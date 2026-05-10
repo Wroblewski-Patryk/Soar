@@ -4,6 +4,20 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest activation evidence refresh:
+`V1-PROD-ACTIVATION-REFRESH-2026-05-10` published fresh activation plan and
+activation evidence audit artifacts as explicit `NO-GO`. Final preflight for
+deployed `74752f025ef49bf5026ec92e056f59947e00a18f` now reports activation
+plan/audit fresh, build-info/public smoke PASS, and V1 `BLOCKED` only on
+protected/formal blockers: liveimport auth/readback, rollback guard auth,
+production DB restore context, failed RC evidence, stale backup/restore drill,
+and stale rollback proof. Next tiny task is protected evidence collection when
+operator credentials and DB context are available; if they are not available,
+the only useful no-secret task is to publish a concise operator unblock
+checklist for those exact inputs. Evidence:
+`docs/planning/v1-production-activation-refresh-2026-05-10-task.md` and
+`docs/operations/v1-final-preflight-74752f02-2026-05-10.md`.
+
 Latest release evidence refresh:
 `V1-RC-BLOCKED-REFRESH-2026-05-10` refreshed RC external gates, RC sign-off,
 and RC checklist as current blocked evidence. Final preflight for deployed

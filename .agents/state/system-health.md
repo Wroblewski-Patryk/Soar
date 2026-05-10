@@ -4,6 +4,15 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-PROD-ACTIVATION-REFRESH-2026-05-10` PASS/BLOCKED: production activation
+  plan and evidence audit are fresh for 2026-05-10 and explicitly `NO-GO` for
+  deployed `74752f025ef49bf5026ec92e056f59947e00a18f`. Final preflight reports
+  build-info PASS, public smoke PASS, activation artifacts fresh, and V1 still
+  `BLOCKED` on protected/formal evidence: liveimport auth/readback, rollback
+  guard auth, production DB restore context, failed RC evidence, stale
+  backup/restore drill, and stale rollback proof. Evidence:
+  `docs/planning/v1-production-activation-refresh-2026-05-10-task.md` and
+  `docs/operations/v1-final-preflight-74752f02-2026-05-10.md`.
 - `V1-RC-BLOCKED-REFRESH-2026-05-10` PASS/BLOCKED: RC external gates status,
   RC sign-off record, and RC checklist are fresh for 2026-05-10 and correctly
   remain blocked/failed instead of approved. Final preflight for deployed

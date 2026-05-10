@@ -17,6 +17,15 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `V1-PROD-ACTIVATION-REFRESH-2026-05-10 release: refresh production activation plan and audit`
+  - Scope: published fresh activation plan and activation evidence audit as
+    explicit `NO-GO` for deployed
+    `74752f025ef49bf5026ec92e056f59947e00a18f`. Final preflight reports
+    activation plan/audit fresh, build-info/public smoke PASS, and V1 still
+    `BLOCKED` on protected/formal evidence. Evidence:
+    `docs/planning/v1-production-activation-refresh-2026-05-10-task.md` and
+    `docs/operations/v1-final-preflight-74752f02-2026-05-10.md`.
+
 - [x] `V1-RC-BLOCKED-REFRESH-2026-05-10 release: refresh current blocked RC evidence`
   - Scope: refreshed RC external gates status, RC sign-off record, and RC
     checklist to 2026-05-10 as current blocked evidence. Final preflight for

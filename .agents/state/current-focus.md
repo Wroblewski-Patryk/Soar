@@ -16,6 +16,17 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 verification update: `V1-PROD-ACTIVATION-REFRESH-2026-05-10`
+published fresh production activation plan and activation evidence audit
+artifacts as explicit `NO-GO` for deployed
+`74752f025ef49bf5026ec92e056f59947e00a18f`. Follow-up no-secret final
+preflight now reports activation plan/audit fresh, build-info/public smoke
+PASS, and V1 still `BLOCKED` on liveimport auth/readback, rollback guard auth,
+production DB restore context, failed RC evidence, stale backup/restore drill,
+and stale rollback proof. Evidence:
+`docs/planning/v1-production-activation-refresh-2026-05-10-task.md` and
+`docs/operations/v1-final-preflight-74752f02-2026-05-10.md`.
+
 2026-05-10 verification update: `V1-RC-BLOCKED-REFRESH-2026-05-10`
 refreshed RC external gates, RC sign-off, and the RC checklist to the active
 evidence date as current blocked evidence. Final preflight for deployed
