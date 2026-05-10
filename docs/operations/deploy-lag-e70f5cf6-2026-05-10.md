@@ -22,11 +22,20 @@ Record production deploy freshness after protected-input readiness was pushed.
   - API `/ready` -> HTTP 200
   - Web `/` -> HTTP 200
 
+## Resolution
+
+Superseded on 2026-05-10 by the Coolify operator recovery recorded in
+`docs/operations/coolify-deploy-queue-recovery-33a2ebc4-2026-05-10.md`.
+Production Web build-info later exposed
+`33a2ebc468be3dbfab7c784f375672ebead5ae16`, stale `soar-api` jobs were
+cancelled, one fresh `soar-api` redeploy finished on the same SHA, public
+API/Web smoke passed, and the Coolify queue was empty.
+
 ## Meaning
 
 The protected-input readiness commit is pushed to `main`, but production is
 not yet proven to contain that documentation/status update.
 
-This is a deploy-freshness blocker, not a public service health failure. The
-next action is operator-side Coolify deployment inspection/retrigger or
-explicitly approved production infrastructure access.
+Historical note: at the time this artifact was created it was a
+deploy-freshness blocker, not a public service health failure. It is no longer
+the active production blocker after the `33a2ebc4` recovery.

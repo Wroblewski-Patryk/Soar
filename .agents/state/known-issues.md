@@ -1,9 +1,16 @@
 # Known Issues
 
-Last updated: 2026-05-09
+Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: the `e70f5cf6` deploy lag is superseded. Coolify showed
+  stale `soar-api` jobs still queued/in progress after production Web
+  build-info had advanced. The stale jobs were cancelled through the
+  operator-approved Coolify UI, one fresh `soar-api` redeploy finished on
+  `33a2ebc468be3dbfab7c784f375672ebead5ae16`, public API/Web smoke passed,
+  and the Coolify queue was empty. Future agents should inspect Coolify before
+  pushing another batch when the queue is non-empty.
 - Local Docker Desktop `desktop-linux` context is unhealthy on this
   workstation and can return pipe `500 Internal Server Error`, but the
   `default` Docker context and local Postgres/Redis ports were reachable on

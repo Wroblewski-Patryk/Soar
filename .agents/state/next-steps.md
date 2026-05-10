@@ -4,6 +4,20 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest Coolify deploy-queue recovery:
+`V1-COOLIFY-DEPLOY-QUEUE-RECOVERY-2026-05-10` supersedes the older
+`e70f5cf6` deploy-lag blocker. Production Web build-info exposes
+`33a2ebc468be3dbfab7c784f375672ebead5ae16`, stale `soar-api` jobs were
+cancelled through the operator-approved Coolify UI, one fresh `soar-api`
+redeploy finished on the same SHA, public API/Web smoke passes, and the
+Coolify queue is empty. Current no-secret final preflight is public PASS and
+protected/formal BLOCKED. Next executable work requires protected
+`LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, production DB restore context,
+real RC approver identities, or authenticated/admin production UI access.
+Evidence:
+`docs/operations/coolify-deploy-queue-recovery-33a2ebc4-2026-05-10.md` and
+`docs/operations/v1-final-preflight-33a2ebc4-2026-05-10.md`.
+
 Latest deploy-control readiness:
 `V1-DEPLOY-CONTROL-READINESS-2026-05-10` confirms production deploy control is
 manual Coolify/operator owned. The repository has CI checks only, no approved

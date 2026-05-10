@@ -4,6 +4,14 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-COOLIFY-DEPLOY-QUEUE-RECOVERY-2026-05-10` PASS/BLOCKED: Coolify stale
+  Soar deploy jobs were cleared, one fresh `soar-api` redeploy finished on
+  `33a2ebc468be3dbfab7c784f375672ebead5ae16`, production Web build-info
+  matches the same SHA, public API/Web smoke passes, and the Coolify queue is
+  empty. The refreshed no-secret V1 final preflight remains correctly
+  `BLOCKED` on protected/formal evidence. Evidence:
+  `docs/operations/coolify-deploy-queue-recovery-33a2ebc4-2026-05-10.md` and
+  `docs/operations/v1-final-preflight-33a2ebc4-2026-05-10.md`.
 - `V1-DEPLOY-CONTROL-READINESS-2026-05-10` PASS/BLOCKED: production deployment
   is manual Coolify/operator controlled; GitHub Actions contains CI checks
   only and no approved no-secret production deploy trigger. Evidence:

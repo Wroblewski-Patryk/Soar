@@ -13,6 +13,17 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-COOLIFY-DEPLOY-QUEUE-RECOVERY-2026-05-10` recovered the
+  production Coolify queue after old Soar deployments remained queued. Stale
+  `soar-api` jobs targeting older SHAs were cancelled, one fresh `soar-api`
+  redeploy finished on
+  `33a2ebc468be3dbfab7c784f375672ebead5ae16`, Web build-info and public
+  API/Web smoke pass, and the Coolify queue is empty. The matching final
+  no-secret preflight remains `BLOCKED / NO-GO` only on protected/formal
+  release evidence. Evidence:
+  `docs/planning/v1-coolify-deploy-queue-recovery-task-2026-05-10.md`,
+  `docs/operations/coolify-deploy-queue-recovery-33a2ebc4-2026-05-10.md`, and
+  `docs/operations/v1-final-preflight-33a2ebc4-2026-05-10.md`.
 - 2026-05-10 `V1-DEPLOY-CONTROL-READINESS-2026-05-10` confirmed production
   deployment is manual Coolify/operator controlled. The repository has CI
   checks only and no approved no-secret production deploy trigger; webhook/API

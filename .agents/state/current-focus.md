@@ -16,6 +16,15 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 post-release update: `V1-COOLIFY-DEPLOY-QUEUE-RECOVERY-2026-05-10`
+cleared the stale Coolify deploy queue for Soar. Production Web build-info and
+the fresh `soar-api` redeploy now both point to
+`33a2ebc468be3dbfab7c784f375672ebead5ae16`; public API/Web smoke passes and
+the Coolify queue is empty. V1 remains `BLOCKED / NO-GO` on protected/formal
+release evidence only. Evidence:
+`docs/operations/coolify-deploy-queue-recovery-33a2ebc4-2026-05-10.md` and
+`docs/operations/v1-final-preflight-33a2ebc4-2026-05-10.md`.
+
 2026-05-10 verification update: `V1-DEPLOY-CONTROL-READINESS-2026-05-10`
 confirms production deploy control is manual Coolify/operator owned. The
 repository has CI checks only, no approved no-secret production deploy trigger,

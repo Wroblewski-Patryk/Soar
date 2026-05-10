@@ -20,6 +20,25 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-05-10 - Check Coolify queue before pushing into slow deploys
+- Context: Soar production deploys can fan out across multiple Coolify
+  applications/workers, so stale queued deploy jobs may remain after Web
+  build-info has already advanced.
+- Symptom: production Web build-info reached the latest pushed commit, public
+  smoke passed, but Coolify still showed stale `soar-api` deployments queued or
+  in progress for older SHAs.
+- Root cause: older deploy jobs were still occupying Coolify's queue.
+- Guardrail: before pushing another batch after a slow deploy, inspect
+  Coolify's deployment queue.
+- Preferred pattern: if only stale jobs for older SHAs remain, cancel those
+  jobs from the operator-approved UI and trigger one fresh deploy for the
+  affected app instead of stacking more pushes.
+- Avoid: pushing another docs/status commit while stale deployments are still
+  queued.
+- Evidence: `33a2ebc468be3dbfab7c784f375672ebead5ae16` reached Web
+  build-info, a fresh `soar-api` redeploy finished on the same SHA, public
+  API/Web smoke passed, and Coolify queue was empty.
+
 ### 2026-05-09 - Release evidence dates need explicit local-date override
 - Context: `V1-RC-BLOCKED-REFRESH-2026-05-09` refreshed RC evidence while the
   operator's local date was 2026-05-09 in Europe/Berlin, but UTC was still

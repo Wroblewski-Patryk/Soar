@@ -17,6 +17,18 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `V1-COOLIFY-DEPLOY-QUEUE-RECOVERY-2026-05-10 release: recover stale Coolify deploy queue`
+  - Scope: cleared stale Soar Coolify deployments after production build-info
+    advanced to
+    `33a2ebc468be3dbfab7c784f375672ebead5ae16`. Stale `soar-api` jobs for old
+    SHAs were cancelled, one fresh `soar-api` redeploy finished on the same
+    SHA, public API/Web smoke passed, and the Coolify queue was empty. Current
+    no-secret V1 preflight is public PASS and protected/formal BLOCKED.
+    Evidence:
+    `docs/planning/v1-coolify-deploy-queue-recovery-task-2026-05-10.md`,
+    `docs/operations/coolify-deploy-queue-recovery-33a2ebc4-2026-05-10.md`,
+    and `docs/operations/v1-final-preflight-33a2ebc4-2026-05-10.md`.
+
 - [x] `V1-DEPLOY-CONTROL-READINESS-2026-05-10 release: audit deploy control after lag`
   - Scope: confirmed production deployment is manual Coolify/operator
     controlled. The repository has CI checks only and no approved no-secret
