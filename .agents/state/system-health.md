@@ -10,8 +10,11 @@ Last updated: 2026-05-09
   order state is mutated only after the boundary call succeeds; contextless
   exchange-backed rows remain fail-closed. Focused exchange tests, focused
   orders cancel tests, API typecheck, guardrails, docs parity, and diff check
-  pass. Production deploy proof remains pending. Evidence:
-  `docs/planning/exchange2-31-live-order-cancel-boundary-task-2026-05-10.md`.
+  pass. Commit `b414e523` is pushed, but production build-info remained on
+  `bebe1906b764a74a641fe716e5d6fb3efe6d9f4d` for the 900-second wait; public
+  API/Web smoke still passed. Evidence:
+  `docs/planning/exchange2-31-live-order-cancel-boundary-task-2026-05-10.md`
+  and `docs/operations/deploy-lag-b414e523-2026-05-10.md`.
 - `EXCHANGE2-30` validation and deployment PASS: Gate.io `LIVE_ORDER_SUBMIT` and
   shared `LIVE_EXECUTION` compatibility support are enabled through the
   canonical orders/exchange boundary. Gate.io exchange-side cancel remains

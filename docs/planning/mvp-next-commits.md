@@ -14,8 +14,11 @@ Operational queue for one-task execution runs.
     preserving fail-closed behavior for contextless exchange-backed rows. No
     real live-money cancel action is performed. Focused exchange tests,
     focused orders cancel tests, API typecheck, guardrails, docs parity, and
-    diff check passed. Evidence:
-    `docs/planning/exchange2-31-live-order-cancel-boundary-task-2026-05-10.md`.
+    diff check passed. Commit `b414e523` is pushed, but production build-info
+    remained on `bebe1906b764a74a641fe716e5d6fb3efe6d9f4d` for the 900-second
+    wait; public API/Web smoke still passed. Evidence:
+    `docs/planning/exchange2-31-live-order-cancel-boundary-task-2026-05-10.md`
+    and `docs/operations/deploy-lag-b414e523-2026-05-10.md`.
 
 - [x] `EXCHANGE2-30-GATEIO-LIVE-ORDER-SUBMIT-2026-05-10 feature(exchange): enable Gate.io live order submit`
   - 2026-05-10: Enable Gate.io `LIVE_ORDER_SUBMIT` through the canonical

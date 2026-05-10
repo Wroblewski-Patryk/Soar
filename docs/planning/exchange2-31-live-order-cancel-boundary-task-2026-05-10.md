@@ -194,8 +194,8 @@ performed.
   module, planning, and state docs.
 - How tested: focused exchange tests, focused orders cancel tests, API
   typecheck, repository guardrails, docs parity, and diff check.
-- What is incomplete: production deploy proof and protected live-money
-  operator evidence remain pending.
+- What is incomplete: production build-info did not reach `b414e523` within
+  900 seconds; protected live-money operator evidence remains pending.
 - Next steps: commit/push, verify production build-info/public smoke, then
   continue protected V1 evidence.
 - Decisions made: exchange-backed cancel must call the exchange boundary before

@@ -23,8 +23,11 @@ connector. Exchange-backed local order state now changes only after the
 boundary call succeeds; contextless exchange-backed rows remain fail-closed.
 No real live-money cancel action is performed in this task. Focused exchange
 tests, focused orders cancel tests, API typecheck, guardrails, docs parity, and
-diff check passed. Evidence:
-`docs/planning/exchange2-31-live-order-cancel-boundary-task-2026-05-10.md`.
+diff check passed. Commit `b414e523` is pushed, but production build-info
+remained on `bebe1906b764a74a641fe716e5d6fb3efe6d9f4d` for the 900-second
+wait; public API/Web smoke still passed. Evidence:
+`docs/planning/exchange2-31-live-order-cancel-boundary-task-2026-05-10.md` and
+`docs/operations/deploy-lag-b414e523-2026-05-10.md`.
 
 2026-05-10 implementation/deploy update: `EXCHANGE2-30` enabled Gate.io
 `LIVE_ORDER_SUBMIT` through the canonical orders/exchange boundary and enables

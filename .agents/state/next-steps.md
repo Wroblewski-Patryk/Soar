@@ -10,9 +10,13 @@ exchange-side `LIVE_ORDER_CANCEL` for Binance and Gate.io through the existing
 orders/exchange/authenticated connector boundary. Focused exchange tests,
 focused orders cancel tests, API typecheck, guardrails, docs parity, and diff
 check pass. Continue by committing, pushing, and verifying production
-build-info/public smoke. Remaining V1 blockers after deploy are protected
-production evidence, authenticated/admin UI clickthrough, RC approval, rollback
-proof, and explicit live-money operator approval.
+build-info/public smoke. Commit `b414e523` is pushed, but production
+build-info remained on `bebe1906b764a74a641fe716e5d6fb3efe6d9f4d` for the
+900-second wait; public API/Web smoke still passed. Next tiny task is to
+recheck deploy freshness for `b414e523` or inspect the Coolify deployment
+queue, then continue protected production evidence, authenticated/admin UI
+clickthrough, RC approval, rollback proof, and explicit live-money operator
+approval.
 
 Latest local implementation slice:
 `EXCHANGE2-30-GATEIO-LIVE-ORDER-SUBMIT-2026-05-10` enabled Gate.io
