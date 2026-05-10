@@ -13,6 +13,13 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `OPEN-PROTECTED-BACKLOG-DYNAMIC-TARGET-SYNC-2026-05-10` aligned
+  the remaining open protected backlog entries (`V1-PROTECTED-ACCESS`,
+  `LIVEIMPORT-03`, and `BOTMULTI-09`) with the dynamic production
+  `/api/build-info` target selection used by the final blocker pack. This is a
+  docs-only handoff cleanup; protected evidence and approvals remain open.
+  Evidence:
+  `docs/planning/open-protected-backlog-dynamic-target-sync-task-2026-05-10.md`.
 - 2026-05-10 `V1-FINAL-PREFLIGHT-82205329-2026-05-10` refreshed current
   production final no-secret preflight for deployed build-info
   `8220532920e484da9ddaa021ac64b5de4cc5e6e1`. Build-info and public API/Web

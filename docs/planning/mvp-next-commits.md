@@ -994,13 +994,17 @@ Operational queue for one-task execution runs.
 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - 2026-05-09: Names-only readiness check found missing live-import auth,
     rollback auth, and production DB/Coolify restore context in the current
-    shell. 2026-05-09 refresh: the documented protected-readiness candidate is
-    current production build-info
-    `30b027b78544f76b5b638851e8e27c98f6d22ab5`. Final V1 evidence remains
-    blocked until protected app/operator auth, DB/Coolify context, RC approval
-    identities, and authenticated/admin UI access are supplied. Evidence:
+    shell. 2026-05-10 refresh: protected evidence target selection is now
+    dynamic; operators must read production `/api/build-info` at the start of
+    the final blocker pack and use that value as `$expectedSha`, unless they
+    intentionally compare one exact intended runtime candidate first. Final V1
+    evidence remains blocked until protected app/operator auth, RC approval
+    identities, and authenticated/admin UI access are supplied. Production DB
+    restore context is currently satisfied by fresh evidence. Evidence:
     `docs/planning/v1-protected-access-readiness-task-2026-05-09.md` and
-    `docs/operations/v1-protected-access-readiness-2026-05-09.md`.
+    `docs/operations/v1-protected-access-readiness-2026-05-09.md`. Current
+    operator path:
+    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
 
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - 2026-05-08: Generated and committed the current no-secret final V1
@@ -3941,17 +3945,17 @@ Operational queue for one-task execution runs.
     service test (`26/26`) and broader orders/manual pack (`49/49`). Evidence:
     `docs/planning/orddrift-01-manual-context-canonical-group-no-direct-fallback-task-2026-05-03.md`.
 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`
-  - Scope: use authenticated read-only dashboard/API evidence on current
-    production build-info
-    `30b027b78544f76b5b638851e8e27c98f6d22ab5` for the reported LIVE ETH/DOGE rows:
+  - Scope: use authenticated read-only dashboard/API evidence against the
+    build-info-derived `$expectedSha` from the final blocker execution pack for
+    the reported LIVE ETH/DOGE rows:
     ownership, `strategyId` or single-strategy provenance recovery, TTP
     visibility, actionable state, and import completeness across assigned bot
     markets. Do not promote stale candidate `39146d2e`; `LIVEIMPORT-03A`
-    confirmed it is not a valid production promotion candidate. 2026-05-09
-    refresh: current production build-info is `30b027b7`, public/no-secret
-    checks pass, and the collector command in the protected operator handoff
-    targets that SHA. Validation still required: authenticated runtime
-    positions readback and redacted evidence.
+    confirmed it is not a valid production promotion candidate. 2026-05-10
+    refresh: public/no-secret checks pass on the current deployed line, and the
+    collector command in the protected operator handoff now derives its target
+    from production `/api/build-info`. Validation still required:
+    authenticated runtime positions readback and redacted evidence.
 - [x] `PAPERSIGNAL-01 fix(api-runtime): audit PAPER signal display-to-execution parity`
   - 2026-05-03: Closed the first confirmed drift. Runtime symbol-stats read
     models now prefer active canonical `BotMarketGroup` and enabled
@@ -3975,12 +3979,12 @@ Operational queue for one-task execution runs.
     redeploy runs migrations automatically through
     `scripts/start-with-migrate.mjs` when `API_AUTO_MIGRATE` is not `false`.
     Local pre-release build, guardrails, and docs parity PASS. Candidate
-    `f3aaa3dca6cf4d4b199372563886165638391a77` is committed and pushed to
-    `origin/main`. 2026-05-09 refresh: current production build-info now
-    reports `30b027b78544f76b5b638851e8e27c98f6d22ab5`, which contains
-    `f3aaa3dca6cf4d4b199372563886165638391a77`; the old public build-info
-    blocker remains resolved. Remaining blocker: authenticated/protected
-    runtime readback and broader V1 release gate evidence are still required.
+    `f3aaa3dca6cf4d4b199372563886165638391a77` is already contained in the
+    deployed V1 line; the old public build-info blocker remains resolved.
+    2026-05-10 refresh: future protected proof must use the dynamic
+    build-info-derived `$expectedSha` from the final blocker pack. Remaining
+    blocker: authenticated/protected runtime readback and broader V1 release
+    gate evidence are still required.
     Evidence:
     `docs/planning/botmulti-09-production-deploy-task-2026-05-03.md` and
     `docs/planning/botmulti-09-current-production-containment-task-2026-05-09.md`.
