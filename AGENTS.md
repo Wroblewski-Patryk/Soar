@@ -11,11 +11,14 @@ runtime safety, deployment discipline, UX quality, or documentation parity.
 Read these before starting non-trivial work:
 
 - `.agents/core/operating-system.md`
+- `.agents/core/project-memory-index.md`
+- `.agents/core/mission-control.md`
 - `.agents/core/execution-loop.md`
 - `.agents/core/anti-regression.md`
 - `.agents/core/quality-gates.md`
 - `.agents/state/current-focus.md`
 - `.agents/state/known-issues.md`
+- `.agents/state/module-confidence-ledger.md`
 - `.agents/state/regression-log.md`
 - `.agents/state/system-health.md`
 - `.agents/state/next-steps.md`
@@ -68,6 +71,42 @@ Read these before starting non-trivial work:
 - Implementation must stay aligned with approved architecture docs.
 - If implementation does not fit architecture, stop and report the mismatch
   instead of creating a workaround.
+- After architecture, module, runtime, route, data, UX, or deployment changes,
+  refresh `.agents/core/project-memory-index.md` governed indexes in the same
+  task. Architecture decisions left only in chat, commits, or scattered
+  planning notes are not source of truth.
+
+### 1A. Project Memory And Module Confidence
+
+- Read `.agents/core/project-memory-index.md` before selecting non-trivial
+  implementation work.
+- Keep `.agents/state/module-confidence-ledger.md` as the truthful map of
+  modules, journeys, working state, evidence, defects, and next proof or fix.
+- Before implementing new features, resolve or explicitly defer P0/P1
+  `BROKEN`, `BLOCKED`, `IMPLEMENTED_NOT_VERIFIED`, and evidence-missing module
+  rows that affect the current release objective.
+- Do not report "almost done", "close", "should work", or similar optimistic
+  states. Use only evidence-backed states: `verified`, `implemented, not
+  verified`, `partially verified`, `blocked`, or `failed`.
+- The user must not be the first tester of a core journey. For browser, mobile,
+  API, auth, data, AI, money, trading, or deployment flows, run a real journey
+  proof or record why it could not run and what risk remains.
+- A task that changes a module must update the module confidence ledger before
+  it can be marked `DONE`.
+
+### 1B. Mission-Based Work Blocks
+
+- Follow `.agents/core/mission-control.md` for long-running autonomous work.
+- Mission control supersedes older wording that says every execution nudge must
+  end after exactly one tiny task. A mission may run for hours and include
+  multiple small slices when they serve one coherent objective.
+- Every mission must define current state, target outcome, owned scope,
+  exclusions, validation gates, checkpoint cadence, stop conditions, and
+  handoff expectations.
+- Update project state, task board, system health, next steps, and module
+  confidence at checkpoints, not only at the end.
+- Keep the mission bounded. Do not merge unrelated objectives just because the
+  agent has available time.
 
 ### 2. Critical Prohibitions
 
@@ -265,11 +304,14 @@ If the user sends a short execution nudge such as `rob`, `rób`, `rób dalej`,
    - `.agents/state/next-steps.md`
    - `docs/planning/mvp-execution-plan.md`
    - `docs/planning/open-decisions.md`
-6. Implement exactly one tiny task through `.agents/core/execution-loop.md`.
-7. Run relevant checks from `.agents/core/quality-gates.md`.
-8. Update `.agents/state/*`, task, project state, and planning files.
-9. Return summary with files changed, tests run, deployment impact, residual
-   risk, and next tiny task.
+6. Define a mission block or continue the active mission block.
+7. Execute the next coherent checkpoint or set of tightly related slices.
+8. Run relevant checks from `.agents/core/quality-gates.md` and real journey
+   proofs.
+9. Update `.agents/state/*`, task, project state, planning files, and module
+   confidence.
+10. Return mission status with files changed, tests run, deployment impact,
+   residual risk, and next checkpoint.
 
 ## UX/UI Contract
 

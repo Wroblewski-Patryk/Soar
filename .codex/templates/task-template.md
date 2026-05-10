@@ -9,8 +9,11 @@
 - Owner: Planning Agent | Product Docs Agent | Backend Builder | Frontend Builder | QA/Test | Security | DB/Migrations | Ops/Release | Review
 - Depends on:
 - Priority: P0 | P1 | P2
+- Module Confidence Rows:
 - Iteration:
 - Operation Mode: BUILDER | ARCHITECT | TESTER
+- Mission ID:
+- Mission Status: PLANNED | IN_PROGRESS | CHECKPOINTED | VERIFIED | PARTIALLY_VERIFIED | BLOCKED | FAILED | SUPERSEDED
 
 ## Process Self-Audit
 - [ ] All seven autonomous loop steps are planned.
@@ -18,6 +21,19 @@
 - [ ] Exactly one priority task is selected.
 - [ ] Operation mode matches the iteration number.
 - [ ] The task is aligned with repository source-of-truth documents.
+- [ ] `.agents/core/project-memory-index.md` was reviewed.
+- [ ] `.agents/core/mission-control.md` was reviewed for long-running work.
+- [ ] Affected module confidence rows were identified.
+- [ ] The task or mission improves release confidence, not only local code appearance.
+
+## Mission Block
+- Mission objective:
+- Release objective advanced:
+- Included slices:
+- Explicit exclusions:
+- Checkpoint cadence:
+- Stop conditions:
+- Handoff expectation:
 ## Context
 Where this work sits in the current project flow and architecture.
 
@@ -62,6 +78,9 @@ Describe exactly what should be produced in the current stage only.
 - Manual checks:
 - Screenshots/logs:
 - High-risk checks:
+- Module confidence ledger updated: yes | no | not applicable
+- Module confidence rows closed or changed:
+- Reality status: verified | implemented, not verified | partially verified | blocked | failed
 
 ## Architecture Evidence (required for architecture-impacting tasks)
 - Architecture source reviewed:
