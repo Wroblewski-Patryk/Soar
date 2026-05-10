@@ -154,6 +154,19 @@ If any check fails, fix before closure.
   adversarial and fail-closed validation before completion.
 - For UX/UI work, require explicit design source, state coverage, responsive
   evidence, accessibility checks, and parity notes.
+- Browser-driven validation must clean up after itself. Close Playwright,
+  browser MCP, Chromium, Chrome, or headless browser contexts/pages before
+  ending the task.
+- Do not leave orphaned `chrome-headless-shell`, `chromium`, Playwright,
+  dev-server, Docker, or database processes running unless the user explicitly
+  asked to keep them alive.
+- After UI/browser testing, check for leftover headless browser processes and
+  terminate only the validation processes you started. On Windows, use a narrow
+  check such as `Get-Process chrome-headless-shell -ErrorAction SilentlyContinue`
+  and clean those up when they belong to the completed validation run.
+- Treat leaked local processes as a P1 environment regression: record the
+  pitfall in `.codex/context/LEARNING_JOURNAL.md` and include cleanup evidence
+  in the task result report.
 - Reuse shared UI patterns before introducing screen-local style inventions.
 - When a new pattern is approved, record it in `docs/ux/design-memory.md`.
 - When a canonical visual target exists, treat it as a specification and close
