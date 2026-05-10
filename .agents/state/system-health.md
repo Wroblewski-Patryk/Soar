@@ -4,6 +4,13 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-OPERATOR-UNBLOCK-CHECKLIST-2026-05-10` PASS/BLOCKED: the operator
+  unblock checklist and final blocker execution pack now target deployed
+  `822d92fc02067fa122e735ab6cc2783e438dc458`. Final preflight for that SHA
+  reports build-info PASS, public smoke PASS, activation artifacts fresh, RC
+  artifacts fresh but failed, and V1 `BLOCKED` on protected/formal evidence.
+  Evidence: `docs/operations/v1-operator-unblock-checklist-2026-05-10.md` and
+  `docs/operations/v1-final-preflight-822d92fc-2026-05-10.md`.
 - `V1-PROD-ACTIVATION-REFRESH-2026-05-10` PASS/BLOCKED: production activation
   plan and evidence audit are fresh for 2026-05-10 and explicitly `NO-GO` for
   deployed `74752f025ef49bf5026ec92e056f59947e00a18f`. Final preflight reports

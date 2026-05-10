@@ -13,6 +13,14 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-OPERATOR-UNBLOCK-CHECKLIST-2026-05-10` published the exact
+  no-secret operator inputs and command order required to close remaining V1
+  blockers. The checklist and final blocker execution pack now target deployed
+  `822d92fc02067fa122e735ab6cc2783e438dc458`; current preflight build-info and
+  public smoke pass, while V1 remains `BLOCKED / NO-GO` on protected/formal
+  evidence. Evidence:
+  `docs/operations/v1-operator-unblock-checklist-2026-05-10.md` and
+  `docs/operations/v1-final-preflight-822d92fc-2026-05-10.md`.
 - 2026-05-10 `V1-PROD-ACTIVATION-REFRESH-2026-05-10` published fresh
   production activation plan and activation evidence audit artifacts as
   explicit `NO-GO` for deployed

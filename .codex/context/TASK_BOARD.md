@@ -17,6 +17,14 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `V1-OPERATOR-UNBLOCK-CHECKLIST-2026-05-10 release: publish final operator unblock checklist`
+  - Scope: published the exact no-secret protected inputs and command order
+    needed to close remaining V1 blockers, retargeted the final blocker
+    execution pack to deployed `822d92fc02067fa122e735ab6cc2783e438dc458`, and
+    captured current no-secret final preflight. V1 remains `BLOCKED / NO-GO`.
+    Evidence: `docs/operations/v1-operator-unblock-checklist-2026-05-10.md`
+    and `docs/operations/v1-final-preflight-822d92fc-2026-05-10.md`.
+
 - [x] `V1-PROD-ACTIVATION-REFRESH-2026-05-10 release: refresh production activation plan and audit`
   - Scope: published fresh activation plan and activation evidence audit as
     explicit `NO-GO` for deployed

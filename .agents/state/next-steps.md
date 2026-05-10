@@ -4,6 +4,17 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest operator unblock packet:
+`V1-OPERATOR-UNBLOCK-CHECKLIST-2026-05-10` published the exact protected
+inputs and command order needed to move V1 from `BLOCKED / NO-GO` to final
+release evidence. The packet targets deployed
+`822d92fc02067fa122e735ab6cc2783e438dc458`; current preflight build-info and
+public smoke pass. Next executable work requires operator-provided
+`LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, production DB restore context, and
+real RC approver identities. Evidence:
+`docs/operations/v1-operator-unblock-checklist-2026-05-10.md` and
+`docs/operations/v1-final-preflight-822d92fc-2026-05-10.md`.
+
 Latest activation evidence refresh:
 `V1-PROD-ACTIVATION-REFRESH-2026-05-10` published fresh activation plan and
 activation evidence audit artifacts as explicit `NO-GO`. Final preflight for

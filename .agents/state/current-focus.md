@@ -16,6 +16,16 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 verification update: `V1-OPERATOR-UNBLOCK-CHECKLIST-2026-05-10`
+published a current no-secret operator unblock checklist for deployed
+`822d92fc02067fa122e735ab6cc2783e438dc458` and retargeted the final blocker
+execution pack to the same SHA. Current preflight build-info/public smoke
+PASS and V1 remains `BLOCKED / NO-GO` until protected liveimport readback,
+rollback proof, production restore drill, Gate 2 evidence, and real RC
+approvers are provided. Evidence:
+`docs/operations/v1-operator-unblock-checklist-2026-05-10.md` and
+`docs/operations/v1-final-preflight-822d92fc-2026-05-10.md`.
+
 2026-05-10 verification update: `V1-PROD-ACTIVATION-REFRESH-2026-05-10`
 published fresh production activation plan and activation evidence audit
 artifacts as explicit `NO-GO` for deployed

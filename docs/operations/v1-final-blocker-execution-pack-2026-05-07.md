@@ -9,9 +9,11 @@
   use local `HEAD` as the protected evidence candidate until that SHA is
   actually exposed by production build-info.
 - Latest verified Coolify deploy:
-  `30b027b78544f76b5b638851e8e27c98f6d22ab5`
+  `822d92fc02067fa122e735ab6cc2783e438dc458`
 - Latest no-secret final preflight:
-  `docs/operations/v1-final-preflight-30b027b7-2026-05-09.md`
+  `docs/operations/v1-final-preflight-822d92fc-2026-05-10.md`
+- Current operator unblock checklist:
+  `docs/operations/v1-operator-unblock-checklist-2026-05-10.md`
 
 ## Purpose
 This pack lists the exact remaining commands needed to turn the current
@@ -50,7 +52,7 @@ midnight drift from producing stale evidence during a late release session.
 
 ```powershell
 $releaseDate = Get-Date -Format yyyy-MM-dd
-$expectedSha = "30b027b78544f76b5b638851e8e27c98f6d22ab5"
+$expectedSha = "822d92fc02067fa122e735ab6cc2783e438dc458"
 ```
 
 Replace `$expectedSha` with `git rev-parse HEAD` only when the currently
@@ -232,9 +234,9 @@ Required result:
 ## Current Known Blockers
 - `LIVEIMPORT-03` authenticated runtime readback is missing.
 - Current verified deployed candidate is
-  `30b027b78544f76b5b638851e8e27c98f6d22ab5`; build-info and public API/Web
+  `822d92fc02067fa122e735ab6cc2783e438dc458`; build-info and public API/Web
   smoke pass for this SHA. The current no-secret final preflight is
-  `docs/operations/v1-final-preflight-30b027b7-2026-05-09.md` and is
+  `docs/operations/v1-final-preflight-822d92fc-2026-05-10.md` and is
   correctly `BLOCKED` on protected auth/operator evidence.
 - The execution pack now uses a single `$releaseDate` and passes it to
   date-aware preflight, restore drill, rollback proof, RC status/sign-off,
@@ -248,10 +250,10 @@ Required result:
   files.
 - Production rollback proof is current for 2026-05-08 but failed because
   protected OPS routes returned `401` without auth.
-- The latest 2026-05-09 preflight marks activation evidence as fresh,
+- The latest 2026-05-10 preflight marks activation evidence as fresh,
   RC external gates/sign-off/checklist as fresh but failed, `LIVEIMPORT-03`
   as missing, and 2026-05-08 restore/rollback evidence as stale for the
-  2026-05-09 evidence date.
+  2026-05-10 evidence date.
 - A no-auth 2026-05-08 runtime freshness probe failed closed with HTTP `401`;
   rollback guard returned `shouldRollback=true` only because runtime freshness
   and alerts endpoints were protected by `401`.
