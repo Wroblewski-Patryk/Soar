@@ -729,6 +729,8 @@ export class RuntimeSignalLoop {
     await processRuntimeFinalCandleDecision(event, {
       nowMs: () => this.deps.nowMs(),
       minDirectionalScore: runtimeSignalLoopConfig.minDirectionalScore,
+      liveGlobalKillSwitch: runtimeSignalLoopConfig.liveGlobalKillSwitch,
+      liveEmergencyStop: runtimeSignalLoopConfig.liveEmergencyStop,
       runtimeSignalQuantity: runtimeSignalLoopConfig.signalQuantity,
       signalDecisionDedupeRetentionMs: runtimeSignalLoopConfig.signalDecisionDedupeRetentionMs,
       processedDecisionWindows: this.processedDecisionWindows,

@@ -4,6 +4,8 @@ export type RuntimeSignalLoopConfig = {
   signalQuantity: number;
   signalDecisionDedupeRetentionMs: number;
   minDirectionalScore: number;
+  liveGlobalKillSwitch: boolean;
+  liveEmergencyStop: boolean;
   tickerFreshnessFallbackMs: number;
   sessionWatchdogIntervalMs: number;
   stallDetectorEnabled: boolean;
@@ -60,6 +62,8 @@ export const readRuntimeSignalLoopConfig = (
       10
     ),
     minDirectionalScore: Number.parseFloat(env.RUNTIME_SIGNAL_MIN_DIRECTIONAL_SCORE ?? '1'),
+    liveGlobalKillSwitch: parseBoolean(env.RUNTIME_LIVE_GLOBAL_KILL_SWITCH, false),
+    liveEmergencyStop: parseBoolean(env.RUNTIME_LIVE_EMERGENCY_STOP, false),
     tickerFreshnessFallbackMs: Math.max(
       30_000,
       Number.parseInt(env.RUNTIME_SIGNAL_TICKER_FRESHNESS_MS ?? '90000', 10)

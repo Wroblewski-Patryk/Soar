@@ -73,6 +73,25 @@ If emergency:
 - disable bot immediately in UI,
 - enable global kill-switch procedure from ops runbook if risk uncertain.
 
+### Controlled LIVE Session Proof
+Before activating a LIVE bot only to prove runtime/session/readback behavior,
+set one or both API execution-worker environment flags and redeploy/restart the
+worker:
+
+```text
+RUNTIME_LIVE_GLOBAL_KILL_SWITCH=true
+RUNTIME_LIVE_EMERGENCY_STOP=true
+```
+
+With either flag enabled, final-candle LIVE decisions still create runtime
+session/telemetry evidence, but entry signals fail closed in the existing
+pre-trade guard before signal creation and order orchestration. Keep the bot
+active only for the observation window, collect `LIVEIMPORT-03`, then
+deactivate the bot and clear the flags before any real LIVE trading run.
+
+Do not use a LIVE session proof as trading approval unless the follow-up
+readback, rollback proof, SLO, and release gate evidence are all current.
+
 ## 6. Monitoring Tab Interpretation
 Monitoring is session-based:
 - Session list/detail:

@@ -2227,6 +2227,28 @@ promise = connect().catch((error) => {
     data after subscription.
   - `binanceStream.service.test.ts` now asserts the routed futures default.
 
+### 2026-05-10 - LIVE session proof needs a code-level no-order guard
+- Context: after Binance key readiness passed, the next V1 blocker was
+  `LIVEIMPORT-03` readback with no running LIVE session.
+- Symptom: the documented kill-switch concept was not available as an
+  environment-controlled guard in the final-candle runtime path, so a LIVE bot
+  activation could reach order orchestration if a strategy emitted an entry.
+- Root cause: pre-trade accepted `globalKillSwitch` and `emergencyStop`, but
+  runtime final-candle decisions always called pre-trade without operator env
+  kill-switch values.
+- Guardrail: controlled LIVE runtime/session proofs must enable
+  `RUNTIME_LIVE_GLOBAL_KILL_SWITCH=true` and/or
+  `RUNTIME_LIVE_EMERGENCY_STOP=true` before activation, then verify
+  `PRETRADE_BLOCKED` telemetry and clear flags before any real trading run.
+- Preferred pattern:
+```text
+1) Add no-order guards in code before attempting production LIVE session proof.
+2) Set env flags and restart/deploy worker before activation.
+3) Activate only for a bounded observation window.
+4) Deactivate and clear flags after evidence capture.
+```
+- Avoid: relying on “probably no signal will fire” as a safety strategy.
+
 ### 2026-05-10 - Exchange permission probes must be scope-explicit and independent
 - Context: `PROD-API-RUNTIME-READINESS-F3CB9A24-2026-05-10` reported a
   Binance key as Spot-ready and Futures-not-ready, but the operator confirmed

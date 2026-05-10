@@ -16,6 +16,13 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 LIVE runtime kill-switch config:
+`LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10` adds
+`RUNTIME_LIVE_GLOBAL_KILL_SWITCH` and `RUNTIME_LIVE_EMERGENCY_STOP` to the
+runtime final-candle pre-trade path. Defaults are off. When enabled for LIVE,
+the existing pre-trade guard blocks before signal creation/order orchestration,
+allowing controlled runtime/session proof without intended exchange orders.
+
 2026-05-10 production rerun after Futures-only key fixes:
 Production build-info reached `8cd5c1b3f38b9594a9caf15d4b434c853a66fdfe`.
 Public smoke passes and the stored Binance key now validates successfully on

@@ -17,6 +17,8 @@ type RuntimeSignalRouteEntry = {
 type RuntimeFinalCandleDecisionContext = {
   nowMs: () => number;
   minDirectionalScore: number;
+  liveGlobalKillSwitch?: boolean;
+  liveEmergencyStop?: boolean;
   runtimeSignalQuantity: number;
   signalDecisionDedupeRetentionMs: number;
   processedDecisionWindows: Map<string, number>;
@@ -47,6 +49,8 @@ type RuntimeFinalCandleDecisionContext = {
     symbol: string;
     mode: 'PAPER' | 'LIVE';
     marketType: 'FUTURES' | 'SPOT';
+    globalKillSwitch?: boolean;
+    emergencyStop?: boolean;
   }) => Promise<{
     allowed: boolean;
     reasons: unknown[];
@@ -404,6 +408,8 @@ export const processRuntimeFinalCandleDecision = async (
           symbol: event.symbol,
           mode: bot.mode,
           marketType: event.marketType,
+          globalKillSwitch: bot.mode === 'LIVE' ? (context.liveGlobalKillSwitch ?? false) : false,
+          emergencyStop: bot.mode === 'LIVE' ? (context.liveEmergencyStop ?? false) : false,
         });
         if (!preTradeDecision.allowed) {
           await context.recordRuntimeEvent?.({

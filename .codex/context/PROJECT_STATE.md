@@ -13,6 +13,12 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10` adds optional
+  environment-controlled LIVE runtime no-order guards. When
+  `RUNTIME_LIVE_GLOBAL_KILL_SWITCH` or `RUNTIME_LIVE_EMERGENCY_STOP` is true,
+  final-candle LIVE decisions pass the flag into pre-trade and block before
+  signal creation/order orchestration. Defaults are off, so production behavior
+  is unchanged until an operator sets the flags.
 - 2026-05-10 production rerun on deployed
   `8cd5c1b3f38b9594a9caf15d4b434c853a66fdfe` confirms the stored Binance key
   now validates successfully on production with `ok: true`, `code: OK`,

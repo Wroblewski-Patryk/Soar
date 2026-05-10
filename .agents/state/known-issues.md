@@ -4,6 +4,12 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: controlled LIVE session proof should wait until
+  `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10` is deployed and the production
+  API/execution-worker env has `RUNTIME_LIVE_GLOBAL_KILL_SWITCH=true` and/or
+  `RUNTIME_LIVE_EMERGENCY_STOP=true`. Without those flags, activating a LIVE
+  bot can reach real order orchestration if a strategy emits an entry signal.
+
 - 2026-05-10 update: the Binance key-readiness blocker is closed after
   deployment of `8cd5c1b3`. Stored key production test now passes with both
   Spot and Futures permissions true. The remaining live-runtime blocker is

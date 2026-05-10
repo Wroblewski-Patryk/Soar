@@ -7,6 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10 fix: add env-controlled LIVE runtime kill switch`
+  - 2026-05-10: Added `RUNTIME_LIVE_GLOBAL_KILL_SWITCH` and
+    `RUNTIME_LIVE_EMERGENCY_STOP` to runtime config and wired them into the
+    final-candle LIVE pre-trade path before signal creation/order
+    orchestration. Defaults are off. Focused config/final-candle tests and API
+    typecheck pass. Evidence:
+    `docs/planning/live-runtime-kill-switch-config-task-2026-05-10.md`.
+
 - [x] `PROD-API-RUNTIME-READINESS-8CD5C1B3-2026-05-10 release: rerun production key and liveimport readiness`
   - 2026-05-10: After production reached
     `8cd5c1b3f38b9594a9caf15d4b434c853a66fdfe`, public deploy smoke passed

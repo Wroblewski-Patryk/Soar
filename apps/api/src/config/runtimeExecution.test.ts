@@ -8,6 +8,8 @@ describe('runtimeExecution config', () => {
     expect(config.signalQuantity).toBe(0.01);
     expect(config.signalDecisionDedupeRetentionMs).toBe(21_600_000);
     expect(config.minDirectionalScore).toBe(1);
+    expect(config.liveGlobalKillSwitch).toBe(false);
+    expect(config.liveEmergencyStop).toBe(false);
     expect(config.tickerFreshnessFallbackMs).toBe(90_000);
     expect(config.sessionWatchdogIntervalMs).toBe(15_000);
     expect(config.stallDetectorEnabled).toBe(true);
@@ -25,6 +27,8 @@ describe('runtimeExecution config', () => {
       RUNTIME_SIGNAL_QUANTITY: '0.25',
       RUNTIME_SIGNAL_DEDUPE_RETENTION_MS: '120000',
       RUNTIME_SIGNAL_MIN_DIRECTIONAL_SCORE: '2.5',
+      RUNTIME_LIVE_GLOBAL_KILL_SWITCH: 'true',
+      RUNTIME_LIVE_EMERGENCY_STOP: 'true',
       RUNTIME_SIGNAL_TICKER_FRESHNESS_MS: '1000',
       RUNTIME_SESSION_WATCHDOG_INTERVAL_MS: '1000',
       RUNTIME_STALL_DETECTOR_ENABLED: 'false',
@@ -40,6 +44,8 @@ describe('runtimeExecution config', () => {
     expect(config.signalQuantity).toBe(0.25);
     expect(config.signalDecisionDedupeRetentionMs).toBe(120_000);
     expect(config.minDirectionalScore).toBe(2.5);
+    expect(config.liveGlobalKillSwitch).toBe(true);
+    expect(config.liveEmergencyStop).toBe(true);
     expect(config.tickerFreshnessFallbackMs).toBe(30_000);
     expect(config.sessionWatchdogIntervalMs).toBe(5_000);
     expect(config.stallDetectorEnabled).toBe(false);

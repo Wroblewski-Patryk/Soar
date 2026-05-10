@@ -4,6 +4,12 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10` LOCAL PASS/PENDING DEPLOY:
+  runtime config now exposes `RUNTIME_LIVE_GLOBAL_KILL_SWITCH` and
+  `RUNTIME_LIVE_EMERGENCY_STOP`; final-candle LIVE pre-trade receives these
+  flags and blocks before signal creation/order orchestration when enabled.
+  Focused runtime config/final-candle tests and API typecheck pass.
+
 - `PROD-API-RUNTIME-READINESS-8CD5C1B3-2026-05-10` PASS/BLOCKED:
   production build-info matches
   `8cd5c1b3f38b9594a9caf15d4b434c853a66fdfe`, public deploy smoke passes, and

@@ -4,6 +4,16 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest LIVE runtime kill-switch config:
+`LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10` adds an env-controlled no-order
+guard for controlled LIVE session proof:
+`RUNTIME_LIVE_GLOBAL_KILL_SWITCH=true` and/or
+`RUNTIME_LIVE_EMERGENCY_STOP=true`. After this deploys, the next executable
+production proof is: set the flag(s) in Coolify API/execution worker env,
+redeploy/restart, activate the LIVE bot briefly, verify a RUNNING session and
+`PRETRADE_BLOCKED` telemetry, rerun `LIVEIMPORT-03`, deactivate the bot, and
+clear the flags before any real trading.
+
 Latest production rerun after API-key probe fixes:
 Production is deployed on `8cd5c1b3f38b9594a9caf15d4b434c853a66fdfe`.
 Public smoke passes. The stored Binance key now validates successfully on

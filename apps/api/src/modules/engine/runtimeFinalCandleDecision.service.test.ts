@@ -184,6 +184,68 @@ describe('runtimeFinalCandleDecision.service', () => {
     );
   });
 
+  it('passes LIVE kill-switch flags into pre-trade and blocks before orchestration', async () => {
+    const { context, createSignal, orchestrateFn, recordRuntimeEvent } = createContext({
+      direction: 'LONG',
+      botOverrides: {
+        mode: 'LIVE',
+      },
+    });
+    const analyzePreTradeFn = vi.fn(async () => ({
+      allowed: false,
+      reasons: ['global_kill_switch_enabled', 'emergency_stop_enabled'],
+      metrics: {},
+    }));
+    (context as any).liveGlobalKillSwitch = true;
+    (context as any).liveEmergencyStop = true;
+    (context as any).analyzePreTradeFn = analyzePreTradeFn;
+
+    await processRuntimeFinalCandleDecision(baseEvent, context as any);
+
+    expect(analyzePreTradeFn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        mode: 'LIVE',
+        globalKillSwitch: true,
+        emergencyStop: true,
+      })
+    );
+    expect(createSignal).not.toHaveBeenCalled();
+    expect(orchestrateFn).not.toHaveBeenCalled();
+    expect(recordRuntimeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'PRETRADE_BLOCKED',
+        message: 'Pre-trade guard blocked execution',
+        payload: expect.objectContaining({
+          reasons: ['global_kill_switch_enabled', 'emergency_stop_enabled'],
+        }),
+      })
+    );
+  });
+
+  it('does not pass LIVE kill-switch flags into PAPER pre-trade', async () => {
+    const { context } = createContext({
+      direction: 'LONG',
+    });
+    const analyzePreTradeFn = vi.fn(async () => ({
+      allowed: true,
+      reasons: [],
+      metrics: {},
+    }));
+    (context as any).liveGlobalKillSwitch = true;
+    (context as any).liveEmergencyStop = true;
+    (context as any).analyzePreTradeFn = analyzePreTradeFn;
+
+    await processRuntimeFinalCandleDecision(baseEvent, context as any);
+
+    expect(analyzePreTradeFn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        mode: 'PAPER',
+        globalKillSwitch: false,
+        emergencyStop: false,
+      })
+    );
+  });
+
   it('does not block a bot when a managed external position belongs to another bot on the same symbol', async () => {
     const { context, createSignal, orchestrateFn, recordRuntimeEvent } = createContext({
       direction: 'LONG',
