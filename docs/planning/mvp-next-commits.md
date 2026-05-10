@@ -7,6 +7,18 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-FUNCTION-COVERAGE-AUDIT-2026-05-10 research: publish V1 function coverage audit`
+  - 2026-05-10: Published a function/module-oriented V1 audit across
+    architecture, route map, API routers, Web routes, module inventory, test
+    inventory, current final preflight, and production UI clickthrough
+    evidence. The result is still `NO-GO`: implementation coverage is broad
+    and no broad missing module implementation was found, but V1 remains
+    blocked on protected liveimport readback, rollback proof PASS,
+    authenticated/admin UI clickthrough, authenticated Gate 2 SLO, RC
+    approval/sign-off/checklist, and final non-dry-run release gate. Evidence:
+    `docs/planning/v1-function-coverage-audit-task-2026-05-10.md` and
+    `docs/operations/v1-function-coverage-audit-2026-05-10.md`.
+
 - [x] `V1-FINAL-PREFLIGHT-82205329-2026-05-10 release: refresh current final no-secret preflight`
   - 2026-05-10: Ran final V1 preflight against production build-info
     `8220532920e484da9ddaa021ac64b5de4cc5e6e1`. Build-info PASS, public

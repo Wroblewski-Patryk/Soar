@@ -17,6 +17,18 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `V1-FUNCTION-COVERAGE-AUDIT-2026-05-10 research: publish V1 function coverage audit`
+  - Scope: published a function/module-oriented V1 audit across architecture,
+    route map, API routers, Web route inventory, module inventory, test
+    inventory, current final preflight, and production UI clickthrough
+    evidence. The audit confirms broad implementation coverage and no broad
+    known missing module implementation for the current V1 scope, but V1
+    remains `NO-GO` until protected liveimport readback, rollback proof PASS,
+    authenticated/admin UI clickthrough, authenticated Gate 2 SLO, RC approval,
+    and final non-dry-run release gate evidence are complete. Evidence:
+    `docs/planning/v1-function-coverage-audit-task-2026-05-10.md` and
+    `docs/operations/v1-function-coverage-audit-2026-05-10.md`.
+
 - [x] `V1-FINAL-PREFLIGHT-82205329-2026-05-10 release: refresh current final no-secret preflight`
   - Scope: ran final V1 preflight against production build-info
     `8220532920e484da9ddaa021ac64b5de4cc5e6e1`. Build-info PASS, public

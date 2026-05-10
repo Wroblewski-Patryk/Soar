@@ -4,6 +4,16 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest function coverage audit:
+`V1-FUNCTION-COVERAGE-AUDIT-2026-05-10` confirms that broad V1 implementation
+and local coverage exist across the documented module/route/test surfaces. No
+broad missing module implementation was found for the current V1 scope. V1 is
+still `NO-GO` because the missing work is protected production proof and
+formal release approval: `LIVEIMPORT-03` protected readback, rollback proof
+PASS, authenticated/admin UI clickthrough, authenticated Gate 2 SLO, RC
+approval/sign-off/checklist, and final non-dry-run release gate. Evidence:
+`docs/operations/v1-function-coverage-audit-2026-05-10.md`.
+
 Latest final preflight:
 `V1-FINAL-PREFLIGHT-82205329-2026-05-10` refreshed the no-secret final
 preflight for deployed build-info

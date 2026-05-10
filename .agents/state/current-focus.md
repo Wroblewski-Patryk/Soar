@@ -16,6 +16,18 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 function coverage audit:
+`V1-FUNCTION-COVERAGE-AUDIT-2026-05-10` published a function/module-oriented
+answer to what remains before V1 can be called complete. The audit reviewed
+architecture, the dashboard route map, API routers, Web routes, module
+inventory, test inventory, current final preflight, and production UI
+clickthrough evidence. Conclusion: broad implementation/local coverage exists
+and no broad missing module implementation was found for the current V1 scope,
+but V1 remains `NO-GO` until protected liveimport readback, rollback proof
+PASS, authenticated/admin UI clickthrough, authenticated Gate 2 SLO, RC
+approval/sign-off/checklist, and final non-dry-run release gate are complete.
+Evidence: `docs/operations/v1-function-coverage-audit-2026-05-10.md`.
+
 2026-05-10 final preflight refresh:
 `V1-FINAL-PREFLIGHT-82205329-2026-05-10` captured the current no-secret final
 preflight for production build-info

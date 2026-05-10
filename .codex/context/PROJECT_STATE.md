@@ -13,6 +13,18 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-FUNCTION-COVERAGE-AUDIT-2026-05-10` published a
+  function/module-oriented V1 audit across architecture, UI routes, API
+  routers, module inventory, test inventory, final preflight, and production UI
+  clickthrough evidence. The audit conclusion is `NO-GO`: Soar V1 has broad
+  implementation and local coverage, and no broad missing module implementation
+  was found for the current V1 scope, but protected production proof and formal
+  release approval remain open. Remaining blockers are `LIVEIMPORT-03`
+  protected readback, rollback proof PASS, authenticated/admin UI clickthrough,
+  authenticated Gate 2 SLO, RC approval/sign-off/checklist, and final
+  non-dry-run release gate. Evidence:
+  `docs/planning/v1-function-coverage-audit-task-2026-05-10.md` and
+  `docs/operations/v1-function-coverage-audit-2026-05-10.md`.
 - 2026-05-10 `OPEN-PROTECTED-BACKLOG-DYNAMIC-TARGET-SYNC-2026-05-10` aligned
   the remaining open protected backlog entries (`V1-PROTECTED-ACCESS`,
   `LIVEIMPORT-03`, and `BOTMULTI-09`) with the dynamic production

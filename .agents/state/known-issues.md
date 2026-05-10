@@ -4,6 +4,13 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: function/module coverage audit confirms the remaining V1
+  issue is not a broad missing implementation backlog, but protected proof and
+  formal release approval. V1 remains blocked on `LIVEIMPORT-03` protected
+  runtime readback, rollback proof PASS, authenticated/admin production UI
+  clickthrough, authenticated Gate 2 SLO, RC approval/sign-off/checklist, and
+  final non-dry-run release gate. Evidence:
+  `docs/operations/v1-function-coverage-audit-2026-05-10.md`.
 - 2026-05-10 update: final no-secret preflight for production build-info
   `8220532920e484da9ddaa021ac64b5de4cc5e6e1` is current and `BLOCKED`.
   Build-info, public smoke, activation artifacts, and production restore drill
