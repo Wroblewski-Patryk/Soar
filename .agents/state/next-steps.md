@@ -4,6 +4,17 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest final preflight:
+`V1-FINAL-PREFLIGHT-82205329-2026-05-10` refreshed the no-secret final
+preflight for deployed build-info
+`8220532920e484da9ddaa021ac64b5de4cc5e6e1`. Build-info PASS, public smoke
+PASS, production DB restore context satisfied by evidence, activation evidence
+fresh, and backup/restore drill fresh. Remaining blockers are protected/formal:
+`LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, RC external gates/sign-off/
+checklist, missing `LIVEIMPORT-03`, rollback proof PASS, and authenticated/
+admin UI proof. Evidence:
+`docs/operations/v1-final-preflight-82205329-2026-05-10.md`.
+
 Latest production UI audit:
 `PROD-UI-PUBLIC-CLICKTHROUGH-88313309-2026-05-10` refreshed no-auth UI
 route/module evidence for deployed build-info

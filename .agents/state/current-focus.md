@@ -16,6 +16,16 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 final preflight refresh:
+`V1-FINAL-PREFLIGHT-82205329-2026-05-10` captured the current no-secret final
+preflight for production build-info
+`8220532920e484da9ddaa021ac64b5de4cc5e6e1`. Build-info and public smoke pass,
+production DB restore context is satisfied by fresh evidence, and V1 remains
+`BLOCKED` only on protected/formal blockers: liveimport auth/readback,
+rollback guard auth/proof PASS, RC gate/sign-off/checklist approval, and
+authenticated/admin UI proof. Evidence:
+`docs/operations/v1-final-preflight-82205329-2026-05-10.md`.
+
 2026-05-10 UI audit refresh:
 `PROD-UI-PUBLIC-CLICKTHROUGH-88313309-2026-05-10` refreshed the no-auth
 production UI route/module audit for deployed build-info

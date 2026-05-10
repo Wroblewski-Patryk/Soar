@@ -4,6 +4,13 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: final no-secret preflight for production build-info
+  `8220532920e484da9ddaa021ac64b5de4cc5e6e1` is current and `BLOCKED`.
+  Build-info, public smoke, activation artifacts, and production restore drill
+  are fresh/satisfied; remaining blockers are liveimport auth/readback,
+  rollback guard auth/proof PASS, RC external gates/sign-off/checklist, and
+  authenticated/admin UI proof. Evidence:
+  `docs/operations/v1-final-preflight-82205329-2026-05-10.md`.
 - 2026-05-10 update: latest no-auth production UI audit for build-info
   `88313309200d35275ba6c0d3465c5045c4b6d99e` passes public routes and shows
   dashboard/admin/legacy protected routes as `BLOCKED_AUTH` redirecting to

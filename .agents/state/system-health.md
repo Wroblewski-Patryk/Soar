@@ -4,6 +4,13 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-FINAL-PREFLIGHT-82205329-2026-05-10` PASS/BLOCKED: production Web
+  build-info matches `8220532920e484da9ddaa021ac64b5de4cc5e6e1`, public
+  API/Web smoke passes, and production DB restore context is satisfied by
+  fresh restore evidence. V1 remains `BLOCKED` on liveimport auth/readback,
+  rollback guard auth/proof PASS, RC external gates/sign-off/checklist, and
+  authenticated/admin UI proof. Evidence:
+  `docs/operations/v1-final-preflight-82205329-2026-05-10.md`.
 - `PROD-UI-PUBLIC-CLICKTHROUGH-88313309-2026-05-10` PASS/BLOCKED: current
   production build-info matches
   `88313309200d35275ba6c0d3465c5045c4b6d99e`. No-auth production UI audit

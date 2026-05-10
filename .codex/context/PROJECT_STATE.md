@@ -13,6 +13,17 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-FINAL-PREFLIGHT-82205329-2026-05-10` refreshed current
+  production final no-secret preflight for deployed build-info
+  `8220532920e484da9ddaa021ac64b5de4cc5e6e1`. Build-info and public API/Web
+  smoke pass, production DB restore context is satisfied by fresh evidence,
+  activation artifacts are fresh, and V1 remains blocked only on protected or
+  formal evidence: liveimport auth/readback, rollback guard auth/proof PASS,
+  RC gate/sign-off/checklist approval, and authenticated/admin UI proof.
+  Evidence:
+  `docs/planning/v1-final-preflight-82205329-task-2026-05-10.md`,
+  `docs/operations/_artifacts-v1-final-preflight-82205329-2026-05-10.json`,
+  and `docs/operations/v1-final-preflight-82205329-2026-05-10.md`.
 - 2026-05-10 `V1-OPERATOR-ARTIFACT-NAMING-2026-05-10` updated final V1
   operator commands so preflight, `LIVEIMPORT-03`, UI clickthrough, and final
   release-gate artifacts include the deployed build-info short SHA plus

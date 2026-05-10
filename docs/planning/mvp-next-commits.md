@@ -7,6 +7,18 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-FINAL-PREFLIGHT-82205329-2026-05-10 release: refresh current final no-secret preflight`
+  - 2026-05-10: Ran final V1 preflight against production build-info
+    `8220532920e484da9ddaa021ac64b5de4cc5e6e1`. Build-info PASS, public
+    smoke PASS, production DB restore context satisfied by evidence, and
+    activation/backup restore evidence fresh. V1 remains `BLOCKED` on
+    protected/formal blockers: liveimport auth/readback, rollback guard
+    auth/proof PASS, RC gate/sign-off/checklist approval, and
+    authenticated/admin UI proof. Evidence:
+    `docs/planning/v1-final-preflight-82205329-task-2026-05-10.md`,
+    `docs/operations/_artifacts-v1-final-preflight-82205329-2026-05-10.json`,
+    and `docs/operations/v1-final-preflight-82205329-2026-05-10.md`.
+
 - [x] `V1-OPERATOR-ARTIFACT-NAMING-2026-05-10 release: add SHA suffixes to V1 operator artifacts`
   - 2026-05-10: Updated the final blocker execution pack, operator unblock
     checklist, and continuation state so preflight, `LIVEIMPORT-03`, UI
