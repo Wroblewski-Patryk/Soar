@@ -4,6 +4,16 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-CURRENT-RELEASE-GATE-DRY-RUN-2026-05-10` PASS/BLOCKED: production Web
+  build-info still exposes
+  `8f8630b0ad5abd690409d6173c9b247b95948138`. The V1 release-gate dry-run
+  generated current artifacts and correctly reports readiness `not_ready`.
+  Activation audit, activation plan, and backup/restore drill evidence are
+  fresh; RC external gates, RC sign-off, RC checklist, `LIVEIMPORT-03`, and
+  rollback proof remain failed or missing. The final production gate must still
+  run without `--dry-run` after protected inputs and RC approvals exist.
+  Evidence:
+  `docs/operations/v1-release-gate-prod-2026-05-10Tcurrent-buildinfo-dry-run.md`.
 - `V1-OPERATOR-RUNBOOK-DYNAMIC-SHA-2026-05-10` PASS/BLOCKED: final V1
   runbooks now derive `$expectedSha` from production build-info by default and
   preserve explicit intended-candidate comparison when needed. V1 remains

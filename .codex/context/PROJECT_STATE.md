@@ -13,6 +13,17 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-CURRENT-RELEASE-GATE-DRY-RUN-2026-05-10` captured a current
+  production V1 release-gate dry-run for deployed build-info
+  `8f8630b0ad5abd690409d6173c9b247b95948138`. The gate classifier reports
+  `not_ready`: activation audit, activation plan, and backup/restore drill are
+  fresh, while RC external gates, RC sign-off, RC checklist, `LIVEIMPORT-03`,
+  rollback proof PASS, and non-dry-run final gate execution remain blockers.
+  Evidence:
+  `docs/planning/v1-current-release-gate-dry-run-task-2026-05-10.md`,
+  `docs/operations/_artifacts-v1-release-gate-prod-2026-05-10Tcurrent-buildinfo-dry-run.json`,
+  and
+  `docs/operations/v1-release-gate-prod-2026-05-10Tcurrent-buildinfo-dry-run.md`.
 - 2026-05-10 `V1-OPERATOR-RUNBOOK-DYNAMIC-SHA-2026-05-10` updated final V1
   operator runbooks to derive `$expectedSha` from production
   `https://soar.luckysparrow.ch/api/build-info` at the start of the protected

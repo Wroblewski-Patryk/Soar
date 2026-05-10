@@ -4,6 +4,17 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest release-gate truth:
+`V1-CURRENT-RELEASE-GATE-DRY-RUN-2026-05-10` ran the production V1 release gate
+in no-secret `--dry-run` mode against build-info
+`8f8630b0ad5abd690409d6173c9b247b95948138`. Readiness is `not_ready`.
+Fresh evidence exists for activation audit, activation plan, and production
+backup/restore drill. Remaining blockers are `RC external gates failed`,
+`RC sign-off failed`, `RC checklist failed`, missing `LIVEIMPORT-03` runtime
+readback, rollback proof fresh but failed, and the need to run the final gate
+without `--dry-run` after protected inputs are present. Evidence:
+`docs/operations/v1-release-gate-prod-2026-05-10Tcurrent-buildinfo-dry-run.md`.
+
 Latest operator target rule:
 `V1-OPERATOR-RUNBOOK-DYNAMIC-SHA-2026-05-10` removes the need to re-sync static
 SHA targets after docs-only deploys. The final blocker pack now reads

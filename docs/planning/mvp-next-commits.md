@@ -7,6 +7,19 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-CURRENT-RELEASE-GATE-DRY-RUN-2026-05-10 release: refresh current production release-gate dry-run`
+  - 2026-05-10: Confirmed production Web build-info for
+    `8f8630b0ad5abd690409d6173c9b247b95948138`, then generated current
+    no-secret production V1 release-gate dry-run artifacts. Readiness is
+    `not_ready`: activation audit, activation plan, and backup/restore drill
+    are fresh, while RC external gates, RC sign-off, RC checklist,
+    `LIVEIMPORT-03`, rollback proof PASS, and final non-dry-run execution
+    remain blockers. Evidence:
+    `docs/planning/v1-current-release-gate-dry-run-task-2026-05-10.md`,
+    `docs/operations/_artifacts-v1-release-gate-prod-2026-05-10Tcurrent-buildinfo-dry-run.json`,
+    and
+    `docs/operations/v1-release-gate-prod-2026-05-10Tcurrent-buildinfo-dry-run.md`.
+
 - [x] `V1-OPERATOR-RUNBOOK-DYNAMIC-SHA-2026-05-10 release: use build-info as operator target`
   - 2026-05-10: Updated the final blocker execution pack and operator unblock
     checklist so protected V1 evidence derives `$expectedSha` from production

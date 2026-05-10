@@ -17,6 +17,17 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `V1-CURRENT-RELEASE-GATE-DRY-RUN-2026-05-10 release: refresh current production release-gate dry-run`
+  - Scope: confirmed production Web build-info still exposes
+    `8f8630b0ad5abd690409d6173c9b247b95948138`, then ran the V1 release gate
+    in no-secret `--dry-run` mode for production. Readiness remains
+    `not_ready`: activation audit, activation plan, and backup/restore drill
+    evidence are fresh, while RC external gates, RC sign-off, RC checklist,
+    `LIVEIMPORT-03`, rollback proof PASS, and final non-dry-run execution
+    remain blockers. Evidence:
+    `docs/planning/v1-current-release-gate-dry-run-task-2026-05-10.md` and
+    `docs/operations/v1-release-gate-prod-2026-05-10Tcurrent-buildinfo-dry-run.md`.
+
 - [x] `V1-OPERATOR-RUNBOOK-DYNAMIC-SHA-2026-05-10 release: use build-info as operator target`
   - Scope: updated the final blocker execution pack and operator unblock
     checklist so `$expectedSha` is derived from production

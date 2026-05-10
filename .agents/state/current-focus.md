@@ -16,6 +16,17 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 release-gate status:
+`V1-CURRENT-RELEASE-GATE-DRY-RUN-2026-05-10` captured a current no-secret
+production V1 release-gate dry-run for deployed build-info
+`8f8630b0ad5abd690409d6173c9b247b95948138`. Readiness is still
+`not_ready`. Fresh PASS-family evidence exists for activation audit,
+activation plan, and backup/restore drill, while RC external gates, RC
+sign-off, RC checklist, `LIVEIMPORT-03`, rollback proof PASS, and the final
+non-dry-run release-gate execution remain blockers. Evidence:
+`docs/planning/v1-current-release-gate-dry-run-task-2026-05-10.md` and
+`docs/operations/v1-release-gate-prod-2026-05-10Tcurrent-buildinfo-dry-run.md`.
+
 2026-05-10 operator target hardening:
 `V1-OPERATOR-RUNBOOK-DYNAMIC-SHA-2026-05-10` changed the final blocker
 execution pack and operator unblock checklist so protected evidence uses

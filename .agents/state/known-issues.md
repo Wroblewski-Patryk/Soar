@@ -4,6 +4,13 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: the current production V1 release-gate dry-run for
+  build-info `8f8630b0ad5abd690409d6173c9b247b95948138` is `not_ready`.
+  Remaining release-gate blockers are failed RC external gates, failed RC
+  sign-off, failed RC checklist, missing `LIVEIMPORT-03` runtime readback,
+  failed rollback proof, and the fact that production release gate still needs
+  a non-dry-run execution once protected inputs are available. Evidence:
+  `docs/operations/v1-release-gate-prod-2026-05-10Tcurrent-buildinfo-dry-run.md`.
 - 2026-05-10 update: RC Gate 2 SLO evidence cannot be completed without
   protected ops auth. A one-minute no-auth production SLO probe produced
   blocker evidence only: `/health` PASS, `/ready` transient 50% availability
