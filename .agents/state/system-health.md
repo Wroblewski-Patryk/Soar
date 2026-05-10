@@ -4,6 +4,16 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `V1-FINAL-PREFLIGHT-1E11F8DE-2026-05-10` PASS/BLOCKED:
+  refreshed no-secret final V1 preflight for deployed
+  `1e11f8de4a3daaa313894a9ccf989237a3e65e5a`. Build-info PASS, public
+  API/Web smoke PASS, and production DB restore context is satisfied by fresh
+  evidence. V1 remains `BLOCKED` on protected/formal evidence:
+  `LIVEIMPORT-03` runtime readback missing, rollback proof failed,
+  liveimport/rollback auth missing, and RC gates/sign-off/checklist failed.
+  Evidence:
+  `docs/operations/v1-final-preflight-1e11f8de-2026-05-10.md`.
+
 - `DEPLOY-SMOKE-SKIP-WORKERS-ALIAS-2026-05-10` LOCAL PASS:
   `scripts/deploySmokeCheck.mjs` now accepts `--skip-workers` as an alias for
   canonical `--no-workers`. The default protected worker check remains enabled

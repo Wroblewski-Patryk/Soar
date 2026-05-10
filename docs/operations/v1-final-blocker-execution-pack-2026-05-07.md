@@ -11,7 +11,7 @@
 - Latest verified Coolify deploy:
   production `/api/build-info` is the current deployment source of truth.
 - Latest no-secret final preflight:
-  `docs/operations/v1-final-preflight-fd8da90b-2026-05-10.md`
+  `docs/operations/v1-final-preflight-1e11f8de-2026-05-10.md`
 - Current operator unblock checklist:
   `docs/operations/v1-operator-unblock-checklist-2026-05-10.md`
 - Note: docs/evidence commits may deploy after runtime code. Always read

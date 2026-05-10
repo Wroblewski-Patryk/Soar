@@ -4,6 +4,16 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest final V1 preflight:
+`V1-FINAL-PREFLIGHT-1E11F8DE-2026-05-10` confirms the deployed production
+candidate `1e11f8de4a3daaa313894a9ccf989237a3e65e5a` passes build-info and
+public API/Web smoke, and production DB restore context is satisfied by fresh
+evidence. V1 is still `BLOCKED`, not because of missing public deployment, but
+because protected/formal release evidence is incomplete: missing
+`LIVEIMPORT-03`, failed rollback proof, missing liveimport/rollback auth, and
+failed RC gates/sign-off/checklist. Evidence:
+`docs/operations/v1-final-preflight-1e11f8de-2026-05-10.md`.
+
 Latest deploy smoke tooling fix:
 `DEPLOY-SMOKE-SKIP-WORKERS-ALIAS-2026-05-10` makes
 `deploySmokeCheck.mjs --skip-workers` behave like canonical `--no-workers`.

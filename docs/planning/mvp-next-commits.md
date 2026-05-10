@@ -7,6 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-FINAL-PREFLIGHT-1E11F8DE-2026-05-10 release: refresh final preflight for current deploy`
+  - 2026-05-10: Read-only final V1 preflight for deployed
+    `1e11f8de4a3daaa313894a9ccf989237a3e65e5a` reports build-info PASS,
+    public API/Web smoke PASS, and production DB restore context satisfied by
+    fresh evidence. V1 remains `BLOCKED` on protected/formal evidence:
+    missing `LIVEIMPORT-03`, failed rollback proof, missing
+    liveimport/rollback auth, and failed RC gates/sign-off/checklist. Evidence:
+    `docs/planning/v1-final-preflight-1e11f8de-task-2026-05-10.md` and
+    `docs/operations/v1-final-preflight-1e11f8de-2026-05-10.md`.
+
 - [x] `DEPLOY-SMOKE-SKIP-WORKERS-ALIAS-2026-05-10 fix: accept skip-workers alias in deploy smoke`
   - 2026-05-10: `scripts/deploySmokeCheck.mjs` now accepts
     `--skip-workers` as an alias for `--no-workers`. Default worker checks

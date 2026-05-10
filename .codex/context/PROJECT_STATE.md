@@ -13,6 +13,14 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-FINAL-PREFLIGHT-1E11F8DE-2026-05-10` refreshed the no-secret
+  final V1 preflight for deployed
+  `1e11f8de4a3daaa313894a9ccf989237a3e65e5a`. Build-info and public API/Web
+  smoke pass, and production DB restore context is satisfied by fresh restore
+  evidence. V1 remains `BLOCKED` only on protected/formal release evidence:
+  missing `LIVEIMPORT-03`, failed rollback proof, missing liveimport/rollback
+  auth, and failed RC gates/sign-off/checklist. Evidence:
+  `docs/operations/v1-final-preflight-1e11f8de-2026-05-10.md`.
 - 2026-05-10 `DEPLOY-SMOKE-SKIP-WORKERS-ALIAS-2026-05-10` improves deployment
   verification tooling by accepting `--skip-workers` as an alias for
   `--no-workers` in `scripts/deploySmokeCheck.mjs`. This closes a recurring
