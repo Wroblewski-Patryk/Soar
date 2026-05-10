@@ -4,6 +4,15 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: the production Binance key probe evidence in
+  `PROD-API-RUNTIME-READINESS-F3CB9A24-2026-05-10` is ambiguous, not
+  authoritative. The operator confirmed the key is Futures-capable; local code
+  review found the probe relied on implicit CCXT balance-scope defaults and
+  sequential scope checks. `BINANCE-FUTURES-APIKEY-PROBE-SCOPE-FIX-2026-05-10`
+  fixes this locally by probing scopes independently and passing explicit
+  Binance Futures balance params. The fixed probe still needs deployment and a
+  production rerun before key readiness is accepted.
+
 - 2026-05-10 update: LIVE Binance Futures startup is blocked by production
   account/runtime readiness, not by route reachability. Authenticated API
   modules are reachable, but the stored Binance key probe reports

@@ -17,6 +17,17 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `BINANCE-FUTURES-APIKEY-PROBE-SCOPE-FIX-2026-05-10 fix: correct API-key probe scope handling`
+  - Scope: corrected the local Binance Futures API-key probe path after the
+    operator challenged the production probe interpretation. The old stored
+    key probe output is now treated as ambiguous. The local fix probes Spot and
+    Futures independently, passes explicit Binance Futures balance params
+    through the exchange-owned probe surface, and updates the production
+    readiness report. Focused unit tests and API typecheck pass; DB-backed e2e
+    is blocked by missing local `DATABASE_URL`. Production rerun is required
+    after deploy. Evidence:
+    `docs/planning/binance-futures-api-key-probe-scope-fix-task-2026-05-10.md`.
+
 - [x] `PROD-API-RUNTIME-READINESS-F3CB9A24-2026-05-10 release: capture authenticated API/runtime readiness`
   - Scope: captured authenticated read-only production API and live-runtime
     readiness evidence for deployed

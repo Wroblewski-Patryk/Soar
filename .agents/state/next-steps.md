@@ -4,6 +4,14 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest Binance Futures API-key probe correction:
+`BINANCE-FUTURES-APIKEY-PROBE-SCOPE-FIX-2026-05-10` found the previous stored
+key probe output was ambiguous for Binance Futures. The local fix probes Spot
+and Futures independently and passes explicit Binance Futures balance params
+to CCXT. Next executable action after deployment is to rerun the stored API-key
+test on production and update `LIVEIMPORT-03` readiness based on the corrected
+probe, not the old `spot/futures` booleans.
+
 Latest production API/runtime readiness:
 `PROD-API-RUNTIME-READINESS-F3CB9A24-2026-05-10` captured authenticated
 read-only API evidence on deployed `f3cb9a24c4c891479d5466a5abae4100ddda5ca8`.

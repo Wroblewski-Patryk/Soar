@@ -16,6 +16,14 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 Binance Futures API-key probe correction:
+`BINANCE-FUTURES-APIKEY-PROBE-SCOPE-FIX-2026-05-10` corrects the prior
+production readiness interpretation. The old stored-key probe output is now
+classified as ambiguous for Binance Futures because the probe relied on
+implicit CCXT balance-scope defaults and sequential scope checks. The local fix
+probes Spot and Futures independently and passes explicit Binance Futures
+balance params before the endpoint is used again as readiness evidence.
+
 2026-05-10 production API/runtime readiness:
 `PROD-API-RUNTIME-READINESS-F3CB9A24-2026-05-10` captured authenticated
 read-only production API evidence on deployed

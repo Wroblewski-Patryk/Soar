@@ -30,6 +30,24 @@ export const resolveApiKeyProbeCcxtDefaultType = (
   return 'future';
 };
 
+export const resolveApiKeyProbeFetchBalanceParams = (
+  exchange: Exchange,
+  marketType: ExchangeApiKeyProbeMarketType
+): Record<string, unknown> => {
+  const defaultType = resolveApiKeyProbeCcxtDefaultType(exchange, marketType);
+
+  if (exchange === 'BINANCE' && marketType === 'future') {
+    return {
+      type: defaultType,
+      useV2: true,
+    };
+  }
+
+  return {
+    type: defaultType,
+  };
+};
+
 export const createExchangeApiKeyProbeClient: ExchangeApiKeyProbeClientFactory = async (
   exchange,
   marketType,

@@ -4,6 +4,14 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `BINANCE-FUTURES-APIKEY-PROBE-SCOPE-FIX-2026-05-10` LOCAL PASS/PENDING
+  DEPLOY: the prior production stored-key probe result is now treated as
+  ambiguous for Binance Futures. Local code now probes Spot and Futures
+  independently and passes explicit Binance Futures balance params
+  `{ type: "future", useV2: true }`. Focused probe tests and API typecheck pass;
+  DB-backed e2e was blocked by missing local `DATABASE_URL`. Production rerun
+  is required after deploy.
+
 - `PROD-API-RUNTIME-READINESS-F3CB9A24-2026-05-10` PASS/BLOCKED:
   production build-info matches
   `f3cb9a24c4c891479d5466a5abae4100ddda5ca8`, authenticated read-only API

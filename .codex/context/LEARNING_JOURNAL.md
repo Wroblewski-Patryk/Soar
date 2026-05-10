@@ -2227,6 +2227,33 @@ promise = connect().catch((error) => {
     data after subscription.
   - `binanceStream.service.test.ts` now asserts the routed futures default.
 
+### 2026-05-10 - Exchange permission probes must be scope-explicit and independent
+- Context: `PROD-API-RUNTIME-READINESS-F3CB9A24-2026-05-10` reported a
+  Binance key as Spot-ready and Futures-not-ready, but the operator confirmed
+  the key is Futures-capable.
+- Symptom: stored API-key test output could be overinterpreted as exchange
+  permission truth even though the probe relied on CCXT default balance-scope
+  behavior and sequential Spot-then-Futures checks.
+- Root cause: profile probing called `fetchBalance()` without explicit
+  per-scope params and short-circuited meaningful multi-scope evidence.
+- Guardrail: exchange-owned API-key probes must pass explicit market-scope
+  params to the adapter/SDK and collect Spot/Futures results independently
+  before reporting permission booleans.
+- Preferred pattern:
+```text
+1) Keep SDK-specific scope params inside the exchange module.
+2) Probe each supported scope independently.
+3) Treat old or ambiguous probe artifacts as inconclusive until the fixed
+   probe is deployed and rerun.
+4) Do not block Futures-only readiness from a Spot failure unless the target
+   flow actually requires Spot.
+```
+- Avoid: concluding that a production key lacks Futures permission from an
+  implicit `fetchBalance()` probe or from a generic all-scopes validation path.
+- Evidence:
+  - `exchangeApiKeyProbe.service.test.ts` now verifies independent scope
+    probing and explicit Binance Futures params.
+
 ### 2026-05-02 - Production readiness must include Redis dependency health
 - Context: `V1BOT-SIGNALS-02` post-deploy production smoke could not complete
   authenticated auth/SSE validation even after the futures websocket route fix.

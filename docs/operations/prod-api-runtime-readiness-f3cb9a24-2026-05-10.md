@@ -2,6 +2,13 @@
 
 ## Status
 - Result: **BLOCKED / NO-GO for starting LIVE Futures bot**
+- Correction note: the stored API-key probe result in this artifact is now
+  classified as **ambiguous** for Binance Futures readiness. Follow-up task
+  `BINANCE-FUTURES-APIKEY-PROBE-SCOPE-FIX-2026-05-10` found that the probe
+  relied on implicit CCXT balance-scope defaults and sequential scope checks,
+  so the `spot/futures` booleans below must not be treated as authoritative
+  proof of the operator's Binance key permissions until the fixed probe is
+  deployed and rerun.
 - Environment: production
 - Evidence date: 2026-05-10
 - Deployed build-info SHA: `f3cb9a24c4c891479d5466a5abae4100ddda5ca8`
@@ -11,10 +18,11 @@
 
 ## Plain Answer
 The application routes and authenticated API modules are reachable, and the
-LIVE bot configuration exists. Do not start the LIVE Binance Futures bot yet:
-the stored Binance key probe currently fails Futures readiness
-(`spot: true`, `futures: false`) and `LIVEIMPORT-03` cannot collect runtime
-readback because there is no running LIVE runtime session.
+LIVE bot configuration exists. Do not treat this artifact as proof that the
+Binance key lacks Futures access. The reliable blocker captured here is that
+`LIVEIMPORT-03` cannot collect runtime readback because there is no running
+LIVE runtime session. The key-permission probe must be rerun after the
+scope-handling fix is deployed.
 
 ## What Passed
 - Production Web build-info matches `f3cb9a24`.
@@ -52,7 +60,7 @@ readback because there is no running LIVE runtime session.
 
 ## Stored Exchange-Key Probe
 The stored Binance key test endpoint returned HTTP 200 with a failed validation
-payload:
+payload, but this result is now considered ambiguous for Binance Futures:
 
 | Field | Value |
 | --- | --- |
@@ -62,10 +70,10 @@ payload:
 | permissions.spot | `true` |
 | permissions.futures | `false` |
 
-This is a fail-closed blocker for LIVE Binance Futures. The likely operator
-actions are to enable Futures API permissions for the Binance key, confirm the
-Futures account/subaccount is active, verify IP restrictions include the
-production API egress IP, or replace the key with a Futures-capable key.
+This was a fail-closed application response, but it should not be interpreted
+as definitive exchange-permission truth. The follow-up fix makes scope probing
+independent and passes explicit balance-scope parameters before this endpoint
+is used again as readiness evidence.
 
 ## LIVEIMPORT-03 Readback
 Command family:
@@ -95,8 +103,8 @@ gate can pass.
 - No destructive account cleanup was performed in this task.
 
 ## V1 Impact
-V1 remains `BLOCKED / NO-GO` for live launch. The next concrete unblock is
-operator-side exchange-key remediation for Binance Futures, followed by a
-controlled paper/live-runtime readback run and then the remaining formal gates:
-rollback proof PASS, authenticated Gate 2 SLO, RC approval/sign-off/checklist,
-and final non-dry-run release gate.
+V1 remains `BLOCKED / NO-GO` for live launch. The next concrete unblock is to
+deploy and rerun the corrected Binance Futures key probe, then run a controlled
+runtime/readback session. The remaining formal gates are rollback proof PASS,
+authenticated Gate 2 SLO, RC approval/sign-off/checklist, and final
+non-dry-run release gate.

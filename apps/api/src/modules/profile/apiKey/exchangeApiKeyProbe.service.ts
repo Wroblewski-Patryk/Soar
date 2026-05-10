@@ -1,6 +1,7 @@
 import type { Exchange } from '@prisma/client';
 import {
   createExchangeApiKeyProbeClient,
+  resolveApiKeyProbeFetchBalanceParams,
   resolveApiKeyProbeCcxtDefaultType,
   type ExchangeApiKeyProbeClientFactory,
   type ExchangeApiKeyProbeClientInput,
@@ -10,6 +11,7 @@ import {
 
 export {
   createExchangeApiKeyProbeClient,
+  resolveApiKeyProbeFetchBalanceParams,
   resolveApiKeyProbeCcxtDefaultType,
 } from '../../exchange/exchangeApiKeyProbeClient.service';
 
@@ -103,6 +105,23 @@ const mapProbeError = (error: unknown, scope: ApiKeyProbeMarketType): ApiKeyProb
   return 'UNKNOWN';
 };
 
+const PROBE_CODE_PRIORITY: Record<ApiKeyProbeCode, number> = {
+  OK: 0,
+  INVALID_KEY: 1,
+  INVALID_SECRET: 2,
+  IP_RESTRICTED: 3,
+  NETWORK_TIMEOUT: 4,
+  MISSING_SPOT_SCOPE: 5,
+  MISSING_FUTURES_SCOPE: 5,
+  UNKNOWN: 6,
+};
+
+const selectProbeFailureCode = (codes: ApiKeyProbeCode[]): ApiKeyProbeCode => {
+  return codes
+    .filter((code) => code !== 'OK')
+    .sort((left, right) => PROBE_CODE_PRIORITY[left] - PROBE_CODE_PRIORITY[right])[0] ?? 'UNKNOWN';
+};
+
 export const formatProbeMessage = (exchange: Exchange, code: ApiKeyProbeCode) => {
   const label = EXCHANGE_DISPLAY_NAMES[exchange] ?? exchange;
   switch (code) {
@@ -132,7 +151,7 @@ const probeScope = async (
 ) => {
   const client = await clientFactory(input.exchange, marketType, input);
   try {
-    await client.fetchBalance();
+    await client.fetchBalance(resolveApiKeyProbeFetchBalanceParams(input.exchange, marketType));
   } finally {
     if (typeof client.close === 'function') {
       await client.close();
@@ -148,18 +167,14 @@ export const probeExchangeApiKeyPermissions = async (
     spot: false,
     futures: false,
   };
+  const failureCodes: ApiKeyProbeCode[] = [];
 
   try {
     await probeScope('spot', input, clientFactory);
     permissions.spot = true;
   } catch (error) {
     const code = mapProbeError(error, 'spot');
-    return {
-      ok: false,
-      code,
-      message: formatProbeMessage(input.exchange, code),
-      permissions,
-    };
+    failureCodes.push(code);
   }
 
   try {
@@ -167,6 +182,11 @@ export const probeExchangeApiKeyPermissions = async (
     permissions.futures = true;
   } catch (error) {
     const code = mapProbeError(error, 'future');
+    failureCodes.push(code);
+  }
+
+  if (failureCodes.length > 0) {
+    const code = selectProbeFailureCode(failureCodes);
     return {
       ok: false,
       code,

@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   probeExchangeApiKeyPermissions,
   resolveApiKeyProbeCcxtDefaultType,
+  resolveApiKeyProbeFetchBalanceParams,
   type ApiKeyProbeClientFactory,
 } from "./exchangeApiKeyProbe.service";
 
@@ -63,7 +64,27 @@ describe("probeExchangeApiKeyPermissions", () => {
     });
   });
 
-  it("maps invalid key error before probing futures", async () => {
+  it("probes futures even when spot fails", async () => {
+    const calls: string[] = [];
+    const result = await withFactory("GATEIO", async (exchange, marketType) => {
+      calls.push(`${exchange}:${marketType}`);
+      return {
+        fetchBalance: async () => {
+          if (marketType === "spot") {
+            throw new Error("Permission denied");
+          }
+        },
+      };
+    });
+
+    expect(calls).toEqual(["GATEIO:spot", "GATEIO:future"]);
+    expect(result.ok).toBe(false);
+    expect(result.code).toBe("MISSING_SPOT_SCOPE");
+    expect(result.message).toBe("Gate.io key has no Spot permission.");
+    expect(result.permissions).toEqual({ spot: false, futures: true });
+  });
+
+  it("maps invalid key error after checking both scopes", async () => {
     const calls: string[] = [];
     const result = await withFactory("GATEIO", async (exchange, marketType) => {
       calls.push(`${exchange}:${marketType}`);
@@ -74,7 +95,7 @@ describe("probeExchangeApiKeyPermissions", () => {
       };
     });
 
-    expect(calls).toEqual(["GATEIO:spot"]);
+    expect(calls).toEqual(["GATEIO:spot", "GATEIO:future"]);
     expect(result.ok).toBe(false);
     expect(result.code).toBe("INVALID_KEY");
     expect(result.message).toBe("Gate.io rejected API key format or value.");
@@ -112,5 +133,18 @@ describe("probeExchangeApiKeyPermissions", () => {
     expect(resolveApiKeyProbeCcxtDefaultType("GATEIO", "spot")).toBe("spot");
     expect(resolveApiKeyProbeCcxtDefaultType("GATEIO", "future")).toBe("swap");
     expect(resolveApiKeyProbeCcxtDefaultType("BINANCE", "future")).toBe("future");
+  });
+
+  it("passes explicit CCXT balance params for Binance Futures probes", async () => {
+    const calls: Array<Record<string, unknown> | undefined> = [];
+
+    await withFactory("BINANCE", async () => ({
+      fetchBalance: async (params) => {
+        calls.push(params);
+      },
+    }));
+
+    expect(calls).toEqual([{ type: "spot" }, { type: "future", useV2: true }]);
+    expect(resolveApiKeyProbeFetchBalanceParams("GATEIO", "future")).toEqual({ type: "swap" });
   });
 });

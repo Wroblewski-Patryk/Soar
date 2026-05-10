@@ -13,6 +13,14 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `BINANCE-FUTURES-APIKEY-PROBE-SCOPE-FIX-2026-05-10` corrected
+  the Binance Futures API-key probe path after the operator challenged the
+  production probe interpretation. The old `spot: true`, `futures: false`
+  output is now treated as ambiguous, not authoritative. Locally, API-key
+  probing now runs Spot and Futures independently and sends explicit Binance
+  Futures balance params through the exchange-owned probe client surface. The
+  next production step is deployment plus rerun of the stored key test before
+  using the result as live readiness evidence.
 - 2026-05-10 `PROD-API-RUNTIME-READINESS-F3CB9A24-2026-05-10` captured
   authenticated read-only production API and live-runtime readiness evidence
   for deployed `f3cb9a24c4c891479d5466a5abae4100ddda5ca8`. Dashboard/admin
