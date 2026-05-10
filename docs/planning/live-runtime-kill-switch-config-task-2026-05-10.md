@@ -154,6 +154,10 @@ Runtime config, final-candle decision wiring, tests, and docs/state updates.
 ### 5. Verify and Test
 - Validation performed: focused runtime tests and API typecheck.
 - Result: PASS.
+- Production release evidence: after push, production build-info reached
+  `f00080842ea59289e8d683ac298939a23b522e67`; public deploy smoke passed for
+  API `/health`, API `/ready`, and Web `/`; Coolify showed Soar services
+  running after the queued deploy completed.
 
 ### 6. Self-Review
 - Simpler option considered: operator-only manual caution was rejected because
@@ -192,4 +196,6 @@ Runtime config, final-candle decision wiring, tests, and docs/state updates.
 LIVE runtime now has optional environment-controlled no-order guards. When
 enabled, final-candle LIVE decisions pass kill-switch flags to pre-trade and
 block before signal creation/order orchestration. This creates a safer
-precondition for controlled production session/readback proof.
+precondition for controlled production session/readback proof. The change is
+deployed on production at
+`f00080842ea59289e8d683ac298939a23b522e67`, with public API/Web smoke passing.

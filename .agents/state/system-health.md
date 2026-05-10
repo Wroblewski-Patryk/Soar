@@ -4,11 +4,14 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
-- `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10` LOCAL PASS/PENDING DEPLOY:
+- `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10` PASS/DEPLOYED:
   runtime config now exposes `RUNTIME_LIVE_GLOBAL_KILL_SWITCH` and
   `RUNTIME_LIVE_EMERGENCY_STOP`; final-candle LIVE pre-trade receives these
   flags and blocks before signal creation/order orchestration when enabled.
-  Focused runtime config/final-candle tests and API typecheck pass.
+  Focused runtime config/final-candle tests and API typecheck pass. Production
+  build-info now exposes `f00080842ea59289e8d683ac298939a23b522e67`, public
+  API/Web smoke passes, and Coolify shows the Soar services running after the
+  queued deploy completed.
 
 - `PROD-API-RUNTIME-READINESS-8CD5C1B3-2026-05-10` PASS/BLOCKED:
   production build-info matches

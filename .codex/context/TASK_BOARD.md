@@ -22,7 +22,9 @@ Last updated: 2026-05-10
     `RUNTIME_LIVE_EMERGENCY_STOP` to runtime config and wired them into the
     final-candle LIVE pre-trade path before signal creation/order
     orchestration. Defaults are off. Focused config/final-candle tests and API
-    typecheck pass. Evidence:
+    typecheck pass. Production build-info reached
+    `f00080842ea59289e8d683ac298939a23b522e67` and public API/Web smoke
+    passed after the queued Coolify deploy completed. Evidence:
     `docs/planning/live-runtime-kill-switch-config-task-2026-05-10.md`.
 
 - [x] `PROD-API-RUNTIME-READINESS-8CD5C1B3-2026-05-10 release: rerun production key and liveimport readiness`

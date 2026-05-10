@@ -18,7 +18,10 @@ Last updated: 2026-05-10
   `RUNTIME_LIVE_GLOBAL_KILL_SWITCH` or `RUNTIME_LIVE_EMERGENCY_STOP` is true,
   final-candle LIVE decisions pass the flag into pre-trade and block before
   signal creation/order orchestration. Defaults are off, so production behavior
-  is unchanged until an operator sets the flags.
+  is unchanged until an operator sets the flags. Production build-info now
+  exposes `f00080842ea59289e8d683ac298939a23b522e67`, public API/Web smoke
+  passes, and Coolify shows the Soar services running after the queued deploy
+  completed.
 - 2026-05-10 production rerun on deployed
   `8cd5c1b3f38b9594a9caf15d4b434c853a66fdfe` confirms the stored Binance key
   now validates successfully on production with `ok: true`, `code: OK`,
