@@ -7,6 +7,15 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `PROD-API-RUNTIME-READINESS-8CD5C1B3-2026-05-10 release: rerun production key and liveimport readiness`
+  - 2026-05-10: After production reached
+    `8cd5c1b3f38b9594a9caf15d4b434c853a66fdfe`, public deploy smoke passed
+    and the stored Binance key test returned `ok: true`, `code: OK`,
+    `permissions.spot: true`, `permissions.futures: true`. `LIVEIMPORT-03`
+    still returns `NO_RUNNING_SESSION`, so remaining live proof requires a
+    controlled runtime session. Evidence:
+    `docs/operations/prod-api-runtime-readiness-8cd5c1b3-2026-05-10.md`.
+
 - [x] `FUTURES-ONLY-APIKEY-ACCEPTANCE-2026-05-10 fix: accept futures-only API key probe success`
   - 2026-05-10: Changed profile API-key probe semantics so a key is accepted
     when at least one actionable scope validates, preserving

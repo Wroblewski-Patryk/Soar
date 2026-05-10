@@ -4,6 +4,15 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest production rerun after API-key probe fixes:
+Production is deployed on `8cd5c1b3f38b9594a9caf15d4b434c853a66fdfe`.
+Public smoke passes. The stored Binance key now validates successfully on
+production with Spot and Futures permissions true. `LIVEIMPORT-03` still
+returns `NO_RUNNING_SESSION`, so the next executable V1 step is a controlled
+LIVE runtime/session proof that avoids unintended order placement, then a
+rerun of `LIVEIMPORT-03`. Evidence:
+`docs/operations/prod-api-runtime-readiness-8cd5c1b3-2026-05-10.md`.
+
 Latest Futures-only API-key acceptance:
 `FUTURES-ONLY-APIKEY-ACCEPTANCE-2026-05-10` closes the semantic gap where a
 Futures-capable key could still fail because Spot was unavailable. After this

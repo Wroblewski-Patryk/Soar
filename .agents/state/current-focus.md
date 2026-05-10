@@ -16,6 +16,14 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 production rerun after Futures-only key fixes:
+Production build-info reached `8cd5c1b3f38b9594a9caf15d4b434c853a66fdfe`.
+Public smoke passes and the stored Binance key now validates successfully on
+production with `ok: true`, `code: OK`, `permissions.spot: true`, and
+`permissions.futures: true`. `LIVEIMPORT-03` remains blocked only because the
+LIVE bot has no running runtime session. Evidence:
+`docs/operations/prod-api-runtime-readiness-8cd5c1b3-2026-05-10.md`.
+
 2026-05-10 Futures-only API-key acceptance:
 `FUTURES-ONLY-APIKEY-ACCEPTANCE-2026-05-10` updates profile API-key test
 semantics so a key is accepted when at least one actionable scope validates.

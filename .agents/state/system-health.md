@@ -4,6 +4,15 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `PROD-API-RUNTIME-READINESS-8CD5C1B3-2026-05-10` PASS/BLOCKED:
+  production build-info matches
+  `8cd5c1b3f38b9594a9caf15d4b434c853a66fdfe`, public deploy smoke passes, and
+  the stored Binance key test now returns `ok: true`, `code: OK`,
+  `permissions.spot: true`, `permissions.futures: true`. `LIVEIMPORT-03`
+  remains blocked fail-closed with `NO_RUNNING_SESSION` because no LIVE runtime
+  session exists. Evidence:
+  `docs/operations/prod-api-runtime-readiness-8cd5c1b3-2026-05-10.md`.
+
 - `FUTURES-ONLY-APIKEY-ACCEPTANCE-2026-05-10` LOCAL PASS/PENDING DEPLOY:
   API-key probe semantics now accept keys that validate at least one actionable
   scope. Futures-only success returns `ok: true` with

@@ -4,6 +4,13 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: the Binance key-readiness blocker is closed after
+  deployment of `8cd5c1b3`. Stored key production test now passes with both
+  Spot and Futures permissions true. The remaining live-runtime blocker is
+  `LIVEIMPORT-03` returning `NO_RUNNING_SESSION`; a controlled runtime session
+  proof is still required before V1 can claim live readback readiness. Evidence:
+  `docs/operations/prod-api-runtime-readiness-8cd5c1b3-2026-05-10.md`.
+
 - 2026-05-10 update: before
   `FUTURES-ONLY-APIKEY-ACCEPTANCE-2026-05-10`, a Futures-only key could still
   fail profile validation because the generic probe treated missing Spot as

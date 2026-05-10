@@ -13,6 +13,13 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 production rerun on deployed
+  `8cd5c1b3f38b9594a9caf15d4b434c853a66fdfe` confirms the stored Binance key
+  now validates successfully on production with `ok: true`, `code: OK`,
+  `permissions.spot: true`, and `permissions.futures: true`. Public smoke also
+  passes. `LIVEIMPORT-03` remains blocked fail-closed because the configured
+  LIVE bot has no running runtime session. Evidence:
+  `docs/operations/prod-api-runtime-readiness-8cd5c1b3-2026-05-10.md`.
 - 2026-05-10 `FUTURES-ONLY-APIKEY-ACCEPTANCE-2026-05-10` changed API-key probe
   success semantics so any validated actionable scope is accepted while
   preserving per-scope permission booleans. This means a Binance Futures-only
