@@ -1,6 +1,7 @@
 import request from 'supertest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
+import { clearRuntimeTickerStore, upsertRuntimeTicker } from '../engine/runtimeTickerStore';
 import { setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 
 export const PLACEHOLDER_EXCHANGES = ['BYBIT', 'OKX', 'KRAKEN', 'COINBASE'] as const;
@@ -149,8 +150,21 @@ export const createPayload = (refs: {
   };
 };
 
+export const seedRuntimeTicker = (symbol: string, price: number) =>
+  upsertRuntimeTicker({
+    type: 'ticker',
+    exchange: 'BINANCE',
+    marketType: 'FUTURES',
+    symbol,
+    markPrice: price,
+    lastPrice: price,
+    eventTime: Date.now(),
+    priceChangePercent24h: 0,
+  });
+
 export const resetBotsE2eState = async () => {
   walletIdByMarketGroupId.clear();
+  clearRuntimeTickerStore();
   await prisma.log.deleteMany();
   await prisma.backtestReport.deleteMany();
   await prisma.backtestTrade.deleteMany();

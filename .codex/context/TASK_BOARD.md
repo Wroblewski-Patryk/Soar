@@ -17,6 +17,16 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `V1-BOTS-ACTION-AUDIT-2026-05-10 fix: verify Bots module action contracts`
+  - Scope: added focused Bots list delete success/failure coverage and
+    refreshed Bots API action evidence across CRUD, delete cleanup, runtime
+    close with deterministic ticker context, ownership isolation, market
+    groups, strategy links, LIVE opt-in guards, duplicate active guards, and
+    runtime monitoring. Reset helpers now clear runtime ticker store state
+    between Bots e2e cases. Evidence:
+    `docs/planning/v1-bots-action-audit-task-2026-05-10.md` and
+    `docs/operations/v1-product-action-audit-matrix-2026-05-10.md`.
+
 - [x] `V1-PRODUCT-ACTION-AUDIT-P0-2026-05-10 fix: seed action audit and close first P0 regressions`
   - Scope: corrected the evidence model after operator-reported UI/action
     failures. Bot deletion now clears `RuntimeExecutionDedupe.botId` before

@@ -19,6 +19,7 @@ import {
   PLACEHOLDER_EXCHANGES,
   registerAndLogin,
   resetBotsE2eState,
+  seedRuntimeTicker,
   walletIdByMarketGroupId,
 } from './bots.e2e.shared';
 
@@ -1619,6 +1620,7 @@ describe('Bots module contract', () => {
       },
       select: { id: true },
     });
+    seedRuntimeTicker('BTCUSDT', 68120);
 
     const missingAckRes = await owner
       .post(`/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions/${position.id}/close`)

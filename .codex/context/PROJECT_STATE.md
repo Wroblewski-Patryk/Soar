@@ -13,6 +13,15 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `V1-BOTS-ACTION-AUDIT-2026-05-10` closes the first module-level
+  action audit slice for Bots on safe local fixtures. The Web Bots list now has
+  regression coverage for delete success and delete failure UI behavior. The
+  API Bots e2e pack passes end-to-end for CRUD, delete cleanup, runtime close,
+  ownership isolation, market groups, strategy links, LIVE opt-in guards,
+  duplicate active guards, and runtime monitoring. Bots e2e reset now clears
+  runtime ticker store state so hidden in-memory market data cannot leak
+  between action tests. This is local action evidence; production-safe Bots
+  clickthrough remains a separate non-destructive proof lane.
 - 2026-05-10 `V1-PRODUCT-ACTION-AUDIT-P0-2026-05-10` corrects the V1
   readiness posture after operator-reported production UI/action failures.
   Previous reports are now classified as deploy/route/local-contract evidence,

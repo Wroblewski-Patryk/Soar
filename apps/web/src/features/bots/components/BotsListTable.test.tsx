@@ -1,5 +1,5 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { I18nProvider } from "@/i18n/I18nProvider";
 
@@ -27,6 +27,51 @@ const renderWithI18n = () => {
     </I18nProvider>
   );
 };
+
+const seedBotsList = () => {
+  listStrategiesMock.mockResolvedValue([
+    {
+      id: "strat-1",
+      name: "Trend Pulse",
+      interval: "5m",
+      leverage: 10,
+    },
+  ]);
+  listBotsMock.mockResolvedValue([
+    {
+      id: "bot-1",
+      name: "Paper Bot",
+      mode: "PAPER",
+      paperStartBalance: 10_000,
+      exchange: "BINANCE",
+      marketType: "FUTURES",
+      positionMode: "ONE_WAY",
+      strategyId: "strat-1",
+      isActive: true,
+      liveOptIn: false,
+      maxOpenPositions: 1,
+    },
+    {
+      id: "bot-2",
+      name: "Second Paper Bot",
+      mode: "PAPER",
+      paperStartBalance: 8_000,
+      exchange: "BINANCE",
+      marketType: "FUTURES",
+      positionMode: "ONE_WAY",
+      strategyId: "strat-1",
+      isActive: false,
+      liveOptIn: false,
+      maxOpenPositions: 1,
+    },
+  ]);
+};
+
+afterEach(() => {
+  vi.clearAllMocks();
+  window.localStorage.clear();
+  window.history.pushState({}, "", "/");
+});
 
 describe("BotsListTable", () => {
   it("renders canonical list-table action links for runtime and edit form", async () => {
@@ -137,6 +182,68 @@ describe("BotsListTable", () => {
     await waitFor(() => {
       expect(screen.getByText("OKX Bot")).toBeInTheDocument();
       expect(screen.queryByText("Binance Bot")).not.toBeInTheDocument();
+    });
+  });
+
+  it("removes only the confirmed bot row after delete succeeds", async () => {
+    seedBotsList();
+    deleteBotMock.mockResolvedValue(undefined);
+
+    renderWithI18n();
+
+    await waitFor(() => {
+      expect(screen.getByText("Paper Bot")).toBeInTheDocument();
+      expect(screen.getByText("Second Paper Bot")).toBeInTheDocument();
+    });
+
+    const paperRow = screen.getByText("Paper Bot").closest("tr");
+    expect(paperRow).not.toBeNull();
+    const deleteButtons = within(paperRow as HTMLElement).getAllByRole("button", {
+      name: /usuń|usun|delete/i,
+    });
+    fireEvent.click(deleteButtons[0]);
+    const dialog = await screen.findByText(/"Paper Bot"/);
+    expect(dialog.closest("dialog")).not.toBeNull();
+    const modal = dialog.closest("dialog") as HTMLElement;
+
+    await act(async () => {
+      fireEvent.click(within(modal).getAllByText(/usuń|usun|delete/i).at(-1) as HTMLElement);
+    });
+
+    await waitFor(() => {
+      expect(deleteBotMock).toHaveBeenCalledWith("bot-1");
+      expect(screen.queryByText("Paper Bot")).not.toBeInTheDocument();
+      expect(screen.getByText("Second Paper Bot")).toBeInTheDocument();
+    });
+  });
+
+  it("keeps the bot row visible when delete fails", async () => {
+    seedBotsList();
+    deleteBotMock.mockRejectedValue(new Error("linked records"));
+
+    renderWithI18n();
+
+    await waitFor(() => {
+      expect(screen.getByText("Paper Bot")).toBeInTheDocument();
+    });
+
+    const paperRow = screen.getByText("Paper Bot").closest("tr");
+    expect(paperRow).not.toBeNull();
+    const deleteButtons = within(paperRow as HTMLElement).getAllByRole("button", {
+      name: /usuń|usun|delete/i,
+    });
+    fireEvent.click(deleteButtons[0]);
+    const dialog = await screen.findByText(/"Paper Bot"/);
+    expect(dialog.closest("dialog")).not.toBeNull();
+    const modal = dialog.closest("dialog") as HTMLElement;
+    await act(async () => {
+      fireEvent.click(within(modal).getAllByText(/usuń|usun|delete/i).at(-1) as HTMLElement);
+    });
+
+    await waitFor(() => {
+      expect(deleteBotMock).toHaveBeenCalledWith("bot-1");
+      expect(screen.getByText("Paper Bot")).toBeInTheDocument();
+      expect(screen.getByText("Second Paper Bot")).toBeInTheDocument();
     });
   });
 });

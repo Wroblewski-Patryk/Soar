@@ -17,6 +17,14 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 Bots action audit:
+`V1-BOTS-ACTION-AUDIT-2026-05-10` is complete locally. Bots list delete
+success/failure behavior is covered in Web tests, and Bots API action contracts
+pass for CRUD, runtime close, ownership isolation, market groups, strategy
+links, LIVE opt-in guards, duplicate active guards, and runtime monitoring.
+This upgrades the Bots row in the product action matrix to `PASS_LOCAL`; it
+does not replace a future production-safe clickthrough.
+
 2026-05-10 product action audit/P0 regression correction:
 `V1-PRODUCT-ACTION-AUDIT-P0-2026-05-10` starts the action-level audit lane
 after operator-reported production UI failures. The current slice fixes bot

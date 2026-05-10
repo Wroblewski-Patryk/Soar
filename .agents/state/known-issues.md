@@ -4,6 +4,11 @@ Last updated: 2026-05-10
 
 ## Active Issues
 
+- 2026-05-10 update: Bots action audit is locally closed for safe fixtures.
+  Remaining risk is not an unverified Bots implementation contract; it is
+  production-safe action clickthrough and the rest of the product action matrix
+  outside Bots, especially Dashboard runtime tables.
+
 - 2026-05-10 update: V1 readiness is no longer limited to protected/formal
   release evidence. Operator-reported UI/action failures showed that previous
   route/module audits overstated functional readiness. The active product

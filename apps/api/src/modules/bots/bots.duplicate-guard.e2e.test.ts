@@ -139,6 +139,7 @@ describe('Bots duplicate active guard', () => {
     await prisma.trade.deleteMany();
     await prisma.order.deleteMany();
     await prisma.position.deleteMany();
+    await prisma.runtimeExecutionDedupe.deleteMany();
     await prisma.signal.deleteMany();
     await prisma.botSubagentConfig.deleteMany();
     await prisma.botAssistantConfig.deleteMany();

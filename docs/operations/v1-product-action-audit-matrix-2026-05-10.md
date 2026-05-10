@@ -30,6 +30,7 @@ evidence is no longer enough for V1 readiness.
 | PAA-001 | Bots | `FIX_IN_PROGRESS` | PAPER bot deletion can fail when runtime-linked records exist; route reachability did not catch action failure. | `apps/api/src/modules/bots/botsCommand.service.ts`; focused e2e added in this task |
 | PAA-002 | Dashboard runtime positions | `FIX_IN_PROGRESS` | Prospective TTP can be displayed while live PnL is non-positive. | `runtimeOpenPositionDerivations.ts`; `runtimeDerivations.ts`; focused Web tests added in this task |
 | PAA-003 | V1 evidence model | `FAIL` | Previous summaries overstated readiness by treating deploy/reachability as functional completeness. | This matrix replaces broad readiness claims until action proofs pass |
+| PAA-004 | Bots | `PASS_LOCAL` | Bots list delete success/failure, backend CRUD/runtime close/market-group/strategy-link/ownership contracts, and duplicate active guards now have focused local action evidence. | `BotsListTable.test.tsx` (`4/4`), `bots.e2e.test.ts` (`27/27`), `bots.duplicate-guard.e2e.test.ts` (`6/6`), `runtimeSessionPositionCommand.service.test.ts` (`11/11`) |
 
 ## Module Action Matrix
 
@@ -42,7 +43,7 @@ evidence is no longer enough for V1 readiness.
 | Wallets | create/edit/delete, paper/live wallet modes, balance preview, reset/repair flows | UI action + API + DB/state readback | `UNVERIFIED` | User allowed cleanup earlier, but production destructive actions still need safe fixture data |
 | Markets | universe create/edit/delete, symbols import, capability guards | UI action + API + adapter capability | `UNVERIFIED` | Must verify active bot guard behavior |
 | Strategies | create/edit/delete/clone, RSI 20/80 preserved, config validation | UI action + API + runtime/backtest compatibility | `UNVERIFIED` | Do not delete the preserved RSI 20/80 strategy |
-| Bots | create/edit/delete, activate/deactivate, PAPER/LIVE mode, assistant config, market groups, strategy links | UI action + API + DB/runtime readback | `FAIL` | Deletion failure currently being fixed; full Bots audit remains open |
+| Bots | create/edit/delete, activate/deactivate, PAPER/LIVE mode, assistant config, market groups, strategy links | UI action + API + DB/runtime readback | `PASS_LOCAL` | Local safe-fixture action proof covers list delete success/failure, API CRUD/delete/runtime close, ownership, market groups, strategy links, LIVE opt-in guards, duplicate active guards, and runtime monitoring. Production clickthrough remains separate and must be non-destructive. |
 | Bot Runtime | runtime graph, sessions, symbol stats, open positions, open orders, trades | UI table proof + API + worker telemetry | `UNVERIFIED` | Must use representative running/stopped PAPER sessions |
 | Dashboard Home | selected bot, wallet KPIs, positions/orders/trades tables, TTP/TSL/DCA/PnL rendering | UI table assertions + runtime payload fixtures | `FAIL` | Prospective TTP fix in progress; broader table audit remains open |
 | Manual Orders | place PAPER order, validation, preview/context, cancel/close paths | UI action + API + DB readback | `UNVERIFIED` | LIVE order actions are `BLOCKED_RISK` |

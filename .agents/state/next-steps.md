@@ -4,6 +4,15 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest Bots action audit:
+`V1-BOTS-ACTION-AUDIT-2026-05-10` is locally complete. Bots action evidence
+now covers Web delete success/failure and API CRUD/delete/runtime
+close/ownership/market-group/strategy-link/LIVE guard/duplicate guard/runtime
+monitoring paths. Next executable product-audit task: run the Dashboard
+Home/runtime table action audit with deterministic runtime payloads, including
+positive/zero/negative PnL, TTP/TSL/DCA rendering, selected-bot filtering,
+orders/trades/positions table states, and error/loading/empty behavior.
+
 Latest product action audit:
 `V1-PRODUCT-ACTION-AUDIT-P0-2026-05-10` fixes the first two operator-reported
 P0 action regressions locally and publishes the active action-level audit
