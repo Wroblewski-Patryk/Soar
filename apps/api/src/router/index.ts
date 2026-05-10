@@ -11,6 +11,7 @@ import { requireOpsNetwork } from '../middleware/requireOpsNetwork';
 import { applyNoStoreHeaders } from '../middleware/noStoreHeaders';
 import { evaluateCriticalSecretsReadiness } from '../config/criticalSecretsReadiness';
 import { evaluateRuntimeDependencyReadiness } from '../config/runtimeDependencyReadiness';
+import { readRuntimeSignalLoopConfig } from '../config/runtimeExecution';
 import { buildRuntimeFreshnessSnapshot } from '../observability/runtimeFreshness';
 import { resolveWorkerTopologySnapshot } from '../workers/workerOwnership';
 
@@ -50,15 +51,28 @@ router.get('/ready', async (_req, res) => {
 
 const requireOpsAccess = [requireAuth, requireRole('ADMIN'), requireOpsNetwork] as const;
 
+const buildRuntimeSafetyDiagnostics = () => {
+  const runtimeConfig = readRuntimeSignalLoopConfig();
+  return {
+    liveNoOrderGuard: {
+      globalKillSwitch: runtimeConfig.liveGlobalKillSwitch,
+      emergencyStop: runtimeConfig.liveEmergencyStop,
+      active: runtimeConfig.liveGlobalKillSwitch || runtimeConfig.liveEmergencyStop,
+    },
+  };
+};
+
 router.get('/ready/details', ...requireOpsAccess, async (_req, res) => {
   const readiness = evaluateCriticalSecretsReadiness();
   const dependencies = await evaluateRuntimeDependencyReadiness();
+  const runtimeSafety = buildRuntimeSafetyDiagnostics();
   if (!readiness.ready || !dependencies.ready) {
     return res.status(503).json({
       status: 'not_ready',
       service: 'api',
       missing: readiness.missing,
       issues: [...readiness.issues, ...dependencies.issues],
+      runtimeSafety,
     });
   }
 
@@ -67,6 +81,7 @@ router.get('/ready/details', ...requireOpsAccess, async (_req, res) => {
     service: 'api',
     missing: [],
     issues: [],
+    runtimeSafety,
   });
 });
 

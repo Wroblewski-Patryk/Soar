@@ -4,6 +4,13 @@ Last updated: 2026-05-10
 
 ## Latest Health Snapshot
 
+- `LIVE-RUNTIME-SAFETY-READINESS-DIAGNOSTICS-2026-05-10` LOCAL PASS/PENDING
+  DEPLOY: protected `/ready/details` now includes
+  `runtimeSafety.liveNoOrderGuard` booleans and derived `active`; public
+  `/ready` remains minimal and does not expose runtime safety diagnostics.
+  Focused API readiness tests pass after loading local `DATABASE_URL` from
+  `apps/api/.env`; API typecheck passes.
+
 - `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10` PASS/DEPLOYED:
   runtime config now exposes `RUNTIME_LIVE_GLOBAL_KILL_SWITCH` and
   `RUNTIME_LIVE_EMERGENCY_STOP`; final-candle LIVE pre-trade receives these

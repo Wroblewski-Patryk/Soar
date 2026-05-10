@@ -16,6 +16,13 @@ contracts synchronized.
 
 ## Current Delivery Stage
 
+2026-05-10 LIVE runtime safety readiness diagnostics:
+`LIVE-RUNTIME-SAFETY-READINESS-DIAGNOSTICS-2026-05-10` adds protected
+`/ready/details` diagnostics for the LIVE no-order guard. The public `/ready`
+response stays minimal, while admin/ops diagnostics can confirm
+`runtimeSafety.liveNoOrderGuard.active=true` before any controlled LIVE session
+proof.
+
 2026-05-10 LIVE runtime kill-switch config:
 `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10` adds
 `RUNTIME_LIVE_GLOBAL_KILL_SWITCH` and `RUNTIME_LIVE_EMERGENCY_STOP` to the

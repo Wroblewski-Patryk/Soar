@@ -20,6 +20,21 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-05-10 - API readiness tests may need explicit DATABASE_URL load
+- Context: running `vitest run src/router/health-readiness.test.ts` from
+  `apps/api`.
+- Symptom: Prisma failed before assertions because `DATABASE_URL` was not
+  visible to the test process.
+- Root cause: the shell/test invocation did not provide Prisma's required
+  database URL early enough, even though local `.env` contained it.
+- Guardrail: load `DATABASE_URL` explicitly from `apps/api/.env` for DB-backed
+  API tests in this shell without printing the value.
+- Preferred pattern: assign `$env:DATABASE_URL` from the `.env` line in the
+  same PowerShell process, then run Vitest.
+- Avoid: echoing or copying the database URL into logs.
+- Evidence: the focused readiness test passed after loading `DATABASE_URL`
+  explicitly in-process.
+
 ### 2026-05-10 - Check Coolify queue before pushing into slow deploys
 - Context: Soar production deploys can fan out across multiple Coolify
   applications/workers, so stale queued deploy jobs may remain after Web

@@ -85,8 +85,10 @@ RUNTIME_LIVE_EMERGENCY_STOP=true
 
 With either flag enabled, final-candle LIVE decisions still create runtime
 session/telemetry evidence, but entry signals fail closed in the existing
-pre-trade guard before signal creation and order orchestration. Keep the bot
-active only for the observation window, collect `LIVEIMPORT-03`, then
+pre-trade guard before signal creation and order orchestration. Before any
+LIVE activation, confirm the protected `/ready/details` response reports
+`runtimeSafety.liveNoOrderGuard.active=true` on the deployed API process. Keep
+the bot active only for the observation window, collect `LIVEIMPORT-03`, then
 deactivate the bot and clear the flags before any real LIVE trading run.
 
 Do not use a LIVE session proof as trading approval unless the follow-up

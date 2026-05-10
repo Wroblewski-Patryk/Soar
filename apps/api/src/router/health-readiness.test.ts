@@ -12,6 +12,8 @@ const originalApiKeyEncryption = process.env.API_KEY_ENCRYPTION;
 const originalApiKeyEncryptionActiveVersion = process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
 const originalRedisRequired = process.env.REDIS_REQUIRED;
 const originalRedisUrl = process.env.REDIS_URL;
+const originalLiveGlobalKillSwitch = process.env.RUNTIME_LIVE_GLOBAL_KILL_SWITCH;
+const originalLiveEmergencyStop = process.env.RUNTIME_LIVE_EMERGENCY_STOP;
 
 afterEach(async () => {
   const restoreEnv = (key: string, value: string | undefined) => {
@@ -26,6 +28,8 @@ afterEach(async () => {
   restoreEnv('API_KEY_ENCRYPTION_ACTIVE_VERSION', originalApiKeyEncryptionActiveVersion);
   restoreEnv('REDIS_REQUIRED', originalRedisRequired);
   restoreEnv('REDIS_URL', originalRedisUrl);
+  restoreEnv('RUNTIME_LIVE_GLOBAL_KILL_SWITCH', originalLiveGlobalKillSwitch);
+  restoreEnv('RUNTIME_LIVE_EMERGENCY_STOP', originalLiveEmergencyStop);
   __runtimeDependencyReadinessInternals.setPingRedisForTests(null);
   await prisma.user.deleteMany({
     where: {
@@ -84,6 +88,7 @@ describe('health and readiness endpoints', () => {
     expect(res.status).toBe(200);
     expect(res.body.status).toBe('ready');
     expect(res.body.service).toBe('api');
+    expect(res.body).not.toHaveProperty('runtimeSafety');
   });
 
   it('returns not_ready when Redis is required but unavailable', async () => {
@@ -152,6 +157,35 @@ describe('health and readiness endpoints', () => {
         }),
       ])
     );
+    expect(res.body.runtimeSafety).toEqual({
+      liveNoOrderGuard: {
+        globalKillSwitch: false,
+        emergencyStop: false,
+        active: false,
+      },
+    });
+  });
+
+  it('returns protected LIVE no-order guard diagnostics without exposing raw env names', async () => {
+    process.env.JWT_SECRET = 'ready-test-secret';
+    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:ready-key';
+    process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v1';
+    process.env.RUNTIME_LIVE_GLOBAL_KILL_SWITCH = 'true';
+    process.env.RUNTIME_LIVE_EMERGENCY_STOP = 'true';
+    const adminAgent = await createAdminAgent();
+
+    const res = await adminAgent.get('/ready/details');
+
+    expect(res.status).toBe(200);
+    expect(res.body.runtimeSafety).toEqual({
+      liveNoOrderGuard: {
+        globalKillSwitch: true,
+        emergencyStop: true,
+        active: true,
+      },
+    });
+    expect(JSON.stringify(res.body)).not.toContain('RUNTIME_LIVE_GLOBAL_KILL_SWITCH');
+    expect(JSON.stringify(res.body)).not.toContain('RUNTIME_LIVE_EMERGENCY_STOP');
   });
 
   it('returns detailed Redis dependency diagnostics on protected endpoint for admin', async () => {

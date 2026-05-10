@@ -13,6 +13,12 @@ Last updated: 2026-05-10
   `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 ## 2026-05-08 V1 Paper/Live Backend Runtime Parity
+- 2026-05-10 `LIVE-RUNTIME-SAFETY-READINESS-DIAGNOSTICS-2026-05-10` adds
+  protected `/ready/details` visibility for the LIVE no-order guard. Admin/ops
+  diagnostics now expose only non-secret booleans under
+  `runtimeSafety.liveNoOrderGuard`, including derived `active`, while public
+  `/ready` remains minimal. This gives operators a process-level confirmation
+  step before controlled LIVE session proof.
 - 2026-05-10 `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10` adds optional
   environment-controlled LIVE runtime no-order guards. When
   `RUNTIME_LIVE_GLOBAL_KILL_SWITCH` or `RUNTIME_LIVE_EMERGENCY_STOP` is true,

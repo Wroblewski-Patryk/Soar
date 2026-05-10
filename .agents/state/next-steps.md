@@ -4,6 +4,15 @@ Last updated: 2026-05-10
 
 ## Next Tiny Task
 
+Latest LIVE runtime safety readiness diagnostics:
+`LIVE-RUNTIME-SAFETY-READINESS-DIAGNOSTICS-2026-05-10` adds protected
+`/ready/details` visibility for the LIVE no-order guard:
+`runtimeSafety.liveNoOrderGuard.globalKillSwitch`,
+`runtimeSafety.liveNoOrderGuard.emergencyStop`, and derived
+`runtimeSafety.liveNoOrderGuard.active`. After this deploys, the controlled
+LIVE proof must first set the Coolify API/execution-worker flags, redeploy, and
+confirm `/ready/details` reports `active=true` before any LIVE bot activation.
+
 Latest LIVE runtime kill-switch config:
 `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10` adds an env-controlled no-order
 guard for controlled LIVE session proof:

@@ -17,6 +17,13 @@ Last updated: 2026-05-10
 
 ## READY
 
+- [x] `LIVE-RUNTIME-SAFETY-READINESS-DIAGNOSTICS-2026-05-10 fix: expose protected LIVE no-order guard diagnostics`
+  - Scope: extended the existing admin/ops protected `/ready/details` endpoint
+    with non-secret `runtimeSafety.liveNoOrderGuard` booleans and derived
+    `active`, while keeping public `/ready` minimal. Focused readiness tests
+    and API typecheck pass. Evidence:
+    `docs/planning/live-runtime-safety-readiness-diagnostics-task-2026-05-10.md`.
+
 - [x] `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10 fix: add env-controlled LIVE runtime kill switch`
   - Scope: added `RUNTIME_LIVE_GLOBAL_KILL_SWITCH` and
     `RUNTIME_LIVE_EMERGENCY_STOP` to runtime config and wired them into the

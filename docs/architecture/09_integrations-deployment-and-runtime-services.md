@@ -97,8 +97,14 @@ subset of those worker families is being checked.
 Canonical health surfaces:
 - `/health`
 - `/ready`
+- `/ready/details` for protected admin/ops diagnostics
 - `/metrics`
 - `/workers/health`
+
+Protected readiness diagnostics may expose non-secret runtime safety state,
+such as LIVE no-order guard booleans, but must not expose secrets,
+credentials, or raw environment values. Public `/ready` remains intentionally
+minimal.
 
 ## Deployment Baseline
 Primary deployment target:
