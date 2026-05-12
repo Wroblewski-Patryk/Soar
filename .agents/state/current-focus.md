@@ -56,6 +56,13 @@ returned `401`. The release gate now classifies rollback proof as `failed`
 rather than stale for 2026-05-12. V1 still remains `NO-GO` until approved
 rollback/protected auth, Gate 4 approvers, and LIVEIMPORT-03 are completed.
 
+2026-05-12 final preflight refresh:
+`V1-FINAL-PREFLIGHT-CURRENT-2026-05-12` refreshed the no-secret final
+preflight for deployed build-info `00169d7f...`. Build-info and public smoke
+pass, production DB restore context is satisfied, and V1 remains `NO-GO` on
+missing `LIVEIMPORT_READBACK_*`, missing `ROLLBACK_GUARD_*`, failed RC
+evidence, missing `LIVEIMPORT-03`, and failed rollback proof.
+
 2026-05-12 V1 completion scorecard:
 `V1-COMPLETION-SCORECARD-2026-05-12` is the current percentage model for V1.
 Use `docs/operations/v1-completion-scorecard-2026-05-12.md` when answering

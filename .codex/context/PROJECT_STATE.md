@@ -4,6 +4,18 @@ Last updated: 2026-05-12
 
 ## 2026-05-12 Production Activation Refresh
 
+- `V1-FINAL-PREFLIGHT-CURRENT-2026-05-12` refreshed the final no-secret
+  production preflight for deployed build-info
+  `00169d7fdc3aff8317759137b05594b20e773c8e`.
+- Preflight artifact:
+  `docs/operations/v1-final-preflight-00169d7f-2026-05-12.md`.
+- Build-info and public smoke passed. Preflight remains `blocked` on missing
+  `LIVEIMPORT_READBACK_*`, missing `ROLLBACK_GUARD_*`, failed RC external
+  gates/sign-off/checklist, missing `LIVEIMPORT-03`, and failed rollback
+  proof.
+- V1 remains `NO-GO`; no deploy, sign-off, rollback, or live-money action was
+  executed.
+
 - `V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-12` refreshed production
   rollback proof evidence to current-date fail-closed truth.
 - Rollback proof artifact

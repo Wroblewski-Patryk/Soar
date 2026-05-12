@@ -4,6 +4,13 @@ Last updated: 2026-05-12
 
 ## Active Issues
 
+- 2026-05-12 update: `V1-FINAL-PREFLIGHT-CURRENT-2026-05-12` refreshed the
+  no-secret final preflight for deployed build-info
+  `00169d7fdc3aff8317759137b05594b20e773c8e`. Build-info and public smoke
+  pass, but preflight remains `blocked` on missing `LIVEIMPORT_READBACK_*`,
+  missing `ROLLBACK_GUARD_*`, failed RC evidence, missing `LIVEIMPORT-03`, and
+  failed rollback proof.
+
 - 2026-05-12 update: `V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-12`
   removes stale rollback proof classification from the current Operations
   blocker list. The new rollback proof is fresh but `FAIL` because protected

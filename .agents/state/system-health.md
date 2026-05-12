@@ -4,6 +4,13 @@ Last updated: 2026-05-12
 
 ## Latest Health Snapshot
 
+- `V1-FINAL-PREFLIGHT-CURRENT-2026-05-12` PUBLIC PASS / FINAL BLOCKED:
+  deployed build-info matches `00169d7f...`, public API/Web smoke passes, and
+  production DB restore context is satisfied by fresh evidence. Final preflight
+  remains blocked on missing `LIVEIMPORT_READBACK_*`, missing
+  `ROLLBACK_GUARD_*`, failed RC evidence, missing `LIVEIMPORT-03`, and failed
+  rollback proof.
+
 - `V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-12` FRESH / FAIL: production
   rollback proof was refreshed for 2026-05-12 and failed closed. The artifact
   reports `shouldRollback:true` because protected runtime freshness and alerts

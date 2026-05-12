@@ -7,6 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-FINAL-PREFLIGHT-CURRENT-2026-05-12 release: refresh final no-secret preflight after current evidence updates`
+  - 2026-05-12: Ran no-secret final production preflight for deployed build-
+    info `00169d7fdc3aff8317759137b05594b20e773c8e`. Build-info and public
+    smoke passed, production DB restore context is satisfied, and preflight
+    remains `blocked` on missing `LIVEIMPORT_READBACK_*`, missing
+    `ROLLBACK_GUARD_*`, failed RC evidence, missing `LIVEIMPORT-03`, and
+    failed rollback proof. Evidence:
+    `docs/planning/v1-final-preflight-current-2026-05-12-task.md` and
+    `docs/operations/v1-final-preflight-00169d7f-2026-05-12.md`.
+
 - [x] `V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-12 release: refresh production rollback proof blocked evidence`
   - 2026-05-12: Ran production rollback proof without auth bypass. The proof
     is fresh but `FAIL`, with `shouldRollback:true` because protected runtime
