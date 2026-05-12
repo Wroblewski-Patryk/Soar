@@ -356,6 +356,26 @@ const collectV1Findings = (projectIndex) => {
 };
 
 const classifySourceMatch = (match) => {
+  const excerptLower = match.excerpt.toLowerCase();
+  if (
+    match.rule === 'NOT_IMPLEMENTED' &&
+    (match.excerpt.includes('ExchangeNotImplementedError') ||
+      (match.file.includes('/i18n/namespaces/') &&
+        (excerptLower.includes('not implemented yet') ||
+          excerptLower.includes('nie jest jeszcze') ||
+          excerptLower.includes('noch nicht'))))
+  ) {
+    return null;
+  }
+
+  if (
+    match.rule === 'PLACEHOLDER_SOURCE' &&
+    match.file.includes('/i18n/namespaces/') &&
+    (excerptLower.includes('placeholder') || excerptLower.includes('platzhalter'))
+  ) {
+    return null;
+  }
+
   if (
     match.rule === 'NOT_IMPLEMENTED' &&
     (match.excerpt.includes('ExchangeNotImplementedError') ||
@@ -448,20 +468,25 @@ const buildScan = async (options) => {
     collectSurfaceFindings(projectIndex),
   ]);
 
-  const sourceFindings = sourceMarkers.matches.map((match) => {
+  const sourceFindings = sourceMarkers.matches.flatMap((match) => {
     const classification = classifySourceMatch(match);
-    return {
-      id: `SOURCE_${match.rule}_${match.file.replace(/[^A-Za-z0-9]/g, '_')}_${match.line}`,
-      severity: classification.severity,
-      category: classification.category,
-      title: `${match.rule} marker in ${match.file}:${match.line}`,
-      evidence: match.excerpt,
-      recommendation: classification.recommendation,
-      location: {
-        file: match.file,
-        line: match.line,
+    if (!classification) {
+      return [];
+    }
+    return [
+      {
+        id: `SOURCE_${match.rule}_${match.file.replace(/[^A-Za-z0-9]/g, '_')}_${match.line}`,
+        severity: classification.severity,
+        category: classification.category,
+        title: `${match.rule} marker in ${match.file}:${match.line}`,
+        evidence: match.excerpt,
+        recommendation: classification.recommendation,
+        location: {
+          file: match.file,
+          line: match.line,
+        },
       },
-    };
+    ];
   });
 
   const findings = [

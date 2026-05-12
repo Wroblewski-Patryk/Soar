@@ -4,6 +4,14 @@ Last updated: 2026-05-12
 
 ## Next Tiny Task
 
+Latest capability gate scan classification:
+`V1-CAPABILITY-GATE-SCAN-CLASSIFICATION-2026-05-12` updated the V1 static scan
+so contract-approved exchange capability gates are no longer counted as
+unresolved findings. Refreshed static scan findings dropped from `32` to `3`
+(`P0:1`, `P1:1`, `P2:1`), leaving Operations `BLOCKED_AUTH`, Bots
+production-safe clickthrough, and protected queue blockers. V1 remains
+`NO-GO`.
+
 Latest manual payment metadata cleanup:
 `V1-MANUAL-PAYMENT-METADATA-CLEANUP-2026-05-12` removed ambiguous
 `placeholder` wording from manual payment checkout metadata without changing

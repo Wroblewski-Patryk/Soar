@@ -1,6 +1,6 @@
 # V1 Static Issue Scan
 
-Generated at: 2026-05-12T17:26:34.962Z
+Generated at: 2026-05-12T17:34:58.156Z
 Evidence date: 2026-05-12
 Project index: `docs/operations/project-index-2026-05-12.json`
 
@@ -12,9 +12,9 @@ not replace browser/API/DB/exchange action audits.
 
 ## Summary
 
-- Total findings: 32
-- By severity: {"P1":1,"P0":1,"P2":30}
-- By category: {"v1-proof-gap":2,"queue-blocked":1,"source-capability-gate":29}
+- Total findings: 3
+- By severity: {"P1":1,"P0":1,"P2":1}
+- By category: {"v1-proof-gap":2,"queue-blocked":1}
 - Production/source files scanned for markers: 658
 - Source marker matches: 29
 
@@ -29,36 +29,7 @@ not replace browser/API/DB/exchange action audits.
 
 | Severity | Category | Finding | Evidence | Recommendation |
 | --- | --- | --- | --- | --- |
-| P2 | queue-blocked | 10 protected/auth queue markers remain open | .codex/context/TASK_BOARD.md:619 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` \| .codex/context/TASK_BOARD.md:1474 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI mod | Keep these open until approved protected auth, production-safe fixtures, or required approvals are available. |
-| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/backtests/backtests.controller.ts:4 | import { ExchangeNotImplementedError } from '../exchange/exchangeCapabilities'; | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
-| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/backtests/backtests.controller.ts:47 | if (error instanceof ExchangeNotImplementedError) { | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
-| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/bots/bots.controller.ts:5 | import { ExchangeNotImplementedError } from '../exchange/exchangeCapabilities'; | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
-| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/bots/bots.controller.ts:371 | if (error instanceof ExchangeNotImplementedError) { | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
-| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/bots/bots.controller.ts:396 | if (error instanceof ExchangeNotImplementedError) { | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
-| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/exchange/exchangeCapabilities.ts:41 | export class ExchangeNotImplementedError extends DomainError<{ | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
-| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/exchange/exchangeCapabilities.ts:58 | name: 'ExchangeNotImplementedError', | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
-| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/exchange/exchangeCapabilities.ts:61 | this.name = 'ExchangeNotImplementedError'; | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
-| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/exchange/exchangeCapabilities.ts:70 | throw new ExchangeNotImplementedError(exchange, capability); | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
-| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/profile/apiKey/apiKey.controller.ts:7 | import { ExchangeNotImplementedError } from '../../exchange/exchangeCapabilities'; | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
-| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/profile/apiKey/apiKey.controller.ts:137 | if (error instanceof ExchangeNotImplementedError) { | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
-| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/profile/apiKey/apiKey.controller.ts:153 | if (error instanceof ExchangeNotImplementedError) { | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
-| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-bots.en.ts:50 | "liveApiKeyCompatibilityUnavailable": "Selected exchange does not support LIVE execution yet (placeholder adapter).", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
-| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-bots.en.ts:74 | "placeholderActivationBlocked": "Selected exchange is in placeholder mode. Bot activation is unavailable.", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
-| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/web/src/i18n/namespaces/dashboard-bots.en.ts:75 | "placeholderActivationHint": "Placeholder exchange selected. Runtime activation for {mode} mode is not implemented yet.", | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
-| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-bots.en.ts:75 | "placeholderActivationHint": "Placeholder exchange selected. Runtime activation for {mode} mode is not implemented yet.", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
-| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-bots.pt.ts:50 | "liveApiKeyCompatibilityUnavailable": "Selected exchange does not support LIVE execution yet (placeholder adapter).", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
-| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-bots.pt.ts:74 | "placeholderActivationBlocked": "Selected exchange is in placeholder mode. Bot activation is unavailable.", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
-| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/web/src/i18n/namespaces/dashboard-bots.pt.ts:75 | "placeholderActivationHint": "Placeholder exchange selected. Runtime activation for {mode} mode is not implemented yet.", | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
-| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-bots.pt.ts:75 | "placeholderActivationHint": "Placeholder exchange selected. Runtime activation for {mode} mode is not implemented yet.", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
-| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/web/src/i18n/namespaces/dashboard-home.en.ts:171 | "placeholderActivationHint": "Placeholder exchange selected. Runtime activation for {mode} mode is not implemented yet.", | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
-| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-home.en.ts:171 | "placeholderActivationHint": "Placeholder exchange selected. Runtime activation for {mode} mode is not implemented yet.", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
-| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/web/src/i18n/namespaces/dashboard-home.pt.ts:171 | "placeholderActivationHint": "Placeholder exchange selected. Runtime activation for {mode} mode is not implemented yet.", | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
-| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-home.pt.ts:171 | "placeholderActivationHint": "Placeholder exchange selected. Runtime activation for {mode} mode is not implemented yet.", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
-| P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/web/src/i18n/namespaces/dashboard-markets.en.ts:73 | "Placeholder exchange selected. Public catalog for this exchange is not implemented yet. You can still save the universe context.", | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
-| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-markets.en.ts:73 | "Placeholder exchange selected. Public catalog for this exchange is not implemented yet. You can still save the universe context.", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
-| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-markets.pl.ts:73 | "Wybrano placeholder exchange. Publiczny katalog dla tej gieldy nie jest jeszcze dostepny. Nadal mozesz zapisac kontekst grupy.", | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
-| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-shell.en.ts:155 | "placeholderProbeInfo": "API key test is not available for {exchange} yet (placeholder adapter). Saving is still allowed." | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
-| P2 | source-capability-gate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-shell.pl.ts:155 | "placeholderProbeInfo": "Dla {exchange} test API key nie jest jeszcze dostepny (placeholder adapter). Zapis jest dozwolony." | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
+| P2 | queue-blocked | 10 protected/auth queue markers remain open | .codex/context/TASK_BOARD.md:627 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` \| .codex/context/TASK_BOARD.md:1482 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI mod | Keep these open until approved protected auth, production-safe fixtures, or required approvals are available. |
 
 ## Interpretation
 

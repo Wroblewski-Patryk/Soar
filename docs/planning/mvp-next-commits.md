@@ -8,6 +8,14 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `V1-CAPABILITY-GATE-SCAN-CLASSIFICATION-2026-05-12 release: classify approved exchange capability gates`
+  - 2026-05-12: Updated `scripts/runV1StaticIssueScan.mjs` so
+    contract-approved exchange capability gates are no longer counted as
+    unresolved findings. Refreshed static scan findings dropped from `32` to
+    `3` (`P0:1`, `P1:1`, `P2:1`), leaving Operations `BLOCKED_AUTH`, Bots
+    production-safe clickthrough, and protected queue blockers. V1 remains
+    `NO-GO`.
+
 - [x] `V1-MANUAL-PAYMENT-METADATA-CLEANUP-2026-05-12 fix: remove placeholder wording from manual payment metadata`
   - 2026-05-12: Changed manual payment checkout metadata from placeholder
     wording to explicit operator-review wording without changing checkout
