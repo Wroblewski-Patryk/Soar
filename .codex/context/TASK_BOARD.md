@@ -17,6 +17,14 @@ Last updated: 2026-05-12
 
 ## READY
 
+- [x] `V1-PROTECTED-QUEUE-DEDUPE-2026-05-12 release: dedupe protected queue blocker reporting`
+  - Scope: updated `scripts/runV1StaticIssueScan.mjs` so protected/auth queue
+    blockers are deduped by task text across `TASK_BOARD` and
+    `mvp-next-commits`, while all source locations remain in evidence.
+    Refreshed scan still reports `3` findings (`P0:1`, `P1:1`, `P2:1`), but
+    the P2 blocker now reflects `5` unique protected/auth tasks instead of
+    `10` duplicated queue markers. V1 remains `NO-GO`.
+
 - [x] `V1-CAPABILITY-GATE-SCAN-CLASSIFICATION-2026-05-12 release: classify approved exchange capability gates`
   - Scope: updated `scripts/runV1StaticIssueScan.mjs` so
     contract-approved exchange capability gates (`ExchangeNotImplementedError`

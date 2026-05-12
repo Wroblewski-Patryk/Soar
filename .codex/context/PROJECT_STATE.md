@@ -4,6 +4,13 @@ Last updated: 2026-05-12
 
 ## 2026-05-12 Production Activation Refresh
 
+- `V1-PROTECTED-QUEUE-DEDUPE-2026-05-12` updated V1 static scan reporting so
+  protected/auth queue blockers are deduped by task text across `TASK_BOARD`
+  and `mvp-next-commits`.
+- The scan still reports `3` findings (`P0:1`, `P1:1`, `P2:1`), but the P2
+  blocker now reflects `5` unique protected/auth tasks instead of `10`
+  duplicated queue markers. V1 remains `NO-GO`.
+
 - `V1-CAPABILITY-GATE-SCAN-CLASSIFICATION-2026-05-12` updated the V1 static
   scan so contract-approved exchange capability gates are no longer counted as
   unresolved findings.

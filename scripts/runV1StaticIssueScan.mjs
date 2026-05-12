@@ -412,6 +412,16 @@ const collectQueueFindings = (projectIndex) => {
   const protectedBlocked = realUnchecked.filter((task) =>
     protectedQueueBlockerPatterns.some((pattern) => task.text.includes(pattern)),
   );
+  const protectedBlockedByText = new Map();
+  for (const task of protectedBlocked) {
+    const existing = protectedBlockedByText.get(task.text) ?? {
+      ...task,
+      locations: [],
+    };
+    existing.locations.push(`${task.source}:${task.line}`);
+    protectedBlockedByText.set(task.text, existing);
+  }
+  const uniqueProtectedBlocked = [...protectedBlockedByText.values()];
   const unclassifiedUnchecked = realUnchecked.filter(
     (task) => !protectedBlocked.includes(task),
   );
@@ -439,13 +449,16 @@ const collectQueueFindings = (projectIndex) => {
     });
   }
 
-  if (protectedBlocked.length > 0) {
+  if (uniqueProtectedBlocked.length > 0) {
     findings.push({
       id: 'QUEUE_PROTECTED_BLOCKERS_OPEN',
       severity: 'P2',
       category: 'queue-blocked',
-      title: `${protectedBlocked.length} protected/auth queue markers remain open`,
-      evidence: protectedBlocked.slice(0, 8).map((task) => `${task.source}:${task.line} ${task.text}`).join(' | '),
+      title: `${uniqueProtectedBlocked.length} protected/auth queue blockers remain open`,
+      evidence: uniqueProtectedBlocked
+        .slice(0, 8)
+        .map((task) => `${task.locations.join(', ')} ${task.text}`)
+        .join(' | '),
       recommendation: 'Keep these open until approved protected auth, production-safe fixtures, or required approvals are available.',
     });
   }

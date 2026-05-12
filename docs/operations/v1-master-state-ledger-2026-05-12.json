@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-12T17:37:58.817Z",
+  "generatedAt": "2026-05-12T17:41:39.147Z",
   "evidenceDate": "2026-05-12",
   "status": "NO-GO",
   "sources": {
@@ -1339,8 +1339,8 @@
       "id": "QUEUE_PROTECTED_BLOCKERS_OPEN",
       "severity": "P2",
       "category": "queue-blocked",
-      "title": "10 protected/auth queue markers remain open",
-      "evidence": ".codex/context/TASK_BOARD.md:627 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | .codex/context/TASK_BOARD.md:1482 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | .codex/context/TASK_BOARD.md:1654 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs` | .codex/context/TASK_BOARD.md:5137 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production` | .codex/context/TASK_BOARD.md:5172 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production` | docs/planning/mvp-next-commits.md:532 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | docs/planning/mvp-next-commits.md:1268 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | docs/planning/mvp-next-commits.md:1636 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`",
+      "title": "5 protected/auth queue blockers remain open",
+      "evidence": ".codex/context/TASK_BOARD.md:636, docs/planning/mvp-next-commits.md:540 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | .codex/context/TASK_BOARD.md:1491, docs/planning/mvp-next-commits.md:1276 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | .codex/context/TASK_BOARD.md:1663, docs/planning/mvp-next-commits.md:1644 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs` | .codex/context/TASK_BOARD.md:5146, docs/planning/mvp-next-commits.md:4597 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production` | .codex/context/TASK_BOARD.md:5181, docs/planning/mvp-next-commits.md:4627 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`",
       "recommendation": "Keep these open until approved protected auth, production-safe fixtures, or required approvals are available.",
       "bucket": "toReview"
     }
