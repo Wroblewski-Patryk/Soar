@@ -8,6 +8,16 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `V1-GENERATED-STATE-REFRESH-AFTER-UI-GATE-2026-05-12 release: refresh generated V1 reports after UI gate hardening`
+  - 2026-05-12: Refreshed the V1 project index, static scan, master ledger,
+    and completion scorecard after production UI evidence hardening and the
+    no-secret preflight update. Generated state remains unchanged in release
+    substance: `PASS_LOCAL:20`, `BLOCKED_AUTH:1`, static findings `3`
+    (`P0:1`, `P1:1`, `P2:1`), scorecard `86.8%` implementation, `61.3%`
+    evidence coverage, and `42.4%` release readiness. Evidence:
+    `docs/planning/v1-generated-state-refresh-after-ui-gate-2026-05-12-task.md`.
+    V1 remains `NO-GO`.
+
 - [x] `V1-RELEASE-GATE-PROD-UI-EVIDENCE-HARDENING-2026-05-12 release: enforce production UI clickthrough in final gate`
   - 2026-05-12: Updated `scripts/runV1ReleaseGate.mjs` so production readiness
     now requires a fresh PASS `prod-ui-module-clickthrough-*` artifact with

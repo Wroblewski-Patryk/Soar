@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-12T17:41:38.365Z",
+  "generatedAt": "2026-05-12T18:08:06.270Z",
   "evidenceDate": "2026-05-12",
   "projectIndex": "docs/operations/project-index-2026-05-12.json",
   "summary": {
@@ -38,7 +38,7 @@
       "severity": "P2",
       "category": "queue-blocked",
       "title": "5 protected/auth queue blockers remain open",
-      "evidence": ".codex/context/TASK_BOARD.md:636, docs/planning/mvp-next-commits.md:540 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | .codex/context/TASK_BOARD.md:1491, docs/planning/mvp-next-commits.md:1276 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | .codex/context/TASK_BOARD.md:1663, docs/planning/mvp-next-commits.md:1644 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs` | .codex/context/TASK_BOARD.md:5146, docs/planning/mvp-next-commits.md:4597 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production` | .codex/context/TASK_BOARD.md:5181, docs/planning/mvp-next-commits.md:4627 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`",
+      "evidence": ".codex/context/TASK_BOARD.md:671, docs/planning/mvp-next-commits.md:575 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | .codex/context/TASK_BOARD.md:1526, docs/planning/mvp-next-commits.md:1311 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | .codex/context/TASK_BOARD.md:1698, docs/planning/mvp-next-commits.md:1679 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs` | .codex/context/TASK_BOARD.md:5181, docs/planning/mvp-next-commits.md:4632 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production` | .codex/context/TASK_BOARD.md:5216, docs/planning/mvp-next-commits.md:4662 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`",
       "recommendation": "Keep these open until approved protected auth, production-safe fixtures, or required approvals are available."
     }
   ]

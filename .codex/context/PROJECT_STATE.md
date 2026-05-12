@@ -4,6 +4,14 @@ Last updated: 2026-05-12
 
 ## 2026-05-12 Production Activation Refresh
 
+- `V1-GENERATED-STATE-REFRESH-AFTER-UI-GATE-2026-05-12` refreshed the V1
+  project index, static scan, master ledger, and completion scorecard after
+  production UI evidence hardening.
+- Generated state remains unchanged in release substance: `PASS_LOCAL:20`,
+  `BLOCKED_AUTH:1`, static findings `3` (`P0:1`, `P1:1`, `P2:1`), scorecard
+  `86.8%` implementation, `61.3%` evidence coverage, and `42.4%` release
+  readiness. V1 remains `NO-GO`.
+
 - `V1-RELEASE-GATE-PROD-UI-EVIDENCE-HARDENING-2026-05-12` updated the final
   V1 release gate so production readiness now requires a fresh PASS
   `prod-ui-module-clickthrough-*` artifact for authenticated Bots UI coverage.
