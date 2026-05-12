@@ -4,6 +4,18 @@ Last updated: 2026-05-12
 
 ## 2026-05-12 Production Activation Refresh
 
+- `V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-12` refreshed production
+  rollback proof evidence to current-date fail-closed truth.
+- Rollback proof artifact
+  `docs/operations/v1-rollback-proof-prod-2026-05-12T00-00-00-000Z.md`
+  reports `Status: **FAIL**` with `shouldRollback: true` because protected
+  runtime freshness and alerts endpoints returned `401`.
+- Release gate dry-run
+  `docs/operations/v1-release-gate-prod-2026-05-12Trollback-refresh-dry-run.md`
+  now classifies rollback proof as `failed` rather than stale.
+- V1 remains `NO-GO`: protected rollback auth, Gate 4 approvers, LIVEIMPORT-03
+  production readback, and final non-dry-run gate are still missing.
+
 - `V1-RC-BLOCKED-REFRESH-2026-05-12` refreshed RC external gates status,
   RC sign-off, and release-candidate checklist to current-date blocked truth.
 - Release gate dry-run

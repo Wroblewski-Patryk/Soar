@@ -4,12 +4,18 @@ Last updated: 2026-05-12
 
 ## Active Issues
 
+- 2026-05-12 update: `V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-12`
+  removes stale rollback proof classification from the current Operations
+  blocker list. The new rollback proof is fresh but `FAIL` because protected
+  runtime freshness and alerts endpoints returned `401`; this correctly keeps
+  V1 blocked until approved rollback guard auth is available.
+
 - 2026-05-12 update: `V1-RC-BLOCKED-REFRESH-2026-05-12` removes stale RC
   sign-off/checklist classification from the current Operations blocker list.
   RC external gates, sign-off, and checklist are fresh for 2026-05-12 but
   correctly `failed`/`OPEN` because Gate 4 approver fields are missing. V1
-  remains blocked by missing LIVEIMPORT-03, stale rollback proof, and approved
-  prod ops auth.
+  remains blocked by missing LIVEIMPORT-03, failed rollback proof, and
+  approved prod ops auth.
 
 - 2026-05-12 update: `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-12`
   removes stale activation audit/plan from the current Operations blocker list.

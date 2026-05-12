@@ -4,14 +4,26 @@ Last updated: 2026-05-11
 
 ## Next Tiny Task
 
+Latest rollback proof blocked refresh:
+`V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-12` refreshes production rollback
+proof to current-date fail-closed evidence. The artifact reports
+`Status: **FAIL**`, `shouldRollback: true`, and reasons
+`runtime_freshness_endpoint_http_401` plus `alerts_endpoint_http_401`.
+Release gate dry-run now classifies rollback proof as `failed` for 2026-05-12
+instead of stale. Remaining exact V1 blockers: LIVEIMPORT-03 production
+readback is missing, rollback proof needs approved auth to PASS, final
+non-dry-run release gate has not run, and real Gate 4 approver fields are
+still needed.
+
 Latest RC blocked refresh:
 `V1-RC-BLOCKED-REFRESH-2026-05-12` refreshes RC external gates status,
 RC sign-off, and release-candidate checklist to current-date blocked truth.
 Release gate dry-run now classifies RC external gates, RC sign-off, and RC
 checklist as `failed` for 2026-05-12 instead of stale. Remaining exact V1
 blockers: LIVEIMPORT-03 production readback is missing, rollback proof is
-stale, final non-dry-run release gate has not run, and approved protected prod
-ops auth plus real Gate 4 approver fields are still needed.
+failed on protected `401`, final non-dry-run release gate has not run, and
+approved protected prod ops auth plus real Gate 4 approver fields are still
+needed.
 
 Latest production activation refresh:
 `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-12` refreshes activation audit and

@@ -4,6 +4,12 @@ Last updated: 2026-05-12
 
 ## Latest Health Snapshot
 
+- `V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-12` FRESH / FAIL: production
+  rollback proof was refreshed for 2026-05-12 and failed closed. The artifact
+  reports `shouldRollback:true` because protected runtime freshness and alerts
+  endpoints returned `401`; release gate dry-run now classifies rollback proof
+  as `failed` rather than stale.
+
 - `V1-RC-BLOCKED-REFRESH-2026-05-12` FRESH / BLOCKED: RC external gates
   status, RC sign-off, and release-candidate checklist were refreshed to
   current-date blocked truth. Gate 1/2/3 are `PASS`, Gate 4 is `OPEN`, and

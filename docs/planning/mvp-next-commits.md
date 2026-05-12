@@ -7,6 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-12 release: refresh production rollback proof blocked evidence`
+  - 2026-05-12: Ran production rollback proof without auth bypass. The proof
+    is fresh but `FAIL`, with `shouldRollback:true` because protected runtime
+    freshness and alerts endpoints returned `401`. Release gate dry-run now
+    classifies rollback proof as `failed` instead of stale. Evidence:
+    `docs/planning/v1-rollback-proof-blocked-refresh-2026-05-12-task.md` and
+    `docs/operations/v1-release-gate-prod-2026-05-12Trollback-refresh-dry-run.md`.
+    V1 remains `NO-GO` due missing LIVEIMPORT-03, failed rollback proof,
+    missing Gate 4 approvers, protected prod auth blockers, and dry-run mode.
+
 - [x] `V1-RC-BLOCKED-REFRESH-2026-05-12 release: refresh RC sign-off and checklist blocked truth`
   - 2026-05-12: Rebuilt RC external gates status, RC sign-off, and the
     release-candidate checklist for 2026-05-12 without approver names. Gate

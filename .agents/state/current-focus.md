@@ -48,6 +48,14 @@ release gate now classifies RC artifacts as `failed` rather than stale for
 2026-05-12. V1 still remains `NO-GO` until Gate 4 approver fields, protected
 prod ops auth, current rollback proof, and LIVEIMPORT-03 are completed.
 
+2026-05-12 rollback proof blocked refresh:
+`V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-12` refreshed production rollback
+proof to current-date fail-closed evidence. The proof reports
+`shouldRollback:true` because protected runtime freshness and alerts endpoints
+returned `401`. The release gate now classifies rollback proof as `failed`
+rather than stale for 2026-05-12. V1 still remains `NO-GO` until approved
+rollback/protected auth, Gate 4 approvers, and LIVEIMPORT-03 are completed.
+
 2026-05-12 V1 completion scorecard:
 `V1-COMPLETION-SCORECARD-2026-05-12` is the current percentage model for V1.
 Use `docs/operations/v1-completion-scorecard-2026-05-12.md` when answering

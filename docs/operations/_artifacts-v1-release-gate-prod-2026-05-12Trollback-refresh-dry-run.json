@@ -1,0 +1,92 @@
+{
+  "generatedAt": "2026-05-12T15:50:03.778Z",
+  "environment": "prod",
+  "dryRun": true,
+  "readiness": "not_ready",
+  "baseUrl": "https://api.soar.luckysparrow.ch",
+  "webBaseUrl": "https://soar.luckysparrow.ch",
+  "expectedSha": "",
+  "evidence": [
+    {
+      "key": "activationAudit",
+      "label": "activation evidence audit",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-12",
+      "path": "docs\\operations\\v1-production-activation-evidence-audit-2026-05-12.md",
+      "date": "2026-05-12"
+    },
+    {
+      "key": "activationPlan",
+      "label": "activation execution plan",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-12",
+      "path": "docs\\planning\\v1-production-activation-and-evidence-plan-2026-05-12.md",
+      "date": "2026-05-12"
+    },
+    {
+      "key": "rcExternalGateStatus",
+      "label": "RC external gates status",
+      "state": "failed",
+      "required": true,
+      "reason": "artifact is fresh but does not show all RC gates PASS",
+      "path": "docs\\operations\\v1-rc-external-gates-status.md",
+      "date": "2026-05-12"
+    },
+    {
+      "key": "rcSignoffRecord",
+      "label": "RC sign-off record",
+      "state": "failed",
+      "required": true,
+      "reason": "artifact is fresh but does not report RC status APPROVED",
+      "path": "docs\\operations\\v1-rc-signoff-record.md",
+      "date": "2026-05-12"
+    },
+    {
+      "key": "rcChecklist",
+      "label": "RC checklist verification block",
+      "state": "failed",
+      "required": true,
+      "reason": "artifact is fresh but does not show all RC gates PASS",
+      "path": "docs\\operations\\v1-release-candidate-checklist.md",
+      "date": "2026-05-12"
+    },
+    {
+      "key": "liveImportReadback",
+      "label": "LIVEIMPORT-03 runtime readback",
+      "state": "missing",
+      "required": true,
+      "reason": "no matching artifact found",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "backupRestoreDrill",
+      "label": "backup/restore drill evidence",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-12",
+      "path": "docs\\operations\\v1-restore-drill-prod-2026-05-12T15-21-38Z.md",
+      "date": "2026-05-12"
+    },
+    {
+      "key": "rollbackProof",
+      "label": "rollback proof pack",
+      "state": "failed",
+      "required": true,
+      "reason": "artifact is fresh but does not report PASS",
+      "path": "docs\\operations\\v1-rollback-proof-prod-2026-05-12T00-00-00-000Z.md",
+      "date": "2026-05-12"
+    }
+  ],
+  "blockers": [
+    "evidence:rcExternalGateStatus:failed",
+    "evidence:rcSignoffRecord:failed",
+    "evidence:rcChecklist:failed",
+    "evidence:liveImportReadback:missing",
+    "evidence:rollbackProof:failed",
+    "mode:prod_dry_run_requires_remote_execution"
+  ],
+  "steps": []
+}
