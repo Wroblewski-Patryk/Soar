@@ -69,6 +69,13 @@ Do not turn uncertainty into optimism.
   production promotion marker is closed as contained in the deployed V1 line,
   but production runtime verification is still not closed. Protected runtime
   readback remains in `LIVEIMPORT-03` and the final release gate.
+- 2026-05-12 `PROD-UI-AUDIT-PLAN-SUPERSEDE-00169D7F-2026-05-12` applies to
+  `SOAR-BOTS-001` and `SOAR-UX-A11Y-MOBILE-001`: the historical broad
+  production UI audit plan is closed as superseded by the current
+  `ops:ui:prod-clickthrough` release-gate lane. Production UI verification is
+  still not closed; the final gate requires a fresh PASS
+  `prod-ui-module-clickthrough-*` artifact with approved `PROD_UI_AUDIT_*`
+  auth.
 
 ## Maintenance Rules
 

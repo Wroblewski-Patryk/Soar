@@ -4,6 +4,13 @@ Last updated: 2026-05-12
 
 ## 2026-05-12 Production Activation Refresh
 
+- `PROD-UI-AUDIT-PLAN-SUPERSEDE-00169D7F-2026-05-12` closed the historical
+  unchecked `PROD-UI-AUDIT-PLAN-2026-05-08` queue item as superseded by the
+  current V1 release-gate UI evidence lane: `ops:ui:prod-clickthrough` with
+  approved `PROD_UI_AUDIT_*` dashboard/admin auth.
+- This is not production UI verification; the final gate still requires a
+  fresh PASS `prod-ui-module-clickthrough-*` artifact. V1 remains `NO-GO`.
+
 - `BOTMULTI-09-CONTAINMENT-SUPERSEDE-00169D7F-2026-05-12` closed the
   historical unchecked `BOTMULTI-09` production promotion marker as contained
   in the deployed V1 line and superseded by the shared protected runtime

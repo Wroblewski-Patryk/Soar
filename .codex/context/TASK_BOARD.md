@@ -17,6 +17,15 @@ Last updated: 2026-05-12
 
 ## READY
 
+- [x] `PROD-UI-AUDIT-PLAN-SUPERSEDE-00169D7F-2026-05-12 qa: close stale broad UI audit plan`
+  - Scope: closed the historical unchecked `PROD-UI-AUDIT-PLAN-2026-05-08`
+    queue item as superseded by the current V1 release-gate UI evidence lane:
+    `ops:ui:prod-clickthrough` with approved `PROD_UI_AUDIT_*` dashboard/admin
+    auth. This does not mark production UI proof verified; the final gate still
+    requires a fresh PASS `prod-ui-module-clickthrough-*` artifact. Evidence:
+    `docs/planning/prod-ui-audit-plan-supersede-00169d7f-2026-05-12-task.md`.
+    V1 remains `NO-GO`.
+
 - [x] `BOTMULTI-09-CONTAINMENT-SUPERSEDE-00169D7F-2026-05-12 release: close contained production promotion marker`
   - Scope: closed the historical unchecked `BOTMULTI-09` production promotion
     marker because its candidate is already contained in the deployed V1 line,
@@ -1594,7 +1603,7 @@ Last updated: 2026-05-12
     fail-closed. Evidence:
     `docs/planning/v1-final-preflight-node-deploy-checks-task-2026-05-08.md`.
 
-- [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
+- [x] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - Scope: execute a production-wide UI audit across canonical public,
     dashboard, admin, and legacy redirect routes, clicking safe module
     functions and capturing screenshots, console/network evidence, responsive
@@ -1606,6 +1615,11 @@ Last updated: 2026-05-12
     are available.
     Evidence plan:
     `docs/planning/prod-ui-module-clickthrough-audit-plan-2026-05-08.md`.
+  - 2026-05-12 supersession: closed as superseded by the current V1
+    release-gate UI evidence lane: `ops:ui:prod-clickthrough` with approved
+    `PROD_UI_AUDIT_*` dashboard/admin auth. This is not accepted UI proof; the
+    final gate still requires a fresh PASS `prod-ui-module-clickthrough-*`
+    artifact.
 
 - [x] `PROD-UI-AUDIT-CURRENT-BLOCKER-SYNC-55469CDC-2026-05-09 qa: sync production UI audit blocker`
   - Scope: synced the production UI clickthrough audit plan and active

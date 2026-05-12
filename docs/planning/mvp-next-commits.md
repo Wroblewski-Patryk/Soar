@@ -8,6 +8,16 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `PROD-UI-AUDIT-PLAN-SUPERSEDE-00169D7F-2026-05-12 qa: close stale broad UI audit plan`
+  - 2026-05-12: Closed the historical unchecked
+    `PROD-UI-AUDIT-PLAN-2026-05-08` queue item as superseded by the current V1
+    release-gate UI evidence lane: `ops:ui:prod-clickthrough` with approved
+    `PROD_UI_AUDIT_*` dashboard/admin auth. This does not mark production UI
+    proof verified; the final gate still requires a fresh PASS
+    `prod-ui-module-clickthrough-*` artifact. Evidence:
+    `docs/planning/prod-ui-audit-plan-supersede-00169d7f-2026-05-12-task.md`.
+    V1 remains `NO-GO`.
+
 - [x] `BOTMULTI-09-CONTAINMENT-SUPERSEDE-00169D7F-2026-05-12 release: close contained production promotion marker`
   - 2026-05-12: Closed the historical unchecked `BOTMULTI-09` production
     promotion marker because its candidate is already contained in the deployed
@@ -1379,7 +1389,7 @@ Operational queue for one-task execution runs.
     `docs/planning/v1-final-preflight-node-deploy-checks-task-2026-05-08.md`
     and `docs/operations/v1-final-preflight-90cd07d6-2026-05-08.md`.
 
-- [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
+- [x] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - 2026-05-08: Planning artifact is ready for a production-wide UI audit that
     visits all canonical public, dashboard, admin, and legacy redirect routes,
     clicks all module-level functions that are safe to exercise, captures
@@ -1391,6 +1401,11 @@ Operational queue for one-task execution runs.
     production test data, and explicit operator approval before live-money or
     destructive actions. Evidence plan:
     `docs/planning/prod-ui-module-clickthrough-audit-plan-2026-05-08.md`.
+  - 2026-05-12 supersession: closed as superseded by the current V1
+    release-gate UI evidence lane: `ops:ui:prod-clickthrough` with approved
+    `PROD_UI_AUDIT_*` dashboard/admin auth. This is not accepted UI proof; the
+    final gate still requires a fresh PASS `prod-ui-module-clickthrough-*`
+    artifact.
 
 - [x] `PROD-UI-PUBLIC-ACCESS-CLICKTHROUGH-2026-05-08 qa: verify production public access and auth gates`
   - 2026-05-08: Captured a safe public/unauthenticated production route audit.
