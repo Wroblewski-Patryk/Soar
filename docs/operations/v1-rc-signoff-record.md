@@ -1,7 +1,7 @@
 # V1 RC Sign-Off Record
 
 Release target: `v1.0.0`  
-Date (UTC): `2026-05-10T00:00:00.000Z`
+Date (UTC): `2026-05-12T00:00:00.000Z`
 
 ## Gate Evidence References
 - RC checklist: `docs/operations/v1-release-candidate-checklist.md`
@@ -30,8 +30,8 @@ Date (UTC): `2026-05-10T00:00:00.000Z`
 
 ## Gate Snapshot at Sign-Off Build
 - Gate statuses found: 4
-- Gate values: PASS, OPEN, PASS, OPEN
-- Gates 1-3 pass: no
+- Gate values: PASS, PASS, PASS, OPEN
+- Gates 1-3 pass: yes
 
 ## Final Decision
 - RC status: `BLOCKED`

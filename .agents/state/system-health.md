@@ -4,6 +4,13 @@ Last updated: 2026-05-12
 
 ## Latest Health Snapshot
 
+- `V1-RC-BLOCKED-REFRESH-2026-05-12` FRESH / BLOCKED: RC external gates
+  status, RC sign-off, and release-candidate checklist were refreshed to
+  current-date blocked truth. Gate 1/2/3 are `PASS`, Gate 4 is `OPEN`, and
+  sign-off status is `BLOCKED` because required approver fields are missing.
+  Release gate dry-run now classifies RC artifacts as `failed` rather than
+  stale for 2026-05-12.
+
 - `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-12` FRESH / NO-GO: activation
   evidence audit and activation execution plan were refreshed to current-date
   `NO-GO` truth. Release gate dry-run now classifies both activation evidence
@@ -18,8 +25,8 @@ Last updated: 2026-05-12
   (`Bot=6`, `Log=52740`, `Order=3981`, `Position=4787`, `User=4`), dropped the
   restore DB, removed the dump, and cleanup returned `0` restore DBs and `0`
   backup dumps. Release gate dry-run now classifies backup/restore drill as
-  `fresh` for 2026-05-12. V1 remains blocked on stale activation/sign-off,
-  failed RC Gate 4/checklist, missing LIVEIMPORT-03, and stale rollback proof.
+  `fresh` for 2026-05-12. V1 remains blocked on failed RC Gate 4/checklist/
+  sign-off, missing LIVEIMPORT-03, and stale rollback proof.
 
 - `V1-OPERATIONS-PROD-READONLY-PROOF-2026-05-12` PRODUCTION PUBLIC PASS /
   RELEASE BLOCKED: production public no-worker deploy smoke passed, public

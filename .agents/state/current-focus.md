@@ -41,6 +41,13 @@ artifacts. The release gate now classifies activation audit/plan as `fresh`
 for 2026-05-12. V1 still remains `NO-GO` until protected prod ops auth,
 current rollback proof, Gate 4/sign-off, and LIVEIMPORT-03 are completed.
 
+2026-05-12 RC blocked refresh:
+`V1-RC-BLOCKED-REFRESH-2026-05-12` refreshed RC external gates, RC sign-off,
+and the release-candidate checklist to current-date blocked evidence. The
+release gate now classifies RC artifacts as `failed` rather than stale for
+2026-05-12. V1 still remains `NO-GO` until Gate 4 approver fields, protected
+prod ops auth, current rollback proof, and LIVEIMPORT-03 are completed.
+
 2026-05-12 V1 completion scorecard:
 `V1-COMPLETION-SCORECARD-2026-05-12` is the current percentage model for V1.
 Use `docs/operations/v1-completion-scorecard-2026-05-12.md` when answering

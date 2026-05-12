@@ -4,6 +4,13 @@ Last updated: 2026-05-12
 
 ## Active Issues
 
+- 2026-05-12 update: `V1-RC-BLOCKED-REFRESH-2026-05-12` removes stale RC
+  sign-off/checklist classification from the current Operations blocker list.
+  RC external gates, sign-off, and checklist are fresh for 2026-05-12 but
+  correctly `failed`/`OPEN` because Gate 4 approver fields are missing. V1
+  remains blocked by missing LIVEIMPORT-03, stale rollback proof, and approved
+  prod ops auth.
+
 - 2026-05-12 update: `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-12`
   removes stale activation audit/plan from the current Operations blocker list.
   The new activation artifacts are fresh for 2026-05-12 and explicitly
@@ -15,9 +22,9 @@ Last updated: 2026-05-12
   blocker list. The isolated production restore drill passed with cleanup
   proof (`LEFTOVER_RESTORE_DATABASES=0`, `LEFTOVER_BACKUPS=0`), and release
   gate dry-run now classifies backup/restore as `fresh` for 2026-05-12. V1
-  remains blocked by stale activation/sign-off, failed RC Gate 4/checklist,
-  missing LIVEIMPORT-03, stale rollback proof, and missing approved protected
-  prod ops auth.
+  remains blocked by failed RC Gate 4/checklist/sign-off, missing
+  LIVEIMPORT-03, stale rollback proof, and missing approved protected prod ops
+  auth.
 
 - 2026-05-12 update: `V1-OPERATIONS-PROD-READONLY-PROOF-2026-05-12`
   confirms production public health but not V1 release readiness. Public
@@ -26,7 +33,7 @@ Last updated: 2026-05-12
   gate remains `not_ready` because protected `/workers/health` returns `401`
   without approved app/operator auth, `LIVEIMPORT-03` production readback is
   missing, Gate 4 is not approved, and production activation/sign-off/
-  backup-restore/rollback artifacts are stale for 2026-05-12.
+  backup-restore/rollback artifacts were stale before the current refreshes.
 
 - 2026-05-12 update: `V1-OPERATIONS-LOCAL-PROOF-2026-05-12` partially closes
   local Operations uncertainty but keeps release approval blocked. Local

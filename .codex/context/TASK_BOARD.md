@@ -17,6 +17,16 @@ Last updated: 2026-05-11
 
 ## READY
 
+- [x] `V1-RC-BLOCKED-REFRESH-2026-05-12 release: refresh RC sign-off and checklist blocked truth`
+  - Scope: rebuilt RC external gates status, RC sign-off, and the release-
+    candidate checklist for 2026-05-12 without approver names. Gate 1/2/3 are
+    `PASS`, Gate 4 remains `OPEN`, sign-off remains `BLOCKED`, and release
+    gate dry-run now classifies RC artifacts as `failed` instead of stale.
+    Evidence: `docs/planning/v1-rc-blocked-refresh-2026-05-12-task.md` and
+    `docs/operations/v1-release-gate-prod-2026-05-12Trc-blocked-refresh-dry-run.md`.
+    V1 remains `NO-GO` due missing LIVEIMPORT-03, stale rollback proof,
+    missing Gate 4 approvers, and protected prod auth blockers.
+
 - [x] `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-12 release: refresh production activation audit and plan truth`
   - Scope: published current-date production activation evidence audit and
     activation execution plan as explicit `NO-GO` artifacts, then ran the

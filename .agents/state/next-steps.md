@@ -4,6 +4,15 @@ Last updated: 2026-05-11
 
 ## Next Tiny Task
 
+Latest RC blocked refresh:
+`V1-RC-BLOCKED-REFRESH-2026-05-12` refreshes RC external gates status,
+RC sign-off, and release-candidate checklist to current-date blocked truth.
+Release gate dry-run now classifies RC external gates, RC sign-off, and RC
+checklist as `failed` for 2026-05-12 instead of stale. Remaining exact V1
+blockers: LIVEIMPORT-03 production readback is missing, rollback proof is
+stale, final non-dry-run release gate has not run, and approved protected prod
+ops auth plus real Gate 4 approver fields are still needed.
+
 Latest production activation refresh:
 `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-12` refreshes activation audit and
 activation execution plan artifacts to current-date `NO-GO` truth. Release
@@ -20,10 +29,9 @@ production Postgres container `x11cfnz1dd9x0yzccftqzcoe`, restored into
 (`Bot=6`, `Log=52740`, `Order=3981`, `Position=4787`, `User=4`), dropped the
 restore database, removed the backup dump, and cleanup returned `0` matching
 restore DBs/backups. Release gate dry-run now classifies backup/restore drill
-evidence as `fresh` for 2026-05-12. Remaining exact V1 blockers: activation
-audit/plan stale, RC sign-off stale, RC Gate 4/checklist failed,
-LIVEIMPORT-03 production readback missing, rollback proof stale, and protected
-prod ops auth still needed.
+evidence as `fresh` for 2026-05-12. Remaining exact V1 blockers: RC
+sign-off/Gate 4/checklist failed, LIVEIMPORT-03 production readback missing,
+rollback proof stale, and protected prod ops auth still needed.
 
 Latest Operations production read-only proof:
 `V1-OPERATIONS-PROD-READONLY-PROOF-2026-05-12` collected safe current
