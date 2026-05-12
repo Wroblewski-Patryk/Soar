@@ -1,6 +1,6 @@
 # V1 Static Issue Scan
 
-Generated at: 2026-05-12T17:34:58.156Z
+Generated at: 2026-05-12T17:37:58.318Z
 Evidence date: 2026-05-12
 Project index: `docs/operations/project-index-2026-05-12.json`
 
@@ -39,6 +39,8 @@ not replace browser/API/DB/exchange action audits.
    stronger candidates for implementation/documentation drift.
 3. `source-marker` findings require human triage because some placeholders
    are valid fail-closed behavior or deterministic fallback contracts.
-4. Start fixes from P0/P1 findings that overlap the V1 Audit Work Map priority:
+4. Approved exchange capability gates are skipped as open source findings when
+   they match the canonical fail-closed exchange capability matrix.
+5. Start fixes from P0/P1 findings that overlap the V1 Audit Work Map priority:
    Dashboard Home, Bot Runtime, Auth, Profile API Keys, then Bots production
    clickthrough.

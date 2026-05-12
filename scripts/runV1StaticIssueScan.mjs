@@ -567,7 +567,9 @@ ${renderFindingsTable(p2Findings)}
    stronger candidates for implementation/documentation drift.
 3. \`source-marker\` findings require human triage because some placeholders
    are valid fail-closed behavior or deterministic fallback contracts.
-4. Start fixes from P0/P1 findings that overlap the V1 Audit Work Map priority:
+4. Approved exchange capability gates are skipped as open source findings when
+   they match the canonical fail-closed exchange capability matrix.
+5. Start fixes from P0/P1 findings that overlap the V1 Audit Work Map priority:
    Dashboard Home, Bot Runtime, Auth, Profile API Keys, then Bots production
    clickthrough.
 `;
