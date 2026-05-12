@@ -156,10 +156,23 @@ Last updated: 2026-05-12
   data and entitlement checks. Operations is now the remaining blocked V1 row
   before release-readiness work can move beyond local proof.
 - Refreshed V1 reports after Subscriptions/Admin: `PASS_LOCAL:20`,
-  `BLOCKED_AUTH:1`; static scan findings `42` (`P0:1`, `P1:9`, `P2:32`);
+  `BLOCKED_AUTH:1`; static scan findings `41` (`P0:1`, `P1:8`, `P2:32`);
   master ledger `NO-GO` with `doneLocalNeedsProdProof:20`, `blocked:1`;
   scorecard `NO-GO`, implementation estimate `86.8%`, evidence coverage
   `61.3%`, release readiness `42.4%`.
+
+## 2026-05-12 Subscriptions Focused Test Gap Closure
+
+- `V1-SUBSCRIPTIONS-FOCUSED-TESTS-2026-05-12` adds direct focused coverage in
+  `apps/api/src/modules/subscriptions/subscriptionEntitlements.service.test.ts`
+  for invalid entitlement fallback and FREE-plan LIVE trading fail-closed
+  behavior.
+- Validation passed: focused Vitest (`2/2`), API typecheck, V1
+  project-index/static-scan/master-ledger/scorecard refresh, repository
+  guardrails, and diff check.
+- The 2026-05-12 static scan no longer reports
+  `API_MODULE_NO_TESTS_SUBSCRIPTIONS`; findings are now `41`
+  (`P0:1`, `P1:8`, `P2:32`) and the scorecard keeps V1 at `NO-GO`.
 
 ## 2026-05-11 Workers Local Proof
 

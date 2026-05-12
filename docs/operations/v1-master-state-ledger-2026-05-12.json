@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-12T16:20:52.121Z",
+  "generatedAt": "2026-05-12T16:29:12.919Z",
   "evidenceDate": "2026-05-12",
   "status": "NO-GO",
   "sources": {
@@ -13,9 +13,9 @@
       "BLOCKED_AUTH": 1
     },
     "findingCounts": {
-      "totalFindings": 42,
+      "totalFindings": 41,
       "bySeverity": {
-        "P1": 9,
+        "P1": 8,
         "P0": 1,
         "P2": 32
       },
@@ -23,7 +23,6 @@
         "v1-proof-gap": 2,
         "web-surface-gap": 1,
         "web-test-gap": 1,
-        "api-test-gap": 1,
         "web-route-gap": 2,
         "documented-placeholder": 3,
         "queue-hygiene": 1,
@@ -36,7 +35,7 @@
     },
     "bucketCounts": {
       "doneLocalNeedsProdProof": 1,
-      "toAddTests": 2,
+      "toAddTests": 1,
       "toClassifyQueue": 1,
       "toCleanPlanning": 1,
       "toProve": 1,
@@ -222,15 +221,6 @@
     }
   ],
   "concreteNonProofGaps": [
-    {
-      "id": "API_MODULE_NO_TESTS_SUBSCRIPTIONS",
-      "severity": "P1",
-      "category": "api-test-gap",
-      "title": "API module 'subscriptions' has no focused tests",
-      "evidence": "module=subscriptions, files=8",
-      "recommendation": "Add focused API tests or document why coverage belongs to another module.",
-      "bucket": "toAddTests"
-    },
     {
       "id": "DOC_PLACEHOLDER_DOCS_MODULES_WEB_ORDERS_MD",
       "severity": "P1",
@@ -1093,6 +1083,7 @@
       "candidateTests": [
         "apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.e2e.test.ts",
         "apps/api/src/modules/admin/users/users.e2e.test.ts",
+        "apps/api/src/modules/subscriptions/subscriptionEntitlements.service.test.ts",
         "apps/api/src/workers/marketStreamSubscriptions.service.test.ts",
         "apps/web/src/features/admin/subscriptions/pages/AdminSubscriptionsPage.test.tsx",
         "apps/web/src/features/admin/users/pages/AdminUsersPage.test.tsx"
@@ -1338,6 +1329,7 @@
         "apps/api/src/modules/profile/security/security.e2e.test.ts",
         "apps/api/src/modules/profile/stage-abuse-throttling.e2e.test.ts",
         "apps/api/src/modules/profile/subscription/subscription.e2e.test.ts",
+        "apps/api/src/modules/subscriptions/subscriptionEntitlements.service.test.ts",
         "apps/api/src/workers/marketStreamSubscriptions.service.test.ts",
         "apps/web/src/app/(public)/auth/authPageCacheContract.test.ts",
         "apps/web/src/app/dashboard/profile/page.test.tsx",
@@ -1348,8 +1340,7 @@
         "apps/web/src/features/auth/components/RegisterForm.test.tsx",
         "apps/web/src/features/auth/hooks/useLoginForm.test.tsx",
         "apps/web/src/features/auth/hooks/useRegisterForm.test.tsx",
-        "apps/web/src/features/auth/types/form.types.test.ts",
-        "apps/web/src/features/profile/components/ApiKeyForm.test.tsx"
+        "apps/web/src/features/auth/types/form.types.test.ts"
       ],
       "relatedFindings": []
     },
@@ -1447,15 +1438,6 @@
       "evidence": "Rollback PASS, liveimport readback, authenticated SLO, release gate, and alerts evidence.",
       "recommendation": "Execute the mapped proof path from project index priority 19.",
       "bucket": "toProve"
-    },
-    {
-      "id": "API_MODULE_NO_TESTS_SUBSCRIPTIONS",
-      "severity": "P1",
-      "category": "api-test-gap",
-      "title": "API module 'subscriptions' has no focused tests",
-      "evidence": "module=subscriptions, files=8",
-      "recommendation": "Add focused API tests or document why coverage belongs to another module.",
-      "bucket": "toAddTests"
     },
     {
       "id": "DOC_PLACEHOLDER_DOCS_MODULES_WEB_ORDERS_MD",

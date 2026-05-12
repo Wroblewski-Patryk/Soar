@@ -1,6 +1,6 @@
 # V1 Master State Ledger
 
-Generated at: 2026-05-12T16:20:52.121Z
+Generated at: 2026-05-12T16:29:12.919Z
 Evidence date: 2026-05-12
 Status: `NO-GO`
 
@@ -14,8 +14,8 @@ Status: `NO-GO`
 
 - V1 status: `NO-GO`
 - Matrix counts: {"PASS_LOCAL":20,"BLOCKED_AUTH":1}
-- Findings by severity: {"P1":9,"P0":1,"P2":32}
-- Findings by bucket: {"doneLocalNeedsProdProof":1,"toAddTests":2,"toClassifyQueue":1,"toCleanPlanning":1,"toProve":1,"toReview":1,"toReviewArchitectureOrFix":3,"toReviewCapabilityGate":29,"toReviewDocumentationOrImplement":3}
+- Findings by severity: {"P1":8,"P0":1,"P2":32}
+- Findings by bucket: {"doneLocalNeedsProdProof":1,"toAddTests":1,"toClassifyQueue":1,"toCleanPlanning":1,"toProve":1,"toReview":1,"toReviewArchitectureOrFix":3,"toReviewCapabilityGate":29,"toReviewDocumentationOrImplement":3}
 - Modules by bucket: {"doneLocalNeedsProdProof":20,"blocked":1}
 
 ## Meaning Of Buckets
@@ -88,7 +88,6 @@ or planning work than generic missing-proof rows.
 
 | Severity | Bucket | Finding | Recommendation |
 | --- | --- | --- | --- |
-| P1 | toAddTests | API module 'subscriptions' has no focused tests | Add focused API tests or document why coverage belongs to another module. |
 | P1 | toReviewDocumentationOrImplement | Module doc still describes placeholder or not-implemented behavior | Either implement the documented surface or update the doc to the canonical owner and proof path. |
 | P1 | toReviewDocumentationOrImplement | Module doc still describes placeholder or not-implemented behavior | Either implement the documented surface or update the doc to the canonical owner and proof path. |
 | P1 | toClassifyQueue | 10 unchecked queue markers remain | Classify each as executable, blocked by auth/approval, or historical carryover. |
@@ -103,7 +102,6 @@ or planning work than generic missing-proof rows.
 | Severity | Bucket | Finding | Recommendation |
 | --- | --- | --- | --- |
 | P0 | toProve | Operations remains BLOCKED_AUTH | Execute the mapped proof path from project index priority 19. |
-| P1 | toAddTests | API module 'subscriptions' has no focused tests | Add focused API tests or document why coverage belongs to another module. |
 | P1 | toReviewDocumentationOrImplement | Module doc still describes placeholder or not-implemented behavior | Either implement the documented surface or update the doc to the canonical owner and proof path. |
 | P1 | toReviewDocumentationOrImplement | Module doc still describes placeholder or not-implemented behavior | Either implement the documented surface or update the doc to the canonical owner and proof path. |
 | P1 | toClassifyQueue | 10 unchecked queue markers remain | Classify each as executable, blocked by auth/approval, or historical carryover. |

@@ -17,6 +17,16 @@ Last updated: 2026-05-11
 
 ## READY
 
+- [x] `V1-SUBSCRIPTIONS-FOCUSED-TESTS-2026-05-12 test: add focused subscriptions module coverage`
+  - Scope: added direct focused coverage in
+    `apps/api/src/modules/subscriptions/subscriptionEntitlements.service.test.ts`
+    for invalid entitlement fallback and FREE-plan LIVE trading fail-closed
+    behavior. Focused Vitest passed (`2/2`), API typecheck passed, V1
+    project-index/static-scan/master-ledger/scorecard refresh passed, and
+    repository guardrails passed. The 2026-05-12 static scan no longer reports
+    `API_MODULE_NO_TESTS_SUBSCRIPTIONS`; findings are now `41`
+    (`P0:1`, `P1:8`, `P2:32`). V1 remains `NO-GO`.
+
 - [x] `V1-RELEASE-GATE-NONDRYRUN-BLOCKED-2026-05-12 release: run production release gate until protected blocker`
   - Scope: ran the production release gate without `--dry-run` and with local
     quality skipped. Build-info freshness passed for

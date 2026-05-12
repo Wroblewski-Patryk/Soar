@@ -4,6 +4,15 @@ Last updated: 2026-05-11
 
 ## Next Tiny Task
 
+Latest subscriptions focused test gap closure:
+`V1-SUBSCRIPTIONS-FOCUSED-TESTS-2026-05-12` adds direct focused coverage for
+the core `subscriptions` module. Focused Vitest passed (`2/2`) for invalid
+entitlement fallback and FREE-plan LIVE trading fail-closed behavior; API
+typecheck passed; refreshed V1 generators now show `41` findings
+(`P0:1`, `P1:8`, `P2:32`) and no longer report
+`API_MODULE_NO_TESTS_SUBSCRIPTIONS`. V1 remains `NO-GO`; the next exact
+unblock action remains the operator packet.
+
 Latest non-dry-run release gate:
 `V1-RELEASE-GATE-NONDRYRUN-BLOCKED-2026-05-12` ran the production release gate
 without `--dry-run` and with local quality skipped. Build-info freshness

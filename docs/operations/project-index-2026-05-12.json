@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-12T16:20:50.888Z",
+  "generatedAt": "2026-05-12T16:29:11.474Z",
   "evidenceDate": "2026-05-12",
   "repoRoot": "C:/Personal/Projekty/Aplikacje/Soar",
   "sources": {
@@ -776,11 +776,14 @@
       "controllerFiles": [],
       "serviceFiles": [
         "apps/api/src/modules/subscriptions/payments/paymentCheckout.service.ts",
+        "apps/api/src/modules/subscriptions/subscriptionEntitlements.service.test.ts",
         "apps/api/src/modules/subscriptions/subscriptionEntitlements.service.ts",
         "apps/api/src/modules/subscriptions/subscriptions.service.ts"
       ],
-      "testFiles": [],
-      "fileCount": 8
+      "testFiles": [
+        "apps/api/src/modules/subscriptions/subscriptionEntitlements.service.test.ts"
+      ],
+      "fileCount": 9
     },
     {
       "name": "upload",
@@ -1328,9 +1331,9 @@
     "apps/api/src/workers/workerOwnership.ts"
   ],
   "tests": {
-    "total": 330,
+    "total": 331,
     "byArea": {
-      "api": 180,
+      "api": 181,
       "web": 148,
       "scripts": 2,
       "other": 0
@@ -1498,6 +1501,7 @@
       "apps/api/src/modules/strategies/indicators/indicators.service.test.ts",
       "apps/api/src/modules/strategies/strategies.e2e.test.ts",
       "apps/api/src/modules/strategies/strategyConfigValidation.test.ts",
+      "apps/api/src/modules/subscriptions/subscriptionEntitlements.service.test.ts",
       "apps/api/src/modules/upload/upload.e2e.test.ts",
       "apps/api/src/modules/wallets/walletCashflowClassifier.service.test.ts",
       "apps/api/src/modules/wallets/wallets.crud.e2e.test.ts",
@@ -5234,11 +5238,14 @@
           "controllerFiles": [],
           "serviceFiles": [
             "apps/api/src/modules/subscriptions/payments/paymentCheckout.service.ts",
+            "apps/api/src/modules/subscriptions/subscriptionEntitlements.service.test.ts",
             "apps/api/src/modules/subscriptions/subscriptionEntitlements.service.ts",
             "apps/api/src/modules/subscriptions/subscriptions.service.ts"
           ],
-          "testFiles": [],
-          "testFileCount": 0
+          "testFiles": [
+            "apps/api/src/modules/subscriptions/subscriptionEntitlements.service.test.ts"
+          ],
+          "testFileCount": 1
         },
         {
           "name": "users",
@@ -5290,6 +5297,7 @@
       "candidateTests": [
         "apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.e2e.test.ts",
         "apps/api/src/modules/admin/users/users.e2e.test.ts",
+        "apps/api/src/modules/subscriptions/subscriptionEntitlements.service.test.ts",
         "apps/api/src/workers/marketStreamSubscriptions.service.test.ts",
         "apps/web/src/features/admin/subscriptions/pages/AdminSubscriptionsPage.test.tsx",
         "apps/web/src/features/admin/users/pages/AdminUsersPage.test.tsx"
@@ -5300,7 +5308,7 @@
         "routes": 3,
         "candidateWorkers": 0,
         "candidateScripts": 5,
-        "candidateTests": 5
+        "candidateTests": 6
       }
     },
     {
@@ -6420,11 +6428,14 @@
           "controllerFiles": [],
           "serviceFiles": [
             "apps/api/src/modules/subscriptions/payments/paymentCheckout.service.ts",
+            "apps/api/src/modules/subscriptions/subscriptionEntitlements.service.test.ts",
             "apps/api/src/modules/subscriptions/subscriptionEntitlements.service.ts",
             "apps/api/src/modules/subscriptions/subscriptions.service.ts"
           ],
-          "testFiles": [],
-          "testFileCount": 0
+          "testFiles": [
+            "apps/api/src/modules/subscriptions/subscriptionEntitlements.service.test.ts"
+          ],
+          "testFileCount": 1
         }
       ],
       "web": [
@@ -6556,6 +6567,7 @@
         "apps/api/src/modules/profile/security/security.e2e.test.ts",
         "apps/api/src/modules/profile/stage-abuse-throttling.e2e.test.ts",
         "apps/api/src/modules/profile/subscription/subscription.e2e.test.ts",
+        "apps/api/src/modules/subscriptions/subscriptionEntitlements.service.test.ts",
         "apps/api/src/workers/marketStreamSubscriptions.service.test.ts",
         "apps/web/src/app/(public)/auth/authPageCacheContract.test.ts",
         "apps/web/src/app/dashboard/profile/page.test.tsx",
@@ -6566,8 +6578,7 @@
         "apps/web/src/features/auth/components/RegisterForm.test.tsx",
         "apps/web/src/features/auth/hooks/useLoginForm.test.tsx",
         "apps/web/src/features/auth/hooks/useRegisterForm.test.tsx",
-        "apps/web/src/features/auth/types/form.types.test.ts",
-        "apps/web/src/features/profile/components/ApiKeyForm.test.tsx"
+        "apps/web/src/features/auth/types/form.types.test.ts"
       ],
       "counts": {
         "apiModules": 5,

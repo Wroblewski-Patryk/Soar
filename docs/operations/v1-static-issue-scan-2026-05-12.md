@@ -1,6 +1,6 @@
 # V1 Static Issue Scan
 
-Generated at: 2026-05-12T16:20:51.724Z
+Generated at: 2026-05-12T16:29:12.256Z
 Evidence date: 2026-05-12
 Project index: `docs/operations/project-index-2026-05-12.json`
 
@@ -12,9 +12,9 @@ not replace browser/API/DB/exchange action audits.
 
 ## Summary
 
-- Total findings: 42
-- By severity: {"P1":9,"P0":1,"P2":32}
-- By category: {"v1-proof-gap":2,"web-surface-gap":1,"web-test-gap":1,"api-test-gap":1,"web-route-gap":2,"documented-placeholder":3,"queue-hygiene":1,"queue-open-work":1,"source-capability-gate":29,"source-marker":1}
+- Total findings: 41
+- By severity: {"P1":8,"P0":1,"P2":32}
+- By category: {"v1-proof-gap":2,"web-surface-gap":1,"web-test-gap":1,"web-route-gap":2,"documented-placeholder":3,"queue-hygiene":1,"queue-open-work":1,"source-capability-gate":29,"source-marker":1}
 - Production/source files scanned for markers: 658
 - Source marker matches: 30
 
@@ -26,7 +26,6 @@ not replace browser/API/DB/exchange action audits.
 | P0 | v1-proof-gap | Operations remains BLOCKED_AUTH | Rollback PASS, liveimport readback, authenticated SLO, release gate, and alerts evidence. | Execute the mapped proof path from project index priority 19. |
 | P1 | web-surface-gap | Web feature 'orders' has no active TS/TSX files | feature=orders | Confirm whether this is intentionally rendered through Dashboard Home or implement/retire the feature surface. |
 | P1 | web-test-gap | Web feature 'positions' has no focused tests | feature=positions, files=1 | Add focused UI/action tests or document why the route is owned by another feature. |
-| P1 | api-test-gap | API module 'subscriptions' has no focused tests | module=subscriptions, files=8 | Add focused API tests or document why coverage belongs to another module. |
 | P1 | web-route-gap | Expected dashboard route '/dashboard/orders' has no page.tsx | route=/dashboard/orders | Confirm whether the action surface intentionally lives on Dashboard Home or add the route/page proof. |
 | P1 | web-route-gap | Expected dashboard route '/dashboard/positions' has no page.tsx | route=/dashboard/positions | Confirm whether the action surface intentionally lives on Dashboard Home or add the route/page proof. |
 | P1 | documented-placeholder | Module doc still describes placeholder or not-implemented behavior | docs/modules/web-orders.md | Either implement the documented surface or update the doc to the canonical owner and proof path. |

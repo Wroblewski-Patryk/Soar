@@ -1,6 +1,6 @@
 # Project Index
 
-Generated at: 2026-05-12T16:20:50.888Z
+Generated at: 2026-05-12T16:29:11.474Z
 Evidence date: 2026-05-12
 
 ## Purpose
@@ -38,7 +38,7 @@ business value.
 | 12 | Orders | PASS_LOCAL | P0 order lifecycle | 4 | 2 | 1 | 30 | Production-safe Orders clickthrough for list/cancel/fill/fee readback through API and adapter boundary; live mutation remains blocked-risk without explicit safe plan. |
 | 13 | Backtests | PASS_LOCAL | P1 simulation correctness | 3 | 1 | 3 | 30 | Production-safe Backtests browser clickthrough for create/delete/details/report/timeline on approved representative RSI strategy and market data. |
 | 14 | Reports | PASS_LOCAL | P2 operator reporting | 4 | 1 | 1 | 30 | Production-safe Reports browser clickthrough for summaries, cross-mode performance, and per-run report readback on approved data. |
-| 15 | Subscriptions/Admin | PASS_LOCAL | P0 role/entitlement access | 3 | 1 | 3 | 5 | Production admin clickthrough with approved non-destructive data and entitlement checks. |
+| 15 | Subscriptions/Admin | PASS_LOCAL | P0 role/entitlement access | 3 | 1 | 3 | 6 | Production admin clickthrough with approved non-destructive data and entitlement checks. |
 | 16 | Logs/Audit Trail | PASS_LOCAL | P1 auditability | 1 | 1 | 1 | 3 | Production-safe Logs/Audit Trail browser clickthrough for filters, pagination, action-produced events, and metadata trace inspection. |
 | 17 | Exchange Adapter | PASS_LOCAL | P0 external exchange boundary | 6 | 3 | 3 | 30 | Production-safe exchange-boundary proof for approved real credentials or read-only adapter operations; live mutation remains blocked-risk without explicit safe plan. |
 | 18 | Workers | PASS_LOCAL | P0 async runtime reliability | 4 | 2 | 3 | 30 | Production-safe protected worker/process proof for health, readiness, runtime freshness, queue/process lifecycle, and observability on the deployed target. |
@@ -255,7 +255,7 @@ business value.
 - Routes: /admin, /admin/subscriptions, /admin/users
 - Candidate scripts: `build`, `ops:deploy:wait-web-build-info`, `ops:rc:signoff:build`, `ops:ui:prod-clickthrough`, `web:verify:build-typecheck`
 - Candidate workers: none
-- Candidate tests: `apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.e2e.test.ts`, `apps/api/src/modules/admin/users/users.e2e.test.ts`, `apps/api/src/workers/marketStreamSubscriptions.service.test.ts`, `apps/web/src/features/admin/subscriptions/pages/AdminSubscriptionsPage.test.tsx`, `apps/web/src/features/admin/users/pages/AdminUsersPage.test.tsx`
+- Candidate tests: `apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.e2e.test.ts`, `apps/api/src/modules/admin/users/users.e2e.test.ts`, `apps/api/src/modules/subscriptions/subscriptionEntitlements.service.test.ts`, `apps/api/src/workers/marketStreamSubscriptions.service.test.ts`, `apps/web/src/features/admin/subscriptions/pages/AdminSubscriptionsPage.test.tsx`, `apps/web/src/features/admin/users/pages/AdminUsersPage.test.tsx`
 - Notes: Local API/Web/admin route proof covers role fail-closed behavior, plan catalog, entitlement validation, user list metadata, role/plan actions, self-demotion guard, and rendered admin pages. Production admin clickthrough remains open.
 
 ### 16. Logs/Audit Trail (PASS_LOCAL)
@@ -365,7 +365,7 @@ business value.
 | profile | 4 | 4 | 6 | 6 | 24 |
 | reports | 1 | 1 | 2 | 1 | 4 |
 | strategies | 2 | 2 | 3 | 3 | 12 |
-| subscriptions | 0 | 0 | 3 | 0 | 8 |
+| subscriptions | 0 | 0 | 4 | 1 | 9 |
 | upload | 1 | 0 | 0 | 1 | 2 |
 | users | 0 | 0 | 0 | 0 | 1 |
 | wallets | 1 | 1 | 5 | 4 | 11 |
@@ -445,8 +445,8 @@ business value.
 
 ## Test Inventory
 
-- Total test/spec files: 330
-- API tests: 180
+- Total test/spec files: 331
+- API tests: 181
 - Web tests: 148
 - Script tests: 2
 - Other tests: 0
