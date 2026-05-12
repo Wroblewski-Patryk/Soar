@@ -23,6 +23,8 @@ test('evaluatePrerequisiteGroups fails closed when production secrets are absent
   assert.deepEqual(requiredStatus({}), {
     'liveimport auth': false,
     'rollback guard auth': false,
+    'production UI dashboard auth': false,
+    'production UI admin auth': false,
     'production DB restore context': false,
   });
 });
@@ -49,6 +51,29 @@ test('evaluatePrerequisiteGroups accepts token or email/password auth alternativ
       ROLLBACK_GUARD_AUTH_EMAIL: 'ops@example.com',
       ROLLBACK_GUARD_AUTH_PASSWORD: 'present',
     })['rollback guard auth'],
+    true,
+  );
+
+  assert.equal(
+    requiredStatus({ PROD_UI_AUDIT_AUTH_TOKEN: 'present' })['production UI dashboard auth'],
+    true,
+  );
+  assert.equal(
+    requiredStatus({
+      PROD_UI_AUDIT_AUTH_EMAIL: 'ops@example.com',
+      PROD_UI_AUDIT_AUTH_PASSWORD: 'present',
+    })['production UI dashboard auth'],
+    true,
+  );
+  assert.equal(
+    requiredStatus({ PROD_UI_AUDIT_ADMIN_TOKEN: 'present' })['production UI admin auth'],
+    true,
+  );
+  assert.equal(
+    requiredStatus({
+      PROD_UI_AUDIT_ADMIN_EMAIL: 'admin@example.com',
+      PROD_UI_AUDIT_ADMIN_PASSWORD: 'present',
+    })['production UI admin auth'],
     true,
   );
 });
@@ -125,6 +150,8 @@ test('annotatePrerequisitesForEvidence accepts fresh restore evidence for the DB
   assert.deepEqual(buildPrerequisiteBlockers(prerequisites), [
     'env:liveimport auth',
     'env:rollback guard auth',
+    'env:production UI dashboard auth',
+    'env:production UI admin auth',
   ]);
 });
 
@@ -248,7 +275,10 @@ test('buildPreflightReport exposes readiness without secret values', () => {
 test('buildRemediationHints maps known final V1 blockers to existing commands', () => {
   const hints = buildRemediationHints([
     'env:liveimport auth',
+    'env:production UI dashboard auth',
+    'env:production UI admin auth',
     'env:production DB restore context',
+    'evidence:prodUiClickthrough:missing',
     'evidence:rcSignoffRecord:failed',
     'evidence:rollbackProof:failed',
     'unknown:blocker',
@@ -258,15 +288,21 @@ test('buildRemediationHints maps known final V1 blockers to existing commands', 
     hints.map((hint) => hint.blocker),
     [
       'env:liveimport auth',
+      'env:production UI dashboard auth',
+      'env:production UI admin auth',
       'env:production DB restore context',
+      'evidence:prodUiClickthrough:missing',
       'evidence:rcSignoffRecord:failed',
       'evidence:rollbackProof:failed',
     ],
   );
   assert.match(hints[0].command, /ops:liveimport:readback/);
-  assert.match(hints[1].command, /ops:db:restore-drill:prod/);
-  assert.match(hints[2].command, /ops:rc:signoff:build/);
-  assert.match(hints[3].command, /ops:deploy:rollback-proof/);
+  assert.match(hints[1].command, /ops:ui:prod-clickthrough/);
+  assert.match(hints[2].command, /ops:ui:prod-clickthrough/);
+  assert.match(hints[3].command, /ops:db:restore-drill:prod/);
+  assert.match(hints[4].command, /ops:ui:prod-clickthrough/);
+  assert.match(hints[5].command, /ops:rc:signoff:build/);
+  assert.match(hints[6].command, /ops:deploy:rollback-proof/);
   const serialized = JSON.stringify(hints);
   assert.equal(serialized.includes('super-secret'), false);
 });
@@ -284,6 +320,8 @@ test('buildBlockerDetails exposes stable categories for Web/operator status', ()
     'build-info',
     'public-smoke',
     'env:liveimport auth',
+    'env:production UI dashboard auth',
+    'evidence:prodUiClickthrough:failed',
     'evidence:rcSignoffRecord:failed',
     'evidence:liveImportReadback:missing',
     'custom:blocker',
@@ -295,6 +333,8 @@ test('buildBlockerDetails exposes stable categories for Web/operator status', ()
       'deploy_freshness',
       'public_reachability',
       'protected_prerequisite',
+      'protected_prerequisite',
+      'release_evidence',
       'release_evidence',
       'release_evidence',
       'unknown',
@@ -302,11 +342,15 @@ test('buildBlockerDetails exposes stable categories for Web/operator status', ()
   );
   assert.equal(details[2].protectedInputRequired, true);
   assert.equal(details[2].finalEvidenceRequired, false);
-  assert.equal(details[3].protectedInputRequired, false);
-  assert.equal(details[3].finalEvidenceRequired, true);
+  assert.equal(details[3].protectedInputRequired, true);
+  assert.equal(details[3].finalEvidenceRequired, false);
   assert.equal(details[4].protectedInputRequired, true);
-  assert.equal(details[4].remediationAvailable, true);
-  assert.equal(details[5].remediationAvailable, false);
+  assert.equal(details[4].finalEvidenceRequired, true);
+  assert.equal(details[5].protectedInputRequired, false);
+  assert.equal(details[5].finalEvidenceRequired, true);
+  assert.equal(details[6].protectedInputRequired, true);
+  assert.equal(details[6].remediationAvailable, true);
+  assert.equal(details[7].remediationAvailable, false);
   assert.equal(JSON.stringify(details).includes('super-secret'), false);
 });
 

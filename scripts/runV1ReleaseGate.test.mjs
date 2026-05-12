@@ -30,6 +30,28 @@ const writeLiveImportReadbackArtifact = (operationsDir, date = '2026-04-22', ove
     )}\n`,
   );
 
+const writeProdUiClickthroughArtifact = (operationsDir, date = '2026-04-22', suffix = 'abc12345') =>
+  writeFile(
+    path.join(operationsDir, `prod-ui-module-clickthrough-${suffix}-${date}.md`),
+    [
+      '# Production UI Module Clickthrough Audit',
+      '',
+      '## Status',
+      '- Result: **PASS**',
+      '- Environment: production',
+      `- Evidence date: ${date}`,
+      '- Dashboard auth: token:present',
+      '- Admin auth: token:present',
+      '',
+      '## Route Results',
+      '| Route | Area | Result | HTTP | Location | Notes |',
+      '| --- | --- | --- | --- | --- | --- |',
+      '| `/dashboard/bots` | dashboard | PASS | 200 | - | authenticated route rendered |',
+      '| `/dashboard/bots/create` | dashboard | PASS | 200 | - | authenticated route rendered |',
+      '',
+    ].join('\n'),
+  );
+
 const writeApprovedRcArtifacts = async (operationsDir, date = '2026-04-22') => {
   await writeFile(
     path.join(operationsDir, 'v1-rc-external-gates-status.md'),
@@ -239,6 +261,7 @@ test('evaluateEvidenceReadiness marks stale prod evidence with explicit blockers
     assert.equal(result.evidence.find((row) => row.key === 'rcSignoffRecord')?.state, 'stale');
     assert.equal(result.evidence.find((row) => row.key === 'rcChecklist')?.state, 'stale');
     assert.equal(result.evidence.find((row) => row.key === 'liveImportReadback')?.state, 'missing');
+    assert.equal(result.evidence.find((row) => row.key === 'prodUiClickthrough')?.state, 'missing');
     assert.equal(result.evidence.find((row) => row.key === 'backupRestoreDrill')?.state, 'stale');
     assert.equal(result.evidence.find((row) => row.key === 'rollbackProof')?.state, 'stale');
     assert.deepEqual(result.blockers, [
@@ -246,6 +269,7 @@ test('evaluateEvidenceReadiness marks stale prod evidence with explicit blockers
       'rcSignoffRecord:stale',
       'rcChecklist:stale',
       'liveImportReadback:missing',
+      'prodUiClickthrough:missing',
       'backupRestoreDrill:stale',
       'rollbackProof:stale',
     ]);
@@ -271,6 +295,7 @@ test('evaluateEvidenceReadiness accepts fresh prod rollback and backup proof', a
     );
     await writeApprovedRcArtifacts(operationsDir);
     await writeLiveImportReadbackArtifact(operationsDir);
+    await writeProdUiClickthroughArtifact(operationsDir);
     await writeFile(
       path.join(operationsDir, 'v1-restore-drill-prod-2026-04-22T19-00-00-000Z.md'),
       '- Generated at (UTC): 2026-04-22T19:00:00.000Z\n- Status: **PASS**\n',
@@ -289,6 +314,7 @@ test('evaluateEvidenceReadiness accepts fresh prod rollback and backup proof', a
     assert.equal(result.ready, true);
     assert.deepEqual(result.blockers, []);
     assert.equal(result.evidence.find((row) => row.key === 'liveImportReadback')?.state, 'fresh');
+    assert.equal(result.evidence.find((row) => row.key === 'prodUiClickthrough')?.state, 'fresh');
     assert.equal(result.evidence.find((row) => row.key === 'backupRestoreDrill')?.state, 'fresh');
     assert.equal(result.evidence.find((row) => row.key === 'rollbackProof')?.state, 'fresh');
   } finally {
@@ -313,6 +339,7 @@ test('evaluateEvidenceReadiness rejects fresh prod restore proof when artifact s
     );
     await writeApprovedRcArtifacts(operationsDir);
     await writeLiveImportReadbackArtifact(operationsDir);
+    await writeProdUiClickthroughArtifact(operationsDir);
     await writeFile(
       path.join(operationsDir, 'v1-restore-drill-prod-2026-04-22T19-00-00-000Z.md'),
       '- Generated at (UTC): 2026-04-22T19:00:00.000Z\n- Status: **FAIL**\n',
@@ -353,6 +380,7 @@ test('evaluateEvidenceReadiness prefers the latest same-day prod restore proof a
     );
     await writeApprovedRcArtifacts(operationsDir);
     await writeLiveImportReadbackArtifact(operationsDir);
+    await writeProdUiClickthroughArtifact(operationsDir);
     await writeFile(
       path.join(operationsDir, 'v1-restore-drill-prod-2026-04-22T19-00-00-000Z.md'),
       '- Generated at (UTC): 2026-04-22T19:00:00.000Z\n- Status: **FAIL**\n',
@@ -419,6 +447,7 @@ test('evaluateEvidenceReadiness rejects fresh prod RC artifacts that are not app
       '### Latest Verification (2026-04-22)\n- current snapshot is `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=OPEN`.\n',
     );
     await writeLiveImportReadbackArtifact(operationsDir);
+    await writeProdUiClickthroughArtifact(operationsDir);
     await writeFile(
       path.join(operationsDir, 'v1-restore-drill-prod-2026-04-22T19-00-00-000Z.md'),
       '- Generated at (UTC): 2026-04-22T19:00:00.000Z\n- Status: **PASS**\n',
@@ -470,6 +499,7 @@ test('evaluateEvidenceReadiness rejects fresh prod live-import readback without 
         missingSymbols: ['ETHUSDT'],
       },
     });
+    await writeProdUiClickthroughArtifact(operationsDir);
     await writeFile(
       path.join(operationsDir, 'v1-restore-drill-prod-2026-04-22T19-00-00-000Z.md'),
       '- Generated at (UTC): 2026-04-22T19:00:00.000Z\n- Status: **PASS**\n',
@@ -488,6 +518,61 @@ test('evaluateEvidenceReadiness rejects fresh prod live-import readback without 
     assert.equal(result.ready, false);
     assert.equal(result.evidence.find((row) => row.key === 'liveImportReadback')?.state, 'failed');
     assert.deepEqual(result.blockers, ['liveImportReadback:failed']);
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test('evaluateEvidenceReadiness rejects fresh prod UI clickthrough without authenticated Bots coverage', async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'v1-release-gate-ui-failed-'));
+  const operationsDir = path.join(tempRoot, 'operations');
+  const planningDir = path.join(tempRoot, 'planning');
+  try {
+    await mkdir(operationsDir, { recursive: true });
+    await mkdir(planningDir, { recursive: true });
+    await writeFile(
+      path.join(operationsDir, 'v1-production-activation-evidence-audit-2026-04-22.md'),
+      '# audit\n',
+    );
+    await writeFile(
+      path.join(planningDir, 'v1-production-activation-and-evidence-plan-2026-04-22.md'),
+      '# plan\n',
+    );
+    await writeApprovedRcArtifacts(operationsDir);
+    await writeLiveImportReadbackArtifact(operationsDir);
+    await writeFile(
+      path.join(operationsDir, 'prod-ui-module-clickthrough-abc12345-2026-04-22.md'),
+      [
+        '# Production UI Module Clickthrough Audit',
+        '',
+        '## Status',
+        '- Result: **BLOCKED_AUTH**',
+        '- Evidence date: 2026-04-22',
+        '- Dashboard auth: missing',
+        '',
+        '## Route Results',
+        '| `/dashboard/bots` | dashboard | BLOCKED_AUTH | 307 | `/auth/login` | auth required |',
+        '',
+      ].join('\n'),
+    );
+    await writeFile(
+      path.join(operationsDir, 'v1-restore-drill-prod-2026-04-22T19-00-00-000Z.md'),
+      '- Generated at (UTC): 2026-04-22T19:00:00.000Z\n- Status: **PASS**\n',
+    );
+    await writeFile(
+      path.join(operationsDir, 'v1-rollback-proof-prod-2026-04-22T19-05-00-000Z.md'),
+      '- Generated at (UTC): 2026-04-22T19:05:00.000Z\n- Status: **PASS**\n',
+    );
+
+    const result = await evaluateEvidenceReadiness({
+      environment: 'prod',
+      evidenceDir: operationsDir,
+      today: '2026-04-22',
+    });
+
+    assert.equal(result.ready, false);
+    assert.equal(result.evidence.find((row) => row.key === 'prodUiClickthrough')?.state, 'failed');
+    assert.deepEqual(result.blockers, ['prodUiClickthrough:failed']);
   } finally {
     await rm(tempRoot, { recursive: true, force: true });
   }

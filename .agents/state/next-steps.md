@@ -4,6 +4,18 @@ Last updated: 2026-05-12
 
 ## Next Tiny Task
 
+Latest release gate production UI evidence hardening:
+`V1-RELEASE-GATE-PROD-UI-EVIDENCE-HARDENING-2026-05-12` updated the final V1
+release gate so production readiness now requires a fresh PASS
+`prod-ui-module-clickthrough-*` artifact with authenticated Bots UI coverage
+for `/dashboard/bots` and `/dashboard/bots/create`. Final preflight now reports
+missing `PROD_UI_AUDIT_*` dashboard/admin auth as protected prerequisites and
+maps missing/failed UI clickthrough evidence to the existing
+`ops:ui:prod-clickthrough` command. V1 remains `NO-GO`; next exact unblock
+action is still approved protected inputs plus fresh PASS evidence for
+production UI clickthrough, `LIVEIMPORT-03`, rollback proof, RC Gate 4, and the
+final non-dry-run release gate.
+
 Latest production UI input unblock sync:
 `V1-PROD-UI-INPUT-UNBLOCK-SYNC-00169D7F-2026-05-12` synchronized the current
 V1 operator unblock packet with the remaining P1 Bots production-safe

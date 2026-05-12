@@ -17,6 +17,19 @@ Last updated: 2026-05-12
 
 ## READY
 
+- [x] `V1-RELEASE-GATE-PROD-UI-EVIDENCE-HARDENING-2026-05-12 release: enforce production UI clickthrough in final gate`
+  - Scope: updated `scripts/runV1ReleaseGate.mjs` so production readiness now
+    requires a fresh PASS `prod-ui-module-clickthrough-*` artifact with
+    authenticated Bots UI coverage for `/dashboard/bots` and
+    `/dashboard/bots/create`. Updated final preflight so missing
+    `PROD_UI_AUDIT_*` dashboard/admin auth and missing/failed UI clickthrough
+    evidence produce stable blockers and remediation hints. Evidence:
+    `docs/planning/v1-release-gate-prod-ui-evidence-hardening-2026-05-12-task.md`.
+    Validation passed: release gate tests (`12/12`), final preflight tests
+    (`14/14`), script syntax checks, guardrails, and diff check. V1 remains
+    `NO-GO` until approved protected inputs produce fresh PASS artifacts and
+    the final gate is rerun.
+
 - [x] `V1-PROD-UI-INPUT-UNBLOCK-SYNC-00169D7F-2026-05-12 release: add production UI audit inputs to operator packet`
   - Scope: synchronized the current V1 operator unblock packet with the
     remaining P1 Bots production-safe clickthrough blocker. The packet now

@@ -4,6 +4,15 @@ Last updated: 2026-05-12
 
 ## 2026-05-12 Production Activation Refresh
 
+- `V1-RELEASE-GATE-PROD-UI-EVIDENCE-HARDENING-2026-05-12` updated the final
+  V1 release gate so production readiness now requires a fresh PASS
+  `prod-ui-module-clickthrough-*` artifact for authenticated Bots UI coverage.
+- Final preflight now reports missing `PROD_UI_AUDIT_*` dashboard/admin auth as
+  protected prerequisites and maps missing/failed UI clickthrough evidence to
+  the existing `ops:ui:prod-clickthrough` command. V1 remains `NO-GO` until
+  approved protected inputs produce fresh PASS artifacts and the final gate is
+  rerun.
+
 - `V1-PROD-UI-INPUT-UNBLOCK-SYNC-00169D7F-2026-05-12` synchronized the
   current V1 operator unblock packet with the remaining P1 Bots production-safe
   clickthrough blocker.

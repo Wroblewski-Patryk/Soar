@@ -62,6 +62,20 @@ const EVIDENCE_FAMILIES = {
     failedPassPatternsReason:
       'artifact is fresh but does not satisfy required runtime readback checks',
   },
+  prodUiClickthrough: {
+    label: 'production UI clickthrough',
+    requiredIn: new Set(['prod']),
+    matcher: /^prod-ui-module-clickthrough-(?:[a-z0-9]+-)?(\d{4}-\d{2}-\d{2})\.md$/i,
+    datePattern: /Evidence date:\s*(\d{4}-\d{2}-\d{2})/i,
+    passPatterns: [
+      /Result:\s*\*\*PASS\*\*/i,
+      /`\/dashboard\/bots`/i,
+      /`\/dashboard\/bots\/create`/i,
+      /Dashboard auth:\s+(?!missing)/i,
+    ],
+    failedPassPatternsReason:
+      'artifact is fresh but does not satisfy authenticated production UI clickthrough checks',
+  },
   backupRestoreDrill: {
     label: 'backup/restore drill evidence',
     requiredIn: new Set(['prod']),

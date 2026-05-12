@@ -114,6 +114,26 @@ export const prerequisiteGroups = [
     ],
   },
   {
+    key: 'production UI dashboard auth',
+    ok: (env) =>
+      hasAnyEnv(env, ['PROD_UI_AUDIT_AUTH_TOKEN']) ||
+      hasAllEnv(env, ['PROD_UI_AUDIT_AUTH_EMAIL', 'PROD_UI_AUDIT_AUTH_PASSWORD']),
+    required: [
+      'PROD_UI_AUDIT_AUTH_TOKEN',
+      'or PROD_UI_AUDIT_AUTH_EMAIL + PROD_UI_AUDIT_AUTH_PASSWORD',
+    ],
+  },
+  {
+    key: 'production UI admin auth',
+    ok: (env) =>
+      hasAnyEnv(env, ['PROD_UI_AUDIT_ADMIN_TOKEN']) ||
+      hasAllEnv(env, ['PROD_UI_AUDIT_ADMIN_EMAIL', 'PROD_UI_AUDIT_ADMIN_PASSWORD']),
+    required: [
+      'PROD_UI_AUDIT_ADMIN_TOKEN',
+      'or PROD_UI_AUDIT_ADMIN_EMAIL + PROD_UI_AUDIT_ADMIN_PASSWORD',
+    ],
+  },
+  {
     key: 'production DB restore context',
     ok: (env) =>
       hasAllEnv(env, ['PROD_DB_CHECK_CONTAINER', 'PROD_DB_CHECK_USER', 'PROD_DB_CHECK_NAME']) ||
@@ -234,6 +254,26 @@ const remediationCatalog = {
     command:
       'pnpm run ops:deploy:rollback-proof -- --profile prod --base-url https://api.soar.luckysparrow.ch',
   },
+  'env:production UI dashboard auth': {
+    title: 'Provide production UI dashboard auth',
+    action: 'Provide approved production app auth for non-destructive dashboard module clickthrough.',
+    requiredInputs: [
+      'PROD_UI_AUDIT_AUTH_TOKEN',
+      'or PROD_UI_AUDIT_AUTH_EMAIL + PROD_UI_AUDIT_AUTH_PASSWORD',
+    ],
+    command:
+      'pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate',
+  },
+  'env:production UI admin auth': {
+    title: 'Provide production UI admin auth',
+    action: 'Provide approved production admin app auth for non-destructive admin module clickthrough.',
+    requiredInputs: [
+      'PROD_UI_AUDIT_ADMIN_TOKEN',
+      'or PROD_UI_AUDIT_ADMIN_EMAIL + PROD_UI_AUDIT_ADMIN_PASSWORD',
+    ],
+    command:
+      'pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate',
+  },
   'env:production DB restore context': {
     title: 'Provide production DB restore context',
     action: 'Provide production DB/Coolify context before running the restore drill.',
@@ -272,6 +312,18 @@ const remediationCatalog = {
     action: 'Run the read-only collector after build-info confirms current HEAD and read-only auth is available.',
     command:
       '$expectedSha = git rev-parse HEAD; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output docs/operations/liveimport-03-prod-readback-2026-05-08.json',
+  },
+  'evidence:prodUiClickthrough:missing': {
+    title: 'Run production UI clickthrough to PASS',
+    action: 'Run the no-secret production UI audit after dashboard and admin app auth are available.',
+    command:
+      'pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate',
+  },
+  'evidence:prodUiClickthrough:failed': {
+    title: 'Fix production UI clickthrough blocker',
+    action: 'Inspect the UI clickthrough artifact, fix the listed auth/build/route blocker, then rerun the audit to PASS.',
+    command:
+      'pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate',
   },
   'evidence:backupRestoreDrill:failed': {
     title: 'Run production restore drill to PASS',
@@ -335,6 +387,24 @@ const blockerDetailCatalog = {
     operatorActionRequired: true,
     requiredCapabilities: ['production_ops_auth'],
   },
+  'env:production UI dashboard auth': {
+    category: 'protected_prerequisite',
+    label: 'Production UI dashboard auth',
+    severity: 'blocking',
+    protectedInputRequired: true,
+    finalEvidenceRequired: false,
+    operatorActionRequired: true,
+    requiredCapabilities: ['production_application_auth', 'authenticated_ui_clickthrough'],
+  },
+  'env:production UI admin auth': {
+    category: 'protected_prerequisite',
+    label: 'Production UI admin auth',
+    severity: 'blocking',
+    protectedInputRequired: true,
+    finalEvidenceRequired: false,
+    operatorActionRequired: true,
+    requiredCapabilities: ['production_admin_auth', 'authenticated_ui_clickthrough'],
+  },
   'env:production DB restore context': {
     category: 'protected_prerequisite',
     label: 'Production DB restore context',
@@ -379,6 +449,24 @@ const blockerDetailCatalog = {
     finalEvidenceRequired: true,
     operatorActionRequired: true,
     requiredCapabilities: ['production_application_auth', 'protected_runtime_readback'],
+  },
+  'evidence:prodUiClickthrough:missing': {
+    category: 'release_evidence',
+    label: 'Production UI clickthrough',
+    severity: 'blocking',
+    protectedInputRequired: true,
+    finalEvidenceRequired: true,
+    operatorActionRequired: true,
+    requiredCapabilities: ['production_application_auth', 'production_admin_auth', 'authenticated_ui_clickthrough'],
+  },
+  'evidence:prodUiClickthrough:failed': {
+    category: 'release_evidence',
+    label: 'Production UI clickthrough',
+    severity: 'blocking',
+    protectedInputRequired: true,
+    finalEvidenceRequired: true,
+    operatorActionRequired: true,
+    requiredCapabilities: ['production_application_auth', 'production_admin_auth', 'authenticated_ui_clickthrough'],
   },
   'evidence:backupRestoreDrill:failed': {
     category: 'release_evidence',
