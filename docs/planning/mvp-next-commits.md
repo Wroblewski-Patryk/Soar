@@ -8,6 +8,17 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `V1-PROTECTED-INPUT-READINESS-CURRENT-SWEEP-00169D7F-2026-05-12 release: refresh current protected input sweep`
+  - 2026-05-12: Refreshed the no-secret protected input readiness sweep for
+    the current Codex shell and confirmed no matching environment variable
+    names were present for `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`,
+    `PROD_UI_AUDIT_*`, `PROD_UI_*`, `SOAR_PROD_*`, production DB check, RC, or
+    Gate families. No secret values were printed or stored. Evidence:
+    `docs/planning/v1-protected-input-readiness-current-sweep-00169d7f-2026-05-12-task.md`
+    and
+    `docs/operations/v1-protected-input-readiness-00169d7f-2026-05-12.md`.
+    V1 remains `NO-GO`.
+
 - [x] `V1-UI-BLOCKER-TRUTH-SYNC-00169D7F-2026-05-12 release: align current UI blocker wording`
   - 2026-05-12: Aligned active source-of-truth wording after the current
     production UI blocked refresh so `PROJECT_STATE` and `next-steps`

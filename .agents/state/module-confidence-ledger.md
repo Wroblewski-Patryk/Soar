@@ -55,6 +55,16 @@ Do not turn uncertainty into optimism.
 | SOAR-BOTS-001 | Bots | Create, edit, delete, start/stop, and monitor bot through real UI/API path | P0 | PARTIAL | Medium | 2026-05-11 `BOT-DELETE-ACTIVE-PAPER-2026-05-11`: active PAPER bot delete no longer routes through LIVE confirmation; Web Vitest passed (`147` files, `501` tests), API Bots e2e passed (`27/27`), Web typecheck passed, guardrails passed, diff check passed with line-ending warnings only. 2026-05-12 `V1-PROD-UI-INPUT-UNBLOCK-SYNC-00169D7F-2026-05-12`: current operator packet now lists `PROD_UI_AUDIT_*` auth and the `ops:ui:prod-clickthrough` PASS requirement before final V1 gate acceptance. 2026-05-12 `V1-RELEASE-GATE-PROD-UI-EVIDENCE-HARDENING-2026-05-12`: final V1 release gate now requires fresh PASS production UI clickthrough evidence for `/dashboard/bots` and `/dashboard/bots/create`. 2026-05-12 `V1-PROD-UI-CURRENT-BLOCKED-REFRESH-00169D7F-2026-05-12`: current no-auth production UI audit confirms `/dashboard/bots` and `/dashboard/bots/create` fail closed to `/auth/login`; this is current blocker evidence, not accepted Bots journey verification. | Production browser clickthrough on representative data is still missing; user-reported failure needs operator confirmation after deploy. The current session has no approved `PROD_UI_AUDIT_*` auth inputs. | Run safe production/non-destructive Bots action clickthrough with approved `PROD_UI_AUDIT_*` app/admin auth and representative data, then update this row to `VERIFIED` or `BROKEN` based on evidence. | QA/Test + Builder | 2026-05-12 |
 | SOAR-REL-001 | Release confidence | Release-critical module inventory and proof map | P0 | IMPLEMENTED_NOT_VERIFIED | Low | Existing planning docs are broad and need current journey-level truth. | No current module-by-module proof ledger. | Inventory P0 journeys for bots, backtests, exchanges, strategies, wallets, subscriptions, auth, dashboard, runtime, and deployment; replace this row with real rows. | Planning | 2026-05-11 |
 
+## Current Release Evidence Notes
+
+- 2026-05-12 `V1-PROTECTED-INPUT-READINESS-CURRENT-SWEEP-00169D7F-2026-05-12`
+  applies to `SOAR-OPERATIONS-001` and `SOAR-BOTS-001`: the current no-secret
+  env-name sweep found no matching `LIVEIMPORT_READBACK_*`,
+  `ROLLBACK_GUARD_*`, `PROD_UI_AUDIT_*`, `PROD_UI_*`, `SOAR_PROD_*`,
+  production DB check, RC, or Gate input families. No secret values were
+  printed or stored. This keeps Operations `BLOCKED` and Bots `PARTIAL` until
+  the operator packet is executed with approved protected inputs.
+
 ## Maintenance Rules
 
 - Update this file when a feature ships, a bug is fixed, a regression appears,

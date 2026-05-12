@@ -4,6 +4,13 @@ Last updated: 2026-05-12
 
 ## Active Issues
 
+- 2026-05-12 update: `V1-PROTECTED-INPUT-READINESS-CURRENT-SWEEP-00169D7F-2026-05-12`
+  confirms the current Codex shell still has no protected input environment
+  variable names for the V1 unblock sequence, including `LIVEIMPORT_READBACK_*`,
+  `ROLLBACK_GUARD_*`, and `PROD_UI_AUDIT_*`. No secret values were printed or
+  stored. V1 remains blocked until approved auth and real Gate 4 approver
+  fields are available.
+
 - 2026-05-12 update: `V1-PROD-UI-CURRENT-BLOCKED-REFRESH-00169D7F-2026-05-12`
   replaces stale production UI clickthrough classification with current
   blocked truth for deployed build-info

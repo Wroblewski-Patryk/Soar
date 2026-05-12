@@ -4,6 +4,15 @@ Last updated: 2026-05-12
 
 ## 2026-05-12 Production Activation Refresh
 
+- `V1-PROTECTED-INPUT-READINESS-CURRENT-SWEEP-00169D7F-2026-05-12`
+  refreshed the no-secret protected input readiness sweep in the current Codex
+  shell.
+- No matching environment variable names were present for
+  `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_UI_AUDIT_*`,
+  `PROD_UI_*`, `SOAR_PROD_*`, production DB check, RC, or Gate families. No
+  secret values were printed or stored. V1 remains `NO-GO` until approved
+  protected auth and real Gate 4 approver inputs are available.
+
 - `V1-PROD-UI-CURRENT-BLOCKED-REFRESH-00169D7F-2026-05-12` captured a current
   no-auth production UI clickthrough audit for deployed
   `00169d7fdc3aff8317759137b05594b20e773c8e`.
