@@ -64,6 +64,11 @@ Do not turn uncertainty into optimism.
   production DB check, RC, or Gate input families. No secret values were
   printed or stored. This keeps Operations `BLOCKED` and Bots `PARTIAL` until
   the operator packet is executed with approved protected inputs.
+- 2026-05-12 `BOTMULTI-09-CONTAINMENT-SUPERSEDE-00169D7F-2026-05-12` applies
+  to `SOAR-BOT-RUNTIME-001` and `SOAR-OPERATIONS-001`: the historical
+  production promotion marker is closed as contained in the deployed V1 line,
+  but production runtime verification is still not closed. Protected runtime
+  readback remains in `LIVEIMPORT-03` and the final release gate.
 
 ## Maintenance Rules
 

@@ -4,6 +4,13 @@ Last updated: 2026-05-12
 
 ## Next Tiny Task
 
+Latest BOTMULTI production marker supersession:
+`BOTMULTI-09-CONTAINMENT-SUPERSEDE-00169D7F-2026-05-12` closed the historical
+unchecked `BOTMULTI-09` production promotion marker as contained in the
+deployed V1 line and superseded by the shared protected runtime readback/final
+gate lane. This is not production runtime verification; `LIVEIMPORT-03` and
+the final release gate remain required protected proof. V1 remains `NO-GO`.
+
 Latest protected readiness supersession:
 `V1-PROTECTED-ACCESS-READINESS-SUPERSEDE-00169D7F-2026-05-12` closed the
 historical unchecked `V1-PROTECTED-ACCESS-READINESS-2026-05-09` queue item as

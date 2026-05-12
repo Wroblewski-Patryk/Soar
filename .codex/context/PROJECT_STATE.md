@@ -4,6 +4,13 @@ Last updated: 2026-05-12
 
 ## 2026-05-12 Production Activation Refresh
 
+- `BOTMULTI-09-CONTAINMENT-SUPERSEDE-00169D7F-2026-05-12` closed the
+  historical unchecked `BOTMULTI-09` production promotion marker as contained
+  in the deployed V1 line and superseded by the shared protected runtime
+  readback/final gate lane.
+- This is not production runtime verification; `LIVEIMPORT-03` and the final
+  release gate remain the required protected proof. V1 remains `NO-GO`.
+
 - `V1-PROTECTED-ACCESS-READINESS-SUPERSEDE-00169D7F-2026-05-12` closed the
   historical unchecked `V1-PROTECTED-ACCESS-READINESS-2026-05-09` queue item
   as superseded by the current `00169d7f` operator packet and protected input

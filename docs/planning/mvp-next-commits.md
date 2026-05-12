@@ -8,6 +8,15 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `BOTMULTI-09-CONTAINMENT-SUPERSEDE-00169D7F-2026-05-12 release: close contained production promotion marker`
+  - 2026-05-12: Closed the historical unchecked `BOTMULTI-09` production
+    promotion marker because its candidate is already contained in the deployed
+    V1 line, and the remaining proof is the shared protected runtime readback/
+    final gate lane. This does not mark multi-strategy runtime production proof
+    verified; it removes a duplicate promotion marker. Evidence:
+    `docs/planning/botmulti-09-containment-supersede-00169d7f-2026-05-12-task.md`.
+    V1 remains `NO-GO`.
+
 - [x] `V1-PROTECTED-ACCESS-READINESS-SUPERSEDE-00169D7F-2026-05-12 release: close stale protected readiness queue entry`
   - 2026-05-12: Closed the historical unchecked
     `V1-PROTECTED-ACCESS-READINESS-2026-05-09` queue item as superseded by the
@@ -4728,7 +4737,7 @@ Operational queue for one-task execution runs.
     runtime capital test (`15/15`), monitoring aggregate plus wallet e2e tests
     (`19/19`), API typecheck, repository guardrails, and docs parity. Evidence:
     `docs/planning/walletbal-01-live-account-balance-cache-task-2026-05-03.md`.
-- [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`
+- [x] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`
   - 2026-05-03: Release task opened after operator request. Confirmed API
     redeploy runs migrations automatically through
     `scripts/start-with-migrate.mjs` when `API_AUTO_MIGRATE` is not `false`.
@@ -4742,6 +4751,10 @@ Operational queue for one-task execution runs.
     Evidence:
     `docs/planning/botmulti-09-production-deploy-task-2026-05-03.md` and
     `docs/planning/botmulti-09-current-production-containment-task-2026-05-09.md`.
+  - 2026-05-12 supersession: closed as contained/superseded by deployed V1
+    line evidence and the current protected runtime readback/final gate lane.
+    This is not a production runtime proof; protected verification still lives
+    in `LIVEIMPORT-03` and the final release gate.
 
 - [x] `OPEN-PROTECTED-BACKLOG-55469CDC-SYNC-2026-05-09 release: sync open protected backlog target`
   - 2026-05-09: Synced open protected backlog entries for
