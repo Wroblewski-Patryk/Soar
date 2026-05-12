@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-05-11
+Last updated: 2026-05-12
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -16,6 +16,18 @@ Last updated: 2026-05-11
     needed
 
 ## READY
+
+- [x] `V1-PROTECTED-INPUT-READINESS-REFRESH-00169D7F-2026-05-12 release: refresh protected input readiness`
+  - Scope: checked only environment variable names for
+    `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_UI_*`, and
+    `SOAR_PROD_*` in the current Codex execution session; no matching names
+    were present and no secret values were printed. Added
+    `docs/operations/v1-protected-input-readiness-00169d7f-2026-05-12.md`
+    and corrected the operator packet to state that the final non-dry-run
+    production gate already ran and stopped `not_ready` on protected
+    `/workers/health` `401`. V1 remains `NO-GO`; the next exact action is
+    still the operator packet with approved protected inputs and real Gate 4
+    approver fields.
 
 - [x] `V1-STATIC-SCAN-QUEUE-BLOCKER-CLASSIFICATION-2026-05-12 ops: classify protected queue blockers`
   - Scope: updated `scripts/runV1StaticIssueScan.mjs` so known protected/auth

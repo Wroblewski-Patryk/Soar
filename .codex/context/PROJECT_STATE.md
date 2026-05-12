@@ -4,6 +4,21 @@ Last updated: 2026-05-12
 
 ## 2026-05-12 Production Activation Refresh
 
+- `V1-PROTECTED-INPUT-READINESS-REFRESH-00169D7F-2026-05-12` refreshed the
+  no-secret protected input readiness state for the current Codex execution
+  session.
+- Readiness artifact:
+  `docs/operations/v1-protected-input-readiness-00169d7f-2026-05-12.md`.
+- The environment-name sweep checked only names matching
+  `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_UI_*`, and
+  `SOAR_PROD_*`; no matching names were present and no secret values were
+  printed or persisted.
+- The operator packet now reflects the latest truth: the final production
+  release gate has already run without dry-run and stopped `not_ready` on
+  protected `/workers/health` `401`. V1 remains `NO-GO`; execute the operator
+  packet only after approved protected auth and real Gate 4 approver fields are
+  available.
+
 - `V1-RELEASE-GATE-NONDRYRUN-BLOCKED-2026-05-12` ran the production release
   gate without `--dry-run` and with local quality skipped.
 - Artifact:

@@ -4,6 +4,16 @@ Last updated: 2026-05-11
 
 ## Next Tiny Task
 
+Latest protected input readiness refresh:
+`V1-PROTECTED-INPUT-READINESS-REFRESH-00169D7F-2026-05-12` checked only
+environment variable names for `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`,
+`PROD_UI_*`, and `SOAR_PROD_*` in the current Codex execution session. No
+matching names were present and no secret values were printed. The operator
+packet now also reflects that the final non-dry-run production gate has already
+run and stopped `not_ready` on protected `/workers/health` `401`. V1 remains
+`NO-GO`; the next exact production unblock action remains executing the
+operator packet with approved protected inputs and real Gate 4 approver fields.
+
 Latest queue blocker classification:
 `V1-STATIC-SCAN-QUEUE-BLOCKER-CLASSIFICATION-2026-05-12` updated
 `scripts/runV1StaticIssueScan.mjs` so known protected/auth queue blockers

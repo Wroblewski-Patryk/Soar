@@ -13,7 +13,10 @@
   - missing `LIVEIMPORT-03` runtime readback
   - rollback proof is fresh but `FAIL`
   - RC Gate 4/sign-off/checklist are fresh but `failed`
-  - final production release gate has not run without dry-run
+  - final production release gate ran without dry-run and stopped `not_ready`
+    on protected `/workers/health` `401`
+- Latest protected input readiness:
+  `docs/operations/v1-protected-input-readiness-00169d7f-2026-05-12.md`
 
 ## Required Protected Inputs
 - `LIVEIMPORT_READBACK_AUTH_TOKEN`, or
@@ -90,14 +93,17 @@ Required result:
 - RC sign-off record reports `RC status: APPROVED`
 - release-candidate checklist shows the current gate snapshot with `G4=PASS`
 
-### 5. Run Final Release Gate
+### 5. Rerun Final Release Gate
 
 ```powershell
 pnpm run ops:release:v1:gate -- --environment prod --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --today $releaseDate
 ```
 
-Required result: readiness `ready`. If the command returns `not_ready`, keep
-V1 at `NO-GO` and fix the listed blocker instead of overriding the gate.
+Required result: readiness `ready`. The latest non-dry-run attempt already
+returned `not_ready` on protected `/workers/health` `401`, so rerun this only
+after protected auth, `LIVEIMPORT-03`, rollback proof PASS, and RC Gate 4
+approval are complete. If the command returns `not_ready`, keep V1 at `NO-GO`
+and fix the listed blocker instead of overriding the gate.
 
 ## Stop Conditions
 - Any protected route returns `401` or `403`.

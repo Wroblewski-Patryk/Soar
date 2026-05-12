@@ -4,6 +4,13 @@ Last updated: 2026-05-12
 
 ## Latest Health Snapshot
 
+- `V1-PROTECTED-INPUT-READINESS-REFRESH-00169D7F-2026-05-12` BLOCKED /
+  NO SECRET VALUES: the current Codex execution session has no environment
+  variable names matching `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`,
+  `PROD_UI_*`, or `SOAR_PROD_*`. The session cannot produce protected
+  production readback, rollback PASS, or production-safe browser proof until
+  approved inputs and real Gate 4 approver fields are provided.
+
 - `V1-RELEASE-GATE-NONDRYRUN-BLOCKED-2026-05-12` NON-DRY-RUN / NOT READY:
   production release gate executed without `--dry-run` and skipped local
   quality only. Build-info freshness passed, public API/Web smoke checks
