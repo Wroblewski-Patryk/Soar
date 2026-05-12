@@ -63,6 +63,13 @@ pass, production DB restore context is satisfied, and V1 remains `NO-GO` on
 missing `LIVEIMPORT_READBACK_*`, missing `ROLLBACK_GUARD_*`, failed RC
 evidence, missing `LIVEIMPORT-03`, and failed rollback proof.
 
+2026-05-12 operator unblock packet:
+`V1-OPERATOR-UNBLOCK-PACKET-00169D7F-2026-05-12` is the active no-secret
+operator handoff for finishing V1. It points to current deployed build-info
+`00169d7f...` and orders the remaining protected steps: provide auth, collect
+`LIVEIMPORT-03`, rerun rollback proof to PASS, approve Gate 4, refresh RC
+artifacts, and run the final production gate without dry-run.
+
 2026-05-12 V1 completion scorecard:
 `V1-COMPLETION-SCORECARD-2026-05-12` is the current percentage model for V1.
 Use `docs/operations/v1-completion-scorecard-2026-05-12.md` when answering

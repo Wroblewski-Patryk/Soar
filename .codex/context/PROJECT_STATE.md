@@ -4,6 +4,15 @@ Last updated: 2026-05-12
 
 ## 2026-05-12 Production Activation Refresh
 
+- `V1-OPERATOR-UNBLOCK-PACKET-00169D7F-2026-05-12` published the current
+  no-secret operator unblock packet for deployed build-info
+  `00169d7fdc3aff8317759137b05594b20e773c8e`.
+- Packet:
+  `docs/operations/v1-operator-unblock-packet-00169d7f-2026-05-12.md`.
+- The packet lists the exact protected inputs and command order for
+  `LIVEIMPORT-03`, rollback proof PASS, RC Gate 4/sign-off/checklist refresh,
+  and the final non-dry-run release gate. It does not approve V1.
+
 - `V1-FINAL-PREFLIGHT-CURRENT-2026-05-12` refreshed the final no-secret
   production preflight for deployed build-info
   `00169d7fdc3aff8317759137b05594b20e773c8e`.

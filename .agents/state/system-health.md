@@ -4,6 +4,12 @@ Last updated: 2026-05-12
 
 ## Latest Health Snapshot
 
+- `V1-OPERATOR-UNBLOCK-PACKET-00169D7F-2026-05-12` HANDOFF READY / V1
+  NO-GO: the current no-secret operator packet for deployed `00169d7f...`
+  lists required protected inputs and the command order for `LIVEIMPORT-03`,
+  rollback proof PASS, RC Gate 4/sign-off/checklist, and final non-dry-run
+  release gate. It does not approve V1.
+
 - `V1-FINAL-PREFLIGHT-CURRENT-2026-05-12` PUBLIC PASS / FINAL BLOCKED:
   deployed build-info matches `00169d7f...`, public API/Web smoke passes, and
   production DB restore context is satisfied by fresh evidence. Final preflight

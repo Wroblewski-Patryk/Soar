@@ -17,6 +17,16 @@ Last updated: 2026-05-11
 
 ## READY
 
+- [x] `V1-OPERATOR-UNBLOCK-PACKET-00169D7F-2026-05-12 release: publish current operator unblock packet`
+  - Scope: published the current no-secret operator handoff for deployed
+    build-info `00169d7fdc3aff8317759137b05594b20e773c8e`. The packet lists
+    required protected auth/approver inputs and the command order for
+    `LIVEIMPORT-03`, rollback proof PASS, RC Gate 4/sign-off/checklist, and
+    final non-dry-run release gate. Evidence:
+    `docs/planning/v1-operator-unblock-packet-00169d7f-2026-05-12-task.md`
+    and `docs/operations/v1-operator-unblock-packet-00169d7f-2026-05-12.md`.
+    V1 remains `NO-GO` until the packet is executed with approved inputs.
+
 - [x] `V1-FINAL-PREFLIGHT-CURRENT-2026-05-12 release: refresh final no-secret preflight after current evidence updates`
   - Scope: ran no-secret final production preflight for deployed build-info
     `00169d7fdc3aff8317759137b05594b20e773c8e`. Build-info and public smoke

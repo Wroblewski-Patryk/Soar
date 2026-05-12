@@ -4,6 +4,11 @@ Last updated: 2026-05-12
 
 ## Active Issues
 
+- 2026-05-12 update: `V1-OPERATOR-UNBLOCK-PACKET-00169D7F-2026-05-12`
+  publishes the current no-secret operator handoff for finishing V1. The
+  packet does not change `NO-GO`; it makes the remaining protected steps
+  executable once auth and approver inputs are available.
+
 - 2026-05-12 update: `V1-FINAL-PREFLIGHT-CURRENT-2026-05-12` refreshed the
   no-secret final preflight for deployed build-info
   `00169d7fdc3aff8317759137b05594b20e773c8e`. Build-info and public smoke

@@ -4,6 +4,15 @@ Last updated: 2026-05-11
 
 ## Next Tiny Task
 
+Current operator unblock packet:
+`V1-OPERATOR-UNBLOCK-PACKET-00169D7F-2026-05-12` publishes the active no-secret
+handoff for deployed build-info `00169d7fdc3aff8317759137b05594b20e773c8e`:
+`docs/operations/v1-operator-unblock-packet-00169d7f-2026-05-12.md`. Next
+exact unblock action: provide `LIVEIMPORT_READBACK_*` and `ROLLBACK_GUARD_*`
+auth, run the packet's `LIVEIMPORT-03` and rollback proof commands, provide
+real Gate 4 approvers, refresh RC artifacts, then run the final production
+release gate without dry-run.
+
 Latest final preflight refresh:
 `V1-FINAL-PREFLIGHT-CURRENT-2026-05-12` refreshes the no-secret final
 production preflight for deployed build-info
