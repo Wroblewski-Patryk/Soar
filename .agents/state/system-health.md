@@ -46,8 +46,8 @@ Last updated: 2026-05-12
   evidence audit and activation execution plan were refreshed to current-date
   `NO-GO` truth. Release gate dry-run now classifies both activation evidence
   families as `fresh` for 2026-05-12. Remaining blockers are RC Gate 4/sign-
-  off, missing LIVEIMPORT-03, stale rollback proof, and missing approved
-  protected prod ops auth.
+  off, missing LIVEIMPORT-03, fresh-but-failed rollback proof, and missing
+  approved protected prod ops auth.
 
 - `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-12` PASS / V1 STILL BLOCKED:
   production Postgres backup/restore drill passed on current-date evidence.
@@ -57,7 +57,7 @@ Last updated: 2026-05-12
   restore DB, removed the dump, and cleanup returned `0` restore DBs and `0`
   backup dumps. Release gate dry-run now classifies backup/restore drill as
   `fresh` for 2026-05-12. V1 remains blocked on failed RC Gate 4/checklist/
-  sign-off, missing LIVEIMPORT-03, and stale rollback proof.
+  sign-off, missing LIVEIMPORT-03, and fresh-but-failed rollback proof.
 
 - `V1-OPERATIONS-PROD-READONLY-PROOF-2026-05-12` PRODUCTION PUBLIC PASS /
   RELEASE BLOCKED: production public no-worker deploy smoke passed, public

@@ -1,6 +1,6 @@
 # V1 Static Issue Scan
 
-Generated at: 2026-05-12T16:55:59.590Z
+Generated at: 2026-05-12T17:08:01.607Z
 Evidence date: 2026-05-12
 Project index: `docs/operations/project-index-2026-05-12.json`
 
@@ -29,8 +29,8 @@ not replace browser/API/DB/exchange action audits.
 
 | Severity | Category | Finding | Evidence | Recommendation |
 | --- | --- | --- | --- | --- |
-| P2 | queue-hygiene | Queue scan still sees unchecked `(none)` markers | .codex/context/TASK_BOARD.md:6604, .codex/context/TASK_BOARD.md:6622 | Ignore these in execution selection or change queue formatting so scan output is cleaner. |
-| P2 | queue-blocked | 10 protected/auth queue markers remain open | .codex/context/TASK_BOARD.md:580 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` \| .codex/context/TASK_BOARD.md:1435 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI mod | Keep these open until approved protected auth, production-safe fixtures, or required approvals are available. |
+| P2 | queue-hygiene | Queue scan still sees unchecked `(none)` markers | .codex/context/TASK_BOARD.md:6624, .codex/context/TASK_BOARD.md:6642 | Ignore these in execution selection or change queue formatting so scan output is cleaner. |
+| P2 | queue-blocked | 10 protected/auth queue markers remain open | .codex/context/TASK_BOARD.md:600 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` \| .codex/context/TASK_BOARD.md:1455 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI mod | Keep these open until approved protected auth, production-safe fixtures, or required approvals are available. |
 | P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/backtests/backtests.controller.ts:4 | import { ExchangeNotImplementedError } from '../exchange/exchangeCapabilities'; | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
 | P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/backtests/backtests.controller.ts:47 | if (error instanceof ExchangeNotImplementedError) { | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
 | P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/bots/bots.controller.ts:5 | import { ExchangeNotImplementedError } from '../exchange/exchangeCapabilities'; | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |

@@ -1,6 +1,6 @@
 # Project Index
 
-Generated at: 2026-05-12T16:55:58.932Z
+Generated at: 2026-05-12T17:07:49.472Z
 Evidence date: 2026-05-12
 
 ## Purpose
@@ -538,18 +538,18 @@ business value.
 
 Showing up to 40 unchecked markers from the canonical queue sources.
 
-- .codex/context/TASK_BOARD.md:580 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`
-- .codex/context/TASK_BOARD.md:1435 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
-- .codex/context/TASK_BOARD.md:1607 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
-- .codex/context/TASK_BOARD.md:5090 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`
-- .codex/context/TASK_BOARD.md:5125 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`
-- .codex/context/TASK_BOARD.md:6604 - [ ] (none)
-- .codex/context/TASK_BOARD.md:6622 - [ ] (none)
-- docs/planning/mvp-next-commits.md:495 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`
-- docs/planning/mvp-next-commits.md:1231 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
-- docs/planning/mvp-next-commits.md:1599 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
-- docs/planning/mvp-next-commits.md:4552 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`
-- docs/planning/mvp-next-commits.md:4582 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`
+- .codex/context/TASK_BOARD.md:600 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`
+- .codex/context/TASK_BOARD.md:1455 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
+- .codex/context/TASK_BOARD.md:1627 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
+- .codex/context/TASK_BOARD.md:5110 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`
+- .codex/context/TASK_BOARD.md:5145 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`
+- .codex/context/TASK_BOARD.md:6624 - [ ] (none)
+- .codex/context/TASK_BOARD.md:6642 - [ ] (none)
+- docs/planning/mvp-next-commits.md:503 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`
+- docs/planning/mvp-next-commits.md:1239 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
+- docs/planning/mvp-next-commits.md:1607 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
+- docs/planning/mvp-next-commits.md:4560 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`
+- docs/planning/mvp-next-commits.md:4590 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`
 
 ## Architecture And Module Sources
 

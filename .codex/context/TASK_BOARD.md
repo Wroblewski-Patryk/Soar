@@ -17,6 +17,15 @@ Last updated: 2026-05-12
 
 ## READY
 
+- [x] `V1-CURRENT-STATE-DRIFT-CLEANUP-2026-05-12 release: clean current V1 blocker wording`
+  - Scope: reran the V1 generator chain and cleaned active queue/state wording
+    that still described the final non-dry-run production gate as not yet run
+    or rollback proof as stale. Generated state remains `NO-GO` with
+    `PASS_LOCAL:20`, `BLOCKED_AUTH:1`, static findings `34` (`P0:1`,
+    `P1:1`, `P2:32`), scorecard `86.8% / 61.3% / 42.4%`. Current truth: the
+    final non-dry-run gate ran and stopped `not_ready`; rollback proof is
+    fresh but failed on protected `401`.
+
 - [x] `V1-PROTECTED-INPUT-READINESS-REFRESH-00169D7F-2026-05-12 release: refresh protected input readiness`
   - Scope: checked only environment variable names for
     `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_UI_*`, and
@@ -113,7 +122,8 @@ Last updated: 2026-05-12
     `docs/planning/v1-rollback-proof-blocked-refresh-2026-05-12-task.md` and
     `docs/operations/v1-release-gate-prod-2026-05-12Trollback-refresh-dry-run.md`.
     V1 remains `NO-GO` due missing LIVEIMPORT-03, failed rollback proof,
-    missing Gate 4 approvers, protected prod auth blockers, and dry-run mode.
+    missing Gate 4 approvers, protected prod auth blockers, and the latest
+    non-dry-run gate result still being `not_ready`.
 
 - [x] `V1-RC-BLOCKED-REFRESH-2026-05-12 release: refresh RC sign-off and checklist blocked truth`
   - Scope: rebuilt RC external gates status, RC sign-off, and the release-
@@ -122,7 +132,7 @@ Last updated: 2026-05-12
     gate dry-run now classifies RC artifacts as `failed` instead of stale.
     Evidence: `docs/planning/v1-rc-blocked-refresh-2026-05-12-task.md` and
     `docs/operations/v1-release-gate-prod-2026-05-12Trc-blocked-refresh-dry-run.md`.
-    V1 remains `NO-GO` due missing LIVEIMPORT-03, stale rollback proof,
+    V1 remains `NO-GO` due missing LIVEIMPORT-03, failed rollback proof,
     missing Gate 4 approvers, and protected prod auth blockers.
 
 - [x] `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-12 release: refresh production activation audit and plan truth`
@@ -133,8 +143,9 @@ Last updated: 2026-05-12
     `docs/planning/v1-production-activation-refresh-2026-05-12-task.md`,
     `docs/operations/v1-production-activation-evidence-audit-2026-05-12.md`,
     and `docs/operations/v1-release-gate-prod-2026-05-12Tactivation-refresh-dry-run.md`.
-    V1 remains `NO-GO` due failed Gate 4/checklist, stale sign-off, missing
-    LIVEIMPORT-03, stale rollback proof, and protected prod auth blockers.
+    V1 remains `NO-GO` due failed Gate 4/checklist, blocked sign-off, missing
+    LIVEIMPORT-03, fresh-but-failed rollback proof, and protected prod auth
+    blockers.
 
 - [x] `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-12 release: refresh production backup/restore drill evidence`
   - Scope: ran production Postgres isolated backup/restore drill over SSH/VPS
@@ -146,8 +157,8 @@ Last updated: 2026-05-12
     evidence as `fresh` for 2026-05-12. Evidence:
     `docs/planning/v1-prod-restore-drill-refresh-task-2026-05-12.md` and
     `docs/operations/v1-restore-drill-prod-2026-05-12T15-21-38Z.md`. V1
-    remains `NO-GO` due stale activation/sign-off, failed Gate 4/checklist,
-    missing LIVEIMPORT-03, and stale rollback proof.
+    remains `NO-GO` due blocked sign-off, failed Gate 4/checklist, missing
+    LIVEIMPORT-03, and fresh-but-failed rollback proof.
 
 - [x] `V1-OPERATIONS-PROD-READONLY-PROOF-2026-05-12 release: collect production read-only Operations evidence`
   - Scope: ran production public no-worker deploy smoke (`PASS`), stage public

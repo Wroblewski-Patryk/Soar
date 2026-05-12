@@ -7,6 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+
+- [x] `V1-CURRENT-STATE-DRIFT-CLEANUP-2026-05-12 release: clean current V1 blocker wording`
+  - 2026-05-12: Refreshed the V1 generator chain and corrected active queue
+    summaries that still described the final non-dry-run production gate as
+    not yet run or rollback proof as stale. Current truth: V1 remains
+    `NO-GO`; generated scorecard remains `86.8%` implementation, `61.3%`
+    evidence coverage, and `42.4%` release readiness; the final non-dry-run
+    gate has run and stopped `not_ready`; rollback proof is fresh but failed
+    on protected `401`.
+
 - [x] `V1-STATIC-SCAN-QUEUE-BLOCKER-CLASSIFICATION-2026-05-12 ops: classify protected queue blockers`
   - 2026-05-12: Updated `scripts/runV1StaticIssueScan.mjs` so known
     protected/auth queue blockers remain open but are classified as
@@ -92,7 +102,8 @@ Operational queue for one-task execution runs.
     `docs/planning/v1-rollback-proof-blocked-refresh-2026-05-12-task.md` and
     `docs/operations/v1-release-gate-prod-2026-05-12Trollback-refresh-dry-run.md`.
     V1 remains `NO-GO` due missing LIVEIMPORT-03, failed rollback proof,
-    missing Gate 4 approvers, protected prod auth blockers, and dry-run mode.
+    missing Gate 4 approvers, protected prod auth blockers, and the latest
+    non-dry-run gate result still being `not_ready`.
 
 - [x] `V1-RC-BLOCKED-REFRESH-2026-05-12 release: refresh RC sign-off and checklist blocked truth`
   - 2026-05-12: Rebuilt RC external gates status, RC sign-off, and the
@@ -101,7 +112,7 @@ Operational queue for one-task execution runs.
     release gate dry-run now classifies RC artifacts as `failed` instead of
     stale. Evidence: `docs/planning/v1-rc-blocked-refresh-2026-05-12-task.md`
     and `docs/operations/v1-release-gate-prod-2026-05-12Trc-blocked-refresh-dry-run.md`.
-    V1 remains `NO-GO` due missing LIVEIMPORT-03, stale rollback proof,
+    V1 remains `NO-GO` due missing LIVEIMPORT-03, failed rollback proof,
     missing Gate 4 approvers, and protected prod auth blockers.
 
 - [x] `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-12 release: refresh production activation audit and plan truth`
@@ -112,8 +123,9 @@ Operational queue for one-task execution runs.
     `docs/planning/v1-production-activation-refresh-2026-05-12-task.md`,
     `docs/operations/v1-production-activation-evidence-audit-2026-05-12.md`,
     and `docs/operations/v1-release-gate-prod-2026-05-12Tactivation-refresh-dry-run.md`.
-    V1 remains `NO-GO` due failed Gate 4/checklist, stale sign-off, missing
-    LIVEIMPORT-03, stale rollback proof, and protected prod auth blockers.
+    V1 remains `NO-GO` due failed Gate 4/checklist, blocked sign-off, missing
+    LIVEIMPORT-03, fresh-but-failed rollback proof, and protected prod auth
+    blockers.
 
 - [x] `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-12 release: refresh production backup/restore drill evidence`
   - 2026-05-12: Ran production Postgres isolated backup/restore drill over
@@ -125,8 +137,8 @@ Operational queue for one-task execution runs.
     evidence as `fresh` for 2026-05-12. Evidence:
     `docs/planning/v1-prod-restore-drill-refresh-task-2026-05-12.md` and
     `docs/operations/v1-restore-drill-prod-2026-05-12T15-21-38Z.md`. V1
-    remains `NO-GO` due stale activation/sign-off, failed Gate 4/checklist,
-    missing LIVEIMPORT-03, and stale rollback proof.
+    remains `NO-GO` due blocked sign-off, failed Gate 4/checklist, missing
+    LIVEIMPORT-03, and fresh-but-failed rollback proof.
 
 - [x] `V1-OPERATIONS-PROD-READONLY-PROOF-2026-05-12 release: collect production read-only Operations evidence`
   - 2026-05-12: Ran production public no-worker deploy smoke (`PASS`), stage

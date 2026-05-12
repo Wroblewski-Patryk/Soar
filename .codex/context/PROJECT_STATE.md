@@ -4,6 +4,18 @@ Last updated: 2026-05-12
 
 ## 2026-05-12 Production Activation Refresh
 
+- `V1-CURRENT-STATE-DRIFT-CLEANUP-2026-05-12` refreshed the V1 generator
+  chain after the protected-input checkpoint and cleaned active current-state
+  wording that still described the final non-dry-run gate as not run or
+  rollback proof as stale.
+- Refreshed generated state remains unchanged in substance: project index
+  reports `PASS_LOCAL:20` and `BLOCKED_AUTH:1`; static scan reports `34`
+  findings (`P0:1`, `P1:1`, `P2:32`); the master ledger remains `NO-GO`;
+  the scorecard remains `86.8%` implementation, `61.3%` evidence coverage,
+  and `42.4%` release readiness.
+- Current truth: the final non-dry-run gate has run and stopped `not_ready`;
+  rollback proof is fresh but failed on protected `401`; V1 remains `NO-GO`.
+
 - `V1-PROTECTED-INPUT-READINESS-REFRESH-00169D7F-2026-05-12` refreshed the
   no-secret protected input readiness state for the current Codex execution
   session.
@@ -60,7 +72,8 @@ Last updated: 2026-05-12
   `docs/operations/v1-release-gate-prod-2026-05-12Trollback-refresh-dry-run.md`
   now classifies rollback proof as `failed` rather than stale.
 - V1 remains `NO-GO`: protected rollback auth, Gate 4 approvers, LIVEIMPORT-03
-  production readback, and final non-dry-run gate are still missing.
+  production readback, and a final non-dry-run gate result of `ready` are still
+  missing.
 
 - `V1-RC-BLOCKED-REFRESH-2026-05-12` refreshed RC external gates status,
   RC sign-off, and release-candidate checklist to current-date blocked truth.
@@ -69,8 +82,8 @@ Last updated: 2026-05-12
   now classifies RC external gates, RC sign-off, and RC checklist as `failed`
   rather than stale.
 - V1 remains `NO-GO`: Gate 4 approver fields are missing, LIVEIMPORT-03
-  production readback is missing, rollback proof is stale, and approved
-  protected prod ops auth is still needed.
+  production readback is missing, rollback proof is fresh but failed on
+  protected `401`, and approved protected prod ops auth is still needed.
 
 - `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-12` refreshed activation audit and
   activation execution plan artifacts to current-date `NO-GO` truth.
@@ -82,8 +95,8 @@ Last updated: 2026-05-12
   now classifies activation evidence audit and activation execution plan as
   `fresh` for 2026-05-12.
 - V1 remains `NO-GO`: RC Gate 4/sign-off is not approved, LIVEIMPORT-03
-  production readback is missing, rollback proof is stale, and approved
-  protected prod ops auth is still needed.
+  production readback is missing, rollback proof is fresh but failed on
+  protected `401`, and approved protected prod ops auth is still needed.
 
 ## 2026-05-12 Production Restore Drill Refresh
 
@@ -103,9 +116,9 @@ Last updated: 2026-05-12
 - Release gate dry-run
   `docs/operations/v1-release-gate-prod-2026-05-12Trestore-refresh-dry-run.md`
   now classifies backup/restore drill evidence as `fresh` for 2026-05-12.
-- V1 remains `NO-GO`: activation audit/plan and RC sign-off are stale, RC Gate
-  4/checklist are failed, LIVEIMPORT-03 production readback is missing, and
-  rollback proof is stale.
+- V1 remains `NO-GO`: activation audit/plan are fresh `NO-GO`, RC sign-off is
+  blocked, RC Gate 4/checklist are failed, LIVEIMPORT-03 production readback is
+  missing, and rollback proof is fresh but failed on protected `401`.
 
 ## 2026-05-12 Operations Production Read-Only Proof
 
