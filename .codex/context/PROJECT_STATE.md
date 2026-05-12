@@ -4,6 +4,13 @@ Last updated: 2026-05-12
 
 ## 2026-05-12 Production Activation Refresh
 
+- `V1-PROTECTED-ACCESS-READINESS-SUPERSEDE-00169D7F-2026-05-12` closed the
+  historical unchecked `V1-PROTECTED-ACCESS-READINESS-2026-05-09` queue item
+  as superseded by the current `00169d7f` operator packet and protected input
+  readiness sweep.
+- This is queue hygiene only: protected evidence remains blocked, and V1
+  remains `NO-GO`.
+
 - `V1-PROTECTED-INPUT-READINESS-CURRENT-SWEEP-00169D7F-2026-05-12`
   refreshed the no-secret protected input readiness sweep in the current Codex
   shell.

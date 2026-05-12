@@ -17,6 +17,16 @@ Last updated: 2026-05-12
 
 ## READY
 
+- [x] `V1-PROTECTED-ACCESS-READINESS-SUPERSEDE-00169D7F-2026-05-12 release: close stale protected readiness queue entry`
+  - Scope: closed the historical unchecked
+    `V1-PROTECTED-ACCESS-READINESS-2026-05-09` queue item as superseded by the
+    current `00169d7f` operator packet and protected input readiness sweep.
+    This does not unblock V1; it removes a duplicate old queue marker so the
+    remaining open tasks represent the actual protected evidence lanes.
+    Evidence:
+    `docs/planning/v1-protected-access-readiness-supersede-00169d7f-2026-05-12-task.md`.
+    V1 remains `NO-GO`.
+
 - [x] `V1-PROTECTED-INPUT-READINESS-CURRENT-SWEEP-00169D7F-2026-05-12 release: refresh current protected input sweep`
   - Scope: refreshed the no-secret protected input readiness sweep for the
     current Codex shell and confirmed no matching environment variable names
@@ -1747,7 +1757,7 @@ Last updated: 2026-05-12
     for protected evidence examples, not local evidence-only `HEAD`. Evidence:
     `docs/planning/v1-continuation-expected-sha-snippets-task-2026-05-09.md`.
 
-- [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
+- [x] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - Scope: current shell lacks required protected env names for live-import
     auth and rollback auth. The readiness target is now selected dynamically
     from production `/api/build-info` by the final blocker execution pack;
@@ -1760,6 +1770,13 @@ Last updated: 2026-05-12
     `docs/operations/v1-protected-access-readiness-2026-05-09.md`. Current
     operator path:
     `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
+  - 2026-05-12 supersession: this historical unchecked readiness item is
+    closed as superseded by
+    `V1-PROTECTED-INPUT-READINESS-CURRENT-SWEEP-00169D7F-2026-05-12` and the
+    current operator packet
+    `docs/operations/v1-operator-unblock-packet-00169d7f-2026-05-12.md`.
+    Protected evidence remains blocked; use the current packet instead of this
+    older queue marker.
 
 - [x] `OPEN-PROTECTED-BACKLOG-55469CDC-SYNC-2026-05-09 release: sync open protected backlog target`
   - Scope: synced open protected backlog entries to current production
