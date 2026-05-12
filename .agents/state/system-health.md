@@ -4,6 +4,11 @@ Last updated: 2026-05-12
 
 ## Latest Health Snapshot
 
+- `V1-RELEASE-GATE-NONDRYRUN-BLOCKED-2026-05-12` NON-DRY-RUN / NOT READY:
+  production release gate executed without `--dry-run` and skipped local
+  quality only. Build-info freshness passed, public API/Web smoke checks
+  passed, and deploy smoke failed on protected `/workers/health` `401`.
+
 - `V1-OPERATOR-UNBLOCK-PACKET-00169D7F-2026-05-12` HANDOFF READY / V1
   NO-GO: the current no-secret operator packet for deployed `00169d7f...`
   lists required protected inputs and the command order for `LIVEIMPORT-03`,

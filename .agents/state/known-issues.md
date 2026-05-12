@@ -4,6 +4,11 @@ Last updated: 2026-05-12
 
 ## Active Issues
 
+- 2026-05-12 update: `V1-RELEASE-GATE-NONDRYRUN-BLOCKED-2026-05-12` confirms
+  the final production gate still blocks without protected auth. Build-info
+  and public smoke pass, but protected `/workers/health` returns `401` during
+  deploy smoke.
+
 - 2026-05-12 update: `V1-OPERATOR-UNBLOCK-PACKET-00169D7F-2026-05-12`
   publishes the current no-secret operator handoff for finishing V1. The
   packet does not change `NO-GO`; it makes the remaining protected steps

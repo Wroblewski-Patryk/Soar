@@ -4,6 +4,16 @@ Last updated: 2026-05-12
 
 ## 2026-05-12 Production Activation Refresh
 
+- `V1-RELEASE-GATE-NONDRYRUN-BLOCKED-2026-05-12` ran the production release
+  gate without `--dry-run` and with local quality skipped.
+- Artifact:
+  `docs/operations/v1-release-gate-prod-2026-05-12Tnon-dry-run-blocked.md`.
+- Build-info freshness passed for
+  `00169d7fdc3aff8317759137b05594b20e773c8e`. Public API `/health`, API
+  `/ready`, and Web `/` passed inside deploy smoke, but deploy smoke failed on
+  protected `/workers/health` with `401`.
+- V1 remains `NO-GO`: the non-dry-run gate readiness is `not_ready`.
+
 - `V1-OPERATOR-UNBLOCK-PACKET-00169D7F-2026-05-12` published the current
   no-secret operator unblock packet for deployed build-info
   `00169d7fdc3aff8317759137b05594b20e773c8e`.

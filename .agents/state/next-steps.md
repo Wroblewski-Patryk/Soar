@@ -4,6 +4,15 @@ Last updated: 2026-05-11
 
 ## Next Tiny Task
 
+Latest non-dry-run release gate:
+`V1-RELEASE-GATE-NONDRYRUN-BLOCKED-2026-05-12` ran the production release gate
+without `--dry-run` and with local quality skipped. Build-info freshness
+passed for `00169d7fdc3aff8317759137b05594b20e773c8e`; public API `/health`,
+API `/ready`, and Web `/` passed inside deploy smoke; protected
+`/workers/health` returned `401`, so the gate stopped at `not_ready`.
+Evidence: `docs/operations/v1-release-gate-prod-2026-05-12Tnon-dry-run-blocked.md`.
+Next exact unblock action remains the operator packet.
+
 Current operator unblock packet:
 `V1-OPERATOR-UNBLOCK-PACKET-00169D7F-2026-05-12` publishes the active no-secret
 handoff for deployed build-info `00169d7fdc3aff8317759137b05594b20e773c8e`:

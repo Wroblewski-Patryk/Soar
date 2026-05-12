@@ -7,6 +7,16 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-RELEASE-GATE-NONDRYRUN-BLOCKED-2026-05-12 release: run production release gate until protected blocker`
+  - 2026-05-12: Ran the production release gate without `--dry-run` and with
+    local quality skipped. Build-info freshness passed for
+    `00169d7fdc3aff8317759137b05594b20e773c8e`; public API `/health`, API
+    `/ready`, and Web `/` passed; deploy smoke failed on protected
+    `/workers/health` `401`. Evidence:
+    `docs/planning/v1-release-gate-nondryrun-blocked-2026-05-12-task.md` and
+    `docs/operations/v1-release-gate-prod-2026-05-12Tnon-dry-run-blocked.md`.
+    V1 remains `NO-GO`.
+
 - [x] `V1-OPERATOR-UNBLOCK-PACKET-00169D7F-2026-05-12 release: publish current operator unblock packet`
   - 2026-05-12: Published the current no-secret operator handoff for deployed
     build-info `00169d7fdc3aff8317759137b05594b20e773c8e`. The packet lists

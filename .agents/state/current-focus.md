@@ -70,6 +70,11 @@ operator handoff for finishing V1. It points to current deployed build-info
 `LIVEIMPORT-03`, rerun rollback proof to PASS, approve Gate 4, refresh RC
 artifacts, and run the final production gate without dry-run.
 
+2026-05-12 non-dry-run gate:
+`V1-RELEASE-GATE-NONDRYRUN-BLOCKED-2026-05-12` ran the production release gate
+without `--dry-run`. Build-info and public smoke passed, but deploy smoke
+failed on protected `/workers/health` `401`, so readiness remains `not_ready`.
+
 2026-05-12 V1 completion scorecard:
 `V1-COMPLETION-SCORECARD-2026-05-12` is the current percentage model for V1.
 Use `docs/operations/v1-completion-scorecard-2026-05-12.md` when answering
