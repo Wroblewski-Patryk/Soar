@@ -214,6 +214,19 @@ Last updated: 2026-05-12
   (`P0:1`, `P1:2`, `P2:31`), with concrete non-proof gaps reduced to `1`.
   V1 remains `NO-GO`; Operations protected evidence remains the P0 blocker.
 
+## 2026-05-12 Static Scan Queue Blocker Classification
+
+- `V1-STATIC-SCAN-QUEUE-BLOCKER-CLASSIFICATION-2026-05-12` updates
+  `scripts/runV1StaticIssueScan.mjs` so known protected/auth queue blockers
+  remain open but are classified as `queue-blocked` instead of unclassified
+  local queue drift.
+- Validation passed: `node --check scripts/runV1StaticIssueScan.mjs`, V1
+  project-index/static-scan/master-ledger/scorecard refresh, repository
+  guardrails, and diff check.
+- The 2026-05-12 static scan now reports `34` findings
+  (`P0:1`, `P1:1`, `P2:32`), and `concreteNonProofGaps` is `0`.
+  V1 remains `NO-GO`; Operations protected evidence remains the P0 blocker.
+
 ## 2026-05-11 Workers Local Proof
 
 - `V1-WORKERS-LOCAL-PROOF-2026-05-11` moves Workers to `PASS_LOCAL` in the V1

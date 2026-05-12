@@ -91,6 +91,9 @@ findings (`P0:1`, `P1:6`, `P2:31`) and concrete non-proof gaps are `5`.
 After `V1-STATIC-SCAN-LEGACY-ROUTE-CLASSIFICATION-2026-05-12`, the static
 scan has `34` findings (`P0:1`, `P1:2`, `P2:31`) and concrete non-proof gaps
 are `1`.
+After `V1-STATIC-SCAN-QUEUE-BLOCKER-CLASSIFICATION-2026-05-12`, the static
+scan has `34` findings (`P0:1`, `P1:1`, `P2:32`) and concrete non-proof gaps
+are `0`.
 V1 remains
 `NO-GO`; every P0 module is still not release-ready, so the next work must
 burn down proof gaps and confirmed defects from the scorecard/ledger order.

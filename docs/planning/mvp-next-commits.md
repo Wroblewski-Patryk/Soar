@@ -7,6 +7,14 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-STATIC-SCAN-QUEUE-BLOCKER-CLASSIFICATION-2026-05-12 ops: classify protected queue blockers`
+  - 2026-05-12: Updated `scripts/runV1StaticIssueScan.mjs` so known
+    protected/auth queue blockers remain open but are classified as
+    `queue-blocked` instead of unclassified local queue drift. Script syntax
+    check, V1 generator refresh, and repository guardrails passed. The
+    2026-05-12 static scan now reports `34` findings (`P0:1`, `P1:1`,
+    `P2:32`), and `concreteNonProofGaps` is `0`. V1 remains `NO-GO`.
+
 - [x] `V1-STATIC-SCAN-LEGACY-ROUTE-CLASSIFICATION-2026-05-12 ops: classify approved legacy web routes`
   - 2026-05-12: Updated `scripts/runV1StaticIssueScan.mjs` so approved
     `/dashboard/orders` and `/dashboard/positions` legacy redirects plus

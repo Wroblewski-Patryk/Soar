@@ -60,6 +60,13 @@ const toPosixPath = (value) => value.split(path.sep).join('/');
 const relativePath = (targetPath) => toPosixPath(path.relative(repoRoot, targetPath));
 const approvedLegacyDashboardRedirects = new Set(['/dashboard/orders', '/dashboard/positions']);
 const approvedRuntimeOwnedWebFeatures = new Set(['orders', 'positions']);
+const protectedQueueBlockerPatterns = [
+  'CONTROLLED-LIVE-SESSION-PROOF',
+  'PROD-UI-AUDIT-PLAN',
+  'V1-PROTECTED-ACCESS-READINESS',
+  'LIVEIMPORT-03',
+  'BOTMULTI-09',
+];
 
 const fileExists = async (targetPath) => {
   try {
@@ -382,6 +389,12 @@ const collectQueueFindings = (projectIndex) => {
   const unchecked = projectIndex.uncheckedTasks ?? [];
   const noneMarkers = unchecked.filter((task) => task.text.includes('(none)'));
   const realUnchecked = unchecked.filter((task) => !task.text.includes('(none)'));
+  const protectedBlocked = realUnchecked.filter((task) =>
+    protectedQueueBlockerPatterns.some((pattern) => task.text.includes(pattern)),
+  );
+  const unclassifiedUnchecked = realUnchecked.filter(
+    (task) => !protectedBlocked.includes(task),
+  );
   const findings = [];
 
   if (noneMarkers.length > 0) {
@@ -395,14 +408,25 @@ const collectQueueFindings = (projectIndex) => {
     });
   }
 
-  if (realUnchecked.length > 0) {
+  if (unclassifiedUnchecked.length > 0) {
     findings.push({
       id: 'QUEUE_OPEN_ITEMS_EXIST',
       severity: 'P1',
       category: 'queue-open-work',
-      title: `${realUnchecked.length} unchecked queue markers remain`,
-      evidence: realUnchecked.slice(0, 8).map((task) => `${task.source}:${task.line} ${task.text}`).join(' | '),
+      title: `${unclassifiedUnchecked.length} unchecked queue markers remain`,
+      evidence: unclassifiedUnchecked.slice(0, 8).map((task) => `${task.source}:${task.line} ${task.text}`).join(' | '),
       recommendation: 'Classify each as executable, blocked by auth/approval, or historical carryover.',
+    });
+  }
+
+  if (protectedBlocked.length > 0) {
+    findings.push({
+      id: 'QUEUE_PROTECTED_BLOCKERS_OPEN',
+      severity: 'P2',
+      category: 'queue-blocked',
+      title: `${protectedBlocked.length} protected/auth queue markers remain open`,
+      evidence: protectedBlocked.slice(0, 8).map((task) => `${task.source}:${task.line} ${task.text}`).join(' | '),
+      recommendation: 'Keep these open until approved protected auth, production-safe fixtures, or required approvals are available.',
     });
   }
 
