@@ -17,6 +17,14 @@ Last updated: 2026-05-12
 
 ## READY
 
+- [x] `V1-UI-BLOCKER-TRUTH-SYNC-00169D7F-2026-05-12 release: align current UI blocker wording`
+  - Scope: aligned active source-of-truth wording after the current production
+    UI blocked refresh so `PROJECT_STATE` and `next-steps` describe the UI
+    blocker as current `prodUiClickthrough:failed` evidence from 2026-05-12,
+    not stale evidence from 2026-05-10. Evidence:
+    `docs/planning/v1-ui-blocker-truth-sync-00169d7f-2026-05-12-task.md`.
+    V1 remains `NO-GO`.
+
 - [x] `V1-PROD-UI-CURRENT-BLOCKED-REFRESH-00169D7F-2026-05-12 release: refresh current production UI blocked evidence`
   - Scope: captured a current no-auth production UI clickthrough audit for
     deployed `00169d7f`: build-info matched, public routes passed, and

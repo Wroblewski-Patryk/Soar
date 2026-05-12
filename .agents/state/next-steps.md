@@ -45,8 +45,8 @@ production UI clickthrough, `LIVEIMPORT-03`, rollback proof, RC Gate 4, and the
 final non-dry-run release gate. The refreshed no-secret preflight for deployed
 `00169d7fdc3aff8317759137b05594b20e773c8e` has build-info and public smoke
 `PASS`, production DB restore context satisfied, and blocks on missing
-`PROD_UI_AUDIT_*` dashboard/admin auth plus stale production UI clickthrough
-evidence from 2026-05-10.
+`PROD_UI_AUDIT_*` dashboard/admin auth plus current failed production UI
+clickthrough evidence from 2026-05-12.
 
 Latest production UI input unblock sync:
 `V1-PROD-UI-INPUT-UNBLOCK-SYNC-00169D7F-2026-05-12` synchronized the current

@@ -42,7 +42,8 @@ Last updated: 2026-05-12
 - Refreshed no-secret preflight for deployed
   `00169d7fdc3aff8317759137b05594b20e773c8e` is blocked with build-info and
   public smoke `PASS`, production DB restore context satisfied,
-  `prodUiClickthrough:stale`, missing `PROD_UI_AUDIT_*` dashboard/admin auth,
+  current `prodUiClickthrough:failed`, missing `PROD_UI_AUDIT_*`
+  dashboard/admin auth,
   missing `LIVEIMPORT_READBACK_*`, missing `ROLLBACK_GUARD_*`, failed RC
   artifacts, missing `LIVEIMPORT-03`, and failed rollback proof.
 
