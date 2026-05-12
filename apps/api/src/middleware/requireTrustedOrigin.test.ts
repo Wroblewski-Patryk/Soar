@@ -6,8 +6,23 @@ import { signAuthToken } from '../modules/auth/auth.jwt';
 import { clientUrl } from '../config/runtime';
 
 const originalCookieSameSite = process.env.COOKIE_SAME_SITE;
+const originalJwtSecret = process.env.JWT_SECRET;
+const originalJwtSecretPrevious = process.env.JWT_SECRET_PREVIOUS;
+const originalJwtSecretPreviousUntil = process.env.JWT_SECRET_PREVIOUS_UNTIL;
+
+const restoreEnv = (key: string, value: string | undefined) => {
+  if (value === undefined || value === 'undefined') delete process.env[key];
+  else process.env[key] = value;
+};
+
+const configureJwtForTest = () => {
+  process.env.JWT_SECRET = 'trusted-origin-test-secret';
+  delete process.env.JWT_SECRET_PREVIOUS;
+  delete process.env.JWT_SECRET_PREVIOUS_UNTIL;
+};
 
 const createSessionCookie = async () => {
+  configureJwtForTest();
   const user = await prisma.user.create({
     data: {
       email: `origin-guard-${Date.now()}@example.com`,
@@ -28,7 +43,10 @@ const createSessionCookie = async () => {
 };
 
 afterEach(async () => {
-  process.env.COOKIE_SAME_SITE = originalCookieSameSite;
+  restoreEnv('COOKIE_SAME_SITE', originalCookieSameSite);
+  restoreEnv('JWT_SECRET', originalJwtSecret);
+  restoreEnv('JWT_SECRET_PREVIOUS', originalJwtSecretPrevious);
+  restoreEnv('JWT_SECRET_PREVIOUS_UNTIL', originalJwtSecretPreviousUntil);
   await prisma.user.deleteMany({
     where: {
       email: {

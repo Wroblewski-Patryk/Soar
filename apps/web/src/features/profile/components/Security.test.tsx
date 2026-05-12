@@ -1,8 +1,17 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { toast } from "sonner";
 
 import { I18nProvider } from "../../../i18n/I18nProvider";
+import { changePassword } from "../services/security.service";
 import SecurityPanel from "./Security";
+
+vi.mock("sonner", () => ({
+  toast: {
+    error: vi.fn(),
+    success: vi.fn(),
+  },
+}));
 
 vi.mock("../services/security.service", () => ({
   changePassword: vi.fn(),
@@ -10,6 +19,13 @@ vi.mock("../services/security.service", () => ({
 }));
 
 describe("SecurityPanel", () => {
+  const mockChangePassword = vi.mocked(changePassword);
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockChangePassword.mockResolvedValue(undefined);
+  });
+
   const renderPanel = async () => {
     window.history.pushState({}, "", "/dashboard/profile");
     await act(async () => {
@@ -62,5 +78,54 @@ describe("SecurityPanel", () => {
     expect(newPasswordInput).toHaveAttribute("type", "password");
     expect(confirmPasswordInput).toHaveAttribute("type", "password");
     expect(deletePasswordInput).toHaveAttribute("type", "password");
+  });
+
+  it("rejects mismatched password confirmation without calling the API", async () => {
+    await renderPanel();
+
+    fireEvent.change(screen.getByLabelText("Current password"), {
+      target: { value: "current-password" },
+    });
+    fireEvent.change(screen.getByLabelText("New password"), {
+      target: { value: "new-password" },
+    });
+    fireEvent.change(screen.getByLabelText("Confirm new password"), {
+      target: { value: "different-password" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Change password" }));
+
+    expect(mockChangePassword).not.toHaveBeenCalled();
+    expect(toast.error).toHaveBeenCalledWith("New password and confirmation must match.");
+  });
+
+  it("submits a valid password change, clears fields, and shows success feedback", async () => {
+    await renderPanel();
+
+    const currentPasswordInput = screen.getByLabelText("Current password");
+    const newPasswordInput = screen.getByLabelText("New password");
+    const confirmPasswordInput = screen.getByLabelText("Confirm new password");
+
+    fireEvent.change(currentPasswordInput, {
+      target: { value: "current-password" },
+    });
+    fireEvent.change(newPasswordInput, {
+      target: { value: "new-password" },
+    });
+    fireEvent.change(confirmPasswordInput, {
+      target: { value: "new-password" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Change password" }));
+
+    await waitFor(() => {
+      expect(mockChangePassword).toHaveBeenCalledWith({
+        currentPassword: "current-password",
+        newPassword: "new-password",
+      });
+    });
+
+    expect(toast.success).toHaveBeenCalledWith("Password changed successfully.");
+    expect(currentPasswordInput).toHaveValue("");
+    expect(newPasswordInput).toHaveValue("");
+    expect(confirmPasswordInput).toHaveValue("");
   });
 });

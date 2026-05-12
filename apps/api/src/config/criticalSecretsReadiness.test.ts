@@ -20,7 +20,7 @@ const originalEnv = Object.fromEntries(
 const resetEnv = () => {
   for (const key of SECRET_ENV_KEYS) {
     const value = originalEnv[key];
-    if (value === undefined) delete process.env[key];
+    if (value === undefined || value === 'undefined') delete process.env[key];
     else process.env[key] = value;
   }
 };
@@ -58,6 +58,8 @@ describe('criticalSecretsReadiness', () => {
 
   it('treats legacy API_KEY_ENCRYPTION as compatibility-only and not release-ready material', () => {
     process.env.JWT_SECRET = 'jwt-secret-primary';
+    delete process.env.JWT_SECRET_PREVIOUS;
+    delete process.env.JWT_SECRET_PREVIOUS_UNTIL;
     delete process.env.API_KEY_ENCRYPTION_KEYS;
     delete process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
     process.env.API_KEY_ENCRYPTION = 'legacy-only-key';

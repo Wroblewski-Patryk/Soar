@@ -10,9 +10,12 @@ const originalJwtSecretPrevious = process.env.JWT_SECRET_PREVIOUS;
 const originalJwtSecretPreviousUntil = process.env.JWT_SECRET_PREVIOUS_UNTIL;
 
 afterEach(() => {
-  process.env.JWT_SECRET = originalJwtSecret;
-  process.env.JWT_SECRET_PREVIOUS = originalJwtSecretPrevious;
-  process.env.JWT_SECRET_PREVIOUS_UNTIL = originalJwtSecretPreviousUntil;
+  if (originalJwtSecret === undefined) delete process.env.JWT_SECRET;
+  else process.env.JWT_SECRET = originalJwtSecret;
+  if (originalJwtSecretPrevious === undefined) delete process.env.JWT_SECRET_PREVIOUS;
+  else process.env.JWT_SECRET_PREVIOUS = originalJwtSecretPrevious;
+  if (originalJwtSecretPreviousUntil === undefined) delete process.env.JWT_SECRET_PREVIOUS_UNTIL;
+  else process.env.JWT_SECRET_PREVIOUS_UNTIL = originalJwtSecretPreviousUntil;
   vi.restoreAllMocks();
 });
 
@@ -20,6 +23,7 @@ describe('requireAuth middleware', () => {
   it('accepts Authorization Bearer token when cookie is missing', async () => {
     process.env.JWT_SECRET = 'bearer-secret';
     process.env.JWT_SECRET_PREVIOUS = '';
+    delete process.env.JWT_SECRET_PREVIOUS_UNTIL;
     const email = `bearer-${Date.now()}@example.com`;
     const user = await prisma.user.create({
       data: {
@@ -87,6 +91,7 @@ describe('requireAuth middleware', () => {
   it('rejects token when issuer/audience claims are invalid', async () => {
     process.env.JWT_SECRET = 'primary-secret';
     process.env.JWT_SECRET_PREVIOUS = '';
+    delete process.env.JWT_SECRET_PREVIOUS_UNTIL;
 
     const token = jwt.sign(
       {

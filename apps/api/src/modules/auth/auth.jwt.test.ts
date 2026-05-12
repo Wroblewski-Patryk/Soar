@@ -7,15 +7,19 @@ const originalJwtSecretPrevious = process.env.JWT_SECRET_PREVIOUS;
 const originalJwtSecretPreviousUntil = process.env.JWT_SECRET_PREVIOUS_UNTIL;
 
 afterEach(() => {
-  process.env.JWT_SECRET = originalJwtSecret;
-  process.env.JWT_SECRET_PREVIOUS = originalJwtSecretPrevious;
-  process.env.JWT_SECRET_PREVIOUS_UNTIL = originalJwtSecretPreviousUntil;
+  if (originalJwtSecret === undefined) delete process.env.JWT_SECRET;
+  else process.env.JWT_SECRET = originalJwtSecret;
+  if (originalJwtSecretPrevious === undefined) delete process.env.JWT_SECRET_PREVIOUS;
+  else process.env.JWT_SECRET_PREVIOUS = originalJwtSecretPrevious;
+  if (originalJwtSecretPreviousUntil === undefined) delete process.env.JWT_SECRET_PREVIOUS_UNTIL;
+  else process.env.JWT_SECRET_PREVIOUS_UNTIL = originalJwtSecretPreviousUntil;
 });
 
 describe('auth.jwt', () => {
   it('signs and verifies token with the primary secret', () => {
     process.env.JWT_SECRET = 'primary-secret';
     process.env.JWT_SECRET_PREVIOUS = '';
+    delete process.env.JWT_SECRET_PREVIOUS_UNTIL;
 
     const token = signAuthToken(
       {

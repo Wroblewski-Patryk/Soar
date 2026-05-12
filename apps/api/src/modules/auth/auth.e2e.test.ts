@@ -5,6 +5,11 @@ import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { REMEMBER_ME_TTL_MS, SESSION_TTL_MS } from './auth.session';
 
+const restoreEnv = (key: string, value: string | undefined) => {
+  if (value === undefined || value === 'undefined') delete process.env[key];
+  else process.env[key] = value;
+};
+
 describe('POST /auth/register', () => {
   beforeEach(async () => {
     await prisma.log.deleteMany();
@@ -157,6 +162,77 @@ describe('POST /auth/register', () => {
     expect(clearedCookie).toContain('token=');
   });
 
+  it('clears session on logout and rejects the next /auth/me request', async () => {
+    const agent = request.agent(app);
+    const email = 'logout-session@example.com';
+    const password = 'test1234';
+
+    const registerRes = await agent.post('/auth/register').send({ email, password });
+    expect(registerRes.status).toBe(201);
+
+    const meBeforeLogoutRes = await agent.get('/auth/me');
+    expect(meBeforeLogoutRes.status).toBe(200);
+    expect(meBeforeLogoutRes.body.email).toBe(email);
+
+    const logoutRes = await agent.post('/auth/logout');
+    expect(logoutRes.status).toBe(200);
+    expect(logoutRes.body.message).toBe('Logged out');
+    const clearedCookie = logoutRes.headers['set-cookie']?.[0] ?? '';
+    expect(clearedCookie).toContain('token=');
+    expect(clearedCookie).toContain('Expires=Thu, 01 Jan 1970');
+
+    const meAfterLogoutRes = await agent.get('/auth/me');
+    expect(meAfterLogoutRes.status).toBe(401);
+    expect(meAfterLogoutRes.body.error.message).toBe('Missing token');
+  });
+
+  it('clears expired JWT sessions and asks the operator to sign in again', async () => {
+    const originalJwtSecret = process.env.JWT_SECRET;
+    const originalJwtSecretPrevious = process.env.JWT_SECRET_PREVIOUS;
+    const originalJwtSecretPreviousUntil = process.env.JWT_SECRET_PREVIOUS_UNTIL;
+
+    process.env.JWT_SECRET = 'auth-expired-session-secret';
+    process.env.JWT_SECRET_PREVIOUS = '';
+    process.env.JWT_SECRET_PREVIOUS_UNTIL = '';
+    try {
+      const user = await prisma.user.create({
+        data: {
+          email: `expired-session-${Date.now()}@example.com`,
+          password: 'hashed-password',
+        },
+      });
+      const nowSec = Math.floor(Date.now() / 1000);
+      const expiredToken = jwt.sign(
+        {
+          userId: user.id,
+          email: user.email,
+          role: 'USER',
+          sessionVersion: 1,
+          iat: nowSec - 7200,
+          exp: nowSec - 3600,
+        },
+        'auth-expired-session-secret',
+        {
+          algorithm: 'HS256',
+          issuer: 'cryptosparrow',
+          audience: 'cryptosparrow-app',
+        }
+      );
+
+      const meRes = await request(app).get('/auth/me').set('Cookie', [`token=${expiredToken}`]);
+
+      expect(meRes.status).toBe(401);
+      expect(meRes.body.error.message).toBe('Session expired. Please sign in again.');
+      const clearedCookie = meRes.headers['set-cookie']?.[0] ?? '';
+      expect(clearedCookie).toContain('token=');
+      expect(clearedCookie).toContain('Expires=Thu, 01 Jan 1970');
+    } finally {
+      restoreEnv('JWT_SECRET', originalJwtSecret);
+      restoreEnv('JWT_SECRET_PREVIOUS', originalJwtSecretPrevious);
+      restoreEnv('JWT_SECRET_PREVIOUS_UNTIL', originalJwtSecretPreviousUntil);
+    }
+  });
+
   it('uses newest valid token on /auth/me when duplicate token cookies are sent', async () => {
     const originalJwtSecret = process.env.JWT_SECRET;
     const originalJwtSecretPrevious = process.env.JWT_SECRET_PREVIOUS;
@@ -221,9 +297,9 @@ describe('POST /auth/register', () => {
       expect(meRes.body.id).toBe(newerUser.id);
       expect(meRes.body.email).toBe(newerUser.email);
     } finally {
-      process.env.JWT_SECRET = originalJwtSecret;
-      process.env.JWT_SECRET_PREVIOUS = originalJwtSecretPrevious;
-      process.env.JWT_SECRET_PREVIOUS_UNTIL = originalJwtSecretPreviousUntil;
+      restoreEnv('JWT_SECRET', originalJwtSecret);
+      restoreEnv('JWT_SECRET_PREVIOUS', originalJwtSecretPrevious);
+      restoreEnv('JWT_SECRET_PREVIOUS_UNTIL', originalJwtSecretPreviousUntil);
     }
   });
 });

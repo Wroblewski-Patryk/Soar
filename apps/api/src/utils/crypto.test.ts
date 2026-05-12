@@ -1,5 +1,14 @@
 import crypto from "crypto";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+const originalApiKeyEncryptionKeys = process.env.API_KEY_ENCRYPTION_KEYS;
+const originalApiKeyEncryption = process.env.API_KEY_ENCRYPTION;
+const originalApiKeyEncryptionActiveVersion = process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
+
+const restoreEnv = (key: string, value: string | undefined) => {
+  if (value === undefined || value === "undefined") delete process.env[key];
+  else process.env[key] = value;
+};
 
 const legacyEncryptCbc = (plaintext: string, keyMaterial: string) => {
   const key = crypto.createHash("sha256").update(keyMaterial).digest();
@@ -14,6 +23,13 @@ describe("crypto utils", () => {
     vi.resetModules();
     delete process.env.API_KEY_ENCRYPTION_KEYS;
     delete process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
+    delete process.env.API_KEY_ENCRYPTION;
+  });
+
+  afterEach(() => {
+    restoreEnv("API_KEY_ENCRYPTION_KEYS", originalApiKeyEncryptionKeys);
+    restoreEnv("API_KEY_ENCRYPTION", originalApiKeyEncryption);
+    restoreEnv("API_KEY_ENCRYPTION_ACTIVE_VERSION", originalApiKeyEncryptionActiveVersion);
   });
 
   it("encrypts/decrypts with AES-GCM and versioned payload", async () => {
