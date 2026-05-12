@@ -1,0 +1,136 @@
+{
+  "generatedAt": "2026-05-12T06:56:29.207Z",
+  "environment": "local",
+  "dryRun": false,
+  "readiness": "ready",
+  "baseUrl": "http://localhost:3001",
+  "webBaseUrl": "http://localhost:3002",
+  "expectedSha": "",
+  "evidence": [
+    {
+      "key": "activationAudit",
+      "label": "activation evidence audit",
+      "state": "skipped",
+      "required": false,
+      "reason": "not required for local",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "activationPlan",
+      "label": "activation execution plan",
+      "state": "skipped",
+      "required": false,
+      "reason": "not required for local",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "rcExternalGateStatus",
+      "label": "RC external gates status",
+      "state": "skipped",
+      "required": false,
+      "reason": "not required for local",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "rcSignoffRecord",
+      "label": "RC sign-off record",
+      "state": "skipped",
+      "required": false,
+      "reason": "not required for local",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "rcChecklist",
+      "label": "RC checklist verification block",
+      "state": "skipped",
+      "required": false,
+      "reason": "not required for local",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "liveImportReadback",
+      "label": "LIVEIMPORT-03 runtime readback",
+      "state": "skipped",
+      "required": false,
+      "reason": "not required for local",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "backupRestoreDrill",
+      "label": "backup/restore drill evidence",
+      "state": "skipped",
+      "required": false,
+      "reason": "not required for local",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "rollbackProof",
+      "label": "rollback proof pack",
+      "state": "skipped",
+      "required": false,
+      "reason": "not required for local",
+      "path": null,
+      "date": null
+    }
+  ],
+  "blockers": [],
+  "steps": [
+    {
+      "label": "post-deploy smoke gate",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "ops:deploy:smoke",
+        "--",
+        "--base-url",
+        "http://localhost:3001",
+        "--web-base-url",
+        "http://localhost:3002"
+      ],
+      "startedAt": "2026-05-12T06:56:27.121Z",
+      "endedAt": "2026-05-12T06:56:27.895Z",
+      "durationMs": 774,
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "label": "runtime freshness gate",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "ops:deploy:runtime-freshness",
+        "--",
+        "--base-url",
+        "http://localhost:3001"
+      ],
+      "startedAt": "2026-05-12T06:56:27.895Z",
+      "endedAt": "2026-05-12T06:56:28.578Z",
+      "durationMs": 683,
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "label": "rollback guard gate",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "ops:deploy:rollback-guard",
+        "--",
+        "--base-url",
+        "http://localhost:3001"
+      ],
+      "startedAt": "2026-05-12T06:56:28.578Z",
+      "endedAt": "2026-05-12T06:56:29.207Z",
+      "durationMs": 629,
+      "status": "passed",
+      "exitCode": 0
+    }
+  ]
+}

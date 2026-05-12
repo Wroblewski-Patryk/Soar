@@ -1,27 +1,235 @@
 # Known Issues
 
-Last updated: 2026-05-11
+Last updated: 2026-05-12
 
 ## Active Issues
 
+- 2026-05-12 update: `V1-OPERATIONS-PROD-READONLY-PROOF-2026-05-12`
+  confirms production public health but not V1 release readiness. Public
+  production no-worker smoke and `/health`/`/ready` pass, and VPS Docker
+  containers are running. Stage public smoke is `503`. Full production release
+  gate remains `not_ready` because protected `/workers/health` returns `401`
+  without approved app/operator auth, `LIVEIMPORT-03` production readback is
+  missing, Gate 4 is not approved, and production activation/sign-off/
+  backup-restore/rollback artifacts are stale for 2026-05-12.
+
+- 2026-05-12 update: `V1-OPERATIONS-LOCAL-PROOF-2026-05-12` partially closes
+  local Operations uncertainty but keeps release approval blocked. Local
+  rollback proof, short SLO collection/window report, local RC gate pipeline,
+  and local release gate passed their non-destructive checks, but Gate 4
+  sign-off remains blocked and LIVEIMPORT-03 local readback failed because no
+  LIVE bots/running import sessions were available. Remaining issue is approved
+  production/stage Operations evidence and sign-off.
+
+- 2026-05-12 update: `V1-SUBSCRIPTIONS-ADMIN-LOCAL-PROOF-2026-05-12`
+  closes the local Subscriptions/Admin proof gap. API/Web tests prove admin-
+  only access, subscription catalog/entitlement validation, user list metadata,
+  role/plan actions, self-demotion blocking, and admin UI loaded/error/action
+  states. Local protected admin route audit passes, and Edge/CDP screenshots
+  render `/admin/subscriptions` and `/admin/users` with no framework overlay.
+  Remaining issue is production admin clickthrough with approved non-
+  destructive data.
+
+- 2026-05-12 update: `V1-UX-A11Y-MOBILE-LOCAL-PROOF-2026-05-11` closes the
+  local UX/A11y/Mobile proof gap. Focused Web UX/a11y/state tests pass, local
+  authenticated route audit passes, Edge/CDP screenshots cover representative
+  desktop/mobile dashboard states, mobile menu interaction works, no framework
+  overlay appears, and CDP console/exception proof has zero events. Remaining
+  issue is production browser clickthrough and external accessibility review.
+
+- 2026-05-11 update: `V1-SECURITY-PRIVACY-LOCAL-PROOF-2026-05-11` closes the
+  local Security/Privacy proof gap. API/Web tests prove fail-closed auth,
+  ownership isolation, trusted-origin and ops-network boundaries, no-store and
+  security headers, critical secret readiness, crypto/keyring behavior, API
+  error redaction, rate-limit degradation, API-key secrecy/probes, Profile
+  security actions, stage abuse throttling, and Web auth/profile guard states.
+  Remaining issue is production-safe protected security proof and external/
+  independent security review.
+
+- 2026-05-11 update: `V1-WORKERS-LOCAL-PROOF-2026-05-11` closes the local
+  Workers proof gap. API Workers/stream/runtime tests prove worker topology
+  ownership, split/inline readiness, protected worker health, runtime
+  freshness pass/fail/skip behavior, protected `/ready` diagnostics, market-
+  stream fanout/source/subscription behavior, queue tuning, backtest job
+  persistence, execution/runtime orchestration, and PAPER runtime-flow
+  telemetry. Remaining issue is production-safe protected worker/process proof
+  for deployed health/readiness/freshness, queue/process lifecycle, and
+  observability.
+
+- 2026-05-11 update: `V1-EXCHANGE-ADAPTER-LOCAL-PROOF-2026-05-11` closes the
+  local Exchange Adapter proof gap and fixes Gate.io public catalog symbol
+  normalization from generic adapter ids like `BTC_USDT` to canonical Soar
+  symbols like `BTCUSDT`. API/Web tests prove probes, capability contracts,
+  public/authenticated reads, connector factory/registry, live adapter retry/
+  fill/fee boundaries, symbol rules, metadata, snapshot normalization, runtime
+  exchange guards, and UI capability/profile API-key integration. Remaining
+  issue is production-safe exchange-boundary proof; real live mutation remains
+  blocked-risk without an explicit safe plan.
+
+- 2026-05-11 update: `V1-LOGS-AUDIT-LOCAL-PROOF-2026-05-11` closes the local
+  Logs/Audit Trail proof gap. API/Web tests prove unauthenticated rejection,
+  owner-only log reads, source/actor/severity filters, pagination defaults/
+  bounds, action-produced audit event visibility, `/dashboard/logs` route
+  shell, empty/loaded states, severity filter request payload, metadata trace
+  rendering, and route-reachable locale copy. Remaining issue is production-
+  safe Logs/Audit Trail browser clickthrough.
+
+- 2026-05-11 update: `V1-REPORTS-LOCAL-PROOF-2026-05-11` closes the local
+  Reports proof gap. API/Web tests prove weighted BACKTEST report aggregation,
+  PAPER trade aggregation, `/dashboard/reports` route shell, empty state,
+  aggregated cards/tables, and route-reachable locale copy. Remaining issue is
+  production-safe Reports browser clickthrough; export/download is outside the
+  current implemented Reports surface.
+
+- 2026-05-11 update: `V1-BACKTESTS-LOCAL-PROOF-2026-05-11` closes the local
+  Backtests proof gap. API/Web tests prove run create/list/get/delete,
+  explicit range validation, pending report lifecycle, worker/job persistence,
+  replay/fill/timeline behavior, strategy-to-backtest-to-paper/live parity,
+  venue consistency, market-universe symbol formula, fail-closed empty
+  symbols, failed parity diagnostics, route shells, create form, run details,
+  table actions, core-data hook, view-models, pair metrics, trade segments,
+  and timeline overlays. Remaining issue is production-safe Backtests browser
+  clickthrough on approved representative RSI strategy and market data.
+
+- 2026-05-11 update: `V1-ORDERS-LOCAL-PROOF-2026-05-11` closes the local
+  Orders proof gap. API/Web tests prove list/read/open/cancel/close,
+  active-only filtering, exchange-backed cancel boundary, exchange event
+  reconciliation, fills, fees, fee backfill, live fill resolution, quantity
+  rules, position scope, source labels, and open-order cancel actions.
+  Remaining issue is production-safe Orders browser clickthrough; live mutation
+  remains blocked-risk without an explicit safe plan.
+
+- 2026-05-11 update: `V1-POSITIONS-LOCAL-PROOF-2026-05-11` closes the local
+  Positions proof gap. API/Web tests prove list/read ownership, symbol filter
+  normalization, stale local exclusion, live status scoping, exchange snapshot
+  selection/fail-closed behavior, authenticated snapshots, takeover
+  classification/rebind, orphan repair, imported lifecycle history,
+  reconciliation diagnostics, manual TP/SL safety, management-mode guards,
+  runtime visibility, close flows, external DCA separation, runtime PnL
+  derivations, and ignored/closed/pending close UI states. Remaining issue is
+  production-safe Positions browser clickthrough; LIVE mutation remains
+  blocked-risk without an explicit safe plan.
+
+- 2026-05-11 update: `V1-MANUAL-ORDERS-LOCAL-PROOF-2026-05-11` closes the
+  local Manual Orders proof gap. API/Web tests prove manual context, PAPER
+  market placement, validation, lifecycle readback, cancel/close, selected-bot
+  scope, quantity rules, ownership isolation, LIVE risk guards, exchange-
+  backed fail-closed cancel behavior, open-order source/cancel actions, and
+  Dashboard Home submitted/waiting/ready/imported/position-opened/blocked
+  states. Remaining issue is production-safe Manual Orders browser
+  clickthrough; LIVE order actions remain blocked-risk without an explicit safe
+  plan.
+
+- 2026-05-11 update: `V1-STRATEGIES-LOCAL-PROOF-2026-05-11` closes the local
+  Strategies proof gap. API/Web tests prove strategy CRUD, export/import,
+  clone payloads, config validation, indicator catalog behavior, ownership
+  isolation, active-bot update/delete blocking, inactive-bot update allowance,
+  form mapping, numeric normalization, close validation, and taxonomy.
+  Remaining issue is production-safe Strategies browser clickthrough plus
+  representative runtime/backtest compatibility proof.
+
+- 2026-05-11 update: `V1-MARKETS-LOCAL-PROOF-2026-05-11` closes the local
+  Markets proof gap. API/Web tests prove market universe CRUD, symbol
+  composition, catalog import, placeholder capability guards, active-bot
+  update/delete blocking, inactive-bot edit/delete, stale legacy link handling,
+  ownership isolation, preview composition, empty preview submit, placeholder
+  submit, table clone payload, and route shells. Remaining issue is
+  production-safe Markets browser clickthrough.
+
+- 2026-05-11 update: `V1-WALLETS-LOCAL-PROOF-2026-05-11` closes the local
+  Wallets proof gap. API/Web tests prove wallet CRUD, ownership isolation,
+  active-bot edit/delete guards, LIVE key/allocation validation, balance
+  preview allocation and fail-closed paths, paper reset guards, cashflow/open-
+  PnL scoping, route wrappers, list/create/edit/preview states, reset
+  success/error, partial ledger, and unavailable ledger fail-closed UI.
+  Remaining issue is production-safe Wallets browser clickthrough.
+
+- 2026-05-11 update: `V1-PROFILE-LOCAL-PROOF-2026-05-11` closes the local
+  Profile basic/security proof gap. API/Web tests prove profile save
+  success/error, timezone persistence/rejection, unauthenticated security
+  rejection, password mismatch fail-closed behavior, valid-current-password
+  change, weak/invalid password rejection, old-login failure/new-login success,
+  and account deletion password confirmation. Remaining issue is production-
+  safe Profile browser clickthrough.
+
+- 2026-05-11 update: `V1-PROFILE-API-KEYS-LOCAL-PROOF-2026-05-11` closes the
+  local Profile API Keys proof gap. API/Web tests prove encrypted storage,
+  masked responses, owner-only lifecycle actions, Binance/Gate.io probes,
+  audit metadata redaction, placeholder probe fail-closed behavior, and UI
+  connection-test/delete-risk guards. Remaining issue is production-safe
+  browser clickthrough and audit-log visibility.
+
+- 2026-05-11 update: `V1-AUTH-SESSION-LIFECYCLE-PROOF-2026-05-11` closes the
+  local Auth session lifecycle proof gap. API and focused Web tests prove
+  login cookie TTLs, logout fail-closed behavior, deleted-user and expired-JWT
+  session expiry, duplicate-token precedence, AuthProvider logout/expired
+  warning behavior, API interceptor expired-session redirect, middleware cookie
+  gate, and login fail-closed handling. Remaining Auth issue is
+  production-safe browser clickthrough.
+
+- 2026-05-11 update: `V1-BOT-RUNTIME-COMPLETED-SESSION-FIXTURE-2026-05-11`
+  closes the local stopped/completed-session proof gap for Bot Runtime. The
+  approved PAPER snapshot import now creates one deterministic completed
+  session, and API/browser proof shows the completed filter rendering
+  completed PAPER state with zero open positions. Worker telemetry is now
+  covered by `V1-BOT-RUNTIME-WORKER-TELEMETRY-PROOF-2026-05-11`; remaining
+  Bot Runtime issue is production-safe/non-local clickthrough.
+
+- 2026-05-11 update: `SOAR-BOT-RUNTIME-001` now has local authenticated
+  browser evidence for the canonical Bot Runtime route with a representative
+  PAPER `RUNNING` session. API sessions, aggregate, positions, symbol stats,
+  and trades returned `200`; the UI rendered bot `asd`, PAPER mode, running
+  status, three symbols, wallet KPI text, responsive desktop/tablet/mobile
+  states, safe view switch, and legacy runtime redirects to preview. The row
+  remains `PARTIAL` because production-safe/non-local clickthrough is still
+  open.
+
+- 2026-05-11 update: `V1-BOT-RUNTIME-WORKER-TELEMETRY-PROOF-2026-05-11`
+  closes the local worker telemetry/live-loop proof gap. Focused
+  `runtime-flow.e2e.test.ts` evidence proves a real `RuntimeSignalLoop` PAPER
+  lifecycle writes runtime sessions, events, symbol stats, positions, and
+  aggregate data read back through authenticated Bot Runtime APIs.
+
+- 2026-05-11 update: `V1-DASHBOARD-HOME-RUNTIME-SESSION-FIXTURE-2026-05-11`
+  fixed the local active Dashboard proof gap found earlier in the day. The
+  approved PAPER snapshot import now creates the missing wallet/session/stat/
+  event data needed by the existing runtime API contract, and local browser
+  proof renders 3 open PAPER positions. Remaining Dashboard Home issue is
+  production-safe clickthrough/non-local proof, plus restricted-network
+  resource console noise classification during local browser runs.
+
+- 2026-05-11 update: `SOAR-DASHBOARD-001` now has local authenticated browser
+  evidence for Dashboard Home empty/onboarding state on desktop and mobile,
+  with console health clean after the shared `ThemeSwitcher` hydration-noise
+  fix. The row remains `PARTIAL` because representative active runtime data
+  was not available for selected-bot wallet KPI/table tab browser proof, and
+  tablet/touch plus production-safe clickthrough remain open.
+
+- 2026-05-11 update: `SOAR-BOTS-001` is no longer `BROKEN` for the local
+  active PAPER delete controller path. `BOT-DELETE-ACTIVE-PAPER-2026-05-11`
+  removed the misleading LIVE confirmation from active PAPER deletion while
+  preserving LIVE/live-opt-in confirmation. Local evidence passed, but the
+  row remains `PARTIAL` until production-safe clickthrough or operator
+  confirmation proves the reported UI failure is gone.
+
 - 2026-05-11 update: current V1 percentages are defined by
   `docs/operations/v1-completion-scorecard-2026-05-11.md`, not by intuition.
-  The scorecard reports implementation estimate `48.7%`, evidence coverage
-  `7.8%`, and release readiness `4.9%`. This explains why a lot of code can
+  The scorecard reports implementation estimate `70.7%`, evidence coverage
+  `38.9%`, and release readiness `26.9%`. This explains why a lot of code can
   exist while V1 still feels unreliable: most module actions still lack
   accepted proof, and all 13 P0 rows are not release-ready.
 
 - 2026-05-10 update: the current consolidated V1 state entrypoint is
   `docs/operations/v1-master-state-ledger-2026-05-10.md`. Use it before
   future broad audit or repair work. It keeps V1 at `NO-GO` and classifies the
-  state into module buckets: `toProve: 16`, `toProveAndPossiblyFix: 2`,
-  `blocked: 2`, and `doneLocalNeedsProdProof: 1`. It also carries all 61
+  state into module buckets: `toProve: 7`, `blocked: 2`, and
+  `doneLocalNeedsProdProof: 12`. It also carries all 50
   static findings with buckets for missing proof, capability-gate review,
   concrete Web/API/test/doc gaps, queue cleanup, and planning classification.
 
 - 2026-05-10 update: static V1 inconsistency scan is available at
-  `docs/operations/v1-static-issue-scan-2026-05-10.md`. The scan reports 61
-  findings (`P0: 12`, `P1: 16`, `P2: 33`). Most P0/P1 items are proof gaps
+  `docs/operations/v1-static-issue-scan-2026-05-11.md`. The scan reports 54
+  findings (`P0: 5`, `P1: 12`, `P2: 33`). Most P0/P1 items are proof gaps
   from the V1 action matrix, not confirmed code bugs. Concrete surface/test/doc
   gaps that need triage: empty Web `orders`, no `/dashboard/orders` or
   `/dashboard/positions` page, no focused Web `positions` tests, no focused API
@@ -29,14 +237,21 @@ Last updated: 2026-05-11
   placeholders, and unchecked queue markers that need blocked/executable/
   historical classification.
 
+- 2026-05-11 update: Dashboard Home now has additional rendered local proof
+  for loading state, retryable error state, selected-bot switching across two
+  active PAPER bots, selected wallet KPI recalculation, open-orders tab data,
+  trade-history tab data, and suppression of stale previous-bot rows.
+  Remaining Dashboard Home risk is browser-level responsive/keyboard proof
+  plus production-safe clickthrough.
+  Evidence:
+  `docs/planning/v1-dashboard-home-selected-bot-rendered-audit-task-2026-05-11.md`.
+
 - 2026-05-10 update: Dashboard runtime table presenter/action audit is locally
   closed for the high-risk table slice. Focused tests cover prospective TTP
   hiding at zero/negative PnL, backend/runtime TTP precedence, TSL-only display,
   negative PnL styling, non-actionable position actions, local open-order
   cancel, terminal order read-only behavior, and exchange-backed cancel blocked
-  rows. Remaining Dashboard Home risk is the broader rendered component/browser
-  audit: selected-bot switching, wallet KPIs, loading/empty/error, responsive
-  behavior, table tabs, and production-safe clickthrough.
+  rows.
 
 - 2026-05-10 update: the rendered Dashboard Home component now has focused
   local proof that a negative-PnL position does not display prospective TTP,

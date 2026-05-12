@@ -25,7 +25,7 @@ const v1SurfaceMap = {
     workerKeywords: [],
     scriptKeywords: ['go-live', 'ui'],
     auditPriority: 3,
-    nextProof: 'Browser login/logout/session-expiry proof plus API auth lifecycle assertions.',
+    nextProof: 'Production-safe browser Auth clickthrough for login, logout, and expired-session redirect.',
     risk: 'P0 auth/session correctness',
   },
   Profile: {
@@ -35,7 +35,7 @@ const v1SurfaceMap = {
     workerKeywords: [],
     scriptKeywords: ['ui'],
     auditPriority: 6,
-    nextProof: 'Profile form success/error submit proof with API readback.',
+    nextProof: 'Production-safe Profile browser clickthrough for basic profile save and password/security update.',
     risk: 'P1 user settings and validation',
   },
   'Profile API Keys': {
@@ -45,7 +45,7 @@ const v1SurfaceMap = {
     workerKeywords: [],
     scriptKeywords: ['exchange', 'ui'],
     auditPriority: 4,
-    nextProof: 'Create/test/delete key proof for Binance and Gate.io through adapter-owned probes and audit logs.',
+    nextProof: 'Production-safe Profile API Keys clickthrough for create, test, delete, and audit log visibility.',
     risk: 'P0 secrets/exchange access',
   },
   'Subscriptions/Admin': {
@@ -55,7 +55,7 @@ const v1SurfaceMap = {
     workerKeywords: [],
     scriptKeywords: ['ui'],
     auditPriority: 15,
-    nextProof: 'Protected admin clickthrough with non-destructive data and entitlement checks.',
+    nextProof: 'Production admin clickthrough with approved non-destructive data and entitlement checks.',
     risk: 'P0 role/entitlement access',
   },
   Wallets: {
@@ -65,7 +65,7 @@ const v1SurfaceMap = {
     workerKeywords: [],
     scriptKeywords: ['go-live', 'ui'],
     auditPriority: 7,
-    nextProof: 'Wallet create/edit/delete/reset/preview proof with DB or API readback and active-bot guards.',
+    nextProof: 'Production-safe Wallets clickthrough for create/edit/delete/reset/preview on approved fixture data.',
     risk: 'P1 capital source of truth',
   },
   Markets: {
@@ -75,7 +75,7 @@ const v1SurfaceMap = {
     workerKeywords: ['marketData', 'marketStream'],
     scriptKeywords: ['exchange', 'ui'],
     auditPriority: 8,
-    nextProof: 'Market universe CRUD/import/capability proof, including active-bot guard behavior.',
+    nextProof: 'Production-safe Markets clickthrough for universe create/edit/delete, catalog import, and active-bot guard messaging.',
     risk: 'P1 runtime symbol scope',
   },
   Strategies: {
@@ -85,7 +85,7 @@ const v1SurfaceMap = {
     workerKeywords: ['backtest', 'execution'],
     scriptKeywords: ['go-live', 'ui'],
     auditPriority: 9,
-    nextProof: 'Strategy create/edit/delete/clone/config proof preserving RSI 20/80 and proving runtime/backtest compatibility.',
+    nextProof: 'Production-safe Strategies clickthrough for create/edit/delete/clone/config validation, preserving RSI 20/80, plus representative runtime/backtest compatibility proof.',
     risk: 'P1 trading decision config',
   },
   Bots: {
@@ -106,7 +106,7 @@ const v1SurfaceMap = {
     workerKeywords: ['execution', 'marketStream'],
     scriptKeywords: ['liveimport', 'live', 'go-live'],
     auditPriority: 2,
-    nextProof: 'Representative PAPER running/stopped runtime session proof with worker telemetry and runtime readback.',
+    nextProof: 'Production-safe Bot Runtime clickthrough on approved representative data.',
     risk: 'P0 runtime truth',
   },
   'Dashboard Home': {
@@ -128,7 +128,7 @@ const v1SurfaceMap = {
     workerKeywords: ['execution'],
     scriptKeywords: ['go-live', 'ui'],
     auditPriority: 10,
-    nextProof: 'PAPER manual order place/cancel/close proof with validation and DB readback; LIVE remains blocked-risk.',
+    nextProof: 'Production-safe Manual Orders clickthrough for PAPER place/cancel/close with DB readback; LIVE remains blocked-risk without an explicit safe plan.',
     risk: 'P0 money-impacting order flow',
   },
   Positions: {
@@ -139,7 +139,7 @@ const v1SurfaceMap = {
     workerKeywords: ['execution'],
     scriptKeywords: ['liveimport', 'go-live', 'ui'],
     auditPriority: 11,
-    nextProof: 'List/close/update/takeover/import-status proof with exchange snapshot boundary and fail-closed live mutation plan.',
+    nextProof: 'Production-safe Positions clickthrough for list/close/update/takeover/import-status with exchange snapshot boundary; live mutation remains blocked-risk without explicit safe plan.',
     risk: 'P0 position ownership/runtime truth',
   },
   Orders: {
@@ -150,7 +150,7 @@ const v1SurfaceMap = {
     workerKeywords: ['execution'],
     scriptKeywords: ['go-live', 'ui'],
     auditPriority: 12,
-    nextProof: 'Order list/cancel/fill/fee proof through API and adapter boundary, separating PAPER from exchange-backed risk.',
+    nextProof: 'Production-safe Orders clickthrough for list/cancel/fill/fee readback through API and adapter boundary; live mutation remains blocked-risk without explicit safe plan.',
     risk: 'P0 order lifecycle',
   },
   Backtests: {
@@ -160,7 +160,7 @@ const v1SurfaceMap = {
     workerKeywords: ['backtest'],
     scriptKeywords: ['go-live', 'ui'],
     auditPriority: 13,
-    nextProof: 'Create/cancel/delete/details/report proof using representative RSI strategy and market data.',
+    nextProof: 'Production-safe Backtests browser clickthrough for create/delete/details/report/timeline on approved representative RSI strategy and market data.',
     risk: 'P1 simulation correctness',
   },
   Reports: {
@@ -170,7 +170,7 @@ const v1SurfaceMap = {
     workerKeywords: [],
     scriptKeywords: ['ui'],
     auditPriority: 14,
-    nextProof: 'Filters/summaries/export proof with API data readback.',
+    nextProof: 'Production-safe Reports browser clickthrough for summaries, cross-mode performance, and per-run report readback on approved data.',
     risk: 'P2 operator reporting',
   },
   'Logs/Audit Trail': {
@@ -180,7 +180,7 @@ const v1SurfaceMap = {
     workerKeywords: [],
     scriptKeywords: ['ui'],
     auditPriority: 16,
-    nextProof: 'Filters/pagination/action-log visibility proof using events produced by the audit.',
+    nextProof: 'Production-safe Logs/Audit Trail browser clickthrough for filters, pagination, action-produced events, and metadata trace inspection.',
     risk: 'P1 auditability',
   },
   'Exchange Adapter': {
@@ -191,7 +191,7 @@ const v1SurfaceMap = {
     workerKeywords: ['marketStream', 'execution'],
     scriptKeywords: ['exchange', 'liveimport', 'live'],
     auditPriority: 17,
-    nextProof: 'Operation-by-operation Binance/Gate.io support matrix with pass/fail-closed proofs.',
+    nextProof: 'Production-safe exchange-boundary proof for approved real credentials or read-only adapter operations; live mutation remains blocked-risk without explicit safe plan.',
     risk: 'P0 external exchange boundary',
   },
   Workers: {
@@ -202,7 +202,7 @@ const v1SurfaceMap = {
     workerKeywords: ['backtest', 'execution', 'marketData', 'marketStream'],
     scriptKeywords: ['deploy', 'go-live', 'live'],
     auditPriority: 18,
-    nextProof: 'Runtime loop, stream, backtest worker, and scheduler lifecycle proof beyond public /ready.',
+    nextProof: 'Production-safe protected worker/process proof for health, readiness, runtime freshness, queue/process lifecycle, and observability on the deployed target.',
     risk: 'P0 async runtime reliability',
   },
   Operations: {
@@ -222,7 +222,7 @@ const v1SurfaceMap = {
     workerKeywords: [],
     scriptKeywords: ['go-live', 'ui'],
     auditPriority: 20,
-    nextProof: 'Ownership isolation, rate-limit, secret redaction, fail-closed, and abuse-case proof.',
+    nextProof: 'Production-safe protected security proof for auth, ownership isolation, rate-limit, secret redaction, fail-closed errors, and abuse cases on an approved deployed target; external security review remains open.',
     risk: 'P0 auth/secrets/data isolation',
   },
   'UX/A11y/Mobile': {
@@ -232,7 +232,7 @@ const v1SurfaceMap = {
     workerKeywords: [],
     scriptKeywords: ['ui', 'i18n'],
     auditPriority: 21,
-    nextProof: 'Per-screen loading/empty/error/success, keyboard/touch, responsive, and accessibility evidence.',
+    nextProof: 'Production browser clickthrough and external accessibility review for per-screen loading/empty/error/success, keyboard/touch, responsive, and accessibility evidence.',
     risk: 'P1 product usability',
   },
 };

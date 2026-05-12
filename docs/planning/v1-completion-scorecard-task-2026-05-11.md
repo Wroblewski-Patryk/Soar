@@ -75,9 +75,9 @@ Generated scorecard:
 Current scorecard result:
 
 - V1 status: `NO-GO`
-- Implementation estimate: `48.7%`
-- Evidence coverage: `7.8%`
-- Release readiness: `4.9%`
+- Implementation estimate: `50.2%`
+- Evidence coverage: `9.5%`
+- Release readiness: `6.3%`
 - P0 modules not release-ready: `13/13`
 - Blocked modules: `Subscriptions/Admin`, `Operations`
 - Concrete non-proof gaps: `9`

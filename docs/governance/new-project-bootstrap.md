@@ -34,7 +34,7 @@ Use this checklist when initializing this repository.
 
 ## 6) First Execution Cycle
 - Pick the first unchecked task in `docs/planning/mvp-next-commits.md` NOW.
-- Implement one tiny task.
+- Implement one mission checkpoint or tiny task tied to the selected objective.
 - Run relevant validation.
 - Update task/plan/state files in the same cycle.
 

@@ -1,0 +1,114 @@
+{
+  "generatedAt": "2026-05-12T15:00:46.320Z",
+  "environment": "prod",
+  "dryRun": false,
+  "readiness": "not_ready",
+  "baseUrl": "https://api.soar.luckysparrow.ch",
+  "webBaseUrl": "https://soar.luckysparrow.ch",
+  "expectedSha": "",
+  "evidence": [
+    {
+      "key": "activationAudit",
+      "label": "activation evidence audit",
+      "state": "stale",
+      "required": true,
+      "reason": "expected 2026-05-12, found 2026-05-10",
+      "path": "docs\\operations\\v1-production-activation-evidence-audit-2026-05-10.md",
+      "date": "2026-05-10"
+    },
+    {
+      "key": "activationPlan",
+      "label": "activation execution plan",
+      "state": "stale",
+      "required": true,
+      "reason": "expected 2026-05-12, found 2026-05-10",
+      "path": "docs\\planning\\v1-production-activation-and-evidence-plan-2026-05-10.md",
+      "date": "2026-05-10"
+    },
+    {
+      "key": "rcExternalGateStatus",
+      "label": "RC external gates status",
+      "state": "failed",
+      "required": true,
+      "reason": "artifact is fresh but does not show all RC gates PASS",
+      "path": "docs\\operations\\v1-rc-external-gates-status.md",
+      "date": "2026-05-12"
+    },
+    {
+      "key": "rcSignoffRecord",
+      "label": "RC sign-off record",
+      "state": "stale",
+      "required": true,
+      "reason": "expected 2026-05-12, found 2026-05-10",
+      "path": "docs\\operations\\v1-rc-signoff-record.md",
+      "date": "2026-05-10"
+    },
+    {
+      "key": "rcChecklist",
+      "label": "RC checklist verification block",
+      "state": "failed",
+      "required": true,
+      "reason": "artifact is fresh but does not show all RC gates PASS",
+      "path": "docs\\operations\\v1-release-candidate-checklist.md",
+      "date": "2026-05-12"
+    },
+    {
+      "key": "liveImportReadback",
+      "label": "LIVEIMPORT-03 runtime readback",
+      "state": "missing",
+      "required": true,
+      "reason": "no matching artifact found",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "backupRestoreDrill",
+      "label": "backup/restore drill evidence",
+      "state": "stale",
+      "required": true,
+      "reason": "expected 2026-05-12, found 2026-05-10",
+      "path": "docs\\operations\\v1-restore-drill-prod-2026-05-10T03-39-56Z.md",
+      "date": "2026-05-10"
+    },
+    {
+      "key": "rollbackProof",
+      "label": "rollback proof pack",
+      "state": "stale",
+      "required": true,
+      "reason": "expected 2026-05-12, found 2026-05-10",
+      "path": "docs\\operations\\v1-rollback-proof-prod-2026-05-10T00-00-00-000Z.md",
+      "date": "2026-05-10"
+    }
+  ],
+  "blockers": [
+    "evidence:activationAudit:stale",
+    "evidence:activationPlan:stale",
+    "evidence:rcExternalGateStatus:failed",
+    "evidence:rcSignoffRecord:stale",
+    "evidence:rcChecklist:failed",
+    "evidence:liveImportReadback:missing",
+    "evidence:backupRestoreDrill:stale",
+    "evidence:rollbackProof:stale",
+    "step:post-deploy smoke gate"
+  ],
+  "steps": [
+    {
+      "label": "post-deploy smoke gate",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "ops:deploy:smoke",
+        "--",
+        "--base-url",
+        "https://api.soar.luckysparrow.ch",
+        "--web-base-url",
+        "https://soar.luckysparrow.ch"
+      ],
+      "startedAt": "2026-05-12T15:00:44.942Z",
+      "endedAt": "2026-05-12T15:00:46.320Z",
+      "durationMs": 1378,
+      "status": "failed",
+      "exitCode": 1
+    }
+  ]
+}

@@ -1,8 +1,284 @@
 # System Health
 
-Last updated: 2026-05-11
+Last updated: 2026-05-12
 
 ## Latest Health Snapshot
+
+- `V1-OPERATIONS-PROD-READONLY-PROOF-2026-05-12` PRODUCTION PUBLIC PASS /
+  RELEASE BLOCKED: production public no-worker deploy smoke passed, public
+  `build-info`, `/health`, and `/ready` returned `200`, and VPS Docker
+  read-only inventory showed Soar API, Web, four workers, Redis, and Postgres
+  running. Stage public smoke failed with `503` on API health, API ready, and
+  web `/`. The production release gate remains `not_ready` in
+  `docs/operations/v1-release-gate-prod-2026-05-12Tprod-readonly.md`: protected
+  `/workers/health` returns `401` without approved app/operator auth,
+  LIVEIMPORT-03 production readback is missing, RC Gate 4 is not approved, and
+  activation, sign-off, backup/restore, and rollback proof artifacts are stale
+  for 2026-05-12.
+
+- `V1-OPERATIONS-LOCAL-PROOF-2026-05-12` PARTIAL LOCAL PASS / RELEASE BLOCKED:
+  local rollback proof passed with `shouldRollback:false`, runtime freshness
+  `PASS`, and no alerts. A short local SLO collection and SLO window report
+  were generated. Local RC gate pipeline produced Gate 1/2/3 `PASS` and Gate 4
+  sign-off blocked. Local V1 release gate passed deploy smoke, runtime
+  freshness, and rollback guard. Local LIVEIMPORT-03 readback authenticated and
+  avoided token capture, but failed because there were no LIVE bots/running
+  import sessions (`botsChecked:0`). Operations remains blocked for V1 release
+  approval until production/stage target evidence, sign-off, backup/restore,
+  and liveimport readback are available.
+
+- `V1-SUBSCRIPTIONS-ADMIN-LOCAL-PROOF-2026-05-12` LOCAL PASS / PRODUCT AUDIT
+  OPEN: API Subscriptions/Admin tests passed (`3` files, `18` tests),
+  covering unauthenticated and non-admin rejection, admin subscription plan
+  catalog, plan price/entitlement update validation, invalid entitlement
+  rejection, admin users list with active subscription metadata, role/plan
+  updates, self-demotion blocking, and profile subscription readback. Web
+  Admin/Profile Subscription tests passed (`3` files, `7` tests), covering
+  loaded, error, role-toggle, and plan-assignment states. Local protected admin
+  route audit passed, and Edge/CDP screenshots rendered `/admin/subscriptions`
+  and `/admin/users` without framework overlay. Subscriptions/Admin is now
+  `PASS_LOCAL`; production admin clickthrough remains open.
+
+- `V1-UX-A11Y-MOBILE-LOCAL-PROOF-2026-05-11` LOCAL PASS / PRODUCT AUDIT OPEN:
+  authenticated local route audit passed; focused Web UX/a11y/state tests
+  passed (`25` files, `126` tests); Edge/CDP browser proof captured desktop
+  Dashboard, desktop Wallets, mobile Dashboard, and mobile menu screenshots;
+  mobile menu focus/click interaction worked; no framework overlay was
+  detected; CDP console/exception proof returned `0` events. UX/A11y/Mobile is
+  now `PASS_LOCAL`; production browser clickthrough and external accessibility
+  review remain open.
+
+- `V1-SECURITY-PRIVACY-LOCAL-PROOF-2026-05-11` LOCAL PASS / PRODUCT AUDIT OPEN:
+  API Security/Privacy tests passed (`23` files, `111` tests), covering
+  security/no-store headers, alerts/metrics admin access, `/ready` secret and
+  runtime diagnostics, API error redaction, crypto/keyring behavior, rate-limit
+  degradation, ops-network/trusted-origin/auth middleware, critical secret
+  readiness, Auth lifecycle/JWT/cookie/error contracts, ownership isolation,
+  Profile API-key secrecy/probes, Profile security actions, stage abuse
+  throttling, and authenticated snapshots. Web Auth/Profile tests passed
+  (`13` files, `48` tests). Security/Privacy is now `PASS_LOCAL`;
+  production-safe protected security proof and external review remain open.
+
+- `V1-WORKERS-LOCAL-PROOF-2026-05-11` LOCAL PASS / PRODUCT AUDIT OPEN:
+  API Workers/stream/runtime tests passed (`18` files, `88` tests), covering
+  worker ownership/topology, market-stream source config, subscriptions,
+  fanout retry, market-stream route contracts/e2e, Exchange polling source/
+  fanout, Binance stream parsing, protected worker health/readiness, runtime
+  freshness pass/fail/skip behavior, protected `/ready` diagnostics, PAPER
+  runtime-flow worker telemetry, execution orchestrator behavior/import
+  cleanup, execution adapter parity, backtest run job persistence, and queue
+  tuning. Workers are now `PASS_LOCAL`; production-safe protected worker/
+  process proof remains open.
+
+- `V1-EXCHANGE-ADAPTER-LOCAL-PROOF-2026-05-11` LOCAL PASS / PRODUCT AUDIT OPEN:
+  fixed Gate.io public catalog symbol normalization so generic adapter ids
+  like `BTC_USDT` become canonical Soar symbols like `BTCUSDT`. API Exchange
+  tests passed (`19` files, `93` tests), covering API-key probes, runtime
+  exchange order guard, Binance public REST/user data stream, CCXT futures
+  connector behavior, adapter boundary fail-closed support, adapter registry,
+  authenticated read service/contracts, connector factory, execution
+  capability contract, market catalog, metadata contract, public read/market
+  data, symbol rules, live order adapter, live fee reconciliation, and
+  position exchange snapshot normalization. Web Exchanges/Profile API-key
+  tests passed (`5` files, `17` tests), covering capability gating, route
+  redirect, profile API-key integration, connection tests, stored-key tests,
+  and delete risk confirmation. Exchange Adapter is now `PASS_LOCAL`;
+  production-safe exchange-boundary proof remains open and real live mutation
+  remains blocked-risk without an explicit safe plan.
+
+- `V1-LOGS-AUDIT-LOCAL-PROOF-2026-05-11` LOCAL PASS / PRODUCT AUDIT OPEN:
+  API Logs tests passed (`2` files, `5` tests), covering unauthenticated
+  rejection, owner-only reads, source/actor/severity filters, bot action-
+  produced audit event visibility, and pagination defaults/bounds. Web Logs
+  tests passed (`3` files, `4` tests), covering `/dashboard/logs` route shell,
+  empty/loaded states, severity filter request payload, metadata trace
+  rendering, and route-reachable locale copy. Logs/Audit Trail is now
+  `PASS_LOCAL`; production-safe browser clickthrough remains open.
+
+- `V1-REPORTS-LOCAL-PROOF-2026-05-11` LOCAL PASS / PRODUCT AUDIT OPEN:
+  API Reports service tests passed (`1` file, `2` tests), covering weighted
+  BACKTEST report aggregation and PAPER trade aggregation. Web Reports tests
+  passed (`3` files, `5` tests), covering `/dashboard/reports` route shell,
+  empty state, aggregated cards/tables, and route-reachable locale copy.
+  Reports is now `PASS_LOCAL`; production-safe browser clickthrough remains
+  open and export/download is outside the current implemented Reports surface.
+
+- `V1-BACKTESTS-LOCAL-PROOF-2026-05-11` LOCAL PASS / PRODUCT AUDIT OPEN:
+  API Backtests tests passed (`12` files, `110` tests), covering auth/
+  ownership, create/list/get/delete, explicit range validation, enriched list
+  fields, pending report contract, strategy-to-backtest-to-paper/live critical
+  flow, paper/live parity with reconciliation, venue consistency, market-
+  universe symbol formula, empty-symbol fail-closed behavior, 3-symbol paper
+  alignment, failed parity diagnostics, run queue/job persistence, replay
+  core, runtime kernel parity, contract remediation, data gateway, fill model,
+  range service, and indicator timeline series. Web Backtests tests passed
+  (`13` files, `32` tests), covering route shells, create form, list/details
+  views, runs table actions, core-data hook, view-models, trade segments, pair
+  metrics, and timeline overlays. Backtests is now `PASS_LOCAL`; production-
+  safe browser clickthrough remains open.
+
+- `V1-ORDERS-LOCAL-PROOF-2026-05-11` LOCAL PASS / PRODUCT AUDIT OPEN:
+  API Orders tests passed (`10` files, `121` tests), covering active filtering,
+  PAPER/LIVE open contracts, missing price truth rejection, add/reverse
+  conflicts, canonical bot context, LIVE pretrade/risk guards, exchange
+  ids/status/fills/fees, execution errors, manual context rules, close
+  attribution, exchange-backed fail-closed cancel/close behavior, list/get
+  ownership, exchange event open/close/DCA/account-update lifecycle, partial/
+  underfilled/capped fill progress, fee pending/backfill, live fill resolution,
+  quantity rules, position scope, and live cancel boundary. Web Orders tests
+  passed (`2` files, `3` tests), covering source labels, active open-order
+  cancel action, and terminal order read-only behavior. Orders is now
+  `PASS_LOCAL`; production-safe clickthrough remains open and live mutation
+  remains blocked-risk without explicit safe plan.
+
+- `V1-POSITIONS-LOCAL-PROOF-2026-05-11` LOCAL PASS / PRODUCT AUDIT OPEN:
+  API Positions tests passed (`12` files, `90` tests), covering list/read
+  ownership, symbol filter normalization, stale local exclusion, live status
+  scoping, exchange snapshot selection/fail-closed behavior, authenticated
+  snapshots, takeover classification/rebind, orphan repair, imported lifecycle
+  history, reconciliation diagnostics, manual TP/SL safety, management-mode
+  guards, runtime visibility, close flows, external DCA separation, and
+  carryover open orders. Web Positions tests passed (`3` files, `10` tests),
+  covering runtime PnL derivations/fallbacks and ignored/closed/pending close
+  UI states. Positions is now `PASS_LOCAL`; production-safe clickthrough
+  remains open and LIVE mutation remains blocked-risk without explicit safe
+  plan.
+
+- `V1-MANUAL-ORDERS-LOCAL-PROOF-2026-05-11` LOCAL PASS / PRODUCT AUDIT OPEN:
+  API Manual Orders tests passed (`7` files, `75` tests), covering manual
+  context, PAPER market truth, open/cancel/close endpoints, order/position
+  ownership, selected-bot write/read scope, quantity rules, position scope,
+  LIVE risk guards, exchange-backed fail-closed cancel behavior, live fill
+  resolution, and live cancel boundary. Web Manual Orders tests passed (`6`
+  files, `20` tests), covering Dashboard Home submit, validation,
+  context/venue/scope semantics, open-order source labels, open-order cancel
+  actions, and submitted/waiting/ready/imported/position-opened/blocked action
+  states. Manual Orders is now `PASS_LOCAL`; production-safe clickthrough
+  remains open and LIVE order actions remain blocked-risk without explicit safe
+  plan.
+
+- `V1-STRATEGIES-LOCAL-PROOF-2026-05-11` LOCAL PASS / PRODUCT AUDIT OPEN:
+  API Strategies tests passed (`3` files, `17` tests), covering CRUD,
+  export/import, advanced TSL validation, invalid import rejection, ownership
+  isolation, active-bot update/delete blocking, inactive bot update allowance,
+  DCA reachability validation, and indicator catalog behavior. Web Strategies
+  tests passed (`14` files, `46` tests), covering clone payloads, route shells,
+  form validation, tab flow, presets, indicators, form mapping, numeric
+  normalization, close validation, presentation, and taxonomy. Strategies is
+  now `PASS_LOCAL`; production-safe browser clickthrough and representative
+  runtime/backtest compatibility proof remain open.
+
+- `V1-PROFILE-API-KEYS-LOCAL-PROOF-2026-05-11` LOCAL PASS / PRODUCT AUDIT
+  OPEN: API key e2e and exchange probe service tests passed (`2` files,
+  `25` tests), covering encrypted-only storage, masked responses, owner-only
+  create/update/delete/rotate/revoke/test behavior, Binance and Gate.io
+  provided/stored probes, no persistence of provided test credentials, audit
+  metadata without raw secrets, placeholder probe fail-closed behavior, and
+  bad-key/futures-missing rejection. Web API key form/list tests passed
+  (`2` files, `13` tests), covering connection-test-before-save, stored-key
+  test action, probe support status, placeholder exchange save behavior, and
+  delete risk confirmation. Profile API Keys is now `PASS_LOCAL`; production-
+  safe clickthrough and audit-log visibility remain open.
+
+- `V1-AUTH-SESSION-LIFECYCLE-PROOF-2026-05-11` LOCAL PASS / PRODUCT AUDIT
+  OPEN: API Auth e2e passed (`11/11`) and proves registration/login cookie
+  TTLs, logout cookie clearing with subsequent `/auth/me` 401, deleted-user
+  session expiry, expired JWT cookie clearing with session-expired message, and
+  duplicate token precedence. Focused Web Auth tests passed (`5` files,
+  `17` tests) and prove AuthProvider bootstrap/logout/session-expired warning,
+  API interceptor redirect to `/auth/login?session=expired`, middleware cookie
+  gate, login form states, and login hook fail-closed missing-session-refresh
+  behavior. Auth is now `PASS_LOCAL`; production-safe browser clickthrough
+  remains open.
+
+- `V1-BOT-RUNTIME-WORKER-TELEMETRY-PROOF-2026-05-11` LOCAL PASS / PRODUCT
+  AUDIT OPEN: focused API e2e proof now validates live-loop worker telemetry.
+  `runtime-flow.e2e.test.ts` passed with a real `RuntimeSignalLoop` PAPER
+  lifecycle that creates a `RUNNING` session, writes at least three runtime
+  events, tracks `BTCUSDT` symbol stats with long and exit counters, closes
+  the runtime position, and reads the same data through authenticated runtime
+  session list, detail, symbol-stats, and aggregate APIs. Bot Runtime is now
+  `PASS_LOCAL` in the product action matrix; production-safe/non-local
+  clickthrough remains open.
+
+- `V1-BOT-RUNTIME-COMPLETED-SESSION-FIXTURE-2026-05-11` LOCAL PASS/PARTIAL
+  PRODUCT AUDIT OPEN: the approved PAPER snapshot import now creates one
+  deterministic completed runtime session beside the running session. API
+  readbacks returned `RUNNING,COMPLETED`, completed status `COMPLETED`,
+  `eventsCount: 1`, `symbolsTracked: 3`, completed positions `openCount: 0`,
+  and aggregate metadata `sessionsCount: 2`. Authenticated Node REPL
+  Playwright proof filtered Bot Runtime to `COMPLETED` and rendered PAPER
+  completed state with `0 open`, the three symbols, and wallet totals. One
+  browser-bootstrap `401 Unauthorized` console resource was observed, while
+  authenticated completed-session data rendered correctly. Worker telemetry is
+  now covered by `V1-BOT-RUNTIME-WORKER-TELEMETRY-PROOF-2026-05-11`;
+  production-safe proof remains open.
+
+- `V1-BOT-RUNTIME-PAPER-SESSION-BROWSER-PROOF-2026-05-11` LOCAL PASS/PARTIAL
+  PRODUCT AUDIT OPEN: approved PAPER snapshot import passed and local
+  API/Web were reachable. API readbacks for Bot Runtime sessions, aggregate,
+  positions, symbol stats, and trades returned `200`; the representative
+  session is PAPER `RUNNING` with 3 open positions. Authenticated Playwright
+  fallback proof rendered the canonical Bot Runtime preview route on desktop
+  `1280x720`, tablet `768x1024`, and mobile `390x844` with bot `asd`,
+  `RUNNING`, `PAPER`, `BTCUSDT`, `BNBUSDT`, `ETHUSDT`, wallet KPI text, safe
+  view switch, no console issues, and legacy runtime redirects to preview.
+  Browser plugin path was attempted first and failed with
+  `No active Codex browser pane available`, so standalone Playwright was used.
+
+- `V1-DASHBOARD-HOME-RUNTIME-SESSION-FIXTURE-2026-05-11` LOCAL PASS/PARTIAL
+  RELEASE: the existing PAPER snapshot import now creates deterministic local
+  PAPER wallet/session/stat/event fixture data for the imported active bot.
+  API readback proves `/runtime-sessions` `RUNNING`, session positions
+  `openCount: 3`, and aggregate `openCount: 3`. Authenticated Playwright
+  fallback proof renders Dashboard Home on desktop `1280x720`, tablet
+  `768x1024`, and mobile `390x844` with status `RUNNING`, rows for `BTCUSDT`,
+  `BNBUSDT`, `ETHUSDT`, wallet KPIs, and `Orders` tab interaction. Browser
+  run had restricted-network resource console failures, but no framework
+  overlay or page errors and the app runtime data rendered completely.
+
+- `V1-DASHBOARD-HOME-ACTIVE-RUNTIME-BROWSER-PROOF-2026-05-11` LOCAL
+  PARTIAL/BLOCKER FOUND: approved PAPER snapshot import succeeded and local
+  API/Web were reachable (`/health` `200`, `/auth/login` `200`). Authenticated
+  Playwright fallback proof rendered `/dashboard` on desktop `1280x720`,
+  tablet `768x1024`, and mobile `390x844` with bot `asd`, PAPER mode,
+  `BTCUSDT`/`BNBUSDT`/`ETHUSDT`, market/strategy context, wallet baseline
+  `10,000.00`, no framework overlay, no console/page errors, and `Orders` tab
+  interaction. It is not full Dashboard Home verification: the page reports
+  `NO_SESSION`, shows `No open positions`, and `/runtime-sessions` returns
+  `[]` despite the snapshot importing 3 open position fixture rows.
+
+- `V1-DASHBOARD-HOME-BROWSER-PROOF-2026-05-11` LOCAL PASS/PARTIAL BROWSER
+  PROOF: local API/Web started successfully after process-only test keyring
+  env override; authenticated `/dashboard` empty/onboarding state passed on
+  desktop `1280x720` and mobile `390x844`, keyboard focus on `Open wallets`
+  passed, framework overlay check passed, and console health passed after the
+  shared `ThemeSwitcher` hydration-noise fix. Dashboard Home remains
+  `PARTIAL`, not `VERIFIED`, because active selected-bot runtime browser proof
+  on representative data, tablet/touch proof, and production-safe clickthrough
+  are still open. Validation passed: targeted Web Vitest (`4` files, `36`
+  tests), Web typecheck, and repository guardrails.
+
+- `V1-DASHBOARD-HOME-SELECTED-BOT-RENDERED-AUDIT-2026-05-11` LOCAL
+  PASS/PARTIAL PRODUCT AUDIT OPEN: rendered `HomeLiveWidgets` proof now covers
+  loading state, retryable error state, selected-bot switching across two
+  active PAPER bots, selected wallet KPI recalculation, open-orders tab data,
+  trade-history tab data, and stale previous-bot row suppression. Validation
+  passed: focused Dashboard pack (`3` files, `35` tests), Web typecheck,
+  repository guardrails, and
+  `git diff --check` with line-ending warnings only. Dashboard Home remains
+  `PARTIAL`, not `VERIFIED`, because browser responsive/keyboard proof and
+  production-safe clickthrough are still open.
+
+- `BOT-DELETE-ACTIVE-PAPER-2026-05-11` LOCAL PASS/PARTIAL PRODUCT FIX:
+  active PAPER bot deletion in `BotsManagement` no longer routes through the
+  LIVE-risk confirmation; LIVE or live-opt-in bots remain guarded by the
+  existing LIVE confirmation. Validation passed: Web Vitest (`147` files,
+  `501` tests), API Bots e2e (`27/27`) after explicitly loading local
+  `DATABASE_URL` without printing it, Web typecheck, repository guardrails,
+  and `git diff --check` with line-ending warnings only. Production-safe
+  browser clickthrough remains the next proof before `SOAR-BOTS-001` can be
+  marked `VERIFIED`.
 
 - `V1-COMPLETION-SCORECARD-2026-05-11` LOCAL PASS/SCORECARD COMPLETE:
   added `ops:project:scorecard` and generated
@@ -10,25 +286,25 @@ Last updated: 2026-05-11
   master ledger. Validation passed: `node --check
   scripts/buildV1CompletionScorecard.mjs`, script help, and scorecard
   generation for `2026-05-11`. Current derived status remains `NO-GO`:
-  implementation estimate `48.7%`, evidence coverage `7.8%`, release
-  readiness `4.9%`, and all 13 P0 modules not release-ready.
+  implementation estimate `61.4%`, evidence coverage `25.4%`, release
+  readiness `17.6%`, and all 13 P0 modules not release-ready.
 
 - `V1-MASTER-STATE-LEDGER-2026-05-10` LOCAL PASS/LEDGER COMPLETE:
   added `ops:project:ledger` and generated
   `docs/operations/v1-master-state-ledger-2026-05-10.md` plus JSON. Validation
   passed: `node --check scripts/buildV1MasterStateLedger.mjs`, script help,
   and ledger generation for `2026-05-10`. The generated ledger keeps V1 at
-  `NO-GO` with module buckets `toProve: 16`, `toProveAndPossiblyFix: 2`,
-  `blocked: 2`, and `doneLocalNeedsProdProof: 1`; it includes 61 static
-  findings (`P0: 12`, `P1: 16`, `P2: 33`).
+  `NO-GO` with module buckets `toProve: 11`, `blocked: 2`, and
+  `doneLocalNeedsProdProof: 8`; it includes 54 static findings (`P0: 8`,
+  `P1: 13`, `P2: 33`).
 
 - `PROJECT-INDEXING-BASELINE-2026-05-10` LOCAL PASS/INDEX BASELINE:
   added `ops:project:index` and generated
   `docs/operations/project-index-2026-05-10.md` plus JSON. Validation passed:
   `node scripts/buildProjectIndex.mjs --help` and
   `node scripts/buildProjectIndex.mjs --today 2026-05-10`. The generated V1
-  module action status counts are `UNVERIFIED: 16`, `BLOCKED_AUTH: 2`,
-  `PASS_LOCAL: 1`, and `PARTIAL_LOCAL: 2`. The first `corepack pnpm` attempt
+  module action status counts are `PASS_LOCAL: 8`, `UNVERIFIED: 11`, and
+  `BLOCKED_AUTH: 2`. The first `corepack pnpm` attempt
   failed before script execution due to a Corepack signature issue on this
   workstation; direct Node execution was used because the script has no package
   dependency and performs only local indexing.
@@ -43,7 +319,7 @@ Last updated: 2026-05-11
 - `V1-STATIC-ISSUE-SCAN-2026-05-10` LOCAL PASS/SCAN COMPLETE: added
   `ops:project:scan` and generated
   `docs/operations/v1-static-issue-scan-2026-05-10.md`. Current scan reports
-  61 findings (`P0: 12`, `P1: 16`, `P2: 33`) across V1 proof gaps, Web/API
+  54 findings (`P0: 8`, `P1: 13`, `P2: 33`) across V1 proof gaps, Web/API
   surface gaps, placeholder docs, queue hygiene, and capability-gate source
   markers. Validation passed: `node --check scripts/runV1StaticIssueScan.mjs`,
   script help, scan generation, repository guardrails, and `git diff --check`.

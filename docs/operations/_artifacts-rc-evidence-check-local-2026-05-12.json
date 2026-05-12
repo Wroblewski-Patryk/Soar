@@ -1,0 +1,23 @@
+{
+  "generatedAt": "2026-05-12T06:55:33.968Z",
+  "gateLabels": {
+    "gate1": "PASS",
+    "gate2": "PASS",
+    "gate3": "PASS",
+    "gate4": "OPEN"
+  },
+  "counts": {
+    "gate1EvidenceFields": 5,
+    "gate3EvidenceFields": 5,
+    "missing": 5
+  },
+  "missing": [
+    "Gate4 sign-off missing: Engineering name",
+    "Gate4 sign-off missing: Product name",
+    "Gate4 sign-off missing: Operations name",
+    "Gate4 sign-off missing: RC owner name",
+    "Gate4 final status is not APPROVED (current: BLOCKED)"
+  ],
+  "strictPassed": false,
+  "gate2Policy": "PASS_OR_LOCAL_PASS"
+}

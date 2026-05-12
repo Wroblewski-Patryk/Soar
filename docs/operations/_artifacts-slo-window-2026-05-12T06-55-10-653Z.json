@@ -1,0 +1,1203 @@
+{
+  "startedAt": "2026-05-12T06:54:20.470Z",
+  "endedAt": "2026-05-12T06:55:10.653Z",
+  "options": {
+    "baseUrl": "http://localhost:3001",
+    "durationMinutes": 1,
+    "intervalSeconds": 10,
+    "authTokenProvided": true,
+    "opsBasicAuthConfigured": false,
+    "opsCustomHeaderConfigured": false,
+    "environment": "local",
+    "allowLocalProductionEvidence": true,
+    "targetProfile": "V1",
+    "thresholds": {
+      "apiAvailabilityPct": 99.9,
+      "workerAvailabilityPct": 99.5,
+      "api5xxRatioPct": 0.5,
+      "apiAvgDurationMs": 250,
+      "queueLagExecutionThreshold": 10,
+      "queueLagExecutionCompliancePct": 99,
+      "liveOrderFailureRatioPct": 1
+    }
+  },
+  "summary": {
+    "probes": {
+      "healthAvailabilityPct": 100,
+      "readyAvailabilityPct": 100,
+      "workersHealthAvailabilityPct": 100,
+      "workersReadyAvailabilityPct": 100
+    },
+    "http": {
+      "requestsDelta": 30,
+      "status5xxDelta": 0,
+      "errorRatioPct": 0,
+      "averageDurationMs": 2.433333333333333
+    },
+    "queueLagExecution": {
+      "sampleCount": 6,
+      "p50": 0,
+      "p95": 0,
+      "max": 0,
+      "threshold": 10,
+      "withinThresholdPct": 100
+    },
+    "liveOrderPath": {
+      "orderAttemptsDelta": 0,
+      "orderFailuresDelta": 0,
+      "failureRatioPct": null
+    },
+    "evaluation": {
+      "targetProfile": "V1",
+      "thresholds": {
+        "targetProfile": "V1",
+        "apiAvailabilityPct": 99.9,
+        "workerAvailabilityPct": 99.5,
+        "api5xxRatioPct": 0.5,
+        "apiAvgDurationMs": 250,
+        "queueLagExecutionThreshold": 10,
+        "queueLagExecutionCompliancePct": 99,
+        "liveOrderFailureRatioPct": 1
+      },
+      "objectives": [
+        {
+          "id": "SLO-1A",
+          "label": "/health availability",
+          "comparator": ">=",
+          "threshold": 99.9,
+          "observed": 100,
+          "unit": "%",
+          "status": "PASS",
+          "passed": true
+        },
+        {
+          "id": "SLO-1B",
+          "label": "/ready availability",
+          "comparator": ">=",
+          "threshold": 99.9,
+          "observed": 100,
+          "unit": "%",
+          "status": "PASS",
+          "passed": true
+        },
+        {
+          "id": "SLO-4A",
+          "label": "/workers/health availability",
+          "comparator": ">=",
+          "threshold": 99.5,
+          "observed": 100,
+          "unit": "%",
+          "status": "PASS",
+          "passed": true
+        },
+        {
+          "id": "SLO-4B",
+          "label": "/workers/ready availability",
+          "comparator": ">=",
+          "threshold": 99.5,
+          "observed": 100,
+          "unit": "%",
+          "status": "PASS",
+          "passed": true
+        },
+        {
+          "id": "SLO-2",
+          "label": "API 5xx ratio",
+          "comparator": "<=",
+          "threshold": 0.5,
+          "observed": 0,
+          "unit": "%",
+          "status": "PASS",
+          "passed": true
+        },
+        {
+          "id": "SLO-3",
+          "label": "API average duration",
+          "comparator": "<=",
+          "threshold": 250,
+          "observed": 2.433333333333333,
+          "unit": "ms",
+          "status": "PASS",
+          "passed": true
+        },
+        {
+          "id": "SLO-5",
+          "label": "Execution queue lag compliance",
+          "comparator": ">=",
+          "threshold": 99,
+          "observed": 100,
+          "unit": "%",
+          "status": "PASS",
+          "passed": true
+        },
+        {
+          "id": "SLO-6",
+          "label": "Live order failure ratio",
+          "comparator": "<=",
+          "threshold": 1,
+          "observed": null,
+          "unit": "%",
+          "status": "NO_DATA",
+          "passed": false
+        }
+      ],
+      "overallStatus": "NO_DATA",
+      "failedObjectiveIds": [],
+      "noDataObjectiveIds": [
+        "SLO-6"
+      ]
+    }
+  },
+  "samples": [
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 4,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-12T06:54:20.474Z"
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:20.477Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 2,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:20.479Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 6,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "inline",
+          "environment": "local",
+          "ownership": {
+            "backtest": "inline",
+            "execution": "inline",
+            "marketData": "inline",
+            "marketStream": "inline"
+          },
+          "topologyStatus": "local_inline",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [],
+          "timestamp": "2026-05-12T06:54:20.484Z"
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:20.485Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 5,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "inline",
+          "environment": "local",
+          "ownership": {
+            "backtest": "inline",
+            "execution": "inline",
+            "marketData": "inline",
+            "marketStream": "inline"
+          },
+          "topologyStatus": "local_inline",
+          "degradedReasons": [],
+          "requiredQueues": [],
+          "requiredWorkerFamilies": [],
+          "details": "Inline worker mode is explicitly supported only for local/test environments"
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:20.491Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 4,
+        "payload": {
+          "http": {
+            "requestsTotal": 431,
+            "status2xx": 426,
+            "status4xx": 5,
+            "status5xx": 0,
+            "totalDurationMs": 4165,
+            "avgDurationMs": 9.663573085846867
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:20.496Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 4,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:20.500Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 3,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-12T06:54:30.506Z"
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:30.508Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 4,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:30.512Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 4,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "inline",
+          "environment": "local",
+          "ownership": {
+            "backtest": "inline",
+            "execution": "inline",
+            "marketData": "inline",
+            "marketStream": "inline"
+          },
+          "topologyStatus": "local_inline",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [],
+          "timestamp": "2026-05-12T06:54:30.515Z"
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:30.517Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 4,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "inline",
+          "environment": "local",
+          "ownership": {
+            "backtest": "inline",
+            "execution": "inline",
+            "marketData": "inline",
+            "marketStream": "inline"
+          },
+          "topologyStatus": "local_inline",
+          "degradedReasons": [],
+          "requiredQueues": [],
+          "requiredWorkerFamilies": [],
+          "details": "Inline worker mode is explicitly supported only for local/test environments"
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:30.521Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 4,
+        "payload": {
+          "http": {
+            "requestsTotal": 437,
+            "status2xx": 432,
+            "status4xx": 5,
+            "status5xx": 0,
+            "totalDurationMs": 4181,
+            "avgDurationMs": 9.5675057208238
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:30.525Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 4,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:30.529Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 3,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-12T06:54:40.530Z"
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:40.531Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 1,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:40.533Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 3,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "inline",
+          "environment": "local",
+          "ownership": {
+            "backtest": "inline",
+            "execution": "inline",
+            "marketData": "inline",
+            "marketStream": "inline"
+          },
+          "topologyStatus": "local_inline",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [],
+          "timestamp": "2026-05-12T06:54:40.535Z"
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:40.536Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 3,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "inline",
+          "environment": "local",
+          "ownership": {
+            "backtest": "inline",
+            "execution": "inline",
+            "marketData": "inline",
+            "marketStream": "inline"
+          },
+          "topologyStatus": "local_inline",
+          "degradedReasons": [],
+          "requiredQueues": [],
+          "requiredWorkerFamilies": [],
+          "details": "Inline worker mode is explicitly supported only for local/test environments"
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:40.539Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 4,
+        "payload": {
+          "http": {
+            "requestsTotal": 443,
+            "status2xx": 438,
+            "status4xx": 5,
+            "status5xx": 0,
+            "totalDurationMs": 4191,
+            "avgDurationMs": 9.460496613995485
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:40.543Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 3,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:40.546Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 5,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-12T06:54:50.556Z"
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:50.557Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 4,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:50.561Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 4,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "inline",
+          "environment": "local",
+          "ownership": {
+            "backtest": "inline",
+            "execution": "inline",
+            "marketData": "inline",
+            "marketStream": "inline"
+          },
+          "topologyStatus": "local_inline",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [],
+          "timestamp": "2026-05-12T06:54:50.564Z"
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:50.565Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 8,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "inline",
+          "environment": "local",
+          "ownership": {
+            "backtest": "inline",
+            "execution": "inline",
+            "marketData": "inline",
+            "marketStream": "inline"
+          },
+          "topologyStatus": "local_inline",
+          "degradedReasons": [],
+          "requiredQueues": [],
+          "requiredWorkerFamilies": [],
+          "details": "Inline worker mode is explicitly supported only for local/test environments"
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:50.573Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 5,
+        "payload": {
+          "http": {
+            "requestsTotal": 449,
+            "status2xx": 444,
+            "status4xx": 5,
+            "status5xx": 0,
+            "totalDurationMs": 4208,
+            "avgDurationMs": 9.371937639198219
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:50.579Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 4,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-12T06:54:50.583Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 3,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-12T06:55:00.592Z"
+        },
+        "error": null,
+        "at": "2026-05-12T06:55:00.593Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 4,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-12T06:55:00.597Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 4,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "inline",
+          "environment": "local",
+          "ownership": {
+            "backtest": "inline",
+            "execution": "inline",
+            "marketData": "inline",
+            "marketStream": "inline"
+          },
+          "topologyStatus": "local_inline",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [],
+          "timestamp": "2026-05-12T06:55:00.600Z"
+        },
+        "error": null,
+        "at": "2026-05-12T06:55:00.601Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 3,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "inline",
+          "environment": "local",
+          "ownership": {
+            "backtest": "inline",
+            "execution": "inline",
+            "marketData": "inline",
+            "marketStream": "inline"
+          },
+          "topologyStatus": "local_inline",
+          "degradedReasons": [],
+          "requiredQueues": [],
+          "requiredWorkerFamilies": [],
+          "details": "Inline worker mode is explicitly supported only for local/test environments"
+        },
+        "error": null,
+        "at": "2026-05-12T06:55:00.605Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 3,
+        "payload": {
+          "http": {
+            "requestsTotal": 455,
+            "status2xx": 450,
+            "status4xx": 5,
+            "status5xx": 0,
+            "totalDurationMs": 4223,
+            "avgDurationMs": 9.281318681318682
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-12T06:55:00.608Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 4,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-12T06:55:00.612Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 2,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-12T06:55:10.627Z"
+        },
+        "error": null,
+        "at": "2026-05-12T06:55:10.628Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 2,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-12T06:55:10.630Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 5,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "inline",
+          "environment": "local",
+          "ownership": {
+            "backtest": "inline",
+            "execution": "inline",
+            "marketData": "inline",
+            "marketStream": "inline"
+          },
+          "topologyStatus": "local_inline",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [],
+          "timestamp": "2026-05-12T06:55:10.634Z"
+        },
+        "error": null,
+        "at": "2026-05-12T06:55:10.635Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 7,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "inline",
+          "environment": "local",
+          "ownership": {
+            "backtest": "inline",
+            "execution": "inline",
+            "marketData": "inline",
+            "marketStream": "inline"
+          },
+          "topologyStatus": "local_inline",
+          "degradedReasons": [],
+          "requiredQueues": [],
+          "requiredWorkerFamilies": [],
+          "details": "Inline worker mode is explicitly supported only for local/test environments"
+        },
+        "error": null,
+        "at": "2026-05-12T06:55:10.642Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 5,
+        "payload": {
+          "http": {
+            "requestsTotal": 461,
+            "status2xx": 456,
+            "status4xx": 5,
+            "status5xx": 0,
+            "totalDurationMs": 4238,
+            "avgDurationMs": 9.193058568329718
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-12T06:55:10.647Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 6,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-12T06:55:10.653Z"
+      }
+    }
+  ]
+}

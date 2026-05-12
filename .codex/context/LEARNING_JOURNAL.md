@@ -20,6 +20,239 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-05-12 - Use API package context or plain Node for one-off Prisma scripts on Windows
+- Context: `V1-SUBSCRIPTIONS-ADMIN-LOCAL-PROOF-2026-05-12` needed a throwaway
+  local admin account for protected route proof.
+- Symptom: `pnpm --filter api exec tsx -e ...` reported `tsx` not found in one
+  invocation, and inline `tsx`/`node -e` snippets broke when PowerShell expanded
+  `$disconnect`.
+- Root cause: pnpm filtered exec resolution and PowerShell `$` expansion are
+  brittle for one-off inline TypeScript/Prisma commands.
+- Guardrail: for local one-off Prisma checks on Windows, either run from
+  `apps/api` with package-local module resolution, or use plain `node -e` with
+  `@prisma/client` from the API package and escape `$` as needed.
+- Preferred pattern:
+```text
+1) Load DATABASE_URL from apps/api/.env.
+2) Set workdir to apps/api when requiring @prisma/client.
+3) In PowerShell inline JS, write prisma.`$disconnect(), not prisma.$disconnect().
+4) Prefer existing API endpoints for setup where possible, then use Prisma only
+   for local-only role/fixture adjustments.
+```
+- Avoid: assuming root `pnpm exec tsx` or filtered `pnpm --filter api exec tsx`
+  will always resolve package dev dependencies the same way on Windows.
+- Evidence:
+  - Throwaway local admin setup succeeded with `node -e` from `apps/api` and
+    `@prisma/client`; protected admin route audit then passed.
+
+### 2026-05-11 - Worker e2e packs must clear runtime-dependent rows
+- Context: V1 Workers local proof ran a focused API pack that combined worker
+  freshness, runtime-flow, backtest job, market-stream, and execution
+  orchestrator e2e tests.
+- Symptom: the first broad worker pack failed with stale inline freshness
+  (`503` instead of `200`) and FK errors on `BotRuntimeSession_botId_fkey`,
+  `BotRuntimeSymbolStat_sessionId_fkey`, `Signal_userId_fkey`, and
+  `BacktestRun_userId_fkey`.
+- Root cause: runtime/worker-adjacent tests share DB tables and freshness
+  sources. Earlier tests can leave market candle cache, running/canceled
+  runtime sessions, symbol stats, signals, backtest runs, dedupe rows, and
+  assistant config rows that later cleanup did not delete before bots/users.
+- Guardrail: when a focused API pack combines worker/runtime/backtest e2e
+  files, make each affected test cleanup delete runtime events, symbol stats,
+  sessions, signals, backtest artifacts, runtime dedupe, assistant/subagent
+  configs, and market candle cache before deleting bots/users or asserting
+  passive inline freshness.
+- Preferred pattern:
+```powershell
+$env:COREPACK_INTEGRITY_KEYS='0'
+$env:API_KEY_ENCRYPTION_KEYS='v1:test-key-material'
+$env:API_KEY_ENCRYPTION_ACTIVE_VERSION='v1'
+# load quote-trimmed DATABASE_URL, then:
+pnpm --filter api exec vitest run src/router/workers-runtime-freshness.test.ts src/modules/engine/executionOrchestrator.owned-import.e2e.test.ts --sequence.concurrent=false --pool=forks --poolOptions.forks.singleFork=true --testTimeout=30000
+```
+- Avoid: deleting `bot` or `user` rows before runtime/backtest dependent rows,
+  or asserting no-demand inline freshness while stale `marketCandleCache` rows
+  remain in the local DB.
+- Evidence:
+  - Initial V1 Workers pack failed in `workers-runtime-freshness.test.ts` and
+    `executionOrchestrator.owned-import.e2e.test.ts`.
+  - After cleanup fixes, the focused rerun passed (`2` files, `9` tests), and
+    the full Workers pack passed (`18` files, `88` tests).
+
+### 2026-05-11 - Security tests must restore absent env vars by deleting them
+- Context: V1 Security/Privacy local proof ran a focused API pack that combined
+  auth/JWT rotation, trusted-origin, readiness, crypto keyring, profile, and
+  ownership-isolation tests.
+- Symptom: the first broad security pack failed with cascading `500`, `503`,
+  and `401` responses after `JWT_SECRET_PREVIOUS_UNTIL` leaked as an invalid
+  value and API-key encryption keyring variables were left in test-specific
+  states.
+- Root cause: several tests restored originally absent environment variables
+  with assignment, which can leave the literal string `"undefined"` or stale
+  empty values in `process.env`. Later auth/readiness files then interpret the
+  leaked value as a malformed JWT rotation window.
+- Guardrail: test env restoration helpers must delete keys when the original
+  value is absent, and focused security packs should clear
+  `JWT_SECRET_PREVIOUS` and `JWT_SECRET_PREVIOUS_UNTIL` in the shell before
+  running.
+- Preferred pattern:
+```ts
+const restoreEnv = (key: string, value: string | undefined) => {
+  if (value === undefined || value === 'undefined') delete process.env[key];
+  else process.env[key] = value;
+};
+```
+- Avoid: `process.env.SOME_KEY = originalValue` when `originalValue` may be
+  `undefined`, especially for JWT rotation or keyring variables.
+- Evidence:
+  - Initial V1 Security/Privacy pack failed across readiness, auth, profile,
+    and isolation files.
+  - After env restoration fixes, the red subset passed (`10` files,
+    `63` tests), the full API Security/Privacy pack passed (`23` files,
+    `111` tests), and the Web Auth/Profile pack passed (`13` files,
+    `48` tests).
+
+### 2026-05-12 - UX browser proof requires local API dependencies and browser runtime
+- Context: V1 UX/A11y/Mobile local proof attempted route/clickthrough and
+  rendered browser evidence after Security/Privacy was locally proven.
+- Symptom: public Web routes rendered, but authenticated route/clickthrough
+  could not run. Backend dev exited because Postgres/Redis were unavailable
+  and Docker Desktop was not running. Playwright was also not installed, so
+  screenshot/console capture could not be collected through the fallback path.
+- Root cause: UX/A11y/Mobile proof depends on both a running local API/DB and
+  a browser automation runtime. Component tests alone are insufficient for the
+  V1 matrix row.
+- Guardrail: before starting UX/A11y/Mobile proof, verify Docker Desktop or
+  equivalent Postgres/Redis availability, then verify Browser plugin runtime
+  or `pnpm exec playwright --version`. If either is missing, mark the task
+  blocked/partial instead of promoting UX/A11y/Mobile to `PASS_LOCAL`.
+- Preferred pattern:
+```powershell
+docker compose up -d postgres redis
+$env:API_KEY_ENCRYPTION_KEYS='v1:test-key-material'
+$env:API_KEY_ENCRYPTION_ACTIVE_VERSION='v1'
+pnpm run backend/dev
+pnpm run frontend/dev
+pnpm exec playwright --version
+```
+- Avoid: accepting route HTML fetches or component tests as a substitute for
+  the required desktop/mobile browser screenshot and interaction proof.
+- Evidence:
+  - `V1-UX-A11Y-MOBILE-LOCAL-PROOF-2026-05-11` focused Web UX/a11y/state pack
+    passed (`25` files, `126` tests).
+  - Full browser proof remained blocked by missing Docker Desktop/Postgres/
+    Redis and missing Playwright.
+
+### 2026-05-11 - Focused API Vitest runs should use package exec and clean dedupe rows
+- Context: Bot Runtime worker telemetry proof extended
+  `apps/api/src/modules/engine/runtime-flow.e2e.test.ts`.
+- Symptom: `pnpm --filter api run test -- src/modules/engine/runtime-flow.e2e.test.ts`
+  did not constrain the run to the intended file and timed out while executing
+  broader engine/positions tests. A later rerun hit
+  `RuntimeExecutionDedupe_userId_fkey` during `user.deleteMany()`.
+- Root cause: the package script argument forwarding was unreliable for this
+  filtered run, and the runtime flow e2e cleanup did not include
+  `runtimeExecutionDedupe` even though the live-loop lifecycle can create
+  dedupe records.
+- Guardrail: for focused API Vitest runs, use `pnpm --filter api exec vitest
+  run <file>` and ensure DB cleanup includes `runtimeExecutionDedupe` before
+  deleting users when runtime orchestration can create dedupe rows.
+- Preferred pattern:
+```powershell
+$env:COREPACK_INTEGRITY_KEYS='0'
+$env:API_KEY_ENCRYPTION_KEYS='v1:test-key-material'
+$env:API_KEY_ENCRYPTION_ACTIVE_VERSION='v1'
+$env:DATABASE_URL=(Select-String -Path apps/api/.env -Pattern '^DATABASE_URL=' | Select-Object -First 1).Line.Substring('DATABASE_URL='.Length).Trim('"')
+corepack pnpm@10.13.1 --filter api exec vitest run src/modules/engine/runtime-flow.e2e.test.ts --sequence.concurrent=false --pool=forks --poolOptions.forks.singleFork=true --testTimeout=30000
+```
+- Avoid: relying on `pnpm --filter api run test -- <file>` for focused e2e
+  proof, or deleting users before runtime dedupe records are cleared.
+- Evidence:
+  - The broad accidental run timed out.
+  - The corrected `exec vitest run` command ran only `runtime-flow.e2e.test.ts`.
+  - Adding `prisma.runtimeExecutionDedupe.deleteMany()` let the focused file
+    pass (`1/1`).
+
+### 2026-05-11 - PowerShell env loading must trim DATABASE_URL quotes
+- Context: Profile local proof reran focused API Profile basic/security e2e
+  tests from the repository root.
+- Symptom: the first API run failed before assertions with Prisma reporting
+  that `DATABASE_URL` did not start with `postgresql://` or `postgres://`.
+- Root cause: the PowerShell helper copied the literal `.env` value including
+  surrounding quotes, so Prisma received a quoted URL string.
+- Guardrail: when loading a single env value from `.env` in PowerShell, trim
+  whitespace and both single and double quotes before invoking Prisma-backed
+  tests.
+- Preferred pattern:
+```powershell
+$dbLine = Get-Content apps/api/.env | Where-Object { $_ -match '^DATABASE_URL=' } | Select-Object -First 1
+$dbValue = ($dbLine -replace '^DATABASE_URL=', '').Trim().Trim('"').Trim("'")
+$env:DATABASE_URL = $dbValue
+```
+- Avoid: assigning the raw `DATABASE_URL=` suffix directly when the `.env`
+  file may quote the value.
+- Evidence:
+  - Raw assignment caused all focused Profile API e2e cases to fail at Prisma
+    datasource validation.
+  - The quote-trimmed rerun passed `basic.e2e.test.ts` and
+    `security.e2e.test.ts` (`7/7`).
+
+### 2026-05-11 - V1 report refresh should pin generated inputs
+- Context: Bot Runtime proof refreshed `project-index`, `static-scan`,
+  `master-ledger`, and `scorecard` on the same evidence date.
+- Symptom: running scan/ledger/scorecard with only `--today 2026-05-11` after
+  the new 2026-05-11 index still carried older Bot Runtime next-proof text.
+- Root cause: the V1 report commands default to "latest artifact" resolvers,
+  which can select stale same-worktree inputs when multiple dated reports are
+  present.
+- Guardrail: when regenerating V1 reports in a continuation task, pass the
+  exact index JSON to scan, the exact index plus scan JSON to ledger, and the
+  exact ledger JSON to scorecard.
+- Preferred pattern:
+```powershell
+$env:COREPACK_INTEGRITY_KEYS='0'
+corepack pnpm@10.13.1 run ops:project:index -- --today 2026-05-11
+corepack pnpm@10.13.1 run ops:project:scan -- --today 2026-05-11 --index docs/operations/project-index-2026-05-11.json
+corepack pnpm@10.13.1 run ops:project:ledger -- --today 2026-05-11 --index docs/operations/project-index-2026-05-11.json --scan docs/operations/v1-static-issue-scan-2026-05-11.json
+corepack pnpm@10.13.1 run ops:project:scorecard -- --today 2026-05-11 --ledger docs/operations/v1-master-state-ledger-2026-05-11.json
+```
+- Avoid: relying on implicit latest-artifact selection when the task just
+  generated a new dated V1 report chain.
+- Evidence:
+  - First scan/scorecard refresh retained stale Bot Runtime next-proof text
+    after the 2026-05-11 project index had the updated worker-telemetry next
+    proof.
+  - Rerunning with explicit `--index`, `--scan`, and `--ledger` inputs
+    produced aligned scan, ledger, and scorecard text.
+
+### 2026-05-11 - Windows dev-server starts need a clean child Path
+- Context: local Dashboard Home browser proof needed long-running API and Web
+  dev servers from PowerShell.
+- Symptom: `Start-Process` failed with `Element zostal juz dodany. Klucz w
+  slowniku: 'Path' Dodawany klucz: 'PATH'`; after clearing the duplicate
+  process key, child commands failed with `node is not recognized`.
+- Root cause: the current Windows process environment can contain conflicting
+  `Path`/`PATH` keys, and clearing the duplicate without rebuilding a minimal
+  child `Path` removes Node from the spawned process.
+- Guardrail: before hidden long-running dev-server starts on Windows, clear the
+  duplicate process `PATH` only for the launcher and explicitly set child
+  `$env:Path` to include `C:\Program Files\nodejs` plus machine/user paths.
+- Preferred pattern:
+```text
+1) Use process-only env overrides for test secrets.
+2) Clear duplicate PATH in the launcher process.
+3) Pass a child PowerShell command that sets a minimal Path including Node.
+4) Confirm `/health` and Web route reachability before browser proof.
+```
+- Avoid: using `Start-Process` directly when `Path/PATH` duplication is
+  present, or clearing `PATH` without restoring Node in the child process.
+- Evidence:
+  - `Start-Process` failed with duplicate `Path/PATH` before server startup.
+  - Child logs reported `node is not recognized` until child `$env:Path`
+    included `C:\Program Files\nodejs`.
+  - API `/health` and Web `/auth/login` returned `200` after applying the
+    child-path pattern.
+
 ### 2026-05-10 - API readiness tests may need explicit DATABASE_URL load
 - Context: running `vitest run src/router/health-readiness.test.ts` from
   `apps/api`.
@@ -34,6 +267,49 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Avoid: echoing or copying the database URL into logs.
 - Evidence: the focused readiness test passed after loading `DATABASE_URL`
   explicitly in-process.
+
+### 2026-05-11 - V1 index, scan, ledger, and scorecard refresh must run sequentially
+- Context: broad V1 continuation refresh before selecting the next Dashboard
+  Home action proof.
+- Symptom: running `node scripts/buildProjectIndex.mjs` and
+  `node scripts/runV1StaticIssueScan.mjs` in parallel caused the scan to fail
+  with `Unexpected end of JSON input` after the index write hit `EPERM`.
+- Root cause: the static scan reads the current project-index JSON artifact,
+  so it can observe a missing, empty, locked, or not-yet-written index when
+  both scripts run concurrently on Windows.
+- Guardrail: run V1 continuation artifact refreshes sequentially:
+  index -> static scan -> master ledger -> completion scorecard.
+- Preferred pattern:
+```powershell
+node scripts/buildProjectIndex.mjs
+node scripts/runV1StaticIssueScan.mjs
+node scripts/buildV1MasterStateLedger.mjs
+node scripts/buildV1CompletionScorecard.mjs
+```
+- Avoid: using `multi_tool_use.parallel` for dependent V1 artifact generators.
+- Evidence: the parallel run failed with `EPERM` and JSON parse errors; the
+  same commands passed when rerun sequentially with approved escalation and
+  produced the 2026-05-11 project-index, scan, ledger, and scorecard artifacts.
+
+### 2026-05-11 - Environment checks must not print secret values
+- Context: local Dashboard Home browser proof needed to confirm whether
+  `apps/api/.env` and `apps/web/.env.local` existed and whether required env
+  names were present.
+- Symptom: a broad file read printed `.env.local` contents into tool output.
+- Root cause: checking readiness with `Get-Content` was too broad for env
+  files.
+- Guardrail: inspect env files by existence and variable names only; redact
+  values in the same command when a name check is required.
+- Preferred pattern:
+```powershell
+Test-Path apps/api/.env
+Select-String -Path apps/api/.env -Pattern '^(API_KEY_ENCRYPTION_KEYS|API_KEY_ENCRYPTION_ACTIVE_VERSION)=' |
+  ForEach-Object { ($_.Line -replace '=.*$','=***') }
+```
+- Avoid: `Get-Content` on `.env`, `.env.local`, or any secret-bearing file
+  during readiness checks.
+- Evidence: subsequent API readiness checks only printed env variable names or
+  redacted values before starting the local browser proof.
 
 ### 2026-05-10 - Check Coolify queue before pushing into slow deploys
 - Context: Soar production deploys can fan out across multiple Coolify

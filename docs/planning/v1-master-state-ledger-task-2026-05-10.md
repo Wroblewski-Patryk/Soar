@@ -75,11 +75,11 @@ Generated ledger:
 Current ledger result:
 
 - V1 status: `NO-GO`
-- Matrix counts: `UNVERIFIED: 16`, `BLOCKED_AUTH: 2`, `PASS_LOCAL: 1`,
-  `PARTIAL_LOCAL: 2`
-- Findings by severity: `P0: 12`, `P1: 16`, `P2: 33`
-- Modules by bucket: `toProve: 16`, `toProveAndPossiblyFix: 2`,
-  `blocked: 2`, `doneLocalNeedsProdProof: 1`
+- Matrix counts: `UNVERIFIED: 16`, `BLOCKED_AUTH: 2`, `PASS_LOCAL: 2`,
+  `PARTIAL_LOCAL: 1`
+- Findings by severity: `P0: 11`, `P1: 16`, `P2: 33`
+- Modules by bucket: `toProve: 16`, `toProveAndPossiblyFix: 1`,
+  `blocked: 2`, `doneLocalNeedsProdProof: 2`
 - Findings by bucket: `toReviewCapabilityGate: 29`, `toProve: 20`,
   `toReviewArchitectureOrFix: 3`, `toReviewDocumentationOrImplement: 3`,
   `toAddTests: 2`, `toClassifyQueue: 1`, `toCleanPlanning: 1`,

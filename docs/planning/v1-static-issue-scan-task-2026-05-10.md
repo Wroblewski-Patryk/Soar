@@ -78,7 +78,7 @@ hygiene issues.
   - `node scripts/repoGuardrails.mjs`
   - `git diff --check`
 - Manual checks:
-  - Scan produced 61 findings: `P0: 12`, `P1: 16`, `P2: 33`.
+  - Scan produced 60 findings: `P0: 11`, `P1: 16`, `P2: 33`.
   - Categories include V1 proof gaps, Web surface/route gaps, API/Web test
     gaps, documented placeholders, queue drift, and capability gates.
   - Ordinary form placeholder attributes are not reported as issues.

@@ -1,0 +1,26 @@
+{
+  "generatedAt": "2026-05-12T06:57:00.362Z",
+  "target": {
+    "baseUrl": "http://localhost:3001",
+    "webBaseUrl": "http://localhost:3002",
+    "expectedSha": null,
+    "buildInfo": null,
+    "symbols": [
+      "ETHUSDT",
+      "DOGEUSDT"
+    ]
+  },
+  "auth": {
+    "source": "login",
+    "tokenCaptured": false
+  },
+  "entries": [],
+  "summary": {
+    "botsChecked": 0,
+    "botsWithRuntimeReadback": 0,
+    "botsWithoutRunningSession": 0,
+    "symbolsExpected": 2,
+    "symbolsVisible": [],
+    "missingSymbols": []
+  }
+}

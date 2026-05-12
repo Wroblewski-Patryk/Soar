@@ -1,0 +1,63 @@
+{
+  "status": "PASS",
+  "profile": "local",
+  "baseUrl": "http://localhost:3001",
+  "startedAt": "2026-05-12T06:54:12.210Z",
+  "endedAt": "2026-05-12T06:54:12.475Z",
+  "command": "node scripts/evaluateRollbackGuard.mjs --base-url http://localhost:3001",
+  "checks": {
+    "commandExitCodeZero": true,
+    "shouldRollbackFalse": true,
+    "noCriticalReasons": true,
+    "freshnessStatusPass": true,
+    "alertsClear": true
+  },
+  "decision": {
+    "checkedAt": "2026-05-12T06:54:12.417Z",
+    "shouldRollback": false,
+    "reasons": [],
+    "freshness": {
+      "status": "PASS",
+      "checks": {
+        "workerHeartbeat": {
+          "status": "SKIP",
+          "thresholdMs": 60000,
+          "ageMs": null,
+          "detail": "worker heartbeat check skipped in current mode without active runtime demand"
+        },
+        "marketData": {
+          "status": "SKIP",
+          "thresholdMs": 120000,
+          "ageMs": null,
+          "detail": "market data freshness skipped in current mode without active runtime demand"
+        },
+        "runtimeSignalLag": {
+          "status": "PASS",
+          "thresholdMs": 90000,
+          "ageMs": 0,
+          "detail": "runtime signal lag within threshold"
+        },
+        "runtimeSessions": {
+          "status": "PASS",
+          "thresholdMs": 120000,
+          "ageMs": null,
+          "runningCount": 0,
+          "staleSessionIds": [],
+          "detail": "runtime sessions heartbeat healthy"
+        },
+        "runtimeDecisionActivity": {
+          "status": "SKIP",
+          "thresholdMs": 300000,
+          "ageMs": null,
+          "required": false,
+          "runningCount": 0,
+          "staleSessionIds": [],
+          "detail": "runtime decision activity freshness check disabled for running sessions"
+        }
+      }
+    },
+    "alerts": []
+  },
+  "stdoutPreview": "{\n  \"checkedAt\": \"2026-05-12T06:54:12.417Z\",\n  \"shouldRollback\": false,\n  \"reasons\": [],\n  \"freshness\": {\n    \"status\": \"PASS\",\n    \"checks\": {\n      \"workerHeartbeat\": {\n        \"status\": \"SKIP\",\n        \"thresholdMs\": 60000,\n        \"ageMs\": null,\n        \"detail\": \"worker heartbeat check skipped in current mode without active runtime demand\"\n      },\n      \"marketData\": {\n        \"status\": \"SKIP\",\n        \"thresholdMs\": 120000,\n        \"ageMs\": null,\n        \"detail\": \"market data freshness skipped in current mode without active runtime demand\"\n      },\n      \"runtimeSignalLag\": {\n        \"status\": \"PASS\",\n        \"thresholdMs\": 90000,\n        \"ageMs\": 0,\n        \"detail\": \"runtime signal lag within threshold\"\n      },\n      \"runtimeSessions\": {\n        \"status\": \"PASS\",\n        \"thresholdMs\": 120000,\n        \"ageMs\": null,\n        \"runningCount\": 0,\n        \"staleSessionIds\": [],\n        \"detail\": \"runtime sessions heartbeat healthy\"\n      },\n      \"runtimeDecisionActivity\": {\n        \"status\": \"SKIP\",\n        \"thresholdMs\": 300000,\n        \"ageMs\": null,\n        \"required\": false,\n        \"runningCount\": 0,\n        \"staleSessionIds\": [],\n        \"detail\": \"runtime decision activity freshness check disabled for running sessions\"\n      }\n    }\n  },\n  \"alerts\": []\n}",
+  "stderrPreview": ""
+}
