@@ -1,6 +1,6 @@
 # V1 Static Issue Scan
 
-Generated at: 2026-05-12T07:00:20.924Z
+Generated at: 2026-05-12T16:20:51.724Z
 Evidence date: 2026-05-12
 Project index: `docs/operations/project-index-2026-05-12.json`
 
@@ -31,14 +31,14 @@ not replace browser/API/DB/exchange action audits.
 | P1 | web-route-gap | Expected dashboard route '/dashboard/positions' has no page.tsx | route=/dashboard/positions | Confirm whether the action surface intentionally lives on Dashboard Home or add the route/page proof. |
 | P1 | documented-placeholder | Module doc still describes placeholder or not-implemented behavior | docs/modules/web-orders.md | Either implement the documented surface or update the doc to the canonical owner and proof path. |
 | P1 | documented-placeholder | Module doc still describes placeholder or not-implemented behavior | docs/modules/web-positions.md | Either implement the documented surface or update the doc to the canonical owner and proof path. |
-| P1 | queue-open-work | 10 unchecked queue markers remain | .codex/context/TASK_BOARD.md:441 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` \| .codex/context/TASK_BOARD.md:1296 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI mod | Classify each as executable, blocked by auth/approval, or historical carryover. |
+| P1 | queue-open-work | 10 unchecked queue markers remain | .codex/context/TASK_BOARD.md:541 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` \| .codex/context/TASK_BOARD.md:1396 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI mod | Classify each as executable, blocked by auth/approval, or historical carryover. |
 
 ## P2 Findings
 
 | Severity | Category | Finding | Evidence | Recommendation |
 | --- | --- | --- | --- | --- |
 | P2 | documented-placeholder | Module doc still describes placeholder or not-implemented behavior | docs/modules/api-subscriptions.md | Either implement the documented surface or update the doc to the canonical owner and proof path. |
-| P2 | queue-hygiene | Queue scan still sees unchecked `(none)` markers | .codex/context/TASK_BOARD.md:6465, .codex/context/TASK_BOARD.md:6483 | Ignore these in execution selection or change queue formatting so scan output is cleaner. |
+| P2 | queue-hygiene | Queue scan still sees unchecked `(none)` markers | .codex/context/TASK_BOARD.md:6565, .codex/context/TASK_BOARD.md:6583 | Ignore these in execution selection or change queue formatting so scan output is cleaner. |
 | P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/backtests/backtests.controller.ts:4 | import { ExchangeNotImplementedError } from '../exchange/exchangeCapabilities'; | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
 | P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/backtests/backtests.controller.ts:47 | if (error instanceof ExchangeNotImplementedError) { | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
 | P2 | source-capability-gate | NOT_IMPLEMENTED marker in apps/api/src/modules/bots/bots.controller.ts:5 | import { ExchangeNotImplementedError } from '../exchange/exchangeCapabilities'; | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |

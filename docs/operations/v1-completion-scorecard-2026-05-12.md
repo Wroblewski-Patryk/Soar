@@ -1,6 +1,6 @@
 # V1 Completion Scorecard
 
-Generated at: 2026-05-12T07:00:22.135Z
+Generated at: 2026-05-12T16:20:52.669Z
 Evidence date: 2026-05-12
 Status: `NO-GO`
 Source ledger: `docs/operations/v1-master-state-ledger-2026-05-12.json`
