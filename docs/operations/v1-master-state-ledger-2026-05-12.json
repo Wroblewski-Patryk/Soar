@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-12T17:21:01.400Z",
+  "generatedAt": "2026-05-12T17:26:35.706Z",
   "evidenceDate": "2026-05-12",
   "status": "NO-GO",
   "sources": {
@@ -13,25 +13,24 @@
       "BLOCKED_AUTH": 1
     },
     "findingCounts": {
-      "totalFindings": 33,
+      "totalFindings": 32,
       "bySeverity": {
         "P1": 1,
         "P0": 1,
-        "P2": 31
+        "P2": 30
       },
       "byCategory": {
         "v1-proof-gap": 2,
         "queue-blocked": 1,
-        "source-capability-gate": 29,
-        "source-marker": 1
+        "source-capability-gate": 29
       },
       "sourceFilesScanned": 658,
-      "sourceMarkers": 30
+      "sourceMarkers": 29
     },
     "bucketCounts": {
       "doneLocalNeedsProdProof": 1,
       "toProve": 1,
-      "toReview": 2,
+      "toReview": 1,
       "toReviewCapabilityGate": 29
     },
     "modulesTotal": 21,
@@ -1365,7 +1364,7 @@
       "severity": "P2",
       "category": "queue-blocked",
       "title": "10 protected/auth queue markers remain open",
-      "evidence": ".codex/context/TASK_BOARD.md:611 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | .codex/context/TASK_BOARD.md:1466 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | .codex/context/TASK_BOARD.md:1638 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs` | .codex/context/TASK_BOARD.md:5121 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production` | .codex/context/TASK_BOARD.md:5156 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production` | docs/planning/mvp-next-commits.md:515 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | docs/planning/mvp-next-commits.md:1251 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | docs/planning/mvp-next-commits.md:1619 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`",
+      "evidence": ".codex/context/TASK_BOARD.md:619 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | .codex/context/TASK_BOARD.md:1474 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | .codex/context/TASK_BOARD.md:1646 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs` | .codex/context/TASK_BOARD.md:5129 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production` | .codex/context/TASK_BOARD.md:5164 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production` | docs/planning/mvp-next-commits.md:523 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | docs/planning/mvp-next-commits.md:1259 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | docs/planning/mvp-next-commits.md:1627 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`",
       "recommendation": "Keep these open until approved protected auth, production-safe fixtures, or required approvals are available.",
       "bucket": "toReview"
     },
@@ -1745,19 +1744,6 @@
         "line": 155
       },
       "bucket": "toReviewCapabilityGate"
-    },
-    {
-      "id": "SOURCE_PLACEHOLDER_SOURCE_apps_api_src_modules_subscriptions_payments_manualPaymentGateway_provider_ts_16",
-      "severity": "P2",
-      "category": "source-marker",
-      "title": "PLACEHOLDER_SOURCE marker in apps/api/src/modules/subscriptions/payments/manualPaymentGateway.provider.ts:16",
-      "evidence": "note: 'Manual provider is configured as abstraction placeholder.',",
-      "recommendation": "Review whether this is test/tooling-only, accepted fail-closed behavior, or unfinished product work.",
-      "location": {
-        "file": "apps/api/src/modules/subscriptions/payments/manualPaymentGateway.provider.ts",
-        "line": 16
-      },
-      "bucket": "toReview"
     }
   ]
 }

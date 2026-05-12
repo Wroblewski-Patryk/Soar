@@ -4,6 +4,14 @@ Last updated: 2026-05-12
 
 ## Next Tiny Task
 
+Latest manual payment metadata cleanup:
+`V1-MANUAL-PAYMENT-METADATA-CLEANUP-2026-05-12` removed ambiguous
+`placeholder` wording from manual payment checkout metadata without changing
+checkout behavior. Focused subscription checkout proof passed (`8/8`);
+refreshed V1 static scan findings dropped from `33` to `32`
+(`P0:1`, `P1:1`, `P2:30`), and the `source-marker` category is gone. V1
+remains `NO-GO` on protected production proof and Operations `BLOCKED_AUTH`.
+
 Latest queue none-marker cleanup:
 `V1-QUEUE-NONE-MARKER-CLEANUP-2026-05-12` converted false unchecked `(none)`
 placeholders in `TASK_BOARD` to plain `None.` text and refreshed the V1

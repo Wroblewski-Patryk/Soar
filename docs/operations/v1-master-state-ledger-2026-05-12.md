@@ -1,6 +1,6 @@
 # V1 Master State Ledger
 
-Generated at: 2026-05-12T17:21:01.400Z
+Generated at: 2026-05-12T17:26:35.706Z
 Evidence date: 2026-05-12
 Status: `NO-GO`
 
@@ -14,8 +14,8 @@ Status: `NO-GO`
 
 - V1 status: `NO-GO`
 - Matrix counts: {"PASS_LOCAL":20,"BLOCKED_AUTH":1}
-- Findings by severity: {"P1":1,"P0":1,"P2":31}
-- Findings by bucket: {"doneLocalNeedsProdProof":1,"toProve":1,"toReview":2,"toReviewCapabilityGate":29}
+- Findings by severity: {"P1":1,"P0":1,"P2":30}
+- Findings by bucket: {"doneLocalNeedsProdProof":1,"toProve":1,"toReview":1,"toReviewCapabilityGate":29}
 - Modules by bucket: {"doneLocalNeedsProdProof":20,"blocked":1}
 
 ## Meaning Of Buckets
@@ -125,7 +125,6 @@ or planning work than generic missing-proof rows.
 | P2 | toReviewCapabilityGate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-markets.pl.ts:73 | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
 | P2 | toReviewCapabilityGate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-shell.en.ts:155 | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
 | P2 | toReviewCapabilityGate | PLACEHOLDER_SOURCE marker in apps/web/src/i18n/namespaces/dashboard-shell.pl.ts:155 | Triage against the exchange capability matrix; this may be accepted copy for unsupported placeholder adapters. |
-| P2 | toReview | PLACEHOLDER_SOURCE marker in apps/api/src/modules/subscriptions/payments/manualPaymentGateway.provider.ts:16 | Review whether this is test/tooling-only, accepted fail-closed behavior, or unfinished product work. |
 
 ## How To Use This File
 

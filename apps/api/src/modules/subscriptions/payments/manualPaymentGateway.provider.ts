@@ -13,7 +13,7 @@ export const manualPaymentGatewayProvider: PaymentGatewayAdapter = {
       expiresAt,
       metadata: {
         mode: 'manual',
-        note: 'Manual provider is configured as abstraction placeholder.',
+        note: 'Manual provider requires operator review before fulfillment.',
       },
     };
   },

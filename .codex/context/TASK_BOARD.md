@@ -17,6 +17,14 @@ Last updated: 2026-05-12
 
 ## READY
 
+- [x] `V1-MANUAL-PAYMENT-METADATA-CLEANUP-2026-05-12 fix: remove placeholder wording from manual payment metadata`
+  - Scope: changed manual payment checkout metadata from placeholder wording
+    to explicit operator-review wording without changing checkout behavior.
+    Focused subscription checkout proof passed (`8/8`). Refreshed V1 static
+    scan findings dropped from `33` to `32` (`P0:1`, `P1:1`, `P2:30`), and
+    the `source-marker` category is gone. V1 remains `NO-GO` on protected
+    production proof and Operations `BLOCKED_AUTH`.
+
 - [x] `V1-QUEUE-NONE-MARKER-CLEANUP-2026-05-12 release: remove false unchecked none markers`
   - Scope: converted old `IN_PROGRESS` and `REVIEW` placeholder rows from
     unchecked `(none)` checkboxes to plain `None.` text, then refreshed the V1
