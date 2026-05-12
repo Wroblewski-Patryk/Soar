@@ -4,6 +4,15 @@ Last updated: 2026-05-11
 
 ## Next Tiny Task
 
+Latest API Subscriptions doc truth update:
+`V1-API-SUBSCRIPTIONS-DOC-TRUTH-2026-05-12` aligned
+`docs/modules/api-subscriptions.md` with the V1 billing boundary. Checkout
+intent creation and admin/profile subscription state are in scope; provider
+webhook reconciliation remains future billing lifecycle scope. Refreshed V1
+generators now show `38` findings (`P0:1`, `P1:6`, `P2:31`) and no longer
+report `DOC_PLACEHOLDER_DOCS_MODULES_API_SUBSCRIPTIONS_MD`. V1 remains
+`NO-GO`; the next exact production unblock action remains the operator packet.
+
 Latest web Orders/Positions doc truth update:
 `V1-WEB-ORDERS-POSITIONS-DOC-TRUTH-2026-05-12` aligned
 `docs/modules/web-orders.md` and `docs/modules/web-positions.md` with the

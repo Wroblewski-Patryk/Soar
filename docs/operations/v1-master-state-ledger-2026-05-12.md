@@ -1,6 +1,6 @@
 # V1 Master State Ledger
 
-Generated at: 2026-05-12T16:39:06.716Z
+Generated at: 2026-05-12T16:45:51.505Z
 Evidence date: 2026-05-12
 Status: `NO-GO`
 
@@ -14,8 +14,8 @@ Status: `NO-GO`
 
 - V1 status: `NO-GO`
 - Matrix counts: {"PASS_LOCAL":20,"BLOCKED_AUTH":1}
-- Findings by severity: {"P1":6,"P0":1,"P2":32}
-- Findings by bucket: {"doneLocalNeedsProdProof":1,"toAddTests":1,"toClassifyQueue":1,"toCleanPlanning":1,"toProve":1,"toReview":1,"toReviewArchitectureOrFix":3,"toReviewCapabilityGate":29,"toReviewDocumentationOrImplement":1}
+- Findings by severity: {"P1":6,"P0":1,"P2":31}
+- Findings by bucket: {"doneLocalNeedsProdProof":1,"toAddTests":1,"toClassifyQueue":1,"toCleanPlanning":1,"toProve":1,"toReview":1,"toReviewArchitectureOrFix":3,"toReviewCapabilityGate":29}
 - Modules by bucket: {"doneLocalNeedsProdProof":20,"blocked":1}
 
 ## Meaning Of Buckets
@@ -93,7 +93,6 @@ or planning work than generic missing-proof rows.
 | P1 | toReviewArchitectureOrFix | Expected dashboard route '/dashboard/positions' has no page.tsx | Confirm whether the action surface intentionally lives on Dashboard Home or add the route/page proof. |
 | P1 | toReviewArchitectureOrFix | Web feature 'orders' has no active TS/TSX files | Confirm whether this is intentionally rendered through Dashboard Home or implement/retire the feature surface. |
 | P1 | toAddTests | Web feature 'positions' has no focused tests | Add focused UI/action tests or document why the route is owned by another feature. |
-| P2 | toReviewDocumentationOrImplement | Module doc still describes placeholder or not-implemented behavior | Either implement the documented surface or update the doc to the canonical owner and proof path. |
 
 ## All Findings Ledger
 
@@ -106,7 +105,6 @@ or planning work than generic missing-proof rows.
 | P1 | toReviewArchitectureOrFix | Expected dashboard route '/dashboard/positions' has no page.tsx | Confirm whether the action surface intentionally lives on Dashboard Home or add the route/page proof. |
 | P1 | toReviewArchitectureOrFix | Web feature 'orders' has no active TS/TSX files | Confirm whether this is intentionally rendered through Dashboard Home or implement/retire the feature surface. |
 | P1 | toAddTests | Web feature 'positions' has no focused tests | Add focused UI/action tests or document why the route is owned by another feature. |
-| P2 | toReviewDocumentationOrImplement | Module doc still describes placeholder or not-implemented behavior | Either implement the documented surface or update the doc to the canonical owner and proof path. |
 | P2 | toCleanPlanning | Queue scan still sees unchecked `(none)` markers | Ignore these in execution selection or change queue formatting so scan output is cleaner. |
 | P2 | toReviewCapabilityGate | NOT_IMPLEMENTED marker in apps/api/src/modules/backtests/backtests.controller.ts:4 | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
 | P2 | toReviewCapabilityGate | NOT_IMPLEMENTED marker in apps/api/src/modules/backtests/backtests.controller.ts:47 | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |

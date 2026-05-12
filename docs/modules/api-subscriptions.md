@@ -14,7 +14,9 @@
 
 Out of scope:
 - Profile UI rendering and client-side plan presentation (web profile module).
-- Final payment webhooks lifecycle (not implemented in this module snapshot).
+- Webhook-driven billing state transitions; V1 currently owns checkout intent
+  creation and admin/profile subscription state management, while external
+  provider webhook reconciliation remains a future billing lifecycle task.
 
 ## 2. Boundaries and Dependencies
 - Direct API exposure is via profile routes:
@@ -77,17 +79,19 @@ Out of scope:
 - Payment provider abstraction allows operational switch between manual and Stripe adapters.
 
 ## 8. Test Coverage and Evidence
-- Coverage is currently mostly indirect through profile and bot flows.
-- Focused entitlement coverage now proves:
+- Focused subscription evidence now includes:
+  - invalid entitlement payload fallback to the FREE plan structure,
+  - FREE-plan LIVE trading fail-closed behavior,
   - FREE-plan bot-count enforcement,
   - upgraded plan re-allocation,
   - no hardcoded bot-cap fallback,
   - explicit LIVE feature-gate enforcement on create and mode switch.
 - Suggested validation command:
 ```powershell
-pnpm --filter api test -- src/modules/bots/bots.subscription-entitlements.e2e.test.ts src/modules/profile/basic/basic.e2e.test.ts
+pnpm --filter api exec vitest run src/modules/subscriptions/subscriptionEntitlements.service.test.ts src/modules/bots/bots.subscription-entitlements.e2e.test.ts src/modules/profile/subscription/subscription.e2e.test.ts
 ```
 
 ## 9. Open Issues and Follow-Ups
 - Add dedicated e2e for checkout intent provider and URL sanitization contract.
-- Add webhook-driven subscription state transitions for production billing lifecycle.
+- Add webhook-driven subscription state transitions for the future production
+  billing lifecycle after the provider operating model is approved.

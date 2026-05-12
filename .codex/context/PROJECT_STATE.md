@@ -188,6 +188,19 @@ Last updated: 2026-05-12
   documented-placeholder gaps; findings are now `39`
   (`P0:1`, `P1:6`, `P2:32`) and the scorecard keeps V1 at `NO-GO`.
 
+## 2026-05-12 API Subscriptions Doc Truth
+
+- `V1-API-SUBSCRIPTIONS-DOC-TRUTH-2026-05-12` aligns
+  `docs/modules/api-subscriptions.md` with the current V1 billing boundary:
+  checkout intent creation and admin/profile subscription state are in scope,
+  while provider webhook reconciliation remains future billing lifecycle
+  scope.
+- Validation passed: V1 project-index/static-scan/master-ledger/scorecard
+  refresh, repository guardrails, and diff check.
+- The 2026-05-12 static scan no longer reports
+  `DOC_PLACEHOLDER_DOCS_MODULES_API_SUBSCRIPTIONS_MD`; findings are now `38`
+  (`P0:1`, `P1:6`, `P2:31`) and the scorecard keeps V1 at `NO-GO`.
+
 ## 2026-05-11 Workers Local Proof
 
 - `V1-WORKERS-LOCAL-PROOF-2026-05-11` moves Workers to `PASS_LOCAL` in the V1

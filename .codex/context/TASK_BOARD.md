@@ -17,6 +17,15 @@ Last updated: 2026-05-11
 
 ## READY
 
+- [x] `V1-API-SUBSCRIPTIONS-DOC-TRUTH-2026-05-12 docs: align subscriptions billing boundary`
+  - Scope: updated `docs/modules/api-subscriptions.md` to state the V1 billing
+    boundary: checkout intent creation and admin/profile subscription state
+    are in scope, while provider webhook reconciliation remains future billing
+    lifecycle scope. V1 generator refresh passed and repository guardrails
+    passed. The 2026-05-12 static scan no longer reports
+    `DOC_PLACEHOLDER_DOCS_MODULES_API_SUBSCRIPTIONS_MD`; findings are now
+    `38` (`P0:1`, `P1:6`, `P2:31`). V1 remains `NO-GO`.
+
 - [x] `V1-WEB-ORDERS-POSITIONS-DOC-TRUTH-2026-05-12 docs: align web Orders/Positions module truth`
   - Scope: updated `docs/modules/web-orders.md` and
     `docs/modules/web-positions.md` to match the canonical route map:

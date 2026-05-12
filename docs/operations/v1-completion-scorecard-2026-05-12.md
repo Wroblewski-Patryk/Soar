@@ -1,6 +1,6 @@
 # V1 Completion Scorecard
 
-Generated at: 2026-05-12T16:39:07.103Z
+Generated at: 2026-05-12T16:45:52.047Z
 Evidence date: 2026-05-12
 Status: `NO-GO`
 Source ledger: `docs/operations/v1-master-state-ledger-2026-05-12.json`
@@ -12,7 +12,7 @@ Source ledger: `docs/operations/v1-master-state-ledger-2026-05-12.json`
 - Release readiness: 42.4%
 - P0 modules not release-ready: 13/13
 - Blocked modules: Operations
-- Concrete non-proof gaps: 6
+- Concrete non-proof gaps: 5
 
 Important: percentages are planning signals, not release approval. V1 remains
 `NO-GO` while any P0 module lacks accepted proof or any release gate is
