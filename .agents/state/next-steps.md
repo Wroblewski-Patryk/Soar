@@ -4,6 +4,17 @@ Last updated: 2026-05-12
 
 ## Next Tiny Task
 
+Latest production UI input unblock sync:
+`V1-PROD-UI-INPUT-UNBLOCK-SYNC-00169D7F-2026-05-12` synchronized the current
+V1 operator unblock packet with the remaining P1 Bots production-safe
+clickthrough blocker. The packet now lists `PROD_UI_AUDIT_*` auth inputs,
+includes `pnpm run ops:ui:prod-clickthrough` before the final release gate, and
+states that public route reachability or unauthenticated redirects do not
+satisfy V1 UI evidence. V1 remains `NO-GO`; next exact unblock action is to
+provide approved `PROD_UI_AUDIT_*` app/admin auth and run the UI clickthrough
+to `PASS` alongside `LIVEIMPORT-03`, rollback proof PASS, RC Gate 4 approval,
+and the final non-dry-run release gate.
+
 Latest protected queue dedupe:
 `V1-PROTECTED-QUEUE-DEDUPE-2026-05-12` updated V1 static scan reporting so
 protected/auth queue blockers are deduped by task text across `TASK_BOARD` and
@@ -114,10 +125,11 @@ Current operator unblock packet:
 `V1-OPERATOR-UNBLOCK-PACKET-00169D7F-2026-05-12` publishes the active no-secret
 handoff for deployed build-info `00169d7fdc3aff8317759137b05594b20e773c8e`:
 `docs/operations/v1-operator-unblock-packet-00169d7f-2026-05-12.md`. Next
-exact unblock action: provide `LIVEIMPORT_READBACK_*` and `ROLLBACK_GUARD_*`
-auth, run the packet's `LIVEIMPORT-03` and rollback proof commands, provide
-real Gate 4 approvers, refresh RC artifacts, then run the final production
-release gate without dry-run.
+exact unblock action: provide `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`,
+and `PROD_UI_AUDIT_*` auth, run the packet's `LIVEIMPORT-03`, rollback proof,
+and production UI clickthrough commands to PASS, provide real Gate 4
+approvers, refresh RC artifacts, then run the final production release gate
+without dry-run.
 
 Latest final preflight refresh:
 `V1-FINAL-PREFLIGHT-CURRENT-2026-05-12` refreshes the no-secret final

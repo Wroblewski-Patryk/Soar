@@ -17,6 +17,19 @@ Last updated: 2026-05-12
 
 ## READY
 
+- [x] `V1-PROD-UI-INPUT-UNBLOCK-SYNC-00169D7F-2026-05-12 release: add production UI audit inputs to operator packet`
+  - Scope: synchronized the current V1 operator unblock packet with the
+    remaining P1 Bots production-safe clickthrough blocker. The packet now
+    lists `PROD_UI_AUDIT_*` auth inputs, includes
+    `pnpm run ops:ui:prod-clickthrough` before the final release gate, and
+    states that public route reachability or unauthenticated redirects do not
+    satisfy V1 UI evidence. Evidence:
+    `docs/planning/v1-prod-ui-input-unblock-sync-00169d7f-2026-05-12-task.md`
+    and
+    `docs/operations/v1-operator-unblock-packet-00169d7f-2026-05-12.md`.
+    V1 remains `NO-GO` until approved UI audit auth produces a PASS artifact
+    plus the protected Operations evidence and final gate are ready.
+
 - [x] `V1-PROTECTED-QUEUE-DEDUPE-2026-05-12 release: dedupe protected queue blocker reporting`
   - Scope: updated `scripts/runV1StaticIssueScan.mjs` so protected/auth queue
     blockers are deduped by task text across `TASK_BOARD` and

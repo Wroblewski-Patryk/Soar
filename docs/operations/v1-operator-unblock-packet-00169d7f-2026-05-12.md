@@ -10,6 +10,7 @@
 - Remaining blockers:
   - missing `LIVEIMPORT_READBACK_*` auth
   - missing `ROLLBACK_GUARD_*` auth
+  - missing `PROD_UI_AUDIT_*` auth for production-safe Bots/UI clickthrough
   - missing `LIVEIMPORT-03` runtime readback
   - rollback proof is fresh but `FAIL`
   - RC Gate 4/sign-off/checklist are fresh but `failed`
@@ -23,6 +24,14 @@
   `LIVEIMPORT_READBACK_AUTH_EMAIL` plus `LIVEIMPORT_READBACK_AUTH_PASSWORD`
 - `ROLLBACK_GUARD_AUTH_TOKEN`, or
   `ROLLBACK_GUARD_AUTH_EMAIL` plus `ROLLBACK_GUARD_AUTH_PASSWORD`
+- `PROD_UI_AUDIT_AUTH_TOKEN`, or
+  `PROD_UI_AUDIT_AUTH_EMAIL` plus `PROD_UI_AUDIT_AUTH_PASSWORD`
+- Optional production admin UI audit auth, if admin routes are included:
+  - `PROD_UI_AUDIT_ADMIN_TOKEN`, or
+    `PROD_UI_AUDIT_ADMIN_EMAIL` plus `PROD_UI_AUDIT_ADMIN_PASSWORD`
+- Optional UI audit route override:
+  - `PROD_UI_AUDIT_EXTRA_ROUTES` for approved non-destructive dashboard,
+    bot runtime, or admin routes that must be included in the clickthrough
 - Optional private OPS layer, if enabled:
   - `LIVEIMPORT_READBACK_OPS_BASIC_USER` plus
     `LIVEIMPORT_READBACK_OPS_BASIC_PASSWORD`, or
@@ -93,7 +102,19 @@ Required result:
 - RC sign-off record reports `RC status: APPROVED`
 - release-candidate checklist shows the current gate snapshot with `G4=PASS`
 
-### 5. Rerun Final Release Gate
+### 5. Run Production UI Clickthrough To PASS
+
+```powershell
+pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate --output-json "docs/operations/_artifacts-prod-ui-module-clickthrough-$expectedShaShort-$releaseDate.json" --output-md "docs/operations/prod-ui-module-clickthrough-$expectedShaShort-$releaseDate.md"
+```
+
+Required result: status `PASS` for the deployed build-info SHA, including
+authenticated production-safe coverage for `/dashboard/bots` and
+`/dashboard/bots/create`. The runner is non-destructive and must not persist
+tokens, cookies, private headers, screenshots, or protected payloads. Public
+route reachability or unauthenticated redirects do not satisfy this step.
+
+### 6. Rerun Final Release Gate
 
 ```powershell
 pnpm run ops:release:v1:gate -- --environment prod --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha $expectedSha --today $releaseDate
@@ -107,6 +128,8 @@ and fix the listed blocker instead of overriding the gate.
 
 ## Stop Conditions
 - Any protected route returns `401` or `403`.
+- The production UI clickthrough returns `BLOCKED_AUTH`, `FAIL`, or a
+  build-info mismatch.
 - `LIVEIMPORT-03` has no running session or no protected runtime positions
   payload.
 - Rollback proof reports `FAIL` or `shouldRollback=true`.
@@ -116,4 +139,7 @@ and fix the listed blocker instead of overriding the gate.
 ## Acceptance Rule
 V1 is achieved only when the final release gate returns `ready` and all
 referenced protected artifacts are present, fresh for the same evidence date,
-and free of secret values.
+and free of secret values. The required artifact set includes production-safe
+Bots/UI clickthrough evidence from `ops:ui:prod-clickthrough`; local browser
+proof, public route reachability, or unauthenticated redirect evidence is not
+enough for V1.
