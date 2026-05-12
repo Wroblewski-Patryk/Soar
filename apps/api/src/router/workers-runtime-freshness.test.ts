@@ -17,6 +17,7 @@ const restoreEnv = (key: string, value: string | undefined) => {
 };
 
 beforeEach(async () => {
+  await prisma.marketCandleCache.deleteMany();
   await prisma.botRuntimeSession.updateMany({
     where: {
       status: 'RUNNING',

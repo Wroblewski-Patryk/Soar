@@ -240,7 +240,8 @@ export const useBotsListController = ({ confirmLiveRisk, t }: UseBotsListControl
   };
 
   const handleDelete = async (bot: Bot) => {
-    if (bot.mode === "LIVE" || bot.liveOptIn || bot.isActive) {
+    const deletesLiveTradingContext = bot.mode === "LIVE" || bot.liveOptIn;
+    if (deletesLiveTradingContext) {
       const accepted = await confirmLiveRisk(t("dashboard.bots.confirms.liveDelete"));
       if (!accepted) return;
     }

@@ -1,6 +1,6 @@
 import { Exchange } from '@prisma/client';
 
-import { normalizeSymbol } from '../../lib/symbols';
+import { normalizeSymbol, normalizeSymbolStrict } from '../../lib/symbols';
 import { assertExchangeCapability } from './exchangeCapabilities';
 import { loadExchangePublicMarketMap } from './exchangePublicRead.service';
 
@@ -54,9 +54,10 @@ const TEST_MARKETS: Record<TradeMarket, PublicMarketEntry[]> = {
 let catalogCache: Record<string, { fetchedAt: number; entries: PublicMarketEntry[] } | null> = {};
 
 const normalizeAsset = (value: string | undefined) => normalizeSymbol(value);
+const normalizeMarketSymbol = (value: string | undefined) => normalizeSymbolStrict(value);
 
 const toPublicMarketEntry = (market: MarketLike): PublicMarketEntry | null => {
-  const id = normalizeAsset(market.id);
+  const id = normalizeMarketSymbol(market.id);
   const baseAsset = normalizeAsset(market.base);
   const quoteAsset = normalizeAsset(market.quote);
   if (!id || !baseAsset || !quoteAsset) return null;
@@ -105,7 +106,7 @@ const fetchTickerMap = async (
 
     const map = new Map<string, { quoteVolume24h: number; lastPrice: number | null }>();
     for (const item of payload) {
-      const symbol = normalizeAsset(item.symbol);
+      const symbol = normalizeMarketSymbol(item.symbol);
       if (!symbol) continue;
       const quoteVolume24h = Number.parseFloat(item.quoteVolume ?? '0');
       const lastPriceRaw = Number.parseFloat(item.lastPrice ?? '');

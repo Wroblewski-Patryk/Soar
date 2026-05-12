@@ -468,6 +468,43 @@ describe("BotsManagement", () => {
     expect(deleteMock).not.toHaveBeenCalled();
   });
 
+  it("deletes active PAPER bot without showing LIVE confirmation", async () => {
+    listStrategiesMock.mockResolvedValue([{ id: "s-delete-paper", name: "Delete Paper Strategy", interval: "5m" }]);
+    listMarketUniversesMock.mockResolvedValue([
+      { id: "g-delete-paper", name: "Delete Paper Group", marketType: "FUTURES", baseCurrency: "USDT", whitelist: [], blacklist: [] },
+    ]);
+    listMock
+      .mockResolvedValueOnce([
+        {
+          id: "b-paper",
+          name: "Paper Bot",
+          mode: "PAPER",
+          paperStartBalance: 10000,
+          marketType: "FUTURES",
+          positionMode: "ONE_WAY",
+          isActive: true,
+          liveOptIn: false,
+          maxOpenPositions: 1,
+        },
+      ])
+      .mockResolvedValueOnce([]);
+    deleteMock.mockResolvedValue(undefined);
+    await renderWithI18n();
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("Paper Bot")).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Usun" }));
+
+    await waitFor(() => {
+      expect(deleteMock).toHaveBeenCalledWith("b-paper");
+    });
+    expect(
+      screen.queryByText("Potwierdzenie LIVE: usuniecie tego bota zatrzyma aktywna konfiguracje tradingowa. Kontynuowac?")
+    ).not.toBeInTheDocument();
+  });
+
   it("renders monitoring tab with runtime session summary, symbol stats and trades", async () => {
     listStrategiesMock.mockResolvedValue([{ id: "s-monitor", name: "Monitor Strategy", interval: "5m" }]);
     listMarketUniversesMock.mockResolvedValue([
