@@ -1,6 +1,6 @@
 # V1 Master State Ledger
 
-Generated at: 2026-05-12T17:08:11.879Z
+Generated at: 2026-05-12T17:21:01.400Z
 Evidence date: 2026-05-12
 Status: `NO-GO`
 
@@ -14,8 +14,8 @@ Status: `NO-GO`
 
 - V1 status: `NO-GO`
 - Matrix counts: {"PASS_LOCAL":20,"BLOCKED_AUTH":1}
-- Findings by severity: {"P1":1,"P0":1,"P2":32}
-- Findings by bucket: {"doneLocalNeedsProdProof":1,"toCleanPlanning":1,"toProve":1,"toReview":2,"toReviewCapabilityGate":29}
+- Findings by severity: {"P1":1,"P0":1,"P2":31}
+- Findings by bucket: {"doneLocalNeedsProdProof":1,"toProve":1,"toReview":2,"toReviewCapabilityGate":29}
 - Modules by bucket: {"doneLocalNeedsProdProof":20,"blocked":1}
 
 ## Meaning Of Buckets
@@ -96,7 +96,6 @@ or planning work than generic missing-proof rows.
 | P0 | toProve | Operations remains BLOCKED_AUTH | Execute the mapped proof path from project index priority 19. |
 | P1 | doneLocalNeedsProdProof | Bots is locally proven but still lacks production-safe clickthrough | Run or add non-destructive production clickthrough on throwaway fixtures before final V1 claim. |
 | P2 | toReview | 10 protected/auth queue markers remain open | Keep these open until approved protected auth, production-safe fixtures, or required approvals are available. |
-| P2 | toCleanPlanning | Queue scan still sees unchecked `(none)` markers | Ignore these in execution selection or change queue formatting so scan output is cleaner. |
 | P2 | toReviewCapabilityGate | NOT_IMPLEMENTED marker in apps/api/src/modules/backtests/backtests.controller.ts:4 | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
 | P2 | toReviewCapabilityGate | NOT_IMPLEMENTED marker in apps/api/src/modules/backtests/backtests.controller.ts:47 | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |
 | P2 | toReviewCapabilityGate | NOT_IMPLEMENTED marker in apps/api/src/modules/bots/bots.controller.ts:371 | Triage as accepted fail-closed capability gating unless the V1 matrix row expects this exchange operation to be supported. |

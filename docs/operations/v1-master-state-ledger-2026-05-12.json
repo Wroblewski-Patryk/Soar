@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-12T17:08:11.879Z",
+  "generatedAt": "2026-05-12T17:21:01.400Z",
   "evidenceDate": "2026-05-12",
   "status": "NO-GO",
   "sources": {
@@ -13,15 +13,14 @@
       "BLOCKED_AUTH": 1
     },
     "findingCounts": {
-      "totalFindings": 34,
+      "totalFindings": 33,
       "bySeverity": {
         "P1": 1,
         "P0": 1,
-        "P2": 32
+        "P2": 31
       },
       "byCategory": {
         "v1-proof-gap": 2,
-        "queue-hygiene": 1,
         "queue-blocked": 1,
         "source-capability-gate": 29,
         "source-marker": 1
@@ -31,7 +30,6 @@
     },
     "bucketCounts": {
       "doneLocalNeedsProdProof": 1,
-      "toCleanPlanning": 1,
       "toProve": 1,
       "toReview": 2,
       "toReviewCapabilityGate": 29
@@ -1367,18 +1365,9 @@
       "severity": "P2",
       "category": "queue-blocked",
       "title": "10 protected/auth queue markers remain open",
-      "evidence": ".codex/context/TASK_BOARD.md:600 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | .codex/context/TASK_BOARD.md:1455 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | .codex/context/TASK_BOARD.md:1627 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs` | .codex/context/TASK_BOARD.md:5110 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production` | .codex/context/TASK_BOARD.md:5145 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production` | docs/planning/mvp-next-commits.md:503 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | docs/planning/mvp-next-commits.md:1239 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | docs/planning/mvp-next-commits.md:1607 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`",
+      "evidence": ".codex/context/TASK_BOARD.md:611 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | .codex/context/TASK_BOARD.md:1466 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | .codex/context/TASK_BOARD.md:1638 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs` | .codex/context/TASK_BOARD.md:5121 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production` | .codex/context/TASK_BOARD.md:5156 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production` | docs/planning/mvp-next-commits.md:515 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | docs/planning/mvp-next-commits.md:1251 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | docs/planning/mvp-next-commits.md:1619 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`",
       "recommendation": "Keep these open until approved protected auth, production-safe fixtures, or required approvals are available.",
       "bucket": "toReview"
-    },
-    {
-      "id": "QUEUE_NONE_MARKERS_INDEXED_AS_UNCHECKED",
-      "severity": "P2",
-      "category": "queue-hygiene",
-      "title": "Queue scan still sees unchecked `(none)` markers",
-      "evidence": ".codex/context/TASK_BOARD.md:6624, .codex/context/TASK_BOARD.md:6642",
-      "recommendation": "Ignore these in execution selection or change queue formatting so scan output is cleaner.",
-      "bucket": "toCleanPlanning"
     },
     {
       "id": "SOURCE_NOT_IMPLEMENTED_apps_api_src_modules_backtests_backtests_controller_ts_4",

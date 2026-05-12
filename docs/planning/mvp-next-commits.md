@@ -8,6 +8,14 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `V1-QUEUE-NONE-MARKER-CLEANUP-2026-05-12 release: remove false unchecked none markers`
+  - 2026-05-12: Converted old `IN_PROGRESS` and `REVIEW` placeholder rows from
+    unchecked `(none)` checkboxes to plain `None.` text, then refreshed the V1
+    generator chain. Static findings dropped from `34` to `33`
+    (`P0:1`, `P1:1`, `P2:31`), and the master ledger no longer reports the
+    `toCleanPlanning` queue-hygiene bucket. V1 remains `NO-GO` on protected
+    production proof and Operations `BLOCKED_AUTH`.
+
 - [x] `V1-CURRENT-STATE-DRIFT-CLEANUP-2026-05-12 release: clean current V1 blocker wording`
   - 2026-05-12: Refreshed the V1 generator chain and corrected active queue
     summaries that still described the final non-dry-run production gate as

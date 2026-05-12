@@ -4,6 +4,14 @@ Last updated: 2026-05-12
 
 ## Next Tiny Task
 
+Latest queue none-marker cleanup:
+`V1-QUEUE-NONE-MARKER-CLEANUP-2026-05-12` converted false unchecked `(none)`
+placeholders in `TASK_BOARD` to plain `None.` text and refreshed the V1
+generator chain. Static scan findings dropped from `34` to `33`
+(`P0:1`, `P1:1`, `P2:31`), and the master ledger no longer reports the
+`toCleanPlanning` queue-hygiene bucket. V1 remains `NO-GO` on protected
+production proof and Operations `BLOCKED_AUTH`.
+
 Latest current-state drift cleanup:
 `V1-CURRENT-STATE-DRIFT-CLEANUP-2026-05-12` reran the V1 generator chain and
 cleaned active queue/state wording that still described the final non-dry-run

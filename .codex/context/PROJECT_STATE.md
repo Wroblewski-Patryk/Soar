@@ -4,6 +4,14 @@ Last updated: 2026-05-12
 
 ## 2026-05-12 Production Activation Refresh
 
+- `V1-QUEUE-NONE-MARKER-CLEANUP-2026-05-12` removed false unchecked
+  `(none)` placeholders from `TASK_BOARD` section headings and refreshed the
+  V1 generator chain.
+- Static scan findings dropped from `34` to `33` (`P0:1`, `P1:1`, `P2:31`);
+  the master ledger no longer reports the `toCleanPlanning` queue-hygiene
+  bucket. V1 remains `NO-GO` because Operations is still `BLOCKED_AUTH` and
+  production-safe proof requires approved protected inputs.
+
 - `V1-CURRENT-STATE-DRIFT-CLEANUP-2026-05-12` refreshed the V1 generator
   chain after the protected-input checkpoint and cleaned active current-state
   wording that still described the final non-dry-run gate as not run or
