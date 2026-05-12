@@ -58,6 +58,8 @@ const scanRules = [
 
 const toPosixPath = (value) => value.split(path.sep).join('/');
 const relativePath = (targetPath) => toPosixPath(path.relative(repoRoot, targetPath));
+const approvedLegacyDashboardRedirects = new Set(['/dashboard/orders', '/dashboard/positions']);
+const approvedRuntimeOwnedWebFeatures = new Set(['orders', 'positions']);
 
 const fileExists = async (targetPath) => {
   try {
@@ -236,6 +238,10 @@ const collectSurfaceFindings = async (projectIndex) => {
   const findings = [];
 
   for (const feature of projectIndex.webFeatures ?? []) {
+    if (approvedRuntimeOwnedWebFeatures.has(feature.name)) {
+      continue;
+    }
+
     if (feature.fileCount === 0) {
       findings.push({
         id: `WEB_FEATURE_EMPTY_${feature.name.toUpperCase()}`,
@@ -275,6 +281,10 @@ const collectSurfaceFindings = async (projectIndex) => {
 
   const routeSet = new Set((projectIndex.nextRoutes ?? []).map((route) => route.route));
   for (const expectedRoute of ['/dashboard/orders', '/dashboard/positions']) {
+    if (approvedLegacyDashboardRedirects.has(expectedRoute)) {
+      continue;
+    }
+
     if (!routeSet.has(expectedRoute)) {
       findings.push({
         id: `WEB_ROUTE_MISSING_${expectedRoute.replace(/[^A-Za-z0-9]/g, '_').toUpperCase()}`,

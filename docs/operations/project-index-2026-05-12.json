@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-12T16:45:50.367Z",
+  "generatedAt": "2026-05-12T16:50:54.997Z",
   "evidenceDate": "2026-05-12",
   "repoRoot": "C:/Personal/Projekty/Aplikacje/Soar",
   "sources": {
@@ -1831,62 +1831,62 @@
   "uncheckedTasks": [
     {
       "source": ".codex/context/TASK_BOARD.md",
-      "line": 562,
+      "line": 571,
       "text": "- [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`"
     },
     {
       "source": ".codex/context/TASK_BOARD.md",
-      "line": 1417,
+      "line": 1426,
       "text": "- [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`"
     },
     {
       "source": ".codex/context/TASK_BOARD.md",
-      "line": 1589,
+      "line": 1598,
       "text": "- [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`"
     },
     {
       "source": ".codex/context/TASK_BOARD.md",
-      "line": 5072,
+      "line": 5081,
       "text": "- [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`"
     },
     {
       "source": ".codex/context/TASK_BOARD.md",
-      "line": 5107,
+      "line": 5116,
       "text": "- [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`"
     },
     {
       "source": ".codex/context/TASK_BOARD.md",
-      "line": 6586,
+      "line": 6595,
       "text": "- [ ] (none)"
     },
     {
       "source": ".codex/context/TASK_BOARD.md",
-      "line": 6604,
+      "line": 6613,
       "text": "- [ ] (none)"
     },
     {
       "source": "docs/planning/mvp-next-commits.md",
-      "line": 477,
+      "line": 486,
       "text": "- [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`"
     },
     {
       "source": "docs/planning/mvp-next-commits.md",
-      "line": 1213,
+      "line": 1222,
       "text": "- [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`"
     },
     {
       "source": "docs/planning/mvp-next-commits.md",
-      "line": 1581,
+      "line": 1590,
       "text": "- [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`"
     },
     {
       "source": "docs/planning/mvp-next-commits.md",
-      "line": 4534,
+      "line": 4543,
       "text": "- [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`"
     },
     {
       "source": "docs/planning/mvp-next-commits.md",
-      "line": 4564,
+      "line": 4573,
       "text": "- [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`"
     }
   ],

@@ -201,6 +201,19 @@ Last updated: 2026-05-12
   `DOC_PLACEHOLDER_DOCS_MODULES_API_SUBSCRIPTIONS_MD`; findings are now `38`
   (`P0:1`, `P1:6`, `P2:31`) and the scorecard keeps V1 at `NO-GO`.
 
+## 2026-05-12 Static Scan Legacy Route Classification
+
+- `V1-STATIC-SCAN-LEGACY-ROUTE-CLASSIFICATION-2026-05-12` updates
+  `scripts/runV1StaticIssueScan.mjs` so approved `/dashboard/orders` and
+  `/dashboard/positions` legacy redirects plus runtime-owned Orders/Positions
+  web feature shells are not reported as missing route/page implementation.
+- Validation passed: `node --check scripts/runV1StaticIssueScan.mjs`, V1
+  project-index/static-scan/master-ledger/scorecard refresh, repository
+  guardrails, and diff check.
+- The 2026-05-12 static scan now reports `34` findings
+  (`P0:1`, `P1:2`, `P2:31`), with concrete non-proof gaps reduced to `1`.
+  V1 remains `NO-GO`; Operations protected evidence remains the P0 blocker.
+
 ## 2026-05-11 Workers Local Proof
 
 - `V1-WORKERS-LOCAL-PROOF-2026-05-11` moves Workers to `PASS_LOCAL` in the V1

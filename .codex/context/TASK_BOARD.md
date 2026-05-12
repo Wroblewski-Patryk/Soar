@@ -17,6 +17,15 @@ Last updated: 2026-05-11
 
 ## READY
 
+- [x] `V1-STATIC-SCAN-LEGACY-ROUTE-CLASSIFICATION-2026-05-12 ops: classify approved legacy web routes`
+  - Scope: updated `scripts/runV1StaticIssueScan.mjs` so approved
+    `/dashboard/orders` and `/dashboard/positions` legacy redirects plus
+    runtime-owned Orders/Positions web feature shells are not reported as
+    missing active pages. Script syntax check, V1 generator refresh, and
+    repository guardrails passed. The 2026-05-12 static scan now reports `34`
+    findings (`P0:1`, `P1:2`, `P2:31`), with concrete non-proof gaps reduced
+    to `1`. V1 remains `NO-GO`.
+
 - [x] `V1-API-SUBSCRIPTIONS-DOC-TRUTH-2026-05-12 docs: align subscriptions billing boundary`
   - Scope: updated `docs/modules/api-subscriptions.md` to state the V1 billing
     boundary: checkout intent creation and admin/profile subscription state

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-12T16:45:52.047Z",
+  "generatedAt": "2026-05-12T16:50:56.678Z",
   "evidenceDate": "2026-05-12",
   "status": "NO-GO",
   "sourceLedger": "docs/operations/v1-master-state-ledger-2026-05-12.json",
@@ -56,7 +56,7 @@
     "blockedModules": [
       "Operations"
     ],
-    "concreteNonProofGaps": 5
+    "concreteNonProofGaps": 1
   },
   "phaseReadiness": [
     {
@@ -707,45 +707,9 @@
       "severity": "P1",
       "category": "queue-open-work",
       "title": "10 unchecked queue markers remain",
-      "evidence": ".codex/context/TASK_BOARD.md:562 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | .codex/context/TASK_BOARD.md:1417 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | .codex/context/TASK_BOARD.md:1589 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs` | .codex/context/TASK_BOARD.md:5072 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production` | .codex/context/TASK_BOARD.md:5107 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production` | docs/planning/mvp-next-commits.md:477 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | docs/planning/mvp-next-commits.md:1213 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | docs/planning/mvp-next-commits.md:1581 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`",
+      "evidence": ".codex/context/TASK_BOARD.md:571 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | .codex/context/TASK_BOARD.md:1426 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | .codex/context/TASK_BOARD.md:1598 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs` | .codex/context/TASK_BOARD.md:5081 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production` | .codex/context/TASK_BOARD.md:5116 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production` | docs/planning/mvp-next-commits.md:486 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | docs/planning/mvp-next-commits.md:1222 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | docs/planning/mvp-next-commits.md:1590 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`",
       "recommendation": "Classify each as executable, blocked by auth/approval, or historical carryover.",
       "bucket": "toClassifyQueue"
-    },
-    {
-      "id": "WEB_ROUTE_MISSING__DASHBOARD_ORDERS",
-      "severity": "P1",
-      "category": "web-route-gap",
-      "title": "Expected dashboard route '/dashboard/orders' has no page.tsx",
-      "evidence": "route=/dashboard/orders",
-      "recommendation": "Confirm whether the action surface intentionally lives on Dashboard Home or add the route/page proof.",
-      "bucket": "toReviewArchitectureOrFix"
-    },
-    {
-      "id": "WEB_ROUTE_MISSING__DASHBOARD_POSITIONS",
-      "severity": "P1",
-      "category": "web-route-gap",
-      "title": "Expected dashboard route '/dashboard/positions' has no page.tsx",
-      "evidence": "route=/dashboard/positions",
-      "recommendation": "Confirm whether the action surface intentionally lives on Dashboard Home or add the route/page proof.",
-      "bucket": "toReviewArchitectureOrFix"
-    },
-    {
-      "id": "WEB_FEATURE_EMPTY_ORDERS",
-      "severity": "P1",
-      "category": "web-surface-gap",
-      "title": "Web feature 'orders' has no active TS/TSX files",
-      "evidence": "feature=orders",
-      "recommendation": "Confirm whether this is intentionally rendered through Dashboard Home or implement/retire the feature surface.",
-      "bucket": "toReviewArchitectureOrFix"
-    },
-    {
-      "id": "WEB_FEATURE_NO_TESTS_POSITIONS",
-      "severity": "P1",
-      "category": "web-test-gap",
-      "title": "Web feature 'positions' has no focused tests",
-      "evidence": "feature=positions, files=1",
-      "recommendation": "Add focused UI/action tests or document why the route is owned by another feature.",
-      "bucket": "toAddTests"
     }
   ]
 }

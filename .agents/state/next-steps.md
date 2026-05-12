@@ -4,6 +4,15 @@ Last updated: 2026-05-11
 
 ## Next Tiny Task
 
+Latest static scan route classification:
+`V1-STATIC-SCAN-LEGACY-ROUTE-CLASSIFICATION-2026-05-12` updated
+`scripts/runV1StaticIssueScan.mjs` so approved `/dashboard/orders` and
+`/dashboard/positions` legacy redirects plus runtime-owned Orders/Positions
+web feature shells are not reported as missing active pages. Refreshed V1
+generators now show `34` findings (`P0:1`, `P1:2`, `P2:31`) and concrete
+non-proof gaps are down to `1`. V1 remains `NO-GO`; the next exact production
+unblock action remains the operator packet.
+
 Latest API Subscriptions doc truth update:
 `V1-API-SUBSCRIPTIONS-DOC-TRUTH-2026-05-12` aligned
 `docs/modules/api-subscriptions.md` with the V1 billing boundary. Checkout
