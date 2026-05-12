@@ -1,6 +1,6 @@
 # V1 Master State Ledger
 
-Generated at: 2026-05-12T18:08:19.269Z
+Generated at: 2026-05-12T18:52:56.798Z
 Evidence date: 2026-05-12
 Status: `NO-GO`
 
@@ -95,7 +95,7 @@ or planning work than generic missing-proof rows.
 | --- | --- | --- | --- |
 | P0 | toProve | Operations remains BLOCKED_AUTH | Execute the mapped proof path from project index priority 19. |
 | P1 | doneLocalNeedsProdProof | Bots is locally proven but still lacks production-safe clickthrough | Run or add non-destructive production clickthrough on throwaway fixtures before final V1 claim. |
-| P2 | toReview | 5 protected/auth queue blockers remain open | Keep these open until approved protected auth, production-safe fixtures, or required approvals are available. |
+| P2 | toReview | 2 protected/auth queue blockers remain open | Keep these open until approved protected auth, production-safe fixtures, or required approvals are available. |
 
 ## How To Use This File
 

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-12T18:07:57.130Z",
+  "generatedAt": "2026-05-12T18:52:55.305Z",
   "evidenceDate": "2026-05-12",
   "repoRoot": "C:/Personal/Projekty/Aplikacje/Soar",
   "sources": {
@@ -1831,53 +1831,23 @@
   "uncheckedTasks": [
     {
       "source": ".codex/context/TASK_BOARD.md",
-      "line": 671,
+      "line": 751,
       "text": "- [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`"
     },
     {
       "source": ".codex/context/TASK_BOARD.md",
-      "line": 1526,
-      "text": "- [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`"
-    },
-    {
-      "source": ".codex/context/TASK_BOARD.md",
-      "line": 1698,
-      "text": "- [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`"
-    },
-    {
-      "source": ".codex/context/TASK_BOARD.md",
-      "line": 5181,
+      "line": 5273,
       "text": "- [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`"
     },
     {
-      "source": ".codex/context/TASK_BOARD.md",
-      "line": 5216,
-      "text": "- [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`"
-    },
-    {
       "source": "docs/planning/mvp-next-commits.md",
-      "line": 575,
+      "line": 656,
       "text": "- [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`"
     },
     {
       "source": "docs/planning/mvp-next-commits.md",
-      "line": 1311,
-      "text": "- [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`"
-    },
-    {
-      "source": "docs/planning/mvp-next-commits.md",
-      "line": 1679,
-      "text": "- [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`"
-    },
-    {
-      "source": "docs/planning/mvp-next-commits.md",
-      "line": 4632,
+      "line": 4725,
       "text": "- [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`"
-    },
-    {
-      "source": "docs/planning/mvp-next-commits.md",
-      "line": 4662,
-      "text": "- [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`"
     }
   ],
   "v1WorkMap": [

@@ -4,6 +4,15 @@ Last updated: 2026-05-12
 
 ## 2026-05-12 Production Activation Refresh
 
+- `V1-GENERATED-STATE-REFRESH-AFTER-QUEUE-HYGIENE-00169D7F-2026-05-12`
+  refreshed the V1 project index, static scan, master ledger, and completion
+  scorecard after stale queue-marker supersessions.
+- Generated state remains `NO-GO`: `PASS_LOCAL:20`, `BLOCKED_AUTH:1`, static
+  findings `3` (`P0:1`, `P1:1`, `P2:1`), scorecard `86.8%` implementation,
+  `61.3%` evidence coverage, and `42.4%` release readiness. Static scan now
+  reports `2 protected/auth queue blockers remain open`, matching
+  `CONTROLLED-LIVE-SESSION-PROOF` and `LIVEIMPORT-03`.
+
 - `PROD-UI-AUDIT-PLAN-SUPERSEDE-00169D7F-2026-05-12` closed the historical
   unchecked `PROD-UI-AUDIT-PLAN-2026-05-08` queue item as superseded by the
   current V1 release-gate UI evidence lane: `ops:ui:prod-clickthrough` with

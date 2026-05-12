@@ -20,6 +20,33 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-05-12 - Run V1 generated-state commands sequentially
+- Context: `V1-GENERATED-STATE-REFRESH-AFTER-QUEUE-HYGIENE-00169D7F-2026-05-12`
+  refreshed project index, static scan, master ledger, and completion scorecard
+  after closing stale V1 queue markers.
+- Symptom: running `ops:project:index`, `ops:project:scan`,
+  `ops:project:ledger`, and `ops:project:scorecard` in parallel allowed the
+  static scan to read the previous project index and report `5` protected/auth
+  queue blockers even after the source queues had only `2` real open blockers.
+- Root cause: `ops:project:scan` reads `docs/operations/project-index-*.json`;
+  parallel generator execution can race on that generated dependency.
+- Guardrail: run generated V1 state commands sequentially whenever scan, ledger,
+  or scorecard depends on a freshly rebuilt project index.
+- Preferred pattern:
+```powershell
+pnpm run ops:project:index
+pnpm run ops:project:scan
+pnpm run ops:project:ledger
+pnpm run ops:project:scorecard
+```
+- Avoid: launching all four V1 generated-state commands in parallel after queue
+  or source-of-truth changes.
+- Evidence:
+  - Parallel run briefly reported `5 protected/auth queue blockers remain open`.
+  - Sequential rerun reported the correct current state:
+    `2 protected/auth queue blockers remain open`, `NO-GO`, release readiness
+    `42.4%`.
+
 ### 2026-05-12 - Use API package context or plain Node for one-off Prisma scripts on Windows
 - Context: `V1-SUBSCRIPTIONS-ADMIN-LOCAL-PROOF-2026-05-12` needed a throwaway
   local admin account for protected route proof.

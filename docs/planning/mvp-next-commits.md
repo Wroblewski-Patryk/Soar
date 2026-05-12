@@ -8,6 +8,17 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `V1-GENERATED-STATE-REFRESH-AFTER-QUEUE-HYGIENE-00169D7F-2026-05-12 release: refresh V1 generated state after queue cleanup`
+  - 2026-05-12: Refreshed `project-index`, `v1-static-issue-scan`,
+    `v1-master-state-ledger`, and `v1-completion-scorecard` after stale
+    queue-marker supersessions. Generated state remains `NO-GO`:
+    `PASS_LOCAL:20`, `BLOCKED_AUTH:1`, static findings `3` (`P0:1`, `P1:1`,
+    `P2:1`), scorecard `86.8%` implementation, `61.3%` evidence coverage,
+    and `42.4%` release readiness. Static scan now reports
+    `2 protected/auth queue blockers remain open`, matching
+    `CONTROLLED-LIVE-SESSION-PROOF` and `LIVEIMPORT-03`. Evidence:
+    `docs/planning/v1-generated-state-refresh-after-queue-hygiene-00169d7f-2026-05-12-task.md`.
+
 - [x] `PROD-UI-AUDIT-PLAN-SUPERSEDE-00169D7F-2026-05-12 qa: close stale broad UI audit plan`
   - 2026-05-12: Closed the historical unchecked
     `PROD-UI-AUDIT-PLAN-2026-05-08` queue item as superseded by the current V1
