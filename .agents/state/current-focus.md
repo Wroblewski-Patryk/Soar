@@ -34,6 +34,13 @@ classifies backup/restore as `fresh` for 2026-05-12. V1 still remains
 `NO-GO` until protected prod ops auth, current rollback proof, Gate 4/sign-off,
 activation evidence, and LIVEIMPORT-03 are completed.
 
+2026-05-12 activation refresh:
+`V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-12` refreshed the production
+activation audit and activation execution plan to current-date `NO-GO`
+artifacts. The release gate now classifies activation audit/plan as `fresh`
+for 2026-05-12. V1 still remains `NO-GO` until protected prod ops auth,
+current rollback proof, Gate 4/sign-off, and LIVEIMPORT-03 are completed.
+
 2026-05-12 V1 completion scorecard:
 `V1-COMPLETION-SCORECARD-2026-05-12` is the current percentage model for V1.
 Use `docs/operations/v1-completion-scorecard-2026-05-12.md` when answering

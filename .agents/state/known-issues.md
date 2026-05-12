@@ -4,6 +4,12 @@ Last updated: 2026-05-12
 
 ## Active Issues
 
+- 2026-05-12 update: `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-12`
+  removes stale activation audit/plan from the current Operations blocker list.
+  The new activation artifacts are fresh for 2026-05-12 and explicitly
+  `NO-GO`. Remaining issue is now narrowed to protected/formal evidence:
+  RC Gate 4/sign-off, LIVEIMPORT-03, rollback proof, and approved prod ops auth.
+
 - 2026-05-12 update: `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-12`
   removes stale production backup/restore evidence from the current Operations
   blocker list. The isolated production restore drill passed with cleanup

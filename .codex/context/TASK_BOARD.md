@@ -17,6 +17,17 @@ Last updated: 2026-05-11
 
 ## READY
 
+- [x] `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-12 release: refresh production activation audit and plan truth`
+  - Scope: published current-date production activation evidence audit and
+    activation execution plan as explicit `NO-GO` artifacts, then ran the
+    production release-gate dry-run to confirm activation audit/plan are
+    classified as `fresh` for 2026-05-12. Evidence:
+    `docs/planning/v1-production-activation-refresh-2026-05-12-task.md`,
+    `docs/operations/v1-production-activation-evidence-audit-2026-05-12.md`,
+    and `docs/operations/v1-release-gate-prod-2026-05-12Tactivation-refresh-dry-run.md`.
+    V1 remains `NO-GO` due failed Gate 4/checklist, stale sign-off, missing
+    LIVEIMPORT-03, stale rollback proof, and protected prod auth blockers.
+
 - [x] `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-12 release: refresh production backup/restore drill evidence`
   - Scope: ran production Postgres isolated backup/restore drill over SSH/VPS
     Docker exec. The PASS run created a compressed dump, restored it into

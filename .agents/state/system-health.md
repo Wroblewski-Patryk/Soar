@@ -4,6 +4,13 @@ Last updated: 2026-05-12
 
 ## Latest Health Snapshot
 
+- `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-12` FRESH / NO-GO: activation
+  evidence audit and activation execution plan were refreshed to current-date
+  `NO-GO` truth. Release gate dry-run now classifies both activation evidence
+  families as `fresh` for 2026-05-12. Remaining blockers are RC Gate 4/sign-
+  off, missing LIVEIMPORT-03, stale rollback proof, and missing approved
+  protected prod ops auth.
+
 - `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-12` PASS / V1 STILL BLOCKED:
   production Postgres backup/restore drill passed on current-date evidence.
   The drill created a compressed dump, restored into isolated database

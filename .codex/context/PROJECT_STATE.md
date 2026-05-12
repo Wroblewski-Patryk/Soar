@@ -2,6 +2,21 @@
 
 Last updated: 2026-05-12
 
+## 2026-05-12 Production Activation Refresh
+
+- `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-12` refreshed activation audit and
+  activation execution plan artifacts to current-date `NO-GO` truth.
+- New artifacts:
+  `docs/operations/v1-production-activation-evidence-audit-2026-05-12.md` and
+  `docs/planning/v1-production-activation-and-evidence-plan-2026-05-12.md`.
+- Release gate dry-run
+  `docs/operations/v1-release-gate-prod-2026-05-12Tactivation-refresh-dry-run.md`
+  now classifies activation evidence audit and activation execution plan as
+  `fresh` for 2026-05-12.
+- V1 remains `NO-GO`: RC Gate 4/sign-off is not approved, LIVEIMPORT-03
+  production readback is missing, rollback proof is stale, and approved
+  protected prod ops auth is still needed.
+
 ## 2026-05-12 Production Restore Drill Refresh
 
 - `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-12` refreshed the production
