@@ -174,6 +174,20 @@ Last updated: 2026-05-12
   `API_MODULE_NO_TESTS_SUBSCRIPTIONS`; findings are now `41`
   (`P0:1`, `P1:8`, `P2:32`) and the scorecard keeps V1 at `NO-GO`.
 
+## 2026-05-12 Web Orders/Positions Doc Truth
+
+- `V1-WEB-ORDERS-POSITIONS-DOC-TRUTH-2026-05-12` aligns
+  `docs/modules/web-orders.md` and `docs/modules/web-positions.md` with the
+  canonical route map: `/dashboard/orders` and `/dashboard/positions` remain
+  legacy redirects to Bot Runtime, while runtime Orders/Positions UX is owned
+  by Dashboard Home and Bot Runtime.
+- Validation passed: middleware redirect tests (`3/3`), V1
+  project-index/static-scan/master-ledger/scorecard refresh, repository
+  guardrails, and diff check.
+- The 2026-05-12 static scan no longer reports the two web Orders/Positions
+  documented-placeholder gaps; findings are now `39`
+  (`P0:1`, `P1:6`, `P2:32`) and the scorecard keeps V1 at `NO-GO`.
+
 ## 2026-05-11 Workers Local Proof
 
 - `V1-WORKERS-LOCAL-PROOF-2026-05-11` moves Workers to `PASS_LOCAL` in the V1

@@ -1,6 +1,6 @@
 # V1 Master State Ledger
 
-Generated at: 2026-05-12T16:29:12.919Z
+Generated at: 2026-05-12T16:39:06.716Z
 Evidence date: 2026-05-12
 Status: `NO-GO`
 
@@ -14,8 +14,8 @@ Status: `NO-GO`
 
 - V1 status: `NO-GO`
 - Matrix counts: {"PASS_LOCAL":20,"BLOCKED_AUTH":1}
-- Findings by severity: {"P1":8,"P0":1,"P2":32}
-- Findings by bucket: {"doneLocalNeedsProdProof":1,"toAddTests":1,"toClassifyQueue":1,"toCleanPlanning":1,"toProve":1,"toReview":1,"toReviewArchitectureOrFix":3,"toReviewCapabilityGate":29,"toReviewDocumentationOrImplement":3}
+- Findings by severity: {"P1":6,"P0":1,"P2":32}
+- Findings by bucket: {"doneLocalNeedsProdProof":1,"toAddTests":1,"toClassifyQueue":1,"toCleanPlanning":1,"toProve":1,"toReview":1,"toReviewArchitectureOrFix":3,"toReviewCapabilityGate":29,"toReviewDocumentationOrImplement":1}
 - Modules by bucket: {"doneLocalNeedsProdProof":20,"blocked":1}
 
 ## Meaning Of Buckets
@@ -88,8 +88,6 @@ or planning work than generic missing-proof rows.
 
 | Severity | Bucket | Finding | Recommendation |
 | --- | --- | --- | --- |
-| P1 | toReviewDocumentationOrImplement | Module doc still describes placeholder or not-implemented behavior | Either implement the documented surface or update the doc to the canonical owner and proof path. |
-| P1 | toReviewDocumentationOrImplement | Module doc still describes placeholder or not-implemented behavior | Either implement the documented surface or update the doc to the canonical owner and proof path. |
 | P1 | toClassifyQueue | 10 unchecked queue markers remain | Classify each as executable, blocked by auth/approval, or historical carryover. |
 | P1 | toReviewArchitectureOrFix | Expected dashboard route '/dashboard/orders' has no page.tsx | Confirm whether the action surface intentionally lives on Dashboard Home or add the route/page proof. |
 | P1 | toReviewArchitectureOrFix | Expected dashboard route '/dashboard/positions' has no page.tsx | Confirm whether the action surface intentionally lives on Dashboard Home or add the route/page proof. |
@@ -102,8 +100,6 @@ or planning work than generic missing-proof rows.
 | Severity | Bucket | Finding | Recommendation |
 | --- | --- | --- | --- |
 | P0 | toProve | Operations remains BLOCKED_AUTH | Execute the mapped proof path from project index priority 19. |
-| P1 | toReviewDocumentationOrImplement | Module doc still describes placeholder or not-implemented behavior | Either implement the documented surface or update the doc to the canonical owner and proof path. |
-| P1 | toReviewDocumentationOrImplement | Module doc still describes placeholder or not-implemented behavior | Either implement the documented surface or update the doc to the canonical owner and proof path. |
 | P1 | toClassifyQueue | 10 unchecked queue markers remain | Classify each as executable, blocked by auth/approval, or historical carryover. |
 | P1 | doneLocalNeedsProdProof | Bots is locally proven but still lacks production-safe clickthrough | Run or add non-destructive production clickthrough on throwaway fixtures before final V1 claim. |
 | P1 | toReviewArchitectureOrFix | Expected dashboard route '/dashboard/orders' has no page.tsx | Confirm whether the action surface intentionally lives on Dashboard Home or add the route/page proof. |

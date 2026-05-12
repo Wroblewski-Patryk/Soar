@@ -4,6 +4,17 @@ Last updated: 2026-05-11
 
 ## Next Tiny Task
 
+Latest web Orders/Positions doc truth update:
+`V1-WEB-ORDERS-POSITIONS-DOC-TRUTH-2026-05-12` aligned
+`docs/modules/web-orders.md` and `docs/modules/web-positions.md` with the
+canonical route map. `/dashboard/orders` and `/dashboard/positions` remain
+legacy redirects to Bot Runtime, while runtime Orders/Positions UX is owned by
+Dashboard Home and Bot Runtime. Middleware redirect tests passed (`3/3`);
+refreshed V1 generators now show `39` findings (`P0:1`, `P1:6`, `P2:32`) and
+no longer report the two web Orders/Positions documented-placeholder gaps. V1
+remains `NO-GO`; the next exact production unblock action remains the
+operator packet.
+
 Latest subscriptions focused test gap closure:
 `V1-SUBSCRIPTIONS-FOCUSED-TESTS-2026-05-12` adds direct focused coverage for
 the core `subscriptions` module. Focused Vitest passed (`2/2`) for invalid

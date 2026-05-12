@@ -84,6 +84,8 @@ refresh, the generated values are implementation estimate `86.8%`, evidence
 coverage `61.3%`, and release readiness `42.4%`.
 After `V1-SUBSCRIPTIONS-FOCUSED-TESTS-2026-05-12`, the static scan has `41`
 findings (`P0:1`, `P1:8`, `P2:32`) and concrete non-proof gaps are `8`.
+After `V1-WEB-ORDERS-POSITIONS-DOC-TRUTH-2026-05-12`, the static scan has
+`39` findings (`P0:1`, `P1:6`, `P2:32`) and concrete non-proof gaps are `6`.
 V1 remains
 `NO-GO`; every P0 module is still not release-ready, so the next work must
 burn down proof gaps and confirmed defects from the scorecard/ledger order.
