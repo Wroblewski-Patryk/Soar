@@ -4,6 +4,12 @@ Last updated: 2026-05-12
 
 ## 2026-05-12 Production Activation Refresh
 
+- `V1-OPERATOR-PACKET-UI-ADMIN-AUTH-SYNC-2026-05-12` aligned the active V1
+  operator packet with final preflight: the default production UI clickthrough
+  requires both dashboard `PROD_UI_AUDIT_AUTH_*` and admin
+  `PROD_UI_AUDIT_ADMIN_*` auth because admin routes are included by the runner.
+- This is a docs-only correction; V1 remains `NO-GO`.
+
 - `V1-GENERATED-STATE-REFRESH-AFTER-UI-GATE-2026-05-12` refreshed the V1
   project index, static scan, master ledger, and completion scorecard after
   production UI evidence hardening.

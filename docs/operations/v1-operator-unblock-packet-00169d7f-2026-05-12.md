@@ -26,9 +26,8 @@
   `ROLLBACK_GUARD_AUTH_EMAIL` plus `ROLLBACK_GUARD_AUTH_PASSWORD`
 - `PROD_UI_AUDIT_AUTH_TOKEN`, or
   `PROD_UI_AUDIT_AUTH_EMAIL` plus `PROD_UI_AUDIT_AUTH_PASSWORD`
-- Optional production admin UI audit auth, if admin routes are included:
-  - `PROD_UI_AUDIT_ADMIN_TOKEN`, or
-    `PROD_UI_AUDIT_ADMIN_EMAIL` plus `PROD_UI_AUDIT_ADMIN_PASSWORD`
+- `PROD_UI_AUDIT_ADMIN_TOKEN`, or
+  `PROD_UI_AUDIT_ADMIN_EMAIL` plus `PROD_UI_AUDIT_ADMIN_PASSWORD`
 - Optional UI audit route override:
   - `PROD_UI_AUDIT_EXTRA_ROUTES` for approved non-destructive dashboard,
     bot runtime, or admin routes that must be included in the clickthrough

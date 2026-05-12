@@ -8,6 +8,15 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `V1-OPERATOR-PACKET-UI-ADMIN-AUTH-SYNC-2026-05-12 release: require admin auth in production UI handoff`
+  - 2026-05-12: Aligned the active V1 operator packet with final preflight so
+    the default production UI clickthrough requires both dashboard
+    `PROD_UI_AUDIT_AUTH_*` and admin `PROD_UI_AUDIT_ADMIN_*` auth. Admin auth
+    is required because `ops:ui:prod-clickthrough` includes admin routes by
+    default. Evidence:
+    `docs/planning/v1-operator-packet-ui-admin-auth-sync-2026-05-12-task.md`.
+    V1 remains `NO-GO`.
+
 - [x] `V1-GENERATED-STATE-REFRESH-AFTER-UI-GATE-2026-05-12 release: refresh generated V1 reports after UI gate hardening`
   - 2026-05-12: Refreshed the V1 project index, static scan, master ledger,
     and completion scorecard after production UI evidence hardening and the
