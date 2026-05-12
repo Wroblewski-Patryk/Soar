@@ -1,7 +1,7 @@
 # V1 Final Preflight Report
 
 ## Context
-- Generated (UTC): 2026-05-12T18:04:33.912Z
+- Generated (UTC): 2026-05-12T18:16:47.244Z
 - Status: blocked
 - API base URL: https://api.soar.luckysparrow.ch
 - Web base URL: https://soar.luckysparrow.ch
@@ -31,7 +31,7 @@
 | RC sign-off record | failed | yes | 2026-05-12 | artifact is fresh but does not report RC status APPROVED |
 | RC checklist verification block | failed | yes | 2026-05-12 | artifact is fresh but does not show all RC gates PASS |
 | LIVEIMPORT-03 runtime readback | missing | yes | - | no matching artifact found |
-| production UI clickthrough | stale | yes | 2026-05-10 | expected 2026-05-12, found 2026-05-10 |
+| production UI clickthrough | failed | yes | 2026-05-12 | artifact is fresh but does not satisfy authenticated production UI clickthrough checks |
 | backup/restore drill evidence | fresh | yes | 2026-05-12 | fresh for 2026-05-12 |
 | rollback proof pack | failed | yes | 2026-05-12 | artifact is fresh but does not report PASS |
 
@@ -44,7 +44,7 @@
 - evidence:rcSignoffRecord:failed
 - evidence:rcChecklist:failed
 - evidence:liveImportReadback:missing
-- evidence:prodUiClickthrough:stale
+- evidence:prodUiClickthrough:failed
 - evidence:rollbackProof:failed
 
 ## Blocker Details
@@ -58,7 +58,7 @@
 | evidence:rcSignoffRecord:failed | release_evidence | blocking | no | yes | yes |
 | evidence:rcChecklist:failed | release_evidence | blocking | no | yes | yes |
 | evidence:liveImportReadback:missing | release_evidence | blocking | yes | yes | yes |
-| evidence:prodUiClickthrough:stale | release_evidence | blocking | yes | yes | yes |
+| evidence:prodUiClickthrough:failed | release_evidence | blocking | yes | yes | yes |
 | evidence:rollbackProof:failed | release_evidence | blocking | yes | yes | yes |
 
 ## Next Actions
@@ -70,7 +70,7 @@
 - evidence:rcSignoffRecord:failed: Provide real Engineering, Product, Operations, and RC owner names. Owner contact is recommended for rollback authority handoff. Required inputs: --engineering-name "<name>"; --product-name "<name>"; --operations-name "<name>"; --owner-name "<name>"; --owner-contact "<email-or-contact>".
 - evidence:rcChecklist:failed: After the sign-off record is APPROVED and external gates are refreshed, sync the RC checklist.
 - evidence:liveImportReadback:missing: Run the read-only collector after build-info confirms current HEAD and read-only auth is available.
-- evidence:prodUiClickthrough:stale: Rerun the no-secret production UI audit for the current evidence date after dashboard and admin app auth are available.
+- evidence:prodUiClickthrough:failed: Inspect the UI clickthrough artifact, fix the listed auth/build/route blocker, then rerun the audit to PASS.
 - evidence:rollbackProof:failed: Run rollback proof after protected rollback guard auth is available.
 
 ## Note

@@ -4,6 +4,19 @@ Last updated: 2026-05-12
 
 ## 2026-05-12 Production Activation Refresh
 
+- `V1-PROD-UI-CURRENT-BLOCKED-REFRESH-00169D7F-2026-05-12` captured a current
+  no-auth production UI clickthrough audit for deployed
+  `00169d7fdc3aff8317759137b05594b20e773c8e`.
+- The audit is fresh `BLOCKED_AUTH`: build-info matched, public routes passed,
+  and dashboard/admin/legacy protected routes failed closed to `/auth/login`
+  without storing secrets or protected payloads. This is useful blocker truth,
+  not V1 acceptance evidence.
+- The V1 release gate now prioritizes matched artifact evidence date before
+  filename fallback, preventing older lexically later SHA UI artifacts from
+  hiding current evidence. Refreshed preflight now reports
+  `prodUiClickthrough:failed` for the current 2026-05-12 artifact. V1 remains
+  `NO-GO`.
+
 - `V1-OPERATOR-PACKET-UI-ADMIN-AUTH-SYNC-2026-05-12` aligned the active V1
   operator packet with final preflight: the default production UI clickthrough
   requires both dashboard `PROD_UI_AUDIT_AUTH_*` and admin

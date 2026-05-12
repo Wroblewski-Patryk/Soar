@@ -316,9 +316,9 @@ const findLatestMatchingFile = async (family, evidenceDir) => {
       const match = family.matcher.exec(entry.name);
       if (!match) continue;
       const absolutePath = path.join(searchDir, entry.name);
-      // Use the full filename so same-day artifacts still sort by their
-      // timestamp suffix instead of collapsing to one YYYY-MM-DD bucket.
-      const datedKey = entry.name;
+      // Prioritize the extracted evidence date, then use the filename to keep
+      // deterministic ordering among same-day artifacts with timestamp suffixes.
+      const datedKey = `${match[1] ?? ''} ${entry.name}`;
       if (!bestMatch || datedKey > bestMatch.sortKey) {
         bestMatch = {
           absolutePath,

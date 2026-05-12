@@ -8,6 +8,20 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `V1-PROD-UI-CURRENT-BLOCKED-REFRESH-00169D7F-2026-05-12 release: refresh current production UI blocked evidence`
+  - 2026-05-12: Captured a current no-auth production UI clickthrough audit
+    for deployed `00169d7f`: build-info matched, public routes passed, and
+    dashboard/admin/legacy protected routes failed closed to `/auth/login`.
+    Updated release-gate artifact discovery so matched evidence date is
+    prioritized before filename fallback, then refreshed final preflight so it
+    reports `prodUiClickthrough:failed` for the current 2026-05-12 artifact.
+    Evidence:
+    `docs/planning/v1-prod-ui-current-blocked-refresh-00169d7f-2026-05-12-task.md`,
+    `docs/operations/prod-ui-module-clickthrough-00169d7f-2026-05-12.md`,
+    and `docs/operations/v1-final-preflight-00169d7f-2026-05-12.md`.
+    Validation passed: release gate tests (`13/13`), release-gate syntax
+    check, guardrails, and diff check. V1 remains `NO-GO`.
+
 - [x] `V1-OPERATOR-PACKET-UI-ADMIN-AUTH-SYNC-2026-05-12 release: require admin auth in production UI handoff`
   - 2026-05-12: Aligned the active V1 operator packet with final preflight so
     the default production UI clickthrough requires both dashboard

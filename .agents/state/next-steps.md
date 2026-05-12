@@ -4,6 +4,19 @@ Last updated: 2026-05-12
 
 ## Next Tiny Task
 
+Latest production UI current blocked refresh:
+`V1-PROD-UI-CURRENT-BLOCKED-REFRESH-00169D7F-2026-05-12` captured a current
+no-auth production UI clickthrough audit for deployed
+`00169d7fdc3aff8317759137b05594b20e773c8e`. Build-info matched, public routes
+passed, and dashboard/admin/legacy protected routes failed closed to
+`/auth/login` without storing secrets or protected payloads. The release gate
+now prioritizes matched artifact evidence date before filename fallback, so the
+current 2026-05-12 UI artifact is evaluated instead of older lexically later
+SHA evidence. Refreshed preflight now reports `prodUiClickthrough:failed`. V1
+remains `NO-GO`; next exact unblock action is approved `PROD_UI_AUDIT_*`
+dashboard/admin auth plus PASS UI clickthrough, protected Operations evidence,
+RC Gate 4 approval, and the final non-dry-run release gate.
+
 Latest operator packet UI admin auth sync:
 `V1-OPERATOR-PACKET-UI-ADMIN-AUTH-SYNC-2026-05-12` aligned the active V1
 operator packet with final preflight: the default production UI clickthrough

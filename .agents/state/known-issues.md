@@ -4,6 +4,14 @@ Last updated: 2026-05-12
 
 ## Active Issues
 
+- 2026-05-12 update: `V1-PROD-UI-CURRENT-BLOCKED-REFRESH-00169D7F-2026-05-12`
+  replaces stale production UI clickthrough classification with current
+  blocked truth for deployed build-info
+  `00169d7fdc3aff8317759137b05594b20e773c8e`. Public routes pass and
+  protected dashboard/admin/legacy routes fail closed to `/auth/login`, but
+  this is not V1 acceptance evidence because approved `PROD_UI_AUDIT_*`
+  dashboard/admin auth is still missing.
+
 - 2026-05-12 update: `V1-RELEASE-GATE-NONDRYRUN-BLOCKED-2026-05-12` confirms
   the final production gate still blocks without protected auth. Build-info
   and public smoke pass, but protected `/workers/health` returns `401` during

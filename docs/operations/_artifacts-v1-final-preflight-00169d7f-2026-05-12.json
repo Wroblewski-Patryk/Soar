@@ -1,6 +1,6 @@
 {
   "status": "blocked",
-  "generatedAt": "2026-05-12T18:04:33.912Z",
+  "generatedAt": "2026-05-12T18:16:47.244Z",
   "context": {
     "apiBaseUrl": "https://api.soar.luckysparrow.ch",
     "webBaseUrl": "https://soar.luckysparrow.ch",
@@ -151,11 +151,11 @@
     {
       "key": "prodUiClickthrough",
       "label": "production UI clickthrough",
-      "state": "stale",
+      "state": "failed",
       "required": true,
-      "reason": "expected 2026-05-12, found 2026-05-10",
-      "path": "docs\\operations\\prod-ui-module-clickthrough-fd8da90b-2026-05-10.md",
-      "date": "2026-05-10"
+      "reason": "artifact is fresh but does not satisfy authenticated production UI clickthrough checks",
+      "path": "docs\\operations\\prod-ui-module-clickthrough-00169d7f-2026-05-12.md",
+      "date": "2026-05-12"
     },
     {
       "key": "backupRestoreDrill",
@@ -185,7 +185,7 @@
     "evidence:rcSignoffRecord:failed",
     "evidence:rcChecklist:failed",
     "evidence:liveImportReadback:missing",
-    "evidence:prodUiClickthrough:stale",
+    "evidence:prodUiClickthrough:failed",
     "evidence:rollbackProof:failed"
   ],
   "blockerDetails": [
@@ -299,7 +299,7 @@
       "remediationAvailable": true
     },
     {
-      "blocker": "evidence:prodUiClickthrough:stale",
+      "blocker": "evidence:prodUiClickthrough:failed",
       "category": "release_evidence",
       "label": "Production UI clickthrough",
       "severity": "blocking",
@@ -401,9 +401,9 @@
       "command": "$expectedSha = git rev-parse HEAD; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output docs/operations/liveimport-03-prod-readback-2026-05-08.json"
     },
     {
-      "blocker": "evidence:prodUiClickthrough:stale",
-      "title": "Refresh production UI clickthrough",
-      "action": "Rerun the no-secret production UI audit for the current evidence date after dashboard and admin app auth are available.",
+      "blocker": "evidence:prodUiClickthrough:failed",
+      "title": "Fix production UI clickthrough blocker",
+      "action": "Inspect the UI clickthrough artifact, fix the listed auth/build/route blocker, then rerun the audit to PASS.",
       "command": "pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate"
     },
     {

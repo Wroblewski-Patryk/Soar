@@ -577,3 +577,48 @@ test('evaluateEvidenceReadiness rejects fresh prod UI clickthrough without authe
     await rm(tempRoot, { recursive: true, force: true });
   }
 });
+
+test('evaluateEvidenceReadiness prefers newer prod UI clickthrough date over lexically later sha', async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'v1-release-gate-ui-latest-date-'));
+  const operationsDir = path.join(tempRoot, 'operations');
+  const planningDir = path.join(tempRoot, 'planning');
+  try {
+    await mkdir(operationsDir, { recursive: true });
+    await mkdir(planningDir, { recursive: true });
+    await writeFile(
+      path.join(operationsDir, 'v1-production-activation-evidence-audit-2026-05-12.md'),
+      '# audit\n',
+    );
+    await writeFile(
+      path.join(planningDir, 'v1-production-activation-and-evidence-plan-2026-05-12.md'),
+      '# plan\n',
+    );
+    await writeApprovedRcArtifacts(operationsDir, '2026-05-12');
+    await writeLiveImportReadbackArtifact(operationsDir, '2026-05-12');
+    await writeProdUiClickthroughArtifact(operationsDir, '2026-05-10', 'fd8da90b');
+    await writeProdUiClickthroughArtifact(operationsDir, '2026-05-12', '00169d7f');
+    await writeFile(
+      path.join(operationsDir, 'v1-restore-drill-prod-2026-05-12T19-00-00-000Z.md'),
+      '- Generated at (UTC): 2026-05-12T19:00:00.000Z\n- Status: **PASS**\n',
+    );
+    await writeFile(
+      path.join(operationsDir, 'v1-rollback-proof-prod-2026-05-12T19-05-00-000Z.md'),
+      '- Generated at (UTC): 2026-05-12T19:05:00.000Z\n- Status: **PASS**\n',
+    );
+
+    const result = await evaluateEvidenceReadiness({
+      environment: 'prod',
+      evidenceDir: operationsDir,
+      today: '2026-05-12',
+    });
+
+    assert.equal(result.ready, true);
+    assert.match(
+      result.evidence.find((row) => row.key === 'prodUiClickthrough')?.path ?? '',
+      /prod-ui-module-clickthrough-00169d7f-2026-05-12\.md$/,
+    );
+    assert.deepEqual(result.blockers, []);
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
