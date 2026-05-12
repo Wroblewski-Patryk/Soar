@@ -4,6 +4,16 @@ Last updated: 2026-05-12
 
 ## Latest Health Snapshot
 
+- `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-12` PASS / V1 STILL BLOCKED:
+  production Postgres backup/restore drill passed on current-date evidence.
+  The drill created a compressed dump, restored into isolated database
+  `postgres_restore_check_20260512152138`, validated aggregate counts
+  (`Bot=6`, `Log=52740`, `Order=3981`, `Position=4787`, `User=4`), dropped the
+  restore DB, removed the dump, and cleanup returned `0` restore DBs and `0`
+  backup dumps. Release gate dry-run now classifies backup/restore drill as
+  `fresh` for 2026-05-12. V1 remains blocked on stale activation/sign-off,
+  failed RC Gate 4/checklist, missing LIVEIMPORT-03, and stale rollback proof.
+
 - `V1-OPERATIONS-PROD-READONLY-PROOF-2026-05-12` PRODUCTION PUBLIC PASS /
   RELEASE BLOCKED: production public no-worker deploy smoke passed, public
   `build-info`, `/health`, and `/ready` returned `200`, and VPS Docker

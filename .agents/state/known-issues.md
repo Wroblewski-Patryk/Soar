@@ -4,6 +4,15 @@ Last updated: 2026-05-12
 
 ## Active Issues
 
+- 2026-05-12 update: `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-12`
+  removes stale production backup/restore evidence from the current Operations
+  blocker list. The isolated production restore drill passed with cleanup
+  proof (`LEFTOVER_RESTORE_DATABASES=0`, `LEFTOVER_BACKUPS=0`), and release
+  gate dry-run now classifies backup/restore as `fresh` for 2026-05-12. V1
+  remains blocked by stale activation/sign-off, failed RC Gate 4/checklist,
+  missing LIVEIMPORT-03, stale rollback proof, and missing approved protected
+  prod ops auth.
+
 - 2026-05-12 update: `V1-OPERATIONS-PROD-READONLY-PROOF-2026-05-12`
   confirms production public health but not V1 release readiness. Public
   production no-worker smoke and `/health`/`/ready` pass, and VPS Docker

@@ -7,6 +7,19 @@ Operational queue for one-task execution runs.
 - Agent executes exactly one unchecked task from `NOW`.
 
 ## NOW
+- [x] `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-12 release: refresh production backup/restore drill evidence`
+  - 2026-05-12: Ran production Postgres isolated backup/restore drill over
+    SSH/VPS Docker exec. The PASS run created a compressed dump, restored it
+    into `postgres_restore_check_20260512152138`, validated aggregate counts
+    (`Bot=6`, `Log=52740`, `Order=3981`, `Position=4787`, `User=4`), dropped
+    the restore DB, removed the dump, and cleanup returned `0` restore DBs and
+    `0` backup dumps. Release gate dry-run now classifies backup/restore drill
+    evidence as `fresh` for 2026-05-12. Evidence:
+    `docs/planning/v1-prod-restore-drill-refresh-task-2026-05-12.md` and
+    `docs/operations/v1-restore-drill-prod-2026-05-12T15-21-38Z.md`. V1
+    remains `NO-GO` due stale activation/sign-off, failed Gate 4/checklist,
+    missing LIVEIMPORT-03, and stale rollback proof.
+
 - [x] `V1-OPERATIONS-PROD-READONLY-PROOF-2026-05-12 release: collect production read-only Operations evidence`
   - 2026-05-12: Ran production public no-worker deploy smoke (`PASS`), stage
     public no-worker deploy smoke (`503` failures), public production build-

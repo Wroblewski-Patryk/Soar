@@ -4,6 +4,19 @@ Last updated: 2026-05-11
 
 ## Next Tiny Task
 
+Latest production restore drill refresh:
+`V1-PROD-RESTORE-DRILL-REFRESH-2026-05-12` refreshes the production
+backup/restore drill to current-date `PASS`. The isolated restore drill used
+production Postgres container `x11cfnz1dd9x0yzccftqzcoe`, restored into
+`postgres_restore_check_20260512152138`, validated aggregate counts
+(`Bot=6`, `Log=52740`, `Order=3981`, `Position=4787`, `User=4`), dropped the
+restore database, removed the backup dump, and cleanup returned `0` matching
+restore DBs/backups. Release gate dry-run now classifies backup/restore drill
+evidence as `fresh` for 2026-05-12. Remaining exact V1 blockers: activation
+audit/plan stale, RC sign-off stale, RC Gate 4/checklist failed,
+LIVEIMPORT-03 production readback missing, rollback proof stale, and protected
+prod ops auth still needed.
+
 Latest Operations production read-only proof:
 `V1-OPERATIONS-PROD-READONLY-PROOF-2026-05-12` collected safe current
 production/stage evidence and keeps V1 `NO-GO`. Production public no-worker

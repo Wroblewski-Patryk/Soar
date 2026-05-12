@@ -2,6 +2,28 @@
 
 Last updated: 2026-05-12
 
+## 2026-05-12 Production Restore Drill Refresh
+
+- `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-12` refreshed the production
+  backup/restore drill evidence to current-date `PASS`.
+- Production Postgres container `x11cfnz1dd9x0yzccftqzcoe` was backed up with a
+  compressed dump, restored into isolated database
+  `postgres_restore_check_20260512152138`, validated with aggregate table
+  counts, then cleaned up.
+- Validation counts: `Bot=6`, `Log=52740`, `Order=3981`, `Position=4787`,
+  `User=4`.
+- Cleanup proof returned `LEFTOVER_RESTORE_DATABASES=0` and
+  `LEFTOVER_BACKUPS=0`.
+- Evidence:
+  `docs/operations/v1-restore-drill-prod-2026-05-12T15-21-38Z.md` and
+  `docs/operations/_artifacts-restore-drill-prod-coolify-2026-05-12T15-21-38Z.json`.
+- Release gate dry-run
+  `docs/operations/v1-release-gate-prod-2026-05-12Trestore-refresh-dry-run.md`
+  now classifies backup/restore drill evidence as `fresh` for 2026-05-12.
+- V1 remains `NO-GO`: activation audit/plan and RC sign-off are stale, RC Gate
+  4/checklist are failed, LIVEIMPORT-03 production readback is missing, and
+  rollback proof is stale.
+
 ## 2026-05-12 Operations Production Read-Only Proof
 
 - `V1-OPERATIONS-PROD-READONLY-PROOF-2026-05-12` collected safe read-only
