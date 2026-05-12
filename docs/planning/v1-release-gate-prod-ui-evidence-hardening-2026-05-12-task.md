@@ -109,6 +109,7 @@ the final preflight report.
   - `node --test scripts/runV1FinalPreflight.test.mjs` => `14/14 PASS`
   - `node --check scripts/runV1ReleaseGate.mjs`
   - `node --check scripts/runV1FinalPreflight.mjs`
+  - `pnpm run ops:release:v1:preflight -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 00169d7fdc3aff8317759137b05594b20e773c8e --today 2026-05-12 --json-output docs/operations/_artifacts-v1-final-preflight-00169d7f-2026-05-12.json --markdown-output docs/operations/v1-final-preflight-00169d7f-2026-05-12.md` => expected `BLOCKED`
   - `pnpm run quality:guardrails`
   - `git diff --check`
 - Manual checks: reviewed production UI audit runner artifact format and route
@@ -186,6 +187,10 @@ the final preflight report.
 ### 5. Verify and Test
 - Validation performed: focused Node tests and script syntax checks.
 - Result: pass.
+- Current no-secret preflight result: expected `BLOCKED`; build-info and
+  public smoke pass, production DB restore context is satisfied, and blockers
+  now include missing `PROD_UI_AUDIT_*` dashboard/admin auth plus stale
+  production UI clickthrough evidence.
 
 ### 6. Self-Review
 - Simpler option considered: leave enforcement only in operator docs.
@@ -230,7 +235,8 @@ the final preflight report.
   clickthrough evidence for Bots routes, and preflight names the required UI
   audit auth inputs.
 - Files changed: release gate, final preflight, focused tests, state docs.
-- How tested: focused Node tests, script syntax checks, guardrails, diff check.
+- How tested: focused Node tests, script syntax checks, no-secret production
+  preflight, guardrails, diff check.
 - What is incomplete: actual production UI artifact remains blocked without
   approved `PROD_UI_AUDIT_*` auth.
 - Next steps: run the documented UI clickthrough, LIVEIMPORT-03, rollback

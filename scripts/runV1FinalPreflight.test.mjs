@@ -279,6 +279,7 @@ test('buildRemediationHints maps known final V1 blockers to existing commands', 
     'env:production UI admin auth',
     'env:production DB restore context',
     'evidence:prodUiClickthrough:missing',
+    'evidence:prodUiClickthrough:stale',
     'evidence:rcSignoffRecord:failed',
     'evidence:rollbackProof:failed',
     'unknown:blocker',
@@ -292,6 +293,7 @@ test('buildRemediationHints maps known final V1 blockers to existing commands', 
       'env:production UI admin auth',
       'env:production DB restore context',
       'evidence:prodUiClickthrough:missing',
+      'evidence:prodUiClickthrough:stale',
       'evidence:rcSignoffRecord:failed',
       'evidence:rollbackProof:failed',
     ],
@@ -301,8 +303,9 @@ test('buildRemediationHints maps known final V1 blockers to existing commands', 
   assert.match(hints[2].command, /ops:ui:prod-clickthrough/);
   assert.match(hints[3].command, /ops:db:restore-drill:prod/);
   assert.match(hints[4].command, /ops:ui:prod-clickthrough/);
-  assert.match(hints[5].command, /ops:rc:signoff:build/);
-  assert.match(hints[6].command, /ops:deploy:rollback-proof/);
+  assert.match(hints[5].command, /ops:ui:prod-clickthrough/);
+  assert.match(hints[6].command, /ops:rc:signoff:build/);
+  assert.match(hints[7].command, /ops:deploy:rollback-proof/);
   const serialized = JSON.stringify(hints);
   assert.equal(serialized.includes('super-secret'), false);
 });
@@ -322,6 +325,7 @@ test('buildBlockerDetails exposes stable categories for Web/operator status', ()
     'env:liveimport auth',
     'env:production UI dashboard auth',
     'evidence:prodUiClickthrough:failed',
+    'evidence:prodUiClickthrough:stale',
     'evidence:rcSignoffRecord:failed',
     'evidence:liveImportReadback:missing',
     'custom:blocker',
@@ -337,6 +341,7 @@ test('buildBlockerDetails exposes stable categories for Web/operator status', ()
       'release_evidence',
       'release_evidence',
       'release_evidence',
+      'release_evidence',
       'unknown',
     ],
   );
@@ -346,11 +351,13 @@ test('buildBlockerDetails exposes stable categories for Web/operator status', ()
   assert.equal(details[3].finalEvidenceRequired, false);
   assert.equal(details[4].protectedInputRequired, true);
   assert.equal(details[4].finalEvidenceRequired, true);
-  assert.equal(details[5].protectedInputRequired, false);
+  assert.equal(details[5].protectedInputRequired, true);
   assert.equal(details[5].finalEvidenceRequired, true);
-  assert.equal(details[6].protectedInputRequired, true);
-  assert.equal(details[6].remediationAvailable, true);
-  assert.equal(details[7].remediationAvailable, false);
+  assert.equal(details[6].protectedInputRequired, false);
+  assert.equal(details[6].finalEvidenceRequired, true);
+  assert.equal(details[7].protectedInputRequired, true);
+  assert.equal(details[7].remediationAvailable, true);
+  assert.equal(details[8].remediationAvailable, false);
   assert.equal(JSON.stringify(details).includes('super-secret'), false);
 });
 

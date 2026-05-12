@@ -325,6 +325,12 @@ const remediationCatalog = {
     command:
       'pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate',
   },
+  'evidence:prodUiClickthrough:stale': {
+    title: 'Refresh production UI clickthrough',
+    action: 'Rerun the no-secret production UI audit for the current evidence date after dashboard and admin app auth are available.',
+    command:
+      'pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate',
+  },
   'evidence:backupRestoreDrill:failed': {
     title: 'Run production restore drill to PASS',
     action: 'Run the production restore drill after production DB/Coolify context is available.',
@@ -460,6 +466,15 @@ const blockerDetailCatalog = {
     requiredCapabilities: ['production_application_auth', 'production_admin_auth', 'authenticated_ui_clickthrough'],
   },
   'evidence:prodUiClickthrough:failed': {
+    category: 'release_evidence',
+    label: 'Production UI clickthrough',
+    severity: 'blocking',
+    protectedInputRequired: true,
+    finalEvidenceRequired: true,
+    operatorActionRequired: true,
+    requiredCapabilities: ['production_application_auth', 'production_admin_auth', 'authenticated_ui_clickthrough'],
+  },
+  'evidence:prodUiClickthrough:stale': {
     category: 'release_evidence',
     label: 'Production UI clickthrough',
     severity: 'blocking',

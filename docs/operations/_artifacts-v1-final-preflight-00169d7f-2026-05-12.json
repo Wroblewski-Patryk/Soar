@@ -1,6 +1,6 @@
 {
   "status": "blocked",
-  "generatedAt": "2026-05-12T15:58:06.891Z",
+  "generatedAt": "2026-05-12T18:04:33.912Z",
   "context": {
     "apiBaseUrl": "https://api.soar.luckysparrow.ch",
     "webBaseUrl": "https://soar.luckysparrow.ch",
@@ -35,6 +35,26 @@
         "required": [
           "ROLLBACK_GUARD_AUTH_TOKEN",
           "or ROLLBACK_GUARD_AUTH_EMAIL + ROLLBACK_GUARD_AUTH_PASSWORD"
+        ],
+        "satisfiedByEvidence": false,
+        "blocking": true
+      },
+      {
+        "key": "production UI dashboard auth",
+        "ok": false,
+        "required": [
+          "PROD_UI_AUDIT_AUTH_TOKEN",
+          "or PROD_UI_AUDIT_AUTH_EMAIL + PROD_UI_AUDIT_AUTH_PASSWORD"
+        ],
+        "satisfiedByEvidence": false,
+        "blocking": true
+      },
+      {
+        "key": "production UI admin auth",
+        "ok": false,
+        "required": [
+          "PROD_UI_AUDIT_ADMIN_TOKEN",
+          "or PROD_UI_AUDIT_ADMIN_EMAIL + PROD_UI_AUDIT_ADMIN_PASSWORD"
         ],
         "satisfiedByEvidence": false,
         "blocking": true
@@ -129,6 +149,15 @@
       "date": null
     },
     {
+      "key": "prodUiClickthrough",
+      "label": "production UI clickthrough",
+      "state": "stale",
+      "required": true,
+      "reason": "expected 2026-05-12, found 2026-05-10",
+      "path": "docs\\operations\\prod-ui-module-clickthrough-fd8da90b-2026-05-10.md",
+      "date": "2026-05-10"
+    },
+    {
       "key": "backupRestoreDrill",
       "label": "backup/restore drill evidence",
       "state": "fresh",
@@ -150,10 +179,13 @@
   "blockers": [
     "env:liveimport auth",
     "env:rollback guard auth",
+    "env:production UI dashboard auth",
+    "env:production UI admin auth",
     "evidence:rcExternalGateStatus:failed",
     "evidence:rcSignoffRecord:failed",
     "evidence:rcChecklist:failed",
     "evidence:liveImportReadback:missing",
+    "evidence:prodUiClickthrough:stale",
     "evidence:rollbackProof:failed"
   ],
   "blockerDetails": [
@@ -180,6 +212,34 @@
       "operatorActionRequired": true,
       "requiredCapabilities": [
         "production_ops_auth"
+      ],
+      "remediationAvailable": true
+    },
+    {
+      "blocker": "env:production UI dashboard auth",
+      "category": "protected_prerequisite",
+      "label": "Production UI dashboard auth",
+      "severity": "blocking",
+      "protectedInputRequired": true,
+      "finalEvidenceRequired": false,
+      "operatorActionRequired": true,
+      "requiredCapabilities": [
+        "production_application_auth",
+        "authenticated_ui_clickthrough"
+      ],
+      "remediationAvailable": true
+    },
+    {
+      "blocker": "env:production UI admin auth",
+      "category": "protected_prerequisite",
+      "label": "Production UI admin auth",
+      "severity": "blocking",
+      "protectedInputRequired": true,
+      "finalEvidenceRequired": false,
+      "operatorActionRequired": true,
+      "requiredCapabilities": [
+        "production_admin_auth",
+        "authenticated_ui_clickthrough"
       ],
       "remediationAvailable": true
     },
@@ -239,6 +299,21 @@
       "remediationAvailable": true
     },
     {
+      "blocker": "evidence:prodUiClickthrough:stale",
+      "category": "release_evidence",
+      "label": "Production UI clickthrough",
+      "severity": "blocking",
+      "protectedInputRequired": true,
+      "finalEvidenceRequired": true,
+      "operatorActionRequired": true,
+      "requiredCapabilities": [
+        "production_application_auth",
+        "production_admin_auth",
+        "authenticated_ui_clickthrough"
+      ],
+      "remediationAvailable": true
+    },
+    {
       "blocker": "evidence:rollbackProof:failed",
       "category": "release_evidence",
       "label": "Production rollback proof",
@@ -275,6 +350,26 @@
       "command": "pnpm run ops:deploy:rollback-proof -- --profile prod --base-url https://api.soar.luckysparrow.ch"
     },
     {
+      "blocker": "env:production UI dashboard auth",
+      "title": "Provide production UI dashboard auth",
+      "action": "Provide approved production app auth for non-destructive dashboard module clickthrough.",
+      "requiredInputs": [
+        "PROD_UI_AUDIT_AUTH_TOKEN",
+        "or PROD_UI_AUDIT_AUTH_EMAIL + PROD_UI_AUDIT_AUTH_PASSWORD"
+      ],
+      "command": "pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate"
+    },
+    {
+      "blocker": "env:production UI admin auth",
+      "title": "Provide production UI admin auth",
+      "action": "Provide approved production admin app auth for non-destructive admin module clickthrough.",
+      "requiredInputs": [
+        "PROD_UI_AUDIT_ADMIN_TOKEN",
+        "or PROD_UI_AUDIT_ADMIN_EMAIL + PROD_UI_AUDIT_ADMIN_PASSWORD"
+      ],
+      "command": "pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate"
+    },
+    {
       "blocker": "evidence:rcExternalGateStatus:failed",
       "title": "Refresh RC gates after real approval",
       "action": "Run the RC gate refresh/status commands after required protected evidence and sign-off are complete.",
@@ -304,6 +399,12 @@
       "title": "Collect LIVEIMPORT-03 runtime readback",
       "action": "Run the read-only collector after build-info confirms current HEAD and read-only auth is available.",
       "command": "$expectedSha = git rev-parse HEAD; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output docs/operations/liveimport-03-prod-readback-2026-05-08.json"
+    },
+    {
+      "blocker": "evidence:prodUiClickthrough:stale",
+      "title": "Refresh production UI clickthrough",
+      "action": "Rerun the no-secret production UI audit for the current evidence date after dashboard and admin app auth are available.",
+      "command": "pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate"
     },
     {
       "blocker": "evidence:rollbackProof:failed",

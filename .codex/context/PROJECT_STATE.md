@@ -12,6 +12,12 @@ Last updated: 2026-05-12
   the existing `ops:ui:prod-clickthrough` command. V1 remains `NO-GO` until
   approved protected inputs produce fresh PASS artifacts and the final gate is
   rerun.
+- Refreshed no-secret preflight for deployed
+  `00169d7fdc3aff8317759137b05594b20e773c8e` is blocked with build-info and
+  public smoke `PASS`, production DB restore context satisfied,
+  `prodUiClickthrough:stale`, missing `PROD_UI_AUDIT_*` dashboard/admin auth,
+  missing `LIVEIMPORT_READBACK_*`, missing `ROLLBACK_GUARD_*`, failed RC
+  artifacts, missing `LIVEIMPORT-03`, and failed rollback proof.
 
 - `V1-PROD-UI-INPUT-UNBLOCK-SYNC-00169D7F-2026-05-12` synchronized the
   current V1 operator unblock packet with the remaining P1 Bots production-safe
