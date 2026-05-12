@@ -150,7 +150,12 @@ export default function ThemeSwitcher({
               <span className="inline-flex items-center gap-1">
                 {theme.value === 'system' ? (
                   <span className="swap swap-rotate pointer-events-none text-base-content/70">
-                    <input type="checkbox" checked={resolvedTheme === 'dark'} readOnly />
+                    <input
+                      type="checkbox"
+                      checked={resolvedTheme === 'dark'}
+                      readOnly
+                      suppressHydrationWarning
+                    />
                     <HiOutlineSun className="swap-off h-3.5 w-3.5" aria-hidden />
                     <HiOutlineMoon className="swap-on h-3.5 w-3.5" aria-hidden />
                   </span>

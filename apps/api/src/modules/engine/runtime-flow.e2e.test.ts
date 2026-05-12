@@ -42,6 +42,7 @@ describe('Runtime flow e2e (strategy -> backtest -> paper runtime)', () => {
     await prisma.backtestReport.deleteMany();
     await prisma.backtestTrade.deleteMany();
     await prisma.backtestRun.deleteMany();
+    await prisma.runtimeExecutionDedupe.deleteMany();
     await prisma.trade.deleteMany();
     await prisma.order.deleteMany();
     await prisma.position.deleteMany();
@@ -271,6 +272,115 @@ describe('Runtime flow e2e (strategy -> backtest -> paper runtime)', () => {
       (value) => value?.status === 'CLOSED'
     );
     expect(closedPosition?.status).toBe('CLOSED');
+
+    const runtimeSession = await pollUntil(
+      () =>
+        prisma.botRuntimeSession.findFirst({
+          where: {
+            botId,
+            status: 'RUNNING',
+            mode: 'PAPER',
+          },
+          orderBy: { startedAt: 'desc' },
+        }),
+      (value) => Boolean(value)
+    );
+    expect(runtimeSession?.status).toBe('RUNNING');
+
+    const runtimeStats = await pollUntil(
+      () =>
+        prisma.botRuntimeSymbolStat.findFirst({
+          where: {
+            botId,
+            sessionId: runtimeSession?.id,
+            symbol: 'BTCUSDT',
+          },
+        }),
+      (value) => Boolean(value) && Number(value?.totalSignals ?? 0) >= 2
+    );
+    expect(runtimeStats?.symbol).toBe('BTCUSDT');
+    expect(Number(runtimeStats?.totalSignals ?? 0)).toBeGreaterThanOrEqual(2);
+    expect(Number(runtimeStats?.longEntries ?? 0)).toBeGreaterThanOrEqual(1);
+    expect(Number(runtimeStats?.exits ?? 0)).toBeGreaterThanOrEqual(1);
+    expect(Number(runtimeStats?.lastPrice ?? 0)).toBe(50000);
+
+    const runtimeEventsCount = await prisma.botRuntimeEvent.count({
+      where: {
+        botId,
+        sessionId: runtimeSession?.id,
+      },
+    });
+    expect(runtimeEventsCount).toBeGreaterThanOrEqual(3);
+
+    const sessionsRes = await agent.get(`/dashboard/bots/${botId}/runtime-sessions`).query({
+      status: 'RUNNING',
+      limit: 10,
+    });
+    expect(sessionsRes.status).toBe(200);
+    const apiSession = (
+      sessionsRes.body as Array<{
+        id: string;
+        mode: string;
+        status: string;
+        eventsCount: number;
+        symbolsTracked: number;
+        summary: { totalSignals: number };
+      }>
+    ).find((session) => session.id === runtimeSession?.id);
+    expect(apiSession).toBeTruthy();
+    expect(apiSession).toEqual(
+      expect.objectContaining({
+        mode: 'PAPER',
+        status: 'RUNNING',
+        eventsCount: expect.any(Number),
+        symbolsTracked: 1,
+      })
+    );
+    expect(apiSession?.eventsCount).toBeGreaterThanOrEqual(3);
+    expect(apiSession?.summary.totalSignals).toBeGreaterThanOrEqual(2);
+
+    const detailRes = await agent.get(`/dashboard/bots/${botId}/runtime-sessions/${runtimeSession?.id}`);
+    expect(detailRes.status).toBe(200);
+    expect(detailRes.body.id).toBe(runtimeSession?.id);
+    expect(detailRes.body.eventsCount).toBeGreaterThanOrEqual(3);
+    expect(detailRes.body.symbolsTracked).toBe(1);
+    expect(detailRes.body.summary.totalSignals).toBeGreaterThanOrEqual(2);
+    expect(detailRes.body.summary.longEntries).toBeGreaterThanOrEqual(1);
+    expect(detailRes.body.summary.exits).toBeGreaterThanOrEqual(1);
+
+    const symbolStatsRes = await agent.get(
+      `/dashboard/bots/${botId}/runtime-sessions/${runtimeSession?.id}/symbol-stats`
+    );
+    expect(symbolStatsRes.status).toBe(200);
+    const apiBtcStats = (
+      symbolStatsRes.body.items as Array<{
+        symbol: string;
+        totalSignals: number;
+        longEntries: number;
+        exits: number;
+        lastPrice?: number | string | null;
+        lastSignalDirection?: string | null;
+      }>
+    ).find((item) => item.symbol === 'BTCUSDT');
+    expect(apiBtcStats).toBeTruthy();
+    expect(apiBtcStats?.totalSignals).toBeGreaterThanOrEqual(2);
+    expect(apiBtcStats?.longEntries).toBeGreaterThanOrEqual(1);
+    expect(apiBtcStats?.exits).toBeGreaterThanOrEqual(1);
+    expect(Number(apiBtcStats?.lastPrice ?? 0)).toBe(50000);
+    expect(apiBtcStats?.lastSignalDirection).toBe('EXIT');
+
+    const aggregateRes = await agent.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`).query({
+      status: 'RUNNING',
+      symbol: 'btcusdt',
+      sessionsLimit: 10,
+      perSessionLimit: 20,
+    });
+    expect(aggregateRes.status).toBe(200);
+    expect(aggregateRes.body.sessionDetail.metadata.sessionsCount).toBe(1);
+    expect(aggregateRes.body.symbolStats.items).toHaveLength(1);
+    expect(aggregateRes.body.symbolStats.items[0].symbol).toBe('BTCUSDT');
+    expect(aggregateRes.body.symbolStats.summary.totalSignals).toBeGreaterThanOrEqual(2);
+    expect(aggregateRes.body.positions.closedCount).toBeGreaterThanOrEqual(1);
   });
 });
 

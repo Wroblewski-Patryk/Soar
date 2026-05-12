@@ -133,9 +133,28 @@ async function main() {
   const userId = await ensureUser(snapshot.source.email);
 
   const botIds = snapshot.data.bots.map((item) => item.id);
+  const snapshotExportedAt = new Date(snapshot.exportedAt);
 
   await prisma.$transaction(async (tx) => {
     if (botIds.length > 0) {
+      await tx.botRuntimeSymbolStat.deleteMany({
+        where: {
+          userId,
+          botId: { in: botIds },
+        },
+      });
+      await tx.botRuntimeEvent.deleteMany({
+        where: {
+          userId,
+          botId: { in: botIds },
+        },
+      });
+      await tx.botRuntimeSession.deleteMany({
+        where: {
+          userId,
+          botId: { in: botIds },
+        },
+      });
       await tx.marketGroupStrategyLink.deleteMany({
         where: {
           userId,
@@ -233,7 +252,41 @@ async function main() {
       });
     }
 
+    const generatedPaperWalletIds = new Map<string, string>();
+    for (const bot of snapshot.data.bots.filter((item) => item.mode === 'PAPER' && item.isActive)) {
+      const botOpenPositions = snapshot.data.openPositions.filter(
+        (position) => position.botId === bot.id && position.status === 'OPEN'
+      );
+      if (botOpenPositions.length === 0) continue;
+
+      const walletId = `snapshot-paper-wallet-${bot.id}`;
+      generatedPaperWalletIds.set(bot.id, walletId);
+      await tx.wallet.upsert({
+        where: { id: walletId },
+        update: {
+          userId,
+          name: `${bot.name} Paper Snapshot Wallet`,
+          mode: bot.mode,
+          exchange: 'BINANCE',
+          marketType: bot.marketType,
+          baseCurrency: 'USDT',
+          paperInitialBalance: bot.paperStartBalance,
+        },
+        create: {
+          id: walletId,
+          userId,
+          name: `${bot.name} Paper Snapshot Wallet`,
+          mode: bot.mode,
+          exchange: 'BINANCE',
+          marketType: bot.marketType,
+          baseCurrency: 'USDT',
+          paperInitialBalance: bot.paperStartBalance,
+        },
+      });
+    }
+
     for (const item of snapshot.data.bots) {
+      const generatedPaperWalletId = generatedPaperWalletIds.get(item.id);
       await tx.bot.upsert({
         where: { id: item.id },
         update: {
@@ -247,6 +300,7 @@ async function main() {
           liveOptIn: item.liveOptIn,
           consentTextVersion: item.consentTextVersion,
           maxOpenPositions: item.maxOpenPositions,
+          ...(generatedPaperWalletId ? { walletId: generatedPaperWalletId } : {}),
         },
         create: {
           id: item.id,
@@ -260,6 +314,7 @@ async function main() {
           liveOptIn: item.liveOptIn,
           consentTextVersion: item.consentTextVersion,
           maxOpenPositions: item.maxOpenPositions,
+          walletId: generatedPaperWalletId ?? null,
         },
       });
     }
@@ -352,6 +407,7 @@ async function main() {
           leverage: item.leverage,
           stopLoss: item.stopLoss,
           takeProfit: item.takeProfit,
+          walletId: item.botId ? generatedPaperWalletIds.get(item.botId) ?? null : null,
           openedAt: new Date(item.openedAt),
           closedAt: item.closedAt ? new Date(item.closedAt) : null,
           realizedPnl: item.realizedPnl,
@@ -374,12 +430,151 @@ async function main() {
           leverage: item.leverage,
           stopLoss: item.stopLoss,
           takeProfit: item.takeProfit,
+          walletId: item.botId ? generatedPaperWalletIds.get(item.botId) ?? null : null,
           openedAt: new Date(item.openedAt),
           closedAt: item.closedAt ? new Date(item.closedAt) : null,
           realizedPnl: item.realizedPnl,
           unrealizedPnl: item.unrealizedPnl,
         },
       });
+    }
+
+    for (const bot of snapshot.data.bots.filter((item) => item.mode === 'PAPER' && item.isActive)) {
+      const botOpenPositions = snapshot.data.openPositions.filter(
+        (position) => position.botId === bot.id && position.status === 'OPEN'
+      );
+      if (botOpenPositions.length === 0) continue;
+
+      const openedAtValues = botOpenPositions.map((position) => new Date(position.openedAt));
+      const firstOpenedAt = openedAtValues
+        .slice()
+        .sort((left, right) => left.getTime() - right.getTime())[0];
+      const lastOpenedAt = openedAtValues
+        .slice()
+        .sort((left, right) => right.getTime() - left.getTime())[0];
+      const sessionStartedAt = new Date(firstOpenedAt.getTime() - 60_000);
+      const sessionHeartbeatAt =
+        Number.isFinite(snapshotExportedAt.getTime()) && snapshotExportedAt > lastOpenedAt
+          ? snapshotExportedAt
+          : new Date(lastOpenedAt.getTime() + 60_000);
+      const completedSessionStartedAt = new Date(sessionStartedAt.getTime() - 3_600_000);
+      const completedSessionFinishedAt = new Date(sessionStartedAt.getTime() - 3_300_000);
+      const completedSessionId = `snapshot-paper-runtime-completed-${bot.id}`;
+      const sessionId = `snapshot-paper-runtime-${bot.id}`;
+
+      await tx.botRuntimeSession.create({
+        data: {
+          id: completedSessionId,
+          userId,
+          botId: bot.id,
+          mode: bot.mode,
+          status: 'COMPLETED',
+          startedAt: completedSessionStartedAt,
+          finishedAt: completedSessionFinishedAt,
+          lastHeartbeatAt: completedSessionFinishedAt,
+          stopReason: 'SNAPSHOT_COMPLETED_SESSION',
+          metadata: {
+            source: 'paper-runtime-snapshot',
+            generatedBy: 'snapshot:paper:import',
+            fixture: 'completed-session',
+            symbolsTracked: new Set(botOpenPositions.map((position) => position.symbol)).size,
+          },
+        },
+      });
+
+      await tx.botRuntimeEvent.create({
+        data: {
+          id: `${completedSessionId}-stopped`,
+          userId,
+          botId: bot.id,
+          sessionId: completedSessionId,
+          eventType: 'SESSION_STOPPED',
+          level: 'INFO',
+          message: 'Paper runtime snapshot completed session imported',
+          payload: {
+            source: 'paper-runtime-snapshot',
+            stopReason: 'SNAPSHOT_COMPLETED_SESSION',
+          },
+          eventAt: completedSessionFinishedAt,
+        },
+      });
+
+      await tx.botRuntimeSession.create({
+        data: {
+          id: sessionId,
+          userId,
+          botId: bot.id,
+          mode: bot.mode,
+          status: 'RUNNING',
+          startedAt: sessionStartedAt,
+          lastHeartbeatAt: sessionHeartbeatAt,
+          metadata: {
+            source: 'paper-runtime-snapshot',
+            generatedBy: 'snapshot:paper:import',
+            openPositions: botOpenPositions.length,
+          },
+        },
+      });
+
+      await tx.botRuntimeEvent.create({
+        data: {
+          id: `${sessionId}-started`,
+          userId,
+          botId: bot.id,
+          sessionId,
+          eventType: 'SESSION_STARTED',
+          level: 'INFO',
+          message: 'Paper runtime snapshot session imported',
+          payload: {
+            source: 'paper-runtime-snapshot',
+            openPositions: botOpenPositions.length,
+          },
+          eventAt: sessionStartedAt,
+        },
+      });
+
+      const positionsBySymbol = new Map<string, typeof botOpenPositions>();
+      for (const position of botOpenPositions) {
+        positionsBySymbol.set(position.symbol, [...(positionsBySymbol.get(position.symbol) ?? []), position]);
+      }
+
+      for (const [symbol, symbolPositions] of positionsBySymbol) {
+        await tx.botRuntimeSymbolStat.create({
+          data: {
+            id: `${completedSessionId}-stat-${symbol}`,
+            userId,
+            botId: bot.id,
+            sessionId: completedSessionId,
+            symbol,
+            openPositionCount: 0,
+            openPositionQty: 0,
+            realizedPnl: symbolPositions.reduce((acc, position) => acc + (position.realizedPnl ?? 0), 0),
+            feesPaid: 0,
+            lastPrice: symbolPositions[0]?.entryPrice ?? null,
+            lastTradeAt: completedSessionFinishedAt,
+            snapshotAt: completedSessionFinishedAt,
+          },
+        });
+
+        await tx.botRuntimeSymbolStat.create({
+          data: {
+            id: `${sessionId}-stat-${symbol}`,
+            userId,
+            botId: bot.id,
+            sessionId,
+            symbol,
+            openPositionCount: symbolPositions.length,
+            openPositionQty: symbolPositions.reduce((acc, position) => acc + position.quantity, 0),
+            realizedPnl: symbolPositions.reduce((acc, position) => acc + (position.realizedPnl ?? 0), 0),
+            feesPaid: 0,
+            lastPrice: symbolPositions[0]?.entryPrice ?? null,
+            lastTradeAt: symbolPositions
+              .map((position) => new Date(position.openedAt))
+              .sort((left, right) => right.getTime() - left.getTime())[0],
+            snapshotAt: sessionHeartbeatAt,
+          },
+        });
+      }
     }
   });
 
@@ -410,4 +605,3 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
-

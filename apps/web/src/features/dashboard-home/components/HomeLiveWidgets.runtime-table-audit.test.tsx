@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { I18nProvider } from "../../../i18n/I18nProvider";
@@ -89,6 +89,206 @@ const sessionDetail = {
     closedTrades: 0,
     realizedPnl: 0,
   },
+};
+
+const createRuntimeBot = ({
+  id,
+  name,
+  symbol,
+  walletName,
+  paperStartBalance,
+}: {
+  id: string;
+  name: string;
+  symbol: string;
+  walletName: string;
+  paperStartBalance: number;
+}) => ({
+  ...runtimeBot,
+  id,
+  name,
+  symbol,
+  symbols: [symbol],
+  paperStartBalance,
+  wallet: {
+    id: `wallet-${id}`,
+    name: walletName,
+    mode: "PAPER",
+    paperInitialBalance: paperStartBalance,
+    baseCurrency: "USDT",
+    currency: "USDT",
+  },
+});
+
+const createSession = (botId: string, symbol: string, realizedPnl: number) => ({
+  ...sessionDetail,
+  id: `session-${botId}`,
+  botId,
+  summary: {
+    ...sessionDetail.summary,
+    totalSignals: 2,
+    realizedPnl,
+  },
+  symbolsTracked: 1,
+  eventsCount: 4,
+  metadata: { symbol },
+});
+
+const createAggregate = ({
+  botId,
+  symbol,
+  realizedPnl,
+  unrealizedPnl,
+  portfolioValue,
+  freeFunds,
+  marginUsed,
+  openOrderId,
+  tradeId,
+}: {
+  botId: string;
+  symbol: string;
+  realizedPnl: number;
+  unrealizedPnl: number;
+  portfolioValue: number;
+  freeFunds: number;
+  marginUsed: number;
+  openOrderId: string;
+  tradeId: string;
+}) => {
+  const session = createSession(botId, symbol, realizedPnl);
+  const nowForBot = now;
+  return {
+    sessionDetail: session,
+    symbolStats: {
+      sessionId: session.id,
+      items: [
+        {
+          id: `signal-${botId}-${symbol}`,
+          symbol,
+          lastPrice: 100,
+          openPositionQty: 1,
+          unrealizedPnl,
+          lastSignalAt: nowForBot,
+          lastSignalDecisionAt: nowForBot,
+          latestSignalAction: "HOLD",
+          latestSignalReason: "fixture",
+          latestSignalScore: 0.5,
+          latestSignalConfidence: 0.5,
+          latestSignalSide: "LONG",
+          latestSignalSource: "LATEST_SIGNAL",
+          runtimeMarketState: "POSITION_OPEN",
+        },
+      ],
+      summary: {
+        totalSignals: 2,
+        longEntries: 1,
+        shortEntries: 0,
+        exits: 0,
+        dcaCount: 0,
+        closedTrades: 1,
+        winningTrades: 1,
+        losingTrades: 0,
+        realizedPnl,
+        unrealizedPnl,
+        totalPnl: realizedPnl + unrealizedPnl,
+        grossProfit: Math.max(realizedPnl, 0),
+        grossLoss: Math.min(realizedPnl, 0),
+        feesPaid: 1,
+      },
+    },
+    positions: {
+      sessionId: session.id,
+      total: 1,
+      openCount: 1,
+      closedCount: 0,
+      openOrdersCount: 1,
+      showDynamicStopColumns: false,
+      window: { startedAt: nowForBot, finishedAt: null },
+      summary: {
+        realizedPnl,
+        unrealizedPnl,
+        feesPaid: 1,
+        portfolioValue,
+        freeFunds,
+        baseCurrency: "USDT",
+      },
+      openOrders: [
+        {
+          id: openOrderId,
+          symbol,
+          side: "BUY",
+          status: "OPEN",
+          type: "LIMIT",
+          quantity: 0.1,
+          filledQuantity: 0,
+          price: 100,
+          stopPrice: null,
+          origin: "BOT",
+          exchangeOrderId: null,
+          submittedAt: nowForBot,
+          createdAt: nowForBot,
+        },
+      ],
+      openItems: [
+        {
+          id: `position-${botId}`,
+          symbol,
+          side: "LONG",
+          status: "OPEN",
+          quantity: 0.1,
+          leverage: 10,
+          marginUsed,
+          entryPrice: 100,
+          entryNotional: marginUsed * 10,
+          exitPrice: null,
+          stopLoss: null,
+          takeProfit: null,
+          openedAt: nowForBot,
+          closedAt: null,
+          holdMs: 60000,
+          dcaCount: 0,
+          feesPaid: 1,
+          realizedPnl: 0,
+          unrealizedPnl,
+          unrealizedPnlPercent: unrealizedPnl,
+          markPrice: 100 + unrealizedPnl,
+          firstTradeAt: nowForBot,
+          lastTradeAt: nowForBot,
+          tradesCount: 1,
+        },
+      ],
+      historyItems: [],
+    },
+    trades: {
+      sessionId: session.id,
+      total: 1,
+      meta: { page: 1, pageSize: 25, total: 1, totalPages: 1, hasPrev: false, hasNext: false },
+      window: { startedAt: nowForBot, finishedAt: null },
+      items: [
+        {
+          id: tradeId,
+          symbol,
+          side: "BUY",
+          lifecycleAction: "OPEN",
+          price: 100,
+          quantity: 0.1,
+          fee: 1,
+          feeSource: "SIMULATED",
+          feePending: false,
+          feeCurrency: "USDT",
+          realizedPnl,
+          executedAt: nowForBot,
+          orderId: openOrderId,
+          positionId: `position-${botId}`,
+          strategyId: "strategy-1",
+          origin: "BOT",
+          managementMode: "BOT",
+          notional: marginUsed * 10,
+          margin: marginUsed,
+        },
+      ],
+    },
+  };
 };
 
 describe("HomeLiveWidgets runtime table rendered audit", () => {
@@ -238,4 +438,178 @@ describe("HomeLiveWidgets runtime table rendered audit", () => {
       }).length
     ).toBeGreaterThan(0);
   });
+
+  it("renders loading and retryable error states for the dashboard runtime surface", async () => {
+    listBotsMock.mockReturnValue(new Promise(() => {}));
+
+    const { unmount } = render(
+      <I18nProvider>
+        <HomeLiveWidgets />
+      </I18nProvider>
+    );
+
+    expect(
+      screen.getByLabelText("Loading operational dashboard", { selector: "[aria-busy='true']" })
+    ).toBeInTheDocument();
+
+    unmount();
+    vi.clearAllMocks();
+    window.localStorage.clear();
+    window.localStorage.setItem("cryptosparrow-locale", "en");
+    listBotsMock.mockRejectedValueOnce(new Error("runtime-fetch-failed"));
+
+    render(
+      <I18nProvider>
+        <HomeLiveWidgets />
+      </I18nProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Could not load operational dashboard")).toBeInTheDocument();
+      expect(screen.getByText("Could not fetch dashboard widgets.")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
+    });
+  });
+
+  it("keeps selected-bot switching, wallet KPIs, and runtime tabs aligned to the selected snapshot", async () => {
+    const alphaBot = createRuntimeBot({
+      id: "bot-alpha",
+      name: "Alpha Audit Bot",
+      symbol: "BTCUSDT",
+      walletName: "Alpha Paper",
+      paperStartBalance: 1000,
+    });
+    const betaBot = createRuntimeBot({
+      id: "bot-beta",
+      name: "Beta Audit Bot",
+      symbol: "ETHUSDT",
+      walletName: "Beta Paper",
+      paperStartBalance: 1500,
+    });
+    const aggregates = new Map([
+      [
+        alphaBot.id,
+        createAggregate({
+          botId: alphaBot.id,
+          symbol: "BTCUSDT",
+          realizedPnl: 10,
+          unrealizedPnl: 5,
+          portfolioValue: 1015,
+          freeFunds: 900,
+          marginUsed: 115,
+          openOrderId: "alpha-order-open",
+          tradeId: "alpha-trade-open",
+        }),
+      ],
+      [
+        betaBot.id,
+        createAggregate({
+          botId: betaBot.id,
+          symbol: "ETHUSDT",
+          realizedPnl: -20,
+          unrealizedPnl: 20,
+          portfolioValue: 1500,
+          freeFunds: 1250,
+          marginUsed: 250,
+          openOrderId: "beta-order-open",
+          tradeId: "beta-trade-open",
+        }),
+      ],
+    ]);
+
+    listBotsMock.mockResolvedValue([alphaBot, betaBot]);
+    listBotRuntimeSessionsMock.mockImplementation(async (botId: string) => [
+      createSession(botId, botId === betaBot.id ? "ETHUSDT" : "BTCUSDT", botId === betaBot.id ? -20 : 10),
+    ]);
+    getBotRuntimeGraphMock.mockImplementation(async (botId: string) => ({
+      ...runtimeGraph,
+      bot: botId === betaBot.id ? betaBot : alphaBot,
+      markets: [{ symbol: botId === betaBot.id ? "ETHUSDT" : "BTCUSDT", status: "ACTIVE", isEnabled: true }],
+      marketGroups: [
+        {
+          id: `group-${botId}`,
+          botId,
+          symbolGroupId: `symbols-${botId}`,
+          lifecycleStatus: "ACTIVE",
+          executionOrder: 1,
+          isEnabled: true,
+          createdAt: now,
+          updatedAt: now,
+          symbolGroup: {
+            id: `symbols-${botId}`,
+            name: botId === betaBot.id ? "Beta group" : "Alpha group",
+            symbols: [botId === betaBot.id ? "ETHUSDT" : "BTCUSDT"],
+            marketUniverseId: "market-universe-1",
+          },
+          strategies: [
+            {
+              id: `strategy-link-${botId}`,
+              strategyId: "strategy-1",
+              priority: 1,
+              weight: 1,
+              isEnabled: true,
+              createdAt: now,
+              updatedAt: now,
+              strategy: {
+                id: "strategy-1",
+                name: "RSI 20/80",
+                interval: "5m",
+                leverage: 10,
+              },
+            },
+          ],
+        },
+      ],
+      legacyBotStrategies: [],
+    }));
+    getBotRuntimeMonitoringAggregateMock.mockImplementation(async (botId: string) => aggregates.get(botId));
+
+    render(
+      <I18nProvider>
+        <HomeLiveWidgets />
+      </I18nProvider>
+    );
+
+    let selector: HTMLSelectElement;
+    await waitFor(() => {
+      const selectorLabel = screen.getByText("Selected bot").closest("label");
+      expect(selectorLabel).not.toBeNull();
+      selector = within(selectorLabel as HTMLLabelElement).getByRole("combobox") as HTMLSelectElement;
+      expect(selector.value).toBe(alphaBot.id);
+      expect(within(screen.getByTestId("wallet-section")).getByText("Alpha Paper")).toBeInTheDocument();
+      expect(within(screen.getByTestId("wallet-kpi-portfolio")).getByText("1,010.50 USDT")).toBeInTheDocument();
+      expect(screen.getAllByText("BTCUSDT").length).toBeGreaterThan(0);
+    });
+
+    fireEvent.change(selector!, { target: { value: betaBot.id } });
+
+    await waitFor(() => {
+      expect(selector!.value).toBe(betaBot.id);
+      expect(within(screen.getByTestId("wallet-section")).getByText("Beta Paper")).toBeInTheDocument();
+      expect(within(screen.getByTestId("wallet-kpi-free-funds")).getByText("1,232.00 USDT")).toBeInTheDocument();
+      expect(within(screen.getByTestId("wallet-kpi-in-positions")).getByText("250.00 USDT")).toBeInTheDocument();
+      expect(screen.getAllByText("ETHUSDT").length).toBeGreaterThan(0);
+      expect(screen.queryByText("Alpha Paper")).not.toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole("tab", { name: "Orders" }));
+
+    await waitFor(() => {
+      expect(screen.getAllByText("ETHUSDT").length).toBeGreaterThan(0);
+      expect(screen.queryByText("BTCUSDT")).not.toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Cancel order" })).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole("tab", { name: "History" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Trades")).toBeInTheDocument();
+      expect(screen.getAllByText("ETHUSDT").length).toBeGreaterThan(0);
+      expect(screen.queryByText("BTCUSDT")).not.toBeInTheDocument();
+    });
+    expect(getBotRuntimeMonitoringAggregateMock).toHaveBeenCalledWith(
+      betaBot.id,
+      expect.objectContaining({ perSessionLimit: 200 })
+    );
+  }, 10_000);
 });
