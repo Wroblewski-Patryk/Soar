@@ -4,6 +4,14 @@ Last updated: 2026-05-13
 
 ## Next Tiny Task
 
+Latest production activation refresh:
+`V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-13` refreshed activation audit and
+activation evidence plan artifacts for the current evidence date. Final
+preflight now classifies activation evidence as fresh for 2026-05-13, but V1
+remains `NO-GO` on missing protected auth, missing DB restore context, stale
+RC/backup-restore/rollback evidence, missing `LIVEIMPORT-03`, and failed
+authenticated production UI clickthrough.
+
 Latest generated state refresh after operator packet:
 `V1-GENERATED-STATE-REFRESH-AFTER-OPERATOR-PACKET-00169D7F-2026-05-13`
 reran the V1 generated-state chain after the current operator packet was

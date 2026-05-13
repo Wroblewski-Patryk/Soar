@@ -8,6 +8,15 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-13 release: refresh current activation audit and plan truth`
+  - 2026-05-13: Published current production activation audit and activation
+    evidence plan artifacts as explicit `NO-GO` truth. Release gate dry-run
+    and final preflight now classify activation audit/plan as fresh, but V1
+    remains blocked on missing protected auth, missing DB restore context,
+    stale RC/backup-restore/rollback evidence, missing `LIVEIMPORT-03`, and
+    failed production UI clickthrough. Evidence:
+    `docs/planning/v1-production-activation-refresh-2026-05-13-task.md`.
+
 - [x] `V1-GENERATED-STATE-REFRESH-AFTER-OPERATOR-PACKET-00169D7F-2026-05-13 release: refresh generated V1 state after operator packet`
   - 2026-05-13: Reran the V1 generated-state chain after publishing the
     current-day operator packet. Generated state remains `NO-GO`:

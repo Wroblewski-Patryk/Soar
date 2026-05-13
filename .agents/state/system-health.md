@@ -4,6 +4,13 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-13` ACTIVATION FRESH / NO-GO:
+  production activation audit and activation evidence plan are fresh for
+  2026-05-13 and explicitly `NO-GO`. Final preflight removed the activation
+  stale blockers but remains blocked on missing protected auth, missing DB
+  restore context, stale RC/backup-restore/rollback evidence, missing
+  `LIVEIMPORT-03`, and failed production UI clickthrough.
+
 - `V1-GENERATED-STATE-REFRESH-AFTER-OPERATOR-PACKET-00169D7F-2026-05-13`
   GENERATED STATE / NO-GO: project index, static scan, master ledger, and
   completion scorecard were rerun after the current operator packet. Generated

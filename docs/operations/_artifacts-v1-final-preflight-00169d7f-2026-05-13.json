@@ -1,6 +1,6 @@
 {
   "status": "blocked",
-  "generatedAt": "2026-05-13T17:03:21.632Z",
+  "generatedAt": "2026-05-13T17:16:01.063Z",
   "context": {
     "apiBaseUrl": "https://api.soar.luckysparrow.ch",
     "webBaseUrl": "https://soar.luckysparrow.ch",
@@ -97,20 +97,20 @@
     {
       "key": "activationAudit",
       "label": "activation evidence audit",
-      "state": "stale",
+      "state": "fresh",
       "required": true,
-      "reason": "expected 2026-05-13, found 2026-05-12",
-      "path": "docs\\operations\\v1-production-activation-evidence-audit-2026-05-12.md",
-      "date": "2026-05-12"
+      "reason": "fresh for 2026-05-13",
+      "path": "docs\\operations\\v1-production-activation-evidence-audit-2026-05-13.md",
+      "date": "2026-05-13"
     },
     {
       "key": "activationPlan",
       "label": "activation execution plan",
-      "state": "stale",
+      "state": "fresh",
       "required": true,
-      "reason": "expected 2026-05-13, found 2026-05-12",
-      "path": "docs\\planning\\v1-production-activation-and-evidence-plan-2026-05-12.md",
-      "date": "2026-05-12"
+      "reason": "fresh for 2026-05-13",
+      "path": "docs\\planning\\v1-production-activation-and-evidence-plan-2026-05-13.md",
+      "date": "2026-05-13"
     },
     {
       "key": "rcExternalGateStatus",
@@ -182,8 +182,6 @@
     "env:production UI dashboard auth",
     "env:production UI admin auth",
     "env:production DB restore context",
-    "evidence:activationAudit:stale",
-    "evidence:activationPlan:stale",
     "evidence:rcExternalGateStatus:stale",
     "evidence:rcSignoffRecord:stale",
     "evidence:rcChecklist:stale",
@@ -259,32 +257,6 @@
         "production_db_coolify_access"
       ],
       "remediationAvailable": true
-    },
-    {
-      "blocker": "evidence:activationAudit:stale",
-      "category": "release_evidence",
-      "label": "activationAudit:stale",
-      "severity": "blocking",
-      "protectedInputRequired": true,
-      "finalEvidenceRequired": true,
-      "operatorActionRequired": true,
-      "requiredCapabilities": [
-        "release_evidence"
-      ],
-      "remediationAvailable": false
-    },
-    {
-      "blocker": "evidence:activationPlan:stale",
-      "category": "release_evidence",
-      "label": "activationPlan:stale",
-      "severity": "blocking",
-      "protectedInputRequired": true,
-      "finalEvidenceRequired": true,
-      "operatorActionRequired": true,
-      "requiredCapabilities": [
-        "release_evidence"
-      ],
-      "remediationAvailable": false
     },
     {
       "blocker": "evidence:rcExternalGateStatus:stale",

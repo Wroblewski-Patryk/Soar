@@ -11,6 +11,7 @@
   `docs/operations/prod-ui-module-clickthrough-00169d7f-2026-05-13.md`
 - Public build-info and public API/Web smoke: `PASS`
 - Current production UI clickthrough: `BLOCKED_AUTH`
+- Activation audit and plan: fresh `NO-GO` for 2026-05-13
 - V1 generated state: `NO-GO`
 
 ## Current Blockers
@@ -24,9 +25,10 @@
 - Missing `LIVEIMPORT-03` runtime readback artifact.
 - Production UI clickthrough is fresh for 2026-05-13 but `BLOCKED_AUTH`; it is
   not accepted V1 evidence.
-- Activation, RC, backup/restore, and rollback artifacts are stale for
-  2026-05-13 and must be refreshed after protected/operator inputs are
-  available.
+- RC, backup/restore, and rollback artifacts are stale for 2026-05-13 and must
+  be refreshed after protected/operator inputs are available.
+- Activation audit and plan are fresh `NO-GO` artifacts for 2026-05-13; they
+  do not approve V1.
 - Final production release gate must return `ready`; the latest non-dry-run
   attempt stopped `not_ready` on protected `/workers/health` `401`.
 

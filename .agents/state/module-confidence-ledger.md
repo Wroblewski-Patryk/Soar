@@ -57,6 +57,13 @@ Do not turn uncertainty into optimism.
 
 ## Current Release Evidence Notes
 
+- 2026-05-13 `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-13` applies to
+  `SOAR-OPERATIONS-001`: production activation audit and activation evidence
+  plan are fresh `NO-GO` artifacts for 2026-05-13. This removes the activation
+  stale classification from final preflight, but Operations remains `BLOCKED`
+  until protected auth, DB restore context, RC approval, rollback proof,
+  `LIVEIMPORT-03`, authenticated production UI clickthrough, and the final
+  release gate are complete.
 - 2026-05-13 `V1-OPERATOR-PACKET-CURRENT-DAY-REFRESH-00169D7F-2026-05-13`
   applies to `SOAR-OPERATIONS-001`, `SOAR-BOTS-001`, and
   `SOAR-UX-A11Y-MOBILE-001`: the current operator unblock packet now points to

@@ -4,6 +4,20 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-13` refreshed production
+  activation audit and activation evidence plan artifacts for the current
+  evidence date.
+- Activation audit/plan are now fresh for 2026-05-13 and explicitly
+  `NO-GO`. Refreshed final preflight removed the activation stale blockers but
+  remains `blocked` on missing protected auth, missing production DB restore
+  context, stale RC/backup-restore/rollback evidence, missing `LIVEIMPORT-03`,
+  and failed authenticated production UI clickthrough.
+- Evidence:
+  `docs/operations/v1-production-activation-evidence-audit-2026-05-13.md`,
+  `docs/planning/v1-production-activation-and-evidence-plan-2026-05-13.md`,
+  `docs/operations/v1-release-gate-prod-2026-05-13Tactivation-refresh-dry-run.md`,
+  and `docs/planning/v1-production-activation-refresh-2026-05-13-task.md`.
+
 - `V1-GENERATED-STATE-REFRESH-AFTER-OPERATOR-PACKET-00169D7F-2026-05-13`
   reran the V1 generated-state chain after publishing the current-day operator
   packet.

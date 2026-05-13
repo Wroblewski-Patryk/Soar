@@ -1,7 +1,7 @@
 # V1 Final Preflight Report
 
 ## Context
-- Generated (UTC): 2026-05-13T17:03:21.632Z
+- Generated (UTC): 2026-05-13T17:16:01.063Z
 - Status: blocked
 - API base URL: https://api.soar.luckysparrow.ch
 - Web base URL: https://soar.luckysparrow.ch
@@ -25,8 +25,8 @@
 ## Release Evidence
 | Evidence | State | Required | Date | Notes |
 | --- | --- | --- | --- | --- |
-| activation evidence audit | stale | yes | 2026-05-12 | expected 2026-05-13, found 2026-05-12 |
-| activation execution plan | stale | yes | 2026-05-12 | expected 2026-05-13, found 2026-05-12 |
+| activation evidence audit | fresh | yes | 2026-05-13 | fresh for 2026-05-13 |
+| activation execution plan | fresh | yes | 2026-05-13 | fresh for 2026-05-13 |
 | RC external gates status | stale | yes | 2026-05-12 | expected 2026-05-13, found 2026-05-12 |
 | RC sign-off record | stale | yes | 2026-05-12 | expected 2026-05-13, found 2026-05-12 |
 | RC checklist verification block | stale | yes | 2026-05-12 | expected 2026-05-13, found 2026-05-12 |
@@ -41,8 +41,6 @@
 - env:production UI dashboard auth
 - env:production UI admin auth
 - env:production DB restore context
-- evidence:activationAudit:stale
-- evidence:activationPlan:stale
 - evidence:rcExternalGateStatus:stale
 - evidence:rcSignoffRecord:stale
 - evidence:rcChecklist:stale
@@ -59,8 +57,6 @@
 | env:production UI dashboard auth | protected_prerequisite | blocking | yes | no | yes |
 | env:production UI admin auth | protected_prerequisite | blocking | yes | no | yes |
 | env:production DB restore context | protected_prerequisite | blocking | yes | no | yes |
-| evidence:activationAudit:stale | release_evidence | blocking | yes | yes | no |
-| evidence:activationPlan:stale | release_evidence | blocking | yes | yes | no |
 | evidence:rcExternalGateStatus:stale | release_evidence | blocking | yes | yes | no |
 | evidence:rcSignoffRecord:stale | release_evidence | blocking | yes | yes | no |
 | evidence:rcChecklist:stale | release_evidence | blocking | yes | yes | no |
