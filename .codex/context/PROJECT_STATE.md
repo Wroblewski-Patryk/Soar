@@ -4,6 +4,13 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-GENERATED-STATE-REFRESH-AFTER-RC-ACTIVATION-2026-05-13` reran the V1
+  generated-state chain after activation and RC artifact refresh.
+- Generated state remains unchanged and `NO-GO`: `PASS_LOCAL:20`,
+  `BLOCKED_AUTH:1`, static findings `3` (`P0:1`, `P1:1`, `P2:1`), scorecard
+  `86.8%` implementation, `61.3%` evidence coverage, and `42.4%` release
+  readiness.
+
 - `V1-RC-CURRENT-BLOCKED-REFRESH-2026-05-13` refreshed RC external gates,
   sign-off, and checklist artifacts for 2026-05-13.
 - Final preflight now classifies RC evidence as current `failed`/`BLOCKED`

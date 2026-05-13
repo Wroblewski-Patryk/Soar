@@ -1,6 +1,6 @@
 # V1 Static Issue Scan
 
-Generated at: 2026-05-13T17:11:05.812Z
+Generated at: 2026-05-13T17:19:10.745Z
 Evidence date: 2026-05-13
 Project index: `docs/operations/project-index-2026-05-13.json`
 
@@ -29,7 +29,7 @@ not replace browser/API/DB/exchange action audits.
 
 | Severity | Category | Finding | Evidence | Recommendation |
 | --- | --- | --- | --- | --- |
-| P2 | queue-blocked | 2 protected/auth queue blockers remain open | .codex/context/TASK_BOARD.md:790, docs/planning/mvp-next-commits.md:696 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` \| .codex/context/TASK_BOARD.md:5312, docs/planning/mvp-next-com | Keep these open until approved protected auth, production-safe fixtures, or required approvals are available. |
+| P2 | queue-blocked | 2 protected/auth queue blockers remain open | .codex/context/TASK_BOARD.md:815, docs/planning/mvp-next-commits.md:721 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` \| .codex/context/TASK_BOARD.md:5337, docs/planning/mvp-next-com | Keep these open until approved protected auth, production-safe fixtures, or required approvals are available. |
 
 ## Interpretation
 

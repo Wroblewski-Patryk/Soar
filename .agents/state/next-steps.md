@@ -4,6 +4,13 @@ Last updated: 2026-05-13
 
 ## Next Tiny Task
 
+Latest generated state refresh after activation and RC evidence:
+`V1-GENERATED-STATE-REFRESH-AFTER-RC-ACTIVATION-2026-05-13` reran the V1
+generated-state chain after current activation and RC artifact refresh.
+Generated state remains `NO-GO`: `PASS_LOCAL:20`, `BLOCKED_AUTH:1`, static
+findings `3` (`P0:1`, `P1:1`, `P2:1`), scorecard `86.8%` implementation,
+`61.3%` evidence coverage, and `42.4%` release readiness.
+
 Latest RC blocked refresh:
 `V1-RC-CURRENT-BLOCKED-REFRESH-2026-05-13` refreshed RC external gates status,
 RC sign-off, and RC checklist artifacts for 2026-05-13. Final preflight now

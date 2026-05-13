@@ -4,6 +4,13 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-GENERATED-STATE-REFRESH-AFTER-RC-ACTIVATION-2026-05-13` GENERATED
+  STATE / NO-GO: project index, static scan, master ledger, and completion
+  scorecard were rerun after activation and RC evidence refresh. Generated
+  state remains `NO-GO` with `PASS_LOCAL:20`, `BLOCKED_AUTH:1`, static
+  findings `3`, implementation `86.8%`, evidence coverage `61.3%`, and
+  release readiness `42.4%`.
+
 - `V1-RC-CURRENT-BLOCKED-REFRESH-2026-05-13` RC FRESH / BLOCKED: RC external
   gates, RC sign-off, and RC checklist were refreshed for 2026-05-13. Gate 4
   remains open because real approver fields are missing; final preflight now

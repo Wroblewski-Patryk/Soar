@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-13T17:11:01.252Z",
+  "generatedAt": "2026-05-13T17:19:02.734Z",
   "evidenceDate": "2026-05-13",
   "repoRoot": "C:/Personal/Projekty/Aplikacje/Soar",
   "sources": {
@@ -1831,22 +1831,22 @@
   "uncheckedTasks": [
     {
       "source": ".codex/context/TASK_BOARD.md",
-      "line": 790,
+      "line": 815,
       "text": "- [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`"
     },
     {
       "source": ".codex/context/TASK_BOARD.md",
-      "line": 5312,
+      "line": 5337,
       "text": "- [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`"
     },
     {
       "source": "docs/planning/mvp-next-commits.md",
-      "line": 696,
+      "line": 721,
       "text": "- [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`"
     },
     {
       "source": "docs/planning/mvp-next-commits.md",
-      "line": 4765,
+      "line": 4790,
       "text": "- [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`"
     }
   ],
