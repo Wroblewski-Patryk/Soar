@@ -4,6 +4,21 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-RUNTIME-EXCHANGE-ADAPTER-BOUNDARY-2026-05-13` corrected a runtime
+  architecture mismatch found during the Binance/Gate.io adapter review.
+  Runtime candle warmup and indicator recovery now use the Exchange module's
+  public market-data boundary instead of a direct Binance REST call from
+  Engine. Runtime candle and derivative stores are exchange-scoped, strategy
+  evaluation receives the bot exchange context, and lifecycle/symbol-stats
+  read fallbacks no longer risk mixing Binance and Gate.io series for the same
+  symbol. Binance-only derivative fallbacks remain Binance-only and fail
+  closed for non-Binance exchanges. Evidence:
+  `docs/planning/v1-runtime-exchange-adapter-boundary-2026-05-13-task.md`;
+  focused runtime/decision-loop tests passed (`55/55`), exchange/stream/
+  fallback/read-model tests passed (`12/12`), API typecheck passed, and
+  guardrails passed. This is local adapter-boundary verification; production
+  multi-bot/live runtime proof remains a separate partial evidence lane.
+
 - `V1-NON-GATEIO-RUNTIME-AND-APP-PROOF-00169D7F-2026-05-13` verified the
   current non-Gate.io slice after the user deferred Gate.io. Result:
   `PARTIAL_BINANCE_LIVE_INACTIVE`. Authenticated read-only production readback

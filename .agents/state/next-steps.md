@@ -4,6 +4,18 @@ Last updated: 2026-05-13
 
 ## Next Tiny Task
 
+Latest runtime adapter boundary proof:
+`V1-RUNTIME-EXCHANGE-ADAPTER-BOUNDARY-2026-05-13` is locally verified. Runtime
+candle warmup and indicator recovery now use the exchange-owned public
+market-data boundary instead of direct Binance REST from Engine. Runtime candle
+and derivative stores are exchange-scoped, and strategy/lifecycle/read-model
+consumers receive exchange context, so Binance and Gate.io cannot share
+in-memory series for the same symbol/interval. Focused runtime/decision-loop
+tests passed (`55/55`), exchange/stream/fallback/read-model tests passed
+(`12/12`), API typecheck passed, and guardrails passed. Next proof remains
+production-safe multi-bot/runtime clickthrough after the production LIVE/Gate.io
+resource shape exists.
+
 Latest non-Gate.io proof:
 `V1-NON-GATEIO-RUNTIME-AND-APP-PROOF-00169D7F-2026-05-13` is
 `PARTIAL_BINANCE_LIVE_INACTIVE` after the user explicitly deferred Gate.io.

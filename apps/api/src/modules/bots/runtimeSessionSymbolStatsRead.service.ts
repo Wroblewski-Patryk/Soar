@@ -221,6 +221,7 @@ const loadMarketSnapshot = async (params: {
   interval: string;
 }): Promise<{ candles: RuntimeCandle[]; derivatives?: StrategySignalDerivativesSeries } | null> => {
   const inMemoryCandles = runtimeSignalLoop.getSeries({
+    exchange: params.exchange,
     marketType: params.marketType,
     symbol: params.symbol,
     interval: params.interval,
@@ -278,16 +279,19 @@ const loadMarketSnapshot = async (params: {
   if (resolvedCandles.length === 0) return null;
 
   const fundingRate = runtimeSignalLoop.resolveFundingRateSeriesForCandles({
+    exchange: params.exchange,
     marketType: params.marketType,
     symbol: params.symbol,
     candles: resolvedCandles,
   });
   const openInterest = runtimeSignalLoop.resolveOpenInterestSeriesForCandles({
+    exchange: params.exchange,
     marketType: params.marketType,
     symbol: params.symbol,
     candles: resolvedCandles,
   });
   const orderBook = runtimeSignalLoop.resolveOrderBookSeriesForCandles({
+    exchange: params.exchange,
     marketType: params.marketType,
     symbol: params.symbol,
     candles: resolvedCandles,

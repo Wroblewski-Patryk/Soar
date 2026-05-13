@@ -1,3 +1,4 @@
+import { Exchange } from '@prisma/client';
 import {
   evaluateStrategySignalAtIndex,
   parseStrategySignalRules,
@@ -27,21 +28,25 @@ export type RuntimeOrderBookSeries = {
 
 type RuntimeSignalDecisionEngineDeps = {
   getSeries: (
+    exchange: Exchange,
     marketType: 'FUTURES' | 'SPOT',
     symbol: string,
     interval?: string | null,
   ) => RuntimeCandle[] | null;
   resolveFundingRateSeriesForCandles: (
+    exchange: Exchange,
     marketType: 'FUTURES' | 'SPOT',
     symbol: string,
     candles: RuntimeCandle[],
   ) => Array<number | null> | null;
   resolveOpenInterestSeriesForCandles: (
+    exchange: Exchange,
     marketType: 'FUTURES' | 'SPOT',
     symbol: string,
     candles: RuntimeCandle[],
   ) => Array<number | null> | null;
   resolveOrderBookSeriesForCandles: (
+    exchange: Exchange,
     marketType: 'FUTURES' | 'SPOT',
     symbol: string,
     candles: RuntimeCandle[],
@@ -52,12 +57,14 @@ export class RuntimeSignalDecisionEngine {
   constructor(private readonly deps: RuntimeSignalDecisionEngineDeps) {}
 
   evaluateStrategy(input: {
+    exchange?: Exchange;
     marketType: 'FUTURES' | 'SPOT';
     symbol: string;
     strategy: ActiveBotStrategy;
     decisionOpenTime: number;
   }): StrategyEvaluation {
     const { marketType, symbol, strategy, decisionOpenTime } = input;
+    const exchange = input.exchange ?? 'BINANCE';
     if (!strategy.strategyConfig) {
       return {
         direction: null,
@@ -74,7 +81,7 @@ export class RuntimeSignalDecisionEngine {
       };
     }
 
-    const candles = this.deps.getSeries(marketType, symbol, strategy.strategyInterval);
+    const candles = this.deps.getSeries(exchange, marketType, symbol, strategy.strategyInterval);
     if (!candles || candles.length === 0) {
       return {
         direction: null,
@@ -95,16 +102,19 @@ export class RuntimeSignalDecisionEngine {
     })();
 
     const fundingRateSeries = this.deps.resolveFundingRateSeriesForCandles(
+      exchange,
       marketType,
       symbol,
       candles,
     );
     const openInterestSeries = this.deps.resolveOpenInterestSeriesForCandles(
+      exchange,
       marketType,
       symbol,
       candles,
     );
     const orderBookSeries = this.deps.resolveOrderBookSeriesForCandles(
+      exchange,
       marketType,
       symbol,
       candles,

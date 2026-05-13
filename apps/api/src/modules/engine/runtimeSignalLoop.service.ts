@@ -56,6 +56,7 @@ import { RuntimeSignalLoopSupervisor } from './runtimeSignalLoopSupervisor';
 import { processRuntimeFinalCandleDecision } from './runtimeFinalCandleDecision.service';
 import { enforceRuntimeOrderLifetimes } from './runtimeOrderLifetime.service';
 import { enforceRuntimePositionLifetimes } from './runtimePositionLifetime.service';
+import { fetchExchangePublicRecentCandles } from '../exchange/exchangePublicMarketData.service';
 
 export {
   deriveRuntimeGroupMaxOpenPositions,
@@ -162,6 +163,7 @@ type RuntimeSignalLoopDeps = {
   autoRestartWindowMs?: number;
   seriesQueueMaxPending?: number;
   warmupEnabled?: boolean;
+  fetchRecentCandles?: typeof fetchExchangePublicRecentCandles;
   acquireWarmupLock?: (
     input: RuntimeSignalWarmupLockInput
   ) => Promise<RuntimeSignalWarmupLockHandle>;
@@ -215,6 +217,8 @@ export class RuntimeSignalLoop {
   private readonly marketDataGateway = new RuntimeSignalMarketDataGateway({
     nowMs: () => this.deps.nowMs(),
     warmupEnabled: () => this.deps.warmupEnabled,
+    fetchRecentCandles: (params) =>
+      (this.deps.fetchRecentCandles ?? fetchExchangePublicRecentCandles)(params),
     acquireWarmupLock: (input) =>
       this.deps.acquireWarmupLock?.(input) ??
       Promise.resolve({
@@ -264,14 +268,29 @@ export class RuntimeSignalLoop {
   });
 
   private readonly decisionEngine = new RuntimeSignalDecisionEngine({
-    getSeries: (marketType, symbol, interval) =>
-      this.marketDataGateway.getSeries(marketType, symbol, interval),
-    resolveFundingRateSeriesForCandles: (marketType, symbol, candles) =>
-      this.marketDataGateway.resolveFundingRateSeriesForCandles(marketType, symbol, candles),
-    resolveOpenInterestSeriesForCandles: (marketType, symbol, candles) =>
-      this.marketDataGateway.resolveOpenInterestSeriesForCandles(marketType, symbol, candles),
-    resolveOrderBookSeriesForCandles: (marketType, symbol, candles) =>
-      this.marketDataGateway.resolveOrderBookSeriesForCandles(marketType, symbol, candles),
+    getSeries: (exchange, marketType, symbol, interval) =>
+      this.marketDataGateway.getSeries(exchange, marketType, symbol, interval),
+    resolveFundingRateSeriesForCandles: (exchange, marketType, symbol, candles) =>
+      this.marketDataGateway.resolveFundingRateSeriesForCandles(
+        exchange,
+        marketType,
+        symbol,
+        candles,
+      ),
+    resolveOpenInterestSeriesForCandles: (exchange, marketType, symbol, candles) =>
+      this.marketDataGateway.resolveOpenInterestSeriesForCandles(
+        exchange,
+        marketType,
+        symbol,
+        candles,
+      ),
+    resolveOrderBookSeriesForCandles: (exchange, marketType, symbol, candles) =>
+      this.marketDataGateway.resolveOrderBookSeriesForCandles(
+        exchange,
+        marketType,
+        symbol,
+        candles,
+      ),
   });
 
   constructor(private readonly deps: RuntimeSignalLoopDeps = defaultDeps) {}
@@ -720,6 +739,7 @@ export class RuntimeSignalLoop {
     if (!event.isFinal) return;
     await this.marketDataGateway.ingestCandleEvent(event);
     await this.marketDataGateway.ensureIndicatorReadySeries({
+      exchange: event.exchange,
       marketType: event.marketType,
       symbol: event.symbol,
       interval: event.interval,
@@ -757,6 +777,7 @@ export class RuntimeSignalLoop {
   }
 
   getRecentCloses(input: {
+    exchange?: ActiveBot['exchange'];
     marketType: 'FUTURES' | 'SPOT';
     symbol: string;
     interval?: string | null;
@@ -766,19 +787,27 @@ export class RuntimeSignalLoop {
   }
 
   getSeries(input: {
+    exchange?: ActiveBot['exchange'];
     marketType: 'FUTURES' | 'SPOT';
     symbol: string;
     interval?: string | null;
   }): RuntimeCandle[] | null {
-    return this.marketDataGateway.getSeries(input.marketType, input.symbol, input.interval);
+    return this.marketDataGateway.getSeries(
+      input.exchange ?? 'BINANCE',
+      input.marketType,
+      input.symbol,
+      input.interval,
+    );
   }
 
   resolveFundingRateSeriesForCandles(input: {
+    exchange?: ActiveBot['exchange'];
     marketType: 'FUTURES' | 'SPOT';
     symbol: string;
     candles: RuntimeCandle[];
   }) {
     return this.marketDataGateway.resolveFundingRateSeriesForCandles(
+      input.exchange ?? 'BINANCE',
       input.marketType,
       input.symbol,
       input.candles
@@ -786,11 +815,13 @@ export class RuntimeSignalLoop {
   }
 
   resolveOpenInterestSeriesForCandles(input: {
+    exchange?: ActiveBot['exchange'];
     marketType: 'FUTURES' | 'SPOT';
     symbol: string;
     candles: RuntimeCandle[];
   }) {
     return this.marketDataGateway.resolveOpenInterestSeriesForCandles(
+      input.exchange ?? 'BINANCE',
       input.marketType,
       input.symbol,
       input.candles
@@ -798,11 +829,13 @@ export class RuntimeSignalLoop {
   }
 
   resolveOrderBookSeriesForCandles(input: {
+    exchange?: ActiveBot['exchange'];
     marketType: 'FUTURES' | 'SPOT';
     symbol: string;
     candles: RuntimeCandle[];
   }): RuntimeOrderBookSeries | null {
     return this.marketDataGateway.resolveOrderBookSeriesForCandles(
+      input.exchange ?? 'BINANCE',
       input.marketType,
       input.symbol,
       input.candles
@@ -810,6 +843,7 @@ export class RuntimeSignalLoop {
   }
 
   private evaluateStrategy(input: {
+    exchange: ActiveBot['exchange'];
     marketType: 'FUTURES' | 'SPOT';
     symbol: string;
     strategy: ActiveBotStrategy;

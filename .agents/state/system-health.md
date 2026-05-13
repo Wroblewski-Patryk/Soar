@@ -4,6 +4,16 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-RUNTIME-EXCHANGE-ADAPTER-BOUNDARY-2026-05-13` LOCAL ADAPTER-BOUNDARY
+  PASS: runtime candle warmup and indicator recovery now use the Exchange
+  module public market-data boundary instead of direct Binance REST from
+  Engine. Runtime candle and derivative series are exchange-scoped, strategy
+  evaluation receives exchange context, and Binance-only derivative fallbacks
+  fail closed for Gate.io. Focused runtime/decision-loop tests passed
+  (`55/55`), exchange/stream/fallback/read-model tests passed (`12/12`), API
+  typecheck passed, and guardrails passed. Production multi-bot/live runtime
+  evidence remains a separate partial lane.
+
 - `V1-NON-GATEIO-RUNTIME-AND-APP-PROOF-00169D7F-2026-05-13` NON-GATE.IO
   PARTIAL: Gate.io is deferred by user decision for this slice. Authenticated
   read-only production runtime readback confirms both active Binance PAPER bots

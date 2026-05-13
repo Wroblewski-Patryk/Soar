@@ -248,15 +248,16 @@ const buildKlineRows = (
 ) =>
   Array.from({ length: points }, (_, index) => {
     const close = closeForIndex(index);
-    return [
-      index * intervalMs,
-      String(close - 1),
-      String(close + 2),
-      String(close - 2),
-      String(close),
-      '1000',
-      index * intervalMs + intervalMs - 1,
-    ];
+    return {
+      openTime: index * intervalMs,
+      open: close - 1,
+      high: close + 2,
+      low: close - 2,
+      close,
+      volume: 1000,
+      closeTime: index * intervalMs + intervalMs - 1,
+      raw: [],
+    };
   });
 
 describe('RuntimeSignalLoop', () => {
@@ -534,7 +535,7 @@ describe('RuntimeSignalLoop', () => {
       isFinal: true,
     });
 
-    const key = 'FUTURES|BTCUSDT|1m';
+    const key = 'BINANCE|FUTURES|BTCUSDT|1m';
     const series = (loop as any).candleSeries.get(key);
     expect(series).toHaveLength(1);
     expect(series[0]).toEqual(
@@ -638,7 +639,7 @@ describe('RuntimeSignalLoop', () => {
 
     expect(deps.acquireWarmupLock).toHaveBeenCalledWith(
       expect.objectContaining({
-        seriesKey: 'FUTURES|BTCUSDT|1m',
+        seriesKey: 'BINANCE|FUTURES|BTCUSDT|1m',
       })
     );
     expect(releaseWarmupLock).toHaveBeenCalledTimes(1);
@@ -677,14 +678,11 @@ describe('RuntimeSignalLoop', () => {
     const originalNodeEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'development';
     const intervalMs = 5 * 60_000;
-    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
-      ok: true,
-      json: async () =>
-        buildKlineRows(20, intervalMs, (index) => (index === 19 ? 119 : 100 + index)),
-    } as any);
-
     const { deps, emit } = createDeps();
     deps.warmupEnabled = false;
+    deps.fetchRecentCandles = vi.fn(async () =>
+      buildKlineRows(20, intervalMs, (index) => (index === 19 ? 119 : 100 + index)),
+    );
     withStrategyBot(deps, {
       marketType: 'SPOT',
       symbols: ['DOGEUSDT'],
@@ -712,10 +710,14 @@ describe('RuntimeSignalLoop', () => {
         isFinal: true,
       });
 
-      expect(fetchSpy).toHaveBeenCalledWith(
-        expect.stringContaining('/api/v3/klines'),
-        expect.any(Object)
-      );
+      expect(deps.fetchRecentCandles).toHaveBeenCalledWith({
+        exchange: 'BINANCE',
+        marketType: 'SPOT',
+        symbol: 'DOGEUSDT',
+        interval: '5m',
+        limit: 150,
+        since: undefined,
+      });
       expect(deps.createSignal).toHaveBeenCalledWith(
         expect.objectContaining({
           botId: 'bot-1',
@@ -741,7 +743,6 @@ describe('RuntimeSignalLoop', () => {
       );
     } finally {
       await loop.stop();
-      fetchSpy.mockRestore();
       process.env.NODE_ENV = originalNodeEnv;
     }
   });
@@ -750,7 +751,7 @@ describe('RuntimeSignalLoop', () => {
     const { deps } = createDeps();
     const loop = new RuntimeSignalLoop(deps);
 
-    const key = 'FUTURES|BTCUSDT|1m';
+    const key = 'BINANCE|FUTURES|BTCUSDT|1m';
     (loop as any).candleSeries.set(key, [
       { openTime: 0, close: 120 },
       { openTime: 60_000, close: 110 },
@@ -759,6 +760,7 @@ describe('RuntimeSignalLoop', () => {
     ]);
 
     const evaluation = (loop as any).evaluateStrategy({
+      exchange: 'BINANCE',
       marketType: 'FUTURES',
       symbol: 'BTCUSDT',
       strategy: strategyShortMomentum,
@@ -772,19 +774,20 @@ describe('RuntimeSignalLoop', () => {
     const { deps } = createDeps();
     const loop = new RuntimeSignalLoop(deps);
 
-    const key = 'FUTURES|BTCUSDT|1m';
+    const key = 'BINANCE|FUTURES|BTCUSDT|1m';
     (loop as any).candleSeries.set(key, [
       { openTime: 0, closeTime: 59_000, open: 100, high: 101, low: 99, close: 100, volume: 1000 },
       { openTime: 60_000, closeTime: 119_000, open: 101, high: 102, low: 100, close: 101, volume: 1000 },
       { openTime: 120_000, closeTime: 179_000, open: 102, high: 103, low: 101, close: 102, volume: 1000 },
       { openTime: 180_000, closeTime: 239_000, open: 103, high: 104, low: 102, close: 103, volume: 1000 },
     ]);
-    (loop as any).fundingRatePoints.set('FUTURES|BTCUSDT', [
+    (loop as any).fundingRatePoints.set('BINANCE|FUTURES|BTCUSDT', [
       { timestamp: 0, fundingRate: 0.0002 },
       { timestamp: 120_000, fundingRate: -0.0003 },
     ]);
 
     const evaluation = (loop as any).evaluateStrategy({
+      exchange: 'BINANCE',
       marketType: 'FUTURES',
       symbol: 'BTCUSDT',
       strategy: strategyFundingLong,
@@ -799,7 +802,7 @@ describe('RuntimeSignalLoop', () => {
     const { deps } = createDeps();
     const loop = new RuntimeSignalLoop(deps);
 
-    const key = 'FUTURES|BTCUSDT|1m';
+    const key = 'BINANCE|FUTURES|BTCUSDT|1m';
     (loop as any).candleSeries.set(key, [
       { openTime: 0, closeTime: 59_000, open: 100, high: 101, low: 99, close: 100, volume: 1000 },
       { openTime: 60_000, closeTime: 119_000, open: 101, high: 102, low: 100, close: 101, volume: 1000 },
@@ -807,7 +810,7 @@ describe('RuntimeSignalLoop', () => {
       { openTime: 180_000, closeTime: 239_000, open: 103, high: 104, low: 102, close: 103, volume: 1000 },
       { openTime: 240_000, closeTime: 299_000, open: 104, high: 105, low: 103, close: 104, volume: 1000 },
     ]);
-    (loop as any).openInterestPoints.set('FUTURES|BTCUSDT', [
+    (loop as any).openInterestPoints.set('BINANCE|FUTURES|BTCUSDT', [
       { timestamp: 0, openInterest: 1000 },
       { timestamp: 60_000, openInterest: 1100 },
       { timestamp: 120_000, openInterest: 1300 },
@@ -816,6 +819,7 @@ describe('RuntimeSignalLoop', () => {
     ]);
 
     const evaluation = (loop as any).evaluateStrategy({
+      exchange: 'BINANCE',
       marketType: 'FUTURES',
       symbol: 'BTCUSDT',
       strategy: strategyOpenInterestShort,
@@ -830,19 +834,20 @@ describe('RuntimeSignalLoop', () => {
     const { deps } = createDeps();
     const loop = new RuntimeSignalLoop(deps);
 
-    const key = 'FUTURES|BTCUSDT|1m';
+    const key = 'BINANCE|FUTURES|BTCUSDT|1m';
     (loop as any).candleSeries.set(key, [
       { openTime: 0, closeTime: 59_000, open: 100, high: 101, low: 99, close: 100, volume: 1000 },
       { openTime: 60_000, closeTime: 119_000, open: 101, high: 102, low: 100, close: 101, volume: 1000 },
       { openTime: 120_000, closeTime: 179_000, open: 102, high: 103, low: 101, close: 102, volume: 1000 },
       { openTime: 180_000, closeTime: 239_000, open: 103, high: 104, low: 102, close: 103, volume: 1000 },
     ]);
-    (loop as any).orderBookPoints.set('FUTURES|BTCUSDT', [
+    (loop as any).orderBookPoints.set('BINANCE|FUTURES|BTCUSDT', [
       { timestamp: 0, imbalance: 0.1, spreadBps: 8, depthRatio: 1.1 },
       { timestamp: 120_000, imbalance: 0.3, spreadBps: 5, depthRatio: 1.8 },
     ]);
 
     const evaluation = (loop as any).evaluateStrategy({
+      exchange: 'BINANCE',
       marketType: 'FUTURES',
       symbol: 'BTCUSDT',
       strategy: strategyOrderBookLong,
@@ -857,7 +862,7 @@ describe('RuntimeSignalLoop', () => {
     const { deps } = createDeps();
     const loop = new RuntimeSignalLoop(deps);
 
-    const key = 'FUTURES|BTCUSDT|1m';
+    const key = 'BINANCE|FUTURES|BTCUSDT|1m';
     (loop as any).candleSeries.set(key, [
       { openTime: 0, closeTime: 59_000, open: 100, high: 101, low: 99, close: 100, volume: 1000 },
       { openTime: 60_000, closeTime: 119_000, open: 101, high: 102, low: 100, close: 101, volume: 1000 },
@@ -867,18 +872,21 @@ describe('RuntimeSignalLoop', () => {
     ]);
 
     const fundingEvaluation = (loop as any).evaluateStrategy({
+      exchange: 'BINANCE',
       marketType: 'FUTURES',
       symbol: 'BTCUSDT',
       strategy: strategyFundingLong,
       decisionOpenTime: 240_000,
     });
     const openInterestEvaluation = (loop as any).evaluateStrategy({
+      exchange: 'BINANCE',
       marketType: 'FUTURES',
       symbol: 'BTCUSDT',
       strategy: strategyOpenInterestShort,
       decisionOpenTime: 240_000,
     });
     const orderBookEvaluation = (loop as any).evaluateStrategy({
+      exchange: 'BINANCE',
       marketType: 'FUTURES',
       symbol: 'BTCUSDT',
       strategy: strategyOrderBookLong,

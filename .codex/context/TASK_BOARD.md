@@ -17,6 +17,20 @@ Last updated: 2026-05-13
 
 ## READY
 
+- [x] `V1-RUNTIME-EXCHANGE-ADAPTER-BOUNDARY-2026-05-13 fix: align runtime market-data warmup with Exchange adapter boundary`
+  - Scope: removed the Engine runtime candle warmup shortcut to Binance public
+    REST by routing indicator recovery through the exchange-owned public
+    market-data boundary. Runtime candle and derivatives stores are now scoped
+    by exchange as well as market/symbol/interval, strategy evaluation and
+    runtime read-model fallbacks receive exchange context, and Binance-only
+    derivative fallbacks fail closed for non-Binance exchanges instead of
+    borrowing Binance data. Evidence:
+    `docs/planning/v1-runtime-exchange-adapter-boundary-2026-05-13-task.md`;
+    focused runtime/decision-loop tests passed (`55/55`), exchange/stream/
+    fallback/read-model tests passed (`12/12`), API typecheck passed, and
+    guardrails passed. Production multi-bot/live evidence remains a separate
+    partial proof lane.
+
 - [x] `V1-NON-GATEIO-RUNTIME-AND-APP-PROOF-00169D7F-2026-05-13 release: verify current non-Gate.io runtime and app proof`
   - Scope: Gate.io was explicitly deferred by the user for this slice. Ran
     authenticated read-only production runtime readback for the approved

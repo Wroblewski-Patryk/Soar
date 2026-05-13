@@ -1,4 +1,5 @@
 
+import { Exchange } from '@prisma/client';
 import { StreamCandleEvent } from '../market-stream/binanceStream.types';
 import {
   alignTimedNumericPointsToCandles,
@@ -12,6 +13,7 @@ import {
 import { normalizeInterval } from './runtimeSignalLoopDefaults';
 import { normalizeSymbol } from '../../lib/symbols';
 import { fetchBinancePublicRestJson } from '../exchange/binancePublicRest.service';
+import { fetchExchangePublicRecentCandles } from '../exchange/exchangePublicMarketData.service';
 
 export type RuntimeCandle = {
   openTime: number;
@@ -42,6 +44,7 @@ export type RuntimeSignalWarmupLockHandle = {
 type RuntimeSignalMarketDataGatewayDeps = {
   nowMs: () => number;
   warmupEnabled?: boolean | (() => boolean | undefined);
+  fetchRecentCandles?: typeof fetchExchangePublicRecentCandles;
   acquireWarmupLock?: (
     input: RuntimeSignalWarmupLockInput
   ) => Promise<RuntimeSignalWarmupLockHandle>;
@@ -104,22 +107,24 @@ const runtimeOrderBookRefreshMs = Math.max(
 const runtimeCandleSeriesStore = new Map<string, RuntimeCandle[]>();
 
 const buildRuntimeSignalSeriesKey = (
+  exchange: Exchange,
   marketType: 'FUTURES' | 'SPOT',
   symbol: string,
   interval: string,
-) => `${marketType}|${normalizeSymbol(symbol)}|${normalizeInterval(interval)}`;
+) => `${exchange}|${marketType}|${normalizeSymbol(symbol)}|${normalizeInterval(interval)}`;
 
 const getRuntimeSignalSeries = (
+  exchange: Exchange,
   marketType: 'FUTURES' | 'SPOT',
   symbol: string,
   interval?: string | null,
 ) => {
   const normalizedInterval = normalizeInterval(interval);
-  const key = buildRuntimeSignalSeriesKey(marketType, symbol, normalizedInterval);
+  const key = buildRuntimeSignalSeriesKey(exchange, marketType, symbol, normalizedInterval);
   const exact = runtimeCandleSeriesStore.get(key);
   if (exact && exact.length > 0) return exact;
 
-  const prefix = `${marketType}|${normalizeSymbol(symbol)}|`;
+  const prefix = `${exchange}|${marketType}|${normalizeSymbol(symbol)}|`;
   const fallbackKey = [...runtimeCandleSeriesStore.keys()].find((entry) => entry.startsWith(prefix));
   if (!fallbackKey) return null;
   const fallbackSeries = runtimeCandleSeriesStore.get(fallbackKey);
@@ -127,12 +132,18 @@ const getRuntimeSignalSeries = (
 };
 
 export const getRecentRuntimeCloses = (input: {
+  exchange?: Exchange;
   marketType: 'FUTURES' | 'SPOT';
   symbol: string;
   interval?: string | null;
   limit?: number;
 }) => {
-  const series = getRuntimeSignalSeries(input.marketType, input.symbol, input.interval);
+  const series = getRuntimeSignalSeries(
+    input.exchange ?? 'BINANCE',
+    input.marketType,
+    input.symbol,
+    input.interval,
+  );
   if (!series || series.length === 0) return [];
   const closes = series
     .map((candle) => candle.close)
@@ -201,7 +212,7 @@ export class RuntimeSignalMarketDataGateway {
   }
 
   async ingestCandleEvent(event: StreamCandleEvent) {
-    const key = this.getSeriesKey(event.marketType, event.symbol, event.interval);
+    const key = this.getSeriesKey(event.exchange, event.marketType, event.symbol, event.interval);
     const series = [...(this.candleSeries.get(key) ?? [])];
     const nextCandle: RuntimeCandle = {
       openTime: event.openTime,
@@ -224,27 +235,40 @@ export class RuntimeSignalMarketDataGateway {
     }
     this.candleSeries.set(key, series);
 
-    await this.ensureSeriesWarmup(event.marketType, event.symbol, event.interval, event.closeTime);
+    await this.ensureSeriesWarmup(
+      event.exchange,
+      event.marketType,
+      event.symbol,
+      event.interval,
+      event.closeTime,
+    );
     await this.ensureFundingRateSeriesForCandle(event);
     await this.ensureOpenInterestSeriesForCandle(event);
     await this.ensureOrderBookSeriesForCandle(event);
   }
 
   getSeries(
+    exchange: Exchange,
     marketType: 'FUTURES' | 'SPOT',
     symbol: string,
     interval?: string | null,
   ) {
-    return getRuntimeSignalSeries(marketType, symbol, interval);
+    return getRuntimeSignalSeries(exchange, marketType, symbol, interval);
   }
 
   getRecentCloses(input: {
+    exchange?: Exchange;
     marketType: 'FUTURES' | 'SPOT';
     symbol: string;
     interval?: string | null;
     limit?: number;
   }) {
-    const series = this.getSeries(input.marketType, input.symbol, input.interval);
+    const series = this.getSeries(
+      input.exchange ?? 'BINANCE',
+      input.marketType,
+      input.symbol,
+      input.interval,
+    );
     if (!series || series.length === 0) return [];
     const closes = series
       .map((candle) => candle.close)
@@ -257,14 +281,16 @@ export class RuntimeSignalMarketDataGateway {
   }
 
   async ensureIndicatorReadySeries(input: {
+    exchange?: Exchange;
     marketType: 'FUTURES' | 'SPOT';
     symbol: string;
     interval?: string | null;
     endTimeMs?: number;
     minCandles?: number;
   }) {
+    const exchange = input.exchange ?? 'BINANCE';
     const normalizedInterval = normalizeInterval(input.interval);
-    const key = this.getSeriesKey(input.marketType, input.symbol, normalizedInterval);
+    const key = this.getSeriesKey(exchange, input.marketType, input.symbol, normalizedInterval);
     const currentSeries = this.candleSeries.get(key) ?? [];
     const minCandles = Math.max(
       20,
@@ -284,6 +310,7 @@ export class RuntimeSignalMarketDataGateway {
     this.decisionRecoveryLastAttemptAt.set(key, now);
 
     const fetched = await this.fetchWarmupCandles(
+      exchange,
       input.marketType,
       input.symbol,
       normalizedInterval,
@@ -298,12 +325,13 @@ export class RuntimeSignalMarketDataGateway {
   }
 
   resolveFundingRateSeriesForCandles(
+    exchange: Exchange,
     marketType: 'FUTURES' | 'SPOT',
     symbol: string,
     candles: RuntimeCandle[],
   ): Array<number | null> | null {
     if (marketType !== 'FUTURES') return null;
-    const key = this.getFundingKey(marketType, symbol);
+    const key = this.getFundingKey(exchange, marketType, symbol);
     const points = this.fundingRatePoints.get(key) ?? [];
     if (points.length === 0) return null;
     return alignTimedNumericPointsToCandles(
@@ -316,12 +344,13 @@ export class RuntimeSignalMarketDataGateway {
   }
 
   resolveOpenInterestSeriesForCandles(
+    exchange: Exchange,
     marketType: 'FUTURES' | 'SPOT',
     symbol: string,
     candles: RuntimeCandle[],
   ): Array<number | null> | null {
     if (marketType !== 'FUTURES') return null;
-    const key = this.getFundingKey(marketType, symbol);
+    const key = this.getFundingKey(exchange, marketType, symbol);
     const points = this.openInterestPoints.get(key) ?? [];
     if (points.length === 0) return null;
     return alignTimedNumericPointsToCandles(
@@ -334,12 +363,13 @@ export class RuntimeSignalMarketDataGateway {
   }
 
   resolveOrderBookSeriesForCandles(
+    exchange: Exchange,
     marketType: 'FUTURES' | 'SPOT',
     symbol: string,
     candles: RuntimeCandle[],
   ): RuntimeOrderBookSeries | null {
     if (marketType !== 'FUTURES') return null;
-    const key = this.getFundingKey(marketType, symbol);
+    const key = this.getFundingKey(exchange, marketType, symbol);
     const points = this.orderBookPoints.get(key) ?? [];
     if (points.length === 0) return null;
     return {
@@ -368,6 +398,7 @@ export class RuntimeSignalMarketDataGateway {
   }
 
   private async fetchWarmupCandles(
+    exchange: Exchange,
     marketType: 'FUTURES' | 'SPOT',
     symbol: string,
     interval: string,
@@ -375,34 +406,30 @@ export class RuntimeSignalMarketDataGateway {
     endTimeMs?: number,
   ): Promise<RuntimeCandle[]> {
     if (process.env.NODE_ENV === 'test') return [];
-    const endpoint = marketType === 'SPOT' ? '/api/v3/klines' : '/fapi/v1/klines';
-    const params = new URLSearchParams({
-      symbol: normalizeSymbol(symbol),
-      interval: normalizeInterval(interval),
-      limit: String(Math.min(1000, Math.max(20, limit))),
-    });
-    if (Number.isFinite(endTimeMs)) {
-      params.set('endTime', String(Math.floor(endTimeMs as number)));
-    }
     try {
-      const payload = await fetchBinancePublicRestJson({
+      const fetchRecentCandles = this.deps.fetchRecentCandles ?? fetchExchangePublicRecentCandles;
+      const payload = await fetchRecentCandles({
+        exchange,
         marketType,
-        path: endpoint,
-        searchParams: params,
+        symbol: normalizeSymbol(symbol),
+        interval: normalizeInterval(interval),
+        limit: Math.min(1000, Math.max(20, limit)),
+        since: undefined,
       });
       if (!Array.isArray(payload)) return [];
       const now = Date.now();
       const closeTimeCutoff = Number.isFinite(endTimeMs) ? Math.floor(endTimeMs as number) : now;
       return payload
         .map((item) => {
-          if (!Array.isArray(item)) return null;
-          const openTime = Number(item[0]);
-          const open = Number(item[1]);
-          const high = Number(item[2]);
-          const low = Number(item[3]);
-          const close = Number(item[4]);
-          const volume = Number(item[5]);
-          const closeTime = Number(item[6]);
+          if (!item || typeof item !== 'object') return null;
+          const row = item as Partial<RuntimeCandle>;
+          const openTime = Number(row.openTime);
+          const open = Number(row.open);
+          const high = Number(row.high);
+          const low = Number(row.low);
+          const close = Number(row.close);
+          const volume = Number(row.volume);
+          const closeTime = Number(row.closeTime);
           if (!Number.isFinite(openTime) || !Number.isFinite(closeTime)) return null;
           if (
             !Number.isFinite(open) ||
@@ -452,6 +479,7 @@ export class RuntimeSignalMarketDataGateway {
   }
 
   private async ensureSeriesWarmup(
+    exchange: Exchange,
     marketType: 'FUTURES' | 'SPOT',
     symbol: string,
     interval: string,
@@ -467,7 +495,7 @@ export class RuntimeSignalMarketDataGateway {
         : runtimeSignalWarmupEnabled;
     if (!warmupEnabled) return;
     const normalizedInterval = normalizeInterval(interval);
-    const key = this.getSeriesKey(marketType, symbol, normalizedInterval);
+    const key = this.getSeriesKey(exchange, marketType, symbol, normalizedInterval);
     const currentSeries = this.candleSeries.get(key) ?? [];
     if (currentSeries.length >= runtimeSignalWarmupCandles) return;
 
@@ -479,6 +507,7 @@ export class RuntimeSignalMarketDataGateway {
     this.warmupLastAttemptAt.set(key, now);
     try {
       const fetched = await this.fetchWarmupCandles(
+        exchange,
         marketType,
         symbol,
         normalizedInterval,
@@ -494,8 +523,8 @@ export class RuntimeSignalMarketDataGateway {
     }
   }
 
-  private getFundingKey(marketType: 'FUTURES' | 'SPOT', symbol: string) {
-    return `${marketType}|${normalizeSymbol(symbol)}`;
+  private getFundingKey(exchange: Exchange, marketType: 'FUTURES' | 'SPOT', symbol: string) {
+    return `${exchange}|${marketType}|${normalizeSymbol(symbol)}`;
   }
 
   private mergeFundingRatePoints(key: string, incoming: FundingRatePoint[]) {
@@ -518,10 +547,12 @@ export class RuntimeSignalMarketDataGateway {
   }
 
   private async fetchFundingRateHistory(
+    exchange: Exchange,
     symbol: string,
     endTimeMs?: number,
   ): Promise<FundingRatePoint[]> {
     if (process.env.NODE_ENV === 'test') return [];
+    if (exchange !== 'BINANCE') return [];
     const params = new URLSearchParams({
       symbol: normalizeSymbol(symbol),
       limit: String(Math.min(1000, Math.max(20, runtimeFundingHistoryLimit))),
@@ -576,7 +607,7 @@ export class RuntimeSignalMarketDataGateway {
 
   private async ensureFundingRateSeriesForCandle(event: StreamCandleEvent) {
     if (event.marketType !== 'FUTURES') return;
-    const key = this.getFundingKey(event.marketType, event.symbol);
+    const key = this.getFundingKey(event.exchange, event.marketType, event.symbol);
     const now = this.deps.nowMs();
     const existing = this.fundingRatePoints.get(key) ?? [];
     const lastFetchAt = this.fundingLastFetchAt.get(key) ?? 0;
@@ -585,9 +616,12 @@ export class RuntimeSignalMarketDataGateway {
 
     const incoming: FundingRatePoint[] = [];
     if (existing.length === 0) {
-      incoming.push(...(await this.fetchFundingRateHistory(event.symbol, event.closeTime)));
+      incoming.push(
+        ...(await this.fetchFundingRateHistory(event.exchange, event.symbol, event.closeTime)),
+      );
     }
-    const snapshot = await this.fetchFundingRateSnapshot(event.symbol);
+    const snapshot =
+      event.exchange === 'BINANCE' ? await this.fetchFundingRateSnapshot(event.symbol) : null;
     if (snapshot) incoming.push(snapshot);
     this.mergeFundingRatePoints(key, incoming);
     this.fundingLastFetchAt.set(key, now);
@@ -620,11 +654,13 @@ export class RuntimeSignalMarketDataGateway {
   }
 
   private async fetchOpenInterestHistory(
+    exchange: Exchange,
     symbol: string,
     interval: string,
     endTimeMs?: number,
   ): Promise<OpenInterestPoint[]> {
     if (process.env.NODE_ENV === 'test') return [];
+    if (exchange !== 'BINANCE') return [];
     const params = new URLSearchParams({
       symbol: normalizeSymbol(symbol),
       period: this.openInterestPeriodForInterval(interval),
@@ -680,7 +716,7 @@ export class RuntimeSignalMarketDataGateway {
 
   private async ensureOpenInterestSeriesForCandle(event: StreamCandleEvent) {
     if (event.marketType !== 'FUTURES') return;
-    const key = this.getFundingKey(event.marketType, event.symbol);
+    const key = this.getFundingKey(event.exchange, event.marketType, event.symbol);
     const now = this.deps.nowMs();
     const existing = this.openInterestPoints.get(key) ?? [];
     const lastFetchAt = this.openInterestLastFetchAt.get(key) ?? 0;
@@ -691,10 +727,16 @@ export class RuntimeSignalMarketDataGateway {
     const incoming: OpenInterestPoint[] = [];
     if (existing.length === 0) {
       incoming.push(
-        ...(await this.fetchOpenInterestHistory(event.symbol, event.interval, event.closeTime)),
+        ...(await this.fetchOpenInterestHistory(
+          event.exchange,
+          event.symbol,
+          event.interval,
+          event.closeTime,
+        )),
       );
     }
-    const snapshot = await this.fetchOpenInterestSnapshot(event.symbol);
+    const snapshot =
+      event.exchange === 'BINANCE' ? await this.fetchOpenInterestSnapshot(event.symbol) : null;
     if (snapshot) incoming.push(snapshot);
     this.mergeOpenInterestPoints(key, incoming);
     this.openInterestLastFetchAt.set(key, now);
@@ -800,19 +842,25 @@ export class RuntimeSignalMarketDataGateway {
 
   private async ensureOrderBookSeriesForCandle(event: StreamCandleEvent) {
     if (event.marketType !== 'FUTURES') return;
-    const key = this.getFundingKey(event.marketType, event.symbol);
+    const key = this.getFundingKey(event.exchange, event.marketType, event.symbol);
     const now = this.deps.nowMs();
     const lastFetchAt = this.orderBookLastFetchAt.get(key) ?? 0;
     if (now - lastFetchAt < runtimeOrderBookRefreshMs) return;
 
-    const snapshot = await this.fetchOrderBookSnapshot(event.symbol);
+    const snapshot =
+      event.exchange === 'BINANCE' ? await this.fetchOrderBookSnapshot(event.symbol) : null;
     if (snapshot) {
       this.mergeOrderBookPoints(key, [snapshot]);
     }
     this.orderBookLastFetchAt.set(key, now);
   }
 
-  private getSeriesKey(marketType: 'FUTURES' | 'SPOT', symbol: string, interval: string) {
-    return buildRuntimeSignalSeriesKey(marketType, symbol, interval);
+  private getSeriesKey(
+    exchange: Exchange,
+    marketType: 'FUTURES' | 'SPOT',
+    symbol: string,
+    interval: string,
+  ) {
+    return buildRuntimeSignalSeriesKey(exchange, marketType, symbol, interval);
   }
 }

@@ -38,6 +38,7 @@ export const resolveRuntimeLifecycleMarkPrice = (
   }
 
   const recentCloses = getRecentCloses({
+    exchange: input.exchange,
     marketType: input.marketType,
     symbol: input.symbol,
     interval: input.interval,

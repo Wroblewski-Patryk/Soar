@@ -77,6 +77,7 @@ type RuntimeFinalCandleDecisionContext = {
     | RuntimeExchangeOrderGuardResult
     | undefined;
   evaluateStrategy: (input: {
+    exchange: ActiveBot['exchange'];
     marketType: 'FUTURES' | 'SPOT';
     symbol: string;
     strategy: ActiveBotStrategy;
@@ -276,6 +277,7 @@ export const processRuntimeFinalCandleDecision = async (
       const strategyVotes: StrategyVote[] = eligibleStrategies
         .map((strategy) => {
           const evaluation = context.evaluateStrategy({
+            exchange: bot.exchange,
             marketType: bot.marketType,
             symbol: event.symbol,
             strategy,
