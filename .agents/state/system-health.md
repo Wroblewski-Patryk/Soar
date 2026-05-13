@@ -4,6 +4,13 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-GENERATED-STATE-REFRESH-AFTER-OPERATOR-PACKET-00169D7F-2026-05-13`
+  GENERATED STATE / NO-GO: project index, static scan, master ledger, and
+  completion scorecard were rerun after the current operator packet. Generated
+  state remains `NO-GO` with `PASS_LOCAL:20`, `BLOCKED_AUTH:1`, static
+  findings `3`, implementation `86.8%`, evidence coverage `61.3%`, and
+  release readiness `42.4%`.
+
 - `V1-OPERATOR-PACKET-CURRENT-DAY-REFRESH-00169D7F-2026-05-13` HANDOFF READY /
   V1 NO-GO: the current no-secret operator packet for deployed `00169d7f...`
   references the 2026-05-13 final preflight, protected input readiness, and

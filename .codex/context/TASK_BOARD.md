@@ -17,6 +17,14 @@ Last updated: 2026-05-13
 
 ## READY
 
+- [x] `V1-GENERATED-STATE-REFRESH-AFTER-OPERATOR-PACKET-00169D7F-2026-05-13 release: refresh generated V1 state after operator packet`
+  - Scope: reran the V1 generated-state chain after publishing the current-day
+    operator packet. Generated state remains `NO-GO`: `PASS_LOCAL:20`,
+    `BLOCKED_AUTH:1`, static findings `3` (`P0:1`, `P1:1`, `P2:1`),
+    scorecard `86.8%` implementation, `61.3%` evidence coverage, and `42.4%`
+    release readiness. Evidence:
+    `docs/planning/v1-generated-state-refresh-after-operator-packet-00169d7f-2026-05-13-task.md`.
+
 - [x] `V1-OPERATOR-PACKET-CURRENT-DAY-REFRESH-00169D7F-2026-05-13 release: refresh operator unblock packet for current evidence`
   - Scope: published the current no-secret V1 operator unblock packet for the
     2026-05-13 evidence set. The packet references current final preflight,

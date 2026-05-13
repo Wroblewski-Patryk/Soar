@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-13T17:06:32.355Z",
+  "generatedAt": "2026-05-13T17:11:12.253Z",
   "evidenceDate": "2026-05-13",
   "status": "NO-GO",
   "sources": {
@@ -1340,7 +1340,7 @@
       "severity": "P2",
       "category": "queue-blocked",
       "title": "2 protected/auth queue blockers remain open",
-      "evidence": ".codex/context/TASK_BOARD.md:772, docs/planning/mvp-next-commits.md:678 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | .codex/context/TASK_BOARD.md:5294, docs/planning/mvp-next-commits.md:4747 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`",
+      "evidence": ".codex/context/TASK_BOARD.md:790, docs/planning/mvp-next-commits.md:696 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | .codex/context/TASK_BOARD.md:5312, docs/planning/mvp-next-commits.md:4765 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`",
       "recommendation": "Keep these open until approved protected auth, production-safe fixtures, or required approvals are available.",
       "bucket": "toReview"
     }
