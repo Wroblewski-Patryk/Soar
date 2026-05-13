@@ -17,6 +17,16 @@ Last updated: 2026-05-13
 
 ## READY
 
+- [x] `V1-PRODUCTION-RUNTIME-INVENTORY-00169D7F-2026-05-13 qa: capture production runtime inventory for multi-bot proof`
+  - Scope: ran authenticated read-only production bot/session inventory for
+    the approved account. Result `PARTIAL`: production has 2 active PAPER bots
+    and 1 inactive LIVE Binance futures bot; no visible LIVE Gate.io bot and
+    fewer than 2 active LIVE bots, so production cannot yet prove the requested
+    2x PAPER + 2x LIVE shape. No production writes, activation, or live orders
+    were attempted; artifact secret scan passed. Evidence:
+    `docs/planning/v1-production-runtime-inventory-00169d7f-2026-05-13-task.md`,
+    `docs/operations/prod-runtime-inventory-00169d7f-2026-05-13.md`.
+
 - [x] `V1-PRODUCTION-UI-CLICKTHROUGH-REFRESH-00169D7F-2026-05-13 qa: refresh authenticated production UI module clickthrough`
   - Scope: ran the no-secret production UI module route audit against deployed
     `00169d7fdc3aff8317759137b05594b20e773c8e` with approved application

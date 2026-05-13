@@ -4,6 +4,15 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-PRODUCTION-RUNTIME-INVENTORY-00169D7F-2026-05-13` PRODUCTION MULTI-BOT
+  SHAPE PARTIAL: authenticated read-only inventory found 3 visible bots:
+  2 active PAPER bots and 1 inactive LIVE Binance futures bot. Latest PAPER
+  sessions are RUNNING with fresh heartbeats; latest LIVE sessions are
+  CANCELED. Production currently lacks the requested second active LIVE bot and
+  has no visible LIVE Gate.io bot, so the 2x PAPER + 2x LIVE production proof
+  is blocked on resource setup/activation decisions. No production writes,
+  activation, or live orders were attempted.
+
 - `V1-PRODUCTION-UI-CLICKTHROUGH-REFRESH-00169D7F-2026-05-13` PRODUCTION UI
   ROUTE AUDIT PASS: deployed build-info matched
   `00169d7fdc3aff8317759137b05594b20e773c8e`; authenticated production UI

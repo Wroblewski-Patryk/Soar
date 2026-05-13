@@ -1,0 +1,231 @@
+{
+  "status": "PARTIAL",
+  "generatedAt": "2026-05-13T19:53:18.303Z",
+  "apiBaseUrl": "https://api.soar.luckysparrow.ch",
+  "auth": "login:present",
+  "botsStatus": 200,
+  "botCount": 3,
+  "byMode": {
+    "LIVE": 1,
+    "PAPER": 2,
+    "PAPER_active": 2
+  },
+  "blockers": [
+    "production has fewer than two active LIVE bots",
+    "production has no LIVE Gate.io bot visible for this account"
+  ],
+  "bots": [
+    {
+      "id": "46d1f560-be45-4537-ba5b-f2a51df03839",
+      "name": "Live",
+      "mode": "LIVE",
+      "exchange": "BINANCE",
+      "marketType": "FUTURES",
+      "isActive": false,
+      "liveOptIn": true,
+      "walletId": "e8681471-a2e7-444d-aa16-e14d0fc5849d",
+      "strategyId": "3264841b-1efa-4a70-a8e9-b6cfa9ec1384"
+    },
+    {
+      "id": "e8651bba-258e-4b16-8dff-d4e789a0a226",
+      "name": "Peper bot 1m",
+      "mode": "PAPER",
+      "exchange": "BINANCE",
+      "marketType": "FUTURES",
+      "isActive": true,
+      "liveOptIn": false,
+      "walletId": "a8fe9387-982c-4005-a6e1-2bf7c44cc449",
+      "strategyId": "8291084e-7107-4b57-9508-8f336aa9bb2a"
+    },
+    {
+      "id": "c104a4e6-eb39-49a1-a74d-048b580b655b",
+      "name": "Peper bot",
+      "mode": "PAPER",
+      "exchange": "BINANCE",
+      "marketType": "FUTURES",
+      "isActive": true,
+      "liveOptIn": false,
+      "walletId": "a8fe9387-982c-4005-a6e1-2bf7c44cc449",
+      "strategyId": "127e1455-bc1b-49a0-92a6-e342a90048c1"
+    }
+  ],
+  "sessionRows": [
+    {
+      "botId": "46d1f560-be45-4537-ba5b-f2a51df03839",
+      "botName": "Live",
+      "sessionsStatus": 200,
+      "sessions": [
+        {
+          "id": "9e60d4ca-5bf0-4341-862a-710c2fcfc5da",
+          "status": "CANCELED",
+          "mode": "LIVE",
+          "startedAt": "2026-05-13T18:37:07.957Z",
+          "finishedAt": "2026-05-13T18:37:14.730Z",
+          "lastHeartbeatAt": "2026-05-13T18:37:14.730Z",
+          "symbolsTracked": 0,
+          "eventsCount": 2
+        },
+        {
+          "id": "9685b611-5c80-460c-bedd-34ad3af94888",
+          "status": "CANCELED",
+          "mode": "LIVE",
+          "startedAt": "2026-05-13T18:36:52.956Z",
+          "finishedAt": "2026-05-13T18:36:55.982Z",
+          "lastHeartbeatAt": "2026-05-13T18:36:55.982Z",
+          "symbolsTracked": 0,
+          "eventsCount": 2
+        },
+        {
+          "id": "9e9b0ef6-35fe-4a5f-8cfa-a5baadb2a99a",
+          "status": "CANCELED",
+          "mode": "LIVE",
+          "startedAt": "2026-05-13T18:36:22.957Z",
+          "finishedAt": "2026-05-13T18:36:29.803Z",
+          "lastHeartbeatAt": "2026-05-13T18:36:29.803Z",
+          "symbolsTracked": 0,
+          "eventsCount": 2
+        },
+        {
+          "id": "abfbf4ef-6587-457d-834c-0adb4cce8e5d",
+          "status": "CANCELED",
+          "mode": "LIVE",
+          "startedAt": "2026-05-13T18:02:37.942Z",
+          "finishedAt": "2026-05-13T18:02:39.978Z",
+          "lastHeartbeatAt": "2026-05-13T18:02:39.978Z",
+          "symbolsTracked": 0,
+          "eventsCount": 2
+        },
+        {
+          "id": "c25406e0-599f-4846-a4a8-a026fd6f2921",
+          "status": "CANCELED",
+          "mode": "LIVE",
+          "startedAt": "2026-05-07T14:13:24.343Z",
+          "finishedAt": "2026-05-07T17:43:19.063Z",
+          "lastHeartbeatAt": "2026-05-07T17:43:19.063Z",
+          "symbolsTracked": 0,
+          "eventsCount": 16322
+        }
+      ]
+    },
+    {
+      "botId": "e8651bba-258e-4b16-8dff-d4e789a0a226",
+      "botName": "Peper bot 1m",
+      "sessionsStatus": 200,
+      "sessions": [
+        {
+          "id": "74958789-93dc-4aa7-9725-88ac7bab2700",
+          "status": "RUNNING",
+          "mode": "PAPER",
+          "startedAt": "2026-05-08T22:36:00.289Z",
+          "finishedAt": null,
+          "lastHeartbeatAt": "2026-05-13T19:52:53.028Z",
+          "symbolsTracked": 7,
+          "eventsCount": 58074
+        },
+        {
+          "id": "d21f3ff2-890f-45d6-9346-345600aef43d",
+          "status": "CANCELED",
+          "mode": "PAPER",
+          "startedAt": "2026-05-08T22:35:21.485Z",
+          "finishedAt": "2026-05-08T22:35:48.356Z",
+          "lastHeartbeatAt": "2026-05-08T22:35:48.356Z",
+          "symbolsTracked": 0,
+          "eventsCount": 2
+        },
+        {
+          "id": "2a5d82a7-3693-40c6-972b-840452202e44",
+          "status": "CANCELED",
+          "mode": "PAPER",
+          "startedAt": "2026-05-07T14:13:33.263Z",
+          "finishedAt": "2026-05-08T22:35:18.016Z",
+          "lastHeartbeatAt": "2026-05-08T22:35:18.016Z",
+          "symbolsTracked": 8,
+          "eventsCount": 26054
+        },
+        {
+          "id": "14fe4643-8c39-43b7-a2b4-13be2a32cc8b",
+          "status": "CANCELED",
+          "mode": "PAPER",
+          "startedAt": "2026-05-07T14:13:35.482Z",
+          "finishedAt": "2026-05-07T14:13:46.938Z",
+          "lastHeartbeatAt": "2026-05-07T14:13:46.938Z",
+          "symbolsTracked": 0,
+          "eventsCount": 1
+        },
+        {
+          "id": "cab5dbf4-27a4-4b4b-bf59-e4f9f521ba92",
+          "status": "CANCELED",
+          "mode": "PAPER",
+          "startedAt": "2026-05-04T22:31:31.000Z",
+          "finishedAt": "2026-05-07T14:13:07.828Z",
+          "lastHeartbeatAt": "2026-05-07T14:13:26.845Z",
+          "symbolsTracked": 8,
+          "eventsCount": 31683
+        }
+      ]
+    },
+    {
+      "botId": "c104a4e6-eb39-49a1-a74d-048b580b655b",
+      "botName": "Peper bot",
+      "sessionsStatus": 200,
+      "sessions": [
+        {
+          "id": "96044778-118c-4f8d-900d-50adff442b3c",
+          "status": "RUNNING",
+          "mode": "PAPER",
+          "startedAt": "2026-05-10T19:29:53.083Z",
+          "finishedAt": null,
+          "lastHeartbeatAt": "2026-05-13T19:52:53.025Z",
+          "symbolsTracked": 7,
+          "eventsCount": 6591
+        },
+        {
+          "id": "74d7fcde-f56e-4ceb-a028-eef396419ac4",
+          "status": "CANCELED",
+          "mode": "PAPER",
+          "startedAt": "2026-05-08T22:35:21.484Z",
+          "finishedAt": "2026-05-10T19:29:45.423Z",
+          "lastHeartbeatAt": "2026-05-10T19:29:45.423Z",
+          "symbolsTracked": 7,
+          "eventsCount": 4125
+        },
+        {
+          "id": "d81bfbd0-830f-4134-94db-07cb2ba6736a",
+          "status": "CANCELED",
+          "mode": "PAPER",
+          "startedAt": "2026-05-08T17:23:30.447Z",
+          "finishedAt": "2026-05-08T22:35:20.543Z",
+          "lastHeartbeatAt": "2026-05-08T22:35:20.543Z",
+          "symbolsTracked": 7,
+          "eventsCount": 494
+        },
+        {
+          "id": "cd754058-5188-42b7-8e49-f406a9e78ef8",
+          "status": "CANCELED",
+          "mode": "PAPER",
+          "startedAt": "2026-05-08T17:20:30.447Z",
+          "finishedAt": "2026-05-08T17:23:15.407Z",
+          "lastHeartbeatAt": "2026-05-08T17:23:15.407Z",
+          "symbolsTracked": 0,
+          "eventsCount": 2
+        },
+        {
+          "id": "5b131fb9-c684-496b-8ae0-4c12fa0a77e9",
+          "status": "CANCELED",
+          "mode": "PAPER",
+          "startedAt": "2026-05-07T14:19:52.460Z",
+          "finishedAt": "2026-05-08T17:20:18.182Z",
+          "lastHeartbeatAt": "2026-05-08T17:20:18.182Z",
+          "symbolsTracked": 7,
+          "eventsCount": 2557
+        }
+      ]
+    }
+  ],
+  "safety": {
+    "readOnly": true,
+    "productionWrites": false,
+    "liveOrders": false,
+    "secretsPersisted": false
+  }
+}

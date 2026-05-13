@@ -4,6 +4,16 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-PRODUCTION-RUNTIME-INVENTORY-00169D7F-2026-05-13` captured
+  authenticated read-only production bot/runtime inventory for the approved
+  account. Result: `PARTIAL`. Production currently has 3 visible bots:
+  2 PAPER bots, both active, and 1 LIVE Binance futures bot, inactive. Latest
+  PAPER sessions are `RUNNING` with fresh heartbeats; the LIVE bot's latest
+  sessions are `CANCELED`. This means the local 2x PAPER + Binance LIVE +
+  Gate.io LIVE proof shape is not present in production yet: blockers are
+  fewer than two active LIVE bots and no visible LIVE Gate.io bot. Evidence:
+  `docs/operations/prod-runtime-inventory-00169d7f-2026-05-13.md`.
+
 - `V1-PRODUCTION-UI-CLICKTHROUGH-REFRESH-00169D7F-2026-05-13` refreshed
   authenticated production UI module route evidence for deployed
   `00169d7fdc3aff8317759137b05594b20e773c8e`. Result: `PASS`; public

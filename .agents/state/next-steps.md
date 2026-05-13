@@ -4,6 +4,16 @@ Last updated: 2026-05-13
 
 ## Next Tiny Task
 
+Latest production runtime inventory:
+`V1-PRODUCTION-RUNTIME-INVENTORY-00169D7F-2026-05-13` is `PARTIAL`: the
+approved production account has 2 active PAPER bots and 1 inactive LIVE Binance
+futures bot, but no visible LIVE Gate.io bot and fewer than 2 active LIVE bots.
+No production writes, activation, or live orders were attempted. The next exact
+unblock action for the user's requested 2x PAPER + 2x LIVE proof is a separate
+safe resource setup decision/task for the missing LIVE/Gate.io bot wiring
+(wallet, API key, exchange, market type, strategy, symbols, activation window,
+and no-order guard), then rerun production multi-bot proof.
+
 Latest production UI route proof:
 `V1-PRODUCTION-UI-CLICKTHROUGH-REFRESH-00169D7F-2026-05-13` passed the
 authenticated production UI module route audit for deployed `00169d7f...`:

@@ -58,6 +58,15 @@ Do not turn uncertainty into optimism.
 ## Current Release Evidence Notes
 
 - 2026-05-13
+  `V1-PRODUCTION-RUNTIME-INVENTORY-00169D7F-2026-05-13` applies to
+  `SOAR-BOTS-001` and `SOAR-BOT-RUNTIME-001`: authenticated read-only
+  production inventory found 2 active PAPER bots and 1 inactive LIVE Binance
+  futures bot. Latest PAPER sessions are RUNNING with fresh heartbeats; latest
+  LIVE sessions are CANCELED. Production lacks the requested second active LIVE
+  bot and has no visible LIVE Gate.io bot, so the local 2x PAPER + Binance LIVE
+  + Gate.io LIVE proof shape cannot yet be claimed in production. Rows remain
+  `PARTIAL`.
+- 2026-05-13
   `V1-PRODUCTION-UI-CLICKTHROUGH-REFRESH-00169D7F-2026-05-13` applies to
   `SOAR-BOTS-001`, `SOAR-UX-A11Y-MOBILE-001`, and
   `SOAR-SUBSCRIPTIONS-ADMIN-001`: authenticated production route/module
