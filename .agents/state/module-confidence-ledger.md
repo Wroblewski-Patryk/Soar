@@ -58,6 +58,13 @@ Do not turn uncertainty into optimism.
 ## Current Release Evidence Notes
 
 - 2026-05-13
+  `V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13` applies to
+  `SOAR-OPERATIONS-001`: an approved controlled LIVE proof started a RUNNING
+  session and cleaned up by deactivating the bot, but `LIVEIMPORT-03` remains
+  failed because ETH/DOGE were not visible in session-scoped runtime readback.
+  A runner partial-update defect was fixed and production bot configuration was
+  restored to inactive LIVE/import-capable state. Operations remains `BLOCKED`.
+- 2026-05-13
   `V1-CONTROLLED-LIVE-PROOF-PREACTIVATION-00169D7F-2026-05-13` applies to
   `SOAR-OPERATIONS-001`: controlled LIVE proof preactivation confirms the
   no-order guard is fully active and the target LIVE bot is inactive and

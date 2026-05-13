@@ -8,6 +8,17 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13 release: run approved controlled LIVE proof`
+  - 2026-05-13: Ran the controlled LIVE proof after explicit user live-risk
+    approval. A runner partial-update defect was found and fixed so toggling
+    `isActive` preserves LIVE consent/import fields. Production bot
+    configuration was restored to inactive LIVE/import-capable state. The
+    corrected run started a RUNNING session and cleanup deactivated the bot,
+    but `LIVEIMPORT-03` remains failed because ETH/DOGE are not visible in the
+    session-scoped runtime readback. Evidence:
+    `docs/planning/v1-controlled-live-proof-attempt-00169d7f-2026-05-13-task.md`.
+    V1 remains `NO-GO`.
+
 - [x] `V1-CONTROLLED-LIVE-PROOF-PREACTIVATION-00169D7F-2026-05-13 release: verify controlled LIVE proof preactivation gates`
   - 2026-05-13: Ran the controlled LIVE proof runner through dry-run and
     preactivation only. Build-info matched, no-order guard is fully active,

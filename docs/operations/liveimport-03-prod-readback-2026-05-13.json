@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-13T17:44:42.218Z",
+  "generatedAt": "2026-05-13T18:02:37.377Z",
   "target": {
     "baseUrl": "https://api.soar.luckysparrow.ch",
     "webBaseUrl": "https://soar.luckysparrow.ch",
@@ -15,7 +15,7 @@
     ]
   },
   "auth": {
-    "source": "login",
+    "source": "provided",
     "tokenCaptured": false
   },
   "entries": [
@@ -32,17 +32,47 @@
         "apiKeyIdHash": "6d9fa9f534a4",
         "activeMarketGroups": null
       },
-      "session": null,
-      "symbols": [],
-      "status": "NO_RUNNING_SESSION"
+      "session": {
+        "idHash": "6030bcc44b39",
+        "status": "RUNNING",
+        "startedAt": "2026-05-13T18:02:37.942Z",
+        "stoppedAt": null,
+        "eventsCount": 1
+      },
+      "symbols": [
+        {
+          "symbol": "ETHUSDT",
+          "total": 0,
+          "openCount": 0,
+          "closedCount": 0,
+          "openOrdersCount": 0,
+          "showDynamicStopColumns": true,
+          "openItems": [],
+          "importCompleteness": "MISSING_FROM_RUNTIME_READBACK"
+        },
+        {
+          "symbol": "DOGEUSDT",
+          "total": 0,
+          "openCount": 0,
+          "closedCount": 0,
+          "openOrdersCount": 0,
+          "showDynamicStopColumns": true,
+          "openItems": [],
+          "importCompleteness": "MISSING_FROM_RUNTIME_READBACK"
+        }
+      ],
+      "status": "REVIEW"
     }
   ],
   "summary": {
     "botsChecked": 1,
-    "botsWithRuntimeReadback": 0,
-    "botsWithoutRunningSession": 1,
+    "botsWithRuntimeReadback": 1,
+    "botsWithoutRunningSession": 0,
     "symbolsExpected": 2,
     "symbolsVisible": [],
-    "missingSymbols": []
+    "missingSymbols": [
+      "ETHUSDT",
+      "DOGEUSDT"
+    ]
   }
 }

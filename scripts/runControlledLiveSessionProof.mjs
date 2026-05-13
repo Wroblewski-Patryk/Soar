@@ -257,6 +257,9 @@ const assertTargetBotSafe = (bot) => {
   if (bot.mode !== 'LIVE') throw new Error('Target bot is not a LIVE bot.');
   if (bot.marketType !== 'FUTURES') throw new Error('Target bot is not a Futures bot.');
   if (bot.liveOptIn !== true) throw new Error('Target bot does not have liveOptIn=true.');
+  if (!bot.consentTextVersion) {
+    throw new Error('Target bot does not have a live consent text version.');
+  }
   if (bot.manageExternalPositions !== true) {
     throw new Error('Target bot does not have manageExternalPositions=true.');
   }
@@ -265,11 +268,21 @@ const assertTargetBotSafe = (bot) => {
   }
 };
 
-const updateBotActiveState = async (options, headers, botId, isActive) =>
-  fetchJson(`${options.baseUrl}/dashboard/bots/${encodeURIComponent(botId)}`, {
+const buildBotActiveStatePayload = (bot, isActive) => ({
+  name: bot.name,
+  walletId: bot.walletId ?? null,
+  strategyId: bot.strategyId ?? null,
+  isActive,
+  liveOptIn: bot.liveOptIn,
+  manageExternalPositions: bot.manageExternalPositions,
+  consentTextVersion: bot.consentTextVersion,
+});
+
+const updateBotActiveState = async (options, headers, bot, isActive) =>
+  fetchJson(`${options.baseUrl}/dashboard/bots/${encodeURIComponent(bot.id)}`, {
     method: 'PUT',
     headers,
-    body: { isActive },
+    body: buildBotActiveStatePayload(bot, isActive),
     timeoutMs: options.timeoutMs,
   });
 
@@ -423,7 +436,7 @@ const main = async () => {
   let activated = false;
   try {
     process.stdout.write('[ops:live:controlled-proof] activating target LIVE bot\n');
-    await updateBotActiveState(options, headers, bot.id, true);
+    await updateBotActiveState(options, headers, bot, true);
     activated = true;
     const session = await waitForRunningSession(options, headers, bot.id);
     process.stdout.write(
@@ -434,7 +447,7 @@ const main = async () => {
     if (activated) {
       try {
         process.stdout.write('[ops:live:controlled-proof] deactivating target LIVE bot\n');
-        await updateBotActiveState(options, headers, bot.id, false);
+        await updateBotActiveState(options, headers, bot, false);
       } catch (error) {
         console.error(
           '[ops:live:controlled-proof] CRITICAL: failed to deactivate target LIVE bot:',

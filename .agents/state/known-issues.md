@@ -4,6 +4,15 @@ Last updated: 2026-05-13
 
 ## Active Issues
 
+- 2026-05-13 update: `V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13`
+  confirms the final V1 blocker is no longer auth, restore, rollback, UI, RC,
+  or session startup. A controlled LIVE proof can start a RUNNING session under
+  the no-order guard and clean up by deactivating the bot, but `LIVEIMPORT-03`
+  remains failed because ETH/DOGE are not visible in the session-scoped runtime
+  position readback. The runner partial-update defect that cleared
+  `liveOptIn`/import flags was fixed and production bot configuration was
+  restored.
+
 - 2026-05-13 update: `V1-CURRENT-DAY-BLOCKER-REFRESH-00169D7F-2026-05-13`
   confirms V1 remains `NO-GO` on current-day evidence. Production build-info
   and public smoke pass for deployed

@@ -4,6 +4,21 @@ Last updated: 2026-05-13
 
 ## Next Tiny Task
 
+Latest controlled LIVE proof attempt:
+`V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13` ran after explicit
+user live-risk approval. The first attempt exposed and recovered from a runner
+partial-update defect that cleared LIVE consent/import flags; production bot
+configuration was restored to inactive `liveOptIn=true`,
+`manageExternalPositions=true`, consent `mvp-v1`. The runner now preserves
+those fields while toggling `isActive`. The corrected run started a RUNNING
+session and cleanup deactivated the bot, but `LIVEIMPORT-03` still fails
+because ETH/DOGE are not visible in the session-scoped runtime position
+readback. Final preflight remains blocked only on
+`evidence:liveImportReadback:failed`. Next exact unblock action requires either
+configuring/importing a real managed LIVE position visible to the target LIVE
+bot's runtime session, or an explicit product decision to change the V1
+acceptance contract.
+
 Latest controlled LIVE proof preactivation:
 `V1-CONTROLLED-LIVE-PROOF-PREACTIVATION-00169D7F-2026-05-13` ran only dry-run
 and preactivation checks for the controlled LIVE proof runner. The runner

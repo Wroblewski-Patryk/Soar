@@ -4,6 +4,14 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13` CONTROLLED LIVE
+  ATTEMPT / FINAL BLOCKED: after explicit user live-risk approval, the
+  controlled runner started a RUNNING session and deactivated the bot in
+  cleanup. A partial-update defect that cleared `liveOptIn`/import fields was
+  found, production state was restored, and the runner was fixed to preserve
+  those fields. V1 remains blocked because the running session did not expose
+  ETH/DOGE runtime positions.
+
 - `V1-CONTROLLED-LIVE-PROOF-PREACTIVATION-00169D7F-2026-05-13` BLOCKED ON
   EXPLICIT LIVE-RISK APPROVAL: controlled LIVE proof preactivation confirmed
   matching build-info, fully active no-order guard, and an inactive

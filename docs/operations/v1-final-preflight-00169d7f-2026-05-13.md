@@ -1,7 +1,7 @@
 # V1 Final Preflight Report
 
 ## Context
-- Generated (UTC): 2026-05-13T17:44:54.319Z
+- Generated (UTC): 2026-05-13T18:05:16.069Z
 - Status: blocked
 - API base URL: https://api.soar.luckysparrow.ch
 - Web base URL: https://soar.luckysparrow.ch

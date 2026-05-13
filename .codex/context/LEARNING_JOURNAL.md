@@ -20,6 +20,24 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-05-13 - Preserve LIVE bot fields when toggling activity
+- Context: `V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13` ran the
+  controlled LIVE proof runner after explicit user approval.
+- Symptom: a follow-up preactivation check reported the production target bot
+  no longer had `liveOptIn=true` after cleanup.
+- Root cause: the bot update endpoint applies schema defaults for omitted
+  `liveOptIn` and `manageExternalPositions`; a helper that sent only
+  `{ isActive }` unintentionally cleared LIVE/import readiness.
+- Guardrail: production bot activity toggles must preserve the current LIVE
+  consent/import fields in the update payload and verify cleanup state
+  afterward.
+- Preferred pattern: read the target bot, assert consent/import readiness, send
+  `name`, `walletId`, `strategyId`, `isActive`, `liveOptIn`,
+  `manageExternalPositions`, and `consentTextVersion` together.
+- Avoid: partial production bot `PUT` payloads that rely on server defaults.
+- Evidence:
+  `docs/planning/v1-controlled-live-proof-attempt-00169d7f-2026-05-13-task.md`.
+
 ### 2026-05-12 - Run V1 generated-state commands sequentially
 - Context: `V1-GENERATED-STATE-REFRESH-AFTER-QUEUE-HYGIENE-00169D7F-2026-05-12`
   refreshed project index, static scan, master ledger, and completion scorecard

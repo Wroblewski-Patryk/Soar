@@ -4,6 +4,23 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13` ran after explicit
+  user live-risk approval. The first attempt exposed a runner defect: partial
+  bot `PUT` updates could clear `liveOptIn`/import flags through API defaults.
+  Production bot configuration was restored immediately to inactive
+  LIVE/import-capable state.
+- `scripts/runControlledLiveSessionProof.mjs` now preserves the target bot's
+  LIVE consent/import fields when toggling `isActive` and requires a consent
+  text version before activation.
+- The corrected controlled proof started a RUNNING session and cleaned up by
+  deactivating the bot, but `LIVEIMPORT-03` still failed because ETH/DOGE were
+  not visible in the session-scoped runtime position readback. Final preflight
+  remains blocked only on `evidence:liveImportReadback:failed`.
+- Evidence:
+  `docs/planning/v1-controlled-live-proof-attempt-00169d7f-2026-05-13-task.md`,
+  `docs/operations/liveimport-03-prod-readback-2026-05-13.json`, and
+  `docs/operations/v1-final-preflight-00169d7f-2026-05-13.md`.
+
 - `V1-CONTROLLED-LIVE-PROOF-PREACTIVATION-00169D7F-2026-05-13` ran the
   controlled LIVE proof runner only through dry-run and preactivation checks.
 - The runner confirmed build-info matches `00169d7f`, the no-order guard is
