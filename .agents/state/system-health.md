@@ -4,6 +4,13 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-GENERATED-STATE-REFRESH-AFTER-CURRENT-DAY-BLOCKER-00169D7F-2026-05-13`
+  GENERATED STATE / NO-GO: project index, static scan, master ledger, and
+  completion scorecard were refreshed for 2026-05-13. Generated state remains
+  `NO-GO` with `PASS_LOCAL:20`, `BLOCKED_AUTH:1`, static findings `3`
+  (`P0:1`, `P1:1`, `P2:1`), implementation `86.8%`, evidence coverage
+  `61.3%`, and release readiness `42.4%`.
+
 - `V1-CURRENT-DAY-BLOCKER-REFRESH-00169D7F-2026-05-13` PUBLIC PASS / FINAL
   BLOCKED: deployed build-info matches
   `00169d7fdc3aff8317759137b05594b20e773c8e`, final preflight public smoke

@@ -8,6 +8,15 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `V1-GENERATED-STATE-REFRESH-AFTER-CURRENT-DAY-BLOCKER-00169D7F-2026-05-13 release: refresh generated V1 state after current blocker evidence`
+  - 2026-05-13: Refreshed the V1 project index, static issue scan, master
+    state ledger, and completion scorecard for 2026-05-13 after the
+    current-day blocker refresh. Generated state remains `NO-GO`:
+    `PASS_LOCAL:20`, `BLOCKED_AUTH:1`, static findings `3` (`P0:1`, `P1:1`,
+    `P2:1`), scorecard `86.8%` implementation, `61.3%` evidence coverage,
+    and `42.4%` release readiness. Evidence:
+    `docs/planning/v1-generated-state-refresh-after-current-day-blocker-00169d7f-2026-05-13-task.md`.
+
 - [x] `V1-CURRENT-DAY-BLOCKER-REFRESH-00169D7F-2026-05-13 release: refresh current-day no-secret V1 blockers`
   - 2026-05-13: Refreshed deployed build-info, protected input readiness,
     final preflight, and production UI clickthrough blocker evidence for
