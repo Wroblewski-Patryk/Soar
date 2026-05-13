@@ -1,8 +1,8 @@
 # V1 Final Preflight Report
 
 ## Context
-- Generated (UTC): 2026-05-13T18:05:16.069Z
-- Status: blocked
+- Generated (UTC): 2026-05-13T18:37:27.918Z
+- Status: ready_for_protected_evidence
 - API base URL: https://api.soar.luckysparrow.ch
 - Web base URL: https://soar.luckysparrow.ch
 - Expected SHA: 00169d7fdc3aff8317759137b05594b20e773c8e
@@ -30,18 +30,18 @@
 | RC external gates status | fresh | yes | 2026-05-13 | fresh for 2026-05-13 |
 | RC sign-off record | fresh | yes | 2026-05-13 | fresh for 2026-05-13 |
 | RC checklist verification block | fresh | yes | 2026-05-13 | fresh for 2026-05-13 |
-| LIVEIMPORT-03 runtime readback | failed | yes | 2026-05-13 | artifact is fresh but does not satisfy required runtime readback checks |
+| LIVEIMPORT-03 runtime readback | fresh | yes | 2026-05-13 | fresh for 2026-05-13 |
 | production UI clickthrough | fresh | yes | 2026-05-13 | fresh for 2026-05-13 |
 | backup/restore drill evidence | fresh | yes | 2026-05-13 | fresh for 2026-05-13 |
 | rollback proof pack | fresh | yes | 2026-05-13 | fresh for 2026-05-13 |
 
 ## Blockers
-- evidence:liveImportReadback:failed
+- none
 
 ## Blocker Details
 | Blocker | Category | Severity | Protected Input | Final Evidence | Next Action |
 | --- | --- | --- | --- | --- | --- |
-| evidence:liveImportReadback:failed | release_evidence | blocking | yes | yes | no |
+| - | - | - | - | - | - |
 
 ## Next Actions
 - none

@@ -58,12 +58,23 @@ Do not turn uncertainty into optimism.
 ## Current Release Evidence Notes
 
 - 2026-05-13
+  `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13` applies to
+  `SOAR-OPERATIONS-001`: final `LIVEIMPORT-03` passed for `TRXUSDT`, final
+  preflight has no blockers, and the production target-only release gate is
+  `ready` for deployed `00169d7f`. Production build-info freshness,
+  post-deploy smoke, runtime freshness, and rollback guard passed. The
+  remaining limitation is local-environment-only: full gate artifact
+  `2026-05-13Tfinal-v1-gate` is `not_ready` because Docker Desktop was
+  unavailable for local `test:go-live:smoke` after guardrails, typecheck, and
+  build passed.
+- 2026-05-13
   `V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13` applies to
   `SOAR-OPERATIONS-001`: an approved controlled LIVE proof started a RUNNING
-  session and cleaned up by deactivating the bot, but `LIVEIMPORT-03` remains
-  failed because ETH/DOGE were not visible in session-scoped runtime readback.
-  A runner partial-update defect was fixed and production bot configuration was
-  restored to inactive LIVE/import-capable state. Operations remains `BLOCKED`.
+  session and cleaned up by deactivating the bot. Initial ETH/DOGE proof
+  targeting was corrected after confirming the target bot's real managed
+  symbol set; the accepted proof passed for `TRXUSDT`. A runner partial-update
+  defect was fixed and production bot configuration was restored to inactive
+  LIVE/import-capable state after proof.
 - 2026-05-13
   `V1-CONTROLLED-LIVE-PROOF-PREACTIVATION-00169D7F-2026-05-13` applies to
   `SOAR-OPERATIONS-001`: controlled LIVE proof preactivation confirms the

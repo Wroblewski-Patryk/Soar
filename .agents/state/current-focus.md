@@ -1,8 +1,16 @@
 # Current Focus
 
-Last updated: 2026-05-12
+Last updated: 2026-05-13
 
 ## Active Focus
+
+2026-05-13 V1 production target gate status:
+`V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13` is the current release
+truth. Final `LIVEIMPORT-03` passed for `TRXUSDT`, final preflight has no
+blockers, and the production target-only release gate reports
+`Readiness: ready` for deployed `00169d7f`. The full local gate remains
+`not_ready` only because Docker Desktop is unavailable for the Docker-backed
+local go-live smoke after guardrails, typecheck, and build passed.
 
 V1 action-level product correctness before any further readiness claim. Deploy
 health, route reachability, and local contract tests remain useful evidence,

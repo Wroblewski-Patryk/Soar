@@ -1,6 +1,6 @@
 {
-  "status": "blocked",
-  "generatedAt": "2026-05-13T18:05:16.069Z",
+  "status": "ready_for_protected_evidence",
+  "generatedAt": "2026-05-13T18:37:27.918Z",
   "context": {
     "apiBaseUrl": "https://api.soar.luckysparrow.ch",
     "webBaseUrl": "https://soar.luckysparrow.ch",
@@ -142,9 +142,9 @@
     {
       "key": "liveImportReadback",
       "label": "LIVEIMPORT-03 runtime readback",
-      "state": "failed",
+      "state": "fresh",
       "required": true,
-      "reason": "artifact is fresh but does not satisfy required runtime readback checks",
+      "reason": "fresh for 2026-05-13",
       "path": "docs\\operations\\liveimport-03-prod-readback-2026-05-13.json",
       "date": "2026-05-13"
     },
@@ -176,24 +176,8 @@
       "date": "2026-05-13"
     }
   ],
-  "blockers": [
-    "evidence:liveImportReadback:failed"
-  ],
-  "blockerDetails": [
-    {
-      "blocker": "evidence:liveImportReadback:failed",
-      "category": "release_evidence",
-      "label": "liveImportReadback:failed",
-      "severity": "blocking",
-      "protectedInputRequired": true,
-      "finalEvidenceRequired": true,
-      "operatorActionRequired": true,
-      "requiredCapabilities": [
-        "release_evidence"
-      ],
-      "remediationAvailable": false
-    }
-  ],
+  "blockers": [],
+  "blockerDetails": [],
   "remediation": [],
   "note": "Preflight JSON is not final V1 release evidence and contains env names/readiness only, not secret values."
 }

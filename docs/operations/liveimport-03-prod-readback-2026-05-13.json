@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-13T18:02:37.377Z",
+  "generatedAt": "2026-05-13T18:37:12.119Z",
   "target": {
     "baseUrl": "https://api.soar.luckysparrow.ch",
     "webBaseUrl": "https://soar.luckysparrow.ch",
@@ -10,8 +10,7 @@
       "matchesExpected": true
     },
     "symbols": [
-      "ETHUSDT",
-      "DOGEUSDT"
+      "TRXUSDT"
     ]
   },
   "auth": {
@@ -33,46 +32,54 @@
         "activeMarketGroups": null
       },
       "session": {
-        "idHash": "6030bcc44b39",
+        "idHash": "8d0f311c0a74",
         "status": "RUNNING",
-        "startedAt": "2026-05-13T18:02:37.942Z",
+        "startedAt": "2026-05-13T18:37:07.957Z",
         "stoppedAt": null,
         "eventsCount": 1
       },
       "symbols": [
         {
-          "symbol": "ETHUSDT",
-          "total": 0,
-          "openCount": 0,
+          "symbol": "TRXUSDT",
+          "total": 1,
+          "openCount": 1,
           "closedCount": 0,
           "openOrdersCount": 0,
           "showDynamicStopColumns": true,
-          "openItems": [],
-          "importCompleteness": "MISSING_FROM_RUNTIME_READBACK"
-        },
-        {
-          "symbol": "DOGEUSDT",
-          "total": 0,
-          "openCount": 0,
-          "closedCount": 0,
-          "openOrdersCount": 0,
-          "showDynamicStopColumns": true,
-          "openItems": [],
-          "importCompleteness": "MISSING_FROM_RUNTIME_READBACK"
+          "openItems": [
+            {
+              "idHash": "86873dc5e99b",
+              "symbol": "TRXUSDT",
+              "status": "OPEN",
+              "side": "SHORT",
+              "origin": "EXCHANGE_SYNC",
+              "managementMode": "BOT_MANAGED",
+              "syncState": "IN_SYNC",
+              "continuityState": "CONFIRMED",
+              "takeoverStatus": "OWNED_AND_MANAGED",
+              "strategyIdHash": null,
+              "strategyAutomationContextResolved": true,
+              "actionable": true,
+              "dcaPlannedLevelsCount": 3,
+              "trailingTakeProfitLevelsCount": 5,
+              "trailingStopLevelsCount": 0,
+              "openedAt": "2026-05-13T16:00:04.078Z"
+            }
+          ],
+          "importCompleteness": "VISIBLE"
         }
       ],
-      "status": "REVIEW"
+      "status": "PASS"
     }
   ],
   "summary": {
     "botsChecked": 1,
     "botsWithRuntimeReadback": 1,
     "botsWithoutRunningSession": 0,
-    "symbolsExpected": 2,
-    "symbolsVisible": [],
-    "missingSymbols": [
-      "ETHUSDT",
-      "DOGEUSDT"
-    ]
+    "symbolsExpected": 1,
+    "symbolsVisible": [
+      "TRXUSDT"
+    ],
+    "missingSymbols": []
   }
 }

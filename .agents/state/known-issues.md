@@ -4,23 +4,26 @@ Last updated: 2026-05-13
 
 ## Active Issues
 
-- 2026-05-13 update: `V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13`
-  confirms the final V1 blocker is no longer auth, restore, rollback, UI, RC,
-  or session startup. A controlled LIVE proof can start a RUNNING session under
-  the no-order guard and clean up by deactivating the bot, but `LIVEIMPORT-03`
-  remains failed because ETH/DOGE are not visible in the session-scoped runtime
-  position readback. The runner partial-update defect that cleared
-  `liveOptIn`/import flags was fixed and production bot configuration was
-  restored.
+- 2026-05-13 update: `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13`
+  resolves the active V1 production target blocker set. `LIVEIMPORT-03` passed
+  for `TRXUSDT`, final preflight has no blockers, and the production
+  target-only gate reports `Readiness: ready`. Remaining environment issue:
+  the full local gate artifact is `not_ready` because Docker Desktop is not
+  available for `pnpm run test:go-live:smoke` on this workstation, after
+  guardrails, typecheck, and build had already passed.
 
-- 2026-05-13 update: `V1-CURRENT-DAY-BLOCKER-REFRESH-00169D7F-2026-05-13`
-  confirms V1 remains `NO-GO` on current-day evidence. Production build-info
+- 2026-05-13 superseded update:
+  `V1-CURRENT-DAY-BLOCKER-REFRESH-00169D7F-2026-05-13` previously confirmed
+  V1 was `NO-GO` on current-day evidence before protected credentials and
+  controlled LIVE proof were completed. Production build-info
   and public smoke pass for deployed
   `00169d7fdc3aff8317759137b05594b20e773c8e`, but protected input names are
   absent in the current Codex shell, production UI clickthrough is fresh
   `BLOCKED_AUTH`, `LIVEIMPORT-03` is still missing, and daily release
   artifacts that require protected or operator inputs are stale for
-  2026-05-13.
+  2026-05-13. This is retained only as historical blocker evidence; the
+  current V1 target gate status is the `V1-TARGET-RELEASE-GATE-PASS` entry
+  above.
 
 - 2026-05-12 update: `V1-PROTECTED-INPUT-READINESS-CURRENT-SWEEP-00169D7F-2026-05-12`
   confirms the current Codex shell still has no protected input environment

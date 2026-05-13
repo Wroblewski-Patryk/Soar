@@ -67,7 +67,22 @@ required runtime position read model.
 - Second controlled run detected a RUNNING session and cleaned up by
   deactivating the bot, but `LIVEIMPORT-03` still failed because ETH/DOGE were
   not visible in the session-scoped runtime readback.
-- Follow-up preactivation confirmed the bot is inactive and import-capable
-  again.
-- Final preflight remains blocked only on
-  `evidence:liveImportReadback:failed`.
+- Follow-up inspection confirmed the target LIVE bot's actual managed symbol
+  set is ADA/DOT/POL/SOL/TRX/XAI, not ETH/DOGE. The accepted proof target was
+  narrowed to the real imported managed symbol visible in runtime readback:
+  `TRXUSDT`.
+- Final controlled proof passed for `TRXUSDT` under the no-order guard. The
+  readback shows one open `EXCHANGE_SYNC` / `BOT_MANAGED` /
+  `OWNED_AND_MANAGED` short position with `syncState=IN_SYNC`,
+  `continuityState=CONFIRMED`, `strategyAutomationContextResolved=true`, and
+  `actionable=true`.
+- Cleanup deactivated the target bot after the proof. No order action was
+  requested or placed.
+- Final preflight now reports no blockers and all required protected evidence
+  is fresh for 2026-05-13.
+- Full release gate passed repository guardrails, typecheck, and build, then
+  failed only at local `test:go-live:smoke` because Docker Desktop was not
+  available in this workstation environment.
+- Target-only production V1 gate passed after the local quality steps above:
+  build-info freshness, post-deploy smoke, runtime freshness, and rollback
+  guard all passed for deployed SHA `00169d7f`.

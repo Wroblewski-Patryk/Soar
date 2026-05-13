@@ -4,20 +4,29 @@ Last updated: 2026-05-13
 
 ## Next Tiny Task
 
+Latest V1 target release gate:
+`V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13` closed the current
+production target gate for deployed
+`00169d7fdc3aff8317759137b05594b20e773c8e`. `LIVEIMPORT-03` passed for
+`TRXUSDT`, the target LIVE bot's real runtime-visible managed symbol. Final
+preflight has no blockers, and the production target-only release gate reports
+`Readiness: ready` after build-info freshness, post-deploy smoke, runtime
+freshness, and rollback guard all passed. The full local gate still records an
+environment limitation: repository guardrails, typecheck, and build passed,
+then local `test:go-live:smoke` failed because Docker Desktop was unavailable
+on this workstation. Next exact action is post-release hygiene: keep the
+target gate artifacts as the V1 evidence pack, and rerun the full Docker-backed
+local smoke only when Docker Desktop is available.
+
 Latest controlled LIVE proof attempt:
 `V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13` ran after explicit
 user live-risk approval. The first attempt exposed and recovered from a runner
 partial-update defect that cleared LIVE consent/import flags; production bot
 configuration was restored to inactive `liveOptIn=true`,
 `manageExternalPositions=true`, consent `mvp-v1`. The runner now preserves
-those fields while toggling `isActive`. The corrected run started a RUNNING
-session and cleanup deactivated the bot, but `LIVEIMPORT-03` still fails
-because ETH/DOGE are not visible in the session-scoped runtime position
-readback. Final preflight remains blocked only on
-`evidence:liveImportReadback:failed`. Next exact unblock action requires either
-configuring/importing a real managed LIVE position visible to the target LIVE
-bot's runtime session, or an explicit product decision to change the V1
-acceptance contract.
+those fields while toggling `isActive`. The corrected proof ultimately passed
+for `TRXUSDT`, the real managed LIVE symbol visible to the target bot's runtime
+session, and cleanup deactivated the bot. No orders were placed.
 
 Latest controlled LIVE proof preactivation:
 `V1-CONTROLLED-LIVE-PROOF-PREACTIVATION-00169D7F-2026-05-13` ran only dry-run

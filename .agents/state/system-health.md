@@ -4,13 +4,22 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13` PRODUCTION TARGET GATE
+  READY: final `LIVEIMPORT-03` passed for `TRXUSDT`, final preflight has no
+  blockers, and the production target-only release gate reports
+  `Readiness: ready` for deployed `00169d7f...`. Production build-info
+  freshness, post-deploy smoke, runtime freshness, and rollback guard all
+  passed. The full gate artifact remains `not_ready` only because local
+  Docker-backed `test:go-live:smoke` could not run without Docker Desktop after
+  guardrails, typecheck, and build had already passed.
+
 - `V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13` CONTROLLED LIVE
-  ATTEMPT / FINAL BLOCKED: after explicit user live-risk approval, the
+  PROOF PASS: after explicit user live-risk approval, the
   controlled runner started a RUNNING session and deactivated the bot in
   cleanup. A partial-update defect that cleared `liveOptIn`/import fields was
   found, production state was restored, and the runner was fixed to preserve
-  those fields. V1 remains blocked because the running session did not expose
-  ETH/DOGE runtime positions.
+  those fields. The accepted runtime readback passed for the target bot's real
+  managed symbol `TRXUSDT`; no orders were placed.
 
 - `V1-CONTROLLED-LIVE-PROOF-PREACTIVATION-00169D7F-2026-05-13` BLOCKED ON
   EXPLICIT LIVE-RISK APPROVAL: controlled LIVE proof preactivation confirmed

@@ -1,0 +1,149 @@
+{
+  "generatedAt": "2026-05-13T18:39:03.185Z",
+  "environment": "prod",
+  "dryRun": false,
+  "readiness": "not_ready",
+  "baseUrl": "https://api.soar.luckysparrow.ch",
+  "webBaseUrl": "https://soar.luckysparrow.ch",
+  "expectedSha": "00169d7fdc3aff8317759137b05594b20e773c8e",
+  "evidence": [
+    {
+      "key": "activationAudit",
+      "label": "activation evidence audit",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-13",
+      "path": "docs\\operations\\v1-production-activation-evidence-audit-2026-05-13.md",
+      "date": "2026-05-13"
+    },
+    {
+      "key": "activationPlan",
+      "label": "activation execution plan",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-13",
+      "path": "docs\\planning\\v1-production-activation-and-evidence-plan-2026-05-13.md",
+      "date": "2026-05-13"
+    },
+    {
+      "key": "rcExternalGateStatus",
+      "label": "RC external gates status",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-13",
+      "path": "docs\\operations\\v1-rc-external-gates-status.md",
+      "date": "2026-05-13"
+    },
+    {
+      "key": "rcSignoffRecord",
+      "label": "RC sign-off record",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-13",
+      "path": "docs\\operations\\v1-rc-signoff-record.md",
+      "date": "2026-05-13"
+    },
+    {
+      "key": "rcChecklist",
+      "label": "RC checklist verification block",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-13",
+      "path": "docs\\operations\\v1-release-candidate-checklist.md",
+      "date": "2026-05-13"
+    },
+    {
+      "key": "liveImportReadback",
+      "label": "LIVEIMPORT-03 runtime readback",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-13",
+      "path": "docs\\operations\\liveimport-03-prod-readback-2026-05-13.json",
+      "date": "2026-05-13"
+    },
+    {
+      "key": "prodUiClickthrough",
+      "label": "production UI clickthrough",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-13",
+      "path": "docs\\operations\\prod-ui-module-clickthrough-00169d7f-2026-05-13.md",
+      "date": "2026-05-13"
+    },
+    {
+      "key": "backupRestoreDrill",
+      "label": "backup/restore drill evidence",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-13",
+      "path": "docs\\operations\\v1-restore-drill-prod-2026-05-13T17-41-29Z.md",
+      "date": "2026-05-13"
+    },
+    {
+      "key": "rollbackProof",
+      "label": "rollback proof pack",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-13",
+      "path": "docs\\operations\\v1-rollback-proof-prod-2026-05-13T00-00-00-000Z.md",
+      "date": "2026-05-13"
+    }
+  ],
+  "blockers": [
+    "step:go-live smoke pack"
+  ],
+  "steps": [
+    {
+      "label": "repository guardrails",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "quality:guardrails"
+      ],
+      "startedAt": "2026-05-13T18:38:05.274Z",
+      "endedAt": "2026-05-13T18:38:05.969Z",
+      "durationMs": 695,
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "label": "repository typecheck",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "typecheck"
+      ],
+      "startedAt": "2026-05-13T18:38:05.969Z",
+      "endedAt": "2026-05-13T18:38:24.191Z",
+      "durationMs": 18222,
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "label": "repository build",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "build"
+      ],
+      "startedAt": "2026-05-13T18:38:24.191Z",
+      "endedAt": "2026-05-13T18:39:00.506Z",
+      "durationMs": 36315,
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "label": "go-live smoke pack",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "test:go-live:smoke"
+      ],
+      "startedAt": "2026-05-13T18:39:00.506Z",
+      "endedAt": "2026-05-13T18:39:03.185Z",
+      "durationMs": 2678,
+      "status": "failed",
+      "exitCode": 1
+    }
+  ]
+}

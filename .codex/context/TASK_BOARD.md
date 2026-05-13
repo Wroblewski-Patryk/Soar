@@ -17,16 +17,25 @@ Last updated: 2026-05-13
 
 ## READY
 
+- [x] `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13 release: close production target V1 gate`
+  - Scope: completed final controlled `LIVEIMPORT-03` proof for the target
+    bot's real runtime-visible managed symbol `TRXUSDT`; final preflight now
+    has no blockers. The full release gate passed guardrails, typecheck, and
+    build, then stopped only because local Docker Desktop was unavailable for
+    `test:go-live:smoke`. The production target-only release gate passed with
+    `Readiness: ready` after build-info freshness, post-deploy smoke, runtime
+    freshness, and rollback guard all passed. Evidence:
+    `docs/planning/v1-target-release-gate-pass-00169d7f-2026-05-13-task.md`,
+    `docs/operations/v1-release-gate-prod-2026-05-13Ttarget-only-v1-gate.md`.
+
 - [x] `V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13 release: run approved controlled LIVE proof`
   - Scope: ran the controlled LIVE proof after explicit user live-risk
     approval. A runner partial-update defect was found and fixed so toggling
     `isActive` preserves LIVE consent/import fields. Production bot
-    configuration was restored to inactive LIVE/import-capable state. The
-    corrected run started a RUNNING session and cleanup deactivated the bot,
-    but `LIVEIMPORT-03` remains failed because ETH/DOGE are not visible in the
-    session-scoped runtime readback. Evidence:
+    configuration was restored to inactive LIVE/import-capable state. The proof
+    ultimately passed for `TRXUSDT`, the real managed symbol visible in the
+    target bot's runtime readback, and cleanup deactivated the bot. Evidence:
     `docs/planning/v1-controlled-live-proof-attempt-00169d7f-2026-05-13-task.md`.
-    V1 remains `NO-GO`.
 
 - [x] `V1-CONTROLLED-LIVE-PROOF-PREACTIVATION-00169D7F-2026-05-13 release: verify controlled LIVE proof preactivation gates`
   - Scope: ran the controlled LIVE proof runner through dry-run and

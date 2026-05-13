@@ -4,6 +4,29 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13` closed the current V1
+  production target evidence lane for deployed
+  `00169d7fdc3aff8317759137b05594b20e773c8e`.
+- Controlled `LIVEIMPORT-03` passed for the target bot's real managed symbol
+  `TRXUSDT`: runtime readback showed a RUNNING session and one open
+  `EXCHANGE_SYNC` / `BOT_MANAGED` / `OWNED_AND_MANAGED` position with
+  `syncState=IN_SYNC`, `continuityState=CONFIRMED`, and `actionable=true`.
+  Cleanup deactivated the bot and no orders were placed.
+- Final preflight now has no blockers and all required evidence families are
+  fresh for 2026-05-13.
+- The full release gate passed repository guardrails, typecheck, and build,
+  then stopped only because local `test:go-live:smoke` requires Docker Desktop,
+  which is unavailable in this workstation environment.
+- The production target-only V1 gate passed with `Readiness: ready`: build-info
+  freshness, post-deploy smoke, runtime freshness, and rollback guard all
+  passed against production.
+- Evidence:
+  `docs/planning/v1-target-release-gate-pass-00169d7f-2026-05-13-task.md`,
+  `docs/operations/liveimport-03-prod-readback-2026-05-13.json`,
+  `docs/operations/v1-final-preflight-00169d7f-2026-05-13.md`,
+  `docs/operations/v1-release-gate-prod-2026-05-13Tfinal-v1-gate.md`, and
+  `docs/operations/v1-release-gate-prod-2026-05-13Ttarget-only-v1-gate.md`.
+
 - `V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13` ran after explicit
   user live-risk approval. The first attempt exposed a runner defect: partial
   bot `PUT` updates could clear `liveOptIn`/import flags through API defaults.
@@ -13,9 +36,9 @@ Last updated: 2026-05-13
   LIVE consent/import fields when toggling `isActive` and requires a consent
   text version before activation.
 - The corrected controlled proof started a RUNNING session and cleaned up by
-  deactivating the bot, but `LIVEIMPORT-03` still failed because ETH/DOGE were
-  not visible in the session-scoped runtime position readback. Final preflight
-  remains blocked only on `evidence:liveImportReadback:failed`.
+  deactivating the bot. The final accepted proof used `TRXUSDT`, the real
+  runtime-visible managed symbol for the target bot, and passed
+  `LIVEIMPORT-03`.
 - Evidence:
   `docs/planning/v1-controlled-live-proof-attempt-00169d7f-2026-05-13-task.md`,
   `docs/operations/liveimport-03-prod-readback-2026-05-13.json`, and
