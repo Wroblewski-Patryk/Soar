@@ -37,6 +37,10 @@ from Dashboard Home/Bots monitoring fixtures. Focused Web runtime tests passed
 matches, and repository guardrails passed. Next Web/API parity work should
 continue with endpoint-to-surface checks rather than re-opening these enum
 fixtures unless new backend enum values are introduced.
+`V1-WEB-BACKEND-PARITY-MONITORING-PROPS-2026-05-13` also removed the remaining
+local Bots Monitoring prop duplicate unions for fee/capital source by reusing
+shared aliases. Focused `BotsManagement` test passed (`14/14`), Web typecheck
+passed, duplicate-union scan returned no matches, and guardrails passed.
 
 Latest V1 target release gate:
 `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13` closed the current

@@ -4,6 +4,12 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-WEB-BACKEND-PARITY-MONITORING-PROPS-2026-05-13` LOCAL CONTRACT PASS:
+  Bots Monitoring props now reuse shared runtime enum aliases instead of local
+  fee/capital source unions. Focused `BotsManagement` test passed (`14/14`),
+  Web typecheck passed, duplicate-union scan returned no matches, and
+  repository guardrails passed.
+
 - `V1-WEB-BACKEND-PARITY-RUNTIME-ENUMS-2026-05-13` LOCAL CONTRACT PASS:
   Web runtime trade/order/position enum typing now matches backend fee source,
   trading origin, position management mode, and capital-source domains. Focused

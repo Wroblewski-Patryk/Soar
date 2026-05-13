@@ -27,6 +27,7 @@ import {
   BotRuntimeSessionListItem,
   BotRuntimeSessionStatus,
   BotRuntimeTrade,
+  FeeSource, RuntimeCapitalSource,
 } from "../../types/bot.type";
 import {
   resolveRuntimeOpenPositionMarkPriceSourceLabelKey,
@@ -89,10 +90,10 @@ type MonitorOperationalTradeRow = {
   realizedPnl: number;
   pnlPct: number;
   cumulativePnl: number;
-  origin: string;
+  origin: BotRuntimeTrade["origin"];
   orderId: string | null;
   positionId: string | null;
-  feeSource: "ESTIMATED" | "EXCHANGE_FILL";
+  feeSource: FeeSource;
   feePending: boolean;
   feeCurrency: string | null;
 };
@@ -174,7 +175,7 @@ type BotsMonitoringTabProps = {
     portfolio: number | null;
     free: number | null;
     inPositions: number;
-    capitalSource: "PAPER_INITIAL_BALANCE" | "PAPER_RESET_CHECKPOINT" | "LIVE_EXCHANGE_BALANCE" | null;
+    capitalSource: RuntimeCapitalSource | null;
     paperResetAt: string | null;
   };
   monitorWinRate: number;
@@ -254,7 +255,7 @@ type BotsMonitoringTabProps = {
   toTradeLifecycleBadgeClass: (value: "OPEN" | "DCA" | "CLOSE" | "UNKNOWN") => string;
   toTradeLifecycleLabelKey: (value: "OPEN" | "DCA" | "CLOSE" | "UNKNOWN") => TranslationKey;
   formatTradeFeeMeta: (trade: {
-    feeSource: "ESTIMATED" | "EXCHANGE_FILL";
+    feeSource: FeeSource;
     feePending: boolean;
     feeCurrency: string | null;
   }) => string;

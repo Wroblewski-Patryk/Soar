@@ -17,6 +17,14 @@ Last updated: 2026-05-13
 
 ## READY
 
+- [x] `V1-WEB-BACKEND-PARITY-MONITORING-PROPS-2026-05-13 fix: reuse runtime enum aliases in Bots Monitoring props`
+  - Scope: removed local duplicated fee/capital enum unions from
+    `BotsMonitoringTab` props, reusing shared runtime aliases and
+    `BotRuntimeTrade["origin"]` instead. Evidence:
+    `docs/planning/v1-web-backend-function-parity-monitoring-props-2026-05-13-task.md`;
+    focused `BotsManagement` test passed (`14/14`), Web typecheck passed,
+    local duplicate-union scan returned no matches, and guardrails passed.
+
 - [x] `V1-WEB-BACKEND-PARITY-RUNTIME-ENUMS-2026-05-13 fix: align Web runtime enum contracts with backend schema`
   - Scope: added backend-compatible Web runtime enum aliases for trading
     origin, position management mode, fee source, and runtime capital source;

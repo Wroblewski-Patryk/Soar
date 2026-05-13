@@ -58,6 +58,15 @@ Do not turn uncertainty into optimism.
 ## Current Release Evidence Notes
 
 - 2026-05-13
+  `V1-WEB-BACKEND-PARITY-MONITORING-PROPS-2026-05-13` applies to
+  `SOAR-BOT-RUNTIME-001`: Bots Monitoring props now reuse shared runtime enum
+  aliases for fee source and capital source, plus `BotRuntimeTrade["origin"]`
+  for operational trade origin, removing a local prop-contract drift point.
+  Evidence: focused `BotsManagement` test passed (`14/14`), Web typecheck
+  passed, local duplicate-union scan returned no matches, and repository
+  guardrails passed. The row remains `PARTIAL` pending production-safe
+  clickthrough and broader V1 runtime proof.
+- 2026-05-13
   `V1-WEB-BACKEND-PARITY-RUNTIME-ENUMS-2026-05-13` applies to
   `SOAR-DASHBOARD-001` and `SOAR-BOT-RUNTIME-001`: Web runtime enum typing now
   reflects backend `FeeSource`, `TradingRecordOrigin`,

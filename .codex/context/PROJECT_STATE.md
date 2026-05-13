@@ -4,6 +4,12 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-WEB-BACKEND-PARITY-MONITORING-PROPS-2026-05-13` removed the remaining
+  local Bots Monitoring prop duplications for runtime fee/capital enum
+  domains by reusing shared Web runtime aliases. Evidence: focused
+  `BotsManagement` test passed (`14/14`), Web typecheck passed, local
+  duplicate-union scan returned no matches, and repository guardrails passed.
+
 - `V1-WEB-BACKEND-PARITY-RUNTIME-ENUMS-2026-05-13` tightened Web runtime
   enum contracts to backend schema truth: runtime trade `feeSource`,
   `origin`, and `managementMode` now use strict backend-compatible Web aliases;
