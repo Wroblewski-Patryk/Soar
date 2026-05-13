@@ -8,6 +8,22 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [ ] `V1-COOLIFY-REDEPLOY-457BCE05-2026-05-14 release: retrigger production Coolify deploy and prove build-info`
+  - Scope: production still serves `00169d7f` after `origin/main` was promoted
+    to `457bce05`. Retrigger or inspect the Coolify production deploy, then
+    rerun build-info freshness, production smoke, and the target release gate
+    for `457bce05`.
+
+- [x] `V1-CURRENT-MAIN-PROMOTION-DEPLOY-LAG-457BCE05-2026-05-14 release: promote current candidate and record deploy lag`
+  - 2026-05-14: Pushed `origin/codex/v1-proof-and-ops-evidence`, fast-forwarded
+    `origin/main` to `457bce05338310c198c03a973395a9176f298dc1`, and checked
+    production build-info. Production remained on
+    `00169d7fdc3aff8317759137b05594b20e773c8e` for the 180-second wait, while
+    public production smoke passed for the currently deployed surface.
+    Evidence:
+    `docs/planning/v1-current-main-promotion-deploy-lag-457bce05-2026-05-14-task.md`,
+    `docs/operations/deploy-lag-457bce05-2026-05-14.md`.
+
 - [ ] `V1-LIVE-PAPER-SIMULTANEOUS-RUNTIME-PROOF-00169D7F-2026-05-13 qa: prove simultaneous LIVE and PAPER bot behavior`
   - Scope: verify the user's concern directly after the V1 production target
     gate. One active LIVE bot and one active PAPER bot must remain separated by

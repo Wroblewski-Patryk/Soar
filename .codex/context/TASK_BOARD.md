@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-05-13
+Last updated: 2026-05-14
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -16,6 +16,21 @@ Last updated: 2026-05-13
     needed
 
 ## READY
+
+- [ ] `V1-COOLIFY-REDEPLOY-457BCE05-2026-05-14 release: retrigger production Coolify deploy and prove build-info`
+  - Scope: retrigger or inspect the production Coolify deployment for the
+    pushed `main` candidate `457bce05`, then rerun build-info freshness,
+    production smoke, and the target release gate. This is required before the
+    latest adapter/runtime fixes can be claimed deployed.
+
+- [x] `V1-CURRENT-MAIN-PROMOTION-DEPLOY-LAG-457BCE05-2026-05-14 release: promote current candidate and record deploy lag`
+  - Scope: pushed `origin/codex/v1-proof-and-ops-evidence`, fast-forwarded
+    `origin/main` to `457bce05338310c198c03a973395a9176f298dc1`, checked
+    production build-info, and recorded that production still serves
+    `00169d7fdc3aff8317759137b05594b20e773c8e`. Public production smoke
+    passed for the currently deployed surface. Evidence:
+    `docs/planning/v1-current-main-promotion-deploy-lag-457bce05-2026-05-14-task.md`,
+    `docs/operations/deploy-lag-457bce05-2026-05-14.md`.
 
 - [x] `V1-RUNTIME-NON-BINANCE-DERIVATIVES-ADAPTER-2026-05-13 fix: route runtime derivatives through exchange adapter`
   - Scope: routed runtime symbol-stats fallback derivatives and live signal

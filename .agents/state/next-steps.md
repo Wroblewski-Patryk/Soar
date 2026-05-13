@@ -1,8 +1,18 @@
 # Next Steps
 
-Last updated: 2026-05-13
+Last updated: 2026-05-14
 
 ## Next Tiny Task
+
+Latest deploy status:
+`V1-CURRENT-MAIN-PROMOTION-DEPLOY-LAG-457BCE05-2026-05-14` is partially
+verified. The current candidate was pushed to
+`origin/codex/v1-proof-and-ops-evidence`, and `origin/main` was fast-forwarded
+to `457bce05338310c198c03a973395a9176f298dc1`. Production build-info stayed on
+`00169d7fdc3aff8317759137b05594b20e773c8e` during the 180-second wait, while
+public production smoke still passed for the deployed surface. Next exact
+task: retrigger or inspect the production Coolify deploy for `457bce05`, then
+rerun build-info freshness, production smoke, and the target release gate.
 
 Latest runtime non-Binance derivatives adapter:
 `V1-RUNTIME-NON-BINANCE-DERIVATIVES-ADAPTER-2026-05-13` is locally verified.

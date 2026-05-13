@@ -1,8 +1,19 @@
 # Current Focus
 
-Last updated: 2026-05-13
+Last updated: 2026-05-14
 
 ## Active Focus
+
+2026-05-14 current candidate deployment status:
+`V1-CURRENT-MAIN-PROMOTION-DEPLOY-LAG-457BCE05-2026-05-14` promoted the
+current V1 candidate to remote Git (`origin/main` now points to
+`457bce05338310c198c03a973395a9176f298dc1`) after local build/typecheck/
+guardrails and focused runtime/backtest validation passed. Production
+build-info did not advance during the bounded wait and still reports
+`00169d7fdc3aff8317759137b05594b20e773c8e`; public production smoke still
+passes for that deployed surface. Active focus is now Coolify production
+redeploy/inspection for `457bce05`, followed by build-info freshness,
+production smoke, and target release gate rerun.
 
 2026-05-13 V1 production target gate status:
 `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13` is the current release
