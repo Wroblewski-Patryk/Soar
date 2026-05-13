@@ -16,6 +16,7 @@ export type BacktestRunDetailsCopy = {
   runPreview: string;
   marketGroup: string;
   strategy: string;
+  venueContext: string;
   calcStart: string;
   calcEnd: string;
   progressTitle: string;
@@ -131,6 +132,7 @@ const DETAIL_KEYS = {
   runPreview: 'dashboard.backtests.details.runPreview',
   marketGroup: 'dashboard.backtests.details.marketGroup',
   strategy: 'dashboard.backtests.details.strategy',
+  venueContext: 'dashboard.backtests.details.venueContext',
   calcStart: 'dashboard.backtests.details.calcStart',
   calcEnd: 'dashboard.backtests.details.calcEnd',
   progressTitle: 'dashboard.backtests.details.progressTitle',

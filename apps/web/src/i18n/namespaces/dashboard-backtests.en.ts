@@ -90,6 +90,7 @@ export const dashboardBacktestsEn = {
     runPreview: "Backtest run preview",
     marketGroup: "Market group:",
     strategy: "Strategy:",
+    venueContext: "Venue:",
     calcStart: "Calculation start:",
     calcEnd: "Calculation end:",
     progressTitle: "Run progress",

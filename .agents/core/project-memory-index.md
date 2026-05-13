@@ -146,6 +146,10 @@ handoff:
 
 ## Current 2026-05-13 Adapter/Runtime Index
 
+- `V1-RUNTIME-TICKER-AND-BACKTEST-VENUE-UI-2026-05-13` is the current local
+  ticker fallback and Backtest details UI parity proof. Evidence lives in
+  `docs/planning/v1-runtime-ticker-and-backtest-venue-ui-2026-05-13-task.md`.
+  It extends `REQ-FUNC-022` and `RISK-023`.
 - `V1-BOT-BACKTEST-EXCHANGE-ADAPTER-AUDIT-2026-05-13` is the current local
   bot/backtest exchange-boundary proof. Evidence lives in
   `docs/planning/v1-bot-backtest-exchange-adapter-audit-2026-05-13-task.md`.

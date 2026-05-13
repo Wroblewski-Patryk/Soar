@@ -89,6 +89,7 @@ export const dashboardBacktestsDeCh = {
     "runPreview": "Vorschau des Backtest-Laufs",
     "marketGroup": "Marktgruppe:",
     "strategy": "Strategie:",
+    "venueContext": "Venue:",
     "calcStart": "Berechnungsstart:",
     "calcEnd": "Berechnungsende:",
     "progressTitle": "Lauffortschritt",

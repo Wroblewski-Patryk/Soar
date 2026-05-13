@@ -4,6 +4,17 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-RUNTIME-TICKER-AND-BACKTEST-VENUE-UI-2026-05-13` closed the next
+  adapter/UI parity gap after the candle audit. Generic runtime ticker fallback
+  prices now use the Exchange public market-data boundary for Binance and
+  non-Binance exchanges, and runtime position reads request fallback ticker
+  prices for the actual bot exchange instead of Binance only. Backtest details
+  now expose the resolved `exchange / marketType / baseCurrency` in the header
+  instead of leaving it only inside raw seed JSON. Evidence:
+  `docs/planning/v1-runtime-ticker-and-backtest-venue-ui-2026-05-13-task.md`;
+  focused runtime tests passed (`36/36`), focused Backtest details Web test
+  passed (`4/4`), API typecheck passed, and Web typecheck passed.
+
 - `V1-BOT-BACKTEST-EXCHANGE-ADAPTER-AUDIT-2026-05-13` extended the
   Binance/Gate.io adapter audit from runtime warmup into the backtest and bot
   fallback surfaces. Backtest candle loading and bot runtime fallback candles

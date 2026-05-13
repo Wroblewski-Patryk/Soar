@@ -746,21 +746,19 @@ export const listBotRuntimeSessionPositions = async (
     return !Number.isFinite(current) || (current as number) <= 0;
   });
   if (missingPriceSymbols.length > 0) {
-    if (botExchange === 'BINANCE') {
-      const fallbackPrices = await fetchFallbackTickerPrices({
-        exchange: botExchange,
-        marketType: botMarketType === 'SPOT' ? 'SPOT' : 'FUTURES',
-        symbols: missingPriceSymbols,
-      });
-      for (const [symbol, price] of fallbackPrices) {
-        if (Number.isFinite(price) && price > 0) {
-          lastPriceBySymbol.set(symbol, price);
-          fallbackRuntimePriceBySymbol.set(symbol, {
-            price,
-            observedAtMs: null,
-            source: 'fallback_ticker',
-          });
-        }
+    const fallbackPrices = await fetchFallbackTickerPrices({
+      exchange: botExchange,
+      marketType: botMarketType === 'SPOT' ? 'SPOT' : 'FUTURES',
+      symbols: missingPriceSymbols,
+    });
+    for (const [symbol, price] of fallbackPrices) {
+      if (Number.isFinite(price) && price > 0) {
+        lastPriceBySymbol.set(symbol, price);
+        fallbackRuntimePriceBySymbol.set(symbol, {
+          price,
+          observedAtMs: null,
+          source: 'fallback_ticker',
+        });
       }
     }
   }

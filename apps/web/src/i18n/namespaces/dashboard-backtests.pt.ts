@@ -90,6 +90,7 @@ export const dashboardBacktestsPt = {
     runPreview: "Previsao da execucao de backtest",
     marketGroup: "Grupo de mercados:",
     strategy: "Estrategia:",
+    venueContext: "Venue:",
     calcStart: "Inicio do calculo:",
     calcEnd: "Fim do calculo:",
     progressTitle: "Progresso da execucao",

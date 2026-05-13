@@ -4,6 +4,17 @@ Last updated: 2026-05-13
 
 ## Next Tiny Task
 
+Latest runtime ticker/backtest UI parity:
+`V1-RUNTIME-TICKER-AND-BACKTEST-VENUE-UI-2026-05-13` is locally verified.
+Generic runtime ticker fallback now uses the Exchange public market-data
+boundary for Binance and non-Binance exchanges, runtime position readback asks
+for fallback prices in the actual bot exchange context, and Backtest details
+shows resolved `exchange / marketType / baseCurrency` in the header. Focused
+runtime tests passed (`36/36`), Backtest details Web test passed (`4/4`), and
+API/Web typechecks passed. Next implementation lane remains generic
+non-Binance derivatives supplemental adapters, or production-safe multi-bot
+runtime clickthrough once the production resource shape exists.
+
 Latest bot/backtest adapter audit:
 `V1-BOT-BACKTEST-EXCHANGE-ADAPTER-AUDIT-2026-05-13` is locally verified.
 Backtest candle loading, backtest run/timeline replay, bot runtime candle

@@ -97,10 +97,18 @@ export default function BacktestRunDetails({ runId }: BacktestRunDetailsProps) {
 
   const liveProgress = ((run?.seedConfig as { liveProgress?: LiveProgress } | null)?.liveProgress ?? null) as LiveProgress | null;
   const seedConfig = (run?.seedConfig as {
+    exchange?: unknown;
     leverage?: unknown;
     marketType?: unknown;
+    baseCurrency?: unknown;
   } | null) ?? null;
   const runMarketType = seedConfig?.marketType === 'SPOT' ? 'SPOT' : 'FUTURES';
+  const runExchange = typeof seedConfig?.exchange === 'string' && seedConfig.exchange.trim()
+    ? seedConfig.exchange.trim().toUpperCase()
+    : 'BINANCE';
+  const runBaseCurrency = typeof seedConfig?.baseCurrency === 'string' && seedConfig.baseCurrency.trim()
+    ? seedConfig.baseCurrency.trim().toUpperCase()
+    : 'USDT';
   const leverageFromSeed = Number(seedConfig?.leverage);
   const leverageFromProgress = Number(liveProgress?.leverage);
   const effectiveLeverage =
@@ -282,6 +290,8 @@ export default function BacktestRunDetails({ runId }: BacktestRunDetailsProps) {
         marketGroupValue={marketGroupLabel}
         strategyLabelText={copy.strategy}
         strategyValue={strategy?.name ?? copy.dash}
+        venueContextLabelText={copy.venueContext}
+        venueContextValue={`${runExchange} / ${runMarketType} / ${runBaseCurrency}`}
         calcStartLabelText={copy.calcStart}
         calcStartValue={formatDateTime(run.startedAt)}
         calcEndLabelText={copy.calcEnd}

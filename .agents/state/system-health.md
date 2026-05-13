@@ -4,6 +4,14 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-RUNTIME-TICKER-AND-BACKTEST-VENUE-UI-2026-05-13` LOCAL CONTRACT PASS:
+  runtime fallback ticker prices now use the Exchange public market-data
+  boundary for Binance and non-Binance exchanges, runtime position readback no
+  longer restricts fallback ticker lookup to Binance, and Backtest details
+  renders the resolved `exchange / marketType / baseCurrency` context in the
+  header. Focused API runtime tests passed (`36/36`), Backtest details Web test
+  passed (`4/4`), API typecheck passed, and Web typecheck passed.
+
 - `V1-BOT-BACKTEST-EXCHANGE-ADAPTER-AUDIT-2026-05-13` LOCAL ADAPTER-BACKTEST
   PASS: audited bot runtime fallback and backtest data paths against the exact
   `(exchange, marketType)` architecture contract. Backtest candles and bot

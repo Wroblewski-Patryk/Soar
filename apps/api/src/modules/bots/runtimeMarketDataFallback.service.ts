@@ -442,45 +442,24 @@ export const fetchFallbackTickerPrices = async (params: {
   }
 
   try {
-    if (exchange !== 'BINANCE') {
-      const entries = await Promise.all(
-        normalizedSymbols.map(async (symbol) => {
-          try {
-            const snapshot = await fetchExchangePublicTickerSnapshot({
-              exchange,
-              marketType: params.marketType,
-              symbol,
-            });
-            const price = snapshot.markPrice ?? snapshot.lastPrice;
-            return Number.isFinite(price) && price > 0 ? ([symbol, price] as const) : null;
-          } catch {
-            return null;
-          }
-        })
-      );
-      return new Map(entries.filter((entry): entry is readonly [string, number] => entry != null));
-    }
-
-    const payload = await fetchBinancePublicRestJson({
-      marketType: params.marketType,
-      path: params.marketType === 'SPOT' ? '/api/v3/ticker/price' : '/fapi/v1/ticker/price',
-    });
     const allPrices = new Map<string, number>();
-    const rows = Array.isArray(payload) ? payload : [payload];
-    for (const row of rows) {
-      if (!row || typeof row !== 'object') continue;
-      const parsedRow = row as { symbol?: unknown; price?: unknown };
-      if (typeof parsedRow.symbol !== 'string') continue;
-      const symbol = parsedRow.symbol.trim().toUpperCase();
-      if (!symbol) continue;
-      const priceRaw =
-        typeof parsedRow.price === 'number'
-          ? parsedRow.price
-          : typeof parsedRow.price === 'string'
-            ? Number.parseFloat(parsedRow.price)
-            : Number.NaN;
-      if (!Number.isFinite(priceRaw) || priceRaw <= 0) continue;
-      allPrices.set(symbol, priceRaw);
+    const entries = await Promise.all(
+      normalizedSymbols.map(async (symbol) => {
+        try {
+          const snapshot = await fetchExchangePublicTickerSnapshot({
+            exchange,
+            marketType: params.marketType,
+            symbol,
+          });
+          const price = snapshot.markPrice ?? snapshot.lastPrice;
+          return Number.isFinite(price) && price > 0 ? ([symbol, price] as const) : null;
+        } catch {
+          return null;
+        }
+      })
+    );
+    for (const entry of entries) {
+      if (entry) allPrices.set(entry[0], entry[1]);
     }
 
     if (allPrices.size > 0) {

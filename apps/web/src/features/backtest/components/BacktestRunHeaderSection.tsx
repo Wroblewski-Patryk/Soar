@@ -23,6 +23,8 @@ type BacktestRunHeaderSectionProps = {
   marketGroupValue: string;
   strategyLabelText: string;
   strategyValue: string;
+  venueContextLabelText: string;
+  venueContextValue: string;
   calcStartLabelText: string;
   calcStartValue: string;
   calcEndLabelText: string;
@@ -54,6 +56,9 @@ export default function BacktestRunHeaderSection(props: BacktestRunHeaderSection
           <span className='opacity-40'>|</span>
           <span className='opacity-70'>{props.strategyLabelText}</span>
           <span className='font-medium'>{props.strategyValue}</span>
+          <span className='opacity-40'>|</span>
+          <span className='opacity-70'>{props.venueContextLabelText}</span>
+          <span className='font-medium'>{props.venueContextValue}</span>
           <span className='opacity-40'>|</span>
           <span className='opacity-70'>{props.calcStartLabelText}</span>
           <span className='font-medium'>{props.calcStartValue}</span>

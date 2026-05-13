@@ -135,4 +135,34 @@ describe("BacktestRunDetails loading UX", () => {
     expect(screen.queryByText("Nie udalo sie pobrac szczegolow backtestu")).not.toBeInTheDocument();
     vi.useRealTimers();
   });
+
+  it("renders resolved venue context from run seed config in the details header", async () => {
+    getBacktestRunMock.mockResolvedValue({
+      id: "run_gateio",
+      strategyId: "strategy_1",
+      name: "Gate spot run",
+      symbol: "BTCUSDT",
+      timeframe: "5m",
+      status: "COMPLETED",
+      seedConfig: {
+        exchange: "GATEIO",
+        marketType: "SPOT",
+        baseCurrency: "USDT",
+      },
+      startedAt: "2026-04-10T10:00:00.000Z",
+      finishedAt: "2026-04-10T11:00:00.000Z",
+      notes: null,
+      createdAt: "2026-04-10T10:00:00.000Z",
+    });
+    getBacktestRunReportMock.mockResolvedValue(null);
+    getBacktestRunTimelineMock.mockResolvedValue(null);
+    listBacktestRunTradesMock.mockResolvedValue([]);
+    getStrategyMock.mockResolvedValue({ id: "strategy_1", name: "Venue strategy", interval: "5m" });
+    getMarketUniverseMock.mockResolvedValue({ id: "market_1", name: "Gate spot universe" });
+
+    renderWithI18n("run_gateio");
+
+    expect(await screen.findByText("Gate spot run")).toBeInTheDocument();
+    expect(screen.getByText("GATEIO / SPOT / USDT")).toBeInTheDocument();
+  });
 });

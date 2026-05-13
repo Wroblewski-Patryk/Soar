@@ -17,6 +17,16 @@ Last updated: 2026-05-13
 
 ## READY
 
+- [x] `V1-RUNTIME-TICKER-AND-BACKTEST-VENUE-UI-2026-05-13 fix: route runtime ticker fallback through exchange adapter`
+  - Scope: moved generic runtime fallback ticker prices onto the Exchange
+    public market-data boundary for Binance and non-Binance exchanges, removed
+    the Binance-only fallback-price restriction from runtime position readback,
+    and surfaced resolved backtest `exchange / marketType / baseCurrency` in
+    the Web details header. Evidence:
+    `docs/planning/v1-runtime-ticker-and-backtest-venue-ui-2026-05-13-task.md`;
+    focused runtime fallback/PnL tests passed (`36/36`), Backtest details Web
+    test passed (`4/4`), API typecheck passed, and Web typecheck passed.
+
 - [x] `V1-BOT-BACKTEST-EXCHANGE-ADAPTER-AUDIT-2026-05-13 fix: scope bot/backtest market data by exchange adapter`
   - Scope: audited bot runtime candle fallback, backtest candle loading,
     backtest run/timeline replay, market candle DB cache ownership, and Web

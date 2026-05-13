@@ -119,6 +119,32 @@ describe('runtimeMarketDataFallback.service', () => {
     expect(prices.get('BTCUSDT')).toBe(101);
   });
 
+  it('routes Binance ticker fallback through the exchange-owned public market-data boundary', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    fetchExchangePublicTickerSnapshotMock.mockResolvedValue({
+      symbol: 'BTC/USDT:USDT',
+      eventTime: 1_714_000_000_000,
+      lastPrice: 100,
+      markPrice: 102,
+      priceChangePercent24h: 0,
+      raw: {},
+    });
+
+    const prices = await fetchFallbackTickerPrices({
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbols: ['BTCUSDT'],
+    });
+
+    expect(fetchBinancePublicRestJsonMock).not.toHaveBeenCalled();
+    expect(fetchExchangePublicTickerSnapshotMock).toHaveBeenCalledWith({
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+    });
+    expect(prices.get('BTCUSDT')).toBe(102);
+  });
+
   it('keeps Binance-only derivatives unavailable for Gate.io instead of mixing exchange domains', async () => {
     vi.stubEnv('NODE_ENV', 'production');
 
