@@ -4,6 +4,14 @@ Last updated: 2026-05-13
 
 ## Next Tiny Task
 
+Latest operator packet current-day refresh:
+`V1-OPERATOR-PACKET-CURRENT-DAY-REFRESH-00169D7F-2026-05-13` published the
+current no-secret V1 operator unblock packet:
+`docs/operations/v1-operator-unblock-packet-00169d7f-2026-05-13.md`. The
+packet references the 2026-05-13 final preflight, protected input readiness,
+and production UI audit artifacts, and keeps V1 `NO-GO` until protected inputs
+and Gate 4 approval allow the final release gate to return `ready`.
+
 Latest generated state refresh after current-day blocker evidence:
 `V1-GENERATED-STATE-REFRESH-AFTER-CURRENT-DAY-BLOCKER-00169D7F-2026-05-13`
 refreshed the V1 project index, static scan, master ledger, and completion

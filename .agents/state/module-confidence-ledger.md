@@ -57,6 +57,13 @@ Do not turn uncertainty into optimism.
 
 ## Current Release Evidence Notes
 
+- 2026-05-13 `V1-OPERATOR-PACKET-CURRENT-DAY-REFRESH-00169D7F-2026-05-13`
+  applies to `SOAR-OPERATIONS-001`, `SOAR-BOTS-001`, and
+  `SOAR-UX-A11Y-MOBILE-001`: the current operator unblock packet now points to
+  2026-05-13 final preflight, protected input readiness, and production UI
+  audit artifacts. It is a handoff only, not production proof; statuses remain
+  unchanged until protected inputs produce PASS artifacts and the final release
+  gate returns `ready`.
 - 2026-05-13 `V1-CURRENT-DAY-BLOCKER-REFRESH-00169D7F-2026-05-13` applies to
   `SOAR-OPERATIONS-001`, `SOAR-BOTS-001`, and
   `SOAR-UX-A11Y-MOBILE-001`: deployed build-info still matches

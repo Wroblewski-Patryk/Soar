@@ -4,6 +4,15 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-OPERATOR-PACKET-CURRENT-DAY-REFRESH-00169D7F-2026-05-13` published a
+  current no-secret operator unblock packet for the 2026-05-13 evidence set.
+- Packet:
+  `docs/operations/v1-operator-unblock-packet-00169d7f-2026-05-13.md`.
+- The packet references the current final preflight, protected input readiness,
+  and production UI audit artifacts, lists the required protected inputs and
+  Gate 4 approver fields, and keeps V1 explicitly `NO-GO` until the final
+  release gate returns `ready`.
+
 - `V1-GENERATED-STATE-REFRESH-AFTER-CURRENT-DAY-BLOCKER-00169D7F-2026-05-13`
   refreshed the V1 project index, static issue scan, master ledger, and
   completion scorecard after current-day blocker evidence.

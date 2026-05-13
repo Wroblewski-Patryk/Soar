@@ -8,6 +8,15 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `V1-OPERATOR-PACKET-CURRENT-DAY-REFRESH-00169D7F-2026-05-13 release: refresh operator unblock packet for current evidence`
+  - 2026-05-13: Published the current no-secret V1 operator unblock packet
+    for the 2026-05-13 evidence set. The packet references current final
+    preflight, protected input readiness, and production UI audit artifacts,
+    lists required protected inputs and Gate 4 approver fields, and keeps V1
+    explicitly `NO-GO` until the final release gate returns `ready`. Evidence:
+    `docs/planning/v1-operator-packet-current-day-refresh-00169d7f-2026-05-13-task.md`
+    and `docs/operations/v1-operator-unblock-packet-00169d7f-2026-05-13.md`.
+
 - [x] `V1-GENERATED-STATE-REFRESH-AFTER-CURRENT-DAY-BLOCKER-00169D7F-2026-05-13 release: refresh generated V1 state after current blocker evidence`
   - 2026-05-13: Refreshed the V1 project index, static issue scan, master
     state ledger, and completion scorecard for 2026-05-13 after the
