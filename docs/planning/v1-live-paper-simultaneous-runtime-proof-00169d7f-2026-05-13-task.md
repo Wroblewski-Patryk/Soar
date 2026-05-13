@@ -95,9 +95,19 @@ run at the same time while preserving Soar's canonical runtime architecture.
     (`14/14`)
   - PASS: `pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets.test.tsx --run`
     (`20/20`)
+  - PASS:
+    `pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets.runtime-table-audit.test.tsx --run`
+    (`4/4`) after adding the exact 2 PAPER + Binance LIVE + Gate.io LIVE
+    selector/readback regression.
+  - PASS:
+    `pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.runtime-table-audit.test.tsx --run`
+    (`24/24`)
+  - PASS: `pnpm --filter web run typecheck`
 - Current status: checkpoint verified locally. The proof now covers the exact
   requested local DB-backed shape: two active PAPER bots plus active Binance
   LIVE and Gate.io LIVE bots, with selected runtime position reads isolated by
-  mode, wallet, API key, exchange, and market type. Broader production-safe UI
-  clickthrough and real live multi-bot runtime operation remain separate V1
-  evidence lanes.
+  mode, wallet, API key, exchange, and market type. The focused Web regression
+  also proves the dashboard selector exposes all four bots and re-scopes wallet
+  and runtime rows when switching between PAPER, Binance LIVE, and Gate.io
+  LIVE. Broader production-safe authenticated browser clickthrough and real
+  live multi-bot runtime operation remain separate V1 evidence lanes.

@@ -67,9 +67,11 @@ Do not turn uncertainty into optimism.
   overlap, Gate.io-safe runtime fallback market data through the exchange
   boundary, Binance-only derivative fallback degradation for Gate.io, duplicate
   guard regression, runtime PnL parity, API typecheck, and focused Dashboard
-  Web rendering. These module rows remain `PARTIAL` because production-safe
-  authenticated UI/runtime clickthrough and real live multi-bot operation
-  evidence are still separate V1 lanes.
+  Web rendering. A rendered Dashboard Home regression also proves all four
+  bots appear in the selector and selected wallet/runtime rows re-scope when
+  switching between PAPER, Binance LIVE, and Gate.io LIVE. These module rows
+  remain `PARTIAL` because production-safe authenticated UI/runtime clickthrough
+  and real live multi-bot operation evidence are still separate V1 lanes.
 - 2026-05-13
   `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13` applies to
   `SOAR-OPERATIONS-001`: final `LIVEIMPORT-03` passed for `TRXUSDT`, final

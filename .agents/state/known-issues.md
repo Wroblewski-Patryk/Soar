@@ -11,9 +11,10 @@ Last updated: 2026-05-13
   and Gate.io LIVE bots can coexist, venue-scoped LIVE overlap behaves
   correctly, Gate.io runtime fallback market data stays inside the exchange
   boundary, and selected runtime position reads are isolated by mode, wallet,
-  API key, exchange, and market type. Remaining issue is production-safe
-  authenticated UI/runtime clickthrough and real live multi-bot operation
-  evidence before making a blanket V1 claim.
+  API key, exchange, and market type. A rendered Dashboard Home regression also
+  proves the four-bot selector and selected wallet/runtime row re-scope.
+  Remaining issue is production-safe authenticated UI/runtime clickthrough and
+  real live multi-bot operation evidence before making a blanket V1 claim.
 
 - 2026-05-13 update: `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13`
   resolves the active V1 production target blocker set. `LIVEIMPORT-03` passed

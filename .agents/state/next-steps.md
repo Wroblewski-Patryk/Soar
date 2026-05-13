@@ -21,9 +21,12 @@ DB-backed e2e proves the requested local shape: two active PAPER bots plus one
 Binance LIVE bot and one Gate.io LIVE bot, with selected runtime position
 readback isolated by mode, wallet, API key, exchange, and market type. Focused
 typecheck, fallback unit tests, duplicate guard e2e, runtime PnL parity e2e,
-and Dashboard Home Web tests passed. Next proof should move from local
-DB-backed API/runtime evidence toward production-safe authenticated UI/runtime
-clickthrough for multi-bot operation.
+and Dashboard Home Web tests passed. A focused rendered Web regression now
+also proves the dashboard selector exposes all four bots and re-scopes wallet
+and runtime rows when switching between PAPER, Binance LIVE, and Gate.io LIVE.
+Next proof should move from local DB-backed API/runtime and rendered Web
+evidence toward production-safe authenticated UI/runtime clickthrough for
+multi-bot operation.
 
 Latest V1 target release gate:
 `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13` closed the current

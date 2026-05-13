@@ -19,7 +19,9 @@ Last updated: 2026-05-13
   Binance LIVE bot and one Gate.io LIVE bot, with selected runtime position
   reads isolated by mode, wallet, API key, exchange, and market type. Focused
   typecheck, fallback unit tests, duplicate guard e2e, runtime PnL parity e2e,
-  and Dashboard Home Web tests passed.
+  and Dashboard Home Web tests passed. A focused rendered Web regression also
+  proves the dashboard selector exposes all four bots and re-scopes wallet and
+  runtime rows when switching between PAPER, Binance LIVE, and Gate.io LIVE.
 
 - `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13` closed the current V1
   production target evidence lane for deployed

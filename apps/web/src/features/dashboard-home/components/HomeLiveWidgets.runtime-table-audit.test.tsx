@@ -97,24 +97,33 @@ const createRuntimeBot = ({
   symbol,
   walletName,
   paperStartBalance,
+  mode = "PAPER",
+  exchange = "BINANCE",
 }: {
   id: string;
   name: string;
   symbol: string;
   walletName: string;
   paperStartBalance: number;
+  mode?: "PAPER" | "LIVE";
+  exchange?: "BINANCE" | "GATEIO";
 }) => ({
   ...runtimeBot,
   id,
   name,
+  mode,
+  exchange,
   symbol,
   symbols: [symbol],
   paperStartBalance,
   wallet: {
     id: `wallet-${id}`,
     name: walletName,
-    mode: "PAPER",
+    mode,
+    exchange,
     paperInitialBalance: paperStartBalance,
+    liveAllocationMode: mode === "LIVE" ? "PERCENT" : null,
+    liveAllocationValue: mode === "LIVE" ? 100 : null,
     baseCurrency: "USDT",
     currency: "USDT",
   },
@@ -235,6 +244,8 @@ const createAggregate = ({
           symbol,
           side: "LONG",
           status: "OPEN",
+          origin: "BOT",
+          managementMode: "BOT_MANAGED",
           quantity: 0.1,
           leverage: 10,
           marginUsed,
@@ -611,5 +622,149 @@ describe("HomeLiveWidgets runtime table rendered audit", () => {
       betaBot.id,
       expect.objectContaining({ perSessionLimit: 200 })
     );
+  }, 10_000);
+
+  it("keeps two PAPER bots and two LIVE venue bots visible without mixing selected runtime rows", async () => {
+    const paperA = createRuntimeBot({
+      id: "paper-a",
+      name: "Concurrent Paper A",
+      symbol: "ETHUSDT",
+      walletName: "Paper Wallet A",
+      paperStartBalance: 10_000,
+    });
+    const paperB = createRuntimeBot({
+      id: "paper-b",
+      name: "Concurrent Paper B",
+      symbol: "SOLUSDT",
+      walletName: "Paper Wallet B",
+      paperStartBalance: 20_000,
+    });
+    const liveBinance = createRuntimeBot({
+      id: "live-binance",
+      name: "Concurrent Binance LIVE",
+      symbol: "BTCUSDT",
+      walletName: "Binance LIVE Wallet",
+      paperStartBalance: 0,
+      mode: "LIVE",
+      exchange: "BINANCE",
+    });
+    const liveGate = createRuntimeBot({
+      id: "live-gate",
+      name: "Concurrent Gate.io LIVE",
+      symbol: "BTCUSDT",
+      walletName: "Gate.io LIVE Wallet",
+      paperStartBalance: 0,
+      mode: "LIVE",
+      exchange: "GATEIO",
+    });
+    const bots = [paperA, paperB, liveBinance, liveGate];
+    const aggregates = new Map(
+      bots.map((bot, index) => {
+        const aggregate = createAggregate({
+          botId: bot.id,
+          symbol: bot.symbol,
+          realizedPnl: index,
+          unrealizedPnl: index + 1,
+          portfolioValue: 10_000 + index,
+          freeFunds: 9_000 + index,
+          marginUsed: 100 + index,
+          openOrderId: `order-${bot.id}`,
+          tradeId: `trade-${bot.id}`,
+        });
+        aggregate.positions.openItems[0].id = `position-${bot.id}`;
+        aggregate.positions.openItems[0].side = bot.id === liveGate.id ? "SHORT" : "LONG";
+        aggregate.positions.openItems[0].origin = bot.mode === "LIVE" ? "EXCHANGE_SYNC" : "BOT";
+        aggregate.positions.openItems[0].managementMode = "BOT_MANAGED";
+        return [bot.id, aggregate];
+      })
+    );
+
+    listBotsMock.mockResolvedValue(bots);
+    listBotRuntimeSessionsMock.mockImplementation(async (botId: string) => [
+      createSession(botId, bots.find((bot) => bot.id === botId)?.symbol ?? "BTCUSDT", 0),
+    ]);
+    getBotRuntimeGraphMock.mockImplementation(async (botId: string) => {
+      const bot = bots.find((item) => item.id === botId) ?? paperA;
+      return {
+        ...runtimeGraph,
+        bot,
+        markets: [{ symbol: bot.symbol, status: "ACTIVE", isEnabled: true }],
+        marketGroups: [
+          {
+            id: `group-${botId}`,
+            botId,
+            symbolGroupId: `symbols-${botId}`,
+            lifecycleStatus: "ACTIVE",
+            executionOrder: 1,
+            isEnabled: true,
+            createdAt: now,
+            updatedAt: now,
+            symbolGroup: {
+              id: `symbols-${botId}`,
+              name: `${bot.name} group`,
+              symbols: [bot.symbol],
+              marketUniverseId: `market-${botId}`,
+              marketUniverse: {
+                exchange: bot.exchange,
+                marketType: "FUTURES",
+                baseCurrency: "USDT",
+              },
+            },
+            strategies: [],
+          },
+        ],
+        legacyBotStrategies: [],
+      };
+    });
+    getBotRuntimeMonitoringAggregateMock.mockImplementation(async (botId: string) => aggregates.get(botId));
+
+    render(
+      <I18nProvider>
+        <HomeLiveWidgets />
+      </I18nProvider>
+    );
+
+    let selector: HTMLSelectElement;
+    await waitFor(() => {
+      const selectorLabel = screen.getByText("Selected bot").closest("label");
+      expect(selectorLabel).not.toBeNull();
+      selector = within(selectorLabel as HTMLLabelElement).getByRole("combobox") as HTMLSelectElement;
+      expect(within(selector).getByRole("option", { name: /Concurrent Paper A/ })).toBeInTheDocument();
+      expect(within(selector).getByRole("option", { name: /Concurrent Paper B/ })).toBeInTheDocument();
+      expect(within(selector).getByRole("option", { name: /Concurrent Binance LIVE/ })).toBeInTheDocument();
+      expect(within(selector).getByRole("option", { name: /Concurrent Gate.io LIVE/ })).toBeInTheDocument();
+      expect(selector.value).toBe(liveBinance.id);
+      expect(within(screen.getByTestId("wallet-section")).getByText("Binance LIVE Wallet")).toBeInTheDocument();
+      expect(screen.getAllByText("BTCUSDT").length).toBeGreaterThan(0);
+    });
+
+    fireEvent.change(selector!, { target: { value: paperA.id } });
+
+    await waitFor(() => {
+      expect(selector!.value).toBe(paperA.id);
+      expect(within(screen.getByTestId("wallet-section")).getByText("Paper Wallet A")).toBeInTheDocument();
+      expect(screen.getAllByText("ETHUSDT").length).toBeGreaterThan(0);
+      expect(screen.queryByText("Binance LIVE Wallet")).not.toBeInTheDocument();
+    });
+
+    fireEvent.change(selector!, { target: { value: liveGate.id } });
+
+    await waitFor(() => {
+      expect(selector!.value).toBe(liveGate.id);
+      expect(within(screen.getByTestId("wallet-section")).getByText("Gate.io LIVE Wallet")).toBeInTheDocument();
+      expect(screen.getAllByText("BTCUSDT").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("SHORT").length).toBeGreaterThan(0);
+      expect(screen.queryByText("Binance LIVE Wallet")).not.toBeInTheDocument();
+    });
+
+    fireEvent.change(selector!, { target: { value: paperB.id } });
+
+    await waitFor(() => {
+      expect(selector!.value).toBe(paperB.id);
+      expect(within(screen.getByTestId("wallet-section")).getByText("Paper Wallet B")).toBeInTheDocument();
+      expect(screen.getAllByText("SOLUSDT").length).toBeGreaterThan(0);
+      expect(screen.queryByText("Gate.io LIVE Wallet")).not.toBeInTheDocument();
+      expect(screen.queryByText("BTCUSDT")).not.toBeInTheDocument();
+    });
   }, 10_000);
 });

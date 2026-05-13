@@ -21,8 +21,10 @@ Operational queue for one-task execution runs.
     position reads stay isolated by mode, wallet, API key, exchange, and market
     type. Venue-scoped LIVE overlap, Gate.io-safe runtime market-data fallback,
     duplicate guard regression, runtime PnL parity, typecheck, and focused Web
-    Dashboard tests passed. Remaining lane: production-safe authenticated
-    UI/runtime clickthrough and real live multi-bot operation evidence.
+    Dashboard tests passed. A rendered Dashboard Home regression now proves the
+    four-bot selector and selected wallet/runtime row re-scope. Remaining lane:
+    production-safe authenticated UI/runtime clickthrough and real live
+    multi-bot operation evidence.
 
 - [x] `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13 release: close production target V1 gate`
   - 2026-05-13: Completed final controlled `LIVEIMPORT-03` proof for the
