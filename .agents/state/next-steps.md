@@ -4,6 +4,18 @@ Last updated: 2026-05-13
 
 ## Next Tiny Task
 
+Latest protected proof reduction:
+`V1-PROTECTED-PROOF-REDUCTION-00169D7F-2026-05-13` used approved production
+application credentials only in the local execution environment. Production UI
+module clickthrough is fresh `PASS`, and production rollback proof is fresh
+`PASS`. LIVEIMPORT auth now works and finds one LIVE Binance futures bot, but
+there is no running session, so `LIVEIMPORT-03` still fails closed with
+`NO_RUNNING_SESSION`. Final preflight remains `blocked` on production DB
+restore context, missing LIVEIMPORT runtime readback, and stale backup/restore
+drill evidence. Next exact unblock actions are to obtain non-secret production
+DB restore context from Coolify and refresh the restore drill, then produce
+LIVEIMPORT readback from an explicitly approved running LIVE/import session.
+
 Latest Gate 4 sign-off:
 `V1-GATE4-PATRYK-SIGNOFF-2026-05-13` applied the user's instruction to use
 `Patryk` for the required Gate 4 approver/owner fields. RC sign-off now reports

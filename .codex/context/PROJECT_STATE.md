@@ -4,6 +4,26 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-PROTECTED-PROOF-REDUCTION-00169D7F-2026-05-13` used the
+  user-approved production application credentials only in the local execution
+  environment to reduce protected V1 blockers without committing secrets.
+- Authenticated production UI module clickthrough is now fresh `PASS`
+  (`public:4`, `dashboard:18`, `admin:3`, `legacy:3`), and production rollback
+  proof is fresh `PASS` with `shouldRollback:false`, runtime freshness `PASS`,
+  and zero alerts.
+- LIVEIMPORT readback authentication now passes and finds one LIVE Binance
+  futures bot, but it fails closed because that bot has no running session
+  (`NO_RUNNING_SESSION`), so `LIVEIMPORT-03` is still not verified.
+- Final preflight is still `blocked`, but the blocker set is reduced to:
+  missing production DB restore context, missing LIVEIMPORT runtime readback,
+  and stale backup/restore drill evidence.
+- Evidence:
+  `docs/planning/v1-protected-proof-reduction-00169d7f-2026-05-13-task.md`,
+  `docs/operations/prod-ui-module-clickthrough-00169d7f-2026-05-13.md`,
+  `docs/operations/v1-rollback-proof-prod-2026-05-13T00-00-00-000Z.md`,
+  `docs/operations/liveimport-03-prod-readback-00169d7f-2026-05-13.json`,
+  and `docs/operations/v1-final-preflight-00169d7f-2026-05-13.md`.
+
 - `V1-GATE4-PATRYK-SIGNOFF-2026-05-13` applied the user's instruction to use
   `Patryk` for the required Gate 4 approver/owner fields. RC sign-off now
   reports `APPROVED`, and final preflight reports RC external gates, RC

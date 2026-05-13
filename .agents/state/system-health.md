@@ -4,6 +4,14 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-PROTECTED-PROOF-REDUCTION-00169D7F-2026-05-13` PROTECTED PROOF REDUCED /
+  V1 NO-GO: approved production application auth produced a fresh PASS
+  production UI module clickthrough and a fresh PASS rollback proof. LIVEIMPORT
+  readback auth succeeds and finds one LIVE Binance futures bot, but there is
+  no running session, so runtime readback remains missing. Final preflight now
+  blocks only on production DB restore context, LIVEIMPORT runtime readback,
+  and stale backup/restore drill evidence.
+
 - `V1-GATE4-PATRYK-SIGNOFF-2026-05-13` RC APPROVED / V1 NO-GO: Gate 4 was
   approved using the user-authorized `Patryk` approver/owner fields. Final
   preflight now reports RC external gates, sign-off, and checklist as fresh.

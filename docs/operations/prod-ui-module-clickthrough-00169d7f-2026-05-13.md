@@ -1,25 +1,24 @@
 # Production UI Module Clickthrough Audit
 
 ## Status
-- Result: **BLOCKED_AUTH**
+- Result: **PASS**
 - Environment: production
 - Evidence date: 2026-05-13
-- Generated at (UTC): 2026-05-13T17:03:10.148Z
+- Generated at (UTC): 2026-05-13T17:31:07.992Z
 - Expected SHA: `00169d7fdc3aff8317759137b05594b20e773c8e`
 - Observed build-info SHA: `00169d7fdc3aff8317759137b05594b20e773c8e`
-- Dashboard auth: missing
-- Admin auth: missing
+- Dashboard auth: login:present
+- Admin auth: login:present
 - Raw JSON: `docs\operations\_artifacts-prod-ui-module-clickthrough-00169d7f-2026-05-13.json`
 
 ## Summary
 - Public routes: PASS:4
-- Dashboard routes: BLOCKED_AUTH:18
-- Admin routes: BLOCKED_AUTH:3
-- Legacy redirects: BLOCKED_AUTH:3
+- Dashboard routes: PASS:18
+- Admin routes: PASS:3
+- Legacy redirects: PASS:3
 
 ## Blockers
-- dashboard auth missing
-- admin auth missing
+- none
 
 ## Route Results
 | Route | Area | Result | HTTP | Location | Notes |
@@ -28,47 +27,47 @@
 | `/auth/login` | public | PASS | 200 | - | public route reachable |
 | `/auth/register` | public | PASS | 200 | - | public route reachable |
 | `/offline` | public | PASS | 200 | - | public route reachable |
-| `/dashboard` | dashboard | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; unauthenticated route fails closed to login |
-| `/dashboard/exchanges` | dashboard | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; unauthenticated route fails closed to login |
-| `/dashboard/profile` | dashboard | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; unauthenticated route fails closed to login |
-| `/dashboard/wallets` | dashboard | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; unauthenticated route fails closed to login |
-| `/dashboard/wallets/list` | dashboard | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; unauthenticated route fails closed to login |
-| `/dashboard/wallets/create` | dashboard | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; unauthenticated route fails closed to login |
-| `/dashboard/markets/list` | dashboard | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; unauthenticated route fails closed to login |
-| `/dashboard/markets/create` | dashboard | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; unauthenticated route fails closed to login |
-| `/dashboard/strategies/list` | dashboard | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; unauthenticated route fails closed to login |
-| `/dashboard/strategies/create` | dashboard | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; unauthenticated route fails closed to login |
-| `/dashboard/backtests/list` | dashboard | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; unauthenticated route fails closed to login |
-| `/dashboard/backtests/create` | dashboard | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; unauthenticated route fails closed to login |
-| `/dashboard/bots` | dashboard | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; unauthenticated route fails closed to login |
-| `/dashboard/bots/create` | dashboard | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; unauthenticated route fails closed to login |
-| `/dashboard/bots/assistant` | dashboard | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; unauthenticated route fails closed to login |
-| `/dashboard/bots/runtime` | dashboard | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; unauthenticated route fails closed to login |
-| `/dashboard/reports` | dashboard | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; unauthenticated route fails closed to login |
-| `/dashboard/logs` | dashboard | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; unauthenticated route fails closed to login |
-| `/dashboard/orders` | legacy | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; legacy route fails closed before redirect audit |
-| `/dashboard/positions` | legacy | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; legacy route fails closed before redirect audit |
-| `/dashboard/bots/new` | legacy | BLOCKED_AUTH | 307 | `/auth/login` | dashboard auth missing; legacy route fails closed before redirect audit |
-| `/admin` | admin | BLOCKED_AUTH | 307 | `/auth/login` | admin auth missing; unauthenticated route fails closed to login |
-| `/admin/users` | admin | BLOCKED_AUTH | 307 | `/auth/login` | admin auth missing; unauthenticated route fails closed to login |
-| `/admin/subscriptions` | admin | BLOCKED_AUTH | 307 | `/auth/login` | admin auth missing; unauthenticated route fails closed to login |
+| `/dashboard` | dashboard | PASS | 200 | - | route rendered HTML |
+| `/dashboard/exchanges` | dashboard | PASS | 307 | `/dashboard/profile#api` | redirect matched /dashboard/profile#api |
+| `/dashboard/profile` | dashboard | PASS | 200 | - | route rendered HTML |
+| `/dashboard/wallets` | dashboard | PASS | 307 | `/dashboard/wallets/list` | redirect matched /dashboard/wallets/list |
+| `/dashboard/wallets/list` | dashboard | PASS | 200 | - | route rendered HTML |
+| `/dashboard/wallets/create` | dashboard | PASS | 200 | - | route rendered HTML |
+| `/dashboard/markets/list` | dashboard | PASS | 200 | - | route rendered HTML |
+| `/dashboard/markets/create` | dashboard | PASS | 200 | - | route rendered HTML |
+| `/dashboard/strategies/list` | dashboard | PASS | 200 | - | route rendered HTML |
+| `/dashboard/strategies/create` | dashboard | PASS | 200 | - | route rendered HTML |
+| `/dashboard/backtests/list` | dashboard | PASS | 200 | - | route rendered HTML |
+| `/dashboard/backtests/create` | dashboard | PASS | 200 | - | route rendered HTML |
+| `/dashboard/bots` | dashboard | PASS | 200 | - | route rendered HTML |
+| `/dashboard/bots/create` | dashboard | PASS | 200 | - | route rendered HTML |
+| `/dashboard/bots/assistant` | dashboard | PASS | 307 | `/dashboard/bots` | redirect matched /dashboard/bots |
+| `/dashboard/bots/runtime` | dashboard | PASS | 307 | `/dashboard/bots` | redirect matched /dashboard/bots |
+| `/dashboard/reports` | dashboard | PASS | 200 | - | route rendered HTML |
+| `/dashboard/logs` | dashboard | PASS | 200 | - | route rendered HTML |
+| `/dashboard/orders` | legacy | PASS | 307 | `/dashboard/bots/runtime?legacy=orders` | redirect matched /dashboard/bots/runtime?legacy=orders |
+| `/dashboard/positions` | legacy | PASS | 307 | `/dashboard/bots/runtime?legacy=positions` | redirect matched /dashboard/bots/runtime?legacy=positions |
+| `/dashboard/bots/new` | legacy | PASS | 307 | `/dashboard/bots/create` | redirect matched /dashboard/bots/create |
+| `/admin` | admin | PASS | 307 | `/admin/subscriptions` | redirect matched /admin/subscriptions |
+| `/admin/users` | admin | PASS | 200 | - | route rendered HTML |
+| `/admin/subscriptions` | admin | PASS | 200 | - | route rendered HTML |
 
 ## Module Results
 | Module | Route | Result | Notes |
 | --- | --- | --- | --- |
 | auth | `/auth/login` | PASS | public route reachable |
-| dashboard-home | `/dashboard` | BLOCKED_AUTH | dashboard auth missing; unauthenticated route fails closed to login |
-| profile/exchanges | `/dashboard/profile` | BLOCKED_AUTH | dashboard auth missing; unauthenticated route fails closed to login |
-| wallets | `/dashboard/wallets/list` | BLOCKED_AUTH | dashboard auth missing; unauthenticated route fails closed to login |
-| markets | `/dashboard/markets/list` | BLOCKED_AUTH | dashboard auth missing; unauthenticated route fails closed to login |
-| strategies | `/dashboard/strategies/list` | BLOCKED_AUTH | dashboard auth missing; unauthenticated route fails closed to login |
-| backtests | `/dashboard/backtests/list` | BLOCKED_AUTH | dashboard auth missing; unauthenticated route fails closed to login |
-| bots | `/dashboard/bots` | BLOCKED_AUTH | dashboard auth missing; unauthenticated route fails closed to login |
-| runtime | `/dashboard/bots/runtime` | BLOCKED_AUTH | dashboard auth missing; unauthenticated route fails closed to login |
-| reports | `/dashboard/reports` | BLOCKED_AUTH | dashboard auth missing; unauthenticated route fails closed to login |
-| logs | `/dashboard/logs` | BLOCKED_AUTH | dashboard auth missing; unauthenticated route fails closed to login |
-| admin/users | `/admin/users` | BLOCKED_AUTH | admin auth missing; unauthenticated route fails closed to login |
-| admin/subscriptions | `/admin/subscriptions` | BLOCKED_AUTH | admin auth missing; unauthenticated route fails closed to login |
+| dashboard-home | `/dashboard` | PASS | route rendered HTML |
+| profile/exchanges | `/dashboard/profile` | PASS | route rendered HTML |
+| wallets | `/dashboard/wallets/list` | PASS | route rendered HTML |
+| markets | `/dashboard/markets/list` | PASS | route rendered HTML |
+| strategies | `/dashboard/strategies/list` | PASS | route rendered HTML |
+| backtests | `/dashboard/backtests/list` | PASS | route rendered HTML |
+| bots | `/dashboard/bots` | PASS | route rendered HTML |
+| runtime | `/dashboard/bots/runtime` | PASS | redirect matched /dashboard/bots |
+| reports | `/dashboard/reports` | PASS | route rendered HTML |
+| logs | `/dashboard/logs` | PASS | route rendered HTML |
+| admin/users | `/admin/users` | PASS | route rendered HTML |
+| admin/subscriptions | `/admin/subscriptions` | PASS | route rendered HTML |
 
 ## Safety Notes
 - This audit never writes production data and never submits live-money actions.

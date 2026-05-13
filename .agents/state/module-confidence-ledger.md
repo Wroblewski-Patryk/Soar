@@ -57,6 +57,15 @@ Do not turn uncertainty into optimism.
 
 ## Current Release Evidence Notes
 
+- 2026-05-13 `V1-PROTECTED-PROOF-REDUCTION-00169D7F-2026-05-13` applies to
+  `SOAR-OPERATIONS-001`, `SOAR-BOTS-001`,
+  `SOAR-UX-A11Y-MOBILE-001`, and `SOAR-SUBSCRIPTIONS-ADMIN-001`:
+  authenticated production UI clickthrough is now fresh `PASS`, and production
+  rollback proof is fresh `PASS`. LIVEIMPORT production readback auth succeeds
+  and finds one LIVE Binance futures bot, but no running session exists, so
+  Operations remains `BLOCKED` and V1 remains `NO-GO`. Final preflight blockers
+  are reduced to production DB restore context, LIVEIMPORT runtime readback,
+  and stale backup/restore drill evidence.
 - 2026-05-13 `V1-GATE4-PATRYK-SIGNOFF-2026-05-13` applies to
   `SOAR-OPERATIONS-001`: Gate 4 is now approved with the user-authorized
   `Patryk` approver/owner fields, and final preflight reports RC evidence as
