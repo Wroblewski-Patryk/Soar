@@ -8,18 +8,27 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
-- [ ] `V1-COOLIFY-REDEPLOY-457BCE05-2026-05-14 release: retrigger production Coolify deploy and prove build-info`
-  - Scope: production still serves `00169d7f` after `origin/main` was promoted
-    to `457bce05`. Retrigger or inspect the Coolify production deploy, then
-    rerun build-info freshness, production smoke, and the target release gate
-    for `457bce05`.
+- [x] `V1-COOLIFY-REDEPLOY-457BCE05-2026-05-14 release: retrigger production Coolify deploy and prove build-info`
+  - 2026-05-14: Production build-info later advanced to
+    `457bce05338310c198c03a973395a9176f298dc1` and public production smoke
+    passed for the deployed surface. Protected runtime freshness and rollback
+    guard checks failed closed with HTTP `401` without approved admin/ops
+    credentials. Evidence:
+    `docs/operations/deploy-freshness-457bce05-2026-05-14.md`.
+
+- [ ] `V1-PROTECTED-OPS-GATE-457BCE05-2026-05-14 release: rerun protected runtime freshness, rollback guard, and target release gate`
+  - Scope: `457bce05` is deployed and public-smoke healthy. Use approved
+    admin/ops credentials or local token source to rerun protected runtime
+    freshness, alerts/rollback guard, and the target release gate for
+    `457bce05` without recording secrets in repository artifacts.
 
 - [x] `V1-CURRENT-MAIN-PROMOTION-DEPLOY-LAG-457BCE05-2026-05-14 release: promote current candidate and record deploy lag`
   - 2026-05-14: Pushed `origin/codex/v1-proof-and-ops-evidence`, fast-forwarded
     `origin/main` to `457bce05338310c198c03a973395a9176f298dc1`, and checked
-    production build-info. Production remained on
-    `00169d7fdc3aff8317759137b05594b20e773c8e` for the 180-second wait, while
-    public production smoke passed for the currently deployed surface.
+    production build-info. Production initially remained on
+    `00169d7fdc3aff8317759137b05594b20e773c8e` for the 180-second wait, then
+    later advanced to `457bce05`; public production smoke passed for both the
+    previously deployed surface and the fresh `457bce05` surface.
     Evidence:
     `docs/planning/v1-current-main-promotion-deploy-lag-457bce05-2026-05-14-task.md`,
     `docs/operations/deploy-lag-457bce05-2026-05-14.md`.

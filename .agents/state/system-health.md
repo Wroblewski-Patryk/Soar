@@ -4,13 +4,15 @@ Last updated: 2026-05-14
 
 ## Latest Health Snapshot
 
-- `V1-CURRENT-MAIN-PROMOTION-DEPLOY-LAG-457BCE05-2026-05-14` DEPLOY LAG:
-  current candidate `457bce05338310c198c03a973395a9176f298dc1` is pushed to
-  `origin/codex/v1-proof-and-ops-evidence` and `origin/main`, but production
-  build-info remained on `00169d7fdc3aff8317759137b05594b20e773c8e` during
-  the bounded wait. Public production smoke passed for the currently deployed
-  surface. Next action is Coolify production redeploy/inspection, then
-  build-info freshness and target release gate rerun for `457bce05`.
+- `V1-CURRENT-MAIN-PROMOTION-DEPLOY-LAG-457BCE05-2026-05-14` SUPERSEDED BY
+  DEPLOY FRESHNESS: current candidate
+  `457bce05338310c198c03a973395a9176f298dc1` is pushed to
+  `origin/codex/v1-proof-and-ops-evidence` and `origin/main`; production
+  build-info now reports `457bce05`, and public production smoke passed for
+  that deployed surface. Protected runtime freshness and rollback guard checks
+  failed closed with HTTP `401` without approved admin/ops credentials. Next
+  action is protected ops evidence and target release gate rerun for
+  `457bce05`.
 
 - `V1-RUNTIME-NON-BINANCE-DERIVATIVES-ADAPTER-2026-05-13` LOCAL ADAPTER PASS:
   runtime symbol-stats fallback derivatives and live signal market-data gateway

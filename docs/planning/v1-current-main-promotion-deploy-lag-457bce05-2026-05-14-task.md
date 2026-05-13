@@ -38,7 +38,8 @@ production deploys it.
 
 ## Result Report
 
-Status: `partially verified, deploy lag`.
+Status: `verified for public deploy freshness; protected ops checks blocked on
+approved admin/ops access`.
 
 Validation:
 
@@ -47,9 +48,21 @@ Validation:
   `457bce05338310c198c03a973395a9176f298dc1`.
 - `pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha 457bce05 --timeout-seconds 180 --interval-seconds 20` -> failed as expected for deploy lag; production remained on `00169d7f`.
 - `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --skip-workers` -> passed for the currently deployed production surface.
+- Later recheck:
+  `pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha 457bce05 --timeout-seconds 60 --interval-seconds 10`
+  -> passed on attempt 1; production build-info reports `457bce05`.
+- Fresh public smoke for `457bce05`:
+  `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --skip-workers`
+  -> passed.
+- Protected ops checks without admin/ops credentials:
+  - `pnpm run ops:deploy:runtime-freshness -- --base-url https://api.soar.luckysparrow.ch`
+    -> failed closed with HTTP `401`.
+  - `pnpm run ops:deploy:rollback-guard -- --base-url https://api.soar.luckysparrow.ch`
+    -> failed closed with HTTP `401` for protected runtime freshness and alerts.
 
 Residual risk:
 
-- Production does not yet contain the latest adapter/runtime fixes.
-- The next required action is a Coolify production redeploy/inspection, then
-  build-info freshness and target release gate rerun for `457bce05`.
+- Protected runtime freshness, alerts, and rollback guard evidence for
+  `457bce05` still need approved admin/ops credentials.
+- The next required action is rerunning protected ops checks and the target
+  release gate for `457bce05`.

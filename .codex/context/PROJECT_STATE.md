@@ -4,17 +4,19 @@ Last updated: 2026-05-14
 
 ## 2026-05-14 Current Candidate Deployment Status
 
-- `V1-CURRENT-MAIN-PROMOTION-DEPLOY-LAG-457BCE05-2026-05-14` promoted the
-  latest verified local candidate to remote Git: branch
-  `origin/codex/v1-proof-and-ops-evidence` is pushed and `origin/main` now
-  points to `457bce05338310c198c03a973395a9176f298dc1`. Production build-info
-  did not advance during the bounded wait and still reports
-  `00169d7fdc3aff8317759137b05594b20e773c8e`. Public production smoke still
-  passes for the currently deployed surface. Evidence:
-  `docs/planning/v1-current-main-promotion-deploy-lag-457bce05-2026-05-14-task.md`
-  and `docs/operations/deploy-lag-457bce05-2026-05-14.md`. Next action:
-  retrigger or inspect the Coolify production deployment, then rerun
-  build-info freshness and the target release gate for `457bce05`.
+- `V1-CURRENT-MAIN-PROMOTION-DEPLOY-LAG-457BCE05-2026-05-14` is superseded by
+  deploy freshness evidence. The latest verified local candidate is on remote
+  Git: branch `origin/codex/v1-proof-and-ops-evidence` is pushed and
+  `origin/main` points to `457bce05338310c198c03a973395a9176f298dc1`.
+  Production build-info now reports `457bce05`, and public production smoke
+  passes for that deployed surface. Protected runtime freshness and rollback
+  guard checks fail closed with HTTP `401` without approved admin/ops access.
+  Evidence:
+  `docs/planning/v1-current-main-promotion-deploy-lag-457bce05-2026-05-14-task.md`,
+  `docs/operations/deploy-lag-457bce05-2026-05-14.md`, and
+  `docs/operations/deploy-freshness-457bce05-2026-05-14.md`. Next action:
+  rerun protected ops checks and the target release gate for `457bce05` using
+  approved local credentials or token source.
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
