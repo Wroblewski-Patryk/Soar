@@ -67,7 +67,7 @@ const tradeRow = {
   positionId: "position-1",
   strategyId: "strategy-1",
   origin: "BOT",
-  managementMode: "BOT",
+  managementMode: "BOT_MANAGED",
   notional: 100,
   margin: 10,
 } satisfies BotRuntimeTrade;

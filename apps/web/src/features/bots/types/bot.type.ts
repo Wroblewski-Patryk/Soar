@@ -315,6 +315,17 @@ export type BotRuntimeSymbolStatsResponse = {
   };
 };
 
+export type TradingRecordOrigin = "BOT" | "USER" | "EXCHANGE_SYNC" | "BACKTEST";
+
+export type PositionManagementMode = "BOT_MANAGED" | "MANUAL_MANAGED";
+
+export type FeeSource = "ESTIMATED" | "EXCHANGE_FILL";
+
+export type RuntimeCapitalSource =
+  | "PAPER_INITIAL_BALANCE"
+  | "PAPER_RESET_CHECKPOINT"
+  | "LIVE_EXCHANGE_BALANCE";
+
 export type BotRuntimeTrade = {
   id: string;
   symbol: string;
@@ -357,7 +368,7 @@ export type BotRuntimeTrade = {
   price: number;
   quantity: number;
   fee: number;
-  feeSource: "ESTIMATED" | "EXCHANGE_FILL";
+  feeSource: FeeSource;
   feePending: boolean;
   feeCurrency: string | null;
   realizedPnl: number;
@@ -365,8 +376,8 @@ export type BotRuntimeTrade = {
   orderId: string | null;
   positionId: string | null;
   strategyId: string | null;
-  origin: string;
-  managementMode: string;
+  origin: TradingRecordOrigin;
+  managementMode: PositionManagementMode;
   notional: number;
   margin: number;
 };
@@ -391,8 +402,8 @@ export type BotRuntimeTradesResponse = {
 
 export type BotRuntimePositionItem = {
   id: string;
-  origin?: "BOT" | "USER" | "MANUAL" | "EXCHANGE_SYNC" | "BACKTEST";
-  managementMode?: "BOT_MANAGED" | "MANUAL_MANAGED";
+  origin?: TradingRecordOrigin | "MANUAL";
+  managementMode?: PositionManagementMode;
   syncState?: "IN_SYNC" | "DRIFT" | "ORPHAN_LOCAL" | "ORPHAN_EXCHANGE";
   continuityState?:
     | "CONFIRMED"
@@ -470,7 +481,7 @@ export type BotRuntimePositionItem = {
 
 export type BotRuntimeOpenOrderItem = {
   id: string;
-  origin?: "BOT" | "USER" | "EXCHANGE_SYNC" | "BACKTEST";
+  origin?: TradingRecordOrigin;
   exchangeOrderId?: string | null;
   symbol: string;
   side: string;
@@ -505,11 +516,7 @@ export type BotRuntimePositionsResponse = {
     freeCash?: number | null;
     accountBalance?: number | null;
     baseCurrency?: string | null;
-    capitalSource?:
-      | "PAPER_INITIAL_BALANCE"
-      | "PAPER_RESET_CHECKPOINT"
-      | "LIVE_EXCHANGE_BALANCE"
-      | null;
+    capitalSource?: RuntimeCapitalSource | null;
     allocationMode?: "PERCENT" | "FIXED" | null;
     allocationValue?: number | null;
     paperResetAt?: string | null;
@@ -550,11 +557,7 @@ export type BotPortfolioHistoryResponse = {
     realizedPnl: number;
     unrealizedPnl: number;
     totalPnl: number;
-    capitalSource?:
-      | "PAPER_INITIAL_BALANCE"
-      | "PAPER_RESET_CHECKPOINT"
-      | "LIVE_EXCHANGE_BALANCE"
-      | null;
+    capitalSource?: RuntimeCapitalSource | null;
     paperResetAt: string | null;
     openPositionCount: number;
     closedPositionCount: number;

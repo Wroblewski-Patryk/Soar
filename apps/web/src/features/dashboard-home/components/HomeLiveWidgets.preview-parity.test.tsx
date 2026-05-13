@@ -244,7 +244,7 @@ const buildAggregatePayload = (botId: string, historySymbol: string, tradeSymbol
         positionId: `position-${botId}`,
         strategyId: botId === "bot-a" ? "str-a" : "str-b",
         origin: "BOT",
-        managementMode: "BOT",
+        managementMode: "BOT_MANAGED",
         notional: 105,
         margin: 35,
       },

@@ -4,6 +4,14 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-WEB-BACKEND-PARITY-RUNTIME-ENUMS-2026-05-13` LOCAL CONTRACT PASS:
+  Web runtime trade/order/position enum typing now matches backend fee source,
+  trading origin, position management mode, and capital-source domains. Focused
+  Web runtime tests passed (`5` files, `47` tests), Web typecheck passed,
+  stale-value scan returned no matches, and repository guardrails passed. This
+  is local contract evidence; production-safe browser/runtime clickthrough
+  remains a separate V1 proof lane.
+
 - `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13` PRODUCTION TARGET GATE
   READY: final `LIVEIMPORT-03` passed for `TRXUSDT`, final preflight has no
   blockers, and the production target-only release gate reports

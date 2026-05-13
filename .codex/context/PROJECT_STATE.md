@@ -4,6 +4,16 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-WEB-BACKEND-PARITY-RUNTIME-ENUMS-2026-05-13` tightened Web runtime
+  enum contracts to backend schema truth: runtime trade `feeSource`,
+  `origin`, and `managementMode` now use strict backend-compatible Web aliases;
+  position/open-order/capital-source types reuse the same enum domains; stale
+  Web fixtures using impossible backend values (`SIMULATED`, `PAPER_RUNTIME`,
+  `BOT`, `MANUAL`, `SIGNAL`) were normalized to backend-valid payloads.
+  Evidence: focused Web runtime tests passed (`5` files, `47` tests), Web
+  typecheck passed, stale-value scan returned no matches, and repository
+  guardrails passed.
+
 - `V1-WEB-BACKEND-PARITY-RUNTIME-ORIGIN-2026-05-13` closed another
   Dashboard/Bot Runtime Web/API contract drift: backend runtime position
   `origin=USER` is now represented in the Web type and Dashboard Home maps it

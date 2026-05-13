@@ -58,6 +58,17 @@ Do not turn uncertainty into optimism.
 ## Current Release Evidence Notes
 
 - 2026-05-13
+  `V1-WEB-BACKEND-PARITY-RUNTIME-ENUMS-2026-05-13` applies to
+  `SOAR-DASHBOARD-001` and `SOAR-BOT-RUNTIME-001`: Web runtime enum typing now
+  reflects backend `FeeSource`, `TradingRecordOrigin`,
+  `PositionManagementMode`, and runtime capital-source domains for runtime
+  trade/order/position payloads. Stale Web fixtures using values the backend
+  cannot emit were normalized. Evidence: focused Web runtime tests passed (`5`
+  files, `47` tests), Web typecheck passed, stale-value scan returned no
+  matches, and repository guardrails passed. Rows remain `PARTIAL` because
+  production-safe clickthrough and the broader V1 route matrix are still
+  separate lanes.
+- 2026-05-13
   `V1-WEB-BACKEND-PARITY-RUNTIME-ORIGIN-2026-05-13` applies to
   `SOAR-DASHBOARD-001` and `SOAR-BOT-RUNTIME-001`: Web runtime position origin
   typing now includes backend `USER`, and Dashboard Home maps backend

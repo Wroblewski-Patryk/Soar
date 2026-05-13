@@ -17,6 +17,17 @@ Last updated: 2026-05-13
 
 ## READY
 
+- [x] `V1-WEB-BACKEND-PARITY-RUNTIME-ENUMS-2026-05-13 fix: align Web runtime enum contracts with backend schema`
+  - Scope: added backend-compatible Web runtime enum aliases for trading
+    origin, position management mode, fee source, and runtime capital source;
+    narrowed runtime trade payload typing away from free-form strings; reused
+    aliases across position/open-order/capital summaries; and removed stale
+    impossible enum fixture values from Dashboard Home and Bots monitoring
+    tests. Evidence:
+    `docs/planning/v1-web-backend-function-parity-runtime-enums-2026-05-13-task.md`;
+    focused Web runtime tests passed (`5` files, `47` tests), Web typecheck
+    passed, stale-value scan returned no matches, and guardrails passed.
+
 - [x] `V1-WEB-BACKEND-PARITY-RUNTIME-ORIGIN-2026-05-13 fix: align runtime position origin labels`
   - Scope: aligned Web runtime position origin typing with backend
     `TradingRecordOrigin.USER` and mapped Dashboard Home edit-position origin

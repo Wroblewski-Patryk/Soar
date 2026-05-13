@@ -28,6 +28,16 @@ Next proof should move from local DB-backed API/runtime and rendered Web
 evidence toward production-safe authenticated UI/runtime clickthrough for
 multi-bot operation.
 
+Latest Web/API runtime enum parity checkpoint:
+`V1-WEB-BACKEND-PARITY-RUNTIME-ENUMS-2026-05-13` tightened Web runtime payload
+types to backend enum domains for fee source, trading origin, position
+management mode, and capital source, and removed stale impossible enum values
+from Dashboard Home/Bots monitoring fixtures. Focused Web runtime tests passed
+(`5` files, `47` tests), Web typecheck passed, stale-value scan returned no
+matches, and repository guardrails passed. Next Web/API parity work should
+continue with endpoint-to-surface checks rather than re-opening these enum
+fixtures unless new backend enum values are introduced.
+
 Latest V1 target release gate:
 `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13` closed the current
 production target gate for deployed
