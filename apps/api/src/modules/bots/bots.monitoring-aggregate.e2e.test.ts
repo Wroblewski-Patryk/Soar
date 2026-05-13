@@ -232,6 +232,7 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     );
     expect(aggregateRes.body.positions.summary).toEqual(
       expect.objectContaining({
+        openPositionQty: 0,
         referenceBalance: null,
         freeCash: null,
       })

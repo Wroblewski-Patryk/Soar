@@ -891,9 +891,9 @@ describe("BotsManagement", () => {
           feeCurrency: "USDT",
           realizedPnl: 2,
           executedAt: "2026-03-31T10:00:00.000Z",
-          orderId: "o-close-1",
-          positionId: "p-closed-1",
-          strategyId: "s-monitor",
+          orderId: null,
+          positionId: null,
+          strategyId: null,
           origin: "MANUAL",
           managementMode: "MANUAL",
           notional: 52,
@@ -959,6 +959,8 @@ describe("BotsManagement", () => {
       expect(screen.getAllByText("RSI(14) | 31.0057 > 60").length).toBeGreaterThan(0);
       expect(screen.getAllByText("RSI(14) | 31.0057 < 40").length).toBeGreaterThan(0);
       expect(screen.getByText("Historia - log operacyjny trade'ow")).toBeInTheDocument();
+      expect(screen.getByTestId("monitor-trade-order-trade-close-1")).toHaveTextContent("-");
+      expect(screen.getByTestId("monitor-trade-position-trade-close-1")).toHaveTextContent("-");
     });
   });
 

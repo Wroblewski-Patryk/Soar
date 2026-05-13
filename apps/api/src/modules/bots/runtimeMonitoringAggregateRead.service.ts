@@ -323,6 +323,7 @@ const buildEmptyAggregatePayload = (params: {
         realizedPnl: 0,
         unrealizedPnl: 0,
         feesPaid: 0,
+        openPositionQty: 0,
         referenceBalance: null,
         freeCash: null,
         accountBalance: null,

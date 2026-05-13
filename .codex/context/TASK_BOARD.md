@@ -17,6 +17,16 @@ Last updated: 2026-05-13
 
 ## READY
 
+- [x] `V1-WEB-BACKEND-PARITY-DASHBOARD-2026-05-13 fix: close runtime trade/position Web API contract drift`
+  - Scope: aligned Web runtime trade IDs with backend nullable
+    `orderId`/`positionId`/`strategyId`, rendered missing monitoring IDs as
+    `-`, added `openPositionQty` to Web positions summary typing, and filled
+    empty aggregate payloads with `openPositionQty: 0` in API/Web fallback
+    paths. Evidence: `docs/planning/v1-web-backend-function-parity-dashboard-home-2026-05-13-task.md`;
+    Web focused tests passed (`2` files, `17` tests), API runtime monitoring
+    aggregate e2e passed (`18/18`), API typecheck passed, and Web typecheck
+    passed.
+
 - [ ] `V1-LIVE-PAPER-SIMULTANEOUS-RUNTIME-PROOF-00169D7F-2026-05-13 qa: prove simultaneous LIVE and PAPER bot behavior`
   - Scope: verify the user's concern directly after the V1 production target
     gate. One active LIVE bot and one active PAPER bot must remain separated by

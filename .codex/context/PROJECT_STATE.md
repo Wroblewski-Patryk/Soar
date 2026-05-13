@@ -4,6 +4,15 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-WEB-BACKEND-PARITY-DASHBOARD-2026-05-13` closed a concrete
+  Dashboard/Bots Monitoring Web/API contract drift: runtime trades now allow
+  backend-truth nullable `orderId`, `positionId`, and `strategyId`; Bots
+  Monitoring renders missing runtime relationship IDs as `-` instead of
+  assuming string IDs; runtime positions summary types and empty aggregate
+  payloads now carry `openPositionQty`. Evidence: Web focused tests passed
+  (`2` files, `17` tests), API runtime monitoring aggregate e2e passed
+  (`18/18`), API typecheck passed, and Web typecheck passed.
+
 - User concern captured as the next proof task:
   `V1-LIVE-PAPER-SIMULTANEOUS-RUNTIME-PROOF-00169D7F-2026-05-13`. The current
   V1 production target gate proves the Operations release lane, not a blanket

@@ -58,6 +58,16 @@ Do not turn uncertainty into optimism.
 ## Current Release Evidence Notes
 
 - 2026-05-13
+  `V1-WEB-BACKEND-PARITY-DASHBOARD-2026-05-13` applies to
+  `SOAR-DASHBOARD-001` and `SOAR-BOT-RUNTIME-001`: Web runtime trade contract
+  now matches backend nullable `orderId`, `positionId`, and `strategyId`;
+  Bots Monitoring renders missing runtime relationship IDs as `-`; Web
+  positions summary typing and empty API/Web aggregate payloads now carry
+  `openPositionQty`. Evidence: Web focused tests passed (`2` files,
+  `17` tests), API runtime monitoring aggregate e2e passed (`18/18`), API
+  typecheck passed, and Web typecheck passed. Rows remain `PARTIAL` because the
+  broader V1 route matrix and production-safe clickthrough are not complete.
+- 2026-05-13
   `V1-LIVE-PAPER-SIMULTANEOUS-RUNTIME-PROOF-00169D7F-2026-05-13` applies to
   `SOAR-BOTS-001`, `SOAR-BOT-RUNTIME-001`, and
   `SOAR-EXCHANGE-ADAPTER-001`: local DB-backed API/runtime evidence now proves

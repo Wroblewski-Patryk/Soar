@@ -362,9 +362,9 @@ export type BotRuntimeTrade = {
   feeCurrency: string | null;
   realizedPnl: number;
   executedAt: string;
-  orderId: string;
-  positionId: string;
-  strategyId: string;
+  orderId: string | null;
+  positionId: string | null;
+  strategyId: string | null;
   origin: string;
   managementMode: string;
   notional: number;
@@ -500,6 +500,7 @@ export type BotRuntimePositionsResponse = {
     realizedPnl: number;
     unrealizedPnl: number;
     feesPaid: number;
+    openPositionQty?: number;
     referenceBalance?: number | null;
     freeCash?: number | null;
     accountBalance?: number | null;

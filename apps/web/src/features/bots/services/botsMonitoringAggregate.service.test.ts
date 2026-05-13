@@ -105,5 +105,6 @@ describe("loadBotMonitoringAggregate", () => {
     expect(result.trades.meta.total).toBe(0);
     expect(result.trades.meta.totalPages).toBe(0);
     expect(result.trades.meta.hasNext).toBe(false);
+    expect(result.positions.summary.openPositionQty).toBe(0);
   });
 });

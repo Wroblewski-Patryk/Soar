@@ -90,8 +90,8 @@ type MonitorOperationalTradeRow = {
   pnlPct: number;
   cumulativePnl: number;
   origin: string;
-  orderId: string;
-  positionId: string;
+  orderId: string | null;
+  positionId: string | null;
   feeSource: "ESTIMATED" | "EXCHANGE_FILL";
   feePending: boolean;
   feeCurrency: string | null;
@@ -258,6 +258,11 @@ type BotsMonitoringTabProps = {
     feePending: boolean;
     feeCurrency: string | null;
   }) => string;
+};
+
+const formatShortRuntimeId = (value: string | null | undefined) => {
+  const normalized = value?.trim();
+  return normalized ? normalized.slice(0, 8) : "-";
 };
 
 export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
@@ -955,8 +960,12 @@ export function BotsMonitoringTab(props: BotsMonitoringTabProps) {
                               <td>
                                 <span className="badge badge-outline badge-xs">{trade.origin}</span>
                               </td>
-                              <td className="font-mono text-[10px]">{trade.orderId.slice(0, 8)}</td>
-                              <td className="font-mono text-[10px]">{trade.positionId.slice(0, 8)}</td>
+                              <td className="font-mono text-[10px]" data-testid={`monitor-trade-order-${trade.id}`}>
+                                {formatShortRuntimeId(trade.orderId)}
+                              </td>
+                              <td className="font-mono text-[10px]" data-testid={`monitor-trade-position-${trade.id}`}>
+                                {formatShortRuntimeId(trade.positionId)}
+                              </td>
                             </tr>
                           ))}
                           {monitorOperationalTrades.length === 0 ? (

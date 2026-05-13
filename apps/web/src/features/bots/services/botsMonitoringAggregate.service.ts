@@ -99,6 +99,7 @@ export const loadBotMonitoringAggregate = async ({
           realizedPnl: 0,
           unrealizedPnl: 0,
           feesPaid: 0,
+          openPositionQty: 0,
         },
         openOrders: [],
         openItems: [],
