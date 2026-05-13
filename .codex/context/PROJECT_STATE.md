@@ -1,6 +1,28 @@
 # PROJECT_STATE
 
-Last updated: 2026-05-12
+Last updated: 2026-05-13
+
+## 2026-05-13 Current-Day V1 Blocker Refresh
+
+- `V1-CURRENT-DAY-BLOCKER-REFRESH-00169D7F-2026-05-13` refreshed current-day
+  no-secret V1 blocker evidence for deployed build-info
+  `00169d7fdc3aff8317759137b05594b20e773c8e`.
+- Production build-info matched and final preflight public smoke passed, but
+  the 2026-05-13 final preflight remains `blocked` on missing protected
+  inputs (`LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`,
+  `PROD_UI_AUDIT_*`, production DB restore context), stale daily release
+  artifacts, missing `LIVEIMPORT-03`, current failed production UI
+  clickthrough, and stale rollback proof.
+- The current protected input readiness sweep found no matching protected input
+  environment variable names in the Codex shell and stored no secret values.
+- The current production UI audit is fresh `BLOCKED_AUTH`: public routes pass,
+  dashboard/admin/legacy protected routes fail closed to `/auth/login`, and
+  this is not V1 acceptance evidence. V1 remains `NO-GO`.
+- Evidence:
+  `docs/planning/v1-current-day-blocker-refresh-00169d7f-2026-05-13-task.md`,
+  `docs/operations/v1-final-preflight-00169d7f-2026-05-13.md`,
+  `docs/operations/prod-ui-module-clickthrough-00169d7f-2026-05-13.md`, and
+  `docs/operations/v1-protected-input-readiness-00169d7f-2026-05-13.md`.
 
 ## 2026-05-12 Production Activation Refresh
 

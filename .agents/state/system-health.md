@@ -1,8 +1,18 @@
 # System Health
 
-Last updated: 2026-05-12
+Last updated: 2026-05-13
 
 ## Latest Health Snapshot
+
+- `V1-CURRENT-DAY-BLOCKER-REFRESH-00169D7F-2026-05-13` PUBLIC PASS / FINAL
+  BLOCKED: deployed build-info matches
+  `00169d7fdc3aff8317759137b05594b20e773c8e`, final preflight public smoke
+  passes, and the current production UI audit is fresh `BLOCKED_AUTH` with
+  protected dashboard/admin/legacy routes failing closed to `/auth/login`.
+  Final preflight remains blocked on missing protected auth and DB context,
+  stale daily release artifacts for 2026-05-13, missing `LIVEIMPORT-03`,
+  current failed production UI clickthrough evidence, and stale rollback proof.
+  V1 remains `NO-GO`.
 
 - `V1-PROTECTED-INPUT-READINESS-REFRESH-00169D7F-2026-05-12` BLOCKED /
   NO SECRET VALUES: the current Codex execution session has no environment

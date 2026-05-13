@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-05-12
+Last updated: 2026-05-13
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -16,6 +16,17 @@ Last updated: 2026-05-12
     needed
 
 ## READY
+
+- [x] `V1-CURRENT-DAY-BLOCKER-REFRESH-00169D7F-2026-05-13 release: refresh current-day no-secret V1 blockers`
+  - Scope: refreshed deployed build-info, protected input readiness, final
+    preflight, and production UI clickthrough blocker evidence for 2026-05-13.
+    Build-info and public smoke pass for
+    `00169d7fdc3aff8317759137b05594b20e773c8e`, but final preflight remains
+    `blocked` on missing protected auth/DB context, stale daily release
+    artifacts, missing `LIVEIMPORT-03`, current failed production UI
+    clickthrough, and stale rollback proof. Evidence:
+    `docs/planning/v1-current-day-blocker-refresh-00169d7f-2026-05-13-task.md`.
+    V1 remains `NO-GO`.
 
 - [x] `V1-GENERATED-STATE-REFRESH-AFTER-QUEUE-HYGIENE-00169D7F-2026-05-12 release: refresh V1 generated state after queue cleanup`
   - Scope: refreshed `project-index`, `v1-static-issue-scan`, `v1-master-state-ledger`,

@@ -1,8 +1,18 @@
 # Next Steps
 
-Last updated: 2026-05-12
+Last updated: 2026-05-13
 
 ## Next Tiny Task
+
+Latest current-day V1 blocker refresh:
+`V1-CURRENT-DAY-BLOCKER-REFRESH-00169D7F-2026-05-13` refreshed no-secret
+release evidence for deployed build
+`00169d7fdc3aff8317759137b05594b20e773c8e`. Build-info and final preflight
+public smoke passed, but preflight remains `blocked`: protected auth and DB
+context are missing, daily activation/RC/backup-restore/rollback artifacts are
+stale for 2026-05-13, `LIVEIMPORT-03` is missing, and the fresh production UI
+clickthrough is `BLOCKED_AUTH`/`failed` because dashboard/admin auth is
+missing. V1 remains `NO-GO`.
 
 Latest generated state refresh after queue hygiene:
 `V1-GENERATED-STATE-REFRESH-AFTER-QUEUE-HYGIENE-00169D7F-2026-05-12`

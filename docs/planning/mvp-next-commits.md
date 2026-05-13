@@ -8,6 +8,17 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `V1-CURRENT-DAY-BLOCKER-REFRESH-00169D7F-2026-05-13 release: refresh current-day no-secret V1 blockers`
+  - 2026-05-13: Refreshed deployed build-info, protected input readiness,
+    final preflight, and production UI clickthrough blocker evidence for
+    deployed `00169d7fdc3aff8317759137b05594b20e773c8e`. Build-info and
+    public smoke pass, but final preflight remains `blocked` on missing
+    protected auth/DB context, stale daily release artifacts, missing
+    `LIVEIMPORT-03`, current failed production UI clickthrough, and stale
+    rollback proof. Evidence:
+    `docs/planning/v1-current-day-blocker-refresh-00169d7f-2026-05-13-task.md`.
+    V1 remains `NO-GO`.
+
 - [x] `V1-GENERATED-STATE-REFRESH-AFTER-QUEUE-HYGIENE-00169D7F-2026-05-12 release: refresh V1 generated state after queue cleanup`
   - 2026-05-12: Refreshed `project-index`, `v1-static-issue-scan`,
     `v1-master-state-ledger`, and `v1-completion-scorecard` after stale

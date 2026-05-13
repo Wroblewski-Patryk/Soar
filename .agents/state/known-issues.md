@@ -1,8 +1,17 @@
 # Known Issues
 
-Last updated: 2026-05-12
+Last updated: 2026-05-13
 
 ## Active Issues
+
+- 2026-05-13 update: `V1-CURRENT-DAY-BLOCKER-REFRESH-00169D7F-2026-05-13`
+  confirms V1 remains `NO-GO` on current-day evidence. Production build-info
+  and public smoke pass for deployed
+  `00169d7fdc3aff8317759137b05594b20e773c8e`, but protected input names are
+  absent in the current Codex shell, production UI clickthrough is fresh
+  `BLOCKED_AUTH`, `LIVEIMPORT-03` is still missing, and daily release
+  artifacts that require protected or operator inputs are stale for
+  2026-05-13.
 
 - 2026-05-12 update: `V1-PROTECTED-INPUT-READINESS-CURRENT-SWEEP-00169D7F-2026-05-12`
   confirms the current Codex shell still has no protected input environment

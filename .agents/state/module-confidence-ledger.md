@@ -1,6 +1,6 @@
 # Module Confidence Ledger
 
-Last updated: 2026-05-12
+Last updated: 2026-05-13
 
 ## Purpose
 
@@ -57,6 +57,17 @@ Do not turn uncertainty into optimism.
 
 ## Current Release Evidence Notes
 
+- 2026-05-13 `V1-CURRENT-DAY-BLOCKER-REFRESH-00169D7F-2026-05-13` applies to
+  `SOAR-OPERATIONS-001`, `SOAR-BOTS-001`, and
+  `SOAR-UX-A11Y-MOBILE-001`: deployed build-info still matches
+  `00169d7fdc3aff8317759137b05594b20e773c8e`, final preflight public smoke
+  passes, and no protected input names were present in the current Codex
+  shell. The fresh production UI audit is `BLOCKED_AUTH` with protected
+  dashboard/admin/legacy routes failing closed to `/auth/login`; this is
+  current blocker evidence, not accepted production UI proof. Operations stays
+  `BLOCKED`, Bots stays `PARTIAL`, and production UX clickthrough remains
+  missing until approved production app/admin auth and protected release inputs
+  are available.
 - 2026-05-12 `V1-PROTECTED-INPUT-READINESS-CURRENT-SWEEP-00169D7F-2026-05-12`
   applies to `SOAR-OPERATIONS-001` and `SOAR-BOTS-001`: the current no-secret
   env-name sweep found no matching `LIVEIMPORT_READBACK_*`,
