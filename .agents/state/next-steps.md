@@ -4,6 +4,17 @@ Last updated: 2026-05-13
 
 ## Next Tiny Task
 
+Latest non-Binance backtest derivatives adapter:
+`V1-NON-BINANCE-BACKTEST-DERIVATIVES-ADAPTER-2026-05-13` is locally verified.
+Non-Binance futures backtests can now fetch supplemental funding-rate and
+open-interest history through the Exchange public market-data adapter when the
+underlying CCXT connector supports it. Backtest order-book history remains
+empty by design until a historical order-book/depth source exists; current
+snapshots must not be used as historical input. Focused API tests passed
+(`26/26`) and API typecheck passed. Next related lane is runtime live
+derivatives supplemental adapter support for non-Binance, or production-safe
+multi-bot/backtest clickthrough.
+
 Latest runtime ticker/backtest UI parity:
 `V1-RUNTIME-TICKER-AND-BACKTEST-VENUE-UI-2026-05-13` is locally verified.
 Generic runtime ticker fallback now uses the Exchange public market-data

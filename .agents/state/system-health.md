@@ -4,6 +4,13 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-NON-BINANCE-BACKTEST-DERIVATIVES-ADAPTER-2026-05-13` LOCAL ADAPTER PASS:
+  non-Binance futures backtest supplemental funding-rate and open-interest
+  history now read through the Exchange public market-data adapter where CCXT
+  supports those methods. Backtest order-book history remains empty rather
+  than using current snapshots as historical data. Focused API tests passed
+  (`26/26`) and API typecheck passed.
+
 - `V1-RUNTIME-TICKER-AND-BACKTEST-VENUE-UI-2026-05-13` LOCAL CONTRACT PASS:
   runtime fallback ticker prices now use the Exchange public market-data
   boundary for Binance and non-Binance exchanges, runtime position readback no

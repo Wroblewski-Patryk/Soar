@@ -1,7 +1,13 @@
 import { Exchange } from '@prisma/client';
 
 import { resolveExchangeAdapterRegistryEntry } from './exchangeAdapterRegistry.service';
-import { CcxtPublicCandle, CcxtPublicTickerSnapshot } from './ccxtFuturesConnector.types';
+import {
+  CcxtPublicCandle,
+  CcxtPublicFundingRatePoint,
+  CcxtPublicOpenInterestPoint,
+  CcxtPublicOrderBookPoint,
+  CcxtPublicTickerSnapshot,
+} from './ccxtFuturesConnector.types';
 
 type TradeMarket = 'FUTURES' | 'SPOT';
 
@@ -13,6 +19,20 @@ type PublicMarketDataConnectorLike = {
     limit?: number;
     since?: number;
   }) => Promise<CcxtPublicCandle[]>;
+  fetchFundingRateHistory?: (input: {
+    symbol: string;
+    since?: number;
+    limit?: number;
+    endTime?: number;
+  }) => Promise<CcxtPublicFundingRatePoint[]>;
+  fetchOpenInterestHistory?: (input: {
+    symbol: string;
+    interval: string;
+    since?: number;
+    limit?: number;
+    endTime?: number;
+  }) => Promise<CcxtPublicOpenInterestPoint[]>;
+  fetchOrderBookSnapshot?: (symbol: string, limit?: number) => Promise<CcxtPublicOrderBookPoint>;
   disconnect: () => Promise<void>;
 };
 
@@ -63,6 +83,82 @@ export const fetchExchangePublicRecentCandles = async (
       limit: params.limit,
       since: params.since,
     });
+  } finally {
+    await connector.disconnect().catch(() => undefined);
+  }
+};
+
+export const fetchExchangePublicFundingRateHistory = async (
+  params: {
+    exchange: Exchange;
+    marketType: TradeMarket;
+    symbol: string;
+    since?: number;
+    limit?: number;
+    endTime?: number;
+  },
+  deps: ExchangePublicMarketDataDeps = defaultDeps
+) => {
+  const connector = deps.createPublicConnector(params);
+  try {
+    if (typeof connector.fetchFundingRateHistory !== 'function') {
+      throw new Error(`Funding-rate history is not supported for ${params.exchange} ${params.marketType}`);
+    }
+    return await connector.fetchFundingRateHistory({
+      symbol: params.symbol,
+      since: params.since,
+      limit: params.limit,
+      endTime: params.endTime,
+    });
+  } finally {
+    await connector.disconnect().catch(() => undefined);
+  }
+};
+
+export const fetchExchangePublicOpenInterestHistory = async (
+  params: {
+    exchange: Exchange;
+    marketType: TradeMarket;
+    symbol: string;
+    interval: string;
+    since?: number;
+    limit?: number;
+    endTime?: number;
+  },
+  deps: ExchangePublicMarketDataDeps = defaultDeps
+) => {
+  const connector = deps.createPublicConnector(params);
+  try {
+    if (typeof connector.fetchOpenInterestHistory !== 'function') {
+      throw new Error(`Open-interest history is not supported for ${params.exchange} ${params.marketType}`);
+    }
+    return await connector.fetchOpenInterestHistory({
+      symbol: params.symbol,
+      interval: params.interval,
+      since: params.since,
+      limit: params.limit,
+      endTime: params.endTime,
+    });
+  } finally {
+    await connector.disconnect().catch(() => undefined);
+  }
+};
+
+export const fetchExchangePublicOrderBookSnapshot = async (
+  params: {
+    exchange: Exchange;
+    marketType: TradeMarket;
+    symbol: string;
+    limit?: number;
+  },
+  deps: ExchangePublicMarketDataDeps = defaultDeps
+) => {
+  const connector = deps.createPublicConnector(params);
+  try {
+    if (typeof connector.fetchOrderBookSnapshot !== 'function') {
+      throw new Error(`Order-book snapshot is not supported for ${params.exchange} ${params.marketType}`);
+    }
+    return await connector.fetchOrderBookSnapshot(params.symbol, params.limit);
   } finally {
     await connector.disconnect().catch(() => undefined);
   }

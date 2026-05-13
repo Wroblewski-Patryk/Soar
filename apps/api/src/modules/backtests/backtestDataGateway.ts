@@ -1,7 +1,11 @@
 import { Exchange } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { fetchBinancePublicRestJson } from '../exchange/binancePublicRest.service';
-import { fetchExchangePublicRecentCandles } from '../exchange/exchangePublicMarketData.service';
+import {
+  fetchExchangePublicFundingRateHistory,
+  fetchExchangePublicOpenInterestHistory,
+  fetchExchangePublicRecentCandles,
+} from '../exchange/exchangePublicMarketData.service';
 import { getTimeframeIntervalMs, normalizeTimeframe } from './backtestTimeframe';
 
 export type BacktestMarketType = 'SPOT' | 'FUTURES';
@@ -336,7 +340,7 @@ export const fetchSupplementalSeries = async (
   endTimeMs?: number,
   startTimeMs?: number,
 ): Promise<BacktestSupplementalSeries> => {
-  if (marketType !== 'FUTURES' || exchange !== 'BINANCE') {
+  if (marketType !== 'FUTURES') {
     return { fundingRates: [], openInterest: [], orderBook: [] };
   }
 
@@ -358,6 +362,47 @@ export const fetchSupplementalSeries = async (
     return empty;
   }
   const limit = clamp(maxCandles, 50, 1000);
+
+  if (exchange !== 'BINANCE') {
+    try {
+      const [fundingRates, openInterest] = await Promise.all([
+        fetchExchangePublicFundingRateHistory({
+          exchange,
+          marketType,
+          symbol,
+          since: startTime,
+          endTime,
+          limit,
+        }),
+        fetchExchangePublicOpenInterestHistory({
+          exchange,
+          marketType,
+          symbol,
+          interval: openInterestPeriodForTimeframe(timeframe),
+          since: startTime,
+          endTime,
+          limit,
+        }),
+      ]);
+      const result: BacktestSupplementalSeries = {
+        fundingRates: fundingRates.map((point) => ({
+          timestamp: point.timestamp,
+          fundingRate: point.fundingRate,
+        })),
+        openInterest: openInterest.map((point) => ({
+          timestamp: point.timestamp,
+          openInterest: point.openInterest,
+        })),
+        orderBook: [],
+      };
+      supplementalCache.set(key, { cachedAt: Date.now(), data: result });
+      return result;
+    } catch {
+      const empty = { fundingRates: [], openInterest: [], orderBook: [] };
+      supplementalCache.set(key, { cachedAt: Date.now(), data: empty });
+      return empty;
+    }
+  }
 
   const fundingQuery = new URLSearchParams({
     symbol,

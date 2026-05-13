@@ -58,6 +58,19 @@ Do not turn uncertainty into optimism.
 ## Current Release Evidence Notes
 
 - 2026-05-13
+  `V1-NON-BINANCE-BACKTEST-DERIVATIVES-ADAPTER-2026-05-13` applies to
+  `SOAR-BACKTESTS-001` and `SOAR-EXCHANGE-ADAPTER-001`: non-Binance futures
+  backtest supplemental funding-rate and open-interest history now flows
+  through the Exchange public market-data adapter where CCXT exposes those
+  public methods. The slice also adds an order-book snapshot boundary but keeps
+  non-Binance backtest order-book history empty because a current snapshot is
+  not valid historical input. CCXT public market-data normalization and client
+  shape types were extracted out of the production connector to satisfy
+  monolith guardrails. Evidence: focused backtest/exchange tests passed
+  (`26/26`), API typecheck passed, and repository guardrails passed. Rows
+  remain `PARTIAL` because runtime non-Binance derivative fallbacks and
+  production-safe multi-bot/backtest clickthrough remain separate lanes.
+- 2026-05-13
   `V1-RUNTIME-TICKER-AND-BACKTEST-VENUE-UI-2026-05-13` applies to
   `SOAR-BOT-RUNTIME-001`, `SOAR-BACKTESTS-001`, and
   `SOAR-EXCHANGE-ADAPTER-001`: generic runtime fallback ticker prices now use

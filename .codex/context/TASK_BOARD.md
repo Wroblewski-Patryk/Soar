@@ -17,6 +17,16 @@ Last updated: 2026-05-13
 
 ## READY
 
+- [x] `V1-NON-BINANCE-BACKTEST-DERIVATIVES-ADAPTER-2026-05-13 fix: read non-Binance backtest funding/OI through exchange adapter`
+  - Scope: added Exchange public connector boundaries for funding-rate
+    history, open-interest history, and order-book snapshots; normalized those
+    CCXT public derivatives payloads; and routed non-Binance futures backtest
+    supplemental funding/open-interest history through the Exchange adapter.
+    Backtest order-book history remains empty rather than using current
+    snapshots as historical data. Evidence:
+    `docs/planning/v1-non-binance-backtest-derivatives-adapter-2026-05-13-task.md`;
+    focused API tests passed (`26/26`) and API typecheck passed.
+
 - [x] `V1-RUNTIME-TICKER-AND-BACKTEST-VENUE-UI-2026-05-13 fix: route runtime ticker fallback through exchange adapter`
   - Scope: moved generic runtime fallback ticker prices onto the Exchange
     public market-data boundary for Binance and non-Binance exchanges, removed

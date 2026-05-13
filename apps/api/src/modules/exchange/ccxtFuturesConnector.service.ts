@@ -1,151 +1,14 @@
-import { CcxtCancelOrderInput, CcxtCancelOrderInputSchema, CcxtFetchOrderWithFillsInput, CcxtFetchOrderWithFillsInputSchema, CcxtFetchTradesForOrderInput, CcxtFetchTradesForOrderInputSchema, CcxtFetchWalletCashflowHistoryInput, CcxtFetchWalletCashflowHistoryInputSchema, CcxtFuturesConnectorConfig, CcxtFuturesConnectorConfigSchema, CcxtFuturesOpenOrder, CcxtFuturesOrderFill, CcxtFuturesOrderRequest, CcxtFuturesOrderRequestSchema, CcxtFuturesOrderResult, CcxtPublicCandle, CcxtPublicTickerSnapshot, CcxtWalletCashflowHistoryEntry } from './ccxtFuturesConnector.types';
+import type {
+  CcxtExchangeLikeClient,
+  CcxtOrderLike,
+  CcxtPositionLike,
+  CcxtTradeLike,
+  CcxtWalletCashflowLike,
+} from './ccxtFuturesConnector.client';
+import { normalizeCcxtFundingRatePoint, normalizeCcxtOpenInterestPoint, normalizeCcxtOrderBookPoint, normalizeCcxtPublicCandle } from './ccxtPublicMarketDataNormalizer';
+import { CcxtCancelOrderInput, CcxtCancelOrderInputSchema, CcxtFetchOrderWithFillsInput, CcxtFetchOrderWithFillsInputSchema, CcxtFetchTradesForOrderInput, CcxtFetchTradesForOrderInputSchema, CcxtFetchWalletCashflowHistoryInput, CcxtFetchWalletCashflowHistoryInputSchema, CcxtFuturesConnectorConfig, CcxtFuturesConnectorConfigSchema, CcxtFuturesOpenOrder, CcxtFuturesOrderFill, CcxtFuturesOrderRequest, CcxtFuturesOrderRequestSchema, CcxtFuturesOrderResult, CcxtPublicCandle, CcxtPublicFundingRatePoint, CcxtPublicOpenInterestPoint, CcxtPublicOrderBookPoint, CcxtPublicTickerSnapshot, CcxtWalletCashflowHistoryEntry } from './ccxtFuturesConnector.types';
 
-type CcxtOrderLike = {
-  id?: string;
-  status?: string;
-  symbol?: string;
-  side?: string;
-  type?: string;
-  amount?: number;
-  filled?: number;
-  price?: number;
-  average?: number;
-  trades?: unknown[];
-  fills?: unknown[];
-  info?: Record<string, unknown>;
-};
-
-type CcxtTradeFeeLike = {
-  cost?: number;
-  currency?: string;
-  rate?: number;
-};
-
-type CcxtTradeLike = {
-  id?: string;
-  order?: string;
-  orderId?: string;
-  symbol?: string;
-  side?: string;
-  price?: number;
-  amount?: number;
-  cost?: number;
-  timestamp?: number;
-  datetime?: string;
-  fee?: CcxtTradeFeeLike | null;
-  fees?: CcxtTradeFeeLike[];
-  info?: Record<string, unknown>;
-};
-
-type CcxtWalletCashflowLike = {
-  id?: string;
-  txid?: string;
-  referenceId?: string;
-  type?: string;
-  direction?: string;
-  amount?: number;
-  currency?: string;
-  code?: string;
-  timestamp?: number;
-  datetime?: string;
-  status?: string;
-  fee?: CcxtTradeFeeLike | number | null;
-  info?: Record<string, unknown>;
-};
-
-type CcxtPositionLike = {
-  symbol?: string;
-  contracts?: number;
-  amount?: number;
-  positionAmt?: number;
-  info?: Record<string, unknown>;
-};
-
-export interface CcxtExchangeLikeClient {
-  setSandboxMode?: (enabled: boolean) => void;
-  loadMarkets: () => Promise<unknown>;
-  fetchPositions?: (
-    symbols?: string[],
-    params?: Record<string, unknown>
-  ) => Promise<CcxtPositionLike[]>;
-  fetchTicker: (symbol: string) => Promise<{
-    symbol?: string;
-    timestamp?: number;
-    last?: number | string | null;
-    mark?: number | string | null;
-    percentage?: number | string | null;
-    info?: Record<string, unknown>;
-  }>;
-  fetchOHLCV?: (
-    symbol: string,
-    timeframe?: string,
-    since?: number,
-    limit?: number,
-    params?: Record<string, unknown>
-  ) => Promise<unknown[][]>;
-  fetchOrder?: (
-    id: string,
-    symbol?: string,
-    params?: Record<string, unknown>
-  ) => Promise<CcxtOrderLike>;
-  fetchMyTrades?: (
-    symbol?: string,
-    since?: number,
-    limit?: number,
-    params?: Record<string, unknown>
-  ) => Promise<CcxtTradeLike[]>;
-  fetchOpenOrders?: (
-    symbol?: string,
-    since?: number,
-    limit?: number,
-    params?: Record<string, unknown>
-  ) => Promise<CcxtOrderLike[]>;
-  fetchBalance?: (params?: Record<string, unknown>) => Promise<unknown>;
-  fetchLedger?: (
-    code?: string,
-    since?: number,
-    limit?: number,
-    params?: Record<string, unknown>
-  ) => Promise<CcxtWalletCashflowLike[]>;
-  fetchDeposits?: (
-    code?: string,
-    since?: number,
-    limit?: number,
-    params?: Record<string, unknown>
-  ) => Promise<CcxtWalletCashflowLike[]>;
-  fetchWithdrawals?: (
-    code?: string,
-    since?: number,
-    limit?: number,
-    params?: Record<string, unknown>
-  ) => Promise<CcxtWalletCashflowLike[]>;
-  fetchTransactions?: (
-    code?: string,
-    since?: number,
-    limit?: number,
-    params?: Record<string, unknown>
-  ) => Promise<CcxtWalletCashflowLike[]>;
-  setLeverage?: (
-    leverage: number,
-    symbol?: string,
-    params?: Record<string, unknown>
-  ) => Promise<unknown>;
-  setMarginMode?: (
-    marginMode: string,
-    symbol?: string,
-    params?: Record<string, unknown>
-  ) => Promise<unknown>;
-  createOrder: (
-    symbol: string,
-    type: string,
-    side: string,
-    amount: number,
-    price?: number,
-    params?: Record<string, unknown>
-  ) => Promise<CcxtOrderLike>;
-  cancelOrder?: (id: string, symbol?: string, params?: Record<string, unknown>) => Promise<CcxtOrderLike>;
-  close?: () => Promise<void>;
-}
+export type { CcxtExchangeLikeClient } from './ccxtFuturesConnector.client';
 
 type CcxtModuleLike = {
   [exchangeId: string]: new (config: Record<string, unknown>) => CcxtExchangeLikeClient;
@@ -271,9 +134,65 @@ export class CcxtFuturesConnector {
     const limit = Math.min(1000, Math.max(1, Math.floor(input.limit ?? 100)));
     const rows = await client.fetchOHLCV(exchangeSymbol, input.interval, input.since, limit);
     return rows
-      .map((row) => this.normalizePublicCandle(row, input.interval))
+      .map((row) => normalizeCcxtPublicCandle(row, input.interval))
       .filter((row): row is CcxtPublicCandle => row != null)
       .sort((left, right) => left.openTime - right.openTime);
+  }
+
+  async fetchFundingRateHistory(input: {
+    symbol: string;
+    since?: number;
+    limit?: number;
+    endTime?: number;
+  }): Promise<CcxtPublicFundingRatePoint[]> {
+    const client = await this.getOrCreateClient();
+    if (typeof client.fetchFundingRateHistory !== 'function') {
+      throw new Error('fetchFundingRateHistory is not supported by this CCXT connector');
+    }
+
+    const exchangeSymbol = await this.resolveExchangeSymbol(input.symbol);
+    const limit = Math.min(1000, Math.max(1, Math.floor(input.limit ?? 100)));
+    const params = Number.isFinite(input.endTime) ? { endTime: Math.floor(input.endTime as number) } : undefined;
+    const rows = await client.fetchFundingRateHistory(exchangeSymbol, input.since, limit, params);
+    return rows
+      .map((row) => normalizeCcxtFundingRatePoint(row))
+      .filter((row): row is CcxtPublicFundingRatePoint => row != null)
+      .sort((left, right) => left.timestamp - right.timestamp);
+  }
+
+  async fetchOpenInterestHistory(input: {
+    symbol: string;
+    interval: string;
+    since?: number;
+    limit?: number;
+    endTime?: number;
+  }): Promise<CcxtPublicOpenInterestPoint[]> {
+    const client = await this.getOrCreateClient();
+    if (typeof client.fetchOpenInterestHistory !== 'function') {
+      throw new Error('fetchOpenInterestHistory is not supported by this CCXT connector');
+    }
+
+    const exchangeSymbol = await this.resolveExchangeSymbol(input.symbol);
+    const limit = Math.min(1000, Math.max(1, Math.floor(input.limit ?? 100)));
+    const params = Number.isFinite(input.endTime) ? { endTime: Math.floor(input.endTime as number) } : undefined;
+    const rows = await client.fetchOpenInterestHistory(exchangeSymbol, input.interval, input.since, limit, params);
+    return rows
+      .map((row) => normalizeCcxtOpenInterestPoint(row))
+      .filter((row): row is CcxtPublicOpenInterestPoint => row != null)
+      .sort((left, right) => left.timestamp - right.timestamp);
+  }
+
+  async fetchOrderBookSnapshot(symbol: string, limit = 100): Promise<CcxtPublicOrderBookPoint> {
+    const client = await this.getOrCreateClient();
+    if (typeof client.fetchOrderBook !== 'function') {
+      throw new Error('fetchOrderBook is not supported by this CCXT connector');
+    }
+
+    const exchangeSymbol = await this.resolveExchangeSymbol(symbol);
+    const snapshot = await client.fetchOrderBook(exchangeSymbol, Math.min(1000, Math.max(1, Math.floor(limit))));
+    const normalized = normalizeCcxtOrderBookPoint(snapshot);
+    if (!normalized) throw new Error(`Unable to resolve order book for ${symbol}`);
+    return normalized;
   }
 
   async hasOpenPosition(symbol: string): Promise<boolean> {
@@ -838,50 +757,6 @@ export class CcxtFuturesConnector {
       source,
       raw: rawEntry,
     };
-  }
-
-  private normalizePublicCandle(row: unknown, interval: string): CcxtPublicCandle | null {
-    if (!Array.isArray(row) || row.length < 6) return null;
-    const openTime = this.readNumber(row[0]);
-    const open = this.readNumber(row[1]);
-    const high = this.readNumber(row[2]);
-    const low = this.readNumber(row[3]);
-    const close = this.readNumber(row[4]);
-    const volume = this.readNumber(row[5]);
-    const values = [openTime, open, high, low, close, volume] as const;
-    if (values.some((value) => value == null)) return null;
-    const [safeOpenTime, safeOpen, safeHigh, safeLow, safeClose, safeVolume] = values as [
-      number, number, number, number, number, number,
-    ];
-    if (safeOpenTime < 0 || safeOpen <= 0 || safeHigh <= 0 || safeLow <= 0 || safeClose <= 0 || safeVolume < 0) {
-      return null;
-    }
-
-    return {
-      openTime: Math.trunc(safeOpenTime),
-      closeTime: Math.trunc(safeOpenTime + this.resolveIntervalMs(interval) - 1),
-      open: safeOpen,
-      high: safeHigh,
-      low: safeLow,
-      close: safeClose,
-      volume: safeVolume,
-      raw: row,
-    };
-  }
-
-  private resolveIntervalMs(interval: string) {
-    const normalized = interval.trim().toLowerCase();
-    const match = /^(\d+)([mhdw])$/.exec(normalized);
-    if (!match) return 60_000;
-    const amount = Number(match[1]);
-    const unit = match[2];
-    const multipliers: Record<string, number> = {
-      m: 60_000,
-      h: 3_600_000,
-      d: 86_400_000,
-      w: 604_800_000,
-    };
-    return Math.max(1, amount) * multipliers[unit];
   }
 
   private extractWalletCashflowFee(

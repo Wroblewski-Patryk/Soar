@@ -1,7 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { fetchExchangePublicRecentCandles } from '../exchange/exchangePublicMarketData.service';
+import {
+  fetchExchangePublicFundingRateHistory,
+  fetchExchangePublicOpenInterestHistory,
+  fetchExchangePublicRecentCandles,
+} from '../exchange/exchangePublicMarketData.service';
 import {
   fetchKlines,
+  fetchSupplementalSeries,
   hasContinuousCandleIntervals,
   resetBacktestDataGatewayCacheForTests,
   setDbCandleDelegateForTests,
@@ -9,6 +14,8 @@ import {
 } from './backtestDataGateway';
 
 vi.mock('../exchange/exchangePublicMarketData.service', () => ({
+  fetchExchangePublicFundingRateHistory: vi.fn(),
+  fetchExchangePublicOpenInterestHistory: vi.fn(),
   fetchExchangePublicRecentCandles: vi.fn(),
 }));
 
@@ -182,5 +189,46 @@ describe('backtestDataGateway', () => {
       baseTime + ONE_MINUTE_MS,
     ]);
     expect(createMany).toHaveBeenCalledTimes(1);
+  });
+
+  it('uses exchange-owned derivatives history for non-Binance futures supplemental series', async () => {
+    const baseTime = 1_710_000_000_000;
+    vi.mocked(fetchExchangePublicFundingRateHistory).mockResolvedValue([
+      { timestamp: baseTime, fundingRate: 0.0001, raw: {} },
+    ]);
+    vi.mocked(fetchExchangePublicOpenInterestHistory).mockResolvedValue([
+      { timestamp: baseTime, openInterest: 1234, raw: {} },
+    ]);
+
+    const supplemental = await fetchSupplementalSeries(
+      'GATEIO',
+      'BTCUSDT',
+      '5m',
+      'FUTURES',
+      100,
+      baseTime + ONE_MINUTE_MS * 10,
+      baseTime,
+    );
+
+    expect(fetchExchangePublicFundingRateHistory).toHaveBeenCalledWith({
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      since: baseTime,
+      endTime: baseTime + ONE_MINUTE_MS * 10,
+      limit: 100,
+    });
+    expect(fetchExchangePublicOpenInterestHistory).toHaveBeenCalledWith({
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      interval: '5m',
+      since: baseTime,
+      endTime: baseTime + ONE_MINUTE_MS * 10,
+      limit: 100,
+    });
+    expect(supplemental.fundingRates).toEqual([{ timestamp: baseTime, fundingRate: 0.0001 }]);
+    expect(supplemental.openInterest).toEqual([{ timestamp: baseTime, openInterest: 1234 }]);
+    expect(supplemental.orderBook).toEqual([]);
   });
 });

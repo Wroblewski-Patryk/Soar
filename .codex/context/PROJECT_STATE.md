@@ -4,6 +4,17 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-NON-BINANCE-BACKTEST-DERIVATIVES-ADAPTER-2026-05-13` moved
+  non-Binance futures backtest supplemental funding-rate and open-interest
+  history onto the Exchange public market-data adapter where the CCXT connector
+  supports those methods. Exchange public market-data now exposes adapter
+  boundaries for funding history, open-interest history, and order-book
+  snapshots, and the CCXT connector normalizes those payloads. Backtest
+  order-book history remains intentionally empty for non-Binance because a
+  current order-book snapshot would be misleading historical input. Evidence:
+  `docs/planning/v1-non-binance-backtest-derivatives-adapter-2026-05-13-task.md`;
+  focused API tests passed (`26/26`) and API typecheck passed.
+
 - `V1-RUNTIME-TICKER-AND-BACKTEST-VENUE-UI-2026-05-13` closed the next
   adapter/UI parity gap after the candle audit. Generic runtime ticker fallback
   prices now use the Exchange public market-data boundary for Binance and

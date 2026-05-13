@@ -146,6 +146,11 @@ handoff:
 
 ## Current 2026-05-13 Adapter/Runtime Index
 
+- `V1-NON-BINANCE-BACKTEST-DERIVATIVES-ADAPTER-2026-05-13` is the current
+  local non-Binance futures backtest supplemental-data proof. Evidence lives in
+  `docs/planning/v1-non-binance-backtest-derivatives-adapter-2026-05-13-task.md`.
+  It extends `REQ-FUNC-022`, `RISK-023`, `SOAR-BACKTESTS-001`, and
+  `SOAR-EXCHANGE-ADAPTER-001`.
 - `V1-RUNTIME-TICKER-AND-BACKTEST-VENUE-UI-2026-05-13` is the current local
   ticker fallback and Backtest details UI parity proof. Evidence lives in
   `docs/planning/v1-runtime-ticker-and-backtest-venue-ui-2026-05-13-task.md`.
@@ -158,6 +163,6 @@ handoff:
 - `V1-RUNTIME-EXCHANGE-ADAPTER-BOUNDARY-2026-05-13` is the prior runtime
   warmup/indicator exchange-boundary proof. Evidence lives in
   `docs/planning/v1-runtime-exchange-adapter-boundary-2026-05-13-task.md`.
-- Both proofs are local adapter-boundary evidence. Production LIVE/Gate.io
-  operation evidence and generic non-Binance derivatives supplemental support
+- These proofs are local adapter-boundary evidence. Production LIVE/Gate.io
+  operation evidence and runtime non-Binance derivatives supplemental support
   remain separate proof/implementation lanes.

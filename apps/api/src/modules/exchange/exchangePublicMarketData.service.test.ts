@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import {
+  fetchExchangePublicFundingRateHistory,
+  fetchExchangePublicOpenInterestHistory,
+  fetchExchangePublicOrderBookSnapshot,
   fetchExchangePublicRecentCandles,
   fetchExchangePublicTickerSnapshot,
 } from './exchangePublicMarketData.service';
@@ -98,5 +101,59 @@ describe('exchangePublicMarketData.service', () => {
     ).rejects.toThrow('gateio_public_ticker_failed');
 
     expect(connector.disconnect).toHaveBeenCalledTimes(1);
+  });
+
+  it('reads public derivatives series through a disposable exchange connector', async () => {
+    const connector = {
+      fetchTickerSnapshot: vi.fn(),
+      fetchRecentCandles: vi.fn(),
+      fetchFundingRateHistory: vi.fn().mockResolvedValue([
+        { timestamp: 1_714_000_000_000, fundingRate: 0.0001, raw: {} },
+      ]),
+      fetchOpenInterestHistory: vi.fn().mockResolvedValue([
+        { timestamp: 1_714_000_000_000, openInterest: 1200, raw: {} },
+      ]),
+      fetchOrderBookSnapshot: vi.fn().mockResolvedValue({
+        timestamp: 1_714_000_000_000,
+        imbalance: 0.1,
+        spreadBps: 2,
+        depthRatio: 1.2,
+        raw: {},
+      }),
+      disconnect: vi.fn().mockResolvedValue(undefined),
+    };
+    const deps = { createPublicConnector: vi.fn(() => connector) };
+
+    const funding = await fetchExchangePublicFundingRateHistory(
+      { exchange: 'GATEIO', marketType: 'FUTURES', symbol: 'BTCUSDT', since: 1, endTime: 2, limit: 10 },
+      deps,
+    );
+    const openInterest = await fetchExchangePublicOpenInterestHistory(
+      { exchange: 'GATEIO', marketType: 'FUTURES', symbol: 'BTCUSDT', interval: '5m', since: 1, endTime: 2, limit: 10 },
+      deps,
+    );
+    const orderBook = await fetchExchangePublicOrderBookSnapshot(
+      { exchange: 'GATEIO', marketType: 'FUTURES', symbol: 'BTCUSDT', limit: 20 },
+      deps,
+    );
+
+    expect(connector.fetchFundingRateHistory).toHaveBeenCalledWith({
+      symbol: 'BTCUSDT',
+      since: 1,
+      endTime: 2,
+      limit: 10,
+    });
+    expect(connector.fetchOpenInterestHistory).toHaveBeenCalledWith({
+      symbol: 'BTCUSDT',
+      interval: '5m',
+      since: 1,
+      endTime: 2,
+      limit: 10,
+    });
+    expect(connector.fetchOrderBookSnapshot).toHaveBeenCalledWith('BTCUSDT', 20);
+    expect(funding).toHaveLength(1);
+    expect(openInterest).toHaveLength(1);
+    expect(orderBook.depthRatio).toBe(1.2);
+    expect(connector.disconnect).toHaveBeenCalledTimes(3);
   });
 });

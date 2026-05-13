@@ -135,3 +135,23 @@ export type CcxtPublicCandle = {
   volume: number;
   raw: unknown;
 };
+
+export type CcxtPublicFundingRatePoint = {
+  timestamp: number;
+  fundingRate: number;
+  raw: unknown;
+};
+
+export type CcxtPublicOpenInterestPoint = {
+  timestamp: number;
+  openInterest: number;
+  raw: unknown;
+};
+
+export type CcxtPublicOrderBookPoint = {
+  timestamp: number;
+  imbalance: number;
+  spreadBps: number;
+  depthRatio: number;
+  raw: unknown;
+};
