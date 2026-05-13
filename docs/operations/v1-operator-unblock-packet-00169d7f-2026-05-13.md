@@ -12,6 +12,8 @@
 - Public build-info and public API/Web smoke: `PASS`
 - Current production UI clickthrough: `BLOCKED_AUTH`
 - Activation audit and plan: fresh `NO-GO` for 2026-05-13
+- RC external gates, sign-off, and checklist: fresh but failed/blocked for
+  2026-05-13
 - V1 generated state: `NO-GO`
 
 ## Current Blockers
@@ -25,8 +27,10 @@
 - Missing `LIVEIMPORT-03` runtime readback artifact.
 - Production UI clickthrough is fresh for 2026-05-13 but `BLOCKED_AUTH`; it is
   not accepted V1 evidence.
-- RC, backup/restore, and rollback artifacts are stale for 2026-05-13 and must
-  be refreshed after protected/operator inputs are available.
+- RC artifacts are fresh for 2026-05-13 but failed/blocked because Gate 4
+  approver fields are missing.
+- Backup/restore and rollback artifacts are stale for 2026-05-13 and must be
+  refreshed after protected/operator inputs are available.
 - Activation audit and plan are fresh `NO-GO` artifacts for 2026-05-13; they
   do not approve V1.
 - Final production release gate must return `ready`; the latest non-dry-run

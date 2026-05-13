@@ -4,6 +4,12 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-RC-CURRENT-BLOCKED-REFRESH-2026-05-13` refreshed RC external gates,
+  sign-off, and checklist artifacts for 2026-05-13.
+- Final preflight now classifies RC evidence as current `failed`/`BLOCKED`
+  rather than stale: Gate 4 approver fields are still missing, so no approval
+  was fabricated and V1 remains `NO-GO`.
+
 - `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-13` refreshed production
   activation audit and activation evidence plan artifacts for the current
   evidence date.

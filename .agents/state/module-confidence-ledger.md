@@ -57,6 +57,10 @@ Do not turn uncertainty into optimism.
 
 ## Current Release Evidence Notes
 
+- 2026-05-13 `V1-RC-CURRENT-BLOCKED-REFRESH-2026-05-13` applies to
+  `SOAR-OPERATIONS-001`: RC external gates, sign-off, and checklist are fresh
+  for 2026-05-13 but remain failed/blocked because Gate 4 approver fields are
+  missing. Operations remains `BLOCKED`.
 - 2026-05-13 `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-13` applies to
   `SOAR-OPERATIONS-001`: production activation audit and activation evidence
   plan are fresh `NO-GO` artifacts for 2026-05-13. This removes the activation

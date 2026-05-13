@@ -17,6 +17,14 @@ Last updated: 2026-05-13
 
 ## READY
 
+- [x] `V1-RC-CURRENT-BLOCKED-REFRESH-2026-05-13 release: refresh RC artifacts to current blocked truth`
+  - Scope: refreshed RC external gates status, RC sign-off, and RC checklist
+    artifacts for 2026-05-13. Final preflight now classifies RC evidence as
+    current `failed`/`BLOCKED` rather than stale because Gate 4 approver fields
+    are still missing. Evidence:
+    `docs/planning/v1-rc-current-blocked-refresh-2026-05-13-task.md`.
+    V1 remains `NO-GO`.
+
 - [x] `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-13 release: refresh current activation audit and plan truth`
   - Scope: published current 2026-05-13 production activation audit and
     activation evidence plan artifacts as explicit `NO-GO` truth. Release gate

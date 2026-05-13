@@ -4,6 +4,11 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-RC-CURRENT-BLOCKED-REFRESH-2026-05-13` RC FRESH / BLOCKED: RC external
+  gates, RC sign-off, and RC checklist were refreshed for 2026-05-13. Gate 4
+  remains open because real approver fields are missing; final preflight now
+  reports RC artifacts as current failed evidence rather than stale evidence.
+
 - `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-13` ACTIVATION FRESH / NO-GO:
   production activation audit and activation evidence plan are fresh for
   2026-05-13 and explicitly `NO-GO`. Final preflight removed the activation

@@ -4,6 +4,12 @@ Last updated: 2026-05-13
 
 ## Next Tiny Task
 
+Latest RC blocked refresh:
+`V1-RC-CURRENT-BLOCKED-REFRESH-2026-05-13` refreshed RC external gates status,
+RC sign-off, and RC checklist artifacts for 2026-05-13. Final preflight now
+classifies RC evidence as current `failed`/`BLOCKED` rather than stale because
+Gate 4 approver fields are still missing. V1 remains `NO-GO`.
+
 Latest production activation refresh:
 `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-13` refreshed activation audit and
 activation evidence plan artifacts for the current evidence date. Final

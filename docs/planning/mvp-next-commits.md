@@ -8,6 +8,14 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `V1-RC-CURRENT-BLOCKED-REFRESH-2026-05-13 release: refresh RC artifacts to current blocked truth`
+  - 2026-05-13: Refreshed RC external gates status, RC sign-off, and RC
+    checklist artifacts for 2026-05-13. Final preflight now classifies RC
+    evidence as current `failed`/`BLOCKED` rather than stale because Gate 4
+    approver fields are still missing. Evidence:
+    `docs/planning/v1-rc-current-blocked-refresh-2026-05-13-task.md`.
+    V1 remains `NO-GO`.
+
 - [x] `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-13 release: refresh current activation audit and plan truth`
   - 2026-05-13: Published current production activation audit and activation
     evidence plan artifacts as explicit `NO-GO` truth. Release gate dry-run

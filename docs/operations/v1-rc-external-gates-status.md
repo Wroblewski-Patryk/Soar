@@ -1,6 +1,6 @@
 # V1 RC External Gates Status
 
-Generated at (UTC): 2026-05-12T00:00:00.000Z
+Generated at (UTC): 2026-05-13T00:00:00.000Z
 
 Source artifact: `docs\operations\v1-slo-window-report-7d-2026-05-12T06-55-18-900Z.json`
 Observation window:
