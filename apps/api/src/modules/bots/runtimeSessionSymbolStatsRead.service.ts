@@ -141,6 +141,7 @@ const firstRuntimeBlockReason = (payload: Record<string, unknown> | null) => {
 };
 
 const resolveFallbackDerivatives = async (params: {
+  exchange: import('@prisma/client').Exchange;
   marketType: 'FUTURES' | 'SPOT';
   symbol: string;
   interval: string;
@@ -151,19 +152,21 @@ const resolveFallbackDerivatives = async (params: {
   const [fundingHistory, fundingSnapshot, openInterestHistory, openInterestSnapshot, orderBookSnapshot] =
     await Promise.all([
       fetchFallbackFundingRateHistory({
+        exchange: params.exchange,
         symbol: params.symbol,
         limit: 200,
         endTimeMs: lastCandle.closeTime,
       }),
-      fetchFallbackFundingRateSnapshot(params.symbol),
+      fetchFallbackFundingRateSnapshot(params.symbol, params.exchange),
       fetchFallbackOpenInterestHistory({
+        exchange: params.exchange,
         symbol: params.symbol,
         interval: params.interval,
         limit: 200,
         endTimeMs: lastCandle.closeTime,
       }),
-      fetchFallbackOpenInterestSnapshot(params.symbol),
-      fetchFallbackOrderBookSnapshot(params.symbol),
+      fetchFallbackOpenInterestSnapshot(params.symbol, params.exchange),
+      fetchFallbackOrderBookSnapshot(params.symbol, params.exchange),
     ]);
 
   const fundingPoints = fundingHistory.map((item) => ({
@@ -212,6 +215,7 @@ const resolveFallbackDerivatives = async (params: {
 };
 
 const loadMarketSnapshot = async (params: {
+  exchange: import('@prisma/client').Exchange;
   marketType: 'FUTURES' | 'SPOT';
   symbol: string;
   interval: string;
@@ -259,6 +263,7 @@ const loadMarketSnapshot = async (params: {
     runtimeCandles.length >= runtimeSignalReadSnapshotMinCandles
       ? []
       : await fetchFallbackKlines({
+          exchange: params.exchange,
           marketType: params.marketType,
           symbol: params.symbol,
           interval: params.interval,
@@ -313,6 +318,7 @@ const loadMarketSnapshot = async (params: {
       ? undefined
       : await resolveFallbackDerivatives({
           marketType: params.marketType,
+          exchange: params.exchange,
           symbol: params.symbol,
           interval: params.interval,
           candles: resolvedCandles,
@@ -612,6 +618,7 @@ export const listBotRuntimeSessionSymbolStats = async (
       [...strategySeriesKeys.entries()].map(async ([key, value]) => ({
         key,
         snapshot: await loadMarketSnapshot({
+          exchange: botExchange,
           marketType: botMarketType,
           symbol: value.symbol,
           interval: value.interval,

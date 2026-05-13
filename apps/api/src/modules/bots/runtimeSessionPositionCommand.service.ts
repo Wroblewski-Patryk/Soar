@@ -267,6 +267,7 @@ export const closeBotRuntimeSessionPosition = async (
     }) ?? null;
   if (!(typeof closeReferencePrice === 'number' && Number.isFinite(closeReferencePrice) && closeReferencePrice > 0)) {
     const fallbackPrices = await fetchFallbackTickerPrices({
+      exchange: botExchange,
       marketType: botMarketType === 'SPOT' ? 'SPOT' : 'FUTURES',
       symbols: [position.symbol],
     });

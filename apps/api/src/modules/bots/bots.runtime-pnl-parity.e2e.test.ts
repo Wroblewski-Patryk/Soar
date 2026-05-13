@@ -270,6 +270,7 @@ describe('Bots runtime pnl parity contract', () => {
 
     expect(positionsRes.status).toBe(200);
     expect(fetchFallbackTickerPricesMock).toHaveBeenCalledWith({
+      exchange: 'BINANCE',
       marketType: 'FUTURES',
       symbols: ['SOLUSDT'],
     });

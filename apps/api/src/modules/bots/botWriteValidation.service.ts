@@ -211,6 +211,9 @@ const findActiveLiveBotSymbolOverlap = async (params: {
       symbolGroup: {
         select: {
           symbols: true,
+          marketUniverse: {
+            select: { exchange: true, marketType: true },
+          },
         },
       },
       botMarketGroups: {
@@ -223,6 +226,9 @@ const findActiveLiveBotSymbolOverlap = async (params: {
           symbolGroup: {
             select: {
               symbols: true,
+              marketUniverse: {
+                select: { exchange: true, marketType: true },
+              },
             },
           },
         },
@@ -239,8 +245,13 @@ const findActiveLiveBotSymbolOverlap = async (params: {
         : bot.symbolGroup
           ? [bot.symbolGroup]
           : [];
+    const matchingVenueSymbolGroups = candidateSymbolGroups.filter(
+      (symbolGroup) =>
+        symbolGroup.marketUniverse.exchange === targetSymbolGroup.marketUniverse.exchange &&
+        symbolGroup.marketUniverse.marketType === targetSymbolGroup.marketUniverse.marketType
+    );
     const overlappingSymbols = [...new Set(
-      candidateSymbolGroups
+      matchingVenueSymbolGroups
         .flatMap((symbolGroup) => symbolGroup.symbols ?? [])
         .map((symbol) => normalizeTrackedSymbol(symbol))
         .filter((symbol) => targetSymbols.has(symbol))

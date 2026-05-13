@@ -1,5 +1,11 @@
+import { Exchange } from '@prisma/client';
+
 import { normalizeSymbols } from '../../lib/symbols';
 import { fetchBinancePublicRestJson } from '../exchange/binancePublicRest.service';
+import {
+  fetchExchangePublicRecentCandles,
+  fetchExchangePublicTickerSnapshot,
+} from '../exchange/exchangePublicMarketData.service';
 
 const normalizeKlineInterval = (value?: string | null) => {
   if (!value) return '1m';
@@ -68,22 +74,23 @@ const DERIVATIVES_SNAPSHOT_TTL_MS = 15_000;
 const tickerPriceFallbackCache = new Map<string, { fetchedAt: number; prices: Map<string, number> }>();
 
 export const fetchFallbackKlines = async (params: {
+  exchange?: Exchange;
   marketType: 'FUTURES' | 'SPOT';
   symbol: string;
   interval: string;
   limit?: number;
 }) => {
   if (process.env.NODE_ENV === 'test') return [];
+  const exchange = params.exchange ?? 'BINANCE';
   const normalizedInterval = normalizeKlineInterval(params.interval);
   const limit = Math.min(1000, Math.max(20, params.limit ?? 300));
-  const cacheKey = `${params.marketType}|${params.symbol.toUpperCase()}|${normalizedInterval}|${limit}`;
+  const cacheKey = `${exchange}|${params.marketType}|${params.symbol.toUpperCase()}|${normalizedInterval}|${limit}`;
   const now = Date.now();
   const cached = klineFallbackCache.get(cacheKey);
   if (cached && now - cached.fetchedAt < KLINE_FALLBACK_TTL_MS) {
     return cached.candles;
   }
 
-  const endpoint = params.marketType === 'SPOT' ? '/api/v3/klines' : '/fapi/v1/klines';
   const searchParams = new URLSearchParams({
     symbol: params.symbol.toUpperCase(),
     interval: normalizedInterval,
@@ -91,15 +98,55 @@ export const fetchFallbackKlines = async (params: {
   });
 
   try {
-    const payload = await fetchBinancePublicRestJson({
-      marketType: params.marketType,
-      path: endpoint,
-      searchParams,
-    });
-    if (!Array.isArray(payload)) return [];
+    const payload =
+      exchange === 'BINANCE'
+        ? await fetchBinancePublicRestJson({
+            marketType: params.marketType,
+            path: params.marketType === 'SPOT' ? '/api/v3/klines' : '/fapi/v1/klines',
+            searchParams,
+          })
+        : await fetchExchangePublicRecentCandles({
+            exchange,
+            marketType: params.marketType,
+            symbol: params.symbol.toUpperCase(),
+            interval: normalizedInterval,
+            limit,
+          });
+    const rows = Array.isArray(payload) ? payload : [];
     const currentTime = Date.now();
-    const candles = payload
+    const candles = rows
       .map((row) => {
+        if (row && typeof row === 'object' && !Array.isArray(row)) {
+          const candle = row as {
+            openTime?: unknown;
+            closeTime?: unknown;
+            open?: unknown;
+            high?: unknown;
+            low?: unknown;
+            close?: unknown;
+            volume?: unknown;
+          };
+          const openTime = Number(candle.openTime);
+          const closeTime = Number(candle.closeTime);
+          const open = Number(candle.open);
+          const high = Number(candle.high);
+          const low = Number(candle.low);
+          const close = Number(candle.close);
+          const volume = Number(candle.volume);
+          if (
+            !Number.isFinite(openTime) ||
+            !Number.isFinite(closeTime) ||
+            !Number.isFinite(open) ||
+            !Number.isFinite(high) ||
+            !Number.isFinite(low) ||
+            !Number.isFinite(close) ||
+            !Number.isFinite(volume)
+          ) {
+            return null;
+          }
+          if (closeTime > currentTime) return null;
+          return { openTime, closeTime, open, high, low, close, volume };
+        }
         if (!Array.isArray(row)) return null;
         const openTime = Number(row[0]);
         const open = Number(row[1]);
@@ -153,11 +200,13 @@ export const fetchFallbackKlines = async (params: {
 };
 
 export const fetchFallbackFundingRateHistory = async (params: {
+  exchange?: Exchange;
   symbol: string;
   limit?: number;
   endTimeMs?: number;
 }) => {
   if (process.env.NODE_ENV === 'test') return [];
+  if ((params.exchange ?? 'BINANCE') !== 'BINANCE') return [];
   const limit = Math.min(1000, Math.max(20, params.limit ?? 200));
   const cacheKey = `${params.symbol.toUpperCase()}|${limit}|${Math.floor(params.endTimeMs ?? 0)}`;
   const now = Date.now();
@@ -199,8 +248,9 @@ export const fetchFallbackFundingRateHistory = async (params: {
   }
 };
 
-export const fetchFallbackFundingRateSnapshot = async (symbol: string) => {
+export const fetchFallbackFundingRateSnapshot = async (symbol: string, exchange: Exchange = 'BINANCE') => {
   if (process.env.NODE_ENV === 'test') return null;
+  if (exchange !== 'BINANCE') return null;
   const cacheKey = symbol.toUpperCase();
   const now = Date.now();
   const cached = fundingSnapshotFallbackCache.get(cacheKey);
@@ -236,12 +286,14 @@ const normalizeOpenInterestPeriod = (value?: string | null) => {
 };
 
 export const fetchFallbackOpenInterestHistory = async (params: {
+  exchange?: Exchange;
   symbol: string;
   interval: string;
   limit?: number;
   endTimeMs?: number;
 }) => {
   if (process.env.NODE_ENV === 'test') return [];
+  if ((params.exchange ?? 'BINANCE') !== 'BINANCE') return [];
   const limit = Math.min(500, Math.max(20, params.limit ?? 200));
   const period = normalizeOpenInterestPeriod(params.interval);
   const cacheKey = `${params.symbol.toUpperCase()}|${period}|${limit}|${Math.floor(params.endTimeMs ?? 0)}`;
@@ -285,8 +337,9 @@ export const fetchFallbackOpenInterestHistory = async (params: {
   }
 };
 
-export const fetchFallbackOpenInterestSnapshot = async (symbol: string) => {
+export const fetchFallbackOpenInterestSnapshot = async (symbol: string, exchange: Exchange = 'BINANCE') => {
   if (process.env.NODE_ENV === 'test') return null;
+  if (exchange !== 'BINANCE') return null;
   const cacheKey = symbol.toUpperCase();
   const now = Date.now();
   const cached = openInterestSnapshotFallbackCache.get(cacheKey);
@@ -315,8 +368,9 @@ export const fetchFallbackOpenInterestSnapshot = async (symbol: string) => {
   }
 };
 
-export const fetchFallbackOrderBookSnapshot = async (symbol: string) => {
+export const fetchFallbackOrderBookSnapshot = async (symbol: string, exchange: Exchange = 'BINANCE') => {
   if (process.env.NODE_ENV === 'test') return null;
+  if (exchange !== 'BINANCE') return null;
   const cacheKey = symbol.toUpperCase();
   const now = Date.now();
   const cached = orderBookSnapshotFallbackCache.get(cacheKey);
@@ -381,14 +435,16 @@ export const fetchFallbackOrderBookSnapshot = async (symbol: string) => {
 };
 
 export const fetchFallbackTickerPrices = async (params: {
+  exchange?: Exchange;
   marketType: 'FUTURES' | 'SPOT';
   symbols: string[];
 }) => {
   if (process.env.NODE_ENV === 'test') return new Map<string, number>();
+  const exchange = params.exchange ?? 'BINANCE';
   const normalizedSymbols = normalizeSymbols(params.symbols);
   if (normalizedSymbols.length === 0) return new Map<string, number>();
 
-  const cacheKey = params.marketType;
+  const cacheKey = `${exchange}|${params.marketType}`;
   const now = Date.now();
   const cached = tickerPriceFallbackCache.get(cacheKey);
   if (cached && now - cached.fetchedAt < TICKER_PRICE_FALLBACK_TTL_MS) {
@@ -398,11 +454,29 @@ export const fetchFallbackTickerPrices = async (params: {
     return new Map(fromCache);
   }
 
-  const endpoint = params.marketType === 'SPOT' ? '/api/v3/ticker/price' : '/fapi/v1/ticker/price';
   try {
+    if (exchange !== 'BINANCE') {
+      const entries = await Promise.all(
+        normalizedSymbols.map(async (symbol) => {
+          try {
+            const snapshot = await fetchExchangePublicTickerSnapshot({
+              exchange,
+              marketType: params.marketType,
+              symbol,
+            });
+            const price = snapshot.markPrice ?? snapshot.lastPrice;
+            return Number.isFinite(price) && price > 0 ? ([symbol, price] as const) : null;
+          } catch {
+            return null;
+          }
+        })
+      );
+      return new Map(entries.filter((entry): entry is readonly [string, number] => entry != null));
+    }
+
     const payload = await fetchBinancePublicRestJson({
       marketType: params.marketType,
-      path: endpoint,
+      path: params.marketType === 'SPOT' ? '/api/v3/ticker/price' : '/fapi/v1/ticker/price',
     });
     const allPrices = new Map<string, number>();
     const rows = Array.isArray(payload) ? payload : [payload];

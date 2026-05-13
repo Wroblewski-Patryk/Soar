@@ -748,6 +748,7 @@ export const listBotRuntimeSessionPositions = async (
   if (missingPriceSymbols.length > 0) {
     if (botExchange === 'BINANCE') {
       const fallbackPrices = await fetchFallbackTickerPrices({
+        exchange: botExchange,
         marketType: botMarketType === 'SPOT' ? 'SPOT' : 'FUTURES',
         symbols: missingPriceSymbols,
       });

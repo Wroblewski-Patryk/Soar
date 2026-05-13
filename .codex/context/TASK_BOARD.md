@@ -25,6 +25,13 @@ Last updated: 2026-05-13
     exchange/import state, LIVE imported positions must not block or pollute
     PAPER decisions, and the shared strategy/merge contract must preserve
     PAPER/LIVE parity where only the execution adapter differs.
+  - 2026-05-13 checkpoint: verified local DB-backed API/runtime proof for two
+    active PAPER bots plus active Binance LIVE and Gate.io LIVE bots. Runtime
+    position reads stay isolated by mode, wallet, API key, exchange, and market
+    type. Venue-scoped LIVE overlap, Gate.io-safe runtime market-data fallback,
+    duplicate guard regression, runtime PnL parity, typecheck, and focused Web
+    Dashboard tests passed. Remaining lane: production-safe authenticated
+    UI/runtime clickthrough and real live multi-bot operation evidence.
 
 - [x] `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13 release: close production target V1 gate`
   - Scope: completed final controlled `LIVEIMPORT-03` proof for the target

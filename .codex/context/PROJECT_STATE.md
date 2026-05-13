@@ -11,6 +11,15 @@ Last updated: 2026-05-13
   runtime/UI/action path. The next proof must verify mode isolation,
   selected-bot scoping, LIVE imported-position isolation, PAPER runtime
   independence, and PAPER/LIVE parity where only the execution adapter differs.
+- Checkpoint 1 for that proof is verified locally: Gate.io runtime fallback
+  market data now uses the exchange-owned public market-data boundary instead
+  of Binance REST, Binance-only derivative fallbacks remain Binance-only, and
+  active LIVE symbol overlap is scoped by exact `(exchange, marketType)`.
+  DB-backed e2e now proves the requested shape: two active PAPER bots plus one
+  Binance LIVE bot and one Gate.io LIVE bot, with selected runtime position
+  reads isolated by mode, wallet, API key, exchange, and market type. Focused
+  typecheck, fallback unit tests, duplicate guard e2e, runtime PnL parity e2e,
+  and Dashboard Home Web tests passed.
 
 - `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13` closed the current V1
   production target evidence lane for deployed

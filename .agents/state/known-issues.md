@@ -4,12 +4,16 @@ Last updated: 2026-05-13
 
 ## Active Issues
 
-- 2026-05-13 update: V1 production target gate evidence does not prove the
-  broad claim that a LIVE bot and a PAPER bot can both be enabled and operate
-  end-to-end across all runtime/UI/action paths at the same time. Architecture
-  supports this model through strict selected-bot scope and PAPER/LIVE parity
-  contracts, and focused local tests cover pieces of it, but a dedicated
-  simultaneous LIVE+PAPER proof is still missing.
+- 2026-05-13 update: V1 production target gate evidence did not by itself
+  prove the broad claim that multiple LIVE and PAPER bots can operate together
+  across all runtime/UI/action paths. Checkpoint 1 now closes the local
+  DB-backed API/runtime portion: two active PAPER bots plus active Binance LIVE
+  and Gate.io LIVE bots can coexist, venue-scoped LIVE overlap behaves
+  correctly, Gate.io runtime fallback market data stays inside the exchange
+  boundary, and selected runtime position reads are isolated by mode, wallet,
+  API key, exchange, and market type. Remaining issue is production-safe
+  authenticated UI/runtime clickthrough and real live multi-bot operation
+  evidence before making a blanket V1 claim.
 
 - 2026-05-13 update: `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13`
   resolves the active V1 production target blocker set. `LIVEIMPORT-03` passed

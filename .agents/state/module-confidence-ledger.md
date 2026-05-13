@@ -58,6 +58,19 @@ Do not turn uncertainty into optimism.
 ## Current Release Evidence Notes
 
 - 2026-05-13
+  `V1-LIVE-PAPER-SIMULTANEOUS-RUNTIME-PROOF-00169D7F-2026-05-13` applies to
+  `SOAR-BOTS-001`, `SOAR-BOT-RUNTIME-001`, and
+  `SOAR-EXCHANGE-ADAPTER-001`: local DB-backed API/runtime evidence now proves
+  two active PAPER bots plus active Binance LIVE and Gate.io LIVE bots can
+  coexist while selected runtime position reads stay isolated by mode, wallet,
+  API key, exchange, and market type. The slice also verifies venue-scoped LIVE
+  overlap, Gate.io-safe runtime fallback market data through the exchange
+  boundary, Binance-only derivative fallback degradation for Gate.io, duplicate
+  guard regression, runtime PnL parity, API typecheck, and focused Dashboard
+  Web rendering. These module rows remain `PARTIAL` because production-safe
+  authenticated UI/runtime clickthrough and real live multi-bot operation
+  evidence are still separate V1 lanes.
+- 2026-05-13
   `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13` applies to
   `SOAR-OPERATIONS-001`: final `LIVEIMPORT-03` passed for `TRXUSDT`, final
   preflight has no blockers, and the production target-only release gate is

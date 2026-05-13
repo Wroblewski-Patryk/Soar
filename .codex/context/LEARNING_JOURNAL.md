@@ -719,6 +719,10 @@ pnpm --filter api exec vitest run <db-backed-test-file> --run
 - Evidence: 2026-05-06 `PMPLC-23` found `cryptosparrow-postgres-1` running on
   `0.0.0.0:5432->5432/tcp`; `orders.exchangeEvents.service.test.ts` then
   passed (`8/8`) and the focused runtime/order pack passed (`81/81`).
+  2026-05-13 `V1-LIVE-PAPER-SIMULTANEOUS-RUNTIME-PROOF` first failed
+  DB-backed e2e with PostgreSQL unavailable because Laragon was off; after the
+  user started Laragon and `Test-NetConnection -ComputerName localhost -Port
+  5432` returned true, the DB-backed concurrent LIVE/PAPER e2e passed.
 
 ### 2026-05-03 - DB-backed API packs with global cleanup must run sequentially
 - Context: continued POSDRIFT runtime/order validation on a shared local test

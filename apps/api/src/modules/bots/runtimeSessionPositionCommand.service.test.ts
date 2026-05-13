@@ -367,6 +367,7 @@ describe('closeBotRuntimeSessionPosition', () => {
     });
 
     expect(mocks.fetchFallbackTickerPrices).toHaveBeenCalledWith({
+      exchange: 'BINANCE',
       marketType: 'FUTURES',
       symbols: ['BTCUSDT'],
     });

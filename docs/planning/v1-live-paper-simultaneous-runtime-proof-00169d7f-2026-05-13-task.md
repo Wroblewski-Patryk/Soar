@@ -2,7 +2,7 @@
 
 ## Context
 
-- Stage: analysis
+- Stage: verification
 - Operation mode: TESTER
 - The production target release gate passed for deployed SHA `00169d7f`, but
   the user correctly challenged whether that proves simultaneous LIVE and PAPER
@@ -66,4 +66,38 @@ run at the same time while preserving Soar's canonical runtime architecture.
 
 ## Result Report
 
-- Pending.
+- Checkpoint 1 implemented and verified a focused architecture fix and
+  regression coverage:
+  - `runtimeMarketDataFallback.service.ts` no longer routes non-Binance candle
+    and ticker fallback through Binance public REST. Gate.io and other
+    supported exchanges now use the exchange-owned public market-data boundary.
+  - Binance-only derivative fallbacks remain Binance-only and return empty
+    degraded data for Gate.io instead of mixing exchange domains.
+  - active LIVE symbol-overlap validation is now venue-scoped. A Binance LIVE
+    bot and a Gate.io LIVE bot may use the same symbol because their
+    `(exchange, marketType)` contexts are different; same-venue LIVE overlap
+    remains blocked.
+  - added `bots.live-paper-concurrent.e2e.test.ts` for the requested shape:
+    two PAPER bots plus one Binance LIVE bot and one Gate.io LIVE bot, with
+    runtime position readback isolation for wallet-owned imported LIVE rows.
+- Validation:
+  - PASS: `pnpm --filter api run typecheck`
+  - PASS:
+    `pnpm --filter api test -- src/modules/bots/bots.live-paper-concurrent.e2e.test.ts --run`
+    (`1/1`)
+  - PASS:
+    `pnpm --filter api test -- src/modules/bots/bots.duplicate-guard.e2e.test.ts --run`
+    (`6/6`)
+  - PASS:
+    `pnpm --filter api test -- src/modules/bots/bots.runtime-pnl-parity.e2e.test.ts --run`
+    (`2/2`)
+  - PASS: `pnpm --filter api test -- src/modules/bots/runtimeMarketDataFallback.service.test.ts src/modules/bots/runtimeSessionPositionCommand.service.test.ts --run`
+    (`14/14`)
+  - PASS: `pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets.test.tsx --run`
+    (`20/20`)
+- Current status: checkpoint verified locally. The proof now covers the exact
+  requested local DB-backed shape: two active PAPER bots plus active Binance
+  LIVE and Gate.io LIVE bots, with selected runtime position reads isolated by
+  mode, wallet, API key, exchange, and market type. Broader production-safe UI
+  clickthrough and real live multi-bot runtime operation remain separate V1
+  evidence lanes.
