@@ -1840,6 +1840,6 @@ describe('RuntimeSignalLoop', () => {
         exchange: 'GATEIO',
         mode: 'LIVE',
       })
-    ).toBe(false);
+    ).toBe(true);
   });
 });

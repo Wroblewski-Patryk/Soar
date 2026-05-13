@@ -4,6 +4,22 @@ Last updated: 2026-05-13
 
 ## Next Tiny Task
 
+Latest non-Gate.io proof:
+`V1-NON-GATEIO-RUNTIME-AND-APP-PROOF-00169D7F-2026-05-13` is
+`PARTIAL_BINANCE_LIVE_INACTIVE` after the user explicitly deferred Gate.io.
+Both active Binance PAPER bots are currently working in production read-only
+runtime readback: fresh RUNNING sessions and successful sessions, detail,
+symbol-stats, positions, trades, and aggregate monitoring endpoint reads.
+The Binance LIVE bot exists and has live opt-in enabled, but it is currently
+inactive and has no RUNNING session. No production writes, activation, live
+orders, close-position commands, or exchange mutation were attempted. Local
+validation is green (`typecheck`, `build`, guardrails, focused API/Web runtime
+tests, and `test:go-live:smoke`). The next exact non-Gate.io action is a
+separate controlled Binance LIVE activation/readback proof only if the user
+explicitly wants current LIVE runtime evidence; otherwise continue with
+production-safe action-level UI clickthroughs for the already-running PAPER
+scope.
+
 Latest production runtime inventory:
 `V1-PRODUCTION-RUNTIME-INVENTORY-00169D7F-2026-05-13` is `PARTIAL`: the
 approved production account has 2 active PAPER bots and 1 inactive LIVE Binance

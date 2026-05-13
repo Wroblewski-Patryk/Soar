@@ -1,0 +1,254 @@
+{
+  "status": "PARTIAL_BINANCE_LIVE_INACTIVE",
+  "generatedAt": "2026-05-13T20:15:37.864Z",
+  "scope": {
+    "gateio": "DEFERRED_BY_USER_2026-05-13",
+    "actions": "read-only GET requests only; no activation; no orders; no production writes"
+  },
+  "buildInfo": {
+    "gitSha": "00169d7fdc3aff8317759137b05594b20e773c8e",
+    "gitRef": "main",
+    "matchesExpected": true
+  },
+  "counts": {
+    "nonGateBots": 3,
+    "paperBots": 2,
+    "liveBots": 1,
+    "activePaperRuntimeReadbackPass": 2,
+    "currentLiveRunning": 0
+  },
+  "botRows": [
+    {
+      "bot": {
+        "idHash": "e0c0bf8f4942",
+        "name": "Live",
+        "mode": "LIVE",
+        "exchange": "BINANCE",
+        "marketType": "FUTURES",
+        "isActive": false,
+        "liveOptIn": true
+      },
+      "sessionsHttp": 200,
+      "sessionsCountReturned": 5,
+      "latestSession": {
+        "idHash": "8d0f311c0a74",
+        "status": "CANCELED",
+        "mode": "LIVE",
+        "startedAt": "2026-05-13T18:37:07.957Z",
+        "finishedAt": "2026-05-13T18:37:14.730Z",
+        "lastHeartbeatAt": "2026-05-13T18:37:14.730Z",
+        "symbolsTracked": 0,
+        "eventsCount": 2,
+        "heartbeatAgeSeconds": 5903
+      },
+      "runningSession": {
+        "idHash": null,
+        "status": null,
+        "mode": null,
+        "startedAt": null,
+        "finishedAt": null,
+        "lastHeartbeatAt": null,
+        "symbolsTracked": null,
+        "eventsCount": null,
+        "heartbeatAgeSeconds": null
+      },
+      "aggregateHttp": null,
+      "aggregate": null,
+      "singleSessionReadback": null,
+      "classification": "INFO_LIVE_PRESENT_INACTIVE_NO_RUNTIME_WRITE_ATTEMPTED"
+    },
+    {
+      "bot": {
+        "idHash": "eb0463ad99c5",
+        "name": "Peper bot 1m",
+        "mode": "PAPER",
+        "exchange": "BINANCE",
+        "marketType": "FUTURES",
+        "isActive": true,
+        "liveOptIn": false
+      },
+      "sessionsHttp": 200,
+      "sessionsCountReturned": 5,
+      "latestSession": {
+        "idHash": "c423e1f68f17",
+        "status": "RUNNING",
+        "mode": "PAPER",
+        "startedAt": "2026-05-08T22:36:00.289Z",
+        "finishedAt": null,
+        "lastHeartbeatAt": "2026-05-13T20:15:23.038Z",
+        "symbolsTracked": 7,
+        "eventsCount": 58250,
+        "heartbeatAgeSeconds": 15
+      },
+      "runningSession": {
+        "idHash": "c423e1f68f17",
+        "status": "RUNNING",
+        "mode": "PAPER",
+        "startedAt": "2026-05-08T22:36:00.289Z",
+        "finishedAt": null,
+        "lastHeartbeatAt": "2026-05-13T20:15:23.038Z",
+        "symbolsTracked": 7,
+        "eventsCount": 58250,
+        "heartbeatAgeSeconds": 15
+      },
+      "aggregateHttp": 200,
+      "aggregate": {
+        "sessionDetail": {
+          "idHash": "aca1e5e3669d",
+          "status": "RUNNING",
+          "mode": "PAPER",
+          "startedAt": "2026-05-08T22:36:00.289Z",
+          "finishedAt": null,
+          "lastHeartbeatAt": "2026-05-13T20:15:23.038Z",
+          "symbolsTracked": 7,
+          "eventsCount": 58250,
+          "heartbeatAgeSeconds": 18
+        },
+        "symbolStats": {
+          "items": 8,
+          "totalSignals": 86,
+          "openPositionCount": 7,
+          "realizedPnl": 7.617155039862221,
+          "unrealizedPnl": -5.523485513021926
+        },
+        "positions": {
+          "total": 93,
+          "openCount": 7,
+          "closedCount": 86,
+          "openOrdersCount": 0,
+          "historyItems": 86,
+          "openItems": 7,
+          "realizedPnl": 7.617155039862226,
+          "unrealizedPnl": 0,
+          "feesPaid": 3.451722594919563
+        },
+        "trades": {
+          "total": 218,
+          "items": 100,
+          "feesPaid": 3.3098772994532486
+        }
+      },
+      "singleSessionReadback": {
+        "detail": {
+          "idHash": "c423e1f68f17",
+          "status": "RUNNING",
+          "mode": "PAPER",
+          "startedAt": "2026-05-08T22:36:00.289Z",
+          "finishedAt": null,
+          "lastHeartbeatAt": "2026-05-13T20:15:23.038Z",
+          "symbolsTracked": 7,
+          "eventsCount": 58250,
+          "heartbeatAgeSeconds": 18
+        },
+        "symbolStatsItems": 8,
+        "symbolStatsTotalSignals": 86,
+        "positionsTotal": 93,
+        "positionsOpenCount": 7,
+        "positionsClosedCount": 86,
+        "openOrdersCount": 0,
+        "tradesTotal": 218,
+        "tradesItems": 100
+      },
+      "classification": "PASS_ACTIVE_PAPER_RUNTIME_READBACK"
+    },
+    {
+      "bot": {
+        "idHash": "310a7fbd1829",
+        "name": "Peper bot",
+        "mode": "PAPER",
+        "exchange": "BINANCE",
+        "marketType": "FUTURES",
+        "isActive": true,
+        "liveOptIn": false
+      },
+      "sessionsHttp": 200,
+      "sessionsCountReturned": 5,
+      "latestSession": {
+        "idHash": "326b402351bf",
+        "status": "RUNNING",
+        "mode": "PAPER",
+        "startedAt": "2026-05-10T19:29:53.083Z",
+        "finishedAt": null,
+        "lastHeartbeatAt": "2026-05-13T20:15:23.038Z",
+        "symbolsTracked": 7,
+        "eventsCount": 6626,
+        "heartbeatAgeSeconds": 18
+      },
+      "runningSession": {
+        "idHash": "326b402351bf",
+        "status": "RUNNING",
+        "mode": "PAPER",
+        "startedAt": "2026-05-10T19:29:53.083Z",
+        "finishedAt": null,
+        "lastHeartbeatAt": "2026-05-13T20:15:23.038Z",
+        "symbolsTracked": 7,
+        "eventsCount": 6626,
+        "heartbeatAgeSeconds": 18
+      },
+      "aggregateHttp": 200,
+      "aggregate": {
+        "sessionDetail": {
+          "idHash": "aca1e5e3669d",
+          "status": "RUNNING",
+          "mode": "PAPER",
+          "startedAt": "2026-05-10T19:29:53.083Z",
+          "finishedAt": null,
+          "lastHeartbeatAt": "2026-05-13T20:15:23.038Z",
+          "symbolsTracked": 7,
+          "eventsCount": 6626,
+          "heartbeatAgeSeconds": 19
+        },
+        "symbolStats": {
+          "items": 7,
+          "totalSignals": 128,
+          "openPositionCount": 7,
+          "realizedPnl": -18.35926939899861,
+          "unrealizedPnl": -0.7635598369420142
+        },
+        "positions": {
+          "total": 135,
+          "openCount": 7,
+          "closedCount": 128,
+          "openOrdersCount": 0,
+          "historyItems": 100,
+          "openItems": 7,
+          "realizedPnl": -18.3592693989986,
+          "unrealizedPnl": 0,
+          "feesPaid": 5.087201098787922
+        },
+        "trades": {
+          "total": 378,
+          "items": 100,
+          "feesPaid": 5.058558577031467
+        }
+      },
+      "singleSessionReadback": {
+        "detail": {
+          "idHash": "326b402351bf",
+          "status": "RUNNING",
+          "mode": "PAPER",
+          "startedAt": "2026-05-10T19:29:53.083Z",
+          "finishedAt": null,
+          "lastHeartbeatAt": "2026-05-13T20:15:23.038Z",
+          "symbolsTracked": 7,
+          "eventsCount": 6626,
+          "heartbeatAgeSeconds": 19
+        },
+        "symbolStatsItems": 7,
+        "symbolStatsTotalSignals": 128,
+        "positionsTotal": 135,
+        "positionsOpenCount": 7,
+        "positionsClosedCount": 128,
+        "openOrdersCount": 0,
+        "tradesTotal": 378,
+        "tradesItems": 100
+      },
+      "classification": "PASS_ACTIVE_PAPER_RUNTIME_READBACK"
+    }
+  ],
+  "conclusions": [
+    "Both non-Gate.io PAPER Binance bots are active and expose fresh RUNNING runtime monitoring data.",
+    "The Binance LIVE bot exists and live opt-in is enabled, but it is currently inactive; no activation was attempted in this read-only proof.",
+    "Gate.io is intentionally out of scope for this proof per user direction on 2026-05-13."
+  ]
+}

@@ -58,6 +58,20 @@ Do not turn uncertainty into optimism.
 ## Current Release Evidence Notes
 
 - 2026-05-13
+  `V1-NON-GATEIO-RUNTIME-AND-APP-PROOF-00169D7F-2026-05-13` applies to
+  `SOAR-BOTS-001`, `SOAR-BOT-RUNTIME-001`, `SOAR-DASHBOARD-001`,
+  `SOAR-EXCHANGE-ADAPTER-001`, and `SOAR-OPERATIONS-001`: Gate.io is
+  deferred by user decision for this slice. Authenticated read-only production
+  readback verifies both active Binance PAPER bots have fresh RUNNING runtime
+  monitoring data through session detail, symbol stats, positions, trades, and
+  aggregate monitoring endpoints. The Binance LIVE bot exists and has
+  live opt-in enabled, but is currently inactive and has no RUNNING session.
+  Local gates passed: focused Web runtime tests (`41/41`), focused API
+  runtime/monitoring tests (`47/47` and `29/29`), typecheck, build,
+  guardrails, and `test:go-live:smoke`. Rows remain `PARTIAL` where they
+  require production action-level UI proof or current LIVE runtime activation
+  evidence.
+- 2026-05-13
   `V1-PRODUCTION-RUNTIME-INVENTORY-00169D7F-2026-05-13` applies to
   `SOAR-BOTS-001` and `SOAR-BOT-RUNTIME-001`: authenticated read-only
   production inventory found 2 active PAPER bots and 1 inactive LIVE Binance

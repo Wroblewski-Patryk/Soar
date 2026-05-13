@@ -4,6 +4,18 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-NON-GATEIO-RUNTIME-AND-APP-PROOF-00169D7F-2026-05-13` NON-GATE.IO
+  PARTIAL: Gate.io is deferred by user decision for this slice. Authenticated
+  read-only production runtime readback confirms both active Binance PAPER bots
+  are RUNNING with fresh monitoring data across runtime sessions, symbol stats,
+  positions, trades, and aggregate endpoints. The Binance LIVE bot exists and
+  has live opt-in enabled, but is currently inactive with no RUNNING session.
+  Local verification is green: focused Web runtime tests (`41/41`), focused
+  API runtime/monitoring tests (`47/47` and `29/29`), typecheck, build,
+  guardrails, `test:go-live:web`, `test:go-live:api`, and
+  `test:go-live:smoke`. No production writes, bot activation, orders,
+  close-position commands, or exchange mutation were attempted.
+
 - `V1-PRODUCTION-RUNTIME-INVENTORY-00169D7F-2026-05-13` PRODUCTION MULTI-BOT
   SHAPE PARTIAL: authenticated read-only inventory found 3 visible bots:
   2 active PAPER bots and 1 inactive LIVE Binance futures bot. Latest PAPER
