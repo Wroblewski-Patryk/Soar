@@ -17,6 +17,17 @@ Last updated: 2026-05-13
 
 ## READY
 
+- [x] `V1-PROD-RESTORE-AND-LIVEIMPORT-TRUTH-00169D7F-2026-05-13 release: refresh production restore and expose LIVEIMPORT truth`
+  - Scope: refreshed production backup/restore drill evidence through the
+    Coolify PostgreSQL resource terminal and generated canonical LIVEIMPORT
+    evidence for final-gate discovery. Restore drill is fresh `PASS`.
+    LIVEIMPORT is fresh `failed` because auth works and one LIVE Binance
+    futures bot exists, but no running session exists (`NO_RUNNING_SESSION`).
+    Final preflight now has one blocker:
+    `evidence:liveImportReadback:failed`. Evidence:
+    `docs/planning/v1-prod-restore-and-liveimport-truth-00169d7f-2026-05-13-task.md`.
+    V1 remains `NO-GO`.
+
 - [x] `V1-PROTECTED-PROOF-REDUCTION-00169D7F-2026-05-13 release: reduce protected V1 blockers with approved app auth`
   - Scope: used user-approved production application credentials only through
     local environment variables to run authenticated production UI clickthrough,

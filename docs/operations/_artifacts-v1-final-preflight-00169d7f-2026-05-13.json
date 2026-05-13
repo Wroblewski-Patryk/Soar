@@ -1,6 +1,6 @@
 {
   "status": "blocked",
-  "generatedAt": "2026-05-13T17:31:57.056Z",
+  "generatedAt": "2026-05-13T17:44:54.319Z",
   "context": {
     "apiBaseUrl": "https://api.soar.luckysparrow.ch",
     "webBaseUrl": "https://soar.luckysparrow.ch",
@@ -61,13 +61,13 @@
       },
       {
         "key": "production DB restore context",
-        "ok": false,
+        "ok": true,
         "required": [
           "PROD_DB_CHECK_CONTAINER + PROD_DB_CHECK_USER + PROD_DB_CHECK_NAME",
           "or PRODUCTION_DB_CHECK_CONTAINER + PRODUCTION_DB_CHECK_USER + PRODUCTION_DB_CHECK_NAME"
         ],
         "satisfiedByEvidence": false,
-        "blocking": true
+        "blocking": false
       }
     ],
     "optional": [
@@ -142,11 +142,11 @@
     {
       "key": "liveImportReadback",
       "label": "LIVEIMPORT-03 runtime readback",
-      "state": "missing",
+      "state": "failed",
       "required": true,
-      "reason": "no matching artifact found",
-      "path": null,
-      "date": null
+      "reason": "artifact is fresh but does not satisfy required runtime readback checks",
+      "path": "docs\\operations\\liveimport-03-prod-readback-2026-05-13.json",
+      "date": "2026-05-13"
     },
     {
       "key": "prodUiClickthrough",
@@ -160,11 +160,11 @@
     {
       "key": "backupRestoreDrill",
       "label": "backup/restore drill evidence",
-      "state": "stale",
+      "state": "fresh",
       "required": true,
-      "reason": "expected 2026-05-13, found 2026-05-12",
-      "path": "docs\\operations\\v1-restore-drill-prod-2026-05-12T15-21-38Z.md",
-      "date": "2026-05-12"
+      "reason": "fresh for 2026-05-13",
+      "path": "docs\\operations\\v1-restore-drill-prod-2026-05-13T17-41-29Z.md",
+      "date": "2026-05-13"
     },
     {
       "key": "rollbackProof",
@@ -177,42 +177,13 @@
     }
   ],
   "blockers": [
-    "env:production DB restore context",
-    "evidence:liveImportReadback:missing",
-    "evidence:backupRestoreDrill:stale"
+    "evidence:liveImportReadback:failed"
   ],
   "blockerDetails": [
     {
-      "blocker": "env:production DB restore context",
-      "category": "protected_prerequisite",
-      "label": "Production DB restore context",
-      "severity": "blocking",
-      "protectedInputRequired": true,
-      "finalEvidenceRequired": false,
-      "operatorActionRequired": true,
-      "requiredCapabilities": [
-        "production_db_coolify_access"
-      ],
-      "remediationAvailable": true
-    },
-    {
-      "blocker": "evidence:liveImportReadback:missing",
+      "blocker": "evidence:liveImportReadback:failed",
       "category": "release_evidence",
-      "label": "LIVEIMPORT-03 runtime readback",
-      "severity": "blocking",
-      "protectedInputRequired": true,
-      "finalEvidenceRequired": true,
-      "operatorActionRequired": true,
-      "requiredCapabilities": [
-        "production_application_auth",
-        "protected_runtime_readback"
-      ],
-      "remediationAvailable": true
-    },
-    {
-      "blocker": "evidence:backupRestoreDrill:stale",
-      "category": "release_evidence",
-      "label": "backupRestoreDrill:stale",
+      "label": "liveImportReadback:failed",
       "severity": "blocking",
       "protectedInputRequired": true,
       "finalEvidenceRequired": true,
@@ -223,23 +194,6 @@
       "remediationAvailable": false
     }
   ],
-  "remediation": [
-    {
-      "blocker": "env:production DB restore context",
-      "title": "Provide production DB restore context",
-      "action": "Provide production DB/Coolify context before running the restore drill.",
-      "requiredInputs": [
-        "PROD_DB_CHECK_CONTAINER + PROD_DB_CHECK_USER + PROD_DB_CHECK_NAME",
-        "or PRODUCTION_DB_CHECK_CONTAINER + PRODUCTION_DB_CHECK_USER + PRODUCTION_DB_CHECK_NAME"
-      ],
-      "command": "pnpm run ops:db:restore-drill:prod"
-    },
-    {
-      "blocker": "evidence:liveImportReadback:missing",
-      "title": "Collect LIVEIMPORT-03 runtime readback",
-      "action": "Run the read-only collector after build-info confirms current HEAD and read-only auth is available.",
-      "command": "$expectedSha = git rev-parse HEAD; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output docs/operations/liveimport-03-prod-readback-2026-05-08.json"
-    }
-  ],
+  "remediation": [],
   "note": "Preflight JSON is not final V1 release evidence and contains env names/readiness only, not secret values."
 }

@@ -57,6 +57,12 @@ Do not turn uncertainty into optimism.
 
 ## Current Release Evidence Notes
 
+- 2026-05-13
+  `V1-PROD-RESTORE-AND-LIVEIMPORT-TRUTH-00169D7F-2026-05-13` applies to
+  `SOAR-OPERATIONS-001`: production restore drill is fresh `PASS`, while
+  LIVEIMPORT is fresh `failed` because the existing LIVE Binance futures bot
+  has no running session. Operations remains `BLOCKED`; final preflight now
+  has only `evidence:liveImportReadback:failed` as the V1 blocker.
 - 2026-05-13 `V1-PROTECTED-PROOF-REDUCTION-00169D7F-2026-05-13` applies to
   `SOAR-OPERATIONS-001`, `SOAR-BOTS-001`,
   `SOAR-UX-A11Y-MOBILE-001`, and `SOAR-SUBSCRIPTIONS-ADMIN-001`:

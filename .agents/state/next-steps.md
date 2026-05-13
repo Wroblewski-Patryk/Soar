@@ -4,6 +4,18 @@ Last updated: 2026-05-13
 
 ## Next Tiny Task
 
+Latest production restore and LIVEIMPORT truth:
+`V1-PROD-RESTORE-AND-LIVEIMPORT-TRUTH-00169D7F-2026-05-13` refreshed the
+production restore drill through the Coolify PostgreSQL resource terminal.
+Restore evidence is fresh `PASS` for 2026-05-13 with zero leftover restore
+databases and zero leftover backup dumps. LIVEIMPORT evidence is now canonical
+and fresh, but it fails closed: auth works and one LIVE Binance futures bot
+exists, but there is no running session (`NO_RUNNING_SESSION`). Final preflight
+now has exactly one blocker: `evidence:liveImportReadback:failed`. Next exact
+unblock action requires explicit live-risk approval and a safe way to produce a
+running LIVE/import session for the existing LIVE bot, or a product decision to
+change the V1 acceptance contract.
+
 Latest protected proof reduction:
 `V1-PROTECTED-PROOF-REDUCTION-00169D7F-2026-05-13` used approved production
 application credentials only in the local execution environment. Production UI

@@ -4,6 +4,24 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-PROD-RESTORE-AND-LIVEIMPORT-TRUTH-00169D7F-2026-05-13` refreshed the
+  production backup/restore drill through the Coolify PostgreSQL resource
+  terminal and normalized LIVEIMPORT evidence naming for final-gate discovery.
+- Restore drill is fresh `PASS` for 2026-05-13 with isolated restore database
+  creation, aggregate validation, restore DB drop, backup removal, and zero
+  leftover restore databases or dumps.
+- LIVEIMPORT now has a canonical current artifact and is correctly classified
+  as `failed`, not missing: auth works and one LIVE Binance futures bot exists,
+  but there is no running session (`NO_RUNNING_SESSION`), so runtime readback
+  cannot be accepted.
+- Final preflight now has exactly one blocker:
+  `evidence:liveImportReadback:failed`. V1 remains `NO-GO`.
+- Evidence:
+  `docs/planning/v1-prod-restore-and-liveimport-truth-00169d7f-2026-05-13-task.md`,
+  `docs/operations/v1-restore-drill-prod-2026-05-13T17-41-29Z.md`,
+  `docs/operations/liveimport-03-prod-readback-2026-05-13.json`, and
+  `docs/operations/v1-final-preflight-00169d7f-2026-05-13.md`.
+
 - `V1-PROTECTED-PROOF-REDUCTION-00169D7F-2026-05-13` used the
   user-approved production application credentials only in the local execution
   environment to reduce protected V1 blockers without committing secrets.

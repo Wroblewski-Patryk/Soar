@@ -4,6 +4,13 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-PROD-RESTORE-AND-LIVEIMPORT-TRUTH-00169D7F-2026-05-13` FINAL PREFLIGHT
+  ONE BLOCKER / V1 NO-GO: production restore drill is fresh `PASS` for
+  2026-05-13 with zero cleanup leftovers. LIVEIMPORT evidence is canonical and
+  fresh but failed because the existing LIVE Binance futures bot has no running
+  session. Final preflight now blocks only on
+  `evidence:liveImportReadback:failed`.
+
 - `V1-PROTECTED-PROOF-REDUCTION-00169D7F-2026-05-13` PROTECTED PROOF REDUCED /
   V1 NO-GO: approved production application auth produced a fresh PASS
   production UI module clickthrough and a fresh PASS rollback proof. LIVEIMPORT
