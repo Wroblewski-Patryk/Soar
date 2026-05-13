@@ -4,6 +4,13 @@ Last updated: 2026-05-13
 
 ## Active Issues
 
+- 2026-05-13 update: V1 production target gate evidence does not prove the
+  broad claim that a LIVE bot and a PAPER bot can both be enabled and operate
+  end-to-end across all runtime/UI/action paths at the same time. Architecture
+  supports this model through strict selected-bot scope and PAPER/LIVE parity
+  contracts, and focused local tests cover pieces of it, but a dedicated
+  simultaneous LIVE+PAPER proof is still missing.
+
 - 2026-05-13 update: `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13`
   resolves the active V1 production target blocker set. `LIVEIMPORT-03` passed
   for `TRXUSDT`, final preflight has no blockers, and the production

@@ -8,6 +8,15 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [ ] `V1-LIVE-PAPER-SIMULTANEOUS-RUNTIME-PROOF-00169D7F-2026-05-13 qa: prove simultaneous LIVE and PAPER bot behavior`
+  - Scope: verify the user's concern directly after the V1 production target
+    gate. One active LIVE bot and one active PAPER bot must remain separated by
+    wallet/mode/symbol scope, both must appear correctly in operator surfaces,
+    runtime reads must stay selected-bot scoped, PAPER must not inherit LIVE
+    exchange/import state, LIVE imported positions must not block or pollute
+    PAPER decisions, and the shared strategy/merge contract must preserve
+    PAPER/LIVE parity where only the execution adapter differs.
+
 - [x] `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13 release: close production target V1 gate`
   - 2026-05-13: Completed final controlled `LIVEIMPORT-03` proof for the
     target bot's real runtime-visible managed symbol `TRXUSDT`; final

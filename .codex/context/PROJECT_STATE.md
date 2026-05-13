@@ -4,6 +4,14 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- User concern captured as the next proof task:
+  `V1-LIVE-PAPER-SIMULTANEOUS-RUNTIME-PROOF-00169D7F-2026-05-13`. The current
+  V1 production target gate proves the Operations release lane, not a blanket
+  claim that simultaneous LIVE and PAPER bots are fully proven across every
+  runtime/UI/action path. The next proof must verify mode isolation,
+  selected-bot scoping, LIVE imported-position isolation, PAPER runtime
+  independence, and PAPER/LIVE parity where only the execution adapter differs.
+
 - `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13` closed the current V1
   production target evidence lane for deployed
   `00169d7fdc3aff8317759137b05594b20e773c8e`.

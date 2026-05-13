@@ -4,6 +4,15 @@ Last updated: 2026-05-13
 
 ## Next Tiny Task
 
+Next proof after V1 target gate:
+`V1-LIVE-PAPER-SIMULTANEOUS-RUNTIME-PROOF-00169D7F-2026-05-13` should verify
+the user's concern directly: one active LIVE bot and one active PAPER bot must
+remain separated by wallet/mode/symbol scope, both appear correctly in the
+dashboard selector, runtime reads must stay selected-bot scoped, PAPER runtime
+must not inherit LIVE exchange state, LIVE imported positions must not block or
+pollute PAPER decisions, and both paths must keep the architecture's
+PAPER/LIVE parity rules where only the execution adapter differs.
+
 Latest V1 target release gate:
 `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13` closed the current
 production target gate for deployed
