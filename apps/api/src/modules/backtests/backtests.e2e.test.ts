@@ -1,10 +1,66 @@
 import request from 'supertest';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { app } from '../../index';
+import { resetBacktestDataGatewayCacheForTests } from './backtestDataGateway';
 import { analyzePreTrade } from '../engine/preTrade.service';
 import { prisma } from '../../prisma/client';
 import { reconcileExternalPositionsFromExchange } from '../positions/livePositionReconciliation.service';
 import { setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
+
+vi.mock('../exchange/exchangePublicMarketData.service', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../exchange/exchangePublicMarketData.service')>();
+  const intervalMsFor = (interval: string) => {
+    const normalized = interval.trim().toLowerCase();
+    const unit = normalized.slice(-1);
+    const amount = Number.parseInt(normalized.slice(0, -1), 10);
+    if (!Number.isFinite(amount) || amount <= 0) return 60_000;
+    if (unit === 'm') return amount * 60_000;
+    if (unit === 'h') return amount * 60 * 60_000;
+    if (unit === 'd') return amount * 24 * 60 * 60_000;
+    return 60_000;
+  };
+
+  return {
+    ...actual,
+    fetchExchangePublicRecentCandles: vi.fn(async (params: {
+      symbol: string;
+      interval: string;
+      limit?: number;
+      since?: number;
+    }) => {
+      if (params.symbol.toUpperCase() === 'INVALIDPAIRXYZ') {
+        throw new Error('Unsupported test market symbol');
+      }
+
+      const intervalMs = intervalMsFor(params.interval);
+      const limit = Math.max(1, Math.min(params.limit ?? 500, 1000));
+      const start = Number.isFinite(params.since)
+        ? Math.floor(params.since as number)
+        : Date.now() - intervalMs * limit;
+      const symbolOffset = params.symbol.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % 200;
+      return Array.from({ length: limit }, (_, index) => {
+        const openTime = start + index * intervalMs;
+        const closeTime = openTime + intervalMs - 1;
+        const wave = Math.sin((index + symbolOffset) / 6);
+        const trend = index * 0.35;
+        const open = 100 + symbolOffset + trend + wave * 3;
+        const close = open + Math.cos((index + symbolOffset) / 5) * 2;
+        const high = Math.max(open, close) + 1.5;
+        const low = Math.min(open, close) - 1.5;
+        return {
+          openTime,
+          closeTime,
+          open,
+          high,
+          low,
+          close,
+          volume: 1_000 + index + symbolOffset,
+          raw: [openTime, open, high, low, close],
+        };
+      });
+    }),
+  };
+});
 
 const originalApiKeyEncryptionKeys = process.env.API_KEY_ENCRYPTION_KEYS;
 const originalApiKeyEncryptionActiveVersion = process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
@@ -117,12 +173,14 @@ describe('Backtests runs contract', () => {
   beforeEach(async () => {
     process.env.API_KEY_ENCRYPTION_KEYS = 'v1:test-keyring-material';
     process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v1';
+    resetBacktestDataGatewayCacheForTests();
 
     await prisma.$executeRawUnsafe(
       'ALTER TABLE "Bot" ADD COLUMN IF NOT EXISTS "paperStartBalance" DOUBLE PRECISION NOT NULL DEFAULT 10000',
     );
 
     await prisma.log.deleteMany();
+    await prisma.marketCandleCache.deleteMany();
     // Backtest worker updates run/report asynchronously, so cleanup is retried to avoid FK races in tests.
     for (let attempt = 0; attempt < 3; attempt += 1) {
       await prisma.backtestReport.deleteMany();

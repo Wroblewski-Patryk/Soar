@@ -112,6 +112,7 @@ export type BacktestTimeline = {
   runId: string;
   symbol: string;
   timeframe: string;
+  exchange: 'BINANCE' | 'BYBIT' | 'OKX' | 'KRAKEN' | 'COINBASE' | 'GATEIO';
   marketType: 'SPOT' | 'FUTURES';
   status: BacktestStatus;
   replayContext?: 'isolated' | 'portfolio';
@@ -134,10 +135,12 @@ export type BacktestTimeline = {
         | 'no_open_position'
         | 'no_flip_with_open_position'
         | 'already_open_same_side'
-        | 'manual_managed_symbol';
+        | 'manual_managed_symbol'
+        | 'strategy_exit_trace_only';
     }>;
     fundingPoints: number;
     openInterestPoints: number;
+    orderBookPoints: number;
   };
   positionStats?: {
     closedOnFinalCandleCount: number;
@@ -154,6 +157,13 @@ export type BacktestTimeline = {
       candleIndex: number;
       timestamp: string;
       value: number;
+    }>;
+    orderBook: Array<{
+      candleIndex: number;
+      timestamp: string;
+      imbalance: number;
+      spreadBps: number;
+      depthRatio: number;
     }>;
   };
   supportedEventTypes: string[];

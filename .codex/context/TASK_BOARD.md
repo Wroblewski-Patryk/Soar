@@ -17,6 +17,21 @@ Last updated: 2026-05-13
 
 ## READY
 
+- [x] `V1-BOT-BACKTEST-EXCHANGE-ADAPTER-AUDIT-2026-05-13 fix: scope bot/backtest market data by exchange adapter`
+  - Scope: audited bot runtime candle fallback, backtest candle loading,
+    backtest run/timeline replay, market candle DB cache ownership, and Web
+    backtest timeline types against the architecture's exact
+    `(exchange, marketType)` contract. Backtest candles and runtime fallback
+    candles now use the Exchange public market-data boundary instead of direct
+    Binance candle REST; run jobs and timelines carry resolved exchange
+    context; market candle cache uniqueness now includes `source`; Web
+    backtest timeline types include backend exchange/order-book/parity fields.
+    Binance-only derivative supplemental fallbacks remain explicit and fail
+    closed for non-Binance exchanges. Evidence:
+    `docs/planning/v1-bot-backtest-exchange-adapter-audit-2026-05-13-task.md`;
+    focused backtest/bot runtime tests passed (`56/56`), API typecheck passed,
+    and Web typecheck passed.
+
 - [x] `V1-RUNTIME-EXCHANGE-ADAPTER-BOUNDARY-2026-05-13 fix: align runtime market-data warmup with Exchange adapter boundary`
   - Scope: removed the Engine runtime candle warmup shortcut to Binance public
     REST by routing indicator recovery through the exchange-owned public

@@ -91,27 +91,14 @@ export const fetchFallbackKlines = async (params: {
     return cached.candles;
   }
 
-  const searchParams = new URLSearchParams({
-    symbol: params.symbol.toUpperCase(),
-    interval: normalizedInterval,
-    limit: String(limit),
-  });
-
   try {
-    const payload =
-      exchange === 'BINANCE'
-        ? await fetchBinancePublicRestJson({
-            marketType: params.marketType,
-            path: params.marketType === 'SPOT' ? '/api/v3/klines' : '/fapi/v1/klines',
-            searchParams,
-          })
-        : await fetchExchangePublicRecentCandles({
-            exchange,
-            marketType: params.marketType,
-            symbol: params.symbol.toUpperCase(),
-            interval: normalizedInterval,
-            limit,
-          });
+    const payload = await fetchExchangePublicRecentCandles({
+      exchange,
+      marketType: params.marketType,
+      symbol: params.symbol.toUpperCase(),
+      interval: normalizedInterval,
+      limit,
+    });
     const rows = Array.isArray(payload) ? payload : [];
     const currentTime = Date.now();
     const candles = rows

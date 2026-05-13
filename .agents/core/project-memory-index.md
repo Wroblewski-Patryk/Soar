@@ -1,6 +1,6 @@
 # Project Memory Index
 
-Last updated: 2026-05-11
+Last updated: 2026-05-13
 
 ## Purpose
 
@@ -143,3 +143,17 @@ handoff:
 - module confidence changes;
 - known broken or unverified journeys;
 - next tiny task.
+
+## Current 2026-05-13 Adapter/Runtime Index
+
+- `V1-BOT-BACKTEST-EXCHANGE-ADAPTER-AUDIT-2026-05-13` is the current local
+  bot/backtest exchange-boundary proof. Evidence lives in
+  `docs/planning/v1-bot-backtest-exchange-adapter-audit-2026-05-13-task.md`.
+  It updates `SOAR-BACKTESTS-001`, `SOAR-BOT-RUNTIME-001`,
+  `SOAR-EXCHANGE-ADAPTER-001`, `REQ-FUNC-022`, and `RISK-023`.
+- `V1-RUNTIME-EXCHANGE-ADAPTER-BOUNDARY-2026-05-13` is the prior runtime
+  warmup/indicator exchange-boundary proof. Evidence lives in
+  `docs/planning/v1-runtime-exchange-adapter-boundary-2026-05-13-task.md`.
+- Both proofs are local adapter-boundary evidence. Production LIVE/Gate.io
+  operation evidence and generic non-Binance derivatives supplemental support
+  remain separate proof/implementation lanes.

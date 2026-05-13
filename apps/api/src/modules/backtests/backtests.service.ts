@@ -600,6 +600,9 @@ export const getRunTimeline = async (
   const runSymbols = Array.isArray(seed.symbols)
     ? normalizeSymbols(seed.symbols as string[])
     : [];
+  const exchange = (Object.values(Exchange) as string[]).includes(String(seed.exchange))
+    ? (seed.exchange as Exchange)
+    : Exchange.BINANCE;
   const marketType = (seed.marketType === 'SPOT' ? 'SPOT' : 'FUTURES') as MarketType;
   const maxCandles = resolveEffectiveMaxCandlesFromSeed({
     seed,
@@ -648,6 +651,7 @@ export const getRunTimeline = async (
     candlesBySymbol.set(
       replaySymbol,
       await fetchKlines(
+        exchange,
         replaySymbol,
         run.timeframe,
         marketType,
@@ -659,6 +663,7 @@ export const getRunTimeline = async (
     supplementalBySymbol.set(
       replaySymbol,
       await fetchSupplementalSeries(
+        exchange,
         replaySymbol,
         run.timeframe,
         marketType,
@@ -795,6 +800,7 @@ export const getRunTimeline = async (
     symbol,
     timeframe: run.timeframe,
     marketType,
+    exchange,
     status: run.status,
     replayContext: query.replayContext,
     cursor: start,

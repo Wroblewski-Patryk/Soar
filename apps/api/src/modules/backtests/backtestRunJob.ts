@@ -1,4 +1,4 @@
-import { PositionSide } from '@prisma/client';
+import { Exchange, PositionSide } from '@prisma/client';
 import { BacktestFillModelConfig } from './backtestFillModel';
 import {
   BacktestKlineCandle,
@@ -125,6 +125,7 @@ type BacktestRunJobDeps = {
     strategyId: string,
   ) => Promise<StrategySignalConfigRecord | null>;
   fetchKlines: (
+    exchange: Exchange,
     symbol: string,
     timeframe: string,
     marketType: BacktestMarketType,
@@ -133,6 +134,7 @@ type BacktestRunJobDeps = {
     startTimeMs?: number,
   ) => Promise<BacktestKlineCandle[]>;
   fetchSupplementalSeries: (
+    exchange: Exchange,
     symbol: string,
     timeframe: string,
     marketType: BacktestMarketType,
@@ -227,6 +229,9 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
     const seed = ((run.seedConfig ?? {}) as Record<string, unknown>) ?? {};
     const symbolListRaw = Array.isArray(seed.symbols) ? (seed.symbols as string[]) : [run.symbol];
     const symbols = deps.uniqueSorted(symbolListRaw);
+    const exchange = (Object.values(Exchange) as string[]).includes(String(seed.exchange))
+      ? (seed.exchange as Exchange)
+      : Exchange.BINANCE;
     const marketType = (seed.marketType === 'SPOT' ? 'SPOT' : 'FUTURES') as BacktestMarketType;
     const leverageCandidate = Number((seed as { leverage?: unknown }).leverage);
     const leverage = Number.isFinite(leverageCandidate) ? leverageCandidate : 1;
@@ -357,6 +362,7 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
 
         try {
           const candles = await deps.fetchKlines(
+            exchange,
             symbol,
             run.timeframe,
             marketType,
@@ -368,6 +374,7 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
             throw new Error('NO_CANDLES_AVAILABLE_FOR_SYMBOL');
           }
           const supplemental = await deps.fetchSupplementalSeries(
+            exchange,
             symbol,
             run.timeframe,
             marketType,

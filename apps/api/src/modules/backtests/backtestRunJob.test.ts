@@ -191,7 +191,7 @@ describe('createBacktestRunJob', () => {
 
     expect(fetchKlines).toHaveBeenCalled();
     const fetchCalls = (fetchKlines as any).mock.calls as Array<any[]>;
-    expect(fetchCalls[0]?.[3]).toBe(400);
+    expect(fetchCalls[0]?.[4]).toBe(400);
     expect(computeAdaptiveMaxCandles).not.toHaveBeenCalled();
   });
 
@@ -233,6 +233,7 @@ describe('createBacktestRunJob', () => {
         strategyId: null,
         seedConfig: {
           symbols: ['BTCUSDT'],
+          exchange: 'GATEIO',
           marketType: 'FUTURES',
           leverage: 2,
           marginMode: 'CROSSED',
@@ -273,13 +274,15 @@ describe('createBacktestRunJob', () => {
 
     expect(fetchKlines).toHaveBeenCalled();
     const fetchKlinesCall = (fetchKlines as any).mock.calls[0] as Array<unknown>;
-    expect(fetchKlinesCall[4]).toBe(Date.parse(endAt));
-    expect(fetchKlinesCall[5]).toBe(Date.parse(startAt));
+    expect(fetchKlinesCall[0]).toBe('GATEIO');
+    expect(fetchKlinesCall[5]).toBe(Date.parse(endAt));
+    expect(fetchKlinesCall[6]).toBe(Date.parse(startAt));
 
     expect(fetchSupplementalSeries).toHaveBeenCalled();
     const fetchSupplementalCall = (fetchSupplementalSeries as any).mock.calls[0] as Array<unknown>;
-    expect(fetchSupplementalCall[4]).toBe(Date.parse(endAt));
-    expect(fetchSupplementalCall[5]).toBe(Date.parse(startAt));
+    expect(fetchSupplementalCall[0]).toBe('GATEIO');
+    expect(fetchSupplementalCall[5]).toBe(Date.parse(endAt));
+    expect(fetchSupplementalCall[6]).toBe(Date.parse(startAt));
   });
 
   it('fails soft when report upsert loses its parent rows during async completion', async () => {

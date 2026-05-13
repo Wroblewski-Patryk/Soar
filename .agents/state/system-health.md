@@ -4,6 +4,16 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-BOT-BACKTEST-EXCHANGE-ADAPTER-AUDIT-2026-05-13` LOCAL ADAPTER-BACKTEST
+  PASS: audited bot runtime fallback and backtest data paths against the exact
+  `(exchange, marketType)` architecture contract. Backtest candles and bot
+  runtime fallback candles now use the Exchange public market-data boundary
+  instead of direct Binance candle REST. Backtest run/timeline replay carries
+  exchange context, Web timeline types match backend parity/order-book fields,
+  and `MarketCandleCache` uniqueness now includes `source`. Focused
+  bot/backtest tests passed (`56/56`), API typecheck passed, and Web typecheck
+  passed. Production LIVE/Gate.io operation proof remains a separate lane.
+
 - `V1-RUNTIME-EXCHANGE-ADAPTER-BOUNDARY-2026-05-13` LOCAL ADAPTER-BOUNDARY
   PASS: runtime candle warmup and indicator recovery now use the Exchange
   module public market-data boundary instead of direct Binance REST from

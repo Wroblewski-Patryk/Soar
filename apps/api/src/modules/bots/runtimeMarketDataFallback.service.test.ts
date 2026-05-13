@@ -25,6 +25,40 @@ describe('runtimeMarketDataFallback.service', () => {
     vi.clearAllMocks();
   });
 
+  it('routes Binance candle fallback through the exchange-owned public market-data boundary', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    fetchExchangePublicRecentCandlesMock.mockResolvedValue([
+      {
+        openTime: 1_714_000_000_000,
+        closeTime: 1_714_000_059_999,
+        open: 100,
+        high: 101,
+        low: 99,
+        close: 100.5,
+        volume: 10,
+      },
+    ]);
+
+    const candles = await fetchFallbackKlines({
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      interval: '5m',
+      limit: 20,
+    });
+
+    expect(fetchBinancePublicRestJsonMock).not.toHaveBeenCalled();
+    expect(fetchExchangePublicRecentCandlesMock).toHaveBeenCalledWith({
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      interval: '5m',
+      limit: 20,
+    });
+    expect(candles).toHaveLength(1);
+    expect(candles[0].close).toBe(100.5);
+  });
+
   it('routes non-Binance candle fallback through the exchange-owned public market-data boundary', async () => {
     vi.stubEnv('NODE_ENV', 'production');
     fetchExchangePublicRecentCandlesMock.mockResolvedValue([

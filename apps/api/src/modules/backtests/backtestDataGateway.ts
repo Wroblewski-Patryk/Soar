@@ -1,5 +1,7 @@
+import { Exchange } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { fetchBinancePublicRestJson } from '../exchange/binancePublicRest.service';
+import { fetchExchangePublicRecentCandles } from '../exchange/exchangePublicMarketData.service';
 import { getTimeframeIntervalMs, normalizeTimeframe } from './backtestTimeframe';
 
 export type BacktestMarketType = 'SPOT' | 'FUTURES';
@@ -137,6 +139,7 @@ export const resetBacktestDataGatewayCacheForTests = () => {
 };
 
 const cacheKeyForCandles = (
+  exchange: Exchange,
   symbol: string,
   timeframe: string,
   marketType: BacktestMarketType,
@@ -144,11 +147,12 @@ const cacheKeyForCandles = (
   endTimeMs?: number,
   startTimeMs?: number,
 ) =>
-  `${marketType}:${symbol}:${normalizeTimeframe(timeframe)}:${maxCandles}:${
+  `${exchange}:${marketType}:${symbol}:${normalizeTimeframe(timeframe)}:${maxCandles}:${
     Number.isFinite(endTimeMs) ? Math.floor(endTimeMs as number) : 'latest'
   }:${Number.isFinite(startTimeMs) ? Math.floor(startTimeMs as number) : 'auto'}`;
 
 const cacheKeyForSupplemental = (
+  exchange: Exchange,
   symbol: string,
   timeframe: string,
   marketType: BacktestMarketType,
@@ -156,7 +160,7 @@ const cacheKeyForSupplemental = (
   endTimeMs?: number,
   startTimeMs?: number,
 ) =>
-  `supp:${marketType}:${symbol}:${normalizeTimeframe(timeframe)}:${maxCandles}:${
+  `supp:${exchange}:${marketType}:${symbol}:${normalizeTimeframe(timeframe)}:${maxCandles}:${
     Number.isFinite(endTimeMs) ? Math.floor(endTimeMs as number) : 'latest'
   }:${Number.isFinite(startTimeMs) ? Math.floor(startTimeMs as number) : 'auto'}`;
 
@@ -177,44 +181,8 @@ const openInterestPeriodForTimeframe = (timeframe: string) => {
   return '5m';
 };
 
-const parseKlinePayload = (payload: unknown): BacktestKlineCandle[] => {
-  if (!Array.isArray(payload) || payload.length === 0) return [];
-
-  return payload
-    .map((row) => {
-      if (!Array.isArray(row) || row.length < 7) return null;
-      const openTime = safeFloat(row[0]);
-      const open = safeFloat(row[1]);
-      const high = safeFloat(row[2]);
-      const low = safeFloat(row[3]);
-      const closePrice = safeFloat(row[4]);
-      const volume = safeFloat(row[5]);
-      const closeTime = safeFloat(row[6]);
-      if (
-        openTime <= 0 ||
-        closeTime <= 0 ||
-        closePrice <= 0 ||
-        open <= 0 ||
-        high <= 0 ||
-        low <= 0
-      ) {
-        return null;
-      }
-      return {
-        openTime,
-        closeTime,
-        open,
-        high,
-        low,
-        close: closePrice,
-        volume,
-      } satisfies BacktestKlineCandle;
-    })
-    .filter((row): row is BacktestKlineCandle => Boolean(row));
-};
-
 const fetchKlineChunk = async (input: {
-  path: string;
+  exchange: Exchange;
   symbol: string;
   normalizedTimeframe: string;
   chunkLimit: number;
@@ -222,40 +190,29 @@ const fetchKlineChunk = async (input: {
   endTime: number;
   marketType: BacktestMarketType;
 }): Promise<BacktestKlineCandle[]> => {
-  const primaryQuery = new URLSearchParams({
+  const candles = await fetchExchangePublicRecentCandles({
+    exchange: input.exchange,
+    marketType: input.marketType,
     symbol: input.symbol,
     interval: input.normalizedTimeframe,
-    limit: String(input.chunkLimit),
-    startTime: String(input.startTime),
-    endTime: String(input.endTime),
+    limit: input.chunkLimit,
+    since: input.startTime,
   });
-  const primaryPayload = await fetchBinancePublicRestJson({
-    marketType: input.marketType,
-    path: input.path,
-    searchParams: primaryQuery,
-  });
-  const primaryParsed = parseKlinePayload(primaryPayload);
-  if (primaryParsed.length > 0) return primaryParsed;
-
-  if (input.marketType !== 'FUTURES') return [];
-
-  const continuousQuery = new URLSearchParams({
-    pair: input.symbol,
-    contractType: 'PERPETUAL',
-    interval: input.normalizedTimeframe,
-    limit: String(input.chunkLimit),
-    startTime: String(input.startTime),
-    endTime: String(input.endTime),
-  });
-  const continuousPayload = await fetchBinancePublicRestJson({
-    marketType: 'FUTURES',
-    path: '/fapi/v1/continuousKlines',
-    searchParams: continuousQuery,
-  });
-  return parseKlinePayload(continuousPayload);
+  return candles
+    .filter((candle) => candle.openTime >= input.startTime && candle.openTime <= input.endTime)
+    .map((candle) => ({
+      openTime: candle.openTime,
+      closeTime: candle.closeTime,
+      open: candle.open,
+      high: candle.high,
+      low: candle.low,
+      close: candle.close,
+      volume: candle.volume,
+    }));
 };
 
 export const fetchKlines = async (
+  exchange: Exchange,
   symbol: string,
   timeframe: string,
   marketType: BacktestMarketType,
@@ -264,7 +221,7 @@ export const fetchKlines = async (
   startTimeMs?: number,
 ): Promise<BacktestKlineCandle[]> => {
   pruneGatewayCache();
-  const key = cacheKeyForCandles(symbol, timeframe, marketType, maxCandles, endTimeMs, startTimeMs);
+  const key = cacheKeyForCandles(exchange, symbol, timeframe, marketType, maxCandles, endTimeMs, startTimeMs);
   const cached = candleCache.get(key);
   if (cached && Date.now() - cached.cachedAt <= CANDLE_CACHE_TTL_MS) {
     return cached.candles;
@@ -286,6 +243,7 @@ export const fetchKlines = async (
       const dbCandlesRaw = await dbDelegate.findMany({
         where: {
           marketType,
+          source: exchange,
           symbol,
           timeframe: normalizedTimeframe,
           openTime: {
@@ -311,8 +269,6 @@ export const fetchKlines = async (
     }
   }
 
-  const path = marketType === 'FUTURES' ? '/fapi/v1/klines' : '/api/v3/klines';
-
   const intervalMs = getTimeframeIntervalMs(timeframe);
   const candles: BacktestKlineCandle[] = [];
   let nextStartTime = startTimeByRange;
@@ -324,7 +280,7 @@ export const fetchKlines = async (
     guard += 1;
     const chunkLimit = Math.min(1000, remaining);
     const parsed = await fetchKlineChunk({
-      path,
+      exchange,
       symbol,
       normalizedTimeframe,
       chunkLimit,
@@ -358,7 +314,7 @@ export const fetchKlines = async (
           low: item.low,
           close: item.close,
           volume: item.volume,
-          source: 'BINANCE',
+          source: exchange,
         })),
         skipDuplicates: true,
       });
@@ -372,6 +328,7 @@ export const fetchKlines = async (
 };
 
 export const fetchSupplementalSeries = async (
+  exchange: Exchange,
   symbol: string,
   timeframe: string,
   marketType: BacktestMarketType,
@@ -379,12 +336,12 @@ export const fetchSupplementalSeries = async (
   endTimeMs?: number,
   startTimeMs?: number,
 ): Promise<BacktestSupplementalSeries> => {
-  if (marketType !== 'FUTURES') {
+  if (marketType !== 'FUTURES' || exchange !== 'BINANCE') {
     return { fundingRates: [], openInterest: [], orderBook: [] };
   }
 
   pruneGatewayCache();
-  const key = cacheKeyForSupplemental(symbol, timeframe, marketType, maxCandles, endTimeMs, startTimeMs);
+  const key = cacheKeyForSupplemental(exchange, symbol, timeframe, marketType, maxCandles, endTimeMs, startTimeMs);
   const cached = supplementalCache.get(key);
   if (cached && Date.now() - cached.cachedAt <= CANDLE_CACHE_TTL_MS) {
     return cached.data;

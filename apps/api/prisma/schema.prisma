@@ -291,9 +291,9 @@ model MarketCandleCache {
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 
-  @@unique([marketType, symbol, timeframe, openTime])
-  @@index([marketType, symbol, timeframe, openTime])
-  @@index([marketType, symbol, timeframe, closeTime])
+  @@unique([marketType, source, symbol, timeframe, openTime])
+  @@index([marketType, source, symbol, timeframe, openTime])
+  @@index([marketType, source, symbol, timeframe, closeTime])
 }
 
 model Bot {

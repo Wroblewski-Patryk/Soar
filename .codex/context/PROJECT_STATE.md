@@ -4,6 +4,21 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-BOT-BACKTEST-EXCHANGE-ADAPTER-AUDIT-2026-05-13` extended the
+  Binance/Gate.io adapter audit from runtime warmup into the backtest and bot
+  fallback surfaces. Backtest candle loading and bot runtime fallback candles
+  now route through the Exchange module public market-data boundary with exact
+  exchange context. Backtest jobs and timelines preserve the resolved exchange
+  context, timeline responses expose `exchange`, and Web backtest timeline
+  types now include backend parity/order-book fields. `MarketCandleCache`
+  uniqueness and indexes now include `source`, preventing cross-exchange cache
+  collisions. Binance-only supplemental derivative fallbacks remain
+  Binance-scoped and fail closed for non-Binance exchanges. Evidence:
+  `docs/planning/v1-bot-backtest-exchange-adapter-audit-2026-05-13-task.md`;
+  focused bot/backtest tests passed (`56/56`), API typecheck passed, and Web
+  typecheck passed. This is local adapter-boundary proof, not production LIVE
+  trading proof.
+
 - `V1-RUNTIME-EXCHANGE-ADAPTER-BOUNDARY-2026-05-13` corrected a runtime
   architecture mismatch found during the Binance/Gate.io adapter review.
   Runtime candle warmup and indicator recovery now use the Exchange module's

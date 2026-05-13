@@ -4,6 +4,19 @@ Last updated: 2026-05-13
 
 ## Next Tiny Task
 
+Latest bot/backtest adapter audit:
+`V1-BOT-BACKTEST-EXCHANGE-ADAPTER-AUDIT-2026-05-13` is locally verified.
+Backtest candle loading, backtest run/timeline replay, bot runtime candle
+fallback, market candle DB cache ownership, and Web backtest timeline typing
+were audited against the exact `(exchange, marketType)` architecture contract.
+Backtest and runtime fallback candles now use the Exchange public market-data
+boundary; cache uniqueness includes `source`; and Web timeline types include
+backend `exchange`, order-book, and parity mismatch fields. Focused
+bot/backtest tests passed (`56/56`), API typecheck passed, and Web typecheck
+passed. Next proof remains production-safe multi-bot/runtime clickthrough once
+the production LIVE/Gate.io resource shape exists; generic non-Binance
+derivatives supplemental data remains a future Exchange adapter capability.
+
 Latest runtime adapter boundary proof:
 `V1-RUNTIME-EXCHANGE-ADAPTER-BOUNDARY-2026-05-13` is locally verified. Runtime
 candle warmup and indicator recovery now use the exchange-owned public

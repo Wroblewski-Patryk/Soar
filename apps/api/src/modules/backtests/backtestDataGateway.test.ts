@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { fetchExchangePublicRecentCandles } from '../exchange/exchangePublicMarketData.service';
 import {
   fetchKlines,
   hasContinuousCandleIntervals,
@@ -6,6 +7,10 @@ import {
   setDbCandleDelegateForTests,
   type BacktestKlineCandle,
 } from './backtestDataGateway';
+
+vi.mock('../exchange/exchangePublicMarketData.service', () => ({
+  fetchExchangePublicRecentCandles: vi.fn(),
+}));
 
 const ONE_MINUTE_MS = 60_000;
 
@@ -19,15 +24,10 @@ const buildCandle = (openTime: number): BacktestKlineCandle => ({
   volume: 1_000,
 });
 
-const buildBinanceKlinePayloadRow = (openTime: number) => [
-  openTime,
-  '100',
-  '101',
-  '99',
-  '100.5',
-  '1000',
-  openTime + ONE_MINUTE_MS - 1,
-];
+const buildPublicCandle = (openTime: number) => ({
+  ...buildCandle(openTime),
+  raw: [],
+});
 
 describe('backtestDataGateway', () => {
   beforeEach(() => {
@@ -93,22 +93,23 @@ describe('backtestDataGateway', () => {
     const createMany = vi.fn(async () => ({ count: 3 }));
     setDbCandleDelegateForTests({ findMany, createMany });
 
-    const fetchMock = vi.fn(async () =>
-      new Response(
-        JSON.stringify([
-          buildBinanceKlinePayloadRow(baseTime),
-          buildBinanceKlinePayloadRow(baseTime + ONE_MINUTE_MS),
-          buildBinanceKlinePayloadRow(baseTime + ONE_MINUTE_MS * 2),
-        ]),
-        { status: 200, headers: { 'content-type': 'application/json' } },
-      ),
-    );
-    vi.stubGlobal('fetch', fetchMock);
+    vi.mocked(fetchExchangePublicRecentCandles).mockResolvedValue([
+      buildPublicCandle(baseTime),
+      buildPublicCandle(baseTime + ONE_MINUTE_MS),
+      buildPublicCandle(baseTime + ONE_MINUTE_MS * 2),
+    ]);
 
-    const candles = await fetchKlines('BTCUSDT', '1m', 'FUTURES', 3, baseTime + ONE_MINUTE_MS * 3);
+    const candles = await fetchKlines('BINANCE', 'BTCUSDT', '1m', 'FUTURES', 3, baseTime + ONE_MINUTE_MS * 3);
 
     expect(findMany).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchExchangePublicRecentCandles).toHaveBeenCalledWith({
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      interval: '1m',
+      limit: 3,
+      since: expect.any(Number),
+    });
     expect(candles.map((item) => item.openTime)).toEqual([
       baseTime,
       baseTime + ONE_MINUTE_MS,
@@ -117,30 +118,42 @@ describe('backtestDataGateway', () => {
     expect(createMany).toHaveBeenCalledTimes(1);
   });
 
-  it('falls back to futures continuous klines when symbol klines are unavailable', async () => {
+  it('uses the exchange market-data boundary for non-Binance candle windows without reading Binance cache rows', async () => {
     const baseTime = 1_710_000_000_000;
-    const findMany = vi.fn(async () => []);
+    const findMany = vi.fn(async (args: any) =>
+      args.where?.source === 'BINANCE'
+        ? [
+            {
+              openTime: BigInt(baseTime),
+              closeTime: BigInt(baseTime + ONE_MINUTE_MS - 1),
+              open: 1,
+              high: 1,
+              low: 1,
+              close: 1,
+              volume: 1,
+            },
+            {
+              openTime: BigInt(baseTime + ONE_MINUTE_MS),
+              closeTime: BigInt(baseTime + ONE_MINUTE_MS * 2 - 1),
+              open: 2,
+              high: 2,
+              low: 2,
+              close: 2,
+              volume: 2,
+            },
+          ]
+        : [],
+    );
     const createMany = vi.fn(async () => ({ count: 2 }));
     setDbCandleDelegateForTests({ findMany, createMany });
 
-    const fetchMock = vi.fn(async (url: string) => {
-      if (url.includes('/fapi/v1/klines?')) {
-        return new Response(JSON.stringify({ message: 'temporarily unavailable' }), {
-          status: 503,
-          headers: { 'content-type': 'application/json' },
-        });
-      }
-      return new Response(
-        JSON.stringify([
-          buildBinanceKlinePayloadRow(baseTime),
-          buildBinanceKlinePayloadRow(baseTime + ONE_MINUTE_MS),
-        ]),
-        { status: 200, headers: { 'content-type': 'application/json' } },
-      );
-    });
-    vi.stubGlobal('fetch', fetchMock);
+    vi.mocked(fetchExchangePublicRecentCandles).mockResolvedValue([
+      buildPublicCandle(baseTime),
+      buildPublicCandle(baseTime + ONE_MINUTE_MS),
+    ]);
 
     const candles = await fetchKlines(
+      'GATEIO',
       'BTCUSDT',
       '1m',
       'FUTURES',
@@ -149,15 +162,21 @@ describe('backtestDataGateway', () => {
       baseTime,
     );
 
-    expect(fetchMock).toHaveBeenCalledTimes(2);
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining('/fapi/v1/klines?symbol=BTCUSDT'),
-      expect.objectContaining({ method: 'GET' }),
+    expect(findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          source: 'GATEIO',
+        }),
+      }),
     );
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining('/fapi/v1/continuousKlines?pair=BTCUSDT&contractType=PERPETUAL'),
-      expect.objectContaining({ method: 'GET' }),
-    );
+    expect(fetchExchangePublicRecentCandles).toHaveBeenCalledWith({
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      interval: '1m',
+      limit: 2,
+      since: baseTime,
+    });
     expect(candles.map((item) => item.openTime)).toEqual([
       baseTime,
       baseTime + ONE_MINUTE_MS,
