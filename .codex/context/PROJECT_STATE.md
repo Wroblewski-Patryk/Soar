@@ -4,6 +4,14 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-WEB-BACKEND-PARITY-RUNTIME-ORIGIN-2026-05-13` closed another
+  Dashboard/Bot Runtime Web/API contract drift: backend runtime position
+  `origin=USER` is now represented in the Web type and Dashboard Home maps it
+  to the existing Manual source label in the edit-position context, while
+  legacy `MANUAL` fixture compatibility remains. Evidence: focused Web test
+  passed (`HomeLiveWidgets.runtime-origin.test.tsx`, `3/3`) and Web typecheck
+  passed.
+
 - `V1-WEB-BACKEND-PARITY-DASHBOARD-2026-05-13` closed a concrete
   Dashboard/Bots Monitoring Web/API contract drift: runtime trades now allow
   backend-truth nullable `orderId`, `positionId`, and `strategyId`; Bots

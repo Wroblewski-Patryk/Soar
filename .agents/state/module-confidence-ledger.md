@@ -58,6 +58,14 @@ Do not turn uncertainty into optimism.
 ## Current Release Evidence Notes
 
 - 2026-05-13
+  `V1-WEB-BACKEND-PARITY-RUNTIME-ORIGIN-2026-05-13` applies to
+  `SOAR-DASHBOARD-001` and `SOAR-BOT-RUNTIME-001`: Web runtime position origin
+  typing now includes backend `USER`, and Dashboard Home maps backend
+  `origin=USER` to the Manual source label in the edit-position context while
+  keeping legacy `MANUAL` payload compatibility. Evidence: focused Web test
+  passed (`3/3`) and Web typecheck passed. Rows remain `PARTIAL` because the
+  broader V1 route matrix and production-safe clickthrough are not complete.
+- 2026-05-13
   `V1-WEB-BACKEND-PARITY-DASHBOARD-2026-05-13` applies to
   `SOAR-DASHBOARD-001` and `SOAR-BOT-RUNTIME-001`: Web runtime trade contract
   now matches backend nullable `orderId`, `positionId`, and `strategyId`;

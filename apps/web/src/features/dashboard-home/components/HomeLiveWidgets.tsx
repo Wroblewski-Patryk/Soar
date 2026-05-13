@@ -95,11 +95,11 @@ const RUNTIME_DATA_TABS: {
   { key: "TRADE_HISTORY", hash: "history", labelKey: "dashboard.home.runtime.tradesHistoryTitlePaper" },
 ];
 
-const resolvePositionOriginLabel = (
+export const resolvePositionOriginLabel = (
   origin: OpenPositionWithLive["origin"] | null | undefined,
   t: (key: string) => string
 ) => {
-  if (origin === "MANUAL") return t("dashboard.home.runtime.sourceManual");
+  if (origin === "USER" || origin === "MANUAL") return t("dashboard.home.runtime.sourceManual");
   if (origin === "BOT") return t("dashboard.home.runtime.sourceBot");
   if (origin === "EXCHANGE_SYNC" || origin === "BACKTEST") return t("dashboard.home.runtime.sourceImported");
   return t("dashboard.home.runtime.reasonUnknown");

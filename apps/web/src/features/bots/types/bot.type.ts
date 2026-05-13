@@ -391,7 +391,7 @@ export type BotRuntimeTradesResponse = {
 
 export type BotRuntimePositionItem = {
   id: string;
-  origin?: "BOT" | "MANUAL" | "EXCHANGE_SYNC" | "BACKTEST";
+  origin?: "BOT" | "USER" | "MANUAL" | "EXCHANGE_SYNC" | "BACKTEST";
   managementMode?: "BOT_MANAGED" | "MANUAL_MANAGED";
   syncState?: "IN_SYNC" | "DRIFT" | "ORPHAN_LOCAL" | "ORPHAN_EXCHANGE";
   continuityState?:

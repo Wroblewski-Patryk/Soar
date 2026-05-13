@@ -17,6 +17,14 @@ Last updated: 2026-05-13
 
 ## READY
 
+- [x] `V1-WEB-BACKEND-PARITY-RUNTIME-ORIGIN-2026-05-13 fix: align runtime position origin labels`
+  - Scope: aligned Web runtime position origin typing with backend
+    `TradingRecordOrigin.USER` and mapped Dashboard Home edit-position origin
+    labels so backend `USER` appears as Manual instead of Unknown; legacy
+    `MANUAL` fixture compatibility remains. Evidence:
+    `docs/planning/v1-web-backend-function-parity-runtime-origin-2026-05-13-task.md`;
+    focused Web test passed (`3/3`) and Web typecheck passed.
+
 - [x] `V1-WEB-BACKEND-PARITY-DASHBOARD-2026-05-13 fix: close runtime trade/position Web API contract drift`
   - Scope: aligned Web runtime trade IDs with backend nullable
     `orderId`/`positionId`/`strategyId`, rendered missing monitoring IDs as
