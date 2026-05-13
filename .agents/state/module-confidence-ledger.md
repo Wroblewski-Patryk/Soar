@@ -57,6 +57,11 @@ Do not turn uncertainty into optimism.
 
 ## Current Release Evidence Notes
 
+- 2026-05-13 `V1-GATE4-PATRYK-SIGNOFF-2026-05-13` applies to
+  `SOAR-OPERATIONS-001`: Gate 4 is now approved with the user-authorized
+  `Patryk` approver/owner fields, and final preflight reports RC evidence as
+  fresh. Operations remains `BLOCKED` on protected technical proof and stale
+  DB/rollback evidence.
 - 2026-05-13 `V1-RC-CURRENT-BLOCKED-REFRESH-2026-05-13` applies to
   `SOAR-OPERATIONS-001`: RC external gates, sign-off, and checklist are fresh
   for 2026-05-13 but remain failed/blocked because Gate 4 approver fields are

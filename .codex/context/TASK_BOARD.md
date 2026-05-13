@@ -17,6 +17,15 @@ Last updated: 2026-05-13
 
 ## READY
 
+- [x] `V1-GATE4-PATRYK-SIGNOFF-2026-05-13 release: apply Patryk Gate 4 RC sign-off`
+  - Scope: applied the user's instruction to use `Patryk` for required Gate 4
+    approver/owner fields. RC sign-off now reports `APPROVED`, and final
+    preflight reports RC evidence as fresh. Remaining V1 blockers are
+    technical protected proof: production auth, DB restore context,
+    `LIVEIMPORT-03`, authenticated production UI clickthrough, DB restore
+    evidence, and rollback proof. Evidence:
+    `docs/planning/v1-gate4-patryk-signoff-2026-05-13-task.md`.
+
 - [x] `V1-GENERATED-STATE-REFRESH-AFTER-RC-ACTIVATION-2026-05-13 release: refresh generated V1 state after activation and RC evidence`
   - Scope: reran the V1 generated-state chain after current activation and RC
     artifact refresh. Generated state remains `NO-GO`: `PASS_LOCAL:20`,

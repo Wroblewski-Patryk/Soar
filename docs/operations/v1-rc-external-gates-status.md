@@ -11,7 +11,7 @@ Observation window:
 - Gate 1 (Backup snapshot + restore validation): PASS
 - Gate 2 (Queue-lag baseline review): PASS
 - Gate 3 (Incident contacts + escalation confirmation): PASS
-- Gate 4 (Formal RC sign-offs): OPEN
+- Gate 4 (Formal RC sign-offs): PASS
 
 ## Backup/Restore Evidence
 - Latest local artifact: `docs\operations\_artifacts-db-restore-check-2026-05-02T17-49-41-000Z.txt`
@@ -26,7 +26,7 @@ Observation window:
 
 ## Formal Sign-Off Evidence
 - Sign-off source: `docs\operations\v1-rc-signoff-record.md`
-- Gate 4 approved status found: no
+- Gate 4 approved status found: yes
 
 ## Derived Metrics (from SLO artifact)
 - source type: slo_window_report
@@ -49,5 +49,4 @@ Observation window:
   - ops(slo): define SLO targets and collect production observation window evidence -> OPEN
 
 ## Manual Follow-ups (Required)
-1. Complete sign-offs in `docs/operations/v1-rc-signoff-record.md` for Gate 4.
-2. Reflect current gate states in `docs/operations/v1-release-candidate-checklist.md` after updating evidence/sign-offs.
+1. Reflect current gate states in `docs/operations/v1-release-candidate-checklist.md` after updating evidence/sign-offs.

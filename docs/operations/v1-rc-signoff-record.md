@@ -10,23 +10,23 @@ Date (UTC): `2026-05-13T00:00:00.000Z`
 
 ## Sign-Offs
 - Engineering sign-off:
-  - Name:
-  - UTC timestamp:
-  - Notes:
+  - Name: Patryk
+  - UTC timestamp: 2026-05-13T00:00:00.000Z
+  - Notes: approved via scripted record build
 - Product sign-off:
-  - Name:
-  - UTC timestamp:
-  - Notes:
+  - Name: Patryk
+  - UTC timestamp: 2026-05-13T00:00:00.000Z
+  - Notes: approved via scripted record build
 - Operations sign-off:
-  - Name:
-  - UTC timestamp:
-  - Notes:
+  - Name: Patryk
+  - UTC timestamp: 2026-05-13T00:00:00.000Z
+  - Notes: approved via scripted record build
 
 ## RC Ownership
 - RC owner with rollback authority:
-  - Name:
-  - Contact:
-  - UTC assignment timestamp:
+  - Name: Patryk
+  - Contact: Patryk
+  - UTC assignment timestamp: 2026-05-13T00:00:00.000Z
 
 ## Gate Snapshot at Sign-Off Build
 - Gate statuses found: 4
@@ -34,8 +34,8 @@ Date (UTC): `2026-05-13T00:00:00.000Z`
 - Gates 1-3 pass: yes
 
 ## Final Decision
-- RC status: `BLOCKED`
-- Blocking reasons (if any): missing gate pass and/or required approvers
+- RC status: `APPROVED`
+- Blocking reasons (if any): none
 - Follow-up actions:
   - If BLOCKED: complete open gates and rerun `pnpm run ops:rc:signoff:build`.
   - If APPROVED: copy this record into release notes and finalize launch trigger.

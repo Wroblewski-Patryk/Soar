@@ -4,6 +4,16 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-GATE4-PATRYK-SIGNOFF-2026-05-13` applied the user's instruction to use
+  `Patryk` for the required Gate 4 approver/owner fields. RC sign-off now
+  reports `APPROVED`, and final preflight reports RC external gates, RC
+  sign-off, and RC checklist as fresh.
+- Remaining final preflight blockers are technical protected proof only:
+  missing `LIVEIMPORT_READBACK_*`, missing `ROLLBACK_GUARD_*`, missing
+  `PROD_UI_AUDIT_*`, missing production DB restore context, missing
+  `LIVEIMPORT-03`, failed authenticated production UI clickthrough, stale DB
+  restore evidence, and stale rollback proof.
+
 - `V1-GENERATED-STATE-REFRESH-AFTER-RC-ACTIVATION-2026-05-13` reran the V1
   generated-state chain after activation and RC artifact refresh.
 - Generated state remains unchanged and `NO-GO`: `PASS_LOCAL:20`,

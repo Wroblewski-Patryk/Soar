@@ -4,6 +4,12 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-GATE4-PATRYK-SIGNOFF-2026-05-13` RC APPROVED / V1 NO-GO: Gate 4 was
+  approved using the user-authorized `Patryk` approver/owner fields. Final
+  preflight now reports RC external gates, sign-off, and checklist as fresh.
+  Remaining blockers are technical protected proof and stale DB/rollback
+  evidence.
+
 - `V1-GENERATED-STATE-REFRESH-AFTER-RC-ACTIVATION-2026-05-13` GENERATED
   STATE / NO-GO: project index, static scan, master ledger, and completion
   scorecard were rerun after activation and RC evidence refresh. Generated

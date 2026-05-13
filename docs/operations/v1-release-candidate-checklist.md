@@ -95,14 +95,14 @@
 - [x] Launch evidence pack compiled (`docs/operations/v1-launch-evidence-pack.md`).
 
 ## RC Sign-Off
-- [ ] Engineering sign-off.
-- [ ] Product sign-off.
-- [ ] Operations sign-off.
-- [ ] RC owner assigned with rollback authority.
+- [x] Engineering sign-off.
+- [x] Product sign-off.
+- [x] Operations sign-off.
+- [x] RC owner assigned with rollback authority.
 - Sign-off record template: `docs/operations/v1-rc-signoff-record.md`.
 
 ## Outstanding External Gates (2026-05-13)
-- current snapshot is `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=OPEN` (synced 2026-05-13).
+- current snapshot is `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS` (synced 2026-05-13).
 - Execution guide: `docs/operations/v1-rc-external-gates-runbook.md`.
 - SLO definitions and metric mapping: `docs/operations/v1-slo-catalog.md`.
 - Binance live bot-control verification checklist: `docs/operations/binance-live-ops-verification-checklist-2026-04-06.md`.
