@@ -4,6 +4,16 @@ Last updated: 2026-05-13
 
 ## Next Tiny Task
 
+Latest runtime non-Binance derivatives adapter:
+`V1-RUNTIME-NON-BINANCE-DERIVATIVES-ADAPTER-2026-05-13` is locally verified.
+Runtime symbol-stats fallback derivatives and live signal market-data gateway
+derivatives now use the Exchange public adapter for non-Binance funding-rate
+history, open-interest history, and current order-book snapshots where
+supported. Binance REST remains scoped to Binance, and unsupported adapter
+methods fail closed. Focused runtime tests passed (`26/26`), API typecheck
+passed, and guardrails passed. Next related lane is production-safe multi-bot
+runtime/backtest clickthrough and target-environment proof.
+
 Latest non-Binance backtest derivatives adapter:
 `V1-NON-BINANCE-BACKTEST-DERIVATIVES-ADAPTER-2026-05-13` is locally verified.
 Non-Binance futures backtests can now fetch supplemental funding-rate and

@@ -334,6 +334,11 @@ describe('RuntimeSignalMarketDataGateway', () => {
         nowMs: () => 1_000_000,
         warmupEnabled: false,
         fetchRecentCandles,
+        fetchFundingRateHistory: vi.fn(async () => []),
+        fetchOpenInterestHistory: vi.fn(async () => []),
+        fetchOrderBookSnapshot: vi.fn(async () => {
+          throw new Error('order_book_not_needed_for_candle_warmup_test');
+        }),
       });
 
       await gateway.ingestCandleEvent({
@@ -376,6 +381,84 @@ describe('RuntimeSignalMarketDataGateway', () => {
       expect(gateway.getSeries('GATEIO', 'FUTURES', 'BTCUSDT', '1m')).toHaveLength(20);
     } finally {
       fetchSpy.mockRestore();
+      process.env.NODE_ENV = originalNodeEnv;
+    }
+  });
+
+  it('loads Gate.io runtime derivatives through the exchange public market-data adapter', async () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    const fetchFundingRateHistory = vi.fn(async () => [
+      { timestamp: 59_000, fundingRate: 0.0001, raw: {} },
+    ]);
+    const fetchOpenInterestHistory = vi.fn(async () => [
+      { timestamp: 59_000, openInterest: 10_000, raw: {} },
+    ]);
+    const fetchOrderBookSnapshot = vi.fn(async () => ({
+      timestamp: 59_000,
+      imbalance: 0.2,
+      spreadBps: 3.5,
+      depthRatio: 1.4,
+      raw: {},
+    }));
+
+    try {
+      const gateway = new RuntimeSignalMarketDataGateway({
+        nowMs: () => 1_000_000,
+        warmupEnabled: false,
+        fetchFundingRateHistory,
+        fetchOpenInterestHistory,
+        fetchOrderBookSnapshot,
+      });
+
+      await gateway.ingestCandleEvent({
+        type: 'candle',
+        exchange: 'GATEIO',
+        marketType: 'FUTURES',
+        symbol: 'BTCUSDT',
+        interval: '1m',
+        eventTime: 60_000,
+        openTime: 0,
+        closeTime: 59_000,
+        open: 100,
+        high: 101,
+        low: 99,
+        close: 100,
+        volume: 1_000,
+        isFinal: true,
+      });
+
+      expect(fetchFundingRateHistory).toHaveBeenCalledWith(
+        expect.objectContaining({
+          exchange: 'GATEIO',
+          marketType: 'FUTURES',
+          symbol: 'BTCUSDT',
+        })
+      );
+      expect(fetchOpenInterestHistory).toHaveBeenCalledWith(
+        expect.objectContaining({
+          exchange: 'GATEIO',
+          marketType: 'FUTURES',
+          symbol: 'BTCUSDT',
+          interval: '5m',
+        })
+      );
+      expect(fetchOrderBookSnapshot).toHaveBeenCalledWith({
+        exchange: 'GATEIO',
+        marketType: 'FUTURES',
+        symbol: 'BTCUSDT',
+        limit: 100,
+      });
+      expect(gateway.getFundingRatePointsStore().get('GATEIO|FUTURES|BTCUSDT')).toEqual([
+        { timestamp: 59_000, fundingRate: 0.0001 },
+      ]);
+      expect(gateway.getOpenInterestPointsStore().get('GATEIO|FUTURES|BTCUSDT')).toEqual([
+        { timestamp: 59_000, openInterest: 10_000 },
+      ]);
+      expect(gateway.getOrderBookPointsStore().get('GATEIO|FUTURES|BTCUSDT')).toEqual([
+        { timestamp: 59_000, imbalance: 0.2, spreadBps: 3.5, depthRatio: 1.4, raw: {} },
+      ]);
+    } finally {
       process.env.NODE_ENV = originalNodeEnv;
     }
   });

@@ -58,6 +58,18 @@ Do not turn uncertainty into optimism.
 ## Current Release Evidence Notes
 
 - 2026-05-13
+  `V1-RUNTIME-NON-BINANCE-DERIVATIVES-ADAPTER-2026-05-13` applies to
+  `SOAR-BOT-RUNTIME-001` and `SOAR-EXCHANGE-ADAPTER-001`: runtime symbol-stats
+  fallback derivatives and the live signal market-data gateway now use Exchange
+  public adapter methods for non-Binance funding-rate history, open-interest
+  history, and current order-book snapshots where supported. Binance REST
+  remains scoped to Binance, unsupported adapter capabilities fail closed, and
+  derivative fallback caches are exchange-scoped. Evidence: focused runtime
+  tests passed (`26/26`), API typecheck passed, and repository guardrails
+  passed. Rows remain `PARTIAL` because production-safe multi-bot/runtime
+  clickthrough and real target-environment operation proof remain separate
+  lanes.
+- 2026-05-13
   `V1-NON-BINANCE-BACKTEST-DERIVATIVES-ADAPTER-2026-05-13` applies to
   `SOAR-BACKTESTS-001` and `SOAR-EXCHANGE-ADAPTER-001`: non-Binance futures
   backtest supplemental funding-rate and open-interest history now flows

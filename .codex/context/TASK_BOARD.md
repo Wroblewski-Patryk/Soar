@@ -17,6 +17,16 @@ Last updated: 2026-05-13
 
 ## READY
 
+- [x] `V1-RUNTIME-NON-BINANCE-DERIVATIVES-ADAPTER-2026-05-13 fix: route runtime derivatives through exchange adapter`
+  - Scope: routed runtime symbol-stats fallback derivatives and live signal
+    market-data gateway funding/open-interest/order-book supplemental reads
+    through the Exchange public adapter for non-Binance exchanges. Binance REST
+    paths remain Binance-scoped, unsupported adapter capabilities fail closed,
+    and derivative fallback caches are exchange-scoped. Evidence:
+    `docs/planning/v1-runtime-non-binance-derivatives-adapter-2026-05-13-task.md`;
+    focused runtime tests passed (`26/26`), API typecheck passed, and
+    guardrails passed.
+
 - [x] `V1-NON-BINANCE-BACKTEST-DERIVATIVES-ADAPTER-2026-05-13 fix: read non-Binance backtest funding/OI through exchange adapter`
   - Scope: added Exchange public connector boundaries for funding-rate
     history, open-interest history, and order-book snapshots; normalized those

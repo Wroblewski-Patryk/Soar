@@ -1,6 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const fetchBinancePublicRestJsonMock = vi.hoisted(() => vi.fn());
+const fetchExchangePublicFundingRateHistoryMock = vi.hoisted(() => vi.fn());
+const fetchExchangePublicOpenInterestHistoryMock = vi.hoisted(() => vi.fn());
+const fetchExchangePublicOrderBookSnapshotMock = vi.hoisted(() => vi.fn());
 const fetchExchangePublicRecentCandlesMock = vi.hoisted(() => vi.fn());
 const fetchExchangePublicTickerSnapshotMock = vi.hoisted(() => vi.fn());
 
@@ -9,13 +12,20 @@ vi.mock('../exchange/binancePublicRest.service', () => ({
 }));
 
 vi.mock('../exchange/exchangePublicMarketData.service', () => ({
+  fetchExchangePublicFundingRateHistory: fetchExchangePublicFundingRateHistoryMock,
+  fetchExchangePublicOpenInterestHistory: fetchExchangePublicOpenInterestHistoryMock,
+  fetchExchangePublicOrderBookSnapshot: fetchExchangePublicOrderBookSnapshotMock,
   fetchExchangePublicRecentCandles: fetchExchangePublicRecentCandlesMock,
   fetchExchangePublicTickerSnapshot: fetchExchangePublicTickerSnapshotMock,
 }));
 
 import {
   fetchFallbackFundingRateHistory,
+  fetchFallbackFundingRateSnapshot,
   fetchFallbackKlines,
+  fetchFallbackOpenInterestHistory,
+  fetchFallbackOpenInterestSnapshot,
+  fetchFallbackOrderBookSnapshot,
   fetchFallbackTickerPrices,
 } from './runtimeMarketDataFallback.service';
 
@@ -145,15 +155,69 @@ describe('runtimeMarketDataFallback.service', () => {
     expect(prices.get('BTCUSDT')).toBe(102);
   });
 
-  it('keeps Binance-only derivatives unavailable for Gate.io instead of mixing exchange domains', async () => {
+  it('routes non-Binance derivative fallbacks through the exchange-owned public market-data boundary', async () => {
     vi.stubEnv('NODE_ENV', 'production');
+    fetchExchangePublicFundingRateHistoryMock.mockResolvedValue([
+      { timestamp: 1_714_000_000_000, fundingRate: 0.0001 },
+    ]);
+    fetchExchangePublicOpenInterestHistoryMock.mockResolvedValue([
+      { timestamp: 1_714_000_000_000, openInterest: 10_000 },
+    ]);
+    fetchExchangePublicOrderBookSnapshotMock.mockResolvedValue({
+      timestamp: 1_714_000_000_000,
+      imbalance: 0.1,
+      spreadBps: 2.5,
+      depthRatio: 1.2,
+    });
 
     const funding = await fetchFallbackFundingRateHistory({
       exchange: 'GATEIO',
       symbol: 'BTCUSDT',
+      limit: 20,
+      endTimeMs: 1_714_000_060_000,
     });
+    const fundingSnapshot = await fetchFallbackFundingRateSnapshot('BTCUSDT', 'GATEIO');
+    const openInterest = await fetchFallbackOpenInterestHistory({
+      exchange: 'GATEIO',
+      symbol: 'BTCUSDT',
+      interval: '1m',
+      limit: 20,
+      endTimeMs: 1_714_000_060_000,
+    });
+    const openInterestSnapshot = await fetchFallbackOpenInterestSnapshot('BTCUSDT', 'GATEIO');
+    const orderBook = await fetchFallbackOrderBookSnapshot('BTCUSDT', 'GATEIO');
 
-    expect(funding).toEqual([]);
+    expect(funding).toEqual([{ timestamp: 1_714_000_000_000, fundingRate: 0.0001 }]);
+    expect(fundingSnapshot).toEqual({ timestamp: 1_714_000_000_000, fundingRate: 0.0001 });
+    expect(openInterest).toEqual([{ timestamp: 1_714_000_000_000, openInterest: 10_000 }]);
+    expect(openInterestSnapshot).toEqual({ timestamp: 1_714_000_000_000, openInterest: 10_000 });
+    expect(orderBook).toEqual({
+      timestamp: 1_714_000_000_000,
+      imbalance: 0.1,
+      spreadBps: 2.5,
+      depthRatio: 1.2,
+    });
     expect(fetchBinancePublicRestJsonMock).not.toHaveBeenCalled();
+    expect(fetchExchangePublicFundingRateHistoryMock).toHaveBeenCalledWith({
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      limit: 20,
+      endTime: 1_714_000_060_000,
+    });
+    expect(fetchExchangePublicOpenInterestHistoryMock).toHaveBeenCalledWith({
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      interval: '5m',
+      limit: 20,
+      endTime: 1_714_000_060_000,
+    });
+    expect(fetchExchangePublicOrderBookSnapshotMock).toHaveBeenCalledWith({
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+      symbol: 'BTCUSDT',
+      limit: 100,
+    });
   });
 });

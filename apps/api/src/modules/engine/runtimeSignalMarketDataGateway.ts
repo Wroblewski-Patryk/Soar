@@ -13,7 +13,12 @@ import {
 import { normalizeInterval } from './runtimeSignalLoopDefaults';
 import { normalizeSymbol } from '../../lib/symbols';
 import { fetchBinancePublicRestJson } from '../exchange/binancePublicRest.service';
-import { fetchExchangePublicRecentCandles } from '../exchange/exchangePublicMarketData.service';
+import {
+  fetchExchangePublicFundingRateHistory,
+  fetchExchangePublicOpenInterestHistory,
+  fetchExchangePublicOrderBookSnapshot,
+  fetchExchangePublicRecentCandles,
+} from '../exchange/exchangePublicMarketData.service';
 
 export type RuntimeCandle = {
   openTime: number;
@@ -45,6 +50,9 @@ type RuntimeSignalMarketDataGatewayDeps = {
   nowMs: () => number;
   warmupEnabled?: boolean | (() => boolean | undefined);
   fetchRecentCandles?: typeof fetchExchangePublicRecentCandles;
+  fetchFundingRateHistory?: typeof fetchExchangePublicFundingRateHistory;
+  fetchOpenInterestHistory?: typeof fetchExchangePublicOpenInterestHistory;
+  fetchOrderBookSnapshot?: typeof fetchExchangePublicOrderBookSnapshot;
   acquireWarmupLock?: (
     input: RuntimeSignalWarmupLockInput
   ) => Promise<RuntimeSignalWarmupLockHandle>;
@@ -552,7 +560,21 @@ export class RuntimeSignalMarketDataGateway {
     endTimeMs?: number,
   ): Promise<FundingRatePoint[]> {
     if (process.env.NODE_ENV === 'test') return [];
-    if (exchange !== 'BINANCE') return [];
+    if (exchange !== 'BINANCE') {
+      try {
+        const fetchFundingRateHistory =
+          this.deps.fetchFundingRateHistory ?? fetchExchangePublicFundingRateHistory;
+        return await fetchFundingRateHistory({
+          exchange,
+          marketType: 'FUTURES',
+          symbol: normalizeSymbol(symbol),
+          limit: Math.min(1000, Math.max(20, runtimeFundingHistoryLimit)),
+          endTime: endTimeMs,
+        });
+      } catch {
+        return [];
+      }
+    }
     const params = new URLSearchParams({
       symbol: normalizeSymbol(symbol),
       limit: String(Math.min(1000, Math.max(20, runtimeFundingHistoryLimit))),
@@ -584,8 +606,27 @@ export class RuntimeSignalMarketDataGateway {
     }
   }
 
-  private async fetchFundingRateSnapshot(symbol: string): Promise<FundingRatePoint | null> {
+  private async fetchFundingRateSnapshot(
+    exchange: Exchange,
+    symbol: string,
+  ): Promise<FundingRatePoint | null> {
     if (process.env.NODE_ENV === 'test') return null;
+    if (exchange !== 'BINANCE') {
+      try {
+        const fetchFundingRateHistory =
+          this.deps.fetchFundingRateHistory ?? fetchExchangePublicFundingRateHistory;
+        const history = await fetchFundingRateHistory({
+          exchange,
+          marketType: 'FUTURES',
+          symbol: normalizeSymbol(symbol),
+          limit: 1,
+          endTime: Date.now(),
+        });
+        return history.at(-1) ?? null;
+      } catch {
+        return null;
+      }
+    }
     const params = new URLSearchParams({ symbol: normalizeSymbol(symbol) });
 
     try {
@@ -620,8 +661,7 @@ export class RuntimeSignalMarketDataGateway {
         ...(await this.fetchFundingRateHistory(event.exchange, event.symbol, event.closeTime)),
       );
     }
-    const snapshot =
-      event.exchange === 'BINANCE' ? await this.fetchFundingRateSnapshot(event.symbol) : null;
+    const snapshot = await this.fetchFundingRateSnapshot(event.exchange, event.symbol);
     if (snapshot) incoming.push(snapshot);
     this.mergeFundingRatePoints(key, incoming);
     this.fundingLastFetchAt.set(key, now);
@@ -660,7 +700,22 @@ export class RuntimeSignalMarketDataGateway {
     endTimeMs?: number,
   ): Promise<OpenInterestPoint[]> {
     if (process.env.NODE_ENV === 'test') return [];
-    if (exchange !== 'BINANCE') return [];
+    if (exchange !== 'BINANCE') {
+      try {
+        const fetchOpenInterestHistory =
+          this.deps.fetchOpenInterestHistory ?? fetchExchangePublicOpenInterestHistory;
+        return await fetchOpenInterestHistory({
+          exchange,
+          marketType: 'FUTURES',
+          symbol: normalizeSymbol(symbol),
+          interval: this.openInterestPeriodForInterval(interval),
+          limit: Math.min(500, Math.max(20, runtimeOpenInterestHistoryLimit)),
+          endTime: endTimeMs,
+        });
+      } catch {
+        return [];
+      }
+    }
     const params = new URLSearchParams({
       symbol: normalizeSymbol(symbol),
       period: this.openInterestPeriodForInterval(interval),
@@ -693,8 +748,29 @@ export class RuntimeSignalMarketDataGateway {
     }
   }
 
-  private async fetchOpenInterestSnapshot(symbol: string): Promise<OpenInterestPoint | null> {
+  private async fetchOpenInterestSnapshot(
+    exchange: Exchange,
+    symbol: string,
+    interval: string,
+  ): Promise<OpenInterestPoint | null> {
     if (process.env.NODE_ENV === 'test') return null;
+    if (exchange !== 'BINANCE') {
+      try {
+        const fetchOpenInterestHistory =
+          this.deps.fetchOpenInterestHistory ?? fetchExchangePublicOpenInterestHistory;
+        const history = await fetchOpenInterestHistory({
+          exchange,
+          marketType: 'FUTURES',
+          symbol: normalizeSymbol(symbol),
+          interval: this.openInterestPeriodForInterval(interval),
+          limit: 1,
+          endTime: Date.now(),
+        });
+        return history.at(-1) ?? null;
+      } catch {
+        return null;
+      }
+    }
     const params = new URLSearchParams({ symbol: normalizeSymbol(symbol) });
 
     try {
@@ -735,8 +811,11 @@ export class RuntimeSignalMarketDataGateway {
         )),
       );
     }
-    const snapshot =
-      event.exchange === 'BINANCE' ? await this.fetchOpenInterestSnapshot(event.symbol) : null;
+    const snapshot = await this.fetchOpenInterestSnapshot(
+      event.exchange,
+      event.symbol,
+      event.interval,
+    );
     if (snapshot) incoming.push(snapshot);
     this.mergeOpenInterestPoints(key, incoming);
     this.openInterestLastFetchAt.set(key, now);
@@ -767,8 +846,25 @@ export class RuntimeSignalMarketDataGateway {
     this.orderBookPoints.set(key, normalized);
   }
 
-  private async fetchOrderBookSnapshot(symbol: string): Promise<OrderBookPoint | null> {
+  private async fetchOrderBookSnapshot(
+    exchange: Exchange,
+    symbol: string,
+  ): Promise<OrderBookPoint | null> {
     if (process.env.NODE_ENV === 'test') return null;
+    if (exchange !== 'BINANCE') {
+      try {
+        const fetchOrderBookSnapshot =
+          this.deps.fetchOrderBookSnapshot ?? fetchExchangePublicOrderBookSnapshot;
+        return await fetchOrderBookSnapshot({
+          exchange,
+          marketType: 'FUTURES',
+          symbol: normalizeSymbol(symbol),
+          limit: 100,
+        });
+      } catch {
+        return null;
+      }
+    }
     const params = new URLSearchParams({
       symbol: normalizeSymbol(symbol),
       limit: '100',
@@ -847,8 +943,7 @@ export class RuntimeSignalMarketDataGateway {
     const lastFetchAt = this.orderBookLastFetchAt.get(key) ?? 0;
     if (now - lastFetchAt < runtimeOrderBookRefreshMs) return;
 
-    const snapshot =
-      event.exchange === 'BINANCE' ? await this.fetchOrderBookSnapshot(event.symbol) : null;
+    const snapshot = await this.fetchOrderBookSnapshot(event.exchange, event.symbol);
     if (snapshot) {
       this.mergeOrderBookPoints(key, [snapshot]);
     }

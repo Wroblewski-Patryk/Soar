@@ -4,6 +4,15 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-RUNTIME-NON-BINANCE-DERIVATIVES-ADAPTER-2026-05-13` LOCAL ADAPTER PASS:
+  runtime symbol-stats fallback derivatives and live signal market-data gateway
+  derivatives now use Exchange public adapter boundaries for non-Binance
+  funding-rate history, open-interest history, and current order-book
+  snapshots where supported. Binance REST remains Binance-scoped, unsupported
+  methods fail closed, and derivative fallback caches are exchange-scoped.
+  Focused runtime tests passed (`26/26`), API typecheck passed, and guardrails
+  passed.
+
 - `V1-NON-BINANCE-BACKTEST-DERIVATIVES-ADAPTER-2026-05-13` LOCAL ADAPTER PASS:
   non-Binance futures backtest supplemental funding-rate and open-interest
   history now read through the Exchange public market-data adapter where CCXT

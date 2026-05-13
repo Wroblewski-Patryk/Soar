@@ -3,6 +3,9 @@ import { Exchange } from '@prisma/client';
 import { normalizeSymbols } from '../../lib/symbols';
 import { fetchBinancePublicRestJson } from '../exchange/binancePublicRest.service';
 import {
+  fetchExchangePublicFundingRateHistory,
+  fetchExchangePublicOpenInterestHistory,
+  fetchExchangePublicOrderBookSnapshot,
   fetchExchangePublicRecentCandles,
   fetchExchangePublicTickerSnapshot,
 } from '../exchange/exchangePublicMarketData.service';
@@ -193,13 +196,29 @@ export const fetchFallbackFundingRateHistory = async (params: {
   endTimeMs?: number;
 }) => {
   if (process.env.NODE_ENV === 'test') return [];
-  if ((params.exchange ?? 'BINANCE') !== 'BINANCE') return [];
+  const exchange = params.exchange ?? 'BINANCE';
   const limit = Math.min(1000, Math.max(20, params.limit ?? 200));
-  const cacheKey = `${params.symbol.toUpperCase()}|${limit}|${Math.floor(params.endTimeMs ?? 0)}`;
+  const cacheKey = `${exchange}|${params.symbol.toUpperCase()}|${limit}|${Math.floor(params.endTimeMs ?? 0)}`;
   const now = Date.now();
   const cached = fundingHistoryFallbackCache.get(cacheKey);
   if (cached && now - cached.fetchedAt < DERIVATIVES_HISTORY_TTL_MS) {
     return cached.points;
+  }
+
+  if (exchange !== 'BINANCE') {
+    try {
+      const points = await fetchExchangePublicFundingRateHistory({
+        exchange,
+        marketType: 'FUTURES',
+        symbol: params.symbol.toUpperCase(),
+        limit,
+        endTime: params.endTimeMs,
+      });
+      fundingHistoryFallbackCache.set(cacheKey, { fetchedAt: now, points });
+      return points;
+    } catch {
+      return [];
+    }
   }
 
   const searchParams = new URLSearchParams({
@@ -237,19 +256,36 @@ export const fetchFallbackFundingRateHistory = async (params: {
 
 export const fetchFallbackFundingRateSnapshot = async (symbol: string, exchange: Exchange = 'BINANCE') => {
   if (process.env.NODE_ENV === 'test') return null;
-  if (exchange !== 'BINANCE') return null;
-  const cacheKey = symbol.toUpperCase();
+  const normalizedSymbol = symbol.toUpperCase();
+  const cacheKey = `${exchange}|${normalizedSymbol}`;
   const now = Date.now();
   const cached = fundingSnapshotFallbackCache.get(cacheKey);
   if (cached && now - cached.fetchedAt < DERIVATIVES_SNAPSHOT_TTL_MS) {
     return cached.point;
   }
 
+  if (exchange !== 'BINANCE') {
+    try {
+      const history = await fetchExchangePublicFundingRateHistory({
+        exchange,
+        marketType: 'FUTURES',
+        symbol: normalizedSymbol,
+        limit: 1,
+        endTime: now,
+      });
+      const point = history.at(-1) ?? null;
+      fundingSnapshotFallbackCache.set(cacheKey, { fetchedAt: now, point });
+      return point;
+    } catch {
+      return null;
+    }
+  }
+
   try {
     const payload = await fetchBinancePublicRestJson({
       marketType: 'FUTURES',
       path: '/fapi/v1/premiumIndex',
-      searchParams: new URLSearchParams({ symbol: symbol.toUpperCase() }),
+      searchParams: new URLSearchParams({ symbol: normalizedSymbol }),
     });
     if (!payload || typeof payload !== 'object') return null;
     const row = payload as { time?: unknown; lastFundingRate?: unknown };
@@ -280,14 +316,31 @@ export const fetchFallbackOpenInterestHistory = async (params: {
   endTimeMs?: number;
 }) => {
   if (process.env.NODE_ENV === 'test') return [];
-  if ((params.exchange ?? 'BINANCE') !== 'BINANCE') return [];
+  const exchange = params.exchange ?? 'BINANCE';
   const limit = Math.min(500, Math.max(20, params.limit ?? 200));
   const period = normalizeOpenInterestPeriod(params.interval);
-  const cacheKey = `${params.symbol.toUpperCase()}|${period}|${limit}|${Math.floor(params.endTimeMs ?? 0)}`;
+  const cacheKey = `${exchange}|${params.symbol.toUpperCase()}|${period}|${limit}|${Math.floor(params.endTimeMs ?? 0)}`;
   const now = Date.now();
   const cached = openInterestHistoryFallbackCache.get(cacheKey);
   if (cached && now - cached.fetchedAt < DERIVATIVES_HISTORY_TTL_MS) {
     return cached.points;
+  }
+
+  if (exchange !== 'BINANCE') {
+    try {
+      const points = await fetchExchangePublicOpenInterestHistory({
+        exchange,
+        marketType: 'FUTURES',
+        symbol: params.symbol.toUpperCase(),
+        interval: period,
+        limit,
+        endTime: params.endTimeMs,
+      });
+      openInterestHistoryFallbackCache.set(cacheKey, { fetchedAt: now, points });
+      return points;
+    } catch {
+      return [];
+    }
   }
 
   const searchParams = new URLSearchParams({
@@ -326,19 +379,37 @@ export const fetchFallbackOpenInterestHistory = async (params: {
 
 export const fetchFallbackOpenInterestSnapshot = async (symbol: string, exchange: Exchange = 'BINANCE') => {
   if (process.env.NODE_ENV === 'test') return null;
-  if (exchange !== 'BINANCE') return null;
-  const cacheKey = symbol.toUpperCase();
+  const normalizedSymbol = symbol.toUpperCase();
+  const cacheKey = `${exchange}|${normalizedSymbol}`;
   const now = Date.now();
   const cached = openInterestSnapshotFallbackCache.get(cacheKey);
   if (cached && now - cached.fetchedAt < DERIVATIVES_SNAPSHOT_TTL_MS) {
     return cached.point;
   }
 
+  if (exchange !== 'BINANCE') {
+    try {
+      const history = await fetchExchangePublicOpenInterestHistory({
+        exchange,
+        marketType: 'FUTURES',
+        symbol: normalizedSymbol,
+        interval: '5m',
+        limit: 1,
+        endTime: now,
+      });
+      const point = history.at(-1) ?? null;
+      openInterestSnapshotFallbackCache.set(cacheKey, { fetchedAt: now, point });
+      return point;
+    } catch {
+      return null;
+    }
+  }
+
   try {
     const payload = await fetchBinancePublicRestJson({
       marketType: 'FUTURES',
       path: '/fapi/v1/openInterest',
-      searchParams: new URLSearchParams({ symbol: symbol.toUpperCase() }),
+      searchParams: new URLSearchParams({ symbol: normalizedSymbol }),
     });
     if (!payload || typeof payload !== 'object') return null;
     const row = payload as { time?: unknown; openInterest?: unknown };
@@ -357,19 +428,34 @@ export const fetchFallbackOpenInterestSnapshot = async (symbol: string, exchange
 
 export const fetchFallbackOrderBookSnapshot = async (symbol: string, exchange: Exchange = 'BINANCE') => {
   if (process.env.NODE_ENV === 'test') return null;
-  if (exchange !== 'BINANCE') return null;
-  const cacheKey = symbol.toUpperCase();
+  const normalizedSymbol = symbol.toUpperCase();
+  const cacheKey = `${exchange}|${normalizedSymbol}`;
   const now = Date.now();
   const cached = orderBookSnapshotFallbackCache.get(cacheKey);
   if (cached && now - cached.fetchedAt < DERIVATIVES_SNAPSHOT_TTL_MS) {
     return cached.point;
   }
 
+  if (exchange !== 'BINANCE') {
+    try {
+      const point = await fetchExchangePublicOrderBookSnapshot({
+        exchange,
+        marketType: 'FUTURES',
+        symbol: normalizedSymbol,
+        limit: 100,
+      });
+      orderBookSnapshotFallbackCache.set(cacheKey, { fetchedAt: now, point });
+      return point;
+    } catch {
+      return null;
+    }
+  }
+
   try {
     const payload = await fetchBinancePublicRestJson({
       marketType: 'FUTURES',
       path: '/fapi/v1/depth',
-      searchParams: new URLSearchParams({ symbol: symbol.toUpperCase(), limit: '100' }),
+      searchParams: new URLSearchParams({ symbol: normalizedSymbol, limit: '100' }),
     });
     if (!payload || typeof payload !== 'object') return null;
     const row = payload as {

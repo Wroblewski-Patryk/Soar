@@ -4,6 +4,17 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-RUNTIME-NON-BINANCE-DERIVATIVES-ADAPTER-2026-05-13` moved runtime
+  non-Binance derivative supplemental fallbacks onto the Exchange public
+  market-data adapter. Runtime symbol-stats reads and the live signal
+  market-data gateway now use exchange-owned funding-rate history,
+  open-interest history, and order-book snapshot boundaries for non-Binance
+  exchanges where supported, while keeping Binance REST behavior scoped to
+  Binance. Derivative fallback caches are exchange-scoped. Evidence:
+  `docs/planning/v1-runtime-non-binance-derivatives-adapter-2026-05-13-task.md`;
+  focused runtime tests passed (`26/26`), API typecheck passed, and guardrails
+  passed.
+
 - `V1-NON-BINANCE-BACKTEST-DERIVATIVES-ADAPTER-2026-05-13` moved
   non-Binance futures backtest supplemental funding-rate and open-interest
   history onto the Exchange public market-data adapter where the CCXT connector
