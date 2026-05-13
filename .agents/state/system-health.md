@@ -4,6 +4,12 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-CONTROLLED-LIVE-PROOF-PREACTIVATION-00169D7F-2026-05-13` BLOCKED ON
+  EXPLICIT LIVE-RISK APPROVAL: controlled LIVE proof preactivation confirmed
+  matching build-info, fully active no-order guard, and an inactive
+  import-capable LIVE Binance futures bot. The runner refused activation
+  without `--i-understand-live-risk`; no activation or order action occurred.
+
 - `V1-PROD-RESTORE-AND-LIVEIMPORT-TRUTH-00169D7F-2026-05-13` FINAL PREFLIGHT
   ONE BLOCKER / V1 NO-GO: production restore drill is fresh `PASS` for
   2026-05-13 with zero cleanup leftovers. LIVEIMPORT evidence is canonical and

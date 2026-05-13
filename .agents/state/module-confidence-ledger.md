@@ -58,6 +58,12 @@ Do not turn uncertainty into optimism.
 ## Current Release Evidence Notes
 
 - 2026-05-13
+  `V1-CONTROLLED-LIVE-PROOF-PREACTIVATION-00169D7F-2026-05-13` applies to
+  `SOAR-OPERATIONS-001`: controlled LIVE proof preactivation confirms the
+  no-order guard is fully active and the target LIVE bot is inactive and
+  import-capable. The runner refused activation without explicit live-risk
+  approval. Operations remains `BLOCKED`.
+- 2026-05-13
   `V1-PROD-RESTORE-AND-LIVEIMPORT-TRUTH-00169D7F-2026-05-13` applies to
   `SOAR-OPERATIONS-001`: production restore drill is fresh `PASS`, while
   LIVEIMPORT is fresh `failed` because the existing LIVE Binance futures bot

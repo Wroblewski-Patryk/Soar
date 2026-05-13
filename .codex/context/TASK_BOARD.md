@@ -17,6 +17,16 @@ Last updated: 2026-05-13
 
 ## READY
 
+- [x] `V1-CONTROLLED-LIVE-PROOF-PREACTIVATION-00169D7F-2026-05-13 release: verify controlled LIVE proof preactivation gates`
+  - Scope: ran the controlled LIVE proof runner through dry-run and
+    preactivation only. Build-info matched, no-order guard is fully active,
+    and the target LIVE Binance futures bot is inactive and import-capable.
+    The runner refused activation because `--i-understand-live-risk` was not
+    provided. No LIVE activation or order action occurred. Evidence:
+    `docs/planning/v1-controlled-live-proof-preactivation-00169d7f-2026-05-13-task.md`.
+    V1 remains `NO-GO` pending explicit live-risk approval or an acceptance
+    contract decision.
+
 - [x] `V1-PROD-RESTORE-AND-LIVEIMPORT-TRUTH-00169D7F-2026-05-13 release: refresh production restore and expose LIVEIMPORT truth`
   - Scope: refreshed production backup/restore drill evidence through the
     Coolify PostgreSQL resource terminal and generated canonical LIVEIMPORT

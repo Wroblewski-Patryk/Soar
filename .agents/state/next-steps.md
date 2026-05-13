@@ -4,6 +4,17 @@ Last updated: 2026-05-13
 
 ## Next Tiny Task
 
+Latest controlled LIVE proof preactivation:
+`V1-CONTROLLED-LIVE-PROOF-PREACTIVATION-00169D7F-2026-05-13` ran only dry-run
+and preactivation checks for the controlled LIVE proof runner. The runner
+confirmed matching build-info, fully active no-order guard
+(`globalKillSwitch=true`, `emergencyStop=true`, `active=true`), and one
+inactive LIVE Binance futures target bot with import management enabled. It
+then stopped before activation because `--i-understand-live-risk` was not
+provided. The next step is a user decision: explicitly approve the controlled
+live-risk proof run, or change/defer the V1 acceptance contract that currently
+requires `LIVEIMPORT-03` readback from a running LIVE/import session.
+
 Latest production restore and LIVEIMPORT truth:
 `V1-PROD-RESTORE-AND-LIVEIMPORT-TRUTH-00169D7F-2026-05-13` refreshed the
 production restore drill through the Coolify PostgreSQL resource terminal.

@@ -4,6 +4,19 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-CONTROLLED-LIVE-PROOF-PREACTIVATION-00169D7F-2026-05-13` ran the
+  controlled LIVE proof runner only through dry-run and preactivation checks.
+- The runner confirmed build-info matches `00169d7f`, the no-order guard is
+  fully active (`globalKillSwitch=true`, `emergencyStop=true`, `active=true`),
+  and the target redacted LIVE Binance futures bot is inactive with
+  `liveOptIn=true` and `manageExternalPositions=true`.
+- The runner stopped before activation because `--i-understand-live-risk` was
+  not provided. No LIVE bot was activated and no order action was attempted.
+  V1 remains `NO-GO` pending explicit live-risk approval for the controlled
+  proof run or a product decision to change the V1 acceptance contract.
+- Evidence:
+  `docs/planning/v1-controlled-live-proof-preactivation-00169d7f-2026-05-13-task.md`.
+
 - `V1-PROD-RESTORE-AND-LIVEIMPORT-TRUTH-00169D7F-2026-05-13` refreshed the
   production backup/restore drill through the Coolify PostgreSQL resource
   terminal and normalized LIVEIMPORT evidence naming for final-gate discovery.
