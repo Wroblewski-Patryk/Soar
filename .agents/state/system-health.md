@@ -4,6 +4,15 @@ Last updated: 2026-05-13
 
 ## Latest Health Snapshot
 
+- `V1-PRODUCTION-UI-CLICKTHROUGH-REFRESH-00169D7F-2026-05-13` PRODUCTION UI
+  ROUTE AUDIT PASS: deployed build-info matched
+  `00169d7fdc3aff8317759137b05594b20e773c8e`; authenticated production UI
+  module clickthrough passed for public `PASS:4`, dashboard `PASS:18`, admin
+  `PASS:3`, and legacy `PASS:3` routes with no blockers. Artifact no-secret
+  inspection found no raw credentials, tokens, cookies, or private headers.
+  This is route/module reachability evidence; deeper action-level journeys and
+  live multi-bot runtime behavior remain separate proof lanes.
+
 - `V1-WEB-BACKEND-PARITY-MONITORING-PROPS-2026-05-13` LOCAL CONTRACT PASS:
   Bots Monitoring props now reuse shared runtime enum aliases instead of local
   fee/capital source unions. Focused `BotsManagement` test passed (`14/14`),

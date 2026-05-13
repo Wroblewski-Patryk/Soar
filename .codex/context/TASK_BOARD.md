@@ -17,6 +17,17 @@ Last updated: 2026-05-13
 
 ## READY
 
+- [x] `V1-PRODUCTION-UI-CLICKTHROUGH-REFRESH-00169D7F-2026-05-13 qa: refresh authenticated production UI module clickthrough`
+  - Scope: ran the no-secret production UI module route audit against deployed
+    `00169d7fdc3aff8317759137b05594b20e773c8e` with approved application
+    auth. Result `PASS`: public `PASS:4`, dashboard `PASS:18`, admin
+    `PASS:3`, legacy `PASS:3`, blockers `none`; artifact scan found no raw
+    credentials/tokens/cookies/private headers. Evidence:
+    `docs/planning/v1-production-ui-clickthrough-refresh-00169d7f-2026-05-13-task.md`,
+    `docs/operations/prod-ui-module-clickthrough-00169d7f-2026-05-13-enum-followup.md`.
+    This is protected route reachability evidence, not a full action-level
+    proof for every module.
+
 - [x] `V1-WEB-BACKEND-PARITY-MONITORING-PROPS-2026-05-13 fix: reuse runtime enum aliases in Bots Monitoring props`
   - Scope: removed local duplicated fee/capital enum unions from
     `BotsMonitoringTab` props, reusing shared runtime aliases and

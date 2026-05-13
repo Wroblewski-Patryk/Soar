@@ -4,6 +4,17 @@ Last updated: 2026-05-13
 
 ## 2026-05-13 Current-Day V1 Blocker Refresh
 
+- `V1-PRODUCTION-UI-CLICKTHROUGH-REFRESH-00169D7F-2026-05-13` refreshed
+  authenticated production UI module route evidence for deployed
+  `00169d7fdc3aff8317759137b05594b20e773c8e`. Result: `PASS`; public
+  routes `PASS:4`, dashboard routes `PASS:18`, admin routes `PASS:3`,
+  legacy redirects `PASS:3`, blockers `none`. Artifact inspection found no
+  raw credentials, tokens, cookies, or private headers; the only match for the
+  secret scan was the safety-note word `passwords`. Evidence:
+  `docs/operations/prod-ui-module-clickthrough-00169d7f-2026-05-13-enum-followup.md`.
+  This proves protected route/module reachability, not every per-module
+  create/edit/delete/action journey.
+
 - `V1-WEB-BACKEND-PARITY-MONITORING-PROPS-2026-05-13` removed the remaining
   local Bots Monitoring prop duplications for runtime fee/capital enum
   domains by reusing shared Web runtime aliases. Evidence: focused

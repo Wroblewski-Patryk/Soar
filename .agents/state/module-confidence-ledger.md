@@ -58,6 +58,16 @@ Do not turn uncertainty into optimism.
 ## Current Release Evidence Notes
 
 - 2026-05-13
+  `V1-PRODUCTION-UI-CLICKTHROUGH-REFRESH-00169D7F-2026-05-13` applies to
+  `SOAR-BOTS-001`, `SOAR-UX-A11Y-MOBILE-001`, and
+  `SOAR-SUBSCRIPTIONS-ADMIN-001`: authenticated production route/module
+  reachability passed for deployed `00169d7f...` with public `PASS:4`,
+  dashboard `PASS:18`, admin `PASS:3`, legacy `PASS:3`, and no blockers.
+  Artifact scan found no raw credential/token/cookie/private-header values.
+  Rows remain `PARTIAL` because this is GET-only protected route evidence; it
+  does not prove every create/edit/delete/action journey or responsive browser
+  rendering.
+- 2026-05-13
   `V1-WEB-BACKEND-PARITY-MONITORING-PROPS-2026-05-13` applies to
   `SOAR-BOT-RUNTIME-001`: Bots Monitoring props now reuse shared runtime enum
   aliases for fee source and capital source, plus `BotRuntimeTrade["origin"]`
