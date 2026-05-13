@@ -129,9 +129,11 @@ typecheck, fallback unit tests, duplicate guard e2e, runtime PnL parity e2e,
 and Dashboard Home Web tests passed. A focused rendered Web regression now
 also proves the dashboard selector exposes all four bots and re-scopes wallet
 and runtime rows when switching between PAPER, Binance LIVE, and Gate.io LIVE.
-Next proof should move from local DB-backed API/runtime and rendered Web
-evidence toward production-safe authenticated UI/runtime clickthrough for
-multi-bot operation.
+2026-05-14 refresh after deployed `457bce05`: production build-info passed for
+`457bce05`, focused API LIVE/PAPER tests passed (`25/25`), and focused Web
+Dashboard tests passed (`24/24`). Next proof should move from local DB-backed
+API/runtime and rendered Web evidence toward production-safe authenticated
+UI/runtime clickthrough for multi-bot operation.
 
 Latest Web/API runtime enum parity checkpoint:
 `V1-WEB-BACKEND-PARITY-RUNTIME-ENUMS-2026-05-13` tightened Web runtime payload

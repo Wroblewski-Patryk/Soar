@@ -50,6 +50,12 @@ Operational queue for one-task execution runs.
     four-bot selector and selected wallet/runtime row re-scope. Remaining lane:
     production-safe authenticated UI/runtime clickthrough and real live
     multi-bot operation evidence.
+  - 2026-05-14 refresh after deployed `457bce05`: production build-info passed
+    for `457bce05`; focused API LIVE/PAPER tests passed (`25/25`); focused Web
+    Dashboard tests passed (`24/24`). Evidence:
+    `docs/planning/v1-live-paper-simultaneous-runtime-proof-refresh-457bce05-2026-05-14-task.md`.
+    Status remains open because production-safe authenticated UI/runtime
+    clickthrough and real live multi-bot operation evidence are still missing.
 
 - [x] `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13 release: close production target V1 gate`
   - 2026-05-13: Completed final controlled `LIVEIMPORT-03` proof for the

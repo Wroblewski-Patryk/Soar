@@ -213,6 +213,15 @@ Do not turn uncertainty into optimism.
   switching between PAPER, Binance LIVE, and Gate.io LIVE. These module rows
   remain `PARTIAL` because production-safe authenticated UI/runtime clickthrough
   and real live multi-bot operation evidence are still separate V1 lanes.
+- 2026-05-14
+  `V1-LIVE-PAPER-SIMULTANEOUS-RUNTIME-PROOF-REFRESH-457BCE05-2026-05-14`
+  refreshes the same `SOAR-BOTS-001`, `SOAR-BOT-RUNTIME-001`, and
+  `SOAR-EXCHANGE-ADAPTER-001` evidence after the production deploy of
+  `457bce05`: production build-info passed for `457bce05`, focused API
+  LIVE/PAPER isolation tests passed (`25/25`), and focused Web Dashboard
+  selected-bot/runtime tests passed (`24/24`). Rows remain `PARTIAL` because
+  protected production runtime/action evidence and the requested production
+  2x PAPER + 2x LIVE bot shape remain unavailable in this no-secret refresh.
 - 2026-05-13
   `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13` applies to
   `SOAR-OPERATIONS-001`: final `LIVEIMPORT-03` passed for `TRXUSDT`, final

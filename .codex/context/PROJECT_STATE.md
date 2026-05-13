@@ -171,6 +171,13 @@ Last updated: 2026-05-14
   and Dashboard Home Web tests passed. A focused rendered Web regression also
   proves the dashboard selector exposes all four bots and re-scopes wallet and
   runtime rows when switching between PAPER, Binance LIVE, and Gate.io LIVE.
+- 2026-05-14 refresh after deployed `457bce05`: production build-info passed
+  for `457bce05`; the focused API LIVE/PAPER isolation pack passed (`5`
+  files, `25/25` tests); the focused Web Dashboard selected-bot/runtime pack
+  passed (`2` files, `24/24` tests). Evidence:
+  `docs/planning/v1-live-paper-simultaneous-runtime-proof-refresh-457bce05-2026-05-14-task.md`.
+  Status remains `PARTIAL` until protected production runtime/action evidence
+  and the requested production 2x PAPER + 2x LIVE shape exist.
 
 - `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13` closed the current V1
   production target evidence lane for deployed

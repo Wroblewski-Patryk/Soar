@@ -66,6 +66,18 @@ run at the same time while preserving Soar's canonical runtime architecture.
 
 ## Result Report
 
+- 2026-05-14 refresh after production deploy `457bce05`:
+  - production build-info passed for
+    `457bce05338310c198c03a973395a9176f298dc1`;
+  - focused API LIVE/PAPER isolation pack passed (`5` files, `25/25` tests);
+  - focused Web Dashboard selected-bot/runtime pack passed (`2` files,
+    `24/24` tests);
+  - evidence:
+    `docs/planning/v1-live-paper-simultaneous-runtime-proof-refresh-457bce05-2026-05-14-task.md`.
+  - Status remains `partially verified` because protected production runtime
+    readback/action evidence and the requested production 2x PAPER + 2x LIVE
+    shape are not available in this no-secret refresh.
+
 - Checkpoint 1 implemented and verified a focused architecture fix and
   regression coverage:
   - `runtimeMarketDataFallback.service.ts` no longer routes non-Binance candle

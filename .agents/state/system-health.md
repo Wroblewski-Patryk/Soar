@@ -70,6 +70,15 @@ Last updated: 2026-05-14
   `test:go-live:smoke`. No production writes, bot activation, orders,
   close-position commands, or exchange mutation were attempted.
 
+- `V1-LIVE-PAPER-SIMULTANEOUS-RUNTIME-PROOF-REFRESH-457BCE05-2026-05-14`
+  PARTIAL REFRESH: production build-info is fresh for `457bce05`; focused API
+  LIVE/PAPER isolation tests passed (`25/25`); focused Web Dashboard
+  selected-bot/runtime tests passed (`24/24`). This refresh proves the local
+  2x PAPER + Binance LIVE + Gate.io LIVE isolation contract still holds after
+  the deployed adapter/runtime candidate, but it does not prove production
+  simultaneous LIVE/PAPER operation because protected auth and the production
+  2x LIVE resource shape are still missing.
+
 - `V1-PRODUCTION-RUNTIME-INVENTORY-00169D7F-2026-05-13` PRODUCTION MULTI-BOT
   SHAPE PARTIAL: authenticated read-only inventory found 3 visible bots:
   2 active PAPER bots and 1 inactive LIVE Binance futures bot. Latest PAPER
