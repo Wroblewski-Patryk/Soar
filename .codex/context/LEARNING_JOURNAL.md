@@ -20,6 +20,27 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-05-14 - Do not claim browser cleanup while headless rows remain
+- Context: after production fixture proof/state synchronization, a narrow
+  `Get-Process chrome-headless-shell` check still returned old Playwright
+  validation processes from earlier UI proof work.
+- Symptom: `Stop-Process`, `taskkill /T /F`, and CIM `Terminate` attempts
+  returned partial or no cleanup, with some rows reporting no live task
+  instance or empty command lines and new short-lived rows appearing under
+  `node.exe -` parents during cleanup attempts.
+- Root cause: the owning browser/Playwright process tree was not closed at the
+  source before the process-level cleanup check, leaving residual or phantom
+  Windows process rows.
+- Guardrail: close browser contexts/pages inside the proof runner, then run a
+  narrow process check. If rows remain, record the residual evidence instead
+  of reporting clean teardown.
+- Preferred pattern: make UI proof scripts own teardown with `await
+  context.close()` / `await browser.close()`, then verify no
+  `chrome-headless-shell` rows remain.
+- Avoid: relying only on post-hoc `Stop-Process` after browser validation.
+- Evidence:
+  `docs/planning/v1-production-fixture-low-risk-action-proof-457bce05-2026-05-14-task.md`.
+
 ### 2026-05-13 - Preserve LIVE bot fields when toggling activity
 - Context: `V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13` ran the
   controlled LIVE proof runner after explicit user approval.
@@ -757,6 +778,12 @@ pnpm --filter api exec vitest run <db-e2e-files> --run --sequence.concurrent=fal
   `orders.exchangeEvents.feeBackfill.test.ts` in parallel with
   `orders.exchangeEvents.service.test.ts` produced false foreign-key cleanup
   failures; the same suites passed when rerun sequentially.
+  Reconfirmed during `V1-CURRENT-GO-LIVE-SMOKE-2026-05-14`: running
+  `pnpm run test:go-live:smoke` in parallel with `pnpm run test:go-live:api`
+  produced false DB-backed failures in Backtests/Strategies (`401`, `404`,
+  `500`, FK cleanup errors). Rerunning `test:go-live:api` alone passed
+  (`44/44`), and rerunning the full `test:go-live:smoke` alone passed API
+  (`44/44`) plus Web (`18/18`).
 
 ### 2026-05-03 - Runtime position reads must inherit canonical venue and strategy context
 - Context: continued operator audit of LIVE/PAPER position management and
@@ -1300,6 +1327,10 @@ pnpm --filter api run test -- src/modules/markets/markets.e2e.test.ts --run
   (`scripts/runRollbackProofEvidence.mjs`,
   `docs/operations/v1-rollback-proof-prod-2026-05-01T01-29-17-680Z.md`,
   `docs/operations/_artifacts-v1-rollback-proof-prod-2026-05-01T01-29-17-680Z.json`).
+- 2026-05-14 reinforcement: a final production proof secret scan found older
+  stage artifacts that had persisted a raw `--auth-password` value in recorded
+  command strings. Those artifacts were redacted in place. Apply the same
+  guardrail to historical evidence sweeps, not only to newly generated files.
 
 ### 2026-05-01 - DCA visibility must survive exchange-sync position replacement
 - Context: protected production inspection of the selected `LIVE` DOGEUSDT bot
@@ -2680,3 +2711,96 @@ promise = connect().catch((error) => {
     decision on several symbols while the session had runtime events.
   - `runtimeSymbolStatsReadModel.service.test.ts` now locks explicit block
     reasons against stale no-vote snapshot replacement.
+
+### 2026-05-14 - Coolify team switching needs a non-visual fallback
+- Context: `V1-PROTECTED-OPS-GATE-457BCE05-2026-05-14` needed production
+  resource and database context from Coolify.
+- Symptom: after login, the default team showed no Soar project; browser
+  automation against the visible team selector was flaky and one headless
+  navigation hung before reaching the database resource.
+- Root cause: Soar lives under `Root Team`, while the default session opens
+  another team. Coolify's Livewire-rendered switcher may have hidden duplicate
+  selects, so selector-based browser actions can target the wrong element or
+  wait indefinitely.
+- Guardrail: for read-only Coolify inventory, switch to `Root Team` first and
+  prefer a short HTTP/Livewire fallback when visual automation is unreliable.
+  Never print or store secret field values from Coolify snapshots.
+- Preferred pattern:
+```text
+1) Login with a WebRequest session.
+2) Use the Livewire `switch-team` component to set `selectedTeamId=0`.
+3) Fetch the resource page and extract only non-secret names/ids required by
+   repo scripts.
+4) If Playwright was used, verify no validation browser process remains.
+```
+- Avoid: assuming the default Coolify team owns Soar, scraping masked/secret
+  env values into repo artifacts, or letting a hung headless browser survive a
+  validation run.
+- Evidence:
+  - Root Team showed the Soar project and production resources.
+  - Direct database resource access returned `404` before team switch and
+    `postgresql > Configuration | Coolify` after the Livewire team switch.
+
+### 2026-05-14 - Avoid low-level Coolify terminal bridge automation
+- Context: `V1-PROTECTED-OPS-GATE-457BCE05-2026-05-14` needed a current-day
+  production restore drill after local Docker could not see the remote VPS
+  PostgreSQL container.
+- Symptom: Playwright/xterm attempts were flaky, Livewire terminal snapshots
+  exposed command-bridge internals, direct websocket attempts timed out, and
+  the user saw a cybersecurity-risk warning during the session.
+- Root cause: Coolify terminal execution is a browser/websocket/SSH bridge
+  designed for interactive operator use. Automating the bridge at a low level
+  is brittle, noisy, and can look like unsafe terminal automation even when the
+  target is authorized.
+- Guardrail: do not automate Coolify terminal/websocket/SSH internals from
+  Codex for restore drills. Use a documented operator-safe path instead:
+  manual Coolify terminal execution with no-secret markers, a purpose-built
+  approved script exposed through the app/ops layer, or an explicitly provided
+  VPS shell channel.
+- Preferred pattern:
+```text
+1) Use local Docker only for local restore evidence.
+2) For production restore proof, ask for or use an approved operator path.
+3) Capture only non-secret PASS/cleanup markers and aggregate counts.
+4) Stop immediately if the path requires reverse-engineering terminal bridges.
+```
+- Avoid: driving Coolify xterm, websocket `/terminal/ws`, generated SSH bridge
+  commands, or hidden Livewire terminal internals as an automation substrate.
+- Evidence:
+  - Local restore drill failed with `No such container` for the VPS container.
+  - Headless terminal attempts produced syntax/timeout/browser-close failures.
+  - User reported the platform cybersecurity-risk warning during the terminal
+    bridge exploration.
+
+### 2026-05-14 - Clean up validation browser processes after protected UI proof
+- Context: `V1-PROTECTED-OPS-GATE-457BCE05-2026-05-14` used production UI
+  clickthrough/browser validation and later source-of-truth synchronization.
+- Symptom: final cleanup found four `chrome-headless-shell` processes still
+  running from the validation run.
+- Root cause: browser-driven validation can leave helper processes behind when
+  a proof or inspection path exits before the browser context is closed.
+- Guardrail: after every UI/browser validation, run a narrow process check for
+  `chrome-headless-shell` and stop only those validation processes before
+  closing the task.
+- Preferred pattern:
+```text
+1) Run the browser proof.
+2) Close pages/contexts in the proof runner.
+3) Run `Get-Process chrome-headless-shell -ErrorAction SilentlyContinue`.
+4) Stop validation leftovers and record cleanup evidence.
+```
+- Avoid: ending a task while validation browser helpers remain alive, or
+  broadly killing unrelated user browser processes.
+- Evidence:
+  - Cleanup found four `chrome-headless-shell` processes started during the
+    validation window and stopped them with a narrow process cleanup.
+  - Follow-up process check returned no remaining `chrome-headless-shell`
+    process.
+  - A later 2026-05-14 validation pass found three additional
+    `chrome-headless-shell` leftovers and the same narrow cleanup again left
+    no remaining validation browser process.
+  - A final 2026-05-14 check found one stale `chrome-headless-shell` entry
+    whose parent process no longer existed; both `Stop-Process -Force` and
+    `taskkill /F /T` reported no removable running task instance. Treat this
+    as a Windows process-table cleanup caveat and recheck before the next
+    browser validation.

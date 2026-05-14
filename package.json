@@ -85,6 +85,8 @@
     "ops:ui:prod-clickthrough": "node scripts/runProdUiModuleClickthroughAudit.mjs",
     "ops:prod-fixture:action-proof": "node scripts/runProdFixtureActionProof.mjs",
     "ops:prod-security-exchange:proof": "node scripts/runProdSecurityExchangeProof.mjs",
+    "ops:prod-positions:proof": "node scripts/runProdPositionsProof.mjs",
+    "ops:prod-ux:proof": "node scripts/runProdUxA11yMobileProof.mjs",
     "ops:exchange:gateio-market-stream-smoke": "pnpm --filter api exec tsx scripts/gateioMarketStreamSourceSmoke.ts"
   },
   "keywords": [],

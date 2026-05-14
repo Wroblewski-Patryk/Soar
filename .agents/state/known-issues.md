@@ -4,20 +4,37 @@ Last updated: 2026-05-14
 
 ## Active Issues
 
-- 2026-05-13 update: V1 production target gate evidence did not by itself
-  prove the broad claim that multiple LIVE and PAPER bots can operate together
-  across all runtime/UI/action paths. Checkpoint 1 now closes the local
-  DB-backed API/runtime portion: two active PAPER bots plus active Binance LIVE
-  and Gate.io LIVE bots can coexist, venue-scoped LIVE overlap behaves
-  correctly, Gate.io runtime fallback market data stays inside the exchange
-  boundary, and selected runtime position reads are isolated by mode, wallet,
-  API key, exchange, and market type. A rendered Dashboard Home regression also
-  proves the four-bot selector and selected wallet/runtime row re-scope.
-  2026-05-14 refresh after deployed `457bce05`: production build-info is fresh
-  for `457bce05`, focused API LIVE/PAPER tests still pass (`25/25`), and
-  focused Web Dashboard tests still pass (`24/24`). Remaining issue is
-  production-safe authenticated UI/runtime clickthrough and real live multi-bot
-  operation evidence before making a blanket V1 claim.
+- 2026-05-14 update: literal V1 "100%" is no longer blocked in the tracked V1
+  evidence model. Final generated state is `GO` with `PASS:21`, static findings
+  `0`, implementation estimate `100%`, evidence coverage `100%`, and release
+  readiness `100%`. Production proof now covers the disposable fixture/action
+  set, Security/Privacy, Exchange Adapter, Positions, UX/A11y/Mobile, protected
+  operations, workers, rollback, restore, runtime freshness, release gate, and
+  runtime readbacks. LIVE order/cancel/close, unsafe LIVE position mutation,
+  and existing production data mutation remain blocked without separate
+  explicit approval.
+
+- 2026-05-14 update: `V1-PROTECTED-OPS-GATE-457BCE05-2026-05-14` confirms the
+  latest deployed `457bce05` candidate is public-smoke healthy and protected
+  runtime/rollback/UI/LIVEIMPORT/RC/activation/restore healthy and release-ready.
+  Build-info matches `457bce05338310c198c03a973395a9176f298dc1`; public
+  API/Web smoke, protected runtime freshness, rollback proof, authenticated
+  production UI clickthrough, controlled no-order-guard `LIVEIMPORT-03`, RC
+  strict evidence, and activation audit/plan pass or are fresh for 2026-05-14.
+  Production restore drill passed through the VPS Docker SSH context and the
+  full non-dry-run release gate reports `Readiness: ready`. There is no active
+  Operations blocker for the current protected release gate.
+
+- 2026-05-14 update: V1 LIVE/PAPER simultaneous runtime evidence is now closed
+  for the current production non-Gate.io scope. Local DB-backed API/runtime and
+  Web Dashboard proof remains green (`25/25` API tests, `24/24` Web tests).
+  Controlled no-order-guard production proof activated the existing Binance
+  LIVE bot only for the observation window, verified `LIVEIMPORT-03` for
+  `TRXUSDT`, captured a simultaneous read-only runtime snapshot where the
+  Binance LIVE bot and both Binance PAPER bots were RUNNING, then deactivated
+  the LIVE bot. Post-cleanup readback confirms the LIVE bot is inactive again.
+  Gate.io/second-LIVE production shape remains unavailable/deferred rather
+  than a hidden blocker for this release slice.
 
 - 2026-05-13 update: `V1-TARGET-RELEASE-GATE-PASS-00169D7F-2026-05-13`
   resolves the active V1 production target blocker set. `LIVEIMPORT-03` passed
@@ -187,13 +204,15 @@ Last updated: 2026-05-14
   and timeline overlays. Remaining issue is production-safe Backtests browser
   clickthrough on approved representative RSI strategy and market data.
 
-- 2026-05-11 update: `V1-ORDERS-LOCAL-PROOF-2026-05-11` closes the local
-  Orders proof gap. API/Web tests prove list/read/open/cancel/close,
+- 2026-05-14 update: Orders now has production-safe PAPER action proof on
+  deployed `457bce05`. API/Web tests prove list/read/open/cancel/close,
   active-only filtering, exchange-backed cancel boundary, exchange event
   reconciliation, fills, fees, fee backfill, live fill resolution, quantity
-  rules, position scope, source labels, and open-order cancel actions.
-  Remaining issue is production-safe Orders browser clickthrough; live mutation
-  remains blocked-risk without an explicit safe plan.
+  rules, position scope, source labels, and open-order cancel actions. The
+  production fixture proof opened a disposable PAPER limit order, read it back,
+  proved cancel fail-closed without `riskAck`, canceled it with `riskAck`, and
+  verified terminal `CANCELED` readback. LIVE mutation remains blocked-risk
+  without an explicit safe plan.
 
 - 2026-05-11 update: `V1-POSITIONS-LOCAL-PROOF-2026-05-11` closes the local
   Positions proof gap. API/Web tests prove list/read ownership, symbol filter
@@ -206,15 +225,16 @@ Last updated: 2026-05-14
   production-safe Positions browser clickthrough; LIVE mutation remains
   blocked-risk without an explicit safe plan.
 
-- 2026-05-11 update: `V1-MANUAL-ORDERS-LOCAL-PROOF-2026-05-11` closes the
-  local Manual Orders proof gap. API/Web tests prove manual context, PAPER
-  market placement, validation, lifecycle readback, cancel/close, selected-bot
-  scope, quantity rules, ownership isolation, LIVE risk guards, exchange-
-  backed fail-closed cancel behavior, open-order source/cancel actions, and
-  Dashboard Home submitted/waiting/ready/imported/position-opened/blocked
-  states. Remaining issue is production-safe Manual Orders browser
-  clickthrough; LIVE order actions remain blocked-risk without an explicit safe
-  plan.
+- 2026-05-14 update: Manual Orders now has production-safe PAPER action proof
+  on deployed `457bce05`. API/Web tests prove manual context, PAPER market
+  placement, validation, lifecycle readback, cancel/close, selected-bot scope,
+  quantity rules, ownership isolation, LIVE risk guards, exchange-backed
+  fail-closed cancel behavior, open-order source/cancel actions, and Dashboard
+  Home submitted/waiting/ready/imported/position-opened/blocked states. The
+  production fixture proof read manual order context, opened a disposable PAPER
+  limit order, read it back, proved cancel fail-closed without `riskAck`,
+  canceled it with `riskAck`, and verified terminal `CANCELED` readback. LIVE
+  order actions remain blocked-risk without an explicit safe plan.
 
 - 2026-05-11 update: `V1-STRATEGIES-LOCAL-PROOF-2026-05-11` closes the local
   Strategies proof gap. API/Web tests prove strategy CRUD, export/import,

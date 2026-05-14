@@ -1,7 +1,7 @@
 # V1 RC Sign-Off Record
 
 Release target: `v1.0.0`  
-Date (UTC): `2026-05-13T00:00:00.000Z`
+Date (UTC): `2026-05-14T00:00:00.000Z`
 
 ## Gate Evidence References
 - RC checklist: `docs/operations/v1-release-candidate-checklist.md`
@@ -10,27 +10,27 @@ Date (UTC): `2026-05-13T00:00:00.000Z`
 
 ## Sign-Offs
 - Engineering sign-off:
-  - Name: Patryk
-  - UTC timestamp: 2026-05-13T00:00:00.000Z
+  - Name: Patryk Wroblewski
+  - UTC timestamp: 2026-05-14T00:00:00.000Z
   - Notes: approved via scripted record build
 - Product sign-off:
-  - Name: Patryk
-  - UTC timestamp: 2026-05-13T00:00:00.000Z
+  - Name: Patryk Wroblewski
+  - UTC timestamp: 2026-05-14T00:00:00.000Z
   - Notes: approved via scripted record build
 - Operations sign-off:
-  - Name: Patryk
-  - UTC timestamp: 2026-05-13T00:00:00.000Z
+  - Name: Patryk Wroblewski
+  - UTC timestamp: 2026-05-14T00:00:00.000Z
   - Notes: approved via scripted record build
 
 ## RC Ownership
 - RC owner with rollback authority:
-  - Name: Patryk
-  - Contact: Patryk
-  - UTC assignment timestamp: 2026-05-13T00:00:00.000Z
+  - Name: Patryk Wroblewski
+  - Contact: TBD
+  - UTC assignment timestamp: 2026-05-14T00:00:00.000Z
 
 ## Gate Snapshot at Sign-Off Build
 - Gate statuses found: 4
-- Gate values: PASS, PASS, PASS, OPEN
+- Gate values: PASS, PASS, PASS, PASS
 - Gates 1-3 pass: yes
 
 ## Final Decision

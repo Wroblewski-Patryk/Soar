@@ -1,0 +1,138 @@
+{
+  "generatedAt": "2026-05-14T01:02:18.086Z",
+  "environment": "prod",
+  "dryRun": false,
+  "readiness": "not_ready",
+  "baseUrl": "https://api.soar.luckysparrow.ch",
+  "webBaseUrl": "https://soar.luckysparrow.ch",
+  "expectedSha": "457bce05338310c198c03a973395a9176f298dc1",
+  "evidence": [
+    {
+      "key": "activationAudit",
+      "label": "activation evidence audit",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-14",
+      "path": "docs\\operations\\v1-production-activation-evidence-audit-2026-05-14.md",
+      "date": "2026-05-14"
+    },
+    {
+      "key": "activationPlan",
+      "label": "activation execution plan",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-14",
+      "path": "docs\\planning\\v1-production-activation-and-evidence-plan-2026-05-14.md",
+      "date": "2026-05-14"
+    },
+    {
+      "key": "rcExternalGateStatus",
+      "label": "RC external gates status",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-14",
+      "path": "docs\\operations\\v1-rc-external-gates-status.md",
+      "date": "2026-05-14"
+    },
+    {
+      "key": "rcSignoffRecord",
+      "label": "RC sign-off record",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-14",
+      "path": "docs\\operations\\v1-rc-signoff-record.md",
+      "date": "2026-05-14"
+    },
+    {
+      "key": "rcChecklist",
+      "label": "RC checklist verification block",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-14",
+      "path": "docs\\operations\\v1-release-candidate-checklist.md",
+      "date": "2026-05-14"
+    },
+    {
+      "key": "liveImportReadback",
+      "label": "LIVEIMPORT-03 runtime readback",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-14",
+      "path": "docs\\operations\\liveimport-03-prod-readback-2026-05-14.json",
+      "date": "2026-05-14"
+    },
+    {
+      "key": "prodUiClickthrough",
+      "label": "production UI clickthrough",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-14",
+      "path": "docs\\operations\\prod-ui-module-clickthrough-457bce05-2026-05-14.md",
+      "date": "2026-05-14"
+    },
+    {
+      "key": "backupRestoreDrill",
+      "label": "backup/restore drill evidence",
+      "state": "stale",
+      "required": true,
+      "reason": "expected 2026-05-14, found 2026-05-13",
+      "path": "docs\\operations\\v1-restore-drill-prod-2026-05-14T00-00-00-000Z.md",
+      "date": "2026-05-13"
+    },
+    {
+      "key": "rollbackProof",
+      "label": "rollback proof pack",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-14",
+      "path": "docs\\operations\\v1-rollback-proof-prod-2026-05-14T01-00-18-225Z.md",
+      "date": "2026-05-14"
+    }
+  ],
+  "blockers": [
+    "evidence:backupRestoreDrill:stale",
+    "step:post-deploy smoke gate"
+  ],
+  "steps": [
+    {
+      "label": "web build-info freshness gate",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "ops:deploy:wait-web-build-info",
+        "--",
+        "--web-base-url",
+        "https://soar.luckysparrow.ch",
+        "--expected-sha",
+        "457bce05338310c198c03a973395a9176f298dc1",
+        "--timeout-seconds",
+        "900",
+        "--interval-seconds",
+        "30"
+      ],
+      "startedAt": "2026-05-14T01:02:16.147Z",
+      "endedAt": "2026-05-14T01:02:16.801Z",
+      "durationMs": 653,
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "label": "post-deploy smoke gate",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "ops:deploy:smoke",
+        "--",
+        "--base-url",
+        "https://api.soar.luckysparrow.ch",
+        "--web-base-url",
+        "https://soar.luckysparrow.ch"
+      ],
+      "startedAt": "2026-05-14T01:02:16.801Z",
+      "endedAt": "2026-05-14T01:02:18.086Z",
+      "durationMs": 1284,
+      "status": "failed",
+      "exitCode": 1
+    }
+  ]
+}

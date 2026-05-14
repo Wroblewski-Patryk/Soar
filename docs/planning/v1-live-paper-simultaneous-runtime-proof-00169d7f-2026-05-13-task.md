@@ -72,11 +72,23 @@ run at the same time while preserving Soar's canonical runtime architecture.
   - focused API LIVE/PAPER isolation pack passed (`5` files, `25/25` tests);
   - focused Web Dashboard selected-bot/runtime pack passed (`2` files,
     `24/24` tests);
+  - controlled no-order-guard production LIVE proof activated the existing
+    Binance LIVE bot only for the observation window, verified `LIVEIMPORT-03`
+    for `TRXUSDT`, collected a simultaneous read-only runtime snapshot where
+    the Binance LIVE bot and both Binance PAPER bots were RUNNING, and then
+    deactivated the LIVE bot;
+  - post-cleanup readback confirmed the Binance LIVE bot was inactive again
+    while both PAPER bots remained healthy;
   - evidence:
-    `docs/planning/v1-live-paper-simultaneous-runtime-proof-refresh-457bce05-2026-05-14-task.md`.
-  - Status remains `partially verified` because protected production runtime
-    readback/action evidence and the requested production 2x PAPER + 2x LIVE
-    shape are not available in this no-secret refresh.
+    `docs/planning/v1-live-paper-simultaneous-runtime-proof-refresh-457bce05-2026-05-14-task.md`,
+    `docs/operations/liveimport-03-prod-readback-live-paper-457bce05-2026-05-14.json`,
+    `docs/operations/prod-live-paper-simultaneous-runtime-readback-457bce05-2026-05-14.md`,
+    and
+    `docs/operations/prod-live-paper-post-cleanup-readback-457bce05-2026-05-14.md`.
+  - Status is verified for the current production non-Gate.io simultaneous
+    LIVE/PAPER runtime scope. The requested 2x PAPER + 2x LIVE production
+    shape remains unavailable because production has no visible second
+    LIVE/Gate.io bot for this user-deferred slice.
 
 - Checkpoint 1 implemented and verified a focused architecture fix and
   regression coverage:

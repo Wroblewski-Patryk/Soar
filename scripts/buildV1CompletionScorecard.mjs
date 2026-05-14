@@ -146,14 +146,22 @@ const buildScorecard = async (options) => {
   const p0NotReleaseReady = moduleScores.filter((row) => row.risk.startsWith('P0') && row.releasePercent < 100);
   const p1NotReleaseReady = moduleScores.filter((row) => row.risk.startsWith('P1') && row.releasePercent < 100);
 
+  const status =
+    p0NotReleaseReady.length === 0 &&
+    blockedRows.length === 0 &&
+    concreteGaps.length === 0 &&
+    score.releaseReadinessPercent >= 100
+      ? 'GO'
+      : 'NO-GO';
+
   return {
     generatedAt: new Date().toISOString(),
     evidenceDate: options.today,
-    status: 'NO-GO',
+    status,
     sourceLedger: relativePath(ledgerPath),
     scoringModel: {
       warning:
-        'Percentages are a planning signal, not release approval. V1 remains NO-GO while any P0 module lacks accepted proof or any release gate is blocked.',
+        'Percentages are a planning signal, not release approval. V1 is GO only when all release rows have accepted proof and no formal gate is blocked.',
       weights: { P0: 5, P1: 3, P2: 1 },
       statusScore,
     },
@@ -176,7 +184,10 @@ const buildScorecard = async (options) => {
         phase: 'Prove action behavior',
         readinessPercent: score.evidenceCoveragePercent,
         status: score.evidenceCoveragePercent >= 100 ? 'DONE' : 'IN_PROGRESS',
-        note: 'Module action proofs are still missing or partial for most rows.',
+        note:
+          score.evidenceCoveragePercent >= 100
+            ? 'All tracked module action proof rows are accepted in the current ledger.'
+            : 'Module action proofs are still missing or partial for one or more rows.',
       },
       {
         phase: 'Repair confirmed failures',
@@ -188,13 +199,19 @@ const buildScorecard = async (options) => {
         phase: 'Production-safe proof',
         readinessPercent: score.releaseReadinessPercent,
         status: score.releaseReadinessPercent >= 100 ? 'DONE' : 'BLOCKED',
-        note: 'Production-safe clickthrough, protected auth, SLO, rollback, and runtime readback are not closed.',
+        note:
+          score.releaseReadinessPercent >= 100
+            ? 'Production-safe clickthrough, protected auth, SLO, rollback, and runtime readback evidence are closed for this snapshot.'
+            : 'Production-safe clickthrough, protected auth, SLO, rollback, or runtime readback is not closed.',
       },
       {
         phase: 'Release decision',
-        readinessPercent: 0,
-        status: 'BLOCKED',
-        note: 'Release remains blocked while P0 proof gaps and formal gates are open.',
+        readinessPercent: status === 'GO' ? 100 : 0,
+        status: status === 'GO' ? 'DONE' : 'BLOCKED',
+        note:
+          status === 'GO'
+            ? 'All tracked module proof rows and formal gates are closed for this V1 evidence snapshot.'
+            : 'Release remains blocked while proof gaps or formal gates are open.',
       },
     ],
     topBlockers: [
@@ -264,9 +281,9 @@ Source ledger: \`${scorecard.sourceLedger}\`
 - Blocked modules: ${scorecard.summary.blockedModules.join(', ') || 'none'}
 - Concrete non-proof gaps: ${scorecard.summary.concreteNonProofGaps}
 
-Important: percentages are planning signals, not release approval. V1 remains
-\`NO-GO\` while any P0 module lacks accepted proof or any release gate is
-blocked.
+Important: percentages are planning signals, not release approval. V1 is
+\`GO\` only when all tracked release rows have accepted proof and no formal
+gate is blocked.
 
 ## Phase Readiness
 

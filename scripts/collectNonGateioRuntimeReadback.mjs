@@ -291,7 +291,9 @@ const main = async () => {
     `- Generated at (UTC): ${payload.generatedAt}`,
     '- Scope: Gate.io deferred by user on 2026-05-13; read-only Binance/PAPER/LIVE inventory and runtime monitoring readback only.',
     `- Build SHA: ${payload.buildInfo.gitSha ?? 'unknown'} (${
-      payload.buildInfo.matchesExpected ? 'matches expected 00169d7f' : 'does not match expected 00169d7f'
+      payload.buildInfo.matchesExpected
+        ? `matches expected ${options.expectedSha}`
+        : `does not match expected ${options.expectedSha}`
     })`,
     `- Raw JSON: \`${options.outputJson}\``,
     '',

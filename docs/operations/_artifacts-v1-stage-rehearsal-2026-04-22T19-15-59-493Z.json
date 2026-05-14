@@ -4,7 +4,7 @@
   "dryRun": false,
   "baseUrl": "https://stage-api.soar.luckysparrow.ch",
   "webBaseUrl": "https://stage.soar.luckysparrow.ch",
-  "command": "node scripts/runV1ReleaseGate.mjs --environment stage --base-url https://stage-api.soar.luckysparrow.ch --web-base-url https://stage.soar.luckysparrow.ch --skip-local-quality --artifact-stamp 2026-04-22T19-15-59-493Z --auth-email stage-ops-admin@luckysparrow.ch --auth-password StageOps26!B3rlin#Gate --ops-auth-header-name X-Forwarded-For --ops-auth-header-value 31.10.146.162",
+  "command": "node scripts/runV1ReleaseGate.mjs --environment stage --base-url https://stage-api.soar.luckysparrow.ch --web-base-url https://stage.soar.luckysparrow.ch --skip-local-quality --artifact-stamp 2026-04-22T19-15-59-493Z --auth-email stage-ops-admin@luckysparrow.ch --auth-password <redacted> --ops-auth-header-name X-Forwarded-For --ops-auth-header-value 31.10.146.162",
   "exitCode": 0,
   "gateJsonPath": "docs\\operations\\_artifacts-v1-release-gate-stage-2026-04-22T19-15-59-493Z.json",
   "gateReportPath": "docs\\operations\\v1-release-gate-stage-2026-04-22T19-15-59-493Z.md",

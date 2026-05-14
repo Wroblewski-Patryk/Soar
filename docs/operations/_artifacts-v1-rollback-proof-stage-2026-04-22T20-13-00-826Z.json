@@ -4,7 +4,7 @@
   "baseUrl": "https://stage-api.soar.luckysparrow.ch",
   "startedAt": "2026-04-22T20:13:00.334Z",
   "endedAt": "2026-04-22T20:13:00.825Z",
-  "command": "node scripts/evaluateRollbackGuard.mjs --base-url https://stage-api.soar.luckysparrow.ch --auth-email stage-ops-admin@luckysparrow.ch --auth-password StageOps26!B3rlin#Gate --ops-auth-header-name X-Forwarded-For --ops-auth-header-value 31.10.146.162",
+  "command": "node scripts/evaluateRollbackGuard.mjs --base-url https://stage-api.soar.luckysparrow.ch --auth-email stage-ops-admin@luckysparrow.ch --auth-password <redacted> --ops-auth-header-name X-Forwarded-For --ops-auth-header-value 31.10.146.162",
   "checks": {
     "commandExitCodeZero": true,
     "shouldRollbackFalse": true,

@@ -48,6 +48,10 @@ const printUsage = () => {
       '  --symbols <csv>                  Symbols to verify (default: ETHUSDT,DOGEUSDT)',
       '  --expected-sha <sha>             Optional expected web build-info SHA prefix',
       '  --output <path>                  JSON artifact path for LIVEIMPORT-03 collector',
+      '  --simultaneous-readback-output-json <path>',
+      '                                   Optional JSON artifact path for PAPER+LIVE read-only runtime readback while LIVE is active',
+      '  --simultaneous-readback-output-md <path>',
+      '                                   Optional Markdown artifact path for PAPER+LIVE read-only runtime readback while LIVE is active',
       '  --poll-seconds <n>               Running-session wait window (default: 180)',
       '  --poll-interval-ms <n>           Poll interval (default: 5000)',
       '  --dry-run                        Print a redacted plan without network calls or activation',
@@ -62,7 +66,9 @@ const printUsage = () => {
       '  CONTROLLED_LIVE_PROOF_OPS_AUTH_HEADER_VALUE, CONTROLLED_LIVE_PROOF_BOT_ID,',
       '  CONTROLLED_LIVE_PROOF_SYMBOLS, CONTROLLED_LIVE_PROOF_EXPECTED_SHA,',
       '  CONTROLLED_LIVE_PROOF_OUTPUT, CONTROLLED_LIVE_PROOF_POLL_SECONDS,',
-      '  CONTROLLED_LIVE_PROOF_POLL_INTERVAL_MS',
+      '  CONTROLLED_LIVE_PROOF_POLL_INTERVAL_MS,',
+      '  CONTROLLED_LIVE_PROOF_SIMULTANEOUS_OUTPUT_JSON,',
+      '  CONTROLLED_LIVE_PROOF_SIMULTANEOUS_OUTPUT_MD',
     ].join('\n') + '\n'
   );
 };
@@ -115,6 +121,14 @@ const resolveOptions = () => ({
   output:
     readArgValue('--output') ||
     process.env.CONTROLLED_LIVE_PROOF_OUTPUT ||
+    '',
+  simultaneousReadbackOutputJson:
+    readArgValue('--simultaneous-readback-output-json') ||
+    process.env.CONTROLLED_LIVE_PROOF_SIMULTANEOUS_OUTPUT_JSON ||
+    '',
+  simultaneousReadbackOutputMd:
+    readArgValue('--simultaneous-readback-output-md') ||
+    process.env.CONTROLLED_LIVE_PROOF_SIMULTANEOUS_OUTPUT_MD ||
     '',
   pollSeconds: Number.parseInt(
     readArgValue('--poll-seconds') ||
@@ -351,6 +365,36 @@ const runCollector = (options, token, botId, sessionId) =>
     });
   });
 
+const runSimultaneousRuntimeReadback = (options, token) => {
+  if (!options.simultaneousReadbackOutputJson.trim() && !options.simultaneousReadbackOutputMd.trim()) {
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, ['scripts/collectNonGateioRuntimeReadback.mjs'], {
+      stdio: 'inherit',
+      env: {
+        ...process.env,
+        NON_GATEIO_READBACK_API_BASE_URL: options.baseUrl,
+        NON_GATEIO_READBACK_WEB_BASE_URL: options.webBaseUrl,
+        NON_GATEIO_READBACK_AUTH_TOKEN: token,
+        NON_GATEIO_READBACK_EXPECTED_SHA: options.expectedSha,
+        NON_GATEIO_READBACK_OUTPUT_JSON: options.simultaneousReadbackOutputJson,
+        NON_GATEIO_READBACK_OUTPUT_MD: options.simultaneousReadbackOutputMd,
+      },
+    });
+
+    child.on('error', reject);
+    child.on('exit', (code) => {
+      if (code === 0) {
+        resolve();
+        return;
+      }
+      reject(new Error(`Simultaneous PAPER+LIVE runtime readback exited with code ${code}.`));
+    });
+  });
+};
+
 const main = async () => {
   if (args.has('--help') || args.has('-h')) {
     printUsage();
@@ -371,6 +415,10 @@ const main = async () => {
           symbols: options.symbols,
           expectedShaProvided: Boolean(options.expectedSha.trim()),
           outputProvided: Boolean(options.output.trim()),
+          simultaneousReadbackOutputJsonProvided: Boolean(
+            options.simultaneousReadbackOutputJson.trim()
+          ),
+          simultaneousReadbackOutputMdProvided: Boolean(options.simultaneousReadbackOutputMd.trim()),
           pollSeconds: options.pollSeconds,
           pollIntervalMs: options.pollIntervalMs,
           understandsLiveRisk: options.understandsLiveRisk,
@@ -443,6 +491,7 @@ const main = async () => {
       `[ops:live:controlled-proof] running session detected: ${hashId(session.id)}\n`
     );
     await runCollector(options, resolvedAuth.token, bot.id, session.id);
+    await runSimultaneousRuntimeReadback(options, resolvedAuth.token);
   } finally {
     if (activated) {
       try {

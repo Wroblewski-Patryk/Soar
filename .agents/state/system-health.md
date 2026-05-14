@@ -4,15 +4,131 @@ Last updated: 2026-05-14
 
 ## Latest Health Snapshot
 
+- `V1-FINAL-EVIDENCE-CONSISTENCY-READBACK-2026-05-14` FINAL EVIDENCE
+  CONSISTENCY PASS: final generated JSON artifacts and Markdown markers agree
+  on scorecard `GO`, implementation/evidence/readiness `100%`, `PASS:21`,
+  blocked modules `none`, concrete non-proof gaps `0`, no next work order,
+  master ledger `GO`, static scan findings `0`, and project-index V1 PASS rows
+  `21`. Evidence:
+  `docs/planning/v1-final-evidence-consistency-readback-2026-05-14-task.md`.
+
+- `V1-ACTIVE-QUEUE-CLOSURE-AUDIT-2026-05-14` ACTIVE QUEUE CLOSED: canonical
+  final evidence files exist, active `next-steps` has no current
+  NO-GO/BLOCKED completion signal, final scorecard readback is `GO` / `100%`
+  / blocked modules `none`, and active unchecked-row scan found no open V1
+  completion row. Evidence:
+  `docs/planning/v1-active-queue-closure-audit-2026-05-14-task.md`.
+
+- `V1-CURRENT-GO-LIVE-SMOKE-2026-05-14` CURRENT GO-LIVE SMOKE PASS: current
+  worktree go-live smoke passed when DB-backed packs were run sequentially:
+  Web `18/18`, API `44/44`, and full smoke API `44/44` plus Web `18/18`.
+  The first parallel attempt produced false DB cleanup interference and is
+  recorded in the learning journal. No deploy or production mutation was
+  performed. Evidence:
+  `docs/planning/v1-current-go-live-smoke-2026-05-14-task.md`.
+
+- `V1-CURRENT-WORKTREE-FULL-REGRESSION-2026-05-14` CURRENT FULL REGRESSION
+  PASS: after final V1 evidence, handoff, inventory, and sanity updates,
+  `pnpm run lint`, full Web Vitest (`149` files / `512` tests), and full API
+  Vitest all passed. No deploy or production mutation was performed. Evidence:
+  `docs/planning/v1-current-worktree-full-regression-2026-05-14-task.md`.
+
+- `V1-CURRENT-WORKTREE-SANITY-2026-05-14` CURRENT WORKTREE PASS: after final
+  V1 evidence, handoff, and inventory updates, `pnpm run typecheck`,
+  `pnpm run build`, and `pnpm run quality:guardrails` all passed. No deploy or
+  production mutation was performed. Evidence:
+  `docs/planning/v1-current-worktree-sanity-2026-05-14-task.md`.
+
+- `V1-FINAL-GENERATED-STATE-2FC90A08-2026-05-14` FINAL GENERATED STATE GO:
+  project index reports `PASS:21`, static issue scan findings `0`, master
+  state ledger status `GO`, and completion scorecard status `GO` with
+  implementation estimate `100%`, evidence coverage `100%`, and release
+  readiness `100%`. Evidence:
+  `docs/operations/v1-master-state-ledger-2026-05-14-final.md` and
+  `docs/operations/v1-completion-scorecard-2026-05-14-final.md`.
+
+- `V1-PRODUCTION-UX-A11Y-MOBILE-PROOF-2FC90A08-2026-05-14` PRODUCTION UX PASS:
+  deployed build-info matches `2fc90a08`. Production route/module audit passed,
+  and production CDP browser proof passed for desktop Dashboard, Wallets,
+  Bots, Profile, and mobile Dashboard with screenshots, mobile menu click,
+  keyboard focus, no framework overlay, and no horizontal overflow. Evidence:
+  `docs/operations/prod-ui-module-clickthrough-2fc90a08-2026-05-14.md` and
+  `docs/operations/prod-ux-a11y-mobile-proof-2fc90a08-2026-05-14.md`.
+
+- `V1-PRODUCTION-POSITIONS-PROOF-2FC90A08-2026-05-14` PRODUCTION POSITIONS
+  PASS: deployed build-info matches
+  `2fc90a0810032f2fedb744d69505a3bd55a23779`. Production proof verifies
+  unauthenticated Positions rejection, active PAPER runtime candidate
+  selection, PAPER-only position open/read, management-mode update/restore,
+  manual TP/SL update, live-status read, takeover-status read, exchange
+  snapshot boundary, runtime close fail-closed without `riskAck`, runtime close
+  with `riskAck`, closed position readback, and OPEN-list cleanup. No LIVE
+  order, LIVE cancel, LIVE close, LIVE position mutation, exchange-side
+  mutation, or raw secret artifact capture was performed. Evidence:
+  `docs/operations/prod-positions-proof-2fc90a08-2026-05-14.md`.
+
+- `V1-PRODUCTION-SECURITY-EXCHANGE-PROOF-2FC90A08-2026-05-14`
+  PRODUCTION SECURITY/EXCHANGE PASS: deployed build-info matches
+  `2fc90a0810032f2fedb744d69505a3bd55a23779`. Production proof verifies
+  security headers, public readiness, unauthenticated protected route
+  rejection, unauthenticated ops diagnostics and metrics rejection, authenticated
+  no-store profile read, API-key list redaction, untrusted Origin controlled
+  `403`, unsupported exchange probe fail-closed behavior, Binance futures
+  catalog read-only data, Gate.io futures catalog canonical symbols, and
+  authenticated readiness details. No LIVE order, LIVE cancel, LIVE close,
+  position mutation, exchange-side mutation, or raw secret artifact capture was
+  performed. Evidence:
+  `docs/operations/prod-security-exchange-proof-2fc90a08-2026-05-14.md`.
+
+- `V1-PRODUCTION-FIXTURE-PAPER-ORDER-PROOF-457BCE05-2026-05-14` PARTIAL V1
+  PRODUCTION PROOF PASS: the accepted limited fixture boundary was used to run
+  a disposable production proof against deployed `457bce05`. Profile, Profile
+  API Keys, Wallets, Markets, Strategies, Bots, Manual Orders, Orders,
+  Backtests, Reports, Logs/Audit Trail, and Exchange Adapter probe fail-closed
+  behavior passed. Cleanup passed for every created fixture, the disposable
+  PAPER limit order was left terminal `CANCELED` as audit/history, and the
+  disposable backtest run was deleted after report/trades/timeline readback. No
+  LIVE order, LIVE cancel, LIVE close, position mutation, or exchange-side
+  mutation was performed. Generated V1 state has since advanced after the
+  Security/Exchange, Positions, and UX proofs to `GO`, `PASS:21`, and release
+  readiness `100%`.
+  Evidence:
+  `docs/operations/prod-fixture-action-proof-457bce05-2026-05-14.md` and
+  `docs/operations/v1-completion-scorecard-2026-05-14-final.md`.
+
+- `V1-BACK-WEB-FULL-LOCAL-BASELINE-457BCE05-2026-05-14` LOCAL BASELINE PASS:
+  repository guardrails, API/Web typecheck, full Web Vitest (`149` files /
+  `512` tests), full API Vitest, lint, production build, and `git diff --check`
+  passed. This confirms broad local backend/web health for the current release
+  line; production-only proof gaps remain tracked separately.
+
+- `V1-PROTECTED-OPS-GATE-457BCE05-2026-05-14` READY / PROTECTED RELEASE PASS:
+  production build-info is fresh for
+  `457bce05338310c198c03a973395a9176f298dc1`, public API/Web smoke passes,
+  protected runtime freshness passes with `runningCount=4`, rollback proof
+  passes with `shouldRollback=false` and no alerts, and authenticated
+  production UI clickthrough passes. Controlled no-order-guard `LIVEIMPORT-03`
+  readback passes for `TRXUSDT`, and post-check confirmed the LIVE bot was
+  deactivated in cleanup. Activation audit/plan, RC external gates, RC
+  sign-off, RC checklist, rollback proof, UI clickthrough, public smoke,
+  protected smoke, runtime freshness, rollback guard, production
+  backup/restore drill, final preflight, and the full non-dry-run release gate
+  are fresh/pass for 2026-05-14. Evidence:
+  `docs/operations/v1-final-preflight-457bce05-2026-05-14-ready.md`,
+  `docs/operations/liveimport-03-prod-readback-2026-05-14.json`,
+  `docs/operations/v1-rollback-proof-prod-2026-05-14T01-00-18-225Z.md`, and
+  `docs/operations/v1-release-gate-prod-457bce05-2026-05-14-full-ready.md`.
+
 - `V1-CURRENT-MAIN-PROMOTION-DEPLOY-LAG-457BCE05-2026-05-14` SUPERSEDED BY
   DEPLOY FRESHNESS: current candidate
   `457bce05338310c198c03a973395a9176f298dc1` is pushed to
   `origin/codex/v1-proof-and-ops-evidence` and `origin/main`; production
   build-info now reports `457bce05`, and public production smoke passed for
-  that deployed surface. Protected runtime freshness and rollback guard checks
-  failed closed with HTTP `401` without approved admin/ops credentials. Next
-  action is protected ops evidence and target release gate rerun for
-  `457bce05`.
+  that deployed surface. The later protected ops gate superseded the initial
+  protected-auth `401` checks: protected runtime freshness, rollback guard,
+  UI clickthrough, restore drill, final preflight, and full release gate are
+  fresh/pass for 2026-05-14. No active V1 completion task remains unless a new
+  deploy or failing signal appears.
 
 - `V1-RUNTIME-NON-BINANCE-DERIVATIVES-ADAPTER-2026-05-13` LOCAL ADAPTER PASS:
   runtime symbol-stats fallback derivatives and live signal market-data gateway
@@ -71,13 +187,15 @@ Last updated: 2026-05-14
   close-position commands, or exchange mutation were attempted.
 
 - `V1-LIVE-PAPER-SIMULTANEOUS-RUNTIME-PROOF-REFRESH-457BCE05-2026-05-14`
-  PARTIAL REFRESH: production build-info is fresh for `457bce05`; focused API
-  LIVE/PAPER isolation tests passed (`25/25`); focused Web Dashboard
-  selected-bot/runtime tests passed (`24/24`). This refresh proves the local
-  2x PAPER + Binance LIVE + Gate.io LIVE isolation contract still holds after
-  the deployed adapter/runtime candidate, but it does not prove production
-  simultaneous LIVE/PAPER operation because protected auth and the production
-  2x LIVE resource shape are still missing.
+  PRODUCTION NON-GATE.IO PASS: production build-info is fresh for `457bce05`;
+  focused API LIVE/PAPER isolation tests passed (`25/25`); focused Web
+  Dashboard selected-bot/runtime tests passed (`24/24`). Controlled
+  no-order-guard production proof activated the existing Binance LIVE bot only
+  for the observation window, verified `LIVEIMPORT-03` for `TRXUSDT`, captured
+  a simultaneous read-only runtime snapshot with the Binance LIVE bot and both
+  Binance PAPER bots RUNNING, and then deactivated the LIVE bot. Post-cleanup
+  readback confirmed the LIVE bot was inactive again while PAPER runtime stayed
+  healthy. Gate.io/second-LIVE production shape remains unavailable/deferred.
 
 - `V1-PRODUCTION-RUNTIME-INVENTORY-00169D7F-2026-05-13` PRODUCTION MULTI-BOT
   SHAPE PARTIAL: authenticated read-only inventory found 3 visible bots:

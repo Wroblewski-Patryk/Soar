@@ -1,0 +1,219 @@
+{
+  "generatedAt": "2026-05-14T01:15:34.805Z",
+  "environment": "prod",
+  "dryRun": false,
+  "readiness": "ready",
+  "baseUrl": "https://api.soar.luckysparrow.ch",
+  "webBaseUrl": "https://soar.luckysparrow.ch",
+  "expectedSha": "457bce05338310c198c03a973395a9176f298dc1",
+  "evidence": [
+    {
+      "key": "activationAudit",
+      "label": "activation evidence audit",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-14",
+      "path": "docs\\operations\\v1-production-activation-evidence-audit-2026-05-14.md",
+      "date": "2026-05-14"
+    },
+    {
+      "key": "activationPlan",
+      "label": "activation execution plan",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-14",
+      "path": "docs\\planning\\v1-production-activation-and-evidence-plan-2026-05-14.md",
+      "date": "2026-05-14"
+    },
+    {
+      "key": "rcExternalGateStatus",
+      "label": "RC external gates status",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-14",
+      "path": "docs\\operations\\v1-rc-external-gates-status.md",
+      "date": "2026-05-14"
+    },
+    {
+      "key": "rcSignoffRecord",
+      "label": "RC sign-off record",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-14",
+      "path": "docs\\operations\\v1-rc-signoff-record.md",
+      "date": "2026-05-14"
+    },
+    {
+      "key": "rcChecklist",
+      "label": "RC checklist verification block",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-14",
+      "path": "docs\\operations\\v1-release-candidate-checklist.md",
+      "date": "2026-05-14"
+    },
+    {
+      "key": "liveImportReadback",
+      "label": "LIVEIMPORT-03 runtime readback",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-14",
+      "path": "docs\\operations\\liveimport-03-prod-readback-2026-05-14.json",
+      "date": "2026-05-14"
+    },
+    {
+      "key": "prodUiClickthrough",
+      "label": "production UI clickthrough",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-14",
+      "path": "docs\\operations\\prod-ui-module-clickthrough-457bce05-2026-05-14.md",
+      "date": "2026-05-14"
+    },
+    {
+      "key": "backupRestoreDrill",
+      "label": "backup/restore drill evidence",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-14",
+      "path": "docs\\operations\\v1-restore-drill-prod-2026-05-14T00-00-00-000Z.md",
+      "date": "2026-05-14"
+    },
+    {
+      "key": "rollbackProof",
+      "label": "rollback proof pack",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-14",
+      "path": "docs\\operations\\v1-rollback-proof-prod-2026-05-14T01-00-18-225Z.md",
+      "date": "2026-05-14"
+    }
+  ],
+  "blockers": [],
+  "steps": [
+    {
+      "label": "repository guardrails",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "quality:guardrails"
+      ],
+      "startedAt": "2026-05-14T01:13:57.349Z",
+      "endedAt": "2026-05-14T01:13:58.333Z",
+      "durationMs": 983,
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "label": "repository typecheck",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "typecheck"
+      ],
+      "startedAt": "2026-05-14T01:13:58.333Z",
+      "endedAt": "2026-05-14T01:14:14.638Z",
+      "durationMs": 16305,
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "label": "repository build",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "build"
+      ],
+      "startedAt": "2026-05-14T01:14:14.638Z",
+      "endedAt": "2026-05-14T01:14:56.271Z",
+      "durationMs": 41633,
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "label": "go-live smoke pack",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "test:go-live:smoke"
+      ],
+      "startedAt": "2026-05-14T01:14:56.271Z",
+      "endedAt": "2026-05-14T01:15:30.828Z",
+      "durationMs": 34557,
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "label": "web build-info freshness gate",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "ops:deploy:wait-web-build-info",
+        "--",
+        "--web-base-url",
+        "https://soar.luckysparrow.ch",
+        "--expected-sha",
+        "457bce05338310c198c03a973395a9176f298dc1",
+        "--timeout-seconds",
+        "900",
+        "--interval-seconds",
+        "30"
+      ],
+      "startedAt": "2026-05-14T01:15:30.828Z",
+      "endedAt": "2026-05-14T01:15:31.786Z",
+      "durationMs": 958,
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "label": "post-deploy smoke gate",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "ops:deploy:smoke",
+        "--",
+        "--base-url",
+        "https://api.soar.luckysparrow.ch",
+        "--web-base-url",
+        "https://soar.luckysparrow.ch"
+      ],
+      "startedAt": "2026-05-14T01:15:31.786Z",
+      "endedAt": "2026-05-14T01:15:32.746Z",
+      "durationMs": 960,
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "label": "runtime freshness gate",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "ops:deploy:runtime-freshness",
+        "--",
+        "--base-url",
+        "https://api.soar.luckysparrow.ch"
+      ],
+      "startedAt": "2026-05-14T01:15:32.746Z",
+      "endedAt": "2026-05-14T01:15:33.761Z",
+      "durationMs": 1015,
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "label": "rollback guard gate",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "ops:deploy:rollback-guard",
+        "--",
+        "--base-url",
+        "https://api.soar.luckysparrow.ch"
+      ],
+      "startedAt": "2026-05-14T01:15:33.761Z",
+      "endedAt": "2026-05-14T01:15:34.805Z",
+      "durationMs": 1044,
+      "status": "passed",
+      "exitCode": 0
+    }
+  ]
+}

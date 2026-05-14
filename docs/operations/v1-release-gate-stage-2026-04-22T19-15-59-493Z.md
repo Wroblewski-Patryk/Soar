@@ -21,9 +21,9 @@
 ## Execution Steps
 | Step | Command | Status | Exit | Duration (ms) |
 | --- | --- | --- | --- | --- |
-| post-deploy smoke gate | `pnpm run ops:deploy:smoke -- --base-url https://stage-api.soar.luckysparrow.ch --auth-email stage-ops-admin@luckysparrow.ch --auth-password StageOps26!B3rlin#Gate --ops-auth-header-name X-Forwarded-For --ops-auth-header-value 31.10.146.162 --web-base-url https://stage.soar.luckysparrow.ch` | passed | 0 | 949 |
-| runtime freshness gate | `pnpm run ops:deploy:runtime-freshness -- --base-url https://stage-api.soar.luckysparrow.ch --auth-email stage-ops-admin@luckysparrow.ch --auth-password StageOps26!B3rlin#Gate --ops-auth-header-name X-Forwarded-For --ops-auth-header-value 31.10.146.162` | passed | 0 | 706 |
-| rollback guard gate | `pnpm run ops:deploy:rollback-guard -- --base-url https://stage-api.soar.luckysparrow.ch --auth-email stage-ops-admin@luckysparrow.ch --auth-password StageOps26!B3rlin#Gate --ops-auth-header-name X-Forwarded-For --ops-auth-header-value 31.10.146.162` | passed | 0 | 882 |
+| post-deploy smoke gate | `pnpm run ops:deploy:smoke -- --base-url https://stage-api.soar.luckysparrow.ch --auth-email stage-ops-admin@luckysparrow.ch --auth-password <redacted> --ops-auth-header-name X-Forwarded-For --ops-auth-header-value 31.10.146.162 --web-base-url https://stage.soar.luckysparrow.ch` | passed | 0 | 949 |
+| runtime freshness gate | `pnpm run ops:deploy:runtime-freshness -- --base-url https://stage-api.soar.luckysparrow.ch --auth-email stage-ops-admin@luckysparrow.ch --auth-password <redacted> --ops-auth-header-name X-Forwarded-For --ops-auth-header-value 31.10.146.162` | passed | 0 | 706 |
+| rollback guard gate | `pnpm run ops:deploy:rollback-guard -- --base-url https://stage-api.soar.luckysparrow.ch --auth-email stage-ops-admin@luckysparrow.ch --auth-password <redacted> --ops-auth-header-name X-Forwarded-For --ops-auth-header-value 31.10.146.162` | passed | 0 | 882 |
 
 ## Blockers
 - none

@@ -187,11 +187,28 @@ const buildLedger = async (options) => {
   }, {});
 
   const moduleLedger = buildModuleLedger(projectIndex, findingLedger);
+  const nextWorkOrder = moduleLedger
+    .filter((row) => !['done'].includes(row.bucket))
+    .sort((left, right) => left.priority - right.priority)
+    .map((row) => ({
+      priority: row.priority,
+      module: row.module,
+      status: row.status,
+      bucket: row.bucket,
+      risk: row.risk,
+      nextProof: row.nextProof,
+    }));
+  const concreteNonProofGaps = findingLedger.filter((finding) =>
+    ['toReviewArchitectureOrFix', 'toAddTests', 'toReviewDocumentationOrImplement', 'toClassifyQueue'].includes(
+      finding.bucket,
+    ),
+  );
+  const status = nextWorkOrder.length === 0 && concreteNonProofGaps.length === 0 ? 'GO' : 'NO-GO';
 
   return {
     generatedAt: new Date().toISOString(),
     evidenceDate: options.today,
-    status: 'NO-GO',
+    status,
     sources: {
       projectIndex: relativePath(indexPath),
       staticIssueScan: relativePath(scanPath),
@@ -208,22 +225,8 @@ const buildLedger = async (options) => {
       modulesTotal: moduleLedger.length,
       modulesByBucket: summarizeBy(moduleLedger, 'bucket'),
     },
-    nextWorkOrder: moduleLedger
-      .filter((row) => !['done'].includes(row.bucket))
-      .sort((left, right) => left.priority - right.priority)
-      .map((row) => ({
-        priority: row.priority,
-        module: row.module,
-        status: row.status,
-        bucket: row.bucket,
-        risk: row.risk,
-        nextProof: row.nextProof,
-      })),
-    concreteNonProofGaps: findingLedger.filter((finding) =>
-      ['toReviewArchitectureOrFix', 'toAddTests', 'toReviewDocumentationOrImplement', 'toClassifyQueue'].includes(
-        finding.bucket,
-      ),
-    ),
+    nextWorkOrder,
+    concreteNonProofGaps,
     moduleLedger,
     findingLedger,
   };

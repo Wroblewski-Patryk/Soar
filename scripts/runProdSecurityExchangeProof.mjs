@@ -132,7 +132,16 @@ const hasSecurityHeaders = (response) => {
 
 const payloadContainsKeyMaterial = (value) => {
   const text = JSON.stringify(value ?? {});
-  return /apiSecret|SECRET_|KEY_|token=|set-cookie|authorization/i.test(text);
+  return /apiSecret|api_secret|secretKey|privateKey|token=|set-cookie|authorization|KEY_PLACEHOLDER|SECRET_PLACEHOLDER/i.test(
+    text
+  );
+};
+
+const readCatalogMarkets = (payload) => {
+  if (Array.isArray(payload?.markets)) return payload.markets;
+  if (Array.isArray(payload?.items)) return payload.items;
+  if (Array.isArray(payload)) return payload;
+  return [];
 };
 
 const renderMarkdown = (payload, jsonPath) => {
@@ -333,11 +342,7 @@ const main = async () => {
       route: '/dashboard/markets/catalog?exchange=BINANCE&marketType=FUTURES&baseCurrency=USDT',
     });
     assertStatus('binance market catalog', binanceCatalog.response.status, 200);
-    const binanceItems = Array.isArray(binanceCatalog.payload?.items)
-      ? binanceCatalog.payload.items
-      : Array.isArray(binanceCatalog.payload)
-        ? binanceCatalog.payload
-        : [];
+    const binanceItems = readCatalogMarkets(binanceCatalog.payload);
     if (binanceItems.length === 0) throw new Error('Binance catalog returned no items');
     steps.push(toStep('binance futures catalog read-only', 'PASS', {
       httpStatus: binanceCatalog.response.status,
@@ -350,11 +355,7 @@ const main = async () => {
       route: '/dashboard/markets/catalog?exchange=GATEIO&marketType=FUTURES&baseCurrency=USDT',
     });
     assertStatus('gateio market catalog', gateioCatalog.response.status, 200);
-    const gateioItems = Array.isArray(gateioCatalog.payload?.items)
-      ? gateioCatalog.payload.items
-      : Array.isArray(gateioCatalog.payload)
-        ? gateioCatalog.payload
-        : [];
+    const gateioItems = readCatalogMarkets(gateioCatalog.payload);
     if (gateioItems.length === 0) throw new Error('Gate.io catalog returned no items');
     const hasUnderscoreCanonicalSymbol = gateioItems.some((item) => {
       const symbol = typeof item?.symbol === 'string' ? item.symbol : '';

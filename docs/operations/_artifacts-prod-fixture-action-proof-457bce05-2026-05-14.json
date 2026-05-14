@@ -1,0 +1,246 @@
+{
+  "status": "PASS",
+  "today": "2026-05-14",
+  "generatedAt": "2026-05-14T02:22:14.083Z",
+  "environment": "production",
+  "webBaseUrl": "https://soar.luckysparrow.ch",
+  "apiBaseUrl": "https://api.soar.luckysparrow.ch",
+  "expectedSha": "457bce05338310c198c03a973395a9176f298dc1",
+  "buildInfo": {
+    "status": 200,
+    "ok": true,
+    "gitSha": "457bce05338310c198c03a973395a9176f298dc1"
+  },
+  "fixturePrefix": "Codex V1 Proof 20260514T0222",
+  "createdFixtureIds": {
+    "apiKeyId": "0277a36f-5372-4df4-9840-e89ebfbffcba",
+    "walletId": "b4589a5b-f6f5-48c7-b096-247d37ce95f0",
+    "marketUniverseId": "8ceff689-95f7-47d0-a1c8-3c187c91ea8b",
+    "strategyId": "fd97351a-c9c9-4afa-8f57-b5df1a283c83",
+    "botId": "fd1713ea-5e94-44f3-8d3e-2b8018969e1f",
+    "botMarketGroupId": "70ddb343-dd7c-4ce2-9c72-b8b6c9ee0f63",
+    "botStrategyLinkId": "157b9008-5dcb-4b55-b28c-895fbbd6ae3f",
+    "limitOrderId": "75cc7b6b-f1cc-43a8-a1b6-6ca26a6867dd",
+    "backtestRunId": "2d434c25-f939-4edb-a429-0d4b3e4c4637"
+  },
+  "steps": [
+    {
+      "name": "build-info freshness",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "deployed build matches expected SHA"
+    },
+    {
+      "name": "auth token resolved",
+      "status": "PASS",
+      "notes": "login:present"
+    },
+    {
+      "name": "profile read",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "profile reversible update",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "profile api key create masked",
+      "status": "PASS",
+      "httpStatus": 201
+    },
+    {
+      "name": "profile api key stored probe fail-closed",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "probe ok=false"
+    },
+    {
+      "name": "wallet create",
+      "status": "PASS",
+      "httpStatus": 201
+    },
+    {
+      "name": "wallet update",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "wallet readback",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "market universe create",
+      "status": "PASS",
+      "httpStatus": 201
+    },
+    {
+      "name": "market universe update",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "market catalog read",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "strategy create",
+      "status": "PASS",
+      "httpStatus": 201
+    },
+    {
+      "name": "strategy export",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "strategy update",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "bot create inactive paper",
+      "status": "PASS",
+      "httpStatus": 201
+    },
+    {
+      "name": "bot readback",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "bot update inactive paper",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "bot runtime graph read",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "bot market groups readback",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "bot strategy links readback",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "bot assistant config update",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "manual order context read",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "manual paper limit order open",
+      "status": "PASS",
+      "httpStatus": 201
+    },
+    {
+      "name": "manual paper limit order readback",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "manual paper limit cancel fail-closed without ack",
+      "status": "PASS",
+      "httpStatus": 400
+    },
+    {
+      "name": "manual paper limit order cancel",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "manual paper canceled order readback",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "backtest run create",
+      "status": "PASS",
+      "httpStatus": 201
+    },
+    {
+      "name": "backtest run readback",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "backtest report readback",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "lifecycle=undefined"
+    },
+    {
+      "name": "backtest trades readback",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "backtest timeline readback",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "candles=49"
+    },
+    {
+      "name": "audit logs readback",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "api key probe event visible"
+    }
+  ],
+  "cleanup": [
+    {
+      "name": "manual paper limit order terminal cleanup",
+      "status": "PASS",
+      "notes": "order left canceled as audit history"
+    },
+    {
+      "name": "backtest run cleanup",
+      "status": "PASS",
+      "httpStatus": 204
+    },
+    {
+      "name": "bot cleanup",
+      "status": "PASS",
+      "httpStatus": 204
+    },
+    {
+      "name": "strategy cleanup",
+      "status": "PASS",
+      "httpStatus": 204
+    },
+    {
+      "name": "market universe cleanup",
+      "status": "PASS",
+      "httpStatus": 204
+    },
+    {
+      "name": "wallet cleanup",
+      "status": "PASS",
+      "httpStatus": 204
+    },
+    {
+      "name": "profile api key cleanup",
+      "status": "PASS",
+      "httpStatus": 204
+    },
+    {
+      "name": "profile restore",
+      "status": "PASS",
+      "httpStatus": 200
+    }
+  ],
+  "blockers": []
+}

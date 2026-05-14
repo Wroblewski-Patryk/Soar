@@ -1,6 +1,6 @@
 # V1 RC External Gates Status
 
-Generated at (UTC): 2026-05-13T00:00:00.000Z
+Generated at (UTC): 2026-05-14T00:00:00.000Z
 
 Source artifact: `docs\operations\v1-slo-window-report-7d-2026-05-12T06-55-18-900Z.json`
 Observation window:
@@ -14,8 +14,8 @@ Observation window:
 - Gate 4 (Formal RC sign-offs): PASS
 
 ## Backup/Restore Evidence
-- Latest local artifact: `docs\operations\_artifacts-db-restore-check-2026-05-02T17-49-41-000Z.txt`
-- Latest local result: PASS
+- Latest local artifact: `docs\operations\_artifacts-db-restore-check-2026-05-13T23-40-43-754Z.txt`
+- Latest local result: FAIL
 - Runbook source: `docs\operations\v1-rc-external-gates-runbook.md`
 - Gate 1 runbook evidence complete: yes
 - Production validation: recorded

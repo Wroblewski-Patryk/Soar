@@ -1,0 +1,198 @@
+{
+  "status": "PASS",
+  "today": "2026-05-14",
+  "generatedAt": "2026-05-14T03:27:08.811Z",
+  "environment": "production",
+  "webBaseUrl": "https://soar.luckysparrow.ch",
+  "apiBaseUrl": "https://api.soar.luckysparrow.ch",
+  "expectedSha": "2fc90a0810032f2fedb744d69505a3bd55a23779",
+  "buildInfo": {
+    "status": 200,
+    "ok": true,
+    "gitSha": "2fc90a0810032f2fedb744d69505a3bd55a23779"
+  },
+  "auth": "login:present",
+  "pages": [
+    {
+      "name": "dashboard desktop",
+      "path": "/dashboard",
+      "url": "https://soar.luckysparrow.ch/dashboard",
+      "viewport": "1366x900 desktop",
+      "status": "PASS",
+      "screenshot": "docs\\operations\\prod-ux-a11y-mobile-proof-2fc90a08-2026-05-14-screenshots\\dashboard-desktop.png",
+      "notes": "text=267; title=Soar; focus=BODY:Skip to main contentSoarDashboardWalletsMarketsStrategiesBacktestsBotsAnalyticsReportsLogsMy accountBasic profileIn; warnings=unnamed inputs=1",
+      "checks": {
+        "title": "Soar",
+        "lang": "en",
+        "visibleTextLength": 267,
+        "bodyPreview": "Skip to main content Soar Dashboard Wallets Markets Strategies Backtests Bots Analytics My account Dashboard ",
+        "headingCount": 1,
+        "buttonCount": 11,
+        "linkCount": 15,
+        "inputCount": 1,
+        "unnamedButtons": 0,
+        "unnamedLinks": 0,
+        "unnamedInputs": 1,
+        "unnamedButtonExamples": [],
+        "unnamedLinkExamples": [],
+        "unnamedInputExamples": [
+          "<input type=\"checkbox\" readonly=\"\">"
+        ],
+        "horizontalOverflow": 0,
+        "frameworkOverlay": false,
+        "activeElement": "BODY:Skip to main contentSoarDashboardWalletsMarketsStrategiesBacktestsBotsAnalyticsReportsLogsMy accountBasic profileIn"
+      },
+      "badEvents": [],
+      "warnings": [
+        "unnamed inputs=1"
+      ]
+    },
+    {
+      "name": "wallets desktop",
+      "path": "/dashboard/wallets/list",
+      "url": "https://soar.luckysparrow.ch/dashboard/wallets/list",
+      "viewport": "1366x900 desktop",
+      "status": "PASS",
+      "screenshot": "docs\\operations\\prod-ux-a11y-mobile-proof-2fc90a08-2026-05-14-screenshots\\wallets-desktop.png",
+      "notes": "text=675; title=Soar; focus=BODY:Skip to main contentSoarDashboardWalletsMarketsStrategiesBacktestsBotsAnalyticsReportsLogsMy accountBasic profileIn; warnings=unnamed inputs=2",
+      "checks": {
+        "title": "Soar",
+        "lang": "en",
+        "visibleTextLength": 675,
+        "bodyPreview": "Skip to main content Soar Dashboard Wallets Markets Strategies Backtests Bots Analytics My account Dashboard Wallets List Create Create for Wallets Name Mode Exchange Market ",
+        "headingCount": 1,
+        "buttonCount": 27,
+        "linkCount": 22,
+        "inputCount": 3,
+        "unnamedButtons": 0,
+        "unnamedLinks": 0,
+        "unnamedInputs": 2,
+        "unnamedButtonExamples": [],
+        "unnamedLinkExamples": [],
+        "unnamedInputExamples": [
+          "<select class=\"select select-bordered select-sm h-8 min-h-8 w-20\"><option value=\"10\">10</option><option value=\"25\">25</option><option value=",
+          "<input type=\"checkbox\" readonly=\"\">"
+        ],
+        "horizontalOverflow": 0,
+        "frameworkOverlay": false,
+        "activeElement": "BODY:Skip to main contentSoarDashboardWalletsMarketsStrategiesBacktestsBotsAnalyticsReportsLogsMy accountBasic profileIn"
+      },
+      "badEvents": [],
+      "warnings": [
+        "unnamed inputs=2"
+      ]
+    },
+    {
+      "name": "bots desktop",
+      "path": "/dashboard/bots",
+      "url": "https://soar.luckysparrow.ch/dashboard/bots",
+      "viewport": "1366x900 desktop",
+      "status": "PASS",
+      "screenshot": "docs\\operations\\prod-ux-a11y-mobile-proof-2fc90a08-2026-05-14-screenshots\\bots-desktop.png",
+      "notes": "text=652; title=Soar; focus=BODY:Skip to main contentSoarDashboardWalletsMarketsStrategiesBacktestsBotsAnalyticsReportsLogsMy accountBasic profileIn; warnings=unnamed inputs=2",
+      "checks": {
+        "title": "Soar",
+        "lang": "en",
+        "visibleTextLength": 652,
+        "bodyPreview": "Skip to main content Soar Dashboard Wallets Markets Strategies Backtests Bots Analytics My account Dashboard Bots Bots list Create bot Create bot for Bots Name Mode Status Ma",
+        "headingCount": 1,
+        "buttonCount": 23,
+        "linkCount": 22,
+        "inputCount": 3,
+        "unnamedButtons": 0,
+        "unnamedLinks": 0,
+        "unnamedInputs": 2,
+        "unnamedButtonExamples": [],
+        "unnamedLinkExamples": [],
+        "unnamedInputExamples": [
+          "<select class=\"select select-bordered select-sm h-8 min-h-8 w-20\"><option value=\"10\">10</option><option value=\"25\">25</option><option value=",
+          "<input type=\"checkbox\" readonly=\"\">"
+        ],
+        "horizontalOverflow": 0,
+        "frameworkOverlay": false,
+        "activeElement": "BODY:Skip to main contentSoarDashboardWalletsMarketsStrategiesBacktestsBotsAnalyticsReportsLogsMy accountBasic profileIn"
+      },
+      "badEvents": [],
+      "warnings": [
+        "unnamed inputs=2"
+      ]
+    },
+    {
+      "name": "profile desktop",
+      "path": "/dashboard/profile",
+      "url": "https://soar.luckysparrow.ch/dashboard/profile",
+      "viewport": "1366x900 desktop",
+      "status": "PASS",
+      "screenshot": "docs\\operations\\prod-ux-a11y-mobile-proof-2fc90a08-2026-05-14-screenshots\\profile-desktop.png",
+      "notes": "text=604; title=Soar; focus=BODY:(self.__next_f=self.__next_f||[]).push([0])self.__next_f.push([1,\"1:\\\"$Sreact.fragment\\\"\\n3:I[1723,[\\\"650\\\",\\\"stati; warnings=unnamed inputs=2; console/runtime event observed: exception:Uncaught",
+      "checks": {
+        "title": "Soar",
+        "lang": "en",
+        "visibleTextLength": 604,
+        "bodyPreview": "Skip to main content Soar Dashboard Wallets Markets Strategies Backtests Bots Analytics My account Dashboard My account Overview User profile Integrations and API keys Subscription",
+        "headingCount": 1,
+        "buttonCount": 16,
+        "linkCount": 16,
+        "inputCount": 4,
+        "unnamedButtons": 0,
+        "unnamedLinks": 0,
+        "unnamedInputs": 2,
+        "unnamedButtonExamples": [],
+        "unnamedLinkExamples": [],
+        "unnamedInputExamples": [
+          "<select class=\"select select-bordered w-full\"><option value=\"auto\">Auto (system) (Europe/Warsaw)</option><option value=\"America/Chicago\">Ame",
+          "<input readonly=\"\" type=\"checkbox\">"
+        ],
+        "horizontalOverflow": 0,
+        "frameworkOverlay": false,
+        "activeElement": "BODY:(self.__next_f=self.__next_f||[]).push([0])self.__next_f.push([1,\"1:\\\"$Sreact.fragment\\\"\\n3:I[1723,[\\\"650\\\",\\\"stati"
+      },
+      "badEvents": [
+        "exception:Uncaught"
+      ],
+      "warnings": [
+        "unnamed inputs=2",
+        "console/runtime event observed: exception:Uncaught"
+      ]
+    },
+    {
+      "name": "dashboard mobile",
+      "path": "/dashboard",
+      "url": "https://soar.luckysparrow.ch/dashboard",
+      "viewport": "390x844 mobile",
+      "status": "PASS",
+      "screenshot": "docs\\operations\\prod-ux-a11y-mobile-proof-2fc90a08-2026-05-14-screenshots\\dashboard-mobile.png",
+      "notes": "text=320; title=Soar; focus=A:Skip to main content; warnings=unnamed inputs=1",
+      "checks": {
+        "title": "Soar",
+        "lang": "en",
+        "visibleTextLength": 320,
+        "bodyPreview": "Skip to main content Soar Menu Dashboard Wallets Markets Strategies Backtests Bots Reports Logs MY ACCOUNT wroblewskipatryk@gmail.com Basic profile Integrations and API keys Sub",
+        "headingCount": 1,
+        "buttonCount": 12,
+        "linkCount": 15,
+        "inputCount": 1,
+        "unnamedButtons": 0,
+        "unnamedLinks": 0,
+        "unnamedInputs": 1,
+        "unnamedButtonExamples": [],
+        "unnamedLinkExamples": [],
+        "unnamedInputExamples": [
+          "<input type=\"checkbox\" readonly=\"\">"
+        ],
+        "horizontalOverflow": 0,
+        "frameworkOverlay": false,
+        "activeElement": "A:Skip to main content"
+      },
+      "badEvents": [],
+      "warnings": [
+        "unnamed inputs=1"
+      ],
+      "mobileMenu": {
+        "clicked": true,
+        "label": "Menu"
+      }
+    }
+  ],
+  "blockers": []
+}

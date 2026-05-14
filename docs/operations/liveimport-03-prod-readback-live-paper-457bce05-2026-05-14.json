@@ -1,0 +1,85 @@
+{
+  "generatedAt": "2026-05-14T01:25:37.874Z",
+  "target": {
+    "baseUrl": "https://api.soar.luckysparrow.ch",
+    "webBaseUrl": "https://soar.luckysparrow.ch",
+    "expectedSha": "457bce05338310c198c03a973395a9176f298dc1",
+    "buildInfo": {
+      "gitSha": "457bce05338310c198c03a973395a9176f298dc1",
+      "gitRef": "main",
+      "matchesExpected": true
+    },
+    "symbols": [
+      "TRXUSDT"
+    ]
+  },
+  "auth": {
+    "source": "provided",
+    "tokenCaptured": false
+  },
+  "entries": [
+    {
+      "bot": {
+        "idHash": "e0c0bf8f4942",
+        "nameHash": "b64ac05f17e6",
+        "mode": "LIVE",
+        "exchange": "BINANCE",
+        "marketType": "FUTURES",
+        "liveOptIn": true,
+        "manageExternalPositions": true,
+        "walletIdHash": "437d49588714",
+        "apiKeyIdHash": "6d9fa9f534a4",
+        "activeMarketGroups": null
+      },
+      "session": {
+        "idHash": "5b793d7685d7",
+        "status": "RUNNING",
+        "startedAt": "2026-05-14T01:25:33.996Z",
+        "stoppedAt": null,
+        "eventsCount": 1
+      },
+      "symbols": [
+        {
+          "symbol": "TRXUSDT",
+          "total": 1,
+          "openCount": 1,
+          "closedCount": 0,
+          "openOrdersCount": 0,
+          "showDynamicStopColumns": true,
+          "openItems": [
+            {
+              "idHash": "acddf631cc28",
+              "symbol": "TRXUSDT",
+              "status": "OPEN",
+              "side": "SHORT",
+              "origin": "EXCHANGE_SYNC",
+              "managementMode": "BOT_MANAGED",
+              "syncState": "IN_SYNC",
+              "continuityState": "CONFIRMED",
+              "takeoverStatus": "OWNED_AND_MANAGED",
+              "strategyIdHash": null,
+              "strategyAutomationContextResolved": true,
+              "actionable": true,
+              "dcaPlannedLevelsCount": 3,
+              "trailingTakeProfitLevelsCount": 5,
+              "trailingStopLevelsCount": 0,
+              "openedAt": "2026-05-14T00:00:04.740Z"
+            }
+          ],
+          "importCompleteness": "VISIBLE"
+        }
+      ],
+      "status": "PASS"
+    }
+  ],
+  "summary": {
+    "botsChecked": 1,
+    "botsWithRuntimeReadback": 1,
+    "botsWithoutRunningSession": 0,
+    "symbolsExpected": 1,
+    "symbolsVisible": [
+      "TRXUSDT"
+    ],
+    "missingSymbols": []
+  }
+}

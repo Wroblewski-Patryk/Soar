@@ -4,6 +4,50 @@ Last updated: 2026-05-14
 
 ## Active Focus
 
+2026-05-14 literal V1 100% status:
+`V1-PRODUCTION-UX-A11Y-MOBILE-PROOF-2FC90A08-2026-05-14` closed the final
+`PASS_LOCAL` row for deployed `2fc90a08`. The final generated V1 state is
+`GO` with `PASS:21`, static findings `0`, implementation estimate `100%`,
+evidence coverage `100%`, and release readiness `100%`. Production proofs now
+cover the disposable fixture/action set, Security/Privacy, Exchange Adapter,
+Positions, UX/A11y/Mobile, protected operations, workers, rollback, restore,
+runtime freshness, release gate, and runtime readbacks. Do not run LIVE
+order/cancel/close, unsafe LIVE position mutation, or existing-data mutation
+without a separate explicit decision.
+
+2026-05-14 broad local back/web baseline:
+`V1-BACK-WEB-FULL-LOCAL-BASELINE-457BCE05-2026-05-14` is green. Guardrails,
+typecheck, full API tests, full Web tests (`149` files / `512` tests), lint,
+production build, and `git diff --check` all passed. This confirms local
+code-level API/Web confidence for the current release line; active focus should
+stay on production-only evidence gaps rather than reopening green local packs
+without a new failure.
+
+2026-05-14 protected ops gate status:
+`V1-PROTECTED-OPS-GATE-457BCE05-2026-05-14` is verified protected operations
+evidence for the deployed `457bce05` surface. Production build-info
+matches `457bce05338310c198c03a973395a9176f298dc1`, public API/Web smoke
+passes, approved temporary Soar admin auth unlocked protected routes, runtime
+freshness passes, rollback proof passes with `shouldRollback=false` and no
+alerts, authenticated production UI clickthrough passes, and controlled
+no-order-guard `LIVEIMPORT-03` readback passes for `TRXUSDT` with post-check
+deactivation. Activation audit/plan, RC external gates, RC sign-off, RC
+checklist, rollback proof, UI clickthrough, public smoke, protected smoke,
+runtime freshness, rollback guard, production backup/restore drill, final
+preflight, and the full non-dry-run release gate are now fresh/pass for
+2026-05-14. There is no active blocker for the current protected operations
+release gate.
+
+2026-05-14 production non-Gate.io LIVE/PAPER runtime status:
+`V1-LIVE-PAPER-SIMULTANEOUS-RUNTIME-PROOF-00169D7F-2026-05-13` is verified for
+the current production non-Gate.io simultaneous runtime scope after deployed
+`457bce05`. Focused API LIVE/PAPER tests passed (`25/25`), focused Web
+Dashboard tests passed (`24/24`), controlled no-order-guard production proof
+verified `LIVEIMPORT-03` for `TRXUSDT`, simultaneous read-only runtime readback
+showed the Binance LIVE bot and both Binance PAPER bots RUNNING, and
+post-cleanup readback confirmed the LIVE bot was inactive again. Gate.io and a
+second LIVE production bot remain unavailable/deferred rather than hidden.
+
 2026-05-14 current candidate deployment status:
 `V1-CURRENT-MAIN-PROMOTION-DEPLOY-LAG-457BCE05-2026-05-14` is superseded by
 deploy freshness evidence. The current V1 candidate is on remote Git

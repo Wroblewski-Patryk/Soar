@@ -32,6 +32,71 @@ Rule: fix/cleanup/update first, then feature delivery.
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
 
 ### Progress Log (Phase SYSFINAL-2026-05-03 - Final System Functionality Audit And Remediation)
+- 2026-05-14: Completed
+  `V1-PRODUCTION-UX-A11Y-MOBILE-PROOF-2FC90A08-2026-05-14` for deployed
+  `2fc90a08`. Production route/module audit passed, and production CDP browser
+  proof passed for desktop Dashboard, Wallets, Bots, Profile, and mobile
+  Dashboard with screenshots, mobile menu click, keyboard focus, no framework
+  overlay, and no horizontal overflow. Final generated state is `GO` with
+  `PASS:21`, static findings `0`, implementation estimate `100%`, evidence
+  coverage `100%`, and release readiness `100%`. Evidence:
+  `docs/planning/v1-production-ux-a11y-mobile-proof-2fc90a08-2026-05-14-task.md`,
+  `docs/operations/prod-ui-module-clickthrough-2fc90a08-2026-05-14.md`, and
+  `docs/operations/prod-ux-a11y-mobile-proof-2fc90a08-2026-05-14.md`.
+- 2026-05-14: Completed
+  `V1-PRODUCTION-POSITIONS-PROOF-2FC90A08-2026-05-14` for deployed
+  `2fc90a08`. Production proof passed for Positions: unauthenticated
+  fail-closed access, active PAPER runtime candidate selection, PAPER-only
+  position open/read, management-mode update/restore, manual TP/SL update,
+  live-status read, takeover-status read, exchange-snapshot boundary, runtime
+  close fail-closed without `riskAck`, runtime close with `riskAck`, closed
+  position readback, and OPEN-list cleanup. Focused Positions API tests passed
+  (`46/46`). Evidence:
+  `docs/planning/v1-production-positions-proof-2fc90a08-2026-05-14-task.md`
+  and `docs/operations/prod-positions-proof-2fc90a08-2026-05-14.md`.
+- 2026-05-14: Completed
+  `V1-PRODUCTION-SECURITY-EXCHANGE-PROOF-2FC90A08-2026-05-14` for deployed
+  `2fc90a08`. Production proof passed for Security/Privacy and Exchange
+  Adapter read-only/fail-closed behavior: security headers, protected/ops/
+  metrics unauthenticated rejection, authenticated no-store profile read,
+  API-key list redaction, untrusted Origin `403`, unsupported exchange probe
+  fail-closed behavior, Binance/Gate.io public catalog reads, and authenticated
+  readiness details. Focused market/exchange API tests passed (`22/22`).
+  Evidence:
+  `docs/planning/v1-production-security-exchange-proof-2fc90a08-2026-05-14-task.md`
+  and `docs/operations/prod-security-exchange-proof-2fc90a08-2026-05-14.md`.
+- 2026-05-14: Promoted additional production-backed proof rows after the
+  release gate: Dashboard Home, Bot Runtime, Auth, Subscriptions/Admin,
+  Workers, and Operations are now `PASS` in
+  `docs/operations/v1-product-action-audit-matrix-2026-05-10.md`. Fresh
+  scorecard counts are `PASS:6`, `PASS_LOCAL:15`, with no unchecked active
+  queue markers. Remaining literal 100% work is blocked on an explicit safe
+  production fixture/action-proof decision or owner acceptance of the current
+  evidence boundary.
+- 2026-05-14: Completed the production non-Gate.io
+  `V1-LIVE-PAPER-SIMULTANEOUS-RUNTIME-PROOF-00169D7F-2026-05-13` refresh for
+  deployed `457bce05`. Focused API LIVE/PAPER tests passed (`25/25`), focused
+  Web Dashboard tests passed (`24/24`), controlled no-order-guard production
+  proof verified `LIVEIMPORT-03` for `TRXUSDT`, simultaneous read-only runtime
+  readback showed the Binance LIVE bot and both Binance PAPER bots RUNNING,
+  and post-cleanup readback confirmed the LIVE bot was inactive again.
+  Evidence:
+  `docs/planning/v1-live-paper-simultaneous-runtime-proof-refresh-457bce05-2026-05-14-task.md`,
+  `docs/operations/prod-live-paper-simultaneous-runtime-readback-457bce05-2026-05-14.md`,
+  and
+  `docs/operations/prod-live-paper-post-cleanup-readback-457bce05-2026-05-14.md`.
+- 2026-05-14: Completed
+  `V1-PROTECTED-OPS-GATE-457BCE05-2026-05-14` with
+  `docs/planning/v1-protected-ops-gate-457bce05-2026-05-14-task.md`.
+  Production build-info is fresh for `457bce05`, and public API/Web smoke
+  passes. Approved temporary app auth unlocked protected runtime/rollback
+  routes; runtime freshness passed; rollback proof passed with
+  `shouldRollback=false` and no alerts; authenticated production UI
+  clickthrough passed; controlled no-order-guard `LIVEIMPORT-03` passed for
+  `TRXUSDT`; activation audit/plan, RC external gates, sign-off, and checklist
+  are fresh/pass; production backup/restore drill passed through the
+  VPS/Coolify Docker context; final preflight is `ready`; and the full
+  non-dry-run release gate is `ready` for deployed `457bce05`.
 - 2026-05-12: Closed
   `V1-UX-A11Y-MOBILE-LOCAL-PROOF-2026-05-11` with
   `docs/planning/v1-ux-a11y-mobile-local-proof-task-2026-05-11.md`. Local
@@ -2938,7 +3003,7 @@ Progress log:
 ## Phase 38 - Subscription + Entitlements Foundation (Active)
 - [x] `SUBS-01 docs(contract): freeze tier catalog (FREE/ADVANCED/PROFESSIONAL), default assignment rules, and entitlement payload schema`
 - [x] `SUBS-02 feat(db): add SubscriptionPlan + UserSubscription + PaymentIntent models with safe migration and indexes`
-- [x] `SUBS-03 feat(seed): seed three plans; default new users to FREE; map owner account (wroblewskipatryk@gmail.com) to PROFESSIONAL`
+- [x] `SUBS-03 feat(seed): seed three plans; default new users to FREE; map owner account (<redacted-email>) to PROFESSIONAL`
 - [x] `SUBS-04 feat(api-profile): expose subscription catalog + active subscription in profile endpoints (my-account ready)`
 - [x] `SUBS-05 feat(web-profile): render subscription list with active-plan highlight in My Account -> Subscription`
 - [x] `SUBS-06 feat(entitlements-core): add central entitlement resolver and enforce bot-count limits by active plan`
@@ -4795,7 +4860,7 @@ ode ./node_modules/prisma/build/index.js db seed --schema prisma/schema.prisma f
 - 2026-04-22: Queued `V1FACT-A` after `REVIEW-D` closure to convert the now-hardened V1 runtime into an evidence-backed production activation path. Scope is intentionally limited to release-gate truth, stage/prod evidence freshness, backup/restore and rollback proof, and final sign-off packaging. Published executor-ready plan `docs/planning/v1-production-activation-and-evidence-plan-2026-04-22.md` and froze activation rules in `docs/architecture/reference/v1-production-activation-contract.md`.
 - 2026-04-22: Closed `V1FACT-01..V1FACT-03` by freezing the activation contract, publishing `docs/operations/v1-production-activation-evidence-audit-2026-04-22.md` with a fresh/stale/missing evidence inventory, and advancing the canonical queue to `V1FACT-A2` for release-gate freshness semantics and fresh stage rehearsal evidence.
 - 2026-04-22: Closed `V1FACT-04..V1FACT-07` by adding explicit evidence freshness classification to `scripts/runV1ReleaseGate.mjs`, fixing deploy-smoke API/web target passthrough, introducing canonical `ops:release:v1:stage-rehearsal`, and publishing fresh stage dry-run artifacts in `docs/operations/v1-release-gate-stage-2026-04-22T17-53-09-987Z.md` and `docs/operations/v1-stage-rehearsal-2026-04-22T17-53-09-987Z.md`. Validation PASS: `node --test scripts/runV1ReleaseGate.test.mjs`, `pnpm run ops:release:v1:gate -- --environment stage --dry-run --base-url https://stage-api.soar.luckysparrow.ch --web-base-url https://stage-soar.luckysparrow.ch --skip-local-quality`, `pnpm run ops:release:v1:stage-rehearsal -- --dry-run --base-url https://stage-api.soar.luckysparrow.ch --web-base-url https://stage-soar.luckysparrow.ch`, `pnpm run quality:guardrails`.
-- 2026-04-22: Closed `V1FACT-07B..V1FACT-09` by deploying the inline runtime-freshness truth fix on SHA `49ea8e0c`, rerunning authenticated stage rehearsal successfully, making prod backup/restore drill and rollback proof explicit release-gate evidence families, adding canonical `ops:deploy:rollback-proof*` entrypoints, and updating activation/runbook docs so stale or missing prod proof remains fail closed. Validation PASS: `node --test scripts/runV1ReleaseGate.test.mjs`, `pnpm run ops:deploy:rollback-proof:stage -- --base-url https://stage-api.soar.luckysparrow.ch --auth-email stage-ops-admin@luckysparrow.ch --auth-password "StageOps26!B3rlin#Gate" --ops-auth-header-name X-Forwarded-For --ops-auth-header-value 31.10.146.162`, `pnpm run quality:guardrails`.
+- 2026-04-22: Closed `V1FACT-07B..V1FACT-09` by deploying the inline runtime-freshness truth fix on SHA `49ea8e0c`, rerunning authenticated stage rehearsal successfully, making prod backup/restore drill and rollback proof explicit release-gate evidence families, adding canonical `ops:deploy:rollback-proof*` entrypoints, and updating activation/runbook docs so stale or missing prod proof remains fail closed. Validation PASS: `node --test scripts/runV1ReleaseGate.test.mjs`, `pnpm run ops:deploy:rollback-proof:stage -- --base-url https://stage-api.soar.luckysparrow.ch --auth-email stage-ops-admin@luckysparrow.ch --auth-password "[redacted]" --ops-auth-header-name X-Forwarded-For --ops-auth-header-value 31.10.146.162`, `pnpm run quality:guardrails`.
 - 2026-04-22: Closed `V1FACT-10` by publishing `docs/operations/v1-production-activation-pack-2026-04-22.md`, refreshing RC external-gates status, RC sign-off, and RC checklist to current-day truth, and narrowing residual activation blockers to missing prod restore-drill proof, missing prod rollback-proof pack, open RC Gate 2, and missing named human approvers. Validation PASS: `pnpm run ops:release:v1:gate -- --environment prod --dry-run --skip-local-quality --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`, `pnpm run ops:rc:gates:status`, `pnpm run ops:rc:signoff:build`, `pnpm run ops:rc:checklist:sync`.
 - 2026-04-22: Closed `V1FACT-11` by publishing `docs/operations/v1-production-activation-closure-2026-04-22.md`, syncing queue/context/project state to the final `CLOSED_WITH_OPERATOR_BLOCKERS` state, and freezing future-agent rules so no future executor can infer production readiness from stage success, public prod smoke, or fresh docs alone.
 

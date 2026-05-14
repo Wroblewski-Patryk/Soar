@@ -1,0 +1,132 @@
+{
+  "status": "PASS",
+  "today": "2026-05-14",
+  "generatedAt": "2026-05-14T03:02:54.423Z",
+  "environment": "production",
+  "webBaseUrl": "https://soar.luckysparrow.ch",
+  "apiBaseUrl": "https://api.soar.luckysparrow.ch",
+  "expectedSha": "2fc90a0810032f2fedb744d69505a3bd55a23779",
+  "buildInfo": {
+    "status": 200,
+    "ok": true,
+    "gitSha": "2fc90a0810032f2fedb744d69505a3bd55a23779"
+  },
+  "selected": {
+    "botId": "e8651bba-258e-4b16-8dff-d4e789a0a226",
+    "botName": "Peper bot 1m",
+    "sessionId": "74958789-93dc-4aa7-9725-88ac7bab2700",
+    "symbol": "BNBUSDT",
+    "orderId": "9c08a656-6e94-4edc-aeca-27ed4a92d4dc",
+    "positionId": "dd16f160-8f38-4d60-bdfb-d6b55d17fe9e"
+  },
+  "steps": [
+    {
+      "name": "build-info freshness",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "deployed build matches expected SHA"
+    },
+    {
+      "name": "auth token resolved",
+      "status": "PASS",
+      "notes": "login:present"
+    },
+    {
+      "name": "unauthenticated positions list fail-closed",
+      "status": "PASS",
+      "httpStatus": 401
+    },
+    {
+      "name": "active paper runtime candidate selected",
+      "status": "PASS",
+      "notes": "openBefore=5; statsSymbols=8"
+    },
+    {
+      "name": "positions list before proof mutation",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "selectedBotOpen=0"
+    },
+    {
+      "name": "manual order context for proof symbol",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "quantity=1"
+    },
+    {
+      "name": "paper market order opens proof position",
+      "status": "PASS",
+      "httpStatus": 201,
+      "notes": "order=9c08a656-6e94-4edc-aeca-27ed4a92d4dc; position=dd16f160-8f38-4d60-bdfb-d6b55d17fe9e"
+    },
+    {
+      "name": "position readback after open",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "position management mode manual",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "position management mode restored bot",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "position manual update",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "positions live reconciliation status read",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "openPositionsSeen=0"
+    },
+    {
+      "name": "positions takeover status read",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "items=2"
+    },
+    {
+      "name": "positions exchange snapshot boundary",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "snapshot read succeeded"
+    },
+    {
+      "name": "runtime position close fail-closed without ack",
+      "status": "PASS",
+      "httpStatus": 400
+    },
+    {
+      "name": "runtime position close with ack",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "closeOrder=9aea8d69-8d8c-4bbd-a5fc-9786b4e847ba"
+    },
+    {
+      "name": "closed position readback",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "positions list after close",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "proof position absent from OPEN list"
+    }
+  ],
+  "cleanup": [
+    {
+      "name": "proof position terminal cleanup",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "status=CLOSED"
+    }
+  ],
+  "blockers": []
+}
