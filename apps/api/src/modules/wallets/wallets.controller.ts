@@ -27,6 +27,9 @@ const handleWalletError = (res: Response, error: unknown) => {
   if (mapped.code === WALLET_ERROR_CODES.paperResetPaperOnly) {
     return sendError(res, 409, 'paper reset is allowed only for PAPER wallets', mapped.details);
   }
+  if (mapped.code === WALLET_ERROR_CODES.paperResetActiveBot) {
+    return sendError(res, 409, 'paper reset is blocked while an active bot uses this wallet', mapped.details);
+  }
   if (mapped.code === WALLET_ERROR_CODES.paperResetOpenPositions) {
     return sendError(res, 409, 'paper reset is blocked while open positions exist', mapped.details);
   }

@@ -4,6 +4,16 @@ Last updated: 2026-05-14
 
 ## Next Tiny Task
 
+Latest post-V1 wallet/bot cleanup hardening:
+`V1-POST-V1-WALLET-BOT-CLEANUP-HARDENING-2026-05-14` is locally verified. Bot
+deletion now removes bot-owned runtime/trading artifacts in one transaction
+while preserving the linked strategy, and PAPER wallet reset now fails closed
+with `409` while an active bot uses the wallet. No production data, LIVE order/
+cancel/close, or exchange-side mutation was performed. Validation: API
+typecheck PASS, Bots delete cleanup e2e `1/1` PASS, Bots e2e `26/26` PASS,
+Wallets e2e `24/24` PASS. Evidence:
+`docs/planning/v1-post-v1-wallet-bot-cleanup-hardening-2026-05-14-task.md`.
+
 Latest 100 percent truth audit:
 `V1-100-PERCENT-TRUTH-AUDIT-2026-05-14` is verified as the current wording for
 the user's "is it 100%?" question. Tracked V1 release acceptance is `YES`:

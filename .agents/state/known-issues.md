@@ -4,6 +4,13 @@ Last updated: 2026-05-14
 
 ## Active Issues
 
+- 2026-05-14 update: `V1-POST-V1-WALLET-BOT-CLEANUP-HARDENING-2026-05-14`
+  closes a local backend hardening slice: bot deletion now removes bot-owned
+  runtime/trading artifacts in one transaction while preserving the strategy,
+  and PAPER wallet reset fails closed while an active bot uses the wallet.
+  Wallets still require production-safe browser clickthrough before the
+  module-confidence row can move from `PARTIAL` to `VERIFIED`.
+
 - 2026-05-14 update: `V1-POST-V1-DASHBOARD-RUNTIME-LEDGER-CLOSURE-2026-05-14`
   closes stale Dashboard Home and Bot Runtime partial ledger rows for the
   current non-Gate.io V1/post-V1 scope. Local rendered/browser proofs plus

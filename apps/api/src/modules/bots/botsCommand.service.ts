@@ -766,63 +766,79 @@ export const deleteBot = async (userId: string, id: string) => {
     });
   }
 
-  await prisma.$transaction([
-    prisma.position.updateMany({
+  await prisma.$transaction(async (tx) => {
+    await tx.walletCashflowEvent.updateMany({
+      where: {
+        userId,
+        OR: [
+          { position: { botId: existing.id } },
+          { order: { botId: existing.id } },
+          { trade: { botId: existing.id } },
+        ],
+      },
+      data: {
+        positionId: null,
+        orderId: null,
+        tradeId: null,
+      },
+    });
+    await tx.orderFill.deleteMany({
+      where: {
+        userId,
+        OR: [
+          { botId: existing.id },
+          { order: { botId: existing.id } },
+          { position: { botId: existing.id } },
+          { trade: { botId: existing.id } },
+        ],
+      },
+    });
+    await tx.trade.deleteMany({
+      where: { userId, botId: existing.id },
+    });
+    await tx.order.deleteMany({
+      where: { userId, botId: existing.id },
+    });
+    await tx.position.deleteMany({
+      where: { userId, botId: existing.id },
+    });
+    await tx.signal.deleteMany({
+      where: { userId, botId: existing.id },
+    });
+    await tx.log.deleteMany({
+      where: { userId, botId: existing.id },
+    });
+    await tx.runtimeExecutionDedupe.deleteMany({
+      where: { userId, botId: existing.id },
+    });
+    await tx.botRuntimeEvent.deleteMany({
+      where: { userId, botId: existing.id },
+    });
+    await tx.botRuntimeSymbolStat.deleteMany({
+      where: { userId, botId: existing.id },
+    });
+    await tx.botRuntimeSession.deleteMany({
+      where: { userId, botId: existing.id },
+    });
+    await tx.marketGroupStrategyLink.deleteMany({
+      where: { userId, botId: existing.id },
+    });
+    await tx.botMarketGroup.deleteMany({
+      where: { userId, botId: existing.id },
+    });
+    await tx.botStrategy.deleteMany({
       where: { botId: existing.id },
-      data: { botId: null },
-    }),
-    prisma.order.updateMany({
-      where: { botId: existing.id },
-      data: { botId: null },
-    }),
-    prisma.trade.updateMany({
-      where: { botId: existing.id },
-      data: { botId: null },
-    }),
-    prisma.signal.updateMany({
-      where: { botId: existing.id },
-      data: { botId: null },
-    }),
-    prisma.log.updateMany({
-      where: { botId: existing.id },
-      data: { botId: null },
-    }),
-    prisma.orderFill.updateMany({
-      where: { botId: existing.id },
-      data: { botId: null },
-    }),
-    prisma.runtimeExecutionDedupe.updateMany({
-      where: { botId: existing.id },
-      data: { botId: null },
-    }),
-    prisma.botRuntimeEvent.deleteMany({
-      where: { botId: existing.id },
-    }),
-    prisma.botRuntimeSymbolStat.deleteMany({
-      where: { botId: existing.id },
-    }),
-    prisma.botRuntimeSession.deleteMany({
-      where: { botId: existing.id },
-    }),
-    prisma.marketGroupStrategyLink.deleteMany({
-      where: { botId: existing.id },
-    }),
-    prisma.botMarketGroup.deleteMany({
-      where: { botId: existing.id },
-    }),
-    prisma.botStrategy.deleteMany({
-      where: { botId: existing.id },
-    }),
-    prisma.botSubagentConfig.deleteMany({
-      where: { botId: existing.id },
-    }),
-    prisma.botAssistantConfig.deleteMany({
-      where: { botId: existing.id },
-    }),
-    prisma.bot.delete({
+    });
+    await tx.botSubagentConfig.deleteMany({
+      where: { userId, botId: existing.id },
+    });
+    await tx.botAssistantConfig.deleteMany({
+      where: { userId, botId: existing.id },
+    });
+    await tx.bot.delete({
       where: { id: existing.id },
-    }),
-  ]);
+    });
+  });
 
   return true;
 };

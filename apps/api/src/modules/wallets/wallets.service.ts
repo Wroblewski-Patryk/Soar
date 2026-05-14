@@ -400,7 +400,18 @@ export const resetPaperWallet = async (userId: string, id: string) => {
   const now = new Date();
 
   return prisma.$transaction(async (tx) => {
-    const [openPositionsCount, openOrdersCount] = await Promise.all([
+    const [activeBot, openPositionsCount, openOrdersCount] = await Promise.all([
+      tx.bot.findFirst({
+        where: {
+          userId,
+          walletId: existing.id,
+          isActive: true,
+        },
+        select: {
+          id: true,
+          name: true,
+        },
+      }),
       tx.position.count({
         where: buildPaperResetOpenPositionsWhere({
           userId,
@@ -416,6 +427,14 @@ export const resetPaperWallet = async (userId: string, id: string) => {
         },
       }),
     ]);
+
+    if (activeBot) {
+      throw walletErrors.paperResetActiveBot({
+        walletId: existing.id,
+        botId: activeBot.id,
+        botName: activeBot.name,
+      });
+    }
 
     if (openPositionsCount > 0) {
       throw walletErrors.paperResetOpenPositions({

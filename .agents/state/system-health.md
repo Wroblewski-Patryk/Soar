@@ -4,6 +4,16 @@ Last updated: 2026-05-14
 
 ## Latest Health Snapshot
 
+- `V1-POST-V1-WALLET-BOT-CLEANUP-HARDENING-2026-05-14` LOCAL HARDENING PASS:
+  bot deletion now removes bot-owned runtime/trading artifacts in one
+  transaction while preserving the strategy, and PAPER wallet reset now fails
+  closed with `409` while an active bot uses the wallet. No production data,
+  LIVE order/cancel/close, or exchange-side mutation was performed. Validation:
+  API typecheck PASS, Bots delete cleanup e2e `1/1` PASS, Bots e2e `26/26`
+  PASS, Wallets e2e `24/24` PASS.
+  Evidence:
+  `docs/planning/v1-post-v1-wallet-bot-cleanup-hardening-2026-05-14-task.md`.
+
 - `V1-POST-V1-DASHBOARD-RUNTIME-LEDGER-CLOSURE-2026-05-14` SOURCE-OF-TRUTH
   CONSISTENCY PASS: local and production-safe evidence closes stale
   `SOAR-DASHBOARD-001` and `SOAR-BOT-RUNTIME-001` `PARTIAL` rows for the

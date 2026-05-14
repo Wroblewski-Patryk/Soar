@@ -864,6 +864,57 @@ describe('Wallets balance preview contract', () => {
     expect(resetRes.body.error.message).toBe('paper reset is allowed only for PAPER wallets');
   });
 
+  it('blocks paper reset while an active bot uses the wallet and allows reset after deactivation', async () => {
+    const email = 'wallet-reset-active-bot-owner@example.com';
+    const agent = await registerAndLogin(email);
+    const userId = await resolveUserIdByEmail(email);
+
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId,
+        name: 'Paper wallet with active bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        paperInitialBalance: 10_000,
+      },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId,
+        walletId: wallet.id,
+        name: 'Active paper bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+      },
+    });
+
+    const blockedRes = await agent.post(`/dashboard/wallets/${wallet.id}/reset-paper`);
+
+    expect(blockedRes.status).toBe(409);
+    expect(blockedRes.body.error.message).toBe('paper reset is blocked while an active bot uses this wallet');
+    expect(blockedRes.body.error.details).toMatchObject({
+      walletId: wallet.id,
+      botId: bot.id,
+      botName: 'Active paper bot',
+    });
+
+    await prisma.bot.update({
+      where: { id: bot.id },
+      data: { isActive: false },
+    });
+
+    const resetRes = await agent.post(`/dashboard/wallets/${wallet.id}/reset-paper`);
+
+    expect(resetRes.status).toBe(200);
+    expect(resetRes.body.id).toBe(wallet.id);
+    expect(typeof resetRes.body.paperResetAt).toBe('string');
+  });
+
   it('rejects paper reset when open positions exist in wallet scope', async () => {
     const email = 'wallet-reset-open-position-owner@example.com';
     const agent = await registerAndLogin(email);

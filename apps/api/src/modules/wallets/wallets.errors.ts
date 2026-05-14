@@ -5,6 +5,7 @@ export const WALLET_ERROR_CODES = {
   liveApiKeyRequired: 'WALLET_LIVE_API_KEY_REQUIRED',
   liveApiKeyExchangeMismatch: 'WALLET_LIVE_API_KEY_EXCHANGE_MISMATCH',
   paperResetPaperOnly: 'WALLET_PAPER_RESET_PAPER_ONLY',
+  paperResetActiveBot: 'WALLET_PAPER_RESET_ACTIVE_BOT',
   paperResetOpenPositions: 'WALLET_PAPER_RESET_OPEN_POSITIONS',
   paperResetOpenOrders: 'WALLET_PAPER_RESET_OPEN_ORDERS',
   inUseCannotDelete: 'WALLET_IN_USE_CANNOT_DELETE',
@@ -34,6 +35,8 @@ export const walletErrors = {
     new WalletDomainError(WALLET_ERROR_CODES.liveApiKeyExchangeMismatch, 400),
   paperResetPaperOnly: (details?: Record<string, unknown>) =>
     new WalletDomainError(WALLET_ERROR_CODES.paperResetPaperOnly, 409, details),
+  paperResetActiveBot: (details?: Record<string, unknown>) =>
+    new WalletDomainError(WALLET_ERROR_CODES.paperResetActiveBot, 409, details),
   paperResetOpenPositions: (details?: Record<string, unknown>) =>
     new WalletDomainError(WALLET_ERROR_CODES.paperResetOpenPositions, 409, details),
   paperResetOpenOrders: (details?: Record<string, unknown>) =>

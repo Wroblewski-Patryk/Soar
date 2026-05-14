@@ -17,6 +17,15 @@ Last updated: 2026-05-14
 
 ## READY
 
+- [x] `V1-POST-V1-WALLET-BOT-CLEANUP-HARDENING-2026-05-14 fix: harden bot cleanup and wallet reset guard`
+  - 2026-05-14: Bot deletion now removes bot-owned runtime/trading artifacts
+    in one transaction while preserving the strategy, and PAPER wallet reset
+    now fails closed with `409` while an active bot uses the wallet. No
+    production data, LIVE order/cancel/close, or exchange-side mutation was
+    performed. Validation: API typecheck PASS, Bots delete cleanup e2e `1/1`
+    PASS, Bots e2e `26/26` PASS, Wallets e2e `24/24` PASS. Evidence:
+    `docs/planning/v1-post-v1-wallet-bot-cleanup-hardening-2026-05-14-task.md`.
+
 - [x] `V1-POST-V1-DASHBOARD-RUNTIME-LEDGER-CLOSURE-2026-05-14 release: close stale Dashboard Home and Bot Runtime proof rows`
   - 2026-05-14: Closed stale `SOAR-DASHBOARD-001` and
     `SOAR-BOT-RUNTIME-001` `PARTIAL` rows using existing local proof plus
