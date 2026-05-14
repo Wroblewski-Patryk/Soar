@@ -4,6 +4,15 @@ Last updated: 2026-05-14
 
 ## 2026-05-14 Current Candidate Deployment Status
 
+- `V1-POST-V1-DASHBOARD-RUNTIME-LEDGER-CLOSURE-2026-05-14` is verified.
+  Existing local rendered/browser proof plus production route/runtime readbacks
+  close stale `SOAR-DASHBOARD-001` and `SOAR-BOT-RUNTIME-001` `PARTIAL` rows
+  for the approved non-Gate.io V1/post-V1 target scope. `RISK-002` and
+  `RISK-003` are closed. Current counts are `PARTIAL:7`, `VERIFIED:15`,
+  `mitigating:15`, and `closed:10`. Gate.io/second-LIVE production shape and
+  LIVE mutation proof remain separate. Evidence:
+  `docs/planning/v1-post-v1-dashboard-runtime-ledger-closure-2026-05-14-task.md`.
+
 - `V1-POST-V1-AUTH-DEPLOY-RERUN-2026-05-14` is verified. The auth stale-token
   replay gap found on deployed `2fc90a08` is fixed and deployed as
   `84711599`. Production build-info matched after wait attempt 32, and
@@ -19,8 +28,8 @@ Last updated: 2026-05-14
   acceptance is `YES` (`GO`, `PASS:21`, static findings `0`, implementation/
   evidence/release readiness `100%`, no next work order), while absolute
   whole-app/every-function/every-live-action proof is `NO` because
-  module-confidence still has `PARTIAL:9` and `IMPLEMENTED_NOT_VERIFIED:0`,
-  risk register still has `mitigating:17`, and LIVE order submit/cancel/
+  module-confidence still has `PARTIAL:7` and `IMPLEMENTED_NOT_VERIFIED:0`,
+  risk register still has `mitigating:15`, and LIVE order submit/cancel/
   position close, exchange-side mutation, and broader 2x LIVE including
   Gate.io production proof were intentionally not performed. Evidence:
   `docs/planning/v1-100-percent-truth-audit-2026-05-14-task.md` and

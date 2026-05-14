@@ -4,6 +4,13 @@ Last updated: 2026-05-14
 
 ## Active Issues
 
+- 2026-05-14 update: `V1-POST-V1-DASHBOARD-RUNTIME-LEDGER-CLOSURE-2026-05-14`
+  closes stale Dashboard Home and Bot Runtime partial ledger rows for the
+  current non-Gate.io V1/post-V1 scope. Local rendered/browser proofs plus
+  production route and runtime readbacks cover the approved Dashboard Home and
+  Bot Runtime operator truth. `RISK-002` and `RISK-003` are closed. Gate.io/
+  second-LIVE production shape and LIVE mutation proof remain separate.
+
 - 2026-05-14 update: `V1-POST-V1-AUTH-DEPLOY-RERUN-2026-05-14` closes the
   Auth stale-token replay issue found on deployed `2fc90a08`. The fixed build
   `84711599` is deployed, production build-info matches, and

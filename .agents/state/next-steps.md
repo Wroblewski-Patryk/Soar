@@ -10,20 +10,29 @@ the user's "is it 100%?" question. Tracked V1 release acceptance is `YES`:
 final scorecard `GO`, `PASS:21`, static findings `0`, implementation/evidence/
 release readiness `100%`, and no generated next work order. Absolute
 whole-app/every-function/every-live-action proof is `NO`: module confidence
-still includes `PARTIAL:9` and `IMPLEMENTED_NOT_VERIFIED:0`, risk register
-still includes `mitigating:17`, and LIVE order submit/cancel/position close,
+still includes `PARTIAL:7` and `IMPLEMENTED_NOT_VERIFIED:0`, risk register
+still includes `mitigating:15`, and LIVE order submit/cancel/position close,
 exchange-side mutation, and broader 2x LIVE including Gate.io production proof
 were intentionally not performed. Evidence:
 `docs/planning/v1-100-percent-truth-audit-2026-05-14-task.md` and
 `docs/operations/v1-100-percent-truth-audit-2026-05-14.md`.
+
+Latest post-V1 Dashboard/Runtime ledger closure:
+`V1-POST-V1-DASHBOARD-RUNTIME-LEDGER-CLOSURE-2026-05-14` is verified. Existing
+local and production evidence closes stale `SOAR-DASHBOARD-001` and
+`SOAR-BOT-RUNTIME-001` `PARTIAL` rows for the approved non-Gate.io V1/post-V1
+scope. `RISK-002` and `RISK-003` are closed. Current counts are `PARTIAL:7`,
+`VERIFIED:15`, `mitigating:15`, and `closed:10`. Gate.io/second-LIVE
+production shape remains separate. Evidence:
+`docs/planning/v1-post-v1-dashboard-runtime-ledger-closure-2026-05-14-task.md`.
 
 Latest post-V1 release-confidence row closure:
 `V1-POST-V1-RELEASE-CONFIDENCE-ROW-CLOSURE-2026-05-14` is verified. The stale
 `SOAR-REL-001` row no longer claims that the module-by-module proof ledger is
 missing; the final evidence pack is now the proof-map evidence for that row.
 This removed the last `IMPLEMENTED_NOT_VERIFIED` module-confidence row without
-promoting unrelated `PARTIAL` rows. Current post-auth counts are `PARTIAL:9`
-and `VERIFIED:13`. Evidence:
+promoting unrelated `PARTIAL` rows. Superseded by the Dashboard/Runtime ledger
+closure above: current counts are `PARTIAL:7` and `VERIFIED:15`. Evidence:
 `docs/planning/v1-post-v1-release-confidence-row-closure-2026-05-14-task.md`.
 
 Latest post-V1 Auth hardening:

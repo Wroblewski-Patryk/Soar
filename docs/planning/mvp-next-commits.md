@@ -8,6 +8,15 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `V1-POST-V1-DASHBOARD-RUNTIME-LEDGER-CLOSURE-2026-05-14 release: close stale Dashboard Home and Bot Runtime proof rows`
+  - 2026-05-14: Closed stale `SOAR-DASHBOARD-001` and
+    `SOAR-BOT-RUNTIME-001` `PARTIAL` rows using existing local proof plus
+    production route/runtime readbacks for the approved non-Gate.io V1/post-V1
+    scope. `RISK-002` and `RISK-003` are closed. Current counts are
+    `PARTIAL:7`, `VERIFIED:15`, `mitigating:15`, and `closed:10`. Gate.io/
+    second-LIVE production shape remains separate. Evidence:
+    `docs/planning/v1-post-v1-dashboard-runtime-ledger-closure-2026-05-14-task.md`.
+
 - [x] `V1-POST-V1-AUTH-DEPLOY-RERUN-2026-05-14 release: deploy logout invalidation and rerun production Auth proof`
   - 2026-05-14: Deployed fixed commit `84711599` to `origin/main`, waited for
     production build-info to match on attempt 32, and reran
@@ -48,8 +57,8 @@ Operational queue for one-task execution runs.
     is `YES` (`GO`, `PASS:21`, static findings `0`, implementation/evidence/
     release readiness `100%`, no next work order); absolute
     whole-app/every-function/every-live-action proof is `NO` because module
-    confidence still has `PARTIAL:9` and `IMPLEMENTED_NOT_VERIFIED:0`, risk
-    register still has `mitigating:17`, and LIVE order submit/cancel/position
+    confidence still has `PARTIAL:7` and `IMPLEMENTED_NOT_VERIFIED:0`, risk
+    register still has `mitigating:15`, and LIVE order submit/cancel/position
     close, exchange-side mutation, and broader 2x LIVE including Gate.io
     production proof were intentionally not performed. No deploy or production
     mutation was performed. Evidence:

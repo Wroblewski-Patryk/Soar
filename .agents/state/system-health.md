@@ -4,6 +4,14 @@ Last updated: 2026-05-14
 
 ## Latest Health Snapshot
 
+- `V1-POST-V1-DASHBOARD-RUNTIME-LEDGER-CLOSURE-2026-05-14` SOURCE-OF-TRUTH
+  CONSISTENCY PASS: local and production-safe evidence closes stale
+  `SOAR-DASHBOARD-001` and `SOAR-BOT-RUNTIME-001` `PARTIAL` rows for the
+  approved non-Gate.io V1/post-V1 scope. `RISK-002` and `RISK-003` are closed.
+  Current ledger counts are `PARTIAL:7`, `VERIFIED:15`, `mitigating:15`, and
+  `closed:10`. Gate.io/second-LIVE production shape remains separate. Evidence:
+  `docs/planning/v1-post-v1-dashboard-runtime-ledger-closure-2026-05-14-task.md`.
+
 - `V1-POST-V1-AUTH-DEPLOY-RERUN-2026-05-14` AUTH PASS: production proof on
   deployed `2fc90a08` found a stale-token replay gap after logout. The fixed
   build `84711599` is deployed, build-info matches, and the production rerun
@@ -16,8 +24,8 @@ Last updated: 2026-05-14
   release acceptance answer is `YES` (`GO`, `PASS:21`, static findings `0`,
   implementation/evidence/release readiness `100%`, no next work order). The
   absolute whole-app/every-function/every-live-action answer is `NO`: module
-  confidence still has `PARTIAL:9` and `IMPLEMENTED_NOT_VERIFIED:0`, risk
-  register still has `mitigating:17`, and LIVE order submit/cancel/position
+  confidence still has `PARTIAL:7` and `IMPLEMENTED_NOT_VERIFIED:0`, risk
+  register still has `mitigating:15`, and LIVE order submit/cancel/position
   close, exchange-side mutation, and broader 2x LIVE including Gate.io
   production proof were intentionally not performed. Evidence:
   `docs/planning/v1-100-percent-truth-audit-2026-05-14-task.md` and
@@ -27,9 +35,10 @@ Last updated: 2026-05-14
   CONSISTENCY PASS: stale `SOAR-REL-001` release-confidence inventory wording
   is closed as `VERIFIED` because the final V1 master ledger, project index,
   completion scorecard, evidence inventory, and 100 percent truth audit now
-  provide the module-by-module proof map. Remaining post-V1 incompleteness is
-  now represented by `PARTIAL:9` module rows and `mitigating:17` risk rows,
-  not by a missing proof-map row. Evidence:
+  provide the module-by-module proof map. That row was superseded by the
+  Dashboard/Runtime ledger closure; remaining post-V1 incompleteness is now
+  represented by `PARTIAL:7` module rows and `mitigating:15` risk rows, not by
+  a missing proof-map row. Evidence:
   `docs/planning/v1-post-v1-release-confidence-row-closure-2026-05-14-task.md`.
 
 - `V1-FINAL-EVIDENCE-CONSISTENCY-READBACK-2026-05-14` FINAL EVIDENCE
