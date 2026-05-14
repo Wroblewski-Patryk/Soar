@@ -25,6 +25,19 @@ This removes the last `IMPLEMENTED_NOT_VERIFIED` module-confidence row without
 promoting the remaining `PARTIAL` rows. Evidence:
 `docs/planning/v1-post-v1-release-confidence-row-closure-2026-05-14-task.md`.
 
+Latest post-V1 Auth hardening:
+`V1-POST-V1-AUTH-LOGOUT-TOKEN-REUSE-HARDENING-2026-05-14` is partially
+verified. Production proof on deployed `2fc90a08` found that direct reuse of
+the pre-logout JWT still returned `/auth/me` `200` after logout, even though
+browser protected-route redirects behaved correctly. The local branch fixes
+logout by incrementing the matching user's `sessionVersion`; focused
+Auth/middleware tests pass (`21/21`) and API typecheck passes. Next exact
+task: deploy this branch to production, then rerun `pnpm run
+ops:prod-auth:proof` against the new build before promoting `SOAR-AUTH-001`.
+Evidence:
+`docs/planning/v1-post-v1-auth-logout-token-reuse-hardening-2026-05-14-task.md`
+and `docs/operations/prod-auth-session-browser-proof-2fc90a08-2026-05-14.md`.
+
 Current continuation target:
 No active V1 completion task remains in the generated work order. The final
 tracked V1 evidence snapshot is `GO` with all `21` product-action rows at

@@ -158,7 +158,43 @@ export const me = async (req: Request, res: Response) => {
   }
 };
 
-export const logout = async (_req: Request, res: Response) => {
+export const logout = async (req: Request, res: Response) => {
+  const verifiedCandidates = getVerifiedAuthTokenCandidates(req);
+
+  try {
+    for (const candidate of verifiedCandidates) {
+      const user = await prisma.user.findUnique({
+        where: { id: candidate.claims.userId },
+        select: { id: true, sessionVersion: true },
+      });
+
+      if (!user) {
+        continue;
+      }
+
+      const candidateSessionVersion = candidate.claims.sessionVersion ?? 1;
+      if (candidateSessionVersion !== user.sessionVersion) {
+        continue;
+      }
+
+      await prisma.user.updateMany({
+        where: {
+          id: user.id,
+          sessionVersion: user.sessionVersion,
+        },
+        data: {
+          sessionVersion: {
+            increment: 1,
+          },
+        },
+      });
+      break;
+    }
+  } catch {
+    clearSessionCookie(res);
+    return sendError(res, 503, 'Auth service temporarily unavailable');
+  }
+
   clearSessionCookie(res);
   return res.status(200).json({ message: 'Logged out' });
 };

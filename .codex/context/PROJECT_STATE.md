@@ -4,6 +4,18 @@ Last updated: 2026-05-14
 
 ## 2026-05-14 Current Candidate Deployment Status
 
+- `V1-POST-V1-AUTH-LOGOUT-TOKEN-REUSE-HARDENING-2026-05-14` is partially
+  verified. A new production auth browser/API proof against deployed
+  `2fc90a08` found direct pre-logout JWT reuse still returned `/auth/me` `200`
+  after `/auth/logout`; browser no-session, valid-session, invalid-token
+  `session=expired`, and post-logout dashboard redirect checks passed. The
+  local branch fixes logout by incrementing the matching user's
+  `sessionVersion`, and focused Auth/middleware tests passed (`21/21`) plus
+  API typecheck passed. Production Auth remains unverified until the fixed
+  build is deployed and `ops:prod-auth:proof` passes. Evidence:
+  `docs/planning/v1-post-v1-auth-logout-token-reuse-hardening-2026-05-14-task.md`
+  and `docs/operations/prod-auth-session-browser-proof-2fc90a08-2026-05-14.md`.
+
 - `V1-100-PERCENT-TRUTH-AUDIT-2026-05-14` is verified. The precise answer to
   the user's "is it 100%?" question is split by scope: tracked V1 release
   acceptance is `YES` (`GO`, `PASS:21`, static findings `0`, implementation/

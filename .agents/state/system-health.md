@@ -4,6 +4,16 @@ Last updated: 2026-05-14
 
 ## Latest Health Snapshot
 
+- `V1-POST-V1-AUTH-LOGOUT-TOKEN-REUSE-HARDENING-2026-05-14` AUTH PARTIAL:
+  production proof on deployed `2fc90a08` found a stale-token replay gap after
+  logout (`/auth/me` returned `200` for the pre-logout JWT). Local code now
+  invalidates the matching session via `sessionVersion` on logout. Focused
+  Auth/middleware tests passed (`21/21`) and API typecheck passed. Production
+  remains pending until the fixed build is deployed and
+  `ops:prod-auth:proof` passes. Evidence:
+  `docs/planning/v1-post-v1-auth-logout-token-reuse-hardening-2026-05-14-task.md`
+  and `docs/operations/prod-auth-session-browser-proof-2fc90a08-2026-05-14.md`.
+
 - `V1-100-PERCENT-TRUTH-AUDIT-2026-05-14` TRUTH AUDIT PASS: the tracked V1
   release acceptance answer is `YES` (`GO`, `PASS:21`, static findings `0`,
   implementation/evidence/release readiness `100%`, no next work order). The

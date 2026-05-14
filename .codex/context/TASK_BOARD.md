@@ -17,6 +17,22 @@ Last updated: 2026-05-14
 
 ## READY
 
+- [ ] `V1-POST-V1-AUTH-DEPLOY-RERUN-2026-05-14 release: deploy logout invalidation and rerun production Auth proof`
+  - Next exact action: deploy the current branch containing
+    `V1-POST-V1-AUTH-LOGOUT-TOKEN-REUSE-HARDENING-2026-05-14`, then rerun
+    `pnpm run ops:prod-auth:proof` against the new build. This is required
+    before `SOAR-AUTH-001` can be promoted from `PARTIAL`.
+
+- [x] `V1-POST-V1-AUTH-LOGOUT-TOKEN-REUSE-HARDENING-2026-05-14 fix: invalidate reused JWT sessions on logout`
+  - 2026-05-14: Production auth browser/API proof on deployed `2fc90a08`
+    found a real replay gap: direct reuse of the pre-logout JWT still returned
+    `/auth/me` `200` after logout. Browser route checks passed. Local fix
+    reuses existing `sessionVersion` invalidation on logout; focused
+    Auth/middleware tests passed (`21/21`) and API typecheck passed. Production
+    rerun is pending deploy, so `SOAR-AUTH-001` remains `PARTIAL`. Evidence:
+    `docs/planning/v1-post-v1-auth-logout-token-reuse-hardening-2026-05-14-task.md`
+    and `docs/operations/prod-auth-session-browser-proof-2fc90a08-2026-05-14.md`.
+
 - [x] `V1-POST-V1-RELEASE-CONFIDENCE-ROW-CLOSURE-2026-05-14 release: close stale release-confidence proof-map row`
   - 2026-05-14: Closed obsolete `SOAR-REL-001` uncertainty after confirming the
     final V1 master ledger, project index, completion scorecard, evidence

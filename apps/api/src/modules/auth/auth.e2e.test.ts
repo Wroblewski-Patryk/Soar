@@ -169,6 +169,8 @@ describe('POST /auth/register', () => {
 
     const registerRes = await agent.post('/auth/register').send({ email, password });
     expect(registerRes.status).toBe(201);
+    const staleSessionCookie = registerRes.headers['set-cookie']?.[0] ?? '';
+    expect(staleSessionCookie).toContain('token=');
 
     const meBeforeLogoutRes = await agent.get('/auth/me');
     expect(meBeforeLogoutRes.status).toBe(200);
@@ -184,6 +186,19 @@ describe('POST /auth/register', () => {
     const meAfterLogoutRes = await agent.get('/auth/me');
     expect(meAfterLogoutRes.status).toBe(401);
     expect(meAfterLogoutRes.body.error.message).toBe('Missing token');
+
+    const staleTokenRes = await request(app).get('/auth/me').set('Cookie', [staleSessionCookie]);
+    expect(staleTokenRes.status).toBe(401);
+    expect(staleTokenRes.body.error.message).toBe('Session expired. Please sign in again.');
+
+    const reloginRes = await request(app).post('/auth/login').send({ email, password });
+    expect(reloginRes.status).toBe(200);
+    const newSessionCookie = reloginRes.headers['set-cookie']?.[0] ?? '';
+    expect(newSessionCookie).toContain('token=');
+
+    const meAfterReloginRes = await request(app).get('/auth/me').set('Cookie', [newSessionCookie]);
+    expect(meAfterReloginRes.status).toBe(200);
+    expect(meAfterReloginRes.body.email).toBe(email);
   });
 
   it('clears expired JWT sessions and asks the operator to sign in again', async () => {
