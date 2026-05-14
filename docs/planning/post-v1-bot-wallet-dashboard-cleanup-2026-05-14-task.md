@@ -106,7 +106,11 @@ architecture/UX changes inside a data-safety hotfix.
 ## Result Report
 
 Task summary: post-V1 feedback is indexed, with the bot/wallet data-safety slice
-fixed and verified locally.
+fixed, verified locally, and deployed as
+`1586f59261cef94d7c513d71bbfcfb697d11ca59`.
+
+Deployment evidence: build-info wait passed on attempt 22, and public deploy
+smoke passed for API `/health`, API `/ready`, and Web `/`.
 
 What is incomplete: Dashboard/UI polish, strategy-history architecture,
 Analytics implementation, Strategy Builder previews, crypto icon consistency,

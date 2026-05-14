@@ -82,3 +82,9 @@ Validation:
   PASS (`24/24`).
 - Initial combined DB-heavy test attempts failed due shared cleanup
   interference; rerunning the same files sequentially passed.
+- `pnpm run build` PASS.
+- Pushed to `origin/main` at
+  `1586f59261cef94d7c513d71bbfcfb697d11ca59`.
+- Build-info wait PASS on attempt 22 for deployed
+  `1586f59261cef94d7c513d71bbfcfb697d11ca59`.
+- Public deploy smoke PASS for API `/health`, API `/ready`, and Web `/`.

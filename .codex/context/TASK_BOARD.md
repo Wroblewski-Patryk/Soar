@@ -23,7 +23,9 @@ Last updated: 2026-05-14
     now fails closed with `409` while an active bot uses the wallet. No
     production data, LIVE order/cancel/close, or exchange-side mutation was
     performed. Validation: API typecheck PASS, Bots delete cleanup e2e `1/1`
-    PASS, Bots e2e `26/26` PASS, Wallets e2e `24/24` PASS. Evidence:
+    PASS, Bots e2e `26/26` PASS, Wallets e2e `24/24` PASS, build PASS.
+    Deployed `1586f59261cef94d7c513d71bbfcfb697d11ca59`; build-info wait
+    passed on attempt 22 and public deploy smoke passed. Evidence:
     `docs/planning/v1-post-v1-wallet-bot-cleanup-hardening-2026-05-14-task.md`.
 
 - [x] `POSTV1-OPERATOR-FEEDBACK-INTAKE-2026-05-14 planning: index operator feedback follow-up missions`
