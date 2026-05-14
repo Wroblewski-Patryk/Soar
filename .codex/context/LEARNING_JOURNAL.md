@@ -2804,3 +2804,9 @@ promise = connect().catch((error) => {
     `taskkill /F /T` reported no removable running task instance. Treat this
     as a Windows process-table cleanup caveat and recheck before the next
     browser validation.
+  - During `V1-100-PERCENT-TRUTH-AUDIT-2026-05-14`, a no-browser documentation
+    audit still found four old Playwright `chrome-headless-shell` helper
+    processes with a temporary profile. A first cleanup command accidentally
+    used PowerShell's read-only `$PID` variable name and did not stop them; the
+    corrected `$procId` loop stopped the exact PIDs, and the follow-up process
+    check returned no remaining `chrome-headless-shell` process.
