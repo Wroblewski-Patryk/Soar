@@ -4,6 +4,17 @@ Last updated: 2026-05-14
 
 ## Next Tiny Task
 
+Latest post-V1 crypto icon consistency:
+`POSTV1-CRYPTO-ICON-CONSISTENCY-2026-05-14` is locally verified. The resolver
+now uses one curated asset catalog for both CoinGecko hints and local icon
+fallback URLs, so common-symbol fixes are catalog-level rather than one-off.
+Focused API icon e2e passes (`6/6`), including a CoinGecko `503` basket proof
+where common trading assets such as `TRX`, `LINK`, `ZEC`, `SAND`, and `MANA`
+resolve to curated icons instead of generic placeholders. No deploy,
+production mutation, LIVE order/cancel/close, or exchange-side mutation was
+performed. Evidence:
+`docs/planning/post-v1-crypto-icon-consistency-2026-05-14-task.md`.
+
 Latest post-V1 ledger reconciliation:
 `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14` is verified. Stale module
 confidence rows for Profile, Profile API Keys, Wallets, Markets, Strategies,
@@ -32,9 +43,9 @@ Post-V1 operator feedback follow-up queue is indexed in
 `docs/planning/post-v1-bot-wallet-dashboard-cleanup-2026-05-14-task.md`.
 Next runnable candidates: Dashboard truth/layout/loading polish, inactive PAPER
 strategy edit reproduction, strategy/market snapshot history architecture,
-Analytics Reports/Logs UX, Strategy Builder preview charts, crypto icon
-consistency, and positions-service decomposition. These are not implemented in
-the wallet/bot cleanup slice.
+Analytics Reports/Logs UX, Strategy Builder preview charts, and
+positions-service decomposition. Crypto icon consistency is now closed by
+`POSTV1-CRYPTO-ICON-CONSISTENCY-2026-05-14`.
 
 Latest 100 percent truth audit:
 `V1-100-PERCENT-TRUTH-AUDIT-2026-05-14` is verified as the current wording for

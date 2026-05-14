@@ -5,14 +5,14 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/icons`
 - Owner: backend/shared-services
-- Last updated: 2026-04-12
+- Last updated: 2026-05-14
 - Related planning task: `DCP-07`
 
 ## 1. Purpose and Scope
 - Resolves token/market symbols to icon URLs for dashboard tables and cards.
 - Uses deterministic multi-step fallback chain:
   - CoinGecko lookup
-  - curated static icon map
+  - curated static icon catalog for common trading assets
   - inline SVG placeholder
 
 Out of scope:
@@ -64,6 +64,12 @@ Out of scope:
 ## 8. Test Coverage and Evidence
 - Primary tests:
   - `icons.e2e.test.ts`
+- 2026-05-14 post-V1 regression:
+  - verified that a basket of common trading symbols
+    (`BTC`, `ETH`, `BNB`, `SOL`, `XRP`, `DOGE`, `ADA`, `TRX`, `DOT`, `LTC`,
+    `AVAX`, `LINK`, `BCH`, `XLM`, `ATOM`, `UNI`, `ETC`, `FIL`, `AAVE`,
+    `ALGO`, `VET`, `ICP`, `MATIC`, `ZEC`, `SAND`, `MANA`) resolves to curated
+    icons, not generic placeholders, when CoinGecko returns `503`.
 - Suggested validation command:
 ```powershell
 pnpm --filter api test -- src/modules/icons/icons.e2e.test.ts
@@ -72,4 +78,3 @@ pnpm --filter api test -- src/modules/icons/icons.e2e.test.ts
 ## 9. Open Issues and Follow-Ups
 - Consider cross-process cache if icon traffic rises in multi-instance deployment.
 - Add telemetry counters for external provider failures and fallback rates.
-

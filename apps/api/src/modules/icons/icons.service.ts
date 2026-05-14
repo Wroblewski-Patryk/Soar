@@ -63,31 +63,53 @@ const DEFAULT_FETCH_GAP_MS = 120;
 const PLACEHOLDER_ICON_DATA_URL =
   'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="%231e2233"/><circle cx="32" cy="26" r="13" fill="%234a5568"/><rect x="17" y="42" width="30" height="8" rx="4" fill="%237184a1"/></svg>';
 
-const CURATED_ICON_BY_ASSET: Record<string, string> = {
-  BTC: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/btc.png',
-  ETH: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/eth.png',
-  BNB: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/bnb.png',
-  SOL: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/sol.png',
-  XRP: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/xrp.png',
-  DOGE: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/doge.png',
-  ADA: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/ada.png',
-  DOT: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/dot.png',
-  LTC: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/ltc.png',
-  AVAX: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/avax.png',
+type CuratedAssetIcon = {
+  coinGeckoId: string;
+  iconSlug: string;
 };
 
-const COINGECKO_ID_HINTS_BY_ASSET: Record<string, string> = {
-  BTC: 'bitcoin',
-  ETH: 'ethereum',
-  BNB: 'binancecoin',
-  SOL: 'solana',
-  XRP: 'ripple',
-  DOGE: 'dogecoin',
-  ADA: 'cardano',
-  DOT: 'polkadot',
-  LTC: 'litecoin',
-  AVAX: 'avalanche-2',
+const CRYPTOCURRENCY_ICONS_BASE_URL =
+  'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color';
+
+const CURATED_ASSET_ICON_CATALOG: Record<string, CuratedAssetIcon> = {
+  BTC: { coinGeckoId: 'bitcoin', iconSlug: 'btc' },
+  ETH: { coinGeckoId: 'ethereum', iconSlug: 'eth' },
+  BNB: { coinGeckoId: 'binancecoin', iconSlug: 'bnb' },
+  SOL: { coinGeckoId: 'solana', iconSlug: 'sol' },
+  XRP: { coinGeckoId: 'ripple', iconSlug: 'xrp' },
+  DOGE: { coinGeckoId: 'dogecoin', iconSlug: 'doge' },
+  ADA: { coinGeckoId: 'cardano', iconSlug: 'ada' },
+  TRX: { coinGeckoId: 'tron', iconSlug: 'trx' },
+  DOT: { coinGeckoId: 'polkadot', iconSlug: 'dot' },
+  LTC: { coinGeckoId: 'litecoin', iconSlug: 'ltc' },
+  AVAX: { coinGeckoId: 'avalanche-2', iconSlug: 'avax' },
+  LINK: { coinGeckoId: 'chainlink', iconSlug: 'link' },
+  BCH: { coinGeckoId: 'bitcoin-cash', iconSlug: 'bch' },
+  XLM: { coinGeckoId: 'stellar', iconSlug: 'xlm' },
+  ATOM: { coinGeckoId: 'cosmos', iconSlug: 'atom' },
+  UNI: { coinGeckoId: 'uniswap', iconSlug: 'uni' },
+  ETC: { coinGeckoId: 'ethereum-classic', iconSlug: 'etc' },
+  FIL: { coinGeckoId: 'filecoin', iconSlug: 'fil' },
+  AAVE: { coinGeckoId: 'aave', iconSlug: 'aave' },
+  ALGO: { coinGeckoId: 'algorand', iconSlug: 'algo' },
+  VET: { coinGeckoId: 'vechain', iconSlug: 'vet' },
+  ICP: { coinGeckoId: 'internet-computer', iconSlug: 'icp' },
+  MATIC: { coinGeckoId: 'matic-network', iconSlug: 'matic' },
+  ZEC: { coinGeckoId: 'zcash', iconSlug: 'zec' },
+  SAND: { coinGeckoId: 'the-sandbox', iconSlug: 'sand' },
+  MANA: { coinGeckoId: 'decentraland', iconSlug: 'mana' },
 };
+
+const CURATED_ICON_BY_ASSET: Record<string, string> = Object.fromEntries(
+  Object.entries(CURATED_ASSET_ICON_CATALOG).map(([asset, value]) => [
+    asset,
+    `${CRYPTOCURRENCY_ICONS_BASE_URL}/${value.iconSlug}.png`,
+  ])
+);
+
+const COINGECKO_ID_HINTS_BY_ASSET: Record<string, string> = Object.fromEntries(
+  Object.entries(CURATED_ASSET_ICON_CATALOG).map(([asset, value]) => [asset, value.coinGeckoId])
+);
 
 const QUOTE_SUFFIXES = [
   'USDT',

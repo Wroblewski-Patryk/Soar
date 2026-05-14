@@ -157,6 +157,57 @@ describe('Icons lookup module contract', () => {
     expect(String(res.body.items[0].iconUrl)).toContain('sol.png');
   });
 
+  it('keeps common trading assets on curated icons when coingecko is unavailable', async () => {
+    const agent = await registerAndLogin('icons-common-curated@example.com');
+    const symbols = [
+      'BTCUSDT',
+      'ETHUSDT',
+      'BNBUSDT',
+      'SOLUSDT',
+      'XRPUSDT',
+      'DOGEUSDT',
+      'ADAUSDT',
+      'TRXUSDT',
+      'DOTUSDT',
+      'LTCUSDT',
+      'AVAXUSDT',
+      'LINKUSDT',
+      'BCHUSDT',
+      'XLMUSDT',
+      'ATOMUSDT',
+      'UNIUSDT',
+      'ETCUSDT',
+      'FILUSDT',
+      'AAVEUSDT',
+      'ALGOUSDT',
+      'VETUSDT',
+      'ICPUSDT',
+      'MATICUSDT',
+      'ZECUSDT',
+      'SANDUSDT',
+      'MANAUSDT',
+    ];
+
+    fetchMock.mockResolvedValue(new Response('', { status: 503 }));
+
+    const res = await agent.get('/dashboard/icons/lookup').query({
+      symbols: symbols.join(','),
+    });
+
+    expect(res.status).toBe(200);
+    expect(res.body.total).toBe(symbols.length);
+    for (const item of res.body.items) {
+      const baseAsset = item.symbol.replace(/USDT$/, '').toLowerCase();
+      expect(item).toMatchObject({
+        baseAsset: item.symbol.replace(/USDT$/, ''),
+        source: 'curated',
+        placeholder: false,
+        coinGeckoId: null,
+      });
+      expect(String(item.iconUrl)).toContain(`/${baseAsset}.png`);
+    }
+  }, 15_000);
+
   it('falls back to deterministic placeholder for unknown assets', async () => {
     const agent = await registerAndLogin('icons-placeholder@example.com');
 
@@ -177,4 +228,3 @@ describe('Icons lookup module contract', () => {
     expect(String(res.body.items[0].iconUrl)).toContain('data:image/svg+xml');
   });
 });
-

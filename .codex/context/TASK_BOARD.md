@@ -17,6 +17,16 @@ Last updated: 2026-05-14
 
 ## READY
 
+- [x] `POSTV1-CRYPTO-ICON-CONSISTENCY-2026-05-14 fix: harden common crypto icon fallback model`
+  - 2026-05-14: Crypto icon lookup now derives CoinGecko ID hints and curated
+    URLs from one shared catalog instead of two drifting maps. A focused API
+    e2e basket proof forces CoinGecko `503` and verifies common trading assets
+    including `TRX`, `LINK`, `ZEC`, `SAND`, and `MANA` resolve to curated
+    icons rather than generic placeholders. No deploy, production data
+    mutation, LIVE order/cancel/close, or exchange-side mutation was performed.
+    Evidence:
+    `docs/planning/post-v1-crypto-icon-consistency-2026-05-14-task.md`.
+
 - [x] `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14 release: reconcile stale proof ledger rows`
   - 2026-05-14: Reconciled stale Profile, Profile API Keys, Wallets, Markets,
     Strategies, Logs/Audit Trail, and Subscriptions/Admin rows with accepted

@@ -4,6 +4,15 @@ Last updated: 2026-05-14
 
 ## Latest Health Snapshot
 
+- `POSTV1-CRYPTO-ICON-CONSISTENCY-2026-05-14` LOCAL CONTRACT PASS: API icon
+  lookup now derives CoinGecko ID hints and curated fallback URLs from one
+  catalog, so common-symbol fixes are model-level instead of one-off. Focused
+  `icons.e2e.test.ts` passes (`6/6`), including a CoinGecko `503` basket proof
+  for common trading assets resolving to curated icons rather than generic
+  placeholders. No deploy, production mutation, LIVE order/cancel/close, or
+  exchange-side mutation was performed. Evidence:
+  `docs/planning/post-v1-crypto-icon-consistency-2026-05-14-task.md`.
+
 - `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14` SOURCE-OF-TRUTH PASS:
   accepted production fixture/UI proof is now reflected in the durable module
   confidence, requirement, quality, and risk ledgers. Current module-confidence

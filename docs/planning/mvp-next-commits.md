@@ -8,6 +8,15 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `POSTV1-CRYPTO-ICON-CONSISTENCY-2026-05-14 fix: harden common crypto icon fallback model`
+  - 2026-05-14: API icon lookup now uses one curated asset catalog for both
+    CoinGecko ID hints and fallback icon URLs. Focused API e2e proof passed
+    (`6/6`), including a CoinGecko `503` basket scenario where common trading
+    assets such as `TRX`, `LINK`, `ZEC`, `SAND`, and `MANA` resolve to curated
+    icons instead of generic placeholders. No deploy, production mutation,
+    LIVE order/cancel/close, or exchange-side mutation was performed. Evidence:
+    `docs/planning/post-v1-crypto-icon-consistency-2026-05-14-task.md`.
+
 - [x] `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14 release: reconcile stale proof ledger rows`
   - 2026-05-14: Reconciled stale Profile, Profile API Keys, Wallets, Markets,
     Strategies, Logs/Audit Trail, and Subscriptions/Admin rows with accepted

@@ -4,6 +4,18 @@ Last updated: 2026-05-14
 
 ## 2026-05-14 Current Candidate Deployment Status
 
+- `POSTV1-CRYPTO-ICON-CONSISTENCY-2026-05-14` is verified locally. The API
+  icon resolver now uses one curated asset catalog to derive both preferred
+  CoinGecko IDs and curated icon URLs, avoiding repeated one-symbol patches.
+  Focused icon e2e proof passes (`6/6`), including a common trading basket
+  outage scenario where CoinGecko returns `503` and `BTC`, `ETH`, `BNB`,
+  `SOL`, `XRP`, `DOGE`, `ADA`, `TRX`, `DOT`, `LTC`, `AVAX`, `LINK`, `BCH`,
+  `XLM`, `ATOM`, `UNI`, `ETC`, `FIL`, `AAVE`, `ALGO`, `VET`, `ICP`, `MATIC`,
+  `ZEC`, `SAND`, and `MANA` resolve to curated icons instead of placeholders.
+  No deploy, production mutation, LIVE order/cancel/close, or exchange-side
+  mutation was performed. Evidence:
+  `docs/planning/post-v1-crypto-icon-consistency-2026-05-14-task.md`.
+
 - `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14` is verified. Stale module
   confidence, requirements, quality, and risk rows were reconciled with
   accepted production fixture/UI evidence. Current module confidence is
