@@ -8,6 +8,14 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14 test: verify inactive linked strategy edits`
+  - 2026-05-14: Verified Strategy edit Web/API parity for inactive linked-bot
+    updates and active-bot guard recovery. Focused validation passed: Web edit
+    page `3/3`, Web strategies suite `14` files / `48` tests, and API
+    strategies e2e `11/11`. No deploy, production mutation, LIVE
+    order/cancel/close, or exchange-side mutation was performed. Evidence:
+    `docs/planning/post-v1-inactive-paper-strategy-edit-proof-2026-05-14-task.md`.
+
 - [x] `POSTV1-CRYPTO-ICON-CONSISTENCY-2026-05-14 fix: harden common crypto icon fallback model`
   - 2026-05-14: API icon lookup now uses one curated asset catalog for both
     CoinGecko ID hints and fallback icon URLs. Focused API e2e proof passed

@@ -5,7 +5,7 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/strategies`
 - Owner: frontend/strategy-builder
-- Last updated: 2026-05-01
+- Last updated: 2026-05-14
 - Related planning task: `DCP-09`
 
 ## 1. Purpose and Scope
@@ -74,6 +74,13 @@ Out of scope:
   - `strategyPresets.test.ts`
   - `StrategyForm.map.test.ts`
   - `strategyNumericInput.test.ts`
+- 2026-05-14 inactive-bot edit proof:
+  - `app/dashboard/strategies/[id]/edit/page.test.tsx` verifies the edit page
+    submits the loaded form when the backend allows the linked inactive-bot
+    path, and renders the active-bot lock with a bot-settings action when the
+    backend returns the active-bot guard.
+  - `strategies.e2e.test.ts` verifies the API allows updates for linked
+    inactive bots and blocks active-bot updates/deletes.
 - Suggested validation command:
 ```powershell
 pnpm --filter web test -- src/app/dashboard/strategies/list/page.test.tsx src/app/dashboard/strategies/create/page.test.tsx src/app/dashboard/strategies/[id]/page.test.tsx src/app/dashboard/strategies/[id]/edit/page.test.tsx src/features/strategies/components/StrategyPresetPicker.test.tsx src/features/strategies/components/StrategyFormSections/Indicators.test.tsx src/features/strategies/presets/strategyPresets.test.ts src/features/strategies/utils/StrategyForm.map.test.ts src/features/strategies/utils/strategyNumericInput.test.ts

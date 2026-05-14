@@ -4,6 +4,14 @@ Last updated: 2026-05-14
 
 ## Latest Health Snapshot
 
+- `POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14` LOCAL CONTRACT PASS:
+  strategy edit Web/API parity is verified for inactive linked-bot updates and
+  active-bot guard recovery. Focused validation passed: Web edit page `3/3`,
+  Web strategies suite `14` files / `48` tests, and API strategies e2e `11/11`.
+  No deploy, production mutation, LIVE order/cancel/close, or exchange-side
+  mutation was performed. Evidence:
+  `docs/planning/post-v1-inactive-paper-strategy-edit-proof-2026-05-14-task.md`.
+
 - `POSTV1-CRYPTO-ICON-CONSISTENCY-2026-05-14` LOCAL CONTRACT PASS: API icon
   lookup now derives CoinGecko ID hints and curated fallback URLs from one
   catalog, so common-symbol fixes are model-level instead of one-off. Focused

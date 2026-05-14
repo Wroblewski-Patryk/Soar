@@ -4,6 +4,16 @@ Last updated: 2026-05-14
 
 ## Next Tiny Task
 
+Latest post-V1 inactive PAPER strategy edit proof:
+`POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14` is locally verified.
+The Web edit page now has direct submit proof for the backend-allowed inactive
+linked-bot strategy update path, and active linked-bot blocking renders a
+targeted lock with bot-settings navigation. Focused validation passed: Web edit
+page `3/3`, Web strategies suite `14` files / `48` tests, and API strategies
+e2e `11/11`. No deploy, production mutation, LIVE order/cancel/close, or
+exchange-side mutation was performed. Evidence:
+`docs/planning/post-v1-inactive-paper-strategy-edit-proof-2026-05-14-task.md`.
+
 Latest post-V1 crypto icon consistency:
 `POSTV1-CRYPTO-ICON-CONSISTENCY-2026-05-14` is locally verified. The resolver
 now uses one curated asset catalog for both CoinGecko hints and local icon
@@ -45,7 +55,9 @@ Next runnable candidates: Dashboard truth/layout/loading polish, inactive PAPER
 strategy edit reproduction, strategy/market snapshot history architecture,
 Analytics Reports/Logs UX, Strategy Builder preview charts, and
 positions-service decomposition. Crypto icon consistency is now closed by
-`POSTV1-CRYPTO-ICON-CONSISTENCY-2026-05-14`.
+`POSTV1-CRYPTO-ICON-CONSISTENCY-2026-05-14`; inactive PAPER strategy edit
+reproduction is now closed by
+`POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14`.
 
 Latest 100 percent truth audit:
 `V1-100-PERCENT-TRUTH-AUDIT-2026-05-14` is verified as the current wording for

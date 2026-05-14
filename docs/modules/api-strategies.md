@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/strategies`
 - Owner: backend/trading-domain
-- Last updated: 2026-04-12
+- Last updated: 2026-05-14
 - Related planning task: `DCP-06`
 
 ## 1. Purpose and Scope
@@ -67,6 +67,9 @@ Out of scope:
 - Primary tests:
   - `apps/api/src/modules/strategies/strategies.e2e.test.ts`
   - `apps/api/src/modules/strategies/indicators/indicators.service.test.ts`
+- 2026-05-14 inactive-bot edit proof:
+  - `strategies.e2e.test.ts` verifies strategy updates are blocked for active
+    linked bots and allowed for inactive linked bots.
 - Suggested validation command:
 ```powershell
 pnpm --filter api test -- src/modules/strategies/strategies.e2e.test.ts src/modules/strategies/indicators/indicators.service.test.ts

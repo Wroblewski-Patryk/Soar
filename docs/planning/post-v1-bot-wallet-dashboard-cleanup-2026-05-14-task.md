@@ -84,9 +84,10 @@ architecture/UX changes inside a data-safety hotfix.
    `docs/planning/post-v1-crypto-icon-consistency-2026-05-14-task.md`; API icon
    lookup now uses one curated catalog and proves common assets resolve to
    curated icons under CoinGecko outage.
-7. `POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14` - reproduce the
-   inactive PAPER strategy edit failure through Web/API and fix parity if the
-   current API proof does not cover the failing UI path.
+7. `POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14` - closed by
+   `docs/planning/post-v1-inactive-paper-strategy-edit-proof-2026-05-14-task.md`;
+   Web/API proof covers inactive linked-bot update allowance and active-bot lock
+   recovery.
 
 ## Validation Evidence
 
@@ -115,10 +116,10 @@ Deployment evidence: build-info wait passed on attempt 22, and public deploy
 smoke passed for API `/health`, API `/ready`, and Web `/`.
 
 What is incomplete: Dashboard/UI polish, strategy-history architecture,
-Analytics implementation, Strategy Builder previews, inactive PAPER strategy
-edit UI reproduction, and positions-service decomposition remain follow-up
-missions. Crypto icon consistency is closed by
-`POSTV1-CRYPTO-ICON-CONSISTENCY-2026-05-14`.
+Analytics implementation, Strategy Builder previews, and positions-service
+decomposition remain follow-up missions. Crypto icon consistency is closed by
+`POSTV1-CRYPTO-ICON-CONSISTENCY-2026-05-14`; inactive PAPER strategy edit
+proof is closed by `POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14`.
 
 Next step: run `POSTV1-DASHBOARD-TRUTH-AND-LAYOUT-2026-05-14` or
 `POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14`, depending on whether

@@ -4,6 +4,17 @@ Last updated: 2026-05-14
 
 ## 2026-05-14 Current Candidate Deployment Status
 
+- `POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14` is verified locally.
+  The suspected inactive PAPER strategy edit path now has direct Web/API
+  evidence: the Web edit page submits the loaded form when the backend allows
+  the inactive linked-bot update path, and it renders a targeted active-bot
+  lock with bot-settings navigation when the backend blocks active linked bots.
+  Focused validation passed: Web edit page `3/3`, Web strategies suite `14`
+  files / `48` tests, and API strategies e2e `11/11`. No deploy, production
+  mutation, LIVE order/cancel/close, or exchange-side mutation was performed.
+  Evidence:
+  `docs/planning/post-v1-inactive-paper-strategy-edit-proof-2026-05-14-task.md`.
+
 - `POSTV1-CRYPTO-ICON-CONSISTENCY-2026-05-14` is verified locally. The API
   icon resolver now uses one curated asset catalog to derive both preferred
   CoinGecko IDs and curated icon URLs, avoiding repeated one-symbol patches.
