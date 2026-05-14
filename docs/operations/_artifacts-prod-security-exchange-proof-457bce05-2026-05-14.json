@@ -1,0 +1,71 @@
+{
+  "status": "PARTIAL",
+  "today": "2026-05-14",
+  "generatedAt": "2026-05-14T02:30:40.904Z",
+  "environment": "production",
+  "webBaseUrl": "https://soar.luckysparrow.ch",
+  "apiBaseUrl": "https://api.soar.luckysparrow.ch",
+  "expectedSha": "457bce05338310c198c03a973395a9176f298dc1",
+  "buildInfo": {
+    "status": 200,
+    "ok": true,
+    "gitSha": "457bce05338310c198c03a973395a9176f298dc1"
+  },
+  "steps": [
+    {
+      "name": "build-info freshness",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "deployed build matches expected SHA"
+    },
+    {
+      "name": "auth token resolved",
+      "status": "PASS",
+      "notes": "login:present"
+    },
+    {
+      "name": "security headers present",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "public readiness minimal response",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "unauthenticated protected route fail-closed",
+      "status": "PASS",
+      "httpStatus": 401
+    },
+    {
+      "name": "unauthenticated ops diagnostics fail-closed",
+      "status": "PASS",
+      "httpStatus": 401
+    },
+    {
+      "name": "unauthenticated metrics fail-closed",
+      "status": "PASS",
+      "httpStatus": 401
+    },
+    {
+      "name": "authenticated no-store profile read",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "profile api key list redaction",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "items=1"
+    },
+    {
+      "name": "proof execution stopped",
+      "status": "FAIL",
+      "notes": "untrusted origin state change expected HTTP 403 but got 500"
+    }
+  ],
+  "blockers": [
+    "untrusted origin state change expected HTTP 403 but got 500"
+  ]
+}

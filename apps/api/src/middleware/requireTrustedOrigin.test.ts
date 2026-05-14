@@ -80,6 +80,18 @@ describe('requireTrustedOrigin middleware', () => {
     expect(res.body.error.message).toBe('Untrusted origin');
   });
 
+  it('returns a controlled 403 for untrusted Origin before route handlers run', async () => {
+    const sessionCookie = await createSessionCookie();
+    const res = await request(app)
+      .post('/auth/logout')
+      .set('Cookie', [sessionCookie])
+      .set('Origin', 'https://evil.example.com')
+      .send({});
+
+    expect(res.status).toBe(403);
+    expect(res.body.error.message).toBe('CORS origin not allowed: https://evil.example.com');
+  });
+
   it('allows missing origin for cookie sessions when sameSite is not none', async () => {
     process.env.COOKIE_SAME_SITE = 'lax';
     const sessionCookie = await createSessionCookie();

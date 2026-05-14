@@ -15,6 +15,12 @@ import { createModuleLogger } from './lib/logger';
 
 const logger = createModuleLogger('api.server');
 
+const createCorsOriginError = (origin: string) => {
+  const error = new Error(`CORS origin not allowed: ${origin}`) as Error & { status: number };
+  error.status = 403;
+  return error;
+};
+
 if (process.env.NODE_ENV !== 'test') {
   assertCriticalSecretsReadiness();
 }
@@ -36,7 +42,7 @@ app.use(
         return;
       }
 
-      callback(new Error(`CORS origin not allowed: ${origin}`));
+      callback(createCorsOriginError(origin));
     },
     credentials: true,
   })

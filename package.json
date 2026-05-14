@@ -83,6 +83,8 @@
     "ops:deploy:rollback-proof:stage": "pnpm run ops:deploy:rollback-proof -- --profile stage",
     "ops:deploy:rollback-proof:prod": "pnpm run ops:deploy:rollback-proof -- --profile prod",
     "ops:ui:prod-clickthrough": "node scripts/runProdUiModuleClickthroughAudit.mjs",
+    "ops:prod-fixture:action-proof": "node scripts/runProdFixtureActionProof.mjs",
+    "ops:prod-security-exchange:proof": "node scripts/runProdSecurityExchangeProof.mjs",
     "ops:exchange:gateio-market-stream-smoke": "pnpm --filter api exec tsx scripts/gateioMarketStreamSourceSmoke.ts"
   },
   "keywords": [],
