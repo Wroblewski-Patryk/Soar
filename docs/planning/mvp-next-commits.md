@@ -17,6 +17,14 @@ Operational queue for one-task execution runs.
     PASS, Bots e2e `26/26` PASS, Wallets e2e `24/24` PASS. Evidence:
     `docs/planning/v1-post-v1-wallet-bot-cleanup-hardening-2026-05-14-task.md`.
 
+- [x] `POSTV1-OPERATOR-FEEDBACK-INTAKE-2026-05-14 planning: index operator feedback follow-up missions`
+  - 2026-05-14: Indexed the remaining post-V1 feedback into bounded follow-up
+    missions for Dashboard truth/layout/loading, inactive PAPER strategy edit
+    reproduction, strategy/market snapshot history, Analytics Reports/Logs UX,
+    Strategy Builder previews, crypto icon consistency, table affordances, and
+    positions-service decomposition. Evidence:
+    `docs/planning/post-v1-bot-wallet-dashboard-cleanup-2026-05-14-task.md`.
+
 - [x] `V1-POST-V1-DASHBOARD-RUNTIME-LEDGER-CLOSURE-2026-05-14 release: close stale Dashboard Home and Bot Runtime proof rows`
   - 2026-05-14: Closed stale `SOAR-DASHBOARD-001` and
     `SOAR-BOT-RUNTIME-001` `PARTIAL` rows using existing local proof plus

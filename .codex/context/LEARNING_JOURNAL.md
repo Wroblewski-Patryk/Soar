@@ -1239,7 +1239,12 @@ pnpm --filter api run test -- src/modules/markets/markets.e2e.test.ts --run
 - Avoid: using parallel shell/tool execution for shared-database e2e files
   during closure evidence collection.
 - Evidence: 2026-05-02 `V1BOT-CONDITIONS-01`; parallel run failed, sequential
-  reruns passed (`bots.runtime-scope` `10/10`, `markets` `13/13`).
+  reruns passed (`bots.runtime-scope` `10/10`, `markets` `13/13`). Confirmed
+  again on 2026-05-14 during
+  `V1-POST-V1-WALLET-BOT-CLEANUP-HARDENING-2026-05-14`: parallel Bots/Wallets
+  DB-backed e2e attempts produced false cleanup interference, then sequential
+  runs passed (`bots.delete-cleanup` `1/1`, `bots.e2e` `26/26`,
+  `wallets.e2e` `24/24`).
 
 ### 2026-05-01 - Imported DCA continuity can cross runtime session restarts
 - Context: after wallet-scoped imported DCA recovery deployed, the production

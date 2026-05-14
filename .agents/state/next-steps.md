@@ -14,6 +14,14 @@ typecheck PASS, Bots delete cleanup e2e `1/1` PASS, Bots e2e `26/26` PASS,
 Wallets e2e `24/24` PASS. Evidence:
 `docs/planning/v1-post-v1-wallet-bot-cleanup-hardening-2026-05-14-task.md`.
 
+Post-V1 operator feedback follow-up queue is indexed in
+`docs/planning/post-v1-bot-wallet-dashboard-cleanup-2026-05-14-task.md`.
+Next runnable candidates: Dashboard truth/layout/loading polish, inactive PAPER
+strategy edit reproduction, strategy/market snapshot history architecture,
+Analytics Reports/Logs UX, Strategy Builder preview charts, crypto icon
+consistency, and positions-service decomposition. These are not implemented in
+the wallet/bot cleanup slice.
+
 Latest 100 percent truth audit:
 `V1-100-PERCENT-TRUTH-AUDIT-2026-05-14` is verified as the current wording for
 the user's "is it 100%?" question. Tracked V1 release acceptance is `YES`:
