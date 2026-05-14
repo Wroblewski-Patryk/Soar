@@ -8,6 +8,17 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `V1-POST-V1-RELEASE-CONFIDENCE-ROW-CLOSURE-2026-05-14 release: close stale release-confidence proof-map row`
+  - 2026-05-14: Closed obsolete `SOAR-REL-001` uncertainty after confirming the
+    final V1 master ledger, project index, completion scorecard, evidence
+    inventory, and 100 percent truth audit provide the module-by-module proof
+    map. This removes the final `IMPLEMENTED_NOT_VERIFIED` module-confidence
+    row while preserving the remaining `PARTIAL:10` rows and `mitigating:18`
+    risks as post-V1 hardening candidates. No code, deploy, production
+    mutation, LIVE order/cancel/close, or exchange-side mutation was performed.
+    Evidence:
+    `docs/planning/v1-post-v1-release-confidence-row-closure-2026-05-14-task.md`.
+
 - [x] `V1-100-PERCENT-TRUTH-AUDIT-2026-05-14 release: answer whether V1 is truly 100%`
   - 2026-05-14: Verified the 100% claim by cross-checking the final scorecard,
     evidence inventory, active continuation state, module-confidence ledger,
@@ -15,7 +26,7 @@ Operational queue for one-task execution runs.
     is `YES` (`GO`, `PASS:21`, static findings `0`, implementation/evidence/
     release readiness `100%`, no next work order); absolute
     whole-app/every-function/every-live-action proof is `NO` because module
-    confidence still has `PARTIAL:10` and `IMPLEMENTED_NOT_VERIFIED:1`, risk
+    confidence still has `PARTIAL:10` and `IMPLEMENTED_NOT_VERIFIED:0`, risk
     register still has `mitigating:18`, and LIVE order submit/cancel/position
     close, exchange-side mutation, and broader 2x LIVE including Gate.io
     production proof were intentionally not performed. No deploy or production

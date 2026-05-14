@@ -45,7 +45,7 @@ Current module-confidence ledger counts:
 
 - `VERIFIED`: 11
 - `PARTIAL`: 10
-- `IMPLEMENTED_NOT_VERIFIED`: 1
+- `IMPLEMENTED_NOT_VERIFIED`: 0
 
 Rows not fully `VERIFIED` in `.agents/state/module-confidence-ledger.md`:
 
@@ -59,7 +59,6 @@ Rows not fully `VERIFIED` in `.agents/state/module-confidence-ledger.md`:
 - `SOAR-SUBSCRIPTIONS-ADMIN-001`
 - `SOAR-DASHBOARD-001`
 - `SOAR-BOT-RUNTIME-001`
-- `SOAR-REL-001`
 
 Current risk-register counts:
 

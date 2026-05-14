@@ -9,12 +9,20 @@ Last updated: 2026-05-14
   acceptance is `YES` (`GO`, `PASS:21`, static findings `0`, implementation/
   evidence/release readiness `100%`, no next work order), while absolute
   whole-app/every-function/every-live-action proof is `NO` because
-  module-confidence still has `PARTIAL:10` and `IMPLEMENTED_NOT_VERIFIED:1`,
+  module-confidence still has `PARTIAL:10` and `IMPLEMENTED_NOT_VERIFIED:0`,
   risk register still has `mitigating:18`, and LIVE order submit/cancel/
   position close, exchange-side mutation, and broader 2x LIVE including
   Gate.io production proof were intentionally not performed. Evidence:
   `docs/planning/v1-100-percent-truth-audit-2026-05-14-task.md` and
   `docs/operations/v1-100-percent-truth-audit-2026-05-14.md`.
+
+- `V1-POST-V1-RELEASE-CONFIDENCE-ROW-CLOSURE-2026-05-14` is verified. The
+  obsolete `SOAR-REL-001` row has been closed as `VERIFIED` because the final
+  V1 evidence pack now provides the module-by-module proof map it previously
+  said was missing. This removes the last `IMPLEMENTED_NOT_VERIFIED`
+  module-confidence row without changing product behavior or promoting the
+  remaining `PARTIAL` rows. Evidence:
+  `docs/planning/v1-post-v1-release-confidence-row-closure-2026-05-14-task.md`.
 
 - `V1-FINAL-EVIDENCE-CONSISTENCY-READBACK-2026-05-14` is verified. Final
   generated JSON artifacts and Markdown markers are internally consistent:
