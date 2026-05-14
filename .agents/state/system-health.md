@@ -4,6 +4,16 @@ Last updated: 2026-05-14
 
 ## Latest Health Snapshot
 
+- `POSTV1-STRATEGY-SNAPSHOT-HISTORY-2026-05-14` LOCAL CONTRACT PASS: new
+  backtest runs persist immutable creation-time strategy and market-universe
+  snapshots; backtest list/timeline/replay paths prefer snapshot strategy truth
+  before mutable strategy records; strategy and market-universe deletion now
+  fail closed with `409` while owned backtest history references those records.
+  Focused API e2e passed for backtests, strategies, and markets (`44/44`). No
+  deploy, production mutation, LIVE order/cancel/close, or exchange-side
+  mutation was performed. Evidence:
+  `docs/planning/post-v1-strategy-snapshot-history-2026-05-14-task.md`.
+
 - `POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14` LOCAL CONTRACT PASS:
   strategy edit Web/API parity is verified for inactive linked-bot updates and
   active-bot guard recovery. Focused validation passed: Web edit page `3/3`,

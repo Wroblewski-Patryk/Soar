@@ -148,6 +148,25 @@ const assertUniverseNotUsedByActiveBot = async (params: { userId: string; market
   }
 };
 
+const assertUniverseNotUsedByBacktestHistory = async (params: {
+  userId: string;
+  marketUniverseId: string;
+}) => {
+  const linkedBacktestRuns = await prisma.backtestRun.count({
+    where: {
+      userId: params.userId,
+      seedConfig: {
+        path: ['marketUniverseId'],
+        equals: params.marketUniverseId,
+      },
+    },
+  });
+
+  if (linkedBacktestRuns > 0) {
+    throw marketErrors.universeLinkedRecords();
+  }
+};
+
 export const createUniverse = async (userId: string, data: CreateMarketUniverseDto) => {
   return prisma.marketUniverse.create({
     data: {
@@ -212,6 +231,7 @@ export const deleteUniverse = async (userId: string, id: string) => {
   const existing = await getUniverse(userId, id);
   if (!existing) return false;
   await assertUniverseNotUsedByActiveBot({ userId, marketUniverseId: existing.id });
+  await assertUniverseNotUsedByBacktestHistory({ userId, marketUniverseId: existing.id });
 
   try {
     await prisma.$transaction(async (tx) => {

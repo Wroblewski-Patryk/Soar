@@ -47,7 +47,16 @@ Close-only series are insufficient for the supported architecture.
 
 ## Backtest Run Contract
 Backtests store:
-- immutable context snapshot
+- immutable context snapshot:
+  - new runs persist `seedConfig.contextSnapshot.version=1`,
+    `capturedAt`, the creation-time strategy configuration/risk fields, and
+    the creation-time market-universe venue/symbol-scope fields when a
+    universe is used.
+  - replay, timeline, and list projections prefer the snapshot before reading
+    mutable live strategy records, so historical runs keep their original
+    meaning after later strategy edits.
+  - strategy and market-universe deletion must fail closed while owned
+    backtest history still references the mutable source record.
 - explicit time window (`startAt`, `endAt`)
 - run-level output and replay diagnostics
 

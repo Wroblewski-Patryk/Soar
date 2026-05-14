@@ -165,6 +165,22 @@ type BacktestRunJobDeps = {
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
+const asRecord = (value: unknown): Record<string, unknown> | null =>
+  value && typeof value === 'object' ? (value as Record<string, unknown>) : null;
+
+const resolveStrategySnapshotFromSeed = (seed: Record<string, unknown>) => {
+  const contextSnapshot = asRecord(seed.contextSnapshot);
+  return asRecord(contextSnapshot?.strategy);
+};
+
+const resolveStrategyConfigFromSnapshot = (snapshot: Record<string, unknown> | null) =>
+  asRecord(snapshot?.config);
+
+const resolveStrategyWalletRiskFromSnapshot = (snapshot: Record<string, unknown> | null) => {
+  const value = Number(snapshot?.walletRisk);
+  return Number.isFinite(value) ? value : null;
+};
+
 const emptyLifecycleEventCounts = (): LifecycleEventCounts => ({
   ENTRY: 0,
   EXIT: 0,
@@ -300,9 +316,16 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
     const strategy = run.strategyId
       ? await deps.findOwnedStrategySignalConfig(run.userId, run.strategyId)
       : null;
-    const strategyConfig = (strategy?.config as Record<string, unknown> | undefined) ?? null;
+    const strategySnapshot = resolveStrategySnapshotFromSeed(seed);
+    const strategyConfig =
+      resolveStrategyConfigFromSnapshot(strategySnapshot) ??
+      (strategy?.config as Record<string, unknown> | undefined) ??
+      null;
     const indicatorWarmupCandles = deps.resolveIndicatorWarmupCandles(strategyConfig);
-    const strategyWalletRisk = deps.normalizeWalletRiskPercent(strategy?.walletRisk ?? 1, 1);
+    const strategyWalletRisk = deps.normalizeWalletRiskPercent(
+      resolveStrategyWalletRiskFromSnapshot(strategySnapshot) ?? strategy?.walletRisk ?? 1,
+      1
+    );
     const strategyRulesActive = Boolean(deps.parseStrategySignalRules(strategyConfig));
     const fillModelConfig: BacktestFillModelConfig = {
       feeRate:

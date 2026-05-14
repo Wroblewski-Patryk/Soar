@@ -4,6 +4,17 @@ Last updated: 2026-05-14
 
 ## 2026-05-14 Current Candidate Deployment Status
 
+- `POSTV1-STRATEGY-SNAPSHOT-HISTORY-2026-05-14` is verified locally. New
+  backtest runs now persist immutable creation-time strategy and
+  market-universe context snapshots in `seedConfig.contextSnapshot`; backtest
+  list/timeline/replay paths prefer snapshot strategy truth before mutable
+  strategy records; strategy and market-universe deletion now fail closed with
+  `409` while owned backtest history references those records. Focused API e2e
+  passed for backtests, strategies, and markets (`44/44`). No deploy,
+  production mutation, LIVE order/cancel/close, or exchange-side mutation was
+  performed. Evidence:
+  `docs/planning/post-v1-strategy-snapshot-history-2026-05-14-task.md`.
+
 - `POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14` is verified locally.
   The suspected inactive PAPER strategy edit path now has direct Web/API
   evidence: the Web edit page submits the loaded form when the backend allows

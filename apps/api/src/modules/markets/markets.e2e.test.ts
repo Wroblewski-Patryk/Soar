@@ -453,6 +453,56 @@ describe('Markets module contract', () => {
     expect(deletedUniverse).toBeNull();
   });
 
+  it('blocks universe delete when historical backtest runs reference the universe', async () => {
+    const agent = await registerAndLogin(uniqueEmail('markets-backtest-history-guard'));
+
+    const createRes = await agent.post('/dashboard/markets/universes').send(createPayload());
+    expect(createRes.status).toBe(201);
+    const universeId = createRes.body.id as string;
+    const universe = await prisma.marketUniverse.findUniqueOrThrow({
+      where: { id: universeId },
+      select: { userId: true },
+    });
+
+    const strategy = await prisma.strategy.create({
+      data: {
+        userId: universe.userId,
+        name: `History guard strategy ${Date.now()}`,
+        interval: '1h',
+        leverage: 2,
+        walletRisk: 1,
+        config: {},
+      },
+    });
+
+    await prisma.backtestRun.create({
+      data: {
+        userId: universe.userId,
+        strategyId: strategy.id,
+        name: 'Universe history guard run',
+        symbol: 'BTCUSDT',
+        timeframe: '1h',
+        seedConfig: {
+          marketUniverseId: universeId,
+          symbols: ['BTCUSDT'],
+          contextSnapshot: {
+            version: 1,
+            marketUniverse: {
+              id: universeId,
+              name: createRes.body.name,
+            },
+          },
+        },
+      },
+    });
+
+    const deleteRes = await agent.delete(`/dashboard/markets/universes/${universeId}`);
+    expect(deleteRes.status).toBe(409);
+    expect(deleteRes.body.error.message).toBe(
+      'market universe has linked records and cannot be deleted'
+    );
+  });
+
   it('syncs linked symbols when a PAPER bot using the universe is inactive', async () => {
     const agent = await registerAndLogin(uniqueEmail('markets-inactive-paper-symbol-sync'));
 

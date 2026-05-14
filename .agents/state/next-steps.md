@@ -4,6 +4,17 @@ Last updated: 2026-05-14
 
 ## Next Tiny Task
 
+Latest post-V1 strategy snapshot history:
+`POSTV1-STRATEGY-SNAPSHOT-HISTORY-2026-05-14` is locally verified. New
+backtest runs now persist immutable creation-time strategy and market-universe
+snapshots, backtest list/timeline/replay paths prefer snapshot strategy truth
+before mutable strategy records, and strategy/market-universe deletion now
+fails closed with `409` while owned backtest history references those records.
+Focused API e2e passed for backtests, strategies, and markets (`44/44`). No
+deploy, production mutation, LIVE order/cancel/close, or exchange-side mutation
+was performed. Evidence:
+`docs/planning/post-v1-strategy-snapshot-history-2026-05-14-task.md`.
+
 Latest post-V1 inactive PAPER strategy edit proof:
 `POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14` is locally verified.
 The Web edit page now has direct submit proof for the backend-allowed inactive
@@ -51,13 +62,15 @@ Wallets e2e `24/24` PASS, build PASS. The fix is deployed as
 
 Post-V1 operator feedback follow-up queue is indexed in
 `docs/planning/post-v1-bot-wallet-dashboard-cleanup-2026-05-14-task.md`.
-Next runnable candidates: Dashboard truth/layout/loading polish, inactive PAPER
-strategy edit reproduction, strategy/market snapshot history architecture,
-Analytics Reports/Logs UX, Strategy Builder preview charts, and
+Next runnable candidates: Dashboard truth/layout/loading polish, Analytics
+Reports/Logs UX, Strategy Builder preview charts, bot history/versioned bot
+context, per-symbol best-parameter comparison, and
 positions-service decomposition. Crypto icon consistency is now closed by
 `POSTV1-CRYPTO-ICON-CONSISTENCY-2026-05-14`; inactive PAPER strategy edit
 reproduction is now closed by
-`POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14`.
+`POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14`; backtest immutable
+strategy/market-universe snapshot history is now closed by
+`POSTV1-STRATEGY-SNAPSHOT-HISTORY-2026-05-14`.
 
 Latest 100 percent truth audit:
 `V1-100-PERCENT-TRUTH-AUDIT-2026-05-14` is verified as the current wording for

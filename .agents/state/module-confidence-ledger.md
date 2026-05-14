@@ -352,6 +352,19 @@ Do not turn uncertainty into optimism.
   `prod-ui-module-clickthrough-*` artifact with approved `PROD_UI_AUDIT_*`
   auth.
 
+## Recent Updates
+
+- 2026-05-14 `POSTV1-STRATEGY-SNAPSHOT-HISTORY-2026-05-14` applies to
+  `SOAR-BACKTESTS-001`, `SOAR-STRATEGIES-001`, and `SOAR-MARKETS-001`: new
+  backtest runs now persist immutable creation-time strategy and
+  market-universe snapshots in `seedConfig.contextSnapshot`; backtest list,
+  timeline, and replay evaluation prefer snapshot strategy truth before
+  mutable strategy records; strategy deletion and market-universe deletion now
+  fail closed with `409` while owned backtest history references those records.
+  Focused API e2e passed for backtests, strategies, and markets (`44/44`).
+  Bot history/versioned bot context and per-symbol best-parameter comparison
+  remain separate follow-up slices.
+
 ## Maintenance Rules
 
 - Update this file when a feature ships, a bug is fixed, a regression appears,

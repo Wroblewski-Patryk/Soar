@@ -15,7 +15,17 @@ export const findBacktestRunById = (runId: string) =>
 export const findOwnedStrategyForBacktest = (userId: string, strategyId: string) =>
   prisma.strategy.findFirst({
     where: { id: strategyId, userId },
-    select: { id: true, leverage: true, config: true },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      interval: true,
+      leverage: true,
+      walletRisk: true,
+      config: true,
+      createdAt: true,
+      updatedAt: true,
+    },
   });
 
 export const findOwnedStrategySignalConfig = (userId: string, strategyId: string) =>
@@ -106,6 +116,19 @@ const resolveInitialBalance = (seedConfig: unknown): number => {
   return 10_000;
 };
 
+const resolveStrategyName = (
+  strategy: { name: string } | null,
+  seedConfig: unknown,
+): string | null => {
+  const seed = normalizeSeed(seedConfig);
+  const contextSnapshot = normalizeSeed(seed.contextSnapshot);
+  const strategySnapshot = normalizeSeed(contextSnapshot.strategy);
+  const snapshotName = typeof strategySnapshot.name === 'string' && strategySnapshot.name.trim().length > 0
+    ? strategySnapshot.name
+    : null;
+  return snapshotName ?? strategy?.name ?? null;
+};
+
 export const listOwnedBacktestRuns = async (
   userId: string,
   query: ListBacktestRunsQuery,
@@ -141,7 +164,7 @@ export const listOwnedBacktestRuns = async (
 
   return rows.map(({ strategy, ...row }) => ({
     ...row,
-    strategyName: strategy?.name ?? null,
+    strategyName: resolveStrategyName(strategy, row.seedConfig),
     markets: resolveRunMarkets(row.seedConfig, row.symbol),
     initialBalance: resolveInitialBalance(row.seedConfig),
   }));

@@ -93,6 +93,41 @@ const clamp = (value: number, min: number, max: number) => Math.min(max, Math.ma
 const asRecord = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === 'object' ? (value as Record<string, unknown>) : null;
 
+const resolveStrategySnapshotFromSeed = (seed: Record<string, unknown>) => {
+  const contextSnapshot = asRecord(seed.contextSnapshot);
+  return asRecord(contextSnapshot?.strategy);
+};
+
+const resolveStrategyConfigFromSnapshot = (snapshot: Record<string, unknown> | null) =>
+  asRecord(snapshot?.config);
+
+const resolveStrategyWalletRiskFromSnapshot = (snapshot: Record<string, unknown> | null) => {
+  const value = Number(snapshot?.walletRisk);
+  return Number.isFinite(value) ? value : null;
+};
+
+const buildStrategySnapshot = (strategy: {
+  id: string;
+  name: string;
+  description: string | null;
+  interval: string;
+  leverage: number;
+  walletRisk: number;
+  config: unknown;
+  createdAt: Date;
+  updatedAt: Date;
+}) => ({
+  id: strategy.id,
+  name: strategy.name,
+  description: strategy.description,
+  interval: strategy.interval,
+  leverage: strategy.leverage,
+  walletRisk: strategy.walletRisk,
+  config: strategy.config,
+  createdAt: strategy.createdAt.toISOString(),
+  updatedAt: strategy.updatedAt.toISOString(),
+});
+
 
 const maxDrawdownFromPnlSeries = (pnls: number[]) => {
   let equity = 0;
@@ -418,11 +453,13 @@ export const deleteRun = async (userId: string, id: string) => {
 
 export const createRun = async (userId: string, data: CreateBacktestRunDto) => {
   let strategyDefaults: { leverage: number; marginMode: MarginMode } | null = null;
+  let strategySnapshot: ReturnType<typeof buildStrategySnapshot> | null = null;
   if (data.strategyId) {
     const strategy = await findOwnedStrategyForBacktest(userId, data.strategyId);
     if (!strategy) return null;
 
     const config = (strategy.config ?? {}) as { additional?: { marginMode?: unknown } };
+    strategySnapshot = buildStrategySnapshot(strategy);
     strategyDefaults = {
       leverage: strategy.leverage,
       marginMode: config.additional?.marginMode === 'ISOLATED' ? 'ISOLATED' : 'CROSSED',
@@ -444,6 +481,7 @@ export const createRun = async (userId: string, data: CreateBacktestRunDto) => {
     resolved.symbols.length,
     requestedMaxCandles,
   );
+  const capturedAt = new Date().toISOString();
 
   const created = await createBacktestRun({
     userId,
@@ -474,6 +512,12 @@ export const createRun = async (userId: string, data: CreateBacktestRunDto) => {
       // Backward compatibility for older readers expecting this field.
       maxCandles: effectiveMaxCandles,
       executionMode: 'interleaved_multi_market_portfolio_clock',
+      contextSnapshot: {
+        version: 1,
+        capturedAt,
+        strategy: strategySnapshot,
+        marketUniverse: resolved.marketUniverseSnapshot,
+      },
     },
     notes: data.notes,
     status: 'PENDING',
@@ -617,7 +661,11 @@ export const getRunTimeline = async (
   const strategy = run.strategyId
     ? await findOwnedStrategySignalConfig(userId, run.strategyId)
     : null;
-  const strategyConfig = (strategy?.config as Record<string, unknown> | undefined) ?? null;
+  const strategySnapshot = resolveStrategySnapshotFromSeed(seed);
+  const strategyConfig =
+    resolveStrategyConfigFromSnapshot(strategySnapshot) ??
+    (strategy?.config as Record<string, unknown> | undefined) ??
+    null;
   const indicatorSpecs = parseStrategyIndicators(strategyConfig);
   const indicatorWarmupCandles = indicatorSpecs.reduce((maxPeriod, spec) => Math.max(maxPeriod, spec.period), 0);
 
@@ -691,7 +739,10 @@ export const getRunTimeline = async (
   const end = clamp(start + query.chunkSize, 0, total);
   const chunk = candles.slice(start, end);
 
-  const strategyWalletRisk = normalizeWalletRiskPercent(strategy?.walletRisk ?? 1, 1);
+  const strategyWalletRisk = normalizeWalletRiskPercent(
+    resolveStrategyWalletRiskFromSnapshot(strategySnapshot) ?? strategy?.walletRisk ?? 1,
+    1
+  );
   const indicatorSeries = query.includeIndicators
     ? buildIndicatorSeries(fullCandles, indicatorSpecs, supplemental).map((series) => ({
       key: series.key,

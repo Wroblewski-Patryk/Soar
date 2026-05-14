@@ -391,6 +391,96 @@ describe('Backtests runs contract', () => {
     expect(createdRun?.initialBalance).toBe(4321);
   });
 
+  it('persists immutable strategy and market-universe snapshots for historical runs', async () => {
+    const ownerEmail = 'backtests-context-snapshot@example.com';
+    const agent = await registerAndLogin(ownerEmail);
+    const userId = await getUserIdByEmail(ownerEmail);
+
+    const strategyRes = await agent.post('/dashboard/strategies').send({
+      name: 'Snapshot strategy v1',
+      description: 'Original strategy description',
+      interval: '1h',
+      leverage: 7,
+      walletRisk: 2,
+      config: {
+        open: { logic: 'AND', rules: [] },
+        close: { logic: 'OR', rules: [] },
+        additional: { marginMode: 'ISOLATED' },
+      },
+    });
+    expect(strategyRes.status).toBe(201);
+    const strategyId = strategyRes.body.id as string;
+
+    const marketUniverse = await prisma.marketUniverse.create({
+      data: {
+        userId,
+        name: 'Snapshot universe v1',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        filterRules: { minQuoteVolumeEnabled: false },
+        whitelist: ['BTCUSDT', 'ETHUSDT'],
+        blacklist: ['ETHUSDT'],
+      },
+    });
+
+    const runRes = await agent.post('/dashboard/backtests/runs').send({
+      name: 'Snapshot run',
+      timeframe: '1h',
+      strategyId,
+      marketUniverseId: marketUniverse.id,
+      seedConfig: { initialBalance: 5000 },
+    });
+    expect(runRes.status).toBe(201);
+    const runId = runRes.body.id as string;
+
+    const detailRes = await agent.get(`/dashboard/backtests/runs/${runId}`);
+    expect(detailRes.status).toBe(200);
+    expect(detailRes.body.seedConfig.contextSnapshot).toMatchObject({
+      version: 1,
+      strategy: {
+        id: strategyId,
+        name: 'Snapshot strategy v1',
+        description: 'Original strategy description',
+        interval: '1h',
+        leverage: 7,
+        walletRisk: 2,
+        config: {
+          additional: { marginMode: 'ISOLATED' },
+        },
+      },
+      marketUniverse: {
+        id: marketUniverse.id,
+        name: 'Snapshot universe v1',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        whitelist: ['BTCUSDT', 'ETHUSDT'],
+        blacklist: ['ETHUSDT'],
+      },
+    });
+    expect(typeof detailRes.body.seedConfig.contextSnapshot.capturedAt).toBe('string');
+    expect(detailRes.body.seedConfig.marginMode).toBe('ISOLATED');
+    expect(detailRes.body.seedConfig.symbols).toEqual(['BTCUSDT']);
+
+    const updateStrategyRes = await agent.put(`/dashboard/strategies/${strategyId}`).send({
+      name: 'Snapshot strategy v2',
+      leverage: 3,
+    });
+    expect(updateStrategyRes.status).toBe(200);
+
+    const listRes = await agent.get('/dashboard/backtests/runs');
+    expect(listRes.status).toBe(200);
+    const createdRun = (listRes.body as Array<Record<string, unknown>>).find(
+      (row) => row.id === runId,
+    );
+    expect(createdRun?.strategyName).toBe('Snapshot strategy v1');
+
+    const deleteStrategyRes = await agent.delete(`/dashboard/strategies/${strategyId}`);
+    expect(deleteStrategyRes.status).toBe(409);
+    expect(deleteStrategyRes.body.error.message).toBe('strategy has linked records and cannot be deleted');
+  });
+
   it('supports delete run flow for owner', async () => {
     const ownerEmail = 'backtests-delete-owner@example.com';
     const agent = await registerAndLogin(ownerEmail);

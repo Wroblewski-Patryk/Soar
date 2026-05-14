@@ -102,6 +102,14 @@ const getStrategyBlockingActiveBot = async (userId: string, strategyId: string) 
     };
 };
 
+const getStrategyBacktestHistoryCount = (userId: string, strategyId: string) =>
+  prisma.backtestRun.count({
+    where: {
+      userId,
+      strategyId,
+    },
+  });
+
 export const deleteStrategy = async (id: string, userId: string) => {
     const existing = await getStrategyById(id, userId);
     if (!existing) return false;
@@ -109,6 +117,11 @@ export const deleteStrategy = async (id: string, userId: string) => {
     const blockingBot = await getStrategyBlockingActiveBot(userId, existing.id);
     if (blockingBot) {
       throw strategyErrors.usedByActiveBot(blockingBot);
+    }
+
+    const backtestHistoryCount = await getStrategyBacktestHistoryCount(userId, existing.id);
+    if (backtestHistoryCount > 0) {
+      throw strategyErrors.linkedRecords();
     }
 
     try {

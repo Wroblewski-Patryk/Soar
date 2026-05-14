@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/markets`
 - Owner: backend/trading-domain
-- Last updated: 2026-05-03
-- Related planning task: `RUNTIME-AUDIT-25`
+- Last updated: 2026-05-14
+- Related planning task: `POSTV1-STRATEGY-SNAPSHOT-HISTORY-2026-05-14`
 
 ## Canonical Architecture Linkage
 Canonical market-scope and context rules live in:
@@ -19,6 +19,9 @@ Canonical market-scope and context rules live in:
 - Resolves effective symbol sets using one canonical composition contract:
   - `final = unique(filter_result U whitelist) - blacklist`.
 - Ensures market universes cannot be mutated while tied to active bot execution paths.
+- Blocks market-universe deletion while owned backtest history still references
+  the universe through the run seed, because new backtests preserve immutable
+  creation-time universe context.
 
 Out of scope:
 - Bot runtime orchestration and signal evaluation.
@@ -49,6 +52,7 @@ Out of scope:
   - `exchange`, `marketType`, `baseCurrency`, `baseCurrencies`, `markets[]`.
 - Guardrails:
   - active-bot usage block for updates/deletes (`MARKET_UNIVERSE_USED_BY_ACTIVE_BOT`).
+  - historical backtest usage block for deletes (`MARKET_UNIVERSE_LINKED_RECORDS`).
 
 ## 4. Runtime Flows
 - Catalog flow:
@@ -61,6 +65,11 @@ Out of scope:
   2. Ensure not used by active bot.
   3. Persist universe.
   4. Sync dependent symbol-group symbols through the shared contract resolver.
+- Universe delete flow:
+  1. Validate ownership.
+  2. Ensure not used by active bot.
+  3. Ensure no owned backtest history references `seedConfig.marketUniverseId`.
+  4. Delete dependent inactive symbol-group/bot-market links in one transaction.
 
 ## 5. API and UI Integration
 - Routes:
@@ -75,6 +84,8 @@ Out of scope:
 - Dashboard auth + ownership isolation for all universe operations.
 - Capability assertion fails closed for unsupported exchanges.
 - Active-runtime guardrail prevents mutation drift against running bots.
+- Backtest-history guardrail preserves simulation auditability after universe
+  edits/deletes.
 
 ## 7. Observability and Operations
 - Catalog fetch has in-memory cache and fallback behavior.
@@ -83,6 +94,9 @@ Out of scope:
 ## 8. Test Coverage and Evidence
 - Primary test:
   - `apps/api/src/modules/markets/markets.e2e.test.ts`
+- 2026-05-14 snapshot-history proof:
+  - `markets.e2e.test.ts` verifies universe deletion returns `409` while owned
+    historical backtest runs reference the universe.
 - Suggested validation command:
 ```powershell
 pnpm --filter api test -- src/modules/markets/markets.e2e.test.ts

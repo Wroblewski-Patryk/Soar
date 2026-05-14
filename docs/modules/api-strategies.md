@@ -12,6 +12,9 @@
 - Owns strategy CRUD plus import/export contracts for user trading strategies.
 - Exposes indicators catalog endpoint used by strategy builder UX.
 - Enforces active-bot safety guardrails before strategy mutation/deletion.
+- Blocks strategy deletion while owned backtest history still references the
+  strategy, because historical runs preserve immutable creation-time strategy
+  context.
 
 Out of scope:
 - Runtime signal execution (engine/bots runtime services).
@@ -31,6 +34,8 @@ Out of scope:
   - `STRATEGY_EXPORT_FORMAT_VERSION`
 - Safety invariant:
   - update/delete blocked when strategy is used by active bot (`STRATEGY_USED_BY_ACTIVE_BOT`).
+  - delete blocked when strategy is referenced by owned backtest history
+    (`STRATEGY_LINKED_RECORDS`).
 
 ## 4. Runtime Flows
 - CRUD flow:
@@ -58,6 +63,8 @@ Out of scope:
 - All routes under dashboard auth boundary.
 - Ownership isolation on all reads/writes.
 - Active bot usage block reduces runtime contract breakage.
+- Backtest-history delete block preserves simulation auditability after
+  strategy edits/deletes.
 
 ## 7. Observability and Operations
 - Standard request logging + e2e coverage for strategy contracts.
@@ -70,6 +77,9 @@ Out of scope:
 - 2026-05-14 inactive-bot edit proof:
   - `strategies.e2e.test.ts` verifies strategy updates are blocked for active
     linked bots and allowed for inactive linked bots.
+- 2026-05-14 snapshot-history proof:
+  - `backtests.e2e.test.ts` verifies strategy deletion returns `409` while
+    owned historical backtest runs reference the strategy.
 - Suggested validation command:
 ```powershell
 pnpm --filter api test -- src/modules/strategies/strategies.e2e.test.ts src/modules/strategies/indicators/indicators.service.test.ts

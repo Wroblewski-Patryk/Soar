@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/backtests`
 - Owner: backend/trading-domain
-- Last updated: 2026-04-21
-- Related planning task: `ARCCON-12`
+- Last updated: 2026-05-14
+- Related planning task: `POSTV1-STRATEGY-SNAPSHOT-HISTORY-2026-05-14`
 
 ## Canonical Architecture Linkage
 Canonical replay and parity rules live in:
@@ -64,9 +64,11 @@ Out of scope:
      - `effectiveMaxCandles` (single adapted value reused everywhere),
      - compatibility `maxCandles` mirror,
      - explicit range boundaries in seed (`startAt`, `endAt`, `rangeSource`).
-  4. Build run record and queue job payload.
-  5. Execute replay with indicator/derivative series and fill model.
-  6. Persist trades and report summary; update run status.
+  4. Persist `seedConfig.contextSnapshot` with creation-time strategy
+     configuration/risk fields and market-universe venue/symbol-scope fields.
+  5. Build run record and queue job payload.
+  6. Execute replay with indicator/derivative series and fill model.
+  7. Persist trades and report summary; update run status.
 - Timeline/report reads:
   - resolve owned run and emit scoped timeline/report projections.
   - timeline fetch prefers configured seed boundary `endAt`; when missing
@@ -75,6 +77,8 @@ Out of scope:
   - timeline replay context supports:
     - `isolated` (default): requested symbol only,
     - `portfolio`: full run-symbol context.
+  - replay and timeline evaluation prefer the immutable strategy snapshot
+    stored on the run before falling back to the mutable live strategy record.
 - Metrics semantics:
   - run/report totals are run-level portfolio truth.
   - timeline/chart diagnostics are replay-context scoped and may differ in portfolio mode by design.
@@ -97,6 +101,8 @@ Out of scope:
 ## 7. Observability and Operations
 - Run queue and job modules provide controlled execution lifecycle.
 - Rich parity and replay tests protect deterministic behavior across strategy modes.
+- New backtest history keeps its creation-time strategy and market-universe
+  context stable after later strategy or universe edits.
 
 ## 8. Test Coverage and Evidence
 - Representative tests:
@@ -105,6 +111,11 @@ Out of scope:
   - `backtestRunJob.test.ts`
   - `backtestRunQueue.test.ts`
   - `backtestParity3Symbols.test.ts`
+- 2026-05-14 snapshot-history proof:
+  - `backtests.e2e.test.ts` verifies new runs persist immutable strategy and
+    market-universe snapshots, list projections keep the original strategy name
+    after strategy edits, and linked strategy deletion is blocked while the
+    backtest history exists.
 - Suggested validation command:
 ```powershell
 pnpm --filter api test -- src/modules/backtests/backtests.e2e.test.ts src/modules/backtests/backtestReplayCore.test.ts src/modules/backtests/backtestRunJob.test.ts src/modules/backtests/backtestRunQueue.test.ts src/modules/backtests/backtestParity3Symbols.test.ts

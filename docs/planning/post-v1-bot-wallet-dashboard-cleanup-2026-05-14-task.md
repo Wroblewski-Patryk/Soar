@@ -67,10 +67,12 @@ architecture/UX changes inside a data-safety hotfix.
    4/5 + 1/5 columns, remove mobile order inversion, polish wallet KPI rows,
    clone button color, table name/symbol navigation, loading bar/skeletons, and
    initial shell theme flash.
-2. `POSTV1-STRATEGY-SNAPSHOT-HISTORY-2026-05-14` - design and implement
-   strategy and market-universe version snapshots for backtests and bots; block
-   strategy/market deletion while linked immutable history exists; add
-   per-symbol backtest history and best-parameter comparison.
+2. `POSTV1-STRATEGY-SNAPSHOT-HISTORY-2026-05-14` - first backend slice closed
+   by `docs/planning/post-v1-strategy-snapshot-history-2026-05-14-task.md`:
+   new backtests persist immutable strategy and market-universe snapshots, and
+   strategy/market deletion is blocked while owned backtest history references
+   those records. Remaining follow-ups: bot history/versioned bot context,
+   per-symbol backtest history, and best-parameter comparison.
 3. `POSTV1-STRATEGY-BUILDER-PREVIEW-2026-05-14` - add four tabbed preview
    scenarios using the same chart component and indicator pipeline as backtest
    details.
@@ -115,12 +117,14 @@ fixed, verified locally, and deployed as
 Deployment evidence: build-info wait passed on attempt 22, and public deploy
 smoke passed for API `/health`, API `/ready`, and Web `/`.
 
-What is incomplete: Dashboard/UI polish, strategy-history architecture,
-Analytics implementation, Strategy Builder previews, and positions-service
-decomposition remain follow-up missions. Crypto icon consistency is closed by
+What is incomplete: Dashboard/UI polish, bot history/versioned bot context,
+per-symbol best-parameter comparison, Analytics implementation, Strategy
+Builder previews, and positions-service decomposition remain follow-up
+missions. Strategy/market immutable backtest snapshot history is closed by
+`POSTV1-STRATEGY-SNAPSHOT-HISTORY-2026-05-14`; crypto icon consistency is closed by
 `POSTV1-CRYPTO-ICON-CONSISTENCY-2026-05-14`; inactive PAPER strategy edit
 proof is closed by `POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14`.
 
-Next step: run `POSTV1-DASHBOARD-TRUTH-AND-LAYOUT-2026-05-14` or
-`POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14`, depending on whether
-the next priority is visible UI correctness or strategy-edit unblock.
+Next step: run `POSTV1-DASHBOARD-TRUTH-AND-LAYOUT-2026-05-14`, bot history
+snapshotting, or per-symbol best-parameter comparison, depending on the next
+operator priority.

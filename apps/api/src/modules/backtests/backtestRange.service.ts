@@ -149,6 +149,19 @@ export type ResolvedRunContext = {
   marketType: MarketType;
   baseCurrency: string;
   marketUniverseId: string | null;
+  marketUniverseSnapshot: {
+    id: string;
+    name: string;
+    exchange: Exchange;
+    marketType: MarketType;
+    baseCurrency: string;
+    filterRules: unknown;
+    whitelist: string[];
+    blacklist: string[];
+    autoExcludeRules: unknown;
+    createdAt: string;
+    updatedAt: string;
+  } | null;
 };
 
 export const resolveSymbolsForRun = async (
@@ -163,6 +176,7 @@ export const resolveSymbolsForRun = async (
       marketType: 'FUTURES' as MarketType,
       baseCurrency: inferBaseCurrencyFromSymbol(symbols[0] ?? 'BTCUSDT'),
       marketUniverseId: null,
+      marketUniverseSnapshot: null,
     };
   }
 
@@ -187,5 +201,18 @@ export const resolveSymbolsForRun = async (
     marketType: universe.marketType as MarketType,
     baseCurrency: universe.baseCurrency,
     marketUniverseId: universe.id,
+    marketUniverseSnapshot: {
+      id: universe.id,
+      name: universe.name,
+      exchange: universe.exchange,
+      marketType: universe.marketType as MarketType,
+      baseCurrency: universe.baseCurrency,
+      filterRules: universe.filterRules,
+      whitelist: universe.whitelist,
+      blacklist: universe.blacklist,
+      autoExcludeRules: universe.autoExcludeRules,
+      createdAt: universe.createdAt.toISOString(),
+      updatedAt: universe.updatedAt.toISOString(),
+    },
   };
 };

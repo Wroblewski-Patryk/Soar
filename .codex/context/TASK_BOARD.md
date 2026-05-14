@@ -17,6 +17,16 @@ Last updated: 2026-05-14
 
 ## READY
 
+- [x] `POSTV1-STRATEGY-SNAPSHOT-HISTORY-2026-05-14 fix: preserve immutable backtest context snapshots`
+  - 2026-05-14: New backtest runs persist immutable creation-time strategy and
+    market-universe context snapshots; backtest list/timeline/replay prefer
+    snapshot strategy truth before mutable strategy records; strategy and
+    market-universe deletion now fail closed with `409` while owned backtest
+    history references those records. Focused API e2e passed for backtests,
+    strategies, and markets (`44/44`). No deploy, production mutation, LIVE
+    order/cancel/close, or exchange-side mutation was performed. Evidence:
+    `docs/planning/post-v1-strategy-snapshot-history-2026-05-14-task.md`.
+
 - [x] `POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14 test: verify inactive linked strategy edits`
   - 2026-05-14: Verified strategy edit Web/API parity for the suspected
     inactive PAPER linked-bot path. The Web edit page now has submit proof for
