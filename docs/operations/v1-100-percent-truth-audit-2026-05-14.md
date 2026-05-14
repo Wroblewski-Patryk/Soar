@@ -43,13 +43,12 @@ some boundaries open, mitigating, or outside the V1 acceptance scope.
 
 Current module-confidence ledger counts:
 
-- `VERIFIED`: 11
-- `PARTIAL`: 10
+- `VERIFIED`: 13
+- `PARTIAL`: 9
 - `IMPLEMENTED_NOT_VERIFIED`: 0
 
 Rows not fully `VERIFIED` in `.agents/state/module-confidence-ledger.md`:
 
-- `SOAR-AUTH-001`
 - `SOAR-PROFILE-001`
 - `SOAR-PROFILE-API-KEYS-001`
 - `SOAR-WALLETS-001`
@@ -62,8 +61,8 @@ Rows not fully `VERIFIED` in `.agents/state/module-confidence-ledger.md`:
 
 Current risk-register counts:
 
-- `closed`: 7
-- `mitigating`: 18
+- `closed`: 8
+- `mitigating`: 17
 
 Risk rows still in `mitigating` state:
 
@@ -71,7 +70,6 @@ Risk rows still in `mitigating` state:
 - `RISK-001`
 - `RISK-002`
 - `RISK-003`
-- `RISK-004`
 - `RISK-005`
 - `RISK-006`
 - `RISK-007`

@@ -10,8 +10,8 @@ the user's "is it 100%?" question. Tracked V1 release acceptance is `YES`:
 final scorecard `GO`, `PASS:21`, static findings `0`, implementation/evidence/
 release readiness `100%`, and no generated next work order. Absolute
 whole-app/every-function/every-live-action proof is `NO`: module confidence
-still includes `PARTIAL:10` and `IMPLEMENTED_NOT_VERIFIED:0`, risk register
-still includes `mitigating:18`, and LIVE order submit/cancel/position close,
+still includes `PARTIAL:9` and `IMPLEMENTED_NOT_VERIFIED:0`, risk register
+still includes `mitigating:17`, and LIVE order submit/cancel/position close,
 exchange-side mutation, and broader 2x LIVE including Gate.io production proof
 were intentionally not performed. Evidence:
 `docs/planning/v1-100-percent-truth-audit-2026-05-14-task.md` and
@@ -21,22 +21,19 @@ Latest post-V1 release-confidence row closure:
 `V1-POST-V1-RELEASE-CONFIDENCE-ROW-CLOSURE-2026-05-14` is verified. The stale
 `SOAR-REL-001` row no longer claims that the module-by-module proof ledger is
 missing; the final evidence pack is now the proof-map evidence for that row.
-This removes the last `IMPLEMENTED_NOT_VERIFIED` module-confidence row without
-promoting the remaining `PARTIAL` rows. Evidence:
+This removed the last `IMPLEMENTED_NOT_VERIFIED` module-confidence row without
+promoting unrelated `PARTIAL` rows. Current post-auth counts are `PARTIAL:9`
+and `VERIFIED:13`. Evidence:
 `docs/planning/v1-post-v1-release-confidence-row-closure-2026-05-14-task.md`.
 
 Latest post-V1 Auth hardening:
-`V1-POST-V1-AUTH-LOGOUT-TOKEN-REUSE-HARDENING-2026-05-14` is partially
-verified. Production proof on deployed `2fc90a08` found that direct reuse of
-the pre-logout JWT still returned `/auth/me` `200` after logout, even though
-browser protected-route redirects behaved correctly. The local branch fixes
-logout by incrementing the matching user's `sessionVersion`; focused
-Auth/middleware tests pass (`21/21`) and API typecheck passes. Next exact
-task: deploy this branch to production, then rerun `pnpm run
-ops:prod-auth:proof` against the new build before promoting `SOAR-AUTH-001`.
-Evidence:
-`docs/planning/v1-post-v1-auth-logout-token-reuse-hardening-2026-05-14-task.md`
-and `docs/operations/prod-auth-session-browser-proof-2fc90a08-2026-05-14.md`.
+`V1-POST-V1-AUTH-DEPLOY-RERUN-2026-05-14` is verified. Production proof on
+deployed `2fc90a08` first found direct reuse of the pre-logout JWT still
+returned `/auth/me` `200`; the fixed build `84711599` was deployed and the
+rerun passed with stale-token `/auth/me` returning `401`. `SOAR-AUTH-001` is
+now `VERIFIED`, and `RISK-004` is `closed`. Evidence:
+`docs/planning/v1-post-v1-auth-deploy-rerun-2026-05-14-task.md` and
+`docs/operations/prod-auth-session-browser-proof-84711599-2026-05-14.md`.
 
 Current continuation target:
 No active V1 completion task remains in the generated work order. The final

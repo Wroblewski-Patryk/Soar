@@ -4,14 +4,15 @@ Last updated: 2026-05-14
 
 ## Active Issues
 
-- 2026-05-14 update: `V1-POST-V1-AUTH-LOGOUT-TOKEN-REUSE-HARDENING-2026-05-14`
-  found a real production Auth gap on deployed `2fc90a08`: browser protected
-  route checks passed, but direct reuse of the pre-logout JWT still returned
-  `/auth/me` `200` after `/auth/logout`. The local branch now fixes logout by
-  incrementing the authenticated user's `sessionVersion` before clearing
-  cookies, and focused Auth/middleware tests pass (`21/21`) with API typecheck
-  passing. The issue remains active for production until the fix is deployed
-  and `pnpm run ops:prod-auth:proof` passes on the new build.
+- 2026-05-14 update: `V1-POST-V1-AUTH-DEPLOY-RERUN-2026-05-14` closes the
+  Auth stale-token replay issue found on deployed `2fc90a08`. The fixed build
+  `84711599` is deployed, production build-info matches, and
+  `docs/operations/prod-auth-session-browser-proof-84711599-2026-05-14.md`
+  passed: unauthenticated protected route redirects to `/auth/login`,
+  authenticated dashboard renders, invalid token redirects to
+  `/auth/login?session=expired`, logout returns `200`, direct reuse of the
+  pre-logout token returns `/auth/me` `401`, and dashboard after logout
+  redirects to `/auth/login`. No active Auth blocker remains for this signal.
 
 - 2026-05-14 update: literal V1 "100%" is no longer blocked in the tracked V1
   evidence model. Final generated state is `GO` with `PASS:21`, static findings

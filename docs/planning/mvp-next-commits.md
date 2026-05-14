@@ -8,11 +8,16 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
-- [ ] `V1-POST-V1-AUTH-DEPLOY-RERUN-2026-05-14 release: deploy logout invalidation and rerun production Auth proof`
-  - Next exact action: deploy the current branch containing
-    `V1-POST-V1-AUTH-LOGOUT-TOKEN-REUSE-HARDENING-2026-05-14`, then rerun
-    `pnpm run ops:prod-auth:proof` against the new build. This is required
-    before `SOAR-AUTH-001` can be promoted from `PARTIAL`.
+- [x] `V1-POST-V1-AUTH-DEPLOY-RERUN-2026-05-14 release: deploy logout invalidation and rerun production Auth proof`
+  - 2026-05-14: Deployed fixed commit `84711599` to `origin/main`, waited for
+    production build-info to match on attempt 32, and reran
+    `pnpm run ops:prod-auth:proof`. PASS: no-session redirect, valid-session
+    dashboard render, invalid-token `session=expired` redirect, logout `200`,
+    stale pre-logout token `/auth/me` `401`, and post-logout dashboard
+    redirect. `SOAR-AUTH-001` is promoted to `VERIFIED`, and `RISK-004` is
+    closed. Evidence:
+    `docs/planning/v1-post-v1-auth-deploy-rerun-2026-05-14-task.md` and
+    `docs/operations/prod-auth-session-browser-proof-84711599-2026-05-14.md`.
 
 - [x] `V1-POST-V1-AUTH-LOGOUT-TOKEN-REUSE-HARDENING-2026-05-14 fix: invalidate reused JWT sessions on logout`
   - 2026-05-14: Production auth browser/API proof on deployed `2fc90a08`
@@ -20,7 +25,8 @@ Operational queue for one-task execution runs.
     `/auth/me` `200` after logout. Browser route checks passed. Local fix
     reuses existing `sessionVersion` invalidation on logout; focused
     Auth/middleware tests passed (`21/21`) and API typecheck passed. Production
-    rerun is pending deploy, so `SOAR-AUTH-001` remains `PARTIAL`. Evidence:
+    rerun later passed on deployed `84711599`; this task is superseded by
+    `V1-POST-V1-AUTH-DEPLOY-RERUN-2026-05-14`. Evidence:
     `docs/planning/v1-post-v1-auth-logout-token-reuse-hardening-2026-05-14-task.md`
     and `docs/operations/prod-auth-session-browser-proof-2fc90a08-2026-05-14.md`.
 
@@ -29,7 +35,7 @@ Operational queue for one-task execution runs.
     final V1 master ledger, project index, completion scorecard, evidence
     inventory, and 100 percent truth audit provide the module-by-module proof
     map. This removes the final `IMPLEMENTED_NOT_VERIFIED` module-confidence
-    row while preserving the remaining `PARTIAL:10` rows and `mitigating:18`
+    row while preserving unrelated remaining `PARTIAL` rows and mitigating
     risks as post-V1 hardening candidates. No code, deploy, production
     mutation, LIVE order/cancel/close, or exchange-side mutation was performed.
     Evidence:
@@ -42,8 +48,8 @@ Operational queue for one-task execution runs.
     is `YES` (`GO`, `PASS:21`, static findings `0`, implementation/evidence/
     release readiness `100%`, no next work order); absolute
     whole-app/every-function/every-live-action proof is `NO` because module
-    confidence still has `PARTIAL:10` and `IMPLEMENTED_NOT_VERIFIED:0`, risk
-    register still has `mitigating:18`, and LIVE order submit/cancel/position
+    confidence still has `PARTIAL:9` and `IMPLEMENTED_NOT_VERIFIED:0`, risk
+    register still has `mitigating:17`, and LIVE order submit/cancel/position
     close, exchange-side mutation, and broader 2x LIVE including Gate.io
     production proof were intentionally not performed. No deploy or production
     mutation was performed. Evidence:

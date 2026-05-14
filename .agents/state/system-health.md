@@ -4,22 +4,20 @@ Last updated: 2026-05-14
 
 ## Latest Health Snapshot
 
-- `V1-POST-V1-AUTH-LOGOUT-TOKEN-REUSE-HARDENING-2026-05-14` AUTH PARTIAL:
-  production proof on deployed `2fc90a08` found a stale-token replay gap after
-  logout (`/auth/me` returned `200` for the pre-logout JWT). Local code now
-  invalidates the matching session via `sessionVersion` on logout. Focused
-  Auth/middleware tests passed (`21/21`) and API typecheck passed. Production
-  remains pending until the fixed build is deployed and
-  `ops:prod-auth:proof` passes. Evidence:
-  `docs/planning/v1-post-v1-auth-logout-token-reuse-hardening-2026-05-14-task.md`
-  and `docs/operations/prod-auth-session-browser-proof-2fc90a08-2026-05-14.md`.
+- `V1-POST-V1-AUTH-DEPLOY-RERUN-2026-05-14` AUTH PASS: production proof on
+  deployed `2fc90a08` found a stale-token replay gap after logout. The fixed
+  build `84711599` is deployed, build-info matches, and the production rerun
+  passes with stale-token `/auth/me` returning `401` after logout. `SOAR-AUTH-001`
+  is `VERIFIED`, and `RISK-004` is `closed`. Evidence:
+  `docs/planning/v1-post-v1-auth-deploy-rerun-2026-05-14-task.md` and
+  `docs/operations/prod-auth-session-browser-proof-84711599-2026-05-14.md`.
 
 - `V1-100-PERCENT-TRUTH-AUDIT-2026-05-14` TRUTH AUDIT PASS: the tracked V1
   release acceptance answer is `YES` (`GO`, `PASS:21`, static findings `0`,
   implementation/evidence/release readiness `100%`, no next work order). The
   absolute whole-app/every-function/every-live-action answer is `NO`: module
-  confidence still has `PARTIAL:10` and `IMPLEMENTED_NOT_VERIFIED:0`, risk
-  register still has `mitigating:18`, and LIVE order submit/cancel/position
+  confidence still has `PARTIAL:9` and `IMPLEMENTED_NOT_VERIFIED:0`, risk
+  register still has `mitigating:17`, and LIVE order submit/cancel/position
   close, exchange-side mutation, and broader 2x LIVE including Gate.io
   production proof were intentionally not performed. Evidence:
   `docs/planning/v1-100-percent-truth-audit-2026-05-14-task.md` and
@@ -30,7 +28,7 @@ Last updated: 2026-05-14
   is closed as `VERIFIED` because the final V1 master ledger, project index,
   completion scorecard, evidence inventory, and 100 percent truth audit now
   provide the module-by-module proof map. Remaining post-V1 incompleteness is
-  now represented by `PARTIAL:10` module rows and `mitigating:18` risk rows,
+  now represented by `PARTIAL:9` module rows and `mitigating:17` risk rows,
   not by a missing proof-map row. Evidence:
   `docs/planning/v1-post-v1-release-confidence-row-closure-2026-05-14-task.md`.
 

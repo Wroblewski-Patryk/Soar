@@ -140,5 +140,7 @@ Validation:
   artifacts returned no matches.
 - PASS: `chrome-headless-shell` process check returned no validation browser
   process.
-- Production rerun status: pending deploy. The fixed code is not yet deployed,
-  so deployed `2fc90a08` remains failed for stale-token reuse.
+- Production rerun status: completed by
+  `V1-POST-V1-AUTH-DEPLOY-RERUN-2026-05-14`. The fixed build `84711599` is
+  deployed and `docs/operations/prod-auth-session-browser-proof-84711599-2026-05-14.md`
+  passed, including stale-token `/auth/me` `401` after logout.

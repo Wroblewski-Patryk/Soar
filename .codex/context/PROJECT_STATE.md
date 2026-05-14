@@ -4,25 +4,23 @@ Last updated: 2026-05-14
 
 ## 2026-05-14 Current Candidate Deployment Status
 
-- `V1-POST-V1-AUTH-LOGOUT-TOKEN-REUSE-HARDENING-2026-05-14` is partially
-  verified. A new production auth browser/API proof against deployed
-  `2fc90a08` found direct pre-logout JWT reuse still returned `/auth/me` `200`
-  after `/auth/logout`; browser no-session, valid-session, invalid-token
-  `session=expired`, and post-logout dashboard redirect checks passed. The
-  local branch fixes logout by incrementing the matching user's
-  `sessionVersion`, and focused Auth/middleware tests passed (`21/21`) plus
-  API typecheck passed. Production Auth remains unverified until the fixed
-  build is deployed and `ops:prod-auth:proof` passes. Evidence:
-  `docs/planning/v1-post-v1-auth-logout-token-reuse-hardening-2026-05-14-task.md`
-  and `docs/operations/prod-auth-session-browser-proof-2fc90a08-2026-05-14.md`.
+- `V1-POST-V1-AUTH-DEPLOY-RERUN-2026-05-14` is verified. The auth stale-token
+  replay gap found on deployed `2fc90a08` is fixed and deployed as
+  `84711599`. Production build-info matched after wait attempt 32, and
+  production auth browser/API proof passed: no-session redirect, valid-session
+  dashboard render, invalid-token `session=expired` redirect, logout `200`,
+  stale pre-logout token `/auth/me` `401`, and post-logout dashboard redirect.
+  `SOAR-AUTH-001` is now `VERIFIED`, and `RISK-004` is `closed`. Evidence:
+  `docs/planning/v1-post-v1-auth-deploy-rerun-2026-05-14-task.md` and
+  `docs/operations/prod-auth-session-browser-proof-84711599-2026-05-14.md`.
 
 - `V1-100-PERCENT-TRUTH-AUDIT-2026-05-14` is verified. The precise answer to
   the user's "is it 100%?" question is split by scope: tracked V1 release
   acceptance is `YES` (`GO`, `PASS:21`, static findings `0`, implementation/
   evidence/release readiness `100%`, no next work order), while absolute
   whole-app/every-function/every-live-action proof is `NO` because
-  module-confidence still has `PARTIAL:10` and `IMPLEMENTED_NOT_VERIFIED:0`,
-  risk register still has `mitigating:18`, and LIVE order submit/cancel/
+  module-confidence still has `PARTIAL:9` and `IMPLEMENTED_NOT_VERIFIED:0`,
+  risk register still has `mitigating:17`, and LIVE order submit/cancel/
   position close, exchange-side mutation, and broader 2x LIVE including
   Gate.io production proof were intentionally not performed. Evidence:
   `docs/planning/v1-100-percent-truth-audit-2026-05-14-task.md` and
