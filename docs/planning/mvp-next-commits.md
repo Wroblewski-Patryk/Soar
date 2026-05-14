@@ -8,6 +8,16 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
+- [x] `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14 release: reconcile stale proof ledger rows`
+  - 2026-05-14: Reconciled stale Profile, Profile API Keys, Wallets, Markets,
+    Strategies, Logs/Audit Trail, and Subscriptions/Admin rows with accepted
+    production fixture/UI proof. Current module confidence is `VERIFIED:22`,
+    `PARTIAL:0`, `IMPLEMENTED_NOT_VERIFIED:0`, `BROKEN:0`, `BLOCKED:0`; risk
+    count is `closed:18`, `mitigating:8`. No deploy, production mutation, LIVE
+    order/cancel/close, unsafe LIVE position mutation, existing-data mutation,
+    or broader Gate.io/second-LIVE proof was performed. Evidence:
+    `docs/planning/v1-post-v1-ledger-reconciliation-2026-05-14-task.md`.
+
 - [x] `V1-POST-V1-WALLET-BOT-CLEANUP-HARDENING-2026-05-14 fix: harden bot cleanup and wallet reset guard`
   - 2026-05-14: Bot deletion now removes bot-owned runtime/trading artifacts
     in one transaction while preserving the strategy, and PAPER wallet reset
@@ -31,9 +41,11 @@ Operational queue for one-task execution runs.
   - 2026-05-14: Closed stale `SOAR-DASHBOARD-001` and
     `SOAR-BOT-RUNTIME-001` `PARTIAL` rows using existing local proof plus
     production route/runtime readbacks for the approved non-Gate.io V1/post-V1
-    scope. `RISK-002` and `RISK-003` are closed. Current counts are
-    `PARTIAL:7`, `VERIFIED:15`, `mitigating:15`, and `closed:10`. Gate.io/
-    second-LIVE production shape remains separate. Evidence:
+    scope. `RISK-002` and `RISK-003` are closed. Its original count readback is
+    superseded by the later ledger reconciliation: current module confidence is
+    `VERIFIED:22` and `PARTIAL:0`; current risk count is `closed:18` and
+    `mitigating:8`. Gate.io/second-LIVE production shape remains separate.
+    Evidence:
     `docs/planning/v1-post-v1-dashboard-runtime-ledger-closure-2026-05-14-task.md`.
 
 - [x] `V1-POST-V1-AUTH-DEPLOY-RERUN-2026-05-14 release: deploy logout invalidation and rerun production Auth proof`
@@ -75,11 +87,11 @@ Operational queue for one-task execution runs.
     and risk register. PASS with scoped verdict: tracked V1 release acceptance
     is `YES` (`GO`, `PASS:21`, static findings `0`, implementation/evidence/
     release readiness `100%`, no next work order); absolute
-    whole-app/every-function/every-live-action proof is `NO` because module
-    confidence still has `PARTIAL:7` and `IMPLEMENTED_NOT_VERIFIED:0`, risk
-    register still has `mitigating:15`, and LIVE order submit/cancel/position
-    close, exchange-side mutation, and broader 2x LIVE including Gate.io
-    production proof were intentionally not performed. No deploy or production
+    whole-app/every-function/every-live-action proof remains `NO` only because
+    LIVE order submit/cancel/position close, exchange-side mutation,
+    existing-data mutation, and broader 2x LIVE including Gate.io production
+    proof were intentionally not performed. Its stale `PARTIAL:7` wording is
+    superseded by the later ledger reconciliation. No deploy or production
     mutation was performed. Evidence:
     `docs/planning/v1-100-percent-truth-audit-2026-05-14-task.md` and
     `docs/operations/v1-100-percent-truth-audit-2026-05-14.md`.

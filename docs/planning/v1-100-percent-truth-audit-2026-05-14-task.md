@@ -73,10 +73,12 @@ Verdict:
   static findings `0`, implementation/evidence/release readiness `100%`, and
   next work order empty.
 - Absolute whole-app/every-function/every-live-action proof is `NO`: module
-  confidence still has `PARTIAL:7` and `IMPLEMENTED_NOT_VERIFIED:0`; risk
-  register still has `mitigating:15`; LIVE order submit/cancel/position close,
-  exchange-side mutation, and broader 2x LIVE including Gate.io production
-  proof were intentionally not performed.
+  confidence at the time still had `PARTIAL:7` and `IMPLEMENTED_NOT_VERIFIED:0`;
+  risk register still had `mitigating:15`; LIVE order submit/cancel/position
+  close, exchange-side mutation, and broader 2x LIVE including Gate.io
+  production proof were intentionally not performed. The stale module-count
+  wording is superseded by `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14`, where
+  current module confidence is `VERIFIED:22` and `PARTIAL:0`.
 
 Evidence:
 

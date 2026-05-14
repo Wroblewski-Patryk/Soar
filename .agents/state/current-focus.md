@@ -4,6 +4,15 @@ Last updated: 2026-05-14
 
 ## Active Focus
 
+2026-05-14 post-V1 source-of-truth reconciliation:
+`V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14` is the latest ledger truth. The
+module-confidence ledger now reports `VERIFIED:22`, `PARTIAL:0`,
+`IMPLEMENTED_NOT_VERIFIED:0`, `BROKEN:0`, and `BLOCKED:0` for the current V1
+scope after reconciling stale Profile, Profile API Keys, Wallets, Markets,
+Strategies, Logs/Audit Trail, and Subscriptions/Admin rows with accepted
+production fixture/UI proof. Remaining non-closed risks are follow-up scope or
+explicit safety boundaries, not current V1 hidden blockers.
+
 2026-05-14 literal V1 100% status:
 `V1-PRODUCTION-UX-A11Y-MOBILE-PROOF-2FC90A08-2026-05-14` closed the final
 `PASS_LOCAL` row for deployed `2fc90a08`. The final generated V1 state is

@@ -69,8 +69,10 @@ Evidence:
 
 Validation:
 
-- Ledger/risk count readback: `VERIFIED:15`, `PARTIAL:7`,
-  `IMPLEMENTED_NOT_VERIFIED:0`, `closed:10`, `mitigating:15`.
+- Ledger/risk count readback at the time: `VERIFIED:15`, `PARTIAL:7`,
+  `IMPLEMENTED_NOT_VERIFIED:0`, `closed:10`, `mitigating:15`. This count is
+  superseded by `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14`, where current
+  module confidence is `VERIFIED:22` and `PARTIAL:0`.
 - `pnpm run quality:guardrails` PASS.
 - `git diff --check` PASS with existing LF/CRLF warnings only.
 - Raw temporary credential scan PASS for touched files.

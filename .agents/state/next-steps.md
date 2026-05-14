@@ -4,6 +4,18 @@ Last updated: 2026-05-14
 
 ## Next Tiny Task
 
+Latest post-V1 ledger reconciliation:
+`V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14` is verified. Stale module
+confidence rows for Profile, Profile API Keys, Wallets, Markets, Strategies,
+Logs/Audit Trail, and Subscriptions/Admin were reconciled with already accepted
+production fixture/UI proof artifacts. Current module-confidence count is
+`VERIFIED:22`, `PARTIAL:0`, `IMPLEMENTED_NOT_VERIFIED:0`, `BROKEN:0`, and
+`BLOCKED:0`. Risk-register count is now `closed:18`, `mitigating:8`. The
+reconciliation did not perform a deploy, production mutation, LIVE order/cancel/
+close, unsafe LIVE position mutation, existing-data mutation, or broader
+Gate.io/second-LIVE proof. Evidence:
+`docs/planning/v1-post-v1-ledger-reconciliation-2026-05-14-task.md`.
+
 Latest post-V1 wallet/bot cleanup hardening:
 `V1-POST-V1-WALLET-BOT-CLEANUP-HARDENING-2026-05-14` is locally verified. Bot
 deletion now removes bot-owned runtime/trading artifacts in one transaction
@@ -29,11 +41,11 @@ Latest 100 percent truth audit:
 the user's "is it 100%?" question. Tracked V1 release acceptance is `YES`:
 final scorecard `GO`, `PASS:21`, static findings `0`, implementation/evidence/
 release readiness `100%`, and no generated next work order. Absolute
-whole-app/every-function/every-live-action proof is `NO`: module confidence
-still includes `PARTIAL:7` and `IMPLEMENTED_NOT_VERIFIED:0`, risk register
-still includes `mitigating:15`, and LIVE order submit/cancel/position close,
-exchange-side mutation, and broader 2x LIVE including Gate.io production proof
-were intentionally not performed. Evidence:
+whole-app/every-function/every-live-action proof remains `NO` only because LIVE
+order submit/cancel/position close, exchange-side mutation, existing-data
+mutation, and broader 2x LIVE including Gate.io production proof were
+intentionally not performed. The stale `PARTIAL:7` module-confidence wording in
+that audit is superseded by the ledger reconciliation above. Evidence:
 `docs/planning/v1-100-percent-truth-audit-2026-05-14-task.md` and
 `docs/operations/v1-100-percent-truth-audit-2026-05-14.md`.
 
@@ -41,9 +53,10 @@ Latest post-V1 Dashboard/Runtime ledger closure:
 `V1-POST-V1-DASHBOARD-RUNTIME-LEDGER-CLOSURE-2026-05-14` is verified. Existing
 local and production evidence closes stale `SOAR-DASHBOARD-001` and
 `SOAR-BOT-RUNTIME-001` `PARTIAL` rows for the approved non-Gate.io V1/post-V1
-scope. `RISK-002` and `RISK-003` are closed. Current counts are `PARTIAL:7`,
-`VERIFIED:15`, `mitigating:15`, and `closed:10`. Gate.io/second-LIVE
-production shape remains separate. Evidence:
+scope. `RISK-002` and `RISK-003` are closed. Its original count readback is
+superseded by the later ledger reconciliation: current module confidence is
+`VERIFIED:22` and `PARTIAL:0`; current risk count is `closed:18` and
+`mitigating:8`. Gate.io/second-LIVE production shape remains separate. Evidence:
 `docs/planning/v1-post-v1-dashboard-runtime-ledger-closure-2026-05-14-task.md`.
 
 Latest post-V1 release-confidence row closure:
@@ -51,8 +64,9 @@ Latest post-V1 release-confidence row closure:
 `SOAR-REL-001` row no longer claims that the module-by-module proof ledger is
 missing; the final evidence pack is now the proof-map evidence for that row.
 This removed the last `IMPLEMENTED_NOT_VERIFIED` module-confidence row without
-promoting unrelated `PARTIAL` rows. Superseded by the Dashboard/Runtime ledger
-closure above: current counts are `PARTIAL:7` and `VERIFIED:15`. Evidence:
+promoting unrelated `PARTIAL` rows. Superseded by later Dashboard/Runtime and
+ledger reconciliation tasks: current counts are `PARTIAL:0` and `VERIFIED:22`.
+Evidence:
 `docs/planning/v1-post-v1-release-confidence-row-closure-2026-05-14-task.md`.
 
 Latest post-V1 Auth hardening:

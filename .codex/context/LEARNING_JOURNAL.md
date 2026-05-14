@@ -2815,3 +2815,10 @@ promise = connect().catch((error) => {
     used PowerShell's read-only `$PID` variable name and did not stop them; the
     corrected `$procId` loop stopped the exact PIDs, and the follow-up process
     check returned no remaining `chrome-headless-shell` process.
+  - During `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14`, a docs/state-only
+    task again found Playwright `chrome-headless-shell` helper processes with
+    `ms-playwright` temp profiles. Parent command-line inspection showed the
+    active remaining process tree belonged to an unrelated
+    `companycore.luckysparrow.ch` audit, not the Soar task, so it was left
+    running to avoid disrupting parallel work. Process cleanup must confirm
+    ownership before stopping browser helpers.

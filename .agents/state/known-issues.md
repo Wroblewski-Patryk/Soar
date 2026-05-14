@@ -4,6 +4,15 @@ Last updated: 2026-05-14
 
 ## Active Issues
 
+- 2026-05-14 update: `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14` reconciles
+  stale module-confidence and requirement/risk/quality rows with already
+  accepted production proof artifacts. The module-confidence ledger now has
+  `VERIFIED:22` and no `PARTIAL`, `IMPLEMENTED_NOT_VERIFIED`, `BROKEN`, or
+  `BLOCKED` rows for the current V1 scope. Remaining mitigated risks represent
+  explicit future/broader scope such as LIVE mutation boundaries, scheduled
+  freshness, process hygiene, and Gate.io/second-LIVE expansion rather than
+  hidden current blockers.
+
 - 2026-05-14 update: `V1-POST-V1-WALLET-BOT-CLEANUP-HARDENING-2026-05-14`
   closes a local backend hardening slice: bot deletion now removes bot-owned
   runtime/trading artifacts in one transaction while preserving the strategy,

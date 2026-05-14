@@ -4,6 +4,17 @@ Last updated: 2026-05-14
 
 ## 2026-05-14 Current Candidate Deployment Status
 
+- `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14` is verified. Stale module
+  confidence, requirements, quality, and risk rows were reconciled with
+  accepted production fixture/UI evidence. Current module confidence is
+  `VERIFIED:22`, `PARTIAL:0`, `IMPLEMENTED_NOT_VERIFIED:0`, `BROKEN:0`,
+  `BLOCKED:0`; current risk count is `closed:18`, `mitigating:8`. No deploy or
+  production mutation was performed. LIVE order/cancel/close, unsafe LIVE
+  position mutation, existing-data mutation, and broader Gate.io/second-LIVE
+  proof remain outside the verified V1 boundary unless separately approved.
+  Evidence:
+  `docs/planning/v1-post-v1-ledger-reconciliation-2026-05-14-task.md`.
+
 - `V1-POST-V1-WALLET-BOT-CLEANUP-HARDENING-2026-05-14` is verified locally.
   Bot deletion now removes bot-owned runtime/trading artifacts in one
   transaction while preserving the strategy, and PAPER wallet reset now fails
@@ -21,9 +32,11 @@ Last updated: 2026-05-14
   Existing local rendered/browser proof plus production route/runtime readbacks
   close stale `SOAR-DASHBOARD-001` and `SOAR-BOT-RUNTIME-001` `PARTIAL` rows
   for the approved non-Gate.io V1/post-V1 target scope. `RISK-002` and
-  `RISK-003` are closed. Current counts are `PARTIAL:7`, `VERIFIED:15`,
-  `mitigating:15`, and `closed:10`. Gate.io/second-LIVE production shape and
-  LIVE mutation proof remain separate. Evidence:
+  `RISK-003` are closed. Its original count readback is superseded by the later
+  ledger reconciliation: current module confidence is `VERIFIED:22` and
+  `PARTIAL:0`; current risk count is `closed:18` and `mitigating:8`.
+  Gate.io/second-LIVE production shape and LIVE mutation proof remain separate.
+  Evidence:
   `docs/planning/v1-post-v1-dashboard-runtime-ledger-closure-2026-05-14-task.md`.
 
 - `V1-POST-V1-AUTH-DEPLOY-RERUN-2026-05-14` is verified. The auth stale-token
@@ -40,11 +53,11 @@ Last updated: 2026-05-14
   the user's "is it 100%?" question is split by scope: tracked V1 release
   acceptance is `YES` (`GO`, `PASS:21`, static findings `0`, implementation/
   evidence/release readiness `100%`, no next work order), while absolute
-  whole-app/every-function/every-live-action proof is `NO` because
-  module-confidence still has `PARTIAL:7` and `IMPLEMENTED_NOT_VERIFIED:0`,
-  risk register still has `mitigating:15`, and LIVE order submit/cancel/
-  position close, exchange-side mutation, and broader 2x LIVE including
-  Gate.io production proof were intentionally not performed. Evidence:
+  whole-app/every-function/every-live-action proof remains `NO` only because
+  LIVE order submit/cancel/position close, exchange-side mutation,
+  existing-data mutation, and broader 2x LIVE including Gate.io production proof
+  were intentionally not performed. Its stale `PARTIAL:7` wording is superseded
+  by the later ledger reconciliation. Evidence:
   `docs/planning/v1-100-percent-truth-audit-2026-05-14-task.md` and
   `docs/operations/v1-100-percent-truth-audit-2026-05-14.md`.
 
