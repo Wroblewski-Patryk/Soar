@@ -114,6 +114,8 @@ work packages `WP-01..WP-08`, the `AUD-19` blocker, closure checks, and safety
 boundaries checkable during future reruns. Follow-up hardening now also checks
 `sourceMarkdown` and `primaryEvidence` paths; the current plan reports `7`
 references checked and `0` missing references.
+Reusable audit remediation-plan validation now requires the remediation
+self-check command in closure checks.
 Reusable audit rerun closure now explicitly requires `audit:manifest:verify`
 and `audit:remediation-plan:check`, and `audit:rerun-playbook:check` fails if
 required closure checks are missing.

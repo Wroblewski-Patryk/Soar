@@ -23,6 +23,7 @@ const remediationPlan = (overrides = {}) => ({
   currentBlockers: ['Fresh AUD-19 production release evidence requires approved protected inputs.'],
   closureChecks: [
     'corepack pnpm run audit:manifest:verify',
+    'corepack pnpm run audit:remediation-plan:check',
     'corepack pnpm run docs:parity:check',
     'corepack pnpm run quality:guardrails',
     'git diff --check',
@@ -115,6 +116,7 @@ test('validateAuditRemediationPlan fails when closure checks are incomplete', ()
 
   assert.equal(result.status, 'FAIL');
   assert.deepEqual(result.closureChecks.missing, [
+    'audit:remediation-plan:check',
     'docs:parity:check',
     'quality:guardrails',
     'git diff --check',

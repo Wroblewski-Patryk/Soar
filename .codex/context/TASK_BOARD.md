@@ -287,6 +287,13 @@ Last updated: 2026-05-19
     coverage catches missing baseline keys and missing paths. Evidence:
     `docs/planning/audit-rerun-playbook-baseline-path-check-2026-05-19-task.md`.
 
+- [x] `AUDIT-REMEDIATION-PLAN-SELF-CHECK-CLOSURE-2026-05-19 feature: require remediation self-check closure`
+  - 2026-05-19: Hardened `audit:remediation-plan:check` so remediation
+    closure must include `audit:remediation-plan:check` itself. Focused
+    regression coverage catches closure sets that drop the remediation
+    self-check command. Evidence:
+    `docs/planning/audit-remediation-plan-self-check-closure-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

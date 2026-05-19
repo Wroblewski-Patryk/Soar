@@ -73,13 +73,13 @@
       "id": "AUDIT-REMEDIATION-PLAN-CHECK",
       "command": "corepack pnpm run audit:remediation-plan:check",
       "script": "scripts/checkAuditRemediationPlan.mjs",
-      "purpose": "Validate remediation roadmap phases, work packages, blockers, closure checks, and safety boundaries."
+      "purpose": "Validate remediation roadmap phases, work packages, blockers, required self-check closure checks, and safety boundaries."
     },
     {
       "id": "AUDIT-REMEDIATION-PLAN-CHECK-TEST",
       "command": "corepack pnpm run audit:remediation-plan:check:test",
       "script": "scripts/checkAuditRemediationPlan.test.mjs",
-      "purpose": "Regression-test remediation plan validation behavior."
+      "purpose": "Regression-test remediation plan validation behavior, including missing self-check closure commands."
     },
     {
       "id": "AUDIT-TOOLING-INDEX-CHECK",
