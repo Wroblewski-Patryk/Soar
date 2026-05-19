@@ -258,6 +258,13 @@ Last updated: 2026-05-19
     summary counts. Evidence:
     `docs/planning/audit-manifest-markdown-summary-parity-2026-05-19-task.md`.
 
+- [x] `AUDIT-ROLLUP-MARKDOWN-AUDIT-ID-PARITY-2026-05-19 feature: validate rollup companion audit ID parity`
+  - 2026-05-19: Hardened `audit:rollup:check` so the JSON rollup audit list
+    and companion Markdown result table stay aligned when the Markdown file is
+    available. Focused regression coverage catches missing Markdown audit IDs.
+    Evidence:
+    `docs/planning/audit-rollup-markdown-audit-id-parity-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

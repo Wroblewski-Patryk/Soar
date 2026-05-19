@@ -60,6 +60,7 @@ const printHelp = () => {
 Validates the full reusable audit rollup JSON by checking:
 - AUD-00 through AUD-23 coverage
 - summary counts match audit statuses
+- companion Markdown lists JSON audit IDs when available
 - referenced rollup paths exist
 - required repair queue items remain present
 - production/LIVE/exchange mutation safety booleans remain false
@@ -84,6 +85,14 @@ export const validateFullReusableAuditRollup = (rollup, options = {}) => {
   const auditIdSet = new Set(auditIds);
   const missingAuditIds = expectedAuditIds.filter((auditId) => !auditIdSet.has(auditId));
   const duplicateAuditIds = auditIds.filter((auditId, index, all) => all.indexOf(auditId) !== index);
+  const markdownText = typeof options.markdownText === 'string' ? options.markdownText : null;
+  const missingMarkdownAuditIds =
+    markdownText === null
+      ? []
+      : auditIds.filter(
+          (auditId) =>
+            !markdownText.includes(`| ${auditId} |`) && !markdownText.includes(`| \`${auditId}\` |`),
+        );
   const computedSummary = audits.reduce(
     (summary, audit) => {
       summary[classifyAuditStatus(audit.status)] += 1;
@@ -125,6 +134,9 @@ export const validateFullReusableAuditRollup = (rollup, options = {}) => {
       computed: computedSummary,
       mismatches: summaryMismatches,
     },
+    markdown: {
+      missingAuditIds: missingMarkdownAuditIds,
+    },
     paths: {
       missingKeys: missingPathKeys,
       missing: missingPaths,
@@ -141,6 +153,7 @@ export const validateFullReusableAuditRollup = (rollup, options = {}) => {
     result.audits.missing.length === 0 &&
     result.audits.duplicates.length === 0 &&
     result.summary.mismatches.length === 0 &&
+    result.markdown.missingAuditIds.length === 0 &&
     result.paths.missingKeys.length === 0 &&
     result.paths.missing.length === 0 &&
     result.repairQueue.missingFragments.length === 0 &&
@@ -160,8 +173,13 @@ const main = async () => {
 
   const rollupPath = path.resolve(repoRoot, options.rollup);
   const rollup = JSON.parse(await readFile(rollupPath, 'utf8'));
+  const markdownPath = options.rollup.endsWith('.json')
+    ? path.resolve(repoRoot, options.rollup.replace(/\.json$/, '.md'))
+    : null;
+  const markdownText = markdownPath && existsSync(markdownPath) ? await readFile(markdownPath, 'utf8') : null;
   const result = validateFullReusableAuditRollup(rollup, {
     rollupPath: path.relative(repoRoot, rollupPath).split(path.sep).join('/'),
+    markdownText,
   });
 
   if (options.json) {
@@ -170,6 +188,7 @@ const main = async () => {
     console.log(`Full reusable audit rollup check: ${result.status}`);
     console.log(`- Audits: ${result.audits.found}/${result.audits.expected}`);
     console.log(`- Summary mismatches: ${result.summary.mismatches.length}`);
+    console.log(`- Missing Markdown audit IDs: ${result.markdown.missingAuditIds.length}`);
     console.log(`- Missing path keys: ${result.paths.missingKeys.length}`);
     console.log(`- Missing paths: ${result.paths.missing.length}`);
     console.log(`- Missing repair queue items: ${result.repairQueue.missingFragments.length}`);

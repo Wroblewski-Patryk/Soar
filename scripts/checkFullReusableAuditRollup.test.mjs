@@ -34,13 +34,15 @@ const rollup = (overrides = {}) => ({
 });
 
 const allPathsExist = () => true;
+const markdownText = auditIds.map((id) => `| ${id} | current local | evidence |`).join('\n');
 
 test('validateFullReusableAuditRollup passes complete rollups', () => {
-  const result = validateFullReusableAuditRollup(rollup(), { exists: allPathsExist });
+  const result = validateFullReusableAuditRollup(rollup(), { exists: allPathsExist, markdownText });
 
   assert.equal(result.status, 'PASS');
   assert.deepEqual(result.audits.missing, []);
   assert.deepEqual(result.summary.mismatches, []);
+  assert.deepEqual(result.markdown.missingAuditIds, []);
   assert.deepEqual(result.paths.missing, []);
 });
 
@@ -74,6 +76,16 @@ test('validateFullReusableAuditRollup fails when summary counts drift', () => {
     { key: 'currentOrCurrentLocal', declared: 24, actual: 23 },
     { key: 'deferred', declared: 0, actual: 1 },
   ]);
+});
+
+test('validateFullReusableAuditRollup fails when companion markdown omits an audit id', () => {
+  const result = validateFullReusableAuditRollup(rollup(), {
+    exists: allPathsExist,
+    markdownText: markdownText.replace('| AUD-20 | current local | evidence |', ''),
+  });
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.markdown.missingAuditIds, ['AUD-20']);
 });
 
 test('validateFullReusableAuditRollup treats current statuses with deferred sub-scope as current', () => {

@@ -249,6 +249,10 @@ Last updated: 2026-05-19
   must match the JSON manifest summary when the Markdown file is available.
   Evidence:
   `docs/planning/audit-manifest-markdown-summary-parity-2026-05-19-task.md`.
+  Follow-up `AUDIT-ROLLUP-MARKDOWN-AUDIT-ID-PARITY-2026-05-19` hardened
+  `audit:rollup:check` so the companion Markdown result table must list every
+  JSON audit ID when the Markdown file is available. Evidence:
+  `docs/planning/audit-rollup-markdown-audit-id-parity-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,
