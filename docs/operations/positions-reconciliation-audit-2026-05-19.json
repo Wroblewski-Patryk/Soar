@@ -1,0 +1,47 @@
+{
+  "auditId": "AUD-13",
+  "name": "Positions And Reconciliation",
+  "date": "2026-05-19",
+  "status": "current local / current historical production-safe PAPER proof",
+  "environment": "local",
+  "productionMutation": false,
+  "liveOrderCancelClose": false,
+  "exchangeSideMutation": false,
+  "existingProductionDataMutation": false,
+  "results": [
+    {
+      "name": "Focused Web runtime positions pack",
+      "command": "corepack pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.runtime-table-audit.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.runtime-origin.test.tsx src/features/dashboard-home/hooks/useCloseRuntimePositionAction.test.tsx src/features/dashboard-home/components/home-live-widgets/runtimeDerivations.test.ts src/features/dashboard-home/components/home-live-widgets/runtimeDataTablePresenters.test.tsx src/features/bots/utils/runtimeOpenPositionDerivations.test.ts src/features/bots/components/bots-management/BotsMonitoringProtectionCell.tsx",
+      "result": "PASS",
+      "files": 6,
+      "tests": 46,
+      "notes": "Vitest reported six test files; the component-only TSX path did not add a separate test file."
+    },
+    {
+      "name": "Focused API positions/reconciliation pack",
+      "command": "corepack pnpm --filter api exec vitest run src/modules/positions/positions.service.test.ts src/modules/positions/positions.list.e2e.test.ts src/modules/positions/positions-live-status.e2e.test.ts src/modules/positions/positions.exchangeSnapshot.e2e.test.ts src/modules/positions/positions.takeover-status.e2e.test.ts src/modules/positions/positions.orphan-repair.e2e.test.ts src/modules/positions/livePositionReconciliation.service.test.ts src/modules/positions/livePositionReconciliation.diagnostics.test.ts src/modules/positions/positions.authenticatedSnapshots.service.test.ts src/modules/positions/positions.exchangeSnapshotNormalization.test.ts src/modules/positions/importedPositionHistoryHydrator.service.test.ts",
+      "result": "PASS",
+      "files": 11,
+      "tests": 68,
+      "notes": "Expected stderr appears in tests that intentionally generate ambiguous/unowned/missing-entry and snapshot-failure diagnostics."
+    }
+  ],
+  "findings": [
+    {
+      "id": "AUD-POS-004",
+      "severity": "P1",
+      "status": "open freshness follow-up",
+      "summary": "Fresh production proof was not rerun."
+    },
+    {
+      "id": "AUD-POS-005",
+      "severity": "P1",
+      "status": "explicit exclusion",
+      "summary": "LIVE position mutation remains explicitly excluded."
+    }
+  ],
+  "cleanup": {
+    "localInfraStopped": true,
+    "command": "corepack pnpm run go-live:infra:down"
+  }
+}

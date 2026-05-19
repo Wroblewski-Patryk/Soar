@@ -1,0 +1,57 @@
+{
+  "auditId": "AUD-15",
+  "name": "Markets And Strategy Configuration",
+  "date": "2026-05-19",
+  "status": "current local / current historical production-safe fixture proof",
+  "environment": "local",
+  "productionMutation": false,
+  "liveOrderCancelClose": false,
+  "exchangeSideMutation": false,
+  "existingProductionDataMutation": false,
+  "results": [
+    {
+      "name": "Focused Web markets/strategies pack",
+      "command": "corepack pnpm --filter web exec vitest run src/app/dashboard/markets/list/page.test.tsx src/app/dashboard/markets/create/page.test.tsx src/app/dashboard/markets/[id]/edit/page.test.tsx src/features/markets/components/MarketUniversesTable.test.tsx src/features/markets/components/MarketUniverseForm.test.tsx src/app/dashboard/strategies/list/page.test.tsx src/app/dashboard/strategies/create/page.test.tsx src/app/dashboard/strategies/[id]/page.test.tsx src/app/dashboard/strategies/[id]/edit/page.test.tsx src/features/strategies/components/StrategiesList.test.tsx src/features/strategies/components/StrategyForm.test.tsx src/features/strategies/components/StrategyPresetPicker.test.tsx src/features/strategies/components/StrategyFormSections/Indicators.test.tsx src/features/strategies/presets/strategyPresets.test.ts src/features/strategies/utils/StrategyForm.map.test.ts src/features/strategies/utils/strategyNumericInput.test.ts src/features/strategies/utils/strategyCloseValidation.test.ts src/features/strategies/utils/indicatorPresentation.test.ts src/features/strategies/utils/indicatorTaxonomy.test.ts",
+      "result": "PASS",
+      "files": 19,
+      "tests": 60
+    },
+    {
+      "name": "Focused API markets/strategies pack",
+      "command": "corepack pnpm --filter api exec vitest run src/modules/markets/markets.e2e.test.ts src/modules/strategies/strategies.e2e.test.ts src/modules/strategies/strategyConfigValidation.test.ts src/modules/strategies/indicators/indicators.service.test.ts",
+      "result": "PASS",
+      "files": 4,
+      "tests": 35
+    }
+  ],
+  "findings": [
+    {
+      "id": "AUD-MKTSTR-004",
+      "severity": "P1",
+      "status": "open freshness follow-up",
+      "summary": "Fresh production-safe market/strategy fixture proof was not rerun."
+    },
+    {
+      "id": "AUD-MKTSTR-005",
+      "severity": "P2",
+      "status": "documented follow-up",
+      "summary": "Market catalog source freshness telemetry remains a documented follow-up."
+    },
+    {
+      "id": "AUD-MKTSTR-006",
+      "severity": "P2",
+      "status": "documented follow-up",
+      "summary": "Typed strategy domain errors remain a documented follow-up."
+    },
+    {
+      "id": "AUD-MKTSTR-007",
+      "severity": "P3",
+      "status": "documented UX follow-up",
+      "summary": "Full strategy i18n coverage and richer dirty-state/conflict handling remain Web follow-ups."
+    }
+  ],
+  "cleanup": {
+    "localInfraStopped": true,
+    "command": "corepack pnpm run go-live:infra:down"
+  }
+}

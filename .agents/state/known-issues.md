@@ -1,8 +1,31 @@
 # Known Issues
 
-Last updated: 2026-05-14
+Last updated: 2026-05-19
 
 ## Active Issues
+
+- 2026-05-19 update:
+  The full reusable audit mission is current through `AUD-00` to `AUD-23`.
+  `AUD-EXCH-002` is repaired: exchange execution/authenticated-read capability
+  now resolves by exact `(exchange, marketType, operation)`, and
+  `AUD-EXCH-007` is closed by neutral exchange-owned type aliases for
+  non-exchange orders/wallet consumers. `DEC-AUD-001` is accepted as Binance +
+  Gate.io implementation scope, not Binance-only, and `DEC-AUD-002` is accepted
+  as assistant foundation/dry-run current scope with hot-path orchestration
+  deferred. Remaining high-signal blocker is `AUD-19`: fresh production release
+  readiness must be rerun before any new production readiness claim.
+  Evidence: `docs/operations/full-reusable-audit-rollup-2026-05-19.md` and
+  `docs/operations/audit-decision-packet-2026-05-19.md`.
+
+- 2026-05-17 historical baseline:
+  `PROJECT-ARCHITECTURE-CODE-DISCREPANCY-AUDIT-2026-05-17` recorded the prior
+  architecture/code drift baseline. At that time, high-signal findings covered
+  exchange-scope wording, exchange operation capability granularity, and
+  assistant hot-path overclaim. The exchange capability granularity finding is
+  now closed by the 2026-05-19 `AUD-09` follow-up; exchange-scope wording and
+  assistant runtime truth were resolved by `DEC-AUD-001` and `DEC-AUD-002`.
+  Evidence: `docs/analysis/architecture-code-discrepancy-audit-2026-05-17.md`
+  and `docs/planning/project-architecture-code-discrepancy-audit-2026-05-17-task.md`.
 
 - 2026-05-14 update: `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14` reconciles
   stale module-confidence and requirement/risk/quality rows with already

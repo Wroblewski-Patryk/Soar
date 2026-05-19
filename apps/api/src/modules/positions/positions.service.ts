@@ -193,7 +193,7 @@ const buildSnapshotForApiKey = async (
   marketType: TradeMarket = 'FUTURES'
 ): Promise<ExchangePositionSnapshot> => {
   try {
-    assertExchangeAdapterOperationSupport(apiKey.exchange, 'POSITIONS_SNAPSHOT');
+    assertExchangeAdapterOperationSupport(apiKey.exchange, marketType, 'POSITIONS_SNAPSHOT');
 
     if (process.env.NODE_ENV === 'test') {
       if (process.env.POSITIONS_SNAPSHOT_FORCE_ERROR === '1') {
@@ -234,7 +234,7 @@ const buildSnapshotForApiKey = async (
     });
 
     return {
-      source: resolveExchangeAdapterSource(apiKey.exchange),
+      source: resolveExchangeAdapterSource(apiKey.exchange, marketType),
       syncedAt: new Date().toISOString(),
       positions: rawPositions.map(normalizeExchangePosition),
     };
@@ -250,7 +250,7 @@ const buildOpenOrdersSnapshotForApiKey = async (
   marketType: TradeMarket = 'FUTURES'
 ): Promise<ExchangeOpenOrderSnapshot> => {
   try {
-    assertExchangeAdapterOperationSupport(apiKey.exchange, 'OPEN_ORDERS_SNAPSHOT');
+    assertExchangeAdapterOperationSupport(apiKey.exchange, marketType, 'OPEN_ORDERS_SNAPSHOT');
     if (process.env.NODE_ENV === 'test') {
       await prisma.apiKey.update({
         where: { id: apiKey.id },
@@ -287,7 +287,7 @@ const buildOpenOrdersSnapshotForApiKey = async (
     });
 
     return {
-      source: resolveExchangeAdapterSource(apiKey.exchange),
+      source: resolveExchangeAdapterSource(apiKey.exchange, marketType),
       syncedAt: new Date().toISOString(),
       orders: rawOrders.map(normalizeExchangeOpenOrder),
     };
@@ -458,7 +458,7 @@ export const fetchExchangePositionsSnapshot = async (userId: string): Promise<Ex
       userId,
       exchange: {
         in: (['BINANCE', 'BYBIT', 'OKX', 'KRAKEN', 'COINBASE', 'GATEIO'] as const).filter((exchange) =>
-          supportsExchangeAdapterOperation(exchange, 'POSITIONS_SNAPSHOT')
+          supportsExchangeAdapterOperation(exchange, 'FUTURES', 'POSITIONS_SNAPSHOT')
         ),
       },
     },
@@ -563,7 +563,7 @@ export const fetchExchangeTradeHistorySnapshotByApiKeyId = async (
   }
 
   try {
-    assertExchangeAdapterOperationSupport(apiKey.exchange, 'TRADE_HISTORY_SNAPSHOT');
+    assertExchangeAdapterOperationSupport(apiKey.exchange, input.marketType ?? 'FUTURES', 'TRADE_HISTORY_SNAPSHOT');
     if (process.env.NODE_ENV === 'test') {
       await prisma.apiKey.update({
         where: { id: apiKey.id },
@@ -594,7 +594,7 @@ export const fetchExchangeTradeHistorySnapshotByApiKeyId = async (
     });
 
     return {
-      source: resolveExchangeAdapterSource(apiKey.exchange),
+      source: resolveExchangeAdapterSource(apiKey.exchange, input.marketType ?? 'FUTURES'),
       syncedAt: new Date().toISOString(),
       symbol: input.symbol,
       trades: rawTrades.map(normalizeExchangeTradeHistoryItem),

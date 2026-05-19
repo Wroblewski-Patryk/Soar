@@ -1,0 +1,73 @@
+{
+  "auditId": "AUD-02",
+  "name": "Requirements And Delivery Map",
+  "date": "2026-05-19",
+  "status": "current for source-of-truth alignment after follow-up",
+  "productionMutation": false,
+  "liveOrderCancelClose": false,
+  "exchangeSideMutation": false,
+  "existingProductionDataMutation": false,
+  "evidence": [
+    {
+      "name": "Fresh AUD-00 project index",
+      "result": "PASS",
+      "artifact": "docs/operations/project-index-2026-05-19.md",
+      "v1Statuses": {
+        "PASS": 21
+      },
+      "testsIndexed": 335
+    },
+    {
+      "name": "Fresh AUD-00 static scan",
+      "result": "PASS",
+      "artifact": "docs/operations/v1-static-issue-scan-2026-05-19.md",
+      "findings": 0
+    },
+    {
+      "name": "Requirements matrix inspection",
+      "result": "PASS_WITH_RESIDUALS"
+    },
+    {
+      "name": "Delivery map inspection",
+      "result": "PASS_AFTER_FOLLOW_UP"
+    },
+    {
+      "name": "Risk register inspection",
+      "result": "PASS_AFTER_FOLLOW_UP"
+    },
+    {
+      "name": "Task board inspection",
+      "result": "PASS"
+    },
+    {
+      "name": "Next steps and project state inspection",
+      "result": "PASS_AFTER_FOLLOW_UP"
+    }
+  ],
+  "findings": [
+    {
+      "id": "AUD-REQ-001",
+      "severity": "P1",
+      "status": "closed",
+      "summary": "Delivery map was refreshed to current audit truth."
+    },
+    {
+      "id": "AUD-REQ-002",
+      "severity": "P1",
+      "status": "closed",
+      "summary": "Risk IDs are unique after renumbering the audit-process row to RISK-036."
+    },
+    {
+      "id": "AUD-REQ-003",
+      "severity": "P2",
+      "status": "closed",
+      "summary": "Final audit rollup and fresh AUD-00/AUD-02 evidence were synchronized into continuation state."
+    },
+    {
+      "id": "AUD-REQ-004",
+      "severity": "P2",
+      "status": "accepted",
+      "summary": "Some requirements remain partially verified because production proof is historical or intentionally excluded."
+    }
+  ]
+}

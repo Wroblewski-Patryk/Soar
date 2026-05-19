@@ -1,0 +1,51 @@
+{
+  "auditId": "AUD-16",
+  "name": "Backtests And Reports",
+  "date": "2026-05-19",
+  "status": "current local / current historical production-safe fixture proof",
+  "environment": "local",
+  "productionMutation": false,
+  "liveOrderCancelClose": false,
+  "exchangeSideMutation": false,
+  "existingProductionDataMutation": false,
+  "results": [
+    {
+      "name": "Focused Web backtests/reports pack",
+      "command": "corepack pnpm --filter web exec vitest run src/app/dashboard/backtests/list/page.test.tsx src/app/dashboard/backtests/create/page.test.tsx src/app/dashboard/backtests/[id]/page.test.tsx src/features/backtest/components/BacktestCreateForm.test.tsx src/features/backtest/components/BacktestRunDetails.test.tsx src/features/backtest/components/BacktestsList.test.tsx src/features/backtest/components/BacktestsListView.test.tsx src/features/backtest/components/BacktestsRunsTable.test.tsx src/features/backtest/hooks/useBacktestRunCoreData.test.tsx src/features/backtest/utils/timelineIndicatorOverlays.test.ts src/features/backtest/utils/pairStatsMetricDisplay.test.ts src/features/backtest/utils/nonOverlappingTradeSegments.test.ts src/features/backtest/utils/backtestRunDetailsViewModel.test.ts src/app/dashboard/reports/page.test.tsx src/features/reports/components/PerformanceReportsView.test.tsx",
+      "result": "PASS",
+      "files": 15,
+      "tests": 37
+    },
+    {
+      "name": "Focused API backtests/reports pack",
+      "command": "corepack pnpm --filter api exec vitest run src/modules/backtests/backtests.e2e.test.ts src/modules/backtests/backtests.contract-remediation.test.ts src/modules/backtests/backtestRuntimeKernelParity.test.ts src/modules/backtests/backtestRunQueue.test.ts src/modules/backtests/backtestRunJob.test.ts src/modules/backtests/backtestReplayCore.test.ts src/modules/backtests/backtestRange.service.test.ts src/modules/backtests/backtestPatternParityFixtures.test.ts src/modules/backtests/backtestParity3Symbols.test.ts src/modules/backtests/backtestIndicatorTimelineSeries.test.ts src/modules/backtests/backtestFillModel.test.ts src/modules/backtests/backtestDataGateway.test.ts src/modules/reports/reports.service.test.ts",
+      "result": "PASS",
+      "files": 13,
+      "tests": 114
+    }
+  ],
+  "findings": [
+    {
+      "id": "AUD-BTR-004",
+      "severity": "P1",
+      "status": "open freshness follow-up",
+      "summary": "Fresh production-safe disposable backtest/report fixture proof was not rerun."
+    },
+    {
+      "id": "AUD-BTR-005",
+      "severity": "P2",
+      "status": "explicit future scope",
+      "summary": "Non-Binance historical order-book parity remains outside current V1 support."
+    },
+    {
+      "id": "AUD-BTR-006",
+      "severity": "P3",
+      "status": "documented follow-up",
+      "summary": "Richer report filters, snapshot persistence, and report i18n hardening remain future reporting scope."
+    }
+  ],
+  "cleanup": {
+    "localInfraStopped": true,
+    "command": "corepack pnpm run go-live:infra:down"
+  }
+}

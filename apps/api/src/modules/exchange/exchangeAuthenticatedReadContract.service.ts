@@ -2,6 +2,7 @@ import { Exchange } from '@prisma/client';
 
 import { DomainError } from '../../lib/errors';
 import {
+  ExchangeMarketType,
   assertExchangeExecutionCapabilitySupport,
   resolveExchangeExecutionSource,
   supportsExchangeExecutionCapability,
@@ -19,19 +20,22 @@ export type AuthenticatedExchangeReadOperation =
 
 export class ExchangeAuthenticatedReadUnsupportedError extends DomainError<{
   exchange: Exchange;
+  marketType: ExchangeMarketType;
   operation: AuthenticatedExchangeReadOperation;
 }> {
   constructor(
     public readonly exchange: Exchange,
+    public readonly marketType: ExchangeMarketType,
     public readonly operation: AuthenticatedExchangeReadOperation
   ) {
     super(
       EXCHANGE_AUTHENTICATED_READ_UNSUPPORTED_CODE,
-      `Exchange ${exchange} does not support authenticated read ${operation}.`,
+      `Exchange ${exchange}/${marketType} does not support authenticated read ${operation}.`,
       {
         status: 501,
         details: {
           exchange,
+          marketType,
           operation,
         },
         name: 'ExchangeAuthenticatedReadUnsupportedError',
@@ -42,19 +46,23 @@ export class ExchangeAuthenticatedReadUnsupportedError extends DomainError<{
 
 export const supportsAuthenticatedExchangeRead = (
   exchange: Exchange,
+  marketType: ExchangeMarketType,
   operation: AuthenticatedExchangeReadOperation
-) => supportsExchangeExecutionCapability(exchange, operation);
+) => supportsExchangeExecutionCapability(exchange, marketType, operation);
 
 export const assertAuthenticatedExchangeReadSupport = (
   exchange: Exchange,
+  marketType: ExchangeMarketType,
   operation: AuthenticatedExchangeReadOperation
 ) => {
   try {
-    assertExchangeExecutionCapabilitySupport(exchange, operation);
+    assertExchangeExecutionCapabilitySupport(exchange, marketType, operation);
   } catch {
-    throw new ExchangeAuthenticatedReadUnsupportedError(exchange, operation);
+    throw new ExchangeAuthenticatedReadUnsupportedError(exchange, marketType, operation);
   }
 };
 
-export const resolveAuthenticatedExchangeReadSource = (exchange: Exchange) =>
-  resolveExchangeExecutionSource(exchange);
+export const resolveAuthenticatedExchangeReadSource = (
+  exchange: Exchange,
+  marketType?: ExchangeMarketType
+) => resolveExchangeExecutionSource(exchange, marketType);

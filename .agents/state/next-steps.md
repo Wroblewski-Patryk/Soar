@@ -1,8 +1,374 @@
 # Next Steps
 
-Last updated: 2026-05-14
+Last updated: 2026-05-19
 
 ## Next Tiny Task
+
+Latest requirements/delivery-map audit:
+`REQUIREMENTS-DELIVERY-MAP-AUDIT-2026-05-19` is the latest `AUD-02` evidence.
+It also refreshed `AUD-00`: project index passed with V1 statuses `PASS:21`
+and tests indexed `335`, and static scan passed with findings `0`. Follow-up
+refreshed the delivery map from current audit truth, restored risk-ID
+uniqueness by renumbering the audit-process row to `RISK-036`, and synchronized
+continuation state with the final rollup and fresh generated audit evidence.
+`AUD-02` is current for source-of-truth alignment after follow-up; production
+boundary requirements remain partial only where fresh production proof was
+intentionally excluded. Evidence:
+`docs/operations/requirements-delivery-map-audit-2026-05-19.md`,
+`docs/operations/project-index-2026-05-19.md`, and
+`docs/operations/v1-static-issue-scan-2026-05-19.md`.
+Next exact source-of-truth follow-up: recheck `AUD-02` on the next broad audit
+and keep production-boundary rows partial unless fresh production proof exists.
+
+Latest full reusable audit rollup:
+`FULL-REUSABLE-AUDIT-ROLLUP-2026-05-19` is the current `AUD-00` through
+`AUD-23` rollup. It separates current local evidence, historical production
+evidence, deferred mobile scope, and explicit forbidden production/LIVE/exchange
+mutation boundaries.
+Evidence: `docs/operations/full-reusable-audit-rollup-2026-05-19.md`.
+Next audit repair queue: `AUD-19` fresh production release gate before any new
+production readiness claim; future hot-path assistant orchestration requires a
+separate AI/security implementation and red-team proof; future Gate.io
+production/live claims require exact operation proof.
+Resolved audit decisions are recorded in
+`docs/operations/audit-decision-packet-2026-05-19.md`: `DEC-AUD-001`
+accepts Binance + Gate.io implementation scope, and `DEC-AUD-002` accepts
+assistant foundation/dry-run current scope.
+Option-specific post-decision repair playbooks are prepared in
+`docs/operations/audit-decision-repair-playbooks-2026-05-19.md`.
+Resume packet for the full audit mission:
+`docs/operations/full-reusable-audit-handoff-2026-05-19.md`.
+
+Latest i18n/copy reachability audit:
+`I18N-COPY-REACHABILITY-AUDIT-2026-05-19` is verified as the latest `AUD-22`
+evidence. Route-reachable i18n audit passed with findings `0`, localCopy `0`,
+fallbackPl `0`, and hardcoded `0`. Focused Web i18n pack passed (`8` files /
+`26` tests). Evidence:
+`docs/operations/i18n-copy-reachability-audit-2026-05-19.md` and
+`docs/planning/i18n-copy-reachability-audit-2026-05-19-task.md`.
+Next i18n follow-up: rerun route-reachable i18n audit after route/copy changes.
+
+Latest mobile/cross-platform scope audit:
+`MOBILE-CROSS-PLATFORM-SCOPE-AUDIT-2026-05-19` is verified as the latest
+`AUD-21` evidence. Mobile remains scaffold-only: `apps/mobile` contains only
+package, README, and placeholder source files; mobile build/test scripts print
+deferred scaffold messages; mobile docs state no production mobile runtime and
+no independent mobile backend contracts. Evidence:
+`docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
+`docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`.
+Next mobile follow-up: before mobile activation, create module docs and replace
+scaffold echoes with real Expo/native build/test validation.
+
+Latest operations/release/deployment audit:
+`OPERATIONS-RELEASE-DEPLOYMENT-AUDIT-2026-05-19` is verified as the latest
+local `AUD-19` evidence. Typecheck, lint, build, go-live smoke, and local DB
+backup/restore check passed. Go-live smoke covered API (`4` files / `45`
+tests) and Web (`3` files / `18` tests). Evidence:
+`docs/operations/operations-release-deployment-audit-2026-05-19.md` and
+`docs/planning/operations-release-deployment-audit-2026-05-19-task.md`.
+Next operations follow-up: production release readiness remains historical for
+deployed `457bce05`; rerun build-info, deploy smoke, protected runtime,
+rollback, backup/restore, and sign-off before any new production release claim.
+
+Latest data-model/migrations audit:
+`DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is verified locally as the latest
+`AUD-07` evidence. Prisma schema validation passed, local migration status
+reported `54` migrations and schema up to date, full local migration replay
+applied all `54` migrations, schema diff generation passed, and isolated
+representative DB-backed tests passed for wallets (`1` file / `24` tests),
+backtests (`1` file / `15` tests), and runtime repository behavior (`1` file /
+`2` tests). Follow-up `corepack pnpm run audit:data:db-isolated` passed and
+now provides the canonical sequential reset-and-run path for these
+representative DB-backed packs. Evidence:
+`docs/operations/data-model-migrations-audit-2026-05-19.md` and
+`docs/planning/data-model-migrations-audit-2026-05-19-task.md`.
+Next data follow-up: use `audit:data:db-isolated` after route/data changes;
+refresh production migration status and backup/restore evidence under `AUD-19`
+before future deploys.
+
+Latest workers/runtime operations audit:
+`WORKERS-RUNTIME-OPERATIONS-AUDIT-2026-05-19` is verified as the latest
+`AUD-08` evidence. The focused API worker/runtime pack passed (`17` files /
+`85` tests). Coverage includes worker ownership/topology, protected worker
+health/readiness, runtime freshness pass/fail/skip behavior, global `/ready`
+diagnostics, market-stream source config, subscriptions, fanout and routes,
+exchange polling, Binance stream parsing, queue tuning, backtest job
+persistence, execution orchestration, and PAPER runtime-flow telemetry.
+Expected stderr appeared only in the intentional Redis-startup retry test.
+Evidence: `docs/operations/workers-runtime-operations-audit-2026-05-19.md` and
+`docs/planning/workers-runtime-operations-audit-2026-05-19-task.md`.
+Next workers follow-up: refresh production-safe protected worker/process proof
+after future deploys or worker topology changes; keep Gate.io/second-LIVE
+production runtime shape outside current claims until explicitly planned.
+
+Latest admin/subscriptions/entitlements audit:
+`ADMIN-SUBSCRIPTIONS-ENTITLEMENTS-AUDIT-2026-05-19` is verified as the latest
+`AUD-18` evidence. Focused Web admin/profile subscription tests passed (`4`
+files / `9` tests), and DB-backed API admin/subscriptions/entitlements tests
+passed (`5` files / `25` tests). Coverage includes admin-only access, user
+listing with subscription metadata, role/plan updates, self-demotion
+prevention, plan/entitlement validation, profile subscription readback, bot
+limit and LIVE trading gates, and Web admin/profile subscription states.
+Evidence: `docs/operations/admin-subscriptions-entitlements-audit-2026-05-19.md`
+and `docs/planning/admin-subscriptions-entitlements-audit-2026-05-19-task.md`.
+Next admin/subscription follow-up: refresh production-safe protected admin
+route proof after future deploys; keep production entitlement mutation excluded
+until an explicit safe admin-ops plan exists; track checkout provider e2e,
+webhook lifecycle, and admin UX follow-ups.
+
+Latest logs/audit-trail audit:
+`LOGS-AUDIT-TRAIL-AUDIT-2026-05-19` is verified as the latest `AUD-17`
+evidence. Focused Web logs/audit tests passed (`2` files / `3` tests), and
+DB-backed API logs/pagination tests passed (`2` files / `5` tests). Coverage
+includes authenticated reads, owner scoping, source/actor/severity filters,
+pagination defaults/bounds, action-produced event visibility, metadata trace
+text rendering, and Web logs route states. Evidence:
+`docs/operations/logs-audit-trail-audit-2026-05-19.md` and
+`docs/planning/logs-audit-trail-audit-2026-05-19-task.md`.
+Next logs follow-up: refresh production-safe action-produced audit readback
+after future deploys; track total-count envelope, pagination controls, saved
+filters, index tuning, and wallet command audit-event write coverage.
+
+Latest backtests/reports audit:
+`BACKTESTS-REPORTS-AUDIT-2026-05-19` is verified as the latest `AUD-16`
+evidence. Focused Web backtest/report UI tests passed (`15` files / `37`
+tests), and DB-backed API backtests/reports tests passed (`13` files / `114`
+tests). Coverage includes run lifecycle, ownership, explicit range validation,
+queue/job/replay, fill model, data gateway, runtime-kernel parity, immutable
+snapshot behavior, pending/degraded report lifecycle, trades/report/timeline
+reads, cross-mode aggregation, and Web route/detail/report states. Evidence:
+`docs/operations/backtests-reports-audit-2026-05-19.md` and
+`docs/planning/backtests-reports-audit-2026-05-19-task.md`.
+Next backtests/reports follow-up: refresh production-safe disposable fixture
+proof after future deploys; keep non-Binance historical order-book parity and
+richer report filters/snapshots/i18n as future scope.
+
+Latest markets/strategies configuration audit:
+`MARKETS-STRATEGIES-CONFIGURATION-AUDIT-2026-05-19` is verified as the latest
+`AUD-15` evidence. Focused Web market/strategy UI tests passed (`19` files /
+`60` tests), and DB-backed API markets/strategies tests passed (`4` files /
+`35` tests). Coverage includes market-universe composition, catalog behavior,
+market and strategy CRUD, ownership, active-bot guards, strategy import/export/
+config validation, inactive-bot edit allowance, active-bot lock UI, and
+indicator registry/presentation parity. Evidence:
+`docs/operations/markets-strategies-configuration-audit-2026-05-19.md` and
+`docs/planning/markets-strategies-configuration-audit-2026-05-19-task.md`.
+Next markets/strategies follow-up: refresh production-safe disposable fixture
+proof after future deploys; track catalog freshness telemetry, typed strategy
+domain errors, and Web strategy i18n/dirty-state follow-ups.
+
+Latest wallets/capital-ledger audit:
+`WALLETS-CAPITAL-LEDGER-AUDIT-2026-05-19` is verified as the latest `AUD-14`
+evidence. Focused Web wallet/ledger UI tests passed (`10` files / `23` tests),
+and DB-backed API wallets/capital tests passed (`7` files / `84` tests).
+Coverage includes wallet CRUD, ownership, PAPER/LIVE validation, API-key
+binding, balance preview, active-bot edit/delete/reset guards, paper reset
+checkpoint, wallet-first bot contract, runtime capital source truth,
+cashflow/equity ledger states, and partial/unavailable ledger UI. Evidence:
+`docs/operations/wallets-capital-ledger-audit-2026-05-19.md` and
+`docs/planning/wallets-capital-ledger-audit-2026-05-19-task.md`.
+Next wallet follow-up: refresh production-safe disposable wallet proof after
+future deploys, keep LIVE exchange mutation excluded until an explicit safe
+plan exists, and track wallet command audit-log events under `AUD-17`.
+
+Latest positions/reconciliation audit:
+`POSITIONS-RECONCILIATION-AUDIT-2026-05-19` is verified as the latest `AUD-13`
+evidence. Focused Web runtime-position tests passed (`6` files / `46` tests),
+and DB-backed API positions/reconciliation tests passed (`11` files / `68`
+tests). Coverage includes list/read ownership, live-status, exchange snapshot
+selection/normalization/fail-closed behavior, takeover/rebind, orphan repair,
+imported history hydration, reconciliation diagnostics, runtime position
+derivations, and close-state UI. Evidence:
+`docs/operations/positions-reconciliation-audit-2026-05-19.md` and
+`docs/planning/positions-reconciliation-audit-2026-05-19-task.md`.
+Next positions follow-up: refresh production-safe PAPER proof after future
+deploys and keep LIVE position mutation excluded until an explicit safe plan
+exists.
+
+Latest orders/manual trading audit:
+`ORDERS-MANUAL-TRADING-AUDIT-2026-05-19` is verified as the latest `AUD-12`
+evidence. Focused Web manual/open-order tests passed (`8` files / `46` tests),
+and DB-backed API order lifecycle tests passed (`10` files / `121` tests).
+Coverage includes manual-order context and selected-bot scope, PAPER lifecycle,
+ownership isolation, active-only filtering, fills, fees, exchange events,
+fail-closed exchange-backed cancel boundary, LIVE risk guards,
+quantity/position scope, and Dashboard Home manual/open-order action states.
+Evidence: `docs/operations/orders-manual-trading-audit-2026-05-19.md` and
+`docs/planning/orders-manual-trading-audit-2026-05-19-task.md`.
+Next orders follow-up: refresh production-safe PAPER proof after future deploys
+and keep LIVE order/cancel/close mutation excluded until an explicit safe plan
+exists.
+
+Latest engine/trading decision-flow audit:
+`ENGINE-TRADING-DECISION-FLOW-AUDIT-2026-05-19` is verified as the latest
+`AUD-11` evidence. Focused engine service/unit tests passed (`15` files / `173`
+tests), and DB-backed engine e2e/smoke tests passed (`4` files / `13` tests).
+Coverage includes deterministic signal merge, final-candle flow, signal loop,
+pre-trade/risk, execution orchestration, dedupe, exchange order guard,
+PAPER/LIVE parity, market-data gateway, position automation, PAPER runtime
+lifecycle, and owned imported-position execution. Evidence:
+`docs/operations/engine-trading-decision-flow-audit-2026-05-19.md` and
+`docs/planning/engine-trading-decision-flow-audit-2026-05-19-task.md`.
+Next engine follow-up: keep LIVE/exchange-side mutation excluded until an
+explicit safe plan exists; keep assistant hot-path truth under `AUD-20`.
+
+Latest bots/runtime truth audit:
+`BOTS-RUNTIME-TRUTH-AUDIT-2026-05-19` is verified as the latest `AUD-10`
+evidence. Focused Web bot/dashboard runtime tests passed (`8` files / `61`
+tests), and DB-backed API bot/runtime tests passed (`10` files / `88` tests).
+Coverage includes CRUD/ownership, wallet-first writes, duplicate and entitlement
+guards, selected-bot runtime scope, aggregate monitoring truth, runtime history
+parity, takeover visibility, LIVE/PAPER isolation, and delete cleanup.
+Evidence: `docs/operations/bots-runtime-truth-audit-2026-05-19.md` and
+`docs/planning/bots-runtime-truth-audit-2026-05-19-task.md`.
+Next bot/runtime follow-up: refresh production-safe proof after future deploys;
+keep assistant hot-path truth under `AUD-20`.
+
+Latest security/privacy audit:
+`SECURITY-PRIVACY-AUDIT-2026-05-19` is verified as the latest `AUD-06`
+evidence. Local focused auth/middleware/header API tests passed (`9` files /
+`32` tests), DB-backed auth/profile/API-key/isolation/abuse tests passed (`7`
+files / `47` tests), focused Web auth/profile/API-key tests passed (`7` files
+/ `28` tests), and the public auth cache contract passed (`1` file / `2`
+tests). Evidence:
+`docs/operations/security-privacy-audit-2026-05-19.md` and
+`docs/planning/security-privacy-audit-2026-05-19-task.md`.
+Next security follow-up: refresh production-safe proof after future deploys and
+schedule external independent security review before broader public launch.
+
+Latest architecture exchange-scope wording audit:
+`ARCHITECTURE-EXCHANGE-SCOPE-WORDING-AUDIT-2026-05-19` is complete as
+`AUD-01`/`AUD-ARCH-001` evidence. `DEC-AUD-001` accepted Binance + Gate.io as
+current implementation scope, not Binance-only, while production/live readiness
+remains evidence-bound by exact exchange, market type, and operation. Evidence:
+`docs/operations/architecture-exchange-scope-wording-audit-2026-05-19.md` and
+`docs/planning/architecture-exchange-scope-wording-audit-2026-05-19-task.md`.
+Next exchange follow-up: prove any Gate.io production/live readiness claim by
+exact exchange, market type, and operation before promoting it.
+
+Latest exchange capability truth audit:
+`EXCHANGE-CAPABILITY-TRUTH-AUDIT-2026-05-19` is verified as the latest
+`AUD-09` truth audit after exact matrix repair. API exchange
+capability/registry/boundary tests passed (`4` files / `21` tests), focused
+contract tests passed with exact `(exchange, marketType, operation)` support,
+and API typecheck passed after updating exchange boundary, wallet preview, and
+positions snapshot consumers. Web exchange capability tests passed (`2` files
+/ `3` tests). Evidence:
+`docs/operations/exchange-capability-truth-audit-2026-05-19.md` and
+`docs/planning/exchange-capability-truth-audit-2026-05-19-task.md`.
+Next exchange follow-up: keep future exchange additions on the exact capability
+contract and neutral exchange-owned type aliases. `AUD-EXCH-007` is closed by
+`AUD09-NEUTRAL-EXCHANGE-TYPE-ALIASES-2026-05-19`.
+
+Latest AI assistant runtime truth audit:
+`AI-ASSISTANT-RUNTIME-TRUTH-AUDIT-2026-05-19` is complete as an `AUD-20`
+truth audit. Deterministic assistant foundation is locally proven: backend
+orchestrator tests passed (`2` files / `6` tests), focused Web assistant route
+tests passed (`2` files / `3` tests), and bot assistant config/dry-run e2e
+passed after local Postgres/Redis startup (`1` file / `3` tests). `DEC-AUD-002`
+accepted this as current foundation/dry-run scope and deferred
+BACKTEST/PAPER/LIVE hot-path assistant orchestration. Evidence:
+`docs/operations/ai-assistant-runtime-truth-audit-2026-05-19.md` and
+`docs/planning/ai-assistant-runtime-truth-audit-2026-05-19-task.md`.
+Next assistant follow-up: before any runtime AI trading claim, implement
+hot-path orchestration separately with persisted trace, fail-closed integration,
+and AI red-team evidence.
+
+Latest endpoint-level API docs parity audit:
+`API-ENDPOINT-DOCS-PARITY-AUDIT-2026-05-19` is verified and current after docs
+gap closure. Command: `pnpm run docs:parity:endpoints:api`. Current result:
+`109` Express endpoints, `109` documented route mentions, `0` gaps. Existing module-level
+`pnpm run docs:parity:check` still passes (`API 22/22`, `Web 16/16`, Routes
+`38/38`). Evidence:
+`docs/operations/api-endpoint-docs-parity-2026-05-19/api-endpoint-docs-parity-2026-05-19.md`
+and `docs/planning/api-endpoint-docs-parity-audit-2026-05-19-task.md`.
+Next documentation improvement: rerun endpoint parity after API route or module
+docs changes.
+
+Latest authenticated route-state audit:
+`AUTHENTICATED-ROUTE-STATE-AUDIT-2026-05-19` is verified locally. Local API/Web
+were started against seeded admin data, Browser login reached `/dashboard`,
+and route-state proof passed for canonical public/auth/dashboard/admin plus
+legacy routes. Result: `53` route checks, `53` PASS, `0` CHECK, `0` console
+warning/error routes, and `6` screenshots. Evidence:
+`docs/analysis/audit-baseline-2026-05-19.md`,
+`docs/operations/route-state-audit-2026-05-19/route-state-audit-2026-05-19.md`,
+and `docs/planning/authenticated-route-state-audit-2026-05-19-task.md`.
+Next audit improvement is deeper keyboard/focus/a11y assertions if needed.
+
+Latest full layered audit run:
+`FULL-LAYERED-AUDIT-RUN-2026-05-18` is verified as a broad local audit pass
+with explicit production/LIVE exclusions. Current evidence includes generated
+project index PASS (`PASS:21`, tests indexed `335`), static scan PASS (`0`
+findings), guardrails PASS, docs parity PASS, typecheck PASS, lint PASS, build
+PASS, full Web Vitest PASS (`149` files / `514` tests), route-reachable i18n
+PASS (`0` findings), focused API layer packs PASS, full API Vitest PASS after
+local Postgres/Redis were available, go-live smoke PASS (API `45/45`, Web
+`18/18`), and representative Browser route-state proof for `/`, `/auth/login`,
+and unauthenticated `/dashboard` redirect on desktop/mobile with `0` console
+warnings/errors. Evidence: `docs/analysis/audit-baseline-2026-05-18.md` and
+`docs/planning/full-layered-audit-run-2026-05-18-task.md`.
+Next audit improvement is deeper authenticated browser/screenshot/a11y proof
+where needed. Keep DB-backed API packs sequential unless isolated database
+state is introduced.
+
+Latest reusable audit system:
+`REUSABLE-AUDIT-REGISTRY-2026-05-18` is verified as the reusable audit map.
+It defines stable audit IDs `AUD-00` through `AUD-23` across project index,
+architecture, requirements, backend API, Web routes, UX/UI/a11y, security,
+data model, workers, exchange, bots, engine, orders, positions, wallets,
+markets/strategies, backtests/reports, logs, admin/subscriptions, operations,
+AI assistant, mobile, i18n, and documentation/traceability. Today-run baseline:
+project index PASS (`PASS:21`, tests indexed `335`) and static scan PASS
+(`0` findings). Evidence: `docs/analysis/reusable-audit-registry.md`,
+`docs/analysis/audit-baseline-2026-05-18.md`, and
+`docs/planning/reusable-audit-registry-2026-05-18-task.md`.
+Validation added to the baseline: guardrails PASS, docs parity PASS, typecheck
+PASS, lint PASS, and build PASS. Browser route-state, full API/Web test suite,
+production proofs, and LIVE/exchange-side mutation were not run in this
+registry task.
+
+Latest architecture-code discrepancy audit:
+`PROJECT-ARCHITECTURE-CODE-DISCREPANCY-AUDIT-2026-05-17` is complete as an
+audit baseline, not a repair. Static scan is green with `0` findings and the
+dashboard route inventory matches the canonical route map. Open repair
+candidates, in order: decide assistant runtime truth (`AUD-AI-003`), clean up
+exchange scope overview/domain wording (`AUD-ARCH-001`), then keep endpoint
+parity automation green (`AUD-TRACE-006`). `AUD-EXCH-002` was repaired on
+2026-05-19 by exact `(exchange, marketType, operation)` capability support.
+Evidence:
+`docs/analysis/architecture-code-discrepancy-audit-2026-05-17.md` and
+`docs/planning/project-architecture-code-discrepancy-audit-2026-05-17-task.md`.
+
+Latest full-project audit baseline:
+`PROJECT-FULL-SCAN-BASELINE-2026-05-14` is verified. The audit thread
+generated a current no-network project index and static scan, then ran broad
+local validation. Results: V1 matrix `PASS:21`, static findings `0`, tests
+indexed `335`, guardrails PASS, typecheck PASS, lint PASS, full Web Vitest
+PASS (`149` files / `514` tests), full API Vitest PASS, build PASS, and
+go-live smoke PASS (API `45/45`, Web `18/18`). Evidence:
+`docs/planning/project-full-scan-baseline-2026-05-14-task.md`,
+`docs/operations/project-full-scan-index-2026-05-14.md`, and
+`docs/operations/project-full-static-scan-2026-05-14.md`.
+Next audit candidate: run manual/browser route-state coverage from the
+generated route map, prioritizing Dashboard Home, Bots, Wallets, Markets,
+Strategies, Backtests, Reports, Logs, Profile, Admin, and Auth states. Keep
+LIVE order/cancel/close, exchange-side mutation, existing production data
+mutation, and broader Gate.io/second-LIVE production shape out of scope unless
+the user explicitly approves that proof lane.
+
+Latest complete-analysis expansion:
+`PROJECT-COMPLETE-ANALYSIS-INDEX-2026-05-14` is indexed in
+`docs/operations/project-complete-analysis-index-2026-05-14.md`. It expands
+the audit target beyond the V1 scorecard and classifies Web/API, mobile,
+assistant/AI, route-state, API endpoint, LIVE mutation, Gate.io/second-LIVE,
+and production-data mutation lanes. Key findings: no `.skip(` or `.only(`
+markers found in the active scan; no active implementation `TODO/FIXME/HACK`
+markers found beyond scanner rule definitions; mobile is explicitly scaffold
+only; assistant runtime has local deterministic safety tests but no full
+`AI_TESTING_PROTOCOL.md` multi-turn red-team report. Next exact audit mission:
+`PROJECT-ROUTE-STATE-AUDIT-2026-05-14`, a browser-driven route-state proof for
+all Web routes.
 
 Latest post-V1 strategy snapshot history:
 `POSTV1-STRATEGY-SNAPSHOT-HISTORY-2026-05-14` is locally verified. New

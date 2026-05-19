@@ -1,0 +1,13 @@
+{
+  "generatedAt": "2026-05-19T01:41:31.126Z",
+  "evidenceDate": "2026-05-19",
+  "projectIndex": "docs/operations/project-index-2026-05-19.json",
+  "summary": {
+    "totalFindings": 0,
+    "bySeverity": {},
+    "byCategory": {},
+    "sourceFilesScanned": 667,
+    "sourceMarkers": 29
+  },
+  "findings": []
+}

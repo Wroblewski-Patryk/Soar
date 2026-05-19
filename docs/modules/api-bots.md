@@ -73,11 +73,21 @@ Out of scope:
   - `GET /dashboard/bots/:id/runtime-graph`
   - `GET /dashboard/bots/:id/runtime-monitoring/aggregate`
   - `GET /dashboard/bots/:id/portfolio-history`
-  - `GET /dashboard/bots/:id/runtime-sessions*`
+  - `GET /dashboard/bots/:id/runtime-sessions`
+  - `GET /dashboard/bots/:id/runtime-sessions/:sessionId`
+  - `GET /dashboard/bots/:id/runtime-sessions/:sessionId/positions`
+  - `POST /dashboard/bots/:id/runtime-sessions/:sessionId/positions/:positionId/close`
+  - `GET /dashboard/bots/:id/runtime-sessions/:sessionId/symbol-stats`
+  - `GET /dashboard/bots/:id/runtime-sessions/:sessionId/trades`
   - `GET /dashboard/bots/strategy-drift`
   - `POST /dashboard/bots/strategy-drift/repair`
-  - `GET/POST/PUT/DELETE /dashboard/bots/:id/market-groups*`
+  - `GET/POST /dashboard/bots/:id/market-groups`
+  - `GET/PUT/DELETE /dashboard/bots/:id/market-groups/:groupId`
+  - `GET/POST /dashboard/bots/:id/market-groups/:groupId/strategies`
+  - `PUT /dashboard/bots/:id/market-groups/:groupId/strategies/reorder`
+  - `PUT/DELETE /dashboard/bots/:id/market-groups/:groupId/strategies/:linkId`
   - `GET/PUT /dashboard/bots/:id/assistant-config`
+  - `PUT/DELETE /dashboard/bots/:id/assistant-config/subagents/:slotIndex`
   - `POST /dashboard/bots/:id/assistant-config/dry-run`
 
 ## 6. Security and Risk Guardrails

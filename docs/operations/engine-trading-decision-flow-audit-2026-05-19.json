@@ -1,0 +1,46 @@
+{
+  "auditId": "AUD-11",
+  "name": "Engine And Trading Decision Flow",
+  "date": "2026-05-19",
+  "status": "current local / production mutation not exercised",
+  "environment": "local",
+  "productionMutation": false,
+  "liveOrderCancelClose": false,
+  "exchangeSideMutation": false,
+  "existingProductionDataMutation": false,
+  "results": [
+    {
+      "name": "Focused API engine service/unit pack",
+      "command": "corepack pnpm --filter api exec vitest run src/modules/engine/runtimeSignalMerge.test.ts src/modules/engine/runtimeSignalDecisionEngine.test.ts src/modules/engine/runtimeFinalCandleDecision.service.test.ts src/modules/engine/executionOrchestrator.service.test.ts src/modules/engine/runtimeExecutionDedupe.service.test.ts src/modules/engine/runtimeExchangeOrderGuard.service.test.ts src/modules/engine/preTrade.service.test.ts src/modules/engine/preTradeRisk.service.test.ts src/modules/engine/paperLiveDecisionEquivalence.test.ts src/modules/engine/runtimeSignalMarketDataGateway.test.ts src/modules/engine/runtimeSignalLoop.service.test.ts src/modules/engine/runtimeSignalLoopSupervisor.test.ts src/modules/engine/runtimeScanLoop.service.test.ts src/modules/engine/runtimePositionAutomation.service.test.ts src/modules/engine/runtimePositionAutomation.defaultDeps.test.ts",
+      "result": "PASS",
+      "files": 15,
+      "tests": 173,
+      "notes": "Expected stderr appears in tests that intentionally simulate failover/fail-closed paths."
+    },
+    {
+      "name": "Focused API engine DB-backed e2e/smoke pack",
+      "command": "corepack pnpm --filter api exec vitest run src/modules/engine/runtime-flow.e2e.test.ts src/modules/engine/runtime-orchestration-smoke.e2e.test.ts src/modules/engine/preTrade.e2e.test.ts src/modules/engine/executionOrchestrator.owned-import.e2e.test.ts",
+      "result": "PASS",
+      "files": 4,
+      "tests": 13
+    }
+  ],
+  "findings": [
+    {
+      "id": "AUD-ENG-004",
+      "severity": "P1",
+      "status": "explicit exclusion",
+      "summary": "Production LIVE/exchange-side mutation is not covered by this audit."
+    },
+    {
+      "id": "AUD-ENG-005",
+      "severity": "P1",
+      "status": "tracked by AUD-20",
+      "summary": "Assistant hot-path runtime integration remains separate and unresolved."
+    }
+  ],
+  "cleanup": {
+    "localInfraStopped": true,
+    "command": "corepack pnpm run go-live:infra:down"
+  }
+}

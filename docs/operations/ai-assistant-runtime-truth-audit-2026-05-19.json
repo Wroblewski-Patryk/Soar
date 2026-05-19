@@ -1,0 +1,75 @@
+{
+  "auditId": "AUD-20",
+  "name": "AI Assistant Runtime Truth Audit",
+  "date": "2026-05-19",
+  "status": "current foundation / hot-path assistant scope deferred",
+  "result": {
+    "foundationExists": true,
+    "hotPathIntegrationProven": false,
+    "aiTestingProtocolPassed": false,
+    "productionJourneyRun": false,
+    "liveMutationRun": false,
+    "exchangeSideMutationRun": false,
+    "existingProductionDataMutationRun": false
+  },
+  "evidence": {
+    "docs": [
+      "docs/architecture/11_assistant-runtime.md",
+      "docs/architecture/reference/assistant-runtime-contract.md",
+      "docs/modules/api-engine.md",
+      "docs/modules/api-bots.md",
+      "AI_TESTING_PROTOCOL.md"
+    ],
+    "code": [
+      "apps/api/src/modules/engine/assistantOrchestrator.service.ts",
+      "apps/api/src/modules/bots/botAssistant.service.ts",
+      "apps/api/src/modules/bots/bots.routes.ts",
+      "apps/web/src/app/dashboard/bots/[id]/assistant/page.test.tsx",
+      "apps/web/src/app/dashboard/bots/assistant/page.test.tsx"
+    ],
+    "tests": [
+      {
+        "command": "pnpm --filter api exec vitest run src/modules/engine/assistantOrchestrator.service.test.ts src/modules/engine/assistantOrchestrator.parity.test.ts",
+        "result": "PASS",
+        "files": 2,
+        "tests": 6
+      },
+      {
+        "command": "pnpm --filter web exec vitest run 'src/app/dashboard/bots/[id]/assistant/page.test.tsx' src/app/dashboard/bots/assistant/page.test.tsx",
+        "result": "PASS",
+        "files": 2,
+        "tests": 3
+      },
+      {
+        "command": "pnpm --filter api exec vitest run src/modules/bots/bots.orchestration.e2e.test.ts",
+        "result": "PASS_AFTER_LOCAL_INFRA_UP",
+        "files": 1,
+        "tests": 3,
+        "initialBlockedReason": "Postgres unavailable at localhost:5432"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "id": "AUD-AI-003",
+      "severity": "P1",
+      "summary": "Assistant architecture overstates BACKTEST/PAPER/LIVE hot-path runtime integration.",
+      "status": "open",
+      "requiredDecision": "Implement hot-path orchestration with AI red-team evidence or narrow architecture to foundation-only."
+    },
+    {
+      "id": "AUD-AI-004",
+      "severity": "P1",
+      "summary": "Full AI_TESTING_PROTOCOL multi-turn red-team proof is not present for assistant behavior.",
+      "status": "open",
+      "requiredDecision": "Add reproducible AI red-team scenario harness/report before claiming deployable AI behavior complete."
+    }
+  ],
+  "cleanup": {
+    "localInfraStopped": true,
+    "chromeHeadlessShellLeftRunning": false
+  },
+  "decisionStatus": "accepted_deferred_scope",
+  "selectedDecision": "DEC-AUD-002: current assistant scope is foundation/dry-run; hot-path BACKTEST/PAPER/LIVE orchestration is later/gated.",
+  "architectureDecisionApplied": true
+}

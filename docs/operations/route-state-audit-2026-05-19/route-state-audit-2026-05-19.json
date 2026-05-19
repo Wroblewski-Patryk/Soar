@@ -1,0 +1,718 @@
+{
+  "generatedAt": "2026-05-18T22:42:09.841Z",
+  "scope": "local authenticated route-state proof against seeded admin data; no production or LIVE mutation",
+  "seededIds": {
+    "wallet": "3c26c9e1-7f88-4d21-a9c6-20dae4936802",
+    "market": "62384753-537c-49f2-a1fa-9f46f37e4d36",
+    "strategy": "e81a8561-b955-4835-ae6b-3608901497ef",
+    "bot": "0d5fb1f2-a940-4c69-abea-3147d7115ad0",
+    "missingBacktest": "00000000-0000-4000-8000-000000000000"
+  },
+  "routesChecked": 53,
+  "passCount": 53,
+  "checkCount": 0,
+  "consoleIssueRoutes": [],
+  "redirects": [
+    {
+      "requestedPath": "/dashboard/exchanges",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/profile#api"
+    },
+    {
+      "requestedPath": "/dashboard/strategies/e81a8561-b955-4835-ae6b-3608901497ef",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/strategies/e81a8561-b955-4835-ae6b-3608901497ef/edit"
+    },
+    {
+      "requestedPath": "/dashboard/bots/assistant",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/bots"
+    },
+    {
+      "requestedPath": "/dashboard/bots/new",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/bots/create"
+    },
+    {
+      "requestedPath": "/dashboard/bots/runtime",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/bots"
+    },
+    {
+      "requestedPath": "/dashboard/bots/0d5fb1f2-a940-4c69-abea-3147d7115ad0",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/bots/0d5fb1f2-a940-4c69-abea-3147d7115ad0/preview"
+    },
+    {
+      "requestedPath": "/dashboard/bots/0d5fb1f2-a940-4c69-abea-3147d7115ad0/runtime",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/bots/0d5fb1f2-a940-4c69-abea-3147d7115ad0/preview"
+    },
+    {
+      "requestedPath": "/dashboard/wallets",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/wallets/list"
+    },
+    {
+      "requestedPath": "/dashboard/wallets/3c26c9e1-7f88-4d21-a9c6-20dae4936802",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/wallets/3c26c9e1-7f88-4d21-a9c6-20dae4936802/edit"
+    },
+    {
+      "requestedPath": "/admin",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/admin/subscriptions"
+    },
+    {
+      "requestedPath": "/dashboard/orders",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/bots"
+    },
+    {
+      "requestedPath": "/dashboard/positions",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/bots"
+    }
+  ],
+  "screenshots": [
+    {
+      "route": "/dashboard",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "name": "dashboard-desktop",
+      "path": "C:\\Personal\\Projekty\\Aplikacje\\Soar\\docs\\operations\\route-state-audit-2026-05-19\\dashboard-desktop.png"
+    },
+    {
+      "route": "/dashboard/bots",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "name": "bots-desktop",
+      "path": "C:\\Personal\\Projekty\\Aplikacje\\Soar\\docs\\operations\\route-state-audit-2026-05-19\\bots-desktop.png"
+    },
+    {
+      "route": "/dashboard/profile",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "name": "profile-desktop",
+      "path": "C:\\Personal\\Projekty\\Aplikacje\\Soar\\docs\\operations\\route-state-audit-2026-05-19\\profile-desktop.png"
+    },
+    {
+      "route": "/admin/users",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "name": "admin-users-desktop",
+      "path": "C:\\Personal\\Projekty\\Aplikacje\\Soar\\docs\\operations\\route-state-audit-2026-05-19\\admin-users-desktop.png"
+    },
+    {
+      "route": "/dashboard",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "name": "dashboard-mobile",
+      "path": "C:\\Personal\\Projekty\\Aplikacje\\Soar\\docs\\operations\\route-state-audit-2026-05-19\\dashboard-mobile.png"
+    },
+    {
+      "route": "/dashboard/bots",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "name": "bots-mobile",
+      "path": "C:\\Personal\\Projekty\\Aplikacje\\Soar\\docs\\operations\\route-state-audit-2026-05-19\\bots-mobile.png"
+    }
+  ],
+  "results": [
+    {
+      "requestedPath": "/",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - link \"Dashboard\":\n    - /url: /dashboard\n    - text: Dashboard\n  - link \"Admin\":\n    - /url: /admin\n    - text: Admin\n- main:\n  - text: Trading bot and strategy execution platform\n  - heading \"Automate trading from idea to execution.\" [level=1]\n  - paragraph: Soar unifies research, strategy builder, backtests, and live bot runtime in one flow. T"
+    },
+    {
+      "requestedPath": "/auth/login",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/auth/login",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - link \"Dashboard\":\n    - /url: /dashboard\n    - text: Dashboard\n  - link \"Admin\":\n    - /url: /admin\n    - text: Admin\n- main:\n  - heading \"Sign in to Soar\" [level=1]\n  - paragraph: Access your control center and monitor markets, positions, and bot runtime in one place.\n  - generic: Email\n  - textbox \"Email\":\n    - /placeholder: name@example.com\n"
+    },
+    {
+      "requestedPath": "/auth/register",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/auth/register",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n- main:\n  - heading \"Create your Soar account\" [level=1]\n  - paragraph: Set up your account and start testing strategies, running bots, and tracking risk in one dashboard.\n  - generic: Email\n  - textbox \"Email\" [disabled]:\n    - /placeholder: name@example.com\n  - generic: Password\n  - textbox \"Password\" [disabled]:\n    - /placeholder: \"********\"\n  -"
+    },
+    {
+      "requestedPath": "/offline",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/offline",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- main:\n  - heading \"Offline Mode\" [level=1]\n  - paragraph: Soar is temporarily offline. Check your connection and try again.\n- button \"Open Next.js Dev Tools\":\n- alert"
+    },
+    {
+      "requestedPath": "/dashboard",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/exchanges",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/profile#api",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/markets/list",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/markets/list",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/markets/create",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/markets/create",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/markets/62384753-537c-49f2-a1fa-9f46f37e4d36/edit",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/markets/62384753-537c-49f2-a1fa-9f46f37e4d36/edit",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/strategies/list",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/strategies/list",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/strategies/create",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/strategies/create",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/strategies/e81a8561-b955-4835-ae6b-3608901497ef",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/strategies/e81a8561-b955-4835-ae6b-3608901497ef/edit",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/strategies/e81a8561-b955-4835-ae6b-3608901497ef/edit",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/strategies/e81a8561-b955-4835-ae6b-3608901497ef/edit",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/backtests/list",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/backtests/list",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/backtests/create",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/backtests/create",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/backtests/00000000-0000-4000-8000-000000000000",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/backtests/00000000-0000-4000-8000-000000000000",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/bots",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/bots",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/bots/assistant",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/bots",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/bots/create",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/bots/create",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/bots/new",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/bots/create",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/bots/runtime",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/bots",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/bots/0d5fb1f2-a940-4c69-abea-3147d7115ad0",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/bots/0d5fb1f2-a940-4c69-abea-3147d7115ad0/preview",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/bots/0d5fb1f2-a940-4c69-abea-3147d7115ad0/assistant",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/bots/0d5fb1f2-a940-4c69-abea-3147d7115ad0/assistant",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/bots/0d5fb1f2-a940-4c69-abea-3147d7115ad0/edit",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/bots/0d5fb1f2-a940-4c69-abea-3147d7115ad0/edit",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/bots/0d5fb1f2-a940-4c69-abea-3147d7115ad0/preview",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/bots/0d5fb1f2-a940-4c69-abea-3147d7115ad0/preview",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/bots/0d5fb1f2-a940-4c69-abea-3147d7115ad0/runtime",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/bots/0d5fb1f2-a940-4c69-abea-3147d7115ad0/preview",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/reports",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/reports",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/logs",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/logs",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/profile",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/profile",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/wallets",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/wallets/list",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/wallets/create",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/wallets/create",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/wallets/list",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/wallets/list",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/wallets/3c26c9e1-7f88-4d21-a9c6-20dae4936802",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/wallets/3c26c9e1-7f88-4d21-a9c6-20dae4936802/edit",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/wallets/3c26c9e1-7f88-4d21-a9c6-20dae4936802/edit",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/wallets/3c26c9e1-7f88-4d21-a9c6-20dae4936802/edit",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/wallets/3c26c9e1-7f88-4d21-a9c6-20dae4936802/preview",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/wallets/3c26c9e1-7f88-4d21-a9c6-20dae4936802/preview",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/admin",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/admin/subscriptions",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation:\n    - link \"Subscriptions\":\n      - /url: /admin/subscriptions\n    - link \"Users\":\n      - /url: /admin/users\n- main:\n  - heading \"Subscriptions admin\" [level=1]\n  - paragraph: Edit pricing and entitlement limits for FREE, ADVANCED, and PROFESSIONAL plans.\n  - button \"Refresh\"\n  - table:\n    - rowgroup:\n      - row \"Plan Price Total "
+    },
+    {
+      "requestedPath": "/admin/users",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/admin/users",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation:\n    - link \"Subscriptions\":\n      - /url: /admin/subscriptions\n    - link \"Users\":\n      - /url: /admin/users\n- main:\n  - heading \"Users admin\" [level=1]\n  - paragraph: Manage account roles and active subscription plans for registered users.\n  - button \"Refresh\"\n  - text: Search by email or name\n  - textbox \"Search by email or name\":"
+    },
+    {
+      "requestedPath": "/admin/subscriptions",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/admin/subscriptions",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation:\n    - link \"Subscriptions\":\n      - /url: /admin/subscriptions\n    - link \"Users\":\n      - /url: /admin/users\n- main:\n  - heading \"Subscriptions admin\" [level=1]\n  - paragraph: Edit pricing and entitlement limits for FREE, ADVANCED, and PROFESSIONAL plans.\n  - button \"Refresh\"\n  - table:\n    - rowgroup:\n      - row \"Plan Price Total "
+    },
+    {
+      "requestedPath": "/dashboard/orders",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/bots",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/dashboard/positions",
+      "viewport": "desktop-1440x900",
+      "finalUrl": "http://localhost:3002/dashboard/bots",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation \"Dashboard navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - text: Dashboard\n      - link \"Wallets\":\n        - /url: /dashboard/wallets/list\n        - text: Wallets\n      - link \"Markets\":\n        - /url: /dashboard/markets/list\n        - text: Markets\n      - link \"Strategies\":\n        - /url: /d"
+    },
+    {
+      "requestedPath": "/",
+      "viewport": "mobile-390x844",
+      "finalUrl": "http://localhost:3002/",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n- main:\n  - text: Trading bot and strategy execution platform\n  - heading \"Automate trading from idea to execution.\" [level=1]\n  - paragraph: Soar unifies research, strategy builder, backtests, and live bot runtime in one flow. Test faster, deploy with confidence, and keep risk under control.\n  - article:\n    - paragraph: Backtest and runtime in one"
+    },
+    {
+      "requestedPath": "/auth/login",
+      "viewport": "mobile-390x844",
+      "finalUrl": "http://localhost:3002/auth/login",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n- main:\n  - heading \"Sign in to Soar\" [level=1]\n  - paragraph: Access your control center and monitor markets, positions, and bot runtime in one place.\n  - generic: Email\n  - textbox \"Email\" [disabled]:\n    - /placeholder: name@example.com\n  - generic: Password\n  - textbox \"Password\" [disabled]:\n    - /placeholder: \"********\"\n  - button \"Show passwo"
+    },
+    {
+      "requestedPath": "/auth/register",
+      "viewport": "mobile-390x844",
+      "finalUrl": "http://localhost:3002/auth/register",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - link \"Dashboard\":\n    - /url: /dashboard\n    - text: Dashboard\n  - link \"Admin\":\n    - /url: /admin\n    - text: Admin\n- main:\n  - heading \"Create your Soar account\" [level=1]\n  - paragraph: Set up your account and start testing strategies, running bots, and tracking risk in one dashboard.\n  - generic: Email\n  - textbox \"Email\":\n    - /placeholde"
+    },
+    {
+      "requestedPath": "/dashboard",
+      "viewport": "mobile-390x844",
+      "finalUrl": "http://localhost:3002/dashboard",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - button \"Menu\":\n    - generic: Menu\n- main:\n  - navigation \"Breadcrumb navigation\":\n    - list:\n      - heading \"Dashboard\" [level=1]:\n        - link \"Dashboard\":\n          - /url: /dashboard\n          - generic: Dashboard\n  - generic \"Loading operational dashboard\":\n    - region \"Loading KPI row\":\n      - article\n      - article\n    - region \"Lo"
+    },
+    {
+      "requestedPath": "/dashboard/bots",
+      "viewport": "mobile-390x844",
+      "finalUrl": "http://localhost:3002/dashboard/bots",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - button \"Menu\":\n    - generic: Menu\n- main:\n  - navigation \"Breadcrumb navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - generic: Dashboard\n      - heading \"Bots\" [level=1]:\n        - link \"Bots\":\n          - /url: /dashboard/bots\n          - generic: Bots\n      - text: Bots list\n  - button \"Create bot\":\n    "
+    },
+    {
+      "requestedPath": "/dashboard/bots/0d5fb1f2-a940-4c69-abea-3147d7115ad0/preview",
+      "viewport": "mobile-390x844",
+      "finalUrl": "http://localhost:3002/dashboard/bots/0d5fb1f2-a940-4c69-abea-3147d7115ad0/preview",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - button \"Menu\":\n    - generic: Menu\n- main:\n  - navigation \"Breadcrumb navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - generic: Dashboard\n      - heading \"Bots\" [level=1]:\n        - link \"Bots\":\n          - /url: /dashboard/bots\n          - generic: Bots\n      - text: Preview\n  - heading \"Bots operations ce"
+    },
+    {
+      "requestedPath": "/dashboard/wallets/list",
+      "viewport": "mobile-390x844",
+      "finalUrl": "http://localhost:3002/dashboard/wallets/list",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - button \"Menu\":\n    - generic: Menu\n- main:\n  - navigation \"Breadcrumb navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - generic: Dashboard\n      - heading \"Wallets\" [level=1]:\n        - link \"Wallets\":\n          - /url: /dashboard/wallets/list\n          - generic: Wallets\n      - text: List\n  - button \"Creat"
+    },
+    {
+      "requestedPath": "/dashboard/markets/list",
+      "viewport": "mobile-390x844",
+      "finalUrl": "http://localhost:3002/dashboard/markets/list",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - button \"Menu\":\n    - generic: Menu\n- main:\n  - navigation \"Breadcrumb navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - generic: Dashboard\n      - heading \"Markets\" [level=1]:\n        - link \"Markets\":\n          - /url: /dashboard/markets/list\n          - generic: Markets\n      - text: List\n  - button \"Creat"
+    },
+    {
+      "requestedPath": "/dashboard/strategies/list",
+      "viewport": "mobile-390x844",
+      "finalUrl": "http://localhost:3002/dashboard/strategies/list",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - button \"Menu\":\n    - generic: Menu\n- main:\n  - navigation \"Breadcrumb navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - generic: Dashboard\n      - heading \"Strategies\" [level=1]:\n        - link \"Strategies\":\n          - /url: /dashboard/strategies/list\n          - generic: Strategies\n      - text: List\n  - b"
+    },
+    {
+      "requestedPath": "/dashboard/backtests/list",
+      "viewport": "mobile-390x844",
+      "finalUrl": "http://localhost:3002/dashboard/backtests/list",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - button \"Menu\":\n    - generic: Menu\n- main:\n  - navigation \"Breadcrumb navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - generic: Dashboard\n      - heading \"Backtests\" [level=1]:\n        - link \"Backtests\":\n          - /url: /dashboard/backtests/list\n          - generic: Backtests\n      - text: List\n  - butto"
+    },
+    {
+      "requestedPath": "/dashboard/profile",
+      "viewport": "mobile-390x844",
+      "finalUrl": "http://localhost:3002/dashboard/profile",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - button \"Menu\":\n    - generic: Menu\n- main:\n  - navigation \"Breadcrumb navigation\":\n    - list:\n      - link \"Dashboard\":\n        - /url: /dashboard\n        - generic: Dashboard\n      - heading \"My account\" [level=1]:\n        - link \"My account\":\n          - /url: /dashboard/profile\n          - generic: My account\n      - text: Overview\n  - tabli"
+    },
+    {
+      "requestedPath": "/admin/users",
+      "viewport": "mobile-390x844",
+      "finalUrl": "http://localhost:3002/admin/users",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation:\n    - link \"Subscriptions\":\n      - /url: /admin/subscriptions\n    - link \"Users\":\n      - /url: /admin/users\n- main:\n  - heading \"Users admin\" [level=1]\n  - paragraph: Manage account roles and active subscription plans for registered users.\n  - button \"Refresh\"\n  - text: Search by email or name\n  - textbox \"Search by email or name\":"
+    },
+    {
+      "requestedPath": "/admin/subscriptions",
+      "viewport": "mobile-390x844",
+      "finalUrl": "http://localhost:3002/admin/subscriptions",
+      "title": "Soar",
+      "status": "PASS",
+      "hasMain": true,
+      "hasSkipLink": true,
+      "consoleWarningsOrErrors": 0,
+      "sample": "- link \"Skip to main content\":\n  - /url: \"#main-content\"\n- region \"Notifications alt+T\"\n- banner:\n  - link \"Soar\":\n    - /url: /\n    - generic: Soar\n  - navigation:\n    - link \"Subscriptions\":\n      - /url: /admin/subscriptions\n    - link \"Users\":\n      - /url: /admin/users\n- main:\n  - heading \"Subscriptions admin\" [level=1]\n  - paragraph: Edit pricing and entitlement limits for FREE, ADVANCED, and PROFESSIONAL plans.\n  - button \"Refresh\"\n  - table:\n    - rowgroup:\n      - row \"Plan Price Total "
+    }
+  ]
+}

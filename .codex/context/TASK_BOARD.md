@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-05-14
+Last updated: 2026-05-19
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -16,6 +16,469 @@ Last updated: 2026-05-14
     needed
 
 ## READY
+
+- [x] `REQUIREMENTS-DELIVERY-MAP-AUDIT-2026-05-19 research: refresh AUD-02 requirements/source-of-truth alignment`
+  - 2026-05-19: Completed the dedicated `AUD-02` requirements and delivery-map
+    audit after the full reusable rollup. Fresh `AUD-00` generated evidence
+    also passed for 2026-05-19: project index `PASS:21`, tests indexed `335`,
+    and static scan findings `0`. Follow-up refreshed the delivery map from
+    current audit truth, restored risk-ID uniqueness by renumbering the
+    audit-process row to `RISK-036`, and synchronized continuation state with
+    the rollup. `AUD-02` is current for source-of-truth alignment after
+    follow-up; production-boundary requirements remain partial only where fresh
+    production proof was intentionally excluded. Evidence:
+    `docs/operations/requirements-delivery-map-audit-2026-05-19.md`,
+    `docs/operations/project-index-2026-05-19.md`, and
+    `docs/operations/v1-static-issue-scan-2026-05-19.md`.
+
+- [x] `FULL-REUSABLE-AUDIT-ROLLUP-2026-05-19 research: close AUD-00 through AUD-23 rollup`
+  - 2026-05-19: Published final reusable audit rollup for `AUD-00` through
+    `AUD-23`, including stable statuses, residual repair queue, and explicit
+    production/LIVE/exchange mutation exclusions. A later decision-sync pass
+    resolved `AUD-01` and `AUD-20`, leaving `AUD-19` fresh production release
+    evidence as the next production-readiness gate. Evidence:
+    `docs/operations/full-reusable-audit-rollup-2026-05-19.md` and
+    `docs/planning/full-reusable-audit-rollup-2026-05-19-task.md`.
+
+- [x] `AUDIT-DECISION-PACKET-2026-05-19 research: packet remaining audit decisions`
+  - 2026-05-19: Prepared and then resolved the audit decision packet.
+    `DEC-AUD-001` accepts Binance + Gate.io as current implementation scope,
+    not Binance-only. `DEC-AUD-002` accepts assistant foundation/dry-run as
+    current scope and defers hot-path orchestration. Evidence:
+    `docs/operations/audit-decision-packet-2026-05-19.md` and
+    `docs/planning/audit-decision-packet-2026-05-19-task.md`.
+
+- [x] `AUDIT-OPEN-DECISION-STATE-SYNC-2026-05-19 research: sync residual decision state`
+  - 2026-05-19: Synchronized risk, requirement, known-issue, and
+    documentation-drift state after the audit decision packet. Repaired
+    `AUD-EXCH-002` and closed `AUD-EXCH-007` are no longer described as open
+    blockers. A later decision-sync pass accepted `DEC-AUD-001` and
+    `DEC-AUD-002`, so the remaining audit blocker is fresh `AUD-19` production
+    release evidence before any new production readiness claim. Evidence:
+    `docs/planning/audit-open-decision-state-sync-2026-05-19-task.md`.
+
+- [x] `AUDIT-DECISION-REPAIR-PLAYBOOKS-2026-05-19 planning: prepare post-decision repair playbooks`
+  - 2026-05-19: Prepared option-specific repair playbooks for `DEC-AUD-001`
+    exchange-scope wording and `DEC-AUD-002` assistant runtime truth. They now
+    serve as historical guidance for the accepted decision repair; runtime
+    behavior was not changed. Evidence:
+    `docs/operations/audit-decision-repair-playbooks-2026-05-19.md` and
+    `docs/planning/audit-decision-repair-playbooks-2026-05-19-task.md`.
+
+- [x] `AUDIT-MACHINE-READABLE-DECISION-LINKS-2026-05-19 planning: link decision JSON to repair playbooks`
+  - 2026-05-19: Added machine-readable links from the full audit rollup JSON
+    and audit decision packet JSON to the post-decision repair playbooks.
+    Evidence:
+    `docs/planning/audit-machine-readable-decision-links-2026-05-19-task.md`.
+
+- [x] `FULL-REUSABLE-AUDIT-HANDOFF-2026-05-19 planning: create audit handoff packet`
+  - 2026-05-19: Created a concise handoff packet for the full reusable audit
+    mission with current source-of-truth files, validation, open decisions,
+    residual risks, and resume instructions. Added a machine-readable JSON
+    handoff for future automation/readback. Evidence:
+    `docs/operations/full-reusable-audit-handoff-2026-05-19.md`,
+    `docs/operations/full-reusable-audit-handoff-2026-05-19.json`, and
+    `docs/planning/full-reusable-audit-handoff-2026-05-19-task.md`.
+
+- [x] `AUDIT-HANDOFF-INDEX-LINK-SYNC-2026-05-19 planning: link audit handoff from indexes`
+  - 2026-05-19: Added the full reusable audit handoff link to the
+    machine-readable rollup JSON and project memory index. Evidence:
+    `docs/planning/audit-handoff-index-link-sync-2026-05-19-task.md`.
+
+- [x] `AUDIT-HANDOFF-CROSSLINK-SYNC-2026-05-19 planning: cross-link audit handoff artifacts`
+  - 2026-05-19: Linked the handoff Markdown to its JSON pair and linked both
+    handoff artifacts from the rollup Markdown. Evidence:
+    `docs/planning/audit-handoff-crosslink-sync-2026-05-19-task.md`.
+
+- [x] `REUSABLE-AUDIT-ARTIFACT-MANIFEST-2026-05-19 planning: create audit artifact manifest`
+  - 2026-05-19: Created a human-readable and machine-readable manifest mapping
+    `AUD-00` through `AUD-23` to current reports, task records, open decisions,
+    and safety boundaries for future reruns. Evidence:
+    `docs/operations/reusable-audit-artifact-manifest-2026-05-19.md`,
+    `docs/operations/reusable-audit-artifact-manifest-2026-05-19.json`, and
+    `docs/planning/reusable-audit-artifact-manifest-2026-05-19-task.md`.
+
+- [x] `REUSABLE-AUDIT-MANIFEST-PATH-CHECK-2026-05-19 verification: verify manifest paths`
+  - 2026-05-19: Verified the reusable audit artifact manifest references only
+    existing repository paths: `81` paths checked, `0` missing. Evidence:
+    `docs/planning/reusable-audit-manifest-path-check-2026-05-19-task.md`.
+
+- [x] `REUSABLE-AUDIT-MANIFEST-CHECK-COMMAND-2026-05-19 verification: add reusable manifest check command`
+  - 2026-05-19: Added `corepack pnpm run audit:manifest:check`, which
+    validates manifest JSON, `AUD-00` through `AUD-23` coverage, referenced
+    path existence, and decision packet/playbook links. Added focused
+    regression tests via `corepack pnpm run audit:manifest:check:test`.
+    Evidence:
+    `docs/planning/reusable-audit-manifest-check-command-2026-05-19-task.md`.
+
+- [x] `REUSABLE-AUDIT-MANIFEST-COMPARE-COMMAND-2026-05-19 verification: add reusable manifest comparison command`
+  - 2026-05-19: Added `corepack pnpm run audit:manifest:compare`, which
+    compares two reusable audit manifests for audit status regressions,
+    summary regressions, added open decisions, and safety-boundary regressions.
+    The current manifest self-comparison passes and JSON output is available
+    for future automation. Added focused regression tests via
+    `corepack pnpm run audit:manifest:compare:test`. Evidence:
+    `docs/planning/reusable-audit-manifest-compare-command-2026-05-19-task.md`.
+
+- [x] `REUSABLE-AUDIT-MANIFEST-VERIFY-COMMAND-2026-05-19 verification: add one-command manifest verification`
+  - 2026-05-19: Added `corepack pnpm run audit:manifest:verify`, which runs
+    manifest checker tests, manifest comparison tests, current manifest check,
+    and current manifest self-comparison as one fail-fast verification bundle.
+    Evidence:
+    `docs/planning/reusable-audit-manifest-verify-command-2026-05-19-task.md`.
+
+- [x] `REUSABLE-AUDIT-RERUN-PLAYBOOK-2026-05-19 planning: publish audit rerun playbook`
+  - 2026-05-19: Published an operations playbook for rerunning the reusable
+    audit set against the 2026-05-19 baseline, including preconditions, run
+    order, manifest validation/compare commands, regression rules, stop
+    conditions, closure checks, and cleanup checks. Added a machine-readable
+    JSON pair for future automation/readback plus `audit:rerun-playbook:check`
+    and focused regression tests; `audit:manifest:verify` now includes the
+    rerun playbook checks. Evidence:
+    `docs/operations/reusable-audit-rerun-playbook-2026-05-19.md`,
+    `docs/operations/reusable-audit-rerun-playbook-2026-05-19.json`, and
+    `docs/planning/reusable-audit-rerun-playbook-2026-05-19-task.md`.
+
+- [x] `REUSABLE-AUDIT-TOOLING-INDEX-2026-05-19 planning: publish audit tooling index`
+  - 2026-05-19: Published a human-readable and machine-readable map of
+    reusable audit scripts and commands, with `audit:manifest:verify` as the
+    primary closure command and explicit safety boundaries. Added
+    `audit:tooling-index:check` and focused regression tests; the primary
+    verify command now includes tooling-index checks. Evidence:
+    `docs/operations/reusable-audit-tooling-index-2026-05-19.md`,
+    `docs/operations/reusable-audit-tooling-index-2026-05-19.json`, and
+    `docs/planning/reusable-audit-tooling-index-2026-05-19-task.md`.
+
+- [x] `AUDIT-REMEDIATION-MASTER-PLAN-2026-05-19 planning: convert audit findings into repair roadmap`
+  - 2026-05-19: Published a master remediation plan that converts the reusable
+    audit rollup into prioritized work packages for exchange architecture
+    truth, assistant runtime truth, production release evidence, production-safe
+    evidence refreshes, security governance, UX/a11y deepening, mobile
+    activation, and audit tooling maintenance. Evidence:
+    `docs/planning/audit-remediation-master-plan-2026-05-19.md`.
+
+- [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
+  - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
+    Route-reachable i18n audit passed with findings `0`, localCopy `0`,
+    fallbackPl `0`, and hardcoded `0`. Focused Web i18n pack passed (`8` files
+    / `26` tests). Evidence:
+    `docs/operations/i18n-copy-reachability-audit-2026-05-19.md` and
+    `docs/planning/i18n-copy-reachability-audit-2026-05-19-task.md`.
+
+- [x] `MOBILE-CROSS-PLATFORM-SCOPE-AUDIT-2026-05-19 research: refresh AUD-21 mobile scope`
+  - 2026-05-19: Completed the `AUD-21` mobile/cross-platform scope audit.
+    Mobile remains scaffold-only: `apps/mobile` contains only package, README,
+    and placeholder source files; mobile build/test scripts intentionally print
+    deferred scaffold messages; mobile docs state no production mobile runtime
+    and no independent mobile backend contracts. Responsive Web mobile evidence
+    remains under `AUD-05`, not native app parity. Evidence:
+    `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
+    `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`.
+
+- [x] `OPERATIONS-RELEASE-DEPLOYMENT-AUDIT-2026-05-19 research: refresh AUD-19 operations/release`
+  - 2026-05-19: Completed the local `AUD-19` operations/release/deployment
+    audit. Typecheck, lint, build, go-live smoke, and local DB backup/restore
+    check passed. Go-live smoke covered API (`4` files / `45` tests) and Web
+    (`3` files / `18` tests). The local backup/restore check requires a
+    running local Postgres container; the first no-infra run failed with that
+    precondition, then passed after `go-live:infra:up`. No production deploy,
+    production database mutation, production journey, LIVE mutation,
+    exchange-side mutation, or existing production data mutation was performed.
+    Evidence:
+    `docs/operations/operations-release-deployment-audit-2026-05-19.md` and
+    `docs/planning/operations-release-deployment-audit-2026-05-19-task.md`.
+
+- [x] `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19 research: refresh AUD-07 data model/migrations`
+  - 2026-05-19: Completed the `AUD-07` data model/migrations audit. Prisma
+    schema validation passed, local migration status reported `54` migrations
+    and schema up to date, full local migration replay applied all `54`
+    migrations, schema diff generation passed, and isolated representative
+    DB-backed tests passed for wallets (`1` file / `24` tests), backtests (`1`
+    file / `15` tests), and runtime repository behavior (`1` file / `2`
+    tests). Follow-up `corepack pnpm run audit:data:db-isolated` passed and now
+    provides the canonical sequential reset-and-run path for representative
+    DB-backed audit packs. No production database, production journey, LIVE
+    mutation, exchange-side mutation, or existing production data mutation was
+    performed.
+    Evidence: `docs/operations/data-model-migrations-audit-2026-05-19.md` and
+    `docs/planning/data-model-migrations-audit-2026-05-19-task.md`.
+
+- [x] `WORKERS-RUNTIME-OPERATIONS-AUDIT-2026-05-19 research: refresh AUD-08 workers/runtime operations`
+  - 2026-05-19: Completed the `AUD-08` workers/runtime operations audit. The
+    focused API worker/runtime pack passed (`17` files / `85` tests). Coverage
+    includes worker ownership/topology, protected worker health/readiness,
+    runtime freshness pass/fail/skip behavior, global `/ready` diagnostics,
+    market-stream source config, subscriptions, fanout and routes, exchange
+    polling, Binance stream parsing, queue tuning, backtest job persistence,
+    execution orchestration, and PAPER runtime-flow telemetry. Expected stderr
+    appeared only in the intentional Redis-startup retry test. No production
+    journey, LIVE mutation, exchange-side mutation, or existing production data
+    mutation was performed. Evidence:
+    `docs/operations/workers-runtime-operations-audit-2026-05-19.md` and
+    `docs/planning/workers-runtime-operations-audit-2026-05-19-task.md`.
+
+- [x] `ADMIN-SUBSCRIPTIONS-ENTITLEMENTS-AUDIT-2026-05-19 research: refresh AUD-18 admin/subscriptions`
+  - 2026-05-19: Completed the `AUD-18` admin/subscriptions/entitlements audit.
+    Focused Web admin/profile subscription tests passed (`4` files / `9`
+    tests), and DB-backed API admin/subscriptions/entitlements tests passed
+    (`5` files / `25` tests). Coverage includes admin-only access, user
+    listing with subscription metadata, role/plan updates, self-demotion
+    prevention, plan/entitlement validation, profile subscription readback, bot
+    limit and LIVE trading gates, and Web admin/profile subscription states. No
+    production journey, LIVE mutation, exchange-side mutation, existing
+    production data mutation, or production entitlement mutation was performed.
+    Evidence:
+    `docs/operations/admin-subscriptions-entitlements-audit-2026-05-19.md` and
+    `docs/planning/admin-subscriptions-entitlements-audit-2026-05-19-task.md`.
+
+- [x] `LOGS-AUDIT-TRAIL-AUDIT-2026-05-19 research: refresh AUD-17 logs/audit trail`
+  - 2026-05-19: Completed the `AUD-17` logs/audit-trail audit. Focused Web
+    logs/audit tests passed (`2` files / `3` tests), and DB-backed API
+    logs/pagination tests passed (`2` files / `5` tests). Coverage includes
+    authenticated reads, owner scoping, source/actor/severity filters,
+    pagination defaults/bounds, action-produced event visibility, metadata
+    trace text rendering, and Web logs route states. No production journey,
+    LIVE mutation, exchange-side mutation, or existing production data mutation
+    was performed. Evidence:
+    `docs/operations/logs-audit-trail-audit-2026-05-19.md` and
+    `docs/planning/logs-audit-trail-audit-2026-05-19-task.md`.
+
+- [x] `BACKTESTS-REPORTS-AUDIT-2026-05-19 research: refresh AUD-16 backtests/reports`
+  - 2026-05-19: Completed the `AUD-16` backtests/reports audit. Focused Web
+    backtest/report UI tests passed (`15` files / `37` tests), and DB-backed
+    API backtests/reports tests passed (`13` files / `114` tests). Coverage
+    includes run lifecycle, ownership, explicit range validation,
+    queue/job/replay, fill model, data gateway, runtime-kernel parity,
+    immutable snapshot behavior, pending/degraded report lifecycle,
+    trades/report/timeline reads, cross-mode aggregation, and Web
+    route/detail/report states. No production journey, LIVE mutation,
+    exchange-side mutation, or existing production data mutation was performed.
+    Evidence: `docs/operations/backtests-reports-audit-2026-05-19.md` and
+    `docs/planning/backtests-reports-audit-2026-05-19-task.md`.
+
+- [x] `MARKETS-STRATEGIES-CONFIGURATION-AUDIT-2026-05-19 research: refresh AUD-15 markets/strategies configuration`
+  - 2026-05-19: Completed the `AUD-15` markets/strategies configuration
+    audit. Focused Web market/strategy UI tests passed (`19` files / `60`
+    tests), and DB-backed API markets/strategies tests passed (`4` files /
+    `35` tests). Coverage includes market-universe composition, catalog
+    behavior, market and strategy CRUD, ownership, active-bot guards, strategy
+    import/export/config validation, inactive-bot edit allowance, active-bot
+    lock UI, and indicator registry/presentation parity. No production
+    journey, LIVE mutation, exchange-side mutation, or existing production data
+    mutation was performed. Evidence:
+    `docs/operations/markets-strategies-configuration-audit-2026-05-19.md` and
+    `docs/planning/markets-strategies-configuration-audit-2026-05-19-task.md`.
+
+- [x] `WALLETS-CAPITAL-LEDGER-AUDIT-2026-05-19 research: refresh AUD-14 wallets/capital ledger`
+  - 2026-05-19: Completed the `AUD-14` wallets/capital-ledger audit. Focused
+    Web wallet/ledger UI tests passed (`10` files / `23` tests), and
+    DB-backed API wallets/capital tests passed (`7` files / `84` tests).
+    Coverage includes wallet CRUD, ownership, PAPER/LIVE validation, API-key
+    binding, balance preview, active-bot edit/delete/reset guards, paper reset
+    checkpoint, wallet-first bot contract, runtime capital source truth,
+    cashflow/equity ledger states, and partial/unavailable ledger UI. No
+    production journey, LIVE mutation, exchange-side mutation, or existing
+    production data mutation was performed. Evidence:
+    `docs/operations/wallets-capital-ledger-audit-2026-05-19.md` and
+    `docs/planning/wallets-capital-ledger-audit-2026-05-19-task.md`.
+
+- [x] `POSITIONS-RECONCILIATION-AUDIT-2026-05-19 research: refresh AUD-13 positions/reconciliation`
+  - 2026-05-19: Completed the `AUD-13` positions/reconciliation audit.
+    Focused Web runtime-position tests passed (`6` files / `46` tests), and
+    DB-backed API positions/reconciliation tests passed (`11` files / `68`
+    tests). Coverage includes list/read ownership, live-status, exchange
+    snapshot selection/normalization/fail-closed behavior, takeover/rebind,
+    orphan repair, imported history hydration, reconciliation diagnostics,
+    runtime position derivations, and close-state UI. No production journey,
+    LIVE mutation, exchange-side mutation, or existing production data mutation
+    was performed. Evidence:
+    `docs/operations/positions-reconciliation-audit-2026-05-19.md` and
+    `docs/planning/positions-reconciliation-audit-2026-05-19-task.md`.
+
+- [x] `ORDERS-MANUAL-TRADING-AUDIT-2026-05-19 research: refresh AUD-12 orders/manual trading`
+  - 2026-05-19: Completed the `AUD-12` orders/manual trading audit. Focused
+    Web manual/open-order tests passed (`8` files / `46` tests), and
+    DB-backed API order lifecycle tests passed (`10` files / `121` tests).
+    Coverage includes manual-order context and selected-bot scope, PAPER
+    lifecycle, ownership isolation, active-only filtering, fills, fees,
+    exchange events, fail-closed exchange-backed cancel boundary, LIVE risk
+    guards, quantity/position scope, and Dashboard Home manual/open-order
+    action states. No production journey, LIVE mutation, exchange-side
+    mutation, or existing production data mutation was performed. Evidence:
+    `docs/operations/orders-manual-trading-audit-2026-05-19.md` and
+    `docs/planning/orders-manual-trading-audit-2026-05-19-task.md`.
+
+- [x] `ENGINE-TRADING-DECISION-FLOW-AUDIT-2026-05-19 research: refresh AUD-11 engine/trading flow`
+  - 2026-05-19: Completed the `AUD-11` engine/trading decision-flow audit.
+    Focused engine service/unit tests passed (`15` files / `173` tests), and
+    DB-backed engine e2e/smoke tests passed (`4` files / `13` tests). Coverage
+    includes deterministic signal merge, final-candle flow, signal loop,
+    pre-trade/risk, execution orchestration, dedupe, exchange order guard,
+    PAPER/LIVE parity, market-data gateway, position automation, PAPER runtime
+    lifecycle, and owned imported-position execution. No production journey,
+    LIVE mutation, exchange-side mutation, or existing production data mutation
+    was performed. Evidence:
+    `docs/operations/engine-trading-decision-flow-audit-2026-05-19.md` and
+    `docs/planning/engine-trading-decision-flow-audit-2026-05-19-task.md`.
+
+- [x] `BOTS-RUNTIME-TRUTH-AUDIT-2026-05-19 research: refresh AUD-10 bots/runtime truth`
+  - 2026-05-19: Completed the `AUD-10` bots/runtime truth audit. Focused Web
+    bot/dashboard runtime tests passed (`8` files / `61` tests), and
+    DB-backed API bot/runtime tests passed (`10` files / `88` tests). Coverage
+    includes CRUD/ownership, wallet-first writes, duplicate and entitlement
+    guards, selected-bot runtime scope, monitoring aggregate truth, runtime
+    history parity, takeover visibility, LIVE/PAPER isolation, and delete
+    cleanup. No production journey, LIVE mutation, exchange-side mutation, or
+    existing production data mutation was performed. Evidence:
+    `docs/operations/bots-runtime-truth-audit-2026-05-19.md` and
+    `docs/planning/bots-runtime-truth-audit-2026-05-19-task.md`.
+
+- [x] `SECURITY-PRIVACY-AUDIT-2026-05-19 research: refresh AUD-06 security/privacy truth`
+  - 2026-05-19: Completed the `AUD-06` security/privacy audit. Local focused
+    auth/middleware/header API tests passed (`9` files / `32` tests),
+    DB-backed auth/profile/API-key/isolation/abuse tests passed (`7` files /
+    `47` tests), focused Web auth/profile/API-key tests passed (`7` files /
+    `28` tests), and the public auth cache contract passed (`1` file / `2`
+    tests). Local Postgres/Redis were stopped after the DB-backed proof. No
+    production journey, LIVE mutation, exchange-side mutation, existing
+    production data mutation, or raw-secret artifact was produced. Evidence:
+    `docs/operations/security-privacy-audit-2026-05-19.md` and
+    `docs/planning/security-privacy-audit-2026-05-19-task.md`.
+
+- [x] `ARCHITECTURE-EXCHANGE-SCOPE-WORDING-AUDIT-2026-05-19 research: prove exchange-scope doc drift`
+  - 2026-05-19: Completed the `AUD-01`/`AUD-ARCH-001` architecture wording
+    audit and then applied accepted `DEC-AUD-001`: current implementation scope
+    is Binance + Gate.io, not Binance-only, while production/live readiness is
+    evidence-bound by exact exchange, market type, and operation. Evidence:
+    `docs/operations/architecture-exchange-scope-wording-audit-2026-05-19.md`
+    and
+    `docs/planning/architecture-exchange-scope-wording-audit-2026-05-19-task.md`.
+
+- [x] `EXCHANGE-CAPABILITY-TRUTH-AUDIT-2026-05-19 research: prove exchange capability truth`
+  - 2026-05-19: Completed the `AUD-09` exchange capability truth audit. API
+    exchange capability/registry/boundary tests passed (`4` files / `21`
+    tests), and Web exchange capability tests passed (`2` files / `3` tests).
+    Follow-up repair now represents exact operation support as
+    `(exchange, marketType, operation)` in API execution/authenticated-read
+    contracts and consumers; focused exact contract tests and API typecheck
+    passed. No production journey, LIVE mutation, exchange-side mutation, or
+    existing production data mutation was performed. Evidence:
+    `docs/operations/exchange-capability-truth-audit-2026-05-19.md` and
+    `docs/planning/exchange-capability-truth-audit-2026-05-19-task.md`.
+
+- [x] `AUD09-NEUTRAL-EXCHANGE-TYPE-ALIASES-2026-05-19 refactor: close exchange type naming debt`
+  - 2026-05-19: Closed `AUD-EXCH-007` by adding neutral exchange-owned type
+    aliases and updating non-exchange orders/wallet consumers away from
+    CCXT-named connector types. Validation PASS: API typecheck and focused
+    orders/wallet classifier tests (`2` files / `41` tests) after local infra
+    startup. Evidence:
+    `docs/planning/aud09-neutral-exchange-type-aliases-2026-05-19-task.md`.
+
+- [x] `AI-ASSISTANT-RUNTIME-TRUTH-AUDIT-2026-05-19 research: prove assistant runtime truth`
+  - 2026-05-19: Completed the `AUD-20` assistant/AI audit. Deterministic
+    assistant foundation is proven locally: backend orchestrator tests passed
+    (`2` files / `6` tests), focused Web assistant route tests passed (`2`
+    files / `3` tests), and bot assistant config/dry-run API e2e passed after
+    local Postgres/Redis startup (`1` file / `3` tests). The architecture
+    overclaim remains open: no audited BACKTEST/PAPER/LIVE hot-path runtime
+    call site to `orchestrateAssistantDecision` was found, and no full
+    `AI_TESTING_PROTOCOL.md` multi-turn red-team proof exists. No production
+    journey, LIVE mutation, exchange-side mutation, or existing production data
+    mutation was performed. Evidence:
+    `docs/operations/ai-assistant-runtime-truth-audit-2026-05-19.md` and
+    `docs/planning/ai-assistant-runtime-truth-audit-2026-05-19-task.md`.
+
+- [x] `API-ENDPOINT-DOCS-PARITY-AUDIT-2026-05-19 research: add endpoint-level API docs parity`
+  - 2026-05-19: Added reusable endpoint-level docs parity command
+    `pnpm run docs:parity:endpoints:api`. Follow-up docs gap closure added
+    root/ops endpoint docs and missing route mentions for bots, orders,
+    positions, and wallets. Current run is `PASS`: `109` Express endpoints,
+    `109` documented, `0` gaps. Existing module-level docs parity still passes
+    (`API 22/22`, `Web 16/16`, `Routes 38/38`). No runtime behavior,
+    production journey, LIVE mutation, or exchange-side mutation was
+    performed. Evidence:
+    `docs/operations/api-endpoint-docs-parity-2026-05-19/api-endpoint-docs-parity-2026-05-19.md`
+    and `docs/planning/api-endpoint-docs-parity-audit-2026-05-19-task.md`.
+
+- [x] `AUTHENTICATED-ROUTE-STATE-AUDIT-2026-05-19 research: prove local authenticated Web routes`
+  - 2026-05-19: Closed the main `AUD-04`/local `AUD-05` gap from the previous
+    baseline. Started local API/Web against seeded admin data, logged in
+    through the Browser plugin, and audited canonical public/auth/dashboard/
+    admin plus legacy route states. Result: `53` route checks, `53` PASS,
+    `0` CHECK, `0` console warning/error routes, and `6` screenshots. No
+    production journey, LIVE mutation, exchange-side mutation, or existing
+    production data mutation was performed. Evidence:
+    `docs/analysis/audit-baseline-2026-05-19.md`,
+    `docs/operations/route-state-audit-2026-05-19/route-state-audit-2026-05-19.md`,
+    and `docs/planning/authenticated-route-state-audit-2026-05-19-task.md`.
+
+- [x] `FULL-LAYERED-AUDIT-RUN-2026-05-18 research: execute reusable audits locally`
+  - 2026-05-18: Continued the reusable audit work into a broad local run.
+    Current evidence now includes generated project index PASS (`PASS:21`,
+    tests indexed `335`), static scan PASS (`0` findings), guardrails PASS,
+    docs parity PASS, typecheck PASS, lint PASS, build PASS, full Web Vitest
+    PASS (`149` files / `514` tests), route-reachable i18n PASS (`0`
+    findings), focused API layer packs PASS, full API Vitest PASS after local
+    Postgres/Redis were available, go-live smoke PASS (API `45/45`, Web
+    `18/18`), and representative Browser route-state proof PASS/PARTIAL for
+    `/`, `/auth/login`, and unauthenticated `/dashboard` redirect on desktop
+    and mobile with `0` console warnings/errors. No production journey, LIVE
+    mutation, exchange-side mutation, or existing production data mutation was
+    performed. Evidence: `docs/analysis/audit-baseline-2026-05-18.md` and
+    `docs/planning/full-layered-audit-run-2026-05-18-task.md`.
+
+- [x] `REUSABLE-AUDIT-REGISTRY-2026-05-18 research: define reusable cross-layer audits`
+  - 2026-05-18: Created the reusable audit system with stable `AUD-00` through
+    `AUD-23` IDs and a current baseline. Covered audit families include project
+    index/static scan, architecture, requirements, backend API, Web routes,
+    UX/UI/a11y, security, data model, workers, exchange, bots, engine/runtime,
+    orders, positions, wallets, markets/strategies, backtests/reports, logs,
+    admin/subscriptions, operations, AI assistant, mobile, i18n, and
+    documentation/traceability. Today-run evidence: project index PASS
+    (`PASS:21`, tests indexed `335`), static scan PASS (`0` findings),
+    guardrails PASS, docs parity PASS, typecheck PASS, lint PASS, and build
+    PASS.
+    Evidence: `docs/analysis/reusable-audit-registry.md`,
+    `docs/analysis/audit-baseline-2026-05-18.md`, and
+    `docs/planning/reusable-audit-registry-2026-05-18-task.md`.
+
+- [x] `PROJECT-ARCHITECTURE-CODE-DISCREPANCY-AUDIT-2026-05-17 research: audit architecture-code drift`
+  - 2026-05-17: Completed an architecture-vs-code discrepancy baseline. Static
+    scan rerun passed with `0` findings and dashboard route inventory matches
+    the canonical route map. Protected diagnostics, worker topology, bot market
+    scope constraints, Prisma lifecycle shape, and exchange SDK ownership are
+    broadly aligned in inspected code. Open drift is recorded as assistant
+    runtime overclaim and stale exchange-scope wording in older architecture
+    overview/domain docs; exchange capability granularity was repaired on
+    2026-05-19 with exact `(exchange, marketType, operation)` support. Evidence:
+    `docs/analysis/architecture-code-discrepancy-audit-2026-05-17.md` and
+    `docs/planning/project-architecture-code-discrepancy-audit-2026-05-17-task.md`.
+
+- [x] `PROJECT-COMPLETE-ANALYSIS-INDEX-2026-05-14 research: classify every project audit lane`
+  - 2026-05-14: Expanded the audit thread from V1 scorecard confidence into a
+    complete-analysis index. The index classifies root gates, Web/API tests,
+    go-live smoke, static scan, Web route inventory, API route inventory,
+    mobile scaffold, assistant/AI runtime, LIVE mutation, Gate.io/second-LIVE,
+    and existing production data mutation. Active marker scan found no
+    `.skip(`, no `.only(`, and no implementation `TODO/FIXME/HACK` markers
+    outside the static scanner rule definitions. Mobile is scaffold-only by
+    documented design; assistant runtime is locally tested for deterministic
+    fail-closed mechanics but still needs full `AI_TESTING_PROTOCOL.md`
+    multi-turn red-team proof before any complete AI-behavior claim. Evidence:
+    `docs/operations/project-complete-analysis-index-2026-05-14.md`.
+
+- [x] `PROJECT-FULL-SCAN-BASELINE-2026-05-14 research: generate full-project audit baseline`
+  - 2026-05-14: Generated current project index and static scan for the
+    audit/indexing thread, then refreshed broad local validation. Results:
+    V1 matrix `PASS:21`, static findings `0`, tests indexed `335`,
+    guardrails PASS, typecheck PASS, lint PASS, full Web Vitest PASS
+    (`149` files / `514` tests), full API Vitest PASS, build PASS, and
+    go-live smoke PASS (API `45/45`, Web `18/18`). No code change, deploy,
+    production mutation, LIVE order/cancel/close, exchange-side mutation, or
+    existing production data mutation was performed. Evidence:
+    `docs/planning/project-full-scan-baseline-2026-05-14-task.md`,
+    `docs/operations/project-full-scan-index-2026-05-14.md`, and
+    `docs/operations/project-full-static-scan-2026-05-14.md`.
 
 - [x] `POSTV1-STRATEGY-SNAPSHOT-HISTORY-2026-05-14 fix: preserve immutable backtest context snapshots`
   - 2026-05-14: New backtest runs persist immutable creation-time strategy and

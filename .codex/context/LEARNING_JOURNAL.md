@@ -20,6 +20,73 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-05-17 - Do not run project index and static scan concurrently
+- Context: architecture-code discrepancy audit refreshed
+  `docs/operations/project-index-2026-05-17.json` and then ran the static scan.
+- Symptom: a parallel `ops:project:index` plus `ops:project:scan` run failed
+  with `SyntaxError: Unexpected end of JSON input`.
+- Root cause: the static scan read the generated project-index JSON while the
+  index command was still writing it.
+- Guardrail: treat the project index as a generated dependency and run
+  `ops:project:scan` only after `ops:project:index` has exited successfully.
+- Preferred pattern:
+```powershell
+pnpm run ops:project:index
+pnpm run ops:project:scan -- --index docs/operations/project-index-YYYY-MM-DD.json
+```
+- Avoid: launching project index and static scan in parallel during audit
+  refreshes.
+- Evidence:
+  `docs/planning/project-architecture-code-discrepancy-audit-2026-05-17-task.md`.
+
+### 2026-05-18 - Do not run shared-DB API packs in parallel
+- Context: `FULL-LAYERED-AUDIT-RUN-2026-05-18` split broad API audit evidence
+  into focused module packs after local Postgres/Redis were started.
+- Symptom: orders/positions and wallets/markets/strategies/icons packs failed
+  with foreign-key/deadlock-style DB interference when launched concurrently,
+  even though the same packs passed when rerun sequentially after
+  `prisma migrate reset`.
+- Root cause: DB-backed Vitest files share the same local PostgreSQL database
+  and cleanup assumptions. Parallel packs can delete or mutate fixture rows
+  while another pack still depends on them.
+- Guardrail: run broad DB-backed API audit packs sequentially unless each pack
+  owns isolated database state or the tests are explicitly designed for
+  cross-pack concurrency.
+- Preferred pattern:
+```powershell
+pnpm run go-live:infra:up
+pnpm --filter api exec prisma migrate reset --force --skip-seed
+pnpm --filter api exec vitest run src/modules/orders src/modules/positions
+pnpm --filter api exec vitest run src/modules/wallets src/modules/markets src/modules/strategies src/modules/icons
+pnpm --filter api run test -- --run
+pnpm run go-live:infra:down
+```
+- Avoid: `multi_tool_use.parallel` for API packs that use the same local DB.
+- Evidence:
+  `docs/planning/full-layered-audit-run-2026-05-18-task.md`.
+
+### 2026-05-19 - Quote process-local env assignments for Windows dev-server starts
+- Context: `AUTHENTICATED-ROUTE-STATE-AUDIT-2026-05-19` needed a local API
+  dev server with test-only `API_KEY_ENCRYPTION_KEYS` values.
+- Symptom: `Start-Process powershell.exe -Command "$env:..."` stripped or
+  de-quoted the `$env:` assignments, so the API kept failing critical secret
+  readiness with `missing=[API_KEY_ENCRYPTION_KEYS]`.
+- Root cause: the parent PowerShell command expanded `$env:` too early, and
+  child `-Command` argument quoting did not preserve string literals as
+  intended.
+- Guardrail: for hidden Windows dev-server starts that only need process-local
+  env values, prefer `cmd /c set KEY=value&& ...` or an encoded PowerShell
+  command. Do not edit `.env` just to satisfy a temporary audit process.
+- Preferred pattern:
+```powershell
+$cmd = '/c set BACKEND_DEV_START_WORKERS=false&& set API_KEY_ENCRYPTION_KEYS=v1:test-key-material&& set API_KEY_ENCRYPTION_ACTIVE_VERSION=v1&& pnpm run backend/dev'
+Start-Process -FilePath "cmd.exe" -ArgumentList $cmd -WorkingDirectory $repo -WindowStyle Hidden
+```
+- Avoid: building a double-quoted parent PowerShell string containing
+  `$env:SOME_KEY=...` unless every `$` is intentionally escaped.
+- Evidence:
+  `docs/planning/authenticated-route-state-audit-2026-05-19-task.md`.
+
 ### 2026-05-14 - Do not claim browser cleanup while headless rows remain
 - Context: after production fixture proof/state synchronization, a narrow
   `Get-Process chrome-headless-shell` check still returned old Playwright
@@ -40,6 +107,14 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Avoid: relying only on post-hoc `Stop-Process` after browser validation.
 - Evidence:
   `docs/planning/v1-production-fixture-low-risk-action-proof-457bce05-2026-05-14-task.md`.
+  2026-05-19 `AUD-12` cleanup found residual `chrome-headless-shell` rows from
+  the broader audit mission; a narrow `Get-Process chrome-headless-shell |
+  Stop-Process -Force` cleanup removed them, and the follow-up process check
+  returned no rows.
+  2026-05-19 `AUD-14` cleanup again found four residual
+  `chrome-headless-shell` rows after non-browser wallet audit validation; a
+  narrow `Get-Process chrome-headless-shell | Stop-Process -Force` cleanup was
+  run, and the follow-up process check returned no rows.
 
 ### 2026-05-13 - Preserve LIVE bot fields when toggling activity
 - Context: `V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13` ran the
@@ -2822,3 +2897,31 @@ promise = connect().catch((error) => {
     `companycore.luckysparrow.ch` audit, not the Soar task, so it was left
     running to avoid disrupting parallel work. Process cleanup must confirm
     ownership before stopping browser helpers.
+
+### 2026-05-19 - Keep DB-backed e2e audit packs sequential or isolated
+- Context: `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` refreshed `AUD-07` with
+  local Prisma migration replay and representative DB-backed tests.
+- Symptom: running wallet and backtest DB e2e packs together against one local
+  database caused FK cleanup failures such as `BacktestRun_userId_fkey` and
+  cross-test state effects; the same files passed after local migration reset
+  and isolated one-file runs.
+- Root cause: DB-backed e2e tests mutate and clean shared tables in file-local
+  order. When multiple packs share one database concurrently, one pack can
+  leave or remove rows that another pack's cleanup does not own.
+- Guardrail: run DB-backed audit packs sequentially with reset boundaries, or
+  provide isolated databases/schemas per pack. Treat shared-DB parallel runs as
+  invalid audit evidence unless the suite explicitly owns isolation.
+- Preferred pattern:
+```text
+1) Start local infra with `corepack pnpm run go-live:infra:up`.
+2) Run `corepack pnpm --filter api exec prisma migrate reset --force --skip-seed`.
+3) Run one DB-backed e2e pack.
+4) Reset again before the next independent DB-backed e2e pack.
+5) Stop local infra before closing the audit.
+```
+- Avoid: parallelizing DB-backed Vitest e2e files that use the same
+  `localhost:5432` database and table-level cleanup.
+- Evidence:
+  - Combined wallet/backtest DB e2e runs failed with FK cleanup conflicts.
+  - Isolated `wallets.e2e.test.ts` passed (`24/24`) after reset.
+  - Isolated `backtests.e2e.test.ts` passed (`15/15`) after reset.

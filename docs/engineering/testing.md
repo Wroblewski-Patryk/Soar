@@ -13,6 +13,12 @@
 - Testing Library for UI behavior.
 - Canonical web closure script for deterministic type generation:
   - `pnpm run web:verify:build-typecheck`
+- Canonical DB-backed audit isolation script:
+  - `pnpm run audit:data:db-isolated`
+  - Runs `AUD-07` representative DB-backed packs sequentially with a Prisma
+    `migrate reset --force --skip-seed` before each pack.
+  - Use this instead of combining wallet/backtest/runtime DB-backed e2e files
+    into one shared-database Vitest invocation.
 
 ## Manual Verification Standard
 - Frontend changes require manual UI verification in addition to automated tests.

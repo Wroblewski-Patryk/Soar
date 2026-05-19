@@ -1,0 +1,63 @@
+{
+  "auditId": "AUD-21",
+  "name": "Mobile And Cross-Platform Scope",
+  "date": "2026-05-19",
+  "status": "deferred / scaffold-only scope verified",
+  "environment": "local",
+  "productionMutation": false,
+  "liveOrderCancelClose": false,
+  "exchangeSideMutation": false,
+  "existingProductionDataMutation": false,
+  "results": [
+    {
+      "name": "Mobile file inventory",
+      "command": "Get-ChildItem apps\\mobile -Recurse -Force",
+      "result": "PASS",
+      "notes": "Only package.json, README.md, and src/.gitkeep are present."
+    },
+    {
+      "name": "Mobile build script",
+      "command": "corepack pnpm --filter @cryptosparrow/mobile run build",
+      "result": "PASS_SCAFFOLD",
+      "notes": "Printed scaffold-only build message."
+    },
+    {
+      "name": "Mobile test script",
+      "command": "corepack pnpm --filter @cryptosparrow/mobile run test",
+      "result": "PASS_SCAFFOLD",
+      "notes": "Printed scaffold-only test message."
+    },
+    {
+      "name": "Mobile docs scope",
+      "command": "Read apps/mobile/README.md and docs/planning/mobile-parity-contract.md",
+      "result": "PASS",
+      "notes": "Docs state bootstrap phase, no production mobile runtime, and no independent mobile backend contracts."
+    }
+  ],
+  "findings": [
+    {
+      "id": "AUD-MOB-001",
+      "severity": "P1",
+      "status": "scope verified",
+      "summary": "Native mobile is not an active production app."
+    },
+    {
+      "id": "AUD-MOB-002",
+      "severity": "P1",
+      "status": "aligned",
+      "summary": "Mobile docs correctly describe bootstrap-only scope."
+    },
+    {
+      "id": "AUD-MOB-003",
+      "severity": "P2",
+      "status": "open future gate",
+      "summary": "Mobile build/test commands are scaffold echoes, not real validation."
+    },
+    {
+      "id": "AUD-MOB-004",
+      "severity": "P2",
+      "status": "separated",
+      "summary": "Responsive Web mobile evidence belongs to AUD-05 and does not prove native app parity."
+    }
+  ]
+}

@@ -64,6 +64,7 @@ Out of scope:
 - Routes:
   - `GET /dashboard/orders`
   - `GET /dashboard/orders/:id`
+  - `GET /dashboard/orders/manual-context`
   - `POST /dashboard/orders/open`
   - `POST /dashboard/orders/:id/cancel`
   - `POST /dashboard/orders/:id/close`

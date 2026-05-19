@@ -1,0 +1,125 @@
+{
+  "auditRollupId": "FULL-REUSABLE-AUDIT-2026-05-19",
+  "date": "2026-05-19",
+  "scope": "AUD-00 through AUD-23",
+  "productionMutation": false,
+  "liveOrderCancelClose": false,
+  "exchangeSideMutation": false,
+  "existingProductionDataMutation": false,
+  "decisionPacket": "docs/operations/audit-decision-packet-2026-05-19.md",
+  "decisionRepairPlaybooks": "docs/operations/audit-decision-repair-playbooks-2026-05-19.md",
+  "handoff": "docs/operations/full-reusable-audit-handoff-2026-05-19.md",
+  "handoffJson": "docs/operations/full-reusable-audit-handoff-2026-05-19.json",
+  "artifactManifest": "docs/operations/reusable-audit-artifact-manifest-2026-05-19.md",
+  "artifactManifestJson": "docs/operations/reusable-audit-artifact-manifest-2026-05-19.json",
+  "summary": {
+    "currentOrCurrentLocal": 23,
+    "partial": 0,
+    "failedDecisionRequired": 0,
+    "deferred": 1,
+    "currentFromPriorBaseline": 0
+  },
+  "audits": [
+    {
+      "id": "AUD-00",
+      "status": "current local"
+    },
+    {
+      "id": "AUD-01",
+      "status": "current after accepted Binance + Gate.io architecture decision"
+    },
+    {
+      "id": "AUD-02",
+      "status": "current for source-of-truth alignment after follow-up"
+    },
+    {
+      "id": "AUD-03",
+      "status": "current local"
+    },
+    {
+      "id": "AUD-04",
+      "status": "current local"
+    },
+    {
+      "id": "AUD-05",
+      "status": "current local / historical production"
+    },
+    {
+      "id": "AUD-06",
+      "status": "current local / historical production-safe"
+    },
+    {
+      "id": "AUD-07",
+      "status": "current local with mitigated finding"
+    },
+    {
+      "id": "AUD-08",
+      "status": "current local / historical production-safe"
+    },
+    {
+      "id": "AUD-09",
+      "status": "current local exact capability matrix and neutral exchange-owned type aliases"
+    },
+    {
+      "id": "AUD-10",
+      "status": "current local / historical production-safe"
+    },
+    {
+      "id": "AUD-11",
+      "status": "current local / production mutation not exercised"
+    },
+    {
+      "id": "AUD-12",
+      "status": "current local / historical production-safe PAPER"
+    },
+    {
+      "id": "AUD-13",
+      "status": "current local / historical production-safe PAPER"
+    },
+    {
+      "id": "AUD-14",
+      "status": "current local / historical production-safe wallet CRUD"
+    },
+    {
+      "id": "AUD-15",
+      "status": "current local / historical production-safe fixture"
+    },
+    {
+      "id": "AUD-16",
+      "status": "current local / historical production-safe fixture"
+    },
+    {
+      "id": "AUD-17",
+      "status": "current local / historical production-safe action readback"
+    },
+    {
+      "id": "AUD-18",
+      "status": "current local / historical production-safe protected route proof"
+    },
+    {
+      "id": "AUD-19",
+      "status": "current local / historical production release gate"
+    },
+    {
+      "id": "AUD-20",
+      "status": "current foundation / hot-path assistant scope deferred"
+    },
+    {
+      "id": "AUD-21",
+      "status": "deferred / scaffold-only scope verified"
+    },
+    {
+      "id": "AUD-22",
+      "status": "current local"
+    },
+    {
+      "id": "AUD-23",
+      "status": "current local traceability"
+    }
+  ],
+  "priorityRepairQueue": [
+    "AUD-19 fresh production release gate before new production readiness claim",
+    "Future hot-path assistant orchestration implementation and AI red-team proof before any runtime AI trading claim",
+    "Future Gate.io production/live proof by exact exchange, market type, and operation before any production readiness claim"
+  ]
+}

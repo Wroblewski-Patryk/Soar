@@ -1,0 +1,1295 @@
+{
+  "generatedAt": "2026-05-19T02:19:01.536Z",
+  "status": "PASS",
+  "scope": "Endpoint-level API docs parity derived from Express router method calls and docs/modules/api-*.md route mentions.",
+  "counts": {
+    "endpoints": 109,
+    "documented": 109,
+    "gaps": 0,
+    "modules": 16
+  },
+  "byModule": {
+    "root": {
+      "total": 11,
+      "documented": 11,
+      "gaps": 0
+    },
+    "admin": {
+      "total": 4,
+      "documented": 4,
+      "gaps": 0
+    },
+    "auth": {
+      "total": 4,
+      "documented": 4,
+      "gaps": 0
+    },
+    "backtests": {
+      "total": 7,
+      "documented": 7,
+      "gaps": 0
+    },
+    "bots": {
+      "total": 31,
+      "documented": 31,
+      "gaps": 0
+    },
+    "icons": {
+      "total": 1,
+      "documented": 1,
+      "gaps": 0
+    },
+    "logs": {
+      "total": 1,
+      "documented": 1,
+      "gaps": 0
+    },
+    "market-stream": {
+      "total": 1,
+      "documented": 1,
+      "gaps": 0
+    },
+    "markets": {
+      "total": 6,
+      "documented": 6,
+      "gaps": 0
+    },
+    "orders": {
+      "total": 6,
+      "documented": 6,
+      "gaps": 0
+    },
+    "positions": {
+      "total": 9,
+      "documented": 9,
+      "gaps": 0
+    },
+    "profile": {
+      "total": 8,
+      "documented": 8,
+      "gaps": 0
+    },
+    "reports": {
+      "total": 1,
+      "documented": 1,
+      "gaps": 0
+    },
+    "strategies": {
+      "total": 7,
+      "documented": 7,
+      "gaps": 0
+    },
+    "wallets": {
+      "total": 11,
+      "documented": 11,
+      "gaps": 0
+    },
+    "upload": {
+      "total": 1,
+      "documented": 1,
+      "gaps": 0
+    }
+  },
+  "gaps": [],
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/",
+      "sourceFile": "apps/api/src/router/index.ts",
+      "module": "root",
+      "docsPath": "docs/modules/api-root.md",
+      "documented": true,
+      "matchedVariants": [
+        "/"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/admin",
+      "sourceFile": "apps/api/src/router/admin.routes.ts",
+      "module": "root",
+      "docsPath": "docs/modules/api-root.md",
+      "documented": true,
+      "matchedVariants": [
+        "/admin"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/admin/subscriptions/plans",
+      "sourceFile": "apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.routes.ts",
+      "module": "admin",
+      "docsPath": "docs/modules/api-admin.md",
+      "documented": true,
+      "matchedVariants": [
+        "/admin/subscriptions/plans"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/subscriptions/plans/:code",
+      "sourceFile": "apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.routes.ts",
+      "module": "admin",
+      "docsPath": "docs/modules/api-admin.md",
+      "documented": true,
+      "matchedVariants": [
+        "/admin/subscriptions/plans/:code"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/admin/users",
+      "sourceFile": "apps/api/src/modules/admin/users/users.routes.ts",
+      "module": "admin",
+      "docsPath": "docs/modules/api-admin.md",
+      "documented": true,
+      "matchedVariants": [
+        "/admin/users"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/admin/users/:userId",
+      "sourceFile": "apps/api/src/modules/admin/users/users.routes.ts",
+      "module": "admin",
+      "docsPath": "docs/modules/api-admin.md",
+      "documented": true,
+      "matchedVariants": [
+        "/admin/users/:userId"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/alerts",
+      "sourceFile": "apps/api/src/router/index.ts",
+      "module": "root",
+      "docsPath": "docs/modules/api-root.md",
+      "documented": true,
+      "matchedVariants": [
+        "/alerts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "sourceFile": "apps/api/src/modules/auth/auth.routes.ts",
+      "module": "auth",
+      "docsPath": "docs/modules/api-auth.md",
+      "documented": true,
+      "matchedVariants": [
+        "/auth/login"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/logout",
+      "sourceFile": "apps/api/src/modules/auth/auth.routes.ts",
+      "module": "auth",
+      "docsPath": "docs/modules/api-auth.md",
+      "documented": true,
+      "matchedVariants": [
+        "/auth/logout"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/auth/me",
+      "sourceFile": "apps/api/src/modules/auth/auth.routes.ts",
+      "module": "auth",
+      "docsPath": "docs/modules/api-auth.md",
+      "documented": true,
+      "matchedVariants": [
+        "/auth/me"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "sourceFile": "apps/api/src/modules/auth/auth.routes.ts",
+      "module": "auth",
+      "docsPath": "docs/modules/api-auth.md",
+      "documented": true,
+      "matchedVariants": [
+        "/auth/register"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard",
+      "sourceFile": "apps/api/src/router/dashboard.routes.ts",
+      "module": "root",
+      "docsPath": "docs/modules/api-root.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/backtests/runs",
+      "sourceFile": "apps/api/src/modules/backtests/backtests.routes.ts",
+      "module": "backtests",
+      "docsPath": "docs/modules/api-backtests.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/backtests/runs"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/backtests/runs",
+      "sourceFile": "apps/api/src/modules/backtests/backtests.routes.ts",
+      "module": "backtests",
+      "docsPath": "docs/modules/api-backtests.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/backtests/runs"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/dashboard/backtests/runs/:id",
+      "sourceFile": "apps/api/src/modules/backtests/backtests.routes.ts",
+      "module": "backtests",
+      "docsPath": "docs/modules/api-backtests.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/backtests/runs/:id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/backtests/runs/:id",
+      "sourceFile": "apps/api/src/modules/backtests/backtests.routes.ts",
+      "module": "backtests",
+      "docsPath": "docs/modules/api-backtests.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/backtests/runs/:id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/backtests/runs/:id/report",
+      "sourceFile": "apps/api/src/modules/backtests/backtests.routes.ts",
+      "module": "backtests",
+      "docsPath": "docs/modules/api-backtests.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/backtests/runs/:id/report"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/backtests/runs/:id/timeline",
+      "sourceFile": "apps/api/src/modules/backtests/backtests.routes.ts",
+      "module": "backtests",
+      "docsPath": "docs/modules/api-backtests.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/backtests/runs/:id/timeline"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/backtests/runs/:id/trades",
+      "sourceFile": "apps/api/src/modules/backtests/backtests.routes.ts",
+      "module": "backtests",
+      "docsPath": "docs/modules/api-backtests.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/backtests/runs/:id/trades"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/bots",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/bots",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/dashboard/bots/:id",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/bots/:id",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/dashboard/bots/:id",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/bots/:id/assistant-config",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/assistant-config"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/dashboard/bots/:id/assistant-config",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/assistant-config"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/bots/:id/assistant-config/dry-run",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/assistant-config/dry-run"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/dashboard/bots/:id/assistant-config/subagents/:slotIndex",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/assistant-config/subagents/:slotIndex"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/dashboard/bots/:id/assistant-config/subagents/:slotIndex",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/assistant-config/subagents/:slotIndex"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/bots/:id/market-groups",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/market-groups"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/bots/:id/market-groups",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/market-groups"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/dashboard/bots/:id/market-groups/:groupId",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/market-groups/:groupId"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/bots/:id/market-groups/:groupId",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/market-groups/:groupId"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/dashboard/bots/:id/market-groups/:groupId",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/market-groups/:groupId"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/bots/:id/market-groups/:groupId/strategies",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/market-groups/:groupId/strategies"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/bots/:id/market-groups/:groupId/strategies",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/market-groups/:groupId/strategies"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/dashboard/bots/:id/market-groups/:groupId/strategies/:linkId",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/market-groups/:groupId/strategies/:linkId"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/dashboard/bots/:id/market-groups/:groupId/strategies/:linkId",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/market-groups/:groupId/strategies/:linkId"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/dashboard/bots/:id/market-groups/:groupId/strategies/reorder",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/market-groups/:groupId/strategies/reorder"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/bots/:id/portfolio-history",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/portfolio-history"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/bots/:id/runtime-graph",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/runtime-graph"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/bots/:id/runtime-monitoring/aggregate",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/runtime-monitoring/aggregate"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/bots/:id/runtime-sessions",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/runtime-sessions"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/bots/:id/runtime-sessions/:sessionId",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/runtime-sessions/:sessionId"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/bots/:id/runtime-sessions/:sessionId/positions",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/runtime-sessions/:sessionId/positions"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/bots/:id/runtime-sessions/:sessionId/positions/:positionId/close",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/runtime-sessions/:sessionId/positions/:positionId/close"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/bots/:id/runtime-sessions/:sessionId/symbol-stats",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/runtime-sessions/:sessionId/symbol-stats"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/bots/:id/runtime-sessions/:sessionId/trades",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/:id/runtime-sessions/:sessionId/trades"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/bots/strategy-drift",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/strategy-drift"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/bots/strategy-drift/repair",
+      "sourceFile": "apps/api/src/modules/bots/bots.routes.ts",
+      "module": "bots",
+      "docsPath": "docs/modules/api-bots.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/bots/strategy-drift/repair"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/icons/lookup",
+      "sourceFile": "apps/api/src/modules/icons/icons.routes.ts",
+      "module": "icons",
+      "docsPath": "docs/modules/api-icons.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/icons/lookup"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/logs",
+      "sourceFile": "apps/api/src/modules/logs/logs.routes.ts",
+      "module": "logs",
+      "docsPath": "docs/modules/api-logs.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/logs"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/market-stream/events",
+      "sourceFile": "apps/api/src/modules/market-stream/marketStream.routes.ts",
+      "module": "market-stream",
+      "docsPath": "docs/modules/api-market-stream.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/market-stream/events"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/markets/catalog",
+      "sourceFile": "apps/api/src/modules/markets/markets.routes.ts",
+      "module": "markets",
+      "docsPath": "docs/modules/api-markets.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/markets/catalog"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/markets/universes",
+      "sourceFile": "apps/api/src/modules/markets/markets.routes.ts",
+      "module": "markets",
+      "docsPath": "docs/modules/api-markets.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/markets/universes"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/markets/universes",
+      "sourceFile": "apps/api/src/modules/markets/markets.routes.ts",
+      "module": "markets",
+      "docsPath": "docs/modules/api-markets.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/markets/universes"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/dashboard/markets/universes/:id",
+      "sourceFile": "apps/api/src/modules/markets/markets.routes.ts",
+      "module": "markets",
+      "docsPath": "docs/modules/api-markets.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/markets/universes/:id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/markets/universes/:id",
+      "sourceFile": "apps/api/src/modules/markets/markets.routes.ts",
+      "module": "markets",
+      "docsPath": "docs/modules/api-markets.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/markets/universes/:id"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/dashboard/markets/universes/:id",
+      "sourceFile": "apps/api/src/modules/markets/markets.routes.ts",
+      "module": "markets",
+      "docsPath": "docs/modules/api-markets.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/markets/universes/:id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/orders",
+      "sourceFile": "apps/api/src/modules/orders/orders.routes.ts",
+      "module": "orders",
+      "docsPath": "docs/modules/api-orders.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/orders"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/orders/:id",
+      "sourceFile": "apps/api/src/modules/orders/orders.routes.ts",
+      "module": "orders",
+      "docsPath": "docs/modules/api-orders.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/orders/:id"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/orders/:id/cancel",
+      "sourceFile": "apps/api/src/modules/orders/orders.routes.ts",
+      "module": "orders",
+      "docsPath": "docs/modules/api-orders.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/orders/:id/cancel"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/orders/:id/close",
+      "sourceFile": "apps/api/src/modules/orders/orders.routes.ts",
+      "module": "orders",
+      "docsPath": "docs/modules/api-orders.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/orders/:id/close"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/orders/manual-context",
+      "sourceFile": "apps/api/src/modules/orders/orders.routes.ts",
+      "module": "orders",
+      "docsPath": "docs/modules/api-orders.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/orders/manual-context"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/orders/open",
+      "sourceFile": "apps/api/src/modules/orders/orders.routes.ts",
+      "module": "orders",
+      "docsPath": "docs/modules/api-orders.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/orders/open"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/positions",
+      "sourceFile": "apps/api/src/modules/positions/positions.routes.ts",
+      "module": "positions",
+      "docsPath": "docs/modules/api-positions.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/positions"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/positions/:id",
+      "sourceFile": "apps/api/src/modules/positions/positions.routes.ts",
+      "module": "positions",
+      "docsPath": "docs/modules/api-positions.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/positions/:id"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/dashboard/positions/:id/management-mode",
+      "sourceFile": "apps/api/src/modules/positions/positions.routes.ts",
+      "module": "positions",
+      "docsPath": "docs/modules/api-positions.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/positions/:id/management-mode"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/dashboard/positions/:id/manual-update",
+      "sourceFile": "apps/api/src/modules/positions/positions.routes.ts",
+      "module": "positions",
+      "docsPath": "docs/modules/api-positions.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/positions/:id/manual-update"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/positions/exchange-snapshot",
+      "sourceFile": "apps/api/src/modules/positions/positions.routes.ts",
+      "module": "positions",
+      "docsPath": "docs/modules/api-positions.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/positions/exchange-snapshot"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/positions/live-status",
+      "sourceFile": "apps/api/src/modules/positions/positions.routes.ts",
+      "module": "positions",
+      "docsPath": "docs/modules/api-positions.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/positions/live-status"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/positions/orphan-repair",
+      "sourceFile": "apps/api/src/modules/positions/positions.routes.ts",
+      "module": "positions",
+      "docsPath": "docs/modules/api-positions.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/positions/orphan-repair"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/positions/takeover-rebind",
+      "sourceFile": "apps/api/src/modules/positions/positions.routes.ts",
+      "module": "positions",
+      "docsPath": "docs/modules/api-positions.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/positions/takeover-rebind"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/positions/takeover-status",
+      "sourceFile": "apps/api/src/modules/positions/positions.routes.ts",
+      "module": "positions",
+      "docsPath": "docs/modules/api-positions.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/positions/takeover-status"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/profile/apiKeys/:id/revoke",
+      "sourceFile": "apps/api/src/modules/profile/apiKey/apiKey.routes.ts",
+      "module": "profile",
+      "docsPath": "docs/modules/api-profile.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/profile/apiKeys/:id/revoke"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/profile/apiKeys/:id/rotate",
+      "sourceFile": "apps/api/src/modules/profile/apiKey/apiKey.routes.ts",
+      "module": "profile",
+      "docsPath": "docs/modules/api-profile.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/profile/apiKeys/:id/rotate"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/profile/apiKeys/:id/test",
+      "sourceFile": "apps/api/src/modules/profile/apiKey/apiKey.routes.ts",
+      "module": "profile",
+      "docsPath": "docs/modules/api-profile.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/profile/apiKeys/:id/test"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/profile/apiKeys/test",
+      "sourceFile": "apps/api/src/modules/profile/apiKey/apiKey.routes.ts",
+      "module": "profile",
+      "docsPath": "docs/modules/api-profile.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/profile/apiKeys/test"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/dashboard/profile/security/account",
+      "sourceFile": "apps/api/src/modules/profile/security/security.routes.ts",
+      "module": "profile",
+      "docsPath": "docs/modules/api-profile.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/profile/security/account"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/dashboard/profile/security/password",
+      "sourceFile": "apps/api/src/modules/profile/security/security.routes.ts",
+      "module": "profile",
+      "docsPath": "docs/modules/api-profile.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/profile/security/password"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/profile/subscription",
+      "sourceFile": "apps/api/src/modules/profile/subscription/subscription.routes.ts",
+      "module": "profile",
+      "docsPath": "docs/modules/api-profile.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/profile/subscription"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/profile/subscription/checkout-intents",
+      "sourceFile": "apps/api/src/modules/profile/subscription/subscription.routes.ts",
+      "module": "profile",
+      "docsPath": "docs/modules/api-profile.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/profile/subscription/checkout-intents"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/reports/cross-mode-performance",
+      "sourceFile": "apps/api/src/modules/reports/reports.routes.ts",
+      "module": "reports",
+      "docsPath": "docs/modules/api-reports.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/reports/cross-mode-performance"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/strategies",
+      "sourceFile": "apps/api/src/modules/strategies/strategies.routes.ts",
+      "module": "strategies",
+      "docsPath": "docs/modules/api-strategies.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/strategies"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/strategies",
+      "sourceFile": "apps/api/src/modules/strategies/strategies.routes.ts",
+      "module": "strategies",
+      "docsPath": "docs/modules/api-strategies.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/strategies"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/dashboard/strategies/:id",
+      "sourceFile": "apps/api/src/modules/strategies/strategies.routes.ts",
+      "module": "strategies",
+      "docsPath": "docs/modules/api-strategies.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/strategies/:id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/strategies/:id",
+      "sourceFile": "apps/api/src/modules/strategies/strategies.routes.ts",
+      "module": "strategies",
+      "docsPath": "docs/modules/api-strategies.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/strategies/:id"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/dashboard/strategies/:id",
+      "sourceFile": "apps/api/src/modules/strategies/strategies.routes.ts",
+      "module": "strategies",
+      "docsPath": "docs/modules/api-strategies.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/strategies/:id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/strategies/:id/export",
+      "sourceFile": "apps/api/src/modules/strategies/strategies.routes.ts",
+      "module": "strategies",
+      "docsPath": "docs/modules/api-strategies.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/strategies/:id/export"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/strategies/import",
+      "sourceFile": "apps/api/src/modules/strategies/strategies.routes.ts",
+      "module": "strategies",
+      "docsPath": "docs/modules/api-strategies.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/strategies/import"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/wallets",
+      "sourceFile": "apps/api/src/modules/wallets/wallets.routes.ts",
+      "module": "wallets",
+      "docsPath": "docs/modules/api-wallets.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/wallets"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/wallets",
+      "sourceFile": "apps/api/src/modules/wallets/wallets.routes.ts",
+      "module": "wallets",
+      "docsPath": "docs/modules/api-wallets.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/wallets"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/dashboard/wallets/:id",
+      "sourceFile": "apps/api/src/modules/wallets/wallets.routes.ts",
+      "module": "wallets",
+      "docsPath": "docs/modules/api-wallets.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/wallets/:id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/wallets/:id",
+      "sourceFile": "apps/api/src/modules/wallets/wallets.routes.ts",
+      "module": "wallets",
+      "docsPath": "docs/modules/api-wallets.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/wallets/:id"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/dashboard/wallets/:id",
+      "sourceFile": "apps/api/src/modules/wallets/wallets.routes.ts",
+      "module": "wallets",
+      "docsPath": "docs/modules/api-wallets.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/wallets/:id"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/wallets/:id/cashflow-events",
+      "sourceFile": "apps/api/src/modules/wallets/wallets.routes.ts",
+      "module": "wallets",
+      "docsPath": "docs/modules/api-wallets.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/wallets/:id/cashflow-events"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/wallets/:id/equity-timeline",
+      "sourceFile": "apps/api/src/modules/wallets/wallets.routes.ts",
+      "module": "wallets",
+      "docsPath": "docs/modules/api-wallets.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/wallets/:id/equity-timeline"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/wallets/:id/performance-summary",
+      "sourceFile": "apps/api/src/modules/wallets/wallets.routes.ts",
+      "module": "wallets",
+      "docsPath": "docs/modules/api-wallets.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/wallets/:id/performance-summary"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/wallets/:id/reset-paper",
+      "sourceFile": "apps/api/src/modules/wallets/wallets.routes.ts",
+      "module": "wallets",
+      "docsPath": "docs/modules/api-wallets.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/wallets/:id/reset-paper"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard/wallets/metadata",
+      "sourceFile": "apps/api/src/modules/wallets/wallets.routes.ts",
+      "module": "wallets",
+      "docsPath": "docs/modules/api-wallets.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/wallets/metadata"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/dashboard/wallets/preview-balance",
+      "sourceFile": "apps/api/src/modules/wallets/wallets.routes.ts",
+      "module": "wallets",
+      "docsPath": "docs/modules/api-wallets.md",
+      "documented": true,
+      "matchedVariants": [
+        "/dashboard/wallets/preview-balance"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "sourceFile": "apps/api/src/router/index.ts",
+      "module": "root",
+      "docsPath": "docs/modules/api-root.md",
+      "documented": true,
+      "matchedVariants": [
+        "/health"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/metrics",
+      "sourceFile": "apps/api/src/router/index.ts",
+      "module": "root",
+      "docsPath": "docs/modules/api-root.md",
+      "documented": true,
+      "matchedVariants": [
+        "/metrics"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/ready",
+      "sourceFile": "apps/api/src/router/index.ts",
+      "module": "root",
+      "docsPath": "docs/modules/api-root.md",
+      "documented": true,
+      "matchedVariants": [
+        "/ready"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/ready/details",
+      "sourceFile": "apps/api/src/router/index.ts",
+      "module": "root",
+      "docsPath": "docs/modules/api-root.md",
+      "documented": true,
+      "matchedVariants": [
+        "/ready/details"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/upload/avatar",
+      "sourceFile": "apps/api/src/modules/upload/upload.routes.ts",
+      "module": "upload",
+      "docsPath": "docs/modules/api-upload.md",
+      "documented": true,
+      "matchedVariants": [
+        "/upload/avatar"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/workers/health",
+      "sourceFile": "apps/api/src/router/index.ts",
+      "module": "root",
+      "docsPath": "docs/modules/api-root.md",
+      "documented": true,
+      "matchedVariants": [
+        "/workers/health"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/workers/ready",
+      "sourceFile": "apps/api/src/router/index.ts",
+      "module": "root",
+      "docsPath": "docs/modules/api-root.md",
+      "documented": true,
+      "matchedVariants": [
+        "/workers/ready"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/workers/runtime-freshness",
+      "sourceFile": "apps/api/src/router/index.ts",
+      "module": "root",
+      "docsPath": "docs/modules/api-root.md",
+      "documented": true,
+      "matchedVariants": [
+        "/workers/runtime-freshness"
+      ]
+    }
+  ]
+}

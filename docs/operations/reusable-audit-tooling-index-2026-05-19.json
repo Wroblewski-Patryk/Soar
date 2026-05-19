@@ -1,0 +1,90 @@
+{
+  "toolingIndexId": "REUSABLE-AUDIT-TOOLING-INDEX-2026-05-19",
+  "date": "2026-05-19",
+  "primaryCommand": "corepack pnpm run audit:manifest:verify",
+  "tools": [
+    {
+      "id": "AUDIT-MANIFEST-CHECK",
+      "command": "corepack pnpm run audit:manifest:check",
+      "script": "scripts/checkReusableAuditManifest.mjs",
+      "purpose": "Validate manifest JSON coverage, referenced paths, and open-decision links."
+    },
+    {
+      "id": "AUDIT-MANIFEST-CHECK-TEST",
+      "command": "corepack pnpm run audit:manifest:check:test",
+      "script": "scripts/checkReusableAuditManifest.test.mjs",
+      "purpose": "Regression-test missing audit IDs, duplicate IDs, missing paths, and missing decision links."
+    },
+    {
+      "id": "AUDIT-MANIFEST-COMPARE",
+      "command": "corepack pnpm run audit:manifest:compare -- --base <path> --target <path>",
+      "script": "scripts/compareReusableAuditManifests.mjs",
+      "purpose": "Compare two audit manifests for regressions and improvements."
+    },
+    {
+      "id": "AUDIT-MANIFEST-COMPARE-TEST",
+      "command": "corepack pnpm run audit:manifest:compare:test",
+      "script": "scripts/compareReusableAuditManifests.test.mjs",
+      "purpose": "Regression-test status, summary, decision, and safety-boundary comparison behavior."
+    },
+    {
+      "id": "AUDIT-MANIFEST-VERIFY",
+      "command": "corepack pnpm run audit:manifest:verify",
+      "script": "package.json",
+      "purpose": "Run the complete manifest/playbook verification bundle."
+    },
+    {
+      "id": "AUDIT-RERUN-PLAYBOOK-CHECK",
+      "command": "corepack pnpm run audit:rerun-playbook:check",
+      "script": "scripts/checkReusableAuditRerunPlaybook.mjs",
+      "purpose": "Validate rerun playbook coverage, required commands, sections, and safety boundaries."
+    },
+    {
+      "id": "AUDIT-RERUN-PLAYBOOK-CHECK-TEST",
+      "command": "corepack pnpm run audit:rerun-playbook:check:test",
+      "script": "scripts/checkReusableAuditRerunPlaybook.test.mjs",
+      "purpose": "Regression-test rerun playbook validation behavior."
+    },
+    {
+      "id": "AUDIT-TOOLING-INDEX-CHECK",
+      "command": "corepack pnpm run audit:tooling-index:check",
+      "script": "scripts/checkReusableAuditToolingIndex.mjs",
+      "purpose": "Validate audit tooling index command/script coverage and safety boundaries."
+    },
+    {
+      "id": "AUDIT-TOOLING-INDEX-CHECK-TEST",
+      "command": "corepack pnpm run audit:tooling-index:check:test",
+      "script": "scripts/checkReusableAuditToolingIndex.test.mjs",
+      "purpose": "Regression-test tooling index validation behavior."
+    },
+    {
+      "id": "AUDIT-DATA-DB-ISOLATED",
+      "command": "corepack pnpm run audit:data:db-isolated",
+      "script": "scripts/runAud07IsolatedDbPacks.mjs",
+      "purpose": "Run representative DB-backed AUD-07 packs sequentially with reset/isolation."
+    },
+    {
+      "id": "API-ENDPOINT-DOCS-PARITY",
+      "command": "corepack pnpm run docs:parity:endpoints:api",
+      "script": "scripts/auditApiEndpointDocsParity.mjs",
+      "purpose": "Verify endpoint-level API documentation parity."
+    }
+  ],
+  "safetyBoundaries": {
+    "architectureDecisionApplied": false,
+    "productionDataMutation": false,
+    "liveOrderSubmitCancelClose": false,
+    "exchangeSideMutation": false
+  },
+  "closureCommands": [
+    "corepack pnpm run audit:manifest:verify",
+    "corepack pnpm run docs:parity:check",
+    "corepack pnpm run quality:guardrails",
+    "git diff --check"
+  ],
+  "cleanupChecks": [
+    "Get-Process chrome-headless-shell -ErrorAction SilentlyContinue",
+    "Get-NetTCPConnection -LocalPort 5432,6379 -ErrorAction SilentlyContinue",
+    "docker compose ps"
+  ]
+}

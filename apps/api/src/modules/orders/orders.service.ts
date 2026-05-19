@@ -7,7 +7,7 @@ import {
   ManualOrderContextQuery,
   OpenOrderDto,
 } from './orders.types';
-import { CcxtFuturesOrderFill } from '../exchange/ccxtFuturesConnector.types';
+import { ExchangeOrderFill } from '../exchange/exchangeData.types';
 import { createPublicExchangeConnector } from '../exchange/exchangeConnectorFactory.service';
 import { orderErrors } from './orders.errors';
 import {
@@ -113,7 +113,7 @@ type LiveExecutionResult = {
   feeCurrency?: string | null;
   effectiveFeeRate?: number | null;
   exchangeTradeId?: string | null;
-  fills?: CcxtFuturesOrderFill[];
+  fills?: ExchangeOrderFill[];
 };
 
 type OpenOrderDeps = {
@@ -639,7 +639,7 @@ export const openOrder = async (
   let feePending = canonicalPayload.mode === 'LIVE';
   let feeCurrency: string | null = null;
   let effectiveFeeRate: number | null = null;
-  let fills: CcxtFuturesOrderFill[] = [];
+  let fills: ExchangeOrderFill[] = [];
 
   if (canonicalPayload.mode === 'LIVE' && process.env.NODE_ENV !== 'test') {
     if (!liveBot) {

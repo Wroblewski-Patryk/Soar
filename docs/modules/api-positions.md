@@ -92,7 +92,9 @@ Out of scope:
   - `GET /dashboard/positions/exchange-snapshot`
   - `GET /dashboard/positions/takeover-status`
   - `POST /dashboard/positions/takeover-rebind`
+  - `POST /dashboard/positions/orphan-repair`
   - `PATCH /dashboard/positions/:id/management-mode`
+  - `PATCH /dashboard/positions/:id/manual-update`
 
 ## 6. Security and Risk Guardrails
 - Dashboard auth boundary + user ownership checks.

@@ -1,8 +1,408 @@
 # PROJECT_STATE
 
-Last updated: 2026-05-14
+Last updated: 2026-05-19
 
 ## 2026-05-14 Current Candidate Deployment Status
+
+- `REQUIREMENTS-DELIVERY-MAP-AUDIT-2026-05-19` is the latest `AUD-02` evidence.
+  It also refreshed `AUD-00` generated evidence for 2026-05-19: project index
+  passed with V1 statuses `PASS:21` and tests indexed `335`, and static scan
+  passed with findings `0`. Follow-up refreshed `.agents/state/delivery-map.md`,
+  restored risk-ID uniqueness by renumbering the audit-process row to
+  `RISK-036`, and synchronized continuation state with the final rollup and
+  fresh generated audit evidence. `AUD-02` is current for source-of-truth
+  alignment after follow-up; production-boundary rows remain intentionally
+  partial where fresh production proof was not run. Evidence:
+  `docs/operations/requirements-delivery-map-audit-2026-05-19.md`,
+  `docs/operations/requirements-delivery-map-audit-2026-05-19.json`,
+  `docs/operations/project-index-2026-05-19.md`, and
+  `docs/operations/v1-static-issue-scan-2026-05-19.md`.
+
+- `FULL-REUSABLE-AUDIT-ROLLUP-2026-05-19` is the current `AUD-00` through
+  `AUD-23` rollup. It records current local evidence, historical production
+  evidence, deferred mobile scope, and explicit exclusions for production
+  mutation, LIVE order/cancel/close, exchange-side mutation, and existing
+  production data mutation. `AUD-01` and `AUD-20` are current after accepted
+  decisions; `AUD-19` remains the next production-readiness gate before any new
+  production readiness claim.
+  Evidence: `docs/operations/full-reusable-audit-rollup-2026-05-19.md` and
+  `docs/operations/full-reusable-audit-rollup-2026-05-19.json`.
+
+- `AUDIT-DECISION-PACKET-2026-05-19` records accepted audit decisions:
+  `DEC-AUD-001` sets current exchange implementation scope to Binance + Gate.io,
+  not Binance-only; `DEC-AUD-002` sets current assistant truth to
+  foundation/dry-run and defers hot-path orchestration. No runtime behavior or
+  production/LIVE/exchange mutation changed. Evidence:
+  `docs/operations/audit-decision-packet-2026-05-19.md`,
+  `docs/operations/audit-decision-packet-2026-05-19.json`, and
+  `docs/planning/audit-decision-packet-2026-05-19-task.md`.
+
+- `AUDIT-DECISION-REPAIR-PLAYBOOKS-2026-05-19` remains as historical
+  option-specific repair guidance for the now-accepted audit decisions. It did
+  not change runtime behavior; it lists files, steps, validation gates, and
+  stop conditions that were used to apply `DEC-AUD-001` and `DEC-AUD-002`.
+  Evidence:
+  `docs/operations/audit-decision-repair-playbooks-2026-05-19.md`,
+  `docs/operations/audit-decision-repair-playbooks-2026-05-19.json`, and
+  `docs/planning/audit-decision-repair-playbooks-2026-05-19-task.md`.
+
+- `FULL-REUSABLE-AUDIT-HANDOFF-2026-05-19` is the resume packet for the full
+  reusable audit mission. It summarizes current source-of-truth files,
+  validation, resolved decisions, residual risks, and next-task instructions.
+  Evidence:
+  `docs/operations/full-reusable-audit-handoff-2026-05-19.md`,
+  `docs/operations/full-reusable-audit-handoff-2026-05-19.json`, and
+  `docs/planning/full-reusable-audit-handoff-2026-05-19-task.md`.
+
+- `REUSABLE-AUDIT-ARTIFACT-MANIFEST-2026-05-19` maps `AUD-00` through
+  `AUD-23` to current reports, JSON artifacts, task records, resolved decisions,
+  and safety boundaries for future reruns. Evidence:
+  `docs/operations/reusable-audit-artifact-manifest-2026-05-19.md`,
+  `docs/operations/reusable-audit-artifact-manifest-2026-05-19.json`, and
+  `docs/planning/reusable-audit-artifact-manifest-2026-05-19-task.md`.
+
+- `I18N-COPY-REACHABILITY-AUDIT-2026-05-19` is the latest `AUD-22` evidence.
+  Route-reachable i18n audit passed with findings `0`, localCopy `0`,
+  fallbackPl `0`, and hardcoded `0`. Focused Web i18n pack passed (`8` files /
+  `26` tests). Repository language policy remains English artifacts plus
+  user-language communication. Evidence:
+  `docs/operations/i18n-copy-reachability-audit-2026-05-19.md`,
+  `docs/operations/i18n-copy-reachability-audit-2026-05-19.json`, and
+  `docs/planning/i18n-copy-reachability-audit-2026-05-19-task.md`.
+
+- `MOBILE-CROSS-PLATFORM-SCOPE-AUDIT-2026-05-19` is the latest `AUD-21`
+  evidence. Mobile remains scaffold-only: `apps/mobile` contains only package,
+  README, and placeholder source files; mobile build/test scripts intentionally
+  print deferred scaffold messages; `apps/mobile/README.md` and
+  `docs/planning/mobile-parity-contract.md` state no production mobile runtime
+  and no independent mobile backend contracts. Responsive Web mobile evidence
+  remains under `AUD-05`, not native app parity. Evidence:
+  `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md`,
+  `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.json`, and
+  `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`.
+
+- `OPERATIONS-RELEASE-DEPLOYMENT-AUDIT-2026-05-19` is the latest local
+  `AUD-19` evidence. Local release-safety proof is current: typecheck, lint,
+  build, go-live smoke, and local DB backup/restore check passed. Go-live
+  smoke covered API (`4` files / `45` tests) and Web (`3` files / `18` tests).
+  The local backup/restore check requires a running local Postgres container;
+  the first no-infra run failed with that precondition, then passed after
+  `go-live:infra:up` and produced
+  `docs/operations/v1-db-restore-check-2026-05-19T01-30-47-200Z.md`. Local
+  Postgres/Redis were stopped after the proof. No production deploy,
+  production database mutation, production journey, LIVE mutation,
+  exchange-side mutation, or existing production data mutation was performed.
+  Evidence:
+  `docs/operations/operations-release-deployment-audit-2026-05-19.md`,
+  `docs/operations/operations-release-deployment-audit-2026-05-19.json`, and
+  `docs/planning/operations-release-deployment-audit-2026-05-19-task.md`.
+
+- `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
+  Local schema and migration proof is current: Prisma schema validation passed,
+  local migration status reported `54` migrations and schema up to date, full
+  local migration replay applied all `54` migrations, schema diff generation
+  passed, and isolated representative DB-backed tests passed for wallets (`1`
+  file / `24` tests), backtests (`1` file / `15` tests), and runtime repository
+  behavior (`1` file / `2` tests). Follow-up
+  `corepack pnpm run audit:data:db-isolated` passed and now provides the
+  canonical sequential reset-and-run path for representative DB-backed audit
+  packs. The shared-DB parallel issue remains a run-policy pitfall, not a
+  failed migration replay. Local Postgres/Redis were stopped after the proof.
+  No production database, production journey, LIVE mutation, exchange-side
+  mutation, or existing production data mutation was performed.
+  Evidence: `docs/operations/data-model-migrations-audit-2026-05-19.md`,
+  `docs/operations/data-model-migrations-audit-2026-05-19.json`, and
+  `docs/planning/data-model-migrations-audit-2026-05-19-task.md`.
+
+- `WORKERS-RUNTIME-OPERATIONS-AUDIT-2026-05-19` is the latest `AUD-08`
+  evidence. Local worker/runtime operations proof is current: the focused API
+  worker/runtime pack passed (`17` files / `85` tests). Coverage includes
+  worker ownership/topology, protected worker health/readiness, runtime
+  freshness pass/fail/skip behavior, global `/ready` diagnostics,
+  market-stream source config, subscriptions, fanout and routes, exchange
+  polling, Binance stream parsing, queue tuning, backtest job persistence,
+  execution orchestration, and PAPER runtime-flow telemetry. Expected stderr
+  appeared only in the intentional Redis-startup retry test. Local
+  Postgres/Redis were stopped after the DB-backed proof. No production
+  journey, LIVE mutation, exchange-side mutation, or existing production data
+  mutation was performed. Evidence:
+  `docs/operations/workers-runtime-operations-audit-2026-05-19.md`,
+  `docs/operations/workers-runtime-operations-audit-2026-05-19.json`, and
+  `docs/planning/workers-runtime-operations-audit-2026-05-19-task.md`.
+
+- `ADMIN-SUBSCRIPTIONS-ENTITLEMENTS-AUDIT-2026-05-19` is the latest `AUD-18`
+  evidence. Local admin/subscriptions proof is current: focused Web admin and
+  profile subscription tests passed (`4` files / `9` tests), and DB-backed API
+  admin/subscriptions/entitlements tests passed (`5` files / `25` tests).
+  Coverage includes admin-only access, user listing with subscription metadata,
+  role/plan updates, self-demotion prevention, plan/entitlement validation,
+  profile subscription readback, bot limit and LIVE trading gates, and Web
+  admin/profile subscription states. Local Postgres/Redis were stopped after
+  the DB-backed proof. No production journey, LIVE mutation, exchange-side
+  mutation, existing production data mutation, or production entitlement
+  mutation was performed. Evidence:
+  `docs/operations/admin-subscriptions-entitlements-audit-2026-05-19.md`,
+  `docs/operations/admin-subscriptions-entitlements-audit-2026-05-19.json`,
+  and
+  `docs/planning/admin-subscriptions-entitlements-audit-2026-05-19-task.md`.
+
+- `LOGS-AUDIT-TRAIL-AUDIT-2026-05-19` is the latest `AUD-17` evidence. Local
+  logs/audit-trail proof is current: focused Web logs/audit tests passed (`2`
+  files / `3` tests), and DB-backed API logs/pagination tests passed (`2`
+  files / `5` tests). Coverage includes authenticated reads, owner scoping,
+  source/actor/severity filters, pagination defaults/bounds, action-produced
+  event visibility, metadata trace text rendering, and Web logs route states.
+  Local Postgres/Redis were stopped after the DB-backed proof. No production
+  journey, LIVE mutation, exchange-side mutation, or existing production data
+  mutation was performed. Evidence:
+  `docs/operations/logs-audit-trail-audit-2026-05-19.md`,
+  `docs/operations/logs-audit-trail-audit-2026-05-19.json`, and
+  `docs/planning/logs-audit-trail-audit-2026-05-19-task.md`.
+
+- `BACKTESTS-REPORTS-AUDIT-2026-05-19` is the latest `AUD-16` evidence. Local
+  backtests/reports proof is current: focused Web backtest/report UI tests
+  passed (`15` files / `37` tests), and DB-backed API backtests/reports tests
+  passed (`13` files / `114` tests). Coverage includes run lifecycle,
+  ownership, explicit range validation, queue/job/replay, fill model, data
+  gateway, runtime-kernel parity, immutable snapshot behavior,
+  pending/degraded report lifecycle, trades/report/timeline reads, cross-mode
+  aggregation, and Web route/detail/report states. Local Postgres/Redis were
+  stopped after the DB-backed proof. No production journey, LIVE mutation,
+  exchange-side mutation, or existing production data mutation was performed.
+  Evidence: `docs/operations/backtests-reports-audit-2026-05-19.md`,
+  `docs/operations/backtests-reports-audit-2026-05-19.json`, and
+  `docs/planning/backtests-reports-audit-2026-05-19-task.md`.
+
+- `MARKETS-STRATEGIES-CONFIGURATION-AUDIT-2026-05-19` is the latest `AUD-15`
+  evidence. Local markets/strategies configuration proof is current: focused
+  Web market/strategy UI tests passed (`19` files / `60` tests), and
+  DB-backed API markets/strategies tests passed (`4` files / `35` tests).
+  Coverage includes market-universe composition, catalog behavior, market and
+  strategy CRUD, ownership, active-bot guards, strategy import/export/config
+  validation, inactive-bot edit allowance, active-bot lock UI, and indicator
+  registry/presentation parity. Local Postgres/Redis were stopped after the
+  DB-backed proof. No production journey, LIVE mutation, exchange-side
+  mutation, or existing production data mutation was performed. Evidence:
+  `docs/operations/markets-strategies-configuration-audit-2026-05-19.md`,
+  `docs/operations/markets-strategies-configuration-audit-2026-05-19.json`,
+  and
+  `docs/planning/markets-strategies-configuration-audit-2026-05-19-task.md`.
+
+- `WALLETS-CAPITAL-LEDGER-AUDIT-2026-05-19` is the latest `AUD-14`
+  evidence. Local wallets/capital-ledger proof is current: focused Web wallet
+  and ledger UI tests passed (`10` files / `23` tests), and DB-backed API
+  wallets/capital tests passed (`7` files / `84` tests). Coverage includes
+  wallet CRUD, ownership, PAPER/LIVE validation, API-key binding, balance
+  preview, active-bot edit/delete/reset guards, paper reset checkpoint,
+  wallet-first bot contract, runtime capital source truth, cashflow/equity
+  ledger states, and partial/unavailable ledger UI. Local Postgres/Redis were
+  stopped after the DB-backed proof. No production journey, LIVE mutation,
+  exchange-side mutation, or existing production data mutation was performed.
+  Evidence: `docs/operations/wallets-capital-ledger-audit-2026-05-19.md`,
+  `docs/operations/wallets-capital-ledger-audit-2026-05-19.json`, and
+  `docs/planning/wallets-capital-ledger-audit-2026-05-19-task.md`.
+
+- `POSITIONS-RECONCILIATION-AUDIT-2026-05-19` is the latest `AUD-13`
+  evidence. Local positions/reconciliation proof is current: focused Web
+  runtime-position tests passed (`6` files / `46` tests), and DB-backed API
+  positions/reconciliation tests passed (`11` files / `68` tests). Coverage
+  includes list/read ownership, live-status, exchange snapshot selection,
+  normalization and fail-closed behavior, takeover/rebind, orphan repair,
+  imported history hydration, reconciliation diagnostics, runtime position
+  derivations, and close-state UI. Expected stderr appeared only in tests that
+  intentionally simulate ambiguous/unowned/missing-entry and snapshot-failure
+  diagnostics. Local Postgres/Redis were stopped after the DB-backed proof. No
+  production journey, LIVE mutation, exchange-side mutation, or existing
+  production data mutation was performed. Evidence:
+  `docs/operations/positions-reconciliation-audit-2026-05-19.md`,
+  `docs/operations/positions-reconciliation-audit-2026-05-19.json`, and
+  `docs/planning/positions-reconciliation-audit-2026-05-19-task.md`.
+
+- `ORDERS-MANUAL-TRADING-AUDIT-2026-05-19` is the latest `AUD-12` evidence.
+  Local orders/manual trading proof is current: focused Web manual/open-order
+  tests passed (`8` files / `46` tests), and DB-backed API order lifecycle
+  tests passed (`10` files / `121` tests). Coverage includes manual-order
+  context and selected-bot scope, PAPER lifecycle, ownership isolation,
+  active-only filtering, fills, fees, exchange events, fail-closed
+  exchange-backed cancel boundary, LIVE risk guards, quantity/position scope,
+  and Dashboard Home manual/open-order action states. Local Postgres/Redis were
+  stopped after the DB-backed proof. No production journey, LIVE mutation,
+  exchange-side mutation, or existing production data mutation was performed.
+  Evidence: `docs/operations/orders-manual-trading-audit-2026-05-19.md`,
+  `docs/operations/orders-manual-trading-audit-2026-05-19.json`, and
+  `docs/planning/orders-manual-trading-audit-2026-05-19-task.md`.
+
+- `ENGINE-TRADING-DECISION-FLOW-AUDIT-2026-05-19` is the latest `AUD-11`
+  evidence. Local engine/trading flow is current: focused engine service/unit
+  tests passed (`15` files / `173` tests), and DB-backed engine e2e/smoke
+  tests passed (`4` files / `13` tests). Coverage includes deterministic
+  signal merge, runtime decision engine, final-candle flow, signal loop and
+  supervisor, pre-trade/risk, execution orchestration, dedupe, exchange order
+  guard, PAPER/LIVE parity, market-data gateway, position automation, PAPER
+  runtime lifecycle, and owned imported-position execution. Expected stderr
+  appeared only in tests that intentionally simulate failover/fail-closed
+  paths. Local Postgres/Redis were stopped after the DB-backed proof. No
+  production journey, LIVE mutation, exchange-side mutation, or existing
+  production data mutation was performed. Evidence:
+  `docs/operations/engine-trading-decision-flow-audit-2026-05-19.md`,
+  `docs/operations/engine-trading-decision-flow-audit-2026-05-19.json`, and
+  `docs/planning/engine-trading-decision-flow-audit-2026-05-19-task.md`.
+
+- `BOTS-RUNTIME-TRUTH-AUDIT-2026-05-19` is the latest `AUD-10` evidence.
+  Local bot/runtime truth is current: focused Web bot/dashboard runtime tests
+  passed (`8` files / `61` tests), and DB-backed API bot/runtime tests passed
+  (`10` files / `88` tests). Coverage includes bot CRUD/ownership,
+  wallet-first writes, duplicate and entitlement guards, selected-bot runtime
+  scope, monitoring aggregate truth, runtime history parity, takeover
+  visibility, LIVE/PAPER isolation, and delete cleanup. Local Postgres/Redis
+  were stopped after the DB-backed proof. No production journey, LIVE mutation,
+  exchange-side mutation, or existing production data mutation was performed.
+  Evidence: `docs/operations/bots-runtime-truth-audit-2026-05-19.md`,
+  `docs/operations/bots-runtime-truth-audit-2026-05-19.json`, and
+  `docs/planning/bots-runtime-truth-audit-2026-05-19-task.md`.
+
+- `SECURITY-PRIVACY-AUDIT-2026-05-19` is the latest `AUD-06` evidence.
+  Local security/privacy proof is current: focused auth/middleware/header API
+  tests passed (`9` files / `32` tests), DB-backed auth/profile/API-key/
+  isolation/abuse tests passed (`7` files / `47` tests), focused Web
+  auth/profile/API-key tests passed (`7` files / `28` tests), and the public
+  auth cache contract passed (`1` file / `2` tests). Local Postgres/Redis were
+  started only for DB-backed tests and then stopped. No production journey,
+  LIVE mutation, exchange-side mutation, existing production data mutation, or
+  raw-secret artifact was produced. Evidence:
+  `docs/operations/security-privacy-audit-2026-05-19.md`,
+  `docs/operations/security-privacy-audit-2026-05-19.json`, and
+  `docs/planning/security-privacy-audit-2026-05-19-task.md`.
+
+- `ARCHITECTURE-EXCHANGE-SCOPE-WORDING-AUDIT-2026-05-19` is the latest
+  `AUD-01`/`AUD-ARCH-001` evidence. `DEC-AUD-001` accepts Binance + Gate.io as
+  current implementation scope, not Binance-only, while keeping production/live
+  readiness evidence-bound by exact exchange, market type, and operation.
+  Evidence:
+  `docs/operations/architecture-exchange-scope-wording-audit-2026-05-19.md`,
+  `docs/operations/architecture-exchange-scope-wording-audit-2026-05-19.json`,
+  and
+  `docs/planning/architecture-exchange-scope-wording-audit-2026-05-19-task.md`.
+
+- `EXCHANGE-CAPABILITY-TRUTH-AUDIT-2026-05-19` is the latest `AUD-09`
+  evidence after exact matrix repair. API exchange capability/registry/boundary
+  tests passed (`4` files / `21` tests), focused exact contract tests passed
+  (`2` files / `4` tests), and API typecheck passed after execution,
+  authenticated-read, boundary, wallet preview, and positions snapshot
+  consumers were updated to use `(exchange, marketType, operation)`. Web
+  exchange capability tests passed (`2` files / `3` tests). SDK/REST ownership
+  remains inside exchange-owned boundaries. `AUD-EXCH-007` is also closed:
+  non-exchange orders/wallet consumers now use neutral exchange-owned type
+  aliases, with focused orders/wallet classifier tests passing (`2` files /
+  `41` tests). Evidence:
+  `docs/operations/exchange-capability-truth-audit-2026-05-19.md`,
+  `docs/operations/exchange-capability-truth-audit-2026-05-19.json`, and
+  `docs/planning/exchange-capability-truth-audit-2026-05-19-task.md`.
+
+- `AI-ASSISTANT-RUNTIME-TRUTH-AUDIT-2026-05-19` is the latest `AUD-20`
+  evidence. The deterministic assistant foundation is locally proven:
+  assistant orchestrator tests passed (`2` files / `6` tests), focused Web
+  assistant route tests passed (`2` files / `3` tests), and bot assistant
+  config/dry-run e2e passed after local Postgres/Redis startup (`1` file /
+  `3` tests). The stronger architecture claim remains unproven: no audited
+  BACKTEST/PAPER/LIVE hot-path runtime call site to
+  `orchestrateAssistantDecision` was found, and no full
+  `AI_TESTING_PROTOCOL.md` multi-turn red-team report exists. Local infra was
+  stopped after the e2e proof. Evidence:
+  `docs/operations/ai-assistant-runtime-truth-audit-2026-05-19.md`,
+  `docs/operations/ai-assistant-runtime-truth-audit-2026-05-19.json`, and
+  `docs/planning/ai-assistant-runtime-truth-audit-2026-05-19-task.md`.
+
+- `API-ENDPOINT-DOCS-PARITY-AUDIT-2026-05-19` is the latest `AUD-03`/`AUD-23`
+  audit evidence. A reusable command now exists:
+  `pnpm run docs:parity:endpoints:api`. Current endpoint-level result is
+  `PASS`: `109` Express endpoints detected, `109` documented by route mention
+  in `docs/modules/api-*.md`, and `0` gaps after adding root/ops endpoint docs
+  plus missing route mentions for bots, orders, positions, and wallets.
+  Existing module-level docs parity still passes (`API 22/22`, `Web 16/16`,
+  `Routes 38/38`). Evidence:
+  `docs/operations/api-endpoint-docs-parity-2026-05-19/api-endpoint-docs-parity-2026-05-19.md`
+  and `docs/planning/api-endpoint-docs-parity-audit-2026-05-19-task.md`.
+
+- `AUTHENTICATED-ROUTE-STATE-AUDIT-2026-05-19` is the latest Web/UX audit
+  evidence. Local API/Web were started against seeded admin data, Browser login
+  reached `/dashboard`, and the route-state audit passed for canonical
+  public/auth/dashboard/admin plus legacy routes. Result: `53` route checks,
+  `53` PASS, `0` CHECK, `0` console warning/error routes, and `6`
+  screenshots. This promotes `AUD-04` and local `AUD-05` from partial to
+  current local evidence. It is not production proof and did not run LIVE
+  mutation, exchange-side mutation, or existing production data mutation.
+  Evidence: `docs/analysis/audit-baseline-2026-05-19.md`,
+  `docs/operations/route-state-audit-2026-05-19/route-state-audit-2026-05-19.md`,
+  and `docs/planning/authenticated-route-state-audit-2026-05-19-task.md`.
+
+- `FULL-LAYERED-AUDIT-RUN-2026-05-18` is the latest broad local audit run.
+  It extends the reusable audit registry baseline with current local evidence:
+  project index PASS (`PASS:21`, tests indexed `335`), static scan PASS (`0`
+  findings), guardrails PASS, docs parity PASS, typecheck PASS, lint PASS,
+  build PASS, full Web Vitest PASS (`149` files / `514` tests),
+  route-reachable i18n PASS (`0` findings), focused API layer packs PASS, full
+  API Vitest PASS after local Postgres/Redis were available, go-live smoke PASS
+  (API `45/45`, Web `18/18`), and representative Browser route-state proof for
+  `/`, `/auth/login`, and unauthenticated `/dashboard` redirect on desktop and
+  mobile with `0` console warnings/errors. This is local audit confidence and
+  representative route proof, not production proof, LIVE mutation proof, or an
+  authenticated all-route browser/screenshot audit. Evidence:
+  `docs/analysis/audit-baseline-2026-05-18.md` and
+  `docs/planning/full-layered-audit-run-2026-05-18-task.md`.
+
+- `REUSABLE-AUDIT-REGISTRY-2026-05-18` is the current reusable audit system.
+  It defines stable `AUD-00` through `AUD-23` audit families across backend,
+  Web, UX/UI, workers, security, exchange, bots, engine/runtime, orders,
+  positions, wallets, markets, strategies, backtests, reports, logs, admin,
+  operations, AI assistant, mobile, i18n, docs, and traceability. The current
+  baseline is `docs/analysis/audit-baseline-2026-05-18.md`: today-run project
+  index passed with `PASS:21` and `335` indexed tests, and static scan passed
+  with `0` findings. Guardrails, docs parity, typecheck, lint, and build also
+  passed. This is an audit-system baseline, not a production proof or code
+  behavior change. Evidence:
+  `docs/analysis/reusable-audit-registry.md` and
+  `docs/planning/reusable-audit-registry-2026-05-18-task.md`.
+
+- `PROJECT-ARCHITECTURE-CODE-DISCREPANCY-AUDIT-2026-05-17` is the current
+  architecture-vs-code discrepancy baseline. It found no route inventory drift
+  for dashboard routes and no static-scan findings after a sequential index/
+  scan refresh. Inspected protected API diagnostics, worker topology, bot active
+  market-scope constraints, Prisma lifecycle shape, and exchange SDK ownership
+  broadly fit architecture. Open drift is now explicit: assistant architecture
+  overstates hot-path BACKTEST/PAPER/LIVE integration; exchange capability
+  services are not yet fully keyed by `(exchange, marketType, operation)`; and
+  older architecture overview/domain wording still implies Binance-only or
+  single-exchange-family baseline despite current Binance/Gate.io code and
+  reference docs. Evidence:
+  `docs/analysis/architecture-code-discrepancy-audit-2026-05-17.md` and
+  `docs/planning/project-architecture-code-discrepancy-audit-2026-05-17-task.md`.
+
+- `PROJECT-COMPLETE-ANALYSIS-INDEX-2026-05-14` is now the broader audit map
+  for the user's request to analyze everything. It classifies Web/API local
+  proof, Web route inventory, API route inventory, mobile scaffold, assistant/
+  AI runtime, every-route browser-state coverage, every-endpoint ledgering,
+  LIVE mutation, Gate.io/second-LIVE production shape, and existing production
+  data mutation. Key readback: no `.skip(` or `.only(` markers were found in
+  the active scan; no active implementation `TODO/FIXME/HACK` markers were
+  found outside the scanner's own rule definitions; mobile is intentionally
+  scaffold-only; assistant runtime has deterministic local safety tests but no
+  complete `AI_TESTING_PROTOCOL.md` multi-turn red-team report. Evidence:
+  `docs/operations/project-complete-analysis-index-2026-05-14.md`.
+
+- `PROJECT-FULL-SCAN-BASELINE-2026-05-14` is verified as the current
+  repository-wide local audit baseline for this audit/indexing thread.
+  Generated project index and static scan artifacts were written to
+  `docs/operations/project-full-scan-index-2026-05-14.md` /
+  `.json` and `docs/operations/project-full-static-scan-2026-05-14.md` /
+  `.json`. Results: V1 matrix `PASS:21`, static findings `0`, tests indexed
+  `335`, guardrails PASS, typecheck PASS, lint PASS, full Web Vitest PASS
+  (`149` files / `514` tests), full API Vitest PASS, build PASS, and
+  go-live smoke PASS (API `45/45`, Web `18/18`). This baseline does not claim
+  unsafe LIVE mutation, exchange-side mutation, existing production data
+  mutation, broader Gate.io/second-LIVE production shape, or manual browser
+  state coverage for every route. Evidence:
+  `docs/planning/project-full-scan-baseline-2026-05-14-task.md`.
 
 - `POSTV1-STRATEGY-SNAPSHOT-HISTORY-2026-05-14` is verified locally. New
   backtest runs now persist immutable creation-time strategy and

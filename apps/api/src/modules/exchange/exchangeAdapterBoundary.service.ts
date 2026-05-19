@@ -123,7 +123,10 @@ type ExchangeAdapterBoundaryDeps = {
   fetchBalanceRaw: (params: SupportedExchangeReadCredentials) => Promise<unknown>;
   resolveLiveExecutionApiKey: (params: {
     userId: string;
-    bot: Pick<SubmitLiveExchangeOrderInput['bot'], 'exchange' | 'apiKeyId' | 'walletId'>;
+    bot: Pick<
+      SubmitLiveExchangeOrderInput['bot'],
+      'exchange' | 'marketType' | 'apiKeyId' | 'walletId'
+    >;
   }) => Promise<LiveExecutionApiKey>;
   createLiveOrderAdapter: (params: {
     exchange: Exchange;
@@ -167,7 +170,7 @@ const getDefaultDeps = (): ExchangeAdapterBoundaryDeps => ({
   resolveLiveExecutionApiKey,
   createLiveOrderAdapter: (params) => {
     const registry = resolveExchangeAdapterRegistryEntry({
-      exchange: resolveExchangeExecutionSource(params.exchange),
+      exchange: resolveExchangeExecutionSource(params.exchange, params.marketType),
       marketType: params.marketType,
     });
     return registry.execution.createLiveOrderAdapter(
@@ -247,9 +250,16 @@ const convergeLiveMarginAndLeverageIfNeeded = async (params: {
 
 export const resolveLiveExecutionApiKey = async (params: {
   userId: string;
-  bot: Pick<SubmitLiveExchangeOrderInput['bot'], 'exchange' | 'apiKeyId' | 'walletId'>;
+  bot: Pick<
+    SubmitLiveExchangeOrderInput['bot'],
+    'exchange' | 'marketType' | 'apiKeyId' | 'walletId'
+  >;
 }): Promise<LiveExecutionApiKey> => {
-  assertExchangeExecutionCapabilitySupport(params.bot.exchange, 'LIVE_ORDER_SUBMIT');
+  assertExchangeExecutionCapabilitySupport(
+    params.bot.exchange,
+    params.bot.marketType,
+    'LIVE_ORDER_SUBMIT'
+  );
 
   if (params.bot.apiKeyId) {
     const botBoundApiKey = await prisma.apiKey.findFirst({
@@ -299,7 +309,11 @@ export const fetchSupportedExchangePositionsRaw = async (
   params: SupportedExchangeReadCredentials,
   deps: Pick<ExchangeAdapterBoundaryDeps, 'createAuthenticatedConnector'> = getDefaultDeps()
 ) => {
-  assertExchangeExecutionCapabilitySupport(params.exchange, 'POSITIONS_SNAPSHOT');
+  assertExchangeExecutionCapabilitySupport(
+    params.exchange,
+    params.marketType,
+    'POSITIONS_SNAPSHOT'
+  );
 
   const connector = deps.createAuthenticatedConnector(params);
   try {
@@ -314,7 +328,11 @@ export const fetchSupportedExchangeOpenOrdersRaw = async (
   params: SupportedExchangeReadCredentials,
   deps: Pick<ExchangeAdapterBoundaryDeps, 'createAuthenticatedConnector'> = getDefaultDeps()
 ) => {
-  assertExchangeExecutionCapabilitySupport(params.exchange, 'OPEN_ORDERS_SNAPSHOT');
+  assertExchangeExecutionCapabilitySupport(
+    params.exchange,
+    params.marketType,
+    'OPEN_ORDERS_SNAPSHOT'
+  );
 
   const connector = deps.createAuthenticatedConnector(params);
   try {
@@ -333,7 +351,11 @@ export const fetchSupportedExchangeTradeHistoryRaw = async (
   },
   deps: Pick<ExchangeAdapterBoundaryDeps, 'createAuthenticatedConnector'> = getDefaultDeps()
 ) => {
-  assertExchangeExecutionCapabilitySupport(params.exchange, 'TRADE_HISTORY_SNAPSHOT');
+  assertExchangeExecutionCapabilitySupport(
+    params.exchange,
+    params.marketType,
+    'TRADE_HISTORY_SNAPSHOT'
+  );
 
   const connector = deps.createAuthenticatedConnector(params);
   try {
@@ -359,7 +381,11 @@ export const fetchSupportedExchangeWalletCashflowHistoryRaw = async (
   },
   deps: Pick<ExchangeAdapterBoundaryDeps, 'createAuthenticatedConnector'> = getDefaultDeps()
 ) => {
-  assertExchangeExecutionCapabilitySupport(params.exchange, 'WALLET_CASHFLOW_HISTORY');
+  assertExchangeExecutionCapabilitySupport(
+    params.exchange,
+    params.marketType,
+    'WALLET_CASHFLOW_HISTORY'
+  );
 
   const connector = deps.createAuthenticatedConnector(params);
   try {
@@ -381,7 +407,7 @@ export const fetchSupportedExchangeBalanceRaw = async (
   params: SupportedExchangeReadCredentials,
   deps: Pick<ExchangeAdapterBoundaryDeps, 'fetchBalanceRaw'> = getDefaultDeps()
 ) => {
-  assertExchangeExecutionCapabilitySupport(params.exchange, 'BALANCE_PREVIEW');
+  assertExchangeExecutionCapabilitySupport(params.exchange, params.marketType, 'BALANCE_PREVIEW');
   return deps.fetchBalanceRaw(params);
 };
 
@@ -389,7 +415,11 @@ export const submitLiveOrderThroughBoundary = async (
   params: SubmitLiveExchangeOrderInput,
   deps: ExchangeAdapterBoundaryDeps = getDefaultDeps()
 ): Promise<SubmitLiveExchangeOrderResult> => {
-  assertExchangeExecutionCapabilitySupport(params.bot.exchange, 'LIVE_ORDER_SUBMIT');
+  assertExchangeExecutionCapabilitySupport(
+    params.bot.exchange,
+    params.bot.marketType,
+    'LIVE_ORDER_SUBMIT'
+  );
 
   const apiKey = await deps.resolveLiveExecutionApiKey({
     userId: params.userId,
@@ -471,7 +501,11 @@ export const cancelLiveOrderThroughBoundary = async (
     'createAuthenticatedConnector' | 'resolveLiveExecutionApiKey'
   > = getDefaultDeps()
 ): Promise<CancelLiveExchangeOrderResult> => {
-  assertExchangeExecutionCapabilitySupport(params.bot.exchange, 'LIVE_ORDER_CANCEL');
+  assertExchangeExecutionCapabilitySupport(
+    params.bot.exchange,
+    params.bot.marketType,
+    'LIVE_ORDER_CANCEL'
+  );
 
   const apiKey = await deps.resolveLiveExecutionApiKey({
     userId: params.userId,

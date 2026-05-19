@@ -95,9 +95,10 @@ When multiple entities can imply context, the canonical priority is:
 
 ## MVP vs Future
 ### Current baseline
-- one exchange family in production scope
+- Binance and Gate.io exchange implementation scope; production/live readiness
+  remains evidence-bound by exact exchange, market type, and operation
 - multi-bot runtime model
-- assistant configuration attached to bots
+- assistant configuration and deterministic dry-run foundation attached to bots
 - one wallet + one symbol-group market scope + one ordered strategy set per bot
 
 ## Migration Note
@@ -122,8 +123,9 @@ have at most one `BotMarketGroup` row where `isEnabled = true` and
 that invariant; it must not silently pause, archive, or choose one market scope.
 
 ### Future extensions
-- more exchange adapters
-- richer assistant mandates
+- more exchange adapters beyond Binance and Gate.io
+- richer assistant mandates, including hot-path orchestration only after a
+  separate implementation and AI red-team proof
 - more advanced portfolio-level controls
 
 ## Related Files

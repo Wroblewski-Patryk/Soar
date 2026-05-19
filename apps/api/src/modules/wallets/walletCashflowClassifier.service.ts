@@ -5,7 +5,7 @@ import {
   WalletCashflowSource,
 } from '@prisma/client';
 
-import { CcxtWalletCashflowHistoryEntry } from '../exchange/ccxtFuturesConnector.types';
+import { ExchangeWalletCashflowHistoryEntry } from '../exchange/exchangeData.types';
 import { prisma } from '../../prisma/client';
 
 type WalletCashflowPrismaClient = Pick<Prisma.TransactionClient, 'walletCashflowEvent'>;
@@ -13,7 +13,7 @@ type WalletCashflowPrismaClient = Pick<Prisma.TransactionClient, 'walletCashflow
 const normalizeType = (value: string | null) => value?.trim().toUpperCase() ?? '';
 
 export const classifyExchangeWalletCashflowSource = (
-  entry: Pick<CcxtWalletCashflowHistoryEntry, 'source' | 'direction' | 'type'>
+  entry: Pick<ExchangeWalletCashflowHistoryEntry, 'source' | 'direction' | 'type'>
 ): WalletCashflowSource => {
   const type = normalizeType(entry.type);
   if (entry.source === 'fetchDeposits') return WalletCashflowSource.DEPOSIT;
@@ -32,7 +32,7 @@ export const classifyExchangeWalletCashflowSource = (
   return WalletCashflowSource.UNKNOWN_EXTERNAL_ADJUSTMENT;
 };
 
-const mapDirection = (direction: CcxtWalletCashflowHistoryEntry['direction']) => {
+const mapDirection = (direction: ExchangeWalletCashflowHistoryEntry['direction']) => {
   if (direction === 'IN') return WalletCashflowDirection.IN;
   if (direction === 'OUT') return WalletCashflowDirection.OUT;
   return WalletCashflowDirection.NEUTRAL;
@@ -82,7 +82,7 @@ export const recordExchangeWalletCashflowEvent = async (
     userId: string;
     walletId: string;
     baseCurrency: string;
-    entry: CcxtWalletCashflowHistoryEntry;
+    entry: ExchangeWalletCashflowHistoryEntry;
     balanceSnapshotId?: string | null;
   },
   client: WalletCashflowPrismaClient = prisma

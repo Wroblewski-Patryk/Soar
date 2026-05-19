@@ -60,15 +60,19 @@ Before feature expansion, Soar must preserve:
 
 ## MVP vs Later
 ### Current canonical baseline
-- Binance-only exchange scope
+- Binance and Gate.io exchange implementation scope, with production/live
+  readiness evidence-bound by exact exchange, market type, and operation
 - multi-user architecture
 - responsive web as the primary product surface
-- assistant layer supported as constrained runtime orchestration
+- assistant foundation supported for bot-scoped configuration, deterministic
+  orchestration contracts, and dry-run diagnostics; trading hot-path assistant
+  orchestration remains later/gated scope
 
 ### Later extensions
-- more exchanges
+- additional exchanges beyond Binance and Gate.io
 - richer admin and billing surfaces
-- deeper assistant autonomy
+- hot-path assistant autonomy after fail-closed integration and AI red-team
+  evidence
 - broader observability automation
 
 ## Related Files

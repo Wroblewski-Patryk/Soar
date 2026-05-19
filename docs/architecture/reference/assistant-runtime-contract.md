@@ -1,13 +1,31 @@
 # Assistant Runtime Contract (MVP Foundation)
 
-Status: canonical, locked for `MBA-14` on 2026-03-23.
+Status: canonical foundation contract; current implementation is bot-scoped
+configuration, deterministic orchestrator coverage, and dry-run diagnostics.
+Hot-path BACKTEST/PAPER/LIVE assistant orchestration is later/gated scope until
+implemented with fail-closed integration, persisted traces, and AI red-team
+evidence.
 
 ## Scope
 - Bot-scoped assistant topology: one main assistant + up to four subagents.
-- Applies to `BACKTEST`, `PAPER`, `LIVE` decision orchestration layer.
-- Assistant output is advisory unless execution policy allows action.
+- Applies today to assistant configuration, isolated deterministic
+  orchestration tests, and owner-scoped dry-run diagnostics.
+- Future hot-path use may apply to `BACKTEST`, `PAPER`, and `LIVE` decision
+  orchestration only after a separate approved implementation and validation
+  package.
+- Assistant output remains advisory unless execution policy allows action.
 
-## Responsibilities
+## Current Responsibilities
+1. Main assistant foundation:
+   - load bot-scoped assistant configuration
+   - coordinate bounded subagent slots for deterministic dry-run diagnostics
+   - return one structured proposal for inspection
+2. Subagent foundation:
+   - perform one role-limited analysis function
+   - produce structured, machine-readable output
+   - never bypass risk/mandate policies
+
+## Future Hot-Path Responsibilities
 1. Main assistant:
    - build decision plan for current bot/market-group/symbol window
    - dispatch bounded tasks to enabled subagents
@@ -46,6 +64,9 @@ Output envelope:
 - `latencyMs`
 
 ## Timeout Policy
+Applies to current deterministic orchestrator behavior and remains mandatory
+for any future hot-path integration:
+
 - main assistant hard timeout: `2500ms` (configurable)
 - each subagent hard timeout: `1200ms` (configurable)
 - per-slot timeout is isolated (one timeout does not kill the whole orchestration)
@@ -66,7 +87,8 @@ Output envelope:
 - all assistant proposals are post-validated by runtime risk/execution guards.
 
 ## Audit and Explainability
-For each assistant cycle persist trace:
+For current dry-run/foundation behavior, trace data must remain structured and
+sanitized. For future hot-path assistant cycles, persist trace:
 - request envelope hash/id
 - enabled slots and per-slot status (`ok | timeout | error | skipped`)
 - raw proposals (sanitized)

@@ -1,0 +1,83 @@
+{
+  "auditId": "AUD-19",
+  "name": "Operations, Release, And Deployment",
+  "date": "2026-05-19",
+  "status": "current local / historical production release gate",
+  "environment": "local",
+  "productionMutation": false,
+  "liveOrderCancelClose": false,
+  "exchangeSideMutation": false,
+  "existingProductionDataMutation": false,
+  "results": [
+    {
+      "name": "Typecheck",
+      "command": "corepack pnpm run typecheck",
+      "result": "PASS"
+    },
+    {
+      "name": "Lint",
+      "command": "corepack pnpm run lint",
+      "result": "PASS"
+    },
+    {
+      "name": "Build",
+      "command": "corepack pnpm run build",
+      "result": "PASS",
+      "notes": "Mobile scaffold build echo, API tsc, Web Next production build with 30 static pages."
+    },
+    {
+      "name": "Local go-live smoke",
+      "command": "corepack pnpm run test:go-live:smoke",
+      "result": "PASS",
+      "apiFiles": 4,
+      "apiTests": 45,
+      "webFiles": 3,
+      "webTests": 18
+    },
+    {
+      "name": "Local DB backup/restore check without infra",
+      "command": "corepack pnpm run ops:db:backup-restore:check-local",
+      "result": "FAIL_EXPECTED_FINDING",
+      "notes": "Failed because no Postgres container was running."
+    },
+    {
+      "name": "Local DB backup/restore check with infra",
+      "command": "corepack pnpm run go-live:infra:up; corepack pnpm run ops:db:backup-restore:check-local; corepack pnpm run go-live:infra:down",
+      "result": "PASS",
+      "report": "docs/operations/v1-db-restore-check-2026-05-19T01-30-47-200Z.md",
+      "artifact": "docs/operations/_artifacts-db-restore-check-2026-05-19T01-30-47-200Z.txt"
+    }
+  ],
+  "findings": [
+    {
+      "id": "AUD-OPS-001",
+      "severity": "P0",
+      "status": "passed",
+      "summary": "Local typecheck, lint, and build release gates pass."
+    },
+    {
+      "id": "AUD-OPS-002",
+      "severity": "P0",
+      "status": "passed",
+      "summary": "Local go-live smoke passes and cleans up local infrastructure."
+    },
+    {
+      "id": "AUD-OPS-003",
+      "severity": "P1",
+      "status": "passed with precondition",
+      "summary": "Local backup/restore check passes when local Postgres container is running."
+    },
+    {
+      "id": "AUD-OPS-004",
+      "severity": "P1",
+      "status": "open freshness follow-up",
+      "summary": "Production release gate was not rerun for a new deployment target."
+    },
+    {
+      "id": "AUD-OPS-005",
+      "severity": "P2",
+      "status": "observation",
+      "summary": "Mobile build remains scaffold-only and is tracked under AUD-21."
+    }
+  ]
+}

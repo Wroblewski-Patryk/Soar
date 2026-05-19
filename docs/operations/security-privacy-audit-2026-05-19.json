@@ -1,0 +1,56 @@
+{
+  "auditId": "AUD-06",
+  "name": "Security And Privacy",
+  "date": "2026-05-19",
+  "status": "current local / current historical production-safe proof",
+  "environment": "local",
+  "productionMutation": false,
+  "liveOrderCancelClose": false,
+  "exchangeSideMutation": false,
+  "existingProductionDataMutation": false,
+  "results": [
+    {
+      "name": "Focused auth middleware/service/header API pack",
+      "command": "corepack pnpm --filter api exec vitest run src/modules/auth/auth.service.test.ts src/modules/auth/auth.cookie.test.ts src/modules/auth/auth.jwt.test.ts src/modules/auth/auth.errors.test.ts src/middleware/requireAuth.test.ts src/middleware/requireTrustedOrigin.test.ts src/middleware/rateLimit.test.ts src/router/security-headers.test.ts src/router/cacheHeaders.test.ts",
+      "result": "PASS",
+      "files": 9,
+      "tests": 32,
+      "notes": "Initial run was blocked by missing local Postgres; rerun passed after go-live:infra:up."
+    },
+    {
+      "name": "DB-backed auth/profile/API-key/isolation/abuse API pack",
+      "command": "corepack pnpm --filter api exec vitest run src/modules/auth/auth.e2e.test.ts src/modules/profile/basic/basic.e2e.test.ts src/modules/profile/security/security.e2e.test.ts src/modules/profile/apiKey/apiKey.e2e.test.ts src/modules/profile/apiKey/exchangeApiKeyProbe.service.test.ts src/modules/profile/stage-abuse-throttling.e2e.test.ts src/modules/isolation/data-isolation.e2e.test.ts",
+      "result": "PASS",
+      "files": 7,
+      "tests": 47
+    },
+    {
+      "name": "Focused Web auth/profile/API-key pack",
+      "command": "corepack pnpm --filter web exec vitest run src/context/AuthContext.test.tsx src/lib/api.test.ts src/features/auth/hooks/useLoginForm.test.tsx src/features/auth/hooks/useRegisterForm.test.tsx src/features/profile/components/ApiKeyForm.test.tsx src/features/profile/components/ApiKeysList.test.tsx src/features/profile/components/Security.test.tsx",
+      "result": "PASS",
+      "files": 7,
+      "tests": 28
+    },
+    {
+      "name": "Web public auth cache contract",
+      "command": "node .\\node_modules\\vitest\\vitest.mjs run 'src/app/(public)/auth/authPageCacheContract.test.ts'",
+      "cwd": "apps/web",
+      "result": "PASS",
+      "files": 1,
+      "tests": 2,
+      "notes": "Direct Vitest invocation avoids Windows shell parsing of parentheses in the route-group path."
+    }
+  ],
+  "findings": [
+    {
+      "id": "AUD-SEC-004",
+      "severity": "P1",
+      "status": "open governance follow-up",
+      "summary": "External independent security review is still not represented by automated proof."
+    }
+  ],
+  "cleanup": {
+    "localInfraStopped": true,
+    "command": "corepack pnpm run go-live:infra:down"
+  }
+}

@@ -526,7 +526,7 @@ const fetchAuthenticatedBalancePreview = async (params: {
 };
 
 export const previewWalletBalance = async (userId: string, payload: WalletBalancePreviewDto) => {
-  assertAuthenticatedExchangeReadSupport(payload.exchange, 'BALANCE_PREVIEW');
+  assertAuthenticatedExchangeReadSupport(payload.exchange, payload.marketType, 'BALANCE_PREVIEW');
 
   const apiKey = await prisma.apiKey.findFirst({
     where: {
@@ -584,7 +584,7 @@ export const previewWalletBalance = async (userId: string, payload: WalletBalanc
             }
           : null,
       fetchedAt: new Date().toISOString(),
-      source: resolveExchangeAdapterSource(payload.exchange),
+      source: resolveExchangeAdapterSource(payload.exchange, payload.marketType),
     };
   } catch (error) {
     if (isAppErrorLike(error) && error.code === 'WALLET_PREVIEW_FETCH_FAILED') {

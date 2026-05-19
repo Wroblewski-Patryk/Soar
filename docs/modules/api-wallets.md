@@ -111,6 +111,9 @@ Out of scope:
   - `GET /dashboard/wallets/metadata`
   - `POST /dashboard/wallets/preview-balance`
   - `GET /dashboard/wallets/:id`
+  - `GET /dashboard/wallets/:id/cashflow-events`
+  - `GET /dashboard/wallets/:id/equity-timeline`
+  - `GET /dashboard/wallets/:id/performance-summary`
   - `POST /dashboard/wallets`
   - `PUT /dashboard/wallets/:id`
   - `DELETE /dashboard/wallets/:id`

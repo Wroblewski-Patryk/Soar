@@ -1,0 +1,45 @@
+{
+  "auditId": "AUD-10",
+  "name": "Bots And Runtime Truth",
+  "date": "2026-05-19",
+  "status": "current local / current historical production-safe proof",
+  "environment": "local",
+  "productionMutation": false,
+  "liveOrderCancelClose": false,
+  "exchangeSideMutation": false,
+  "existingProductionDataMutation": false,
+  "results": [
+    {
+      "name": "Focused Web bots/runtime pack",
+      "command": "corepack pnpm --filter web exec vitest run src/features/bots/components/BotsManagement.test.tsx src/features/bots/components/BotsListTable.test.tsx src/features/bots/components/BotCreateEditForm.test.tsx src/features/bots/services/botsMonitoringAggregate.service.test.ts src/features/bots/utils/runtimeSurfaceTruth.test.ts src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.runtime-table-audit.test.tsx src/features/dashboard-home/hooks/useHomeLiveWidgetsController.test.tsx",
+      "result": "PASS",
+      "files": 8,
+      "tests": 61
+    },
+    {
+      "name": "Focused API bots/runtime DB-backed pack",
+      "command": "corepack pnpm --filter api exec vitest run src/modules/bots/bots.e2e.test.ts src/modules/bots/bots.duplicate-guard.e2e.test.ts src/modules/bots/bots.subscription-entitlements.e2e.test.ts src/modules/bots/bots.wallet-contract.e2e.test.ts src/modules/bots/bots.runtime-scope.e2e.test.ts src/modules/bots/bots.monitoring-aggregate.e2e.test.ts src/modules/bots/bots.runtime-history-parity.e2e.test.ts src/modules/bots/bots.delete-cleanup.e2e.test.ts src/modules/bots/bots.live-paper-concurrent.e2e.test.ts src/modules/bots/bots.runtime-takeover.e2e.test.ts",
+      "result": "PASS",
+      "files": 10,
+      "tests": 88
+    }
+  ],
+  "findings": [
+    {
+      "id": "AUD-BOT-004",
+      "severity": "P1",
+      "status": "open freshness follow-up",
+      "summary": "Production proof for bot/runtime remains historical and scoped."
+    },
+    {
+      "id": "AUD-BOT-005",
+      "severity": "P1",
+      "status": "tracked by AUD-20",
+      "summary": "Assistant hot-path runtime integration remains separate and unresolved."
+    }
+  ],
+  "cleanup": {
+    "localInfraStopped": true,
+    "command": "corepack pnpm run go-live:infra:down"
+  }
+}

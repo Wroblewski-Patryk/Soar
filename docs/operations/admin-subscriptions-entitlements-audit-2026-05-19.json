@@ -1,0 +1,57 @@
+{
+  "auditId": "AUD-18",
+  "name": "Admin, Subscriptions, And Entitlements",
+  "date": "2026-05-19",
+  "status": "current local / current historical production-safe protected route proof",
+  "environment": "local",
+  "productionMutation": false,
+  "liveOrderCancelClose": false,
+  "exchangeSideMutation": false,
+  "existingProductionDataMutation": false,
+  "results": [
+    {
+      "name": "Focused Web admin/subscription pack",
+      "command": "corepack pnpm --filter web exec vitest run src/features/admin/users/pages/AdminUsersPage.test.tsx src/features/admin/subscriptions/pages/AdminSubscriptionsPage.test.tsx src/features/profile/components/Subscription.test.tsx src/app/dashboard/profile/page.test.tsx",
+      "result": "PASS",
+      "files": 4,
+      "tests": 9
+    },
+    {
+      "name": "Focused API admin/subscription pack",
+      "command": "corepack pnpm --filter api exec vitest run src/modules/admin/users/users.e2e.test.ts src/modules/admin/subscriptionPlans/subscriptionPlans.e2e.test.ts src/modules/subscriptions/subscriptionEntitlements.service.test.ts src/modules/profile/subscription/subscription.e2e.test.ts src/modules/bots/bots.subscription-entitlements.e2e.test.ts",
+      "result": "PASS",
+      "files": 5,
+      "tests": 25
+    }
+  ],
+  "findings": [
+    {
+      "id": "AUD-ADM-004",
+      "severity": "P1",
+      "status": "open freshness follow-up",
+      "summary": "Fresh production protected admin/subscription route proof was not rerun."
+    },
+    {
+      "id": "AUD-ADM-005",
+      "severity": "P1",
+      "status": "explicit exclusion",
+      "summary": "Non-destructive production entitlement mutation was not run."
+    },
+    {
+      "id": "AUD-ADM-006",
+      "severity": "P2",
+      "status": "documented follow-up",
+      "summary": "Typed admin domain errors, admin mutation audit detail, checkout provider e2e, and webhook billing lifecycle remain follow-ups."
+    },
+    {
+      "id": "AUD-ADM-007",
+      "severity": "P3",
+      "status": "documented UX follow-up",
+      "summary": "Client-side non-admin gate/redirect and optimistic rollback telemetry remain Web admin follow-ups."
+    }
+  ],
+  "cleanup": {
+    "localInfraStopped": true,
+    "command": "corepack pnpm run go-live:infra:down"
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "playbookId": "REUSABLE-AUDIT-RERUN-PLAYBOOK-2026-05-19",
+  "date": "2026-05-19",
+  "purpose": "Rerun the full reusable audit set and compare future results with the 2026-05-19 baseline.",
+  "baseline": {
+    "manifest": "docs/operations/reusable-audit-artifact-manifest-2026-05-19.json",
+    "rollup": "docs/operations/full-reusable-audit-rollup-2026-05-19.md"
+  },
+  "preconditions": [
+    "Read docs/analysis/reusable-audit-registry.md.",
+    "Read the latest .agents/state/next-steps.md and .codex/context/TASK_BOARD.md.",
+    "Keep production/LIVE safety boundaries explicit before running checks.",
+    "Do not run production data mutation, LIVE order submit/cancel/close, or exchange-side mutation without explicit approval.",
+    "Run generated project index and static scan sequentially.",
+    "Keep shared local DB-backed audit packs sequential, reset, or isolated."
+  ],
+  "rerunOrder": [
+    {
+      "step": 1,
+      "auditIds": ["AUD-00"],
+      "purpose": "Refresh project index and static scan."
+    },
+    {
+      "step": 2,
+      "auditIds": ["AUD-01", "AUD-02", "AUD-23"],
+      "purpose": "Refresh architecture conformance, requirements alignment, documentation, and traceability before deeper module audits."
+    },
+    {
+      "step": 3,
+      "auditIds": ["AUD-06", "AUD-07", "AUD-08", "AUD-09", "AUD-10", "AUD-11", "AUD-12", "AUD-13", "AUD-19", "AUD-20"],
+      "purpose": "Refresh P0 safety families."
+    },
+    {
+      "step": 4,
+      "auditIds": ["AUD-03", "AUD-04", "AUD-05", "AUD-14", "AUD-15", "AUD-16", "AUD-17", "AUD-18"],
+      "purpose": "Refresh product workflow families."
+    },
+    {
+      "step": 5,
+      "auditIds": ["AUD-21", "AUD-22"],
+      "purpose": "Refresh scope/deferred families."
+    },
+    {
+      "step": 6,
+      "outputs": ["new rollup", "new handoff", "new manifest"],
+      "purpose": "Produce dated rerun artifacts."
+    },
+    {
+      "step": 7,
+      "commands": [
+        "corepack pnpm run audit:manifest:check -- --manifest docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json",
+        "corepack pnpm run audit:manifest:compare -- --base docs/operations/reusable-audit-artifact-manifest-2026-05-19.json --target docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json"
+      ],
+      "purpose": "Validate and compare the future manifest."
+    }
+  ],
+  "currentManifestVerification": {
+    "command": "corepack pnpm run audit:manifest:verify",
+    "expectedStatus": "PASS"
+  },
+  "futureManifestCommands": {
+    "check": "corepack pnpm run audit:manifest:check -- --manifest docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json",
+    "compare": "corepack pnpm run audit:manifest:compare -- --base docs/operations/reusable-audit-artifact-manifest-2026-05-19.json --target docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json",
+    "compareJson": "corepack pnpm run audit:manifest:compare -- --base docs/operations/reusable-audit-artifact-manifest-2026-05-19.json --target docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json --json"
+  },
+  "requiredResultShape": [
+    "dated baseline or rollup report",
+    "dated manifest JSON and Markdown pair",
+    "task records for changed audit families",
+    "explicit safety-boundary fields",
+    "open decisions with packet and playbook links",
+    "improvement and regression notes per affected AUD-* ID",
+    "updated .codex/context/TASK_BOARD.md",
+    "updated .agents/state/next-steps.md when priorities change",
+    "updated project memory index when new canonical artifacts are added"
+  ],
+  "regressionRules": [
+    "missing AUD-00 through AUD-23 row",
+    "duplicate audit ID",
+    "missing manifest path",
+    "open decision without a packet or playbook",
+    "new open decision ID",
+    "audit status moving from current to deferred, partial, or failed",
+    "increase in partial, deferred, or failedDecisionRequired",
+    "safety-boundary field changing from false to true"
+  ],
+  "improvementRules": [
+    "failed or partial audit becomes current with named evidence",
+    "open decision is resolved and source-of-truth docs are updated",
+    "local proof is replaced by fresh production-safe proof",
+    "endpoint, route, i18n, or docs parity gap count decreases",
+    "security, exchange, data, or AI red-team coverage expands with evidence"
+  ],
+  "stopConditions": [
+    "architecture/code mismatch requires DEC-AUD-001 or DEC-AUD-002",
+    "production proof is required but credentials, operator scope, or approval is missing",
+    "LIVE or exchange-side mutation would be needed",
+    "shared DB state makes DB-backed packs unreliable without reset/isolation",
+    "manifest comparison reports a regression not explained by an accepted scope change"
+  ],
+  "closureChecks": [
+    "corepack pnpm run docs:parity:check",
+    "corepack pnpm run quality:guardrails",
+    "git diff --check"
+  ],
+  "cleanupChecks": [
+    "Get-Process chrome-headless-shell -ErrorAction SilentlyContinue",
+    "Get-NetTCPConnection -LocalPort 5432,6379 -ErrorAction SilentlyContinue",
+    "docker compose ps"
+  ],
+  "safetyBoundaries": {
+    "productionDataMutationWithoutApproval": false,
+    "liveOrderSubmitCancelCloseWithoutApproval": false,
+    "exchangeSideMutationWithoutApproval": false,
+    "architectureDecisionApplied": false,
+    "runtimeBehaviorChanged": false
+  }
+}

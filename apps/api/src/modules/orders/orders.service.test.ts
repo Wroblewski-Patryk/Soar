@@ -2983,6 +2983,7 @@ describe('resolveLiveExecutionApiKey', () => {
       userId: user.id,
       bot: {
         exchange: 'BINANCE',
+        marketType: 'FUTURES',
         apiKeyId: key.id,
         walletId: null,
       },
@@ -3020,6 +3021,7 @@ describe('resolveLiveExecutionApiKey', () => {
       userId: user.id,
       bot: {
         exchange: 'BINANCE',
+        marketType: 'FUTURES',
         apiKeyId: null,
         walletId: wallet.id,
       },
@@ -3058,6 +3060,7 @@ describe('resolveLiveExecutionApiKey', () => {
         userId: user.id,
         bot: {
           exchange: 'BINANCE',
+          marketType: 'FUTURES',
           apiKeyId: mismatch.id,
           walletId: null,
         },

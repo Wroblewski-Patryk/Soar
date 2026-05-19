@@ -1,6 +1,9 @@
 import { Exchange } from '@prisma/client';
 
 import { DomainError } from '../../lib/errors';
+import { ExchangeMarketType, getExchangeMarketTypeOptions } from './exchangeCapabilities';
+
+export type { ExchangeMarketType };
 
 export const EXCHANGE_EXECUTION_CAPABILITY_UNSUPPORTED_CODE =
   'EXCHANGE_EXECUTION_CAPABILITY_UNSUPPORTED' as const;
@@ -16,79 +19,148 @@ export type ExchangeExecutionCapabilityOperation =
 
 const EXCHANGE_EXECUTION_CAPABILITY_MATRIX: Record<
   Exchange,
-  Record<ExchangeExecutionCapabilityOperation, boolean>
+  Record<ExchangeMarketType, Record<ExchangeExecutionCapabilityOperation, boolean>>
 > = {
   BINANCE: {
-    BALANCE_PREVIEW: true,
-    POSITIONS_SNAPSHOT: true,
-    OPEN_ORDERS_SNAPSHOT: true,
-    TRADE_HISTORY_SNAPSHOT: true,
-    WALLET_CASHFLOW_HISTORY: true,
-    LIVE_ORDER_SUBMIT: true,
-    LIVE_ORDER_CANCEL: true,
+    FUTURES: {
+      BALANCE_PREVIEW: true,
+      POSITIONS_SNAPSHOT: true,
+      OPEN_ORDERS_SNAPSHOT: true,
+      TRADE_HISTORY_SNAPSHOT: true,
+      WALLET_CASHFLOW_HISTORY: true,
+      LIVE_ORDER_SUBMIT: true,
+      LIVE_ORDER_CANCEL: true,
+    },
+    SPOT: {
+      BALANCE_PREVIEW: true,
+      POSITIONS_SNAPSHOT: true,
+      OPEN_ORDERS_SNAPSHOT: true,
+      TRADE_HISTORY_SNAPSHOT: true,
+      WALLET_CASHFLOW_HISTORY: true,
+      LIVE_ORDER_SUBMIT: true,
+      LIVE_ORDER_CANCEL: true,
+    },
   },
   BYBIT: {
-    BALANCE_PREVIEW: false,
-    POSITIONS_SNAPSHOT: false,
-    OPEN_ORDERS_SNAPSHOT: false,
-    TRADE_HISTORY_SNAPSHOT: false,
-    WALLET_CASHFLOW_HISTORY: false,
-    LIVE_ORDER_SUBMIT: false,
-    LIVE_ORDER_CANCEL: false,
+    FUTURES: {
+      BALANCE_PREVIEW: false,
+      POSITIONS_SNAPSHOT: false,
+      OPEN_ORDERS_SNAPSHOT: false,
+      TRADE_HISTORY_SNAPSHOT: false,
+      WALLET_CASHFLOW_HISTORY: false,
+      LIVE_ORDER_SUBMIT: false,
+      LIVE_ORDER_CANCEL: false,
+    },
+    SPOT: {
+      BALANCE_PREVIEW: false,
+      POSITIONS_SNAPSHOT: false,
+      OPEN_ORDERS_SNAPSHOT: false,
+      TRADE_HISTORY_SNAPSHOT: false,
+      WALLET_CASHFLOW_HISTORY: false,
+      LIVE_ORDER_SUBMIT: false,
+      LIVE_ORDER_CANCEL: false,
+    },
   },
   OKX: {
-    BALANCE_PREVIEW: false,
-    POSITIONS_SNAPSHOT: false,
-    OPEN_ORDERS_SNAPSHOT: false,
-    TRADE_HISTORY_SNAPSHOT: false,
-    WALLET_CASHFLOW_HISTORY: false,
-    LIVE_ORDER_SUBMIT: false,
-    LIVE_ORDER_CANCEL: false,
+    FUTURES: {
+      BALANCE_PREVIEW: false,
+      POSITIONS_SNAPSHOT: false,
+      OPEN_ORDERS_SNAPSHOT: false,
+      TRADE_HISTORY_SNAPSHOT: false,
+      WALLET_CASHFLOW_HISTORY: false,
+      LIVE_ORDER_SUBMIT: false,
+      LIVE_ORDER_CANCEL: false,
+    },
+    SPOT: {
+      BALANCE_PREVIEW: false,
+      POSITIONS_SNAPSHOT: false,
+      OPEN_ORDERS_SNAPSHOT: false,
+      TRADE_HISTORY_SNAPSHOT: false,
+      WALLET_CASHFLOW_HISTORY: false,
+      LIVE_ORDER_SUBMIT: false,
+      LIVE_ORDER_CANCEL: false,
+    },
   },
   KRAKEN: {
-    BALANCE_PREVIEW: false,
-    POSITIONS_SNAPSHOT: false,
-    OPEN_ORDERS_SNAPSHOT: false,
-    TRADE_HISTORY_SNAPSHOT: false,
-    WALLET_CASHFLOW_HISTORY: false,
-    LIVE_ORDER_SUBMIT: false,
-    LIVE_ORDER_CANCEL: false,
+    FUTURES: {
+      BALANCE_PREVIEW: false,
+      POSITIONS_SNAPSHOT: false,
+      OPEN_ORDERS_SNAPSHOT: false,
+      TRADE_HISTORY_SNAPSHOT: false,
+      WALLET_CASHFLOW_HISTORY: false,
+      LIVE_ORDER_SUBMIT: false,
+      LIVE_ORDER_CANCEL: false,
+    },
+    SPOT: {
+      BALANCE_PREVIEW: false,
+      POSITIONS_SNAPSHOT: false,
+      OPEN_ORDERS_SNAPSHOT: false,
+      TRADE_HISTORY_SNAPSHOT: false,
+      WALLET_CASHFLOW_HISTORY: false,
+      LIVE_ORDER_SUBMIT: false,
+      LIVE_ORDER_CANCEL: false,
+    },
   },
   COINBASE: {
-    BALANCE_PREVIEW: false,
-    POSITIONS_SNAPSHOT: false,
-    OPEN_ORDERS_SNAPSHOT: false,
-    TRADE_HISTORY_SNAPSHOT: false,
-    WALLET_CASHFLOW_HISTORY: false,
-    LIVE_ORDER_SUBMIT: false,
-    LIVE_ORDER_CANCEL: false,
+    FUTURES: {
+      BALANCE_PREVIEW: false,
+      POSITIONS_SNAPSHOT: false,
+      OPEN_ORDERS_SNAPSHOT: false,
+      TRADE_HISTORY_SNAPSHOT: false,
+      WALLET_CASHFLOW_HISTORY: false,
+      LIVE_ORDER_SUBMIT: false,
+      LIVE_ORDER_CANCEL: false,
+    },
+    SPOT: {
+      BALANCE_PREVIEW: false,
+      POSITIONS_SNAPSHOT: false,
+      OPEN_ORDERS_SNAPSHOT: false,
+      TRADE_HISTORY_SNAPSHOT: false,
+      WALLET_CASHFLOW_HISTORY: false,
+      LIVE_ORDER_SUBMIT: false,
+      LIVE_ORDER_CANCEL: false,
+    },
   },
   GATEIO: {
-    BALANCE_PREVIEW: true,
-    POSITIONS_SNAPSHOT: true,
-    OPEN_ORDERS_SNAPSHOT: true,
-    TRADE_HISTORY_SNAPSHOT: true,
-    WALLET_CASHFLOW_HISTORY: true,
-    LIVE_ORDER_SUBMIT: true,
-    LIVE_ORDER_CANCEL: true,
+    FUTURES: {
+      BALANCE_PREVIEW: true,
+      POSITIONS_SNAPSHOT: true,
+      OPEN_ORDERS_SNAPSHOT: true,
+      TRADE_HISTORY_SNAPSHOT: true,
+      WALLET_CASHFLOW_HISTORY: true,
+      LIVE_ORDER_SUBMIT: true,
+      LIVE_ORDER_CANCEL: true,
+    },
+    SPOT: {
+      BALANCE_PREVIEW: true,
+      POSITIONS_SNAPSHOT: true,
+      OPEN_ORDERS_SNAPSHOT: true,
+      TRADE_HISTORY_SNAPSHOT: true,
+      WALLET_CASHFLOW_HISTORY: true,
+      LIVE_ORDER_SUBMIT: true,
+      LIVE_ORDER_CANCEL: true,
+    },
   },
 };
 
 export class ExchangeExecutionCapabilityUnsupportedError extends DomainError<{
   exchange: Exchange;
+  marketType: ExchangeMarketType;
   operation: ExchangeExecutionCapabilityOperation;
 }> {
   constructor(
     public readonly exchange: Exchange,
+    public readonly marketType: ExchangeMarketType,
     public readonly operation: ExchangeExecutionCapabilityOperation
   ) {
     super(
       EXCHANGE_EXECUTION_CAPABILITY_UNSUPPORTED_CODE,
-      `Exchange ${exchange} does not support ${operation}.`,
+      `Exchange ${exchange}/${marketType} does not support ${operation}.`,
       {
         status: 501,
         details: {
           exchange,
+          marketType,
           operation,
         },
         name: 'ExchangeExecutionCapabilityUnsupportedError',
@@ -99,16 +171,23 @@ export class ExchangeExecutionCapabilityUnsupportedError extends DomainError<{
 
 export const supportsExchangeExecutionCapability = (
   exchange: Exchange,
+  marketType: ExchangeMarketType,
   operation: ExchangeExecutionCapabilityOperation
-) => EXCHANGE_EXECUTION_CAPABILITY_MATRIX[exchange]?.[operation] ?? false;
+) =>
+  getExchangeMarketTypeOptions(exchange).includes(marketType) &&
+  (EXCHANGE_EXECUTION_CAPABILITY_MATRIX[exchange]?.[marketType]?.[operation] ?? false);
 
 export const assertExchangeExecutionCapabilitySupport = (
   exchange: Exchange,
+  marketType: ExchangeMarketType,
   operation: ExchangeExecutionCapabilityOperation
 ) => {
-  if (!supportsExchangeExecutionCapability(exchange, operation)) {
-    throw new ExchangeExecutionCapabilityUnsupportedError(exchange, operation);
+  if (!supportsExchangeExecutionCapability(exchange, marketType, operation)) {
+    throw new ExchangeExecutionCapabilityUnsupportedError(exchange, marketType, operation);
   }
 };
 
-export const resolveExchangeExecutionSource = (exchange: Exchange) => exchange;
+export const resolveExchangeExecutionSource = (
+  exchange: Exchange,
+  _marketType?: ExchangeMarketType
+) => exchange;

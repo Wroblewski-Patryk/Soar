@@ -1,0 +1,45 @@
+{
+  "auditId": "AUD-12",
+  "name": "Orders And Manual Trading",
+  "date": "2026-05-19",
+  "status": "current local / current historical production-safe PAPER proof",
+  "environment": "local",
+  "productionMutation": false,
+  "liveOrderCancelClose": false,
+  "exchangeSideMutation": false,
+  "existingProductionDataMutation": false,
+  "results": [
+    {
+      "name": "Focused Web manual/open-order pack",
+      "command": "corepack pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.manual-order.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.manual-order-scope.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.manual-order-venue.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-actions.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-source.test.tsx src/features/dashboard-home/hooks/useManualOrderController.test.tsx src/features/dashboard-home/hooks/useCloseRuntimePositionAction.test.tsx src/features/dashboard-home/components/home-live-widgets/runtimeDataTablePresenters.test.tsx",
+      "result": "PASS",
+      "files": 8,
+      "tests": 46
+    },
+    {
+      "name": "Focused API orders/manual trading pack",
+      "command": "corepack pnpm --filter api exec vitest run src/modules/orders/orders.service.test.ts src/modules/orders/orders-positions.e2e.test.ts src/modules/orders/orders.manual-paper-market.e2e.test.ts src/modules/orders/orders.exchangeEvents.service.test.ts src/modules/orders/orders.exchangeEvents.feeBackfill.test.ts src/modules/orders/orders.exchangeEvents.helpers.test.ts src/modules/orders/orders.liveCancelBoundary.service.test.ts src/modules/orders/orders.liveFillResolution.test.ts src/modules/orders/orders.quantityRules.test.ts src/modules/orders/orders.positionScope.test.ts",
+      "result": "PASS",
+      "files": 10,
+      "tests": 121
+    }
+  ],
+  "findings": [
+    {
+      "id": "AUD-ORD-004",
+      "severity": "P1",
+      "status": "open freshness follow-up",
+      "summary": "Fresh production proof was not rerun."
+    },
+    {
+      "id": "AUD-ORD-005",
+      "severity": "P1",
+      "status": "explicit exclusion",
+      "summary": "LIVE order/cancel/close mutation remains explicitly excluded."
+    }
+  ],
+  "cleanup": {
+    "localInfraStopped": true,
+    "command": "corepack pnpm run go-live:infra:down"
+  }
+}

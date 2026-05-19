@@ -3,8 +3,24 @@
 ## Purpose
 Define the place of the assistant layer inside Soar without letting it override core runtime safety.
 
+## Current Implementation Scope
+The current audited implementation is an assistant foundation, not a trading
+hot-path authority.
+
+It supports:
+- bot-scoped assistant configuration
+- one main assistant plus bounded subagent slots
+- deterministic orchestration contracts and isolated orchestrator tests
+- owner-scoped dry-run diagnostics
+
+It does not currently claim an audited BACKTEST, PAPER, or LIVE trading
+decision-loop call site. Hot-path assistant orchestration is future/gated scope
+until implemented with fail-closed runtime integration, persisted traces, and
+AI red-team evidence.
+
 ## Assistant Role
-The assistant layer is a constrained runtime orchestration layer.
+The assistant layer is currently a constrained assistant foundation. A future
+approved slice may promote it into a constrained runtime orchestration layer.
 
 It may:
 - analyze structured context
@@ -29,7 +45,8 @@ It may not:
 - `GENERAL`
 
 ## Input Contract
-Assistant input contains:
+Assistant input contains, for dry-run/foundation paths today and future
+hot-path paths after approval:
 - request identifiers
 - user and bot scope
 - symbol and interval window
@@ -49,6 +66,9 @@ Assistant output contains:
 - latency
 
 ## Merge and Safety Rules
+These rules are mandatory for current dry-run/foundation behavior and for any
+future hot-path assistant integration:
+
 - safety guards remain first
 - deterministic merge remains mandatory
 - tie or invalid merge resolves to `NO_TRADE`

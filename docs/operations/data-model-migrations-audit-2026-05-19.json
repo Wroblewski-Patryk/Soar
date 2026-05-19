@@ -1,0 +1,101 @@
+{
+  "auditId": "AUD-07",
+  "name": "Data Model And Migrations",
+  "date": "2026-05-19",
+  "status": "current local with mitigated test-isolation finding",
+  "environment": "local",
+  "productionMutation": false,
+  "liveOrderCancelClose": false,
+  "exchangeSideMutation": false,
+  "existingProductionDataMutation": false,
+  "results": [
+    {
+      "name": "Prisma schema validation",
+      "command": "corepack pnpm --filter api exec prisma validate",
+      "result": "PASS"
+    },
+    {
+      "name": "Local migration status",
+      "command": "corepack pnpm --filter api exec prisma migrate status",
+      "result": "PASS",
+      "migrations": 54,
+      "notes": "Database schema is up to date."
+    },
+    {
+      "name": "Full local migration replay",
+      "command": "corepack pnpm --filter api exec prisma migrate reset --force --skip-seed",
+      "result": "PASS",
+      "migrationsApplied": 54
+    },
+    {
+      "name": "Schema diff generation",
+      "command": "corepack pnpm --filter api exec prisma migrate diff --from-empty --to-schema-datamodel prisma\\schema.prisma --script",
+      "result": "PASS"
+    },
+    {
+      "name": "Wallet data-contract e2e isolated",
+      "command": "corepack pnpm --filter api exec vitest run src/modules/wallets/wallets.e2e.test.ts",
+      "result": "PASS",
+      "files": 1,
+      "tests": 24
+    },
+    {
+      "name": "Backtests data-contract e2e isolated",
+      "command": "corepack pnpm --filter api exec vitest run src/modules/backtests/backtests.e2e.test.ts",
+      "result": "PASS",
+      "files": 1,
+      "tests": 15
+    },
+    {
+      "name": "Runtime repository contract",
+      "command": "corepack pnpm --filter api exec vitest run src/modules/engine/runtimeSignalLoop.repository.test.ts",
+      "result": "PASS",
+      "files": 1,
+      "tests": 2
+    },
+    {
+      "name": "Shared-DB parallel DB pack",
+      "command": "corepack pnpm --filter api exec vitest run src/modules/bots/bots.repository.test.ts src/modules/engine/runtimeSignalLoop.repository.test.ts src/modules/backtests/backtests.e2e.test.ts src/modules/wallets/wallets.e2e.test.ts",
+      "result": "FAIL_EXPECTED_FINDING",
+      "notes": "Shared local database parallel execution caused FK cleanup conflicts such as BacktestRun_userId_fkey; isolated reset-and-run passes."
+    },
+    {
+      "name": "Canonical isolated DB audit runner",
+      "command": "corepack pnpm run audit:data:db-isolated",
+      "result": "PASS",
+      "notes": "Runner validates schema and migration status, resets before each representative pack, then passes wallets 24/24, backtests 15/15, and runtime repository 2/2."
+    }
+  ],
+  "findings": [
+    {
+      "id": "AUD-DATA-001",
+      "severity": "P0",
+      "status": "passed",
+      "summary": "Prisma schema is valid and local migration history replays cleanly."
+    },
+    {
+      "id": "AUD-DATA-002",
+      "severity": "P1",
+      "status": "passed with manual ownership",
+      "summary": "Critical partial-index invariants are owned by manual migrations because Prisma schema DSL cannot express them directly."
+    },
+    {
+      "id": "AUD-DATA-003",
+      "severity": "P1",
+      "status": "passed",
+      "summary": "Market candle cache is scoped by source/exchange context and no longer uses Binance-only storage identity."
+    },
+    {
+      "id": "AUD-DATA-004",
+      "severity": "P1",
+      "status": "mitigated",
+      "summary": "DB-backed e2e packs are not safe to run in parallel on one shared local database; use audit:data:db-isolated for representative reset-and-run proof."
+    },
+    {
+      "id": "AUD-DATA-005",
+      "severity": "P2",
+      "status": "open freshness follow-up",
+      "summary": "Production migration status and backup/restore freshness were not rerun in this local audit."
+    }
+  ]
+}

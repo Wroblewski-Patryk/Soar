@@ -1,0 +1,45 @@
+{
+  "auditId": "AUD-08",
+  "name": "Workers And Runtime Operations",
+  "date": "2026-05-19",
+  "status": "current local / current historical production-safe protected runtime proof",
+  "environment": "local",
+  "productionMutation": false,
+  "liveOrderCancelClose": false,
+  "exchangeSideMutation": false,
+  "existingProductionDataMutation": false,
+  "results": [
+    {
+      "name": "Focused API worker/runtime operations pack",
+      "command": "corepack pnpm --filter api exec vitest run src/workers/workerOwnership.test.ts src/workers/marketStreamWorkerConfig.test.ts src/workers/marketStreamSubscriptions.service.test.ts src/router/workers-health-readiness.test.ts src/router/workers-runtime-freshness.test.ts src/router/health-readiness.test.ts src/queue/queueTuning.test.ts src/modules/market-stream/marketStreamFanout.test.ts src/modules/market-stream/marketStream.routes.e2e.test.ts src/modules/market-stream/marketStream.routes.contract.test.ts src/modules/market-stream/exchangePollingStream.service.test.ts src/modules/market-stream/exchangePollingStream.fanout.test.ts src/modules/market-stream/binanceStream.service.test.ts src/modules/backtests/backtestRunJob.test.ts src/modules/backtests/backtestRunQueue.test.ts src/modules/engine/executionOrchestrator.service.test.ts src/modules/engine/runtime-flow.e2e.test.ts",
+      "result": "PASS",
+      "files": 17,
+      "tests": 85,
+      "notes": "Expected stderr from market-stream fanout retry test simulating initial Redis startup failure."
+    }
+  ],
+  "findings": [
+    {
+      "id": "AUD-WRK-004",
+      "severity": "P1",
+      "status": "open freshness follow-up",
+      "summary": "Fresh production protected worker/process proof was not rerun."
+    },
+    {
+      "id": "AUD-WRK-005",
+      "severity": "P1",
+      "status": "explicit exclusion",
+      "summary": "Gate.io/second-LIVE production runtime shape remains outside the verified release slice."
+    },
+    {
+      "id": "AUD-WRK-006",
+      "severity": "P2",
+      "status": "expected failover noise",
+      "summary": "Market stream fanout retry test intentionally logs redis_booting before retry success."
+    }
+  ],
+  "cleanup": {
+    "localInfraStopped": true,
+    "command": "corepack pnpm run go-live:infra:down"
+  }
+}
