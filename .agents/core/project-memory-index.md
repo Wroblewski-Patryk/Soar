@@ -229,6 +229,9 @@ Before any future "full audit" request, start from:
 - `docs/planning/audit-tooling-index-self-check-closure-2026-05-19-task.md`:
   tooling index validation now requires `audit:tooling-index:check` in closure
   commands.
+- `docs/planning/audit-remediation-plan-cleanup-check-command-2026-05-19-task.md`:
+  remediation-plan validation now requires cleanup checks for headless browser
+  processes, local DB/Redis listeners, and Docker compose services.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.

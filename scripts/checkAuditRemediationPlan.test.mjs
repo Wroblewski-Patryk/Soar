@@ -28,6 +28,11 @@ const remediationPlan = (overrides = {}) => ({
     'corepack pnpm run quality:guardrails',
     'git diff --check',
   ],
+  cleanupChecks: [
+    'Get-Process chrome-headless-shell -ErrorAction SilentlyContinue',
+    'Get-NetTCPConnection -LocalPort 5432,6379 -ErrorAction SilentlyContinue',
+    'docker compose ps',
+  ],
   safetyBoundaries: {
     productionDataMutationWithoutApproval: false,
     liveOrderSubmitCancelCloseWithoutApproval: false,
@@ -120,6 +125,21 @@ test('validateAuditRemediationPlan fails when closure checks are incomplete', ()
     'docs:parity:check',
     'quality:guardrails',
     'git diff --check',
+  ]);
+});
+
+test('validateAuditRemediationPlan fails when required cleanup checks are missing', () => {
+  const result = validateAuditRemediationPlan(
+    remediationPlan({
+      cleanupChecks: ['docker compose ps'],
+    }),
+    { exists: allPathsExist },
+  );
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.cleanupChecks.missing, [
+    'chrome-headless-shell',
+    'Get-NetTCPConnection',
   ]);
 });
 

@@ -42,6 +42,9 @@ Last updated: 2026-05-19
   validation, docs parity, guardrails, or diff check are omitted.
 - Reusable audit tooling-index validation now requires its own
   `audit:tooling-index:check` command in closure evidence.
+- Reusable audit remediation-plan validation now enforces required cleanup
+  checks for headless browser processes, local DB/Redis listeners, and Docker
+  compose services.
 - Reusable audit tooling-index validation now enforces required cleanup checks
   for headless browser processes, local DB/Redis listeners, and Docker compose
   services.

@@ -22,6 +22,11 @@ const requiredClosureCheckFragments = [
   'quality:guardrails',
   'git diff --check',
 ];
+const requiredCleanupCheckFragments = [
+  'chrome-headless-shell',
+  'Get-NetTCPConnection',
+  'docker compose ps',
+];
 
 const parseArgs = () => {
   const args = process.argv.slice(2);
@@ -58,6 +63,7 @@ Validates the reusable audit remediation master plan JSON by checking:
 - WP-01 through WP-08 work packages are present and actionable
 - safety boundaries remain false
 - blockers and closure checks are explicit
+- required cleanup checks are present
 `);
 };
 
@@ -71,6 +77,7 @@ export const validateAuditRemediationPlan = (plan, options = {}) => {
   const workPackageIds = idsFrom(plan.workPackages);
   const safetyBoundaries = plan.safetyBoundaries ?? {};
   const closureChecks = Array.isArray(plan.closureChecks) ? plan.closureChecks : [];
+  const cleanupChecks = Array.isArray(plan.cleanupChecks) ? plan.cleanupChecks : [];
   const currentBlockers = Array.isArray(plan.currentBlockers) ? plan.currentBlockers : [];
   const referencedPaths = [
     plan.sourceMarkdown,
@@ -99,6 +106,12 @@ export const validateAuditRemediationPlan = (plan, options = {}) => {
         (fragment) => !closureChecks.some((check) => String(check).includes(fragment)),
       ),
       count: closureChecks.length,
+    },
+    cleanupChecks: {
+      missing: requiredCleanupCheckFragments.filter(
+        (fragment) => !cleanupChecks.some((check) => String(check).includes(fragment)),
+      ),
+      count: cleanupChecks.length,
     },
     references: {
       checked: referencedPaths.length,
@@ -134,6 +147,7 @@ export const validateAuditRemediationPlan = (plan, options = {}) => {
     result.workPackages.missingDoneWhen.length === 0 &&
     result.workPackages.missingValidationOrBlocker.length === 0 &&
     result.closureChecks.missing.length === 0 &&
+    result.cleanupChecks.missing.length === 0 &&
     result.references.missing.length === 0 &&
     result.blockers.count > 0 &&
     !result.blockers.missingAud19Blocker &&
@@ -167,6 +181,7 @@ const main = async () => {
     console.log(`- References checked: ${result.references.checked}`);
     console.log(`- Missing references: ${result.references.missing.length}`);
     console.log(`- Missing closure checks: ${result.closureChecks.missing.length}`);
+    console.log(`- Missing cleanup checks: ${result.cleanupChecks.missing.length}`);
     console.log(`- Current blockers: ${result.blockers.count}`);
     console.log(`- Unsafe safety boundaries: ${result.safetyBoundaries.unsafe.length}`);
   }

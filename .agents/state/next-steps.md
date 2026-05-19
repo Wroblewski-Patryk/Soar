@@ -116,6 +116,9 @@ boundaries checkable during future reruns. Follow-up hardening now also checks
 references checked and `0` missing references.
 Reusable audit remediation-plan validation now requires the remediation
 self-check command in closure checks.
+Reusable audit remediation-plan validation now also fails if cleanup checks
+omit headless browser process inspection, local DB/Redis listener inspection,
+or Docker compose service inspection.
 Reusable audit rerun closure now explicitly requires `audit:manifest:verify`
 `audit:rerun-playbook:check`, and `audit:remediation-plan:check`, and
 `audit:rerun-playbook:check` fails if required closure checks are missing.
