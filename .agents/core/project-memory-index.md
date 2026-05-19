@@ -217,6 +217,9 @@ Before any future "full audit" request, start from:
 - `docs/planning/audit-tooling-index-cleanup-check-command-2026-05-19-task.md`:
   tooling index validation now requires cleanup checks for headless browser
   processes, local DB/Redis listeners, and Docker compose services.
+- `docs/planning/audit-rerun-playbook-cleanup-check-command-2026-05-19-task.md`:
+  rerun playbook validation now requires the same cleanup checks for future
+  audit reruns.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.
@@ -246,7 +249,8 @@ Before any future "full audit" request, start from:
   checks including remediation-plan validation.
 - `docs/operations/reusable-audit-rerun-playbook-2026-05-19.json`:
   machine-readable rerun order, commands, stop conditions, regression rules,
-  required closure checks, and cleanup checks for future audit automation.
+  required closure checks, and required cleanup checks for future audit
+  automation.
 - `docs/operations/reusable-audit-tooling-index-2026-05-19.md` and
   `docs/operations/reusable-audit-tooling-index-2026-05-19.json`: command and
   script map for reusable audit validation, comparison, rerun playbook checks,

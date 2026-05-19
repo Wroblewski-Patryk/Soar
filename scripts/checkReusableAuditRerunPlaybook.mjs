@@ -23,6 +23,11 @@ const requiredClosureCheckFragments = [
   'quality:guardrails',
   'git diff --check',
 ];
+const requiredCleanupCheckFragments = [
+  'chrome-headless-shell',
+  'Get-NetTCPConnection',
+  'docker compose ps',
+];
 
 const parseArgs = () => {
   const args = process.argv.slice(2);
@@ -59,6 +64,7 @@ Validates the reusable audit rerun playbook JSON by checking:
 - AUD-00 through AUD-23 are present in rerunOrder
 - future manifest commands are present
 - regression rules, stop conditions, required closure checks, and cleanup checks exist
+- required cleanup checks are present
 - safety boundaries remain false
 `);
 };
@@ -100,6 +106,10 @@ export const validateReusableAuditRerunPlaybook = (playbook, options = {}) => {
   const missingClosureCheckFragments = requiredClosureCheckFragments.filter(
     (fragment) => !closureChecks.some((check) => String(check).includes(fragment)),
   );
+  const cleanupChecks = Array.isArray(playbook.cleanupChecks) ? playbook.cleanupChecks : [];
+  const missingCleanupCheckFragments = requiredCleanupCheckFragments.filter(
+    (fragment) => !cleanupChecks.some((check) => String(check).includes(fragment)),
+  );
 
   const result = {
     playbook: options.playbookPath ?? null,
@@ -126,10 +136,13 @@ export const validateReusableAuditRerunPlaybook = (playbook, options = {}) => {
       improvementRules: Array.isArray(playbook.improvementRules) ? playbook.improvementRules.length : 0,
       stopConditions: Array.isArray(playbook.stopConditions) ? playbook.stopConditions.length : 0,
       closureChecks: closureChecks.length,
-      cleanupChecks: Array.isArray(playbook.cleanupChecks) ? playbook.cleanupChecks.length : 0,
+      cleanupChecks: cleanupChecks.length,
     },
     closureChecks: {
       missingRequiredFragments: missingClosureCheckFragments,
+    },
+    cleanupChecks: {
+      missingRequiredFragments: missingCleanupCheckFragments,
     },
     safetyBoundaries: {
       missing: missingSafetyBoundaries,
@@ -153,6 +166,7 @@ export const validateReusableAuditRerunPlaybook = (playbook, options = {}) => {
     !result.commands.compareJsonWithoutOutput &&
     missingRequiredSections.length === 0 &&
     result.closureChecks.missingRequiredFragments.length === 0 &&
+    result.cleanupChecks.missingRequiredFragments.length === 0 &&
     result.safetyBoundaries.missing.length === 0 &&
     result.safetyBoundaries.unsafe.length === 0
       ? 'PASS'
@@ -186,6 +200,7 @@ const main = async () => {
     console.log(`- Missing future commands: ${result.commands.missingFutureCommands.length}`);
     console.log(`- Missing sections: ${result.sections.missing.length}`);
     console.log(`- Missing required closure checks: ${result.closureChecks.missingRequiredFragments.length}`);
+    console.log(`- Missing required cleanup checks: ${result.cleanupChecks.missingRequiredFragments.length}`);
     console.log(`- Unsafe safety boundaries: ${result.safetyBoundaries.unsafe.length}`);
   }
 

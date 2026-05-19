@@ -276,6 +276,10 @@ Last updated: 2026-05-19
   `chrome-headless-shell`, `Get-NetTCPConnection`, and `docker compose ps`.
   Evidence:
   `docs/planning/audit-tooling-index-cleanup-check-command-2026-05-19-task.md`.
+  Follow-up `AUDIT-RERUN-PLAYBOOK-CLEANUP-CHECK-COMMAND-2026-05-19` hardened
+  `audit:rerun-playbook:check` so rerun playbook cleanup checks must include
+  those same local cleanup commands. Evidence:
+  `docs/planning/audit-rerun-playbook-cleanup-check-command-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,

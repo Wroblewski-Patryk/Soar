@@ -32,7 +32,11 @@ const playbook = (overrides = {}) => ({
     'corepack pnpm run quality:guardrails',
     'git diff --check',
   ],
-  cleanupChecks: ['docker compose ps'],
+  cleanupChecks: [
+    'Get-Process chrome-headless-shell -ErrorAction SilentlyContinue',
+    'Get-NetTCPConnection -LocalPort 5432,6379 -ErrorAction SilentlyContinue',
+    'docker compose ps',
+  ],
   safetyBoundaries: {
     productionDataMutationWithoutApproval: false,
     liveOrderSubmitCancelCloseWithoutApproval: false,
@@ -179,5 +183,20 @@ test('validateReusableAuditRerunPlaybook fails when required closure checks are 
     'audit:manifest:verify',
     'audit:remediation-plan:check',
     'quality:guardrails',
+  ]);
+});
+
+test('validateReusableAuditRerunPlaybook fails when required cleanup checks are missing', () => {
+  const result = validateReusableAuditRerunPlaybook(
+    playbook({
+      cleanupChecks: ['docker compose ps'],
+    }),
+    { exists: allPathsExist },
+  );
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.cleanupChecks.missingRequiredFragments, [
+    'chrome-headless-shell',
+    'Get-NetTCPConnection',
   ]);
 });

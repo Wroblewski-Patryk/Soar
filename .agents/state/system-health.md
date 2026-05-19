@@ -43,6 +43,8 @@ Last updated: 2026-05-19
 - Reusable audit tooling-index validation now enforces required cleanup checks
   for headless browser processes, local DB/Redis listeners, and Docker compose
   services.
+- Reusable audit rerun playbook validation now enforces those same required
+  cleanup checks for future reruns.
 - Full reusable audit handoff validation is now included in
   `audit:manifest:verify`; `audit:handoff:check` verifies source paths,
   residual risks, forbidden boundaries, validation checks, and fail-closed
