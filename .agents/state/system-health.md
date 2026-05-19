@@ -71,6 +71,8 @@ Last updated: 2026-05-19
   count parity when the Markdown file is available.
 - Reusable full-audit handoff validation now checks handoff rollup-summary
   parity against the referenced rollup JSON.
+- Reusable audit rerun playbook validation now checks baseline manifest and
+  rollup Markdown/JSON path completeness and existence.
 
 ## Latest Health Snapshot
 

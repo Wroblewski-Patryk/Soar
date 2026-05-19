@@ -117,6 +117,8 @@ references checked and `0` missing references.
 Reusable audit rerun closure now explicitly requires `audit:manifest:verify`
 and `audit:remediation-plan:check`, and `audit:rerun-playbook:check` fails if
 required closure checks are missing.
+Reusable audit rerun playbook validation now checks that baseline manifest and
+rollup Markdown/JSON paths are present and resolvable.
 Reusable audit tooling-index validation now also fails if closure omits
 manifest verification, remediation-plan validation, docs parity, guardrails, or
 diff check.

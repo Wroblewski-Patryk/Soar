@@ -4,7 +4,8 @@
   "purpose": "Rerun the full reusable audit set and compare future results with the 2026-05-19 baseline.",
   "baseline": {
     "manifest": "docs/operations/reusable-audit-artifact-manifest-2026-05-19.json",
-    "rollup": "docs/operations/full-reusable-audit-rollup-2026-05-19.md"
+    "rollup": "docs/operations/full-reusable-audit-rollup-2026-05-19.md",
+    "rollupJson": "docs/operations/full-reusable-audit-rollup-2026-05-19.json"
   },
   "preconditions": [
     "Read docs/analysis/reusable-audit-registry.md.",

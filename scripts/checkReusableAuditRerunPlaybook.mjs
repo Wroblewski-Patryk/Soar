@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -7,6 +8,7 @@ import { pathToFileURL } from 'node:url';
 const repoRoot = process.cwd();
 const expectedAuditIds = Array.from({ length: 24 }, (_, index) => `AUD-${String(index).padStart(2, '0')}`);
 const requiredFutureCommands = ['check', 'compare', 'compareJson'];
+const requiredBaselineKeys = ['manifest', 'rollup', 'rollupJson'];
 const requiredSafetyBoundaries = [
   'productionDataMutationWithoutApproval',
   'liveOrderSubmitCancelCloseWithoutApproval',
@@ -53,6 +55,7 @@ const printHelp = () => {
   console.log(`Usage: pnpm run audit:rerun-playbook:check -- [--playbook <path>] [--json]
 
 Validates the reusable audit rerun playbook JSON by checking:
+- baseline manifest and rollup paths are present and resolvable
 - AUD-00 through AUD-23 are present in rerunOrder
 - future manifest commands are present
 - regression rules, stop conditions, required closure checks, and cleanup checks exist
@@ -66,6 +69,12 @@ const collectRerunAuditIds = (playbook) =>
   );
 
 export const validateReusableAuditRerunPlaybook = (playbook, options = {}) => {
+  const exists = options.exists ?? ((relativePath) => existsSync(path.resolve(repoRoot, relativePath)));
+  const baseline = playbook.baseline ?? {};
+  const missingBaselineKeys = requiredBaselineKeys.filter((key) => !(key in baseline));
+  const missingBaselinePaths = requiredBaselineKeys
+    .filter((key) => typeof baseline[key] === 'string' && !exists(baseline[key]))
+    .map((key) => ({ key, path: baseline[key] }));
   const auditIds = collectRerunAuditIds(playbook);
   const auditIdSet = new Set(auditIds);
   const missingAuditIds = expectedAuditIds.filter((auditId) => !auditIdSet.has(auditId));
@@ -101,6 +110,10 @@ export const validateReusableAuditRerunPlaybook = (playbook, options = {}) => {
       missing: missingAuditIds,
       duplicates: [...new Set(duplicateAuditIds)],
     },
+    baseline: {
+      missingKeys: missingBaselineKeys,
+      missingPaths: missingBaselinePaths,
+    },
     commands: {
       missingFutureCommands,
       commandWithoutBaselinePlaceholder,
@@ -132,6 +145,8 @@ export const validateReusableAuditRerunPlaybook = (playbook, options = {}) => {
   result.status =
     result.audits.missing.length === 0 &&
     result.audits.duplicates.length === 0 &&
+    result.baseline.missingKeys.length === 0 &&
+    result.baseline.missingPaths.length === 0 &&
     result.commands.missingFutureCommands.length === 0 &&
     result.commands.commandWithoutBaselinePlaceholder.length === 0 &&
     result.commands.commandWithoutTargetPlaceholder.length === 0 &&
@@ -166,6 +181,8 @@ const main = async () => {
     console.log(`- Audits: ${result.audits.found}/${result.audits.expected}`);
     console.log(`- Missing audits: ${result.audits.missing.length}`);
     console.log(`- Duplicate audits: ${result.audits.duplicates.length}`);
+    console.log(`- Missing baseline keys: ${result.baseline.missingKeys.length}`);
+    console.log(`- Missing baseline paths: ${result.baseline.missingPaths.length}`);
     console.log(`- Missing future commands: ${result.commands.missingFutureCommands.length}`);
     console.log(`- Missing sections: ${result.sections.missing.length}`);
     console.log(`- Missing required closure checks: ${result.closureChecks.missingRequiredFragments.length}`);

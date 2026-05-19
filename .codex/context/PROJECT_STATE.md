@@ -262,6 +262,11 @@ Last updated: 2026-05-19
   so handoff `rollupSummary` keys and values must match the referenced rollup
   JSON. Evidence:
   `docs/planning/audit-handoff-rollup-summary-parity-2026-05-19-task.md`.
+  Follow-up `AUDIT-RERUN-PLAYBOOK-BASELINE-PATH-CHECK-2026-05-19` added
+  `baseline.rollupJson` to the rerun playbook and hardened
+  `audit:rerun-playbook:check` so baseline manifest and rollup paths must be
+  complete and resolvable. Evidence:
+  `docs/planning/audit-rerun-playbook-baseline-path-check-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,

@@ -280,6 +280,13 @@ Last updated: 2026-05-19
     Evidence:
     `docs/planning/audit-handoff-rollup-summary-parity-2026-05-19-task.md`.
 
+- [x] `AUDIT-RERUN-PLAYBOOK-BASELINE-PATH-CHECK-2026-05-19 feature: validate rerun baseline paths`
+  - 2026-05-19: Added `baseline.rollupJson` to the reusable audit rerun
+    playbook and hardened `audit:rerun-playbook:check` so required baseline
+    manifest/rollup paths must be present and resolvable. Focused regression
+    coverage catches missing baseline keys and missing paths. Evidence:
+    `docs/planning/audit-rerun-playbook-baseline-path-check-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

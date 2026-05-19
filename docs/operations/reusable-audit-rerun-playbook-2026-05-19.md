@@ -13,6 +13,7 @@ Baseline manifest:
 Baseline rollup:
 
 - `docs/operations/full-reusable-audit-rollup-2026-05-19.md`
+- `docs/operations/full-reusable-audit-rollup-2026-05-19.json`
 
 Machine-readable pair:
 

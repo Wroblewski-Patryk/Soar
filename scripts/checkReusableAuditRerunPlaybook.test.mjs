@@ -6,6 +6,11 @@ import { validateReusableAuditRerunPlaybook } from './checkReusableAuditRerunPla
 const auditIds = Array.from({ length: 24 }, (_, index) => `AUD-${String(index).padStart(2, '0')}`);
 
 const playbook = (overrides = {}) => ({
+  baseline: {
+    manifest: 'docs/operations/reusable-audit-artifact-manifest-2026-05-19.json',
+    rollup: 'docs/operations/full-reusable-audit-rollup-2026-05-19.md',
+    rollupJson: 'docs/operations/full-reusable-audit-rollup-2026-05-19.json',
+  },
   rerunOrder: [
     { step: 1, auditIds: auditIds.slice(0, 8) },
     { step: 2, auditIds: auditIds.slice(8, 16) },
@@ -37,15 +42,47 @@ const playbook = (overrides = {}) => ({
   },
   ...overrides,
 });
+const allPathsExist = () => true;
 
 test('validateReusableAuditRerunPlaybook passes complete playbooks', () => {
-  const result = validateReusableAuditRerunPlaybook(playbook());
+  const result = validateReusableAuditRerunPlaybook(playbook(), { exists: allPathsExist });
 
   assert.equal(result.status, 'PASS');
   assert.equal(result.audits.found, 24);
   assert.deepEqual(result.audits.missing, []);
+  assert.deepEqual(result.baseline.missingKeys, []);
+  assert.deepEqual(result.baseline.missingPaths, []);
   assert.deepEqual(result.sections.missing, []);
   assert.deepEqual(result.safetyBoundaries.unsafe, []);
+});
+
+test('validateReusableAuditRerunPlaybook fails when baseline keys are missing', () => {
+  const result = validateReusableAuditRerunPlaybook(
+    playbook({
+      baseline: {
+        manifest: 'docs/operations/reusable-audit-artifact-manifest-2026-05-19.json',
+        rollup: 'docs/operations/full-reusable-audit-rollup-2026-05-19.md',
+      },
+    }),
+    { exists: allPathsExist },
+  );
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.baseline.missingKeys, ['rollupJson']);
+});
+
+test('validateReusableAuditRerunPlaybook fails when baseline paths are missing', () => {
+  const result = validateReusableAuditRerunPlaybook(playbook(), {
+    exists: (relativePath) => relativePath !== 'docs/operations/full-reusable-audit-rollup-2026-05-19.json',
+  });
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.baseline.missingPaths, [
+    {
+      key: 'rollupJson',
+      path: 'docs/operations/full-reusable-audit-rollup-2026-05-19.json',
+    },
+  ]);
 });
 
 test('validateReusableAuditRerunPlaybook fails when an audit is missing', () => {

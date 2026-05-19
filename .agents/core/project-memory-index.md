@@ -208,6 +208,9 @@ Before any future "full audit" request, start from:
 - `docs/planning/audit-handoff-rollup-summary-parity-2026-05-19-task.md`:
   handoff validation now checks handoff `rollupSummary` key/value parity
   against the referenced rollup JSON.
+- `docs/planning/audit-rerun-playbook-baseline-path-check-2026-05-19-task.md`:
+  rerun playbook validation now checks baseline manifest and rollup
+  Markdown/JSON path completeness and existence.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.
