@@ -61,6 +61,7 @@ Validates the full reusable audit rollup JSON by checking:
 - AUD-00 through AUD-23 coverage
 - summary counts match audit statuses
 - companion Markdown lists JSON audit IDs when available
+- companion Markdown summary counts match JSON when available
 - referenced rollup paths exist
 - required repair queue items remain present
 - production/LIVE/exchange mutation safety booleans remain false
@@ -93,6 +94,13 @@ export const validateFullReusableAuditRollup = (rollup, options = {}) => {
           (auditId) =>
             !markdownText.includes(`| ${auditId} |`) && !markdownText.includes(`| \`${auditId}\` |`),
         );
+  const markdownSummaryLabels = {
+    currentOrCurrentLocal: 'Current/current-local',
+    partial: 'Partial',
+    failedDecisionRequired: 'Failed decision-required',
+    deferred: 'Deferred',
+    currentFromPriorBaseline: 'Current from prior baseline',
+  };
   const computedSummary = audits.reduce(
     (summary, audit) => {
       summary[classifyAuditStatus(audit.status)] += 1;
@@ -109,6 +117,15 @@ export const validateFullReusableAuditRollup = (rollup, options = {}) => {
   const summaryMismatches = Object.entries(computedSummary)
     .filter(([key, value]) => declaredSummary[key] !== undefined && declaredSummary[key] !== value)
     .map(([key, actual]) => ({ key, declared: declaredSummary[key], actual }));
+  const markdownSummaryMismatches =
+    markdownText === null
+      ? []
+      : Object.entries(markdownSummaryLabels)
+          .filter(([key, label]) => {
+            const expected = declaredSummary[key];
+            return expected !== undefined && !markdownText.includes(`- ${label}: \`${expected}\``);
+          })
+          .map(([key]) => ({ key, declared: declaredSummary[key] }));
 
   const missingPathKeys = requiredPathKeys.filter((key) => !(key in rollup));
   const missingPaths = requiredPathKeys
@@ -133,6 +150,7 @@ export const validateFullReusableAuditRollup = (rollup, options = {}) => {
     summary: {
       computed: computedSummary,
       mismatches: summaryMismatches,
+      markdownMismatches: markdownSummaryMismatches,
     },
     markdown: {
       missingAuditIds: missingMarkdownAuditIds,
@@ -153,6 +171,7 @@ export const validateFullReusableAuditRollup = (rollup, options = {}) => {
     result.audits.missing.length === 0 &&
     result.audits.duplicates.length === 0 &&
     result.summary.mismatches.length === 0 &&
+    result.summary.markdownMismatches.length === 0 &&
     result.markdown.missingAuditIds.length === 0 &&
     result.paths.missingKeys.length === 0 &&
     result.paths.missing.length === 0 &&
@@ -188,6 +207,7 @@ const main = async () => {
     console.log(`Full reusable audit rollup check: ${result.status}`);
     console.log(`- Audits: ${result.audits.found}/${result.audits.expected}`);
     console.log(`- Summary mismatches: ${result.summary.mismatches.length}`);
+    console.log(`- Markdown summary mismatches: ${result.summary.markdownMismatches.length}`);
     console.log(`- Missing Markdown audit IDs: ${result.markdown.missingAuditIds.length}`);
     console.log(`- Missing path keys: ${result.paths.missingKeys.length}`);
     console.log(`- Missing paths: ${result.paths.missing.length}`);

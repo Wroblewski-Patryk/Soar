@@ -145,6 +145,8 @@ Reusable audit manifest validation now checks that companion Markdown current
 summary counts match JSON summary counts when the Markdown file is available.
 Reusable audit rollup validation now checks that companion Markdown result
 tables list every JSON audit ID when the Markdown file is available.
+Reusable audit rollup validation now checks that companion Markdown summary
+counts match JSON summary counts when the Markdown file is available.
 Next executable protected step remains the same: provide the approved
 protected inputs named in that packet and execute the commands in order.
 

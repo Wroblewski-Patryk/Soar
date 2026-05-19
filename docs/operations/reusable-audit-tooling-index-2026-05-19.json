@@ -37,13 +37,13 @@
       "id": "AUDIT-ROLLUP-CHECK",
       "command": "corepack pnpm run audit:rollup:check",
       "script": "scripts/checkFullReusableAuditRollup.mjs",
-      "purpose": "Validate full reusable audit rollup coverage, Markdown/JSON audit ID coverage, summary counts, source paths, repair queue, and safety booleans."
+      "purpose": "Validate full reusable audit rollup coverage, Markdown/JSON audit ID and summary coverage, source paths, repair queue, and safety booleans."
     },
     {
       "id": "AUDIT-ROLLUP-CHECK-TEST",
       "command": "corepack pnpm run audit:rollup:check:test",
       "script": "scripts/checkFullReusableAuditRollup.test.mjs",
-      "purpose": "Regression-test full reusable audit rollup validation behavior, including Markdown/JSON audit ID drift."
+      "purpose": "Regression-test full reusable audit rollup validation behavior, including Markdown/JSON audit ID and summary drift."
     },
     {
       "id": "AUDIT-RERUN-PLAYBOOK-CHECK",

@@ -253,6 +253,10 @@ Last updated: 2026-05-19
   `audit:rollup:check` so the companion Markdown result table must list every
   JSON audit ID when the Markdown file is available. Evidence:
   `docs/planning/audit-rollup-markdown-audit-id-parity-2026-05-19-task.md`.
+  Follow-up `AUDIT-ROLLUP-MARKDOWN-SUMMARY-PARITY-2026-05-19` added checked
+  summary counts to the rollup Markdown and hardened `audit:rollup:check` so
+  those counts must match the JSON rollup summary. Evidence:
+  `docs/planning/audit-rollup-markdown-summary-parity-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,

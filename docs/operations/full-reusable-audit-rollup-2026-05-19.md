@@ -35,6 +35,14 @@ Excluded:
 
 ## Result Summary
 
+Current summary counts:
+
+- Current/current-local: `23`
+- Partial: `0`
+- Failed decision-required: `0`
+- Deferred: `1`
+- Current from prior baseline: `0`
+
 | Audit | Status | Current Evidence |
 | --- | --- | --- |
 | AUD-00 | current local | 2026-05-19 project index and static scan passed: `PASS:21`, tests indexed `335`, scan findings `0`. |
