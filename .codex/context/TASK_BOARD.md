@@ -322,6 +322,13 @@ Last updated: 2026-05-19
     command from closure. Evidence:
     `docs/planning/audit-rerun-playbook-self-check-closure-2026-05-19-task.md`.
 
+- [x] `AUDIT-TOOLING-INDEX-SELF-CHECK-CLOSURE-2026-05-19 feature: require tooling index self-check closure`
+  - 2026-05-19: Hardened `audit:tooling-index:check` so tooling index
+    `closureCommands` must include `audit:tooling-index:check`. Focused
+    regression coverage catches tooling index closure sets that omit their own
+    validation command. Evidence:
+    `docs/planning/audit-tooling-index-self-check-closure-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

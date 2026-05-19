@@ -288,6 +288,10 @@ Last updated: 2026-05-19
   `audit:rerun-playbook:check` so rerun playbook closure must include the
   rerun-playbook self-check command. Evidence:
   `docs/planning/audit-rerun-playbook-self-check-closure-2026-05-19-task.md`.
+  Follow-up `AUDIT-TOOLING-INDEX-SELF-CHECK-CLOSURE-2026-05-19` hardened
+  `audit:tooling-index:check` so tooling index closure must include the
+  tooling-index self-check command. Evidence:
+  `docs/planning/audit-tooling-index-self-check-closure-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,

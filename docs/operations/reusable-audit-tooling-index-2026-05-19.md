@@ -54,8 +54,8 @@ It runs:
 | `AUDIT-HANDOFF-CHECK-TEST` | `corepack pnpm run audit:handoff:check:test` | `scripts/checkFullReusableAuditHandoff.test.mjs` | Regression-test full reusable audit handoff validation behavior, including rollup summary drift and missing self-check validation. |
 | `AUDIT-REMEDIATION-PLAN-CHECK` | `corepack pnpm run audit:remediation-plan:check` | `scripts/checkAuditRemediationPlan.mjs` | Validate remediation roadmap phases, work packages, blockers, required self-check closure checks, and safety boundaries. |
 | `AUDIT-REMEDIATION-PLAN-CHECK-TEST` | `corepack pnpm run audit:remediation-plan:check:test` | `scripts/checkAuditRemediationPlan.test.mjs` | Regression-test remediation plan validation behavior, including missing self-check closure commands. |
-| `AUDIT-TOOLING-INDEX-CHECK` | `corepack pnpm run audit:tooling-index:check` | `scripts/checkReusableAuditToolingIndex.mjs` | Validate audit tooling index Markdown/JSON tool coverage, command/script coverage, package script existence, required closure commands, required cleanup checks, and safety boundaries. |
-| `AUDIT-TOOLING-INDEX-CHECK-TEST` | `corepack pnpm run audit:tooling-index:check:test` | `scripts/checkReusableAuditToolingIndex.test.mjs` | Regression-test tooling index validation behavior, including Markdown/JSON drift, missing package scripts, required closure commands, and required cleanup checks. |
+| `AUDIT-TOOLING-INDEX-CHECK` | `corepack pnpm run audit:tooling-index:check` | `scripts/checkReusableAuditToolingIndex.mjs` | Validate audit tooling index Markdown/JSON tool coverage, command/script coverage, package script existence, required self-check closure commands, required cleanup checks, and safety boundaries. |
+| `AUDIT-TOOLING-INDEX-CHECK-TEST` | `corepack pnpm run audit:tooling-index:check:test` | `scripts/checkReusableAuditToolingIndex.test.mjs` | Regression-test tooling index validation behavior, including Markdown/JSON drift, missing package scripts, required self-check closure commands, and required cleanup checks. |
 | `AUDIT-DATA-DB-ISOLATED` | `corepack pnpm run audit:data:db-isolated` | `scripts/runAud07IsolatedDbPacks.mjs` | Run representative DB-backed `AUD-07` packs sequentially with reset/isolation. |
 | `API-ENDPOINT-DOCS-PARITY` | `corepack pnpm run docs:parity:endpoints:api` | `scripts/auditApiEndpointDocsParity.mjs` | Verify endpoint-level API documentation parity. |
 | `OPS-PROTECTED-INPUTS-CHECK` | `corepack pnpm run ops:protected-inputs:check -- --today <yyyy-mm-dd> --expected-sha <sha>` | `scripts/checkProtectedInputReadiness.mjs` | Check protected production input env-name readiness without printing or storing secret values. |
@@ -77,6 +77,7 @@ After changing this tooling index or related audit tooling, run:
 ```powershell
 corepack pnpm run audit:manifest:verify
 corepack pnpm run audit:remediation-plan:check
+corepack pnpm run audit:tooling-index:check
 corepack pnpm run ops:protected-inputs:check:test
 corepack pnpm run docs:parity:check
 corepack pnpm run quality:guardrails

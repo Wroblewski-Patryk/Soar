@@ -36,6 +36,7 @@ const requiredSafetyBoundaries = [
 const requiredClosureCommandFragments = [
   'audit:manifest:verify',
   'audit:remediation-plan:check',
+  'audit:tooling-index:check',
   'docs:parity:check',
   'quality:guardrails',
   'git diff --check',

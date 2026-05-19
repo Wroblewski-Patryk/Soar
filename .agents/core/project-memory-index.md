@@ -226,6 +226,9 @@ Before any future "full audit" request, start from:
 - `docs/planning/audit-rerun-playbook-self-check-closure-2026-05-19-task.md`:
   rerun playbook validation now requires `audit:rerun-playbook:check` in
   closure checks.
+- `docs/planning/audit-tooling-index-self-check-closure-2026-05-19-task.md`:
+  tooling index validation now requires `audit:tooling-index:check` in closure
+  commands.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.
@@ -261,8 +264,8 @@ Before any future "full audit" request, start from:
   `docs/operations/reusable-audit-tooling-index-2026-05-19.json`: command and
   script map for reusable audit validation, comparison, rerun playbook checks,
   handoff checks, endpoint parity, isolated DB-backed audit packs, and
-  required closure-command, cleanup-check, and package-script existence
-  enforcement.
+  required self-check closure-command, cleanup-check, and package-script
+  existence enforcement.
 
 Current baseline facts: project index passed on 2026-05-18 with `PASS:21` and
 `335` indexed tests; static scan passed with `0` findings; guardrails, docs

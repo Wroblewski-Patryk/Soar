@@ -42,6 +42,7 @@ const toolingIndex = (overrides = {}) => ({
   closureCommands: [
     'corepack pnpm run audit:manifest:verify',
     'corepack pnpm run audit:remediation-plan:check',
+    'corepack pnpm run audit:tooling-index:check',
     'corepack pnpm run docs:parity:check',
     'corepack pnpm run quality:guardrails',
     'git diff --check',
@@ -139,6 +140,7 @@ test('validateReusableAuditToolingIndex fails when required closure commands are
   assert.equal(result.status, 'FAIL');
   assert.deepEqual(result.commands.missingClosureCommandFragments, [
     'audit:remediation-plan:check',
+    'audit:tooling-index:check',
     'docs:parity:check',
     'quality:guardrails',
   ]);
