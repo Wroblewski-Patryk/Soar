@@ -130,6 +130,8 @@ Stop and report instead of continuing if:
 Before closing a rerun:
 
 ```powershell
+corepack pnpm run audit:manifest:verify
+corepack pnpm run audit:remediation-plan:check
 corepack pnpm run docs:parity:check
 corepack pnpm run quality:guardrails
 git diff --check

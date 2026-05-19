@@ -173,6 +173,14 @@ Last updated: 2026-05-19
     regression coverage for missing referenced evidence. Evidence:
     `docs/planning/audit-remediation-plan-reference-check-2026-05-19-task.md`.
 
+- [x] `AUDIT-RERUN-PLAYBOOK-REMEDIATION-CLOSURE-SYNC-2026-05-19 feature: require remediation closure check`
+  - 2026-05-19: Updated the reusable audit rerun playbook and validator so
+    closure requires `audit:manifest:verify`, `audit:remediation-plan:check`,
+    docs parity, guardrails, and diff check. The rerun playbook check now
+    reports missing required closure checks and fails when they are absent.
+    Evidence:
+    `docs/planning/audit-rerun-playbook-remediation-closure-sync-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

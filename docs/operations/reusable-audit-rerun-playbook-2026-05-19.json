@@ -99,6 +99,8 @@
     "manifest comparison reports a regression not explained by an accepted scope change"
   ],
   "closureChecks": [
+    "corepack pnpm run audit:manifest:verify",
+    "corepack pnpm run audit:remediation-plan:check",
     "corepack pnpm run docs:parity:check",
     "corepack pnpm run quality:guardrails",
     "git diff --check"

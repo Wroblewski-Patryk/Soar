@@ -20,7 +20,13 @@ const playbook = (overrides = {}) => ({
   regressionRules: ['missing audit'],
   improvementRules: ['partial becomes current'],
   stopConditions: ['decision required'],
-  closureChecks: ['corepack pnpm run docs:parity:check'],
+  closureChecks: [
+    'corepack pnpm run audit:manifest:verify',
+    'corepack pnpm run audit:remediation-plan:check',
+    'corepack pnpm run docs:parity:check',
+    'corepack pnpm run quality:guardrails',
+    'git diff --check',
+  ],
   cleanupChecks: ['docker compose ps'],
   safetyBoundaries: {
     productionDataMutationWithoutApproval: false,
@@ -107,4 +113,19 @@ test('validateReusableAuditRerunPlaybook fails when required sections are empty'
 
   assert.equal(result.status, 'FAIL');
   assert.deepEqual(result.sections.missing, ['stopConditions', 'cleanupChecks']);
+});
+
+test('validateReusableAuditRerunPlaybook fails when required closure checks are missing', () => {
+  const result = validateReusableAuditRerunPlaybook(
+    playbook({
+      closureChecks: ['corepack pnpm run docs:parity:check', 'git diff --check'],
+    }),
+  );
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.closureChecks.missingRequiredFragments, [
+    'audit:manifest:verify',
+    'audit:remediation-plan:check',
+    'quality:guardrails',
+  ]);
 });

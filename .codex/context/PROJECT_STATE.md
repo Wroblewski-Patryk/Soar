@@ -194,6 +194,12 @@ Last updated: 2026-05-19
   current check reports `7` references checked and `0` missing references.
   Evidence:
   `docs/planning/audit-remediation-plan-reference-check-2026-05-19-task.md`.
+  Follow-up
+  `AUDIT-RERUN-PLAYBOOK-REMEDIATION-CLOSURE-SYNC-2026-05-19` updated the
+  reusable audit rerun playbook and validator so rerun closure explicitly
+  requires `audit:manifest:verify`, `audit:remediation-plan:check`, docs
+  parity, guardrails, and diff check. Evidence:
+  `docs/planning/audit-rerun-playbook-remediation-closure-sync-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,

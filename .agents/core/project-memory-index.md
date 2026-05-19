@@ -157,6 +157,10 @@ Before any future "full audit" request, start from:
   `AUD-19` blocker, closure checks, safety boundaries, and source/evidence
   reference path existence. Follow-up task:
   `docs/planning/audit-remediation-plan-reference-check-2026-05-19-task.md`.
+- `docs/planning/audit-rerun-playbook-remediation-closure-sync-2026-05-19-task.md`:
+  rerun playbook closure now explicitly requires `audit:manifest:verify`,
+  `audit:remediation-plan:check`, docs parity, guardrails, and diff check, and
+  the rerun playbook validator fails if those closure checks are missing.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.
@@ -181,10 +185,11 @@ Before any future "full audit" request, start from:
   and safety boundaries.
 - `docs/operations/reusable-audit-rerun-playbook-2026-05-19.md`: operational
   rerun guide for comparing future manifests against the 2026-05-19 baseline
-  with explicit safety boundaries, regression rules, and closure checks.
+  with explicit safety boundaries, regression rules, and required closure
+  checks including remediation-plan validation.
 - `docs/operations/reusable-audit-rerun-playbook-2026-05-19.json`:
   machine-readable rerun order, commands, stop conditions, regression rules,
-  and cleanup checks for future audit automation.
+  required closure checks, and cleanup checks for future audit automation.
 - `docs/operations/reusable-audit-tooling-index-2026-05-19.md` and
   `docs/operations/reusable-audit-tooling-index-2026-05-19.json`: command and
   script map for reusable audit validation, comparison, rerun playbook checks,

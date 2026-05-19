@@ -33,6 +33,10 @@ Last updated: 2026-05-19
   `corepack pnpm run audit:remediation-plan:check` validates the plan JSON,
   required phases/work packages, the `AUD-19` blocker, closure checks, and
   safety boundaries.
+- Reusable audit rerun closure now explicitly requires
+  `audit:manifest:verify`, `audit:remediation-plan:check`, docs parity,
+  guardrails, and diff check; `audit:rerun-playbook:check` fails if any
+  required closure check is missing.
 
 ## Latest Health Snapshot
 
@@ -126,6 +130,9 @@ Last updated: 2026-05-19
   current output reports `7` references checked and `0` missing references.
   Evidence:
   `docs/planning/audit-remediation-plan-reference-check-2026-05-19-task.md`.
+  Follow-up closure sync requires the remediation-plan check in the reusable
+  audit rerun playbook and validator. Evidence:
+  `docs/planning/audit-rerun-playbook-remediation-closure-sync-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` LOCAL DATA/MIGRATIONS PASS WITH
   FINDING: Prisma schema validation passed, local migration status reported

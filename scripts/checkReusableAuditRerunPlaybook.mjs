@@ -14,6 +14,13 @@ const requiredSafetyBoundaries = [
   'architectureDecisionApplied',
   'runtimeBehaviorChanged',
 ];
+const requiredClosureCheckFragments = [
+  'audit:manifest:verify',
+  'audit:remediation-plan:check',
+  'docs:parity:check',
+  'quality:guardrails',
+  'git diff --check',
+];
 
 const parseArgs = () => {
   const args = process.argv.slice(2);
@@ -48,7 +55,7 @@ const printHelp = () => {
 Validates the reusable audit rerun playbook JSON by checking:
 - AUD-00 through AUD-23 are present in rerunOrder
 - future manifest commands are present
-- regression rules, stop conditions, closure checks, and cleanup checks exist
+- regression rules, stop conditions, required closure checks, and cleanup checks exist
 - safety boundaries remain false
 `);
 };
@@ -76,6 +83,10 @@ export const validateReusableAuditRerunPlaybook = (playbook, options = {}) => {
   const safetyBoundaries = playbook.safetyBoundaries ?? {};
   const missingSafetyBoundaries = requiredSafetyBoundaries.filter((key) => !(key in safetyBoundaries));
   const unsafeSafetyBoundaries = requiredSafetyBoundaries.filter((key) => safetyBoundaries[key] !== false);
+  const closureChecks = Array.isArray(playbook.closureChecks) ? playbook.closureChecks : [];
+  const missingClosureCheckFragments = requiredClosureCheckFragments.filter(
+    (fragment) => !closureChecks.some((check) => String(check).includes(fragment)),
+  );
 
   const result = {
     playbook: options.playbookPath ?? null,
@@ -96,8 +107,11 @@ export const validateReusableAuditRerunPlaybook = (playbook, options = {}) => {
       regressionRules: Array.isArray(playbook.regressionRules) ? playbook.regressionRules.length : 0,
       improvementRules: Array.isArray(playbook.improvementRules) ? playbook.improvementRules.length : 0,
       stopConditions: Array.isArray(playbook.stopConditions) ? playbook.stopConditions.length : 0,
-      closureChecks: Array.isArray(playbook.closureChecks) ? playbook.closureChecks.length : 0,
+      closureChecks: closureChecks.length,
       cleanupChecks: Array.isArray(playbook.cleanupChecks) ? playbook.cleanupChecks.length : 0,
+    },
+    closureChecks: {
+      missingRequiredFragments: missingClosureCheckFragments,
     },
     safetyBoundaries: {
       missing: missingSafetyBoundaries,
@@ -117,6 +131,7 @@ export const validateReusableAuditRerunPlaybook = (playbook, options = {}) => {
     result.commands.commandWithoutBaselinePlaceholder.length === 0 &&
     result.commands.commandWithoutTargetPlaceholder.length === 0 &&
     missingRequiredSections.length === 0 &&
+    result.closureChecks.missingRequiredFragments.length === 0 &&
     result.safetyBoundaries.missing.length === 0 &&
     result.safetyBoundaries.unsafe.length === 0
       ? 'PASS'
@@ -147,6 +162,7 @@ const main = async () => {
     console.log(`- Duplicate audits: ${result.audits.duplicates.length}`);
     console.log(`- Missing future commands: ${result.commands.missingFutureCommands.length}`);
     console.log(`- Missing sections: ${result.sections.missing.length}`);
+    console.log(`- Missing required closure checks: ${result.closureChecks.missingRequiredFragments.length}`);
     console.log(`- Unsafe safety boundaries: ${result.safetyBoundaries.unsafe.length}`);
   }
 
