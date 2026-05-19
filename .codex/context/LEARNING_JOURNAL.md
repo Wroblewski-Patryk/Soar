@@ -115,6 +115,11 @@ Start-Process -FilePath "cmd.exe" -ArgumentList $cmd -WorkingDirectory $repo -Wi
   `chrome-headless-shell` rows after non-browser wallet audit validation; a
   narrow `Get-Process chrome-headless-shell | Stop-Process -Force` cleanup was
   run, and the follow-up process check returned no rows.
+  2026-05-19 audit manifest Markdown summary parity validation found four
+  short-lived `chrome-headless-shell` rows after the no-browser audit tooling
+  checks; the parent Playwright validation process was inspected, a narrow
+  `Stop-Process -Id <parent>` cleanup removed the tree, and the follow-up
+  `Get-Process chrome-headless-shell` check returned no rows.
 
 ### 2026-05-13 - Preserve LIVE bot fields when toggling activity
 - Context: `V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13` ran the
