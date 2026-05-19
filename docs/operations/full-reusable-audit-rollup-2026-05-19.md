@@ -56,7 +56,7 @@ Excluded:
 | AUD-16 | current local / historical production-safe fixture | Backtests/reports Web and API packs passed: `15` files / `37` tests and `13` files / `114` tests. |
 | AUD-17 | current local / historical production-safe action readback | Logs/audit Web and API packs passed: `2` files / `3` tests and `2` files / `5` tests. |
 | AUD-18 | current local / historical production-safe protected route proof | Admin/subscriptions Web and API packs passed: `4` files / `9` tests and `5` files / `25` tests. |
-| AUD-19 | current local / public deploy fresh / protected preflight and RC blocked | Typecheck, lint, build, go-live smoke, and local DB backup/restore passed; production build-info and public smoke passed for `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac` after fast-forwarding `origin/main`; no-auth protected preflight passed build-info/public smoke and blocked on missing protected inputs plus stale 2026-05-14 protected evidence; dated no-secret RC packet records Gate 2 `OPEN` and Gate 4 `OPEN`. |
+| AUD-19 | current local / public deploy fresh / protected preflight and RC blocked / operator handoff current | Typecheck, lint, build, go-live smoke, and local DB backup/restore passed; production build-info and public smoke passed for `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac` after fast-forwarding `origin/main`; no-auth protected preflight passed build-info/public smoke and blocked on missing protected inputs plus stale 2026-05-14 protected evidence; dated no-secret RC packet records Gate 2 `OPEN` and Gate 4 `OPEN`; current operator unblock packet lists the remaining protected inputs, command order, and stop conditions. |
 | AUD-20 | current foundation / hot-path assistant scope deferred | `DEC-AUD-002` accepted current assistant truth as bot-scoped configuration, deterministic orchestrator coverage, and dry-run diagnostics. BACKTEST/PAPER/LIVE hot-path assistant orchestration remains future/gated scope requiring fail-closed integration, persisted traces, and AI red-team evidence. |
 | AUD-21 | deferred / scaffold-only scope verified | `apps/mobile` is package/README/placeholder only; build/test scripts intentionally echo scaffold-only state. |
 | AUD-22 | current local | Route-reachable i18n audit passed with `0` findings; focused Web i18n pack passed: `8` files / `26` tests. |
@@ -66,7 +66,8 @@ Excluded:
 
 1. Before any full production release claim, rerun `AUD-19` protected runtime,
    rollback, backup/restore, sign-off, and any approved protected journey
-   evidence for the current target.
+   evidence for the current target using
+   `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.md`.
 2. Before any runtime AI trading claim, implement hot-path assistant
    orchestration with fail-closed guards, persisted traces, and AI red-team
    proof.

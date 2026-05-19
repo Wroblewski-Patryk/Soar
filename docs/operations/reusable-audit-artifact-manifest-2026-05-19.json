@@ -213,13 +213,15 @@
     },
     {
       "id": "AUD-19",
-      "status": "current local / historical production release gate",
+      "status": "current local / public deploy fresh / protected preflight and RC blocked / operator handoff current",
       "reports": [
         "docs/operations/operations-release-deployment-audit-2026-05-19.md",
         "docs/operations/operations-release-deployment-audit-2026-05-19.json",
-        "docs/operations/v1-db-restore-check-2026-05-19T01-30-47-200Z.md"
+        "docs/operations/v1-db-restore-check-2026-05-19T01-30-47-200Z.md",
+        "docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.md",
+        "docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.json"
       ],
-      "task": "docs/planning/operations-release-deployment-audit-2026-05-19-task.md"
+      "task": "docs/planning/v1-operator-unblock-packet-dd1a1faf-2026-05-19-task.md"
     },
     {
       "id": "AUD-20",

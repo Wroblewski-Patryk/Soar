@@ -95,6 +95,15 @@ Last updated: 2026-05-19
   `docs/operations/v1-rc-signoff-record-dd1a1faf-2026-05-19-blocked.md`, and
   `docs/planning/rc-evidence-blocked-dd1a1faf-2026-05-19-task.md`.
 
+- `V1-OPERATOR-UNBLOCK-PACKET-DD1A1FAF-2026-05-19` OPERATOR HANDOFF CURRENT:
+  production build-info readback still points to
+  `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac` on `main`; the packet lists the
+  required protected inputs, command order, stop conditions, and final
+  acceptance rule for completing `AUD-19`. It is intentionally `NO-GO` and does
+  not replace missing protected evidence. Evidence:
+  `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.md` and
+  `docs/planning/v1-operator-unblock-packet-dd1a1faf-2026-05-19-task.md`.
+
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` LOCAL DATA/MIGRATIONS PASS WITH
   FINDING: Prisma schema validation passed, local migration status reported
   `54` migrations and schema up to date, full local migration replay applied

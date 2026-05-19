@@ -27,6 +27,8 @@ Tooling index pair:
 - Baseline: `docs/analysis/audit-baseline-2026-05-19.md`
 - Rollup: `docs/operations/full-reusable-audit-rollup-2026-05-19.md`
 - Handoff: `docs/operations/full-reusable-audit-handoff-2026-05-19.md`
+- Current `AUD-19` operator unblock packet:
+  `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.md`
 - Rerun playbook: `docs/operations/reusable-audit-rerun-playbook-2026-05-19.md`
 - Tooling index: `docs/operations/reusable-audit-tooling-index-2026-05-19.md`
 - Decision packet: `docs/operations/audit-decision-packet-2026-05-19.md`
@@ -77,7 +79,7 @@ Validate this manifest with:
 
 Latest path check:
 
-- `85` manifest paths checked
+- `87` manifest paths checked
 - `0` missing paths
 - `corepack pnpm run audit:manifest:verify` PASS after `DEC-AUD-001` and
   `DEC-AUD-002` acceptance

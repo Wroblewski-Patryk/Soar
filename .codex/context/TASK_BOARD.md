@@ -235,6 +235,17 @@ Last updated: 2026-05-19
     `docs/operations/v1-rc-external-gates-status-dd1a1faf-2026-05-19-blocked.md`
     and `docs/planning/rc-evidence-blocked-dd1a1faf-2026-05-19-task.md`.
 
+- [x] `V1-OPERATOR-UNBLOCK-PACKET-DD1A1FAF-2026-05-19 release: publish current protected evidence handoff`
+  - 2026-05-19: Published a current no-secret operator unblock packet for
+    protected `AUD-19` completion on deployed `dd1a1faf`. Production build-info
+    readback still points to
+    `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`; the packet lists required
+    protected auth/context and sign-off inputs, ordered commands, stop
+    conditions, and final acceptance rule. It remains `NO-GO` and does not
+    claim protected release readiness. Evidence:
+    `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.md` and
+    `docs/planning/v1-operator-unblock-packet-dd1a1faf-2026-05-19-task.md`.
+
 - [x] `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19 research: refresh AUD-07 data model/migrations`
   - 2026-05-19: Completed the `AUD-07` data model/migrations audit. Prisma
     schema validation passed, local migration status reported `54` migrations

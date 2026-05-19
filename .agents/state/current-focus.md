@@ -20,6 +20,10 @@ context, and dated protected release evidence remain required.
 `RC-EVIDENCE-BLOCKED-DD1A1FAF-2026-05-19` adds the current no-secret RC
 snapshot: Gate 1 `PASS`, Gate 2 `OPEN`, Gate 3 `PASS`, Gate 4 `OPEN`; approval
 requires fresh Gate2/SLO evidence and named Gate4 approver/owner fields.
+`V1-OPERATOR-UNBLOCK-PACKET-DD1A1FAF-2026-05-19` is the current no-secret
+operator handoff for finishing the protected `AUD-19` evidence line on this
+deployed target. It records the exact required auth/context inputs, command
+order, stop conditions, and acceptance rule without claiming release approval.
 
 2026-05-14 post-V1 source-of-truth reconciliation:
 `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14` is the latest ledger truth. The

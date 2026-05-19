@@ -2,7 +2,7 @@
   "auditId": "AUD-19",
   "name": "Operations, Release, And Deployment",
   "date": "2026-05-19",
-  "status": "current local / historical production release gate",
+  "status": "current local / public deploy fresh / protected preflight and RC blocked / operator handoff current",
   "environment": "local",
   "productionMutation": false,
   "liveOrderCancelClose": false,
@@ -78,6 +78,43 @@
       "severity": "P2",
       "status": "observation",
       "summary": "Mobile build remains scaffold-only and is tracked under AUD-21."
+    },
+    {
+      "id": "AUD-OPS-006",
+      "severity": "P1",
+      "status": "blocked by stale target build-info",
+      "summary": "Post-push production build-info did not expose 36ff999d while public smoke passed for the deployed service."
+    },
+    {
+      "id": "AUD-OPS-007",
+      "severity": "P1",
+      "status": "public deploy freshness passed / protected gate still open",
+      "summary": "Production build-info and public smoke passed for dd1a1faf after origin/main was fast-forwarded."
+    },
+    {
+      "id": "AUD-OPS-008",
+      "severity": "P0",
+      "status": "protected preflight blocked as expected",
+      "summary": "No-auth final preflight for dd1a1faf passed build-info/public smoke but blocked on missing protected inputs and stale protected evidence."
+    },
+    {
+      "id": "AUD-OPS-009",
+      "severity": "P0",
+      "status": "RC packet blocked as expected",
+      "summary": "Dated no-secret RC packet for dd1a1faf has Gate2 OPEN and Gate4 OPEN; strict evidence check fails as expected."
+    },
+    {
+      "id": "AUD-OPS-010",
+      "severity": "P1",
+      "status": "operator handoff current",
+      "summary": "Current no-secret operator unblock packet for dd1a1faf is available and keeps the release boundary NO-GO."
     }
-  ]
+  ],
+  "operatorHandoff": {
+    "status": "NO-GO",
+    "targetSha": "dd1a1faf79f8ac3581ca0a8c983481a3e30327ac",
+    "markdown": "docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.md",
+    "json": "docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.json",
+    "task": "docs/planning/v1-operator-unblock-packet-dd1a1faf-2026-05-19-task.md"
+  }
 }

@@ -150,6 +150,17 @@ Last updated: 2026-05-19
   `docs/operations/_artifacts-rc-evidence-check-dd1a1faf-2026-05-19-blocked.json`,
   and `docs/planning/rc-evidence-blocked-dd1a1faf-2026-05-19-task.md`.
 
+- `V1-OPERATOR-UNBLOCK-PACKET-DD1A1FAF-2026-05-19` is the current no-secret
+  operator handoff for completing protected `AUD-19` evidence on the deployed
+  `dd1a1faf` target. It confirms production build-info still points to
+  `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`, lists required auth/context and
+  sign-off inputs, orders the remaining restore, liveimport, rollback, Gate2,
+  Gate4, UI, final gate, and generated-state refresh steps, and records
+  fail-closed stop conditions. It is not release approval. Evidence:
+  `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.md`,
+  `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.json`, and
+  `docs/planning/v1-operator-unblock-packet-dd1a1faf-2026-05-19-task.md`.
+
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,
   local migration status reported `54` migrations and schema up to date, full

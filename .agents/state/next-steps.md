@@ -98,6 +98,11 @@ Evidence:
 Next RC follow-up: collect approved production SLO/Gate2 evidence and provide
 named sign-off/owner fields before rebuilding RC status, sign-off, and
 checklist as `APPROVED`.
+Current no-secret operator handoff for that follow-up:
+`docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.md` and
+`docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.json`.
+Next executable protected step remains the same: provide the approved
+protected inputs named in that packet and execute the commands in order.
 
 Latest data-model/migrations audit:
 `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is verified locally as the latest
