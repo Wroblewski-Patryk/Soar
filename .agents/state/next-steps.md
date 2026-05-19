@@ -141,6 +141,8 @@ Reusable audit rerun playbook validation now requires
 comparison evidence is persisted by default.
 Reusable audit tooling-index validation now checks that the companion Markdown
 table lists every JSON tool ID when the Markdown file is available.
+Reusable audit manifest validation now checks that companion Markdown current
+summary counts match JSON summary counts when the Markdown file is available.
 Next executable protected step remains the same: provide the approved
 protected inputs named in that packet and execute the commands in order.
 

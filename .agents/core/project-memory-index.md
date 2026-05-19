@@ -196,6 +196,9 @@ Before any future "full audit" request, start from:
   `docs/planning/audit-tooling-index-markdown-json-parity-2026-05-19-task.md`
   makes the tooling index validator check companion Markdown/JSON tool ID
   parity.
+- `docs/planning/audit-manifest-markdown-summary-parity-2026-05-19-task.md`:
+  manifest validation now checks companion Markdown/JSON summary count parity
+  when the Markdown file is available.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.

@@ -251,6 +251,13 @@ Last updated: 2026-05-19
     coverage catches a missing Markdown tool ID. Evidence:
     `docs/planning/audit-tooling-index-markdown-json-parity-2026-05-19-task.md`.
 
+- [x] `AUDIT-MANIFEST-MARKDOWN-SUMMARY-PARITY-2026-05-19 feature: validate manifest companion summary parity`
+  - 2026-05-19: Hardened `audit:manifest:check` so the JSON manifest summary
+    and companion Markdown "Current Summary" stay aligned when the Markdown
+    file is available. Focused regression coverage catches stale Markdown
+    summary counts. Evidence:
+    `docs/planning/audit-manifest-markdown-summary-parity-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

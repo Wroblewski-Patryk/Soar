@@ -41,6 +41,7 @@ Validates a reusable audit artifact manifest by checking:
 - JSON parse
 - AUD-00 through AUD-23 coverage
 - summary counts match audit statuses
+- companion Markdown summary counts match JSON when available
 - path validation metadata matches referenced paths
 - referenced repository paths exist
 - open decisions include packet and playbook links
@@ -76,6 +77,7 @@ const classifyAuditStatus = (status) => {
 
 export const validateReusableAuditManifest = (manifest, options = {}) => {
   const exists = options.exists ?? ((relativePath) => existsSync(path.resolve(repoRoot, relativePath)));
+  const markdownText = typeof options.markdownText === 'string' ? options.markdownText : null;
   const audits = Array.isArray(manifest.audits) ? manifest.audits : [];
   const auditIds = new Set(audits.map((audit) => audit.id));
   const missingAuditIds = expectedAuditIds.filter((auditId) => !auditIds.has(auditId));
@@ -102,6 +104,21 @@ export const validateReusableAuditManifest = (manifest, options = {}) => {
   const summaryMismatches = Object.entries(computedSummary)
     .filter(([key, value]) => declaredSummary[key] !== undefined && declaredSummary[key] !== value)
     .map(([key, actual]) => ({ key, declared: declaredSummary[key], actual }));
+  const markdownSummaryLabels = {
+    currentOrCurrentLocal: 'Current/current-local',
+    partial: 'Partial',
+    failedDecisionRequired: 'Failed decision-required',
+    deferred: 'Deferred',
+  };
+  const markdownSummaryMismatches =
+    markdownText === null
+      ? []
+      : Object.entries(markdownSummaryLabels)
+          .filter(([key, label]) => {
+            const expected = declaredSummary[key];
+            return expected !== undefined && !markdownText.includes(`- ${label}: \`${expected}\``);
+          })
+          .map(([key]) => ({ key, declared: declaredSummary[key] }));
   const manifestValidation = manifest.manifestValidation ?? {};
   const manifestValidationMismatches = [];
   if (manifestValidation.pathExistenceChecked !== undefined && manifestValidation.pathExistenceChecked !== true) {
@@ -138,6 +155,7 @@ export const validateReusableAuditManifest = (manifest, options = {}) => {
       duplicateAuditIds.length === 0 &&
       missingPaths.length === 0 &&
       summaryMismatches.length === 0 &&
+      markdownSummaryMismatches.length === 0 &&
       manifestValidationMismatches.length === 0 &&
       decisionsMissingLinks.length === 0
         ? 'PASS'
@@ -155,6 +173,7 @@ export const validateReusableAuditManifest = (manifest, options = {}) => {
     summary: {
       computed: computedSummary,
       mismatches: summaryMismatches,
+      markdownMismatches: markdownSummaryMismatches,
     },
     manifestValidation: {
       mismatches: manifestValidationMismatches,
@@ -174,9 +193,12 @@ const main = async () => {
   }
 
   const manifestPath = path.resolve(repoRoot, options.manifest);
+  const markdownPath = manifestPath.endsWith('.json') ? manifestPath.replace(/\.json$/, '.md') : null;
   const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+  const markdownText = markdownPath && existsSync(markdownPath) ? await readFile(markdownPath, 'utf8') : null;
   const result = validateReusableAuditManifest(manifest, {
     manifestPath: path.relative(repoRoot, manifestPath).split(path.sep).join('/'),
+    markdownText,
   });
 
   if (options.json) {
@@ -187,6 +209,7 @@ const main = async () => {
     console.log(`- Paths checked: ${result.paths.checked}`);
     console.log(`- Missing paths: ${result.paths.missing.length}`);
     console.log(`- Summary mismatches: ${result.summary.mismatches.length}`);
+    console.log(`- Markdown summary mismatches: ${result.summary.markdownMismatches.length}`);
     console.log(`- Manifest validation metadata mismatches: ${result.manifestValidation.mismatches.length}`);
     console.log(`- Open decisions: ${result.decisions.open}`);
     console.log(`- Decisions missing packet/playbook links: ${result.decisions.missingLinks.length}`);

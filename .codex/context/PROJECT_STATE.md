@@ -244,6 +244,11 @@ Last updated: 2026-05-19
   `audit:tooling-index:check` so the companion Markdown tooling table must
   list every JSON tool ID when the Markdown file is available. Evidence:
   `docs/planning/audit-tooling-index-markdown-json-parity-2026-05-19-task.md`.
+  Follow-up `AUDIT-MANIFEST-MARKDOWN-SUMMARY-PARITY-2026-05-19` hardened
+  `audit:manifest:check` so the companion Markdown current-summary counts
+  must match the JSON manifest summary when the Markdown file is available.
+  Evidence:
+  `docs/planning/audit-manifest-markdown-summary-parity-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,

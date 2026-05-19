@@ -32,9 +32,18 @@ const manifest = (overrides = {}) => ({
 });
 
 const allPathsExist = () => true;
+const markdownText = `# Reusable Audit Artifact Manifest
+
+## Current Summary
+
+- Current/current-local: \`24\`
+- Partial: \`0\`
+- Failed decision-required: \`0\`
+- Deferred: \`0\`
+`;
 
 test('validateReusableAuditManifest passes complete manifests', () => {
-  const result = validateReusableAuditManifest(manifest(), { exists: allPathsExist });
+  const result = validateReusableAuditManifest(manifest(), { exists: allPathsExist, markdownText });
 
   assert.equal(result.status, 'PASS');
   assert.equal(result.audits.found, 24);
@@ -42,6 +51,7 @@ test('validateReusableAuditManifest passes complete manifests', () => {
   assert.deepEqual(result.audits.duplicates, []);
   assert.deepEqual(result.paths.missing, []);
   assert.deepEqual(result.summary.mismatches, []);
+  assert.deepEqual(result.summary.markdownMismatches, []);
   assert.deepEqual(result.manifestValidation.mismatches, []);
   assert.deepEqual(result.decisions.missingLinks, []);
 });
@@ -173,6 +183,21 @@ test('validateReusableAuditManifest fails when manifest validation metadata drif
       key: 'missingPaths',
       declared: 1,
       actual: 0,
+    },
+  ]);
+});
+
+test('validateReusableAuditManifest fails when companion markdown summary drifts', () => {
+  const result = validateReusableAuditManifest(manifest(), {
+    exists: allPathsExist,
+    markdownText: markdownText.replace('- Current/current-local: `24`', '- Current/current-local: `23`'),
+  });
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.summary.markdownMismatches, [
+    {
+      key: 'currentOrCurrentLocal',
+      declared: 24,
     },
   ]);
 });

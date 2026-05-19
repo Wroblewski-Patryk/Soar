@@ -63,6 +63,8 @@ Last updated: 2026-05-19
   `--json-output`, preventing stdout-only structured comparison instructions.
 - Reusable audit tooling-index validation now checks companion Markdown/JSON
   tool ID parity when the Markdown file is available.
+- Reusable audit manifest validation now checks companion Markdown/JSON
+  summary count parity when the Markdown file is available.
 
 ## Latest Health Snapshot
 
@@ -187,6 +189,9 @@ Last updated: 2026-05-19
   Follow-up tooling-index parity validation catches missing Markdown entries
   for JSON tool IDs. Evidence:
   `docs/planning/audit-tooling-index-markdown-json-parity-2026-05-19-task.md`.
+  Follow-up manifest summary parity validation catches stale Markdown current
+  summary counts against the JSON manifest summary. Evidence:
+  `docs/planning/audit-manifest-markdown-summary-parity-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` LOCAL DATA/MIGRATIONS PASS WITH
   FINDING: Prisma schema validation passed, local migration status reported
