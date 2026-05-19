@@ -225,6 +225,11 @@ Last updated: 2026-05-19
   audit coverage, summary counts, source paths, repair queue, and safety
   booleans. Evidence:
   `docs/planning/audit-rollup-check-command-2026-05-19-task.md`.
+  Follow-up `AUDIT-MANIFEST-COMPARE-STATUS-BUCKET-CHECK-2026-05-19` aligned
+  `audit:manifest:compare` with manifest and rollup validators by ranking only
+  leading status buckets; hybrid current/deferred wording no longer produces a
+  false regression. Evidence:
+  `docs/planning/audit-manifest-compare-status-bucket-check-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,

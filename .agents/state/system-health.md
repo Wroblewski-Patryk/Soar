@@ -54,6 +54,9 @@ Last updated: 2026-05-19
   `audit:manifest:verify`; `audit:rollup:check` verifies audit coverage,
   summary counts, source paths, repair queue items, and fail-closed safety
   booleans.
+- Reusable audit manifest comparison now ranks only leading status buckets,
+  aligning comparison semantics with manifest and rollup validators and
+  avoiding false regressions from hybrid current/deferred wording.
 
 ## Latest Health Snapshot
 
@@ -165,6 +168,10 @@ Last updated: 2026-05-19
   Follow-up rollup validation makes the full reusable audit rollup
   machine-checkable. Evidence:
   `docs/planning/audit-rollup-check-command-2026-05-19-task.md`.
+  Follow-up manifest-comparison hardening aligns status ranking to leading
+  buckets, preventing hybrid current/deferred statuses from being misread as
+  regressions. Evidence:
+  `docs/planning/audit-manifest-compare-status-bucket-check-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` LOCAL DATA/MIGRATIONS PASS WITH
   FINDING: Prisma schema validation passed, local migration status reported

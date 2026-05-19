@@ -74,6 +74,61 @@ test('compareReusableAuditManifests fails when negative summary buckets grow', (
   );
 });
 
+test('compareReusableAuditManifests treats current statuses with deferred sub-scope as current', () => {
+  const result = compareReusableAuditManifests(
+    manifest({
+      audits: [{ id: 'AUD-20', status: 'current local' }],
+    }),
+    manifest({
+      audits: [{ id: 'AUD-20', status: 'current foundation / hot-path assistant scope deferred' }],
+    }),
+  );
+
+  assert.equal(result.status, 'PASS');
+  assert.deepEqual(result.regressions.audits, []);
+});
+
+test('compareReusableAuditManifests uses leading status buckets for regressions and improvements', () => {
+  const result = compareReusableAuditManifests(
+    manifest({
+      audits: [
+        { id: 'AUD-00', status: 'current local' },
+        { id: 'AUD-01', status: 'partial / needs proof' },
+      ],
+    }),
+    manifest({
+      audits: [
+        { id: 'AUD-00', status: 'deferred / scaffold-only scope verified' },
+        { id: 'AUD-01', status: 'current after follow-up' },
+      ],
+    }),
+  );
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(
+    result.regressions.audits.map((audit) => audit.id),
+    ['AUD-00'],
+  );
+  assert.deepEqual(
+    result.improvements.audits.map((audit) => audit.id),
+    ['AUD-01'],
+  );
+});
+
+test('compareReusableAuditManifests treats non-leading failed wording as informational', () => {
+  const result = compareReusableAuditManifests(
+    manifest({
+      audits: [{ id: 'AUD-00', status: 'current local' }],
+    }),
+    manifest({
+      audits: [{ id: 'AUD-00', status: 'current local / failed historical proof retained' }],
+    }),
+  );
+
+  assert.equal(result.status, 'PASS');
+  assert.deepEqual(result.regressions.audits, []);
+});
+
 test('compareReusableAuditManifests fails when a new open decision appears', () => {
   const result = compareReusableAuditManifests(
     manifest(),

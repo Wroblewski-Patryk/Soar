@@ -59,10 +59,10 @@ const readJson = async (relativePath) => {
 
 const statusRank = (status) => {
   const value = String(status ?? '').toLowerCase();
-  if (value.includes('failed')) return 4;
-  if (value.includes('partial')) return 3;
-  if (value.includes('deferred')) return 2;
-  if (value.includes('current')) return 0;
+  if (value.startsWith('failed') || value.startsWith('decision required')) return 4;
+  if (value.startsWith('partial')) return 3;
+  if (value.startsWith('deferred')) return 2;
+  if (value.startsWith('current')) return 0;
   return 1;
 };
 

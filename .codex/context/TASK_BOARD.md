@@ -221,6 +221,14 @@ Last updated: 2026-05-19
     in the reusable tooling index. Evidence:
     `docs/planning/audit-rollup-check-command-2026-05-19-task.md`.
 
+- [x] `AUDIT-MANIFEST-COMPARE-STATUS-BUCKET-CHECK-2026-05-19 feature: align manifest comparison status buckets`
+  - 2026-05-19: Hardened `audit:manifest:compare` so status
+    regression/improvement ranking uses leading status buckets, matching
+    manifest and rollup validators. Hybrid statuses such as
+    `current ... deferred` remain current, and non-leading failed wording is
+    informational. Evidence:
+    `docs/planning/audit-manifest-compare-status-bucket-check-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

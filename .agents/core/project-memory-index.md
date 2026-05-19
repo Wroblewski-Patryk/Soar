@@ -181,6 +181,12 @@ Before any future "full audit" request, start from:
   `docs/planning/audit-rollup-check-command-2026-05-19-task.md`: full reusable
   audit rollup validation for audit coverage, summary counts, source paths,
   repair queue, and fail-closed safety booleans.
+- `scripts/compareReusableAuditManifests.mjs`,
+  `scripts/compareReusableAuditManifests.test.mjs`, and
+  `docs/planning/audit-manifest-compare-status-bucket-check-2026-05-19-task.md`:
+  manifest comparison ranks only leading status buckets, matching manifest and
+  rollup validators so hybrid current/deferred wording does not become a false
+  regression.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.

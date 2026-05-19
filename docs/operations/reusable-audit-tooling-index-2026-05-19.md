@@ -43,8 +43,8 @@ It runs:
 | --- | --- | --- | --- |
 | `AUDIT-MANIFEST-CHECK` | `corepack pnpm run audit:manifest:check` | `scripts/checkReusableAuditManifest.mjs` | Validate manifest JSON coverage, summary counts, path metadata, referenced paths, and open-decision links. |
 | `AUDIT-MANIFEST-CHECK-TEST` | `corepack pnpm run audit:manifest:check:test` | `scripts/checkReusableAuditManifest.test.mjs` | Regression-test missing audit IDs, duplicate IDs, summary drift, path metadata drift, missing paths, and missing decision links. |
-| `AUDIT-MANIFEST-COMPARE` | `corepack pnpm run audit:manifest:compare -- --base <path> --target <path>` | `scripts/compareReusableAuditManifests.mjs` | Compare two audit manifests for regressions and improvements. |
-| `AUDIT-MANIFEST-COMPARE-TEST` | `corepack pnpm run audit:manifest:compare:test` | `scripts/compareReusableAuditManifests.test.mjs` | Regression-test status, summary, decision, and safety-boundary comparison behavior. |
+| `AUDIT-MANIFEST-COMPARE` | `corepack pnpm run audit:manifest:compare -- --base <path> --target <path>` | `scripts/compareReusableAuditManifests.mjs` | Compare two audit manifests for regressions and improvements using leading status buckets. |
+| `AUDIT-MANIFEST-COMPARE-TEST` | `corepack pnpm run audit:manifest:compare:test` | `scripts/compareReusableAuditManifests.test.mjs` | Regression-test leading status bucket, summary, decision, and safety-boundary comparison behavior. |
 | `AUDIT-MANIFEST-VERIFY` | `corepack pnpm run audit:manifest:verify` | `package.json` | Run the complete manifest/playbook verification bundle. |
 | `AUDIT-ROLLUP-CHECK` | `corepack pnpm run audit:rollup:check` | `scripts/checkFullReusableAuditRollup.mjs` | Validate full reusable audit rollup coverage, summary counts, source paths, repair queue, and safety booleans. |
 | `AUDIT-ROLLUP-CHECK-TEST` | `corepack pnpm run audit:rollup:check:test` | `scripts/checkFullReusableAuditRollup.test.mjs` | Regression-test full reusable audit rollup validation behavior. |
