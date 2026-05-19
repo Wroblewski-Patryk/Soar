@@ -60,6 +60,7 @@
   `git diff --check`.
 - Latest validation for the handoff chain:
   - `corepack pnpm run audit:manifest:verify` PASS after accepted decisions.
+  - `corepack pnpm run audit:handoff:check` PASS.
   - JSON parse PASS for decision packet, repair playbooks, and rollup JSON.
   - `corepack pnpm run docs:parity:check` PASS.
   - Focused exchange API pack PASS (`4` files / `21` tests).

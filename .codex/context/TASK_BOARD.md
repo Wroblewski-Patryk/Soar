@@ -189,6 +189,14 @@ Last updated: 2026-05-19
     Evidence:
     `docs/planning/audit-tooling-index-closure-command-check-2026-05-19-task.md`.
 
+- [x] `AUDIT-HANDOFF-CHECK-COMMAND-2026-05-19 feature: validate reusable audit handoff`
+  - 2026-05-19: Added `corepack pnpm run audit:handoff:check` and focused
+    regression coverage for source-of-truth paths, residual risks, forbidden
+    boundaries, latest validation checks, and fail-closed safety booleans. The
+    handoff check is now included in `audit:manifest:verify` and registered in
+    the reusable tooling index. Evidence:
+    `docs/planning/audit-handoff-check-command-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

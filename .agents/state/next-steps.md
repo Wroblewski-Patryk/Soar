@@ -120,6 +120,9 @@ required closure checks are missing.
 Reusable audit tooling-index validation now also fails if closure omits
 manifest verification, remediation-plan validation, docs parity, guardrails, or
 diff check.
+Reusable full-audit handoff validation is now part of `audit:manifest:verify`;
+`audit:handoff:check` verifies handoff source paths, residual risks, forbidden
+boundaries, validation checks, and fail-closed safety booleans.
 Next executable protected step remains the same: provide the approved
 protected inputs named in that packet and execute the commands in order.
 

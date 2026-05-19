@@ -205,6 +205,12 @@ Last updated: 2026-05-19
   index validator so it fails if those same required closure commands are
   removed from the reusable tooling index. Evidence:
   `docs/planning/audit-tooling-index-closure-command-check-2026-05-19-task.md`.
+  Follow-up `AUDIT-HANDOFF-CHECK-COMMAND-2026-05-19` added
+  `corepack pnpm run audit:handoff:check` and included it in
+  `audit:manifest:verify`, making the full reusable audit handoff
+  machine-checkable for source paths, residual risks, forbidden boundaries,
+  validation checks, and fail-closed booleans. Evidence:
+  `docs/planning/audit-handoff-check-command-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,

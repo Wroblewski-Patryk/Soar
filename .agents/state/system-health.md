@@ -40,6 +40,10 @@ Last updated: 2026-05-19
 - Reusable audit tooling-index validation now enforces the same required
   closure command set and fails if manifest verification, remediation-plan
   validation, docs parity, guardrails, or diff check are omitted.
+- Full reusable audit handoff validation is now included in
+  `audit:manifest:verify`; `audit:handoff:check` verifies source paths,
+  residual risks, forbidden boundaries, validation checks, and fail-closed
+  safety booleans.
 
 ## Latest Health Snapshot
 
@@ -139,6 +143,9 @@ Last updated: 2026-05-19
   Follow-up tooling-index hardening requires the same closure command set in
   the reusable tooling index. Evidence:
   `docs/planning/audit-tooling-index-closure-command-check-2026-05-19-task.md`.
+  Follow-up handoff validation makes the full reusable audit handoff
+  machine-checkable. Evidence:
+  `docs/planning/audit-handoff-check-command-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` LOCAL DATA/MIGRATIONS PASS WITH
   FINDING: Prisma schema validation passed, local migration status reported

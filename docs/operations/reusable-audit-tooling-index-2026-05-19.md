@@ -26,12 +26,14 @@ It runs:
 - rerun playbook regression tests;
 - tooling index regression tests;
 - remediation plan regression tests;
+- handoff regression tests;
 - protected input readiness regression tests;
 - current manifest validation;
 - current manifest self-comparison;
 - rerun playbook validation;
 - tooling index validation;
 - remediation plan validation.
+- handoff validation.
 
 ## Tools
 
@@ -44,6 +46,8 @@ It runs:
 | `AUDIT-MANIFEST-VERIFY` | `corepack pnpm run audit:manifest:verify` | `package.json` | Run the complete manifest/playbook verification bundle. |
 | `AUDIT-RERUN-PLAYBOOK-CHECK` | `corepack pnpm run audit:rerun-playbook:check` | `scripts/checkReusableAuditRerunPlaybook.mjs` | Validate rerun playbook coverage, required commands, sections, and safety boundaries. |
 | `AUDIT-RERUN-PLAYBOOK-CHECK-TEST` | `corepack pnpm run audit:rerun-playbook:check:test` | `scripts/checkReusableAuditRerunPlaybook.test.mjs` | Regression-test rerun playbook validation behavior. |
+| `AUDIT-HANDOFF-CHECK` | `corepack pnpm run audit:handoff:check` | `scripts/checkFullReusableAuditHandoff.mjs` | Validate full reusable audit handoff source paths, residual risks, forbidden boundaries, validation checks, and safety booleans. |
+| `AUDIT-HANDOFF-CHECK-TEST` | `corepack pnpm run audit:handoff:check:test` | `scripts/checkFullReusableAuditHandoff.test.mjs` | Regression-test full reusable audit handoff validation behavior. |
 | `AUDIT-REMEDIATION-PLAN-CHECK` | `corepack pnpm run audit:remediation-plan:check` | `scripts/checkAuditRemediationPlan.mjs` | Validate remediation roadmap phases, work packages, blockers, closure checks, and safety boundaries. |
 | `AUDIT-REMEDIATION-PLAN-CHECK-TEST` | `corepack pnpm run audit:remediation-plan:check:test` | `scripts/checkAuditRemediationPlan.test.mjs` | Regression-test remediation plan validation behavior. |
 | `AUDIT-TOOLING-INDEX-CHECK` | `corepack pnpm run audit:tooling-index:check` | `scripts/checkReusableAuditToolingIndex.mjs` | Validate audit tooling index command/script coverage, required closure commands, and safety boundaries. |

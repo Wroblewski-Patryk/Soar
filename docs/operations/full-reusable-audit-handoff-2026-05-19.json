@@ -58,6 +58,7 @@
   ],
   "latestValidation": [
     "corepack pnpm run audit:manifest:verify PASS after accepted decisions",
+    "corepack pnpm run audit:handoff:check PASS",
     "corepack pnpm run docs:parity:check PASS",
     "focused exchange API pack PASS: 4 files / 21 tests",
     "focused assistant API pack PASS: 2 files / 6 tests",

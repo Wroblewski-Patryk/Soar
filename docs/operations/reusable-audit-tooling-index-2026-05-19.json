@@ -46,6 +46,18 @@
       "purpose": "Regression-test rerun playbook validation behavior."
     },
     {
+      "id": "AUDIT-HANDOFF-CHECK",
+      "command": "corepack pnpm run audit:handoff:check",
+      "script": "scripts/checkFullReusableAuditHandoff.mjs",
+      "purpose": "Validate full reusable audit handoff source paths, residual risks, forbidden boundaries, validation checks, and safety booleans."
+    },
+    {
+      "id": "AUDIT-HANDOFF-CHECK-TEST",
+      "command": "corepack pnpm run audit:handoff:check:test",
+      "script": "scripts/checkFullReusableAuditHandoff.test.mjs",
+      "purpose": "Regression-test full reusable audit handoff validation behavior."
+    },
+    {
       "id": "AUDIT-REMEDIATION-PLAN-CHECK",
       "command": "corepack pnpm run audit:remediation-plan:check",
       "script": "scripts/checkAuditRemediationPlan.mjs",

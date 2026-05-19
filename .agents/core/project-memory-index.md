@@ -165,6 +165,11 @@ Before any future "full audit" request, start from:
   tooling index validation now enforces the same required closure command set
   so the audit tooling registry cannot silently drop remediation, parity,
   guardrail, or diff checks.
+- `scripts/checkFullReusableAuditHandoff.mjs`,
+  `scripts/checkFullReusableAuditHandoff.test.mjs`, and
+  `docs/planning/audit-handoff-check-command-2026-05-19-task.md`: full
+  reusable audit handoff validation for source paths, residual risks,
+  forbidden boundaries, validation checks, and fail-closed safety booleans.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.
@@ -182,7 +187,8 @@ Before any future "full audit" request, start from:
   `docs/operations/full-reusable-audit-handoff-2026-05-19.json` plus
   `docs/planning/full-reusable-audit-handoff-2026-05-19-task.md`: concise
   human-readable and machine-readable resume packet for the full reusable
-  audit mission.
+  audit mission. Current handoff JSON is validated by
+  `corepack pnpm run audit:handoff:check`.
 - `docs/operations/reusable-audit-artifact-manifest-2026-05-19.md` and
   `docs/operations/reusable-audit-artifact-manifest-2026-05-19.json`: manifest
   mapping `AUD-00` through `AUD-23` to current reports, task records, decisions,
@@ -197,8 +203,8 @@ Before any future "full audit" request, start from:
 - `docs/operations/reusable-audit-tooling-index-2026-05-19.md` and
   `docs/operations/reusable-audit-tooling-index-2026-05-19.json`: command and
   script map for reusable audit validation, comparison, rerun playbook checks,
-  endpoint parity, isolated DB-backed audit packs, and required closure-command
-  enforcement.
+  handoff checks, endpoint parity, isolated DB-backed audit packs, and
+  required closure-command enforcement.
 
 Current baseline facts: project index passed on 2026-05-18 with `PASS:21` and
 `335` indexed tests; static scan passed with `0` findings; guardrails, docs
