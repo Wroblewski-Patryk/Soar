@@ -255,6 +255,14 @@ Last updated: 2026-05-19
     `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.md` and
     `docs/planning/v1-protected-input-readiness-dd1a1faf-2026-05-19-task.md`.
 
+- [x] `PROTECTED-INPUT-READINESS-COMMAND-2026-05-19 feature: add reusable no-secret readiness command`
+  - 2026-05-19: Added `corepack pnpm run ops:protected-inputs:check` and
+    `corepack pnpm run ops:protected-inputs:check:test`. The command checks
+    protected env-name families only, writes optional JSON/Markdown reports,
+    and never prints or stores env values. It is included in the reusable audit
+    tooling index and `audit:manifest:verify`. Evidence:
+    `docs/planning/protected-input-readiness-command-2026-05-19-task.md`.
+
 - [x] `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19 research: refresh AUD-07 data model/migrations`
   - 2026-05-19: Completed the `AUD-07` data model/migrations audit. Prisma
     schema validation passed, local migration status reported `54` migrations

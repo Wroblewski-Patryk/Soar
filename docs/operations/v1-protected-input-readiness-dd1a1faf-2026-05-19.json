@@ -3,7 +3,7 @@
   "date": "2026-05-19",
   "status": "BLOCKED",
   "releaseStatus": "NO-GO",
-  "scope": "current Codex execution shell only",
+  "scope": "current execution shell only",
   "secretHandling": "no secret values printed, copied, or stored",
   "target": {
     "gitSha": "dd1a1faf79f8ac3581ca0a8c983481a3e30327ac",
@@ -15,49 +15,58 @@
     {
       "family": "LIVEIMPORT_READBACK_*",
       "state": "missing",
-      "purpose": "Protected LIVEIMPORT-03 production runtime readback"
+      "purpose": "Protected LIVEIMPORT-03 production runtime readback",
+      "matchingNamesPresent": 0
     },
     {
       "family": "ROLLBACK_GUARD_*",
       "state": "missing",
-      "purpose": "Protected production rollback/runtime freshness proof"
+      "purpose": "Protected production rollback/runtime freshness proof",
+      "matchingNamesPresent": 0
     },
     {
       "family": "PROD_UI_AUDIT_*",
       "state": "missing",
-      "purpose": "Authenticated production dashboard/admin UI clickthrough"
+      "purpose": "Authenticated production dashboard/admin UI clickthrough",
+      "matchingNamesPresent": 0
     },
     {
       "family": "PROD_UI_*",
       "state": "missing",
-      "purpose": "Legacy production UI audit input family"
+      "purpose": "Legacy production UI audit input family",
+      "matchingNamesPresent": 0
     },
     {
       "family": "SOAR_PROD_*",
       "state": "missing",
-      "purpose": "Production app/operator context"
+      "purpose": "Production app/operator context",
+      "matchingNamesPresent": 0
     },
     {
       "family": "PROD_DB_CHECK_*",
       "state": "missing",
-      "purpose": "Production DB restore context"
+      "purpose": "Production DB restore context",
+      "matchingNamesPresent": 0
     },
     {
       "family": "PRODUCTION_DB_CHECK_*",
       "state": "missing",
-      "purpose": "Alternate production DB restore context"
+      "purpose": "Alternate production DB restore context",
+      "matchingNamesPresent": 0
     },
     {
       "family": "RC_*",
       "state": "missing",
-      "purpose": "Release-candidate gate context"
+      "purpose": "Release-candidate gate context",
+      "matchingNamesPresent": 0
     },
     {
       "family": "GATE* / GATE_*",
       "state": "missing",
-      "purpose": "Gate approver context"
+      "purpose": "Gate approver context",
+      "matchingNamesPresent": 0
     }
   ],
   "observedOutput": "NO_MATCHING_PROTECTED_INPUT_NAMES_PRESENT",
-  "nextAction": "Execute docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.md only after approved protected inputs and real approver fields are available."
+  "nextAction": "Execute the current operator unblock packet only after approved protected inputs and real approver fields are available."
 }

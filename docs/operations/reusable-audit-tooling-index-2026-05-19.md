@@ -24,6 +24,7 @@ It runs:
 - manifest checker regression tests;
 - manifest comparison regression tests;
 - rerun playbook regression tests;
+- protected input readiness regression tests;
 - current manifest validation;
 - current manifest self-comparison;
 - rerun playbook validation.
@@ -43,6 +44,8 @@ It runs:
 | `AUDIT-TOOLING-INDEX-CHECK-TEST` | `corepack pnpm run audit:tooling-index:check:test` | `scripts/checkReusableAuditToolingIndex.test.mjs` | Regression-test tooling index validation behavior. |
 | `AUDIT-DATA-DB-ISOLATED` | `corepack pnpm run audit:data:db-isolated` | `scripts/runAud07IsolatedDbPacks.mjs` | Run representative DB-backed `AUD-07` packs sequentially with reset/isolation. |
 | `API-ENDPOINT-DOCS-PARITY` | `corepack pnpm run docs:parity:endpoints:api` | `scripts/auditApiEndpointDocsParity.mjs` | Verify endpoint-level API documentation parity. |
+| `OPS-PROTECTED-INPUTS-CHECK` | `corepack pnpm run ops:protected-inputs:check -- --today <yyyy-mm-dd> --expected-sha <sha>` | `scripts/checkProtectedInputReadiness.mjs` | Check protected production input env-name readiness without printing or storing secret values. |
+| `OPS-PROTECTED-INPUTS-CHECK-TEST` | `corepack pnpm run ops:protected-inputs:check:test` | `scripts/checkProtectedInputReadiness.test.mjs` | Regression-test protected input readiness counting and secret-value redaction. |
 
 ## Safety Boundaries
 
@@ -59,6 +62,7 @@ After changing this tooling index or related audit tooling, run:
 
 ```powershell
 corepack pnpm run audit:manifest:verify
+corepack pnpm run ops:protected-inputs:check:test
 corepack pnpm run docs:parity:check
 corepack pnpm run quality:guardrails
 git diff --check

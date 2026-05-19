@@ -170,6 +170,15 @@ Last updated: 2026-05-19
   `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.json`, and
   `docs/planning/v1-protected-input-readiness-dd1a1faf-2026-05-19-task.md`.
 
+- `PROTECTED-INPUT-READINESS-COMMAND-2026-05-19` adds reusable no-secret
+  tooling for future protected-input sweeps:
+  `corepack pnpm run ops:protected-inputs:check`. The command checks env names
+  only, writes optional JSON/Markdown output, and has regression coverage for
+  not leaking secret-like values. Evidence:
+  `scripts/checkProtectedInputReadiness.mjs`,
+  `scripts/checkProtectedInputReadiness.test.mjs`, and
+  `docs/planning/protected-input-readiness-command-2026-05-19-task.md`.
+
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,
   local migration status reported `54` migrations and schema up to date, full

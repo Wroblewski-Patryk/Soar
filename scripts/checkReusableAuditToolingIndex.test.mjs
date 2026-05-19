@@ -15,6 +15,8 @@ const toolIds = [
   'AUDIT-TOOLING-INDEX-CHECK-TEST',
   'AUDIT-DATA-DB-ISOLATED',
   'API-ENDPOINT-DOCS-PARITY',
+  'OPS-PROTECTED-INPUTS-CHECK',
+  'OPS-PROTECTED-INPUTS-CHECK-TEST',
 ];
 
 const toolingIndex = (overrides = {}) => ({

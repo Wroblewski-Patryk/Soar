@@ -68,6 +68,18 @@
       "command": "corepack pnpm run docs:parity:endpoints:api",
       "script": "scripts/auditApiEndpointDocsParity.mjs",
       "purpose": "Verify endpoint-level API documentation parity."
+    },
+    {
+      "id": "OPS-PROTECTED-INPUTS-CHECK",
+      "command": "corepack pnpm run ops:protected-inputs:check -- --today <yyyy-mm-dd> --expected-sha <sha>",
+      "script": "scripts/checkProtectedInputReadiness.mjs",
+      "purpose": "Check protected production input env-name readiness without printing or storing secret values."
+    },
+    {
+      "id": "OPS-PROTECTED-INPUTS-CHECK-TEST",
+      "command": "corepack pnpm run ops:protected-inputs:check:test",
+      "script": "scripts/checkProtectedInputReadiness.test.mjs",
+      "purpose": "Regression-test protected input readiness counting and secret-value redaction."
     }
   ],
   "safetyBoundaries": {

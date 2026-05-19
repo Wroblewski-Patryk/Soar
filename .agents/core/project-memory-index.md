@@ -143,6 +143,11 @@ Before any future "full audit" request, start from:
   current names-only protected input readiness sweep for deployed `dd1a1faf`;
   it found `0` matching protected input names in this shell and printed no
   secret values.
+- `scripts/checkProtectedInputReadiness.mjs`,
+  `scripts/checkProtectedInputReadiness.test.mjs`, and
+  `docs/planning/protected-input-readiness-command-2026-05-19-task.md`:
+  reusable no-secret protected input readiness command for future `AUD-19`
+  sweeps.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.

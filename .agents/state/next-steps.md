@@ -105,6 +105,8 @@ Current protected-input readiness sweep:
 `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.md` and
 `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.json`
 report `0` matching protected input names in this shell.
+Reusable command for future sweeps:
+`corepack pnpm run ops:protected-inputs:check -- --today <yyyy-mm-dd> --expected-sha <sha> --json-output <path> --markdown-output <path>`.
 Next executable protected step remains the same: provide the approved
 protected inputs named in that packet and execute the commands in order.
 

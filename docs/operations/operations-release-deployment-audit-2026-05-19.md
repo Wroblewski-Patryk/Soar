@@ -55,6 +55,9 @@ was performed.
 - 2026-05-19 names-only protected input readiness sweep for `dd1a1faf` found
   `0` matching protected input names in this shell. No secret values were
   printed or stored.
+- 2026-05-19 `ops:protected-inputs:check` now provides a reusable no-secret
+  command for future protected-input readiness sweeps and regenerated the
+  current `dd1a1faf` readiness artifact.
 - Production release readiness remains historical for the 2026-05-14
   `457bce05` target. Any new production deploy needs fresh build-info, smoke,
   protected runtime, rollback, backup/restore, and sign-off evidence.
@@ -74,6 +77,7 @@ was performed.
 | AUD-OPS-009 | P0 | RC packet blocked as expected | Dated no-secret RC status/checklist/sign-off packet for `dd1a1faf` remains blocked: Gate 2 is `OPEN`, Gate 4 is `OPEN`, and strict evidence check fails on missing approver/owner fields. | `docs/operations/v1-rc-external-gates-status-dd1a1faf-2026-05-19-blocked.md`; `docs/operations/v1-rc-signoff-record-dd1a1faf-2026-05-19-blocked.md`; `docs/operations/v1-release-candidate-checklist-dd1a1faf-2026-05-19-blocked.md`; `docs/operations/_artifacts-rc-evidence-check-dd1a1faf-2026-05-19-blocked.json`. |
 | AUD-OPS-010 | P1 | operator handoff current | Current no-secret operator unblock packet for `dd1a1faf` is available and explicitly preserves the `NO-GO` boundary until protected evidence is collected. | `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.md`; execute it only after approved protected auth/context and sign-off inputs exist. |
 | AUD-OPS-011 | P1 | protected inputs absent | Names-only protected input readiness sweep for `dd1a1faf` found `0` matching protected input names in this shell. | `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.md`; provide approved inputs outside repo artifacts before running protected evidence commands. |
+| AUD-OPS-012 | P2 | protected readiness tooling added | Reusable no-secret command exists for future protected-input readiness sweeps. | `corepack pnpm run ops:protected-inputs:check`; `corepack pnpm run ops:protected-inputs:check:test`. |
 
 ## Result
 
