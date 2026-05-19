@@ -125,6 +125,9 @@ Reusable full-audit handoff validation is now part of `audit:manifest:verify`;
 boundaries, validation checks, and fail-closed safety booleans.
 Reusable audit tooling-index validation now also verifies that referenced
 `corepack pnpm run` commands exist in `package.json`.
+Reusable audit manifest validation now verifies declared summary counts and
+`manifestValidation` path metadata against actual audit rows and collected
+repository paths.
 Next executable protected step remains the same: provide the approved
 protected inputs named in that packet and execute the commands in order.
 

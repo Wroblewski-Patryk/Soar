@@ -173,6 +173,9 @@ Before any future "full audit" request, start from:
 - `docs/planning/audit-tooling-index-package-script-check-2026-05-19-task.md`:
   tooling index validation now checks that referenced `corepack pnpm run`
   commands exist in `package.json`.
+- `docs/planning/audit-manifest-summary-metadata-check-2026-05-19-task.md`:
+  manifest validation now checks declared summary counts and
+  `manifestValidation` path metadata against actual manifest contents.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.
@@ -195,7 +198,7 @@ Before any future "full audit" request, start from:
 - `docs/operations/reusable-audit-artifact-manifest-2026-05-19.md` and
   `docs/operations/reusable-audit-artifact-manifest-2026-05-19.json`: manifest
   mapping `AUD-00` through `AUD-23` to current reports, task records, decisions,
-  and safety boundaries.
+  safety boundaries, checked summary counts, and checked path metadata.
 - `docs/operations/reusable-audit-rerun-playbook-2026-05-19.md`: operational
   rerun guide for comparing future manifests against the 2026-05-19 baseline
   with explicit safety boundaries, regression rules, and required closure

@@ -10,6 +10,17 @@ const manifest = (overrides = {}) => ({
   sourceChain: {
     registry: 'docs/analysis/reusable-audit-registry.md',
   },
+  summary: {
+    currentOrCurrentLocal: 24,
+    partial: 0,
+    failedDecisionRequired: 0,
+    deferred: 0,
+  },
+  manifestValidation: {
+    pathExistenceChecked: true,
+    pathsChecked: 3,
+    missingPaths: 0,
+  },
   openDecisions: [
     {
       id: 'DEC-AUD-001',
@@ -30,6 +41,8 @@ test('validateReusableAuditManifest passes complete manifests', () => {
   assert.deepEqual(result.audits.missing, []);
   assert.deepEqual(result.audits.duplicates, []);
   assert.deepEqual(result.paths.missing, []);
+  assert.deepEqual(result.summary.mismatches, []);
+  assert.deepEqual(result.manifestValidation.mismatches, []);
   assert.deepEqual(result.decisions.missingLinks, []);
 });
 
@@ -43,6 +56,125 @@ test('validateReusableAuditManifest fails when an audit id is missing', () => {
 
   assert.equal(result.status, 'FAIL');
   assert.deepEqual(result.audits.missing, ['AUD-20']);
+});
+
+test('validateReusableAuditManifest fails when summary counts drift from audit statuses', () => {
+  const result = validateReusableAuditManifest(
+    manifest({
+      audits: auditIds.map((id) => ({
+        id,
+        status: id === 'AUD-21' ? 'deferred / scaffold-only scope verified' : 'current local',
+      })),
+      summary: {
+        currentOrCurrentLocal: 24,
+        partial: 0,
+        failedDecisionRequired: 0,
+        deferred: 0,
+      },
+    }),
+    { exists: allPathsExist },
+  );
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.summary.mismatches, [
+    {
+      key: 'currentOrCurrentLocal',
+      declared: 24,
+      actual: 23,
+    },
+    {
+      key: 'deferred',
+      declared: 0,
+      actual: 1,
+    },
+  ]);
+});
+
+test('validateReusableAuditManifest treats current statuses with deferred sub-scope as current', () => {
+  const result = validateReusableAuditManifest(
+    manifest({
+      audits: auditIds.map((id) => ({
+        id,
+        status: id === 'AUD-20' ? 'current foundation / hot-path assistant scope deferred' : 'current local',
+      })),
+      summary: {
+        currentOrCurrentLocal: 24,
+        partial: 0,
+        failedDecisionRequired: 0,
+        deferred: 0,
+      },
+    }),
+    { exists: allPathsExist },
+  );
+
+  assert.equal(result.status, 'PASS');
+  assert.equal(result.summary.computed.currentOrCurrentLocal, 24);
+  assert.equal(result.summary.computed.deferred, 0);
+});
+
+test('validateReusableAuditManifest classifies leading status buckets only', () => {
+  const result = validateReusableAuditManifest(
+    manifest({
+      audits: auditIds.map((id) => ({
+        id,
+        status:
+          id === 'AUD-01'
+            ? 'partial / needs proof'
+            : id === 'AUD-02'
+              ? 'failed / decision required'
+              : id === 'AUD-21'
+                ? 'deferred / scaffold-only scope verified'
+                : 'current local',
+      })),
+      summary: {
+        currentOrCurrentLocal: 21,
+        partial: 1,
+        failedDecisionRequired: 1,
+        deferred: 1,
+      },
+    }),
+    { exists: allPathsExist },
+  );
+
+  assert.equal(result.status, 'PASS');
+  assert.deepEqual(result.summary.computed, {
+    currentOrCurrentLocal: 21,
+    partial: 1,
+    failedDecisionRequired: 1,
+    deferred: 1,
+  });
+});
+
+test('validateReusableAuditManifest fails when manifest validation metadata drifts', () => {
+  const result = validateReusableAuditManifest(
+    manifest({
+      manifestValidation: {
+        pathExistenceChecked: false,
+        pathsChecked: 999,
+        missingPaths: 1,
+      },
+    }),
+    { exists: allPathsExist },
+  );
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.manifestValidation.mismatches, [
+    {
+      key: 'pathExistenceChecked',
+      declared: false,
+      actual: true,
+    },
+    {
+      key: 'pathsChecked',
+      declared: 999,
+      actual: 3,
+    },
+    {
+      key: 'missingPaths',
+      declared: 1,
+      actual: 0,
+    },
+  ]);
 });
 
 test('validateReusableAuditManifest fails on duplicate audit ids', () => {

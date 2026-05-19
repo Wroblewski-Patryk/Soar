@@ -204,6 +204,15 @@ Last updated: 2026-05-19
     and focused regression coverage catches a removed command. Evidence:
     `docs/planning/audit-tooling-index-package-script-check-2026-05-19-task.md`.
 
+- [x] `AUDIT-MANIFEST-SUMMARY-METADATA-CHECK-2026-05-19 feature: validate manifest rollup metadata`
+  - 2026-05-19: Hardened `audit:manifest:check` so declared manifest summary
+    counts and `manifestValidation` path metadata must match actual audit
+    rows and collected repository paths. Current manifest reports `0` summary
+    mismatches and `0` metadata mismatches; regression coverage includes stale
+    counts, stale path metadata, and hybrid current statuses with deferred
+    sub-scope. Evidence:
+    `docs/planning/audit-manifest-summary-metadata-check-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

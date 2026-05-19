@@ -39,8 +39,8 @@ It runs:
 
 | Tool ID | Command | Script | Purpose |
 | --- | --- | --- | --- |
-| `AUDIT-MANIFEST-CHECK` | `corepack pnpm run audit:manifest:check` | `scripts/checkReusableAuditManifest.mjs` | Validate manifest JSON coverage, referenced paths, and open-decision links. |
-| `AUDIT-MANIFEST-CHECK-TEST` | `corepack pnpm run audit:manifest:check:test` | `scripts/checkReusableAuditManifest.test.mjs` | Regression-test missing audit IDs, duplicate IDs, missing paths, and missing decision links. |
+| `AUDIT-MANIFEST-CHECK` | `corepack pnpm run audit:manifest:check` | `scripts/checkReusableAuditManifest.mjs` | Validate manifest JSON coverage, summary counts, path metadata, referenced paths, and open-decision links. |
+| `AUDIT-MANIFEST-CHECK-TEST` | `corepack pnpm run audit:manifest:check:test` | `scripts/checkReusableAuditManifest.test.mjs` | Regression-test missing audit IDs, duplicate IDs, summary drift, path metadata drift, missing paths, and missing decision links. |
 | `AUDIT-MANIFEST-COMPARE` | `corepack pnpm run audit:manifest:compare -- --base <path> --target <path>` | `scripts/compareReusableAuditManifests.mjs` | Compare two audit manifests for regressions and improvements. |
 | `AUDIT-MANIFEST-COMPARE-TEST` | `corepack pnpm run audit:manifest:compare:test` | `scripts/compareReusableAuditManifests.test.mjs` | Regression-test status, summary, decision, and safety-boundary comparison behavior. |
 | `AUDIT-MANIFEST-VERIFY` | `corepack pnpm run audit:manifest:verify` | `package.json` | Run the complete manifest/playbook verification bundle. |

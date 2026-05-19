@@ -215,6 +215,10 @@ Last updated: 2026-05-19
   `audit:tooling-index:check` so `corepack pnpm run` commands in the reusable
   tooling index must exist in `package.json`. Evidence:
   `docs/planning/audit-tooling-index-package-script-check-2026-05-19-task.md`.
+  Follow-up `AUDIT-MANIFEST-SUMMARY-METADATA-CHECK-2026-05-19` hardened
+  `audit:manifest:check` so declared summary counts and path metadata must
+  match actual audit rows and collected paths. Evidence:
+  `docs/planning/audit-manifest-summary-metadata-check-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,

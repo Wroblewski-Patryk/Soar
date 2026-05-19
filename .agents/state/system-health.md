@@ -47,6 +47,9 @@ Last updated: 2026-05-19
 - Reusable audit tooling-index validation now checks referenced `corepack pnpm
   run` commands against `package.json` scripts and reports missing package
   scripts separately.
+- Reusable audit manifest validation now checks declared summary counts and
+  `manifestValidation` path metadata against actual audit rows and collected
+  repository paths.
 
 ## Latest Health Snapshot
 
@@ -152,6 +155,9 @@ Last updated: 2026-05-19
   Follow-up package-script validation keeps reusable tooling-index commands
   aligned with `package.json`. Evidence:
   `docs/planning/audit-tooling-index-package-script-check-2026-05-19-task.md`.
+  Follow-up manifest metadata validation keeps reusable audit rollup counts and
+  path metadata aligned with actual manifest contents. Evidence:
+  `docs/planning/audit-manifest-summary-metadata-check-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` LOCAL DATA/MIGRATIONS PASS WITH
   FINDING: Prisma schema validation passed, local migration status reported

@@ -40,6 +40,8 @@ const printHelp = () => {
 Validates a reusable audit artifact manifest by checking:
 - JSON parse
 - AUD-00 through AUD-23 coverage
+- summary counts match audit statuses
+- path validation metadata matches referenced paths
 - referenced repository paths exist
 - open decisions include packet and playbook links
 `);
@@ -64,6 +66,13 @@ const collectPaths = (value, paths = new Set()) => {
 };
 
 const expectedAuditIds = Array.from({ length: 24 }, (_, index) => `AUD-${String(index).padStart(2, '0')}`);
+const classifyAuditStatus = (status) => {
+  const normalized = String(status ?? '').toLowerCase();
+  if (normalized.startsWith('deferred')) return 'deferred';
+  if (normalized.startsWith('partial')) return 'partial';
+  if (normalized.startsWith('failed') || normalized.startsWith('decision required')) return 'failedDecisionRequired';
+  return 'currentOrCurrentLocal';
+};
 
 export const validateReusableAuditManifest = (manifest, options = {}) => {
   const exists = options.exists ?? ((relativePath) => existsSync(path.resolve(repoRoot, relativePath)));
@@ -76,6 +85,46 @@ export const validateReusableAuditManifest = (manifest, options = {}) => {
 
   const paths = collectPaths(manifest);
   const missingPaths = [...paths].sort().filter((relativePath) => !exists(relativePath));
+  const computedSummary = audits.reduce(
+    (summary, audit) => {
+      const bucket = classifyAuditStatus(audit.status);
+      summary[bucket] += 1;
+      return summary;
+    },
+    {
+      currentOrCurrentLocal: 0,
+      partial: 0,
+      failedDecisionRequired: 0,
+      deferred: 0,
+    },
+  );
+  const declaredSummary = manifest.summary ?? {};
+  const summaryMismatches = Object.entries(computedSummary)
+    .filter(([key, value]) => declaredSummary[key] !== undefined && declaredSummary[key] !== value)
+    .map(([key, actual]) => ({ key, declared: declaredSummary[key], actual }));
+  const manifestValidation = manifest.manifestValidation ?? {};
+  const manifestValidationMismatches = [];
+  if (manifestValidation.pathExistenceChecked !== undefined && manifestValidation.pathExistenceChecked !== true) {
+    manifestValidationMismatches.push({
+      key: 'pathExistenceChecked',
+      declared: manifestValidation.pathExistenceChecked,
+      actual: true,
+    });
+  }
+  if (manifestValidation.pathsChecked !== undefined && manifestValidation.pathsChecked !== paths.size) {
+    manifestValidationMismatches.push({
+      key: 'pathsChecked',
+      declared: manifestValidation.pathsChecked,
+      actual: paths.size,
+    });
+  }
+  if (manifestValidation.missingPaths !== undefined && manifestValidation.missingPaths !== missingPaths.length) {
+    manifestValidationMismatches.push({
+      key: 'missingPaths',
+      declared: manifestValidation.missingPaths,
+      actual: missingPaths.length,
+    });
+  }
 
   const openDecisions = Array.isArray(manifest.openDecisions) ? manifest.openDecisions : [];
   const decisionsMissingLinks = openDecisions
@@ -88,6 +137,8 @@ export const validateReusableAuditManifest = (manifest, options = {}) => {
       missingAuditIds.length === 0 &&
       duplicateAuditIds.length === 0 &&
       missingPaths.length === 0 &&
+      summaryMismatches.length === 0 &&
+      manifestValidationMismatches.length === 0 &&
       decisionsMissingLinks.length === 0
         ? 'PASS'
         : 'FAIL',
@@ -100,6 +151,13 @@ export const validateReusableAuditManifest = (manifest, options = {}) => {
     paths: {
       checked: paths.size,
       missing: missingPaths,
+    },
+    summary: {
+      computed: computedSummary,
+      mismatches: summaryMismatches,
+    },
+    manifestValidation: {
+      mismatches: manifestValidationMismatches,
     },
     decisions: {
       open: openDecisions.length,
@@ -128,6 +186,8 @@ const main = async () => {
     console.log(`- Audits: ${result.audits.found}/${result.audits.expected}`);
     console.log(`- Paths checked: ${result.paths.checked}`);
     console.log(`- Missing paths: ${result.paths.missing.length}`);
+    console.log(`- Summary mismatches: ${result.summary.mismatches.length}`);
+    console.log(`- Manifest validation metadata mismatches: ${result.manifestValidation.mismatches.length}`);
     console.log(`- Open decisions: ${result.decisions.open}`);
     console.log(`- Decisions missing packet/playbook links: ${result.decisions.missingLinks.length}`);
   }
