@@ -314,6 +314,10 @@ Last updated: 2026-05-19
   `audit:manifest:check` so the reusable audit manifest must include all
   required source-chain keys before path validation can pass. Evidence:
   `docs/planning/audit-manifest-source-chain-key-check-2026-05-19-task.md`.
+  Follow-up `AUDIT-MANIFEST-SOURCE-CHAIN-PATH-CHECK-2026-05-19` hardened
+  `audit:manifest:check` so required source-chain values must be repository
+  paths, not empty strings or external URLs. Evidence:
+  `docs/planning/audit-manifest-source-chain-path-check-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,

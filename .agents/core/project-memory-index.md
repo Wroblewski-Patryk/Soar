@@ -245,6 +245,9 @@ Before any future "full audit" request, start from:
   manifest validation now requires source-chain keys for registry, baseline,
   rollup, handoff, rerun playbook, tooling index, remediation plan, decision
   packet, and repair playbooks.
+- `docs/planning/audit-manifest-source-chain-path-check-2026-05-19-task.md`:
+  manifest validation now requires required source-chain values to be
+  repository paths under approved roots.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.
@@ -283,7 +286,8 @@ Before any future "full audit" request, start from:
   required self-check closure-command, cleanup-check, and package-script
   existence enforcement.
   Manifest validation also requires the full source-chain key set before a
-  reusable audit manifest can pass.
+  reusable audit manifest can pass, and required source-chain values must be
+  repository paths.
 
 Current baseline facts: project index passed on 2026-05-18 with `PASS:21` and
 `335` indexed tests; static scan passed with `0` findings; guardrails, docs

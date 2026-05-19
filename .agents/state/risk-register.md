@@ -58,5 +58,9 @@ Last updated: 2026-05-19
 - 2026-05-19 `AUDIT-MANIFEST-SOURCE-CHAIN-KEY-CHECK-2026-05-19` updates
   `RISK-021` and `RISK-036`: manifest validation now catches missing required
   source-chain keys before a reusable audit manifest can pass.
+- 2026-05-19 `AUDIT-MANIFEST-SOURCE-CHAIN-PATH-CHECK-2026-05-19` updates
+  `RISK-021` and `RISK-036`: manifest validation now catches empty or
+  non-repository required source-chain values before a reusable audit manifest
+  can pass.
 
 Allowed statuses: `open`, `mitigating`, `accepted`, `closed`, `superseded`.

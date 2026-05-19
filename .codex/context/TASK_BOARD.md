@@ -368,6 +368,13 @@ Last updated: 2026-05-19
     manifests that keep only a partial source chain. Evidence:
     `docs/planning/audit-manifest-source-chain-key-check-2026-05-19-task.md`.
 
+- [x] `AUDIT-MANIFEST-SOURCE-CHAIN-PATH-CHECK-2026-05-19 feature: require manifest source-chain repository paths`
+  - 2026-05-19: Hardened `audit:manifest:check` so required source-chain
+    values must be repository paths, not empty strings or external URLs.
+    Focused regression coverage catches invalid source-chain path values.
+    Evidence:
+    `docs/planning/audit-manifest-source-chain-path-check-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

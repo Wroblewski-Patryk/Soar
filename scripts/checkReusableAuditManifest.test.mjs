@@ -64,6 +64,7 @@ test('validateReusableAuditManifest passes complete manifests', () => {
   assert.deepEqual(result.audits.duplicates, []);
   assert.deepEqual(result.paths.missing, []);
   assert.deepEqual(result.sourceChain.missingKeys, []);
+  assert.deepEqual(result.sourceChain.invalidPaths, []);
   assert.deepEqual(result.summary.mismatches, []);
   assert.deepEqual(result.summary.markdownMismatches, []);
   assert.deepEqual(result.manifestValidation.mismatches, []);
@@ -231,6 +232,25 @@ test('validateReusableAuditManifest fails when required source-chain keys are mi
     'remediationPlanJson',
     'decisionPacket',
     'repairPlaybooks',
+  ]);
+});
+
+test('validateReusableAuditManifest fails when required source-chain values are not repository paths', () => {
+  const result = validateReusableAuditManifest(
+    manifest({
+      sourceChain: {
+        ...manifest().sourceChain,
+        handoffJson: '',
+        toolingIndexJson: 'https://example.test/tooling.json',
+      },
+    }),
+    { exists: allPathsExist },
+  );
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.sourceChain.invalidPaths, [
+    { key: 'handoffJson', value: '' },
+    { key: 'toolingIndexJson', value: 'https://example.test/tooling.json' },
   ]);
 });
 

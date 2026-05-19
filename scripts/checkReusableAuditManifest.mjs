@@ -44,6 +44,7 @@ Validates a reusable audit artifact manifest by checking:
 - companion Markdown summary counts match JSON when available
 - path validation metadata matches referenced paths
 - required source-chain keys are present
+- required source-chain values are repository paths
 - referenced repository paths exist
 - open decisions include packet and playbook links
 `);
@@ -105,6 +106,9 @@ export const validateReusableAuditManifest = (manifest, options = {}) => {
   const paths = collectPaths(manifest);
   const sourceChain = manifest.sourceChain ?? {};
   const missingSourceChainKeys = requiredSourceChainKeys.filter((key) => !(key in sourceChain));
+  const invalidSourceChainPaths = requiredSourceChainKeys
+    .filter((key) => key in sourceChain && !isRepositoryPath(sourceChain[key]))
+    .map((key) => ({ key, value: sourceChain[key] ?? null }));
   const missingPaths = [...paths].sort().filter((relativePath) => !exists(relativePath));
   const computedSummary = audits.reduce(
     (summary, audit) => {
@@ -173,6 +177,7 @@ export const validateReusableAuditManifest = (manifest, options = {}) => {
       missingAuditIds.length === 0 &&
       duplicateAuditIds.length === 0 &&
       missingSourceChainKeys.length === 0 &&
+      invalidSourceChainPaths.length === 0 &&
       missingPaths.length === 0 &&
       summaryMismatches.length === 0 &&
       markdownSummaryMismatches.length === 0 &&
@@ -194,6 +199,7 @@ export const validateReusableAuditManifest = (manifest, options = {}) => {
       expectedKeys: requiredSourceChainKeys.length,
       foundKeys: Object.keys(sourceChain).length,
       missingKeys: missingSourceChainKeys,
+      invalidPaths: invalidSourceChainPaths,
     },
     summary: {
       computed: computedSummary,
@@ -234,6 +240,7 @@ const main = async () => {
     console.log(`- Paths checked: ${result.paths.checked}`);
     console.log(`- Source chain keys: ${result.sourceChain.foundKeys}/${result.sourceChain.expectedKeys}`);
     console.log(`- Missing source chain keys: ${result.sourceChain.missingKeys.length}`);
+    console.log(`- Invalid source chain paths: ${result.sourceChain.invalidPaths.length}`);
     console.log(`- Missing paths: ${result.paths.missing.length}`);
     console.log(`- Summary mismatches: ${result.summary.mismatches.length}`);
     console.log(`- Markdown summary mismatches: ${result.summary.markdownMismatches.length}`);
