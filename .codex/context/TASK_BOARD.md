@@ -375,6 +375,13 @@ Last updated: 2026-05-19
     Evidence:
     `docs/planning/audit-manifest-source-chain-path-check-2026-05-19-task.md`.
 
+- [x] `AUDIT-MANIFEST-SOURCE-CHAIN-EXACT-KEY-CHECK-2026-05-19 feature: require exact manifest source-chain keys`
+  - 2026-05-19: Hardened `audit:manifest:check` so reusable audit manifests
+    fail when noncanonical source-chain keys are present. Focused regression
+    coverage catches unexpected source-chain keys even when they look like
+    repository paths. Evidence:
+    `docs/planning/audit-manifest-source-chain-exact-key-check-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

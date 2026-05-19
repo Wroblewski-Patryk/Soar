@@ -73,6 +73,8 @@ Last updated: 2026-05-19
   keys are missing from the manifest source chain.
 - Reusable audit manifest validation now also fails if required source-chain
   values are empty or are not repository paths.
+- Reusable audit manifest validation now also fails if unexpected source-chain
+  keys are present.
 - Full reusable audit rollup validation is now included in
   `audit:manifest:verify`; `audit:rollup:check` verifies audit coverage,
   summary counts, source paths, repair queue items, and fail-closed safety

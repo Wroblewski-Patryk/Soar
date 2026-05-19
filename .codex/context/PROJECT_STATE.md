@@ -318,6 +318,10 @@ Last updated: 2026-05-19
   `audit:manifest:check` so required source-chain values must be repository
   paths, not empty strings or external URLs. Evidence:
   `docs/planning/audit-manifest-source-chain-path-check-2026-05-19-task.md`.
+  Follow-up `AUDIT-MANIFEST-SOURCE-CHAIN-EXACT-KEY-CHECK-2026-05-19` hardened
+  `audit:manifest:check` so unexpected source-chain keys fail validation.
+  Evidence:
+  `docs/planning/audit-manifest-source-chain-exact-key-check-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,

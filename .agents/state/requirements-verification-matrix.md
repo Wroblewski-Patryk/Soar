@@ -62,6 +62,9 @@ Last updated: 2026-05-19
 - 2026-05-19 `AUDIT-MANIFEST-SOURCE-CHAIN-PATH-CHECK-2026-05-19` updates
   `REQ-FUNC-021` and `REQ-AUDIT-031`: `audit:manifest:check` now fails when
   required source-chain values are empty or are not repository paths.
+- 2026-05-19 `AUDIT-MANIFEST-SOURCE-CHAIN-EXACT-KEY-CHECK-2026-05-19`
+  updates `REQ-FUNC-021` and `REQ-AUDIT-031`: `audit:manifest:check` now
+  fails when unexpected source-chain keys are present.
 
 Allowed statuses: `proposed`, `accepted`, `in_progress`,
 `implemented_not_verified`, `partially_verified`, `verified`, `failed`,

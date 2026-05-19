@@ -64,6 +64,7 @@ test('validateReusableAuditManifest passes complete manifests', () => {
   assert.deepEqual(result.audits.duplicates, []);
   assert.deepEqual(result.paths.missing, []);
   assert.deepEqual(result.sourceChain.missingKeys, []);
+  assert.deepEqual(result.sourceChain.unexpectedKeys, []);
   assert.deepEqual(result.sourceChain.invalidPaths, []);
   assert.deepEqual(result.summary.mismatches, []);
   assert.deepEqual(result.summary.markdownMismatches, []);
@@ -252,6 +253,26 @@ test('validateReusableAuditManifest fails when required source-chain values are 
     { key: 'handoffJson', value: '' },
     { key: 'toolingIndexJson', value: 'https://example.test/tooling.json' },
   ]);
+});
+
+test('validateReusableAuditManifest fails when unexpected source-chain keys are present', () => {
+  const result = validateReusableAuditManifest(
+    manifest({
+      sourceChain: {
+        ...manifest().sourceChain,
+        scratchpad: 'docs/operations/scratchpad.md',
+      },
+      manifestValidation: {
+        pathExistenceChecked: true,
+        pathsChecked: 15,
+        missingPaths: 0,
+      },
+    }),
+    { exists: allPathsExist },
+  );
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.sourceChain.unexpectedKeys, ['scratchpad']);
 });
 
 test('validateReusableAuditManifest fails when companion markdown summary drifts', () => {
