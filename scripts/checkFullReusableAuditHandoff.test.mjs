@@ -44,6 +44,7 @@ const handoff = (overrides = {}) => ({
   ],
   latestValidation: [
     'corepack pnpm run audit:manifest:verify PASS',
+    'corepack pnpm run audit:handoff:check PASS',
     'corepack pnpm run docs:parity:check PASS',
     'corepack pnpm run quality:guardrails PASS',
     'git diff --check PASS',
@@ -177,6 +178,7 @@ test('validateFullReusableAuditHandoff fails when latest validation omits requir
 
   assert.equal(result.status, 'FAIL');
   assert.deepEqual(result.latestValidation.missingFragments, [
+    'audit:handoff:check',
     'docs:parity:check',
     'quality:guardrails',
     'git diff --check',

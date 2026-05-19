@@ -220,6 +220,9 @@ Before any future "full audit" request, start from:
 - `docs/planning/audit-rerun-playbook-cleanup-check-command-2026-05-19-task.md`:
   rerun playbook validation now requires the same cleanup checks for future
   audit reruns.
+- `docs/planning/audit-handoff-self-check-validation-2026-05-19-task.md`:
+  handoff validation now requires `audit:handoff:check` in latest validation
+  evidence.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.

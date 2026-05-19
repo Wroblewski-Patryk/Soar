@@ -308,6 +308,13 @@ Last updated: 2026-05-19
     that drop required local validation cleanup checks. Evidence:
     `docs/planning/audit-rerun-playbook-cleanup-check-command-2026-05-19-task.md`.
 
+- [x] `AUDIT-HANDOFF-SELF-CHECK-VALIDATION-2026-05-19 feature: require handoff self-check validation`
+  - 2026-05-19: Hardened `audit:handoff:check` so handoff
+    `latestValidation` must include `audit:handoff:check`. Focused regression
+    coverage catches handoff packets that omit their own validation command.
+    Evidence:
+    `docs/planning/audit-handoff-self-check-validation-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

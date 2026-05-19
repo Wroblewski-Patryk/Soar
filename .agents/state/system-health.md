@@ -49,6 +49,8 @@ Last updated: 2026-05-19
   `audit:manifest:verify`; `audit:handoff:check` verifies source paths,
   residual risks, forbidden boundaries, validation checks, and fail-closed
   safety booleans.
+- Full reusable audit handoff validation now requires its own
+  `audit:handoff:check` command in latest validation evidence.
 - Reusable audit tooling-index validation now checks referenced `corepack pnpm
   run` commands against `package.json` scripts and reports missing package
   scripts separately.

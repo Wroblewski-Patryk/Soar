@@ -32,6 +32,7 @@ const requiredForbiddenFragments = [
 ];
 const requiredValidationFragments = [
   'audit:manifest:verify',
+  'audit:handoff:check',
   'docs:parity:check',
   'quality:guardrails',
   'git diff --check',
