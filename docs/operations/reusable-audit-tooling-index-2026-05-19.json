@@ -34,6 +34,18 @@
       "purpose": "Run the complete manifest/playbook verification bundle."
     },
     {
+      "id": "AUDIT-ROLLUP-CHECK",
+      "command": "corepack pnpm run audit:rollup:check",
+      "script": "scripts/checkFullReusableAuditRollup.mjs",
+      "purpose": "Validate full reusable audit rollup coverage, summary counts, source paths, repair queue, and safety booleans."
+    },
+    {
+      "id": "AUDIT-ROLLUP-CHECK-TEST",
+      "command": "corepack pnpm run audit:rollup:check:test",
+      "script": "scripts/checkFullReusableAuditRollup.test.mjs",
+      "purpose": "Regression-test full reusable audit rollup validation behavior."
+    },
+    {
       "id": "AUDIT-RERUN-PLAYBOOK-CHECK",
       "command": "corepack pnpm run audit:rerun-playbook:check",
       "script": "scripts/checkReusableAuditRerunPlaybook.mjs",

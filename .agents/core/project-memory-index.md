@@ -176,6 +176,11 @@ Before any future "full audit" request, start from:
 - `docs/planning/audit-manifest-summary-metadata-check-2026-05-19-task.md`:
   manifest validation now checks declared summary counts and
   `manifestValidation` path metadata against actual manifest contents.
+- `scripts/checkFullReusableAuditRollup.mjs`,
+  `scripts/checkFullReusableAuditRollup.test.mjs`, and
+  `docs/planning/audit-rollup-check-command-2026-05-19-task.md`: full reusable
+  audit rollup validation for audit coverage, summary counts, source paths,
+  repair queue, and fail-closed safety booleans.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.

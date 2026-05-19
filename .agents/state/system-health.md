@@ -50,6 +50,10 @@ Last updated: 2026-05-19
 - Reusable audit manifest validation now checks declared summary counts and
   `manifestValidation` path metadata against actual audit rows and collected
   repository paths.
+- Full reusable audit rollup validation is now included in
+  `audit:manifest:verify`; `audit:rollup:check` verifies audit coverage,
+  summary counts, source paths, repair queue items, and fail-closed safety
+  booleans.
 
 ## Latest Health Snapshot
 
@@ -158,6 +162,9 @@ Last updated: 2026-05-19
   Follow-up manifest metadata validation keeps reusable audit rollup counts and
   path metadata aligned with actual manifest contents. Evidence:
   `docs/planning/audit-manifest-summary-metadata-check-2026-05-19-task.md`.
+  Follow-up rollup validation makes the full reusable audit rollup
+  machine-checkable. Evidence:
+  `docs/planning/audit-rollup-check-command-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` LOCAL DATA/MIGRATIONS PASS WITH
   FINDING: Prisma schema validation passed, local migration status reported

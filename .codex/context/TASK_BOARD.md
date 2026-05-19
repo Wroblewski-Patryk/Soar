@@ -213,6 +213,14 @@ Last updated: 2026-05-19
     sub-scope. Evidence:
     `docs/planning/audit-manifest-summary-metadata-check-2026-05-19-task.md`.
 
+- [x] `AUDIT-ROLLUP-CHECK-COMMAND-2026-05-19 feature: validate full audit rollup`
+  - 2026-05-19: Added `corepack pnpm run audit:rollup:check` and focused
+    regression coverage for audit coverage, summary counts, source paths,
+    repair queue items, hybrid current/deferred wording, and safety booleans.
+    The rollup check is now included in `audit:manifest:verify` and registered
+    in the reusable tooling index. Evidence:
+    `docs/planning/audit-rollup-check-command-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

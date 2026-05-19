@@ -128,6 +128,9 @@ Reusable audit tooling-index validation now also verifies that referenced
 Reusable audit manifest validation now verifies declared summary counts and
 `manifestValidation` path metadata against actual audit rows and collected
 repository paths.
+Reusable full-audit rollup validation is now part of `audit:manifest:verify`;
+`audit:rollup:check` verifies audit coverage, summary counts, source paths,
+repair queue items, and fail-closed safety booleans.
 Next executable protected step remains the same: provide the approved
 protected inputs named in that packet and execute the commands in order.
 

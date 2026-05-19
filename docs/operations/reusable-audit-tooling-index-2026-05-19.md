@@ -23,6 +23,7 @@ It runs:
 
 - manifest checker regression tests;
 - manifest comparison regression tests;
+- rollup regression tests;
 - rerun playbook regression tests;
 - tooling index regression tests;
 - remediation plan regression tests;
@@ -30,6 +31,7 @@ It runs:
 - protected input readiness regression tests;
 - current manifest validation;
 - current manifest self-comparison;
+- rollup validation;
 - rerun playbook validation;
 - tooling index validation;
 - remediation plan validation.
@@ -44,6 +46,8 @@ It runs:
 | `AUDIT-MANIFEST-COMPARE` | `corepack pnpm run audit:manifest:compare -- --base <path> --target <path>` | `scripts/compareReusableAuditManifests.mjs` | Compare two audit manifests for regressions and improvements. |
 | `AUDIT-MANIFEST-COMPARE-TEST` | `corepack pnpm run audit:manifest:compare:test` | `scripts/compareReusableAuditManifests.test.mjs` | Regression-test status, summary, decision, and safety-boundary comparison behavior. |
 | `AUDIT-MANIFEST-VERIFY` | `corepack pnpm run audit:manifest:verify` | `package.json` | Run the complete manifest/playbook verification bundle. |
+| `AUDIT-ROLLUP-CHECK` | `corepack pnpm run audit:rollup:check` | `scripts/checkFullReusableAuditRollup.mjs` | Validate full reusable audit rollup coverage, summary counts, source paths, repair queue, and safety booleans. |
+| `AUDIT-ROLLUP-CHECK-TEST` | `corepack pnpm run audit:rollup:check:test` | `scripts/checkFullReusableAuditRollup.test.mjs` | Regression-test full reusable audit rollup validation behavior. |
 | `AUDIT-RERUN-PLAYBOOK-CHECK` | `corepack pnpm run audit:rerun-playbook:check` | `scripts/checkReusableAuditRerunPlaybook.mjs` | Validate rerun playbook coverage, required commands, sections, and safety boundaries. |
 | `AUDIT-RERUN-PLAYBOOK-CHECK-TEST` | `corepack pnpm run audit:rerun-playbook:check:test` | `scripts/checkReusableAuditRerunPlaybook.test.mjs` | Regression-test rerun playbook validation behavior. |
 | `AUDIT-HANDOFF-CHECK` | `corepack pnpm run audit:handoff:check` | `scripts/checkFullReusableAuditHandoff.mjs` | Validate full reusable audit handoff source paths, residual risks, forbidden boundaries, validation checks, and safety booleans. |

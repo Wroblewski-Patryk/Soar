@@ -219,6 +219,12 @@ Last updated: 2026-05-19
   `audit:manifest:check` so declared summary counts and path metadata must
   match actual audit rows and collected paths. Evidence:
   `docs/planning/audit-manifest-summary-metadata-check-2026-05-19-task.md`.
+  Follow-up `AUDIT-ROLLUP-CHECK-COMMAND-2026-05-19` added
+  `corepack pnpm run audit:rollup:check` and included it in
+  `audit:manifest:verify`, making the full reusable audit rollup checkable for
+  audit coverage, summary counts, source paths, repair queue, and safety
+  booleans. Evidence:
+  `docs/planning/audit-rollup-check-command-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,
