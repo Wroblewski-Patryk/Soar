@@ -360,6 +360,14 @@ Last updated: 2026-05-19
     Evidence:
     `docs/planning/audit-handoff-self-source-check-2026-05-19-task.md`.
 
+- [x] `AUDIT-MANIFEST-SOURCE-CHAIN-KEY-CHECK-2026-05-19 feature: require manifest source-chain keys`
+  - 2026-05-19: Hardened `audit:manifest:check` so reusable audit manifests
+    must include all required source-chain keys for registry, baseline,
+    rollup, handoff, rerun playbook, tooling index, remediation plan, decision
+    packet, and repair playbooks. Focused regression coverage catches
+    manifests that keep only a partial source chain. Evidence:
+    `docs/planning/audit-manifest-source-chain-key-check-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

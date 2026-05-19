@@ -68,6 +68,12 @@ Do not turn uncertainty into optimism.
   Markdown and JSON self-source paths in the handoff source chain. Evidence:
   `docs/planning/audit-handoff-self-source-check-2026-05-19-task.md`.
 - 2026-05-19
+  `AUDIT-MANIFEST-SOURCE-CHAIN-KEY-CHECK-2026-05-19` applies to
+  `SOAR-OPERATIONS-001`: `audit:manifest:check` now requires the full reusable
+  audit manifest source-chain key set before manifest validation can pass.
+  Evidence:
+  `docs/planning/audit-manifest-source-chain-key-check-2026-05-19-task.md`.
+- 2026-05-19
   `AUDIT-HANDOFF-TOOLING-INDEX-SOURCE-CHECK-2026-05-19` applies to
   `SOAR-OPERATIONS-001`: `audit:handoff:check` now requires reusable
   tooling-index Markdown and JSON paths in the handoff source chain. Evidence:

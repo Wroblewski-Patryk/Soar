@@ -43,6 +43,7 @@ Validates a reusable audit artifact manifest by checking:
 - summary counts match audit statuses
 - companion Markdown summary counts match JSON when available
 - path validation metadata matches referenced paths
+- required source-chain keys are present
 - referenced repository paths exist
 - open decisions include packet and playbook links
 `);
@@ -67,6 +68,22 @@ const collectPaths = (value, paths = new Set()) => {
 };
 
 const expectedAuditIds = Array.from({ length: 24 }, (_, index) => `AUD-${String(index).padStart(2, '0')}`);
+const requiredSourceChainKeys = [
+  'registry',
+  'baseline',
+  'rollup',
+  'rollupJson',
+  'handoff',
+  'handoffJson',
+  'rerunPlaybook',
+  'rerunPlaybookJson',
+  'toolingIndex',
+  'toolingIndexJson',
+  'remediationPlan',
+  'remediationPlanJson',
+  'decisionPacket',
+  'repairPlaybooks',
+];
 const classifyAuditStatus = (status) => {
   const normalized = String(status ?? '').toLowerCase();
   if (normalized.startsWith('deferred')) return 'deferred';
@@ -86,6 +103,8 @@ export const validateReusableAuditManifest = (manifest, options = {}) => {
     .filter((auditId, index, all) => auditId && all.indexOf(auditId) !== index);
 
   const paths = collectPaths(manifest);
+  const sourceChain = manifest.sourceChain ?? {};
+  const missingSourceChainKeys = requiredSourceChainKeys.filter((key) => !(key in sourceChain));
   const missingPaths = [...paths].sort().filter((relativePath) => !exists(relativePath));
   const computedSummary = audits.reduce(
     (summary, audit) => {
@@ -153,6 +172,7 @@ export const validateReusableAuditManifest = (manifest, options = {}) => {
     status:
       missingAuditIds.length === 0 &&
       duplicateAuditIds.length === 0 &&
+      missingSourceChainKeys.length === 0 &&
       missingPaths.length === 0 &&
       summaryMismatches.length === 0 &&
       markdownSummaryMismatches.length === 0 &&
@@ -169,6 +189,11 @@ export const validateReusableAuditManifest = (manifest, options = {}) => {
     paths: {
       checked: paths.size,
       missing: missingPaths,
+    },
+    sourceChain: {
+      expectedKeys: requiredSourceChainKeys.length,
+      foundKeys: Object.keys(sourceChain).length,
+      missingKeys: missingSourceChainKeys,
     },
     summary: {
       computed: computedSummary,
@@ -207,6 +232,8 @@ const main = async () => {
     console.log(`Reusable audit manifest check: ${result.status}`);
     console.log(`- Audits: ${result.audits.found}/${result.audits.expected}`);
     console.log(`- Paths checked: ${result.paths.checked}`);
+    console.log(`- Source chain keys: ${result.sourceChain.foundKeys}/${result.sourceChain.expectedKeys}`);
+    console.log(`- Missing source chain keys: ${result.sourceChain.missingKeys.length}`);
     console.log(`- Missing paths: ${result.paths.missing.length}`);
     console.log(`- Summary mismatches: ${result.summary.mismatches.length}`);
     console.log(`- Markdown summary mismatches: ${result.summary.markdownMismatches.length}`);

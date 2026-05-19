@@ -151,6 +151,8 @@ Reusable audit tooling-index validation now also verifies that referenced
 Reusable audit manifest validation now verifies declared summary counts and
 `manifestValidation` path metadata against actual audit rows and collected
 repository paths.
+Reusable audit manifest validation now also fails if required source-chain keys
+are missing from the manifest source chain.
 Reusable full-audit rollup validation is now part of `audit:manifest:verify`;
 `audit:rollup:check` verifies audit coverage, summary counts, source paths,
 repair queue items, and fail-closed safety booleans.

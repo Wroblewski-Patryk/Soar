@@ -9,6 +9,19 @@ const manifest = (overrides = {}) => ({
   audits: auditIds.map((id) => ({ id, status: 'current local' })),
   sourceChain: {
     registry: 'docs/analysis/reusable-audit-registry.md',
+    baseline: 'docs/analysis/audit-baseline-2026-05-19.md',
+    rollup: 'docs/operations/full-reusable-audit-rollup-2026-05-19.md',
+    rollupJson: 'docs/operations/full-reusable-audit-rollup-2026-05-19.json',
+    handoff: 'docs/operations/full-reusable-audit-handoff-2026-05-19.md',
+    handoffJson: 'docs/operations/full-reusable-audit-handoff-2026-05-19.json',
+    rerunPlaybook: 'docs/operations/reusable-audit-rerun-playbook-2026-05-19.md',
+    rerunPlaybookJson: 'docs/operations/reusable-audit-rerun-playbook-2026-05-19.json',
+    toolingIndex: 'docs/operations/reusable-audit-tooling-index-2026-05-19.md',
+    toolingIndexJson: 'docs/operations/reusable-audit-tooling-index-2026-05-19.json',
+    remediationPlan: 'docs/planning/audit-remediation-master-plan-2026-05-19.md',
+    remediationPlanJson: 'docs/operations/audit-remediation-master-plan-2026-05-19.json',
+    decisionPacket: 'docs/operations/audit-decision-packet-2026-05-19.md',
+    repairPlaybooks: 'docs/operations/audit-decision-repair-playbooks-2026-05-19.md',
   },
   summary: {
     currentOrCurrentLocal: 24,
@@ -18,7 +31,7 @@ const manifest = (overrides = {}) => ({
   },
   manifestValidation: {
     pathExistenceChecked: true,
-    pathsChecked: 3,
+    pathsChecked: 14,
     missingPaths: 0,
   },
   openDecisions: [
@@ -50,6 +63,7 @@ test('validateReusableAuditManifest passes complete manifests', () => {
   assert.deepEqual(result.audits.missing, []);
   assert.deepEqual(result.audits.duplicates, []);
   assert.deepEqual(result.paths.missing, []);
+  assert.deepEqual(result.sourceChain.missingKeys, []);
   assert.deepEqual(result.summary.mismatches, []);
   assert.deepEqual(result.summary.markdownMismatches, []);
   assert.deepEqual(result.manifestValidation.mismatches, []);
@@ -177,13 +191,46 @@ test('validateReusableAuditManifest fails when manifest validation metadata drif
     {
       key: 'pathsChecked',
       declared: 999,
-      actual: 3,
+      actual: 14,
     },
     {
       key: 'missingPaths',
       declared: 1,
       actual: 0,
     },
+  ]);
+});
+
+test('validateReusableAuditManifest fails when required source-chain keys are missing', () => {
+  const result = validateReusableAuditManifest(
+    manifest({
+      sourceChain: {
+        registry: 'docs/analysis/reusable-audit-registry.md',
+      },
+      manifestValidation: {
+        pathExistenceChecked: true,
+        pathsChecked: 3,
+        missingPaths: 0,
+      },
+    }),
+    { exists: allPathsExist },
+  );
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.sourceChain.missingKeys, [
+    'baseline',
+    'rollup',
+    'rollupJson',
+    'handoff',
+    'handoffJson',
+    'rerunPlaybook',
+    'rerunPlaybookJson',
+    'toolingIndex',
+    'toolingIndexJson',
+    'remediationPlan',
+    'remediationPlanJson',
+    'decisionPacket',
+    'repairPlaybooks',
   ]);
 });
 
