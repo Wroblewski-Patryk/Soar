@@ -133,6 +133,11 @@ Start-Process -FilePath "cmd.exe" -ArgumentList $cmd -WorkingDirectory $repo -Wi
   a Playwright temp profile, the first narrow stop respawned a second four-row
   tree, and a second narrow `Get-Process chrome-headless-shell | Stop-Process
   -Force` cleanup followed by a delayed process check returned no rows.
+  2026-05-19 audit handoff rollup summary parity validation repeated the same
+  final-check leak pattern: four residual `chrome-headless-shell` rows under a
+  Playwright temp profile were inspected, then a narrow
+  `Get-Process chrome-headless-shell | Stop-Process -Force` cleanup followed by
+  a delayed process check returned no rows.
 
 ### 2026-05-13 - Preserve LIVE bot fields when toggling activity
 - Context: `V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13` ran the

@@ -102,7 +102,11 @@ A handoff validator that checks `rollupSummary` completeness and parity against 
   - `git diff --check`
 - Manual checks: reviewed handoff `rollupSummary` keys against rollup JSON `summary`.
 - High-risk checks: no production calls, no protected inputs, no LIVE/exchange-side mutation.
-- Cleanup checks: no `chrome-headless-shell` rows remained after final cleanup; no local `5432`/`6379` listeners were found and Docker had no running compose services.
+- Cleanup checks: final cleanup found four residual `chrome-headless-shell`
+  rows under a Playwright temp profile; a narrow
+  `Get-Process chrome-headless-shell | Stop-Process -Force` cleanup followed
+  by a delayed process check returned no rows. No local `5432`/`6379` listeners
+  were found and Docker had no running compose services.
 - Module confidence ledger updated: yes
 - Requirements matrix updated: yes
 - Risk register updated: yes
