@@ -154,7 +154,9 @@ Before any future "full audit" request, start from:
   `docs/planning/audit-remediation-plan-check-2026-05-19-task.md`:
   machine-readable remediation plan and validator for future audit repair
   reruns. It checks phases `P0..P6`, work packages `WP-01..WP-08`, the current
-  `AUD-19` blocker, closure checks, and safety boundaries.
+  `AUD-19` blocker, closure checks, safety boundaries, and source/evidence
+  reference path existence. Follow-up task:
+  `docs/planning/audit-remediation-plan-reference-check-2026-05-19-task.md`.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.

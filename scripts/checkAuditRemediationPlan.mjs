@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { readFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -61,13 +62,19 @@ Validates the reusable audit remediation master plan JSON by checking:
 
 const idsFrom = (items) => (Array.isArray(items) ? items.map((item) => item.id).filter(Boolean) : []);
 const uniqueDuplicates = (items) => [...new Set(items.filter((item, index, all) => all.indexOf(item) !== index))];
+const defaultExists = (relativePath) => existsSync(path.resolve(repoRoot, relativePath));
 
 export const validateAuditRemediationPlan = (plan, options = {}) => {
+  const exists = options.exists ?? defaultExists;
   const phaseIds = idsFrom(plan.priorityRoadmap);
   const workPackageIds = idsFrom(plan.workPackages);
   const safetyBoundaries = plan.safetyBoundaries ?? {};
   const closureChecks = Array.isArray(plan.closureChecks) ? plan.closureChecks : [];
   const currentBlockers = Array.isArray(plan.currentBlockers) ? plan.currentBlockers : [];
+  const referencedPaths = [
+    plan.sourceMarkdown,
+    ...(Array.isArray(plan.primaryEvidence) ? plan.primaryEvidence : []),
+  ].filter(Boolean);
 
   const result = {
     plan: options.planPath ?? null,
@@ -91,6 +98,10 @@ export const validateAuditRemediationPlan = (plan, options = {}) => {
         (fragment) => !closureChecks.some((check) => String(check).includes(fragment)),
       ),
       count: closureChecks.length,
+    },
+    references: {
+      checked: referencedPaths.length,
+      missing: referencedPaths.filter((relativePath) => !exists(relativePath)).sort(),
     },
     blockers: {
       count: currentBlockers.length,
@@ -122,6 +133,7 @@ export const validateAuditRemediationPlan = (plan, options = {}) => {
     result.workPackages.missingDoneWhen.length === 0 &&
     result.workPackages.missingValidationOrBlocker.length === 0 &&
     result.closureChecks.missing.length === 0 &&
+    result.references.missing.length === 0 &&
     result.blockers.count > 0 &&
     !result.blockers.missingAud19Blocker &&
     result.safetyBoundaries.missing.length === 0 &&
@@ -151,6 +163,8 @@ const main = async () => {
     console.log(`Audit remediation plan check: ${result.status}`);
     console.log(`- Phases: ${result.phases.found}/${result.phases.expected}`);
     console.log(`- Work packages: ${result.workPackages.found}/${result.workPackages.expected}`);
+    console.log(`- References checked: ${result.references.checked}`);
+    console.log(`- Missing references: ${result.references.missing.length}`);
     console.log(`- Missing closure checks: ${result.closureChecks.missing.length}`);
     console.log(`- Current blockers: ${result.blockers.count}`);
     console.log(`- Unsafe safety boundaries: ${result.safetyBoundaries.unsafe.length}`);

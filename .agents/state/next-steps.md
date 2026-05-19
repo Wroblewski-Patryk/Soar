@@ -111,7 +111,9 @@ Current machine-readable remediation plan:
 `docs/operations/audit-remediation-master-plan-2026-05-19.json` is verified by
 `corepack pnpm run audit:remediation-plan:check`; it keeps phases `P0..P6`,
 work packages `WP-01..WP-08`, the `AUD-19` blocker, closure checks, and safety
-boundaries checkable during future reruns.
+boundaries checkable during future reruns. Follow-up hardening now also checks
+`sourceMarkdown` and `primaryEvidence` paths; the current plan reports `7`
+references checked and `0` missing references.
 Next executable protected step remains the same: provide the approved
 protected inputs named in that packet and execute the commands in order.
 

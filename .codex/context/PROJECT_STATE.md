@@ -189,6 +189,11 @@ Last updated: 2026-05-19
   `scripts/checkAuditRemediationPlan.mjs`,
   `scripts/checkAuditRemediationPlan.test.mjs`, and
   `docs/planning/audit-remediation-plan-check-2026-05-19-task.md`.
+  Follow-up `AUDIT-REMEDIATION-PLAN-REFERENCE-CHECK-2026-05-19` hardened the
+  same validator to verify `sourceMarkdown` and `primaryEvidence` paths. The
+  current check reports `7` references checked and `0` missing references.
+  Evidence:
+  `docs/planning/audit-remediation-plan-reference-check-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,

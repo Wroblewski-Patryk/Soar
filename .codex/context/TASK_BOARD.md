@@ -166,6 +166,13 @@ Last updated: 2026-05-19
     `docs/operations/audit-remediation-master-plan-2026-05-19.json` and
     `docs/planning/audit-remediation-plan-check-2026-05-19-task.md`.
 
+- [x] `AUDIT-REMEDIATION-PLAN-REFERENCE-CHECK-2026-05-19 feature: validate remediation references`
+  - 2026-05-19: Hardened `audit:remediation-plan:check` so it verifies
+    `sourceMarkdown` and `primaryEvidence` repository paths. The current plan
+    reports `7` references checked and `0` missing references, with focused
+    regression coverage for missing referenced evidence. Evidence:
+    `docs/planning/audit-remediation-plan-reference-check-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

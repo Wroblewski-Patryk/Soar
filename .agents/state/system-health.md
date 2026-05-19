@@ -122,6 +122,10 @@ Last updated: 2026-05-19
   `audit:manifest:verify`. Evidence:
   `docs/operations/audit-remediation-master-plan-2026-05-19.json` and
   `docs/planning/audit-remediation-plan-check-2026-05-19-task.md`.
+  Follow-up hardening verifies remediation-plan source/evidence references;
+  current output reports `7` references checked and `0` missing references.
+  Evidence:
+  `docs/planning/audit-remediation-plan-reference-check-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` LOCAL DATA/MIGRATIONS PASS WITH
   FINDING: Prisma schema validation passed, local migration status reported
