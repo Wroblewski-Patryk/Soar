@@ -13,6 +13,10 @@ SHA on attempt `8`; public no-worker smoke passed for API `/health`, API
 `/ready`, and Web `/`. This proves public deploy freshness only. Full protected
 `AUD-19` release readiness still requires protected runtime, rollback,
 backup/restore, sign-off, and any approved protected journey evidence.
+`PROTECTED-PREFLIGHT-DD1A1FAF-2026-05-19` then confirmed the current protected
+blockers without secrets: build-info and public smoke pass, while liveimport
+auth, rollback guard auth, dashboard/admin UI auth, production DB restore
+context, and dated protected release evidence remain required.
 
 2026-05-14 post-V1 source-of-truth reconciliation:
 `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14` is the latest ledger truth. The

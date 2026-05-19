@@ -118,6 +118,12 @@ Before any future "full audit" request, start from:
   public deploy freshness checkpoint after fast-forwarding `origin/main` to
   `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`; build-info and public smoke
   passed, while full protected release readiness remains a separate gate.
+- `docs/operations/v1-final-preflight-dd1a1faf-2026-05-19-noauth.md`,
+  `_artifacts-v1-final-preflight-dd1a1faf-2026-05-19-noauth.json`, and
+  `docs/planning/protected-preflight-dd1a1faf-2026-05-19-task.md`:
+  no-secret protected preflight classifier for deployed `dd1a1faf`; build-info
+  and public smoke passed, while protected release readiness remains blocked on
+  missing approved auth/context and stale 2026-05-14 protected evidence.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.

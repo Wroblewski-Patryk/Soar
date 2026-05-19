@@ -125,6 +125,17 @@ Last updated: 2026-05-19
   `docs/operations/main-promotion-build-info-dd1a1faf-2026-05-19.json`, and
   `docs/planning/main-promotion-build-info-dd1a1faf-2026-05-19-task.md`.
 
+- `PROTECTED-PREFLIGHT-DD1A1FAF-2026-05-19` is the latest no-secret protected
+  release-gate classifier for deployed `dd1a1faf`. It passed build-info and
+  public smoke, then blocked on missing liveimport auth, rollback guard auth,
+  production dashboard/admin UI auth, production DB restore context, and stale
+  2026-05-14 protected release evidence. This is expected without approved
+  protected inputs and does not mutate production data, LIVE orders, exchange
+  state, or existing production data. Evidence:
+  `docs/operations/v1-final-preflight-dd1a1faf-2026-05-19-noauth.md`,
+  `docs/operations/_artifacts-v1-final-preflight-dd1a1faf-2026-05-19-noauth.json`,
+  and `docs/planning/protected-preflight-dd1a1faf-2026-05-19-task.md`.
+
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,
   local migration status reported `54` migrations and schema up to date, full

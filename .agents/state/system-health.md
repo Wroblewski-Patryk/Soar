@@ -78,6 +78,14 @@ Last updated: 2026-05-19
   `docs/operations/main-promotion-build-info-dd1a1faf-2026-05-19.md` and
   `docs/planning/main-promotion-build-info-dd1a1faf-2026-05-19-task.md`.
 
+- `PROTECTED-PREFLIGHT-DD1A1FAF-2026-05-19` PROTECTED RELEASE GATE BLOCKED AS
+  EXPECTED: no-auth final preflight for the deployed `dd1a1faf` target passed
+  build-info and public smoke, then blocked on missing liveimport auth,
+  rollback guard auth, dashboard UI auth, admin UI auth, production DB restore
+  context, and stale 2026-05-14 protected release evidence. Evidence:
+  `docs/operations/v1-final-preflight-dd1a1faf-2026-05-19-noauth.md` and
+  `docs/planning/protected-preflight-dd1a1faf-2026-05-19-task.md`.
+
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` LOCAL DATA/MIGRATIONS PASS WITH
   FINDING: Prisma schema validation passed, local migration status reported
   `54` migrations and schema up to date, full local migration replay applied

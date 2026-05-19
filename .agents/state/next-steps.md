@@ -79,6 +79,15 @@ that SHA on attempt `8`, and public API/Web smoke passed. Evidence:
 Next operations follow-up: rerun full protected release-gate evidence
 (protected runtime, rollback, backup/restore, sign-off, and any approved
 protected journeys) before any full production readiness claim.
+No-auth protected preflight for `dd1a1faf` passed build-info and public smoke,
+then blocked as expected on missing protected production inputs and stale
+2026-05-14 protected evidence. Evidence:
+`docs/operations/v1-final-preflight-dd1a1faf-2026-05-19-noauth.md` and
+`docs/planning/protected-preflight-dd1a1faf-2026-05-19-task.md`.
+Next exact protected follow-up: provide approved liveimport auth, rollback
+guard auth, dashboard/admin UI auth, and production DB/Coolify restore context,
+then rerun protected runtime, rollback, backup/restore, sign-off, liveimport,
+and production UI clickthrough evidence for 2026-05-19.
 
 Latest data-model/migrations audit:
 `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is verified locally as the latest

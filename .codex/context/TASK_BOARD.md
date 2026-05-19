@@ -212,6 +212,17 @@ Last updated: 2026-05-19
     `docs/operations/main-promotion-build-info-dd1a1faf-2026-05-19.md` and
     `docs/planning/main-promotion-build-info-dd1a1faf-2026-05-19-task.md`.
 
+- [x] `PROTECTED-PREFLIGHT-DD1A1FAF-2026-05-19 verification: classify protected release blockers`
+  - 2026-05-19: Ran the no-secret final preflight against deployed
+    `dd1a1faf`. Build-info and public smoke passed. The preflight then blocked
+    as expected on missing liveimport auth, rollback guard auth, dashboard UI
+    auth, admin UI auth, production DB restore context, and stale 2026-05-14
+    protected release evidence. No production mutation, LIVE order/cancel/close,
+    exchange-side mutation, existing production data mutation, or protected
+    authenticated journey was performed. Evidence:
+    `docs/operations/v1-final-preflight-dd1a1faf-2026-05-19-noauth.md` and
+    `docs/planning/protected-preflight-dd1a1faf-2026-05-19-task.md`.
+
 - [x] `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19 research: refresh AUD-07 data model/migrations`
   - 2026-05-19: Completed the `AUD-07` data model/migrations audit. Prisma
     schema validation passed, local migration status reported `54` migrations
