@@ -197,6 +197,13 @@ Last updated: 2026-05-19
     the reusable tooling index. Evidence:
     `docs/planning/audit-handoff-check-command-2026-05-19-task.md`.
 
+- [x] `AUDIT-TOOLING-INDEX-PACKAGE-SCRIPT-CHECK-2026-05-19 feature: validate tooling-index package commands`
+  - 2026-05-19: Hardened `audit:tooling-index:check` so `corepack pnpm run`
+    commands referenced by the reusable tooling index must exist in
+    `package.json`. Current tooling index reports `0` missing package scripts,
+    and focused regression coverage catches a removed command. Evidence:
+    `docs/planning/audit-tooling-index-package-script-check-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

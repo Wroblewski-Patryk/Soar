@@ -211,6 +211,10 @@ Last updated: 2026-05-19
   machine-checkable for source paths, residual risks, forbidden boundaries,
   validation checks, and fail-closed booleans. Evidence:
   `docs/planning/audit-handoff-check-command-2026-05-19-task.md`.
+  Follow-up `AUDIT-TOOLING-INDEX-PACKAGE-SCRIPT-CHECK-2026-05-19` hardened
+  `audit:tooling-index:check` so `corepack pnpm run` commands in the reusable
+  tooling index must exist in `package.json`. Evidence:
+  `docs/planning/audit-tooling-index-package-script-check-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,

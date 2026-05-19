@@ -170,6 +170,9 @@ Before any future "full audit" request, start from:
   `docs/planning/audit-handoff-check-command-2026-05-19-task.md`: full
   reusable audit handoff validation for source paths, residual risks,
   forbidden boundaries, validation checks, and fail-closed safety booleans.
+- `docs/planning/audit-tooling-index-package-script-check-2026-05-19-task.md`:
+  tooling index validation now checks that referenced `corepack pnpm run`
+  commands exist in `package.json`.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.
@@ -204,7 +207,7 @@ Before any future "full audit" request, start from:
   `docs/operations/reusable-audit-tooling-index-2026-05-19.json`: command and
   script map for reusable audit validation, comparison, rerun playbook checks,
   handoff checks, endpoint parity, isolated DB-backed audit packs, and
-  required closure-command enforcement.
+  required closure-command plus package-script existence enforcement.
 
 Current baseline facts: project index passed on 2026-05-18 with `PASS:21` and
 `335` indexed tests; static scan passed with `0` findings; guardrails, docs

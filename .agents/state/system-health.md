@@ -44,6 +44,9 @@ Last updated: 2026-05-19
   `audit:manifest:verify`; `audit:handoff:check` verifies source paths,
   residual risks, forbidden boundaries, validation checks, and fail-closed
   safety booleans.
+- Reusable audit tooling-index validation now checks referenced `corepack pnpm
+  run` commands against `package.json` scripts and reports missing package
+  scripts separately.
 
 ## Latest Health Snapshot
 
@@ -146,6 +149,9 @@ Last updated: 2026-05-19
   Follow-up handoff validation makes the full reusable audit handoff
   machine-checkable. Evidence:
   `docs/planning/audit-handoff-check-command-2026-05-19-task.md`.
+  Follow-up package-script validation keeps reusable tooling-index commands
+  aligned with `package.json`. Evidence:
+  `docs/planning/audit-tooling-index-package-script-check-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` LOCAL DATA/MIGRATIONS PASS WITH
   FINDING: Prisma schema validation passed, local migration status reported

@@ -49,9 +49,10 @@ const toolingIndex = (overrides = {}) => ({
 });
 
 const allPathsExist = () => true;
+const packageScripts = Object.fromEntries(toolIds.map((id) => [id.toLowerCase(), 'mock command']));
 
 test('validateReusableAuditToolingIndex passes complete indexes', () => {
-  const result = validateReusableAuditToolingIndex(toolingIndex(), { exists: allPathsExist });
+  const result = validateReusableAuditToolingIndex(toolingIndex(), { exists: allPathsExist, packageScripts });
 
   assert.equal(result.status, 'PASS');
   assert.equal(result.tools.found, toolIds.length);
@@ -65,7 +66,7 @@ test('validateReusableAuditToolingIndex fails when a required tool is missing', 
     toolingIndex({
       tools: toolingIndex().tools.filter((tool) => tool.id !== 'AUDIT-MANIFEST-VERIFY'),
     }),
-    { exists: allPathsExist },
+    { exists: allPathsExist, packageScripts },
   );
 
   assert.equal(result.status, 'FAIL');
@@ -78,7 +79,7 @@ test('validateReusableAuditToolingIndex fails on duplicate tools', () => {
     toolingIndex({
       tools: [...base.tools, base.tools[0]],
     }),
-    { exists: allPathsExist },
+    { exists: allPathsExist, packageScripts },
   );
 
   assert.equal(result.status, 'FAIL');
@@ -88,6 +89,7 @@ test('validateReusableAuditToolingIndex fails on duplicate tools', () => {
 test('validateReusableAuditToolingIndex fails when a referenced script is missing', () => {
   const result = validateReusableAuditToolingIndex(toolingIndex(), {
     exists: (relativePath) => relativePath !== 'scripts/example.mjs',
+    packageScripts,
   });
 
   assert.equal(result.status, 'FAIL');
@@ -104,7 +106,7 @@ test('validateReusableAuditToolingIndex fails when safety boundaries are unsafe'
         exchangeSideMutation: false,
       },
     }),
-    { exists: allPathsExist },
+    { exists: allPathsExist, packageScripts },
   );
 
   assert.equal(result.status, 'FAIL');
@@ -119,7 +121,7 @@ test('validateReusableAuditToolingIndex fails when required closure commands are
     toolingIndex({
       closureCommands: ['corepack pnpm run audit:manifest:verify', 'git diff --check'],
     }),
-    { exists: allPathsExist },
+    { exists: allPathsExist, packageScripts },
   );
 
   assert.equal(result.status, 'FAIL');
@@ -127,5 +129,21 @@ test('validateReusableAuditToolingIndex fails when required closure commands are
     'audit:remediation-plan:check',
     'docs:parity:check',
     'quality:guardrails',
+  ]);
+});
+
+test('validateReusableAuditToolingIndex fails when a pnpm run command is missing from package scripts', () => {
+  const { 'audit-manifest-verify': _missing, ...packageScriptsWithoutVerify } = packageScripts;
+  const result = validateReusableAuditToolingIndex(toolingIndex(), {
+    exists: allPathsExist,
+    packageScripts: packageScriptsWithoutVerify,
+  });
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.tools.missingPackageScripts, [
+    {
+      id: 'AUDIT-MANIFEST-VERIFY',
+      scriptName: 'audit-manifest-verify',
+    },
   ]);
 });

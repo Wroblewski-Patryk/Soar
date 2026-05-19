@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -74,15 +74,26 @@ Validates the reusable audit tooling index JSON by checking:
 - tool IDs are unique
 - referenced scripts/files exist
 - commands and purposes are present
+- pnpm run commands exist in package.json
 - required closure commands are present
 - safety boundaries remain false
 `);
 };
 
 const defaultExists = (relativePath) => existsSync(path.resolve(repoRoot, relativePath));
+const defaultPackageScripts = () => {
+  const packageJson = JSON.parse(readFileSync(path.resolve(repoRoot, 'package.json'), 'utf8'));
+  return packageJson.scripts ?? {};
+};
+const pnpmRunScriptPattern = /(?:^|\s)(?:corepack\s+)?pnpm\s+run\s+([^\s]+)/;
+const getPnpmRunScriptName = (command) => {
+  const match = String(command).match(pnpmRunScriptPattern);
+  return match?.[1] ?? null;
+};
 
 export const validateReusableAuditToolingIndex = (toolingIndex, options = {}) => {
   const exists = options.exists ?? defaultExists;
+  const packageScripts = options.packageScripts ?? defaultPackageScripts();
   const tools = Array.isArray(toolingIndex.tools) ? toolingIndex.tools : [];
   const toolIds = tools.map((tool) => tool.id).filter(Boolean);
   const toolIdSet = new Set(toolIds);
@@ -94,6 +105,15 @@ export const validateReusableAuditToolingIndex = (toolingIndex, options = {}) =>
     .filter((tool) => tool.script && !exists(tool.script))
     .map((tool) => tool.script)
     .sort();
+  const missingPackageScripts = tools
+    .map((tool) => ({
+      id: tool.id ?? 'unknown',
+      command: tool.command,
+      scriptName: getPnpmRunScriptName(tool.command),
+    }))
+    .filter((tool) => tool.scriptName && !(tool.scriptName in packageScripts))
+    .map(({ id, scriptName }) => ({ id, scriptName }))
+    .sort((left, right) => left.id.localeCompare(right.id));
 
   const safetyBoundaries = toolingIndex.safetyBoundaries ?? {};
   const missingSafetyBoundaries = requiredSafetyBoundaries.filter((key) => !(key in safetyBoundaries));
@@ -117,6 +137,7 @@ export const validateReusableAuditToolingIndex = (toolingIndex, options = {}) =>
       missingCommand: toolsMissingCommand,
       missingPurpose: toolsMissingPurpose,
       missingScripts: [...new Set(missingScripts)],
+      missingPackageScripts,
     },
     commands: {
       primaryCommandOk,
@@ -136,6 +157,7 @@ export const validateReusableAuditToolingIndex = (toolingIndex, options = {}) =>
     result.tools.missingCommand.length === 0 &&
     result.tools.missingPurpose.length === 0 &&
     result.tools.missingScripts.length === 0 &&
+    result.tools.missingPackageScripts.length === 0 &&
     result.commands.primaryCommandOk &&
     result.commands.closureCommands > 0 &&
     result.commands.missingClosureCommandFragments.length === 0 &&
@@ -169,6 +191,7 @@ const main = async () => {
     console.log(`- Missing tools: ${result.tools.missing.length}`);
     console.log(`- Duplicate tools: ${result.tools.duplicates.length}`);
     console.log(`- Missing scripts: ${result.tools.missingScripts.length}`);
+    console.log(`- Missing package scripts: ${result.tools.missingPackageScripts.length}`);
     console.log(`- Missing closure commands: ${result.commands.missingClosureCommandFragments.length}`);
     console.log(`- Unsafe safety boundaries: ${result.safetyBoundaries.unsafe.length}`);
   }
