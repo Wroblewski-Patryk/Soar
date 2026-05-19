@@ -52,6 +52,10 @@ Last updated: 2026-05-19
   `REQ-FUNC-021` and `REQ-AUDIT-031`: `audit:handoff:check` now requires
   reusable tooling-index Markdown and JSON paths in the full-audit handoff
   source chain.
+- 2026-05-19 `AUDIT-HANDOFF-SELF-SOURCE-CHECK-2026-05-19` updates
+  `REQ-FUNC-021` and `REQ-AUDIT-031`: `audit:handoff:check` now requires the
+  handoff Markdown and JSON self-source paths in the full-audit handoff source
+  chain.
 
 Allowed statuses: `proposed`, `accepted`, `in_progress`,
 `implemented_not_verified`, `partially_verified`, `verified`, `failed`,

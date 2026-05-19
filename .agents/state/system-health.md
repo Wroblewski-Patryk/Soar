@@ -61,6 +61,8 @@ Last updated: 2026-05-19
   compose services.
 - Full reusable audit handoff validation now requires reusable tooling-index
   Markdown and JSON paths in the handoff source-of-truth chain.
+- Full reusable audit handoff validation now requires the handoff Markdown and
+  JSON self-source paths in the handoff source-of-truth chain.
 - Reusable audit tooling-index validation now checks referenced `corepack pnpm
   run` commands against `package.json` scripts and reports missing package
   scripts separately.

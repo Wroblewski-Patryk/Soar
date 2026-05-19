@@ -144,6 +144,8 @@ omits cleanup evidence for headless browser processes, local DB/Redis
 listeners, or Docker compose services.
 Reusable full-audit handoff validation now also requires the reusable
 tooling-index Markdown and JSON paths in its source-of-truth chain.
+Reusable full-audit handoff validation now also requires the handoff Markdown
+and JSON self-source paths in its source-of-truth chain.
 Reusable audit tooling-index validation now also verifies that referenced
 `corepack pnpm run` commands exist in `package.json`.
 Reusable audit manifest validation now verifies declared summary counts and

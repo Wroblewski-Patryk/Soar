@@ -229,6 +229,9 @@ Before any future "full audit" request, start from:
 - `docs/planning/audit-handoff-tooling-index-source-check-2026-05-19-task.md`:
   handoff validation now requires reusable tooling-index Markdown and JSON
   source paths.
+- `docs/planning/audit-handoff-self-source-check-2026-05-19-task.md`:
+  handoff validation now requires the handoff Markdown and JSON self-source
+  paths.
 - `docs/planning/audit-rerun-playbook-self-check-closure-2026-05-19-task.md`:
   rerun playbook validation now requires `audit:rerun-playbook:check` in
   closure checks.

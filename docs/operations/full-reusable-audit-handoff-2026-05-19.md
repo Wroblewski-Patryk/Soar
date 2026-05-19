@@ -21,6 +21,7 @@
 - Architecture: `docs/architecture/**`
 - Audit registry: `docs/analysis/reusable-audit-registry.md`
 - Audit baseline: `docs/analysis/audit-baseline-2026-05-19.md`
+- Handoff: `docs/operations/full-reusable-audit-handoff-2026-05-19.md`
 - Rollup: `docs/operations/full-reusable-audit-rollup-2026-05-19.md`
 - Rollup JSON: `docs/operations/full-reusable-audit-rollup-2026-05-19.json`
 - Handoff JSON: `docs/operations/full-reusable-audit-handoff-2026-05-19.json`

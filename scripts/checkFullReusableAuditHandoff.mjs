@@ -11,6 +11,8 @@ const requiredSourceKeys = [
   'architecture',
   'auditRegistry',
   'auditBaseline',
+  'handoff',
+  'handoffJson',
   'rollup',
   'rollupJson',
   'rerunPlaybook',

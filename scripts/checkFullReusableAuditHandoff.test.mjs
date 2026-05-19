@@ -8,6 +8,8 @@ const sourceOfTruth = {
   architecture: 'docs/architecture/**',
   auditRegistry: 'docs/analysis/reusable-audit-registry.md',
   auditBaseline: 'docs/analysis/audit-baseline-2026-05-19.md',
+  handoff: 'docs/operations/full-reusable-audit-handoff-2026-05-19.md',
+  handoffJson: 'docs/operations/full-reusable-audit-handoff-2026-05-19.json',
   rollup: 'docs/operations/full-reusable-audit-rollup-2026-05-19.md',
   rollupJson: 'docs/operations/full-reusable-audit-rollup-2026-05-19.json',
   rerunPlaybook: 'docs/operations/reusable-audit-rerun-playbook-2026-05-19.md',
@@ -81,7 +83,12 @@ test('validateFullReusableAuditHandoff passes complete handoffs', () => {
 });
 
 test('validateFullReusableAuditHandoff fails when required source keys are missing', () => {
-  const { operationsAudit, toolingIndex, toolingIndexJson, ...partialSourceOfTruth } = sourceOfTruth;
+  const partialSourceOfTruth = { ...sourceOfTruth };
+  delete partialSourceOfTruth.handoff;
+  delete partialSourceOfTruth.handoffJson;
+  delete partialSourceOfTruth.operationsAudit;
+  delete partialSourceOfTruth.toolingIndex;
+  delete partialSourceOfTruth.toolingIndexJson;
   const result = validateFullReusableAuditHandoff(
     handoff({
       sourceOfTruth: partialSourceOfTruth,
@@ -90,7 +97,13 @@ test('validateFullReusableAuditHandoff fails when required source keys are missi
   );
 
   assert.equal(result.status, 'FAIL');
-  assert.deepEqual(result.sourceOfTruth.missingKeys, ['toolingIndex', 'toolingIndexJson', 'operationsAudit']);
+  assert.deepEqual(result.sourceOfTruth.missingKeys, [
+    'handoff',
+    'handoffJson',
+    'toolingIndex',
+    'toolingIndexJson',
+    'operationsAudit',
+  ]);
 });
 
 test('validateFullReusableAuditHandoff fails when referenced source paths are missing', () => {

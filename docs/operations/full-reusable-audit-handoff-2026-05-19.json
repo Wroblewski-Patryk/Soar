@@ -17,6 +17,8 @@
     "architecture": "docs/architecture/**",
     "auditRegistry": "docs/analysis/reusable-audit-registry.md",
     "auditBaseline": "docs/analysis/audit-baseline-2026-05-19.md",
+    "handoff": "docs/operations/full-reusable-audit-handoff-2026-05-19.md",
+    "handoffJson": "docs/operations/full-reusable-audit-handoff-2026-05-19.json",
     "rollup": "docs/operations/full-reusable-audit-rollup-2026-05-19.md",
     "rollupJson": "docs/operations/full-reusable-audit-rollup-2026-05-19.json",
     "rerunPlaybook": "docs/operations/reusable-audit-rerun-playbook-2026-05-19.md",

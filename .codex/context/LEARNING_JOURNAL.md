@@ -2925,6 +2925,10 @@ promise = connect().catch((error) => {
     `companycore.luckysparrow.ch` audit, not the Soar task, so it was left
     running to avoid disrupting parallel work. Process cleanup must confirm
     ownership before stopping browser helpers.
+  - During `AUDIT-HANDOFF-SELF-SOURCE-CHECK-2026-05-19`, local audit
+    validation left four `chrome-headless-shell` rows visible during cleanup;
+    narrow cleanup with `Stop-Process -Force` removed the validation leftovers
+    and the follow-up process check returned no remaining rows.
 
 ### 2026-05-19 - Keep DB-backed e2e audit packs sequential or isolated
 - Context: `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` refreshed `AUD-07` with
