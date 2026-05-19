@@ -61,7 +61,7 @@
   "futureManifestCommands": {
     "check": "corepack pnpm run audit:manifest:check -- --manifest docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json",
     "compare": "corepack pnpm run audit:manifest:compare -- --base docs/operations/reusable-audit-artifact-manifest-2026-05-19.json --target docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json",
-    "compareJson": "corepack pnpm run audit:manifest:compare -- --base docs/operations/reusable-audit-artifact-manifest-2026-05-19.json --target docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json --json"
+    "compareJson": "corepack pnpm run audit:manifest:compare -- --base docs/operations/reusable-audit-artifact-manifest-2026-05-19.json --target docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json --json-output docs/operations/reusable-audit-manifest-comparison-YYYY-MM-DD.json"
   },
   "requiredResultShape": [
     "dated baseline or rollup report",

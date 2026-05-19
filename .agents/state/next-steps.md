@@ -136,6 +136,9 @@ matching manifest and rollup validators so hybrid statuses such as
 `current ... deferred` do not create false regressions.
 Reusable audit manifest comparison can now persist machine-readable rerun
 evidence with `--json-output <path>`.
+Reusable audit rerun playbook validation now requires
+`futureManifestCommands.compareJson` to use `--json-output`, so structured
+comparison evidence is persisted by default.
 Next executable protected step remains the same: provide the approved
 protected inputs named in that packet and execute the commands in order.
 

@@ -237,6 +237,13 @@ Last updated: 2026-05-19
     Evidence:
     `docs/planning/audit-manifest-compare-json-output-2026-05-19-task.md`.
 
+- [x] `AUDIT-RERUN-PLAYBOOK-COMPARE-JSON-OUTPUT-SYNC-2026-05-19 feature: require persisted comparison output`
+  - 2026-05-19: Updated the reusable audit rerun playbook so
+    `futureManifestCommands.compareJson` uses `--json-output` and writes a
+    dated comparison artifact. Hardened `audit:rerun-playbook:check` to fail
+    if structured comparison output is stdout-only. Evidence:
+    `docs/planning/audit-rerun-playbook-compare-json-output-sync-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

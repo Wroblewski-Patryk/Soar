@@ -79,6 +79,10 @@ export const validateReusableAuditRerunPlaybook = (playbook, options = {}) => {
   const commandWithoutTargetPlaceholder = requiredFutureCommands.filter(
     (key) => typeof futureCommands[key] === 'string' && !futureCommands[key].includes('YYYY-MM-DD'),
   );
+  const compareJsonWithoutOutput = Boolean(
+    typeof futureCommands.compareJson === 'string' &&
+      !futureCommands.compareJson.includes('--json-output'),
+  );
 
   const safetyBoundaries = playbook.safetyBoundaries ?? {};
   const missingSafetyBoundaries = requiredSafetyBoundaries.filter((key) => !(key in safetyBoundaries));
@@ -101,6 +105,7 @@ export const validateReusableAuditRerunPlaybook = (playbook, options = {}) => {
       missingFutureCommands,
       commandWithoutBaselinePlaceholder,
       commandWithoutTargetPlaceholder,
+      compareJsonWithoutOutput,
     },
     sections: {
       preconditions: Array.isArray(playbook.preconditions) ? playbook.preconditions.length : 0,
@@ -130,6 +135,7 @@ export const validateReusableAuditRerunPlaybook = (playbook, options = {}) => {
     result.commands.missingFutureCommands.length === 0 &&
     result.commands.commandWithoutBaselinePlaceholder.length === 0 &&
     result.commands.commandWithoutTargetPlaceholder.length === 0 &&
+    !result.commands.compareJsonWithoutOutput &&
     missingRequiredSections.length === 0 &&
     result.closureChecks.missingRequiredFragments.length === 0 &&
     result.safetyBoundaries.missing.length === 0 &&

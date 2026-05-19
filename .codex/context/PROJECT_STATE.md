@@ -235,6 +235,11 @@ Last updated: 2026-05-19
   persist machine-readable comparison reports instead of relying on copied
   terminal output. Evidence:
   `docs/planning/audit-manifest-compare-json-output-2026-05-19-task.md`.
+  Follow-up
+  `AUDIT-RERUN-PLAYBOOK-COMPARE-JSON-OUTPUT-SYNC-2026-05-19` updated the
+  reusable audit rerun playbook and validator so `compareJson` must use
+  `--json-output` and produce a dated persisted comparison artifact. Evidence:
+  `docs/planning/audit-rerun-playbook-compare-json-output-sync-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,

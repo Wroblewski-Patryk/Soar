@@ -59,6 +59,8 @@ Last updated: 2026-05-19
   avoiding false regressions from hybrid current/deferred wording.
 - Reusable audit manifest comparison can now persist machine-readable reports
   with `--json-output <path>` for future rerun evidence.
+- Reusable audit rerun playbook validation now requires `compareJson` to use
+  `--json-output`, preventing stdout-only structured comparison instructions.
 
 ## Latest Health Snapshot
 
@@ -177,6 +179,9 @@ Last updated: 2026-05-19
   Follow-up JSON-output hardening allows `audit:manifest:compare` to persist
   the full comparison report with `--json-output <path>`. Evidence:
   `docs/planning/audit-manifest-compare-json-output-2026-05-19-task.md`.
+  Follow-up rerun-playbook sync requires `compareJson` to persist structured
+  comparison evidence with `--json-output`. Evidence:
+  `docs/planning/audit-rerun-playbook-compare-json-output-sync-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` LOCAL DATA/MIGRATIONS PASS WITH
   FINDING: Prisma schema validation passed, local migration status reported

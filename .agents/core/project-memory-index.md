@@ -189,6 +189,9 @@ Before any future "full audit" request, start from:
   regression. Follow-up
   `docs/planning/audit-manifest-compare-json-output-2026-05-19-task.md` adds
   `--json-output <path>` for persisted machine-readable comparison reports.
+  Follow-up
+  `docs/planning/audit-rerun-playbook-compare-json-output-sync-2026-05-19-task.md`
+  makes the rerun playbook validator require persisted `compareJson` output.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.

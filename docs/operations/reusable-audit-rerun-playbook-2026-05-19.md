@@ -72,10 +72,10 @@ Then compare it with this baseline:
 corepack pnpm run audit:manifest:compare -- --base docs/operations/reusable-audit-artifact-manifest-2026-05-19.json --target docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json
 ```
 
-Use JSON output when a downstream report or dashboard needs structured deltas:
+Persist JSON output when a downstream report or dashboard needs structured deltas:
 
 ```powershell
-corepack pnpm run audit:manifest:compare -- --base docs/operations/reusable-audit-artifact-manifest-2026-05-19.json --target docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json --json
+corepack pnpm run audit:manifest:compare -- --base docs/operations/reusable-audit-artifact-manifest-2026-05-19.json --target docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json --json-output docs/operations/reusable-audit-manifest-comparison-YYYY-MM-DD.json
 ```
 
 ## Required Result Shape

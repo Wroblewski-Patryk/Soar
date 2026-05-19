@@ -14,7 +14,7 @@ const playbook = (overrides = {}) => ({
   futureManifestCommands: {
     check: 'corepack pnpm run audit:manifest:check -- --manifest docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json',
     compare: 'corepack pnpm run audit:manifest:compare -- --base docs/operations/reusable-audit-artifact-manifest-2026-05-19.json --target docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json',
-    compareJson: 'corepack pnpm run audit:manifest:compare -- --base docs/operations/reusable-audit-artifact-manifest-2026-05-19.json --target docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json --json',
+    compareJson: 'corepack pnpm run audit:manifest:compare -- --base docs/operations/reusable-audit-artifact-manifest-2026-05-19.json --target docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json --json-output docs/operations/reusable-audit-manifest-comparison-YYYY-MM-DD.json',
   },
   preconditions: ['read registry'],
   regressionRules: ['missing audit'],
@@ -81,6 +81,21 @@ test('validateReusableAuditRerunPlaybook fails when required future commands are
 
   assert.equal(result.status, 'FAIL');
   assert.deepEqual(result.commands.missingFutureCommands, ['compare', 'compareJson']);
+});
+
+test('validateReusableAuditRerunPlaybook fails when compareJson does not persist output', () => {
+  const result = validateReusableAuditRerunPlaybook(
+    playbook({
+      futureManifestCommands: {
+        check: 'corepack pnpm run audit:manifest:check -- --manifest docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json',
+        compare: 'corepack pnpm run audit:manifest:compare -- --base docs/operations/reusable-audit-artifact-manifest-2026-05-19.json --target docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json',
+        compareJson: 'corepack pnpm run audit:manifest:compare -- --base docs/operations/reusable-audit-artifact-manifest-2026-05-19.json --target docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json --json',
+      },
+    }),
+  );
+
+  assert.equal(result.status, 'FAIL');
+  assert.equal(result.commands.compareJsonWithoutOutput, true);
 });
 
 test('validateReusableAuditRerunPlaybook fails when safety boundaries are unsafe', () => {
