@@ -344,6 +344,14 @@ Last updated: 2026-05-19
     that drop required local validation cleanup evidence. Evidence:
     `docs/planning/audit-handoff-cleanup-validation-command-2026-05-19-task.md`.
 
+- [x] `AUDIT-HANDOFF-TOOLING-INDEX-SOURCE-CHECK-2026-05-19 feature: require handoff tooling-index sources`
+  - 2026-05-19: Hardened `audit:handoff:check` so handoff
+    source-of-truth must include reusable tooling-index Markdown and JSON
+    paths. Current handoff Markdown/JSON now lists those artifacts, and
+    focused regression coverage catches source chains that omit them.
+    Evidence:
+    `docs/planning/audit-handoff-tooling-index-source-check-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

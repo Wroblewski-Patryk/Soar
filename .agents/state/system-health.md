@@ -59,6 +59,8 @@ Last updated: 2026-05-19
 - Full reusable audit handoff validation now also requires cleanup validation
   evidence for headless browser processes, local DB/Redis listeners, and Docker
   compose services.
+- Full reusable audit handoff validation now requires reusable tooling-index
+  Markdown and JSON paths in the handoff source-of-truth chain.
 - Reusable audit tooling-index validation now checks referenced `corepack pnpm
   run` commands against `package.json` scripts and reports missing package
   scripts separately.

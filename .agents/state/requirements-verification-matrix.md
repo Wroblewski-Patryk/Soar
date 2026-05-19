@@ -48,6 +48,10 @@ Last updated: 2026-05-19
   `REQ-FUNC-021` and `REQ-AUDIT-031`: `audit:handoff:check` now fails when
   full-audit handoff `latestValidation` omits cleanup evidence for headless
   browser processes, local DB/Redis listeners, or Docker compose services.
+- 2026-05-19 `AUDIT-HANDOFF-TOOLING-INDEX-SOURCE-CHECK-2026-05-19` updates
+  `REQ-FUNC-021` and `REQ-AUDIT-031`: `audit:handoff:check` now requires
+  reusable tooling-index Markdown and JSON paths in the full-audit handoff
+  source chain.
 
 Allowed statuses: `proposed`, `accepted`, `in_progress`,
 `implemented_not_verified`, `partially_verified`, `verified`, `failed`,

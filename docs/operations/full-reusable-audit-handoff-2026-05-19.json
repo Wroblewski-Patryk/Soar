@@ -21,6 +21,8 @@
     "rollupJson": "docs/operations/full-reusable-audit-rollup-2026-05-19.json",
     "rerunPlaybook": "docs/operations/reusable-audit-rerun-playbook-2026-05-19.md",
     "rerunPlaybookJson": "docs/operations/reusable-audit-rerun-playbook-2026-05-19.json",
+    "toolingIndex": "docs/operations/reusable-audit-tooling-index-2026-05-19.md",
+    "toolingIndexJson": "docs/operations/reusable-audit-tooling-index-2026-05-19.json",
     "decisionPacket": "docs/operations/audit-decision-packet-2026-05-19.md",
     "repairPlaybooks": "docs/operations/audit-decision-repair-playbooks-2026-05-19.md",
     "taskBoard": ".codex/context/TASK_BOARD.md",

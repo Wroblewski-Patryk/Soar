@@ -48,5 +48,9 @@ Last updated: 2026-05-19
   updates `RISK-021` and `RISK-036`: handoff validation now catches missing
   cleanup evidence for headless browser processes, local DB/Redis listeners,
   and Docker compose services before a broad-audit handoff can pass.
+- 2026-05-19 `AUDIT-HANDOFF-TOOLING-INDEX-SOURCE-CHECK-2026-05-19`
+  updates `RISK-021` and `RISK-036`: handoff validation now catches missing
+  reusable tooling-index Markdown/JSON source paths before a broad-audit
+  handoff can pass.
 
 Allowed statuses: `open`, `mitigating`, `accepted`, `closed`, `superseded`.

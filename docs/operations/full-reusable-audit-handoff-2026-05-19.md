@@ -27,6 +27,9 @@
 - Rerun playbook: `docs/operations/reusable-audit-rerun-playbook-2026-05-19.md`
 - Rerun playbook JSON:
   `docs/operations/reusable-audit-rerun-playbook-2026-05-19.json`
+- Tooling index: `docs/operations/reusable-audit-tooling-index-2026-05-19.md`
+- Tooling index JSON:
+  `docs/operations/reusable-audit-tooling-index-2026-05-19.json`
 - Decision packet: `docs/operations/audit-decision-packet-2026-05-19.md`
 - Repair playbooks: `docs/operations/audit-decision-repair-playbooks-2026-05-19.md`
 - Task board: `.codex/context/TASK_BOARD.md`

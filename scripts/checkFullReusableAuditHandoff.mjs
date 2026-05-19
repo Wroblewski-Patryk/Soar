@@ -15,6 +15,8 @@ const requiredSourceKeys = [
   'rollupJson',
   'rerunPlaybook',
   'rerunPlaybookJson',
+  'toolingIndex',
+  'toolingIndexJson',
   'decisionPacket',
   'repairPlaybooks',
   'taskBoard',

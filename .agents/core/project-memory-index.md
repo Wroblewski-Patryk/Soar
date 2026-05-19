@@ -226,6 +226,9 @@ Before any future "full audit" request, start from:
 - `docs/planning/audit-handoff-cleanup-validation-command-2026-05-19-task.md`:
   handoff validation now requires cleanup validation evidence for headless
   browser processes, local DB/Redis listeners, and Docker compose services.
+- `docs/planning/audit-handoff-tooling-index-source-check-2026-05-19-task.md`:
+  handoff validation now requires reusable tooling-index Markdown and JSON
+  source paths.
 - `docs/planning/audit-rerun-playbook-self-check-closure-2026-05-19-task.md`:
   rerun playbook validation now requires `audit:rerun-playbook:check` in
   closure checks.
