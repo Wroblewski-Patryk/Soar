@@ -138,6 +138,11 @@ Start-Process -FilePath "cmd.exe" -ArgumentList $cmd -WorkingDirectory $repo -Wi
   Playwright temp profile were inspected, then a narrow
   `Get-Process chrome-headless-shell | Stop-Process -Force` cleanup followed by
   a delayed process check returned no rows.
+  2026-05-19 audit tooling-index cleanup-check hardening again found four
+  residual `chrome-headless-shell` rows after no-browser audit tooling checks;
+  no local DB/Redis listeners or running Docker compose services were present,
+  and a narrow `Get-Process chrome-headless-shell | Stop-Process -Force`
+  cleanup followed by a delayed process check returned no rows.
 
 ### 2026-05-13 - Preserve LIVE bot fields when toggling activity
 - Context: `V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13` ran the
