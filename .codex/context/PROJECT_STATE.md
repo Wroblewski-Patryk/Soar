@@ -200,6 +200,11 @@ Last updated: 2026-05-19
   requires `audit:manifest:verify`, `audit:remediation-plan:check`, docs
   parity, guardrails, and diff check. Evidence:
   `docs/planning/audit-rerun-playbook-remediation-closure-sync-2026-05-19-task.md`.
+  Follow-up
+  `AUDIT-TOOLING-INDEX-CLOSURE-COMMAND-CHECK-2026-05-19` hardened the tooling
+  index validator so it fails if those same required closure commands are
+  removed from the reusable tooling index. Evidence:
+  `docs/planning/audit-tooling-index-closure-command-check-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,

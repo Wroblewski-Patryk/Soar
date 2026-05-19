@@ -24,11 +24,13 @@ It runs:
 - manifest checker regression tests;
 - manifest comparison regression tests;
 - rerun playbook regression tests;
+- tooling index regression tests;
 - remediation plan regression tests;
 - protected input readiness regression tests;
 - current manifest validation;
 - current manifest self-comparison;
 - rerun playbook validation;
+- tooling index validation;
 - remediation plan validation.
 
 ## Tools
@@ -44,8 +46,8 @@ It runs:
 | `AUDIT-RERUN-PLAYBOOK-CHECK-TEST` | `corepack pnpm run audit:rerun-playbook:check:test` | `scripts/checkReusableAuditRerunPlaybook.test.mjs` | Regression-test rerun playbook validation behavior. |
 | `AUDIT-REMEDIATION-PLAN-CHECK` | `corepack pnpm run audit:remediation-plan:check` | `scripts/checkAuditRemediationPlan.mjs` | Validate remediation roadmap phases, work packages, blockers, closure checks, and safety boundaries. |
 | `AUDIT-REMEDIATION-PLAN-CHECK-TEST` | `corepack pnpm run audit:remediation-plan:check:test` | `scripts/checkAuditRemediationPlan.test.mjs` | Regression-test remediation plan validation behavior. |
-| `AUDIT-TOOLING-INDEX-CHECK` | `corepack pnpm run audit:tooling-index:check` | `scripts/checkReusableAuditToolingIndex.mjs` | Validate audit tooling index command/script coverage and safety boundaries. |
-| `AUDIT-TOOLING-INDEX-CHECK-TEST` | `corepack pnpm run audit:tooling-index:check:test` | `scripts/checkReusableAuditToolingIndex.test.mjs` | Regression-test tooling index validation behavior. |
+| `AUDIT-TOOLING-INDEX-CHECK` | `corepack pnpm run audit:tooling-index:check` | `scripts/checkReusableAuditToolingIndex.mjs` | Validate audit tooling index command/script coverage, required closure commands, and safety boundaries. |
+| `AUDIT-TOOLING-INDEX-CHECK-TEST` | `corepack pnpm run audit:tooling-index:check:test` | `scripts/checkReusableAuditToolingIndex.test.mjs` | Regression-test tooling index validation behavior, including missing required closure commands. |
 | `AUDIT-DATA-DB-ISOLATED` | `corepack pnpm run audit:data:db-isolated` | `scripts/runAud07IsolatedDbPacks.mjs` | Run representative DB-backed `AUD-07` packs sequentially with reset/isolation. |
 | `API-ENDPOINT-DOCS-PARITY` | `corepack pnpm run docs:parity:endpoints:api` | `scripts/auditApiEndpointDocsParity.mjs` | Verify endpoint-level API documentation parity. |
 | `OPS-PROTECTED-INPUTS-CHECK` | `corepack pnpm run ops:protected-inputs:check -- --today <yyyy-mm-dd> --expected-sha <sha>` | `scripts/checkProtectedInputReadiness.mjs` | Check protected production input env-name readiness without printing or storing secret values. |

@@ -35,7 +35,13 @@ const toolingIndex = (overrides = {}) => ({
     liveOrderSubmitCancelClose: false,
     exchangeSideMutation: false,
   },
-  closureCommands: ['corepack pnpm run audit:manifest:verify'],
+  closureCommands: [
+    'corepack pnpm run audit:manifest:verify',
+    'corepack pnpm run audit:remediation-plan:check',
+    'corepack pnpm run docs:parity:check',
+    'corepack pnpm run quality:guardrails',
+    'git diff --check',
+  ],
   cleanupChecks: ['docker compose ps'],
   ...overrides,
 });
@@ -103,5 +109,21 @@ test('validateReusableAuditToolingIndex fails when safety boundaries are unsafe'
   assert.deepEqual(result.safetyBoundaries.unsafe, [
     'architectureDecisionApplied',
     'liveOrderSubmitCancelClose',
+  ]);
+});
+
+test('validateReusableAuditToolingIndex fails when required closure commands are missing', () => {
+  const result = validateReusableAuditToolingIndex(
+    toolingIndex({
+      closureCommands: ['corepack pnpm run audit:manifest:verify', 'git diff --check'],
+    }),
+    { exists: allPathsExist },
+  );
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.commands.missingClosureCommandFragments, [
+    'audit:remediation-plan:check',
+    'docs:parity:check',
+    'quality:guardrails',
   ]);
 });

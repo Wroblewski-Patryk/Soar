@@ -29,6 +29,13 @@ const requiredSafetyBoundaries = [
   'liveOrderSubmitCancelClose',
   'exchangeSideMutation',
 ];
+const requiredClosureCommandFragments = [
+  'audit:manifest:verify',
+  'audit:remediation-plan:check',
+  'docs:parity:check',
+  'quality:guardrails',
+  'git diff --check',
+];
 
 const parseArgs = () => {
   const args = process.argv.slice(2);
@@ -65,6 +72,7 @@ Validates the reusable audit tooling index JSON by checking:
 - tool IDs are unique
 - referenced scripts/files exist
 - commands and purposes are present
+- required closure commands are present
 - safety boundaries remain false
 `);
 };
@@ -92,6 +100,9 @@ export const validateReusableAuditToolingIndex = (toolingIndex, options = {}) =>
   const closureCommands = Array.isArray(toolingIndex.closureCommands) ? toolingIndex.closureCommands : [];
   const cleanupChecks = Array.isArray(toolingIndex.cleanupChecks) ? toolingIndex.cleanupChecks : [];
   const primaryCommandOk = toolingIndex.primaryCommand === 'corepack pnpm run audit:manifest:verify';
+  const missingClosureCommandFragments = requiredClosureCommandFragments.filter(
+    (fragment) => !closureCommands.some((command) => String(command).includes(fragment)),
+  );
 
   const result = {
     index: options.indexPath ?? null,
@@ -108,6 +119,7 @@ export const validateReusableAuditToolingIndex = (toolingIndex, options = {}) =>
     commands: {
       primaryCommandOk,
       closureCommands: closureCommands.length,
+      missingClosureCommandFragments,
       cleanupChecks: cleanupChecks.length,
     },
     safetyBoundaries: {
@@ -124,6 +136,7 @@ export const validateReusableAuditToolingIndex = (toolingIndex, options = {}) =>
     result.tools.missingScripts.length === 0 &&
     result.commands.primaryCommandOk &&
     result.commands.closureCommands > 0 &&
+    result.commands.missingClosureCommandFragments.length === 0 &&
     result.commands.cleanupChecks > 0 &&
     result.safetyBoundaries.missing.length === 0 &&
     result.safetyBoundaries.unsafe.length === 0
@@ -154,6 +167,7 @@ const main = async () => {
     console.log(`- Missing tools: ${result.tools.missing.length}`);
     console.log(`- Duplicate tools: ${result.tools.duplicates.length}`);
     console.log(`- Missing scripts: ${result.tools.missingScripts.length}`);
+    console.log(`- Missing closure commands: ${result.commands.missingClosureCommandFragments.length}`);
     console.log(`- Unsafe safety boundaries: ${result.safetyBoundaries.unsafe.length}`);
   }
 

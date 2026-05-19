@@ -37,6 +37,9 @@ Last updated: 2026-05-19
   `audit:manifest:verify`, `audit:remediation-plan:check`, docs parity,
   guardrails, and diff check; `audit:rerun-playbook:check` fails if any
   required closure check is missing.
+- Reusable audit tooling-index validation now enforces the same required
+  closure command set and fails if manifest verification, remediation-plan
+  validation, docs parity, guardrails, or diff check are omitted.
 
 ## Latest Health Snapshot
 
@@ -133,6 +136,9 @@ Last updated: 2026-05-19
   Follow-up closure sync requires the remediation-plan check in the reusable
   audit rerun playbook and validator. Evidence:
   `docs/planning/audit-rerun-playbook-remediation-closure-sync-2026-05-19-task.md`.
+  Follow-up tooling-index hardening requires the same closure command set in
+  the reusable tooling index. Evidence:
+  `docs/planning/audit-tooling-index-closure-command-check-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` LOCAL DATA/MIGRATIONS PASS WITH
   FINDING: Prisma schema validation passed, local migration status reported

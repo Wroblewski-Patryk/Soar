@@ -61,13 +61,13 @@
       "id": "AUDIT-TOOLING-INDEX-CHECK",
       "command": "corepack pnpm run audit:tooling-index:check",
       "script": "scripts/checkReusableAuditToolingIndex.mjs",
-      "purpose": "Validate audit tooling index command/script coverage and safety boundaries."
+      "purpose": "Validate audit tooling index command/script coverage, required closure commands, and safety boundaries."
     },
     {
       "id": "AUDIT-TOOLING-INDEX-CHECK-TEST",
       "command": "corepack pnpm run audit:tooling-index:check:test",
       "script": "scripts/checkReusableAuditToolingIndex.test.mjs",
-      "purpose": "Regression-test tooling index validation behavior."
+      "purpose": "Regression-test tooling index validation behavior, including missing required closure commands."
     },
     {
       "id": "AUDIT-DATA-DB-ISOLATED",

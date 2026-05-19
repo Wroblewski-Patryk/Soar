@@ -181,6 +181,14 @@ Last updated: 2026-05-19
     Evidence:
     `docs/planning/audit-rerun-playbook-remediation-closure-sync-2026-05-19-task.md`.
 
+- [x] `AUDIT-TOOLING-INDEX-CLOSURE-COMMAND-CHECK-2026-05-19 feature: require tooling-index closure commands`
+  - 2026-05-19: Hardened `audit:tooling-index:check` so the reusable tooling
+    index fails if closure omits `audit:manifest:verify`,
+    `audit:remediation-plan:check`, docs parity, guardrails, or diff check.
+    Focused regression coverage now exercises missing closure commands.
+    Evidence:
+    `docs/planning/audit-tooling-index-closure-command-check-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,
