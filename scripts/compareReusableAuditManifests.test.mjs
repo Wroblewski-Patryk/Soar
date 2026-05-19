@@ -1,7 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { execFile } from 'node:child_process';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { promisify } from 'node:util';
 
 import { compareReusableAuditManifests } from './compareReusableAuditManifests.mjs';
+
+const execFileAsync = promisify(execFile);
+const scriptPath = fileURLToPath(new URL('./compareReusableAuditManifests.mjs', import.meta.url));
 
 const dedupeAudits = (audits) =>
   audits.filter((audit, index, all) => all.findIndex((item) => item.id === audit.id) === index);
@@ -185,4 +194,34 @@ test('compareReusableAuditManifests records improvements without failing', () =>
     result.improvements.summary.map((item) => item.key),
     ['currentOrCurrentLocal', 'failedDecisionRequired', 'partial'],
   );
+});
+
+test('compareReusableAuditManifests CLI writes JSON output report', async () => {
+  const tempDir = await mkdtemp(path.join(tmpdir(), 'soar-audit-compare-'));
+  try {
+    const basePath = path.join(tempDir, 'base.json');
+    const targetPath = path.join(tempDir, 'target.json');
+    const outputPath = path.join(tempDir, 'comparison.json');
+
+    await writeFile(basePath, `${JSON.stringify(manifest(), null, 2)}\n`);
+    await writeFile(targetPath, `${JSON.stringify(manifest(), null, 2)}\n`);
+
+    await execFileAsync(process.execPath, [
+      scriptPath,
+      '--base',
+      basePath,
+      '--target',
+      targetPath,
+      '--json-output',
+      outputPath,
+    ]);
+
+    const report = JSON.parse(await readFile(outputPath, 'utf8'));
+    assert.equal(report.status, 'PASS');
+    assert.equal(report.regressions.audits.length, 0);
+    assert.equal(report.base, basePath);
+    assert.equal(report.target, targetPath);
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
 });

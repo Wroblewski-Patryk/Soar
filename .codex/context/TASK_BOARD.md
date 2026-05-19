@@ -229,6 +229,14 @@ Last updated: 2026-05-19
     informational. Evidence:
     `docs/planning/audit-manifest-compare-status-bucket-check-2026-05-19-task.md`.
 
+- [x] `AUDIT-MANIFEST-COMPARE-JSON-OUTPUT-2026-05-19 feature: persist manifest comparison reports`
+  - 2026-05-19: Added `--json-output <path>` to
+    `audit:manifest:compare`, creating parent directories and writing the full
+    machine-readable comparison report for future audit rerun evidence.
+    Focused CLI regression coverage writes and reads a temporary report.
+    Evidence:
+    `docs/planning/audit-manifest-compare-json-output-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

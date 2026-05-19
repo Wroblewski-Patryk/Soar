@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { readFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -11,6 +11,7 @@ const parseArgs = () => {
   const options = {
     base: null,
     target: null,
+    jsonOutput: '',
     json: false,
     help: false,
   };
@@ -33,6 +34,11 @@ const parseArgs = () => {
     if (arg === '--target') {
       options.target = args[index + 1] ?? null;
       index += 1;
+      continue;
+    }
+    if (arg === '--json-output') {
+      options.jsonOutput = args[index + 1] ?? '';
+      index += 1;
     }
   }
 
@@ -40,7 +46,7 @@ const parseArgs = () => {
 };
 
 const printHelp = () => {
-  console.log(`Usage: pnpm run audit:manifest:compare -- --base <path> --target <path> [--json]
+  console.log(`Usage: pnpm run audit:manifest:compare -- --base <path> --target <path> [--json] [--json-output <path>]
 
 Compares two reusable audit manifests and reports:
 - audit status changes
@@ -48,6 +54,7 @@ Compares two reusable audit manifests and reports:
 - open decision deltas
 - safety-boundary regressions
 
+Use --json-output to persist the comparison report for future audit rerun evidence.
 The command exits with a non-zero code when the target manifest regresses.
 `);
 };
@@ -189,6 +196,13 @@ export const compareReusableAuditManifests = (baseManifest, targetManifest, opti
   };
 };
 
+const writeJsonOutput = async (filePath, result) => {
+  if (!filePath) return;
+  const fullPath = path.resolve(repoRoot, filePath);
+  await mkdir(path.dirname(fullPath), { recursive: true });
+  await writeFile(fullPath, `${JSON.stringify(result, null, 2)}\n`);
+};
+
 const main = async () => {
   const options = parseArgs();
 
@@ -209,6 +223,7 @@ const main = async () => {
     base: options.base,
     target: options.target,
   });
+  await writeJsonOutput(options.jsonOutput, result);
 
   if (options.json) {
     console.log(JSON.stringify(result, null, 2));

@@ -186,7 +186,9 @@ Before any future "full audit" request, start from:
   `docs/planning/audit-manifest-compare-status-bucket-check-2026-05-19-task.md`:
   manifest comparison ranks only leading status buckets, matching manifest and
   rollup validators so hybrid current/deferred wording does not become a false
-  regression.
+  regression. Follow-up
+  `docs/planning/audit-manifest-compare-json-output-2026-05-19-task.md` adds
+  `--json-output <path>` for persisted machine-readable comparison reports.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.

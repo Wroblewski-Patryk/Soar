@@ -17,15 +17,15 @@
     },
     {
       "id": "AUDIT-MANIFEST-COMPARE",
-      "command": "corepack pnpm run audit:manifest:compare -- --base <path> --target <path>",
+      "command": "corepack pnpm run audit:manifest:compare -- --base <path> --target <path> --json-output <path>",
       "script": "scripts/compareReusableAuditManifests.mjs",
-      "purpose": "Compare two audit manifests for regressions and improvements using leading status buckets."
+      "purpose": "Compare two audit manifests for regressions and improvements using leading status buckets, with optional JSON report output."
     },
     {
       "id": "AUDIT-MANIFEST-COMPARE-TEST",
       "command": "corepack pnpm run audit:manifest:compare:test",
       "script": "scripts/compareReusableAuditManifests.test.mjs",
-      "purpose": "Regression-test leading status bucket, summary, decision, and safety-boundary comparison behavior."
+      "purpose": "Regression-test leading status bucket, summary, decision, safety-boundary comparison behavior, and JSON report output."
     },
     {
       "id": "AUDIT-MANIFEST-VERIFY",

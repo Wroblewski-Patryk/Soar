@@ -134,6 +134,8 @@ repair queue items, and fail-closed safety booleans.
 Reusable audit manifest comparison now uses leading status bucket semantics,
 matching manifest and rollup validators so hybrid statuses such as
 `current ... deferred` do not create false regressions.
+Reusable audit manifest comparison can now persist machine-readable rerun
+evidence with `--json-output <path>`.
 Next executable protected step remains the same: provide the approved
 protected inputs named in that packet and execute the commands in order.
 

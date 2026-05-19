@@ -230,6 +230,11 @@ Last updated: 2026-05-19
   leading status buckets; hybrid current/deferred wording no longer produces a
   false regression. Evidence:
   `docs/planning/audit-manifest-compare-status-bucket-check-2026-05-19-task.md`.
+  Follow-up `AUDIT-MANIFEST-COMPARE-JSON-OUTPUT-2026-05-19` added
+  `--json-output <path>` to `audit:manifest:compare`, so future reruns can
+  persist machine-readable comparison reports instead of relying on copied
+  terminal output. Evidence:
+  `docs/planning/audit-manifest-compare-json-output-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,

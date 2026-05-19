@@ -57,6 +57,8 @@ Last updated: 2026-05-19
 - Reusable audit manifest comparison now ranks only leading status buckets,
   aligning comparison semantics with manifest and rollup validators and
   avoiding false regressions from hybrid current/deferred wording.
+- Reusable audit manifest comparison can now persist machine-readable reports
+  with `--json-output <path>` for future rerun evidence.
 
 ## Latest Health Snapshot
 
@@ -172,6 +174,9 @@ Last updated: 2026-05-19
   buckets, preventing hybrid current/deferred statuses from being misread as
   regressions. Evidence:
   `docs/planning/audit-manifest-compare-status-bucket-check-2026-05-19-task.md`.
+  Follow-up JSON-output hardening allows `audit:manifest:compare` to persist
+  the full comparison report with `--json-output <path>`. Evidence:
+  `docs/planning/audit-manifest-compare-json-output-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` LOCAL DATA/MIGRATIONS PASS WITH
   FINDING: Prisma schema validation passed, local migration status reported
