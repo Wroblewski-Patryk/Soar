@@ -111,6 +111,20 @@ Last updated: 2026-05-19
   and
   `docs/planning/post-push-build-info-readback-36ff999d-2026-05-19-task.md`.
 
+- `MAIN-PROMOTION-BUILD-INFO-DD1A1FAF-2026-05-19` is the latest public deploy
+  freshness checkpoint. It confirmed production tracks `main`, fast-forwarded
+  `origin/main` from `1586f59261cef94d7c513d71bbfcfb697d11ca59` to
+  `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`, waited until production
+  build-info exposed `dd1a1faf`, and reran public no-worker deploy smoke
+  successfully. No production data mutation, LIVE order/cancel/close,
+  exchange-side mutation, existing production data mutation, or protected
+  authenticated journey was performed. Full protected `AUD-19` release
+  readiness still requires protected runtime, rollback, backup/restore, and
+  sign-off evidence. Evidence:
+  `docs/operations/main-promotion-build-info-dd1a1faf-2026-05-19.md`,
+  `docs/operations/main-promotion-build-info-dd1a1faf-2026-05-19.json`, and
+  `docs/planning/main-promotion-build-info-dd1a1faf-2026-05-19-task.md`.
+
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,
   local migration status reported `54` migrations and schema up to date, full

@@ -199,6 +199,19 @@ Last updated: 2026-05-19
     `docs/operations/post-push-build-info-readback-36ff999d-2026-05-19.md` and
     `docs/planning/post-push-build-info-readback-36ff999d-2026-05-19-task.md`.
 
+- [x] `MAIN-PROMOTION-BUILD-INFO-DD1A1FAF-2026-05-19 release: promote audit branch to main and verify public freshness`
+  - 2026-05-19: Confirmed `origin/main` was an ancestor of the current audit
+    branch HEAD, fast-forwarded `origin/main` to
+    `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`, waited for production
+    build-info to expose `dd1a1faf` on attempt `8`, and reran public no-worker
+    deploy smoke successfully for API `/health`, API `/ready`, and Web `/`.
+    No production data mutation, LIVE order/cancel/close, exchange-side
+    mutation, existing production data mutation, or protected authenticated
+    journey was performed. Full protected release readiness remains a separate
+    `AUD-19` gate. Evidence:
+    `docs/operations/main-promotion-build-info-dd1a1faf-2026-05-19.md` and
+    `docs/planning/main-promotion-build-info-dd1a1faf-2026-05-19-task.md`.
+
 - [x] `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19 research: refresh AUD-07 data model/migrations`
   - 2026-05-19: Completed the `AUD-07` data model/migrations audit. Prisma
     schema validation passed, local migration status reported `54` migrations

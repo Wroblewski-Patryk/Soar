@@ -1,8 +1,18 @@
 # Current Focus
 
-Last updated: 2026-05-14
+Last updated: 2026-05-19
 
 ## Active Focus
+
+2026-05-19 production deploy target status:
+`MAIN-PROMOTION-BUILD-INFO-DD1A1FAF-2026-05-19` is the latest deploy freshness
+checkpoint. Production was confirmed to track `main`; the audit branch HEAD
+was fast-forwarded to `origin/main` at
+`dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`; production build-info reached that
+SHA on attempt `8`; public no-worker smoke passed for API `/health`, API
+`/ready`, and Web `/`. This proves public deploy freshness only. Full protected
+`AUD-19` release readiness still requires protected runtime, rollback,
+backup/restore, sign-off, and any approved protected journey evidence.
 
 2026-05-14 post-V1 source-of-truth reconciliation:
 `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14` is the latest ledger truth. The

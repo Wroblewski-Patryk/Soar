@@ -23,6 +23,9 @@ Last updated: 2026-05-19
   still on `1586f59261cef94d7c513d71bbfcfb697d11ca59` (`gitRef: main`) while
   public API/Web smoke passed. `36ff999d` is not production-ready by
   build-info.
+- Follow-up confirmed production tracks `main`. `origin/main` was
+  fast-forwarded to `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`; production
+  build-info reached that SHA and public API/Web smoke passed.
 - Post-decision repair playbooks are available at
   `docs/operations/audit-decision-repair-playbooks-2026-05-19.md`; they are
   historical planning guidance and do not change runtime behavior.
@@ -64,6 +67,16 @@ Last updated: 2026-05-19
   smoke passed for the currently deployed service. Evidence:
   `docs/operations/post-push-build-info-readback-36ff999d-2026-05-19.md` and
   `docs/planning/post-push-build-info-readback-36ff999d-2026-05-19-task.md`.
+
+- `MAIN-PROMOTION-BUILD-INFO-DD1A1FAF-2026-05-19` PUBLIC DEPLOY FRESHNESS
+  PASS: `origin/main` was fast-forwarded to
+  `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`; production Web build-info
+  exposed that SHA on attempt `8`; public no-worker deploy smoke passed for
+  API `/health`, API `/ready`, and Web `/`. Full protected `AUD-19` release
+  readiness still requires protected runtime, rollback, backup/restore, and
+  sign-off evidence. Evidence:
+  `docs/operations/main-promotion-build-info-dd1a1faf-2026-05-19.md` and
+  `docs/planning/main-promotion-build-info-dd1a1faf-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` LOCAL DATA/MIGRATIONS PASS WITH
   FINDING: Prisma schema validation passed, local migration status reported

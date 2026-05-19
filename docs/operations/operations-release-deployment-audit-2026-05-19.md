@@ -37,6 +37,11 @@ was performed.
   build-info still on `1586f59261cef94d7c513d71bbfcfb697d11ca59` (`gitRef:
   main`) after a 60-second wait. Public smoke passed for the currently deployed
   production service, but `36ff999d` is not production-ready by build-info.
+- 2026-05-19 follow-up confirmed production tracks `main`: `origin/main`
+  matched `1586f59261cef94d7c513d71bbfcfb697d11ca59`, while the audit branch
+  was ahead. A fast-forward push promoted `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`
+  to `origin/main`; production build-info reached that SHA on attempt `8`, and
+  public API/Web smoke passed.
 - Production release readiness remains historical for the 2026-05-14
   `457bce05` target. Any new production deploy needs fresh build-info, smoke,
   protected runtime, rollback, backup/restore, and sign-off evidence.
@@ -51,6 +56,7 @@ was performed.
 | AUD-OPS-004 | P1 | open freshness follow-up | Production release gate was not rerun for a new deployment target. | Keep 2026-05-14 `457bce05` as historical production evidence only; rerun production gates before any new release claim. |
 | AUD-OPS-005 | P2 | observation | Mobile build remains scaffold-only. | Root build prints `Mobile scaffold only. Build not enabled yet.`; tracked under `AUD-21`. |
 | AUD-OPS-006 | P1 | blocked by stale target build-info | Post-push production build-info did not expose `36ff999d`; it stayed on `1586f59261cef94d7c513d71bbfcfb697d11ca59` while public smoke passed for the deployed service. | `docs/operations/post-push-build-info-readback-36ff999d-2026-05-19.md`; promote/deploy the intended target or wait for the correct production pipeline, then rerun build-info and release-gate checks. |
+| AUD-OPS-007 | P1 | public deploy freshness passed / protected gate still open | Production tracks `main`; after fast-forwarding `origin/main` to `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`, build-info freshness and public API/Web smoke passed. | `docs/operations/main-promotion-build-info-dd1a1faf-2026-05-19.md`; rerun protected runtime, rollback, backup/restore, and sign-off evidence before any full production readiness claim. |
 
 ## Result
 

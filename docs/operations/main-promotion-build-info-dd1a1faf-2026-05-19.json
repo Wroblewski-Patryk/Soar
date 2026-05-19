@@ -1,0 +1,48 @@
+{
+  "id": "MAIN-PROMOTION-BUILD-INFO-DD1A1FAF-2026-05-19",
+  "date": "2026-05-19",
+  "targetCommit": "dd1a1faf79f8ac3581ca0a8c983481a3e30327ac",
+  "targetBranch": "main",
+  "sourceBranch": "codex/v1-proof-and-ops-evidence",
+  "previousMainCommit": "1586f59261cef94d7c513d71bbfcfb697d11ca59",
+  "productionWebBaseUrl": "https://soar.luckysparrow.ch",
+  "productionApiBaseUrl": "https://api.soar.luckysparrow.ch",
+  "productionMutation": false,
+  "liveOrderCancelClose": false,
+  "exchangeSideMutation": false,
+  "existingProductionDataMutation": false,
+  "remoteBranchComparison": {
+    "status": "PASS",
+    "originMainWasAncestorOfHead": true
+  },
+  "mainPromotion": {
+    "command": "git push origin HEAD:main",
+    "status": "PASS",
+    "from": "1586f59261cef94d7c513d71bbfcfb697d11ca59",
+    "to": "dd1a1faf79f8ac3581ca0a8c983481a3e30327ac"
+  },
+  "buildInfoWait": {
+    "command": "corepack pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha dd1a1faf --timeout-seconds 900 --interval-seconds 30",
+    "status": "PASS",
+    "attempts": 8,
+    "expectedSha": "dd1a1faf"
+  },
+  "buildInfoReadback": {
+    "buildId": "9ArCoaW6DPdlInYuCZfH_",
+    "gitSha": "dd1a1faf79f8ac3581ca0a8c983481a3e30327ac",
+    "gitRef": "main",
+    "metadataGeneratedAt": null,
+    "metadataSource": "env-runtime",
+    "checkedAt": "2026-05-19T03:52:04.635Z"
+  },
+  "publicSmoke": {
+    "command": "corepack pnpm run ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --skip-workers",
+    "status": "PASS",
+    "checks": [
+      { "name": "API /health", "status": 200 },
+      { "name": "API /ready", "status": 200 },
+      { "name": "WEB /", "status": 200 }
+    ]
+  },
+  "conclusion": "Production now exposes dd1a1faf on main and public API/Web smoke passes. Full protected AUD-19 release readiness still requires protected runtime, rollback, backup/restore, and sign-off evidence."
+}
