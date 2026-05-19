@@ -100,7 +100,12 @@ A rollup Markdown summary and validator check that keep summary counts aligned w
   - `git diff --check`
 - Manual checks: reviewed rollup Markdown summary labels and JSON summary keys.
 - High-risk checks: no production calls, no protected inputs, no LIVE/exchange-side mutation.
-- Cleanup checks: no `chrome-headless-shell` rows remained after final cleanup; no local `5432`/`6379` listeners were found and Docker had no running compose services.
+- Cleanup checks: final cleanup found four residual `chrome-headless-shell`
+  rows under a Playwright temp profile, the first narrow stop respawned a
+  second four-row tree, and a second narrow
+  `Get-Process chrome-headless-shell | Stop-Process -Force` cleanup followed
+  by a delayed process check returned no rows. No local `5432`/`6379` listeners
+  were found and Docker had no running compose services.
 - Module confidence ledger updated: yes
 - Requirements matrix updated: yes
 - Risk register updated: yes
