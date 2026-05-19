@@ -62,6 +62,7 @@ const printHelp = () => {
 
 Validates the reusable audit rerun playbook JSON by checking:
 - baseline manifest and rollup paths are present and resolvable
+- baseline manifest and rollup values are repository paths
 - AUD-00 through AUD-23 are present in rerunOrder
 - future manifest commands are present
 - regression rules, stop conditions, required closure checks, and cleanup checks exist
@@ -74,11 +75,16 @@ const collectRerunAuditIds = (playbook) =>
   (Array.isArray(playbook.rerunOrder) ? playbook.rerunOrder : []).flatMap((step) =>
     Array.isArray(step.auditIds) ? step.auditIds : [],
   );
+const isRepositoryPath = (value) =>
+  typeof value === 'string' && /^(docs|\.agents|\.codex|apps|scripts)\//.test(value);
 
 export const validateReusableAuditRerunPlaybook = (playbook, options = {}) => {
   const exists = options.exists ?? ((relativePath) => existsSync(path.resolve(repoRoot, relativePath)));
   const baseline = playbook.baseline ?? {};
   const missingBaselineKeys = requiredBaselineKeys.filter((key) => !(key in baseline));
+  const invalidBaselinePaths = requiredBaselineKeys
+    .filter((key) => key in baseline && !isRepositoryPath(baseline[key]))
+    .map((key) => ({ key, value: baseline[key] ?? null }));
   const missingBaselinePaths = requiredBaselineKeys
     .filter((key) => typeof baseline[key] === 'string' && !exists(baseline[key]))
     .map((key) => ({ key, path: baseline[key] }));
@@ -123,6 +129,7 @@ export const validateReusableAuditRerunPlaybook = (playbook, options = {}) => {
     },
     baseline: {
       missingKeys: missingBaselineKeys,
+      invalidPaths: invalidBaselinePaths,
       missingPaths: missingBaselinePaths,
     },
     commands: {
@@ -160,6 +167,7 @@ export const validateReusableAuditRerunPlaybook = (playbook, options = {}) => {
     result.audits.missing.length === 0 &&
     result.audits.duplicates.length === 0 &&
     result.baseline.missingKeys.length === 0 &&
+    result.baseline.invalidPaths.length === 0 &&
     result.baseline.missingPaths.length === 0 &&
     result.commands.missingFutureCommands.length === 0 &&
     result.commands.commandWithoutBaselinePlaceholder.length === 0 &&
@@ -197,6 +205,7 @@ const main = async () => {
     console.log(`- Missing audits: ${result.audits.missing.length}`);
     console.log(`- Duplicate audits: ${result.audits.duplicates.length}`);
     console.log(`- Missing baseline keys: ${result.baseline.missingKeys.length}`);
+    console.log(`- Invalid baseline paths: ${result.baseline.invalidPaths.length}`);
     console.log(`- Missing baseline paths: ${result.baseline.missingPaths.length}`);
     console.log(`- Missing future commands: ${result.commands.missingFutureCommands.length}`);
     console.log(`- Missing sections: ${result.sections.missing.length}`);

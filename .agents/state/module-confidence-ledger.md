@@ -89,6 +89,11 @@ Do not turn uncertainty into optimism.
   safety-boundary booleans are missing or unsafe. Evidence:
   `docs/planning/audit-manifest-safety-boundary-check-2026-05-19-task.md`.
 - 2026-05-19
+  `AUDIT-RERUN-PLAYBOOK-BASELINE-PATH-VALUE-CHECK-2026-05-19` applies to
+  `SOAR-OPERATIONS-001`: `audit:rerun-playbook:check` now fails when required
+  baseline values are empty or not repository paths. Evidence:
+  `docs/planning/audit-rerun-playbook-baseline-path-value-check-2026-05-19-task.md`.
+- 2026-05-19
   `AUDIT-HANDOFF-TOOLING-INDEX-SOURCE-CHECK-2026-05-19` applies to
   `SOAR-OPERATIONS-001`: `audit:handoff:check` now requires reusable
   tooling-index Markdown and JSON paths in the handoff source chain. Evidence:

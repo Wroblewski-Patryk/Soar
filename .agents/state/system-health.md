@@ -100,6 +100,8 @@ Last updated: 2026-05-19
   parity against the referenced rollup JSON.
 - Reusable audit rerun playbook validation now checks baseline manifest and
   rollup Markdown/JSON path completeness and existence.
+- Reusable audit rerun playbook validation now also fails if required baseline
+  values are empty or are not repository paths.
 - Reusable audit remediation-plan validation now requires its own self-check
   command in closure checks.
 

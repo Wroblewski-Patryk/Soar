@@ -326,6 +326,10 @@ Last updated: 2026-05-19
   `audit:manifest:check` so manifest safety-boundary booleans must remain
   fail-closed. Evidence:
   `docs/planning/audit-manifest-safety-boundary-check-2026-05-19-task.md`.
+  Follow-up `AUDIT-RERUN-PLAYBOOK-BASELINE-PATH-VALUE-CHECK-2026-05-19`
+  hardened `audit:rerun-playbook:check` so required baseline values must be
+  repository paths, not empty strings or external URLs. Evidence:
+  `docs/planning/audit-rerun-playbook-baseline-path-value-check-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,

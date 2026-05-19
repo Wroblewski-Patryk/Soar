@@ -68,5 +68,9 @@ Last updated: 2026-05-19
 - 2026-05-19 `AUDIT-MANIFEST-SAFETY-BOUNDARY-CHECK-2026-05-19` updates
   `RISK-021` and `RISK-036`: manifest validation now catches missing or unsafe
   safety-boundary booleans before a reusable audit manifest can pass.
+- 2026-05-19 `AUDIT-RERUN-PLAYBOOK-BASELINE-PATH-VALUE-CHECK-2026-05-19`
+  updates `RISK-021` and `RISK-036`: rerun playbook validation now catches
+  empty or non-repository required baseline values before a reusable audit
+  rerun playbook can pass.
 
 Allowed statuses: `open`, `mitigating`, `accepted`, `closed`, `superseded`.

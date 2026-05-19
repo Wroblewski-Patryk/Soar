@@ -253,6 +253,9 @@ Before any future "full audit" request, start from:
   source-chain structure stays exact.
 - `docs/planning/audit-manifest-safety-boundary-check-2026-05-19-task.md`:
   manifest validation now fails on unsafe or missing safety-boundary booleans.
+- `docs/planning/audit-rerun-playbook-baseline-path-value-check-2026-05-19-task.md`:
+  rerun playbook validation now requires required baseline values to be
+  repository paths under approved roots.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.
@@ -283,7 +286,7 @@ Before any future "full audit" request, start from:
 - `docs/operations/reusable-audit-rerun-playbook-2026-05-19.json`:
   machine-readable rerun order, commands, stop conditions, regression rules,
   required closure checks, and required cleanup checks for future audit
-  automation.
+  automation. Required baseline values must be repository paths.
 - `docs/operations/reusable-audit-tooling-index-2026-05-19.md` and
   `docs/operations/reusable-audit-tooling-index-2026-05-19.json`: command and
   script map for reusable audit validation, comparison, rerun playbook checks,

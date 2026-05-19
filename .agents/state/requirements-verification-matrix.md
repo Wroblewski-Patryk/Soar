@@ -68,6 +68,10 @@ Last updated: 2026-05-19
 - 2026-05-19 `AUDIT-MANIFEST-SAFETY-BOUNDARY-CHECK-2026-05-19` updates
   `REQ-FUNC-021` and `REQ-AUDIT-031`: `audit:manifest:check` now fails when
   manifest safety-boundary booleans are missing or unsafe.
+- 2026-05-19 `AUDIT-RERUN-PLAYBOOK-BASELINE-PATH-VALUE-CHECK-2026-05-19`
+  updates `REQ-FUNC-021` and `REQ-AUDIT-031`: `audit:rerun-playbook:check`
+  now fails when required baseline values are empty or are not repository
+  paths.
 
 Allowed statuses: `proposed`, `accepted`, `in_progress`,
 `implemented_not_verified`, `partially_verified`, `verified`, `failed`,

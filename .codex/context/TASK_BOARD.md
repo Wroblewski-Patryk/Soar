@@ -389,6 +389,12 @@ Last updated: 2026-05-19
     application, and runtime behavior-change drift. Evidence:
     `docs/planning/audit-manifest-safety-boundary-check-2026-05-19-task.md`.
 
+- [x] `AUDIT-RERUN-PLAYBOOK-BASELINE-PATH-VALUE-CHECK-2026-05-19 feature: require rerun baseline repository paths`
+  - 2026-05-19: Hardened `audit:rerun-playbook:check` so required baseline
+    values must be repository paths, not empty strings or external URLs.
+    Focused regression coverage catches invalid baseline path values. Evidence:
+    `docs/planning/audit-rerun-playbook-baseline-path-value-check-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

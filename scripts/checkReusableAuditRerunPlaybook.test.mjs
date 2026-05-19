@@ -56,6 +56,7 @@ test('validateReusableAuditRerunPlaybook passes complete playbooks', () => {
   assert.equal(result.audits.found, 24);
   assert.deepEqual(result.audits.missing, []);
   assert.deepEqual(result.baseline.missingKeys, []);
+  assert.deepEqual(result.baseline.invalidPaths, []);
   assert.deepEqual(result.baseline.missingPaths, []);
   assert.deepEqual(result.sections.missing, []);
   assert.deepEqual(result.safetyBoundaries.unsafe, []);
@@ -87,6 +88,25 @@ test('validateReusableAuditRerunPlaybook fails when baseline paths are missing',
       key: 'rollupJson',
       path: 'docs/operations/full-reusable-audit-rollup-2026-05-19.json',
     },
+  ]);
+});
+
+test('validateReusableAuditRerunPlaybook fails when baseline values are not repository paths', () => {
+  const result = validateReusableAuditRerunPlaybook(
+    playbook({
+      baseline: {
+        manifest: '',
+        rollup: 'https://example.test/rollup.md',
+        rollupJson: 'docs/operations/full-reusable-audit-rollup-2026-05-19.json',
+      },
+    }),
+    { exists: allPathsExist },
+  );
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.baseline.invalidPaths, [
+    { key: 'manifest', value: '' },
+    { key: 'rollup', value: 'https://example.test/rollup.md' },
   ]);
 });
 
