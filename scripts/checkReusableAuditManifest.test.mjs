@@ -34,6 +34,13 @@ const manifest = (overrides = {}) => ({
     pathsChecked: 14,
     missingPaths: 0,
   },
+  safetyBoundaries: {
+    productionDataMutation: false,
+    liveOrderCancelClose: false,
+    exchangeSideMutation: false,
+    architectureDecisionApplied: true,
+    runtimeBehaviorChanged: false,
+  },
   openDecisions: [
     {
       id: 'DEC-AUD-001',
@@ -69,6 +76,7 @@ test('validateReusableAuditManifest passes complete manifests', () => {
   assert.deepEqual(result.summary.mismatches, []);
   assert.deepEqual(result.summary.markdownMismatches, []);
   assert.deepEqual(result.manifestValidation.mismatches, []);
+  assert.deepEqual(result.safetyBoundaries.mismatches, []);
   assert.deepEqual(result.decisions.missingLinks, []);
 });
 
@@ -287,6 +295,28 @@ test('validateReusableAuditManifest fails when companion markdown summary drifts
       key: 'currentOrCurrentLocal',
       declared: 24,
     },
+  ]);
+});
+
+test('validateReusableAuditManifest fails when safety boundaries are unsafe', () => {
+  const result = validateReusableAuditManifest(
+    manifest({
+      safetyBoundaries: {
+        productionDataMutation: true,
+        liveOrderCancelClose: false,
+        exchangeSideMutation: false,
+        architectureDecisionApplied: false,
+        runtimeBehaviorChanged: true,
+      },
+    }),
+    { exists: allPathsExist },
+  );
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.safetyBoundaries.mismatches, [
+    { key: 'productionDataMutation', expected: false, actual: true },
+    { key: 'architectureDecisionApplied', expected: true, actual: false },
+    { key: 'runtimeBehaviorChanged', expected: false, actual: true },
   ]);
 });
 

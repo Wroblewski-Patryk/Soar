@@ -65,5 +65,8 @@ Last updated: 2026-05-19
 - 2026-05-19 `AUDIT-MANIFEST-SOURCE-CHAIN-EXACT-KEY-CHECK-2026-05-19`
   updates `RISK-021` and `RISK-036`: manifest validation now catches
   unexpected source-chain keys before a reusable audit manifest can pass.
+- 2026-05-19 `AUDIT-MANIFEST-SAFETY-BOUNDARY-CHECK-2026-05-19` updates
+  `RISK-021` and `RISK-036`: manifest validation now catches missing or unsafe
+  safety-boundary booleans before a reusable audit manifest can pass.
 
 Allowed statuses: `open`, `mitigating`, `accepted`, `closed`, `superseded`.

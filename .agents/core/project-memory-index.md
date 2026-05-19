@@ -251,6 +251,8 @@ Before any future "full audit" request, start from:
 - `docs/planning/audit-manifest-source-chain-exact-key-check-2026-05-19-task.md`:
   manifest validation now fails on unexpected source-chain keys so the
   source-chain structure stays exact.
+- `docs/planning/audit-manifest-safety-boundary-check-2026-05-19-task.md`:
+  manifest validation now fails on unsafe or missing safety-boundary booleans.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.
@@ -290,7 +292,8 @@ Before any future "full audit" request, start from:
   existence enforcement.
   Manifest validation also requires the full source-chain key set before a
   reusable audit manifest can pass, and required source-chain values must be
-  repository paths. Unexpected source-chain keys fail validation.
+  repository paths. Unexpected source-chain keys and unsafe safety boundaries
+  fail validation.
 
 Current baseline facts: project index passed on 2026-05-18 with `PASS:21` and
 `335` indexed tests; static scan passed with `0` findings; guardrails, docs

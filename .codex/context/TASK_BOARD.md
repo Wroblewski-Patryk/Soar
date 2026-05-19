@@ -382,6 +382,13 @@ Last updated: 2026-05-19
     repository paths. Evidence:
     `docs/planning/audit-manifest-source-chain-exact-key-check-2026-05-19-task.md`.
 
+- [x] `AUDIT-MANIFEST-SAFETY-BOUNDARY-CHECK-2026-05-19 feature: require manifest safety boundaries`
+  - 2026-05-19: Hardened `audit:manifest:check` so reusable audit manifests
+    fail when safety-boundary booleans are missing or unsafe. Focused
+    regression coverage catches production mutation, missing decision
+    application, and runtime behavior-change drift. Evidence:
+    `docs/planning/audit-manifest-safety-boundary-check-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

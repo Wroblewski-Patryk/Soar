@@ -84,6 +84,11 @@ Do not turn uncertainty into optimism.
   source-chain keys are present. Evidence:
   `docs/planning/audit-manifest-source-chain-exact-key-check-2026-05-19-task.md`.
 - 2026-05-19
+  `AUDIT-MANIFEST-SAFETY-BOUNDARY-CHECK-2026-05-19` applies to
+  `SOAR-OPERATIONS-001`: `audit:manifest:check` now fails when manifest
+  safety-boundary booleans are missing or unsafe. Evidence:
+  `docs/planning/audit-manifest-safety-boundary-check-2026-05-19-task.md`.
+- 2026-05-19
   `AUDIT-HANDOFF-TOOLING-INDEX-SOURCE-CHECK-2026-05-19` applies to
   `SOAR-OPERATIONS-001`: `audit:handoff:check` now requires reusable
   tooling-index Markdown and JSON paths in the handoff source chain. Evidence:

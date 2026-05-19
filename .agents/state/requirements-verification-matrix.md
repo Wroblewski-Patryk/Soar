@@ -65,6 +65,9 @@ Last updated: 2026-05-19
 - 2026-05-19 `AUDIT-MANIFEST-SOURCE-CHAIN-EXACT-KEY-CHECK-2026-05-19`
   updates `REQ-FUNC-021` and `REQ-AUDIT-031`: `audit:manifest:check` now
   fails when unexpected source-chain keys are present.
+- 2026-05-19 `AUDIT-MANIFEST-SAFETY-BOUNDARY-CHECK-2026-05-19` updates
+  `REQ-FUNC-021` and `REQ-AUDIT-031`: `audit:manifest:check` now fails when
+  manifest safety-boundary booleans are missing or unsafe.
 
 Allowed statuses: `proposed`, `accepted`, `in_progress`,
 `implemented_not_verified`, `partially_verified`, `verified`, `failed`,

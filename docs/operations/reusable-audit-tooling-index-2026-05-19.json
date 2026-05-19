@@ -7,13 +7,13 @@
       "id": "AUDIT-MANIFEST-CHECK",
       "command": "corepack pnpm run audit:manifest:check",
       "script": "scripts/checkReusableAuditManifest.mjs",
-      "purpose": "Validate manifest JSON coverage, exact source-chain keys with repository-path values, JSON/Markdown summary counts, path metadata, referenced paths, and open-decision links."
+      "purpose": "Validate manifest JSON coverage, exact source-chain keys with repository-path values, JSON/Markdown summary counts, path metadata, referenced paths, safety boundaries, and open-decision links."
     },
     {
       "id": "AUDIT-MANIFEST-CHECK-TEST",
       "command": "corepack pnpm run audit:manifest:check:test",
       "script": "scripts/checkReusableAuditManifest.test.mjs",
-      "purpose": "Regression-test missing audit IDs, duplicate IDs, missing or unexpected source-chain keys, invalid source-chain paths, JSON/Markdown summary drift, path metadata drift, missing paths, and missing decision links."
+      "purpose": "Regression-test missing audit IDs, duplicate IDs, missing or unexpected source-chain keys, invalid source-chain paths, JSON/Markdown summary drift, path metadata drift, missing paths, unsafe safety boundaries, and missing decision links."
     },
     {
       "id": "AUDIT-MANIFEST-COMPARE",

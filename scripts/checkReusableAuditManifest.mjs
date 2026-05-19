@@ -47,6 +47,7 @@ Validates a reusable audit artifact manifest by checking:
 - no unexpected source-chain keys are present
 - required source-chain values are repository paths
 - referenced repository paths exist
+- safety-boundary booleans remain fail-closed
 - open decisions include packet and playbook links
 `);
 };
@@ -86,6 +87,13 @@ const requiredSourceChainKeys = [
   'decisionPacket',
   'repairPlaybooks',
 ];
+const requiredSafetyBoundaries = {
+  productionDataMutation: false,
+  liveOrderCancelClose: false,
+  exchangeSideMutation: false,
+  architectureDecisionApplied: true,
+  runtimeBehaviorChanged: false,
+};
 const classifyAuditStatus = (status) => {
   const normalized = String(status ?? '').toLowerCase();
   if (normalized.startsWith('deferred')) return 'deferred';
@@ -168,6 +176,11 @@ export const validateReusableAuditManifest = (manifest, options = {}) => {
     });
   }
 
+  const safetyBoundaries = manifest.safetyBoundaries ?? {};
+  const safetyBoundaryMismatches = Object.entries(requiredSafetyBoundaries)
+    .filter(([key, expected]) => safetyBoundaries[key] !== expected)
+    .map(([key, expected]) => ({ key, expected, actual: safetyBoundaries[key] ?? null }));
+
   const openDecisions = Array.isArray(manifest.openDecisions) ? manifest.openDecisions : [];
   const decisionsMissingLinks = openDecisions
     .filter((decision) => !decision.packet || !decision.playbook)
@@ -185,6 +198,7 @@ export const validateReusableAuditManifest = (manifest, options = {}) => {
       summaryMismatches.length === 0 &&
       markdownSummaryMismatches.length === 0 &&
       manifestValidationMismatches.length === 0 &&
+      safetyBoundaryMismatches.length === 0 &&
       decisionsMissingLinks.length === 0
         ? 'PASS'
         : 'FAIL',
@@ -212,6 +226,9 @@ export const validateReusableAuditManifest = (manifest, options = {}) => {
     },
     manifestValidation: {
       mismatches: manifestValidationMismatches,
+    },
+    safetyBoundaries: {
+      mismatches: safetyBoundaryMismatches,
     },
     decisions: {
       open: openDecisions.length,
@@ -250,6 +267,7 @@ const main = async () => {
     console.log(`- Summary mismatches: ${result.summary.mismatches.length}`);
     console.log(`- Markdown summary mismatches: ${result.summary.markdownMismatches.length}`);
     console.log(`- Manifest validation metadata mismatches: ${result.manifestValidation.mismatches.length}`);
+    console.log(`- Safety boundary mismatches: ${result.safetyBoundaries.mismatches.length}`);
     console.log(`- Open decisions: ${result.decisions.open}`);
     console.log(`- Decisions missing packet/playbook links: ${result.decisions.missingLinks.length}`);
   }

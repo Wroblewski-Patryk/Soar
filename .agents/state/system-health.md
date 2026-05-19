@@ -75,6 +75,8 @@ Last updated: 2026-05-19
   values are empty or are not repository paths.
 - Reusable audit manifest validation now also fails if unexpected source-chain
   keys are present.
+- Reusable audit manifest validation now also fails if safety-boundary booleans
+  are missing or unsafe.
 - Full reusable audit rollup validation is now included in
   `audit:manifest:verify`; `audit:rollup:check` verifies audit coverage,
   summary counts, source paths, repair queue items, and fail-closed safety

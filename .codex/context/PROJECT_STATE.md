@@ -322,6 +322,10 @@ Last updated: 2026-05-19
   `audit:manifest:check` so unexpected source-chain keys fail validation.
   Evidence:
   `docs/planning/audit-manifest-source-chain-exact-key-check-2026-05-19-task.md`.
+  Follow-up `AUDIT-MANIFEST-SAFETY-BOUNDARY-CHECK-2026-05-19` hardened
+  `audit:manifest:check` so manifest safety-boundary booleans must remain
+  fail-closed. Evidence:
+  `docs/planning/audit-manifest-safety-boundary-check-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,
