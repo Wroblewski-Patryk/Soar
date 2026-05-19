@@ -213,15 +213,17 @@
     },
     {
       "id": "AUD-19",
-      "status": "current local / public deploy fresh / protected preflight and RC blocked / operator handoff current",
+      "status": "current local / public deploy fresh / protected preflight and RC blocked / operator handoff current / protected inputs absent",
       "reports": [
         "docs/operations/operations-release-deployment-audit-2026-05-19.md",
         "docs/operations/operations-release-deployment-audit-2026-05-19.json",
         "docs/operations/v1-db-restore-check-2026-05-19T01-30-47-200Z.md",
         "docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.md",
-        "docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.json"
+        "docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.json",
+        "docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.md",
+        "docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.json"
       ],
-      "task": "docs/planning/v1-operator-unblock-packet-dd1a1faf-2026-05-19-task.md"
+      "task": "docs/planning/v1-protected-input-readiness-dd1a1faf-2026-05-19-task.md"
     },
     {
       "id": "AUD-20",

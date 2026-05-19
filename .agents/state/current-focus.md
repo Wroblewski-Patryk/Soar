@@ -24,6 +24,10 @@ requires fresh Gate2/SLO evidence and named Gate4 approver/owner fields.
 operator handoff for finishing the protected `AUD-19` evidence line on this
 deployed target. It records the exact required auth/context inputs, command
 order, stop conditions, and acceptance rule without claiming release approval.
+`V1-PROTECTED-INPUT-READINESS-DD1A1FAF-2026-05-19` confirms the current Codex
+shell has `0` matching protected input names, so the next protected evidence
+step remains blocked until approved operator inputs are supplied outside repo
+artifacts.
 
 2026-05-14 post-V1 source-of-truth reconciliation:
 `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14` is the latest ledger truth. The

@@ -137,6 +137,12 @@ Before any future "full audit" request, start from:
   current no-secret operator handoff for completing protected `AUD-19`
   evidence on deployed `dd1a1faf`; it lists required inputs, command order,
   stop conditions, and the acceptance rule, but remains `NO-GO`.
+- `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.md`,
+  `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.json`, and
+  `docs/planning/v1-protected-input-readiness-dd1a1faf-2026-05-19-task.md`:
+  current names-only protected input readiness sweep for deployed `dd1a1faf`;
+  it found `0` matching protected input names in this shell and printed no
+  secret values.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.

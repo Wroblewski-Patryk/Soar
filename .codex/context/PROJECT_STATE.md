@@ -161,6 +161,15 @@ Last updated: 2026-05-19
   `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.json`, and
   `docs/planning/v1-operator-unblock-packet-dd1a1faf-2026-05-19-task.md`.
 
+- `V1-PROTECTED-INPUT-READINESS-DD1A1FAF-2026-05-19` is the latest names-only
+  protected-input sweep for the current Codex shell. It found `0` matching
+  protected input names and therefore confirms the protected `AUD-19` path is
+  still blocked in this environment. No secret values were printed, copied, or
+  stored. Evidence:
+  `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.md`,
+  `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.json`, and
+  `docs/planning/v1-protected-input-readiness-dd1a1faf-2026-05-19-task.md`.
+
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,
   local migration status reported `54` migrations and schema up to date, full

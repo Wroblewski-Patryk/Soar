@@ -101,6 +101,10 @@ checklist as `APPROVED`.
 Current no-secret operator handoff for that follow-up:
 `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.md` and
 `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.json`.
+Current protected-input readiness sweep:
+`docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.md` and
+`docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.json`
+report `0` matching protected input names in this shell.
 Next executable protected step remains the same: provide the approved
 protected inputs named in that packet and execute the commands in order.
 
