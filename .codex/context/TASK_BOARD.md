@@ -315,6 +315,13 @@ Last updated: 2026-05-19
     Evidence:
     `docs/planning/audit-handoff-self-check-validation-2026-05-19-task.md`.
 
+- [x] `AUDIT-RERUN-PLAYBOOK-SELF-CHECK-CLOSURE-2026-05-19 feature: require rerun playbook self-check closure`
+  - 2026-05-19: Hardened `audit:rerun-playbook:check` so rerun playbook
+    `closureChecks` must include `audit:rerun-playbook:check`. Focused
+    regression coverage catches rerun playbooks that omit their own validation
+    command from closure. Evidence:
+    `docs/planning/audit-rerun-playbook-self-check-closure-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

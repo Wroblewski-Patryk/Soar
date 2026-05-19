@@ -223,6 +223,9 @@ Before any future "full audit" request, start from:
 - `docs/planning/audit-handoff-self-check-validation-2026-05-19-task.md`:
   handoff validation now requires `audit:handoff:check` in latest validation
   evidence.
+- `docs/planning/audit-rerun-playbook-self-check-closure-2026-05-19-task.md`:
+  rerun playbook validation now requires `audit:rerun-playbook:check` in
+  closure checks.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.
@@ -249,7 +252,7 @@ Before any future "full audit" request, start from:
 - `docs/operations/reusable-audit-rerun-playbook-2026-05-19.md`: operational
   rerun guide for comparing future manifests against the 2026-05-19 baseline
   with explicit safety boundaries, regression rules, and required closure
-  checks including remediation-plan validation.
+  checks including rerun-playbook and remediation-plan validation.
 - `docs/operations/reusable-audit-rerun-playbook-2026-05-19.json`:
   machine-readable rerun order, commands, stop conditions, regression rules,
   required closure checks, and required cleanup checks for future audit

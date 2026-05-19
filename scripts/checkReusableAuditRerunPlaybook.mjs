@@ -18,6 +18,7 @@ const requiredSafetyBoundaries = [
 ];
 const requiredClosureCheckFragments = [
   'audit:manifest:verify',
+  'audit:rerun-playbook:check',
   'audit:remediation-plan:check',
   'docs:parity:check',
   'quality:guardrails',

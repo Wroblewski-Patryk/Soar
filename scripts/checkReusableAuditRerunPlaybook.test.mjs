@@ -27,6 +27,7 @@ const playbook = (overrides = {}) => ({
   stopConditions: ['decision required'],
   closureChecks: [
     'corepack pnpm run audit:manifest:verify',
+    'corepack pnpm run audit:rerun-playbook:check',
     'corepack pnpm run audit:remediation-plan:check',
     'corepack pnpm run docs:parity:check',
     'corepack pnpm run quality:guardrails',
@@ -181,6 +182,7 @@ test('validateReusableAuditRerunPlaybook fails when required closure checks are 
   assert.equal(result.status, 'FAIL');
   assert.deepEqual(result.closureChecks.missingRequiredFragments, [
     'audit:manifest:verify',
+    'audit:rerun-playbook:check',
     'audit:remediation-plan:check',
     'quality:guardrails',
   ]);

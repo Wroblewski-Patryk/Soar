@@ -132,6 +132,7 @@ Before closing a rerun:
 
 ```powershell
 corepack pnpm run audit:manifest:verify
+corepack pnpm run audit:rerun-playbook:check
 corepack pnpm run audit:remediation-plan:check
 corepack pnpm run docs:parity:check
 corepack pnpm run quality:guardrails

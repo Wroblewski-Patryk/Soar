@@ -49,13 +49,13 @@
       "id": "AUDIT-RERUN-PLAYBOOK-CHECK",
       "command": "corepack pnpm run audit:rerun-playbook:check",
       "script": "scripts/checkReusableAuditRerunPlaybook.mjs",
-      "purpose": "Validate rerun playbook baseline paths, coverage, required commands, sections, required cleanup checks, and safety boundaries."
+      "purpose": "Validate rerun playbook baseline paths, coverage, required commands, required self-check closure checks, sections, required cleanup checks, and safety boundaries."
     },
     {
       "id": "AUDIT-RERUN-PLAYBOOK-CHECK-TEST",
       "command": "corepack pnpm run audit:rerun-playbook:check:test",
       "script": "scripts/checkReusableAuditRerunPlaybook.test.mjs",
-      "purpose": "Regression-test rerun playbook validation behavior, including missing baseline paths and required cleanup checks."
+      "purpose": "Regression-test rerun playbook validation behavior, including missing baseline paths, required self-check closure checks, and required cleanup checks."
     },
     {
       "id": "AUDIT-HANDOFF-CHECK",

@@ -34,9 +34,9 @@ Last updated: 2026-05-19
   required phases/work packages, the `AUD-19` blocker, closure checks, and
   safety boundaries.
 - Reusable audit rerun closure now explicitly requires
-  `audit:manifest:verify`, `audit:remediation-plan:check`, docs parity,
-  guardrails, and diff check; `audit:rerun-playbook:check` fails if any
-  required closure check is missing.
+  `audit:manifest:verify`, `audit:rerun-playbook:check`,
+  `audit:remediation-plan:check`, docs parity, guardrails, and diff check;
+  `audit:rerun-playbook:check` fails if any required closure check is missing.
 - Reusable audit tooling-index validation now enforces the same required
   closure command set and fails if manifest verification, remediation-plan
   validation, docs parity, guardrails, or diff check are omitted.
