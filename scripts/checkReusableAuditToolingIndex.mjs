@@ -40,6 +40,11 @@ const requiredClosureCommandFragments = [
   'quality:guardrails',
   'git diff --check',
 ];
+const requiredCleanupCheckFragments = [
+  'chrome-headless-shell',
+  'Get-NetTCPConnection',
+  'docker compose ps',
+];
 
 const parseArgs = () => {
   const args = process.argv.slice(2);
@@ -79,6 +84,7 @@ Validates the reusable audit tooling index JSON by checking:
 - commands and purposes are present
 - pnpm run commands exist in package.json
 - required closure commands are present
+- required cleanup checks are present
 - safety boundaries remain false
 `);
 };
@@ -133,6 +139,9 @@ export const validateReusableAuditToolingIndex = (toolingIndex, options = {}) =>
   const missingClosureCommandFragments = requiredClosureCommandFragments.filter(
     (fragment) => !closureCommands.some((command) => String(command).includes(fragment)),
   );
+  const missingCleanupCheckFragments = requiredCleanupCheckFragments.filter(
+    (fragment) => !cleanupChecks.some((check) => String(check).includes(fragment)),
+  );
 
   const result = {
     index: options.indexPath ?? null,
@@ -153,6 +162,7 @@ export const validateReusableAuditToolingIndex = (toolingIndex, options = {}) =>
       closureCommands: closureCommands.length,
       missingClosureCommandFragments,
       cleanupChecks: cleanupChecks.length,
+      missingCleanupCheckFragments,
     },
     safetyBoundaries: {
       missing: missingSafetyBoundaries,
@@ -172,6 +182,7 @@ export const validateReusableAuditToolingIndex = (toolingIndex, options = {}) =>
     result.commands.closureCommands > 0 &&
     result.commands.missingClosureCommandFragments.length === 0 &&
     result.commands.cleanupChecks > 0 &&
+    result.commands.missingCleanupCheckFragments.length === 0 &&
     result.safetyBoundaries.missing.length === 0 &&
     result.safetyBoundaries.unsafe.length === 0
       ? 'PASS'
@@ -207,6 +218,7 @@ const main = async () => {
     console.log(`- Missing package scripts: ${result.tools.missingPackageScripts.length}`);
     console.log(`- Missing Markdown tool IDs: ${result.tools.missingMarkdownToolIds.length}`);
     console.log(`- Missing closure commands: ${result.commands.missingClosureCommandFragments.length}`);
+    console.log(`- Missing cleanup checks: ${result.commands.missingCleanupCheckFragments.length}`);
     console.log(`- Unsafe safety boundaries: ${result.safetyBoundaries.unsafe.length}`);
   }
 

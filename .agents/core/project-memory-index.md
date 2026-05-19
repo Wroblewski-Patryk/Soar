@@ -214,6 +214,9 @@ Before any future "full audit" request, start from:
 - `docs/planning/audit-remediation-plan-self-check-closure-2026-05-19-task.md`:
   remediation-plan validation now requires its own self-check command in
   closure checks.
+- `docs/planning/audit-tooling-index-cleanup-check-command-2026-05-19-task.md`:
+  tooling index validation now requires cleanup checks for headless browser
+  processes, local DB/Redis listeners, and Docker compose services.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.
@@ -248,7 +251,8 @@ Before any future "full audit" request, start from:
   `docs/operations/reusable-audit-tooling-index-2026-05-19.json`: command and
   script map for reusable audit validation, comparison, rerun playbook checks,
   handoff checks, endpoint parity, isolated DB-backed audit packs, and
-  required closure-command plus package-script existence enforcement.
+  required closure-command, cleanup-check, and package-script existence
+  enforcement.
 
 Current baseline facts: project index passed on 2026-05-18 with `PASS:21` and
 `335` indexed tests; static scan passed with `0` findings; guardrails, docs

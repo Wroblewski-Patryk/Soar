@@ -294,6 +294,13 @@ Last updated: 2026-05-19
     self-check command. Evidence:
     `docs/planning/audit-remediation-plan-self-check-closure-2026-05-19-task.md`.
 
+- [x] `AUDIT-TOOLING-INDEX-CLEANUP-CHECK-COMMAND-2026-05-19 feature: require tooling-index cleanup checks`
+  - 2026-05-19: Hardened `audit:tooling-index:check` so cleanup checks must
+    include `chrome-headless-shell`, `Get-NetTCPConnection`, and
+    `docker compose ps`. Focused regression coverage catches cleanup sets that
+    drop required local validation cleanup checks. Evidence:
+    `docs/planning/audit-tooling-index-cleanup-check-command-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

@@ -124,6 +124,9 @@ rollup Markdown/JSON paths are present and resolvable.
 Reusable audit tooling-index validation now also fails if closure omits
 manifest verification, remediation-plan validation, docs parity, guardrails, or
 diff check.
+Reusable audit tooling-index validation now also fails if cleanup checks omit
+headless browser process inspection, local DB/Redis listener inspection, or
+Docker compose service inspection.
 Reusable full-audit handoff validation is now part of `audit:manifest:verify`;
 `audit:handoff:check` verifies handoff source paths, residual risks, forbidden
 boundaries, validation checks, and fail-closed safety booleans.

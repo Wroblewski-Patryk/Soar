@@ -46,7 +46,11 @@ const toolingIndex = (overrides = {}) => ({
     'corepack pnpm run quality:guardrails',
     'git diff --check',
   ],
-  cleanupChecks: ['docker compose ps'],
+  cleanupChecks: [
+    'Get-Process chrome-headless-shell -ErrorAction SilentlyContinue',
+    'Get-NetTCPConnection -LocalPort 5432,6379 -ErrorAction SilentlyContinue',
+    'docker compose ps',
+  ],
   ...overrides,
 });
 
@@ -137,6 +141,21 @@ test('validateReusableAuditToolingIndex fails when required closure commands are
     'audit:remediation-plan:check',
     'docs:parity:check',
     'quality:guardrails',
+  ]);
+});
+
+test('validateReusableAuditToolingIndex fails when required cleanup checks are missing', () => {
+  const result = validateReusableAuditToolingIndex(
+    toolingIndex({
+      cleanupChecks: ['docker compose ps'],
+    }),
+    { exists: allPathsExist, packageScripts },
+  );
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.commands.missingCleanupCheckFragments, [
+    'chrome-headless-shell',
+    'Get-NetTCPConnection',
   ]);
 });
 

@@ -271,6 +271,11 @@ Last updated: 2026-05-19
   `audit:remediation-plan:check` so remediation closure must include the
   remediation-plan self-check command. Evidence:
   `docs/planning/audit-remediation-plan-self-check-closure-2026-05-19-task.md`.
+  Follow-up `AUDIT-TOOLING-INDEX-CLEANUP-CHECK-COMMAND-2026-05-19` hardened
+  `audit:tooling-index:check` so cleanup checks must include
+  `chrome-headless-shell`, `Get-NetTCPConnection`, and `docker compose ps`.
+  Evidence:
+  `docs/planning/audit-tooling-index-cleanup-check-command-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,
