@@ -205,6 +205,9 @@ Before any future "full audit" request, start from:
 - `docs/planning/audit-rollup-markdown-summary-parity-2026-05-19-task.md`:
   rollup validation now checks companion Markdown/JSON summary count parity
   when the Markdown file is available.
+- `docs/planning/audit-handoff-rollup-summary-parity-2026-05-19-task.md`:
+  handoff validation now checks handoff `rollupSummary` key/value parity
+  against the referenced rollup JSON.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.

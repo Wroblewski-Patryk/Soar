@@ -272,6 +272,14 @@ Last updated: 2026-05-19
     Markdown summary counts. Evidence:
     `docs/planning/audit-rollup-markdown-summary-parity-2026-05-19-task.md`.
 
+- [x] `AUDIT-HANDOFF-ROLLUP-SUMMARY-PARITY-2026-05-19 feature: validate handoff rollup summary parity`
+  - 2026-05-19: Added `rollupJson` to the full reusable audit handoff source
+    chain and hardened `audit:handoff:check` so handoff `rollupSummary` keys
+    and values stay aligned with the referenced rollup JSON. Focused
+    regression coverage catches missing summary keys and stale counts.
+    Evidence:
+    `docs/planning/audit-handoff-rollup-summary-parity-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

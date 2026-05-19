@@ -257,6 +257,11 @@ Last updated: 2026-05-19
   summary counts to the rollup Markdown and hardened `audit:rollup:check` so
   those counts must match the JSON rollup summary. Evidence:
   `docs/planning/audit-rollup-markdown-summary-parity-2026-05-19-task.md`.
+  Follow-up `AUDIT-HANDOFF-ROLLUP-SUMMARY-PARITY-2026-05-19` added
+  `rollupJson` to the handoff source chain and hardened `audit:handoff:check`
+  so handoff `rollupSummary` keys and values must match the referenced rollup
+  JSON. Evidence:
+  `docs/planning/audit-handoff-rollup-summary-parity-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,

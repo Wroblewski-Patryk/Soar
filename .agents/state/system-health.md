@@ -69,6 +69,8 @@ Last updated: 2026-05-19
   parity when the Markdown file is available.
 - Reusable audit rollup validation now checks companion Markdown/JSON summary
   count parity when the Markdown file is available.
+- Reusable full-audit handoff validation now checks handoff rollup-summary
+  parity against the referenced rollup JSON.
 
 ## Latest Health Snapshot
 

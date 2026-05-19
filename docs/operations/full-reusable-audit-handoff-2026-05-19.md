@@ -22,6 +22,7 @@
 - Audit registry: `docs/analysis/reusable-audit-registry.md`
 - Audit baseline: `docs/analysis/audit-baseline-2026-05-19.md`
 - Rollup: `docs/operations/full-reusable-audit-rollup-2026-05-19.md`
+- Rollup JSON: `docs/operations/full-reusable-audit-rollup-2026-05-19.json`
 - Handoff JSON: `docs/operations/full-reusable-audit-handoff-2026-05-19.json`
 - Rerun playbook: `docs/operations/reusable-audit-rerun-playbook-2026-05-19.md`
 - Rerun playbook JSON:

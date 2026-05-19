@@ -12,6 +12,7 @@ const requiredSourceKeys = [
   'auditRegistry',
   'auditBaseline',
   'rollup',
+  'rollupJson',
   'rerunPlaybook',
   'rerunPlaybookJson',
   'decisionPacket',
@@ -34,6 +35,13 @@ const requiredValidationFragments = [
   'docs:parity:check',
   'quality:guardrails',
   'git diff --check',
+];
+const requiredRollupSummaryKeys = [
+  'currentOrCurrentLocal',
+  'partial',
+  'failedDecisionRequired',
+  'deferred',
+  'currentFromPriorBaseline',
 ];
 
 const parseArgs = () => {
@@ -68,6 +76,7 @@ const printHelp = () => {
 
 Validates the reusable audit handoff JSON by checking:
 - required source-of-truth paths are present and resolvable
+- rollup summary matches the referenced rollup JSON when available
 - required residual risks and forbidden boundaries are present
 - latest validation includes core audit closure checks
 - production/LIVE/runtime mutation booleans stay fail-closed
@@ -84,6 +93,7 @@ const pathExists = (relativePath) => {
 
 export const validateFullReusableAuditHandoff = (handoff, options = {}) => {
   const exists = options.exists ?? pathExists;
+  const rollupSummarySource = options.rollupSummary ?? null;
   const sourceOfTruth = handoff.sourceOfTruth ?? {};
   const missingSourceKeys = requiredSourceKeys.filter((key) => !(key in sourceOfTruth));
   const missingSourcePaths = Object.entries(sourceOfTruth)
@@ -115,6 +125,18 @@ export const validateFullReusableAuditHandoff = (handoff, options = {}) => {
   const unsafeBooleans = Object.entries(expectedBooleans)
     .filter(([key, expected]) => handoff[key] !== expected)
     .map(([key]) => key);
+  const rollupSummary = handoff.rollupSummary ?? {};
+  const missingRollupSummaryKeys = requiredRollupSummaryKeys.filter((key) => !(key in rollupSummary));
+  const rollupSummaryMismatches =
+    rollupSummarySource === null
+      ? []
+      : requiredRollupSummaryKeys
+          .filter((key) => rollupSummary[key] !== rollupSummarySource[key])
+          .map((key) => ({
+            key,
+            declared: rollupSummary[key],
+            actual: rollupSummarySource[key],
+          }));
 
   const result = {
     handoff: options.handoffPath ?? null,
@@ -128,6 +150,10 @@ export const validateFullReusableAuditHandoff = (handoff, options = {}) => {
     residualRisks: {
       expected: requiredResidualRiskIds,
       missing: missingResidualRiskIds,
+    },
+    rollupSummary: {
+      missingKeys: missingRollupSummaryKeys,
+      mismatches: rollupSummaryMismatches,
     },
     forbiddenWithoutApproval: {
       missingFragments: missingForbiddenFragments,
@@ -143,6 +169,8 @@ export const validateFullReusableAuditHandoff = (handoff, options = {}) => {
   result.status =
     result.sourceOfTruth.missingKeys.length === 0 &&
     result.sourceOfTruth.missingPaths.length === 0 &&
+    result.rollupSummary.missingKeys.length === 0 &&
+    result.rollupSummary.mismatches.length === 0 &&
     result.residualRisks.missing.length === 0 &&
     result.forbiddenWithoutApproval.missingFragments.length === 0 &&
     result.latestValidation.missingFragments.length === 0 &&
@@ -162,8 +190,17 @@ const main = async () => {
 
   const handoffPath = path.resolve(repoRoot, options.handoff);
   const handoff = JSON.parse(await readFile(handoffPath, 'utf8'));
+  const rollupJsonPath =
+    typeof handoff.sourceOfTruth?.rollupJson === 'string'
+      ? path.resolve(repoRoot, handoff.sourceOfTruth.rollupJson)
+      : null;
+  const rollupSummary =
+    rollupJsonPath && existsSync(rollupJsonPath)
+      ? JSON.parse(await readFile(rollupJsonPath, 'utf8')).summary
+      : null;
   const result = validateFullReusableAuditHandoff(handoff, {
     handoffPath: path.relative(repoRoot, handoffPath).split(path.sep).join('/'),
+    rollupSummary,
   });
 
   if (options.json) {
@@ -172,6 +209,8 @@ const main = async () => {
     console.log(`Full reusable audit handoff check: ${result.status}`);
     console.log(`- Source keys: ${result.sourceOfTruth.foundKeys}/${result.sourceOfTruth.expectedKeys}`);
     console.log(`- Missing source paths: ${result.sourceOfTruth.missingPaths.length}`);
+    console.log(`- Missing rollup summary keys: ${result.rollupSummary.missingKeys.length}`);
+    console.log(`- Rollup summary mismatches: ${result.rollupSummary.mismatches.length}`);
     console.log(`- Missing residual risks: ${result.residualRisks.missing.length}`);
     console.log(`- Missing forbidden boundaries: ${result.forbiddenWithoutApproval.missingFragments.length}`);
     console.log(`- Missing validation checks: ${result.latestValidation.missingFragments.length}`);

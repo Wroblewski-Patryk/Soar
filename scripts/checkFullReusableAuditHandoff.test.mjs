@@ -9,6 +9,7 @@ const sourceOfTruth = {
   auditRegistry: 'docs/analysis/reusable-audit-registry.md',
   auditBaseline: 'docs/analysis/audit-baseline-2026-05-19.md',
   rollup: 'docs/operations/full-reusable-audit-rollup-2026-05-19.md',
+  rollupJson: 'docs/operations/full-reusable-audit-rollup-2026-05-19.json',
   rerunPlaybook: 'docs/operations/reusable-audit-rerun-playbook-2026-05-19.md',
   rerunPlaybookJson: 'docs/operations/reusable-audit-rerun-playbook-2026-05-19.json',
   decisionPacket: 'docs/operations/audit-decision-packet-2026-05-19.md',
@@ -23,6 +24,13 @@ const sourceOfTruth = {
 const handoff = (overrides = {}) => ({
   handoffId: 'FULL-REUSABLE-AUDIT-HANDOFF-2026-05-19',
   sourceOfTruth,
+  rollupSummary: {
+    currentOrCurrentLocal: 23,
+    partial: 0,
+    failedDecisionRequired: 0,
+    deferred: 1,
+    currentFromPriorBaseline: 0,
+  },
   residualRisks: [
     { id: 'AUD-19', summary: 'Production readiness remains historical.' },
     { id: 'GATEIO-PRODUCTION-LIVE', summary: 'Gate.io proof required.' },
@@ -47,13 +55,22 @@ const handoff = (overrides = {}) => ({
 });
 
 const allPathsExist = () => true;
+const rollupSummary = {
+  currentOrCurrentLocal: 23,
+  partial: 0,
+  failedDecisionRequired: 0,
+  deferred: 1,
+  currentFromPriorBaseline: 0,
+};
 
 test('validateFullReusableAuditHandoff passes complete handoffs', () => {
-  const result = validateFullReusableAuditHandoff(handoff(), { exists: allPathsExist });
+  const result = validateFullReusableAuditHandoff(handoff(), { exists: allPathsExist, rollupSummary });
 
   assert.equal(result.status, 'PASS');
   assert.deepEqual(result.sourceOfTruth.missingKeys, []);
   assert.deepEqual(result.sourceOfTruth.missingPaths, []);
+  assert.deepEqual(result.rollupSummary.missingKeys, []);
+  assert.deepEqual(result.rollupSummary.mismatches, []);
   assert.deepEqual(result.residualRisks.missing, []);
 });
 
@@ -80,6 +97,44 @@ test('validateFullReusableAuditHandoff fails when referenced source paths are mi
     {
       key: 'rollup',
       path: 'docs/operations/full-reusable-audit-rollup-2026-05-19.md',
+    },
+  ]);
+});
+
+test('validateFullReusableAuditHandoff fails when rollup summary keys are missing', () => {
+  const result = validateFullReusableAuditHandoff(
+    handoff({
+      rollupSummary: {
+        currentOrCurrentLocal: 23,
+        partial: 0,
+        failedDecisionRequired: 0,
+        deferred: 1,
+      },
+    }),
+    { exists: allPathsExist },
+  );
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.rollupSummary.missingKeys, ['currentFromPriorBaseline']);
+});
+
+test('validateFullReusableAuditHandoff fails when rollup summary drifts from rollup JSON', () => {
+  const result = validateFullReusableAuditHandoff(
+    handoff({
+      rollupSummary: {
+        ...rollupSummary,
+        currentOrCurrentLocal: 24,
+      },
+    }),
+    { exists: allPathsExist, rollupSummary },
+  );
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.rollupSummary.mismatches, [
+    {
+      key: 'currentOrCurrentLocal',
+      declared: 24,
+      actual: 23,
     },
   ]);
 });
