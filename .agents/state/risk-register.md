@@ -42,4 +42,11 @@ Last updated: 2026-05-19
 | RISK-034 | I18n / copy | Route or copy changes may introduce missing locale keys, fallback Polish leakage, local copy outside namespaces, or hardcoded UI literals that are missed by normal component tests. | medium | medium | New route, state, or UI copy is added without running route-reachable i18n audit and copy guardrails. | 2026-05-19 `AUD-22` route-reachable i18n audit passed with findings `0`, localCopy `0`, fallbackPl `0`, hardcoded `0`; focused Web i18n pack passed (`8` files / `26` tests); language policy remains explicit. | closed | REQ-I18N-022 | Reopen only on a new i18n/copy finding; rerun route-reachable audit after route/copy changes. | 2026-05-19 |
 | RISK-035 | Requirements / delivery map | Future planning may use stale delivery-map rows or non-unique risk IDs after broad audits, causing duplicated work or false confidence in project state. | medium | high | Delivery map remains dated before the latest audit run, a risk ID appears more than once, or continuation state omits the latest rollup/audit artifact. | 2026-05-19 `AUD-02` found the exact source-of-truth drift, then the follow-up refreshed `.agents/state/delivery-map.md` to current audit truth, synchronized continuation state, and restored risk-ID uniqueness by renumbering the audit-process row to `RISK-036`. | closed | REQ-AUDIT-002 | Reopen only if a future broad audit finds stale delivery rows, duplicate IDs, or missing continuation-state sync. | 2026-05-19 |
 
+## Risk Notes
+
+- 2026-05-19 `AUDIT-HANDOFF-CLEANUP-VALIDATION-COMMAND-2026-05-19`
+  updates `RISK-021` and `RISK-036`: handoff validation now catches missing
+  cleanup evidence for headless browser processes, local DB/Redis listeners,
+  and Docker compose services before a broad-audit handoff can pass.
+
 Allowed statuses: `open`, `mitigating`, `accepted`, `closed`, `superseded`.

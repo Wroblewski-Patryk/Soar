@@ -61,13 +61,13 @@
       "id": "AUDIT-HANDOFF-CHECK",
       "command": "corepack pnpm run audit:handoff:check",
       "script": "scripts/checkFullReusableAuditHandoff.mjs",
-      "purpose": "Validate full reusable audit handoff source paths, rollup summary parity, residual risks, forbidden boundaries, required validation checks including its self-check, and safety booleans."
+      "purpose": "Validate full reusable audit handoff source paths, rollup summary parity, residual risks, forbidden boundaries, required validation checks including its self-check, required cleanup validation checks, and safety booleans."
     },
     {
       "id": "AUDIT-HANDOFF-CHECK-TEST",
       "command": "corepack pnpm run audit:handoff:check:test",
       "script": "scripts/checkFullReusableAuditHandoff.test.mjs",
-      "purpose": "Regression-test full reusable audit handoff validation behavior, including rollup summary drift and missing self-check validation."
+      "purpose": "Regression-test full reusable audit handoff validation behavior, including rollup summary drift, missing self-check validation, and missing cleanup validation."
     },
     {
       "id": "AUDIT-REMEDIATION-PLAN-CHECK",

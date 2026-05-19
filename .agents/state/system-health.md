@@ -56,6 +56,9 @@ Last updated: 2026-05-19
   safety booleans.
 - Full reusable audit handoff validation now requires its own
   `audit:handoff:check` command in latest validation evidence.
+- Full reusable audit handoff validation now also requires cleanup validation
+  evidence for headless browser processes, local DB/Redis listeners, and Docker
+  compose services.
 - Reusable audit tooling-index validation now checks referenced `corepack pnpm
   run` commands against `package.json` scripts and reports missing package
   scripts separately.

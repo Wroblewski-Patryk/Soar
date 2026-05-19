@@ -139,6 +139,9 @@ Reusable full-audit handoff validation is now part of `audit:manifest:verify`;
 boundaries, validation checks, and fail-closed safety booleans.
 Reusable full-audit handoff validation now also fails if latest validation
 omits `audit:handoff:check` itself.
+Reusable full-audit handoff validation now also fails if latest validation
+omits cleanup evidence for headless browser processes, local DB/Redis
+listeners, or Docker compose services.
 Reusable audit tooling-index validation now also verifies that referenced
 `corepack pnpm run` commands exist in `package.json`.
 Reusable audit manifest validation now verifies declared summary counts and

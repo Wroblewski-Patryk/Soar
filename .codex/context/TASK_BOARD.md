@@ -336,6 +336,14 @@ Last updated: 2026-05-19
     that drop required local validation cleanup checks. Evidence:
     `docs/planning/audit-remediation-plan-cleanup-check-command-2026-05-19-task.md`.
 
+- [x] `AUDIT-HANDOFF-CLEANUP-VALIDATION-COMMAND-2026-05-19 feature: require handoff cleanup validation`
+  - 2026-05-19: Hardened `audit:handoff:check` so handoff
+    `latestValidation` must include cleanup evidence for
+    `chrome-headless-shell`, local `5432`/`6379` listeners, and
+    `docker compose ps`. Focused regression coverage catches handoff packets
+    that drop required local validation cleanup evidence. Evidence:
+    `docs/planning/audit-handoff-cleanup-validation-command-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

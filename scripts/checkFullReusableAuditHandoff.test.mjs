@@ -48,6 +48,9 @@ const handoff = (overrides = {}) => ({
     'corepack pnpm run docs:parity:check PASS',
     'corepack pnpm run quality:guardrails PASS',
     'git diff --check PASS',
+    'no chrome-headless-shell process left running',
+    'no listeners on local 5432 or 6379',
+    'docker compose ps showed no running services',
   ],
   runtimeBehaviorChanged: false,
   productionJourneyRun: false,
@@ -182,6 +185,29 @@ test('validateFullReusableAuditHandoff fails when latest validation omits requir
     'docs:parity:check',
     'quality:guardrails',
     'git diff --check',
+  ]);
+});
+
+test('validateFullReusableAuditHandoff fails when latest validation omits cleanup checks', () => {
+  const result = validateFullReusableAuditHandoff(
+    handoff({
+      latestValidation: [
+        'corepack pnpm run audit:manifest:verify PASS',
+        'corepack pnpm run audit:handoff:check PASS',
+        'corepack pnpm run docs:parity:check PASS',
+        'corepack pnpm run quality:guardrails PASS',
+        'git diff --check PASS',
+        'no chrome-headless-shell process left running',
+      ],
+    }),
+    { exists: allPathsExist },
+  );
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.latestValidation.missingCleanupFragments, [
+    '5432',
+    '6379',
+    'docker compose ps',
   ]);
 });
 

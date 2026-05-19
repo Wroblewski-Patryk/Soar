@@ -297,6 +297,11 @@ Last updated: 2026-05-19
   include `chrome-headless-shell`, `Get-NetTCPConnection`, and
   `docker compose ps`. Evidence:
   `docs/planning/audit-remediation-plan-cleanup-check-command-2026-05-19-task.md`.
+  Follow-up `AUDIT-HANDOFF-CLEANUP-VALIDATION-COMMAND-2026-05-19` hardened
+  `audit:handoff:check` so handoff `latestValidation` must include cleanup
+  evidence for headless browser processes, local DB/Redis listeners, and Docker
+  compose services. Evidence:
+  `docs/planning/audit-handoff-cleanup-validation-command-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,

@@ -37,6 +37,12 @@ const requiredValidationFragments = [
   'quality:guardrails',
   'git diff --check',
 ];
+const requiredCleanupValidationFragments = [
+  'chrome-headless-shell',
+  '5432',
+  '6379',
+  'docker compose ps',
+];
 const requiredRollupSummaryKeys = [
   'currentOrCurrentLocal',
   'partial',
@@ -80,6 +86,7 @@ Validates the reusable audit handoff JSON by checking:
 - rollup summary matches the referenced rollup JSON when available
 - required residual risks and forbidden boundaries are present
 - latest validation includes core audit closure checks
+- latest validation includes local cleanup checks
 - production/LIVE/runtime mutation booleans stay fail-closed
 `);
 };
@@ -115,6 +122,9 @@ export const validateFullReusableAuditHandoff = (handoff, options = {}) => {
 
   const latestValidation = Array.isArray(handoff.latestValidation) ? handoff.latestValidation : [];
   const missingValidationFragments = requiredValidationFragments.filter(
+    (fragment) => !latestValidation.some((entry) => String(entry).includes(fragment)),
+  );
+  const missingCleanupValidationFragments = requiredCleanupValidationFragments.filter(
     (fragment) => !latestValidation.some((entry) => String(entry).includes(fragment)),
   );
 
@@ -161,6 +171,7 @@ export const validateFullReusableAuditHandoff = (handoff, options = {}) => {
     },
     latestValidation: {
       missingFragments: missingValidationFragments,
+      missingCleanupFragments: missingCleanupValidationFragments,
     },
     safetyBooleans: {
       unsafe: unsafeBooleans,
@@ -175,6 +186,7 @@ export const validateFullReusableAuditHandoff = (handoff, options = {}) => {
     result.residualRisks.missing.length === 0 &&
     result.forbiddenWithoutApproval.missingFragments.length === 0 &&
     result.latestValidation.missingFragments.length === 0 &&
+    result.latestValidation.missingCleanupFragments.length === 0 &&
     result.safetyBooleans.unsafe.length === 0
       ? 'PASS'
       : 'FAIL';
@@ -215,6 +227,7 @@ const main = async () => {
     console.log(`- Missing residual risks: ${result.residualRisks.missing.length}`);
     console.log(`- Missing forbidden boundaries: ${result.forbiddenWithoutApproval.missingFragments.length}`);
     console.log(`- Missing validation checks: ${result.latestValidation.missingFragments.length}`);
+    console.log(`- Missing cleanup validation checks: ${result.latestValidation.missingCleanupFragments.length}`);
     console.log(`- Unsafe safety booleans: ${result.safetyBooleans.unsafe.length}`);
   }
 

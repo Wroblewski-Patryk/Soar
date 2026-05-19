@@ -62,6 +62,12 @@ Do not turn uncertainty into optimism.
 
 ## Current Release Evidence Notes
 
+- 2026-05-19
+  `AUDIT-HANDOFF-CLEANUP-VALIDATION-COMMAND-2026-05-19` applies to
+  `SOAR-OPERATIONS-001`: `audit:handoff:check` now fails if handoff
+  `latestValidation` omits cleanup evidence for headless browser processes,
+  local DB/Redis listeners, or Docker compose services. Evidence:
+  `docs/planning/audit-handoff-cleanup-validation-command-2026-05-19-task.md`.
 - 2026-05-14
   `V1-PRODUCTION-FIXTURE-ACTION-PROOF-PLAN-2026-05-14` records the current
   literal-100% blocker for remaining `PASS_LOCAL` rows: production-safe
