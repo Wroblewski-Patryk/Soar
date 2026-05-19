@@ -74,6 +74,7 @@ const printHelp = () => {
 Validates the reusable audit tooling index JSON by checking:
 - required tool IDs are present
 - tool IDs are unique
+- companion Markdown lists JSON tool IDs when available
 - referenced scripts/files exist
 - commands and purposes are present
 - pnpm run commands exist in package.json
@@ -96,6 +97,7 @@ const getPnpmRunScriptName = (command) => {
 export const validateReusableAuditToolingIndex = (toolingIndex, options = {}) => {
   const exists = options.exists ?? defaultExists;
   const packageScripts = options.packageScripts ?? defaultPackageScripts();
+  const markdownText = typeof options.markdownText === 'string' ? options.markdownText : null;
   const tools = Array.isArray(toolingIndex.tools) ? toolingIndex.tools : [];
   const toolIds = tools.map((tool) => tool.id).filter(Boolean);
   const toolIdSet = new Set(toolIds);
@@ -116,6 +118,10 @@ export const validateReusableAuditToolingIndex = (toolingIndex, options = {}) =>
     .filter((tool) => tool.scriptName && !(tool.scriptName in packageScripts))
     .map(({ id, scriptName }) => ({ id, scriptName }))
     .sort((left, right) => left.id.localeCompare(right.id));
+  const missingMarkdownToolIds =
+    markdownText === null
+      ? []
+      : toolIds.filter((toolId) => !markdownText.includes(`\`${toolId}\``));
 
   const safetyBoundaries = toolingIndex.safetyBoundaries ?? {};
   const missingSafetyBoundaries = requiredSafetyBoundaries.filter((key) => !(key in safetyBoundaries));
@@ -140,6 +146,7 @@ export const validateReusableAuditToolingIndex = (toolingIndex, options = {}) =>
       missingPurpose: toolsMissingPurpose,
       missingScripts: [...new Set(missingScripts)],
       missingPackageScripts,
+      missingMarkdownToolIds,
     },
     commands: {
       primaryCommandOk,
@@ -160,6 +167,7 @@ export const validateReusableAuditToolingIndex = (toolingIndex, options = {}) =>
     result.tools.missingPurpose.length === 0 &&
     result.tools.missingScripts.length === 0 &&
     result.tools.missingPackageScripts.length === 0 &&
+    result.tools.missingMarkdownToolIds.length === 0 &&
     result.commands.primaryCommandOk &&
     result.commands.closureCommands > 0 &&
     result.commands.missingClosureCommandFragments.length === 0 &&
@@ -180,9 +188,12 @@ const main = async () => {
   }
 
   const indexPath = path.resolve(repoRoot, options.index);
+  const markdownPath = indexPath.endsWith('.json') ? indexPath.replace(/\.json$/, '.md') : null;
   const toolingIndex = JSON.parse(await readFile(indexPath, 'utf8'));
+  const markdownText = markdownPath && existsSync(markdownPath) ? await readFile(markdownPath, 'utf8') : null;
   const result = validateReusableAuditToolingIndex(toolingIndex, {
     indexPath: path.relative(repoRoot, indexPath).split(path.sep).join('/'),
+    markdownText,
   });
 
   if (options.json) {
@@ -194,6 +205,7 @@ const main = async () => {
     console.log(`- Duplicate tools: ${result.tools.duplicates.length}`);
     console.log(`- Missing scripts: ${result.tools.missingScripts.length}`);
     console.log(`- Missing package scripts: ${result.tools.missingPackageScripts.length}`);
+    console.log(`- Missing Markdown tool IDs: ${result.tools.missingMarkdownToolIds.length}`);
     console.log(`- Missing closure commands: ${result.commands.missingClosureCommandFragments.length}`);
     console.log(`- Unsafe safety boundaries: ${result.safetyBoundaries.unsafe.length}`);
   }

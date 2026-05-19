@@ -244,6 +244,13 @@ Last updated: 2026-05-19
     if structured comparison output is stdout-only. Evidence:
     `docs/planning/audit-rerun-playbook-compare-json-output-sync-2026-05-19-task.md`.
 
+- [x] `AUDIT-TOOLING-INDEX-MARKDOWN-JSON-PARITY-2026-05-19 feature: validate tooling index companion parity`
+  - 2026-05-19: Hardened `audit:tooling-index:check` so the JSON tooling
+    index and companion Markdown table stay aligned: when the Markdown file is
+    present, every JSON tool ID must be listed there. Focused regression
+    coverage catches a missing Markdown tool ID. Evidence:
+    `docs/planning/audit-tooling-index-markdown-json-parity-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

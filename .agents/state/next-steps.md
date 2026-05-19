@@ -139,6 +139,8 @@ evidence with `--json-output <path>`.
 Reusable audit rerun playbook validation now requires
 `futureManifestCommands.compareJson` to use `--json-output`, so structured
 comparison evidence is persisted by default.
+Reusable audit tooling-index validation now checks that the companion Markdown
+table lists every JSON tool ID when the Markdown file is available.
 Next executable protected step remains the same: provide the approved
 protected inputs named in that packet and execute the commands in order.
 

@@ -61,6 +61,8 @@ Last updated: 2026-05-19
   with `--json-output <path>` for future rerun evidence.
 - Reusable audit rerun playbook validation now requires `compareJson` to use
   `--json-output`, preventing stdout-only structured comparison instructions.
+- Reusable audit tooling-index validation now checks companion Markdown/JSON
+  tool ID parity when the Markdown file is available.
 
 ## Latest Health Snapshot
 
@@ -182,6 +184,9 @@ Last updated: 2026-05-19
   Follow-up rerun-playbook sync requires `compareJson` to persist structured
   comparison evidence with `--json-output`. Evidence:
   `docs/planning/audit-rerun-playbook-compare-json-output-sync-2026-05-19-task.md`.
+  Follow-up tooling-index parity validation catches missing Markdown entries
+  for JSON tool IDs. Evidence:
+  `docs/planning/audit-tooling-index-markdown-json-parity-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` LOCAL DATA/MIGRATIONS PASS WITH
   FINDING: Prisma schema validation passed, local migration status reported

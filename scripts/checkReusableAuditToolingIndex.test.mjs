@@ -52,13 +52,19 @@ const toolingIndex = (overrides = {}) => ({
 
 const allPathsExist = () => true;
 const packageScripts = Object.fromEntries(toolIds.map((id) => [id.toLowerCase(), 'mock command']));
+const markdownText = toolIds.map((id) => `| \`${id}\` | command | script | purpose |`).join('\n');
 
 test('validateReusableAuditToolingIndex passes complete indexes', () => {
-  const result = validateReusableAuditToolingIndex(toolingIndex(), { exists: allPathsExist, packageScripts });
+  const result = validateReusableAuditToolingIndex(toolingIndex(), {
+    exists: allPathsExist,
+    packageScripts,
+    markdownText,
+  });
 
   assert.equal(result.status, 'PASS');
   assert.equal(result.tools.found, toolIds.length);
   assert.deepEqual(result.tools.missing, []);
+  assert.deepEqual(result.tools.missingMarkdownToolIds, []);
   assert.deepEqual(result.tools.missingScripts, []);
   assert.deepEqual(result.safetyBoundaries.unsafe, []);
 });
@@ -148,4 +154,15 @@ test('validateReusableAuditToolingIndex fails when a pnpm run command is missing
       scriptName: 'audit-manifest-verify',
     },
   ]);
+});
+
+test('validateReusableAuditToolingIndex fails when companion markdown omits a tool id', () => {
+  const result = validateReusableAuditToolingIndex(toolingIndex(), {
+    exists: allPathsExist,
+    packageScripts,
+    markdownText: markdownText.replace('| `AUDIT-HANDOFF-CHECK` | command | script | purpose |', ''),
+  });
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.tools.missingMarkdownToolIds, ['AUDIT-HANDOFF-CHECK']);
 });

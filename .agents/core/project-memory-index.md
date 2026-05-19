@@ -192,6 +192,10 @@ Before any future "full audit" request, start from:
   Follow-up
   `docs/planning/audit-rerun-playbook-compare-json-output-sync-2026-05-19-task.md`
   makes the rerun playbook validator require persisted `compareJson` output.
+  Follow-up
+  `docs/planning/audit-tooling-index-markdown-json-parity-2026-05-19-task.md`
+  makes the tooling index validator check companion Markdown/JSON tool ID
+  parity.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.
