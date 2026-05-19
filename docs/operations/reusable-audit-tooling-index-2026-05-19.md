@@ -24,10 +24,12 @@ It runs:
 - manifest checker regression tests;
 - manifest comparison regression tests;
 - rerun playbook regression tests;
+- remediation plan regression tests;
 - protected input readiness regression tests;
 - current manifest validation;
 - current manifest self-comparison;
-- rerun playbook validation.
+- rerun playbook validation;
+- remediation plan validation.
 
 ## Tools
 
@@ -40,6 +42,8 @@ It runs:
 | `AUDIT-MANIFEST-VERIFY` | `corepack pnpm run audit:manifest:verify` | `package.json` | Run the complete manifest/playbook verification bundle. |
 | `AUDIT-RERUN-PLAYBOOK-CHECK` | `corepack pnpm run audit:rerun-playbook:check` | `scripts/checkReusableAuditRerunPlaybook.mjs` | Validate rerun playbook coverage, required commands, sections, and safety boundaries. |
 | `AUDIT-RERUN-PLAYBOOK-CHECK-TEST` | `corepack pnpm run audit:rerun-playbook:check:test` | `scripts/checkReusableAuditRerunPlaybook.test.mjs` | Regression-test rerun playbook validation behavior. |
+| `AUDIT-REMEDIATION-PLAN-CHECK` | `corepack pnpm run audit:remediation-plan:check` | `scripts/checkAuditRemediationPlan.mjs` | Validate remediation roadmap phases, work packages, blockers, closure checks, and safety boundaries. |
+| `AUDIT-REMEDIATION-PLAN-CHECK-TEST` | `corepack pnpm run audit:remediation-plan:check:test` | `scripts/checkAuditRemediationPlan.test.mjs` | Regression-test remediation plan validation behavior. |
 | `AUDIT-TOOLING-INDEX-CHECK` | `corepack pnpm run audit:tooling-index:check` | `scripts/checkReusableAuditToolingIndex.mjs` | Validate audit tooling index command/script coverage and safety boundaries. |
 | `AUDIT-TOOLING-INDEX-CHECK-TEST` | `corepack pnpm run audit:tooling-index:check:test` | `scripts/checkReusableAuditToolingIndex.test.mjs` | Regression-test tooling index validation behavior. |
 | `AUDIT-DATA-DB-ISOLATED` | `corepack pnpm run audit:data:db-isolated` | `scripts/runAud07IsolatedDbPacks.mjs` | Run representative DB-backed `AUD-07` packs sequentially with reset/isolation. |
@@ -62,6 +66,7 @@ After changing this tooling index or related audit tooling, run:
 
 ```powershell
 corepack pnpm run audit:manifest:verify
+corepack pnpm run audit:remediation-plan:check
 corepack pnpm run ops:protected-inputs:check:test
 corepack pnpm run docs:parity:check
 corepack pnpm run quality:guardrails

@@ -12,6 +12,8 @@
     "rerunPlaybookJson": "docs/operations/reusable-audit-rerun-playbook-2026-05-19.json",
     "toolingIndex": "docs/operations/reusable-audit-tooling-index-2026-05-19.md",
     "toolingIndexJson": "docs/operations/reusable-audit-tooling-index-2026-05-19.json",
+    "remediationPlan": "docs/planning/audit-remediation-master-plan-2026-05-19.md",
+    "remediationPlanJson": "docs/operations/audit-remediation-master-plan-2026-05-19.json",
     "decisionPacket": "docs/operations/audit-decision-packet-2026-05-19.md",
     "repairPlaybooks": "docs/operations/audit-decision-repair-playbooks-2026-05-19.md"
   },
@@ -23,7 +25,7 @@
   },
   "manifestValidation": {
     "pathExistenceChecked": true,
-    "pathsChecked": 85,
+    "pathsChecked": 91,
     "missingPaths": 0
   },
   "safetyBoundaries": {

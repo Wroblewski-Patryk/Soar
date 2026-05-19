@@ -33,6 +33,9 @@ Tooling index pair:
   `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.md`
 - Rerun playbook: `docs/operations/reusable-audit-rerun-playbook-2026-05-19.md`
 - Tooling index: `docs/operations/reusable-audit-tooling-index-2026-05-19.md`
+- Remediation plan: `docs/planning/audit-remediation-master-plan-2026-05-19.md`
+- Remediation plan JSON:
+  `docs/operations/audit-remediation-master-plan-2026-05-19.json`
 - Decision packet: `docs/operations/audit-decision-packet-2026-05-19.md`
 - Repair playbooks: `docs/operations/audit-decision-repair-playbooks-2026-05-19.md`
 
@@ -81,7 +84,7 @@ Validate this manifest with:
 
 Latest path check:
 
-- `89` manifest paths checked
+- `91` manifest paths checked
 - `0` missing paths
 - `corepack pnpm run audit:manifest:verify` PASS after `DEC-AUD-001` and
   `DEC-AUD-002` acceptance

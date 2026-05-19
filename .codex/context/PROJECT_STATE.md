@@ -179,6 +179,17 @@ Last updated: 2026-05-19
   `scripts/checkProtectedInputReadiness.test.mjs`, and
   `docs/planning/protected-input-readiness-command-2026-05-19-task.md`.
 
+- `AUDIT-REMEDIATION-PLAN-CHECK-2026-05-19` adds a machine-readable audit
+  remediation master plan and validator:
+  `corepack pnpm run audit:remediation-plan:check`. The check verifies phases
+  `P0..P6`, work packages `WP-01..WP-08`, the current `AUD-19` blocker,
+  closure commands, and safety boundaries; it is included in
+  `audit:manifest:verify`. Evidence:
+  `docs/operations/audit-remediation-master-plan-2026-05-19.json`,
+  `scripts/checkAuditRemediationPlan.mjs`,
+  `scripts/checkAuditRemediationPlan.test.mjs`, and
+  `docs/planning/audit-remediation-plan-check-2026-05-19-task.md`.
+
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,
   local migration status reported `54` migrations and schema up to date, full

@@ -14,6 +14,7 @@ Primary evidence:
 - `docs/operations/reusable-audit-artifact-manifest-2026-05-19.json`
 - `docs/operations/reusable-audit-rerun-playbook-2026-05-19.json`
 - `docs/operations/reusable-audit-tooling-index-2026-05-19.json`
+- `docs/operations/audit-remediation-master-plan-2026-05-19.json`
 
 ## Current Truth
 
@@ -41,7 +42,7 @@ mutation, or architecture decision is authorized by this plan.
 | P3 | P1 | Promote production-safe proofs for historical-production audit families. | Several families are locally current but production-safe proof is historical. | Production-safe fixture/auth scope. | Fresh production-safe evidence where approved. |
 | P4 | P1 | Schedule independent security review. | `AUD-06` is locally/prod-safe current, but external review remains governance follow-up. | Reviewer/scope availability. | External review report or tracked governance task. |
 | P5 | P2 | Deepen UX/a11y proof after UI changes. | `AUD-05` has current local route proof but production UX proof is historical. | UI change scope or production-safe browser access. | Fresh responsive/a11y/browser evidence. |
-| P6 | P2 | Keep audit tooling and manifests current. | Future reruns need stable comparison. | None. | `audit:manifest:verify` remains PASS. |
+| P6 | P2 | Keep audit tooling and manifests current. | Future reruns need stable comparison and a machine-readable remediation roadmap. | None. | `audit:manifest:verify` and `audit:remediation-plan:check` remain PASS. |
 
 ## Decision Gates
 
@@ -187,18 +188,21 @@ Applied:
 - Scope: keep reusable audit tooling green after audit docs or scripts change.
 - Primary command:
   - `corepack pnpm run audit:manifest:verify`
+  - `corepack pnpm run audit:remediation-plan:check`
 - Done when:
   - manifest check is `24/24`;
   - manifest paths are `0` missing;
   - rerun playbook check is `24/24`;
   - tooling index check is complete;
+  - remediation plan check is complete;
   - comparison reports `0` unexplained regressions.
 
 ## Suggested Execution Order
 
 1. `DEC-AUD-001` accepted and `WP-01` applied.
 2. `DEC-AUD-002` accepted and `WP-02` applied.
-3. Run `audit:manifest:verify` and update the audit status artifacts.
+3. Run `audit:manifest:verify` and `audit:remediation-plan:check`, then
+   update the audit status artifacts.
 4. If production readiness needs to be claimed, execute `WP-03`.
 5. Refresh production-safe evidence families in `WP-04` by risk and release
    priority.
@@ -212,6 +216,7 @@ Before closing any repair package:
 
 ```powershell
 corepack pnpm run audit:manifest:verify
+corepack pnpm run audit:remediation-plan:check
 corepack pnpm run docs:parity:check
 corepack pnpm run quality:guardrails
 git diff --check

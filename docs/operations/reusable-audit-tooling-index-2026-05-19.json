@@ -46,6 +46,18 @@
       "purpose": "Regression-test rerun playbook validation behavior."
     },
     {
+      "id": "AUDIT-REMEDIATION-PLAN-CHECK",
+      "command": "corepack pnpm run audit:remediation-plan:check",
+      "script": "scripts/checkAuditRemediationPlan.mjs",
+      "purpose": "Validate remediation roadmap phases, work packages, blockers, closure checks, and safety boundaries."
+    },
+    {
+      "id": "AUDIT-REMEDIATION-PLAN-CHECK-TEST",
+      "command": "corepack pnpm run audit:remediation-plan:check:test",
+      "script": "scripts/checkAuditRemediationPlan.test.mjs",
+      "purpose": "Regression-test remediation plan validation behavior."
+    },
+    {
       "id": "AUDIT-TOOLING-INDEX-CHECK",
       "command": "corepack pnpm run audit:tooling-index:check",
       "script": "scripts/checkReusableAuditToolingIndex.mjs",
@@ -90,6 +102,7 @@
   },
   "closureCommands": [
     "corepack pnpm run audit:manifest:verify",
+    "corepack pnpm run audit:remediation-plan:check",
     "corepack pnpm run docs:parity:check",
     "corepack pnpm run quality:guardrails",
     "git diff --check"

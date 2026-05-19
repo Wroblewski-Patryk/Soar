@@ -29,6 +29,10 @@ Last updated: 2026-05-19
 - Post-decision repair playbooks are available at
   `docs/operations/audit-decision-repair-playbooks-2026-05-19.md`; they are
   historical planning guidance and do not change runtime behavior.
+- Audit remediation roadmap is now machine-checkable:
+  `corepack pnpm run audit:remediation-plan:check` validates the plan JSON,
+  required phases/work packages, the `AUD-19` blocker, closure checks, and
+  safety boundaries.
 
 ## Latest Health Snapshot
 
@@ -110,6 +114,14 @@ Last updated: 2026-05-19
   RC, and Gate families. No secret values were printed or stored. Evidence:
   `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.md` and
   `docs/planning/v1-protected-input-readiness-dd1a1faf-2026-05-19-task.md`.
+
+- `AUDIT-REMEDIATION-PLAN-CHECK-2026-05-19` LOCAL AUDIT TOOLING PASS:
+  `audit:remediation-plan:check` verifies the machine-readable remediation
+  plan has phases `P0..P6`, work packages `WP-01..WP-08`, current `AUD-19`
+  blockers, closure checks, and safe boundaries. It is included in
+  `audit:manifest:verify`. Evidence:
+  `docs/operations/audit-remediation-master-plan-2026-05-19.json` and
+  `docs/planning/audit-remediation-plan-check-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` LOCAL DATA/MIGRATIONS PASS WITH
   FINDING: Prisma schema validation passed, local migration status reported

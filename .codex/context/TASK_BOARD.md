@@ -157,6 +157,15 @@ Last updated: 2026-05-19
     activation, and audit tooling maintenance. Evidence:
     `docs/planning/audit-remediation-master-plan-2026-05-19.md`.
 
+- [x] `AUDIT-REMEDIATION-PLAN-CHECK-2026-05-19 feature: validate remediation roadmap`
+  - 2026-05-19: Added a machine-readable remediation master plan plus
+    `corepack pnpm run audit:remediation-plan:check` and focused regression
+    tests. The validator locks required phases `P0..P6`, work packages
+    `WP-01..WP-08`, the fresh `AUD-19` blocker, closure checks, and safety
+    boundaries. It is now included in `audit:manifest:verify`. Evidence:
+    `docs/operations/audit-remediation-master-plan-2026-05-19.json` and
+    `docs/planning/audit-remediation-plan-check-2026-05-19-task.md`.
+
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,

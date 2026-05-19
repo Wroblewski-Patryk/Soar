@@ -148,6 +148,13 @@ Before any future "full audit" request, start from:
   `docs/planning/protected-input-readiness-command-2026-05-19-task.md`:
   reusable no-secret protected input readiness command for future `AUD-19`
   sweeps.
+- `docs/operations/audit-remediation-master-plan-2026-05-19.json`,
+  `scripts/checkAuditRemediationPlan.mjs`,
+  `scripts/checkAuditRemediationPlan.test.mjs`, and
+  `docs/planning/audit-remediation-plan-check-2026-05-19-task.md`:
+  machine-readable remediation plan and validator for future audit repair
+  reruns. It checks phases `P0..P6`, work packages `WP-01..WP-08`, the current
+  `AUD-19` blocker, closure checks, and safety boundaries.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.

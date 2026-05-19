@@ -107,6 +107,11 @@ Current protected-input readiness sweep:
 report `0` matching protected input names in this shell.
 Reusable command for future sweeps:
 `corepack pnpm run ops:protected-inputs:check -- --today <yyyy-mm-dd> --expected-sha <sha> --json-output <path> --markdown-output <path>`.
+Current machine-readable remediation plan:
+`docs/operations/audit-remediation-master-plan-2026-05-19.json` is verified by
+`corepack pnpm run audit:remediation-plan:check`; it keeps phases `P0..P6`,
+work packages `WP-01..WP-08`, the `AUD-19` blocker, closure checks, and safety
+boundaries checkable during future reruns.
 Next executable protected step remains the same: provide the approved
 protected inputs named in that packet and execute the commands in order.
 
