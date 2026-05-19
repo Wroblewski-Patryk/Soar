@@ -99,6 +99,13 @@ A rollup validator that checks companion Markdown audit IDs when the Markdown fi
   - `git diff --check`
 - Manual checks: reviewed rollup Markdown table audit IDs and JSON audit IDs.
 - High-risk checks: no production calls, no protected inputs, no LIVE/exchange-side mutation.
+- Cleanup checks: five residual `chrome-headless-shell` rows were inspected as
+  a Playwright tree, removed by stopping the parent process, and rechecked with
+  no rows remaining. A follow-up docs/guardrails recheck spawned a second
+  four-row tree; stopping the parent was insufficient, so a narrow
+  `Get-Process chrome-headless-shell | Stop-Process -Force` cleanup was used
+  and the final process check returned no rows. No local `5432`/`6379`
+  listeners were found and Docker had no running compose services.
 - Module confidence ledger updated: yes
 - Requirements matrix updated: yes
 - Risk register updated: yes

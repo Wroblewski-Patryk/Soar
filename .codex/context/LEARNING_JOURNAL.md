@@ -120,6 +120,14 @@ Start-Process -FilePath "cmd.exe" -ArgumentList $cmd -WorkingDirectory $repo -Wi
   checks; the parent Playwright validation process was inspected, a narrow
   `Stop-Process -Id <parent>` cleanup removed the tree, and the follow-up
   `Get-Process chrome-headless-shell` check returned no rows.
+  2026-05-19 audit rollup Markdown audit ID parity validation found five
+  residual `chrome-headless-shell` rows after no-browser audit tooling checks;
+  the parent Playwright process was inspected, a narrow `Stop-Process -Id
+  <parent>` cleanup removed the tree, and the follow-up process check returned
+  no rows. A follow-up docs/guardrails recheck spawned a second four-row
+  Playwright tree; stopping the parent was insufficient, so a narrow
+  `Get-Process chrome-headless-shell | Stop-Process -Force` cleanup was used
+  and the final process check returned no rows.
 
 ### 2026-05-13 - Preserve LIVE bot fields when toggling activity
 - Context: `V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13` ran the
