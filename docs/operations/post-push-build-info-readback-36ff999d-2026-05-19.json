@@ -1,0 +1,37 @@
+{
+  "id": "POST-PUSH-BUILD-INFO-READBACK-36FF999D-2026-05-19",
+  "date": "2026-05-19",
+  "targetCommit": "36ff999d",
+  "targetBranch": "codex/v1-proof-and-ops-evidence",
+  "productionWebBaseUrl": "https://soar.luckysparrow.ch",
+  "productionApiBaseUrl": "https://api.soar.luckysparrow.ch",
+  "productionMutation": false,
+  "liveOrderCancelClose": false,
+  "exchangeSideMutation": false,
+  "existingProductionDataMutation": false,
+  "buildInfoWait": {
+    "command": "corepack pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha 36ff999d --timeout-seconds 60 --interval-seconds 10",
+    "status": "FAIL_STALE_SHA",
+    "attempts": 6,
+    "lastSeenSha": "1586f59261cef94d7c513d71bbfcfb697d11ca59",
+    "expectedSha": "36ff999d"
+  },
+  "buildInfoReadback": {
+    "buildId": "PoxMXEACiCr5Aeb3f-lev",
+    "gitSha": "1586f59261cef94d7c513d71bbfcfb697d11ca59",
+    "gitRef": "main",
+    "metadataGeneratedAt": null,
+    "metadataSource": "env-runtime",
+    "checkedAt": "2026-05-19T03:40:16.755Z"
+  },
+  "publicSmoke": {
+    "command": "corepack pnpm run ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --skip-workers",
+    "status": "PASS",
+    "checks": [
+      { "name": "API /health", "status": 200 },
+      { "name": "API /ready", "status": 200 },
+      { "name": "WEB /", "status": 200 }
+    ]
+  },
+  "conclusion": "Production public smoke is healthy for the currently deployed main SHA, but production build-info does not expose the pushed audit commit. Do not claim 36ff999d is deployed or production-ready from this readback."
+}

@@ -188,6 +188,17 @@ Last updated: 2026-05-19
     `docs/operations/operations-release-deployment-audit-2026-05-19.md` and
     `docs/planning/operations-release-deployment-audit-2026-05-19-task.md`.
 
+- [x] `POST-PUSH-BUILD-INFO-READBACK-36FF999D-2026-05-19 verification: read production build-info after push`
+  - 2026-05-19: Completed a read-only post-push production freshness check for
+    pushed commit `36ff999d`. Public API/Web smoke passed for the currently
+    deployed service, but production build-info stayed on
+    `1586f59261cef94d7c513d71bbfcfb697d11ca59` (`gitRef: main`) instead of
+    `36ff999d`, so no production readiness claim is made for `36ff999d`. No
+    production mutation, database mutation, journey mutation, LIVE
+    order/cancel/close, or exchange-side mutation was performed. Evidence:
+    `docs/operations/post-push-build-info-readback-36ff999d-2026-05-19.md` and
+    `docs/planning/post-push-build-info-readback-36ff999d-2026-05-19-task.md`.
+
 - [x] `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19 research: refresh AUD-07 data model/migrations`
   - 2026-05-19: Completed the `AUD-07` data model/migrations audit. Prisma
     schema validation passed, local migration status reported `54` migrations

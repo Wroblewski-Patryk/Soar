@@ -106,6 +106,12 @@ Before any future "full audit" request, start from:
 - `docs/operations/operations-release-deployment-audit-2026-05-19.md` and
   `docs/planning/operations-release-deployment-audit-2026-05-19-task.md`:
   local operations/release/deployment evidence for `AUD-19`.
+- `docs/operations/post-push-build-info-readback-36ff999d-2026-05-19.md`,
+  `.json`, and
+  `docs/planning/post-push-build-info-readback-36ff999d-2026-05-19-task.md`:
+  read-only post-push production freshness evidence for pushed commit
+  `36ff999d`; production public smoke passed but build-info stayed on
+  `1586f59261cef94d7c513d71bbfcfb697d11ca59`.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.

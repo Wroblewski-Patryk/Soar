@@ -33,6 +33,10 @@ was performed.
   local backup/restore check when the required local Postgres container exists.
 - `ops:db:backup-restore:check-local` is container-dependent; running it after
   infra shutdown is an expected operational failure, not database evidence.
+- 2026-05-19 post-push readback for commit `36ff999d` found production
+  build-info still on `1586f59261cef94d7c513d71bbfcfb697d11ca59` (`gitRef:
+  main`) after a 60-second wait. Public smoke passed for the currently deployed
+  production service, but `36ff999d` is not production-ready by build-info.
 - Production release readiness remains historical for the 2026-05-14
   `457bce05` target. Any new production deploy needs fresh build-info, smoke,
   protected runtime, rollback, backup/restore, and sign-off evidence.
@@ -46,6 +50,7 @@ was performed.
 | AUD-OPS-003 | P1 | passed with precondition | Local backup/restore check passes only when local Postgres container is running. | First run failed with no container; rerun after `go-live:infra:up` passed and produced a dated restore report. |
 | AUD-OPS-004 | P1 | open freshness follow-up | Production release gate was not rerun for a new deployment target. | Keep 2026-05-14 `457bce05` as historical production evidence only; rerun production gates before any new release claim. |
 | AUD-OPS-005 | P2 | observation | Mobile build remains scaffold-only. | Root build prints `Mobile scaffold only. Build not enabled yet.`; tracked under `AUD-21`. |
+| AUD-OPS-006 | P1 | blocked by stale target build-info | Post-push production build-info did not expose `36ff999d`; it stayed on `1586f59261cef94d7c513d71bbfcfb697d11ca59` while public smoke passed for the deployed service. | `docs/operations/post-push-build-info-readback-36ff999d-2026-05-19.md`; promote/deploy the intended target or wait for the correct production pipeline, then rerun build-info and release-gate checks. |
 
 ## Result
 

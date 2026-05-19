@@ -19,6 +19,10 @@ Last updated: 2026-05-19
   orchestration deferred.
 - Remaining production-readiness blocker is `AUD-19`: rerun fresh production
   release evidence before any new production readiness claim.
+- Post-push readback for pushed commit `36ff999d` found production build-info
+  still on `1586f59261cef94d7c513d71bbfcfb697d11ca59` (`gitRef: main`) while
+  public API/Web smoke passed. `36ff999d` is not production-ready by
+  build-info.
 - Post-decision repair playbooks are available at
   `docs/operations/audit-decision-repair-playbooks-2026-05-19.md`; they are
   historical planning guidance and do not change runtime behavior.
@@ -52,6 +56,14 @@ Last updated: 2026-05-19
   production data mutation was performed. Evidence:
   `docs/operations/operations-release-deployment-audit-2026-05-19.md` and
   `docs/planning/operations-release-deployment-audit-2026-05-19-task.md`.
+
+- `POST-PUSH-BUILD-INFO-READBACK-36FF999D-2026-05-19` PRODUCTION FRESHNESS
+  BLOCKED FOR TARGET SHA: `ops:deploy:wait-web-build-info` did not observe
+  pushed commit `36ff999d` within the readback window; production build-info
+  stayed on `1586f59261cef94d7c513d71bbfcfb697d11ca59` while public deploy
+  smoke passed for the currently deployed service. Evidence:
+  `docs/operations/post-push-build-info-readback-36ff999d-2026-05-19.md` and
+  `docs/planning/post-push-build-info-readback-36ff999d-2026-05-19-task.md`.
 
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` LOCAL DATA/MIGRATIONS PASS WITH
   FINDING: Prisma schema validation passed, local migration status reported

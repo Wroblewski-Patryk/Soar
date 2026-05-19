@@ -56,7 +56,7 @@ Excluded:
 | AUD-16 | current local / historical production-safe fixture | Backtests/reports Web and API packs passed: `15` files / `37` tests and `13` files / `114` tests. |
 | AUD-17 | current local / historical production-safe action readback | Logs/audit Web and API packs passed: `2` files / `3` tests and `2` files / `5` tests. |
 | AUD-18 | current local / historical production-safe protected route proof | Admin/subscriptions Web and API packs passed: `4` files / `9` tests and `5` files / `25` tests. |
-| AUD-19 | current local / historical production release gate | Typecheck, lint, build, go-live smoke, and local DB backup/restore passed; production gate remains historical for deployed `457bce05`. |
+| AUD-19 | current local / historical production release gate / post-push target stale | Typecheck, lint, build, go-live smoke, and local DB backup/restore passed; production gate remains historical for deployed `457bce05`. Post-push readback for `36ff999d` found production build-info still on `1586f59261cef94d7c513d71bbfcfb697d11ca59` while public smoke passed. |
 | AUD-20 | current foundation / hot-path assistant scope deferred | `DEC-AUD-002` accepted current assistant truth as bot-scoped configuration, deterministic orchestrator coverage, and dry-run diagnostics. BACKTEST/PAPER/LIVE hot-path assistant orchestration remains future/gated scope requiring fail-closed integration, persisted traces, and AI red-team evidence. |
 | AUD-21 | deferred / scaffold-only scope verified | `apps/mobile` is package/README/placeholder only; build/test scripts intentionally echo scaffold-only state. |
 | AUD-22 | current local | Route-reachable i18n audit passed with `0` findings; focused Web i18n pack passed: `8` files / `26` tests. |
@@ -64,7 +64,8 @@ Excluded:
 
 ## Current Repair Queue
 
-1. Before any new production release claim, rerun `AUD-19` production
+1. Before any new production release claim, promote/deploy the intended target
+   or verify the production tracked branch, then rerun `AUD-19` production
    build-info, smoke, protected runtime, rollback, backup/restore, and sign-off
    evidence.
 2. Before any runtime AI trading claim, implement hot-path assistant

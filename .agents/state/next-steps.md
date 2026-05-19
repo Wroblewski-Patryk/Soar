@@ -66,9 +66,14 @@ backup/restore check passed. Go-live smoke covered API (`4` files / `45`
 tests) and Web (`3` files / `18` tests). Evidence:
 `docs/operations/operations-release-deployment-audit-2026-05-19.md` and
 `docs/planning/operations-release-deployment-audit-2026-05-19-task.md`.
-Next operations follow-up: production release readiness remains historical for
-deployed `457bce05`; rerun build-info, deploy smoke, protected runtime,
-rollback, backup/restore, and sign-off before any new production release claim.
+Post-push readback for pushed audit commit `36ff999d` found production
+build-info still on `1586f59261cef94d7c513d71bbfcfb697d11ca59` (`gitRef:
+main`) while public API/Web smoke passed for the deployed service. Evidence:
+`docs/operations/post-push-build-info-readback-36ff999d-2026-05-19.md` and
+`docs/planning/post-push-build-info-readback-36ff999d-2026-05-19-task.md`.
+Next operations follow-up: promote/deploy the intended target or verify which
+branch Coolify tracks, then rerun build-info freshness and full protected
+release-gate evidence before any new production readiness claim.
 
 Latest data-model/migrations audit:
 `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is verified locally as the latest
