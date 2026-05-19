@@ -223,6 +223,18 @@ Last updated: 2026-05-19
     `docs/operations/v1-final-preflight-dd1a1faf-2026-05-19-noauth.md` and
     `docs/planning/protected-preflight-dd1a1faf-2026-05-19-task.md`.
 
+- [x] `RC-EVIDENCE-BLOCKED-DD1A1FAF-2026-05-19 verification: refresh dated no-secret RC blocked packet`
+  - 2026-05-19: Published dated no-secret RC status, sign-off, checklist, and
+    strict evidence-check artifacts for deployed `dd1a1faf` without overwriting
+    historical 2026-05-14 canonical PASS artifacts. Current snapshot is Gate 1
+    `PASS`, Gate 2 `OPEN`, Gate 3 `PASS`, Gate 4 `OPEN`; strict evidence check
+    fails as expected on missing Gate 2 PASS and missing Gate 4 approver/owner
+    fields. No production mutation, LIVE order/cancel/close, exchange-side
+    mutation, protected authenticated journey, or fabricated approval was
+    performed. Evidence:
+    `docs/operations/v1-rc-external-gates-status-dd1a1faf-2026-05-19-blocked.md`
+    and `docs/planning/rc-evidence-blocked-dd1a1faf-2026-05-19-task.md`.
+
 - [x] `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19 research: refresh AUD-07 data model/migrations`
   - 2026-05-19: Completed the `AUD-07` data model/migrations audit. Prisma
     schema validation passed, local migration status reported `54` migrations

@@ -86,6 +86,15 @@ Last updated: 2026-05-19
   `docs/operations/v1-final-preflight-dd1a1faf-2026-05-19-noauth.md` and
   `docs/planning/protected-preflight-dd1a1faf-2026-05-19-task.md`.
 
+- `RC-EVIDENCE-BLOCKED-DD1A1FAF-2026-05-19` RC PACKET BLOCKED AS EXPECTED:
+  dated no-secret RC status/checklist/sign-off artifacts for `dd1a1faf` show
+  Gate 1 `PASS`, Gate 2 `OPEN`, Gate 3 `PASS`, Gate 4 `OPEN`; strict evidence
+  check fails on missing Gate 2 PASS and missing Gate 4 approver/owner fields.
+  Evidence:
+  `docs/operations/v1-rc-external-gates-status-dd1a1faf-2026-05-19-blocked.md`,
+  `docs/operations/v1-rc-signoff-record-dd1a1faf-2026-05-19-blocked.md`, and
+  `docs/planning/rc-evidence-blocked-dd1a1faf-2026-05-19-task.md`.
+
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` LOCAL DATA/MIGRATIONS PASS WITH
   FINDING: Prisma schema validation passed, local migration status reported
   `54` migrations and schema up to date, full local migration replay applied

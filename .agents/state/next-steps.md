@@ -88,6 +88,16 @@ Next exact protected follow-up: provide approved liveimport auth, rollback
 guard auth, dashboard/admin UI auth, and production DB/Coolify restore context,
 then rerun protected runtime, rollback, backup/restore, sign-off, liveimport,
 and production UI clickthrough evidence for 2026-05-19.
+Dated no-secret RC packet for `dd1a1faf` now records Gate 1 `PASS`, Gate 2
+`OPEN`, Gate 3 `PASS`, and Gate 4 `OPEN`; strict RC evidence check fails as
+expected on missing Gate 2 PASS and missing Gate 4 approver/owner fields.
+Evidence:
+`docs/operations/v1-rc-external-gates-status-dd1a1faf-2026-05-19-blocked.md`,
+`docs/operations/v1-rc-signoff-record-dd1a1faf-2026-05-19-blocked.md`, and
+`docs/planning/rc-evidence-blocked-dd1a1faf-2026-05-19-task.md`.
+Next RC follow-up: collect approved production SLO/Gate2 evidence and provide
+named sign-off/owner fields before rebuilding RC status, sign-off, and
+checklist as `APPROVED`.
 
 Latest data-model/migrations audit:
 `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is verified locally as the latest

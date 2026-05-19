@@ -124,6 +124,13 @@ Before any future "full audit" request, start from:
   no-secret protected preflight classifier for deployed `dd1a1faf`; build-info
   and public smoke passed, while protected release readiness remains blocked on
   missing approved auth/context and stale 2026-05-14 protected evidence.
+- `docs/operations/v1-rc-external-gates-status-dd1a1faf-2026-05-19-blocked.md`,
+  `docs/operations/v1-rc-signoff-record-dd1a1faf-2026-05-19-blocked.md`,
+  `docs/operations/v1-release-candidate-checklist-dd1a1faf-2026-05-19-blocked.md`,
+  `docs/operations/_artifacts-rc-evidence-check-dd1a1faf-2026-05-19-blocked.json`,
+  and `docs/planning/rc-evidence-blocked-dd1a1faf-2026-05-19-task.md`:
+  dated no-secret RC blocked packet for deployed `dd1a1faf`; Gate 2 and Gate 4
+  remain open and strict evidence check fails as expected.
 - `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
   `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.

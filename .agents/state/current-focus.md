@@ -17,6 +17,9 @@ backup/restore, sign-off, and any approved protected journey evidence.
 blockers without secrets: build-info and public smoke pass, while liveimport
 auth, rollback guard auth, dashboard/admin UI auth, production DB restore
 context, and dated protected release evidence remain required.
+`RC-EVIDENCE-BLOCKED-DD1A1FAF-2026-05-19` adds the current no-secret RC
+snapshot: Gate 1 `PASS`, Gate 2 `OPEN`, Gate 3 `PASS`, Gate 4 `OPEN`; approval
+requires fresh Gate2/SLO evidence and named Gate4 approver/owner fields.
 
 2026-05-14 post-V1 source-of-truth reconciliation:
 `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14` is the latest ledger truth. The

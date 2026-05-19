@@ -136,6 +136,20 @@ Last updated: 2026-05-19
   `docs/operations/_artifacts-v1-final-preflight-dd1a1faf-2026-05-19-noauth.json`,
   and `docs/planning/protected-preflight-dd1a1faf-2026-05-19-task.md`.
 
+- `RC-EVIDENCE-BLOCKED-DD1A1FAF-2026-05-19` is the latest no-secret RC packet
+  for the deployed `dd1a1faf` target. It intentionally avoids overwriting the
+  historical 2026-05-14 canonical PASS artifacts and records the current
+  dated state as Gate 1 `PASS`, Gate 2 `OPEN`, Gate 3 `PASS`, Gate 4 `OPEN`,
+  with strict RC evidence check failing on missing Gate 2 PASS and missing
+  Gate 4 approver/owner fields. No production mutation, LIVE mutation,
+  exchange-side mutation, protected authenticated journey, or fabricated
+  approval was performed. Evidence:
+  `docs/operations/v1-rc-external-gates-status-dd1a1faf-2026-05-19-blocked.md`,
+  `docs/operations/v1-rc-signoff-record-dd1a1faf-2026-05-19-blocked.md`,
+  `docs/operations/v1-release-candidate-checklist-dd1a1faf-2026-05-19-blocked.md`,
+  `docs/operations/_artifacts-rc-evidence-check-dd1a1faf-2026-05-19-blocked.json`,
+  and `docs/planning/rc-evidence-blocked-dd1a1faf-2026-05-19-task.md`.
+
 - `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19` is the latest `AUD-07` evidence.
   Local schema and migration proof is current: Prisma schema validation passed,
   local migration status reported `54` migrations and schema up to date, full

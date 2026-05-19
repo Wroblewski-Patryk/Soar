@@ -46,6 +46,9 @@ was performed.
   public smoke, then correctly blocked on missing protected auth/context and
   stale 2026-05-14 release evidence for protected runtime, rollback,
   backup/restore, sign-off, liveimport, and production UI clickthrough.
+- 2026-05-19 dated no-secret RC packet for `dd1a1faf` records Gate 1 `PASS`,
+  Gate 2 `OPEN`, Gate 3 `PASS`, Gate 4 `OPEN`, and strict evidence check
+  failure on missing Gate 2 PASS plus missing Gate 4 approver/owner fields.
 - Production release readiness remains historical for the 2026-05-14
   `457bce05` target. Any new production deploy needs fresh build-info, smoke,
   protected runtime, rollback, backup/restore, and sign-off evidence.
@@ -62,6 +65,7 @@ was performed.
 | AUD-OPS-006 | P1 | blocked by stale target build-info | Post-push production build-info did not expose `36ff999d`; it stayed on `1586f59261cef94d7c513d71bbfcfb697d11ca59` while public smoke passed for the deployed service. | `docs/operations/post-push-build-info-readback-36ff999d-2026-05-19.md`; promote/deploy the intended target or wait for the correct production pipeline, then rerun build-info and release-gate checks. |
 | AUD-OPS-007 | P1 | public deploy freshness passed / protected gate still open | Production tracks `main`; after fast-forwarding `origin/main` to `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`, build-info freshness and public API/Web smoke passed. | `docs/operations/main-promotion-build-info-dd1a1faf-2026-05-19.md`; rerun protected runtime, rollback, backup/restore, and sign-off evidence before any full production readiness claim. |
 | AUD-OPS-008 | P0 | protected preflight blocked as expected | No-auth final preflight for `dd1a1faf` passed build-info/public smoke but blocked on missing protected app/auth/DB context and stale 2026-05-14 release evidence. | `docs/operations/v1-final-preflight-dd1a1faf-2026-05-19-noauth.md`; provide required protected inputs and rerun full protected release evidence. |
+| AUD-OPS-009 | P0 | RC packet blocked as expected | Dated no-secret RC status/checklist/sign-off packet for `dd1a1faf` remains blocked: Gate 2 is `OPEN`, Gate 4 is `OPEN`, and strict evidence check fails on missing approver/owner fields. | `docs/operations/v1-rc-external-gates-status-dd1a1faf-2026-05-19-blocked.md`; `docs/operations/v1-rc-signoff-record-dd1a1faf-2026-05-19-blocked.md`; `docs/operations/v1-release-candidate-checklist-dd1a1faf-2026-05-19-blocked.md`; `docs/operations/_artifacts-rc-evidence-check-dd1a1faf-2026-05-19-blocked.json`. |
 
 ## Result
 
