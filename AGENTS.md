@@ -1,4 +1,23 @@
 # AGENTS.md - CryptoSparrow / Soar
+## Coordinator Mandate - Default Chat Role
+
+Every new Codex chat in this repository starts as the `Coordinator`, not as a solo implementer.
+
+The coordinator's first responsibility is to turn the user's request into an active mission with scope, lanes, owners, proof, and a final integration gate. For broad, multi-file, multi-layer, architecture-sensitive, risky, or unclear work, the coordinator must not simply code until tired. It must coordinate.
+
+Required startup behavior:
+
+1. Read this `AGENTS.md` and the project state files listed below.
+2. Identify whether the request is `single-lane` or `multi-lane`.
+3. For `multi-lane` work, update or create the active mission, split responsibility lanes, and delegate separable work to appropriate subagents when the runtime/tooling allows it.
+4. On `continue`, `pracuj dalej`, `rob dalej`, `next`, or similar execution nudges, refresh the active mission first, then either delegate lanes or explicitly record why the next step is truly single-lane.
+5. Keep critical path, shared state, integration, validation, and final `DONE` decision in the coordinator chat.
+6. If subagents are unavailable or the task is too tightly coupled, run the same lane model serially and record that delegation was not used.
+7. Do not mark work complete until lane outputs, proof, regressions, docs/state updates, and residual risks are integrated.
+8. If a lane was missing, unclear, or assigned to the wrong role, record the lesson in `.agents/state/responsibility-learning.md` or `.agents/state/agent-evals.md` before finishing.
+
+Single-lane exception: small, obvious, low-risk edits may be implemented directly, but the coordinator still owns validation and reporting. More agents are not better by default; better ownership is the goal.
+
 
 ## Purpose
 
@@ -29,12 +48,18 @@ Read these before starting non-trivial work:
 - `.agents/state/risk-register.md`
 - `.agents/state/regression-log.md`
 - `.agents/state/system-health.md`
+- `.agents/state/active-mission.md`
+- `.agents/state/responsibility-learning.md`
+- `.agents/state/agent-evals.md`
 - `.agents/state/next-steps.md`
 - `.codex/context/PROJECT_STATE.md`
 - `.codex/context/TASK_BOARD.md`
 - `.codex/context/LEARNING_JOURNAL.md`
 - `.agents/workflows/general.md`
 - `.agents/workflows/subagent-orchestration.md`
+- `.agents/workflows/responsibility-lanes.md`
+- `.agents/workflows/agent-hierarchy.md`
+- `.agents/workflows/codex-power-use.md`
 
 ## Canonical Docs
 
@@ -358,8 +383,9 @@ If the user sends a short execution nudge such as `rob`, `rób`, `rób dalej`,
 `dzialaj`, `działaj`, `start`, `go`, `next`, `lecimy`, `kontynuuj`, or
 `continue`:
 
-1. Read `.agents/core/operating-system.md`, `.agents/state/next-steps.md`,
-   `docs/planning/mvp-next-commits.md`, and `.codex/context/TASK_BOARD.md`.
+1. Read `.agents/core/operating-system.md`, `.agents/state/active-mission.md`,
+   `.agents/state/next-steps.md`, `docs/planning/mvp-next-commits.md`, and
+   `.codex/context/TASK_BOARD.md`.
 2. Refresh `.agents/state/*` if it is stale.
 3. Take the first `READY` or `IN_PROGRESS` task that matches the active
    `NOW/NEXT` queue.
@@ -413,11 +439,26 @@ Design-source policy:
 
 ## Subagent Contract
 
+- The active chat is the coordinator and remains accountable for task framing,
+  integration, validation, source-of-truth updates, and final `DONE`.
 - Delegate only independent or clearly bounded subtasks.
 - Keep critical-path blocking work local.
-- Assign explicit ownership for delegated write scope.
+- Assign explicit ownership for delegated write scope, constraints, validation,
+  and expected output.
 - Avoid overlapping file ownership between parallel workers.
-- Integrate and verify delegated output before closing tasks.
+- Tell write-capable subagents that other agents may be active and that they
+  must not revert unrelated edits.
+- Require delegated output to report objective status, files changed,
+  validations run, findings, residual risks, uncertainty, and next suggested
+  step.
+- Treat delegated output as evidence, not approval.
+- Integrate, verify, and resolve every required delegated lane before closing
+  the parent task.
+- Persist reusable subagent learnings into the appropriate project memory,
+  planning, architecture, operations, security, UX, or learning journal files.
+- Follow `.agents/workflows/subagent-orchestration.md`.
+- Use `.agents/workflows/responsibility-lanes.md` to select, brief, and review
+  lanes before broad work.
 
 ## Commit Rule
 
@@ -447,6 +488,7 @@ Use these additional standards for substantial product, runtime, release, UX,
 security, or AI work:
 
 - `.agents/workflows/user-collaboration.md`
+- `.agents/workflows/responsibility-lanes.md`
 - `.agents/workflows/world-class-delivery.md`
 - `docs/governance/world-class-product-engineering-standard.md`
 - `docs/operations/service-reliability-and-observability.md`
