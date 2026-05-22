@@ -102,14 +102,19 @@ const selectActiveTrailingStop = (
   return active;
 };
 
-const hasRemainingProfitSideDcaLevels = (
+const hasRemainingDcaLevelsBySide = (
   dcaEnabled: boolean,
   dcaLevels: number[],
   executedDcaLevelIndices: Set<number>,
+  side: 'profit' | 'loss',
 ) => {
   if (!dcaEnabled || dcaLevels.length === 0) return false;
+  const isMatchingSide =
+    side === 'profit'
+      ? (level: number) => level >= 0
+      : (level: number) => level < 0;
   return dcaLevels.some((level, index) => (
-    !executedDcaLevelIndices.has(index) && Number.isFinite(level) && level >= 0
+    !executedDcaLevelIndices.has(index) && Number.isFinite(level) && isMatchingSide(level)
   ));
 };
 
@@ -243,7 +248,10 @@ export const evaluatePositionManagement = (
   const dcaProtectionSatisfied = dcaSequenceCompleted || parsedInput.dcaFundsExhausted === true;
   const ttpDcaProtectionSatisfied =
     dcaProtectionSatisfied ||
-    !hasRemainingProfitSideDcaLevels(dcaEnabled, dcaLevels, executedDcaLevelIndices);
+    !hasRemainingDcaLevelsBySide(dcaEnabled, dcaLevels, executedDcaLevelIndices, 'profit');
+  const tslDcaProtectionSatisfied =
+    dcaProtectionSatisfied ||
+    !hasRemainingDcaLevelsBySide(dcaEnabled, dcaLevels, executedDcaLevelIndices, 'loss');
 
   if (
     ttpDcaProtectionSatisfied &&
@@ -350,7 +358,7 @@ export const evaluatePositionManagement = (
   }
 
   if (
-    dcaProtectionSatisfied &&
+    tslDcaProtectionSatisfied &&
     typeof parsedInput.stopLossPrice === 'number' &&
     isStopLossHit(parsedInput.side, parsedInput.currentPrice, parsedInput.stopLossPrice)
   ) {
@@ -364,7 +372,7 @@ export const evaluatePositionManagement = (
     };
   }
 
-  if (dcaProtectionSatisfied && !ttpTrackingActive) {
+  if (tslDcaProtectionSatisfied && !ttpTrackingActive) {
     if (parsedInput.trailingLoss?.enabled) {
       const start = parsedInput.trailingLoss.startPercent;
       const step = parsedInput.trailingLoss.stepPercent;

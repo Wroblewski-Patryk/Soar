@@ -590,6 +590,35 @@ describe('position management', () => {
     expect(result.closeReason).toBe('stop_loss');
   });
 
+  it('allows stop loss when remaining DCA levels are profit-side only', () => {
+    const result = evaluatePositionManagement(
+      {
+        side: 'LONG',
+        currentPrice: 98.5,
+        leverage: 10,
+        stopLossPrice: 99,
+        dcaFundsExhausted: false,
+        dca: {
+          enabled: true,
+          maxAdds: 2,
+          levelPercents: [-0.2, 0.2],
+          addSizeFractions: [1, 1],
+          stepPercent: 0.2,
+          addSizeFraction: 1,
+        },
+      },
+      {
+        averageEntryPrice: 100,
+        quantity: 2,
+        currentAdds: 1,
+        executedDcaLevelIndices: [0],
+      }
+    );
+
+    expect(result.shouldClose).toBe(true);
+    expect(result.closeReason).toBe('stop_loss');
+  });
+
   it('keeps trailing loss blocked while pending DCA remains financially possible', () => {
     const result = evaluatePositionManagement(
       {
@@ -648,6 +677,40 @@ describe('position management', () => {
         averageEntryPrice: 100,
         quantity: 4,
         currentAdds: 2,
+        trailingLossLimitPercent: -0.1,
+      }
+    );
+
+    expect(result.shouldClose).toBe(true);
+    expect(result.closeReason).toBe('trailing_stop');
+  });
+
+  it('allows trailing loss when remaining DCA levels are profit-side only', () => {
+    const result = evaluatePositionManagement(
+      {
+        side: 'LONG',
+        currentPrice: 98.5,
+        leverage: 10,
+        dcaFundsExhausted: false,
+        trailingLoss: {
+          enabled: true,
+          startPercent: -0.2,
+          stepPercent: 0.1,
+        },
+        dca: {
+          enabled: true,
+          maxAdds: 2,
+          levelPercents: [-0.2, 0.2],
+          addSizeFractions: [1, 1],
+          stepPercent: 0.2,
+          addSizeFraction: 1,
+        },
+      },
+      {
+        averageEntryPrice: 100,
+        quantity: 2,
+        currentAdds: 1,
+        executedDcaLevelIndices: [0],
         trailingLossLimitPercent: -0.1,
       }
     );

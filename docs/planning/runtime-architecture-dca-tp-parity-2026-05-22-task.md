@@ -1,8 +1,8 @@
-# Runtime Architecture DCA/TP Parity Task
+# Runtime Architecture DCA/Close Parity Task
 
 ## Header
 - ID: `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22`
-- Title: Restore architecture parity for profit-side DCA before TP close
+- Title: Restore architecture parity for side-specific DCA before close protection
 - Task Type: fix
 - Current Stage: post-release
 - Status: DONE
@@ -34,7 +34,7 @@
 ## Mission Block
 - Mission objective: audit architecture-vs-code parity for runtime bot lifecycle behavior and repair confirmed P0/P1 drift.
 - Release objective advanced: safer LIVE/PAPER/BACKTEST lifecycle parity for DCA-first position management.
-- Included slices: DCA-first TP close gating in runtime core, runtime automation regression, replay regression, and interleaved portfolio regression.
+- Included slices: DCA-first TP/SL/TSL close gating in runtime core, runtime automation regression, replay regression, and interleaved portfolio regression.
 - Explicit exclusions: live exchange-side mutation, production deploy, broad UI redesign, and unrelated `AUD-19` release proof.
 - Checkpoint cadence: close each confirmed architecture mismatch with focused tests before expanding scope.
 - Stop conditions: architecture contradiction requiring product decision, failing quality gate that cannot be safely fixed, or production credentials/real live-money mutation.
@@ -45,9 +45,9 @@
 | Lane | Owner | Source docs/state | Owned files/surfaces | Output | Validation/proof | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | Coordinator | Active chat | `AGENTS.md`, `.agents/state/active-mission.md`, `.codex/context/PROJECT_STATE.md` | Mission framing, integration, state updates | Bounded runtime parity checkpoint | Parent focused validation | CHECKPOINTED |
-| Architecture | Coordinator serial lane | `docs/architecture/06_execution-lifecycle.md`, `reference/position-management-pnl-lifecycle-contract.md`, `reference/live-protection-state-parity-contract.md`, `reference/execution-lifecycle-parity-contract.md` | Contract extraction | Confirmed DCA-first TP drift | Code/test diff | VERIFIED |
-| Runtime implementation | Coordinator serial lane | Runtime engine services | `positionManagement.service.ts`, runtime automation test | TP now respects profit-side DCA gate | Focused engine tests | VERIFIED |
-| Backtest parity | Coordinator serial lane | Backtest parity docs and code | backtest replay and portfolio helper/tests | Backtest helper treats TP like protected close for profit-side DCA | Focused backtest tests | VERIFIED |
+| Architecture | Coordinator serial lane | `docs/architecture/06_execution-lifecycle.md`, `reference/position-management-pnl-lifecycle-contract.md`, `reference/live-protection-state-parity-contract.md`, `reference/execution-lifecycle-parity-contract.md` | Contract extraction | Confirmed side-specific DCA close-gate drift | Code/test diff | VERIFIED |
+| Runtime implementation | Coordinator serial lane | Runtime engine services | `positionManagement.service.ts`, runtime automation test | TP/TTP respect profit-side DCA and SL/TSL respect loss-side DCA | Focused engine tests | VERIFIED |
+| Backtest parity | Coordinator serial lane | Backtest parity docs and code | backtest replay and portfolio helper/tests | Backtest helper blocks close by matching DCA side | Focused backtest tests | VERIFIED |
 | QA/Test | Coordinator serial lane | `.agents/core/quality-gates.md` | Focused Vitest packs | `104` focused tests passed across runtime/backtest packs | Vitest output | VERIFIED |
 | Documentation/Memory | Coordinator | Project state and task board | Planning task and state docs | Durable source-of-truth update | Guardrails and diff check | VERIFIED |
 
@@ -64,11 +64,11 @@
 The operator reported that bot functions still do not behave correctly after prior DCA fixes. Architecture states that `DCA` must be evaluated before close protection and that runtime, PAPER, LIVE, and backtest must share one lifecycle meaning.
 
 ## Goal
-Remove the confirmed code drift where basic `TP` could close while profit-side DCA levels remained pending, even though `TTP`, `SL`, and `TSL` already passed through DCA-first close gates.
+Remove the confirmed code drift where close protection could use inconsistent DCA gates: `TP` did not check profit-side DCA, while `SL`/`TSL` used an overly broad all-DCA gate instead of the loss-side DCA gate described by the architecture.
 
 ## Success Signal
 - User or operator problem: bot closes or reports lifecycle progress inconsistent with configured DCA ladder.
-- Expected product or reliability outcome: profit-side DCA intent blocks `TP` the same way it blocks `TTP` until the relevant DCA gate is satisfied or released.
+- Expected product or reliability outcome: profit-side DCA intent blocks `TP`/`TTP`, and loss-side DCA intent blocks `SL`/`TSL`, until the relevant DCA gate is satisfied or released.
 - How success will be observed: focused runtime and backtest tests fail before the fix and pass after it.
 - Post-launch learning needed: yes.
 
@@ -83,8 +83,9 @@ A verified focused code fix with regression tests and source-of-truth updates.
 - keep the slice limited to confirmed architecture drift
 
 ## Definition of Done
-- [x] Runtime core `TP` respects profit-side DCA gate.
-- [x] Backtest replay and portfolio helpers apply the same `TP` gate.
+- [x] Runtime core `TP`/`TTP` respect the profit-side DCA gate.
+- [x] Runtime core `SL`/`TSL` respect the loss-side DCA gate.
+- [x] Backtest replay and portfolio helpers apply the same side-specific close gates.
 - [x] Focused runtime/backtest regression packs pass.
 - [x] API typecheck and repository guardrails pass.
 - [x] Source-of-truth files are updated.
@@ -105,6 +106,7 @@ A verified focused code fix with regression tests and source-of-truth updates.
   - `corepack pnpm --filter api exec vitest run src/modules/engine/positionManagement.service.test.ts src/modules/backtests/backtestReplayCore.test.ts src/modules/backtests/backtests.contract-remediation.test.ts --run` => PASS, `66/66`
   - `corepack pnpm --filter api exec vitest run src/modules/engine/runtimePositionAutomation.service.test.ts --run` => PASS, `38/38`
   - `corepack pnpm --filter api exec vitest run src/modules/engine/positionManagement.service.test.ts src/modules/engine/runtimePositionAutomation.dcaTpParity.test.ts src/modules/engine/runtimePositionAutomation.service.test.ts src/modules/backtests/backtestReplayCore.test.ts src/modules/backtests/backtests.contract-remediation.test.ts --run` => PASS, `104/104`
+  - `corepack pnpm --filter api exec vitest run src/modules/engine/positionManagement.service.test.ts src/modules/engine/runtimePositionAutomation.dcaTpParity.test.ts src/modules/backtests/backtestReplayCore.test.ts src/modules/backtests/backtests.contract-remediation.test.ts --run` => PASS, `71/71` after SL/TSL side-specific close-gate correction
   - `corepack pnpm --filter api run typecheck` => PASS
   - `corepack pnpm run quality:guardrails` => PASS
   - `git diff --check` => PASS with line-ending warnings only
@@ -127,7 +129,7 @@ A verified focused code fix with regression tests and source-of-truth updates.
   - `docs/architecture/reference/live-protection-state-parity-contract.md`
   - `docs/architecture/reference/live-runtime-lifecycle-parity-contract.md`
 - Fits approved architecture: yes.
-- Mismatch discovered: yes, basic `TP` bypassed the profit-side DCA-first gate.
+- Mismatch discovered: yes, basic `TP` bypassed the profit-side DCA-first gate; `SL`/`TSL` used an all-DCA gate instead of matching only remaining loss-side DCA.
 - Decision required from user: no.
 - Approval reference if architecture changed: not applicable.
 - Follow-up architecture doc updates: none; implementation now matches existing architecture.
@@ -167,11 +169,11 @@ A verified focused code fix with regression tests and source-of-truth updates.
   - `apps/api/src/modules/engine/positionManagement.service.ts`
   - `apps/api/src/modules/backtests/backtestReplayCore.ts`
   - focused runtime/backtest tests
-- Logic: require the same profit-side DCA protection satisfaction for `TP` as for `TTP`.
-- Edge cases: allow `TP` when remaining DCA levels are loss-side only.
+- Logic: require profit-side DCA protection satisfaction for `TP`/`TTP`, and loss-side DCA protection satisfaction for `SL`/`TSL`.
+- Edge cases: allow `TP`/`TTP` when remaining DCA levels are loss-side only, and allow `SL`/`TSL` when remaining DCA levels are profit-side only.
 
 ### 4. Execute Implementation
-- Implementation notes: reused existing `ttpDcaProtectionSatisfied` and `shouldBlockCloseByPendingDca` paths instead of introducing a new mechanism.
+- Implementation notes: generalized the existing DCA-side helper and reused `shouldBlockCloseByPendingDca` instead of introducing a new lifecycle mechanism.
 
 ### 5. Verify and Test
 - Validation performed: focused runtime core, runtime automation, backtest replay, portfolio tests, API typecheck, guardrails, and diff check.

@@ -20,13 +20,14 @@ Last updated: 2026-05-22
 - [x] `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22 fix: restore DCA-first TP parity`
   - 2026-05-22: Coordinator architecture audit found a confirmed bot runtime
     lifecycle drift against `docs/architecture`: basic `TP` could close while
-    profit-side DCA levels remained pending, even though `TTP`, `SL`, and
-    `TSL` already used DCA-first gates. Runtime position management now gates
-    `TP` behind profit-side DCA satisfaction, and backtest replay /
-    interleaved portfolio helpers block `take_profit` when profit-side DCA is
-    still pending. Validation passed so far: focused position/backtest pack
-    `66/66`, combined focused pack `104/104`, API typecheck, repository
-    guardrails, and diff check with line-ending warnings only. Next action:
+    profit-side DCA levels remained pending, and `SL`/`TSL` used an all-DCA
+    gate instead of matching only pending loss-side DCA. Runtime position
+    management now uses side-specific DCA gates for `TP`/`TTP` and `SL`/`TSL`,
+    and backtest replay / interleaved portfolio helpers use the same close
+    blocking model. Validation passed so far: focused position/backtest pack
+    `66/66`, combined focused pack `104/104`, SL/TSL correction pack `71/71`,
+    API typecheck, repository guardrails, and diff check with line-ending
+    warnings only. Next action:
     commit, push, then production deploy/readback when VPS availability is
     restored. Evidence:
     `docs/planning/runtime-architecture-dca-tp-parity-2026-05-22-task.md`.

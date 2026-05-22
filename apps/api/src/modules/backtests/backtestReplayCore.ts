@@ -108,10 +108,11 @@ export const shouldBlockCloseByPendingDca = (
   }
 ) => {
   if (!input.lockTrailingByPendingDca) return false;
-  if (input.closeReason === 'trailing_stop' || input.closeReason === 'stop_loss') {
-    return true;
-  }
-  if (input.closeReason !== 'take_profit' && input.closeReason !== 'trailing_take_profit') return false;
+  const blocksLossSideDca =
+    input.closeReason === 'trailing_stop' || input.closeReason === 'stop_loss';
+  const blocksProfitSideDca =
+    input.closeReason === 'take_profit' || input.closeReason === 'trailing_take_profit';
+  if (!blocksLossSideDca && !blocksProfitSideDca) return false;
 
   const executed = new Set(
     (input.executedDcaLevelIndices ?? []).filter(
@@ -119,7 +120,10 @@ export const shouldBlockCloseByPendingDca = (
     ),
   );
   return input.riskConfig.dcaLevels.some(
-    (level, index) => !executed.has(index) && Number.isFinite(level) && level >= 0,
+    (level, index) =>
+      !executed.has(index) &&
+      Number.isFinite(level) &&
+      (blocksProfitSideDca ? level >= 0 : level < 0),
   );
 };
 

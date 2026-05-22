@@ -506,12 +506,14 @@ Do not turn uncertainty into optimism.
   `SOAR-BOT-RUNTIME-001`, `SOAR-BACKTESTS-001`, and `SOAR-ORDERS-001`:
   architecture-vs-code review found and fixed a confirmed DCA-first lifecycle
   drift where basic `TP` could close while profit-side DCA levels remained
-  pending. Runtime position management now gates `TP` behind the same
-  profit-side DCA satisfaction used for `TTP`, and replay/portfolio backtest
-  helpers now block `take_profit` under the same condition. Evidence:
-  focused combined runtime/backtest pack passed `104/104`, API typecheck
-  passed, repository guardrails passed, and diff check passed with line-ending
-  warnings only. Missing proof: production deploy/readback; production
+  pending, and `SL`/`TSL` used an all-DCA gate instead of matching pending
+  loss-side DCA. Runtime position management now gates `TP`/`TTP` on
+  remaining profit-side DCA and `SL`/`TSL` on remaining loss-side DCA;
+  replay/portfolio backtest helpers use the same side-specific close blocking.
+  Evidence: focused combined runtime/backtest pack passed `104/104`, SL/TSL
+  correction pack passed `71/71`, API typecheck passed, repository guardrails
+  passed, and diff check passed with line-ending warnings only. Missing proof:
+  production deploy/readback; production
   endpoints timed out during this local checkpoint.
 
 - 2026-05-21 `MONEY-FLOW-SECURITY-CANCEL-ENTITLEMENT-2026-05-21` applies to

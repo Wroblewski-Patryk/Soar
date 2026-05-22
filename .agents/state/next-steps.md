@@ -7,11 +7,13 @@ Last updated: 2026-05-22
 Current active runtime parity checkpoint:
 `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22` is locally checkpointed after
 an architecture-vs-code review found a confirmed bot lifecycle drift. Basic
-`TP` could close while profit-side DCA levels remained pending; runtime core
-and backtest replay/portfolio helpers now gate `TP` behind profit-side DCA
-satisfaction. Focused validation passed: combined runtime/backtest pack
-`104/104`, API typecheck, repository guardrails, and diff check with
-line-ending warnings only. Next exact task: commit, push to `main`, then
+`TP` could close while profit-side DCA levels remained pending, and `SL`/`TSL`
+used an all-DCA gate instead of matching pending loss-side DCA. Runtime core
+and backtest replay/portfolio helpers now gate `TP`/`TTP` on profit-side DCA
+and `SL`/`TSL` on loss-side DCA. Focused validation passed: combined
+runtime/backtest pack `104/104`, SL/TSL correction pack `71/71`, API
+typecheck, repository guardrails, and diff check with line-ending warnings
+only. Next exact task: commit, push to `main`, then
 recheck production availability/deploy readback. Production probes timed out
 from this shell during the checkpoint, so do not claim live deployment proof
 until that is resolved. Evidence:

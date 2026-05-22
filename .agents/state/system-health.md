@@ -2,17 +2,17 @@
 
 Last updated: 2026-05-22
 
-## 2026-05-22 Runtime Architecture DCA/TP Parity
+## 2026-05-22 Runtime Architecture DCA/Close Parity
 
 - `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22` is locally checkpointed.
   Architecture review confirmed a runtime/backtest lifecycle drift: basic
-  `TP` did not respect pending profit-side DCA, despite DCA-first contracts
-  requiring one lifecycle meaning across runtime and backtest. The runtime
-  core now gates `TP` through profit-side DCA satisfaction, and backtest replay
-  plus portfolio simulation now block `take_profit` under the same condition.
-- Passed validation: focused combined runtime/backtest pack `104/104`, API
-  typecheck, repository guardrails, and diff check with line-ending warnings
-  only.
+  `TP` did not respect pending profit-side DCA, and `SL`/`TSL` used an
+  all-DCA gate instead of matching pending loss-side DCA. The runtime core now
+  gates `TP`/`TTP` on profit-side DCA and `SL`/`TSL` on loss-side DCA; backtest
+  replay plus portfolio simulation use the same side-specific close blocking.
+- Passed validation: focused combined runtime/backtest pack `104/104`, SL/TSL
+  correction pack `71/71`, API typecheck, repository guardrails, and diff
+  check with line-ending warnings only.
 - Remaining closure gate: commit/push, then production deploy/readback after
   availability is restored.
 - Production availability warning: `https://soar.luckysparrow.ch/api/build-info`

@@ -7,14 +7,16 @@ Last updated: 2026-05-22
 - `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22` is a local runtime
   architecture parity checkpoint after operator feedback that bot lifecycle
   functions still do not match the architecture docs. Review of the DCA-first
-  lifecycle contracts found a confirmed implementation drift: basic `TP`
-  close could bypass pending profit-side DCA levels, while `TTP`, `SL`, and
-  `TSL` already respected DCA-first gates. Runtime position management now
-  requires profit-side DCA satisfaction before `TP`, and backtest replay /
-  interleaved portfolio helpers now treat `take_profit` as a protected close
-  for profit-side DCA blocking. Validation passed: focused combined
-  runtime/backtest pack `104/104`, API typecheck, repository guardrails, and
-  diff check with line-ending warnings only.
+  lifecycle contracts found confirmed implementation drift in close gating:
+  basic `TP` could bypass pending profit-side DCA levels, and `SL`/`TSL`
+  used an all-DCA gate instead of matching only pending loss-side DCA.
+  Runtime position management now uses side-specific gates: `TP`/`TTP`
+  wait on remaining profit-side DCA, while `SL`/`TSL` wait on remaining
+  loss-side DCA. Backtest replay / interleaved portfolio helpers use the
+  same side-specific close blocking. Validation passed: focused combined
+  runtime/backtest pack `104/104`, SL/TSL correction pack `71/71`, API
+  typecheck, repository guardrails, and diff check with line-ending warnings
+  only.
   Production `soar.luckysparrow.ch` and `api.soar.luckysparrow.ch` probes
   timed out from this shell during the checkpoint; that is tracked as a
   separate ops/deploy blocker, not local code evidence. Evidence:

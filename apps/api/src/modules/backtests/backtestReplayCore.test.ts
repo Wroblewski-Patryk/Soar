@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { simulateTradesForSymbolReplay } from './backtestReplayCore';
+import { shouldBlockCloseByPendingDca, simulateTradesForSymbolReplay } from './backtestReplayCore';
 
 const candle = (index: number, close: number) => ({
   openTime: 1_700_000_000_000 + index * 60_000,
@@ -1230,5 +1230,34 @@ describe('simulateTradesForSymbolReplay', () => {
     expect(result.eventCounts.DCA).toBe(1);
     expect(result.eventCounts.TTP).toBeGreaterThanOrEqual(1);
     expect(result.trades[0]?.quantity).toBeCloseTo(2, 5);
+  });
+});
+
+describe('shouldBlockCloseByPendingDca', () => {
+  it('blocks SL and TSL only while loss-side DCA levels remain pending', () => {
+    const baseInput = {
+      lockTrailingByPendingDca: true,
+      riskConfig: { dcaLevels: [-20, 20] },
+      executedDcaLevelIndices: [0],
+    };
+
+    expect(
+      shouldBlockCloseByPendingDca({
+        ...baseInput,
+        closeReason: 'stop_loss',
+      }),
+    ).toBe(false);
+    expect(
+      shouldBlockCloseByPendingDca({
+        ...baseInput,
+        closeReason: 'trailing_stop',
+      }),
+    ).toBe(false);
+    expect(
+      shouldBlockCloseByPendingDca({
+        ...baseInput,
+        closeReason: 'take_profit',
+      }),
+    ).toBe(true);
   });
 });
