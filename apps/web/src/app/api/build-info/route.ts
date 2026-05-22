@@ -2,8 +2,8 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const dynamic = "force-static";
+export const revalidate = false;
 
 const readBuildIdFromFile = async (): Promise<string | null> => {
   try {
@@ -94,7 +94,7 @@ export async function GET() {
       gitRef,
       metadataGeneratedAt: buildMetadata?.generatedAt ?? null,
       metadataSource,
-      checkedAt: new Date().toISOString(),
+      checkedAt: buildMetadata?.generatedAt ?? null,
     },
     {
       headers: {

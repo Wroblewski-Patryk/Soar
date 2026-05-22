@@ -17,6 +17,19 @@ Last updated: 2026-05-22
 
 ## READY
 
+- [x] `WEB-PUBLIC-STATIC-READBACK-2026-05-22 fix: prerender public proof routes`
+  - 2026-05-22: Production availability proof found the public static root
+    reachable externally while dynamic public routes were not reliably
+    reachable from the local/proxy probes. `/auth/login`, `/auth/register`,
+    and `/api/build-info` now prerender as static content, and build-info no
+    longer requires per-request `checkedAt` generation. Validation passed:
+    targeted auth cache contract `2/2`, `web build` with Next output marking
+    all three routes `Static`, `web typecheck`, `quality:guardrails`,
+    `git diff --check`, and local production HTTP smoke returning `200` for
+    `/auth/login`, `/auth/register`, and `/api/build-info`. Next action:
+    commit/push to `main`, wait for Coolify autodeploy, then collect
+    production readback.
+
 - [ ] `ARCH-CODE-RUNTIME-AUDIT-2026-05-22 audit: verify architecture-code runtime parity`
   - 2026-05-22 money-path continuation: locally repaired
     `ARCH-RUNTIME-P1-002`, `ARCH-RUNTIME-P1-003`, and

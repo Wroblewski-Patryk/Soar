@@ -4,6 +4,18 @@ Last updated: 2026-05-22
 
 ## Current Candidate Deployment Status
 
+- `WEB-PUBLIC-STATIC-READBACK-2026-05-22` is a public web deploy-proof repair
+  after production probes showed the static root was externally reachable while
+  dynamic public routes such as `/auth/login`, `/auth/register`, and
+  `/api/build-info` were not locally reachable. These public proof routes now
+  use static prerendering (`force-static`, no revalidation), and
+  `/api/build-info` no longer forces per-request time data. Local validation
+  passed: targeted auth cache contract `2/2`, `web build` with Next route
+  output showing all three routes as `Static`, `web typecheck`,
+  `quality:guardrails`, `git diff --check`, and production-mode local HTTP
+  smoke returning `200` for `/auth/login`, `/auth/register`, and
+  `/api/build-info`.
+
 - `ARCH-RUNTIME-P1-002-004-MONEY-PATH-2026-05-22` is a local runtime/order
   repair from the architecture-code audit. Account updates now require source
   API-key identity and fail closed when the source is absent; runtime LIVE

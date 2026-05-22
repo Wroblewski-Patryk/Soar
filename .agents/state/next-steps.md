@@ -4,6 +4,17 @@ Last updated: 2026-05-22
 
 ## Next Tiny Task
 
+Current public deploy-proof follow-up:
+`WEB-PUBLIC-STATIC-READBACK-2026-05-22` is locally verified and ready to push.
+Production probes showed the public static root reachable while dynamic public
+routes were not reliably reachable, so `/auth/login`, `/auth/register`, and
+`/api/build-info` now prerender as static content. Validation passed: targeted
+auth cache contract `2/2`, `web build` with those three routes reported as
+`Static`, `web typecheck`, `quality:guardrails`, `git diff --check`, and local
+production HTTP smoke returning `200` for all three routes. Next exact task:
+commit/push to `main`, wait for Coolify autodeploy, then collect production
+readback for root, auth pages, and build-info.
+
 Current money-path runtime audit follow-up:
 `ARCH-RUNTIME-P1-002-004-MONEY-PATH-2026-05-22` is locally implemented and
 focused-test verified. Account updates now require source API-key identity,
