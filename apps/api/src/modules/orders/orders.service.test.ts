@@ -1435,7 +1435,7 @@ describe('openOrder live execution contract', () => {
     }
   });
 
-  it('executes exchange order for LIVE and persists exchangeOrderId/status', async () => {
+  it('executes exchange order for LIVE but waits for fill truth before lifecycle finality', async () => {
     const user = await prisma.user.create({
       data: {
         email: 'orders-live@example.com',
@@ -1501,9 +1501,9 @@ describe('openOrder live execution contract', () => {
         })
       );
       expect(order.exchangeOrderId).toBe('binance-order-123');
-      expect(order.status).toBe('FILLED');
-      expect(order.filledQuantity).toBe(2);
-      expect(order.filledAt).not.toBeNull();
+      expect(order.status).toBe('OPEN');
+      expect(order.filledQuantity).toBe(0);
+      expect(order.filledAt).toBeNull();
     } finally {
       process.env.NODE_ENV = previousNodeEnv;
     }

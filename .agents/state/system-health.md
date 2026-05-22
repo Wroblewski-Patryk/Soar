@@ -7,15 +7,20 @@ Last updated: 2026-05-22
 - `ARCH-CODE-RUNTIME-AUDIT-2026-05-22` is checkpointed locally. Four
   read-only lanes checked runtime lifecycle, orders/exchange fill authority,
   backtest/report parity, and ops/deploy topology against `docs/architecture`.
-- Two P0 orders/exchange drifts were fixed locally:
+- Two P0 orders/exchange drifts were fixed:
   - stale unproven runtime execution dedupe remains `inflight` instead of
     re-executing a side effect;
   - LIVE `FILLED` without exchange fill quantity no longer synthesizes local
     full fill/lifecycle truth, and LIVE lifecycle no longer uses request price
     as fill price.
-- Passed validation: focused unit pack `17/17` and API typecheck.
-- Blocked validation: DB-backed `orders.service.test.ts` could not run because
-  local Postgres was unavailable at `localhost:5432`.
+- Follow-up safe local P1 repairs fixed imported LIVE dynamic stop display
+  fallback, backtest closed-candle windowing, settled-only report aggregation,
+  deploy smoke worker readiness, VPS split-worker compose defaults, API DB
+  readiness, and rollback worker-readiness proof.
+- Passed validation: focused API pack `88/88`, readiness/backtest/report pack
+  `20/20`, script syntax checks, and VPS compose config with required env.
+  Laragon was running, but local Postgres required repo `go-live:infra:up`;
+  this workstation guardrail is recorded in `.codex/context/LEARNING_JOURNAL.md`.
 
 ## 2026-05-22 Runtime Architecture DCA/Close Parity
 

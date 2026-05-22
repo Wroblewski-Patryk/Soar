@@ -8,14 +8,20 @@ Last updated: 2026-05-22
   audit requested after the DCA close-gate repair. Four read-only lanes
   checked runtime lifecycle, orders/exchange fill authority, backtest/report
   parity, and ops/deploy topology against `docs/architecture`. Confirmed P0
-  code drift was found and repaired locally: stale unproven runtime execution
+  code drift was found and repaired: stale unproven runtime execution
   dedupe no longer resets to `execute`, and LIVE `FILLED` responses without
   exchange fill quantity no longer synthesize a local full fill or lifecycle
-  mutation. LIVE lifecycle also no longer uses request price as fill price.
-  Validation passed: focused unit pack `17/17` and API typecheck. Broader
-  DB-backed `orders.service.test.ts` could not run because local Postgres was
-  unavailable at `localhost:5432`. Remaining open audit findings are tracked
-  in `docs/planning/architecture-code-runtime-audit-2026-05-22-task.md`.
+  mutation. LIVE lifecycle also no longer uses request price as fill price. A
+  second safe-local pass fixed imported LIVE dynamic stop display fallback,
+  backtest closed-candle windowing, reports settled-trade aggregation,
+  deploy smoke worker readiness, VPS split-worker compose defaults, API DB
+  readiness, and rollback worker-readiness proof. Validation passed: focused
+  API pack `88/88`, readiness/backtest/report pack `20/20`, script syntax
+  checks, and VPS compose config with required env. Laragon was running at
+  `C:\laragon\laragon.exe`, but local Postgres required repo
+  `go-live:infra:up`; that pitfall is recorded in the learning journal.
+  Remaining open audit findings are tracked in
+  `docs/planning/architecture-code-runtime-audit-2026-05-22-task.md`.
 
 - `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22` is a local runtime
   architecture parity checkpoint after operator feedback that bot lifecycle

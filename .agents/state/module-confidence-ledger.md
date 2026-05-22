@@ -63,6 +63,23 @@ Do not turn uncertainty into optimism.
 ## Current Release Evidence Notes
 
 - 2026-05-22
+  `ARCH-CODE-RUNTIME-AUDIT-2026-05-22` applies to
+  `SOAR-BOT-RUNTIME-001`, `SOAR-ORDERS-001`, `SOAR-BACKTESTS-001`,
+  `SOAR-REPORTS-001`, and `SOAR-OPERATIONS-001`: architecture/code audit
+  found and repaired local drift in runtime execution dedupe, LIVE fill
+  authority, imported LIVE dynamic-stop display, backtest closed-candle
+  windowing, settled-only report aggregation, deploy smoke worker readiness,
+  VPS split-worker compose defaults, API DB readiness, and rollback
+  worker-readiness proof. Validation passed: focused API pack `88/88`,
+  readiness/backtest/report pack `20/20`, script syntax checks, and VPS
+  compose config with required env. Remaining open findings are tracked in
+  `docs/planning/architecture-code-runtime-audit-2026-05-22-task.md` and
+  include account-update source scoping, live retry client-order id,
+  account-update close materialization, backtest multi-strategy merge parity,
+  backtest `TRAILING`/`TSL` event naming, durable backtest queue ownership,
+  and cross-container worker heartbeat proof.
+
+- 2026-05-22
   `LIVE-DCA-SUBMITTED-FILL-GATE-2026-05-22` applies to
   `SOAR-BOT-RUNTIME-001`, `SOAR-ORDERS-001`, and `SOAR-POSITIONS-001`:
   emergency runtime safety fix after operator feedback that LIVE DCA could be
@@ -504,15 +521,19 @@ Do not turn uncertainty into optimism.
 
 - 2026-05-22 `ARCH-CODE-RUNTIME-AUDIT-2026-05-22` applies to
   `SOAR-ENGINE-001`, `SOAR-ORDERS-001`, `SOAR-BOT-RUNTIME-001`,
-  `SOAR-BACKTESTS-001`, and `SOAR-OPERATIONS-001`: four read-only
-  architecture/code audit lanes found remaining runtime drift. Two P0
-  orders/exchange defects were fixed locally: stale unproven runtime execution
-  dedupe no longer resets to `execute`, and LIVE `FILLED` without exchange
-  fill quantity no longer synthesizes local full fill/lifecycle truth or uses
-  request price as fill price. Evidence: focused unit pack passed `17/17` and
-  API typecheck passed. Missing proof: DB-backed `orders.service.test.ts`
-  could not run because local Postgres was unavailable at `localhost:5432`;
-  production deploy/readback is also blocked by endpoint timeouts.
+  `SOAR-BACKTESTS-001`, `SOAR-REPORTS-001`, and `SOAR-OPERATIONS-001`: four
+  read-only architecture/code audit lanes found remaining runtime drift. Two
+  P0 orders/exchange defects and safe local P1 defects were fixed: stale
+  unproven runtime execution dedupe no longer resets to `execute`, LIVE
+  `FILLED` without exchange fill quantity no longer synthesizes local full
+  fill/lifecycle truth or uses request price as fill price, imported LIVE
+  rows no longer show dynamic strategy fallback without runtime state,
+  backtests use closed-candle upper bounds, reports aggregate settled
+  realized-PnL trades only, deploy smoke checks worker readiness, VPS compose
+  encodes split-worker defaults, API readiness checks DB reachability, and
+  rollback proof checks worker readiness. Evidence: focused API pack `88/88`,
+  readiness/backtest/report pack `20/20`, script syntax checks, and VPS
+  compose config with required env.
 
 - 2026-05-22 `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22` applies to
   `SOAR-BOT-RUNTIME-001`, `SOAR-BACKTESTS-001`, and `SOAR-ORDERS-001`:

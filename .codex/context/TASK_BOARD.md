@@ -21,13 +21,17 @@ Last updated: 2026-05-22
   - 2026-05-22: Coordinator spawned four read-only explorer lanes for runtime
     lifecycle, orders/exchange fill authority, backtest/report parity, and
     ops/deploy topology. The audit found two P0 orders/exchange drifts and
-    repaired both locally: stale unproven runtime execution dedupe stays
+    repaired both: stale unproven runtime execution dedupe stays
     `inflight` instead of re-executing a side effect, and LIVE `FILLED`
     without exchange fill quantity no longer synthesizes a full fill or
-    lifecycle mutation. Validation passed: focused unit pack `17/17` and API
-    typecheck. Broader DB-backed orders tests are blocked because local
-    Postgres is unavailable at `localhost:5432`. Remaining P1/P2 findings are
-    listed in the task artifact. Evidence:
+    lifecycle mutation. Follow-up safe local P1 repairs covered imported LIVE
+    dynamic stop display fallback, backtest closed-candle windowing, reports
+    settled-trade aggregation, deploy smoke worker readiness, VPS split-worker
+    compose defaults, API DB readiness, and rollback worker-readiness proof.
+    Validation passed: focused API pack `88/88`, readiness/backtest/report
+    pack `20/20`, script syntax checks, and VPS compose config with required
+    env. Remaining open P1/P2 findings are listed in the task artifact.
+    Evidence:
     `docs/planning/architecture-code-runtime-audit-2026-05-22-task.md`.
 
 - [x] `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22 fix: restore DCA-first TP parity`

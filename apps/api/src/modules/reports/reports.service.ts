@@ -58,7 +58,9 @@ export const aggregateModePerformance = (
     };
   }
 
-  const trades = input.trades ?? [];
+  const trades = (input.trades ?? []).filter(
+    (trade): trade is { realizedPnl: number } => typeof trade.realizedPnl === 'number'
+  );
   const totalTrades = trades.length;
   let winningTrades = 0;
   let losingTrades = 0;

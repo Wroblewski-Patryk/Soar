@@ -141,7 +141,7 @@ describe('Bots runtime strategy context contract', () => {
     expect(positionsRes.body.openItems[0].symbol).toBe('ETHUSDT');
   });
 
-  it('surfaces canonical symbol-level advanced close plans for strategy-null runtime positions', async () => {
+  it('surfaces canonical symbol-level plans without dynamic strategy fallback for imported positions without runtime state', async () => {
     const ownerEmail = 'bot-runtime-symbol-level-advanced-close@example.com';
     const owner = await registerAndLogin(ownerEmail);
     const ownerUser = await prisma.user.findUniqueOrThrow({ where: { email: ownerEmail } });
@@ -294,11 +294,13 @@ describe('Bots runtime strategy context contract', () => {
       strategyAutomationContextResolved: boolean;
       trailingTakeProfitLevels: Array<{ armPercent: number; trailPercent: number }>;
       dynamicTtpStopLoss: number | null;
+      dynamicTtpStopLossSource: string | null;
     };
     expect(item.actionable).toBe(false);
     expect(item.strategyAutomationContextResolved).toBe(true);
     expect(item.trailingTakeProfitLevels).toEqual([{ armPercent: 0.1, trailPercent: 0.05 }]);
-    expect(item.dynamicTtpStopLoss).toBeCloseTo(105.4, 5);
+    expect(item.dynamicTtpStopLoss).toBeNull();
+    expect(item.dynamicTtpStopLossSource).toBeNull();
   });
 
   it('does not surface symbol-fallback DCA or trailing plans when LIVE position lacks canonical strategy context', async () => {

@@ -191,6 +191,67 @@ describe('backtestDataGateway', () => {
     expect(createMany).toHaveBeenCalledTimes(1);
   });
 
+  it('excludes candles that open inside the range but close after the requested end time', async () => {
+    const baseTime = 1_710_000_000_000;
+    const inRange = buildPublicCandle(baseTime);
+    const stillOpenAtEnd = buildPublicCandle(baseTime + ONE_MINUTE_MS);
+    const endTime = stillOpenAtEnd.openTime;
+
+    vi.mocked(fetchExchangePublicRecentCandles).mockResolvedValue([
+      inRange,
+      stillOpenAtEnd,
+    ]);
+
+    const candles = await fetchKlines(
+      'BINANCE',
+      'BTCUSDT',
+      '1m',
+      'FUTURES',
+      2,
+      endTime,
+      baseTime,
+    );
+
+    expect(candles.map((item) => item.openTime)).toEqual([baseTime]);
+  });
+
+  it('queries DB cache by close time upper bound for closed-candle replay windows', async () => {
+    const baseTime = 1_710_000_000_000;
+    const findMany = vi.fn(async () => [
+      {
+        openTime: BigInt(baseTime),
+        closeTime: BigInt(baseTime + ONE_MINUTE_MS - 1),
+        open: 100,
+        high: 101,
+        low: 99,
+        close: 100.5,
+        volume: 1_000,
+      },
+    ]);
+    const createMany = vi.fn(async () => ({ count: 1 }));
+    setDbCandleDelegateForTests({ findMany, createMany });
+
+    await fetchKlines(
+      'BINANCE',
+      'BTCUSDT',
+      '1m',
+      'FUTURES',
+      1,
+      baseTime + ONE_MINUTE_MS - 1,
+      baseTime,
+    );
+
+    expect(findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          openTime: { gte: BigInt(baseTime) },
+          closeTime: { lte: BigInt(baseTime + ONE_MINUTE_MS - 1) },
+        }),
+      }),
+    );
+    expect(fetchExchangePublicRecentCandles).not.toHaveBeenCalled();
+  });
+
   it('uses exchange-owned derivatives history for non-Binance futures supplemental series', async () => {
     const baseTime = 1_710_000_000_000;
     vi.mocked(fetchExchangePublicFundingRateHistory).mockResolvedValue([

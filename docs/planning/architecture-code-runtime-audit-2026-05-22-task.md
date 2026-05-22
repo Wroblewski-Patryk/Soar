@@ -64,7 +64,7 @@
 The operator reported recurring bot behavior defects and asked to coordinate a check that code still reflects the large architecture set under `docs/architecture`. A prior checkpoint fixed confirmed DCA close-gate drift for `TP`/`TTP` and `SL`/`TSL`; this task broadens the audit to remaining runtime trading contracts.
 
 ## Goal
-Produce an evidence-backed list of remaining architecture/code mismatches and fix the highest safe local P0/P1 mismatch if one is confirmed during this checkpoint.
+Produce an evidence-backed list of remaining architecture/code mismatches and fix confirmed safe local P0/P1 mismatches discovered during this checkpoint.
 
 ## Success Signal
 - User or operator problem: bot and production runtime behavior diverge from documented intent.
@@ -108,26 +108,26 @@ An integrated architecture-vs-code findings table for the four lanes, plus a sel
 | --- | --- | --- | --- | --- | --- |
 | `ARCH-RUNTIME-P0-001` | P0 | Orders/exchange | Stale `PENDING` runtime dedupe without linked order could reset to `execute`, allowing duplicate LIVE side effects after crash/retry. | FIXED_LOCALLY | `runtimeExecutionDedupe.service.ts` now keeps stale unproven pending commands `inflight`; unit regression added. |
 | `ARCH-RUNTIME-P0-002` | P0 | Orders/exchange | LIVE `FILLED` without exchange fill quantity synthesized full fill from requested quantity and could advance lifecycle without fill truth. | FIXED_LOCALLY | `orders.service.ts` now keeps such LIVE responses pending/open; LIVE fill lifecycle no longer uses request price as fill price. |
-| `ARCH-RUNTIME-P1-001` | P1 | Runtime lifecycle | LIVE read model may show dynamic TTP from `strategy_fallback` without canonical runtime protection state. | OPEN | Next fix candidate after P0 closure. |
+| `ARCH-RUNTIME-P1-001` | P1 | Runtime lifecycle | LIVE read model may show dynamic TTP from `strategy_fallback` without canonical runtime protection state. | FIXED_LOCALLY | Imported `EXCHANGE_SYNC` positions now require canonical runtime state before dynamic strategy fallback can be displayed; plan levels may still be shown. |
 | `ARCH-RUNTIME-P1-002` | P1 | Runtime lifecycle / orders | `ACCOUNT_UPDATE` scope may update the only matching position by `userId+symbol+side` without wallet/api-key source proof. | OPEN | Requires normalized stream source identity or explicit no-op when source is absent. |
 | `ARCH-RUNTIME-P1-003` | P1 | Orders/exchange | LIVE retry submit path does not pass canonical `clientOrderId` through exchange boundary. | OPEN | Needs adapter-bound idempotent client order id from dedupe/fingerprint. |
 | `ARCH-RUNTIME-P1-004` | P1 | Orders/exchange | `ACCOUNT_UPDATE quantity=0` can close a position without materialized close fill/trade/PnL truth. | OPEN | Needs recovery/close-pending or proven fill materialization. |
-| `ARCH-RUNTIME-P1-005` | P1 | Backtest parity | Backtest candle gateway filters by `openTime <= endTime` instead of closed-candle `closeTime <= endTime`. | OPEN | Add gateway test and change DB/fetch filters. |
+| `ARCH-RUNTIME-P1-005` | P1 | Backtest parity | Backtest candle gateway filters by `openTime <= endTime` instead of closed-candle `closeTime <= endTime`. | FIXED_LOCALLY | Gateway fetch and DB cache now use `closeTime <= endTime`; regressions cover network and DB-cache paths. |
 | `ARCH-RUNTIME-P1-006` | P1 | Backtest parity | Backtest request path is single-strategy and does not implement runtime signal merge for multi-strategy bot parity. | OPEN | Product/architecture decision or implementation slice required. |
-| `ARCH-RUNTIME-P1-007` | P1 | Reports | Reports count trades with `realizedPnl = null` as completed zero-PnL trades. | OPEN | Filter PAPER/LIVE reports to canonical close trades with realized PnL. |
-| `ARCH-RUNTIME-P1-008` | P1 | Ops/deploy | Deploy smoke can pass on `/workers/health` even when topology is degraded. | OPEN | Add `/workers/ready` and degraded-status failure to smoke. |
-| `ARCH-RUNTIME-P1-009` | P1 | Ops/deploy | `docker-compose.vps.yml` does not fully encode canonical split worker env/Dockerfile ownership. | OPEN | Align compose or document explicit fallback boundary. |
+| `ARCH-RUNTIME-P1-007` | P1 | Reports | Reports count trades with `realizedPnl = null` as completed zero-PnL trades. | FIXED_LOCALLY | PAPER/LIVE report aggregation now counts only settled realized-PnL trades. |
+| `ARCH-RUNTIME-P1-008` | P1 | Ops/deploy | Deploy smoke can pass on `/workers/health` even when topology is degraded. | FIXED_LOCALLY | Deploy smoke now probes `/workers/ready` and fails degraded/not-ready worker payloads. |
+| `ARCH-RUNTIME-P1-009` | P1 | Ops/deploy | `docker-compose.vps.yml` does not fully encode canonical split worker env/Dockerfile ownership. | FIXED_LOCALLY | VPS compose now defaults to split worker mode, explicit worker ownership/queues, and dedicated worker Dockerfiles. |
 | `ARCH-RUNTIME-P1-010` | P1 | Ops/deploy | Backtest worker entrypoint does not own durable backtest queue consumption. | OPEN | Needs durable queue/consumer or architecture narrowing. |
 | `ARCH-RUNTIME-P1-011` | P1 | Ops/deploy | `/workers/ready` does not prove live worker process heartbeat across containers. | OPEN | Move heartbeat to Redis/DB and make readiness check required worker families. |
+| `ARCH-RUNTIME-P1-012` | P1 | Ops/deploy | `/ready` did not check Postgres/Prisma reachability. | FIXED_LOCALLY | Runtime dependency readiness now includes bounded database `SELECT 1` with protected details diagnostics. |
+| `ARCH-RUNTIME-P1-013` | P1 | Ops/deploy | Rollback proof did not include `/workers/ready`. | FIXED_LOCALLY | Rollback guard now checks `/workers/ready` before runtime freshness and alerts. |
 
 ## Validation Evidence
 - Tests:
-  - `corepack pnpm --filter api exec vitest run src/modules/orders/orders.liveFillResolution.test.ts src/modules/engine/runtimeExecutionDedupe.service.test.ts --run` => PASS, `17/17`
-  - `corepack pnpm --filter api exec vitest run src/modules/orders/orders.liveFillResolution.test.ts --run` => PASS, `5/5`
-  - `corepack pnpm --filter api run typecheck` => PASS
-  - `corepack pnpm run quality:guardrails` => PASS
-  - `git diff --check` => PASS with line-ending warnings only
-  - `corepack pnpm --filter api exec vitest run src/modules/orders/orders.service.test.ts --run` => BLOCKED, local Postgres unavailable at `localhost:5432`
+  - `corepack pnpm --filter api exec vitest run src/modules/backtests/backtestDataGateway.test.ts src/modules/reports/reports.service.test.ts src/modules/bots/runtimeSessionPositionsRead.service.test.ts src/modules/bots/bots.runtime-strategy-context.e2e.test.ts src/modules/orders/orders.liveFillResolution.test.ts src/modules/engine/runtimeExecutionDedupe.service.test.ts src/modules/orders/orders.service.test.ts --run --sequence.concurrent=false` => PASS, `88/88`
+  - `corepack pnpm --filter api exec vitest run src/router/health-readiness.test.ts src/modules/backtests/backtestDataGateway.test.ts src/modules/reports/reports.service.test.ts --run --sequence.concurrent=false` => PASS, `20/20`
+  - `node --check scripts/deploySmokeCheck.mjs; node --check scripts/evaluateRollbackGuard.mjs` => PASS
+  - `docker compose -f docker-compose.vps.yml config` with required dummy env => PASS
 - Manual checks: architecture/code lane inspection completed by four read-only explorer lanes and coordinator spot checks.
 - Screenshots/logs: not applicable
 - High-risk checks: no production or live exchange mutation authorized
@@ -136,7 +136,7 @@ An integrated architecture-vs-code findings table for the four lanes, plus a sel
 - Requirements matrix updated: not applicable for initial audit
 - Quality scenarios updated: not applicable for initial audit
 - Risk register updated: pending if new risks are confirmed
-- Reality status: partially verified; two P0 fixes are locally unit-verified, broader DB-backed orders proof blocked by local DB availability.
+- Reality status: partially verified; local runtime/order/backtest/report/readiness fixes are focused-test verified. Remaining open findings are account-update scoping, live retry client-order id, account-update close materialization, backtest multi-strategy merge parity, backtest `TRAILING`/`TSL` event naming, durable backtest queue ownership, and cross-container worker heartbeat proof.
 
 ## Architecture Evidence
 - Architecture source reviewed:
@@ -179,9 +179,10 @@ An integrated architecture-vs-code findings table for the four lanes, plus a sel
 ### 4. Execute Implementation
 - Repaired `ARCH-RUNTIME-P0-001`: stale unproven runtime execution dedupe remains `inflight` instead of allowing duplicate side-effect execution.
 - Repaired `ARCH-RUNTIME-P0-002`: LIVE `FILLED` without exchange fill quantity no longer synthesizes a fill or advances lifecycle; LIVE lifecycle no longer uses request price as fill price.
+- Repaired safe local P1s: dynamic strategy fallback display for imported LIVE rows, closed-candle backtest gateway windowing, settled-only report aggregation, deploy smoke worker readiness, VPS split-worker compose defaults, API DB readiness, and rollback worker-readiness proof.
 
 ### 5. Verify and Test
-- Unit pack passed `17/17`; API typecheck passed. DB-backed orders pack is blocked because local Postgres is not reachable.
+- Focused API packs passed `88/88` and readiness/backtest/report pack passed `20/20`; script syntax checks and VPS compose config passed. Local Postgres/Redis were started through repo infra after confirming Laragon/MySQL alone did not provide Postgres.
 
 ### 6. Self-Review
 - The P0 fixes are fail-closed and reuse existing services/tests. They do not add workaround paths or architecture changes.

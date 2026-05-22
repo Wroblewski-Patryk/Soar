@@ -33,18 +33,17 @@ describe('aggregateModePerformance', () => {
     expect(result.winRate).toBeCloseTo((14 / 30) * 100, 5);
   });
 
-  it('aggregates paper/live trades from realized pnl values', () => {
+  it('aggregates paper/live trades from settled realized pnl values only', () => {
     const result = aggregateModePerformance('PAPER', {
       trades: [{ realizedPnl: 10 }, { realizedPnl: -7 }, { realizedPnl: 0 }, { realizedPnl: null }],
     });
 
-    expect(result.totalTrades).toBe(4);
+    expect(result.totalTrades).toBe(3);
     expect(result.winningTrades).toBe(1);
     expect(result.losingTrades).toBe(1);
     expect(result.netPnl).toBe(3);
     expect(result.grossProfit).toBe(10);
     expect(result.grossLoss).toBe(7);
-    expect(result.winRate).toBe(25);
+    expect(result.winRate).toBeCloseTo((1 / 3) * 100, 5);
   });
 });
-

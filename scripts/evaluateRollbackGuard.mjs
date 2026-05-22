@@ -108,9 +108,34 @@ const main = async () => {
     checkedAt: new Date().toISOString(),
     shouldRollback: false,
     reasons: [],
+    workersReady: null,
     freshness: null,
     alerts: [],
   };
+
+  const workersReadyResponse = await fetchWithTimeout(
+    `${baseUrl}/workers/ready`,
+    { method: 'GET', headers },
+    timeoutMs
+  );
+  if (!workersReadyResponse.ok) {
+    decision.shouldRollback = true;
+    decision.reasons.push(`workers_ready_endpoint_http_${workersReadyResponse.status}`);
+  } else {
+    const workersReadyPayload = await workersReadyResponse.json();
+    decision.workersReady = {
+      status: workersReadyPayload?.status ?? 'UNKNOWN',
+      topologyStatus: workersReadyPayload?.topologyStatus ?? null,
+      requiredWorkerFamilies: workersReadyPayload?.requiredWorkerFamilies ?? null,
+    };
+    if (
+      workersReadyPayload?.status !== 'ready' ||
+      workersReadyPayload?.topologyStatus === 'degraded'
+    ) {
+      decision.shouldRollback = true;
+      decision.reasons.push('workers_ready_failed');
+    }
+  }
 
   const freshnessResponse = await fetchWithTimeout(
     `${baseUrl}/workers/runtime-freshness`,

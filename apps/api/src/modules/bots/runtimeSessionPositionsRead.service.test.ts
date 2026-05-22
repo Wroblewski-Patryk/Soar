@@ -20,6 +20,7 @@ import {
   buildRuntimeSessionOpenPositionWindow,
 } from './runtimeSessionPositionWindow';
 import { buildBotlessWalletTradeFallbackWhere } from './runtimeSessionTradeFallbackScope';
+import { canUseStrategyProtectionFallbackForDisplay } from './runtimeStrategyProtectionFallbackDisplay';
 
 describe('buildBotlessWalletTradeFallbackWhere', () => {
   it('does not include botless wallet trades for PAPER runtime position reads', () => {
@@ -185,6 +186,40 @@ describe('buildRuntimeTradeCarryOverWindowClause', () => {
         },
       ],
     });
+  });
+});
+
+describe('canUseStrategyProtectionFallbackForDisplay', () => {
+  it('does not use strategy-derived dynamic stops for imported LIVE positions without canonical runtime state', () => {
+    expect(
+      canUseStrategyProtectionFallbackForDisplay({
+        position: { origin: 'EXCHANGE_SYNC' },
+        strategyAutomationContextResolved: true,
+        runtimeState: null,
+      })
+    ).toBe(false);
+  });
+
+  it('allows strategy fallback for canonical runtime-owned positions and imported positions with runtime state', () => {
+    expect(
+      canUseStrategyProtectionFallbackForDisplay({
+        position: { origin: 'BOT' },
+        strategyAutomationContextResolved: true,
+        runtimeState: null,
+      })
+    ).toBe(true);
+
+    expect(
+      canUseStrategyProtectionFallbackForDisplay({
+        position: { origin: 'EXCHANGE_SYNC' },
+        strategyAutomationContextResolved: true,
+        runtimeState: {
+          averageEntryPrice: 100,
+          quantity: 1,
+          currentAdds: 0,
+        },
+      })
+    ).toBe(true);
   });
 });
 

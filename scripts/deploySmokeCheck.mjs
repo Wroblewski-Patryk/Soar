@@ -93,10 +93,11 @@ const checks = [
 
 if (requireWorkers) {
   checks.push({
-    name: 'API /workers/health',
-    url: `${apiBase}/workers/health`,
+    name: 'API /workers/ready',
+    url: `${apiBase}/workers/ready`,
     method: 'GET',
     headers: authHeaders,
+    expectReadyBody: true,
   });
 }
 
@@ -109,7 +110,24 @@ const runCheck = async (check) => {
       headers: check.headers,
       signal: controller.signal,
     });
+    let body = null;
+    const contentType = response.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      body = await response.json().catch(() => null);
+    }
     if (response.status >= 200 && response.status < 400) {
+      if (
+        check.expectReadyBody &&
+        body &&
+        (body.status === 'degraded' ||
+          body.status === 'not_ready' ||
+          body.topologyStatus === 'degraded')
+      ) {
+        return {
+          ok: false,
+          detail: `${response.status} ${body.status ?? 'unknown'}${body.topologyStatus ? ` topology=${body.topologyStatus}` : ''}`,
+        };
+      }
       return { ok: true, detail: `${response.status}` };
     }
     return { ok: false, detail: `status ${response.status}` };

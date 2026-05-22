@@ -42,6 +42,30 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
   `.codex/context/PROJECT_STATE.md` entry
   `V1-LOGIN-API-STARTUP-HOTFIX-2026-05-22`.
 
+### 2026-05-22 - Check Laragon and Postgres separately before DB-backed API tests
+- Context: architecture-code runtime audit needed DB-backed `orders.service`
+  tests after fixing LIVE fill authority and runtime execution dedupe.
+- Symptom: DB-backed tests failed at setup with `Can't reach database server at
+  localhost:5432`; Laragon was running, but only Laragon/MySQL processes were
+  visible and `Test-NetConnection localhost 5432` returned false.
+- Root cause: on this Windows machine Laragon may be the local services entry
+  point, but a running `C:\laragon\laragon.exe` process does not prove that the
+  repository's required Postgres listener is active on `localhost:5432`.
+- Guardrail: before DB-backed API tests, check both Laragon and the exact
+  Postgres port; if Laragon is missing, start `C:\laragon\laragon.exe`, then
+  verify or start the repo Postgres/Redis path with `go-live:infra:up`.
+- Preferred pattern:
+```powershell
+Get-Process laragon -ErrorAction SilentlyContinue | Select-Object ProcessName,Id,Path
+Test-NetConnection -ComputerName localhost -Port 5432
+corepack pnpm run go-live:infra:up
+```
+- Avoid: assuming DB-backed tests are runnable just because Laragon/MySQL is
+  running, or reporting a code regression when `localhost:5432` is closed.
+- Evidence: 2026-05-22 terminal output showed `laragon.exe` at
+  `C:\laragon\laragon.exe`, MySQL processes under `C:\laragon\bin\mysql\...`,
+  and `TcpTestSucceeded=False` for `localhost:5432`.
+
 ### 2026-05-21 - Capture subagent reports before closing security lanes
 - Context: `SECURITY-RED-TEAM-HARDENING-2026-05-21` used delegated security
   lanes for Auth, Secrets/Ops, Trading/Money Safety, and Frontend Security.

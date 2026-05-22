@@ -57,6 +57,7 @@ import { normalizeSymbols } from './runtimeSymbolUniverse.service';
 import { resolveRuntimePositionDcaCount } from './runtimeSessionPositionDcaCount';
 import { buildRuntimeSessionClosedPositionWindow } from './runtimeSessionPositionWindow';
 import { buildBotlessWalletTradeFallbackWhere } from './runtimeSessionTradeFallbackScope';
+import { canUseStrategyProtectionFallbackForDisplay } from './runtimeStrategyProtectionFallbackDisplay';
 
 type RuntimeTakeoverStatus = 'OWNED_AND_MANAGED' | 'UNOWNED' | 'AMBIGUOUS' | 'MANUAL_ONLY';
 
@@ -859,7 +860,11 @@ export const listBotRuntimeSessionPositions = async (
       runtimeState,
       trailingTakeProfitLevels,
       trailingStopLevels,
-      allowStrategyProtectionFallback: strategyAutomationContextResolved,
+      allowStrategyProtectionFallback: canUseStrategyProtectionFallbackForDisplay({
+        position,
+        strategyAutomationContextResolved,
+        runtimeState,
+      }),
     });
 
     const holdUntil = position.closedAt ?? windowEnd;

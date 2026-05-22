@@ -12,6 +12,7 @@ const originalApiKeyEncryption = process.env.API_KEY_ENCRYPTION;
 const originalApiKeyEncryptionActiveVersion = process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
 const originalRedisRequired = process.env.REDIS_REQUIRED;
 const originalRedisUrl = process.env.REDIS_URL;
+const originalDatabaseRequired = process.env.DATABASE_REQUIRED;
 const originalLiveGlobalKillSwitch = process.env.RUNTIME_LIVE_GLOBAL_KILL_SWITCH;
 const originalLiveEmergencyStop = process.env.RUNTIME_LIVE_EMERGENCY_STOP;
 
@@ -28,9 +29,11 @@ afterEach(async () => {
   restoreEnv('API_KEY_ENCRYPTION_ACTIVE_VERSION', originalApiKeyEncryptionActiveVersion);
   restoreEnv('REDIS_REQUIRED', originalRedisRequired);
   restoreEnv('REDIS_URL', originalRedisUrl);
+  restoreEnv('DATABASE_REQUIRED', originalDatabaseRequired);
   restoreEnv('RUNTIME_LIVE_GLOBAL_KILL_SWITCH', originalLiveGlobalKillSwitch);
   restoreEnv('RUNTIME_LIVE_EMERGENCY_STOP', originalLiveEmergencyStop);
   __runtimeDependencyReadinessInternals.setPingRedisForTests(null);
+  __runtimeDependencyReadinessInternals.setPingDatabaseForTests(null);
   await prisma.user.deleteMany({
     where: {
       email: {
@@ -103,6 +106,23 @@ describe('health and readiness endpoints', () => {
     }));
 
     const res = await request(app).get('/ready');
+    expect(res.status).toBe(503);
+    expect(res.body.status).toBe('not_ready');
+    expect(res.body).not.toHaveProperty('issues');
+  });
+
+  it('returns not_ready when database readiness check fails', async () => {
+    process.env.JWT_SECRET = 'jwt-primary-generated-material-32-plus';
+    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:encryption-primary-generated-material-32-plus';
+    process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v1';
+    process.env.REDIS_REQUIRED = 'false';
+    __runtimeDependencyReadinessInternals.setPingDatabaseForTests(async () => ({
+      ok: false,
+      reason: 'connection refused',
+    }));
+
+    const res = await request(app).get('/ready');
+
     expect(res.status).toBe(503);
     expect(res.body.status).toBe('not_ready');
     expect(res.body).not.toHaveProperty('issues');
@@ -210,6 +230,31 @@ describe('health and readiness endpoints', () => {
         expect.objectContaining({
           key: 'REDIS_URL',
           reason: expect.stringContaining('redis unavailable'),
+        }),
+      ])
+    );
+  });
+
+  it('returns detailed database dependency diagnostics on protected endpoint for admin', async () => {
+    process.env.JWT_SECRET = 'jwt-primary-generated-material-32-plus';
+    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:encryption-primary-generated-material-32-plus';
+    process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v1';
+    process.env.REDIS_REQUIRED = 'false';
+    __runtimeDependencyReadinessInternals.setPingDatabaseForTests(async () => ({
+      ok: false,
+      reason: 'pool timeout',
+    }));
+    const adminAgent = await createAdminAgent();
+
+    const res = await adminAgent.get('/ready/details');
+
+    expect(res.status).toBe(503);
+    expect(res.body.status).toBe('not_ready');
+    expect(res.body.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          key: 'DATABASE_URL',
+          reason: expect.stringContaining('database unavailable'),
         }),
       ])
     );

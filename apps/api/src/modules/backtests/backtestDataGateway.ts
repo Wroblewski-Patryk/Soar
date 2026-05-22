@@ -203,7 +203,7 @@ const fetchKlineChunk = async (input: {
     since: input.startTime,
   });
   return candles
-    .filter((candle) => candle.openTime >= input.startTime && candle.openTime <= input.endTime)
+    .filter((candle) => candle.openTime >= input.startTime && candle.closeTime <= input.endTime)
     .map((candle) => ({
       openTime: candle.openTime,
       closeTime: candle.closeTime,
@@ -252,6 +252,8 @@ export const fetchKlines = async (
           timeframe: normalizedTimeframe,
           openTime: {
             gte: BigInt(startTimeByRange),
+          },
+          closeTime: {
             lte: BigInt(endTime),
           },
         },
