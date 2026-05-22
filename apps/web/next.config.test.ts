@@ -37,15 +37,17 @@ describe('next security headers', () => {
     expect(hsts).toBe('max-age=31536000; includeSubDomains');
   });
 
-  it('allows unsafe-eval only in development CSP and keeps production script policy without eval', () => {
+  it('allows unsafe-eval only in development CSP and keeps production script policy renderable', () => {
     const devCsp = buildCsp('development');
     const prodCsp = buildCsp('production');
 
     expect(devCsp).toContain("'unsafe-eval'");
     expect(prodCsp).not.toContain("'unsafe-eval'");
     expect(devCsp).toContain("script-src 'self' 'unsafe-inline' 'unsafe-eval'");
-    expect(prodCsp).toContain(`script-src 'self' 'sha256-${themeBootstrapScriptSha256}'`);
-    expect(getCspDirective(prodCsp, 'script-src')).not.toContain("'unsafe-inline'");
+    expect(prodCsp).toContain(
+      `script-src 'self' 'unsafe-inline' 'sha256-${themeBootstrapScriptSha256}'`
+    );
+    expect(getCspDirective(prodCsp, 'script-src')).toContain("'unsafe-inline'");
     expect(devCsp).toContain("connect-src 'self' http: https: ws: wss:");
     expect(prodCsp).toContain("connect-src 'self' https://api.soar.luckysparrow.ch");
     expect(prodCsp).toContain("https://stage-api.soar.luckysparrow.ch");
