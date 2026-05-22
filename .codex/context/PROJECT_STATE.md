@@ -14,7 +14,11 @@ Last updated: 2026-05-22
   output showing all three routes as `Static`, `web typecheck`,
   `quality:guardrails`, `git diff --check`, and production-mode local HTTP
   smoke returning `200` for `/auth/login`, `/auth/register`, and
-  `/api/build-info`.
+  `/api/build-info`. Commit `1b351a51` was pushed to `main`, but production
+  readback is blocked: local probes timed out and an external reader/proxy
+  returned `ERR_ADDRESS_UNREACHABLE` for both `soar.luckysparrow.ch` and
+  `vps.luckysparrow.ch`. Evidence:
+  `docs/operations/deploy-freshness-1b351a51-2026-05-22.md`.
 
 - `ARCH-RUNTIME-P1-002-004-MONEY-PATH-2026-05-22` is a local runtime/order
   repair from the architecture-code audit. Account updates now require source

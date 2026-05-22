@@ -26,9 +26,15 @@ Last updated: 2026-05-22
     targeted auth cache contract `2/2`, `web build` with Next output marking
     all three routes `Static`, `web typecheck`, `quality:guardrails`,
     `git diff --check`, and local production HTTP smoke returning `200` for
-    `/auth/login`, `/auth/register`, and `/api/build-info`. Next action:
-    commit/push to `main`, wait for Coolify autodeploy, then collect
-    production readback.
+    `/auth/login`, `/auth/register`, and `/api/build-info`. Commit
+    `1b351a51` is pushed to `main`. Production readback is currently blocked
+    before app proof: local probes time out and an external reader/proxy
+    returns `ERR_ADDRESS_UNREACHABLE` for the production web and Coolify
+    hostnames. Evidence:
+    `docs/operations/deploy-freshness-1b351a51-2026-05-22.md`. Next action:
+    restore VPS/public routing or use an operator Coolify context that can
+    reach the Soar production resources, then rerun build-info and deploy
+    smoke.
 
 - [ ] `ARCH-CODE-RUNTIME-AUDIT-2026-05-22 audit: verify architecture-code runtime parity`
   - 2026-05-22 money-path continuation: locally repaired

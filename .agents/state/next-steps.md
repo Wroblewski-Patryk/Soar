@@ -12,8 +12,13 @@ routes were not reliably reachable, so `/auth/login`, `/auth/register`, and
 auth cache contract `2/2`, `web build` with those three routes reported as
 `Static`, `web typecheck`, `quality:guardrails`, `git diff --check`, and local
 production HTTP smoke returning `200` for all three routes. Next exact task:
-commit/push to `main`, wait for Coolify autodeploy, then collect production
-readback for root, auth pages, and build-info.
+restore VPS/public routing or use an operator Coolify context that can reach
+the Soar production resources, then rerun build-info and deploy smoke. Commit
+`1b351a51` is already pushed to `main`, but production readback is blocked:
+local probes time out and an external reader/proxy reports
+`ERR_ADDRESS_UNREACHABLE` for both `soar.luckysparrow.ch` and
+`vps.luckysparrow.ch`. Evidence:
+`docs/operations/deploy-freshness-1b351a51-2026-05-22.md`.
 
 Current money-path runtime audit follow-up:
 `ARCH-RUNTIME-P1-002-004-MONEY-PATH-2026-05-22` is locally implemented and
