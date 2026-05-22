@@ -141,6 +141,11 @@ const evaluateEncryptionReadiness = (issues: ReadinessIssue[], missing: Set<stri
   }
 };
 
+const hasLegacyEncryptionStartupFallback = () => {
+  const legacyMaterial = asNonEmpty(process.env.API_KEY_ENCRYPTION);
+  return Boolean(legacyMaterial && !looksWeakSecret(legacyMaterial, 32));
+};
+
 export const evaluateCriticalSecretsReadiness = (nowMs = Date.now()): CriticalSecretsReadiness => {
   const missing = new Set<string>();
   const issues: ReadinessIssue[] = [];
@@ -158,6 +163,15 @@ export const evaluateCriticalSecretsReadiness = (nowMs = Date.now()): CriticalSe
 export const assertCriticalSecretsReadiness = (nowMs = Date.now()) => {
   const readiness = evaluateCriticalSecretsReadiness(nowMs);
   if (readiness.ready) return;
+
+  if (
+    readiness.issues.length === 0 &&
+    readiness.missing.length === 1 &&
+    readiness.missing[0] === 'API_KEY_ENCRYPTION_KEYS' &&
+    hasLegacyEncryptionStartupFallback()
+  ) {
+    return;
+  }
 
   const missingPart =
     readiness.missing.length > 0 ? `missing=[${readiness.missing.join(', ')}]` : '';

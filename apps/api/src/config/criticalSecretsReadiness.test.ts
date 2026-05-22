@@ -69,6 +69,7 @@ describe('criticalSecretsReadiness', () => {
     expect(readiness.ready).toBe(false);
     expect(readiness.missing).toEqual(['API_KEY_ENCRYPTION_KEYS']);
     expect(readiness.issues).toEqual([]);
+    expect(() => assertCriticalSecretsReadiness()).not.toThrow();
   });
 
   it('flags expired JWT previous-secret rotation windows', () => {

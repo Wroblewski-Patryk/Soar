@@ -81,9 +81,10 @@ describe('health and readiness endpoints', () => {
   });
 
   it('returns ready when runtime requirements are satisfied', async () => {
-    process.env.JWT_SECRET = 'ready-test-secret';
-    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:ready-key';
+    process.env.JWT_SECRET = 'jwt-primary-generated-material-32-plus';
+    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:encryption-primary-generated-material-32-plus';
     process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v1';
+    process.env.REDIS_REQUIRED = 'false';
     const res = await request(app).get('/ready');
     expect(res.status).toBe(200);
     expect(res.body.status).toBe('ready');
@@ -92,8 +93,8 @@ describe('health and readiness endpoints', () => {
   });
 
   it('returns not_ready when Redis is required but unavailable', async () => {
-    process.env.JWT_SECRET = 'ready-test-secret';
-    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:ready-key';
+    process.env.JWT_SECRET = 'jwt-primary-generated-material-32-plus';
+    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:encryption-primary-generated-material-32-plus';
     process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v1';
     process.env.REDIS_REQUIRED = 'true';
     __runtimeDependencyReadinessInternals.setPingRedisForTests(async () => ({
@@ -108,7 +109,7 @@ describe('health and readiness endpoints', () => {
   });
 
   it('returns not_ready when only legacy API-key encryption fallback is configured', async () => {
-    process.env.JWT_SECRET = 'ready-test-secret';
+    process.env.JWT_SECRET = 'jwt-primary-generated-material-32-plus';
     delete process.env.API_KEY_ENCRYPTION_KEYS;
     delete process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
     process.env.API_KEY_ENCRYPTION = 'legacy-only-key';
@@ -121,10 +122,10 @@ describe('health and readiness endpoints', () => {
   });
 
   it('returns not_ready with secret rotation issues', async () => {
-    process.env.JWT_SECRET = 'ready-test-secret';
+    process.env.JWT_SECRET = 'jwt-primary-generated-material-32-plus';
     process.env.JWT_SECRET_PREVIOUS = 'old-secret';
     process.env.JWT_SECRET_PREVIOUS_UNTIL = '2026-01-01T00:00:00.000Z';
-    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:ready-key';
+    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:encryption-primary-generated-material-32-plus';
     process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v1';
 
     const res = await request(app).get('/ready');
@@ -139,10 +140,10 @@ describe('health and readiness endpoints', () => {
   });
 
   it('returns detailed readiness diagnostics on protected endpoint for admin', async () => {
-    process.env.JWT_SECRET = 'ready-test-secret';
+    process.env.JWT_SECRET = 'jwt-primary-generated-material-32-plus';
     process.env.JWT_SECRET_PREVIOUS = 'old-secret';
     process.env.JWT_SECRET_PREVIOUS_UNTIL = '2026-01-01T00:00:00.000Z';
-    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:ready-key';
+    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:encryption-primary-generated-material-32-plus';
     process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v1';
     const adminAgent = await createAdminAgent();
     const res = await adminAgent.get('/ready/details');
@@ -167,9 +168,10 @@ describe('health and readiness endpoints', () => {
   });
 
   it('returns protected LIVE no-order guard diagnostics without exposing raw env names', async () => {
-    process.env.JWT_SECRET = 'ready-test-secret';
-    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:ready-key';
+    process.env.JWT_SECRET = 'jwt-primary-generated-material-32-plus';
+    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:encryption-primary-generated-material-32-plus';
     process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v1';
+    process.env.REDIS_REQUIRED = 'false';
     process.env.RUNTIME_LIVE_GLOBAL_KILL_SWITCH = 'true';
     process.env.RUNTIME_LIVE_EMERGENCY_STOP = 'true';
     const adminAgent = await createAdminAgent();
@@ -189,8 +191,8 @@ describe('health and readiness endpoints', () => {
   });
 
   it('returns detailed Redis dependency diagnostics on protected endpoint for admin', async () => {
-    process.env.JWT_SECRET = 'ready-test-secret';
-    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:ready-key';
+    process.env.JWT_SECRET = 'jwt-primary-generated-material-32-plus';
+    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:encryption-primary-generated-material-32-plus';
     process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v1';
     process.env.REDIS_REQUIRED = 'true';
     __runtimeDependencyReadinessInternals.setPingRedisForTests(async () => ({

@@ -20,6 +20,28 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-05-22 - Stage secret-keyring rollouts before enforcing startup gates
+- Context: `V1-LOGIN-API-STARTUP-HOTFIX-2026-05-22` investigated a production
+  login outage after `beae3ada` deployed to `main`.
+- Symptom: the Web app served the new build, but `api.soar.luckysparrow.ch`
+  returned `503` for public API probes and login could not reach the backend.
+- Root cause: code and `docker-compose.vps.yml` enforced the new
+  `API_KEY_ENCRYPTION_KEYS` startup requirement before confirming the
+  production Coolify/VPS environment had migrated from legacy
+  `API_KEY_ENCRYPTION`.
+- Guardrail: for secret/keyring migrations, deploy compatibility first, update
+  production env, verify readback, then enforce release-readiness hard failure.
+- Preferred pattern: keep legacy decrypt/start compatibility for one deploy
+  window, make `/ready` or protected diagnostics report the missing keyring,
+  and only remove compatibility after production env readback proves the new
+  variables exist.
+- Avoid: making a new secret env mandatory in compose/startup in the same
+  release that introduces it unless the operator has already applied the env.
+- Evidence:
+  `.codex/context/TASK_BOARD.md` and
+  `.codex/context/PROJECT_STATE.md` entry
+  `V1-LOGIN-API-STARTUP-HOTFIX-2026-05-22`.
+
 ### 2026-05-21 - Capture subagent reports before closing security lanes
 - Context: `SECURITY-RED-TEAM-HARDENING-2026-05-21` used delegated security
   lanes for Auth, Secrets/Ops, Trading/Money Safety, and Frontend Security.

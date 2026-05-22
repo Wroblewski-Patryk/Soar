@@ -1,8 +1,18 @@
 # Known Issues
 
-Last updated: 2026-05-21
+Last updated: 2026-05-22
 
 ## Active Issues
+
+- 2026-05-22 production login/API startup incident:
+  After `beae3ada` deployed to `main`, the Web app was current but the public
+  API domain returned `503`, which made login unavailable. Local reproduction
+  showed the API startup guard failed when only legacy `API_KEY_ENCRYPTION`
+  was configured and `API_KEY_ENCRYPTION_KEYS` was absent. Hotfix allows API
+  startup with strong legacy material while preserving `/ready=not_ready` until
+  the versioned keyring is configured. Remaining issue: operator must set real
+  `API_KEY_ENCRYPTION_KEYS` and `API_KEY_ENCRYPTION_ACTIVE_VERSION` in
+  Coolify/VPS; otherwise API-key create/rotation readiness remains degraded.
 
 - 2026-05-21 protected V1 release update:
   Protected app auth is no longer the only blocker for the current `dd1a1faf`

@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-05-21
+Last updated: 2026-05-22
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -16,6 +16,20 @@ Last updated: 2026-05-21
     needed
 
 ## READY
+
+- [x] `V1-LOGIN-API-STARTUP-HOTFIX-2026-05-22 fix: restore API startup after main deploy`
+  - 2026-05-22: Production Web deployed `beae3ada`, but
+    `https://api.soar.luckysparrow.ch` returned `503` for public API probes,
+    so login could not reach the backend. Root cause was a deploy/env
+    compatibility mismatch: the new startup readiness guard required
+    `API_KEY_ENCRYPTION_KEYS`, while the production environment may still only
+    provide legacy `API_KEY_ENCRYPTION`. Hotfix keeps the release-readiness
+    distinction intact: API startup is allowed with strong legacy material, but
+    `/ready` stays `not_ready` until the versioned keyring is configured.
+    Validation passed: readiness tests `17/17`, typecheck, API build, VPS
+    compose config, legacy-startup check, guardrails, and guardrail tests.
+    Follow-up: configure real `API_KEY_ENCRYPTION_KEYS` in Coolify/VPS and
+    rerun protected release proof after deploy.
 
 - [ ] `V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21 release: finish current protected AUD-19 evidence`
   - 2026-05-21: Protected application access allowed current production proof

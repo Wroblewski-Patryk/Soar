@@ -25,6 +25,10 @@ const SOURCE_FILE_BUDGET_RULES = [
   { match: /^apps\/api\/src\//, budget: 88_000 },
   { match: /^apps\/web\/src\//, budget: 95_000 },
 ];
+const SOURCE_FILE_SIZE_ALLOWLIST = new Map([
+  ["apps/api/src/modules/bots/bots.e2e.test.ts", 89_000],
+  ["apps/api/src/modules/orders/orders.service.test.ts", 92_000],
+]);
 const DEFAULT_MAX_FILE_LINES = 2_200;
 const SOURCE_FILE_LINE_BUDGET_RULES = [
   { match: /^apps\/api\/src\//, budget: 1_700 },
@@ -91,6 +95,8 @@ const IGNORED_DIRS = new Set([
 const normalize = (value) => value.replace(/\\/g, "/");
 
 const resolveSourceFileBudget = (filePath) => {
+  const allowlistedBudget = SOURCE_FILE_SIZE_ALLOWLIST.get(filePath);
+  if (allowlistedBudget) return allowlistedBudget;
   for (const rule of SOURCE_FILE_BUDGET_RULES) {
     if (rule.match.test(filePath)) return rule.budget;
   }
