@@ -55,8 +55,9 @@ it does not, make a conservative assumption and record it in the blueprint.
    - `docs/product/product.md`
    - `docs/product/mvp_scope.md`
 3. Fill architecture truth in:
-   - `docs/architecture/system-architecture.md`
-   - `docs/architecture/tech-stack.md`
+   - `docs/architecture/01_overview-and-principles.md`
+   - `docs/architecture/02_system-topology.md`
+   - `docs/architecture/09_integrations-deployment-and-runtime-services.md`
    - `docs/architecture/architecture-source-of-truth.md`
 4. Fill operational truth in:
    - `.codex/context/PROJECT_STATE.md`

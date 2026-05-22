@@ -1,6 +1,6 @@
 # Active Mission Packet
 
-Last updated: 2026-05-22
+Last updated: 2026-05-23
 
 Use this file as the first operational router for `pracuj dalej`, `rob dalej`,
 `kontynuuj`, `next`, and similar continuation nudges. Keep it short enough that
@@ -9,23 +9,23 @@ repository history.
 
 ## Current Mission
 
-- Mission ID: `ARCH-CODE-RUNTIME-AUDIT-2026-05-22`
-- Status: CHECKPOINTED
-- Selected objective: coordinate an architecture-vs-code audit focused on bot
-  runtime lifecycle, order/fill authority, backtest parity, and operations
-  topology; repair confirmed local P0/P1 drift when safe.
-- Why this mission now: the operator reported that bot functions still behave
-  incorrectly despite extensive architecture docs and recent DCA fixes.
-- Release objective or product milestone advanced: safer fail-closed LIVE
-  execution by restoring fill authority and replay-safe side-effect dedupe.
-- First/next checkpoint: four read-only audit lanes completed; two P0
-  orders/exchange drifts and seven safe local P1 drifts were repaired. The
-  OPS/WORKERS follow-up also repaired durable Redis backtest queue ownership
-  and Redis-backed cross-container heartbeat proof locally. The deeper
-  money-path follow-up repaired account-update source scoping, runtime
-  `clientOrderId` propagation, and zero-quantity account-update close
-  materialization drift. Next checkpoint should address full backtest
-  multi-strategy merge parity as a product/schema slice.
+- Mission ID: `REPO-SOT-FUNCTION-PARITY-2026-05-23`
+- Status: VERIFIED_LOCAL
+- Selected objective: remove obsolete competing root template source-of-truth
+  folders, then continue architecture-to-backend/frontend parity verification
+  for bot runtime functions and production availability after VPS restart.
+- Why this mission now: the operator noticed duplicate architecture-looking
+  folders and asked the team to coordinate cleanup plus continued proof that
+  documented bot functions work across backend, frontend, and integration.
+- Release objective or product milestone advanced: reduce agent/operator drift
+  from duplicate docs and keep the runtime parity audit moving toward usable
+  production proof.
+- First/next checkpoint: remove obsolete root `architecture/`, `agents/`,
+  `pipelines/`, `tasks/`, `tests/`, `deploy/`, and `src/README.md` template
+  files while preserving canonical `docs/architecture/`, `.agents/`,
+  `.codex/context`, `docs/pipelines/`, and referenced evidence under
+  `outputs/`; integrate read-only subagent findings for backend/frontend parity
+  before selecting the next code slice.
 - Stop conditions: required production credentials, raw secret access, real
   live-money mutation, destructive production action, architecture mismatch
   requiring product decision, or failing quality gate that cannot be safely
@@ -35,9 +35,9 @@ repository history.
 
 ## Source Rows
 
-- Task board: `ARCH-CODE-RUNTIME-AUDIT-2026-05-22`
+- Task board: `REPO-SOT-CLEANUP-2026-05-23`
 - Planning:
-  `docs/planning/architecture-code-runtime-audit-2026-05-22-task.md`
+  `docs/planning/repo-source-truth-cleanup-2026-05-23-task.md`
 - Delivery map: runtime bot lifecycle, backtest parity, order/fill lifecycle,
   operator-visible bot correctness.
 - Requirements: DCA-first close gating, one lifecycle meaning across
@@ -62,7 +62,10 @@ repository history.
 
 | Lane | Owner | Source docs/state | Owned files/surfaces | Output | Validation/proof | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| Coordinator | Active chat | AGENTS, state, docs | Integration, task closure, source-of-truth updates | Mission packet, task evidence, final acceptance | Parent validation gate | CHECKPOINTED |
+| Coordinator | Active chat | AGENTS, state, docs | Integration, task closure, source-of-truth updates | Mission packet, task evidence, final acceptance | Parent validation gate | VERIFIED_LOCAL |
+| Documentation/Structure | Explorer lane + coordinator cleanup | AGENTS, docs source-of-truth rules | Root template folders and documentation routing | Obsolete source-of-truth cleanup and findings | Guardrails/diff/reference scans | COMPLETE |
+| Backend runtime/API parity | Explorer lane | docs/architecture runtime contracts | API/runtime/backtest/order lifecycle | Confirmed drift list or no-drift evidence | File/line evidence and test recommendations | COMPLETE |
+| Frontend/integration parity | Explorer lane + coordinator fix | docs/architecture + module docs | Web dashboard/API client/build-info surfaces | Confirmed drift list or no-drift evidence | File/line evidence and focused tests | COMPLETE |
 | Runtime lifecycle | Explorer lane | runtime lifecycle reference contracts | Engine and bot runtime read models | P1/P2 findings; DCA gates verified aligned | File/line evidence | COMPLETE |
 | Orders/exchange fill authority | Explorer lane + coordinator fix | fill/idempotency contracts | Orders and runtime dedupe | Two P0 findings fixed | Focused tests | CHECKPOINTED |
 | Backtest parity | Explorer lane + coordinator fix | Backtest replay/report parity | Backtest/reports code | Closed-candle gateway and settled-report fixes; TSL naming fixed; multi-strategy now fails fast but full merge parity remains open | Focused tests | CHECKPOINTED |
@@ -97,6 +100,7 @@ repository history.
 
 | Date | Checkpoint | Result | Evidence | Next action |
 | --- | --- | --- | --- | --- |
+| 2026-05-23 | Source-of-truth duplicate cleanup | VERIFIED_LOCAL: confirmed `docs/architecture/` is canonical and root `architecture/` plus related root template folders are obsolete competing scaffolding from 2026-05-03. Removed only tracked obsolete template files; moved referenced evidence under `docs/operations/`; moved root security report under `docs/security/`; fixed P2 legacy redirects to Dashboard Home runtime tabs. Backend parity lane confirmed one remaining P1 deferred backtest multi-strategy merge gap. | `docs/planning/repo-source-truth-cleanup-2026-05-23-task.md`; subagent reports; focused web tests `7/7`; web typecheck; web build; docs parity; guardrails; diff check | Commit/push, wait for production build-info to expose pushed SHA, then run smoke checks. |
 | 2026-05-22 | Public web deploy-proof route hardening | VERIFIED locally, BLOCKED in production readback: converted `/auth/login`, `/auth/register`, and `/api/build-info` to static prerendered routes and removed per-request build-info time generation. Commit `1b351a51` is pushed to `main`, but production probes time out and an external reader/proxy reports `ERR_ADDRESS_UNREACHABLE` for the production web and Coolify hostnames. | Targeted auth cache contract `2/2`; `web build` route output shows `/auth/login`, `/auth/register`, and `/api/build-info` as `Static`; `web typecheck`; `quality:guardrails`; `git diff --check`; local production HTTP smoke `200` for all three routes; `docs/operations/deploy-freshness-1b351a51-2026-05-22.md` | Restore VPS/public routing or use an operator Coolify context that can reach Soar resources, then rerun build-info wait and deploy smoke. |
 | 2026-05-22 | Architecture-code runtime audit P0/P1 closure | CHECKPOINTED locally: four read-only lanes found remaining architecture/code drift. Fixed two P0 orders/exchange findings plus safe local P1 drifts in imported LIVE dynamic stop display, backtest closed-candle windowing, reports settled-trade aggregation, deploy smoke worker readiness, VPS split-worker compose defaults, API DB readiness, and rollback worker-readiness proof. | `docs/planning/architecture-code-runtime-audit-2026-05-22-task.md`; focused API pack `88/88`; readiness/backtest/report pack `20/20`; script syntax checks; VPS compose config | Run typecheck/guardrails/diff check, commit/push, then continue deeper P1 findings. |
 | 2026-05-22 | Runtime architecture DCA/close parity | VERIFIED locally: architecture audit found confirmed runtime/backtest drift where basic `TP` could close while profit-side DCA levels remained pending, and `SL`/`TSL` used an all-DCA gate instead of matching pending loss-side DCA. Fixed runtime core and backtest helper parity so `TP`/`TTP` gate on profit-side DCA and `SL`/`TSL` gate on loss-side DCA; added focused runtime automation, position-management, replay, and portfolio regressions. Production endpoints timed out from this shell and remain an ops blocker, not local code proof. | `docs/planning/runtime-architecture-dca-tp-parity-2026-05-22-task.md`; focused combined pack `104/104`; SL/TSL correction pack `71/71`; API typecheck; repository guardrails; `git diff --check` with line-ending warnings only | Commit/push, then continue broader architecture audit or production availability/deploy proof as the next checkpoint. |

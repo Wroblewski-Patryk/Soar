@@ -27,4 +27,17 @@ describe("Bots legacy /runtime route", () => {
 
     expect(redirectMock).toHaveBeenCalledWith("/dashboard/bots");
   });
+
+  it.each([
+    ["orders", "/dashboard#orders"],
+    ["positions", "/dashboard#positions"],
+  ])("redirects legacy %s query to the matching Dashboard Home runtime tab", async (legacy, target) => {
+    const { default: BotsRuntimePage } = await import("./page");
+
+    await BotsRuntimePage({
+      searchParams: Promise.resolve({ legacy }),
+    });
+
+    expect(redirectMock).toHaveBeenCalledWith(target);
+  });
 });

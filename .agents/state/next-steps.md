@@ -1,8 +1,16 @@
 # Next Steps
 
-Last updated: 2026-05-22
+Last updated: 2026-05-23
 
 ## Next Tiny Task
+
+Current source-of-truth cleanup:
+`REPO-SOT-CLEANUP-2026-05-23` is verified locally. Confirmed canonical architecture
+truth belongs in `docs/architecture/`, not root `architecture/`. Obsolete root
+template folders from 2026-05-03 are being removed while preserving referenced
+evidence under `docs/operations/`. The frontend legacy redirect drift for
+`/dashboard/orders` and `/dashboard/positions` is also fixed locally. Next exact task: commit/push, wait for production build-info to expose the pushed SHA, then run smoke checks. Evidence:
+`docs/planning/repo-source-truth-cleanup-2026-05-23-task.md`.
 
 Current public deploy-proof follow-up:
 `WEB-PUBLIC-STATIC-READBACK-2026-05-22` is locally verified and ready to push.

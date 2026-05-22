@@ -27,6 +27,8 @@ Out of scope:
 Canonical route behavior:
 - `/dashboard/positions` is a legacy compatibility route.
 - Web middleware redirects it to `/dashboard/bots/runtime?legacy=positions`.
+- The legacy runtime route redirects to `/dashboard#positions`, where
+  Dashboard Home selects the open-positions runtime tab from the hash.
 - `docs/architecture/reference/dashboard-route-map.md` requires first-level
   Orders and Positions paths to remain legacy redirects.
 

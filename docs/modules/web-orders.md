@@ -24,6 +24,8 @@ Out of scope:
 Canonical route behavior:
 - `/dashboard/orders` is a legacy compatibility route.
 - Web middleware redirects it to `/dashboard/bots/runtime?legacy=orders`.
+- The legacy runtime route redirects to `/dashboard#orders`, where Dashboard
+  Home selects the open-orders runtime tab from the hash.
 - `docs/architecture/reference/dashboard-route-map.md` requires first-level
   Orders and Positions paths to remain legacy redirects.
 

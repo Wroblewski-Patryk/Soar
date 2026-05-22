@@ -23,7 +23,7 @@ found in the code scan has at least one auditable row.
 ## Scope
 - `docs/operations/v1-function-coverage-matrix-2026-05-01.csv`
 - `docs/operations/v1-function-coverage-audit-2026-05-01.md`
-- `outputs/v1-function-coverage-audit-2026-05-01/Soar V1 Function Coverage Audit 2026-05-01.xlsx`
+- `docs/operations/_artifacts-v1-function-coverage-audit-2026-05-01.xlsx`
 - `.codex/context/TASK_BOARD.md`
 - `.codex/context/PROJECT_STATE.md`
 - `docs/planning/mvp-next-commits.md`
@@ -82,7 +82,7 @@ found in the code scan has at least one auditable row.
   - Priority split: `P0=45`, `P1=24`, `P2=10`.
 - Screenshots/logs:
   - Workbook regenerated at
-    `outputs/v1-function-coverage-audit-2026-05-01/Soar V1 Function Coverage Audit 2026-05-01.xlsx`.
+    `docs/operations/_artifacts-v1-function-coverage-audit-2026-05-01.xlsx`.
 - High-risk checks:
   - Newly added rows use `PARTIAL`, `NOT_VERIFIED`,
     `NEEDS_PROD_SAMPLE`, or `NEEDS_PROD_UI_CHECK` unless fresh production

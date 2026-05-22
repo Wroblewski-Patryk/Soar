@@ -23,7 +23,7 @@ risk, owner, and next verification.
 ## Scope
 - `docs/operations/v1-function-coverage-audit-2026-05-01.md`
 - `docs/operations/v1-function-coverage-matrix-2026-05-01.csv`
-- `outputs/v1-function-coverage-audit-2026-05-01/Soar V1 Function Coverage Audit 2026-05-01.xlsx`
+- `docs/operations/_artifacts-v1-function-coverage-audit-2026-05-01.xlsx`
 - Context/queue docs that reference the new audit artifact.
 
 ## Implementation Plan
@@ -61,7 +61,7 @@ risk, owner, and next verification.
   - Priority counts: `P0=22`, `P1=9`, `P2=2`.
 - Screenshots/logs:
   - Workbook generated at
-    `outputs/v1-function-coverage-audit-2026-05-01/Soar V1 Function Coverage Audit 2026-05-01.xlsx`.
+    `docs/operations/_artifacts-v1-function-coverage-audit-2026-05-01.xlsx`.
 - High-risk checks:
   - Matrix does not mark production confidence as `PASS` where only inferred
     or local evidence exists.

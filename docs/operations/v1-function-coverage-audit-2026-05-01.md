@@ -22,7 +22,7 @@ broader top-level function inventory.
 
 - CSV source: `docs/operations/v1-function-coverage-matrix-2026-05-01.csv`
 - Workbook artifact:
-  `outputs/v1-function-coverage-audit-2026-05-01/Soar V1 Function Coverage Audit 2026-05-01.xlsx`
+  `docs/operations/_artifacts-v1-function-coverage-audit-2026-05-01.xlsx`
 - Implementation readiness audit:
   `docs/operations/v1-function-implementation-readiness-audit-2026-05-01.md`
 

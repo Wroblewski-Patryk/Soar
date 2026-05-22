@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-05-22
+Last updated: 2026-05-23
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -16,6 +16,25 @@ Last updated: 2026-05-22
     needed
 
 ## READY
+
+- [x] `REPO-SOT-CLEANUP-2026-05-23 refactor: remove obsolete root template source-of-truth folders`
+  - 2026-05-23: Operator noticed duplicate architecture-looking folders.
+    Canonical governance confirms architecture truth belongs in
+    `docs/architecture/`, agent/process truth in `.agents/`, task truth in
+    `.codex/context/TASK_BOARD.md`, and system flows in `docs/pipelines/`.
+    Root template folders from 2026-05-03 (`architecture/`, `agents/`,
+    `pipelines/`, `tasks/`, `tests/`, `deploy/`, and `src/README.md`) were
+    identified as obsolete competing scaffolding. Cleanup is in progress under
+    `docs/planning/repo-source-truth-cleanup-2026-05-23-task.md`.
+  - 2026-05-23: Frontend/integration lane also found a P2 legacy route drift:
+    `/dashboard/orders` and `/dashboard/positions` reached
+    `/dashboard/bots/runtime?legacy=*`, but that route dropped the legacy
+    target and sent users to the bot list. The route now redirects legacy
+    queries to Dashboard Home runtime tabs (`/dashboard#orders` and
+    `/dashboard#positions`) and docs/tests were updated.
+  - Validation passed: focused web route/middleware tests `7/7`, web
+    typecheck, web build, docs parity, repository guardrails, and
+    `git diff --check`.
 
 - [x] `WEB-PUBLIC-STATIC-READBACK-2026-05-22 fix: prerender public proof routes`
   - 2026-05-22: Production availability proof found the public static root

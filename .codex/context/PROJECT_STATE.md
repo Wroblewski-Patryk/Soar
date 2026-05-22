@@ -1,8 +1,21 @@
 # PROJECT_STATE
 
-Last updated: 2026-05-22
+Last updated: 2026-05-23
 
 ## Current Candidate Deployment Status
+
+- `REPO-SOT-CLEANUP-2026-05-23` is verified locally after the operator noticed
+  duplicate architecture-looking folders. Current governance confirms
+  `docs/architecture/` is canonical, while root `architecture/` and related
+  root template folders from 2026-05-03 are obsolete competing scaffolding.
+  The cleanup removes only those tracked template files and preserves
+  referenced evidence by moving it under `docs/operations/`. It also fixes a
+  P2 frontend legacy redirect drift for `/dashboard/orders` and
+  `/dashboard/positions`, routing them to the matching Dashboard Home runtime
+  tabs instead of the bot list. Validation passed: focused web
+  route/middleware tests `7/7`, web typecheck, web build, docs parity,
+  repository guardrails, and `git diff --check`. Evidence:
+  `docs/planning/repo-source-truth-cleanup-2026-05-23-task.md`.
 
 - `WEB-PUBLIC-STATIC-READBACK-2026-05-22` is a public web deploy-proof repair
   after production probes showed the static root was externally reachable while

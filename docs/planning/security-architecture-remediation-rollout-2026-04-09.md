@@ -1,6 +1,6 @@
 # Security + Architecture Remediation Rollout Plan (2026-04-09)
 
-Source audit: `security_best_practices_report.md`
+Source audit: `docs/security/security-best-practices-report-2026-04-09.md`
 Linked execution phase: `docs/planning/mvp-execution-plan.md` (`Phase 40`, `SAR-01..SAR-14`)
 
 ## Goals

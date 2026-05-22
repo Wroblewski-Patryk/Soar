@@ -88,8 +88,8 @@ Wallet placement rule:
 ## Legacy and Redirect Contract
 | Legacy / Alias Route | Canonical Target | Enforcement Layer |
 |---|---|---|
-| `/dashboard/orders` | `/dashboard/bots/runtime?legacy=orders` | `apps/web/src/middleware.ts` |
-| `/dashboard/positions` | `/dashboard/bots/runtime?legacy=positions` | `apps/web/src/middleware.ts` |
+| `/dashboard/orders` | `/dashboard/bots/runtime?legacy=orders`, then `/dashboard#orders` | `apps/web/src/middleware.ts`, then app route redirect |
+| `/dashboard/positions` | `/dashboard/bots/runtime?legacy=positions`, then `/dashboard#positions` | `apps/web/src/middleware.ts`, then app route redirect |
 | `/dashboard/exchanges` | `/dashboard/profile#api` | app route redirect |
 | `/dashboard/bots/new` | `/dashboard/bots/create` | app route redirect |
 | `/dashboard/bots/assistant` | `/dashboard/bots` when `botId` query is missing; `/dashboard/bots/:id/assistant` when `botId` is present | app route redirect |

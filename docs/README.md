@@ -72,12 +72,12 @@ This folder contains canonical project documentation grouped by responsibility.
 - Historical assumptions and rollout evidence should stay in planning and operations artifacts, not in the canonical architecture set.
 ## Template Sync: Shared Agent Standards
 
-Additional cross-project standards synced from `!template`:
+Additional cross-project standards adopted for this repository:
 
 - `.agents/workflows/user-collaboration.md`
 - `.agents/workflows/world-class-delivery.md`
 - `docs/governance/world-class-product-engineering-standard.md`
-- `governance/autonomous-engineering-loop.md`
+- `docs/governance/autonomous-engineering-loop.md`
 - `docs/operations/service-reliability-and-observability.md`
 - `docs/security/secure-development-lifecycle.md`
 - `docs/ux/evidence-driven-ux-review.md`

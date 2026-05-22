@@ -169,4 +169,3 @@ Overall posture is **solid but with meaningful hardening gaps**:
 4. Fix F-04 (CSP `unsafe-inline` removal path).
 5. Fix F-06 (rate limits for profile security/payment intents).
 6. Continue F-08/F-09 architecture decomposition workstream.
-
