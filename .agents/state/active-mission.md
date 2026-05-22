@@ -1,6 +1,6 @@
 # Active Mission Packet
 
-Last updated: 2026-05-21
+Last updated: 2026-05-22
 
 Use this file as the first operational router for `pracuj dalej`, `rob dalej`,
 `kontynuuj`, `next`, and similar continuation nudges. Keep it short enough that
@@ -9,79 +9,73 @@ repository history.
 
 ## Current Mission
 
-- Mission ID: `STANDARDS-SECURITY-HARDENING-2026-05-21`
+- Mission ID: `RUNTIME-ARCHITECTURE-PARITY-2026-05-22`
 - Status: VERIFIED
-- Selected objective: use current defensive security standards to run an
-  agent-assisted review and harden confirmed local defects across permission
-  isolation, trading-money safety, frontend secrecy/error handling,
-  ops/supply-chain, and upload resource safety.
-- Why this mission now: the user asked to learn from current internet security
-  guidance and coordinate agents until Soar is harder to misuse before selling
-  access to an autonomous capital-management app.
-- Release objective or product milestone advanced: local commercial-readiness
-  security hardening, with no production mutation and no unbounded security
-  claim.
-- First/next checkpoint: external penetration/VPS configuration review,
-  protected production `AUD-19`, and explicit LIVE exchange-side mutation proof
-  remain separate approval-gated gates.
+- Selected objective: coordinate an architecture-vs-code audit focused on bot
+  runtime lifecycle contracts, then repair confirmed P0/P1 drift that can make
+  DCA/protection behavior diverge from `docs/architecture`.
+- Why this mission now: the operator reported that bot functions still behave
+  incorrectly despite extensive architecture docs and recent DCA fixes.
+- Release objective or product milestone advanced: safer DCA-first lifecycle
+  parity across runtime core, LIVE/PAPER automation, and backtest replay.
+- First/next checkpoint: local checkpoint repaired confirmed `TP` versus
+  profit-side DCA drift; next checkpoint should continue at remaining runtime
+  architecture contracts or production availability/deploy proof.
 - Stop conditions: required production credentials, raw secret access, real
   live-money mutation, destructive production action, architecture mismatch
-  requiring a product decision, or failing quality gate that cannot be safely
+  requiring product decision, or failing quality gate that cannot be safely
   fixed in this mission.
-- Parent validation gate: OWASP/NIST/CISA-informed lane reports, API/Web
-  typecheck, full Web tests, focused DB-backed API regressions, avatar
-  processing tests, guardrails, production dependency audit, compose config,
-  build, diff check, and cleanup checks.
+- Parent validation gate: focused runtime/backtest regressions, API typecheck,
+  repository guardrails, source-of-truth updates, then commit/push when green.
 
 ## Source Rows
 
-- Task board: `STANDARDS-SECURITY-HARDENING-2026-05-21`
-- Planning: `docs/planning/standards-based-security-hardening-2026-05-21-task.md`
-- Delivery map: permission/data isolation, trading-money fail-closed behavior,
-  frontend security/UX secrecy, ops/supply-chain guardrails, upload processing
-  safety.
-- Requirements: no mass assignment of sensitive API-key fields, current LIVE
-  entitlement before exchange-backed cancel, no raw secret retention or
-  production error leaks in the browser, no secret-bearing ops CLI args, and
-  bounded avatar processing.
-- Quality scenarios: security, privacy, fail-closed trading safety,
-  production deploy safety, supply-chain hygiene, and regression resistance.
-- Risks: BOLA/BOPLA, stale entitlement assumptions, secret leakage through UI
-  or ops artifacts, tracked env files, and upload resource exhaustion.
-- Module confidence: `SOAR-SECURITY-PRIVACY-001`, `SOAR-AUTH-001`,
-  `SOAR-PROFILE-API-KEYS-001`, `SOAR-MANUAL-ORDERS-001`,
-  `SOAR-OPERATIONS-001`
+- Task board: `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22`
+- Planning:
+  `docs/planning/runtime-architecture-dca-tp-parity-2026-05-22-task.md`
+- Delivery map: runtime bot lifecycle, backtest parity, order/fill lifecycle,
+  operator-visible bot correctness.
+- Requirements: DCA-first close gating, one lifecycle meaning across
+  BACKTEST/PAPER/LIVE, fill authority for LIVE, idempotent side-effect paths.
+- Quality scenarios: live-trading safety, fail-closed runtime behavior,
+  runtime/backtest parity, regression resistance.
+- Risks: false close before DCA progression, misleading DCA/protection status,
+  production deploy unavailable for final proof.
+- Module confidence: `SOAR-BOT-RUNTIME-001`, `SOAR-BACKTESTS-001`,
+  `SOAR-ORDERS-001`, `SOAR-OPERATIONS-001`
 - System health:
-  `docs/planning/standards-based-security-hardening-2026-05-21-task.md`
-- Architecture / UX / security / ops sources:
-  `docs/architecture/`, `docs/modules/`, `.agents/state/module-confidence-ledger.md`,
-  `.agents/state/known-issues.md`, `.agents/core/quality-gates.md`,
-  `docs/operations/full-reusable-audit-rollup-2026-05-19.md`
+  `docs/planning/runtime-architecture-dca-tp-parity-2026-05-22-task.md`
+- Architecture / runtime sources:
+  `docs/architecture/06_execution-lifecycle.md`,
+  `docs/architecture/reference/position-management-pnl-lifecycle-contract.md`,
+  `docs/architecture/reference/execution-lifecycle-parity-contract.md`,
+  `docs/architecture/reference/live-protection-state-parity-contract.md`,
+  `.agents/state/module-confidence-ledger.md`, `.agents/core/quality-gates.md`
 
 ## Responsibility Lanes
 
 | Lane | Owner | Source docs/state | Owned files/surfaces | Output | Validation/proof | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| Coordinator | Active chat | AGENTS, state, docs, external standards | Integration, task closure, source-of-truth updates | Mission packet, task evidence, final acceptance | Parent validation gate | VERIFIED |
-| Permission/data isolation | Defensive backend agent | OWASP API Top 10, Authorization Cheat Sheet | API-key controller/service, auth/admin/isolation tests | DTO allowlist and no raw create spread | DB-backed API tests | VERIFIED |
-| Trading money safety | Money-flow agent | Secure-by-design, runtime architecture | Exchange-backed cancel path | LIVE entitlement fail-closed before adapter | DB-backed cancel test | VERIFIED |
-| Frontend security/UX | Frontend agent | OWASP headers/CSP/CSRF/storage guidance | Profile API-key/error surfaces | Secret response normalization and redacted errors | Web tests/typecheck | VERIFIED |
-| Ops/supply-chain | Ops agent | NIST SSDF, CISA, OWASP secrets/Docker guidance | Env policy, ops scripts, guardrails | Secret argv rejection and env-file guardrails | Guardrails/script tests/audit | VERIFIED |
-| Upload resource safety | Coordinator | OWASP File Upload guidance | Avatar processing | Pixel-budget transform regression | API unit test | VERIFIED |
-| Documentation/Memory | Coordinator | State files and docs | Source-of-truth updates and residual risks | Task evidence and state updates | Guardrails/diff checks | VERIFIED |
+| Coordinator | Active chat | AGENTS, state, docs | Integration, task closure, source-of-truth updates | Mission packet, task evidence, final acceptance | Parent validation gate | CHECKPOINTED |
+| Architecture contract extraction | Coordinator serial lane | `docs/architecture/06_execution-lifecycle.md`, runtime reference contracts | Runtime lifecycle invariants | Confirmed DCA-first TP mismatch | Code/test diff | VERIFIED |
+| Runtime implementation | Coordinator serial lane | Engine/runtime files | Position-management and automation tests | TP uses profit-side DCA gate | Focused engine tests | VERIFIED |
+| Backtest parity | Coordinator serial lane | Backtest replay/portfolio parity | Replay and portfolio close blocking | TP parity with runtime DCA-first rule | Focused backtest tests | VERIFIED |
+| Ops/deploy reality | Coordinator serial lane | Production endpoints, deployment docs | Public health/build-info probes | Current production timeout recorded as blocker | HTTP probe output | BLOCKED |
+| Documentation/Memory | Coordinator | State files and docs | Source-of-truth updates and residual risks | Task evidence and state updates | Guardrails/diff checks | IN_PROGRESS |
 
 ## Delegation Plan
 
-- Lanes kept local: coordinator, protected credential use, source-of-truth
+- Lanes kept local: coordinator, runtime critical path, source-of-truth
   updates, parent validation.
-- Lanes delegated: none; protected credentials were not passed to subagents.
-- Lanes intentionally omitted and why: production DB restore through Coolify,
-  Gate 2/SLO, Gate 4 approver construction, and open runtime payload creation
-  remain blocked by operator decision/access or safety boundaries.
-- Known overlap risks: existing uncommitted documentation edits predate this
-  run; preserve them and append only current checkpoint state.
+- Lanes delegated: none in this checkpoint; the available runtime did not
+  expose a write-capable subagent namespace after tool discovery, so the lane
+  model was executed serially.
+- Lanes intentionally omitted and why: production deploy/proof is blocked by
+  current endpoint timeouts and must not be mixed with local code proof.
+- Known overlap risks: live-trading runtime files are high-risk and require
+  focused tests before commit/push.
 - Forbidden files or surfaces: no live-money mutation, no production data
-  mutation, no raw secret capture, no hidden `riskAck` behavior change.
+  mutation, no raw secret capture, no hidden risk-ack or fill-authority bypass.
 
 ## Acceptance
 
@@ -97,6 +91,7 @@ repository history.
 
 | Date | Checkpoint | Result | Evidence | Next action |
 | --- | --- | --- | --- | --- |
+| 2026-05-22 | Runtime architecture DCA/TP parity | VERIFIED locally: architecture audit found a confirmed runtime/backtest drift where basic `TP` could close while profit-side DCA levels remained pending. Fixed runtime core and backtest helper parity so `TP` uses the same profit-side DCA gate as `TTP`; added focused runtime automation, position-management, replay, and portfolio regressions. Production endpoints timed out from this shell and remain an ops blocker, not local code proof. | `docs/planning/runtime-architecture-dca-tp-parity-2026-05-22-task.md`; focused combined pack `104/104`; API typecheck; repository guardrails; `git diff --check` with line-ending warnings only | Commit/push, then continue broader architecture audit or production availability/deploy proof as the next checkpoint. |
 | 2026-05-21 | Standards-based security hardening | VERIFIED locally: coordinated defensive lanes against OWASP/NIST/CISA guidance. Fixed API-key mass assignment, LIVE cancel entitlement fail-closed gap, frontend raw-secret/error exposure hardening, ops secret-argv/env-file policy, and avatar decoded-pixel budget. | `docs/planning/standards-based-security-hardening-2026-05-21-task.md`; Web `151` files / `533` tests; API cancel/API-key DB pack `20` tests; avatar processing `2` tests; script tests `9` tests; API/Web typecheck; production audit; compose config; build; guardrails; `git diff --check`; cleanup checks | External pentest/VPS review, protected `AUD-19`, and explicit LIVE exchange-side mutation proof remain separate gates before commercial security claims. |
 | 2026-05-21 | Protected V1 app proof follow-up for deployed `dd1a1faf` | BLOCKED with progress: operator packet validation and build-info passed; protected UI clickthrough passed; rollback proof passed; Gate 4 sign-off is approved. `LIVEIMPORT-03` authenticated and found a RUNNING Binance FUTURES LIVE session, but failed closed because there are no open positions or open orders. Controlled proof preactivation failed safely because the target LIVE bot is already active. Fresh 30-minute production SLO is `FAIL`: `/workers/ready` availability `0%`, API 5xx ratio `16.6667%`, caused by deployed `inline` worker topology (`DEPLOYED_INLINE_MODE`) rather than the canonical split-worker contract. Production DB restore drill still needs VPS/Coolify Docker access. | `docs/planning/v1-protected-app-proof-attempt-dd1a1faf-2026-05-21-task.md`; `docs/operations/prod-ui-module-clickthrough-dd1a1faf-2026-05-21.md`; `docs/operations/v1-rollback-proof-prod-2026-05-21T00-00-00-000Z.md`; `docs/operations/liveimport-03-prod-readback-dd1a1faf-2026-05-21.json`; `docs/operations/v1-slo-observation-2026-05-21T15-28-20-108Z.md`; `docs/operations/v1-rc-signoff-record.md` | Repair/verify production split-worker topology, provide a safe open runtime readback payload path, run production DB restore drill from VPS/Coolify Docker context, then rerun final non-dry-run release gate. |
 | 2026-05-21 | Supply-chain SAST ops audit | VERIFIED locally: audited dependency/supply-chain hygiene, Docker/compose, env templates, secrets handling, logging artifacts, CI/scripts, SSRF/egress surfaces, file upload/static assets, and production-readiness gates. Fixed protected ops scripts accepting secret-bearing CLI flags and added env-file/secret-argv guardrails. | `docs/planning/supply-chain-sast-ops-audit-2026-05-21-task.md`; guardrail tests `9/9`; guardrails; production dependency audit; VPS/local compose config; API/Web typecheck; script syntax; manual secret-argv fail-closed checks; diff check with line-ending warnings only | Protected `AUD-19`, external VPS/cloud egress review, and operator rotation/removal of local untracked env secrets remain separate gates. |

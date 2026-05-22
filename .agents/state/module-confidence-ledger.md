@@ -502,6 +502,18 @@ Do not turn uncertainty into optimism.
 
 ## Recent Updates
 
+- 2026-05-22 `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22` applies to
+  `SOAR-BOT-RUNTIME-001`, `SOAR-BACKTESTS-001`, and `SOAR-ORDERS-001`:
+  architecture-vs-code review found and fixed a confirmed DCA-first lifecycle
+  drift where basic `TP` could close while profit-side DCA levels remained
+  pending. Runtime position management now gates `TP` behind the same
+  profit-side DCA satisfaction used for `TTP`, and replay/portfolio backtest
+  helpers now block `take_profit` under the same condition. Evidence:
+  focused combined runtime/backtest pack passed `104/104`, API typecheck
+  passed, repository guardrails passed, and diff check passed with line-ending
+  warnings only. Missing proof: production deploy/readback; production
+  endpoints timed out during this local checkpoint.
+
 - 2026-05-21 `MONEY-FLOW-SECURITY-CANCEL-ENTITLEMENT-2026-05-21` applies to
   `SOAR-ORDERS-001`, `SOAR-MANUAL-ORDERS-001`, and
   `SOAR-EXCHANGE-ADAPTER-001`: fixed a confirmed local LIVE cancel

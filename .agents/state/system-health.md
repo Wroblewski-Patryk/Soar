@@ -1,6 +1,24 @@
 # System Health
 
-Last updated: 2026-05-21
+Last updated: 2026-05-22
+
+## 2026-05-22 Runtime Architecture DCA/TP Parity
+
+- `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22` is locally checkpointed.
+  Architecture review confirmed a runtime/backtest lifecycle drift: basic
+  `TP` did not respect pending profit-side DCA, despite DCA-first contracts
+  requiring one lifecycle meaning across runtime and backtest. The runtime
+  core now gates `TP` through profit-side DCA satisfaction, and backtest replay
+  plus portfolio simulation now block `take_profit` under the same condition.
+- Passed validation: focused combined runtime/backtest pack `104/104`, API
+  typecheck, repository guardrails, and diff check with line-ending warnings
+  only.
+- Remaining closure gate: commit/push, then production deploy/readback after
+  availability is restored.
+- Production availability warning: `https://soar.luckysparrow.ch/api/build-info`
+  and `https://api.soar.luckysparrow.ch/health` timed out from this shell
+  during the checkpoint. Treat production deploy/readback as blocked until VPS
+  availability is rechecked or restored.
 
 ## 2026-05-21 Protected V1 App Proof Attempt
 

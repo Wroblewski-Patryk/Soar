@@ -111,7 +111,7 @@ export const shouldBlockCloseByPendingDca = (
   if (input.closeReason === 'trailing_stop' || input.closeReason === 'stop_loss') {
     return true;
   }
-  if (input.closeReason !== 'trailing_take_profit') return false;
+  if (input.closeReason !== 'take_profit' && input.closeReason !== 'trailing_take_profit') return false;
 
   const executed = new Set(
     (input.executedDcaLevelIndices ?? []).filter(

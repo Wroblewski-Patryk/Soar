@@ -214,7 +214,7 @@ describe('position management', () => {
     expect(second.nextState.currentAdds).toBe(2);
   });
 
-  it('applies DCA before TP in the same cycle (legacy order contract)', () => {
+  it('applies DCA before TP and keeps TP blocked while profit-side DCA remains pending', () => {
     const result = evaluatePositionManagement(
       {
         side: 'LONG',
@@ -222,9 +222,9 @@ describe('position management', () => {
         takeProfitPrice: 108,
         dca: {
           enabled: true,
-          maxAdds: 1,
-          levelPercents: [0.05],
-          addSizeFractions: [0.5],
+          maxAdds: 2,
+          levelPercents: [0.05, 0.2],
+          addSizeFractions: [0.5, 0.5],
           stepPercent: 0.05,
           addSizeFraction: 0.5,
         },
@@ -239,6 +239,33 @@ describe('position management', () => {
     expect(result.dcaExecuted).toBe(true);
     expect(result.dcaAddedQuantity).toBe(1);
     expect(result.nextState.currentAdds).toBe(1);
+    expect(result.shouldClose).toBe(false);
+    expect(result.closeReason).toBeUndefined();
+  });
+
+  it('allows TP when remaining DCA levels are loss-side only', () => {
+    const result = evaluatePositionManagement(
+      {
+        side: 'LONG',
+        currentPrice: 110,
+        takeProfitPrice: 108,
+        dca: {
+          enabled: true,
+          maxAdds: 2,
+          levelPercents: [-0.2, -0.4],
+          addSizeFractions: [1, 1],
+          stepPercent: 0.2,
+          addSizeFraction: 1,
+        },
+      },
+      {
+        averageEntryPrice: 100,
+        quantity: 2,
+        currentAdds: 0,
+      }
+    );
+
+    expect(result.dcaExecuted).toBe(false);
     expect(result.shouldClose).toBe(true);
     expect(result.closeReason).toBe('take_profit');
   });

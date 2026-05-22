@@ -246,6 +246,7 @@ export const evaluatePositionManagement = (
     !hasRemainingProfitSideDcaLevels(dcaEnabled, dcaLevels, executedDcaLevelIndices);
 
   if (
+    ttpDcaProtectionSatisfied &&
     typeof parsedInput.takeProfitPrice === 'number' &&
     isTakeProfitHit(parsedInput.side, parsedInput.currentPrice, parsedInput.takeProfitPrice)
   ) {

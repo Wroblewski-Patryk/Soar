@@ -17,6 +17,20 @@ Last updated: 2026-05-22
 
 ## READY
 
+- [x] `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22 fix: restore DCA-first TP parity`
+  - 2026-05-22: Coordinator architecture audit found a confirmed bot runtime
+    lifecycle drift against `docs/architecture`: basic `TP` could close while
+    profit-side DCA levels remained pending, even though `TTP`, `SL`, and
+    `TSL` already used DCA-first gates. Runtime position management now gates
+    `TP` behind profit-side DCA satisfaction, and backtest replay /
+    interleaved portfolio helpers block `take_profit` when profit-side DCA is
+    still pending. Validation passed so far: focused position/backtest pack
+    `66/66`, combined focused pack `104/104`, API typecheck, repository
+    guardrails, and diff check with line-ending warnings only. Next action:
+    commit, push, then production deploy/readback when VPS availability is
+    restored. Evidence:
+    `docs/planning/runtime-architecture-dca-tp-parity-2026-05-22-task.md`.
+
 - [x] `LIVE-DCA-SUBMITTED-FILL-GATE-2026-05-22 fix: fail closed when LIVE DCA is only submitted`
   - 2026-05-22: Emergency live-trading fix after operator feedback that DCA
     could appear executed even when no exchange fill occurred, allowing

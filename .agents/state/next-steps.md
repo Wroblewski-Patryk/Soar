@@ -1,8 +1,21 @@
 # Next Steps
 
-Last updated: 2026-05-21
+Last updated: 2026-05-22
 
 ## Next Tiny Task
+
+Current active runtime parity checkpoint:
+`RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22` is locally checkpointed after
+an architecture-vs-code review found a confirmed bot lifecycle drift. Basic
+`TP` could close while profit-side DCA levels remained pending; runtime core
+and backtest replay/portfolio helpers now gate `TP` behind profit-side DCA
+satisfaction. Focused validation passed: combined runtime/backtest pack
+`104/104`, API typecheck, repository guardrails, and diff check with
+line-ending warnings only. Next exact task: commit, push to `main`, then
+recheck production availability/deploy readback. Production probes timed out
+from this shell during the checkpoint, so do not claim live deployment proof
+until that is resolved. Evidence:
+`docs/planning/runtime-architecture-dca-tp-parity-2026-05-22-task.md`.
 
 Latest protected V1 app proof:
 `V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21` is `BLOCKED`, with real
