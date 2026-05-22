@@ -849,6 +849,7 @@ export class RuntimePositionAutomationService {
 
     const result = evaluatePositionManagement(managementInput, previousState);
     let effectiveState = this.cloneState(result.nextState);
+    let dcaPendingExchangeFill = false;
 
     if (result.dcaExecuted) {
       const dcaAddedQuantity = Number.isFinite(result.dcaAddedQuantity)
@@ -889,6 +890,7 @@ export class RuntimePositionAutomationService {
           }
         } else {
           effectiveState = previousStateSnapshot;
+          dcaPendingExchangeFill = true;
         }
         if (position.botId && dcaResult.executed) {
           const eventAt = new Date(event.eventTime);
@@ -926,6 +928,13 @@ export class RuntimePositionAutomationService {
       }
     }
     this.positionStates.set(position.id, effectiveState);
+
+    if (dcaPendingExchangeFill) {
+      if (stateRebasedToCanonical || !this.statesEqual(previousStateSnapshot, effectiveState)) {
+        await runtimePositionStateStore.setPositionRuntimeState(position.id, effectiveState);
+      }
+      return;
+    }
 
     if (result.shouldClose) {
       await recordRuntimeProtectionCloseDecisionTelemetry({

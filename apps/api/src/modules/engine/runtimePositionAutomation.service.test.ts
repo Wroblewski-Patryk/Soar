@@ -1647,6 +1647,79 @@ describe('RuntimePositionAutomationService', () => {
     );
   });
 
+  it('does not close with stop protection in the same LIVE tick when DCA is only submitted', async () => {
+    process.env.RUNTIME_TRAILING_ENABLED = 'false';
+    process.env.RUNTIME_DCA_ENABLED = 'false';
+
+    const closeByExitSignal = vi.fn(async () => ({ status: 'closed' as const }));
+    const recordRuntimeEvent = vi.fn(async () => undefined);
+    const deps: any = {
+      listOpenPositionsBySymbol: vi.fn(async () => [
+        {
+          id: 'pos-submitted-dca-stop-block',
+          userId: 'user-submitted-dca-stop-block',
+          botId: 'bot-submitted-dca-stop-block',
+          strategyId: 'strat-submitted-dca-stop-block',
+          symbol: 'SOLUSDT',
+          side: 'LONG' as const,
+          entryPrice: 100,
+          quantity: 1,
+          leverage: 1,
+          stopLoss: null,
+          takeProfit: null,
+          managementMode: 'BOT_MANAGED' as const,
+          continuityState: 'CONFIRMED' as const,
+          bot: buildBotExecutionContext({
+            wallet: { mode: 'LIVE' },
+          }),
+        },
+      ]),
+      getStrategyConfigById: vi.fn(async () => ({
+        close: { mode: 'basic', tp: null, sl: 5, ttp: [], tsl: [] },
+        additional: {
+          dcaEnabled: true,
+          dcaTimes: 1,
+          dcaLevels: [{ percent: -5, multiplier: 1 }],
+        },
+      })),
+      executeDca: vi.fn(async () => ({ feePaid: 0, executed: false })),
+      closeByExitSignal,
+      recordRuntimeEvent,
+      resolveDcaFundsExhausted: vi.fn(async () => false),
+      nowMs: vi.fn(() => Date.now()),
+    };
+
+    const service = new RuntimePositionAutomationService(deps);
+    await service.handleTickerEvent({
+      type: 'ticker',
+      exchange: 'BINANCE',
+      marketType: 'FUTURES',
+      symbol: 'SOLUSDT',
+      eventTime: 9_100,
+      lastPrice: 94,
+      priceChangePercent24h: -0.8,
+    });
+
+    expect(deps.executeDca).toHaveBeenCalledWith(
+      expect.objectContaining({
+        positionId: 'pos-submitted-dca-stop-block',
+        mode: 'LIVE',
+        dcaLevelIndex: 0,
+      })
+    );
+    expect(closeByExitSignal).not.toHaveBeenCalled();
+    expect(recordRuntimeEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({ eventType: 'DCA_EXECUTED' })
+    );
+    expect(service.getPositionStateSnapshot('pos-submitted-dca-stop-block')).toEqual(
+      expect.objectContaining({
+        quantity: 1,
+        averageEntryPrice: 100,
+        currentAdds: 0,
+      })
+    );
+  });
+
   it('stores executed DCA state using canonical fill-derived quantity and price', async () => {
     process.env.RUNTIME_TRAILING_ENABLED = 'false';
     process.env.RUNTIME_DCA_ENABLED = 'false';

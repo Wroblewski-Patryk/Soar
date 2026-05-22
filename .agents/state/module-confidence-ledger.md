@@ -1,6 +1,6 @@
 # Module Confidence Ledger
 
-Last updated: 2026-05-21
+Last updated: 2026-05-22
 
 ## Purpose
 
@@ -61,6 +61,18 @@ Do not turn uncertainty into optimism.
 | SOAR-REL-001 | Release confidence | Release-critical module inventory and proof map | P0 | VERIFIED | High | 2026-05-14 final evidence pack: `docs/operations/v1-master-state-ledger-2026-05-14-final.md`, `docs/operations/v1-project-index-2026-05-14-final.md`, `docs/operations/v1-completion-scorecard-2026-05-14-final.md`, `docs/operations/v1-final-evidence-inventory-2026-05-14.md`, and `docs/operations/v1-100-percent-truth-audit-2026-05-14.md` define the current module-by-module proof map, score, evidence inventory, and scoped 100 percent verdict. 2026-05-14 ledger reconciliation promotes the stale Profile, Profile API Keys, Wallets, Markets, Strategies, Logs/Audit Trail, and Subscriptions/Admin rows to `VERIFIED` using already-accepted production-safe proof artifacts instead of collapsing unproven LIVE mutation scope. | None for the release-confidence inventory row. LIVE order/cancel/close, unsafe LIVE position mutation, existing-data mutation, and broader Gate.io/second-LIVE production shape remain outside the verified V1 scope unless separately approved. | Keep proof-map artifacts fresh after future scope changes or deploys; use new failing signals rather than stale proof gaps to reopen rows. | Planning | 2026-05-14 |
 
 ## Current Release Evidence Notes
+
+- 2026-05-22
+  `LIVE-DCA-SUBMITTED-FILL-GATE-2026-05-22` applies to
+  `SOAR-BOT-RUNTIME-001`, `SOAR-ORDERS-001`, and `SOAR-POSITIONS-001`:
+  emergency runtime safety fix after operator feedback that LIVE DCA could be
+  treated as progressed before exchange fill confirmation, allowing stop/TSL
+  logic to continue from false DCA state. Runtime automation now returns
+  fail-closed when DCA order placement is only submitted (`executed: false`);
+  DCA progress, `DCA_EXECUTED` telemetry, symbol-stat DCA count, and same-tick
+  close protection wait for confirmed fill handling. Evidence:
+  `docs/planning/live-dca-submitted-fill-gate-2026-05-22-task.md`; focused
+  runtime automation tests passed (`37/37`) and API typecheck passed.
 
 - 2026-05-21
   `V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21` applies to

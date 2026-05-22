@@ -4,6 +4,19 @@ Last updated: 2026-05-22
 
 ## Current Candidate Deployment Status
 
+- `LIVE-DCA-SUBMITTED-FILL-GATE-2026-05-22` is an emergency live-trading
+  safety fix for runtime DCA. Operator feedback showed that DCA could be
+  treated as progressed even when the LIVE exchange order had only been
+  submitted and no fill was confirmed, which could allow stop/TSL protection
+  to proceed from false DCA state. Runtime position automation now fails
+  closed after submitted-only DCA: it restores the previous runtime state,
+  does not emit `DCA_EXECUTED`, does not increment DCA stats, and returns
+  before same-tick close protection. Exchange fill handling remains the
+  authority that advances DCA state after a confirmed fill. Local validation:
+  focused runtime automation tests passed (`37/37`) and API typecheck passed.
+  Evidence:
+  `docs/planning/live-dca-submitted-fill-gate-2026-05-22-task.md`.
+
 - `V1-LOGIN-API-STARTUP-HOTFIX-2026-05-22` is closed as an emergency
   production availability hotfix after pushing `beae3ada` to `main`.
   Production Web initially reported `beae3ada`, while

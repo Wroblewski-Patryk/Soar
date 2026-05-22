@@ -17,6 +17,17 @@ Last updated: 2026-05-22
 
 ## READY
 
+- [x] `LIVE-DCA-SUBMITTED-FILL-GATE-2026-05-22 fix: fail closed when LIVE DCA is only submitted`
+  - 2026-05-22: Emergency live-trading fix after operator feedback that DCA
+    could appear executed even when no exchange fill occurred, allowing
+    stop/TSL protection to proceed from false DCA progress. Runtime position
+    automation now returns immediately when a DCA attempt only submits a LIVE
+    order (`executed: false`), preserving the previous runtime state and
+    waiting for exchange fill confirmation before DCA progress, telemetry, or
+    close protection can advance. Validation passed: focused runtime
+    automation tests `37/37` and API typecheck. Evidence:
+    `docs/planning/live-dca-submitted-fill-gate-2026-05-22-task.md`.
+
 - [x] `V1-LOGIN-API-STARTUP-HOTFIX-2026-05-22 fix: restore API startup after main deploy`
   - 2026-05-22: Production Web deployed `beae3ada`, but
     `https://api.soar.luckysparrow.ch` returned `503` for public API probes,
