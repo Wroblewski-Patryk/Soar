@@ -1,27 +1,27 @@
-import { PageTitle } from "@/ui/layout/dashboard/PageTitle";
-import BotsManagement from "@/features/bots/components/BotsManagement";
+"use client";
+
+import { useParams } from "next/navigation";
 import { LuBot, LuLayoutDashboard } from "react-icons/lu";
-import { dashboardShellEn } from "@/i18n/namespaces/dashboard-shell.en";
-import { dashboardBotsEn } from "@/i18n/namespaces/dashboard-bots.en";
 
-type BotPreviewPageProps = {
-  params: Promise<{
-    id: string;
-  }>;
-};
+import BotsManagement from "@/features/bots/components/BotsManagement";
+import { useI18n } from "@/i18n/I18nProvider";
+import { PageTitle } from "@/ui/layout/dashboard/PageTitle";
+import { dashboardRoutes } from "@/ui/layout/dashboard/dashboardRoutes";
 
-export default async function BotPreviewPage({ params }: BotPreviewPageProps) {
-  const { id } = await params;
+export default function BotPreviewPage() {
+  const { t } = useI18n();
+  const params = useParams<{ id: string }>();
+  const id = params.id;
 
   return (
     <section className="w-full space-y-4">
       <PageTitle
-        title={dashboardShellEn.nav.bots}
+        title={t("dashboard.nav.bots")}
         icon={<LuBot className="h-5 w-5" />}
         breadcrumb={[
-          { label: dashboardShellEn.common.dashboard, href: "/dashboard" },
-          { label: dashboardShellEn.nav.bots, href: "/dashboard/bots" },
-          { label: dashboardBotsEn.page.breadcrumbPreview, icon: <LuLayoutDashboard className="h-3.5 w-3.5" /> },
+          { label: t("dashboard.common.dashboard"), href: "/dashboard" },
+          { label: t("dashboard.nav.bots"), href: dashboardRoutes.bots.list },
+          { label: t("dashboard.bots.page.breadcrumbPreview"), icon: <LuLayoutDashboard className="h-3.5 w-3.5" /> },
         ]}
       />
 

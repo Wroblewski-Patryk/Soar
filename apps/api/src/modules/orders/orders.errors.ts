@@ -22,6 +22,7 @@ export const ORDER_ERROR_CODES = {
   livePretradeAmountBelowMin: 'LIVE_PRETRADE_AMOUNT_BELOW_MIN',
   livePretradeAmountPrecision: 'LIVE_PRETRADE_AMOUNT_PRECISION',
   livePretradeNotionalBelowMin: 'LIVE_PRETRADE_NOTIONAL_BELOW_MIN',
+  livePretradeNotionalPriceUnavailable: 'LIVE_PRETRADE_NOTIONAL_PRICE_UNAVAILABLE',
   orderNotCancelable: 'ORDER_NOT_CANCELABLE',
   orderCancelRiskAckRequired: 'ORDER_CANCEL_RISK_ACK_REQUIRED',
   orderCloseRiskAckRequired: 'ORDER_CLOSE_RISK_ACK_REQUIRED',
@@ -73,6 +74,8 @@ export const orderErrors = {
     new OrderDomainError(ORDER_ERROR_CODES.livePretradeAmountPrecision, 400),
   livePretradeNotionalBelowMin: () =>
     new OrderDomainError(ORDER_ERROR_CODES.livePretradeNotionalBelowMin, 400),
+  livePretradeNotionalPriceUnavailable: () =>
+    new OrderDomainError(ORDER_ERROR_CODES.livePretradeNotionalPriceUnavailable, 400),
   orderNotCancelable: () => new OrderDomainError(ORDER_ERROR_CODES.orderNotCancelable, 400),
   orderCancelRiskAckRequired: () =>
     new OrderDomainError(ORDER_ERROR_CODES.orderCancelRiskAckRequired, 400),

@@ -147,7 +147,7 @@ export const closeBotRuntimeSessionPosition = async (
   botId: string,
   sessionId: string,
   positionId: string,
-  payload: { riskAck?: boolean } = { riskAck: true }
+  payload: { riskAck: boolean }
 ): Promise<BotRuntimeClosePositionResponse> => {
   const res = await api.post<BotRuntimeClosePositionResponse>(
     `/dashboard/bots/${botId}/runtime-sessions/${sessionId}/positions/${positionId}/close`,
@@ -171,7 +171,7 @@ export const openDashboardManualOrder = async (payload: {
 
 export const cancelDashboardOrder = async (
   id: string,
-  payload: { riskAck?: boolean } = { riskAck: true }
+  payload: { riskAck: boolean }
 ): Promise<{ id: string; status: string }> => {
   const res = await api.post<{ id: string; status: string }>(`/dashboard/orders/${id}/cancel`, payload);
   return res.data;

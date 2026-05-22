@@ -8,6 +8,7 @@ import {
   setActiveSubscriptionForUser,
 } from '../subscriptions/subscriptions.service';
 import { SubscriptionEntitlementsSchema } from '../subscriptions/subscriptionEntitlements.service';
+import { listActiveRuntimeBots } from '../engine/runtimeSignalLoopDefaults';
 
 const walletIdByMarketGroupId = new Map<string, string>();
 
@@ -375,5 +376,132 @@ describe('Bots subscription entitlements', () => {
       feature: 'liveTrading',
       planCode: 'FREE',
     });
+  });
+
+  it('fails closed for LIVE order open, runtime close, and runtime loop after entitlement downgrade', async () => {
+    const email = 'bots-subscription-live-runtime-downgrade@example.com';
+    const agent = await registerAndLogin(email);
+    const user = await prisma.user.findUniqueOrThrow({
+      where: { email },
+      select: { id: true },
+    });
+
+    await setActiveSubscriptionForUser(prisma, {
+      userId: user.id,
+      planCode: 'ADVANCED',
+      source: 'ADMIN_OVERRIDE',
+      metadata: { reason: 'e2e-live-runtime-downgrade-setup' },
+    });
+
+    const strategyId = await createStrategy(agent, 'Entitlements Live Runtime Downgrade');
+    const marketGroupId = await createMarketGroup(email);
+    const liveApiKeyId = await createLiveApiKeyForUser(email);
+    const liveWalletId = await createWalletForContext(email, {
+      mode: 'LIVE',
+      apiKeyId: liveApiKeyId,
+    });
+
+    const createLiveBot = await agent.post('/dashboard/bots').send({
+      ...createPayload({
+        strategyId,
+        marketGroupId,
+        walletId: liveWalletId,
+      }),
+      isActive: true,
+      liveOptIn: true,
+      consentTextVersion: 'v1-live-risk',
+    });
+    expect(createLiveBot.status).toBe(201);
+    const botId = createLiveBot.body.id as string;
+
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: user.id,
+        botId,
+        mode: 'LIVE',
+        status: 'RUNNING',
+        startedAt: new Date('2026-05-21T10:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-05-21T10:01:00.000Z'),
+      },
+      select: { id: true },
+    });
+    const staleLivePosition = await prisma.position.create({
+      data: {
+        userId: user.id,
+        botId,
+        walletId: liveWalletId,
+        strategyId,
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        entryPrice: 64_000,
+        quantity: 0.05,
+        leverage: 2,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+        continuityState: 'CONFIRMED',
+        openedAt: new Date('2026-05-21T10:00:30.000Z'),
+      },
+      select: { id: true },
+    });
+
+    await setActiveSubscriptionForUser(prisma, {
+      userId: user.id,
+      planCode: 'FREE',
+      source: 'ADMIN_OVERRIDE',
+      metadata: { reason: 'e2e-live-runtime-downgrade' },
+    });
+
+    const liveOrderOpen = await agent.post('/dashboard/orders/open').send({
+      botId,
+      symbol: 'BTCUSDT',
+      side: 'BUY',
+      type: 'MARKET',
+      quantity: 0.01,
+      mode: 'LIVE',
+      riskAck: true,
+    });
+    expect(liveOrderOpen.status).toBe(403);
+    expect(liveOrderOpen.body.error.message).toBe(
+      'live trading is not available on the active subscription plan'
+    );
+    expect(liveOrderOpen.body.error.details).toMatchObject({
+      feature: 'liveTrading',
+      planCode: 'FREE',
+    });
+
+    const runtimeClose = await agent
+      .post(
+        `/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions/${staleLivePosition.id}/close`
+      )
+      .send({ riskAck: true });
+    expect(runtimeClose.status).toBe(403);
+    expect(runtimeClose.body.error.message).toBe(
+      'live trading is not available on the active subscription plan'
+    );
+    expect(runtimeClose.body.error.details).toMatchObject({
+      feature: 'liveTrading',
+      planCode: 'FREE',
+    });
+
+    const runtimeTopology = await listActiveRuntimeBots();
+    expect(runtimeTopology.some((bot) => bot.id === botId)).toBe(false);
+
+    await expect(
+      prisma.order.count({
+        where: {
+          userId: user.id,
+          botId,
+          symbol: 'BTCUSDT',
+        },
+      })
+    ).resolves.toBe(0);
+    await expect(
+      prisma.position.findUnique({
+        where: { id: staleLivePosition.id },
+        select: { status: true },
+      })
+    ).resolves.toMatchObject({ status: 'OPEN' });
   });
 });

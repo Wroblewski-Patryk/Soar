@@ -11,5 +11,20 @@ describe('security headers baseline', () => {
     expect(res.headers['x-dns-prefetch-control']).toBe('off');
     expect(res.headers['referrer-policy']).toBe('no-referrer');
   });
-});
 
+  it('serves public avatars with static-asset hardening headers', async () => {
+    const res = await request(app).get('/avatars/default.png');
+
+    expect(res.status).toBe(200);
+    expect(res.headers['content-type']).toMatch(/^image\/png\b/);
+    expect(res.headers['x-content-type-options']).toBe('nosniff');
+    expect(res.headers['cache-control']).toContain('public');
+    expect(res.headers['cache-control']).toContain('immutable');
+  });
+
+  it('does not expose avatar directory index fallback', async () => {
+    const res = await request(app).get('/avatars/');
+
+    expect(res.status).toBe(404);
+  });
+});

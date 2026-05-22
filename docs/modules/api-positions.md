@@ -25,7 +25,8 @@ Out of scope:
 - Mounted under `/dashboard/positions`.
 - Depends on:
   - `prisma` position/order/apiKey persistence.
-  - CCXT Binance snapshots for external positions/open orders.
+  - authenticated-read exchange snapshot adapters for supported
+    `(exchange, marketType, operation)` combinations.
   - live reconciliation service and takeover classification helpers.
 
 ## 3. Data and Contract Surface

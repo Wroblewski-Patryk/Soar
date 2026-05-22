@@ -8,6 +8,7 @@ import { ErrorState } from "../../../ui/components/ViewState";
 import { SkeletonCardBlock, SkeletonKpiRow, SkeletonTableRows } from "../../../ui/components/loading";
 import FormModal from "../../../ui/components/FormModal";
 import AssetSymbol from "../../../ui/components/AssetSymbol";
+import { useAsyncConfirm } from "@/ui/components/useAsyncConfirm";
 import { useI18n } from "../../../i18n/I18nProvider";
 import { useLocaleFormatting } from "../../../i18n/useLocaleFormatting";
 import { createMarketStreamEventSource } from "../../../lib/marketStream";
@@ -167,9 +168,25 @@ export const resolveSelectedStrategyDisplay = (
   return t("dashboard.home.runtime.reasonUnknown");
 };
 
-export default function HomeLiveWidgets() {
+type HomeLiveWidgetsProps = {
+  authConfirmed?: boolean;
+};
+
+export default function HomeLiveWidgets({ authConfirmed = true }: HomeLiveWidgetsProps) {
   const { t } = useI18n();
   const { formatCurrency, formatDateTime, formatDateTimeWithSeconds, formatNumber, formatPercent, formatTime } = useLocaleFormatting();
+  const { confirm, confirmModal } = useAsyncConfirm();
+  const confirmRuntimeRiskAction = useCallback(
+    (descriptionKey: string) =>
+      confirm({
+        title: t("dashboard.home.runtime.riskConfirmTitle"),
+        description: t(descriptionKey),
+        confirmLabel: t("dashboard.home.runtime.riskConfirmConfirmLabel"),
+        cancelLabel: t("dashboard.home.runtime.riskConfirmCancelLabel"),
+        confirmVariant: "error",
+      }),
+    [confirm, t]
+  );
   const formatDcaPercent = useCallback(
     (value: number) => `${formatNumber(value, { maximumFractionDigits: 2 })}%`,
     [formatNumber]
@@ -204,6 +221,7 @@ export default function HomeLiveWidgets() {
     viewportWidth,
   } = useHomeLiveWidgetsController({
     createMarketStreamEventSource,
+    enabled: authConfirmed,
     getBotRuntimeGraph,
     getBotRuntimeMonitoringAggregate,
     listBotRuntimeSessions,
@@ -471,6 +489,7 @@ export default function HomeLiveWidgets() {
     selected,
     selectedData,
     load,
+    confirmRiskAction: () => confirmRuntimeRiskAction("dashboard.home.runtime.riskConfirmManualOrderDescription"),
     labels: {
       invalidSymbol: manualOrderInvalidSymbolLabel,
       invalidQuantity: manualOrderInvalidQuantityLabel,
@@ -489,7 +508,9 @@ export default function HomeLiveWidgets() {
     closePositionIgnoredLabel,
     closePositionNoSessionLabel,
     closePositionSuccessLabel,
+    confirmRiskAction: () => confirmRuntimeRiskAction("dashboard.home.runtime.riskConfirmClosePositionDescription"),
     onClosed: () => load({ silent: true }),
+    selectedBotMode: selected?.bot.mode,
     selectedBotId: selected?.bot.id,
     selectedSessionId: selected?.actionSessionId ?? selected?.session?.id,
   });
@@ -502,6 +523,10 @@ export default function HomeLiveWidgets() {
   const handleCancelOpenOrder = useCallback(
     async (orderId: string) => {
       if (cancelingOpenOrderIds.includes(orderId)) return;
+      if (selected?.bot.mode === "LIVE") {
+        const accepted = await confirmRuntimeRiskAction("dashboard.home.runtime.riskConfirmCancelOrderDescription");
+        if (!accepted) return;
+      }
 
       setCancelingOpenOrderIds((current) => [...current, orderId]);
       try {
@@ -514,7 +539,7 @@ export default function HomeLiveWidgets() {
         setCancelingOpenOrderIds((current) => current.filter((currentId) => currentId !== orderId));
       }
     },
-    [cancelOpenOrderErrorLabel, cancelOpenOrderSuccessLabel, cancelingOpenOrderIds, load]
+    [cancelOpenOrderErrorLabel, cancelOpenOrderSuccessLabel, cancelingOpenOrderIds, confirmRuntimeRiskAction, load, selected?.bot.mode]
   );
 
   const openPositionsColumns = useMemo(
@@ -1102,6 +1127,7 @@ export default function HomeLiveWidgets() {
           </div>
         ) : null}
       </FormModal>
+      {confirmModal}
     </div>
   );
 }

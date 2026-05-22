@@ -19,7 +19,7 @@ export default function DashboardPage() {
     }
   }, [loading, user, router]);
 
-  if (loading) {
+  if (!loading && !user) {
     return <LoadingState title={t('dashboard.home.runtime.loadingTitle')} />;
   }
 
@@ -34,7 +34,7 @@ export default function DashboardPage() {
         ]}
       />
 
-      <HomeLiveWidgets />
+      <HomeLiveWidgets authConfirmed={Boolean(user)} />
     </section>
   );
 }

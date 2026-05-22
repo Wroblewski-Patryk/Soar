@@ -281,6 +281,7 @@ export interface RuntimeTradeGateway {
     lifecycleAction?: 'OPEN' | 'DCA' | 'CLOSE' | 'UNKNOWN';
     origin?: 'BOT';
     managementMode?: 'BOT_MANAGED' | 'MANUAL_MANAGED';
+    executionMode: RuntimeExecutionMode;
   }): Promise<void>;
 }
 
@@ -503,6 +504,7 @@ const defaultRuntimeTradeGateway: RuntimeTradeGateway = {
         closeInitiator: input.closeInitiator ?? null,
         origin: input.origin ?? 'BOT',
         managementMode: input.managementMode ?? 'BOT_MANAGED',
+        executionMode: input.executionMode,
       },
     });
   },
@@ -745,6 +747,7 @@ export const orchestrateRuntimeSignal = async (
       closeInitiator: closeAttribution.closeInitiator,
       lifecycleAction: 'CLOSE',
       managementMode: openPosition.managementMode as 'BOT_MANAGED' | 'MANUAL_MANAGED',
+      executionMode: input.mode,
     });
     if (input.botId) {
       await runtimeTelemetryService.upsertRuntimeSymbolStat({
@@ -937,6 +940,7 @@ export const orchestrateRuntimeSignal = async (
     realizedPnl: 0,
     lifecycleAction: 'OPEN',
     managementMode: 'BOT_MANAGED',
+    executionMode: input.mode,
   });
   if (input.botId) {
     await runtimeTelemetryService.upsertRuntimeSymbolStat({

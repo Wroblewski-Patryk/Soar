@@ -7,6 +7,7 @@ import {
   PlaceLiveOrderWithFeesResult,
 } from './liveOrderAdapter.types';
 import { metricsStore } from '../../observability/metrics';
+import { createModuleLogger } from '../../lib/logger';
 
 type SleepFn = (delayMs: number) => Promise<void>;
 type LogLevel = 'info' | 'warn' | 'error';
@@ -35,13 +36,8 @@ const defaultSleep: SleepFn = (delayMs) =>
 const emitDefaultLog = (level: LogLevel, payload: ExchangeLogPayload) => {
   if (process.env.NODE_ENV === 'test') return;
 
-  const entry = {
-    level,
-    module: 'exchange.live-order-adapter',
-    timestamp: new Date().toISOString(),
-    ...payload,
-  };
-  console.log(JSON.stringify(entry));
+  const { event, ...fields } = payload;
+  createModuleLogger('exchange.live-order-adapter')[level](event, fields);
 };
 
 const defaultExchangeLogger: ExchangeLogger = {

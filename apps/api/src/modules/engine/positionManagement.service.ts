@@ -213,7 +213,7 @@ export const evaluatePositionManagement = (
           leverage: effectiveLeverage,
         });
 
-  // Legacy parity order: DCA -> TP -> TTP -> SL -> TSL.
+  // DCA-first close management; callers supply either basic TP/SL or advanced TTP/TSL inputs.
   let dcaLevelIndex: number | undefined;
   if (dcaEnabled && executedDcaLevelIndices.size < dcaLevelsRequired) {
     const nextLevelIndex = selectNextDcaLevelIndex(currentPnlFraction, dcaLevels, executedDcaLevelIndices);

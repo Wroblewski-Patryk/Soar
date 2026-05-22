@@ -1,9 +1,12 @@
 # Risk Register
 
-Last updated: 2026-05-19
+Last updated: 2026-05-21
 
 | ID | Area | Risk | Likelihood | Impact | Trigger | Mitigation | Status | Linked Requirement/Decision | Next Action | Last Updated |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| RISK-039 | Protected release evidence | V1 may be overclaimed as production-ready if fresh UI/rollback/Gate 4 proof is mistaken for full `AUD-19` while `LIVEIMPORT-03` has no open runtime payload, production SLO fails, and restore/final release evidence remain incomplete. | high | high | Current deployed `dd1a1faf` has protected UI clickthrough, rollback proof, and Gate 4 sign-off passing, but the authenticated LIVE runtime session has `openCount=0` and `openOrdersCount=0`; fresh Gate 2/SLO fails with `/workers/ready` `0%` and API 5xx `16.6667%` because deployed workers are in `inline` topology; production DB restore and final release gate are still missing. | `V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21` records the partial pass and fail-closed blockers without storing secrets. Release state remains `NO-GO` until split-worker topology is repaired/verified, an approved open runtime payload exists, production restore passes, and the final gate passes. | active | REQ-FUNC-021 | Repair/verify split-worker production topology, approve a safe runtime-readback payload path, run production DB restore from VPS/Coolify Docker context, then run final non-dry-run release evidence. | 2026-05-21 |
+| RISK-038 | Supply-chain / Ops secrets | Protected ops credentials may leak through CLI argv, shell history, process listings, or command artifacts; local runtime env files may be accidentally tracked if repo policy drifts. | medium | high | Operator passes auth token/password/private OPS header value via CLI, or a `.env` runtime file is committed outside redacted examples. | `SUPPLY-CHAIN-SAST-OPS-AUDIT-2026-05-21` rejects secret-bearing CLI flags across protected ops scripts, requires existing env var families for secret values, adds root env-file ignore policy, and adds guardrails for tracked runtime env files plus secret-bearing ops-script argv parsers. | mitigating | REQ-SEC-041 | External VPS/cloud egress review, protected production `AUD-19`, and operator rotation/removal of any local untracked env secrets remain separate follow-ups. | 2026-05-21 |
+| RISK-037 | LIVE cancel entitlement | Exchange-backed LIVE order cancel could reach the adapter boundary after a user subscription downgrade if cancel only checked `riskAck` and ownership. | medium | high | Manual cancel or runtime stale-order lifetime cancel targets an exchange-backed LIVE order after active entitlement no longer allows `liveTrading`. | `MONEY-FLOW-SECURITY-CANCEL-ENTITLEMENT-2026-05-21` adds a current `liveTrading` entitlement check before exchange-backed cancel boundary calls and before local cancel mutation. Parent verification reran the focused DB-backed cancel/API-key pack with local Postgres/Redis; `2` files / `20` tests passed. API/Web typecheck, full Web test pack, guardrails, build, audit, compose config, and diff check also passed. | mitigated | REQ-SEC-040 | Keep real LIVE exchange-side mutation proof separate and approval-gated. | 2026-05-21 |
 | RISK-000 | process | Agents may report progress without requirement-level proof. | medium | high | Work changes behavior but matrix/evidence is not updated. | Require requirement matrix updates before DONE. | mitigating | REQ-FUNC-000 | Replace sample row with project-specific risks. | 2026-05-11 |
 | RISK-001 | Bots UI actions | Operators may be blocked or confused when deleting active PAPER bots if PAPER activity is treated like LIVE trading risk. | medium | high | Active PAPER bot delete asks for LIVE confirmation or appears not to work. | Restrict LIVE delete confirmation to `mode === "LIVE"` or `liveOptIn`; keep regression coverage for active PAPER and LIVE paths. 2026-05-14 production disposable bot fixture cleanup passed. 2026-05-19 `AUD-10` refreshed local Web bot/runtime evidence (`8` files / `61` tests) and API bot/runtime evidence (`10` files / `88` tests). | closed | REQ-FUNC-001 | Reopen only on a new failing Bots delete/action signal; LIVE mutation remains separately approval-gated. | 2026-05-19 |
 | RISK-002 | Dashboard Home | Operators may act on stale or incomplete runtime truth if wallet KPIs or runtime tabs remain bound to the previously selected bot, if backend fields are missing from the Web contract, or if the runtime surface has no usable bot context. | medium | high | Selected bot changes while wallet/tables still show stale symbol, order, or trade rows; initial runtime load fails; empty operator account opens Dashboard Home; backend returns nullable trade relationship IDs, `origin=USER`, aggregate `openPositionQty`, or enum values outside stale Web fixture assumptions but Web assumes a narrower or legacy contract. | Rendered component proof locks loading state, retryable error state, selected-bot switch, wallet KPI recalculation, Orders tab rows, History tab rows, and previous-bot row suppression. Local browser proof locks authenticated empty/onboarding state on desktop and mobile with no console errors. Snapshot import creates PAPER wallet/session/stat/event data; API and browser proof render active open positions and wallet KPIs through the existing runtime contract. 2026-05-13 parity slices align nullable trade IDs, backend `USER` origin, `openPositionQty`, and backend-compatible enum domains. 2026-05-14 production evidence verifies authenticated `/dashboard` route reachability and simultaneous production runtime readback for both Binance PAPER bots plus controlled Binance LIVE observation without order placement. | closed | REQ-FUNC-002 | Reopen only on a new Dashboard/runtime failing signal or a broader Gate.io/2x LIVE scope decision. | 2026-05-14 |
@@ -44,6 +47,92 @@ Last updated: 2026-05-19
 
 ## Risk Notes
 
+- 2026-05-21 `SUPPLY-CHAIN-SAST-OPS-AUDIT-2026-05-21` adds `RISK-038`:
+  a local ops/supply-chain audit found confirmed secret-bearing CLI argv
+  handling in protected proof/release scripts and a repo-wide env-file policy
+  gap. The local code defect is fixed with parser fail-closed behavior,
+  existing env-var secret input families, root `.gitignore` env protection,
+  and repository guardrails. Validation passed for guardrails/tests,
+  production dependency audit, compose config, API/Web typecheck, script syntax,
+  manual secret-argv rejection checks, and diff check. Remaining risk is
+  external/protected: VPS/cloud egress review, protected `AUD-19`, and operator
+  handling of local untracked env files.
+- 2026-05-21 `BACKEND-PERMISSION-ISOLATION-REVIEW-2026-05-21` updates
+  `RISK-005` and `RISK-018`: defensive review found and repaired a local
+  API-key create DTO allowlist defect where validation parsed `req.body` but
+  raw request fields still reached Prisma create data. The fix passes parsed
+  payloads through the controller and uses explicit service create fields.
+  Focused regression proves request-supplied `id`, `userId`, `lastUsed`,
+  `createdAt`, and `updatedAt` are not persisted. Validation passed:
+  API-key e2e `18/18`, auth/admin/API-key pack `34/34`,
+  isolation/reports/wallets pack `28/28`, and API typecheck. Protected
+  production `AUD-19`, external penetration/VPS configuration review, and
+  explicit LIVE exchange-side mutation proof remain separate gates.
+- 2026-05-21 `SECURITY-RED-TEAM-HARDENING-2026-05-21` updates
+  `RISK-004`, `RISK-005`, `RISK-010`, `RISK-011`, `RISK-012`, `RISK-021`,
+  `RISK-023`, and `RISK-036`: completed second-round security agents found
+  confirmed local hardening defects and the coordinator repaired them. Fixes
+  covered stale admin-token authorization after demotion, auth IP limiting,
+  production ops private-network defaults, weak/placeholder secret readiness,
+  unsafe deploy defaults, API-key lifecycle audit events, sensitive logging
+  redaction, hidden runtime close `riskAck` defaults, execution-time LIVE
+  entitlement checks, Gate.io swap derivative parameters, unknown LIVE status
+  fail-closed mapping, min-notional price-truth fail-closed behavior,
+  production CSP, production error redaction, and known Next.js/`ws`
+  production dependency vulnerabilities. Residual risk remains explicit:
+  protected `AUD-19`, external penetration/VPS configuration review, and LIVE
+  exchange-side mutation proof were not replaced by local validation.
+  Continuation reduced the residual local risk further by fixing frontend
+  auth-confirm/admin/API-key P2 items, adding DB-backed LIVE entitlement
+  downgrade proof, preventing stage rehearsal secret argv/artifact leakage,
+  hardening VPS env template drift, adding non-root runtime Dockerfiles with a
+  guardrail, adding production HSTS, and binding local compose DB/Redis to
+  localhost.
+- 2026-05-21 `LOCAL-CERTAINTY-CLOSURE-2026-05-21` updates `RISK-014`,
+  `RISK-021`, `RISK-032`, `RISK-034`, and `RISK-036`: the Reports mutable
+  bot-mode risk is locally mitigated for new trades by adding
+  `Trade.executionMode`, migration backfill, snapshot-first Reports aggregation,
+  and focused regression coverage for bot mode switching. Broad local gates now
+  pass after the remaining Web polish fixes: full Web Vitest, full API Vitest
+  in one-worker fork mode, build, lint, guardrails, docs parity, i18n audit,
+  go-live smoke, Prisma validate/status, and diff check. Residual release risk
+  is not code-local: protected production `AUD-19` still requires approved
+  protected inputs and same-date production evidence before a production-ready
+  claim.
+- 2026-05-21 `REST-IMPLEMENTATION-SWEEP-2026-05-21` updates
+  `RISK-010`, `RISK-011`, `RISK-012`, `RISK-014`, `RISK-021`, `RISK-030`,
+  and `SOAR-SUBSCRIPTIONS-ADMIN-001`: agent-assisted local implementation
+  sweep found no new P0 code defect, fixed explicit confirmation gaps for
+  Dashboard Home LIVE manual order, LIVE open-order cancel, LIVE runtime
+  position close, and Admin Users role/plan changes, removed default Web
+  service-layer `riskAck: true` values, and changed LIVE runtime manual close
+  to fail closed when no trusted close reference price is available instead of
+  falling back to `entryPrice`. Focused Web/API tests and typechecks passed.
+  Residual risks remain evidence-bound: protected `AUD-19` production proof is
+  still blocked, Assistant hot-path trading orchestration remains deferred, and
+  Reports historical mode classification still needs a data-model decision for
+  immutable trade execution-mode snapshots.
+- 2026-05-20 `V1-PROTECTED-PREFLIGHT-DD1A1FAF-2026-05-20` updates
+  `RISK-021`: current production build-info and public smoke pass for
+  `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`, but the protected release path
+  remains blocked because this shell has `0` matching protected input names and
+  required protected evidence is stale for 2026-05-20. Keep V1 `NO-GO` for any
+  new current-date readiness claim until the operator unblock packet produces
+  fresh protected evidence and the final non-dry-run release gate returns
+  `ready`. Current handoff:
+  `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.md`.
+  `ops:operator-unblock:check` now validates that packet before protected
+  execution.
+- 2026-05-20 `V1-OPERATOR-UNBLOCK-TOOLING-INDEX-SYNC-2026-05-20` updates
+  `RISK-021` and `RISK-036`: reusable audit tooling validation now requires
+  the operator unblock packet check commands, and `audit:manifest:verify`
+  executes the current packet validation. This reduces handoff drift but does
+  not replace protected production evidence.
+- 2026-05-20 `V1-AGENT-BLOCKER-SWEEP-DD1A1FAF-2026-05-20` updates
+  `RISK-021`: two independent read-only agent lanes confirmed there is no
+  meaningful non-secret deployment task left; continuing local prep would add
+  churn, not reduce production release risk. Protected execution remains the
+  only next risk-reducing step.
 - 2026-05-19 `AUDIT-HANDOFF-CLEANUP-VALIDATION-COMMAND-2026-05-19`
   updates `RISK-021` and `RISK-036`: handoff validation now catches missing
   cleanup evidence for headless browser processes, local DB/Redis listeners,

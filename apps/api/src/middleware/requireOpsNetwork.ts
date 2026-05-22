@@ -47,7 +47,8 @@ const isAllowedByNetwork = (ip: string) => {
     .filter(Boolean);
   if (explicit.includes(ip)) return true;
 
-  if ((process.env.OPS_ALLOW_PRIVATE_NETWORK ?? 'true').toLowerCase() === 'true') {
+  const allowPrivateDefault = process.env.NODE_ENV === 'production' ? 'false' : 'true';
+  if ((process.env.OPS_ALLOW_PRIVATE_NETWORK ?? allowPrivateDefault).toLowerCase() === 'true') {
     return isPrivateIpv4(ip) || isPrivateIpv6(ip);
   }
 

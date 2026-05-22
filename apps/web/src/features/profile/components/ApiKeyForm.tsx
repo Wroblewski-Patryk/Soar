@@ -6,6 +6,7 @@ import { isAxiosError } from "axios";
 import { apiKeySchema } from "../types/apiKeyForm.type";
 import { testApiKeyConnection, testStoredApiKeyConnection } from "../services/apiKeys.service";
 import { useI18n } from "../../../i18n/I18nProvider";
+import { resolveUiErrorMessage } from "@/lib/errorResolver";
 import {
   EXCHANGE_OPTIONS,
   ExchangeOption,
@@ -13,6 +14,9 @@ import {
 } from "@/features/exchanges/exchangeCapabilities";
 
 const EXCHANGES: ExchangeOption[] = [...EXCHANGE_OPTIONS];
+
+const resolveConnectionTestError = (error: unknown, fallback: string) =>
+  isAxiosError(error) ? (resolveUiErrorMessage(error, { fallback }) ?? fallback) : fallback;
 
 export type ApiKeyFormSavePayload = {
   label: string;
@@ -94,9 +98,7 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
         setTestMessage(result.message ?? formText("testConnectionFailed"));
         setTestedFingerprint(null);
       } catch (err: unknown) {
-        const message = isAxiosError<{ message?: string }>(err)
-          ? (err.response?.data?.message ?? formText("testConnectionFailed"))
-          : formText("testConnectionFailed");
+        const message = resolveConnectionTestError(err, formText("testConnectionFailed"));
         setTestStatus("error");
         setTestMessage(message);
         setTestedFingerprint(null);
@@ -127,9 +129,7 @@ export default function ApiKeyForm({ defaultValues, isEdit, onSave, onCancel }: 
       setTestMessage(result.message ?? formText("testConnectionFailed"));
       setTestedFingerprint(null);
     } catch (err: unknown) {
-      const message = isAxiosError<{ message?: string }>(err)
-        ? (err.response?.data?.message ?? formText("testConnectionFailed"))
-        : formText("testConnectionFailed");
+      const message = resolveConnectionTestError(err, formText("testConnectionFailed"));
       setTestStatus("error");
       setTestMessage(message);
       setTestedFingerprint(null);

@@ -296,6 +296,7 @@ export const executeRuntimeDca = async (input: {
           realizedPnl: 0,
           origin: 'BOT',
           managementMode: 'BOT_MANAGED',
+          executionMode: input.mode,
         },
       });
 

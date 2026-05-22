@@ -179,7 +179,10 @@ pnpm --filter web build
 ```bash
 pnpm --filter api run run
 ```
-Use `pnpm --filter api start` only for destructive local reset flow (Prisma reset + seed).
+Use `pnpm --filter api start` for the production-safe launcher that applies
+`prisma migrate deploy` through `scripts/start-with-migrate.mjs`. Use
+`pnpm --filter api run db:reset:local` only for the explicit destructive local
+reset + seed workflow.
 
 ### 4) Start Web in production mode (terminal #2, repo root)
 ```bash

@@ -26,10 +26,11 @@ ENV PORT=3002
 RUN corepack enable
 WORKDIR /app
 
-COPY --from=build /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/
-COPY --from=build /app/node_modules /app/node_modules
-COPY --from=build /app/apps/web /app/apps/web
-COPY --from=build /app/libs/shared /app/libs/shared
+COPY --from=build --chown=node:node /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/
+COPY --from=build --chown=node:node /app/node_modules /app/node_modules
+COPY --from=build --chown=node:node /app/apps/web /app/apps/web
+COPY --from=build --chown=node:node /app/libs/shared /app/libs/shared
 
 EXPOSE 3002
+USER node
 CMD ["pnpm", "--filter", "web", "start"]

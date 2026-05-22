@@ -5,8 +5,8 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/wallets`
 - Owner: frontend/trading-setup
-- Last updated: 2026-04-23
-- Related planning task: `DCP-09`, `WAPR-10`, `V1CAP-A`
+- Last updated: 2026-05-21
+- Related planning task: `LOCAL-CERTAINTY-CLOSURE-2026-05-21`
 
 ## 1. Purpose and Scope
 - Owns wallet management UI for trading context setup.
@@ -86,7 +86,9 @@ Out of scope:
   `LIVE_EXECUTION` support is enabled; exchange-side cancel is handled by the
   backend order-cancel boundary for supported LIVE venue contexts.
 - Delete flow respects backend conflict contract when wallet is linked to active bots.
-- Paper reset action is `PAPER`-only in UI and must respect backend fail-closed guards (`open positions` / `active open orders` block reset).
+- Paper reset action is `PAPER`-only in UI, uses the shared async confirmation
+  modal instead of native browser confirmation, and must respect backend
+  fail-closed guards (`open positions` / `active open orders` block reset).
 
 ## 7. Observability and Operations
 - Metadata source and preview states are surfaced in form UX to explain capability fallback.
@@ -98,6 +100,8 @@ Out of scope:
   - `app/dashboard/wallets/[id]/preview/page.test.tsx`
   - `WalletsListTable.test.tsx`
   - `WalletCreateEditForm.test.tsx`
+- 2026-05-21 evidence: `WalletCreateEditForm.test.tsx` proves PAPER reset does
+  not execute until the shared modal is confirmed.
   - `WalletPreviewPanel.test.tsx`
 - Suggested validation command:
 ```powershell

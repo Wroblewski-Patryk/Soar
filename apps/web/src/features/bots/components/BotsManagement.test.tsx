@@ -920,6 +920,9 @@ describe("BotsManagement", () => {
     await waitFor(() => {
       expect(listRuntimeSessionsMock).toHaveBeenCalledWith("b-monitor", { status: undefined, limit: 50 });
     });
+    await waitFor(() => {
+      expect(listRuntimeSessionsMock).toHaveBeenCalledTimes(1);
+    });
 
     await waitFor(() => {
       expect(loadBotMonitoringAggregateMock).toHaveBeenCalledWith({

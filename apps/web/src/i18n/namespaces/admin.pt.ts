@@ -11,6 +11,11 @@ export const adminPt = {
     footer: {
       rights: "Todos os direitos reservados.",
     },
+    auth: {
+      loading: "A confirmar acesso admin...",
+      deniedTitle: "Acesso admin necessario",
+      deniedDescription: "A conta atual nao esta confirmada como administradora.",
+    },
   },
   users: {
     loadError: "Nao foi possivel carregar utilizadores.",
@@ -40,6 +45,11 @@ export const adminPt = {
     toggleRoleAriaPrefix: "Alterar papel para",
     planSelectAriaPrefix: "Selecionar plano para",
     assignPlanAriaPrefix: "Atribuir plano para",
+    confirmTitle: "Confirmar alteracao admin",
+    confirmRoleDescription: "Alterar o papel de {email} para {role}.",
+    confirmPlanDescription: "Atribuir o plano {plan} a {email}.",
+    confirmLabel: "Confirmar",
+    cancelLabel: "Cancelar",
   },
   subscriptions: {
     loadError: "Nao foi possivel carregar planos de subscricao.",

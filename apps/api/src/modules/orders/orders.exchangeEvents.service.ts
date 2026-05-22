@@ -258,6 +258,7 @@ const ensureTradeRecord = async (input: {
   lifecycleAction: 'OPEN' | 'DCA' | 'CLOSE';
   managementMode: 'BOT_MANAGED' | 'MANUAL_MANAGED';
   origin: 'BOT' | 'USER' | 'EXCHANGE_SYNC' | 'BACKTEST';
+  executionMode: 'PAPER' | 'LIVE';
   realizedPnl?: number;
   closeReason?: 'TP' | 'TTP' | 'SL' | 'TSL' | 'LIQUIDATION' | 'ACCOUNT_FLOOR' | 'MANUAL' | 'SIGNAL_EXIT' | 'POSITION_LIFETIME' | 'EXTERNAL_SYNC_MISSING' | 'SYSTEM_REPAIR' | null;
   closeInitiator?: 'BOT_APP' | 'USER_APP' | 'USER_EXCHANGE' | 'EXCHANGE' | 'SYSTEM_REPAIR' | null;
@@ -297,6 +298,7 @@ const ensureTradeRecord = async (input: {
       closeInitiator: input.closeInitiator ?? null,
       origin: input.origin,
       managementMode: input.managementMode,
+      executionMode: input.executionMode,
     },
   });
 };
@@ -687,6 +689,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
           lifecycleAction: 'CLOSE',
           managementMode: updatedOrder.managementMode,
           origin: updatedOrder.origin,
+          executionMode: 'LIVE',
           realizedPnl,
           closeReason: closeAttribution.closeReason,
           closeInitiator: closeAttribution.closeInitiator,
@@ -730,6 +733,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
           lifecycleAction: 'DCA',
           managementMode: updatedOrder.managementMode,
           origin: updatedOrder.origin,
+          executionMode: 'LIVE',
           realizedPnl: 0,
         });
         await syncRuntimeDcaStateFromExchangeFill({
@@ -792,6 +796,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
           lifecycleAction: 'OPEN',
           managementMode: updatedOrder.managementMode,
           origin: updatedOrder.origin,
+          executionMode: 'LIVE',
           realizedPnl: 0,
         });
       }

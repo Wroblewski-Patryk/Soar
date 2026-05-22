@@ -165,8 +165,22 @@ describe('requireAuth middleware', () => {
     });
     vi.spyOn(prisma.user, 'findUnique').mockImplementation((async (args: { where: { id?: string } }) => {
       const { where } = args;
-      if (where.id === olderUserId) return { id: olderUserId, sessionVersion: 1 } as { id: string; sessionVersion: number };
-      if (where.id === newerUserId) return { id: newerUserId, sessionVersion: 1 } as { id: string; sessionVersion: number };
+      if (where.id === olderUserId) {
+        return {
+          id: olderUserId,
+          email: 'older@example.com',
+          role: 'USER',
+          sessionVersion: 1,
+        } as { id: string; email: string; role: 'USER'; sessionVersion: number };
+      }
+      if (where.id === newerUserId) {
+        return {
+          id: newerUserId,
+          email: 'newer@example.com',
+          role: 'USER',
+          sessionVersion: 1,
+        } as { id: string; email: string; role: 'USER'; sessionVersion: number };
+      }
       return null;
     }) as unknown as typeof prisma.user.findUnique);
 

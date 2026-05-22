@@ -18,6 +18,7 @@ import {
   closeReasonToEventType,
   parseStrategyRiskConfig,
   resolveReplayDcaProbePrice,
+  shouldBlockCloseByPendingDca,
 } from './backtestReplayCore';
 import {
   BacktestFillModelConfig,
@@ -431,9 +432,13 @@ export const simulateInterleavedPortfolio = (input: {
     position.bestPrice = managementResult.nextState.trailingAnchorPrice ?? position.bestPrice;
 
     if (
-      lockTrailingByPendingDca &&
       managementResult.shouldClose &&
-      ['trailing_stop', 'stop_loss'].includes(managementResult.closeReason ?? '')
+      shouldBlockCloseByPendingDca({
+        lockTrailingByPendingDca,
+        closeReason: managementResult.closeReason,
+        riskConfig,
+        executedDcaLevelIndices: position.executedDcaLevelIndices,
+      })
     ) {
       managementResult = {
         ...managementResult,

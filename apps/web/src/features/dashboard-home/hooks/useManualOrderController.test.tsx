@@ -366,6 +366,102 @@ describe("useManualOrderController", () => {
     expect(openDashboardManualOrderMock).toHaveBeenCalledTimes(1);
   });
 
+  it("requires explicit confirmation before submitting a LIVE manual order", async () => {
+    getDashboardManualOrderContextMock.mockResolvedValue({
+      botId: "bot-live-confirm",
+      symbol: "BTCUSDT",
+      mode: "LIVE",
+      orderType: "MARKET",
+      marginMode: "ISOLATED",
+      leverage: 10,
+      priceReference: {
+        markPrice: 100,
+        source: "exchange_mark",
+      },
+      quantityConstraints: {
+        minAmount: 0.001,
+        amountPrecision: 0.001,
+        minNotional: 5,
+        minExecutableQty: 0.001,
+      },
+    });
+
+    const labels = {
+      invalidSymbol: "invalid-symbol",
+      invalidQuantity: "invalid-quantity",
+      invalidPrice: "invalid-price",
+      requiredPrice: "required-price",
+      marketPriceUnavailable: "market-price-unavailable",
+      minQuantity: "min-quantity {value}",
+      exceedsFreeFunds: "exceeds-free-funds",
+      success: "success",
+      error: "error",
+    };
+    const selected = {
+      bot: {
+        id: "bot-live-confirm",
+        mode: "LIVE",
+        marketType: "FUTURES",
+        exchange: "BINANCE",
+        symbolGroup: {
+          id: "group-live-confirm",
+          name: "Live group",
+          symbols: ["BTCUSDT"],
+        },
+      },
+      runtimeGraph: {
+        marketGroups: [],
+      },
+    } as unknown as RuntimeSnapshot;
+    const selectedData = {
+      free: 100,
+      symbols: [{ symbol: "BTCUSDT", liveLastPrice: 100 }],
+      open: [],
+    } as unknown as RuntimeSelectedData;
+    const confirmRiskAction = vi.fn().mockResolvedValueOnce(false).mockResolvedValueOnce(true);
+
+    const { result } = renderHook(() =>
+      useManualOrderController({
+        selected,
+        selectedData,
+        load: vi.fn().mockResolvedValue(undefined),
+        confirmRiskAction,
+        labels,
+      })
+    );
+
+    await waitFor(() => {
+      expect(result.current.manualOrderSymbol).toBe("BTCUSDT");
+      expect(result.current.manualOrderPrice).toBe("100");
+    });
+
+    act(() => {
+      result.current.setManualOrderQuantity("1");
+    });
+
+    await act(async () => {
+      await result.current.handleSubmitManualOrder();
+    });
+
+    expect(confirmRiskAction).toHaveBeenCalledTimes(1);
+    expect(openDashboardManualOrderMock).not.toHaveBeenCalled();
+
+    await act(async () => {
+      await result.current.handleSubmitManualOrder();
+    });
+
+    expect(confirmRiskAction).toHaveBeenCalledTimes(2);
+    expect(openDashboardManualOrderMock).toHaveBeenCalledWith({
+      botId: "bot-live-confirm",
+      symbol: "BTCUSDT",
+      side: "BUY",
+      type: "MARKET",
+      quantity: 1,
+      price: 100,
+      riskAck: true,
+    });
+  });
+
   it("uses active canonical market groups for manual-order symbols before stale direct projections", async () => {
     getDashboardManualOrderContextMock.mockResolvedValue({
       botId: "bot-canonical-manual-symbols",

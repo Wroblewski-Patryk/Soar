@@ -1,14 +1,50 @@
 'use client';
 
 import type { ReactNode } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 import AppLogoLink from "@/ui/components/AppLogoLink";
 import FooterPreferencesSwitchers from "@/ui/components/FooterPreferencesSwitchers";
+import { ErrorState, LoadingState } from "@/ui/components/ViewState";
 import { useI18n } from "@/i18n/I18nProvider";
 
 export default function AdminLayoutShell({ children }: { children: ReactNode }) {
   const { t } = useI18n();
+  const { user, loading } = useAuth();
+  const router = useRouter();
   const year = new Date().getFullYear();
+  const isAdmin = user?.role === "ADMIN";
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/auth/login");
+    }
+  }, [loading, router, user]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-base-100 text-base-content">
+        <main className="mx-auto w-full max-w-7xl px-4 py-8">
+          <LoadingState title={t("admin.layout.auth.loading")} />
+        </main>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-base-100 text-base-content">
+        <main className="mx-auto w-full max-w-7xl px-4 py-8">
+          <ErrorState
+            title={t("admin.layout.auth.deniedTitle")}
+            description={t("admin.layout.auth.deniedDescription")}
+          />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-base-100 text-base-content flex flex-col">

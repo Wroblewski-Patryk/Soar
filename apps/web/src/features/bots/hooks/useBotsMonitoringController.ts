@@ -73,10 +73,15 @@ export const useBotsMonitoringController = ({
   const [monitorLastUpdatedAt, setMonitorLastUpdatedAt] = useState<string | null>(null);
   const [monitorStaleWatchNowMs, setMonitorStaleWatchNowMs] = useState(() => Date.now());
   const [monitorLiveTickerPrices, setMonitorLiveTickerPrices] = useState<Record<string, number>>({});
+  const monitorSessionIdRef = useRef("");
   const monitorStreamEligibleRef = useRef(false);
   const monitorStreamConnectedRef = useRef(false);
   const monitorLastSseTickerAtRef = useRef<number | null>(null);
   const monitorLastSseDrivenRefreshAtRef = useRef(0);
+
+  useEffect(() => {
+    monitorSessionIdRef.current = monitorSessionId;
+  }, [monitorSessionId]);
 
   const monitorStreamSymbols = useMemo(() => {
     const fromStats = monitorSymbolStats?.items?.map((item) => item.symbol) ?? [];
@@ -291,7 +296,7 @@ export const useBotsMonitoringController = ({
         await loadMonitorPortfolioHistory(monitorBotId);
         return;
       }
-      const effectiveSessionId = monitorSessionId || sessions[0]?.id;
+      const effectiveSessionId = monitorSessionIdRef.current || sessions[0]?.id;
       if (!effectiveSessionId) {
         setMonitorSessionDetail(null);
         setMonitorSymbolStats(null);
@@ -310,7 +315,6 @@ export const useBotsMonitoringController = ({
       loadMonitorPortfolioHistory,
       monitorAppliedSymbolFilter,
       monitorBotId,
-      monitorSessionId,
       monitorStatus,
       monitorViewMode,
     ]

@@ -83,9 +83,9 @@ export default function ProfileForm() {
   };
 
   return (
-    <form className="w-full mx-auto space-y-6" onSubmit={handleSubmit}>
-      <div className="flex items-center gap-4 py-2">
-        <div className="flex-shrink-0 pr-8">
+    <form className="mx-auto w-full space-y-6" onSubmit={handleSubmit}>
+      <div className="flex flex-col gap-6 py-2 md:flex-row md:items-center md:gap-4">
+        <div className="w-full shrink-0 md:w-56 md:pr-8">
           {avatarUrl ? (
             <Image
               src={avatarUrl}
@@ -94,10 +94,10 @@ export default function ProfileForm() {
               height={192}
               loader={({ src }) => src}
               unoptimized
-              className="w-48 h-48 rounded-full object-cover mb-4"
+              className="mx-auto mb-4 h-40 w-40 rounded-full object-cover sm:h-48 sm:w-48 md:mx-0"
             />
           ) : (
-            <div className="w-48 h-48 rounded-full bg-primary mb-4" />
+            <div className="mx-auto mb-4 h-40 w-40 rounded-full bg-primary sm:h-48 sm:w-48 md:mx-0" />
           )}
 
           <input
@@ -116,7 +116,7 @@ export default function ProfileForm() {
           </label>
         </div>
 
-        <div className="flex-grow">
+        <div className="w-full min-w-0 flex-grow">
           <div className="form-control mb-4">
             <label className="label">
               <span className="label-text">{t("dashboard.profileBasic.nameLabel")}</span>

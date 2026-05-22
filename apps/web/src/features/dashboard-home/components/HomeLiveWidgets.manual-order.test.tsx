@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { I18nProvider } from "../../../i18n/I18nProvider";
@@ -1862,6 +1862,9 @@ describe("HomeLiveWidgets manual order", () => {
     fireEvent.change(await screen.findByTestId("manual-order-symbol-select"), { target: { value: "BTCUSDT" } });
     fireEvent.change(screen.getByTestId("manual-order-quantity-input"), { target: { value: "0.25" } });
     fireEvent.click(screen.getByRole("button", { name: /Otworz zlecenie reczne|Open manual order/i }));
+
+    const dialog = await screen.findByText(/Potwierdz akcje runtime|Confirm runtime action/i);
+    fireEvent.click(within(dialog.closest("dialog") as HTMLElement).getByText(/^Potwierdz$|^Confirm$/i));
 
     await waitFor(() => {
       expect(screen.getByRole("button", { name: /Otwieranie|Opening/i })).toBeDisabled();

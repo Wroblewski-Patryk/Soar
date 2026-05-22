@@ -216,7 +216,7 @@ export const GetBotRuntimeMonitoringAggregateQuerySchema = z.object({
 export const GetBotPortfolioHistoryQuerySchema = z.object({});
 
 export const CloseBotRuntimePositionSchema = z.object({
-  riskAck: z.boolean().default(true),
+  riskAck: z.boolean().default(false),
 });
 
 export type CreateBotDto = z.infer<typeof CreateBotSchema>;

@@ -1,8 +1,201 @@
 # Next Steps
 
-Last updated: 2026-05-19
+Last updated: 2026-05-21
 
 ## Next Tiny Task
+
+Latest protected V1 app proof:
+`V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21` is `BLOCKED`, with real
+progress. Protected production UI clickthrough passed, rollback proof passed,
+and production build-info still matches `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`.
+Gate 4 sign-off is approved. `LIVEIMPORT-03` authenticates and reaches a
+RUNNING Binance FUTURES LIVE session, but fails closed because there is no open
+runtime position or open order payload; only closed historical `BNBUSDT` /
+`XRPUSDT` runtime data is visible. The controlled proof runner refuses to take
+over the already-active LIVE bot. Fresh 30-minute production SLO is `FAIL`
+because `/workers/ready` is `503` for all samples in deployed `inline` worker
+topology (`DEPLOYED_INLINE_MODE`), driving API 5xx to `16.6667%`. Next exact
+task: repair/verify split-worker production topology, choose an approved safe
+way to produce or observe an open runtime readback payload, run production DB
+restore from VPS/Coolify Docker context, then rerun final non-dry-run
+release-gate evidence. Evidence:
+`docs/planning/v1-protected-app-proof-attempt-dd1a1faf-2026-05-21-task.md`.
+
+Latest supply-chain/SAST ops checkpoint:
+`SUPPLY-CHAIN-SAST-OPS-AUDIT-2026-05-21` is locally `VERIFIED`. It audited
+dependency/supply-chain hygiene, Docker/compose, env templates, secrets
+handling, logging artifacts, CI/scripts, SSRF/egress surfaces, file
+upload/static assets, and production readiness gates. It fixed a confirmed
+secret-handling defect where protected ops/release proof scripts accepted
+secret-bearing CLI flags; those scripts now require existing env-var families.
+Root `.gitignore` and repository guardrails also block tracked runtime `.env`
+files outside redacted examples and block reintroduced secret-bearing ops
+script argv parsers. Validation passed: guardrail tests `9/9`, repository
+guardrails, production dependency audit, VPS/local compose config, API/Web
+typecheck, script syntax checks, manual secret-argv fail-closed checks, and
+diff check with line-ending warnings only. Next exact security step remains
+external/protected: protected `AUD-19`, VPS/cloud egress review, and operator
+rotation/removal of local untracked env secrets if they contain live
+credentials.
+Evidence:
+`docs/planning/supply-chain-sast-ops-audit-2026-05-21-task.md`.
+
+Latest frontend security/UX checkpoint:
+`FRONTEND-SECURITY-UX-OWASP-SWEEP-2026-05-21` is locally `VERIFIED`. It
+checked Web auth bootstrap, protected data flash prevention, admin gating,
+CSP/header assumptions, storage usage, CSRF-sensitive UI call shape,
+clickjacking/HSTS assumptions, secret/error exposure, and money-action
+confirmations. It fixed two confirmed frontend exposure paths: API-key response
+normalization no longer retains unmasked returned credential values, and
+profile/API-key axios error handling now uses shared production redaction.
+Validation passed: focused Web profile/error tests (`4` files / `28` tests),
+broader Web auth/admin/header/money pack (`7` files / `23` tests), Web
+typecheck, and `git diff --check` with line-ending warnings only. Next exact
+security step remains external/protected: production header readback,
+protected `AUD-19`, external pentest/VPS review, and backend-owned
+CSRF/trusted-origin proof as separate gates.
+Evidence:
+`docs/planning/frontend-security-ux-owasp-sweep-2026-05-21-task.md`.
+
+Latest money-flow/static security checkpoint:
+`MONEY-FLOW-SECURITY-CANCEL-ENTITLEMENT-2026-05-21` is locally `VERIFIED`.
+It fixed a confirmed P1 fail-closed gap where exchange-backed LIVE order
+cancel could reach the exchange cancel boundary after subscription downgrade
+because the cancel path checked `riskAck` but not current `liveTrading`
+entitlement. Parent verification reran the DB-backed cancel/API-key pack with
+local Postgres/Redis; `2` files / `20` tests passed. The follow-up local
+hardening slice also made public avatar static serving explicit: no directory
+index fallback, dotfiles denied, immutable public cache, and `nosniff` headers;
+focused API static/upload processing tests passed `2` files / `5` tests. Next
+exact security step remains external/protected: protected `AUD-19`, real LIVE
+exchange-side mutation proof, external pentest, and VPS/cloud egress review.
+Evidence:
+`docs/planning/money-flow-security-cancel-entitlement-2026-05-21-task.md`.
+
+Latest security hardening sweep:
+`SECURITY-RED-TEAM-HARDENING-2026-05-21` is locally `VERIFIED` for the repaired
+security scope. It fixed stale admin-token authorization, auth IP limiting,
+production ops-network defaults, weak secret readiness and deploy defaults,
+API-key lifecycle audit logs, sensitive logging redaction, runtime close
+`riskAck` defaults, execution-time LIVE entitlement checks, Gate.io swap
+derivative order parameters, unknown LIVE status fail-closed behavior,
+min-notional price-truth fail-closed behavior, production CSP, production UI
+error redaction, and known Next.js/`ws` production dependency vulnerabilities.
+Validation passed: `pnpm audit --prod`, guardrails, API/Web typecheck, build,
+and focused API/Web security regression packs. Continuation also verified and
+closed the remaining local security follow-ups: frontend auth-confirm/admin
+role/API-key typing, DB-backed LIVE entitlement downgrade behavior, stage
+rehearsal secret handling, VPS env template drift, non-root runtime Dockerfiles,
+production HSTS, and local compose localhost binding. Next exact security step:
+commission/run external penetration and VPS configuration review, or provide
+protected inputs for `AUD-19`; explicit LIVE exchange-side mutation proof still
+requires separate approval.
+Evidence: `docs/planning/security-red-team-hardening-2026-05-21-task.md`.
+
+Latest local certainty closure:
+`LOCAL-CERTAINTY-CLOSURE-2026-05-21` is locally `VERIFIED`. It closed the
+previous Reports execution-mode snapshot migration and smaller Web polish
+queue: `Trade.executionMode` now snapshots PAPER/LIVE execution mode for new
+runtime/exchange/imported trades, Reports uses snapshot-first aggregation with
+legacy fallback, bot preview/assistant breadcrumbs are localized, Profile Basic
+has safer mobile layout, Admin Subscriptions uses shared view states, Wallet
+PAPER reset uses the shared confirmation modal, and Dashboard Home tests cover
+the explicit runtime confirmation gate. Validation passed: Prisma
+generate/reset/validate/status, focused Reports tests (`2` files / `5` tests),
+API typecheck, focused Web tests (`6` files / `22` tests and `2` files / `31`
+tests), Web typecheck, guardrails, docs parity, i18n audit (`0` findings),
+lint, build, full Web Vitest (`149` files / `522` tests), full API Vitest in
+one-worker fork mode, go-live smoke (`45` API tests, `18` Web tests), and
+`git diff --check`. Next exact step: protected `AUD-19` operator packet after
+approved protected input families are available; do not claim current
+production readiness before that proof.
+Evidence: `docs/planning/local-certainty-closure-2026-05-21-task.md`.
+
+Latest remaining-implementation sweep:
+`REST-IMPLEMENTATION-SWEEP-2026-05-21` is locally `VERIFIED` for the repaired
+scope. It fixed Dashboard Home LIVE risk confirmation, removed default Web
+runtime risk-ack wrappers, made API LIVE manual runtime close fail closed
+without a trusted close reference price, and added Admin Users mutation
+confirmation. Validation passed: focused Web pack (`4` files / `14` tests),
+focused API pack (`4` files / `99` tests), Web typecheck, and API typecheck.
+Next exact local task: choose whether to implement the P2 Reports historical
+execution-mode snapshot migration or the smaller Web polish queue
+(Admin shared ViewState, bot preview/assistant i18n, wallet reset modal, profile
+mobile layout). Current production readiness still remains blocked by protected
+`AUD-19` inputs.
+Evidence: `docs/planning/rest-implementation-sweep-2026-05-21-task.md`.
+
+Latest frontend/engine UX+DCA sweep:
+`FRONTEND-ENGINE-UX-DCA-SWEEP-2026-05-21` is locally `VERIFIED`. It fixed
+backtest replay and interleaved portfolio `TTP` behavior so affordable pending
+profit-side DCA levels block close protection, matching runtime/PAPER core
+semantics. It also fixed bot-monitoring first-open duplicate fetch risk,
+Dashboard Home auth-bootstrap regression coverage, and Reports per-run partial
+failure behavior. Validation passed: focused API pack (`4` files / `99`
+tests), focused Web pack (`3` files / `22` tests), API typecheck, Web
+typecheck, and repository guardrails. Its explicit Dashboard Home runtime
+confirmation follow-up was implemented by `REST-IMPLEMENTATION-SWEEP-2026-05-21`.
+Evidence: `docs/planning/frontend-engine-ux-dca-sweep-2026-05-21-task.md`.
+
+Latest local function/architecture sweep:
+`V1-FUNCTION-ARCHITECTURE-VERIFICATION-2026-05-20` is locally
+`PARTIALLY_VERIFIED`: broad local gates passed and the confirmed P1 API
+start-script mismatch was fixed and guarded, but final production readiness is
+still blocked by protected `AUD-19` inputs. Validation passed:
+`quality:guardrails`, `quality:guardrails:test`, `docs:parity:check`,
+`docs:parity:endpoints:api`, `audit:manifest:verify`, lint, typecheck, build,
+Web Vitest (`149` files / `514` tests), full API Vitest in a controlled
+one-worker local-infra window, i18n route audit (`0` findings), sequential
+`audit:data:db-isolated` (`24/24`, `15/15`, `2/2`), and go-live smoke (`45/45`
+API, `18/18` Web). The next executable step is the protected operator unblock
+packet once approved inputs are available.
+Evidence: `docs/planning/v1-function-architecture-verification-2026-05-20-task.md`.
+
+Latest protected V1 preflight:
+`V1-PROTECTED-PREFLIGHT-DD1A1FAF-2026-05-20` is the current protected `AUD-19`
+classifier for deployed `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`. Production
+build-info matches the expected SHA and public API/Web smoke passes, but the
+final V1 release path remains `BLOCKED`: this shell has `0` matching protected
+input names, and required protected evidence is stale for evidence date
+`2026-05-20` (`LIVEIMPORT-03`, rollback proof, production DB restore,
+production UI clickthrough, RC/SLO/sign-off, and final release evidence).
+Evidence:
+`docs/operations/v1-final-preflight-dd1a1faf-2026-05-20.md`,
+`docs/operations/_artifacts-v1-final-preflight-dd1a1faf-2026-05-20.json`,
+`docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20.md`,
+`docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20.json`, and
+`docs/planning/v1-protected-preflight-dd1a1faf-2026-05-20-task.md`.
+Current no-secret operator handoff:
+`docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.md`,
+`docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json`, and
+`docs/planning/v1-operator-unblock-packet-dd1a1faf-2026-05-20-task.md`.
+The handoff is now machine-checkable:
+`corepack pnpm run ops:operator-unblock:check -- --packet docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json --expected-sha dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`.
+It is also part of reusable audit closure: `audit:manifest:verify` now runs
+`ops:operator-unblock:check:test` and the current operator packet check, and
+the tooling index records `OPS-OPERATOR-UNBLOCK-CHECK` /
+`OPS-OPERATOR-UNBLOCK-CHECK-TEST`.
+Focused regression evidence:
+`docs/planning/v1-operator-unblock-packet-check-command-2026-05-20-task.md`
+and
+`docs/planning/v1-operator-unblock-tooling-index-sync-2026-05-20-task.md`.
+Next exact executable protected step: provide approved
+`LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_UI_AUDIT_*`,
+production DB/Coolify restore context, Gate 2/SLO context, and Gate 4 approver
+fields, then execute the current 2026-05-20 operator unblock packet. Public
+smoke/build-info must not be substituted for protected release proof.
+Parallel agent blocker sweep:
+`docs/planning/v1-agent-blocker-sweep-dd1a1faf-2026-05-20-task.md` confirms
+both independent lanes agree there is no meaningful non-secret deployment task
+left. The rerun protected-input sweep still reports `0` matching protected
+input names in
+`docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20-rerun.md`.
+Latest manual heartbeat setup:
+`v1-protected-release-unblock-check` now checks this thread every 30 minutes.
+The latest sweep still reports `0` matching protected input names in
+`docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20-latest.md`;
+production build-info still reports deployed `dd1a1faf` on `main`, and
+`ops:operator-unblock:check` passes.
 
 Latest requirements/delivery-map audit:
 `REQUIREMENTS-DELIVERY-MAP-AUDIT-2026-05-19` is the latest `AUD-02` evidence.

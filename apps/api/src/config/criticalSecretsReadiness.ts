@@ -14,6 +14,25 @@ const asNonEmpty = (value: string | undefined | null) => {
   return normalized ? normalized : null;
 };
 
+const WEAK_SECRET_VALUES = [
+  'change-me',
+  'changeme',
+  'password',
+  'secret',
+  'replace-me',
+  'replace-with-secret',
+  'replace-with-generated-secret',
+  'change-me-32-byte-secret',
+];
+
+const looksWeakSecret = (value: string, minimumLength: number) => {
+  const normalized = value.trim().toLowerCase();
+  if (normalized.length < minimumLength) return true;
+  if (WEAK_SECRET_VALUES.some((weak) => normalized.includes(weak))) return true;
+  if (/^(.)\1+$/.test(normalized)) return true;
+  return false;
+};
+
 const parseKeyring = (raw: string | undefined) => {
   const entries = (raw ?? '')
     .split(',')
@@ -21,17 +40,23 @@ const parseKeyring = (raw: string | undefined) => {
     .filter(Boolean);
   const versions = new Set<string>();
   const malformed: string[] = [];
+  const weak: string[] = [];
 
   for (const entry of entries) {
-    const [version, material] = entry.split(':');
+    const separatorIndex = entry.indexOf(':');
+    const version = separatorIndex > 0 ? entry.slice(0, separatorIndex).trim() : '';
+    const material = separatorIndex > 0 ? entry.slice(separatorIndex + 1).trim() : '';
     if (!version || !material) {
       malformed.push(entry);
       continue;
     }
     versions.add(version.trim());
+    if (looksWeakSecret(material, 32)) {
+      weak.push(version);
+    }
   }
 
-  return { versions, malformed };
+  return { versions, malformed, weak };
 };
 
 const evaluateJwtRotationReadiness = (
@@ -42,6 +67,11 @@ const evaluateJwtRotationReadiness = (
   const jwtSecret = asNonEmpty(process.env.JWT_SECRET);
   if (!jwtSecret) {
     missing.add('JWT_SECRET');
+  } else if (looksWeakSecret(jwtSecret, 32)) {
+    issues.push({
+      key: 'JWT_SECRET',
+      reason: 'must be generated high-entropy material, not a placeholder or short value',
+    });
   }
 
   const previous = asNonEmpty(process.env.JWT_SECRET_PREVIOUS);
@@ -84,11 +114,17 @@ const evaluateEncryptionReadiness = (issues: ReadinessIssue[], missing: Set<stri
   const keyringRaw = asNonEmpty(process.env.API_KEY_ENCRYPTION_KEYS);
   const activeVersion = asNonEmpty(process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION) ?? 'v1';
 
-  const { versions, malformed } = parseKeyring(keyringRaw ?? '');
+  const { versions, malformed, weak } = parseKeyring(keyringRaw ?? '');
   for (const entry of malformed) {
     issues.push({
       key: 'API_KEY_ENCRYPTION_KEYS',
       reason: `malformed entry "${entry}" (expected version:key)`,
+    });
+  }
+  for (const version of weak) {
+    issues.push({
+      key: 'API_KEY_ENCRYPTION_KEYS',
+      reason: `version "${version}" uses weak or placeholder key material`,
     });
   }
 

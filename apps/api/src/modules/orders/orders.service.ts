@@ -37,6 +37,7 @@ import {
   buildImportedExternalPositionMarketPrefix,
   buildLegacyImportedExternalPositionSymbolPrefix,
 } from '../positions/livePositionReconciliation.helpers';
+import { assertSubscriptionAllowsLiveTrading } from '../subscriptions/subscriptionEntitlements.service';
 export { resolveLiveExecutionApiKey } from '../exchange/exchangeAdapterBoundary.service';
 
 type OpenOrderInput = OpenOrderDto & {
@@ -629,6 +630,9 @@ export const openOrder = async (
     botContext,
   });
   const liveBot = ensureLiveOrderAllowed(canonicalPayload, botContext);
+  if (canonicalPayload.mode === 'LIVE') {
+    await assertSubscriptionAllowsLiveTrading(userId);
+  }
 
   const now = new Date();
   let exchangeOrderId: string | null = null;
@@ -841,6 +845,7 @@ export const cancelOrder = async (
     throw orderErrors.orderNotCancelable();
   }
   if (hasExchangeOrderIdentity(existing.exchangeOrderId)) {
+    await assertSubscriptionAllowsLiveTrading(userId);
     const cancelContext = resolveExchangeCancelContext(existing);
     if (!cancelContext || !existing.exchangeOrderId) {
       throw orderErrors.liveOrderCancelUnsupported();

@@ -22,6 +22,7 @@ const mocks = vi.hoisted(() => ({
   fetchFallbackTickerPrices: vi.fn(),
   createPublicExchangeConnector: vi.fn(),
   resolveExternalPositionOwnershipIndex: vi.fn(),
+  assertSubscriptionAllowsLiveTrading: vi.fn(),
 }));
 
 vi.mock('../../prisma/client', () => ({
@@ -62,6 +63,10 @@ vi.mock('./runtimeExternalPositionOwner.service', () => ({
   resolveExternalPositionOwnershipIndex: mocks.resolveExternalPositionOwnershipIndex,
 }));
 
+vi.mock('../subscriptions/subscriptionEntitlements.service', () => ({
+  assertSubscriptionAllowsLiveTrading: mocks.assertSubscriptionAllowsLiveTrading,
+}));
+
 import { closeBotRuntimeSessionPosition } from './runtimeSessionPositionCommand.service';
 
 describe('closeBotRuntimeSessionPosition', () => {
@@ -86,6 +91,7 @@ describe('closeBotRuntimeSessionPosition', () => {
       fetchMarkPrice: vi.fn(async () => Number.NaN),
       disconnect: vi.fn(async () => undefined),
     });
+    mocks.assertSubscriptionAllowsLiveTrading.mockResolvedValue(undefined);
   });
 
   it('fails closed when external exchange ownership is ambiguous', async () => {
@@ -260,7 +266,7 @@ describe('closeBotRuntimeSessionPosition', () => {
     expect(mocks.orchestrateRuntimeSignal).not.toHaveBeenCalled();
   });
 
-  it('falls back to entry price for LIVE manual close when runtime lifecycle price is unavailable', async () => {
+  it('fails closed for LIVE manual close instead of using entry price as close price', async () => {
     mocks.prisma.position.findFirst.mockResolvedValue({
       id: 'position-1',
       botId: 'bot-1',
@@ -274,26 +280,20 @@ describe('closeBotRuntimeSessionPosition', () => {
       continuityState: 'CONFIRMED',
     });
     mocks.resolveRuntimeLifecycleMarkPrice.mockReturnValue(null);
-    mocks.orchestrateRuntimeSignal.mockResolvedValue({
-      status: 'submitted',
-      orderId: 'order-close-pending-1',
+    mocks.fetchFallbackTickerPrices.mockResolvedValue(new Map());
+    mocks.createPublicExchangeConnector.mockReturnValue({
+      fetchMarkPrice: vi.fn(async () => Number.NaN),
+      disconnect: vi.fn(async () => undefined),
     });
 
-    const result = await closeBotRuntimeSessionPosition('user-1', 'bot-1', 'session-1', 'position-1', {
-      riskAck: true,
-    });
-
-    expect(mocks.orchestrateRuntimeSignal).toHaveBeenCalledWith(
-      expect.objectContaining({
-        symbol: 'BTCUSDT',
-        direction: 'EXIT',
-        markPrice: 50_000,
+    await expect(
+      closeBotRuntimeSessionPosition('user-1', 'bot-1', 'session-1', 'position-1', {
+        riskAck: true,
       })
-    );
-    expect(result).toEqual({
-      status: 'submitted',
-      orderId: 'order-close-pending-1',
+    ).rejects.toMatchObject({
+      code: 'POSITION_CLOSE_PRICE_UNAVAILABLE',
     });
+    expect(mocks.orchestrateRuntimeSignal).not.toHaveBeenCalled();
   });
 
   it('fails closed in PAPER when no canonical close price is available', async () => {

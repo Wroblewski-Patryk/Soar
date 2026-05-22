@@ -1,62 +1,47 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const pageTitleMock = vi.hoisted(() => vi.fn());
 const botsManagementMock = vi.hoisted(() => vi.fn());
 
-vi.mock("@/ui/layout/dashboard/PageTitle", () => ({
-  PageTitle: (props: {
-    title: string;
-    breadcrumb?: Array<{ label: string }>;
-  }) => {
-    pageTitleMock(props);
-    return (
-      <div>
-        <h1>{props.title}</h1>
-        <nav aria-label="breadcrumb">
-          {(props.breadcrumb ?? []).map((item) => (
-            <span key={item.label}>{item.label}</span>
-          ))}
-        </nav>
-      </div>
-    );
-  },
+vi.mock("next/navigation", () => ({
+  useParams: () => ({
+    id: "bot-789",
+  }),
+  usePathname: () => (typeof window === "undefined" ? "/" : window.location.pathname || "/"),
 }));
 
 vi.mock("@/features/bots/components/BotsManagement", () => ({
-  default: (props: {
-    initialTab: string;
-    lockedTab?: string;
-    preferredBotId?: string;
-  }) => {
+  default: (props: unknown) => {
     botsManagementMock(props);
-    return <div data-testid="bots-management">{props.initialTab}:{props.preferredBotId}</div>;
+    return <div data-testid="bots-management" />;
   },
 }));
 
-describe("Bots preview page", () => {
-  it("renders the canonical monitoring shell for the selected bot", async () => {
-    const { default: BotPreviewPage } = await import("./page");
-    const ui = await BotPreviewPage({
-      params: Promise.resolve({ id: "bot-777" }),
-    });
+import { I18nProvider } from "@/i18n/I18nProvider";
+import BotPreviewPage from "./page";
 
-    render(ui);
+describe("Bot preview page", () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+    botsManagementMock.mockClear();
+  });
 
-    expect(screen.getByRole("heading", { name: "Bots" })).toBeInTheDocument();
-    expect(screen.getByLabelText("breadcrumb")).toHaveTextContent("Dashboard");
-    expect(screen.getByLabelText("breadcrumb")).toHaveTextContent("Bots");
-    expect(screen.getByLabelText("breadcrumb")).toHaveTextContent("Preview");
-    expect(screen.getByTestId("bots-management")).toHaveTextContent("monitoring:bot-777");
-    expect(pageTitleMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: "Bots",
-      })
+  it("renders localized preview breadcrumbs and locks monitoring tab for the selected bot", () => {
+    window.localStorage.setItem("cryptosparrow-locale", "pl");
+    window.history.pushState({}, "", "/dashboard/bots/bot-789/preview");
+
+    render(
+      <I18nProvider>
+        <BotPreviewPage />
+      </I18nProvider>
     );
+
+    expect(screen.getByRole("heading", { level: 1, name: "Boty" })).toBeInTheDocument();
+    expect(screen.getByRole("navigation")).toHaveTextContent("Podglad");
     expect(botsManagementMock).toHaveBeenCalledWith({
       initialTab: "monitoring",
       lockedTab: "monitoring",
-      preferredBotId: "bot-777",
+      preferredBotId: "bot-789",
     });
   });
 });

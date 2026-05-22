@@ -11,6 +11,11 @@ export const adminEn = {
     footer: {
       rights: "All rights reserved.",
     },
+    auth: {
+      loading: "Confirming admin access...",
+      deniedTitle: "Admin access required",
+      deniedDescription: "Your current account is not confirmed as an administrator.",
+    },
   },
   users: {
     loadError: "Could not load users.",
@@ -40,6 +45,11 @@ export const adminEn = {
     toggleRoleAriaPrefix: "Toggle role for",
     planSelectAriaPrefix: "Plan select for",
     assignPlanAriaPrefix: "Assign plan for",
+    confirmTitle: "Confirm admin change",
+    confirmRoleDescription: "Change {email} role to {role}.",
+    confirmPlanDescription: "Assign {plan} plan to {email}.",
+    confirmLabel: "Confirm",
+    cancelLabel: "Cancel",
   },
   subscriptions: {
     loadError: "Could not load subscription plans.",

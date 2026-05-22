@@ -47,7 +47,19 @@ app.use(
     credentials: true,
   })
 );
-app.use("/avatars", express.static(path.join(process.cwd(), "public", "avatars")));
+app.use(
+  "/avatars",
+  express.static(path.join(process.cwd(), "public", "avatars"), {
+    dotfiles: "deny",
+    fallthrough: false,
+    immutable: true,
+    index: false,
+    maxAge: "7d",
+    setHeaders: (res) => {
+      res.setHeader("X-Content-Type-Options", "nosniff");
+    },
+  })
+);
 app.use(express.json());
 app.use(requireTrustedOrigin);
 app.use(requestLogger);

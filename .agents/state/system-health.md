@@ -1,6 +1,144 @@
 # System Health
 
-Last updated: 2026-05-19
+Last updated: 2026-05-21
+
+## 2026-05-21 Protected V1 App Proof Attempt
+
+- `V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21` is blocked after
+  partial protected production proof. Production build-info matches
+  `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`; the operator packet check
+  passes.
+- Fresh protected proof now collected: production UI clickthrough `PASS`;
+  rollback proof `PASS` with `shouldRollback=false`, runtime freshness `PASS`,
+  and no alerts; Gate 4 sign-off `APPROVED`.
+- Remaining blocker: `LIVEIMPORT-03` authenticated successfully and found a
+  RUNNING Binance FUTURES LIVE session, but the current session has no open
+  positions or open orders. Existing runtime data is closed historical
+  `BNBUSDT` / `XRPUSDT`; the collector correctly fails closed because no open
+  runtime payload is visible. The controlled proof runner also refused to take
+  over the already-active LIVE bot before any mutation.
+- Fresh Gate 2/SLO evidence was collected and is `FAIL`: `/workers/ready`
+  availability is `0%`, API 5xx ratio is `16.6667%`, and the SLO artifact
+  shows deployed workers are in `inline` mode with
+  `DEPLOYED_INLINE_MODE`, not the canonical split-worker topology.
+- Still open before V1 `GO`: repair/verify split-worker topology, production
+  DB restore drill from VPS/Coolify Docker context, final non-dry-run release
+  gate, and an approved safe path to produce or observe an open runtime
+  readback payload.
+
+## 2026-05-21 Supply-Chain SAST Ops Audit
+
+- `SUPPLY-CHAIN-SAST-OPS-AUDIT-2026-05-21` is locally verified for the
+  requested defensive ops/supply-chain/SAST scope. It audited dependencies,
+  Docker/compose, env templates, secret handling, logging artifacts,
+  CI/scripts, SSRF/egress surfaces, file upload/static assets, and production
+  readiness gates against NIST SSDF, CISA Secure by Design, and OWASP
+  cheat-sheet expectations.
+- Confirmed local repair: protected proof/release scripts no longer accept
+  secret-bearing CLI flags for auth tokens, auth passwords, private OPS header
+  values, or basic-auth passwords; they require the existing env-var families.
+  Root `.gitignore` and repository guardrails now also prevent tracked runtime
+  `.env` files while allowing redacted `.env*.example` templates.
+- Passed validation: guardrail tests, repository guardrails, production
+  dependency audit, VPS/local compose config checks, API/Web typecheck, script
+  syntax checks, manual secret-argv fail-closed checks, and diff check with
+  line-ending warnings only.
+- Remaining system-health limitations are explicit: protected production
+  `AUD-19`, external penetration/VPS/cloud egress review, and operator
+  rotation/removal of any local untracked env secrets remain separate gates.
+
+## 2026-05-21 Backend Permission And Data-Isolation Review
+
+- `BACKEND-PERMISSION-ISOLATION-REVIEW-2026-05-21` is locally verified for the
+  reviewed backend security scope. It repaired an API-key create DTO allowlist
+  defect by using parsed request payloads and explicit Prisma create fields.
+- Passed validation: API-key e2e `18/18`, auth/admin/API-key pack `34/34`,
+  isolation/reports/wallets pack `28/28`, and API typecheck.
+- Initial API-key e2e attempt failed before assertions because local Postgres
+  was not listening on `localhost:5432`; after starting the repo Postgres
+  service and applying existing migrations, the focused packs passed.
+- Cleanup evidence: the local Postgres container started for validation was
+  stopped; `docker --context default ps` showed no running containers, no
+  `chrome-headless-shell` processes were present, and localhost ports `5432`
+  and `6379` were closed.
+- Remaining system-health limitations are explicit: no production access,
+  external penetration/VPS configuration review, protected `AUD-19`, or LIVE
+  exchange-side mutation proof was performed in this defensive local review.
+
+## 2026-05-21 Money-Flow Security Cancel Entitlement
+
+- `MONEY-FLOW-SECURITY-CANCEL-ENTITLEMENT-2026-05-21` is partially verified.
+  Code repair and focused regression test were added for exchange-backed LIVE
+  cancel entitlement fail-closed behavior after subscription downgrade.
+- Passed validation: `pnpm --filter api run typecheck` and
+  `pnpm run quality:guardrails`.
+- Blocked validation: `pnpm --filter api run test -- src/modules/orders/orders.liveCancelBoundary.service.test.ts --run`
+  could not reach local Postgres at `localhost:5432`; local Redis was also
+  closed and `docker --context default ps` failed because the Windows Docker
+  engine pipe was unavailable.
+- Cleanup evidence: no `chrome-headless-shell` process rows were present. No
+  local Docker containers were started by this task.
+
+## 2026-05-21 Security Red-Team Hardening
+
+- `SECURITY-RED-TEAM-HARDENING-2026-05-21` is locally verified for the repaired
+  security scope. Completed second-round agent reports drove fixes across
+  Auth, Secrets/Ops, Trading/Money Safety, and Frontend Security.
+- Security hardening passed: production dependency audit with no known
+  vulnerabilities, repository guardrails, API/Web typecheck, production build,
+  Web security-focused tests (`149` files / `523` tests), API
+  config/logging/runtime focused tests (`7` files / `33` tests), admin/API-key
+  e2e packs, orders/live-fill packs, exchange packs, and focused runtime close
+  proof.
+- Remaining system-health limitations are explicit: no local pass can prove an
+  uncrackable system; protected `AUD-19`, external penetration/VPS
+  configuration review, and explicit LIVE exchange-side mutation proof remain
+  separate gates.
+- Continuation closed the remaining local security follow-ups: dashboard
+  runtime data/SSE now waits for confirmed auth, admin shell content waits for
+  confirmed `ADMIN`, API-key frontend state strips accidental secrets, LIVE
+  entitlement downgrade has DB-backed proof and `403` mapping, stage rehearsal
+  no longer leaks protected credentials through argv/artifact commands, VPS env
+  template matches hardened Redis/secret expectations, runtime Dockerfiles run
+  as non-root with guardrail coverage, production Web emits HSTS, and local
+  compose DB/Redis bind to localhost.
+
+## 2026-05-21 Local Certainty Closure
+
+- `LOCAL-CERTAINTY-CLOSURE-2026-05-21` is locally verified for the broad
+  executable scope. Agents and coordinator closed Reports snapshot truth,
+  bot-route i18n, profile mobile layout, admin/wallet shared-state polish, and
+  Dashboard Home confirmation-aware test gaps.
+- Broad validation passed: Prisma generate/reset/validate/status, focused
+  Reports tests, API/Web typecheck, full Web Vitest (`149` files / `522`
+  tests), full API Vitest in one-worker fork mode, lint, build, go-live smoke
+  (`45` API tests / `18` Web tests), guardrails, docs parity, i18n audit (`0`
+  findings), and diff check.
+- Remaining system-health limitation is outside local execution: protected
+  production `AUD-19` still needs approved protected inputs and same-date
+  production evidence.
+
+## 2026-05-21 Frontend/Engine UX+DCA Sweep
+
+- `REST-IMPLEMENTATION-SWEEP-2026-05-21` is locally verified for the repaired
+  scope. It fixed explicit-risk-confirmation and fail-closed runtime close
+  issues found by agent lanes. Focused Web validation passed for Dashboard
+  Home runtime confirmations and Admin Users confirmations: `4` files / `14`
+  tests. Focused API validation passed for runtime manual close plus DCA-first
+  lifecycle guard packs: `4` files / `99` tests. API and Web typecheck passed.
+- Remaining system-health limitations are protected or explicit deferred scope:
+  current production `AUD-19`, native mobile deferred scope, and assistant
+  hot-path orchestration deferred scope.
+
+- `FRONTEND-ENGINE-UX-DCA-SWEEP-2026-05-21` is locally verified for the
+  repaired scope. Focused API validation passed for backtest replay,
+  interleaved portfolio parity, position management, and runtime automation:
+  `4` files / `99` tests. Focused Web validation passed for Dashboard Home
+  auth-bootstrap rendering, Reports partial degradation, and Bots monitoring:
+  `3` files / `22` tests.
+- Typecheck passed for both API and Web. Repository guardrails passed.
+- Its former Dashboard runtime `riskAck` follow-up is now implemented by
+  `REST-IMPLEMENTATION-SWEEP-2026-05-21`.
 
 ## 2026-05-19 Audit System Health Addendum
 
@@ -106,6 +244,85 @@ Last updated: 2026-05-19
   command in closure checks.
 
 ## Latest Health Snapshot
+
+- `V1-FUNCTION-ARCHITECTURE-VERIFICATION-2026-05-20` LOCAL FUNCTION /
+  ARCHITECTURE SWEEP PARTIALLY VERIFIED: coordinated lanes checked
+  Architecture/Runtime, Backend/API/Data, Frontend/UX, and QA/Ops. Confirmed
+  and fixed a P1 production footgun: `apps/api` package `start` no longer runs
+  destructive `prisma migrate reset`/seed; it now uses
+  `node scripts/start-with-migrate.mjs`, and `quality:guardrails` locks that
+  contract. Updated wallet test expectations for exact
+  `(exchange, marketType, operation)` unsupported-capability errors. Local
+  gates passed after sequential reruns: guardrails, guardrails regression
+  tests, docs parity, API endpoint
+  docs parity (`109/109`), `audit:manifest:verify`, lint, typecheck, build,
+  Web Vitest (`149` files / `514` tests), full API Vitest in a one-worker
+  local-infra window, i18n route audit (`0` findings), `audit:data:db-isolated`
+  (`24/24`, `15/15`, `2/2`), and go-live smoke (`45/45` API, `18/18` Web).
+  Full protected production release readiness
+  remains blocked by missing protected inputs and was not downgraded to local
+  or public proof. Evidence:
+  `docs/planning/v1-function-architecture-verification-2026-05-20-task.md`.
+
+- `V1-PROTECTED-PREFLIGHT-DD1A1FAF-2026-05-20` PROTECTED RELEASE GATE BLOCKED
+  AS EXPECTED: production Web build-info matches
+  `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac` and public API/Web smoke passes.
+  The no-secret preflight then blocks on missing `LIVEIMPORT_READBACK_*`,
+  `ROLLBACK_GUARD_*`, `PROD_UI_AUDIT_*`, production DB restore context, and
+  stale protected release evidence for 2026-05-20. The protected-input sweep
+  found `0` matching protected input names in this shell and printed no secret
+  values. Evidence:
+  `docs/operations/v1-final-preflight-dd1a1faf-2026-05-20.md`,
+  `docs/operations/_artifacts-v1-final-preflight-dd1a1faf-2026-05-20.json`,
+  `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20.md`,
+  `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20.json`,
+  and `docs/planning/v1-protected-preflight-dd1a1faf-2026-05-20-task.md`.
+  This is status-only handoff evidence, not final V1 release evidence.
+
+- `V1-OPERATOR-UNBLOCK-PACKET-DD1A1FAF-2026-05-20` OPERATOR HANDOFF CURRENT:
+  the no-secret handoff now points to the 2026-05-20 preflight and protected
+  input readiness evidence for deployed
+  `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`. It preserves the ordered
+  protected steps for production DB restore, `LIVEIMPORT-03`, rollback proof,
+  Gate 2 SLO, Gate 4 sign-off, production UI clickthrough, final non-dry-run
+  release gate, and generated-state refresh. Evidence:
+  `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.md`,
+  `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json`, and
+  `docs/planning/v1-operator-unblock-packet-dd1a1faf-2026-05-20-task.md`.
+
+- `V1-OPERATOR-UNBLOCK-PACKET-CHECK-COMMAND-2026-05-20` LOCAL TOOLING PASS:
+  added `ops:operator-unblock:check` plus focused tests so the current
+  operator packet fails validation if it loses the expected SHA, evidence
+  paths, required protected input families, remaining proof steps, forbidden
+  boundaries, protected input readiness, or final acceptance rule. Focused
+  tests passed (`5/5`) and the current packet check passed. Evidence:
+  `scripts/checkOperatorUnblockPacket.mjs`,
+  `scripts/checkOperatorUnblockPacket.test.mjs`, and
+  `docs/planning/v1-operator-unblock-packet-check-command-2026-05-20-task.md`.
+
+- `V1-OPERATOR-UNBLOCK-TOOLING-INDEX-SYNC-2026-05-20` LOCAL TOOLING PASS:
+  reusable audit tooling index now includes `OPS-OPERATOR-UNBLOCK-CHECK` and
+  `OPS-OPERATOR-UNBLOCK-CHECK-TEST`; `audit:manifest:verify` runs both the
+  operator packet regression test and the current packet validation. Evidence:
+  `docs/operations/reusable-audit-tooling-index-2026-05-19.md`,
+  `docs/operations/reusable-audit-tooling-index-2026-05-19.json`, and
+  `docs/planning/v1-operator-unblock-tooling-index-sync-2026-05-20-task.md`.
+
+- `V1-AGENT-BLOCKER-SWEEP-DD1A1FAF-2026-05-20` PARALLEL AGENT VERDICT:
+  independent Ops/Release and Planning/Queue lanes confirmed the current V1
+  deployment path has no meaningful non-secret task left. Build-info still
+  reports deployed `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac` on `main`, the
+  operator packet validator passes, and the protected-input rerun still reports
+  `0` matching protected input names. Evidence:
+  `docs/planning/v1-agent-blocker-sweep-dd1a1faf-2026-05-20-task.md` and
+  `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20-rerun.md`.
+
+- `V1-PROTECTED-RELEASE-UNBLOCK-HEARTBEAT-2026-05-20` ACTIVE MONITOR:
+  automation `v1-protected-release-unblock-check` now checks this thread every
+  30 minutes. Latest manual setup check is still BLOCKED with `0` matching
+  protected input names; build-info remains `dd1a1faf` on `main`, and the
+  operator packet validator passes. Evidence:
+  `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20-latest.md`.
 
 - `I18N-COPY-REACHABILITY-AUDIT-2026-05-19` LOCAL I18N/COPY PASS:
   route-reachable i18n audit passed with findings `0`, localCopy `0`,

@@ -2297,6 +2297,9 @@ describe("HomeLiveWidgets", () => {
     const closeButton = await screen.findByRole("button", { name: /Zamknij pozycje|Close position/i });
     fireEvent.click(closeButton);
 
+    const dialog = await screen.findByText(/Potwierdz akcje runtime|Confirm runtime action/i);
+    fireEvent.click(within(dialog.closest("dialog") as HTMLElement).getByText(/^Potwierdz$|^Confirm$/i));
+
     await waitFor(() => {
       expect(closeBotRuntimeSessionPositionMock).toHaveBeenCalledWith(
         "bot-close-position",

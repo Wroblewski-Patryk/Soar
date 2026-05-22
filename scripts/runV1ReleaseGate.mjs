@@ -7,6 +7,12 @@ import { fileURLToPath } from 'node:url';
 
 const VALID_ENVIRONMENTS = new Set(['local', 'stage', 'prod']);
 const operationsDir = path.resolve(process.cwd(), 'docs', 'operations');
+const SECRET_CLI_FLAGS = new Set([
+  '--auth-token',
+  '--auth-password',
+  '--ops-basic-password',
+  '--ops-auth-header-value',
+]);
 
 const EVIDENCE_FAMILIES = {
   activationAudit: {
@@ -126,19 +132,16 @@ const parseArgs = () => {
       options.help = true;
       return options;
     }
+    if (SECRET_CLI_FLAGS.has(arg)) {
+      throw new Error(`${arg} is secret-bearing and must be provided through RELEASE_GATE_* environment variables`);
+    }
     if (arg === '--base-url') options.baseUrl = args[index + 1] ?? options.baseUrl;
     if (arg === '--web-base-url') options.webBaseUrl = args[index + 1] ?? options.webBaseUrl;
     if (arg === '--expected-sha') options.expectedSha = args[index + 1] ?? options.expectedSha;
-    if (arg === '--auth-token') options.authToken = args[index + 1] ?? options.authToken;
     if (arg === '--auth-email') options.authEmail = args[index + 1] ?? options.authEmail;
-    if (arg === '--auth-password') options.authPassword = args[index + 1] ?? options.authPassword;
     if (arg === '--ops-basic-user') options.opsBasicUser = args[index + 1] ?? options.opsBasicUser;
-    if (arg === '--ops-basic-password') options.opsBasicPassword = args[index + 1] ?? options.opsBasicPassword;
     if (arg === '--ops-auth-header-name') {
       options.opsAuthHeaderName = args[index + 1] ?? options.opsAuthHeaderName;
-    }
-    if (arg === '--ops-auth-header-value') {
-      options.opsAuthHeaderValue = args[index + 1] ?? options.opsAuthHeaderValue;
     }
     if (arg === '--environment') options.environment = args[index + 1] ?? options.environment;
     if (arg === '--evidence-dir') options.evidenceDir = args[index + 1] ?? options.evidenceDir;
@@ -172,13 +175,9 @@ const printUsage = () => {
       '  --web-base-url <url>             Target web base URL for deploy smoke (optional)',
       '  --expected-sha <sha>             Expected deployed web build-info SHA prefix',
       '  --environment <local|stage|prod> Evidence/readiness scope (default: local)',
-      '  --auth-token <token>            Admin JWT for protected OPS endpoints',
       '  --auth-email <email>            Admin email for automatic token fetch',
-      '  --auth-password <password>      Admin password for automatic token fetch',
       '  --ops-basic-user <user>         Optional extra OPS basic-auth user',
-      '  --ops-basic-password <pass>     Optional extra OPS basic-auth password',
       '  --ops-auth-header-name <name>   Optional extra OPS header name',
-      '  --ops-auth-header-value <val>   Optional extra OPS header value',
       '  --skip-local-quality            Skip repository-level quality/type/build/go-live checks',
       '  --skip-go-live-smoke            Skip `pnpm run test:go-live:smoke` inside local-quality block',
       '  --skip-deploy-smoke             Skip post-deploy smoke endpoint checks',
@@ -189,6 +188,9 @@ const printUsage = () => {
       '  --artifact-stamp <stamp>        Force artifact timestamp suffix',
       '  --dry-run                       Print planned commands without executing them',
       '  --help                          Show this message',
+      '',
+      'Secret-bearing values must be provided through RELEASE_GATE_AUTH_TOKEN, RELEASE_GATE_AUTH_PASSWORD,',
+      'RELEASE_GATE_OPS_BASIC_PASSWORD, and RELEASE_GATE_OPS_AUTH_HEADER_VALUE.',
     ].join('\n')
   );
 };

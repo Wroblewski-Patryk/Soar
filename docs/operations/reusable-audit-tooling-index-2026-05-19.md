@@ -29,6 +29,7 @@ It runs:
 - remediation plan regression tests;
 - handoff regression tests;
 - protected input readiness regression tests;
+- operator unblock packet regression tests;
 - current manifest validation;
 - current manifest self-comparison;
 - rollup validation;
@@ -36,6 +37,7 @@ It runs:
 - tooling index validation;
 - remediation plan validation.
 - handoff validation.
+- current operator unblock packet validation.
 
 ## Tools
 
@@ -60,6 +62,8 @@ It runs:
 | `API-ENDPOINT-DOCS-PARITY` | `corepack pnpm run docs:parity:endpoints:api` | `scripts/auditApiEndpointDocsParity.mjs` | Verify endpoint-level API documentation parity. |
 | `OPS-PROTECTED-INPUTS-CHECK` | `corepack pnpm run ops:protected-inputs:check -- --today <yyyy-mm-dd> --expected-sha <sha>` | `scripts/checkProtectedInputReadiness.mjs` | Check protected production input env-name readiness without printing or storing secret values. |
 | `OPS-PROTECTED-INPUTS-CHECK-TEST` | `corepack pnpm run ops:protected-inputs:check:test` | `scripts/checkProtectedInputReadiness.test.mjs` | Regression-test protected input readiness counting and secret-value redaction. |
+| `OPS-OPERATOR-UNBLOCK-CHECK` | `corepack pnpm run ops:operator-unblock:check -- --packet docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json --expected-sha dd1a1faf79f8ac3581ca0a8c983481a3e30327ac` | `scripts/checkOperatorUnblockPacket.mjs` | Validate the no-secret V1 operator unblock packet before protected operator execution. |
+| `OPS-OPERATOR-UNBLOCK-CHECK-TEST` | `corepack pnpm run ops:operator-unblock:check:test` | `scripts/checkOperatorUnblockPacket.test.mjs` | Regression-test the operator unblock packet validator for required protected-input families, proof steps, evidence paths, safety boundaries, and acceptance rules. |
 
 ## Safety Boundaries
 
@@ -79,6 +83,8 @@ corepack pnpm run audit:manifest:verify
 corepack pnpm run audit:remediation-plan:check
 corepack pnpm run audit:tooling-index:check
 corepack pnpm run ops:protected-inputs:check:test
+corepack pnpm run ops:operator-unblock:check:test
+corepack pnpm run ops:operator-unblock:check -- --packet docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json --expected-sha dd1a1faf79f8ac3581ca0a8c983481a3e30327ac
 corepack pnpm run docs:parity:check
 corepack pnpm run quality:guardrails
 git diff --check

@@ -10,8 +10,13 @@ import {
 } from './orders.types';
 import * as ordersService from './orders.service';
 import { ORDER_ERROR_CODES } from './orders.errors';
+import { SubscriptionFeatureUnavailableError } from '../subscriptions/subscriptionEntitlements.service';
 
 const handleOrderError = (res: Response, error: unknown) => {
+  if (error instanceof SubscriptionFeatureUnavailableError) {
+    return sendError(res, 403, 'live trading is not available on the active subscription plan', error.details);
+  }
+
   const mapped = mapErrorToHttpResponse(error);
 
   if (mapped.code === ORDER_ERROR_CODES.botContextNotFound) {

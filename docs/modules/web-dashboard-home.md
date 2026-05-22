@@ -5,8 +5,8 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/dashboard-home`
 - Owner: frontend/runtime-observability
-- Last updated: 2026-05-07
-- Related planning task: `DASHDRIFT-02`
+- Last updated: 2026-05-21
+- Related planning task: `REST-IMPLEMENTATION-SWEEP-2026-05-21`
 
 ## Canonical Architecture Linkage
 Canonical surface and routing rules live in:
@@ -61,9 +61,11 @@ Out of scope:
 ## 4. Runtime Flows
 - Initial load flow:
   1. List bots and build active scope mode-agnostically (`PAPER` + `LIVE`) with deterministic ordering and dashboard cap.
-  2. For selected bots load sessions + runtime graph and aggregate selected-bot runtime payload (`symbolStats`, `positions`, `orders`, `history`, `trades`).
+  2. For selected bots start runtime sessions and runtime graph reads in
+     parallel, then load aggregate runtime payload (`symbolStats`, `positions`,
+     `orders`, `history`, `trades`) once session scope is known.
   3. Keep fallback path to per-session reads only when aggregate endpoint is unavailable.
-  3. Build unified runtime snapshot and summary metrics.
+  4. Build unified runtime snapshot and summary metrics.
 - Live refresh flow:
   1. Poll runtime snapshots every 5 seconds (silent refresh).
   2. Subscribe to ticker stream for visible symbols.
@@ -93,6 +95,12 @@ Out of scope:
 
 ## 6. Security and Risk Guardrails
 - Dashboard page checks session and redirects unauthenticated user to `/auth/login`.
+- Auth bootstrap must not block the initial runtime widgets mount for a
+  normally authenticated `/dashboard` visit; middleware and API 401 handling
+  remain the fail-closed authority for unauthenticated or expired sessions.
+- LIVE manual order, LIVE open-order cancel, and LIVE close-position actions
+  require explicit operator confirmation in the Web flow before the client
+  sends `riskAck: true` to the protected API.
 - Close-position action is explicit and routed through protected API.
 - Runtime stale data warning is surfaced when refresh age threshold is exceeded.
 - Open-position status cells expose continuity, actionability, and unresolved
@@ -118,15 +126,22 @@ Out of scope:
 
 ## 8. Test Coverage and Evidence
 - Primary tests:
+  - `useHomeLiveWidgetsController.test.tsx`
   - `HomeLiveWidgets.test.tsx`
   - `LiveMarketBar.test.tsx`
+  - `HomeLiveWidgets.open-orders-actions.test.tsx`
+  - `useManualOrderController.test.tsx`
+  - `useCloseRuntimePositionAction.test.tsx`
 - Suggested validation command:
 ```powershell
-pnpm --filter web test -- src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/LiveMarketBar.test.tsx
+pnpm --filter web exec vitest run src/features/dashboard-home/hooks/useHomeLiveWidgetsController.test.tsx src/app/dashboard/dashboard.a11y.smoke.test.tsx --run
 ```
 
 ## 9. Open Issues and Follow-Ups
 - Consider virtualized tables for larger runtime payloads.
+- Consider a consolidated Dashboard Home bootstrap endpoint if active-bot count
+  or aggregate payload size makes the remaining per-bot request fan-out visible
+  again.
 - `SCALE-12..SCALE-16` container-ownership closure is complete; keep future
   HomeLiveWidgets growth in hook/presenter seams per
   `docs/architecture/reference/web-container-split-contract.md`.

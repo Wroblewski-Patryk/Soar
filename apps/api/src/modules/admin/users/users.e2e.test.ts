@@ -105,5 +105,18 @@ describe('Admin users API', () => {
     expect(response.status).toBe(400);
     expect(response.body.error.message).toBe('You cannot demote your own admin account');
   });
-});
 
+  it('revokes stale admin sessions after role demotion', async () => {
+    const actingAdmin = await createAgent('ADMIN');
+    const demotedAdmin = await createAgent('ADMIN');
+
+    const demoteRes = await actingAdmin.agent.patch(`/admin/users/${demotedAdmin.user.id}`).send({
+      role: 'USER',
+    });
+    expect(demoteRes.status).toBe(200);
+    expect(demoteRes.body.role).toBe('USER');
+
+    const staleSessionRes = await demotedAdmin.agent.get('/admin/users');
+    expect(staleSessionRes.status).toBe(401);
+  });
+});

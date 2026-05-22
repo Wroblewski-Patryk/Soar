@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/exchange`
 - Owner: backend/trading-integration
-- Last updated: 2026-05-10
+- Last updated: 2026-05-21
 - Related planning task: `ARCH-AUDIT-01`
 
 ## 1. Purpose and Scope
@@ -23,6 +23,9 @@
 Out of scope:
 - Public route ownership.
 - Trading decision logic (engine module).
+- Production readiness claims for live-money exchange mutation. Implementation
+  capability is not sufficient proof; submit/cancel/close claims require fresh
+  approved evidence for the exact `(exchange, marketType, operation)` tuple.
 
 ## 2. Boundaries and Dependencies
 - No direct router mount; consumed by orders, engine, profile API-key probe,
@@ -77,6 +80,8 @@ Out of scope:
 - Exchange capability assertions fail closed for unsupported providers/features.
 - LIVE retries bounded by max attempts/backoff policy.
 - Connector validates position-side constraints in hedge/one-way modes.
+- LIVE exchange-side mutation remains approval-gated and must not be inferred
+  from local adapter tests or authenticated-read proof.
 
 ## 7. Observability and Operations
 - Structured logging for live-order success/retry/failure events.

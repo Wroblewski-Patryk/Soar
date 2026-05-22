@@ -5,8 +5,8 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/bots`
 - Owner: frontend/trading-runtime
-- Last updated: 2026-05-07
-- Related planning task: `ARCCON-12`
+- Last updated: 2026-05-21
+- Related planning task: `LOCAL-CERTAINTY-CLOSURE-2026-05-21`
 
 ## Canonical Architecture Linkage
 Canonical bot topology and operator-surface rules live in:
@@ -61,6 +61,8 @@ Out of scope:
   2. Apply filters for symbol/status/view mode.
   3. Load bot portfolio history with reset/capital markers alongside runtime monitoring.
   4. Support operator actions (close position) with explicit confirmations.
+  5. In aggregate monitoring mode, first session selection must not retrigger
+     the whole monitoring fetch cycle after the initial sessions response.
 - Assistant flow:
   1. Load current assistant config for selected bot.
   2. Save main config and subagent slots.
@@ -73,6 +75,8 @@ Out of scope:
   - `BotsManagement` with tabs (`bots`, `monitoring`, `assistant`)
 - Legacy helper routes:
   - `/dashboard/bots/runtime` and `/dashboard/bots/assistant` resolve to canonical bot-specific routes.
+- Bot-specific preview and assistant route breadcrumbs use the i18n provider
+  instead of static English namespace imports.
 
 ## 6. Security and Risk Guardrails
 - LIVE mode actions require explicit risk confirmation.
@@ -109,6 +113,9 @@ Out of scope:
 - Monitoring history tables expose backend close attribution (`closeReason` and
   `closeInitiator`) for closed positions and close trades.
 - Assistant tab exposes per-slot status, latency, and message traces for operator diagnostics.
+- Monitoring controller keeps selected session id in a ref for refresh
+  execution, avoiding an initial aggregate-mode double-fetch when session list
+  loading selects the first session.
 
 ## 8. Test Coverage and Evidence
 - Primary tests:
@@ -119,6 +126,9 @@ Out of scope:
   - `BotsManagement.test.tsx`
   - `BotsManagement.portfolio-history.test.tsx`
   - `trailingStopDisplay.test.ts`
+- 2026-05-21 monitoring regression:
+  - `BotsManagement.test.tsx` verifies the monitoring tab loads runtime
+    sessions once on first aggregate-mode open.
 - Suggested validation command:
 ```powershell
 pnpm --filter web test -- src/app/dashboard/bots/[id]/preview/page.test.tsx src/app/dashboard/bots/[id]/assistant/page.test.tsx src/features/bots/components/BotCreateEditForm.test.tsx src/features/bots/components/BotsListTable.test.tsx src/features/bots/components/BotsManagement.test.tsx src/features/bots/utils/trailingStopDisplay.test.ts

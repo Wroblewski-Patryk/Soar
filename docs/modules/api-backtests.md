@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/backtests`
 - Owner: backend/trading-domain
-- Last updated: 2026-05-14
-- Related planning task: `POSTV1-STRATEGY-SNAPSHOT-HISTORY-2026-05-14`
+- Last updated: 2026-05-21
+- Related planning task: `FRONTEND-ENGINE-UX-DCA-SWEEP-2026-05-21`
 
 ## Canonical Architecture Linkage
 Canonical replay and parity rules live in:
@@ -82,6 +82,12 @@ Out of scope:
 - Metrics semantics:
   - run/report totals are run-level portfolio truth.
   - timeline/chart diagnostics are replay-context scoped and may differ in portfolio mode by design.
+- DCA-first replay guard:
+  - isolated replay and interleaved portfolio replay must not close by `TTP`
+    while an affordable profit-side DCA level is still pending.
+  - `SL` / `TSL` remain blocked while any affordable DCA remains pending.
+  - funds-exhausted DCA may release close protection according to the
+    position-management lifecycle policy.
 
 ## 5. API and UI Integration
 - Routes:
@@ -105,20 +111,37 @@ Out of scope:
   context stable after later strategy or universe edits.
 
 ## 8. Test Coverage and Evidence
-- Representative tests:
+- Primary local audit evidence:
+  - `docs/operations/backtests-reports-audit-2026-05-19.md`
+  - Web backtests/reports pack: `15` files / `37` tests.
+  - API backtests/reports pack: `13` files / `114` tests.
+- Representative API tests:
   - `backtests.e2e.test.ts`
-  - `backtestReplayCore.test.ts`
-  - `backtestRunJob.test.ts`
+  - `backtests.contract-remediation.test.ts`
+  - `backtestRuntimeKernelParity.test.ts`
   - `backtestRunQueue.test.ts`
+  - `backtestRunJob.test.ts`
+  - `backtestReplayCore.test.ts`
+  - `backtestRange.service.test.ts`
+  - `backtestPatternParityFixtures.test.ts`
   - `backtestParity3Symbols.test.ts`
+  - `backtestIndicatorTimelineSeries.test.ts`
+  - `backtestFillModel.test.ts`
+  - `backtestDataGateway.test.ts`
+  - `reports.service.test.ts`
 - 2026-05-14 snapshot-history proof:
   - `backtests.e2e.test.ts` verifies new runs persist immutable strategy and
     market-universe snapshots, list projections keep the original strategy name
     after strategy edits, and linked strategy deletion is blocked while the
     backtest history exists.
+- 2026-05-21 DCA/TTP replay parity repair:
+  - `backtestReplayCore.test.ts` and
+    `backtests.contract-remediation.test.ts` verify that backtest replay and
+    interleaved portfolio simulation keep `TTP` blocked while affordable
+    profit-side DCA levels remain pending.
 - Suggested validation command:
 ```powershell
-pnpm --filter api test -- src/modules/backtests/backtests.e2e.test.ts src/modules/backtests/backtestReplayCore.test.ts src/modules/backtests/backtestRunJob.test.ts src/modules/backtests/backtestRunQueue.test.ts src/modules/backtests/backtestParity3Symbols.test.ts
+pnpm --filter api exec vitest run src/modules/backtests/backtests.e2e.test.ts src/modules/backtests/backtests.contract-remediation.test.ts src/modules/backtests/backtestRuntimeKernelParity.test.ts src/modules/backtests/backtestRunQueue.test.ts src/modules/backtests/backtestRunJob.test.ts src/modules/backtests/backtestReplayCore.test.ts src/modules/backtests/backtestRange.service.test.ts src/modules/backtests/backtestPatternParityFixtures.test.ts src/modules/backtests/backtestParity3Symbols.test.ts src/modules/backtests/backtestIndicatorTimelineSeries.test.ts src/modules/backtests/backtestFillModel.test.ts src/modules/backtests/backtestDataGateway.test.ts src/modules/reports/reports.service.test.ts --pool=forks --maxWorkers=1 --minWorkers=1 --testTimeout=30000
 ```
 
 ## 9. Open Issues and Follow-Ups

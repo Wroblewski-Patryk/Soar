@@ -52,6 +52,26 @@ describe('rate limit identity resolution', () => {
     expect(subject).toBe('auth:user@test.com');
   });
 
+  it('can enforce an auth IP bucket across rotated emails', async () => {
+    process.env.RATE_LIMIT_ENABLE_TEST_MODE = 'true';
+    process.env.RATE_LIMIT_ALLOW_LOCAL_FALLBACK = 'true';
+    __rateLimitInternals.setGetRedisClientForTests(async () => null);
+    const limiter = createRateLimiter({ windowMs: 60_000, max: 1, keyScope: 'ip' });
+
+    const firstReq = makeRequest({ method: 'POST', baseUrl: '/auth', path: '/login', body: { email: 'a@test.com' } });
+    const firstRes = makeResponse();
+    const firstNext = vi.fn();
+    await limiter(firstReq, firstRes, firstNext);
+    expect(firstNext).toHaveBeenCalledTimes(1);
+
+    const secondReq = makeRequest({ method: 'POST', baseUrl: '/auth', path: '/login', body: { email: 'b@test.com' } });
+    const secondRes = makeResponse();
+    const secondNext = vi.fn();
+    await limiter(secondReq, secondRes, secondNext);
+    expect(secondNext).not.toHaveBeenCalled();
+    expect(secondRes.status).toHaveBeenCalledWith(429);
+  });
+
   it('uses user id for authenticated dashboard requests', () => {
     const req = makeRequest({
       user: { id: 'user-123', email: 'u@test.com', role: 'USER' },

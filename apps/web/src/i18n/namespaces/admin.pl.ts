@@ -11,6 +11,11 @@ export const adminPl = {
     footer: {
       rights: "Wszelkie prawa zastrzezone.",
     },
+    auth: {
+      loading: "Potwierdzanie dostepu admin...",
+      deniedTitle: "Wymagany dostep admin",
+      deniedDescription: "Biezace konto nie jest potwierdzone jako administrator.",
+    },
   },
   users: {
     loadError: "Nie udalo sie pobrac listy uzytkownikow.",
@@ -40,6 +45,11 @@ export const adminPl = {
     toggleRoleAriaPrefix: "Przelacz role dla",
     planSelectAriaPrefix: "Wybierz plan dla",
     assignPlanAriaPrefix: "Przypisz plan dla",
+    confirmTitle: "Potwierdz zmiane admin",
+    confirmRoleDescription: "Zmien role {email} na {role}.",
+    confirmPlanDescription: "Przypisz plan {plan} do {email}.",
+    confirmLabel: "Potwierdz",
+    cancelLabel: "Anuluj",
   },
   subscriptions: {
     loadError: "Nie udalo sie pobrac planow subskrypcji.",

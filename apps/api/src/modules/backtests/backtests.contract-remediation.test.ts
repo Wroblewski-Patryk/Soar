@@ -168,6 +168,50 @@ describe('backtest parity remediation contracts', () => {
     expect(simulation.perSymbol.ETHUSDT.eventCounts.ENTRY).toBe(1);
   });
 
+  it('keeps portfolio TTP blocked while affordable profit-side DCA levels remain pending', () => {
+    const symbol = 'BTCUSDT';
+    const simulation = simulateInterleavedPortfolio({
+      symbols: [symbol],
+      candlesBySymbol: new Map([[
+        symbol,
+        makeCandles([100, 101, 102, 120, 114, 114]),
+      ]]),
+      marketType: 'FUTURES',
+      leverage: 1,
+      marginMode: 'CROSSED',
+      strategyConfig: {
+        openConditions: {
+          direction: 'long',
+          indicatorsLong: [
+            { name: 'MOMENTUM', condition: '>', value: -999, params: { period: 1 } },
+          ],
+          indicatorsShort: [],
+        },
+        close: {
+          mode: 'advanced',
+          tp: 99,
+          sl: 99,
+          ttp: [{ percent: 10, arm: 5 }],
+          tsl: [],
+        },
+        additional: {
+          dcaEnabled: true,
+          dcaMode: 'advanced',
+          dcaTimes: 0,
+          dcaLevels: [
+            { percent: 80, multiplier: 1 },
+            { percent: 90, multiplier: 1 },
+          ],
+        },
+      },
+      walletRiskPercent: 10,
+      initialBalance: 10_000,
+    });
+
+    expect(simulation.perSymbol[symbol].eventCounts.DCA).toBe(0);
+    expect(simulation.perSymbol[symbol].eventCounts.TTP).toBe(0);
+  });
+
   it('defaults timeline replay context to isolated and keeps portfolio mode explicit', () => {
     const targetSymbol = 'BTCUSDT';
     const runSymbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT'];

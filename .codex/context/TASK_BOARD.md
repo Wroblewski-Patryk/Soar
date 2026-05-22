@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-05-19
+Last updated: 2026-05-21
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -16,6 +16,286 @@ Last updated: 2026-05-19
     needed
 
 ## READY
+
+- [ ] `V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21 release: finish current protected AUD-19 evidence`
+  - 2026-05-21: Protected application access allowed current production proof
+    to advance. UI clickthrough PASS and rollback proof PASS are fresh for
+    deployed `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`; build-info matches
+    `main`. `LIVEIMPORT-03` authenticates and reaches one RUNNING Binance
+    FUTURES LIVE session, but remains blocked because the session has no open
+    positions or open orders, only closed historical `BNBUSDT` / `XRPUSDT`
+    data. Controlled proof preactivation refuses to take over the already-active
+    LIVE bot. Gate 4 sign-off is approved. Fresh 30-minute production SLO is
+    `FAIL`: `/workers/ready` availability `0%`, API 5xx ratio `16.6667%`, and
+    deployed worker topology is `inline` (`DEPLOYED_INLINE_MODE`) instead of
+    canonical split-worker. Evidence:
+    `docs/planning/v1-protected-app-proof-attempt-dd1a1faf-2026-05-21-task.md`.
+    Next action: repair/verify split-worker production topology, approve or
+    create a safe open runtime readback payload path, run production DB restore
+    from VPS/Coolify Docker context, then collect final non-dry-run release
+    evidence.
+
+- [x] `SUPPLY-CHAIN-SAST-OPS-AUDIT-2026-05-21 security: supply-chain/SAST ops audit`
+  - 2026-05-21: Ops/Supply-Chain/SAST audit checked dependency hygiene,
+    Docker/compose, env templates, secret handling, logging artifacts,
+    CI/scripts, SSRF/egress surfaces, file upload/static assets, and
+    production readiness gates against NIST SSDF, CISA Secure by Design, and
+    OWASP cheat-sheet expectations. Fixed confirmed local defect:
+    protected ops/release proof scripts no longer accept secret-bearing CLI
+    flags and require existing env-var secret families. Added root `.gitignore`
+    env protection plus repository guardrails for tracked runtime env files and
+    secret-bearing ops-script argv parsers. Validation passed: guardrail tests
+    `9/9`, repository guardrails, production dependency audit, VPS/local compose
+    config, API/Web typecheck, script syntax, manual secret-argv fail-closed
+    checks, and diff check with line-ending warnings only. Evidence:
+    `docs/planning/supply-chain-sast-ops-audit-2026-05-21-task.md`.
+
+- [x] `BACKEND-PERMISSION-ISOLATION-REVIEW-2026-05-21 fix: defensive backend permission and data-isolation review`
+  - 2026-05-21: Reviewed backend auth/session middleware, admin guards,
+    API-key ownership, representative user-scoped reads/writes, request DTO
+    allowlists, and denial tests against repository architecture and OWASP
+    defensive guidance. Fixed confirmed local API-key create allowlist defect:
+    parsed DTO payloads are now passed from controller to service and Prisma
+    create data is built from explicit fields, preventing request-supplied
+    `id`, `userId`, `lastUsed`, `createdAt`, or `updatedAt` from being
+    persisted. Validation passed: API-key e2e `18/18`, auth/admin/API-key
+    pack `34/34`, isolation/reports/wallets pack `28/28`, and API typecheck.
+    Evidence:
+    `docs/planning/backend-permission-isolation-review-2026-05-21-task.md`.
+
+- [x] `FRONTEND-SECURITY-UX-OWASP-SWEEP-2026-05-21 fix: frontend OWASP security/UX sweep`
+  - 2026-05-21: Frontend Security/UX audit checked the Web frontend against
+    OWASP Top 10 / cheat-sheet concerns for auth bootstrap, protected data
+    flashes, admin gating, CSP/header regressions, secret/error exposure,
+    dangerous storage handling, CSRF-sensitive UI patterns, clickjacking/HSTS
+    assumptions, and money-action confirmations. Fixed confirmed frontend
+    defects: unmasked API-key response values are no longer retained as display
+    state, and profile/API-key axios errors now use shared UI redaction in
+    production-sensitive paths. Validation passed: focused profile/error Web
+    tests (`4` files / `28` tests), broader Web auth/admin/header/money pack
+    (`7` files / `23` tests), Web typecheck, and `git diff --check` with
+    line-ending warnings only. Evidence:
+    `docs/planning/frontend-security-ux-owasp-sweep-2026-05-21-task.md`.
+
+- [ ] `MONEY-FLOW-SECURITY-CANCEL-ENTITLEMENT-2026-05-21 fix: fail closed LIVE exchange-backed cancel after entitlement downgrade`
+  - 2026-05-21: Security/Money-Flow audit found and fixed a confirmed local P1
+    gap in LIVE cancel. Exchange-backed LIVE order cancel now checks current
+    `liveTrading` entitlement before calling the exchange cancel boundary and
+    before local order mutation, covering manual cancel and runtime stale-order
+    lifetime cancel. Added focused DB-backed tests for allowed entitlement and
+    downgraded FREE fail-closed behavior. Validation: `pnpm --filter api run
+    typecheck` PASS and `pnpm run quality:guardrails` PASS. Focused test
+    command was attempted but blocked before assertions because local Postgres
+    at `localhost:5432` and Docker were unavailable in this session. Evidence:
+    `docs/planning/money-flow-security-cancel-entitlement-2026-05-21-task.md`.
+    Next action: start local DB infra and rerun
+    `pnpm --filter api run test -- src/modules/orders/orders.liveCancelBoundary.service.test.ts --run`.
+
+- [x] `SECURITY-RED-TEAM-HARDENING-2026-05-21 security: agent-assisted adversarial hardening`
+  - 2026-05-21: Reran the security agents after the first background set was
+    closed, then integrated completed second-round reports across Auth,
+    Secrets/Ops, Trading/Money Safety, and Frontend Security. Fixed confirmed
+    local P1/P2 issues: stale admin tokens after demotion, weak auth
+    rate-limit scoping, production ops private-network default, placeholder
+    production secrets and unsafe compose defaults, missing API-key lifecycle
+    audit logs, sensitive query/error log leakage, hidden runtime close
+    `riskAck` default, stale LIVE entitlement assumptions, Gate.io swap
+    reduce-only/hedge/leverage handling, unknown LIVE market status mapping,
+    min-notional price-truth fail-open behavior, overly broad production CSP,
+    raw production UI error surfacing, and known production dependency
+    vulnerabilities. Validation passed: `pnpm audit --prod` with no known
+    vulnerabilities, guardrails, API/Web typecheck, production build, Web
+    security-focused tests (`149` files / `523` tests), API focused security
+    packs, admin/API-key e2e packs, orders/live-fill packs, exchange packs,
+    and focused runtime-close proof. Residual gates remain explicit:
+    protected `AUD-19`, external penetration/VPS config review, LIVE
+    exchange-side mutation proof, and frontend P2 auth-confirm/admin/API-key
+    typing hardening.
+    Evidence:
+    `docs/planning/security-red-team-hardening-2026-05-21-task.md`.
+  - 2026-05-21 continuation: Coordinated Frontend Security, Backend Security,
+    and Ops/Security lanes to close the residual local security queue.
+    Frontend now gates runtime data/SSE behind confirmed auth, withholds admin
+    shell content until confirmed `ADMIN`, and strips accidental API-key
+    response secrets from frontend state. Backend now has DB-backed LIVE
+    entitlement downgrade proof for LIVE order open, runtime close, and runtime
+    topology, and entitlement denials map to HTTP `403`. Ops fixes remove
+    stage-rehearsal secret argv/artifact leakage, harden `.env.vps.example`,
+    run API/Web/worker runtime Docker images as non-root with guardrail
+    coverage, add production HSTS, and bind local compose DB/Redis to
+    localhost. Validation passed: node script/guardrail tests (`6`), Web pack
+    (`151` files / `530` tests), API downgrade/runtime pack (`17` tests),
+    API orders service (`38` tests), API/Web typecheck, i18n audit `0`,
+    production dependency audit, VPS compose config, build, guardrails, and
+    diff check. Cleanup passed: no Soar Docker containers and no
+    `chrome-headless-shell` rows.
+
+- [x] `LOCAL-CERTAINTY-CLOSURE-2026-05-21 verification: agent-assisted local certainty closure`
+  - 2026-05-21: Coordinated Frontend, Admin/Wallet, and Reports/Data agent
+    lanes plus coordinator integration to close locally executable residual
+    gaps. Added immutable `Trade.executionMode` reporting snapshots with
+    migration backfill and updated runtime/exchange/imported trade writers;
+    Reports now classify PAPER/LIVE by snapshot with legacy current-bot fallback.
+    Fixed bot preview/assistant route i18n drift, Profile Basic mobile layout,
+    Admin Subscriptions shared view states, Wallet PAPER reset shared
+    confirmation, and Dashboard Home tests for the new runtime confirmation
+    gate. Validation passed: Prisma generate/reset/validate/status, Reports
+    focused tests (`2` files / `5` tests), API typecheck, focused Web polish
+    tests (`6` files / `22` tests), Dashboard Home focused tests (`2` files /
+    `31` tests), Web typecheck, guardrails, docs parity, i18n audit (`0`
+    findings), lint, build, full Web Vitest (`149` files / `522` tests), full
+    API Vitest in one-worker fork mode, `test:go-live:smoke` (`45` API tests,
+    `18` Web tests), and `git diff --check`. Protected production `AUD-19`
+    remains blocked by required protected inputs and was not claimed complete.
+
+- [x] `REST-IMPLEMENTATION-SWEEP-2026-05-21 fix: agent-assisted remaining implementation safety sweep`
+  - 2026-05-21: Coordinated Frontend/UX, Backend/Runtime, and QA/Regression
+    lanes for the user's "check the rest" request. Fixed confirmed local P1
+    defects: Dashboard Home LIVE manual order/cancel/close now require explicit
+    operator confirmation before `riskAck: true`; Web runtime close/cancel
+    service wrappers no longer default to `{ riskAck: true }`; API LIVE manual
+    runtime close fails closed when no trusted close reference price is
+    available instead of using `entryPrice`; Admin Users role/plan mutations now
+    require confirmation. Validation passed: focused Web pack (`4` files /
+    `14` tests), focused API pack (`4` files / `99` tests), Web typecheck, and
+    API typecheck. Residual non-fixed items are recorded as follow-ups: current
+    protected production `AUD-19`, Reports historical execution-mode snapshot
+    migration, Admin shared ViewState polish, bot preview/assistant i18n drift,
+    wallet reset modal consistency, profile mobile layout polish, native mobile
+    deferred scope, and assistant hot-path orchestration deferred scope.
+
+- [x] `FRONTEND-ENGINE-UX-DCA-SWEEP-2026-05-21 fix: verify frontend UX/runtime behavior and DCA-first backtest parity`
+  - 2026-05-21: Coordinated Frontend/UX, Backend/Engine, and Regression Scout
+    lanes for the operator-reported UX/runtime concerns. Fixed confirmed
+    backend parity defect: backtest replay and interleaved portfolio simulation
+    now block `TTP` while affordable profit-side DCA levels remain pending,
+    matching the DCA-first lifecycle guard already present in runtime/PAPER
+    core. Fixed frontend runtime issues: bot monitoring first aggregate open
+    no longer retriggers the sessions/aggregate fetch cycle through
+    `monitorSessionId`; Dashboard Home now has a page-level regression test for
+    rendering runtime widgets during auth bootstrap; Reports now parallelizes
+    completed-runs and cross-mode fetches and tolerates individual per-run
+    report failures. Validation passed: focused API pack (`4` files / `99`
+    tests), focused Web pack (`3` files / `22` tests), API typecheck, Web
+    typecheck, and `quality:guardrails`. Follow-up: runtime mutation actions
+    still auto-send `riskAck: true` and need a separate explicit UX/safety
+    confirmation design before changing LIVE-sensitive behavior.
+
+- [x] `DASHBOARD-POST-LOGIN-PERF-2026-05-21 performance: reduce Dashboard Home post-login waterfall`
+  - 2026-05-21: Reduced the first Dashboard Home waterfall after login by
+    rendering runtime widgets while client auth bootstrap is still confirming
+    the session, with middleware/API 401 still owning fail-closed redirects.
+    Also parallelized per-bot runtime graph loading with runtime session loading
+    inside `useHomeLiveWidgetsController`. Validation passed: focused Web tests
+    (`2` files / `6` tests), Web typecheck, and local browser validation on
+    seeded data with `/dashboard` heading visible in about `560 ms`, runtime
+    content ready in about `1.1 s`, and no console warnings/errors.
+
+- [x] `V1-GAP-HUNT-2026-05-21 verification: agent-assisted uncovered path sweep`
+  - 2026-05-21: Continued the broad application function/user-path check with
+    Backend/API, Frontend/UX, and Ops/Security agent lanes. Fixed the confirmed
+    proof-classification defect by making `scripts/runProdUxA11yMobileProof.mjs`
+    fail closed on runtime exceptions and console error/warning events. Added
+    `apps/api/src/modules/reports/reports.e2e.test.ts` for DB-backed Reports
+    route proof: unauthenticated access rejects and authenticated cross-mode
+    performance remains user-scoped across BACKTEST/PAPER/LIVE rows. Validation
+    passed: script syntax check, API typecheck, focused Reports API tests
+    (`2` files / `4` tests), endpoint docs parity, route-reachable i18n audit,
+    and reusable audit manifest verify. Remaining unverified areas are
+    protected-input or explicit-scope gated: `AUD-19`, LIVE exchange-side
+    mutation, assistant hot-path orchestration, native mobile, and current
+    production authenticated clickthrough.
+
+- [x] `V1-FUNCTION-ARCHITECTURE-VERIFICATION-2026-05-20 verification: local function and architecture sweep`
+  - 2026-05-20: Coordinated Architecture/Runtime, Backend/API/Data,
+    Frontend/UX, and QA/Ops lanes for a broad local application function check.
+    Fixed the confirmed P1 API production footgun by changing `apps/api`
+    `start` from destructive reset/seed to the production-safe
+    `node scripts/start-with-migrate.mjs`, and added a repository guardrail for
+    that contract, with a negative guardrail regression test. Updated wallet
+    capability regression expectations for exact `(exchange, marketType,
+    operation)` details and synchronized module docs / operations ledger
+    language. Validation passed: `quality:guardrails`,
+    `quality:guardrails:test`,
+    `docs:parity:check`, `docs:parity:endpoints:api`, `audit:manifest:verify`,
+    lint, typecheck, build, Web Vitest (`149` files / `514` tests), full API
+    Vitest in a controlled one-worker local-infra window, i18n route audit (`0`
+    findings), sequential `audit:data:db-isolated` (`24/24`, `15/15`, `2/2`),
+    and go-live smoke (`45/45` API, `18/18` Web). Protected production
+    `AUD-19` remains blocked by missing approved
+    inputs and was not claimed as ready. Evidence:
+    `docs/planning/v1-function-architecture-verification-2026-05-20-task.md`.
+
+- [x] `V1-PROTECTED-PREFLIGHT-DD1A1FAF-2026-05-20 verification: classify current protected V1 release blockers`
+  - 2026-05-20: Refreshed the no-secret protected `AUD-19` classifier for
+    deployed `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`. Production
+    build-info matches the expected SHA and public API/Web smoke passes, but
+    final V1 readiness remains `BLOCKED`: this shell has `0` matching protected
+    input names, and required protected release evidence is stale for the
+    2026-05-20 evidence date. Missing input families include
+    `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_UI_AUDIT_*`, production
+    DB restore context, Gate 2/SLO context, and Gate 4 approver fields. No
+    secret values were printed or stored; no production mutation, LIVE order,
+    exchange-side mutation, or runtime code change was performed. Evidence:
+    `docs/operations/v1-final-preflight-dd1a1faf-2026-05-20.md`,
+    `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20.md`, and
+    `docs/planning/v1-protected-preflight-dd1a1faf-2026-05-20-task.md`.
+
+- [x] `V1-OPERATOR-UNBLOCK-PACKET-DD1A1FAF-2026-05-20 release: publish current protected operator handoff`
+  - 2026-05-20: Published a current no-secret operator unblock packet for the
+    deployed `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac` target. The packet
+    points to the 2026-05-20 preflight and protected-input readiness reports,
+    lists the required protected input families, preserves ordered execution
+    through restore, `LIVEIMPORT-03`, rollback, Gate 2, Gate 4, production UI
+    clickthrough, final non-dry-run release gate, and generated-state refresh,
+    and keeps the final status `NO-GO` until protected same-date evidence
+    exists. Evidence:
+    `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.md`,
+    `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json`, and
+    `docs/planning/v1-operator-unblock-packet-dd1a1faf-2026-05-20-task.md`.
+
+- [x] `V1-OPERATOR-UNBLOCK-PACKET-CHECK-COMMAND-2026-05-20 feature: validate protected operator handoff`
+  - 2026-05-20: Added `ops:operator-unblock:check` and focused tests to keep
+    the current V1 operator packet machine-checkable. Validation passes for
+    the real 2026-05-20 packet and fails on SHA mismatch, missing evidence
+    paths, missing protected input families, and missing acceptance-rule
+    fragments. Evidence:
+    `scripts/checkOperatorUnblockPacket.mjs`,
+    `scripts/checkOperatorUnblockPacket.test.mjs`, and
+    `docs/planning/v1-operator-unblock-packet-check-command-2026-05-20-task.md`.
+
+- [x] `V1-OPERATOR-UNBLOCK-TOOLING-INDEX-SYNC-2026-05-20 release: add operator packet validation to reusable audit verification`
+  - 2026-05-20: Added `OPS-OPERATOR-UNBLOCK-CHECK` and
+    `OPS-OPERATOR-UNBLOCK-CHECK-TEST` to the reusable audit tooling index and
+    made `audit:manifest:verify` run both the operator packet regression test
+    and current packet check. Evidence:
+    `docs/operations/reusable-audit-tooling-index-2026-05-19.md`,
+    `docs/operations/reusable-audit-tooling-index-2026-05-19.json`, and
+    `docs/planning/v1-operator-unblock-tooling-index-sync-2026-05-20-task.md`.
+
+- [x] `V1-AGENT-BLOCKER-SWEEP-DD1A1FAF-2026-05-20 release: confirm no non-secret work can deploy V1`
+  - 2026-05-20: Spawned independent Ops/Release and Planning/Queue agents.
+    Both confirmed the current V1 path is blocked on protected inputs and
+    same-date protected proof, not on further local implementation/tooling.
+    Production build-info still reports `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`
+    on `main`; the protected-input rerun still found `0` matching names; the
+    operator packet validator still passes. Evidence:
+    `docs/planning/v1-agent-blocker-sweep-dd1a1faf-2026-05-20-task.md`,
+    `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20-rerun.md`,
+    and
+    `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20-rerun.json`.
+
+- [x] `V1-PROTECTED-RELEASE-UNBLOCK-HEARTBEAT-2026-05-20 automation: monitor protected-input unblock`
+  - 2026-05-20: Created heartbeat automation
+    `v1-protected-release-unblock-check` every 30 minutes. It must only rerun
+    no-secret readiness/build-info checks while inputs are absent, and must
+    proceed to the operator packet only if approved protected inputs appear.
+    Latest manual sweep still reports `0` matching protected input names;
+    build-info remains `dd1a1faf` on `main`; operator packet validation passes.
+    Evidence:
+    `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20-latest.md`
+    and
+    `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20-latest.json`.
 
 - [x] `REQUIREMENTS-DELIVERY-MAP-AUDIT-2026-05-19 research: refresh AUD-02 requirements/source-of-truth alignment`
   - 2026-05-19: Completed the dedicated `AUD-02` requirements and delivery-map

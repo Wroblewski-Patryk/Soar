@@ -780,6 +780,7 @@ describe('Wallets balance preview contract', () => {
     expect(previewRes.body.error.details).toEqual({
       code: 'EXCHANGE_AUTHENTICATED_READ_UNSUPPORTED',
       exchange: 'OKX',
+      marketType: 'FUTURES',
       operation: 'BALANCE_PREVIEW',
     });
   });

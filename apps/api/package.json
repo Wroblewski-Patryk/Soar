@@ -20,7 +20,8 @@
     "test:load:stress": "node scripts/load-test.mjs stress",
     "build": "tsc",
     "run": "node dist/index.js",
-    "start": "pnpm exec prisma migrate reset --force --skip-seed && pnpm exec prisma db seed && pnpm run run"
+    "start": "node scripts/start-with-migrate.mjs",
+    "db:reset:local": "pnpm exec prisma migrate reset --force --skip-seed && pnpm exec prisma db seed"
   },
   "keywords": [],
   "author": "",
@@ -42,7 +43,7 @@
     "redis": "^4.7.1",
     "sharp": "^0.34.3",
     "stripe": "^22.0.0",
-    "ws": "^8.18.3",
+    "ws": "^8.20.1",
     "zod": "^4.0.10"
   },
   "devDependencies": {

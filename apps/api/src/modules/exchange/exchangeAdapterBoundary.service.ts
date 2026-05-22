@@ -188,13 +188,13 @@ const mapLiveOrderType = (type: SubmitLiveExchangeOrderInput['order']['type']) =
 
 const mapLiveOrderStatus = (
   status: string | undefined,
-  fallbackType: SubmitLiveExchangeOrderInput['order']['type']
+  _fallbackType: SubmitLiveExchangeOrderInput['order']['type']
 ) => {
   if (status) {
     const normalized = status.toLowerCase();
     if (normalized.includes('filled') || normalized.includes('closed')) return 'FILLED' as const;
   }
-  return fallbackType === 'MARKET' ? ('FILLED' as const) : ('OPEN' as const);
+  return 'OPEN' as const;
 };
 
 const liveMarginLeverageConvergenceCache = new Map<string, { expiresAtMs: number }>();

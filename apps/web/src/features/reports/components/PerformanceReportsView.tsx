@@ -32,9 +32,11 @@ export default function PerformanceReportsView() {
     setLoading(true);
     setError(null);
     try {
-      const runs = await listBacktestRuns("COMPLETED");
-      const modePerformance = await getCrossModePerformance();
-      const withReports = await Promise.all(
+      const [runs, modePerformance] = await Promise.all([
+        listBacktestRuns("COMPLETED"),
+        getCrossModePerformance(),
+      ]);
+      const withReports = await Promise.allSettled(
         runs.slice(0, 40).map(async (run) => {
           const report = await getBacktestRunReport(run.id);
           if (!report) return null;
@@ -42,7 +44,11 @@ export default function PerformanceReportsView() {
         })
       );
       setModeRows(modePerformance.rows);
-      setRows(withReports.filter((item): item is RunReportRow => item != null));
+      setRows(
+        withReports.flatMap((item) =>
+          item.status === "fulfilled" && item.value != null ? [item.value] : []
+        )
+      );
     } catch (err: unknown) {
       setError(getAxiosMessage(err) ?? t("dashboard.reports.states.errorFallback"));
     } finally {

@@ -7,6 +7,7 @@ import {
 } from "../services/adminSubscriptionPlan.service";
 import { AdminSubscriptionPlan } from "../types/adminSubscriptionPlan.type";
 import { useI18n } from "@/i18n/I18nProvider";
+import { ErrorState, LoadingState } from "@/ui/components/ViewState";
 
 type PlanFormState = {
   monthlyPriceMinor: string;
@@ -207,8 +208,14 @@ export default function AdminSubscriptionsPage() {
         </button>
       </div>
 
-      {loading && <div className="alert alert-info">{labels.loading}</div>}
-      {!loading && error && <div className="alert alert-error">{error}</div>}
+      {loading && <LoadingState title={labels.loading} />}
+      {!loading && error && (
+        <ErrorState
+          title={error}
+          retryLabel={labels.refresh}
+          onRetry={() => void loadPlans()}
+        />
+      )}
 
       {!loading && !error && (
         <div className="overflow-x-auto rounded-box border border-base-300/70">

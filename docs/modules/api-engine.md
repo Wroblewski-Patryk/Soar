@@ -95,7 +95,12 @@ Out of scope:
   - imported ownership hydration must load symbol-group metadata required by
     the same scope resolver.
 - Assistant orchestration:
-  - planner step -> subagent fan-out (timeouts/errors tracked) -> deterministic merge -> policy gate.
+  - current approved scope is deterministic config/dry-run foundation:
+    planner step -> subagent fan-out (timeouts/errors tracked) ->
+    deterministic merge -> policy gate.
+  - BACKTEST/PAPER/LIVE hot-path assistant orchestration remains deferred
+    until a separate implementation, persisted trace contract, fail-closed
+    integration, and AI red-team evidence are approved.
 
 ## 5. API and UI Integration
 - No direct API endpoints.

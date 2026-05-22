@@ -8,7 +8,9 @@ type UseCloseRuntimePositionActionParams = {
   closePositionIgnoredLabel: string;
   closePositionNoSessionLabel: string;
   closePositionSuccessLabel: string;
+  confirmRiskAction?: () => Promise<boolean>;
   onClosed: () => Promise<void>;
+  selectedBotMode?: 'PAPER' | 'LIVE' | null;
   selectedBotId?: string | null;
   selectedSessionId?: string | null;
 };
@@ -18,7 +20,9 @@ export const useCloseRuntimePositionAction = ({
   closePositionIgnoredLabel,
   closePositionNoSessionLabel,
   closePositionSuccessLabel,
+  confirmRiskAction,
   onClosed,
+  selectedBotMode,
   selectedBotId,
   selectedSessionId,
 }: UseCloseRuntimePositionActionParams) => {
@@ -36,6 +40,11 @@ export const useCloseRuntimePositionAction = ({
       if (!botId || !sessionId) {
         toast.error(closePositionNoSessionLabel);
         return;
+      }
+
+      if (selectedBotMode === 'LIVE' && confirmRiskAction) {
+        const accepted = await confirmRiskAction();
+        if (!accepted) return;
       }
 
       setClosingPositionById((current) => ({ ...current, [position.id]: true }));
@@ -65,7 +74,9 @@ export const useCloseRuntimePositionAction = ({
       closePositionIgnoredLabel,
       closePositionNoSessionLabel,
       closePositionSuccessLabel,
+      confirmRiskAction,
       onClosed,
+      selectedBotMode,
       selectedBotId,
       selectedSessionId,
     ]

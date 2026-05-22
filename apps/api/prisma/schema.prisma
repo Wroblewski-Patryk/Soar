@@ -942,6 +942,7 @@ model Trade {
   walletId       String?
   origin         TradingRecordOrigin    @default(BOT)
   managementMode PositionManagementMode @default(BOT_MANAGED)
+  executionMode  BotMode?
 
   symbol           String
   side             OrderSide
@@ -979,6 +980,7 @@ model Trade {
   @@index([positionId])
   @@index([userId, origin, executedAt])
   @@index([userId, managementMode, executedAt])
+  @@index([userId, executionMode, executedAt])
   @@index([exchangeTradeId])
   @@index([feeSource, feePending])
   @@index([symbol])

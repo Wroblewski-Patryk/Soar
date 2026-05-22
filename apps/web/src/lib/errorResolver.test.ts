@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { resolveUiErrorMessage } from './errorResolver';
 import { getAxiosMessage } from './getAxiosMessage';
 import { handleError } from './handleError';
@@ -9,6 +9,10 @@ const createAxiosLikeError = (data: unknown, message = 'axios fallback') =>
     response: { data },
     message,
   }) as unknown;
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
 
 describe('resolveUiErrorMessage', () => {
   it('prefers validation detail messages when present', () => {
@@ -34,6 +38,24 @@ describe('resolveUiErrorMessage', () => {
 
   it('applies fallback when no message is available', () => {
     expect(resolveUiErrorMessage({}, { fallback: 'fallback message' })).toBe('fallback message');
+  });
+
+  it('redacts sensitive backend and raw Error messages in production', () => {
+    vi.stubEnv('NODE_ENV', 'production');
+
+    expect(
+      resolveUiErrorMessage(
+        createAxiosLikeError({
+          error: {
+            details: [{ message: 'Authorization token leaked in Prisma query SELECT * FROM users' }],
+          },
+        }),
+        { fallback: 'Request failed' }
+      )
+    ).toBe('Request failed');
+    expect(resolveUiErrorMessage(new Error('apiSecret=abc123'), { fallback: 'Request failed' })).toBe(
+      'Request failed'
+    );
   });
 });
 

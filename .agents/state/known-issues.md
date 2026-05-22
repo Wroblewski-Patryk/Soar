@@ -1,8 +1,141 @@
 # Known Issues
 
-Last updated: 2026-05-19
+Last updated: 2026-05-21
 
 ## Active Issues
+
+- 2026-05-21 protected V1 release update:
+  Protected app auth is no longer the only blocker for the current `dd1a1faf`
+  release attempt. Fresh production UI clickthrough and rollback proof pass,
+  and authenticated `LIVEIMPORT-03` reaches a RUNNING Binance FUTURES LIVE
+  session. V1 remains `NO-GO` because that session currently has no open
+  positions or open orders, so `LIVEIMPORT-03` has no open runtime payload to
+  prove; the controlled proof runner refuses to take over the already-active
+  LIVE bot. Gate 4 sign-off is approved, but fresh Gate 2/SLO evidence fails:
+  `/workers/ready` returned `503` throughout the 30-minute window because the
+  deployed worker topology is `inline` (`DEPLOYED_INLINE_MODE`), driving API
+  5xx to `16.6667%`. Remaining blockers are split-worker topology
+  repair/verification, production DB restore from VPS/Coolify Docker context,
+  final non-dry-run release gate, and an approved safe runtime-readback payload
+  path.
+
+- 2026-05-21 supply-chain/SAST ops audit update:
+  `SUPPLY-CHAIN-SAST-OPS-AUDIT-2026-05-21` fixed a confirmed local P1
+  secret-handling defect: protected ops/release proof scripts accepted
+  secret-bearing CLI flags, which could leak through shell history, process
+  argv, crash output, or artifacts. The scripts now reject those flags and
+  require existing env-var families; guardrails block reintroduction and block
+  tracked runtime `.env` files outside redacted examples. Remaining active
+  issues are external/protected or operator-local: protected production
+  `AUD-19`, external VPS/cloud egress review, and rotation/removal of any local
+  untracked env secrets if they contain live credentials. No production or
+  LIVE exchange mutation was run.
+
+- 2026-05-21 money-flow security update:
+  `MONEY-FLOW-SECURITY-CANCEL-ENTITLEMENT-2026-05-21` fixed a confirmed local
+  P1 fail-closed gap: exchange-backed LIVE order cancel now checks current
+  `liveTrading` entitlement before the exchange cancel boundary and before
+  local order mutation. This protects manual cancel and runtime stale-order
+  lifetime cancel after subscription downgrade. Parent verification later
+  reran the DB-backed cancel/API-key pack with local Postgres/Redis; `2` files
+  / `20` tests passed. Static avatar serving was also hardened with explicit
+  no-index/dotfile denial, immutable public cache, and `nosniff` headers.
+  Remaining active issues are evidence/protected-scope only: real LIVE
+  exchange-side mutation proof and protected production proof remain separate
+  approval gates.
+
+- 2026-05-21 security hardening update:
+  `SECURITY-RED-TEAM-HARDENING-2026-05-21` fixed confirmed local P1/P2
+  security defects across auth/admin, secrets/ops, logging/audit,
+  trading-money safety, exchange handling, frontend security, and dependency
+  hygiene. Remaining active issues are not hidden DONE: protected production
+  `AUD-19` still needs approved inputs and same-date evidence; external
+  penetration testing and VPS/cloud configuration review are still needed
+  before a commercial security claim; LIVE exchange-side mutation proof was
+  intentionally not run. Continuation closed the local residuals: dashboard
+  auth-confirmed loading, admin UI role-gate clarity, API-key frontend response
+  typing, and DB-backed runtime LIVE entitlement downgrade proof are now fixed
+  and verified locally. Remaining active issue is evidence/protected-scope, not
+  a known local P1/P2 code defect.
+
+- 2026-05-21 local certainty closure update:
+  `LOCAL-CERTAINTY-CLOSURE-2026-05-21` closed the previously listed local P2
+  follow-ups: Reports historical mode drift now has `Trade.executionMode`
+  snapshots and snapshot-first aggregation; Admin shared ViewState polish,
+  bot preview/assistant i18n drift, Wallet reset modal consistency, and Profile
+  mobile layout polish were fixed. Full local validation is green, including
+  full Web/API tests, build, lint, go-live smoke, Prisma validate/status,
+  guardrails, docs parity, and i18n audit. Remaining active issues are now
+  protected or explicit-scope gated: protected production `AUD-19`, real LIVE
+  exchange-side mutation proof, native mobile activation, and Assistant/AI
+  hot-path runtime trading orchestration.
+
+- 2026-05-21 remaining-implementation sweep update:
+  `REST-IMPLEMENTATION-SWEEP-2026-05-21` fixed confirmed local P1 safety
+  defects in Dashboard Home, Admin Users, and runtime manual close. Dashboard
+  Home LIVE manual order/cancel/close now require explicit operator
+  confirmation before the client sends `riskAck: true`; Web runtime
+  close/cancel service wrappers no longer default to `{ riskAck: true }`; API
+  LIVE manual runtime close fails closed when no trusted close reference price
+  is available instead of using position `entryPrice`; Admin Users role/plan
+  mutations now require confirmation. Remaining active issues are not newly
+  confirmed P1 code defects in this sweep: protected production `AUD-19`,
+  Reports historical execution-mode snapshot migration, Admin shared ViewState
+  polish, bot preview/assistant i18n drift, wallet reset modal consistency,
+  profile mobile layout polish, native mobile deferred scope, and assistant
+  hot-path orchestration deferred scope.
+
+- 2026-05-21 frontend/engine sweep update:
+  `FRONTEND-ENGINE-UX-DCA-SWEEP-2026-05-21` fixed a confirmed backtest parity
+  defect: isolated replay and interleaved portfolio replay could close by
+  `TTP` while affordable profit-side DCA levels were still pending. Runtime and
+  PAPER core already had the guard. Frontend fixes in the same mission reduce
+  bot-monitoring first-open duplicate loading and make Reports resilient to one
+  failed per-run report request. Remaining UX/safety follow-up: Dashboard Home
+  manual order, cancel, and close runtime actions currently send `riskAck:
+  true`; changing that needs an explicit confirmation-flow design for
+  LIVE-sensitive actions rather than a hidden implementation tweak.
+
+- 2026-05-21 dashboard performance update:
+  The operator-reported slow post-login Dashboard Home load had a confirmed
+  client-side waterfall: `/dashboard` waited for client `/auth/me` before
+  mounting runtime widgets, and per-bot runtime graph loading waited for
+  session loading. `DASHBOARD-POST-LOGIN-PERF-2026-05-21` removes those two
+  avoidable waits. Remaining future optimization is larger: a consolidated
+  dashboard bootstrap endpoint or table virtualization if high active-bot counts
+  or very large runtime payloads become visible again.
+
+- 2026-05-21 gap-hunt update:
+  `V1-GAP-HUNT-2026-05-21` found and fixed one proof-classification defect:
+  production UX/a11y/mobile proof now treats runtime exceptions and console
+  error/warning events as failures rather than PASS-with-warning. It also added
+  DB-backed Reports route e2e coverage for auth rejection and user-scoped
+  BACKTEST/PAPER/LIVE aggregation. Remaining active issue is still evidence,
+  not a newly confirmed local code defect: current protected production
+  `AUD-19`, LIVE exchange-side mutation, assistant hot-path orchestration,
+  native mobile, and current production authenticated clickthrough require
+  protected inputs or explicit product/safety decisions.
+
+- 2026-05-20 local sweep update:
+  `V1-FUNCTION-ARCHITECTURE-VERIFICATION-2026-05-20` fixed the confirmed local
+  P1 API start-script mismatch and refreshed local validation. No remaining
+  code-level architecture mismatch was confirmed by the lanes. The remaining
+  high-signal issue is still protected production release evidence for
+  `AUD-19`; do not treat local gates or public smoke as full production
+  readiness.
+
+- 2026-05-20 update:
+  `V1-PROTECTED-PREFLIGHT-DD1A1FAF-2026-05-20` confirms the active issue is
+  still protected release evidence, not public deployment freshness. Production
+  build-info matches `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac` and public
+  API/Web smoke passes, but this shell has `0` matching protected input names
+  and required protected evidence is stale for 2026-05-20. V1 remains `NO-GO`
+  for any new current-date readiness claim until approved protected inputs,
+  Gate2/SLO evidence, Gate4 approver fields, and the final non-dry-run release
+  gate return `ready`. The current no-secret execution handoff is
+  `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.md`, and
+  `ops:operator-unblock:check` validates that handoff before protected
+  execution.
 
 - 2026-05-19 update:
   The full reusable audit mission is current through `AUD-00` to `AUD-23`.
@@ -814,3 +947,10 @@ Last updated: 2026-05-19
   badges or invented fallback truth.
 - Production release evidence tasks that need credentials must not be marked
   done from public health/build-info checks or local regression packs alone.
+- 2026-05-20: the `dd1a1faf` operator unblock packet and reusable audit
+  tooling are now machine-checkable, but this does not remove the protected
+  evidence blocker. The next meaningful V1 release step still needs approved
+  protected inputs and operator execution.
+- 2026-05-20: parallel agent blocker sweep confirmed no meaningful non-secret
+  deployment task remains. Further agents should execute the operator packet
+  only after protected inputs change.

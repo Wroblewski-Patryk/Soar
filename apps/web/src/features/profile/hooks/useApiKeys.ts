@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { fetchApiKeys, addApiKey, editApiKey, deleteApiKey } from "../services/apiKeys.service";
-import { ApiKey } from "../types/apiKey.type";
+import { ApiKey, ApiKeyMutationPayload } from "../types/apiKey.type";
 import { handleError } from "../../../lib/handleError";
 import { useI18n } from "../../../i18n/I18nProvider";
 import { runAsyncWithViewState } from "@/lib/async";
@@ -46,7 +46,7 @@ export function useApiKeys() {
     void refresh();
   }, [refresh]);
 
-  const handleAdd = async (payload: Partial<ApiKey>) => {
+  const handleAdd = async (payload: ApiKeyMutationPayload) => {
     try {
       await addApiKey(payload);
       await refresh();
@@ -56,7 +56,7 @@ export function useApiKeys() {
     }
   };
 
-  const handleEdit = async (id: string, payload: Partial<ApiKey>) => {
+  const handleEdit = async (id: string, payload: ApiKeyMutationPayload) => {
     try {
       await editApiKey(id, payload);
       await refresh();

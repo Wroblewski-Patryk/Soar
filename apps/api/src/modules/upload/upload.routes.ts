@@ -12,6 +12,7 @@ import { uploadPublicOrigin } from '../../config/runtime';
 const uploadRouter = Router();
 const uploadLimiter = createRateLimiter({ windowMs: 60_000, max: 20 });
 const avatarMaxFileSizeBytes = 2 * 1024 * 1024;
+const avatarMaxInputPixels = 4_000_000;
 const avatarMimeAllowlist = new Set(['image/jpeg', 'image/png', 'image/webp']);
 
 const tmpDir = path.join(process.cwd(), 'tmp');
@@ -51,6 +52,16 @@ const uploadAvatarMiddleware = (req: Parameters<typeof uploadAvatar>[0], res: Pa
     });
   });
 
+const isImageInputRejected = (error: unknown) =>
+  error instanceof Error &&
+  (error.message.includes('Input image exceeds pixel limit') || error.message.includes('unsupported image format'));
+
+export const transformAvatarToJpeg = (inputPath: string, outputPath: string) =>
+  sharp(inputPath, { limitInputPixels: avatarMaxInputPixels })
+    .resize(150, 150)
+    .jpeg({ quality: 80 })
+    .toFile(outputPath);
+
 uploadRouter.post('/avatar', requireAuth, uploadLimiter, async (req, res) => {
   await uploadAvatarMiddleware(req, res);
   if (res.headersSent) {
@@ -62,12 +73,15 @@ uploadRouter.post('/avatar', requireAuth, uploadLimiter, async (req, res) => {
   const outPath = path.join(avatarDir, outFilename);
 
   try {
-    await sharp(req.file.path).resize(150, 150).jpeg({ quality: 80 }).toFile(outPath);
+    await transformAvatarToJpeg(req.file.path, outPath);
     await fs.promises.unlink(req.file.path);
     const url = `${uploadPublicOrigin}/avatars/${outFilename}`;
     return res.json({ url });
-  } catch {
+  } catch (error) {
     await fs.promises.unlink(req.file.path).catch(() => undefined);
+    if (isImageInputRejected(error)) {
+      return sendError(res, 400, 'Invalid image');
+    }
     return sendError(res, 500, 'Image processing failed');
   }
 });

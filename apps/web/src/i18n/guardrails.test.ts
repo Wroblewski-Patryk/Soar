@@ -62,8 +62,14 @@ const TRUTH_A_MONITORED_FILES = [
   "features/dashboard-home/components/home-live-widgets/RuntimeDataSection.tsx",
 ];
 
+const CLIENT_LOCALIZED_ROUTE_FILES = [
+  "app/dashboard/bots/[id]/assistant/page.tsx",
+  "app/dashboard/bots/[id]/preview/page.tsx",
+];
+
 const LOCAL_COPY_PATTERN = /const\s+\w+\s*=\s*{[\s\S]*?\b(?:en|pl|pt|deCH|de-CH)\s*:/i;
 const FALLBACK_PL_PATTERN = /(?:\?\?|\|\|)\s*['"]pl['"]/;
+const EN_NAMESPACE_IMPORT_PATTERN = /@\/i18n\/namespaces\/[^'"]+\.en['"]/;
 const HARD_CODED_ATTRIBUTE_PATTERN =
   /\b(?:title|placeholder|aria-label|aria-placeholder)\s*=\s*['"][^'"{][^'"]*['"]/g;
 const HARD_CODED_PROP_LITERAL_PATTERN =
@@ -133,6 +139,14 @@ describe("i18n guardrails", () => {
       .map((entry) => `${entry.relativePath}\n  - ${entry.hardcodedUiMatches.join("\n  - ")}`);
 
     expect(offenders, `Hardcoded UI string matches found in:\n${offenders.join("\n")}`).toEqual([]);
+  });
+
+  it("blocks EN namespace imports in client-localized route pages", () => {
+    const offenders = scanFiles(CLIENT_LOCALIZED_ROUTE_FILES)
+      .filter((entry) => EN_NAMESPACE_IMPORT_PATTERN.test(readFileSync(join(resolveWebSrc(), entry.relativePath), "utf8")))
+      .map((entry) => entry.relativePath);
+
+    expect(offenders, `EN namespace route imports found in:\n${offenders.join("\n")}`).toEqual([]);
   });
 
   it("detects seeded regression fixture for all hard-fail categories", () => {

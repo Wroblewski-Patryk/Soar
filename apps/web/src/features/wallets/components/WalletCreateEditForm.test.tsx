@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import WalletCreateEditForm from './WalletCreateEditForm';
 
@@ -30,6 +30,7 @@ const translations = vi.hoisted<Record<string, string>>(() => ({
   'dashboard.wallets.form.marketType': 'Rynek',
   'dashboard.wallets.form.baseCurrency': 'Waluta bazowa',
   'dashboard.wallets.form.resetPaperAction': 'Resetuj portfel PAPER',
+  'dashboard.wallets.form.resetPaperConfirm': 'Resetowac kapital PAPER?',
   'dashboard.wallets.form.resetPaperLoading': 'Resetowanie...',
   'dashboard.wallets.form.resetPaperLastAt': 'Ostatni reset',
   'dashboard.wallets.form.validationName': 'Podaj nazwe portfela.',
@@ -510,7 +511,6 @@ describe('WalletCreateEditForm', () => {
       })
     );
 
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
     render(<WalletCreateEditForm editId='wallet-paper' />);
 
     await waitFor(() => {
@@ -520,9 +520,16 @@ describe('WalletCreateEditForm', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Resetuj portfel PAPER' }));
 
-    expect(confirmSpy).toHaveBeenCalled();
-    expect(resetPaperWalletMock).toHaveBeenCalledWith('wallet-paper');
-    expect(screen.getByRole('button', { name: 'Resetowanie...' })).toBeDisabled();
+    const confirmText = await screen.findByText('Resetowac kapital PAPER?');
+    const confirmDialog = confirmText.closest('dialog');
+    expect(confirmDialog).not.toBeNull();
+    expect(resetPaperWalletMock).not.toHaveBeenCalled();
+    fireEvent.click(within(confirmDialog as HTMLElement).getByText('Resetuj portfel PAPER', { selector: 'button' }));
+
+    await waitFor(() => {
+      expect(resetPaperWalletMock).toHaveBeenCalledWith('wallet-paper');
+    });
+    expect(await screen.findByRole('button', { name: 'Resetowanie...' })).toBeDisabled();
 
     finishReset?.();
 
@@ -530,8 +537,6 @@ describe('WalletCreateEditForm', () => {
       expect(screen.getByText(/Ostatni reset:/)).toBeInTheDocument();
     });
     expect(screen.getByText(/Aktywny kapital paper startuje teraz od ostatniego checkpointu resetu/)).toBeInTheDocument();
-
-    confirmSpy.mockRestore();
   });
 
   it('shows reset error text when paper reset request fails', async () => {
@@ -551,7 +556,6 @@ describe('WalletCreateEditForm', () => {
     });
     resetPaperWalletMock.mockRejectedValue(new Error('reset failed'));
 
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
     render(<WalletCreateEditForm editId='wallet-paper' />);
 
     await waitFor(() => {
@@ -560,11 +564,13 @@ describe('WalletCreateEditForm', () => {
     await waitForFormReady();
 
     fireEvent.click(screen.getByRole('button', { name: 'Resetuj portfel PAPER' }));
+    const confirmText = await screen.findByText('Resetowac kapital PAPER?');
+    const confirmDialog = confirmText.closest('dialog');
+    expect(confirmDialog).not.toBeNull();
+    fireEvent.click(within(confirmDialog as HTMLElement).getByText('Resetuj portfel PAPER', { selector: 'button' }));
 
     await waitFor(() => {
       expect(screen.getByText('reset failed')).toBeInTheDocument();
     });
-
-    confirmSpy.mockRestore();
   });
 });

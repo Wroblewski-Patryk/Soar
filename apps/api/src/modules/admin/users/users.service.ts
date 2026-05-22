@@ -139,7 +139,10 @@ export const updateAdminUser = async (
       if (input.role !== undefined && input.role !== existing.role) {
         await tx.user.update({
           where: { id: input.userId },
-          data: { role: input.role },
+          data: {
+            role: input.role,
+            sessionVersion: { increment: 1 },
+          },
         });
       }
 
@@ -177,4 +180,3 @@ export const updateAdminUser = async (
     throw error;
   }
 };
-

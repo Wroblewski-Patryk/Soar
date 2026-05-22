@@ -99,6 +99,30 @@ export type StrategyRiskConfig = {
   dcaMultipliers: number[];
 };
 
+export const shouldBlockCloseByPendingDca = (
+  input: {
+    lockTrailingByPendingDca: boolean;
+    closeReason?: string;
+    riskConfig: Pick<StrategyRiskConfig, 'dcaLevels'>;
+    executedDcaLevelIndices?: number[];
+  }
+) => {
+  if (!input.lockTrailingByPendingDca) return false;
+  if (input.closeReason === 'trailing_stop' || input.closeReason === 'stop_loss') {
+    return true;
+  }
+  if (input.closeReason !== 'trailing_take_profit') return false;
+
+  const executed = new Set(
+    (input.executedDcaLevelIndices ?? []).filter(
+      (index) => Number.isInteger(index) && index >= 0,
+    ),
+  );
+  return input.riskConfig.dcaLevels.some(
+    (level, index) => !executed.has(index) && Number.isFinite(level) && level >= 0,
+  );
+};
+
 type TtpLevel = {
   arm: number;
   percent: number;
@@ -720,11 +744,13 @@ export const simulateTradesForSymbolReplay = (input: {
     openPosition.bestPrice = managementResult.nextState.trailingAnchorPrice ?? openPosition.bestPrice;
 
     if (
-      lockTrailingByPendingDca &&
       managementResult.shouldClose &&
-      ['trailing_stop', 'stop_loss'].includes(
-        managementResult.closeReason ?? '',
-      )
+      shouldBlockCloseByPendingDca({
+        lockTrailingByPendingDca,
+        closeReason: managementResult.closeReason,
+        riskConfig,
+        executedDcaLevelIndices: openPosition.executedDcaLevelIndices,
+      })
     ) {
       managementResult = {
         ...managementResult,

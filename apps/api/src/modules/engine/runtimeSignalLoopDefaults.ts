@@ -25,6 +25,7 @@ import {
   resolveCanonicalRuntimeVenueContext,
   resolveInheritedRuntimeExecutionContext,
 } from './runtimeBotExecutionContext';
+import { assertSubscriptionAllowsLiveTrading } from '../subscriptions/subscriptionEntitlements.service';
 
 export type ActiveBotStrategy = {
   strategyId: string;
@@ -134,10 +135,23 @@ export const listActiveRuntimeBots = async (): Promise<ActiveBot[]> => {
       (executionContext.mode !== 'LIVE' || raw.liveOptIn) &&
       supportsRuntimeSignalLoopExchange(executionContext)
   );
+  const entitledActiveBots = (
+    await Promise.all(
+      activeBots.map(async (bot) => {
+        if (bot.executionContext.mode !== 'LIVE') return bot;
+        try {
+          await assertSubscriptionAllowsLiveTrading(bot.raw.userId);
+          return bot;
+        } catch {
+          return null;
+        }
+      })
+    )
+  ).filter((bot): bot is (typeof activeBots)[number] => bot !== null);
   const catalogSymbolsCache = new Map<string, string[]>();
 
   return Promise.all(
-    activeBots.map(async ({ raw: bot, executionContext }) => {
+    entitledActiveBots.map(async ({ raw: bot, executionContext }) => {
       const canonicalGroup = (bot.botMarketGroups ?? [])[0] ?? null;
       const canonicalStrategies = (canonicalGroup?.strategyLinks ?? []).map((link) => ({
         strategyId: link.strategyId,

@@ -134,6 +134,66 @@ describe("PerformanceReportsView", () => {
     });
   });
 
+  it("keeps reports usable when one per-run report request fails", async () => {
+    listRunsMock.mockResolvedValue([
+      {
+        id: "r1",
+        strategyId: null,
+        name: "Run Alpha",
+        symbol: "BTCUSDT",
+        timeframe: "5m",
+        status: "COMPLETED",
+        startedAt: "2026-03-16T10:00:00.000Z",
+        finishedAt: "2026-03-16T11:00:00.000Z",
+        notes: null,
+        createdAt: "2026-03-16T10:00:00.000Z",
+      },
+      {
+        id: "r2",
+        strategyId: null,
+        name: "Run Broken",
+        symbol: "ETHUSDT",
+        timeframe: "5m",
+        status: "COMPLETED",
+        startedAt: "2026-03-16T10:00:00.000Z",
+        finishedAt: "2026-03-16T11:00:00.000Z",
+        notes: null,
+        createdAt: "2026-03-16T10:00:00.000Z",
+      },
+    ]);
+    getReportMock.mockImplementation(async (runId: string) => {
+      if (runId === "r2") throw new Error("report unavailable");
+      return {
+        id: "rep1",
+        backtestRunId: "r1",
+        totalTrades: 12,
+        winningTrades: 8,
+        losingTrades: 4,
+        winRate: 66.7,
+        netPnl: 245.5,
+        grossProfit: 300,
+        grossLoss: -54.5,
+        maxDrawdown: 12.2,
+        sharpe: 1.4,
+        metrics: null,
+      };
+    });
+    getCrossModePerformanceMock.mockResolvedValue({
+      generatedAt: "2026-03-24T00:00:00.000Z",
+      modeResolution: "BOT_CURRENT_MODE",
+      rows: [],
+    });
+
+    await renderWithI18n();
+
+    await waitFor(() => {
+      expect(screen.getByText("Performance reports loaded")).toBeInTheDocument();
+      expect(screen.getAllByText("Run Alpha").length).toBeGreaterThan(0);
+    });
+    expect(screen.queryByText("Run Broken")).not.toBeInTheDocument();
+    expect(screen.queryByText("Unable to load reports")).not.toBeInTheDocument();
+  });
+
   it("uses dashboard-reports pt namespace copy when locale is pt", async () => {
     window.localStorage.setItem("cryptosparrow-locale", "pt");
     listRunsMock.mockResolvedValue([]);

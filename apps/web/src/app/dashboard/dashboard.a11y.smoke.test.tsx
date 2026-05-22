@@ -8,20 +8,27 @@ import WalletsListPage from "./wallets/list/page";
 import { I18nProvider } from "@/i18n/I18nProvider";
 
 const listWalletsMock = vi.hoisted(() => vi.fn());
+const homeLiveWidgetsPropsMock = vi.hoisted(() => vi.fn());
+const authState = vi.hoisted(() => ({
+  user: { email: "qa@cryptosparrow.dev", userId: "user-1", role: "USER" } as
+    | { email: string; userId: string; role: string }
+    | null,
+  loading: false,
+}));
 
 vi.mock("../../context/AuthContext", () => ({
-  useAuth: () => ({
-    user: { email: "qa@cryptosparrow.dev", userId: "user-1", role: "USER" },
-    loading: false,
-  }),
+  useAuth: () => authState,
 }));
 
 vi.mock("@/features/dashboard-home/components/HomeLiveWidgets", () => ({
-  default: () => (
-    <section aria-label="Runtime widgets">
-      <button type="button">Refresh runtime</button>
-    </section>
-  ),
+  default: (props: { authConfirmed?: boolean }) => {
+    homeLiveWidgetsPropsMock(props);
+    return (
+      <section aria-label="Runtime widgets">
+        <button type="button">Refresh runtime</button>
+      </section>
+    );
+  },
 }));
 
 vi.mock("@/features/bots/components/BotsListTable", () => ({
@@ -59,6 +66,9 @@ const expectNamedInteractiveControls = () => {
 describe("Dashboard core routes accessibility smoke", () => {
   afterEach(() => {
     listWalletsMock.mockReset();
+    homeLiveWidgetsPropsMock.mockClear();
+    authState.user = { email: "qa@cryptosparrow.dev", userId: "user-1", role: "USER" };
+    authState.loading = false;
     window.localStorage.clear();
   });
 
@@ -70,6 +80,18 @@ describe("Dashboard core routes accessibility smoke", () => {
     expect(screen.getByRole("heading", { level: 1, name: "Dashboard" })).toBeInTheDocument();
     expect(screen.getByRole("region", { name: "Runtime widgets" })).toBeInTheDocument();
     expectNamedInteractiveControls();
+  });
+
+  it("renders runtime widgets during auth bootstrap instead of blanking dashboard home", async () => {
+    authState.user = null;
+    authState.loading = true;
+
+    await renderWithI18n(<DashboardPage />, "/dashboard");
+
+    expect(screen.getByRole("heading", { level: 1, name: "Dashboard" })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "Runtime widgets" })).toBeInTheDocument();
+    expect(homeLiveWidgetsPropsMock).toHaveBeenLastCalledWith({ authConfirmed: false });
+    expect(screen.queryByText("Loading runtime workspace")).not.toBeInTheDocument();
   });
 
   it("keeps bots route create action accessible with contextual description", async () => {

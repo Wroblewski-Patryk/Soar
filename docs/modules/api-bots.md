@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/bots`
 - Owner: backend/trading-domain
-- Last updated: 2026-05-07
-- Related planning task: `RUNTIME-AUDIT-27`
+- Last updated: 2026-05-21
+- Related planning task: `REST-IMPLEMENTATION-SWEEP-2026-05-21`
 
 ## Canonical Architecture Linkage
 Canonical runtime topology and ownership rules live in:
@@ -106,14 +106,24 @@ Out of scope:
   - repair: `POST /dashboard/bots/strategy-drift/repair` (idempotent, ownership-scoped)
 
 ## 8. Test Coverage and Evidence
-- Primary tests:
+- Primary local audit evidence:
+  - `docs/operations/bots-runtime-truth-audit-2026-05-19.md`
+  - Web bot/runtime pack: `8` files / `61` tests.
+  - API bot/runtime pack: `10` files / `88` tests.
+- Representative API tests:
   - `bots.e2e.test.ts`
-  - `bots.orchestration.e2e.test.ts`
   - `bots.duplicate-guard.e2e.test.ts`
   - `bots.subscription-entitlements.e2e.test.ts`
+  - `bots.wallet-contract.e2e.test.ts`
+  - `bots.runtime-scope.e2e.test.ts`
+  - `bots.monitoring-aggregate.e2e.test.ts`
+  - `bots.runtime-history-parity.e2e.test.ts`
+  - `bots.delete-cleanup.e2e.test.ts`
+  - `bots.live-paper-concurrent.e2e.test.ts`
+  - `bots.runtime-takeover.e2e.test.ts`
 - Suggested validation command:
 ```powershell
-pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bots.orchestration.e2e.test.ts src/modules/bots/bots.duplicate-guard.e2e.test.ts src/modules/bots/bots.subscription-entitlements.e2e.test.ts
+pnpm --filter api exec vitest run src/modules/bots/bots.e2e.test.ts src/modules/bots/bots.duplicate-guard.e2e.test.ts src/modules/bots/bots.subscription-entitlements.e2e.test.ts src/modules/bots/bots.wallet-contract.e2e.test.ts src/modules/bots/bots.runtime-scope.e2e.test.ts src/modules/bots/bots.monitoring-aggregate.e2e.test.ts src/modules/bots/bots.runtime-history-parity.e2e.test.ts src/modules/bots/bots.delete-cleanup.e2e.test.ts src/modules/bots/bots.live-paper-concurrent.e2e.test.ts src/modules/bots/bots.runtime-takeover.e2e.test.ts --pool=forks --maxWorkers=1 --minWorkers=1 --testTimeout=30000
 ```
 
 ## 9. Open Issues and Follow-Ups
@@ -139,6 +149,9 @@ pnpm --filter api test -- src/modules/bots/bots.e2e.test.ts src/modules/bots/bot
   - allowed only for `OPEN + BOT_MANAGED + wallet-compatible` rows owned directly or through external deterministic mapping,
   - allowed only when the target symbol belongs to the selected bot's active
     configured symbol scope when a symbol group is available,
+  - LIVE manual close requires a trusted close reference price from lifecycle
+    mark price, fallback ticker, or public connector mark price; it must not
+    use position `entryPrice` as a close-price fallback,
   - all other paths return `status=ignored`, `reason=no_open_position`.
 - External takeover audit statuses from positions module are non-actionable in dashboard close flow:
   - `UNOWNED`, `AMBIGUOUS`, `MANUAL_ONLY`.

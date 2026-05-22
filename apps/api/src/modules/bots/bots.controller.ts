@@ -38,6 +38,10 @@ const handleBotError = (res: Response, error: unknown) => {
 };
 
 const handleCloseRuntimePositionError = (res: Response, error: unknown) => {
+  if (error instanceof SubscriptionFeatureUnavailableError) {
+    return sendError(res, 403, 'live trading is not available on the active subscription plan', error.details);
+  }
+
   const mapped = mapErrorToHttpResponse(error);
   if (mapped.code === BOT_ERROR_CODES.positionCloseRiskAckRequired) {
     return sendError(res, 400, 'riskAck must be true to close runtime position', mapped.details);

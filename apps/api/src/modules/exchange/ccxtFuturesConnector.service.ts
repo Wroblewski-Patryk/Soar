@@ -288,7 +288,7 @@ export class CcxtFuturesConnector {
     const client = await this.getOrCreateClient();
     const params: Record<string, unknown> = {};
 
-    if (this.config.marketType === 'future') {
+    if (this.config.marketType === 'future' || this.config.marketType === 'swap') {
       if (typeof request.reduceOnly === 'boolean') {
         params.reduceOnly = request.reduceOnly;
       }
@@ -481,7 +481,7 @@ export class CcxtFuturesConnector {
     leverage?: number | null;
     marginMode?: 'cross' | 'isolated' | null;
   }): Promise<{ leverageApplied: boolean; marginModeApplied: boolean }> {
-    if (this.config.marketType !== 'future') {
+    if (this.config.marketType !== 'future' && this.config.marketType !== 'swap') {
       return { leverageApplied: false, marginModeApplied: false };
     }
 

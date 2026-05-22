@@ -5,8 +5,8 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/profile`
 - Owner: frontend/account
-- Last updated: 2026-04-12
-- Related planning task: `DCP-08`
+- Last updated: 2026-05-21
+- Related planning task: `LOCAL-CERTAINTY-CLOSURE-2026-05-21`
 
 ## 1. Purpose and Scope
 - Implements user account workspace under `/dashboard/profile`.
@@ -63,6 +63,9 @@ Out of scope:
   - `ExchangeConnectionsView` (embedded from exchanges feature)
 - Navigation contract:
   - hash-synced tabs for deep linking to profile sections.
+- Responsive contract:
+  - Basic profile/avatar layout stacks on narrow screens and constrains form
+    fields with `min-w-0` to reduce overflow.
 
 ## 6. Security and Risk Guardrails
 - Sensitive actions require explicit user input (current password / delete confirm).
@@ -80,6 +83,7 @@ Out of scope:
   - `ApiKeysList.test.tsx`
   - `Security.test.tsx`
   - `Subscription.test.tsx`
+  - `BasicForm.test.tsx`
 - Suggested validation command:
 ```powershell
 pnpm --filter web test -- src/app/dashboard/profile/page.test.tsx src/features/profile/components/ApiKeyForm.test.tsx src/features/profile/components/ApiKeysList.test.tsx src/features/profile/components/Security.test.tsx src/features/profile/components/Subscription.test.tsx

@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { I18nProvider } from "../../../i18n/I18nProvider";
@@ -204,18 +204,18 @@ describe("HomeLiveWidgets open orders actions", () => {
     });
   };
 
-  it("shows final action column and cancels active open orders from the orders tab", async () => {
+  it("requires confirmation before canceling active LIVE open orders from the orders tab", async () => {
     listBotsMock.mockResolvedValue([
       {
         id: "bot-orders-cancel",
         name: "Orders Cancel Bot",
-        mode: "PAPER",
+        mode: "LIVE",
         paperStartBalance: 10000,
         marketType: "FUTURES",
         positionMode: "ONE_WAY",
         strategyId: "str-orders-cancel",
         isActive: true,
-        liveOptIn: false,
+        liveOptIn: true,
         maxOpenPositions: 2,
       },
     ]);
@@ -298,6 +298,22 @@ describe("HomeLiveWidgets open orders actions", () => {
     });
 
     fireEvent.click(screen.getByRole("button", { name: /Anuluj zlecenie|Cancel order/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Potwierdz akcje runtime|Confirm runtime action/i)).toBeInTheDocument();
+    });
+    expect(cancelDashboardOrderMock).not.toHaveBeenCalled();
+
+    let dialog = screen.getByText(/Potwierdz akcje runtime|Confirm runtime action/i).closest("dialog") as HTMLElement;
+    fireEvent.click(within(dialog).getByText(/^Anuluj$|^Cancel$/i));
+    expect(cancelDashboardOrderMock).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole("button", { name: /Anuluj zlecenie|Cancel order/i }));
+    await waitFor(() => {
+      expect(screen.getByText(/Potwierdz akcje runtime|Confirm runtime action/i)).toBeInTheDocument();
+    });
+    dialog = screen.getByText(/Potwierdz akcje runtime|Confirm runtime action/i).closest("dialog") as HTMLElement;
+    fireEvent.click(within(dialog).getByText(/^Potwierdz$|^Confirm$/i));
 
     await waitFor(() => {
       expect(cancelDashboardOrderMock).toHaveBeenCalledWith("order-open-1", { riskAck: true });

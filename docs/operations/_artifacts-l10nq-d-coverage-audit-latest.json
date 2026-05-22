@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAtUtc": "2026-05-19T01:36:12.120Z",
+  "generatedAtUtc": "2026-05-22T15:31:31.509Z",
   "rootDir": ".",
   "scope": {
     "scannedSourceFiles": 302,
@@ -54,7 +54,7 @@
     },
     {
       "routePage": "apps/web/src/app/admin/page.tsx",
-      "reachableFilesCount": 65,
+      "reachableFilesCount": 71,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,
@@ -66,7 +66,7 @@
     },
     {
       "routePage": "apps/web/src/app/admin/subscriptions/page.tsx",
-      "reachableFilesCount": 68,
+      "reachableFilesCount": 74,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,
@@ -78,7 +78,7 @@
     },
     {
       "routePage": "apps/web/src/app/admin/users/page.tsx",
-      "reachableFilesCount": 70,
+      "reachableFilesCount": 78,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,
@@ -306,7 +306,7 @@
     },
     {
       "routePage": "apps/web/src/app/dashboard/page.tsx",
-      "reachableFilesCount": 124,
+      "reachableFilesCount": 126,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,
@@ -390,7 +390,7 @@
     },
     {
       "routePage": "apps/web/src/app/dashboard/wallets/[id]/edit/page.tsx",
-      "reachableFilesCount": 101,
+      "reachableFilesCount": 103,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,
@@ -426,7 +426,7 @@
     },
     {
       "routePage": "apps/web/src/app/dashboard/wallets/create/page.tsx",
-      "reachableFilesCount": 101,
+      "reachableFilesCount": 103,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,

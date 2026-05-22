@@ -1,8 +1,90 @@
 # Current Focus
 
-Last updated: 2026-05-19
+Last updated: 2026-05-21
 
 ## Active Focus
+
+2026-05-21 protected V1 app proof status:
+`V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21` used approved protected
+application access without persisting secrets and advanced current production
+evidence for deployed `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`. Operator
+packet validation passed; build-info still matches `dd1a1faf` on `main`;
+protected UI clickthrough passed; rollback proof passed with
+`shouldRollback=false`, runtime freshness `PASS`, and no alerts; Gate 4
+sign-off is approved. V1 is still `NO-GO`: `LIVEIMPORT-03` authenticates and
+finds one RUNNING Binance FUTURES LIVE session, but there is no open runtime
+position or open order payload; the controlled proof runner refuses to take
+over the already-active LIVE bot; fresh 30-minute production SLO fails because
+`/workers/ready` is `503` in inline deployed topology
+(`DEPLOYED_INLINE_MODE`), driving API 5xx to `16.6667%`; production DB restore
+still needs VPS/Coolify Docker access. Current focus is split-worker topology
+repair/verification, a safe open runtime payload path, production restore
+drill, and the final release gate.
+
+2026-05-21 money-flow security checkpoint:
+`MONEY-FLOW-SECURITY-CANCEL-ENTITLEMENT-2026-05-21` found and fixed a P1
+fail-closed gap in exchange-backed LIVE order cancel. Current focus includes
+the verified DB-backed proof: parent verification reran the cancel/API-key pack
+with local Postgres/Redis and passed `2` files / `20` tests. Static avatar
+serving was also hardened with explicit no-index/dotfile denial, immutable
+public cache, and `nosniff` headers. No production or real LIVE exchange-side
+mutation was run.
+
+2026-05-21 security hardening status:
+`SECURITY-RED-TEAM-HARDENING-2026-05-21` is the latest local security sweep.
+Second-round security agents completed reports for Auth, Secrets/Ops,
+Trading/Money Safety, and Frontend Security after the first background set was
+closed. Confirmed local issues were repaired: stale admin-token authorization,
+auth IP limiting, production ops-network default, weak secret readiness/deploy
+defaults, API-key lifecycle audit logs, sensitive logging redaction, runtime
+close `riskAck` default, execution-time LIVE entitlement checks, Gate.io swap
+derivative parameters, unknown LIVE status fail-closed mapping, min-notional
+price-truth guard, production CSP, production UI error redaction, and
+Next.js/`ws` production dependency vulnerabilities. Local validation is green:
+production audit, guardrails, API/Web typecheck, build, and focused API/Web
+security regression packs. Active focus remains evidence-bound: protected
+`AUD-19`, external penetration/VPS configuration review, and explicit LIVE
+exchange-side mutation proof are still separate gates before a commercial
+security-readiness claim.
+
+Continuation agents then closed the remaining local P1/P2 security queue:
+dashboard protected runtime data is gated until client auth confirmation,
+admin content is withheld until client `ADMIN` role confirmation, API-key
+frontend response state strips accidental secrets, LIVE entitlement downgrade
+now has DB-backed fail-closed proof plus `403` controller mapping, stage
+rehearsal no longer passes protected credentials through CLI args/artifacts,
+VPS env examples match authenticated Redis/Postgres deploy defaults, runtime
+Docker images run as non-root, production Web HSTS is asserted, and local
+Postgres/Redis bind to `127.0.0.1`. Continuation validation passed script
+tests, Web `151` files / `530` tests, focused API downgrade/order/runtime
+tests, API/Web typecheck, production audit, compose config, i18n route audit,
+build, guardrails, and cleanup checks.
+
+2026-05-21 local certainty status:
+`LOCAL-CERTAINTY-CLOSURE-2026-05-21` is the latest local maximum-confidence
+sweep. It closed Reports execution-mode snapshot truth, remaining Web polish
+items, and confirmation-aware Dashboard Home tests, then passed Prisma
+generate/reset/validate/status, focused tests, API/Web typecheck, full Web
+Vitest, full API Vitest in one-worker fork mode, lint, build, go-live smoke,
+guardrails, docs parity, i18n route audit, and diff check. No remaining local
+code blocker was found by this sweep. Active focus returns to protected
+production `AUD-19`, which still requires approved protected inputs before any
+current production readiness claim.
+
+2026-05-20 protected V1 release gate status:
+`V1-PROTECTED-PREFLIGHT-DD1A1FAF-2026-05-20` is the current no-secret
+classifier for deployed `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`.
+Production build-info matches the expected SHA and public API/Web smoke
+passes. Full protected V1 readiness remains `BLOCKED`: this shell has `0`
+matching protected input names, and required protected evidence is stale for
+the 2026-05-20 evidence date. Continue from the operator unblock packet only
+after approved `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_UI_AUDIT_*`,
+production DB/Coolify restore context, Gate2/SLO context, and Gate4 approver
+fields are available.
+The current no-secret operator packet is
+`docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.md`.
+Run `corepack pnpm run ops:operator-unblock:check -- --packet docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json --expected-sha dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`
+before executing protected operator commands.
 
 2026-05-19 production deploy target status:
 `MAIN-PROMOTION-BUILD-INFO-DD1A1FAF-2026-05-19` is the latest deploy freshness
@@ -1077,6 +1159,13 @@ NO-GO.
 The canonical `LIVEIMPORT-03` command now targets the latest build-info-proven
 production SHA. Do not substitute local evidence-only `HEAD` unless production
 build-info proves that SHA is deployed.
+
+2026-05-20 continuation: the current `dd1a1faf` operator unblock packet is
+machine-checkable and included in `audit:manifest:verify`. Further local
+prep should stop unless it directly supports protected execution; the next
+real release movement requires approved protected inputs and same-date proof.
+Parallel agent sweep confirmed this is not a planning ambiguity: without
+protected inputs, there is no remaining meaningful non-secret deployment task.
 
 Latest continuation recheck: public production build-info reached the RC
 approval gate hardening commit

@@ -116,6 +116,18 @@
       "command": "corepack pnpm run ops:protected-inputs:check:test",
       "script": "scripts/checkProtectedInputReadiness.test.mjs",
       "purpose": "Regression-test protected input readiness counting and secret-value redaction."
+    },
+    {
+      "id": "OPS-OPERATOR-UNBLOCK-CHECK",
+      "command": "corepack pnpm run ops:operator-unblock:check -- --packet docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json --expected-sha dd1a1faf79f8ac3581ca0a8c983481a3e30327ac",
+      "script": "scripts/checkOperatorUnblockPacket.mjs",
+      "purpose": "Validate the no-secret V1 operator unblock packet before protected operator execution."
+    },
+    {
+      "id": "OPS-OPERATOR-UNBLOCK-CHECK-TEST",
+      "command": "corepack pnpm run ops:operator-unblock:check:test",
+      "script": "scripts/checkOperatorUnblockPacket.test.mjs",
+      "purpose": "Regression-test the operator unblock packet validator for required protected-input families, proof steps, evidence paths, safety boundaries, and acceptance rules."
     }
   ],
   "safetyBoundaries": {

@@ -9,6 +9,8 @@ import {
   resolveLiveExecutionApiKey,
 } from './orders.service';
 import { ORDER_ERROR_CODES } from './orders.errors';
+import { ensureSubscriptionCatalog } from '../subscriptions/subscriptions.service';
+import { SubscriptionEntitlementsSchema } from '../subscriptions/subscriptionEntitlements.service';
 
 const cleanupDb = async () => {
   await prisma.log.deleteMany();
@@ -110,6 +112,24 @@ const createLiveScopedBotContext = async (params: {
   return { bot, strategy, wallet, universe, symbolGroup };
 };
 
+const allowLive = async () => {
+  await ensureSubscriptionCatalog(prisma, { seedDefaults: true });
+  const freePlan = await prisma.subscriptionPlan.findUniqueOrThrow({
+    where: { code: 'FREE' },
+    select: { entitlements: true },
+  });
+  const entitlements = SubscriptionEntitlementsSchema.parse(freePlan.entitlements);
+  await prisma.subscriptionPlan.update({
+    where: { code: 'FREE' },
+    data: {
+      entitlements: {
+        ...entitlements,
+        features: { ...entitlements.features, liveTrading: true },
+      },
+    },
+  });
+};
+
 describe('listOrders active order contract', () => {
   beforeEach(async () => {
     await cleanupDb();
@@ -168,6 +188,7 @@ describe('listOrders active order contract', () => {
 describe('openOrder live execution contract', () => {
   beforeEach(async () => {
     await cleanupDb();
+    await allowLive();
   });
 
   it('does not execute exchange side effects for PAPER mode', async () => {

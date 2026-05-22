@@ -149,6 +149,8 @@ pnpm --filter api test -- src/modules/wallets/wallets.e2e.test.ts
 ```
 
 ## 9. Open Issues and Follow-Ups
-- Expand live submit support beyond Binance only after exact adapter support
-  and protected evidence exist.
+- Keep wallet exchange operations bound to the exact
+  `(exchange, marketType, operation)` capability matrix. Gate.io support must
+  remain limited to operations that are explicitly supported in that matrix and
+  backed by local/protected evidence.
 - Add explicit audit log entries for wallet create/update/delete events.

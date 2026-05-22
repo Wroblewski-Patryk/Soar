@@ -30,6 +30,12 @@ const TARGET_PROFILES = {
 };
 
 const ALLOWED_ENVIRONMENTS = new Set(['local', 'stage', 'production']);
+const SECRET_CLI_FLAGS = new Set([
+  '--auth-token',
+  '--auth-password',
+  '--ops-basic-password',
+  '--ops-auth-header-value',
+]);
 
 const parseOptionalNumber = (value) => {
   if (value == null || value === '') return null;
@@ -90,22 +96,17 @@ const parseArgs = () => {
       options.help = true;
       return options;
     }
+    if (SECRET_CLI_FLAGS.has(arg)) {
+      throw new Error(`${arg} is secret-bearing and must be provided through SLO_* environment variables`);
+    }
     if (arg === '--base-url') options.baseUrl = args[index + 1] ?? options.baseUrl;
     if (arg === '--duration-minutes') options.durationMinutes = Number.parseInt(args[index + 1] ?? '', 10);
     if (arg === '--interval-seconds') options.intervalSeconds = Number.parseInt(args[index + 1] ?? '', 10);
-    if (arg === '--auth-token') options.authToken = args[index + 1] ?? options.authToken;
     if (arg === '--auth-email') options.authEmail = args[index + 1] ?? options.authEmail;
-    if (arg === '--auth-password') options.authPassword = args[index + 1] ?? options.authPassword;
     if (arg === '--ops-auth-header-name') {
       options.opsAuthHeaderName = args[index + 1] ?? options.opsAuthHeaderName;
     }
-    if (arg === '--ops-auth-header-value') {
-      options.opsAuthHeaderValue = args[index + 1] ?? options.opsAuthHeaderValue;
-    }
     if (arg === '--ops-basic-user') options.opsBasicUser = args[index + 1] ?? options.opsBasicUser;
-    if (arg === '--ops-basic-password') {
-      options.opsBasicPassword = args[index + 1] ?? options.opsBasicPassword;
-    }
     if (arg === '--environment') options.environment = normalizeEnvironment(args[index + 1] ?? options.environment);
     if (arg === '--target-profile') options.targetProfile = normalizeTargetProfile(args[index + 1] ?? options.targetProfile);
     if (arg === '--api-availability-pct') options.apiAvailabilityPct = parseOptionalNumber(args[index + 1]);
@@ -496,7 +497,7 @@ const main = async () => {
   const options = parseArgs();
   if (options.help) {
     console.log(
-      'Usage: node scripts/collectSloEvidence.mjs [--base-url <url>] [--duration-minutes <n>] [--interval-seconds <n>] [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--ops-basic-user <user>] [--ops-basic-password <password>] [--ops-auth-header-name <name>] [--ops-auth-header-value <value>] [--environment <local|stage|production>] [--target-profile <MVP|V1>] [--api-availability-pct <n>] [--worker-availability-pct <n>] [--api-5xx-ratio-pct <n>] [--api-avg-duration-ms <n>] [--queue-lag-exec-threshold <n>] [--queue-lag-exec-compliance-pct <n>] [--live-order-failure-ratio-pct <n>] [--allow-local-production-evidence]'
+      'Usage: node scripts/collectSloEvidence.mjs [--base-url <url>] [--duration-minutes <n>] [--interval-seconds <n>] [--auth-email <email>] [--ops-basic-user <user>] [--ops-auth-header-name <name>] [--environment <local|stage|production>] [--target-profile <MVP|V1>] [--api-availability-pct <n>] [--worker-availability-pct <n>] [--api-5xx-ratio-pct <n>] [--api-avg-duration-ms <n>] [--queue-lag-exec-threshold <n>] [--queue-lag-exec-compliance-pct <n>] [--live-order-failure-ratio-pct <n>] [--allow-local-production-evidence]\n\nSecret-bearing values must be provided through SLO_AUTH_TOKEN, SLO_AUTH_PASSWORD, SLO_OPS_BASIC_PASSWORD, and SLO_OPS_AUTH_HEADER_VALUE.'
     );
     process.exit(0);
   }

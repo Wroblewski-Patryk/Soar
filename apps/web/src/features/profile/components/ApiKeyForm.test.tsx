@@ -32,6 +32,7 @@ describe("ApiKeyForm", () => {
   });
 
   afterEach(() => {
+    vi.unstubAllEnvs();
     if (originalBinanceWhitelist) {
       process.env.NEXT_PUBLIC_BINANCE_IP_WHITELIST = originalBinanceWhitelist;
       return;
@@ -113,6 +114,34 @@ describe("ApiKeyForm", () => {
     expect(
       screen.getByText("Could not verify connection.")
     ).toBeInTheDocument();
+  });
+
+  it("redacts sensitive backend connection-test errors in production", async () => {
+    vi.stubEnv("NODE_ENV", "production");
+    testApiKeyConnectionMock.mockRejectedValueOnce({
+      isAxiosError: true,
+      response: {
+        data: {
+          message: "apiSecret=leaked-token from Prisma SELECT * FROM ApiKey",
+        },
+      },
+      message: "request failed with apiSecret=leaked-token",
+    });
+
+    renderForm({ onSave: vi.fn(), onCancel: vi.fn() });
+
+    fireEvent.change(screen.getByLabelText("API Key"), {
+      target: { value: "bad-key" },
+    });
+    fireEvent.change(screen.getByLabelText("API Secret"), {
+      target: { value: "bad-secret" },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Test connection" }));
+
+    expect(await screen.findByText("Error")).toBeInTheDocument();
+    expect(screen.getByText("Could not verify connection.")).toBeInTheDocument();
+    expect(screen.queryByText(/leaked-token|Prisma|SELECT/i)).not.toBeInTheDocument();
   });
 
   it("blocks save when connection test has not succeeded in current session", async () => {

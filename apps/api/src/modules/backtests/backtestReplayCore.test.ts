@@ -381,6 +381,58 @@ describe('simulateTradesForSymbolReplay', () => {
     expect(result.eventCounts.TTP).toBeGreaterThanOrEqual(1);
   });
 
+  it('keeps TTP blocked while affordable profit-side DCA levels remain pending', () => {
+    const candles = [
+      candle(0, 100),
+      candle(1, 101),
+      candle(2, 102), // open LONG after indicator warmup
+      candle(3, 120), // arms TTP but does not reach 80% profit-side DCA
+      candle(4, 114), // would retrace through TTP without the DCA-first guard
+      candle(5, 114),
+    ];
+
+    const result = simulateTradesForSymbolReplay({
+      symbol: 'BTCUSDT',
+      candles,
+      marketType: 'FUTURES',
+      leverage: 1,
+      marginMode: 'CROSSED',
+      strategyConfig: {
+        openConditions: {
+          direction: 'long',
+          indicatorsLong: [
+            { name: 'MOMENTUM', condition: '>', value: -999, params: { period: 1 } },
+          ],
+          indicatorsShort: [],
+        },
+        close: {
+          mode: 'advanced',
+          tp: 99,
+          sl: 99,
+          ttp: [{ percent: 10, arm: 5 }],
+          tsl: [],
+        },
+        additional: {
+          dcaEnabled: true,
+          dcaMode: 'advanced',
+          dcaTimes: 0,
+          dcaLevels: [
+            { percent: 80, multiplier: 1 },
+            { percent: 90, multiplier: 1 },
+          ],
+        },
+      },
+      positionSizing: {
+        mode: 'fixed',
+        fixedQuantity: 1,
+        referenceBalance: 10_000,
+      },
+    });
+
+    expect(result.eventCounts.DCA).toBe(0);
+    expect(result.eventCounts.TTP).toBe(0);
+  });
+
   it('emits stop-loss lifecycle event when adverse move breaches SL threshold', () => {
     const candles = [
       candle(0, 100),

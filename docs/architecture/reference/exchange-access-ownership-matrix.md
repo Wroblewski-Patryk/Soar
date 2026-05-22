@@ -1,7 +1,7 @@
 # Exchange Access Ownership Matrix
 
 Status: Active  
-Updated: 2026-05-10
+Updated: 2026-05-21
 
 ## Purpose
 
@@ -42,6 +42,10 @@ reintroduce parallel bootstrap, metadata, or snapshot flows.
 Exchange support must be explicit per operation family and must fail closed when
 unsupported. Authenticated reads and write-side execution are separate
 capability families and must never be inferred from each other.
+Capability entries describe implementation routing and fail-closed behavior, not
+current production-readiness proof for live-money mutation. Production readiness
+requires fresh approved evidence for the exact `(exchange, marketType,
+operation)` tuple.
 
 ### Stage 1 - Compatibility-Stage Matrix
 

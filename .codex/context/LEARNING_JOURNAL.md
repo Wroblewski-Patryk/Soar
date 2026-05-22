@@ -20,6 +20,26 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-05-21 - Capture subagent reports before closing security lanes
+- Context: `SECURITY-RED-TEAM-HARDENING-2026-05-21` used delegated security
+  lanes for Auth, Secrets/Ops, Trading/Money Safety, and Frontend Security.
+- Symptom: the first background security agent set was closed before its
+  reports were integrated, so the parent mission could not treat those lanes
+  as evidence.
+- Root cause: agent cleanup was done before each delegated lane reached a
+  completed status with a captured report.
+- Guardrail: for security, compliance, release, or money-impacting reviews,
+  wait for every delegated lane to complete and copy the findings into the
+  task record before closing the agent.
+- Preferred pattern: `spawn_agent` for bounded lanes, continue local
+  non-overlapping work, `wait_agent` when integration is needed, record the
+  lane report in `docs/planning/*-task.md`, then close the agent.
+- Avoid: treating a closed-but-unreported background agent as evidence.
+- Evidence:
+  `docs/planning/security-red-team-hardening-2026-05-21-task.md`,
+  `.agents/state/agent-evals.md`, and
+  `.agents/state/responsibility-learning.md`.
+
 ### 2026-05-17 - Do not run project index and static scan concurrently
 - Context: architecture-code discrepancy audit refreshed
   `docs/operations/project-index-2026-05-17.json` and then ran the static scan.
@@ -64,6 +84,13 @@ pnpm run go-live:infra:down
 - Avoid: `multi_tool_use.parallel` for API packs that use the same local DB.
 - Evidence:
   `docs/planning/full-layered-audit-run-2026-05-18-task.md`.
+  2026-05-20 `V1-FUNCTION-ARCHITECTURE-VERIFICATION-2026-05-20` reproduced
+  the same pitfall when DB-backed parent gates were started together. A
+  single-fork full-suite attempt then failed with too many Prisma client
+  connections because one long-lived worker accumulated database connections.
+  The passing full-suite pattern was local infra plus migration reset followed
+  by `pnpm --filter api exec vitest run --pool=forks --maxWorkers=1
+  --minWorkers=1 --testTimeout=30000`, then explicit infra teardown.
 
 ### 2026-05-19 - Quote process-local env assignments for Windows dev-server starts
 - Context: `AUTHENTICATED-ROUTE-STATE-AUDIT-2026-05-19` needed a local API
@@ -2957,3 +2984,9 @@ promise = connect().catch((error) => {
   - Combined wallet/backtest DB e2e runs failed with FK cleanup conflicts.
   - Isolated `wallets.e2e.test.ts` passed (`24/24`) after reset.
   - Isolated `backtests.e2e.test.ts` passed (`15/15`) after reset.
+  - 2026-05-20 `V1-FUNCTION-ARCHITECTURE-VERIFICATION-2026-05-20` confirmed
+    the same pitfall when `audit:data:db-isolated` and `test:go-live:smoke`
+    were started concurrently: the shared DB produced FK cleanup failures and
+    one transient Prisma client rename error. Sequential reruns passed:
+    `audit:data:db-isolated` (`24/24`, `15/15`, `2/2`) and go-live smoke
+    (`45/45` API, `18/18` Web).

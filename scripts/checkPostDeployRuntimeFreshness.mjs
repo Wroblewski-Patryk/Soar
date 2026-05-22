@@ -5,6 +5,13 @@ import {
 } from './buildOpsRequestHeaders.mjs';
 import { resolveOpsAuthToken } from './resolveOpsAuthToken.mjs';
 
+const SECRET_CLI_FLAGS = new Set([
+  '--auth-token',
+  '--auth-password',
+  '--ops-basic-password',
+  '--ops-auth-header-value',
+]);
+
 const parseArgs = () => {
   const args = process.argv.slice(2);
   const options = {
@@ -25,20 +32,15 @@ const parseArgs = () => {
       options.help = true;
       return options;
     }
+    if (SECRET_CLI_FLAGS.has(arg)) {
+      throw new Error(`${arg} is secret-bearing and must be provided through DEPLOY_FRESHNESS_* environment variables`);
+    }
     if (arg === '--base-url') options.baseUrl = args[index + 1] ?? options.baseUrl;
-    if (arg === '--auth-token') options.authToken = args[index + 1] ?? options.authToken;
     if (arg === '--auth-email') options.authEmail = args[index + 1] ?? options.authEmail;
-    if (arg === '--auth-password') options.authPassword = args[index + 1] ?? options.authPassword;
     if (arg === '--ops-auth-header-name') {
       options.opsAuthHeaderName = args[index + 1] ?? options.opsAuthHeaderName;
     }
-    if (arg === '--ops-auth-header-value') {
-      options.opsAuthHeaderValue = args[index + 1] ?? options.opsAuthHeaderValue;
-    }
     if (arg === '--ops-basic-user') options.opsBasicUser = args[index + 1] ?? options.opsBasicUser;
-    if (arg === '--ops-basic-password') {
-      options.opsBasicPassword = args[index + 1] ?? options.opsBasicPassword;
-    }
     if (arg === '--timeout-ms') {
       options.timeoutMs = Number.parseInt(args[index + 1] ?? String(options.timeoutMs), 10);
     }
@@ -49,7 +51,7 @@ const parseArgs = () => {
 
 const printUsage = () => {
   console.log(
-    'Usage: node scripts/checkPostDeployRuntimeFreshness.mjs [--base-url <url>] [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--ops-basic-user <user>] [--ops-basic-password <password>] [--ops-auth-header-name <name>] [--ops-auth-header-value <value>] [--timeout-ms <ms>]'
+    'Usage: node scripts/checkPostDeployRuntimeFreshness.mjs [--base-url <url>] [--auth-email <email>] [--ops-basic-user <user>] [--ops-auth-header-name <name>] [--timeout-ms <ms>]\n\nSecret-bearing values must be provided through DEPLOY_FRESHNESS_AUTH_TOKEN, DEPLOY_FRESHNESS_AUTH_PASSWORD, DEPLOY_FRESHNESS_OPS_BASIC_PASSWORD, and DEPLOY_FRESHNESS_OPS_AUTH_HEADER_VALUE.'
   );
 };
 

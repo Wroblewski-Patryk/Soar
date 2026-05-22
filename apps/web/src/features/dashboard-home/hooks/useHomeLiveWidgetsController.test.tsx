@@ -36,6 +36,14 @@ class FakeEventSource {
 
 const nowIso = "2026-05-02T10:00:00.000Z";
 
+const createDeferred = <T,>() => {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((nextResolve) => {
+    resolve = nextResolve;
+  });
+  return { promise, resolve };
+};
+
 const createBot = (id: string): Bot =>
   ({
     id,
@@ -323,5 +331,71 @@ describe("useHomeLiveWidgetsController", () => {
     await waitFor(() => expect(result.current.selectedTrades?.total).toBe(3));
     expect(result.current.selectedTrades?.meta.total).toBe(3);
     expect(result.current.selectedTrades?.items).toHaveLength(2);
+  });
+
+  it("starts runtime graph loading in parallel with session loading for faster dashboard startup", async () => {
+    const createMarketStreamEventSource = vi.fn(() => new FakeEventSource() as unknown as EventSource);
+    const bots = [createBot("bot-a")];
+    const sessionsDeferred = createDeferred<BotRuntimeSessionListItem[]>();
+    const getBotRuntimeGraph = vi.fn().mockResolvedValue(null);
+    const getBotRuntimeMonitoringAggregate = vi.fn(async (botId: string) => createAggregate(botId, "session-a"));
+    const listBotRuntimeSessions = vi.fn(() => sessionsDeferred.promise);
+    const listBots = vi.fn().mockResolvedValue(bots);
+    const t = (key: TranslationKey) => key;
+
+    const { result } = renderHook(() =>
+      useHomeLiveWidgetsController({
+        createMarketStreamEventSource,
+        getBotRuntimeGraph,
+        getBotRuntimeMonitoringAggregate,
+        listBotRuntimeSessions,
+        listBots,
+        t,
+      })
+    );
+
+    await waitFor(() => expect(listBotRuntimeSessions).toHaveBeenCalledWith("bot-a", { limit: 20 }));
+    expect(getBotRuntimeGraph).toHaveBeenCalledWith("bot-a");
+    expect(getBotRuntimeMonitoringAggregate).not.toHaveBeenCalled();
+
+    await act(async () => {
+      sessionsDeferred.resolve([createSession("bot-a", "session-a")]);
+    });
+
+    await waitFor(() => expect(result.current.selected?.bot.id).toBe("bot-a"));
+    expect(getBotRuntimeMonitoringAggregate).toHaveBeenCalledWith("bot-a", {
+      sessionsLimit: 1,
+      perSessionLimit: 200,
+    });
+  });
+
+  it("does not load protected runtime data until auth is confirmed", async () => {
+    const createMarketStreamEventSource = vi.fn(() => new FakeEventSource() as unknown as EventSource);
+    const getBotRuntimeGraph = vi.fn().mockResolvedValue(null);
+    const getBotRuntimeMonitoringAggregate = vi.fn();
+    const listBotRuntimeSessions = vi.fn();
+    const listBots = vi.fn().mockResolvedValue([createBot("bot-a")]);
+    const t = (key: TranslationKey) => key;
+
+    const { rerender } = renderHook(
+      ({ enabled }: { enabled: boolean }) =>
+        useHomeLiveWidgetsController({
+          createMarketStreamEventSource,
+          enabled,
+          getBotRuntimeGraph,
+          getBotRuntimeMonitoringAggregate,
+          listBotRuntimeSessions,
+          listBots,
+          t,
+        }),
+      { initialProps: { enabled: false } }
+    );
+
+    expect(listBots).not.toHaveBeenCalled();
+    expect(getBotRuntimeGraph).not.toHaveBeenCalled();
+
+    rerender({ enabled: true });
+
+    await waitFor(() => expect(listBots).toHaveBeenCalledTimes(1));
   });
 });

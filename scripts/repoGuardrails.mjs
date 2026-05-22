@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { execSync } from "node:child_process";
+import { pathToFileURL } from "node:url";
 
 const ROOT_DIR = process.cwd();
 const EXPECTED_LOCKFILE = "pnpm-lock.yaml";
@@ -42,6 +43,27 @@ const HARD_CODED_UI_ALLOWLIST = new Set([
 const DUPLICATE_HELPER_SNAPSHOT_PATH =
   "docs/modules/_artifacts-cqlt-duplicate-helper-snapshot-2026-04-21.json";
 const CODE_QUALITY_GUARDRAILS_DOC_PATH = "docs/governance/code-quality-guardrails.md";
+const API_PACKAGE_JSON_PATH = "apps/api/package.json";
+const RUNTIME_DOCKERFILES = [
+  "apps/api/Dockerfile",
+  "apps/web/Dockerfile",
+  "apps/api/Dockerfile.worker.execution",
+  "apps/api/Dockerfile.worker.backtest",
+  "apps/api/Dockerfile.worker.market-data",
+  "apps/api/Dockerfile.worker.market-stream",
+];
+const SECRET_BEARING_CLI_FLAGS = [
+  "--auth-token",
+  "--auth-password",
+  "--ops-basic-password",
+  "--ops-auth-header-value",
+];
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const OPS_SCRIPT_SECRET_FLAG_PATTERN = new RegExp(
+  `arg\\s*===\\s*['"](?:${SECRET_BEARING_CLI_FLAGS.map(escapeRegex).join("|")})['"]`
+);
+const TRACKED_ENV_FILE_RE = /(^|\/)\.env(?:\.|$)/;
+const TRACKED_ENV_FILE_ALLOWLIST_RE = /(^|\/)\.env(?:\..*)?\.example$/;
 const LOCAL_COPY_PATTERNS = [
   /copyByLocale/,
   /const\s+\w*copy\w*\s*=\s*locale\s*===/i,
@@ -468,6 +490,115 @@ const validateCodeQualityGuardrailsDoc = () => {
     : [`Missing code-quality guardrails doc: ${CODE_QUALITY_GUARDRAILS_DOC_PATH}`];
 };
 
+export const validateApiStartScript = ({
+  rootDir = ROOT_DIR,
+  apiPackageJsonPath = API_PACKAGE_JSON_PATH,
+} = {}) => {
+  const absolute = path.join(rootDir, apiPackageJsonPath);
+  if (!fs.existsSync(absolute)) {
+    return [`Missing API package manifest: ${apiPackageJsonPath}`];
+  }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(fs.readFileSync(absolute, "utf8"));
+  } catch (error) {
+    return [`Invalid API package manifest JSON at ${apiPackageJsonPath}: ${String(error)}`];
+  }
+
+  const startScript = parsed?.scripts?.start;
+  if (startScript !== "node scripts/start-with-migrate.mjs") {
+    return [
+      `API start script must use the production-safe migration launcher.\n  - ${apiPackageJsonPath}: scripts.start=${JSON.stringify(
+        startScript
+      )}\nUse "node scripts/start-with-migrate.mjs"; keep destructive reset/seed commands under explicit local-only scripts.`,
+    ];
+  }
+
+  const destructiveStartPatterns = [/migrate\s+reset/i, /\bdb\s+seed\b/i];
+  const destructivePattern = destructiveStartPatterns.find((pattern) => pattern.test(startScript));
+  if (destructivePattern) {
+    return [
+      `API start script contains destructive database command (${destructivePattern}). Move reset/seed to a local-only script.`,
+    ];
+  }
+
+  return [];
+};
+
+export const validateRuntimeDockerfilesRunAsNonRoot = ({
+  rootDir = ROOT_DIR,
+  dockerfiles = RUNTIME_DOCKERFILES,
+} = {}) => {
+  const errors = [];
+
+  for (const dockerfile of dockerfiles) {
+    const absolute = path.join(rootDir, dockerfile);
+    if (!fs.existsSync(absolute)) {
+      errors.push(`Missing runtime Dockerfile: ${dockerfile}`);
+      continue;
+    }
+
+    const content = fs.readFileSync(absolute, "utf8");
+    const runtimeStage = content.split(/\nFROM\s+node:20-bookworm-slim\s+AS\s+runtime\b/i)[1] ?? "";
+    if (!runtimeStage) {
+      errors.push(`${dockerfile} must define a node runtime stage.`);
+      continue;
+    }
+
+    if (!/^\s*USER\s+node\s*$/m.test(runtimeStage)) {
+      errors.push(`${dockerfile} runtime stage must switch to USER node before CMD.`);
+    }
+  }
+
+  return errors.length === 0
+    ? []
+    : [`Runtime Dockerfiles must run as non-root:\n${errors.map((error) => `  - ${error}`).join("\n")}`];
+};
+
+export const validateTrackedEnvFilePolicy = ({ trackedFiles = readTrackedFiles() } = {}) => {
+  const offenders = trackedFiles.filter(
+    (filePath) => TRACKED_ENV_FILE_RE.test(filePath) && !TRACKED_ENV_FILE_ALLOWLIST_RE.test(filePath)
+  );
+
+  return offenders.length === 0
+    ? []
+    : [
+        `Runtime environment files must not be tracked in git:\n${offenders
+          .map((filePath) => `  - ${filePath}`)
+          .join("\n")}\nKeep only redacted .env*.example templates under version control.`,
+      ];
+};
+
+export const validateOpsScriptsDoNotAcceptSecretCliArgs = ({
+  rootDir = ROOT_DIR,
+  trackedFiles = readTrackedFiles(),
+} = {}) => {
+  const offenders = [];
+  const scripts = trackedFiles.filter(
+    (filePath) =>
+      filePath.startsWith("scripts/") &&
+      filePath.endsWith(".mjs") &&
+      !filePath.endsWith(".test.mjs")
+  );
+
+  for (const filePath of scripts) {
+    const absolute = path.join(rootDir, filePath);
+    if (!fs.existsSync(absolute)) continue;
+    const content = fs.readFileSync(absolute, "utf8");
+    if (!OPS_SCRIPT_SECRET_FLAG_PATTERN.test(content)) continue;
+    offenders.push(filePath);
+  }
+
+  return offenders.length === 0
+    ? []
+    : [
+        `Ops scripts must not accept secret-bearing CLI args:\n${offenders
+          .map((filePath) => `  - ${filePath}`)
+          .join("\n")}\nUse environment variables for secret values so they are not exposed in shell history, process argv, or command artifacts.`,
+      ];
+};
+
 const run = () => {
   const trackedFiles = readTrackedFiles();
   const errors = [
@@ -480,6 +611,10 @@ const run = () => {
     ...validateWebHardcodedUiLiterals(trackedFiles),
     ...validateDuplicateHelperSnapshot(),
     ...validateCodeQualityGuardrailsDoc(),
+    ...validateApiStartScript(),
+    ...validateRuntimeDockerfilesRunAsNonRoot(),
+    ...validateTrackedEnvFilePolicy({ trackedFiles }),
+    ...validateOpsScriptsDoNotAcceptSecretCliArgs({ trackedFiles }),
   ];
 
   if (errors.length > 0) {
@@ -504,6 +639,15 @@ const run = () => {
   console.log(
     `- CQLT web copy guardrails: OK (local copy + hardcoded UI literals blocked outside documented allowlists)`
   );
+  console.log(`- API start script: OK (production-safe launcher)`);
+  console.log(`- Runtime Dockerfiles: OK (non-root runtime user)`);
+  console.log(`- Env file policy: OK (only redacted .env examples tracked)`);
+  console.log(`- Ops script secret argv policy: OK (secret-bearing CLI args rejected)`);
 };
 
-run();
+const isDirectRun =
+  process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+
+if (isDirectRun) {
+  run();
+}

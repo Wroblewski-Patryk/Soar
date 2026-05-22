@@ -5,8 +5,8 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/reports`
 - Owner: backend/reporting
-- Last updated: 2026-04-12
-- Related planning task: `DCP-07`
+- Last updated: 2026-05-21
+- Related planning task: `LOCAL-CERTAINTY-CLOSURE-2026-05-21`
 
 ## 1. Purpose and Scope
 - Provides dashboard performance summary across execution modes.
@@ -25,7 +25,7 @@ Out of scope:
 ## 3. Data and Contract Surface
 - Core response contract:
   - `generatedAt`
-  - `modeResolution` (`BOT_CURRENT_MODE`)
+  - `modeResolution` (`TRADE_EXECUTION_MODE_SNAPSHOT_WITH_BOT_CURRENT_MODE_FALLBACK`)
   - `rows[]` with `BACKTEST | PAPER | LIVE` aggregates
 - Aggregate row fields:
   - `totalTrades`, `winningTrades`, `losingTrades`
@@ -35,6 +35,9 @@ Out of scope:
 - Cross-mode performance flow:
   1. Controller requires authenticated `userId`.
   2. Service fetches backtest report rows and paper/live trades in parallel.
+     Trade rows are classified by immutable `Trade.executionMode` when present,
+     with a current `Bot.mode` fallback only for legacy rows created before the
+     snapshot field existed.
   3. Aggregator computes deterministic metrics per mode.
   4. API returns compact summary payload for dashboard reports widgets.
 
@@ -48,6 +51,9 @@ Out of scope:
 - No public access; endpoint requires dashboard authentication.
 - Query is user-scoped and never returns cross-tenant data.
 - Read-only contract with no write side effects.
+- Runtime trade writers persist `Trade.executionMode` at execution time so a
+  later bot PAPER/LIVE mode switch does not move historical PnL between report
+  buckets.
 
 ## 7. Observability and Operations
 - Lightweight service with deterministic aggregation logic.
@@ -55,12 +61,16 @@ Out of scope:
 
 ## 8. Test Coverage and Evidence
 - Primary tests:
+  - `reports.e2e.test.ts`
   - `reports.service.test.ts`
 - Suggested validation command:
 ```powershell
-pnpm --filter api test -- src/modules/reports/reports.service.test.ts
+pnpm --filter api exec vitest run src/modules/reports/reports.service.test.ts src/modules/reports/reports.e2e.test.ts --pool=forks --maxWorkers=1 --minWorkers=1 --testTimeout=30000
 ```
 
 ## 9. Open Issues and Follow-Ups
 - Add richer filtering dimensions (time window, strategy, symbol) when reporting scope expands.
 - Consider explicit report snapshot persistence if dashboard history UX requires it.
+- Legacy rows without `Trade.executionMode` are backfilled from the current bot
+  mode by migration; if an older bot had already switched modes before the
+  migration, that historical ambiguity remains bounded to pre-snapshot data.

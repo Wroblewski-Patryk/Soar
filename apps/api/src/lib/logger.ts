@@ -2,6 +2,11 @@ type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 type LogFields = Record<string, unknown>;
 
+const REDACTED = '[REDACTED]';
+const SENSITIVE_KEY_PATTERN =
+  /(password|passphrase|secret|token|authorization|cookie|api[-_]?key|api[-_]?secret|private[-_]?key|jwt|credential|session)/i;
+const MAX_REDACTION_DEPTH = 6;
+
 const logLevelPriority: Record<LogLevel, number> = {
   debug: 10,
   info: 20,
@@ -24,13 +29,26 @@ const shouldLog = (level: LogLevel) => {
   return logLevelPriority[level] >= logLevelPriority[configuredLogLevel];
 };
 
-const serializeValue = (value: unknown): unknown => {
+const shouldRedactKey = (key: string) => SENSITIVE_KEY_PATTERN.test(key);
+
+const serializeValue = (value: unknown, depth = 0): unknown => {
   if (value instanceof Error) {
     return {
       name: value.name,
-      message: value.message,
-      stack: value.stack,
+      message: REDACTED,
+      stack: REDACTED,
     };
+  }
+  if (depth >= MAX_REDACTION_DEPTH) return '[MaxDepth]';
+  if (Array.isArray(value)) {
+    return value.map((item) => serializeValue(item, depth + 1));
+  }
+  if (value && typeof value === 'object') {
+    const serialized: LogFields = {};
+    for (const [key, nestedValue] of Object.entries(value as Record<string, unknown>)) {
+      serialized[key] = shouldRedactKey(key) ? REDACTED : serializeValue(nestedValue, depth + 1);
+    }
+    return serialized;
   }
   return value;
 };
@@ -40,7 +58,7 @@ const sanitizeFields = (fields: LogFields | undefined): LogFields => {
   const sanitized: LogFields = {};
   for (const [key, value] of Object.entries(fields)) {
     if (value === undefined) continue;
-    sanitized[key] = serializeValue(value);
+    sanitized[key] = shouldRedactKey(key) ? REDACTED : serializeValue(value);
   }
   return sanitized;
 };
@@ -74,4 +92,3 @@ export const createModuleLogger = (module: string) => ({
   warn: (event: string, fields?: LogFields) => writeLog('warn', module, event, fields),
   error: (event: string, fields?: LogFields) => writeLog('error', module, event, fields),
 });
-

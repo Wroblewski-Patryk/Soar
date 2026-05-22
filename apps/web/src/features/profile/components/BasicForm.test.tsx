@@ -106,4 +106,15 @@ describe("BasicForm", () => {
     expect(toast.error).toHaveBeenCalledWith("Could not save profile changes.");
     expect(screen.getByRole("button", { name: "Save changes" })).toBeEnabled();
   });
+
+  it("keeps the profile editor stacked and width bounded on narrow screens", async () => {
+    await renderForm();
+
+    const form = screen.getByRole("button", { name: "Save changes" }).closest("form");
+    const layout = form?.firstElementChild;
+    const fields = screen.getByPlaceholderText("John Doe").closest(".flex-grow");
+
+    expect(layout).toHaveClass("flex-col", "md:flex-row");
+    expect(fields).toHaveClass("w-full", "min-w-0");
+  });
 });

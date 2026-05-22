@@ -221,6 +221,12 @@ type TranslationSchema = {
         cancelOpenOrderUnsupported: string;
         cancelOpenOrderSuccess: string;
         cancelOpenOrderError: string;
+        riskConfirmTitle: string;
+        riskConfirmManualOrderDescription: string;
+        riskConfirmCancelOrderDescription: string;
+        riskConfirmClosePositionDescription: string;
+        riskConfirmConfirmLabel: string;
+        riskConfirmCancelLabel: string;
         advancedOptions: string;
         placeholderBadge: string;
         placeholderActivationHint: string;

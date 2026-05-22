@@ -3,21 +3,28 @@
 import { spawnSync } from 'node:child_process';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const operationsDir = path.resolve(process.cwd(), 'docs', 'operations');
+const SECRET_CLI_FLAGS = new Set([
+  '--auth-token',
+  '--auth-password',
+  '--ops-basic-password',
+  '--ops-auth-header-value',
+]);
 
-const parseArgs = () => {
-  const args = process.argv.slice(2);
+export const parseArgs = (argv = process.argv.slice(2), env = process.env) => {
+  const args = argv;
   const options = {
-    baseUrl: process.env.RELEASE_GATE_API_BASE_URL ?? 'https://stage-api.soar.luckysparrow.ch',
-    webBaseUrl: process.env.RELEASE_GATE_WEB_BASE_URL ?? 'https://stage.soar.luckysparrow.ch',
-    authToken: process.env.RELEASE_GATE_AUTH_TOKEN ?? '',
-    authEmail: process.env.RELEASE_GATE_AUTH_EMAIL ?? '',
-    authPassword: process.env.RELEASE_GATE_AUTH_PASSWORD ?? '',
-    opsBasicUser: process.env.RELEASE_GATE_OPS_BASIC_USER ?? '',
-    opsBasicPassword: process.env.RELEASE_GATE_OPS_BASIC_PASSWORD ?? '',
-    opsAuthHeaderName: process.env.RELEASE_GATE_OPS_AUTH_HEADER_NAME ?? '',
-    opsAuthHeaderValue: process.env.RELEASE_GATE_OPS_AUTH_HEADER_VALUE ?? '',
+    baseUrl: env.RELEASE_GATE_API_BASE_URL ?? 'https://stage-api.soar.luckysparrow.ch',
+    webBaseUrl: env.RELEASE_GATE_WEB_BASE_URL ?? 'https://stage.soar.luckysparrow.ch',
+    authToken: env.RELEASE_GATE_AUTH_TOKEN ?? '',
+    authEmail: env.RELEASE_GATE_AUTH_EMAIL ?? '',
+    authPassword: env.RELEASE_GATE_AUTH_PASSWORD ?? '',
+    opsBasicUser: env.RELEASE_GATE_OPS_BASIC_USER ?? '',
+    opsBasicPassword: env.RELEASE_GATE_OPS_BASIC_PASSWORD ?? '',
+    opsAuthHeaderName: env.RELEASE_GATE_OPS_AUTH_HEADER_NAME ?? '',
+    opsAuthHeaderValue: env.RELEASE_GATE_OPS_AUTH_HEADER_VALUE ?? '',
     dryRun: false,
     help: false,
   };
@@ -30,13 +37,14 @@ const parseArgs = () => {
     }
     if (arg === '--base-url') options.baseUrl = args[index + 1] ?? options.baseUrl;
     if (arg === '--web-base-url') options.webBaseUrl = args[index + 1] ?? options.webBaseUrl;
-    if (arg === '--auth-token') options.authToken = args[index + 1] ?? options.authToken;
+    if (SECRET_CLI_FLAGS.has(arg)) {
+      throw new Error(
+        `${arg} is secret-bearing and must be provided through RELEASE_GATE_* environment variables`
+      );
+    }
     if (arg === '--auth-email') options.authEmail = args[index + 1] ?? options.authEmail;
-    if (arg === '--auth-password') options.authPassword = args[index + 1] ?? options.authPassword;
     if (arg === '--ops-basic-user') options.opsBasicUser = args[index + 1] ?? options.opsBasicUser;
-    if (arg === '--ops-basic-password') options.opsBasicPassword = args[index + 1] ?? options.opsBasicPassword;
     if (arg === '--ops-auth-header-name') options.opsAuthHeaderName = args[index + 1] ?? options.opsAuthHeaderName;
-    if (arg === '--ops-auth-header-value') options.opsAuthHeaderValue = args[index + 1] ?? options.opsAuthHeaderValue;
     if (arg === '--dry-run') options.dryRun = true;
   }
 
@@ -45,11 +53,52 @@ const parseArgs = () => {
 
 const printUsage = () => {
   console.log(
-    'Usage: node scripts/runV1StageRehearsal.mjs [--base-url <url>] [--web-base-url <url>] [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--ops-basic-user <user>] [--ops-basic-password <password>] [--ops-auth-header-name <name>] [--ops-auth-header-value <value>] [--dry-run]'
+    'Usage: node scripts/runV1StageRehearsal.mjs [--base-url <url>] [--web-base-url <url>] [--auth-email <email>] [--ops-basic-user <user>] [--ops-auth-header-name <name>] [--dry-run]\n\nSecret-bearing values must be provided through RELEASE_GATE_AUTH_TOKEN, RELEASE_GATE_AUTH_PASSWORD, RELEASE_GATE_OPS_BASIC_PASSWORD, and RELEASE_GATE_OPS_AUTH_HEADER_VALUE.'
   );
 };
 
 const nowStamp = () => new Date().toISOString().replace(/[:.]/g, '-');
+
+export const buildReleaseGateInvocation = (options) => {
+  const args = [
+    'scripts/runV1ReleaseGate.mjs',
+    '--environment',
+    'stage',
+    '--base-url',
+    options.baseUrl,
+    '--web-base-url',
+    options.webBaseUrl,
+    '--skip-local-quality',
+    '--artifact-stamp',
+    options.stamp,
+  ];
+  if (options.dryRun) args.push('--dry-run');
+
+  const childEnv = {
+    ...process.env,
+    RELEASE_GATE_API_BASE_URL: options.baseUrl,
+    RELEASE_GATE_WEB_BASE_URL: options.webBaseUrl,
+  };
+  const envMappings = [
+    ['RELEASE_GATE_AUTH_TOKEN', options.authToken],
+    ['RELEASE_GATE_AUTH_EMAIL', options.authEmail],
+    ['RELEASE_GATE_AUTH_PASSWORD', options.authPassword],
+    ['RELEASE_GATE_OPS_BASIC_USER', options.opsBasicUser],
+    ['RELEASE_GATE_OPS_BASIC_PASSWORD', options.opsBasicPassword],
+    ['RELEASE_GATE_OPS_AUTH_HEADER_NAME', options.opsAuthHeaderName],
+    ['RELEASE_GATE_OPS_AUTH_HEADER_VALUE', options.opsAuthHeaderValue],
+  ];
+  for (const [key, value] of envMappings) {
+    const normalized = String(value ?? '').trim();
+    if (normalized) childEnv[key] = normalized;
+  }
+
+  return {
+    args,
+    childEnv,
+    command: ['node', ...args].join(' '),
+  };
+};
 
 const renderMarkdown = (report, jsonPath) => `# V1 Stage Rehearsal Report
 
@@ -88,31 +137,12 @@ const main = async () => {
   }
 
   const stamp = nowStamp();
-  const args = [
-    'scripts/runV1ReleaseGate.mjs',
-    '--environment',
-    'stage',
-    '--base-url',
-    options.baseUrl,
-    '--web-base-url',
-    options.webBaseUrl,
-    '--skip-local-quality',
-    '--artifact-stamp',
-    stamp,
-  ];
-  if (options.authToken.trim()) args.push('--auth-token', options.authToken.trim());
-  if (options.authEmail.trim()) args.push('--auth-email', options.authEmail.trim());
-  if (options.authPassword.trim()) args.push('--auth-password', options.authPassword.trim());
-  if (options.opsBasicUser.trim()) args.push('--ops-basic-user', options.opsBasicUser.trim());
-  if (options.opsBasicPassword.trim()) args.push('--ops-basic-password', options.opsBasicPassword.trim());
-  if (options.opsAuthHeaderName.trim()) args.push('--ops-auth-header-name', options.opsAuthHeaderName.trim());
-  if (options.opsAuthHeaderValue.trim()) args.push('--ops-auth-header-value', options.opsAuthHeaderValue.trim());
-  if (options.dryRun) args.push('--dry-run');
+  const invocation = buildReleaseGateInvocation({ ...options, stamp });
 
-  const result = spawnSync('node', args, {
+  const result = spawnSync('node', invocation.args, {
     stdio: 'inherit',
     shell: process.platform === 'win32',
-    env: process.env,
+    env: invocation.childEnv,
   });
 
   const gateJsonPath = path.join('docs', 'operations', `_artifacts-v1-release-gate-stage-${stamp}.json`);
@@ -134,7 +164,7 @@ const main = async () => {
     dryRun: options.dryRun,
     baseUrl: options.baseUrl,
     webBaseUrl: options.webBaseUrl,
-    command: ['node', ...args].join(' '),
+    command: invocation.command,
     exitCode,
     gateJsonPath,
     gateReportPath,
@@ -153,10 +183,18 @@ const main = async () => {
   process.exit(options.dryRun ? 0 : exitCode);
 };
 
-main().catch((error) => {
-  console.error(
-    '[ops:release:v1:stage-rehearsal] failed:',
-    error instanceof Error ? error.message : String(error)
-  );
-  process.exit(1);
-});
+const isEntrypoint = () => {
+  const entry = process.argv[1];
+  if (!entry) return false;
+  return path.resolve(entry) === path.resolve(fileURLToPath(import.meta.url));
+};
+
+if (isEntrypoint()) {
+  main().catch((error) => {
+    console.error(
+      '[ops:release:v1:stage-rehearsal] failed:',
+      error instanceof Error ? error.message : String(error)
+    );
+    process.exit(1);
+  });
+}

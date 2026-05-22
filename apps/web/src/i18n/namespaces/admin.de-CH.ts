@@ -10,6 +10,11 @@ export const adminDeCh = {
     },
     "footer": {
       "rights": "Alle Rechte vorbehalten."
+    },
+    "auth": {
+      "loading": "Admin-Zugriff wird bestaetigt...",
+      "deniedTitle": "Admin-Zugriff erforderlich",
+      "deniedDescription": "Das aktuelle Konto ist nicht als Administrator bestaetigt."
     }
   },
   "users": {
@@ -40,6 +45,11 @@ export const adminDeCh = {
     "toggleRoleAriaPrefix": "Rolle umschalten für",
     "planSelectAriaPrefix": "Plan auswählen für",
     "assignPlanAriaPrefix": "Plan zuweisen für"
+    ,"confirmTitle": "Admin-Aenderung bestaetigen",
+    "confirmRoleDescription": "Rolle von {email} zu {role} aendern.",
+    "confirmPlanDescription": "Plan {plan} an {email} zuweisen.",
+    "confirmLabel": "Bestaetigen",
+    "cancelLabel": "Abbrechen"
   },
   "subscriptions": {
     "loadError": "Abonnementpläne konnten nicht geladen werden.",

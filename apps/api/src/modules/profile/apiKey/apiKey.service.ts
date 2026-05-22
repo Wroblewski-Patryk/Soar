@@ -183,6 +183,42 @@ const writeApiKeyTestAudit = async (params: {
   }
 };
 
+const writeApiKeyLifecycleAudit = async (params: {
+  userId: string;
+  apiKeyId: string;
+  exchange: Exchange;
+  action:
+    | "profile.api_key.created"
+    | "profile.api_key.updated"
+    | "profile.api_key.deleted"
+    | "profile.api_key.rotated"
+    | "profile.api_key.revoked";
+  level?: "INFO" | "WARN";
+  metadata?: Record<string, unknown>;
+}) => {
+  try {
+    await prisma.log.create({
+      data: {
+        userId: params.userId,
+        action: params.action,
+        level: params.level ?? "INFO",
+        source: "profile.apiKey.service",
+        message: `API key lifecycle event: ${params.action}`,
+        category: "SECURITY",
+        entityType: "API_KEY",
+        entityId: params.apiKeyId,
+        metadata: {
+          exchange: params.exchange,
+          apiKeyId: params.apiKeyId,
+          ...(params.metadata ?? {}),
+        },
+      },
+    });
+  } catch {
+    // Audit failures should not expose or block credential mutation flows.
+  }
+};
+
 const maskValue = (value: string) => {
   if (!value) return "";
   if (value.length <= 4) return "*".repeat(value.length);
@@ -226,13 +262,25 @@ export const createApiKey = async (userId: string, data: ApiKeyPayload) => {
 
   const created = await prisma.apiKey.create({
     data: {
-        ...data,
-        apiKey: encrypt(data.apiKey),
-        apiSecret: encrypt(data.apiSecret),
-        syncExternalPositions: syncOptions.syncExternalPositions,
-        manageExternalPositions: syncOptions.manageExternalPositions,
-        userId
+      label: data.label,
+      exchange: data.exchange,
+      apiKey: encrypt(data.apiKey),
+      apiSecret: encrypt(data.apiSecret),
+      syncExternalPositions: syncOptions.syncExternalPositions,
+      manageExternalPositions: syncOptions.manageExternalPositions,
+      userId,
     }
+  });
+
+  await writeApiKeyLifecycleAudit({
+    userId,
+    apiKeyId: created.id,
+    exchange: created.exchange,
+    action: "profile.api_key.created",
+    metadata: {
+      syncExternalPositions: created.syncExternalPositions,
+      manageExternalPositions: created.manageExternalPositions,
+    },
   });
 
   return toPublicApiKey(created);
@@ -268,6 +316,10 @@ export const updateApiKey = async (
     syncExternalPositions: syncOptions.syncExternalPositions,
     manageExternalPositions: syncOptions.manageExternalPositions,
   };
+  const changedFields = Object.keys(updateData).filter(
+    (field) => field !== "apiKey" && field !== "apiSecret"
+  );
+  const credentialsRotated = data.apiKey !== undefined || data.apiSecret !== undefined;
 
   await prisma.apiKey.update({
     where: { id: existing.id },
@@ -279,13 +331,41 @@ export const updateApiKey = async (
   });
 
   if (!updated) return null;
+  await writeApiKeyLifecycleAudit({
+    userId,
+    apiKeyId: updated.id,
+    exchange: updated.exchange,
+    action: "profile.api_key.updated",
+    metadata: {
+      changedFields,
+      credentialsRotated,
+      syncExternalPositions: updated.syncExternalPositions,
+      manageExternalPositions: updated.manageExternalPositions,
+    },
+  });
   return toPublicApiKey(updated);
 };
 
 export const deleteApiKey = async (userId: string, id: string) => {
+  const existing = await prisma.apiKey.findFirst({
+    where: { id, userId },
+    select: { id: true, exchange: true },
+  });
+  if (!existing) return false;
+
   const result = await prisma.apiKey.deleteMany({ 
     where: { id, userId } 
   });
+
+  if (result.count > 0) {
+    await writeApiKeyLifecycleAudit({
+      userId,
+      apiKeyId: existing.id,
+      exchange: existing.exchange,
+      action: "profile.api_key.deleted",
+      level: "WARN",
+    });
+  }
 
   return result.count > 0;
 };
@@ -310,11 +390,39 @@ export const rotateApiKeySecretPair = async (
   });
 
   if (!updated) return null;
+  await writeApiKeyLifecycleAudit({
+    userId,
+    apiKeyId: updated.id,
+    exchange: updated.exchange,
+    action: "profile.api_key.rotated",
+    level: "WARN",
+    metadata: {
+      credentialsRotated: true,
+    },
+  });
   return toPublicApiKey(updated);
 };
 
 export const revokeApiKey = async (userId: string, id: string) => {
-  return deleteApiKey(userId, id);
+  const existing = await prisma.apiKey.findFirst({
+    where: { id, userId },
+    select: { id: true, exchange: true },
+  });
+  if (!existing) return false;
+
+  const result = await prisma.apiKey.deleteMany({
+    where: { id, userId },
+  });
+  if (result.count > 0) {
+    await writeApiKeyLifecycleAudit({
+      userId,
+      apiKeyId: existing.id,
+      exchange: existing.exchange,
+      action: "profile.api_key.revoked",
+      level: "WARN",
+    });
+  }
+  return result.count > 0;
 };
 
 export const testApiKeyConnection = async (

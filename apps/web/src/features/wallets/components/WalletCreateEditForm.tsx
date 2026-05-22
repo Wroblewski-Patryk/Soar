@@ -12,6 +12,7 @@ import {
 import { fetchApiKeys } from '@/features/profile/services/apiKeys.service';
 import type { ApiKey } from '@/features/profile/types/apiKey.type';
 import { ErrorState, LoadingState } from '@/ui/components/ViewState';
+import { useAsyncConfirm } from '@/ui/components/useAsyncConfirm';
 import {
   FormAlert,
   focusFirstInvalidField,
@@ -78,6 +79,7 @@ export default function WalletCreateEditForm({
   const { t } = useI18n();
   const router = useRouter();
   const isEditMode = Boolean(editId);
+  const { confirm, confirmModal } = useAsyncConfirm();
 
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -370,7 +372,13 @@ export default function WalletCreateEditForm({
   const handleResetPaper = useCallback(async () => {
     if (!editId || !isEditMode || form.mode !== 'PAPER' || submitting || resetting) return;
 
-    const confirmed = typeof window === 'undefined' ? true : window.confirm(walletText('resetPaperConfirm'));
+    const confirmed = await confirm({
+      title: walletText('resetPaperAction'),
+      description: walletText('resetPaperConfirm'),
+      confirmLabel: walletText('resetPaperAction'),
+      cancelLabel: t('public.sharedUi.cancelLabel'),
+      confirmVariant: 'error',
+    });
     if (!confirmed) return;
 
     setResetError(null);
@@ -388,7 +396,7 @@ export default function WalletCreateEditForm({
         description: errorMessage,
       });
     }
-  }, [editId, form.mode, isEditMode, loadData, resetting, submitting, walletText]);
+  }, [confirm, editId, form.mode, isEditMode, loadData, resetting, submitting, t, walletText]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -445,90 +453,93 @@ export default function WalletCreateEditForm({
   }
 
   return (
-    <form id={formId} onSubmit={handleSubmit} className='grid gap-4 xl:grid-cols-[minmax(0,1fr)_20rem]'>
-      <div className='space-y-4'>
-        {showValidation && hasValidationErrors ? (
-          <FormValidationSummary title={walletText('validationSummaryTitle')} errors={validationSummaryErrors} />
-        ) : null}
+    <>
+      <form id={formId} onSubmit={handleSubmit} className='grid gap-4 xl:grid-cols-[minmax(0,1fr)_20rem]'>
+        <div className='space-y-4'>
+          {showValidation && hasValidationErrors ? (
+            <FormValidationSummary title={walletText('validationSummaryTitle')} errors={validationSummaryErrors} />
+          ) : null}
 
-        <WalletBasicsSection
-          walletText={walletText}
-          form={form}
-          modeOptions={modeOptions}
-          exchangeOptions={exchangeOptions}
-          marketTypeOptions={marketTypeSelectOptions}
-          baseCurrencyOptions={baseCurrencyOptions}
-          walletMetadataLoading={walletMetadataLoading}
-          walletMetadataError={walletMetadataError}
-          showValidation={showValidation}
-          fieldErrors={fieldErrors}
-          onNameChange={(value) => setForm((prev) => ({ ...prev, name: value }))}
-          onModeChange={setMode}
-          onExchangeChange={(value) => setForm((prev) => ({ ...prev, exchange: value }))}
-          onMarketTypeChange={(value) => setForm((prev) => ({ ...prev, marketType: value }))}
-          onBaseCurrencyChange={(value) => setForm((prev) => ({ ...prev, baseCurrency: normalizeFormSymbol(value) }))}
-        />
-
-        {form.mode === 'PAPER' ? (
-          <WalletPaperSection
+          <WalletBasicsSection
             walletText={walletText}
             form={form}
-            isEditMode={isEditMode}
-            resetting={resetting}
-            submitting={submitting}
-            lastResetAt={lastResetAt}
-            resetError={resetError}
-            onPaperInitialBalanceChange={(value) => setForm((prev) => ({ ...prev, paperInitialBalance: value }))}
-            onResetPaper={() => void handleResetPaper()}
-          />
-        ) : null}
-
-        {form.mode === 'LIVE' ? (
-          <WalletLiveSection
-            walletText={walletText}
-            form={form}
-            compatibleApiKeys={compatibleApiKeys}
-            liveAllocationModeOptions={liveAllocationModeOptions}
-            apiKeyOptions={apiKeyOptions}
+            modeOptions={modeOptions}
+            exchangeOptions={exchangeOptions}
+            marketTypeOptions={marketTypeSelectOptions}
+            baseCurrencyOptions={baseCurrencyOptions}
+            walletMetadataLoading={walletMetadataLoading}
+            walletMetadataError={walletMetadataError}
             showValidation={showValidation}
             fieldErrors={fieldErrors}
-            onLiveAllocationValueChange={(value) => setForm((prev) => ({ ...prev, liveAllocationValue: value }))}
-            onLiveAllocationModeChange={(value) => setForm((prev) => ({ ...prev, liveAllocationMode: value as WalletAllocationMode }))}
-            onApiKeyChange={(value) => {
-              setForm((prev) => ({ ...prev, apiKeyId: value }));
-              setPreview(null);
-              setPreviewError(null);
-            }}
+            onNameChange={(value) => setForm((prev) => ({ ...prev, name: value }))}
+            onModeChange={setMode}
+            onExchangeChange={(value) => setForm((prev) => ({ ...prev, exchange: value }))}
+            onMarketTypeChange={(value) => setForm((prev) => ({ ...prev, marketType: value }))}
+            onBaseCurrencyChange={(value) => setForm((prev) => ({ ...prev, baseCurrency: normalizeFormSymbol(value) }))}
           />
-        ) : null}
 
-        {!canSaveMode ? (
-          <FormAlert variant='warning'>
-            {form.mode === 'LIVE' ? walletText('liveUnsupported') : walletText('paperUnsupported')}
-          </FormAlert>
-        ) : null}
-      </div>
+          {form.mode === 'PAPER' ? (
+            <WalletPaperSection
+              walletText={walletText}
+              form={form}
+              isEditMode={isEditMode}
+              resetting={resetting}
+              submitting={submitting}
+              lastResetAt={lastResetAt}
+              resetError={resetError}
+              onPaperInitialBalanceChange={(value) => setForm((prev) => ({ ...prev, paperInitialBalance: value }))}
+              onResetPaper={() => void handleResetPaper()}
+            />
+          ) : null}
 
-      <aside className='space-y-4'>
-        <WalletSummarySection walletText={walletText} form={form} selectedApiKey={selectedApiKey} />
+          {form.mode === 'LIVE' ? (
+            <WalletLiveSection
+              walletText={walletText}
+              form={form}
+              compatibleApiKeys={compatibleApiKeys}
+              liveAllocationModeOptions={liveAllocationModeOptions}
+              apiKeyOptions={apiKeyOptions}
+              showValidation={showValidation}
+              fieldErrors={fieldErrors}
+              onLiveAllocationValueChange={(value) => setForm((prev) => ({ ...prev, liveAllocationValue: value }))}
+              onLiveAllocationModeChange={(value) => setForm((prev) => ({ ...prev, liveAllocationMode: value as WalletAllocationMode }))}
+              onApiKeyChange={(value) => {
+                setForm((prev) => ({ ...prev, apiKeyId: value }));
+                setPreview(null);
+                setPreviewError(null);
+              }}
+            />
+          ) : null}
 
-        {form.mode === 'LIVE' ? (
-          <WalletPreviewSection
-            walletText={walletText}
-            form={form}
-            canSaveMode={canSaveMode}
-            previewLoading={previewLoading}
-            previewError={previewError}
-            preview={preview}
-            previewReferenceBalance={previewReferenceBalance}
-            onPreviewBalance={() => void handlePreviewBalance()}
-          />
-        ) : null}
-      </aside>
+          {!canSaveMode ? (
+            <FormAlert variant='warning'>
+              {form.mode === 'LIVE' ? walletText('liveUnsupported') : walletText('paperUnsupported')}
+            </FormAlert>
+          ) : null}
+        </div>
 
-      <button type='submit' className='sr-only' disabled={submitting}>
-        {walletText('hiddenSubmit')}
-      </button>
-    </form>
+        <aside className='space-y-4'>
+          <WalletSummarySection walletText={walletText} form={form} selectedApiKey={selectedApiKey} />
+
+          {form.mode === 'LIVE' ? (
+            <WalletPreviewSection
+              walletText={walletText}
+              form={form}
+              canSaveMode={canSaveMode}
+              previewLoading={previewLoading}
+              previewError={previewError}
+              preview={preview}
+              previewReferenceBalance={previewReferenceBalance}
+              onPreviewBalance={() => void handlePreviewBalance()}
+            />
+          ) : null}
+        </aside>
+
+        <button type='submit' className='sr-only' disabled={submitting}>
+          {walletText('hiddenSubmit')}
+        </button>
+      </form>
+      {confirmModal}
+    </>
   );
 }

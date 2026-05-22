@@ -26,6 +26,8 @@ const requiredToolIds = [
   'API-ENDPOINT-DOCS-PARITY',
   'OPS-PROTECTED-INPUTS-CHECK',
   'OPS-PROTECTED-INPUTS-CHECK-TEST',
+  'OPS-OPERATOR-UNBLOCK-CHECK',
+  'OPS-OPERATOR-UNBLOCK-CHECK-TEST',
 ];
 const requiredSafetyBoundaries = [
   'architectureDecisionApplied',

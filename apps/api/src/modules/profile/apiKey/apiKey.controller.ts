@@ -41,14 +41,15 @@ export const create = async (req: Request, res: Response) => {
   const userId = req.user?.id;
   if (!userId) return sendError(res, 401, 'Unauthorized');
 
+  let payload: apiKeyService.ApiKeyPayload;
   try {
-    apiKeySchema.parse(req.body);
+    payload = apiKeySchema.parse(req.body);
   } catch (error) {
     return sendValidationError(res, error);
   }
 
   try {
-    const key = await apiKeyService.createApiKey(userId, req.body);
+    const key = await apiKeyService.createApiKey(userId, payload);
     res.status(201).json(key);
   } catch (error) {
     const mapped = mapApiKeyPersistenceError(error);
@@ -60,15 +61,16 @@ export const update = async (req: Request, res: Response) => {
   const userId = req.user?.id;
   if (!userId) return sendError(res, 401, 'Unauthorized');
 
+  let payload: Partial<apiKeyService.ApiKeyPayload>;
   try {
-    apiKeySchema.partial().parse(req.body);
+    payload = apiKeySchema.partial().parse(req.body);
   } catch (error) {
     return sendValidationError(res, error);
   }
 
   let result: Awaited<ReturnType<typeof apiKeyService.updateApiKey>>;
   try {
-    result = await apiKeyService.updateApiKey(userId, req.params.id, req.body);
+    result = await apiKeyService.updateApiKey(userId, req.params.id, payload);
   } catch (error) {
     const mapped = mapApiKeyPersistenceError(error);
     return sendError(res, mapped.status, mapped.message);
@@ -91,15 +93,16 @@ export const rotate = async (req: Request, res: Response) => {
   const userId = req.user?.id;
   if (!userId) return sendError(res, 401, 'Unauthorized');
 
+  let payload: Pick<apiKeyService.ApiKeyPayload, 'apiKey' | 'apiSecret'>;
   try {
-    apiKeyRotateSchema.parse(req.body);
+    payload = apiKeyRotateSchema.parse(req.body);
   } catch (error) {
     return sendValidationError(res, error);
   }
 
   let result: Awaited<ReturnType<typeof apiKeyService.rotateApiKeySecretPair>>;
   try {
-    result = await apiKeyService.rotateApiKeySecretPair(userId, req.params.id, req.body);
+    result = await apiKeyService.rotateApiKeySecretPair(userId, req.params.id, payload);
   } catch (error) {
     const mapped = mapApiKeyPersistenceError(error);
     return sendError(res, mapped.status, mapped.message);
@@ -124,14 +127,15 @@ export const testConnection = async (req: Request, res: Response) => {
   const userId = req.user?.id;
   if (!userId) return sendError(res, 401, 'Unauthorized');
 
+  let payload: apiKeyService.ApiKeyTestPayload;
   try {
-    apiKeyTestSchema.parse(req.body);
+    payload = apiKeyTestSchema.parse(req.body);
   } catch (error) {
     return sendValidationError(res, error);
   }
 
   try {
-    const result = await apiKeyService.testApiKeyConnection(userId, req.body);
+    const result = await apiKeyService.testApiKeyConnection(userId, payload);
     return res.status(200).json(result);
   } catch (error) {
     if (error instanceof ExchangeNotImplementedError) {

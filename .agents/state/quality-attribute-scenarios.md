@@ -1,9 +1,11 @@
 # Quality Attribute Scenarios
 
-Last updated: 2026-05-14
+Last updated: 2026-05-21
 
 | ID | Attribute | Scenario | Measure | Verification | Linked Requirements | Status | Last Updated |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| QA-039 | reliability/operations | Current protected V1 release evidence must remain fail-closed when only part of the production proof set is fresh. | UI clickthrough, rollback proof, and Gate 4 sign-off can be recorded as fresh passes, but release readiness remains blocked if `LIVEIMPORT-03` lacks an open runtime payload, if production SLO fails, or if DB restore/final release gate evidence is missing. | `docs/planning/v1-protected-app-proof-attempt-dd1a1faf-2026-05-21-task.md`; UI clickthrough PASS; rollback proof PASS; Gate 4 APPROVED; `LIVEIMPORT-03` authenticated but failed closed with `openCount=0` and `openOrdersCount=0`; SLO FAIL with `/workers/ready` `0%`, API 5xx `16.6667%`, `DEPLOYED_INLINE_MODE`. | REQ-FUNC-021 | blocked | 2026-05-21 |
+| QA-027 | security/money-flow fail-closed | When an exchange-backed LIVE order cancel is attempted after the user's active subscription no longer allows live trading, the API should reject before exchange adapter invocation and before local order mutation. | Downgraded FREE user receives `SubscriptionFeatureUnavailableError`, `cancelLiveOrder` is not called, and persisted order remains `OPEN`; allowed entitlement path still reaches the canonical exchange cancel boundary. | Parent verification reran `corepack pnpm --dir apps/api exec vitest run src/modules/orders/orders.liveCancelBoundary.service.test.ts src/modules/profile/apiKey/apiKey.e2e.test.ts --pool=forks --maxWorkers=1 --minWorkers=1 --test-timeout 30000` with local Postgres/Redis; `2` files / `20` tests passed. API/Web typecheck, full Web test pack, guardrails, build, audit, compose config, and diff check also passed. | REQ-SEC-040 | verified | 2026-05-21 |
 | QA-000 | process | Agents verify significant claims before reporting completion. | Completed missions link evidence to requirement IDs. | inspection | REQ-FUNC-000 | verified | 2026-05-11 |
 | QA-001 | usability/safety | When an operator deletes an active PAPER bot in the Bots UI, the app should not show a misleading LIVE-risk confirmation; when the bot is LIVE or live-opt-in, the LIVE confirmation must still appear. | Active PAPER delete calls `deleteBot`; LIVE delete cancellation does not call `deleteBot`. | component tests in `BotsManagement.test.tsx` | REQ-FUNC-001 | partially_verified | 2026-05-11 |
 | QA-002 | usability/operator truth | Dashboard Home renders loading, retryable error, and empty/onboarding states; when an operator switches the selected bot, wallet KPIs and runtime table tabs update to the selected bot without stale rows. | Loading shell is aria-busy; error shell exposes retry; selected bot changes to the new bot; wallet KPI values update; Orders and History tabs show selected-bot symbol rows and suppress previous-bot rows; authenticated empty/onboarding state renders on desktop and mobile with keyboard focusable next action and no console errors; active PAPER snapshot state renders bot configuration, PAPER mode, wallet baseline, symbols, responsive desktop/tablet/mobile layouts, open position rows, safe tab interaction, backend-null trade relationship IDs as `-`, backend `origin=USER` as Manual in the edit-position context, aggregate `openPositionQty` in success/empty contracts, and runtime enum values that match backend fee/origin/management/capital domains. | rendered component test in `HomeLiveWidgets.runtime-table-audit.test.tsx`; local browser proof in `V1-DASHBOARD-HOME-BROWSER-PROOF-2026-05-11`; active snapshot browser proof in `V1-DASHBOARD-HOME-RUNTIME-SESSION-FIXTURE-2026-05-11`; `V1-WEB-BACKEND-PARITY-DASHBOARD-2026-05-13` focused Web tests (`17/17`), API aggregate e2e (`18/18`), and API/Web typechecks; `V1-WEB-BACKEND-PARITY-RUNTIME-ORIGIN-2026-05-13` focused Web test (`3/3`) and Web typecheck; `V1-WEB-BACKEND-PARITY-RUNTIME-ENUMS-2026-05-13` focused Web runtime tests (`47/47`), Web typecheck, stale-value scan, and guardrails | REQ-FUNC-002 | partially_verified | 2026-05-13 |
@@ -29,7 +31,44 @@ Last updated: 2026-05-14
 | QA-022 | data lifecycle/capital safety | Deleted bots should not leave active-looking bot-owned runtime/trading rows that later block PAPER wallet reset, and wallet reset should fail closed when a currently active bot still uses that wallet. | Bot delete removes bot-owned positions, orders, trades, fills, signals, logs, runtime dedupe rows, sessions, events, stats, strategy links, market links, assistant config, and subagent config while preserving the strategy; PAPER reset returns `409` for an active wallet-linked bot and succeeds after deactivation when no open rows remain. | `docs/planning/v1-post-v1-wallet-bot-cleanup-hardening-2026-05-14-task.md`; `bots.delete-cleanup.e2e.test.ts` PASS (`1/1`); Wallets e2e PASS (`24/24`); API typecheck PASS | REQ-FUNC-025 | verified | 2026-05-14 |
 | QA-023 | usability/operator trust | Common crypto symbols shown in dashboard/runtime tables should not degrade to generic placeholders during a CoinGecko outage when a verified curated icon exists. | For the common trading basket, API icon lookup returns `source=curated`, `placeholder=false`, and an asset-specific icon URL when upstream responses are `503`; unknown symbols still use the deterministic placeholder. | `docs/planning/post-v1-crypto-icon-consistency-2026-05-14-task.md`; `icons.e2e.test.ts` PASS (`6/6`) | REQ-FUNC-026 | verified | 2026-05-14 |
 | QA-024 | simulation auditability/data lifecycle | Historical backtest results should keep the exact strategy and market-universe context used at run creation even when mutable strategy or universe records are later edited, and deletes should fail closed while history still references the source record. | New runs persist `seedConfig.contextSnapshot`; list/timeline/replay use snapshot strategy truth before mutable strategy records; deleting a referenced strategy or market universe returns `409`. | `docs/planning/post-v1-strategy-snapshot-history-2026-05-14-task.md`; focused API e2e PASS (`44/44`) across backtests, strategies, and markets | REQ-FUNC-027 | verified | 2026-05-14 |
+| QA-025 | security/commercial readiness | Security-critical paths should fail closed under adversarial review before any commercial security claim: role changes invalidate stale privilege, weak deploy secrets are rejected, logs and UI errors do not expose sensitive internals, LIVE-sensitive execution checks current entitlement, exchange adapters preserve derivative safety parameters, unknown LIVE statuses do not become filled truth, and production dependencies have no known audit vulnerabilities. | Second-round security agents report completed findings; production audit reports no known vulnerabilities; focused API/Web security packs pass; build/typecheck/guardrails pass; residual production/pentest/LIVE mutation gates remain explicit. | `docs/planning/security-red-team-hardening-2026-05-21-task.md`; `pnpm audit --prod`; focused API/Web regression packs; API/Web typecheck; build; guardrails | REQ-SEC-038 | verified | 2026-05-21 |
+| QA-026 | security/ops hardening | Residual local hardening should prevent secret leakage in release rehearsal artifacts, avoid client-side protected data loads before auth confirmation, withhold admin content until client role confirmation, keep API-key response state secret-free, fail closed on LIVE entitlement downgrade, avoid root runtime containers, align VPS templates with hardened Redis/secret defaults, emit HSTS, and keep local datastores bound to localhost. | Secret-bearing rehearsal flags are rejected; generated command strings do not contain secret values; frontend tests prove disabled runtime loading and admin role gate; API tests prove downgrade `403` behavior and runtime topology exclusion; guardrails reject root runtime Dockerfiles; VPS compose config parses with hardened template; build/typecheck pass; cleanup checks pass. | `docs/planning/security-red-team-hardening-2026-05-21-task.md`; `scripts/runV1StageRehearsal.test.mjs`; `scripts/repoGuardrails.test.mjs`; focused API/Web tests; build; guardrails | REQ-SEC-039 | verified | 2026-05-21 |
 
 Scenario shape:
 
 `stimulus -> environment -> artifact -> response -> measure -> verification`
+
+## Scenario Notes
+
+- 2026-05-21 `SECURITY-RED-TEAM-HARDENING-2026-05-21` updates security,
+  privacy, fail-closed trading safety, deploy hygiene, and commercial
+  readiness posture. Local hardening is verified by agent reports, dependency
+  audit, focused API/Web regression packs, typecheck, build, and guardrails.
+  This does not replace protected production proof, LIVE exchange-side mutation
+  proof, or an independent penetration/VPS configuration review.
+- 2026-05-21 security continuation updates frontend, backend entitlement, and
+  ops hardening. The remaining local P2 queue from the first security report is
+  closed with tests and guardrails; remaining risk is external/protected
+  evidence rather than a known local P1/P2 code defect.
+- 2026-05-21 `LOCAL-CERTAINTY-CLOSURE-2026-05-21` updates reporting
+  reliability, i18n, UX consistency, migration confidence, and release-local
+  validation: Reports now use immutable execution-mode snapshots for new
+  trades, route-reachable i18n audit passed with `0` findings, shared modal and
+  shared state components replaced remaining local UI inconsistencies, Prisma
+  migration replay/status/validation passed, full API/Web tests passed, build
+  passed, and go-live smoke passed. Protected production readiness still
+  depends on `AUD-19`.
+- 2026-05-20 `V1-PROTECTED-PREFLIGHT-DD1A1FAF-2026-05-20` updates `QA-021`:
+  the release gate correctly fails closed for the current evidence date. Public
+  build-info and public smoke pass for deployed `dd1a1faf79f8ac...`, but
+  missing protected input names and stale protected evidence keep final V1
+  readiness blocked. The current no-secret operator handoff is
+  `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.md`, and
+  `ops:operator-unblock:check` now validates it.
+- 2026-05-20 `V1-OPERATOR-UNBLOCK-TOOLING-INDEX-SYNC-2026-05-20` updates
+  `QA-021`: the current no-secret operator packet validation is now included
+  in reusable audit tooling and `audit:manifest:verify`, so future release
+  evidence reruns fail sooner if the protected handoff drifts.
+- 2026-05-20 `V1-AGENT-BLOCKER-SWEEP-DD1A1FAF-2026-05-20` updates
+  `QA-021`: parallel agents confirmed the release gate is correctly fail-closed
+  and cannot be advanced by public smoke, build-info, or more non-secret prep.

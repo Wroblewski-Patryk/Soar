@@ -27,11 +27,11 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
   const verifiedCandidates = getVerifiedAuthTokenCandidates(req);
 
   for (const candidate of verifiedCandidates) {
-    let userExists: { id: string; sessionVersion: number } | null = null;
+    let userExists: { id: string; email: string; role: 'USER' | 'ADMIN'; sessionVersion: number } | null = null;
     try {
       userExists = await prisma.user.findUnique({
         where: { id: candidate.claims.userId },
-        select: { id: true, sessionVersion: true },
+        select: { id: true, email: true, role: true, sessionVersion: true },
       });
     } catch {
       return sendError(res, 503, 'Auth service temporarily unavailable');
@@ -48,9 +48,9 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
     }
 
     req.user = {
-      id: candidate.claims.userId,
-      email: candidate.claims.email,
-      role: candidate.claims.role,
+      id: userExists.id,
+      email: userExists.email,
+      role: userExists.role,
     };
 
     return next();

@@ -2,6 +2,8 @@ import { prisma } from '../../prisma/client';
 
 export type PerformanceMode = 'BACKTEST' | 'PAPER' | 'LIVE';
 
+const TRADE_MODE_RESOLUTION = 'TRADE_EXECUTION_MODE_SNAPSHOT_WITH_BOT_CURRENT_MODE_FALLBACK';
+
 export type ModePerformance = {
   mode: PerformanceMode;
   totalTrades: number;
@@ -106,7 +108,13 @@ export const getCrossModePerformance = async (userId: string) => {
       where: {
         userId,
         botId: { not: null },
-        bot: { mode: 'PAPER' },
+        OR: [
+          { executionMode: 'PAPER' },
+          {
+            executionMode: null,
+            bot: { mode: 'PAPER' },
+          },
+        ],
       },
       select: { realizedPnl: true },
       take: 2000,
@@ -115,7 +123,13 @@ export const getCrossModePerformance = async (userId: string) => {
       where: {
         userId,
         botId: { not: null },
-        bot: { mode: 'LIVE' },
+        OR: [
+          { executionMode: 'LIVE' },
+          {
+            executionMode: null,
+            bot: { mode: 'LIVE' },
+          },
+        ],
       },
       select: { realizedPnl: true },
       take: 2000,
@@ -124,7 +138,7 @@ export const getCrossModePerformance = async (userId: string) => {
 
   return {
     generatedAt: new Date().toISOString(),
-    modeResolution: 'BOT_CURRENT_MODE',
+    modeResolution: TRADE_MODE_RESOLUTION,
     rows: [
       aggregateModePerformance('BACKTEST', { backtestReports }),
       aggregateModePerformance('PAPER', { trades: paperTrades }),
@@ -132,4 +146,3 @@ export const getCrossModePerformance = async (userId: string) => {
     ],
   };
 };
-

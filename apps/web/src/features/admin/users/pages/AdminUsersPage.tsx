@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { getAdminUsers, updateAdminUser } from "../services/adminUsers.service";
 import { AdminSubscriptionPlanCode, AdminUser, AdminUserRole } from "../types/adminUser.type";
 import { useI18n } from "@/i18n/I18nProvider";
+import { useAsyncConfirm } from "@/ui/components/useAsyncConfirm";
 
 const formatDate = (value: string, locale: "en" | "pl" | "pt" | "de-CH") => {
   const date = new Date(value);
@@ -21,6 +22,7 @@ const formatDate = (value: string, locale: "en" | "pl" | "pt" | "de-CH") => {
 export default function AdminUsersPage() {
   const { locale, t } = useI18n();
   const { user: authUser } = useAuth();
+  const { confirm, confirmModal } = useAsyncConfirm();
   const labels = {
     loadError: t("admin.users.loadError"),
     roleUpdateErrorPrefix: t("admin.users.roleUpdateErrorPrefix"),
@@ -49,6 +51,11 @@ export default function AdminUsersPage() {
     toggleRoleAriaPrefix: t("admin.users.toggleRoleAriaPrefix"),
     planSelectAriaPrefix: t("admin.users.planSelectAriaPrefix"),
     assignPlanAriaPrefix: t("admin.users.assignPlanAriaPrefix"),
+    confirmTitle: t("admin.users.confirmTitle"),
+    confirmRoleDescription: t("admin.users.confirmRoleDescription"),
+    confirmPlanDescription: t("admin.users.confirmPlanDescription"),
+    confirmLabel: t("admin.users.confirmLabel"),
+    cancelLabel: t("admin.users.cancelLabel"),
   } as const;
 
   const [users, setUsers] = useState<AdminUser[]>([]);
@@ -144,6 +151,17 @@ export default function AdminUsersPage() {
 
   const onToggleRole = async (user: AdminUser) => {
     const nextRole: AdminUserRole = user.role === "ADMIN" ? "USER" : "ADMIN";
+    const accepted = await confirm({
+      title: labels.confirmTitle,
+      description: labels.confirmRoleDescription
+        .replace("{email}", user.email)
+        .replace("{role}", nextRole),
+      confirmLabel: labels.confirmLabel,
+      cancelLabel: labels.cancelLabel,
+      confirmVariant: "error",
+    });
+    if (!accepted) return;
+
     setSavingKey(`role:${user.id}`);
     setActionError(null);
     try {
@@ -159,6 +177,16 @@ export default function AdminUsersPage() {
   const onAssignPlan = async (user: AdminUser) => {
     const selectedPlan = planDraftByUserId[user.id];
     if (!selectedPlan) return;
+    const accepted = await confirm({
+      title: labels.confirmTitle,
+      description: labels.confirmPlanDescription
+        .replace("{email}", user.email)
+        .replace("{plan}", selectedPlan),
+      confirmLabel: labels.confirmLabel,
+      cancelLabel: labels.cancelLabel,
+      confirmVariant: "error",
+    });
+    if (!accepted) return;
 
     setSavingKey(`plan:${user.id}`);
     setActionError(null);
@@ -325,6 +353,7 @@ export default function AdminUsersPage() {
           </table>
         </div>
       )}
+      {confirmModal}
     </section>
   );
 }

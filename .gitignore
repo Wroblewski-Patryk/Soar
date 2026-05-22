@@ -16,3 +16,13 @@ docs/operations/_artifacts-rc-evidence-check-latest.json
 **/package-lock.json
 output/
 
+# Keep local runtime secrets out of version control.
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!.env.*.example
+!**/.env.example
+!**/.env.*.example
+

@@ -5,8 +5,8 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/admin`
 - Owner: frontend/admin-console
-- Last updated: 2026-04-12
-- Related planning task: `DCP-08`
+- Last updated: 2026-05-21
+- Related planning task: `LOCAL-CERTAINTY-CLOSURE-2026-05-21`
 
 ## 1. Purpose and Scope
 - Implements admin console pages for user and subscription plan operations.
@@ -60,15 +60,22 @@ Out of scope:
 - Admin pages are under middleware-protected `/admin/:path*`.
 - Final authorization is backend-enforced; UI assumes authenticated admin context.
 - Users page blocks accidental self-demotion action in client.
+- Users page role and subscription-plan mutations require explicit confirmation
+  before the client calls the admin update API.
 
 ## 7. Observability and Operations
-- Explicit loading/error/action-error states in both admin pages.
+- Explicit loading/error/action-error states in both admin pages; Admin
+  Subscriptions uses shared `LoadingState` / `ErrorState` components for
+  consistent retryable page-state behavior.
 - Refresh controls allow manual re-sync after admin mutations.
 
 ## 8. Test Coverage and Evidence
 - Primary tests:
   - `AdminUsersPage.test.tsx`
   - `AdminSubscriptionsPage.test.tsx`
+- 2026-05-21 evidence: `AdminUsersPage.test.tsx` covers cancel and confirm
+  paths for role and plan mutation confirmation; `AdminSubscriptionsPage.test.tsx`
+  covers the shared loading/error state surface.
 - Suggested validation command:
 ```powershell
 pnpm --filter web test -- src/features/admin/users/pages/AdminUsersPage.test.tsx src/features/admin/subscriptions/pages/AdminSubscriptionsPage.test.tsx
@@ -77,4 +84,3 @@ pnpm --filter web test -- src/features/admin/users/pages/AdminUsersPage.test.tsx
 ## 9. Open Issues and Follow-Ups
 - Add explicit client-side role gate/redirect for non-admin users to improve UX clarity.
 - Add optimistic update rollback telemetry for admin mutation failures.
-

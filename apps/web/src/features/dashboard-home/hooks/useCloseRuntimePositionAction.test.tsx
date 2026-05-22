@@ -62,6 +62,60 @@ describe('useCloseRuntimePositionAction', () => {
     expect(onClosed).toHaveBeenCalledTimes(1);
   });
 
+  it('requires explicit confirmation before closing a LIVE runtime position', async () => {
+    closeBotRuntimeSessionPositionMock.mockResolvedValue({
+      status: 'closed',
+      orderId: 'order-1',
+      positionId: 'position-1',
+    });
+    const onClosed = vi.fn(async () => undefined);
+    const confirmRiskAction = vi.fn().mockResolvedValueOnce(false).mockResolvedValueOnce(true);
+
+    const { result } = renderHook(() =>
+      useCloseRuntimePositionAction({
+        closePositionErrorLabel: 'error',
+        closePositionIgnoredLabel: 'ignored',
+        closePositionNoSessionLabel: 'no-session',
+        closePositionSuccessLabel: 'success',
+        confirmRiskAction,
+        onClosed,
+        selectedBotMode: 'LIVE',
+        selectedBotId: 'bot-default',
+        selectedSessionId: 'session-default',
+      })
+    );
+
+    await act(async () => {
+      await result.current.handleCloseRuntimePosition({
+        id: 'position-1',
+        runtimeBotId: 'bot-1',
+        runtimeSessionId: 'session-1',
+      } as never);
+    });
+
+    expect(confirmRiskAction).toHaveBeenCalledTimes(1);
+    expect(closeBotRuntimeSessionPositionMock).not.toHaveBeenCalled();
+    expect(onClosed).not.toHaveBeenCalled();
+
+    await act(async () => {
+      await result.current.handleCloseRuntimePosition({
+        id: 'position-1',
+        runtimeBotId: 'bot-1',
+        runtimeSessionId: 'session-1',
+      } as never);
+    });
+
+    expect(confirmRiskAction).toHaveBeenCalledTimes(2);
+    expect(closeBotRuntimeSessionPositionMock).toHaveBeenCalledWith(
+      'bot-1',
+      'session-1',
+      'position-1',
+      { riskAck: true }
+    );
+    expect(toastSuccessMock).toHaveBeenCalledWith('success');
+    expect(onClosed).toHaveBeenCalledTimes(1);
+  });
+
   it('tracks pending state per row for concurrent close actions', async () => {
     let resolveFirst: ((value: { status: 'closed' }) => void) | null = null;
     let resolveSecond: ((value: { status: 'closed' }) => void) | null = null;

@@ -130,6 +130,9 @@ describe("AdminUsersPage", () => {
 
     expect(await screen.findByText("user@example.com")).toBeInTheDocument();
     fireEvent.click(screen.getByLabelText("Toggle role for user@example.com"));
+    expect(screen.getByText("Confirm admin change")).toBeInTheDocument();
+    expect(updateAdminUserMock).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText(/^Confirm$/));
 
     await waitFor(() => {
       expect(updateAdminUserMock).toHaveBeenCalledWith("user-1", { role: "ADMIN" });
@@ -160,6 +163,9 @@ describe("AdminUsersPage", () => {
       target: { value: "ADVANCED" },
     });
     fireEvent.click(screen.getByLabelText("Assign plan for user@example.com"));
+    expect(screen.getByText("Confirm admin change")).toBeInTheDocument();
+    expect(updateAdminUserMock).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText(/^Confirm$/));
 
     await waitFor(() => {
       expect(updateAdminUserMock).toHaveBeenCalledWith("user-1", {
@@ -167,6 +173,28 @@ describe("AdminUsersPage", () => {
       });
     });
     expect(await screen.findByText("Advanced")).toBeInTheDocument();
+  });
+
+  it("does not update role or plan when admin confirmation is canceled", async () => {
+    getAdminUsersMock.mockResolvedValue({
+      users: [baseUser],
+      meta: { page: 1, pageSize: 100, total: 1, totalPages: 1 },
+    });
+    getAdminSubscriptionPlansMock.mockResolvedValue([freePlan, advancedPlan]);
+
+    renderWithI18n();
+
+    expect(await screen.findByText("user@example.com")).toBeInTheDocument();
+    fireEvent.click(screen.getByLabelText("Toggle role for user@example.com"));
+    fireEvent.click(screen.getByText(/^Cancel$/));
+    expect(updateAdminUserMock).not.toHaveBeenCalled();
+
+    fireEvent.change(screen.getByLabelText("Plan select for user@example.com"), {
+      target: { value: "ADVANCED" },
+    });
+    fireEvent.click(screen.getByLabelText("Assign plan for user@example.com"));
+    fireEvent.click(screen.getByText(/^Cancel$/));
+    expect(updateAdminUserMock).not.toHaveBeenCalled();
   });
 
   it("shows error alert when users load fails", async () => {

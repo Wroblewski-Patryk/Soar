@@ -26,11 +26,13 @@ ENV NODE_ENV=production
 RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
-COPY --from=build /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/
-COPY --from=build /app/node_modules /app/node_modules
-COPY --from=build /app/apps/api /app/apps/api
-COPY --from=build /app/libs/shared /app/libs/shared
+COPY --from=build --chown=node:node /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/
+COPY --from=build --chown=node:node /app/node_modules /app/node_modules
+COPY --from=build --chown=node:node /app/apps/api /app/apps/api
+COPY --from=build --chown=node:node /app/libs/shared /app/libs/shared
+RUN mkdir -p /app/apps/api/tmp /app/apps/api/public/avatars && chown -R node:node /app
 
 EXPOSE 3001
 WORKDIR /app/apps/api
+USER node
 CMD ["node", "scripts/start-with-migrate.mjs"]

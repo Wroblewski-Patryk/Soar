@@ -11,6 +11,12 @@ import { resolveOpsAuthToken } from './resolveOpsAuthToken.mjs';
 
 const ALLOWED_ENVIRONMENTS = new Set(['local', 'stage', 'production']);
 const ALLOWED_DB_PROFILES = new Set(['local', 'stage', 'prod']);
+const SECRET_CLI_FLAGS = new Set([
+  '--auth-token',
+  '--auth-password',
+  '--ops-basic-password',
+  '--ops-auth-header-value',
+]);
 
 const normalizeEnvironment = (value) => {
   const normalized = String(value ?? '').trim().toLowerCase();
@@ -58,22 +64,17 @@ const parseArgs = () => {
       options.help = true;
       return options;
     }
+    if (SECRET_CLI_FLAGS.has(arg)) {
+      throw new Error(`${arg} is secret-bearing and must be provided through SLO_* environment variables`);
+    }
     if (arg === '--base-url') options.baseUrl = args[index + 1] ?? options.baseUrl;
     if (arg === '--duration-minutes') options.durationMinutes = args[index + 1] ?? options.durationMinutes;
     if (arg === '--interval-seconds') options.intervalSeconds = args[index + 1] ?? options.intervalSeconds;
-    if (arg === '--auth-token') options.authToken = args[index + 1] ?? options.authToken;
     if (arg === '--auth-email') options.authEmail = args[index + 1] ?? options.authEmail;
-    if (arg === '--auth-password') options.authPassword = args[index + 1] ?? options.authPassword;
     if (arg === '--ops-auth-header-name') {
       options.opsAuthHeaderName = args[index + 1] ?? options.opsAuthHeaderName;
     }
-    if (arg === '--ops-auth-header-value') {
-      options.opsAuthHeaderValue = args[index + 1] ?? options.opsAuthHeaderValue;
-    }
     if (arg === '--ops-basic-user') options.opsBasicUser = args[index + 1] ?? options.opsBasicUser;
-    if (arg === '--ops-basic-password') {
-      options.opsBasicPassword = args[index + 1] ?? options.opsBasicPassword;
-    }
     if (arg === '--environment') options.environment = normalizeEnvironment(args[index + 1] ?? options.environment);
     if (arg === '--db-profile') options.dbProfile = normalizeDbProfile(args[index + 1] ?? options.dbProfile);
     if (arg === '--allow-local-production-evidence') options.allowLocalProductionEvidence = true;
@@ -173,10 +174,16 @@ const canReachApi = async (baseUrl, authToken, authLayer) => {
 };
 
 const main = () => {
-  const options = parseArgs();
+  let options;
+  try {
+    options = parseArgs();
+  } catch (error) {
+    console.error('[ops:rc:gates:local] failed:', error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  }
   if (options.help) {
     console.log(
-      'Usage: node scripts/runLocalExternalGatesPipeline.mjs [--base-url <url>] [--duration-minutes <n>] [--interval-seconds <n>] [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--ops-basic-user <user>] [--ops-basic-password <password>] [--ops-auth-header-name <name>] [--ops-auth-header-value <value>] [--environment <local|stage|production>] [--db-profile <local|stage|prod>] [--allow-local-production-evidence] [--skip-db-check] [--skip-slo-collect] [--skip-window-report] [--skip-checklist-sync] [--skip-evidence-check] [--strict-evidence-check] [--require-production-gate2] [--evidence-output <file>] [--window-days <csv>] [--allow-offline]'
+      'Usage: node scripts/runLocalExternalGatesPipeline.mjs [--base-url <url>] [--duration-minutes <n>] [--interval-seconds <n>] [--auth-email <email>] [--ops-basic-user <user>] [--ops-auth-header-name <name>] [--environment <local|stage|production>] [--db-profile <local|stage|prod>] [--allow-local-production-evidence] [--skip-db-check] [--skip-slo-collect] [--skip-window-report] [--skip-checklist-sync] [--skip-evidence-check] [--strict-evidence-check] [--require-production-gate2] [--evidence-output <file>] [--window-days <csv>] [--allow-offline]\n\nSecret-bearing values must be provided through SLO_AUTH_TOKEN, SLO_AUTH_PASSWORD, SLO_OPS_BASIC_PASSWORD, and SLO_OPS_AUTH_HEADER_VALUE.'
     );
     process.exit(0);
   }

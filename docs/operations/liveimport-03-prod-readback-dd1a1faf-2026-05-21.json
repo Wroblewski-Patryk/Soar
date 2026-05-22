@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-05-21T13:53:31.921Z",
+  "target": {
+    "baseUrl": "https://api.soar.luckysparrow.ch",
+    "webBaseUrl": "https://soar.luckysparrow.ch",
+    "expectedSha": "dd1a1faf79f8ac3581ca0a8c983481a3e30327ac",
+    "buildInfo": {
+      "gitSha": "dd1a1faf79f8ac3581ca0a8c983481a3e30327ac",
+      "gitRef": "main",
+      "matchesExpected": true
+    },
+    "symbols": [
+      "BNBUSDT",
+      "XRPUSDT"
+    ]
+  },
+  "auth": {
+    "source": "login",
+    "tokenCaptured": false
+  },
+  "entries": [
+    {
+      "bot": {
+        "idHash": "e0c0bf8f4942",
+        "nameHash": "b64ac05f17e6",
+        "mode": "LIVE",
+        "exchange": "BINANCE",
+        "marketType": "FUTURES",
+        "liveOptIn": true,
+        "manageExternalPositions": true,
+        "walletIdHash": "437d49588714",
+        "apiKeyIdHash": "6d9fa9f534a4",
+        "activeMarketGroups": null
+      },
+      "session": {
+        "idHash": "0d924c7e1e8b",
+        "status": "RUNNING",
+        "startedAt": "2026-05-14T14:58:12.989Z",
+        "stoppedAt": null,
+        "eventsCount": 42668
+      },
+      "symbols": [
+        {
+          "symbol": "BNBUSDT",
+          "total": 10,
+          "openCount": 0,
+          "closedCount": 10,
+          "openOrdersCount": 0,
+          "showDynamicStopColumns": true,
+          "openItems": [],
+          "importCompleteness": "MISSING_FROM_RUNTIME_READBACK"
+        },
+        {
+          "symbol": "XRPUSDT",
+          "total": 8,
+          "openCount": 0,
+          "closedCount": 8,
+          "openOrdersCount": 0,
+          "showDynamicStopColumns": true,
+          "openItems": [],
+          "importCompleteness": "MISSING_FROM_RUNTIME_READBACK"
+        }
+      ],
+      "status": "REVIEW"
+    }
+  ],
+  "summary": {
+    "botsChecked": 1,
+    "botsWithRuntimeReadback": 1,
+    "botsWithoutRunningSession": 0,
+    "symbolsExpected": 2,
+    "symbolsVisible": [],
+    "missingSymbols": [
+      "BNBUSDT",
+      "XRPUSDT"
+    ]
+  }
+}

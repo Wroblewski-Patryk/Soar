@@ -245,18 +245,19 @@ export const enforceLivePretradeGuards = async (params: {
     throw orderErrors.livePretradeAmountPrecision();
   }
 
-  if (typeof rules.minNotional === 'number') {
+  if (typeof rules.minNotional === 'number' && Number.isFinite(rules.minNotional) && rules.minNotional > 0) {
     let priceForNotional: number | null = null;
     if (typeof params.payload.price === 'number' && Number.isFinite(params.payload.price)) {
       priceForNotional = params.payload.price;
     } else {
       priceForNotional = await params.connector.fetchMarkPrice(normalizedSymbol).catch(() => null);
     }
-    if (typeof priceForNotional === 'number' && Number.isFinite(priceForNotional)) {
-      const notional = quantity * priceForNotional;
-      if (approxLessThan(notional, rules.minNotional)) {
-        throw orderErrors.livePretradeNotionalBelowMin();
-      }
+    if (!(typeof priceForNotional === 'number' && Number.isFinite(priceForNotional) && priceForNotional > 0)) {
+      throw orderErrors.livePretradeNotionalPriceUnavailable();
+    }
+    const notional = quantity * priceForNotional;
+    if (approxLessThan(notional, rules.minNotional)) {
+      throw orderErrors.livePretradeNotionalBelowMin();
     }
   }
 };

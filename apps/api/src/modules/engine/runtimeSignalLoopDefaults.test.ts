@@ -31,6 +31,10 @@ vi.mock('../bots/runtimeExternalPositionOwner.service', () => ({
   ),
 }));
 
+vi.mock('../subscriptions/subscriptionEntitlements.service', () => ({
+  assertSubscriptionAllowsLiveTrading: vi.fn(async () => undefined),
+}));
+
 import { prisma } from '../../prisma/client';
 import {
   getExternalPositionOwnership,
@@ -47,6 +51,7 @@ import {
   listActiveRuntimeBotsRaw,
   listRuntimeManagedExternalPositionsRaw,
 } from './runtimeSignalLoop.repository';
+import { assertSubscriptionAllowsLiveTrading } from '../subscriptions/subscriptionEntitlements.service';
 
 describe('listActiveRuntimeBots', () => {
   beforeEach(() => {
@@ -58,6 +63,8 @@ describe('listActiveRuntimeBots', () => {
     vi.mocked(resolveExternalPositionOwnershipIndex).mockReset();
     vi.mocked(listOwnedExternalSymbolsForBot).mockReset();
     vi.mocked(getExternalPositionOwnership).mockReset();
+    vi.mocked(assertSubscriptionAllowsLiveTrading).mockReset();
+    vi.mocked(assertSubscriptionAllowsLiveTrading).mockResolvedValue(undefined as never);
   });
 
   it('excludes LIVE bots without liveOptIn from runtime topology', async () => {

@@ -7,6 +7,7 @@ import { getOwnedBotRuntimeSession } from './botOwnership.service';
 import { botErrors } from './bots.errors';
 import { fetchFallbackTickerPrices } from './runtimeMarketDataFallback.service';
 import { createPublicExchangeConnector } from '../exchange/exchangeConnectorFactory.service';
+import { assertSubscriptionAllowsLiveTrading } from '../subscriptions/subscriptionEntitlements.service';
 import {
   getExternalPositionOwnership,
   parseApiKeyIdFromExternalPositionId,
@@ -163,6 +164,9 @@ export const closeBotRuntimeSessionPosition = async (
     },
   });
   if (!botContext) return null;
+  if (botContext.mode === 'LIVE') {
+    await assertSubscriptionAllowsLiveTrading(userId);
+  }
 
   const position = await prisma.position.findFirst({
     where: {
@@ -292,11 +296,6 @@ export const closeBotRuntimeSessionPosition = async (
       await connector.disconnect().catch(() => undefined);
     }
   }
-  closeReferencePrice =
-    closeReferencePrice ??
-    (botContext.mode === 'LIVE' && Number.isFinite(position.entryPrice) && position.entryPrice > 0
-      ? position.entryPrice
-      : null);
   if (!closeReferencePrice) {
     throw botErrors.positionClosePriceUnavailable();
   }

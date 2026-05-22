@@ -443,7 +443,7 @@ const main = async () => {
       if (check.horizontalOverflow > 12) failures.push(`horizontal overflow=${check.horizontalOverflow}`);
       if (check.frameworkOverlay) failures.push('framework overlay detected');
       const badEvents = summarizeBadEvents(client.events);
-      if (badEvents.length) warnings.push(`console/runtime event observed: ${badEvents.join(' | ')}`);
+      if (badEvents.length) failures.push(`console/runtime event observed: ${badEvents.join(' | ')}`);
       if (scenario.name.includes('mobile') && !scenario.mobileMenu?.clicked) failures.push('mobile menu click target missing');
       const status = failures.length ? 'FAIL' : 'PASS';
       pages.push({

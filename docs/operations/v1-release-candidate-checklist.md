@@ -13,7 +13,7 @@
   - bots LIVE confirmations,
   - shell/accessibility smoke.
 
-### Latest Verification (2026-05-14)
+### Latest Verification (2026-05-21)
 - `pnpm --filter api build` passed.
 - `pnpm --filter web build` passed.
 - `pnpm --filter api test -- src/modules/auth/auth.e2e.test.ts src/modules/exchange/liveOrderAdapter.service.test.ts src/router/health-readiness.test.ts src/router/workers-health-readiness.test.ts src/router/metrics.test.ts src/router/alerts.test.ts` passed (`6` files, `20` tests).
@@ -46,6 +46,11 @@
   - `/workers/runtime-freshness`.
 - [x] Queue lag metrics reviewed and within baseline.
 - [x] Incident contacts and escalation chain confirmed.
+
+### Current Runtime Gate Override (2026-05-21)
+- Fresh production SLO supersedes the static checklist ticks above for the
+  current candidate: `/workers/ready` returned `503` for the full 30-minute
+  window, so worker readiness and Gate 2 are not currently approved.
 
 ### Mandatory Post-Deploy Validation Sequence (Runtime + Cache + Stream)
 1. API baseline:
@@ -101,8 +106,10 @@
 - [x] RC owner assigned with rollback authority.
 - Sign-off record template: `docs/operations/v1-rc-signoff-record.md`.
 
-## Outstanding External Gates (2026-05-14)
-- current snapshot is `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS` (synced 2026-05-14).
+## Outstanding External Gates (2026-05-21)
+- current truth snapshot is `G1=OPEN`, `G2=FAIL`, `G3=PASS`, `G4=PASS` (synced 2026-05-21 after fresh production SLO).
+- Gate 1 remains open until the production restore drill is rerun from VPS/Coolify Docker context for this candidate.
+- Gate 2 failed in `docs/operations/v1-slo-observation-2026-05-21T15-28-20-108Z.md`: `/workers/ready` availability `0.00%`, API 5xx ratio `16.6667%`, with `DEPLOYED_INLINE_MODE` in worker readiness.
 - Execution guide: `docs/operations/v1-rc-external-gates-runbook.md`.
 - SLO definitions and metric mapping: `docs/operations/v1-slo-catalog.md`.
 - Binance live bot-control verification checklist: `docs/operations/binance-live-ops-verification-checklist-2026-04-06.md`.

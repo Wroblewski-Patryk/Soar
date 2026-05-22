@@ -10,13 +10,10 @@ import PasswordVisibilityToggle from "../../auth/components/PasswordVisibilityTo
 import { changePassword, deleteAccount } from "../services/security.service";
 import ConfirmModal from "@/ui/components/ConfirmModal";
 import { navigateWithFallback } from "@/lib/navigation";
+import { resolveUiErrorMessage } from "@/lib/errorResolver";
 
-const mapApiError = (error: unknown, fallback: string) => {
-  if (isAxiosError<{ message?: string }>(error)) {
-    return error.response?.data?.message ?? fallback;
-  }
-  return fallback;
-};
+const mapApiError = (error: unknown, fallback: string) =>
+  isAxiosError(error) ? (resolveUiErrorMessage(error, { fallback }) ?? fallback) : fallback;
 
 export default function SecurityPanel() {
   const { t } = useI18n();

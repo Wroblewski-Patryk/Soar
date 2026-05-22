@@ -1,5 +1,5 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { toast } from "sonner";
 
 import { I18nProvider } from "../../../i18n/I18nProvider";
@@ -24,6 +24,10 @@ describe("SecurityPanel", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockChangePassword.mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   const renderPanel = async () => {
@@ -127,5 +131,37 @@ describe("SecurityPanel", () => {
     expect(currentPasswordInput).toHaveValue("");
     expect(newPasswordInput).toHaveValue("");
     expect(confirmPasswordInput).toHaveValue("");
+  });
+
+  it("redacts sensitive backend password-change errors in production", async () => {
+    vi.stubEnv("NODE_ENV", "production");
+    mockChangePassword.mockRejectedValueOnce({
+      isAxiosError: true,
+      response: {
+        data: {
+          message: "password reset token leaked via Prisma SELECT * FROM users",
+        },
+      },
+      message: "stack trace token leaked",
+    });
+
+    await renderPanel();
+
+    fireEvent.change(screen.getByLabelText("Current password"), {
+      target: { value: "current-password" },
+    });
+    fireEvent.change(screen.getByLabelText("New password"), {
+      target: { value: "new-password" },
+    });
+    fireEvent.change(screen.getByLabelText("Confirm new password"), {
+      target: { value: "new-password" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Change password" }));
+
+    await waitFor(() => {
+      expect(mockChangePassword).toHaveBeenCalled();
+    });
+    expect(toast.error).toHaveBeenCalledWith("Could not change password.");
+    expect(toast.error).not.toHaveBeenCalledWith(expect.stringMatching(/token|Prisma|SELECT/i));
   });
 });

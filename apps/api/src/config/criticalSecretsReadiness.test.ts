@@ -30,10 +30,11 @@ afterEach(() => {
 });
 
 const setBaseline = () => {
-  process.env.JWT_SECRET = 'jwt-secret-primary';
+  process.env.JWT_SECRET = 'jwt-primary-generated-material-32-plus';
   delete process.env.JWT_SECRET_PREVIOUS;
   delete process.env.JWT_SECRET_PREVIOUS_UNTIL;
-  process.env.API_KEY_ENCRYPTION_KEYS = 'v1:key-one,v2:key-two';
+  process.env.API_KEY_ENCRYPTION_KEYS =
+    'v1:encryption-key-one-generated-material-32-plus,v2:encryption-key-two-generated-material-32-plus';
   process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v1';
   delete process.env.API_KEY_ENCRYPTION;
 };
@@ -57,12 +58,12 @@ describe('criticalSecretsReadiness', () => {
   });
 
   it('treats legacy API_KEY_ENCRYPTION as compatibility-only and not release-ready material', () => {
-    process.env.JWT_SECRET = 'jwt-secret-primary';
+    process.env.JWT_SECRET = 'jwt-primary-generated-material-32-plus';
     delete process.env.JWT_SECRET_PREVIOUS;
     delete process.env.JWT_SECRET_PREVIOUS_UNTIL;
     delete process.env.API_KEY_ENCRYPTION_KEYS;
     delete process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
-    process.env.API_KEY_ENCRYPTION = 'legacy-only-key';
+    process.env.API_KEY_ENCRYPTION = 'legacy-only-key-generated-material-32-plus';
 
     const readiness = evaluateCriticalSecretsReadiness();
     expect(readiness.ready).toBe(false);
@@ -72,7 +73,7 @@ describe('criticalSecretsReadiness', () => {
 
   it('flags expired JWT previous-secret rotation windows', () => {
     setBaseline();
-    process.env.JWT_SECRET_PREVIOUS = 'legacy-secret';
+    process.env.JWT_SECRET_PREVIOUS = 'legacy-secret-generated-material-32-plus';
     process.env.JWT_SECRET_PREVIOUS_UNTIL = '2026-01-01T00:00:00.000Z';
     const readiness = evaluateCriticalSecretsReadiness(Date.parse('2026-04-06T00:00:00.000Z'));
     expect(readiness.ready).toBe(false);
@@ -88,7 +89,7 @@ describe('criticalSecretsReadiness', () => {
 
   it('flags malformed encryption keyring entries and active-version mismatches', () => {
     setBaseline();
-    process.env.API_KEY_ENCRYPTION_KEYS = 'broken-entry,v1:key-one';
+    process.env.API_KEY_ENCRYPTION_KEYS = 'broken-entry,v1:encryption-key-one-generated-material-32-plus';
     process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v2';
     const readiness = evaluateCriticalSecretsReadiness();
     expect(readiness.ready).toBe(false);
@@ -108,10 +109,25 @@ describe('criticalSecretsReadiness', () => {
 
   it('throws fail-safe startup error when readiness is invalid', () => {
     setBaseline();
-    process.env.JWT_SECRET_PREVIOUS = 'legacy-secret';
+    process.env.JWT_SECRET_PREVIOUS = 'legacy-secret-generated-material-32-plus';
     delete process.env.JWT_SECRET_PREVIOUS_UNTIL;
     expect(() => assertCriticalSecretsReadiness()).toThrowError(
       /Critical secret readiness check failed/
+    );
+  });
+
+  it('rejects placeholder and short production secret material', () => {
+    process.env.JWT_SECRET = 'change-me';
+    process.env.API_KEY_ENCRYPTION_KEYS = 'v1:change-me-32-byte-secret';
+    process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION = 'v1';
+
+    const readiness = evaluateCriticalSecretsReadiness();
+    expect(readiness.ready).toBe(false);
+    expect(readiness.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ key: 'JWT_SECRET' }),
+        expect.objectContaining({ key: 'API_KEY_ENCRYPTION_KEYS' }),
+      ])
     );
   });
 });

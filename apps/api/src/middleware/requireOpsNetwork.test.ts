@@ -6,6 +6,7 @@ import { requireOpsNetwork } from './requireOpsNetwork';
 const ORIGINAL_ALLOW_PRIVATE = process.env.OPS_ALLOW_PRIVATE_NETWORK;
 const ORIGINAL_ALLOWED_IPS = process.env.OPS_ALLOWED_IPS;
 const ORIGINAL_TRUSTED_PROXY_IPS = process.env.OPS_TRUSTED_PROXY_IPS;
+const ORIGINAL_NODE_ENV = process.env.NODE_ENV;
 
 const buildApp = () => {
   const app = express();
@@ -39,6 +40,7 @@ afterEach(() => {
   process.env.OPS_ALLOW_PRIVATE_NETWORK = ORIGINAL_ALLOW_PRIVATE;
   process.env.OPS_ALLOWED_IPS = ORIGINAL_ALLOWED_IPS;
   process.env.OPS_TRUSTED_PROXY_IPS = ORIGINAL_TRUSTED_PROXY_IPS;
+  process.env.NODE_ENV = ORIGINAL_NODE_ENV;
 });
 
 describe('requireOpsNetwork', () => {
@@ -73,5 +75,12 @@ describe('requireOpsNetwork', () => {
     const res = await request(app).get('/ops-probe').set('x-test-remote-ip', '192.168.1.10');
     expect(res.status).toBe(403);
   });
-});
 
+  it('defaults private-network access to disabled in production', async () => {
+    process.env.NODE_ENV = 'production';
+    delete process.env.OPS_ALLOW_PRIVATE_NETWORK;
+    const app = buildApp();
+    const res = await request(app).get('/ops-probe').set('x-test-remote-ip', '10.20.30.40');
+    expect(res.status).toBe(403);
+  });
+});

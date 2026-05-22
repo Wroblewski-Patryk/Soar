@@ -267,6 +267,7 @@ const persistImportedLifecycleTrades = async (input: {
         realizedPnl: trade.realizedPnl,
         origin: 'EXCHANGE_SYNC',
         managementMode: input.managementMode,
+        executionMode: 'LIVE',
         executedAt: trade.executedAt,
       },
     });
@@ -352,6 +353,7 @@ const persistImportedOpenAnchorTrade = async (input: {
       realizedPnl: 0,
       origin: 'EXCHANGE_SYNC',
       managementMode: input.managementMode,
+      executionMode: 'LIVE',
       executedAt: input.executedAt,
     },
   });

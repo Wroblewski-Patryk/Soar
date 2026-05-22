@@ -121,6 +121,40 @@ describe("API Keys security contract", () => {
     expect(listRes.body[0].manageExternalPositions).toBe(false);
   });
 
+  it("does not persist API key create fields outside the request DTO allowlist", async () => {
+    const agent = await registerAndLogin("apikey-allowlist@example.com");
+    const clientChosenId = "11111111-1111-4111-8111-111111111111";
+    const attackerControlledLastUsed = "2099-01-01T00:00:00.000Z";
+
+    const createRes = await agent.post("/dashboard/profile/apiKeys").send({
+      id: clientChosenId,
+      label: "allowlist-key",
+      exchange: "BINANCE",
+      apiKey: "ALLOWLISTKEY12345",
+      apiSecret: "ALLOWLISTSECRET12345",
+      lastUsed: attackerControlledLastUsed,
+      createdAt: attackerControlledLastUsed,
+      updatedAt: attackerControlledLastUsed,
+      userId: "attacker-controlled-user",
+    });
+
+    expect(createRes.status).toBe(201);
+    expect(createRes.body.id).not.toBe(clientChosenId);
+
+    const user = await prisma.user.findUniqueOrThrow({
+      where: { email: "apikey-allowlist@example.com" },
+    });
+    const dbRecord = await prisma.apiKey.findFirstOrThrow({
+      where: { userId: user.id, label: "allowlist-key" },
+    });
+
+    expect(dbRecord.id).not.toBe(clientChosenId);
+    expect(dbRecord.userId).toBe(user.id);
+    expect(dbRecord.lastUsed).toBeNull();
+    expect(dbRecord.createdAt.toISOString()).not.toBe(attackerControlledLastUsed);
+    expect(dbRecord.updatedAt.toISOString()).not.toBe(attackerControlledLastUsed);
+  });
+
   it("updates external-position onboarding options", async () => {
     const agent = await registerAndLogin("apikey-onboarding-options@example.com");
 
@@ -222,6 +256,27 @@ describe("API Keys security contract", () => {
     const listRes = await agent.get("/dashboard/profile/apiKeys");
     expect(listRes.status).toBe(200);
     expect(listRes.body).toHaveLength(0);
+
+    const user = await prisma.user.findUniqueOrThrow({
+      where: { email: "apikey-rotate-owner@example.com" },
+    });
+    const logs = await prisma.log.findMany({
+      where: {
+        userId: user.id,
+        entityType: "API_KEY",
+        entityId: keyId,
+      },
+      orderBy: { occurredAt: "asc" },
+    });
+    expect(logs.map((log) => log.action)).toEqual([
+      "profile.api_key.created",
+      "profile.api_key.rotated",
+      "profile.api_key.revoked",
+    ]);
+    expect(JSON.stringify(logs.map((log) => log.metadata))).not.toContain("ROTATEKEY1111");
+    expect(JSON.stringify(logs.map((log) => log.metadata))).not.toContain("ROTATESECRET1111");
+    expect(JSON.stringify(logs.map((log) => log.metadata))).not.toContain("ROTATEKEY2222");
+    expect(JSON.stringify(logs.map((log) => log.metadata))).not.toContain("ROTATESECRET2222");
   });
 
   it("tests key connection without persisting secrets", async () => {

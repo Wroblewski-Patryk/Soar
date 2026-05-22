@@ -1554,6 +1554,12 @@ describe('Bots module contract', () => {
     expect(missingAckRes.status).toBe(400);
     expect(missingAckRes.body.error.message).toBe('riskAck must be true to close runtime position');
 
+    const emptyAckRes = await owner
+      .post(`/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions/${position.id}/close`)
+      .send({});
+    expect(emptyAckRes.status).toBe(400);
+    expect(emptyAckRes.body.error.message).toBe('riskAck must be true to close runtime position');
+
     const closeRes = await owner
       .post(`/dashboard/bots/${botId}/runtime-sessions/${session.id}/positions/${position.id}/close`)
       .send({ riskAck: true });

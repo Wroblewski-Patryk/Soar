@@ -5,6 +5,12 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const operationsDir = path.resolve(process.cwd(), 'docs', 'operations');
+const SECRET_CLI_FLAGS = new Set([
+  '--auth-token',
+  '--auth-password',
+  '--ops-basic-password',
+  '--ops-auth-header-value',
+]);
 
 const parseArgs = () => {
   const args = process.argv.slice(2);
@@ -27,15 +33,14 @@ const parseArgs = () => {
       options.help = true;
       return options;
     }
+    if (SECRET_CLI_FLAGS.has(arg)) {
+      throw new Error(`${arg} is secret-bearing and must be provided through ROLLBACK_GUARD_* environment variables`);
+    }
     if (arg === '--profile') options.profile = (args[index + 1] ?? options.profile).toLowerCase();
     if (arg === '--base-url') options.baseUrl = args[index + 1] ?? options.baseUrl;
-    if (arg === '--auth-token') options.authToken = args[index + 1] ?? options.authToken;
     if (arg === '--auth-email') options.authEmail = args[index + 1] ?? options.authEmail;
-    if (arg === '--auth-password') options.authPassword = args[index + 1] ?? options.authPassword;
     if (arg === '--ops-basic-user') options.opsBasicUser = args[index + 1] ?? options.opsBasicUser;
-    if (arg === '--ops-basic-password') options.opsBasicPassword = args[index + 1] ?? options.opsBasicPassword;
     if (arg === '--ops-auth-header-name') options.opsAuthHeaderName = args[index + 1] ?? options.opsAuthHeaderName;
-    if (arg === '--ops-auth-header-value') options.opsAuthHeaderValue = args[index + 1] ?? options.opsAuthHeaderValue;
     if (arg === '--today') options.today = args[index + 1] ?? options.today;
   }
 
@@ -45,13 +50,15 @@ const parseArgs = () => {
 const printUsage = () => {
   console.log(
     [
-      'Usage: node scripts/runRollbackProofEvidence.mjs [--profile <stage|prod>] --base-url <url> [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--ops-basic-user <user>] [--ops-basic-password <pass>] [--ops-auth-header-name <name>] [--ops-auth-header-value <value>] [--today <yyyy-mm-dd>]',
+      'Usage: node scripts/runRollbackProofEvidence.mjs [--profile <stage|prod>] --base-url <url> [--auth-email <email>] [--ops-basic-user <user>] [--ops-auth-header-name <name>] [--today <yyyy-mm-dd>]',
       '',
       'Env:',
       '  ROLLBACK_GUARD_API_BASE_URL',
       '  ROLLBACK_GUARD_AUTH_TOKEN, or ROLLBACK_GUARD_AUTH_EMAIL plus ROLLBACK_GUARD_AUTH_PASSWORD',
       '  ROLLBACK_GUARD_OPS_BASIC_USER plus ROLLBACK_GUARD_OPS_BASIC_PASSWORD',
       '  ROLLBACK_GUARD_OPS_AUTH_HEADER_NAME plus ROLLBACK_GUARD_OPS_AUTH_HEADER_VALUE',
+      '',
+      'Secret-bearing values must be provided through ROLLBACK_GUARD_* environment variables.',
     ].join('\n')
   );
 };

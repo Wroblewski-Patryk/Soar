@@ -207,6 +207,7 @@ type UseHomeLiveWidgetsControllerArgs = {
   ) => Promise<BotRuntimeMonitoringAggregateResponse>;
   listBotRuntimeSessions: (botId: string, query?: { limit?: number }) => Promise<BotRuntimeSessionListItem[]>;
   listBots: () => Promise<Bot[]>;
+  enabled?: boolean;
   t: (key: TranslationKey) => string;
 };
 
@@ -216,6 +217,7 @@ export const useHomeLiveWidgetsController = ({
   getBotRuntimeMonitoringAggregate,
   listBotRuntimeSessions,
   listBots,
+  enabled = true,
   t,
 }: UseHomeLiveWidgetsControllerArgs) => {
   const [bots, setBots] = useState<Bot[]>([]);
@@ -251,6 +253,7 @@ export const useHomeLiveWidgetsController = ({
   const signalRailRef = useRef<HTMLDivElement | null>(null);
 
   const load = useCallback(async (opts?: { silent?: boolean }) => {
+    if (!enabled) return;
     const silent = opts?.silent ?? false;
     if (silent && loadInFlightRef.current) {
       const startedAt = loadStartedAtRef.current ?? 0;
@@ -292,9 +295,11 @@ export const useHomeLiveWidgetsController = ({
       const next = await Promise.all(
         scope.map(async (bot): Promise<RuntimeSnapshot> => {
           try {
-            const sessions = await listBotRuntimeSessions(bot.id, { limit: 20 });
+            const [sessions, runtimeGraph] = await Promise.all([
+              listBotRuntimeSessions(bot.id, { limit: 20 }),
+              getBotRuntimeGraph(bot.id).catch(() => null),
+            ]);
             const primary = pickPrimarySession(sessions);
-            const runtimeGraph = await getBotRuntimeGraph(bot.id).catch(() => null);
             if (!primary) {
               return {
                 bot,
@@ -387,6 +392,7 @@ export const useHomeLiveWidgetsController = ({
   }, [
     getBotRuntimeGraph,
     getBotRuntimeMonitoringAggregate,
+    enabled,
     listBotRuntimeSessions,
     listBots,
     t,
@@ -414,10 +420,12 @@ export const useHomeLiveWidgetsController = ({
   }, []);
 
   useEffect(() => {
+    if (!enabled) return;
     void load();
-  }, [load]);
+  }, [enabled, load]);
 
   useEffect(() => {
+    if (!enabled) return;
     if (typeof document === "undefined") return;
 
     let timer = window.setInterval(() => {
@@ -437,7 +445,7 @@ export const useHomeLiveWidgetsController = ({
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.clearInterval(timer);
     };
-  }, [load]);
+  }, [enabled, load]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -486,6 +494,7 @@ export const useHomeLiveWidgetsController = ({
   }, [selected?.session?.id, selected?.session?.status, streamSymbolsKey]);
 
   useEffect(() => {
+    if (!enabled) return;
     if (!selected?.session?.id || selected.session.status !== "RUNNING") return;
     if (!streamSymbolsKey) return;
     if (typeof window === "undefined" || typeof window.EventSource === "undefined") return;
@@ -525,6 +534,7 @@ export const useHomeLiveWidgetsController = ({
     };
   }, [
     createMarketStreamEventSource,
+    enabled,
     selected?.session?.id,
     selected?.session?.status,
     streamSymbols,

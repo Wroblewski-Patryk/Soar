@@ -21,6 +21,7 @@ type UseManualOrderControllerArgs = {
   selected: RuntimeSnapshot | null;
   selectedData: RuntimeSelectedData | null;
   load: (opts?: { silent?: boolean }) => Promise<void>;
+  confirmRiskAction?: () => Promise<boolean>;
   labels: {
     invalidSymbol: string;
     invalidQuantity: string;
@@ -38,6 +39,7 @@ export const useManualOrderController = ({
   selected,
   selectedData,
   load,
+  confirmRiskAction,
   labels,
 }: UseManualOrderControllerArgs) => {
   const [manualOrderSymbol, setManualOrderSymbol] = useState("");
@@ -536,6 +538,11 @@ export const useManualOrderController = ({
       return;
     }
 
+    if (selected.bot.mode === "LIVE" && confirmRiskAction) {
+      const accepted = await confirmRiskAction();
+      if (!accepted) return;
+    }
+
     setIsSubmittingManualOrder(true);
     clearManualOrderActionState();
     try {
@@ -562,6 +569,7 @@ export const useManualOrderController = ({
     }
   }, [
     clearManualOrderActionState,
+    confirmRiskAction,
     labels.error,
     labels.exceedsFreeFunds,
     labels.invalidPrice,

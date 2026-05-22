@@ -1,7 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { createClient } from 'redis';
 import { createHash } from 'crypto';
+import { createModuleLogger } from '../lib/logger';
 import { sendError } from '../utils/apiError';
+
+const logger = createModuleLogger('rate-limit');
 
 type RateLimitOptions = {
   windowMs: number;
@@ -153,12 +156,12 @@ export const createRateLimiter = ({ windowMs, max, keyScope = 'user' }: RateLimi
         return next();
       } catch (error) {
         if (!shouldAllowInMemoryFallback()) {
-          console.error('Redis rate-limit eval failed, denying request:', error);
+          logger.error('redis_eval_failed_denied', { error });
           res.setHeader('X-RateLimit-Degraded', 'redis_unavailable');
           return sendError(res, 503, 'Rate limit temporarily unavailable');
         }
 
-        console.error('Redis rate-limit eval failed, falling back to in-memory limiter:', error);
+        logger.error('redis_eval_failed_fallback', { error });
       }
     } else if (!shouldAllowInMemoryFallback()) {
       res.setHeader('X-RateLimit-Degraded', 'redis_unavailable');

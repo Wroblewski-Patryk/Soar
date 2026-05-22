@@ -264,6 +264,33 @@ describe('CcxtFuturesConnector scaffold', () => {
     );
   });
 
+  it('preserves reduceOnly and hedge parameters for swap-mode derivatives', async () => {
+    const client = createMockClient();
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' },
+      vi.fn().mockResolvedValue(client)
+    );
+
+    await connector.placeOrder({
+      symbol: 'BTC/USDT:USDT',
+      type: 'market',
+      side: 'sell',
+      amount: 0.3,
+      positionMode: 'HEDGE',
+      positionSide: 'SHORT',
+      reduceOnly: true,
+    });
+
+    expect(client.createOrder).toHaveBeenCalledWith(
+      'BTC/USDT:USDT',
+      'market',
+      'sell',
+      0.3,
+      undefined,
+      { reduceOnly: true, positionSide: 'SHORT' }
+    );
+  });
+
   it('throws when hedge mode order is missing positionSide in futures mode', async () => {
     const client = createMockClient();
     const connector = new CcxtFuturesConnector(
@@ -696,6 +723,27 @@ describe('CcxtFuturesConnector scaffold', () => {
 
     expect(client.setMarginMode).toHaveBeenCalledWith('isolated', 'BTC/USDT:USDT');
     expect(client.setLeverage).toHaveBeenCalledWith(7, 'BTC/USDT:USDT');
+    expect(result).toEqual({
+      leverageApplied: true,
+      marginModeApplied: true,
+    });
+  });
+
+  it('converges swap-mode derivative margin mode and leverage when setter methods are available', async () => {
+    const client = createMockClient();
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' },
+      vi.fn().mockResolvedValue(client)
+    );
+
+    const result = await connector.convergeFuturesLeverageAndMargin({
+      symbol: 'BTC/USDT:USDT',
+      leverage: 3,
+      marginMode: 'cross',
+    });
+
+    expect(client.setMarginMode).toHaveBeenCalledWith('cross', 'BTC/USDT:USDT');
+    expect(client.setLeverage).toHaveBeenCalledWith(3, 'BTC/USDT:USDT');
     expect(result).toEqual({
       leverageApplied: true,
       marginModeApplied: true,

@@ -9,6 +9,16 @@ regression. See `docs/operations/v1-product-action-audit-matrix-2026-05-10.md`.
 
 ## Fixed Or Prevented In This Slice
 
+- 2026-05-21: Fixed LIVE exchange-backed cancel entitlement drift. Symptom
+  class: manual cancel or runtime stale-order lifetime cancel could call the
+  exchange cancel boundary after a user subscription downgrade because cancel
+  checked `riskAck` and ownership but not current `liveTrading` entitlement.
+  Fix: `orders.service.cancelOrder` now checks
+  `assertSubscriptionAllowsLiveTrading(userId)` before exchange-backed cancel
+  boundary invocation and before local order mutation. Validation: API
+  typecheck and guardrails passed; focused DB-backed regression test was added
+  but local execution was blocked by unavailable Postgres/Docker.
+
 - 2026-05-11: Fixed Security/Privacy test env restoration drift. Symptom
   class: focused security packs could leak `JWT_SECRET_PREVIOUS_UNTIL` as a
   malformed value or leave API-key encryption keyring state between files,
