@@ -2,6 +2,21 @@
 
 Last updated: 2026-05-22
 
+## 2026-05-22 Architecture-Code Runtime Audit
+
+- `ARCH-CODE-RUNTIME-AUDIT-2026-05-22` is checkpointed locally. Four
+  read-only lanes checked runtime lifecycle, orders/exchange fill authority,
+  backtest/report parity, and ops/deploy topology against `docs/architecture`.
+- Two P0 orders/exchange drifts were fixed locally:
+  - stale unproven runtime execution dedupe remains `inflight` instead of
+    re-executing a side effect;
+  - LIVE `FILLED` without exchange fill quantity no longer synthesizes local
+    full fill/lifecycle truth, and LIVE lifecycle no longer uses request price
+    as fill price.
+- Passed validation: focused unit pack `17/17` and API typecheck.
+- Blocked validation: DB-backed `orders.service.test.ts` could not run because
+  local Postgres was unavailable at `localhost:5432`.
+
 ## 2026-05-22 Runtime Architecture DCA/Close Parity
 
 - `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22` is locally checkpointed.

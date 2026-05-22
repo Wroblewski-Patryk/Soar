@@ -266,9 +266,9 @@ export const resolvePersistedLiveOrderFill = (input: {
   }
   if (exchangeFilledQuantity == null) {
     return {
-      status: 'FILLED' as OrderStatus,
-      filledQuantity: requestedQuantity,
-      complete: true,
+      status: 'OPEN' as OrderStatus,
+      filledQuantity: 0,
+      complete: false,
     };
   }
 
@@ -683,7 +683,9 @@ export const openOrder = async (
   const fillPriceFromExchange =
     fills.find((fill) => Number.isFinite(fill.price) && fill.price > 0)?.price ??
     resolvedPaperFillPrice ??
-    (isPositiveFiniteNumber(canonicalPayload.price) ? canonicalPayload.price : null);
+    (canonicalPayload.mode === 'PAPER' && isPositiveFiniteNumber(canonicalPayload.price)
+      ? canonicalPayload.price
+      : null);
   if (
     canonicalPayload.mode === 'PAPER' &&
     canonicalPayload.type === 'MARKET' &&

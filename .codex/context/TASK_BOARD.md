@@ -17,6 +17,19 @@ Last updated: 2026-05-22
 
 ## READY
 
+- [ ] `ARCH-CODE-RUNTIME-AUDIT-2026-05-22 audit: verify architecture-code runtime parity`
+  - 2026-05-22: Coordinator spawned four read-only explorer lanes for runtime
+    lifecycle, orders/exchange fill authority, backtest/report parity, and
+    ops/deploy topology. The audit found two P0 orders/exchange drifts and
+    repaired both locally: stale unproven runtime execution dedupe stays
+    `inflight` instead of re-executing a side effect, and LIVE `FILLED`
+    without exchange fill quantity no longer synthesizes a full fill or
+    lifecycle mutation. Validation passed: focused unit pack `17/17` and API
+    typecheck. Broader DB-backed orders tests are blocked because local
+    Postgres is unavailable at `localhost:5432`. Remaining P1/P2 findings are
+    listed in the task artifact. Evidence:
+    `docs/planning/architecture-code-runtime-audit-2026-05-22-task.md`.
+
 - [x] `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22 fix: restore DCA-first TP parity`
   - 2026-05-22: Coordinator architecture audit found a confirmed bot runtime
     lifecycle drift against `docs/architecture`: basic `TP` could close while

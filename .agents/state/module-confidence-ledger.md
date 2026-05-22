@@ -502,6 +502,18 @@ Do not turn uncertainty into optimism.
 
 ## Recent Updates
 
+- 2026-05-22 `ARCH-CODE-RUNTIME-AUDIT-2026-05-22` applies to
+  `SOAR-ENGINE-001`, `SOAR-ORDERS-001`, `SOAR-BOT-RUNTIME-001`,
+  `SOAR-BACKTESTS-001`, and `SOAR-OPERATIONS-001`: four read-only
+  architecture/code audit lanes found remaining runtime drift. Two P0
+  orders/exchange defects were fixed locally: stale unproven runtime execution
+  dedupe no longer resets to `execute`, and LIVE `FILLED` without exchange
+  fill quantity no longer synthesizes local full fill/lifecycle truth or uses
+  request price as fill price. Evidence: focused unit pack passed `17/17` and
+  API typecheck passed. Missing proof: DB-backed `orders.service.test.ts`
+  could not run because local Postgres was unavailable at `localhost:5432`;
+  production deploy/readback is also blocked by endpoint timeouts.
+
 - 2026-05-22 `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22` applies to
   `SOAR-BOT-RUNTIME-001`, `SOAR-BACKTESTS-001`, and `SOAR-ORDERS-001`:
   architecture-vs-code review found and fixed a confirmed DCA-first lifecycle

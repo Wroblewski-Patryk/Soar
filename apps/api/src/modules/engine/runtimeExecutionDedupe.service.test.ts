@@ -336,6 +336,54 @@ describe('runtimeExecutionDedupe retryability gate', () => {
     });
   });
 
+  it('keeps stale pending command inflight when no linked order can prove retry safety', async () => {
+    const service = new RuntimeExecutionDedupeService();
+    vi.spyOn(prisma.runtimeExecutionDedupe, 'create').mockRejectedValue({ code: 'P2002' });
+    vi.spyOn(prisma.runtimeExecutionDedupe, 'findUnique').mockResolvedValue({
+      id: 'dedupe-stale-no-order',
+      dedupeKey: 'v1|OPEN|u1|bot-1|BTCUSDT|group-1|1m|1000|59000|LONG',
+      dedupeVersion: 'v1',
+      commandType: 'OPEN',
+      userId: 'u1',
+      botId: 'bot-1',
+      symbol: 'BTCUSDT',
+      status: 'PENDING',
+      commandFingerprint: {},
+      firstSeenAt: new Date('2026-04-16T10:00:00.000Z'),
+      lastSeenAt: new Date('2026-04-16T10:00:00.000Z'),
+      ttlExpiresAt: new Date('2026-04-17T10:00:00.000Z'),
+      orderId: null,
+      positionId: null,
+      errorClass: null,
+      createdAt: new Date('2026-04-16T10:00:00.000Z'),
+      updatedAt: new Date('2026-04-16T10:00:00.000Z'),
+    } as never);
+    const orderLookupSpy = vi.spyOn(prisma.order, 'findUnique');
+    const updateSpy = vi.spyOn(prisma.runtimeExecutionDedupe, 'update').mockResolvedValue({} as never);
+
+    const result = await service.acquire({
+      dedupeKey: 'v1|OPEN|u1|bot-1|BTCUSDT|group-1|1m|1000|59000|LONG',
+      commandType: 'OPEN',
+      userId: 'u1',
+      botId: 'bot-1',
+      symbol: 'BTCUSDT',
+      commandFingerprint: { test: true },
+      now: new Date('2026-04-16T10:05:00.000Z'),
+    });
+
+    expect(result).toEqual({
+      outcome: 'inflight',
+      dedupeKey: 'v1|OPEN|u1|bot-1|BTCUSDT|group-1|1m|1000|59000|LONG',
+    });
+    expect(orderLookupSpy).not.toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith({
+      where: { dedupeKey: 'v1|OPEN|u1|bot-1|BTCUSDT|group-1|1m|1000|59000|LONG' },
+      data: expect.objectContaining({
+        lastSeenAt: new Date('2026-04-16T10:05:00.000Z'),
+      }),
+    });
+  });
+
   it('marks succeeded by order id only for filled synced orders', async () => {
     const service = new RuntimeExecutionDedupeService();
     vi.spyOn(prisma.order, 'findUnique').mockResolvedValue({

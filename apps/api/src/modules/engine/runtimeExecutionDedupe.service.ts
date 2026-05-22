@@ -341,6 +341,32 @@ export class RuntimeExecutionDedupeService {
               positionId: resolvedPositionId,
             };
           }
+
+          if (
+            linkedOrder.syncState === 'IN_SYNC' &&
+            (linkedOrder.status === 'CANCELED' ||
+              linkedOrder.status === 'REJECTED' ||
+              linkedOrder.status === 'EXPIRED')
+          ) {
+            await prisma.runtimeExecutionDedupe.update({
+              where: { dedupeKey: input.dedupeKey },
+              data: {
+                status: 'PENDING',
+                dedupeVersion,
+                commandType: input.commandType,
+                userId: input.userId,
+                botId: input.botId ?? null,
+                symbol: input.symbol ? normalizeSymbol(input.symbol) : null,
+                commandFingerprint: toPrismaJson(input.commandFingerprint),
+                lastSeenAt: now,
+                ttlExpiresAt,
+                orderId: null,
+                positionId: null,
+                errorClass: null,
+              },
+            });
+            return { outcome: 'execute', dedupeKey: input.dedupeKey };
+          }
         }
         if (linkedOrderIsStale) {
           await prisma.runtimeExecutionDedupe.update({
@@ -374,6 +400,13 @@ export class RuntimeExecutionDedupeService {
         });
         return { outcome: 'inflight', dedupeKey: input.dedupeKey };
       }
+      await prisma.runtimeExecutionDedupe.update({
+        where: { dedupeKey: input.dedupeKey },
+        data: {
+          lastSeenAt: now,
+        },
+      });
+      return { outcome: 'inflight', dedupeKey: input.dedupeKey };
     }
 
     if (

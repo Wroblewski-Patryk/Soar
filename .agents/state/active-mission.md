@@ -9,38 +9,39 @@ repository history.
 
 ## Current Mission
 
-- Mission ID: `RUNTIME-ARCHITECTURE-PARITY-2026-05-22`
-- Status: VERIFIED
+- Mission ID: `ARCH-CODE-RUNTIME-AUDIT-2026-05-22`
+- Status: CHECKPOINTED
 - Selected objective: coordinate an architecture-vs-code audit focused on bot
-  runtime lifecycle contracts, then repair confirmed P0/P1 drift that can make
-  DCA/protection behavior diverge from `docs/architecture`.
+  runtime lifecycle, order/fill authority, backtest parity, and operations
+  topology; repair confirmed local P0/P1 drift when safe.
 - Why this mission now: the operator reported that bot functions still behave
   incorrectly despite extensive architecture docs and recent DCA fixes.
-- Release objective or product milestone advanced: safer DCA-first lifecycle
-  parity across runtime core, LIVE/PAPER automation, and backtest replay.
-- First/next checkpoint: local checkpoint repaired confirmed side-specific
-  close-gate drift for `TP`/`TTP` and `SL`/`TSL`; next checkpoint should continue at remaining runtime
-  architecture contracts or production availability/deploy proof.
+- Release objective or product milestone advanced: safer fail-closed LIVE
+  execution by restoring fill authority and replay-safe side-effect dedupe.
+- First/next checkpoint: four read-only audit lanes completed; two P0
+  orders/exchange drifts were repaired locally. Next checkpoint should close
+  remaining P1 findings or restore DB-backed proof availability.
 - Stop conditions: required production credentials, raw secret access, real
   live-money mutation, destructive production action, architecture mismatch
   requiring product decision, or failing quality gate that cannot be safely
   fixed in this mission.
-- Parent validation gate: focused runtime/backtest regressions, API typecheck,
+- Parent validation gate: focused P0 unit regressions, API typecheck,
   repository guardrails, source-of-truth updates, then commit/push when green.
 
 ## Source Rows
 
-- Task board: `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22`
+- Task board: `ARCH-CODE-RUNTIME-AUDIT-2026-05-22`
 - Planning:
-  `docs/planning/runtime-architecture-dca-tp-parity-2026-05-22-task.md`
+  `docs/planning/architecture-code-runtime-audit-2026-05-22-task.md`
 - Delivery map: runtime bot lifecycle, backtest parity, order/fill lifecycle,
   operator-visible bot correctness.
 - Requirements: DCA-first close gating, one lifecycle meaning across
   BACKTEST/PAPER/LIVE, fill authority for LIVE, idempotent side-effect paths.
 - Quality scenarios: live-trading safety, fail-closed runtime behavior,
   runtime/backtest parity, regression resistance.
-- Risks: false close before DCA progression, misleading DCA/protection status,
-  production deploy unavailable for final proof.
+- Risks: duplicate LIVE side effects after crash/retry, false LIVE fill
+  lifecycle truth, account-update scoping drift, misleading protection read
+  models, production deploy unavailable for final proof.
 - Module confidence: `SOAR-BOT-RUNTIME-001`, `SOAR-BACKTESTS-001`,
   `SOAR-ORDERS-001`, `SOAR-OPERATIONS-001`
 - System health:
@@ -57,19 +58,19 @@ repository history.
 | Lane | Owner | Source docs/state | Owned files/surfaces | Output | Validation/proof | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | Coordinator | Active chat | AGENTS, state, docs | Integration, task closure, source-of-truth updates | Mission packet, task evidence, final acceptance | Parent validation gate | CHECKPOINTED |
-| Architecture contract extraction | Coordinator serial lane | `docs/architecture/06_execution-lifecycle.md`, runtime reference contracts | Runtime lifecycle invariants | Confirmed side-specific DCA close-gate mismatch | Code/test diff | VERIFIED |
-| Runtime implementation | Coordinator serial lane | Engine/runtime files | Position-management and automation tests | TP/TTP use profit-side DCA gate; SL/TSL use loss-side DCA gate | Focused engine tests | VERIFIED |
-| Backtest parity | Coordinator serial lane | Backtest replay/portfolio parity | Replay and portfolio close blocking | Side-specific DCA close blocking matches runtime | Focused backtest tests | VERIFIED |
+| Runtime lifecycle | Explorer lane | runtime lifecycle reference contracts | Engine and bot runtime read models | P1/P2 findings; DCA gates verified aligned | File/line evidence | COMPLETE |
+| Orders/exchange fill authority | Explorer lane + coordinator fix | fill/idempotency contracts | Orders and runtime dedupe | Two P0 findings fixed locally | Unit tests `17/17` | CHECKPOINTED |
+| Backtest parity | Explorer lane | Backtest replay/report parity | Backtest/reports code | P1/P2 findings recorded | File/line evidence | COMPLETE |
+| Ops/deploy reality | Explorer lane | Production endpoints, deployment docs | Worker readiness/deploy smoke | P1/P2 topology findings recorded; current production timeout remains blocker | HTTP probe output | BLOCKED |
 | Ops/deploy reality | Coordinator serial lane | Production endpoints, deployment docs | Public health/build-info probes | Current production timeout recorded as blocker | HTTP probe output | BLOCKED |
 | Documentation/Memory | Coordinator | State files and docs | Source-of-truth updates and residual risks | Task evidence and state updates | Guardrails/diff checks | IN_PROGRESS |
 
 ## Delegation Plan
 
-- Lanes kept local: coordinator, runtime critical path, source-of-truth
-  updates, parent validation.
-- Lanes delegated: none in this checkpoint; the available runtime did not
-  expose a write-capable subagent namespace after tool discovery, so the lane
-  model was executed serially.
+- Lanes kept local: coordinator, P0 fixes, source-of-truth updates, parent
+  validation.
+- Lanes delegated: runtime lifecycle explorer, orders/exchange explorer,
+  backtest/report explorer, ops/deploy explorer.
 - Lanes intentionally omitted and why: production deploy/proof is blocked by
   current endpoint timeouts and must not be mixed with local code proof.
 - Known overlap risks: live-trading runtime files are high-risk and require
@@ -91,6 +92,7 @@ repository history.
 
 | Date | Checkpoint | Result | Evidence | Next action |
 | --- | --- | --- | --- | --- |
+| 2026-05-22 | Architecture-code runtime audit P0 closure | CHECKPOINTED locally: four read-only lanes found remaining architecture/code drift. Two P0 orders/exchange findings were fixed: stale unproven `PENDING` runtime dedupe remains `inflight` instead of re-executing a side effect, and LIVE `FILLED` without exchange fill quantity no longer synthesizes full fill/lifecycle truth or uses request price as fill price. DB-backed orders pack is blocked because local Postgres is unavailable. | `docs/planning/architecture-code-runtime-audit-2026-05-22-task.md`; focused unit pack `17/17`; API typecheck | Run guardrails/diff check, commit/push, then close next P1 finding. |
 | 2026-05-22 | Runtime architecture DCA/close parity | VERIFIED locally: architecture audit found confirmed runtime/backtest drift where basic `TP` could close while profit-side DCA levels remained pending, and `SL`/`TSL` used an all-DCA gate instead of matching pending loss-side DCA. Fixed runtime core and backtest helper parity so `TP`/`TTP` gate on profit-side DCA and `SL`/`TSL` gate on loss-side DCA; added focused runtime automation, position-management, replay, and portfolio regressions. Production endpoints timed out from this shell and remain an ops blocker, not local code proof. | `docs/planning/runtime-architecture-dca-tp-parity-2026-05-22-task.md`; focused combined pack `104/104`; SL/TSL correction pack `71/71`; API typecheck; repository guardrails; `git diff --check` with line-ending warnings only | Commit/push, then continue broader architecture audit or production availability/deploy proof as the next checkpoint. |
 | 2026-05-21 | Standards-based security hardening | VERIFIED locally: coordinated defensive lanes against OWASP/NIST/CISA guidance. Fixed API-key mass assignment, LIVE cancel entitlement fail-closed gap, frontend raw-secret/error exposure hardening, ops secret-argv/env-file policy, and avatar decoded-pixel budget. | `docs/planning/standards-based-security-hardening-2026-05-21-task.md`; Web `151` files / `533` tests; API cancel/API-key DB pack `20` tests; avatar processing `2` tests; script tests `9` tests; API/Web typecheck; production audit; compose config; build; guardrails; `git diff --check`; cleanup checks | External pentest/VPS review, protected `AUD-19`, and explicit LIVE exchange-side mutation proof remain separate gates before commercial security claims. |
 | 2026-05-21 | Protected V1 app proof follow-up for deployed `dd1a1faf` | BLOCKED with progress: operator packet validation and build-info passed; protected UI clickthrough passed; rollback proof passed; Gate 4 sign-off is approved. `LIVEIMPORT-03` authenticated and found a RUNNING Binance FUTURES LIVE session, but failed closed because there are no open positions or open orders. Controlled proof preactivation failed safely because the target LIVE bot is already active. Fresh 30-minute production SLO is `FAIL`: `/workers/ready` availability `0%`, API 5xx ratio `16.6667%`, caused by deployed `inline` worker topology (`DEPLOYED_INLINE_MODE`) rather than the canonical split-worker contract. Production DB restore drill still needs VPS/Coolify Docker access. | `docs/planning/v1-protected-app-proof-attempt-dd1a1faf-2026-05-21-task.md`; `docs/operations/prod-ui-module-clickthrough-dd1a1faf-2026-05-21.md`; `docs/operations/v1-rollback-proof-prod-2026-05-21T00-00-00-000Z.md`; `docs/operations/liveimport-03-prod-readback-dd1a1faf-2026-05-21.json`; `docs/operations/v1-slo-observation-2026-05-21T15-28-20-108Z.md`; `docs/operations/v1-rc-signoff-record.md` | Repair/verify production split-worker topology, provide a safe open runtime readback payload path, run production DB restore drill from VPS/Coolify Docker context, then rerun final non-dry-run release gate. |

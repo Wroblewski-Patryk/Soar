@@ -4,6 +4,19 @@ Last updated: 2026-05-22
 
 ## Current Candidate Deployment Status
 
+- `ARCH-CODE-RUNTIME-AUDIT-2026-05-22` is the follow-up architecture-vs-code
+  audit requested after the DCA close-gate repair. Four read-only lanes
+  checked runtime lifecycle, orders/exchange fill authority, backtest/report
+  parity, and ops/deploy topology against `docs/architecture`. Confirmed P0
+  code drift was found and repaired locally: stale unproven runtime execution
+  dedupe no longer resets to `execute`, and LIVE `FILLED` responses without
+  exchange fill quantity no longer synthesize a local full fill or lifecycle
+  mutation. LIVE lifecycle also no longer uses request price as fill price.
+  Validation passed: focused unit pack `17/17` and API typecheck. Broader
+  DB-backed `orders.service.test.ts` could not run because local Postgres was
+  unavailable at `localhost:5432`. Remaining open audit findings are tracked
+  in `docs/planning/architecture-code-runtime-audit-2026-05-22-task.md`.
+
 - `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22` is a local runtime
   architecture parity checkpoint after operator feedback that bot lifecycle
   functions still do not match the architecture docs. Review of the DCA-first

@@ -19,7 +19,7 @@ describe('resolvePersistedLiveOrderFill', () => {
     });
   });
 
-  it('keeps legacy full-fill behavior when no exchange fill quantity is available', () => {
+  it('keeps LIVE FILLED pending when no exchange fill quantity is available', () => {
     expect(
       resolvePersistedLiveOrderFill({
         requestedQuantity: 2,
@@ -27,9 +27,9 @@ describe('resolvePersistedLiveOrderFill', () => {
         exchangeFilledQuantity: null,
       }),
     ).toEqual({
-      status: 'FILLED',
-      filledQuantity: 2,
-      complete: true,
+      status: 'OPEN',
+      filledQuantity: 0,
+      complete: false,
     });
   });
 
@@ -56,7 +56,7 @@ describe('resolvePersistedLiveOrderFill', () => {
     });
   });
 
-  it('allows compatible LIVE full-fill lifecycle when no exchange fill rows exist', () => {
+  it('blocks compatible LIVE full-fill lifecycle when no exchange fill rows exist', () => {
     const liveFillResolution = resolvePersistedLiveOrderFill({
       requestedQuantity: 2,
       liveStatus: 'FILLED',
@@ -72,10 +72,10 @@ describe('resolvePersistedLiveOrderFill', () => {
         liveFillResolution,
       }),
     ).toEqual({
-      persistedStatus: 'FILLED',
-      persistedFilledQuantity: 2,
-      shouldApplyImmediateFillLifecycle: true,
-      lifecycleFillQuantity: 2,
+      persistedStatus: 'OPEN',
+      persistedFilledQuantity: 0,
+      shouldApplyImmediateFillLifecycle: false,
+      lifecycleFillQuantity: 0,
     });
   });
 

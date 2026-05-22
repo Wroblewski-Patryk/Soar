@@ -4,6 +4,18 @@ Last updated: 2026-05-22
 
 ## Next Tiny Task
 
+Current active architecture-code audit:
+`ARCH-CODE-RUNTIME-AUDIT-2026-05-22` found and locally repaired two P0
+orders/exchange runtime safety drifts: stale unproven runtime execution dedupe
+no longer re-executes side effects, and LIVE `FILLED` without exchange fill
+quantity no longer synthesizes local fill/lifecycle truth. Focused unit
+validation passed `17/17` and API typecheck passed. Next exact task after this
+checkpoint: run remaining gates, commit/push to `main`, then continue with the
+highest open P1 finding, starting with account-update source scoping or LIVE
+read-model protection fallback. DB-backed orders proof is blocked until local
+Postgres is available at `localhost:5432`. Evidence:
+`docs/planning/architecture-code-runtime-audit-2026-05-22-task.md`.
+
 Current active runtime parity checkpoint:
 `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22` is locally checkpointed after
 an architecture-vs-code review found a confirmed bot lifecycle drift. Basic
