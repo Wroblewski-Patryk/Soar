@@ -43,6 +43,7 @@ export { resolveLiveExecutionApiKey } from '../exchange/exchangeAdapterBoundary.
 type OpenOrderInput = OpenOrderDto & {
   positionId?: string | null;
   origin?: 'USER' | 'BOT';
+  clientOrderId?: string | null;
 };
 
 const ACTIVE_LIST_ORDER_STATUSES = new Set<OrderStatus>([
@@ -417,6 +418,7 @@ const executeLiveOrderOnExchange: OpenOrderDeps['executeLiveOrder'] = async (par
       price: params.payload.price,
       strategyId: params.payload.strategyId,
       reduceOnly: params.payload.reduceOnly,
+      ...(params.payload.clientOrderId ? { clientOrderId: params.payload.clientOrderId } : {}),
     },
     targetLeverage,
   });

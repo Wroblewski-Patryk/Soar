@@ -466,6 +466,7 @@ describe('openOrder live execution contract', () => {
           price: 60_000,
           mode: 'LIVE',
           riskAck: true,
+          clientOrderId: 'soar_orders_service_1',
         },
         { executeLiveOrder }
       );
@@ -483,6 +484,7 @@ describe('openOrder live execution contract', () => {
           payload: expect.objectContaining({
             mode: 'LIVE',
             strategyId: strategy.id,
+            clientOrderId: 'soar_orders_service_1',
           }),
         })
       );

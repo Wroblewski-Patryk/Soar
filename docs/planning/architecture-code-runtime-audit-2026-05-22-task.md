@@ -58,7 +58,7 @@
 - [x] No two write lanes own the same file or shared registry; explorers are read-only.
 - [x] Each lane has expected output and validation/proof.
 - [x] Missing or unclear ownership was recorded in `.agents/state/responsibility-learning.md` if discovered.
-- [ ] Process eval will be recorded in `.agents/state/agent-evals.md` after the broad/subagent-heavy checkpoint closes.
+- [x] Process eval recorded in `.agents/state/agent-evals.md` for the broad/subagent-heavy checkpoint.
 
 ## Context
 The operator reported recurring bot behavior defects and asked to coordinate a check that code still reflects the large architecture set under `docs/architecture`. A prior checkpoint fixed confirmed DCA close-gate drift for `TP`/`TTP` and `SL`/`TSL`; this task broadens the audit to remaining runtime trading contracts.
@@ -109,16 +109,17 @@ An integrated architecture-vs-code findings table for the four lanes, plus a sel
 | `ARCH-RUNTIME-P0-001` | P0 | Orders/exchange | Stale `PENDING` runtime dedupe without linked order could reset to `execute`, allowing duplicate LIVE side effects after crash/retry. | FIXED_LOCALLY | `runtimeExecutionDedupe.service.ts` now keeps stale unproven pending commands `inflight`; unit regression added. |
 | `ARCH-RUNTIME-P0-002` | P0 | Orders/exchange | LIVE `FILLED` without exchange fill quantity synthesized full fill from requested quantity and could advance lifecycle without fill truth. | FIXED_LOCALLY | `orders.service.ts` now keeps such LIVE responses pending/open; LIVE fill lifecycle no longer uses request price as fill price. |
 | `ARCH-RUNTIME-P1-001` | P1 | Runtime lifecycle | LIVE read model may show dynamic TTP from `strategy_fallback` without canonical runtime protection state. | FIXED_LOCALLY | Imported `EXCHANGE_SYNC` positions now require canonical runtime state before dynamic strategy fallback can be displayed; plan levels may still be shown. |
-| `ARCH-RUNTIME-P1-002` | P1 | Runtime lifecycle / orders | `ACCOUNT_UPDATE` scope may update the only matching position by `userId+symbol+side` without wallet/api-key source proof. | OPEN | Requires normalized stream source identity or explicit no-op when source is absent. |
-| `ARCH-RUNTIME-P1-003` | P1 | Orders/exchange | LIVE retry submit path does not pass canonical `clientOrderId` through exchange boundary. | OPEN | Needs adapter-bound idempotent client order id from dedupe/fingerprint. |
-| `ARCH-RUNTIME-P1-004` | P1 | Orders/exchange | `ACCOUNT_UPDATE quantity=0` can close a position without materialized close fill/trade/PnL truth. | OPEN | Needs recovery/close-pending or proven fill materialization. |
+| `ARCH-RUNTIME-P1-002` | P1 | Runtime lifecycle / orders | `ACCOUNT_UPDATE` scope may update the only matching position by `userId+symbol+side` without wallet/api-key source proof. | FIXED_LOCALLY | Account updates now require `sourceApiKeyId`; missing source fails closed, and wallet/bot candidates must match the source API key. Focused exchange-event regressions passed. |
+| `ARCH-RUNTIME-P1-003` | P1 | Orders/exchange | LIVE retry submit path does not pass canonical `clientOrderId` through exchange boundary. | FIXED_LOCALLY | Runtime open/close/DCA paths now derive deterministic `soar_...` client order ids from dedupe keys and pass them through order service, exchange boundary, live adapter, and CCXT connector. Focused boundary/orders/runtime regressions passed. |
+| `ARCH-RUNTIME-P1-004` | P1 | Orders/exchange | `ACCOUNT_UPDATE quantity=0` can close a position without materialized close fill/trade/PnL truth. | FIXED_LOCALLY | Zero-quantity account updates now mark matching LIVE positions as `DRIFT`/`RECOVERING` without closing or assigning PnL/close attribution until fill truth arrives. Focused exchange-event regressions passed. |
 | `ARCH-RUNTIME-P1-005` | P1 | Backtest parity | Backtest candle gateway filters by `openTime <= endTime` instead of closed-candle `closeTime <= endTime`. | FIXED_LOCALLY | Gateway fetch and DB cache now use `closeTime <= endTime`; regressions cover network and DB-cache paths. |
-| `ARCH-RUNTIME-P1-006` | P1 | Backtest parity | Backtest request path is single-strategy and does not implement runtime signal merge for multi-strategy bot parity. | OPEN | Product/architecture decision or implementation slice required. |
+| `ARCH-RUNTIME-P1-006` | P1 | Backtest parity | Backtest request path is single-strategy and does not implement runtime signal merge for multi-strategy bot parity. | PARTIALLY_MITIGATED | Request validation now fails fast on multi-strategy seed snapshots instead of silently using the single-strategy path; full merge parity still requires a product/schema implementation slice. |
+| `ARCH-RUNTIME-P1-014` | P1 | Backtest parity | Backtest lifecycle event naming exposed trailing stop as `TRAILING` while lifecycle contract uses `TSL`. | FIXED_LOCALLY | Backtest replay, report/timeline counts, and web timeline close-like event types now use `TSL`. |
 | `ARCH-RUNTIME-P1-007` | P1 | Reports | Reports count trades with `realizedPnl = null` as completed zero-PnL trades. | FIXED_LOCALLY | PAPER/LIVE report aggregation now counts only settled realized-PnL trades. |
 | `ARCH-RUNTIME-P1-008` | P1 | Ops/deploy | Deploy smoke can pass on `/workers/health` even when topology is degraded. | FIXED_LOCALLY | Deploy smoke now probes `/workers/ready` and fails degraded/not-ready worker payloads. |
 | `ARCH-RUNTIME-P1-009` | P1 | Ops/deploy | `docker-compose.vps.yml` does not fully encode canonical split worker env/Dockerfile ownership. | FIXED_LOCALLY | VPS compose now defaults to split worker mode, explicit worker ownership/queues, and dedicated worker Dockerfiles. |
-| `ARCH-RUNTIME-P1-010` | P1 | Ops/deploy | Backtest worker entrypoint does not own durable backtest queue consumption. | OPEN | Needs durable queue/consumer or architecture narrowing. |
-| `ARCH-RUNTIME-P1-011` | P1 | Ops/deploy | `/workers/ready` does not prove live worker process heartbeat across containers. | OPEN | Move heartbeat to Redis/DB and make readiness check required worker families. |
+| `ARCH-RUNTIME-P1-010` | P1 | Ops/deploy | Backtest worker entrypoint does not own durable backtest queue consumption. | FIXED_LOCALLY | Split backtest ownership now enqueues to Redis and `workers-backtest` consumes the existing job through the same queue. Focused Redis queue tests passed; production split-worker readback remains required. |
+| `ARCH-RUNTIME-P1-011` | P1 | Ops/deploy | `/workers/ready` does not prove live worker process heartbeat across containers. | FIXED_LOCALLY | Worker bootstrap records Redis heartbeat per worker family and `/workers/ready` requires fresh heartbeats for required split-worker families. Focused heartbeat and workers route tests passed; production split-worker readback remains required. |
 | `ARCH-RUNTIME-P1-012` | P1 | Ops/deploy | `/ready` did not check Postgres/Prisma reachability. | FIXED_LOCALLY | Runtime dependency readiness now includes bounded database `SELECT 1` with protected details diagnostics. |
 | `ARCH-RUNTIME-P1-013` | P1 | Ops/deploy | Rollback proof did not include `/workers/ready`. | FIXED_LOCALLY | Rollback guard now checks `/workers/ready` before runtime freshness and alerts. |
 
@@ -126,17 +127,26 @@ An integrated architecture-vs-code findings table for the four lanes, plus a sel
 - Tests:
   - `corepack pnpm --filter api exec vitest run src/modules/backtests/backtestDataGateway.test.ts src/modules/reports/reports.service.test.ts src/modules/bots/runtimeSessionPositionsRead.service.test.ts src/modules/bots/bots.runtime-strategy-context.e2e.test.ts src/modules/orders/orders.liveFillResolution.test.ts src/modules/engine/runtimeExecutionDedupe.service.test.ts src/modules/orders/orders.service.test.ts --run --sequence.concurrent=false` => PASS, `88/88`
   - `corepack pnpm --filter api exec vitest run src/router/health-readiness.test.ts src/modules/backtests/backtestDataGateway.test.ts src/modules/reports/reports.service.test.ts --run --sequence.concurrent=false` => PASS, `20/20`
+  - `corepack pnpm --filter api exec vitest run src/modules/backtests/backtestReplayCore.test.ts src/modules/backtests/backtests.contract-remediation.test.ts src/modules/backtests/backtestRunJob.test.ts --run --sequence.concurrent=false` => PASS, `49/49`
+  - `corepack pnpm --filter web exec vitest run src/features/backtest/utils/backtestRunDetailsViewModel.test.ts --run` => PASS, `4/4`
+  - `corepack pnpm --filter api exec vitest run src/modules/backtests/backtestRunQueue.test.ts src/modules/backtests/backtestRunJob.test.ts src/workers/workerHeartbeat.test.ts src/workers/workerOwnership.test.ts --run` => PASS, `17/17`
+  - `corepack pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts --run --sequence.concurrent=false` => PASS, `7/7`
+  - `corepack pnpm --filter api exec vitest run src/modules/orders/orders.exchangeEvents.service.test.ts src/modules/orders/orders.exchangeEvents.accountUpdate.service.test.ts --run --sequence.concurrent=false` => PASS, `21/21`
+  - `corepack pnpm --filter api exec vitest run src/modules/exchange/exchangeAdapterBoundary.service.test.ts src/modules/orders/orders.service.test.ts --run --sequence.concurrent=false` => PASS, `51/51`
+  - `corepack pnpm --filter api exec vitest run src/modules/engine/executionOrchestrator.service.test.ts src/modules/engine/runtimePositionAutomation.service.test.ts --run --sequence.concurrent=false` => PASS, `55/55`
+  - `corepack pnpm --filter api run typecheck` => PASS
+  - `corepack pnpm --filter web run typecheck` => PASS
   - `node --check scripts/deploySmokeCheck.mjs; node --check scripts/evaluateRollbackGuard.mjs` => PASS
   - `docker compose -f docker-compose.vps.yml config` with required dummy env => PASS
 - Manual checks: architecture/code lane inspection completed by four read-only explorer lanes and coordinator spot checks.
 - Screenshots/logs: not applicable
 - High-risk checks: no production or live exchange mutation authorized
-- Module confidence ledger updated: pending
-- Module confidence rows closed or changed: pending
+- Module confidence ledger updated: yes
+- Module confidence rows closed or changed: `SOAR-BOT-RUNTIME-001`, `SOAR-ORDERS-001`, `SOAR-BACKTESTS-001`, `SOAR-OPERATIONS-001`
 - Requirements matrix updated: not applicable for initial audit
 - Quality scenarios updated: not applicable for initial audit
 - Risk register updated: pending if new risks are confirmed
-- Reality status: partially verified; local runtime/order/backtest/report/readiness fixes are focused-test verified. Remaining open findings are account-update scoping, live retry client-order id, account-update close materialization, backtest multi-strategy merge parity, backtest `TRAILING`/`TSL` event naming, durable backtest queue ownership, and cross-container worker heartbeat proof.
+- Reality status: partially verified; local runtime/order/backtest/report/readiness fixes are focused-test verified. Full backtest multi-strategy merge parity remains only partially mitigated by fail-fast validation and still needs a product/schema implementation slice. Durable backtest queue ownership and cross-container worker heartbeat proof are implemented locally but still need production split-worker readback after deploy.
 
 ## Architecture Evidence
 - Architecture source reviewed:

@@ -4,6 +4,30 @@ Last updated: 2026-05-22
 
 ## Current Candidate Deployment Status
 
+- `ARCH-RUNTIME-P1-002-004-MONEY-PATH-2026-05-22` is a local runtime/order
+  repair from the architecture-code audit. Account updates now require source
+  API-key identity and fail closed when the source is absent; runtime LIVE
+  open/close/DCA paths now propagate deterministic dedupe-derived
+  `clientOrderId` through exchange submission; and zero-quantity account
+  updates mark positions as `DRIFT`/`RECOVERING` instead of closing without
+  fill truth. Focused validation: exchange-event tests passed (`21/21`),
+  exchange boundary/orders tests passed (`51/51`), runtime
+  orchestrator/automation tests passed (`55/55`), and API typecheck passed.
+
+- `ARCH-RUNTIME-P1-010-011-WORKERS-QUEUE-HEARTBEAT-2026-05-22` is a local
+  OPS/WORKERS repair for the remaining durable queue and heartbeat findings
+  from the runtime architecture audit. Split backtest ownership now stores run
+  ids in Redis and `workers-backtest` consumes the existing backtest job from
+  that durable queue; local inline execution remains explicit. Backtest retry
+  now skips terminal runs and clears stale run-owned trades before retrying an
+  active run. Worker bootstrap writes per-family Redis heartbeats, and
+  `/workers/ready` requires fresh heartbeat proof for all required split-worker
+  families. Focused validation: queue/job/heartbeat/ownership tests passed
+  (`17/17`), workers health/readiness route tests passed (`7/7`), API
+  typecheck passed, and `git diff --check` passed with line-ending warnings
+  only. Evidence:
+  `docs/planning/arch-runtime-p1-010-011-workers-queue-heartbeat-2026-05-22-task.md`.
+
 - `ARCH-CODE-RUNTIME-AUDIT-2026-05-22` is the follow-up architecture-vs-code
   audit requested after the DCA close-gate repair. Four read-only lanes
   checked runtime lifecycle, orders/exchange fill authority, backtest/report

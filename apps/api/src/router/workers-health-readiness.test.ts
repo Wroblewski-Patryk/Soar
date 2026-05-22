@@ -1,7 +1,15 @@
 import request from 'supertest';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { app } from '../index';
 import { prisma } from '../prisma/client';
+
+const workerHeartbeatClientMock = vi.hoisted(() => ({
+  readMany: vi.fn(),
+}));
+
+vi.mock('../workers/workerHeartbeat', () => ({
+  workerHeartbeatClient: workerHeartbeatClientMock,
+}));
 
 const originalWorkerMode = process.env.WORKER_MODE;
 const originalMarketQueue = process.env.WORKER_MARKET_DATA_QUEUE;
@@ -17,6 +25,7 @@ afterEach(() => {
   process.env.WORKER_EXECUTION_QUEUE = originalExecutionQueue;
   process.env.WORKER_MARKET_DATA_OWNERSHIP = originalMarketDataOwnership;
   process.env.WORKER_BACKTEST_OWNERSHIP = originalBacktestOwnership;
+  workerHeartbeatClientMock.readMany.mockReset();
 });
 
 const createAdminAgent = async () => {
@@ -74,6 +83,10 @@ describe('workers health and readiness endpoints', () => {
     process.env.WORKER_MARKET_DATA_QUEUE = '';
     process.env.WORKER_BACKTEST_QUEUE = '';
     process.env.WORKER_EXECUTION_QUEUE = 'execution';
+    workerHeartbeatClientMock.readMany.mockResolvedValue([
+      { worker: 'execution', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
+      { worker: 'market-stream', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
+    ]);
 
     const res = await adminAgent.get('/workers/ready');
     expect(res.status).toBe(200);
@@ -107,10 +120,38 @@ describe('workers health and readiness endpoints', () => {
     process.env.WORKER_MARKET_DATA_QUEUE = 'market-data';
     process.env.WORKER_BACKTEST_QUEUE = 'backtests';
     process.env.WORKER_EXECUTION_QUEUE = 'execution';
+    workerHeartbeatClientMock.readMany.mockResolvedValue([
+      { worker: 'backtest', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
+      { worker: 'execution', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
+      { worker: 'market-data', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
+      { worker: 'market-stream', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
+    ]);
 
     const res = await adminAgent.get('/workers/ready');
     expect(res.status).toBe(200);
     expect(res.body.status).toBe('ready');
     expect(res.body.mode).toBe('split');
+    expect(res.body.heartbeats).toHaveLength(4);
+  });
+
+  it('returns not_ready in split mode when a required worker heartbeat is stale', async () => {
+    const adminAgent = await createAdminAgent();
+    process.env.WORKER_MODE = 'split';
+    process.env.WORKER_MARKET_DATA_OWNERSHIP = 'worker';
+    process.env.WORKER_BACKTEST_OWNERSHIP = 'worker';
+    process.env.WORKER_MARKET_DATA_QUEUE = 'market-data';
+    process.env.WORKER_BACKTEST_QUEUE = 'backtests';
+    process.env.WORKER_EXECUTION_QUEUE = 'execution';
+    workerHeartbeatClientMock.readMany.mockResolvedValue([
+      { worker: 'backtest', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
+      { worker: 'execution', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
+      { worker: 'market-data', status: 'stale', lastHeartbeatAt: '2000-01-01T00:00:00.000Z', ageMs: 1_000_000 },
+      { worker: 'market-stream', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
+    ]);
+
+    const res = await adminAgent.get('/workers/ready');
+    expect(res.status).toBe(503);
+    expect(res.body.status).toBe('not_ready');
+    expect(res.body.staleWorkers).toEqual(['market-data']);
   });
 });

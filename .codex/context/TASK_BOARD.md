@@ -18,6 +18,25 @@ Last updated: 2026-05-22
 ## READY
 
 - [ ] `ARCH-CODE-RUNTIME-AUDIT-2026-05-22 audit: verify architecture-code runtime parity`
+  - 2026-05-22 money-path continuation: locally repaired
+    `ARCH-RUNTIME-P1-002`, `ARCH-RUNTIME-P1-003`, and
+    `ARCH-RUNTIME-P1-004`. `ACCOUNT_UPDATE` now requires source API-key
+    ownership, runtime LIVE open/close/DCA submissions propagate deterministic
+    dedupe-derived `clientOrderId`, and zero-quantity account updates mark
+    `DRIFT`/`RECOVERING` instead of synthesizing close finality. Focused
+    validation passed: exchange-event tests `21/21`, exchange boundary/orders
+    tests `51/51`, runtime orchestrator/automation tests `55/55`, and API
+    typecheck.
+  - 2026-05-22 OPS/WORKERS continuation: locally repaired
+    `ARCH-RUNTIME-P1-010` and `ARCH-RUNTIME-P1-011`. Split backtest ownership
+    now enqueues run ids to Redis and `workers-backtest` consumes the existing
+    job from the durable queue. Worker bootstrap writes Redis heartbeats per
+    worker family, and `/workers/ready` requires fresh heartbeat proof for all
+    required split-worker families. Focused validation passed: queue tests
+    and retry-safe job tests plus worker heartbeat/ownership tests `17/17`,
+    workers health/readiness route tests `7/7`, API typecheck, and
+    `git diff --check` with line-ending warnings only. Evidence:
+    `docs/planning/arch-runtime-p1-010-011-workers-queue-heartbeat-2026-05-22-task.md`.
   - 2026-05-22: Coordinator spawned four read-only explorer lanes for runtime
     lifecycle, orders/exchange fill authority, backtest/report parity, and
     ops/deploy topology. The audit found two P0 orders/exchange drifts and

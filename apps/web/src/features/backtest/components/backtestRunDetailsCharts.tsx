@@ -250,7 +250,7 @@ export function TimelineCandlesChart({
   } = splitTimelineIndicatorSeriesForRendering(timelineIndicatorSeries);
   const tradeSegmentsFromEvents = (() => {
     if (timelineEvents.length === 0) return [] as ReturnType<typeof buildNonOverlappingTradeSegments>;
-    const closeLike = new Set(["EXIT", "TP", "TTP", "SL", "TRAILING", "LIQUIDATION"]);
+    const closeLike = new Set(["EXIT", "TP", "TTP", "SL", "TSL", "LIQUIDATION"]);
     const grouped = new Map<
       string,
       {

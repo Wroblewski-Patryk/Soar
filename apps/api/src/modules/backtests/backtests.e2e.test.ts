@@ -1223,8 +1223,8 @@ describe('Backtests runs contract', () => {
       }, {});
       expect(parity.eventCounts.ENTRY ?? 0).toBe(countsFromEvents.ENTRY ?? 0);
       expect(parity.eventCounts.DCA ?? 0).toBe(countsFromEvents.DCA ?? 0);
-      expect((parity.eventCounts.EXIT ?? 0) + (parity.eventCounts.TP ?? 0) + (parity.eventCounts.TTP ?? 0) + (parity.eventCounts.SL ?? 0) + (parity.eventCounts.TRAILING ?? 0) + (parity.eventCounts.LIQUIDATION ?? 0)).toBe(
-        (countsFromEvents.EXIT ?? 0) + (countsFromEvents.TP ?? 0) + (countsFromEvents.TTP ?? 0) + (countsFromEvents.SL ?? 0) + (countsFromEvents.TRAILING ?? 0) + (countsFromEvents.LIQUIDATION ?? 0),
+      expect((parity.eventCounts.EXIT ?? 0) + (parity.eventCounts.TP ?? 0) + (parity.eventCounts.TTP ?? 0) + (parity.eventCounts.SL ?? 0) + (parity.eventCounts.TSL ?? 0) + (parity.eventCounts.LIQUIDATION ?? 0)).toBe(
+        (countsFromEvents.EXIT ?? 0) + (countsFromEvents.TP ?? 0) + (countsFromEvents.TTP ?? 0) + (countsFromEvents.SL ?? 0) + (countsFromEvents.TSL ?? 0) + (countsFromEvents.LIQUIDATION ?? 0),
       );
 
       const positionStats = timelineRes.body.positionStats as {

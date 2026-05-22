@@ -63,21 +63,55 @@ Do not turn uncertainty into optimism.
 ## Current Release Evidence Notes
 
 - 2026-05-22
+  `ARCH-RUNTIME-P1-002-004-MONEY-PATH-2026-05-22` applies to
+  `SOAR-BOT-RUNTIME-001`, `SOAR-ORDERS-001`, and `SOAR-POSITIONS-001`:
+  repaired remaining local money-path architecture drift from the runtime
+  audit. `ACCOUNT_UPDATE` position scope now requires source API-key identity
+  and matches only wallet/bot positions owned by that key; missing source
+  identity fails closed. Runtime open, runtime close, and runtime DCA live
+  order submission now propagate deterministic `soar_...` client order ids
+  derived from runtime dedupe keys through the order service and exchange
+  boundary. Zero-quantity account updates no longer synthesize a close without
+  fill/trade/PnL truth; they mark the position `DRIFT`/`RECOVERING` until
+  authoritative close fill evidence arrives. Evidence: exchange-event tests
+  passed (`21/21`), exchange boundary/orders tests passed (`51/51`), runtime
+  orchestrator/automation tests passed (`55/55`), and API typecheck passed.
+
+- 2026-05-22
+  `ARCH-RUNTIME-P1-010-011-WORKERS-QUEUE-HEARTBEAT-2026-05-22` applies to
+  `SOAR-BACKTESTS-001`, `SOAR-WORKERS-001`, and `SOAR-OPERATIONS-001`:
+  repaired the local OPS/WORKERS follow-up for durable backtest queue
+  ownership and cross-container worker heartbeat truth. Split backtest
+  ownership now enqueues run ids to Redis and the `workers-backtest` entrypoint
+  consumes the existing backtest job from that queue; local inline mode remains
+  the explicit fallback. The backtest job now skips terminal runs and clears
+  stale run-owned trades before retrying active runs. Worker bootstrap writes per-family Redis
+  heartbeats, and `/workers/ready` requires fresh heartbeats for required
+  split-worker families. Evidence:
+  `docs/planning/arch-runtime-p1-010-011-workers-queue-heartbeat-2026-05-22-task.md`;
+  focused queue/job/heartbeat/ownership tests passed (`17/17`), workers
+  health/readiness route tests passed (`7/7`), API typecheck
+  passed, and `git diff --check` passed with line-ending warnings only.
+  Production protected `/workers/ready` readback is still required after
+  deploy.
+
+- 2026-05-22
   `ARCH-CODE-RUNTIME-AUDIT-2026-05-22` applies to
   `SOAR-BOT-RUNTIME-001`, `SOAR-ORDERS-001`, `SOAR-BACKTESTS-001`,
   `SOAR-REPORTS-001`, and `SOAR-OPERATIONS-001`: architecture/code audit
   found and repaired local drift in runtime execution dedupe, LIVE fill
   authority, imported LIVE dynamic-stop display, backtest closed-candle
   windowing, settled-only report aggregation, deploy smoke worker readiness,
-  VPS split-worker compose defaults, API DB readiness, and rollback
-  worker-readiness proof. Validation passed: focused API pack `88/88`,
-  readiness/backtest/report pack `20/20`, script syntax checks, and VPS
-  compose config with required env. Remaining open findings are tracked in
-  `docs/planning/architecture-code-runtime-audit-2026-05-22-task.md` and
-  include account-update source scoping, live retry client-order id,
-  account-update close materialization, backtest multi-strategy merge parity,
-  backtest `TRAILING`/`TSL` event naming, durable backtest queue ownership,
-  and cross-container worker heartbeat proof.
+  VPS split-worker compose defaults, API DB readiness, rollback
+  worker-readiness proof, account-update source scoping, deterministic runtime
+  live-order client ids, zero-quantity account-update recovery behavior,
+  backtest `TSL` event naming, durable Redis backtest queue ownership, and
+  Redis-backed worker readiness heartbeats. Validation passed: focused API pack
+  `88/88`, readiness/backtest/report pack `20/20`, backtest/worker follow-up
+  packs, money-path follow-up packs, API/Web typecheck, script syntax checks,
+  and VPS compose config with required env. Remaining open finding is tracked
+  in `docs/planning/architecture-code-runtime-audit-2026-05-22-task.md`: full
+  backtest multi-strategy merge parity, currently fail-fast mitigated.
 
 - 2026-05-22
   `LIVE-DCA-SUBMITTED-FILL-GATE-2026-05-22` applies to

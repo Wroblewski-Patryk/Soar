@@ -137,7 +137,7 @@ export const simulateInterleavedPortfolio = (input: {
           TP: 0,
           TTP: 0,
           SL: 0,
-          TRAILING: 0,
+          TSL: 0,
           LIQUIDATION: 0,
         },
         decisionTrace: [],

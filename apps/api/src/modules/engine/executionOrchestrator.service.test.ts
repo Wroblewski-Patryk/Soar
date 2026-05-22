@@ -509,6 +509,7 @@ describe('orchestrateRuntimeSignal', () => {
         mode: 'LIVE',
         walletId: 'wallet-open',
         reduceOnly: true,
+        clientOrderId: expect.stringMatching(/^soar_/),
       })
     );
     const closeOrderPayload = (orderGateway.openOrder as ReturnType<typeof vi.fn>).mock.calls[0]?.[1] as Record<
@@ -733,6 +734,7 @@ describe('orchestrateRuntimeSignal', () => {
         walletId: 'wallet-live',
         positionId: 'position-imported-live',
         reduceOnly: true,
+        clientOrderId: expect.stringMatching(/^soar_/),
       })
     );
     expect(positionGateway.closePosition).toHaveBeenCalledWith(
@@ -945,6 +947,7 @@ describe('orchestrateRuntimeSignal', () => {
       expect.objectContaining({
         reduceOnly: true,
         side: 'SELL',
+        clientOrderId: expect.stringMatching(/^soar_/),
       })
     );
     expect(dedupeGateway.markSubmitted).toHaveBeenCalledWith(

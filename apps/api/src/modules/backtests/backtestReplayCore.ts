@@ -44,7 +44,7 @@ export type ReplayEventType =
   | 'TP'
   | 'TTP'
   | 'SL'
-  | 'TRAILING'
+  | 'TSL'
   | 'LIQUIDATION';
 
 export type ReplayEventDraft = {
@@ -156,7 +156,7 @@ export const closeReasonToEventType = (reason?: 'take_profit' | 'trailing_take_p
     case 'stop_loss':
       return 'SL';
     case 'trailing_stop':
-      return 'TRAILING';
+      return 'TSL';
     default:
       return 'EXIT';
   }
@@ -470,7 +470,7 @@ export const simulateTradesForSymbolReplay = (input: {
     TP: 0,
     TTP: 0,
     SL: 0,
-    TRAILING: 0,
+    TSL: 0,
     LIQUIDATION: 0,
   };
   if (candles.length < 3) {

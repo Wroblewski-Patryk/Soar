@@ -19,9 +19,13 @@ repository history.
 - Release objective or product milestone advanced: safer fail-closed LIVE
   execution by restoring fill authority and replay-safe side-effect dedupe.
 - First/next checkpoint: four read-only audit lanes completed; two P0
-  orders/exchange drifts and seven safe local P1 drifts were repaired. Next
-  checkpoint should close remaining P1 findings that need deeper runtime,
-  exchange-event, backtest multi-strategy, or durable queue work.
+  orders/exchange drifts and seven safe local P1 drifts were repaired. The
+  OPS/WORKERS follow-up also repaired durable Redis backtest queue ownership
+  and Redis-backed cross-container heartbeat proof locally. The deeper
+  money-path follow-up repaired account-update source scoping, runtime
+  `clientOrderId` propagation, and zero-quantity account-update close
+  materialization drift. Next checkpoint should address full backtest
+  multi-strategy merge parity as a product/schema slice.
 - Stop conditions: required production credentials, raw secret access, real
   live-money mutation, destructive production action, architecture mismatch
   requiring product decision, or failing quality gate that cannot be safely
@@ -61,8 +65,8 @@ repository history.
 | Coordinator | Active chat | AGENTS, state, docs | Integration, task closure, source-of-truth updates | Mission packet, task evidence, final acceptance | Parent validation gate | CHECKPOINTED |
 | Runtime lifecycle | Explorer lane | runtime lifecycle reference contracts | Engine and bot runtime read models | P1/P2 findings; DCA gates verified aligned | File/line evidence | COMPLETE |
 | Orders/exchange fill authority | Explorer lane + coordinator fix | fill/idempotency contracts | Orders and runtime dedupe | Two P0 findings fixed | Focused tests | CHECKPOINTED |
-| Backtest parity | Explorer lane + coordinator fix | Backtest replay/report parity | Backtest/reports code | Closed-candle gateway and settled-report fixes; multi-strategy and event naming remain open | Focused tests | CHECKPOINTED |
-| Ops/deploy reality | Explorer lane + coordinator fix | Production endpoints, deployment docs | Worker readiness/deploy smoke | Deploy smoke, compose, API DB readiness, and rollback readiness fixed; durable queue/heartbeat remain open | Script/compose checks | CHECKPOINTED |
+| Backtest parity | Explorer lane + coordinator fix | Backtest replay/report parity | Backtest/reports code | Closed-candle gateway and settled-report fixes; TSL naming fixed; multi-strategy now fails fast but full merge parity remains open | Focused tests | CHECKPOINTED |
+| Ops/deploy reality | Explorer lane + coordinator fix | Production endpoints, deployment docs | Worker readiness/deploy smoke | Deploy smoke, compose, API DB readiness, rollback readiness, durable Redis backtest queue ownership, and Redis heartbeat readiness fixed locally | Focused tests/script/compose checks | CHECKPOINTED |
 | Ops/deploy reality | Coordinator serial lane | Production endpoints, deployment docs | Public health/build-info probes | Current production timeout recorded as blocker | HTTP probe output | BLOCKED |
 | Documentation/Memory | Coordinator | State files and docs | Source-of-truth updates and residual risks | Task evidence and state updates | Guardrails/diff checks | IN_PROGRESS |
 

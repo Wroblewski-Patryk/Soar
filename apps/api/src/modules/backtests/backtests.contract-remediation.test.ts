@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { GetBacktestTimelineQuerySchema } from './backtests.types';
+import {
+  CreateBacktestRunSchema,
+  GetBacktestTimelineQuerySchema,
+  hasUnsupportedMultiStrategyBacktestSeed,
+} from './backtests.types';
 import {
   resolveEffectiveMaxCandlesFromSeed,
   resolveReplaySymbolsForTimeline,
@@ -23,7 +27,7 @@ const countCloseLikeEvents = (eventCounts: Record<string, number>) =>
   (eventCounts.TP ?? 0) +
   (eventCounts.TTP ?? 0) +
   (eventCounts.SL ?? 0) +
-  (eventCounts.TRAILING ?? 0) +
+  (eventCounts.TSL ?? 0) +
   (eventCounts.LIQUIDATION ?? 0);
 
 describe('backtest parity remediation contracts', () => {
@@ -283,6 +287,32 @@ describe('backtest parity remediation contracts', () => {
         replayContext: 'portfolio',
       }),
     ).toEqual(runSymbols);
+  });
+
+  it('fails fast instead of accepting unsupported multi-strategy backtest seeds', () => {
+    const seedConfig = {
+      contextSnapshot: {
+        botMarketGroup: {
+          strategyLinks: [
+            { strategyId: 'strategy-a', priority: 10, weight: 1, isEnabled: true },
+            { strategyId: 'strategy-b', priority: 20, weight: 1, isEnabled: true },
+          ],
+        },
+      },
+    };
+
+    expect(hasUnsupportedMultiStrategyBacktestSeed(seedConfig)).toBe(true);
+    const parsed = CreateBacktestRunSchema.safeParse({
+      name: 'Unsupported multi-strategy backtest',
+      symbol: 'BTCUSDT',
+      timeframe: '1m',
+      seedConfig,
+    });
+
+    expect(parsed.success).toBe(false);
+    if (!parsed.success) {
+      expect(parsed.error.issues[0]?.path).toEqual(['seedConfig']);
+    }
   });
 
   it('uses terminal run finishedAt as timeline anchor instead of stale liveProgress', () => {

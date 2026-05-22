@@ -51,6 +51,7 @@ export type SubmitLiveExchangeOrderInput = {
     price?: number;
     strategyId?: string | null;
     reduceOnly?: boolean;
+    clientOrderId?: string;
   };
   targetLeverage: number | null;
 };
@@ -141,6 +142,7 @@ type ExchangeAdapterBoundaryDeps = {
         amount: number;
         price?: number;
         reduceOnly?: boolean;
+        clientOrderId?: string;
         positionMode: 'ONE_WAY' | 'HEDGE';
       };
     }) => Promise<{
@@ -461,16 +463,19 @@ export const submitLiveOrderThroughBoundary = async (
       targetLeverage: params.targetLeverage,
     });
 
+    const liveOrderPayload = {
+      symbol: params.order.symbol.toUpperCase(),
+      side: params.order.side === 'BUY' ? ('buy' as const) : ('sell' as const),
+      type: mapLiveOrderType(params.order.type),
+      amount: params.order.quantity,
+      price: params.order.price,
+      reduceOnly: params.order.reduceOnly,
+      ...(params.order.clientOrderId ? { clientOrderId: params.order.clientOrderId } : {}),
+      positionMode: params.bot.positionMode,
+    };
+
     const result = await liveAdapter.placeLiveOrderWithFees({
-      order: {
-        symbol: params.order.symbol.toUpperCase(),
-        side: params.order.side === 'BUY' ? 'buy' : 'sell',
-        type: mapLiveOrderType(params.order.type),
-        amount: params.order.quantity,
-        price: params.order.price,
-        reduceOnly: params.order.reduceOnly,
-        positionMode: params.bot.positionMode,
-      },
+      order: liveOrderPayload,
     });
 
     return {

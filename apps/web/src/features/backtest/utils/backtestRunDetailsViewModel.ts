@@ -137,7 +137,7 @@ const CLOSE_LIKE_TIMELINE_EVENT_TYPES = new Set<BacktestTimelineEvent["type"]>([
   "TP",
   "TTP",
   "SL",
-  "TRAILING",
+  "TSL",
   "LIQUIDATION",
 ]);
 

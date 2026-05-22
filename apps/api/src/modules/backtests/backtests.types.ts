@@ -19,6 +19,41 @@ const DateTimeSchema = z.preprocess((value) => {
   return value;
 }, z.date());
 
+const asRecord = (value: unknown): Record<string, unknown> | null =>
+  value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : null;
+
+const countConfiguredStrategies = (value: unknown) => {
+  if (!Array.isArray(value)) return 0;
+  return value.filter((item) => {
+    if (typeof item === 'string') return item.trim().length > 0;
+    const row = asRecord(item);
+    if (!row) return false;
+    if (row.isEnabled === false) return false;
+    return typeof row.strategyId === 'string' && row.strategyId.trim().length > 0;
+  }).length;
+};
+
+export const hasUnsupportedMultiStrategyBacktestSeed = (seedConfig: unknown) => {
+  const seed = asRecord(seedConfig);
+  if (!seed) return false;
+
+  const contextSnapshot = asRecord(seed.contextSnapshot);
+  const marketGroupSnapshot =
+    asRecord(contextSnapshot?.marketGroup) ??
+    asRecord(contextSnapshot?.botMarketGroup) ??
+    asRecord(seed.marketGroup) ??
+    asRecord(seed.botMarketGroup);
+
+  return [
+    seed.strategyIds,
+    seed.strategyLinks,
+    contextSnapshot?.strategyIds,
+    contextSnapshot?.strategyLinks,
+    marketGroupSnapshot?.strategyIds,
+    marketGroupSnapshot?.strategyLinks,
+  ].some((value) => countConfiguredStrategies(value) > 1);
+};
+
 export const CreateBacktestRunSchema = z.object({
   name: z.string().trim().min(1),
   symbol: z.string().trim().min(1).optional(),
@@ -49,6 +84,13 @@ export const CreateBacktestRunSchema = z.object({
       code: z.ZodIssueCode.custom,
       message: 'startAt must be earlier than endAt',
       path: ['startAt'],
+    });
+  }
+  if (hasUnsupportedMultiStrategyBacktestSeed(value.seedConfig)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Multi-strategy backtests require the runtime signal merge contract and are not supported by the single-strategy backtest path',
+      path: ['seedConfig'],
     });
   }
 });

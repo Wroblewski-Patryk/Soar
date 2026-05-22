@@ -14,6 +14,7 @@ import { evaluateRuntimeDependencyReadiness } from '../config/runtimeDependencyR
 import { readRuntimeSignalLoopConfig } from '../config/runtimeExecution';
 import { buildRuntimeFreshnessSnapshot } from '../observability/runtimeFreshness';
 import { resolveWorkerTopologySnapshot } from '../workers/workerOwnership';
+import { workerHeartbeatClient, type WorkerHeartbeatName } from '../workers/workerHeartbeat';
 
 const router = Router();
 
@@ -124,7 +125,7 @@ router.get('/workers/health', ...requireOpsAccess, (_req, res) => {
   });
 });
 
-router.get('/workers/ready', ...requireOpsAccess, (_req, res) => {
+router.get('/workers/ready', ...requireOpsAccess, async (_req, res) => {
   const topology = resolveWorkerTopologySnapshot();
   const marketDataLag = Number.parseInt(process.env.WORKER_MARKET_DATA_QUEUE_LAG ?? '0', 10);
   const backtestLag = Number.parseInt(process.env.WORKER_BACKTEST_QUEUE_LAG ?? '0', 10);
@@ -181,6 +182,47 @@ router.get('/workers/ready', ...requireOpsAccess, (_req, res) => {
     });
   }
 
+  let heartbeats: Awaited<ReturnType<typeof workerHeartbeatClient.readMany>>;
+  try {
+    heartbeats = await workerHeartbeatClient.readMany(
+      topology.requiredWorkerFamilies as WorkerHeartbeatName[]
+    );
+  } catch (error) {
+    return res.status(503).json({
+      status: 'not_ready',
+      service: 'workers',
+      mode: topology.mode,
+      environment: topology.environment,
+      ownership: topology.ownership,
+      topologyStatus: topology.topologyStatus,
+      degradedReasons: topology.degradedReasons,
+      requiredQueues: topology.requiredQueues,
+      requiredWorkerFamilies: topology.requiredWorkerFamilies,
+      missing: [],
+      heartbeatStatus: 'unavailable',
+      details: error instanceof Error ? error.message : 'worker heartbeat read failed',
+    });
+  }
+
+  const staleHeartbeats = heartbeats.filter((heartbeat) => heartbeat.status !== 'fresh');
+  if (staleHeartbeats.length > 0) {
+    return res.status(503).json({
+      status: 'not_ready',
+      service: 'workers',
+      mode: topology.mode,
+      environment: topology.environment,
+      ownership: topology.ownership,
+      topologyStatus: topology.topologyStatus,
+      degradedReasons: topology.degradedReasons,
+      requiredQueues: topology.requiredQueues,
+      requiredWorkerFamilies: topology.requiredWorkerFamilies,
+      missing: [],
+      heartbeats,
+      staleWorkers: staleHeartbeats.map((heartbeat) => heartbeat.worker),
+      details: 'Required split-worker heartbeats are missing or stale',
+    });
+  }
+
   return res.status(200).json({
     status: 'ready',
     service: 'workers',
@@ -191,6 +233,7 @@ router.get('/workers/ready', ...requireOpsAccess, (_req, res) => {
     degradedReasons: topology.degradedReasons,
     requiredQueues: topology.requiredQueues,
     requiredWorkerFamilies: topology.requiredWorkerFamilies,
+    heartbeats,
   });
 });
 

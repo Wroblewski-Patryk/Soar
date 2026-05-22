@@ -41,11 +41,13 @@ import {
 import { simulateInterleavedPortfolio } from './backtestPortfolioSimulation.service';
 import { createBacktestRunJob } from './backtestRunJob';
 import { BacktestRunQueue } from './backtestRunQueue';
+import { resolveWorkerOwnershipConfig } from '../../workers/workerOwnership';
 import {
   countLosingBacktestTrades,
   countWinningBacktestTrades,
   createBacktestRun,
   createBacktestTrades,
+  deleteBacktestTradesForRun,
   deleteOwnedBacktestRunCascade,
   findBacktestRunById,
   findOwnedBacktestReport,
@@ -422,13 +424,18 @@ const runBacktestAsync = createBacktestRunJob({
   fetchSupplementalSeries,
   simulateInterleavedPortfolio,
   createBacktestTrades,
+  deleteBacktestTradesForRun,
   countWinningBacktestTrades,
   countLosingBacktestTrades,
   upsertBacktestReportForRun: safeUpsertBacktestReportForRun,
   computeSourceWindowMs,
   maxDrawdownFromPnlSeries,
 });
-const backtestRunQueue = new BacktestRunQueue(runBacktestAsync);
+const backtestWorkerOwnership = resolveWorkerOwnershipConfig().backtest;
+export const backtestRunQueue = new BacktestRunQueue(runBacktestAsync, {
+  backend: backtestWorkerOwnership === 'worker' ? 'redis' : 'inline',
+  queueName: process.env.WORKER_BACKTEST_QUEUE ?? 'backtest',
+});
 
 export const listRuns = async (userId: string, query: ListBacktestRunsQuery) => {
   return listOwnedBacktestRuns(userId, query);
@@ -561,7 +568,7 @@ export const createRun = async (userId: string, data: CreateBacktestRunDto) => {
     },
   });
 
-  backtestRunQueue.enqueue(created.id);
+  await backtestRunQueue.enqueue(created.id);
 
   return created;
 };
@@ -806,7 +813,7 @@ export const getRunTimeline = async (
       TP: 0,
       TTP: 0,
       SL: 0,
-      TRAILING: 0,
+      TSL: 0,
       LIQUIDATION: 0,
     } as Record<ReplayEventType, number>,
     decisionTrace: [],
@@ -944,7 +951,7 @@ export const getRunTimeline = async (
           depthRatio: number;
         } => Boolean(point)),
     },
-        supportedEventTypes: ['ENTRY', 'EXIT', 'DCA', 'TP', 'TTP', 'SL', 'TRAILING', 'LIQUIDATION'],
+        supportedEventTypes: ['ENTRY', 'EXIT', 'DCA', 'TP', 'TTP', 'SL', 'TSL', 'LIQUIDATION'],
     unsupportedEventTypes: [],
     playbackCursor:
       shouldExposePlaybackCursor &&

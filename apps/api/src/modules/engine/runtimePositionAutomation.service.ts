@@ -12,6 +12,7 @@ import {
   buildDcaExecutionDedupeKey,
   runtimeExecutionDedupeService,
 } from './runtimeExecutionDedupe.service';
+import { buildRuntimeClientOrderId } from './runtimeExecutionClientOrderId';
 import { computePositionAddUpdate } from '../orders/positionFillMath';
 import {
   recordRuntimeAutomationSkipTelemetry,
@@ -239,6 +240,7 @@ export const executeRuntimeDca = async (input: {
       price: input.markPrice,
       mode: input.mode,
       riskAck: true,
+      clientOrderId: buildRuntimeClientOrderId(dedupeKey),
     });
 
     if (opened.status !== 'FILLED') {

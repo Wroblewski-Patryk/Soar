@@ -10,18 +10,13 @@ import {
   buildOpenExecutionDedupeKey,
   runtimeExecutionDedupeService,
 } from './runtimeExecutionDedupe.service';
-import {
-  PositionCloseAttribution,
-  resolveRuntimeCloseAttribution,
-} from '../positions/positionCloseAttribution';
+import { buildRuntimeClientOrderId } from './runtimeExecutionClientOrderId';
+import { PositionCloseAttribution, resolveRuntimeCloseAttribution } from '../positions/positionCloseAttribution';
 import {
   getExternalPositionOwnership,
   resolveExternalPositionOwnershipIndex,
 } from '../bots/runtimeExternalPositionOwner.service';
-import {
-  buildImportedExternalPositionMarketPrefix,
-  buildLegacyImportedExternalPositionSymbolPrefix,
-} from '../positions/livePositionReconciliation.helpers';
+import { buildImportedExternalPositionMarketPrefix, buildLegacyImportedExternalPositionSymbolPrefix } from '../positions/livePositionReconciliation.helpers';
 import {
   computeTradeFee,
   isCloseQuantityComplete,
@@ -82,6 +77,7 @@ export interface OrderFlowGateway {
     price?: number;
     mode: RuntimeExecutionMode;
     riskAck: boolean;
+    clientOrderId?: string | null;
   }): Promise<Order>;
   closeOrder(userId: string, orderId: string, input: { riskAck: boolean }): Promise<Order | null>;
   linkOrderToPosition(orderId: string, positionId: string): Promise<void>;
@@ -647,6 +643,7 @@ export const orchestrateRuntimeSignal = async (
       price: input.markPrice,
       mode: input.mode,
       riskAck: true,
+      clientOrderId: buildRuntimeClientOrderId(closeDedupeKey),
     });
     await orderGateway.annotateCloseAttribution?.(closeOrder.id, closeAttribution);
     if (closeOrder.status === 'OPEN' || closeOrder.status === 'PARTIALLY_FILLED') {
@@ -885,6 +882,7 @@ export const orchestrateRuntimeSignal = async (
     price: input.markPrice,
     mode: input.mode,
     riskAck: true,
+    ...(openDedupeKey ? { clientOrderId: buildRuntimeClientOrderId(openDedupeKey) } : {}),
   });
 
   const openEventAt = new Date();

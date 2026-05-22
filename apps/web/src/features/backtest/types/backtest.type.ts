@@ -76,7 +76,7 @@ export type BacktestTimelineQuery = {
 export type BacktestTimelineEvent = {
   id: string;
   tradeId: string;
-  type: 'ENTRY' | 'EXIT' | 'DCA' | 'TP' | 'TTP' | 'SL' | 'TRAILING' | 'LIQUIDATION';
+  type: 'ENTRY' | 'EXIT' | 'DCA' | 'TP' | 'TTP' | 'SL' | 'TSL' | 'LIQUIDATION';
   side: 'LONG' | 'SHORT';
   timestamp: string;
   price: number;

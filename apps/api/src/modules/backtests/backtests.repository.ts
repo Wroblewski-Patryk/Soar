@@ -40,6 +40,11 @@ export const createBacktestTrades = (data: Prisma.BacktestTradeCreateManyInput[]
     skipDuplicates: false,
   });
 
+export const deleteBacktestTradesForRun = (userId: string, runId: string) =>
+  prisma.backtestTrade.deleteMany({
+    where: { userId, backtestRunId: runId },
+  });
+
 export const countWinningBacktestTrades = (userId: string, runId: string) =>
   prisma.backtestTrade.count({
     where: { backtestRunId: runId, userId, pnl: { gt: 0 } },

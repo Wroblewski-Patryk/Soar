@@ -8,7 +8,6 @@ import {
 } from '../exchange/binanceUserDataStream.types';
 import {
   resolveExchangeConfirmedCloseAttribution,
-  resolveExternalSyncMissingCloseAttribution,
 } from '../positions/positionCloseAttribution';
 import { applyOrderFillLifecycle } from './orders.lifecycle.service';
 import { computePositionAddUpdate } from './positionFillMath';
@@ -308,7 +307,15 @@ const resolveLiveAccountUpdateScope = async (input: {
   symbol: string;
   side: 'LONG' | 'SHORT';
   marketType: 'FUTURES' | 'SPOT';
+  sourceApiKeyId: string | null;
 }) => {
+  if (!input.sourceApiKeyId) {
+    console.warn(
+      `[LiveExchangeAccountUpdate] user=${input.userId} symbol=${input.symbol} side=${input.side} marketType=${input.marketType} skipped: missing_source_api_key`
+    );
+    return [];
+  }
+
   const candidates = await prisma.position.findMany({
     where: {
       userId: input.userId,
@@ -322,6 +329,7 @@ const resolveLiveAccountUpdateScope = async (input: {
             mode: 'LIVE',
             exchange: 'BINANCE',
             marketType: input.marketType,
+            apiKeyId: input.sourceApiKeyId,
           },
         },
         {
@@ -329,6 +337,10 @@ const resolveLiveAccountUpdateScope = async (input: {
             mode: 'LIVE',
             exchange: 'BINANCE',
             marketType: input.marketType,
+            OR: [
+              { apiKeyId: input.sourceApiKeyId },
+              { wallet: { apiKeyId: input.sourceApiKeyId } },
+            ],
           },
         },
       ],
@@ -813,6 +825,7 @@ export const applyLiveExchangeOrderTradeUpdateEvent = async (input: {
 
 export const applyLiveExchangeAccountUpdateEvent = async (input: {
   userId: string;
+  sourceApiKeyId?: string | null;
   event: NormalizedBinanceAccountUpdateEvent;
 }) => {
   let updatedPositions = 0;
@@ -835,22 +848,22 @@ export const applyLiveExchangeAccountUpdateEvent = async (input: {
       symbol: normalizedSymbol,
       side,
       marketType: input.event.marketType,
+      sourceApiKeyId: input.sourceApiKeyId ?? null,
     });
     if (scopedPositionIds.length === 0) continue;
     if (quantity === 0) {
-      const closeAttribution = resolveExternalSyncMissingCloseAttribution();
       const result = await prisma.position.updateMany({
         where: {
           id: { in: scopedPositionIds },
         },
         data: {
-          status: 'CLOSED',
-          closedAt: eventAt,
-          syncState: 'ORPHAN_LOCAL',
-          continuityState: 'EXTERNAL_CLOSE_CONFIRMED',
+          syncState: 'DRIFT',
+          continuityState: 'RECOVERING',
           unrealizedPnl: 0,
-          closeReason: closeAttribution.closeReason,
-          closeInitiator: closeAttribution.closeInitiator,
+          missingSince: eventAt,
+          lastExchangeSeenAt: eventAt,
+          lastExchangeSyncAt: eventAt,
+          missingSyncCount: { increment: 1 },
         },
       });
       updatedPositions += result.count;
@@ -884,6 +897,7 @@ export const applyLiveExchangeAccountUpdateEvent = async (input: {
 
 export const applyLiveExchangeUserDataStreamEvent = async (input: {
   userId: string;
+  sourceApiKeyId?: string | null;
   event: NormalizedBinanceUserDataStreamEvent;
 }) => {
   if (input.event.eventType === 'ORDER_TRADE_UPDATE') {
@@ -895,6 +909,7 @@ export const applyLiveExchangeUserDataStreamEvent = async (input: {
   if (input.event.eventType === 'ACCOUNT_UPDATE') {
     return applyLiveExchangeAccountUpdateEvent({
       userId: input.userId,
+      sourceApiKeyId: input.sourceApiKeyId,
       event: input.event,
     });
   }

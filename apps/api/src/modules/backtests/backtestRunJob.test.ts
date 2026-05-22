@@ -14,6 +14,7 @@ describe('createBacktestRunJob', () => {
         symbol: 'BTCUSDT',
         timeframe: '1m',
         strategyId: null,
+        status: 'PENDING',
         seedConfig: {
           symbols: ['BTCUSDT'],
           marketType: 'FUTURES',
@@ -83,7 +84,7 @@ describe('createBacktestRunJob', () => {
                   TP: 0,
                   TTP: 0,
                   SL: 0,
-                  TRAILING: 0,
+                  TSL: 0,
                   LIQUIDATION: 0,
                 },
                 decisionTrace: [],
@@ -93,6 +94,7 @@ describe('createBacktestRunJob', () => {
           }) as any,
       ),
       createBacktestTrades,
+      deleteBacktestTradesForRun: vi.fn(async () => undefined),
       countWinningBacktestTrades: vi.fn(async () => 1),
       countLosingBacktestTrades: vi.fn(async () => 0),
       upsertBacktestReportForRun,
@@ -148,6 +150,7 @@ describe('createBacktestRunJob', () => {
         symbol: 'BTCUSDT',
         timeframe: '1m',
         strategyId: null,
+        status: 'PENDING',
         seedConfig: {
           symbols: ['BTCUSDT', 'ETHUSDT', 'SOLUSDT'],
           marketType: 'FUTURES',
@@ -180,6 +183,7 @@ describe('createBacktestRunJob', () => {
           }) as any,
       ),
       createBacktestTrades: vi.fn(async () => undefined),
+      deleteBacktestTradesForRun: vi.fn(async () => undefined),
       countWinningBacktestTrades: vi.fn(async () => 0),
       countLosingBacktestTrades: vi.fn(async () => 0),
       upsertBacktestReportForRun: vi.fn(async () => undefined),
@@ -231,6 +235,7 @@ describe('createBacktestRunJob', () => {
         symbol: 'BTCUSDT',
         timeframe: '1m',
         strategyId: null,
+        status: 'PENDING',
         seedConfig: {
           symbols: ['BTCUSDT'],
           exchange: 'GATEIO',
@@ -263,6 +268,7 @@ describe('createBacktestRunJob', () => {
           }) as any,
       ),
       createBacktestTrades: vi.fn(async () => undefined),
+      deleteBacktestTradesForRun: vi.fn(async () => undefined),
       countWinningBacktestTrades: vi.fn(async () => 0),
       countLosingBacktestTrades: vi.fn(async () => 0),
       upsertBacktestReportForRun: vi.fn(async () => undefined),
@@ -296,6 +302,7 @@ describe('createBacktestRunJob', () => {
         symbol: 'BTCUSDT',
         timeframe: '1m',
         strategyId: null,
+        status: 'PENDING',
         seedConfig: {
           symbols: ['BTCUSDT'],
           marketType: 'FUTURES',
@@ -332,6 +339,7 @@ describe('createBacktestRunJob', () => {
         throw new Error('parent rows removed during async completion');
       }),
       createBacktestTrades: vi.fn(async () => undefined),
+      deleteBacktestTradesForRun: vi.fn(async () => undefined),
       countWinningBacktestTrades: vi.fn(async () => 0),
       countLosingBacktestTrades: vi.fn(async () => 0),
       upsertBacktestReportForRun,
@@ -342,5 +350,72 @@ describe('createBacktestRunJob', () => {
     await expect(runJob('run-missing-parent')).resolves.toBeUndefined();
     expect(upsertBacktestReportForRun).toHaveBeenCalledTimes(1);
     expect(safeUpdateRun).toHaveBeenCalled();
+  });
+
+  it('skips terminal runs and clears stale trades before retrying active runs', async () => {
+    const deleteBacktestTradesForRun = vi.fn(async () => undefined);
+    const safeUpdateRun = vi.fn(async () => true);
+    const createJob = (status: string) =>
+      createBacktestRunJob({
+        findBacktestRunById: vi.fn(async () => ({
+          id: 'run-retry',
+          userId: 'user-1',
+          symbol: 'BTCUSDT',
+          timeframe: '1m',
+          strategyId: null,
+          status,
+          seedConfig: {
+            symbols: ['BTCUSDT'],
+            marketType: 'FUTURES',
+            leverage: 2,
+            marginMode: 'CROSSED',
+            initialBalance: 10_000,
+            maxCandles: 200,
+          },
+        })),
+        safeUpdateRun,
+        uniqueSorted: (values) => [...new Set(values)].sort(),
+        computeAdaptiveMaxCandles: vi.fn(() => 120),
+        resolveIndicatorWarmupCandles: () => 0,
+        normalizeWalletRiskPercent: () => 1,
+        parseStrategySignalRules: () => null,
+        findOwnedStrategySignalConfig: vi.fn(async () => null),
+        fetchKlines: vi.fn(async () => [
+          {
+            openTime: 0,
+            closeTime: 59_000,
+            open: 100,
+            high: 101,
+            low: 99,
+            close: 100,
+            volume: 1_000,
+          },
+        ]),
+        fetchSupplementalSeries: vi.fn(async () => ({
+          fundingRates: [],
+          openInterest: [],
+          orderBook: [],
+        })),
+        simulateInterleavedPortfolio: vi.fn(
+          () =>
+            ({
+              perSymbol: {},
+              finalBalance: 10_000,
+            }) as any
+        ),
+        createBacktestTrades: vi.fn(async () => undefined),
+        deleteBacktestTradesForRun,
+        countWinningBacktestTrades: vi.fn(async () => 0),
+        countLosingBacktestTrades: vi.fn(async () => 0),
+        upsertBacktestReportForRun: vi.fn(async () => undefined),
+        computeSourceWindowMs: () => 14 * 24 * 60 * 60 * 1000,
+        maxDrawdownFromPnlSeries: () => 0,
+      });
+
+    await createJob('COMPLETED')('run-retry');
+    expect(safeUpdateRun).not.toHaveBeenCalled();
+
+    await createJob('RUNNING')('run-retry');
+    expect(deleteBacktestTradesForRun).toHaveBeenCalledWith('user-1', 'run-retry');
   });
 });

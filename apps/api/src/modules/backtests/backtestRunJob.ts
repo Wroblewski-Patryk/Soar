@@ -39,7 +39,7 @@ type LifecycleEventCounts = {
   TP: number;
   TTP: number;
   SL: number;
-  TRAILING: number;
+  TSL: number;
   LIQUIDATION: number;
 };
 
@@ -88,6 +88,7 @@ type BacktestRunRecord = {
   timeframe: string;
   strategyId: string | null;
   seedConfig: unknown;
+  status: string;
 };
 
 type StrategySignalConfigRecord = {
@@ -156,6 +157,7 @@ type BacktestRunJobDeps = {
     initialBalance: number;
   }) => SimulationResult;
   createBacktestTrades: (trades: CreateTradeInput[]) => Promise<unknown>;
+  deleteBacktestTradesForRun: (userId: string, runId: string) => Promise<unknown>;
   countWinningBacktestTrades: (userId: string, runId: string) => Promise<number>;
   countLosingBacktestTrades: (userId: string, runId: string) => Promise<number>;
   upsertBacktestReportForRun: (input: any) => Promise<unknown>;
@@ -188,7 +190,7 @@ const emptyLifecycleEventCounts = (): LifecycleEventCounts => ({
   TP: 0,
   TTP: 0,
   SL: 0,
-  TRAILING: 0,
+  TSL: 0,
   LIQUIDATION: 0,
 });
 
@@ -241,6 +243,7 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
   async (runId: string) => {
     const run = await deps.findBacktestRunById(runId);
     if (!run) return;
+    if (['COMPLETED', 'FAILED', 'CANCELED'].includes(run.status)) return;
 
     const seed = ((run.seedConfig ?? {}) as Record<string, unknown>) ?? {};
     const symbolListRaw = Array.isArray(seed.symbols) ? (seed.symbols as string[]) : [run.symbol];
@@ -310,6 +313,7 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
       },
     });
     if (!runExists) return;
+    await deps.deleteBacktestTradesForRun(run.userId, run.id);
 
     const pnlSeries: number[] = [];
     const lifecycleEventCounts = emptyLifecycleEventCounts();
@@ -495,7 +499,7 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
               symbolSimulation.eventCounts.TP +
               symbolSimulation.eventCounts.TTP +
               symbolSimulation.eventCounts.SL +
-              symbolSimulation.eventCounts.TRAILING,
+              symbolSimulation.eventCounts.TSL,
             liquidationEvents: symbolSimulation.eventCounts.LIQUIDATION,
             mismatchCount: decisionTrace.filter((entry) => entry.mismatchReason !== null).length,
             mismatchSamples: decisionTrace

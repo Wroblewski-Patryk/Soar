@@ -4,20 +4,47 @@ Last updated: 2026-05-22
 
 ## Next Tiny Task
 
+Current money-path runtime audit follow-up:
+`ARCH-RUNTIME-P1-002-004-MONEY-PATH-2026-05-22` is locally implemented and
+focused-test verified. Account updates now require source API-key identity,
+runtime LIVE open/close/DCA submissions propagate deterministic dedupe-derived
+`clientOrderId`, and zero-quantity account updates move positions to
+`DRIFT`/`RECOVERING` instead of closing without fill truth. Focused validation
+passed: exchange-event tests `21/21`, exchange boundary/orders tests `51/51`,
+runtime orchestrator/automation tests `55/55`, and API typecheck.
+
+Current OPS/WORKERS runtime audit follow-up:
+`ARCH-RUNTIME-P1-010-011-WORKERS-QUEUE-HEARTBEAT-2026-05-22` is locally
+implemented, not fully verified end-to-end. Split backtest ownership now uses
+Redis for durable run-id enqueue/claim, and the `workers-backtest` entrypoint
+starts queue consumption. Worker bootstrap now writes Redis heartbeat keys per
+worker family, and `/workers/ready` requires fresh heartbeat proof for required
+split-worker families. Focused validation passed: backtest queue tests `4/4`
+plus retry-safe job tests and worker heartbeat/ownership tests `17/17`,
+workers health/readiness route tests `7/7`, API typecheck, and
+`git diff --check` with line-ending warnings only.
+Next exact task: collect protected production `/workers/ready` split-worker
+readback after deploy. Evidence:
+`docs/planning/arch-runtime-p1-010-011-workers-queue-heartbeat-2026-05-22-task.md`.
+
 Current active architecture-code audit:
 `ARCH-CODE-RUNTIME-AUDIT-2026-05-22` found and repaired two P0
 orders/exchange runtime safety drifts: stale unproven runtime execution dedupe
 no longer re-executes side effects, and LIVE `FILLED` without exchange fill
 quantity no longer synthesizes local fill/lifecycle truth. Follow-up safe local
-P1 repairs fixed imported LIVE dynamic stop display fallback, backtest
-closed-candle windowing, reports settled-trade aggregation, deploy smoke worker
-readiness, VPS split-worker compose defaults, API DB readiness, and rollback
-worker-readiness proof. Validation passed: focused API pack `88/88`,
-readiness/backtest/report pack `20/20`, script syntax checks, and VPS compose
-config with required env. Next exact task after this checkpoint: run remaining
-gates, commit/push to `main`, then continue with the highest open P1 finding,
-starting with account-update source scoping, live retry client-order id, or
-durable backtest queue ownership. Evidence:
+P1 repairs fixed imported LIVE dynamic stop display fallback, account-update
+source scoping, deterministic runtime live-order client ids, zero-quantity
+account-update recovery behavior, backtest closed-candle windowing, backtest
+`TSL` event naming, reports settled-trade aggregation, deploy smoke worker
+readiness, VPS split-worker compose defaults, API DB readiness, rollback
+worker-readiness proof, durable Redis backtest queue ownership, and
+Redis-backed split-worker heartbeat readiness. Validation passed: focused API
+pack `88/88`, readiness/backtest/report pack `20/20`, backtest/worker
+follow-up packs, money-path follow-up packs, API/Web typecheck, script syntax
+checks, and VPS compose config with required env. Next exact task after this
+checkpoint: full backtest multi-strategy merge parity remains a product/schema
+slice; the current code fails fast on multi-strategy seed snapshots instead of
+silently simulating the single-strategy path. Evidence:
 `docs/planning/architecture-code-runtime-audit-2026-05-22-task.md`.
 
 Current active runtime parity checkpoint:

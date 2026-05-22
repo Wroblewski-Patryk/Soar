@@ -499,6 +499,7 @@ describe('exchangeAdapterBoundary.service', () => {
           type: 'LIMIT',
           quantity: 0.1,
           price: 100_000,
+          clientOrderId: 'soar_runtime_1',
         },
         targetLeverage: 5,
       },
@@ -527,6 +528,7 @@ describe('exchangeAdapterBoundary.service', () => {
         amount: 0.1,
         price: 100_000,
         reduceOnly: undefined,
+        clientOrderId: 'soar_runtime_1',
         positionMode: 'ONE_WAY',
       },
     });

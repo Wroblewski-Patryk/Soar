@@ -259,13 +259,13 @@ describe('simulateTradesForSymbolReplay', () => {
     }
   });
 
-  it('emits lifecycle actions (DCA/TRAILING/EXIT) for timeline/reporting', () => {
+  it('emits lifecycle actions (DCA/TSL/EXIT) for timeline/reporting', () => {
     const candles = [
       candle(0, 100),
       candle(1, 101.5), // open LONG
       candle(2, 101.2), // small pullback
-      candle(3, 103.0), // favorable move (arms trailing but does not hit TP)
-      candle(4, 102.0), // pullback -> trailing exit
+      candle(3, 103.0), // favorable move (arms TSL but does not hit TP)
+      candle(4, 102.0), // pullback -> TSL exit
     ];
 
     const result = simulateTradesForSymbolReplay({
@@ -301,7 +301,7 @@ describe('simulateTradesForSymbolReplay', () => {
     expect(result.eventCounts.ENTRY).toBeGreaterThan(0);
     expect(result.eventCounts.DCA).toBe(0);
     expect(
-      result.eventCounts.TRAILING +
+      result.eventCounts.TSL +
         result.eventCounts.EXIT +
         result.eventCounts.TP +
         result.eventCounts.TTP +
@@ -312,7 +312,7 @@ describe('simulateTradesForSymbolReplay', () => {
         result.eventCounts.TP +
         result.eventCounts.TTP +
         result.eventCounts.SL +
-        result.eventCounts.TRAILING +
+        result.eventCounts.TSL +
         result.eventCounts.LIQUIDATION
     ).toBe(result.trades.length);
   });
@@ -336,7 +336,7 @@ describe('simulateTradesForSymbolReplay', () => {
     expect(result.eventCounts.TP).toBeGreaterThanOrEqual(1);
   });
 
-  it('emits trailing-take-profit event when arm and pullback thresholds are hit', () => {
+  it('emits TSL-take-profit event when arm and pullback thresholds are hit', () => {
     const candles = [
       candle(0, 100),
       candle(1, 100.5),
@@ -502,14 +502,14 @@ describe('simulateTradesForSymbolReplay', () => {
     expect(result.eventCounts.SL).toBeGreaterThanOrEqual(1);
   });
 
-  it('emits trailing exit lifecycle event once pullback crosses trailing threshold', () => {
+  it('emits TSL exit lifecycle event once pullback crosses TSL threshold', () => {
     const candles = [
       candle(0, 100),
       candle(1, 101.5), // open LONG
       candle(2, 101.2), // indicator warmup opens LONG here
       candle(3, 100.2), // negative-start TSL arms
-      candle(4, 103.0), // recovery lifts trailing loss limit
-      candle(5, 102.0), // pullback crosses trailing loss limit
+      candle(4, 103.0), // recovery lifts TSL loss limit
+      candle(5, 102.0), // pullback crosses TSL loss limit
     ];
 
     const result = simulateTradesForSymbolReplay({
@@ -543,7 +543,7 @@ describe('simulateTradesForSymbolReplay', () => {
       },
     });
 
-    expect(result.eventCounts.TRAILING).toBeGreaterThanOrEqual(1);
+    expect(result.eventCounts.TSL).toBeGreaterThanOrEqual(1);
   });
 
   it('triggers DCA on intrabar wick (low/high), not only on candle close', () => {
@@ -898,12 +898,12 @@ describe('simulateTradesForSymbolReplay', () => {
     expect(highRisk.trades[0].quantity).toBeGreaterThan(lowRisk.trades[0].quantity);
   });
 
-  it('respects close.mode=basic and ignores trailing thresholds from config', () => {
+  it('respects close.mode=basic and ignores TSL thresholds from config', () => {
     const candles = [
       candle(0, 100),
       candle(1, 101.5), // open LONG
       candle(2, 103), // move up
-      candle(3, 102.2), // pullback - could trigger trailing if enabled
+      candle(3, 102.2), // pullback - could trigger TSL if enabled
       candle(4, 102.1),
     ];
 
@@ -930,7 +930,7 @@ describe('simulateTradesForSymbolReplay', () => {
     });
 
     expect(result.eventCounts.TTP).toBe(0);
-    expect(result.eventCounts.TRAILING).toBe(0);
+    expect(result.eventCounts.TSL).toBe(0);
   });
 
   it('respects close.mode=advanced and ignores TP/SL from config', () => {

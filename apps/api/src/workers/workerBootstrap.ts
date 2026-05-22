@@ -1,5 +1,6 @@
 import type { QueueTuning } from '../queue/queueTuning';
 import { createModuleLogger } from '../lib/logger';
+import { workerHeartbeatClient } from './workerHeartbeat';
 
 type WorkerName = 'market-data' | 'backtest' | 'execution' | 'market-stream';
 
@@ -29,8 +30,24 @@ export const bootstrapWorker = (config: WorkerBootstrapConfig) => {
     queueTuning: config.queueTuning ?? null,
   });
 
-  setInterval(() => {
-    process.env.WORKER_LAST_HEARTBEAT_AT = new Date().toISOString();
+  const recordHeartbeat = async () => {
+    const heartbeatAt = new Date();
+    process.env.WORKER_LAST_HEARTBEAT_AT = heartbeatAt.toISOString();
+    await workerHeartbeatClient.record(config.workerName, heartbeatAt);
     logWorkerEvent(config.workerName, 'worker_heartbeat');
+  };
+
+  void recordHeartbeat().catch((error) => {
+    workerLoggers[config.workerName].error('worker_heartbeat_record_failed', {
+      error: error instanceof Error ? error.message : 'unknown_error',
+    });
+  });
+
+  const timer = setInterval(() => {
+    void recordHeartbeat().catch((error) => {
+      workerLoggers[config.workerName].error('worker_heartbeat_record_failed', {
+        error: error instanceof Error ? error.message : 'unknown_error',
+      });
+    });
   }, heartbeatIntervalMs);
 };

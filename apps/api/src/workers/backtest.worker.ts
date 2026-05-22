@@ -1,6 +1,7 @@
 import { bootstrapWorker } from './workerBootstrap';
 import { getQueueTuning } from '../queue/queueTuning';
 import { resolveWorkerOwnershipConfig } from './workerOwnership';
+import { backtestRunQueue } from '../modules/backtests/backtests.service';
 
 const ownership = resolveWorkerOwnershipConfig();
 
@@ -15,3 +16,7 @@ bootstrapWorker(
         workerName: 'backtest',
       }
 );
+
+if (ownership.backtest === 'worker') {
+  backtestRunQueue.startWorker();
+}
