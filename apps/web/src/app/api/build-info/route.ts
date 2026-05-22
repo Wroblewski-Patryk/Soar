@@ -49,14 +49,22 @@ const resolveGitRefFromEnv = () =>
   );
 
 const readBuildMetadataFromFile = async (): Promise<BuildMetadata | null> => {
-  try {
-    const filePath = path.join(process.cwd(), ".next", "BUILD_META.json");
-    const raw = await readFile(filePath, "utf8");
-    const parsed = JSON.parse(raw) as BuildMetadata;
-    return parsed && typeof parsed === "object" ? parsed : null;
-  } catch {
-    return null;
+  const candidatePaths = [
+    path.join(process.cwd(), ".build-meta", "BUILD_META.json"),
+    path.join(process.cwd(), ".next", "BUILD_META.json"),
+  ];
+
+  for (const filePath of candidatePaths) {
+    try {
+      const raw = await readFile(filePath, "utf8");
+      const parsed = JSON.parse(raw) as BuildMetadata;
+      return parsed && typeof parsed === "object" ? parsed : null;
+    } catch {
+      // Try the next metadata location.
+    }
   }
+
+  return null;
 };
 
 const resolveBuildId = async () => {

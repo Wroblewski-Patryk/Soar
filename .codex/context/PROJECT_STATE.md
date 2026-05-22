@@ -9501,6 +9501,17 @@ Last updated: 2026-05-23
 - Treat deployment docs and smoke checks as part of done-state for runtime
   changes.
 
+## Recent Status
+
+- 2026-05-23: Repository source-of-truth cleanup is committed on `main`.
+  Obsolete root template scaffolds were removed, evidence was moved under
+  canonical docs, and the Web legacy runtime route redirect drift was fixed.
+- 2026-05-23: Coolify production `soar-web` manual redeploy reached commit
+  `b68d3464`, but public `/api/build-info` returned `gitSha: null`. The local
+  fix now writes Web build metadata to `.build-meta/BUILD_META.json` and copies
+  minimal `.git` metadata into the Docker build stage only; local Docker proof
+  returns the expected Git SHA from `/api/build-info`.
+
 ## Canonical Context
 - `.codex/context/PROJECT_STATE.md`
 - `.codex/context/TASK_BOARD.md`

@@ -9,7 +9,7 @@ const execFileAsync = promisify(execFile);
 
 const webDir = path.resolve(process.cwd());
 const repoRoot = path.resolve(webDir, '..', '..');
-const outputDir = path.join(webDir, '.next');
+const outputDir = path.join(webDir, '.build-meta');
 const outputPath = path.join(outputDir, 'BUILD_META.json');
 
 const readTrimmedEnv = (...keys) => {

@@ -97,11 +97,13 @@ area.
   - `pnpm --filter web exec vitest run src/app/dashboard/bots/runtime/page.test.tsx src/middleware.test.ts --run` => `2` files / `7` tests PASS.
   - `pnpm --filter web run typecheck` => PASS after `next build` regenerated `.next/types`.
   - `pnpm --filter web run build` => PASS.
+  - `docker build -f apps/web/Dockerfile -t soar-web-buildmeta-check .` => PASS; build log wrote `.build-meta/BUILD_META.json` with `gitSha=b68d3464b373db361153e1885be83e035f55f197`.
+  - `docker run --rm -p 3102:3002 soar-web-buildmeta-check` plus `GET http://127.0.0.1:3102/api/build-info` => PASS with `gitSha=b68d3464b373db361153e1885be83e035f55f197`.
   - `pnpm run docs:parity:check` => PASS.
   - `pnpm run quality:guardrails` => PASS.
   - `git diff --check` => PASS with line-ending warnings only.
-- Manual checks: root tracked template scan, reference scan, ignored local artifact cleanup, production availability probe after VPS restart.
-- Reality status: verified for cleanup and local frontend route behavior; production deploy readback pending post-push.
+- Manual checks: root tracked template scan, reference scan, ignored local artifact cleanup, production availability probe after VPS restart, Coolify project/team lookup, manual `soar-web` redeploy readback.
+- Reality status: verified for cleanup, local frontend route behavior, and local Docker build-info packaging. First production redeploy reached commit `b68d3464` in Coolify deployment history, but public `/api/build-info` reported `gitSha: null`; follow-up Docker metadata fix is ready for commit/push/redeploy.
 
 ## Architecture Evidence
 
@@ -122,13 +124,18 @@ area.
 - Task summary: removed obsolete root source-of-truth scaffolding, moved root
   security and spreadsheet evidence into canonical docs areas, corrected stale
   template-era links, and fixed the small frontend legacy route drift found by
-  the integration lane.
+  the integration lane. During production proof, fixed the Web Docker
+  build-info packaging path so the static `/api/build-info` endpoint can expose
+  the deployed Git SHA from Docker builds.
 - Files changed: root scaffold deletions, docs/state updates, web legacy route
-  redirect, route docs/module docs, moved evidence artifacts.
+  redirect, route docs/module docs, moved evidence artifacts, web Dockerfile,
+  build metadata writer, and build-info route metadata lookup.
 - How tested: focused web route/middleware tests, web typecheck, web build,
-  docs parity, repository guardrails, and diff check passed.
+  local Docker image build-info proof, docs parity, repository guardrails, and
+  diff check passed.
 - What is incomplete: full backtest multi-strategy merge parity remains a P1
-  product/schema implementation slice; production readback still depends on
-  VPS/Coolify availability after restart.
-- Next steps: commit/push, then wait for production build-info to expose the
-  pushed SHA and run smoke checks.
+  product/schema implementation slice; production readback still needs a
+  second deploy after the build-info metadata fix is pushed.
+- Next steps: commit/push the build-info metadata fix, redeploy `soar-web`,
+  wait for production build-info to expose the new pushed SHA, then run smoke
+  checks.
