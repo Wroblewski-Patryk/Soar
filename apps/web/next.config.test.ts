@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import nextConfig, { buildCsp, themeBootstrapScriptSha256 } from './next.config';
+import nextConfig, { buildCsp } from './next.config';
 
 describe('next security headers', () => {
   afterEach(() => {
@@ -44,10 +44,9 @@ describe('next security headers', () => {
     expect(devCsp).toContain("'unsafe-eval'");
     expect(prodCsp).not.toContain("'unsafe-eval'");
     expect(devCsp).toContain("script-src 'self' 'unsafe-inline' 'unsafe-eval'");
-    expect(prodCsp).toContain(
-      `script-src 'self' 'unsafe-inline' 'sha256-${themeBootstrapScriptSha256}'`
-    );
+    expect(prodCsp).toContain("script-src 'self' 'unsafe-inline'");
     expect(getCspDirective(prodCsp, 'script-src')).toContain("'unsafe-inline'");
+    expect(getCspDirective(prodCsp, 'script-src')).not.toContain('sha256-');
     expect(devCsp).toContain("connect-src 'self' http: https: ws: wss:");
     expect(prodCsp).toContain("connect-src 'self' https://api.soar.luckysparrow.ch");
     expect(prodCsp).toContain("https://stage-api.soar.luckysparrow.ch");
