@@ -4,19 +4,24 @@ Last updated: 2026-05-22
 
 ## Current Candidate Deployment Status
 
-- `V1-LOGIN-API-STARTUP-HOTFIX-2026-05-22` is an emergency production
-  availability hotfix after pushing `beae3ada` to `main`. Production Web
-  build-info reported `beae3ada`, while `https://api.soar.luckysparrow.ch`
-  returned `503` for `/health`, `/ready`, and `/build-info`, making login
-  unavailable. Local reproduction confirmed the API startup guard failed when
-  production had legacy `API_KEY_ENCRYPTION` material but not the newer
-  `API_KEY_ENCRYPTION_KEYS` keyring. The hotfix allows startup with a strong
-  legacy fallback while `/ready` remains `not_ready` until the operator adds
-  the versioned keyring. Validation: focused readiness tests `17/17`,
-  typecheck, API build, VPS compose config, legacy-startup check, guardrails,
-  and guardrail tests. Follow-up: set real `API_KEY_ENCRYPTION_KEYS` and
-  `API_KEY_ENCRYPTION_ACTIVE_VERSION` in Coolify/VPS, then rerun protected
-  release evidence.
+- `V1-LOGIN-API-STARTUP-HOTFIX-2026-05-22` is closed as an emergency
+  production availability hotfix after pushing `beae3ada` to `main`.
+  Production Web initially reported `beae3ada`, while
+  `https://api.soar.luckysparrow.ch` returned `503` for `/health`, `/ready`,
+  and `/build-info`, making login unavailable. Local reproduction confirmed
+  the API startup guard failed when production had legacy
+  `API_KEY_ENCRYPTION` material but not the newer `API_KEY_ENCRYPTION_KEYS`
+  keyring. The code hotfix allows startup with a strong legacy fallback, and
+  the Coolify `soar-api` production environment was then repaired with
+  generated high-entropy `JWT_SECRET`, `API_KEY_ENCRYPTION_KEYS`, and
+  `API_KEY_ENCRYPTION_ACTIVE_VERSION=v1` values. Production evidence after
+  redeploy: Web build-info reports `7fe389cb4ed3914b2e3aafac0832bcfca7da44b5`,
+  public API `/health` returns `200`, public API `/ready` returns `200`, and
+  `POST /auth/login` from the Web origin reaches the API and returns an
+  expected invalid-credentials response with CORS for
+  `https://soar.luckysparrow.ch`. Local validation: focused readiness tests
+  `17/17`, typecheck, API build, VPS compose config, legacy-startup check,
+  guardrails, and guardrail tests.
 
 - `V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21` advanced the current
   protected `AUD-19` blocker from generic missing app auth to specific fresh

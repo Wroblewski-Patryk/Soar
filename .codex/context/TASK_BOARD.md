@@ -28,8 +28,13 @@ Last updated: 2026-05-22
     `/ready` stays `not_ready` until the versioned keyring is configured.
     Validation passed: readiness tests `17/17`, typecheck, API build, VPS
     compose config, legacy-startup check, guardrails, and guardrail tests.
-    Follow-up: configure real `API_KEY_ENCRYPTION_KEYS` in Coolify/VPS and
-    rerun protected release proof after deploy.
+    Coolify production repair then set high-entropy `JWT_SECRET`,
+    `API_KEY_ENCRYPTION_KEYS`, and `API_KEY_ENCRYPTION_ACTIVE_VERSION=v1` for
+    `soar-api` and redeployed. Production proof after redeploy:
+    `soar.luckysparrow.ch/api/build-info` reports
+    `7fe389cb4ed3914b2e3aafac0832bcfca7da44b5`, API `/health` is `200`, API
+    `/ready` is `200`, and `POST /auth/login` from the Web origin reaches the
+    API with expected invalid-credentials handling.
 
 - [ ] `V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21 release: finish current protected AUD-19 evidence`
   - 2026-05-21: Protected application access allowed current production proof
