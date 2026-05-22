@@ -25,6 +25,7 @@ const resolveGitSha = async () => {
     'SOURCE_COMMIT',
     'GITHUB_SHA',
     'COOLIFY_GIT_COMMIT_SHA',
+    'COOLIFY_COMMIT_SHA',
     'VERCEL_GIT_COMMIT_SHA',
     'RAILWAY_GIT_COMMIT_SHA'
   );
@@ -80,6 +81,7 @@ const resolveGitRef = () =>
   readTrimmedEnv(
     'SOURCE_BRANCH',
     'COOLIFY_GIT_BRANCH',
+    'COOLIFY_BRANCH',
     'GITHUB_REF_NAME',
     'VERCEL_GIT_COMMIT_REF',
     'RAILWAY_GIT_BRANCH'

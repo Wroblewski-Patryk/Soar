@@ -97,13 +97,13 @@ area.
   - `pnpm --filter web exec vitest run src/app/dashboard/bots/runtime/page.test.tsx src/middleware.test.ts --run` => `2` files / `7` tests PASS.
   - `pnpm --filter web run typecheck` => PASS after `next build` regenerated `.next/types`.
   - `pnpm --filter web run build` => PASS.
-  - `docker build -f apps/web/Dockerfile -t soar-web-buildmeta-check .` => PASS; build log wrote `.build-meta/BUILD_META.json` with `gitSha=b68d3464b373db361153e1885be83e035f55f197`.
-  - `docker run --rm -p 3102:3002 soar-web-buildmeta-check` plus `GET http://127.0.0.1:3102/api/build-info` => PASS with `gitSha=b68d3464b373db361153e1885be83e035f55f197`.
+  - `docker build --build-arg SOURCE_COMMIT=$(git rev-parse HEAD) --build-arg SOURCE_BRANCH=main -f apps/web/Dockerfile -t soar-web-buildmeta-check .` => PASS; build log wrote `.build-meta/BUILD_META.json` with `metadataSource=env`.
+  - `docker run --rm -p 3102:3002 soar-web-buildmeta-check` plus `GET http://127.0.0.1:3102/api/build-info` => PASS with `gitSha=4aa396333dd467bbb29a6744a043250cdaaf0c2f` and `gitRef=main`.
   - `pnpm run docs:parity:check` => PASS.
   - `pnpm run quality:guardrails` => PASS.
   - `git diff --check` => PASS with line-ending warnings only.
 - Manual checks: root tracked template scan, reference scan, ignored local artifact cleanup, production availability probe after VPS restart, Coolify project/team lookup, manual `soar-web` redeploy readback.
-- Reality status: verified for cleanup, local frontend route behavior, and local Docker build-info packaging. First production redeploy reached commit `b68d3464` in Coolify deployment history, but public `/api/build-info` reported `gitSha: null`; follow-up Docker metadata fix is ready for commit/push/redeploy.
+- Reality status: verified for cleanup, local frontend route behavior, and local Docker build-info packaging. First production redeploy reached commit `b68d3464` in Coolify deployment history, but public `/api/build-info` reported `gitSha: null`; a follow-up deploy of `4aa39633` failed because copying `.git` is impossible in Coolify's generated Docker context. The current fix uses Coolify/Docker `SOURCE_COMMIT` build args instead and is ready for commit/push/redeploy.
 
 ## Architecture Evidence
 
@@ -126,7 +126,7 @@ area.
   template-era links, and fixed the small frontend legacy route drift found by
   the integration lane. During production proof, fixed the Web Docker
   build-info packaging path so the static `/api/build-info` endpoint can expose
-  the deployed Git SHA from Docker builds.
+  the deployed Git SHA from Docker build args.
 - Files changed: root scaffold deletions, docs/state updates, web legacy route
   redirect, route docs/module docs, moved evidence artifacts, web Dockerfile,
   build metadata writer, and build-info route metadata lookup.

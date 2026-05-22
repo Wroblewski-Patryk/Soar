@@ -37,12 +37,12 @@ Last updated: 2026-05-23
     `git diff --check`.
   - 2026-05-23 deploy proof follow-up: manual Coolify redeploy of `soar-web`
     reached commit `b68d3464`, but public `/api/build-info` reported
-    `gitSha: null`. Fixed Web Docker build metadata by allowing minimal `.git`
-    metadata into the build stage only and moving generated metadata from
-    `.next` to `.build-meta`. Local Docker proof passed:
-    `docker build -f apps/web/Dockerfile -t soar-web-buildmeta-check .` and
+    `gitSha: null`. Fixed Web Docker build metadata by moving generated
+    metadata from `.next` to `.build-meta` and passing Docker/Coolify
+    `SOURCE_COMMIT`/`SOURCE_BRANCH` build args into the Web build. Local Docker proof passed:
+    `docker build --build-arg SOURCE_COMMIT=$(git rev-parse HEAD) --build-arg SOURCE_BRANCH=main -f apps/web/Dockerfile -t soar-web-buildmeta-check .` and
     `GET http://127.0.0.1:3102/api/build-info` returned
-    `b68d3464b373db361153e1885be83e035f55f197`. Next action: commit/push,
+    `4aa396333dd467bbb29a6744a043250cdaaf0c2f`. Next action: commit/push,
     redeploy `soar-web`, then run public build-info freshness and smoke.
 
 - [x] `WEB-PUBLIC-STATIC-READBACK-2026-05-22 fix: prerender public proof routes`

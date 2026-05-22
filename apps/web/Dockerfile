@@ -15,11 +15,13 @@ FROM base AS deps
 RUN pnpm install --frozen-lockfile
 
 FROM deps AS build
-COPY .git .git
+ARG SOURCE_COMMIT
+ARG SOURCE_BRANCH
+ARG COOLIFY_BRANCH
 COPY apps/web apps/web
 COPY libs/shared libs/shared
 COPY scripts scripts
-RUN pnpm --filter web build
+RUN SOURCE_COMMIT="$SOURCE_COMMIT" SOURCE_BRANCH="${SOURCE_BRANCH:-$COOLIFY_BRANCH}" pnpm --filter web build
 
 FROM node:20-bookworm-slim AS runtime
 ENV NODE_ENV=production
