@@ -2,8 +2,11 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 export const revalidate = false;
+
+const githubBranchApiUrl =
+  "https://api.github.com/repos/Wroblewski-Patryk/Soar/commits/main";
 
 const readBuildIdFromFile = async (): Promise<string | null> => {
   try {
@@ -42,11 +45,39 @@ const resolveGitShaFromEnv = () =>
 const resolveGitRefFromEnv = () =>
   readTrimmedEnv(
     "SOURCE_BRANCH",
+    "COOLIFY_GIT_BRANCH",
     "COOLIFY_BRANCH",
     "GITHUB_REF_NAME",
     "VERCEL_GIT_COMMIT_REF",
     "RAILWAY_GIT_BRANCH"
   );
+
+const resolveGitShaFromGithubBranch = async () => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5_000);
+
+  try {
+    const response = await fetch(githubBranchApiUrl, {
+      cache: "no-store",
+      headers: {
+        accept: "application/vnd.github+json",
+        "user-agent": "soar-web-build-info",
+      },
+      signal: controller.signal,
+    });
+
+    if (!response.ok) return null;
+
+    const payload = (await response.json()) as { sha?: unknown };
+    return typeof payload.sha === "string" && payload.sha.trim()
+      ? payload.sha.trim()
+      : null;
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeout);
+  }
+};
 
 const readBuildMetadataFromFile = async (): Promise<BuildMetadata | null> => {
   const candidatePaths = [
@@ -89,11 +120,21 @@ export async function GET() {
   const buildMetadata = await readBuildMetadataFromFile();
   const envGitSha = resolveGitShaFromEnv();
   const envGitRef = resolveGitRefFromEnv();
-  const gitSha = buildMetadata?.gitSha ?? envGitSha ?? null;
+  const githubGitSha =
+    buildMetadata?.gitSha || envGitSha ? null : await resolveGitShaFromGithubBranch();
+  const gitSha = buildMetadata?.gitSha ?? envGitSha ?? githubGitSha ?? null;
   const gitRef = buildMetadata?.gitRef ?? envGitRef ?? null;
+  const fileMetadataSource =
+    buildMetadata?.metadataSource && buildMetadata.metadataSource !== "unknown"
+      ? buildMetadata.metadataSource
+      : null;
   const metadataSource =
+    fileMetadataSource ??
+    (envGitSha || envGitRef ? "env-runtime" : null) ??
+    (githubGitSha ? "github-branch-runtime" : null) ??
     buildMetadata?.metadataSource ??
-    (envGitSha || envGitRef ? "env-runtime" : null);
+    null;
+  const checkedAt = new Date().toISOString();
 
   return NextResponse.json(
     {
@@ -102,7 +143,7 @@ export async function GET() {
       gitRef,
       metadataGeneratedAt: buildMetadata?.generatedAt ?? null,
       metadataSource,
-      checkedAt: buildMetadata?.generatedAt ?? null,
+      checkedAt,
     },
     {
       headers: {

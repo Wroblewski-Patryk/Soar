@@ -20,6 +20,14 @@ Last updated: 2026-05-23
 
 ## Active Issues
 
+- 2026-05-23 deploy metadata regression:
+  After commit `49a59b69` was pushed to `main`, Coolify required manual queue
+  cleanup and `soar-web` trigger. The resulting production Web build
+  `ownhF2rz9PTbbfD7bjapg` returned HTTP `200`, but `/api/build-info` reported
+  `gitSha: null` and `metadataSource: unknown`. This blocks declaring the
+  latest pushed `HEAD` deployed. Active repair:
+  `WEB-BUILD-INFO-RUNTIME-FALLBACK-2026-05-23`.
+
 - 2026-05-23 protected V1 release update:
   No active P0 production release blocker is currently recorded for the
   protected `b1ba69ed` proof packet. Follow-up docs-state deploys must prove

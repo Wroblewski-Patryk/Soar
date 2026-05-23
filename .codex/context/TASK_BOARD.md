@@ -15,6 +15,18 @@ Last updated: 2026-05-23
   - sync task state, project state, planning docs, and learning journal when
     needed
 
+## IN_PROGRESS
+
+- [ ] `WEB-BUILD-INFO-RUNTIME-FALLBACK-2026-05-23 fix: recover deploy metadata when Coolify writes null SHA`
+  - 2026-05-23: After commit `49a59b69` was manually deployed, production
+    served Web build `ownhF2rz9PTbbfD7bjapg` but `/api/build-info` returned
+    `gitSha: null` and `metadataSource: unknown`. Treating this as active
+    deploy-proof regression. The in-progress fix makes `/api/build-info`
+    dynamic, adds a no-store runtime GitHub `main` fallback when file/env
+    metadata is absent, and retries build-time GitHub metadata resolution.
+  - Evidence/task:
+    `docs/planning/web-build-info-runtime-fallback-2026-05-23-task.md`.
+
 ## DONE
 
 - [x] `AI-ASSISTANT-FOUNDATION-PROTOCOL-HARNESS-2026-05-23 test/docs: add reproducible assistant foundation AI protocol harness`

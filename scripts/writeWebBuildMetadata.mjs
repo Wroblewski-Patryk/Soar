@@ -133,27 +133,37 @@ const readGitShaFromRef = async (gitDir, refName) => {
 const readGitShaFromGithubBranch = async () => {
   if (typeof fetch !== 'function') return null;
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10_000);
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10_000);
 
-  try {
-    const response = await fetch(githubBranchApiUrl, {
-      headers: {
-        accept: 'application/vnd.github+json',
-        'user-agent': 'soar-web-build-metadata',
-      },
-      signal: controller.signal,
-    });
+    try {
+      const response = await fetch(githubBranchApiUrl, {
+        headers: {
+          accept: 'application/vnd.github+json',
+          'user-agent': 'soar-web-build-metadata',
+        },
+        signal: controller.signal,
+      });
 
-    if (!response.ok) return null;
+      if (!response.ok) return null;
 
-    const payload = await response.json();
-    return typeof payload?.sha === 'string' && payload.sha.trim()
-      ? payload.sha.trim()
-      : null;
-  } finally {
-    clearTimeout(timeout);
+      const payload = await response.json();
+      const gitSha =
+        typeof payload?.sha === 'string' && payload.sha.trim()
+          ? payload.sha.trim()
+          : null;
+      if (gitSha) return gitSha;
+    } catch {
+      // Retry transient network failures inside Coolify builds.
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, attempt * 1_000));
   }
+
+  return null;
 };
 
 const main = async () => {

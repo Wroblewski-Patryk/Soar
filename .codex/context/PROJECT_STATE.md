@@ -4,6 +4,16 @@ Last updated: 2026-05-23
 
 ## Current Candidate Deployment Status
 
+- `WEB-BUILD-INFO-RUNTIME-FALLBACK-2026-05-23` is in progress after a
+  production deploy of commit `49a59b69` served a new Web build
+  `ownhF2rz9PTbbfD7bjapg` with `gitSha: null` and `metadataSource: unknown`.
+  The coordinator is treating this as a deploy-proof regression, not as a
+  closed release. The fix makes `/api/build-info` dynamic, adds a no-store
+  runtime GitHub `main` fallback when file/env metadata is missing, and retries
+  build-time GitHub metadata resolution for transient Coolify network failures.
+  Evidence/task:
+  `docs/planning/web-build-info-runtime-fallback-2026-05-23-task.md`.
+
 - `AI-ASSISTANT-FOUNDATION-PROTOCOL-HARNESS-2026-05-23` is locally verified.
   The current assistant architecture remains foundation/dry-run only under
   `DEC-AUD-002`; no BACKTEST/PAPER/LIVE hot-path assistant call is claimed.
