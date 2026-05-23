@@ -5,7 +5,8 @@ Last updated: 2026-05-23
 ## Next Tiny Task
 
 Current live exchange execution parity:
-`LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23` is partially verified locally.
+`LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23` is locally verified for the
+exchange-rule repair and partially production-verified by public deploy proof.
 The Gate.io under-`1 USDT` manual ADAUSDT short failure was not proven to be a
 Binance rule leak, but the investigation found two concrete exchange-parity
 gaps: Gate.io swap and spot markets can normalize to the same `ADAUSDT`
@@ -16,11 +17,17 @@ uses `contractSize` in manual pretrade, runtime LIVE sizing, and wallet funds
 guards. Read-only probes show Gate.io ADAUSDT swap has `minAmount=1`,
 `amountPrecision=1`, `contractSize=10`, mark about `0.2421`; one contract is
 about `2.421 USDT`, so the previous `<= 1 USDT` cap is impossible for that
-market. Validation passed: focused API tests `129/129` and API typecheck. Next
-exact task: run final hygiene checks, deploy the fix, run production read-only
-manual/bot preflights for Binance and Gate.io, then request explicit operator
-approval for the minimum executable live size before any new exchange-side
-mutation. Evidence:
+market. Validation passed: focused API tests `129/129`, API typecheck,
+guardrails, and diff check. Commit `9d1a8387` is deployed publicly after
+approved Coolify manual redeploy/force-start for `soar-web`, `soar-api`, and
+`workers-execution`; production Web build-info reports
+`9d1a83875767cd0227be9e2a899b2170a74034cf` on `main` with
+`metadataSource=github-branch` and build id `1tCeTjS9PmOJLsdQ6fVIG`, and
+public no-worker smoke passes API `/health`, API `/ready`, and Web `/`. Next
+exact task: run production read-only manual/bot preflights for Binance and
+Gate.io only after transient Soar app auth is available, then request explicit
+operator approval for the minimum executable live size before any new
+exchange-side mutation. Evidence:
 `docs/planning/live-exchange-execution-parity-2026-05-23-task.md`.
 
 Current runtime DCA protection display parity:

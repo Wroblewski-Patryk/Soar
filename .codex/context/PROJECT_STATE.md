@@ -4,9 +4,11 @@ Last updated: 2026-05-23
 
 ## Current Candidate Deployment Status
 
-- `LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23` is locally partially verified
-  and production LIVE proof is intentionally blocked until deployment and a
-  fresh operator approval. The Gate.io ADAUSDT failure was not a simple Binance
+- `LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23` is locally verified for the
+  exchange-rule repair and partially production-verified by public deploy
+  evidence. Protected production LIVE readback and any new mutation are still
+  intentionally blocked until transient Soar app auth and/or fresh operator
+  approval are available. The Gate.io ADAUSDT failure was not a simple Binance
   notional leak. Local investigation found a real exchange-adapter gap:
   Gate.io CCXT returns spot and swap markets whose symbols/ids both normalize
   to `ADAUSDT`, so generic symbol resolution could select the spot market for
@@ -18,8 +20,17 @@ Last updated: 2026-05-23
   Gate.io ADAUSDT swap `minAmount=1`, `contractSize=10`, mark about `0.2421`,
   so the smallest honest ADAUSDT Gate.io position was about `2.421 USDT`; the
   previous `<=1 USDT` cap is impossible for that contract. Validation passed:
-  focused API tests `9` files / `129` tests and API typecheck. No new
-  production LIVE mutation was performed. Evidence:
+  focused API tests `9` files / `129` tests, API typecheck, repository
+  guardrails, and diff check. Commit
+  `9d1a83875767cd0227be9e2a899b2170a74034cf` is now deployed on public
+  production after approved Coolify manual redeploy/force-start for
+  `soar-web`, `soar-api`, and `workers-execution`; Web build-info reports
+  `9d1a8387` on `main` with `metadataSource=github-branch` and build id
+  `1tCeTjS9PmOJLsdQ6fVIG`, and public smoke passes API `/health`, API
+  `/ready`, and Web `/`. This is not an authenticated manual/bot readback:
+  the current shell still has no Soar app password, token, session cookie, API
+  key secret, or private ops auth env var. No new production LIVE mutation was
+  performed after the fix. Evidence:
   `docs/planning/live-exchange-execution-parity-2026-05-23-task.md`.
 
 - `RUNTIME-DCA-PROTECTION-DISPLAY-PARITY-2026-05-23` is locally verified.

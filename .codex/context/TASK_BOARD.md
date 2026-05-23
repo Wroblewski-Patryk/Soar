@@ -23,12 +23,18 @@ Last updated: 2026-05-23
     notional rules leaking into Gate.io, and requested coordinated proof that
     both Binance and Gate.io can open positions through manual order and
     automated bot channels.
-  - Current stage: verification. Local repair is partially verified: Gate.io
+  - Current stage: verification. Local repair is verified and public
+    production deploy proof is complete for commit
+    `9d1a83875767cd0227be9e2a899b2170a74034cf`: Gate.io
     FUTURES now resolves the swap market before spot when both normalize to
     `ADAUSDT`, and derivative notional uses exchange `contractSize` in manual
-    pretrade, runtime sizing, and funds checks. Live mutation remains blocked
-    until the fix is deployed and the operator approves a Gate.io minimum
-    executable size above the previous `1 USDT` cap. Evidence:
+    pretrade, runtime sizing, and funds checks. Coolify manual redeploy/force
+    start was used for `soar-web`, `soar-api`, and `workers-execution`; public
+    Web build-info reports `9d1a8387` on `main`, and public smoke passes API
+    `/health`, API `/ready`, and Web `/`. Protected app manual/bot readback
+    remains blocked without transient Soar app auth, and live mutation remains
+    blocked until the operator approves a Gate.io minimum executable size above
+    the previous `1 USDT` cap. Evidence:
     `docs/planning/live-exchange-execution-parity-2026-05-23-task.md`.
 
 ## DONE

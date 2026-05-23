@@ -16,7 +16,7 @@
 - Iteration: protected live-trading parity checkpoint
 - Operation Mode: BUILDER
 - Mission ID: LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23
-- Mission Status: PARTIALLY_VERIFIED
+- Mission Status: PARTIALLY_VERIFIED_PROD_PUBLIC
 
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
@@ -57,7 +57,7 @@
 | Coordinator | Active chat | AGENTS, active mission, live trading task evidence | Integration, live-mutation decision gate, source-of-truth updates | Mission packet, final acceptance | Parent validation gate | IN_PROGRESS |
 | Manual order path | Explorer lane + coordinator | Orders services, exchange boundary, prior Gate.io fail-closed evidence | Read-only findings; possible focused tests | Manual path parity findings | File/line evidence, focused tests if changed | IN_PROGRESS |
 | Automated bot path | Explorer lane + coordinator | Runtime bot execution, exchange boundary, strategy/order services | Read-only findings; possible focused tests | Auto path parity findings | File/line evidence, focused tests if changed | IN_PROGRESS |
-| Production preflight and proof | Coordinator | Production API/Web health and protected app context | Authenticated readbacks and bounded live attempts | Preflight and live proof report | Health/readiness/order/position readbacks | PLANNED |
+| Production preflight and proof | Coordinator | Production API/Web health and protected app context | Authenticated readbacks and bounded live attempts | Preflight and live proof report | Public build-info/smoke passed; protected app readback blocked without transient Soar auth | PARTIAL |
 | Documentation/Memory | Coordinator | State files and task board | Planning/state updates | Durable evidence and residual risk | Secret scan, diff check | IN_PROGRESS |
 
 ### Lane Checks
@@ -123,11 +123,19 @@ derivative contract size.
   - `pnpm --filter api run typecheck` => PASS.
   - `pnpm run quality:guardrails` => PASS.
   - `git diff --check` => PASS with line-ending normalization warnings only.
+  - `pnpm run quality:guardrails` => PASS before production redeploy.
+  - `git diff --check` => PASS before production redeploy.
 - Manual checks:
   - Local read-only CCXT connector probe after the fix resolved `GATEIO / FUTURES/swap / ADAUSDT` to swap rules: `minAmount=1`, `amountPrecision=1`, `contractSize=10`, `mark=0.2421`, so one contract notional was about `2.421 USDT` and `quantity=4` would be about `9.684 USDT`.
   - Local read-only CCXT connector probe for Binance ADAUSDT futures returned `minAmount=1`, `minNotional=5`, `contractSize=1`, `mark=0.2421`.
+- Production deploy/readback:
+  - Commit `9d1a83875767cd0227be9e2a899b2170a74034cf` was pushed to `main`.
+  - Coolify did not converge automatically from the previous public build, so the coordinator manually triggered approved Coolify redeploy/force-start for `soar-web`, `soar-api`, and `workers-execution`.
+  - `pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha 9d1a8387 --timeout-seconds 1200 --interval-seconds 30` => PASS; production Web build-info reported `gitSha=9d1a83875767cd0227be9e2a899b2170a74034cf`, `gitRef=main`, `metadataSource=github-branch`, `buildId=1tCeTjS9PmOJLsdQ6fVIG`.
+  - `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers` => PASS for API `/health`, API `/ready`, and Web `/`.
+  - Fresh readback at `2026-05-23T16:23:36.987Z` still reported the same `9d1a8387` build-info tuple.
 - Screenshots/logs: pending
-- High-risk checks: no new production LIVE mutation was attempted after finding the contract-size bug; production proof remains blocked until this fix is deployed and the operator explicitly approves a minimum-contract-size order.
+- High-risk checks: no new production LIVE mutation was attempted after finding the contract-size bug. Public deployment proof is complete for `9d1a8387`; protected manual/bot readbacks remain blocked because this shell has no Soar app password, API token, session cookie, or private ops auth env vars. A future live mutation still requires fresh explicit operator approval for exchange, symbol, side, and minimum executable size.
 - Secret checks: full repo scan still finds pre-existing test/seed references to the default test password; changed-diff scan found no newly added raw password secret in this mission.
 - Module confidence ledger updated: yes
 - Module confidence rows closed or changed: SOAR-ORDERS-001, SOAR-BOT-RUNTIME-001, SOAR-OPERATIONS-001
@@ -137,21 +145,21 @@ derivative contract size.
 - Quality scenario rows closed or changed: QAS-LIVE-TRADING-SAFETY-2026-05-23
 - Risk register updated: yes
 - Risk rows closed or changed: RISK-LIVE-EXCHANGE-MUTATION-2026-05-23
-- Reality status: partially verified
+- Reality status: partially verified with public production deploy proof
 
 ## Architecture Evidence
 - Architecture source reviewed: `docs/architecture/06_execution-lifecycle.md`, exchange/order services, runtime execution state.
 - Fits approved architecture: yes. The fix keeps LIVE order truth in the exchange/rules boundary and shared pretrade/runtime guards.
 - Mismatch discovered: no architecture mismatch; implementation was missing Gate.io derivative market disambiguation and contract-size propagation.
-- Decision required from user: yes, but only for the next live mutation size because Gate.io ADAUSDT cannot satisfy the previous `<= 1 USDT` cap.
+- Decision required from user: yes, but only for protected app credentials/readback execution or the next live mutation size because Gate.io ADAUSDT cannot satisfy the previous `<= 1 USDT` cap.
 - Approval reference if architecture changed: not applicable
 - Follow-up architecture doc updates: pending
 
 ## Deployment / Ops Evidence
-- Deploy impact: medium
+- Deploy impact: medium; deployed publicly as `9d1a8387`
 - Env or secret changes: none planned
 - Health-check impact: none planned
-- Smoke steps updated: pending
+- Smoke steps updated: public no-worker deploy smoke passed for the deployed candidate.
 - Rollback note: live mutation proof must include final readback and cleanup/deactivation where applicable.
 - Observability or alerting impact: none in this local slice
 - Staged rollout or feature flag: not applicable
@@ -187,8 +195,8 @@ derivative contract size.
 - Implementation notes: fixed CCXT market symbol resolution to prefer the configured market type when spot and swap markets normalize to the same symbol/id; filtered `loadMarketsMap()` to the configured market type; added `contractSize` to symbol trading rules and metadata; updated manual context and live pretrade notional checks to compute `quantity * markPrice * contractSize`; updated runtime exchange order guard, runtime signal sizing, and runtime wallet funds guard to account for derivative contract size before auto orchestration.
 
 ### 5. Verify and Test
-- Validation performed: focused exchange/orders/runtime tests and API typecheck listed above.
-- Result: PASS locally.
+- Validation performed: focused exchange/orders/runtime tests, API typecheck, guardrails, diff check, production Web build-info freshness wait, and public API/Web smoke listed above.
+- Result: PASS locally and PASS for public production deploy freshness.
 
 ### 6. Self-Review
 - Simpler option considered: answer from existing failed order evidence only.
