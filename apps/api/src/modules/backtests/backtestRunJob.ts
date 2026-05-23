@@ -233,6 +233,37 @@ const parseSeedTimeMs = (value: unknown) => {
   return Number.isFinite(parsed) ? parsed : undefined;
 };
 
+const mentionsOrderBookIndicator = (value: unknown): boolean => {
+  if (typeof value === 'string') return value.toUpperCase().includes('ORDER_BOOK');
+  if (Array.isArray(value)) return value.some(mentionsOrderBookIndicator);
+  if (!value || typeof value !== 'object') return false;
+
+  return Object.entries(value as Record<string, unknown>).some(
+    ([key, nestedValue]) =>
+      key.toUpperCase().includes('ORDER_BOOK') || mentionsOrderBookIndicator(nestedValue),
+  );
+};
+
+const requiresHistoricalOrderBook = (strategyConfigs: Array<Record<string, unknown> | null>) =>
+  strategyConfigs.some(mentionsOrderBookIndicator);
+
+const assertHistoricalOrderBookSupported = (input: {
+  exchange: Exchange;
+  marketType: BacktestMarketType;
+  symbol: string;
+  orderBookPoints: number;
+  requiresOrderBook: boolean;
+}) => {
+  if (!input.requiresOrderBook) return;
+  if (input.marketType !== 'FUTURES') return;
+  if (input.exchange === Exchange.BINANCE) return;
+  if (input.orderBookPoints > 0) return;
+
+  throw new Error(
+    `UNSUPPORTED_HISTORICAL_ORDER_BOOK_FOR_EXCHANGE:${input.exchange}:${input.symbol}`,
+  );
+};
+
 const updateRunProgress = async (
   deps: BacktestRunJobDeps,
   runId: string,
@@ -340,6 +371,7 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
       0,
       ...strategyConfigsForWarmup.map((config) => deps.resolveIndicatorWarmupCandles(config)),
     );
+    const strategyRequiresOrderBook = requiresHistoricalOrderBook(strategyConfigsForWarmup);
     const strategyWalletRisk = deps.normalizeWalletRiskPercent(
       resolveStrategyWalletRiskFromSnapshot(strategySnapshot) ?? strategy?.walletRisk ?? 1,
       1
@@ -434,6 +466,13 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
             fetchEndTimeMs,
             fetchStartTimeMs,
           );
+          assertHistoricalOrderBookSupported({
+            exchange,
+            marketType,
+            symbol,
+            orderBookPoints: supplemental.orderBook.length,
+            requiresOrderBook: strategyRequiresOrderBook,
+          });
           candlesBySymbol.set(symbol, candles);
           supplementalBySymbol.set(symbol, supplemental);
           symbolInputCoverage.push({

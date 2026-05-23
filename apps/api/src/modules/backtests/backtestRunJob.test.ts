@@ -468,6 +468,98 @@ describe('createBacktestRunJob', () => {
     expect(fetchSupplementalCall[6]).toBe(Date.parse(startAt));
   });
 
+  it('fails closed for non-Binance futures ORDER_BOOK strategies without historical order-book input', async () => {
+    const safeUpdateRun = vi.fn(async () => true);
+    const upsertBacktestReportForRun = vi.fn(async () => undefined);
+    const simulateInterleavedPortfolio = vi.fn(
+      () =>
+        ({
+          perSymbol: {},
+          finalBalance: 10_000,
+        }) as any,
+    );
+
+    const runJob = createBacktestRunJob({
+      findBacktestRunById: vi.fn(async () => ({
+        id: 'run-order-book-gateio',
+        userId: 'user-1',
+        symbol: 'BTCUSDT',
+        timeframe: '1m',
+        strategyId: null,
+        status: 'PENDING',
+        seedConfig: {
+          symbols: ['BTCUSDT'],
+          exchange: 'GATEIO',
+          marketType: 'FUTURES',
+          leverage: 2,
+          marginMode: 'CROSSED',
+          initialBalance: 10_000,
+          maxCandles: 200,
+          contextSnapshot: {
+            strategy: {
+              config: {
+                indicatorsLong: [
+                  {
+                    name: 'ORDER_BOOK_IMBALANCE',
+                    condition: '>',
+                    value: 0.2,
+                    params: {},
+                  },
+                ],
+              },
+            },
+          },
+        },
+      })),
+      safeUpdateRun,
+      uniqueSorted: (values) => [...new Set(values)].sort(),
+      computeAdaptiveMaxCandles: vi.fn(() => 120),
+      resolveIndicatorWarmupCandles: () => 0,
+      normalizeWalletRiskPercent: () => 1,
+      parseStrategySignalRules: () => ({ long: true }),
+      findOwnedStrategySignalConfig: vi.fn(async () => null),
+      fetchKlines: vi.fn(async () => [
+        {
+          openTime: 0,
+          closeTime: 59_000,
+          open: 100,
+          high: 101,
+          low: 99,
+          close: 100,
+          volume: 1_000,
+        },
+      ]),
+      fetchSupplementalSeries: vi.fn(async () => ({
+        fundingRates: [],
+        openInterest: [],
+        orderBook: [],
+      })),
+      simulateInterleavedPortfolio,
+      createBacktestTrades: vi.fn(async () => undefined),
+      deleteBacktestTradesForRun: vi.fn(async () => undefined),
+      countWinningBacktestTrades: vi.fn(async () => 0),
+      countLosingBacktestTrades: vi.fn(async () => 0),
+      upsertBacktestReportForRun,
+      computeSourceWindowMs: () => 14 * 24 * 60 * 60 * 1000,
+      maxDrawdownFromPnlSeries: () => 0,
+    });
+
+    await runJob('run-order-book-gateio');
+
+    expect(simulateInterleavedPortfolio).not.toHaveBeenCalled();
+    const finalUpdate = (safeUpdateRun as any).mock.calls.at(-1)?.[1] as any;
+    expect(finalUpdate.status).toBe('FAILED');
+    expect(finalUpdate.seedConfig.liveProgress.failedSymbols).toEqual(['BTCUSDT']);
+
+    const reportPayload = (upsertBacktestReportForRun as any).mock.calls[0]?.[0] as any;
+    expect(reportPayload.create.metrics.parityDiagnostics[0]).toMatchObject({
+      symbol: 'BTCUSDT',
+      status: 'FAILED',
+      orderBookPoints: 0,
+      error: 'UNSUPPORTED_HISTORICAL_ORDER_BOOK_FOR_EXCHANGE:GATEIO:BTCUSDT',
+    });
+  });
+
   it('fails soft when report upsert loses its parent rows during async completion', async () => {
     const upsertBacktestReportForRun = vi.fn(async () => false);
     const safeUpdateRun = vi.fn(async () => true);

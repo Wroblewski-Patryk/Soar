@@ -76,6 +76,17 @@ Last updated: 2026-05-23
   - Evidence/task:
     `docs/planning/deploy-build-info-freshness-gate-hardening-2026-05-23-task.md`.
 
+- [x] `BACKTEST-NON-BINANCE-ORDER-BOOK-FAIL-CLOSED-2026-05-23 fix: fail closed on missing non-Binance order-book history`
+  - 2026-05-23: Backtest run jobs now detect effective `ORDER_BOOK_*`
+    strategy config and reject non-Binance FUTURES symbols when supplemental
+    data has zero historical order-book points. The run records explicit
+    parity diagnostics such as
+    `UNSUPPORTED_HISTORICAL_ORDER_BOOK_FOR_EXCHANGE:GATEIO:BTCUSDT` instead
+    of simulating against a silent empty order-book series.
+  - Validation passed: focused backtest pack `47/47` and API typecheck.
+  - Evidence/task:
+    `docs/planning/backtest-non-binance-order-book-fail-closed-2026-05-23-task.md`.
+
 - [x] `V1-PROTECTED-APP-PROOF-B1BA69ED-2026-05-23 release: production proof and release gate ready`
   - 2026-05-23: Production deploy
     `b1ba69edccc639e97943f37fb2b1e6249a62e87c` is current on `main`.

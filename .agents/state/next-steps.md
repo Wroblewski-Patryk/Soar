@@ -32,6 +32,17 @@ bounded product/runtime gap or explicitly plan future hot-path assistant
 integration with persisted traces, fail-closed guards, and full AI red-team
 evidence.
 
+Current backtest order-book safety:
+`BACKTEST-NON-BINANCE-ORDER-BOOK-FAIL-CLOSED-2026-05-23` is locally verified.
+Non-Binance FUTURES backtests that use `ORDER_BOOK_*` strategy indicators now
+fail closed when supplemental data has zero historical order-book points,
+recording explicit parity diagnostics instead of simulating against a silent
+empty series. This does not claim real non-Binance historical order-book
+support. Validation passed: focused backtest pack `47/47` and API typecheck.
+Next exact task: implement a real exchange-owned historical order-book
+boundary before claiming full non-Binance order-book parity, or continue the
+next architecture-audit runtime gap.
+
 Current protected release state:
 Production release-gate proof for `b1ba69edccc639e97943f37fb2b1e6249a62e87c`
 is healthy and complete: build-info matched `main`, deploy smoke passed,

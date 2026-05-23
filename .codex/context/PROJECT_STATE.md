@@ -103,6 +103,16 @@ Last updated: 2026-05-23
   replay/kernel parity pack `34/34`, and API typecheck. Evidence:
   `docs/planning/architecture-code-runtime-audit-2026-05-22-task.md`.
 
+- `BACKTEST-NON-BINANCE-ORDER-BOOK-FAIL-CLOSED-2026-05-23` is locally
+  verified. Non-Binance FUTURES backtests that use `ORDER_BOOK_*` strategy
+  indicators now fail closed when supplemental data contains no historical
+  order-book points, preserving explicit parity diagnostics instead of
+  simulating against silent empty order-book history. This does not synthesize
+  historical order-book data and does not claim real non-Binance historical
+  order-book support. Validation passed: focused backtest pack `47/47` and
+  API typecheck. Evidence:
+  `docs/planning/backtest-non-binance-order-book-fail-closed-2026-05-23-task.md`.
+
 - `REPO-SOT-CLEANUP-2026-05-23` is verified locally after the operator noticed
   duplicate architecture-looking folders. Current governance confirms
   `docs/architecture/` is canonical, while root `architecture/` and related
