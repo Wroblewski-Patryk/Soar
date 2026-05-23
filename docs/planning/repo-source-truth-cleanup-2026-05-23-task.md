@@ -104,6 +104,11 @@ area.
   - `git diff --check` => PASS with line-ending warnings only.
 - Manual checks: root tracked template scan, reference scan, ignored local artifact cleanup, production availability probe after VPS restart, Coolify project/team lookup, manual `soar-web` redeploy readback.
 - Reality status: verified for cleanup, local frontend route behavior, and local Docker build-info packaging. First production redeploy reached commit `b68d3464` in Coolify deployment history, but public `/api/build-info` reported `gitSha: null`; a follow-up deploy of `4aa39633` failed because copying `.git` is impossible in Coolify's generated Docker context. The current fix uses Coolify/Docker `SOURCE_COMMIT` build args instead and is ready for commit/push/redeploy.
+- Follow-up reality: Coolify deployment `b7p9w45kzbnkfpwmyjg8mniy` imported
+  commit `06ef5f39` and finished, but still logged
+  `RUN SOURCE_COMMIT=""` and wrote `metadataSource=unknown`. The metadata
+  script now has a final GitHub branch readback fallback for Docker contexts
+  where `.git` and build args are unavailable.
 
 ## Architecture Evidence
 

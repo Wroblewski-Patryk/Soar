@@ -3053,3 +3053,8 @@ promise = connect().catch((error) => {
 - Evidence: Coolify deployment `wyyx5em0h9djlyilb8y9e3al` logged
   `RUN SOURCE_COMMIT="" ...` despite importing commit `57e87bae`; removing
   the local redeclarations lets Coolify's injected defaults remain in scope.
+- Follow-up: Coolify can still pass an empty `SOURCE_COMMIT` build arg through
+  generated compose even when it imports the correct commit. The Web build
+  metadata script therefore keeps GitHub branch readback as a final Docker
+  context fallback, and this fallback must be tested in a directory without
+  `.git`.

@@ -44,6 +44,12 @@ Last updated: 2026-05-23
     `GET http://127.0.0.1:3102/api/build-info` returned
     `4aa396333dd467bbb29a6744a043250cdaaf0c2f`. Next action: commit/push,
     redeploy `soar-web`, then run public build-info freshness and smoke.
+  - 2026-05-23: Coolify deployment `b7p9w45kzbnkfpwmyjg8mniy` imported
+    `06ef5f39` and finished, but generated Docker build still ran with
+    `SOURCE_COMMIT=""`. `scripts/writeWebBuildMetadata.mjs` now falls back to
+    GitHub branch readback when env/git/.git-files are unavailable; fallback
+    proof passed in a temporary no-`.git` directory with
+    `metadataSource=github-branch`.
 
 - [x] `WEB-PUBLIC-STATIC-READBACK-2026-05-22 fix: prerender public proof routes`
   - 2026-05-22: Production availability proof found the public static root
