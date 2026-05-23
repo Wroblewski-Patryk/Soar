@@ -8,27 +8,30 @@ Last updated: 2026-05-23
 `V1-PROTECTED-APP-PROOF-B1BA69ED-2026-05-23` plus the post-push release-state
 sync is the active production release truth. Production was advanced from
 `b1ba69edccc639e97943f37fb2b1e6249a62e87c` through
-`db07214667a700ba02ea8210629655cf2becd7d6` to
-`0ee013214ef82be61d08430e9d3338ef5c263b67` on `main`; Coolify twice needed a
-manual `soar-web` deployment `Force Start`, and Web build-info now reports
-`0ee013214ef82be61d08430e9d3338ef5c263b67`. Public post-deploy smoke passes
-for API `/health`, API `/ready`, and Web `/`. Authenticated deploy smoke could
-not be claimed for the latest sync because the available Coolify credential is
-not a valid Soar application password for `ai@luckysparrow.ch`
-(`401 Invalid email or password`).
+`db07214667a700ba02ea8210629655cf2becd7d6`,
+`0ee013214ef82be61d08430e9d3338ef5c263b67`, and then
+`e0457b424196d8e9773b1ef402f7d1c501160ebc` on `main`; Coolify needed manual
+`soar-web` deployment `Force Start` actions for docs/state sync deploys,
+including queued deployment `iwhb44uuc5pqxixr7b9xv6ko`, and Web build-info
+reported `e0457b424196d8e9773b1ef402f7d1c501160ebc` after convergence. Public
+post-deploy smoke passes for API `/health`, API `/ready`, and Web `/`.
+Authenticated deploy smoke is not claimed for the latest docs/state sync
+because the available Coolify credential is not a valid Soar application
+password for `ai@luckysparrow.ch` (`401 Invalid email or password`).
 `LIVEIMPORT-03` passed with `--symbols auto` against the real open runtime
 payloads discovered in production (`SOLUSDT`, `BNBUSDT`), both
 `EXCHANGE_SYNC`, `BOT_MANAGED`, `OWNED_AND_MANAGED`, and `IN_SYNC`; Codex did
 not create or mutate any LIVE order or position. Final preflight and the full
 non-dry-run production release gate are `READY_FOR_PROTECTED_EVIDENCE` /
-`ready` for `b1ba69ed` evidence, and the current `0ee01321` deploy has fresh
-public build-info plus public deploy smoke after build-info convergence.
+`ready` for `b1ba69ed` evidence. Post-release docs/state sync commits must be
+verified by public build-info and public deploy smoke after each push because
+each docs-only commit changes the deploy SHA.
 Current focus is post-release monitoring and the next bounded product/runtime task; do not treat
 historical `72b547e` ETH/DOGE liveimport failure notes as the current release
 blocker.
 
 Historical 2026-05-21 protected V1 app proof status (superseded by the
-2026-05-23 `b1ba69ed` / `0ee01321` production proof above):
+2026-05-23 `b1ba69ed` / `e0457b42` production proof above):
 `V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21` used approved protected
 application access without persisting secrets and advanced current production
 evidence for deployed `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`. Operator

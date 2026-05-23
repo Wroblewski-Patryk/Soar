@@ -22,20 +22,21 @@ Last updated: 2026-05-23
 
 - 2026-05-23 protected V1 release update:
   No active P0 production release blocker is currently recorded for the
-  deployed `0ee013214ef82be61d08430e9d3338ef5c263b67` proof packet. Production
-  Web build-info matches `0ee01321` after a Coolify manual `soar-web`
-  deployment `Force Start`, public deploy smoke passes, and the immediately
-  preceding protected release gate for `b1ba69ed` is ready. Authenticated
-  deploy smoke for this latest docs/state sync is not claimed because the
-  available Coolify credential is not a valid Soar application password for
-  `ai@luckysparrow.ch` (`401 Invalid email or password`).
+  protected `b1ba69ed` proof packet. Follow-up docs-state deploys must prove
+  the pushed `HEAD` via public Web build-info and public deploy smoke after
+  deployment convergence; the pre-sync `e0457b42` checkpoint passed after a
+  Coolify manual `soar-web` redeploy and `Force Start` for queued deployment
+  `iwhb44uuc5pqxixr7b9xv6ko`. Authenticated deploy smoke for the latest
+  docs/state sync is not claimed because the available Coolify credential is
+  not a valid Soar application password for `ai@luckysparrow.ch`
+  (`401 Invalid email or password`).
   `LIVEIMPORT-03` passed with `--symbols auto` against the actual open runtime
   payloads visible in production (`SOLUSDT`, `BNBUSDT`), both
   `EXCHANGE_SYNC`, `BOT_MANAGED`, `OWNED_AND_MANAGED`, and `IN_SYNC`; no LIVE
   order or position was created or mutated by Codex.
 
 - Historical 2026-05-21 protected V1 release update, superseded by the
-  2026-05-23 `b1ba69ed` / `0ee01321` production proof above:
+  2026-05-23 `b1ba69ed` / `e0457b42` production proof above:
   Protected app auth is no longer the only blocker for the current `dd1a1faf`
   release attempt. Fresh production UI clickthrough and rollback proof pass,
   and authenticated `LIVEIMPORT-03` reaches a RUNNING Binance FUTURES LIVE

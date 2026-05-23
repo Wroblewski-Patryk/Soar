@@ -6,8 +6,9 @@ Last updated: 2026-05-23
 
 - `V1-PROTECTED-APP-PROOF-B1BA69ED-2026-05-23` is the current protected
   production release-gate truth, and
-  `0ee013214ef82be61d08430e9d3338ef5c263b67` is the current deployed `main`
-  build-info truth after the release-state sync commit. The `b1ba69ed` release
+  follow-up docs/state sync commits are required to prove the pushed `HEAD`
+  through public Web build-info plus public deploy smoke after each push. The
+  `b1ba69ed` release
   proof passed build-info, deploy smoke, authenticated `/workers/ready`,
   split-worker topology, production DB restore drill, rollback proof,
   production UI clickthrough, RC Gates 1-4, sign-off, and SLO
@@ -15,13 +16,16 @@ Last updated: 2026-05-23
   read-only auto-discovering the real open runtime symbols `SOLUSDT` and
   `BNBUSDT`; both readbacks are `EXCHANGE_SYNC`, `BOT_MANAGED`,
   `OWNED_AND_MANAGED`, and `IN_SYNC`. Final preflight has no blockers and the
-  full non-dry-run production release gate is `ready`. Follow-up deploy
-  `0ee013214ef82be61d08430e9d3338ef5c263b67` required manually forcing the
-  queued Coolify `soar-web` deployment, then Web build-info converged and
-  public deploy smoke passed for API `/health`, API `/ready`, and Web `/`.
-  Authenticated deploy smoke is not claimed for that latest docs/state sync
-  because the available Coolify credential is not a valid Soar application
-  password for `ai@luckysparrow.ch` (`401 Invalid email or password`).
+  full non-dry-run production release gate is `ready`. Follow-up deploys
+  required manually forcing queued Coolify `soar-web` deployments; the
+  pre-sync checkpoint `e0457b424196d8e9773b1ef402f7d1c501160ebc` converged
+  after manual redeploy and `Force Start` of `iwhb44uuc5pqxixr7b9xv6ko`, then
+  Web build-info and public deploy smoke passed for API `/health`, API
+  `/ready`, and Web `/`. Later docs-only commits must repeat the same
+  build-info plus public-smoke proof for the pushed `HEAD`. Authenticated
+  deploy smoke is not claimed for the latest docs/state sync because the
+  available Coolify credential is not a valid Soar application password for
+  `ai@luckysparrow.ch` (`401 Invalid email or password`).
   Evidence:
   `docs/operations/v1-production-activation-evidence-audit-2026-05-23.md`,
   `docs/planning/v1-production-activation-and-evidence-plan-2026-05-23.md`,

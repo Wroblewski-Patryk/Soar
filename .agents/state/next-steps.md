@@ -13,13 +13,17 @@ passed, and SLO health/readiness/5xx/queue-lag objectives passed with live
 order ratio `NO_DATA` only because no live order attempts occurred.
 `LIVEIMPORT-03` passes via read-only auto-discovery of the real open runtime
 symbols `SOLUSDT` and `BNBUSDT`. Final preflight has no blockers, and the full
-non-dry-run production release gate returned `ready`. The follow-up docs/state
-sync commit `0ee013214ef82be61d08430e9d3338ef5c263b67` is pushed to `main`,
-production Web build-info converged after a manual Coolify `soar-web`
-`Force Start`, and public deploy smoke passed. Authenticated deploy smoke is
-not claimed for this latest sync because the available Coolify credential is
-not a Soar application password (`401 Invalid email or password`). Next exact
-task: post-release monitoring or select the next bounded product/runtime task;
+non-dry-run production release gate returned `ready`. Follow-up docs/state
+sync commits reached `main`; the last hard-coded checkpoint before this
+source-of-truth sync was
+`e0457b424196d8e9773b1ef402f7d1c501160ebc` after a manual Coolify `soar-web`
+redeploy and `Force Start` of queued deployment `iwhb44uuc5pqxixr7b9xv6ko`.
+Each later docs-only commit must be verified by public build-info for the
+pushed `HEAD` and public deploy smoke after deployment convergence.
+Authenticated deploy smoke is not claimed for the latest docs-state sync
+because the available Coolify credential is not a Soar application password
+(`401 Invalid email or password`). Next exact task: post-release monitoring or
+select the next bounded product/runtime task;
 do not reopen the superseded ETH/DOGE liveimport blocker unless fresh
 production evidence contradicts the auto-discovered readback. Evidence:
 `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,

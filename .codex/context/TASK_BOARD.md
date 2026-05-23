@@ -36,10 +36,16 @@ Last updated: 2026-05-23
     Coolify left the `soar-web` deployment queued, so the coordinator used the
     approved Coolify UI context and clicked `Force Start`. Production
     `/api/build-info` then converged to `0ee01321`, and public deploy smoke
-    passed for API `/health`, API `/ready`, and Web `/`. Authenticated deploy
-    smoke is not claimed for this latest docs/state sync because the available
-    Coolify credential is not a valid Soar application password for
-    `ai@luckysparrow.ch` (`401 Invalid email or password`).
+    passed for API `/health`, API `/ready`, and Web `/`. Follow-up smoke-truth
+    correction `e0457b424196d8e9773b1ef402f7d1c501160ebc` was then pushed to
+    `main`; Coolify did not auto-start it, so the coordinator manually
+    redeployed `soar-web`, clicked `Force Start` for queued deployment
+    `iwhb44uuc5pqxixr7b9xv6ko`, waited until `/api/build-info` converged to
+    `e0457b42`, and reran public deploy smoke successfully for API `/health`,
+    API `/ready`, and Web `/`. Authenticated deploy smoke is not claimed for
+    this latest docs/state sync because the available Coolify credential is not
+    a valid Soar application password for `ai@luckysparrow.ch`
+    (`401 Invalid email or password`).
   - Evidence:
     `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
     `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,
