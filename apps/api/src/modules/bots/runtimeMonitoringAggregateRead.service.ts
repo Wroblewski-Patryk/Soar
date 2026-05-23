@@ -33,6 +33,10 @@ const runtimeAggregateSubqueryTimeoutMs = Number.parseInt(
   process.env.RUNTIME_MONITORING_AGGREGATE_SUBQUERY_TIMEOUT_MS ?? '5000',
   10,
 );
+const runtimeAggregateStaleTtlMs = Number.parseInt(
+  process.env.RUNTIME_MONITORING_AGGREGATE_STALE_TTL_MS ?? '45000',
+  10,
+);
 const runtimeAggregateRunningSessionsCap = Number.parseInt(
   process.env.RUNTIME_MONITORING_AGGREGATE_RUNNING_SESSIONS_CAP ?? '0',
   10,
@@ -923,9 +927,15 @@ export const getBotRuntimeMonitoringAggregate = async (
     return cached.value;
   }
 
+  const canServeStale =
+    cached &&
+    Number.isFinite(runtimeAggregateStaleTtlMs) &&
+    runtimeAggregateStaleTtlMs > 0 &&
+    now <= cached.expiresAt + runtimeAggregateStaleTtlMs;
+
   const inflight = runtimeAggregateInflight.get(key);
   if (inflight) {
-    return inflight;
+    return canServeStale ? cached.value : inflight;
   }
 
   const task = getBotRuntimeMonitoringAggregateUncached(userId, botId, query)
@@ -936,10 +946,16 @@ export const getBotRuntimeMonitoringAggregate = async (
       });
       return value;
     })
+    .catch((error) => {
+      if (canServeStale && cached) {
+        return cached.value;
+      }
+      throw error;
+    })
     .finally(() => {
       runtimeAggregateInflight.delete(key);
     });
 
   runtimeAggregateInflight.set(key, task);
-  return task;
+  return canServeStale ? cached.value : task;
 };
