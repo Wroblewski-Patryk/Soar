@@ -379,13 +379,30 @@ const syncRuntimeDcaStateFromExchangeFill = async (input: {
     (await runtimePositionStateStore.getPositionRuntimeState(input.positionId)) ?? null;
   const rawLevelIndex = dedupe.commandFingerprint?.dcaLevelIndex;
   const levelIndex = Number(rawLevelIndex);
+  const normalizedLevelIndex = Number.isFinite(levelIndex)
+    ? Math.max(0, Math.floor(levelIndex))
+    : null;
+  const previousExecutedDcaLevelIndices =
+    previousState?.executedDcaLevelIndices?.filter((index) => Number.isFinite(index)) ?? [];
+  const executedDcaLevelIndices =
+    normalizedLevelIndex == null
+      ? previousExecutedDcaLevelIndices
+      : [
+          ...new Set(
+            previousExecutedDcaLevelIndices.length > 0
+              ? [...previousExecutedDcaLevelIndices, normalizedLevelIndex]
+              : Array.from({ length: normalizedLevelIndex + 1 }, (_, index) => index)
+          ),
+        ].sort((left, right) => left - right);
   await runtimePositionStateStore.setPositionRuntimeState(input.positionId, {
     quantity: input.nextQuantity,
     averageEntryPrice: input.nextEntryPrice,
     currentAdds: Math.max(
       previousState?.currentAdds ?? 0,
-      Number.isFinite(levelIndex) ? Math.max(0, Math.floor(levelIndex) + 1) : 0,
+      executedDcaLevelIndices.length,
     ),
+    executedDcaLevelIndices:
+      executedDcaLevelIndices.length > 0 ? executedDcaLevelIndices : undefined,
     trailingAnchorPrice: previousState?.trailingAnchorPrice ?? input.nextEntryPrice,
     trailingLossLimitPercent: previousState?.trailingLossLimitPercent,
     trailingTakeProfitHighPercent: previousState?.trailingTakeProfitHighPercent,

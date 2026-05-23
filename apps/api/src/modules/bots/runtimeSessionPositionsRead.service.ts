@@ -58,6 +58,11 @@ import { resolveRuntimePositionDcaCount } from './runtimeSessionPositionDcaCount
 import { buildRuntimeSessionClosedPositionWindow } from './runtimeSessionPositionWindow';
 import { buildBotlessWalletTradeFallbackWhere } from './runtimeSessionTradeFallbackScope';
 import { canUseStrategyProtectionFallbackForDisplay } from './runtimeStrategyProtectionFallbackDisplay';
+import {
+  hasRemainingDcaLevelsForDisplaySide,
+  resolveRuntimePositionActionableForDisplay,
+  resolveRuntimeStrategyAutomationContext,
+} from './runtimeDcaProtectionDisplay.service';
 
 type RuntimeTakeoverStatus = 'OWNED_AND_MANAGED' | 'UNOWNED' | 'AMBIGUOUS' | 'MANUAL_ONLY';
 
@@ -78,25 +83,6 @@ const resolveRuntimeTakeoverStatus = (input: {
   if (input.botId) return 'OWNED_AND_MANAGED';
   return input.syncState === 'DRIFT' ? 'AMBIGUOUS' : 'UNOWNED';
 };
-
-const resolveRuntimePositionActionable = (input: {
-  continuityState:
-    | 'CONFIRMED'
-    | 'RECOVERING'
-    | 'RECOVERED_UNACTIONABLE'
-    | 'EXTERNAL_CLOSE_CONFIRMED'
-    | 'REPAIR_ONLY_CLEANUP';
-  botId: string | null;
-  strategyId: string | null;
-}) =>
-  input.continuityState === 'CONFIRMED' &&
-  typeof input.botId === 'string' &&
-  input.botId.length > 0 &&
-  typeof input.strategyId === 'string' &&
-  input.strategyId.length > 0;
-
-const resolveRuntimeStrategyAutomationContext = (strategyId: string | null) =>
-  typeof strategyId === 'string' && strategyId.length > 0;
 
 const runtimeVisibleOpenPositionSyncWhere: Prisma.PositionWhereInput = {
   OR: [
@@ -839,6 +825,16 @@ export const listBotRuntimeSessionPositions = async (
       runtimeStateCurrentAdds: runtimeState?.currentAdds ?? null,
     });
     const dcaExecutedLevels = resolveDcaExecutedLevels(dcaCount, dcaPlannedLevels);
+    const allowTrailingTakeProfitProtection = !hasRemainingDcaLevelsForDisplaySide(
+      dcaPlannedLevels,
+      dcaCount,
+      'profit'
+    );
+    const allowTrailingStopProtection = !hasRemainingDcaLevelsForDisplaySide(
+      dcaPlannedLevels,
+      dcaCount,
+      'loss'
+    );
     const stateEntryPrice =
       runtimeState && Number.isFinite(runtimeState.averageEntryPrice) && runtimeState.averageEntryPrice > 0
         ? runtimeState.averageEntryPrice
@@ -865,6 +861,8 @@ export const listBotRuntimeSessionPositions = async (
         strategyAutomationContextResolved,
         runtimeState,
       }),
+      allowTrailingTakeProfitProtection,
+      allowTrailingStopProtection,
     });
 
     const holdUntil = position.closedAt ?? windowEnd;
@@ -920,7 +918,7 @@ export const listBotRuntimeSessionPositions = async (
       closeReason: position.closeReason ?? null,
       closeInitiator: position.closeInitiator ?? null,
       strategyAutomationContextResolved,
-      actionable: resolveRuntimePositionActionable({
+      actionable: resolveRuntimePositionActionableForDisplay({
         continuityState: position.continuityState,
         botId: position.botId,
         strategyId: executableStrategyContextResolved ? effectiveStrategyId : null,

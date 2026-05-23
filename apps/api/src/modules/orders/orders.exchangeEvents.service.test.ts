@@ -2414,6 +2414,7 @@ describe('orders.exchangeEvents.service', () => {
     expect(runtimeState?.quantity).toBeCloseTo(0.15, 10);
     expect(runtimeState?.averageEntryPrice).toBeCloseTo(62_500, 10);
     expect(runtimeState?.currentAdds).toBe(1);
+    expect(runtimeState?.executedDcaLevelIndices).toEqual([0]);
     expect(runtimeState?.trailingAnchorPrice).toBeCloseTo(62_000, 10);
     expect(runtimeState?.lastDcaPrice).toBeCloseTo(63_500, 10);
     await runtimePositionStateStore.deletePositionRuntimeState(position.id);

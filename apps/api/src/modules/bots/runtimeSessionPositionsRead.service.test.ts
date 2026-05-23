@@ -14,6 +14,7 @@ import {
   sumRuntimeAggregateProjectedSymbolsTracked,
 } from './runtimeMonitoringAggregateRead.service';
 import { buildRuntimeTradeCarryOverWindowClause } from './runtimeSessionTradesRead.service';
+import { hasRemainingDcaLevelsForDisplaySide } from './runtimeDcaProtectionDisplay.service';
 import { resolveRuntimePositionDcaCount } from './runtimeSessionPositionDcaCount';
 import {
   buildRuntimeSessionClosedPositionWindow,
@@ -220,6 +221,19 @@ describe('canUseStrategyProtectionFallbackForDisplay', () => {
         },
       })
     ).toBe(true);
+  });
+});
+
+describe('hasRemainingDcaLevelsForDisplaySide', () => {
+  it('keeps TSL display gated until all loss-side DCA levels are executed', () => {
+    expect(hasRemainingDcaLevelsForDisplaySide([-5, -10, -15], 2, 'loss')).toBe(true);
+    expect(hasRemainingDcaLevelsForDisplaySide([-5, -10, -15], 3, 'loss')).toBe(false);
+  });
+
+  it('keeps TTP display gated only by remaining profit-side DCA levels', () => {
+    expect(hasRemainingDcaLevelsForDisplaySide([-5, -10, -15], 0, 'profit')).toBe(false);
+    expect(hasRemainingDcaLevelsForDisplaySide([2, 4, -5], 1, 'profit')).toBe(true);
+    expect(hasRemainingDcaLevelsForDisplaySide([2, 4, -5], 2, 'profit')).toBe(false);
   });
 });
 

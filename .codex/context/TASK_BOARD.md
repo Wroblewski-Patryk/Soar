@@ -17,6 +17,42 @@ Last updated: 2026-05-23
 
 ## DONE
 
+- [x] `RUNTIME-DCA-PROTECTION-DISPLAY-PARITY-2026-05-23 fix: keep dashboard TSL/TTP display behind DCA gates`
+  - 2026-05-23: Operator screenshot showed Binance Positions table drift:
+    strategy has three DCA levels, but `BNBUSDT` showed TSL after DCA count
+    `2`, and `SOLUSDT` showed TSL while DCA count was `0`. Root cause was not
+    the close executor gate, but the API read-model serializing dynamic
+    TSL/TTP from runtime state or strategy fallback without applying the same
+    side-aware DCA protection gate.
+  - Fix: Positions read-model now computes pending DCA by side from the
+    planned DCA ladder and executed count, then suppresses dynamic TTP until
+    profit-side DCA is satisfied and suppresses dynamic TSL until loss-side
+    DCA is satisfied. Exchange-confirmed DCA fill sync now persists
+    `executedDcaLevelIndices` from the runtime dedupe fingerprint in addition
+    to `currentAdds`.
+  - Validation passed: runtime serialization/read-model tests `32/32`,
+    exchange-event DB-backed tests `19/19` after local repo Postgres/Redis
+    startup, runtime position-management/automation tests `62/62`, and API
+    typecheck. Evidence:
+    `docs/planning/runtime-dca-protection-display-parity-2026-05-23-task.md`.
+
+- [x] `GATEIO-LIVE-MANUAL-ORDER-ADA-SHORT-2026-05-23 release: attempt under-1-USDT Gate.io ADA short`
+  - 2026-05-23: Operator explicitly approved activating the Gate.io LIVE bot
+    and opening a manual ADAUSDT short whose value was not greater than
+    `1 USDT`. Manual context returned ADAUSDT mark price about `0.2422`, so
+    the attempt used `SELL MARKET quantity=4` with estimated notional
+    `0.9688 USDT`.
+  - Result: bot activation with `liveOptIn=true` and
+    `consentTextVersion=mvp-v1` succeeded, but the canonical manual order
+    endpoint rejected the order with `400 LIVE_PRETRADE_NOTIONAL_BELOW_MIN`.
+    No larger retry was made because the operator cap was `<= 1 USDT`.
+  - Safety cleanup: bot `Gate.io RSI 20/80`
+    (`ff5ed1a5-eda3-4efc-a5ad-3ba3db2be0b1`) was deactivated immediately
+    after the fail-closed result. Final readback shows `isActive=false`,
+    `liveOptIn=false`, `consentTextVersion=null`; no ADAUSDT open order or
+    Gate.io ADAUSDT position was created by this attempt. Evidence:
+    `docs/planning/gateio-live-manual-order-ada-short-2026-05-23-task.md`.
+
 - [x] `GATEIO-LIVE-BOT-CONTEXT-REPAIR-2026-05-23 release: repair Gate.io market context and create inactive LIVE RSI bot`
   - 2026-05-23: Production readback confirmed the reported bot-create blocker
     was valid: wallet `Gate.io` was `LIVE / GATEIO / FUTURES / USDT`, but

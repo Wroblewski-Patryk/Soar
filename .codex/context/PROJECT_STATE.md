@@ -4,6 +4,35 @@ Last updated: 2026-05-23
 
 ## Current Candidate Deployment Status
 
+- `RUNTIME-DCA-PROTECTION-DISPLAY-PARITY-2026-05-23` is locally verified.
+  The operator reported Binance dashboard drift where a strategy with three
+  DCA levels showed TSL after DCA count `2`, and `SOLUSDT` showed TSL while
+  the table still showed DCA count `0`. The fix applies the same side-aware
+  DCA protection contract to the Positions API read-model: TTP display waits
+  for profit-side DCA levels to be satisfied, and TSL display waits for
+  loss-side DCA levels to be satisfied. Exchange-confirmed DCA fill sync also
+  persists `executedDcaLevelIndices` from the runtime dedupe fingerprint so
+  runtime state does not rely only on a count. Validation passed: Positions
+  serialization/read-model tests `32/32`, exchange-event DB-backed tests
+  `19/19` after `pnpm run go-live:infra:up`, runtime position-management and
+  automation tests `62/62`, and API typecheck. No production LIVE mutation was
+  performed. Evidence:
+  `docs/planning/runtime-dca-protection-display-parity-2026-05-23-task.md`.
+
+- `GATEIO-LIVE-MANUAL-ORDER-ADA-SHORT-2026-05-23` is verified fail-closed.
+  The operator approved a real LIVE manual ADAUSDT short with position value
+  not greater than 1 USDT. Manual context returned mark price about `0.2422`,
+  so the attempted `SELL MARKET` quantity `4` had estimated notional
+  `0.9688` USDT. The Gate.io bot was temporarily activated with
+  `liveOptIn=true` and `consentTextVersion=mvp-v1`, then
+  `POST /dashboard/orders/open` returned `400 LIVE_PRETRADE_NOTIONAL_BELOW_MIN`.
+  No larger retry was made because that would exceed the approved cap. The bot
+  was immediately deactivated again and final readback shows
+  `isActive=false`, `liveOptIn=false`, `consentTextVersion=null`; there are no
+  open ADAUSDT orders for the Gate.io bot and no Gate.io ADAUSDT position was
+  created by this attempt. Evidence:
+  `docs/planning/gateio-live-manual-order-ada-short-2026-05-23-task.md`.
+
 - `GATEIO-LIVE-BOT-CONTEXT-REPAIR-2026-05-23` is verified for the
   operator-requested production configuration repair. The reported bot-create
   blocker was caused by `Main gateio` being saved as

@@ -197,4 +197,56 @@ describe('runtimePositionSerialization', () => {
     expect(result.dynamicTtpStopLoss).toBeNull();
     expect(result.dynamicTslStopLoss).toBeCloseTo(2295.945, 6);
   });
+
+  it('hides dynamic TSL while loss-side DCA levels remain pending', () => {
+    const result = resolveRuntimePositionDynamicStops({
+      positionSide: 'LONG',
+      entryPrice: 100,
+      quantity: 1,
+      leverage: 5,
+      unrealizedPnl: null,
+      marketPrice: 105,
+      stateEntryPrice: 100,
+      runtimeState: {
+        averageEntryPrice: 100,
+        quantity: 1,
+        currentAdds: 2,
+        trailingAnchorPrice: 105,
+        trailingLossLimitPercent: -0.03,
+      },
+      trailingTakeProfitLevels: [],
+      trailingStopLevels: [{ armPercent: 0.2, trailPercent: 0.04 }],
+      allowStrategyProtectionFallback: true,
+      allowTrailingStopProtection: false,
+    });
+
+    expect(result.dynamicTslStopLoss).toBeNull();
+  });
+
+  it('hides dynamic TTP while profit-side DCA levels remain pending', () => {
+    const result = resolveRuntimePositionDynamicStops({
+      positionSide: 'LONG',
+      entryPrice: 100,
+      quantity: 1,
+      leverage: 2,
+      unrealizedPnl: null,
+      marketPrice: 106,
+      stateEntryPrice: 100,
+      runtimeState: {
+        averageEntryPrice: 100,
+        quantity: 1,
+        currentAdds: 0,
+        trailingAnchorPrice: 106,
+        trailingTakeProfitHighPercent: 0.11,
+        trailingTakeProfitStepPercent: 0.01,
+      },
+      trailingTakeProfitLevels: [{ armPercent: 0.04, trailPercent: 0.01 }],
+      trailingStopLevels: [],
+      allowStrategyProtectionFallback: true,
+      allowTrailingTakeProfitProtection: false,
+    });
+
+    expect(result.dynamicTtpStopLoss).toBeNull();
+    expect(result.dynamicTtpStopLossSource).toBeNull();
+  });
 });

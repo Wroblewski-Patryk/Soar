@@ -119,6 +119,8 @@ type ResolveRuntimePositionDynamicStopsParams = {
   trailingTakeProfitLevels: TrailingTakeProfitDisplayLevel[];
   trailingStopLevels: TrailingStopDisplayLevel[];
   allowStrategyProtectionFallback: boolean;
+  allowTrailingTakeProfitProtection?: boolean;
+  allowTrailingStopProtection?: boolean;
 };
 
 export const resolveRuntimePositionDynamicStops = (
@@ -137,11 +139,14 @@ export const resolveRuntimePositionDynamicStops = (
     trailingTakeProfitLevels,
     trailingStopLevels,
     allowStrategyProtectionFallback,
+    allowTrailingTakeProfitProtection = true,
+    allowTrailingStopProtection = true,
   } = params;
 
   const effectiveLeverage =
     Number.isFinite(leverage) && leverage > 0 ? leverage : 1;
   const ttpTriggerPercentFromState =
+    allowTrailingTakeProfitProtection &&
     runtimeState &&
     Number.isFinite(runtimeState.trailingTakeProfitHighPercent) &&
     Number.isFinite(runtimeState.trailingTakeProfitStepPercent)
@@ -196,7 +201,9 @@ export const resolveRuntimePositionDynamicStops = (
       ? ttpTriggerPercentFromState
       : null;
   const activeTtpLevel =
-    !hasActiveRuntimeTtpState && allowStrategyProtectionFallback
+    allowTrailingTakeProfitProtection &&
+    !hasActiveRuntimeTtpState &&
+    allowStrategyProtectionFallback
       ? selectActiveTrailingTakeProfitDisplayLevel(
           favorableMovePercentForFallback,
           trailingTakeProfitLevels
@@ -207,10 +214,13 @@ export const resolveRuntimePositionDynamicStops = (
       ? favorableMovePercentForFallback - activeTtpLevel.trailPercent
       : null;
   const tslTriggerPercent =
-    hasRuntimeTslState && Number.isFinite(runtimeState.trailingLossLimitPercent)
+    allowTrailingStopProtection &&
+    hasRuntimeTslState &&
+    Number.isFinite(runtimeState.trailingLossLimitPercent)
       ? (runtimeState.trailingLossLimitPercent as number)
       : null;
   const stickyFallbackTtpLevel =
+    allowTrailingTakeProfitProtection &&
     !hasActiveRuntimeTtpState &&
     allowStrategyProtectionFallback &&
     tslTriggerPercent != null
@@ -224,7 +234,9 @@ export const resolveRuntimePositionDynamicStops = (
       ? tslTriggerPercent + stickyFallbackTtpLevel.trailPercent
       : null;
   const activeTslLevel =
-    runtimeState && favorableMovePercentFromLivePrice != null
+    allowTrailingStopProtection &&
+    runtimeState &&
+    favorableMovePercentFromLivePrice != null
       ? selectActiveTrailingStopDisplayLevel(
           favorableMovePercentFromLivePrice,
           trailingStopLevels

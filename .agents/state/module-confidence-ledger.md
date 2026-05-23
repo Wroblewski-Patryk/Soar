@@ -90,6 +90,35 @@ Do not turn uncertainty into optimism.
 ## Current Release Evidence Notes
 
 - 2026-05-23
+  `RUNTIME-DCA-PROTECTION-DISPLAY-PARITY-2026-05-23` applies to
+  `SOAR-BOT-RUNTIME-001`, `SOAR-ORDERS-001`, `SOAR-POSITIONS-001`, and
+  `SOAR-DASHBOARD-001`: repaired the operator-reported Positions table drift
+  where dynamic TSL appeared while loss-side DCA levels were still pending.
+  The API read-model now applies side-aware DCA protection before serializing
+  dynamic protection fields: TTP waits for profit-side DCA satisfaction, and
+  TSL waits for loss-side DCA satisfaction. Exchange-confirmed DCA fill sync
+  now persists `executedDcaLevelIndices` from runtime dedupe fingerprints.
+  Evidence:
+  `docs/planning/runtime-dca-protection-display-parity-2026-05-23-task.md`;
+  serialization/read-model tests passed (`32/32`), exchange-event DB-backed
+  tests passed (`19/19`) after local repo Postgres/Redis startup, runtime
+  position-management/automation tests passed (`62/62`), and API typecheck
+  passed. Production dashboard readback remains a post-deploy verification
+  step.
+
+- 2026-05-23
+  `GATEIO-LIVE-MANUAL-ORDER-ADA-SHORT-2026-05-23` applies to
+  `SOAR-BOTS-001`, `SOAR-MANUAL-ORDERS-001`, `SOAR-ORDERS-001`, and
+  `SOAR-OPERATIONS-001`: an operator-approved LIVE manual order attempt used
+  the canonical manual order endpoint with `riskAck=true` and an estimated
+  notional below the explicit `1 USDT` cap. Bot activation and consent
+  succeeded, but pretrade rejected `SELL MARKET ADAUSDT quantity=4` with
+  `LIVE_PRETRADE_NOTIONAL_BELOW_MIN`. The bot was deactivated immediately
+  after the fail-closed result; no larger retry was made and no Gate.io ADA
+  position was created. Evidence:
+  `docs/planning/gateio-live-manual-order-ada-short-2026-05-23-task.md`.
+
+- 2026-05-23
   `GATEIO-LIVE-BOT-CONTEXT-REPAIR-2026-05-23` applies to
   `SOAR-PROFILE-API-KEYS-001`, `SOAR-WALLETS-001`, `SOAR-MARKETS-001`,
   `SOAR-STRATEGIES-001`, and `SOAR-BOTS-001`: production readback confirmed

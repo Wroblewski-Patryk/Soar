@@ -4,6 +4,37 @@ Last updated: 2026-05-23
 
 ## Next Tiny Task
 
+Current runtime DCA protection display parity:
+`RUNTIME-DCA-PROTECTION-DISPLAY-PARITY-2026-05-23` is locally verified. The
+operator-reported Binance dashboard drift was reproduced at the read-model
+level: Positions API could show dynamic TSL/TTP from runtime state or strategy
+fallback before the same side-aware DCA protection gate used by execution was
+satisfied. The API read-model now suppresses TTP until profit-side DCA is
+satisfied and suppresses TSL until loss-side DCA is satisfied; exchange fill
+sync also persists `executedDcaLevelIndices` from DCA dedupe fingerprints.
+Validation passed: serialization/read-model tests `32/32`, DB-backed exchange
+event tests `19/19` after `pnpm run go-live:infra:up`, runtime
+position-management/automation tests `62/62`, and API typecheck. Next exact
+task: run guardrails/diff check, commit/push, then verify public deploy
+freshness and production dashboard readback for the real open positions.
+Evidence:
+`docs/planning/runtime-dca-protection-display-parity-2026-05-23-task.md`.
+
+Current Gate.io ADA manual order attempt:
+`GATEIO-LIVE-MANUAL-ORDER-ADA-SHORT-2026-05-23` is verified fail-closed.
+The operator approved a real LIVE `SELL MARKET ADAUSDT` manual order with
+position value not greater than `1 USDT`. Manual context mark price was about
+`0.2422`, so `quantity=4` estimated notional was `0.9688 USDT`. The bot was
+temporarily activated with `liveOptIn=true` and `consentTextVersion=mvp-v1`,
+but `POST /dashboard/orders/open` returned
+`400 LIVE_PRETRADE_NOTIONAL_BELOW_MIN`. The bot was immediately deactivated
+again; final state is `isActive=false`, `liveOptIn=false`,
+`consentTextVersion=null`. No larger retry was made and no Gate.io ADAUSDT
+position was created. Next exact task if the operator still wants a Gate.io ADA
+position: request explicit approval for a size that satisfies Gate.io/pretrade
+minimum notional, likely above `1 USDT`. Evidence:
+`docs/planning/gateio-live-manual-order-ada-short-2026-05-23-task.md`.
+
 Current Gate.io live bot setup:
 `GATEIO-LIVE-BOT-CONTEXT-REPAIR-2026-05-23` is verified for inactive bot
 creation. The operator-reported mismatch was caused by market universe
