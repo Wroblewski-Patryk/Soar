@@ -46,8 +46,13 @@ Last updated: 2026-05-23
   Web build-info reports `a0e4f117` on `main` with
   `metadataSource=github-branch` and build id `AnqfCfwjz3KEHQ-_bouFD`, and
   public no-worker smoke still passes API `/health`, API `/ready`, and Web
-  `/`. Additional local DB-backed proof now covers the manual-order context
-  route and service for Gate.io futures: with mocked exchange rules
+  `/`. The submitted-close dedupe plus Gate.io manual-context proof commit
+  `314e90cedf1cd0cc32699f47fb87d0bd08838146` is also deployed after Coolify
+  queue recovery for `soar-web`, `soar-api`, and split worker resources; Web
+  build-info reports `314e90ce` with `metadataSource=github-branch`, build id
+  `7ysWp6y0xFAxM53oPR98y`, and public smoke passes API `/health`, API
+  `/ready`, and Web `/`. Additional DB-backed proof now covers the
+  manual-order context route and service for Gate.io futures: with mocked exchange rules
   `minAmount=1`, `minNotional=5`, `amountPrecision=1`, `contractSize=10`,
   mark price `0.25`, leverage `5`, and requested `quantity=4`, both service
   and route proof return `minExecutableQty=2`, estimated notional `10 USDT`,

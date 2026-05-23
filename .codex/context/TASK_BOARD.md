@@ -44,7 +44,12 @@ Last updated: 2026-05-23
     margin at leverage `5`, and `minExecutableQty=2`. The same focused route
     pack exposed and fixed a LIVE close dedupe truth bug: reused submitted
     closes stay `submitted` until completed instead of being reported as
-    `closed` while the position remains open. Evidence:
+    `closed` while the position remains open. Commit
+    `314e90cedf1cd0cc32699f47fb87d0bd08838146` is pushed to `main` and
+    publicly deployed after Coolify queue recovery; Web build-info reports
+    `314e90ce` with `metadataSource=github-branch`, build id
+    `7ysWp6y0xFAxM53oPR98y`, and public smoke passes API `/health`, API
+    `/ready`, and Web `/`. Evidence:
     `docs/planning/live-exchange-execution-parity-2026-05-23-task.md`.
 
 ## DONE

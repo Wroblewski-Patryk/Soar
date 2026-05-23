@@ -163,10 +163,10 @@ derivative contract size.
 - Follow-up architecture doc updates: pending
 
 ## Deployment / Ops Evidence
-- Deploy impact: medium; code repair deployed publicly as `9d1a8387`, docs/state HEAD deployed publicly as `a0e4f117`, and Web dashboard protection follow-up deployed publicly as `b703b67f`
+- Deploy impact: medium; code repair deployed publicly as `9d1a8387`, docs/state HEAD deployed publicly as `a0e4f117`, Web dashboard protection follow-up deployed publicly as `b703b67f`, and the submitted-close dedupe plus Gate.io manual-context contract-size proof commit is deployed publicly as `314e90cedf1cd0cc32699f47fb87d0bd08838146`.
 - Env or secret changes: none planned
 - Health-check impact: none planned
-- Smoke steps updated: public no-worker deploy smoke passed for the deployed candidate.
+- Smoke steps updated: public no-worker deploy smoke passed for the deployed `314e90ce` candidate; API `/ready` returned `200` after the API and worker deployments were force-started from the Coolify queue.
 - Rollback note: live mutation proof must include final readback and cleanup/deactivation where applicable.
 - Observability or alerting impact: none in this local slice
 - Staged rollout or feature flag: not applicable
@@ -239,4 +239,4 @@ derivative contract size.
 - Files changed: `apps/api/src/modules/engine/executionOrchestrator.service.ts`, `apps/api/src/modules/engine/executionOrchestrator.service.test.ts`, `apps/api/src/modules/orders/orders.manualContext.contractSize.service.test.ts`, `apps/api/src/modules/orders/orders-positions.e2e.test.ts`, this task file, and related state ledgers.
 - How tested: focused Gate.io service/route tests after `pnpm run go-live:infra:up`, quantity-rules/runtime contract-size pack, and the combined `6` file / `98` test API pack.
 - What is incomplete: protected production manual/bot readback and any live mutation remain blocked without transient Soar app auth and explicit operator approval for a minimum executable size.
-- Next steps: run broader API/typecheck/guardrails, commit/push when green, then verify public deploy freshness if a code commit is pushed.
+- Next steps: keep protected readbacks/live mutation gated on transient Soar app auth and fresh explicit operator approval; no further local code blocker is known for this slice.

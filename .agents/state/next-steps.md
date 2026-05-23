@@ -57,8 +57,9 @@ Evidence:
 `docs/planning/web-dashboard-dca-protection-truth-parity-2026-05-23-task.md`.
 
 Current Gate.io manual-order contract-size backend proof:
-`LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23` has an additional local
-DB-backed service and route proof for manual-order context. The new tests prove
+`LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23` has an additional production-public
+deployment checkpoint plus local DB-backed service and route proof for
+manual-order context. The new tests prove
 Gate.io futures `ADAUSDT` with `contractSize=10`, `minAmount=1`,
 `minNotional=5`, mark price `0.25`, leverage `5`, and requested `quantity=4`
 returns `minExecutableQty=2`, estimated notional `10 USDT`, and estimated
@@ -66,8 +67,13 @@ margin `2 USDT`. The route test uses a Vitest-only connector override, so no
 real exchange call or LIVE mutation occurs. The same focused route pack found
 and fixed a LIVE close dedupe truth bug: reused submitted closes now stay
 `submitted` until completed instead of reporting `closed` while the position
-is still open. Next exact task: run API typecheck, guardrails, commit/push if
-green, and verify public deploy freshness for the pushed HEAD.
+is still open. Commit `314e90cedf1cd0cc32699f47fb87d0bd08838146` is pushed to
+`main` and publicly deployed after Coolify queue recovery; Web build-info
+reports `314e90ce` with build id `7ysWp6y0xFAxM53oPR98y`, and public smoke
+passes API `/health`, API `/ready`, and Web `/`. Next exact task: run
+protected manual/bot production readbacks only after transient Soar app auth is
+available; any LIVE mutation still needs fresh explicit operator approval for
+exchange, symbol, side, and minimum executable size.
 
 Current Gate.io ADA manual order attempt:
 `GATEIO-LIVE-MANUAL-ORDER-ADA-SHORT-2026-05-23` is verified fail-closed.
