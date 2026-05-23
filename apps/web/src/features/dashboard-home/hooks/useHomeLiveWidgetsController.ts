@@ -33,6 +33,10 @@ const MAX_DASHBOARD_BOTS = 8;
 const AUTO_REFRESH_VISIBLE_INTERVAL_MS = 10_000;
 const AUTO_REFRESH_HIDDEN_INTERVAL_MS = 30_000;
 const LOAD_STALE_AFTER_MS = 20_000;
+const AGGREGATE_SELECTED_SESSIONS_LIMIT = 6;
+const AGGREGATE_SELECTED_PER_SESSION_LIMIT = 80;
+const AGGREGATE_SECONDARY_SESSIONS_LIMIT = 2;
+const AGGREGATE_SECONDARY_PER_SESSION_LIMIT = 30;
 const SELECTED_BOT_STORAGE_KEY = "dashboard.home.selectedBotId";
 const DASHBOARD_TRADE_HISTORY_SORT_STORAGE_KEY = "dashboard.home.tradeHistory.sort.v1";
 const TRADE_PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
@@ -312,9 +316,16 @@ export const useHomeLiveWidgetsController = ({
               };
             }
             try {
+              const isPrimaryBot = selectedBotId == null ? bot.id === scope[0]?.id : bot.id === selectedBotId;
+              const sessionsLimit = isPrimaryBot
+                ? Math.min(sessions.length, AGGREGATE_SELECTED_SESSIONS_LIMIT)
+                : Math.min(sessions.length, AGGREGATE_SECONDARY_SESSIONS_LIMIT);
+              const perSessionLimit = isPrimaryBot
+                ? AGGREGATE_SELECTED_PER_SESSION_LIMIT
+                : AGGREGATE_SECONDARY_PER_SESSION_LIMIT;
               const aggregate = await getBotRuntimeMonitoringAggregate(bot.id, {
-                sessionsLimit: sessions.length,
-                perSessionLimit: 200,
+                sessionsLimit: Math.max(1, sessionsLimit),
+                perSessionLimit,
               });
               return {
                 bot,
@@ -373,7 +384,20 @@ export const useHomeLiveWidgetsController = ({
         })
       );
 
-      setSnapshots(next);
+      setSnapshots((previous) => {
+        const previousByBotId = new Map(previous.map((item) => [item.bot.id, item] as const));
+        return next.map((item) => {
+          if (!item.loadError) return item;
+          const prior = previousByBotId.get(item.bot.id);
+          if (!prior) return item;
+          return {
+            ...prior,
+            bot: item.bot,
+            runtimeGraph: item.runtimeGraph ?? prior.runtimeGraph,
+            loadError: item.loadError,
+          };
+        });
+      });
       setSelectedBotId((prev) => (prev && next.some((x) => x.bot.id === prev) ? prev : next[0]?.bot.id ?? null));
       const hasFreshSnapshot = next.some((item) => !item.loadError);
       if (hasFreshSnapshot) {

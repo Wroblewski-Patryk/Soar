@@ -365,7 +365,7 @@ describe("useHomeLiveWidgetsController", () => {
     await waitFor(() => expect(result.current.selected?.bot.id).toBe("bot-a"));
     expect(getBotRuntimeMonitoringAggregate).toHaveBeenCalledWith("bot-a", {
       sessionsLimit: 1,
-      perSessionLimit: 200,
+      perSessionLimit: 80,
     });
   });
 

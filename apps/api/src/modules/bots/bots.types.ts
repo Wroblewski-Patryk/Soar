@@ -209,8 +209,8 @@ export const ListBotRuntimePositionsQuerySchema = z.object({
 export const GetBotRuntimeMonitoringAggregateQuerySchema = z.object({
   status: BotRuntimeSessionStatusSchema.optional(),
   symbol: z.string().trim().min(1).max(40).optional(),
-  sessionsLimit: z.coerce.number().int().min(1).max(50).default(20),
-  perSessionLimit: z.coerce.number().int().min(1).max(500).default(200),
+  sessionsLimit: z.coerce.number().int().min(1).max(50).default(8),
+  perSessionLimit: z.coerce.number().int().min(1).max(500).default(80),
 });
 
 export const GetBotPortfolioHistoryQuerySchema = z.object({});

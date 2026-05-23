@@ -247,6 +247,38 @@ type MarkFailedInput = {
 };
 
 export class RuntimeExecutionDedupeService {
+  async hasPendingSubmittedDcaForPosition(positionId: string) {
+    const staleThreshold = new Date(Date.now() - pendingStaleMs);
+    const pending = await prisma.runtimeExecutionDedupe.findMany({
+      where: {
+        commandType: 'DCA',
+        status: 'PENDING',
+        positionId,
+        orderId: { not: null },
+        updatedAt: { gte: staleThreshold },
+      },
+      select: { orderId: true },
+      take: 5,
+      orderBy: [{ updatedAt: 'desc' }, { createdAt: 'desc' }],
+    });
+    if (pending.length === 0) return false;
+
+    const orderIds = pending
+      .map((item) => item.orderId)
+      .filter((value): value is string => typeof value === 'string' && value.length > 0);
+    if (orderIds.length === 0) return false;
+
+    const active = await prisma.order.findFirst({
+      where: {
+        id: { in: orderIds },
+        syncState: 'IN_SYNC',
+        status: { in: ['PENDING', 'OPEN', 'PARTIALLY_FILLED'] },
+      },
+      select: { id: true },
+    });
+    return Boolean(active);
+  }
+
   async acquire(input: AcquireInput): Promise<RuntimeExecutionDedupeAcquireResult> {
     const now = input.now ?? new Date();
     const ttlExpiresAt = resolveTtlExpiresAt(input.commandType, now);
@@ -420,11 +452,22 @@ export class RuntimeExecutionDedupeService {
       await prisma.runtimeExecutionDedupe.update({
         where: { dedupeKey: input.dedupeKey },
         data: {
+          status: 'PENDING',
+          dedupeVersion,
+          commandType: input.commandType,
+          userId: input.userId,
+          botId: input.botId ?? null,
+          symbol: input.symbol ? normalizeSymbol(input.symbol) : null,
+          commandFingerprint: toPrismaJson(input.commandFingerprint),
           lastSeenAt: now,
+          ttlExpiresAt,
+          orderId: null,
+          positionId: null,
+          errorClass: null,
         },
       });
-      recordDedupeMetric({ outcome: 'inflight', commandType: input.commandType });
-      return { outcome: 'inflight', dedupeKey: input.dedupeKey };
+      recordDedupeMetric({ outcome: 'retry', commandType: input.commandType });
+      return { outcome: 'execute', dedupeKey: input.dedupeKey };
     }
 
     if (

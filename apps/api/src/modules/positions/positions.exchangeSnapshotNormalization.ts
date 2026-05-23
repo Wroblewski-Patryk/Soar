@@ -78,11 +78,17 @@ const deriveExchangePositionLeverage = (position: ExchangePositionLike, info: Re
 };
 
 const deriveExchangePositionMarginUsed = (position: ExchangePositionLike, info: Record<string, unknown>) => {
-  const explicitMargin = isIsolatedMarginMode(position, info)
-    ? readNumber(info.isolatedWallet) ??
-      readNumber(info.isolatedMargin) ??
-      readNumber(info.positionInitialMargin) ??
-      readNumber(info.initialMargin)
+  const isolatedMarginMode = isIsolatedMarginMode(position, info);
+  const isolatedCandidates = [
+    readNumber(info.isolatedWallet),
+    readNumber(info.isolatedMargin),
+    readNumber(info.positionInitialMargin),
+    readNumber(info.initialMargin),
+  ]
+    .filter((value): value is number => value != null && value > 0)
+    .map((value) => Math.abs(value));
+  const explicitMargin = isolatedMarginMode
+    ? (isolatedCandidates.length > 0 ? Math.max(...isolatedCandidates) : null)
     : readNumber(info.initialMargin) ??
       readNumber(info.positionInitialMargin) ??
       readNumber(info.isolatedMargin) ??

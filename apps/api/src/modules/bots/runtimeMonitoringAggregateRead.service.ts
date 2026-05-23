@@ -11,6 +11,31 @@ type RuntimeSymbolStatsResponse = NonNullable<Awaited<ReturnType<typeof listBotR
 type RuntimePositionsResponse = NonNullable<Awaited<ReturnType<typeof listBotRuntimeSessionPositions>>>;
 type RuntimeTradesResponse = NonNullable<Awaited<ReturnType<typeof listBotRuntimeSessionTrades>>>;
 
+type RuntimeAggregateCacheValue = Awaited<ReturnType<typeof getBotRuntimeMonitoringAggregateUncached>>;
+
+const runtimeAggregateCacheTtlMs = Number.parseInt(
+  process.env.RUNTIME_MONITORING_AGGREGATE_CACHE_TTL_MS ?? '5000',
+  10,
+);
+const runtimeAggregateCacheEnabled =
+  process.env.NODE_ENV !== 'test' && Number.isFinite(runtimeAggregateCacheTtlMs) && runtimeAggregateCacheTtlMs > 0;
+const runtimeAggregateCache = new Map<string, { expiresAt: number; value: RuntimeAggregateCacheValue }>();
+const runtimeAggregateInflight = new Map<string, Promise<RuntimeAggregateCacheValue>>();
+
+const buildRuntimeAggregateCacheKey = (
+  userId: string,
+  botId: string,
+  query: GetBotRuntimeMonitoringAggregateQueryDto
+) =>
+  [
+    userId,
+    botId,
+    query.status ?? 'ALL',
+    query.symbol ?? '',
+    String(query.sessionsLimit),
+    String(query.perSessionLimit),
+  ].join('|');
+
 const toDate = (value: Date | string | null | undefined): Date | null => {
   if (value == null) return null;
   if (value instanceof Date) return value;
@@ -351,7 +376,7 @@ const buildEmptyAggregatePayload = (params: {
   };
 };
 
-export const getBotRuntimeMonitoringAggregate = async (
+const getBotRuntimeMonitoringAggregateUncached = async (
   userId: string,
   botId: string,
   query: GetBotRuntimeMonitoringAggregateQueryDto
@@ -804,4 +829,41 @@ export const getBotRuntimeMonitoringAggregate = async (
       items: tradeItems,
     },
   };
+};
+
+export const getBotRuntimeMonitoringAggregate = async (
+  userId: string,
+  botId: string,
+  query: GetBotRuntimeMonitoringAggregateQueryDto
+) => {
+  if (!runtimeAggregateCacheEnabled) {
+    return getBotRuntimeMonitoringAggregateUncached(userId, botId, query);
+  }
+
+  const key = buildRuntimeAggregateCacheKey(userId, botId, query);
+  const now = Date.now();
+  const cached = runtimeAggregateCache.get(key);
+  if (cached && cached.expiresAt > now) {
+    return cached.value;
+  }
+
+  const inflight = runtimeAggregateInflight.get(key);
+  if (inflight) {
+    return inflight;
+  }
+
+  const task = getBotRuntimeMonitoringAggregateUncached(userId, botId, query)
+    .then((value) => {
+      runtimeAggregateCache.set(key, {
+        expiresAt: Date.now() + runtimeAggregateCacheTtlMs,
+        value,
+      });
+      return value;
+    })
+    .finally(() => {
+      runtimeAggregateInflight.delete(key);
+    });
+
+  runtimeAggregateInflight.set(key, task);
+  return task;
 };

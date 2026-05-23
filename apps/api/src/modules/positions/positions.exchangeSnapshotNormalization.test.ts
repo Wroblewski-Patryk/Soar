@@ -128,4 +128,26 @@ describe('positions exchange snapshot normalization', () => {
 
     expect(normalized.marginUsed).toBe(0.7692281);
   });
+
+  it('uses the highest positive isolated margin signal when isolated fields disagree', () => {
+    const normalized = normalizeExchangePosition({
+      symbol: 'ETHUSDT',
+      side: 'LONG',
+      contracts: 0.25,
+      entryPrice: 3200,
+      markPrice: 3210,
+      unrealizedPnl: 2.5,
+      leverage: 20,
+      marginMode: 'isolated',
+      info: {
+        marginType: 'isolated',
+        initialMargin: '2.05',
+        positionInitialMargin: '2.05',
+        isolatedMargin: '4.10',
+        isolatedWallet: '4.00',
+      },
+    });
+
+    expect(normalized.marginUsed).toBe(4.1);
+  });
 });

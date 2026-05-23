@@ -390,7 +390,7 @@ describe('runtimeExecutionDedupe retryability gate', () => {
     });
   });
 
-  it('keeps stale pending command inflight when no linked order can prove retry safety', async () => {
+  it('retries stale pending command when no linked order exists', async () => {
     const before = metricsStore.snapshot().runtime.executionDedupe;
     const service = new RuntimeExecutionDedupeService();
     vi.spyOn(prisma.runtimeExecutionDedupe, 'create').mockRejectedValue({ code: 'P2002' });
@@ -427,21 +427,36 @@ describe('runtimeExecutionDedupe retryability gate', () => {
     });
 
     expect(result).toEqual({
-      outcome: 'inflight',
+      outcome: 'execute',
       dedupeKey: 'v1|OPEN|u1|bot-1|BTCUSDT|group-1|1m|1000|59000|LONG',
     });
     const after = metricsStore.snapshot().runtime.executionDedupe;
-    expect(after.inflight).toBeGreaterThanOrEqual(before.inflight + 1);
-    expect(after.byCommand.open.inflight).toBeGreaterThanOrEqual(
-      (before.byCommand.open?.inflight ?? 0) + 1
+    expect(after.retry).toBeGreaterThanOrEqual(before.retry + 1);
+    expect(after.byCommand.open.retry).toBeGreaterThanOrEqual(
+      (before.byCommand.open?.retry ?? 0) + 1
     );
     expect(orderLookupSpy).not.toHaveBeenCalled();
     expect(updateSpy).toHaveBeenCalledWith({
       where: { dedupeKey: 'v1|OPEN|u1|bot-1|BTCUSDT|group-1|1m|1000|59000|LONG' },
       data: expect.objectContaining({
+        status: 'PENDING',
+        orderId: null,
+        positionId: null,
+        errorClass: null,
         lastSeenAt: new Date('2026-04-16T10:05:00.000Z'),
       }),
     });
+  });
+
+  it('treats stale pending DCA as non-blocking for pending-submitted close guard', async () => {
+    const service = new RuntimeExecutionDedupeService();
+    vi.spyOn(prisma.runtimeExecutionDedupe, 'findMany').mockResolvedValue([] as never);
+    const orderLookupSpy = vi.spyOn(prisma.order, 'findFirst');
+
+    const result = await service.hasPendingSubmittedDcaForPosition('pos-1');
+
+    expect(result).toBe(false);
+    expect(orderLookupSpy).not.toHaveBeenCalled();
   });
 
   it('marks succeeded by order id only for filled synced orders', async () => {

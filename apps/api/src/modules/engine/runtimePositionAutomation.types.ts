@@ -133,6 +133,7 @@ export type RuntimePositionAutomationDeps = {
     leverage: number;
     nowMs: number;
   }) => Promise<boolean>;
+  hasPendingSubmittedDcaForPosition?: (positionId: string) => Promise<boolean>;
   recordRuntimeEvent?: (params: {
     userId: string;
     botId: string;

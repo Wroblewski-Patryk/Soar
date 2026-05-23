@@ -600,7 +600,7 @@ describe("HomeLiveWidgets aggregate history parity", () => {
     expect(screen.queryByText("COMPLETEDHISTUSDT")).not.toBeInTheDocument();
     expect(getBotRuntimeMonitoringAggregateMock).toHaveBeenCalledWith("bot-current-aggregate-render", {
       sessionsLimit: 2,
-      perSessionLimit: 200,
+      perSessionLimit: 80,
     });
 
     fireEvent.click(screen.getByRole("tab", { name: /Historia|History/i }));

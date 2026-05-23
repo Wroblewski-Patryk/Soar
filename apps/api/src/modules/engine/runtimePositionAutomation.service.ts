@@ -373,6 +373,8 @@ const defaultDeps: RuntimePositionAutomationDeps = {
     return { status: result.status === 'closed' ? 'closed' : 'submitted' };
   },
   resolveDcaFundsExhausted: (input) => resolveRuntimeDcaFundsExhausted(input),
+  hasPendingSubmittedDcaForPosition: (positionId) =>
+    runtimeExecutionDedupeService.hasPendingSubmittedDcaForPosition(positionId),
   recordRuntimeEvent: (params) => runtimeTelemetryService.recordRuntimeEvent(params),
   upsertRuntimeSymbolStat: (params) => runtimeTelemetryService.upsertRuntimeSymbolStat(params),
   resolveLifecyclePrice: ({ exchange, marketType, symbol, fallbackPrice }) =>
@@ -570,6 +572,7 @@ export class RuntimePositionAutomationService {
             ...defaultDeps,
             getCanonicalPositionState: async () => null,
             getDurableDcaProgress: async () => null,
+            hasPendingSubmittedDcaForPosition: async () => false,
             recordRuntimeEvent: async () => undefined,
             upsertRuntimeSymbolStat: async () => undefined,
           };
@@ -607,17 +610,13 @@ export class RuntimePositionAutomationService {
     );
   }
 
-  getPositionStateSnapshot(positionId: string): PositionManagementState | null {
-    const state = this.positionStates.get(positionId); return state ? this.cloneState(state) : null;
-  }
+  getPositionStateSnapshot(positionId: string): PositionManagementState | null { const state = this.positionStates.get(positionId); return state ? this.cloneState(state) : null; }
 
   async handleTickerEvent(event: StreamTickerEvent) {
     await Promise.all((await this.deps.listOpenPositionsBySymbol(event.symbol)).map((position) => this.processPosition(event, position)));
   }
 
-  private async getStrategyConfig(strategyId: string | null) {
-    return strategyId ? this.deps.getStrategyConfigById(strategyId) : null;
-  }
+  private async getStrategyConfig(strategyId: string | null) { return strategyId ? this.deps.getStrategyConfigById(strategyId) : null; }
   private async processPosition(
     event: StreamTickerEvent,
     position: RuntimeManagedPosition
@@ -792,6 +791,10 @@ export class RuntimePositionAutomationService {
       currentPrice: effectiveLifecyclePrice,
       leverage: Math.max(1, position.leverage || 1),
       marginUsed: position.marginUsed ?? null,
+      unrealizedPnl:
+        position.origin === 'EXCHANGE_SYNC' && typeof position.unrealizedPnl === 'number'
+          ? position.unrealizedPnl
+          : null,
       state: previousState,
     });
 
@@ -932,6 +935,15 @@ export class RuntimePositionAutomationService {
     this.positionStates.set(position.id, effectiveState);
 
     if (dcaPendingExchangeFill) {
+      if (stateRebasedToCanonical || !this.statesEqual(previousStateSnapshot, effectiveState)) {
+        await runtimePositionStateStore.setPositionRuntimeState(position.id, effectiveState);
+      }
+      return;
+    }
+
+    const hasPendingSubmittedDca =
+      (await this.deps.hasPendingSubmittedDcaForPosition?.(position.id)) ?? false;
+    if (result.shouldClose && hasPendingSubmittedDca) {
       if (stateRebasedToCanonical || !this.statesEqual(previousStateSnapshot, effectiveState)) {
         await runtimePositionStateStore.setPositionRuntimeState(position.id, effectiveState);
       }
