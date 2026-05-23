@@ -4,12 +4,14 @@ Last updated: 2026-05-23
 
 ## 2026-05-23 Production Deploy And Protected Release Gate
 
-- Current deploy-proof warning: after commit `49a59b69` was pushed and
-  `soar-web` was manually deployed, production served a new Web build
+- Deploy-proof recovery: after commit `49a59b69` was pushed and `soar-web` was
+  manually deployed, production served a new Web build
   `ownhF2rz9PTbbfD7bjapg` with HTTP `200`, but `/api/build-info` reported
-  `gitSha: null` and `metadataSource: unknown`. This is not accepted as a
-  closed production freshness proof. Active repair:
-  `WEB-BUILD-INFO-RUNTIME-FALLBACK-2026-05-23`.
+  `gitSha: null` and `metadataSource: unknown`. This was repaired by
+  `WEB-BUILD-INFO-RUNTIME-FALLBACK-2026-05-23`: code commit
+  `f822adef3381cd74412d6ee248a84298b9ac04be` is deployed, public
+  `/api/build-info` returns that SHA on `main`, and public smoke passes API
+  `/health`, API `/ready`, and Web `/`.
 - Post-release docs/state deploy freshness: follow-up docs/state sync commits
   must prove the pushed `HEAD` through public Web build-info and public deploy
   smoke after deployment convergence. The latest verified public production

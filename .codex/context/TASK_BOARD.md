@@ -15,19 +15,22 @@ Last updated: 2026-05-23
   - sync task state, project state, planning docs, and learning journal when
     needed
 
-## IN_PROGRESS
+## DONE
 
-- [ ] `WEB-BUILD-INFO-RUNTIME-FALLBACK-2026-05-23 fix: recover deploy metadata when Coolify writes null SHA`
+- [x] `WEB-BUILD-INFO-RUNTIME-FALLBACK-2026-05-23 fix: recover deploy metadata when Coolify writes null SHA`
   - 2026-05-23: After commit `49a59b69` was manually deployed, production
     served Web build `ownhF2rz9PTbbfD7bjapg` but `/api/build-info` returned
-    `gitSha: null` and `metadataSource: unknown`. Treating this as active
-    deploy-proof regression. The in-progress fix makes `/api/build-info`
+    `gitSha: null` and `metadataSource: unknown`. Treated this as an active
+    deploy-proof regression. The fix makes `/api/build-info`
     dynamic, adds a no-store runtime GitHub `main` fallback when file/env
     metadata is absent, and retries build-time GitHub metadata resolution.
+  - 2026-05-23: Local validation passed: Web typecheck, Web build, repository
+    guardrails, and `git diff --check`. After manual Coolify queue cleanup and
+    `soar-web` trigger, production `/api/build-info` converged to
+    `f822adef3381cd74412d6ee248a84298b9ac04be`, and public deploy smoke
+    passed API `/health`, API `/ready`, and Web `/`.
   - Evidence/task:
     `docs/planning/web-build-info-runtime-fallback-2026-05-23-task.md`.
-
-## DONE
 
 - [x] `AI-ASSISTANT-FOUNDATION-PROTOCOL-HARNESS-2026-05-23 test/docs: add reproducible assistant foundation AI protocol harness`
   - 2026-05-23: Confirmed `DEC-AUD-002` current truth: assistant is

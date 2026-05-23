@@ -4,14 +4,18 @@ Last updated: 2026-05-23
 
 ## Current Candidate Deployment Status
 
-- `WEB-BUILD-INFO-RUNTIME-FALLBACK-2026-05-23` is in progress after a
-  production deploy of commit `49a59b69` served a new Web build
-  `ownhF2rz9PTbbfD7bjapg` with `gitSha: null` and `metadataSource: unknown`.
-  The coordinator is treating this as a deploy-proof regression, not as a
-  closed release. The fix makes `/api/build-info` dynamic, adds a no-store
-  runtime GitHub `main` fallback when file/env metadata is missing, and retries
-  build-time GitHub metadata resolution for transient Coolify network failures.
-  Evidence/task:
+- `WEB-BUILD-INFO-RUNTIME-FALLBACK-2026-05-23` is verified and deployed for
+  code commit `f822adef3381cd74412d6ee248a84298b9ac04be`. It repaired a
+  deploy-proof regression where production Web build `ownhF2rz9PTbbfD7bjapg`
+  returned `gitSha: null` and `metadataSource: unknown` after manual Coolify
+  deployment of `49a59b69`. `/api/build-info` is now dynamic, includes a
+  no-store runtime GitHub `main` fallback when file/env metadata is missing,
+  and build-time GitHub metadata resolution retries transient Coolify network
+  failures. Production validation passed after manual Coolify queue cleanup and
+  `soar-web` trigger: build-info converged to `f822adef`, and public smoke
+  passed API `/health`, API `/ready`, and Web `/`. Authenticated app smoke and
+  protected `/workers/ready` are not claimed without valid Soar app
+  credentials. Evidence/task:
   `docs/planning/web-build-info-runtime-fallback-2026-05-23-task.md`.
 
 - `AI-ASSISTANT-FOUNDATION-PROTOCOL-HARNESS-2026-05-23` is locally verified.

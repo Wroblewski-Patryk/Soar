@@ -60,7 +60,7 @@ inside Coolify.
 
 ## Result Report
 
-- Status: locally verified; production redeploy pending.
+- Status: verified and deployed for code commit `f822adef`.
 - Local changes implemented:
   - `apps/web/src/app/api/build-info/route.ts`
   - `scripts/writeWebBuildMetadata.mjs`
@@ -74,5 +74,24 @@ inside Coolify.
     in the Next route manifest.
   - `pnpm run quality:guardrails` - PASS
   - `git diff --check` - PASS with line-ending warnings only.
-- Production redeploy and public smoke evidence will be appended after the fix
-  is pushed to `main`.
+- Production validation after manual Coolify queue cleanup and `soar-web`
+  trigger:
+  - `pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha f822adef --timeout-seconds 900 --interval-seconds 30`
+    - PASS; production returned
+      `f822adef3381cd74412d6ee248a84298b9ac04be`.
+  - `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`
+    - PASS API `/health` 200, API `/ready` 200, Web `/` 200.
+  - Public build-info readback:
+    - `buildId`: `dlbLKwBTKf2H0xApVEoJY`
+    - `gitSha`: `f822adef3381cd74412d6ee248a84298b9ac04be`
+    - `gitRef`: `main`
+    - `metadataSource`: `github-branch`
+    - `metadataGeneratedAt`: `2026-05-23T10:07:09.813Z`
+    - `checkedAt`: `2026-05-23T10:09:38.432Z`
+- Residual operational risk:
+  - Coolify still accumulates stale queued/in-progress worker/API deployments
+    and did not auto-start `soar-web`; manual queue cleanup plus Web trigger was
+    required.
+  - Authenticated app smoke and protected `/workers/ready` were not claimed
+    because the available Coolify credential is not a valid Soar application
+    credential.

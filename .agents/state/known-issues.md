@@ -4,6 +4,19 @@ Last updated: 2026-05-23
 
 ## Resolved Incidents
 
+- 2026-05-23 deploy metadata regression is resolved for code commit
+  `f822adef3381cd74412d6ee248a84298b9ac04be`:
+  After commit `49a59b69` was pushed to `main`, Coolify required manual queue
+  cleanup and `soar-web` trigger. The resulting production Web build
+  `ownhF2rz9PTbbfD7bjapg` returned HTTP `200`, but `/api/build-info` reported
+  `gitSha: null` and `metadataSource: unknown`. The fix makes `/api/build-info`
+  dynamic, adds a no-store runtime GitHub `main` fallback when file/env
+  metadata is absent, and retries build-time GitHub metadata resolution.
+  Production build-info converged to `f822adef`, and public smoke passed API
+  `/health`, API `/ready`, and Web `/`. Residual operations issue: Coolify
+  still accumulates stale queued/in-progress worker/API deployments and may
+  require manual queue cleanup before `soar-web` deploys.
+
 - 2026-05-22 production login/API startup incident is resolved:
   After `beae3ada` deployed to `main`, the Web app was current but the public
   API domain returned `503`, which made login unavailable. Local reproduction
@@ -19,14 +32,6 @@ Last updated: 2026-05-23
   before live exchange operations can decrypt them.
 
 ## Active Issues
-
-- 2026-05-23 deploy metadata regression:
-  After commit `49a59b69` was pushed to `main`, Coolify required manual queue
-  cleanup and `soar-web` trigger. The resulting production Web build
-  `ownhF2rz9PTbbfD7bjapg` returned HTTP `200`, but `/api/build-info` reported
-  `gitSha: null` and `metadataSource: unknown`. This blocks declaring the
-  latest pushed `HEAD` deployed. Active repair:
-  `WEB-BUILD-INFO-RUNTIME-FALLBACK-2026-05-23`.
 
 - 2026-05-23 protected V1 release update:
   No active P0 production release blocker is currently recorded for the
