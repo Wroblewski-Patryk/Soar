@@ -15,27 +15,29 @@ Last updated: 2026-05-23
   - sync task state, project state, planning docs, and learning journal when
     needed
 
-## BLOCKED
+## DONE
 
-- [ ] `V1-PROTECTED-APP-PROOF-72B547E1-2026-05-23 release: current production proof blocked only on LIVEIMPORT-03`
+- [x] `V1-PROTECTED-APP-PROOF-B1BA69ED-2026-05-23 release: production proof and release gate ready`
   - 2026-05-23: Production deploy
-    `72b547e12351e078c49807fb25d56c27f64c6567` is current on `main`.
+    `b1ba69edccc639e97943f37fb2b1e6249a62e87c` is current on `main`.
     Build-info, deploy smoke, authenticated `/workers/ready`, split-worker
     topology, production DB restore drill, rollback proof, production UI
     clickthrough, RC Gates 1-4, and SLO health/readiness/5xx/queue-lag
     objectives pass.
-  - Final preflight and non-dry-run release gate are fresh but remain
-    `not_ready` because `LIVEIMPORT-03` failed closed: the running LIVE
-    Binance Futures session has no open runtime payload for `ETHUSDT` or
-    `DOGEUSDT`.
-  - Next action: approve a safe way to observe or produce a qualifying open
-    runtime payload, rerun `LIVEIMPORT-03`, then rerun final preflight and
-    release gate. Do not create LIVE orders or positions without separate
-    explicit approval.
+  - 2026-05-23 follow-up: `LIVEIMPORT-03` now passes with read-only
+    auto-discovery against the running LIVE Binance Futures session. The real
+    open runtime symbols are `SOLUSDT` and `BNBUSDT`; both readbacks are
+    `EXCHANGE_SYNC`, `BOT_MANAGED`, `OWNED_AND_MANAGED`, and `IN_SYNC`.
+  - Final preflight has no blockers and the non-dry-run production release
+    gate is `ready`. No production LIVE order, position, exchange mutation, or
+    bot activation change was performed by this proof.
   - Evidence:
-    `docs/operations/v1-final-preflight-72b547e1-2026-05-23-after-refresh.md`,
-    `docs/operations/v1-release-gate-prod-72b547e1-2026-05-23-after-refresh.md`,
+    `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
+    `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,
+    `docs/operations/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`,
     `docs/operations/v1-production-activation-evidence-audit-2026-05-23.md`.
+
+## BLOCKED
 
 ## READY
 

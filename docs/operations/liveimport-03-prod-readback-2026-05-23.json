@@ -1,18 +1,15 @@
 {
-  "generatedAt": "2026-05-23T04:08:11.929Z",
+  "generatedAt": "2026-05-23T05:20:24.457Z",
   "target": {
     "baseUrl": "https://api.soar.luckysparrow.ch",
     "webBaseUrl": "https://soar.luckysparrow.ch",
-    "expectedSha": "72b547e12351e078c49807fb25d56c27f64c6567",
+    "expectedSha": "b1ba69edccc639e97943f37fb2b1e6249a62e87c",
     "buildInfo": {
-      "gitSha": "72b547e12351e078c49807fb25d56c27f64c6567",
+      "gitSha": "b1ba69edccc639e97943f37fb2b1e6249a62e87c",
       "gitRef": "main",
       "matchesExpected": true
     },
-    "symbols": [
-      "ETHUSDT",
-      "DOGEUSDT"
-    ]
+    "symbols": "auto"
   },
   "auth": {
     "source": "login",
@@ -37,31 +34,82 @@
         "status": "RUNNING",
         "startedAt": "2026-05-22T23:20:00.208Z",
         "stoppedAt": null,
-        "eventsCount": 3253
+        "eventsCount": 3383
+      },
+      "discovery": {
+        "mode": "OPEN_RUNTIME_SYMBOLS",
+        "total": 8,
+        "openCount": 2,
+        "closedCount": 6,
+        "openOrdersCount": 0,
+        "showDynamicStopColumns": true,
+        "symbolsDiscovered": [
+          "SOLUSDT",
+          "BNBUSDT"
+        ],
+        "status": "FOUND_OPEN_RUNTIME_SYMBOLS"
       },
       "symbols": [
         {
-          "symbol": "ETHUSDT",
-          "total": 0,
-          "openCount": 0,
-          "closedCount": 0,
+          "symbol": "SOLUSDT",
+          "total": 3,
+          "openCount": 1,
+          "closedCount": 2,
           "openOrdersCount": 0,
           "showDynamicStopColumns": true,
-          "openItems": [],
-          "importCompleteness": "MISSING_FROM_RUNTIME_READBACK"
+          "openItems": [
+            {
+              "idHash": "aa04f4a08562",
+              "symbol": "SOLUSDT",
+              "status": "OPEN",
+              "side": "LONG",
+              "origin": "EXCHANGE_SYNC",
+              "managementMode": "BOT_MANAGED",
+              "syncState": "IN_SYNC",
+              "continuityState": "CONFIRMED",
+              "takeoverStatus": "OWNED_AND_MANAGED",
+              "strategyIdHash": null,
+              "strategyAutomationContextResolved": true,
+              "actionable": true,
+              "dcaPlannedLevelsCount": 3,
+              "trailingTakeProfitLevelsCount": 5,
+              "trailingStopLevelsCount": 0,
+              "openedAt": "2026-05-23T00:00:04.571Z"
+            }
+          ],
+          "importCompleteness": "VISIBLE"
         },
         {
-          "symbol": "DOGEUSDT",
-          "total": 0,
-          "openCount": 0,
-          "closedCount": 0,
+          "symbol": "BNBUSDT",
+          "total": 2,
+          "openCount": 1,
+          "closedCount": 1,
           "openOrdersCount": 0,
           "showDynamicStopColumns": true,
-          "openItems": [],
-          "importCompleteness": "MISSING_FROM_RUNTIME_READBACK"
+          "openItems": [
+            {
+              "idHash": "f9869850456e",
+              "symbol": "BNBUSDT",
+              "status": "OPEN",
+              "side": "LONG",
+              "origin": "EXCHANGE_SYNC",
+              "managementMode": "BOT_MANAGED",
+              "syncState": "IN_SYNC",
+              "continuityState": "CONFIRMED",
+              "takeoverStatus": "OWNED_AND_MANAGED",
+              "strategyIdHash": null,
+              "strategyAutomationContextResolved": true,
+              "actionable": true,
+              "dcaPlannedLevelsCount": 3,
+              "trailingTakeProfitLevelsCount": 5,
+              "trailingStopLevelsCount": 0,
+              "openedAt": "2026-05-23T00:00:04.328Z"
+            }
+          ],
+          "importCompleteness": "VISIBLE"
         }
       ],
-      "status": "REVIEW"
+      "status": "PASS"
     }
   ],
   "summary": {
@@ -69,10 +117,12 @@
     "botsWithRuntimeReadback": 1,
     "botsWithoutRunningSession": 0,
     "symbolsExpected": 2,
-    "symbolsVisible": [],
-    "missingSymbols": [
-      "ETHUSDT",
-      "DOGEUSDT"
-    ]
+    "symbolDiscoveryMode": "auto",
+    "symbolsVisible": [
+      "SOLUSDT",
+      "BNBUSDT"
+    ],
+    "missingSymbols": [],
+    "entriesWithoutOpenRuntimePayload": 0
   }
 }

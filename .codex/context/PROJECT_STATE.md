@@ -4,24 +4,29 @@ Last updated: 2026-05-23
 
 ## Current Candidate Deployment Status
 
-- `V1-PROTECTED-APP-PROOF-72B547E1-2026-05-23` is the current production
-  release truth for deployed `72b547e12351e078c49807fb25d56c27f64c6567`.
-  Production Web build-info reports that SHA on `main`; deploy smoke passes
-  for API `/health`, API `/ready`, Web `/`, and authenticated
-  `/workers/ready`; split-worker topology is healthy; production DB restore
-  drill passes through the VPS Docker SSH context; rollback proof passes with
+- `V1-PROTECTED-APP-PROOF-B1BA69ED-2026-05-23` is the current production
+  release truth for deployed `b1ba69edccc639e97943f37fb2b1e6249a62e87c` on
+  `main`. Production Web build-info reports that SHA; deploy smoke passes for
+  API `/health`, API `/ready`, Web `/`, and authenticated `/workers/ready`;
+  split-worker topology is healthy; production DB restore drill passes through
+  the VPS Docker SSH context; rollback proof passes with
   `shouldRollback=false`; production UI clickthrough passes; RC Gates 1-4 and
   sign-off are current `PASS`; and the SLO window passes health/readiness/5xx
   and queue-lag objectives with `NO_DATA` only for live order ratio because no
-  live order attempts occurred. Final preflight and release gate are fresh but
-  remain blocked only by `LIVEIMPORT-03`: the running LIVE Binance Futures
-  session had no open runtime payload for `ETHUSDT` or `DOGEUSDT`. Evidence:
+  live order attempts occurred. `LIVEIMPORT-03` now passes by read-only
+  auto-discovering the real open runtime symbols `SOLUSDT` and `BNBUSDT`
+  rather than the legacy `ETHUSDT,DOGEUSDT` default; both readbacks are
+  `EXCHANGE_SYNC`, `BOT_MANAGED`, `OWNED_AND_MANAGED`, and `IN_SYNC`.
+  Final preflight has no blockers and the full non-dry-run production release
+  gate is `ready`. Evidence:
   `docs/operations/v1-production-activation-evidence-audit-2026-05-23.md`,
   `docs/planning/v1-production-activation-and-evidence-plan-2026-05-23.md`,
-  `docs/operations/v1-final-preflight-72b547e1-2026-05-23-after-refresh.md`,
+  `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
+  `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,
   and
-  `docs/operations/v1-release-gate-prod-72b547e1-2026-05-23-after-refresh.md`.
-  Do not create LIVE orders or positions without separate explicit approval.
+  `docs/operations/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`.
+  No production LIVE order, position, exchange mutation, or bot activation
+  change was performed by this proof.
 
 - `ARCH-RUNTIME-P1-006-BACKTEST-MULTI-STRATEGY-MERGE-2026-05-23` is locally
   verified as the next architecture-code audit repair. Complete immutable

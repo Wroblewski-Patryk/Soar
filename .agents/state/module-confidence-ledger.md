@@ -31,14 +31,16 @@ Do not turn uncertainty into optimism.
 ## Current Operational Override
 
 - 2026-05-23 `SOAR-OPERATIONS-001` and `SOAR-WORKERS-001`: deployed
-  `72b547e12351e078c49807fb25d56c27f64c6567` has current production proof for
+  `b1ba69edccc639e97943f37fb2b1e6249a62e87c` has current production proof for
   build-info, deploy smoke, split-worker `/workers/ready`, restore drill,
-  rollback proof, production UI clickthrough, RC Gates 1-4, and SLO
-  health/readiness/5xx/queue-lag objectives. `SOAR-WORKERS-001` is current for
-  split-worker readiness. `SOAR-OPERATIONS-001` remains `PARTIAL/BLOCKED` for
-  release approval only because `LIVEIMPORT-03` failed closed with no open
-  runtime position/order payload for `ETHUSDT` or `DOGEUSDT`. Do not create a
-  LIVE order or position to satisfy this without separate explicit approval.
+  rollback proof, production UI clickthrough, RC Gates 1-4, SLO
+  health/readiness/5xx/queue-lag objectives, read-only `LIVEIMPORT-03`
+  runtime readback for the real open symbols `SOLUSDT` and `BNBUSDT`, final
+  preflight with no blockers, and a full non-dry-run production release gate
+  returning `ready`. `SOAR-WORKERS-001` is current for split-worker readiness.
+  `SOAR-OPERATIONS-001` is verified for the current production release gate.
+  No production LIVE order, position, exchange mutation, or bot activation
+  change was performed by this proof.
 
 ## Ledger
 

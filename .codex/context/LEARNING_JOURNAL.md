@@ -42,6 +42,47 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
   `.codex/context/PROJECT_STATE.md` entry
   `V1-LOGIN-API-STARTUP-HOTFIX-2026-05-22`.
 
+### 2026-05-23 - Use LIVEIMPORT auto-discovery before assuming legacy symbols
+- Context: `LIVEIMPORT-03` production readback on the 2026-05-23 release
+  candidate initially failed for the legacy default symbols.
+- Symptom: the collector reported no open runtime payload for
+  `ETHUSDT,DOGEUSDT`, while the running LIVE session had open runtime payloads
+  for different symbols.
+- Root cause: `scripts/collectLiveImportReadbackEvidence.mjs` used a fixed
+  default symbol list unless the operator manually supplied current symbols.
+- Guardrail: use `--symbols auto` for production readback when the current LIVE
+  bot/session symbols are not already known; keep the collector fail-closed
+  when no open runtime payload is visible.
+- Preferred pattern:
+```powershell
+pnpm run ops:liveimport:readback -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha <deployed-sha> --symbols auto
+```
+- Avoid: treating a missing `ETHUSDT,DOGEUSDT` readback as a product/runtime
+  failure before checking the real open runtime symbols.
+- Evidence:
+  `docs/operations/liveimport-03-prod-readback-2026-05-23.json` passed for
+  auto-discovered `SOLUSDT` and `BNBUSDT`.
+
+### 2026-05-23 - Start Docker Desktop before full go-live smoke
+- Context: the production release gate runs `pnpm run test:go-live:smoke`,
+  which starts local Postgres and Redis through Docker Compose.
+- Symptom: release gate failed locally with missing
+  `dockerDesktopLinuxEngine` pipe even though Laragon was running.
+- Root cause: Laragon did not expose this repo's required Postgres/Redis ports,
+  and Docker Desktop was installed but not fully started.
+- Guardrail: for full release gates, verify Docker engine availability before
+  the go-live smoke pack; start Docker Desktop when the CLI exists but the
+  engine pipe is missing.
+- Preferred pattern:
+```powershell
+docker version
+Start-Process -FilePath "C:\Program Files\Docker\Docker\Docker Desktop.exe" -WindowStyle Hidden
+```
+- Avoid: classifying go-live smoke startup failure as an application regression
+  before checking Docker engine and `localhost:5432` / `localhost:6379`.
+- Evidence: the first release-gate run failed on Docker engine connection; the
+  rerun passed after Docker Desktop became ready.
+
 ### 2026-05-22 - Check Laragon and Postgres separately before DB-backed API tests
 - Context: architecture-code runtime audit needed DB-backed `orders.service`
   tests after fixing LIVE fill authority and runtime execution dedupe.

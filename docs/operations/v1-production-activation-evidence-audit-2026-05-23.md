@@ -5,9 +5,9 @@
 - API URL: `https://api.soar.luckysparrow.ch`
 - Web URL: `https://soar.luckysparrow.ch`
 - Public Web build-info SHA:
-  `72b547e12351e078c49807fb25d56c27f64c6567`.
+  `b1ba69edccc639e97943f37fb2b1e6249a62e87c`.
 - Current final preflight:
-  `docs/operations/v1-final-preflight-72b547e1-2026-05-23.md`.
+  `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`.
 - Current production UI clickthrough:
   `docs/operations/prod-ui-module-clickthrough-2026-05-23.md`.
 - Current `LIVEIMPORT-03` runtime readback:
@@ -27,17 +27,17 @@
 
 ## Evidence Reviewed
 - Public production build-info: PASS, deployed Web SHA
-  `72b547e12351e078c49807fb25d56c27f64c6567`.
+  `b1ba69edccc639e97943f37fb2b1e6249a62e87c`.
 - Production deploy smoke: PASS for `/health`, `/ready`, Web `/`, and
   authenticated `/workers/ready` after Coolify split-worker topology repair.
 - Worker topology: PASS after production API was moved to `WORKER_MODE=split`
   and all required worker families reported fresh heartbeats.
 - Production UI clickthrough: PASS for public, dashboard, admin, and legacy
   redirect route groups.
-- `LIVEIMPORT-03`: FAIL. A running LIVE Binance Futures bot/session was found,
-  but the required runtime readback had no open positions or orders for
-  `ETHUSDT` and `DOGEUSDT`; both symbols were marked
-  `MISSING_FROM_RUNTIME_READBACK`.
+- `LIVEIMPORT-03`: PASS. A running LIVE Binance Futures bot/session was found,
+  and read-only auto-discovery selected the real open runtime symbols
+  `SOLUSDT` and `BNBUSDT`; both positions are `EXCHANGE_SYNC`,
+  `BOT_MANAGED`, `OWNED_AND_MANAGED`, and `IN_SYNC`.
 - Rollback proof: PASS with `shouldRollback=false`, fresh runtime checks, and
   no alerts.
 - Production DB restore drill: PASS through the VPS Docker SSH context using
@@ -53,13 +53,15 @@
   degraded inline-worker state.
 - Protected UI, rollback, restore, SLO, and RC evidence are fresh for
   2026-05-23.
-- V1 activation cannot be marked ready because the required `LIVEIMPORT-03`
-  runtime readback did not prove an open runtime payload.
-- The missing `LIVEIMPORT-03` proof must not be bypassed by marking DCA/SL/TSL
-  behavior as executed without a corresponding runtime-visible action.
+- V1 activation can be marked ready for this production proof packet because
+  `LIVEIMPORT-03`, final preflight, and the full non-dry-run production release
+  gate now pass.
+- The `LIVEIMPORT-03` proof was not bypassed by weaker signals; it uses the
+  runtime positions readback for the real open symbols currently visible in
+  production.
 
 ## Result
-- Status: **NO-GO**
+- Status: **READY**
 - Satisfied for 2026-05-23:
   - production public build-info readback
   - production public and authenticated smoke
@@ -69,10 +71,8 @@
   - production DB restore drill
   - 30-minute production SLO observation, except live order ratio `NO_DATA`
   - RC external gates, sign-off, and checklist evidence
+  - `LIVEIMPORT-03` runtime readback for `SOLUSDT` and `BNBUSDT`
+  - final preflight with no blockers
+  - full non-dry-run production release gate `ready`
 - Remaining blockers:
-  - `LIVEIMPORT-03` production runtime readback failed because no qualifying
-    open runtime position/order payload was visible.
-  - Final V1 release gate must remain `not_ready` until `LIVEIMPORT-03` is
-    rerun against a real qualifying runtime payload or an explicitly approved
-    controlled LIVE proof.
-
+  - none.

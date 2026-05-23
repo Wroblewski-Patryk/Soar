@@ -4,7 +4,7 @@ Last updated: 2026-05-23
 
 ## 2026-05-23 Production Deploy And Protected Release Gate
 
-- Production deploy for `72b547e12351e078c49807fb25d56c27f64c6567` is healthy:
+- Production deploy for `b1ba69edccc639e97943f37fb2b1e6249a62e87c` is healthy:
   public Web build-info reports the expected SHA on `main`, deploy smoke
   passes for API `/health`, API `/ready`, Web `/`, and authenticated
   `/workers/ready`.
@@ -16,10 +16,15 @@ Last updated: 2026-05-23
 - SLO observation is operationally healthy for health/readiness/5xx/queue lag;
   overall SLO artifact is `NO_DATA` only because the live order failure-ratio
   objective had no live order attempts in the observation window.
-- Release readiness remains `not_ready` by design because `LIVEIMPORT-03`
-  failed closed: the running LIVE Binance Futures session had no open runtime
-  position/order payload for `ETHUSDT` or `DOGEUSDT`. This is an evidence
-  blocker, not a split-worker/restore/rollback availability blocker.
+- `LIVEIMPORT-03` passes with read-only auto-discovery of the real open runtime
+  symbols `SOLUSDT` and `BNBUSDT`; both runtime readbacks are `EXCHANGE_SYNC`,
+  `BOT_MANAGED`, `OWNED_AND_MANAGED`, and `IN_SYNC`.
+- Final preflight has no blockers and the full non-dry-run production release
+  gate is `ready`. Evidence:
+  `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
+  `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,
+  and
+  `docs/operations/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`.
 
 ## 2026-05-22 Architecture-Code Runtime Audit
 

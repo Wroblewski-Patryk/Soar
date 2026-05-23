@@ -47,7 +47,7 @@ const printUsage = () => {
       '  --ops-auth-header-value <v>  Optional extra private OPS header value',
       '  --bot-id <id>                Bot id override; auto-discovers LIVE bots when omitted',
       '  --session-id <id>            Runtime session id override; latest RUNNING session is used when omitted',
-      '  --symbols <csv>              Symbols to verify (default: ETHUSDT,DOGEUSDT)',
+      '  --symbols <csv|auto>         Symbols to verify, or auto-discover open runtime symbols (default: ETHUSDT,DOGEUSDT)',
       '  --expected-sha <sha>         Optional expected web build-info SHA prefix',
       '  --web-base-url <url>         Web origin for build-info check',
       '  --output <path>              Optional JSON artifact path',
@@ -66,50 +66,57 @@ const printUsage = () => {
   );
 };
 
-const resolveOptions = () => ({
-  baseUrl: normalizeBaseUrl(
-    readArgValue('--base-url') ||
-      process.env.LIVEIMPORT_READBACK_API_BASE_URL ||
-      'https://api.soar.luckysparrow.ch'
-  ),
-  webBaseUrl: normalizeBaseUrl(
-    readArgValue('--web-base-url') ||
-      process.env.LIVEIMPORT_READBACK_WEB_BASE_URL ||
-      'https://soar.luckysparrow.ch'
-  ),
-  authToken: readArgValue('--auth-token') || process.env.LIVEIMPORT_READBACK_AUTH_TOKEN || '',
-  authEmail: readArgValue('--auth-email') || process.env.LIVEIMPORT_READBACK_AUTH_EMAIL || '',
-  authPassword:
-    readArgValue('--auth-password') || process.env.LIVEIMPORT_READBACK_AUTH_PASSWORD || '',
-  opsBasicUser:
-    readArgValue('--ops-basic-user') || process.env.LIVEIMPORT_READBACK_OPS_BASIC_USER || '',
-  opsBasicPassword:
-    readArgValue('--ops-basic-password') ||
-    process.env.LIVEIMPORT_READBACK_OPS_BASIC_PASSWORD ||
-    '',
-  opsAuthHeaderName:
-    readArgValue('--ops-auth-header-name') ||
-    process.env.LIVEIMPORT_READBACK_OPS_AUTH_HEADER_NAME ||
-    '',
-  opsAuthHeaderValue:
-    readArgValue('--ops-auth-header-value') ||
-    process.env.LIVEIMPORT_READBACK_OPS_AUTH_HEADER_VALUE ||
-    '',
-  botId: readArgValue('--bot-id') || process.env.LIVEIMPORT_READBACK_BOT_ID || '',
-  sessionId: readArgValue('--session-id') || process.env.LIVEIMPORT_READBACK_SESSION_ID || '',
-  symbols: splitCsv(
-    readArgValue('--symbols') || process.env.LIVEIMPORT_READBACK_SYMBOLS || 'ETHUSDT,DOGEUSDT'
-  ).map(normalizeSymbol),
-  expectedSha:
-    readArgValue('--expected-sha') || process.env.LIVEIMPORT_READBACK_EXPECTED_SHA || '',
-  output: readArgValue('--output') || process.env.LIVEIMPORT_READBACK_OUTPUT || '',
-  timeoutMs: Number.parseInt(process.env.LIVEIMPORT_READBACK_TIMEOUT_MS || '10000', 10),
-  dryRun: args.has('--dry-run'),
-});
+const resolveOptions = () => {
+  const rawSymbols =
+    readArgValue('--symbols') || process.env.LIVEIMPORT_READBACK_SYMBOLS || 'ETHUSDT,DOGEUSDT';
+  const autoDiscoverSymbols = rawSymbols.trim().toLowerCase() === 'auto';
+  return {
+    baseUrl: normalizeBaseUrl(
+      readArgValue('--base-url') ||
+        process.env.LIVEIMPORT_READBACK_API_BASE_URL ||
+        'https://api.soar.luckysparrow.ch'
+    ),
+    webBaseUrl: normalizeBaseUrl(
+      readArgValue('--web-base-url') ||
+        process.env.LIVEIMPORT_READBACK_WEB_BASE_URL ||
+        'https://soar.luckysparrow.ch'
+    ),
+    authToken: readArgValue('--auth-token') || process.env.LIVEIMPORT_READBACK_AUTH_TOKEN || '',
+    authEmail: readArgValue('--auth-email') || process.env.LIVEIMPORT_READBACK_AUTH_EMAIL || '',
+    authPassword:
+      readArgValue('--auth-password') || process.env.LIVEIMPORT_READBACK_AUTH_PASSWORD || '',
+    opsBasicUser:
+      readArgValue('--ops-basic-user') || process.env.LIVEIMPORT_READBACK_OPS_BASIC_USER || '',
+    opsBasicPassword:
+      readArgValue('--ops-basic-password') ||
+      process.env.LIVEIMPORT_READBACK_OPS_BASIC_PASSWORD ||
+      '',
+    opsAuthHeaderName:
+      readArgValue('--ops-auth-header-name') ||
+      process.env.LIVEIMPORT_READBACK_OPS_AUTH_HEADER_NAME ||
+      '',
+    opsAuthHeaderValue:
+      readArgValue('--ops-auth-header-value') ||
+      process.env.LIVEIMPORT_READBACK_OPS_AUTH_HEADER_VALUE ||
+      '',
+    botId: readArgValue('--bot-id') || process.env.LIVEIMPORT_READBACK_BOT_ID || '',
+    sessionId: readArgValue('--session-id') || process.env.LIVEIMPORT_READBACK_SESSION_ID || '',
+    rawSymbols,
+    autoDiscoverSymbols,
+    symbols: autoDiscoverSymbols ? [] : splitCsv(rawSymbols).map(normalizeSymbol),
+    expectedSha:
+      readArgValue('--expected-sha') || process.env.LIVEIMPORT_READBACK_EXPECTED_SHA || '',
+    output: readArgValue('--output') || process.env.LIVEIMPORT_READBACK_OUTPUT || '',
+    timeoutMs: Number.parseInt(process.env.LIVEIMPORT_READBACK_TIMEOUT_MS || '10000', 10),
+    dryRun: args.has('--dry-run'),
+  };
+};
 
 const assertOptions = (options) => {
   if (!options.baseUrl) throw new Error('Missing --base-url.');
-  if (!options.symbols.length) throw new Error('At least one --symbols value is required.');
+  if (!options.autoDiscoverSymbols && !options.symbols.length) {
+    throw new Error('At least one --symbols value is required, or use --symbols auto.');
+  }
 };
 
 const hashId = (value) => {
@@ -244,9 +251,31 @@ const resolveSession = async (options, headers, botId) => {
   return sessions[0];
 };
 
-const collectSymbolPositions = async (options, headers, botId, sessionId) => {
+const collectAllPositions = async (options, headers, botId, sessionId) => {
+  const url = `${options.baseUrl}/dashboard/bots/${encodeURIComponent(
+    botId
+  )}/runtime-sessions/${encodeURIComponent(sessionId)}/positions?limit=50`;
+  return fetchJson(url, { headers, timeoutMs: options.timeoutMs });
+};
+
+const discoverSymbolsFromRuntimeReadback = (payload) =>
+  Array.from(
+    new Set(
+      (Array.isArray(payload?.openItems) ? payload.openItems : [])
+        .map((position) => normalizeSymbol(position?.symbol))
+        .filter(Boolean)
+    )
+  );
+
+const collectSymbolPositions = async (
+  options,
+  headers,
+  botId,
+  sessionId,
+  symbols = options.symbols
+) => {
   const bySymbol = [];
-  for (const symbol of options.symbols) {
+  for (const symbol of symbols) {
     const url = `${options.baseUrl}/dashboard/bots/${encodeURIComponent(
       botId
     )}/runtime-sessions/${encodeURIComponent(sessionId)}/positions?symbol=${encodeURIComponent(symbol)}&limit=50`;
@@ -284,7 +313,7 @@ const main = async () => {
           webBaseUrl: options.webBaseUrl,
           botIdProvided: Boolean(options.botId.trim()),
           sessionIdProvided: Boolean(options.sessionId.trim()),
-          symbols: options.symbols,
+          symbols: options.autoDiscoverSymbols ? 'auto' : options.symbols,
           expectedShaProvided: Boolean(options.expectedSha.trim()),
           outputProvided: Boolean(options.output.trim()),
         },
@@ -337,13 +366,40 @@ const main = async () => {
       });
       continue;
     }
-    // eslint-disable-next-line no-await-in-loop
-    const symbols = await collectSymbolPositions(options, headers, bot.id, session.id);
+    let discovery = null;
+    let symbolsToVerify = options.symbols;
+    if (options.autoDiscoverSymbols) {
+      // eslint-disable-next-line no-await-in-loop
+      const payload = await collectAllPositions(options, headers, bot.id, session.id);
+      symbolsToVerify = discoverSymbolsFromRuntimeReadback(payload);
+      discovery = {
+        mode: 'OPEN_RUNTIME_SYMBOLS',
+        total: payload?.total ?? null,
+        openCount: payload?.openCount ?? null,
+        closedCount: payload?.closedCount ?? null,
+        openOrdersCount: payload?.openOrdersCount ?? null,
+        showDynamicStopColumns: payload?.showDynamicStopColumns ?? null,
+        symbolsDiscovered: symbolsToVerify,
+        status:
+          symbolsToVerify.length > 0 ? 'FOUND_OPEN_RUNTIME_SYMBOLS' : 'NO_OPEN_RUNTIME_PAYLOAD',
+      };
+    }
+    let symbols = [];
+    if (symbolsToVerify.length > 0) {
+      // eslint-disable-next-line no-await-in-loop
+      symbols = await collectSymbolPositions(options, headers, bot.id, session.id, symbolsToVerify);
+    }
     entries.push({
       bot: redactBot(bot),
       session: redactSession(session),
+      discovery,
       symbols,
-      status: symbols.every((item) => item.importCompleteness === 'VISIBLE') ? 'PASS' : 'REVIEW',
+      status:
+        symbols.length > 0 && symbols.every((item) => item.importCompleteness === 'VISIBLE')
+          ? 'PASS'
+          : options.autoDiscoverSymbols && symbols.length === 0
+            ? 'NO_OPEN_RUNTIME_PAYLOAD'
+            : 'REVIEW',
     });
   }
 
@@ -354,7 +410,7 @@ const main = async () => {
       webBaseUrl: options.webBaseUrl,
       expectedSha: options.expectedSha.trim() || null,
       buildInfo,
-      symbols: options.symbols,
+      symbols: options.autoDiscoverSymbols ? 'auto' : options.symbols,
     },
     auth: {
       source: resolvedAuth.source,
@@ -365,7 +421,10 @@ const main = async () => {
       botsChecked: entries.length,
       botsWithRuntimeReadback: entries.filter((entry) => entry.symbols.length > 0).length,
       botsWithoutRunningSession: entries.filter((entry) => entry.status === 'NO_RUNNING_SESSION').length,
-      symbolsExpected: options.symbols.length,
+      symbolsExpected: options.autoDiscoverSymbols
+        ? Array.from(new Set(entries.flatMap((entry) => entry.discovery?.symbolsDiscovered ?? []))).length
+        : options.symbols.length,
+      symbolDiscoveryMode: options.autoDiscoverSymbols ? 'auto' : 'explicit',
       symbolsVisible: Array.from(
         new Set(
           entries.flatMap((entry) =>
@@ -380,6 +439,9 @@ const main = async () => {
           .filter((symbol) => symbol.importCompleteness !== 'VISIBLE')
           .map((symbol) => symbol.symbol)
       ),
+      entriesWithoutOpenRuntimePayload: entries.filter(
+        (entry) => entry.status === 'NO_OPEN_RUNTIME_PAYLOAD'
+      ).length,
     },
   };
 
@@ -394,7 +456,17 @@ const main = async () => {
     throw new Error('No LIVE bots were available for readback.');
   }
   if (evidence.summary.botsWithRuntimeReadback === 0) {
-    throw new Error('No runtime positions readback was collected from a RUNNING session.');
+    throw new Error(
+      options.autoDiscoverSymbols
+        ? 'No open runtime payload was visible for auto-discovered LIVEIMPORT readback.'
+        : 'No runtime positions readback was collected from a RUNNING session.'
+    );
+  }
+  if (options.autoDiscoverSymbols) {
+    if (evidence.summary.symbolsVisible.length === 0) {
+      throw new Error('Auto-discovery did not find any visible open runtime symbols.');
+    }
+    return;
   }
   const missingExpectedSymbols = options.symbols.filter(
     (symbol) => !evidence.summary.symbolsVisible.includes(symbol)

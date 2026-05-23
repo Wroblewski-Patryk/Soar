@@ -1,0 +1,183 @@
+{
+  "status": "ready_for_protected_evidence",
+  "generatedAt": "2026-05-23T05:20:59.174Z",
+  "context": {
+    "apiBaseUrl": "https://api.soar.luckysparrow.ch",
+    "webBaseUrl": "https://soar.luckysparrow.ch",
+    "expectedSha": "b1ba69edccc639e97943f37fb2b1e6249a62e87c",
+    "today": "2026-05-23",
+    "buildInfoSkipped": false,
+    "publicSmokeSkipped": false
+  },
+  "buildInfo": {
+    "state": "pass",
+    "exitCode": 0
+  },
+  "publicSmoke": {
+    "state": "pass",
+    "exitCode": 0
+  },
+  "prerequisites": {
+    "required": [
+      {
+        "key": "liveimport auth",
+        "ok": true,
+        "required": [
+          "LIVEIMPORT_READBACK_AUTH_TOKEN",
+          "or LIVEIMPORT_READBACK_AUTH_EMAIL + LIVEIMPORT_READBACK_AUTH_PASSWORD"
+        ],
+        "satisfiedByEvidence": false,
+        "blocking": false
+      },
+      {
+        "key": "rollback guard auth",
+        "ok": true,
+        "required": [
+          "ROLLBACK_GUARD_AUTH_TOKEN",
+          "or ROLLBACK_GUARD_AUTH_EMAIL + ROLLBACK_GUARD_AUTH_PASSWORD"
+        ],
+        "satisfiedByEvidence": false,
+        "blocking": false
+      },
+      {
+        "key": "production UI dashboard auth",
+        "ok": true,
+        "required": [
+          "PROD_UI_AUDIT_AUTH_TOKEN",
+          "or PROD_UI_AUDIT_AUTH_EMAIL + PROD_UI_AUDIT_AUTH_PASSWORD"
+        ],
+        "satisfiedByEvidence": false,
+        "blocking": false
+      },
+      {
+        "key": "production UI admin auth",
+        "ok": true,
+        "required": [
+          "PROD_UI_AUDIT_ADMIN_TOKEN",
+          "or PROD_UI_AUDIT_ADMIN_EMAIL + PROD_UI_AUDIT_ADMIN_PASSWORD"
+        ],
+        "satisfiedByEvidence": false,
+        "blocking": false
+      },
+      {
+        "key": "production DB restore context",
+        "ok": false,
+        "required": [
+          "PROD_DB_CHECK_CONTAINER + PROD_DB_CHECK_USER + PROD_DB_CHECK_NAME",
+          "or PRODUCTION_DB_CHECK_CONTAINER + PRODUCTION_DB_CHECK_USER + PRODUCTION_DB_CHECK_NAME"
+        ],
+        "satisfiedByEvidence": true,
+        "blocking": false
+      }
+    ],
+    "optional": [
+      {
+        "key": "liveimport private OPS layer",
+        "ok": false,
+        "accepted": [
+          "LIVEIMPORT_READBACK_OPS_BASIC_USER + LIVEIMPORT_READBACK_OPS_BASIC_PASSWORD",
+          "or LIVEIMPORT_READBACK_OPS_AUTH_HEADER_NAME + LIVEIMPORT_READBACK_OPS_AUTH_HEADER_VALUE"
+        ],
+        "satisfiedByEvidence": false,
+        "blocking": false
+      },
+      {
+        "key": "rollback private OPS layer",
+        "ok": false,
+        "accepted": [
+          "ROLLBACK_GUARD_OPS_BASIC_USER + ROLLBACK_GUARD_OPS_BASIC_PASSWORD",
+          "or ROLLBACK_GUARD_OPS_AUTH_HEADER_NAME + ROLLBACK_GUARD_OPS_AUTH_HEADER_VALUE"
+        ],
+        "satisfiedByEvidence": false,
+        "blocking": false
+      }
+    ]
+  },
+  "evidence": [
+    {
+      "key": "activationAudit",
+      "label": "activation evidence audit",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-23",
+      "path": "docs\\operations\\v1-production-activation-evidence-audit-2026-05-23.md",
+      "date": "2026-05-23"
+    },
+    {
+      "key": "activationPlan",
+      "label": "activation execution plan",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-23",
+      "path": "docs\\planning\\v1-production-activation-and-evidence-plan-2026-05-23.md",
+      "date": "2026-05-23"
+    },
+    {
+      "key": "rcExternalGateStatus",
+      "label": "RC external gates status",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-23",
+      "path": "docs\\operations\\v1-rc-external-gates-status.md",
+      "date": "2026-05-23"
+    },
+    {
+      "key": "rcSignoffRecord",
+      "label": "RC sign-off record",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-23",
+      "path": "docs\\operations\\v1-rc-signoff-record.md",
+      "date": "2026-05-23"
+    },
+    {
+      "key": "rcChecklist",
+      "label": "RC checklist verification block",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-23",
+      "path": "docs\\operations\\v1-release-candidate-checklist.md",
+      "date": "2026-05-23"
+    },
+    {
+      "key": "liveImportReadback",
+      "label": "LIVEIMPORT-03 runtime readback",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-23",
+      "path": "docs\\operations\\liveimport-03-prod-readback-2026-05-23.json",
+      "date": "2026-05-23"
+    },
+    {
+      "key": "prodUiClickthrough",
+      "label": "production UI clickthrough",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-23",
+      "path": "docs\\operations\\prod-ui-module-clickthrough-2026-05-23.md",
+      "date": "2026-05-23"
+    },
+    {
+      "key": "backupRestoreDrill",
+      "label": "backup/restore drill evidence",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-23",
+      "path": "docs\\operations\\v1-restore-drill-prod-2026-05-23T00-00-00-000Z.md",
+      "date": "2026-05-23"
+    },
+    {
+      "key": "rollbackProof",
+      "label": "rollback proof pack",
+      "state": "fresh",
+      "required": true,
+      "reason": "fresh for 2026-05-23",
+      "path": "docs\\operations\\v1-rollback-proof-prod-2026-05-23T00-00-00-000Z.md",
+      "date": "2026-05-23"
+    }
+  ],
+  "blockers": [],
+  "blockerDetails": [],
+  "remediation": [],
+  "note": "Preflight JSON is not final V1 release evidence and contains env names/readiness only, not secret values."
+}

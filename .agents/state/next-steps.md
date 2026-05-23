@@ -4,22 +4,22 @@ Last updated: 2026-05-23
 
 ## Next Tiny Task
 
-Current protected release blocker:
-Production deploy `72b547e12351e078c49807fb25d56c27f64c6567` is healthy and
+Current protected release state:
+Production deploy `b1ba69edccc639e97943f37fb2b1e6249a62e87c` is healthy and
 freshly proven: build-info matches `main`, deploy smoke passes, authenticated
 `/workers/ready` passes in split-worker mode, restore drill passes, rollback
 proof passes, production UI clickthrough passes, RC Gates 1-4 pass, and SLO
 health/readiness/5xx/queue-lag objectives pass with live order ratio `NO_DATA`
-only because no live order attempts occurred. V1 remains `NO-GO` only because
-`LIVEIMPORT-03` failed closed: the running LIVE Binance Futures session has no
-open runtime position/order payload for `ETHUSDT` or `DOGEUSDT`. Next exact
-task: choose an approved safe way to observe or produce a qualifying open
-runtime payload, rerun `LIVEIMPORT-03`, then rerun final preflight and the
-non-dry-run release gate. Do not create a LIVE order or position without
-separate explicit operator approval. Evidence:
-`docs/operations/v1-final-preflight-72b547e1-2026-05-23-after-refresh.md`,
-`docs/operations/v1-release-gate-prod-72b547e1-2026-05-23-after-refresh.md`,
-and `docs/operations/liveimport-03-prod-readback-2026-05-23.json`.
+only because no live order attempts occurred. `LIVEIMPORT-03` now passes via
+read-only auto-discovery of the real open runtime symbols `SOLUSDT` and
+`BNBUSDT`. Final preflight has no blockers, and the full non-dry-run
+production release gate returned `ready`. Next exact task: commit/push the
+collector/state/evidence updates, then monitor Coolify deploy freshness for
+the pushed SHA. Evidence:
+`docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
+`docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,
+and
+`docs/operations/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`.
 
 Current source-of-truth cleanup:
 `REPO-SOT-CLEANUP-2026-05-23` is verified locally. Confirmed canonical architecture
