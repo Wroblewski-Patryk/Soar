@@ -17,6 +17,20 @@ Last updated: 2026-05-23
 
 ## DONE
 
+- [x] `AI-ASSISTANT-FOUNDATION-PROTOCOL-HARNESS-2026-05-23 test/docs: add reproducible assistant foundation AI protocol harness`
+  - 2026-05-23: Confirmed `DEC-AUD-002` current truth: assistant is
+    foundation/dry-run only, not BACKTEST/PAPER/LIVE hot-path trading
+    authority. Added scenario JSON for all `AI_TESTING_PROTOCOL.md` risk
+    areas, a deterministic API harness for foundation-applicable scenarios,
+    and an operations report preserving the future/gated runtime AI boundary.
+    Validation passed: protocol harness `3/3`, assistant orchestrator
+    foundation `6/6`, and Web assistant route tests `3/3`.
+  - Evidence:
+    `docs/planning/ai-assistant-foundation-protocol-harness-2026-05-23-task.md`,
+    `docs/operations/ai-assistant-foundation-protocol-report-2026-05-23.md`,
+    and
+    `docs/operations/ai-assistant-foundation-protocol-scenarios-2026-05-23.json`.
+
 - [x] `V1-PROTECTED-APP-PROOF-B1BA69ED-2026-05-23 release: production proof and release gate ready`
   - 2026-05-23: Production deploy
     `b1ba69edccc639e97943f37fb2b1e6249a62e87c` is current on `main`.

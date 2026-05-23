@@ -40,6 +40,20 @@ Last updated: 2026-05-23
   and
   `docs/operations/post-release-public-monitoring-878e199d-2026-05-23.md`.
 
+## 2026-05-23 Assistant Foundation Protocol Harness
+
+- `AI-ASSISTANT-FOUNDATION-PROTOCOL-HARNESS-2026-05-23` is locally verified
+  for the accepted foundation/dry-run assistant scope. All
+  `AI_TESTING_PROTOCOL.md` risk areas are represented; deterministic
+  foundation-applicable scenarios execute against `orchestrateAssistantDecision`;
+  memory and multi-turn model scenarios are explicitly classified as
+  `not_applicable_foundation_only`.
+- Passed validation: protocol harness `3/3`, existing assistant orchestrator
+  foundation `6/6`, and Web assistant route tests `3/3`.
+- Runtime hot-path assistant trading remains future/gated scope under
+  `DEC-AUD-002`; no BACKTEST/PAPER/LIVE assistant behavior completion is
+  claimed.
+
 ## 2026-05-22 Architecture-Code Runtime Audit
 
 - `ARCH-CODE-RUNTIME-AUDIT-2026-05-22` is checkpointed locally. Four

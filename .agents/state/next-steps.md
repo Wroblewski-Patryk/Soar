@@ -4,6 +4,19 @@ Last updated: 2026-05-23
 
 ## Next Tiny Task
 
+Current assistant/AI foundation:
+`AI-ASSISTANT-FOUNDATION-PROTOCOL-HARNESS-2026-05-23` is locally verified.
+`DEC-AUD-002` remains the current assistant truth: bot-scoped config,
+deterministic orchestration foundation, and owner-scoped dry-run diagnostics.
+The new harness maps all `AI_TESTING_PROTOCOL.md` risk areas and executes
+foundation-applicable deterministic scenarios without secrets, production, DB,
+or live AI providers. It does not claim runtime AI behavior complete.
+Validation passed: protocol harness `3/3`, existing API assistant foundation
+`6/6`, and Web assistant route tests `3/3`. Next exact task: choose another
+bounded product/runtime gap or explicitly plan future hot-path assistant
+integration with persisted traces, fail-closed guards, and full AI red-team
+evidence.
+
 Current protected release state:
 Production release-gate proof for `b1ba69edccc639e97943f37fb2b1e6249a62e87c`
 is healthy and complete: build-info matched `main`, deploy smoke passed,

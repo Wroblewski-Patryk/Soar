@@ -4,6 +4,18 @@ Last updated: 2026-05-23
 
 ## Current Candidate Deployment Status
 
+- `AI-ASSISTANT-FOUNDATION-PROTOCOL-HARNESS-2026-05-23` is locally verified.
+  The current assistant architecture remains foundation/dry-run only under
+  `DEC-AUD-002`; no BACKTEST/PAPER/LIVE hot-path assistant call is claimed.
+  Added reproducible `AI_TESTING_PROTOCOL.md` scenario coverage for the
+  accepted foundation scope, with deterministic tests for forbidden actions,
+  mandates, trace sanitization, and edge confidence handling. Validation
+  passed: protocol harness `3/3`, assistant orchestrator foundation `6/6`,
+  and Web assistant routes `3/3`. Evidence:
+  `docs/planning/ai-assistant-foundation-protocol-harness-2026-05-23-task.md`
+  and
+  `docs/operations/ai-assistant-foundation-protocol-report-2026-05-23.md`.
+
 - `V1-PROTECTED-APP-PROOF-B1BA69ED-2026-05-23` is the current protected
   production release-gate truth, and
   follow-up docs/state sync commits are required to prove the pushed `HEAD`
