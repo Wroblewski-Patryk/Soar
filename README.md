@@ -3,6 +3,21 @@
 Monorepo with:
 - `apps/api` (Express API)
 - `apps/web` (Next.js app)
+- `apps/mobile` (Expo/mobile scaffold; not production-ready unless the mobile
+  parity contract says otherwise)
+
+## Project Navigation
+
+- Start with `docs/soar-documentation-map.md` for current product,
+  architecture, runtime, operations, and agent-work routes.
+- Use `docs/documentation-overview.md` for the folder-level documentation
+  overview.
+- Use `history/history-overview.md` for completed task records, old plans,
+  audits, release evidence, and raw generated artifacts.
+- Current documentation belongs in `docs/`; historical proof and generated
+  output belong in `history/`.
+- Before autonomous agent work, read `AGENTS.md` and the active state files it
+  names.
 
 ## Quick Start (Local)
 

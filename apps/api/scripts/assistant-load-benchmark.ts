@@ -171,7 +171,7 @@ const run = async () => {
 
   const artifactPath = path.resolve(
     repoRoot,
-    'docs/operations/_artifacts-assistant-load-2026-03-23.json'
+    'history/operations/_artifacts-assistant-load-2026-03-23.json'
   );
   await fs.writeFile(
     artifactPath,

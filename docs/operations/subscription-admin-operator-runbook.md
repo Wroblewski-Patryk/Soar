@@ -139,7 +139,7 @@ pnpm --filter api exec tsx -e "import { prisma } from './src/prisma/client'; imp
 
 ## References
 - Contract: `docs/architecture/reference/subscription-tier-entitlements-contract.md`
-- Rollout plan: `docs/planning/subscription-entitlements-rollout-plan-2026-04-06.md`
+- Rollout plan: `history/plans/subscription-entitlements-rollout-plan-2026-04-06.md`
 - API modules:
   - `apps/api/src/modules/admin/subscriptionPlans/*`
   - `apps/api/src/modules/profile/subscription/*`

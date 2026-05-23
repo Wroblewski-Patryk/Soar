@@ -107,7 +107,7 @@ Out of scope:
 
 ## 8. Test Coverage and Evidence
 - Primary local audit evidence:
-  - `docs/operations/bots-runtime-truth-audit-2026-05-19.md`
+  - `history/audits/bots-runtime-truth-audit-2026-05-19.md`
   - Web bot/runtime pack: `8` files / `61` tests.
   - API bot/runtime pack: `10` files / `88` tests.
 - Representative API tests:

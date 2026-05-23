@@ -215,6 +215,6 @@ docker compose down
 
 ## Related Docs
 - `docs/operations/dev-stage-prod-environment-matrix.md`
-- `docs/planning/deployment-dev-prod-coolify-plan-2026-04-02.md`
+- `history/plans/deployment-dev-prod-coolify-plan-2026-04-02.md`
 
 

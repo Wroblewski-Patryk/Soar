@@ -45,7 +45,7 @@ const HARD_CODED_UI_ALLOWLIST = new Set([
   "apps/web/src/features/backtest/components/BacktestCreateForm.tsx",
 ]);
 const DUPLICATE_HELPER_SNAPSHOT_PATH =
-  "docs/modules/_artifacts-cqlt-duplicate-helper-snapshot-2026-04-21.json";
+  "history/artifacts/_artifacts-cqlt-duplicate-helper-snapshot-2026-04-21.json";
 const CODE_QUALITY_GUARDRAILS_DOC_PATH = "docs/governance/code-quality-guardrails.md";
 const API_PACKAGE_JSON_PATH = "apps/api/package.json";
 const RUNTIME_DOCKERFILES = [

@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "profile": "prod",
+  "startedAt": "2026-04-22T22:30:48.000Z",
+  "endedAt": "2026-04-22T22:31:28.000Z",
+  "command": "manual Coolify terminal execution inside database container x11cfnz1dd9x0yzccftqzcoe (equivalent to node scripts/runBackupVerificationProfile.mjs --profile prod)",
+  "checks": {
+    "commandExitCodeZero": true,
+    "rawArtifactPresent": true,
+    "markdownReportPresent": true,
+    "backupRestoreResultPass": true
+  },
+  "backupRestore": {
+    "result": "PASS",
+    "rawArtifact": "history/artifacts/_artifacts-db-restore-check-2026-04-22T22-30-48-000Z.txt",
+    "reportArtifact": "history/evidence/v1-db-restore-check-2026-04-22T22-30-48-000Z.md"
+  },
+  "stdoutPreview": "START:20260422T223048Z\nCONTAINER:x11cfnz1dd9x0yzccftqzcoe\nPRIMARY_DB:postgres\nRESTORE_DB:postgres_restore_check_20260422T223048Z\nDUMP_OK\nNOTICE:  database \"postgres_restore_check_20260422T223048Z\" does not exist, skipping\nDROP DATABASE\nCREATE DATABASE\nDB_OK\nRESTORE_OK\nUser,3\nBot,5\nOrder,1727\nPosition,664\nLog,21506\nCOUNTS_OK\nDROP_OK\nCLEANUP_OK\nCMD_STATUS:0",
+  "stderrPreview": ""
+}

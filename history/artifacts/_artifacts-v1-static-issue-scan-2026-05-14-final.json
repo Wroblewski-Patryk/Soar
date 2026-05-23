@@ -1,0 +1,13 @@
+{
+  "generatedAt": "2026-05-14T03:30:13.632Z",
+  "evidenceDate": "2026-05-14",
+  "projectIndex": "history/artifacts/_artifacts-v1-project-index-2026-05-14-final.json",
+  "summary": {
+    "totalFindings": 0,
+    "bySeverity": {},
+    "byCategory": {},
+    "sourceFilesScanned": 665,
+    "sourceMarkers": 29
+  },
+  "findings": []
+}

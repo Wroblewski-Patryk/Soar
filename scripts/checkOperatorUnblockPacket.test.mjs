@@ -15,10 +15,10 @@ const completePacket = (overrides = {}) => ({
     buildInfoCheckedAt: '2026-05-20T20:56:14.532Z',
   },
   evidence: {
-    preflight: 'docs/operations/v1-final-preflight-dd1a1faf-2026-05-20.md',
-    preflightJson: 'docs/operations/_artifacts-v1-final-preflight-dd1a1faf-2026-05-20.json',
-    protectedInputReadiness: 'docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20.md',
-    protectedInputReadinessJson: 'docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20.json',
+    preflight: 'history/releases/v1-final-preflight-dd1a1faf-2026-05-20.md',
+    preflightJson: 'history/artifacts/_artifacts-v1-final-preflight-dd1a1faf-2026-05-20.json',
+    protectedInputReadiness: 'history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-20.md',
+    protectedInputReadinessJson: 'history/artifacts/v1-protected-input-readiness-dd1a1faf-2026-05-20.json',
   },
   protectedInputReadiness: {
     matchingProtectedInputNames: 0,
@@ -90,11 +90,11 @@ test('validateOperatorUnblockPacket fails when evidence paths are missing', () =
   assert.deepEqual(result.evidence.missingPaths, [
     {
       key: 'preflightJson',
-      path: 'docs/operations/_artifacts-v1-final-preflight-dd1a1faf-2026-05-20.json',
+      path: 'history/artifacts/_artifacts-v1-final-preflight-dd1a1faf-2026-05-20.json',
     },
     {
       key: 'protectedInputReadinessJson',
-      path: 'docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20.json',
+      path: 'history/artifacts/v1-protected-input-readiness-dd1a1faf-2026-05-20.json',
     },
   ]);
 });

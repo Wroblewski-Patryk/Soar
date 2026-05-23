@@ -10,7 +10,7 @@ const repoRoot = process.cwd();
 const parseArgs = () => {
   const args = process.argv.slice(2);
   const options = {
-    manifest: 'docs/operations/reusable-audit-artifact-manifest-2026-05-19.json',
+    manifest: 'history/artifacts/reusable-audit-artifact-manifest-2026-05-19.json',
     json: false,
     help: false,
   };

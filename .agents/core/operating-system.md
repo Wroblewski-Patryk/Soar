@@ -54,7 +54,7 @@ If these sources drift, canonical priority is:
 3. `.codex/context/*`
 4. `.agents/state/*`
 5. planning files
-6. historical reports and archived notes
+6. historical reports and archived notes under `history/`
 
 ## Operating Principles
 
@@ -177,7 +177,8 @@ Every autonomous iteration should classify the project through these lenses:
 - mobile readiness: responsive layout, touch, overflow, keyboard path
 - regressions: behavioral drift, test gaps, duplication, dead code, type safety
 - operations: health, readiness, smoke, rollback, observability
-- documentation: architecture memory, module docs, planning, evidence
+- documentation: architecture memory, module docs, active planning, history,
+  evidence
 
 ## Regression Detection
 

@@ -7,7 +7,7 @@ const WEB_SRC_DIR = path.join(ROOT_DIR, "apps/web/src");
 const APP_DIR = path.join(WEB_SRC_DIR, "app");
 const OUT_DEFAULT = path.join(
   ROOT_DIR,
-  "docs/operations/_artifacts-l10nq-d-coverage-audit-latest.json"
+  "history/artifacts/_artifacts-l10nq-d-coverage-audit-latest.json"
 );
 
 const SOURCE_EXTENSIONS = [".ts", ".tsx", ".js", ".jsx"];

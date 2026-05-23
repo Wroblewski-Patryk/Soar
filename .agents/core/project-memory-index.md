@@ -27,13 +27,13 @@ Use this audit before planning architecture repairs:
   hot-path orchestration deferred. `AUD-EXCH-002` was repaired on 2026-05-19
   with exact `(exchange, marketType, operation)` capability support.
 - The resolved decision packet is
-  `docs/operations/audit-decision-packet-2026-05-19.md`: `DEC-AUD-001`
+  `history/audits/audit-decision-packet-2026-05-19.md`: `DEC-AUD-001`
   for exchange scope and `DEC-AUD-002` for assistant runtime truth.
 - Option-specific post-decision repair playbooks are prepared in
-  `docs/operations/audit-decision-repair-playbooks-2026-05-19.md`.
+  `history/audits/audit-decision-repair-playbooks-2026-05-19.md`.
 - Evidence:
-  `docs/analysis/architecture-code-discrepancy-audit-2026-05-17.md` and
-  `docs/planning/project-architecture-code-discrepancy-audit-2026-05-17-task.md`.
+  `history/audits/architecture-code-discrepancy-audit-2026-05-17.md` and
+  `history/audits/project-architecture-code-discrepancy-audit-2026-05-17-task.md`.
 
 ## Reusable Audit Registry
 
@@ -44,251 +44,251 @@ Before any future "full audit" request, start from:
 
 - `docs/analysis/reusable-audit-registry.md`: stable audit IDs `AUD-00` through
   `AUD-23`, run order, evidence expectations, trend fields, and boundaries.
-- `docs/analysis/audit-baseline-2026-05-18.md`: current baseline separating
+- `history/audits/audit-baseline-2026-05-18.md`: current baseline separating
   today-run commands from historical evidence.
-- `docs/planning/reusable-audit-registry-2026-05-18-task.md`: task contract and
+- `history/audits/reusable-audit-registry-2026-05-18-task.md`: task contract and
   validation evidence.
-- `docs/planning/full-layered-audit-run-2026-05-18-task.md`: broad local audit
+- `history/audits/full-layered-audit-run-2026-05-18-task.md`: broad local audit
   execution evidence against the reusable registry.
-- `docs/analysis/audit-baseline-2026-05-19.md` and
-  `docs/planning/authenticated-route-state-audit-2026-05-19-task.md`:
+- `history/audits/audit-baseline-2026-05-19.md` and
+  `history/audits/authenticated-route-state-audit-2026-05-19-task.md`:
   authenticated local route-state proof for `AUD-04` and local `AUD-05`.
-- `docs/planning/api-endpoint-docs-parity-audit-2026-05-19-task.md`:
+- `history/audits/api-endpoint-docs-parity-audit-2026-05-19-task.md`:
   endpoint-level API docs parity automation and current gap list for
   `AUD-03`/`AUD-23`.
-- `docs/operations/ai-assistant-runtime-truth-audit-2026-05-19.md` and
-  `docs/planning/ai-assistant-runtime-truth-audit-2026-05-19-task.md`:
+- `history/audits/ai-assistant-runtime-truth-audit-2026-05-19.md` and
+  `history/audits/ai-assistant-runtime-truth-audit-2026-05-19-task.md`:
   assistant runtime truth evidence for `AUD-20`.
-- `docs/operations/exchange-capability-truth-audit-2026-05-19.md` and
-  `docs/planning/exchange-capability-truth-audit-2026-05-19-task.md`:
+- `history/audits/exchange-capability-truth-audit-2026-05-19.md` and
+  `history/audits/exchange-capability-truth-audit-2026-05-19-task.md`:
   exchange capability truth evidence for `AUD-09`.
-- `docs/planning/aud09-exact-exchange-capability-matrix-2026-05-19-task.md`:
+- `history/audits/aud09-exact-exchange-capability-matrix-2026-05-19-task.md`:
   exact `(exchange, marketType, operation)` capability repair for `AUD-09`.
-- `docs/operations/architecture-exchange-scope-wording-audit-2026-05-19.md`
-  and `docs/planning/architecture-exchange-scope-wording-audit-2026-05-19-task.md`:
+- `history/audits/architecture-exchange-scope-wording-audit-2026-05-19.md`
+  and `history/audits/architecture-exchange-scope-wording-audit-2026-05-19-task.md`:
   architecture exchange-scope wording evidence for `AUD-01`/`AUD-ARCH-001`.
-- `docs/operations/data-model-migrations-audit-2026-05-19.md` and
-  `docs/planning/data-model-migrations-audit-2026-05-19-task.md`:
+- `history/audits/data-model-migrations-audit-2026-05-19.md` and
+  `history/audits/data-model-migrations-audit-2026-05-19-task.md`:
   data-model/migrations evidence for `AUD-07`.
-- `docs/operations/security-privacy-audit-2026-05-19.md` and
-  `docs/planning/security-privacy-audit-2026-05-19-task.md`:
+- `history/audits/security-privacy-audit-2026-05-19.md` and
+  `history/audits/security-privacy-audit-2026-05-19-task.md`:
   security/privacy evidence for `AUD-06`.
-- `docs/operations/bots-runtime-truth-audit-2026-05-19.md` and
-  `docs/planning/bots-runtime-truth-audit-2026-05-19-task.md`:
+- `history/audits/bots-runtime-truth-audit-2026-05-19.md` and
+  `history/audits/bots-runtime-truth-audit-2026-05-19-task.md`:
   bots/runtime truth evidence for `AUD-10`.
-- `docs/operations/workers-runtime-operations-audit-2026-05-19.md` and
-  `docs/planning/workers-runtime-operations-audit-2026-05-19-task.md`:
+- `history/audits/workers-runtime-operations-audit-2026-05-19.md` and
+  `history/audits/workers-runtime-operations-audit-2026-05-19-task.md`:
   workers/runtime operations evidence for `AUD-08`.
-- `docs/operations/engine-trading-decision-flow-audit-2026-05-19.md` and
-  `docs/planning/engine-trading-decision-flow-audit-2026-05-19-task.md`:
+- `history/audits/engine-trading-decision-flow-audit-2026-05-19.md` and
+  `history/audits/engine-trading-decision-flow-audit-2026-05-19-task.md`:
   engine/trading decision-flow evidence for `AUD-11`.
-- `docs/operations/orders-manual-trading-audit-2026-05-19.md` and
-  `docs/planning/orders-manual-trading-audit-2026-05-19-task.md`:
+- `history/audits/orders-manual-trading-audit-2026-05-19.md` and
+  `history/audits/orders-manual-trading-audit-2026-05-19-task.md`:
   orders/manual trading evidence for `AUD-12`.
-- `docs/operations/positions-reconciliation-audit-2026-05-19.md` and
-  `docs/planning/positions-reconciliation-audit-2026-05-19-task.md`:
+- `history/audits/positions-reconciliation-audit-2026-05-19.md` and
+  `history/audits/positions-reconciliation-audit-2026-05-19-task.md`:
   positions/reconciliation evidence for `AUD-13`.
-- `docs/operations/wallets-capital-ledger-audit-2026-05-19.md` and
-  `docs/planning/wallets-capital-ledger-audit-2026-05-19-task.md`:
+- `history/audits/wallets-capital-ledger-audit-2026-05-19.md` and
+  `history/audits/wallets-capital-ledger-audit-2026-05-19-task.md`:
   wallets/capital-ledger evidence for `AUD-14`.
-- `docs/operations/markets-strategies-configuration-audit-2026-05-19.md` and
-  `docs/planning/markets-strategies-configuration-audit-2026-05-19-task.md`:
+- `history/audits/markets-strategies-configuration-audit-2026-05-19.md` and
+  `history/audits/markets-strategies-configuration-audit-2026-05-19-task.md`:
   markets/strategies configuration evidence for `AUD-15`.
-- `docs/operations/backtests-reports-audit-2026-05-19.md` and
-  `docs/planning/backtests-reports-audit-2026-05-19-task.md`:
+- `history/audits/backtests-reports-audit-2026-05-19.md` and
+  `history/audits/backtests-reports-audit-2026-05-19-task.md`:
   backtests/reports evidence for `AUD-16`.
-- `docs/operations/logs-audit-trail-audit-2026-05-19.md` and
-  `docs/planning/logs-audit-trail-audit-2026-05-19-task.md`:
+- `history/audits/logs-audit-trail-audit-2026-05-19.md` and
+  `history/audits/logs-audit-trail-audit-2026-05-19-task.md`:
   logs/audit-trail evidence for `AUD-17`.
-- `docs/operations/admin-subscriptions-entitlements-audit-2026-05-19.md` and
-  `docs/planning/admin-subscriptions-entitlements-audit-2026-05-19-task.md`:
+- `history/audits/admin-subscriptions-entitlements-audit-2026-05-19.md` and
+  `history/audits/admin-subscriptions-entitlements-audit-2026-05-19-task.md`:
   admin/subscriptions/entitlements evidence for `AUD-18`.
-- `docs/operations/operations-release-deployment-audit-2026-05-19.md` and
-  `docs/planning/operations-release-deployment-audit-2026-05-19-task.md`:
+- `history/audits/operations-release-deployment-audit-2026-05-19.md` and
+  `history/audits/operations-release-deployment-audit-2026-05-19-task.md`:
   local operations/release/deployment evidence for `AUD-19`.
-- `docs/operations/post-push-build-info-readback-36ff999d-2026-05-19.md`,
+- `history/evidence/post-push-build-info-readback-36ff999d-2026-05-19.md`,
   `.json`, and
-  `docs/planning/post-push-build-info-readback-36ff999d-2026-05-19-task.md`:
+  `history/evidence/post-push-build-info-readback-36ff999d-2026-05-19-task.md`:
   read-only post-push production freshness evidence for pushed commit
   `36ff999d`; production public smoke passed but build-info stayed on
   `1586f59261cef94d7c513d71bbfcfb697d11ca59`.
-- `docs/operations/main-promotion-build-info-dd1a1faf-2026-05-19.md`,
+- `history/evidence/main-promotion-build-info-dd1a1faf-2026-05-19.md`,
   `.json`, and
-  `docs/planning/main-promotion-build-info-dd1a1faf-2026-05-19-task.md`:
+  `history/evidence/main-promotion-build-info-dd1a1faf-2026-05-19-task.md`:
   public deploy freshness checkpoint after fast-forwarding `origin/main` to
   `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`; build-info and public smoke
   passed, while full protected release readiness remains a separate gate.
-- `docs/operations/v1-final-preflight-dd1a1faf-2026-05-19-noauth.md`,
+- `history/releases/v1-final-preflight-dd1a1faf-2026-05-19-noauth.md`,
   `_artifacts-v1-final-preflight-dd1a1faf-2026-05-19-noauth.json`, and
-  `docs/planning/protected-preflight-dd1a1faf-2026-05-19-task.md`:
+  `history/tasks/protected-preflight-dd1a1faf-2026-05-19-task.md`:
   no-secret protected preflight classifier for deployed `dd1a1faf`; build-info
   and public smoke passed, while protected release readiness remains blocked on
   missing approved auth/context and stale 2026-05-14 protected evidence.
-- `docs/operations/v1-rc-external-gates-status-dd1a1faf-2026-05-19-blocked.md`,
-  `docs/operations/v1-rc-signoff-record-dd1a1faf-2026-05-19-blocked.md`,
-  `docs/operations/v1-release-candidate-checklist-dd1a1faf-2026-05-19-blocked.md`,
-  `docs/operations/_artifacts-rc-evidence-check-dd1a1faf-2026-05-19-blocked.json`,
-  and `docs/planning/rc-evidence-blocked-dd1a1faf-2026-05-19-task.md`:
+- `history/releases/v1-rc-external-gates-status-dd1a1faf-2026-05-19-blocked.md`,
+  `history/releases/v1-rc-signoff-record-dd1a1faf-2026-05-19-blocked.md`,
+  `history/releases/v1-release-candidate-checklist-dd1a1faf-2026-05-19-blocked.md`,
+  `history/artifacts/_artifacts-rc-evidence-check-dd1a1faf-2026-05-19-blocked.json`,
+  and `history/releases/rc-evidence-blocked-dd1a1faf-2026-05-19-task.md`:
   dated no-secret RC blocked packet for deployed `dd1a1faf`; Gate 2 and Gate 4
   remain open and strict evidence check fails as expected.
-- `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.md`,
-  `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.json`, and
-  `docs/planning/v1-operator-unblock-packet-dd1a1faf-2026-05-19-task.md`:
+- `history/releases/v1-operator-unblock-packet-dd1a1faf-2026-05-19.md`,
+  `history/artifacts/v1-operator-unblock-packet-dd1a1faf-2026-05-19.json`, and
+  `history/releases/v1-operator-unblock-packet-dd1a1faf-2026-05-19-task.md`:
   current no-secret operator handoff for completing protected `AUD-19`
   evidence on deployed `dd1a1faf`; it lists required inputs, command order,
   stop conditions, and the acceptance rule, but remains `NO-GO`.
-- `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.md`,
-  `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.json`, and
-  `docs/planning/v1-protected-input-readiness-dd1a1faf-2026-05-19-task.md`:
+- `history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-19.md`,
+  `history/artifacts/v1-protected-input-readiness-dd1a1faf-2026-05-19.json`, and
+  `history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-19-task.md`:
   current names-only protected input readiness sweep for deployed `dd1a1faf`;
   it found `0` matching protected input names in this shell and printed no
   secret values.
 - `scripts/checkProtectedInputReadiness.mjs`,
   `scripts/checkProtectedInputReadiness.test.mjs`, and
-  `docs/planning/protected-input-readiness-command-2026-05-19-task.md`:
+  `history/evidence/protected-input-readiness-command-2026-05-19-task.md`:
   reusable no-secret protected input readiness command for future `AUD-19`
   sweeps.
-- `docs/operations/audit-remediation-master-plan-2026-05-19.json`,
+- `history/artifacts/audit-remediation-master-plan-2026-05-19.json`,
   `scripts/checkAuditRemediationPlan.mjs`,
   `scripts/checkAuditRemediationPlan.test.mjs`, and
-  `docs/planning/audit-remediation-plan-check-2026-05-19-task.md`:
+  `history/audits/audit-remediation-plan-check-2026-05-19-task.md`:
   machine-readable remediation plan and validator for future audit repair
   reruns. It checks phases `P0..P6`, work packages `WP-01..WP-08`, the current
   `AUD-19` blocker, closure checks, safety boundaries, and source/evidence
   reference path existence. Follow-up task:
-  `docs/planning/audit-remediation-plan-reference-check-2026-05-19-task.md`.
-- `docs/planning/audit-rerun-playbook-remediation-closure-sync-2026-05-19-task.md`:
+  `history/audits/audit-remediation-plan-reference-check-2026-05-19-task.md`.
+- `history/audits/audit-rerun-playbook-remediation-closure-sync-2026-05-19-task.md`:
   rerun playbook closure now explicitly requires `audit:manifest:verify`,
   `audit:remediation-plan:check`, docs parity, guardrails, and diff check, and
   the rerun playbook validator fails if those closure checks are missing.
-- `docs/planning/audit-tooling-index-closure-command-check-2026-05-19-task.md`:
+- `history/audits/audit-tooling-index-closure-command-check-2026-05-19-task.md`:
   tooling index validation now enforces the same required closure command set
   so the audit tooling registry cannot silently drop remediation, parity,
   guardrail, or diff checks.
 - `scripts/checkFullReusableAuditHandoff.mjs`,
   `scripts/checkFullReusableAuditHandoff.test.mjs`, and
-  `docs/planning/audit-handoff-check-command-2026-05-19-task.md`: full
+  `history/audits/audit-handoff-check-command-2026-05-19-task.md`: full
   reusable audit handoff validation for source paths, residual risks,
   forbidden boundaries, validation checks, and fail-closed safety booleans.
-- `docs/planning/audit-tooling-index-package-script-check-2026-05-19-task.md`:
+- `history/audits/audit-tooling-index-package-script-check-2026-05-19-task.md`:
   tooling index validation now checks that referenced `corepack pnpm run`
   commands exist in `package.json`.
-- `docs/planning/audit-manifest-summary-metadata-check-2026-05-19-task.md`:
+- `history/audits/audit-manifest-summary-metadata-check-2026-05-19-task.md`:
   manifest validation now checks declared summary counts and
   `manifestValidation` path metadata against actual manifest contents.
 - `scripts/checkFullReusableAuditRollup.mjs`,
   `scripts/checkFullReusableAuditRollup.test.mjs`, and
-  `docs/planning/audit-rollup-check-command-2026-05-19-task.md`: full reusable
+  `history/audits/audit-rollup-check-command-2026-05-19-task.md`: full reusable
   audit rollup validation for audit coverage, summary counts, source paths,
   repair queue, and fail-closed safety booleans.
 - `scripts/compareReusableAuditManifests.mjs`,
   `scripts/compareReusableAuditManifests.test.mjs`, and
-  `docs/planning/audit-manifest-compare-status-bucket-check-2026-05-19-task.md`:
+  `history/audits/audit-manifest-compare-status-bucket-check-2026-05-19-task.md`:
   manifest comparison ranks only leading status buckets, matching manifest and
   rollup validators so hybrid current/deferred wording does not become a false
   regression. Follow-up
-  `docs/planning/audit-manifest-compare-json-output-2026-05-19-task.md` adds
+  `history/audits/audit-manifest-compare-json-output-2026-05-19-task.md` adds
   `--json-output <path>` for persisted machine-readable comparison reports.
   Follow-up
-  `docs/planning/audit-rerun-playbook-compare-json-output-sync-2026-05-19-task.md`
+  `history/audits/audit-rerun-playbook-compare-json-output-sync-2026-05-19-task.md`
   makes the rerun playbook validator require persisted `compareJson` output.
   Follow-up
-  `docs/planning/audit-tooling-index-markdown-json-parity-2026-05-19-task.md`
+  `history/audits/audit-tooling-index-markdown-json-parity-2026-05-19-task.md`
   makes the tooling index validator check companion Markdown/JSON tool ID
   parity.
-- `docs/planning/audit-manifest-markdown-summary-parity-2026-05-19-task.md`:
+- `history/audits/audit-manifest-markdown-summary-parity-2026-05-19-task.md`:
   manifest validation now checks companion Markdown/JSON summary count parity
   when the Markdown file is available.
-- `docs/planning/audit-rollup-markdown-audit-id-parity-2026-05-19-task.md`:
+- `history/audits/audit-rollup-markdown-audit-id-parity-2026-05-19-task.md`:
   rollup validation now checks companion Markdown/JSON audit ID parity when
   the Markdown file is available.
-- `docs/planning/audit-rollup-markdown-summary-parity-2026-05-19-task.md`:
+- `history/audits/audit-rollup-markdown-summary-parity-2026-05-19-task.md`:
   rollup validation now checks companion Markdown/JSON summary count parity
   when the Markdown file is available.
-- `docs/planning/audit-handoff-rollup-summary-parity-2026-05-19-task.md`:
+- `history/audits/audit-handoff-rollup-summary-parity-2026-05-19-task.md`:
   handoff validation now checks handoff `rollupSummary` key/value parity
   against the referenced rollup JSON.
-- `docs/planning/audit-rerun-playbook-baseline-path-check-2026-05-19-task.md`:
+- `history/audits/audit-rerun-playbook-baseline-path-check-2026-05-19-task.md`:
   rerun playbook validation now checks baseline manifest and rollup
   Markdown/JSON path completeness and existence.
-- `docs/planning/audit-remediation-plan-self-check-closure-2026-05-19-task.md`:
+- `history/audits/audit-remediation-plan-self-check-closure-2026-05-19-task.md`:
   remediation-plan validation now requires its own self-check command in
   closure checks.
-- `docs/planning/audit-tooling-index-cleanup-check-command-2026-05-19-task.md`:
+- `history/audits/audit-tooling-index-cleanup-check-command-2026-05-19-task.md`:
   tooling index validation now requires cleanup checks for headless browser
   processes, local DB/Redis listeners, and Docker compose services.
-- `docs/planning/audit-rerun-playbook-cleanup-check-command-2026-05-19-task.md`:
+- `history/audits/audit-rerun-playbook-cleanup-check-command-2026-05-19-task.md`:
   rerun playbook validation now requires the same cleanup checks for future
   audit reruns.
-- `docs/planning/audit-handoff-self-check-validation-2026-05-19-task.md`:
+- `history/audits/audit-handoff-self-check-validation-2026-05-19-task.md`:
   handoff validation now requires `audit:handoff:check` in latest validation
   evidence.
-- `docs/planning/audit-handoff-cleanup-validation-command-2026-05-19-task.md`:
+- `history/audits/audit-handoff-cleanup-validation-command-2026-05-19-task.md`:
   handoff validation now requires cleanup validation evidence for headless
   browser processes, local DB/Redis listeners, and Docker compose services.
-- `docs/planning/audit-handoff-tooling-index-source-check-2026-05-19-task.md`:
+- `history/audits/audit-handoff-tooling-index-source-check-2026-05-19-task.md`:
   handoff validation now requires reusable tooling-index Markdown and JSON
   source paths.
-- `docs/planning/audit-handoff-self-source-check-2026-05-19-task.md`:
+- `history/audits/audit-handoff-self-source-check-2026-05-19-task.md`:
   handoff validation now requires the handoff Markdown and JSON self-source
   paths.
-- `docs/planning/audit-rerun-playbook-self-check-closure-2026-05-19-task.md`:
+- `history/audits/audit-rerun-playbook-self-check-closure-2026-05-19-task.md`:
   rerun playbook validation now requires `audit:rerun-playbook:check` in
   closure checks.
-- `docs/planning/audit-tooling-index-self-check-closure-2026-05-19-task.md`:
+- `history/audits/audit-tooling-index-self-check-closure-2026-05-19-task.md`:
   tooling index validation now requires `audit:tooling-index:check` in closure
   commands.
-- `docs/planning/audit-remediation-plan-cleanup-check-command-2026-05-19-task.md`:
+- `history/audits/audit-remediation-plan-cleanup-check-command-2026-05-19-task.md`:
   remediation-plan validation now requires cleanup checks for headless browser
   processes, local DB/Redis listeners, and Docker compose services.
-- `docs/planning/audit-manifest-source-chain-key-check-2026-05-19-task.md`:
+- `history/audits/audit-manifest-source-chain-key-check-2026-05-19-task.md`:
   manifest validation now requires source-chain keys for registry, baseline,
   rollup, handoff, rerun playbook, tooling index, remediation plan, decision
   packet, and repair playbooks.
-- `docs/planning/audit-manifest-source-chain-path-check-2026-05-19-task.md`:
+- `history/audits/audit-manifest-source-chain-path-check-2026-05-19-task.md`:
   manifest validation now requires required source-chain values to be
   repository paths under approved roots.
-- `docs/planning/audit-manifest-source-chain-exact-key-check-2026-05-19-task.md`:
+- `history/audits/audit-manifest-source-chain-exact-key-check-2026-05-19-task.md`:
   manifest validation now fails on unexpected source-chain keys so the
   source-chain structure stays exact.
-- `docs/planning/audit-manifest-safety-boundary-check-2026-05-19-task.md`:
+- `history/audits/audit-manifest-safety-boundary-check-2026-05-19-task.md`:
   manifest validation now fails on unsafe or missing safety-boundary booleans.
-- `docs/planning/audit-rerun-playbook-baseline-path-value-check-2026-05-19-task.md`:
+- `history/audits/audit-rerun-playbook-baseline-path-value-check-2026-05-19-task.md`:
   rerun playbook validation now requires required baseline values to be
   repository paths under approved roots.
-- `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
-  `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
+- `history/audits/mobile-cross-platform-scope-audit-2026-05-19.md` and
+  `history/audits/mobile-cross-platform-scope-audit-2026-05-19-task.md`:
   mobile/cross-platform scope evidence for `AUD-21`.
-- `docs/operations/i18n-copy-reachability-audit-2026-05-19.md` and
-  `docs/planning/i18n-copy-reachability-audit-2026-05-19-task.md`:
+- `history/audits/i18n-copy-reachability-audit-2026-05-19.md` and
+  `history/audits/i18n-copy-reachability-audit-2026-05-19-task.md`:
   i18n/copy reachability evidence for `AUD-22`.
-- `docs/operations/audit-decision-packet-2026-05-19.md` and
-  `docs/planning/audit-decision-packet-2026-05-19-task.md`: resolved decision
+- `history/audits/audit-decision-packet-2026-05-19.md` and
+  `history/audits/audit-decision-packet-2026-05-19-task.md`: resolved decision
   packet for `AUD-01` and `AUD-20`.
-- `docs/operations/audit-decision-repair-playbooks-2026-05-19.md` and
-  `docs/planning/audit-decision-repair-playbooks-2026-05-19-task.md`:
+- `history/audits/audit-decision-repair-playbooks-2026-05-19.md` and
+  `history/audits/audit-decision-repair-playbooks-2026-05-19-task.md`:
   option-specific repair steps, validation gates, and stop conditions for
   future reference after `DEC-AUD-001` and `DEC-AUD-002` acceptance.
-- `docs/operations/full-reusable-audit-handoff-2026-05-19.md` and
-  `docs/operations/full-reusable-audit-handoff-2026-05-19.json` plus
-  `docs/planning/full-reusable-audit-handoff-2026-05-19-task.md`: concise
+- `history/audits/full-reusable-audit-handoff-2026-05-19.md` and
+  `history/artifacts/full-reusable-audit-handoff-2026-05-19.json` plus
+  `history/audits/full-reusable-audit-handoff-2026-05-19-task.md`: concise
   human-readable and machine-readable resume packet for the full reusable
   audit mission. Current handoff JSON is validated by
   `corepack pnpm run audit:handoff:check`.
-- `docs/operations/reusable-audit-artifact-manifest-2026-05-19.md` and
-  `docs/operations/reusable-audit-artifact-manifest-2026-05-19.json`: manifest
+- `history/audits/reusable-audit-artifact-manifest-2026-05-19.md` and
+  `history/artifacts/reusable-audit-artifact-manifest-2026-05-19.json`: manifest
   mapping `AUD-00` through `AUD-23` to current reports, task records, decisions,
   safety boundaries, checked summary counts, and checked path metadata.
-- `docs/operations/reusable-audit-rerun-playbook-2026-05-19.md`: operational
+- `history/audits/reusable-audit-rerun-playbook-2026-05-19.md`: operational
   rerun guide for comparing future manifests against the 2026-05-19 baseline
   with explicit safety boundaries, regression rules, and required closure
   checks including rerun-playbook and remediation-plan validation.
-- `docs/operations/reusable-audit-rerun-playbook-2026-05-19.json`:
+- `history/artifacts/reusable-audit-rerun-playbook-2026-05-19.json`:
   machine-readable rerun order, commands, stop conditions, regression rules,
   required closure checks, and required cleanup checks for future audit
   automation. Required baseline values must be repository paths.
-- `docs/operations/reusable-audit-tooling-index-2026-05-19.md` and
-  `docs/operations/reusable-audit-tooling-index-2026-05-19.json`: command and
+- `history/audits/reusable-audit-tooling-index-2026-05-19.md` and
+  `history/artifacts/reusable-audit-tooling-index-2026-05-19.json`: command and
   script map for reusable audit validation, comparison, rerun playbook checks,
   handoff checks, endpoint parity, isolated DB-backed audit packs, and
   required self-check closure-command, cleanup-check, and package-script
@@ -599,7 +599,7 @@ handoff:
 
 - `PROJECT-COMPLETE-ANALYSIS-INDEX-2026-05-14` expands the audit target beyond
   green V1 validation and is the current "analyze everything" map. Evidence:
-  `docs/operations/project-complete-analysis-index-2026-05-14.md`. It
+  `history/plans/project-complete-analysis-index-2026-05-14.md`. It
   classifies root gates, Web/API test health, Web route inventory, API route
   inventory, mobile scaffold, assistant/AI safety, LIVE mutation boundaries,
   Gate.io/second-LIVE resource shape, and existing production data mutation.
@@ -607,13 +607,13 @@ handoff:
   endpoint ledger for all `108` route handlers.
 - `PROJECT-FULL-SCAN-BASELINE-2026-05-14` is the current repository-wide
   local audit baseline for this audit/indexing thread. Evidence lives in
-  `docs/planning/project-full-scan-baseline-2026-05-14-task.md`.
+  `history/audits/project-full-scan-baseline-2026-05-14-task.md`.
 - Generated index artifacts:
-  `docs/operations/project-full-scan-index-2026-05-14.md` and
-  `docs/operations/project-full-scan-index-2026-05-14.json`.
+  `history/audits/project-full-scan-index-2026-05-14.md` and
+  `history/artifacts/project-full-scan-index-2026-05-14.json`.
 - Generated static scan artifacts:
-  `docs/operations/project-full-static-scan-2026-05-14.md` and
-  `docs/operations/project-full-static-scan-2026-05-14.json`.
+  `history/audits/project-full-static-scan-2026-05-14.md` and
+  `history/artifacts/project-full-static-scan-2026-05-14.json`.
 - Fresh baseline results: V1 matrix rows `PASS:21`, static findings `0`,
   tests indexed `335`, guardrails PASS, typecheck PASS, lint PASS, full Web
   Vitest PASS (`149` files / `514` tests), full API Vitest PASS, production
@@ -625,26 +625,26 @@ handoff:
 
 - `V1-RUNTIME-NON-BINANCE-DERIVATIVES-ADAPTER-2026-05-13` is the current local
   runtime non-Binance derivatives fallback proof. Evidence lives in
-  `docs/planning/v1-runtime-non-binance-derivatives-adapter-2026-05-13-task.md`.
+  `history/tasks/v1-runtime-non-binance-derivatives-adapter-2026-05-13-task.md`.
   It extends `REQ-FUNC-022`, `RISK-023`, `SOAR-BOT-RUNTIME-001`, and
   `SOAR-EXCHANGE-ADAPTER-001`.
 - `V1-NON-BINANCE-BACKTEST-DERIVATIVES-ADAPTER-2026-05-13` is the current
   local non-Binance futures backtest supplemental-data proof. Evidence lives in
-  `docs/planning/v1-non-binance-backtest-derivatives-adapter-2026-05-13-task.md`.
+  `history/tasks/v1-non-binance-backtest-derivatives-adapter-2026-05-13-task.md`.
   It extends `REQ-FUNC-022`, `RISK-023`, `SOAR-BACKTESTS-001`, and
   `SOAR-EXCHANGE-ADAPTER-001`.
 - `V1-RUNTIME-TICKER-AND-BACKTEST-VENUE-UI-2026-05-13` is the current local
   ticker fallback and Backtest details UI parity proof. Evidence lives in
-  `docs/planning/v1-runtime-ticker-and-backtest-venue-ui-2026-05-13-task.md`.
+  `history/tasks/v1-runtime-ticker-and-backtest-venue-ui-2026-05-13-task.md`.
   It extends `REQ-FUNC-022` and `RISK-023`.
 - `V1-BOT-BACKTEST-EXCHANGE-ADAPTER-AUDIT-2026-05-13` is the current local
   bot/backtest exchange-boundary proof. Evidence lives in
-  `docs/planning/v1-bot-backtest-exchange-adapter-audit-2026-05-13-task.md`.
+  `history/audits/v1-bot-backtest-exchange-adapter-audit-2026-05-13-task.md`.
   It updates `SOAR-BACKTESTS-001`, `SOAR-BOT-RUNTIME-001`,
   `SOAR-EXCHANGE-ADAPTER-001`, `REQ-FUNC-022`, and `RISK-023`.
 - `V1-RUNTIME-EXCHANGE-ADAPTER-BOUNDARY-2026-05-13` is the prior runtime
   warmup/indicator exchange-boundary proof. Evidence lives in
-  `docs/planning/v1-runtime-exchange-adapter-boundary-2026-05-13-task.md`.
+  `history/tasks/v1-runtime-exchange-adapter-boundary-2026-05-13-task.md`.
 - These proofs are local adapter-boundary evidence. Production LIVE/Gate.io
   operation evidence remains a separate proof lane, and non-Binance historical
   backtest order-book support remains intentionally unclaimed.

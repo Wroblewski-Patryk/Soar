@@ -221,7 +221,7 @@ pnpm --filter web exec vitest run src/features/dashboard-home/hooks/useHomeLiveW
   - `UXR-I` is residual-gap refresh only; it must not re-open already compliant form areas without explicit gap-map evidence.
   - no runtime command/path behavior changes are allowed in this linkage track.
 - Canonical references:
-  - `docs/planning/uxr-i-dashboard-forms-consistency-refresh-plan-2026-04-19.md`
+  - `history/plans/uxr-i-dashboard-forms-consistency-refresh-plan-2026-04-19.md`
   - `docs/planning/open-decisions.md` (`Dashboard Forms Consistency Refresh (Post-UXR-F)`)
 
 ## 17. Dashboard Tables Consistency Refresh Linkage (`UXR-J`)
@@ -242,7 +242,7 @@ pnpm --filter web exec vitest run src/features/dashboard-home/hooks/useHomeLiveW
   - updates must start in shared `TableUi`/`DataTable` contracts before any module-level adjustment.
   - no runtime command/path behavior changes are allowed in this linkage track.
 - Canonical references:
-  - `docs/planning/uxr-j-dashboard-tables-consistency-refresh-plan-2026-04-19.md`
+  - `history/plans/uxr-j-dashboard-tables-consistency-refresh-plan-2026-04-19.md`
   - `docs/planning/open-decisions.md` (`Dashboard Tables Consistency Refresh (Post-UXR-I)`)
 
 ## 18. Dashboard Runtime Parity Recovery Contract (`DASHR`)

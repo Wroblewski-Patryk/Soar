@@ -1,0 +1,56 @@
+# V1 Launch Evidence Pack
+
+Purpose: single reference index for launch-readiness documentation and evidence artifacts.
+
+## 1) Public-Facing Documentation
+- User guide: `docs/operations/user-guide.md`
+- Risk consent text: `docs/security/mvp-risk-consent-text.md`
+- Product scope/status: `docs/product/product.md`
+- Known limits: `docs/product/known-limits.md`
+- Changelog: `docs/operations/v1-changelog.md`
+- Migration notes: `docs/operations/v1-migration-notes.md`
+
+## 2) Operator and Incident Documentation
+- Operator handbook: `docs/operations/operator-handbook.md`
+- V1 ops runbook: `docs/operations/v1-ops-runbook.md`
+- Assistant incident runbook: `docs/operations/v1-assistant-incident-runbook.md`
+- Alert rules: `docs/operations/v1-alert-rules.md`
+- Incident drills: `docs/operations/v1-incident-drills.md`
+- Post-release monitoring protocol: `docs/operations/v1-post-release-monitoring.md`
+
+## 3) Security and Audit Evidence
+- Ownership baseline audit: `history/audits/security-ownership-audit-2026-03-16.md`
+- Final security verification (auth/ownership/key-flow): `history/audits/security-audit-verification-2026-03-21.md`
+- Audit remediation log: `history/audits/audit-remediation-2026-03-16.md`
+
+## 4) Runtime and Performance Evidence
+- MVP release checklist evidence: `docs/operations/mvp-release-checklist.md`
+- RC checklist evidence: `docs/operations/v1-release-candidate-checklist.md`
+- SLO catalog: `docs/operations/v1-slo-catalog.md`
+- Load baseline report: `history/audits/v1-load-baseline-2026-03-21.md`
+- Raw load baseline artifact: `history/artifacts/_artifacts-load-baseline-2026-03-21.txt`
+- Assistant runtime evidence pack: `history/evidence/v1-assistant-runtime-evidence-pack-2026-03-23.md`
+- Assistant load profile report: `history/plans/v1-assistant-load-profile-2026-03-23.md`
+- Assistant load raw artifact: `history/artifacts/_artifacts-assistant-load-2026-03-23.json`
+
+## 5) External Gates (Production-Dependent)
+- External-gates runbook: `docs/operations/v1-rc-external-gates-runbook.md`
+- RC sign-off record template: `docs/operations/v1-rc-signoff-record.md`
+- Launch review + V1.1 backlog cut: `history/plans/v1-launch-review-2026-03-21.md`
+
+Open production-dependent items are tracked in:
+- `docs/operations/v1-release-candidate-checklist.md` -> `Outstanding External Gates`
+
+## 6) Current Readiness Snapshot (2026-05-02)
+- API closeout, docs parity, and repository guardrails are green for the
+  current closeout packet.
+- Active current evidence refresh:
+  - `history/evidence/v1-closeout-evidence-refresh-2026-05-02.md`
+- Current status: `NO-GO`.
+- Remaining blockers:
+  - Gate 4 formal RC sign-offs are missing and sign-off record is `BLOCKED`,
+  - stage/prod restore drills cannot run without target DB container
+    configuration,
+  - prod rollback proof is stale for the current candidate,
+  - authenticated stage/prod release gates were not executed in this local
+    context.

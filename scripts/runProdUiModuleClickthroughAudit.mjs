@@ -4,7 +4,7 @@ import path from 'node:path';
 import process from 'node:process';
 import { resolveOpsAuthToken } from './resolveOpsAuthToken.mjs';
 
-const operationsDir = path.resolve(process.cwd(), 'docs', 'operations');
+const operationsDir = path.resolve(process.cwd(), 'history', 'operations');
 const rawArgs = process.argv.slice(2);
 const args = new Set(rawArgs);
 

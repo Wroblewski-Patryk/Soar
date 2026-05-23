@@ -1,4 +1,4 @@
-﻿# Security and Risk
+# Security and Risk
 
 ## Security Principles
 - Minimum access to API keys.
@@ -19,7 +19,7 @@ For canonical runtime/ops secret owners and rotation cadence, use:
 - `docs/security/v1-secrets-inventory.md`
 
 For ownership-boundary coverage snapshot, use:
-- `docs/security/security-ownership-audit.md`
+- `history/audits/security-ownership-audit-2026-03-16.md`
 
 ## Authentication Plan
 - MVP: email + password.

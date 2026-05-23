@@ -52,7 +52,7 @@ const requiredCleanupCheckFragments = [
 const parseArgs = () => {
   const args = process.argv.slice(2);
   const options = {
-    index: 'docs/operations/reusable-audit-tooling-index-2026-05-19.json',
+    index: 'history/artifacts/reusable-audit-tooling-index-2026-05-19.json',
     json: false,
     help: false,
   };

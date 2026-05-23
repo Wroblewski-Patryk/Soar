@@ -1,4 +1,4 @@
-﻿# Admin Frontend Architecture
+# Admin Frontend Architecture
 
 This document captures admin/dashboard frontend architecture constraints.
 

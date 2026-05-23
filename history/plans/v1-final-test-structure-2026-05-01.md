@@ -1,0 +1,244 @@
+# V1 Final Test Structure
+
+Date: 2026-05-01
+Status: EXECUTED WITH BLOCKERS
+
+## Purpose
+
+Provide one execution structure for the final V1 confidence pass after the
+latest `main` runtime hardening reaches production. This prevents V1 from being
+declared on stale deployed code or partial local evidence.
+
+## Current Freshness Check
+
+Commands run on 2026-05-01:
+
+```powershell
+pnpm run ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers
+```
+
+Result: PASS
+
+- API `/health`: `200`
+- API `/ready`: `200`
+- Web `/`: `200`
+
+Production build-info:
+
+- `gitSha`: `c081f224134fedb65de2ecad716274b92593c373`
+- `gitRef`: `main`
+- `metadataSource`: `env-runtime`
+- `checkedAt`: `2026-05-01T02:21:14.922Z`
+
+Current repository head:
+
+- `fba29a96 docs(release): freeze final v1 test structure`
+- Runtime hardening commit included in current `main` history:
+  `577c45a8 fix(api-runtime): harden live close reopen state`
+
+Conclusion:
+
+- Production is healthy but stale for the latest money-path runtime fix.
+- `V1DOGE-02` post-deploy verification must not be claimed until production
+  build-info reports `577c45a8` or a later commit that includes it.
+
+Follow-up recheck on 2026-05-01:
+
+- Production build-info still reports
+  `c081f224134fedb65de2ecad716274b92593c373`.
+- Latest GitHub `Promote PROD` workflow run is old
+  (`0f122ed4cc38e443c4dc58a038cd413a4d8447c6`, 2026-04-25) and failed.
+- No current `Promote PROD` run exists for `577c45a8`/`fba29a96`.
+
+Conclusion:
+
+- Final V1 execution is blocked on an operational production deploy trigger,
+  not on a newly discovered code task.
+
+Post-deploy execution on 2026-05-01:
+
+- Production web build-info now reports
+  `6a8ded9333eabced5e8461362e9e9237a9bf4e4d` on `main`.
+- Public production smoke PASS.
+- Authenticated production smoke PASS, including `/workers/health`.
+- Protected runtime freshness PASS with `runningCount=4`.
+- Protected rollback guard PASS with `shouldRollback=false`, no reasons, and no
+  alerts.
+- Active `LIVE` `DOGEUSDT` runtime `Positions` payload no longer carries stale
+  DCA from the previous lifecycle: current open `DOGEUSDT` row reports
+  `dcaCount=0`, `tradesCount=1`, and
+  `strategyAutomationContextResolved=true`.
+- Rollback proof regenerated:
+  `history/evidence/v1-rollback-proof-prod-2026-05-01T02-42-49-727Z.md`.
+- Release-gate classification regenerated:
+  `history/releases/v1-release-gate-prod-2026-05-01T02-44-00-227Z.md`.
+
+Conclusion:
+
+- Gate 0 and the executable part of Gate 1 PASS on the deployed candidate.
+- Final V1 remains `NO-GO/BLOCKED` because the release-gate report still has:
+  `activationAudit:stale`, `activationPlan:stale`, and
+  `backupRestoreDrill:failed`.
+
+Current target refresh on 2026-05-01:
+
+- Production public smoke still PASS.
+- Production web build-info now reports
+  `662ce9b48fac6a48963a62f8d3bc4ac2f645cac6` on `main`.
+- That production SHA is an ancestor of local `HEAD`
+  `ef37fca0c4a3c47605986a815b5323fd535a37fa`.
+- Production is behind the newest local commits:
+  `ca430aa5`, `1e20b6df`, and `ef37fca0`.
+- Stage public smoke still FAILS with `503` for API `/health`, API `/ready`,
+  and web `/`.
+- Evidence:
+  `history/plans/v1gate-01-current-target-freshness-2026-05-01.md`.
+
+Stage check:
+
+```powershell
+pnpm run ops:deploy:smoke -- --api-base-url https://stage-api.soar.luckysparrow.ch --web-base-url https://stage.soar.luckysparrow.ch --no-workers
+```
+
+Result: FAIL
+
+- API `/health`: `503`
+- API `/ready`: `503`
+- Web `/`: `503`
+
+Conclusion:
+
+- Stage remains unavailable and cannot be used for V1 release-gate evidence
+  until Coolify stage services are restored or redeployed.
+
+## Required Gate Order
+
+### Gate 0: Deploy Freshness
+
+Pass condition:
+
+- production build-info `gitSha` is `577c45a8` or later and includes
+  `V1DOGE-02`; preferred current target is `fba29a96` or later because it also
+  includes this final test structure.
+- production public smoke passes.
+- stage either passes or remains explicitly documented as an environment
+  blocker, not a product-code blocker.
+
+Commands:
+
+```powershell
+pnpm run ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers
+```
+
+Protected checks, with auth supplied only through process environment:
+
+```powershell
+pnpm run ops:deploy:runtime-freshness -- --base-url https://api.soar.luckysparrow.ch
+pnpm run ops:deploy:rollback-guard -- --base-url https://api.soar.luckysparrow.ch
+```
+
+### Gate 1: DOGE Runtime Regression Verification
+
+Pass condition:
+
+- active production runtime payload for DOGE-style `LIVE` futures positions no
+  longer shows stale DCA after a same-symbol close/reopen lifecycle.
+- previous lifecycle keeps its own DCA history.
+- runtime close trades/orders preserve `strategyId`.
+- runtime events include the new close decision snapshot when automated close
+  authority executes.
+
+Evidence to capture:
+
+- current runtime `Positions` payload for the active `LIVE` bot.
+- current runtime `History`/trades payload for `DOGEUSDT`.
+- runtime event sample containing `SIGNAL_DECISION` or documented absence if no
+  close happened after deploy.
+- build-info SHA.
+
+Fail condition:
+
+- fresh same-symbol open carries stale DCA levels from a prior closed
+  lifecycle.
+- close trade lacks `strategyId` after the fixed deployment.
+- automated close has no explainable runtime event when one occurred after
+  deploy.
+
+### Gate 2: V1EXCEL Production Evidence
+
+Pass condition:
+
+- production public smoke passes.
+- protected runtime freshness passes.
+- rollback guard returns `shouldRollback=false`.
+- rollback proof artifact is regenerated for the current deployed SHA.
+- RC status/sign-off/checklist are rebuilt from current evidence.
+
+Commands:
+
+```powershell
+pnpm run ops:deploy:rollback-proof -- --profile prod --base-url https://api.soar.luckysparrow.ch
+pnpm run ops:release:v1:gate -- --environment prod --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --skip-go-live-smoke
+```
+
+The full gate must not be marked green if it consumes stale evidence from a
+different production SHA.
+
+### Gate 3: Manual Operator Matrix
+
+Pass condition:
+
+- browser-side PAPER action proof is executed or explicitly waived by the
+  release owner because API-plus-UI-state proof is sufficient.
+- LIVE exchange-authority cases are executed by an authorized operator:
+  - manual LIVE open,
+  - manual LIVE close,
+  - external pending order visibility until fill,
+  - exchange-side intervention,
+  - restart/recovery truth.
+
+Evidence source:
+
+- `history/audits/v1excel-manual-verification-matrix-2026-04-29.md`
+- `history/audits/v1live-mixed-origin-verification-matrix-2026-04-29.md`
+
+### Gate 4: Final GO / NO-GO
+
+Pass condition:
+
+- all hard blockers in `DEPLOYMENT_GATE.md` are false.
+- applicable `DEFINITION_OF_DONE.md` requirements are backed by current
+  evidence.
+- remaining stage blocker, if still present, is explicitly accepted by the
+  release owner or keeps the decision at `NO-GO`.
+
+Output artifacts:
+
+- fresh production evidence report
+- updated manual matrix
+- RC gate status
+- sign-off record
+- final V1 GO/NO-GO record
+
+## Current Blockers
+
+- Production deploy freshness is resolved on `6a8ded93`.
+- Stage still returns `503 no available server`.
+- Manual LIVE exchange-authority scenarios are not executed in the current
+  evidence set.
+- Production restore drill was rerun for the latest candidate but failed because
+  no production DB container configuration was available in this execution
+  context.
+- RC status/checklist/sign-off were refreshed on 2026-05-01; sign-off is
+  `BLOCKED` because required approver fields are empty.
+- Activation audit and activation execution plan are still stale
+  (`2026-04-22`) for the latest deployed SHA.
+
+## Next Smallest Executable Task
+
+1. provide production DB restore-drill execution context or container settings
+   and rerun `pnpm run ops:db:restore-drill -- --profile prod`;
+2. regenerate the production activation audit and execution plan for
+   `6a8ded93`;
+3. complete or explicitly waive the manual operator matrix;
+4. rerun the final production release gate and publish the GO/NO-GO decision.

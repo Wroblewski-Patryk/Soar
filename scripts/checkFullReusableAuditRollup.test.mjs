@@ -9,12 +9,12 @@ const rollup = (overrides = {}) => ({
   liveOrderCancelClose: false,
   exchangeSideMutation: false,
   existingProductionDataMutation: false,
-  decisionPacket: 'docs/operations/audit-decision-packet-2026-05-19.md',
-  decisionRepairPlaybooks: 'docs/operations/audit-decision-repair-playbooks-2026-05-19.md',
-  handoff: 'docs/operations/full-reusable-audit-handoff-2026-05-19.md',
-  handoffJson: 'docs/operations/full-reusable-audit-handoff-2026-05-19.json',
-  artifactManifest: 'docs/operations/reusable-audit-artifact-manifest-2026-05-19.md',
-  artifactManifestJson: 'docs/operations/reusable-audit-artifact-manifest-2026-05-19.json',
+  decisionPacket: 'history/audits/audit-decision-packet-2026-05-19.md',
+  decisionRepairPlaybooks: 'history/audits/audit-decision-repair-playbooks-2026-05-19.md',
+  handoff: 'history/audits/full-reusable-audit-handoff-2026-05-19.md',
+  handoffJson: 'history/artifacts/full-reusable-audit-handoff-2026-05-19.json',
+  artifactManifest: 'history/audits/reusable-audit-artifact-manifest-2026-05-19.md',
+  artifactManifestJson: 'history/artifacts/reusable-audit-artifact-manifest-2026-05-19.json',
   summary: {
     currentOrCurrentLocal: 23,
     partial: 0,
@@ -138,14 +138,14 @@ test('validateFullReusableAuditRollup treats current statuses with deferred sub-
 
 test('validateFullReusableAuditRollup fails when referenced paths are missing', () => {
   const result = validateFullReusableAuditRollup(rollup(), {
-    exists: (relativePath) => relativePath !== 'docs/operations/full-reusable-audit-handoff-2026-05-19.md',
+    exists: (relativePath) => relativePath !== 'history/audits/full-reusable-audit-handoff-2026-05-19.md',
   });
 
   assert.equal(result.status, 'FAIL');
   assert.deepEqual(result.paths.missing, [
     {
       key: 'handoff',
-      path: 'docs/operations/full-reusable-audit-handoff-2026-05-19.md',
+      path: 'history/audits/full-reusable-audit-handoff-2026-05-19.md',
     },
   ]);
 });

@@ -11,7 +11,7 @@ documents aligned with current repository reality.
 - `.codex/context/TASK_BOARD.md`
 - `.codex/context/LEARNING_JOURNAL.md`
 - `.agents/workflows/documentation-governance.md`
-- `docs/README.md`
+- `docs/documentation-overview.md`
 - relevant files in `docs/product/`, `docs/architecture/`, `docs/modules/`,
   `docs/planning/`, `docs/operations/`, and `docs/ux/`
 

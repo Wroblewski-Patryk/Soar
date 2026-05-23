@@ -58,7 +58,7 @@ const requiredRollupSummaryKeys = [
 const parseArgs = () => {
   const args = process.argv.slice(2);
   const options = {
-    handoff: 'docs/operations/full-reusable-audit-handoff-2026-05-19.json',
+    handoff: 'history/artifacts/full-reusable-audit-handoff-2026-05-19.json',
     json: false,
     help: false,
   };

@@ -1,0 +1,206 @@
+{
+  "planId": "AUDIT-REMEDIATION-MASTER-PLAN-2026-05-19",
+  "date": "2026-05-19",
+  "purpose": "Turn the 2026-05-19 reusable audit findings into an ordered, evidence-bound repair roadmap.",
+  "sourceMarkdown": "history/audits/audit-remediation-master-plan-2026-05-19.md",
+  "primaryEvidence": [
+    "history/audits/full-reusable-audit-rollup-2026-05-19.md",
+    "history/audits/audit-decision-packet-2026-05-19.md",
+    "history/audits/audit-decision-repair-playbooks-2026-05-19.md",
+    "history/artifacts/reusable-audit-artifact-manifest-2026-05-19.json",
+    "history/artifacts/reusable-audit-rerun-playbook-2026-05-19.json",
+    "history/artifacts/reusable-audit-tooling-index-2026-05-19.json"
+  ],
+  "currentTruth": {
+    "currentAuditFamilies": 23,
+    "resolvedDecisions": ["DEC-AUD-001", "DEC-AUD-002"],
+    "deferredAudits": ["AUD-21"],
+    "productionReadinessGate": "AUD-19",
+    "productionReadinessStatus": "blocked until fresh protected production evidence exists"
+  },
+  "priorityRoadmap": [
+    {
+      "id": "P0",
+      "priority": "done",
+      "scope": "Accept audit decisions",
+      "output": "Accepted DEC-AUD-001 and DEC-AUD-002."
+    },
+    {
+      "id": "P1",
+      "priority": "done",
+      "scope": "Repair exchange and assistant source-of-truth claims",
+      "output": "AUD-01 and AUD-20 no longer overclaim current implementation truth."
+    },
+    {
+      "id": "P2",
+      "priority": "P1",
+      "scope": "Refresh production release gate before any production readiness claim",
+      "blocks": ["approved protected production scope", "approved auth/operator access"],
+      "output": "Fresh AUD-19 evidence packet."
+    },
+    {
+      "id": "P3",
+      "priority": "P1",
+      "scope": "Promote production-safe proofs for historical-production audit families",
+      "blocks": ["production-safe fixture/auth scope"],
+      "output": "Fresh production-safe evidence or explicit blocked reason per family."
+    },
+    {
+      "id": "P4",
+      "priority": "P1",
+      "scope": "Schedule independent security review",
+      "blocks": ["reviewer and scope availability"],
+      "output": "External review artifact or scheduled owner/date."
+    },
+    {
+      "id": "P5",
+      "priority": "P2",
+      "scope": "Deepen UX/a11y proof after UI changes",
+      "blocks": ["UI change scope or production-safe browser access"],
+      "output": "Fresh responsive, keyboard, focus, and browser evidence."
+    },
+    {
+      "id": "P6",
+      "priority": "P2",
+      "scope": "Keep audit tooling and manifests current",
+      "blocks": [],
+      "output": "audit:manifest:verify remains PASS."
+    }
+  ],
+  "workPackages": [
+    {
+      "id": "WP-01",
+      "title": "Exchange Architecture Truth Repair",
+      "dependsOn": ["DEC-AUD-001"],
+      "scope": "Architecture, module, and audit-state wording for Binance + Gate.io implementation scope.",
+      "validation": [
+        "corepack pnpm run docs:parity:check",
+        "focused exchange capability/boundary/registry tests",
+        "corepack pnpm --dir apps/api run typecheck",
+        "corepack pnpm run quality:guardrails",
+        "git diff --check"
+      ],
+      "blockers": [],
+      "doneWhen": "AUD-01 no longer reports doc-consistency failure."
+    },
+    {
+      "id": "WP-02",
+      "title": "Assistant Runtime Truth Repair",
+      "dependsOn": ["DEC-AUD-002"],
+      "scope": "Assistant architecture, module docs, audit baseline, risk/register/matrix/module confidence truth narrowing.",
+      "validation": [
+        "corepack pnpm run docs:parity:check",
+        "assistant orchestrator focused tests",
+        "bot assistant config/dry-run e2e when claimed",
+        "focused Web assistant route tests",
+        "corepack pnpm run quality:guardrails",
+        "git diff --check"
+      ],
+      "blockers": [],
+      "doneWhen": "AUD-20 is no longer failed against a hot-path claim."
+    },
+    {
+      "id": "WP-03",
+      "title": "Production Release Evidence Refresh",
+      "dependsOn": ["explicit production scope", "approved auth/operator access"],
+      "scope": "AUD-19 build-info, public smoke, protected runtime, rollback, backup/restore, and sign-off evidence.",
+      "validation": [
+        "production build-info freshness",
+        "public API/Web smoke",
+        "protected runtime readback where applicable",
+        "rollback proof",
+        "backup/restore proof",
+        "RC/sign-off evidence"
+      ],
+      "blockers": [
+        "approved liveimport auth",
+        "approved rollback auth",
+        "approved production UI auth",
+        "approved production DB/Coolify restore context",
+        "Gate2 SLO evidence",
+        "Gate4 approver and owner fields"
+      ],
+      "doneWhen": "A new dated production release evidence packet replaces the historical production readiness claim."
+    },
+    {
+      "id": "WP-04",
+      "title": "Production-Safe Evidence Refresh Queue",
+      "dependsOn": ["production-safe fixture/auth scope"],
+      "scope": "AUD-05, AUD-06, AUD-08, AUD-10, AUD-12, AUD-13, AUD-14, AUD-15, AUD-16, AUD-17, and AUD-18 production-safe evidence refreshes.",
+      "validation": [
+        "production-safe family-specific proof command or blocked-reason artifact",
+        "no LIVE order submit/cancel/close",
+        "no exchange-side mutation",
+        "cleanup verification for disposable fixtures"
+      ],
+      "blockers": ["approved production-safe fixture/auth scope"],
+      "doneWhen": "Each refreshed family records fresh production-safe evidence or a clear blocked reason."
+    },
+    {
+      "id": "WP-05",
+      "title": "Security Governance Follow-Up",
+      "dependsOn": ["reviewer/scope assignment"],
+      "scope": "External independent security review.",
+      "validation": ["review artifact", "findings triage", "security risk register update"],
+      "blockers": ["reviewer/scope availability"],
+      "doneWhen": "AUD-06 governance gap has a dated review result or scheduled owner/date."
+    },
+    {
+      "id": "WP-06",
+      "title": "UX/A11y Deepening",
+      "dependsOn": ["UI change scope or production-safe browser access"],
+      "scope": "Responsive, keyboard, focus, empty/error/success states, and screenshot comparison where relevant.",
+      "validation": ["fresh browser proof", "responsive checks", "a11y checks", "updated UX evidence"],
+      "blockers": ["UI change scope or production-safe browser access"],
+      "doneWhen": "AUD-05 no longer relies on historical production UX proof for current UI claims."
+    },
+    {
+      "id": "WP-07",
+      "title": "Mobile Activation Plan",
+      "dependsOn": ["explicit product decision to activate native/mobile scope"],
+      "scope": "Mobile module docs, Expo/native validation commands, route/API parity expectations, and mobile confidence rows if activated.",
+      "validation": ["mobile remains explicitly deferred or activation plan is approved"],
+      "blockers": ["explicit mobile activation decision"],
+      "doneWhen": "Mobile remains explicitly deferred or has a real activation plan."
+    },
+    {
+      "id": "WP-08",
+      "title": "Audit Tooling Maintenance",
+      "dependsOn": [],
+      "scope": "Reusable audit tooling, manifests, rerun playbook, tooling index, and remediation plan validation.",
+      "validation": [
+        "corepack pnpm run audit:manifest:verify",
+        "corepack pnpm run audit:remediation-plan:check",
+        "corepack pnpm run docs:parity:check",
+        "corepack pnpm run quality:guardrails",
+        "git diff --check"
+      ],
+      "blockers": [],
+      "doneWhen": "Manifest checks, rerun playbook checks, tooling index checks, remediation plan checks, and comparisons report no unexplained regressions."
+    }
+  ],
+  "currentBlockers": [
+    "Fresh AUD-19 production readiness requires explicit production scope and approved auth/operator access.",
+    "LIVE or exchange-side mutation requires separate explicit approval.",
+    "Production readiness must not be claimed until fresh AUD-19 protected production evidence passes."
+  ],
+  "closureChecks": [
+    "corepack pnpm run audit:manifest:verify",
+    "corepack pnpm run audit:remediation-plan:check",
+    "corepack pnpm run docs:parity:check",
+    "corepack pnpm run quality:guardrails",
+    "git diff --check"
+  ],
+  "cleanupChecks": [
+    "Get-Process chrome-headless-shell -ErrorAction SilentlyContinue",
+    "Get-NetTCPConnection -LocalPort 5432,6379 -ErrorAction SilentlyContinue",
+    "docker compose ps"
+  ],
+  "safetyBoundaries": {
+    "productionDataMutationWithoutApproval": false,
+    "liveOrderSubmitCancelCloseWithoutApproval": false,
+    "exchangeSideMutationWithoutApproval": false,
+    "architectureDecisionApplied": false,
+    "productionReadinessClaimWithoutFreshAud19": false
+  }
+}

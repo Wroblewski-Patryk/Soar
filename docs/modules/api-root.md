@@ -96,9 +96,9 @@ Out of scope:
 
 ## 8. Test Coverage and Evidence
 - Primary evidence:
-  - `docs/operations/operations-release-deployment-audit-2026-05-19.md`
-  - `docs/operations/workers-runtime-operations-audit-2026-05-19.md`
-  - `docs/operations/security-privacy-audit-2026-05-19.md`
+  - `history/audits/operations-release-deployment-audit-2026-05-19.md`
+  - `history/audits/workers-runtime-operations-audit-2026-05-19.md`
+  - `history/audits/security-privacy-audit-2026-05-19.md`
 - Suggested validation commands:
 ```powershell
 pnpm run test:go-live:smoke

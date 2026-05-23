@@ -48,7 +48,7 @@ const requiredAcceptanceFragments = [
 const parseArgs = () => {
   const args = process.argv.slice(2);
   const options = {
-    packet: 'docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json',
+    packet: 'history/artifacts/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json',
     expectedSha: '',
     json: false,
     help: false,

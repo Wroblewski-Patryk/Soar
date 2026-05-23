@@ -54,7 +54,7 @@ const parseArgs = () => {
     skipEvidenceCheck: false,
     strictEvidenceCheck: false,
     requireProductionGate2: false,
-    evidenceOutput: 'docs/operations/_artifacts-rc-evidence-check-latest.json',
+    evidenceOutput: 'history/artifacts/_artifacts-rc-evidence-check-latest.json',
     windowDays: [7, 30],
   };
 
@@ -112,7 +112,7 @@ const run = (label, command, args, env = {}) => {
 };
 
 const hasSloInputs = async () => {
-  const operationsDir = path.resolve(process.cwd(), 'docs', 'operations');
+  const operationsDir = path.resolve(process.cwd(), 'history', 'operations');
   try {
     const entries = await readdir(operationsDir);
     return entries.some(

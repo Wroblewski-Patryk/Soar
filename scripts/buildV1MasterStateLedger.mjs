@@ -53,11 +53,11 @@ const parseArgs = () => {
     }
   }
 
-  options.index = options.index || `docs/operations/project-index-${options.today}.json`;
-  options.scan = options.scan || `docs/operations/v1-static-issue-scan-${options.today}.json`;
+  options.index = options.index || `history/audits/project-index-${options.today}.json`;
+  options.scan = options.scan || `history/audits/v1-static-issue-scan-${options.today}.json`;
   options.markdownOutput =
-    options.markdownOutput || `docs/operations/v1-master-state-ledger-${options.today}.md`;
-  options.jsonOutput = options.jsonOutput || `docs/operations/v1-master-state-ledger-${options.today}.json`;
+    options.markdownOutput || `history/audits/v1-master-state-ledger-${options.today}.md`;
+  options.jsonOutput = options.jsonOutput || `history/audits/v1-master-state-ledger-${options.today}.json`;
   return options;
 };
 

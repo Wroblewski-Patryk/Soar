@@ -183,7 +183,7 @@ Last updated: 2026-05-23
   for any new current-date readiness claim until approved protected inputs,
   Gate2/SLO evidence, Gate4 approver fields, and the final non-dry-run release
   gate return `ready`. The current no-secret execution handoff is
-  `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.md`, and
+  `history/releases/v1-operator-unblock-packet-dd1a1faf-2026-05-20.md`, and
   `ops:operator-unblock:check` validates that handoff before protected
   execution.
 
@@ -197,8 +197,8 @@ Last updated: 2026-05-23
   as assistant foundation/dry-run current scope with hot-path orchestration
   deferred. Remaining high-signal blocker is `AUD-19`: fresh production release
   readiness must be rerun before any new production readiness claim.
-  Evidence: `docs/operations/full-reusable-audit-rollup-2026-05-19.md` and
-  `docs/operations/audit-decision-packet-2026-05-19.md`.
+  Evidence: `history/audits/full-reusable-audit-rollup-2026-05-19.md` and
+  `history/audits/audit-decision-packet-2026-05-19.md`.
 
 - 2026-05-17 historical baseline:
   `PROJECT-ARCHITECTURE-CODE-DISCREPANCY-AUDIT-2026-05-17` recorded the prior
@@ -207,8 +207,8 @@ Last updated: 2026-05-23
   assistant hot-path overclaim. The exchange capability granularity finding is
   now closed by the 2026-05-19 `AUD-09` follow-up; exchange-scope wording and
   assistant runtime truth were resolved by `DEC-AUD-001` and `DEC-AUD-002`.
-  Evidence: `docs/analysis/architecture-code-discrepancy-audit-2026-05-17.md`
-  and `docs/planning/project-architecture-code-discrepancy-audit-2026-05-17-task.md`.
+  Evidence: `history/audits/architecture-code-discrepancy-audit-2026-05-17.md`
+  and `history/audits/project-architecture-code-discrepancy-audit-2026-05-17-task.md`.
 
 - 2026-05-14 update: `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14` reconciles
   stale module-confidence and requirement/risk/quality rows with already
@@ -236,7 +236,7 @@ Last updated: 2026-05-23
 - 2026-05-14 update: `V1-POST-V1-AUTH-DEPLOY-RERUN-2026-05-14` closes the
   Auth stale-token replay issue found on deployed `2fc90a08`. The fixed build
   `84711599` is deployed, production build-info matches, and
-  `docs/operations/prod-auth-session-browser-proof-84711599-2026-05-14.md`
+  `history/evidence/prod-auth-session-browser-proof-84711599-2026-05-14.md`
   passed: unauthenticated protected route redirects to `/auth/login`,
   authenticated dashboard renders, invalid token redirects to
   `/auth/login?session=expired`, logout returns `200`, direct reuse of the
@@ -568,14 +568,14 @@ Last updated: 2026-05-23
   confirmation proves the reported UI failure is gone.
 
 - 2026-05-11 update: current V1 percentages are defined by
-  `docs/operations/v1-completion-scorecard-2026-05-11.md`, not by intuition.
+  `history/releases/v1-completion-scorecard-2026-05-11.md`, not by intuition.
   The scorecard reports implementation estimate `70.7%`, evidence coverage
   `38.9%`, and release readiness `26.9%`. This explains why a lot of code can
   exist while V1 still feels unreliable: most module actions still lack
   accepted proof, and all 13 P0 rows are not release-ready.
 
 - 2026-05-10 update: the current consolidated V1 state entrypoint is
-  `docs/operations/v1-master-state-ledger-2026-05-10.md`. Use it before
+  `history/audits/v1-master-state-ledger-2026-05-10.md`. Use it before
   future broad audit or repair work. It keeps V1 at `NO-GO` and classifies the
   state into module buckets: `toProve: 7`, `blocked: 2`, and
   `doneLocalNeedsProdProof: 12`. It also carries all 50
@@ -583,7 +583,7 @@ Last updated: 2026-05-23
   concrete Web/API/test/doc gaps, queue cleanup, and planning classification.
 
 - 2026-05-10 update: static V1 inconsistency scan is available at
-  `docs/operations/v1-static-issue-scan-2026-05-11.md`. The scan reports 54
+  `history/audits/v1-static-issue-scan-2026-05-11.md`. The scan reports 54
   findings (`P0: 5`, `P1: 12`, `P2: 33`). Most P0/P1 items are proof gaps
   from the V1 action matrix, not confirmed code bugs. Concrete surface/test/doc
   gaps that need triage: empty Web `orders`, no `/dashboard/orders` or
@@ -599,7 +599,7 @@ Last updated: 2026-05-23
   Remaining Dashboard Home risk is browser-level responsive/keyboard proof
   plus production-safe clickthrough.
   Evidence:
-  `docs/planning/v1-dashboard-home-selected-bot-rendered-audit-task-2026-05-11.md`.
+  `history/audits/v1-dashboard-home-selected-bot-rendered-audit-task-2026-05-11.md`.
 
 - 2026-05-10 update: Dashboard runtime table presenter/action audit is locally
   closed for the high-risk table slice. Focused tests cover prospective TTP
@@ -623,7 +623,7 @@ Last updated: 2026-05-23
   release evidence. Operator-reported UI/action failures showed that previous
   route/module audits overstated functional readiness. The active product
   issue is action-level coverage: every module action in
-  `docs/operations/v1-product-action-audit-matrix-2026-05-10.md` must be
+  `history/audits/v1-product-action-audit-matrix-2026-05-10.md` must be
   verified as `PASS` or carried as an explicit `BLOCKED_*` item with a safe
   operator plan.
 
@@ -650,15 +650,15 @@ Last updated: 2026-05-23
   Preactivation `LIVEIMPORT-03` on `b1391526` confirms the configured LIVE
   Binance Futures bot still has `NO_RUNNING_SESSION`. The task is blocked on
   explicit operator approval for a short LIVE activation window. Evidence:
-  `docs/planning/controlled-live-session-proof-task-2026-05-10.md` and
-  `docs/operations/_artifacts-liveimport-readback-preactivation-b1391526-2026-05-10.json`.
+  `history/evidence/controlled-live-session-proof-task-2026-05-10.md` and
+  `history/artifacts/_artifacts-liveimport-readback-preactivation-b1391526-2026-05-10.json`.
 
 - 2026-05-10 update: the Binance key-readiness blocker is closed after
   deployment of `8cd5c1b3`. Stored key production test now passes with both
   Spot and Futures permissions true. The remaining live-runtime blocker is
   `LIVEIMPORT-03` returning `NO_RUNNING_SESSION`; a controlled runtime session
   proof is still required before V1 can claim live readback readiness. Evidence:
-  `docs/operations/prod-api-runtime-readiness-8cd5c1b3-2026-05-10.md`.
+  `history/evidence/prod-api-runtime-readiness-8cd5c1b3-2026-05-10.md`.
 
 - 2026-05-10 update: before
   `FUTURES-ONLY-APIKEY-ACCEPTANCE-2026-05-10`, a Futures-only key could still
@@ -683,7 +683,7 @@ Last updated: 2026-05-23
   the configured LIVE bot has no running runtime session. Do not start the
   LIVE Futures bot until the Binance Futures key is remediated and readback is
   rerun successfully. Evidence:
-  `docs/operations/prod-api-runtime-readiness-f3cb9a24-2026-05-10.md`.
+  `history/evidence/prod-api-runtime-readiness-f3cb9a24-2026-05-10.md`.
 
 - 2026-05-10 update: authenticated/admin production UI route/module
   reachability is no longer blocked after
@@ -691,43 +691,43 @@ Last updated: 2026-05-23
   covers route/module reachability only; deeper production action/form
   clickthrough, live-money actions, `LIVEIMPORT-03`, rollback proof PASS,
   Gate 2 SLO, and RC approval remain separate V1 proof lanes. Evidence:
-  `docs/operations/prod-ui-module-clickthrough-39a52703-2026-05-10.md`.
+  `history/plans/prod-ui-module-clickthrough-39a52703-2026-05-10.md`.
 - 2026-05-10 update: the architecture function audit's local implementation
   and docs findings are closed by
   `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10`. API-key probe CCXT client
   construction now lives behind `modules/exchange`, and Gate.io runtime/
   exchange docs are refreshed. Remaining V1 issues are protected proof and
   formal approval lanes, not this local architecture mismatch. Evidence:
-  `docs/planning/v1-architecture-boundary-cleanup-task-2026-05-10.md` and
-  `docs/operations/v1-architecture-function-audit-2026-05-10.md`.
+  `history/tasks/v1-architecture-boundary-cleanup-task-2026-05-10.md` and
+  `history/audits/v1-architecture-function-audit-2026-05-10.md`.
 - 2026-05-10 update: function/module coverage audit confirms the remaining V1
   issue is not a broad missing implementation backlog, but protected proof and
   formal release approval. V1 remains blocked on `LIVEIMPORT-03` protected
   runtime readback, rollback proof PASS, authenticated/admin production UI
   clickthrough, authenticated Gate 2 SLO, RC approval/sign-off/checklist, and
   final non-dry-run release gate. Evidence:
-  `docs/operations/v1-function-coverage-audit-2026-05-10.md`.
+  `history/audits/v1-function-coverage-audit-2026-05-10.md`.
 - 2026-05-10 update: final no-secret preflight for production build-info
   `8220532920e484da9ddaa021ac64b5de4cc5e6e1` is current and `BLOCKED`.
   Build-info, public smoke, activation artifacts, and production restore drill
   are fresh/satisfied; remaining blockers are liveimport auth/readback,
   rollback guard auth/proof PASS, RC external gates/sign-off/checklist, and
   authenticated/admin UI proof. Evidence:
-  `docs/operations/v1-final-preflight-82205329-2026-05-10.md`.
+  `history/releases/v1-final-preflight-82205329-2026-05-10.md`.
 - 2026-05-10 update: latest no-auth production UI audit for build-info
   `88313309200d35275ba6c0d3465c5045c4b6d99e` passes public routes and shows
   dashboard/admin/legacy protected routes as `BLOCKED_AUTH` redirecting to
   `/auth/login`. This is current fail-closed evidence only; full UI module
   clickthrough still requires valid production dashboard/admin auth and
   representative data. Evidence:
-  `docs/operations/prod-ui-module-clickthrough-88313309-2026-05-10.md`.
+  `history/plans/prod-ui-module-clickthrough-88313309-2026-05-10.md`.
 - 2026-05-10 update: the current production V1 release-gate dry-run for
   build-info `8f8630b0ad5abd690409d6173c9b247b95948138` is `not_ready`.
   Remaining release-gate blockers are failed RC external gates, failed RC
   sign-off, failed RC checklist, missing `LIVEIMPORT-03` runtime readback,
   failed rollback proof, and the fact that production release gate still needs
   a non-dry-run execution once protected inputs are available. Evidence:
-  `docs/operations/v1-release-gate-prod-2026-05-10Tcurrent-buildinfo-dry-run.md`.
+  `history/releases/v1-release-gate-prod-2026-05-10Tcurrent-buildinfo-dry-run.md`.
 - 2026-05-10 update: RC Gate 2 SLO evidence cannot be completed without
   protected ops auth. A one-minute no-auth production SLO probe produced
   blocker evidence only: `/health` PASS, `/ready` transient 50% availability
@@ -904,7 +904,7 @@ Last updated: 2026-05-23
   read-only production auth token or login credentials. Names-only env scan
   found only `FIGMA_OAUTH_TOKEN` and `IGCCSVC_DB`.
 - 2026-05-08 V1 release-gate dry-run is `not_ready`:
-  `docs/operations/v1-release-gate-prod-2026-05-08T05-36-43-320Z.md` marks
+  `history/releases/v1-release-gate-prod-2026-05-08T05-36-43-320Z.md` marks
   activation, RC external gates, RC sign-off, and RC checklist fresh for
   2026-05-08. Backup/restore drill is fresh but failed due to missing
   production DB/Coolify access. Rollback proof is fresh but failed because
@@ -953,7 +953,7 @@ Last updated: 2026-05-23
   production V1 release gate now fails fresh RC external-gate, sign-off, and
   checklist artifacts unless Gate 4 is `PASS`, `RC status: APPROVED` is
   present, and the checklist shows `G4=PASS`. Latest dry-run
-  `docs/operations/v1-release-gate-prod-2026-05-08Trc-approval-required-dry-run.md`
+  `history/releases/v1-release-gate-prod-2026-05-08Trc-approval-required-dry-run.md`
   reports `evidence:rcExternalGateStatus:failed`,
   `evidence:rcSignoffRecord:failed`, and `evidence:rcChecklist:failed`, so
   final `ready` cannot bypass real Gate 4 approval.

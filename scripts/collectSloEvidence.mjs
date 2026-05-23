@@ -566,7 +566,7 @@ const main = async () => {
     ...options.thresholds,
   });
 
-  const operationsDir = path.resolve(process.cwd(), 'docs', 'operations');
+  const operationsDir = path.resolve(process.cwd(), 'history', 'operations');
   const stamp = toIsoStamp();
   const jsonPath = path.join(operationsDir, `_artifacts-slo-window-${stamp}.json`);
   const mdPath = path.join(operationsDir, `v1-slo-observation-${stamp}.md`);

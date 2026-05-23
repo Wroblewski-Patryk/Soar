@@ -33,7 +33,7 @@ const requiredCleanupCheckFragments = [
 const parseArgs = () => {
   const args = process.argv.slice(2);
   const options = {
-    playbook: 'docs/operations/reusable-audit-rerun-playbook-2026-05-19.json',
+    playbook: 'history/artifacts/reusable-audit-rerun-playbook-2026-05-19.json',
     json: false,
     help: false,
   };

@@ -7,10 +7,10 @@ const phaseIds = ['P0', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6'];
 const workPackageIds = Array.from({ length: 8 }, (_, index) => `WP-${String(index + 1).padStart(2, '0')}`);
 
 const remediationPlan = (overrides = {}) => ({
-  sourceMarkdown: 'docs/planning/audit-remediation-master-plan-2026-05-19.md',
+  sourceMarkdown: 'history/audits/audit-remediation-master-plan-2026-05-19.md',
   primaryEvidence: [
-    'docs/operations/full-reusable-audit-rollup-2026-05-19.md',
-    'docs/operations/reusable-audit-artifact-manifest-2026-05-19.json',
+    'history/audits/full-reusable-audit-rollup-2026-05-19.md',
+    'history/artifacts/reusable-audit-artifact-manifest-2026-05-19.json',
   ],
   priorityRoadmap: phaseIds.map((id) => ({ id, status: id === 'P0' ? 'done' : 'planned' })),
   workPackages: workPackageIds.map((id) => ({
@@ -145,11 +145,11 @@ test('validateAuditRemediationPlan fails when required cleanup checks are missin
 
 test('validateAuditRemediationPlan fails when referenced evidence is missing', () => {
   const result = validateAuditRemediationPlan(remediationPlan(), {
-    exists: (relativePath) => relativePath !== 'docs/operations/full-reusable-audit-rollup-2026-05-19.md',
+    exists: (relativePath) => relativePath !== 'history/audits/full-reusable-audit-rollup-2026-05-19.md',
   });
 
   assert.equal(result.status, 'FAIL');
   assert.deepEqual(result.references.missing, [
-    'docs/operations/full-reusable-audit-rollup-2026-05-19.md',
+    'history/audits/full-reusable-audit-rollup-2026-05-19.md',
   ]);
 });

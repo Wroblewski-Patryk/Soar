@@ -75,7 +75,7 @@ For each nit found, capture:
 ## Execution Notes (2026-04-17)
 - Status: `PASS`.
 - Validation basis:
-  - previous manual smoke baseline (`docs/operations/dashboard-bots-manual-smoke-2026-04-01.md`) with final nit closure in subsequent BOPS polish commits,
+  - previous manual smoke baseline (`history/evidence/dashboard-bots-manual-smoke-2026-04-01.md`) with final nit closure in subsequent BOPS polish commits,
   - fresh focused regression pack:
     - `pnpm --filter web test -- src/features/bots/components/BotCreateEditForm.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/bots/components/BotsManagement.test.tsx src/app/dashboard/dashboard.a11y.smoke.test.tsx src/ui/layout/dashboard/PageTitle.a11y.test.tsx src/ui/layout/dashboard/Header.responsive.test.tsx`
     - result: `PASS (34/34)`,

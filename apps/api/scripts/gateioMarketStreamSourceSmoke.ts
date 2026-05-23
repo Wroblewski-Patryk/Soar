@@ -161,12 +161,12 @@ const run = async () => {
     const jsonPath = normalizeOutputPath(
       repoRoot,
       options.outputJson,
-      'docs/operations/_artifacts-gateio-market-stream-source-smoke-2026-05-09.json'
+      'history/operations/_artifacts-gateio-market-stream-source-smoke-2026-05-09.json'
     );
     const markdownPath = normalizeOutputPath(
       repoRoot,
       options.outputMarkdown,
-      'docs/operations/gateio-market-stream-source-smoke-2026-05-09.md'
+      'history/operations/gateio-market-stream-source-smoke-2026-05-09.md'
     );
     await mkdir(path.dirname(jsonPath), { recursive: true });
     await mkdir(path.dirname(markdownPath), { recursive: true });

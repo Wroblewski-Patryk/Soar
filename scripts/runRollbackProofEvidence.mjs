@@ -4,7 +4,7 @@ import { spawnSync } from 'node:child_process';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const operationsDir = path.resolve(process.cwd(), 'docs', 'operations');
+const operationsDir = path.resolve(process.cwd(), 'history', 'operations');
 const SECRET_CLI_FLAGS = new Set([
   '--auth-token',
   '--auth-password',

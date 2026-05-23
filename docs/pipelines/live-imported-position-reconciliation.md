@@ -57,7 +57,7 @@ requests takeover/orphan repair from dashboard positions/runtime surfaces.
 - `docs/modules/api-exchange.md`
 - `docs/architecture/reference/live-position-restart-continuity-contract.md`
 - `docs/architecture/reference/position-close-attribution-contract.md`
-- `docs/planning/live-import-ownership-wallet-scope-task-2026-05-03.md`
+- `history/tasks/live-import-ownership-wallet-scope-task-2026-05-03.md`
 
 ## Known Gaps
 - Production evidence must be checked in latest planning/context files for any

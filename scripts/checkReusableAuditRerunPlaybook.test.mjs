@@ -7,9 +7,9 @@ const auditIds = Array.from({ length: 24 }, (_, index) => `AUD-${String(index).p
 
 const playbook = (overrides = {}) => ({
   baseline: {
-    manifest: 'docs/operations/reusable-audit-artifact-manifest-2026-05-19.json',
-    rollup: 'docs/operations/full-reusable-audit-rollup-2026-05-19.md',
-    rollupJson: 'docs/operations/full-reusable-audit-rollup-2026-05-19.json',
+    manifest: 'history/artifacts/reusable-audit-artifact-manifest-2026-05-19.json',
+    rollup: 'history/audits/full-reusable-audit-rollup-2026-05-19.md',
+    rollupJson: 'history/artifacts/full-reusable-audit-rollup-2026-05-19.json',
   },
   rerunOrder: [
     { step: 1, auditIds: auditIds.slice(0, 8) },
@@ -17,9 +17,9 @@ const playbook = (overrides = {}) => ({
     { step: 3, auditIds: auditIds.slice(16, 24) },
   ],
   futureManifestCommands: {
-    check: 'corepack pnpm run audit:manifest:check -- --manifest docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json',
-    compare: 'corepack pnpm run audit:manifest:compare -- --base docs/operations/reusable-audit-artifact-manifest-2026-05-19.json --target docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json',
-    compareJson: 'corepack pnpm run audit:manifest:compare -- --base docs/operations/reusable-audit-artifact-manifest-2026-05-19.json --target docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json --json-output docs/operations/reusable-audit-manifest-comparison-YYYY-MM-DD.json',
+    check: 'corepack pnpm run audit:manifest:check -- --manifest history/audits/reusable-audit-artifact-manifest-YYYY-MM-DD.json',
+    compare: 'corepack pnpm run audit:manifest:compare -- --base history/artifacts/reusable-audit-artifact-manifest-2026-05-19.json --target history/audits/reusable-audit-artifact-manifest-YYYY-MM-DD.json',
+    compareJson: 'corepack pnpm run audit:manifest:compare -- --base history/artifacts/reusable-audit-artifact-manifest-2026-05-19.json --target history/audits/reusable-audit-artifact-manifest-YYYY-MM-DD.json --json-output history/audits/reusable-audit-manifest-comparison-YYYY-MM-DD.json',
   },
   preconditions: ['read registry'],
   regressionRules: ['missing audit'],
@@ -66,8 +66,8 @@ test('validateReusableAuditRerunPlaybook fails when baseline keys are missing', 
   const result = validateReusableAuditRerunPlaybook(
     playbook({
       baseline: {
-        manifest: 'docs/operations/reusable-audit-artifact-manifest-2026-05-19.json',
-        rollup: 'docs/operations/full-reusable-audit-rollup-2026-05-19.md',
+        manifest: 'history/artifacts/reusable-audit-artifact-manifest-2026-05-19.json',
+        rollup: 'history/audits/full-reusable-audit-rollup-2026-05-19.md',
       },
     }),
     { exists: allPathsExist },
@@ -79,14 +79,14 @@ test('validateReusableAuditRerunPlaybook fails when baseline keys are missing', 
 
 test('validateReusableAuditRerunPlaybook fails when baseline paths are missing', () => {
   const result = validateReusableAuditRerunPlaybook(playbook(), {
-    exists: (relativePath) => relativePath !== 'docs/operations/full-reusable-audit-rollup-2026-05-19.json',
+    exists: (relativePath) => relativePath !== 'history/artifacts/full-reusable-audit-rollup-2026-05-19.json',
   });
 
   assert.equal(result.status, 'FAIL');
   assert.deepEqual(result.baseline.missingPaths, [
     {
       key: 'rollupJson',
-      path: 'docs/operations/full-reusable-audit-rollup-2026-05-19.json',
+      path: 'history/artifacts/full-reusable-audit-rollup-2026-05-19.json',
     },
   ]);
 });
@@ -97,7 +97,7 @@ test('validateReusableAuditRerunPlaybook fails when baseline values are not repo
       baseline: {
         manifest: '',
         rollup: 'https://example.test/rollup.md',
-        rollupJson: 'docs/operations/full-reusable-audit-rollup-2026-05-19.json',
+        rollupJson: 'history/artifacts/full-reusable-audit-rollup-2026-05-19.json',
       },
     }),
     { exists: allPathsExist },
@@ -136,7 +136,7 @@ test('validateReusableAuditRerunPlaybook fails when required future commands are
   const result = validateReusableAuditRerunPlaybook(
     playbook({
       futureManifestCommands: {
-        check: 'corepack pnpm run audit:manifest:check -- --manifest docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json',
+        check: 'corepack pnpm run audit:manifest:check -- --manifest history/audits/reusable-audit-artifact-manifest-YYYY-MM-DD.json',
       },
     }),
   );
@@ -149,9 +149,9 @@ test('validateReusableAuditRerunPlaybook fails when compareJson does not persist
   const result = validateReusableAuditRerunPlaybook(
     playbook({
       futureManifestCommands: {
-        check: 'corepack pnpm run audit:manifest:check -- --manifest docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json',
-        compare: 'corepack pnpm run audit:manifest:compare -- --base docs/operations/reusable-audit-artifact-manifest-2026-05-19.json --target docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json',
-        compareJson: 'corepack pnpm run audit:manifest:compare -- --base docs/operations/reusable-audit-artifact-manifest-2026-05-19.json --target docs/operations/reusable-audit-artifact-manifest-YYYY-MM-DD.json --json',
+        check: 'corepack pnpm run audit:manifest:check -- --manifest history/audits/reusable-audit-artifact-manifest-YYYY-MM-DD.json',
+        compare: 'corepack pnpm run audit:manifest:compare -- --base history/artifacts/reusable-audit-artifact-manifest-2026-05-19.json --target history/audits/reusable-audit-artifact-manifest-YYYY-MM-DD.json',
+        compareJson: 'corepack pnpm run audit:manifest:compare -- --base history/artifacts/reusable-audit-artifact-manifest-2026-05-19.json --target history/audits/reusable-audit-artifact-manifest-YYYY-MM-DD.json --json',
       },
     }),
   );

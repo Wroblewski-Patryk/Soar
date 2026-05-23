@@ -22,15 +22,15 @@
 - Worker runtime endpoint coverage confirmed via `workers-health-readiness` test suite.
 - `pnpm --filter api test -- src/modules/auth/auth.jwt.test.ts src/modules/profile/apiKey/apiKey.e2e.test.ts src/modules/engine/preTrade.e2e.test.ts` passed (`3` files, `11` tests).
 - `pnpm --filter web exec vitest run src/features/bots/components/BotsManagement.test.tsx` passed (`1` file, `5` tests).
-- Ownership audit reviewed: `docs/security/security-ownership-audit.md` (baseline review date `2026-03-16`).
-- Final security verification: `docs/security/security-audit-verification-2026-03-21.md` (`9` files, `34` tests, all green).
+- Ownership audit reviewed: `history/audits/security-ownership-audit-2026-03-16.md` (baseline review date `2026-03-16`).
+- Final security verification: `history/audits/security-audit-verification-2026-03-21.md` (`9` files, `34` tests, all green).
 - `pnpm --filter api exec prisma migrate deploy` passed (`16` migrations found, no pending migrations).
 - `pnpm --filter api test -- src/modules/orders/orders-positions.e2e.test.ts src/modules/logs/logs.e2e.test.ts src/modules/pagination/pagination-query.test.ts` passed (`3` files, `8` tests).
 - Documentation reviewed: `docs/operations/user-guide.md`, `docs/operations/operator-handbook.md`.
-- QA docs reviewed: `docs/ux/localization-qa.md`, `docs/ux/accessibility-dashboard-audit.md`.
+- QA docs reviewed: `docs/ux/localization-qa.md`, `docs/ux/dashboard-accessibility-baseline.md`.
 - Release docs drafted: `docs/operations/v1-changelog.md`, `docs/operations/v1-migration-notes.md`.
-- Load baseline evidence: `docs/operations/v1-load-baseline-2026-03-21.md` (error rate `0`, p95 `37ms`, p99 `72ms`, threshold gate `PASS`).
-- 2026-03-25 local backup/restore dry-run passed via `pnpm run ops:db:backup-restore:check-local` (artifacts: `docs/operations/_artifacts-db-restore-check-2026-03-25T18-10-26-980Z.txt`, `docs/operations/v1-db-restore-check-2026-03-25T18-10-26-980Z.md`).
+- Load baseline evidence: `history/audits/v1-load-baseline-2026-03-21.md` (error rate `0`, p95 `37ms`, p99 `72ms`, threshold gate `PASS`).
+- 2026-03-25 local backup/restore dry-run passed via `pnpm run ops:db:backup-restore:check-local` (artifacts: `history/artifacts/_artifacts-db-restore-check-2026-03-25T18-10-26-980Z.txt`, `history/evidence/v1-db-restore-check-2026-03-25T18-10-26-980Z.md`).
 - Canonical release gate runbook: `docs/operations/v1-release-gate-runbook.md`.
 
 ## Runtime and Operations Gates
@@ -89,7 +89,7 @@
      - `pnpm run ops:deploy:runtime-freshness -- --base-url https://<target-api> --auth-token <ADMIN_JWT>`
      - `pnpm run ops:deploy:rollback-guard -- --base-url https://<target-api> --auth-token <ADMIN_JWT>`
 8. Binance live-ops verification:
-   - execute and fill `docs/operations/binance-live-ops-verification-checklist-2026-04-06.md`
+   - execute and fill `history/plans/binance-live-ops-verification-checklist-2026-04-06.md`
 
 ## Security and Risk Gates
 - [x] JWT rotation window policy verified.
@@ -108,7 +108,7 @@
 - [x] Operator handbook reviewed (`docs/operations/operator-handbook.md`).
 - [x] Design/accessibility/localization QA docs reviewed.
 - [x] Release notes and migration notes drafted.
-- [x] Launch evidence pack compiled (`docs/operations/v1-launch-evidence-pack.md`).
+- [x] Launch evidence pack compiled (`history/evidence/v1-launch-evidence-pack.md`).
 
 ## RC Sign-Off
 - [x] Engineering sign-off.
@@ -120,22 +120,22 @@
 ## Outstanding External Gates (2026-05-23)
 - current snapshot is `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS` (synced 2026-05-23).
 - Gate 1 is satisfied by
-  `docs/operations/v1-restore-drill-prod-2026-05-23T00-00-00-000Z.md`.
+  `history/evidence/v1-restore-drill-prod-2026-05-23T00-00-00-000Z.md`.
 - Gate 2 is satisfied by
-  `docs/operations/v1-slo-observation-2026-05-23T04-38-07-393Z.md`; the only
+  `history/evidence/v1-slo-observation-2026-05-23T04-38-07-393Z.md`; the only
   `NO_DATA` objective is live order failure ratio because no live order
   attempts occurred.
 - `LIVEIMPORT-03` is satisfied by
-  `docs/operations/liveimport-03-prod-readback-2026-05-23.json` after the
+  `history/artifacts/liveimport-03-prod-readback-2026-05-23.json` after the
   runner used `--symbols auto` and read actual open runtime payloads for
   `SOLUSDT` and `BNBUSDT`; no LIVE order or position was created by Codex.
 - Final protected release gate evidence is satisfied by
-  `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`
+  `history/releases/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`
   and
-  `docs/operations/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`.
+  `history/releases/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`.
 - Execution guide: `docs/operations/v1-rc-external-gates-runbook.md`.
 - SLO definitions and metric mapping: `docs/operations/v1-slo-catalog.md`.
-- Binance live bot-control verification checklist: `docs/operations/binance-live-ops-verification-checklist-2026-04-06.md`.
+- Binance live bot-control verification checklist: `history/plans/binance-live-ops-verification-checklist-2026-04-06.md`.
 
 ### External Gates Quick Commands
 - Collect SLO observation evidence:
@@ -187,17 +187,17 @@
 - Run local cutover dry-run with structured artifact output:
   - `pnpm run ops:cutover:dry-run`
 - Expected outputs:
-  - `docs/operations/_artifacts-slo-window-*.json`
-  - `docs/operations/_artifacts-db-restore-check-*.txt`
-  - `docs/operations/v1-db-restore-check-*.md`
-  - `docs/operations/_artifacts-restore-drill-*.json`
-  - `docs/operations/v1-restore-drill-*.md`
-  - `docs/operations/v1-slo-observation-*.md`
-  - `docs/operations/v1-slo-window-report-7d-*.md`
-  - `docs/operations/v1-slo-window-report-30d-*.md`
+  - `history/artifacts/_artifacts-slo-window-*.json`
+  - `history/artifacts/_artifacts-db-restore-check-*.txt`
+  - `history/evidence/v1-db-restore-check-*.md`
+  - `history/artifacts/_artifacts-restore-drill-*.json`
+  - `history/evidence/v1-restore-drill-*.md`
+  - `history/evidence/v1-slo-observation-*.md`
+  - `history/evidence/v1-slo-window-report-7d-*.md`
+  - `history/evidence/v1-slo-window-report-30d-*.md`
   - `docs/operations/v1-rc-external-gates-status.md`
   - `docs/operations/v1-rc-signoff-record.md`
-  - `docs/operations/_artifacts-rc-evidence-check-latest.json`
-  - `docs/operations/_artifacts-cutover-dry-run-*.json`
-  - `docs/operations/v1-local-cutover-dry-run-*.md`
+  - `history/artifacts/_artifacts-rc-evidence-check-latest.json`
+  - `history/artifacts/_artifacts-cutover-dry-run-*.json`
+  - `history/evidence/v1-local-cutover-dry-run-*.md`
 

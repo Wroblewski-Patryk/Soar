@@ -4,6 +4,7 @@ import { readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const operationsDir = path.resolve(process.cwd(), 'docs', 'operations');
+const historyOperationsDir = path.resolve(process.cwd(), 'history', 'operations');
 
 const parseArgs = () => {
   const args = process.argv.slice(2);
@@ -49,30 +50,30 @@ const normalizeEnvironment = (value) => {
 };
 
 const findLatestSloArtifact = async () => {
-  const entries = await readdir(operationsDir);
+  const entries = await readdir(historyOperationsDir);
   const candidates = entries
     .filter((name) => name.startsWith('_artifacts-slo-window-') && name.endsWith('.json'))
     .sort((a, b) => b.localeCompare(a));
   if (candidates.length === 0) return null;
-  return path.join(operationsDir, candidates[0]);
+  return path.join(historyOperationsDir, candidates[0]);
 };
 
 const findLatestSloWindowReportArtifact = async () => {
-  const entries = await readdir(operationsDir);
+  const entries = await readdir(historyOperationsDir);
   const candidates = entries
     .filter((name) => name.startsWith('v1-slo-window-report-') && name.endsWith('.json'))
     .sort((a, b) => b.localeCompare(a));
   if (candidates.length === 0) return null;
-  return path.join(operationsDir, candidates[0]);
+  return path.join(historyOperationsDir, candidates[0]);
 };
 
 const findLatestDbRestoreArtifact = async () => {
-  const entries = await readdir(operationsDir);
+  const entries = await readdir(historyOperationsDir);
   const candidates = entries
     .filter((name) => name.startsWith('_artifacts-db-restore-check-') && name.endsWith('.txt'))
     .sort((a, b) => b.localeCompare(a));
   if (candidates.length === 0) return null;
-  return path.join(operationsDir, candidates[0]);
+  return path.join(historyOperationsDir, candidates[0]);
 };
 
 const evaluateBackupRestoreGate = async () => {

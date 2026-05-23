@@ -31,7 +31,7 @@ const requiredCleanupCheckFragments = [
 const parseArgs = () => {
   const args = process.argv.slice(2);
   const options = {
-    plan: 'docs/operations/audit-remediation-master-plan-2026-05-19.json',
+    plan: 'history/artifacts/audit-remediation-master-plan-2026-05-19.json',
     json: false,
     help: false,
   };

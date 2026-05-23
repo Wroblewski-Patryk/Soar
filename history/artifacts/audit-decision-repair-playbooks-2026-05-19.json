@@ -1,0 +1,112 @@
+{
+  "date": "2026-05-19",
+  "status": "historical_playbook_after_decisions_accepted",
+  "sourceDecisionPacket": "history/audits/audit-decision-packet-2026-05-19.md",
+  "architectureDecisionApplied": true,
+  "runtimeBehaviorChanged": false,
+  "productionJourneyRun": false,
+  "liveExchangeMutationRun": false,
+  "playbooks": [
+    {
+      "decisionId": "DEC-AUD-001",
+      "auditIds": [
+        "AUD-01",
+        "AUD-ARCH-001"
+      ],
+      "options": [
+        {
+          "option": 1,
+          "name": "Current Binance + Gate.io implementation truth",
+          "validation": [
+            "corepack pnpm run docs:parity:check",
+            "focused API exchange capability/registry/boundary tests",
+            "corepack pnpm --dir apps/api run typecheck",
+            "corepack pnpm run quality:guardrails",
+            "git diff --check"
+          ]
+        },
+        {
+          "option": 2,
+          "name": "Approved staged Gate.io adapter scope",
+          "validation": [
+            "corepack pnpm run docs:parity:check",
+            "focused API exchange capability/registry/boundary tests",
+            "corepack pnpm --dir apps/api run typecheck",
+            "corepack pnpm run quality:guardrails",
+            "git diff --check"
+          ]
+        },
+        {
+          "option": 3,
+          "name": "Narrow back to Binance-only",
+          "validation": [
+            "exchange option/code compatibility proof",
+            "focused API and Web exchange capability tests",
+            "corepack pnpm --dir apps/api run typecheck",
+            "corepack pnpm run quality:guardrails",
+            "git diff --check"
+          ]
+        }
+      ]
+    },
+    {
+      "decisionId": "DEC-AUD-002",
+      "auditIds": [
+        "AUD-20",
+        "AUD-AI-003",
+        "AUD-AI-004"
+      ],
+      "options": [
+        {
+          "option": 1,
+          "name": "Implement hot-path assistant orchestration",
+          "validation": [
+            "existing assistant orchestrator tests",
+            "engine focused service/unit pack",
+            "DB-backed runtime/pre-trade/orchestration smoke",
+            "new assistant hot-path fail-closed/trace tests",
+            "AI_TESTING_PROTOCOL.md reproducible red-team scenarios",
+            "corepack pnpm --dir apps/api run typecheck",
+            "corepack pnpm run quality:guardrails",
+            "git diff --check"
+          ]
+        },
+        {
+          "option": 2,
+          "name": "Narrow to foundation/dry-run truth",
+          "validation": [
+            "corepack pnpm run docs:parity:check",
+            "assistant orchestrator focused tests",
+            "bot assistant config/dry-run e2e if claimed",
+            "focused Web assistant route tests",
+            "corepack pnpm run quality:guardrails",
+            "git diff --check"
+          ]
+        },
+        {
+          "option": 3,
+          "name": "Keep current claim as explicit future-state",
+          "validation": [
+            "corepack pnpm run docs:parity:check",
+            "assistant orchestrator focused tests",
+            "focused Web assistant route tests",
+            "corepack pnpm run quality:guardrails",
+            "git diff --check"
+          ]
+        }
+      ]
+    }
+  ],
+  "selectedDecisions": [
+    {
+      "decisionId": "DEC-AUD-001",
+      "selectedOption": 1,
+      "status": "accepted"
+    },
+    {
+      "decisionId": "DEC-AUD-002",
+      "selectedOption": 2,
+      "status": "accepted_deferred_scope"
+    }
+  ]
+}

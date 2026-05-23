@@ -242,7 +242,7 @@ const remediationCatalog = {
       'or LIVEIMPORT_READBACK_AUTH_EMAIL + LIVEIMPORT_READBACK_AUTH_PASSWORD',
     ],
     command:
-      '$expectedSha = git rev-parse HEAD; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output docs/operations/liveimport-03-prod-readback-2026-05-08.json',
+      '$expectedSha = git rev-parse HEAD; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output history/evidence/liveimport-03-prod-readback-2026-05-08.json',
   },
   'env:rollback guard auth': {
     title: 'Provide rollback guard auth',
@@ -311,7 +311,7 @@ const remediationCatalog = {
     title: 'Collect LIVEIMPORT-03 runtime readback',
     action: 'Run the read-only collector after build-info confirms current HEAD and read-only auth is available.',
     command:
-      '$expectedSha = git rev-parse HEAD; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output docs/operations/liveimport-03-prod-readback-2026-05-08.json',
+      '$expectedSha = git rev-parse HEAD; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output history/evidence/liveimport-03-prod-readback-2026-05-08.json',
   },
   'evidence:prodUiClickthrough:missing': {
     title: 'Run production UI clickthrough to PASS',

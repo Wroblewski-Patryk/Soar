@@ -112,7 +112,7 @@ Out of scope:
 
 ## 8. Test Coverage and Evidence
 - Primary local audit evidence:
-  - `docs/operations/backtests-reports-audit-2026-05-19.md`
+  - `history/audits/backtests-reports-audit-2026-05-19.md`
   - Web backtests/reports pack: `15` files / `37` tests.
   - API backtests/reports pack: `13` files / `114` tests.
 - Representative API tests:

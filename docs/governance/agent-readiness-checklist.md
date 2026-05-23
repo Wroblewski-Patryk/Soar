@@ -12,7 +12,7 @@ a new or newly adopted project.
       and deployment posture.
 - [ ] `.codex/context/PROJECT_STATE.md` contains real commands and paths.
 - [ ] `.codex/context/TASK_BOARD.md` has an actionable `READY` or `NOW` item.
-- [ ] `docs/README.md` points to the canonical docs that actually exist.
+- [ ] `docs/documentation-overview.md` points to the canonical docs that actually exist.
 - [ ] `docs/planning/mvp-next-commits.md` and the task board agree on the next
       task.
 

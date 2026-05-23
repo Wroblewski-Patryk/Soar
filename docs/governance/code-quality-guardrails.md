@@ -24,7 +24,7 @@ the `SCALE-A` wave and which new debt is now blocked by repository guardrails.
 Allowlist entries are permitted only when all conditions hold:
 
 1. the offender already exists in the repository,
-2. the file is explicitly inventoried in `docs/modules/code-quality-maintainability-inventory-2026-04-21.md`,
+2. the file is explicitly inventoried in `history/audits/code-quality-maintainability-inventory-2026-04-21.md`,
 3. a queued `CQLT-*` task exists to remove or split it,
 4. the allowlist entry is single-file and not wildcard-based.
 

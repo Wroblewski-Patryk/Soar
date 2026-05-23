@@ -12,9 +12,12 @@ and coding agents.
   - implementation-facing deep-dives
   - source paths, dependencies, routes, test entrypoints
 - `docs/planning/`
-  - active queue, rollout sequencing, unresolved decisions
+  - active queue, durable planning, rollout sequencing, unresolved decisions
 - `docs/operations/`
-  - deployment, smoke checks, rollback, evidence, runbooks
+  - deployment, smoke checks, rollback, living runbooks, current gates
+- `history/`
+  - semantic historical archive:
+    `tasks/`, `plans/`, `audits/`, `evidence/`, `releases/`, `artifacts/`
 - `docs/product/`
   - product intent, scope, limits, and user-facing policy
 - `docs/ux/`
@@ -22,7 +25,7 @@ and coding agents.
 
 ## Architecture Read Order
 When work touches runtime behavior, read in this order:
-1. `docs/architecture/README.md`
+1. `docs/architecture/architecture-documentation.md`
 2. `docs/architecture/01_overview-and-principles.md`
 3. the most relevant numbered architecture files for the task
 4. related module deep-dives in `docs/modules/`
@@ -32,6 +35,7 @@ When work touches runtime behavior, read in this order:
   live in `docs/architecture/`.
 - Do not leave accepted architecture only in:
   - `docs/planning/*.md`
+  - `history/tasks/*.md`
   - closure notes
   - task summaries
   - module deep-dives
@@ -50,7 +54,8 @@ When work touches runtime behavior, read in this order:
 ## Historical Docs Rule
 - Closure snapshots, remediation deltas, and audits are historical references.
 - Keep them out of the canonical reading path.
-- If retained, they should be archived or clearly marked non-canonical.
+- If retained, they should live under `history/` or be clearly marked
+  non-canonical.
 
 ## When To Update Which Docs
 ### Update `docs/architecture/` when:
@@ -67,9 +72,22 @@ When work touches runtime behavior, read in this order:
 ### Update `docs/planning/` when:
 - queue or active wave changed
 - a real unresolved decision appears
+- durable planning or roadmap truth changes
 
 ### Update `docs/operations/` when:
 - deployment, smoke, rollback, or runbook behavior changed
+- current gate templates or operator procedures changed
+
+### Update `history/` when:
+- a task contract is completed: `history/tasks/`
+- an old plan, closure note, or remediation note is retained: `history/plans/`
+- an audit, baseline, scan, inventory, or parity report is produced:
+  `history/audits/`
+- readable proof or verification evidence is produced: `history/evidence/`
+- release gates, preflights, RC records, sign-offs, or scorecards are produced:
+  `history/releases/`
+- raw JSON, logs, screenshots, CSV, XLSX, or move manifests are produced:
+  `history/artifacts/`
 
 ## Anti-Drift Guardrails
 - Prefer one canonical statement over repeated similar wording.

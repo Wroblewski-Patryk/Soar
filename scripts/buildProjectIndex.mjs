@@ -342,8 +342,8 @@ const parseArgs = () => {
   }
 
   options.markdownOutput =
-    options.markdownOutput || `docs/operations/project-index-${options.today}.md`;
-  options.jsonOutput = options.jsonOutput || `docs/operations/project-index-${options.today}.json`;
+    options.markdownOutput || `history/audits/project-index-${options.today}.md`;
+  options.jsonOutput = options.jsonOutput || `history/audits/project-index-${options.today}.json`;
   return options;
 };
 

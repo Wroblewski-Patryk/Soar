@@ -1,0 +1,87 @@
+{
+  "handoffId": "FULL-REUSABLE-AUDIT-HANDOFF-2026-05-19",
+  "date": "2026-05-19",
+  "authorRole": "Codex Planning/Architecture Agent",
+  "branch": "codex/v1-proof-and-ops-evidence",
+  "stage": "verification after accepted architecture decisions",
+  "operationMode": "ARCHITECT",
+  "relatedTaskIds": [
+    "FULL-REUSABLE-AUDIT-ROLLUP-2026-05-19",
+    "AUDIT-DECISION-PACKET-2026-05-19",
+    "AUDIT-DECISION-REPAIR-PLAYBOOKS-2026-05-19",
+    "AUDIT-MACHINE-READABLE-DECISION-LINKS-2026-05-19",
+    "FULL-REUSABLE-AUDIT-HANDOFF-2026-05-19"
+  ],
+  "sourceOfTruth": {
+    "product": ".codex/context/PROJECT_STATE.md",
+    "architecture": "docs/architecture/**",
+    "auditRegistry": "docs/analysis/reusable-audit-registry.md",
+    "auditBaseline": "history/audits/audit-baseline-2026-05-19.md",
+    "handoff": "history/audits/full-reusable-audit-handoff-2026-05-19.md",
+    "handoffJson": "history/artifacts/full-reusable-audit-handoff-2026-05-19.json",
+    "rollup": "history/audits/full-reusable-audit-rollup-2026-05-19.md",
+    "rollupJson": "history/artifacts/full-reusable-audit-rollup-2026-05-19.json",
+    "rerunPlaybook": "history/audits/reusable-audit-rerun-playbook-2026-05-19.md",
+    "rerunPlaybookJson": "history/artifacts/reusable-audit-rerun-playbook-2026-05-19.json",
+    "toolingIndex": "history/audits/reusable-audit-tooling-index-2026-05-19.md",
+    "toolingIndexJson": "history/artifacts/reusable-audit-tooling-index-2026-05-19.json",
+    "decisionPacket": "history/audits/audit-decision-packet-2026-05-19.md",
+    "repairPlaybooks": "history/audits/audit-decision-repair-playbooks-2026-05-19.md",
+    "taskBoard": ".codex/context/TASK_BOARD.md",
+    "nextSteps": ".agents/state/next-steps.md",
+    "riskRegister": ".agents/state/risk-register.md",
+    "requirementsMatrix": ".agents/state/requirements-verification-matrix.md",
+    "operationsAudit": "history/audits/operations-release-deployment-audit-2026-05-19.md"
+  },
+  "rollupSummary": {
+    "scope": "AUD-00 through AUD-23",
+    "currentOrCurrentLocal": 23,
+    "partial": 0,
+    "failedDecisionRequired": 0,
+    "deferred": 1,
+    "currentFromPriorBaseline": 0
+  },
+  "openDecisions": [],
+  "residualRisks": [
+    {
+      "id": "AUD-19",
+      "summary": "Production readiness remains historical for deployed 457bce05 and must be rerun before any new production readiness claim."
+    },
+    {
+      "id": "GATEIO-PRODUCTION-LIVE",
+      "summary": "Gate.io production/live readiness requires exact exchange, market type, and operation proof before any production readiness claim."
+    },
+    {
+      "id": "ASSISTANT-HOT-PATH",
+      "summary": "Hot-path assistant orchestration requires separate implementation, persisted traces, fail-closed integration, and AI red-team proof before any runtime AI trading claim."
+    }
+  ],
+  "forbiddenWithoutApproval": [
+    "production data mutation",
+    "LIVE order submit/cancel/close",
+    "exchange-side mutation",
+    "runtime AI hot-path behavior without a separate approved AI/security task"
+  ],
+  "latestValidation": [
+    "corepack pnpm run audit:manifest:verify PASS after accepted decisions",
+    "corepack pnpm run audit:handoff:check PASS",
+    "corepack pnpm run docs:parity:check PASS",
+    "focused exchange API pack PASS: 4 files / 21 tests",
+    "focused assistant API pack PASS: 2 files / 6 tests",
+    "focused assistant Web route pack PASS: 2 files / 3 tests",
+    "corepack pnpm run quality:guardrails PASS",
+    "git diff --check PASS with line-ending warnings only",
+    "no chrome-headless-shell process left running",
+    "no listeners on local 5432 or 6379",
+    "docker compose ps showed no running services"
+  ],
+  "recommendedNextTask": {
+    "summary": "Run accepted decision-sync validation, then keep AUD-19 as the next production-readiness gate before any deploy/push readiness claim.",
+    "owner": "Planning/Product Docs for validation; Ops/Release for any later AUD-19 production gate.",
+    "validationSource": "history/audits/audit-decision-repair-playbooks-2026-05-19.md"
+  },
+  "runtimeBehaviorChanged": false,
+  "architectureDecisionApplied": true,
+  "productionJourneyRun": false,
+  "liveExchangeMutationRun": false
+}

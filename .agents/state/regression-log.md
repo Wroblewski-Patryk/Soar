@@ -5,7 +5,7 @@ Last updated: 2026-05-11
 ## Open Regressions
 
 The broad V1 action audit remains open as a coverage gap, not a single code
-regression. See `docs/operations/v1-product-action-audit-matrix-2026-05-10.md`.
+regression. See `history/audits/v1-product-action-audit-matrix-2026-05-10.md`.
 
 ## Fixed Or Prevented In This Slice
 

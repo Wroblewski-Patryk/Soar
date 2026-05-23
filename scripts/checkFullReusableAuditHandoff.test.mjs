@@ -7,22 +7,22 @@ const sourceOfTruth = {
   product: '.codex/context/PROJECT_STATE.md',
   architecture: 'docs/architecture/**',
   auditRegistry: 'docs/analysis/reusable-audit-registry.md',
-  auditBaseline: 'docs/analysis/audit-baseline-2026-05-19.md',
-  handoff: 'docs/operations/full-reusable-audit-handoff-2026-05-19.md',
-  handoffJson: 'docs/operations/full-reusable-audit-handoff-2026-05-19.json',
-  rollup: 'docs/operations/full-reusable-audit-rollup-2026-05-19.md',
-  rollupJson: 'docs/operations/full-reusable-audit-rollup-2026-05-19.json',
-  rerunPlaybook: 'docs/operations/reusable-audit-rerun-playbook-2026-05-19.md',
-  rerunPlaybookJson: 'docs/operations/reusable-audit-rerun-playbook-2026-05-19.json',
-  toolingIndex: 'docs/operations/reusable-audit-tooling-index-2026-05-19.md',
-  toolingIndexJson: 'docs/operations/reusable-audit-tooling-index-2026-05-19.json',
-  decisionPacket: 'docs/operations/audit-decision-packet-2026-05-19.md',
-  repairPlaybooks: 'docs/operations/audit-decision-repair-playbooks-2026-05-19.md',
+  auditBaseline: 'history/audits/audit-baseline-2026-05-19.md',
+  handoff: 'history/audits/full-reusable-audit-handoff-2026-05-19.md',
+  handoffJson: 'history/artifacts/full-reusable-audit-handoff-2026-05-19.json',
+  rollup: 'history/audits/full-reusable-audit-rollup-2026-05-19.md',
+  rollupJson: 'history/artifacts/full-reusable-audit-rollup-2026-05-19.json',
+  rerunPlaybook: 'history/audits/reusable-audit-rerun-playbook-2026-05-19.md',
+  rerunPlaybookJson: 'history/artifacts/reusable-audit-rerun-playbook-2026-05-19.json',
+  toolingIndex: 'history/audits/reusable-audit-tooling-index-2026-05-19.md',
+  toolingIndexJson: 'history/artifacts/reusable-audit-tooling-index-2026-05-19.json',
+  decisionPacket: 'history/audits/audit-decision-packet-2026-05-19.md',
+  repairPlaybooks: 'history/audits/audit-decision-repair-playbooks-2026-05-19.md',
   taskBoard: '.codex/context/TASK_BOARD.md',
   nextSteps: '.agents/state/next-steps.md',
   riskRegister: '.agents/state/risk-register.md',
   requirementsMatrix: '.agents/state/requirements-verification-matrix.md',
-  operationsAudit: 'docs/operations/operations-release-deployment-audit-2026-05-19.md',
+  operationsAudit: 'history/audits/operations-release-deployment-audit-2026-05-19.md',
 };
 
 const handoff = (overrides = {}) => ({
@@ -108,14 +108,14 @@ test('validateFullReusableAuditHandoff fails when required source keys are missi
 
 test('validateFullReusableAuditHandoff fails when referenced source paths are missing', () => {
   const result = validateFullReusableAuditHandoff(handoff(), {
-    exists: (relativePath) => relativePath !== 'docs/operations/full-reusable-audit-rollup-2026-05-19.md',
+    exists: (relativePath) => relativePath !== 'history/audits/full-reusable-audit-rollup-2026-05-19.md',
   });
 
   assert.equal(result.status, 'FAIL');
   assert.deepEqual(result.sourceOfTruth.missingPaths, [
     {
       key: 'rollup',
-      path: 'docs/operations/full-reusable-audit-rollup-2026-05-19.md',
+      path: 'history/audits/full-reusable-audit-rollup-2026-05-19.md',
     },
   ]);
 });

@@ -75,10 +75,10 @@ Read these before starting non-trivial work:
 
 ## Canonical Docs
 
-- `docs/README.md`
+- `docs/documentation-overview.md`
 - `docs/product/overview.md`
 - `docs/product/product.md`
-- `docs/architecture/README.md`
+- `docs/architecture/architecture-documentation.md`
 - `docs/architecture/01_overview-and-principles.md`
 - `docs/architecture/architecture-source-of-truth.md`
 - `docs/architecture/reference/runtime-signal-merge-contract.md`
@@ -275,13 +275,17 @@ If any check fails, fix before closure.
 - Keep repository artifacts in English.
 - Communicate with the user in the user's language.
 - Never reference sibling repositories or `!template` paths from project docs.
-- Keep root minimal. Project documentation belongs in `docs/`.
+- Keep root minimal. Current project documentation belongs in `docs/`;
+  completed task contracts belong in `history/tasks/`, old plans in
+  `history/plans/`, audits in `history/audits/`, readable proof in
+  `history/evidence/`, release packets in `history/releases/`, and raw
+  generated output in `history/artifacts/`.
 - Every meaningful change updates at least one relevant source-of-truth file:
   - `.codex/context/TASK_BOARD.md`
   - `.codex/context/PROJECT_STATE.md`
   - `.codex/context/LEARNING_JOURNAL.md` when a recurring pitfall is confirmed
-  - planning, architecture, operations, or UX docs when behavior or structure
-    changed
+  - planning, architecture, operations, history, or UX docs when behavior or
+    structure changed
 - Keep commits tiny, single-purpose, and reversible.
 - Scope lock is mandatory:
   - implement only what the user explicitly requested or what is required by

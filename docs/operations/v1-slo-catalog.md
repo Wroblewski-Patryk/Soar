@@ -80,8 +80,8 @@ Purpose: define measurable service objectives for MVP/V1 runtime and bind each o
   - failure count = orchestrator invocation failures
 - Source evidence:
   - benchmark command: `pnpm --filter api run test:load:assistant-profile`
-  - artifact: `docs/operations/_artifacts-assistant-load-2026-03-23.json`
-  - report: `docs/operations/v1-assistant-load-profile-2026-03-23.md`
+  - artifact: `history/artifacts/_artifacts-assistant-load-2026-03-23.json`
+  - report: `history/plans/v1-assistant-load-profile-2026-03-23.md`
 
 ## Alert-to-SLO Mapping
 - `exchange_live_order_failures_spike` maps to SLO-6 burn risk.

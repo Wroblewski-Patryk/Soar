@@ -3,7 +3,7 @@
 Updated: 2026-05-01
 
 Purpose: keep one canonical mapping of web routes to frontend feature ownership, API contracts, and security/operational guardrails.
-Latest docs parity artifact: `docs/operations/_artifacts-docs-parity-2026-04-16T22-37-19-622Z.json` (`PASS`).
+Latest docs parity artifact: `history/artifacts/_artifacts-docs-parity-2026-04-16T22-37-19-622Z.json` (`PASS`).
 
 ## Canonical Web Route Inventory (V1)
 ### Dashboard

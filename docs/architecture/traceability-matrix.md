@@ -37,6 +37,6 @@ means the trace is incomplete or needs a stronger future evidence pass.
 Any new feature or route must update:
 - this matrix,
 - `docs/architecture/codebase-map.md` if structure changes,
-- `docs/pipelines/index.md` or a pipeline doc if flow changes,
-- `docs/modules/index.md` and relevant module deep dives if ownership changes,
+- `docs/pipelines/pipeline-registry.md` or a pipeline doc if flow changes,
+- `docs/modules/module-registry.md` and relevant module deep dives if ownership changes,
 - `docs/analysis/documentation-drift.md` if a new gap is discovered.

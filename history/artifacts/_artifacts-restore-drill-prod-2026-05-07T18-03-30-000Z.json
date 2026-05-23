@@ -1,0 +1,24 @@
+{
+  "status": "FAIL",
+  "profile": "prod",
+  "startedAt": "2026-05-07T18:03:30.000Z",
+  "endedAt": "2026-05-07T18:03:30.000Z",
+  "command": "not executed - production database/Coolify access unavailable in this shell",
+  "checks": {
+    "commandExitCodeZero": false,
+    "rawArtifactPresent": false,
+    "markdownReportPresent": true,
+    "backupRestoreResultPass": false
+  },
+  "backupRestore": {
+    "result": "NOT_EXECUTED",
+    "rawArtifact": null,
+    "reportArtifact": "history/evidence/v1-restore-drill-prod-2026-05-07T18-03-30-000Z.md"
+  },
+  "blockers": [
+    "missing_production_database_access",
+    "missing_coolify_restore_drill_execution"
+  ],
+  "stdoutPreview": "",
+  "stderrPreview": ""
+}

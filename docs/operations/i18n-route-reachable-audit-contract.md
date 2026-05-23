@@ -3,7 +3,7 @@
 ## Command
 - `pnpm i18n:audit:route-reachable:web`
 - Optional output override:
-  - `pnpm i18n:audit:route-reachable:web -- --out docs/operations/_artifacts-custom.json`
+  - `pnpm i18n:audit:route-reachable:web -- --out history/artifacts/_artifacts-custom.json`
 
 ## Exit Semantics
 - `0`: audit completed and JSON artifact written.
@@ -13,7 +13,7 @@
 
 ## Output File (JSON)
 Default output path:
-- `docs/operations/_artifacts-l10nq-d-coverage-audit-latest.json`
+- `history/artifacts/_artifacts-l10nq-d-coverage-audit-latest.json`
 
 Top-level schema:
 ```json

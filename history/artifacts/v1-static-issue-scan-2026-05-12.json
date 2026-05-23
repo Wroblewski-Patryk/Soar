@@ -1,0 +1,45 @@
+{
+  "generatedAt": "2026-05-12T18:52:56.111Z",
+  "evidenceDate": "2026-05-12",
+  "projectIndex": "history/artifacts/project-index-2026-05-12.json",
+  "summary": {
+    "totalFindings": 3,
+    "bySeverity": {
+      "P1": 1,
+      "P0": 1,
+      "P2": 1
+    },
+    "byCategory": {
+      "v1-proof-gap": 2,
+      "queue-blocked": 1
+    },
+    "sourceFilesScanned": 658,
+    "sourceMarkers": 29
+  },
+  "findings": [
+    {
+      "id": "V1_BOTS_PROD_CLICKTHROUGH_OPEN",
+      "severity": "P1",
+      "category": "v1-proof-gap",
+      "title": "Bots is locally proven but still lacks production-safe clickthrough",
+      "evidence": "Production-safe non-destructive clickthrough for bot actions; local action proof already exists.",
+      "recommendation": "Run or add non-destructive production clickthrough on throwaway fixtures before final V1 claim."
+    },
+    {
+      "id": "V1_OPERATIONS_BLOCKED_AUTH",
+      "severity": "P0",
+      "category": "v1-proof-gap",
+      "title": "Operations remains BLOCKED_AUTH",
+      "evidence": "Rollback PASS, liveimport readback, authenticated SLO, release gate, and alerts evidence.",
+      "recommendation": "Execute the mapped proof path from project index priority 19."
+    },
+    {
+      "id": "QUEUE_PROTECTED_BLOCKERS_OPEN",
+      "severity": "P2",
+      "category": "queue-blocked",
+      "title": "2 protected/auth queue blockers remain open",
+      "evidence": ".codex/context/TASK_BOARD.md:751, docs/planning/mvp-next-commits.md:656 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | .codex/context/TASK_BOARD.md:5273, docs/planning/mvp-next-commits.md:4725 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`",
+      "recommendation": "Keep these open until approved protected auth, production-safe fixtures, or required approvals are available."
+    }
+  ]
+}

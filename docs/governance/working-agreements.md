@@ -1,4 +1,4 @@
-﻿# Working Agreements
+# Working Agreements
 
 - Tiny, single-purpose changes.
 - Docs and implementation stay in sync.
@@ -20,24 +20,24 @@
 - Planning updates must not silently reintroduce non-English canonical policy text.
 
 ### Backlog: Legacy Non-English Docs To Normalize
-- `docs/planning/bots-menu-ia-plan-2026-04-01.md`
-- `docs/planning/dashboard-sidebar-control-prune-plan-2026-04-01.md`
-- `docs/planning/dashboard-trades-filter-polish-plan-2026-04-02.md`
-- `docs/planning/exchanges-module-manual-position-plan-2026-04-02.md`
-- `docs/planning/i18n-dashboard-bots-menu-inventory-2026-04-02.md`
-- `docs/planning/typecheck-adoption-plan-2026-04-02.md`
+- `history/plans/bots-menu-ia-plan-2026-04-01.md`
+- `history/plans/dashboard-sidebar-control-prune-plan-2026-04-01.md`
+- `history/plans/dashboard-trades-filter-polish-plan-2026-04-02.md`
+- `history/plans/exchanges-module-manual-position-plan-2026-04-02.md`
+- `history/audits/i18n-dashboard-bots-menu-inventory-2026-04-02.md`
+- `history/plans/typecheck-adoption-plan-2026-04-02.md`
 
 ## Documentation Parity Policy (Mandatory)
 - Treat documentation parity as release-blocking for structural changes.
 - Any change in `apps/api/src/modules/*` directory inventory must include same-change update of `docs/modules/system-modules.md`.
 - Any change in `apps/web/src/features/*` directory inventory must include same-change update of `docs/modules/system-modules.md`.
 - Any change in route inventory under `apps/web/src/app/**/page.tsx` must include same-change update of `docs/architecture/reference/dashboard-route-map.md`.
-- Any moved/renamed canonical docs file must include same-change update of `docs/README.md`.
+- Any moved/renamed canonical docs file must include same-change update of `docs/documentation-overview.md`.
 - Delivery queue updates must be reflected in both `docs/planning/mvp-next-commits.md` and `docs/planning/mvp-execution-plan.md` in the same task.
 
 ## Documentation Parity Sustainment (Cadence and Ownership)
 - Cadence:
-  - Run `pnpm run docs:parity:check -- --json --output docs/operations/_artifacts-docs-parity-<UTC_TIMESTAMP>.json` at least once per week.
+  - Run `pnpm run docs:parity:check -- --json --output history/artifacts/_artifacts-docs-parity-<UTC_TIMESTAMP>.json` at least once per week.
   - Run the same command immediately after any route/module inventory change, before closing the task.
 - Ownership:
   - The active delivery agent for the current queue task is responsible for generating parity evidence and syncing canonical docs in the same commit.

@@ -21,7 +21,7 @@ Use this checklist when initializing this repository.
 ## 4) Product and Architecture Baseline
 - Fill `docs/product/product.md`.
 - Fill `docs/product/mvp_scope.md`.
-- Fill the canonical architecture set starting from `docs/architecture/README.md`.
+- Fill the canonical architecture set starting from `docs/architecture/architecture-documentation.md`.
 - Fill `docs/architecture/01_overview-and-principles.md` through `docs/architecture/12_documentation-governance.md` as needed for the project.
 - Fill `docs/engineering/local-development.md` and `docs/engineering/testing.md` with exact tooling and verification flow.
 

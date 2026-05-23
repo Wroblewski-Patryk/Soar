@@ -1,0 +1,272 @@
+{
+  "manifestId": "REUSABLE-AUDIT-ARTIFACT-MANIFEST-2026-05-19",
+  "date": "2026-05-19",
+  "sourceChain": {
+    "registry": "docs/analysis/reusable-audit-registry.md",
+    "baseline": "history/audits/audit-baseline-2026-05-19.md",
+    "rollup": "history/audits/full-reusable-audit-rollup-2026-05-19.md",
+    "rollupJson": "history/artifacts/full-reusable-audit-rollup-2026-05-19.json",
+    "handoff": "history/audits/full-reusable-audit-handoff-2026-05-19.md",
+    "handoffJson": "history/artifacts/full-reusable-audit-handoff-2026-05-19.json",
+    "rerunPlaybook": "history/audits/reusable-audit-rerun-playbook-2026-05-19.md",
+    "rerunPlaybookJson": "history/artifacts/reusable-audit-rerun-playbook-2026-05-19.json",
+    "toolingIndex": "history/audits/reusable-audit-tooling-index-2026-05-19.md",
+    "toolingIndexJson": "history/artifacts/reusable-audit-tooling-index-2026-05-19.json",
+    "remediationPlan": "history/audits/audit-remediation-master-plan-2026-05-19.md",
+    "remediationPlanJson": "history/artifacts/audit-remediation-master-plan-2026-05-19.json",
+    "decisionPacket": "history/audits/audit-decision-packet-2026-05-19.md",
+    "repairPlaybooks": "history/audits/audit-decision-repair-playbooks-2026-05-19.md"
+  },
+  "summary": {
+    "currentOrCurrentLocal": 23,
+    "partial": 0,
+    "failedDecisionRequired": 0,
+    "deferred": 1
+  },
+  "manifestValidation": {
+    "pathExistenceChecked": true,
+    "pathsChecked": 91,
+    "missingPaths": 0
+  },
+  "safetyBoundaries": {
+    "productionDataMutation": false,
+    "liveOrderCancelClose": false,
+    "exchangeSideMutation": false,
+    "architectureDecisionApplied": true,
+    "runtimeBehaviorChanged": false
+  },
+  "audits": [
+    {
+      "id": "AUD-00",
+      "status": "current local",
+      "reports": [
+        "history/plans/project-index-2026-05-19.md",
+        "history/artifacts/project-index-2026-05-19.json",
+        "history/audits/v1-static-issue-scan-2026-05-19.md",
+        "history/artifacts/v1-static-issue-scan-2026-05-19.json"
+      ],
+      "task": "history/audits/requirements-delivery-map-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-01",
+      "status": "current after accepted Binance + Gate.io architecture decision",
+      "reports": [
+        "history/audits/architecture-exchange-scope-wording-audit-2026-05-19.md",
+        "history/artifacts/architecture-exchange-scope-wording-audit-2026-05-19.json"
+      ],
+      "task": "history/audits/architecture-exchange-scope-wording-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-02",
+      "status": "current for source-of-truth alignment after follow-up",
+      "reports": [
+        "history/audits/requirements-delivery-map-audit-2026-05-19.md",
+        "history/artifacts/requirements-delivery-map-audit-2026-05-19.json"
+      ],
+      "task": "history/audits/requirements-delivery-map-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-03",
+      "status": "current local",
+      "reports": [
+        "history/audits/api-endpoint-docs-parity-2026-05-19/api-endpoint-docs-parity-2026-05-19.md",
+        "history/audits/api-endpoint-docs-parity-2026-05-19/api-endpoint-docs-parity-2026-05-19.json"
+      ],
+      "task": "history/audits/api-endpoint-docs-parity-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-04",
+      "status": "current local",
+      "reports": [
+        "history/audits/route-state-audit-2026-05-19/route-state-audit-2026-05-19.md",
+        "history/audits/route-state-audit-2026-05-19/route-state-audit-2026-05-19.json"
+      ],
+      "task": "history/audits/authenticated-route-state-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-05",
+      "status": "current local / historical production",
+      "reports": [
+        "history/audits/route-state-audit-2026-05-19/route-state-audit-2026-05-19.md",
+        "history/audits/audit-baseline-2026-05-19.md"
+      ],
+      "task": "history/audits/authenticated-route-state-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-06",
+      "status": "current local / historical production-safe",
+      "reports": [
+        "history/audits/security-privacy-audit-2026-05-19.md",
+        "history/artifacts/security-privacy-audit-2026-05-19.json"
+      ],
+      "task": "history/audits/security-privacy-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-07",
+      "status": "current local with mitigated finding",
+      "reports": [
+        "history/audits/data-model-migrations-audit-2026-05-19.md",
+        "history/artifacts/data-model-migrations-audit-2026-05-19.json"
+      ],
+      "task": "history/audits/data-model-migrations-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-08",
+      "status": "current local / historical production-safe",
+      "reports": [
+        "history/audits/workers-runtime-operations-audit-2026-05-19.md",
+        "history/artifacts/workers-runtime-operations-audit-2026-05-19.json"
+      ],
+      "task": "history/audits/workers-runtime-operations-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-09",
+      "status": "current local exact capability matrix and neutral exchange-owned type aliases",
+      "reports": [
+        "history/audits/exchange-capability-truth-audit-2026-05-19.md",
+        "history/artifacts/exchange-capability-truth-audit-2026-05-19.json"
+      ],
+      "tasks": [
+        "history/audits/exchange-capability-truth-audit-2026-05-19-task.md",
+        "history/audits/aud09-exact-exchange-capability-matrix-2026-05-19-task.md",
+        "history/tasks/aud09-neutral-exchange-type-aliases-2026-05-19-task.md"
+      ]
+    },
+    {
+      "id": "AUD-10",
+      "status": "current local / historical production-safe",
+      "reports": [
+        "history/audits/bots-runtime-truth-audit-2026-05-19.md",
+        "history/artifacts/bots-runtime-truth-audit-2026-05-19.json"
+      ],
+      "task": "history/audits/bots-runtime-truth-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-11",
+      "status": "current local / production mutation not exercised",
+      "reports": [
+        "history/audits/engine-trading-decision-flow-audit-2026-05-19.md",
+        "history/artifacts/engine-trading-decision-flow-audit-2026-05-19.json"
+      ],
+      "task": "history/audits/engine-trading-decision-flow-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-12",
+      "status": "current local / historical production-safe PAPER",
+      "reports": [
+        "history/audits/orders-manual-trading-audit-2026-05-19.md",
+        "history/artifacts/orders-manual-trading-audit-2026-05-19.json"
+      ],
+      "task": "history/audits/orders-manual-trading-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-13",
+      "status": "current local / historical production-safe PAPER",
+      "reports": [
+        "history/audits/positions-reconciliation-audit-2026-05-19.md",
+        "history/artifacts/positions-reconciliation-audit-2026-05-19.json"
+      ],
+      "task": "history/audits/positions-reconciliation-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-14",
+      "status": "current local / historical production-safe wallet CRUD",
+      "reports": [
+        "history/audits/wallets-capital-ledger-audit-2026-05-19.md",
+        "history/artifacts/wallets-capital-ledger-audit-2026-05-19.json"
+      ],
+      "task": "history/audits/wallets-capital-ledger-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-15",
+      "status": "current local / historical production-safe fixture",
+      "reports": [
+        "history/audits/markets-strategies-configuration-audit-2026-05-19.md",
+        "history/artifacts/markets-strategies-configuration-audit-2026-05-19.json"
+      ],
+      "task": "history/audits/markets-strategies-configuration-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-16",
+      "status": "current local / historical production-safe fixture",
+      "reports": [
+        "history/audits/backtests-reports-audit-2026-05-19.md",
+        "history/artifacts/backtests-reports-audit-2026-05-19.json"
+      ],
+      "task": "history/audits/backtests-reports-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-17",
+      "status": "current local / historical production-safe action readback",
+      "reports": [
+        "history/audits/logs-audit-trail-audit-2026-05-19.md",
+        "history/artifacts/logs-audit-trail-audit-2026-05-19.json"
+      ],
+      "task": "history/audits/logs-audit-trail-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-18",
+      "status": "current local / historical production-safe protected route proof",
+      "reports": [
+        "history/audits/admin-subscriptions-entitlements-audit-2026-05-19.md",
+        "history/artifacts/admin-subscriptions-entitlements-audit-2026-05-19.json"
+      ],
+      "task": "history/audits/admin-subscriptions-entitlements-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-19",
+      "status": "current local / public deploy fresh / protected preflight and RC blocked / operator handoff current / protected inputs absent",
+      "reports": [
+        "history/audits/operations-release-deployment-audit-2026-05-19.md",
+        "history/artifacts/operations-release-deployment-audit-2026-05-19.json",
+        "history/evidence/v1-db-restore-check-2026-05-19T01-30-47-200Z.md",
+        "history/releases/v1-operator-unblock-packet-dd1a1faf-2026-05-19.md",
+        "history/artifacts/v1-operator-unblock-packet-dd1a1faf-2026-05-19.json",
+        "history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-19.md",
+        "history/artifacts/v1-protected-input-readiness-dd1a1faf-2026-05-19.json"
+      ],
+      "task": "history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-20",
+      "status": "current foundation / hot-path assistant scope deferred",
+      "reports": [
+        "history/audits/ai-assistant-runtime-truth-audit-2026-05-19.md",
+        "history/artifacts/ai-assistant-runtime-truth-audit-2026-05-19.json"
+      ],
+      "task": "history/audits/ai-assistant-runtime-truth-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-21",
+      "status": "deferred / scaffold-only scope verified",
+      "reports": [
+        "history/audits/mobile-cross-platform-scope-audit-2026-05-19.md",
+        "history/artifacts/mobile-cross-platform-scope-audit-2026-05-19.json"
+      ],
+      "task": "history/audits/mobile-cross-platform-scope-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-22",
+      "status": "current local",
+      "reports": [
+        "history/audits/i18n-copy-reachability-audit-2026-05-19.md",
+        "history/artifacts/i18n-copy-reachability-audit-2026-05-19.json"
+      ],
+      "task": "history/audits/i18n-copy-reachability-audit-2026-05-19-task.md"
+    },
+    {
+      "id": "AUD-23",
+      "status": "current local traceability",
+      "reports": [
+        "docs/analysis/documentation-drift.md",
+        "history/audits/api-endpoint-docs-parity-2026-05-19/api-endpoint-docs-parity-2026-05-19.md",
+        "history/audits/full-reusable-audit-handoff-2026-05-19.md"
+      ],
+      "tasks": [
+        "history/audits/full-reusable-audit-rollup-2026-05-19-task.md",
+        "history/audits/full-reusable-audit-handoff-2026-05-19-task.md"
+      ]
+    }
+  ],
+  "openDecisions": []
+}

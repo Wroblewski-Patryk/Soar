@@ -1,0 +1,66 @@
+# Architecture Documentation for Soar
+
+This folder is the canonical source of truth for how Soar works.
+
+Use these files when the question is:
+- what the system is,
+- how the runtime flows work,
+- which entity owns which context,
+- which invariants are fail-closed,
+- how backtest, paper, and live must stay aligned.
+
+Do not use this folder for:
+- execution plans,
+- rollout waves,
+- closure notes,
+- evidence packs,
+- module inventory,
+- implementation task history.
+
+Those belong elsewhere:
+- `docs/planning/` for change sequencing and open work
+- `docs/modules/` for code ownership and implementation deep-dives
+- `docs/operations/` for runbooks, smoke checks, and evidence
+- `docs/product/` for product intent and scope
+
+## Reading Order
+1. [Architecture source of truth](./architecture-source-of-truth.md)
+2. [Codebase map](./codebase-map.md)
+3. [Traceability matrix](./traceability-matrix.md)
+4. [Overview and principles](./01_overview-and-principles.md)
+5. [System topology](./02_system-topology.md)
+6. [Domain model](./03_domain-model.md)
+7. [Runtime contexts](./04_runtime-contexts.md)
+8. [Strategy, signal, and decision flow](./05_strategy-signal-and-decision-flow.md)
+9. [Execution lifecycle](./06_execution-lifecycle.md)
+10. [Modes, parity, and data](./07_modes-parity-and-data.md)
+11. [Operator surfaces and routing](./08_operator-surfaces-and-routing.md)
+12. [Integrations, deployment, and runtime services](./09_integrations-deployment-and-runtime-services.md)
+13. [Safety, entitlements, and risk](./10_safety-entitlements-and-risk.md)
+14. [Assistant runtime](./11_assistant-runtime.md)
+15. [Documentation governance](./12_documentation-governance.md)
+
+## Architecture Rules
+- One file = one responsibility.
+- File order matches system understanding and execution flow.
+- Resolved architecture decisions belong here, not in planning notes.
+- Module docs may explain implementation, but they do not override this folder.
+- If a rule matters for runtime safety, source-of-truth ownership, or parity, it must be explicit here.
+
+## Supporting References
+- [Reference contracts](./reference/architecture-reference-contracts.md) contains active supporting contracts for deeper detail.
+- [Codebase map](./codebase-map.md) maps current implementation surfaces to architecture and
+  module docs.
+- [Traceability matrix](./traceability-matrix.md) maps core features across frontend, API, services,
+  data, pipelines, tests, and docs.
+- maintainability and quality remediation invariants live in
+  [maintainability remediation contract](./reference/maintainability-remediation-contract.md).
+- canonical exchange-access ownership for API modules lives in
+  [exchange access ownership matrix](./reference/exchange-access-ownership-matrix.md).
+- PnL/ROI-percent position management behavior for DCA, `TP`, `SL`, `TTP`,
+  and `TSL` lives in
+  [position management PnL lifecycle contract](./reference/position-management-pnl-lifecycle-contract.md).
+- [Archive](./archive/architecture-archive.md) contains historical, superseded, and
+  compatibility-only files. Do not use it as current architecture truth.
+
+The numbered files above remain the canonical architecture flow.

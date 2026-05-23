@@ -62,7 +62,7 @@ const main = async () => {
   const restoreDb = `${options.dbName}_restore_check_${normalizeIdSuffix(stamp)}`;
   const backupPath = `/tmp/${options.dbName}_backup_${stamp}.dump`;
 
-  const operationsDir = path.resolve(process.cwd(), 'docs', 'operations');
+  const operationsDir = path.resolve(process.cwd(), 'history', 'operations');
   await mkdir(operationsDir, { recursive: true });
   const artifactTxt = path.join(operationsDir, `_artifacts-db-restore-check-${stamp}.txt`);
   const reportMd = path.join(operationsDir, `v1-db-restore-check-${stamp}.md`);

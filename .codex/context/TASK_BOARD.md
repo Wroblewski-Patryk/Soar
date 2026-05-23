@@ -50,9 +50,116 @@ Last updated: 2026-05-23
     `314e90ce` with `metadataSource=github-branch`, build id
     `7ysWp6y0xFAxM53oPR98y`, and public smoke passes API `/health`, API
     `/ready`, and Web `/`. Evidence:
-    `docs/planning/live-exchange-execution-parity-2026-05-23-task.md`.
+    `history/audits/live-exchange-execution-parity-2026-05-23-task.md`.
 
 ## DONE
+
+- [x] `PROJECT-ORGANIZATION-PRECOMMIT-POLISH-2026-05-23 refactor: align root and policy entrypoints before commit`
+  - 2026-05-23: Final pre-commit organization polish after the docs/history
+    restructure. Updated root `README.md` to point at the current docs map,
+    documentation overview, and history overview; noted that `apps/mobile` is
+    scaffold-only until mobile parity is active. Updated repository structure
+    policy so the allowed docs categories match the real folders, and changed
+    `.gitignore` to ignore the rotating RC evidence artifact under
+    `history/artifacts/` instead of old `docs/operations/`. Validation PASS:
+    markdown link check `1816` files / `482` relative or file links / `0`
+    missing targets, docs graph scan `258` docs markdown files / `0`
+    no-incoming files excluding root semantic hubs / `0` isolated docs files,
+    stale old docs artifact/index path scan clean, `pnpm run
+    quality:guardrails`, `pnpm run docs:parity:check`, and `git diff --check`
+    with only Windows LF/CRLF warnings. Evidence/task:
+    `history/tasks/project-organization-precommit-polish-2026-05-23-task.md`.
+
+- [x] `DOC-USABILITY-ROUTING-IMPROVEMENT-2026-05-23 refactor: make docs more decision-routable`
+  - 2026-05-23: After the docs graph and content cleanup, the operator asked
+    to keep improving usefulness. Added decision-oriented work routes to the
+    main documentation map, evidence/current-source routing to the agent work
+    map, and a four-question usefulness standard to contributing docs. Updated
+    repository structure policy plus documentation inventory/drift records so
+    generated evidence and historical proof route to `history/*`, while
+    `docs/` remains current source-of-truth documentation. Validation PASS:
+    markdown link check `1814` files / `482` relative or file links / `0`
+    missing targets, docs graph scan `258` docs markdown files / `0`
+    no-incoming files excluding root semantic hubs / `0` isolated docs files,
+    `pnpm run quality:guardrails`, `pnpm run docs:parity:check`, and
+    `git diff --check` with only Windows LF/CRLF warnings. Evidence/task:
+    `history/tasks/doc-usability-routing-improvement-2026-05-23-task.md`.
+
+- [x] `DOC-FINAL-CONTENT-CLARITY-SCAN-2026-05-23 refactor: remove historical audit leftovers from current docs`
+  - 2026-05-23: Operator saw runtime/audit-like nodes still present in
+    `docs/` and requested a final correctness/complementarity/clarity scan.
+    Reviewed suspicious `audit`, `runtime`, `evidence`, `baseline`, and
+    artifact-path docs. Kept active runtime contracts/runbooks in `docs/`,
+    moved historical UI/security audit snapshots to `history/audits`, renamed
+    active UX evidence files to baseline/template names, clarified ADR 0001 as
+    Soar agent governance, and updated active runbooks so generated evidence
+    goes to `history/artifacts`, `history/evidence`, or `history/releases`.
+    Evidence/task:
+    `history/tasks/doc-final-content-clarity-scan-2026-05-23-task.md`.
+
+- [x] `DOC-HUB-FILENAME-SEMANTICS-2026-05-23 refactor: rename docs graph hubs to semantic area names`
+  - 2026-05-23: Operator pointed out that the largest Obsidian graph nodes
+    were still named `README` or `index`, making hover labels unhelpful.
+    Renamed current docs and history hub files to semantic area filenames such
+    as `soar-documentation-map.md`, `documentation-overview.md`,
+    `architecture-documentation.md`, `module-registry.md`,
+    `operations-documentation.md`, and `history-overview.md`; updated active
+    navigation text and state so future agents use semantic area hubs.
+    Validation PASS: no `README.md` or `index.md` files remain under `docs/`
+    or `history/`; markdown link check, graph scan, guardrails, docs parity,
+    and diff check are recorded in
+    `history/tasks/doc-hub-filename-semantics-2026-05-23-task.md`.
+
+- [x] `DOC-LOCAL-INDEX-COHESION-2026-05-23 refactor: connect docs through local folder indexes`
+  - 2026-05-23: Operator asked whether every file in `docs/` is still needed
+    and whether the docs form one coherent connected description. Added and
+    updated semantic area hubs so `docs/` stays current source-of-truth
+    documentation while Obsidian shows domain clusters instead of isolated
+    dots. Metrics improved from `200` no-incoming docs files and `193` fully
+    isolated docs files to `0` no-incoming docs files excluding root semantic hubs
+    and `0` fully isolated docs files. Validation PASS: markdown link check
+    `1811` files / `0` missing targets, `pnpm run quality:guardrails`,
+    `pnpm run docs:parity:check`, and `git diff --check` with CRLF warnings
+    only. Evidence/task:
+    `history/tasks/doc-local-index-cohesion-2026-05-23-task.md`.
+
+- [x] `DOC-CONTENT-GRAPH-HYGIENE-2026-05-23 refactor: reduce Obsidian graph noise in docs entrypoints`
+  - 2026-05-23: After the `docs`/`history` split and semantic history
+    taxonomy, the operator noted that the Obsidian graph was better but still
+    had a small dense hub. Tuned `docs/soar-documentation-map.md` and `docs/maps/*` so markdown
+    links are reserved for high-signal navigation, while secondary references
+    are plain code paths that agents can still read without creating extra
+    graph edges. Link-density scan changed the previous broad hub profile
+    (`docs/soar-documentation-map.md` `48` links and maps at `13-22`) to top docs hub `10`,
+    `docs/soar-documentation-map.md` `6`, and maps `4-6`. Validation PASS: markdown link check
+    `1805` files / `0` missing targets, `pnpm run quality:guardrails`, and
+    `pnpm run docs:parity:check`. Evidence/task:
+    `history/tasks/doc-content-graph-hygiene-2026-05-23-task.md`.
+
+- [x] `DOC-KNOWLEDGE-TAXONOMY-REFINEMENT-2026-05-23 refactor: split history into semantic knowledge folders`
+  - 2026-05-23: Operator asked for the repository knowledge structure to be
+    reconsidered beyond the first `docs`/`history` split. Classified
+    historical records into `history/tasks`, `history/plans`,
+    `history/audits`, `history/evidence`, `history/releases`, and
+    `history/artifacts`; moved residual dated/audit/generated artifacts out of
+    `docs`; updated references, indexes, governance, scripts, and state. No
+    `apps/` restructuring, runtime behavior, deploy, production data, or LIVE
+    exchange mutation was involved. Validation PASS: old taxonomy path scan
+    `0`, markdown link check `1804` files / `0` missing targets, no dated
+    markdown leftovers in `docs`, `pnpm run quality:guardrails`, and `pnpm run
+    docs:parity:check`. Evidence/task:
+    `history/tasks/doc-knowledge-taxonomy-refinement-2026-05-23-task.md`.
+
+- [x] `DOC-KNOWLEDGE-SYSTEM-RESTRUCTURE-2026-05-23 refactor: split canonical docs from historical work records`
+  - 2026-05-23: Operator opened `docs/` in Obsidian and the graph exposed that
+    historical planning/operations records dominated the documentation graph.
+    Moved dated task/proof/audit/generated records into `history/`, added
+    `docs/maps/*` and `history/*` indexes, updated docs governance/agent
+    memory, and redirected generated evidence tooling away from canonical
+    docs. Validation PASS: exact moved-path scan `0` stale paths, markdown
+    relative-link check `1732` files / `0` missing targets, `pnpm run
+    quality:guardrails`, and `pnpm run docs:parity:check`. Evidence/task:
+    `history/tasks/doc-knowledge-system-restructure-2026-05-23-task.md`.
 
 - [x] `WEB-DASHBOARD-DCA-PROTECTION-TRUTH-PARITY-2026-05-23 fix: keep Dashboard Home TTP display behind backend truth`
   - 2026-05-23: Frontend/integration explorer found that Dashboard Home still
@@ -65,7 +172,7 @@ Last updated: 2026-05-23
     as protection truth. API-provided backend/prospective TTP remains supported.
   - Validation passed: focused Web runtime table/view-model pack `45/45`, Web
     typecheck, repository guardrails, and `git diff --check`. Evidence:
-    `docs/planning/web-dashboard-dca-protection-truth-parity-2026-05-23-task.md`.
+    `history/audits/web-dashboard-dca-protection-truth-parity-2026-05-23-task.md`.
 
 - [x] `RUNTIME-DCA-PROTECTION-DISPLAY-PARITY-2026-05-23 fix: keep dashboard TSL/TTP display behind DCA gates`
   - 2026-05-23: Operator screenshot showed Binance Positions table drift:
@@ -84,7 +191,7 @@ Last updated: 2026-05-23
     exchange-event DB-backed tests `19/19` after local repo Postgres/Redis
     startup, runtime position-management/automation tests `62/62`, and API
     typecheck. Evidence:
-    `docs/planning/runtime-dca-protection-display-parity-2026-05-23-task.md`.
+    `history/audits/runtime-dca-protection-display-parity-2026-05-23-task.md`.
 
 - [x] `GATEIO-LIVE-MANUAL-ORDER-ADA-SHORT-2026-05-23 release: attempt under-1-USDT Gate.io ADA short`
   - 2026-05-23: Operator explicitly approved activating the Gate.io LIVE bot
@@ -101,7 +208,7 @@ Last updated: 2026-05-23
     after the fail-closed result. Final readback shows `isActive=false`,
     `liveOptIn=false`, `consentTextVersion=null`; no ADAUSDT open order or
     Gate.io ADAUSDT position was created by this attempt. Evidence:
-    `docs/planning/gateio-live-manual-order-ada-short-2026-05-23-task.md`.
+    `history/tasks/gateio-live-manual-order-ada-short-2026-05-23-task.md`.
 
 - [x] `GATEIO-LIVE-BOT-CONTEXT-REPAIR-2026-05-23 release: repair Gate.io market context and create inactive LIVE RSI bot`
   - 2026-05-23: Production readback confirmed the reported bot-create blocker
@@ -120,7 +227,7 @@ Last updated: 2026-05-23
     `liveOptIn=false`); no LIVE order, exchange position mutation, runtime
     start, token/cookie/API-secret persistence, or raw secret artifact was
     produced. Evidence:
-    `docs/planning/gateio-live-bot-context-repair-2026-05-23-task.md`.
+    `history/tasks/gateio-live-bot-context-repair-2026-05-23-task.md`.
 
 - [x] `PROTECTED-APP-TEST-CREDENTIAL-AVAILABILITY-2026-05-23 release: record approved Soar app account/API-key test context`
   - 2026-05-23: Operator confirmed that the Soar production application
@@ -133,7 +240,7 @@ Last updated: 2026-05-23
     variables, then run the relevant authenticated smoke before claiming proof.
   - Validation: documentation/state-only update; authenticated smoke not run
     and not claimed. Evidence:
-    `docs/planning/protected-app-test-credential-availability-2026-05-23-task.md`.
+    `history/tasks/protected-app-test-credential-availability-2026-05-23-task.md`.
 
 - [x] `RUNTIME-EXECUTION-DEDUPE-OBSERVABILITY-2026-05-23 feat: expose runtime dedupe metrics`
   - 2026-05-23: Architecture parity review found that
@@ -150,7 +257,7 @@ Last updated: 2026-05-23
     `pnpm run go-live:infra:up` started repo Postgres/Redis, the route test
     passed.
   - Evidence:
-    `docs/planning/runtime-execution-dedupe-observability-2026-05-23-task.md`.
+    `history/tasks/runtime-execution-dedupe-observability-2026-05-23-task.md`.
 
 - [x] `DATA-MODEL-ISOLATED-DB-PROOF-2026-05-23 test/ops: refresh local migration and DB-backed data proof`
   - 2026-05-23: Local Postgres/Redis were initially unavailable even though
@@ -167,9 +274,9 @@ Last updated: 2026-05-23
     and build id `orQiE9zTo_TVTcAoXpzI6`, and public smoke passes API
     `/health`, API `/ready`, and Web `/`.
   - Evidence:
-    `docs/planning/data-model-isolated-db-proof-2026-05-23-task.md`,
-    `docs/operations/v1-db-restore-check-2026-05-23T13-05-22-623Z.md`, and
-    `docs/operations/_artifacts-db-restore-check-2026-05-23T13-05-22-623Z.txt`.
+    `history/evidence/data-model-isolated-db-proof-2026-05-23-task.md`,
+    `history/evidence/v1-db-restore-check-2026-05-23T13-05-22-623Z.md`, and
+    `history/artifacts/_artifacts-db-restore-check-2026-05-23T13-05-22-623Z.txt`.
 
 - [x] `WEB-BUILD-INFO-RUNTIME-FALLBACK-2026-05-23 fix: recover deploy metadata when Coolify writes null SHA`
   - 2026-05-23: After commit `49a59b69` was manually deployed, production
@@ -184,7 +291,7 @@ Last updated: 2026-05-23
     `f822adef3381cd74412d6ee248a84298b9ac04be`, and public deploy smoke
     passed API `/health`, API `/ready`, and Web `/`.
   - Evidence/task:
-    `docs/planning/web-build-info-runtime-fallback-2026-05-23-task.md`.
+    `history/evidence/web-build-info-runtime-fallback-2026-05-23-task.md`.
 
 - [x] `AI-ASSISTANT-FOUNDATION-PROTOCOL-HARNESS-2026-05-23 test/docs: add reproducible assistant foundation AI protocol harness`
   - 2026-05-23: Confirmed `DEC-AUD-002` current truth: assistant is
@@ -195,10 +302,10 @@ Last updated: 2026-05-23
     Validation passed: protocol harness `3/3`, assistant orchestrator
     foundation `6/6`, and Web assistant route tests `3/3`.
   - Evidence:
-    `docs/planning/ai-assistant-foundation-protocol-harness-2026-05-23-task.md`,
-    `docs/operations/ai-assistant-foundation-protocol-report-2026-05-23.md`,
+    `history/tasks/ai-assistant-foundation-protocol-harness-2026-05-23-task.md`,
+    `history/plans/ai-assistant-foundation-protocol-report-2026-05-23.md`,
     and
-    `docs/operations/ai-assistant-foundation-protocol-scenarios-2026-05-23.json`.
+    `history/artifacts/ai-assistant-foundation-protocol-scenarios-2026-05-23.json`.
 
 - [x] `DEPLOY-BUILD-INFO-FRESHNESS-GATE-HARDENING-2026-05-23 test/ops: reject runtime fallback deploy freshness false positives`
   - 2026-05-23: Hardened `scripts/waitForWebBuildInfo.mjs` so deploy
@@ -209,7 +316,7 @@ Last updated: 2026-05-23
     default even when the SHA matches; `--allow-runtime-fallback` is reserved
     for diagnostics.
   - Evidence/task:
-    `docs/planning/deploy-build-info-freshness-gate-hardening-2026-05-23-task.md`.
+    `history/evidence/deploy-build-info-freshness-gate-hardening-2026-05-23-task.md`.
 
 - [x] `BACKTEST-NON-BINANCE-ORDER-BOOK-FAIL-CLOSED-2026-05-23 fix: fail closed on missing non-Binance order-book history`
   - 2026-05-23: Backtest run jobs now detect effective `ORDER_BOOK_*`
@@ -220,7 +327,7 @@ Last updated: 2026-05-23
     of simulating against a silent empty order-book series.
   - Validation passed: focused backtest pack `47/47` and API typecheck.
   - Evidence/task:
-    `docs/planning/backtest-non-binance-order-book-fail-closed-2026-05-23-task.md`.
+    `history/tasks/backtest-non-binance-order-book-fail-closed-2026-05-23-task.md`.
 
 - [x] `V1-PROTECTED-APP-PROOF-B1BA69ED-2026-05-23 release: production proof and release gate ready`
   - 2026-05-23: Production deploy
@@ -277,10 +384,10 @@ Last updated: 2026-05-23
     `PrpSx-bTjsSwKw5bQemwh`, and public deploy smoke passes API `/health`,
     API `/ready`, and Web `/`.
   - Evidence:
-    `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
-    `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,
-    `docs/operations/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`,
-    `docs/operations/v1-production-activation-evidence-audit-2026-05-23.md`.
+    `history/artifacts/liveimport-03-prod-readback-2026-05-23.json`,
+    `history/releases/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,
+    `history/releases/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`,
+    `history/audits/v1-production-activation-evidence-audit-2026-05-23.md`.
 
 ## BLOCKED
 
@@ -294,7 +401,7 @@ Last updated: 2026-05-23
     Root template folders from 2026-05-03 (`architecture/`, `agents/`,
     `pipelines/`, `tasks/`, `tests/`, `deploy/`, and `src/README.md`) were
     identified as obsolete competing scaffolding. Cleanup is in progress under
-    `docs/planning/repo-source-truth-cleanup-2026-05-23-task.md`.
+    `history/tasks/repo-source-truth-cleanup-2026-05-23-task.md`.
   - 2026-05-23: Frontend/integration lane also found a P2 legacy route drift:
     `/dashboard/orders` and `/dashboard/positions` reached
     `/dashboard/bots/runtime?legacy=*`, but that route dropped the legacy
@@ -338,7 +445,7 @@ Last updated: 2026-05-23
     and deploy smoke pass. Historical public post-release monitoring for
     `878e199d` passed `5/5` samples over Web `/api/build-info`, API `/health`,
     API `/ready`, and Web `/`. Evidence:
-    `docs/operations/post-release-public-monitoring-878e199d-2026-05-23.md`.
+    `history/evidence/post-release-public-monitoring-878e199d-2026-05-23.md`.
 
 - [x] `WEB-PUBLIC-STATIC-READBACK-2026-05-22 fix: prerender public proof routes`
   - 2026-05-22: Production availability proof found the public static root
@@ -356,8 +463,8 @@ Last updated: 2026-05-23
     `dd3191d73944f534800659b2dfd0bf5e0bd8b52f` on `main`, public deploy smoke
     passes API `/health`, API `/ready`, and Web `/`, and historical public
     post-release monitoring for `878e199d` passed `5/5` samples. Evidence:
-    `docs/operations/deploy-freshness-1b351a51-2026-05-22.md` and
-    `docs/operations/post-release-public-monitoring-878e199d-2026-05-23.md`.
+    `history/plans/deploy-freshness-1b351a51-2026-05-22.md` and
+    `history/evidence/post-release-public-monitoring-878e199d-2026-05-23.md`.
 
 - [ ] `ARCH-CODE-RUNTIME-AUDIT-2026-05-22 audit: verify architecture-code runtime parity`
   - 2026-05-23 continuation: repaired `ARCH-RUNTIME-P1-006`. Complete
@@ -385,7 +492,7 @@ Last updated: 2026-05-23
     and retry-safe job tests plus worker heartbeat/ownership tests `17/17`,
     workers health/readiness route tests `7/7`, API typecheck, and
     `git diff --check` with line-ending warnings only. Evidence:
-    `docs/planning/arch-runtime-p1-010-011-workers-queue-heartbeat-2026-05-22-task.md`.
+    `history/tasks/arch-runtime-p1-010-011-workers-queue-heartbeat-2026-05-22-task.md`.
   - 2026-05-22: Coordinator spawned four read-only explorer lanes for runtime
     lifecycle, orders/exchange fill authority, backtest/report parity, and
     ops/deploy topology. The audit found two P0 orders/exchange drifts and
@@ -400,7 +507,7 @@ Last updated: 2026-05-23
     pack `20/20`, script syntax checks, and VPS compose config with required
     env. Remaining open P1/P2 findings are listed in the task artifact.
     Evidence:
-    `docs/planning/architecture-code-runtime-audit-2026-05-22-task.md`.
+    `history/audits/architecture-code-runtime-audit-2026-05-22-task.md`.
 
 - [x] `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22 fix: restore DCA-first TP parity`
   - 2026-05-22: Coordinator architecture audit found a confirmed bot runtime
@@ -415,7 +522,7 @@ Last updated: 2026-05-23
     warnings only. Next action:
     commit, push, then production deploy/readback when VPS availability is
     restored. Evidence:
-    `docs/planning/runtime-architecture-dca-tp-parity-2026-05-22-task.md`.
+    `history/audits/runtime-architecture-dca-tp-parity-2026-05-22-task.md`.
 
 - [x] `LIVE-DCA-SUBMITTED-FILL-GATE-2026-05-22 fix: fail closed when LIVE DCA is only submitted`
   - 2026-05-22: Emergency live-trading fix after operator feedback that DCA
@@ -426,7 +533,7 @@ Last updated: 2026-05-23
     waiting for exchange fill confirmation before DCA progress, telemetry, or
     close protection can advance. Validation passed: focused runtime
     automation tests `37/37` and API typecheck. Evidence:
-    `docs/planning/live-dca-submitted-fill-gate-2026-05-22-task.md`.
+    `history/tasks/live-dca-submitted-fill-gate-2026-05-22-task.md`.
 
 - [x] `V1-LOGIN-API-STARTUP-HOTFIX-2026-05-22 fix: restore API startup after main deploy`
   - 2026-05-22: Production Web deployed `beae3ada`, but
@@ -459,7 +566,7 @@ Last updated: 2026-05-23
     `FAIL`: `/workers/ready` availability `0%`, API 5xx ratio `16.6667%`, and
     deployed worker topology is `inline` (`DEPLOYED_INLINE_MODE`) instead of
     canonical split-worker. Evidence:
-    `docs/planning/v1-protected-app-proof-attempt-dd1a1faf-2026-05-21-task.md`.
+    `history/evidence/v1-protected-app-proof-attempt-dd1a1faf-2026-05-21-task.md`.
     Next action: repair/verify split-worker production topology, approve or
     create a safe open runtime readback payload path, run production DB restore
     from VPS/Coolify Docker context, then collect final non-dry-run release
@@ -478,7 +585,7 @@ Last updated: 2026-05-23
     `9/9`, repository guardrails, production dependency audit, VPS/local compose
     config, API/Web typecheck, script syntax, manual secret-argv fail-closed
     checks, and diff check with line-ending warnings only. Evidence:
-    `docs/planning/supply-chain-sast-ops-audit-2026-05-21-task.md`.
+    `history/audits/supply-chain-sast-ops-audit-2026-05-21-task.md`.
 
 - [x] `BACKEND-PERMISSION-ISOLATION-REVIEW-2026-05-21 fix: defensive backend permission and data-isolation review`
   - 2026-05-21: Reviewed backend auth/session middleware, admin guards,
@@ -491,7 +598,7 @@ Last updated: 2026-05-23
     persisted. Validation passed: API-key e2e `18/18`, auth/admin/API-key
     pack `34/34`, isolation/reports/wallets pack `28/28`, and API typecheck.
     Evidence:
-    `docs/planning/backend-permission-isolation-review-2026-05-21-task.md`.
+    `history/tasks/backend-permission-isolation-review-2026-05-21-task.md`.
 
 - [x] `FRONTEND-SECURITY-UX-OWASP-SWEEP-2026-05-21 fix: frontend OWASP security/UX sweep`
   - 2026-05-21: Frontend Security/UX audit checked the Web frontend against
@@ -505,7 +612,7 @@ Last updated: 2026-05-23
     tests (`4` files / `28` tests), broader Web auth/admin/header/money pack
     (`7` files / `23` tests), Web typecheck, and `git diff --check` with
     line-ending warnings only. Evidence:
-    `docs/planning/frontend-security-ux-owasp-sweep-2026-05-21-task.md`.
+    `history/tasks/frontend-security-ux-owasp-sweep-2026-05-21-task.md`.
 
 - [ ] `MONEY-FLOW-SECURITY-CANCEL-ENTITLEMENT-2026-05-21 fix: fail closed LIVE exchange-backed cancel after entitlement downgrade`
   - 2026-05-21: Security/Money-Flow audit found and fixed a confirmed local P1
@@ -517,7 +624,7 @@ Last updated: 2026-05-23
     typecheck` PASS and `pnpm run quality:guardrails` PASS. Focused test
     command was attempted but blocked before assertions because local Postgres
     at `localhost:5432` and Docker were unavailable in this session. Evidence:
-    `docs/planning/money-flow-security-cancel-entitlement-2026-05-21-task.md`.
+    `history/tasks/money-flow-security-cancel-entitlement-2026-05-21-task.md`.
     Next action: start local DB infra and rerun
     `pnpm --filter api run test -- src/modules/orders/orders.liveCancelBoundary.service.test.ts --run`.
 
@@ -542,7 +649,7 @@ Last updated: 2026-05-23
     exchange-side mutation proof, and frontend P2 auth-confirm/admin/API-key
     typing hardening.
     Evidence:
-    `docs/planning/security-red-team-hardening-2026-05-21-task.md`.
+    `history/tasks/security-red-team-hardening-2026-05-21-task.md`.
   - 2026-05-21 continuation: Coordinated Frontend Security, Backend Security,
     and Ops/Security lanes to close the residual local security queue.
     Frontend now gates runtime data/SSE behind confirmed auth, withholds admin
@@ -654,7 +761,7 @@ Last updated: 2026-05-23
     and go-live smoke (`45/45` API, `18/18` Web). Protected production
     `AUD-19` remains blocked by missing approved
     inputs and was not claimed as ready. Evidence:
-    `docs/planning/v1-function-architecture-verification-2026-05-20-task.md`.
+    `history/tasks/v1-function-architecture-verification-2026-05-20-task.md`.
 
 - [x] `V1-PROTECTED-PREFLIGHT-DD1A1FAF-2026-05-20 verification: classify current protected V1 release blockers`
   - 2026-05-20: Refreshed the no-secret protected `AUD-19` classifier for
@@ -667,9 +774,9 @@ Last updated: 2026-05-23
     DB restore context, Gate 2/SLO context, and Gate 4 approver fields. No
     secret values were printed or stored; no production mutation, LIVE order,
     exchange-side mutation, or runtime code change was performed. Evidence:
-    `docs/operations/v1-final-preflight-dd1a1faf-2026-05-20.md`,
-    `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20.md`, and
-    `docs/planning/v1-protected-preflight-dd1a1faf-2026-05-20-task.md`.
+    `history/releases/v1-final-preflight-dd1a1faf-2026-05-20.md`,
+    `history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-20.md`, and
+    `history/tasks/v1-protected-preflight-dd1a1faf-2026-05-20-task.md`.
 
 - [x] `V1-OPERATOR-UNBLOCK-PACKET-DD1A1FAF-2026-05-20 release: publish current protected operator handoff`
   - 2026-05-20: Published a current no-secret operator unblock packet for the
@@ -680,9 +787,9 @@ Last updated: 2026-05-23
     clickthrough, final non-dry-run release gate, and generated-state refresh,
     and keeps the final status `NO-GO` until protected same-date evidence
     exists. Evidence:
-    `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.md`,
-    `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json`, and
-    `docs/planning/v1-operator-unblock-packet-dd1a1faf-2026-05-20-task.md`.
+    `history/releases/v1-operator-unblock-packet-dd1a1faf-2026-05-20.md`,
+    `history/artifacts/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json`, and
+    `history/releases/v1-operator-unblock-packet-dd1a1faf-2026-05-20-task.md`.
 
 - [x] `V1-OPERATOR-UNBLOCK-PACKET-CHECK-COMMAND-2026-05-20 feature: validate protected operator handoff`
   - 2026-05-20: Added `ops:operator-unblock:check` and focused tests to keep
@@ -692,16 +799,16 @@ Last updated: 2026-05-23
     fragments. Evidence:
     `scripts/checkOperatorUnblockPacket.mjs`,
     `scripts/checkOperatorUnblockPacket.test.mjs`, and
-    `docs/planning/v1-operator-unblock-packet-check-command-2026-05-20-task.md`.
+    `history/releases/v1-operator-unblock-packet-check-command-2026-05-20-task.md`.
 
 - [x] `V1-OPERATOR-UNBLOCK-TOOLING-INDEX-SYNC-2026-05-20 release: add operator packet validation to reusable audit verification`
   - 2026-05-20: Added `OPS-OPERATOR-UNBLOCK-CHECK` and
     `OPS-OPERATOR-UNBLOCK-CHECK-TEST` to the reusable audit tooling index and
     made `audit:manifest:verify` run both the operator packet regression test
     and current packet check. Evidence:
-    `docs/operations/reusable-audit-tooling-index-2026-05-19.md`,
-    `docs/operations/reusable-audit-tooling-index-2026-05-19.json`, and
-    `docs/planning/v1-operator-unblock-tooling-index-sync-2026-05-20-task.md`.
+    `history/audits/reusable-audit-tooling-index-2026-05-19.md`,
+    `history/artifacts/reusable-audit-tooling-index-2026-05-19.json`, and
+    `history/releases/v1-operator-unblock-tooling-index-sync-2026-05-20-task.md`.
 
 - [x] `V1-AGENT-BLOCKER-SWEEP-DD1A1FAF-2026-05-20 release: confirm no non-secret work can deploy V1`
   - 2026-05-20: Spawned independent Ops/Release and Planning/Queue agents.
@@ -710,10 +817,10 @@ Last updated: 2026-05-23
     Production build-info still reports `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`
     on `main`; the protected-input rerun still found `0` matching names; the
     operator packet validator still passes. Evidence:
-    `docs/planning/v1-agent-blocker-sweep-dd1a1faf-2026-05-20-task.md`,
-    `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20-rerun.md`,
+    `history/tasks/v1-agent-blocker-sweep-dd1a1faf-2026-05-20-task.md`,
+    `history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-20-rerun.md`,
     and
-    `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20-rerun.json`.
+    `history/artifacts/v1-protected-input-readiness-dd1a1faf-2026-05-20-rerun.json`.
 
 - [x] `V1-PROTECTED-RELEASE-UNBLOCK-HEARTBEAT-2026-05-20 automation: monitor protected-input unblock`
   - 2026-05-20: Created heartbeat automation
@@ -723,9 +830,9 @@ Last updated: 2026-05-23
     Latest manual sweep still reports `0` matching protected input names;
     build-info remains `dd1a1faf` on `main`; operator packet validation passes.
     Evidence:
-    `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20-latest.md`
+    `history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-20-latest.md`
     and
-    `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20-latest.json`.
+    `history/artifacts/v1-protected-input-readiness-dd1a1faf-2026-05-20-latest.json`.
 
 - [x] `REQUIREMENTS-DELIVERY-MAP-AUDIT-2026-05-19 research: refresh AUD-02 requirements/source-of-truth alignment`
   - 2026-05-19: Completed the dedicated `AUD-02` requirements and delivery-map
@@ -737,9 +844,9 @@ Last updated: 2026-05-23
     the rollup. `AUD-02` is current for source-of-truth alignment after
     follow-up; production-boundary requirements remain partial only where fresh
     production proof was intentionally excluded. Evidence:
-    `docs/operations/requirements-delivery-map-audit-2026-05-19.md`,
-    `docs/operations/project-index-2026-05-19.md`, and
-    `docs/operations/v1-static-issue-scan-2026-05-19.md`.
+    `history/audits/requirements-delivery-map-audit-2026-05-19.md`,
+    `history/plans/project-index-2026-05-19.md`, and
+    `history/audits/v1-static-issue-scan-2026-05-19.md`.
 
 - [x] `FULL-REUSABLE-AUDIT-ROLLUP-2026-05-19 research: close AUD-00 through AUD-23 rollup`
   - 2026-05-19: Published final reusable audit rollup for `AUD-00` through
@@ -747,16 +854,16 @@ Last updated: 2026-05-23
     production/LIVE/exchange mutation exclusions. A later decision-sync pass
     resolved `AUD-01` and `AUD-20`, leaving `AUD-19` fresh production release
     evidence as the next production-readiness gate. Evidence:
-    `docs/operations/full-reusable-audit-rollup-2026-05-19.md` and
-    `docs/planning/full-reusable-audit-rollup-2026-05-19-task.md`.
+    `history/audits/full-reusable-audit-rollup-2026-05-19.md` and
+    `history/audits/full-reusable-audit-rollup-2026-05-19-task.md`.
 
 - [x] `AUDIT-DECISION-PACKET-2026-05-19 research: packet remaining audit decisions`
   - 2026-05-19: Prepared and then resolved the audit decision packet.
     `DEC-AUD-001` accepts Binance + Gate.io as current implementation scope,
     not Binance-only. `DEC-AUD-002` accepts assistant foundation/dry-run as
     current scope and defers hot-path orchestration. Evidence:
-    `docs/operations/audit-decision-packet-2026-05-19.md` and
-    `docs/planning/audit-decision-packet-2026-05-19-task.md`.
+    `history/audits/audit-decision-packet-2026-05-19.md` and
+    `history/audits/audit-decision-packet-2026-05-19-task.md`.
 
 - [x] `AUDIT-OPEN-DECISION-STATE-SYNC-2026-05-19 research: sync residual decision state`
   - 2026-05-19: Synchronized risk, requirement, known-issue, and
@@ -765,53 +872,53 @@ Last updated: 2026-05-23
     blockers. A later decision-sync pass accepted `DEC-AUD-001` and
     `DEC-AUD-002`, so the remaining audit blocker is fresh `AUD-19` production
     release evidence before any new production readiness claim. Evidence:
-    `docs/planning/audit-open-decision-state-sync-2026-05-19-task.md`.
+    `history/audits/audit-open-decision-state-sync-2026-05-19-task.md`.
 
 - [x] `AUDIT-DECISION-REPAIR-PLAYBOOKS-2026-05-19 planning: prepare post-decision repair playbooks`
   - 2026-05-19: Prepared option-specific repair playbooks for `DEC-AUD-001`
     exchange-scope wording and `DEC-AUD-002` assistant runtime truth. They now
     serve as historical guidance for the accepted decision repair; runtime
     behavior was not changed. Evidence:
-    `docs/operations/audit-decision-repair-playbooks-2026-05-19.md` and
-    `docs/planning/audit-decision-repair-playbooks-2026-05-19-task.md`.
+    `history/audits/audit-decision-repair-playbooks-2026-05-19.md` and
+    `history/audits/audit-decision-repair-playbooks-2026-05-19-task.md`.
 
 - [x] `AUDIT-MACHINE-READABLE-DECISION-LINKS-2026-05-19 planning: link decision JSON to repair playbooks`
   - 2026-05-19: Added machine-readable links from the full audit rollup JSON
     and audit decision packet JSON to the post-decision repair playbooks.
     Evidence:
-    `docs/planning/audit-machine-readable-decision-links-2026-05-19-task.md`.
+    `history/audits/audit-machine-readable-decision-links-2026-05-19-task.md`.
 
 - [x] `FULL-REUSABLE-AUDIT-HANDOFF-2026-05-19 planning: create audit handoff packet`
   - 2026-05-19: Created a concise handoff packet for the full reusable audit
     mission with current source-of-truth files, validation, open decisions,
     residual risks, and resume instructions. Added a machine-readable JSON
     handoff for future automation/readback. Evidence:
-    `docs/operations/full-reusable-audit-handoff-2026-05-19.md`,
-    `docs/operations/full-reusable-audit-handoff-2026-05-19.json`, and
-    `docs/planning/full-reusable-audit-handoff-2026-05-19-task.md`.
+    `history/audits/full-reusable-audit-handoff-2026-05-19.md`,
+    `history/artifacts/full-reusable-audit-handoff-2026-05-19.json`, and
+    `history/audits/full-reusable-audit-handoff-2026-05-19-task.md`.
 
 - [x] `AUDIT-HANDOFF-INDEX-LINK-SYNC-2026-05-19 planning: link audit handoff from indexes`
   - 2026-05-19: Added the full reusable audit handoff link to the
     machine-readable rollup JSON and project memory index. Evidence:
-    `docs/planning/audit-handoff-index-link-sync-2026-05-19-task.md`.
+    `history/audits/audit-handoff-index-link-sync-2026-05-19-task.md`.
 
 - [x] `AUDIT-HANDOFF-CROSSLINK-SYNC-2026-05-19 planning: cross-link audit handoff artifacts`
   - 2026-05-19: Linked the handoff Markdown to its JSON pair and linked both
     handoff artifacts from the rollup Markdown. Evidence:
-    `docs/planning/audit-handoff-crosslink-sync-2026-05-19-task.md`.
+    `history/audits/audit-handoff-crosslink-sync-2026-05-19-task.md`.
 
 - [x] `REUSABLE-AUDIT-ARTIFACT-MANIFEST-2026-05-19 planning: create audit artifact manifest`
   - 2026-05-19: Created a human-readable and machine-readable manifest mapping
     `AUD-00` through `AUD-23` to current reports, task records, open decisions,
     and safety boundaries for future reruns. Evidence:
-    `docs/operations/reusable-audit-artifact-manifest-2026-05-19.md`,
-    `docs/operations/reusable-audit-artifact-manifest-2026-05-19.json`, and
-    `docs/planning/reusable-audit-artifact-manifest-2026-05-19-task.md`.
+    `history/audits/reusable-audit-artifact-manifest-2026-05-19.md`,
+    `history/artifacts/reusable-audit-artifact-manifest-2026-05-19.json`, and
+    `history/audits/reusable-audit-artifact-manifest-2026-05-19-task.md`.
 
 - [x] `REUSABLE-AUDIT-MANIFEST-PATH-CHECK-2026-05-19 verification: verify manifest paths`
   - 2026-05-19: Verified the reusable audit artifact manifest references only
     existing repository paths: `81` paths checked, `0` missing. Evidence:
-    `docs/planning/reusable-audit-manifest-path-check-2026-05-19-task.md`.
+    `history/audits/reusable-audit-manifest-path-check-2026-05-19-task.md`.
 
 - [x] `REUSABLE-AUDIT-MANIFEST-CHECK-COMMAND-2026-05-19 verification: add reusable manifest check command`
   - 2026-05-19: Added `corepack pnpm run audit:manifest:check`, which
@@ -819,7 +926,7 @@ Last updated: 2026-05-23
     path existence, and decision packet/playbook links. Added focused
     regression tests via `corepack pnpm run audit:manifest:check:test`.
     Evidence:
-    `docs/planning/reusable-audit-manifest-check-command-2026-05-19-task.md`.
+    `history/audits/reusable-audit-manifest-check-command-2026-05-19-task.md`.
 
 - [x] `REUSABLE-AUDIT-MANIFEST-COMPARE-COMMAND-2026-05-19 verification: add reusable manifest comparison command`
   - 2026-05-19: Added `corepack pnpm run audit:manifest:compare`, which
@@ -828,14 +935,14 @@ Last updated: 2026-05-23
     The current manifest self-comparison passes and JSON output is available
     for future automation. Added focused regression tests via
     `corepack pnpm run audit:manifest:compare:test`. Evidence:
-    `docs/planning/reusable-audit-manifest-compare-command-2026-05-19-task.md`.
+    `history/audits/reusable-audit-manifest-compare-command-2026-05-19-task.md`.
 
 - [x] `REUSABLE-AUDIT-MANIFEST-VERIFY-COMMAND-2026-05-19 verification: add one-command manifest verification`
   - 2026-05-19: Added `corepack pnpm run audit:manifest:verify`, which runs
     manifest checker tests, manifest comparison tests, current manifest check,
     and current manifest self-comparison as one fail-fast verification bundle.
     Evidence:
-    `docs/planning/reusable-audit-manifest-verify-command-2026-05-19-task.md`.
+    `history/audits/reusable-audit-manifest-verify-command-2026-05-19-task.md`.
 
 - [x] `REUSABLE-AUDIT-RERUN-PLAYBOOK-2026-05-19 planning: publish audit rerun playbook`
   - 2026-05-19: Published an operations playbook for rerunning the reusable
@@ -845,9 +952,9 @@ Last updated: 2026-05-23
     JSON pair for future automation/readback plus `audit:rerun-playbook:check`
     and focused regression tests; `audit:manifest:verify` now includes the
     rerun playbook checks. Evidence:
-    `docs/operations/reusable-audit-rerun-playbook-2026-05-19.md`,
-    `docs/operations/reusable-audit-rerun-playbook-2026-05-19.json`, and
-    `docs/planning/reusable-audit-rerun-playbook-2026-05-19-task.md`.
+    `history/audits/reusable-audit-rerun-playbook-2026-05-19.md`,
+    `history/artifacts/reusable-audit-rerun-playbook-2026-05-19.json`, and
+    `history/audits/reusable-audit-rerun-playbook-2026-05-19-task.md`.
 
 - [x] `REUSABLE-AUDIT-TOOLING-INDEX-2026-05-19 planning: publish audit tooling index`
   - 2026-05-19: Published a human-readable and machine-readable map of
@@ -855,9 +962,9 @@ Last updated: 2026-05-23
     primary closure command and explicit safety boundaries. Added
     `audit:tooling-index:check` and focused regression tests; the primary
     verify command now includes tooling-index checks. Evidence:
-    `docs/operations/reusable-audit-tooling-index-2026-05-19.md`,
-    `docs/operations/reusable-audit-tooling-index-2026-05-19.json`, and
-    `docs/planning/reusable-audit-tooling-index-2026-05-19-task.md`.
+    `history/audits/reusable-audit-tooling-index-2026-05-19.md`,
+    `history/artifacts/reusable-audit-tooling-index-2026-05-19.json`, and
+    `history/audits/reusable-audit-tooling-index-2026-05-19-task.md`.
 
 - [x] `AUDIT-REMEDIATION-MASTER-PLAN-2026-05-19 planning: convert audit findings into repair roadmap`
   - 2026-05-19: Published a master remediation plan that converts the reusable
@@ -865,7 +972,7 @@ Last updated: 2026-05-23
     truth, assistant runtime truth, production release evidence, production-safe
     evidence refreshes, security governance, UX/a11y deepening, mobile
     activation, and audit tooling maintenance. Evidence:
-    `docs/planning/audit-remediation-master-plan-2026-05-19.md`.
+    `history/audits/audit-remediation-master-plan-2026-05-19.md`.
 
 - [x] `AUDIT-REMEDIATION-PLAN-CHECK-2026-05-19 feature: validate remediation roadmap`
   - 2026-05-19: Added a machine-readable remediation master plan plus
@@ -873,15 +980,15 @@ Last updated: 2026-05-23
     tests. The validator locks required phases `P0..P6`, work packages
     `WP-01..WP-08`, the fresh `AUD-19` blocker, closure checks, and safety
     boundaries. It is now included in `audit:manifest:verify`. Evidence:
-    `docs/operations/audit-remediation-master-plan-2026-05-19.json` and
-    `docs/planning/audit-remediation-plan-check-2026-05-19-task.md`.
+    `history/artifacts/audit-remediation-master-plan-2026-05-19.json` and
+    `history/audits/audit-remediation-plan-check-2026-05-19-task.md`.
 
 - [x] `AUDIT-REMEDIATION-PLAN-REFERENCE-CHECK-2026-05-19 feature: validate remediation references`
   - 2026-05-19: Hardened `audit:remediation-plan:check` so it verifies
     `sourceMarkdown` and `primaryEvidence` repository paths. The current plan
     reports `7` references checked and `0` missing references, with focused
     regression coverage for missing referenced evidence. Evidence:
-    `docs/planning/audit-remediation-plan-reference-check-2026-05-19-task.md`.
+    `history/audits/audit-remediation-plan-reference-check-2026-05-19-task.md`.
 
 - [x] `AUDIT-RERUN-PLAYBOOK-REMEDIATION-CLOSURE-SYNC-2026-05-19 feature: require remediation closure check`
   - 2026-05-19: Updated the reusable audit rerun playbook and validator so
@@ -889,7 +996,7 @@ Last updated: 2026-05-23
     docs parity, guardrails, and diff check. The rerun playbook check now
     reports missing required closure checks and fails when they are absent.
     Evidence:
-    `docs/planning/audit-rerun-playbook-remediation-closure-sync-2026-05-19-task.md`.
+    `history/audits/audit-rerun-playbook-remediation-closure-sync-2026-05-19-task.md`.
 
 - [x] `AUDIT-TOOLING-INDEX-CLOSURE-COMMAND-CHECK-2026-05-19 feature: require tooling-index closure commands`
   - 2026-05-19: Hardened `audit:tooling-index:check` so the reusable tooling
@@ -897,7 +1004,7 @@ Last updated: 2026-05-23
     `audit:remediation-plan:check`, docs parity, guardrails, or diff check.
     Focused regression coverage now exercises missing closure commands.
     Evidence:
-    `docs/planning/audit-tooling-index-closure-command-check-2026-05-19-task.md`.
+    `history/audits/audit-tooling-index-closure-command-check-2026-05-19-task.md`.
 
 - [x] `AUDIT-HANDOFF-CHECK-COMMAND-2026-05-19 feature: validate reusable audit handoff`
   - 2026-05-19: Added `corepack pnpm run audit:handoff:check` and focused
@@ -905,14 +1012,14 @@ Last updated: 2026-05-23
     boundaries, latest validation checks, and fail-closed safety booleans. The
     handoff check is now included in `audit:manifest:verify` and registered in
     the reusable tooling index. Evidence:
-    `docs/planning/audit-handoff-check-command-2026-05-19-task.md`.
+    `history/audits/audit-handoff-check-command-2026-05-19-task.md`.
 
 - [x] `AUDIT-TOOLING-INDEX-PACKAGE-SCRIPT-CHECK-2026-05-19 feature: validate tooling-index package commands`
   - 2026-05-19: Hardened `audit:tooling-index:check` so `corepack pnpm run`
     commands referenced by the reusable tooling index must exist in
     `package.json`. Current tooling index reports `0` missing package scripts,
     and focused regression coverage catches a removed command. Evidence:
-    `docs/planning/audit-tooling-index-package-script-check-2026-05-19-task.md`.
+    `history/audits/audit-tooling-index-package-script-check-2026-05-19-task.md`.
 
 - [x] `AUDIT-MANIFEST-SUMMARY-METADATA-CHECK-2026-05-19 feature: validate manifest rollup metadata`
   - 2026-05-19: Hardened `audit:manifest:check` so declared manifest summary
@@ -921,7 +1028,7 @@ Last updated: 2026-05-23
     mismatches and `0` metadata mismatches; regression coverage includes stale
     counts, stale path metadata, and hybrid current statuses with deferred
     sub-scope. Evidence:
-    `docs/planning/audit-manifest-summary-metadata-check-2026-05-19-task.md`.
+    `history/audits/audit-manifest-summary-metadata-check-2026-05-19-task.md`.
 
 - [x] `AUDIT-ROLLUP-CHECK-COMMAND-2026-05-19 feature: validate full audit rollup`
   - 2026-05-19: Added `corepack pnpm run audit:rollup:check` and focused
@@ -929,7 +1036,7 @@ Last updated: 2026-05-23
     repair queue items, hybrid current/deferred wording, and safety booleans.
     The rollup check is now included in `audit:manifest:verify` and registered
     in the reusable tooling index. Evidence:
-    `docs/planning/audit-rollup-check-command-2026-05-19-task.md`.
+    `history/audits/audit-rollup-check-command-2026-05-19-task.md`.
 
 - [x] `AUDIT-MANIFEST-COMPARE-STATUS-BUCKET-CHECK-2026-05-19 feature: align manifest comparison status buckets`
   - 2026-05-19: Hardened `audit:manifest:compare` so status
@@ -937,7 +1044,7 @@ Last updated: 2026-05-23
     manifest and rollup validators. Hybrid statuses such as
     `current ... deferred` remain current, and non-leading failed wording is
     informational. Evidence:
-    `docs/planning/audit-manifest-compare-status-bucket-check-2026-05-19-task.md`.
+    `history/audits/audit-manifest-compare-status-bucket-check-2026-05-19-task.md`.
 
 - [x] `AUDIT-MANIFEST-COMPARE-JSON-OUTPUT-2026-05-19 feature: persist manifest comparison reports`
   - 2026-05-19: Added `--json-output <path>` to
@@ -945,42 +1052,42 @@ Last updated: 2026-05-23
     machine-readable comparison report for future audit rerun evidence.
     Focused CLI regression coverage writes and reads a temporary report.
     Evidence:
-    `docs/planning/audit-manifest-compare-json-output-2026-05-19-task.md`.
+    `history/audits/audit-manifest-compare-json-output-2026-05-19-task.md`.
 
 - [x] `AUDIT-RERUN-PLAYBOOK-COMPARE-JSON-OUTPUT-SYNC-2026-05-19 feature: require persisted comparison output`
   - 2026-05-19: Updated the reusable audit rerun playbook so
     `futureManifestCommands.compareJson` uses `--json-output` and writes a
     dated comparison artifact. Hardened `audit:rerun-playbook:check` to fail
     if structured comparison output is stdout-only. Evidence:
-    `docs/planning/audit-rerun-playbook-compare-json-output-sync-2026-05-19-task.md`.
+    `history/audits/audit-rerun-playbook-compare-json-output-sync-2026-05-19-task.md`.
 
 - [x] `AUDIT-TOOLING-INDEX-MARKDOWN-JSON-PARITY-2026-05-19 feature: validate tooling index companion parity`
   - 2026-05-19: Hardened `audit:tooling-index:check` so the JSON tooling
     index and companion Markdown table stay aligned: when the Markdown file is
     present, every JSON tool ID must be listed there. Focused regression
     coverage catches a missing Markdown tool ID. Evidence:
-    `docs/planning/audit-tooling-index-markdown-json-parity-2026-05-19-task.md`.
+    `history/audits/audit-tooling-index-markdown-json-parity-2026-05-19-task.md`.
 
 - [x] `AUDIT-MANIFEST-MARKDOWN-SUMMARY-PARITY-2026-05-19 feature: validate manifest companion summary parity`
   - 2026-05-19: Hardened `audit:manifest:check` so the JSON manifest summary
     and companion Markdown "Current Summary" stay aligned when the Markdown
     file is available. Focused regression coverage catches stale Markdown
     summary counts. Evidence:
-    `docs/planning/audit-manifest-markdown-summary-parity-2026-05-19-task.md`.
+    `history/audits/audit-manifest-markdown-summary-parity-2026-05-19-task.md`.
 
 - [x] `AUDIT-ROLLUP-MARKDOWN-AUDIT-ID-PARITY-2026-05-19 feature: validate rollup companion audit ID parity`
   - 2026-05-19: Hardened `audit:rollup:check` so the JSON rollup audit list
     and companion Markdown result table stay aligned when the Markdown file is
     available. Focused regression coverage catches missing Markdown audit IDs.
     Evidence:
-    `docs/planning/audit-rollup-markdown-audit-id-parity-2026-05-19-task.md`.
+    `history/audits/audit-rollup-markdown-audit-id-parity-2026-05-19-task.md`.
 
 - [x] `AUDIT-ROLLUP-MARKDOWN-SUMMARY-PARITY-2026-05-19 feature: validate rollup companion summary parity`
   - 2026-05-19: Added checked summary counts to the full reusable audit rollup
     Markdown and hardened `audit:rollup:check` so the companion Markdown
     summary stays aligned with JSON. Focused regression coverage catches stale
     Markdown summary counts. Evidence:
-    `docs/planning/audit-rollup-markdown-summary-parity-2026-05-19-task.md`.
+    `history/audits/audit-rollup-markdown-summary-parity-2026-05-19-task.md`.
 
 - [x] `AUDIT-HANDOFF-ROLLUP-SUMMARY-PARITY-2026-05-19 feature: validate handoff rollup summary parity`
   - 2026-05-19: Added `rollupJson` to the full reusable audit handoff source
@@ -988,63 +1095,63 @@ Last updated: 2026-05-23
     and values stay aligned with the referenced rollup JSON. Focused
     regression coverage catches missing summary keys and stale counts.
     Evidence:
-    `docs/planning/audit-handoff-rollup-summary-parity-2026-05-19-task.md`.
+    `history/audits/audit-handoff-rollup-summary-parity-2026-05-19-task.md`.
 
 - [x] `AUDIT-RERUN-PLAYBOOK-BASELINE-PATH-CHECK-2026-05-19 feature: validate rerun baseline paths`
   - 2026-05-19: Added `baseline.rollupJson` to the reusable audit rerun
     playbook and hardened `audit:rerun-playbook:check` so required baseline
     manifest/rollup paths must be present and resolvable. Focused regression
     coverage catches missing baseline keys and missing paths. Evidence:
-    `docs/planning/audit-rerun-playbook-baseline-path-check-2026-05-19-task.md`.
+    `history/audits/audit-rerun-playbook-baseline-path-check-2026-05-19-task.md`.
 
 - [x] `AUDIT-REMEDIATION-PLAN-SELF-CHECK-CLOSURE-2026-05-19 feature: require remediation self-check closure`
   - 2026-05-19: Hardened `audit:remediation-plan:check` so remediation
     closure must include `audit:remediation-plan:check` itself. Focused
     regression coverage catches closure sets that drop the remediation
     self-check command. Evidence:
-    `docs/planning/audit-remediation-plan-self-check-closure-2026-05-19-task.md`.
+    `history/audits/audit-remediation-plan-self-check-closure-2026-05-19-task.md`.
 
 - [x] `AUDIT-TOOLING-INDEX-CLEANUP-CHECK-COMMAND-2026-05-19 feature: require tooling-index cleanup checks`
   - 2026-05-19: Hardened `audit:tooling-index:check` so cleanup checks must
     include `chrome-headless-shell`, `Get-NetTCPConnection`, and
     `docker compose ps`. Focused regression coverage catches cleanup sets that
     drop required local validation cleanup checks. Evidence:
-    `docs/planning/audit-tooling-index-cleanup-check-command-2026-05-19-task.md`.
+    `history/audits/audit-tooling-index-cleanup-check-command-2026-05-19-task.md`.
 
 - [x] `AUDIT-RERUN-PLAYBOOK-CLEANUP-CHECK-COMMAND-2026-05-19 feature: require rerun-playbook cleanup checks`
   - 2026-05-19: Hardened `audit:rerun-playbook:check` so cleanup checks must
     include `chrome-headless-shell`, `Get-NetTCPConnection`, and
     `docker compose ps`. Focused regression coverage catches rerun playbooks
     that drop required local validation cleanup checks. Evidence:
-    `docs/planning/audit-rerun-playbook-cleanup-check-command-2026-05-19-task.md`.
+    `history/audits/audit-rerun-playbook-cleanup-check-command-2026-05-19-task.md`.
 
 - [x] `AUDIT-HANDOFF-SELF-CHECK-VALIDATION-2026-05-19 feature: require handoff self-check validation`
   - 2026-05-19: Hardened `audit:handoff:check` so handoff
     `latestValidation` must include `audit:handoff:check`. Focused regression
     coverage catches handoff packets that omit their own validation command.
     Evidence:
-    `docs/planning/audit-handoff-self-check-validation-2026-05-19-task.md`.
+    `history/audits/audit-handoff-self-check-validation-2026-05-19-task.md`.
 
 - [x] `AUDIT-RERUN-PLAYBOOK-SELF-CHECK-CLOSURE-2026-05-19 feature: require rerun playbook self-check closure`
   - 2026-05-19: Hardened `audit:rerun-playbook:check` so rerun playbook
     `closureChecks` must include `audit:rerun-playbook:check`. Focused
     regression coverage catches rerun playbooks that omit their own validation
     command from closure. Evidence:
-    `docs/planning/audit-rerun-playbook-self-check-closure-2026-05-19-task.md`.
+    `history/audits/audit-rerun-playbook-self-check-closure-2026-05-19-task.md`.
 
 - [x] `AUDIT-TOOLING-INDEX-SELF-CHECK-CLOSURE-2026-05-19 feature: require tooling index self-check closure`
   - 2026-05-19: Hardened `audit:tooling-index:check` so tooling index
     `closureCommands` must include `audit:tooling-index:check`. Focused
     regression coverage catches tooling index closure sets that omit their own
     validation command. Evidence:
-    `docs/planning/audit-tooling-index-self-check-closure-2026-05-19-task.md`.
+    `history/audits/audit-tooling-index-self-check-closure-2026-05-19-task.md`.
 
 - [x] `AUDIT-REMEDIATION-PLAN-CLEANUP-CHECK-COMMAND-2026-05-19 feature: require remediation cleanup checks`
   - 2026-05-19: Hardened `audit:remediation-plan:check` so cleanup checks
     must include `chrome-headless-shell`, `Get-NetTCPConnection`, and
     `docker compose ps`. Focused regression coverage catches remediation plans
     that drop required local validation cleanup checks. Evidence:
-    `docs/planning/audit-remediation-plan-cleanup-check-command-2026-05-19-task.md`.
+    `history/audits/audit-remediation-plan-cleanup-check-command-2026-05-19-task.md`.
 
 - [x] `AUDIT-HANDOFF-CLEANUP-VALIDATION-COMMAND-2026-05-19 feature: require handoff cleanup validation`
   - 2026-05-19: Hardened `audit:handoff:check` so handoff
@@ -1052,7 +1159,7 @@ Last updated: 2026-05-23
     `chrome-headless-shell`, local `5432`/`6379` listeners, and
     `docker compose ps`. Focused regression coverage catches handoff packets
     that drop required local validation cleanup evidence. Evidence:
-    `docs/planning/audit-handoff-cleanup-validation-command-2026-05-19-task.md`.
+    `history/audits/audit-handoff-cleanup-validation-command-2026-05-19-task.md`.
 
 - [x] `AUDIT-HANDOFF-TOOLING-INDEX-SOURCE-CHECK-2026-05-19 feature: require handoff tooling-index sources`
   - 2026-05-19: Hardened `audit:handoff:check` so handoff
@@ -1060,7 +1167,7 @@ Last updated: 2026-05-23
     paths. Current handoff Markdown/JSON now lists those artifacts, and
     focused regression coverage catches source chains that omit them.
     Evidence:
-    `docs/planning/audit-handoff-tooling-index-source-check-2026-05-19-task.md`.
+    `history/audits/audit-handoff-tooling-index-source-check-2026-05-19-task.md`.
 
 - [x] `AUDIT-HANDOFF-SELF-SOURCE-CHECK-2026-05-19 feature: require handoff self sources`
   - 2026-05-19: Hardened `audit:handoff:check` so handoff
@@ -1068,7 +1175,7 @@ Last updated: 2026-05-23
     paths. Current handoff Markdown/JSON now lists those artifacts, and
     focused regression coverage catches source chains that omit them.
     Evidence:
-    `docs/planning/audit-handoff-self-source-check-2026-05-19-task.md`.
+    `history/audits/audit-handoff-self-source-check-2026-05-19-task.md`.
 
 - [x] `AUDIT-MANIFEST-SOURCE-CHAIN-KEY-CHECK-2026-05-19 feature: require manifest source-chain keys`
   - 2026-05-19: Hardened `audit:manifest:check` so reusable audit manifests
@@ -1076,42 +1183,42 @@ Last updated: 2026-05-23
     rollup, handoff, rerun playbook, tooling index, remediation plan, decision
     packet, and repair playbooks. Focused regression coverage catches
     manifests that keep only a partial source chain. Evidence:
-    `docs/planning/audit-manifest-source-chain-key-check-2026-05-19-task.md`.
+    `history/audits/audit-manifest-source-chain-key-check-2026-05-19-task.md`.
 
 - [x] `AUDIT-MANIFEST-SOURCE-CHAIN-PATH-CHECK-2026-05-19 feature: require manifest source-chain repository paths`
   - 2026-05-19: Hardened `audit:manifest:check` so required source-chain
     values must be repository paths, not empty strings or external URLs.
     Focused regression coverage catches invalid source-chain path values.
     Evidence:
-    `docs/planning/audit-manifest-source-chain-path-check-2026-05-19-task.md`.
+    `history/audits/audit-manifest-source-chain-path-check-2026-05-19-task.md`.
 
 - [x] `AUDIT-MANIFEST-SOURCE-CHAIN-EXACT-KEY-CHECK-2026-05-19 feature: require exact manifest source-chain keys`
   - 2026-05-19: Hardened `audit:manifest:check` so reusable audit manifests
     fail when noncanonical source-chain keys are present. Focused regression
     coverage catches unexpected source-chain keys even when they look like
     repository paths. Evidence:
-    `docs/planning/audit-manifest-source-chain-exact-key-check-2026-05-19-task.md`.
+    `history/audits/audit-manifest-source-chain-exact-key-check-2026-05-19-task.md`.
 
 - [x] `AUDIT-MANIFEST-SAFETY-BOUNDARY-CHECK-2026-05-19 feature: require manifest safety boundaries`
   - 2026-05-19: Hardened `audit:manifest:check` so reusable audit manifests
     fail when safety-boundary booleans are missing or unsafe. Focused
     regression coverage catches production mutation, missing decision
     application, and runtime behavior-change drift. Evidence:
-    `docs/planning/audit-manifest-safety-boundary-check-2026-05-19-task.md`.
+    `history/audits/audit-manifest-safety-boundary-check-2026-05-19-task.md`.
 
 - [x] `AUDIT-RERUN-PLAYBOOK-BASELINE-PATH-VALUE-CHECK-2026-05-19 feature: require rerun baseline repository paths`
   - 2026-05-19: Hardened `audit:rerun-playbook:check` so required baseline
     values must be repository paths, not empty strings or external URLs.
     Focused regression coverage catches invalid baseline path values. Evidence:
-    `docs/planning/audit-rerun-playbook-baseline-path-value-check-2026-05-19-task.md`.
+    `history/audits/audit-rerun-playbook-baseline-path-value-check-2026-05-19-task.md`.
 
 - [x] `I18N-COPY-REACHABILITY-AUDIT-2026-05-19 research: refresh AUD-22 i18n/copy`
   - 2026-05-19: Completed the `AUD-22` i18n/copy reachability audit.
     Route-reachable i18n audit passed with findings `0`, localCopy `0`,
     fallbackPl `0`, and hardcoded `0`. Focused Web i18n pack passed (`8` files
     / `26` tests). Evidence:
-    `docs/operations/i18n-copy-reachability-audit-2026-05-19.md` and
-    `docs/planning/i18n-copy-reachability-audit-2026-05-19-task.md`.
+    `history/audits/i18n-copy-reachability-audit-2026-05-19.md` and
+    `history/audits/i18n-copy-reachability-audit-2026-05-19-task.md`.
 
 - [x] `MOBILE-CROSS-PLATFORM-SCOPE-AUDIT-2026-05-19 research: refresh AUD-21 mobile scope`
   - 2026-05-19: Completed the `AUD-21` mobile/cross-platform scope audit.
@@ -1120,8 +1227,8 @@ Last updated: 2026-05-23
     deferred scaffold messages; mobile docs state no production mobile runtime
     and no independent mobile backend contracts. Responsive Web mobile evidence
     remains under `AUD-05`, not native app parity. Evidence:
-    `docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
-    `docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`.
+    `history/audits/mobile-cross-platform-scope-audit-2026-05-19.md` and
+    `history/audits/mobile-cross-platform-scope-audit-2026-05-19-task.md`.
 
 - [x] `OPERATIONS-RELEASE-DEPLOYMENT-AUDIT-2026-05-19 research: refresh AUD-19 operations/release`
   - 2026-05-19: Completed the local `AUD-19` operations/release/deployment
@@ -1133,8 +1240,8 @@ Last updated: 2026-05-23
     production database mutation, production journey, LIVE mutation,
     exchange-side mutation, or existing production data mutation was performed.
     Evidence:
-    `docs/operations/operations-release-deployment-audit-2026-05-19.md` and
-    `docs/planning/operations-release-deployment-audit-2026-05-19-task.md`.
+    `history/audits/operations-release-deployment-audit-2026-05-19.md` and
+    `history/audits/operations-release-deployment-audit-2026-05-19-task.md`.
 
 - [x] `POST-PUSH-BUILD-INFO-READBACK-36FF999D-2026-05-19 verification: read production build-info after push`
   - 2026-05-19: Completed a read-only post-push production freshness check for
@@ -1144,8 +1251,8 @@ Last updated: 2026-05-23
     `36ff999d`, so no production readiness claim is made for `36ff999d`. No
     production mutation, database mutation, journey mutation, LIVE
     order/cancel/close, or exchange-side mutation was performed. Evidence:
-    `docs/operations/post-push-build-info-readback-36ff999d-2026-05-19.md` and
-    `docs/planning/post-push-build-info-readback-36ff999d-2026-05-19-task.md`.
+    `history/evidence/post-push-build-info-readback-36ff999d-2026-05-19.md` and
+    `history/evidence/post-push-build-info-readback-36ff999d-2026-05-19-task.md`.
 
 - [x] `MAIN-PROMOTION-BUILD-INFO-DD1A1FAF-2026-05-19 release: promote audit branch to main and verify public freshness`
   - 2026-05-19: Confirmed `origin/main` was an ancestor of the current audit
@@ -1157,8 +1264,8 @@ Last updated: 2026-05-23
     mutation, existing production data mutation, or protected authenticated
     journey was performed. Full protected release readiness remains a separate
     `AUD-19` gate. Evidence:
-    `docs/operations/main-promotion-build-info-dd1a1faf-2026-05-19.md` and
-    `docs/planning/main-promotion-build-info-dd1a1faf-2026-05-19-task.md`.
+    `history/evidence/main-promotion-build-info-dd1a1faf-2026-05-19.md` and
+    `history/evidence/main-promotion-build-info-dd1a1faf-2026-05-19-task.md`.
 
 - [x] `PROTECTED-PREFLIGHT-DD1A1FAF-2026-05-19 verification: classify protected release blockers`
   - 2026-05-19: Ran the no-secret final preflight against deployed
@@ -1168,8 +1275,8 @@ Last updated: 2026-05-23
     protected release evidence. No production mutation, LIVE order/cancel/close,
     exchange-side mutation, existing production data mutation, or protected
     authenticated journey was performed. Evidence:
-    `docs/operations/v1-final-preflight-dd1a1faf-2026-05-19-noauth.md` and
-    `docs/planning/protected-preflight-dd1a1faf-2026-05-19-task.md`.
+    `history/releases/v1-final-preflight-dd1a1faf-2026-05-19-noauth.md` and
+    `history/tasks/protected-preflight-dd1a1faf-2026-05-19-task.md`.
 
 - [x] `RC-EVIDENCE-BLOCKED-DD1A1FAF-2026-05-19 verification: refresh dated no-secret RC blocked packet`
   - 2026-05-19: Published dated no-secret RC status, sign-off, checklist, and
@@ -1180,8 +1287,8 @@ Last updated: 2026-05-23
     fields. No production mutation, LIVE order/cancel/close, exchange-side
     mutation, protected authenticated journey, or fabricated approval was
     performed. Evidence:
-    `docs/operations/v1-rc-external-gates-status-dd1a1faf-2026-05-19-blocked.md`
-    and `docs/planning/rc-evidence-blocked-dd1a1faf-2026-05-19-task.md`.
+    `history/releases/v1-rc-external-gates-status-dd1a1faf-2026-05-19-blocked.md`
+    and `history/releases/rc-evidence-blocked-dd1a1faf-2026-05-19-task.md`.
 
 - [x] `V1-OPERATOR-UNBLOCK-PACKET-DD1A1FAF-2026-05-19 release: publish current protected evidence handoff`
   - 2026-05-19: Published a current no-secret operator unblock packet for
@@ -1191,8 +1298,8 @@ Last updated: 2026-05-23
     protected auth/context and sign-off inputs, ordered commands, stop
     conditions, and final acceptance rule. It remains `NO-GO` and does not
     claim protected release readiness. Evidence:
-    `docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.md` and
-    `docs/planning/v1-operator-unblock-packet-dd1a1faf-2026-05-19-task.md`.
+    `history/releases/v1-operator-unblock-packet-dd1a1faf-2026-05-19.md` and
+    `history/releases/v1-operator-unblock-packet-dd1a1faf-2026-05-19-task.md`.
 
 - [x] `V1-PROTECTED-INPUT-READINESS-DD1A1FAF-2026-05-19 verification: sweep protected input names`
   - 2026-05-19: Ran a names-only protected input readiness sweep for the
@@ -1200,8 +1307,8 @@ Last updated: 2026-05-23
     liveimport, rollback, production UI, production DB, RC, and Gate families.
     No secret values were printed or stored. Protected `AUD-19` evidence
     remains blocked until approved operator inputs are supplied. Evidence:
-    `docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.md` and
-    `docs/planning/v1-protected-input-readiness-dd1a1faf-2026-05-19-task.md`.
+    `history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-19.md` and
+    `history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-19-task.md`.
 
 - [x] `PROTECTED-INPUT-READINESS-COMMAND-2026-05-19 feature: add reusable no-secret readiness command`
   - 2026-05-19: Added `corepack pnpm run ops:protected-inputs:check` and
@@ -1209,7 +1316,7 @@ Last updated: 2026-05-23
     protected env-name families only, writes optional JSON/Markdown reports,
     and never prints or stores env values. It is included in the reusable audit
     tooling index and `audit:manifest:verify`. Evidence:
-    `docs/planning/protected-input-readiness-command-2026-05-19-task.md`.
+    `history/evidence/protected-input-readiness-command-2026-05-19-task.md`.
 
 - [x] `DATA-MODEL-MIGRATIONS-AUDIT-2026-05-19 research: refresh AUD-07 data model/migrations`
   - 2026-05-19: Completed the `AUD-07` data model/migrations audit. Prisma
@@ -1223,8 +1330,8 @@ Last updated: 2026-05-23
     DB-backed audit packs. No production database, production journey, LIVE
     mutation, exchange-side mutation, or existing production data mutation was
     performed.
-    Evidence: `docs/operations/data-model-migrations-audit-2026-05-19.md` and
-    `docs/planning/data-model-migrations-audit-2026-05-19-task.md`.
+    Evidence: `history/audits/data-model-migrations-audit-2026-05-19.md` and
+    `history/audits/data-model-migrations-audit-2026-05-19-task.md`.
 
 - [x] `WORKERS-RUNTIME-OPERATIONS-AUDIT-2026-05-19 research: refresh AUD-08 workers/runtime operations`
   - 2026-05-19: Completed the `AUD-08` workers/runtime operations audit. The
@@ -1237,8 +1344,8 @@ Last updated: 2026-05-23
     appeared only in the intentional Redis-startup retry test. No production
     journey, LIVE mutation, exchange-side mutation, or existing production data
     mutation was performed. Evidence:
-    `docs/operations/workers-runtime-operations-audit-2026-05-19.md` and
-    `docs/planning/workers-runtime-operations-audit-2026-05-19-task.md`.
+    `history/audits/workers-runtime-operations-audit-2026-05-19.md` and
+    `history/audits/workers-runtime-operations-audit-2026-05-19-task.md`.
 
 - [x] `ADMIN-SUBSCRIPTIONS-ENTITLEMENTS-AUDIT-2026-05-19 research: refresh AUD-18 admin/subscriptions`
   - 2026-05-19: Completed the `AUD-18` admin/subscriptions/entitlements audit.
@@ -1251,8 +1358,8 @@ Last updated: 2026-05-23
     production journey, LIVE mutation, exchange-side mutation, existing
     production data mutation, or production entitlement mutation was performed.
     Evidence:
-    `docs/operations/admin-subscriptions-entitlements-audit-2026-05-19.md` and
-    `docs/planning/admin-subscriptions-entitlements-audit-2026-05-19-task.md`.
+    `history/audits/admin-subscriptions-entitlements-audit-2026-05-19.md` and
+    `history/audits/admin-subscriptions-entitlements-audit-2026-05-19-task.md`.
 
 - [x] `LOGS-AUDIT-TRAIL-AUDIT-2026-05-19 research: refresh AUD-17 logs/audit trail`
   - 2026-05-19: Completed the `AUD-17` logs/audit-trail audit. Focused Web
@@ -1263,8 +1370,8 @@ Last updated: 2026-05-23
     trace text rendering, and Web logs route states. No production journey,
     LIVE mutation, exchange-side mutation, or existing production data mutation
     was performed. Evidence:
-    `docs/operations/logs-audit-trail-audit-2026-05-19.md` and
-    `docs/planning/logs-audit-trail-audit-2026-05-19-task.md`.
+    `history/audits/logs-audit-trail-audit-2026-05-19.md` and
+    `history/audits/logs-audit-trail-audit-2026-05-19-task.md`.
 
 - [x] `BACKTESTS-REPORTS-AUDIT-2026-05-19 research: refresh AUD-16 backtests/reports`
   - 2026-05-19: Completed the `AUD-16` backtests/reports audit. Focused Web
@@ -1276,8 +1383,8 @@ Last updated: 2026-05-23
     trades/report/timeline reads, cross-mode aggregation, and Web
     route/detail/report states. No production journey, LIVE mutation,
     exchange-side mutation, or existing production data mutation was performed.
-    Evidence: `docs/operations/backtests-reports-audit-2026-05-19.md` and
-    `docs/planning/backtests-reports-audit-2026-05-19-task.md`.
+    Evidence: `history/audits/backtests-reports-audit-2026-05-19.md` and
+    `history/audits/backtests-reports-audit-2026-05-19-task.md`.
 
 - [x] `MARKETS-STRATEGIES-CONFIGURATION-AUDIT-2026-05-19 research: refresh AUD-15 markets/strategies configuration`
   - 2026-05-19: Completed the `AUD-15` markets/strategies configuration
@@ -1289,8 +1396,8 @@ Last updated: 2026-05-23
     lock UI, and indicator registry/presentation parity. No production
     journey, LIVE mutation, exchange-side mutation, or existing production data
     mutation was performed. Evidence:
-    `docs/operations/markets-strategies-configuration-audit-2026-05-19.md` and
-    `docs/planning/markets-strategies-configuration-audit-2026-05-19-task.md`.
+    `history/audits/markets-strategies-configuration-audit-2026-05-19.md` and
+    `history/audits/markets-strategies-configuration-audit-2026-05-19-task.md`.
 
 - [x] `WALLETS-CAPITAL-LEDGER-AUDIT-2026-05-19 research: refresh AUD-14 wallets/capital ledger`
   - 2026-05-19: Completed the `AUD-14` wallets/capital-ledger audit. Focused
@@ -1302,8 +1409,8 @@ Last updated: 2026-05-23
     cashflow/equity ledger states, and partial/unavailable ledger UI. No
     production journey, LIVE mutation, exchange-side mutation, or existing
     production data mutation was performed. Evidence:
-    `docs/operations/wallets-capital-ledger-audit-2026-05-19.md` and
-    `docs/planning/wallets-capital-ledger-audit-2026-05-19-task.md`.
+    `history/audits/wallets-capital-ledger-audit-2026-05-19.md` and
+    `history/audits/wallets-capital-ledger-audit-2026-05-19-task.md`.
 
 - [x] `POSITIONS-RECONCILIATION-AUDIT-2026-05-19 research: refresh AUD-13 positions/reconciliation`
   - 2026-05-19: Completed the `AUD-13` positions/reconciliation audit.
@@ -1315,8 +1422,8 @@ Last updated: 2026-05-23
     runtime position derivations, and close-state UI. No production journey,
     LIVE mutation, exchange-side mutation, or existing production data mutation
     was performed. Evidence:
-    `docs/operations/positions-reconciliation-audit-2026-05-19.md` and
-    `docs/planning/positions-reconciliation-audit-2026-05-19-task.md`.
+    `history/audits/positions-reconciliation-audit-2026-05-19.md` and
+    `history/audits/positions-reconciliation-audit-2026-05-19-task.md`.
 
 - [x] `ORDERS-MANUAL-TRADING-AUDIT-2026-05-19 research: refresh AUD-12 orders/manual trading`
   - 2026-05-19: Completed the `AUD-12` orders/manual trading audit. Focused
@@ -1328,8 +1435,8 @@ Last updated: 2026-05-23
     guards, quantity/position scope, and Dashboard Home manual/open-order
     action states. No production journey, LIVE mutation, exchange-side
     mutation, or existing production data mutation was performed. Evidence:
-    `docs/operations/orders-manual-trading-audit-2026-05-19.md` and
-    `docs/planning/orders-manual-trading-audit-2026-05-19-task.md`.
+    `history/audits/orders-manual-trading-audit-2026-05-19.md` and
+    `history/audits/orders-manual-trading-audit-2026-05-19-task.md`.
 
 - [x] `ENGINE-TRADING-DECISION-FLOW-AUDIT-2026-05-19 research: refresh AUD-11 engine/trading flow`
   - 2026-05-19: Completed the `AUD-11` engine/trading decision-flow audit.
@@ -1341,8 +1448,8 @@ Last updated: 2026-05-23
     lifecycle, and owned imported-position execution. No production journey,
     LIVE mutation, exchange-side mutation, or existing production data mutation
     was performed. Evidence:
-    `docs/operations/engine-trading-decision-flow-audit-2026-05-19.md` and
-    `docs/planning/engine-trading-decision-flow-audit-2026-05-19-task.md`.
+    `history/audits/engine-trading-decision-flow-audit-2026-05-19.md` and
+    `history/audits/engine-trading-decision-flow-audit-2026-05-19-task.md`.
 
 - [x] `BOTS-RUNTIME-TRUTH-AUDIT-2026-05-19 research: refresh AUD-10 bots/runtime truth`
   - 2026-05-19: Completed the `AUD-10` bots/runtime truth audit. Focused Web
@@ -1353,8 +1460,8 @@ Last updated: 2026-05-23
     history parity, takeover visibility, LIVE/PAPER isolation, and delete
     cleanup. No production journey, LIVE mutation, exchange-side mutation, or
     existing production data mutation was performed. Evidence:
-    `docs/operations/bots-runtime-truth-audit-2026-05-19.md` and
-    `docs/planning/bots-runtime-truth-audit-2026-05-19-task.md`.
+    `history/audits/bots-runtime-truth-audit-2026-05-19.md` and
+    `history/audits/bots-runtime-truth-audit-2026-05-19-task.md`.
 
 - [x] `SECURITY-PRIVACY-AUDIT-2026-05-19 research: refresh AUD-06 security/privacy truth`
   - 2026-05-19: Completed the `AUD-06` security/privacy audit. Local focused
@@ -1365,17 +1472,17 @@ Last updated: 2026-05-23
     tests). Local Postgres/Redis were stopped after the DB-backed proof. No
     production journey, LIVE mutation, exchange-side mutation, existing
     production data mutation, or raw-secret artifact was produced. Evidence:
-    `docs/operations/security-privacy-audit-2026-05-19.md` and
-    `docs/planning/security-privacy-audit-2026-05-19-task.md`.
+    `history/audits/security-privacy-audit-2026-05-19.md` and
+    `history/audits/security-privacy-audit-2026-05-19-task.md`.
 
 - [x] `ARCHITECTURE-EXCHANGE-SCOPE-WORDING-AUDIT-2026-05-19 research: prove exchange-scope doc drift`
   - 2026-05-19: Completed the `AUD-01`/`AUD-ARCH-001` architecture wording
     audit and then applied accepted `DEC-AUD-001`: current implementation scope
     is Binance + Gate.io, not Binance-only, while production/live readiness is
     evidence-bound by exact exchange, market type, and operation. Evidence:
-    `docs/operations/architecture-exchange-scope-wording-audit-2026-05-19.md`
+    `history/audits/architecture-exchange-scope-wording-audit-2026-05-19.md`
     and
-    `docs/planning/architecture-exchange-scope-wording-audit-2026-05-19-task.md`.
+    `history/audits/architecture-exchange-scope-wording-audit-2026-05-19-task.md`.
 
 - [x] `EXCHANGE-CAPABILITY-TRUTH-AUDIT-2026-05-19 research: prove exchange capability truth`
   - 2026-05-19: Completed the `AUD-09` exchange capability truth audit. API
@@ -1386,8 +1493,8 @@ Last updated: 2026-05-23
     contracts and consumers; focused exact contract tests and API typecheck
     passed. No production journey, LIVE mutation, exchange-side mutation, or
     existing production data mutation was performed. Evidence:
-    `docs/operations/exchange-capability-truth-audit-2026-05-19.md` and
-    `docs/planning/exchange-capability-truth-audit-2026-05-19-task.md`.
+    `history/audits/exchange-capability-truth-audit-2026-05-19.md` and
+    `history/audits/exchange-capability-truth-audit-2026-05-19-task.md`.
 
 - [x] `AUD09-NEUTRAL-EXCHANGE-TYPE-ALIASES-2026-05-19 refactor: close exchange type naming debt`
   - 2026-05-19: Closed `AUD-EXCH-007` by adding neutral exchange-owned type
@@ -1395,7 +1502,7 @@ Last updated: 2026-05-23
     CCXT-named connector types. Validation PASS: API typecheck and focused
     orders/wallet classifier tests (`2` files / `41` tests) after local infra
     startup. Evidence:
-    `docs/planning/aud09-neutral-exchange-type-aliases-2026-05-19-task.md`.
+    `history/tasks/aud09-neutral-exchange-type-aliases-2026-05-19-task.md`.
 
 - [x] `AI-ASSISTANT-RUNTIME-TRUTH-AUDIT-2026-05-19 research: prove assistant runtime truth`
   - 2026-05-19: Completed the `AUD-20` assistant/AI audit. Deterministic
@@ -1408,8 +1515,8 @@ Last updated: 2026-05-23
     `AI_TESTING_PROTOCOL.md` multi-turn red-team proof exists. No production
     journey, LIVE mutation, exchange-side mutation, or existing production data
     mutation was performed. Evidence:
-    `docs/operations/ai-assistant-runtime-truth-audit-2026-05-19.md` and
-    `docs/planning/ai-assistant-runtime-truth-audit-2026-05-19-task.md`.
+    `history/audits/ai-assistant-runtime-truth-audit-2026-05-19.md` and
+    `history/audits/ai-assistant-runtime-truth-audit-2026-05-19-task.md`.
 
 - [x] `API-ENDPOINT-DOCS-PARITY-AUDIT-2026-05-19 research: add endpoint-level API docs parity`
   - 2026-05-19: Added reusable endpoint-level docs parity command
@@ -1420,8 +1527,8 @@ Last updated: 2026-05-23
     (`API 22/22`, `Web 16/16`, `Routes 38/38`). No runtime behavior,
     production journey, LIVE mutation, or exchange-side mutation was
     performed. Evidence:
-    `docs/operations/api-endpoint-docs-parity-2026-05-19/api-endpoint-docs-parity-2026-05-19.md`
-    and `docs/planning/api-endpoint-docs-parity-audit-2026-05-19-task.md`.
+    `history/audits/api-endpoint-docs-parity-2026-05-19/api-endpoint-docs-parity-2026-05-19.md`
+    and `history/audits/api-endpoint-docs-parity-audit-2026-05-19-task.md`.
 
 - [x] `AUTHENTICATED-ROUTE-STATE-AUDIT-2026-05-19 research: prove local authenticated Web routes`
   - 2026-05-19: Closed the main `AUD-04`/local `AUD-05` gap from the previous
@@ -1431,9 +1538,9 @@ Last updated: 2026-05-23
     `0` CHECK, `0` console warning/error routes, and `6` screenshots. No
     production journey, LIVE mutation, exchange-side mutation, or existing
     production data mutation was performed. Evidence:
-    `docs/analysis/audit-baseline-2026-05-19.md`,
-    `docs/operations/route-state-audit-2026-05-19/route-state-audit-2026-05-19.md`,
-    and `docs/planning/authenticated-route-state-audit-2026-05-19-task.md`.
+    `history/audits/audit-baseline-2026-05-19.md`,
+    `history/audits/route-state-audit-2026-05-19/route-state-audit-2026-05-19.md`,
+    and `history/audits/authenticated-route-state-audit-2026-05-19-task.md`.
 
 - [x] `FULL-LAYERED-AUDIT-RUN-2026-05-18 research: execute reusable audits locally`
   - 2026-05-18: Continued the reusable audit work into a broad local run.
@@ -1447,8 +1554,8 @@ Last updated: 2026-05-23
     `/`, `/auth/login`, and unauthenticated `/dashboard` redirect on desktop
     and mobile with `0` console warnings/errors. No production journey, LIVE
     mutation, exchange-side mutation, or existing production data mutation was
-    performed. Evidence: `docs/analysis/audit-baseline-2026-05-18.md` and
-    `docs/planning/full-layered-audit-run-2026-05-18-task.md`.
+    performed. Evidence: `history/audits/audit-baseline-2026-05-18.md` and
+    `history/audits/full-layered-audit-run-2026-05-18-task.md`.
 
 - [x] `REUSABLE-AUDIT-REGISTRY-2026-05-18 research: define reusable cross-layer audits`
   - 2026-05-18: Created the reusable audit system with stable `AUD-00` through
@@ -1462,8 +1569,8 @@ Last updated: 2026-05-23
     guardrails PASS, docs parity PASS, typecheck PASS, lint PASS, and build
     PASS.
     Evidence: `docs/analysis/reusable-audit-registry.md`,
-    `docs/analysis/audit-baseline-2026-05-18.md`, and
-    `docs/planning/reusable-audit-registry-2026-05-18-task.md`.
+    `history/audits/audit-baseline-2026-05-18.md`, and
+    `history/audits/reusable-audit-registry-2026-05-18-task.md`.
 
 - [x] `PROJECT-ARCHITECTURE-CODE-DISCREPANCY-AUDIT-2026-05-17 research: audit architecture-code drift`
   - 2026-05-17: Completed an architecture-vs-code discrepancy baseline. Static
@@ -1474,8 +1581,8 @@ Last updated: 2026-05-23
     runtime overclaim and stale exchange-scope wording in older architecture
     overview/domain docs; exchange capability granularity was repaired on
     2026-05-19 with exact `(exchange, marketType, operation)` support. Evidence:
-    `docs/analysis/architecture-code-discrepancy-audit-2026-05-17.md` and
-    `docs/planning/project-architecture-code-discrepancy-audit-2026-05-17-task.md`.
+    `history/audits/architecture-code-discrepancy-audit-2026-05-17.md` and
+    `history/audits/project-architecture-code-discrepancy-audit-2026-05-17-task.md`.
 
 - [x] `PROJECT-COMPLETE-ANALYSIS-INDEX-2026-05-14 research: classify every project audit lane`
   - 2026-05-14: Expanded the audit thread from V1 scorecard confidence into a
@@ -1488,7 +1595,7 @@ Last updated: 2026-05-23
     documented design; assistant runtime is locally tested for deterministic
     fail-closed mechanics but still needs full `AI_TESTING_PROTOCOL.md`
     multi-turn red-team proof before any complete AI-behavior claim. Evidence:
-    `docs/operations/project-complete-analysis-index-2026-05-14.md`.
+    `history/plans/project-complete-analysis-index-2026-05-14.md`.
 
 - [x] `PROJECT-FULL-SCAN-BASELINE-2026-05-14 research: generate full-project audit baseline`
   - 2026-05-14: Generated current project index and static scan for the
@@ -1499,9 +1606,9 @@ Last updated: 2026-05-23
     go-live smoke PASS (API `45/45`, Web `18/18`). No code change, deploy,
     production mutation, LIVE order/cancel/close, exchange-side mutation, or
     existing production data mutation was performed. Evidence:
-    `docs/planning/project-full-scan-baseline-2026-05-14-task.md`,
-    `docs/operations/project-full-scan-index-2026-05-14.md`, and
-    `docs/operations/project-full-static-scan-2026-05-14.md`.
+    `history/audits/project-full-scan-baseline-2026-05-14-task.md`,
+    `history/audits/project-full-scan-index-2026-05-14.md`, and
+    `history/audits/project-full-static-scan-2026-05-14.md`.
 
 - [x] `POSTV1-STRATEGY-SNAPSHOT-HISTORY-2026-05-14 fix: preserve immutable backtest context snapshots`
   - 2026-05-14: New backtest runs persist immutable creation-time strategy and
@@ -1511,7 +1618,7 @@ Last updated: 2026-05-23
     history references those records. Focused API e2e passed for backtests,
     strategies, and markets (`44/44`). No deploy, production mutation, LIVE
     order/cancel/close, or exchange-side mutation was performed. Evidence:
-    `docs/planning/post-v1-strategy-snapshot-history-2026-05-14-task.md`.
+    `history/tasks/post-v1-strategy-snapshot-history-2026-05-14-task.md`.
 
 - [x] `POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14 test: verify inactive linked strategy edits`
   - 2026-05-14: Verified strategy edit Web/API parity for the suspected
@@ -1521,7 +1628,7 @@ Last updated: 2026-05-23
     Web strategies suite `14` files / `48` tests, API strategies e2e `11/11`.
     No deploy, production mutation, LIVE order/cancel/close, or exchange-side
     mutation was performed. Evidence:
-    `docs/planning/post-v1-inactive-paper-strategy-edit-proof-2026-05-14-task.md`.
+    `history/evidence/post-v1-inactive-paper-strategy-edit-proof-2026-05-14-task.md`.
 
 - [x] `POSTV1-CRYPTO-ICON-CONSISTENCY-2026-05-14 fix: harden common crypto icon fallback model`
   - 2026-05-14: Crypto icon lookup now derives CoinGecko ID hints and curated
@@ -1531,7 +1638,7 @@ Last updated: 2026-05-23
     icons rather than generic placeholders. No deploy, production data
     mutation, LIVE order/cancel/close, or exchange-side mutation was performed.
     Evidence:
-    `docs/planning/post-v1-crypto-icon-consistency-2026-05-14-task.md`.
+    `history/tasks/post-v1-crypto-icon-consistency-2026-05-14-task.md`.
 
 - [x] `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14 release: reconcile stale proof ledger rows`
   - 2026-05-14: Reconciled stale Profile, Profile API Keys, Wallets, Markets,
@@ -1541,7 +1648,7 @@ Last updated: 2026-05-23
     count is `closed:18`, `mitigating:8`. No deploy, production mutation, LIVE
     order/cancel/close, unsafe LIVE position mutation, existing-data mutation,
     or broader Gate.io/second-LIVE proof was performed. Evidence:
-    `docs/planning/v1-post-v1-ledger-reconciliation-2026-05-14-task.md`.
+    `history/audits/v1-post-v1-ledger-reconciliation-2026-05-14-task.md`.
 
 - [x] `V1-POST-V1-WALLET-BOT-CLEANUP-HARDENING-2026-05-14 fix: harden bot cleanup and wallet reset guard`
   - 2026-05-14: Bot deletion now removes bot-owned runtime/trading artifacts
@@ -1552,7 +1659,7 @@ Last updated: 2026-05-23
     PASS, Bots e2e `26/26` PASS, Wallets e2e `24/24` PASS, build PASS.
     Deployed `1586f59261cef94d7c513d71bbfcfb697d11ca59`; build-info wait
     passed on attempt 22 and public deploy smoke passed. Evidence:
-    `docs/planning/v1-post-v1-wallet-bot-cleanup-hardening-2026-05-14-task.md`.
+    `history/tasks/v1-post-v1-wallet-bot-cleanup-hardening-2026-05-14-task.md`.
 
 - [x] `POSTV1-OPERATOR-FEEDBACK-INTAKE-2026-05-14 planning: index operator feedback follow-up missions`
   - 2026-05-14: Indexed the remaining post-V1 feedback into bounded follow-up
@@ -1560,7 +1667,7 @@ Last updated: 2026-05-23
     reproduction, strategy/market snapshot history, Analytics Reports/Logs UX,
     Strategy Builder previews, crypto icon consistency, table affordances, and
     positions-service decomposition. Evidence:
-    `docs/planning/post-v1-bot-wallet-dashboard-cleanup-2026-05-14-task.md`.
+    `history/tasks/post-v1-bot-wallet-dashboard-cleanup-2026-05-14-task.md`.
 
 - [x] `V1-POST-V1-DASHBOARD-RUNTIME-LEDGER-CLOSURE-2026-05-14 release: close stale Dashboard Home and Bot Runtime proof rows`
   - 2026-05-14: Closed stale `SOAR-DASHBOARD-001` and
@@ -1571,7 +1678,7 @@ Last updated: 2026-05-23
     `VERIFIED:22` and `PARTIAL:0`; current risk count is `closed:18` and
     `mitigating:8`. Gate.io/second-LIVE production shape remains separate.
     Evidence:
-    `docs/planning/v1-post-v1-dashboard-runtime-ledger-closure-2026-05-14-task.md`.
+    `history/audits/v1-post-v1-dashboard-runtime-ledger-closure-2026-05-14-task.md`.
 
 - [x] `V1-POST-V1-AUTH-DEPLOY-RERUN-2026-05-14 release: deploy logout invalidation and rerun production Auth proof`
   - 2026-05-14: Deployed fixed commit `84711599` to `origin/main`, waited for
@@ -1581,8 +1688,8 @@ Last updated: 2026-05-23
     stale pre-logout token `/auth/me` `401`, and post-logout dashboard
     redirect. `SOAR-AUTH-001` is promoted to `VERIFIED`, and `RISK-004` is
     closed. Evidence:
-    `docs/planning/v1-post-v1-auth-deploy-rerun-2026-05-14-task.md` and
-    `docs/operations/prod-auth-session-browser-proof-84711599-2026-05-14.md`.
+    `history/tasks/v1-post-v1-auth-deploy-rerun-2026-05-14-task.md` and
+    `history/evidence/prod-auth-session-browser-proof-84711599-2026-05-14.md`.
 
 - [x] `V1-POST-V1-AUTH-LOGOUT-TOKEN-REUSE-HARDENING-2026-05-14 fix: invalidate reused JWT sessions on logout`
   - 2026-05-14: Production auth browser/API proof on deployed `2fc90a08`
@@ -1592,8 +1699,8 @@ Last updated: 2026-05-23
     Auth/middleware tests passed (`21/21`) and API typecheck passed. Production
     rerun later passed on deployed `84711599`; this task is superseded by
     `V1-POST-V1-AUTH-DEPLOY-RERUN-2026-05-14`. Evidence:
-    `docs/planning/v1-post-v1-auth-logout-token-reuse-hardening-2026-05-14-task.md`
-    and `docs/operations/prod-auth-session-browser-proof-2fc90a08-2026-05-14.md`.
+    `history/tasks/v1-post-v1-auth-logout-token-reuse-hardening-2026-05-14-task.md`
+    and `history/evidence/prod-auth-session-browser-proof-2fc90a08-2026-05-14.md`.
 
 - [x] `V1-POST-V1-RELEASE-CONFIDENCE-ROW-CLOSURE-2026-05-14 release: close stale release-confidence proof-map row`
   - 2026-05-14: Closed obsolete `SOAR-REL-001` uncertainty after confirming the
@@ -1604,7 +1711,7 @@ Last updated: 2026-05-23
     risks as post-V1 hardening candidates. No code, deploy, production
     mutation, LIVE order/cancel/close, or exchange-side mutation was performed.
     Evidence:
-    `docs/planning/v1-post-v1-release-confidence-row-closure-2026-05-14-task.md`.
+    `history/tasks/v1-post-v1-release-confidence-row-closure-2026-05-14-task.md`.
 
 - [x] `V1-100-PERCENT-TRUTH-AUDIT-2026-05-14 release: answer whether V1 is truly 100%`
   - 2026-05-14: Verified the 100% claim by cross-checking the final scorecard,
@@ -1618,8 +1725,8 @@ Last updated: 2026-05-23
     proof were intentionally not performed. Its stale `PARTIAL:7` wording is
     superseded by the later ledger reconciliation. No deploy or production
     mutation was performed. Evidence:
-    `docs/planning/v1-100-percent-truth-audit-2026-05-14-task.md` and
-    `docs/operations/v1-100-percent-truth-audit-2026-05-14.md`.
+    `history/audits/v1-100-percent-truth-audit-2026-05-14-task.md` and
+    `history/audits/v1-100-percent-truth-audit-2026-05-14.md`.
 
 - [x] `V1-FINAL-EVIDENCE-CONSISTENCY-READBACK-2026-05-14 release: verify final generated evidence consistency`
   - 2026-05-14: Machine-read final generated JSON artifacts and Markdown
@@ -1628,7 +1735,7 @@ Last updated: 2026-05-23
     work order, master ledger `GO`, static scan findings `0`, and project index
     V1 PASS rows `21`. No deploy or production mutation was performed.
     Evidence:
-    `docs/planning/v1-final-evidence-consistency-readback-2026-05-14-task.md`.
+    `history/evidence/v1-final-evidence-consistency-readback-2026-05-14-task.md`.
 
 - [x] `V1-ACTIVE-QUEUE-CLOSURE-AUDIT-2026-05-14 release: verify no active V1 completion work remains`
   - 2026-05-14: Verified active V1 continuation sources after final quality and
@@ -1637,7 +1744,7 @@ Last updated: 2026-05-23
     no current NO-GO/BLOCKED completion signal, final scorecard readback is
     `GO` / `100%` / blocked modules `none`, and active task-board/next-commits
     unchecked-row scan found no open V1 completion row. Evidence:
-    `docs/planning/v1-active-queue-closure-audit-2026-05-14-task.md`.
+    `history/audits/v1-active-queue-closure-audit-2026-05-14-task.md`.
 
 - [x] `V1-CURRENT-GO-LIVE-SMOKE-2026-05-14 qa: verify current worktree go-live smoke`
   - 2026-05-14: Verified the current worktree go-live smoke path. The first
@@ -1647,7 +1754,7 @@ Last updated: 2026-05-23
     `pnpm run test:go-live:api` PASS (`44/44`), and
     `pnpm run test:go-live:smoke` PASS (API `44/44`, Web `18/18`). No deploy
     or production mutation was performed. Evidence:
-    `docs/planning/v1-current-go-live-smoke-2026-05-14-task.md`.
+    `history/evidence/v1-current-go-live-smoke-2026-05-14-task.md`.
 
 - [x] `V1-CURRENT-WORKTREE-FULL-REGRESSION-2026-05-14 qa: verify current worktree lint and full API/Web tests`
   - 2026-05-14: Refreshed current full local regression after the final V1
@@ -1655,7 +1762,7 @@ Last updated: 2026-05-23
     full Web Vitest (`149` files / `512` tests), and full API Vitest. This is
     local regression confidence only; no deploy or production mutation was
     performed. Evidence:
-    `docs/planning/v1-current-worktree-full-regression-2026-05-14-task.md`.
+    `history/tasks/v1-current-worktree-full-regression-2026-05-14-task.md`.
 
 - [x] `V1-CURRENT-WORKTREE-SANITY-2026-05-14 qa: verify current worktree typecheck, build, and guardrails`
   - 2026-05-14: Refreshed current worktree sanity after the final V1 evidence,
@@ -1663,7 +1770,7 @@ Last updated: 2026-05-23
     `pnpm run build`, and `pnpm run quality:guardrails`. This is local
     code/build confidence only; no deploy or production mutation was performed.
     Evidence:
-    `docs/planning/v1-current-worktree-sanity-2026-05-14-task.md`.
+    `history/tasks/v1-current-worktree-sanity-2026-05-14-task.md`.
 
 - [x] `V1-FINAL-EVIDENCE-INVENTORY-2026-05-14 release: publish final V1 evidence inventory`
   - 2026-05-14: Published the final V1 evidence inventory and safe
@@ -1671,16 +1778,16 @@ Last updated: 2026-05-23
     LIVE mutation approval boundary, warns against blind staging of the large
     proof-artifact working tree, and clarifies that docs-only commits do not
     imply a fresh production build-info. Evidence:
-    `docs/planning/v1-final-evidence-inventory-2026-05-14-task.md` and
-    `docs/operations/v1-final-evidence-inventory-2026-05-14.md`.
+    `history/audits/v1-final-evidence-inventory-2026-05-14-task.md` and
+    `history/audits/v1-final-evidence-inventory-2026-05-14.md`.
 
 - [x] `V1-FINAL-HANDOFF-PACKET-2026-05-14 release: publish final V1 handoff packet`
   - 2026-05-14: Published the final V1 handoff packet after the tracked V1
     evidence model reached `GO`. The packet records current source of truth,
     final evidence links, validations, residual risks, explicit LIVE mutation
     approval boundary, and resume instructions. Evidence:
-    `docs/planning/v1-final-handoff-packet-2026-05-14-task.md` and
-    `docs/operations/v1-final-handoff-packet-2026-05-14.md`.
+    `history/audits/v1-final-handoff-packet-2026-05-14-task.md` and
+    `history/audits/v1-final-handoff-packet-2026-05-14.md`.
 
 - [x] `V1-POST-RELEASE-FRESHNESS-MEMORY-SYNC-2026-05-14 release: clarify final V1 GO continuation memory`
   - 2026-05-14: Verified the final V1 scorecard remains the active continuation
@@ -1689,7 +1796,7 @@ Last updated: 2026-05-23
     so superseded protected-auth, Docker, and preactivation blockers are not
     presented as current next actions. Older `NO-GO` / `BLOCKED` entries remain
     retained below an explicit historical superseded evidence heading. Evidence:
-    `docs/planning/v1-post-release-freshness-memory-sync-2026-05-14-task.md`.
+    `history/tasks/v1-post-release-freshness-memory-sync-2026-05-14-task.md`.
 
 - [x] `V1-PRODUCTION-UX-A11Y-MOBILE-PROOF-2FC90A08-2026-05-14 release: prove UX/A11y/Mobile on production`
   - 2026-05-14: Added and ran `scripts/runProdUxA11yMobileProof.mjs` plus the
@@ -1701,9 +1808,9 @@ Last updated: 2026-05-23
     (`33/33`). Final generated state is `GO` with `PASS:21`, static findings
     `0`, implementation estimate `100%`, evidence coverage `100%`, and release
     readiness `100%`. Evidence:
-    `docs/planning/v1-production-ux-a11y-mobile-proof-2fc90a08-2026-05-14-task.md`,
-    `docs/operations/prod-ui-module-clickthrough-2fc90a08-2026-05-14.md`, and
-    `docs/operations/prod-ux-a11y-mobile-proof-2fc90a08-2026-05-14.md`.
+    `history/evidence/v1-production-ux-a11y-mobile-proof-2fc90a08-2026-05-14-task.md`,
+    `history/plans/prod-ui-module-clickthrough-2fc90a08-2026-05-14.md`, and
+    `history/evidence/prod-ux-a11y-mobile-proof-2fc90a08-2026-05-14.md`.
 
 - [x] `V1-PRODUCTION-POSITIONS-PROOF-2FC90A08-2026-05-14 release: prove Positions on production`
   - 2026-05-14: Added and ran `scripts/runProdPositionsProof.mjs` against
@@ -1715,8 +1822,8 @@ Last updated: 2026-05-23
     position readback, and OPEN-list cleanup. No LIVE order/cancel/close, LIVE
     position mutation, exchange-side mutation, or raw secret artifact capture
     was performed. Focused Positions API tests passed (`46/46`). Evidence:
-    `docs/planning/v1-production-positions-proof-2fc90a08-2026-05-14-task.md`
-    and `docs/operations/prod-positions-proof-2fc90a08-2026-05-14.md`.
+    `history/evidence/v1-production-positions-proof-2fc90a08-2026-05-14-task.md`
+    and `history/evidence/prod-positions-proof-2fc90a08-2026-05-14.md`.
 
 - [x] `V1-PRODUCTION-SECURITY-EXCHANGE-PROOF-2FC90A08-2026-05-14 release: prove Security/Privacy and Exchange Adapter on production`
   - 2026-05-14: Added and ran `scripts/runProdSecurityExchangeProof.mjs`
@@ -1729,8 +1836,8 @@ Last updated: 2026-05-23
     position mutation, exchange-side mutation, or raw secret artifact capture
     was performed. Focused market/exchange API tests passed (`22/22`).
     Evidence:
-    `docs/planning/v1-production-security-exchange-proof-2fc90a08-2026-05-14-task.md`
-    and `docs/operations/prod-security-exchange-proof-2fc90a08-2026-05-14.md`.
+    `history/evidence/v1-production-security-exchange-proof-2fc90a08-2026-05-14-task.md`
+    and `history/evidence/prod-security-exchange-proof-2fc90a08-2026-05-14.md`.
 
 - [x] `V1-PRODUCTION-FIXTURE-BACKTESTS-REPORTS-PROOF-457BCE05-2026-05-14 release: prove Backtests and Reports with a disposable run`
   - 2026-05-14: Extended `scripts/runProdFixtureActionProof.mjs` and reran the
@@ -1742,8 +1849,8 @@ Last updated: 2026-05-23
     later advanced after the Security/Exchange and Positions proofs to
     `PASS:20`, `PASS_LOCAL:1`, static findings `0`, and scorecard `NO-GO` at
     `99.7% / 98.8% / 98.1%`. Evidence:
-    `docs/planning/v1-production-fixture-backtests-reports-proof-457bce05-2026-05-14-task.md`
-    and `docs/operations/prod-fixture-action-proof-457bce05-2026-05-14.md`.
+    `history/evidence/v1-production-fixture-backtests-reports-proof-457bce05-2026-05-14-task.md`
+    and `history/evidence/prod-fixture-action-proof-457bce05-2026-05-14.md`.
 
 - [x] `V1-PRODUCTION-FIXTURE-PAPER-ORDER-PROOF-457BCE05-2026-05-14 release: prove Manual Orders and Orders with a disposable PAPER order`
   - 2026-05-14: Extended `scripts/runProdFixtureActionProof.mjs` and reran the
@@ -1755,8 +1862,8 @@ Last updated: 2026-05-23
     position mutation out of scope. Regenerated V1 reports now show `PASS:15`,
     `PASS_LOCAL:6`, static findings `0`, and scorecard `NO-GO` at `97.5% /
     91.1% / 86.1%`. Evidence:
-    `docs/planning/v1-production-fixture-paper-order-proof-457bce05-2026-05-14-task.md`
-    and `docs/operations/prod-fixture-action-proof-457bce05-2026-05-14.md`.
+    `history/evidence/v1-production-fixture-paper-order-proof-457bce05-2026-05-14-task.md`
+    and `history/evidence/prod-fixture-action-proof-457bce05-2026-05-14.md`.
 
 - [x] `V1-PRODUCTION-FIXTURE-LOW-RISK-ACTION-PROOF-457BCE05-2026-05-14 release: run low-risk disposable production action proof`
   - 2026-05-14: Extended `scripts/runProdFixtureActionProof.mjs` and ran the
@@ -1769,8 +1876,8 @@ Last updated: 2026-05-23
     for every created fixture. Regenerated V1 reports now show `PASS:13`,
     `PASS_LOCAL:8`, static findings `0`, and scorecard `NO-GO` at `96.3% /
     87.1% / 79.8%`. Evidence:
-    `docs/planning/v1-production-fixture-low-risk-action-proof-457bce05-2026-05-14-task.md`
-    and `docs/operations/prod-fixture-action-proof-457bce05-2026-05-14.md`.
+    `history/evidence/v1-production-fixture-low-risk-action-proof-457bce05-2026-05-14-task.md`
+    and `history/evidence/prod-fixture-action-proof-457bce05-2026-05-14.md`.
 
 - [x] `V1-PRODUCTION-FIXTURE-ACTION-PROOF-PLAN-2026-05-14 release: define safe production fixture action proof boundary`
   - 2026-05-14: Published the safe owner-approval boundary for the remaining
@@ -1779,8 +1886,8 @@ Last updated: 2026-05-23
     restricts money-adjacent actions to PAPER unless separately approved,
     requires cleanup verification, and forbids raw secret artifact capture.
     No production data was mutated. Evidence:
-    `docs/planning/v1-production-fixture-action-proof-plan-2026-05-14-task.md`
-    and `docs/operations/v1-production-fixture-action-proof-plan-2026-05-14.md`.
+    `history/evidence/v1-production-fixture-action-proof-plan-2026-05-14-task.md`
+    and `history/evidence/v1-production-fixture-action-proof-plan-2026-05-14.md`.
 
 - [x] `V1-BACK-WEB-FULL-LOCAL-BASELINE-457BCE05-2026-05-14 qa: verify full local backend and web baseline`
   - 2026-05-14: After the protected ops checkpoint and controlled LIVE
@@ -1789,7 +1896,7 @@ Last updated: 2026-05-23
     `pnpm run typecheck`, full Web Vitest (`149` files / `512` tests), full API
     Vitest, `pnpm run lint`, `pnpm run build`, and `git diff --check`
     (line-ending warnings only). Evidence:
-    `docs/planning/v1-back-web-full-local-baseline-457bce05-2026-05-14-task.md`.
+    `history/audits/v1-back-web-full-local-baseline-457bce05-2026-05-14-task.md`.
     This confirms the implemented API/Web layers are locally green, but does
     not replace remaining production-only release evidence.
 
@@ -1799,7 +1906,7 @@ Last updated: 2026-05-23
     passed for the deployed surface. Protected runtime freshness and rollback
     guard checks failed closed with HTTP `401` without approved admin/ops
     credentials. Evidence:
-    `docs/operations/deploy-freshness-457bce05-2026-05-14.md`.
+    `history/plans/deploy-freshness-457bce05-2026-05-14.md`.
 
 - [x] `V1-PROTECTED-OPS-GATE-457BCE05-2026-05-14 release: rerun protected runtime freshness, rollback guard, and target release gate`
   - Scope: `457bce05` is deployed and public-smoke healthy. Use approved
@@ -1823,15 +1930,15 @@ Last updated: 2026-05-23
     repository guardrails, typecheck, build, go-live smoke, deploy smoke,
     runtime freshness, and rollback guard all passing.
     Evidence:
-    `docs/planning/v1-protected-ops-gate-457bce05-2026-05-14-task.md`,
-    `docs/operations/v1-final-preflight-457bce05-2026-05-14-ready.md`,
-    `docs/operations/v1-release-gate-prod-457bce05-2026-05-14-full-ready.md`,
-    `docs/operations/v1-production-activation-evidence-audit-2026-05-14.md`,
-    `docs/planning/v1-production-activation-and-evidence-plan-2026-05-14.md`,
-    `docs/operations/v1-rollback-proof-prod-2026-05-14T01-00-18-225Z.md`,
-    `docs/operations/liveimport-03-prod-readback-2026-05-14.json`,
-    `docs/operations/prod-ui-module-clickthrough-457bce05-2026-05-14.md`,
-    and `docs/operations/v1-restore-drill-prod-2026-05-14T00-00-00-000Z.md`.
+    `history/tasks/v1-protected-ops-gate-457bce05-2026-05-14-task.md`,
+    `history/releases/v1-final-preflight-457bce05-2026-05-14-ready.md`,
+    `history/releases/v1-release-gate-prod-457bce05-2026-05-14-full-ready.md`,
+    `history/audits/v1-production-activation-evidence-audit-2026-05-14.md`,
+    `history/plans/v1-production-activation-and-evidence-plan-2026-05-14.md`,
+    `history/evidence/v1-rollback-proof-prod-2026-05-14T01-00-18-225Z.md`,
+    `history/artifacts/liveimport-03-prod-readback-2026-05-14.json`,
+    `history/plans/prod-ui-module-clickthrough-457bce05-2026-05-14.md`,
+    and `history/evidence/v1-restore-drill-prod-2026-05-14T00-00-00-000Z.md`.
 
 - [x] `V1-CURRENT-MAIN-PROMOTION-DEPLOY-LAG-457BCE05-2026-05-14 release: promote current candidate and record deploy lag`
   - Scope: pushed `origin/codex/v1-proof-and-ops-evidence`, fast-forwarded
@@ -1840,8 +1947,8 @@ Last updated: 2026-05-23
     `00169d7fdc3aff8317759137b05594b20e773c8e`. Later build-info freshness
     passed for `457bce05`, and public production smoke passed for that
     deployed surface. Evidence:
-    `docs/planning/v1-current-main-promotion-deploy-lag-457bce05-2026-05-14-task.md`,
-    `docs/operations/deploy-lag-457bce05-2026-05-14.md`.
+    `history/tasks/v1-current-main-promotion-deploy-lag-457bce05-2026-05-14-task.md`,
+    `history/plans/deploy-lag-457bce05-2026-05-14.md`.
 
 - [x] `V1-RUNTIME-NON-BINANCE-DERIVATIVES-ADAPTER-2026-05-13 fix: route runtime derivatives through exchange adapter`
   - Scope: routed runtime symbol-stats fallback derivatives and live signal
@@ -1849,7 +1956,7 @@ Last updated: 2026-05-23
     through the Exchange public adapter for non-Binance exchanges. Binance REST
     paths remain Binance-scoped, unsupported adapter capabilities fail closed,
     and derivative fallback caches are exchange-scoped. Evidence:
-    `docs/planning/v1-runtime-non-binance-derivatives-adapter-2026-05-13-task.md`;
+    `history/tasks/v1-runtime-non-binance-derivatives-adapter-2026-05-13-task.md`;
     focused runtime tests passed (`26/26`), API typecheck passed, and
     guardrails passed.
 
@@ -1860,7 +1967,7 @@ Last updated: 2026-05-23
     supplemental funding/open-interest history through the Exchange adapter.
     Backtest order-book history remains empty rather than using current
     snapshots as historical data. Evidence:
-    `docs/planning/v1-non-binance-backtest-derivatives-adapter-2026-05-13-task.md`;
+    `history/tasks/v1-non-binance-backtest-derivatives-adapter-2026-05-13-task.md`;
     focused API tests passed (`26/26`) and API typecheck passed.
 
 - [x] `V1-RUNTIME-TICKER-AND-BACKTEST-VENUE-UI-2026-05-13 fix: route runtime ticker fallback through exchange adapter`
@@ -1869,7 +1976,7 @@ Last updated: 2026-05-23
     the Binance-only fallback-price restriction from runtime position readback,
     and surfaced resolved backtest `exchange / marketType / baseCurrency` in
     the Web details header. Evidence:
-    `docs/planning/v1-runtime-ticker-and-backtest-venue-ui-2026-05-13-task.md`;
+    `history/tasks/v1-runtime-ticker-and-backtest-venue-ui-2026-05-13-task.md`;
     focused runtime fallback/PnL tests passed (`36/36`), Backtest details Web
     test passed (`4/4`), API typecheck passed, and Web typecheck passed.
 
@@ -1884,7 +1991,7 @@ Last updated: 2026-05-23
     backtest timeline types include backend exchange/order-book/parity fields.
     Binance-only derivative supplemental fallbacks remain explicit and fail
     closed for non-Binance exchanges. Evidence:
-    `docs/planning/v1-bot-backtest-exchange-adapter-audit-2026-05-13-task.md`;
+    `history/audits/v1-bot-backtest-exchange-adapter-audit-2026-05-13-task.md`;
     focused backtest/bot runtime tests passed (`56/56`), API typecheck passed,
     and Web typecheck passed.
 
@@ -1896,7 +2003,7 @@ Last updated: 2026-05-23
     runtime read-model fallbacks receive exchange context, and Binance-only
     derivative fallbacks fail closed for non-Binance exchanges instead of
     borrowing Binance data. Evidence:
-    `docs/planning/v1-runtime-exchange-adapter-boundary-2026-05-13-task.md`;
+    `history/tasks/v1-runtime-exchange-adapter-boundary-2026-05-13-task.md`;
     focused runtime/decision-loop tests passed (`55/55`), exchange/stream/
     fallback/read-model tests passed (`12/12`), API typecheck passed, and
     guardrails passed. Production multi-bot/live evidence remains a separate
@@ -1914,8 +2021,8 @@ Last updated: 2026-05-23
     Web runtime tests (`41/41`), focused API runtime/monitoring tests
     (`47/47` and `29/29`), typecheck, build, guardrails, `test:go-live:web`,
     `test:go-live:api`, and `test:go-live:smoke`. Evidence:
-    `docs/planning/v1-non-gateio-runtime-and-app-proof-00169d7f-2026-05-13-task.md`,
-    `docs/operations/prod-non-gateio-runtime-readback-00169d7f-2026-05-13.md`.
+    `history/evidence/v1-non-gateio-runtime-and-app-proof-00169d7f-2026-05-13-task.md`,
+    `history/evidence/prod-non-gateio-runtime-readback-00169d7f-2026-05-13.md`.
 
 - [x] `V1-PRODUCTION-RUNTIME-INVENTORY-00169D7F-2026-05-13 qa: capture production runtime inventory for multi-bot proof`
   - Scope: ran authenticated read-only production bot/session inventory for
@@ -1924,8 +2031,8 @@ Last updated: 2026-05-23
     fewer than 2 active LIVE bots, so production cannot yet prove the requested
     2x PAPER + 2x LIVE shape. No production writes, activation, or live orders
     were attempted; artifact secret scan passed. Evidence:
-    `docs/planning/v1-production-runtime-inventory-00169d7f-2026-05-13-task.md`,
-    `docs/operations/prod-runtime-inventory-00169d7f-2026-05-13.md`.
+    `history/audits/v1-production-runtime-inventory-00169d7f-2026-05-13-task.md`,
+    `history/audits/prod-runtime-inventory-00169d7f-2026-05-13.md`.
 
 - [x] `V1-PRODUCTION-UI-CLICKTHROUGH-REFRESH-00169D7F-2026-05-13 qa: refresh authenticated production UI module clickthrough`
   - Scope: ran the no-secret production UI module route audit against deployed
@@ -1933,8 +2040,8 @@ Last updated: 2026-05-23
     auth. Result `PASS`: public `PASS:4`, dashboard `PASS:18`, admin
     `PASS:3`, legacy `PASS:3`, blockers `none`; artifact scan found no raw
     credentials/tokens/cookies/private headers. Evidence:
-    `docs/planning/v1-production-ui-clickthrough-refresh-00169d7f-2026-05-13-task.md`,
-    `docs/operations/prod-ui-module-clickthrough-00169d7f-2026-05-13-enum-followup.md`.
+    `history/tasks/v1-production-ui-clickthrough-refresh-00169d7f-2026-05-13-task.md`,
+    `history/plans/prod-ui-module-clickthrough-00169d7f-2026-05-13-enum-followup.md`.
     This is protected route reachability evidence, not a full action-level
     proof for every module.
 
@@ -1942,7 +2049,7 @@ Last updated: 2026-05-23
   - Scope: removed local duplicated fee/capital enum unions from
     `BotsMonitoringTab` props, reusing shared runtime aliases and
     `BotRuntimeTrade["origin"]` instead. Evidence:
-    `docs/planning/v1-web-backend-function-parity-monitoring-props-2026-05-13-task.md`;
+    `history/audits/v1-web-backend-function-parity-monitoring-props-2026-05-13-task.md`;
     focused `BotsManagement` test passed (`14/14`), Web typecheck passed,
     local duplicate-union scan returned no matches, and guardrails passed.
 
@@ -1953,7 +2060,7 @@ Last updated: 2026-05-23
     aliases across position/open-order/capital summaries; and removed stale
     impossible enum fixture values from Dashboard Home and Bots monitoring
     tests. Evidence:
-    `docs/planning/v1-web-backend-function-parity-runtime-enums-2026-05-13-task.md`;
+    `history/audits/v1-web-backend-function-parity-runtime-enums-2026-05-13-task.md`;
     focused Web runtime tests passed (`5` files, `47` tests), Web typecheck
     passed, stale-value scan returned no matches, and guardrails passed.
 
@@ -1962,7 +2069,7 @@ Last updated: 2026-05-23
     `TradingRecordOrigin.USER` and mapped Dashboard Home edit-position origin
     labels so backend `USER` appears as Manual instead of Unknown; legacy
     `MANUAL` fixture compatibility remains. Evidence:
-    `docs/planning/v1-web-backend-function-parity-runtime-origin-2026-05-13-task.md`;
+    `history/audits/v1-web-backend-function-parity-runtime-origin-2026-05-13-task.md`;
     focused Web test passed (`3/3`) and Web typecheck passed.
 
 - [x] `V1-WEB-BACKEND-PARITY-DASHBOARD-2026-05-13 fix: close runtime trade/position Web API contract drift`
@@ -1970,7 +2077,7 @@ Last updated: 2026-05-23
     `orderId`/`positionId`/`strategyId`, rendered missing monitoring IDs as
     `-`, added `openPositionQty` to Web positions summary typing, and filled
     empty aggregate payloads with `openPositionQty: 0` in API/Web fallback
-    paths. Evidence: `docs/planning/v1-web-backend-function-parity-dashboard-home-2026-05-13-task.md`;
+    paths. Evidence: `history/audits/v1-web-backend-function-parity-dashboard-home-2026-05-13-task.md`;
     Web focused tests passed (`2` files, `17` tests), API runtime monitoring
     aggregate e2e passed (`18/18`), API typecheck passed, and Web typecheck
     passed.
@@ -2001,12 +2108,12 @@ Last updated: 2026-05-23
     PAPER bots were RUNNING, then deactivated the LIVE bot. Post-cleanup
     readback confirmed the Binance LIVE bot was inactive again while both
     PAPER bots remained healthy. Evidence:
-    `docs/planning/v1-live-paper-simultaneous-runtime-proof-refresh-457bce05-2026-05-14-task.md`.
+    `history/evidence/v1-live-paper-simultaneous-runtime-proof-refresh-457bce05-2026-05-14-task.md`.
     Runtime artifacts:
-    `docs/operations/liveimport-03-prod-readback-live-paper-457bce05-2026-05-14.json`,
-    `docs/operations/prod-live-paper-simultaneous-runtime-readback-457bce05-2026-05-14.md`,
+    `history/artifacts/liveimport-03-prod-readback-live-paper-457bce05-2026-05-14.json`,
+    `history/evidence/prod-live-paper-simultaneous-runtime-readback-457bce05-2026-05-14.md`,
     and
-    `docs/operations/prod-live-paper-post-cleanup-readback-457bce05-2026-05-14.md`.
+    `history/evidence/prod-live-paper-post-cleanup-readback-457bce05-2026-05-14.md`.
     Status is closed for the current production non-Gate.io simultaneous
     LIVE/PAPER runtime scope; the unavailable/deferred second LIVE/Gate.io
     shape is not hidden.
@@ -2019,8 +2126,8 @@ Last updated: 2026-05-23
     `test:go-live:smoke`. The production target-only release gate passed with
     `Readiness: ready` after build-info freshness, post-deploy smoke, runtime
     freshness, and rollback guard all passed. Evidence:
-    `docs/planning/v1-target-release-gate-pass-00169d7f-2026-05-13-task.md`,
-    `docs/operations/v1-release-gate-prod-2026-05-13Ttarget-only-v1-gate.md`.
+    `history/releases/v1-target-release-gate-pass-00169d7f-2026-05-13-task.md`,
+    `history/releases/v1-release-gate-prod-2026-05-13Ttarget-only-v1-gate.md`.
 
 - [x] `V1-CONTROLLED-LIVE-PROOF-ATTEMPT-00169D7F-2026-05-13 release: run approved controlled LIVE proof`
   - Scope: ran the controlled LIVE proof after explicit user live-risk
@@ -2029,7 +2136,7 @@ Last updated: 2026-05-23
     configuration was restored to inactive LIVE/import-capable state. The proof
     ultimately passed for `TRXUSDT`, the real managed symbol visible in the
     target bot's runtime readback, and cleanup deactivated the bot. Evidence:
-    `docs/planning/v1-controlled-live-proof-attempt-00169d7f-2026-05-13-task.md`.
+    `history/evidence/v1-controlled-live-proof-attempt-00169d7f-2026-05-13-task.md`.
 
 - [x] `V1-CONTROLLED-LIVE-PROOF-PREACTIVATION-00169D7F-2026-05-13 release: verify controlled LIVE proof preactivation gates`
   - Scope: ran the controlled LIVE proof runner through dry-run and
@@ -2037,7 +2144,7 @@ Last updated: 2026-05-23
     and the target LIVE Binance futures bot is inactive and import-capable.
     The runner refused activation because `--i-understand-live-risk` was not
     provided. No LIVE activation or order action occurred. Evidence:
-    `docs/planning/v1-controlled-live-proof-preactivation-00169d7f-2026-05-13-task.md`.
+    `history/evidence/v1-controlled-live-proof-preactivation-00169d7f-2026-05-13-task.md`.
     V1 remains `NO-GO` pending explicit live-risk approval or an acceptance
     contract decision.
 
@@ -2049,7 +2156,7 @@ Last updated: 2026-05-23
     futures bot exists, but no running session exists (`NO_RUNNING_SESSION`).
     Final preflight now has one blocker:
     `evidence:liveImportReadback:failed`. Evidence:
-    `docs/planning/v1-prod-restore-and-liveimport-truth-00169d7f-2026-05-13-task.md`.
+    `history/tasks/v1-prod-restore-and-liveimport-truth-00169d7f-2026-05-13-task.md`.
     V1 remains `NO-GO`.
 
 - [x] `V1-PROTECTED-PROOF-REDUCTION-00169D7F-2026-05-13 release: reduce protected V1 blockers with approved app auth`
@@ -2061,7 +2168,7 @@ Last updated: 2026-05-23
     `LIVEIMPORT-03` remains unverified. Final preflight is still `blocked` on
     production DB restore context, missing LIVEIMPORT runtime readback, and
     stale backup/restore drill evidence. Evidence:
-    `docs/planning/v1-protected-proof-reduction-00169d7f-2026-05-13-task.md`.
+    `history/evidence/v1-protected-proof-reduction-00169d7f-2026-05-13-task.md`.
     V1 remains `NO-GO`.
 
 - [x] `V1-GATE4-PATRYK-SIGNOFF-2026-05-13 release: apply Patryk Gate 4 RC sign-off`
@@ -2071,7 +2178,7 @@ Last updated: 2026-05-23
     technical protected proof: production auth, DB restore context,
     `LIVEIMPORT-03`, authenticated production UI clickthrough, DB restore
     evidence, and rollback proof. Evidence:
-    `docs/planning/v1-gate4-patryk-signoff-2026-05-13-task.md`.
+    `history/releases/v1-gate4-patryk-signoff-2026-05-13-task.md`.
 
 - [x] `V1-GENERATED-STATE-REFRESH-AFTER-RC-ACTIVATION-2026-05-13 release: refresh generated V1 state after activation and RC evidence`
   - Scope: reran the V1 generated-state chain after current activation and RC
@@ -2079,14 +2186,14 @@ Last updated: 2026-05-23
     `BLOCKED_AUTH:1`, static findings `3` (`P0:1`, `P1:1`, `P2:1`),
     scorecard `86.8%` implementation, `61.3%` evidence coverage, and `42.4%`
     release readiness. Evidence:
-    `docs/planning/v1-generated-state-refresh-after-rc-activation-2026-05-13-task.md`.
+    `history/releases/v1-generated-state-refresh-after-rc-activation-2026-05-13-task.md`.
 
 - [x] `V1-RC-CURRENT-BLOCKED-REFRESH-2026-05-13 release: refresh RC artifacts to current blocked truth`
   - Scope: refreshed RC external gates status, RC sign-off, and RC checklist
     artifacts for 2026-05-13. Final preflight now classifies RC evidence as
     current `failed`/`BLOCKED` rather than stale because Gate 4 approver fields
     are still missing. Evidence:
-    `docs/planning/v1-rc-current-blocked-refresh-2026-05-13-task.md`.
+    `history/releases/v1-rc-current-blocked-refresh-2026-05-13-task.md`.
     V1 remains `NO-GO`.
 
 - [x] `V1-PRODUCTION-ACTIVATION-REFRESH-2026-05-13 release: refresh current activation audit and plan truth`
@@ -2096,7 +2203,7 @@ Last updated: 2026-05-23
     but V1 remains blocked on missing protected auth, missing DB restore
     context, stale RC/backup-restore/rollback evidence, missing
     `LIVEIMPORT-03`, and failed production UI clickthrough. Evidence:
-    `docs/planning/v1-production-activation-refresh-2026-05-13-task.md`.
+    `history/tasks/v1-production-activation-refresh-2026-05-13-task.md`.
 
 - [x] `V1-GENERATED-STATE-REFRESH-AFTER-OPERATOR-PACKET-00169D7F-2026-05-13 release: refresh generated V1 state after operator packet`
   - Scope: reran the V1 generated-state chain after publishing the current-day
@@ -2104,7 +2211,7 @@ Last updated: 2026-05-23
     `BLOCKED_AUTH:1`, static findings `3` (`P0:1`, `P1:1`, `P2:1`),
     scorecard `86.8%` implementation, `61.3%` evidence coverage, and `42.4%`
     release readiness. Evidence:
-    `docs/planning/v1-generated-state-refresh-after-operator-packet-00169d7f-2026-05-13-task.md`.
+    `history/tasks/v1-generated-state-refresh-after-operator-packet-00169d7f-2026-05-13-task.md`.
 
 - [x] `V1-OPERATOR-PACKET-CURRENT-DAY-REFRESH-00169D7F-2026-05-13 release: refresh operator unblock packet for current evidence`
   - Scope: published the current no-secret V1 operator unblock packet for the
@@ -2112,8 +2219,8 @@ Last updated: 2026-05-23
     protected input readiness, and production UI audit artifacts, lists
     required protected inputs and Gate 4 approver fields, and keeps V1
     explicitly `NO-GO` until the final release gate returns `ready`. Evidence:
-    `docs/planning/v1-operator-packet-current-day-refresh-00169d7f-2026-05-13-task.md`
-    and `docs/operations/v1-operator-unblock-packet-00169d7f-2026-05-13.md`.
+    `history/tasks/v1-operator-packet-current-day-refresh-00169d7f-2026-05-13-task.md`
+    and `history/releases/v1-operator-unblock-packet-00169d7f-2026-05-13.md`.
 
 - [x] `V1-GENERATED-STATE-REFRESH-AFTER-CURRENT-DAY-BLOCKER-00169D7F-2026-05-13 release: refresh generated V1 state after current blocker evidence`
   - Scope: refreshed the V1 project index, static issue scan, master state
@@ -2122,7 +2229,7 @@ Last updated: 2026-05-23
     `BLOCKED_AUTH:1`, static findings `3` (`P0:1`, `P1:1`, `P2:1`),
     scorecard `86.8%` implementation, `61.3%` evidence coverage, and `42.4%`
     release readiness. Evidence:
-    `docs/planning/v1-generated-state-refresh-after-current-day-blocker-00169d7f-2026-05-13-task.md`.
+    `history/tasks/v1-generated-state-refresh-after-current-day-blocker-00169d7f-2026-05-13-task.md`.
 
 - [x] `V1-CURRENT-DAY-BLOCKER-REFRESH-00169D7F-2026-05-13 release: refresh current-day no-secret V1 blockers`
   - Scope: refreshed deployed build-info, protected input readiness, final
@@ -2132,7 +2239,7 @@ Last updated: 2026-05-23
     `blocked` on missing protected auth/DB context, stale daily release
     artifacts, missing `LIVEIMPORT-03`, current failed production UI
     clickthrough, and stale rollback proof. Evidence:
-    `docs/planning/v1-current-day-blocker-refresh-00169d7f-2026-05-13-task.md`.
+    `history/tasks/v1-current-day-blocker-refresh-00169d7f-2026-05-13-task.md`.
     V1 remains `NO-GO`.
 
 - [x] `V1-GENERATED-STATE-REFRESH-AFTER-QUEUE-HYGIENE-00169D7F-2026-05-12 release: refresh V1 generated state after queue cleanup`
@@ -2143,7 +2250,7 @@ Last updated: 2026-05-23
     implementation, `61.3%` evidence coverage, and `42.4%` release readiness.
     Static scan now reports `2 protected/auth queue blockers remain open`,
     matching `CONTROLLED-LIVE-SESSION-PROOF` and `LIVEIMPORT-03`. Evidence:
-    `docs/planning/v1-generated-state-refresh-after-queue-hygiene-00169d7f-2026-05-12-task.md`.
+    `history/tasks/v1-generated-state-refresh-after-queue-hygiene-00169d7f-2026-05-12-task.md`.
 
 - [x] `PROD-UI-AUDIT-PLAN-SUPERSEDE-00169D7F-2026-05-12 qa: close stale broad UI audit plan`
   - Scope: closed the historical unchecked `PROD-UI-AUDIT-PLAN-2026-05-08`
@@ -2151,7 +2258,7 @@ Last updated: 2026-05-23
     `ops:ui:prod-clickthrough` with approved `PROD_UI_AUDIT_*` dashboard/admin
     auth. This does not mark production UI proof verified; the final gate still
     requires a fresh PASS `prod-ui-module-clickthrough-*` artifact. Evidence:
-    `docs/planning/prod-ui-audit-plan-supersede-00169d7f-2026-05-12-task.md`.
+    `history/audits/prod-ui-audit-plan-supersede-00169d7f-2026-05-12-task.md`.
     V1 remains `NO-GO`.
 
 - [x] `BOTMULTI-09-CONTAINMENT-SUPERSEDE-00169D7F-2026-05-12 release: close contained production promotion marker`
@@ -2160,7 +2267,7 @@ Last updated: 2026-05-23
     and the remaining proof is the shared protected runtime readback/final gate
     lane. This does not mark multi-strategy runtime production proof verified;
     it removes a duplicate promotion marker. Evidence:
-    `docs/planning/botmulti-09-containment-supersede-00169d7f-2026-05-12-task.md`.
+    `history/tasks/botmulti-09-containment-supersede-00169d7f-2026-05-12-task.md`.
     V1 remains `NO-GO`.
 
 - [x] `V1-PROTECTED-ACCESS-READINESS-SUPERSEDE-00169D7F-2026-05-12 release: close stale protected readiness queue entry`
@@ -2170,7 +2277,7 @@ Last updated: 2026-05-23
     This does not unblock V1; it removes a duplicate old queue marker so the
     remaining open tasks represent the actual protected evidence lanes.
     Evidence:
-    `docs/planning/v1-protected-access-readiness-supersede-00169d7f-2026-05-12-task.md`.
+    `history/evidence/v1-protected-access-readiness-supersede-00169d7f-2026-05-12-task.md`.
     V1 remains `NO-GO`.
 
 - [x] `V1-PROTECTED-INPUT-READINESS-CURRENT-SWEEP-00169D7F-2026-05-12 release: refresh current protected input sweep`
@@ -2179,9 +2286,9 @@ Last updated: 2026-05-23
     were present for `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`,
     `PROD_UI_AUDIT_*`, `PROD_UI_*`, `SOAR_PROD_*`, production DB check, RC, or
     Gate families. No secret values were printed or stored. Evidence:
-    `docs/planning/v1-protected-input-readiness-current-sweep-00169d7f-2026-05-12-task.md`
+    `history/evidence/v1-protected-input-readiness-current-sweep-00169d7f-2026-05-12-task.md`
     and
-    `docs/operations/v1-protected-input-readiness-00169d7f-2026-05-12.md`.
+    `history/evidence/v1-protected-input-readiness-00169d7f-2026-05-12.md`.
     V1 remains `NO-GO`.
 
 - [x] `V1-UI-BLOCKER-TRUTH-SYNC-00169D7F-2026-05-12 release: align current UI blocker wording`
@@ -2189,7 +2296,7 @@ Last updated: 2026-05-23
     UI blocked refresh so `PROJECT_STATE` and `next-steps` describe the UI
     blocker as current `prodUiClickthrough:failed` evidence from 2026-05-12,
     not stale evidence from 2026-05-10. Evidence:
-    `docs/planning/v1-ui-blocker-truth-sync-00169d7f-2026-05-12-task.md`.
+    `history/tasks/v1-ui-blocker-truth-sync-00169d7f-2026-05-12-task.md`.
     V1 remains `NO-GO`.
 
 - [x] `V1-PROD-UI-CURRENT-BLOCKED-REFRESH-00169D7F-2026-05-12 release: refresh current production UI blocked evidence`
@@ -2200,9 +2307,9 @@ Last updated: 2026-05-23
     prioritized before filename fallback, then refreshed final preflight so it
     reports `prodUiClickthrough:failed` for the current 2026-05-12 artifact.
     Evidence:
-    `docs/planning/v1-prod-ui-current-blocked-refresh-00169d7f-2026-05-12-task.md`,
-    `docs/operations/prod-ui-module-clickthrough-00169d7f-2026-05-12.md`,
-    and `docs/operations/v1-final-preflight-00169d7f-2026-05-12.md`.
+    `history/tasks/v1-prod-ui-current-blocked-refresh-00169d7f-2026-05-12-task.md`,
+    `history/plans/prod-ui-module-clickthrough-00169d7f-2026-05-12.md`,
+    and `history/releases/v1-final-preflight-00169d7f-2026-05-12.md`.
     Validation passed: release gate tests (`13/13`), release-gate syntax
     check, guardrails, and diff check. V1 remains `NO-GO`.
 
@@ -2212,7 +2319,7 @@ Last updated: 2026-05-23
     `PROD_UI_AUDIT_AUTH_*` and admin `PROD_UI_AUDIT_ADMIN_*` auth. Admin auth
     is required because `ops:ui:prod-clickthrough` includes admin routes by
     default. Evidence:
-    `docs/planning/v1-operator-packet-ui-admin-auth-sync-2026-05-12-task.md`.
+    `history/tasks/v1-operator-packet-ui-admin-auth-sync-2026-05-12-task.md`.
     V1 remains `NO-GO`.
 
 - [x] `V1-GENERATED-STATE-REFRESH-AFTER-UI-GATE-2026-05-12 release: refresh generated V1 reports after UI gate hardening`
@@ -2222,7 +2329,7 @@ Last updated: 2026-05-23
     substance: `PASS_LOCAL:20`, `BLOCKED_AUTH:1`, static findings `3`
     (`P0:1`, `P1:1`, `P2:1`), scorecard `86.8%` implementation, `61.3%`
     evidence coverage, and `42.4%` release readiness. Evidence:
-    `docs/planning/v1-generated-state-refresh-after-ui-gate-2026-05-12-task.md`.
+    `history/tasks/v1-generated-state-refresh-after-ui-gate-2026-05-12-task.md`.
     V1 remains `NO-GO`.
 
 - [x] `V1-RELEASE-GATE-PROD-UI-EVIDENCE-HARDENING-2026-05-12 release: enforce production UI clickthrough in final gate`
@@ -2232,7 +2339,7 @@ Last updated: 2026-05-23
     `/dashboard/bots/create`. Updated final preflight so missing
     `PROD_UI_AUDIT_*` dashboard/admin auth and missing/failed UI clickthrough
     evidence produce stable blockers and remediation hints. Evidence:
-    `docs/planning/v1-release-gate-prod-ui-evidence-hardening-2026-05-12-task.md`.
+    `history/releases/v1-release-gate-prod-ui-evidence-hardening-2026-05-12-task.md`.
     Validation passed: release gate tests (`12/12`), final preflight tests
     (`14/14`), script syntax checks, no-secret production preflight for
     deployed `00169d7f` with expected `BLOCKED`, guardrails, and diff check.
@@ -2246,9 +2353,9 @@ Last updated: 2026-05-23
     `pnpm run ops:ui:prod-clickthrough` before the final release gate, and
     states that public route reachability or unauthenticated redirects do not
     satisfy V1 UI evidence. Evidence:
-    `docs/planning/v1-prod-ui-input-unblock-sync-00169d7f-2026-05-12-task.md`
+    `history/tasks/v1-prod-ui-input-unblock-sync-00169d7f-2026-05-12-task.md`
     and
-    `docs/operations/v1-operator-unblock-packet-00169d7f-2026-05-12.md`.
+    `history/releases/v1-operator-unblock-packet-00169d7f-2026-05-12.md`.
     V1 remains `NO-GO` until approved UI audit auth produces a PASS artifact
     plus the protected Operations evidence and final gate are ready.
 
@@ -2299,7 +2406,7 @@ Last updated: 2026-05-23
     `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_UI_*`, and
     `SOAR_PROD_*` in the current Codex execution session; no matching names
     were present and no secret values were printed. Added
-    `docs/operations/v1-protected-input-readiness-00169d7f-2026-05-12.md`
+    `history/evidence/v1-protected-input-readiness-00169d7f-2026-05-12.md`
     and corrected the operator packet to state that the final non-dry-run
     production gate already ran and stopped `not_ready` on protected
     `/workers/health` `401`. V1 remains `NO-GO`; the next exact action is
@@ -2359,8 +2466,8 @@ Last updated: 2026-05-23
     `00169d7fdc3aff8317759137b05594b20e773c8e`; public API `/health`, API
     `/ready`, and Web `/` passed; deploy smoke failed on protected
     `/workers/health` `401`. Evidence:
-    `docs/planning/v1-release-gate-nondryrun-blocked-2026-05-12-task.md` and
-    `docs/operations/v1-release-gate-prod-2026-05-12Tnon-dry-run-blocked.md`.
+    `history/releases/v1-release-gate-nondryrun-blocked-2026-05-12-task.md` and
+    `history/releases/v1-release-gate-prod-2026-05-12Tnon-dry-run-blocked.md`.
     V1 remains `NO-GO`.
 
 - [x] `V1-OPERATOR-UNBLOCK-PACKET-00169D7F-2026-05-12 release: publish current operator unblock packet`
@@ -2369,8 +2476,8 @@ Last updated: 2026-05-23
     required protected auth/approver inputs and the command order for
     `LIVEIMPORT-03`, rollback proof PASS, RC Gate 4/sign-off/checklist, and
     final non-dry-run release gate. Evidence:
-    `docs/planning/v1-operator-unblock-packet-00169d7f-2026-05-12-task.md`
-    and `docs/operations/v1-operator-unblock-packet-00169d7f-2026-05-12.md`.
+    `history/releases/v1-operator-unblock-packet-00169d7f-2026-05-12-task.md`
+    and `history/releases/v1-operator-unblock-packet-00169d7f-2026-05-12.md`.
     V1 remains `NO-GO` until the packet is executed with approved inputs.
 
 - [x] `V1-FINAL-PREFLIGHT-CURRENT-2026-05-12 release: refresh final no-secret preflight after current evidence updates`
@@ -2379,16 +2486,16 @@ Last updated: 2026-05-23
     passed, production DB restore context is satisfied, and preflight remains
     `blocked` on missing `LIVEIMPORT_READBACK_*`, missing `ROLLBACK_GUARD_*`,
     failed RC evidence, missing `LIVEIMPORT-03`, and failed rollback proof.
-    Evidence: `docs/planning/v1-final-preflight-current-2026-05-12-task.md`
-    and `docs/operations/v1-final-preflight-00169d7f-2026-05-12.md`.
+    Evidence: `history/releases/v1-final-preflight-current-2026-05-12-task.md`
+    and `history/releases/v1-final-preflight-00169d7f-2026-05-12.md`.
 
 - [x] `V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-12 release: refresh production rollback proof blocked evidence`
   - Scope: ran production rollback proof for 2026-05-12 without auth bypass.
     The proof is fresh but `FAIL`, with `shouldRollback:true` because protected
     runtime freshness and alerts endpoints returned `401`. Release gate dry-run
     now classifies rollback proof as `failed` instead of stale. Evidence:
-    `docs/planning/v1-rollback-proof-blocked-refresh-2026-05-12-task.md` and
-    `docs/operations/v1-release-gate-prod-2026-05-12Trollback-refresh-dry-run.md`.
+    `history/evidence/v1-rollback-proof-blocked-refresh-2026-05-12-task.md` and
+    `history/releases/v1-release-gate-prod-2026-05-12Trollback-refresh-dry-run.md`.
     V1 remains `NO-GO` due missing LIVEIMPORT-03, failed rollback proof,
     missing Gate 4 approvers, protected prod auth blockers, and the latest
     non-dry-run gate result still being `not_ready`.
@@ -2398,8 +2505,8 @@ Last updated: 2026-05-23
     candidate checklist for 2026-05-12 without approver names. Gate 1/2/3 are
     `PASS`, Gate 4 remains `OPEN`, sign-off remains `BLOCKED`, and release
     gate dry-run now classifies RC artifacts as `failed` instead of stale.
-    Evidence: `docs/planning/v1-rc-blocked-refresh-2026-05-12-task.md` and
-    `docs/operations/v1-release-gate-prod-2026-05-12Trc-blocked-refresh-dry-run.md`.
+    Evidence: `history/releases/v1-rc-blocked-refresh-2026-05-12-task.md` and
+    `history/releases/v1-release-gate-prod-2026-05-12Trc-blocked-refresh-dry-run.md`.
     V1 remains `NO-GO` due missing LIVEIMPORT-03, failed rollback proof,
     missing Gate 4 approvers, and protected prod auth blockers.
 
@@ -2408,9 +2515,9 @@ Last updated: 2026-05-23
     activation execution plan as explicit `NO-GO` artifacts, then ran the
     production release-gate dry-run to confirm activation audit/plan are
     classified as `fresh` for 2026-05-12. Evidence:
-    `docs/planning/v1-production-activation-refresh-2026-05-12-task.md`,
-    `docs/operations/v1-production-activation-evidence-audit-2026-05-12.md`,
-    and `docs/operations/v1-release-gate-prod-2026-05-12Tactivation-refresh-dry-run.md`.
+    `history/tasks/v1-production-activation-refresh-2026-05-12-task.md`,
+    `history/audits/v1-production-activation-evidence-audit-2026-05-12.md`,
+    and `history/releases/v1-release-gate-prod-2026-05-12Tactivation-refresh-dry-run.md`.
     V1 remains `NO-GO` due failed Gate 4/checklist, blocked sign-off, missing
     LIVEIMPORT-03, fresh-but-failed rollback proof, and protected prod auth
     blockers.
@@ -2423,8 +2530,8 @@ Last updated: 2026-05-23
     the restore DB, removed the dump, and cleanup returned `0` restore DBs and
     `0` backup dumps. Release gate dry-run now classifies backup/restore drill
     evidence as `fresh` for 2026-05-12. Evidence:
-    `docs/planning/v1-prod-restore-drill-refresh-task-2026-05-12.md` and
-    `docs/operations/v1-restore-drill-prod-2026-05-12T15-21-38Z.md`. V1
+    `history/evidence/v1-prod-restore-drill-refresh-task-2026-05-12.md` and
+    `history/evidence/v1-restore-drill-prod-2026-05-12T15-21-38Z.md`. V1
     remains `NO-GO` due blocked sign-off, failed Gate 4/checklist, missing
     LIVEIMPORT-03, and fresh-but-failed rollback proof.
 
@@ -2434,8 +2541,8 @@ Last updated: 2026-05-23
     health/ready probes, VPS Docker read-only production service inventory,
     API container env-name-only inspection, and production V1 release gate.
     Evidence:
-    `docs/planning/v1-operations-production-readonly-proof-task-2026-05-12.md`,
-    `docs/operations/v1-release-gate-prod-2026-05-12Tprod-readonly.md`.
+    `history/evidence/v1-operations-production-readonly-proof-task-2026-05-12.md`,
+    `history/releases/v1-release-gate-prod-2026-05-12Tprod-readonly.md`.
     Production public health is `PASS`, but the production release gate is
     `not_ready`: protected `/workers/health` returns `401` without approved
     app/operator auth, `LIVEIMPORT-03` prod readback is missing, RC Gate 4 is
@@ -2449,7 +2556,7 @@ Last updated: 2026-05-23
     rollback proof, alert absence through rollback guard, SLO artifact
     generation, RC Gate 1/2/3 status, Gate 4 sign-off blocker, and liveimport
     readback blocker (`botsChecked:0`). Evidence:
-    `docs/planning/v1-operations-local-proof-task-2026-05-12.md`. Operations
+    `history/evidence/v1-operations-local-proof-task-2026-05-12.md`. Operations
     remains `BLOCKED_AUTH`; final V1 release approval requires approved
     stage/prod credentials, production/stage rollback and SLO/release-gate
     evidence, backup/restore evidence, Gate 4 sign-off, and safe LIVE/import
@@ -2464,7 +2571,7 @@ Last updated: 2026-05-23
     user list with active subscription metadata, role/plan update contracts,
     self-demotion blocking, admin UI loaded/error/action states, protected
     admin route rendering, and no framework overlay. Evidence:
-    `docs/planning/v1-subscriptions-admin-local-proof-task-2026-05-12.md`.
+    `history/evidence/v1-subscriptions-admin-local-proof-task-2026-05-12.md`.
     Subscriptions/Admin is now `PASS_LOCAL`; production admin clickthrough
     remains open.
 
@@ -2477,7 +2584,7 @@ Last updated: 2026-05-23
     empty state, mobile Dashboard/menu rendering, mobile menu focus/click
     interaction, route locale smoke, no framework overlay, and zero CDP
     console/exception events. Evidence:
-    `docs/planning/v1-ux-a11y-mobile-local-proof-task-2026-05-11.md`.
+    `history/evidence/v1-ux-a11y-mobile-local-proof-task-2026-05-11.md`.
     UX/A11y/Mobile is now `PASS_LOCAL`; production browser clickthrough and
     external accessibility review remain open.
 
@@ -2492,7 +2599,7 @@ Last updated: 2026-05-23
     ownership isolation, Profile API-key secrecy/probes, Profile security
     actions, stage abuse throttling, authenticated snapshots, and Web auth/
     profile guard states. Evidence:
-    `docs/planning/v1-security-privacy-local-proof-task-2026-05-11.md`.
+    `history/evidence/v1-security-privacy-local-proof-task-2026-05-11.md`.
     Security/Privacy is now `PASS_LOCAL`; production-safe protected security
     proof and external/independent review remain open.
 
@@ -2506,7 +2613,7 @@ Last updated: 2026-05-23
     freshness pass/fail/skip behavior, protected `/ready` diagnostics, PAPER
     runtime-flow worker telemetry, execution orchestrator import handling,
     execution adapter parity, backtest run job persistence, and queue tuning.
-    Evidence: `docs/planning/v1-workers-local-proof-task-2026-05-11.md`.
+    Evidence: `history/evidence/v1-workers-local-proof-task-2026-05-11.md`.
     Workers are now `PASS_LOCAL`; production-safe protected worker/process
     proof remains open.
 
@@ -2522,7 +2629,7 @@ Last updated: 2026-05-23
     normalization, capability gating, `/dashboard/exchanges` redirect, profile
     API-key integration, connection tests, stored-key tests, and delete risk
     confirmation. Evidence:
-    `docs/planning/v1-exchange-adapter-local-proof-task-2026-05-11.md`.
+    `history/evidence/v1-exchange-adapter-local-proof-task-2026-05-11.md`.
     Exchange Adapter is now `PASS_LOCAL`; production-safe exchange-boundary
     proof remains open and real live mutation remains blocked-risk without an
     explicit safe plan.
@@ -2534,7 +2641,7 @@ Last updated: 2026-05-23
     visibility, pagination defaults/bounds, `/dashboard/logs` route shell,
     empty/loaded states, severity filter request payload, metadata trace
     rendering, and route-reachable locale copy. Evidence:
-    `docs/planning/v1-logs-audit-local-proof-task-2026-05-11.md`. Logs/Audit
+    `history/audits/v1-logs-audit-local-proof-task-2026-05-11.md`. Logs/Audit
     Trail is now `PASS_LOCAL`; production-safe browser clickthrough remains
     open.
 
@@ -2543,7 +2650,7 @@ Last updated: 2026-05-23
     locale tests. Evidence covers weighted BACKTEST report aggregation, PAPER
     trade aggregation, `/dashboard/reports` route shell, empty state,
     aggregated cards/tables, and route-reachable locale copy. Evidence:
-    `docs/planning/v1-reports-local-proof-task-2026-05-11.md`. Reports is now
+    `history/evidence/v1-reports-local-proof-task-2026-05-11.md`. Reports is now
     `PASS_LOCAL`; production-safe browser clickthrough remains open and
     export/download is outside the current implemented Reports surface.
 
@@ -2559,7 +2666,7 @@ Last updated: 2026-05-23
     timeline series, list/create/detail route shells, create form, run details,
     list view, table actions, core-data hook, view-models, pair metrics, trade
     segments, and timeline overlays. Evidence:
-    `docs/planning/v1-backtests-local-proof-task-2026-05-11.md`. Backtests is
+    `history/evidence/v1-backtests-local-proof-task-2026-05-11.md`. Backtests is
     now `PASS_LOCAL`; production-safe browser clickthrough remains open.
 
 - [x] `V1-ORDERS-LOCAL-PROOF-2026-05-11 test: prove Orders local contracts`
@@ -2574,7 +2681,7 @@ Last updated: 2026-05-23
     backfill, live fill resolution, quantity rules, position scope, live cancel
     boundary, source labels, active open-order cancel action, and terminal
     order read-only behavior. Evidence:
-    `docs/planning/v1-orders-local-proof-task-2026-05-11.md`. Orders is now
+    `history/evidence/v1-orders-local-proof-task-2026-05-11.md`. Orders is now
     `PASS_LOCAL`; production-safe clickthrough remains open and live mutation
     remains blocked-risk without explicit safe plan.
 
@@ -2588,7 +2695,7 @@ Last updated: 2026-05-23
     runtime visibility, close flows, external DCA separation, carryover open
     orders, runtime PnL derivations/fallbacks, and ignored/closed/pending close
     UI states. Evidence:
-    `docs/planning/v1-positions-local-proof-task-2026-05-11.md`. Positions is
+    `history/evidence/v1-positions-local-proof-task-2026-05-11.md`. Positions is
     now `PASS_LOCAL`; production-safe clickthrough remains open and LIVE
     mutation remains blocked-risk without explicit safe plan.
 
@@ -2601,7 +2708,7 @@ Last updated: 2026-05-23
     live cancel boundary, Dashboard Home submit, validation, context/venue/
     scope semantics, open-order source labels, open-order cancel actions, and
     submitted/waiting/ready/imported/position-opened/blocked states. Evidence:
-    `docs/planning/v1-manual-orders-local-proof-task-2026-05-11.md`. Manual
+    `history/evidence/v1-manual-orders-local-proof-task-2026-05-11.md`. Manual
     Orders is now `PASS_LOCAL`; production-safe clickthrough remains open and
     LIVE order actions remain blocked-risk without explicit safe plan.
 
@@ -2613,7 +2720,7 @@ Last updated: 2026-05-23
     reachability validation, indicator catalog behavior, clone payloads, route
     shells, form validation, tab flow, presets, indicators, form mapping,
     numeric normalization, close validation, presentation, and taxonomy.
-    Evidence: `docs/planning/v1-strategies-local-proof-task-2026-05-11.md`.
+    Evidence: `history/evidence/v1-strategies-local-proof-task-2026-05-11.md`.
     Strategies is now `PASS_LOCAL`; production-safe browser clickthrough and
     representative runtime/backtest compatibility proof remain open.
 
@@ -2625,7 +2732,7 @@ Last updated: 2026-05-23
     update/delete blocking, inactive bot edits, stale legacy link handling,
     ownership isolation, preview parity, placeholder submit, validation helper,
     table clone payload, and route shells. Evidence:
-    `docs/planning/v1-markets-local-proof-task-2026-05-11.md`. Markets is now
+    `history/evidence/v1-markets-local-proof-task-2026-05-11.md`. Markets is now
     `PASS_LOCAL`; production-safe browser clickthrough remains open.
 
 - [x] `V1-WALLETS-LOCAL-PROOF-2026-05-11 test: prove Wallets local contracts`
@@ -2636,7 +2743,7 @@ Last updated: 2026-05-23
     open-PnL scoping, list/create/edit/preview route wrappers, inline API-key
     state, clone payload, form validation, mode-specific fields, reset
     success/error, partial ledger, and unavailable ledger fail-closed UI.
-    Evidence: `docs/planning/v1-wallets-local-proof-task-2026-05-11.md`.
+    Evidence: `history/evidence/v1-wallets-local-proof-task-2026-05-11.md`.
     Wallets is now `PASS_LOCAL`; production-safe browser clickthrough remains
     open.
 
@@ -2649,7 +2756,7 @@ Last updated: 2026-05-23
     failure/new-login success, password-confirmed account deletion, Web save
     success/error toasts, timezone preference payload, password mismatch
     short-circuit, and password change feedback. Evidence:
-    `docs/planning/v1-profile-local-proof-task-2026-05-11.md`. Profile is now
+    `history/evidence/v1-profile-local-proof-task-2026-05-11.md`. Profile is now
     `PASS_LOCAL`; production-safe browser clickthrough remains open.
 
 - [x] `V1-PROFILE-API-KEYS-LOCAL-PROOF-2026-05-11 test: prove Profile API Keys local contracts`
@@ -2659,7 +2766,7 @@ Last updated: 2026-05-23
     persistence of provided test secrets, audit metadata without raw secrets,
     placeholder fail-closed probes, connection-test-before-save, stored-key test
     action, and delete risk confirmation. Evidence:
-    `docs/planning/v1-profile-api-keys-local-proof-task-2026-05-11.md`.
+    `history/evidence/v1-profile-api-keys-local-proof-task-2026-05-11.md`.
     Profile API Keys is now `PASS_LOCAL`; production-safe browser clickthrough
     and audit-log visibility remain open.
 
@@ -2670,7 +2777,7 @@ Last updated: 2026-05-23
     AuthProvider logout/session-expired warning, API interceptor redirect,
     middleware cookie gate, login form states, and login hook fail-closed
     missing-session-refresh behavior. Evidence:
-    `docs/planning/v1-auth-session-lifecycle-proof-task-2026-05-11.md`.
+    `history/evidence/v1-auth-session-lifecycle-proof-task-2026-05-11.md`.
     Auth is now `PASS_LOCAL`; production-safe browser clickthrough remains
     open.
 
@@ -2680,7 +2787,7 @@ Last updated: 2026-05-23
     `BTCUSDT` symbol stats with long and exit counters, closes the runtime
     position, and exposes the same telemetry through authenticated runtime
     session list, detail, symbol-stats, and aggregate APIs. Evidence:
-    `docs/planning/v1-bot-runtime-worker-telemetry-proof-task-2026-05-11.md`.
+    `history/evidence/v1-bot-runtime-worker-telemetry-proof-task-2026-05-11.md`.
     Bot Runtime is now `PASS_LOCAL` in the product action matrix; production-
     safe/non-local clickthrough remains open.
 
@@ -2692,7 +2799,7 @@ Last updated: 2026-05-23
     metadata `sessionsCount: 2`. Authenticated browser proof filters the
     canonical Bot Runtime route to `COMPLETED` and renders PAPER completed
     state with `0 open`, symbols, and wallet totals. Evidence:
-    `docs/planning/v1-bot-runtime-completed-session-fixture-task-2026-05-11.md`.
+    `history/tasks/v1-bot-runtime-completed-session-fixture-task-2026-05-11.md`.
     Worker telemetry is covered by
     `V1-BOT-RUNTIME-WORKER-TELEMETRY-PROOF-2026-05-11`; production-safe/non-
     local clickthrough remains open.
@@ -2706,7 +2813,7 @@ Last updated: 2026-05-23
     `BTCUSDT`, `BNBUSDT`, `ETHUSDT`, wallet KPI text, desktop/tablet/mobile
     responsive states, safe view switch, and legacy runtime redirects to
     preview. Evidence:
-    `docs/planning/v1-bot-runtime-paper-session-browser-proof-task-2026-05-11.md`.
+    `history/evidence/v1-bot-runtime-paper-session-browser-proof-task-2026-05-11.md`.
     `SOAR-BOT-RUNTIME-001` remains `PARTIAL`; the stopped/completed gap is now
     covered by `V1-BOT-RUNTIME-COMPLETED-SESSION-FIXTURE-2026-05-11`, while
     worker telemetry/live-loop proof and production-safe/non-local clickthrough
@@ -2720,7 +2827,7 @@ Last updated: 2026-05-23
     renders status `RUNNING`, open rows for `BTCUSDT`, `BNBUSDT`, and
     `ETHUSDT`, wallet KPIs, desktop/tablet/mobile runtime visibility, and
     `Orders` tab interaction. Evidence:
-    `docs/planning/v1-dashboard-home-runtime-session-fixture-task-2026-05-11.md`.
+    `history/tasks/v1-dashboard-home-runtime-session-fixture-task-2026-05-11.md`.
 
 - [x] `V1-DASHBOARD-HOME-ACTIVE-RUNTIME-BROWSER-PROOF-2026-05-11 test: prove Dashboard active PAPER runtime in browser`
   - Scope: captured the first active PAPER snapshot browser proof and exposed
@@ -2735,7 +2842,7 @@ Last updated: 2026-05-23
     `1280x720` and mobile `390x844`, keyboard focus on `Open wallets`, no
     framework overlay, and no console errors after fixing shared
     `ThemeSwitcher` hydration-noise. Evidence:
-    `docs/planning/v1-dashboard-home-browser-proof-task-2026-05-11.md`.
+    `history/evidence/v1-dashboard-home-browser-proof-task-2026-05-11.md`.
     Validation passed: targeted Web Vitest (`4` files, `36` tests), Web
     typecheck, and repository guardrails. `SOAR-DASHBOARD-001` remains
     `PARTIAL`, pending active selected-bot
@@ -2747,7 +2854,7 @@ Last updated: 2026-05-23
     retryable error state, selected-bot switching across two active PAPER
     bots, selected wallet KPI recalculation, open-orders tab data,
     trade-history tab data, and stale previous-bot row suppression. Evidence:
-    `docs/planning/v1-dashboard-home-selected-bot-rendered-audit-task-2026-05-11.md`.
+    `history/audits/v1-dashboard-home-selected-bot-rendered-audit-task-2026-05-11.md`.
     Validation passed: focused Dashboard pack (`3` files, `35` tests), Web
     typecheck, repository guardrails, and diff check. `SOAR-DASHBOARD-001`
     remains `PARTIAL`, pending browser responsive/keyboard proof and
@@ -2758,7 +2865,7 @@ Last updated: 2026-05-23
     longer require the LIVE-risk confirmation; LIVE or live-opt-in bots still
     require the existing confirmation. Added regression coverage for active
     PAPER delete and preserved the LIVE delete cancellation test. Evidence:
-    `docs/planning/bot-delete-active-paper-confirmation-task-2026-05-11.md`.
+    `history/tasks/bot-delete-active-paper-confirmation-task-2026-05-11.md`.
     Validation passed: Web Vitest (`147` files, `501` tests), API Bots e2e
     (`27/27`) with explicit local `DATABASE_URL`, Web typecheck, repository
     guardrails, and diff check. `SOAR-BOTS-001` is now `PARTIAL`, pending
@@ -2771,8 +2878,8 @@ Last updated: 2026-05-23
     (`33.1%`) so future work does not confuse code presence with safe V1
     completion. V1 remains `NO-GO`; all 13 P0 modules are not release-ready.
     Evidence:
-    `docs/planning/v1-completion-scorecard-task-2026-05-11.md` and
-    `docs/operations/v1-completion-scorecard-2026-05-11.md`.
+    `history/releases/v1-completion-scorecard-task-2026-05-11.md` and
+    `history/releases/v1-completion-scorecard-2026-05-11.md`.
 
 - [x] `V1-MASTER-STATE-LEDGER-2026-05-10 research: consolidate full V1 state index`
   - Scope: added `ops:project:ledger`, a local no-network master ledger
@@ -2782,8 +2889,8 @@ Last updated: 2026-05-23
     and `doneLocalNeedsProdProof: 16`; it carries 46 findings
     (`P0: 4`, `P1: 10`, `P2: 32`) and separates concrete surface/test/doc
     gaps from missing-proof rows. Evidence:
-    `docs/planning/v1-master-state-ledger-task-2026-05-10.md` and
-    `docs/operations/v1-master-state-ledger-2026-05-10.md`.
+    `history/audits/v1-master-state-ledger-task-2026-05-10.md` and
+    `history/audits/v1-master-state-ledger-2026-05-10.md`.
 
 - [x] `PROJECT-INDEXING-BASELINE-2026-05-10 research: build local project index for V1 continuation`
   - Scope: added `ops:project:index` and a no-network local index generator
@@ -2793,16 +2900,16 @@ Last updated: 2026-05-23
     `PASS_LOCAL: 16`, `UNVERIFIED: 3`, and `BLOCKED_AUTH: 2`. This is a
     planning/audit baseline, not V1 approval
     evidence. Evidence:
-    `docs/planning/project-indexing-baseline-task-2026-05-10.md` and
-    `docs/operations/project-index-2026-05-10.md`.
+    `history/audits/project-indexing-baseline-task-2026-05-10.md` and
+    `history/plans/project-index-2026-05-10.md`.
 
 - [x] `PROJECT-INDEX-V1-CROSSWALK-2026-05-10 research: map V1 rows to code and proof surfaces`
   - Scope: extended the project index with a prioritized V1 audit work map for
     all 21 module action rows. The crosswalk records risk, next proof, API
     modules, Web features, routes, workers, scripts, and candidate tests.
     Dashboard Home is priority 1 and Bot Runtime is priority 2. Evidence:
-    `docs/planning/project-index-v1-crosswalk-task-2026-05-10.md` and
-    `docs/operations/project-index-2026-05-10.md`.
+    `history/tasks/project-index-v1-crosswalk-task-2026-05-10.md` and
+    `history/plans/project-index-2026-05-10.md`.
 
 - [x] `V1-STATIC-ISSUE-SCAN-2026-05-10 research: scan V1 inconsistencies and unfinished surfaces`
   - Scope: added `ops:project:scan`, a no-network static scan over the project
@@ -2813,8 +2920,8 @@ Last updated: 2026-05-23
     pages, missing focused Web `positions` tests, missing focused API
     `subscriptions` tests, and placeholder docs for Web orders/positions.
     Evidence:
-    `docs/planning/v1-static-issue-scan-task-2026-05-10.md` and
-    `docs/operations/v1-static-issue-scan-2026-05-10.md`.
+    `history/audits/v1-static-issue-scan-task-2026-05-10.md` and
+    `history/audits/v1-static-issue-scan-2026-05-10.md`.
 
 - [x] `V1-DASHBOARD-HOME-RENDERED-RUNTIME-AUDIT-2026-05-10 fix: add rendered Dashboard TTP proof`
   - Scope: added a dedicated rendered `HomeLiveWidgets` regression showing a
@@ -2823,8 +2930,8 @@ Last updated: 2026-05-23
     Dashboard component without growing the near-budget main test file.
     Dashboard Home remains `PARTIAL_LOCAL`; broader rendered/browser audit is
     still open. Evidence:
-    `docs/planning/v1-dashboard-home-rendered-runtime-audit-task-2026-05-10.md`
-    and `docs/operations/v1-product-action-audit-matrix-2026-05-10.md`.
+    `history/audits/v1-dashboard-home-rendered-runtime-audit-task-2026-05-10.md`
+    and `history/audits/v1-product-action-audit-matrix-2026-05-10.md`.
 
 - [x] `V1-DASHBOARD-RUNTIME-TABLE-ACTION-AUDIT-2026-05-10 fix: verify Dashboard runtime table action/display contracts`
   - Scope: added focused Dashboard runtime table presenter proof for
@@ -2834,8 +2941,8 @@ Last updated: 2026-05-23
     and non-actionable open-position edit/close buttons. Dashboard Home and
     Bot Runtime rows are `PARTIAL_LOCAL`; rendered browser/component proof
     remains open. Evidence:
-    `docs/planning/v1-dashboard-runtime-table-action-audit-task-2026-05-10.md`
-    and `docs/operations/v1-product-action-audit-matrix-2026-05-10.md`.
+    `history/audits/v1-dashboard-runtime-table-action-audit-task-2026-05-10.md`
+    and `history/audits/v1-product-action-audit-matrix-2026-05-10.md`.
 
 - [x] `V1-BOTS-ACTION-AUDIT-2026-05-10 fix: verify Bots module action contracts`
   - Scope: added focused Bots list delete success/failure coverage and
@@ -2844,8 +2951,8 @@ Last updated: 2026-05-23
     groups, strategy links, LIVE opt-in guards, duplicate active guards, and
     runtime monitoring. Reset helpers now clear runtime ticker store state
     between Bots e2e cases. Evidence:
-    `docs/planning/v1-bots-action-audit-task-2026-05-10.md` and
-    `docs/operations/v1-product-action-audit-matrix-2026-05-10.md`.
+    `history/audits/v1-bots-action-audit-task-2026-05-10.md` and
+    `history/audits/v1-product-action-audit-matrix-2026-05-10.md`.
 
 - [x] `V1-PRODUCT-ACTION-AUDIT-P0-2026-05-10 fix: seed action audit and close first P0 regressions`
   - Scope: corrected the evidence model after operator-reported UI/action
@@ -2856,8 +2963,8 @@ Last updated: 2026-05-23
     resolver, and presenter tests. Also published the first action-level V1
     audit matrix so route reachability is no longer treated as functional
     completeness. Evidence:
-    `docs/planning/v1-product-action-audit-p0-task-2026-05-10.md` and
-    `docs/operations/v1-product-action-audit-matrix-2026-05-10.md`.
+    `history/audits/v1-product-action-audit-p0-task-2026-05-10.md` and
+    `history/audits/v1-product-action-audit-matrix-2026-05-10.md`.
 
 - [x] `V1-FINAL-PREFLIGHT-1E11F8DE-2026-05-10 release: refresh final preflight for current deploy`
   - Scope: ran the read-only final V1 preflight for deployed
@@ -2866,15 +2973,15 @@ Last updated: 2026-05-23
     V1 remains `BLOCKED` on protected/formal evidence: missing
     `LIVEIMPORT-03`, failed rollback proof, missing liveimport/rollback auth,
     and failed RC gates/sign-off/checklist. Evidence:
-    `docs/planning/v1-final-preflight-1e11f8de-task-2026-05-10.md` and
-    `docs/operations/v1-final-preflight-1e11f8de-2026-05-10.md`.
+    `history/releases/v1-final-preflight-1e11f8de-task-2026-05-10.md` and
+    `history/releases/v1-final-preflight-1e11f8de-2026-05-10.md`.
 
 - [x] `DEPLOY-SMOKE-SKIP-WORKERS-ALIAS-2026-05-10 fix: accept skip-workers alias in deploy smoke`
   - Scope: `scripts/deploySmokeCheck.mjs` now accepts `--skip-workers` as an
     alias for canonical `--no-workers`, while default worker checks remain
     enabled. Syntax/help checks and production public smoke with
     `--skip-workers` pass. Evidence:
-    `docs/planning/deploy-smoke-skip-workers-alias-task-2026-05-10.md`.
+    `history/evidence/deploy-smoke-skip-workers-alias-task-2026-05-10.md`.
 
 - [x] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback`
   - 2026-05-10: Added guarded command
@@ -2888,14 +2995,14 @@ Last updated: 2026-05-23
     `LIVEIMPORT-03`, deactivate the bot, and record redacted evidence.
     Preactivation read-only check confirms expected `NO_RUNNING_SESSION`.
     Evidence:
-    `docs/planning/controlled-live-session-proof-task-2026-05-10.md` and
-    `docs/operations/_artifacts-liveimport-readback-preactivation-b1391526-2026-05-10.json`.
+    `history/evidence/controlled-live-session-proof-task-2026-05-10.md` and
+    `history/artifacts/_artifacts-liveimport-readback-preactivation-b1391526-2026-05-10.json`.
   - 2026-05-14 supersession: closed by the `457bce05` controlled
     no-order-guard LIVE proof. Evidence:
-    `docs/operations/liveimport-03-prod-readback-live-paper-457bce05-2026-05-14.json`,
-    `docs/operations/prod-live-paper-simultaneous-runtime-readback-457bce05-2026-05-14.md`,
+    `history/artifacts/liveimport-03-prod-readback-live-paper-457bce05-2026-05-14.json`,
+    `history/evidence/prod-live-paper-simultaneous-runtime-readback-457bce05-2026-05-14.md`,
     and
-    `docs/operations/prod-live-paper-post-cleanup-readback-457bce05-2026-05-14.md`.
+    `history/evidence/prod-live-paper-post-cleanup-readback-457bce05-2026-05-14.md`.
 
 - [x] `LIVE-RUNTIME-SAFETY-READINESS-DIAGNOSTICS-2026-05-10 fix: expose protected LIVE no-order guard diagnostics`
   - Scope: extended the existing admin/ops protected `/ready/details` endpoint
@@ -2903,9 +3010,9 @@ Last updated: 2026-05-23
     `active`, while keeping public `/ready` minimal. Focused readiness tests
     and API typecheck pass. Production no-order guard is active on
     `b139152672aa9f6b0e26f1cab5ba0203beb54741`. Evidence:
-    `docs/planning/live-runtime-safety-readiness-diagnostics-task-2026-05-10.md`
+    `history/evidence/live-runtime-safety-readiness-diagnostics-task-2026-05-10.md`
     and
-    `docs/operations/live-runtime-no-order-guard-prod-b1391526-2026-05-10.md`.
+    `history/plans/live-runtime-no-order-guard-prod-b1391526-2026-05-10.md`.
 
 - [x] `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10 fix: add env-controlled LIVE runtime kill switch`
   - Scope: added `RUNTIME_LIVE_GLOBAL_KILL_SWITCH` and
@@ -2915,7 +3022,7 @@ Last updated: 2026-05-23
     typecheck pass. Production build-info reached
     `f00080842ea59289e8d683ac298939a23b522e67` and public API/Web smoke
     passed after the queued Coolify deploy completed. Evidence:
-    `docs/planning/live-runtime-kill-switch-config-task-2026-05-10.md`.
+    `history/tasks/live-runtime-kill-switch-config-task-2026-05-10.md`.
 
 - [x] `PROD-API-RUNTIME-READINESS-8CD5C1B3-2026-05-10 release: rerun production key and liveimport readiness`
   - Scope: after production reached
@@ -2924,7 +3031,7 @@ Last updated: 2026-05-23
     `permissions.spot: true`, `permissions.futures: true`. `LIVEIMPORT-03`
     still returns `NO_RUNNING_SESSION`, so remaining live proof requires a
     controlled runtime session. Evidence:
-    `docs/operations/prod-api-runtime-readiness-8cd5c1b3-2026-05-10.md`.
+    `history/evidence/prod-api-runtime-readiness-8cd5c1b3-2026-05-10.md`.
 
 - [x] `FUTURES-ONLY-APIKEY-ACCEPTANCE-2026-05-10 fix: accept futures-only API key probe success`
   - Scope: changed profile API-key probe semantics so a key is accepted when
@@ -2933,7 +3040,7 @@ Last updated: 2026-05-23
     states Spot & Margin permission is only for Spot bots. Focused API/Web
     tests, API/Web typechecks, guardrails, docs parity, and diff check pass.
     Production rerun is required after deploy. Evidence:
-    `docs/planning/futures-only-api-key-acceptance-task-2026-05-10.md`.
+    `history/tasks/futures-only-api-key-acceptance-task-2026-05-10.md`.
 
 - [x] `BINANCE-FUTURES-APIKEY-PROBE-SCOPE-FIX-2026-05-10 fix: correct API-key probe scope handling`
   - Scope: corrected the local Binance Futures API-key probe path after the
@@ -2944,7 +3051,7 @@ Last updated: 2026-05-23
     readiness report. Focused unit tests and API typecheck pass; DB-backed e2e
     is blocked by missing local `DATABASE_URL`. Production rerun is required
     after deploy. Evidence:
-    `docs/planning/binance-futures-api-key-probe-scope-fix-task-2026-05-10.md`.
+    `history/tasks/binance-futures-api-key-probe-scope-fix-task-2026-05-10.md`.
 
 - [x] `PROD-API-RUNTIME-READINESS-F3CB9A24-2026-05-10 release: capture authenticated API/runtime readiness`
   - Scope: captured authenticated read-only production API and live-runtime
@@ -2955,8 +3062,8 @@ Last updated: 2026-05-23
     `spot: true` and `futures: false`, and `LIVEIMPORT-03` wrote fail-closed
     `NO_RUNNING_SESSION` evidence because the configured LIVE bot has no
     running runtime session. Evidence:
-    `docs/planning/prod-api-runtime-readiness-audit-f3cb9a24-task-2026-05-10.md`
-    and `docs/operations/prod-api-runtime-readiness-f3cb9a24-2026-05-10.md`.
+    `history/audits/prod-api-runtime-readiness-audit-f3cb9a24-task-2026-05-10.md`
+    and `history/evidence/prod-api-runtime-readiness-f3cb9a24-2026-05-10.md`.
 
 - [x] `PROD-UI-AUTH-CLICKTHROUGH-39A52703-2026-05-10 qa: capture authenticated/admin production UI route evidence`
   - Scope: ran the production UI module clickthrough runner with approved
@@ -2965,8 +3072,8 @@ Last updated: 2026-05-23
     `4/4`, dashboard routes `18/18`, admin routes `3/3`, and legacy redirects
     `3/3`. Also aligned the runner and route docs with the documented
     top-level bot helper redirects. Evidence:
-    `docs/planning/prod-ui-auth-clickthrough-39a52703-task-2026-05-10.md` and
-    `docs/operations/prod-ui-module-clickthrough-39a52703-2026-05-10.md`.
+    `history/tasks/prod-ui-auth-clickthrough-39a52703-task-2026-05-10.md` and
+    `history/plans/prod-ui-module-clickthrough-39a52703-2026-05-10.md`.
 
 - [x] `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10 fix: close exchange-boundary audit drift`
   - Scope: resolved the architecture audit findings by moving API-key probe
@@ -2974,8 +3081,8 @@ Last updated: 2026-05-23
     factory under `modules/exchange`, then refreshed Gate.io runtime context
     and exchange module docs. Focused probe tests, API typecheck, direct CCXT
     boundary grep, guardrails, docs parity, and diff check passed. Evidence:
-    `docs/planning/v1-architecture-boundary-cleanup-task-2026-05-10.md` and
-    `docs/operations/v1-architecture-function-audit-2026-05-10.md`.
+    `history/tasks/v1-architecture-boundary-cleanup-task-2026-05-10.md` and
+    `history/audits/v1-architecture-function-audit-2026-05-10.md`.
 
 - [x] `V1-ARCH-FUNCTION-AUDIT-2026-05-10 research: audit V1 functions against architecture`
   - Scope: published architecture/function conformity audit across
@@ -2986,8 +3093,8 @@ Last updated: 2026-05-23
     Gate.io docs drifts. Those local findings are now resolved by
     `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10`; protected production evidence and
     formal approval remain the V1 blockers. Evidence:
-    `docs/planning/v1-architecture-function-audit-task-2026-05-10.md` and
-    `docs/operations/v1-architecture-function-audit-2026-05-10.md`.
+    `history/audits/v1-architecture-function-audit-task-2026-05-10.md` and
+    `history/audits/v1-architecture-function-audit-2026-05-10.md`.
 
 - [x] `V1-FUNCTION-COVERAGE-AUDIT-2026-05-10 research: publish V1 function coverage audit`
   - Scope: published a function/module-oriented V1 audit across architecture,
@@ -2998,8 +3105,8 @@ Last updated: 2026-05-23
     remains `NO-GO` until protected liveimport readback, rollback proof PASS,
     authenticated/admin UI clickthrough, authenticated Gate 2 SLO, RC approval,
     and final non-dry-run release gate evidence are complete. Evidence:
-    `docs/planning/v1-function-coverage-audit-task-2026-05-10.md` and
-    `docs/operations/v1-function-coverage-audit-2026-05-10.md`.
+    `history/audits/v1-function-coverage-audit-task-2026-05-10.md` and
+    `history/audits/v1-function-coverage-audit-2026-05-10.md`.
 
 - [x] `V1-FINAL-PREFLIGHT-82205329-2026-05-10 release: refresh current final no-secret preflight`
   - Scope: ran final V1 preflight against production build-info
@@ -3009,8 +3116,8 @@ Last updated: 2026-05-23
     protected/formal blockers: liveimport auth/readback, rollback guard
     auth/proof PASS, RC gate/sign-off/checklist approval, and
     authenticated/admin UI proof. Evidence:
-    `docs/planning/v1-final-preflight-82205329-task-2026-05-10.md` and
-    `docs/operations/v1-final-preflight-82205329-2026-05-10.md`.
+    `history/releases/v1-final-preflight-82205329-task-2026-05-10.md` and
+    `history/releases/v1-final-preflight-82205329-2026-05-10.md`.
 
 - [x] `V1-OPERATOR-ARTIFACT-NAMING-2026-05-10 release: add SHA suffixes to V1 operator artifacts`
   - Scope: updated the final blocker execution pack, operator unblock
@@ -3018,7 +3125,7 @@ Last updated: 2026-05-23
     clickthrough, and final release-gate artifact paths include
     `$expectedShaShort-$releaseDate`. Also fixed duplicate final blocker pack
     step numbering. Evidence:
-    `docs/planning/v1-operator-artifact-naming-task-2026-05-10.md`.
+    `history/tasks/v1-operator-artifact-naming-task-2026-05-10.md`.
 
 - [x] `V1-NEXT-STEPS-DYNAMIC-SHA-CLEANUP-2026-05-10 release: remove stale static SHA targets`
   - Scope: cleaned the lower V1 continuation backlog so protected evidence
@@ -3026,7 +3133,7 @@ Last updated: 2026-05-23
     stale historical defaults like `c50e1e7c` or `30b027b7`. The final blocker
     pack remains authoritative, and build-info freshness is still not treated
     as liveimport, rollback, RC, or authenticated UI proof. Evidence:
-    `docs/planning/v1-next-steps-dynamic-sha-cleanup-task-2026-05-10.md`.
+    `history/tasks/v1-next-steps-dynamic-sha-cleanup-task-2026-05-10.md`.
 
 - [x] `PROD-UI-PUBLIC-CLICKTHROUGH-88313309-2026-05-10 qa: refresh current no-auth production UI audit`
   - Scope: ran the existing production UI module clickthrough runner without
@@ -3036,8 +3143,8 @@ Last updated: 2026-05-23
     `BLOCKED_AUTH` with `/auth/login` redirects. This is current fail-closed
     evidence only; full authenticated/admin UI clickthrough remains blocked on
     valid production auth and representative data. Evidence:
-    `docs/planning/prod-ui-public-clickthrough-88313309-task-2026-05-10.md`
-    and `docs/operations/prod-ui-module-clickthrough-88313309-2026-05-10.md`.
+    `history/tasks/prod-ui-public-clickthrough-88313309-task-2026-05-10.md`
+    and `history/plans/prod-ui-module-clickthrough-88313309-2026-05-10.md`.
 
 - [x] `V1-CURRENT-RELEASE-GATE-DRY-RUN-2026-05-10 release: refresh current production release-gate dry-run`
   - Scope: confirmed production Web build-info still exposes
@@ -3047,8 +3154,8 @@ Last updated: 2026-05-23
     evidence are fresh, while RC external gates, RC sign-off, RC checklist,
     `LIVEIMPORT-03`, rollback proof PASS, and final non-dry-run execution
     remain blockers. Evidence:
-    `docs/planning/v1-current-release-gate-dry-run-task-2026-05-10.md` and
-    `docs/operations/v1-release-gate-prod-2026-05-10Tcurrent-buildinfo-dry-run.md`.
+    `history/releases/v1-current-release-gate-dry-run-task-2026-05-10.md` and
+    `history/releases/v1-release-gate-prod-2026-05-10Tcurrent-buildinfo-dry-run.md`.
 
 - [x] `V1-OPERATOR-RUNBOOK-DYNAMIC-SHA-2026-05-10 release: use build-info as operator target`
   - Scope: updated the final blocker execution pack and operator unblock
@@ -3058,9 +3165,9 @@ Last updated: 2026-05-23
     comparison when promoting one exact runtime SHA. This reduces stale
     docs-only SHA churn while preserving that build-info freshness is not
     protected runtime proof. Evidence:
-    `docs/planning/v1-operator-runbook-dynamic-sha-task-2026-05-10.md`,
-    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`, and
-    `docs/operations/v1-operator-unblock-checklist-2026-05-10.md`.
+    `history/tasks/v1-operator-runbook-dynamic-sha-task-2026-05-10.md`,
+    `history/plans/v1-final-blocker-execution-pack-2026-05-07.md`, and
+    `history/releases/v1-operator-unblock-checklist-2026-05-10.md`.
 
 - [x] `V1-SLO-GATE2-NOAUTH-PROBE-2026-05-10 release: record no-auth Gate 2 SLO probe`
   - Scope: ran a short read-only production SLO collector without auth against
@@ -3071,9 +3178,9 @@ Last updated: 2026-05-23
     metrics `NO_DATA`. A follow-up public deploy smoke passed. Gate 2 remains
     blocked until an authenticated 30-minute production SLO run is captured.
     Evidence:
-    `docs/planning/v1-slo-gate2-noauth-probe-task-2026-05-10.md`,
-    `docs/operations/v1-slo-gate2-noauth-probe-2026-05-10.md`, and
-    `docs/operations/v1-slo-observation-2026-05-10T05-09-56-366Z.md`.
+    `history/evidence/v1-slo-gate2-noauth-probe-task-2026-05-10.md`,
+    `history/evidence/v1-slo-gate2-noauth-probe-2026-05-10.md`, and
+    `history/evidence/v1-slo-observation-2026-05-10T05-09-56-366Z.md`.
 
 - [x] `V1-OPERATOR-RUNBOOK-CURRENT-SHA-SYNC-2026-05-10 release: sync operator runbooks to current deploy`
   - Scope: updated the final blocker execution pack and operator unblock
@@ -3083,9 +3190,9 @@ Last updated: 2026-05-23
     explicitly says later docs-only deploys may supersede the listed SHA but
     cannot substitute for `LIVEIMPORT-03`, rollback proof PASS, RC approval,
     or authenticated/admin UI proof. Evidence:
-    `docs/planning/v1-operator-runbook-current-sha-sync-task-2026-05-10.md`,
-    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`, and
-    `docs/operations/v1-operator-unblock-checklist-2026-05-10.md`.
+    `history/tasks/v1-operator-runbook-current-sha-sync-task-2026-05-10.md`,
+    `history/plans/v1-final-blocker-execution-pack-2026-05-07.md`, and
+    `history/releases/v1-operator-unblock-checklist-2026-05-10.md`.
 
 - [x] `V1-COVERAGE-CONFIDENCE-AUDIT-2026-05-10 research: publish current V1 coverage confidence audit`
   - Scope: refreshed current no-secret final preflight and no-auth production
@@ -3096,10 +3203,10 @@ Last updated: 2026-05-23
     but V1 remains `NO-GO` because protected liveimport readback, rollback
     proof PASS, RC approval/gates, and authenticated/admin UI clickthrough are
     still missing or blocked. Evidence:
-    `docs/planning/v1-coverage-confidence-audit-task-2026-05-10.md`,
-    `docs/operations/v1-coverage-confidence-audit-2026-05-10.md`,
-    `docs/operations/v1-final-preflight-fd8da90b-2026-05-10.md`, and
-    `docs/operations/prod-ui-module-clickthrough-fd8da90b-2026-05-10.md`.
+    `history/audits/v1-coverage-confidence-audit-task-2026-05-10.md`,
+    `history/audits/v1-coverage-confidence-audit-2026-05-10.md`,
+    `history/releases/v1-final-preflight-fd8da90b-2026-05-10.md`, and
+    `history/plans/prod-ui-module-clickthrough-fd8da90b-2026-05-10.md`.
 
 - [x] `PROD-UI-MODULE-CLICKTHROUGH-RUNNER-2026-05-10 qa: add production UI module audit runner`
   - Scope: added `ops:ui:prod-clickthrough`, a no-secret production UI module
@@ -3110,8 +3217,8 @@ Last updated: 2026-05-23
     dashboard/admin/legacy protected routes `BLOCKED_AUTH`. Authenticated UI
     clickthrough remains blocked until production app/admin credentials and
     representative data are available. Evidence:
-    `docs/planning/prod-ui-module-clickthrough-runner-task-2026-05-10.md` and
-    `docs/operations/prod-ui-module-clickthrough-84e7c0e0-2026-05-10.md`.
+    `history/tasks/prod-ui-module-clickthrough-runner-task-2026-05-10.md` and
+    `history/plans/prod-ui-module-clickthrough-84e7c0e0-2026-05-10.md`.
 
 - [x] `V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-10 release: refresh rollback-proof blocked evidence`
   - Scope: captured current fail-closed production rollback proof evidence for
@@ -3122,9 +3229,9 @@ Last updated: 2026-05-23
     build-info PASS, public smoke PASS, production DB restore context
     satisfied, backup/restore fresh, and rollback proof fresh but failed. V1
     remains `BLOCKED / NO-GO`. Evidence:
-    `docs/planning/v1-rollback-proof-blocked-refresh-task-2026-05-10.md`,
-    `docs/operations/v1-rollback-proof-prod-2026-05-10T00-00-00-000Z.md`,
-    and `docs/operations/v1-final-preflight-8df3260b-2026-05-10.md`.
+    `history/evidence/v1-rollback-proof-blocked-refresh-task-2026-05-10.md`,
+    `history/evidence/v1-rollback-proof-prod-2026-05-10T00-00-00-000Z.md`,
+    and `history/releases/v1-final-preflight-8df3260b-2026-05-10.md`.
 
 - [x] `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-10 release: refresh production restore drill evidence`
   - Scope: captured fresh PASS production Postgres restore evidence through
@@ -3137,9 +3244,9 @@ Last updated: 2026-05-23
     2026-05-10. V1 remains `BLOCKED / NO-GO` on liveimport auth/readback,
     rollback guard auth/proof, RC approval/gates, and authenticated/admin UI
     clickthrough. Evidence:
-    `docs/planning/v1-prod-restore-drill-refresh-task-2026-05-10.md`,
-    `docs/operations/v1-restore-drill-prod-2026-05-10T03-39-56Z.md`, and
-    `docs/operations/v1-final-preflight-969df7c8-2026-05-10.md`.
+    `history/evidence/v1-prod-restore-drill-refresh-task-2026-05-10.md`,
+    `history/evidence/v1-restore-drill-prod-2026-05-10T03-39-56Z.md`, and
+    `history/releases/v1-final-preflight-969df7c8-2026-05-10.md`.
 
 - [x] `V1-COOLIFY-DEPLOY-QUEUE-RECOVERY-2026-05-10 release: recover stale Coolify deploy queue`
   - Scope: cleared stale Soar Coolify deployments after production build-info
@@ -3149,44 +3256,44 @@ Last updated: 2026-05-23
     SHA, public API/Web smoke passed, and the Coolify queue was empty. Current
     no-secret V1 preflight is public PASS and protected/formal BLOCKED.
     Evidence:
-    `docs/planning/v1-coolify-deploy-queue-recovery-task-2026-05-10.md`,
-    `docs/operations/coolify-deploy-queue-recovery-33a2ebc4-2026-05-10.md`,
-    and `docs/operations/v1-final-preflight-33a2ebc4-2026-05-10.md`.
+    `history/tasks/v1-coolify-deploy-queue-recovery-task-2026-05-10.md`,
+    `history/plans/coolify-deploy-queue-recovery-33a2ebc4-2026-05-10.md`,
+    and `history/releases/v1-final-preflight-33a2ebc4-2026-05-10.md`.
 
 - [x] `V1-DEPLOY-CONTROL-READINESS-2026-05-10 release: audit deploy control after lag`
   - Scope: confirmed production deployment is manual Coolify/operator
     controlled. The repository has CI checks only and no approved no-secret
     production deploy trigger. Evidence:
-    `docs/operations/v1-deploy-control-readiness-2026-05-10.md`.
+    `history/evidence/v1-deploy-control-readiness-2026-05-10.md`.
 
 - [x] `DEPLOY-LAG-E70F5CF6-2026-05-10 release: record protected-input readiness deploy lag`
   - Scope: recorded that pushed commit
     `e70f5cf6229d6fc4d26ea0342b81baab80851800` did not reach production
     build-info during two bounded wait windows. Production still reports
     `40e9b3c35c96d4acced73bbab980039f9e6b6a22`; public smoke passes. Evidence:
-    `docs/operations/deploy-lag-e70f5cf6-2026-05-10.md`.
+    `history/plans/deploy-lag-e70f5cf6-2026-05-10.md`.
 
 - [x] `V1-PROTECTED-INPUTS-READINESS-2026-05-10 release: recheck protected inputs`
   - Scope: checked required protected env families by presence only and
     recorded that privileged VPS/Docker inspection was rejected by escalation
     review. V1 remains `BLOCKED / NO-GO` until operator inputs or explicit
     production infrastructure authorization are available. Evidence:
-    `docs/operations/v1-protected-inputs-readiness-2026-05-10.md`.
+    `history/evidence/v1-protected-inputs-readiness-2026-05-10.md`.
 
 - [x] `V1-FINAL-PREFLIGHT-CURRENT-9D28F682-2026-05-10 release: refresh final preflight for current deploy`
   - Scope: captured final no-secret preflight for currently deployed
     `9d28f682f23dc176dbbad790bea8ddf213c8ac01`. Build-info and public smoke
     pass; V1 remains `BLOCKED / NO-GO` on protected/formal evidence. Evidence:
-    `docs/planning/v1-final-preflight-current-9d28f682-task-2026-05-10.md`
-    and `docs/operations/v1-final-preflight-9d28f682-2026-05-10.md`.
+    `history/releases/v1-final-preflight-current-9d28f682-task-2026-05-10.md`
+    and `history/releases/v1-final-preflight-9d28f682-2026-05-10.md`.
 
 - [x] `V1-OPERATOR-UNBLOCK-CHECKLIST-2026-05-10 release: publish final operator unblock checklist`
   - Scope: published the exact no-secret protected inputs and command order
     needed to close remaining V1 blockers, retargeted the final blocker
     execution pack to deployed `822d92fc02067fa122e735ab6cc2783e438dc458`, and
     captured current no-secret final preflight. V1 remains `BLOCKED / NO-GO`.
-    Evidence: `docs/operations/v1-operator-unblock-checklist-2026-05-10.md`
-    and `docs/operations/v1-final-preflight-822d92fc-2026-05-10.md`.
+    Evidence: `history/releases/v1-operator-unblock-checklist-2026-05-10.md`
+    and `history/releases/v1-final-preflight-822d92fc-2026-05-10.md`.
 
 - [x] `V1-PROD-ACTIVATION-REFRESH-2026-05-10 release: refresh production activation plan and audit`
   - Scope: published fresh activation plan and activation evidence audit as
@@ -3194,8 +3301,8 @@ Last updated: 2026-05-23
     `74752f025ef49bf5026ec92e056f59947e00a18f`. Final preflight reports
     activation plan/audit fresh, build-info/public smoke PASS, and V1 still
     `BLOCKED` on protected/formal evidence. Evidence:
-    `docs/planning/v1-production-activation-refresh-2026-05-10-task.md` and
-    `docs/operations/v1-final-preflight-74752f02-2026-05-10.md`.
+    `history/tasks/v1-production-activation-refresh-2026-05-10-task.md` and
+    `history/releases/v1-final-preflight-74752f02-2026-05-10.md`.
 
 - [x] `V1-RC-BLOCKED-REFRESH-2026-05-10 release: refresh current blocked RC evidence`
   - Scope: refreshed RC external gates status, RC sign-off record, and RC
@@ -3203,8 +3310,8 @@ Last updated: 2026-05-23
     deployed `1609929ed3b98c2b794d8a0b48ff0f39c16cd75f` reports build-info
     PASS, public smoke PASS, and RC evidence `failed` instead of `stale`; V1
     remains `BLOCKED` on protected/formal evidence. Evidence:
-    `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-10.md` and
-    `docs/operations/v1-final-preflight-1609929e-2026-05-10.md`.
+    `history/releases/v1-rc-blocked-evidence-refresh-task-2026-05-10.md` and
+    `history/releases/v1-final-preflight-1609929e-2026-05-10.md`.
 
 - [x] `DEPLOY-FRESHNESS-9C125683-2026-05-10 release: verify live cancel boundary deployment freshness`
   - Scope: verified production Web build-info for
@@ -3215,9 +3322,9 @@ Last updated: 2026-05-23
     production DB restore context, current activation/RC evidence,
     `LIVEIMPORT-03` readback, backup/restore drill, rollback proof, and
     authenticated/admin UI clickthrough. Evidence:
-    `docs/planning/deploy-freshness-9c125683-task-2026-05-10.md`,
-    `docs/operations/deploy-freshness-9c125683-2026-05-10.md`, and
-    `docs/operations/v1-final-preflight-9c125683-2026-05-10.md`.
+    `history/tasks/deploy-freshness-9c125683-task-2026-05-10.md`,
+    `history/plans/deploy-freshness-9c125683-2026-05-10.md`, and
+    `history/releases/v1-final-preflight-9c125683-2026-05-10.md`.
 
 - [x] `EXCHANGE2-31-LIVE-ORDER-CANCEL-BOUNDARY-2026-05-10 feature(exchange): enable live order cancel boundary`
   - Scope: add canonical exchange-side `LIVE_ORDER_CANCEL` for Binance and
@@ -3228,8 +3335,8 @@ Last updated: 2026-05-23
     typecheck, guardrails, docs parity, and diff check passed. Production
     freshness is now proven by `DEPLOY-FRESHNESS-9C125683`; the earlier
     deploy-lag artifact is superseded. Evidence:
-    `docs/planning/exchange2-31-live-order-cancel-boundary-task-2026-05-10.md`
-    and `docs/operations/deploy-freshness-9c125683-2026-05-10.md`.
+    `history/tasks/exchange2-31-live-order-cancel-boundary-task-2026-05-10.md`
+    and `history/plans/deploy-freshness-9c125683-2026-05-10.md`.
 
 - [x] `EXCHANGE2-30-GATEIO-LIVE-ORDER-SUBMIT-2026-05-10 feature(exchange): enable Gate.io live order submit`
   - Scope: enable Gate.io `LIVE_ORDER_SUBMIT` through the canonical
@@ -3239,8 +3346,8 @@ Last updated: 2026-05-23
     test, API typecheck, Web typecheck, production build-info for
     `04a4204ca9090586d49ae77b0dd8c1be048d7bdf`, and public deploy smoke
     passed. Evidence:
-    `docs/planning/exchange2-30-gateio-live-order-submit-task-2026-05-10.md`
-    and `docs/operations/deploy-freshness-04a4204c-2026-05-10.md`.
+    `history/tasks/exchange2-30-gateio-live-order-submit-task-2026-05-10.md`
+    and `history/plans/deploy-freshness-04a4204c-2026-05-10.md`.
 
 - [x] `EXCHANGE2-29-GATEIO-WALLET-CASHFLOW-HISTORY-2026-05-09 feature(exchange): enable Gate.io wallet cashflow history`
   - Scope: enable only `GATEIO` `WALLET_CASHFLOW_HISTORY` through the existing
@@ -3249,8 +3356,8 @@ Last updated: 2026-05-23
     parity, and diff check passed. Production build-info and public smoke pass
     for `8ea7f33b581ec0f3cf7d653168b160c31cbb23a8`.
     Evidence:
-    `docs/planning/exchange2-29-gateio-wallet-cashflow-history-task-2026-05-09.md`
-    and `docs/operations/deploy-freshness-8ea7f33b-2026-05-09.md`.
+    `history/tasks/exchange2-29-gateio-wallet-cashflow-history-task-2026-05-09.md`
+    and `history/plans/deploy-freshness-8ea7f33b-2026-05-09.md`.
 
 - [x] `EXCHANGE2-28-GATEIO-TRADE-HISTORY-SNAPSHOT-2026-05-09 feature(exchange): enable Gate.io trade-history snapshot`
   - Scope: enable only `GATEIO` `TRADE_HISTORY_SNAPSHOT` through the existing
@@ -3259,8 +3366,8 @@ Last updated: 2026-05-23
     snapshot service test, API typecheck, guardrails, docs parity, and diff
     check passed. Production build-info and public smoke pass for
     `432f768701300c7ba600fa7633532c0cc9ef4b96`. Evidence:
-    `docs/planning/exchange2-28-gateio-trade-history-snapshot-task-2026-05-09.md`
-    and `docs/operations/deploy-freshness-432f7687-2026-05-09.md`.
+    `history/tasks/exchange2-28-gateio-trade-history-snapshot-task-2026-05-09.md`
+    and `history/plans/deploy-freshness-432f7687-2026-05-09.md`.
 
 - [x] `EXCHANGE2-27-GATEIO-OPEN-ORDERS-SNAPSHOT-2026-05-09 feature(exchange): enable Gate.io open-orders snapshot`
   - Scope: enable only `GATEIO` `OPEN_ORDERS_SNAPSHOT` through the existing
@@ -3269,8 +3376,8 @@ Last updated: 2026-05-23
     API typecheck, guardrails, docs parity, and diff check passed. Production
     build-info and public smoke pass for
     `214a9c034d38ab8670fd4b43d0f8ed692d78d90c`. Evidence:
-    `docs/planning/exchange2-27-gateio-open-orders-snapshot-task-2026-05-09.md`
-    and `docs/operations/deploy-freshness-214a9c03-2026-05-09.md`.
+    `history/tasks/exchange2-27-gateio-open-orders-snapshot-task-2026-05-09.md`
+    and `history/plans/deploy-freshness-214a9c03-2026-05-09.md`.
 
 - [x] `EXCHANGE2-26-GATEIO-POSITIONS-SNAPSHOT-2026-05-09 feature(exchange): enable Gate.io positions snapshot`
   - Scope: enable only `GATEIO` `POSITIONS_SNAPSHOT` through the existing
@@ -3280,8 +3387,8 @@ Last updated: 2026-05-23
     typecheck, guardrails, docs parity, and diff check passed. Production
     build-info and public smoke pass for
     `4c7548acc74295f27676c1f00d79dbf58b873942`. Evidence:
-    `docs/planning/exchange2-26-gateio-positions-snapshot-task-2026-05-09.md`
-    and `docs/operations/deploy-freshness-4c7548ac-2026-05-09.md`.
+    `history/tasks/exchange2-26-gateio-positions-snapshot-task-2026-05-09.md`
+    and `history/plans/deploy-freshness-4c7548ac-2026-05-09.md`.
 
 - [x] `EXCHANGE2-25-GATEIO-BALANCE-PREVIEW-2026-05-09 feature(exchange): enable Gate.io balance preview`
   - Scope: enable only `GATEIO` `BALANCE_PREVIEW` through the existing
@@ -3290,8 +3397,8 @@ Last updated: 2026-05-23
     exchange tests, wallet e2e, API typecheck, guardrails, docs parity, and
     diff check passed. Production build-info and public smoke pass for
     `15dfacb9882fc4904a2bfcd91d8b58c05d3ac5dd`. Evidence:
-    `docs/planning/exchange2-25-gateio-balance-preview-task-2026-05-09.md` and
-    `docs/operations/deploy-freshness-15dfacb9-2026-05-09.md`.
+    `history/tasks/exchange2-25-gateio-balance-preview-task-2026-05-09.md` and
+    `history/plans/deploy-freshness-15dfacb9-2026-05-09.md`.
 
 - [x] `EXCHANGE2-24-GATEIO-API-KEY-PROBE-2026-05-09 feature(exchange): enable Gate.io API-key probe`
   - Scope: replace the Binance-only profile API-key probe with a shared
@@ -3301,16 +3408,16 @@ Last updated: 2026-05-23
     Focused API/Web tests, API/Web typechecks, guardrails, docs parity, and
     diff check passed. Production build-info and public smoke pass for
     `e76e08a1a20b12abaeabf4edc44a38ba37619005`. Evidence:
-    `docs/planning/exchange2-24-gateio-api-key-probe-task-2026-05-09.md` and
-    `docs/operations/deploy-freshness-e76e08a1-2026-05-09.md`.
+    `history/tasks/exchange2-24-gateio-api-key-probe-task-2026-05-09.md` and
+    `history/plans/deploy-freshness-e76e08a1-2026-05-09.md`.
 
 - [x] `DEPLOY-FRESHNESS-1DC55D96-2026-05-09 release: verify Gate.io PAPER pricing batch deployment`
   - Scope: verified production Web build-info for
     `1dc55d9623bab11dacb5b9f8ce9634778c139249`, ran public API/Web smoke with
     `--no-workers`, and refreshed no-secret final V1 preflight. Public checks
     pass; protected/formal V1 evidence remains blocked. Evidence:
-    `docs/planning/deploy-freshness-1dc55d96-task-2026-05-09.md` and
-    `docs/operations/deploy-freshness-1dc55d96-2026-05-09.md`.
+    `history/tasks/deploy-freshness-1dc55d96-task-2026-05-09.md` and
+    `history/plans/deploy-freshness-1dc55d96-2026-05-09.md`.
 
 - [x] `EXCHANGE2-23-GATEIO-PAPER-PRICING-ENABLE-2026-05-09 feature(exchange): enable Gate.io public PAPER pricing`
   - Scope: enabled only `GATEIO` `PAPER_PRICING_FEED` in the shared
@@ -3319,22 +3426,22 @@ Last updated: 2026-05-23
     LIVE/authenticated/cancel capabilities fail-closed. Focused validation
     passed for Web exchange/wallet/bot UI, API runtime loop, API wallet
     create/update, and focused API bot Gate.io/placeholder gating. Evidence:
-    `docs/planning/exchange2-23-gateio-paper-pricing-enable-task-2026-05-09.md`.
+    `history/tasks/exchange2-23-gateio-paper-pricing-enable-task-2026-05-09.md`.
 
 - [x] `V1-COMPLETION-GAP-AUDIT-2026-05-09 research: explain what blocks 100% V1 readiness`
   - Scope: created a concise evidence-backed completion gap report that
     separates implemented/proven work, implemented-but-not-production-proven
     work, missing implementation, protected operator inputs, and release
     blockers. Evidence:
-    `docs/planning/v1-completion-gap-audit-task-2026-05-09.md` and
-    `docs/operations/v1-completion-gap-report-2026-05-09.md`.
+    `history/audits/v1-completion-gap-audit-task-2026-05-09.md` and
+    `history/plans/v1-completion-gap-report-2026-05-09.md`.
 
 - [x] `DEPLOY-FRESHNESS-E8CD748E-2026-05-09 release: verify docs/evidence batch deployment`
   - Scope: verified production build-info for the docs/evidence batch ending
     at `e8cd748e80b8693087e01beb21b0085ace747c49`, ran public API/Web smoke
     with `--no-workers`, and refreshed no-secret final V1 preflight. Public
     checks pass; protected/formal V1 evidence remains blocked. Evidence:
-    `docs/planning/deploy-freshness-e8cd748e-task-2026-05-09.md`.
+    `history/tasks/deploy-freshness-e8cd748e-task-2026-05-09.md`.
 
 - [x] `CURRENT-PROD-BUILDINFO-745B5F5A-SYNC-2026-05-09 release: sync latest public build-info truth`
   - Scope: synchronized active source-of-truth files after public UI evidence
@@ -3343,7 +3450,7 @@ Last updated: 2026-05-23
     only over protected runtime/preflight baseline
     `30b027b78544f76b5b638851e8e27c98f6d22ab5`; protected V1 evidence and
     Gate.io paper/live/authenticated blockers remain open. Evidence:
-    `docs/planning/current-production-build-info-745b5f5a-sync-task-2026-05-09.md`.
+    `history/evidence/current-production-build-info-745b5f5a-sync-task-2026-05-09.md`.
 
 - [x] `PROD-UI-PUBLIC-ACCESS-REFRESH-745B5F5A-2026-05-09 qa: refresh public production UI access evidence`
   - Scope: refreshed public/unauthenticated production access evidence for
@@ -3352,7 +3459,7 @@ Last updated: 2026-05-23
     200, and unauthenticated dashboard/admin routes redirect to `/auth/login`.
     The full module clickthrough remains blocked on authenticated/admin
     production app access. Evidence:
-    `docs/planning/prod-ui-public-access-refresh-745b5f5a-task-2026-05-09.md`.
+    `history/tasks/prod-ui-public-access-refresh-745b5f5a-task-2026-05-09.md`.
 
 - [x] `DEPLOY-FRESHNESS-30B027B7-2026-05-09 release: verify protected-backlog sync batch deployment`
   - Scope: pushed the protected-backlog sync batch ending at
@@ -3361,7 +3468,7 @@ Last updated: 2026-05-23
     smoke with `--no-workers`, and refreshed no-secret final V1 preflight.
     Public checks pass; protected/formal V1 evidence remains blocked.
     Evidence:
-    `docs/planning/deploy-freshness-30b027b7-task-2026-05-09.md`.
+    `history/tasks/deploy-freshness-30b027b7-task-2026-05-09.md`.
 
 - [x] `OPEN-PROTECTED-BACKLOG-BA3D852D-SYNC-2026-05-09 release: sync protected backlog target`
   - Scope: retargeted the active protected V1 backlog and final blocker pack
@@ -3369,7 +3476,7 @@ Last updated: 2026-05-23
     protected evidence. `LIVEIMPORT-03`, rollback proof, restore proof, RC
     approval, and authenticated/admin UI audit remain blocked on operator
     inputs. Evidence:
-    `docs/planning/open-protected-backlog-ba3d852d-sync-task-2026-05-09.md`.
+    `history/tasks/open-protected-backlog-ba3d852d-sync-task-2026-05-09.md`.
 
 - [x] `DEPLOY-FRESHNESS-BA3D852D-2026-05-09 release: verify docs/status sync batch deployment`
   - Scope: pushed the docs/status sync batch ending at
@@ -3377,14 +3484,14 @@ Last updated: 2026-05-23
     build-info reached that SHA, ran public API/Web smoke with `--no-workers`,
     and refreshed no-secret final V1 preflight. Public checks pass;
     protected/formal V1 evidence remains blocked. Evidence:
-    `docs/planning/deploy-freshness-ba3d852d-task-2026-05-09.md`.
+    `history/tasks/deploy-freshness-ba3d852d-task-2026-05-09.md`.
 
 - [x] `DEPLOY-FRESHNESS-010B4F8B-2026-05-09 release: verify Gate.io source batch deployment`
   - Scope: verified production build-info for the three-commit Gate.io source
     batch ending at `010b4f8b6abfaf4c24d26550eb4761215d119f21`, ran public
     API/Web smoke, and refreshed no-secret final V1 preflight. Public checks
     pass; protected/formal V1 evidence remains blocked. Evidence:
-    `docs/planning/deploy-freshness-010b4f8b-task-2026-05-09.md`.
+    `history/tasks/deploy-freshness-010b4f8b-task-2026-05-09.md`.
 
 - [x] `EXCHANGE2-22-GATEIO-PUBLIC-SYMBOL-RULES-2026-05-09 fix(exchange): decouple public symbol rules from live execution`
   - Scope: changed public symbol-rule resolution to use `MARKET_CATALOG`
@@ -3392,7 +3499,7 @@ Last updated: 2026-05-23
     preserved fail-closed null/no-load behavior for exchanges without market
     catalog. Gate.io paper/live/authenticated capabilities remain unsupported.
     Evidence:
-    `docs/planning/exchange2-22-gateio-public-symbol-rules-task-2026-05-09.md`.
+    `history/tasks/exchange2-22-gateio-public-symbol-rules-task-2026-05-09.md`.
 
 - [x] `EXCHANGE2-21-GATEIO-MARKET-STREAM-SOURCE-SMOKE-2026-05-09 qa: add Gate.io public market-stream source smoke`
   - Scope: added a public-read-only smoke runner for the existing Gate.io
@@ -3401,7 +3508,7 @@ Last updated: 2026-05-23
     exchange writes, live orders, or paper pricing enablement. Gate.io
     `PAPER_PRICING_FEED`, authenticated reads, live submit, and cancel remain
     unsupported. Evidence:
-    `docs/planning/exchange2-21-gateio-market-stream-source-smoke-task-2026-05-09.md`.
+    `history/evidence/exchange2-21-gateio-market-stream-source-smoke-task-2026-05-09.md`.
 
 - [x] `DEPLOY-LAG-D355DF93-FOLLOW-UP-2026-05-09 release: record deploy lag follow-up after pushed operator handoff`
   - Scope: recorded that the pushed operator handoff/source-of-truth commit
@@ -3410,7 +3517,7 @@ Last updated: 2026-05-23
     build-info-proven at `c50e1e7c`; the next deploy action requires
     operator-side Coolify inspection or an approved trigger, not empty
     retrigger commits. Evidence:
-    `docs/planning/deploy-lag-d355df93-follow-up-task-2026-05-09.md`.
+    `history/tasks/deploy-lag-d355df93-follow-up-task-2026-05-09.md`.
 
 - [x] `DASH-RUNTIME-CURRENT-AGGREGATE-2026-05-09 fix(api): prefer running runtime rows for dashboard current aggregate state`
   - Scope: added explicit current-row selection in the runtime monitoring
@@ -3419,13 +3526,13 @@ Last updated: 2026-05-23
     prefer the freshest `RUNNING` session row when one exists. Historical
     closed-position/trade projection continues to use the existing aggregate
     projection rows. Evidence:
-    `docs/planning/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`.
+    `history/tasks/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`.
 
 - [x] `DASH-RUNTIME-WIDGET-AGGREGATE-CURRENT-RENDER-2026-05-09 test(web): lock dashboard aggregate current-row rendering`
   - Scope: added focused `HomeLiveWidgets` coverage proving a running bot's
     aggregate current open-position row renders on the dashboard while
     completed-session history remains visible in the history tab. Evidence:
-    `docs/planning/dashboard-runtime-widget-aggregate-current-render-task-2026-05-09.md`.
+    `history/tasks/dashboard-runtime-widget-aggregate-current-render-task-2026-05-09.md`.
 
 - [x] `DEPLOY-FRESHNESS-3C5DA343-2026-05-09 release: verify dashboard runtime aggregate batch deployment`
   - Scope: pushed the accumulated dashboard runtime aggregate batch ending at
@@ -3434,8 +3541,8 @@ Last updated: 2026-05-23
     `--no-workers`. The follow-up no-secret final preflight reports build-info
     and public smoke PASS while protected/formal V1 blockers remain open.
     Evidence:
-    `docs/planning/deploy-freshness-3c5da343-task-2026-05-09.md` and
-    `docs/operations/deploy-freshness-3c5da343-2026-05-09.md`.
+    `history/tasks/deploy-freshness-3c5da343-task-2026-05-09.md` and
+    `history/plans/deploy-freshness-3c5da343-2026-05-09.md`.
 
 - [x] `PROD-UI-PUBLIC-ACCESS-REFRESH-3C5DA343-2026-05-09 qa: refresh public production UI access evidence for dashboard runtime batch`
   - Scope: refreshed the public/unauthenticated production access evidence for
@@ -3444,7 +3551,7 @@ Last updated: 2026-05-23
     200, and unauthenticated dashboard/admin routes redirect to `/auth/login`.
     The full module clickthrough remains blocked on authenticated/admin
     production app access. Evidence:
-    `docs/planning/prod-ui-public-access-refresh-3c5da343-task-2026-05-09.md`.
+    `history/tasks/prod-ui-public-access-refresh-3c5da343-task-2026-05-09.md`.
 
 - [x] `CURRENT-EXECUTABLE-V1-BOUNDARY-3C5DA343-2026-05-09 release: clarify current executable V1 boundary`
   - Scope: updated active continuation state so future work starts from the
@@ -3453,7 +3560,7 @@ Last updated: 2026-05-23
     blocks protected V1 work on authenticated/admin app access, live-import
     auth, rollback auth, production DB/Coolify context, and RC approval
     identities. Evidence:
-    `docs/planning/current-executable-v1-boundary-3c5da343-task-2026-05-09.md`.
+    `history/tasks/current-executable-v1-boundary-3c5da343-task-2026-05-09.md`.
 
 - [x] `V1-PROTECTED-OPERATOR-HANDOFF-3C5DA343-2026-05-09 release: publish protected operator handoff`
   - Scope: published a concise no-secret operator handoff for remaining V1
@@ -3461,8 +3568,8 @@ Last updated: 2026-05-23
     The handoff lists required protected input names, command order,
     acceptance criteria, and evidence that must not be accepted as protected
     proof. Evidence:
-    `docs/planning/v1-protected-operator-handoff-task-2026-05-09.md` and
-    `docs/operations/v1-protected-operator-handoff-3c5da343-2026-05-09.md`.
+    `history/audits/v1-protected-operator-handoff-task-2026-05-09.md` and
+    `history/audits/v1-protected-operator-handoff-3c5da343-2026-05-09.md`.
 
 - [x] `DEPLOY-FRESHNESS-4EE1672E-2026-05-09 release: verify docs/evidence handoff batch deployment`
   - Scope: pushed the accumulated docs/evidence handoff batch ending at
@@ -3470,8 +3577,8 @@ Last updated: 2026-05-23
     build-info reached that SHA, ran public API/Web smoke with `--no-workers`,
     and refreshed the no-secret final V1 preflight. Build-info and public
     smoke pass; protected V1 evidence remains blocked. Evidence:
-    `docs/planning/deploy-freshness-4ee1672e-task-2026-05-09.md` and
-    `docs/operations/deploy-freshness-4ee1672e-2026-05-09.md`.
+    `history/tasks/deploy-freshness-4ee1672e-task-2026-05-09.md` and
+    `history/plans/deploy-freshness-4ee1672e-2026-05-09.md`.
 
 - [x] `PROD-UI-PUBLIC-ACCESS-REFRESH-4EE1672E-2026-05-09 qa: refresh public production UI access evidence for docs/evidence handoff batch`
   - Scope: refreshed the public/unauthenticated production access evidence for
@@ -3480,7 +3587,7 @@ Last updated: 2026-05-23
     200, and unauthenticated dashboard/admin routes redirect to `/auth/login`.
     The full module clickthrough remains blocked on authenticated/admin
     production app access. Evidence:
-    `docs/planning/prod-ui-public-access-refresh-4ee1672e-task-2026-05-09.md`.
+    `history/tasks/prod-ui-public-access-refresh-4ee1672e-task-2026-05-09.md`.
 
 - [x] `V1-NEXT-STEPS-PROTECTED-SHA-SYNC-2026-05-09 release: align protected continuation backlog with deployed SHA`
   - Scope: corrected active continuation backlog instructions so
@@ -3488,21 +3595,21 @@ Last updated: 2026-05-23
     `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f` unless a newer intended
     candidate is deployed and proven by production build-info. Protected
     evidence remains blocked on auth/operator inputs. Evidence:
-    `docs/planning/v1-next-steps-protected-sha-sync-task-2026-05-09.md`.
+    `history/tasks/v1-next-steps-protected-sha-sync-task-2026-05-09.md`.
 
 - [x] `CURRENT-FOCUS-4EE1672E-SYNC-2026-05-09 release: align active focus with current production SHA`
   - Scope: updated the first continuation view in
     `.agents/state/current-focus.md` to use current production
     `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, current public/no-secret
     evidence, and the protected preflight command for that SHA. Evidence:
-    `docs/planning/current-focus-4ee1672e-sync-task-2026-05-09.md`.
+    `history/tasks/current-focus-4ee1672e-sync-task-2026-05-09.md`.
 
 - [x] `MVP-EXECUTION-PLAN-4EE1672E-PROGRESS-SYNC-2026-05-09 docs(planning): prepend current production progress`
   - Scope: prepended the latest `4ee1672e` continuation and protected
     readiness sync entries to the SYSFINAL progress log in
     `docs/planning/mvp-execution-plan.md`, preserving older history below.
     Evidence:
-    `docs/planning/mvp-execution-plan-4ee1672e-progress-sync-task-2026-05-09.md`.
+    `history/tasks/mvp-execution-plan-4ee1672e-progress-sync-task-2026-05-09.md`.
 
 - [x] `SYSTEM-HEALTH-4EE1672E-TOPLINE-SYNC-2026-05-09 release: sync system health topline`
   - Scope: prepended the current production health snapshot in
@@ -3510,29 +3617,29 @@ Last updated: 2026-05-23
     `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, public/no-secret PASS
     evidence, `LIVEIMPORT-03` target sync, and protected V1 blockers before
     historical rollout notes. Evidence:
-    `docs/planning/system-health-4ee1672e-topline-sync-task-2026-05-09.md`.
+    `history/evidence/system-health-4ee1672e-topline-sync-task-2026-05-09.md`.
 
 - [x] `DEPLOY-FRESHNESS-55469CDC-2026-05-09 release: verify source-of-truth sync batch deployment`
   - Scope: pushed the 10-commit source-of-truth synchronization batch ending
     at `55469cdc2ad888b822c8cdbd86660c4ed5166e1c`, verified production Web
     build-info reached that SHA, ran public API/Web smoke with `--no-workers`,
     and refreshed no-secret final V1 preflight for that SHA. Evidence:
-    `docs/planning/deploy-freshness-55469cdc-task-2026-05-09.md` and
-    `docs/operations/deploy-freshness-55469cdc-2026-05-09.md`.
+    `history/tasks/deploy-freshness-55469cdc-task-2026-05-09.md` and
+    `history/plans/deploy-freshness-55469cdc-2026-05-09.md`.
 
 - [x] `V1-PROTECTED-OPERATOR-DOCS-55469CDC-SYNC-2026-05-09 release: retarget protected operator docs`
   - Scope: retargeted active protected-access readiness, production
     activation, activation audit, and operator handoff docs to current
     production build-info `55469cdc2ad888b822c8cdbd86660c4ed5166e1c` without
     closing protected V1 evidence. Evidence:
-    `docs/planning/v1-protected-operator-docs-55469cdc-sync-task-2026-05-09.md`.
+    `history/tasks/v1-protected-operator-docs-55469cdc-sync-task-2026-05-09.md`.
 
 - [x] `MVP-EXECUTION-PLAN-55469CDC-PROGRESS-SYNC-2026-05-09 docs(planning): prepend current production progress`
   - Scope: prepended current `55469cdc` deploy freshness and protected
     operator-doc sync entries to the SYSFINAL progress log in
     `docs/planning/mvp-execution-plan.md`, preserving older history below.
     Evidence:
-    `docs/planning/mvp-execution-plan-55469cdc-progress-sync-task-2026-05-09.md`.
+    `history/tasks/mvp-execution-plan-55469cdc-progress-sync-task-2026-05-09.md`.
 
 - [x] `PROD-UI-PUBLIC-ACCESS-REFRESH-55469CDC-2026-05-09 qa: refresh public production UI access evidence`
   - Scope: refreshed public/unauthenticated production access evidence for
@@ -3541,7 +3648,7 @@ Last updated: 2026-05-23
     200, and unauthenticated dashboard/admin routes redirect to `/auth/login`.
     The full module clickthrough remains blocked on authenticated/admin
     production app access. Evidence:
-    `docs/planning/prod-ui-public-access-refresh-55469cdc-task-2026-05-09.md`.
+    `history/tasks/prod-ui-public-access-refresh-55469cdc-task-2026-05-09.md`.
 
 - [x] `UX-UI-MEMORY-AUTONOMY-2026-05-08 design: make UX/UI feedback memory autonomous`
   - Scope: extended the existing user feedback loop, design memory, and screen
@@ -3549,7 +3656,7 @@ Last updated: 2026-05-23
     in the right source of truth, reviews memory before implementation, and
     asks the user only when feedback conflicts or changes global visual truth.
     Evidence:
-    `docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
+    `history/tasks/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 - [x] `EXCHANGE2-LIVE-READINESS-PLAN-2026-05-08 planning: stage second exchange adapter after V1 live readiness`
   - Scope: published and reconciled the safe staged delivery plan for adding
@@ -3559,14 +3666,14 @@ Last updated: 2026-05-23
     Web/API gates. Paper pricing, authenticated reads, live submit, and cancel
     remain unsupported until exact operation support and evidence exist.
     Evidence:
-    `docs/planning/second-exchange-live-readiness-plan-2026-05-08.md`.
+    `history/evidence/second-exchange-live-readiness-plan-2026-05-08.md`.
 
 - [x] `EXCHANGE2-20 planning: reconcile Gate.io second-exchange plan`
   - Scope: updated second-exchange planning/status truth after the deployed
     Gate.io foundation so future iterations do not reopen completed planning
     or infer unsupported paper/live/auth capabilities from public market-data
     support. Evidence:
-    `docs/planning/exchange2-20-plan-reconciliation-task-2026-05-09.md`.
+    `history/tasks/exchange2-20-plan-reconciliation-task-2026-05-09.md`.
 
 - [x] `EXCHANGE2-01 chore(exchange): register GATEIO as fail-closed placeholder`
   - Scope: add `GATEIO` to the Prisma/shared exchange catalogs and exact
@@ -3574,28 +3681,28 @@ Last updated: 2026-05-23
     This makes Gate.io a recognized but unsupported exchange until each adapter
     operation is implemented and verified through the approved exchange module
     boundaries. Evidence:
-    `docs/planning/exchange2-01-gateio-fail-closed-placeholder-task-2026-05-08.md`.
+    `history/tasks/exchange2-01-gateio-fail-closed-placeholder-task-2026-05-08.md`.
 
 - [x] `EXCHANGE2-02 feat(exchange): enable Gate.io public market catalog`
   - Scope: enable only Gate.io `MARKET_CATALOG` via the existing exchange
     adapter registry/public read/catalog services, with no authenticated read
     or live execution capability. Gate.io public adapter failures must fail
     closed rather than returning sample markets. Evidence:
-    `docs/planning/exchange2-02-gateio-public-market-catalog-task-2026-05-08.md`.
+    `history/tasks/exchange2-02-gateio-public-market-catalog-task-2026-05-08.md`.
 
 - [x] `EXCHANGE2-03 runtime: generalize market-event exchange boundary`
   - Scope: widen canonical runtime market events to carry registered exchanges
     so a future Gate.io market-data adapter can publish ticker/candle events
     through the existing runtime router without pretending to be Binance.
     Gate.io paper/live/authenticated capabilities remain disabled. Evidence:
-    `docs/planning/exchange2-03-runtime-market-event-exchange-boundary-task-2026-05-08.md`.
+    `history/tasks/exchange2-03-runtime-market-event-exchange-boundary-task-2026-05-08.md`.
 
 - [x] `EXCHANGE2-04 feat(exchange): add Gate.io public ticker/candle reader`
   - Scope: add exchange-module public ticker and candle reads through the
     existing CCXT adapter registry, including Gate.io `FUTURES -> swap`
     mapping. Gate.io paper/live/authenticated capabilities remain disabled.
     Evidence:
-    `docs/planning/exchange2-04-gateio-public-market-data-reader-task-2026-05-08.md`.
+    `history/tasks/exchange2-04-gateio-public-market-data-reader-task-2026-05-08.md`.
 
 - [x] `EXCHANGE2-05 feat(market-stream): publish Gate.io public data as canonical events`
   - Scope: add an opt-in `MARKET_STREAM_EXCHANGE=GATEIO` market-stream
@@ -3605,7 +3712,7 @@ Last updated: 2026-05-23
     remains the default path, and Gate.io paper/live/authenticated capabilities
     remain disabled.
     Evidence:
-    `docs/planning/exchange2-05-gateio-market-stream-polling-task-2026-05-08.md`.
+    `history/tasks/exchange2-05-gateio-market-stream-polling-task-2026-05-08.md`.
 
 - [x] `EXCHANGE2-06 test(runtime): lock Gate.io event consumption context`
   - Scope: add runtime regressions proving Gate.io ticker events and
@@ -3613,7 +3720,7 @@ Last updated: 2026-05-23
     market-type context for runtime automation, while Gate.io
     `PAPER_PRICING_FEED` remains disabled.
     Evidence:
-    `docs/planning/exchange2-06-gateio-runtime-consumption-regression-task-2026-05-08.md`.
+    `history/tasks/exchange2-06-gateio-runtime-consumption-regression-task-2026-05-08.md`.
 
 - [x] `EXCHANGE2-07 test(market-stream): lock Gate.io polling source to fanout`
   - Scope: add a mocked Redis regression proving the Gate.io polling worker
@@ -3622,7 +3729,7 @@ Last updated: 2026-05-23
     context. Gate.io `PAPER_PRICING_FEED`, authenticated reads, LIVE submit,
     and cancel remain disabled.
     Evidence:
-    `docs/planning/exchange2-07-gateio-market-stream-fanout-regression-task-2026-05-08.md`.
+    `history/tasks/exchange2-07-gateio-market-stream-fanout-regression-task-2026-05-08.md`.
 
 - [x] `EXCHANGE2-08 qa(exchange): capture Gate.io public market-data smoke`
   - Scope: captured a real public read-only Gate.io adapter smoke through the
@@ -3631,7 +3738,7 @@ Last updated: 2026-05-23
     exchange writes, or live orders. Gate.io paper/live/authenticated
     capabilities remain disabled.
     Evidence:
-    `docs/planning/exchange2-08-gateio-public-market-data-smoke-task-2026-05-08.md`.
+    `history/evidence/exchange2-08-gateio-public-market-data-smoke-task-2026-05-08.md`.
 
 - [x] `EXCHANGE2-09 refactor(market-stream): lock Gate.io worker source selection`
   - Scope: extracted market-stream worker env parsing into
@@ -3641,7 +3748,7 @@ Last updated: 2026-05-23
     back to safe defaults. Gate.io paper/live/authenticated capabilities remain
     disabled.
     Evidence:
-    `docs/planning/exchange2-09-gateio-market-stream-worker-config-task-2026-05-08.md`.
+    `history/tasks/exchange2-09-gateio-market-stream-worker-config-task-2026-05-08.md`.
 
 - [x] `EXCHANGE2-10 test(web): lock Gate.io capability gating`
   - Scope: added focused Web coverage for `supportsExchangeCapability` so UI
@@ -3649,14 +3756,14 @@ Last updated: 2026-05-23
     pricing, live execution, and API-key probe remain blocked. Unknown/nullish
     exchange values fail closed.
     Evidence:
-    `docs/planning/exchange2-10-gateio-web-capability-gating-task-2026-05-08.md`.
+    `history/tasks/exchange2-10-gateio-web-capability-gating-task-2026-05-08.md`.
 
 - [x] `EXCHANGE2-11 test(web): lock Gate.io wallet and bot form gating`
   - Scope: added product-facing Web form regressions so Gate.io PAPER wallet
     submit remains blocked while `PAPER_PRICING_FEED` is unsupported, and
     Gate.io bot activation cannot be toggled active from the create/edit form.
     Evidence:
-    `docs/planning/exchange2-11-gateio-wallet-bot-ui-gating-task-2026-05-08.md`.
+    `history/tasks/exchange2-11-gateio-wallet-bot-ui-gating-task-2026-05-08.md`.
 
 - [x] `EXCHANGE2-12 test(api): lock Gate.io wallet create fail closed`
   - Scope: added DB-backed API coverage proving direct Gate.io PAPER wallet
@@ -3664,14 +3771,14 @@ Last updated: 2026-05-23
     `PAPER_PRICING_FEED` and leaves no wallet persisted for the user. Gate.io
     paper/live/authenticated capabilities remain disabled.
     Evidence:
-    `docs/planning/exchange2-12-gateio-api-wallet-fail-closed-task-2026-05-08.md`.
+    `history/tasks/exchange2-12-gateio-api-wallet-fail-closed-task-2026-05-08.md`.
 
 - [x] `EXCHANGE2-13 test(api): lock Gate.io wallet update fail closed`
   - Scope: added wallet CRUD coverage proving an existing Binance PAPER wallet
     cannot be updated to `GATEIO` while `PAPER_PRICING_FEED` is unsupported,
     and the persisted wallet remains unchanged after rejection.
     Evidence:
-    `docs/planning/exchange2-13-gateio-api-wallet-update-fail-closed-task-2026-05-08.md`.
+    `history/tasks/exchange2-13-gateio-api-wallet-update-fail-closed-task-2026-05-08.md`.
 
 - [x] `EXCHANGE2-14 test(api): lock Gate.io stored API-key probe fail closed`
   - Scope: added API-key coverage proving a stored Gate.io placeholder key can
@@ -3679,7 +3786,7 @@ Last updated: 2026-05-23
     `EXCHANGE_NOT_IMPLEMENTED` for `API_KEY_PROBE` and writes no misleading
     connection-test audit log.
     Evidence:
-    `docs/planning/exchange2-14-gateio-stored-api-key-probe-fail-closed-task-2026-05-08.md`.
+    `history/tasks/exchange2-14-gateio-stored-api-key-probe-fail-closed-task-2026-05-08.md`.
 
 - [x] `EXCHANGE2-15 test(api): lock Gate.io wallet balance preview fail closed`
   - Scope: added wallet coverage proving a stored Gate.io placeholder API key
@@ -3687,7 +3794,7 @@ Last updated: 2026-05-23
     authenticated reads are unsupported, and the key is not marked used after
     rejection.
     Evidence:
-    `docs/planning/exchange2-15-gateio-wallet-balance-preview-fail-closed-task-2026-05-08.md`.
+    `history/tasks/exchange2-15-gateio-wallet-balance-preview-fail-closed-task-2026-05-08.md`.
 
 - [x] `EXCHANGE2-16 fix(api): lock Gate.io positions snapshot explicit key fail closed`
   - Scope: enforced the existing positions snapshot capability guard before
@@ -3696,7 +3803,7 @@ Last updated: 2026-05-23
     proving an explicit Gate.io `apiKeyId` is rejected while `lastUsed` stays
     unchanged.
     Evidence:
-    `docs/planning/exchange2-16-gateio-positions-snapshot-fail-closed-task-2026-05-08.md`.
+    `history/tasks/exchange2-16-gateio-positions-snapshot-fail-closed-task-2026-05-08.md`.
 
 - [x] `EXCHANGE2-17 fix(api): lock Gate.io reconciliation snapshots fail closed`
   - Scope: enforced the existing adapter capability guard before open-orders
@@ -3704,14 +3811,14 @@ Last updated: 2026-05-23
     capability errors, and added DB-backed coverage proving Gate.io keys stay
     unused while those authenticated-read operations are disabled.
     Evidence:
-    `docs/planning/exchange2-17-gateio-reconciliation-snapshots-fail-closed-task-2026-05-08.md`.
+    `history/tasks/exchange2-17-gateio-reconciliation-snapshots-fail-closed-task-2026-05-08.md`.
 
 - [x] `EXCHANGE2-18 test(api): lock Gate.io live submit boundary`
   - Scope: added a focused exchange boundary regression proving Gate.io
     `LIVE_ORDER_SUBMIT` fails closed before credentials, connectors, pretrade
     guards, leverage convergence, or live order adapter creation are reached.
     Evidence:
-    `docs/planning/exchange2-18-gateio-live-submit-boundary-task-2026-05-08.md`.
+    `history/tasks/exchange2-18-gateio-live-submit-boundary-task-2026-05-08.md`.
 
 - [x] `EXCHANGE2-19 test(api): lock exchange-backed cancel route fail closed`
   - Scope: added route-level API coverage proving persisted exchange-backed
@@ -3720,14 +3827,14 @@ Last updated: 2026-05-23
     with no cancellation audit log. Gate.io and all other exchange-side cancel
     capabilities remain disabled until a canonical adapter operation exists.
     Evidence:
-    `docs/planning/exchange2-19-exchange-backed-cancel-route-fail-closed-task-2026-05-08.md`.
+    `history/tasks/exchange2-19-exchange-backed-cancel-route-fail-closed-task-2026-05-08.md`.
 
 - [x] `DEPLOY-FRESHNESS-90CD07D6-2026-05-08 release: verify Gate.io fail-closed batch deployment`
   - Scope: verified production Web build-info for pushed `main`
     `90cd07d602f0a31f315719b8a5cd5be3fd112313` and reran public API/Web smoke
     successfully. Evidence:
-    `docs/planning/deploy-freshness-90cd07d6-task-2026-05-08.md` and
-    `docs/operations/deploy-freshness-90cd07d6-2026-05-08.md`.
+    `history/tasks/deploy-freshness-90cd07d6-task-2026-05-08.md` and
+    `history/plans/deploy-freshness-90cd07d6-2026-05-08.md`.
 
 - [x] `V1-FINAL-PREFLIGHT-NODE-DEPLOY-CHECKS-2026-05-08 fix(ops): remove pnpm dependency from preflight deploy checks`
   - Scope: updated final V1 preflight to call bundled Node scripts directly for
@@ -3735,7 +3842,7 @@ Last updated: 2026-05-23
     hints, and generated a no-secret preflight report for deployed `90cd07d6`
     showing build-info/public smoke PASS with protected evidence blockers still
     fail-closed. Evidence:
-    `docs/planning/v1-final-preflight-node-deploy-checks-task-2026-05-08.md`.
+    `history/releases/v1-final-preflight-node-deploy-checks-task-2026-05-08.md`.
 
 - [x] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit`
   - Scope: execute a production-wide UI audit across canonical public,
@@ -3748,7 +3855,7 @@ Last updated: 2026-05-23
     data, and explicit operator approval for live-money or destructive actions
     are available.
     Evidence plan:
-    `docs/planning/prod-ui-module-clickthrough-audit-plan-2026-05-08.md`.
+    `history/audits/prod-ui-module-clickthrough-audit-plan-2026-05-08.md`.
   - 2026-05-12 supersession: closed as superseded by the current V1
     release-gate UI evidence lane: `ops:ui:prod-clickthrough` with approved
     `PROD_UI_AUDIT_*` dashboard/admin auth. This is not accepted UI proof; the
@@ -3760,7 +3867,7 @@ Last updated: 2026-05-23
     queue/context docs with deployed build-info `55469cdc`, removing stale
     deploy-blocker language while keeping the authenticated/admin blocker
     explicit. Evidence:
-    `docs/planning/prod-ui-audit-current-blocker-sync-55469cdc-task-2026-05-09.md`.
+    `history/audits/prod-ui-audit-current-blocker-sync-55469cdc-task-2026-05-09.md`.
 
 - [x] `DEPLOY-FRESHNESS-6C54BB5D-2026-05-09 release: verify protected-backlog sync batch deployment`
   - Scope: pushed the six-commit protected-backlog/source-of-truth sync batch
@@ -3768,8 +3875,8 @@ Last updated: 2026-05-23
     Web build-info reached that SHA, ran public API/Web smoke with
     `--no-workers`, and refreshed no-secret final V1 preflight. Build-info and
     public smoke pass; protected V1 evidence remains blocked. Evidence:
-    `docs/planning/deploy-freshness-6c54bb5d-task-2026-05-09.md` and
-    `docs/operations/deploy-freshness-6c54bb5d-2026-05-09.md`.
+    `history/tasks/deploy-freshness-6c54bb5d-task-2026-05-09.md` and
+    `history/plans/deploy-freshness-6c54bb5d-2026-05-09.md`.
 
 - [x] `PROD-UI-PUBLIC-ACCESS-REFRESH-6C54BB5D-2026-05-09 qa: refresh public production UI access evidence`
   - Scope: refreshed public/unauthenticated production access evidence for
@@ -3778,14 +3885,14 @@ Last updated: 2026-05-23
     200, and unauthenticated dashboard/admin routes redirect to `/auth/login`.
     The full module clickthrough remains blocked on authenticated/admin
     production app access. Evidence:
-    `docs/planning/prod-ui-public-access-refresh-6c54bb5d-task-2026-05-09.md`.
+    `history/tasks/prod-ui-public-access-refresh-6c54bb5d-task-2026-05-09.md`.
 
 - [x] `OPERATOR-PROTECTED-PACK-6C54BB5D-SYNC-2026-05-09 release: retarget protected operator pack`
   - Scope: retargeted active protected command examples, activation plan,
     activation evidence audit, and known-issue state to deployed
     `6c54bb5d02e433af2e6ba1c1d3ed76c685ff6623` without closing protected
     evidence. Evidence:
-    `docs/planning/operator-protected-pack-6c54bb5d-sync-task-2026-05-09.md`.
+    `history/tasks/operator-protected-pack-6c54bb5d-sync-task-2026-05-09.md`.
 
 - [x] `DEPLOY-FRESHNESS-C50E1E7C-2026-05-09 release: verify protected operator pack deployment`
   - Scope: verified the protected operator pack/source-of-truth sync batch
@@ -3793,8 +3900,8 @@ Last updated: 2026-05-23
     `c50e1e7cf1e37d9c799031cacbb30a834f57e81d`, ran public API/Web smoke with
     `--no-workers`, and refreshed no-secret final V1 preflight. Build-info and
     public smoke pass; protected V1 evidence remains blocked. Evidence:
-    `docs/planning/deploy-freshness-c50e1e7c-task-2026-05-09.md` and
-    `docs/operations/deploy-freshness-c50e1e7c-2026-05-09.md`.
+    `history/tasks/deploy-freshness-c50e1e7c-task-2026-05-09.md` and
+    `history/plans/deploy-freshness-c50e1e7c-2026-05-09.md`.
 
 - [x] `PROD-UI-PUBLIC-ACCESS-REFRESH-C50E1E7C-2026-05-09 qa: refresh public production UI access evidence`
   - Scope: refreshed public/unauthenticated production access evidence for
@@ -3803,7 +3910,7 @@ Last updated: 2026-05-23
     200, and unauthenticated dashboard/admin routes redirect to `/auth/login`.
     The full module clickthrough remains blocked on authenticated/admin
     production app access. Evidence:
-    `docs/planning/prod-ui-public-access-refresh-c50e1e7c-task-2026-05-09.md`.
+    `history/tasks/prod-ui-public-access-refresh-c50e1e7c-task-2026-05-09.md`.
 
 - [x] `DEPLOY-LAG-1F1D9C12-2026-05-09 release: wait for pushed evidence batch deployment`
   - Scope: pushed the two-commit docs/evidence batch ending at
@@ -3817,8 +3924,8 @@ Last updated: 2026-05-23
     `010b4f8b6abfaf4c24d26550eb4761215d119f21`, so this is no longer an active
     deploy-freshness blocker.
     Evidence:
-    `docs/planning/deploy-lag-1f1d9c12-task-2026-05-09.md` and
-    `docs/operations/deploy-lag-1f1d9c12-2026-05-09.md`.
+    `history/tasks/deploy-lag-1f1d9c12-task-2026-05-09.md` and
+    `history/plans/deploy-lag-1f1d9c12-2026-05-09.md`.
 
 - [x] `PROD-UI-PUBLIC-ACCESS-CLICKTHROUGH-2026-05-08 qa: verify production public access and auth gates`
   - Scope: captured the public/unauthenticated portion of the production UI
@@ -3828,7 +3935,7 @@ Last updated: 2026-05-23
     remains stale at `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d`, so the full
     clickthrough still requires latest deploy plus authenticated/admin access.
     Evidence:
-    `docs/planning/prod-ui-public-access-clickthrough-task-2026-05-08.md`.
+    `history/tasks/prod-ui-public-access-clickthrough-task-2026-05-08.md`.
 
 - [x] `PROD-UI-PUBLIC-ACCESS-REFRESH-90CD07D6-2026-05-09 qa: refresh public production UI access evidence`
   - Scope: refreshed the public/unauthenticated production access evidence for
@@ -3837,7 +3944,7 @@ Last updated: 2026-05-23
     200, and unauthenticated dashboard/admin routes redirect to `/auth/login`.
     The full module clickthrough remains blocked on authenticated/admin
     production app access. Evidence:
-    `docs/planning/prod-ui-public-access-refresh-90cd07d6-task-2026-05-09.md`.
+    `history/tasks/prod-ui-public-access-refresh-90cd07d6-task-2026-05-09.md`.
 
 - [x] `V1-FINAL-PREFLIGHT-REFRESH-90CD07D6-2026-05-09 release: refresh current no-secret V1 blocker report`
   - Scope: generated current no-secret final preflight reports for deployed
@@ -3845,7 +3952,7 @@ Last updated: 2026-05-23
     smoke passed, while release status remains `BLOCKED` on protected auth,
     production DB restore context, missing `LIVEIMPORT-03`, and stale
     2026-05-08 release evidence for the 2026-05-09 date. Evidence:
-    `docs/planning/v1-final-preflight-refresh-90cd07d6-task-2026-05-09.md`.
+    `history/releases/v1-final-preflight-refresh-90cd07d6-task-2026-05-09.md`.
 
 - [x] `V1-PROD-ACTIVATION-REFRESH-2026-05-09 release: refresh production activation plan and audit`
   - Scope: created fresh 2026-05-09 production activation plan and activation
@@ -3853,28 +3960,28 @@ Last updated: 2026-05-23
     those operator-facing artifacts to current production build-info
     `4ee1672e7a3ac6d9b549b4d461120afd7f89d68f`, while protected release
     blockers remain explicit. Evidence:
-    `docs/planning/v1-production-activation-refresh-2026-05-09-task.md`.
+    `history/tasks/v1-production-activation-refresh-2026-05-09-task.md`.
 
 - [x] `V1-RC-BLOCKED-REFRESH-2026-05-09 release: refresh RC evidence as current blocked`
   - Scope: added explicit RC evidence date support, regenerated RC external
     gates status, sign-off, and checklist for 2026-05-09 as blocked/open
     evidence, and reran the no-secret final preflight. RC blockers are now
     fresh `failed` instead of stale. Evidence:
-    `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-09.md`.
+    `history/releases/v1-rc-blocked-evidence-refresh-task-2026-05-09.md`.
 
 - [x] `V1-ROLLBACK-PROOF-DATE-OVERRIDE-2026-05-09 fix(ops): date rollback proof evidence`
   - Scope: added explicit evidence-date support to the rollback proof
     generator so future authenticated operator runs can create artifacts for
     the intended release date. No production rollback proof artifact was
     accepted in this task. Evidence:
-    `docs/planning/v1-rollback-proof-date-override-task-2026-05-09.md`.
+    `history/evidence/v1-rollback-proof-date-override-task-2026-05-09.md`.
 
 - [x] `V1-RESTORE-DRILL-DATE-OVERRIDE-2026-05-09 fix(ops): date restore drill evidence`
   - Scope: added explicit evidence-date support to the restore drill evidence
     wrapper so future production DB/Coolify runs can create artifacts for the
     intended release date. No production restore drill artifact was accepted in
     this task. Evidence:
-    `docs/planning/v1-restore-drill-date-override-task-2026-05-09.md`.
+    `history/evidence/v1-restore-drill-date-override-task-2026-05-09.md`.
 
 - [x] `V1-FINAL-BLOCKER-PACK-DATE-OVERRIDES-2026-05-09 release: sync final blocker pack date overrides`
   - Scope: synchronized the final V1 blocker execution pack with existing
@@ -3882,37 +3989,37 @@ Last updated: 2026-05-23
     and uses it for supported preflight, restore drill, rollback proof, RC
     evidence, and final gate commands. No production evidence was generated or
     accepted in this task. Evidence:
-    `docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.
+    `history/tasks/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.
 
 - [x] `DEPLOY-FRESHNESS-4792FBCA-2026-05-09 release: verify current V1 evidence batch deployment`
   - Scope: pushed the current V1 release-evidence batch, verified production
     Web build-info for `4792fbca9ab3ca44d08c312f219f70d648707886`, and ran
     safe public API/Web smoke. Protected runtime/readback, restore, rollback,
     RC approval, and authenticated UI evidence remain open. Evidence:
-    `docs/planning/deploy-freshness-4792fbca-task-2026-05-09.md` and
-    `docs/operations/deploy-freshness-4792fbca-2026-05-09.md`.
+    `history/tasks/deploy-freshness-4792fbca-task-2026-05-09.md` and
+    `history/plans/deploy-freshness-4792fbca-2026-05-09.md`.
 
 - [x] `V1-FINAL-PREFLIGHT-4792FBCA-2026-05-09 release: refresh final preflight for deployed batch`
   - Scope: generated no-secret final V1 preflight artifacts for deployed
     `4792fbca`. Build-info and public smoke pass; protected release readiness
     remains blocked on auth, DB/Coolify context, RC approval, `LIVEIMPORT-03`,
     and current restore/rollback evidence. Evidence:
-    `docs/planning/v1-final-preflight-4792fbca-task-2026-05-09.md` and
-    `docs/operations/v1-final-preflight-4792fbca-2026-05-09.md`.
+    `history/releases/v1-final-preflight-4792fbca-task-2026-05-09.md` and
+    `history/releases/v1-final-preflight-4792fbca-2026-05-09.md`.
 
 - [x] `V1-FINAL-BLOCKER-PACK-CANDIDATE-SHA-SYNC-2026-05-09 release: sync final blocker pack candidate SHA`
   - Scope: updated the final blocker execution pack to target the verified
     deployed candidate SHA `4792fbca9ab3ca44d08c312f219f70d648707886` for
     protected evidence, while warning that local evidence-only `HEAD` must not
     be used until build-info proves deployment. Evidence:
-    `docs/planning/v1-final-blocker-pack-candidate-sha-sync-task-2026-05-09.md`.
+    `history/tasks/v1-final-blocker-pack-candidate-sha-sync-task-2026-05-09.md`.
 
 - [x] `V1-CONTINUATION-EXPECTED-SHA-SNIPPETS-2026-05-09 release: align continuation expected-sha snippets`
   - Scope: updated active continuation commands in `.agents/state` so future
     runs use the verified deployed candidate
     `4792fbca9ab3ca44d08c312f219f70d648707886` and date-aware output paths
     for protected evidence examples, not local evidence-only `HEAD`. Evidence:
-    `docs/planning/v1-continuation-expected-sha-snippets-task-2026-05-09.md`.
+    `history/tasks/v1-continuation-expected-sha-snippets-task-2026-05-09.md`.
 
 - [x] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`
   - Scope: current shell lacks required protected env names for live-import
@@ -3923,15 +4030,15 @@ Last updated: 2026-05-23
     authenticated UI clickthrough remain blocked until operator inputs are
     supplied. Production DB restore context is currently satisfied by fresh
     evidence. Evidence:
-    `docs/planning/v1-protected-access-readiness-task-2026-05-09.md` and
-    `docs/operations/v1-protected-access-readiness-2026-05-09.md`. Current
+    `history/evidence/v1-protected-access-readiness-task-2026-05-09.md` and
+    `history/evidence/v1-protected-access-readiness-2026-05-09.md`. Current
     operator path:
-    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
+    `history/plans/v1-final-blocker-execution-pack-2026-05-07.md`.
   - 2026-05-12 supersession: this historical unchecked readiness item is
     closed as superseded by
     `V1-PROTECTED-INPUT-READINESS-CURRENT-SWEEP-00169D7F-2026-05-12` and the
     current operator packet
-    `docs/operations/v1-operator-unblock-packet-00169d7f-2026-05-12.md`.
+    `history/releases/v1-operator-unblock-packet-00169d7f-2026-05-12.md`.
     Protected evidence remains blocked; use the current packet instead of this
     older queue marker.
 
@@ -3940,7 +4047,7 @@ Last updated: 2026-05-23
     build-info `55469cdc2ad888b822c8cdbd86660c4ed5166e1c` without closing
     protected evidence. `V1-PROTECTED-ACCESS-READINESS`, `LIVEIMPORT-03`, and
     `BOTMULTI-09` remain blocked on authenticated/operator evidence. Evidence:
-    `docs/planning/open-protected-backlog-55469cdc-sync-task-2026-05-09.md`.
+    `history/tasks/open-protected-backlog-55469cdc-sync-task-2026-05-09.md`.
 
 - [x] `V1-CURRENT-PREFLIGHT-STATUS-SNAPSHOT-2026-05-08 release: publish current no-secret V1 preflight snapshot`
   - Scope: generated and committed the current no-secret final V1 preflight
@@ -3949,9 +4056,9 @@ Last updated: 2026-05-23
     build-info PASS, public smoke PASS, production DB restore context
     SATISFIED, and current blockers limited to live-import auth/readback,
     rollback guard auth/proof, and RC Gate 4 approval evidence. Evidence:
-    `docs/operations/_artifacts-v1-final-preflight-current.json`,
-    `docs/operations/v1-final-preflight-current.md`, and
-    `docs/planning/v1-current-preflight-status-snapshot-task-2026-05-08.md`.
+    `history/artifacts/_artifacts-v1-final-preflight-current.json`,
+    `history/releases/v1-final-preflight-current.md`, and
+    `history/tasks/v1-current-preflight-status-snapshot-task-2026-05-08.md`.
 
 - [x] `V1-FINAL-BLOCKER-PACK-RESTORE-STATE-SYNC-2026-05-08 release: sync final blocker pack after restore evidence`
   - Scope: synchronized the active final blocker pack and continuation state
@@ -3960,7 +4067,7 @@ Last updated: 2026-05-23
     SATISFIED by fresh backup/restore drill evidence. Current V1 blockers are
     limited to live-import auth/readback, rollback guard auth/proof, and RC
     Gate 4 approval evidence. Evidence:
-    `docs/planning/v1-final-blocker-pack-restore-state-sync-task-2026-05-08.md`.
+    `history/tasks/v1-final-blocker-pack-restore-state-sync-task-2026-05-08.md`.
 
 - [x] `V1-PROTECTED-AUTH-CONTEXT-SWEEP-2026-05-08 release: classify protected auth context after restore drill`
   - Scope: inspected approved Coolify/API runtime context without persisting
@@ -3972,7 +4079,7 @@ Last updated: 2026-05-23
     stale env blocker. Current preflight still blocks on live-import auth,
     rollback auth, RC Gate 4 approval evidence, missing `LIVEIMPORT-03`, and
     failed rollback proof. Evidence:
-    `docs/planning/v1-protected-auth-context-sweep-task-2026-05-08.md`.
+    `history/tasks/v1-protected-auth-context-sweep-task-2026-05-08.md`.
 
 - [x] `V1-PROD-RESTORE-DRILL-COOLIFY-TERMINAL-2026-05-08 release: verify production restore drill execution path`
   - Scope: used approved Coolify terminal access for production Postgres
@@ -3984,7 +4091,7 @@ Last updated: 2026-05-23
     matching restore databases and no `/tmp/postgres_backup_*.dump` files.
     Final preflight now reports backup/restore drill evidence as fresh.
     Evidence:
-    `docs/planning/v1-prod-restore-drill-coolify-terminal-task-2026-05-08.md`.
+    `history/evidence/v1-prod-restore-drill-coolify-terminal-task-2026-05-08.md`.
 
 - [x] `V1-PROTECTED-EVIDENCE-COOLIFY-CONTEXT-2026-05-08 release: resolve protected V1 evidence context`
   - Scope: used the approved Coolify operator path after the latest `main`
@@ -3995,11 +4102,11 @@ Last updated: 2026-05-23
     container, so the existing Docker-based restore drill cannot honestly run
     as production evidence from this workstation. Generated no-secret
     protected-context preflight reports:
-    `docs/operations/_artifacts-v1-final-preflight-2026-05-08-protected-context.json`
+    `history/artifacts/_artifacts-v1-final-preflight-2026-05-08-protected-context.json`
     and
-    `docs/operations/v1-final-preflight-2026-05-08-protected-context.md`.
+    `history/releases/v1-final-preflight-2026-05-08-protected-context.md`.
     Evidence:
-    `docs/planning/v1-protected-evidence-coolify-context-task-2026-05-08.md`.
+    `history/evidence/v1-protected-evidence-coolify-context-task-2026-05-08.md`.
 
 - [x] `V1-FINAL-PREFLIGHT-MARKDOWN-REPORT-2026-05-08 release: add no-secret markdown report`
   - Scope: added optional `--markdown-output <path>` support to
@@ -4007,7 +4114,7 @@ Last updated: 2026-05-23
     same no-secret preflight report object as JSON and summarizes context,
     public checks, protected prerequisites, release evidence, blockers,
     blocker details, and next actions for operator/Web handoff. Evidence:
-    `docs/planning/v1-final-preflight-markdown-report-task-2026-05-08.md`.
+    `history/releases/v1-final-preflight-markdown-report-task-2026-05-08.md`.
 
 - [x] `V1-FINAL-PREFLIGHT-BLOCKER-DETAILS-2026-05-08 release: add structured blocker details`
   - Scope: added additive no-secret `blockerDetails` metadata to final V1
@@ -4015,7 +4122,7 @@ Last updated: 2026-05-23
     severity, protected-input requirement, final-evidence requirement,
     required capability tags, and remediation availability for later
     Web/operator status rendering without parsing blocker strings. Evidence:
-    `docs/planning/v1-final-preflight-blocker-details-task-2026-05-08.md`.
+    `history/releases/v1-final-preflight-blocker-details-task-2026-05-08.md`.
 
 - [x] `V1-FINAL-PREFLIGHT-REMEDIATION-HINTS-2026-05-08 release: add preflight next actions`
   - Scope: added no-secret remediation hints to final V1 preflight CLI/JSON
@@ -4024,7 +4131,7 @@ Last updated: 2026-05-23
     drill, rollback proof, RC sign-off, gate refresh, and checklist sync.
     Validation PASS: syntax, focused tests, preflight, guardrails, docs parity,
     public smoke, and diff check. Evidence:
-    `docs/planning/v1-final-preflight-remediation-hints-task-2026-05-08.md`.
+    `history/releases/v1-final-preflight-remediation-hints-task-2026-05-08.md`.
 
 - [x] `V1-FINAL-PREFLIGHT-PUBLIC-SMOKE-2026-05-08 release: include public smoke in preflight`
   - Scope: extended `ops:release:v1:preflight` with the existing public deploy
@@ -4034,7 +4141,7 @@ Last updated: 2026-05-23
     protected auth/DB/approval and evidence inputs. Validation PASS: syntax,
     focused tests, preflight, guardrails, docs parity, public smoke, and diff
     check. Evidence:
-    `docs/planning/v1-final-preflight-public-smoke-task-2026-05-08.md`.
+    `history/releases/v1-final-preflight-public-smoke-task-2026-05-08.md`.
 
 - [x] `V1-FINAL-PREFLIGHT-JSON-REPORT-2026-05-08 release: add machine-readable preflight report`
   - Scope: added optional `--json-output <path>` support to
@@ -4044,7 +4151,7 @@ Last updated: 2026-05-23
     and blockers, but it is not final release evidence and contains no secret
     values. Validation PASS: syntax, focused tests, local no-auth JSON output,
     guardrails, docs parity, public smoke, and diff check. Evidence:
-    `docs/planning/v1-final-preflight-json-report-task-2026-05-08.md`.
+    `history/releases/v1-final-preflight-json-report-task-2026-05-08.md`.
 
 - [x] `V1-FINAL-PREFLIGHT-REGRESSION-TESTS-2026-05-08 release: lock final V1 preflight checks`
   - Scope: added focused tests for `ops:release:v1:preflight` prerequisite
@@ -4054,7 +4161,7 @@ Last updated: 2026-05-23
     testable without network calls. Validation PASS: syntax, focused tests,
     help, no-auth fail-closed preflight, guardrails, docs parity, public smoke,
     and diff check. Evidence:
-    `docs/planning/v1-final-preflight-regression-tests-task-2026-05-08.md`.
+    `history/releases/v1-final-preflight-regression-tests-task-2026-05-08.md`.
 
 - [x] `V1-FINAL-PREFLIGHT-COMMAND-2026-05-08 release: add final V1 operator preflight`
   - Scope: added `pnpm run ops:release:v1:preflight`, a read-only command that
@@ -4064,7 +4171,7 @@ Last updated: 2026-05-23
     protected production evidence artifacts when auth/DB/approval inputs are
     missing. Validation PASS: syntax, help, no-auth fail-closed preflight,
     guardrails, docs parity, public smoke, and diff check. Evidence:
-    `docs/planning/v1-final-preflight-command-task-2026-05-08.md`.
+    `history/releases/v1-final-preflight-command-task-2026-05-08.md`.
 
 - [x] `V1-RELEASE-STATE-SHA-HANDOFF-2026-05-08 release: keep deploy SHA verification dynamic`
   - Scope: updated the active final blocker handoff and continuation state so
@@ -4075,7 +4182,7 @@ Last updated: 2026-05-23
     historical evidence, not the permanent target for future readback.
     Validation PASS: guardrails, docs parity, public smoke, and diff check.
     Evidence:
-    `docs/planning/v1-release-state-sha-handoff-task-2026-05-08.md`.
+    `history/audits/v1-release-state-sha-handoff-task-2026-05-08.md`.
 
 - [x] `V1-RELEASE-GATE-RC-APPROVAL-EVIDENCE-2026-05-08 release: require RC approval in V1 gate`
   - Scope: aligned `ops:release:v1:gate` with the final Gate 4 approval
@@ -4085,7 +4192,7 @@ Last updated: 2026-05-23
     checklist as `failed` while Gate 4 remains open/blocked. Validation PASS:
     release-gate tests, syntax checks, dry-run report generation, guardrails,
     docs parity, public smoke, and diff check. Evidence:
-    `docs/planning/v1-release-gate-rc-approval-evidence-task-2026-05-08.md`.
+    `history/releases/v1-release-gate-rc-approval-evidence-task-2026-05-08.md`.
 
 - [x] `V1-RELEASE-GATE-BUILD-INFO-FRESHNESS-2026-05-08 release: require deployed SHA in V1 gate`
   - Scope: added `--expected-sha` / `RELEASE_GATE_EXPECTED_SHA` to
@@ -4095,7 +4202,7 @@ Last updated: 2026-05-23
     the final release gate. Validation PASS: release-gate tests, missing
     web-base-url failure path, dry-run report generation, guardrails, docs
     parity, public smoke, and diff check. Evidence:
-    `docs/planning/v1-release-gate-build-info-freshness-task-2026-05-08.md`.
+    `history/releases/v1-release-gate-build-info-freshness-task-2026-05-08.md`.
 
 - [x] `V1-RELEASE-GATE-LIVEIMPORT-EVIDENCE-2026-05-08 release: require live-import readback in V1 gate`
   - Scope: aligned `ops:release:v1:gate` with the active `LIVEIMPORT-03`
@@ -4104,7 +4211,7 @@ Last updated: 2026-05-23
     `evidence:liveImportReadback:missing` until protected runtime readback is
     captured. Validation PASS: release-gate tests, syntax checks, dry-run
     report generation, guardrails, docs parity, and diff check. Evidence:
-    `docs/planning/v1-release-gate-liveimport-evidence-task-2026-05-08.md`.
+    `history/releases/v1-release-gate-liveimport-evidence-task-2026-05-08.md`.
 
 - [x] `V1-RELEASE-GATE-CURRENT-DRY-RUN-2026-05-08 release: refresh deployed-head V1 release gate dry-run`
   - Scope: generated a fresh production V1 release-gate dry-run on deployed
@@ -4112,7 +4219,7 @@ Last updated: 2026-05-23
     blocker pack/state to the new report. Readiness remains `not_ready`:
     activation and RC families are fresh; backup/restore drill and rollback
     proof are fresh but failed; dry-run mode blocks final approval. Evidence:
-    `docs/planning/v1-release-gate-current-dry-run-task-2026-05-08.md`.
+    `history/releases/v1-release-gate-current-dry-run-task-2026-05-08.md`.
 
 - [x] `V1-RC-SIGNOFF-PREFLIGHT-HARDENING-2026-05-08 release(ops): clarify Gate 4 sign-off blockers`
   - Scope: updated the existing RC sign-off builder output so blocked Gate 4
@@ -4121,7 +4228,7 @@ Last updated: 2026-05-23
     are required, while owner contact is reported as recommended handoff
     metadata. Validation PASS: script syntax, help path, blocked and approved
     temp-output paths, guardrails, docs parity, and diff check. Evidence:
-    `docs/planning/v1-rc-signoff-preflight-hardening-task-2026-05-08.md`.
+    `history/releases/v1-rc-signoff-preflight-hardening-task-2026-05-08.md`.
 
 - [x] `V1-RECOVERY-PROOF-PREFLIGHT-HARDENING-2026-05-08 release(ops): clarify recovery proof prerequisites`
   - Scope: clarified production restore drill and rollback proof prerequisite
@@ -4131,7 +4238,7 @@ Last updated: 2026-05-23
     runtime/API/DB/Web/exchange/deploy or live-money behavior changed.
     Validation PASS: script syntax, help paths, missing prod DB container
     fail-closed path, guardrails, docs parity, and diff check. Evidence:
-    `docs/planning/v1-recovery-proof-preflight-hardening-task-2026-05-08.md`.
+    `history/evidence/v1-recovery-proof-preflight-hardening-task-2026-05-08.md`.
 
 - [x] `V1-LIVEIMPORT-AUTH-PREFLIGHT-HARDENING-2026-05-08 release(ops): clarify live-import auth preflight`
   - Scope: updated the existing `ops:liveimport:readback` missing-auth
@@ -4141,7 +4248,7 @@ Last updated: 2026-05-23
     syntax check, help path, dry-run path, no-auth fail-closed path with no
     artifact creation, repository guardrails, docs parity, and diff check.
     Evidence:
-    `docs/planning/v1-liveimport-auth-preflight-hardening-task-2026-05-08.md`.
+    `history/tasks/v1-liveimport-auth-preflight-hardening-task-2026-05-08.md`.
 
 - [x] `V1-DEPLOY-FRESHNESS-STATE-SYNC-2026-05-08 docs(release): sync final blocker state to deployed SHA`
   - Scope: synchronized active V1 release state and the final blocker
@@ -4153,7 +4260,7 @@ Last updated: 2026-05-23
     authenticated `LIVEIMPORT-03`, production restore drill, rollback proof,
     and Gate 4 sign-off.
     Evidence:
-    `docs/planning/v1-deploy-freshness-state-sync-task-2026-05-08.md`.
+    `history/tasks/v1-deploy-freshness-state-sync-task-2026-05-08.md`.
 
 - [x] `V1-PAPER-LIVE-BACKEND-RUNTIME-PARITY-2026-05-08 fix(api-runtime): keep execution orchestration adapter-pure`
   - Scope: fixed the shared PAPER/LIVE `executionOrchestrator` close-settlement
@@ -4168,7 +4275,7 @@ Last updated: 2026-05-23
     DB-backed runs were blocked only by an unhealthy `desktop-linux` Docker
     context; the `default` Docker context and local Postgres/Redis ports were
     reachable, and sequential reruns passed. Evidence:
-    `docs/planning/v1-paper-live-backend-runtime-parity-task-2026-05-08.md`.
+    `history/audits/v1-paper-live-backend-runtime-parity-task-2026-05-08.md`.
     Candidate commit: current task commit.
 
 - [x] `V1-LIVE-IMPORT-STATUS-ISOLATION-2026-05-07 fix(api): scope live import diagnostics status`
@@ -4180,7 +4287,7 @@ Last updated: 2026-05-23
     regression failed as expected, post-fix focused e2e (`3/3`), import
     diagnostics/service pack (`35/35`), API typecheck, repository guardrails,
     docs parity, and diff check. Evidence:
-    `docs/planning/v1-live-import-status-isolation-task-2026-05-07.md`.
+    `history/tasks/v1-live-import-status-isolation-task-2026-05-07.md`.
 
 - [x] `V1-DASHBOARD-CRYPTO-ICONS-REGRESSION-2026-05-07 fix(web): restore dashboard crypto icon recovery`
   - Scope: fixed the shared `AssetSymbol` renderer so a previous image load
@@ -4190,14 +4297,14 @@ Last updated: 2026-05-23
     Validation PASS: pre-fix regression failed as expected, post-fix component
     test (`4/4`), dashboard widget pack (`25/25`), Web typecheck, Web lint,
     repository guardrails, docs parity, and diff check. Evidence:
-    `docs/planning/v1-dashboard-crypto-icons-regression-task-2026-05-07.md`.
+    `history/tasks/v1-dashboard-crypto-icons-regression-task-2026-05-07.md`.
 
 - [x] `V1-PROD-GITHUB-ACTIONS-REGRESSION-CLEANUP-2026-05-07 release: remove GitHub Actions production path`
   - Scope: removed the invalid GitHub Actions production promotion/rollback
     path and the local helper that dispatched it. Active deployment state now
     points to Coolify/manual operator deployment plus repository-local
     verification gates. Evidence:
-    `docs/planning/v1-prod-github-actions-regression-cleanup-task-2026-05-07.md`.
+    `history/tasks/v1-prod-github-actions-regression-cleanup-task-2026-05-07.md`.
 
 - [x] `V1-FINAL-BLOCKER-PREREQ-RECHECK-2026-05-07 release: recheck final blocker prerequisites`
   - Scope: rechecked the current shell against the final blocker execution
@@ -4206,22 +4313,22 @@ Last updated: 2026-05-23
     no required Soar production auth/access. The live-import collector failed
     closed before protected readback, and the refreshed release-gate dry-run
     remains `not_ready`. Evidence:
-    `docs/planning/v1-final-blocker-prerequisite-recheck-task-2026-05-07.md`.
+    `history/tasks/v1-final-blocker-prerequisite-recheck-task-2026-05-07.md`.
 
 - [x] `V1-FINAL-BLOCKER-PACK-2026-05-07 release: publish final blocker execution pack`
   - Scope: added
-    `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`, a current
+    `history/plans/v1-final-blocker-execution-pack-2026-05-07.md`, a current
     operator pack for the remaining V1 blockers: `LIVEIMPORT-03`, production
     restore drill, rollback proof, RC gates/sign-off, and final non-dry-run
     release gate. Evidence:
-    `docs/planning/v1-final-blocker-execution-pack-task-2026-05-07.md`.
+    `history/tasks/v1-final-blocker-execution-pack-task-2026-05-07.md`.
 
 - [x] `V1-CONTINUATION-STATE-SYNC-2026-05-07 release: sync continuation state after recovery blockers`
   - Scope: updated V1 continuation state so future runs target production SHA
     `21bb52f1e4b8865aab0dbb83ecffe698061fd7a3` for `LIVEIMPORT-03`, and state
     docs no longer describe local docs-only commits as deployed or synced.
     Evidence:
-    `docs/planning/v1-continuation-state-sync-task-2026-05-07.md`.
+    `history/tasks/v1-continuation-state-sync-task-2026-05-07.md`.
 
 - [x] `V1-PROD-RECOVERY-PROOF-BLOCKED-REFRESH-2026-05-07 release: refresh restore and rollback blockers`
   - Scope: generated current failed/blocked production recovery evidence.
@@ -4229,7 +4336,7 @@ Last updated: 2026-05-23
     drill is recorded as not executed because production database/Coolify
     access is missing in this shell. Release-gate dry-run now classifies both
     recovery evidence families as `FAILED` rather than `stale`. Evidence:
-    `docs/planning/v1-prod-recovery-proof-blocked-refresh-task-2026-05-07.md`.
+    `history/evidence/v1-prod-recovery-proof-blocked-refresh-task-2026-05-07.md`.
 
 - [x] `V1-RC-BLOCKED-REFRESH-2026-05-07 release: refresh RC evidence as blocked`
   - Scope: refreshed RC external gates status, RC sign-off, and RC checklist
@@ -4237,7 +4344,7 @@ Last updated: 2026-05-23
     `G3=PASS`, `G4=OPEN`; sign-off is `BLOCKED`. Release-gate dry-run now
     treats RC status/sign-off/checklist as fresh while V1 remains `not_ready`.
     Evidence:
-    `docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-07.md`.
+    `history/releases/v1-rc-blocked-evidence-refresh-task-2026-05-07.md`.
 
 - [x] `V1-PROD-ACTIVATION-REFRESH-2026-05-07 release: refresh production activation plan and audit`
   - Scope: created fresh 2026-05-07 production activation plan and activation
@@ -4246,7 +4353,7 @@ Last updated: 2026-05-23
     are stale RC external gates status, RC sign-off, RC checklist,
     backup/restore drill evidence, rollback proof pack, and dry-run mode.
     Evidence:
-    `docs/planning/v1-production-activation-plan-refresh-task-2026-05-07.md`.
+    `history/tasks/v1-production-activation-plan-refresh-task-2026-05-07.md`.
 
 - [x] `V1-PROD-GATE-DRY-RUN-2026-05-07 release: classify current production V1 gate blockers`
   - Scope: ran `ops:release:v1:gate` in production dry-run mode with
@@ -4256,7 +4363,7 @@ Last updated: 2026-05-23
     RC checklist, backup/restore drill evidence, and rollback proof pack. The
     dry-run mode blocker remains explicit and no protected OPS, exchange, or
     live-money path was called. Evidence:
-    `docs/planning/v1-prod-release-gate-dry-run-task-2026-05-07.md`.
+    `history/releases/v1-prod-release-gate-dry-run-task-2026-05-07.md`.
 
 - [x] `PROD-BUILDINFO-LAG-2026-05-07 release: record build-info lag after collector hardening push`
   - Scope: rechecked production build-info after `origin/main` advanced to
@@ -4265,7 +4372,7 @@ Last updated: 2026-05-23
     `6bf5de83b8ed285410ecc10ecc50a2567ac68ee1`. Public API `/health` and
     `/ready` passed. No runtime, API, DB, exchange, deployment, or live-money
     behavior changed. Evidence:
-    `docs/planning/prod-build-info-lag-after-collector-hardening-task-2026-05-07.md`.
+    `history/evidence/prod-build-info-lag-after-collector-hardening-task-2026-05-07.md`.
 
 - [x] `LIVEIMPORT-03-COLLECTOR-HARDENING-2026-05-07 fix(ops): fail closed empty runtime readback`
   - Scope: hardened the read-only live-import collector so no-session output
@@ -4275,7 +4382,7 @@ Last updated: 2026-05-23
     collected or when requested symbols are not visible in collected runtime
     readback. Validation PASS: syntax check, help, dry-run, missing-auth
     fail-closed, and a local no-running-session harness. Evidence:
-    `docs/planning/liveimport-03-readback-collector-hardening-task-2026-05-07.md`.
+    `history/evidence/liveimport-03-readback-collector-hardening-task-2026-05-07.md`.
 
 - [x] `LIVEIMPORT-03-COLLECTOR-2026-05-07 release(ops): add redacted live-import readback collector`
   - Scope: added `ops:liveimport:readback`, a read-only helper for the active
@@ -4285,7 +4392,7 @@ Last updated: 2026-05-23
     production auth is missing. No API route, DB schema, exchange adapter,
     runtime execution, deployment, or live-money behavior changed. Validation
     PASS: help path, dry-run path, and missing-auth fail-closed path. Evidence:
-    `docs/planning/liveimport-03-readback-collector-task-2026-05-07.md`.
+    `history/evidence/liveimport-03-readback-collector-task-2026-05-07.md`.
 
 - [x] `PROD-PROMOTE-PREQ-2026-05-07 release: recheck production promotion prerequisites after validated push`
   - Scope: after the validated local audit closure commits were pushed to
@@ -4297,7 +4404,7 @@ Last updated: 2026-05-23
     API `/health`, API `/ready`, and web `/auth/login` are healthy. No
     runtime, API, DB, Web, deployment, exchange, or live-money behavior
     changed. Evidence:
-    `docs/planning/prod-promotion-prerequisite-sweep-task-2026-05-07.md`.
+    `history/tasks/prod-promotion-prerequisite-sweep-task-2026-05-07.md`.
 
 - [x] `PLAN-SWEEP-2026-05-07 release: sync planning status after local audit gates`
   - Scope: swept active planning after `LIVEIMPORT-03` remained blocked by
@@ -4306,7 +4413,7 @@ Last updated: 2026-05-23
     gates through `FULLARCH-FIX-11` and the prerequisite sweep. No runtime,
     API, DB, Web, deployment, exchange, or live-money behavior changed.
     Evidence:
-    `docs/planning/planning-status-sweep-after-local-audit-gates-task-2026-05-07.md`.
+    `history/audits/planning-status-sweep-after-local-audit-gates-task-2026-05-07.md`.
 
 - [x] `LIVEIMPORT-03-PREQ-2026-05-07 release: recheck production readback prerequisites`
   - Scope: after local audit gates closed through `FULLARCH-FIX-11`, rechecked
@@ -4316,7 +4423,7 @@ Last updated: 2026-05-23
     production auth variable name is present. No secret values, production
     writes, exchange writes, deploys, or live-money actions were used.
     `LIVEIMPORT-03` remains open. Evidence:
-    `docs/planning/liveimport-03-production-readback-prerequisite-sweep-task-2026-05-07.md`.
+    `history/evidence/liveimport-03-production-readback-prerequisite-sweep-task-2026-05-07.md`.
 
 - [x] `FULLARCH-FIX-11 test(api-web): validate wallet market bot topology gate`
   - Scope: ran focused API and Web evidence for wallet/capital handling,
@@ -4326,7 +4433,7 @@ Last updated: 2026-05-23
     exchange, or live-money behavior changed. Validation PASS: API pack
     (`11/11` files, `80/80` tests) and Web pack (`21/21` files, `49/49`
     tests). Evidence:
-    `docs/planning/fullarch-fix-11-wallet-market-bot-topology-gate-task-2026-05-07.md`.
+    `history/tasks/fullarch-fix-11-wallet-market-bot-topology-gate-task-2026-05-07.md`.
 
 - [x] `FULLARCH-FIX-10 test(api-web): validate market stream dashboard monitoring gate`
   - Scope: ran focused API and Web evidence for market stream ingestion/fanout
@@ -4334,7 +4441,7 @@ Last updated: 2026-05-23
     harness repair. No code, schema, deployment, or live-money behavior
     changed. Validation PASS: API pack (`9/9` files, `63/63` tests) and Web
     pack (`19/19` files, `79/79` tests). Evidence:
-    `docs/planning/fullarch-fix-10-market-dashboard-monitoring-gate-task-2026-05-07.md`.
+    `history/evidence/fullarch-fix-10-market-dashboard-monitoring-gate-task-2026-05-07.md`.
 
 - [x] `FULLARCH-FIX-09 test(api-web): validate strategy backtest reports logs gate`
   - Scope: ran focused API and Web evidence for strategy/indicator parity,
@@ -4342,7 +4449,7 @@ Last updated: 2026-05-23
     navigation mock harness repair. No code, schema, deployment, or live-money
     behavior changed. Validation PASS: API pack (`12/12` files, `92/92`
     tests) and Web pack (`21/21` files, `49/49` tests). Evidence:
-    `docs/planning/fullarch-fix-09-strategy-backtest-reports-logs-gate-task-2026-05-07.md`.
+    `history/tasks/fullarch-fix-09-strategy-backtest-reports-logs-gate-task-2026-05-07.md`.
 
 - [x] `FULLARCH-FIX-08 test(api-security): validate local security and isolation release gate`
   - Scope: ran the focused local API security/isolation release-gate pack
@@ -4352,7 +4459,7 @@ Last updated: 2026-05-23
     isolation. No code, schema, UI, deployment, or live-money behavior changed.
     Validation PASS: `18/18` files and `87/87` tests with sequential
     execution and test-only API-key encryption env. Evidence:
-    `docs/planning/fullarch-fix-08-security-isolation-release-gate-task-2026-05-07.md`.
+    `history/releases/fullarch-fix-08-security-isolation-release-gate-task-2026-05-07.md`.
 
 - [x] `FULLARCH-AUDIT-SYNC-2026-05-07 docs(planning): sync full architecture audit repair queue`
   - Scope: updated the full architecture conformance audit report so its
@@ -4362,7 +4469,7 @@ Last updated: 2026-05-23
     No code, schema, UI, deployment, or live-money behavior changed.
     Validation PASS: names-only auth env scan, repository guardrails, docs
     parity, and diff check. Evidence:
-    `docs/planning/fullarch-audit-repair-queue-sync-task-2026-05-07.md`.
+    `history/audits/fullarch-audit-repair-queue-sync-task-2026-05-07.md`.
 
 - [x] `FULLARCH-FIX-07 test(api-runtime): validate runtime repair closure pack after import fixes`
   - Scope: ran the focused post-repair runtime validation pack covering signal
@@ -4371,7 +4478,7 @@ Last updated: 2026-05-23
     visibility, takeover readback, and position automation. No code, schema,
     UI, deployment, or live-money behavior changed. Validation PASS:
     `16/16` files and `240/240` tests with sequential execution. Evidence:
-    `docs/planning/fullarch-fix-07-runtime-repair-closure-validation-task-2026-05-07.md`.
+    `history/tasks/fullarch-fix-07-runtime-repair-closure-validation-task-2026-05-07.md`.
 
 - [x] `FULLARCH-FIX-06 fix(api-positions): lock Binance futures position snapshot normalization`
   - Scope: Binance futures snapshots now normalize signed `positionAmt` into
@@ -4382,7 +4489,7 @@ Last updated: 2026-05-23
     PASS: pre-fix normalizer regression failed as expected (`3 failed`),
     normalizer suite (`5/5`), focused import/reconciliation/takeover pack
     (`42/42`), and API typecheck. Evidence:
-    `docs/planning/fullarch-fix-06-binance-futures-position-normalization-task-2026-05-07.md`.
+    `history/tasks/fullarch-fix-06-binance-futures-position-normalization-task-2026-05-07.md`.
 
 - [x] `AOS-STATE-ENV-2026-05-07 docs(agent-os): capture safe environment scan guardrail`
   - Scope: recorded a verified secret-adjacent execution pitfall in the
@@ -4392,7 +4499,7 @@ Last updated: 2026-05-23
     authenticated read-only production runtime readback remains the next real
     evidence task. Validation PASS: names-only env scan, repository
     guardrails, and diff check. Evidence:
-    `docs/planning/aos-state-env-scan-secret-safety-task-2026-05-07.md`.
+    `history/audits/aos-state-env-scan-secret-safety-task-2026-05-07.md`.
 
 - [x] `FULLARCH-FIX-05 fix(api-bots): close single active bot scope root-suite failures`
   - Scope: bot market-group writes now fail closed with a controlled `409`
@@ -4405,7 +4512,7 @@ Last updated: 2026-05-23
     `59/59` tests), API typecheck, root workspace tests (`api 174/174 files,
     1163/1163 tests; web 145/145 files, 482/482 tests`), lint, guardrails,
     docs parity, and diff check. Evidence:
-    `docs/planning/fullarch-fix-05-api-single-active-bot-scope-task-2026-05-07.md`.
+    `history/tasks/fullarch-fix-05-api-single-active-bot-scope-task-2026-05-07.md`.
 
 - [x] `FULLARCH-FIX-04 fix(web-tests): repair next/navigation mock harness drift`
   - Scope: local Web tests that mock `next/navigation` now expose the
@@ -4418,7 +4525,7 @@ Last updated: 2026-05-23
     Web and exposes remaining API e2e failures around bot market-group
     creation/unique `botId` constraints, manual LIVE exchange-synced
     open-order visibility, and stale DB cleanup FK residue. Evidence:
-    `docs/planning/fullarch-fix-04-web-navigation-mock-harness-task-2026-05-07.md`.
+    `history/tasks/fullarch-fix-04-web-navigation-mock-harness-task-2026-05-07.md`.
 
 - [x] `FULLARCH-FIX-03 feat(api-positions): add live import reconciliation diagnostics`
   - Scope: live position reconciliation now returns structured
@@ -4429,7 +4536,7 @@ Last updated: 2026-05-23
     Web, or live-money behavior changed. Validation PASS: focused
     diagnostics/import/ownership/takeover pack (`47/47`), API typecheck.
     Evidence:
-    `docs/planning/fullarch-fix-03-reconciliation-diagnostics-task-2026-05-07.md`.
+    `history/tasks/fullarch-fix-03-reconciliation-diagnostics-task-2026-05-07.md`.
 
 - [x] `FULLARCH-FIX-02 test(api-runtime): cover six-position import/readback path`
   - Scope: added a DB-backed runtime takeover regression that creates one
@@ -4441,7 +4548,7 @@ Last updated: 2026-05-23
     Web, or live-money behavior changed. Validation PASS: runtime takeover e2e
     (`5/5`), focused import/ownership/takeover pack (`46/46`), API typecheck,
     repository guardrails. Evidence:
-    `docs/planning/fullarch-fix-02-six-position-import-readback-regression-task-2026-05-07.md`.
+    `history/evidence/fullarch-fix-02-six-position-import-readback-regression-task-2026-05-07.md`.
 
 - [x] `FULLARCH-FIX-01 fix(api-runtime): restore recovered imported position visibility`
   - Scope: runtime bot position readback now includes the narrow recovered
@@ -4453,7 +4560,7 @@ Last updated: 2026-05-23
     DB schema, Web, or live-money behavior changed. Validation PASS: focused
     runtime takeover e2e (`4/4`), focused import/ownership/takeover pack
     (`45/45`), API typecheck, repository guardrails. Evidence:
-    `docs/planning/fullarch-fix-01-recovered-imported-position-visibility-task-2026-05-07.md`.
+    `history/tasks/fullarch-fix-01-recovered-imported-position-visibility-task-2026-05-07.md`.
 
 - [x] `FULLARCH-AUDIT-2026-05-07 research(system): audit V1 functions against architecture`
   - Scope: mapped product/architecture-declared V1 functions across auth,
@@ -4466,7 +4573,7 @@ Last updated: 2026-05-23
     full test command FAIL with classified issues: one confirmed API runtime
     takeover visibility regression and broad Web harness failures around
     `next/navigation.usePathname` mocks plus dashboard timeouts. Evidence:
-    `docs/planning/full-architecture-conformance-audit-task-2026-05-07.md`.
+    `history/audits/full-architecture-conformance-audit-task-2026-05-07.md`.
 
 - [x] `LIVEIMPORT-AUDIT-2026-05-07 research(api-runtime): audit exchange import against bot ownership architecture`
   - Scope: reviewed architecture and implementation from exchange snapshot
@@ -4481,7 +4588,7 @@ Last updated: 2026-05-23
     and Binance futures normalization coverage. Validation: focused API pack
     produced `44 passed, 1 failed`, with the failing test matching the
     recovered-position visibility mismatch. Evidence:
-    `docs/planning/live-import-runtime-architecture-audit-task-2026-05-07.md`.
+    `history/audits/live-import-runtime-architecture-audit-task-2026-05-07.md`.
 
 - [x] `AOS-STATE-2026-05-07 docs(agent-os): sync continuation state to production readback queue`
   - Scope: synchronized `.agents/state/*` after the agent operating system
@@ -4493,7 +4600,7 @@ Last updated: 2026-05-23
     `rg` access failure, environment-variable name scan confirming no
     production auth material in this shell, repository guardrails, and
     `git diff --check`. Evidence:
-    `docs/planning/agent-state-production-readback-sync-task-2026-05-07.md`.
+    `history/evidence/agent-state-production-readback-sync-task-2026-05-07.md`.
 
 - [x] `AOS-2026-05-07 docs(agent-os): establish autonomous agent operating system`
   - Scope: created `.agents/core/operating-system.md`,
@@ -4505,7 +4612,7 @@ Last updated: 2026-05-23
     documentation indexes, project state, and planning. This is a docs-only
     operating-system slice with no runtime, API, DB, deployment, or UI behavior
     change. Evidence:
-    `docs/planning/agent-operating-system-task-2026-05-07.md`.
+    `history/tasks/agent-operating-system-task-2026-05-07.md`.
 
 - [x] `V1UI-41 fix(web-runtime): fail closed dashboard open-order status`
   - Scope: Dashboard Home open-order status cells now keep the shared known
@@ -4521,7 +4628,7 @@ Last updated: 2026-05-23
     but local `node_repl` resolved Node `v22.13.0` while requiring
     `>=22.22.0`, so rendered validation used bundled Codex Node plus
     Playwright. Evidence:
-    `docs/planning/v1ui-41-open-order-status-fail-closed-task-2026-05-07.md`.
+    `history/tasks/v1ui-41-open-order-status-fail-closed-task-2026-05-07.md`.
 
 - Operator-reported LIVE/PAPER runtime follow-ups are queued after
   `LIVEIMPORT-02`; execute exactly one unchecked task per iteration.
@@ -4534,7 +4641,7 @@ Last updated: 2026-05-23
     container, created a Redis volume backup, ran `redis-check-aof --fix`,
     restarted Redis, and verified Coolify Redis `Running (healthy)`, API
     `/ready` `200`, API `/health` `200`, and web `/auth/login` `200`.
-    Evidence: `docs/operations/redis-aof-recovery-2026-05-07.md`.
+    Evidence: `history/plans/redis-aof-recovery-2026-05-07.md`.
 
 - [x] `V1UI-40 fix(web-runtime): fail closed unknown runtime signal labels`
   - Scope: closed a TESTER-mode runtime signal label hardening slice. Shared
@@ -4552,7 +4659,7 @@ Last updated: 2026-05-23
     plugin validation was attempted first but local `node_repl` resolved Node
     `v22.13.0` while requiring `>=22.22.0`, so rendered validation used
     bundled Codex Node plus Playwright. Evidence:
-    `docs/planning/v1ui-40-runtime-signal-label-unknown-values-task-2026-05-07.md`.
+    `history/tasks/v1ui-40-runtime-signal-label-unknown-values-task-2026-05-07.md`.
 
 - [x] `V1UI-39 refactor(web-runtime): share runtime signal label suffixes`
   - Scope: closed an ARCHITECT-mode Dashboard/Bots runtime label semantics
@@ -4571,7 +4678,7 @@ Last updated: 2026-05-23
     plugin validation was attempted first but local `node_repl` resolved Node
     `v22.13.0` while requiring `>=22.22.0`, so rendered validation used
     bundled Codex Node plus Playwright. Evidence:
-    `docs/planning/v1ui-39-shared-runtime-signal-label-suffixes-task-2026-05-07.md`.
+    `history/tasks/v1ui-39-shared-runtime-signal-label-suffixes-task-2026-05-07.md`.
 
 - [x] `V1UI-38 feat(web-runtime): show dashboard session failure detail`
   - Scope: closed a BUILDER-mode Dashboard Home session diagnostics parity
@@ -4587,7 +4694,7 @@ Last updated: 2026-05-23
     responses. Browser plugin validation was attempted first but local
     `node_repl` resolved Node `v22.13.0` while requiring `>=22.22.0`, so
     rendered validation used bundled Codex Node plus Playwright. Evidence:
-    `docs/planning/v1ui-38-dashboard-session-failure-detail-task-2026-05-07.md`.
+    `history/tasks/v1ui-38-dashboard-session-failure-detail-task-2026-05-07.md`.
 
 - [x] `V1UI-37 feat(web-runtime): show dashboard signal market state`
   - Scope: closed a BUILDER-mode Dashboard Home runtime-state parity slice.
@@ -4605,7 +4712,7 @@ Last updated: 2026-05-23
     responses. Browser plugin validation was attempted first but local
     `node_repl` resolved Node `v22.13.0` while requiring `>=22.22.0`, so
     rendered validation used bundled Codex Node plus Playwright. Evidence:
-    `docs/planning/v1ui-37-dashboard-signal-market-state-badge-task-2026-05-07.md`.
+    `history/tasks/v1ui-37-dashboard-signal-market-state-badge-task-2026-05-07.md`.
 
 - [x] `V1UI-36 fix(web-i18n): restore de-CH exchange order id parity`
   - Scope: closed an ARCHITECT-mode i18n structure slice. Runtime order
@@ -4618,7 +4725,7 @@ Last updated: 2026-05-23
     PASS: focused i18n parity tests (`9/9`), route-reachable i18n audit
     (`findings=0`), Web typecheck, Web lint, repository guardrails,
     `git diff --check`, and full workspace build. Evidence:
-    `docs/planning/v1ui-36-de-ch-exchange-order-id-i18n-parity-task-2026-05-07.md`.
+    `history/audits/v1ui-36-de-ch-exchange-order-id-i18n-parity-task-2026-05-07.md`.
 
 - [x] `V1UI-35 feat(web-runtime): show dashboard signal runtime detail`
   - Scope: closed a TESTER-mode Dashboard Home signal diagnostics parity
@@ -4635,7 +4742,7 @@ Last updated: 2026-05-23
     responses. Browser plugin validation was attempted first but local
     `node_repl` resolved Node `v22.13.0` while requiring `>=22.22.0`, so
     rendered validation used bundled Codex Node plus Playwright. Evidence:
-    `docs/planning/v1ui-35-dashboard-signal-runtime-detail-task-2026-05-07.md`.
+    `history/tasks/v1ui-35-dashboard-signal-runtime-detail-task-2026-05-07.md`.
 
 - [x] `V1UI-34 feat(web-runtime): show signal score summary`
   - Scope: closed a BUILDER-mode Dashboard Home signal diagnostics parity
@@ -4652,7 +4759,7 @@ Last updated: 2026-05-23
     but local `node_repl` resolved Node `v22.13.0` while requiring
     `>=22.22.0`, so rendered validation used bundled Codex Node plus
     Playwright. Evidence:
-    `docs/planning/v1ui-34-dashboard-signal-score-summary-task-2026-05-07.md`.
+    `history/tasks/v1ui-34-dashboard-signal-score-summary-task-2026-05-07.md`.
 
 - [x] `V1UI-33 refactor(web-runtime): share mark-price source label suffix`
   - Scope: closed an ARCHITECT-mode Dashboard Home/Bots runtime label
@@ -4668,7 +4775,7 @@ Last updated: 2026-05-23
     plugin validation was attempted first but local `node_repl` resolved Node
     `v22.13.0` while requiring `>=22.22.0`, so rendered validation used
     bundled Codex Node plus Playwright. Evidence:
-    `docs/planning/v1ui-33-shared-mark-price-source-suffix-task-2026-05-07.md`.
+    `history/tasks/v1ui-33-shared-mark-price-source-suffix-task-2026-05-07.md`.
 
 - [x] `V1UI-32 fix(web-dashboard): close route-owned copy leaks`
   - Scope: closed a BUILDER-mode Dashboard Home copy-ownership slice.
@@ -4684,7 +4791,7 @@ Last updated: 2026-05-23
     validation was attempted first but local `node_repl` resolved Node
     `v22.13.0` while requiring `>=22.22.0`, so rendered validation used
     bundled Codex Node plus Playwright. Evidence:
-    `docs/planning/v1ui-32-dashboard-home-route-owned-copy-closure-task-2026-05-07.md`.
+    `history/tasks/v1ui-32-dashboard-home-route-owned-copy-closure-task-2026-05-07.md`.
 
 - [x] `V1UI-31 fix(web-dashboard): keep runtime labels route-owned`
   - Scope: closed a BUILDER-mode route ownership cleanup slice. Dashboard
@@ -4700,7 +4807,7 @@ Last updated: 2026-05-23
     validation was attempted first but local `node_repl` resolved Node
     `v22.13.0` while requiring `>=22.22.0`, so rendered validation used
     bundled Codex Node plus Playwright. Evidence:
-    `docs/planning/v1ui-31-dashboard-home-route-owned-runtime-labels-task-2026-05-07.md`.
+    `history/tasks/v1ui-31-dashboard-home-route-owned-runtime-labels-task-2026-05-07.md`.
 
 - [x] `V1UI-30 fix(web-auth): fail closed pre-hydration auth submit`
   - Scope: closed a TESTER-mode auth entrypoint safety slice. Login/Register
@@ -4716,7 +4823,7 @@ Last updated: 2026-05-23
     `/auth/login` plus desktop register and mobile login flows to `/dashboard`
     with no credential URL leak and no relevant console/page/5xx errors.
     Evidence:
-    `docs/planning/v1ui-30-auth-form-prehydration-fail-closed-task-2026-05-07.md`.
+    `history/tasks/v1ui-30-auth-form-prehydration-fail-closed-task-2026-05-07.md`.
 
 - [x] `V1UI-29 fix(runtime-orders): fail closed exchange-backed local cancel`
   - Scope: closed a BUILDER-mode API/Web order-action parity slice. The
@@ -4731,7 +4838,7 @@ Last updated: 2026-05-23
     route-reachable i18n audit (`findings=0`), repository guardrails, full
     workspace build, and authenticated rendered `/dashboard` smoke on desktop
     and mobile with no console errors, page errors, or 5xx responses. Evidence:
-    `docs/planning/v1ui-29-exchange-backed-order-cancel-fail-closed-task-2026-05-07.md`.
+    `history/tasks/v1ui-29-exchange-backed-order-cancel-fail-closed-task-2026-05-07.md`.
 
 - [x] `V1UI-28 fix(web-runtime): show manual-order blocked reason`
   - Scope: closed a BUILDER-mode manual-order diagnostics parity slice.
@@ -4745,7 +4852,7 @@ Last updated: 2026-05-23
     (`findings=0`), repository guardrails, full workspace build, and
     authenticated rendered `/dashboard` smoke on desktop and mobile with no
     console warnings, console errors, or page errors. Evidence:
-    `docs/planning/v1ui-28-manual-order-blocked-reason-state-task-2026-05-07.md`.
+    `history/tasks/v1ui-28-manual-order-blocked-reason-state-task-2026-05-07.md`.
 
 - [x] `V1UI-27 fix(web-runtime): show manual-order exchange id`
   - Scope: closed an ARCHITECT-mode manual-order response parity slice.
@@ -4759,7 +4866,7 @@ Last updated: 2026-05-23
     workspace build, and authenticated rendered `/dashboard` smoke on desktop
     and mobile with no console warnings, console errors, or page errors.
     Evidence:
-    `docs/planning/v1ui-27-manual-order-exchange-id-state-task-2026-05-07.md`.
+    `history/tasks/v1ui-27-manual-order-exchange-id-state-task-2026-05-07.md`.
 
 - [x] `V1UI-26 fix(web-runtime): show open-order exchange id`
   - Scope: closed a BUILDER-mode backend-to-Web parity slice. Runtime
@@ -4772,7 +4879,7 @@ Last updated: 2026-05-23
     workspace build, and authenticated rendered `/dashboard` smoke on desktop
     and mobile with no console warnings, console errors, or page errors.
     Evidence:
-    `docs/planning/v1ui-26-open-order-exchange-id-parity-task-2026-05-07.md`.
+    `history/audits/v1ui-26-open-order-exchange-id-parity-task-2026-05-07.md`.
 
 - [x] `V1UI-25 fix(web-runtime): show submitted manual-order state`
   - Scope: closed a TESTER-mode UOLF lifecycle visibility slice. Dashboard
@@ -4785,7 +4892,7 @@ Last updated: 2026-05-23
     (`findings=0`), repository guardrails, full workspace build, and
     authenticated rendered `/dashboard` smoke on desktop and mobile with no
     console warnings, console errors, or page errors. Evidence:
-    `docs/planning/v1ui-25-dashboard-manual-order-submitted-state-task-2026-05-07.md`.
+    `history/tasks/v1ui-25-dashboard-manual-order-submitted-state-task-2026-05-07.md`.
 
 - [x] `V1UI-24 fix(web-runtime): show dashboard open-position fees`
   - Scope: closed an ARCHITECT-mode Dashboard Home open-position parity slice.
@@ -4797,7 +4904,7 @@ Last updated: 2026-05-23
     repository guardrails, full workspace build, and authenticated rendered
     `/dashboard` smoke on desktop and mobile with no console warnings, console
     errors, or page errors. Evidence:
-    `docs/planning/v1ui-24-dashboard-open-position-fee-parity-task-2026-05-07.md`.
+    `history/audits/v1ui-24-dashboard-open-position-fee-parity-task-2026-05-07.md`.
 
 - [x] `V1UI-23 fix(web-runtime): show dashboard manual-order lifecycle state`
   - Scope: closed a BUILDER-mode UOLF backend-to-Web parity slice. Dashboard
@@ -4811,7 +4918,7 @@ Last updated: 2026-05-23
     repository guardrails, full workspace build, and authenticated rendered
     `/dashboard` smoke on desktop and mobile with no console warnings, console
     errors, or page errors. Evidence:
-    `docs/planning/v1ui-23-dashboard-manual-order-lifecycle-state-task-2026-05-07.md`.
+    `history/tasks/v1ui-23-dashboard-manual-order-lifecycle-state-task-2026-05-07.md`.
 
 - [x] `V1UI-22 fix(web-runtime): show dashboard signal context source`
   - Scope: closed a BUILDER-mode Dashboard Home signal-source parity slice.
@@ -4826,7 +4933,7 @@ Last updated: 2026-05-23
     workspace build, and authenticated rendered `/dashboard` smoke on desktop
     and mobile with no console warnings, console errors, or page errors.
     Evidence:
-    `docs/planning/v1ui-22-dashboard-signal-source-parity-task-2026-05-07.md`.
+    `history/audits/v1ui-22-dashboard-signal-source-parity-task-2026-05-07.md`.
 
 - [x] `V1UI-21 fix(web-runtime): keep aggregate wallet capital strict`
   - Scope: closed an ARCHITECT-mode aggregate wallet source-of-truth slice.
@@ -4841,7 +4948,7 @@ Last updated: 2026-05-23
     guardrails, full workspace build, and authenticated rendered `/dashboard`
     smoke on desktop and mobile with no console warnings, console errors, or
     page errors. Evidence:
-    `docs/planning/v1ui-21-dashboard-aggregate-wallet-strict-capital-task-2026-05-07.md`.
+    `history/tasks/v1ui-21-dashboard-aggregate-wallet-strict-capital-task-2026-05-07.md`.
 
 - [x] `V1UI-20 fix(web-runtime): show dashboard closed-position history`
   - Scope: closed a TESTER-mode architecture-to-Web runtime history parity
@@ -4854,7 +4961,7 @@ Last updated: 2026-05-23
     route-reachable i18n audit (`findings=0`), repository guardrails, full
     workspace build, and authenticated rendered `/dashboard` smoke with no
     console warnings, console errors, or page errors. Evidence:
-    `docs/planning/v1ui-20-dashboard-closed-history-table-task-2026-05-07.md`.
+    `history/tasks/v1ui-20-dashboard-closed-history-table-task-2026-05-07.md`.
 
 - [x] `V1UI-19 fix(web-runtime): show dashboard history close reason`
   - Scope: closed a BUILDER-mode backend-to-Web runtime history parity slice.
@@ -4866,7 +4973,7 @@ Last updated: 2026-05-23
     lint, route-reachable i18n audit (`findings=0`), repository guardrails,
     full workspace build, and authenticated rendered `/dashboard` smoke with
     no console warnings, console errors, or page errors. Evidence:
-    `docs/planning/v1ui-19-dashboard-history-close-reason-task-2026-05-07.md`.
+    `history/tasks/v1ui-19-dashboard-history-close-reason-task-2026-05-07.md`.
 
 - [x] `V1UI-18 fix(web-runtime): show dashboard trade fee finality`
   - Scope: closed an ARCHITECT-mode backend-to-Web runtime trade parity slice.
@@ -4879,7 +4986,7 @@ Last updated: 2026-05-23
     Web typecheck, Web lint, route-reachable i18n audit (`findings=0`),
     repository guardrails, full workspace build, and authenticated rendered
     `/dashboard` smoke with no console or page errors. Evidence:
-    `docs/planning/v1ui-18-dashboard-trade-fee-parity-task-2026-05-07.md`.
+    `history/audits/v1ui-18-dashboard-trade-fee-parity-task-2026-05-07.md`.
 
 - [x] `V1UI-17 fix(web-runtime): show dashboard open-position entry and quantity`
   - Scope: closed a BUILDER-mode backend-to-Web runtime position parity slice.
@@ -4892,7 +4999,7 @@ Last updated: 2026-05-23
     (`findings=0`), repository guardrails, full workspace build, and
     authenticated rendered `/dashboard` smoke with no post-auth console
     errors. Evidence:
-    `docs/planning/v1ui-17-dashboard-open-position-entry-quantity-task-2026-05-07.md`.
+    `history/tasks/v1ui-17-dashboard-open-position-entry-quantity-task-2026-05-07.md`.
 
 - [x] `V1UI-16 fix(web-runtime): show dashboard open-order execution terms`
   - Scope: closed a BUILDER-mode backend-to-Web runtime order parity slice.
@@ -4904,7 +5011,7 @@ Last updated: 2026-05-23
     route-reachable i18n audit (`findings=0`), repository guardrails, full
     workspace build, and authenticated rendered `/dashboard` smoke with no
     post-auth console errors. Evidence:
-    `docs/planning/v1ui-16-dashboard-open-order-execution-terms-task-2026-05-07.md`.
+    `history/tasks/v1ui-16-dashboard-open-order-execution-terms-task-2026-05-07.md`.
 
 - [x] `V1UI-15 fix(web-runtime): show dashboard open-order filled quantity`
   - Scope: closed a TESTER-mode backend-to-Web runtime order parity slice.
@@ -4916,7 +5023,7 @@ Last updated: 2026-05-23
     audit (`findings=0`), repository guardrails, full workspace build, and
     authenticated rendered `/dashboard` smoke with no post-auth console
     errors. Evidence:
-    `docs/planning/v1ui-15-dashboard-open-order-fill-quantity-task-2026-05-07.md`.
+    `history/tasks/v1ui-15-dashboard-open-order-fill-quantity-task-2026-05-07.md`.
 
 - [x] `V1UI-14 fix(web-runtime): align open-order status labels`
   - Scope: closed a BUILDER-mode runtime order lifecycle label parity slice.
@@ -4928,7 +5035,7 @@ Last updated: 2026-05-23
     Web lint, route-reachable i18n audit (`findings=0`), repository guardrails,
     Web build, and authenticated rendered `/dashboard/bots` route smoke with
     no console errors. Evidence:
-    `docs/planning/v1ui-14-runtime-open-order-status-label-task-2026-05-07.md`.
+    `history/tasks/v1ui-14-runtime-open-order-status-label-task-2026-05-07.md`.
 
 - [x] `V1UI-13 fix(web-runtime): show bot monitoring open-order source labels`
   - Scope: closed a BUILDER-mode backend-to-Web runtime order parity slice.
@@ -4939,7 +5046,7 @@ Last updated: 2026-05-23
     monitoring tests (`28/28`), Web typecheck, Web lint, route-reachable i18n
     audit (`findings=0`), repository guardrails, Web build, and authenticated
     rendered `/dashboard/bots` route smoke with no console errors. Evidence:
-    `docs/planning/v1ui-13-bot-open-orders-source-label-task-2026-05-07.md`.
+    `history/tasks/v1ui-13-bot-open-orders-source-label-task-2026-05-07.md`.
 
 - [x] `V1UI-12 refactor(web-runtime): centralize continuity label semantics`
   - Scope: closed an ARCHITECT-mode runtime diagnostics drift cleanup.
@@ -4950,7 +5057,7 @@ Last updated: 2026-05-23
     tests (`27/27`), Web typecheck, Web lint, route-reachable i18n audit
     (`findings=0`), repository guardrails, Web build, and authenticated
     rendered `/dashboard/bots` smoke with no console errors. Evidence:
-    `docs/planning/v1ui-12-runtime-continuity-label-helper-task-2026-05-07.md`.
+    `history/tasks/v1ui-12-runtime-continuity-label-helper-task-2026-05-07.md`.
 
 - [x] `V1UI-11 fix(web-runtime): show provenance in dashboard position modal`
   - Scope: closed a BUILDER-mode dashboard action-context parity slice.
@@ -4962,7 +5069,7 @@ Last updated: 2026-05-23
     monitoring tests (`46/46`), Web typecheck, Web lint, route-reachable i18n
     audit (`findings=0`), repository guardrails, Web build, and authenticated
     rendered `/dashboard` smoke with no console errors. Evidence:
-    `docs/planning/v1ui-11-dashboard-position-modal-provenance-task-2026-05-07.md`.
+    `history/tasks/v1ui-11-dashboard-position-modal-provenance-task-2026-05-07.md`.
 
 - [x] `V1UI-10 fix(web-runtime): show position provenance labels`
   - Scope: closed a TESTER-mode backend-to-Web runtime provenance parity
@@ -4974,7 +5081,7 @@ Last updated: 2026-05-23
     (`findings=0`), Web lint, repository guardrails, Web build, and
     authenticated rendered `/dashboard` plus `/dashboard/bots` smoke with no
     console errors. Evidence:
-    `docs/planning/v1ui-10-runtime-position-provenance-label-task-2026-05-07.md`.
+    `history/tasks/v1ui-10-runtime-position-provenance-label-task-2026-05-07.md`.
 
 - [x] `V1UI-09 fix(web-runtime): label API fallback TTP protection source`
   - Scope: closed an ARCHITECT-mode runtime protection-truth parity slice.
@@ -4986,7 +5093,7 @@ Last updated: 2026-05-23
     (`findings=0`), Web lint, repository guardrails, Web build, and
     authenticated rendered `/dashboard/bots` smoke with no console errors.
     Evidence:
-    `docs/planning/v1ui-09-runtime-ttp-source-parity-task-2026-05-07.md`.
+    `history/audits/v1ui-09-runtime-ttp-source-parity-task-2026-05-07.md`.
 
 - [x] `V1UI-08 fix(web-runtime): label prospective dashboard TTP protection`
   - Scope: closed a BUILDER-mode dashboard protection-truth parity slice.
@@ -4997,7 +5104,7 @@ Last updated: 2026-05-23
     route-reachable i18n audit (`findings=0`), Web lint, guardrails, Web build,
     diff check, and authenticated rendered `/dashboard` smoke with no console
     errors. Evidence:
-    `docs/planning/v1ui-08-dashboard-prospective-protection-label-task-2026-05-07.md`.
+    `history/tasks/v1ui-08-dashboard-prospective-protection-label-task-2026-05-07.md`.
 
 - [x] `V1UI-07 fix(web-runtime): show actionability details in dashboard open positions`
   - Scope: closed a BUILDER-mode dashboard runtime parity slice. Dashboard home
@@ -5009,7 +5116,7 @@ Last updated: 2026-05-23
     typecheck, Web lint, Web build, route-reachable i18n audit (`findings=0`),
     guardrails, diff check, and authenticated rendered `/dashboard` smoke with
     no console errors. Evidence:
-    `docs/planning/v1ui-07-dashboard-home-actionability-status-parity-task-2026-05-07.md`.
+    `history/audits/v1ui-07-dashboard-home-actionability-status-parity-task-2026-05-07.md`.
 
 - [x] `V1UI-06 fix(web-runtime): surface continuity state in bot monitoring positions`
   - Scope: closed an ARCHITECT-mode backend-to-Web runtime parity slice. Bot
@@ -5021,7 +5128,7 @@ Last updated: 2026-05-23
     route-reachable i18n audit (`findings=0`), guardrails, diff check, and
     authenticated rendered `/dashboard/bots` smoke with no console errors.
     Evidence:
-    `docs/planning/v1ui-06-bot-monitoring-continuity-state-web-parity-task-2026-05-07.md`.
+    `history/audits/v1ui-06-bot-monitoring-continuity-state-web-parity-task-2026-05-07.md`.
 
 - [x] `V1UI-05 fix(web-runtime): surface close attribution in bot monitoring history`
   - Scope: closed a TESTER-mode backend-to-Web runtime parity slice. Bot
@@ -5031,7 +5138,7 @@ Last updated: 2026-05-23
     `BotsManagement.test.tsx` (`13/13`), Web typecheck, Web lint, Web build,
     route-reachable i18n audit (`findings=0`), guardrails, and diff check.
     Evidence:
-    `docs/planning/v1ui-05-bot-monitoring-close-attribution-web-parity-task-2026-05-07.md`.
+    `history/audits/v1ui-05-bot-monitoring-close-attribution-web-parity-task-2026-05-07.md`.
 
 - [x] `V1UI-04 feat(web-runtime): surface runtime mark-price source in monitoring`
   - Scope: closed a BUILDER-mode backend-to-Web runtime parity slice. Web now
@@ -5046,7 +5153,7 @@ Last updated: 2026-05-23
     applying `20260503013000_enforce_single_active_bot_market_group`; rendered
     authenticated runtime smoke remains blocked by missing local
     `API_KEY_ENCRYPTION_KEYS`. Evidence:
-    `docs/planning/v1ui-04-runtime-mark-price-source-web-parity-task-2026-05-07.md`.
+    `history/audits/v1ui-04-runtime-mark-price-source-web-parity-task-2026-05-07.md`.
 
 - [x] `V1UI-03 fix(web-public): hide auth CTAs while session state is loading`
   - Scope: closed an ARCHITECT-mode public access shell/i18n route slice.
@@ -5058,7 +5165,7 @@ Last updated: 2026-05-23
     focused header/i18n tests (`7/7`), Web typecheck, lint, production build,
     local desktop/mobile rendered smoke, route-reachable i18n audit
     (`findings=0`), guardrails, and diff check. Evidence:
-    `docs/planning/v1ui-03-public-access-header-route-contract-task-2026-05-07.md`.
+    `history/tasks/v1ui-03-public-access-header-route-contract-task-2026-05-07.md`.
 
 - [x] `V1UI-02 fix(web-auth): persist register errors and seed auth i18n route`
   - Scope: closed a BUILDER-mode auth register UI/i18n slice. Registration
@@ -5069,7 +5176,7 @@ Last updated: 2026-05-23
     smoke. Validation PASS: focused i18n/register tests (`13/13`), Web
     typecheck, local desktop/mobile rendered smoke, route-reachable i18n audit
     (`findings=0`), guardrails, and diff check. Evidence:
-    `docs/planning/v1ui-02-auth-register-error-i18n-task-2026-05-07.md`.
+    `history/tasks/v1ui-02-auth-register-error-i18n-task-2026-05-07.md`.
 
 - [x] `V1UI-01 fix(web-auth): announce login server errors`
   - Scope: closed a BUILDER-mode auth UI accessibility slice. Rendered
@@ -5081,7 +5188,7 @@ Last updated: 2026-05-23
     Codex Node `v24.14.0` plus bundled Playwright without changing project
     dependencies. Validation PASS: focused LoginForm tests (`4/4`), Web
     typecheck, local desktop/mobile rendered smoke, guardrails, and diff check.
-    Evidence: `docs/planning/v1ui-01-auth-login-error-alert-task-2026-05-07.md`.
+    Evidence: `history/tasks/v1ui-01-auth-login-error-alert-task-2026-05-07.md`.
 
 - [x] `V1GATE-04 fix(ops): report skipped go-live smoke when local quality is skipped`
   - Scope: closed a BUILDER-mode release-gate tooling fix. The V1 release gate
@@ -5092,7 +5199,7 @@ Last updated: 2026-05-23
     remain stale activation, RC, restore, and rollback evidence plus the
     broader stage/protected/manual/live-money gates. Validation PASS:
     release-gate tests (`8/8`). Evidence:
-    `docs/planning/v1gate-04-release-gate-plan-summary-task-2026-05-07.md`.
+    `history/releases/v1gate-04-release-gate-plan-summary-task-2026-05-07.md`.
 
 - [x] `V1GATE-03 release(ops): refresh OPS deploy freshness ledger row`
   - Scope: closed a BUILDER-mode deploy freshness ledger sync. Re-read
@@ -5102,7 +5209,7 @@ Last updated: 2026-05-23
     references the current `V1GATE-02` public target refresh instead of the
     older 2026-05-01 SHA. This does not close restore, stage, GO/NO-GO,
     protected/manual, or live-money evidence blockers. Evidence:
-    `docs/planning/v1gate-03-deploy-ledger-refresh-task-2026-05-07.md`.
+    `history/audits/v1gate-03-deploy-ledger-refresh-task-2026-05-07.md`.
 
 - [x] `V1MANUAL-01 qa(web): align V1 manual route evidence with runtime IA`
   - Scope: closed an ARCHITECT-mode V1 manual evidence sync. The V1
@@ -5112,7 +5219,7 @@ Last updated: 2026-05-23
     focused web middleware regression for legacy orders/positions redirects and
     unauthenticated fail-closed login behavior. Validation PASS: focused
     middleware test (`3/3`). Evidence:
-    `docs/planning/v1manual-web-legacy-route-evidence-sync-task-2026-05-07.md`.
+    `history/evidence/v1manual-web-legacy-route-evidence-sync-task-2026-05-07.md`.
 
 - [x] `V1MONEY-02 qa(money): capture paper-safe close evidence for TP SL TTP TSL and DCA guards`
   - Scope: closed a BUILDER-mode paper-safe close evidence slice. Focused API
@@ -5121,7 +5228,7 @@ Last updated: 2026-05-23
     Evidence now maps TP, SL, TTP, TSL, DCA-first, and DCA-exhausted rows to
     covered local behavior and remaining production/paper-sample proof. No
     live-money mutations were run. Evidence:
-    `docs/planning/v1money-paper-safe-close-evidence-task-2026-05-07.md`.
+    `history/evidence/v1money-paper-safe-close-evidence-task-2026-05-07.md`.
 
 - [x] `MARKETDATA-FUT-01 feat(api-runtime): expose runtime mark-price source for futures evidence`
   - Scope: closed a BUILDER-mode futures market-data evidence slice. Runtime
@@ -5131,7 +5238,7 @@ Last updated: 2026-05-23
     and unavailable states. Existing numeric price helper remains compatible.
     Validation PASS: focused runtime lifecycle/position PnL tests (`8/8`), API
     typecheck, Web typecheck, guardrails, and diff check. Evidence:
-    `docs/planning/marketdata-fut-runtime-mark-price-source-task-2026-05-07.md`.
+    `history/tasks/marketdata-fut-runtime-mark-price-source-task-2026-05-07.md`.
 
 - [x] `V1MONEY-01 qa(money): build local and paper-safe V1 money scenario matrix`
   - Scope: closed a TESTER-mode local/paper-safe V1 money matrix. The matrix
@@ -5141,7 +5248,7 @@ Last updated: 2026-05-23
     position/order lifetime, strategy lifetime policy, lifecycle mark-price,
     and close parity. This does not close production-only TP/SL/TSL/live-close
     rows; it defines the next safe evidence path. Evidence:
-    `docs/planning/v1money-local-paper-safe-matrix-task-2026-05-07.md`.
+    `history/audits/v1money-local-paper-safe-matrix-task-2026-05-07.md`.
 
 - [x] `LIVEIMPORT-03A qa(planning): triage stale imported-position release candidate against current main`
   - Scope: closed a BUILDER-mode release-candidate triage. The old
@@ -5152,7 +5259,7 @@ Last updated: 2026-05-23
     authenticated ETH/DOGE production readback on current `main`; do not
     promote stale `39146d2e`. BOTMULTI stale build-info blocker text was also
     refreshed because production now contains `f3aaa3d`. Evidence:
-    `docs/planning/liveimport-03-current-main-candidate-triage-task-2026-05-07.md`.
+    `history/tasks/liveimport-03-current-main-candidate-triage-task-2026-05-07.md`.
 
 - [x] `V1GATE-02 release(ops): refresh public production and stage target truth after PMPLC merge`
   - Scope: closed an ARCHITECT-mode public target refresh after the PMPLC
@@ -5165,7 +5272,7 @@ Last updated: 2026-05-23
     on `stage-soar.luckysparrow.ch`). V1 remains NO-GO until restore drill,
     stage restoration or waiver, sign-off, protected/manual matrix, and
     live-money proof rows are closed. Evidence:
-    `docs/planning/v1gate-02-public-target-refresh-task-2026-05-07.md`.
+    `history/tasks/v1gate-02-public-target-refresh-task-2026-05-07.md`.
 
 - [x] `APPCHECK-01 qa(app): verify main after PMPLC merge with local function sweep`
   - Scope: closed a BUILDER-mode local post-merge app-function sweep on branch
@@ -5175,7 +5282,7 @@ Last updated: 2026-05-23
     runtime/order API pack (`90/90`), focused dashboard/strategy Web pack
     (`32/32`), and full workspace build. No executable local regression was
     isolated in this sweep. Evidence:
-    `docs/planning/app-function-check-main-sweep-task-2026-05-06.md`.
+    `history/tasks/app-function-check-main-sweep-task-2026-05-06.md`.
 
 - [x] `PMPLC-46 docs(planning): clear stale PMPLC-45 follow-up after closure`
   - Scope: closed a BUILDER-mode planning truth sync slice after PMPLC-45.
@@ -5184,7 +5291,7 @@ Last updated: 2026-05-23
     remained green (`64/64` plus exchange-event pack `46/46`) before the
     docs-only sync, so no new executable money-runtime regression was isolated
     in this iteration. Evidence:
-    `docs/planning/pmplc-queue-sync-task-2026-05-06.md`.
+    `history/tasks/pmplc-queue-sync-task-2026-05-06.md`.
 
 - [x] `PMPLC-45 fix(api-bots): include imported externally closed positions in aggregate PnL`
   - Scope: closed a TESTER-mode runtime read-model money-truth slice.
@@ -5198,7 +5305,7 @@ Last updated: 2026-05-23
     regression, focused external-close history regression, runtime/portfolio
     pack (`51/51`), helper unit suite (`16/16`), API typecheck, repository
     guardrails, and lint. Evidence:
-    `docs/planning/runtime-aggregate-imported-closed-position-pnl-task-2026-05-06.md`.
+    `history/tasks/runtime-aggregate-imported-closed-position-pnl-task-2026-05-06.md`.
 
 - [x] `PMPLC-44 fix(api-bots): mark portfolio history partial for pending fees`
   - Scope: closed a BUILDER-mode LIVE portfolio completeness slice. Portfolio
@@ -5209,7 +5316,7 @@ Last updated: 2026-05-23
     (`completeness=COMPLETE` received vs `PARTIAL` expected), focused
     regression, portfolio-history e2e (`4/4`), API typecheck, repository
     guardrails, and lint. Evidence:
-    `docs/planning/portfolio-history-pending-fee-completeness-task-2026-05-06.md`.
+    `history/tasks/portfolio-history-pending-fee-completeness-task-2026-05-06.md`.
 
 - [x] `PMPLC-43 fix(api-orders): keep pending after incomplete partial fee backfill`
   - Scope: closed a BUILDER-mode LIVE fee reconciliation finality slice.
@@ -5223,7 +5330,7 @@ Last updated: 2026-05-23
     (`21/21`), dedicated fee-backfill suite (`1/1`), focused runtime/order
     suites (`105/105`), API typecheck, repository guardrails, lint, and diff
     check. Evidence:
-    `docs/planning/position-management-exchange-partial-backfill-still-pending-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-partial-backfill-still-pending-task-2026-05-06.md`.
 
 - [x] `PMPLC-42 fix(api-orders): refresh close PnL after missing partial close fee backfill`
   - Scope: closed an ARCHITECT-mode LIVE fee/PnL reconciliation slice.
@@ -5236,7 +5343,7 @@ Last updated: 2026-05-23
     (`24/24`), DB-backed exchange-event suite (`21/21`), focused runtime/order
     suites (`104/104`), API typecheck, repository guardrails, lint, and diff
     check. Evidence:
-    `docs/planning/position-management-exchange-close-pnl-fee-backfill-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-close-pnl-fee-backfill-task-2026-05-06.md`.
 
 - [x] `PMPLC-41 fix(api-orders): settle lifecycle fee after missing partial fee backfill`
   - Scope: closed a BUILDER-mode LIVE fee reconciliation backfill slice. Fee
@@ -5248,7 +5355,7 @@ Last updated: 2026-05-23
     helper suite (`24/24`), DB-backed exchange-event suite (`20/20`), focused
     runtime/order suites (`103/103`), API typecheck, repository guardrails,
     lint, and diff check. Evidence:
-    `docs/planning/position-management-exchange-missing-partial-fee-backfill-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-missing-partial-fee-backfill-task-2026-05-06.md`.
 
 - [x] `PMPLC-40 fix(api-orders): keep pending when earlier partial fill fee is missing`
   - Scope: closed a TESTER-mode LIVE fee reconciliation finality slice.
@@ -5260,7 +5367,7 @@ Last updated: 2026-05-23
     expected), helper suite (`24/24`), DB-backed exchange-event suite
     (`19/19`), focused runtime/order suites (`102/102`), API typecheck,
     repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-exchange-missing-partial-fee-pending-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-missing-partial-fee-pending-task-2026-05-06.md`.
 
 - [x] `PMPLC-39 fix(api-orders): keep final fill pending after partial fee truth`
   - Scope: closed an ARCHITECT-mode LIVE fee reconciliation finality slice.
@@ -5272,7 +5379,7 @@ Last updated: 2026-05-23
     received vs `true` expected), helper suite (`24/24`), DB-backed
     exchange-event suite (`18/18`), focused runtime/order suites (`101/101`),
     API typecheck, repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-exchange-final-fee-pending-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-final-fee-pending-task-2026-05-06.md`.
 
 - [x] `PMPLC-38 fix(api-orders): keep fee pending for partial exchange fills`
   - Scope: closed a BUILDER-mode LIVE fee reconciliation finality slice.
@@ -5284,7 +5391,7 @@ Last updated: 2026-05-23
     `true` expected), helper suite (`24/24`), DB-backed exchange-event suite
     (`17/17`), focused runtime/order suites (`100/100`), API typecheck,
     repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-exchange-partial-fee-pending-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-partial-fee-pending-task-2026-05-06.md`.
 
 - [x] `PMPLC-37 fix(api-orders): clear pending drift when exchange fee is settled`
   - Scope: closed a BUILDER-mode LIVE fee reconciliation drift recovery slice.
@@ -5295,7 +5402,7 @@ Last updated: 2026-05-23
     (`feePending=true` received vs `false` expected), DB-backed exchange-event
     suite (`16/16`), focused runtime/order suites (`98/98`), API typecheck,
     repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-exchange-settled-fee-pending-recovery-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-settled-fee-pending-recovery-task-2026-05-06.md`.
 
 - [x] `PMPLC-36 refactor(api-orders): centralize exchange fee pending decision`
   - Scope: closed an ARCHITECT-mode exchange fee-pending decision boundary
@@ -5306,7 +5413,7 @@ Last updated: 2026-05-23
     remains unchanged. Validation PASS: helper suite (`22/22`), DB-backed
     exchange-event suite (`15/15`), focused runtime/order suites (`96/96`),
     API typecheck, repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-exchange-fee-pending-helper-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-fee-pending-helper-task-2026-05-06.md`.
 
 - [x] `PMPLC-35 fix(api-orders): recover pending truth when rejected fee leaves estimate unresolved`
   - Scope: closed a TESTER-mode LIVE fee reconciliation recovery slice.
@@ -5318,7 +5425,7 @@ Last updated: 2026-05-23
     received vs `true` expected), DB-backed exchange-event suite (`15/15`),
     focused runtime/order suites (`92/92`), API typecheck, repository
     guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-exchange-stale-fee-pending-recovery-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-stale-fee-pending-recovery-task-2026-05-06.md`.
 
 - [x] `PMPLC-34 fix(api-orders): keep fee pending when stale unknown fee is rejected`
   - Scope: closed a BUILDER-mode LIVE fee reconciliation visibility guard.
@@ -5330,7 +5437,7 @@ Last updated: 2026-05-23
     `true` expected), DB-backed exchange-event suite (`14/14`), focused
     runtime/order suites (`91/91`), API typecheck, repository guardrails, lint,
     and diff check. Evidence:
-    `docs/planning/position-management-exchange-stale-fee-pending-guard-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-stale-fee-pending-guard-task-2026-05-06.md`.
 
 - [x] `PMPLC-33 refactor(api-orders): centralize exchange fee refresh decision`
   - Scope: closed an ARCHITECT-mode exchange fee decision boundary slice.
@@ -5341,7 +5448,7 @@ Last updated: 2026-05-23
     remains unchanged. Validation PASS: helper suite (`18/18`), DB-backed
     exchange-event suite (`13/13`), focused runtime/order suites (`90/90`),
     API typecheck, repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-exchange-fee-refresh-helper-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-fee-refresh-helper-task-2026-05-06.md`.
 
 - [x] `PMPLC-32 fix(api-orders): ignore stale terminal fee events for unknown fills`
   - Scope: closed a BUILDER-mode LIVE fee idempotency guard. Exchange
@@ -5352,7 +5459,7 @@ Last updated: 2026-05-23
     failed as expected (`0.13` received vs `0.04` expected), DB-backed
     exchange-event suite (`13/13`), focused runtime/order suites (`86/86`),
     API typecheck, repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-exchange-stale-fee-event-guard-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-stale-fee-event-guard-task-2026-05-06.md`.
 
 - [x] `PMPLC-31 fix(api-orders): backfill missing exchange fill fee truth`
   - Scope: closed a BUILDER-mode LIVE fee-truth backfill slice. Exchange
@@ -5363,7 +5470,7 @@ Last updated: 2026-05-23
     lifecycle. Validation PASS: focused DB-backed regression, DB-backed
     exchange-event suite (`12/12`), focused runtime/order suites (`85/85`),
     API typecheck, repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-exchange-fill-fee-backfill-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-fill-fee-backfill-task-2026-05-06.md`.
 
 - [x] `PMPLC-30 fix(api-orders): aggregate exchange fill fees across partial fills`
   - Scope: closed a TESTER-mode LIVE fee aggregation slice. Exchange
@@ -5376,7 +5483,7 @@ Last updated: 2026-05-23
     DB-backed exchange-event suite (`11/11`), focused runtime/order suites
     (`84/84`), API typecheck, repository guardrails, lint, and diff check.
     Evidence:
-    `docs/planning/position-management-exchange-fill-fee-aggregation-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-fill-fee-aggregation-task-2026-05-06.md`.
 
 - [x] `PMPLC-29 fix(api-orders): recover unresolved exchange fee pending truth`
   - Scope: closed a BUILDER-mode LIVE fee-truth recovery slice. Exchange
@@ -5387,7 +5494,7 @@ Last updated: 2026-05-23
     pre-fix DB-backed regression failed as expected, DB-backed exchange-event
     suite (`10/10`), focused runtime/order suites (`83/83`), API typecheck,
     repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-exchange-fee-pending-recovery-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-fee-pending-recovery-task-2026-05-06.md`.
 
 - [x] `PMPLC-28 fix(api-orders): preserve exchange fee pending truth without fee`
   - Scope: closed a BUILDER-mode LIVE fee truth slice. Exchange order-trade
@@ -5398,7 +5505,7 @@ Last updated: 2026-05-23
     PASS: pre-fix DB-backed regression failed as expected, DB-backed
     exchange-event suite (`10/10`), focused runtime/order suites (`83/83`),
     API typecheck, repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-exchange-fee-pending-truth-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-fee-pending-truth-task-2026-05-06.md`.
 
 - [x] `PMPLC-27 refactor(api-orders): centralize exchange recordable fill details`
   - Scope: closed an ARCHITECT-mode exchange event recordability slice.
@@ -5408,7 +5515,7 @@ Last updated: 2026-05-23
     Validation PASS: local Postgres availability check, DB-backed
     exchange-event suite (`9/9`), focused runtime/order suites (`82/82`), API
     typecheck, repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-exchange-recordable-fill-details-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-recordable-fill-details-task-2026-05-06.md`.
 
 - [x] `PMPLC-26 fix(api-orders): scale exchange fill fee to accepted local quantity`
   - Scope: closed a BUILDER-mode exchange event fee parity slice. Exchange
@@ -5418,7 +5525,7 @@ Last updated: 2026-05-23
     quantity under over-reported fills. Validation PASS: DB-backed
     exchange-event suite (`9/9`), focused runtime/order suites (`82/82`), API
     typecheck, repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-exchange-fill-fee-cap-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-fill-fee-cap-task-2026-05-06.md`.
 
 - [x] `PMPLC-25 fix(api-orders): cap exchange order-fill rows to local fill progress`
   - Scope: closed a TESTER-mode exchange event child-fill quantity slice.
@@ -5429,7 +5536,7 @@ Last updated: 2026-05-23
     DB-backed exchange-event suite (`9/9`), focused runtime/order suites
     (`82/82`), API typecheck, repository guardrails, lint, and diff check.
     Evidence:
-    `docs/planning/position-management-exchange-orderfill-quantity-cap-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-orderfill-quantity-cap-task-2026-05-06.md`.
 
 - [x] `PMPLC-24 refactor(api-orders): centralize exchange fill quantity normalization`
   - Scope: closed an ARCHITECT-mode exchange fill quantity helper slice.
@@ -5439,7 +5546,7 @@ Last updated: 2026-05-23
     changes. Validation PASS: helper plus DB-backed exchange-event suite
     (`22/22`), focused runtime/order suites (`81/81`), API typecheck,
     repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-exchange-fill-quantity-normalizer-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-fill-quantity-normalizer-task-2026-05-06.md`.
 
 - [x] `PMPLC-23 fix(api-orders): cap existing exchange fill progress to order quantity`
   - Scope: closed a BUILDER-mode exchange fill quantity cap slice. Exchange
@@ -5450,7 +5557,7 @@ Last updated: 2026-05-23
     regression (`14/14`), DB-backed exchange-event suite (`8/8`), focused
     runtime/order suites (`81/81`), API typecheck, repository guardrails, lint,
     and diff check. Evidence:
-    `docs/planning/position-management-exchange-existing-fill-cap-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-existing-fill-cap-task-2026-05-06.md`.
 
 - [x] `PMPLC-22 fix(api-orders): keep known underfilled exchange events partial`
   - Scope: closed a BUILDER-mode exchange event fail-closed slice. Exchange
@@ -5460,7 +5567,7 @@ Last updated: 2026-05-23
     `PARTIALLY_FILLED` without applying filled lifecycle. Validation PASS:
     no-DB helper regression (`13/13`), focused runtime/order suites (`72/72`),
     API typecheck, repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-exchange-event-underfilled-entry-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-event-underfilled-entry-task-2026-05-06.md`.
 
 - [x] `PMPLC-21 refactor(api-orders): make exchange persisted status decision explicit`
   - Scope: closed an ARCHITECT-mode exchange fill helper refactor slice.
@@ -5471,7 +5578,7 @@ Last updated: 2026-05-23
     changes. Validation PASS: no-DB helper regression (`11/11`), focused
     runtime/order suites (`70/70`), API typecheck, repository guardrails, lint,
     and diff check. Evidence:
-    `docs/planning/position-management-exchange-fill-status-helper-refactor-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-fill-status-helper-refactor-task-2026-05-06.md`.
 
 - [x] `PMPLC-20 fix(api-orders): fail closed on exchange FILLED without quantity`
   - Scope: closed a TESTER-mode exchange fill fail-closed slice. Exchange fill
@@ -5481,7 +5588,7 @@ Last updated: 2026-05-23
     lifecycle/detail refresh until quantity truth is present. Validation PASS:
     no-DB helper regression (`10/10`), focused runtime/order suites (`69/69`),
     API typecheck, repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-exchange-filled-without-quantity-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-filled-without-quantity-task-2026-05-06.md`.
 
 - [x] `PMPLC-19 fix(api-orders): keep exchange partial fill status monotonic`
   - Scope: closed a BUILDER-mode exchange fill status monotonicity slice.
@@ -5490,7 +5597,7 @@ Last updated: 2026-05-23
     execution from being hidden as a plain open order. Validation PASS: no-DB
     helper regression (`8/8`), focused runtime/order suites (`67/67`), API
     typecheck, repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-exchange-partial-status-monotonicity-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-partial-status-monotonicity-task-2026-05-06.md`.
 
 - [x] `PMPLC-18 refactor(api-orders): extract pure exchange fill helper boundary`
   - Scope: closed an ARCHITECT-mode exchange fill helper boundary slice. Pure
@@ -5501,7 +5608,7 @@ Last updated: 2026-05-23
     orchestration without behavior changes. Validation PASS: no-DB helper
     regression (`6/6`), focused runtime/order suites (`65/65`), API typecheck,
     repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-exchange-fill-helper-boundary-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-fill-helper-boundary-task-2026-05-06.md`.
 
 - [x] `PMPLC-17 fix(api-orders): keep stale exchange events from overwriting terminal fill details`
   - Scope: closed a BUILDER-mode money-impacting exchange-event idempotency
@@ -5514,7 +5621,7 @@ Last updated: 2026-05-23
     (`65/65`), API typecheck, repository guardrails, lint, and diff check.
     DB-backed exchange-event lifecycle suites remain pending because local
     Postgres at `localhost:5432` is unavailable. Evidence:
-    `docs/planning/position-management-exchange-terminal-fill-details-idempotency-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-terminal-fill-details-idempotency-task-2026-05-06.md`.
 
 - [x] `PMPLC-16 fix(api-orders): keep duplicate exchange FILLED events idempotent`
   - Scope: closed a BUILDER-mode money-impacting exchange-event idempotency
@@ -5526,7 +5633,7 @@ Last updated: 2026-05-23
     (`64/64`), API typecheck, repository guardrails, lint, and diff check.
     DB-backed exchange-event lifecycle suites remain pending because local
     Postgres at `localhost:5432` is unavailable. Evidence:
-    `docs/planning/position-management-exchange-filled-event-idempotency-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-filled-event-idempotency-task-2026-05-06.md`.
 
 - [x] `PMPLC-15 test(api-orders): lock LIVE entry lifecycle gate for partial fills`
   - Scope: closed a TESTER-mode money-impacting lifecycle gate regression
@@ -5539,7 +5646,7 @@ Last updated: 2026-05-23
     typecheck, repository guardrails, lint, and diff check. DB-backed order
     lifecycle suites remain pending because local Postgres at `localhost:5432`
     is unavailable. Evidence:
-    `docs/planning/position-management-live-entry-lifecycle-gate-task-2026-05-06.md`.
+    `history/tasks/position-management-live-entry-lifecycle-gate-task-2026-05-06.md`.
 
 - [x] `PMPLC-14 fix(api-orders): keep underfilled LIVE entry from opening full position`
   - Scope: closed a BUILDER-mode money-impacting LIVE order creation safety
@@ -5551,7 +5658,7 @@ Last updated: 2026-05-23
     (`58/58`), API typecheck, repository guardrails, lint, and diff check.
     DB-backed order lifecycle suites remain pending because local Postgres at
     `localhost:5432` is unavailable. Evidence:
-    `docs/planning/position-management-live-entry-underfill-task-2026-05-06.md`.
+    `history/tasks/position-management-live-entry-underfill-task-2026-05-06.md`.
 
 - [x] `PMPLC-13 fix(api-orders): keep exchange underfilled close from closing full position`
   - Scope: closed a BUILDER-mode money-impacting exchange-event reconciliation
@@ -5563,7 +5670,7 @@ Last updated: 2026-05-23
     repository guardrails, lint, and diff check. Full DB-backed
     exchange-events suite remains pending because local Postgres at
     `localhost:5432` is unavailable. Evidence:
-    `docs/planning/position-management-exchange-event-underfilled-close-task-2026-05-06.md`.
+    `history/tasks/position-management-exchange-event-underfilled-close-task-2026-05-06.md`.
 
 - [x] `PMPLC-12 fix(api-runtime): keep underfilled close from closing full position`
   - Scope: closed an ARCHITECT-mode money-impacting runtime close safety slice.
@@ -5575,7 +5682,7 @@ Last updated: 2026-05-23
     orchestrator/automation suites (`54/54`), API typecheck, repository
     guardrails, lint, and diff check. DB-backed exchange-events suite was
     blocked by unavailable local Postgres at `localhost:5432`. Evidence:
-    `docs/planning/position-management-underfilled-close-fail-closed-task-2026-05-06.md`.
+    `history/tasks/position-management-underfilled-close-fail-closed-task-2026-05-06.md`.
 
 - [x] `PMPLC-11 fix(api-runtime): cap LIVE free cash by exchange free balance`
   - Scope: closed a BUILDER-mode money-impacting LIVE runtime capital slice.
@@ -5585,7 +5692,7 @@ Last updated: 2026-05-23
     snapshots with the actual free balance. Validation PASS: focused runtime
     capital suite (`18/18`), focused runtime DCA/position suites (`76/76`),
     API typecheck, repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-live-free-balance-cap-task-2026-05-06.md`.
+    `history/tasks/position-management-live-free-balance-cap-task-2026-05-06.md`.
 
 - [x] `PMPLC-10 fix(api-backtests): reserve entry margin in tracked replay balance`
   - Scope: closed a TESTER-mode money-impacting replay accounting slice.
@@ -5595,7 +5702,7 @@ Last updated: 2026-05-23
     focused backtest replay suite (`29/29`), focused backtest/runtime DCA
     suites (`61/61`), API typecheck, repository guardrails, lint, and diff
     check. Evidence:
-    `docs/planning/position-management-replay-tracked-balance-reserve-task-2026-05-06.md`.
+    `history/tasks/position-management-replay-tracked-balance-reserve-task-2026-05-06.md`.
 
 - [x] `PMPLC-09 fix(api-backtests): use DCA fill price for replay reserve accounting`
   - Scope: closed an ARCHITECT-mode money-impacting backtest accounting slice.
@@ -5605,7 +5712,7 @@ Last updated: 2026-05-23
     PASS: focused contract remediation suite (`10/10`), focused
     backtest/runtime DCA suites (`60/60`), API typecheck, repository
     guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-portfolio-dca-fill-margin-task-2026-05-06.md`.
+    `history/tasks/position-management-portfolio-dca-fill-margin-task-2026-05-06.md`.
 
 - [x] `PMPLC-08 fix(api-backtests): release final-candle reserved margin from portfolio state`
   - Scope: closed a BUILDER-mode money-impacting portfolio accounting slice.
@@ -5614,7 +5721,7 @@ Last updated: 2026-05-23
     again in `finalBalance`. Validation PASS: focused contract remediation
     suite (`9/9`), focused backtest/runtime DCA suites (`59/59`), API
     typecheck, repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-portfolio-final-margin-release-task-2026-05-06.md`.
+    `history/tasks/position-management-portfolio-final-margin-release-task-2026-05-06.md`.
 
 - [x] `PMPLC-07 fix(api-backtests): estimate DCA funds from selected level size`
   - Scope: closed a BUILDER-mode money-impacting backtest/runtime parity
@@ -5624,7 +5731,7 @@ Last updated: 2026-05-23
     affordability drift. Validation PASS: focused backtest replay suite
     (`28/28`), focused backtest/runtime DCA suites (`50/50`), API typecheck,
     repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-backtest-selected-dca-funds-task-2026-05-06.md`.
+    `history/tasks/position-management-backtest-selected-dca-funds-task-2026-05-06.md`.
 
 - [x] `PMPLC-06 fix(api-backtests): respect tracked wallet funds before replay DCA adds`
   - Scope: closed a BUILDER-mode money-impacting backtest/runtime parity
@@ -5634,7 +5741,7 @@ Last updated: 2026-05-23
     funds-exhausted. Validation PASS: focused backtest replay suite (`27/27`),
     focused backtest/runtime DCA suites (`49/49`), API typecheck, repository
     guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-backtest-dca-funds-parity-task-2026-05-06.md`.
+    `history/audits/position-management-backtest-dca-funds-parity-task-2026-05-06.md`.
 
 - [x] `PMPLC-05 fix(api-backtests): preserve mixed DCA lane parity with runtime`
   - Scope: closed a TESTER-mode money-impacting backtest/runtime parity slice.
@@ -5645,7 +5752,7 @@ Last updated: 2026-05-23
     aligned with runtime. Validation PASS: focused backtest replay suite
     (`26/26`), focused backtest/runtime DCA suites (`48/48`), API typecheck,
     repository guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-backtest-mixed-dca-parity-task-2026-05-06.md`.
+    `history/audits/position-management-backtest-mixed-dca-parity-task-2026-05-06.md`.
 
 - [x] `PMPLC-04 test(api-runtime): lock LIVE close order contract before venue protection work`
   - Scope: closed a BUILDER-mode money-impacting runtime contract slice.
@@ -5655,7 +5762,7 @@ Last updated: 2026-05-23
     exchange-backed protection-order vertical slice exists. Validation PASS:
     focused runtime orchestrator suite (`17/17`), API typecheck, repository
     guardrails, lint, and diff check. Evidence:
-    `docs/planning/position-management-live-close-order-contract-task-2026-05-06.md`.
+    `history/tasks/position-management-live-close-order-contract-task-2026-05-06.md`.
 
 - [x] `PMPLC-03 fix(strategy-config): block unreachable basic DCA levels`
   - Scope: closed a BUILDER-mode money-impacting strategy validation slice.
@@ -5666,7 +5773,7 @@ Last updated: 2026-05-23
     validation suite (`5/5`), focused web strategy validation/form suite
     (`12/12`), API/web typecheck, route-reachable i18n audit, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/position-management-basic-dca-reachability-task-2026-05-06.md`.
+    `history/tasks/position-management-basic-dca-reachability-task-2026-05-06.md`.
 
 - [x] `PMPLC-02 fix(api-runtime): preserve mixed DCA lane progress`
   - Scope: closed a BUILDER-mode money-impacting runtime lifecycle slice.
@@ -5676,7 +5783,7 @@ Last updated: 2026-05-23
     count. Validation PASS: focused position management suite (`22/22`),
     runtime automation suite (`36/36`), runtime serialization suite (`8/8`),
     API typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/position-management-dca-lane-state-task-2026-05-06.md`.
+    `history/tasks/position-management-dca-lane-state-task-2026-05-06.md`.
 
 - [x] `PMPLC-01 docs(architecture): freeze PnL position-management lifecycle contract`
   - Scope: closed an ARCHITECT-mode docs-only source-of-truth update for
@@ -5686,7 +5793,7 @@ Last updated: 2026-05-23
     DCA policy, live order/position reconciliation, imported-position
     adoption-point rules, and backtest parity requirements. Validation PASS:
     repository guardrails and architecture diff review. Evidence:
-    `docs/planning/position-management-pnl-lifecycle-contract-task-2026-05-06.md`.
+    `history/tasks/position-management-pnl-lifecycle-contract-task-2026-05-06.md`.
 
 - [x] `RUNTIME-AUDIT-143 test(web-dashboard): lock dynamic stop display precedence`
   - Scope: closed a money-impacting dynamic stop display coverage gap.
@@ -5695,7 +5802,7 @@ Last updated: 2026-05-23
     backend TTP precedence over fallback TTP. Validation PASS: focused runtime
     derivations suite (`5/5`), web typecheck, repository guardrails, lint, and
     diff review. Evidence:
-    `docs/planning/runtime-audit-143-dynamic-stop-display-contract-task-2026-05-04.md`.
+    `history/audits/runtime-audit-143-dynamic-stop-display-contract-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-142 test(web-dashboard): lock backend TTP precedence`
   - Scope: closed a money-impacting dashboard regression gap. Runtime
@@ -5703,7 +5810,7 @@ Last updated: 2026-05-23
     fallback TTP display when both values exist. Validation PASS: focused
     runtime selection view-model suite (`9/9`), web typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-142-backend-ttp-precedence-regression-task-2026-05-04.md`.
+    `history/audits/runtime-audit-142-backend-ttp-precedence-regression-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-141 fix(web-dashboard): scope fallback TTP sticky state`
   - Scope: closed an ARCHITECT-mode money-impacting runtime display boundary
@@ -5712,7 +5819,7 @@ Last updated: 2026-05-23
     cross-runtime leakage. Validation PASS: focused runtime selection
     view-model suite (`8/8`), web typecheck, repository guardrails, lint, and
     diff review. Evidence:
-    `docs/planning/runtime-audit-141-scope-fallback-ttp-sticky-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-141-scope-fallback-ttp-sticky-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-140 test(web-dashboard): lock fallback TTP disarm behavior`
   - Scope: closed a TESTER-mode money-impacting dashboard regression gap.
@@ -5721,7 +5828,7 @@ Last updated: 2026-05-23
     floor, while planned TTP row truth can keep dynamic stop columns visible.
     Validation PASS: focused runtime selection view-model suite (`7/7`), web
     typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-140-fallback-ttp-disarm-regression-task-2026-05-04.md`.
+    `history/audits/runtime-audit-140-fallback-ttp-disarm-regression-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-139 fix(web-dashboard): show fallback TTP protection`
   - Scope: closed a BUILDER-mode dashboard TTP display drift. Selected runtime
@@ -5731,7 +5838,7 @@ Last updated: 2026-05-23
     focused runtime selection view-model suite (`6/6`), runtime table
     presenter suite, web typecheck, repository guardrails, lint, and diff
     review. Evidence:
-    `docs/planning/runtime-audit-139-dashboard-fallback-ttp-display-task-2026-05-04.md`.
+    `history/audits/runtime-audit-139-dashboard-fallback-ttp-display-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-138 fix(web-ui): clamp manual total pages with visible rows`
   - Scope: closed an ARCHITECT-mode shared table pagination contract drift.
@@ -5740,7 +5847,7 @@ Last updated: 2026-05-23
     summaries with rendered runtime rows. Validation PASS: focused `DataTable`
     suite (`9/9`), web typecheck, repository guardrails, lint, and diff
     review. Evidence:
-    `docs/planning/runtime-audit-138-manual-total-pages-visible-rows-task-2026-05-04.md`.
+    `history/audits/runtime-audit-138-manual-total-pages-visible-rows-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-137 fix(web-ui): clamp manual table totals without reported totals`
   - Scope: closed a BUILDER-mode shared table display invariant follow-up.
@@ -5748,7 +5855,7 @@ Last updated: 2026-05-23
     callers provide only `totalRows` metadata and no `reportedTotalRows`.
     Validation PASS: focused `DataTable` suite (`8/8`), web typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-137-manual-total-display-clamp-task-2026-05-04.md`.
+    `history/audits/runtime-audit-137-manual-total-display-clamp-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-136 fix(web-ui): clamp manual reported table totals`
   - Scope: closed a BUILDER-mode follow-up to the shared table display
@@ -5756,7 +5863,7 @@ Last updated: 2026-05-23
     rows as well as external metadata, so stale zero metadata cannot contradict
     rendered rows. Validation PASS: focused `DataTable` suite (`7/7`), web
     typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-136-manual-reported-table-total-clamp-task-2026-05-04.md`.
+    `history/audits/runtime-audit-136-manual-reported-table-total-clamp-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-135 fix(web-ui): clamp reported table totals`
   - Scope: closed a TESTER-mode shared table display invariant gap. Display-only
@@ -5764,7 +5871,7 @@ Last updated: 2026-05-23
     stale or inconsistent runtime counter cannot show `Rows: 0` while rows are
     visible. Validation PASS: focused `DataTable` suite (`6/6`), web
     typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-135-clamp-reported-table-totals-task-2026-05-04.md`.
+    `history/audits/runtime-audit-135-clamp-reported-table-totals-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-134 fix(web-dashboard): include open-order icon symbols`
   - Scope: closed a BUILDER-mode dashboard open-orders display drift.
@@ -5772,7 +5879,7 @@ Last updated: 2026-05-23
     reusing the existing shared icon hook and resolver. Validation PASS:
     focused dashboard open-orders source suite (`1/1`), web typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-134-open-orders-icon-symbols-task-2026-05-04.md`.
+    `history/audits/runtime-audit-134-open-orders-icon-symbols-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-133 fix(web-dashboard): preserve position row totals`
   - Scope: closed a BUILDER-mode dashboard position/open-order counter drift.
@@ -5782,7 +5889,7 @@ Last updated: 2026-05-23
     `DataTable` suite (`5/5`), focused dashboard open-orders source suite
     (`1/1`), web typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-133-dashboard-position-row-totals-task-2026-05-04.md`.
+    `history/audits/runtime-audit-133-dashboard-position-row-totals-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-132 refactor(web-dashboard): centralize runtime trade-row selector`
   - Scope: closed an ARCHITECT-mode dashboard runtime truth cleanup. Selected
@@ -5791,7 +5898,7 @@ Last updated: 2026-05-23
     session blocking. Validation PASS: focused runtime selection view-model
     suite (`5/5`), focused dashboard component suite (`20/20`), web typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-132-runtime-trade-row-selector-task-2026-05-04.md`.
+    `history/audits/runtime-audit-132-runtime-trade-row-selector-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-131 fix(web-dashboard): preserve snapshot trade rows`
   - Scope: closed a BUILDER-mode dashboard trade-history visibility drift.
@@ -5801,7 +5908,7 @@ Last updated: 2026-05-23
     Validation PASS: focused runtime selection view-model suite (`2/2`),
     focused dashboard component suite (`20/20`), web typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-131-snapshot-trade-rows-fallback-task-2026-05-04.md`.
+    `history/audits/runtime-audit-131-snapshot-trade-rows-fallback-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-130 fix(web-ui): preserve empty manual pagination meta`
   - Scope: closed a TESTER-mode shared dashboard pagination contract drift.
@@ -5811,7 +5918,7 @@ Last updated: 2026-05-23
     fake page count. Validation PASS: focused `DataTable` suite (`4/4`),
     focused dashboard component suite (`20/20`), web typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-130-manual-pagination-empty-meta-task-2026-05-04.md`.
+    `history/audits/runtime-audit-130-manual-pagination-empty-meta-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-129 refactor(web-dashboard): share runtime trade meta builder`
   - Scope: closed an ARCHITECT-mode dashboard runtime source-of-truth cleanup.
@@ -5821,7 +5928,7 @@ Last updated: 2026-05-23
     duplicated formulas. Validation PASS: focused dashboard component suite
     (`20/20`), focused dashboard controller suite (`2/2`), web typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-129-shared-trade-meta-builder-task-2026-05-04.md`.
+    `history/audits/runtime-audit-129-shared-trade-meta-builder-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-128 fix(web-dashboard): align fallback trade metadata`
   - Scope: closed a BUILDER-mode dashboard runtime fallback metadata drift.
@@ -5830,7 +5937,7 @@ Last updated: 2026-05-23
     `totalPages=0` and non-empty fallback pages are clamped to the local page
     range. Validation PASS: focused dashboard component suite (`20/20`), web
     typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-128-dashboard-trade-meta-fallback-task-2026-05-04.md`.
+    `history/audits/runtime-audit-128-dashboard-trade-meta-fallback-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-127 fix(web-dashboard): preserve aggregate trade totals`
   - Scope: closed a BUILDER-mode dashboard aggregate trade-history counter
@@ -5839,7 +5946,7 @@ Last updated: 2026-05-23
     count no longer collapses to the returned item-window length. Validation
     PASS: focused dashboard controller suite (`2/2`), web typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-127-dashboard-aggregate-trade-total-task-2026-05-04.md`.
+    `history/audits/runtime-audit-127-dashboard-aggregate-trade-total-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-126 fix(web-bots): align empty aggregate trade meta fallback`
   - Scope: closed an ARCHITECT-mode dashboard aggregate fallback contract
@@ -5849,7 +5956,7 @@ Last updated: 2026-05-23
     `hasNext=false`. Validation PASS: focused web aggregate service suite
     (`3/3`), web typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-126-web-empty-aggregate-trade-meta-task-2026-05-04.md`.
+    `history/audits/runtime-audit-126-web-empty-aggregate-trade-meta-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-125 fix(api-bots): align empty aggregate trade meta`
   - Scope: closed a TESTER-mode runtime aggregate empty-state metadata drift.
@@ -5859,7 +5966,7 @@ Last updated: 2026-05-23
     `hasNext=false` remain unchanged. Validation PASS: focused runtime session
     position unit suite (`16/16`), API typecheck, repository guardrails, lint,
     and diff review. Evidence:
-    `docs/planning/runtime-audit-125-empty-aggregate-trade-meta-task-2026-05-04.md`.
+    `history/audits/runtime-audit-125-empty-aggregate-trade-meta-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-124 fix(api-bots): align aggregate trade meta page size`
   - Scope: closed a BUILDER-mode runtime aggregate trade metadata drift.
@@ -5868,7 +5975,7 @@ Last updated: 2026-05-23
     `hasNext` remains based on `totalTrades > returnedItems`. Validation PASS:
     focused runtime session position unit suite (`16/16`), API typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-124-aggregate-trade-meta-page-size-task-2026-05-04.md`.
+    `history/audits/runtime-audit-124-aggregate-trade-meta-page-size-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-123 refactor(api-bots): remove stale aggregate position source`
   - Scope: closed an ARCHITECT-mode runtime aggregate source-clarity cleanup.
@@ -5877,7 +5984,7 @@ Last updated: 2026-05-23
     canonical current/projection sources. Validation PASS: focused runtime
     session position unit suite (`15/15`), API typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-123-remove-stale-position-response-aggregate-task-2026-05-04.md`.
+    `history/audits/runtime-audit-123-remove-stale-position-response-aggregate-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-122 fix(api-bots): preserve aggregate account balance`
   - Scope: closed a BUILDER-mode runtime aggregate wallet/capital visibility
@@ -5887,7 +5994,7 @@ Last updated: 2026-05-23
     summaries. Validation PASS: focused runtime session position unit suite
     (`15/15`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-122-aggregate-account-balance-summary-task-2026-05-04.md`.
+    `history/audits/runtime-audit-122-aggregate-account-balance-summary-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-121 fix(api-bots): align aggregate dynamic stop flag`
   - Scope: closed a BUILDER-mode runtime aggregate dashboard display-flag
@@ -5897,7 +6004,7 @@ Last updated: 2026-05-23
     unused dynamic-stop columns. Validation PASS: focused runtime session
     position unit suite (`14/14`), API typecheck, repository guardrails, lint,
     and diff review. Evidence:
-    `docs/planning/runtime-audit-121-aggregate-dynamic-stop-flag-task-2026-05-04.md`.
+    `history/audits/runtime-audit-121-aggregate-dynamic-stop-flag-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-120 fix(api-bots): align aggregate position items`
   - Scope: closed a TESTER-mode runtime aggregate dashboard table/counter
@@ -5907,7 +6014,7 @@ Last updated: 2026-05-23
     stay visible after counters move to the newer snapshot. Validation PASS:
     focused runtime session position unit suite (`13/13`), API typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-120-aggregate-position-items-task-2026-05-04.md`.
+    `history/audits/runtime-audit-120-aggregate-position-items-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-119 fix(api-bots): align aggregate running trade items`
   - Scope: closed a BUILDER-mode runtime aggregate dashboard table/counter
@@ -5917,7 +6024,7 @@ Last updated: 2026-05-23
     RUNNING session. Validation PASS: focused runtime session position unit
     suite (`12/12`), API typecheck, repository guardrails, lint, and diff
     review. Evidence:
-    `docs/planning/runtime-audit-119-aggregate-running-trade-items-task-2026-05-04.md`.
+    `history/audits/runtime-audit-119-aggregate-running-trade-items-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-118 fix(api-bots): align aggregate running symbols`
   - Scope: closed a BUILDER-mode runtime aggregate dashboard metadata drift.
@@ -5927,7 +6034,7 @@ Last updated: 2026-05-23
     contribute normally. Validation PASS: focused runtime session position unit
     suite (`11/11`), API typecheck, repository guardrails, lint, and diff
     review. Evidence:
-    `docs/planning/runtime-audit-118-aggregate-running-symbols-task-2026-05-04.md`.
+    `history/audits/runtime-audit-118-aggregate-running-symbols-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-117 fix(api-bots): restrict carry-over session trades`
   - Scope: closed an ARCHITECT-mode runtime trades dashboard window drift.
@@ -5937,7 +6044,7 @@ Last updated: 2026-05-23
     fees. Validation PASS: focused runtime session position unit suite
     (`10/10`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-117-trades-carryover-window-task-2026-05-04.md`.
+    `history/audits/runtime-audit-117-trades-carryover-window-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-116 fix(api-bots): include live imported open positions in symbol stats`
   - Scope: closed a BUILDER-mode LIVE dashboard parity drift. Runtime
@@ -5947,7 +6054,7 @@ Last updated: 2026-05-23
     recovery scope. Validation PASS: focused runtime session position unit
     suite (`8/8`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-116-symbol-stats-live-imported-open-position-task-2026-05-04.md`.
+    `history/audits/runtime-audit-116-symbol-stats-live-imported-open-position-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-115 fix(api-bots): include carried open positions in symbol stats`
   - Scope: closed a TESTER-mode runtime dashboard parity drift. Runtime
@@ -5956,7 +6063,7 @@ Last updated: 2026-05-23
     the session positions endpoint's carried-position semantics. Validation
     PASS: focused runtime session position unit suite (`6/6`), API typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-115-symbol-stats-carried-open-position-task-2026-05-04.md`.
+    `history/audits/runtime-audit-115-symbol-stats-carried-open-position-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-114 fix(api-bots): bound session closed positions by window`
   - Scope: closed an ARCHITECT-mode runtime session dashboard window drift.
@@ -5967,7 +6074,7 @@ Last updated: 2026-05-23
     green. Validation PASS: focused runtime session position unit suite
     (`5/5`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-114-session-closed-position-window-task-2026-05-04.md`.
+    `history/audits/runtime-audit-114-session-closed-position-window-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-113 fix(api-wallets): include paper closed position realized PnL`
   - Scope: closed a BUILDER-mode PAPER wallet analytics drift. Wallet
@@ -5976,7 +6083,7 @@ Last updated: 2026-05-23
     using the wallet, while LIVE wallet realized PnL remains cashflow-based.
     Validation PASS: focused wallet service unit suite (`5/5`), API typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-113-paper-wallet-realized-pnl-task-2026-05-04.md`.
+    `history/audits/runtime-audit-113-paper-wallet-realized-pnl-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-112 fix(api-bots): scope runtime trade wallet fallback to live`
   - Scope: closed a BUILDER-mode runtime read-model drift. Runtime position
@@ -5985,7 +6092,7 @@ Last updated: 2026-05-23
     unrelated botless wallet-scoped trades into bot-scoped position rows.
     Validation PASS: focused runtime positions read unit suite (`4/4`), API
     typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-112-paper-runtime-trade-wallet-fallback-task-2026-05-04.md`.
+    `history/audits/runtime-audit-112-paper-runtime-trade-wallet-fallback-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-111 test(api-orders): align paper position bot-scope expectations`
   - Scope: closed a BUILDER-mode test-contract drift. DB-backed order tests
@@ -5996,7 +6103,7 @@ Last updated: 2026-05-23
     diff review. Targeted DB-backed order tests were attempted but timed out
     locally after 120s because the local PostgreSQL-backed suite did not
     complete in this environment. Evidence:
-    `docs/planning/runtime-audit-111-paper-position-test-contract-task-2026-05-04.md`.
+    `history/audits/runtime-audit-111-paper-position-test-contract-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-110 fix(api-bots): preserve paper close bot scope`
   - Scope: closed a TESTER-mode PAPER manual-close ownership drift. Manual
@@ -6006,7 +6113,7 @@ Last updated: 2026-05-23
     receives wallet context from the bot. Validation PASS: focused runtime
     session position command suite (`11/11`), API typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-110-paper-manual-close-wallet-backfill-task-2026-05-04.md`.
+    `history/audits/runtime-audit-110-paper-manual-close-wallet-backfill-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-109 fix(api-wallets): block paper reset on bot-owned positions`
   - Scope: closed a BUILDER-mode PAPER wallet reset safety drift. PAPER wallet
@@ -6015,7 +6122,7 @@ Last updated: 2026-05-23
     fail-closed reset behavior after PAPER bot positions moved to bot-scoped
     persistence. Validation PASS: focused wallet service unit suite (`3/3`),
     API typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-109-paper-reset-bot-position-scope-task-2026-05-04.md`.
+    `history/audits/runtime-audit-109-paper-reset-bot-position-scope-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-108 fix(api-orders): persist paper positions in bot scope`
   - Scope: closed an ARCHITECT-mode PAPER persistence/DB uniqueness drift.
@@ -6028,7 +6135,7 @@ Last updated: 2026-05-23
     repository guardrails, lint, and diff review. DB-backed order-service
     regression remains locally blocked by unavailable PostgreSQL on
     `localhost:5432`. Evidence:
-    `docs/planning/runtime-audit-108-paper-position-db-scope-task-2026-05-04.md`.
+    `history/audits/runtime-audit-108-paper-position-db-scope-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-107 fix(api-orders): scope PAPER fills by bot`
   - Scope: closed a BUILDER-mode PAPER execution scope drift. Order
@@ -6041,7 +6148,7 @@ Last updated: 2026-05-23
     and diff review. A DB-backed order-service regression was added but local
     execution was blocked by unavailable PostgreSQL on `localhost:5432`.
     Evidence:
-    `docs/planning/runtime-audit-107-paper-order-fill-bot-scope-task-2026-05-04.md`.
+    `history/audits/runtime-audit-107-paper-order-fill-bot-scope-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-106 fix(api-bots): dedupe bot-open DCA display`
   - Scope: closed a BUILDER-mode dashboard DCA display drift reported by the
@@ -6052,7 +6159,7 @@ Last updated: 2026-05-23
     count unit suite (`2/2`), API typecheck, repository guardrails, lint, and
     diff review. Integration e2e scenario was added but local execution was
     blocked by unavailable PostgreSQL on `localhost:5432`. Evidence:
-    `docs/planning/runtime-audit-106-bot-open-dca-display-dedupe-task-2026-05-04.md`.
+    `history/audits/runtime-audit-106-bot-open-dca-display-dedupe-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-105 fix(api-engine): scope runtime external count to synced rows`
   - Scope: closed a TESTER-mode runtime cap active-truth drift. LIVE owned
@@ -6062,7 +6169,7 @@ Last updated: 2026-05-23
     ignored them. Validation PASS: runtime signal-loop defaults suite
     (`10/10`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-105-runtime-external-count-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-105-runtime-external-count-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-104 fix(api-runtime): guard close mutations by sync state`
   - Scope: closed a BUILDER-mode close mutation active-truth drift. Manual
@@ -6072,7 +6179,7 @@ Last updated: 2026-05-23
     PASS: orders service suite (`35/35`), execution orchestrator suite
     (`17/17`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-104-close-position-mutation-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-104-close-position-mutation-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-103 fix(api-positions): scope reconciliation synced lookups`
   - Scope: closed a BUILDER-mode LIVE reconciliation active-truth drift.
@@ -6082,7 +6189,7 @@ Last updated: 2026-05-23
     close handling after they leave active truth. Validation PASS: focused
     reconciliation suite (`31/31`), API typecheck, repository guardrails, lint,
     and diff review. Evidence:
-    `docs/planning/runtime-audit-103-reconciliation-open-synced-scope-task-2026-05-04.md`.
+    `history/audits/runtime-audit-103-reconciliation-open-synced-scope-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-102 fix(api-engine): scope scan watchdog to synced rows`
   - Scope: closed an ARCHITECT-mode runtime scan target drift. Default runtime
@@ -6092,7 +6199,7 @@ Last updated: 2026-05-23
     while explicit `RUNTIME_SCAN_SYMBOLS` remains operator-owned. Validation
     PASS: focused runtime scan suite (`6/6`), API typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-102-runtime-scan-watchdog-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-102-runtime-scan-watchdog-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-101 fix(api-engine): scope position automation to synced rows`
   - Scope: closed a BUILDER-mode runtime automation active-truth drift.
@@ -6102,7 +6209,7 @@ Last updated: 2026-05-23
     exchange-imported ownership hydration remains covered. Validation PASS:
     focused automation default-deps suite (`1/1`), API typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-101-position-automation-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-101-position-automation-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-100 fix(api-engine): scope position lifetime to synced rows`
   - Scope: closed a TESTER-mode runtime lifetime active-truth drift. Runtime
@@ -6111,7 +6218,7 @@ Last updated: 2026-05-23
     close orchestration while synced stale positions still close through the
     canonical runtime path. Validation PASS: focused lifetime suite (`4/4`),
     API typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-100-position-lifetime-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-100-position-lifetime-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-99 fix(api-bots): scope PAPER LIVE switch guard`
   - Scope: closed an ARCHITECT-mode bot management active-truth drift. PAPER
@@ -6120,7 +6227,7 @@ Last updated: 2026-05-23
     longer block a bot configuration switch while real active paper positions
     remain fail-closed. Validation PASS: focused bot e2e pack (`27/27`), API
     typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-99-paper-live-switch-active-position-scope-task-2026-05-04.md`.
+    `history/audits/runtime-audit-99-paper-live-switch-active-position-scope-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-98 fix(api-orders): release stale fill blockers`
   - Scope: closed a BUILDER-mode immediate-fill DB blocker drift. Order fill
@@ -6130,7 +6237,7 @@ Last updated: 2026-05-23
     filled orders at the partial unique index layer. Validation PASS: orders
     service suite (`34/34`), API typecheck, repository guardrails, lint, and
     diff review. Evidence:
-    `docs/planning/runtime-audit-98-immediate-fill-stale-position-blocker-task-2026-05-04.md`.
+    `history/audits/runtime-audit-98-immediate-fill-stale-position-blocker-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-97 fix(api-orders): require synced open position scope`
   - Scope: closed a BUILDER-mode shared order open-position scope drift.
@@ -6139,7 +6246,7 @@ Last updated: 2026-05-23
     drive manual reverse-conflict checks or unlinked fill reusable-position
     lookup. Validation PASS: orders service suite (`33/33`), API typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-97-open-position-scope-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-97-open-position-scope-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-96 fix(api-orders): guard linked position fill lifecycle`
   - Scope: closed an ARCHITECT-mode linked-position lifecycle drift. LIVE
@@ -6149,7 +6256,7 @@ Last updated: 2026-05-23
     updates, DCA trades, or runtime DCA dedupe completion. Validation PASS:
     exchange-events suite (`7/7`), API typecheck, repository guardrails, lint,
     and diff review. Evidence:
-    `docs/planning/runtime-audit-96-linked-position-fill-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-96-linked-position-fill-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-95 fix(api-orders): scope trade updates to synced live orders`
   - Scope: closed a TESTER-mode LIVE order-trade update scope drift. Binance
@@ -6159,7 +6266,7 @@ Last updated: 2026-05-23
     steal lifecycle updates from the valid active order. Validation PASS:
     exchange-events suite (`6/6`), API typecheck, repository guardrails, lint,
     and diff review. Evidence:
-    `docs/planning/runtime-audit-95-order-trade-update-order-scope-task-2026-05-04.md`.
+    `history/audits/runtime-audit-95-order-trade-update-order-scope-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-94 fix(api-orders): scope account updates to synced positions`
   - Scope: closed a BUILDER-mode LIVE account-update active-truth drift.
@@ -6169,7 +6276,7 @@ Last updated: 2026-05-23
     PnL, or external-close updates. Validation PASS: exchange-events suite
     (`6/6`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-94-account-update-scope-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-94-account-update-scope-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-93 fix(api-engine): guard dedupe success by order state`
   - Scope: closed an ARCHITECT-mode runtime DCA completion drift. Runtime
@@ -6179,7 +6286,7 @@ Last updated: 2026-05-23
     state after exchange-event handling. Validation PASS: runtime execution
     dedupe suite (`11/11`), exchange-events suite (`6/6`), API typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-93-dedupe-success-order-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-93-dedupe-success-order-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-92 fix(api-engine): align dedupe linked orders with sync state`
   - Scope: closed a BUILDER-mode runtime execution dedupe active-truth drift.
@@ -6189,7 +6296,7 @@ Last updated: 2026-05-23
     submitted or inflight. Validation PASS: runtime execution dedupe suite
     (`9/9`), execution orchestrator suite (`17/17`), API typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-92-runtime-dedupe-linked-order-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-92-runtime-dedupe-linked-order-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-91 fix(api-engine): align execution open lookup with sync state`
   - Scope: closed a BUILDER-mode runtime execution active-truth drift. Runtime
@@ -6199,7 +6306,7 @@ Last updated: 2026-05-23
     after dashboard/pre-trade/runtime loop has stopped treating them as active.
     Validation PASS: focused execution orchestrator suite (`17/17`), API
     typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-91-execution-open-lookup-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-91-execution-open-lookup-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-90 fix(api-engine): align runtime loop repository with sync state`
   - Scope: closed a TESTER-mode runtime loop active-truth drift. Runtime signal
@@ -6209,7 +6316,7 @@ Last updated: 2026-05-23
     managed-import truth. Validation PASS: focused runtime repository/defaults
     pack (`12/12`), API typecheck, repository guardrails, lint, and diff
     review. Evidence:
-    `docs/planning/runtime-audit-90-runtime-loop-repository-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-90-runtime-loop-repository-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-89 fix(api-engine): align pre-trade open guards with sync state`
   - Scope: closed a BUILDER-mode pre-trade/runtime active-truth drift.
@@ -6220,7 +6327,7 @@ Last updated: 2026-05-23
     remain blocking. Validation PASS: focused pre-trade e2e/unit pack
     (`25/25`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-89-pretrade-sync-state-open-guards-task-2026-05-04.md`.
+    `history/audits/runtime-audit-89-pretrade-sync-state-open-guards-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-88 fix(api-positions): scope reconciliation owner cleanup by market`
   - Scope: closed a BUILDER-mode LIVE reconciliation cleanup ownership drift.
@@ -6231,7 +6338,7 @@ Last updated: 2026-05-23
     closing SPOT-only owner cleanup targets. Validation PASS: live position
     reconciliation suite (`30/30`), API typecheck, repository guardrails, lint,
     and diff review. Evidence:
-    `docs/planning/runtime-audit-88-reconciliation-owner-market-scope-task-2026-05-04.md`.
+    `history/audits/runtime-audit-88-reconciliation-owner-market-scope-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-87 fix(api-positions): scope stale reconciliation scans by market`
   - Scope: closed an ARCHITECT-mode LIVE reconciliation write-path drift. LIVE
@@ -6242,7 +6349,7 @@ Last updated: 2026-05-23
     reconciliation pass from marking same-api-key SPOT rows stale. Validation
     PASS: live position reconciliation suite (`29/29`), API typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-87-reconciliation-stale-scan-market-scope-task-2026-05-04.md`.
+    `history/audits/runtime-audit-87-reconciliation-stale-scan-market-scope-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-86 fix(api-wallets): scope imported open PnL by market type`
   - Scope: closed a BUILDER-mode wallet analytics market-scope drift. Wallet
@@ -6252,7 +6359,7 @@ Last updated: 2026-05-23
     open PnL from the same API key while same-market `IN_SYNC` imported PnL
     remains included. Validation PASS: wallets e2e (`20/20`), API typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-86-wallet-open-pnl-market-scope-task-2026-05-04.md`.
+    `history/audits/runtime-audit-86-wallet-open-pnl-market-scope-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-85 fix(api-bots): align runtime closed history with sync state`
   - Scope: closed a TESTER-mode runtime/portfolio closed-history drift.
@@ -6263,7 +6370,7 @@ Last updated: 2026-05-23
     Validation PASS: portfolio-history e2e (`3/3`), runtime-scope e2e
     (`16/16`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-85-runtime-closed-positions-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-85-runtime-closed-positions-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-84 fix(api-bots): align runtime open positions with sync state`
   - Scope: closed an ARCHITECT-mode runtime dashboard active-position drift.
@@ -6273,7 +6380,7 @@ Last updated: 2026-05-23
     scoped `ORPHAN_LOCAL` open rows no longer appear as live bot positions.
     Validation PASS: runtime-scope e2e (`16/16`), API typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-84-runtime-open-positions-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-84-runtime-open-positions-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-83 fix(api-bots): align symbol live rows with sync state`
   - Scope: closed a BUILDER-mode runtime symbol KPI drift. Runtime symbol live
@@ -6282,7 +6389,7 @@ Last updated: 2026-05-23
     unrealized PnL, or derived market state while active synced rows remain
     included. Validation PASS: runtime-scope e2e (`15/15`), API typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-83-symbol-live-rows-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-83-symbol-live-rows-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-82 fix(api-wallets): align open PnL with sync state`
   - Scope: closed a BUILDER-mode wallet KPI/timeline parity drift. Wallet
@@ -6292,7 +6399,7 @@ Last updated: 2026-05-23
     dashboard PnL while active imported `IN_SYNC` rows remain included.
     Validation PASS: wallets e2e (`20/20`), API typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-82-wallet-open-pnl-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-82-wallet-open-pnl-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-81 fix(api-wallets): align reset open-position blocker with sync state`
   - Scope: closed an ARCHITECT-mode paper wallet reset parity drift. Paper
@@ -6301,7 +6408,7 @@ Last updated: 2026-05-23
     position-list/runtime semantics, so stale `ORPHAN_LOCAL` open-position
     rows no longer deny reset. Validation PASS: wallets e2e (`20/20`), API
     typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-81-wallet-reset-active-position-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-81-wallet-reset-active-position-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-80 fix(api-positions): ignore local orphans in legacy repair`
   - Scope: closed a TESTER-mode legacy open-position repair drift. Local
@@ -6312,7 +6419,7 @@ Last updated: 2026-05-23
     re-import behavior remain covered. Validation PASS: orphan-repair e2e
     (`1/1`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-80-orphan-repair-ignore-local-orphans-task-2026-05-04.md`.
+    `history/audits/runtime-audit-80-orphan-repair-ignore-local-orphans-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-79 fix(api-positions): ignore local orphans in takeover repair`
   - Scope: closed a BUILDER-mode LIVE takeover repair drift. Takeover status
@@ -6322,7 +6429,7 @@ Last updated: 2026-05-23
     `IN_SYNC`. `DRIFT` repair behavior remains intact. Validation PASS:
     takeover-status e2e (`6/6`), API typecheck, repository guardrails, lint,
     and diff review. Evidence:
-    `docs/planning/runtime-audit-79-takeover-ignore-local-orphans-task-2026-05-04.md`.
+    `history/audits/runtime-audit-79-takeover-ignore-local-orphans-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-78 fix(api-positions): reject stale management-mode toggles`
   - Scope: closed an ARCHITECT-mode position management-state drift.
@@ -6332,7 +6439,7 @@ Last updated: 2026-05-23
     runtime paths stop treating them as live. Validation PASS: positions
     service suite (`3/3`), API typecheck, repository guardrails, lint, and diff
     review. Evidence:
-    `docs/planning/runtime-audit-78-position-management-mode-active-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-78-position-management-mode-active-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-77 fix(api-positions): require synced state for manual updates`
   - Scope: closed a BUILDER-mode manual position update parity drift. Manual
@@ -6342,7 +6449,7 @@ Last updated: 2026-05-23
     list/runtime close paths stop treating them as active. Validation PASS:
     positions service suite (`2/2`), API typecheck, repository guardrails,
     lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-77-position-manual-update-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-77-position-manual-update-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-76 fix(api-positions): align active position lists with sync state`
   - Scope: closed a BUILDER-mode dashboard positions-list parity drift.
@@ -6351,7 +6458,7 @@ Last updated: 2026-05-23
     longer appear as active list truth while unfiltered history remains
     available for audit. Validation PASS: positions list e2e (`2/2`), API
     typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-76-positions-list-active-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-76-positions-list-active-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-75 fix(api-runtime): require synced state for runtime close`
   - Scope: closed a TESTER-mode runtime manual-close parity drift.
@@ -6361,7 +6468,7 @@ Last updated: 2026-05-23
     are ignored as `no_open_position` before close orchestration. Validation
     PASS: runtime position command suite (`10/10`), API typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-75-runtime-close-position-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-75-runtime-close-position-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-74 fix(api-orders): require active sync state for order actions`
   - Scope: closed a BUILDER-mode manual order lifecycle parity drift. Manual
@@ -6371,7 +6478,7 @@ Last updated: 2026-05-23
     has stopped treating them as active. Validation PASS: orders service suite
     (`31/31`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-74-order-actions-active-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-74-order-actions-active-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-73 fix(api-orders): align active order lists with sync state`
   - Scope: closed a BUILDER-mode dashboard/order-list parity drift. Orders list
@@ -6381,7 +6488,7 @@ Last updated: 2026-05-23
     terminal status filters remain available. Validation PASS: orders service
     suite (`29/29`), API typecheck, repository guardrails, lint, and diff
     review. Evidence:
-    `docs/planning/runtime-audit-73-orders-list-active-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-73-orders-list-active-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-72 fix(api-engine): align order lifetime with sync state`
   - Scope: closed an ARCHITECT-mode runtime lifecycle parity drift. Runtime
@@ -6390,7 +6497,7 @@ Last updated: 2026-05-23
     attempts or dedupe noise while stale confirmed active rows remain
     cancelable. Validation PASS: runtime order lifetime suite (`5/5`), API
     typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-72-order-lifetime-active-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-72-order-lifetime-active-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-71 fix(api-wallets): align reset open-order blocker with sync state`
   - Scope: closed a BUILDER-mode wallet/runtime lifecycle parity drift. Paper
@@ -6400,7 +6507,7 @@ Last updated: 2026-05-23
     Active `IN_SYNC` open orders still block reset. Validation PASS: wallet e2e
     (`19/19`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-71-wallet-reset-active-order-sync-state-task-2026-05-04.md`.
+    `history/audits/runtime-audit-71-wallet-reset-active-order-sync-state-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-70 fix(api-runtime): hide stale synced open orders`
   - Scope: closed a TESTER-mode dashboard/reconciliation lifecycle drift.
@@ -6410,7 +6517,7 @@ Last updated: 2026-05-23
     synced orders to non-open `CANCELED`. Validation PASS: runtime-scope e2e
     (`15/15`), live reconciliation suite (`28/28`), API typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-70-hide-stale-open-orders-task-2026-05-04.md`.
+    `history/audits/runtime-audit-70-hide-stale-open-orders-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-69 fix(api-positions): scope open-order upsert by owner`
   - Scope: closed an ARCHITECT-mode LIVE open-order write-path ownership
@@ -6420,7 +6527,7 @@ Last updated: 2026-05-23
     cannot steal the update or prevent the owning bot/wallet row from being
     created. Validation PASS: live reconciliation suite (`27/27`), API
     typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-69-open-order-upsert-owner-scope-task-2026-05-04.md`.
+    `history/audits/runtime-audit-69-open-order-upsert-owner-scope-task-2026-05-04.md`.
 
 - [x] `RUNTIME-AUDIT-68 fix(api-runtime): require wallet proof for botless LIVE open orders`
   - Scope: closed a BUILDER-mode dashboard management-state ownership drift.
@@ -6431,7 +6538,7 @@ Last updated: 2026-05-23
     through the existing bot-scoped filter. Validation PASS: runtime-scope e2e
     (`14/14`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-68-live-open-order-wallet-proof-task-2026-05-03.md`.
+    `history/audits/runtime-audit-68-live-open-order-wallet-proof-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-67 fix(api-runtime): scope imported external-id query filters`
   - Scope: closed a TESTER-mode DB candidate-filter drift after market-scoped
@@ -6443,7 +6550,7 @@ Last updated: 2026-05-23
     loop defaults (`10/10`), live reconciliation (`26/26`), pre-trade service
     (`17/17`), orders service (`28/28`), runtime position command (`9/9`),
     API typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-67-market-scoped-external-id-query-filters-task-2026-05-03.md`.
+    `history/audits/runtime-audit-67-market-scoped-external-id-query-filters-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-66 fix(api-runtime): parse external-id market for ownership reads`
   - Scope: closed an ARCHITECT-mode read-path drift after market-scoped
@@ -6453,7 +6560,7 @@ Last updated: 2026-05-23
     `apiKey:symbol:side` fallback preserved. Validation PASS: runtime loop
     defaults suite (`10/10`), live reconciliation suite (`26/26`), API
     typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-66-parse-external-id-market-ownership-task-2026-05-03.md`.
+    `history/audits/runtime-audit-66-parse-external-id-market-ownership-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-65 fix(api-positions): market-scope imported external IDs`
   - Scope: closed a BUILDER-mode persisted identity drift after market-scoped
@@ -6465,7 +6572,7 @@ Last updated: 2026-05-23
     can be upgraded instead of duplicated. Validation PASS: live reconciliation
     suite (`26/26`), API typecheck, repository guardrails, lint, and diff
     review. Evidence:
-    `docs/planning/runtime-audit-65-market-scoped-external-position-id-task-2026-05-03.md`.
+    `history/audits/runtime-audit-65-market-scoped-external-position-id-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-64 fix(api-bots): scope external ownership by market type`
   - Scope: closed a BUILDER-mode LIVE import ownership drift. External
@@ -6477,7 +6584,7 @@ Last updated: 2026-05-23
     PASS: ownership regression suite (`10/10`), live reconciliation suite
     (`25/25`), runtime loop defaults suite (`9/9`), API typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-64-external-ownership-market-type-task-2026-05-03.md`.
+    `history/audits/runtime-audit-64-external-ownership-market-type-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-63 fix(api-positions): use market type in live reconciliation`
   - Scope: closed an ARCHITECT-mode LIVE import scope drift. The exchange
@@ -6488,7 +6595,7 @@ Last updated: 2026-05-23
     FUTURES fallback for legacy API-key-only contexts. Validation PASS: live
     position reconciliation unit suite (`25/25`), API typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-63-live-reconciliation-market-type-task-2026-05-03.md`.
+    `history/audits/runtime-audit-63-live-reconciliation-market-type-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-62 fix(api-bots): show planned dynamic-stop columns`
   - Scope: closed a TESTER-mode API display-contract drift. Runtime session
@@ -6500,7 +6607,7 @@ Last updated: 2026-05-23
     the bot's assigned market group. Validation PASS: dynamic-stop operator
     truth e2e (`3/3`), API typecheck, repository guardrails, lint, and diff
     review. Evidence:
-    `docs/planning/runtime-audit-62-planned-dynamic-stop-columns-task-2026-05-03.md`.
+    `history/audits/runtime-audit-62-planned-dynamic-stop-columns-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-61 fix(web-runtime): align dashboard dynamic-stop plan visibility`
   - Scope: closed a BUILDER-mode dashboard/Bots surface drift. Dashboard home
@@ -6509,7 +6616,7 @@ Last updated: 2026-05-23
     protected percentages, or planned trailing levels before arm. Validation
     PASS: focused web regression pack (`33/33`), web typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-61-dashboard-dynamic-stop-plan-visibility-task-2026-05-03.md`.
+    `history/audits/runtime-audit-61-dashboard-dynamic-stop-plan-visibility-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-60 fix(api-bots): prevent aggregate running session metadata overlap double counts`
   - Scope: closed an ARCHITECT-mode aggregate status metadata drift. Runtime
@@ -6521,7 +6628,7 @@ Last updated: 2026-05-23
     diagnostic/configured-scope metadata. Validation PASS: aggregate e2e
     (`18/18`), runtime-scope e2e (`13/13`), API typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-60-aggregate-running-session-metadata-overlap-task-2026-05-03.md`.
+    `history/audits/runtime-audit-60-aggregate-running-session-metadata-overlap-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-59 fix(api-bots): prevent aggregate running symbol-summary overlap double counts`
   - Scope: closed a BUILDER-mode aggregate market/signal summary drift.
@@ -6532,7 +6639,7 @@ Last updated: 2026-05-23
     dashboard market/header summaries. Validation PASS: aggregate e2e
     (`17/17`), runtime-scope e2e (`13/13`), API typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-59-aggregate-running-symbol-summary-overlap-task-2026-05-03.md`.
+    `history/audits/runtime-audit-59-aggregate-running-symbol-summary-overlap-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-58 fix(api-bots): prevent aggregate running closed-position overlap double counts`
   - Scope: closed a BUILDER-mode aggregate closed-position history drift.
@@ -6543,7 +6650,7 @@ Last updated: 2026-05-23
     closed totals. Validation PASS: aggregate e2e (`16/16`), runtime-scope
     e2e (`13/13`), API typecheck, repository guardrails, lint, and diff
     review. Evidence:
-    `docs/planning/runtime-audit-58-aggregate-running-closed-position-overlap-task-2026-05-03.md`.
+    `history/audits/runtime-audit-58-aggregate-running-closed-position-overlap-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-57 fix(api-bots): prevent aggregate symbol open-state overlap double counts`
   - Scope: closed a TESTER-mode aggregate market/signal current-state drift.
@@ -6554,7 +6661,7 @@ Last updated: 2026-05-23
     state. Validation PASS: aggregate e2e (`15/15`), runtime-scope e2e
     (`13/13`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-57-aggregate-symbol-open-overlap-task-2026-05-03.md`.
+    `history/audits/runtime-audit-57-aggregate-symbol-open-overlap-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-56 fix(api-bots): prevent aggregate running trade overlap double counts`
   - Scope: closed a BUILDER-mode aggregate trade/fee drift. Runtime monitoring
@@ -6564,7 +6671,7 @@ Last updated: 2026-05-23
     `trades.total` or fee summary. Validation PASS: aggregate e2e (`15/15`),
     runtime-scope e2e (`13/13`), API typecheck, repository guardrails, lint,
     and diff review. Evidence:
-    `docs/planning/runtime-audit-56-aggregate-running-trade-overlap-task-2026-05-03.md`.
+    `history/audits/runtime-audit-56-aggregate-running-trade-overlap-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-55 fix(api-bots): align aggregate total positions with final counts`
   - Scope: closed a BUILDER-mode aggregate count consistency drift. Runtime
@@ -6574,7 +6681,7 @@ Last updated: 2026-05-23
     open-position dedupe. Validation PASS: aggregate e2e (`14/14`),
     runtime-scope e2e (`13/13`), API typecheck, repository guardrails, lint,
     and diff review. Evidence:
-    `docs/planning/runtime-audit-55-aggregate-total-position-overlap-task-2026-05-03.md`.
+    `history/audits/runtime-audit-55-aggregate-total-position-overlap-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-54 fix(api-bots): prevent aggregate open-position overlap double counts`
   - Scope: closed an ARCHITECT-mode current-state dashboard drift. Runtime
@@ -6585,7 +6692,7 @@ Last updated: 2026-05-23
     remain session-window sums. Validation PASS: overlapping-session aggregate
     e2e (`14/14`), runtime-scope e2e (`13/13`), API typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-54-aggregate-open-position-overlap-task-2026-05-03.md`.
+    `history/audits/runtime-audit-54-aggregate-open-position-overlap-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-53 fix(api-bots): preserve portfolio close points under monitoring row caps`
   - Scope: closed a BUILDER-mode portfolio dashboard history drift. Bot
@@ -6595,7 +6702,7 @@ Last updated: 2026-05-23
     closed-count and realized-PnL summaries. Validation PASS: 501-close
     portfolio history e2e (`3/3`), API typecheck, repository guardrails, lint,
     and diff review. Evidence:
-    `docs/planning/runtime-audit-53-portfolio-history-close-points-limit-task-2026-05-03.md`.
+    `history/audits/runtime-audit-53-portfolio-history-close-points-limit-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-52 fix(api-bots): preserve aggregate symbols-tracked under item limits`
   - Scope: closed a TESTER-mode dashboard aggregate metadata drift. Runtime
@@ -6606,7 +6713,7 @@ Last updated: 2026-05-23
     `perSessionLimit=1` symbols-tracked regression, monitoring aggregate e2e
     (`13/13`), runtime-scope e2e (`13/13`), API typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-52-aggregate-symbols-tracked-limit-task-2026-05-03.md`.
+    `history/audits/runtime-audit-52-aggregate-symbols-tracked-limit-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-51 fix(api-bots): preserve aggregate symbol-stats summaries under item limits`
   - Scope: closed an ARCHITECT-mode dashboard aggregate summary drift. Runtime
@@ -6618,7 +6725,7 @@ Last updated: 2026-05-23
     summary regression, monitoring aggregate e2e (`13/13`), runtime-scope e2e
     (`13/13`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-51-aggregate-symbol-stats-summary-limit-task-2026-05-03.md`.
+    `history/audits/runtime-audit-51-aggregate-symbol-stats-summary-limit-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-50 fix(api-bots): preserve symbol-stats open summary under item limits`
   - Scope: closed a BUILDER-mode dashboard market/signal summary drift.
@@ -6630,7 +6737,7 @@ Last updated: 2026-05-23
     symbol-stats open summary regression, runtime-scope e2e (`13/13`),
     monitoring aggregate e2e (`12/12`), API typecheck, repository guardrails,
     lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-50-symbol-stats-open-summary-limit-task-2026-05-03.md`.
+    `history/audits/runtime-audit-50-symbol-stats-open-summary-limit-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-49 fix(api-bots): preserve aggregate open-order counts under row limits`
   - Scope: closed a BUILDER-mode dashboard management-state drift. Runtime
@@ -6643,7 +6750,7 @@ Last updated: 2026-05-23
     regression, monitoring aggregate e2e (`12/12`), runtime-scope e2e
     (`12/12`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-49-aggregate-open-orders-count-limit-task-2026-05-03.md`.
+    `history/audits/runtime-audit-49-aggregate-open-orders-count-limit-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-48 fix(api-bots): preserve runtime open-order counts under row limits`
   - Scope: closed an ARCHITECT-mode dashboard management-state drift. Runtime
@@ -6655,7 +6762,7 @@ Last updated: 2026-05-23
     regression, runtime-scope e2e (`12/12`), monitoring aggregate e2e
     (`11/11`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-48-open-orders-count-limit-task-2026-05-03.md`.
+    `history/audits/runtime-audit-48-open-orders-count-limit-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-47 fix(api-bots): preserve aggregate position fees under row limits`
   - Scope: closed a TESTER-mode dashboard accounting summary drift. Runtime
@@ -6667,7 +6774,7 @@ Last updated: 2026-05-23
     position-fee regression, runtime-scope e2e (`12/12`), monitoring
     aggregate e2e (`11/11`), API typecheck, repository guardrails, lint, and
     diff review. Evidence:
-    `docs/planning/runtime-audit-47-aggregate-position-fees-limit-task-2026-05-03.md`.
+    `history/audits/runtime-audit-47-aggregate-position-fees-limit-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-46 fix(api-bots): preserve runtime unrealized PnL under row limits`
   - Scope: closed a BUILDER-mode money-impacting dashboard summary drift.
@@ -6680,7 +6787,7 @@ Last updated: 2026-05-23
     `perSessionLimit=1` unrealized-PnL regression, runtime-scope e2e
     (`12/12`), monitoring aggregate e2e (`11/11`), API typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-46-position-unrealized-pnl-limit-task-2026-05-03.md`.
+    `history/audits/runtime-audit-46-position-unrealized-pnl-limit-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-45 fix(api-bots): preserve runtime position fees under row limits`
   - Scope: closed an ARCHITECT-mode dashboard accounting summary drift.
@@ -6692,7 +6799,7 @@ Last updated: 2026-05-23
     `limit=1` position-fee regression, runtime-scope e2e (`12/12`),
     monitoring aggregate e2e (`11/11`), API typecheck, repository guardrails,
     lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-45-position-fees-limit-task-2026-05-03.md`.
+    `history/audits/runtime-audit-45-position-fees-limit-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-44 fix(api-bots): preserve aggregate trade fees under row limits`
   - Scope: closed a BUILDER-mode dashboard accounting summary drift. Runtime
@@ -6704,7 +6811,7 @@ Last updated: 2026-05-23
     `perSessionLimit=1` trade-fee regression, runtime-scope e2e (`12/12`),
     monitoring aggregate e2e (`11/11`), API typecheck, repository guardrails,
     lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-44-aggregate-trade-fees-limit-task-2026-05-03.md`.
+    `history/audits/runtime-audit-44-aggregate-trade-fees-limit-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-43 fix(api-bots): preserve free cash under hidden open-position margin`
   - Scope: closed a BUILDER-mode money-impacting dashboard read-model drift.
@@ -6717,7 +6824,7 @@ Last updated: 2026-05-23
     hidden-margin free-cash regression, runtime-scope e2e (`12/12`),
     monitoring aggregate e2e (`11/11`), API typecheck, repository guardrails,
     lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-43-free-cash-open-margin-limit-task-2026-05-03.md`.
+    `history/audits/runtime-audit-43-free-cash-open-margin-limit-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-42 fix(api-bots): preserve aggregate open-position quantity under row limits`
   - Scope: closed an ARCHITECT-mode dashboard read-model quantity drift.
@@ -6729,7 +6836,7 @@ Last updated: 2026-05-23
     failing-then-passing `perSessionLimit=1` open-quantity regression,
     runtime-scope e2e (`12/12`), monitoring aggregate e2e (`11/11`), API
     typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-42-open-position-qty-limit-task-2026-05-03.md`.
+    `history/audits/runtime-audit-42-open-position-qty-limit-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-41 fix(api-bots): preserve runtime position realized PnL under row limits`
   - Scope: closed a BUILDER-mode dashboard read-model summary drift. Runtime
@@ -6741,7 +6848,7 @@ Last updated: 2026-05-23
     failing-then-passing `limit=1` realized-PnL regression, runtime-scope e2e
     (`12/12`), monitoring aggregate e2e (`10/10`), API typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-41-position-realized-pnl-limit-task-2026-05-03.md`.
+    `history/audits/runtime-audit-41-position-realized-pnl-limit-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-40 fix(api-bots): preserve runtime position counts under row limits`
   - Scope: closed a BUILDER-mode dashboard read-model count drift. Runtime
@@ -6753,7 +6860,7 @@ Last updated: 2026-05-23
     failing-then-passing `limit=1` regression, runtime-scope e2e (`12/12`),
     monitoring aggregate e2e (`10/10`), API typecheck, repository guardrails,
     lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-40-position-count-limit-task-2026-05-03.md`.
+    `history/audits/runtime-audit-40-position-count-limit-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-39 fix(api-bots): preserve aggregate trade totals under row limits`
   - Scope: closed an ARCHITECT-mode dashboard read-model count drift. Runtime
@@ -6765,7 +6872,7 @@ Last updated: 2026-05-23
     PASS: failing-then-passing `perSessionLimit=1` regression, full monitoring
     aggregate e2e (`10/10`), API typecheck, repository guardrails, lint, and
     diff review. Evidence:
-    `docs/planning/runtime-audit-39-aggregate-trade-total-limit-task-2026-05-03.md`.
+    `history/audits/runtime-audit-39-aggregate-trade-total-limit-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-38 fix(api-bots): align non-running aggregate end time`
   - Scope: closed a BUILDER-mode runtime dashboard timestamp drift. Runtime
@@ -6777,7 +6884,7 @@ Last updated: 2026-05-23
     reports `finishedAt: null`. Validation PASS: failing-then-passing
     failed-session end-time regression, full monitoring aggregate e2e (`9/9`),
     API typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-38-aggregate-non-running-window-end-task-2026-05-03.md`.
+    `history/audits/runtime-audit-38-aggregate-non-running-window-end-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-37 fix(api-bots): do not invent empty aggregate heartbeat`
   - Scope: closed a TESTER-mode false-freshness empty-state bug. Empty runtime
@@ -6788,7 +6895,7 @@ Last updated: 2026-05-23
     remains session-derived. Validation PASS: failing-then-passing empty
     aggregate heartbeat regression, full monitoring aggregate e2e (`8/8`), API
     typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-37-empty-aggregate-heartbeat-task-2026-05-03.md`.
+    `history/audits/runtime-audit-37-empty-aggregate-heartbeat-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-36 fix(api-bots): align aggregate header PnL with positions`
   - Scope: closed an ARCHITECT-mode duplicate-summary truth drift. Runtime
@@ -6800,7 +6907,7 @@ Last updated: 2026-05-23
     PnL regression, full monitoring aggregate e2e (`8/8`), runtime history
     parity e2e (`6/6`), API typecheck, repository guardrails, lint, and diff
     review. Evidence:
-    `docs/planning/runtime-audit-36-aggregate-position-summary-pnl-task-2026-05-03.md`.
+    `history/audits/runtime-audit-36-aggregate-position-summary-pnl-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-35 fix(api-bots): keep empty running aggregate unfinished`
   - Scope: closed a BUILDER-mode runtime dashboard empty-state timestamp
@@ -6811,7 +6918,7 @@ Last updated: 2026-05-23
     deterministic. Validation PASS: failing-then-passing empty
     `status=RUNNING` regression, full monitoring aggregate e2e (`7/7`), API
     typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-35-empty-aggregate-running-finished-at-task-2026-05-03.md`.
+    `history/audits/runtime-audit-35-empty-aggregate-running-finished-at-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-34 fix(api-bots): preserve empty aggregate bot mode`
   - Scope: closed a BUILDER-mode runtime dashboard empty-state truth drift.
@@ -6822,7 +6929,7 @@ Last updated: 2026-05-23
     PASS: failing-then-passing LIVE empty aggregate mode regression, full
     monitoring aggregate e2e (`6/6`), API typecheck, repository guardrails,
     lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-34-empty-aggregate-mode-task-2026-05-03.md`.
+    `history/audits/runtime-audit-34-empty-aggregate-mode-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-33 fix(api-bots): attribute imported open trade anchors to effective strategy`
   - Scope: closed an ARCHITECT-mode runtime dashboard provenance drift.
@@ -6835,7 +6942,7 @@ Last updated: 2026-05-23
     runtime history parity e2e (`6/6`), runtime-scope e2e (`12/12`),
     runtime-strategy-context e2e (`5/5`), API typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-33-trade-anchor-effective-strategy-task-2026-05-03.md`.
+    `history/audits/runtime-audit-33-trade-anchor-effective-strategy-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-32 fix(api-engine): attribute automation skip telemetry to effective strategy`
   - Scope: closed a TESTER-mode dashboard/runtime event provenance drift.
@@ -6847,7 +6954,7 @@ Last updated: 2026-05-23
     failing-then-passing imported strategy-null skip telemetry regression, full
     runtime position automation service tests (`36/36`), API typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-32-skip-telemetry-effective-strategy-task-2026-05-03.md`.
+    `history/audits/runtime-audit-32-skip-telemetry-effective-strategy-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-31 fix(api-engine): attribute DCA block telemetry to effective strategy`
   - Scope: closed a dashboard/runtime event provenance drift. Runtime DCA
@@ -6858,7 +6965,7 @@ Last updated: 2026-05-23
     failing-then-passing imported strategy-null DCA block telemetry regression,
     full runtime position automation service tests (`35/35`), API typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-31-dca-block-effective-strategy-telemetry-task-2026-05-03.md`.
+    `history/audits/runtime-audit-31-dca-block-effective-strategy-telemetry-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-30 fix(api-positions): protect live positions while same-symbol orders are open`
   - Scope: closed a LIVE stale-close lifecycle drift. Owned exchange open
@@ -6871,7 +6978,7 @@ Last updated: 2026-05-23
     (`24/24`), sequential runtime takeover e2e (`4/4`), sequential
     runtime-scope e2e (`12/12`), API typecheck, repository guardrails, lint,
     and diff review. Evidence:
-    `docs/planning/runtime-audit-30-live-reconcile-open-order-symbol-protection-task-2026-05-03.md`.
+    `history/audits/runtime-audit-30-live-reconcile-open-order-symbol-protection-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-29 fix(api-bots): keep runtime open orders visible after dedupe`
   - Scope: closed a dashboard runtime open-order drift. Runtime session
@@ -6882,7 +6989,7 @@ Last updated: 2026-05-23
     regression, focused runtime-scope e2e (`12/12`), broader bots e2e
     (`26/26`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-29-runtime-open-orders-dedupe-limit-task-2026-05-03.md`.
+    `history/audits/runtime-audit-29-runtime-open-orders-dedupe-limit-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-28 fix(api-bots): keep runtime open positions visible under history limits`
   - Scope: closed a dashboard runtime positions drift. Runtime session
@@ -6893,7 +7000,7 @@ Last updated: 2026-05-23
     regression, focused runtime-scope e2e (`11/11`), broader bots e2e
     (`26/26`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-28-runtime-positions-open-history-limit-task-2026-05-03.md`.
+    `history/audits/runtime-audit-28-runtime-positions-open-history-limit-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-27 fix(api-bots): hydrate limited symbol stats by configured order`
   - Scope: closed a TESTER-mode dashboard signal truth drift. Unfiltered
@@ -6905,7 +7012,7 @@ Last updated: 2026-05-23
     failing-then-passing configured-order `limit=1` regression, focused bots
     e2e (`26/26`), broader runtime/read pack (`42/42`), API typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-27-symbol-stats-configured-limit-task-2026-05-03.md`.
+    `history/audits/runtime-audit-27-symbol-stats-configured-limit-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-26 fix(api-bots): show canonical symbol TTP plans`
   - Scope: closed a runtime dashboard TTP display drift. Runtime position
@@ -6918,7 +7025,7 @@ Last updated: 2026-05-23
     runtime strategy context e2e (`5/5`), broader bot runtime/read pack
     (`37/37`), API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-26-runtime-position-symbol-strategy-display-task-2026-05-03.md`.
+    `history/audits/runtime-audit-26-runtime-position-symbol-strategy-display-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-25 fix(api-markets): normalize universe symbols`
   - Scope: closed a market-configuration source-of-truth drift. Market
@@ -6929,7 +7036,7 @@ Last updated: 2026-05-23
     failing-then-passing lowercase market universe regression, focused markets
     e2e (`16/16`), API typecheck, repository guardrails, lint, and diff
     review. Evidence:
-    `docs/planning/runtime-audit-25-market-universe-symbol-normalization-task-2026-05-03.md`.
+    `history/audits/runtime-audit-25-market-universe-symbol-normalization-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-24 fix(api-orders): normalize list symbol filters`
   - Scope: closed the sibling dashboard order read drift after
@@ -6939,7 +7046,7 @@ Last updated: 2026-05-23
     table. Validation PASS: failing-then-passing lowercase symbol filter
     regression, focused orders/positions read e2e (`21/21`), API typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-24-order-list-symbol-normalization-task-2026-05-03.md`.
+    `history/audits/runtime-audit-24-order-list-symbol-normalization-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-23 fix(api-positions): normalize list symbol filters`
   - Scope: closed a dashboard position read drift. Position list `symbol`
@@ -6949,7 +7056,7 @@ Last updated: 2026-05-23
     failing-then-passing lowercase symbol filter regression, focused positions
     list e2e, API typecheck, repository guardrails, lint, and diff review.
     Evidence:
-    `docs/planning/runtime-audit-23-position-list-symbol-normalization-task-2026-05-03.md`.
+    `history/audits/runtime-audit-23-position-list-symbol-normalization-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-22 fix(api-wallets): validate analytics date ranges`
   - Scope: closed a TESTER-mode wallet analytics API-boundary drift. Wallet
@@ -6960,7 +7067,7 @@ Last updated: 2026-05-23
     PASS: failing-then-passing inverted date-range regression, focused wallets
     e2e (`18/18`), API typecheck, repository guardrails, lint, and diff
     review. Evidence:
-    `docs/planning/runtime-audit-22-wallet-analytics-date-range-task-2026-05-03.md`.
+    `history/audits/runtime-audit-22-wallet-analytics-date-range-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-21 fix(api-wallets): validate analytics source filters`
   - Scope: closed a wallet analytics API-boundary drift. Wallet analytics
@@ -6970,7 +7077,7 @@ Last updated: 2026-05-23
     Validation PASS: failing-then-passing invalid source regression, focused
     wallets e2e (`17/17`), API typecheck, repository guardrails, lint, and
     diff review. Evidence:
-    `docs/planning/runtime-audit-21-wallet-analytics-source-validation-task-2026-05-03.md`.
+    `history/audits/runtime-audit-21-wallet-analytics-source-validation-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-20 fix(api-wallets): keep filtered wallet timeline historical`
   - Scope: closed a follow-up wallet timeline edge drift. Wallet equity
@@ -6979,7 +7086,7 @@ Last updated: 2026-05-23
     historical response. Validation PASS: failing-then-passing filtered
     timeline regression, focused wallets e2e (`16/16`), API typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-20-wallet-timeline-filtered-open-pnl-task-2026-05-03.md`.
+    `history/audits/runtime-audit-20-wallet-timeline-filtered-open-pnl-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-19 fix(api-wallets): align latest wallet timeline open PnL`
   - Scope: closed the next wallet preview parity drift. Wallet equity timeline
@@ -6990,7 +7097,7 @@ Last updated: 2026-05-23
     points. Validation PASS: failing-then-passing wallet timeline regression,
     focused wallets e2e (`16/16`), API typecheck, repository guardrails, lint,
     and diff review. Evidence:
-    `docs/planning/runtime-audit-19-wallet-timeline-open-pnl-task-2026-05-03.md`.
+    `history/audits/runtime-audit-19-wallet-timeline-open-pnl-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-18 fix(api-wallets): include owned imported LIVE open PnL`
   - Scope: closed the next wallet/dashboard capital drift. Wallet performance
@@ -7000,7 +7107,7 @@ Last updated: 2026-05-23
     equity timeline contracts unchanged. Validation PASS: failing-then-passing
     wallet performance regression, focused wallets e2e (`15/15`), API
     typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-18-wallet-owned-import-open-pnl-task-2026-05-03.md`.
+    `history/audits/runtime-audit-18-wallet-owned-import-open-pnl-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-17 fix(api-orders): scope exchange-fill close fees by position lifecycle`
   - Scope: closed the next TESTER close-PnL parity drift. LIVE exchange
@@ -7010,7 +7117,7 @@ Last updated: 2026-05-23
     orchestrator close contract. Validation PASS: focused exchange-events pack
     (`6/6`), broader orders/runtime PnL pack (`75/75`), API typecheck,
     repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-17-exchange-fill-close-fee-scope-task-2026-05-03.md`.
+    `history/audits/runtime-audit-17-exchange-fill-close-fee-scope-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-16 fix(api-bots): show selected LIVE bot legacy wallet-null open orders`
   - Scope: closed the next dashboard open-order visibility drift. Runtime
@@ -7020,7 +7127,7 @@ Last updated: 2026-05-23
     keeping `botId` ownership mandatory. Validation PASS: focused runtime
     takeover e2e (`4/4`), broader runtime positions/read pack (`33/33`), API
     typecheck, repository guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-16-live-open-order-wallet-null-task-2026-05-03.md`.
+    `history/audits/runtime-audit-16-live-open-order-wallet-null-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-15 fix(api-engine): scope close entry fees by position lifecycle`
   - Scope: closed the next close-PnL attribution drift. Runtime close
@@ -7032,7 +7139,7 @@ Last updated: 2026-05-23
     Validation PASS: focused execution orchestrator pack (`17/17`), broader
     runtime/order/automation pack (`90/90`), API typecheck, repository
     guardrails, lint, and diff review. Evidence:
-    `docs/planning/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
+    `history/audits/runtime-audit-15-close-fee-position-scope-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-14 fix(api-engine): resolve owned LIVE imports for runtime EXIT lookup`
   - Scope: closed the next LIVE close/automation lookup drift. Runtime
@@ -7044,7 +7151,7 @@ Last updated: 2026-05-23
     `no_open_position`, while unowned imports remain invisible. Validation
     PASS: focused orchestrator pack (`18/18`), broader runtime/orders pack
     (`111/111`), typecheck, guardrails, lint, and diff check. Evidence:
-    `docs/planning/runtime-audit-14-exit-owned-import-lookup-task-2026-05-03.md`.
+    `history/audits/runtime-audit-14-exit-owned-import-lookup-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-13 fix(api-orders): reuse owned LIVE imports during fill lifecycle`
   - Scope: closed the next LIVE fill lifecycle duplication drift. Filled
@@ -7057,7 +7164,7 @@ Last updated: 2026-05-23
     PASS: focused orders pack (`28/28`), broader orders/e2e/pre-trade/
     final-candle/defaults pack (`90/90`), typecheck, guardrails, lint, and
     diff check. Evidence:
-    `docs/planning/runtime-audit-13-fill-lifecycle-owned-import-reuse-task-2026-05-03.md`.
+    `history/audits/runtime-audit-13-fill-lifecycle-owned-import-reuse-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-12 fix(api-orders): fail closed manual LIVE reverse opens against owned imports`
   - Scope: closed the next LIVE manual command guard drift. Manual selected-bot
@@ -7070,7 +7177,7 @@ Last updated: 2026-05-23
     Validation PASS: focused orders pack (`27/27`), broader
     orders/pre-trade/final-candle/defaults pack (`69/69`), typecheck,
     guardrails, lint, and diff check. Evidence:
-    `docs/planning/runtime-audit-12-live-manual-reverse-owned-import-task-2026-05-03.md`.
+    `history/audits/runtime-audit-12-live-manual-reverse-owned-import-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-11 fix(api-runtime): scope final-candle external-position guard to owner bot`
   - Scope: closed the next final-candle false-block drift.
@@ -7081,7 +7188,7 @@ Last updated: 2026-05-23
     one bot's exchange-synced position no longer blocks another bot's signal on
     the same symbol. Validation PASS: focused final-candle/defaults pack
     (`18/18`). Evidence:
-    `docs/planning/runtime-audit-11-final-candle-owned-external-bot-scope-task-2026-05-03.md`.
+    `history/audits/runtime-audit-11-final-candle-owned-external-bot-scope-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-10 fix(api-engine): count owned LIVE imports in pre-trade bot caps`
   - Scope: closed the next LIVE pre-trade exposure-count drift.
@@ -7090,7 +7197,7 @@ Last updated: 2026-05-23
     the same bot/wallet/API key. PAPER remains direct-bot scoped, and
     ambiguous/manual-only/unowned imports are not counted as bot exposure.
     Validation PASS: focused pre-trade pack (`24/24`). Evidence:
-    `docs/planning/runtime-audit-10-pretrade-bot-open-count-owned-imports-task-2026-05-03.md`.
+    `history/audits/runtime-audit-10-pretrade-bot-open-count-owned-imports-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-09 fix(api-engine): scope pre-trade same-symbol guard to runtime bot`
   - Scope: closed the next PAPER/LIVE false-block drift. Pre-trade
@@ -7101,7 +7208,7 @@ Last updated: 2026-05-23
     selected PAPER/LIVE bot from opening. Validation PASS: focused pre-trade
     pack (`23/23`), broader runtime/backtest decision pack (`88/88`), and API
     typecheck. Evidence:
-    `docs/planning/runtime-audit-09-pretrade-bot-scoped-symbol-uniqueness-task-2026-05-03.md`.
+    `history/audits/runtime-audit-09-pretrade-bot-scoped-symbol-uniqueness-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-08 fix(api-bots): resolve imported LIVE ownership with catalog scope`
   - Scope: closed the next LIVE import ownership drift. External-position
@@ -7112,7 +7219,7 @@ Last updated: 2026-05-23
     exchange positions consistently with dashboard/runtime reads. Validation
     PASS: focused ownership regression (`9/9`), broader
     reconciliation/takeover pack (`41/41`), and API typecheck. Evidence:
-    `docs/planning/runtime-audit-08-external-position-ownership-catalog-scope-task-2026-05-03.md`.
+    `history/audits/runtime-audit-08-external-position-ownership-catalog-scope-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-07 fix(api-engine): fail closed off-scope runtime position automation`
   - Scope: closed the next money-impacting automation/read parity drift.
@@ -7125,7 +7232,7 @@ Last updated: 2026-05-23
     `position_symbol_outside_configured_scope`. Validation PASS: focused
     automation/default-deps pack (`35/35`), broader close/ownership
     automation pack (`52/52`), and API typecheck. Evidence:
-    `docs/planning/runtime-audit-07-position-automation-canonical-symbol-scope-task-2026-05-03.md`.
+    `history/audits/runtime-audit-07-position-automation-canonical-symbol-scope-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-06 fix(api-bots): fail closed off-scope dashboard position close`
   - Scope: closed the next money-impacting command/read parity drift.
@@ -7136,7 +7243,7 @@ Last updated: 2026-05-23
     ignored `no_open_position` result instead of being closed. Validation
     PASS: focused close command regression (`9/9`) and broader
     close/runtime/imported-position pack (`74/74`). Evidence:
-    `docs/planning/runtime-audit-06-close-position-canonical-symbol-scope-task-2026-05-03.md`.
+    `history/audits/runtime-audit-06-close-position-canonical-symbol-scope-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-05 fix(api-bots): keep selected-bot runtime rows canonical-symbol scoped`
   - Scope: closed the next default dashboard row drift. Runtime trade history
@@ -7147,7 +7254,7 @@ Last updated: 2026-05-23
     history/open positions after market reassignment. Validation PASS:
     focused runtime-scope regression (`1/1`) and broader monitoring/positions
     pack (`57/57`). Evidence:
-    `docs/planning/runtime-audit-05-runtime-rows-canonical-symbol-scope-task-2026-05-03.md`.
+    `history/audits/runtime-audit-05-runtime-rows-canonical-symbol-scope-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-04 fix(api-bots): keep runtime trade history canonical-symbol scoped`
   - Scope: closed the next selected-bot dashboard-history drift. Runtime
@@ -7158,7 +7265,7 @@ Last updated: 2026-05-23
     monitoring aggregate history after market reassignment. Validation PASS:
     focused runtime-scope regression (`1/1`) and broader monitoring pack
     (`45/45`). Evidence:
-    `docs/planning/runtime-audit-04-runtime-trades-canonical-symbol-scope-task-2026-05-03.md`.
+    `history/audits/runtime-audit-04-runtime-trades-canonical-symbol-scope-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-03 fix(api-bots): fail closed canonical update scope and symbol-filter pagination`
   - Scope: closed the next residual selected-bot topology drift. Bot update
@@ -7170,7 +7277,7 @@ Last updated: 2026-05-23
     not disappear from dashboard reads when `limit=1`. Validation PASS:
     focused helper/reconciliation pack (`31/31`), focused monitoring filter
     e2e (`1/1`), and broader bot/runtime/position pack (`68/68`). Evidence:
-    `docs/planning/runtime-audit-03-canonical-update-and-symbol-filter-scope-task-2026-05-03.md`.
+    `history/audits/runtime-audit-03-canonical-update-and-symbol-filter-scope-task-2026-05-03.md`.
 
 - [x] `ORDDRIFT-01 fix(api-orders): block direct fallback when canonical manual scope exists`
   - Scope: closed the next manual-order strategy-context drift. Manual-order
@@ -7180,7 +7287,7 @@ Last updated: 2026-05-23
     longer alter manual-order preview leverage, margin mode, or order type
     after canonical market reassignment. Validation PASS: focused orders
     service test (`26/26`) and broader orders/manual pack (`49/49`). Evidence:
-    `docs/planning/orddrift-01-manual-context-canonical-group-no-direct-fallback-task-2026-05-03.md`.
+    `history/tasks/orddrift-01-manual-context-canonical-group-no-direct-fallback-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-02 fix(api-runtime): fail closed empty canonical strategy-link topology`
   - Scope: closed the next execution/display topology drift. Runtime
@@ -7191,7 +7298,7 @@ Last updated: 2026-05-23
     dashboard configured strategy context remains empty. Validation PASS:
     focused defaults/symbol-stats tests (`11/11`) and broader
     runtime/symbol-stats pack (`78/78`). Evidence:
-    `docs/planning/runtime-audit-02-empty-canonical-strategy-links-task-2026-05-03.md`.
+    `history/audits/runtime-audit-02-empty-canonical-strategy-links-task-2026-05-03.md`.
 
 - [x] `DASHDRIFT-05 fix(api-bots): keep runtime symbol-stats symbol filters canonical-scope locked`
   - Scope: closed the next selected-bot signal/market stats drift. Explicit
@@ -7201,7 +7308,7 @@ Last updated: 2026-05-23
     for old/off-scope markets can no longer appear through direct symbol
     queries. Validation PASS: focused runtime-scope e2e (`10/10`) and broader
     symbol-stats/market-universe/PnL pack (`25/25`). Evidence:
-    `docs/planning/dashdrift-05-symbol-stats-filter-canonical-scope-task-2026-05-03.md`.
+    `history/tasks/dashdrift-05-symbol-stats-filter-canonical-scope-task-2026-05-03.md`.
 
 - [x] `DASHDRIFT-04 fix(api-bots): keep symbol-level dynamic-stop plans canonical-context scoped`
   - Scope: closed the next dashboard runtime row-data drift. Runtime TTP/TSL
@@ -7211,7 +7318,7 @@ Last updated: 2026-05-23
     legacy advanced-close rows can no longer overwrite canonical basic-close
     symbol plans. Validation PASS: focused runtime strategy-context e2e
     (`4/4`) and broader bot runtime/dynamic-stop pack (`40/40`). Evidence:
-    `docs/planning/dashdrift-04-symbol-dynamic-stop-plans-canonical-task-2026-05-03.md`.
+    `history/tasks/dashdrift-04-symbol-dynamic-stop-plans-canonical-task-2026-05-03.md`.
 
 - [x] `DASHDRIFT-03 fix(api-bots): keep dynamic-stop column visibility canonical-context scoped`
   - Scope: closed the next dashboard runtime display drift. Runtime position
@@ -7222,7 +7329,7 @@ Last updated: 2026-05-23
     canonical basic-close selected-bot view. Validation PASS: focused runtime
     strategy-context e2e (`3/3`) and broader bot runtime/dynamic-stop pack
     (`31/31`). Evidence:
-    `docs/planning/dashdrift-03-dynamic-stop-columns-canonical-task-2026-05-03.md`.
+    `history/tasks/dashdrift-03-dynamic-stop-columns-canonical-task-2026-05-03.md`.
 
 - [x] `POSDRIFT-12 fix(api-positions): keep LIVE reconciliation continuity strategy canonical`
   - Scope: closed the TESTER continuity edge. LIVE exchange reconciliation now
@@ -7232,7 +7339,7 @@ Last updated: 2026-05-23
     no longer label imported/recovered LIVE exchange-synced rows when canonical
     topology exists. Validation PASS: focused reconciliation test (`23/23`) and
     wider position/reconciliation/automation pack (`29/29`). Evidence:
-    `docs/planning/posdrift-12-live-continuity-canonical-strategy-task-2026-05-03.md`.
+    `history/tasks/posdrift-12-live-continuity-canonical-strategy-task-2026-05-03.md`.
 
 - [x] `BOTDRIFT-02 fix(api-bots): keep bot update safety guards canonical-context scoped`
   - Scope: closed the next bot-management safety drift. Bot activation/update
@@ -7243,7 +7350,7 @@ Last updated: 2026-05-23
     activation bypass canonical duplicate checks. Validation PASS: focused
     duplicate guard (`6/6`) and wider bot write/runtime pack (`43/43`).
     Evidence:
-    `docs/planning/botdrift-02-bot-update-canonical-guard-task-2026-05-03.md`.
+    `history/tasks/botdrift-02-bot-update-canonical-guard-task-2026-05-03.md`.
 
 - [x] `BOTDRIFT-01 fix(api-bots): keep bot list/get projection canonical-context scoped`
   - Scope: closed the next upstream dashboard/runtime drift. `GET
@@ -7254,7 +7361,7 @@ Last updated: 2026-05-23
     dashboard and bot-management read models when canonical topology exists.
     Validation PASS: bot runtime-scope e2e (`10/10`) and wider bot pack
     (`41/41`). Evidence:
-    `docs/planning/botdrift-01-bot-read-projection-canonical-context-task-2026-05-03.md`.
+    `history/tasks/botdrift-01-bot-read-projection-canonical-context-task-2026-05-03.md`.
 
 - [x] `DASHDRIFT-02 fix(web-dashboard): keep position edit strategy display runtime-graph scoped`
   - Scope: closed the next dashboard display drift. The position edit modal in
@@ -7264,7 +7371,7 @@ Last updated: 2026-05-23
     override canonical runtime strategy display in that position-management
     modal. Validation PASS: focused HomeLiveWidgets regression (`18/18`).
     Evidence:
-    `docs/planning/dashdrift-02-position-edit-strategy-display-task-2026-05-03.md`.
+    `history/tasks/dashdrift-02-position-edit-strategy-display-task-2026-05-03.md`.
 
 - [x] `POSDRIFT-11 fix(api-positions): keep legacy open-position repair canonical-market scoped`
   - Scope: closed the next confirmed position-management drift. Local repair
@@ -7275,7 +7382,7 @@ Last updated: 2026-05-23
     Stale direct bot market/strategy projections can no longer claim or
     mislabel repaired orphan rows when canonical groups exist. Validation PASS:
     focused position repair regression (`1/1`). Evidence:
-    `docs/planning/posdrift-11-legacy-position-repair-canonical-scope-task-2026-05-03.md`.
+    `history/tasks/posdrift-11-legacy-position-repair-canonical-scope-task-2026-05-03.md`.
 
 - [x] `POSDRIFT-10 fix(api-orders): fail closed for manual-order multi-strategy ambiguity`
   - Scope: closed the TESTER edge-case for LIVE manual opens. Manual-order
@@ -7284,7 +7391,7 @@ Last updated: 2026-05-23
     groups with multiple enabled strategies remain unresolved, so LIVE manual
     open fails closed instead of silently selecting the first link. Validation
     PASS: focused LIVE ambiguous manual-order regression. Evidence:
-    `docs/planning/posdrift-10-manual-order-multistrategy-ambiguity-task-2026-05-03.md`.
+    `history/tasks/posdrift-10-manual-order-multistrategy-ambiguity-task-2026-05-03.md`.
 
 - [x] `POSDRIFT-09 fix(api-orders): keep manual-order context venue canonical`
   - Scope: closed the next confirmed dashboard/manual-order drift.
@@ -7293,7 +7400,7 @@ Last updated: 2026-05-23
     `exchange/marketType`, then uses that venue for connector selection,
     exchange metadata fallback, leverage, and margin-mode semantics. Validation
     PASS: focused manual-order context tests (`5` tests). Evidence:
-    `docs/planning/posdrift-09-manual-context-canonical-venue-task-2026-05-03.md`.
+    `history/tasks/posdrift-09-manual-context-canonical-venue-task-2026-05-03.md`.
 
 - [x] `POSDRIFT-08 fix(api-bots): keep wallet update validation canonical-market scoped`
   - Scope: closed the next confirmed wallet/market write safety drift.
@@ -7303,7 +7410,7 @@ Last updated: 2026-05-23
     can no longer allow a wallet venue mismatch against the bot's real assigned
     market group. Validation PASS: focused bot context validation test (`2/2`).
     Evidence:
-    `docs/planning/posdrift-08-wallet-update-canonical-market-scope-task-2026-05-03.md`.
+    `history/tasks/posdrift-08-wallet-update-canonical-market-scope-task-2026-05-03.md`.
 
 - [x] `POSDRIFT-07 fix(api-bots): keep active LIVE overlap guard canonical-market scoped`
   - Scope: closed the next confirmed LIVE market-assignment safety drift.
@@ -7313,7 +7420,7 @@ Last updated: 2026-05-23
     projections can no longer allow shared symbols in real assigned canonical
     market scope. Validation PASS: focused duplicate guard e2e (`5/5`).
     Evidence:
-    `docs/planning/posdrift-07-live-overlap-canonical-market-scope-task-2026-05-03.md`.
+    `history/tasks/posdrift-07-live-overlap-canonical-market-scope-task-2026-05-03.md`.
 
 - [x] `POSDRIFT-06 fix(api-runtime): keep runtime signal-loop venue on shared canonical resolver`
   - Scope: closed the next architecture drift in the PAPER/LIVE open pipeline.
@@ -7324,7 +7431,7 @@ Last updated: 2026-05-23
     `Bot.symbolGroup` remains fallback only through the shared resolver.
     Validation PASS: focused runtime signal-loop defaults test (`6/6`).
     Evidence:
-    `docs/planning/posdrift-06-runtime-signal-loop-canonical-venue-task-2026-05-03.md`.
+    `history/tasks/posdrift-06-runtime-signal-loop-canonical-venue-task-2026-05-03.md`.
 
 - [x] `POSDRIFT-05 fix(api-runtime): keep execution venue canonical across pre-trade/manual-open/automation`
   - Scope: closed the next confirmed position-management drift. Pre-trade LIVE
@@ -7335,7 +7442,7 @@ Last updated: 2026-05-23
     TTP/DCA/close/manual-open behavior away from the assigned canonical market
     scope. Validation PASS: focused runtime/order/position pack (`74/74`).
     Evidence:
-    `docs/planning/posdrift-05-canonical-execution-venue-task-2026-05-03.md`.
+    `history/tasks/posdrift-05-canonical-execution-venue-task-2026-05-03.md`.
 
 - [x] `POSDRIFT-04 fix(api-runtime): keep runtime position reads canonical-context aligned`
   - Scope: closed the next dashboard position drift. Runtime position reads now
@@ -7347,7 +7454,7 @@ Last updated: 2026-05-23
     dynamic-stop/serialization/automation pack (`42/42`),
     runtime-scope/orders/market-universe pack (`34/34`), web history/manual
     pack (`13/13`), and API typecheck. Evidence:
-    `docs/planning/posdrift-04-runtime-position-read-canonical-context-task-2026-05-03.md`.
+    `history/tasks/posdrift-04-runtime-position-read-canonical-context-task-2026-05-03.md`.
 
 - [x] `POSDRIFT-03 fix(api-runtime): keep imported ownership canonical-market scoped`
   - Scope: closed the next imported-position ownership drift. External-position
@@ -7358,7 +7465,7 @@ Last updated: 2026-05-23
     assigned markets. Validation PASS: focused ownership test (`8/8`), takeover
     and reconciliation pack (`34/34`), runtime-scope/market-universe/orders
     pack (`34/34`), and API typecheck. Evidence:
-    `docs/planning/posdrift-03-import-ownership-canonical-market-scope-task-2026-05-03.md`.
+    `history/tasks/posdrift-03-import-ownership-canonical-market-scope-task-2026-05-03.md`.
 
 - [x] `POSDRIFT-02 fix(api-runtime): preserve strategy provenance on imported manual close`
   - Scope: closed the next confirmed position-management drift. Dashboard
@@ -7369,7 +7476,7 @@ Last updated: 2026-05-23
     focused command test (`8/8`), API order/position + dynamic-stop +
     automation pack (`62/62`), web manual close/history pack (`13/13`), and
     API typecheck. Evidence:
-    `docs/planning/posdrift-02-manual-close-strategy-provenance-task-2026-05-03.md`.
+    `history/tasks/posdrift-02-manual-close-strategy-provenance-task-2026-05-03.md`.
 
 - [x] `POSDRIFT-01 fix(api+web): keep manual-order scope canonical-first`
   - Scope: closed the next confirmed dashboard/runtime drift from the
@@ -7380,7 +7487,7 @@ Last updated: 2026-05-23
     before any legacy fallback. Validation PASS: API focused manual-order test
     (`23/23`), web hook test (`3/3`), API positions/market-universe/runtime
     pack (`34/34`), and web manual-order widget pack (`13/13`). Evidence:
-    `docs/planning/posdrift-01-manual-order-canonical-context-task-2026-05-03.md`.
+    `history/tasks/posdrift-01-manual-order-canonical-context-task-2026-05-03.md`.
 
 - [x] `DASHDRIFT-01 fix(api+web): keep dashboard sidebar runtime context canonical-first`
   - Scope: closed the first confirmed drift from the dashboard-wide audit.
@@ -7391,7 +7498,7 @@ Last updated: 2026-05-23
     (`8/8`), runtime-scope API e2e (`10/10`), dashboard aggregate/runtime
     presenter pack (`11/11`), API aggregate/symbol-stats pack (`14/14`),
     API/web typechecks, repository guardrails, and docs parity. Evidence:
-    `docs/planning/dashdrift-01-dashboard-runtime-context-parity-task-2026-05-03.md`.
+    `history/audits/dashdrift-01-dashboard-runtime-context-parity-task-2026-05-03.md`.
 
 - [x] `RUNTIME-AUDIT-01 fix(api-runtime): align LIVE open-position counts with wallet-first ownership proof`
   - Scope: closed the first confirmed drift from the operator-requested
@@ -7402,7 +7509,7 @@ Last updated: 2026-05-23
     tests (`13/13`), runtime final-candle/live reconciliation/dynamic-stop
     pack (`75/75`), paper-live equivalence (`2/2`), API typecheck, repository
     guardrails, and docs parity. Evidence:
-    `docs/planning/live-paper-runtime-prod-audit-wallet-first-count-task-2026-05-03.md`.
+    `history/audits/live-paper-runtime-prod-audit-wallet-first-count-task-2026-05-03.md`.
 
 - [x] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production`
   - Scope: use authenticated read-only dashboard/API evidence against the
@@ -7419,7 +7526,7 @@ Last updated: 2026-05-23
   - 2026-05-14 supersession: closed against the current deployed
     `457bce05` target with the runtime-visible managed symbol `TRXUSDT` rather
     than stale ETH/DOGE assumptions. Evidence:
-    `docs/operations/liveimport-03-prod-readback-live-paper-457bce05-2026-05-14.json`.
+    `history/artifacts/liveimport-03-prod-readback-live-paper-457bce05-2026-05-14.json`.
 
 - [x] `PAPERSIGNAL-01 fix(api-runtime): audit PAPER signal display-to-execution parity`
   - Scope: closed the first confirmed PAPER display-to-execution drift. Runtime
@@ -7431,7 +7538,7 @@ Last updated: 2026-05-23
     Validation PASS: focused symbol-stats/final-candle/paper-live pack
     (`18/18`), bot runtime scope/market-universe/dynamic-stop/runtime-loop pack
     (`60/60`), and API typecheck. Evidence:
-    `docs/planning/papersignal-01-canonical-symbol-stats-parity-task-2026-05-03.md`.
+    `history/audits/papersignal-01-canonical-symbol-stats-parity-task-2026-05-03.md`.
 
 - [x] `WALLETBAL-01 fix(api-runtime): stabilize LIVE wallet account-balance cache display semantics`
   - Scope: closed the first confirmed dashboard wallet account-balance drift.
@@ -7441,7 +7548,7 @@ Last updated: 2026-05-23
     `freeCash` from allocated trading capital. Validation PASS: focused
     runtime capital test (`15/15`), monitoring aggregate plus wallet e2e tests
     (`19/19`), API typecheck, repository guardrails, and docs parity. Evidence:
-    `docs/planning/walletbal-01-live-account-balance-cache-task-2026-05-03.md`.
+    `history/tasks/walletbal-01-live-account-balance-cache-task-2026-05-03.md`.
 
 - [x] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production`
   - Scope: release the locally verified BOTMULTI multi-strategy topology
@@ -7458,8 +7565,8 @@ Last updated: 2026-05-23
     blocker: authenticated/protected runtime readback and broader V1 release
     gate evidence are still required.
     Evidence:
-    `docs/planning/botmulti-09-production-deploy-task-2026-05-03.md` and
-    `docs/planning/botmulti-09-current-production-containment-task-2026-05-09.md`.
+    `history/tasks/botmulti-09-production-deploy-task-2026-05-03.md` and
+    `history/tasks/botmulti-09-current-production-containment-task-2026-05-09.md`.
   - 2026-05-12 supersession: closed as contained/superseded by deployed V1
     line evidence and the current protected runtime readback/final gate lane.
     This is not a production runtime proof; protected verification still lives
@@ -7469,13 +7576,13 @@ Last updated: 2026-05-23
   - Scope: closed the post-V1 BOTMULTI wave with focused API/runtime/lifecycle
     and web validation, API/web typechecks, i18n route audit, docs parity, and
     repository guardrails. Evidence:
-    `docs/planning/botmulti-08-architecture-runtime-closure-task-2026-05-03.md`.
+    `history/tasks/botmulti-08-architecture-runtime-closure-task-2026-05-03.md`.
 
 - [x] `BOTMULTI-07 web(ui+operator): expose multi-strategy bot management and runtime truth`
   - Scope: bot create/edit now exposes explicit primary strategy plus enabled
     additional strategies, submits ordered canonical `strategies[]`, and
     prefills edit mode from canonical runtime graph strategy links. Evidence:
-    `docs/planning/botmulti-07-web-operator-multi-strategy-truth-task-2026-05-03.md`.
+    `history/tasks/botmulti-07-web-operator-multi-strategy-truth-task-2026-05-03.md`.
 
 - [x] `BOTMULTI-06 runtime(risk+lifecycle): align DCA/TTP/TSL and ownership across multiple strategies`
   - Scope: runtime position automation now fails closed when a bot-managed
@@ -7483,7 +7590,7 @@ Last updated: 2026-05-23
     canonical strategy links. The guard reuses existing skip telemetry and
     prevents fallback DCA/TTP/SL/TSL settings from acting on ambiguous
     multi-strategy position ownership. Evidence:
-    `docs/planning/botmulti-06-runtime-risk-lifecycle-ownership-task-2026-05-03.md`.
+    `history/tasks/botmulti-06-runtime-risk-lifecycle-ownership-task-2026-05-03.md`.
 
 - [x] `BOTMULTI-05 runtime(signal-merge): execute deterministic multi-strategy evaluation per bot`
   - Scope: runtime topology and final-candle decision now consume the enabled
@@ -7491,7 +7598,7 @@ Last updated: 2026-05-23
     `BotMarketGroup`, evaluate all interval-eligible strategies, merge votes
     with existing deterministic priority/weight semantics, and preserve winner
     provenance for downstream execution context. Evidence:
-    `docs/planning/botmulti-05-runtime-signal-merge-task-2026-05-03.md`.
+    `history/tasks/botmulti-05-runtime-signal-merge-task-2026-05-03.md`.
 
 - [x] `BOTMULTI-04 api(write): support bot create/update with multiple strategies`
   - Scope: extended bot create/update API writes with optional ordered
@@ -7499,7 +7606,7 @@ Last updated: 2026-05-23
     `MarketGroupStrategyLink` rows under one active `BotMarketGroup`, keep
     `Bot.strategyId` as primary compatibility projection, and avoid legacy
     `BotStrategy` writes for multi-strategy payloads. Evidence:
-    `docs/planning/botmulti-04-api-write-multi-strategy-task-2026-05-03.md`.
+    `history/tasks/botmulti-04-api-write-multi-strategy-task-2026-05-03.md`.
 
 - [x] `BOTMULTI-03 db(schema): finalize canonical multi-strategy topology and migration path`
   - Scope: finalized the persistence boundary for one bot with one wallet, one
@@ -7507,7 +7614,7 @@ Last updated: 2026-05-23
     Added fail-closed migration preflight plus partial unique index
     `BotMarketGroup_one_active_scope_per_bot_idx` so a bot cannot have more
     than one enabled `ACTIVE` `BotMarketGroup`. Evidence:
-    `docs/planning/botmulti-03-canonical-topology-migration-task-2026-05-03.md`.
+    `history/tasks/botmulti-03-canonical-topology-migration-task-2026-05-03.md`.
 
 - [x] `BOTMULTI-02 audit(data+runtime): inventory legacy compatibility remnants and migration debt`
   - Scope: inventoried current schema, API, runtime, tests, and module docs
@@ -7515,7 +7622,7 @@ Last updated: 2026-05-23
     lower numeric strategy-link priority as canonical; architecture reference
     wording and focused runtime merge regression now lock that semantics.
     Evidence:
-    `docs/planning/botmulti-02-legacy-compatibility-migration-audit-task-2026-05-03.md`.
+    `history/audits/botmulti-02-legacy-compatibility-migration-audit-task-2026-05-03.md`.
 
 - [x] `BOTMULTI-01 docs(decision): freeze post-V1 multi-strategy bot contract`
   - Scope: first executable post-V1 BOTMULTI slice after `SYSFINAL-09` closed
@@ -7524,7 +7631,7 @@ Last updated: 2026-05-23
     Manual-order ambiguity must fail closed, runtime merge must preserve
     primary strategy provenance, and DCA/TTP/SL/TSL ownership remains
     position-scoped. Evidence:
-    `docs/planning/botmulti-01-post-v1-multi-strategy-contract-task-2026-05-03.md`.
+    `history/tasks/botmulti-01-post-v1-multi-strategy-contract-task-2026-05-03.md`.
 
 - [x] `DOCMAP-01 docs(architecture): create engineering documentation system map foundation`
   - Scope: created the first traceable technical documentation map without
@@ -7535,7 +7642,7 @@ Last updated: 2026-05-23
     routes, services/modules, Prisma models, workers, tests, deployment docs,
     and known gaps. Runtime behavior unchanged. Validation: docs-focused
     parity/guardrail commands. Evidence:
-    `docs/planning/docmap-01-engineering-documentation-system-map-task-2026-05-03.md`.
+    `history/tasks/docmap-01-engineering-documentation-system-map-task-2026-05-03.md`.
 
 - [x] `SYSFINAL-09 release(closure): execute fixes regression production smoke and closure`
   - Scope: final executable slice from the consolidated final system
@@ -7544,9 +7651,9 @@ Last updated: 2026-05-23
     publish residual-risk evidence. Production-impacting smoke must use real
     available credentials/environment; if unavailable, classify the external
     blocker instead of inventing evidence. Evidence plan:
-    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    `history/plans/system-functionality-final-remediation-master-plan-2026-05-03.md`.
   - 2026-05-03: Closed with
-    `docs/planning/sysfinal-09-final-regression-production-smoke-closure-task-2026-05-03.md`.
+    `history/evidence/sysfinal-09-final-regression-production-smoke-closure-task-2026-05-03.md`.
     Validation PASS: guardrails, docs parity, lint, typecheck, full API tests,
     full web tests (`141` files / `399` tests), build, public production
     `/health`, `/ready`, web root, login page, web build-info, and protected
@@ -7561,9 +7668,9 @@ Last updated: 2026-05-23
     expected behavior, affected files, validation, deployment impact, rollback
     path, and acceptance criteria. If no findings exist, publish explicit empty
     fix-queue closure evidence. Evidence plan:
-    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    `history/plans/system-functionality-final-remediation-master-plan-2026-05-03.md`.
   - 2026-05-03: Closed with
-    `docs/planning/sysfinal-08-empty-sysfix-queue-task-2026-05-03.md`.
+    `history/tasks/sysfinal-08-empty-sysfix-queue-task-2026-05-03.md`.
     Review of `SYSFINAL-02..07` found no confirmed discrepancies requiring
     implementation. Current `SYSFIX-*` queue is intentionally empty.
 
@@ -7574,9 +7681,9 @@ Last updated: 2026-05-23
     filtering, route-reachable i18n, and key dashboard responsive/accessibility
     state coverage. Any confirmed discrepancy becomes a scoped `SYSFIX-*`
     task. Evidence plan:
-    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    `history/plans/system-functionality-final-remediation-master-plan-2026-05-03.md`.
   - 2026-05-03: Closed with
-    `docs/planning/sysfinal-07-backtests-reports-logs-i18n-ux-audit-task-2026-05-03.md`.
+    `history/audits/sysfinal-07-backtests-reports-logs-i18n-ux-audit-task-2026-05-03.md`.
     Validation PASS: focused API backtest/report pack (`13` files / `94`
     tests), sequential DB backtest/logs e2e pack (`2` files / `17` tests),
     focused web product/UX/i18n/a11y/responsive pack (`12` files / `33`
@@ -7591,9 +7698,9 @@ Last updated: 2026-05-23
     validation, and bot create/edit/start/stop canonical wallet-first
     market/strategy runtime scope. Any confirmed discrepancy becomes a scoped
     `SYSFIX-*` task. Evidence plan:
-    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    `history/plans/system-functionality-final-remediation-master-plan-2026-05-03.md`.
   - 2026-05-03: Closed with
-    `docs/planning/sysfinal-06-configuration-workflows-audit-task-2026-05-03.md`.
+    `history/audits/sysfinal-06-configuration-workflows-audit-task-2026-05-03.md`.
     Validation PASS: API config pack (`16` files / `130` tests), web config
     pack (`11` files / `52` tests), and repository guardrails. No `SYSFIX-*`
     task required.
@@ -7606,9 +7713,9 @@ Last updated: 2026-05-23
     history attribution, LIVE read-only imported position ownership/protection
     state, and visible guardrail explanations. Any confirmed discrepancy
     becomes a scoped `SYSFIX-*` task. Evidence plan:
-    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    `history/plans/system-functionality-final-remediation-master-plan-2026-05-03.md`.
   - 2026-05-03: Closed with
-    `docs/planning/sysfinal-05-order-position-workflows-audit-task-2026-05-03.md`.
+    `history/audits/sysfinal-05-order-position-workflows-audit-task-2026-05-03.md`.
     Validation PASS: lifecycle/pre-trade pack (`14` files / `116` tests),
     sequential DB order/position e2e pack (`7` files / `42` tests), focused
     web trading workflow pack (`8` files / `24` tests), and repository
@@ -7622,9 +7729,9 @@ Last updated: 2026-05-23
     guardrail-blocked outcomes, Redis market-stream readiness, and
     PAPER/read-only LIVE runtime rows. Any confirmed discrepancy becomes a
     scoped `SYSFIX-*` task. Evidence plan:
-    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    `history/plans/system-functionality-final-remediation-master-plan-2026-05-03.md`.
   - 2026-05-03: Closed with
-    `docs/planning/sysfinal-04-dashboard-bot-runtime-truth-audit-task-2026-05-03.md`.
+    `history/audits/sysfinal-04-dashboard-bot-runtime-truth-audit-task-2026-05-03.md`.
     Validation PASS: focused API runtime/readiness pack (`14` files / `113`
     tests), sequential DB runtime e2e pack (`7` files / `33` tests), focused
     web runtime pack (`14` files / `59` tests), and repository guardrails. No
@@ -7637,9 +7744,9 @@ Last updated: 2026-05-23
     denial, API-key masking/encryption behavior, connection-test error states,
     and LIVE write entitlement/consent fail-closed behavior. Any confirmed
     discrepancy becomes a scoped `SYSFIX-*` task. Evidence plan:
-    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    `history/plans/system-functionality-final-remediation-master-plan-2026-05-03.md`.
   - 2026-05-03: Closed with
-    `docs/planning/sysfinal-03-auth-session-security-audit-task-2026-05-03.md`.
+    `history/audits/sysfinal-03-auth-session-security-audit-task-2026-05-03.md`.
     Validation PASS: focused API security pack (`14` files / `75` tests),
     focused web auth/profile/admin pack (`8` files / `28` tests),
     `pnpm audit`, and repository guardrails. No `SYSFIX-*` task required.
@@ -7651,9 +7758,9 @@ Last updated: 2026-05-23
     lint, typecheck, full API/web tests, and build. Every failure must be
     classified before implementation; confirmed product failures become scoped
     `SYSFIX-*` tasks. Evidence plan:
-    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    `history/plans/system-functionality-final-remediation-master-plan-2026-05-03.md`.
   - 2026-05-03: Closed with
-    `docs/planning/sysfinal-02-repository-baseline-gates-task-2026-05-03.md`.
+    `history/audits/sysfinal-02-repository-baseline-gates-task-2026-05-03.md`.
     Validation PASS: repository guardrails, docs parity, lint, API+web
     typecheck, full API tests, full web tests (`141` files / `399` tests), and
     workspace build. No `SYSFIX-*` task required from the baseline.
@@ -7665,9 +7772,9 @@ Last updated: 2026-05-23
     Output must map every current route and major user function to its backend
     contract, data source, UI states, auth boundary, validation method, and
     explicit V2/deferred exclusions. Evidence plan:
-    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    `history/plans/system-functionality-final-remediation-master-plan-2026-05-03.md`.
   - 2026-05-03: Closed with
-    `docs/planning/sysfinal-01-current-function-inventory-task-2026-05-03.md`.
+    `history/audits/sysfinal-01-current-function-inventory-task-2026-05-03.md`.
     Current web route families and API families are mapped to backend owners,
     data sources, expected UI states, auth boundaries, validation methods,
     redirect-only compatibility routes, and explicit V2/deferred exclusions.
@@ -7681,7 +7788,7 @@ Last updated: 2026-05-23
     carryover checkboxes. Stage remains deferred to V2, and `BOTMULTI-*`
     remains deferred pipeline until the current V1 production system is fully
     re-audited. Evidence plan:
-    `docs/planning/system-functionality-final-remediation-master-plan-2026-05-03.md`.
+    `history/plans/system-functionality-final-remediation-master-plan-2026-05-03.md`.
   - 2026-05-03: Closed by synchronizing current queue truth. Runtime signal
     recovery is production-smoked and no longer waiting for deploy evidence;
     duplicate `V1BOT-SIGNALS-02` and older `V1FINAL/V1EXCEL` carryover entries
@@ -7699,7 +7806,7 @@ Last updated: 2026-05-23
     fail-closed `AMBIGUOUS`, `MANUAL_ONLY`, and `UNOWNED` outcomes. Validation
     PASS: focused ownership/takeover tests (`14/14`), API typecheck, API build,
     and repository guardrails. Evidence:
-    `docs/planning/live-import-ownership-wallet-scope-task-2026-05-03.md`.
+    `history/tasks/live-import-ownership-wallet-scope-task-2026-05-03.md`.
 
 - [x] `LIVEIMPORT-02 fix(api-runtime): recover single-strategy provenance for imported LIVE protection`
   - Scope: closed the operator-reported follow-up where an imported LIVE
@@ -7711,7 +7818,7 @@ Last updated: 2026-05-23
     provenance remains fail-closed. Validation PASS: focused runtime automation
     tests (`33/33`), focused dynamic-stop operator truth e2e (`2/2`), API
     typecheck, and repository guardrails. Evidence:
-    `docs/planning/live-import-single-strategy-provenance-task-2026-05-03.md`.
+    `history/tasks/live-import-single-strategy-provenance-task-2026-05-03.md`.
 
 - [x] `ETHDCA-01 fix(api-runtime): preserve LIVE DCA-first gating for trailing-stop close decisions`
   - Scope: closed the operator-reported ETHUSDT investigation slice. Runtime
@@ -7727,7 +7834,7 @@ Last updated: 2026-05-23
     serialization tests (`38/38`), API typecheck, API build, and repository
     guardrails.
     Evidence:
-    `docs/planning/ethdca-01-live-dca-first-tsl-hardening-task-2026-05-02.md`.
+    `history/tasks/ethdca-01-live-dca-first-tsl-hardening-task-2026-05-02.md`.
 
 - [x] `RUNTIME-SIGNAL-VOTES-01 fix(api-runtime): recover runtime strategy votes when matched indicators exist`
   - Scope: implementation is locally verified and production-smoked for
@@ -7752,7 +7859,7 @@ Last updated: 2026-05-23
     (`4` files / `56` tests), focused blocked-decision read-model tests
     (`2` files / `8` tests), API typecheck, API build, and repository
     guardrails. Evidence:
-    `docs/planning/runtime-signal-vote-recovery-audit-plan-2026-05-02.md`.
+    `history/audits/runtime-signal-vote-recovery-audit-plan-2026-05-02.md`.
 
 - [x] `DOCSYNC-V1EXCEL-01 docs(planning): close superseded V1EXCEL evidence gates`
   - Scope: synchronized stale `V1EXCEL-03..06`, `V1EXCEL-04`, and
@@ -7761,17 +7868,17 @@ Last updated: 2026-05-23
     operator decision, while production restore/rollback/signoff/release-gate
     evidence is superseded by the 2026-05-02 closeout pack. Validation PASS:
     repository guardrails. Evidence:
-    `docs/planning/docsync-v1excel-superseded-gates-task-2026-05-02.md`.
+    `history/tasks/docsync-v1excel-superseded-gates-task-2026-05-02.md`.
 
 - [x] `DOCSYNC-V1FINAL-01 docs(planning): close superseded V1FINAL-01 gate`
   - Scope: synchronized stale 2026-05-01 final-gate queue truth after
     `V1CLOSEOUT-11` published the current 2026-05-02 V1 production-only `GO`.
     `V1FINAL-01` is now marked closed as superseded by
-    `docs/operations/v1-final-go-no-go-closure-2026-05-02.md`, and
+    `history/plans/v1-final-go-no-go-closure-2026-05-02.md`, and
     `PROJECT_STATE` no longer describes the current phase as the older
     `V1EXCEL` / `V1FINAL-01` `NO-GO`. Validation PASS: repository guardrails.
     Evidence:
-    `docs/planning/docsync-v1final-01-superseded-gate-status-task-2026-05-02.md`.
+    `history/tasks/docsync-v1final-01-superseded-gate-status-task-2026-05-02.md`.
 
 - [x] `DASHSIGNALS-02 fix(api-runtime): recover indicator candles before unavailable signal values`
   - Scope: closed the deeper follow-up from `DASHSIGNALS-01`. Runtime symbol
@@ -7786,7 +7893,7 @@ Last updated: 2026-05-23
     and API build. Production readback after deploy confirmed no raw `n/a`, no
     pending indicator labels, and concrete visible `RSI(14)` values for active
     dashboard signal cards. Evidence:
-    `docs/planning/dashsignals-02-indicator-recovery-before-unavailable-task-2026-05-02.md`.
+    `history/tasks/dashsignals-02-indicator-recovery-before-unavailable-task-2026-05-02.md`.
 
 - [x] `V1BOT-SIGNALS-02 fix(api-runtime): expose condition match truth and recover market-stream publishing`
   - Scope: closed the runtime signal truth and market-stream recovery slice.
@@ -7801,7 +7908,7 @@ Last updated: 2026-05-23
     read-model tests (`50/50`), focused Binance stream/fanout/subscription
     tests (`15/15`), readiness tests (`9/9`), API typecheck, web typecheck,
     API build, and repository guardrails. Evidence:
-    `docs/planning/v1bot-signals-runtime-truth-2026-05-02.md`.
+    `history/plans/v1bot-signals-runtime-truth-2026-05-02.md`.
 
 - [x] `DASHSIGNALS-01 fix(runtime+web): clarify unavailable indicator signal values`
   - Scope: remediated the operator-reported production dashboard signal-card
@@ -7816,7 +7923,7 @@ Last updated: 2026-05-23
     tests (`5/5`), focused web dashboard/bot signal tests (`32/32`), API
     typecheck, web typecheck, repository guardrails, lint, route-reachable
     i18n audit, API build, and web build. Evidence:
-    `docs/planning/dashsignals-01-indicator-value-pending-display-task-2026-05-02.md`.
+    `history/tasks/dashsignals-01-indicator-value-pending-display-task-2026-05-02.md`.
 
 - [x] `DASHDISPLAY-01 fix(web-dashboard): repair production dashboard display polish`
   - Scope: remediated authenticated production dashboard display findings from
@@ -7827,11 +7934,11 @@ Last updated: 2026-05-23
     `__dashboard-spacer__` in rendered DOM text. Validation PASS: focused web
     dashboard/title pack (`29/29`), web typecheck, repository guardrails, and
     web build. Evidence:
-    `docs/planning/dashdisplay-01-prod-dashboard-display-polish-task-2026-05-02.md`.
+    `history/tasks/dashdisplay-01-prod-dashboard-display-polish-task-2026-05-02.md`.
 
 - [x] `AWESOME-FIX-01 test(api-positions): isolate imported position history hydrator fixtures`
   - Scope: remediated the only confirmed follow-up from
-    `docs/operations/awesome-audit-execution-report-2026-05-02.md`.
+    `history/audits/awesome-audit-execution-report-2026-05-02.md`.
     `apps/api/src/modules/positions/importedPositionHistoryHydrator.service.test.ts`
     now cleans dependent rows before users. Validation PASS: affected test file
     (`6` tests), adjacent focused API slices (`58` tests across `7` files),
@@ -7839,19 +7946,19 @@ Last updated: 2026-05-23
 
 - [x] `AWESOME-01 qa(product): execute full post-V1 quality audit program`
   - Scope: executed the master audit program from
-    `docs/planning/awesome-audit-master-plan-2026-05-02.md`. Start with
+    `history/audits/awesome-audit-master-plan-2026-05-02.md`. Start with
     architecture truth and route/API contract audits, then proceed through
     auth/session, frontend-backend integration, dashboard runtime truth, bots,
     orders/positions, wallets/exchange keys, strategies/markets, backtests,
     UX states, security, production runtime, data integrity, and final user
     acceptance matrix. Closed with
-    `docs/operations/awesome-audit-execution-report-2026-05-02.md`.
+    `history/audits/awesome-audit-execution-report-2026-05-02.md`.
     Result: no product/runtime/security/production public-smoke blocker found;
     the only QA test-isolation follow-up is closed as `AWESOME-FIX-01`.
 
 - [x] `V1CLOSEOUT-01 fix(api-wallets/bots): resolve LIVE external management ownership persistence`
   - Scope: first execution slice from
-    `docs/planning/v1closeout-audit-remediation-plan-2026-05-02.md`.
+    `history/audits/v1closeout-audit-remediation-plan-2026-05-02.md`.
     Reconcile the failing LIVE wallet `manageExternalPositions` assertion with
     the current singular-bot architecture and `V1TAKE-10` ownership decision.
     Fix the API contract or stale test without duplicating wallet/bot
@@ -7917,7 +8024,7 @@ Last updated: 2026-05-23
     container env vars are not configured in this execution context. Stage and
     prod release gates were rerun in dry-run mode and remain `not_ready`.
     Current evidence packet:
-    `docs/operations/v1-closeout-evidence-refresh-2026-05-02.md`.
+    `history/evidence/v1-closeout-evidence-refresh-2026-05-02.md`.
 
 - [x] `V1CLOSEOUT-10 refactor(api-exchange): decide and remediate direct exchange boundary access`
   - Scope: remediated direct Binance REST host/fetch ownership and direct
@@ -7934,7 +8041,7 @@ Last updated: 2026-05-23
   - Scope: after P0 fixes and evidence refresh, run the complete validation
     baseline, synchronize RC artifacts, and publish final GO or NO-GO with
     exact evidence. Closed with final `GO` in
-    `docs/operations/v1-final-go-no-go-closure-2026-05-02.md`. Repository
+    `history/plans/v1-final-go-no-go-closure-2026-05-02.md`. Repository
     validation baseline is green, and Gate 4 is now approved with Patryk
     Wroblewski as Engineering, Product, Operations, and RC owner. Production
     restore evidence PASS, rollback proof PASS, and the non-dry-run production
@@ -7949,7 +8056,7 @@ Last updated: 2026-05-23
     deferred to V2. Validation PASS: `pnpm audit`, `quality:guardrails`,
     `lint`, `typecheck`, full web tests (`139` files / `394` tests), full API
     tests, `build`, and `docs:parity:check`. Evidence:
-    `docs/planning/v1sec-01-prod-only-dependency-hardening-task-2026-05-02.md`.
+    `history/tasks/v1sec-01-prod-only-dependency-hardening-task-2026-05-02.md`.
 
 - [x] `V1PRICE-04 fix(api-runtime): propagate fallback ticker price into position markPrice candidates`
   - Scope: closed as part of `V1RUNTIME-TRUST-03`. Runtime Positions now feeds
@@ -7957,7 +8064,7 @@ Last updated: 2026-05-23
     open-position `markPrice` when runtime/stat price truth is missing, without
     changing live close command semantics and while preserving exchange-sync
     freshness precedence. Focused API regression PASS. Evidence:
-    `docs/planning/v1runtime-operator-trust-hardening-task-2026-05-02.md`.
+    `history/tasks/v1runtime-operator-trust-hardening-task-2026-05-02.md`.
 
 - [x] `V1SURF-03 fix(web-runtime): reset live ticker state on runtime context changes`
   - Scope: closed as part of `V1RUNTIME-TRUST-03`. Dashboard Home and Bot
@@ -7965,7 +8072,7 @@ Last updated: 2026-05-23
     boundaries, and Bot Monitoring opens market SSE only for `RUNNING`
     contexts. Focused web regression PASS for same-symbol selected-bot stream
     reset. Evidence:
-    `docs/planning/v1runtime-operator-trust-hardening-task-2026-05-02.md`.
+    `history/tasks/v1runtime-operator-trust-hardening-task-2026-05-02.md`.
 
 - [x] `V1BOT-AUDIT-02 qa(runtime+web): audit runtime freshness, action context, and operator trust`
   - Scope: completed a second operator-trust audit after `V1SURF-02`.
@@ -7975,7 +8082,7 @@ Last updated: 2026-05-23
     eligibility is broader than Dashboard Home; runtime price source/freshness
     remains hidden from the web contract; close/cancel paths are backend
     guarded but UI affordances can improve later. Evidence:
-    `docs/planning/v1bot-runtime-operator-trust-audit-2026-05-02.md`.
+    `history/audits/v1bot-runtime-operator-trust-audit-2026-05-02.md`.
 
 - [x] `V1SURF-02 fix(web-runtime): share live open-position derivation across Bot Runtime and Dashboard`
   - Scope: follow-up from `V1BOT-AUDIT-01`. Consolidated the duplicated open
@@ -7987,7 +8094,7 @@ Last updated: 2026-05-23
     `summary.unrealized`, `paperDelta`, `paperEquity`, selected `net`, and the
     open-position table. Validation PASS: focused web derivation/component
     tests (`9/9`), web typecheck, web build, and guardrails. Evidence:
-    `docs/planning/v1surf-02-shared-runtime-position-derivation-task-2026-05-02.md`.
+    `history/tasks/v1surf-02-shared-runtime-position-derivation-task-2026-05-02.md`.
 
 - [x] `V1DOGE-03 fix(api-runtime+web): align imported LIVE protection and dashboard price truth`
   - Scope: fixed an operator-reported `LIVE DOGEUSDT SHORT` protection concern
@@ -8007,7 +8114,7 @@ Last updated: 2026-05-23
     typecheck, focused web derivation test (`3/3`), web typecheck, web build,
     and guardrails. Production deploy and
     protected DOGE readback remain operational follow-up evidence. Evidence:
-    `docs/planning/v1doge-ttp-exchange-sync-price-task-2026-05-02.md`.
+    `history/tasks/v1doge-ttp-exchange-sync-price-task-2026-05-02.md`.
 
 - [x] `V1MARKET-03 fix(api-markets): ignore stale legacy bot-strategy market links`
   - Scope: reproduced the operator-reported production `LIVE` blocker with
@@ -8026,7 +8133,7 @@ Last updated: 2026-05-23
     whitelist restore -> `live` re-enable, all `200 OK`; final `live` active
     and `ETH` whitelist unchanged).
     Evidence:
-    `docs/planning/v1market-03-ignore-stale-legacy-market-guard-task-2026-05-02.md`.
+    `history/tasks/v1market-03-ignore-stale-legacy-market-guard-task-2026-05-02.md`.
 
 - [x] `V1MARKET-02 fix(web-markets): keep Binance catalog symbols selectable for whitelist`
   - Scope: fixed the operator-reported follow-up where market whitelist
@@ -8039,7 +8146,7 @@ Last updated: 2026-05-23
     selection and a focused regression covering a below-threshold `SOLUSDT`
     selection. Validation PASS: focused market form component test (`8/8`)
     web typecheck, web build, and repository guardrails. Evidence:
-    `docs/planning/v1market-02-whitelist-catalog-selection-task-2026-05-02.md`.
+    `history/tasks/v1market-02-whitelist-catalog-selection-task-2026-05-02.md`.
 
 - [x] `V1MARKET-01 fix(api-bots+markets): allow market edits after linked bot deactivation`
   - Scope: fixed the operator-reported blocker where a linked market universe
@@ -8052,7 +8159,7 @@ Last updated: 2026-05-23
     reactivate -> active block. Validation PASS: markets e2e (`14/14`), bots
     runtime-scope e2e (`10/10`), bots duplicate guard e2e (`4/4`), API
     typecheck, and repository guardrails. Evidence:
-    `docs/planning/v1market-01-deactivated-bot-market-edit-task-2026-05-02.md`.
+    `history/tasks/v1market-01-deactivated-bot-market-edit-task-2026-05-02.md`.
 
 - [x] `V1BOT-SIGNALS-02 fix(api-runtime): expose condition match truth and recover market-stream publishing`
   - Scope: follow-up for the production `Dashboard -> Markets / Signals`
@@ -8082,7 +8189,7 @@ Last updated: 2026-05-23
     hardening deploy/readback was superseded by the later closed entry above
     and by production smoke confirming Redis readiness, real market-stream
     events, and runtime signal guardrail visibility. Evidence:
-    `docs/planning/v1bot-signals-runtime-truth-2026-05-02.md`.
+    `history/plans/v1bot-signals-runtime-truth-2026-05-02.md`.
 
 - [x] `V1BACKTEST-01 fix(api-backtests): recover futures candles when primary kline endpoint is unavailable`
   - Scope: investigated the operator-reported production backtest details/run
@@ -8099,7 +8206,7 @@ Last updated: 2026-05-23
     by recent strategy changes. Validation PASS: gateway test (`3/3`), replay
     core (`25/25`), backtests e2e (`14/14`), API typecheck, API build, and
     repository guardrails. Evidence:
-    `docs/planning/v1backtest-01-futures-kline-fallback-task-2026-05-02.md`.
+    `history/tasks/v1backtest-01-futures-kline-fallback-task-2026-05-02.md`.
 
 - [x] `DPL-PROD-BUILDINFO-01 fix(ops): fail promotion when web build-info stays on old SHA`
   - Scope: hardened the canonical production promotion workflow after a
@@ -8109,7 +8216,7 @@ Last updated: 2026-05-23
     `github.sha`. Added the reusable `ops:deploy:wait-web-build-info` script
     and updated Coolify/post-deploy runbooks. Validation PASS: script help,
     production readback against active SHA, and repository guardrails.
-    Evidence: `docs/operations/prod-web-build-info-gate-2026-05-02.md`.
+    Evidence: `history/evidence/prod-web-build-info-gate-2026-05-02.md`.
 
 - [x] `V1BOT-CONDITIONS-01 fix(api-runtime-read): prevent stale signal conditions after bot context edits`
   - Scope: fixed operator-reported runtime monitoring drift where `Markets /
@@ -8127,7 +8234,7 @@ Last updated: 2026-05-23
     runtime-scope e2e (`10/10`), markets e2e (`13/13`), API typecheck, API
     build, and repository guardrails.
     Evidence:
-    `docs/planning/v1bot-conditions-market-sync-2026-05-02.md`.
+    `history/plans/v1bot-conditions-market-sync-2026-05-02.md`.
 
 - [x] `V1I18N-01 feat(web-i18n): add Swiss German locale`
   - Scope: added German (Switzerland) as standard locale code `de-CH` across
@@ -8139,7 +8246,7 @@ Last updated: 2026-05-23
     checks. Validation PASS: focused i18n/UI tests (`22/22`), web typecheck,
     web build, repository guardrails, and route-reachable i18n audit
     (`findings=0`). Evidence:
-    `docs/planning/v1i18n-01-swiss-german-locale-task-2026-05-02.md`.
+    `history/tasks/v1i18n-01-swiss-german-locale-task-2026-05-02.md`.
 
 - [x] `V1UI-FLAG-01 fix(web-footer): restore language switcher flags`
   - Scope: after an operator-reported UI regression, reviewed commits from
@@ -8151,7 +8258,7 @@ Last updated: 2026-05-23
     footer without text content.
     Validation PASS: focused footer/language switcher tests (`5/5`), web
     typecheck, web build, repository guardrails. Evidence:
-    `docs/planning/v1ui-flag-01-footer-language-flags-regression-task-2026-05-01.md`.
+    `history/tasks/v1ui-flag-01-footer-language-flags-regression-task-2026-05-01.md`.
 
 - [x] `V1DCA-05 fix(api-runtime-read): restore imported DCA across restarted sessions`
   - Scope: after production deployed `15cddb5a`, authenticated ETHUSDT evidence
@@ -8165,7 +8272,7 @@ Last updated: 2026-05-23
     bot-scoped legacy trades, and preserves close/reopen boundaries. Validation
     PASS: focused imported DCA API e2e (`6/6`), API typecheck, API build,
     repository guardrails, diff check. Evidence:
-    `docs/planning/v1dca-05-restarted-session-imported-dca-read-model-task-2026-05-01.md`.
+    `history/tasks/v1dca-05-restarted-session-imported-dca-read-model-task-2026-05-01.md`.
 
 - [x] `V1DCA-04 fix(api-runtime-read): restore wallet-scoped imported DCA in Positions`
   - Scope: after `V1DCA-03` proved the UI no longer hides monitoring content,
@@ -8176,7 +8283,7 @@ Last updated: 2026-05-23
     missing strategy refs inside the same lifecycle while preserving close/reopen
     boundaries. Validation PASS: focused imported DCA API e2e (`5/5`), API
     typecheck, API build, repository guardrails. Evidence:
-    `docs/planning/v1dca-04-wallet-scoped-imported-dca-read-model-task-2026-05-01.md`.
+    `history/tasks/v1dca-04-wallet-scoped-imported-dca-read-model-task-2026-05-01.md`.
 
 - [x] `V1DCA-03 fix(web-monitoring): restore DCA visibility when portfolio-history refresh fails`
   - Scope: after production deployed `fbeae8f0`, the operator reported DCA no
@@ -8189,7 +8296,7 @@ Last updated: 2026-05-23
     as failing while DCA ladder output remains asserted; production web
     build-info reports `19a62b8d20f7e14d2489bbd8a842ca9c0c558efb`; public
     production deploy smoke passed. Evidence:
-    `docs/planning/v1dca-03-monitoring-dca-visibility-regression-task-2026-05-01.md`.
+    `history/evidence/v1dca-03-monitoring-dca-visibility-regression-task-2026-05-01.md`.
 
 - [x] `V1COVER-01 qa(release): create V1 module function coverage ledger`
   - Scope: replace repeated ad-hoc confidence loops with one filterable
@@ -8201,8 +8308,8 @@ Last updated: 2026-05-23
     `PASS=14`, `PARTIAL=5`, `NEEDS_PROD_SAMPLE=7`,
     `NEEDS_PROD_UI_CHECK=1`, `BLOCKED=2`, `FAIL=1`,
     `NOT_APPLICABLE=2`, `NOT_VERIFIED=1`. Evidence:
-    `docs/operations/v1-function-coverage-audit-2026-05-01.md`,
-    `docs/operations/v1-function-coverage-matrix-2026-05-01.csv`.
+    `history/audits/v1-function-coverage-audit-2026-05-01.md`,
+    `history/artifacts/v1-function-coverage-matrix-2026-05-01.csv`.
 
 - [x] `V1COVER-02 qa(release): expand function coverage ledger from code scan`
   - Scope: scan API module directories/routes, web dashboard routes, and test
@@ -8214,9 +8321,9 @@ Last updated: 2026-05-23
     `NEEDS_PROD_UI_CHECK=12`, `NOT_VERIFIED=11`, `NOT_APPLICABLE=5`,
     `BLOCKED=2`, `FAIL=1`; priorities: `P0=45`, `P1=24`, `P2=10`.
     Evidence:
-    `docs/planning/v1cover-02-code-scan-function-ledger-expansion-task-2026-05-01.md`,
-    `docs/operations/v1-function-coverage-audit-2026-05-01.md`,
-    `docs/operations/v1-function-coverage-matrix-2026-05-01.csv`.
+    `history/audits/v1cover-02-code-scan-function-ledger-expansion-task-2026-05-01.md`,
+    `history/audits/v1-function-coverage-audit-2026-05-01.md`,
+    `history/artifacts/v1-function-coverage-matrix-2026-05-01.csv`.
 
 - [x] `V1COVER-03 qa(release): classify function ledger by implementation readiness`
   - Scope: classify all 79 ledger rows into implementation-readiness buckets
@@ -8227,8 +8334,8 @@ Last updated: 2026-05-23
     `V1_BLOCKER=3`, `REQUIRES_IMPLEMENTATION_REVIEW=0`. Recommended follow-up
     waves are `V1GATE-A`, `V1MONEY-A`, `V1MANUAL-A`, `V1UX-A`, and
     `V1SCOPE-A`. Evidence:
-    `docs/planning/v1cover-03-function-implementation-readiness-task-2026-05-01.md`,
-    `docs/operations/v1-function-implementation-readiness-audit-2026-05-01.md`.
+    `history/evidence/v1cover-03-function-implementation-readiness-task-2026-05-01.md`,
+    `history/audits/v1-function-implementation-readiness-audit-2026-05-01.md`.
 
 - [x] `V1COVER-04 qa(release): promote function ledger into reusable project standard`
   - Scope: extract the reusable table model from the Soar V1 ledger so other
@@ -8238,7 +8345,7 @@ Last updated: 2026-05-23
   - 2026-05-01: Closed with a governance standard plus copyable CSV template.
     Soar's V1 ledger is now documented as one project-specific instance of the
     model. Evidence:
-    `docs/planning/v1cover-04-model-function-ledger-standard-task-2026-05-01.md`,
+    `history/audits/v1cover-04-model-function-ledger-standard-task-2026-05-01.md`,
     `docs/governance/function-coverage-ledger-standard.md`,
     `docs/governance/function-coverage-ledger-template.csv`.
 
@@ -8250,7 +8357,7 @@ Last updated: 2026-05-23
     `assertSubscriptionAllowsLiveTrading(...)` guard and focused e2e coverage
     for FREE-plan LIVE-pool drift. Validation PASS: API typecheck, focused
     entitlement e2e (`5/5`), API build, repository guardrails. Evidence:
-    `docs/planning/v1subs-01-live-entitlement-bot-write-guard-task-2026-05-01.md`.
+    `history/tasks/v1subs-01-live-entitlement-bot-write-guard-task-2026-05-01.md`.
 
 - [x] `V1FINAL-01 qa(prod): verify deployed DOGE runtime hardening and run final V1 gates`
   - Scope: execute the final V1 gate structure after production deploys
@@ -8264,8 +8371,8 @@ Last updated: 2026-05-23
     latest `Promote PROD` run is old (`0f122ed4`, 2026-04-25) and failed; no
     current production promotion run exists for `577c45a8`/`fba29a96`.
     Test structure:
-    `docs/operations/v1-final-test-structure-2026-05-01.md`. Planning task:
-    `docs/planning/v1final-00-final-test-structure-task-2026-05-01.md`.
+    `history/plans/v1-final-test-structure-2026-05-01.md`. Planning task:
+    `history/tasks/v1final-00-final-test-structure-task-2026-05-01.md`.
   - 2026-05-01 execution: production deploy freshness is now resolved on
     `6a8ded9333eabced5e8461362e9e9237a9bf4e4d`; public and authenticated
     production smoke passed; protected runtime freshness passed; rollback guard
@@ -8276,15 +8383,15 @@ Last updated: 2026-05-23
     failed production restore drill caused by missing prod DB container
     configuration, stale activation audit/plan from `2026-04-22`, incomplete
     manual operator matrix, and stage `503`. Evidence:
-    `docs/planning/v1final-01-prod-gate-execution-task-2026-05-01.md`,
-    `docs/operations/v1-release-gate-prod-2026-05-01T02-44-00-227Z.md`.
+    `history/tasks/v1final-01-prod-gate-execution-task-2026-05-01.md`,
+    `history/releases/v1-release-gate-prod-2026-05-01T02-44-00-227Z.md`.
   - 2026-05-01 deploy refresh: production web build-info now reports
     `fbeae8f08926bc838141d53397fc142f52945356` on `main`, matching the local
     V1 candidate. Public production deploy smoke passed for API `/health`, API
     `/ready`, and web `/`. Release-gate classification remains `not_ready`
     because activation audit/plan are stale and the production backup/restore
     drill artifact is still failed. Evidence:
-    `docs/operations/v1-release-gate-prod-2026-05-01T18-20-00-000Z.md`.
+    `history/releases/v1-release-gate-prod-2026-05-01T18-20-00-000Z.md`.
   - 2026-05-03 sync: this older final-gate item is preserved as historical
     evidence and is no longer active V1 work. It is superseded by
     `V1CLOSEOUT-11` and the 2026-05-02 production-only final `GO` closure.
@@ -8295,7 +8402,7 @@ Last updated: 2026-05-23
     available server` on `https://stage-api.soar.luckysparrow.ch` and
     `https://stage.soar.luckysparrow.ch` for health/ready/root/build-info.
     Evidence:
-    `docs/operations/v1excel-04-stage-refresh-503-2026-05-01.md`. Next action
+    `history/plans/v1excel-04-stage-refresh-503-2026-05-01.md`. Next action
     is a Coolify stage service restore/redeploy, then public smoke and
     authenticated runtime/rollback gate rerun.
   - 2026-05-01 follow-up: stage public smoke still fails with the same `503 no
@@ -8304,13 +8411,13 @@ Last updated: 2026-05-23
     resources and Coolify API reads return `401` without a bearer token, so
     automated restore/deploy remains blocked on proper Coolify resource/API
     access. Evidence:
-    `docs/operations/v1excel-04-stage-coolify-access-refresh-2026-05-01.md`.
+    `history/plans/v1excel-04-stage-coolify-access-refresh-2026-05-01.md`.
   - 2026-05-01 Coolify team follow-up: the account sees
     `luckysparrow's Team` and `Root Team`, but the active UI remains on
     `luckysparrow's Team`; attempting to switch to `Root Team` through the
     rendered Livewire team switch returned `500`. No stage restore action was
     attempted. Evidence:
-    `docs/operations/v1excel-04-stage-coolify-access-refresh-2026-05-01.md`.
+    `history/plans/v1excel-04-stage-coolify-access-refresh-2026-05-01.md`.
   - 2026-05-02: closed for V1 as deferred to V2 by operator decision in
     `V1CLOSEOUT-11`; stage restoration remains a V2 infrastructure task.
 - [x] `V1EXCEL-05 ops(prod-refresh): finish broader production evidence families`
@@ -8321,7 +8428,7 @@ Last updated: 2026-05-23
     freshness passed, and rollback guard returned `shouldRollback=false`, no
     reasons, no alerts, `runningCount=4`. Production rollback-proof artifact
     also PASS with secret-safe command recording. Evidence:
-    `docs/operations/v1excel-05-prod-refresh-2026-05-01.md`. Remaining work:
+    `history/plans/v1excel-05-prod-refresh-2026-05-01.md`. Remaining work:
     restore drill, RC status/sign-off/checklist rebuild, and remaining manual
     matrix items.
   - 2026-05-01 follow-up: RC status/checklist/sign-off were rebuilt and
@@ -8342,7 +8449,7 @@ Last updated: 2026-05-23
     `503` on API `/health`, API `/ready`, and web `/`, and a git ancestry check
     showing production is an ancestor of local `HEAD` but lacks
     `ca430aa5`, `1e20b6df`, and `ef37fca0`. Evidence:
-    `docs/planning/v1gate-01-current-target-freshness-sync-task-2026-05-01.md`.
+    `history/tasks/v1gate-01-current-target-freshness-sync-task-2026-05-01.md`.
 
 - [x] `V1SMOKE-01 test(local): restore go-live smoke after entitlement and ownership fixture drift`
   - Scope: recover the local umbrella go-live smoke path after verified local
@@ -8354,7 +8461,7 @@ Last updated: 2026-05-23
     Validation PASS: focused backtests e2e (`14/14`), focused web smoke pack
     (`17/17`), bot portfolio-history web test (`1/1`), and full
     `pnpm run test:go-live:smoke` (API `38/38`, web `17/17`). Evidence:
-    `docs/planning/v1smoke-01-go-live-smoke-recovery-task-2026-05-01.md`.
+    `history/evidence/v1smoke-01-go-live-smoke-recovery-task-2026-05-01.md`.
 
 - [x] `BHIST-01 feature(bot-history): add bot-scoped portfolio history with reset and wallet-capital markers`
   - Scope: extend selected-bot monitoring with one portfolio-history view from
@@ -8368,7 +8475,7 @@ Last updated: 2026-05-23
     portfolio-history e2e (`2/2`), focused web portfolio-history test (`1/1`),
     API build, web build, repository guardrails.
     Evidence:
-    `docs/planning/bhist-01-bot-portfolio-history-and-capital-events-task-2026-05-01.md`.
+    `history/tasks/bhist-01-bot-portfolio-history-and-capital-events-task-2026-05-01.md`.
 
 - [x] `V1DCA-01 fix(api-runtime-read): preserve DCA visibility after exchange-sync position replacement`
   - Scope: keep dashboard runtime `Positions` DCA truth aligned with the
@@ -8385,7 +8492,7 @@ Last updated: 2026-05-23
     commit `9460317c7d9409062ff2ddd284a179a60ac89f1a`: current DOGEUSDT
     `Positions` row reports `dcaCount=1`, `tradesCount=2`, and `lastTradeAt`
     from the real `BOT/DCA` trade. Evidence:
-    `docs/operations/v1dca-01-prod-verification-2026-05-01.md`.
+    `history/plans/v1dca-01-prod-verification-2026-05-01.md`.
 
 - [x] `V1DCA-02 fix(api-runtime-read): preserve multi-level DCA visibility across repeated exchange-sync replacements`
   - Scope: keep runtime `Positions` DCA levels aligned with persisted trade
@@ -8399,7 +8506,7 @@ Last updated: 2026-05-23
     fills from the first same-identity open after the last exit. Validation
     PASS: focused imported DCA visibility e2e (`3/3`), lint, API typecheck,
     API build, repository guardrails. Task packet:
-    `docs/planning/v1dca-02-multi-replacement-dca-count-task-2026-05-01.md`.
+    `history/tasks/v1dca-02-multi-replacement-dca-count-task-2026-05-01.md`.
 
 - [x] `V1DOGE-02 fix(api-runtime): harden DOGE-style LIVE close/reopen lifecycle state`
   - Scope: prevent stale same-symbol DCA/protection state from crossing a
@@ -8413,7 +8520,7 @@ Last updated: 2026-05-23
     attachment remains strict by lifecycle identity. Validation PASS: focused
     runtime automation, position-management, imported DCA visibility, and
     futures market-data gateway packs. Task packet:
-    `docs/planning/v1doge-02-runtime-close-reopen-hardening-task-2026-05-01.md`.
+    `history/tasks/v1doge-02-runtime-close-reopen-hardening-task-2026-05-01.md`.
     Post-deploy protected production verification is still required.
 
 - [x] `V1FINAL-00 release(planning): freeze final V1 test structure after DOGE runtime hardening`
@@ -8424,7 +8531,7 @@ Last updated: 2026-05-23
     build-info reports stale `c081f224`, stage public smoke FAIL with `503`,
     and the final V1 structure now blocks DOGE post-deploy verification until
     `577c45a8` or later is deployed. Evidence:
-    `docs/operations/v1-final-test-structure-2026-05-01.md`.
+    `history/plans/v1-final-test-structure-2026-05-01.md`.
 
 - [x] `WLEDGER-07..09 web-wallet-preview: expose ledger-backed wallet preview from wallet list`
   - Scope: add a wallets table preview action and `/dashboard/wallets/:id/preview` surface for ledger-backed summary, equity timeline, and cashflow events.
@@ -8456,7 +8563,7 @@ Last updated: 2026-05-23
 
 - [x] `WLEDGER-00 docs(product+architecture): freeze LIVE wallet cashflow ledger and equity timeline target`
   - Scope: document the target wallet performance model so future implementation can separate contributed user capital, bot PnL, deposits, withdrawals, transfers, fees/funding, and unclassified exchange adjustments.
-  - 2026-04-30: Closed as a documentation/planning slice after operator discussion confirmed the intended model: if a user starts with `5 USDT`, bot earns `+1 USDT`, and the user later deposits `+10 USDT`, wallet delta should remain bot PnL `+1 USDT` over contributed capital `15 USDT`, not treat the deposit as bot profit. Architecture now records the target ledger/equity model, product docs and known limits are aligned, module docs identify wallet/exchange responsibilities, and the queued implementation plan is published in `docs/planning/live-wallet-cashflow-ledger-and-equity-timeline-plan-2026-04-30.md`. Validation PASS: repository guardrails.
+  - 2026-04-30: Closed as a documentation/planning slice after operator discussion confirmed the intended model: if a user starts with `5 USDT`, bot earns `+1 USDT`, and the user later deposits `+10 USDT`, wallet delta should remain bot PnL `+1 USDT` over contributed capital `15 USDT`, not treat the deposit as bot profit. Architecture now records the target ledger/equity model, product docs and known limits are aligned, module docs identify wallet/exchange responsibilities, and the queued implementation plan is published in `history/audits/live-wallet-cashflow-ledger-and-equity-timeline-plan-2026-04-30.md`. Validation PASS: repository guardrails.
 
 - [x] `UXFIX-2026-04-30-B fix(web-dashboard): derive LIVE percent wallet delta from runtime equity and net PnL`
   - Scope: keep dashboard wallet KPI rendering in the web layer aligned with the existing runtime capital snapshot contract, without changing API/runtime behavior.
@@ -8529,23 +8636,23 @@ Last updated: 2026-05-23
 
 - [x] `V1OWN-01 fix(api-runtime): hydrate imported owned LIVE positions into canonical runtime ownership`
   - Scope: stop runtime automation and bot-scope open-position counting from keying only on persisted `position.botId` when a `BOT_MANAGED EXCHANGE_SYNC` row is canonically owned through the external-position ownership contract.
-  - 2026-04-30: Closed by reusing the canonical ownership classifier in `runtimePositionAutomation` default imported-position lookup and in `runtimeSignalLoopDefaults` bot-scope open-position counting. Imported owned rows can now execute automation with effective bot context even when the canonical row still has `botId=null`, and signal-loop bot-scope counts no longer ignore those rows. Closure evidence: `docs/operations/v1own-imported-live-runtime-ownership-closure-2026-04-30.md`.
+  - 2026-04-30: Closed by reusing the canonical ownership classifier in `runtimePositionAutomation` default imported-position lookup and in `runtimeSignalLoopDefaults` bot-scope open-position counting. Imported owned rows can now execute automation with effective bot context even when the canonical row still has `botId=null`, and signal-loop bot-scope counts no longer ignore those rows. Closure evidence: `history/plans/v1own-imported-live-runtime-ownership-closure-2026-04-30.md`.
 
 - [x] `V1AUTO-01 fix(api-runtime): rebase stale imported runtime state to canonical exchange-synced basis`
   - Scope: keep imported `LIVE` automation fail-closed when the same `EXCHANGE_SYNC` row is updated in place by exchange truth but the persisted runtime state still reflects an older basis or older `currentAdds`.
-  - 2026-04-30: Closed with a focused runtime-state rebase seam in `runtimePositionAutomation`. Imported `EXCHANGE_SYNC` positions now rebase stale persisted state to canonical exchange-synced `quantity + entryPrice` truth before management evaluation, and the regression pack proves stale `currentAdds` can no longer suppress valid DCA on the new canonical basis. Closure evidence: `docs/operations/v1auto-runtime-state-rebase-closure-2026-04-30.md`.
+  - 2026-04-30: Closed with a focused runtime-state rebase seam in `runtimePositionAutomation`. Imported `EXCHANGE_SYNC` positions now rebase stale persisted state to canonical exchange-synced `quantity + entryPrice` truth before management evaluation, and the regression pack proves stale `currentAdds` can no longer suppress valid DCA on the new canonical basis. Closure evidence: `history/plans/v1auto-runtime-state-rebase-closure-2026-04-30.md`.
 
 - [x] `V1AUTO-02 fix(api-reconcile): hydrate imported LIVE automation prospectively from fresh exchange-sync truth`
   - Scope: stop freshly adopted imported `LIVE` positions from remaining dormant until a later ticker-path event arrives, while still reusing the one canonical runtime automation engine.
-  - 2026-04-30: Closed by wiring `livePositionReconciliation` to call the existing `runtimePositionAutomationService.handleTickerEvent(...)` path whenever it creates or updates a canonically owned imported `BOT_MANAGED` row with `continuityState=CONFIRMED` and finite positive `markPrice`. This stays aligned with the approved `LIVE` protection-state contract as prospective hydration from the adoption point, not a second imported-position execution path. Closure evidence: `docs/operations/v1auto-reconciliation-automation-hydration-closure-2026-04-30.md`.
+  - 2026-04-30: Closed by wiring `livePositionReconciliation` to call the existing `runtimePositionAutomationService.handleTickerEvent(...)` path whenever it creates or updates a canonically owned imported `BOT_MANAGED` row with `continuityState=CONFIRMED` and finite positive `markPrice`. This stays aligned with the approved `LIVE` protection-state contract as prospective hydration from the adoption point, not a second imported-position execution path. Closure evidence: `history/plans/v1auto-reconciliation-automation-hydration-closure-2026-04-30.md`.
 
 - [x] `V1AUTO-03 fix(api-read): restore imported DCA visibility in runtime positions payload`
   - Scope: stop imported managed positions from showing `DCA=0` in operator runtime tables just because the original imported `OPEN` trade is not yet present in local history.
-  - 2026-04-30: Closed by extending runtime position trade rows with canonical `lifecycleAction` and deriving `dcaCount` from explicit `DCA` trades plus runtime `currentAdds` before the old `entryLegs - 1` inference. This keeps imported managed position `DCA` truth faithful without inventing missing historical `OPEN` trades. Closure evidence: `docs/operations/v1auto-imported-dca-visibility-closure-2026-04-30.md`.
+  - 2026-04-30: Closed by extending runtime position trade rows with canonical `lifecycleAction` and deriving `dcaCount` from explicit `DCA` trades plus runtime `currentAdds` before the old `entryLegs - 1` inference. This keeps imported managed position `DCA` truth faithful without inventing missing historical `OPEN` trades. Closure evidence: `history/plans/v1auto-imported-dca-visibility-closure-2026-04-30.md`.
 
 - [x] `V1ROE-00 analysis(queue): publish LIVE PnL/ROE semantics and imported automation parity packet`
   - Scope: freeze the newly confirmed production drift where operator-visible `PnL %` diverges from Binance Futures semantics while imported/reopened `LIVE` automation also appears stale enough to miss `DCA/TTP` evaluation.
-  - 2026-04-30: Closed as an analysis-only slice. Published `docs/planning/v1roe-live-pnl-roe-and-runtime-automation-parity-plan-2026-04-30.md` plus `docs/planning/v1roe-00-analysis-task-2026-04-30.md` after protected production API/UI verification and code review of runtime percent + DCA semantics. Current conclusion: there is one ordinary runtime bug to fix (imported/reopened `LIVE` automation continuity) and one architecture/product decision to make explicitly (`leveraged move` versus exchange `ROE` semantics for the primary percent truth).
+  - 2026-04-30: Closed as an analysis-only slice. Published `history/audits/v1roe-live-pnl-roe-and-runtime-automation-parity-plan-2026-04-30.md` plus `history/tasks/v1roe-00-analysis-task-2026-04-30.md` after protected production API/UI verification and code review of runtime percent + DCA semantics. Current conclusion: there is one ordinary runtime bug to fix (imported/reopened `LIVE` automation continuity) and one architecture/product decision to make explicitly (`leveraged move` versus exchange `ROE` semantics for the primary percent truth).
 
 - [x] `V1ROE-01 fix(api+web+runtime): align shared lifecycle PnL fraction to canonical margin basis`
   - Scope: keep one shared lifecycle engine while replacing the `LIVE` modeled-margin shortcut with canonical exchange-synced `marginUsed` truth wherever available, and propagate the same basis through runtime automation, read models, and operator surfaces.
@@ -8561,7 +8668,7 @@ Last updated: 2026-05-23
 
 - [x] `V1REOPEN-00 analysis(queue): publish same-symbol LIVE close/reopen hardening packet`
   - Scope: freeze the newly reported `LIVE close -> reopen same symbol` regression into one exact execution packet covering stale lifecycle visibility, wrong `PnL%` basis, and stale `TTP` continuity risk.
-  - 2026-04-29: Closed as an analysis-only slice. Published `docs/planning/v1reopen-live-close-reopen-pnl-ttp-hardening-plan-2026-04-29.md` plus `docs/planning/v1reopen-00-analysis-task-2026-04-29.md` after reviewing reconciliation, runtime protection-state, and dashboard derivation seams. Current strongest hypothesis: the bug is stale lifecycle continuity across same-symbol `LIVE` close/reopen, not a simple UI percent formula drift.
+  - 2026-04-29: Closed as an analysis-only slice. Published `history/plans/v1reopen-live-close-reopen-pnl-ttp-hardening-plan-2026-04-29.md` plus `history/tasks/v1reopen-00-analysis-task-2026-04-29.md` after reviewing reconciliation, runtime protection-state, and dashboard derivation seams. Current strongest hypothesis: the bug is stale lifecycle continuity across same-symbol `LIVE` close/reopen, not a simple UI percent formula drift.
 
 - [x] `V1REOPEN-01 audit(regression-matrix): freeze the exact same-symbol close/reopen failure matrix`
   - Scope: reproduce and lock the reported `DOGEUSDT` class across same-side and opposite-side reentry, including wrong PnL sign/basis and stale protection carryover.
@@ -8591,15 +8698,15 @@ Last updated: 2026-05-23
 
 - [x] `V1REOPEN-07 qa(closure): run focused close/reopen truth pack and publish evidence`
   - Scope: rerun the focused reconciliation/runtime/operator pack, typechecks, and repository guardrails; then publish closure evidence.
-  - 2026-04-29: Closed with `docs/operations/v1reopen-live-close-reopen-truth-closure-2026-04-29.md`. Focused validation PASS: API runtime/reconcile/orders pack, focused web operator pack, API/web typecheck, and repository guardrails.
+  - 2026-04-29: Closed with `history/plans/v1reopen-live-close-reopen-truth-closure-2026-04-29.md`. Focused validation PASS: API runtime/reconcile/orders pack, focused web operator pack, API/web typecheck, and repository guardrails.
 
 - [x] `V1HIST-00 analysis(queue): publish imported exchange lifecycle history packet and mixed-origin live matrix`
   - Scope: freeze the newly reported imported-position history gap into one exact execution packet covering imported opening-history truth, external-close history parity, and operator-visible history timestamps, plus an explicit mixed-origin `exchange/app` live verification matrix.
-  - 2026-04-29: Closed as an analysis-only slice. Published `docs/planning/v1hist-imported-exchange-lifecycle-history-plan-2026-04-29.md`, `docs/planning/v1hist-00-analysis-task-2026-04-29.md`, and `docs/operations/v1live-mixed-origin-verification-matrix-2026-04-29.md` after reviewing imported `EXCHANGE_SYNC` reconciliation, exchange-event close truth, runtime history reads, and dashboard history presentation. Current strongest conclusion: imported position lifecycle history is still snapshot-strong for active rows but ledger-weak for history truth.
+  - 2026-04-29: Closed as an analysis-only slice. Published `history/plans/v1hist-imported-exchange-lifecycle-history-plan-2026-04-29.md`, `history/tasks/v1hist-00-analysis-task-2026-04-29.md`, and `history/audits/v1live-mixed-origin-verification-matrix-2026-04-29.md` after reviewing imported `EXCHANGE_SYNC` reconciliation, exchange-event close truth, runtime history reads, and dashboard history presentation. Current strongest conclusion: imported position lifecycle history is still snapshot-strong for active rows but ledger-weak for history truth.
 
 - [x] `V1HIST-01 audit(api+history): freeze the imported open/close history failure matrix`
   - Scope: reproduce and lock the missing-history class across imported open, imported external close, and mixed-origin lifecycle continuity.
-  - 2026-04-29: Closed by freezing the full imported lifecycle matrix in `docs/planning/v1hist-imported-exchange-lifecycle-history-plan-2026-04-29.md` and `docs/operations/v1live-mixed-origin-verification-matrix-2026-04-29.md`.
+  - 2026-04-29: Closed by freezing the full imported lifecycle matrix in `history/plans/v1hist-imported-exchange-lifecycle-history-plan-2026-04-29.md` and `history/audits/v1live-mixed-origin-verification-matrix-2026-04-29.md`.
 
 - [x] `V1HIST-02 docs(contract): freeze imported lifecycle history and history-table timestamp truth`
   - Scope: document the canonical rule for imported opening history, imported external close history, and explicit `openedAt` plus `closedAt` operator truth.
@@ -8623,43 +8730,43 @@ Last updated: 2026-05-23
 
 - [x] `V1HIST-07 qa(closure): run focused history-truth pack and publish evidence`
   - Scope: rerun the focused imported-history pack, typechecks, and repository guardrails; then publish closure evidence.
-  - 2026-04-29: Closed with `docs/operations/v1hist-imported-exchange-lifecycle-history-closure-2026-04-29.md`. Focused validation PASS: imported hydrator unit pack, live reconciliation pack, exchange boundary contract pack, runtime history parity e2e, API typecheck, web typecheck, and repository guardrails.
+  - 2026-04-29: Closed with `history/plans/v1hist-imported-exchange-lifecycle-history-closure-2026-04-29.md`. Focused validation PASS: imported hydrator unit pack, live reconciliation pack, exchange boundary contract pack, runtime history parity e2e, API typecheck, web typecheck, and repository guardrails.
 
 - [x] `V1EXCEL-00 planning(queue): publish full V1 excellence and production-confidence packet`
-  - 2026-04-29: Closed as a planning-only slice after reviewing the repo's own completion and activation contracts against the newly closed `V1TRUTH-A` wave. Published `docs/planning/v1excel-full-v1-excellence-and-confidence-plan-2026-04-29.md` plus `docs/planning/v1excel-00-planning-task-2026-04-29.md`, freezing the remaining non-deferred gap as a confidence/evidence wave rather than a code-architecture wave.
+  - 2026-04-29: Closed as a planning-only slice after reviewing the repo's own completion and activation contracts against the newly closed `V1TRUTH-A` wave. Published `history/plans/v1excel-full-v1-excellence-and-confidence-plan-2026-04-29.md` plus `history/tasks/v1excel-00-planning-task-2026-04-29.md`, freezing the remaining non-deferred gap as a confidence/evidence wave rather than a code-architecture wave.
 
 - [x] `V1EXCEL-01 audit(v1-gap-map): freeze the exact remaining gap map against DoD, integration, deployment, and activation contracts`
   - Scope: produce one canonical map of what is already closed in code, what is still missing only as fresh evidence, what remains locally blocked by reproducibility debt, and what is explicitly deferred beyond `V1`.
-  - 2026-04-29: Closed by publishing `docs/operations/v1excel-gap-map-audit-2026-04-29.md` plus `docs/planning/v1excel-01-gap-map-audit-task-2026-04-29.md`. The audit confirms there is no remaining core implementation gap in `V1`; the remaining blockers are confidence and evidence only.
+  - 2026-04-29: Closed by publishing `history/audits/v1excel-gap-map-audit-2026-04-29.md` plus `history/audits/v1excel-01-gap-map-audit-task-2026-04-29.md`. The audit confirms there is no remaining core implementation gap in `V1`; the remaining blockers are confidence and evidence only.
 
 - [x] `V1EXCEL-02 qa(local-infra): restore fully reproducible local confidence path or classify the exact external blocker`
   - Scope: resolve or strictly classify the remaining `test:go-live:smoke` local blocker around migration-history debt and reusable infra so another engineer can reproduce the local confidence path honestly.
-  - 2026-04-29: Closed by non-destructively repairing drifted local Prisma migration history with `migrate resolve`, updating the local-development and smoke-wrapper guidance, and rerunning the umbrella local pack successfully. Fresh evidence: `pnpm run test:go-live:smoke` => PASS with `35/35` API and `17/17` web checks. Canonical closure: `docs/operations/v1excel-local-confidence-path-closure-2026-04-29.md`.
+  - 2026-04-29: Closed by non-destructively repairing drifted local Prisma migration history with `migrate resolve`, updating the local-development and smoke-wrapper guidance, and rerunning the umbrella local pack successfully. Fresh evidence: `pnpm run test:go-live:smoke` => PASS with `35/35` API and `17/17` web checks. Canonical closure: `history/plans/v1excel-local-confidence-path-closure-2026-04-29.md`.
 
 Historical carryover snapshot, superseded by active `READY` and `BLOCKED`
 entries above:
 
 - Historical `V1EXCEL-03 qa(manual-matrix): execute the full critical manual UI/API/operator matrix`
   - Scope: run and record the real critical `PAPER` and `LIVE` operator scenarios, including manual order/close, pending external order truth, DCA/close protection behavior, and restart/recovery truth.
-  - 2026-04-29 status: IN_PROGRESS. The full matrix remains incomplete, but authenticated Soar production operator access is now available and the first `PAPER` API/operator pass has been executed. Evidence: `docs/operations/v1excel-paper-operator-verification-2026-04-29.md`. That evidence now confirms truthful same-side add behavior for an existing managed `PAPER` position, truthful post-deploy manual close through the protected production API, and aligned authenticated dashboard UI truth for the resulting paper-bot state and history. The remaining incomplete scope is browser-side action proof if required plus the `LIVE` exchange-authority, mixed-origin, and restart/recovery scenarios.
+  - 2026-04-29 status: IN_PROGRESS. The full matrix remains incomplete, but authenticated Soar production operator access is now available and the first `PAPER` API/operator pass has been executed. Evidence: `history/plans/v1excel-paper-operator-verification-2026-04-29.md`. That evidence now confirms truthful same-side add behavior for an existing managed `PAPER` position, truthful post-deploy manual close through the protected production API, and aligned authenticated dashboard UI truth for the resulting paper-bot state and history. The remaining incomplete scope is browser-side action proof if required plus the `LIVE` exchange-authority, mixed-origin, and restart/recovery scenarios.
 
 - Historical `V1EXCEL-04 ops(stage-refresh): rerun the latest authenticated stage release gate and smoke on the current candidate`
   - Scope: refresh stage rehearsal and smoke artifacts against the newest repository candidate instead of inheriting older activation evidence.
-  - 2026-04-29 status: BLOCKED. Public stage smoke is green, and dry-run rehearsal artifacts were regenerated, but authenticated stage OPS/private-route evidence remains blocked by missing credentials. Canonical status: `docs/operations/v1excel-stage-refresh-2026-04-29.md`.
+  - 2026-04-29 status: BLOCKED. Public stage smoke is green, and dry-run rehearsal artifacts were regenerated, but authenticated stage OPS/private-route evidence remains blocked by missing credentials. Canonical status: `history/plans/v1excel-stage-refresh-2026-04-29.md`.
 
 - Historical `V1EXCEL-05 ops(prod-refresh): rerun fresh production release-gate evidence families on the current candidate`
   - Scope: refresh prod release gate, post-deploy smoke, rollback proof, restore-drill proof, and related candidate-day artifacts.
-  - 2026-04-29 status: BLOCKED. Public prod smoke is green, but the prod release-gate dry-run still reports stale evidence families and protected OPS routes remain auth-gated from this session. Canonical status: `docs/operations/v1excel-prod-refresh-2026-04-29.md`.
-  - 2026-04-29 post-redeploy check: public prod smoke passed again on candidate `4514894127ad07cbe95415043658e10b8c0cf75d`; protected runtime and rollback probes still fail at the same `401` auth boundary. Follow-up note: `docs/operations/v1excel-prod-post-deploy-check-2026-04-29.md`.
+  - 2026-04-29 status: BLOCKED. Public prod smoke is green, but the prod release-gate dry-run still reports stale evidence families and protected OPS routes remain auth-gated from this session. Canonical status: `history/plans/v1excel-prod-refresh-2026-04-29.md`.
+  - 2026-04-29 post-redeploy check: public prod smoke passed again on candidate `4514894127ad07cbe95415043658e10b8c0cf75d`; protected runtime and rollback probes still fail at the same `401` auth boundary. Follow-up note: `history/plans/v1excel-prod-post-deploy-check-2026-04-29.md`.
 
 - Historical `V1EXCEL-06 ops(runtime-observability): verify active LIVE worker/runtime diagnostics under current production truth`
   - Scope: confirm worker health, runtime freshness, event visibility, and operator diagnostics remain healthy under the current hardened `LIVE` candidate.
-  - 2026-04-29 status: BLOCKED. Stage and prod runtime observability probes both hit protected-route `401` boundaries without OPS auth; this proves the endpoint boundary but not current worker/runtime health. Canonical status: `docs/operations/v1excel-runtime-observability-2026-04-29.md`.
-  - 2026-05-01 production refresh: production runtime observability is green with authenticated evidence. Runtime freshness PASS, rollback guard PASS with `shouldRollback=false`, no reasons, no alerts, and `runningCount=4`. Stage runtime observability remains open. Task packet: `docs/planning/v1excel-06-prod-runtime-observability-task-2026-05-01.md`.
+  - 2026-04-29 status: BLOCKED. Stage and prod runtime observability probes both hit protected-route `401` boundaries without OPS auth; this proves the endpoint boundary but not current worker/runtime health. Canonical status: `history/plans/v1excel-runtime-observability-2026-04-29.md`.
+  - 2026-05-01 production refresh: production runtime observability is green with authenticated evidence. Runtime freshness PASS, rollback guard PASS with `shouldRollback=false`, no reasons, no alerts, and `runningCount=4`. Stage runtime observability remains open. Task packet: `history/tasks/v1excel-06-prod-runtime-observability-task-2026-05-01.md`.
 
 - [x] `V1EXCEL-UNBLOCK ops(runbook): execute the final authenticated unblock sequence for GO readiness`
   - Scope: use the prepared operator runbook to clear the remaining external blockers `V1EXCEL-03..06` once Soar operator auth, OPS/private-route auth, and exchange authority are available.
-  - 2026-04-29: Ready as an execution handoff only. Canonical runbook: `docs/operations/v1excel-final-unblock-runbook-2026-04-29.md`.
+  - 2026-04-29: Ready as an execution handoff only. Canonical runbook: `history/plans/v1excel-final-unblock-runbook-2026-04-29.md`.
   - 2026-05-03 sync: closed as superseded for current V1 planning. The final
     authenticated unblock sequence was replaced by the later
     `V1CLOSEOUT-11` production-only `GO` path, with stage explicitly deferred
@@ -8667,7 +8774,7 @@ entries above:
 
 - [x] `V1EXCEL-07 release(go-no-go): rebuild RC status/sign-off/checklist and publish final V1 excellence decision`
   - Scope: produce one final operator-facing `GO / NO-GO` answer for the current candidate with exact residual risks or blockers.
-  - 2026-04-29: Closed with an explicit `NO-GO` decision for candidate `51acd9c445227a3ca8cc8b781564d14b55fda43f`. The repository no longer shows a known implementation or architecture gap for `V1`, but fresh manual authenticated operator evidence and protected stage/prod OPS evidence remain missing. Canonical decision: `docs/operations/v1excel-final-go-no-go-2026-04-29.md`.
+  - 2026-04-29: Closed with an explicit `NO-GO` decision for candidate `51acd9c445227a3ca8cc8b781564d14b55fda43f`. The repository no longer shows a known implementation or architecture gap for `V1`, but fresh manual authenticated operator evidence and protected stage/prod OPS evidence remain missing. Canonical decision: `history/plans/v1excel-final-go-no-go-2026-04-29.md`.
 
 - [x] `V1EXCEL-08 docs(closure): sync canonical queue/context and freeze the final post-V1 handoff`
   - Scope: if `GO`, close the wave and point future work to `BOTMULTI-A`; if `NO-GO`, open only the smallest missing fix packet(s).
@@ -8681,14 +8788,14 @@ entries above:
     `V1EXCEL-03..06` checklist rows in this older section into non-checkbox
     historical notes. Active execution truth remains in current `READY` and
     `BLOCKED` sections. Evidence:
-    `docs/planning/docsync-2026-05-01-v1excel-historical-carryover-task.md`.
+    `history/tasks/docsync-2026-05-01-v1excel-historical-carryover-task.md`.
 
 - [x] `V1TRUTH-00 planning(queue): publish final LIVE exchange-truth packet`
-  - 2026-04-29: Closed as the next planning-only slice after the new real-account notes review. Published `docs/planning/v1truth-live-exchange-truth-hardening-plan-2026-04-29.md` plus `docs/planning/v1truth-00-planning-task-2026-04-29.md`, freezing one final `V1` hardening wave around truthful `LIVE` money paths: leverage-aware futures manual-order sizing, exchange-backed manual close, pending external order versus position truth, and the final explicit `DCA/TTP/TSL` rule. The user-approved staged direction is now canonical: keep the singular bot architecture through this wave and defer multi-strategy-per-bot to post-`V1`.
+  - 2026-04-29: Closed as the next planning-only slice after the new real-account notes review. Published `history/plans/v1truth-live-exchange-truth-hardening-plan-2026-04-29.md` plus `history/tasks/v1truth-00-planning-task-2026-04-29.md`, freezing one final `V1` hardening wave around truthful `LIVE` money paths: leverage-aware futures manual-order sizing, exchange-backed manual close, pending external order versus position truth, and the final explicit `DCA/TTP/TSL` rule. The user-approved staged direction is now canonical: keep the singular bot architecture through this wave and defer multi-strategy-per-bot to post-`V1`.
 
 - [x] `V1TRUTH-01 audit(api+web+exchange): freeze the exact remaining money-path failure matrix`
   - Scope: reproduce and lock the reported real-account scenarios for external DCA pending-order truth, manual close failure, futures manual-order leverage drift, and operator-visible order/position separation.
-  - 2026-04-29: Closed by the final `V1TRUTH-A` closure packet, which freezes the exact failure matrix and its resolution status in `docs/operations/v1truth-live-exchange-truth-closure-2026-04-29.md`.
+  - 2026-04-29: Closed by the final `V1TRUTH-A` closure packet, which freezes the exact failure matrix and its resolution status in `history/plans/v1truth-live-exchange-truth-closure-2026-04-29.md`.
 
 - [x] `V1TRUTH-02 fix(web+api-contract): align futures manual-order sizing and free-funds validation`
   - Scope: unify leverage-aware margin validation between manual-order context and dashboard controller while preserving exchange min-notional truth.
@@ -8712,7 +8819,7 @@ entries above:
 
 - [x] `V1TRUTH-07 docs+test(runtime-red): freeze and prove the final DCA/TTP/TSL rule`
   - Scope: document and prove when `TTP` must and must not consider DCA thresholds.
-  - 2026-04-29: Closed by freezing the exact rule in the protection architecture refs and by adding focused shared-kernel plus runtime regressions for profit-side versus loss-side-only pending DCA. Canonical task record: `docs/planning/v1truth-07-08-protection-rule-task-2026-04-29.md`.
+  - 2026-04-29: Closed by freezing the exact rule in the protection architecture refs and by adding focused shared-kernel plus runtime regressions for profit-side versus loss-side-only pending DCA. Canonical task record: `history/tasks/v1truth-07-08-protection-rule-task-2026-04-29.md`.
 
 - [x] `V1TRUTH-08 fix(api-runtime+web): align protection execution and operator truth`
   - Scope: close any remaining implementation drift versus the frozen protection contract.
@@ -8720,16 +8827,16 @@ entries above:
 
 - [x] `V1TRUTH-09 qa(closure): run focused real-money truth pack and publish closure evidence`
   - Scope: run the final focused closure pack for API, web, runtime, and guardrails before the post-`V1` architecture wave begins.
-  - 2026-04-29: Closed by running the focused API closure pack (`99/99 PASS`), focused web closure pack (`15/15 PASS`), API/web typecheck, and repository guardrails. Closure evidence: `docs/operations/v1truth-live-exchange-truth-closure-2026-04-29.md`.
+  - 2026-04-29: Closed by running the focused API closure pack (`99/99 PASS`), focused web closure pack (`15/15 PASS`), API/web typecheck, and repository guardrails. Closure evidence: `history/plans/v1truth-live-exchange-truth-closure-2026-04-29.md`.
 
 - [x] `BOTMULTI-00 planning(post-v1): publish deferred multi-strategy reintroduction packet`
-  - 2026-04-29: Closed as a deferred planning-only slice. Published `docs/planning/botmulti-post-v1-multi-strategy-reintroduction-plan-2026-04-29.md` plus `docs/planning/botmulti-00-planning-task-2026-04-29.md`, recording the approved post-`V1` architecture direction: only after `V1TRUTH-A` closes and remains stable should Soar reopen the bot model from `1 strategy` to `N strategies`.
+  - 2026-04-29: Closed as a deferred planning-only slice. Published `history/plans/botmulti-post-v1-multi-strategy-reintroduction-plan-2026-04-29.md` plus `history/tasks/botmulti-00-planning-task-2026-04-29.md`, recording the approved post-`V1` architecture direction: only after `V1TRUTH-A` closes and remains stable should Soar reopen the bot model from `1 strategy` to `N strategies`.
 
 - [x] `V1MARK-00 planning(queue): publish LIVE futures mark-price parity packet`
-  - 2026-04-29: Closed as the next derived post-`V1COVER-A` planning slice. Published the canonical packet `docs/planning/v1mark-live-futures-mark-price-parity-plan-2026-04-29.md` plus `docs/planning/v1mark-00-planning-task-2026-04-29.md`, freezing the next `LIVE exchange` hardening wave around one concrete futures-only drift: runtime protection and position-lifetime automation still resolve lifecycle price from ticker `lastPrice` / candle close instead of preferring futures mark price through the existing shared seam.
+  - 2026-04-29: Closed as the next derived post-`V1COVER-A` planning slice. Published the canonical packet `history/audits/v1mark-live-futures-mark-price-parity-plan-2026-04-29.md` plus `history/tasks/v1mark-00-planning-task-2026-04-29.md`, freezing the next `LIVE exchange` hardening wave around one concrete futures-only drift: runtime protection and position-lifetime automation still resolve lifecycle price from ticker `lastPrice` / candle close instead of preferring futures mark price through the existing shared seam.
 
 - [x] `V1MARK-02..05 docs+api+qa(closure): close LIVE futures lifecycle-price parity for runtime protection`
-  - 2026-04-29: Closed the full `V1MARK-A` wave. Binance futures mark-price updates now flow through the approved market-stream boundary, runtime ticker state preserves mark price without dropping last trade price, and the shared lifecycle-price resolver now prefers `markPrice -> lastPrice -> recent close` for `LIVE FUTURES`. Closure evidence: `docs/operations/v1mark-live-futures-mark-price-parity-closure-2026-04-29.md`. Validation PASS: focused `binanceStream`, `runtimeTickerStore`, `runtimeLifecycleMarkPrice`, `runtimePositionAutomation`, and `runtimePositionLifetime` suites, API typecheck, and repository guardrails.
+  - 2026-04-29: Closed the full `V1MARK-A` wave. Binance futures mark-price updates now flow through the approved market-stream boundary, runtime ticker state preserves mark price without dropping last trade price, and the shared lifecycle-price resolver now prefers `markPrice -> lastPrice -> recent close` for `LIVE FUTURES`. Closure evidence: `history/audits/v1mark-live-futures-mark-price-parity-closure-2026-04-29.md`. Validation PASS: focused `binanceStream`, `runtimeTickerStore`, `runtimeLifecycleMarkPrice`, `runtimePositionAutomation`, and `runtimePositionLifetime` suites, API typecheck, and repository guardrails.
 
 - [x] `V1COVER-01 test(runtime-state): reset shared runtime candle/ticker stores at canonical test boundaries`
   - 2026-04-29: Closed the first `V1COVER-A` slice by clearing module-global runtime candle/ticker stores in `runtime-flow.e2e.test.ts` and `runtimeSignalLoop.service.test.ts`. Focused combined validation now passes when those two files run together, which removes one confirmed source of false-red `LIVE` parity noise caused by inherited runtime market data.
@@ -8738,18 +8845,18 @@ entries above:
   - 2026-04-29: Closed by restoring `wallet.deleteMany()` to the shared takeover reset helper and updating the stale overlap proof to the current architecture. Runtime takeover coverage now matches the approved rule set: `LIVE + PAPER` may share a symbol, but the imported `LIVE` position stays visible only for the owning LIVE bot, while the older two-active-LIVE overlap assumption is no longer treated as valid proof.
 
 - [x] `V1COVER-03..05 qa+test(closure): rerun stabilized broad LIVE runtime coverage and close residual fixture drift`
-  - 2026-04-29: Closed the full `V1COVER-A` wave. Sequential broad runtime/order coverage is green again after removing shared runtime-state leaks, restoring shared wallet cleanup, aligning takeover overlap proof to the current architecture, and stabilizing the remaining `orders.service` LIVE fixture path through nested user+API-key setup. Closure evidence: `docs/operations/v1cover-live-runtime-regression-coverage-closure-2026-04-29.md`. Validation PASS: broad sequential runtime/order pack, full `orders.service`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
+  - 2026-04-29: Closed the full `V1COVER-A` wave. Sequential broad runtime/order coverage is green again after removing shared runtime-state leaks, restoring shared wallet cleanup, aligning takeover overlap proof to the current architecture, and stabilizing the remaining `orders.service` LIVE fixture path through nested user+API-key setup. Closure evidence: `history/plans/v1cover-live-runtime-regression-coverage-closure-2026-04-29.md`. Validation PASS: broad sequential runtime/order pack, full `orders.service`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `GOLIVE-2026-04-29-A tooling(smoke): harden local go-live smoke wrapper for reusable local infra`
   - 2026-04-29: Closed the local tooling slice. The umbrella smoke wrapper now reuses already-running reachable Postgres/Redis when Docker Compose cannot bind `5432/6379`, avoids shutting down infra it did not start, and surfaces the real remaining local blocker explicitly: Prisma `P3009` from failed migration `20260424094500_add_single_context_bot_refs`. Direct canonical go-live packs remain green, so the unresolved blocker is local DB state rather than current repo code.
 
 - [x] `V1GUARD-01..05 docs+api+qa(closure): close final LIVE protection drifts for DCA/TTP/TSL parity`
-  - 2026-04-29: Closed the full `V1GUARD-A` wave. Shared engine parity now keeps `TTP` blocked until the canonical `DCA-first` guard is satisfied, exchange-confirmed `LIVE DCA` fills now mark runtime dedupe success and converge persisted runtime position-state truth, and runtime protection evaluation now flows through one explicit lifecycle-price seam instead of hardcoding ticker `lastPrice`. Closure evidence: `docs/operations/v1guard-live-protection-final-closure-2026-04-29.md`. Validation PASS: focused `positionManagement`, focused `runtimePositionAutomation`, focused `orders.exchangeEvents`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
+  - 2026-04-29: Closed the full `V1GUARD-A` wave. Shared engine parity now keeps `TTP` blocked until the canonical `DCA-first` guard is satisfied, exchange-confirmed `LIVE DCA` fills now mark runtime dedupe success and converge persisted runtime position-state truth, and runtime protection evaluation now flows through one explicit lifecycle-price seam instead of hardcoding ticker `lastPrice`. Closure evidence: `history/plans/v1guard-live-protection-final-closure-2026-04-29.md`. Validation PASS: focused `positionManagement`, focused `runtimePositionAutomation`, focused `orders.exchangeEvents`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `V1SAFE-00 planning(audit): publish LIVE protection and liquidation-safety analysis plus execution packet`
-  - 2026-04-29: Closed as a planning-only analysis slice after refining the earlier broad liquidation-safety draft to the exact remaining parity problem. Published `docs/planning/v1safe-live-protection-and-liquidation-safety-plan-2026-04-29.md` plus the task packet `docs/planning/v1safe-00-analysis-task-2026-04-29.md`. The packet freezes the strongest confirmed drifts behind the current real-account symptom class: imported and recovered `LIVE` positions can still lack canonical trailing/DCA runtime state, runtime read-models can imply dynamic protection through fallback logic the engine cannot execute, and `DCA-first` close gating still lacks focused parity proof across `backtest`, `paper`, and `live`.
+  - 2026-04-29: Closed as a planning-only analysis slice after refining the earlier broad liquidation-safety draft to the exact remaining parity problem. Published `history/plans/v1safe-live-protection-and-liquidation-safety-plan-2026-04-29.md` plus the task packet `history/tasks/v1safe-00-analysis-task-2026-04-29.md`. The packet freezes the strongest confirmed drifts behind the current real-account symptom class: imported and recovered `LIVE` positions can still lack canonical trailing/DCA runtime state, runtime read-models can imply dynamic protection through fallback logic the engine cannot execute, and `DCA-first` close gating still lacks focused parity proof across `backtest`, `paper`, and `live`.
 - [x] `V1SAFE-01..10 docs+api+web+qa(closure): close LIVE DCA/TTP/TSL parity for imported and recovered positions`
-  - 2026-04-29: Closed the full `V1SAFE-A` wave. Added the canonical `LIVE` protection-state parity contract, proved prospective imported-position `TTP` hydration in focused runtime tests, removed API dynamic-stop fallback that could overstate `TTP` / `TSL` beyond runtime truth, and removed sticky fallback overlays from dashboard-home and bot-monitoring surfaces. Closure evidence: `docs/operations/v1safe-live-dca-ttp-tsl-parity-closure-2026-04-29.md`. Validation PASS: focused `runtimePositionAutomation`, focused `runtimePositionSerialization`, API typecheck, web typecheck, focused `HomeLiveWidgets`, focused `BotsManagement`, and repository guardrails.
+  - 2026-04-29: Closed the full `V1SAFE-A` wave. Added the canonical `LIVE` protection-state parity contract, proved prospective imported-position `TTP` hydration in focused runtime tests, removed API dynamic-stop fallback that could overstate `TTP` / `TSL` beyond runtime truth, and removed sticky fallback overlays from dashboard-home and bot-monitoring surfaces. Closure evidence: `history/audits/v1safe-live-dca-ttp-tsl-parity-closure-2026-04-29.md`. Validation PASS: focused `runtimePositionAutomation`, focused `runtimePositionSerialization`, API typecheck, web typecheck, focused `HomeLiveWidgets`, focused `BotsManagement`, and repository guardrails.
 
 - [x] `DOCSYNC-2026-04-28-E docs(planning-history): normalize remaining historical status wording`
   - 2026-04-28: Closed by normalizing the last ambiguous historical planning headers that still looked active after their owning waves had closed: `dashboard-loading-skeleton-progress-plan`, both dashboard planner briefs, and `xvenue-02-exchange-boundary-leak-audit`. The planning catalog now records those artifacts truthfully as historical implemented or superseded references instead of leaving mixed `PLANNED/planned/Published` wording in place. Validation PASS: `pnpm run quality:guardrails`.
@@ -8764,20 +8871,20 @@ entries above:
 - [x] `BOTLIVE-2026-04-28-A api(bot-guard): block active LIVE bot market-group overlap against other active LIVE bot scopes`
   - 2026-04-28: Closed by adding one canonical create/update guard for bots that would become `LIVE + isActive + liveOptIn`. The write path now fails closed when the selected market group overlaps any symbol already covered by another active opted-in LIVE bot for the same user, while still allowing `PAPER` and `LIVE` overlap. Conflict responses now identify the blocking bot name plus exact conflicting symbols, e.g. `ETHUSDT` owned by another active LIVE bot. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/bots.duplicate-guard.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - [x] `V1RESTART-00 planning(queue): publish canonical LIVE restart continuity and recovery hardening packet`
-  - 2026-04-28: Closed as a planning-only task after a fresh user-reported production analysis of restart-time LIVE position disappearance. Published `docs/planning/v1restart-live-position-continuity-hardening-plan-2026-04-28.md` plus `docs/planning/v1restart-00-planning-task-2026-04-28.md`, freezing the target model as a high-quality continuity wave rather than a narrow bugfix. The plan locks restart-safe position continuity, event-first recovery authority, staged reconcile semantics for missing exchange rows, canonical ownership and strategy-context restoration for recovered positions, explicit operator recovery states, and an adversarial verification matrix for manual exchange close, liquidation, partial snapshots, and post-restart DCA/TSL continuity.
+  - 2026-04-28: Closed as a planning-only task after a fresh user-reported production analysis of restart-time LIVE position disappearance. Published `history/plans/v1restart-live-position-continuity-hardening-plan-2026-04-28.md` plus `history/tasks/v1restart-00-planning-task-2026-04-28.md`, freezing the target model as a high-quality continuity wave rather than a narrow bugfix. The plan locks restart-safe position continuity, event-first recovery authority, staged reconcile semantics for missing exchange rows, canonical ownership and strategy-context restoration for recovered positions, explicit operator recovery states, and an adversarial verification matrix for manual exchange close, liquidation, partial snapshots, and post-restart DCA/TSL continuity.
 - [x] `V1RESTART-01 docs(contract): freeze canonical LIVE restart and downtime continuity model`
   - 2026-04-28: Closed by publishing `docs/architecture/reference/live-position-restart-continuity-contract.md` and normalizing the contract into `docs/architecture/06_execution-lifecycle.md`, `docs/architecture/04_runtime-contexts.md`, and `docs/architecture/reference/position-lifecycle-parity-matrix.md`. The repository now explicitly freezes that restart is not close authority, that one missing post-restart snapshot is insufficient to classify a previously open `LIVE` position as closed, that recovery evidence is ordered `events -> durable local state -> repeated snapshot confirmation -> repair`, and that recovered actionability requires restored canonical ownership plus strategy context rather than mere visibility.
 - [x] `V1RESTART-02..11 db+api+runtime+web+qa(closure): implement restart-safe LIVE position continuity and recovery truth`
   - 2026-04-28: Closed as the full `V1RESTART-A` implementation wave. Added durable restart continuity persistence on `Position` (`continuityState`, `lastExchangeSeenAt`, `lastExchangeSyncAt`, `missingSince`, `missingSyncCount`) plus migration `20260428113000_add_position_restart_continuity_state`; upgraded exchange-event close handling so confirmed external closes persist `EXTERNAL_CLOSE_CONFIRMED`; replaced reconcile's destructive one-pass stale close with staged recovery that first marks missing rows `RECOVERING` and only closes them after repeated missing confirmation; restored canonical `botId + walletId + strategyId` for deterministically owned recovered imported rows by reusing `bot.strategyId`; kept runtime automation and manual runtime close fail-closed until continuity returns to `CONFIRMED`; exposed `continuityState` and `actionable` in runtime/read surfaces; and updated dashboard runtime typing plus the open-positions presenter so degraded rows are explicit and action buttons disable until continuity is confirmed. Validation PASS: focused restart reconciliation tests, focused runtime automation tests, focused runtime takeover e2e for recovered/non-actionable visibility, API typecheck, web typecheck, and repository guardrails. Local Prisma note: due a pre-existing failed local migration `20260424094500_add_single_context_bot_refs`, this task validated schema changes with `prisma db push` after client generation instead of `migrate deploy`.
 
 - [x] `V1CLOSE-00 planning(queue): publish canonical close-attribution and external-close hardening packet`
-  - 2026-04-27: Closed after a focused audit of close-lifecycle semantics across architecture, runtime close commands, exchange-event application, reconciliation, and repair flows. The repository can already close positions technically, but it still lacked one canonical model for who or what initiated the close. The user approved the architecture extension on 2026-04-27: keep `closeReason` separate from a new canonical `closeInitiator` dimension. Published `docs/planning/v1close-position-close-attribution-hardening-plan-2026-04-27.md`, normalized the contract into `docs/architecture/06_execution-lifecycle.md` plus new `docs/architecture/reference/position-close-attribution-contract.md`, extended lifecycle parity docs, and synchronized canonical planning/context truth for the follow-up implementation wave.
+  - 2026-04-27: Closed after a focused audit of close-lifecycle semantics across architecture, runtime close commands, exchange-event application, reconciliation, and repair flows. The repository can already close positions technically, but it still lacked one canonical model for who or what initiated the close. The user approved the architecture extension on 2026-04-27: keep `closeReason` separate from a new canonical `closeInitiator` dimension. Published `history/plans/v1close-position-close-attribution-hardening-plan-2026-04-27.md`, normalized the contract into `docs/architecture/06_execution-lifecycle.md` plus new `docs/architecture/reference/position-close-attribution-contract.md`, extended lifecycle parity docs, and synchronized canonical planning/context truth for the follow-up implementation wave.
 - [x] `V1CLOSE-01..09 docs+db+api+web+qa(closure): implement canonical close-attribution truth across write paths, read models, and operator history`
   - 2026-04-27: Closed as the full `V1CLOSE-A` implementation wave. Added nullable `closeReason` / `closeInitiator` on `Position`, `Order`, and `Trade`, plus migration `20260427103000_add_position_close_attribution`. `positionCloseAttribution.ts` is now the canonical mapper for `USER_APP`, `BOT_APP`, `USER_EXCHANGE`, `EXCHANGE`, and `SYSTEM_REPAIR`, and that mapping is reused by `orders.service.ts`, `executionOrchestrator.service.ts`, `orders.exchangeEvents.service.ts`, `livePositionReconciliation.service.ts`, and `positions.service.ts` instead of inferring close authorship from logs or orphan states. Runtime read models now expose persisted close attribution, and dashboard aggregate history renders operator-facing labels for the persisted initiator truth. Validation PASS: `pnpm --filter api run test -- --run src/modules/orders/orders.service.test.ts src/modules/orders/orders.exchangeEvents.service.test.ts src/modules/positions/positions.orphan-repair.e2e.test.ts src/modules/engine/paperLiveDecisionEquivalence.test.ts src/modules/engine/runtimeCrashRetry.regression.test.ts`, `pnpm --filter web run test -- --run src/features/dashboard-home/components/HomeLiveWidgets.aggregate-history.test.tsx`, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`, `pnpm run build`.
 
 - [x] `V1LIVE-01 audit(api+docs): publish canonical live-execution and takeover regression packet`
   - 2026-04-26: Fresh repository audit after the user's live-position report confirmed this is no longer only a manual-order bug. The current drift spans exact adapter selection from user/bot exchange settings, ownership classification, imported live entry truth, runtime visibility/close parity for exchange-synced positions, and missing live event-stream lifecycle support for the first Binance adapter family. The task must publish one canonical investigation packet with exact findings, file-scoped follow-up tasks, and focused validation evidence.
-  - 2026-04-26: Closed by publishing the canonical packet `docs/planning/v1live-binance-execution-and-takeover-hardening-plan-2026-04-26.md`, the follow-up audit `docs/planning/v1live-post-fix-quality-audit-and-plan-2026-04-26.md`, and synchronized queue/context truth for the active `V1LIVE-A` execution wave.
+  - 2026-04-26: Closed by publishing the canonical packet `history/plans/v1live-binance-execution-and-takeover-hardening-plan-2026-04-26.md`, the follow-up audit `history/audits/v1live-post-fix-quality-audit-and-plan-2026-04-26.md`, and synchronized queue/context truth for the active `V1LIVE-A` execution wave.
 
 - [x] `V1LIVE-PROD-2026-04-26-A web(prod-manual-order): close stale manual-order symbol-context drift on the real account and verify by browser`
   - 2026-04-26: Closed after real-account production browser verification on the affected account. The deployed dashboard no longer reuses stale previous-symbol manual-order context price after bot/symbol switches, and authenticated production submit on the real account now follows current `botId + symbol` truth instead of freezing a previous-symbol `markPrice` into the request payload. Validation PASS locally: `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.manual-order.test.tsx src/features/dashboard-home/hooks/useManualOrderController.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`, `pnpm --filter web run build`; production browser verification PASS after manual Coolify deploy.
@@ -8844,7 +8951,7 @@ entries above:
   - 2026-04-26: In progress after real-account production reproduction proved two concrete blockers on the user account: authenticated Binance position snapshot works, but legacy open positions with `botId=null` still exist as hidden blockers, so manual order collides with invisible stale rows and exchange takeover cannot project current exchange truth into runtime/UI cleanly. Added explicit `POST /dashboard/positions/orphan-repair` flow that rebinds local open rows only when canonical bot proof exists and closes only fully detached local orphans before forcing exchange reconciliation and takeover rebind. Validation PASS so far: `pnpm --filter api test -- --run src/modules/positions/positions.orphan-repair.e2e.test.ts src/modules/positions/positions.takeover-status.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`. Remaining step: deploy to prod, execute repair on the affected account, and recheck dashboard/takeover behavior end-to-end.
   - 2026-04-26: Live prod verification after the orphan repair exposed one more blocking drift: manual-order conflict/reuse still searched open positions globally by `userId + symbol`, so a `LIVE` DOGE position on the live wallet falsely blocked a `PAPER` DOGE manual order on the paper wallet. Repository fix is now ready locally: `orders.positionScope.ts` centralizes wallet-first open-position scoping, manual pre-submit and fill-lifecycle paths both reuse it, and the new partial unique index migration scopes `OPEN` uniqueness by wallet/bot/unowned contract instead of user-global symbol. Validation PASS: `pnpm --filter api exec vitest run src/modules/orders/orders.service.test.ts src/modules/orders/orders.manual-paper-market.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`. Remaining step: deploy the latest API migration+code to prod and rerun the exact paper-bot manual-order dashboard flow on the affected account.
   - 2026-04-26: Local deploy-readiness gate is now green after the final repository closure pass. Backtests hardening now keeps wallet-first takeover fixtures truthful, makes report polling deterministic for the slow 3-symbol parity contract, and makes delete-run resilient to async worker/report races. Validation PASS: `pnpm --filter api exec vitest run src/modules/backtests/backtestRunJob.test.ts src/modules/backtests/backtests.e2e.test.ts`, `pnpm run test:go-live:api`, `pnpm run typecheck`, `pnpm run quality:guardrails`, `pnpm run build`. Remaining step is operational only: deploy latest code + migration to prod, then rerun manual-order and live-takeover smoke on the affected account.
-  - 2026-04-28: Closed after production push of `25276b475937d9dcf4af6337abf10185ec7dcd0c` and authenticated affected-account smoke. Public prod baseline passed (`/health`, `/ready`, web root, protected redirect, protected metrics denial), `GET /api/build-info` confirmed the exact deployed SHA, and the affected account loaded `/dashboard` with live runtime truth present for the selected live bot, including visible managed `DOGEUSDT SHORT` position, `RUNNING` LIVE runtime status, and authenticated exchange-balance wallet context. Evidence: `docs/operations/v1fix-2026-04-26-b-prod-smoke-2026-04-28.md`.
+  - 2026-04-28: Closed after production push of `25276b475937d9dcf4af6337abf10185ec7dcd0c` and authenticated affected-account smoke. Public prod baseline passed (`/health`, `/ready`, web root, protected redirect, protected metrics denial), `GET /api/build-info` confirmed the exact deployed SHA, and the affected account loaded `/dashboard` with live runtime truth present for the selected live bot, including visible managed `DOGEUSDT SHORT` position, `RUNNING` LIVE runtime status, and authenticated exchange-balance wallet context. Evidence: `history/evidence/v1fix-2026-04-26-b-prod-smoke-2026-04-28.md`.
 
 - [x] `V1FIX-2026-04-26-A api(manual-order-lifecycle): reuse existing same-symbol open position on manual fill and fail closed on reverse-side conflict`
   - 2026-04-26: Closed after reproducing the production `P2002` crash path directly in `soar-api` for manual `PAPER MARKET` open on a user who already had an open same-symbol position. `applyOrderFillLifecycle()` now updates and links the existing open position for same-direction fills, `openOrder()` fails closed with an explicit `409` for reverse-direction open attempts, and focused service + route regressions lock both cases. Validation PASS: `pnpm --filter api exec vitest run src/modules/orders/orders.service.test.ts src/modules/orders/orders.manual-paper-market.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
@@ -8887,9 +8994,9 @@ entries above:
 - [x] `V1TAKE-02 test(api-red): lock takeover authority drift between API key, wallet, and bot visibility`
   - 2026-04-25: Added focused DB-backed takeover-status coverage proving the old drift around stale `BOT_MANAGED` rows and then refined it under the user-approved wallet-only contract. The red slice now documents that API-key-level `manageExternalPositions=false` is compatibility-only, while wallet-disabled takeover must fail closed.
 - [x] `V1TAKE-01 audit(api+runtime): publish confirmed ownership/manual-order investigation packet with DB-backed validation`
-  - 2026-04-25: Published `docs/planning/v1take-01-investigation-audit-2026-04-25.md` and the matching task packet `docs/planning/v1take-01-investigation-audit-task-2026-04-25.md`. The audit freezes four concrete classes: a confirmed ownership-contract split between API key and wallet flags, the intentional `BINANCE + FUTURES` import boundary, the operator gap between takeover status and runtime `BOT_MANAGED` visibility, and a narrower manual-order watch item around UI estimation versus backend truth. Validation PASS: `positions.takeover-status.e2e.test.ts`, targeted `orders.service.test.ts`, targeted `orders-positions.e2e.test.ts`, and `pnpm run quality:guardrails`.
+  - 2026-04-25: Published `history/audits/v1take-01-investigation-audit-2026-04-25.md` and the matching task packet `history/audits/v1take-01-investigation-audit-task-2026-04-25.md`. The audit freezes four concrete classes: a confirmed ownership-contract split between API key and wallet flags, the intentional `BINANCE + FUTURES` import boundary, the operator gap between takeover status and runtime `BOT_MANAGED` visibility, and a narrower manual-order watch item around UI estimation versus backend truth. Validation PASS: `positions.takeover-status.e2e.test.ts`, targeted `orders.service.test.ts`, targeted `orders-positions.e2e.test.ts`, and `pnpm run quality:guardrails`.
 - [x] `V1TAKE-A planning queued (exchange takeover ownership and manual-order truth closure after fresh live investigation)`
-  - 2026-04-25: Published `docs/planning/v1take-exchange-takeover-manual-order-closure-plan-2026-04-25.md` plus the planning task packet `docs/planning/v1take-00-planning-task-2026-04-25.md`. The new wave freezes four confirmed audit findings: takeover authority drift between API-key and wallet flags, Binance Futures-only import scope, runtime visibility gated by deterministic `BOT_MANAGED` ownership, and remaining manual `PAPER/LIVE` open truth closure. Local Docker verification is no longer engine-blocked; DB-backed `positions.takeover-status.e2e.test.ts` now passes and the targeted `orders.service` manual-LIVE regression also passes.
+  - 2026-04-25: Published `history/plans/v1take-exchange-takeover-manual-order-closure-plan-2026-04-25.md` plus the planning task packet `history/tasks/v1take-00-planning-task-2026-04-25.md`. The new wave freezes four confirmed audit findings: takeover authority drift between API-key and wallet flags, Binance Futures-only import scope, runtime visibility gated by deterministic `BOT_MANAGED` ownership, and remaining manual `PAPER/LIVE` open truth closure. Local Docker verification is no longer engine-blocked; DB-backed `positions.takeover-status.e2e.test.ts` now passes and the targeted `orders.service` manual-LIVE regression also passes.
 
 - [x] `XADAPT-02 audit(api-exchange): classify Binance-specific assumptions across orders, exchange, and reconciliation paths`
   - 2026-04-25: Published the classification packet for orders, exchange, and reconciliation paths. The repository now distinguishes intentional Binance-only runtime scope, compatibility-only generic seams, and generic-looking drift risks that `XADAPT-03` must narrow.
@@ -8904,7 +9011,7 @@ entries above:
   - 2026-04-25: Reran the focused exchange-hardening closure pack, confirmed the adapter boundary and capability-contract suites stay green together, and synced queue/context artifacts to point at `XADAPT-06` as the next smallest slice. Validation PASS: `pnpm --filter api exec vitest run src/modules/exchange/exchangeAdapterBoundary.service.test.ts src/modules/exchange/exchangeExecutionCapabilityContract.service.test.ts src/modules/exchange/exchangeAuthenticatedRead.service.test.ts src/modules/exchange/exchangeAuthenticatedReadContract.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `XADAPT-06 planning(readiness): publish staged next-exchange rollout packet after Binance boundary closure`
-  - 2026-04-25: Published the staged next-exchange readiness packet in `docs/planning/xadapt-06-next-exchange-readiness-packet-2026-04-25.md`. The packet chooses `BYBIT` as the next target, freezes staged rollout order (`API_KEY_PROBE -> BALANCE_PREVIEW -> POSITIONS_SNAPSHOT -> OPEN_ORDERS_SNAPSHOT -> LIVE_ORDER_SUBMIT`), keeps reconciliation broadening out of scope, and preserves `LIVE_ORDER_CANCEL` as unsupported. Validation PASS: `pnpm run quality:guardrails`.
+  - 2026-04-25: Published the staged next-exchange readiness packet in `history/evidence/xadapt-06-next-exchange-readiness-packet-2026-04-25.md`. The packet chooses `BYBIT` as the next target, freezes staged rollout order (`API_KEY_PROBE -> BALANCE_PREVIEW -> POSITIONS_SNAPSHOT -> OPEN_ORDERS_SNAPSHOT -> LIVE_ORDER_SUBMIT`), keeps reconciliation broadening out of scope, and preserves `LIVE_ORDER_CANCEL` as unsupported. Validation PASS: `pnpm run quality:guardrails`.
 
 - [x] `V1REG-02 qa(auto): execute architecture-v1 automated verification pack and record function-by-function status`
   - 2026-04-25: Ran the first post-`V1COH-A` / post-`XADAPT-A` automated architecture-V1 sweep and wrote results back into the checklist. Web suites and non-DB API suites passed; DB-backed API verification is environment-blocked by unreachable local Postgres at `localhost:5432`, so affected functions are recorded as `INFRA_BLOCKED` or `PARTIAL_PASS_INFRA_BLOCKED` instead of false product failures. Validation PASS: web regression batches, non-DB API regression batch, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
@@ -8949,14 +9056,14 @@ None.
 ## DONE
 
 - [x] `V1ROE-04 qa(prod-manual): verify exchange-aligned LIVE PnL truth and imported automation on protected DOGEUSDT`
-  - 2026-05-01: Closed with authenticated protected production evidence. Production build-info reports `e6bdcfda35698dbb29513490a953e15b9a2c0469` on `main`, public deploy smoke and protected runtime freshness pass, protected `DOGEUSDT` runtime truth is `IN_SYNC`, `CONFIRMED`, `actionable=true`, and strategy-context resolved, and headless dashboard proof confirms the `live` bot `Positions` row matches protected API truth. Evidence: `docs/operations/v1roe-04-prod-verification-closure-2026-05-01.md`.
+  - 2026-05-01: Closed with authenticated protected production evidence. Production build-info reports `e6bdcfda35698dbb29513490a953e15b9a2c0469` on `main`, public deploy smoke and protected runtime freshness pass, protected `DOGEUSDT` runtime truth is `IN_SYNC`, `CONFIRMED`, `actionable=true`, and strategy-context resolved, and headless dashboard proof confirms the `live` bot `Positions` row matches protected API truth. Evidence: `history/plans/v1roe-04-prod-verification-closure-2026-05-01.md`.
 
 - [x] `V1PARITY-01 docs(contract): freeze LIVE add-fill, account-update scope, and runtime/read-model strategy-context parity`
   - 2026-04-29: Closed by publishing `docs/architecture/reference/live-runtime-lifecycle-parity-contract.md` and normalizing the contract into `06_execution-lifecycle.md`, `04_runtime-contexts.md`, and `reference/execution-lifecycle-parity-contract.md`. The repository now explicitly freezes that confirmed LIVE add-fills on an existing position must update canonical quantity/entry from fill truth, that add-leg fills must preserve `DCA` semantics instead of collapsing into generic `OPEN`, that `ACCOUNT_UPDATE` is confirmation/repair rather than broad rewrite authority across all `userId + symbol + side` rows, and that read models must not visually imply strategy-manageable runtime truth when canonical `position.strategyId` is missing.
 - [x] `V1PARITY-10 qa(closure): run focused LIVE parity pack and publish closure evidence`
-  - 2026-04-29: Closed the remaining `V1PARITY-02..10` implementation slices end to end. `orders.exchangeEvents.service.ts` now reprices existing LIVE positions through canonical add-update fill math with explicit `DCA` trade attribution and narrow `ACCOUNT_UPDATE` ownership scope; runtime read models no longer surface DCA/TSL plans through symbol fallback when canonical `strategyId` is missing; and fail-closed LIVE automation skips now emit operator-visible `PRETRADE_BLOCKED` diagnostics through runtime telemetry. Closure evidence: `docs/operations/v1parity-live-runtime-lifecycle-parity-closure-2026-04-29.md`. Validation PASS: focused `orders.exchangeEvents`, `runtimePositionAutomation`, `bots.runtime-strategy-context`, focused DCA ladder e2e, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
+  - 2026-04-29: Closed the remaining `V1PARITY-02..10` implementation slices end to end. `orders.exchangeEvents.service.ts` now reprices existing LIVE positions through canonical add-update fill math with explicit `DCA` trade attribution and narrow `ACCOUNT_UPDATE` ownership scope; runtime read models no longer surface DCA/TSL plans through symbol fallback when canonical `strategyId` is missing; and fail-closed LIVE automation skips now emit operator-visible `PRETRADE_BLOCKED` diagnostics through runtime telemetry. Closure evidence: `history/audits/v1parity-live-runtime-lifecycle-parity-closure-2026-04-29.md`. Validation PASS: focused `orders.exchangeEvents`, `runtimePositionAutomation`, `bots.runtime-strategy-context`, focused DCA ladder e2e, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - [x] `V1PARITY-00 planning(audit): publish LIVE runtime lifecycle parity analysis and execution packet`
-  - 2026-04-29: Closed as a planning-only analysis slice after a fresh repository audit requested by the user. Published `docs/planning/v1parity-live-runtime-lifecycle-parity-hardening-plan-2026-04-29.md` plus the task packet `docs/planning/v1parity-00-analysis-task-2026-04-29.md`. The packet freezes five high-value confirmed drifts behind the reported `LIVE DCA` mismatch: exchange-confirmed fills on existing positions do not fully reuse canonical add-update lifecycle authority, add-leg fills are persisted as generic `OPEN` instead of explicit `DCA`, `ACCOUNT_UPDATE` scoping is too broad (`userId + symbol + side`), runtime read models can mask missing `strategyId` with symbol-level fallback, and fail-closed runtime skip reasons are still mostly console-only instead of operator-visible telemetry.
+  - 2026-04-29: Closed as a planning-only analysis slice after a fresh repository audit requested by the user. Published `history/audits/v1parity-live-runtime-lifecycle-parity-hardening-plan-2026-04-29.md` plus the task packet `history/audits/v1parity-00-analysis-task-2026-04-29.md`. The packet freezes five high-value confirmed drifts behind the reported `LIVE DCA` mismatch: exchange-confirmed fills on existing positions do not fully reuse canonical add-update lifecycle authority, add-leg fills are persisted as generic `OPEN` instead of explicit `DCA`, `ACCOUNT_UPDATE` scoping is too broad (`userId + symbol + side`), runtime read models can mask missing `strategyId` with symbol-level fallback, and fail-closed runtime skip reasons are still mostly console-only instead of operator-visible telemetry.
 
 - [x] `V1COH-04 fix(api-reconciliation): tighten exchange-synced order/position adoption around manual LIVE opens`
   - 2026-04-25: Extended runtime session open-order reads to adopt eligible `EXCHANGE_SYNC` orders through the same symbol-ownership contract already used for external positions, and deduplicated manual-vs-synced open-order visibility by `exchangeOrderId` with preference for the exchange-synced row. This keeps the runtime view truthful across `submitted -> imported_open_order -> position_opened` without double-counting the same LIVE order. Validation PASS: `pnpm --filter api exec vitest run src/modules/orders/orders-positions.e2e.test.ts -t "keeps manual LIVE MARKET visibility truthful from submitted order through exchange-synced adoption"`, `pnpm --filter api exec vitest run src/modules/orders/orders-positions.e2e.test.ts -t "keeps LIVE open orders visible in runtime view when order was created before current session start"`, `pnpm --filter api run typecheck`.
@@ -8965,7 +9072,7 @@ None.
   - 2026-04-25: Added a focused `orders.service` regression proving manual `LIVE MARKET` orders stay `OPEN/submitted` with `waitingForFill=true` when exchange placement returns no fill truth, plus a route-level runtime e2e regression that currently fails exactly on missing `EXCHANGE_SYNC` open-order visibility before later `EXCHANGE_SYNC` position adoption. Validation evidence: PASS `pnpm --filter api exec vitest run src/modules/orders/orders.service.test.ts -t "keeps LIVE MARKET order submitted when exchange placement returns OPEN without fill truth"`, expected RED `pnpm --filter api exec vitest run src/modules/orders/orders-positions.e2e.test.ts -t "keeps manual LIVE MARKET visibility truthful from submitted order through exchange-synced adoption"`.
 
 - [x] `V1REG-01 docs(audit): publish architecture-v1 functionality inventory and reusable regression checklist`
-  - 2026-04-25: Published one reusable V1 checklist in `docs/operations/v1-architecture-functionality-regression-checklist-2026-04-25.md` plus the execution packet in `docs/planning/v1-architecture-functionality-verification-plan-2026-04-25.md`, mapping architecture-defined functions to implementation status, automated tests, manual browser checks, and follow-up task families.
+  - 2026-04-25: Published one reusable V1 checklist in `history/plans/v1-architecture-functionality-regression-checklist-2026-04-25.md` plus the execution packet in `history/plans/v1-architecture-functionality-verification-plan-2026-04-25.md`, mapping architecture-defined functions to implementation status, automated tests, manual browser checks, and follow-up task families.
 
 - [x] `V1REG-03 qa(browser): execute architecture-v1 browser checklist and capture findings`
   - 2026-04-25: Completed the local browser/manual sweep against the reachable web target. `/auth/login` and `/auth/register` rendered correctly, unauthenticated `/dashboard` redirected back to `/auth/login`, and invalid sign-in stayed explicit with `Sign-in failed: Network Error` instead of false success. No new product-visible regression was isolated; the remaining manual function checks are infra-blocked locally because the API dev target fails closed on missing `API_KEY_ENCRYPTION_KEYS` and local Docker/Postgres were unavailable.
@@ -8980,7 +9087,7 @@ None.
   - 2026-04-25: Froze the approved exchange/runtime architecture in canonical docs. `04_runtime-contexts.md`, `05_strategy-signal-and-decision-flow.md`, and `09_integrations-deployment-and-runtime-services.md` now explicitly require exact `(exchange, marketType)` context, forbid mixing `SPOT` and `FUTURES` or cross-exchange market-data reuse, freeze the narrow adapter-family model, and require worker health/readiness to reflect the full deployed topology.
 
 - [x] `XVENUE-02 audit(api): inventory boundary leaks and direct exchange SDK usage`
-  - 2026-04-25: Published `docs/planning/xvenue-02-exchange-boundary-leak-audit-2026-04-25.md`, which inventories the confirmed direct exchange leaks still living outside `modules/exchange`: market catalog and public ticker access in `markets.service.ts`, live balance reads in `runtimeCapitalContext.service.ts`, runtime/backtest Binance REST dependencies in `runtimeSignalMarketDataGateway.ts`, `runtimeMarketDataFallback.service.ts`, and `backtestDataGateway.ts`, Binance-specific API-key probing outside the exchange module, and worker topology drift in `/workers/*` plus `workerOwnership.ts`. This closes the audit uncertainty and moves the queue to `XVENUE-03`.
+  - 2026-04-25: Published `history/audits/xvenue-02-exchange-boundary-leak-audit-2026-04-25.md`, which inventories the confirmed direct exchange leaks still living outside `modules/exchange`: market catalog and public ticker access in `markets.service.ts`, live balance reads in `runtimeCapitalContext.service.ts`, runtime/backtest Binance REST dependencies in `runtimeSignalMarketDataGateway.ts`, `runtimeMarketDataFallback.service.ts`, and `backtestDataGateway.ts`, Binance-specific API-key probing outside the exchange module, and worker topology drift in `/workers/*` plus `workerOwnership.ts`. This closes the audit uncertainty and moves the queue to `XVENUE-03`.
 
 - [x] `XVENUE-03 docs(contract): freeze capability matrix migration rules`
   - 2026-04-25: Canonical docs now distinguish compatibility-stage exchange-level flags from the target exact-stage `(exchange, marketType, operation)` matrix. `exchange-access-ownership-matrix.md` freezes the migration rules and forbidden inferences, while `09_integrations-deployment-and-runtime-services.md` makes explicit that broad exchange flags cannot override narrower operation contracts. This moves the queue to `XVENUE-04`.
@@ -9038,7 +9145,7 @@ None.
   - 2026-04-24: Closed the lifetime/order-control wave after rerunning the focused closure pack across strategy `0 = no limit` semantics, shared lifetime policy normalization, runtime stale-order cancellation, runtime stale-position close flow, and dashboard open-order cancel action. Validation PASS: `pnpm --filter web exec vitest run src/features/strategies/components/StrategyForm.test.tsx src/features/strategies/utils/StrategyForm.map.test.ts src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-actions.test.tsx`, `pnpm --filter api exec vitest run src/modules/engine/strategyLifetimePolicy.test.ts src/modules/engine/runtimeOrderLifetime.service.test.ts src/modules/engine/runtimePositionLifetime.service.test.ts src/modules/engine/runtimeSignalLoop.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `V1SURF-B planning: publish residual operator-surface truth closure after V1LIFE`
-  - 2026-04-24: Fresh post-`V1LIFE` audit found that the backend/runtime core is no longer the main risk; the remaining drift is on operator surfaces. `dashboard-home` still reconstructs runtime aggregate in the browser when the aggregate endpoint fails, while dashboard/manual-order and bot-monitoring quick-context surfaces still read some venue semantics from duplicated bot snapshot fields instead of inherited context. Published `docs/planning/v1-residual-operator-truth-closure-2026-04-24.md` and queued `V1SURF-05..08`.
+  - 2026-04-24: Fresh post-`V1LIFE` audit found that the backend/runtime core is no longer the main risk; the remaining drift is on operator surfaces. `dashboard-home` still reconstructs runtime aggregate in the browser when the aggregate endpoint fails, while dashboard/manual-order and bot-monitoring quick-context surfaces still read some venue semantics from duplicated bot snapshot fields instead of inherited context. Published `history/plans/v1-residual-operator-truth-closure-2026-04-24.md` and queued `V1SURF-05..08`.
 
 - [x] `V1SURF-05 web(aggregate-truth): remove selected-bot dashboard aggregate fallback and fail closed on aggregate errors`
   - 2026-04-24: Removed the remaining browser-side aggregate reconstruction path from `useHomeLiveWidgetsController.ts`. Selected-bot dashboard now keeps only real session truth from `listBotRuntimeSessions`, clears runtime aggregate payloads on aggregate endpoint failure, and exposes degraded selected-bot state instead of reconstructing symbol stats, positions, and trades in web. Added focused regression coverage proving aggregate failure does not trigger session-level reconstruction. Validation PASS: `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.aggregate-error.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.aggregate-wallet.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-actions.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-source.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
@@ -9071,16 +9178,16 @@ None.
   - 2026-04-24: Confirmed that the known production orphan was a historical pre-fix `PAPER MARKET` manual order persisted as `OPEN` with `positionId=null`, not a new runtime regression. Recovery reused the existing canonical `cancelOrder` path: order `3c147495-519e-4f74-b8eb-07027e4a49f1` was canceled successfully on production via `POST /dashboard/orders/:id/cancel`, and the paper bot runtime aggregate now reports `openOrdersCount=0`.
 
 - [x] `V1LIFE-A planning: publish order/position lifetime enforcement and dashboard open-order control wave`
-  - 2026-04-24: Audited strategy builder, API/runtime, and dashboard open orders surfaces after the final V1 runtime review. Confirmed that lifetime fields already exist in `strategy.config.additional` and are exposed in the web form, but runtime currently only consumes `maxPositions`; no canonical enforcement path was found for `orderLifetime`, `positionLifetime`, or `maxOrders`, and dashboard orders table still lacks a cancel action despite an existing backend cancel endpoint. Published `docs/planning/v1-order-position-lifetime-and-manual-order-closure-2026-04-24.md` and queued `V1LIFE-01..06`.
+  - 2026-04-24: Audited strategy builder, API/runtime, and dashboard open orders surfaces after the final V1 runtime review. Confirmed that lifetime fields already exist in `strategy.config.additional` and are exposed in the web form, but runtime currently only consumes `maxPositions`; no canonical enforcement path was found for `orderLifetime`, `positionLifetime`, or `maxOrders`, and dashboard orders table still lacks a cancel action despite an existing backend cancel endpoint. Published `history/plans/v1-order-position-lifetime-and-manual-order-closure-2026-04-24.md` and queued `V1LIFE-01..06`.
 
 - [x] `V1FINAL-A planning: publish final runtime closure wave after full repo green plus fresh production aggregate audit`
-  - 2026-04-24: After rerunning full `api`, full `web`, `build`, and `quality:guardrails`, the repository is green again. Fresh production API verification showed the main runtime/signal path is now healthy, but two narrow follow-ups remain: aggregate session detail still mixed `RUNNING` with stale `finishedAt`, and production still contains at least one legacy paper manual `MARKET` order persisted pre-fix as `OPEN` without fill/position. Published `docs/planning/v1-final-runtime-closure-2026-04-24.md` and queued `V1FINAL-01..03`.
+  - 2026-04-24: After rerunning full `api`, full `web`, `build`, and `quality:guardrails`, the repository is green again. Fresh production API verification showed the main runtime/signal path is now healthy, but two narrow follow-ups remain: aggregate session detail still mixed `RUNNING` with stale `finishedAt`, and production still contains at least one legacy paper manual `MARKET` order persisted pre-fix as `OPEN` without fill/position. Published `history/plans/v1-final-runtime-closure-2026-04-24.md` and queued `V1FINAL-01..03`.
 
 - [x] `V1FINAL-01 api(aggregate-session-truth): keep aggregate sessionDetail finishedAt null while any session is still RUNNING`
   - 2026-04-24: Fixed synthetic aggregate session semantics in `runtimeMonitoringAggregateRead.service.ts` so `sessionDetail.finishedAt` stays `null` whenever any aggregated runtime session is still `RUNNING`, instead of copying a stale finished timestamp from older completed sessions. Added regression coverage in `bots.monitoring-aggregate.e2e.test.ts`. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `V1MON-A planning: publish bot monitoring runtime-truth hardening wave`
-  - 2026-04-24: After the post-`V1IND-A` operator-surface audit, user explicitly approved the strict architecture direction for bot monitoring: one backend aggregate endpoint is the only truth, and web must fail closed into degraded/error state instead of reconstructing runtime aggregate locally. Published `docs/planning/v1-monitoring-runtime-truth-hardening-2026-04-24.md` and queued `V1MON-01..04`.
+  - 2026-04-24: After the post-`V1IND-A` operator-surface audit, user explicitly approved the strict architecture direction for bot monitoring: one backend aggregate endpoint is the only truth, and web must fail closed into degraded/error state instead of reconstructing runtime aggregate locally. Published `history/evidence/v1-monitoring-runtime-truth-hardening-2026-04-24.md` and queued `V1MON-01..04`.
 
 - [x] `V1MON-01 web(aggregate-truth): remove client-side monitoring aggregate fallback and fail closed on backend aggregate errors`
   - 2026-04-24: Removed the browser-side aggregate reconstruction path from `botsMonitoringAggregate.service.ts`. Bot monitoring now depends on the canonical backend aggregate endpoint and surfaces endpoint failure through the existing degraded/error state instead of building a second runtime truth path in web code. Validation PASS: `pnpm --filter web exec vitest run src/features/bots/services/botsMonitoringAggregate.service.test.ts`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
@@ -9095,13 +9202,13 @@ None.
   - 2026-04-24: Closed `V1MON-A` after rerunning the focused bot-monitoring truth pack, keeping aggregate fail-closed behavior, inherited venue/strategy context, and future-signal semantics under one closure record. Validation PASS: `pnpm --filter web exec vitest run src/features/bots/components/BotsManagement.test.tsx src/features/bots/components/BotsListTable.test.tsx src/features/bots/services/botsMonitoringAggregate.service.test.ts src/i18n/translations.test.ts`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `V1SIGSEM-A planning: publish signal-surface semantic hardening slice`
-  - 2026-04-24: After `V1IND-A` closed the canonical indicator and signal-analysis drift, a smaller operator-surface issue remained: `CONFIGURED_ONLY` rows still read too much like runtime decisions even though architecture defines them as market snapshots from the latest closed candle. Published `docs/planning/v1-signal-surface-semantic-hardening-2026-04-24.md` to lock the slice as presentation-only semantic hardening.
+  - 2026-04-24: After `V1IND-A` closed the canonical indicator and signal-analysis drift, a smaller operator-surface issue remained: `CONFIGURED_ONLY` rows still read too much like runtime decisions even though architecture defines them as market snapshots from the latest closed candle. Published `history/plans/v1-signal-surface-semantic-hardening-2026-04-24.md` to lock the slice as presentation-only semantic hardening.
 
 - [x] `V1SIGSEM-01 web(copy+semantics): make configured-only signal rows explicit market snapshots`
   - 2026-04-24: Dashboard-home and bot-monitoring copy now describe `CONFIGURED_ONLY` / `configured_fallback` rows as closed-candle market snapshots instead of pseudo-signals or runtime decisions. The selected-bot signal rail also reduces visual emphasis for snapshot-only rows while keeping the same conditions visible for operator comparison. Validation PASS: `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/i18n/translations.test.ts`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 
 - [x] `V1POSTBOT-A planning: publish post-V1BOT full API contract recovery wave`
-  - 2026-04-24: After `V1IND-A` closure, full `pnpm --filter api run test -- --run` still had 7 red cases in `backtests/orders` suites. Audit grouped them into one post-`V1BOT` singular-context recovery wave rather than an indicator regression: older e2e fixtures still assumed partially configured LIVE bots, manual-order persistence expectations still depended on legacy linkage, and runtime session positions read/close flows still drifted for carryover open orders plus `EXCHANGE_SYNC BOT_MANAGED` LIVE ownership. Published `docs/planning/v1-post-v1bot-runtime-contract-recovery-2026-04-24.md` and queued `V1POSTBOT-01..05`.
+  - 2026-04-24: After `V1IND-A` closure, full `pnpm --filter api run test -- --run` still had 7 red cases in `backtests/orders` suites. Audit grouped them into one post-`V1BOT` singular-context recovery wave rather than an indicator regression: older e2e fixtures still assumed partially configured LIVE bots, manual-order persistence expectations still depended on legacy linkage, and runtime session positions read/close flows still drifted for carryover open orders plus `EXCHANGE_SYNC BOT_MANAGED` LIVE ownership. Published `history/plans/v1-post-v1bot-runtime-contract-recovery-2026-04-24.md` and queued `V1POSTBOT-01..05`.
 
 - [x] `V1POSTBOT-01..05 api(test+qa): recover full API contract parity after V1BOT singular-context migration`
   - 2026-04-24: Closed the post-`V1BOT` recovery wave by aligning the affected `backtests/orders` e2e fixtures with the canonical singular bot contract (`walletId + symbolGroupId + strategyId`) instead of relying on partially configured LIVE/PAPER bots plus legacy graph rows. This restored the expected pre-trade/live parity checks, deterministic selected-bot order ownership expectations, runtime positions visibility for carryover open orders, and `EXCHANGE_SYNC BOT_MANAGED` LIVE close/read parity. Validation PASS: `pnpm --filter api exec vitest run src/modules/backtests/backtests.e2e.test.ts src/modules/orders/orders-positions.e2e.test.ts`, full `pnpm --filter api run test -- --run` with required API-key encryption env, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
@@ -9110,7 +9217,7 @@ None.
   - 2026-04-24: Closed the full `V1IND-A` wave. Architecture now freezes one canonical V1 indicator registry scope and one shared parity contract for builder, runtime, backtest, and operator surfaces. Strategy-builder metadata is served from the canonical registry, signal read-models no longer own a subset indicator formatter that emitted opaque `X` placeholders, configured market snapshots are analyzed through the same shared indicator kernel used by runtime/backtest, and signal-surface venue truth now derives from inherited `SymbolGroup -> MarketUniverse` context. Added parity coverage proving every builder-exposed indicator is executable through the canonical registry/evaluator path. Focused validation PASS: `pnpm --filter api exec vitest run src/modules/engine/strategyIndicatorRegistryParity.test.ts src/modules/strategies/indicators/indicators.service.test.ts src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts src/modules/engine/runtimeFinalCandleDecision.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter web exec vitest run src/features/strategies/components/StrategyFormSections/Indicators.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx`, `pnpm --filter web exec vitest run src/i18n/translations.test.ts src/i18n/namespaceRegistry.test.ts`, `pnpm --filter web run test -- --run`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`, `pnpm run build`.
 
 - [x] `V1IND-A planning: publish canonical indicator parity and signal-surface recovery wave`
-  - 2026-04-24: Audited builder-exposed indicators, shared runtime/backtest kernel coverage, signal-surface read models, and architecture contracts. Found that the currently exposed indicator families are broadly implemented in `strategyIndicatorKernel.ts`, but architecture docs still disagree on the frozen V1 parity scope, strategy-builder metadata still comes from standalone `indicators.data.ts`, signal read-models still contain subset fallback formatting that emits `X`/`-`, and operator surfaces still blur configured market snapshots with evaluated runtime decisions. Published `docs/planning/v1-indicator-parity-and-signal-surface-recovery-2026-04-24.md` and queued `V1IND-01..07`.
+  - 2026-04-24: Audited builder-exposed indicators, shared runtime/backtest kernel coverage, signal-surface read models, and architecture contracts. Found that the currently exposed indicator families are broadly implemented in `strategyIndicatorKernel.ts`, but architecture docs still disagree on the frozen V1 parity scope, strategy-builder metadata still comes from standalone `indicators.data.ts`, signal read-models still contain subset fallback formatting that emits `X`/`-`, and operator surfaces still blur configured market snapshots with evaluated runtime decisions. Published `history/audits/v1-indicator-parity-and-signal-surface-recovery-2026-04-24.md` and queued `V1IND-01..07`.
 
 - [x] `V1BOT-09 api+web(manual-order): recover dashboard manual-order truth and singular-context execution for PAPER and LIVE`
   - 2026-04-24: Manual-order context now resolves against the singular bot contract first (`bot -> symbolGroup + strategy`) and fails closed when a symbol is outside the direct bot scope. `PAPER` `MARKET` orders without explicit request price now resolve one canonical fill price from manual-order context and immediately apply the shared order -> fill -> position lifecycle instead of persisting as hanging `OPEN` orders. The dashboard manual-order symbol list now prefers the selected bot market scope even before runtime activity appears. Validation PASS: `pnpm --filter api exec vitest run src/modules/orders/orders.service.test.ts`, `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.manual-order-scope.test.tsx`.
@@ -9152,10 +9259,10 @@ None.
   - 2026-04-24: The approved singular bot model is now the canonical implementation path for Soar V1. One bot owns exactly one wallet, one symbol-group-derived market scope, and one strategy; runtime and operator surfaces consume inherited context from those linked modules, while legacy topology is compatibility-only and excluded from canonical execution truth.
 
 - [x] `V1BOTSURF-A planning: queue bot operator-surface truth hardening after the wider dashboard audit`
-  - 2026-04-24: A broader operator-surface audit confirmed that dashboard-home is not the only place still capable of drifting away from runtime truth. `BotsManagement` and `BotsListTable` still partly seed paper values from legacy bot snapshot fields, and bot monitoring does not yet expose pending open-order / degraded runtime states strongly enough for operator use. Published `docs/planning/v1-bot-surfaces-truth-hardening-2026-04-24.md` and queued `V1BOT-12..15`.
+  - 2026-04-24: A broader operator-surface audit confirmed that dashboard-home is not the only place still capable of drifting away from runtime truth. `BotsManagement` and `BotsListTable` still partly seed paper values from legacy bot snapshot fields, and bot monitoring does not yet expose pending open-order / degraded runtime states strongly enough for operator use. Published `history/plans/v1-bot-surfaces-truth-hardening-2026-04-24.md` and queued `V1BOT-12..15`.
 
 - [x] `V1BOT-A planning: approve and queue the single-context bot architecture migration`
-  - 2026-04-24: User approved the full target-domain rewrite where one bot owns exactly one wallet, one symbol-group market scope, and one strategy, while inheriting execution context from wallet, venue/symbol scope from market group, and logic/risk settings from strategy. Published detailed migration packet `docs/planning/v1-single-context-bot-architecture-migration-2026-04-24.md`, updated the canonical architecture docs, and queued `V1BOT-01..11`.
+  - 2026-04-24: User approved the full target-domain rewrite where one bot owns exactly one wallet, one symbol-group market scope, and one strategy, while inheriting execution context from wallet, venue/symbol scope from market group, and logic/risk settings from strategy. Published detailed migration packet `history/plans/v1-single-context-bot-architecture-migration-2026-04-24.md`, updated the canonical architecture docs, and queued `V1BOT-01..11`.
 
 - [x] `V1RT-02 fix(api-market-stream-endpoint): select Binance websocket default by runtime market type`
   - 2026-04-23: Authenticated production verification after the `V1RT-01` deploy showed that only symbols listed on both Binance spot and futures were receiving runtime decisions, while futures-only symbols stayed at `configured_fallback`. Root cause: `BinanceMarketStreamWorker` defaulted to the spot websocket even for `FUTURES` runtime. The worker now defaults `FUTURES` to `wss://fstream.binance.com/ws` and `SPOT` to `wss://stream.binance.com:9443/ws`, with focused regression coverage in `src/modules/market-stream/binanceStream.service.test.ts`.
@@ -9164,7 +9271,7 @@ None.
   - 2026-04-23: Found and fixed a production-relevant contract drift where `marketStream.worker` built symbol subscriptions from ad-hoc whitelist logic instead of the canonical symbol-group resolver already used by runtime signal topology. Active bot stream subscriptions now resolve the same symbol scope as runtime and operator reads, including catalog-backed/filter-backed market universes. Validation PASS: `pnpm --filter api exec vitest run src/workers/marketStreamSubscriptions.service.test.ts src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts`, `pnpm --filter api run typecheck`.
 
 - [x] `V1SURF-01 fix(api+web-runtime-surface): make selected-bot dashboard markets section truth-based instead of mixing fallback context with accepted signal feed`
-  - 2026-04-23: Added one explicit runtime market truth state to runtime symbol stats (`CONFIGURED_ONLY`, `EVALUATED_NO_TRADE`, `SIGNAL_ACTIVE`, `POSITION_OPEN`, `UNRESOLVED`) and rewired the dashboard selected-bot markets section to render all attached/runtime markets with factual state instead of filtering fallback context into a pseudo-signal feed. Synced architecture and task packet in `docs/planning/v1-runtime-market-truth-surface-2026-04-23.md`. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts`, `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx src/features/bots/services/botsMonitoringAggregate.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`.
+  - 2026-04-23: Added one explicit runtime market truth state to runtime symbol stats (`CONFIGURED_ONLY`, `EVALUATED_NO_TRADE`, `SIGNAL_ACTIVE`, `POSITION_OPEN`, `UNRESOLVED`) and rewired the dashboard selected-bot markets section to render all attached/runtime markets with factual state instead of filtering fallback context into a pseudo-signal feed. Synced architecture and task packet in `history/plans/v1-runtime-market-truth-surface-2026-04-23.md`. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts`, `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx src/features/bots/services/botsMonitoringAggregate.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`.
 
 - [x] `V1ALIGN-01 docs(architecture-worker-ownership): freeze split workers as deployed target and inline as local/degraded-only contract`
   - 2026-04-23: Updated canonical architecture and deployment docs so `split` is now the explicit deployed worker-ownership target for `STAGE` and `PROD`, while `inline` is documented as local/test-only or explicit degraded fallback. Synced the canonical queue so implementation can now proceed against one honest architecture contract instead of the prior half-state.
@@ -9179,7 +9286,7 @@ None.
 - [x] `V1ALIGN-06 qa(closure): run focused runtime-alignment closure pack and sync canonical docs/context`
   - 2026-04-23: Focused runtime-alignment tests, API typecheck, repository guardrails, and the full API pack all passed. Full API validation required explicit test-only encryption env (`API_KEY_ENCRYPTION_KEYS`, `API_KEY_ENCRYPTION_ACTIVE_VERSION`). `pnpm run test:go-live:smoke` remained workstation-blocked because local Docker bootstrap could not bind `5432` while another Postgres container was already using that port.
 - [x] `V1ALIGN-A planning: runtime worker-ownership alignment plus symbol-scope, interval-truth, freshness-authority, and diagnostics closure`
-  - 2026-04-23: Published `docs/planning/v1-runtime-architecture-and-truth-alignment-2026-04-23.md` after a fresh architecture-conformance review. The planned wave freezes one target answer for the current worker-ownership drift (`split` as deployed target, `inline` as local/degraded-only), then queues executor-ready slices for empty-scope runtime routing, truthful signal interval persistence, per-active-session freshness authority, and explicit no-route/runtime-input diagnostics.
+  - 2026-04-23: Published `history/plans/v1-runtime-architecture-and-truth-alignment-2026-04-23.md` after a fresh architecture-conformance review. The planned wave freezes one target answer for the current worker-ownership drift (`split` as deployed target, `inline` as local/degraded-only), then queues executor-ready slices for empty-scope runtime routing, truthful signal interval persistence, per-active-session freshness authority, and explicit no-route/runtime-input diagnostics.
 
 - [x] `V1SIG-01 diagnose(prod-runtime-truth): reproduce and classify why active PAPER/LIVE bots stay at zero persisted runtime signals/positions/trades`
   - 2026-04-23: Closed the diagnosis slice by confirming through authenticated production investigation plus local code tracing that the active PAPER/LIVE bots are not failing at the paper/live execution adapter boundary. The canonical runtime evidence points instead to repeated decision-stage `No trade decision after strategy merge` / `No votes` outcomes, while the monitoring read model previously overstated configured fallback strategy context as if it were accepted signal truth.
@@ -9192,9 +9299,9 @@ None.
 - [x] `V1SIG-05 qa(runtime-recovery): run focused backtest-paper-live parity and runtime delivery closure pack, then sync docs/context`
   - 2026-04-23: Full focused runtime recovery pack now passes end-to-end, including DB-backed symbol-stats/aggregate e2e coverage and paper/live execution parity tests. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeFinalCandleDecision.service.test.ts src/modules/engine/runtimeCapitalContext.service.test.ts src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts`, `pnpm --filter api exec vitest run src/modules/engine/runtimeSignalLoop.service.test.ts`, `pnpm --filter api exec vitest run src/modules/bots/bots.runtime-scope.e2e.test.ts src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`, `pnpm --filter api exec vitest run src/modules/engine/executionOrchestrator.service.test.ts src/modules/engine/paperLiveDecisionEquivalence.test.ts`, `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.preview-parity.test.tsx`, `pnpm --filter api run typecheck`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 - [x] `V1SIG-A planning: runtime signal delivery recovery and truthful operator diagnostics`
-  - 2026-04-23: Investigated production through authenticated API access on `https://api.soar.luckysparrow.ch` for the active PAPER bot `859fd4f7-cbb1-4f8e-b52a-5d119442e265` and LIVE bot `7204173d-af68-494a-bca8-95d3c1ba8ef1`. Both sessions are `RUNNING` with fresh heartbeats, but aggregate runtime truth shows `totalSignals=0`, `openPositionCount=0`, and `tradesTotal=0`. Runtime symbol monitoring currently exposes `configured_fallback` strategy context that can look like "signals" even when no persisted runtime signal exists. Published recovery packet `docs/planning/v1-runtime-signal-delivery-recovery-2026-04-23.md` and promoted the diagnosis slice plus follow-up recovery slices into the canonical queue.
+  - 2026-04-23: Investigated production through authenticated API access on `https://api.soar.luckysparrow.ch` for the active PAPER bot `859fd4f7-cbb1-4f8e-b52a-5d119442e265` and LIVE bot `7204173d-af68-494a-bca8-95d3c1ba8ef1`. Both sessions are `RUNNING` with fresh heartbeats, but aggregate runtime truth shows `totalSignals=0`, `openPositionCount=0`, and `tradesTotal=0`. Runtime symbol monitoring currently exposes `configured_fallback` strategy context that can look like "signals" even when no persisted runtime signal exists. Published recovery packet `history/plans/v1-runtime-signal-delivery-recovery-2026-04-23.md` and promoted the diagnosis slice plus follow-up recovery slices into the canonical queue.
 - [x] `V1CAP-A planning: wallet capital authority recovery for reset and post-deposit cases`
-  - 2026-04-23: Analyzed wallet/runtime capital authority against current Soar architecture and production investigation. Published `docs/planning/v1-wallet-capital-authority-recovery-2026-04-23.md` to freeze the two critical operator cases: `PAPER` reset checkpoint semantics and `LIVE` post-loss/post-deposit exchange balance refresh behavior under wallet allocation modes (`PERCENT`, `FIXED`, effective full balance). Promoted the capital-authority follow-up slices into the canonical queue.
+  - 2026-04-23: Analyzed wallet/runtime capital authority against current Soar architecture and production investigation. Published `history/plans/v1-wallet-capital-authority-recovery-2026-04-23.md` to freeze the two critical operator cases: `PAPER` reset checkpoint semantics and `LIVE` post-loss/post-deposit exchange balance refresh behavior under wallet allocation modes (`PERCENT`, `FIXED`, effective full balance). Promoted the capital-authority follow-up slices into the canonical queue.
 - [x] `V1CAP-01 docs(capital-authority): freeze wallet capital rules for PAPER reset and LIVE post-deposit recovery`
   - 2026-04-23: Froze the explicit capital-authority contract in architecture/module docs so `PAPER` reset checkpoints and `LIVE` post-deposit allocation behavior are now documented as source-of-truth instead of planning-only intent.
 - [x] `V1CAP-02 test(wallet-runtime): add focused regression coverage for reset checkpoint and refreshed exchange balance semantics`
@@ -9211,7 +9318,7 @@ None.
 - [x] `V1CONF-06 test(i18n-signal): reduce remaining I18nProvider act warnings and route-namespace noise in high-signal web suites`
   - 2026-04-23: Removed mount-time `I18nProvider` hydration drift by lazily initializing locale/timezone from storage, mapped `/dashboard/profile` to the `auth` namespace, aligned the affected auth/profile/reports/backtests/dashboard suites with their real route context, and stabilized `BotsManagement` against brittle render/fetch timing assumptions. Validation PASS: `pnpm --filter web exec vitest run src/i18n/I18nProvider.test.tsx src/i18n/namespaceRegistry.test.ts src/features/auth/components/LoginForm.test.tsx src/features/auth/components/RegisterForm.test.tsx src/features/profile/components/Security.test.tsx src/app/dashboard/dashboard.a11y.smoke.test.tsx src/features/reports/components/PerformanceReportsView.test.tsx src/features/backtest/components/BacktestsListView.test.tsx`, `pnpm --filter web exec vitest run src/features/bots/components/BotsManagement.test.tsx`, `pnpm --filter web run test -- --run`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`.
 - [x] `V1CONF-01 docs(sync): align canonical phase + queue with approved V1 and confidence-hardening mode`
-  - 2026-04-23: Published `docs/planning/v1-confidence-hardening-plan-2026-04-23.md`, updated the canonical queue, and aligned project state with the fact that V1 is already approved and active engineering work is now a post-approval confidence-hardening wave.
+  - 2026-04-23: Published `history/plans/v1-confidence-hardening-plan-2026-04-23.md`, updated the canonical queue, and aligned project state with the fact that V1 is already approved and active engineering work is now a post-approval confidence-hardening wave.
 - [x] `V1CONF-02 test(web-route-context): continue removing false i18n/noise drift from high-signal dashboard table tests`
   - 2026-04-23: Aligned the bots, wallets, and backtests table tests with their real dashboard route context so route-owned namespaces load intentionally instead of producing false `/`-route i18n warnings. Validation PASS: `pnpm --filter web exec vitest run src/features/backtest/components/BacktestsRunsTable.test.tsx src/features/bots/components/BotsListTable.test.tsx src/features/wallets/components/WalletsListTable.test.tsx`.
 - [x] `V1CONF-03 investigate(web-test-noise): isolate remaining AggregateError source after route-context cleanup`
@@ -9249,19 +9356,19 @@ None.
 - [x] `V1FACT-A group closure (evidence-backed activation path published; candidate still blocked on operator-only inputs)`
   - 2026-04-22: Closed `V1FACT-A` as an engineering/doc wave by publishing the final activation packet plus closure record and leaving only explicit operator-owned blockers for prod proof artifacts and named sign-offs.
 - [x] `V1FACT-11 docs(sync): close wave, sync canonical queue/context, and freeze future-agent activation rules`
-  - 2026-04-22: Published `docs/operations/v1-production-activation-closure-2026-04-22.md`, synchronized queue/context to the final `CLOSED_WITH_OPERATOR_BLOCKERS` state, and froze future-agent rules so production activation cannot be inferred from stage success, public prod smoke, or fresh docs alone.
+  - 2026-04-22: Published `history/releases/v1-production-activation-closure-2026-04-22.md`, synchronized queue/context to the final `CLOSED_WITH_OPERATOR_BLOCKERS` state, and froze future-agent rules so production activation cannot be inferred from stage success, public prod smoke, or fresh docs alone.
 - [x] `V1FACT-A4 final activation pack + closure sync (V1FACT-10..V1FACT-11)`
   - 2026-04-22: Closed the final `V1FACT-A` slice by publishing both the consolidated activation packet and the closure record, and by narrowing the remaining production blockers to explicit operator-only inputs.
 - [x] `V1FACT-10 qa(prod-pack): build final prod activation evidence pack and sign-off summary`
-  - 2026-04-22: Published `docs/operations/v1-production-activation-pack-2026-04-22.md`, refreshed RC status/sign-off/checklist truth for the current day, and reduced remaining blockers to missing prod restore-drill proof, missing prod rollback-proof pack, open RC Gate 2, and missing named human approvers.
+  - 2026-04-22: Published `history/releases/v1-production-activation-pack-2026-04-22.md`, refreshed RC status/sign-off/checklist truth for the current day, and reduced remaining blockers to missing prod restore-drill proof, missing prod rollback-proof pack, open RC Gate 2, and missing named human approvers.
 - [x] `V1FACT-07B inline runtime-freshness truth after authenticated stage rehearsal`
   - 2026-04-22: Closed the inline runtime-freshness blocker by aligning `WORKER_MODE=inline` readiness truth with actual worker demand, deploying SHA `49ea8e0c`, and rerunning authenticated stage rehearsal successfully with fresh stage artifacts.
 - [x] `V1FACT-A3 rollback/backup proof as first-class gate inputs (V1FACT-08..V1FACT-09)`
   - 2026-04-22: Closed the third `V1FACT-A` slice by making prod backup/restore drill and rollback proof explicit release-gate evidence families, exposing canonical rollback-proof commands, and updating activation/runbook docs so stale or missing prod proof remains fail closed.
 - [x] `V1FACT-A2 release-gate freshness + stage rehearsal evidence (V1FACT-04..V1FACT-07)`
-  - 2026-04-22: Closed the second `V1FACT-A` slice by making release-gate evidence freshness explicit in `scripts/runV1ReleaseGate.mjs`, adding the canonical stage rehearsal entrypoint `scripts/runV1StageRehearsal.mjs`, fixing deploy-smoke target passthrough for both API and web URLs, and publishing fresh stage dry-run artifacts in `docs/operations/v1-release-gate-stage-2026-04-22T17-53-09-987Z.md` and `docs/operations/v1-stage-rehearsal-2026-04-22T17-53-09-987Z.md` with blockers kept explicit.
+  - 2026-04-22: Closed the second `V1FACT-A` slice by making release-gate evidence freshness explicit in `scripts/runV1ReleaseGate.mjs`, adding the canonical stage rehearsal entrypoint `scripts/runV1StageRehearsal.mjs`, fixing deploy-smoke target passthrough for both API and web URLs, and publishing fresh stage dry-run artifacts in `history/releases/v1-release-gate-stage-2026-04-22T17-53-09-987Z.md` and `history/releases/v1-stage-rehearsal-2026-04-22T17-53-09-987Z.md` with blockers kept explicit.
 - [x] `V1FACT-A1 contract + audit + queue truth (V1FACT-01..V1FACT-03)`
-  - 2026-04-22: Closed the first `V1FACT-A` slice by freezing the activation contract, auditing current operator evidence freshness in `docs/operations/v1-production-activation-evidence-audit-2026-04-22.md`, and advancing canonical queue/context to the stage-rehearsal + release-gate freshness slice.
+  - 2026-04-22: Closed the first `V1FACT-A` slice by freezing the activation contract, auditing current operator evidence freshness in `history/audits/v1-production-activation-evidence-audit-2026-04-22.md`, and advancing canonical queue/context to the stage-rehearsal + release-gate freshness slice.
 
 - [x] `REVIEW-D1 runtime live opt-in admission truth (REVIEW-D-01..REVIEW-D-03)`
   - 2026-04-22: Closed the first `REVIEW-D` slice by excluding `LIVE` bots without `liveOptIn=true` from runtime signal topology in both repository and defaults-level admission, and by making runtime position automation skip non-opted-in live positions before any strategy lookup, DCA, or close path can run. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeSignalLoopDefaults.test.ts src/modules/engine/runtimePositionAutomation.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`, `pnpm run quality:guardrails`.
@@ -9270,14 +9377,14 @@ None.
 - [x] `REVIEW-D3 canonical takeover-rebind ownership truth (REVIEW-D-06..REVIEW-D-07)`
   - 2026-04-22: Closed the third `REVIEW-D` slice by removing heuristic rebind for orphan `origin='BOT'` positions; takeover rebind now leaves bot-origin orphan state unresolved unless explicit canonical ownership proof exists, while `EXCHANGE_SYNC` api-key-based rebind stays deterministic. Validation PASS: `pnpm --filter api exec vitest run src/modules/positions/positions.takeover-status.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`.
 - [x] `REVIEW-D4 readiness-truth hardening + closure evidence (REVIEW-D-08..REVIEW-D-10)`
-  - 2026-04-22: Closed the final `REVIEW-D` slice by requiring versioned `API_KEY_ENCRYPTION_KEYS` for readiness and new encryption writes, keeping legacy `API_KEY_ENCRYPTION` as compatibility-only decrypt material, and publishing closure evidence in `docs/operations/review-d-live-opt-in-and-ownership-safety-closure-2026-04-22.md`. Validation PASS: focused `REVIEW-D` pack (`38/38 PASS`), `pnpm --filter api run typecheck`, `pnpm --filter api run build`, `pnpm run quality:guardrails`.
+  - 2026-04-22: Closed the final `REVIEW-D` slice by requiring versioned `API_KEY_ENCRYPTION_KEYS` for readiness and new encryption writes, keeping legacy `API_KEY_ENCRYPTION` as compatibility-only decrypt material, and publishing closure evidence in `history/plans/review-d-live-opt-in-and-ownership-safety-closure-2026-04-22.md`. Validation PASS: focused `REVIEW-D` pack (`38/38 PASS`), `pnpm --filter api run typecheck`, `pnpm --filter api run build`, `pnpm run quality:guardrails`.
 - [x] `REVIEW-D group closure (live opt-in admission truth, orphan bot-position fail-closed safety, canonical takeover rebind, and readiness-truth hardening)`
-  - 2026-04-22: Closed `REVIEW-D` end-to-end by finishing all four remediation slices and publishing closure evidence in `docs/operations/review-d-live-opt-in-and-ownership-safety-closure-2026-04-22.md`.
+  - 2026-04-22: Closed `REVIEW-D` end-to-end by finishing all four remediation slices and publishing closure evidence in `history/plans/review-d-live-opt-in-and-ownership-safety-closure-2026-04-22.md`.
 
 - [x] `SAFEV1-A4 production rate-limit degradation hardening (SAFEV1-08..SAFEV1-09)`
   - 2026-04-22: Closed the fourth `SAFEV1-A` slice by locking prod degraded-mode behavior for rate limiting, adding Redis reconnect cooldown/retry behavior, and making production requests fail closed with explicit `503 + X-RateLimit-Degraded` instead of silently settling into indefinite local-only enforcement. Validation PASS: `pnpm --filter api exec vitest run src/middleware/rateLimit.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`.
 - [x] `SAFEV1-A group closure (live/paper runtime safety closure for V1)`
-  - 2026-04-22: Closed `SAFEV1-A` end-to-end by completing all four remediation slices plus closure pack, publishing `docs/operations/safev1-a-live-paper-runtime-safety-closure-2026-04-22.md`, and passing the focused validation pack (`27/27 PASS`), `api typecheck`, `api build`, and `quality:guardrails`.
+  - 2026-04-22: Closed `SAFEV1-A` end-to-end by completing all four remediation slices plus closure pack, publishing `history/plans/safev1-a-live-paper-runtime-safety-closure-2026-04-22.md`, and passing the focused validation pack (`27/27 PASS`), `api typecheck`, `api build`, and `quality:guardrails`.
 - [x] `SAFEV1-A3 canonical external ownership resolution (SAFEV1-06..SAFEV1-07)`
   - 2026-04-22: Closed the third `SAFEV1-A` slice by replacing symbol-only external ownership heuristics with an explicit `OWNED/AMBIGUOUS` contract, preferring canonical market-group scope over legacy-only bridges, and making manual runtime close fail closed on ambiguous ownership. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/runtimeExternalPositionOwner.service.test.ts src/modules/bots/runtimeSessionPositionCommand.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`.
 - [x] `SAFEV1-A2 fail-closed live capital truth (SAFEV1-04..SAFEV1-05)`
@@ -9285,30 +9392,30 @@ None.
 - [x] `SAFEV1-A1 zero-entry reconciliation truth closure (SAFEV1-01..SAFEV1-03)`
   - 2026-04-22: Closed the first `SAFEV1-A` slice by freezing the runtime safety contract and blocking exchange reconciliation from creating or updating open synced positions when canonical entry truth is missing. Validation PASS: `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm --filter api run build`.
 - [x] `SAFEV1-A planning queued (V1 runtime safety closure for reconciliation, live capital truth, external ownership, and limiter degradation)`
-  - 2026-04-22: Published `docs/planning/safev1-a-live-paper-runtime-safety-plan-2026-04-22.md`, froze permanent rules in `docs/architecture/reference/live-paper-runtime-safety-contract.md`, published audit evidence in `docs/operations/safev1-a-live-paper-runtime-safety-audit-2026-04-22.md`, and activated the new remediation family in canonical queue/context so future execution can close the remaining V1 runtime safety gaps without reconstructing intent from review notes.
+  - 2026-04-22: Published `history/plans/safev1-a-live-paper-runtime-safety-plan-2026-04-22.md`, froze permanent rules in `docs/architecture/reference/live-paper-runtime-safety-contract.md`, published audit evidence in `history/audits/safev1-a-live-paper-runtime-safety-audit-2026-04-22.md`, and activated the new remediation family in canonical queue/context so future execution can close the remaining V1 runtime safety gaps without reconstructing intent from review notes.
 
 - [x] `RELEASE-HARDEN-A group closure (canonical V1 release gate entrypoint)`
   - 2026-04-22: Closed `RELEASE-HARDEN-A` by adding `scripts/runV1ReleaseGate.mjs`, exposing `pnpm run ops:release:v1:gate`, publishing `docs/operations/v1-release-gate-runbook.md`, and aligning V1 release/smoke docs with the new canonical gate entrypoint. Validation PASS: `pnpm run ops:release:v1:gate -- --dry-run --base-url http://localhost:3001 --skip-go-live-smoke --skip-deploy-smoke --skip-runtime-freshness --skip-rollback-guard`, `pnpm run quality:guardrails`.
 - [x] `REVIEW-C group closure (runtime-state replay truth + snapshot error normalization + reconciliation truth)`
-  - 2026-04-22: Closed `REVIEW-C-01..REVIEW-C-07` end-to-end by deriving completed DCA replay state from canonical persisted position truth, normalizing authenticated exchange snapshot failures through one explicit operator error contract, replacing synthetic stale-order cancelation with explicit unresolved reconciliation truth, and publishing closure evidence in `docs/operations/review-c-runtime-state-and-reconciliation-closure-2026-04-22.md`. Validation PASS: focused runtime/positions pack, `api typecheck`, `api build`, `quality:guardrails`.
+  - 2026-04-22: Closed `REVIEW-C-01..REVIEW-C-07` end-to-end by deriving completed DCA replay state from canonical persisted position truth, normalizing authenticated exchange snapshot failures through one explicit operator error contract, replacing synthetic stale-order cancelation with explicit unresolved reconciliation truth, and publishing closure evidence in `history/plans/review-c-runtime-state-and-reconciliation-closure-2026-04-22.md`. Validation PASS: focused runtime/positions pack, `api typecheck`, `api build`, `quality:guardrails`.
 - [x] `REVIEW-B group closure (runtime/exchange production-readiness closure after XLIFE-A)`
-  - 2026-04-22: Closed `REVIEW-B-01..REVIEW-B-08` end-to-end by moving DCA/add-leg execution onto canonical fill-result lifecycle, making submitted dedupe non-terminal until linked order truth is known, making exchange snapshots fail closed when multiple supported API keys exist unless `apiKeyId` is explicit, narrowing watchdog symbol scope to explicit Binance-futures contexts, and publishing closure evidence in `docs/operations/review-b-runtime-exchange-production-closure-2026-04-22.md`. Validation PASS: focused runtime/positions pack, `api typecheck`, `api build`, repo-wide `typecheck`, repo-wide `build`, `quality:guardrails`.
+  - 2026-04-22: Closed `REVIEW-B-01..REVIEW-B-08` end-to-end by moving DCA/add-leg execution onto canonical fill-result lifecycle, making submitted dedupe non-terminal until linked order truth is known, making exchange snapshots fail closed when multiple supported API keys exist unless `apiKeyId` is explicit, narrowing watchdog symbol scope to explicit Binance-futures contexts, and publishing closure evidence in `history/plans/review-b-runtime-exchange-production-closure-2026-04-22.md`. Validation PASS: focused runtime/positions pack, `api typecheck`, `api build`, repo-wide `typecheck`, repo-wide `build`, `quality:guardrails`.
 - [x] `REVIEW-B planning queued (post-XLIFE runtime/exchange production-readiness closure)`
-  - 2026-04-22: Published `docs/planning/review-b-runtime-exchange-production-readiness-plan-2026-04-22.md` after the post-`XLIFE-A` review confirmed four remaining production risks: DCA lifecycle still bypassing canonical fill truth, submitted dedupe becoming terminal too early, generic exchange snapshots choosing ambiguous API-key ownership, and watchdog symbol scope being broader than its explicit Binance-only coverage.
+  - 2026-04-22: Published `history/evidence/review-b-runtime-exchange-production-readiness-plan-2026-04-22.md` after the post-`XLIFE-A` review confirmed four remaining production risks: DCA lifecycle still bypassing canonical fill truth, submitted dedupe becoming terminal too early, generic exchange snapshots choosing ambiguous API-key ownership, and watchdog symbol scope being broader than its explicit Binance-only coverage.
 - [x] `XLIFE-A group closure (one canonical PAPER/LIVE execution lifecycle, fill-truth accounting, and explicit runtime exchange-scope truth)`
-  - 2026-04-22: Closed `XLIFE-A` end-to-end by making LIVE close flow fail-closed until canonical fill truth exists, switching runtime trade/PnL persistence to canonical fill price and quantity, persisting runtime-origin orders with `origin=BOT` so bot-opened positions keep ownership truth through the shared order-fill-position lifecycle, keeping runtime automation alive during submitted close state, and publishing closure evidence in `docs/operations/execution-lifecycle-parity-and-exchange-truth-closure-2026-04-22.md`. Validation PASS: focused XLIFE engine/runtime pack, `api typecheck`, `api build`, `quality:guardrails`.
+  - 2026-04-22: Closed `XLIFE-A` end-to-end by making LIVE close flow fail-closed until canonical fill truth exists, switching runtime trade/PnL persistence to canonical fill price and quantity, persisting runtime-origin orders with `origin=BOT` so bot-opened positions keep ownership truth through the shared order-fill-position lifecycle, keeping runtime automation alive during submitted close state, and publishing closure evidence in `history/audits/execution-lifecycle-parity-and-exchange-truth-closure-2026-04-22.md`. Validation PASS: focused XLIFE engine/runtime pack, `api typecheck`, `api build`, `quality:guardrails`.
 - [x] `XLIFE-A planning queued (one canonical PAPER/LIVE execution lifecycle, fill-truth accounting, and explicit runtime exchange-scope truth)`
-  - 2026-04-22: Executor-ready wave published in `docs/planning/execution-lifecycle-parity-and-exchange-truth-plan-2026-04-22.md` with one shared lifecycle target for `PAPER` and `LIVE`, explicit fill-truth over `markPrice`, no local close-before-fill rule, and explicit runtime exchange-scope hardening tasks.
+  - 2026-04-22: Executor-ready wave published in `history/audits/execution-lifecycle-parity-and-exchange-truth-plan-2026-04-22.md` with one shared lifecycle target for `PAPER` and `LIVE`, explicit fill-truth over `markPrice`, no local close-before-fill rule, and explicit runtime exchange-scope hardening tasks.
 
 - [x] `TRUTH-A execution-plan parity sync`
   - 2026-04-22: Corrected the remaining planning drift by marking `TRUTH-01..TRUTH-14` closed in `docs/planning/mvp-execution-plan.md` and confirming no residual unchecked tasks remained in canonical planning files.
 - [x] `TRUTH-A group closure (fail-closed LIVE ownership + authenticated read contract truth + web guardrail truthfulness)`
-  - 2026-04-22: Closed `TRUTH-A` end-to-end by removing the forbidden LIVE order fallback to unrelated recent API keys, introducing canonical authenticated exchange-read support truth (`BINANCE` supported, other exchanges explicit fail-closed per operation family), hardening runtime/dashboard copy guardrails to catch JSX prop literals and nullish fallback strings, migrating shared UI defaults (`ConfirmModal`, `DataTable`, `SearchableMultiSelect`) to canonical `public.sharedUi.*` i18n, and publishing closure evidence in `docs/operations/truth-a-live-safety-and-contract-truth-closure-2026-04-22.md`. Validation PASS: focused API tests, focused web guardrails test, `quality:guardrails`, `api build`, `web build`, `typecheck`.
+  - 2026-04-22: Closed `TRUTH-A` end-to-end by removing the forbidden LIVE order fallback to unrelated recent API keys, introducing canonical authenticated exchange-read support truth (`BINANCE` supported, other exchanges explicit fail-closed per operation family), hardening runtime/dashboard copy guardrails to catch JSX prop literals and nullish fallback strings, migrating shared UI defaults (`ConfirmModal`, `DataTable`, `SearchableMultiSelect`) to canonical `public.sharedUi.*` i18n, and publishing closure evidence in `history/plans/truth-a-live-safety-and-contract-truth-closure-2026-04-22.md`. Validation PASS: focused API tests, focused web guardrails test, `quality:guardrails`, `api build`, `web build`, `typecheck`.
 - [x] `TRUTH-A planning queued (fail-closed LIVE key ownership + exchange contract truth + web guardrail truthfulness)`
-  - 2026-04-22: Published executor-ready plan `docs/planning/truth-a-live-safety-and-contract-truth-plan-2026-04-22.md`, froze permanent remediation rules in `docs/architecture/reference/live-safety-and-contract-truth-remediation-contract.md`, and queued detailed follow-up tasks for LIVE key ownership safety, authenticated exchange-read contract truth, and JSX/presenter guardrail hardening.
+  - 2026-04-22: Published executor-ready plan `history/plans/truth-a-live-safety-and-contract-truth-plan-2026-04-22.md`, froze permanent remediation rules in `docs/architecture/reference/live-safety-and-contract-truth-remediation-contract.md`, and queued detailed follow-up tasks for LIVE key ownership safety, authenticated exchange-read contract truth, and JSX/presenter guardrail hardening.
 
 - [x] `SCALE-17 docs(sync): publish closure evidence, future-agent coding rules, and residual backlog handoff`
-  - 2026-04-22: Published `docs/operations/scale-cd-closure-evidence-2026-04-22.md`, synchronized canonical queue/context/planning status, and froze future-agent extension rules in `web-container-split-contract` plus module handoff docs.
+  - 2026-04-22: Published `history/evidence/scale-cd-closure-evidence-2026-04-22.md`, synchronized canonical queue/context/planning status, and froze future-agent extension rules in `web-container-split-contract` plus module handoff docs.
 - [x] `SCALE-16 test(web-seams): run focused parity/regression pack for dashboard and backtests seam extraction`
   - 2026-04-22: Focused dashboard/backtests seam pack passed (`31/31`) across `HomeLiveWidgets`, preview parity, `BacktestRunDetails`, `useBacktestRunCoreData`, and `backtestRunDetailsViewModel`; `quality:guardrails`, `web build`, and `web typecheck` all PASS.
 - [x] `SCALE-15 refactor(web-backtests): extract trades analytics and tab presenters from BacktestRunDetails`
@@ -9322,21 +9429,21 @@ None.
 - [x] `SCALE-11 docs(contract): freeze container/controller/view-model split contract for HomeLiveWidgets and BacktestRunDetails`
   - 2026-04-22: Added `docs/architecture/reference/web-container-split-contract.md`, linked it from architecture/module docs, and froze explicit ownership boundaries plus remaining extraction targets (`SCALE-13..15`).
 - [x] `SCALE-B group closure (SCALE-06..SCALE-10)`
-  - 2026-04-22: Closed exchange-access convergence wave by publishing the canonical duplicate-flow audit in `docs/operations/scale-b-exchange-access-audit-2026-04-22.md`, adding shared exchange read boundaries (`exchangePublicRead`, `exchangeAuthenticatedRead`, `exchangeMetadataContract`), rewiring symbol rules + manual-order context + positions snapshots + wallet metadata/balance preview to those boundaries, and passing focused exchange regression pack + `api typecheck` + `api build` + `quality:guardrails`.
+  - 2026-04-22: Closed exchange-access convergence wave by publishing the canonical duplicate-flow audit in `history/audits/scale-b-exchange-access-audit-2026-04-22.md`, adding shared exchange read boundaries (`exchangePublicRead`, `exchangeAuthenticatedRead`, `exchangeMetadataContract`), rewiring symbol rules + manual-order context + positions snapshots + wallet metadata/balance preview to those boundaries, and passing focused exchange regression pack + `api typecheck` + `api build` + `quality:guardrails`.
 - [x] `SCALE-A group closure (SCALE-01..SCALE-05)`
   - 2026-04-22: Completed anti-drift foundation slice by auditing guardrail allowlists against real pattern matches, removing stale local-copy/hardcoded/monolith exceptions from `scripts/repoGuardrails.mjs`, synchronizing maintainability inventory metrics to current hotspot reality, and freezing canonical exchange access ownership in `docs/architecture/reference/exchange-access-ownership-matrix.md` with links from architecture/module docs.
 - [x] `SCALE-A planning queued (post-L10NQ anti-drift foundation: truthful guardrails, canonical exchange access, and web container ownership closure)`
-  - 2026-04-22: Published `docs/planning/scalability-anti-drift-foundation-plan-2026-04-22.md`, froze the permanent anti-drift delivery rules in `docs/architecture/reference/scalability-anti-drift-delivery-contract.md`, and activated `SCALE-01..SCALE-17` in the canonical queue/context so future executors get one self-sufficient task packet per change instead of reconstructing context from multiple files.
+  - 2026-04-22: Published `history/plans/scalability-anti-drift-foundation-plan-2026-04-22.md`, froze the permanent anti-drift delivery rules in `docs/architecture/reference/scalability-anti-drift-delivery-contract.md`, and activated `SCALE-01..SCALE-17` in the canonical queue/context so future executors get one self-sufficient task packet per change instead of reconstructing context from multiple files.
 - [x] `L10NQ-E-01..L10NQ-E-10 residual route-reachable i18n closure`
-  - 2026-04-21: Closed the entire residual post-`CQLT` i18n wave by hardening route-reachable audit signal quality, migrating remaining public/profile/wallets/markets/backtests/shared UI copy to canonical namespaces, retiring local locale maps from `backtestRunDetails.copy.ts`, and passing closure gates (`i18n audit=0`, `quality:guardrails`, focused web i18n tests, `web build`, `typecheck`). Evidence published in `docs/operations/l10nq-e-residual-route-reachable-i18n-closure-2026-04-21.md`.
+  - 2026-04-21: Closed the entire residual post-`CQLT` i18n wave by hardening route-reachable audit signal quality, migrating remaining public/profile/wallets/markets/backtests/shared UI copy to canonical namespaces, retiring local locale maps from `backtestRunDetails.copy.ts`, and passing closure gates (`i18n audit=0`, `quality:guardrails`, focused web i18n tests, `web build`, `typecheck`). Evidence published in `history/plans/l10nq-e-residual-route-reachable-i18n-closure-2026-04-21.md`.
 - [x] `L10NQ-E planning queued (residual route-reachable i18n debt closure + audit signal-quality hardening after CQLT closure)`
-  - 2026-04-21: Published `docs/planning/l10nq-e-residual-route-reachable-i18n-closure-plan-2026-04-21.md` and activated `L10NQ-E-01..10` in canonical queue/context so the residual i18n audit debt is now an explicit execution wave instead of informal carry-over from `CQLT`.
+  - 2026-04-21: Published `history/plans/l10nq-e-residual-route-reachable-i18n-closure-plan-2026-04-21.md` and activated `L10NQ-E-01..10` in canonical queue/context so the residual i18n audit debt is now an explicit execution wave instead of informal carry-over from `CQLT`.
 - [x] CQLT-33 qa(closure): run full quality closure pack and publish maintainability delta evidence
-  - 2026-04-21: Passed sequential DB-backed API closure suites for `orders`, `backtests`, and `bots`, then passed repository-wide `build`, `typecheck`, `quality:guardrails`, and refreshed `i18n:audit:route-reachable:web`; maintainability delta evidence published in `docs/operations/code-quality-maintainability-closure-2026-04-21.md`.
+  - 2026-04-21: Passed sequential DB-backed API closure suites for `orders`, `backtests`, and `bots`, then passed repository-wide `build`, `typecheck`, `quality:guardrails`, and refreshed `i18n:audit:route-reachable:web`; maintainability delta evidence published in `history/plans/code-quality-maintainability-closure-2026-04-21.md`.
 - [x] CQLT-34 docs(sync): update queue/context/module docs and capture post-wave coding rules for future agents
   - 2026-04-21: Synchronized queue/context/planning docs after the API maintainability wave and recorded the remaining closure blocker explicitly.
 - [x] CQLT-32 docs(decision): freeze legacy bridge sunset list and mark compatibility-only code paths that remain intentional
-  - 2026-04-21: Added explicit legacy bridge inventory and sunset rule to `docs/modules/code-quality-maintainability-inventory-2026-04-21.md`.
+  - 2026-04-21: Added explicit legacy bridge inventory and sunset rule to `history/audits/code-quality-maintainability-inventory-2026-04-21.md`.
 - [x] CQLT-31 refactor(shared): replace forbidden hidden fallbacks in non-critical quality paths with explicit unresolved states where safe
   - 2026-04-21: Removed hidden `USDT` inference from bot update-path wallet context checks so unresolved ownership now fails closed instead of guessing base currency.
 - [x] CQLT-30 docs(inventory): catalog fallback/default patterns as allowed, temporary, or forbidden
@@ -9381,14 +9488,14 @@ None.
 - [x] CQLT-B group closure (`CQLT-06..CQLT-10`)
   - 2026-04-21: Added repository guardrails that block new production-local copy dictionaries, raw user-facing hardcoded UI literals, and non-allowlisted `1000`+ line monoliths; published the active exception policy in `docs/governance/code-quality-guardrails.md`; and added the duplicate-helper snapshot artifact under `docs/modules/`.
 - [x] CQLT-A group closure (`CQLT-01..CQLT-05`)
-  - 2026-04-21: Published the maintainability remediation contract in `docs/architecture/reference/maintainability-remediation-contract.md`, recorded concrete web/API/monolith inventories in `docs/modules/code-quality-maintainability-inventory-2026-04-21.md`, and updated the active CQLT plan with frozen extraction-order rules before refactor work.
+  - 2026-04-21: Published the maintainability remediation contract in `docs/architecture/reference/maintainability-remediation-contract.md`, recorded concrete web/API/monolith inventories in `history/audits/code-quality-maintainability-inventory-2026-04-21.md`, and updated the active CQLT plan with frozen extraction-order rules before refactor work.
 
 - [x] ARCCON group closure (`ARCCON-01..ARCCON-12`)
   - 2026-04-21: Closed architecture-conformance wave end-to-end by removing hidden manual-order strategy fallback, locking wallet+market-universe canonical precedence in bot ownership checks, formalizing worker ownership contract (`inline|worker`) in bootstrap and `/workers/health|ready`, hardening backtest report lifecycle to explicit `runLifecycle` pending/degraded semantics, and removing `/dashboard/bots` i18n leakage into `dashboard.home.*`. Closure validation PASS: `api focused tests (52/52)`, `web focused bots tests (15/15)`, `api/web typecheck`, `api/web build`, `quality:guardrails`.
 - [x] CQLT planning queued (code-quality and maintainability remediation)
-  - 2026-04-21: Added `docs/planning/code-quality-maintainability-remediation-plan-2026-04-21.md` and synchronized canonical queue/context so a future executor can reduce hardcoded copy, oversized modules, duplicated helpers, spread exchange bootstrap ownership, fallback drift, and async controller boilerplate in tiny, regression-safe slices.
+  - 2026-04-21: Added `history/plans/code-quality-maintainability-remediation-plan-2026-04-21.md` and synchronized canonical queue/context so a future executor can reduce hardcoded copy, oversized modules, duplicated helpers, spread exchange bootstrap ownership, fallback drift, and async controller boilerplate in tiny, regression-safe slices.
 - [x] ARCCON planning queued (architecture conformance remediation)
-  - 2026-04-21: Added `docs/planning/architecture-conformance-remediation-plan-2026-04-21.md` and synchronized canonical queue/context so the next safe execution wave can close architecture drift only where code still violates canonical source-of-truth ownership, split-worker runtime-service contracts, async backtest report lifecycle clarity, or route-level i18n ownership.
+  - 2026-04-21: Added `history/plans/architecture-conformance-remediation-plan-2026-04-21.md` and synchronized canonical queue/context so the next safe execution wave can close architecture drift only where code still violates canonical source-of-truth ownership, split-worker runtime-service contracts, async backtest report lifecycle clarity, or route-level i18n ownership.
 - [x] DOCARC-02 architecture top-level cleanup and temp artifact removal
   - 2026-04-21: Reduced `docs/architecture/` top-level to the numbered
     canonical core plus `reference/` and `archive/`, moved active supporting
@@ -9416,15 +9523,15 @@ None.
 - [x] UOLF group closure (`UOLF-02..UOLF-15`)
   - 2026-04-20: Closed unified order lifecycle wave end-to-end by locking selected-bot manual-order scope regressions, enforcing canonical bot context on order open, introducing shared order-fill-position lifecycle handling (`order -> fill -> position`) for manual/runtime paths, adding runtime `submitted/waiting_fill` semantics, aligning dashboard copy/statuses, and completing closure validation pack (`api UOLF test matrix`, `HomeLiveWidgets + preview parity`, `api/web typecheck`, `build`, `quality:guardrails`, `test:go-live:smoke`).
 - [x] WAPR planning queued (wallets list api-key status + paper reset safety)
-  - 2026-04-20: Added `docs/planning/wallets-list-paper-reset-safety-plan-2026-04-20.md` and queued `WAPR-01..WAPR-10` for wallet-list simplification (`remove Details`, add inline `API key` status column) plus dedicated non-destructive `PAPER` wallet reset with reset-aware capital baseline, fail-closed guards, focused API/web regressions, and closure validation.
+  - 2026-04-20: Added `history/plans/wallets-list-paper-reset-safety-plan-2026-04-20.md` and queued `WAPR-01..WAPR-10` for wallet-list simplification (`remove Details`, add inline `API key` status column) plus dedicated non-destructive `PAPER` wallet reset with reset-aware capital baseline, fail-closed guards, focused API/web regressions, and closure validation.
 - [x] UOLF-01 docs(contract): supersede manual-order order-only contract with unified order-fill-position lifecycle
   - 2026-04-20: Frozen canonical `UOLF` contract in `open-decisions` and module deep-dives (`api-orders`, `api-bots`, `web-dashboard-home`), explicitly superseding historical `SOPR-C order-only` wording with unified lifecycle target (`order -> fill -> position`), strict selected-bot scope, and wallet-scoped exchange takeover ownership expectations.
 - [x] UOLF planning queued (unified order lifecycle + exchange-sync parity)
-  - 2026-04-20: Added `docs/planning/unified-order-lifecycle-and-exchange-sync-plan-2026-04-20.md` and queued `UOLF-01..UOLF-15` to replace the superseded `order-only` target with one exchange-native lifecycle (`order -> fill -> position`) across manual and bot entries, tighten selected-bot context, align Binance adapter/pretrade rules, restore external exchange import parity for wallet-owned bots, and require a focused real-money safety pack before closure.
+  - 2026-04-20: Added `history/plans/unified-order-lifecycle-and-exchange-sync-plan-2026-04-20.md` and queued `UOLF-01..UOLF-15` to replace the superseded `order-only` target with one exchange-native lifecycle (`order -> fill -> position`) across manual and bot entries, tighten selected-bot context, align Binance adapter/pretrade rules, restore external exchange import parity for wallet-owned bots, and require a focused real-money safety pack before closure.
 - [x] BTCF-01 docs(contract): freeze backtests list columns and explicit time-window create contract
   - 2026-04-20: Locked canonical backtests list/create contract in `open-decisions` and module docs (`web-backtest`, `api-backtests`) with exact list-column set (`Strategy`, `Markets`, `Init balance`, `Status`, `Start`, `Actions`), explicit create range fields (`startAt/endAt`), slider bounds (`250..10000`), and legacy run compatibility requirement.
 - [x] BTCF planning queued (`BTCF-01..BTCF-12`)
-  - 2026-04-20: Added `docs/planning/backtests-list-create-time-window-remediation-plan-2026-04-20.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) for backtests list contract update, create-form 3-column time-window UX, backend explicit range execution path, i18n sync, and closure validations.
+  - 2026-04-20: Added `history/plans/backtests-list-create-time-window-remediation-plan-2026-04-20.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) for backtests list contract update, create-form 3-column time-window UX, backend explicit range execution path, i18n sync, and closure validations.
 - [x] BTCF-A group closure (`BTCF-01..BTCF-04`)
   - 2026-04-20: Closed list-contract wave by adding API regression for enriched list rows (`strategyName`, `markets`, `initialBalance`), implementing list payload enrich on API, and switching web runs table to canonical columns (`Strategy`, `Markets`, `Init balance`, `Status`, `Start`, `Actions`) with focused API+web test coverage.
 - [x] BTCF-B group closure (`BTCF-05..BTCF-09`)
@@ -9442,7 +9549,7 @@ None.
 - [x] OOSC-01 docs(contract): freeze dashboard open-orders source-column and active-only status contract
   - 2026-04-20: Frozen canonical Open Orders `Source` mapping (`USER/BOT/EXCHANGE_SYNC/BACKTEST` -> `Manual/Bot/Imported`), locked explicit manual-order write-origin requirement (`origin=USER`), and confirmed unchanged active-only Open Orders status scope (`PENDING`, `OPEN`, `PARTIALLY_FILLED`) in `open-decisions`, `api-orders`, and `web-dashboard-home`.
 - [x] OOSC planning queued (open-orders source column + active-only status contract)
-  - 2026-04-20: Added `docs/planning/dashboard-open-orders-source-column-plan-2026-04-20.md` and queued `OOSC-01..OOSC-08` for executor delivery. Scope is locked to dashboard Open Orders `Source` column (`Manual/Bot/Imported`), explicit manual-order write origin (`USER`), and preserving active-only order visibility (`PENDING`, `OPEN`, `PARTIALLY_FILLED`) with no new orders-history table.
+  - 2026-04-20: Added `history/plans/dashboard-open-orders-source-column-plan-2026-04-20.md` and queued `OOSC-01..OOSC-08` for executor delivery. Scope is locked to dashboard Open Orders `Source` column (`Manual/Bot/Imported`), explicit manual-order write origin (`USER`), and preserving active-only order visibility (`PENDING`, `OPEN`, `PARTIALLY_FILLED`) with no new orders-history table.
 - [x] EXTM-01 wallet-scoped external position takeover contract
   - 2026-04-20: Added `Wallet.manageExternalPositions` as the bot-facing takeover switch (with DB backfill from legacy API-key takeover flag), wired runtime reconciliation ownership to wallet-scoped takeover intent first (legacy API-key fallback preserved), and extended wallet create/edit web UX + tests so external exchange positions can be explicitly managed per LIVE wallet context.
 - [x] DEPFIX-01 web deploy lint hotfix
@@ -9456,7 +9563,7 @@ None.
 - [x] DAWR-C group closure (`DAWR-08..DAWR-10`)
   - 2026-04-20: Closed Stage C by documenting strategy-drift audit/repair triage in ops + module docs, synchronizing planning queue/status files, and completing closure validation pack (`api aggregate e2e`, `web HomeLiveWidgets + HomeLiveWidgets.aggregate-wallet + RuntimeSidebarSection tests`, `api/web typecheck`, `quality:guardrails`).
 - [x] DAWR planning queued (`DAWR-01..DAWR-10`)
-  - 2026-04-20: Added `docs/planning/dashboard-aggregate-wallet-strategy-regression-plan-2026-04-20.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) to fix aggregate LIVE wallet KPI contract drift, strategy sidebar null/mismatch edge behavior, and planning-status synchronization.
+  - 2026-04-20: Added `history/plans/dashboard-aggregate-wallet-strategy-regression-plan-2026-04-20.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) to fix aggregate LIVE wallet KPI contract drift, strategy sidebar null/mismatch edge behavior, and planning-status synchronization.
 - [x] MURC group closure (`MURC-01..MURC-12`)
   - 2026-04-20: Closed market-universe symbol contract parity end-to-end by freezing canonical formula (`final = unique(filter_result U whitelist) - blacklist`) in open decisions + module docs, unifying API consumers (markets sync, bot auto-group, runtime, backtests, manual-order context) on shared resolver path, aligning web preview/validation to allow valid empty sets, adding parity regressions (including runtime/backtest/manual-context and web empty-preview submit), splitting oversized bots e2e coverage into dedicated `bots.market-universe-contract.e2e.ts` to satisfy repository size guardrails, and completing closure validation pack (`api full tests`, `web full tests`, `api/web typecheck`, `quality:guardrails`).
 - [x] SOPR-C group closure (`SOPR-09..SOPR-12`)
@@ -9468,7 +9575,7 @@ None.
 - [x] SOPR-01 Lock consolidated source-of-truth and parity contract for signals/open flows after DAGG+SBSC
   - 2026-04-19: Published consolidated selected-bot signals/open-runtime parity contract in canonical docs (`open-decisions`, `web-dashboard-home`, `api-bots`, `api-orders`) with explicit prerequisite baseline (`DAGG`, `SBSC`), signal-context precedence, runtime no-open diagnostics visibility, and manual-order semantic baseline before `SOPR-09`.
 - [x] MURC planning queued (`MURC-01..MURC-12`)
-  - 2026-04-19: Added `docs/planning/market-universe-symbol-contract-parity-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) as post-`SOPR` follow-up to fix symbol-composition drift across markets sync, runtime, backtests, manual-order context, and web preview/validation.
+  - 2026-04-19: Added `history/audits/market-universe-symbol-contract-parity-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) as post-`SOPR` follow-up to fix symbol-composition drift across markets sync, runtime, backtests, manual-order context, and web preview/validation.
 - [x] SBSC-C group closure (`SBSC-07..SBSC-08`)
   - 2026-04-19: Focused SBSC closure pack PASS (`bots.runtime-scope.e2e`, `bots.e2e`, `HomeLiveWidgets`, `api/web typecheck`) and canonical queue/context synchronized; `SOPR-01` promoted to active queue.
 - [x] SBSC-B group closure (`SBSC-04..SBSC-06`)
@@ -9528,13 +9635,13 @@ None.
 - [x] DAGG-01 Freeze /dashboard aggregate selected-bot runtime contract (positions/orders/history)
   - 2026-04-19: Contract linkage is frozen in canonical docs (`open-decisions`, `web-dashboard-home`, `web-bots`) and enforced by implementation evidence from `DAGG-A`.
 - [x] SOPR planning queued (`SOPR-01..SOPR-12`)
-  - 2026-04-19: Added `docs/planning/signals-open-runtime-parity-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) as post-`DAGG`/`SBSC` follow-up for selected-bot signal context parity, dashboard-vs-preview parity, runtime no-open diagnostics clarity, and manual-order lifecycle semantics closure.
+  - 2026-04-19: Added `history/audits/signals-open-runtime-parity-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) as post-`DAGG`/`SBSC` follow-up for selected-bot signal context parity, dashboard-vs-preview parity, runtime no-open diagnostics clarity, and manual-order lifecycle semantics closure.
 
 - [x] SBSC planning queued (`SBSC-01..SBSC-08`)
-  - 2026-04-19: Added `docs/planning/dashboard-sidebar-strategy-contract-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) as post-`DAGG` follow-up for selected-bot sidebar strategy source-of-truth parity.
+  - 2026-04-19: Added `history/plans/dashboard-sidebar-strategy-contract-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) as post-`DAGG` follow-up for selected-bot sidebar strategy source-of-truth parity.
 
 - [x] DAGG planning queued (`DAGG-01..DAGG-10`)
-  - 2026-04-19: Added `docs/planning/dashboard-aggregate-selected-bot-view-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) to implement aggregate selected-bot contract for dashboard `positions/orders/history`.
+  - 2026-04-19: Added `history/plans/dashboard-aggregate-selected-bot-view-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` + `mvp-execution-plan`) to implement aggregate selected-bot contract for dashboard `positions/orders/history`.
 
 - [x] DASHR-C group closure (`DASHR-09..DASHR-11`)
   - 2026-04-19: Closed signal execution diagnostics path and `DASHR` closure pack end-to-end; runtime now emits explicit `PRETRADE_BLOCKED` event for ignored orchestration outcomes and closure validation passed (`bots.e2e`, `bots.runtime-scope.e2e`, `runtimeSignalDecisionEngine`, `orders.service`, `runtime-history-parity`, `runtimeFinalCandleDecision`, `HomeLiveWidgets`, api/web typecheck, web build, guardrails).
@@ -9565,7 +9672,7 @@ None.
 - [x] DASHR-01 Freeze dashboard runtime parity contract for positions/orders/history/signals/selected-bot section
   - 2026-04-19: Frozen `DASHR` contract in canonical docs (`open-decisions`, `web-dashboard-home`) with strict selected-bot scope for `signals/strategy`, table-first `orders` tab contract (including deterministic empty state), `positions/history` selected-session parity expectation, and selected-bot panel layout order (`KPI -> selector -> market/strategy`) plus `mt-6` spacing lock.
 - [x] DASHR planning queued (`DASHR-01..DASHR-11`)
-  - 2026-04-19: Added `docs/planning/dashboard-runtime-data-parity-recovery-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` NOW/NEXT/PIPELINE) to unblock executor with strict scope lock on reported dashboard runtime issues only.
+  - 2026-04-19: Added `history/audits/dashboard-runtime-data-parity-recovery-plan-2026-04-19.md` and synchronized canonical queue (`mvp-next-commits` NOW/NEXT/PIPELINE) to unblock executor with strict scope lock on reported dashboard runtime issues only.
 
 - [x] UXR-J-C group closure (`UXR-J-08`)
   - 2026-04-19: Closure pack PASS (`DataTable + bots/backtests/profile/logs/home focused suite: 25/25`, `web typecheck`, `web build`) and canonical queue/context synchronized.
@@ -9614,7 +9721,7 @@ None.
 - [x] UXR-I-03 Normalize shared ui/forms primitive API surface for refresh migration
   - 2026-04-19: Normalized `ui/forms` API surface by exporting shared primitive prop/type contracts to stabilize downstream wrapper/form migration usage without behavior changes.
 - [x] UXR-I-02 Publish residual forms consistency gap map per route/module
-  - 2026-04-19: Published deterministic route/module gap inventory in `docs/operations/uxr-i-forms-gap-map-2026-04-19.md` with machine-readable artifact `_artifacts-uxr-i-forms-gap-map-2026-04-19.json`.
+  - 2026-04-19: Published deterministic route/module gap inventory in `history/plans/uxr-i-forms-gap-map-2026-04-19.md` with machine-readable artifact `_artifacts-uxr-i-forms-gap-map-2026-04-19.json`.
 - [x] UXR-I-01 Freeze dashboard forms consistency refresh boundaries after UXR-F
   - 2026-04-19: Locked canonical UXR-I scope/behavior boundaries in `open-decisions` and module linkage docs (`web-dashboard-home`) before refresh migration tasks.
 - [x] UXR-J planning queued: `UXR-J-01..UXR-J-08` dashboard tables consistency refresh wave activated from planner brief
@@ -9622,7 +9729,7 @@ None.
 - [x] OPV-05 Gate-aware RC status follow-ups
   - 2026-04-19: Updated RC gate status generator to emit only unresolved manual follow-ups per current gate state (`Gate1..Gate4`) and stop listing already-closed evidence steps as required.
 - [x] POS-B group closure (`POS-39..POS-42`)
-  - 2026-04-19: Closed queue drift by confirming existing implementation and running focused runtime/parity verification pack (`50/50 PASS`); evidence in `docs/operations/pos-ab-closure-2026-04-19.md`.
+  - 2026-04-19: Closed queue drift by confirming existing implementation and running focused runtime/parity verification pack (`50/50 PASS`); evidence in `history/plans/pos-ab-closure-2026-04-19.md`.
 - [x] POS-A group closure (`POS-36..POS-38`)
   - 2026-04-19: Closed queue drift by confirming implementation-complete state and syncing canonical queue/context after focused verification (`runtimePositionAutomation`, `runtimeCapitalContext`, `backtestReplayCore`, `lifecycleCloseParity`).
 - [x] OPV-A group closure (`OPV-01..OPV-04`)
@@ -9632,9 +9739,9 @@ None.
 - [x] OPV-03 Refresh RC external-gates/sign-off artifacts with fresh production evidence
   - 2026-04-19: Collected new production SLO observation, rebuilt 7d/30d windows, refreshed RC gate status/checklist/sign-off artifacts, then reran final status sync + diagnostics (`_artifacts-opv-03-rc-evidence-final-sync-2026-04-19T01-43-32-327Z.json`).
 - [x] OPV-02 Verify takeover endpoint and private ops probes on production target
-  - 2026-04-19: Production takeover API routes now return `401 Missing token` (protected route present, no `404`), while private OPS probes remain blocked without VPS private-route admin auth; evidence captured in `docs/operations/opv-02-prod-live-takeover-2026-04-19.md` and `_artifacts-opv-02-*`.
+  - 2026-04-19: Production takeover API routes now return `401 Missing token` (protected route present, no `404`), while private OPS probes remain blocked without VPS private-route admin auth; evidence captured in `history/plans/opv-02-prod-live-takeover-2026-04-19.md` and `_artifacts-opv-02-*`.
 - [x] OPV-01 Execute Dockerfile-first stage/prod rehearsal and capture deployment evidence
-  - 2026-04-19: Dockerfile-first rehearsal passed for `api`, `web`, and all worker images; production smoke (`api.soar.luckysparrow.ch` + `soar.luckysparrow.ch`) passed for `/health`, `/ready`, and web root. Stage smoke is now also confirmed on `stage-api.soar.luckysparrow.ch` and `stage.soar.luckysparrow.ch`; evidence captured in `docs/operations/opv-01-vps-rehearsal-2026-04-19.md` and follow-up RC artifacts.
+  - 2026-04-19: Dockerfile-first rehearsal passed for `api`, `web`, and all worker images; production smoke (`api.soar.luckysparrow.ch` + `soar.luckysparrow.ch`) passed for `/health`, `/ready`, and web root. Stage smoke is now also confirmed on `stage-api.soar.luckysparrow.ch` and `stage.soar.luckysparrow.ch`; evidence captured in `history/plans/opv-01-vps-rehearsal-2026-04-19.md` and follow-up RC artifacts.
 - [x] UXR-H group closure (`UXR-H-02..UXR-H-10`)
   - 2026-04-19: Closed dashboard manual-order advanced UX wave end-to-end by delivering API manual-order context endpoint + regression locks, wiring typed web context/state integration, adding price input + market-price fill + qty slider + side-aware summary + single-layer container layout, completing EN/PL/PT i18n parity, and running focused closure pack (`api tests`, `web tests`, `api/web typecheck`, `api/web build`, `quality:guardrails`).
 - [x] UXR-H-02 Add API manual-order context endpoint for symbol constraints, price reference, and bot execution metadata

@@ -30,7 +30,7 @@ const falseSafetyBooleans = [
 const parseArgs = () => {
   const args = process.argv.slice(2);
   const options = {
-    rollup: 'docs/operations/full-reusable-audit-rollup-2026-05-19.json',
+    rollup: 'history/artifacts/full-reusable-audit-rollup-2026-05-19.json',
     json: false,
     help: false,
   };

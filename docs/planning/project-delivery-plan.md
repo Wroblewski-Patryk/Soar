@@ -1,10 +1,10 @@
-﻿# Project Delivery Plan (MVP -> V1.0)
+# Project Delivery Plan (MVP -> V1.0)
 
 This file connects execution across all planning documents.
 
 ## Source Documents
 - Product scope: `docs/product/product.md`
-- Architecture and modules: `docs/architecture/README.md`, `docs/modules/system-modules.md`
+- Architecture and modules: `docs/architecture/architecture-documentation.md`, `docs/modules/system-modules.md`
 - Data model: `docs/architecture/03_domain-model.md`, `docs/architecture/07_modes-parity-and-data.md`
 - Trading behavior: `docs/architecture/05_strategy-signal-and-decision-flow.md`, `docs/architecture/06_execution-lifecycle.md`
 - Safety and quality: `docs/security/security-and-risk.md`, `docs/engineering/testing.md`

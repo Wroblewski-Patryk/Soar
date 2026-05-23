@@ -93,7 +93,7 @@ Evidence to record:
 
 ## Binance Live Ops Verification (Recommended Before Gate 4)
 1. Execute checklist:
-   - `docs/operations/binance-live-ops-verification-checklist-2026-04-06.md`
+   - `history/plans/binance-live-ops-verification-checklist-2026-04-06.md`
 2. Confirm recorded evidence for:
    - connectivity and permission gate
    - exchange snapshot trust
@@ -141,7 +141,7 @@ Evidence to record:
     - `pnpm run ops:rc:gates:status`
     - gate snapshot prefers latest `v1-slo-window-report-*.json` (rolling review) and falls back to latest `_artifacts-slo-window-*.json`.
   - Execute Binance live-ops verification checklist:
-    - `docs/operations/binance-live-ops-verification-checklist-2026-04-06.md`
+    - `history/plans/binance-live-ops-verification-checklist-2026-04-06.md`
   - Sync RC checklist checkboxes from current gate snapshot + sign-off record:
     - `pnpm run ops:rc:checklist:sync`
   - Check missing external evidence fields (Gate1/Gate3/Gate4):
@@ -153,7 +153,7 @@ Evidence to record:
       - shortcut: `pnpm run ops:rc:gates:evidence:check:strict:prod`.
     - machine-readable output:
       - `pnpm run ops:rc:gates:evidence:check -- --json`
-      - `pnpm run ops:rc:gates:evidence:check -- --json --output docs/operations/_artifacts-rc-evidence-check.json`
+      - `pnpm run ops:rc:gates:evidence:check -- --json --output history/artifacts/_artifacts-rc-evidence-check.json`
   - Quick summary (gate labels + missing evidence count):
     - `pnpm run ops:rc:gates:summary`
     - JSON: `pnpm run ops:rc:gates:summary -- --json`
@@ -169,7 +169,7 @@ Evidence to record:
     - by default this pipeline also generates SLO rolling reports for `7d` and `30d`.
     - by default this pipeline also syncs `v1-release-candidate-checklist.md` checkbox states from status/sign-off artifacts.
     - by default this pipeline also prints missing evidence diagnostics (`ops:rc:gates:evidence:check`).
-    - by default diagnostics are saved to `docs/operations/_artifacts-rc-evidence-check-latest.json`.
+    - by default diagnostics are saved to `history/artifacts/_artifacts-rc-evidence-check-latest.json`.
     - customize window outputs:
       - `pnpm run ops:rc:gates:local-pipeline -- --window-days 7,30`
       - `pnpm run ops:rc:gates:local-pipeline -- --skip-window-report`
@@ -177,7 +177,7 @@ Evidence to record:
       - `pnpm run ops:rc:gates:local-pipeline -- --skip-evidence-check`
       - `pnpm run ops:rc:gates:local-pipeline -- --strict-evidence-check`
       - `pnpm run ops:rc:gates:local-pipeline -- --strict-evidence-check --require-production-gate2`
-      - `pnpm run ops:rc:gates:local-pipeline -- --evidence-output docs/operations/_artifacts-rc-evidence-check-custom.json`
+      - `pnpm run ops:rc:gates:local-pipeline -- --evidence-output history/artifacts/_artifacts-rc-evidence-check-custom.json`
     - strict shortcut:
       - `pnpm run ops:rc:gates:local-pipeline:strict`
       - `pnpm run ops:rc:gates:local-pipeline:strict:prod`

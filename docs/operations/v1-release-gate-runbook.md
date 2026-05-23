@@ -146,6 +146,6 @@ Environment fallbacks:
 
 - `docs/operations/post-deploy-smoke-checklist.md`
 - `docs/operations/deployment-rollback-playbook.md`
-- `docs/operations/v1-production-activation-evidence-audit-2026-04-22.md`
+- `history/audits/v1-production-activation-evidence-audit-2026-04-22.md`
 - `docs/operations/v1-release-candidate-checklist.md`
 - `docs/operations/v1-rc-external-gates-runbook.md`

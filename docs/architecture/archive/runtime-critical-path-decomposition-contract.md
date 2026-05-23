@@ -39,4 +39,4 @@ Owner: API runtime maintainability wave (`ARC-A..ARC-E`)
 ## Canonical Linkage
 - Queue owner: `docs/planning/mvp-next-commits.md`
 - Phase owner: `docs/planning/mvp-execution-plan.md`
-- Finding source: `docs/planning/architecture-maintainability-audit-2026-04-18.md`
+- Finding source: `history/audits/architecture-maintainability-audit-2026-04-18.md`

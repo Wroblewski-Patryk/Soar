@@ -65,5 +65,5 @@ Required env-configurable controls:
 ## Linked Planning
 
 - `docs/planning/mvp-execution-plan.md` -> Phase 32 (`ICN-01..ICN-07`)
-- `docs/planning/coin-icons-coingecko-plan-2026-04-05.md`
+- `history/plans/coin-icons-coingecko-plan-2026-04-05.md`
 - `docs/planning/open-decisions.md` -> Coin Icon Source Policy

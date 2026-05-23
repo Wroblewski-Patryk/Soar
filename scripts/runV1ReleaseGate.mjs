@@ -6,7 +6,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const VALID_ENVIRONMENTS = new Set(['local', 'stage', 'prod']);
-const operationsDir = path.resolve(process.cwd(), 'docs', 'operations');
+const currentOperationsDir = path.resolve(process.cwd(), 'docs', 'operations');
+const historyOperationsDir = path.resolve(process.cwd(), 'history', 'operations');
 const SECRET_CLI_FLAGS = new Set([
   '--auth-token',
   '--auth-password',
@@ -30,6 +31,7 @@ const EVIDENCE_FAMILIES = {
     label: 'RC external gates status',
     requiredIn: new Set(['prod']),
     matcher: /^v1-rc-external-gates-status\.md$/,
+    searchDirType: 'currentOperations',
     datePattern: /Generated at \(UTC\):\s*(\d{4}-\d{2}-\d{2})T/i,
     passPatterns: [
       /- Gate 1 \(.+?\):\s+PASS/i,
@@ -44,6 +46,7 @@ const EVIDENCE_FAMILIES = {
     label: 'RC sign-off record',
     requiredIn: new Set(['prod']),
     matcher: /^v1-rc-signoff-record\.md$/,
+    searchDirType: 'currentOperations',
     datePattern: /Date \(UTC\):\s*`?(\d{4}-\d{2}-\d{2})T/i,
     passPattern: /RC status:\s*`?APPROVED`?/i,
     failedPassReason: 'artifact is fresh but does not report RC status APPROVED',
@@ -52,6 +55,7 @@ const EVIDENCE_FAMILIES = {
     label: 'RC checklist verification block',
     requiredIn: new Set(['prod']),
     matcher: /^v1-release-candidate-checklist\.md$/,
+    searchDirType: 'currentOperations',
     datePattern: /Latest Verification \((\d{4}-\d{2}-\d{2})\)/i,
     passPattern: /G1=PASS`,\s*`G2=PASS`,\s*`G3=PASS`,\s*`G4=PASS`/i,
     failedPassReason: 'artifact is fresh but does not show all RC gates PASS',
@@ -121,7 +125,7 @@ const parseArgs = () => {
     dryRun: false,
     help: false,
     environment: 'local',
-    evidenceDir: operationsDir,
+    evidenceDir: historyOperationsDir,
     today: new Date().toISOString().slice(0, 10),
     artifactStamp: '',
   };
@@ -300,6 +304,9 @@ const formatCommand = (command, args) =>
 const resolveSearchDirs = (family, evidenceDir) => {
   if (family.searchDirType === 'planning') {
     return [path.resolve(evidenceDir, '..', 'planning')];
+  }
+  if (family.searchDirType === 'currentOperations') {
+    return [currentOperationsDir];
   }
   return [evidenceDir];
 };
@@ -510,9 +517,9 @@ ${report.blockers.length > 0 ? report.blockers.map((item) => `- ${item}`).join('
 };
 
 const writeArtifacts = async (report, stamp) => {
-  await mkdir(operationsDir, { recursive: true });
-  const jsonFile = path.join(operationsDir, `_artifacts-v1-release-gate-${report.environment}-${stamp}.json`);
-  const mdFile = path.join(operationsDir, `v1-release-gate-${report.environment}-${stamp}.md`);
+  await mkdir(historyOperationsDir, { recursive: true });
+  const jsonFile = path.join(historyOperationsDir, `_artifacts-v1-release-gate-${report.environment}-${stamp}.json`);
+  const mdFile = path.join(historyOperationsDir, `v1-release-gate-${report.environment}-${stamp}.md`);
   await writeFile(jsonFile, JSON.stringify(report, null, 2));
   await writeFile(mdFile, renderMarkdown(report, path.relative(process.cwd(), jsonFile)));
   return {

@@ -42,11 +42,11 @@ const options = {
   outputJson:
     readArgValue('--output-json') ||
     process.env.NON_GATEIO_READBACK_OUTPUT_JSON ||
-    'docs/operations/_artifacts-prod-non-gateio-runtime-readback-00169d7f-2026-05-13.json',
+    'history/artifacts/_artifacts-prod-non-gateio-runtime-readback-00169d7f-2026-05-13.json',
   outputMd:
     readArgValue('--output-md') ||
     process.env.NON_GATEIO_READBACK_OUTPUT_MD ||
-    'docs/operations/prod-non-gateio-runtime-readback-00169d7f-2026-05-13.md',
+    'history/evidence/prod-non-gateio-runtime-readback-00169d7f-2026-05-13.md',
   timeoutMs: Number.parseInt(process.env.NON_GATEIO_READBACK_TIMEOUT_MS || '15000', 10),
 };
 
@@ -335,7 +335,7 @@ const main = async () => {
     '- Credentials and session tokens are not written to this artifact.',
   ].join('\n');
 
-  await mkdir('docs/operations', { recursive: true });
+  await mkdir('history/evidence', { recursive: true });
   await writeFile(options.outputJson, `${JSON.stringify(payload, null, 2)}\n`);
   await writeFile(options.outputMd, `${md}\n`);
   process.stdout.write(`[ops:non-gateio-runtime-readback] status=${payload.status}\n`);

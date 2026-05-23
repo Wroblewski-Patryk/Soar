@@ -4,6 +4,65 @@ Last updated: 2026-05-23
 
 ## Next Tiny Task
 
+Pre-commit project organization polish:
+`PROJECT-ORGANIZATION-PRECOMMIT-POLISH-2026-05-23` is verified. The repository
+is organization-ready for a docs/history restructure commit from this slice:
+root README, repository structure policy, and `.gitignore` all point at the
+current `docs/` versus `history/` model. Current proof: markdown link check
+`1816` files / `482` relative or file links / `0` missing targets, docs graph
+scan `258` docs markdown files / `0` no-incoming files excluding root semantic
+hubs / `0` isolated docs files, stale old docs artifact/index path scan clean,
+repository guardrails, docs parity, and diff check.
+
+Documentation usefulness routing:
+`DOC-USABILITY-ROUTING-IMPROVEMENT-2026-05-23` is verified. Future docs work
+should preserve the route model: start from `docs/soar-documentation-map.md`,
+choose the relevant map, use current docs/state for truth, and use `history/`
+only as evidence or lineage. New or changed current docs should answer owner,
+surface, proof, and next action. Current proof: markdown link check `1814`
+files / `482` relative or file links / `0` missing targets, docs graph scan
+`258` docs markdown files / `0` no-incoming files excluding root semantic hubs
+/ `0` isolated files, repository guardrails, docs parity, and diff check.
+Next exact docs improvement when a module is touched: add normalized
+`Pipelines`, `Tests`, and `Evidence` sections to that module deep dive.
+
+Documentation local index cohesion:
+`DOC-LOCAL-INDEX-COHESION-2026-05-23` is verified. Future docs additions should
+be linked from the nearest semantic area hub, such as
+`architecture-documentation.md`, `module-registry.md`, or
+`operations-documentation.md`; do not add every new file to the global maps.
+Current proof: `260` docs markdown files, `0` no-incoming files excluding root
+docs semantic hubs, `0` fully isolated files, markdown link check `1811` files
+/ `0` missing targets, repository guardrails, docs parity, and diff check.
+
+Documentation graph hygiene:
+`DOC-CONTENT-GRAPH-HYGIENE-2026-05-23` is verified. Future agents should keep
+`docs/soar-documentation-map.md` and `docs/maps/*` sparse: use markdown links only for primary
+navigation that should appear as Obsidian graph edges, and use plain code paths
+for secondary references. Current evidence: top docs outgoing hub `10` links,
+`docs/soar-documentation-map.md` `6`, docs maps `4-6`, markdown link check `1805` files / `0`
+missing targets, `pnpm run quality:guardrails`, and `pnpm run
+docs:parity:check`.
+
+Documentation knowledge system:
+`DOC-KNOWLEDGE-TAXONOMY-REFINEMENT-2026-05-23` is verified. Future agents
+should use `history/tasks` for completed task contracts, `history/plans` for
+old plans/closure notes, `history/audits` for audits and scans,
+`history/evidence` for readable proof, `history/releases` for release packets,
+and `history/artifacts` for raw machine output. Validation passed: old taxonomy
+path scan `0`, markdown link check `1804` files / `0` missing targets, no
+dated markdown leftovers in `docs/`, `pnpm run quality:guardrails`, and
+`pnpm run docs:parity:check`.
+
+`DOC-KNOWLEDGE-SYSTEM-RESTRUCTURE-2026-05-23` is verified. Future agents should
+put dated task contracts, audits, generated proof, and operational work history
+under `history/`, not canonical `docs/`. Use `docs/soar-documentation-map.md` and
+`docs/maps/documentation-maps.md` for current documentation navigation, and
+`history/history-overview.md` for older evidence. Validation passed: exact moved-path
+scan `0` stale old paths, markdown relative-link check `1732` files / `0`
+missing targets, `pnpm run quality:guardrails`, and `pnpm run
+docs:parity:check`.
+
 Current live exchange execution parity:
 `LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23` is locally verified for the
 exchange-rule repair and partially production-verified by public deploy proof.
@@ -33,7 +92,7 @@ only after transient Soar app auth is available, then request explicit operator
 approval for the minimum executable live size before any new exchange-side
 mutation. If no auth/approval is available, select the next local executable
 architecture/runtime gap. Evidence:
-`docs/planning/live-exchange-execution-parity-2026-05-23-task.md`.
+`history/audits/live-exchange-execution-parity-2026-05-23-task.md`.
 
 Current runtime DCA protection display parity:
 `RUNTIME-DCA-PROTECTION-DISPLAY-PARITY-2026-05-23` and
@@ -53,8 +112,8 @@ runtime table/view-model tests `45/45`, Web typecheck, guardrails, and diff
 check. Next exact task: commit/push, then verify public deploy freshness; real
 production dashboard readback still requires transient Soar app auth.
 Evidence:
-`docs/planning/runtime-dca-protection-display-parity-2026-05-23-task.md` and
-`docs/planning/web-dashboard-dca-protection-truth-parity-2026-05-23-task.md`.
+`history/audits/runtime-dca-protection-display-parity-2026-05-23-task.md` and
+`history/audits/web-dashboard-dca-protection-truth-parity-2026-05-23-task.md`.
 
 Current Gate.io manual-order contract-size backend proof:
 `LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23` has an additional production-public
@@ -88,7 +147,7 @@ again; final state is `isActive=false`, `liveOptIn=false`,
 position was created. Next exact task if the operator still wants a Gate.io ADA
 position: request explicit approval for a size that satisfies Gate.io/pretrade
 minimum notional, likely above `1 USDT`. Evidence:
-`docs/planning/gateio-live-manual-order-ada-short-2026-05-23-task.md`.
+`history/tasks/gateio-live-manual-order-ada-short-2026-05-23-task.md`.
 
 Current Gate.io live bot setup:
 `GATEIO-LIVE-BOT-CONTEXT-REPAIR-2026-05-23` is verified for inactive bot
@@ -102,7 +161,7 @@ read-only futures probe passed, the market universe is now
 Next exact task if requested: run a separate approval-gated activation plan or
 UI clickthrough; do not activate LIVE trading or perform exchange mutation
 without explicit operator approval. Evidence:
-`docs/planning/gateio-live-bot-context-repair-2026-05-23-task.md`.
+`history/tasks/gateio-live-bot-context-repair-2026-05-23-task.md`.
 
 Current protected app test credential context:
 `PROTECTED-APP-TEST-CREDENTIAL-AVAILABILITY-2026-05-23` is recorded as a
@@ -114,7 +173,7 @@ tokens, cookies, or private headers in repo artifacts. Future authenticated
 smoke should use transient operator-approved secret context or local env
 variables only, then record pass/fail evidence. Status: available for planning,
 not yet smoke-verified. Evidence:
-`docs/planning/protected-app-test-credential-availability-2026-05-23-task.md`.
+`history/tasks/protected-app-test-credential-availability-2026-05-23-task.md`.
 
 Current data/migrations local proof:
 `DATA-MODEL-ISOLATED-DB-PROOF-2026-05-23` is locally verified. Local
@@ -129,7 +188,7 @@ and production backup/restore freshness remain protected ops proof, not local
 proof. Next exact task: choose another bounded non-production product/runtime
 gap, or collect protected production migration/restore evidence only when a
 valid production ops context is available. Evidence:
-`docs/planning/data-model-isolated-db-proof-2026-05-23-task.md`.
+`history/evidence/data-model-isolated-db-proof-2026-05-23-task.md`.
 
 Current assistant/AI foundation:
 `AI-ASSISTANT-FOUNDATION-PROTOCOL-HARNESS-2026-05-23` is locally verified.
@@ -193,12 +252,12 @@ bounded product/runtime task; do not reopen the superseded ETH/DOGE liveimport
 blocker unless fresh production evidence contradicts the auto-discovered
 readback.
 Evidence:
-`docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
-`docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,
+`history/artifacts/liveimport-03-prod-readback-2026-05-23.json`,
+`history/releases/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,
 and
-`docs/operations/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`,
+`history/releases/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`,
 and
-historical `docs/operations/post-release-public-monitoring-878e199d-2026-05-23.md`,
+historical `history/evidence/post-release-public-monitoring-878e199d-2026-05-23.md`,
 plus fresh public smoke/build-info readback for `dd3191d7` on 2026-05-23.
 
 Current source-of-truth cleanup:
@@ -210,7 +269,7 @@ evidence under `docs/operations/`. The frontend legacy redirect drift for
 build-info deploy proof are already pushed and production-verified through the
 later release proof chain. Next exact task: keep this as historical evidence
 unless a new source-of-truth drift is found. Evidence:
-`docs/planning/repo-source-truth-cleanup-2026-05-23-task.md`.
+`history/tasks/repo-source-truth-cleanup-2026-05-23-task.md`.
 
 Current public deploy-proof follow-up:
 `WEB-PUBLIC-STATIC-READBACK-2026-05-22` is superseded by later production
@@ -219,7 +278,7 @@ target and exposes `dd3191d73944f534800659b2dfd0bf5e0bd8b52f` on `main` after
 the non-Binance order-book fail-closed deploy. Public smoke passes for API
 `/health`, API `/ready`, and Web `/`. Keep this as historical availability
 evidence unless a fresh production probe fails. Evidence:
-`docs/operations/deploy-freshness-1b351a51-2026-05-22.md`.
+`history/plans/deploy-freshness-1b351a51-2026-05-22.md`.
 
 Current money-path runtime audit follow-up:
 `ARCH-RUNTIME-P1-002-004-MONEY-PATH-2026-05-22` is locally implemented and
@@ -242,7 +301,7 @@ workers health/readiness route tests `7/7`, API typecheck, and
 `git diff --check` with line-ending warnings only.
 Next exact task: collect protected production `/workers/ready` split-worker
 readback after deploy. Evidence:
-`docs/planning/arch-runtime-p1-010-011-workers-queue-heartbeat-2026-05-22-task.md`.
+`history/tasks/arch-runtime-p1-010-011-workers-queue-heartbeat-2026-05-22-task.md`.
 
 Current active architecture-code audit:
 `ARCH-CODE-RUNTIME-AUDIT-2026-05-22` found and repaired two P0
@@ -266,7 +325,7 @@ and exposes merge diagnostics in report/timeline payloads. Ambiguous link-only
 snapshots still fail closed. Next exact task after this checkpoint: run final
 repo guardrails/diff check, commit/push, then continue production split-worker
 and runtime journey proof after deploy. Evidence:
-`docs/planning/architecture-code-runtime-audit-2026-05-22-task.md`.
+`history/audits/architecture-code-runtime-audit-2026-05-22-task.md`.
 
 Current active runtime parity checkpoint:
 `RUNTIME-ARCHITECTURE-DCA-TP-PARITY-2026-05-22` is locally checkpointed after
@@ -281,7 +340,7 @@ only. Next exact task: commit, push to `main`, then
 recheck production availability/deploy readback. Production probes timed out
 from this shell during the checkpoint, so do not claim live deployment proof
 until that is resolved. Evidence:
-`docs/planning/runtime-architecture-dca-tp-parity-2026-05-22-task.md`.
+`history/audits/runtime-architecture-dca-tp-parity-2026-05-22-task.md`.
 
 Latest protected V1 app proof:
 `V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21` is `BLOCKED`, with real
@@ -298,7 +357,7 @@ task: repair/verify split-worker production topology, choose an approved safe
 way to produce or observe an open runtime readback payload, run production DB
 restore from VPS/Coolify Docker context, then rerun final non-dry-run
 release-gate evidence. Evidence:
-`docs/planning/v1-protected-app-proof-attempt-dd1a1faf-2026-05-21-task.md`.
+`history/evidence/v1-protected-app-proof-attempt-dd1a1faf-2026-05-21-task.md`.
 
 Latest supply-chain/SAST ops checkpoint:
 `SUPPLY-CHAIN-SAST-OPS-AUDIT-2026-05-21` is locally `VERIFIED`. It audited
@@ -317,7 +376,7 @@ external/protected: protected `AUD-19`, VPS/cloud egress review, and operator
 rotation/removal of local untracked env secrets if they contain live
 credentials.
 Evidence:
-`docs/planning/supply-chain-sast-ops-audit-2026-05-21-task.md`.
+`history/audits/supply-chain-sast-ops-audit-2026-05-21-task.md`.
 
 Latest frontend security/UX checkpoint:
 `FRONTEND-SECURITY-UX-OWASP-SWEEP-2026-05-21` is locally `VERIFIED`. It
@@ -334,7 +393,7 @@ security step remains external/protected: production header readback,
 protected `AUD-19`, external pentest/VPS review, and backend-owned
 CSRF/trusted-origin proof as separate gates.
 Evidence:
-`docs/planning/frontend-security-ux-owasp-sweep-2026-05-21-task.md`.
+`history/tasks/frontend-security-ux-owasp-sweep-2026-05-21-task.md`.
 
 Latest money-flow/static security checkpoint:
 `MONEY-FLOW-SECURITY-CANCEL-ENTITLEMENT-2026-05-21` is locally `VERIFIED`.
@@ -349,7 +408,7 @@ focused API static/upload processing tests passed `2` files / `5` tests. Next
 exact security step remains external/protected: protected `AUD-19`, real LIVE
 exchange-side mutation proof, external pentest, and VPS/cloud egress review.
 Evidence:
-`docs/planning/money-flow-security-cancel-entitlement-2026-05-21-task.md`.
+`history/tasks/money-flow-security-cancel-entitlement-2026-05-21-task.md`.
 
 Latest security hardening sweep:
 `SECURITY-RED-TEAM-HARDENING-2026-05-21` is locally `VERIFIED` for the repaired
@@ -369,7 +428,7 @@ production HSTS, and local compose localhost binding. Next exact security step:
 commission/run external penetration and VPS configuration review, or provide
 protected inputs for `AUD-19`; explicit LIVE exchange-side mutation proof still
 requires separate approval.
-Evidence: `docs/planning/security-red-team-hardening-2026-05-21-task.md`.
+Evidence: `history/tasks/security-red-team-hardening-2026-05-21-task.md`.
 
 Latest local certainty closure:
 `LOCAL-CERTAINTY-CLOSURE-2026-05-21` is locally `VERIFIED`. It closed the
@@ -388,7 +447,7 @@ one-worker fork mode, go-live smoke (`45` API tests, `18` Web tests), and
 `git diff --check`. Next exact step: protected `AUD-19` operator packet after
 approved protected input families are available; do not claim current
 production readiness before that proof.
-Evidence: `docs/planning/local-certainty-closure-2026-05-21-task.md`.
+Evidence: `history/tasks/local-certainty-closure-2026-05-21-task.md`.
 
 Latest remaining-implementation sweep:
 `REST-IMPLEMENTATION-SWEEP-2026-05-21` is locally `VERIFIED` for the repaired
@@ -402,7 +461,7 @@ execution-mode snapshot migration or the smaller Web polish queue
 (Admin shared ViewState, bot preview/assistant i18n, wallet reset modal, profile
 mobile layout). Current production readiness still remains blocked by protected
 `AUD-19` inputs.
-Evidence: `docs/planning/rest-implementation-sweep-2026-05-21-task.md`.
+Evidence: `history/tasks/rest-implementation-sweep-2026-05-21-task.md`.
 
 Latest frontend/engine UX+DCA sweep:
 `FRONTEND-ENGINE-UX-DCA-SWEEP-2026-05-21` is locally `VERIFIED`. It fixed
@@ -414,7 +473,7 @@ failure behavior. Validation passed: focused API pack (`4` files / `99`
 tests), focused Web pack (`3` files / `22` tests), API typecheck, Web
 typecheck, and repository guardrails. Its explicit Dashboard Home runtime
 confirmation follow-up was implemented by `REST-IMPLEMENTATION-SWEEP-2026-05-21`.
-Evidence: `docs/planning/frontend-engine-ux-dca-sweep-2026-05-21-task.md`.
+Evidence: `history/tasks/frontend-engine-ux-dca-sweep-2026-05-21-task.md`.
 
 Latest local function/architecture sweep:
 `V1-FUNCTION-ARCHITECTURE-VERIFICATION-2026-05-20` is locally
@@ -428,7 +487,7 @@ one-worker local-infra window, i18n route audit (`0` findings), sequential
 `audit:data:db-isolated` (`24/24`, `15/15`, `2/2`), and go-live smoke (`45/45`
 API, `18/18` Web). The next executable step is the protected operator unblock
 packet once approved inputs are available.
-Evidence: `docs/planning/v1-function-architecture-verification-2026-05-20-task.md`.
+Evidence: `history/tasks/v1-function-architecture-verification-2026-05-20-task.md`.
 
 Latest protected V1 preflight:
 `V1-PROTECTED-PREFLIGHT-DD1A1FAF-2026-05-20` is the current protected `AUD-19`
@@ -439,40 +498,40 @@ input names, and required protected evidence is stale for evidence date
 `2026-05-20` (`LIVEIMPORT-03`, rollback proof, production DB restore,
 production UI clickthrough, RC/SLO/sign-off, and final release evidence).
 Evidence:
-`docs/operations/v1-final-preflight-dd1a1faf-2026-05-20.md`,
-`docs/operations/_artifacts-v1-final-preflight-dd1a1faf-2026-05-20.json`,
-`docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20.md`,
-`docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20.json`, and
-`docs/planning/v1-protected-preflight-dd1a1faf-2026-05-20-task.md`.
+`history/releases/v1-final-preflight-dd1a1faf-2026-05-20.md`,
+`history/artifacts/_artifacts-v1-final-preflight-dd1a1faf-2026-05-20.json`,
+`history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-20.md`,
+`history/artifacts/v1-protected-input-readiness-dd1a1faf-2026-05-20.json`, and
+`history/tasks/v1-protected-preflight-dd1a1faf-2026-05-20-task.md`.
 Current no-secret operator handoff:
-`docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.md`,
-`docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json`, and
-`docs/planning/v1-operator-unblock-packet-dd1a1faf-2026-05-20-task.md`.
+`history/releases/v1-operator-unblock-packet-dd1a1faf-2026-05-20.md`,
+`history/artifacts/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json`, and
+`history/releases/v1-operator-unblock-packet-dd1a1faf-2026-05-20-task.md`.
 The handoff is now machine-checkable:
-`corepack pnpm run ops:operator-unblock:check -- --packet docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json --expected-sha dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`.
+`corepack pnpm run ops:operator-unblock:check -- --packet history/artifacts/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json --expected-sha dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`.
 It is also part of reusable audit closure: `audit:manifest:verify` now runs
 `ops:operator-unblock:check:test` and the current operator packet check, and
 the tooling index records `OPS-OPERATOR-UNBLOCK-CHECK` /
 `OPS-OPERATOR-UNBLOCK-CHECK-TEST`.
 Focused regression evidence:
-`docs/planning/v1-operator-unblock-packet-check-command-2026-05-20-task.md`
+`history/releases/v1-operator-unblock-packet-check-command-2026-05-20-task.md`
 and
-`docs/planning/v1-operator-unblock-tooling-index-sync-2026-05-20-task.md`.
+`history/releases/v1-operator-unblock-tooling-index-sync-2026-05-20-task.md`.
 Next exact executable protected step: provide approved
 `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_UI_AUDIT_*`,
 production DB/Coolify restore context, Gate 2/SLO context, and Gate 4 approver
 fields, then execute the current 2026-05-20 operator unblock packet. Public
 smoke/build-info must not be substituted for protected release proof.
 Parallel agent blocker sweep:
-`docs/planning/v1-agent-blocker-sweep-dd1a1faf-2026-05-20-task.md` confirms
+`history/tasks/v1-agent-blocker-sweep-dd1a1faf-2026-05-20-task.md` confirms
 both independent lanes agree there is no meaningful non-secret deployment task
 left. The rerun protected-input sweep still reports `0` matching protected
 input names in
-`docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20-rerun.md`.
+`history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-20-rerun.md`.
 Latest manual heartbeat setup:
 `v1-protected-release-unblock-check` now checks this thread every 30 minutes.
 The latest sweep still reports `0` matching protected input names in
-`docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-20-latest.md`;
+`history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-20-latest.md`;
 production build-info still reports deployed `dd1a1faf` on `main`, and
 `ops:operator-unblock:check` passes.
 
@@ -486,9 +545,9 @@ continuation state with the final rollup and fresh generated audit evidence.
 `AUD-02` is current for source-of-truth alignment after follow-up; production
 boundary requirements remain partial only where fresh production proof was
 intentionally excluded. Evidence:
-`docs/operations/requirements-delivery-map-audit-2026-05-19.md`,
-`docs/operations/project-index-2026-05-19.md`, and
-`docs/operations/v1-static-issue-scan-2026-05-19.md`.
+`history/audits/requirements-delivery-map-audit-2026-05-19.md`,
+`history/plans/project-index-2026-05-19.md`, and
+`history/audits/v1-static-issue-scan-2026-05-19.md`.
 Next exact source-of-truth follow-up: recheck `AUD-02` on the next broad audit
 and keep production-boundary rows partial unless fresh production proof exists.
 
@@ -497,27 +556,27 @@ Latest full reusable audit rollup:
 `AUD-23` rollup. It separates current local evidence, historical production
 evidence, deferred mobile scope, and explicit forbidden production/LIVE/exchange
 mutation boundaries.
-Evidence: `docs/operations/full-reusable-audit-rollup-2026-05-19.md`.
+Evidence: `history/audits/full-reusable-audit-rollup-2026-05-19.md`.
 Next audit repair queue: `AUD-19` fresh production release gate before any new
 production readiness claim; future hot-path assistant orchestration requires a
 separate AI/security implementation and red-team proof; future Gate.io
 production/live claims require exact operation proof.
 Resolved audit decisions are recorded in
-`docs/operations/audit-decision-packet-2026-05-19.md`: `DEC-AUD-001`
+`history/audits/audit-decision-packet-2026-05-19.md`: `DEC-AUD-001`
 accepts Binance + Gate.io implementation scope, and `DEC-AUD-002` accepts
 assistant foundation/dry-run current scope.
 Option-specific post-decision repair playbooks are prepared in
-`docs/operations/audit-decision-repair-playbooks-2026-05-19.md`.
+`history/audits/audit-decision-repair-playbooks-2026-05-19.md`.
 Resume packet for the full audit mission:
-`docs/operations/full-reusable-audit-handoff-2026-05-19.md`.
+`history/audits/full-reusable-audit-handoff-2026-05-19.md`.
 
 Latest i18n/copy reachability audit:
 `I18N-COPY-REACHABILITY-AUDIT-2026-05-19` is verified as the latest `AUD-22`
 evidence. Route-reachable i18n audit passed with findings `0`, localCopy `0`,
 fallbackPl `0`, and hardcoded `0`. Focused Web i18n pack passed (`8` files /
 `26` tests). Evidence:
-`docs/operations/i18n-copy-reachability-audit-2026-05-19.md` and
-`docs/planning/i18n-copy-reachability-audit-2026-05-19-task.md`.
+`history/audits/i18n-copy-reachability-audit-2026-05-19.md` and
+`history/audits/i18n-copy-reachability-audit-2026-05-19-task.md`.
 Next i18n follow-up: rerun route-reachable i18n audit after route/copy changes.
 
 Latest mobile/cross-platform scope audit:
@@ -526,8 +585,8 @@ Latest mobile/cross-platform scope audit:
 package, README, and placeholder source files; mobile build/test scripts print
 deferred scaffold messages; mobile docs state no production mobile runtime and
 no independent mobile backend contracts. Evidence:
-`docs/operations/mobile-cross-platform-scope-audit-2026-05-19.md` and
-`docs/planning/mobile-cross-platform-scope-audit-2026-05-19-task.md`.
+`history/audits/mobile-cross-platform-scope-audit-2026-05-19.md` and
+`history/audits/mobile-cross-platform-scope-audit-2026-05-19-task.md`.
 Next mobile follow-up: before mobile activation, create module docs and replace
 scaffold echoes with real Expo/native build/test validation.
 
@@ -536,26 +595,26 @@ Latest operations/release/deployment audit:
 local `AUD-19` evidence. Typecheck, lint, build, go-live smoke, and local DB
 backup/restore check passed. Go-live smoke covered API (`4` files / `45`
 tests) and Web (`3` files / `18` tests). Evidence:
-`docs/operations/operations-release-deployment-audit-2026-05-19.md` and
-`docs/planning/operations-release-deployment-audit-2026-05-19-task.md`.
+`history/audits/operations-release-deployment-audit-2026-05-19.md` and
+`history/audits/operations-release-deployment-audit-2026-05-19-task.md`.
 Post-push readback for pushed audit commit `36ff999d` found production
 build-info still on `1586f59261cef94d7c513d71bbfcfb697d11ca59` (`gitRef:
 main`) while public API/Web smoke passed for the deployed service. Evidence:
-`docs/operations/post-push-build-info-readback-36ff999d-2026-05-19.md` and
-`docs/planning/post-push-build-info-readback-36ff999d-2026-05-19-task.md`.
+`history/evidence/post-push-build-info-readback-36ff999d-2026-05-19.md` and
+`history/evidence/post-push-build-info-readback-36ff999d-2026-05-19-task.md`.
 Follow-up confirmed production tracks `main`; `origin/main` was fast-forwarded
 to `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`, production build-info reached
 that SHA on attempt `8`, and public API/Web smoke passed. Evidence:
-`docs/operations/main-promotion-build-info-dd1a1faf-2026-05-19.md` and
-`docs/planning/main-promotion-build-info-dd1a1faf-2026-05-19-task.md`.
+`history/evidence/main-promotion-build-info-dd1a1faf-2026-05-19.md` and
+`history/evidence/main-promotion-build-info-dd1a1faf-2026-05-19-task.md`.
 Next operations follow-up: rerun full protected release-gate evidence
 (protected runtime, rollback, backup/restore, sign-off, and any approved
 protected journeys) before any full production readiness claim.
 No-auth protected preflight for `dd1a1faf` passed build-info and public smoke,
 then blocked as expected on missing protected production inputs and stale
 2026-05-14 protected evidence. Evidence:
-`docs/operations/v1-final-preflight-dd1a1faf-2026-05-19-noauth.md` and
-`docs/planning/protected-preflight-dd1a1faf-2026-05-19-task.md`.
+`history/releases/v1-final-preflight-dd1a1faf-2026-05-19-noauth.md` and
+`history/tasks/protected-preflight-dd1a1faf-2026-05-19-task.md`.
 Next exact protected follow-up: provide approved liveimport auth, rollback
 guard auth, dashboard/admin UI auth, and production DB/Coolify restore context,
 then rerun protected runtime, rollback, backup/restore, sign-off, liveimport,
@@ -564,23 +623,23 @@ Dated no-secret RC packet for `dd1a1faf` now records Gate 1 `PASS`, Gate 2
 `OPEN`, Gate 3 `PASS`, and Gate 4 `OPEN`; strict RC evidence check fails as
 expected on missing Gate 2 PASS and missing Gate 4 approver/owner fields.
 Evidence:
-`docs/operations/v1-rc-external-gates-status-dd1a1faf-2026-05-19-blocked.md`,
-`docs/operations/v1-rc-signoff-record-dd1a1faf-2026-05-19-blocked.md`, and
-`docs/planning/rc-evidence-blocked-dd1a1faf-2026-05-19-task.md`.
+`history/releases/v1-rc-external-gates-status-dd1a1faf-2026-05-19-blocked.md`,
+`history/releases/v1-rc-signoff-record-dd1a1faf-2026-05-19-blocked.md`, and
+`history/releases/rc-evidence-blocked-dd1a1faf-2026-05-19-task.md`.
 Next RC follow-up: collect approved production SLO/Gate2 evidence and provide
 named sign-off/owner fields before rebuilding RC status, sign-off, and
 checklist as `APPROVED`.
 Current no-secret operator handoff for that follow-up:
-`docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.md` and
-`docs/operations/v1-operator-unblock-packet-dd1a1faf-2026-05-19.json`.
+`history/releases/v1-operator-unblock-packet-dd1a1faf-2026-05-19.md` and
+`history/artifacts/v1-operator-unblock-packet-dd1a1faf-2026-05-19.json`.
 Current protected-input readiness sweep:
-`docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.md` and
-`docs/operations/v1-protected-input-readiness-dd1a1faf-2026-05-19.json`
+`history/evidence/v1-protected-input-readiness-dd1a1faf-2026-05-19.md` and
+`history/artifacts/v1-protected-input-readiness-dd1a1faf-2026-05-19.json`
 report `0` matching protected input names in this shell.
 Reusable command for future sweeps:
 `corepack pnpm run ops:protected-inputs:check -- --today <yyyy-mm-dd> --expected-sha <sha> --json-output <path> --markdown-output <path>`.
 Current machine-readable remediation plan:
-`docs/operations/audit-remediation-master-plan-2026-05-19.json` is verified by
+`history/artifacts/audit-remediation-master-plan-2026-05-19.json` is verified by
 `corepack pnpm run audit:remediation-plan:check`; it keeps phases `P0..P6`,
 work packages `WP-01..WP-08`, the `AUD-19` blocker, closure checks, and safety
 boundaries checkable during future reruns. Follow-up hardening now also checks
@@ -667,8 +726,8 @@ backtests (`1` file / `15` tests), and runtime repository behavior (`1` file /
 `2` tests). Follow-up `corepack pnpm run audit:data:db-isolated` passed and
 now provides the canonical sequential reset-and-run path for these
 representative DB-backed packs. Evidence:
-`docs/operations/data-model-migrations-audit-2026-05-19.md` and
-`docs/planning/data-model-migrations-audit-2026-05-19-task.md`.
+`history/audits/data-model-migrations-audit-2026-05-19.md` and
+`history/audits/data-model-migrations-audit-2026-05-19-task.md`.
 Next data follow-up: use `audit:data:db-isolated` after route/data changes;
 refresh production migration status and backup/restore evidence under `AUD-19`
 before future deploys.
@@ -682,8 +741,8 @@ diagnostics, market-stream source config, subscriptions, fanout and routes,
 exchange polling, Binance stream parsing, queue tuning, backtest job
 persistence, execution orchestration, and PAPER runtime-flow telemetry.
 Expected stderr appeared only in the intentional Redis-startup retry test.
-Evidence: `docs/operations/workers-runtime-operations-audit-2026-05-19.md` and
-`docs/planning/workers-runtime-operations-audit-2026-05-19-task.md`.
+Evidence: `history/audits/workers-runtime-operations-audit-2026-05-19.md` and
+`history/audits/workers-runtime-operations-audit-2026-05-19-task.md`.
 Next workers follow-up: refresh production-safe protected worker/process proof
 after future deploys or worker topology changes; keep Gate.io/second-LIVE
 production runtime shape outside current claims until explicitly planned.
@@ -696,8 +755,8 @@ passed (`5` files / `25` tests). Coverage includes admin-only access, user
 listing with subscription metadata, role/plan updates, self-demotion
 prevention, plan/entitlement validation, profile subscription readback, bot
 limit and LIVE trading gates, and Web admin/profile subscription states.
-Evidence: `docs/operations/admin-subscriptions-entitlements-audit-2026-05-19.md`
-and `docs/planning/admin-subscriptions-entitlements-audit-2026-05-19-task.md`.
+Evidence: `history/audits/admin-subscriptions-entitlements-audit-2026-05-19.md`
+and `history/audits/admin-subscriptions-entitlements-audit-2026-05-19-task.md`.
 Next admin/subscription follow-up: refresh production-safe protected admin
 route proof after future deploys; keep production entitlement mutation excluded
 until an explicit safe admin-ops plan exists; track checkout provider e2e,
@@ -710,8 +769,8 @@ DB-backed API logs/pagination tests passed (`2` files / `5` tests). Coverage
 includes authenticated reads, owner scoping, source/actor/severity filters,
 pagination defaults/bounds, action-produced event visibility, metadata trace
 text rendering, and Web logs route states. Evidence:
-`docs/operations/logs-audit-trail-audit-2026-05-19.md` and
-`docs/planning/logs-audit-trail-audit-2026-05-19-task.md`.
+`history/audits/logs-audit-trail-audit-2026-05-19.md` and
+`history/audits/logs-audit-trail-audit-2026-05-19-task.md`.
 Next logs follow-up: refresh production-safe action-produced audit readback
 after future deploys; track total-count envelope, pagination controls, saved
 filters, index tuning, and wallet command audit-event write coverage.
@@ -724,8 +783,8 @@ tests). Coverage includes run lifecycle, ownership, explicit range validation,
 queue/job/replay, fill model, data gateway, runtime-kernel parity, immutable
 snapshot behavior, pending/degraded report lifecycle, trades/report/timeline
 reads, cross-mode aggregation, and Web route/detail/report states. Evidence:
-`docs/operations/backtests-reports-audit-2026-05-19.md` and
-`docs/planning/backtests-reports-audit-2026-05-19-task.md`.
+`history/audits/backtests-reports-audit-2026-05-19.md` and
+`history/audits/backtests-reports-audit-2026-05-19-task.md`.
 Next backtests/reports follow-up: refresh production-safe disposable fixture
 proof after future deploys; keep non-Binance historical order-book parity and
 richer report filters/snapshots/i18n as future scope.
@@ -738,8 +797,8 @@ Latest markets/strategies configuration audit:
 market and strategy CRUD, ownership, active-bot guards, strategy import/export/
 config validation, inactive-bot edit allowance, active-bot lock UI, and
 indicator registry/presentation parity. Evidence:
-`docs/operations/markets-strategies-configuration-audit-2026-05-19.md` and
-`docs/planning/markets-strategies-configuration-audit-2026-05-19-task.md`.
+`history/audits/markets-strategies-configuration-audit-2026-05-19.md` and
+`history/audits/markets-strategies-configuration-audit-2026-05-19-task.md`.
 Next markets/strategies follow-up: refresh production-safe disposable fixture
 proof after future deploys; track catalog freshness telemetry, typed strategy
 domain errors, and Web strategy i18n/dirty-state follow-ups.
@@ -752,8 +811,8 @@ Coverage includes wallet CRUD, ownership, PAPER/LIVE validation, API-key
 binding, balance preview, active-bot edit/delete/reset guards, paper reset
 checkpoint, wallet-first bot contract, runtime capital source truth,
 cashflow/equity ledger states, and partial/unavailable ledger UI. Evidence:
-`docs/operations/wallets-capital-ledger-audit-2026-05-19.md` and
-`docs/planning/wallets-capital-ledger-audit-2026-05-19-task.md`.
+`history/audits/wallets-capital-ledger-audit-2026-05-19.md` and
+`history/audits/wallets-capital-ledger-audit-2026-05-19-task.md`.
 Next wallet follow-up: refresh production-safe disposable wallet proof after
 future deploys, keep LIVE exchange mutation excluded until an explicit safe
 plan exists, and track wallet command audit-log events under `AUD-17`.
@@ -766,8 +825,8 @@ tests). Coverage includes list/read ownership, live-status, exchange snapshot
 selection/normalization/fail-closed behavior, takeover/rebind, orphan repair,
 imported history hydration, reconciliation diagnostics, runtime position
 derivations, and close-state UI. Evidence:
-`docs/operations/positions-reconciliation-audit-2026-05-19.md` and
-`docs/planning/positions-reconciliation-audit-2026-05-19-task.md`.
+`history/audits/positions-reconciliation-audit-2026-05-19.md` and
+`history/audits/positions-reconciliation-audit-2026-05-19-task.md`.
 Next positions follow-up: refresh production-safe PAPER proof after future
 deploys and keep LIVE position mutation excluded until an explicit safe plan
 exists.
@@ -780,8 +839,8 @@ Coverage includes manual-order context and selected-bot scope, PAPER lifecycle,
 ownership isolation, active-only filtering, fills, fees, exchange events,
 fail-closed exchange-backed cancel boundary, LIVE risk guards,
 quantity/position scope, and Dashboard Home manual/open-order action states.
-Evidence: `docs/operations/orders-manual-trading-audit-2026-05-19.md` and
-`docs/planning/orders-manual-trading-audit-2026-05-19-task.md`.
+Evidence: `history/audits/orders-manual-trading-audit-2026-05-19.md` and
+`history/audits/orders-manual-trading-audit-2026-05-19-task.md`.
 Next orders follow-up: refresh production-safe PAPER proof after future deploys
 and keep LIVE order/cancel/close mutation excluded until an explicit safe plan
 exists.
@@ -794,8 +853,8 @@ Coverage includes deterministic signal merge, final-candle flow, signal loop,
 pre-trade/risk, execution orchestration, dedupe, exchange order guard,
 PAPER/LIVE parity, market-data gateway, position automation, PAPER runtime
 lifecycle, and owned imported-position execution. Evidence:
-`docs/operations/engine-trading-decision-flow-audit-2026-05-19.md` and
-`docs/planning/engine-trading-decision-flow-audit-2026-05-19-task.md`.
+`history/audits/engine-trading-decision-flow-audit-2026-05-19.md` and
+`history/audits/engine-trading-decision-flow-audit-2026-05-19-task.md`.
 Next engine follow-up: keep LIVE/exchange-side mutation excluded until an
 explicit safe plan exists; keep assistant hot-path truth under `AUD-20`.
 
@@ -806,8 +865,8 @@ tests), and DB-backed API bot/runtime tests passed (`10` files / `88` tests).
 Coverage includes CRUD/ownership, wallet-first writes, duplicate and entitlement
 guards, selected-bot runtime scope, aggregate monitoring truth, runtime history
 parity, takeover visibility, LIVE/PAPER isolation, and delete cleanup.
-Evidence: `docs/operations/bots-runtime-truth-audit-2026-05-19.md` and
-`docs/planning/bots-runtime-truth-audit-2026-05-19-task.md`.
+Evidence: `history/audits/bots-runtime-truth-audit-2026-05-19.md` and
+`history/audits/bots-runtime-truth-audit-2026-05-19-task.md`.
 Next bot/runtime follow-up: refresh production-safe proof after future deploys;
 keep assistant hot-path truth under `AUD-20`.
 
@@ -818,8 +877,8 @@ evidence. Local focused auth/middleware/header API tests passed (`9` files /
 files / `47` tests), focused Web auth/profile/API-key tests passed (`7` files
 / `28` tests), and the public auth cache contract passed (`1` file / `2`
 tests). Evidence:
-`docs/operations/security-privacy-audit-2026-05-19.md` and
-`docs/planning/security-privacy-audit-2026-05-19-task.md`.
+`history/audits/security-privacy-audit-2026-05-19.md` and
+`history/audits/security-privacy-audit-2026-05-19-task.md`.
 Next security follow-up: refresh production-safe proof after future deploys and
 schedule external independent security review before broader public launch.
 
@@ -828,8 +887,8 @@ Latest architecture exchange-scope wording audit:
 `AUD-01`/`AUD-ARCH-001` evidence. `DEC-AUD-001` accepted Binance + Gate.io as
 current implementation scope, not Binance-only, while production/live readiness
 remains evidence-bound by exact exchange, market type, and operation. Evidence:
-`docs/operations/architecture-exchange-scope-wording-audit-2026-05-19.md` and
-`docs/planning/architecture-exchange-scope-wording-audit-2026-05-19-task.md`.
+`history/audits/architecture-exchange-scope-wording-audit-2026-05-19.md` and
+`history/audits/architecture-exchange-scope-wording-audit-2026-05-19-task.md`.
 Next exchange follow-up: prove any Gate.io production/live readiness claim by
 exact exchange, market type, and operation before promoting it.
 
@@ -841,8 +900,8 @@ contract tests passed with exact `(exchange, marketType, operation)` support,
 and API typecheck passed after updating exchange boundary, wallet preview, and
 positions snapshot consumers. Web exchange capability tests passed (`2` files
 / `3` tests). Evidence:
-`docs/operations/exchange-capability-truth-audit-2026-05-19.md` and
-`docs/planning/exchange-capability-truth-audit-2026-05-19-task.md`.
+`history/audits/exchange-capability-truth-audit-2026-05-19.md` and
+`history/audits/exchange-capability-truth-audit-2026-05-19-task.md`.
 Next exchange follow-up: keep future exchange additions on the exact capability
 contract and neutral exchange-owned type aliases. `AUD-EXCH-007` is closed by
 `AUD09-NEUTRAL-EXCHANGE-TYPE-ALIASES-2026-05-19`.
@@ -855,8 +914,8 @@ tests passed (`2` files / `3` tests), and bot assistant config/dry-run e2e
 passed after local Postgres/Redis startup (`1` file / `3` tests). `DEC-AUD-002`
 accepted this as current foundation/dry-run scope and deferred
 BACKTEST/PAPER/LIVE hot-path assistant orchestration. Evidence:
-`docs/operations/ai-assistant-runtime-truth-audit-2026-05-19.md` and
-`docs/planning/ai-assistant-runtime-truth-audit-2026-05-19-task.md`.
+`history/audits/ai-assistant-runtime-truth-audit-2026-05-19.md` and
+`history/audits/ai-assistant-runtime-truth-audit-2026-05-19-task.md`.
 Next assistant follow-up: before any runtime AI trading claim, implement
 hot-path orchestration separately with persisted trace, fail-closed integration,
 and AI red-team evidence.
@@ -867,8 +926,8 @@ gap closure. Command: `pnpm run docs:parity:endpoints:api`. Current result:
 `109` Express endpoints, `109` documented route mentions, `0` gaps. Existing module-level
 `pnpm run docs:parity:check` still passes (`API 22/22`, `Web 16/16`, Routes
 `38/38`). Evidence:
-`docs/operations/api-endpoint-docs-parity-2026-05-19/api-endpoint-docs-parity-2026-05-19.md`
-and `docs/planning/api-endpoint-docs-parity-audit-2026-05-19-task.md`.
+`history/audits/api-endpoint-docs-parity-2026-05-19/api-endpoint-docs-parity-2026-05-19.md`
+and `history/audits/api-endpoint-docs-parity-audit-2026-05-19-task.md`.
 Next documentation improvement: rerun endpoint parity after API route or module
 docs changes.
 
@@ -878,9 +937,9 @@ were started against seeded admin data, Browser login reached `/dashboard`,
 and route-state proof passed for canonical public/auth/dashboard/admin plus
 legacy routes. Result: `53` route checks, `53` PASS, `0` CHECK, `0` console
 warning/error routes, and `6` screenshots. Evidence:
-`docs/analysis/audit-baseline-2026-05-19.md`,
-`docs/operations/route-state-audit-2026-05-19/route-state-audit-2026-05-19.md`,
-and `docs/planning/authenticated-route-state-audit-2026-05-19-task.md`.
+`history/audits/audit-baseline-2026-05-19.md`,
+`history/audits/route-state-audit-2026-05-19/route-state-audit-2026-05-19.md`,
+and `history/audits/authenticated-route-state-audit-2026-05-19-task.md`.
 Next audit improvement is deeper keyboard/focus/a11y assertions if needed.
 
 Latest full layered audit run:
@@ -893,8 +952,8 @@ PASS (`0` findings), focused API layer packs PASS, full API Vitest PASS after
 local Postgres/Redis were available, go-live smoke PASS (API `45/45`, Web
 `18/18`), and representative Browser route-state proof for `/`, `/auth/login`,
 and unauthenticated `/dashboard` redirect on desktop/mobile with `0` console
-warnings/errors. Evidence: `docs/analysis/audit-baseline-2026-05-18.md` and
-`docs/planning/full-layered-audit-run-2026-05-18-task.md`.
+warnings/errors. Evidence: `history/audits/audit-baseline-2026-05-18.md` and
+`history/audits/full-layered-audit-run-2026-05-18-task.md`.
 Next audit improvement is deeper authenticated browser/screenshot/a11y proof
 where needed. Keep DB-backed API packs sequential unless isolated database
 state is introduced.
@@ -908,8 +967,8 @@ markets/strategies, backtests/reports, logs, admin/subscriptions, operations,
 AI assistant, mobile, i18n, and documentation/traceability. Today-run baseline:
 project index PASS (`PASS:21`, tests indexed `335`) and static scan PASS
 (`0` findings). Evidence: `docs/analysis/reusable-audit-registry.md`,
-`docs/analysis/audit-baseline-2026-05-18.md`, and
-`docs/planning/reusable-audit-registry-2026-05-18-task.md`.
+`history/audits/audit-baseline-2026-05-18.md`, and
+`history/audits/reusable-audit-registry-2026-05-18-task.md`.
 Validation added to the baseline: guardrails PASS, docs parity PASS, typecheck
 PASS, lint PASS, and build PASS. Browser route-state, full API/Web test suite,
 production proofs, and LIVE/exchange-side mutation were not run in this
@@ -924,8 +983,8 @@ exchange scope overview/domain wording (`AUD-ARCH-001`), then keep endpoint
 parity automation green (`AUD-TRACE-006`). `AUD-EXCH-002` was repaired on
 2026-05-19 by exact `(exchange, marketType, operation)` capability support.
 Evidence:
-`docs/analysis/architecture-code-discrepancy-audit-2026-05-17.md` and
-`docs/planning/project-architecture-code-discrepancy-audit-2026-05-17-task.md`.
+`history/audits/architecture-code-discrepancy-audit-2026-05-17.md` and
+`history/audits/project-architecture-code-discrepancy-audit-2026-05-17-task.md`.
 
 Latest full-project audit baseline:
 `PROJECT-FULL-SCAN-BASELINE-2026-05-14` is verified. The audit thread
@@ -934,9 +993,9 @@ local validation. Results: V1 matrix `PASS:21`, static findings `0`, tests
 indexed `335`, guardrails PASS, typecheck PASS, lint PASS, full Web Vitest
 PASS (`149` files / `514` tests), full API Vitest PASS, build PASS, and
 go-live smoke PASS (API `45/45`, Web `18/18`). Evidence:
-`docs/planning/project-full-scan-baseline-2026-05-14-task.md`,
-`docs/operations/project-full-scan-index-2026-05-14.md`, and
-`docs/operations/project-full-static-scan-2026-05-14.md`.
+`history/audits/project-full-scan-baseline-2026-05-14-task.md`,
+`history/audits/project-full-scan-index-2026-05-14.md`, and
+`history/audits/project-full-static-scan-2026-05-14.md`.
 Next audit candidate: run manual/browser route-state coverage from the
 generated route map, prioritizing Dashboard Home, Bots, Wallets, Markets,
 Strategies, Backtests, Reports, Logs, Profile, Admin, and Auth states. Keep
@@ -946,7 +1005,7 @@ the user explicitly approves that proof lane.
 
 Latest complete-analysis expansion:
 `PROJECT-COMPLETE-ANALYSIS-INDEX-2026-05-14` is indexed in
-`docs/operations/project-complete-analysis-index-2026-05-14.md`. It expands
+`history/plans/project-complete-analysis-index-2026-05-14.md`. It expands
 the audit target beyond the V1 scorecard and classifies Web/API, mobile,
 assistant/AI, route-state, API endpoint, LIVE mutation, Gate.io/second-LIVE,
 and production-data mutation lanes. Key findings: no `.skip(` or `.only(`
@@ -966,7 +1025,7 @@ fails closed with `409` while owned backtest history references those records.
 Focused API e2e passed for backtests, strategies, and markets (`44/44`). No
 deploy, production mutation, LIVE order/cancel/close, or exchange-side mutation
 was performed. Evidence:
-`docs/planning/post-v1-strategy-snapshot-history-2026-05-14-task.md`.
+`history/tasks/post-v1-strategy-snapshot-history-2026-05-14-task.md`.
 
 Latest post-V1 inactive PAPER strategy edit proof:
 `POSTV1-INACTIVE-PAPER-STRATEGY-EDIT-PROOF-2026-05-14` is locally verified.
@@ -976,7 +1035,7 @@ targeted lock with bot-settings navigation. Focused validation passed: Web edit
 page `3/3`, Web strategies suite `14` files / `48` tests, and API strategies
 e2e `11/11`. No deploy, production mutation, LIVE order/cancel/close, or
 exchange-side mutation was performed. Evidence:
-`docs/planning/post-v1-inactive-paper-strategy-edit-proof-2026-05-14-task.md`.
+`history/evidence/post-v1-inactive-paper-strategy-edit-proof-2026-05-14-task.md`.
 
 Latest post-V1 crypto icon consistency:
 `POSTV1-CRYPTO-ICON-CONSISTENCY-2026-05-14` is locally verified. The resolver
@@ -987,7 +1046,7 @@ where common trading assets such as `TRX`, `LINK`, `ZEC`, `SAND`, and `MANA`
 resolve to curated icons instead of generic placeholders. No deploy,
 production mutation, LIVE order/cancel/close, or exchange-side mutation was
 performed. Evidence:
-`docs/planning/post-v1-crypto-icon-consistency-2026-05-14-task.md`.
+`history/tasks/post-v1-crypto-icon-consistency-2026-05-14-task.md`.
 
 Latest post-V1 ledger reconciliation:
 `V1-POST-V1-LEDGER-RECONCILIATION-2026-05-14` is verified. Stale module
@@ -999,7 +1058,7 @@ production fixture/UI proof artifacts. Current module-confidence count is
 reconciliation did not perform a deploy, production mutation, LIVE order/cancel/
 close, unsafe LIVE position mutation, existing-data mutation, or broader
 Gate.io/second-LIVE proof. Evidence:
-`docs/planning/v1-post-v1-ledger-reconciliation-2026-05-14-task.md`.
+`history/audits/v1-post-v1-ledger-reconciliation-2026-05-14-task.md`.
 
 Latest post-V1 wallet/bot cleanup hardening:
 `V1-POST-V1-WALLET-BOT-CLEANUP-HARDENING-2026-05-14` is locally verified. Bot
@@ -1011,10 +1070,10 @@ typecheck PASS, Bots delete cleanup e2e `1/1` PASS, Bots e2e `26/26` PASS,
 Wallets e2e `24/24` PASS, build PASS. The fix is deployed as
 `1586f59261cef94d7c513d71bbfcfb697d11ca59`; build-info wait passed on attempt
 22, and public deploy smoke passed. Evidence:
-`docs/planning/v1-post-v1-wallet-bot-cleanup-hardening-2026-05-14-task.md`.
+`history/tasks/v1-post-v1-wallet-bot-cleanup-hardening-2026-05-14-task.md`.
 
 Post-V1 operator feedback follow-up queue is indexed in
-`docs/planning/post-v1-bot-wallet-dashboard-cleanup-2026-05-14-task.md`.
+`history/tasks/post-v1-bot-wallet-dashboard-cleanup-2026-05-14-task.md`.
 Next runnable candidates: Dashboard truth/layout/loading polish, Analytics
 Reports/Logs UX, Strategy Builder preview charts, bot history/versioned bot
 context, per-symbol best-parameter comparison, and
@@ -1035,8 +1094,8 @@ order submit/cancel/position close, exchange-side mutation, existing-data
 mutation, and broader 2x LIVE including Gate.io production proof were
 intentionally not performed. The stale `PARTIAL:7` module-confidence wording in
 that audit is superseded by the ledger reconciliation above. Evidence:
-`docs/planning/v1-100-percent-truth-audit-2026-05-14-task.md` and
-`docs/operations/v1-100-percent-truth-audit-2026-05-14.md`.
+`history/audits/v1-100-percent-truth-audit-2026-05-14-task.md` and
+`history/audits/v1-100-percent-truth-audit-2026-05-14.md`.
 
 Latest post-V1 Dashboard/Runtime ledger closure:
 `V1-POST-V1-DASHBOARD-RUNTIME-LEDGER-CLOSURE-2026-05-14` is verified. Existing
@@ -1046,7 +1105,7 @@ scope. `RISK-002` and `RISK-003` are closed. Its original count readback is
 superseded by the later ledger reconciliation: current module confidence is
 `VERIFIED:22` and `PARTIAL:0`; current risk count is `closed:18` and
 `mitigating:8`. Gate.io/second-LIVE production shape remains separate. Evidence:
-`docs/planning/v1-post-v1-dashboard-runtime-ledger-closure-2026-05-14-task.md`.
+`history/audits/v1-post-v1-dashboard-runtime-ledger-closure-2026-05-14-task.md`.
 
 Latest post-V1 release-confidence row closure:
 `V1-POST-V1-RELEASE-CONFIDENCE-ROW-CLOSURE-2026-05-14` is verified. The stale
@@ -1056,7 +1115,7 @@ This removed the last `IMPLEMENTED_NOT_VERIFIED` module-confidence row without
 promoting unrelated `PARTIAL` rows. Superseded by later Dashboard/Runtime and
 ledger reconciliation tasks: current counts are `PARTIAL:0` and `VERIFIED:22`.
 Evidence:
-`docs/planning/v1-post-v1-release-confidence-row-closure-2026-05-14-task.md`.
+`history/tasks/v1-post-v1-release-confidence-row-closure-2026-05-14-task.md`.
 
 Latest post-V1 Auth hardening:
 `V1-POST-V1-AUTH-DEPLOY-RERUN-2026-05-14` is verified. Production proof on
@@ -1064,8 +1123,8 @@ deployed `2fc90a08` first found direct reuse of the pre-logout JWT still
 returned `/auth/me` `200`; the fixed build `84711599` was deployed and the
 rerun passed with stale-token `/auth/me` returning `401`. `SOAR-AUTH-001` is
 now `VERIFIED`, and `RISK-004` is `closed`. Evidence:
-`docs/planning/v1-post-v1-auth-deploy-rerun-2026-05-14-task.md` and
-`docs/operations/prod-auth-session-browser-proof-84711599-2026-05-14.md`.
+`history/tasks/v1-post-v1-auth-deploy-rerun-2026-05-14-task.md` and
+`history/evidence/prod-auth-session-browser-proof-84711599-2026-05-14.md`.
 
 Current continuation target:
 No active V1 completion task remains in the generated work order. The final
@@ -1074,19 +1133,19 @@ tracked V1 evidence snapshot is `GO` with all `21` product-action rows at
 post-V1 polish or freshness reruns unless a new failing signal appears.
 
 Latest completion scorecard:
-`docs/operations/v1-completion-scorecard-2026-05-14-final.md` is freshly
+`history/releases/v1-completion-scorecard-2026-05-14-final.md` is freshly
 regenerated after the UX/A11y/Mobile production proof. Current matrix counts
 are `PASS:21`, static findings `0`, implementation estimate `100%`, evidence
 coverage `100%`, release readiness `100%`, and status `GO`.
 
 Latest final handoff:
-`docs/operations/v1-final-handoff-packet-2026-05-14.md` is published and
+`history/audits/v1-final-handoff-packet-2026-05-14.md` is published and
 records current source of truth, evidence links, validations, residual risks,
 the LIVE mutation approval boundary, and resume instructions for future
 sessions.
 
 Latest final evidence inventory:
-`docs/operations/v1-final-evidence-inventory-2026-05-14.md` is published and
+`history/audits/v1-final-evidence-inventory-2026-05-14.md` is published and
 names the canonical V1 proof pack, the source-of-truth state files, the LIVE
 mutation boundary, and safe version-control guidance. It explicitly warns
 against blind staging of the large proof-artifact working tree.
@@ -1126,7 +1185,7 @@ guardrails, and production build: `pnpm run quality:guardrails` PASS,
 `pnpm run typecheck` PASS, full Web Vitest PASS (`149` files / `512` tests),
 full API Vitest PASS, `pnpm run lint` PASS, `pnpm run build` PASS, and
 `git diff --check` PASS with line-ending warnings only. Evidence:
-`docs/planning/v1-back-web-full-local-baseline-457bce05-2026-05-14-task.md`.
+`history/audits/v1-back-web-full-local-baseline-457bce05-2026-05-14-task.md`.
 Next exact task: no active V1 completion task; rerun freshness checks only if
 code changes, deployment changes, or a new failing signal appears.
 
@@ -1147,11 +1206,11 @@ clickthrough, LIVEIMPORT, public smoke, protected smoke, runtime freshness,
 rollback guard, local guardrails, typecheck, build, and go-live smoke are
 fresh/pass for 2026-05-14.
 Evidence:
-`docs/planning/v1-protected-ops-gate-457bce05-2026-05-14-task.md`,
-`docs/operations/v1-final-preflight-457bce05-2026-05-14-ready.md`,
-`docs/operations/v1-release-gate-prod-457bce05-2026-05-14-full-ready.md`,
-`docs/operations/liveimport-03-prod-readback-2026-05-14.json`, and
-`docs/operations/v1-rollback-proof-prod-2026-05-14T01-00-18-225Z.md`.
+`history/tasks/v1-protected-ops-gate-457bce05-2026-05-14-task.md`,
+`history/releases/v1-final-preflight-457bce05-2026-05-14-ready.md`,
+`history/releases/v1-release-gate-prod-457bce05-2026-05-14-full-ready.md`,
+`history/artifacts/liveimport-03-prod-readback-2026-05-14.json`, and
+`history/evidence/v1-rollback-proof-prod-2026-05-14T01-00-18-225Z.md`.
 Next exact task: keep the release regression loop green; do not reopen V1
 release readiness unless a new failing signal appears.
 
@@ -1234,11 +1293,11 @@ window, verified `LIVEIMPORT-03` for `TRXUSDT`, and collected a simultaneous
 read-only runtime snapshot where the Binance LIVE bot and both Binance PAPER
 bots were RUNNING. Post-cleanup readback confirmed the Binance LIVE bot was
 inactive again while both PAPER bots remained healthy. Evidence:
-`docs/planning/v1-live-paper-simultaneous-runtime-proof-refresh-457bce05-2026-05-14-task.md`,
-`docs/operations/liveimport-03-prod-readback-live-paper-457bce05-2026-05-14.json`,
-`docs/operations/prod-live-paper-simultaneous-runtime-readback-457bce05-2026-05-14.md`,
+`history/evidence/v1-live-paper-simultaneous-runtime-proof-refresh-457bce05-2026-05-14-task.md`,
+`history/artifacts/liveimport-03-prod-readback-live-paper-457bce05-2026-05-14.json`,
+`history/evidence/prod-live-paper-simultaneous-runtime-readback-457bce05-2026-05-14.md`,
 and
-`docs/operations/prod-live-paper-post-cleanup-readback-457bce05-2026-05-14.md`.
+`history/evidence/prod-live-paper-post-cleanup-readback-457bce05-2026-05-14.md`.
 Gate.io/second-LIVE production shape remains unavailable/deferred rather than
 hidden.
 
@@ -1256,8 +1315,8 @@ for deployed `2fc90a08`, and the CDP UX proof captured desktop Dashboard,
 Wallets, Bots, Profile, and mobile Dashboard screenshots with mobile menu,
 keyboard focus, no framework overlay, no horizontal overflow, and no production
 data mutation. Evidence:
-`docs/operations/prod-ui-module-clickthrough-2fc90a08-2026-05-14.md` and
-`docs/operations/prod-ux-a11y-mobile-proof-2fc90a08-2026-05-14.md`.
+`history/plans/prod-ui-module-clickthrough-2fc90a08-2026-05-14.md` and
+`history/evidence/prod-ux-a11y-mobile-proof-2fc90a08-2026-05-14.md`.
 
 Closed proof after V1 target gate:
 `V1-LIVE-PAPER-SIMULTANEOUS-RUNTIME-PROOF-00169D7F-2026-05-13` verified the
@@ -1387,7 +1446,7 @@ readiness.
 Latest operator packet current-day refresh:
 `V1-OPERATOR-PACKET-CURRENT-DAY-REFRESH-00169D7F-2026-05-13` published the
 current no-secret V1 operator unblock packet:
-`docs/operations/v1-operator-unblock-packet-00169d7f-2026-05-13.md`. The
+`history/releases/v1-operator-unblock-packet-00169d7f-2026-05-13.md`. The
 packet references the 2026-05-13 final preflight, protected input readiness,
 and production UI audit artifacts, and keeps V1 `NO-GO` until protected inputs
 and Gate 4 approval allow the final release gate to return `ready`.
@@ -1612,13 +1671,13 @@ without `--dry-run` and with local quality skipped. Build-info freshness
 passed for `00169d7fdc3aff8317759137b05594b20e773c8e`; public API `/health`,
 API `/ready`, and Web `/` passed inside deploy smoke; protected
 `/workers/health` returned `401`, so the gate stopped at `not_ready`.
-Evidence: `docs/operations/v1-release-gate-prod-2026-05-12Tnon-dry-run-blocked.md`.
+Evidence: `history/releases/v1-release-gate-prod-2026-05-12Tnon-dry-run-blocked.md`.
 Next exact unblock action remains the operator packet.
 
 Current operator unblock packet:
 `V1-OPERATOR-UNBLOCK-PACKET-00169D7F-2026-05-12` publishes the active no-secret
 handoff for deployed build-info `00169d7fdc3aff8317759137b05594b20e773c8e`:
-`docs/operations/v1-operator-unblock-packet-00169d7f-2026-05-12.md`. Next
+`history/releases/v1-operator-unblock-packet-00169d7f-2026-05-12.md`. Next
 exact unblock action: provide `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`,
 and `PROD_UI_AUDIT_*` auth, run the packet's `LIVEIMPORT-03`, rollback proof,
 and production UI clickthrough commands to PASS, provide real Gate 4
@@ -1684,7 +1743,7 @@ production/stage evidence and keeps V1 `NO-GO`. Production public no-worker
 smoke passed, public `build-info`/`/health`/`/ready` returned `200`, and VPS
 Docker inventory showed Soar API, Web, workers, Redis, and Postgres running.
 Stage public smoke failed with `503`. The production release gate report
-`docs/operations/v1-release-gate-prod-2026-05-12Tprod-readonly.md` is
+`history/releases/v1-release-gate-prod-2026-05-12Tprod-readonly.md` is
 `not_ready`: protected `/workers/health` returned `401` without approved
 app/operator auth, LIVEIMPORT-03 production readback is missing, RC external
 gates/checklist remain failed because Gate 4 is not approved, and activation,
@@ -2009,7 +2068,7 @@ proof or the next unverified P0 module.
 
 Latest V1 master state ledger:
 `V1-MASTER-STATE-LEDGER-2026-05-10` adds the consolidated state file for
-continuation: `docs/operations/v1-master-state-ledger-2026-05-10.md`. Before
+continuation: `history/audits/v1-master-state-ledger-2026-05-10.md`. Before
 the next broad repair or audit slice, refresh the source reports with
 `pnpm run ops:project:index`, `pnpm run ops:project:scan`, then
 `pnpm run ops:project:ledger`. Start from the ledger's `Next Work Order`.
@@ -2021,7 +2080,7 @@ still listed separately in the ledger.
 Latest project indexing baseline:
 `PROJECT-INDEXING-BASELINE-2026-05-10` adds `pnpm run ops:project:index`, a
 local no-network index generator for V1 continuation. Current generated index:
-`docs/operations/project-index-2026-05-10.md`. Before the next repair slice,
+`history/plans/project-index-2026-05-10.md`. Before the next repair slice,
 use the index to select one non-`PASS` V1 matrix row and map it to the matching
 API module, Web feature, route, worker, and focused tests. This index is not
 V1 approval evidence; it is the baseline for the next action audit.
@@ -2071,7 +2130,7 @@ smoke, or route reachability. Next executable task: run the Bots module action
 audit on safe fixture/local data, covering create/edit/delete, activation/
 deactivation, assistant config, market groups, strategy links, and error
 states; then update
-`docs/operations/v1-product-action-audit-matrix-2026-05-10.md` with PASS/FAIL
+`history/audits/v1-product-action-audit-matrix-2026-05-10.md` with PASS/FAIL
 evidence.
 
 Latest final V1 preflight:
@@ -2082,7 +2141,7 @@ evidence. V1 is still `BLOCKED`, not because of missing public deployment, but
 because protected/formal release evidence is incomplete: missing
 `LIVEIMPORT-03`, failed rollback proof, missing liveimport/rollback auth, and
 failed RC gates/sign-off/checklist. Evidence:
-`docs/operations/v1-final-preflight-1e11f8de-2026-05-10.md`.
+`history/releases/v1-final-preflight-1e11f8de-2026-05-10.md`.
 
 Latest deploy smoke tooling fix:
 `DEPLOY-SMOKE-SKIP-WORKERS-ALIAS-2026-05-10` makes
@@ -2090,7 +2149,7 @@ Latest deploy smoke tooling fix:
 This prevents false deploy-smoke failures on protected `/workers/health` when
 the intended check is public-only API/Web reachability. Default behavior still
 checks workers unless skipped explicitly. Evidence:
-`docs/planning/deploy-smoke-skip-workers-alias-task-2026-05-10.md`.
+`history/evidence/deploy-smoke-skip-workers-alias-task-2026-05-10.md`.
 
 Latest controlled LIVE proof runner:
 `CONTROLLED-LIVE-PROOF-RUNNER-2026-05-10` adds
@@ -2120,7 +2179,7 @@ Latest controlled LIVE proof preactivation:
 operator approval for LIVE activation. Preactivation `LIVEIMPORT-03` against
 `b1391526` confirmed one LIVE Binance Futures bot and expected
 `NO_RUNNING_SESSION`; artifact:
-`docs/operations/_artifacts-liveimport-readback-preactivation-b1391526-2026-05-10.json`.
+`history/artifacts/_artifacts-liveimport-readback-preactivation-b1391526-2026-05-10.json`.
 
 Latest LIVE runtime kill-switch config:
 `LIVE-RUNTIME-KILL-SWITCH-CONFIG-2026-05-10` adds an env-controlled no-order
@@ -2139,7 +2198,7 @@ production with Spot and Futures permissions true. `LIVEIMPORT-03` still
 returns `NO_RUNNING_SESSION`, so the next executable V1 step is a controlled
 LIVE runtime/session proof that avoids unintended order placement, then a
 rerun of `LIVEIMPORT-03`. Evidence:
-`docs/operations/prod-api-runtime-readiness-8cd5c1b3-2026-05-10.md`.
+`history/evidence/prod-api-runtime-readiness-8cd5c1b3-2026-05-10.md`.
 
 Latest Futures-only API-key acceptance:
 `FUTURES-ONLY-APIKEY-ACCEPTANCE-2026-05-10` closes the semantic gap where a
@@ -2167,7 +2226,7 @@ probe fails Futures readiness (`spot: true`, `futures: false`), and
 running runtime session. Next executable action is to remediate the Binance
 Futures API key, then rerun stored key test and `LIVEIMPORT-03` after a
 controlled runtime session exists. Evidence:
-`docs/operations/prod-api-runtime-readiness-f3cb9a24-2026-05-10.md`.
+`history/evidence/prod-api-runtime-readiness-f3cb9a24-2026-05-10.md`.
 
 Latest authenticated UI evidence:
 `PROD-UI-AUTH-CLICKTHROUGH-39A52703-2026-05-10` passed production UI
@@ -2177,7 +2236,7 @@ next V1 proof lanes are now narrower: `LIVEIMPORT-03` protected runtime
 readback, rollback proof PASS, authenticated Gate 2 SLO, RC approval/signoff/
 checklist, and optional deeper production action/form clickthrough that avoids
 live-money or destructive writes unless explicitly approved. Evidence:
-`docs/operations/prod-ui-module-clickthrough-39a52703-2026-05-10.md`.
+`history/plans/prod-ui-module-clickthrough-39a52703-2026-05-10.md`.
 
 Latest architecture cleanup:
 `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10` resolved the implementation boundary and
@@ -2189,8 +2248,8 @@ the protected/formal evidence lanes when inputs are available:
 `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_UI_AUDIT_*`,
 authenticated Gate 2 SLO, RC approvals, and final non-dry-run release gate.
 Evidence:
-`docs/planning/v1-architecture-boundary-cleanup-task-2026-05-10.md` and
-`docs/operations/v1-architecture-function-audit-2026-05-10.md`.
+`history/tasks/v1-architecture-boundary-cleanup-task-2026-05-10.md` and
+`history/audits/v1-architecture-function-audit-2026-05-10.md`.
 
 Latest architecture function audit:
 `V1-ARCH-FUNCTION-AUDIT-2026-05-10` originally found broad architecture
@@ -2198,7 +2257,7 @@ alignment but one local boundary mismatch and two Gate.io-era docs drifts.
 Those findings are now resolved by
 `V1-ARCH-BOUNDARY-CLEANUP-2026-05-10`; keep the audit as historical evidence,
 not as an open local implementation blocker. Evidence:
-`docs/operations/v1-architecture-function-audit-2026-05-10.md`.
+`history/audits/v1-architecture-function-audit-2026-05-10.md`.
 
 Latest function coverage audit:
 `V1-FUNCTION-COVERAGE-AUDIT-2026-05-10` confirms that broad V1 implementation
@@ -2208,7 +2267,7 @@ still `NO-GO` because the missing work is protected production proof and
 formal release approval: `LIVEIMPORT-03` protected readback, rollback proof
 PASS, authenticated/admin UI clickthrough, authenticated Gate 2 SLO, RC
 approval/sign-off/checklist, and final non-dry-run release gate. Evidence:
-`docs/operations/v1-function-coverage-audit-2026-05-10.md`.
+`history/audits/v1-function-coverage-audit-2026-05-10.md`.
 
 Latest final preflight:
 `V1-FINAL-PREFLIGHT-82205329-2026-05-10` refreshed the no-secret final
@@ -2219,7 +2278,7 @@ fresh, and backup/restore drill fresh. Remaining blockers are protected/formal:
 `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, RC external gates/sign-off/
 checklist, missing `LIVEIMPORT-03`, rollback proof PASS, and authenticated/
 admin UI proof. Evidence:
-`docs/operations/v1-final-preflight-82205329-2026-05-10.md`.
+`history/releases/v1-final-preflight-82205329-2026-05-10.md`.
 
 Latest production UI audit:
 `PROD-UI-PUBLIC-CLICKTHROUGH-88313309-2026-05-10` refreshed no-auth UI
@@ -2229,7 +2288,7 @@ admin, and legacy protected routes are `BLOCKED_AUTH` and redirect to
 `/auth/login`. Next executable UI work requires valid `PROD_UI_AUDIT_*`
 dashboard/admin auth and representative production data to perform the full
 authenticated/admin module clickthrough. Evidence:
-`docs/operations/prod-ui-module-clickthrough-88313309-2026-05-10.md`.
+`history/plans/prod-ui-module-clickthrough-88313309-2026-05-10.md`.
 
 Latest release-gate truth:
 `V1-CURRENT-RELEASE-GATE-DRY-RUN-2026-05-10` ran the production V1 release gate
@@ -2240,7 +2299,7 @@ backup/restore drill. Remaining blockers are `RC external gates failed`,
 `RC sign-off failed`, `RC checklist failed`, missing `LIVEIMPORT-03` runtime
 readback, rollback proof fresh but failed, and the need to run the final gate
 without `--dry-run` after protected inputs are present. Evidence:
-`docs/operations/v1-release-gate-prod-2026-05-10Tcurrent-buildinfo-dry-run.md`.
+`history/releases/v1-release-gate-prod-2026-05-10Tcurrent-buildinfo-dry-run.md`.
 
 Latest operator target rule:
 `V1-OPERATOR-RUNBOOK-DYNAMIC-SHA-2026-05-10` removes the need to re-sync static
@@ -2250,7 +2309,7 @@ as `$expectedSha`, unless an operator intentionally promotes one exact runtime
 candidate and compares it first. Next executable V1 work still requires
 operator-provided `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`,
 `PROD_UI_AUDIT_*`, authenticated Gate 2 SLO, and real RC approver inputs.
-Evidence: `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
+Evidence: `history/plans/v1-final-blocker-execution-pack-2026-05-07.md`.
 
 Latest Gate 2 evidence boundary:
 `V1-SLO-GATE2-NOAUTH-PROBE-2026-05-10` proves Gate 2 cannot be completed from
@@ -2259,7 +2318,7 @@ evidence only: protected workers/metrics/alerts returned `401`, queue/API/
 live-order metrics were `NO_DATA`, and `/ready` had a short transient that
 passed on follow-up public smoke. Next executable Gate 2 work requires an
 operator-authenticated 30-minute SLO collector run, then RC gate status refresh.
-Evidence: `docs/operations/v1-slo-gate2-noauth-probe-2026-05-10.md`.
+Evidence: `history/evidence/v1-slo-gate2-noauth-probe-2026-05-10.md`.
 
 Latest operator runbook target:
 `V1-OPERATOR-RUNBOOK-CURRENT-SHA-SYNC-2026-05-10` updated the final blocker
@@ -2270,8 +2329,8 @@ requires operator-provided `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`,
 commit has already deployed, first verify the currently observed build-info SHA
 and use that as `$expectedSha`; do not treat docs-only deploy freshness as
 protected runtime proof. Evidence:
-`docs/operations/v1-final-blocker-execution-pack-2026-05-07.md` and
-`docs/operations/v1-operator-unblock-checklist-2026-05-10.md`.
+`history/plans/v1-final-blocker-execution-pack-2026-05-07.md` and
+`history/releases/v1-operator-unblock-checklist-2026-05-10.md`.
 
 Latest V1 coverage confidence audit:
 `V1-COVERAGE-CONFIDENCE-AUDIT-2026-05-10` confirms the project should not be
@@ -2283,9 +2342,9 @@ rollback guard auth/proof, failed RC evidence/sign-off/checklist, and missing
 and dashboard/admin/legacy routes `BLOCKED_AUTH`. Next executable work requires
 operator-provided `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`,
 `PROD_UI_AUDIT_*`, and real RC approver/gate inputs. Evidence:
-`docs/operations/v1-coverage-confidence-audit-2026-05-10.md`,
-`docs/operations/v1-final-preflight-fd8da90b-2026-05-10.md`, and
-`docs/operations/prod-ui-module-clickthrough-fd8da90b-2026-05-10.md`.
+`history/audits/v1-coverage-confidence-audit-2026-05-10.md`,
+`history/releases/v1-final-preflight-fd8da90b-2026-05-10.md`, and
+`history/plans/prod-ui-module-clickthrough-fd8da90b-2026-05-10.md`.
 
 Latest production UI audit tooling:
 `PROD-UI-MODULE-CLICKTHROUGH-RUNNER-2026-05-10` added
@@ -2296,8 +2355,8 @@ until app/admin credentials are supplied. Next executable UI work is to rerun
 the same command with `PROD_UI_AUDIT_AUTH_*` and `PROD_UI_AUDIT_ADMIN_*`
 inputs, plus representative route IDs through `--extra-routes` when needed.
 Evidence:
-`docs/planning/prod-ui-module-clickthrough-runner-task-2026-05-10.md` and
-`docs/operations/prod-ui-module-clickthrough-84e7c0e0-2026-05-10.md`.
+`history/tasks/prod-ui-module-clickthrough-runner-task-2026-05-10.md` and
+`history/plans/prod-ui-module-clickthrough-84e7c0e0-2026-05-10.md`.
 
 Latest rollback-proof refresh:
 `V1-ROLLBACK-PROOF-BLOCKED-REFRESH-2026-05-10` captured current fail-closed
@@ -2309,9 +2368,9 @@ proof `failed` instead of `stale`. Next executable V1 work requires either
 `ROLLBACK_GUARD_*` auth to make rollback proof PASS, `LIVEIMPORT_READBACK_*`
 auth to run `LIVEIMPORT-03`, real RC approver identities/gate evidence, or
 authenticated/admin production UI access. Evidence:
-`docs/planning/v1-rollback-proof-blocked-refresh-task-2026-05-10.md`,
-`docs/operations/v1-rollback-proof-prod-2026-05-10T00-00-00-000Z.md`, and
-`docs/operations/v1-final-preflight-8df3260b-2026-05-10.md`.
+`history/evidence/v1-rollback-proof-blocked-refresh-task-2026-05-10.md`,
+`history/evidence/v1-rollback-proof-prod-2026-05-10T00-00-00-000Z.md`, and
+`history/releases/v1-final-preflight-8df3260b-2026-05-10.md`.
 
 Latest production restore-drill refresh:
 `V1-PROD-RESTORE-DRILL-REFRESH-2026-05-10` captured fresh PASS production
@@ -2324,9 +2383,9 @@ lanes: provide `LIVEIMPORT_READBACK_*` app auth and run `LIVEIMPORT-03`,
 provide `ROLLBACK_GUARD_*` auth and refresh rollback proof, provide real RC
 approver identities/gate evidence, or provide authenticated/admin production
 UI access for the module clickthrough. Evidence:
-`docs/planning/v1-prod-restore-drill-refresh-task-2026-05-10.md`,
-`docs/operations/v1-restore-drill-prod-2026-05-10T03-39-56Z.md`, and
-`docs/operations/v1-final-preflight-969df7c8-2026-05-10.md`.
+`history/evidence/v1-prod-restore-drill-refresh-task-2026-05-10.md`,
+`history/evidence/v1-restore-drill-prod-2026-05-10T03-39-56Z.md`, and
+`history/releases/v1-final-preflight-969df7c8-2026-05-10.md`.
 
 Latest Coolify deploy-queue recovery:
 `V1-COOLIFY-DEPLOY-QUEUE-RECOVERY-2026-05-10` supersedes the older
@@ -2339,8 +2398,8 @@ protected/formal BLOCKED. Next executable work requires protected
 `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, production DB restore context,
 real RC approver identities, or authenticated/admin production UI access.
 Evidence:
-`docs/operations/coolify-deploy-queue-recovery-33a2ebc4-2026-05-10.md` and
-`docs/operations/v1-final-preflight-33a2ebc4-2026-05-10.md`.
+`history/plans/coolify-deploy-queue-recovery-33a2ebc4-2026-05-10.md` and
+`history/releases/v1-final-preflight-33a2ebc4-2026-05-10.md`.
 
 Latest deploy-control readiness:
 `V1-DEPLOY-CONTROL-READINESS-2026-05-10` confirms production deploy control is
@@ -2349,7 +2408,7 @@ no-secret production deploy trigger, and webhook/API credentials are
 operator-held secrets. Next action requires operator-side Coolify
 inspection/retrigger, approved deploy credentials, or explicit production
 infrastructure authorization. Evidence:
-`docs/operations/v1-deploy-control-readiness-2026-05-10.md`.
+`history/evidence/v1-deploy-control-readiness-2026-05-10.md`.
 
 Latest deploy freshness blocker:
 `DEPLOY-LAG-E70F5CF6-2026-05-10` records that pushed commit
@@ -2358,7 +2417,7 @@ build-info during two bounded wait windows; production still reports
 `40e9b3c35c96d4acced73bbab980039f9e6b6a22`, while public smoke passes. Next
 action is operator-side Coolify deploy inspection/retrigger or explicit
 production infrastructure authorization. Evidence:
-`docs/operations/deploy-lag-e70f5cf6-2026-05-10.md`.
+`history/plans/deploy-lag-e70f5cf6-2026-05-10.md`.
 
 Latest protected-input readiness:
 `V1-PROTECTED-INPUTS-READINESS-2026-05-10` confirms this session does not have
@@ -2367,18 +2426,18 @@ production DB restore context. Privileged VPS/Docker inspection was rejected by
 the escalation reviewer and must not be bypassed. Next executable work requires
 operator-provided credentials/context or explicit production infrastructure
 authorization. Evidence:
-`docs/operations/v1-protected-inputs-readiness-2026-05-10.md`.
+`history/evidence/v1-protected-inputs-readiness-2026-05-10.md`.
 
 Latest current preflight:
 `V1-FINAL-PREFLIGHT-CURRENT-9D28F682` captured final no-secret preflight for
 deployed `9d28f682f23dc176dbbad790bea8ddf213c8ac01`. Build-info and public
 smoke pass; V1 remains `BLOCKED / NO-GO` only on protected/formal evidence.
 The next executable work requires the operator inputs listed in
-`docs/operations/v1-operator-unblock-checklist-2026-05-10.md`: liveimport auth,
+`history/releases/v1-operator-unblock-checklist-2026-05-10.md`: liveimport auth,
 rollback guard auth, production DB restore context, and real RC approver
 identities. Evidence:
-`docs/planning/v1-final-preflight-current-9d28f682-task-2026-05-10.md` and
-`docs/operations/v1-final-preflight-9d28f682-2026-05-10.md`.
+`history/releases/v1-final-preflight-current-9d28f682-task-2026-05-10.md` and
+`history/releases/v1-final-preflight-9d28f682-2026-05-10.md`.
 
 Latest operator unblock packet:
 `V1-OPERATOR-UNBLOCK-CHECKLIST-2026-05-10` published the exact protected
@@ -2388,8 +2447,8 @@ release evidence. The packet targets deployed
 public smoke pass. Next executable work requires operator-provided
 `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, production DB restore context, and
 real RC approver identities. Evidence:
-`docs/operations/v1-operator-unblock-checklist-2026-05-10.md` and
-`docs/operations/v1-final-preflight-822d92fc-2026-05-10.md`.
+`history/releases/v1-operator-unblock-checklist-2026-05-10.md` and
+`history/releases/v1-final-preflight-822d92fc-2026-05-10.md`.
 
 Latest activation evidence refresh:
 `V1-PROD-ACTIVATION-REFRESH-2026-05-10` published fresh activation plan and
@@ -2402,8 +2461,8 @@ and stale rollback proof. Next mission checkpoint is protected evidence collecti
 operator credentials and DB context are available; if they are not available,
 the only useful no-secret task is to publish a concise operator unblock
 checklist for those exact inputs. Evidence:
-`docs/planning/v1-production-activation-refresh-2026-05-10-task.md` and
-`docs/operations/v1-final-preflight-74752f02-2026-05-10.md`.
+`history/tasks/v1-production-activation-refresh-2026-05-10-task.md` and
+`history/releases/v1-final-preflight-74752f02-2026-05-10.md`.
 
 Latest release evidence refresh:
 `V1-RC-BLOCKED-REFRESH-2026-05-10` refreshed RC external gates, RC sign-off,
@@ -2415,8 +2474,8 @@ that can be done without protected secrets. Protected tasks after that remain
 blocked on liveimport auth/readback, rollback guard auth, production DB restore
 context, backup/restore drill, rollback proof, Gate 2 SLO evidence, and real
 RC approver identities. Evidence:
-`docs/planning/v1-rc-blocked-evidence-refresh-task-2026-05-10.md` and
-`docs/operations/v1-final-preflight-1609929e-2026-05-10.md`.
+`history/releases/v1-rc-blocked-evidence-refresh-task-2026-05-10.md` and
+`history/releases/v1-final-preflight-1609929e-2026-05-10.md`.
 
 Latest release evidence:
 `DEPLOY-FRESHNESS-9C125683-2026-05-10` proves production Web build-info now
@@ -2430,9 +2489,9 @@ authenticated/admin UI clickthrough. Next mission checkpoint is to refresh one
 protected/formal V1 evidence lane when operator credentials and production DB
 restore context are available, or continue a no-secret status cleanup if those
 inputs remain unavailable. Evidence:
-`docs/planning/deploy-freshness-9c125683-task-2026-05-10.md`,
-`docs/operations/deploy-freshness-9c125683-2026-05-10.md`, and
-`docs/operations/v1-final-preflight-9c125683-2026-05-10.md`.
+`history/tasks/deploy-freshness-9c125683-task-2026-05-10.md`,
+`history/plans/deploy-freshness-9c125683-2026-05-10.md`, and
+`history/releases/v1-final-preflight-9c125683-2026-05-10.md`.
 
 Current implementation slice:
 `EXCHANGE2-31-LIVE-ORDER-CANCEL-BOUNDARY-2026-05-10` adds canonical
@@ -2453,7 +2512,7 @@ Web typecheck, production build-info for
 no-secret final V1 preflight public checks pass and remain correctly blocked on
 protected/formal evidence. The remaining V1 blockers are protected production
 evidence and authenticated/admin UI clickthrough. Evidence:
-`docs/operations/deploy-freshness-04a4204c-2026-05-10.md`.
+`history/plans/deploy-freshness-04a4204c-2026-05-10.md`.
 
 Latest local implementation slice:
 `EXCHANGE2-29-GATEIO-WALLET-CASHFLOW-HISTORY-2026-05-09` enabled only Gate.io
@@ -2464,7 +2523,7 @@ diff check pass. Production build-info now exposes
 `8ea7f33b581ec0f3cf7d653168b160c31cbb23a8`, public deploy smoke passes, and
 no-secret final V1 preflight remains correctly blocked on protected/formal
 evidence. Evidence:
-`docs/operations/deploy-freshness-8ea7f33b-2026-05-09.md`. The next Gate.io
+`history/plans/deploy-freshness-8ea7f33b-2026-05-09.md`. The next Gate.io
 implementation gap is `LIVE_ORDER_SUBMIT`, which is money-impacting and must
 remain a separate protected-evidence task.
 
@@ -2477,7 +2536,7 @@ typecheck, guardrails, docs parity, and diff check pass. Production build-info
 now exposes `432f768701300c7ba600fa7633532c0cc9ef4b96`, public deploy smoke
 passes, and no-secret final V1 preflight remains correctly blocked on
 protected/formal evidence. Evidence:
-`docs/operations/deploy-freshness-432f7687-2026-05-09.md`. The next exact
+`history/plans/deploy-freshness-432f7687-2026-05-09.md`. The next exact
 Gate.io gap is either `WALLET_CASHFLOW_HISTORY` if product scope requires
 ledger ingestion parity, or `LIVE_ORDER_SUBMIT` if the user confirms Gate.io
 live-money execution belongs in V1.
@@ -2490,7 +2549,7 @@ unsupported. Production build-info now exposes
 `214a9c034d38ab8670fd4b43d0f8ed692d78d90c`, public deploy smoke passes, and
 the no-secret final V1 preflight remains correctly blocked on
 protected/formal evidence. Evidence:
-`docs/operations/deploy-freshness-214a9c03-2026-05-09.md`. The next exact
+`history/plans/deploy-freshness-214a9c03-2026-05-09.md`. The next exact
 Gate.io authenticated-read gap is `TRADE_HISTORY_SNAPSHOT`.
 
 Latest local implementation slice:
@@ -2502,7 +2561,7 @@ authenticated-read gap is `OPEN_ORDERS_SNAPSHOT`. Production build-info now
 exposes `4c7548acc74295f27676c1f00d79dbf58b873942`, public deploy smoke
 passes, and the no-secret final V1 preflight remains correctly blocked on
 protected/formal evidence. Evidence:
-`docs/operations/deploy-freshness-4c7548ac-2026-05-09.md`.
+`history/plans/deploy-freshness-4c7548ac-2026-05-09.md`.
 
 Latest local implementation slice:
 `EXCHANGE2-25-GATEIO-BALANCE-PREVIEW-2026-05-09` enabled only Gate.io
@@ -2515,7 +2574,7 @@ Production build-info now exposes
 `15dfacb9882fc4904a2bfcd91d8b58c05d3ac5dd`, public deploy smoke passes, and
 the no-secret final V1 preflight remains correctly blocked on protected/formal
 evidence. Evidence:
-`docs/operations/deploy-freshness-15dfacb9-2026-05-09.md`.
+`history/plans/deploy-freshness-15dfacb9-2026-05-09.md`.
 
 Latest local implementation slice:
 `EXCHANGE2-24-GATEIO-API-KEY-PROBE-2026-05-09` enabled Gate.io
@@ -2528,7 +2587,7 @@ protected production evidence becomes unblocked first. Production build-info
 now exposes `e76e08a1a20b12abaeabf4edc44a38ba37619005`, public deploy smoke
 passes, and the no-secret final V1 preflight remains correctly blocked on
 protected/formal evidence. Evidence:
-`docs/operations/deploy-freshness-e76e08a1-2026-05-09.md`.
+`history/plans/deploy-freshness-e76e08a1-2026-05-09.md`.
 
 Latest deployed implementation slice:
 `EXCHANGE2-23-GATEIO-PAPER-PRICING-ENABLE-2026-05-09` enabled only Gate.io
@@ -2539,10 +2598,10 @@ Web build-info now exposes
 Gate.io `LIVE_EXECUTION`, `API_KEY_PROBE`, authenticated reads, live submit,
 and exchange-side cancel remain unsupported. The next Gate.io gaps are
 authenticated read operations and live submit, not paper capability gating.
-Evidence: `docs/operations/deploy-freshness-1dc55d96-2026-05-09.md`.
+Evidence: `history/plans/deploy-freshness-1dc55d96-2026-05-09.md`.
 
 Latest V1 completion gap report:
-`docs/operations/v1-completion-gap-report-2026-05-09.md`.
+`history/plans/v1-completion-gap-report-2026-05-09.md`.
 Short answer: the app is not broadly missing; remaining 100% readiness is
 blocked by protected production evidence, authenticated/admin UI clickthrough,
 Gate.io paper/live implementation beyond public market data, and a few
@@ -2559,8 +2618,8 @@ checks pass while protected/formal evidence remains correctly `BLOCKED`. This
 batch is docs/evidence only over the protected runtime baseline; it does not
 change runtime behavior, close protected V1 evidence, or enable Gate.io
 paper/live/authenticated capabilities. Evidence:
-`docs/planning/deploy-freshness-e8cd748e-task-2026-05-09.md` and
-`docs/operations/deploy-freshness-e8cd748e-2026-05-09.md`.
+`history/tasks/deploy-freshness-e8cd748e-task-2026-05-09.md` and
+`history/plans/deploy-freshness-e8cd748e-2026-05-09.md`.
 
 Latest protected runtime/preflight baseline:
 `30b027b78544f76b5b638851e8e27c98f6d22ab5`. Production build-info advanced
@@ -2590,7 +2649,7 @@ later 180-second follow-up wait with production still on `c50e1e7c`. After the
 `d355df93` operator handoff/source-of-truth commit was pushed, a bounded
 120-second follow-up wait initially timed out on the same production SHA, but
 the next batch wait later showed production on `d355df93`. See
-`docs/operations/deploy-lag-1f1d9c12-2026-05-09.md`.
+`history/plans/deploy-lag-1f1d9c12-2026-05-09.md`.
 Current shell still has no protected live-import, rollback, production DB, or
 authenticated/admin app context, so the next V1 action remains protected
 operator evidence rather than another public deploy wait.
@@ -2623,23 +2682,23 @@ Completed for that candidate:
   build-info progress
 
 Evidence:
-- `docs/operations/prod-ui-public-access-clickthrough-745b5f5a-2026-05-09.md`
-- `docs/planning/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`
-- `docs/planning/dashboard-runtime-widget-aggregate-current-render-task-2026-05-09.md`
-- `docs/operations/deploy-freshness-3c5da343-2026-05-09.md`
-- `docs/operations/v1-final-preflight-3c5da343-2026-05-09.md`
-- `docs/operations/prod-ui-public-access-clickthrough-3c5da343-2026-05-09.md`
-- `docs/operations/deploy-freshness-4ee1672e-2026-05-09.md`
-- `docs/operations/v1-final-preflight-4ee1672e-2026-05-09.md`
-- `docs/operations/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`
-- `docs/operations/deploy-freshness-55469cdc-2026-05-09.md`
-- `docs/operations/v1-final-preflight-55469cdc-2026-05-09.md`
-- `docs/operations/deploy-freshness-6c54bb5d-2026-05-09.md`
-- `docs/operations/v1-final-preflight-6c54bb5d-2026-05-09.md`
-- `docs/operations/deploy-freshness-c50e1e7c-2026-05-09.md`
-- `docs/operations/v1-final-preflight-c50e1e7c-2026-05-09.md`
-- `docs/operations/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`
-- `docs/operations/deploy-lag-1f1d9c12-2026-05-09.md`
+- `history/plans/prod-ui-public-access-clickthrough-745b5f5a-2026-05-09.md`
+- `history/tasks/dashboard-runtime-current-state-aggregate-task-2026-05-09.md`
+- `history/tasks/dashboard-runtime-widget-aggregate-current-render-task-2026-05-09.md`
+- `history/plans/deploy-freshness-3c5da343-2026-05-09.md`
+- `history/releases/v1-final-preflight-3c5da343-2026-05-09.md`
+- `history/plans/prod-ui-public-access-clickthrough-3c5da343-2026-05-09.md`
+- `history/plans/deploy-freshness-4ee1672e-2026-05-09.md`
+- `history/releases/v1-final-preflight-4ee1672e-2026-05-09.md`
+- `history/plans/prod-ui-public-access-clickthrough-4ee1672e-2026-05-09.md`
+- `history/plans/deploy-freshness-55469cdc-2026-05-09.md`
+- `history/releases/v1-final-preflight-55469cdc-2026-05-09.md`
+- `history/plans/deploy-freshness-6c54bb5d-2026-05-09.md`
+- `history/releases/v1-final-preflight-6c54bb5d-2026-05-09.md`
+- `history/plans/deploy-freshness-c50e1e7c-2026-05-09.md`
+- `history/releases/v1-final-preflight-c50e1e7c-2026-05-09.md`
+- `history/plans/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`
+- `history/plans/deploy-lag-1f1d9c12-2026-05-09.md`
 
 Next executable V1 steps are protected and remain blocked until the operator
 supplies authenticated/admin production app access, live-import auth, rollback
@@ -2651,7 +2710,7 @@ BOTMULTI-09 is also current against production build-info:
 `f3aaa3dca6cf4d4b199372563886165638391a77` is contained in deployed
 `30b027b78544f76b5b638851e8e27c98f6d22ab5`, but BOTMULTI remains open until
 protected runtime/V1 gate evidence is collected.
-Use `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md` and the
+Use `history/plans/v1-final-blocker-execution-pack-2026-05-07.md` and the
 current protected access readiness artifact before running the full blocker
 pack.
 
@@ -2662,11 +2721,11 @@ Classify user feedback as reusable rule, visual direction, anti-pattern,
 screen-specific feedback, open design decision, or recurring agent mistake;
 store it in the matching source of truth; and record applied design-memory
 entries in the active task before implementation. Evidence:
-`docs/planning/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
+`history/tasks/ux-ui-memory-autonomy-process-task-2026-05-08.md`.
 
 Second-exchange implementation is now planned with `GATEIO` selected as the
 target exchange. Use
-`docs/planning/second-exchange-live-readiness-plan-2026-05-08.md` as the
+`history/evidence/second-exchange-live-readiness-plan-2026-05-08.md` as the
 canonical staged plan. Do not enable broad `LIVE_EXECUTION` or
 `PAPER_PRICING_FEED` for another exchange until exact operation support is
 implemented and verified. Gate.io public market catalog is the first adapter
@@ -2708,7 +2767,7 @@ Follow-up production build-info now exposes
 `PAPER_PRICING_FEED` still remains disabled until target-environment source
 evidence proves the live polling source behavior cleanly.
 Real public Gate.io adapter smoke is now captured:
-`docs/operations/gateio-public-market-data-smoke-2026-05-08.md` shows
+`history/evidence/gateio-public-market-data-smoke-2026-05-08.md` shows
 `GATEIO/FUTURES/BTCUSDT` ticker and `1m` candle reads passing through
 `exchangePublicMarketData.service.ts` without secrets or writes. This still
 does not enable `PAPER_PRICING_FEED`; the remaining Gate.io paper boundary is
@@ -2770,14 +2829,14 @@ adapter operation exists.
 The pushed Gate.io fail-closed batch is now deployed: production build-info
 exposes `90cd07d602f0a31f315719b8a5cd5be3fd112313`, and public API/Web smoke
 passed. Evidence:
-`docs/operations/deploy-freshness-90cd07d6-2026-05-08.md`.
+`history/plans/deploy-freshness-90cd07d6-2026-05-08.md`.
 Final V1 preflight deploy checks are now portable on this Windows workstation:
 `runV1FinalPreflight.mjs` calls bundled Node scripts directly for build-info
 and public smoke instead of depending on global `pnpm`. The refreshed no-secret
 preflight for deployed `90cd07d6` reports build-info PASS and public smoke
 PASS, then blocks only on protected live-import auth/readback, rollback
 auth/proof, and RC Gate 4 evidence. Evidence:
-`docs/operations/v1-final-preflight-90cd07d6-2026-05-08.md`.
+`history/releases/v1-final-preflight-90cd07d6-2026-05-08.md`.
 Second-exchange planning is now reconciled with the deployed Gate.io
 foundation. Treat `EXCHANGE2-LIVE-READINESS-PLAN-2026-05-08` as complete
 planning, not an open implementation blocker. The current supported Gate.io
@@ -2785,11 +2844,11 @@ truth is narrow: public catalog plus public `FUTURES`/swap market-data
 foundation only. Keep `PAPER_PRICING_FEED`, authenticated reads,
 `LIVE_ORDER_SUBMIT`, and `LIVE_ORDER_CANCEL` unsupported until exact operation
 support and evidence exist. Evidence:
-`docs/planning/exchange2-20-plan-reconciliation-task-2026-05-09.md`.
+`history/tasks/exchange2-20-plan-reconciliation-task-2026-05-09.md`.
 
 After the planned Gate.io/deploy-auth blockers are cleared, execute the
 production UI module clickthrough audit from
-`docs/planning/prod-ui-module-clickthrough-audit-plan-2026-05-08.md`. The audit
+`history/audits/prod-ui-module-clickthrough-audit-plan-2026-05-08.md`. The audit
 now has current production build-info at
 `c50e1e7cf1e37d9c799031cacbb30a834f57e81d` and latest public access evidence
 for the same SHA, but must still wait for
@@ -2797,7 +2856,7 @@ authenticated/admin app access, representative production test data, and
 explicit operator approval before any live-money or destructive action.
 Public-only checks cannot prove protected dashboard/admin flows.
 The public/unauthenticated access slice has been captured at
-`docs/operations/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`:
+`history/plans/prod-ui-public-access-clickthrough-c50e1e7c-2026-05-09.md`:
 API health and readiness passed, public routes returned HTTP 200, and
 protected dashboard/admin routes redirected to `/auth/login`. It does not
 satisfy the full module clickthrough because no authenticated/admin production
@@ -2808,7 +2867,7 @@ build-info remained stale on `d0dc6459e5fa33a8e5f68c5fc36dd29cc1df440d` during
 the 120-second wait.
 Refreshed public/unauthenticated production access evidence is now current for
 the deployed Gate.io fail-closed batch:
-`docs/operations/prod-ui-public-access-clickthrough-90cd07d6-2026-05-09.md`
+`history/plans/prod-ui-public-access-clickthrough-90cd07d6-2026-05-09.md`
 shows Web build-info matching
 `90cd07d602f0a31f315719b8a5cd5be3fd112313`, API `/health` and `/ready`
 passing, public Web routes returning HTTP 200, and unauthenticated
@@ -2817,14 +2876,14 @@ not satisfy the full production UI module clickthrough, which remains blocked
 on authenticated/admin production app access.
 The current no-secret V1 final preflight for deployed
 `90cd07d602f0a31f315719b8a5cd5be3fd112313` is now refreshed for 2026-05-09 at
-`docs/operations/v1-final-preflight-90cd07d6-2026-05-09.md`. Build-info and
+`history/releases/v1-final-preflight-90cd07d6-2026-05-09.md`. Build-info and
 public smoke pass, but V1 remains `BLOCKED` on missing live-import auth,
 rollback auth, production DB restore context, missing `LIVEIMPORT-03`, and
 stale 2026-05-08 release evidence for the 2026-05-09 evidence date.
 Production activation plan and activation evidence audit are now fresh
 2026-05-09 `NO-GO` artifacts:
-`docs/planning/v1-production-activation-and-evidence-plan-2026-05-09.md` and
-`docs/operations/v1-production-activation-evidence-audit-2026-05-09.md`.
+`history/plans/v1-production-activation-and-evidence-plan-2026-05-09.md` and
+`history/audits/v1-production-activation-evidence-audit-2026-05-09.md`.
 The follow-up preflight confirms those two evidence families are fresh; the
 remaining blockers are protected auth, production DB restore context, stale
 RC/recovery evidence, missing `LIVEIMPORT-03`, and rollback proof.
@@ -2845,21 +2904,21 @@ The final blocker execution pack is now synced to those date-aware commands:
 set `$releaseDate` once and reuse it for preflight, restore drill, rollback
 proof, RC status/sign-off/checklist, live-import output paths, and the final
 release gate. Evidence:
-`docs/planning/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.
+`history/tasks/v1-final-blocker-pack-date-overrides-task-2026-05-09.md`.
 The dashboard runtime aggregate batch is now deployed: production Web
 build-info exposes `3c5da34371e22aecb1a7aff0a185018870d35cec`, and public
 API/Web smoke passed for API `/health`, API `/ready`, and Web `/`. Evidence:
-`docs/operations/deploy-freshness-3c5da343-2026-05-09.md`. Continue from the
+`history/plans/deploy-freshness-3c5da343-2026-05-09.md`. Continue from the
 final blocker pack against this deployed SHA; do not treat this public smoke as
 protected runtime, restore, rollback, RC approval, or authenticated UI evidence.
 The no-secret final V1 preflight for deployed `3c5da343` is now fresh:
-`docs/operations/v1-final-preflight-3c5da343-2026-05-09.md`. Build-info and
+`history/releases/v1-final-preflight-3c5da343-2026-05-09.md`. Build-info and
 public smoke pass. Remaining blockers are live-import auth, rollback auth,
 production DB restore context, failed RC evidence, missing `LIVEIMPORT-03`, and
 stale restore/rollback proof evidence for the 2026-05-09 evidence date.
 Public production UI access evidence has been refreshed for the same deployed
 candidate at
-`docs/operations/prod-ui-public-access-clickthrough-3c5da343-2026-05-09.md`;
+`history/plans/prod-ui-public-access-clickthrough-3c5da343-2026-05-09.md`;
 it confirms public route reachability and unauthenticated auth gates only.
 The final blocker execution pack now separates the deployed code/tooling
 candidate from local evidence-only commits. For protected evidence, derive
@@ -2867,11 +2926,11 @@ candidate from local evidence-only commits. For protected evidence, derive
 run unless the operator intentionally compares one exact intended runtime
 candidate first.
 Evidence:
-`docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
+`history/plans/v1-final-blocker-execution-pack-2026-05-07.md`.
 Protected access readiness is currently BLOCKED. Names-only checks in this
 shell found no `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, or production
 DB/Coolify restore context env names. Evidence:
-`docs/operations/v1-protected-access-readiness-2026-05-09.md`. The next
+`history/evidence/v1-protected-access-readiness-2026-05-09.md`. The next
 executable step requires protected app/operator auth, DB/Coolify context, RC
 approval identities, and authenticated/admin UI access.
 
@@ -2906,7 +2965,7 @@ pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckyspar
 ```
 
 After production build-info exposes the selected SHA, continue with
-`docs/operations/v1-final-blocker-execution-pack-2026-05-07.md` once
+`history/plans/v1-final-blocker-execution-pack-2026-05-07.md` once
 production auth and DB/Coolify access are available. Start with
 `pnpm run ops:release:v1:preflight`; it is read-only and reports deploy
 freshness, missing prerequisite env names, and current release evidence
@@ -2931,14 +2990,14 @@ production PASS evidence from this workstation. The current shell still lacks
 the required Soar production auth/access. A no-auth collector attempt failed
 closed before runtime readback, which is the expected safe result. The latest
 no-secret status reports are:
-`docs/operations/_artifacts-v1-final-preflight-2026-05-08-protected-context.json`
+`history/artifacts/_artifacts-v1-final-preflight-2026-05-08-protected-context.json`
 and
-`docs/operations/v1-final-preflight-2026-05-08-protected-context.md`.
+`history/releases/v1-final-preflight-2026-05-08-protected-context.md`.
 
 The production restore drill is now PASS through approved Coolify terminal
 access. Evidence:
-`docs/operations/v1-restore-drill-prod-2026-05-08T15-16-24Z.md` and
-`docs/operations/_artifacts-restore-drill-prod-coolify-2026-05-08T15-16-24Z.json`.
+`history/evidence/v1-restore-drill-prod-2026-05-08T15-16-24Z.md` and
+`history/artifacts/_artifacts-restore-drill-prod-coolify-2026-05-08T15-16-24Z.json`.
 The corrected run created a compressed backup, restored it into isolated DB
 `postgres_restore_check_20260508151624`, validated key table counts, dropped
 the restore DB, removed the backup dump, and cleanup verification returned `0`
@@ -2950,11 +3009,11 @@ run still exits `BLOCKED`, but the remaining blockers are now limited to
 live-import auth, rollback guard auth, failed RC Gate 4 approval evidence,
 missing `LIVEIMPORT-03` readback, and failed rollback proof. The latest
 rollback proof rerun failed closed on protected `401` responses and is recorded
-in `docs/operations/v1-rollback-proof-prod-2026-05-08T15-30-28-231Z.md`.
+in `history/evidence/v1-rollback-proof-prod-2026-05-08T15-30-28-231Z.md`.
 The current no-secret preflight snapshot for deployed SHA
 `052df82244ea0f81e8611ff8bb2b677db115bd19` is committed at
-`docs/operations/_artifacts-v1-final-preflight-current.json` and
-`docs/operations/v1-final-preflight-current.md` for Web/operator status
+`history/artifacts/_artifacts-v1-final-preflight-current.json` and
+`history/releases/v1-final-preflight-current.md` for Web/operator status
 visualization.
 
 The next executable production evidence step requires approved Soar
@@ -2981,7 +3040,7 @@ $buildInfo = Invoke-RestMethod "https://soar.luckysparrow.ch/api/build-info"
 $expectedSha = $buildInfo.gitSha
 $expectedShaShort = $expectedSha.Substring(0, 8)
 $expectedSha
-pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "docs/operations/liveimport-03-prod-readback-$expectedShaShort-$releaseDate.json"
+pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output "history/artifacts/liveimport-03-prod-readback-$expectedShaShort-$releaseDate.json"
 ```
 
 If the operator is promoting one exact intended runtime candidate, compare that
@@ -2993,7 +3052,7 @@ changes are irrelevant to the protected readback.
 ## Candidate Backlog
 
 0. Follow the final blocker execution pack:
-   `docs/operations/v1-final-blocker-execution-pack-2026-05-07.md`.
+   `history/plans/v1-final-blocker-execution-pack-2026-05-07.md`.
 0-preflight. Run `pnpm run ops:release:v1:preflight` first. It should be
    `BLOCKED` until live-import auth, rollback auth, RC approval, live-import
    readback, and rollback evidence are all present. Fresh production restore

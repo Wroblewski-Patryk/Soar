@@ -120,6 +120,6 @@ Before declaring env ready:
 - No STAGE endpoint references in PROD and no PROD credentials in STAGE.
 
 ## Related Documents
-- `docs/planning/deployment-dev-prod-coolify-plan-2026-04-02.md`
+- `history/plans/deployment-dev-prod-coolify-plan-2026-04-02.md`
 - `docs/operations/v1-ops-runbook.md`
 - `docs/operations/v1-rc-external-gates-runbook.md`

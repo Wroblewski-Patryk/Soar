@@ -1,0 +1,795 @@
+{
+  "generatedAt": "2026-05-11T17:32:51.573Z",
+  "evidenceDate": "2026-05-11",
+  "status": "NO-GO",
+  "sourceLedger": "history/artifacts/v1-master-state-ledger-2026-05-11.json",
+  "scoringModel": {
+    "warning": "Percentages are a planning signal, not release approval. V1 remains NO-GO while any P0 module lacks accepted proof or any release gate is blocked.",
+    "weights": {
+      "P0": 5,
+      "P1": 3,
+      "P2": 1
+    },
+    "statusScore": {
+      "PASS": {
+        "implementation": 1,
+        "evidence": 1,
+        "release": 1
+      },
+      "PASS_LOCAL": {
+        "implementation": 0.9,
+        "evidence": 0.65,
+        "release": 0.45
+      },
+      "PARTIAL_LOCAL": {
+        "implementation": 0.65,
+        "evidence": 0.35,
+        "release": 0.2
+      },
+      "UNVERIFIED": {
+        "implementation": 0.45,
+        "evidence": 0,
+        "release": 0
+      },
+      "BLOCKED_AUTH": {
+        "implementation": 0.35,
+        "evidence": 0,
+        "release": 0
+      },
+      "FAIL": {
+        "implementation": 0.1,
+        "evidence": 0,
+        "release": 0
+      }
+    }
+  },
+  "summary": {
+    "implementationEstimatePercent": 82.1,
+    "evidenceCoveragePercent": 55.3,
+    "releaseReadinessPercent": 38.3,
+    "moduleCounts": {
+      "PASS_LOCAL": 18,
+      "BLOCKED_AUTH": 2,
+      "UNVERIFIED": 1
+    },
+    "p0Total": 13,
+    "p0NotReleaseReady": 13,
+    "blockedModules": [
+      "Subscriptions/Admin",
+      "Operations"
+    ],
+    "concreteNonProofGaps": 9
+  },
+  "phaseReadiness": [
+    {
+      "phase": "Map state",
+      "readinessPercent": 100,
+      "status": "DONE",
+      "note": "Project index, static scan, and master ledger exist."
+    },
+    {
+      "phase": "Prove action behavior",
+      "readinessPercent": 55.3,
+      "status": "IN_PROGRESS",
+      "note": "Module action proofs are still missing or partial for most rows."
+    },
+    {
+      "phase": "Repair confirmed failures",
+      "readinessPercent": 55,
+      "status": "IN_PROGRESS",
+      "note": "Only repair after proof or static gap triage identifies a concrete defect."
+    },
+    {
+      "phase": "Production-safe proof",
+      "readinessPercent": 38.3,
+      "status": "BLOCKED",
+      "note": "Production-safe clickthrough, protected auth, SLO, rollback, and runtime readback are not closed."
+    },
+    {
+      "phase": "Release decision",
+      "readinessPercent": 0,
+      "status": "BLOCKED",
+      "note": "Release remains blocked while P0 proof gaps and formal gates are open."
+    }
+  ],
+  "topBlockers": [
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Dashboard Home",
+      "status": "PASS_LOCAL",
+      "nextProof": "Rendered/browser proof for selected bot, wallet KPIs, tables, loading/empty/error, responsive states, and safe clickthrough."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Bot Runtime",
+      "status": "PASS_LOCAL",
+      "nextProof": "Production-safe Bot Runtime clickthrough on approved representative data."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Auth",
+      "status": "PASS_LOCAL",
+      "nextProof": "Production-safe browser Auth clickthrough for login, logout, and expired-session redirect."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Profile API Keys",
+      "status": "PASS_LOCAL",
+      "nextProof": "Production-safe Profile API Keys clickthrough for create, test, delete, and audit log visibility."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Bots",
+      "status": "PASS_LOCAL",
+      "nextProof": "Production-safe non-destructive clickthrough for bot actions; local action proof already exists."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Manual Orders",
+      "status": "PASS_LOCAL",
+      "nextProof": "Production-safe Manual Orders clickthrough for PAPER place/cancel/close with DB readback; LIVE remains blocked-risk without an explicit safe plan."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Positions",
+      "status": "PASS_LOCAL",
+      "nextProof": "Production-safe Positions clickthrough for list/close/update/takeover/import-status with exchange snapshot boundary; live mutation remains blocked-risk without explicit safe plan."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Orders",
+      "status": "PASS_LOCAL",
+      "nextProof": "Production-safe Orders clickthrough for list/cancel/fill/fee readback through API and adapter boundary; live mutation remains blocked-risk without explicit safe plan."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Subscriptions/Admin",
+      "status": "BLOCKED_AUTH",
+      "nextProof": "Protected admin clickthrough with non-destructive data and entitlement checks."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Exchange Adapter",
+      "status": "PASS_LOCAL",
+      "nextProof": "Production-safe exchange-boundary proof for approved real credentials or read-only adapter operations; live mutation remains blocked-risk without explicit safe plan."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Workers",
+      "status": "PASS_LOCAL",
+      "nextProof": "Production-safe protected worker/process proof for health, readiness, runtime freshness, queue/process lifecycle, and observability on the deployed target."
+    },
+    {
+      "type": "P0_NOT_RELEASE_READY",
+      "module": "Operations",
+      "status": "BLOCKED_AUTH",
+      "nextProof": "Rollback PASS, liveimport readback, authenticated SLO, release gate, and alerts evidence."
+    },
+    {
+      "type": "BLOCKED_MODULE",
+      "module": "Subscriptions/Admin",
+      "status": "BLOCKED_AUTH",
+      "nextProof": "Protected admin clickthrough with non-destructive data and entitlement checks."
+    },
+    {
+      "type": "BLOCKED_MODULE",
+      "module": "Operations",
+      "status": "BLOCKED_AUTH",
+      "nextProof": "Rollback PASS, liveimport readback, authenticated SLO, release gate, and alerts evidence."
+    }
+  ],
+  "nextWorkOrder": [
+    {
+      "priority": 1,
+      "module": "Dashboard Home",
+      "risk": "P0 operator truth surface",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "releasePercent": 45,
+      "nextProof": "Rendered/browser proof for selected bot, wallet KPIs, tables, loading/empty/error, responsive states, and safe clickthrough."
+    },
+    {
+      "priority": 2,
+      "module": "Bot Runtime",
+      "risk": "P0 runtime truth",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "releasePercent": 45,
+      "nextProof": "Production-safe Bot Runtime clickthrough on approved representative data."
+    },
+    {
+      "priority": 3,
+      "module": "Auth",
+      "risk": "P0 auth/session correctness",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "releasePercent": 45,
+      "nextProof": "Production-safe browser Auth clickthrough for login, logout, and expired-session redirect."
+    },
+    {
+      "priority": 4,
+      "module": "Profile API Keys",
+      "risk": "P0 secrets/exchange access",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "releasePercent": 45,
+      "nextProof": "Production-safe Profile API Keys clickthrough for create, test, delete, and audit log visibility."
+    },
+    {
+      "priority": 5,
+      "module": "Bots",
+      "risk": "P0 bot lifecycle",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "releasePercent": 45,
+      "nextProof": "Production-safe non-destructive clickthrough for bot actions; local action proof already exists."
+    },
+    {
+      "priority": 6,
+      "module": "Profile",
+      "risk": "P1 user settings and validation",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "releasePercent": 45,
+      "nextProof": "Production-safe Profile browser clickthrough for basic profile save and password/security update."
+    },
+    {
+      "priority": 7,
+      "module": "Wallets",
+      "risk": "P1 capital source of truth",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "releasePercent": 45,
+      "nextProof": "Production-safe Wallets clickthrough for create/edit/delete/reset/preview on approved fixture data."
+    },
+    {
+      "priority": 8,
+      "module": "Markets",
+      "risk": "P1 runtime symbol scope",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "releasePercent": 45,
+      "nextProof": "Production-safe Markets clickthrough for universe create/edit/delete, catalog import, and active-bot guard messaging."
+    },
+    {
+      "priority": 9,
+      "module": "Strategies",
+      "risk": "P1 trading decision config",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "releasePercent": 45,
+      "nextProof": "Production-safe Strategies clickthrough for create/edit/delete/clone/config validation, preserving RSI 20/80, plus representative runtime/backtest compatibility proof."
+    },
+    {
+      "priority": 10,
+      "module": "Manual Orders",
+      "risk": "P0 money-impacting order flow",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "releasePercent": 45,
+      "nextProof": "Production-safe Manual Orders clickthrough for PAPER place/cancel/close with DB readback; LIVE remains blocked-risk without an explicit safe plan."
+    },
+    {
+      "priority": 11,
+      "module": "Positions",
+      "risk": "P0 position ownership/runtime truth",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "releasePercent": 45,
+      "nextProof": "Production-safe Positions clickthrough for list/close/update/takeover/import-status with exchange snapshot boundary; live mutation remains blocked-risk without explicit safe plan."
+    },
+    {
+      "priority": 12,
+      "module": "Orders",
+      "risk": "P0 order lifecycle",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "releasePercent": 45,
+      "nextProof": "Production-safe Orders clickthrough for list/cancel/fill/fee readback through API and adapter boundary; live mutation remains blocked-risk without explicit safe plan."
+    },
+    {
+      "priority": 13,
+      "module": "Backtests",
+      "risk": "P1 simulation correctness",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "releasePercent": 45,
+      "nextProof": "Production-safe Backtests browser clickthrough for create/delete/details/report/timeline on approved representative RSI strategy and market data."
+    },
+    {
+      "priority": 14,
+      "module": "Reports",
+      "risk": "P2 operator reporting",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "releasePercent": 45,
+      "nextProof": "Production-safe Reports browser clickthrough for summaries, cross-mode performance, and per-run report readback on approved data."
+    },
+    {
+      "priority": 15,
+      "module": "Subscriptions/Admin",
+      "risk": "P0 role/entitlement access",
+      "status": "BLOCKED_AUTH",
+      "bucket": "blocked",
+      "releasePercent": 0,
+      "nextProof": "Protected admin clickthrough with non-destructive data and entitlement checks."
+    },
+    {
+      "priority": 16,
+      "module": "Logs/Audit Trail",
+      "risk": "P1 auditability",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "releasePercent": 45,
+      "nextProof": "Production-safe Logs/Audit Trail browser clickthrough for filters, pagination, action-produced events, and metadata trace inspection."
+    },
+    {
+      "priority": 17,
+      "module": "Exchange Adapter",
+      "risk": "P0 external exchange boundary",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "releasePercent": 45,
+      "nextProof": "Production-safe exchange-boundary proof for approved real credentials or read-only adapter operations; live mutation remains blocked-risk without explicit safe plan."
+    },
+    {
+      "priority": 18,
+      "module": "Workers",
+      "risk": "P0 async runtime reliability",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "releasePercent": 45,
+      "nextProof": "Production-safe protected worker/process proof for health, readiness, runtime freshness, queue/process lifecycle, and observability on the deployed target."
+    },
+    {
+      "priority": 19,
+      "module": "Operations",
+      "risk": "P0 release safety",
+      "status": "BLOCKED_AUTH",
+      "bucket": "blocked",
+      "releasePercent": 0,
+      "nextProof": "Rollback PASS, liveimport readback, authenticated SLO, release gate, and alerts evidence."
+    },
+    {
+      "priority": 20,
+      "module": "Security/Privacy",
+      "risk": "P0 auth/secrets/data isolation",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "releasePercent": 45,
+      "nextProof": "Production-safe protected security proof for auth, ownership isolation, rate-limit, secret redaction, fail-closed errors, and abuse cases on an approved deployed target; external security review remains open."
+    },
+    {
+      "priority": 21,
+      "module": "UX/A11y/Mobile",
+      "risk": "P1 product usability",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "releasePercent": 0,
+      "nextProof": "Per-screen loading/empty/error/success, keyboard/touch, responsive, and accessibility evidence."
+    }
+  ],
+  "moduleScores": [
+    {
+      "module": "Dashboard Home",
+      "priority": 1,
+      "risk": "P0 operator truth surface",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 5,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Rendered/browser proof for selected bot, wallet KPIs, tables, loading/empty/error, responsive states, and safe clickthrough."
+    },
+    {
+      "module": "Bot Runtime",
+      "priority": 2,
+      "risk": "P0 runtime truth",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 5,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe Bot Runtime clickthrough on approved representative data."
+    },
+    {
+      "module": "Auth",
+      "priority": 3,
+      "risk": "P0 auth/session correctness",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 5,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe browser Auth clickthrough for login, logout, and expired-session redirect."
+    },
+    {
+      "module": "Profile API Keys",
+      "priority": 4,
+      "risk": "P0 secrets/exchange access",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 5,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe Profile API Keys clickthrough for create, test, delete, and audit log visibility."
+    },
+    {
+      "module": "Bots",
+      "priority": 5,
+      "risk": "P0 bot lifecycle",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 5,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe non-destructive clickthrough for bot actions; local action proof already exists."
+    },
+    {
+      "module": "Profile",
+      "priority": 6,
+      "risk": "P1 user settings and validation",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 3,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe Profile browser clickthrough for basic profile save and password/security update."
+    },
+    {
+      "module": "Wallets",
+      "priority": 7,
+      "risk": "P1 capital source of truth",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 3,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe Wallets clickthrough for create/edit/delete/reset/preview on approved fixture data."
+    },
+    {
+      "module": "Markets",
+      "priority": 8,
+      "risk": "P1 runtime symbol scope",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 3,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe Markets clickthrough for universe create/edit/delete, catalog import, and active-bot guard messaging."
+    },
+    {
+      "module": "Strategies",
+      "priority": 9,
+      "risk": "P1 trading decision config",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 3,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe Strategies clickthrough for create/edit/delete/clone/config validation, preserving RSI 20/80, plus representative runtime/backtest compatibility proof."
+    },
+    {
+      "module": "Manual Orders",
+      "priority": 10,
+      "risk": "P0 money-impacting order flow",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 5,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe Manual Orders clickthrough for PAPER place/cancel/close with DB readback; LIVE remains blocked-risk without an explicit safe plan."
+    },
+    {
+      "module": "Positions",
+      "priority": 11,
+      "risk": "P0 position ownership/runtime truth",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 5,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe Positions clickthrough for list/close/update/takeover/import-status with exchange snapshot boundary; live mutation remains blocked-risk without explicit safe plan."
+    },
+    {
+      "module": "Orders",
+      "priority": 12,
+      "risk": "P0 order lifecycle",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 5,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe Orders clickthrough for list/cancel/fill/fee readback through API and adapter boundary; live mutation remains blocked-risk without explicit safe plan."
+    },
+    {
+      "module": "Backtests",
+      "priority": 13,
+      "risk": "P1 simulation correctness",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 3,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe Backtests browser clickthrough for create/delete/details/report/timeline on approved representative RSI strategy and market data."
+    },
+    {
+      "module": "Reports",
+      "priority": 14,
+      "risk": "P2 operator reporting",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 1,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe Reports browser clickthrough for summaries, cross-mode performance, and per-run report readback on approved data."
+    },
+    {
+      "module": "Subscriptions/Admin",
+      "priority": 15,
+      "risk": "P0 role/entitlement access",
+      "status": "BLOCKED_AUTH",
+      "bucket": "blocked",
+      "weight": 5,
+      "implementationPercent": 35,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Protected admin clickthrough with non-destructive data and entitlement checks."
+    },
+    {
+      "module": "Logs/Audit Trail",
+      "priority": 16,
+      "risk": "P1 auditability",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 3,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe Logs/Audit Trail browser clickthrough for filters, pagination, action-produced events, and metadata trace inspection."
+    },
+    {
+      "module": "Exchange Adapter",
+      "priority": 17,
+      "risk": "P0 external exchange boundary",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 5,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe exchange-boundary proof for approved real credentials or read-only adapter operations; live mutation remains blocked-risk without explicit safe plan."
+    },
+    {
+      "module": "Workers",
+      "priority": 18,
+      "risk": "P0 async runtime reliability",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 5,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe protected worker/process proof for health, readiness, runtime freshness, queue/process lifecycle, and observability on the deployed target."
+    },
+    {
+      "module": "Operations",
+      "priority": 19,
+      "risk": "P0 release safety",
+      "status": "BLOCKED_AUTH",
+      "bucket": "blocked",
+      "weight": 5,
+      "implementationPercent": 35,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Rollback PASS, liveimport readback, authenticated SLO, release gate, and alerts evidence."
+    },
+    {
+      "module": "Security/Privacy",
+      "priority": 20,
+      "risk": "P0 auth/secrets/data isolation",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 5,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe protected security proof for auth, ownership isolation, rate-limit, secret redaction, fail-closed errors, and abuse cases on an approved deployed target; external security review remains open."
+    },
+    {
+      "module": "UX/A11y/Mobile",
+      "priority": 21,
+      "risk": "P1 product usability",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 3,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Per-screen loading/empty/error/success, keyboard/touch, responsive, and accessibility evidence."
+    }
+  ],
+  "p1NotReleaseReady": [
+    {
+      "module": "Profile",
+      "priority": 6,
+      "risk": "P1 user settings and validation",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 3,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe Profile browser clickthrough for basic profile save and password/security update."
+    },
+    {
+      "module": "Wallets",
+      "priority": 7,
+      "risk": "P1 capital source of truth",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 3,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe Wallets clickthrough for create/edit/delete/reset/preview on approved fixture data."
+    },
+    {
+      "module": "Markets",
+      "priority": 8,
+      "risk": "P1 runtime symbol scope",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 3,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe Markets clickthrough for universe create/edit/delete, catalog import, and active-bot guard messaging."
+    },
+    {
+      "module": "Strategies",
+      "priority": 9,
+      "risk": "P1 trading decision config",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 3,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe Strategies clickthrough for create/edit/delete/clone/config validation, preserving RSI 20/80, plus representative runtime/backtest compatibility proof."
+    },
+    {
+      "module": "Backtests",
+      "priority": 13,
+      "risk": "P1 simulation correctness",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 3,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe Backtests browser clickthrough for create/delete/details/report/timeline on approved representative RSI strategy and market data."
+    },
+    {
+      "module": "Logs/Audit Trail",
+      "priority": 16,
+      "risk": "P1 auditability",
+      "status": "PASS_LOCAL",
+      "bucket": "doneLocalNeedsProdProof",
+      "weight": 3,
+      "implementationPercent": 90,
+      "evidencePercent": 65,
+      "releasePercent": 45,
+      "nextProof": "Production-safe Logs/Audit Trail browser clickthrough for filters, pagination, action-produced events, and metadata trace inspection."
+    },
+    {
+      "module": "UX/A11y/Mobile",
+      "priority": 21,
+      "risk": "P1 product usability",
+      "status": "UNVERIFIED",
+      "bucket": "toProve",
+      "weight": 3,
+      "implementationPercent": 45,
+      "evidencePercent": 0,
+      "releasePercent": 0,
+      "nextProof": "Per-screen loading/empty/error/success, keyboard/touch, responsive, and accessibility evidence."
+    }
+  ],
+  "concreteNonProofGaps": [
+    {
+      "id": "API_MODULE_NO_TESTS_SUBSCRIPTIONS",
+      "severity": "P1",
+      "category": "api-test-gap",
+      "title": "API module 'subscriptions' has no focused tests",
+      "evidence": "module=subscriptions, files=8",
+      "recommendation": "Add focused API tests or document why coverage belongs to another module.",
+      "bucket": "toAddTests"
+    },
+    {
+      "id": "DOC_PLACEHOLDER_DOCS_MODULES_WEB_ORDERS_MD",
+      "severity": "P1",
+      "category": "documented-placeholder",
+      "title": "Module doc still describes placeholder or not-implemented behavior",
+      "evidence": "docs/modules/web-orders.md",
+      "recommendation": "Either implement the documented surface or update the doc to the canonical owner and proof path.",
+      "bucket": "toReviewDocumentationOrImplement"
+    },
+    {
+      "id": "DOC_PLACEHOLDER_DOCS_MODULES_WEB_POSITIONS_MD",
+      "severity": "P1",
+      "category": "documented-placeholder",
+      "title": "Module doc still describes placeholder or not-implemented behavior",
+      "evidence": "docs/modules/web-positions.md",
+      "recommendation": "Either implement the documented surface or update the doc to the canonical owner and proof path.",
+      "bucket": "toReviewDocumentationOrImplement"
+    },
+    {
+      "id": "QUEUE_OPEN_ITEMS_EXIST",
+      "severity": "P1",
+      "category": "queue-open-work",
+      "title": "10 unchecked queue markers remain",
+      "evidence": ".codex/context/TASK_BOARD.md:415 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | .codex/context/TASK_BOARD.md:1270 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | .codex/context/TASK_BOARD.md:1442 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs` | .codex/context/TASK_BOARD.md:4925 - [ ] `LIVEIMPORT-03 release(prod): read back imported ETH/DOGE provenance on current production` | .codex/context/TASK_BOARD.md:4960 - [ ] `BOTMULTI-09 release(prod): promote multi-strategy runtime topology to production` | docs/planning/mvp-next-commits.md:334 - [ ] `CONTROLLED-LIVE-SESSION-PROOF-2026-05-10 release: capture guarded LIVE runtime session readback` | docs/planning/mvp-next-commits.md:1070 - [ ] `PROD-UI-AUDIT-PLAN-2026-05-08 qa: execute production UI module clickthrough audit` | docs/planning/mvp-next-commits.md:1438 - [ ] `V1-PROTECTED-ACCESS-READINESS-2026-05-09 release: provide protected final evidence inputs`",
+      "recommendation": "Classify each as executable, blocked by auth/approval, or historical carryover.",
+      "bucket": "toClassifyQueue"
+    },
+    {
+      "id": "WEB_ROUTE_MISSING__DASHBOARD_ORDERS",
+      "severity": "P1",
+      "category": "web-route-gap",
+      "title": "Expected dashboard route '/dashboard/orders' has no page.tsx",
+      "evidence": "route=/dashboard/orders",
+      "recommendation": "Confirm whether the action surface intentionally lives on Dashboard Home or add the route/page proof.",
+      "bucket": "toReviewArchitectureOrFix"
+    },
+    {
+      "id": "WEB_ROUTE_MISSING__DASHBOARD_POSITIONS",
+      "severity": "P1",
+      "category": "web-route-gap",
+      "title": "Expected dashboard route '/dashboard/positions' has no page.tsx",
+      "evidence": "route=/dashboard/positions",
+      "recommendation": "Confirm whether the action surface intentionally lives on Dashboard Home or add the route/page proof.",
+      "bucket": "toReviewArchitectureOrFix"
+    },
+    {
+      "id": "WEB_FEATURE_EMPTY_ORDERS",
+      "severity": "P1",
+      "category": "web-surface-gap",
+      "title": "Web feature 'orders' has no active TS/TSX files",
+      "evidence": "feature=orders",
+      "recommendation": "Confirm whether this is intentionally rendered through Dashboard Home or implement/retire the feature surface.",
+      "bucket": "toReviewArchitectureOrFix"
+    },
+    {
+      "id": "WEB_FEATURE_NO_TESTS_POSITIONS",
+      "severity": "P1",
+      "category": "web-test-gap",
+      "title": "Web feature 'positions' has no focused tests",
+      "evidence": "feature=positions, files=1",
+      "recommendation": "Add focused UI/action tests or document why the route is owned by another feature.",
+      "bucket": "toAddTests"
+    },
+    {
+      "id": "DOC_PLACEHOLDER_DOCS_MODULES_API_SUBSCRIPTIONS_MD",
+      "severity": "P2",
+      "category": "documented-placeholder",
+      "title": "Module doc still describes placeholder or not-implemented behavior",
+      "evidence": "docs/modules/api-subscriptions.md",
+      "recommendation": "Either implement the documented surface or update the doc to the canonical owner and proof path.",
+      "bucket": "toReviewDocumentationOrImplement"
+    }
+  ]
+}

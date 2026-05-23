@@ -1,4 +1,4 @@
-﻿# Testing Strategy
+# Testing Strategy
 
 ## Critical Areas
 - Authorization and data isolation.
@@ -39,7 +39,7 @@
 - Localization QA checklist:
   - `docs/ux/localization-qa.md`
 - Accessibility audit checklist:
-  - `docs/ux/accessibility-dashboard-audit.md`
+  - `docs/ux/dashboard-accessibility-baseline.md`
 - Load tests for API and worker monitoring endpoints:
   - baseline: `pnpm --filter api test:load:baseline`
   - stress: `pnpm --filter api test:load:stress`

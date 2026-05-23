@@ -30,7 +30,7 @@ runtime readiness.
 
 ## Data Read/Write
 - Reads runtime dependency state and build/deploy metadata.
-- Writes operation evidence artifacts under `docs/operations/_artifacts-*`
+- Writes operation evidence artifacts under `history/artifacts/_artifacts-*`
   when scripts are run.
 
 ## Failure Points

@@ -2,7 +2,7 @@
 
 Generated at (UTC): 2026-05-23T04:41:47.179Z
 
-Source artifact: `docs\operations\v1-slo-window-report-7d-2026-05-23T04-38-18-047Z.json`
+Source artifact: `history\artifacts\v1-slo-window-report-7d-2026-05-23T04-38-18-047Z.json`
 Observation window:
 - started: n/a
 - ended: n/a
@@ -14,7 +14,7 @@ Observation window:
 - Gate 4 (Formal RC sign-offs): PASS
 
 ## Backup/Restore Evidence
-- Latest local artifact: `docs\operations\_artifacts-db-restore-check-2026-05-23T04-06-43-683Z.txt`
+- Latest local artifact: `history\artifacts\_artifacts-db-restore-check-2026-05-23T04-06-43-683Z.txt`
 - Latest local result: PASS
 - Runbook source: `docs\operations\v1-rc-external-gates-runbook.md`
 - Gate 1 runbook evidence complete: yes

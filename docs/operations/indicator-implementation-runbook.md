@@ -133,7 +133,7 @@ pnpm --filter api test -- src/modules/backtests/backtestParity3Symbols.test.ts
 
 Attach/update evidence doc under `docs/operations/` (timestamped file), for example:
 
-- `docs/operations/indicator-3symbol-parity-evidence-YYYY-MM-DD.md`
+- `history/evidence/indicator-3symbol-parity-evidence-YYYY-MM-DD.md`
 
 Document:
 
@@ -148,7 +148,7 @@ After each task commit:
 
 - update `docs/planning/mvp-next-commits.md`
 - update checkbox + progress log in `docs/planning/mvp-execution-plan.md`
-- update `docs/planning/indicator-expansion-implementation-plan-2026-04-07.md` (or current active plan)
+- update `history/plans/indicator-expansion-implementation-plan-2026-04-07.md` (or current active plan)
 
 Keep one logical change per commit. Do not mix feature/refactor/test/docs in one commit unless the task explicitly requires it.
 

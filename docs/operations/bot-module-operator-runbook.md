@@ -97,7 +97,7 @@ bot, activates only after explicit risk acknowledgement, runs `LIVEIMPORT-03`,
 and deactivates the bot in a `finally` cleanup path:
 
 ```powershell
-pnpm run ops:live:controlled-proof -- --expected-sha <sha> --output docs/operations/liveimport-03-prod-readback-<sha>-<date>.json --i-understand-live-risk
+pnpm run ops:live:controlled-proof -- --expected-sha <sha> --output history/artifacts/liveimport-03-prod-readback-<sha>-<date>.json --i-understand-live-risk
 ```
 
 Use `--dry-run` first to inspect the redacted plan without network calls or

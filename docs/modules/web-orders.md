@@ -81,10 +81,10 @@ parallel page.
 
 ## 8. Test Coverage and Evidence
 Relevant evidence:
-- `docs/planning/v1-orders-local-proof-task-2026-05-11.md`
-- `docs/planning/v1-manual-orders-local-proof-task-2026-05-11.md`
+- `history/evidence/v1-orders-local-proof-task-2026-05-11.md`
+- `history/evidence/v1-manual-orders-local-proof-task-2026-05-11.md`
 - `docs/planning/v1-dashboard-runtime-table-action-audit-2026-05-10-task.md`
-- `docs/planning/v1-bot-runtime-paper-session-browser-proof-task-2026-05-11.md`
+- `history/evidence/v1-bot-runtime-paper-session-browser-proof-task-2026-05-11.md`
 - `apps/web/src/middleware.test.ts`
 - Dashboard Home focused order/action tests under
   `apps/web/src/features/dashboard-home/components/`

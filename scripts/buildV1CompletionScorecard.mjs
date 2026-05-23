@@ -4,7 +4,7 @@ import { readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const repoRoot = process.cwd();
-const operationsDir = path.join(repoRoot, 'docs', 'operations');
+const auditsDir = path.join(repoRoot, 'history', 'audits');
 
 const toPosixPath = (value) => value.split(path.sep).join('/');
 const relativePath = (targetPath) => toPosixPath(path.relative(repoRoot, targetPath));
@@ -48,8 +48,8 @@ const parseArgs = () => {
   }
 
   options.markdownOutput =
-    options.markdownOutput || `docs/operations/v1-completion-scorecard-${options.today}.md`;
-  options.jsonOutput = options.jsonOutput || `docs/operations/v1-completion-scorecard-${options.today}.json`;
+    options.markdownOutput || `history/releases/v1-completion-scorecard-${options.today}.md`;
+  options.jsonOutput = options.jsonOutput || `history/releases/v1-completion-scorecard-${options.today}.json`;
   return options;
 };
 
@@ -68,14 +68,14 @@ Options:
 };
 
 const latestLedgerPath = async () => {
-  const files = await readdir(operationsDir);
+  const files = await readdir(auditsDir);
   const ledgers = files
     .filter((file) => /^v1-master-state-ledger-\d{4}-\d{2}-\d{2}\.json$/.test(file))
     .sort();
   if (ledgers.length === 0) {
-    throw new Error('No v1-master-state-ledger-YYYY-MM-DD.json file found in docs/operations.');
+    throw new Error('No v1-master-state-ledger-YYYY-MM-DD.json file found in history/audits.');
   }
-  return path.join(operationsDir, ledgers.at(-1));
+  return path.join(auditsDir, ledgers.at(-1));
 };
 
 const riskWeight = (risk) => {

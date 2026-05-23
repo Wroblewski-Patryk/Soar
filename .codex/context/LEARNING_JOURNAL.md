@@ -60,7 +60,7 @@ pnpm run ops:liveimport:readback -- --base-url https://api.soar.luckysparrow.ch 
 - Avoid: treating a missing `ETHUSDT,DOGEUSDT` readback as a product/runtime
   failure before checking the real open runtime symbols.
 - Evidence:
-  `docs/operations/liveimport-03-prod-readback-2026-05-23.json` passed for
+  `history/artifacts/liveimport-03-prod-readback-2026-05-23.json` passed for
   auto-discovered `SOLUSDT` and `BNBUSDT`.
 
 ### 2026-05-23 - Start Docker Desktop before full go-live smoke
@@ -131,13 +131,13 @@ corepack pnpm run go-live:infra:up
   lane report in `docs/planning/*-task.md`, then close the agent.
 - Avoid: treating a closed-but-unreported background agent as evidence.
 - Evidence:
-  `docs/planning/security-red-team-hardening-2026-05-21-task.md`,
+  `history/tasks/security-red-team-hardening-2026-05-21-task.md`,
   `.agents/state/agent-evals.md`, and
   `.agents/state/responsibility-learning.md`.
 
 ### 2026-05-17 - Do not run project index and static scan concurrently
 - Context: architecture-code discrepancy audit refreshed
-  `docs/operations/project-index-2026-05-17.json` and then ran the static scan.
+  `history/artifacts/project-index-2026-05-17.json` and then ran the static scan.
 - Symptom: a parallel `ops:project:index` plus `ops:project:scan` run failed
   with `SyntaxError: Unexpected end of JSON input`.
 - Root cause: the static scan read the generated project-index JSON while the
@@ -152,7 +152,7 @@ pnpm run ops:project:scan -- --index docs/operations/project-index-YYYY-MM-DD.js
 - Avoid: launching project index and static scan in parallel during audit
   refreshes.
 - Evidence:
-  `docs/planning/project-architecture-code-discrepancy-audit-2026-05-17-task.md`.
+  `history/audits/project-architecture-code-discrepancy-audit-2026-05-17-task.md`.
 
 ### 2026-05-18 - Do not run shared-DB API packs in parallel
 - Context: `FULL-LAYERED-AUDIT-RUN-2026-05-18` split broad API audit evidence
@@ -178,7 +178,7 @@ pnpm run go-live:infra:down
 ```
 - Avoid: `multi_tool_use.parallel` for API packs that use the same local DB.
 - Evidence:
-  `docs/planning/full-layered-audit-run-2026-05-18-task.md`.
+  `history/audits/full-layered-audit-run-2026-05-18-task.md`.
   2026-05-20 `V1-FUNCTION-ARCHITECTURE-VERIFICATION-2026-05-20` reproduced
   the same pitfall when DB-backed parent gates were started together. A
   single-fork full-suite attempt then failed with too many Prisma client
@@ -207,7 +207,7 @@ Start-Process -FilePath "cmd.exe" -ArgumentList $cmd -WorkingDirectory $repo -Wi
 - Avoid: building a double-quoted parent PowerShell string containing
   `$env:SOME_KEY=...` unless every `$` is intentionally escaped.
 - Evidence:
-  `docs/planning/authenticated-route-state-audit-2026-05-19-task.md`.
+  `history/audits/authenticated-route-state-audit-2026-05-19-task.md`.
 
 ### 2026-05-14 - Do not claim browser cleanup while headless rows remain
 - Context: after production fixture proof/state synchronization, a narrow
@@ -228,7 +228,7 @@ Start-Process -FilePath "cmd.exe" -ArgumentList $cmd -WorkingDirectory $repo -Wi
   `chrome-headless-shell` rows remain.
 - Avoid: relying only on post-hoc `Stop-Process` after browser validation.
 - Evidence:
-  `docs/planning/v1-production-fixture-low-risk-action-proof-457bce05-2026-05-14-task.md`.
+  `history/evidence/v1-production-fixture-low-risk-action-proof-457bce05-2026-05-14-task.md`.
   2026-05-19 `AUD-12` cleanup found residual `chrome-headless-shell` rows from
   the broader audit mission; a narrow `Get-Process chrome-headless-shell |
   Stop-Process -Force` cleanup removed them, and the follow-up process check
@@ -282,7 +282,7 @@ Start-Process -FilePath "cmd.exe" -ArgumentList $cmd -WorkingDirectory $repo -Wi
   `manageExternalPositions`, and `consentTextVersion` together.
 - Avoid: partial production bot `PUT` payloads that rely on server defaults.
 - Evidence:
-  `docs/planning/v1-controlled-live-proof-attempt-00169d7f-2026-05-13-task.md`.
+  `history/evidence/v1-controlled-live-proof-attempt-00169d7f-2026-05-13-task.md`.
 
 ### 2026-05-12 - Run V1 generated-state commands sequentially
 - Context: `V1-GENERATED-STATE-REFRESH-AFTER-QUEUE-HYGIENE-00169D7F-2026-05-12`
@@ -503,9 +503,9 @@ $env:DATABASE_URL = $dbValue
 ```powershell
 $env:COREPACK_INTEGRITY_KEYS='0'
 corepack pnpm@10.13.1 run ops:project:index -- --today 2026-05-11
-corepack pnpm@10.13.1 run ops:project:scan -- --today 2026-05-11 --index docs/operations/project-index-2026-05-11.json
-corepack pnpm@10.13.1 run ops:project:ledger -- --today 2026-05-11 --index docs/operations/project-index-2026-05-11.json --scan docs/operations/v1-static-issue-scan-2026-05-11.json
-corepack pnpm@10.13.1 run ops:project:scorecard -- --today 2026-05-11 --ledger docs/operations/v1-master-state-ledger-2026-05-11.json
+corepack pnpm@10.13.1 run ops:project:scan -- --today 2026-05-11 --index history/artifacts/project-index-2026-05-11.json
+corepack pnpm@10.13.1 run ops:project:ledger -- --today 2026-05-11 --index history/artifacts/project-index-2026-05-11.json --scan history/artifacts/v1-static-issue-scan-2026-05-11.json
+corepack pnpm@10.13.1 run ops:project:scorecard -- --today 2026-05-11 --ledger history/artifacts/v1-master-state-ledger-2026-05-11.json
 ```
 - Avoid: relying on implicit latest-artifact selection when the task just
   generated a new dated V1 report chain.
@@ -1555,8 +1555,8 @@ pnpm --filter api run test -- src/modules/markets/markets.e2e.test.ts --run
   also records the command into durable evidence.
 - Evidence: 2026-05-01 `V1EXCEL-05` rollback-proof refresh
   (`scripts/runRollbackProofEvidence.mjs`,
-  `docs/operations/v1-rollback-proof-prod-2026-05-01T01-29-17-680Z.md`,
-  `docs/operations/_artifacts-v1-rollback-proof-prod-2026-05-01T01-29-17-680Z.json`).
+  `history/evidence/v1-rollback-proof-prod-2026-05-01T01-29-17-680Z.md`,
+  `history/artifacts/_artifacts-v1-rollback-proof-prod-2026-05-01T01-29-17-680Z.json`).
 - 2026-05-14 reinforcement: a final production proof secret scan found older
   stage artifacts that had persisted a raw `--auth-password` value in recorded
   command strings. Those artifacts were redacted in place. Apply the same
@@ -1674,7 +1674,7 @@ pnpm --filter api run test -- src/modules/markets/markets.e2e.test.ts --run
 4) Lock the seam with a focused regression proving stale `currentAdds` cannot suppress the next valid DCA.
 ```
 - Avoid: assuming that fixing runtime/session price truth alone is enough to restore imported LIVE automation continuity.
-- Evidence: 2026-04-30 `V1AUTO-A` (`runtimePositionAutomation.service.ts`, `runtimePositionAutomation.service.test.ts`, `docs/operations/v1auto-runtime-state-rebase-closure-2026-04-30.md`).
+- Evidence: 2026-04-30 `V1AUTO-A` (`runtimePositionAutomation.service.ts`, `runtimePositionAutomation.service.test.ts`, `history/plans/v1auto-runtime-state-rebase-closure-2026-04-30.md`).
 
 ### 2026-04-28 - Legacy DB-backed e2e suites are often more stable with unique per-test identities than destructive per-test cleanup
 - Context: the follow-up quality task after `UXSAFE-2026-04-28-A` needed the full legacy `markets` and `wallets` CRUD suites green again, not only focused `-t` regressions.
@@ -2338,7 +2338,7 @@ $ts = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH-mm-ss-fffZ')
 ```
 - Avoid: `Get-Date -AsUTC -Format ...`
 - Evidence:
-  - Observed on 2026-04-15 while generating `docs/operations/_artifacts-docs-parity-*.json` in this repository.
+  - Observed on 2026-04-15 while generating `history/artifacts/_artifacts-docs-parity-*.json` in this repository.
 
 ### 2026-04-16 - Long soak load-test summary overflow
 - Context: running 30-minute load soak via `apps/api/scripts/load-test.mjs`.
@@ -2352,7 +2352,7 @@ $ts = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH-mm-ss-fffZ')
 ```
 - Avoid: using spread (`Math.min(...arr)`, `Math.max(...arr)`) over unbounded large arrays in long-duration load runners.
 - Evidence:
-  - Observed on 2026-04-16 in `docs/operations/_artifacts-cpdb24-soak-2026-04-16T02-03-29-605Z.json` (`RangeError` in `apps/api/scripts/load-test.mjs`).
+  - Observed on 2026-04-16 in `history/artifacts/_artifacts-cpdb24-soak-2026-04-16T02-03-29-605Z.json` (`RangeError` in `apps/api/scripts/load-test.mjs`).
 
 ### 2026-04-16 - API e2e shared-db concurrency collision
 - Context: running multiple API e2e files in one `vitest` invocation against the shared local test database.

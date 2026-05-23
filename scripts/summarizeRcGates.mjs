@@ -9,7 +9,7 @@ const parseArgs = () => {
   const args = process.argv.slice(2);
   const options = {
     statusPath: path.join(operationsDir, 'v1-rc-external-gates-status.md'),
-    evidencePath: path.join(operationsDir, '_artifacts-rc-evidence-check-latest.json'),
+    evidencePath: path.join(process.cwd(), 'history', 'operations', '_artifacts-rc-evidence-check-latest.json'),
     json: false,
   };
 
