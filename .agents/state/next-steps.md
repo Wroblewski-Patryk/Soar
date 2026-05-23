@@ -56,6 +56,19 @@ Evidence:
 `docs/planning/runtime-dca-protection-display-parity-2026-05-23-task.md` and
 `docs/planning/web-dashboard-dca-protection-truth-parity-2026-05-23-task.md`.
 
+Current Gate.io manual-order contract-size backend proof:
+`LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23` has an additional local
+DB-backed service and route proof for manual-order context. The new tests prove
+Gate.io futures `ADAUSDT` with `contractSize=10`, `minAmount=1`,
+`minNotional=5`, mark price `0.25`, leverage `5`, and requested `quantity=4`
+returns `minExecutableQty=2`, estimated notional `10 USDT`, and estimated
+margin `2 USDT`. The route test uses a Vitest-only connector override, so no
+real exchange call or LIVE mutation occurs. The same focused route pack found
+and fixed a LIVE close dedupe truth bug: reused submitted closes now stay
+`submitted` until completed instead of reporting `closed` while the position
+is still open. Next exact task: run API typecheck, guardrails, commit/push if
+green, and verify public deploy freshness for the pushed HEAD.
+
 Current Gate.io ADA manual order attempt:
 `GATEIO-LIVE-MANUAL-ORDER-ADA-SHORT-2026-05-23` is verified fail-closed.
 The operator approved a real LIVE `SELL MARKET ADAUSDT` manual order with

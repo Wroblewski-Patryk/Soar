@@ -1291,4 +1291,64 @@ describe('orchestrateRuntimeSignal', () => {
     expect(positionGateway.closePosition).not.toHaveBeenCalled();
     expect(tradeGateway.createTrade).not.toHaveBeenCalled();
   });
+
+  it('keeps reused submitted CLOSE dedupe truthful even when a position id is linked', async () => {
+    const orderGateway = createOrderGateway();
+    const positionGateway = createPositionGateway();
+    const eventGateway = createEventGateway();
+    const tradeGateway = createTradeGateway();
+    const dedupeGateway = createDedupeGateway();
+    (positionGateway.getOpenPositionBySymbol as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'position-open',
+      userId: 'u1',
+      externalId: null,
+      origin: 'BOT',
+      managementMode: 'BOT_MANAGED',
+      syncState: 'IN_SYNC',
+      symbol: 'BTCUSDT',
+      side: 'LONG',
+      status: 'OPEN',
+      entryPrice: 43000,
+      quantity: 0.2,
+      leverage: 1,
+      openedAt: new Date(),
+      closedAt: null,
+      realizedPnl: null,
+      unrealizedPnl: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      botId: null,
+      strategyId: null,
+      stopLoss: null,
+      takeProfit: null,
+    });
+    (dedupeGateway.acquire as ReturnType<typeof vi.fn>).mockResolvedValue({
+      outcome: 'reused',
+      dedupeKey: 'v1|CLOSE|...',
+      reuseStatus: 'submitted',
+      orderId: 'order-close-pending',
+      positionId: 'position-open',
+    });
+
+    const result = await orchestrateRuntimeSignal(
+      {
+        userId: 'u1',
+        symbol: 'BTCUSDT',
+        direction: 'EXIT',
+        quantity: 0.2,
+        markPrice: 43000,
+        mode: 'LIVE',
+      },
+      orderGateway,
+      positionGateway,
+      eventGateway,
+      tradeGateway,
+      dedupeGateway
+    );
+
+    expect(result).toEqual({ status: 'submitted', orderId: 'order-close-pending' });
+    expect(orderGateway.openOrder).not.toHaveBeenCalled();
+    expect(positionGateway.closePosition).not.toHaveBeenCalled();
+    expect(tradeGateway.createTrade).not.toHaveBeenCalled();
+  });
 });

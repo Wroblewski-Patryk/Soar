@@ -1,9 +1,38 @@
 import request from 'supertest';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { clearRuntimeSignalMarketDataStore } from '../engine/runtimeSignalMarketDataGateway';
 import { clearRuntimeTickerStore, upsertRuntimeTicker } from '../engine/runtimeTickerStore';
+
+const manualContextConnectorOverride = vi.hoisted(() => ({
+  current: null as null | ((params: { exchange: string; marketType: 'FUTURES' | 'SPOT' }) => {
+    getSymbolTradingRules: (symbol: string) => Promise<{
+      minAmount: number | null;
+      minNotional: number | null;
+      amountPrecision: number | null;
+      contractSize?: number | null;
+    }>;
+    fetchMarkPrice: (symbol: string) => Promise<number>;
+    disconnect: () => Promise<void>;
+  }),
+}));
+
+vi.mock('./orders.manualContext.service', async () => {
+  const actual = await vi.importActual<typeof import('./orders.manualContext.service')>('./orders.manualContext.service');
+
+  return {
+    ...actual,
+    getManualOrderContext: (userId: string, query: unknown, deps: unknown) =>
+      actual.getManualOrderContext(
+        userId,
+        query as Parameters<typeof actual.getManualOrderContext>[1],
+        manualContextConnectorOverride.current
+          ? { createPublicConnector: manualContextConnectorOverride.current }
+          : (deps as Parameters<typeof actual.getManualOrderContext>[2])
+      ),
+  };
+});
 
 const registerAndLogin = async (email: string) => {
   const agent = request.agent(app);
@@ -66,6 +95,7 @@ const createMarketScope = async (params: {
 
 describe('Orders and positions read contract', () => {
   beforeEach(async () => {
+    manualContextConnectorOverride.current = null;
     clearRuntimeTickerStore();
     clearRuntimeSignalMarketDataStore();
     await prisma.log.deleteMany();
@@ -345,6 +375,106 @@ describe('Orders and positions read contract', () => {
 
     expect(forbiddenContextRes.status).toBe(404);
     expect(forbiddenContextRes.body.error.message).toBe('Not found');
+  });
+
+  it('uses Gate.io futures contract size for manual-order context quantity and notional truth through the route', async () => {
+    const ownerAgent = await registerAndLogin('manual-context-gateio-contract-size-owner@example.com');
+    const ownerId = await getUserId('manual-context-gateio-contract-size-owner@example.com');
+
+    const strategy = await prisma.strategy.create({
+      data: {
+        userId: ownerId,
+        name: 'Manual Context Gate.io Contract Size Strategy',
+        description: null,
+        interval: '15m',
+        leverage: 5,
+        walletRisk: 1,
+        config: {
+          additional: {
+            marginMode: 'CROSSED',
+            orderType: 'MARKET',
+          },
+        },
+      },
+    });
+
+    const symbolGroup = await createMarketScope({
+      userId: ownerId,
+      name: 'Manual context Gate.io contract size',
+      symbols: ['ADAUSDT'],
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+    });
+
+    const bot = await prisma.bot.create({
+      data: {
+        userId: ownerId,
+        name: 'Manual context Gate.io contract size bot',
+        mode: 'LIVE',
+        exchange: 'GATEIO',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        liveOptIn: true,
+        consentTextVersion: 'mvp-v1',
+      },
+    });
+
+    const botGroup = await prisma.botMarketGroup.create({
+      data: {
+        userId: ownerId,
+        botId: bot.id,
+        symbolGroupId: symbolGroup.id,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 1,
+        maxOpenPositions: 3,
+        isEnabled: true,
+      },
+    });
+
+    await prisma.marketGroupStrategyLink.create({
+      data: {
+        userId: ownerId,
+        botId: bot.id,
+        botMarketGroupId: botGroup.id,
+        strategyId: strategy.id,
+        priority: 1,
+        weight: 1,
+        isEnabled: true,
+      },
+    });
+
+    const connectorFactory = vi.fn(() => ({
+      getSymbolTradingRules: async () => ({
+        minAmount: 1,
+        minNotional: 5,
+        amountPrecision: 1,
+        contractSize: 10,
+      }),
+      fetchMarkPrice: async () => 0.25,
+      disconnect: async () => undefined,
+    }));
+    manualContextConnectorOverride.current = connectorFactory;
+
+    const contextRes = await ownerAgent.get('/dashboard/orders/manual-context').query({
+      botId: bot.id,
+      symbol: 'adausdt',
+      side: 'SELL',
+      quantity: 4,
+    });
+
+    expect(contextRes.status).toBe(200);
+    expect(connectorFactory).toHaveBeenCalledWith({
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+    });
+    expect(contextRes.body.symbol).toBe('ADAUSDT');
+    expect(contextRes.body.leverage).toBe(5);
+    expect(contextRes.body.quantityConstraints.contractSize).toBe(10);
+    expect(contextRes.body.quantityConstraints.minExecutableQty).toBe(2);
+    expect(contextRes.body.sideAwarePreview.requestedQuantity).toBe(4);
+    expect(contextRes.body.sideAwarePreview.estimatedNotional).toBe(10);
+    expect(contextRes.body.sideAwarePreview.estimatedMargin).toBe(2);
   });
 
   it('resolves manual-order strategy context from market-universe contract when symbol-group snapshot is empty', async () => {
@@ -1656,16 +1786,34 @@ describe('Orders and positions read contract', () => {
       .send({ riskAck: true });
 
     expect(closeRes.status).toBe(200);
-    expect(closeRes.body.status).toBe('closed');
-    expect(closeRes.body.positionId).toBe(exchangePosition.id);
+    expect(closeRes.body.status).toBe('submitted');
+    expect(closeRes.body.orderId).toEqual(expect.any(String));
+
+    const submittedCloseOrder = await prisma.order.findUniqueOrThrow({
+      where: { id: closeRes.body.orderId },
+    });
+    expect(submittedCloseOrder.status).toBe('OPEN');
+    expect(submittedCloseOrder.side).toBe('SELL');
+    expect(submittedCloseOrder.type).toBe('MARKET');
+    expect(submittedCloseOrder.positionId).toBe(exchangePosition.id);
+
+    const stillOpenPosition = await prisma.position.findUniqueOrThrow({
+      where: { id: exchangePosition.id },
+    });
+    expect(stillOpenPosition.status).toBe('OPEN');
 
     const secondCloseRes = await ownerAgent
       .post(`/dashboard/bots/${liveBot.id}/runtime-sessions/${session.id}/positions/${exchangePosition.id}/close`)
       .send({ riskAck: true });
 
     expect(secondCloseRes.status).toBe(200);
-    expect(secondCloseRes.body.status).toBe('closed');
-    expect(secondCloseRes.body.positionId).toBe(exchangePosition.id);
+    expect(secondCloseRes.body.status).toBe('submitted');
+    expect(secondCloseRes.body.orderId).toBe(submittedCloseOrder.id);
+
+    const stillOpenAfterReuse = await prisma.position.findUniqueOrThrow({
+      where: { id: exchangePosition.id },
+    });
+    expect(stillOpenAfterReuse.status).toBe('OPEN');
   });
 
   it('keeps profitable PAPER runtime manual close consistent across position history and capital summary', async () => {

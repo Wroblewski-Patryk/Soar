@@ -46,7 +46,15 @@ Last updated: 2026-05-23
   Web build-info reports `a0e4f117` on `main` with
   `metadataSource=github-branch` and build id `AnqfCfwjz3KEHQ-_bouFD`, and
   public no-worker smoke still passes API `/health`, API `/ready`, and Web
-  `/`. Evidence:
+  `/`. Additional local DB-backed proof now covers the manual-order context
+  route and service for Gate.io futures: with mocked exchange rules
+  `minAmount=1`, `minNotional=5`, `amountPrecision=1`, `contractSize=10`,
+  mark price `0.25`, leverage `5`, and requested `quantity=4`, both service
+  and route proof return `minExecutableQty=2`, estimated notional `10 USDT`,
+  and estimated margin `2 USDT`. The broader focused pack also fixed a LIVE
+  close lifecycle truth bug: reused submitted close dedupe now remains
+  `submitted` instead of claiming `closed` before exchange/fill completion.
+  Evidence:
   `docs/planning/live-exchange-execution-parity-2026-05-23-task.md`.
 
 - `RUNTIME-DCA-PROTECTION-DISPLAY-PARITY-2026-05-23` is locally verified.

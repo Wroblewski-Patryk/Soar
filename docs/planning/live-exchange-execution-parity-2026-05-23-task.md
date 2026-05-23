@@ -120,6 +120,10 @@ derivative contract size.
 ## Validation Evidence
 - Tests:
   - `pnpm --filter api exec vitest run src/modules/orders/orders.quantityRules.test.ts src/modules/exchange/ccxtFuturesConnector.service.test.ts src/modules/exchange/exchangeSymbolRules.service.test.ts src/modules/exchange/exchangeMetadataContract.service.test.ts src/modules/engine/runtimeExchangeOrderGuard.service.test.ts src/modules/exchange/exchangeAdapterBoundary.service.test.ts src/modules/engine/runtimeFinalCandleDecision.service.test.ts src/modules/engine/runtimeSignalLoop.service.test.ts src/modules/engine/runtimeCapitalContext.service.test.ts --run --reporter=dot` => PASS, `9` files / `129` tests.
+  - `pnpm --filter api exec vitest run src/modules/orders/orders-positions.e2e.test.ts --run --sequence.concurrent=false -t "Gate.io futures contract size"` => PASS, route-level DB-backed proof after `pnpm run go-live:infra:up`.
+  - `pnpm --filter api exec vitest run src/modules/orders/orders.manualContext.contractSize.service.test.ts --run --sequence.concurrent=false` => PASS, service-level DB-backed proof after `pnpm run go-live:infra:up`.
+  - `pnpm --filter api exec vitest run src/modules/orders/orders.quantityRules.test.ts src/modules/engine/runtimeFinalCandleDecision.service.test.ts --run --sequence.concurrent=false` => PASS, `2` files / `17` tests.
+  - `pnpm --filter api exec vitest run src/modules/orders/orders-positions.e2e.test.ts src/modules/orders/orders.manualContext.contractSize.service.test.ts src/modules/orders/orders.service.test.ts src/modules/orders/orders.quantityRules.test.ts src/modules/engine/runtimeFinalCandleDecision.service.test.ts src/modules/engine/executionOrchestrator.service.test.ts --run --sequence.concurrent=false --pool=forks --maxWorkers=1 --minWorkers=1 --test-timeout 30000` => PASS, `6` files / `98` tests.
   - `pnpm --filter api run typecheck` => PASS.
   - `pnpm run quality:guardrails` => PASS.
   - `git diff --check` => PASS with line-ending normalization warnings only.
@@ -128,6 +132,8 @@ derivative contract size.
 - Manual checks:
   - Local read-only CCXT connector probe after the fix resolved `GATEIO / FUTURES/swap / ADAUSDT` to swap rules: `minAmount=1`, `amountPrecision=1`, `contractSize=10`, `mark=0.2421`, so one contract notional was about `2.421 USDT` and `quantity=4` would be about `9.684 USDT`.
   - Local read-only CCXT connector probe for Binance ADAUSDT futures returned `minAmount=1`, `minNotional=5`, `contractSize=1`, `mark=0.2421`.
+  - Local DB-backed manual-order context proof now avoids real exchange calls and locks the API/service interpretation: mocked Gate.io futures `ADAUSDT` rules with `minAmount=1`, `minNotional=5`, `amountPrecision=1`, `contractSize=10`, mark price `0.25`, requested `quantity=4`, and leverage `5` return `minExecutableQty=2`, estimated notional `10 USDT`, and estimated margin `2 USDT`.
+  - During the broader route pack, an existing LIVE runtime close e2e exposed a truthful-state bug: reused CLOSE dedupe with an already submitted order and linked position id could report `closed` even though the position remained `OPEN`. The orchestrator now returns `submitted` for `reuseStatus=submitted` and only returns `closed` for completed dedupe.
 - Production deploy/readback:
   - Commit `9d1a83875767cd0227be9e2a899b2170a74034cf` was pushed to `main`.
   - Coolify did not converge automatically from the previous public build, so the coordinator manually triggered approved Coolify redeploy/force-start for `soar-web`, `soar-api`, and `workers-execution`.
@@ -136,7 +142,7 @@ derivative contract size.
   - Fresh readback at `2026-05-23T16:23:36.987Z` still reported the same `9d1a8387` build-info tuple.
   - Follow-up docs/state commit `a0e4f117ec9ecec770518ff186cc7f5ec087b76e` was pushed to `main` and deployed after a manual Coolify `Force Start` for queued `soar-web`. Current production Web build-info reports `a0e4f117` on `main`, `metadataSource=github-branch`, build id `AnqfCfwjz3KEHQ-_bouFD`; public no-worker smoke still passes.
 - Screenshots/logs: pending
-- High-risk checks: no new production LIVE mutation was attempted after finding the contract-size bug. Public deployment proof is complete for `9d1a8387`; protected manual/bot readbacks remain blocked because this shell has no Soar app password, API token, session cookie, or private ops auth env vars. A future live mutation still requires fresh explicit operator approval for exchange, symbol, side, and minimum executable size.
+- High-risk checks: no new production LIVE mutation was attempted after finding the contract-size bug. Public deployment proof is complete for `9d1a8387`, later public deployment proof is complete for `a0e4f117` and `b703b67f`, and the new route/service contract-size proof used a Vitest-only connector override rather than real CCXT calls. The LIVE close dedupe fix prevents a submitted close order from being reported as closed before exchange/fill completion. Protected manual/bot readbacks remain blocked because this shell has no Soar app password, API token, session cookie, or private ops auth env vars. A future live mutation still requires fresh explicit operator approval for exchange, symbol, side, and minimum executable size.
 - Secret checks: full repo scan still finds pre-existing test/seed references to the default test password; changed-diff scan found no newly added raw password secret in this mission.
 - Module confidence ledger updated: yes
 - Module confidence rows closed or changed: SOAR-ORDERS-001, SOAR-BOT-RUNTIME-001, SOAR-OPERATIONS-001
@@ -157,7 +163,7 @@ derivative contract size.
 - Follow-up architecture doc updates: pending
 
 ## Deployment / Ops Evidence
-- Deploy impact: medium; code repair deployed publicly as `9d1a8387`, and current docs/state HEAD deployed publicly as `a0e4f117`
+- Deploy impact: medium; code repair deployed publicly as `9d1a8387`, docs/state HEAD deployed publicly as `a0e4f117`, and Web dashboard protection follow-up deployed publicly as `b703b67f`
 - Env or secret changes: none planned
 - Health-check impact: none planned
 - Smoke steps updated: public no-worker deploy smoke passed for the deployed candidate.
@@ -196,8 +202,8 @@ derivative contract size.
 - Implementation notes: fixed CCXT market symbol resolution to prefer the configured market type when spot and swap markets normalize to the same symbol/id; filtered `loadMarketsMap()` to the configured market type; added `contractSize` to symbol trading rules and metadata; updated manual context and live pretrade notional checks to compute `quantity * markPrice * contractSize`; updated runtime exchange order guard, runtime signal sizing, and runtime wallet funds guard to account for derivative contract size before auto orchestration.
 
 ### 5. Verify and Test
-- Validation performed: focused exchange/orders/runtime tests, API typecheck, guardrails, diff check, production Web build-info freshness wait, and public API/Web smoke listed above.
-- Result: PASS locally and PASS for public production deploy freshness.
+- Validation performed: focused exchange/orders/runtime tests, DB-backed Gate.io manual-order service and route tests, LIVE close dedupe truth regression tests, API typecheck, guardrails, diff check, production Web build-info freshness wait, and public API/Web smoke listed above.
+- Result: PASS locally for the service/route contract-size proof and PASS for public production deploy freshness.
 
 ### 6. Self-Review
 - Simpler option considered: answer from existing failed order evidence only.
@@ -226,3 +232,11 @@ derivative contract size.
 - [x] Docs or context were updated if repository truth changed.
 - [x] Learning journal was updated if a recurring pitfall was confirmed or marked not applicable.
 - [x] Required responsibility lanes were integrated, rejected, or tracked as follow-up.
+
+## Result Report
+
+- Task summary: Gate.io contract-size execution parity remains partially verified for public production, and the local backend proof is now stronger. Manual-order service and route tests prove Gate.io futures context reports contract-sized notional and margin instead of base-asset quantity. The broader proof also fixed a LIVE close dedupe truth bug where a reused submitted close could be reported as closed.
+- Files changed: `apps/api/src/modules/engine/executionOrchestrator.service.ts`, `apps/api/src/modules/engine/executionOrchestrator.service.test.ts`, `apps/api/src/modules/orders/orders.manualContext.contractSize.service.test.ts`, `apps/api/src/modules/orders/orders-positions.e2e.test.ts`, this task file, and related state ledgers.
+- How tested: focused Gate.io service/route tests after `pnpm run go-live:infra:up`, quantity-rules/runtime contract-size pack, and the combined `6` file / `98` test API pack.
+- What is incomplete: protected production manual/bot readback and any live mutation remain blocked without transient Soar app auth and explicit operator approval for a minimum executable size.
+- Next steps: run broader API/typecheck/guardrails, commit/push when green, then verify public deploy freshness if a code commit is pushed.

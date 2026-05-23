@@ -610,17 +610,17 @@ export const orchestrateRuntimeSignal = async (
       return { status: 'ignored', reason: 'dedupe_inflight' };
     }
     if (closeDedupe.outcome === 'reused') {
-      if (closeDedupe.orderId && closeDedupe.positionId) {
-        return {
-          status: 'closed',
-          orderId: closeDedupe.orderId,
-          positionId: closeDedupe.positionId,
-        };
-      }
       if (closeDedupe.orderId && closeDedupe.reuseStatus === 'submitted') {
         return {
           status: 'submitted',
           orderId: closeDedupe.orderId,
+        };
+      }
+      if (closeDedupe.orderId && closeDedupe.positionId && closeDedupe.reuseStatus === 'completed') {
+        return {
+          status: 'closed',
+          orderId: closeDedupe.orderId,
+          positionId: closeDedupe.positionId,
         };
       }
       return { status: 'ignored', reason: 'dedupe_reused' };

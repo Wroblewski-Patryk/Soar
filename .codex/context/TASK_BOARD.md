@@ -37,7 +37,14 @@ Last updated: 2026-05-23
     `AnqfCfwjz3KEHQ-_bouFD`, and public no-worker smoke still passes.
     Protected app manual/bot readback remains blocked without transient Soar
     app auth, and live mutation remains blocked until the operator approves a
-    Gate.io minimum executable size above the previous `1 USDT` cap. Evidence:
+    Gate.io minimum executable size above the previous `1 USDT` cap. Additional
+    local DB-backed service and route proof now locks Gate.io manual-order
+    context contract-size semantics: `quantity=4`, `contractSize=10`,
+    `markPrice=0.25` returns `10 USDT` estimated notional, `2 USDT` estimated
+    margin at leverage `5`, and `minExecutableQty=2`. The same focused route
+    pack exposed and fixed a LIVE close dedupe truth bug: reused submitted
+    closes stay `submitted` until completed instead of being reported as
+    `closed` while the position remains open. Evidence:
     `docs/planning/live-exchange-execution-parity-2026-05-23-task.md`.
 
 ## DONE
