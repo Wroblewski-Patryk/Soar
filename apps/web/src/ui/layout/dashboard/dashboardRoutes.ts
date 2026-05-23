@@ -1,8 +1,5 @@
 export const dashboardRoutes = {
   home: "/dashboard",
-  exchanges: {
-    root: "/dashboard/exchanges",
-  },
   wallets: {
     root: "/dashboard/wallets",
     list: "/dashboard/wallets/list",

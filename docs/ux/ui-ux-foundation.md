@@ -25,16 +25,14 @@ This document defines the baseline UX and UI assumptions for CryptoSparrow dashb
 
 ## Global Information Architecture (MVP)
 1. `/dashboard` (Control Center)
-2. `/dashboard/strategies`
+2. `/dashboard/wallets`
 3. `/dashboard/markets`
-4. `/dashboard/bots`
-5. `/dashboard/orders`
-6. `/dashboard/positions`
-7. `/dashboard/backtest`
-8. `/dashboard/reports`
-9. `/dashboard/logs`
-10. `/dashboard/exchanges`
-11. `/dashboard/profile`
+4. `/dashboard/strategies`
+5. `/dashboard/bots`
+6. `/dashboard/backtests`
+7. `/dashboard/reports`
+8. `/dashboard/logs`
+9. `/dashboard/profile` (`#api` owns exchange integrations)
 
 ## Control Center Requirements (`/dashboard`)
 
@@ -142,12 +140,13 @@ Provide a fast, actionable overview of risk, exposure, and bot execution health.
 - Strategies: clear strategy identity, risk profile summary, and safe version edits.
 - Markets: transparent universe filtering with visible include/exclude outcomes.
 - Bots: operational state machine visibility (running, paused, stopped, degraded).
-- Orders: rejection and failure reason clarity for operational recovery.
-- Positions: PnL and risk parameter visibility in one place.
+- Orders and positions: exposed from runtime dashboard/bot operational surfaces,
+  not standalone top-level pages.
 - Backtest: setup-to-results flow with transparent assumptions.
 - Reports: concise performance narratives with drawdown and cost visibility.
 - Logs: high signal-to-noise with severity and source filtering.
-- Exchanges: secure credentials UX with masked outputs and health checks.
+- Exchange integrations: secure credentials UX in profile `#api` with masked
+  outputs and health checks.
 
 ## Non-Goals for MVP UI
 - Overly decorative or entertainment-style visual language.

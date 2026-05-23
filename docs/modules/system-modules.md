@@ -1,6 +1,6 @@
 # Module Map
 
-Updated: 2026-04-17
+Updated: 2026-05-24
 
 ## Backend Modules (Current)
 - `admin`. Administrative read/write workflows for users and subscription plans.
@@ -41,9 +41,10 @@ Updated: 2026-04-17
 - `admin`. Admin dashboard views (`users`, `subscriptions`).
 - `dashboard`. Control Center shell, route layout, risk and status framing.
 - `dashboard-home`. Home live widgets and runtime summary composition.
-- `dashboard/exchanges`. Exchange connections plus operational exchange context.
-- `dashboard/orders`. Order-oriented UI components/services used in exchange operational views.
-- `dashboard/positions`. Position-oriented UI components/services used in exchange operational views.
+- `dashboard/profile#api` / exchange integrations. Exchange connections and
+  capability context.
+- `dashboard` runtime surfaces. Order and position operational views are
+  embedded in dashboard runtime/home contexts (not standalone top-level pages).
 - `dashboard/profile`. User/security/subscription settings.
 - `dashboard/strategies`. Strategy list/create/edit/detail workflows.
 - `dashboard/markets`. Market universe list/create/edit flows.
@@ -63,7 +64,7 @@ Updated: 2026-04-17
 
 ## Dashboard IA Order (MVP)
 - `dashboard` (Control Center with risk and operations priority).
-- `dashboard/exchanges`.
+- `dashboard/profile#api`.
 - `dashboard/wallets`.
 - `dashboard/markets`.
 - `dashboard/strategies`.
@@ -78,7 +79,8 @@ Updated: 2026-04-17
 - `dashboard/strategies`: list-first workflow with clear preset/source metadata and safe edit/delete controls.
 - `dashboard/markets`: universe builder with explainable filters and explicit whitelist/blacklist outcomes.
 - `dashboard/bots`: lifecycle controls with wallet-derived execution context, heartbeat visibility, and emergency controls.
-- `dashboard/exchanges`: connection health, permission checks, secure API key UX, and nested operational order/position views.
+- `dashboard/profile#api` / exchange integrations: connection health,
+  permission checks, and secure API key UX.
 - `dashboard/backtests`: run KPI header, stage timeline, summary charts, per-symbol timeline overlays, pair-side stats, and capital-aware trades table.
 - `dashboard/wallets`: source-of-truth for execution mode and capital context, with clear create/edit safety and state feedback.
 - `dashboard/reports`: performance summaries focused on PnL, drawdown, fees, and funding costs.

@@ -68,10 +68,10 @@ Expected: authenticated response if cookie/token is present; otherwise controlle
 
 - App navigation check:
   - `/dashboard`
-  - `/dashboard/orders`
-  - `/dashboard/positions`
+  - `/dashboard#orders`
+  - `/dashboard#positions`
   - `/dashboard/logs`
-  - `/dashboard/exchanges`
+  - `/dashboard/profile#api`
 
 - Infrastructure check:
 ```bash

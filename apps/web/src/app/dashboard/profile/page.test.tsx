@@ -41,7 +41,7 @@ describe("Profile page", () => {
     expect(screen.queryByTestId("profile-api-view")).not.toBeInTheDocument();
   });
 
-  it("honors the canonical #api hash entrypoint used by /dashboard/exchanges", async () => {
+  it("honors the canonical #api hash entrypoint for API key management", async () => {
     renderPage("/dashboard/profile#api");
 
     await waitFor(() => {

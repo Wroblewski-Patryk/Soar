@@ -1,6 +1,6 @@
 # Dashboard Route-to-Feature-to-API Contract (Canonical)
 
-Updated: 2026-05-01
+Updated: 2026-05-24
 
 Purpose: keep one canonical mapping of web routes to frontend feature ownership, API contracts, and security/operational guardrails.
 Latest docs parity artifact: `history/artifacts/_artifacts-docs-parity-2026-04-16T22-37-19-622Z.json` (`PASS`).
@@ -8,7 +8,6 @@ Latest docs parity artifact: `history/artifacts/_artifacts-docs-parity-2026-04-1
 ## Canonical Web Route Inventory (V1)
 ### Dashboard
 - `/dashboard`
-- `/dashboard/exchanges`
 - `/dashboard/markets/list`
 - `/dashboard/markets/create`
 - `/dashboard/markets/:id/edit`
@@ -53,18 +52,17 @@ Latest docs parity artifact: `history/artifacts/_artifacts-docs-parity-2026-04-1
 ## Dashboard Navigation IA Contract (Wallet-First)
 Canonical top-level dashboard order:
 1. `/dashboard`
-2. `/dashboard/exchanges`
-3. `/dashboard/wallets`
-4. `/dashboard/markets/*`
-5. `/dashboard/strategies/*`
-6. `/dashboard/bots/*`
-7. `/dashboard/backtests/*`
-8. `/dashboard/reports`
-9. `/dashboard/logs`
-10. `/dashboard/profile`
+2. `/dashboard/wallets`
+3. `/dashboard/markets/*`
+4. `/dashboard/strategies/*`
+5. `/dashboard/bots/*`
+6. `/dashboard/backtests/*`
+7. `/dashboard/reports`
+8. `/dashboard/logs`
+9. `/dashboard/profile` (`#api` owns exchange integrations)
 
 Wallet placement rule:
-- Wallet must remain between Exchanges and Markets in navigation IA.
+- Wallet must remain before Markets in navigation IA.
 - Bot create/edit entrypoints depend on this placement because wallet is runtime-mode and budget source-of-truth.
 
 ## Canonical Route Mapping
@@ -73,8 +71,7 @@ Wallet placement rule:
 | `/auth/login`, `/auth/register` | `features/auth` | `/auth/login`, `/auth/register`, `/auth/me`, `/auth/logout` | `api/auth` | Public pages; authenticated session redirects user to `/dashboard`. |
 | `/dashboard` | `features/dashboard-home` | `/dashboard/bots*`, `/dashboard/market-stream/events`, `/dashboard/icons/lookup` | `api/bots`, `api/market-stream`, `api/icons` | Requires dashboard session; stale runtime data warning and read-safe fallback states. |
 | `/dashboard/profile` | `features/profile` + `features/exchanges` | `/dashboard/profile/basic`, `/dashboard/profile/apiKeys*`, `/dashboard/profile/security/*`, `/dashboard/profile/subscription`, `/upload/avatar` | `api/profile`, `api/subscriptions`, `api/upload` | Sensitive actions require explicit confirmation/password input. |
-| `/dashboard/exchanges` | Redirect to profile integrations (`#api`) | Uses profile API-key contract (`/dashboard/profile/apiKeys*`) | `api/profile` | Canonical integration surface remains profile tab; no standalone exchanges write contract yet. |
-| `/dashboard/wallets*` | `features/wallets` | `/dashboard/wallets*` | `api/wallets` | Wallet is required prerequisite for bot creation (`walletId`-first contract) and must stay in nav between Exchanges and Markets. |
+| `/dashboard/wallets*` | `features/wallets` | `/dashboard/wallets*` | `api/wallets` | Wallet is required prerequisite for bot creation (`walletId`-first contract) and must stay before Markets in dashboard IA. |
 | `/dashboard/markets*` | `features/markets` | `/dashboard/markets/universes*`, `/dashboard/markets/catalog` | `api/markets` | Edit path fails closed when market universe is used by active bot. |
 | `/dashboard/strategies*` | `features/strategies` | `/dashboard/strategies*`, `/dashboard/strategies/indicators` | `api/strategies` | Edit path surfaces active-bot lock contract from backend. |
 | `/dashboard/backtests*` | `features/backtest` | `/dashboard/backtests/runs*` | `api/backtests` | Deterministic staging in details view; safe handling of missing report/timeline failures. |
@@ -88,9 +85,6 @@ Wallet placement rule:
 ## Legacy and Redirect Contract
 | Legacy / Alias Route | Canonical Target | Enforcement Layer |
 |---|---|---|
-| `/dashboard/orders` | `/dashboard/bots/runtime?legacy=orders`, then `/dashboard#orders` | `apps/web/src/middleware.ts`, then app route redirect |
-| `/dashboard/positions` | `/dashboard/bots/runtime?legacy=positions`, then `/dashboard#positions` | `apps/web/src/middleware.ts`, then app route redirect |
-| `/dashboard/exchanges` | `/dashboard/profile#api` | app route redirect |
 | `/dashboard/bots/new` | `/dashboard/bots/create` | app route redirect |
 | `/dashboard/bots/assistant` | `/dashboard/bots` when `botId` query is missing; `/dashboard/bots/:id/assistant` when `botId` is present | app route redirect |
 | `/dashboard/bots/runtime` | `/dashboard/bots` when `botId` query is missing; `/dashboard/bots/:id/preview` when `botId` is present | app route redirect |
@@ -106,7 +100,8 @@ Wallet placement rule:
 2. API authorization is authoritative on backend:
    - `/dashboard/*` requires `requireAuth`.
    - `/admin/*` requires `requireAuth + requireRole('ADMIN')`.
-3. First-level `/dashboard/orders` and `/dashboard/positions` must stay legacy redirects, not active IA destinations.
+3. First-level `/dashboard/orders` and `/dashboard/positions` are removed from
+   web IA and are not maintained as compatibility redirects.
 4. Navigation should use `dashboardRoutes` constants; do not hardcode divergent dashboard paths.
 5. Any added/removed `app/**/page.tsx` route must update this file in the same task.
 6. Any new route-to-feature contract must have matching module deep-dive coverage in `docs/modules/`.
