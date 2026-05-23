@@ -64,7 +64,7 @@ describe("runtimeDerivations", () => {
         fallbackTtpProtectedPercent: 6,
         tslProtectedPercent: 4,
       })
-    ).toBeNull();
+    ).toBe(4);
   });
 
   it("prefers backend TTP over fallback TTP in the display resolver", () => {
@@ -79,14 +79,14 @@ describe("runtimeDerivations", () => {
     expect(resolveDynamicTtpDisplaySource(row)).toBe("backend");
   });
 
-  it("marks fallback TTP display as prospective protection truth", () => {
+  it("ignores local fallback TTP display as protection truth", () => {
     const row = {
       ...dynamicStopRow,
       fallbackTtpProtectedPercent: 7,
     };
 
-    expect(resolveDynamicTtpDisplay(row)).toBe(7);
-    expect(resolveDynamicTtpDisplaySource(row)).toBe("prospective");
+    expect(resolveDynamicTtpDisplay(row)).toBeNull();
+    expect(resolveDynamicTtpDisplaySource(row)).toBeNull();
     expect(resolveDynamicTtpDisplaySource(dynamicStopRow)).toBeNull();
   });
 

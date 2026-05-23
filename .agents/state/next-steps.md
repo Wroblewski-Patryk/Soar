@@ -24,27 +24,37 @@ approved Coolify manual redeploy/force-start for `soar-web`, `soar-api`, and
 `9d1a83875767cd0227be9e2a899b2170a74034cf` on `main` with
 `metadataSource=github-branch` and build id `1tCeTjS9PmOJLsdQ6fVIG`, and
 public no-worker smoke passes API `/health`, API `/ready`, and Web `/`. Next
-exact task: run production read-only manual/bot preflights for Binance and
-Gate.io only after transient Soar app auth is available, then request explicit
-operator approval for the minimum executable live size before any new
-exchange-side mutation. Evidence:
+docs/state commit `a0e4f117ec9ecec770518ff186cc7f5ec087b76e` is also deployed
+after a manually force-started queued `soar-web` deployment; current production
+Web build-info reports `a0e4f117` with `metadataSource=github-branch`, build id
+`AnqfCfwjz3KEHQ-_bouFD`, and public no-worker smoke still passes. Next exact
+task: run production read-only manual/bot preflights for Binance and Gate.io
+only after transient Soar app auth is available, then request explicit operator
+approval for the minimum executable live size before any new exchange-side
+mutation. If no auth/approval is available, select the next local executable
+architecture/runtime gap. Evidence:
 `docs/planning/live-exchange-execution-parity-2026-05-23-task.md`.
 
 Current runtime DCA protection display parity:
-`RUNTIME-DCA-PROTECTION-DISPLAY-PARITY-2026-05-23` is locally verified. The
+`RUNTIME-DCA-PROTECTION-DISPLAY-PARITY-2026-05-23` and
+`WEB-DASHBOARD-DCA-PROTECTION-TRUTH-PARITY-2026-05-23` are locally verified. The
 operator-reported Binance dashboard drift was reproduced at the read-model
 level: Positions API could show dynamic TSL/TTP from runtime state or strategy
 fallback before the same side-aware DCA protection gate used by execution was
 satisfied. The API read-model now suppresses TTP until profit-side DCA is
 satisfied and suppresses TSL until loss-side DCA is satisfied; exchange fill
 sync also persists `executedDcaLevelIndices` from DCA dedupe fingerprints.
+Dashboard Home no longer reconstructs TTP from frontend-only trailing-level
+fallback when the backend withholds dynamic TTP.
 Validation passed: serialization/read-model tests `32/32`, DB-backed exchange
 event tests `19/19` after `pnpm run go-live:infra:up`, runtime
-position-management/automation tests `62/62`, and API typecheck. Next exact
-task: run guardrails/diff check, commit/push, then verify public deploy
-freshness and production dashboard readback for the real open positions.
+position-management/automation tests `62/62`, API typecheck, focused Web
+runtime table/view-model tests `45/45`, Web typecheck, guardrails, and diff
+check. Next exact task: commit/push, then verify public deploy freshness; real
+production dashboard readback still requires transient Soar app auth.
 Evidence:
-`docs/planning/runtime-dca-protection-display-parity-2026-05-23-task.md`.
+`docs/planning/runtime-dca-protection-display-parity-2026-05-23-task.md` and
+`docs/planning/web-dashboard-dca-protection-truth-parity-2026-05-23-task.md`.
 
 Current Gate.io ADA manual order attempt:
 `GATEIO-LIVE-MANUAL-ORDER-ADA-SHORT-2026-05-23` is verified fail-closed.

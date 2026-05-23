@@ -134,6 +134,7 @@ derivative contract size.
   - `pnpm run ops:deploy:wait-web-build-info -- --web-base-url https://soar.luckysparrow.ch --expected-sha 9d1a8387 --timeout-seconds 1200 --interval-seconds 30` => PASS; production Web build-info reported `gitSha=9d1a83875767cd0227be9e2a899b2170a74034cf`, `gitRef=main`, `metadataSource=github-branch`, `buildId=1tCeTjS9PmOJLsdQ6fVIG`.
   - `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers` => PASS for API `/health`, API `/ready`, and Web `/`.
   - Fresh readback at `2026-05-23T16:23:36.987Z` still reported the same `9d1a8387` build-info tuple.
+  - Follow-up docs/state commit `a0e4f117ec9ecec770518ff186cc7f5ec087b76e` was pushed to `main` and deployed after a manual Coolify `Force Start` for queued `soar-web`. Current production Web build-info reports `a0e4f117` on `main`, `metadataSource=github-branch`, build id `AnqfCfwjz3KEHQ-_bouFD`; public no-worker smoke still passes.
 - Screenshots/logs: pending
 - High-risk checks: no new production LIVE mutation was attempted after finding the contract-size bug. Public deployment proof is complete for `9d1a8387`; protected manual/bot readbacks remain blocked because this shell has no Soar app password, API token, session cookie, or private ops auth env vars. A future live mutation still requires fresh explicit operator approval for exchange, symbol, side, and minimum executable size.
 - Secret checks: full repo scan still finds pre-existing test/seed references to the default test password; changed-diff scan found no newly added raw password secret in this mission.
@@ -156,7 +157,7 @@ derivative contract size.
 - Follow-up architecture doc updates: pending
 
 ## Deployment / Ops Evidence
-- Deploy impact: medium; deployed publicly as `9d1a8387`
+- Deploy impact: medium; code repair deployed publicly as `9d1a8387`, and current docs/state HEAD deployed publicly as `a0e4f117`
 - Env or secret changes: none planned
 - Health-check impact: none planned
 - Smoke steps updated: public no-worker deploy smoke passed for the deployed candidate.

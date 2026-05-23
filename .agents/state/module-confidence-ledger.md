@@ -38,11 +38,22 @@ Do not turn uncertainty into optimism.
   runtime sizing misrepresent Gate.io order value. Focused exchange/orders/
   runtime tests passed (`9` files / `129` tests), API typecheck, guardrails,
   and diff check passed, and commit `9d1a8387` is publicly deployed with Web
-  build-info plus public no-worker smoke passing. Protected manual/bot
-  production readback remains blocked until transient Soar app auth is
+  build-info plus public no-worker smoke passing. Follow-up docs/state HEAD
+  `a0e4f117` is also publicly deployed with Web build-info plus public
+  no-worker smoke passing. Protected manual/bot production readback remains
+  blocked until transient Soar app auth is
   available, and any further live mutation still requires operator approval
   for a minimum-contract-size order; Gate.io ADAUSDT cannot honor a `<=1 USDT`
   cap because one contract is about `2.421 USDT`.
+
+- 2026-05-23 `WEB-DASHBOARD-DCA-PROTECTION-TRUTH-PARITY-2026-05-23`: local
+  confidence for `SOAR-DASHBOARD-001` and `SOAR-BOT-RUNTIME-001` is refreshed
+  for dashboard protection truth. Dashboard Home no longer computes local
+  fallback TTP from `trailingTakeProfitLevels` when backend dynamic TTP is
+  gated by DCA state; API-provided backend/prospective TTP remains supported.
+  Focused Web runtime table/view-model tests passed (`45/45`), Web typecheck,
+  guardrails, and diff check passed. Production dashboard readback remains
+  protected-auth scope.
 
 - 2026-05-23 post-release docs/state deploy freshness: follow-up docs/state
   sync commits must prove the pushed `HEAD` through public Web build-info and

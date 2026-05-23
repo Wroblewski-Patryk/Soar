@@ -804,7 +804,7 @@ describe("createOpenPositionsColumns", () => {
     expect(onCloseRuntimePosition).not.toHaveBeenCalled();
   });
 
-  it("labels fallback TTP protection as prospective in open-position rows", () => {
+  it("does not render local fallback TTP protection as open-position truth", () => {
     const columns = createOpenPositionsColumns({
       t: (key) =>
         ({
@@ -854,8 +854,9 @@ describe("createOpenPositionsColumns", () => {
       </div>
     );
 
-    expect(screen.getByText("7%")).toBeInTheDocument();
-    expect(screen.getByText("Prospective")).toHaveClass("uppercase");
+    expect(screen.getByText("-")).toBeInTheDocument();
+    expect(screen.queryByText("7%")).not.toBeInTheDocument();
+    expect(screen.queryByText("Prospective")).not.toBeInTheDocument();
   });
 
   it("labels API strategy-fallback TTP protection as prospective in open-position rows", () => {

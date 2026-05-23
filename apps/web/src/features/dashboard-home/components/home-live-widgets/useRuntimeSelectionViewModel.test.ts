@@ -182,7 +182,7 @@ describe("useRuntimeSelectionViewModel", () => {
     expect(result.current.selectedData?.trades[0]?.id).toBe("trade-1");
   });
 
-  it("shows fallback TTP protection when trailing take-profit is armed before stop price arrives", () => {
+  it("does not synthesize fallback TTP protection when backend stop price is gated", () => {
     const positions = snapshot.positions;
     expect(positions).not.toBeNull();
     const snapshotWithTrailingTtp = {
@@ -209,12 +209,12 @@ describe("useRuntimeSelectionViewModel", () => {
     );
 
     const row = result.current.selectedData?.open[0];
-    expect(row?.fallbackTtpProtectedPercent).toBeCloseTo(7, 8);
-    expect(resolveDynamicTtpDisplay(row!)).toBeCloseTo(7, 8);
+    expect(row?.fallbackTtpProtectedPercent).toBeNull();
+    expect(resolveDynamicTtpDisplay(row!)).toBeNull();
     expect(result.current.showDynamicStopColumns).toBe(true);
   });
 
-  it("clears fallback TTP protection when live PnL drops below the disarm floor", () => {
+  it("keeps fallback TTP hidden across live PnL updates", () => {
     const positions = snapshot.positions;
     expect(positions).not.toBeNull();
     const snapshotWithTrailingTtp = {
@@ -242,7 +242,7 @@ describe("useRuntimeSelectionViewModel", () => {
       { initialProps: { price: 0.991 } }
     );
 
-    expect(resolveDynamicTtpDisplay(result.current.selectedData!.open[0]!)).toBeCloseTo(7, 8);
+    expect(resolveDynamicTtpDisplay(result.current.selectedData!.open[0]!)).toBeNull();
 
     rerender({ price: 0.9985 });
 
@@ -279,7 +279,7 @@ describe("useRuntimeSelectionViewModel", () => {
 
     const row = result.current.selectedData!.open[0]!;
     expect(row.ttpProtectedPercent).toBeCloseTo(5, 8);
-    expect(row.fallbackTtpProtectedPercent).toBeCloseTo(7, 8);
+    expect(row.fallbackTtpProtectedPercent).toBeNull();
     expect(resolveDynamicTtpDisplay(row)).toBeCloseTo(5, 8);
   });
 
@@ -342,7 +342,7 @@ describe("useRuntimeSelectionViewModel", () => {
       }
     );
 
-    expect(resolveDynamicTtpDisplay(result.current.selectedData!.open[0]!)).toBeCloseTo(7, 8);
+    expect(resolveDynamicTtpDisplay(result.current.selectedData!.open[0]!)).toBeNull();
 
     rerender({ selected: noLivePnlSnapshot, prices: {} });
 

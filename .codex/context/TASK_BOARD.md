@@ -31,13 +31,29 @@ Last updated: 2026-05-23
     pretrade, runtime sizing, and funds checks. Coolify manual redeploy/force
     start was used for `soar-web`, `soar-api`, and `workers-execution`; public
     Web build-info reports `9d1a8387` on `main`, and public smoke passes API
-    `/health`, API `/ready`, and Web `/`. Protected app manual/bot readback
-    remains blocked without transient Soar app auth, and live mutation remains
-    blocked until the operator approves a Gate.io minimum executable size above
-    the previous `1 USDT` cap. Evidence:
+    `/health`, API `/ready`, and Web `/`. Follow-up docs/state commit
+    `a0e4f117` is also deployed on public production after manual Coolify
+    `Force Start`; current build-info reports build id
+    `AnqfCfwjz3KEHQ-_bouFD`, and public no-worker smoke still passes.
+    Protected app manual/bot readback remains blocked without transient Soar
+    app auth, and live mutation remains blocked until the operator approves a
+    Gate.io minimum executable size above the previous `1 USDT` cap. Evidence:
     `docs/planning/live-exchange-execution-parity-2026-05-23-task.md`.
 
 ## DONE
+
+- [x] `WEB-DASHBOARD-DCA-PROTECTION-TRUTH-PARITY-2026-05-23 fix: keep Dashboard Home TTP display behind backend truth`
+  - 2026-05-23: Frontend/integration explorer found that Dashboard Home still
+    computed `fallbackTtpProtectedPercent` from `trailingTakeProfitLevels`
+    after the backend had already been fixed to suppress dynamic TTP/TSL behind
+    side-aware DCA gates. This could let Web show prospective TTP even when the
+    API intentionally withheld dynamic TTP because DCA was still pending.
+  - Fix: Dashboard Home no longer computes frontend-only fallback TTP from
+    trailing levels, and the TTP display resolver ignores local fallback fields
+    as protection truth. API-provided backend/prospective TTP remains supported.
+  - Validation passed: focused Web runtime table/view-model pack `45/45`, Web
+    typecheck, repository guardrails, and `git diff --check`. Evidence:
+    `docs/planning/web-dashboard-dca-protection-truth-parity-2026-05-23-task.md`.
 
 - [x] `RUNTIME-DCA-PROTECTION-DISPLAY-PARITY-2026-05-23 fix: keep dashboard TSL/TTP display behind DCA gates`
   - 2026-05-23: Operator screenshot showed Binance Positions table drift:

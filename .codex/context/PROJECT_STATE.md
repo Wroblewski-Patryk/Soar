@@ -4,6 +4,16 @@ Last updated: 2026-05-23
 
 ## Current Candidate Deployment Status
 
+- `WEB-DASHBOARD-DCA-PROTECTION-TRUTH-PARITY-2026-05-23` is locally verified.
+  Dashboard Home no longer reconstructs TTP protection from frontend-only
+  `trailingTakeProfitLevels` fallback after the backend suppresses dynamic TTP
+  behind DCA gates. The Web TTP display resolver now ignores local fallback
+  fields as protection truth while preserving API-provided backend/prospective
+  TTP. Validation passed: focused Web runtime table/view-model pack `45/45`,
+  Web typecheck, repository guardrails, and `git diff --check`. No production
+  auth or live exchange mutation was used. Evidence:
+  `docs/planning/web-dashboard-dca-protection-truth-parity-2026-05-23-task.md`.
+
 - `LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23` is locally verified for the
   exchange-rule repair and partially production-verified by public deploy
   evidence. Protected production LIVE readback and any new mutation are still
@@ -30,7 +40,13 @@ Last updated: 2026-05-23
   `/ready`, and Web `/`. This is not an authenticated manual/bot readback:
   the current shell still has no Soar app password, token, session cookie, API
   key secret, or private ops auth env var. No new production LIVE mutation was
-  performed after the fix. Evidence:
+  performed after the fix. Follow-up docs/state commit
+  `a0e4f117ec9ecec770518ff186cc7f5ec087b76e` is also deployed after a manual
+  Coolify `Force Start` for the queued `soar-web` deployment; current public
+  Web build-info reports `a0e4f117` on `main` with
+  `metadataSource=github-branch` and build id `AnqfCfwjz3KEHQ-_bouFD`, and
+  public no-worker smoke still passes API `/health`, API `/ready`, and Web
+  `/`. Evidence:
   `docs/planning/live-exchange-execution-parity-2026-05-23-task.md`.
 
 - `RUNTIME-DCA-PROTECTION-DISPLAY-PARITY-2026-05-23` is locally verified.
