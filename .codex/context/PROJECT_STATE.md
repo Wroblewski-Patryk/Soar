@@ -4,6 +4,17 @@ Last updated: 2026-05-23
 
 ## Current Candidate Deployment Status
 
+- `PROTECTED-APP-TEST-CREDENTIAL-AVAILABILITY-2026-05-23` records a new
+  operator-confirmed protected test context: the Soar production application
+  account `wroblewskipatryk@gmail.com` on `https://soar.luckysparrow.ch` has
+  an API key configured and may be used for authenticated app/API-key testing.
+  No password, API key secret, token, cookie, or private header is stored in
+  repository artifacts. This supersedes the earlier "only Coolify credential
+  available" blocker for planning purposes, but authenticated smoke is still
+  not claimed until the secret is supplied transiently and the smoke run
+  passes. Evidence:
+  `docs/planning/protected-app-test-credential-availability-2026-05-23-task.md`.
+
 - `DATA-MODEL-ISOLATED-DB-PROOF-2026-05-23` is locally verified. After local
   Postgres/Redis were unavailable and Laragon was found running without
   PostgreSQL, Docker Desktop was started and `pnpm run go-live:infra:up`

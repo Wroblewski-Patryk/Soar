@@ -17,6 +17,19 @@ Last updated: 2026-05-23
 
 ## DONE
 
+- [x] `PROTECTED-APP-TEST-CREDENTIAL-AVAILABILITY-2026-05-23 release: record approved Soar app account/API-key test context`
+  - 2026-05-23: Operator confirmed that the Soar production application
+    account `wroblewskipatryk@gmail.com` on
+    `https://soar.luckysparrow.ch` has an API key configured and may be used
+    for authenticated app/API-key testing. This is a no-secret source-of-truth
+    update only: do not store the password, API key secret, tokens, cookies, or
+    private headers in repository artifacts. Future agents should request/use
+    the secret only through transient operator-approved context or local env
+    variables, then run the relevant authenticated smoke before claiming proof.
+  - Validation: documentation/state-only update; authenticated smoke not run
+    and not claimed. Evidence:
+    `docs/planning/protected-app-test-credential-availability-2026-05-23-task.md`.
+
 - [x] `RUNTIME-EXECUTION-DEDUPE-OBSERVABILITY-2026-05-23 feat: expose runtime dedupe metrics`
   - 2026-05-23: Architecture parity review found that
     `docs/architecture/reference/runtime-execution-idempotency-contract.md`

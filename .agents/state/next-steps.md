@@ -4,6 +4,18 @@ Last updated: 2026-05-23
 
 ## Next Tiny Task
 
+Current protected app test credential context:
+`PROTECTED-APP-TEST-CREDENTIAL-AVAILABILITY-2026-05-23` is recorded as a
+no-secret source-of-truth update. The operator confirmed that the Soar
+production application account `wroblewskipatryk@gmail.com` on
+`https://soar.luckysparrow.ch` has an API key configured and may be used for
+authenticated app/API-key testing. Do not store the password, API key secret,
+tokens, cookies, or private headers in repo artifacts. Future authenticated
+smoke should use transient operator-approved secret context or local env
+variables only, then record pass/fail evidence. Status: available for planning,
+not yet smoke-verified. Evidence:
+`docs/planning/protected-app-test-credential-availability-2026-05-23-task.md`.
+
 Current data/migrations local proof:
 `DATA-MODEL-ISOLATED-DB-PROOF-2026-05-23` is locally verified. Local
 Postgres/Redis were initially unavailable; Laragon was running but did not
