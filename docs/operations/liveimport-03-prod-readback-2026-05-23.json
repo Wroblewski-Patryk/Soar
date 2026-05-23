@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-05-23T04:08:11.929Z",
+  "target": {
+    "baseUrl": "https://api.soar.luckysparrow.ch",
+    "webBaseUrl": "https://soar.luckysparrow.ch",
+    "expectedSha": "72b547e12351e078c49807fb25d56c27f64c6567",
+    "buildInfo": {
+      "gitSha": "72b547e12351e078c49807fb25d56c27f64c6567",
+      "gitRef": "main",
+      "matchesExpected": true
+    },
+    "symbols": [
+      "ETHUSDT",
+      "DOGEUSDT"
+    ]
+  },
+  "auth": {
+    "source": "login",
+    "tokenCaptured": false
+  },
+  "entries": [
+    {
+      "bot": {
+        "idHash": "0a12bb539700",
+        "nameHash": "b64ac05f17e6",
+        "mode": "LIVE",
+        "exchange": "BINANCE",
+        "marketType": "FUTURES",
+        "liveOptIn": true,
+        "manageExternalPositions": true,
+        "walletIdHash": "437d49588714",
+        "apiKeyIdHash": "6d9fa9f534a4",
+        "activeMarketGroups": null
+      },
+      "session": {
+        "idHash": "84e96a451594",
+        "status": "RUNNING",
+        "startedAt": "2026-05-22T23:20:00.208Z",
+        "stoppedAt": null,
+        "eventsCount": 3253
+      },
+      "symbols": [
+        {
+          "symbol": "ETHUSDT",
+          "total": 0,
+          "openCount": 0,
+          "closedCount": 0,
+          "openOrdersCount": 0,
+          "showDynamicStopColumns": true,
+          "openItems": [],
+          "importCompleteness": "MISSING_FROM_RUNTIME_READBACK"
+        },
+        {
+          "symbol": "DOGEUSDT",
+          "total": 0,
+          "openCount": 0,
+          "closedCount": 0,
+          "openOrdersCount": 0,
+          "showDynamicStopColumns": true,
+          "openItems": [],
+          "importCompleteness": "MISSING_FROM_RUNTIME_READBACK"
+        }
+      ],
+      "status": "REVIEW"
+    }
+  ],
+  "summary": {
+    "botsChecked": 1,
+    "botsWithRuntimeReadback": 1,
+    "botsWithoutRunningSession": 0,
+    "symbolsExpected": 2,
+    "symbolsVisible": [],
+    "missingSymbols": [
+      "ETHUSDT",
+      "DOGEUSDT"
+    ]
+  }
+}

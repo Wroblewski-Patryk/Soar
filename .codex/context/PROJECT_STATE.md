@@ -4,6 +4,25 @@ Last updated: 2026-05-23
 
 ## Current Candidate Deployment Status
 
+- `V1-PROTECTED-APP-PROOF-72B547E1-2026-05-23` is the current production
+  release truth for deployed `72b547e12351e078c49807fb25d56c27f64c6567`.
+  Production Web build-info reports that SHA on `main`; deploy smoke passes
+  for API `/health`, API `/ready`, Web `/`, and authenticated
+  `/workers/ready`; split-worker topology is healthy; production DB restore
+  drill passes through the VPS Docker SSH context; rollback proof passes with
+  `shouldRollback=false`; production UI clickthrough passes; RC Gates 1-4 and
+  sign-off are current `PASS`; and the SLO window passes health/readiness/5xx
+  and queue-lag objectives with `NO_DATA` only for live order ratio because no
+  live order attempts occurred. Final preflight and release gate are fresh but
+  remain blocked only by `LIVEIMPORT-03`: the running LIVE Binance Futures
+  session had no open runtime payload for `ETHUSDT` or `DOGEUSDT`. Evidence:
+  `docs/operations/v1-production-activation-evidence-audit-2026-05-23.md`,
+  `docs/planning/v1-production-activation-and-evidence-plan-2026-05-23.md`,
+  `docs/operations/v1-final-preflight-72b547e1-2026-05-23-after-refresh.md`,
+  and
+  `docs/operations/v1-release-gate-prod-72b547e1-2026-05-23-after-refresh.md`.
+  Do not create LIVE orders or positions without separate explicit approval.
+
 - `ARCH-RUNTIME-P1-006-BACKTEST-MULTI-STRATEGY-MERGE-2026-05-23` is locally
   verified as the next architecture-code audit repair. Complete immutable
   multi-strategy backtest snapshots now replay through the same runtime

@@ -13,7 +13,7 @@
   - bots LIVE confirmations,
   - shell/accessibility smoke.
 
-### Latest Verification (2026-05-21)
+### Latest Verification (2026-05-23)
 - `pnpm --filter api build` passed.
 - `pnpm --filter web build` passed.
 - `pnpm --filter api test -- src/modules/auth/auth.e2e.test.ts src/modules/exchange/liveOrderAdapter.service.test.ts src/router/health-readiness.test.ts src/router/workers-health-readiness.test.ts src/router/metrics.test.ts src/router/alerts.test.ts` passed (`6` files, `20` tests).
@@ -47,10 +47,12 @@
 - [x] Queue lag metrics reviewed and within baseline.
 - [x] Incident contacts and escalation chain confirmed.
 
-### Current Runtime Gate Override (2026-05-21)
-- Fresh production SLO supersedes the static checklist ticks above for the
-  current candidate: `/workers/ready` returned `503` for the full 30-minute
-  window, so worker readiness and Gate 2 are not currently approved.
+### Current Runtime Gate Override (2026-05-23)
+- Fresh production SLO and split-worker proof supersede the 2026-05-21 inline
+  topology failure for the current candidate:
+  `72b547e12351e078c49807fb25d56c27f64c6567`. `/workers/ready` is healthy,
+  Gate 2 is approved, and live order failure ratio is `NO_DATA` only because no
+  live order attempts occurred in the observation window.
 
 ### Mandatory Post-Deploy Validation Sequence (Runtime + Cache + Stream)
 1. API baseline:
@@ -106,10 +108,17 @@
 - [x] RC owner assigned with rollback authority.
 - Sign-off record template: `docs/operations/v1-rc-signoff-record.md`.
 
-## Outstanding External Gates (2026-05-21)
-- current truth snapshot is `G1=OPEN`, `G2=FAIL`, `G3=PASS`, `G4=PASS` (synced 2026-05-21 after fresh production SLO).
-- Gate 1 remains open until the production restore drill is rerun from VPS/Coolify Docker context for this candidate.
-- Gate 2 failed in `docs/operations/v1-slo-observation-2026-05-21T15-28-20-108Z.md`: `/workers/ready` availability `0.00%`, API 5xx ratio `16.6667%`, with `DEPLOYED_INLINE_MODE` in worker readiness.
+## Outstanding External Gates (2026-05-23)
+- current snapshot is `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS` (synced 2026-05-23).
+- Gate 1 is satisfied by
+  `docs/operations/v1-restore-drill-prod-2026-05-23T00-00-00-000Z.md`.
+- Gate 2 is satisfied by
+  `docs/operations/v1-slo-observation-2026-05-23T04-38-07-393Z.md`; the only
+  `NO_DATA` objective is live order failure ratio because no live order
+  attempts occurred.
+- Separate release blocker: `LIVEIMPORT-03` is still failed in
+  `docs/operations/liveimport-03-prod-readback-2026-05-23.json` because no
+  qualifying open runtime payload was visible.
 - Execution guide: `docs/operations/v1-rc-external-gates-runbook.md`.
 - SLO definitions and metric mapping: `docs/operations/v1-slo-catalog.md`.
 - Binance live bot-control verification checklist: `docs/operations/binance-live-ops-verification-checklist-2026-04-06.md`.

@@ -1,6 +1,6 @@
 # Known Issues
 
-Last updated: 2026-05-22
+Last updated: 2026-05-23
 
 ## Resolved Incidents
 
@@ -20,7 +20,23 @@ Last updated: 2026-05-22
 
 ## Active Issues
 
-- 2026-05-21 protected V1 release update:
+- 2026-05-23 protected V1 release update:
+  Production deploy `72b547e12351e078c49807fb25d56c27f64c6567` is healthy:
+  build-info matches `main`, deploy smoke passes, `/workers/ready` passes in
+  split-worker mode, production restore drill passes, rollback proof passes,
+  production UI clickthrough passes, RC Gates 1-4 pass, and the SLO window is
+  healthy except live order failure ratio `NO_DATA` because no live order
+  attempts occurred. V1 remains `NO-GO` for one active issue:
+  `LIVEIMPORT-03` failed closed because the running LIVE Binance Futures
+  session has no open runtime payload for `ETHUSDT` or `DOGEUSDT`
+  (`openCount=0`, `openOrdersCount=0`,
+  `importCompleteness=MISSING_FROM_RUNTIME_READBACK`). Remaining action is an
+  approved safe open runtime readback payload path and then rerun final
+  preflight/release gate. Do not create a LIVE order or position without
+  separate explicit operator approval.
+
+- Historical 2026-05-21 protected V1 release update, superseded by the
+  2026-05-23 `72b547e` production proof above:
   Protected app auth is no longer the only blocker for the current `dd1a1faf`
   release attempt. Fresh production UI clickthrough and rollback proof pass,
   and authenticated `LIVEIMPORT-03` reaches a RUNNING Binance FUTURES LIVE

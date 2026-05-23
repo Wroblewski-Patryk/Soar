@@ -15,6 +15,28 @@ Last updated: 2026-05-23
   - sync task state, project state, planning docs, and learning journal when
     needed
 
+## BLOCKED
+
+- [ ] `V1-PROTECTED-APP-PROOF-72B547E1-2026-05-23 release: current production proof blocked only on LIVEIMPORT-03`
+  - 2026-05-23: Production deploy
+    `72b547e12351e078c49807fb25d56c27f64c6567` is current on `main`.
+    Build-info, deploy smoke, authenticated `/workers/ready`, split-worker
+    topology, production DB restore drill, rollback proof, production UI
+    clickthrough, RC Gates 1-4, and SLO health/readiness/5xx/queue-lag
+    objectives pass.
+  - Final preflight and non-dry-run release gate are fresh but remain
+    `not_ready` because `LIVEIMPORT-03` failed closed: the running LIVE
+    Binance Futures session has no open runtime payload for `ETHUSDT` or
+    `DOGEUSDT`.
+  - Next action: approve a safe way to observe or produce a qualifying open
+    runtime payload, rerun `LIVEIMPORT-03`, then rerun final preflight and
+    release gate. Do not create LIVE orders or positions without separate
+    explicit approval.
+  - Evidence:
+    `docs/operations/v1-final-preflight-72b547e1-2026-05-23-after-refresh.md`,
+    `docs/operations/v1-release-gate-prod-72b547e1-2026-05-23-after-refresh.md`,
+    `docs/operations/v1-production-activation-evidence-audit-2026-05-23.md`.
+
 ## READY
 
 - [x] `REPO-SOT-CLEANUP-2026-05-23 refactor: remove obsolete root template source-of-truth folders`

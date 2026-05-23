@@ -28,6 +28,18 @@ Do not turn uncertainty into optimism.
   incomplete.
 - `Low`: evidence is missing, stale, inferred, or chat-only.
 
+## Current Operational Override
+
+- 2026-05-23 `SOAR-OPERATIONS-001` and `SOAR-WORKERS-001`: deployed
+  `72b547e12351e078c49807fb25d56c27f64c6567` has current production proof for
+  build-info, deploy smoke, split-worker `/workers/ready`, restore drill,
+  rollback proof, production UI clickthrough, RC Gates 1-4, and SLO
+  health/readiness/5xx/queue-lag objectives. `SOAR-WORKERS-001` is current for
+  split-worker readiness. `SOAR-OPERATIONS-001` remains `PARTIAL/BLOCKED` for
+  release approval only because `LIVEIMPORT-03` failed closed with no open
+  runtime position/order payload for `ETHUSDT` or `DOGEUSDT`. Do not create a
+  LIVE order or position to satisfy this without separate explicit approval.
+
 ## Ledger
 
 | ID | Module | Journey / function | Priority | Status | Confidence | Evidence | Missing proof or defect | Next smallest action | Owner | Last verified |

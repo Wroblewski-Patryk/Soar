@@ -1,6 +1,6 @@
 # Delivery Map
 
-Last updated: 2026-05-19
+Last updated: 2026-05-23
 
 ## Current Product Target
 
@@ -8,16 +8,16 @@ Last updated: 2026-05-19
 - Current release or milestone: V1 trading/runtime confidence
 - Primary user: trading operator
 - Primary outcome: Core bot, backtest, exchange, wallet, dashboard, and subscription journeys work with proof.
-- Top blockers: no local implementation blocker in the generated V1 state. The
-  2026-05-19 `AUD-00` refresh is `PASS:21`, static findings `0`, and tests
-  indexed `335`. Remaining work is source-of-truth and proof-boundary work:
-  `AUD-01` architecture exchange-scope wording, `AUD-20` assistant
-  hot-path truth, and fresh `AUD-19`
-  production release evidence before any new production readiness claim.
-- Next mission: repair the highest-priority audit findings without changing
-  product scope silently. LIVE order/cancel/close, unsafe LIVE position
-  mutation, exchange-side mutation, and existing production data mutation remain
-  blocked without separate explicit approval.
+- Top blockers: no current split-worker, restore, rollback, UI, RC, or public
+  deploy blocker remains for deployed
+  `72b547e12351e078c49807fb25d56c27f64c6567`. The active production release
+  blocker is `LIVEIMPORT-03`: no open runtime position/order payload is visible
+  for `ETHUSDT` or `DOGEUSDT`, so the final release gate remains `not_ready`.
+- Next mission: obtain an approved safe open runtime payload path, rerun
+  `LIVEIMPORT-03`, final preflight, and the non-dry-run release gate. LIVE
+  order/cancel/close, unsafe LIVE position mutation, exchange-side mutation,
+  and existing production data mutation remain blocked without separate
+  explicit approval.
 
 ## Source Inputs
 
@@ -52,7 +52,7 @@ Last updated: 2026-05-19
 | SOAR-DM-020 | UX/A11y/Mobile | Public/dashboard route rendering, state coverage, keyboard/focus, responsive/mobile shell, screenshots, and console health | Web, browser proof, a11y tests, route audit, production clickthrough | verified | `.agents/state/module-confidence-ledger.md` row `SOAR-UX-A11Y-MOBILE-001`; `V1-UX-A11Y-MOBILE-LOCAL-PROOF-2026-05-11`; `docs/operations/prod-ui-module-clickthrough-2fc90a08-2026-05-14.md`; `docs/operations/prod-ux-a11y-mobile-proof-2fc90a08-2026-05-14.md` | Keep proof fresh after future deploys; unnamed internal-control accessibility warnings remain post-V1 polish. |
 | SOAR-DM-021 | Subscriptions/Admin | Admin subscription plans, entitlement validation, user role/plan assignment, and protected admin routes | API, Web, DB, auth/role middleware, route audit, browser proof | verified | `.agents/state/module-confidence-ledger.md` row `SOAR-SUBSCRIPTIONS-ADMIN-001`; 2026-05-19 `AUD-18` Web admin/subscription pack (`4` files / `9` tests) and API admin/subscriptions pack (`5` files / `25` tests); production protected admin route proof. | Keep proof fresh after future deploys; non-destructive production entitlement mutation remains future admin-ops scope. |
 | SOAR-DM-006 | Profile API Keys | Create, test, store, rotate, revoke, delete, and audit exchange keys | web, API, exchange probes, tests, browser proof | verified | `.agents/state/module-confidence-ledger.md` row `SOAR-PROFILE-API-KEYS-001`; 2026-05-19 `AUD-06` API-key/probe/ownership and Web API-key evidence; production masked create/probe/audit/delete proof. | Keep proof fresh after future deploys; never store or print raw operator secrets in proof artifacts. |
-| SOAR-DM-002 | Release confidence | P0 journey inventory | web, API, runtime, ops, tests | verified | Final V1 proof map: `docs/operations/v1-master-state-ledger-2026-05-14-final.md`, `docs/operations/v1-project-index-2026-05-14-final.md`, `docs/operations/v1-completion-scorecard-2026-05-14-final.md`, and `docs/operations/v1-100-percent-truth-audit-2026-05-14.md`. | Superseded by concrete module rows; keep the generated proof map fresh after future scope changes. |
+| SOAR-DM-002 | Release confidence | P0 journey inventory | web, API, runtime, ops, tests | blocked | 2026-05-23 production deploy for `72b547e12351e078c49807fb25d56c27f64c6567` is healthy: build-info, deploy smoke, split-worker readiness, restore drill, rollback proof, production UI clickthrough, RC Gates 1-4, and SLO health objectives pass. Final preflight/release gate remain `not_ready` because `LIVEIMPORT-03` failed closed with no open runtime payload for `ETHUSDT`/`DOGEUSDT`. | Rerun release confidence only after approved qualifying open runtime payload makes `LIVEIMPORT-03` pass; do not substitute generic health gates for live-import readback. |
 
 ## Visual Slice Map
 

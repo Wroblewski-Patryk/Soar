@@ -1,6 +1,25 @@
 # System Health
 
-Last updated: 2026-05-22
+Last updated: 2026-05-23
+
+## 2026-05-23 Production Deploy And Protected Release Gate
+
+- Production deploy for `72b547e12351e078c49807fb25d56c27f64c6567` is healthy:
+  public Web build-info reports the expected SHA on `main`, deploy smoke
+  passes for API `/health`, API `/ready`, Web `/`, and authenticated
+  `/workers/ready`.
+- Split-worker topology is verified in production: API reports `WORKER_MODE`
+  split, required worker families are present, and worker heartbeats are fresh.
+- Protected operational evidence is fresh: production DB restore drill `PASS`,
+  rollback proof `PASS` with `shouldRollback=false`, production UI clickthrough
+  `PASS`, RC Gates 1-4 `PASS`, and RC sign-off `APPROVED`.
+- SLO observation is operationally healthy for health/readiness/5xx/queue lag;
+  overall SLO artifact is `NO_DATA` only because the live order failure-ratio
+  objective had no live order attempts in the observation window.
+- Release readiness remains `not_ready` by design because `LIVEIMPORT-03`
+  failed closed: the running LIVE Binance Futures session had no open runtime
+  position/order payload for `ETHUSDT` or `DOGEUSDT`. This is an evidence
+  blocker, not a split-worker/restore/rollback availability blocker.
 
 ## 2026-05-22 Architecture-Code Runtime Audit
 

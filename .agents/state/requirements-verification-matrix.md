@@ -1,6 +1,19 @@
 # Requirements Verification Matrix
 
-Last updated: 2026-05-21
+Last updated: 2026-05-23
+
+## Current Release Override
+
+- 2026-05-23 `REQ-FUNC-021` status is **blocked** for final V1 release
+  approval. Production deploy `72b547e12351e078c49807fb25d56c27f64c6567`
+  passes build-info, deploy smoke, authenticated `/workers/ready`,
+  split-worker topology, restore drill, rollback proof, production UI
+  clickthrough, RC Gates 1-4, and SLO health/readiness/5xx/queue-lag
+  objectives. The remaining required proof is `LIVEIMPORT-03`: current
+  readback failed closed because `ETHUSDT` and `DOGEUSDT` had no open runtime
+  position/order payload. Next proof is an approved qualifying open runtime
+  payload readback; LIVE order/position creation requires separate explicit
+  operator approval.
 
 | ID | Source | Requirement | Type | Journey/Module | Verification Method | Evidence | Status | Next Proof Or Fix | Last Updated |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |

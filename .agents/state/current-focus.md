@@ -1,10 +1,29 @@
 # Current Focus
 
-Last updated: 2026-05-21
+Last updated: 2026-05-23
 
 ## Active Focus
 
-2026-05-21 protected V1 app proof status:
+2026-05-23 protected V1 production proof status:
+`V1-PROTECTED-APP-PROOF-72B547E1-2026-05-23` is the active production release
+truth for deployed `72b547e12351e078c49807fb25d56c27f64c6567`. Production
+build-info matches `main`; post-deploy smoke passes for API `/health`, API
+`/ready`, Web `/`, and authenticated `/workers/ready`; split-worker topology is
+healthy; production DB restore drill passes through the VPS Docker SSH context;
+rollback proof passes with `shouldRollback=false`; production UI clickthrough
+passes for public/dashboard/admin/legacy routes; RC Gates 1-4 and sign-off are
+current `PASS`; and the 30-minute SLO window passes health/readiness/5xx/queue
+lag with `NO_DATA` only for live order failure ratio because no live order
+attempts occurred. V1 is still `NO-GO`: `LIVEIMPORT-03` reached a running LIVE
+Binance Futures session, but `ETHUSDT` and `DOGEUSDT` both have no open
+runtime position/order payload and are marked `MISSING_FROM_RUNTIME_READBACK`.
+Current focus is a safe, explicitly approved way to observe or produce a
+qualifying open runtime payload, then rerun `LIVEIMPORT-03`, final preflight,
+and the non-dry-run release gate. Do not create a LIVE order or position
+without separate explicit operator approval.
+
+Historical 2026-05-21 protected V1 app proof status (superseded by the
+2026-05-23 `72b547e` production proof above):
 `V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21` used approved protected
 application access without persisting secrets and advanced current production
 evidence for deployed `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`. Operator
