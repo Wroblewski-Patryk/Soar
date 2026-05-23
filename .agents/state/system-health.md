@@ -6,12 +6,16 @@ Last updated: 2026-05-23
 
 - Post-release docs/state deploy freshness: follow-up docs/state sync commits
   must prove the pushed `HEAD` through public Web build-info and public deploy
-  smoke after deployment convergence. The pre-sync `e0457b42` checkpoint
-  passed after manual Coolify `soar-web` redeploy and `Force Start` for queued
-  deployment `iwhb44uuc5pqxixr7b9xv6ko`. Authenticated deploy smoke is not
-  claimed for the latest docs/state sync because the available Coolify
-  credential is not a valid Soar application password for `ai@luckysparrow.ch`
-  (`401 Invalid email or password`).
+  smoke after deployment convergence. The latest verified docs/state checkpoint
+  before this record is
+  `32c145181a8740ca3d7714c7ee83b9b450a57453`: Coolify had accumulated stale
+  queued/in-progress worker/API deployments, so the coordinator cancelled the
+  stale queue, triggered a fresh `soar-web` deploy from the approved Coolify UI
+  context, waited for public Web build-info to converge to `32c14518`, and
+  reran public deploy smoke successfully for API `/health`, API `/ready`, and
+  Web `/`. Authenticated deploy smoke is not claimed for the latest docs/state
+  sync because the available Coolify credential is not a valid Soar application
+  password for `ai@luckysparrow.ch` (`401 Invalid email or password`).
 - Production deploy for `b1ba69edccc639e97943f37fb2b1e6249a62e87c` is healthy:
   public Web build-info reports the expected SHA on `main`, deploy smoke
   passes for API `/health`, API `/ready`, Web `/`, and authenticated

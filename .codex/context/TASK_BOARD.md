@@ -50,6 +50,14 @@ Last updated: 2026-05-23
     closed by the commit alone. The pushed `HEAD` must be observed through
     public Web build-info and public deploy smoke after Coolify deployment
     convergence; authenticated smoke remains separate app-auth scope.
+  - 2026-05-23 Coolify queue recovery follow-up: later docs/state commit
+    `32c145181a8740ca3d7714c7ee83b9b450a57453` did not auto-roll out while
+    Coolify had stale queued/in-progress worker/API deployments. The
+    coordinator cancelled the stale queue, triggered a fresh `soar-web` deploy
+    from the approved Coolify UI context, waited until public Web build-info
+    converged to `32c14518`, and reran public deploy smoke successfully for
+    API `/health`, API `/ready`, and Web `/`. No authenticated smoke is
+    claimed for this docs/state checkpoint without a valid Soar app password.
   - Evidence:
     `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
     `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,

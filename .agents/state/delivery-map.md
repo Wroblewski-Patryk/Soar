@@ -13,8 +13,10 @@ Last updated: 2026-05-23
   `b1ba69edccc639e97943f37fb2b1e6249a62e87c` is ready, including
   `LIVEIMPORT-03 --symbols auto` for actual open runtime payloads `SOLUSDT`
   and `BNBUSDT`; follow-up docs-state deploys must prove the pushed `HEAD`
-  through public build-info plus public deploy smoke. Authenticated smoke is
-  not claimed for the latest docs/state sync because the available Coolify
+  through public build-info plus public deploy smoke. The latest verified
+  docs/state checkpoint before this record is `32c14518` after Coolify
+  stale-queue cleanup and fresh `soar-web` deploy. Authenticated smoke is not
+  claimed for the latest docs/state sync because the available Coolify
   credential is not a Soar application password.
 - Next mission: post-release monitoring and the next bounded
   architecture-aligned product/runtime slice. LIVE order/cancel/close, unsafe

@@ -16,12 +16,15 @@ Last updated: 2026-05-23
   read-only auto-discovering the real open runtime symbols `SOLUSDT` and
   `BNBUSDT`; both readbacks are `EXCHANGE_SYNC`, `BOT_MANAGED`,
   `OWNED_AND_MANAGED`, and `IN_SYNC`. Final preflight has no blockers and the
-  full non-dry-run production release gate is `ready`. Follow-up deploys
-  required manually forcing queued Coolify `soar-web` deployments; the
-  pre-sync checkpoint `e0457b424196d8e9773b1ef402f7d1c501160ebc` converged
-  after manual redeploy and `Force Start` of `iwhb44uuc5pqxixr7b9xv6ko`, then
-  Web build-info and public deploy smoke passed for API `/health`, API
-  `/ready`, and Web `/`. Later docs-only commits must repeat the same
+  full non-dry-run production release gate is `ready`. Follow-up deploys first
+  required manually forcing queued Coolify `soar-web` deployments; the latest
+  verified docs/state checkpoint before this record is
+  `32c145181a8740ca3d7714c7ee83b9b450a57453`. Coolify had accumulated stale
+  queued/in-progress worker/API deployments, so the coordinator cancelled the
+  stale queue, triggered a fresh `soar-web` deploy from the approved Coolify UI
+  context, waited for Web build-info to converge to `32c14518`, and reran
+  public deploy smoke successfully for API `/health`, API `/ready`, and Web
+  `/`. Later docs-only commits must repeat the same
   build-info plus public-smoke proof for the pushed `HEAD`. Authenticated
   deploy smoke is not claimed for the latest docs/state sync because the
   available Coolify credential is not a valid Soar application password for

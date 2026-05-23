@@ -3112,3 +3112,22 @@ promise = connect().catch((error) => {
 - Evidence: timed-out full API run left PIDs `40492`, `28936`, and `34532`;
   narrow `Stop-Process` cleanup removed them and the follow-up process check
   returned no Soar/vitest/pnpm node rows.
+
+### 2026-05-23 - Clear stale Coolify deployment queue before retriggering deploy
+
+- Symptom: docs/state commits reached `main`, but public Web build-info stayed
+  on an older SHA even after waiting for deployment convergence.
+- Root cause: Coolify had accumulated stale queued/in-progress worker and API
+  deployments, so fresh `soar-web` rollout did not advance until the stale
+  queue was cancelled and a new web deploy was triggered from the approved
+  Coolify UI context.
+- Guardrail: when `main` is pushed but public build-info does not advance,
+  inspect the Coolify deployment list for queued/in-progress entries across
+  Soar services before repeatedly pushing or waiting. Cancel only stale
+  queued/in-progress deployments that belong to the blocked Soar rollout, then
+  trigger `soar-web` and verify with public build-info plus public smoke.
+- Evidence: stale Coolify queue was cleared, active deployment queue rechecked
+  empty, fresh `soar-web` deploy converged public build-info to
+  `32c145181a8740ca3d7714c7ee83b9b450a57453`, and public smoke passed for API
+  `/health`, API `/ready`, and Web `/`. Authenticated smoke was not claimed
+  because the available Coolify credential is not a valid Soar app password.

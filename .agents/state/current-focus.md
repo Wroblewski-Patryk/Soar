@@ -7,14 +7,14 @@ Last updated: 2026-05-23
 2026-05-23 protected V1 production proof status:
 `V1-PROTECTED-APP-PROOF-B1BA69ED-2026-05-23` plus the post-push release-state
 sync is the active production release truth. Production was advanced from
-`b1ba69edccc639e97943f37fb2b1e6249a62e87c` through
-`db07214667a700ba02ea8210629655cf2becd7d6`,
-`0ee013214ef82be61d08430e9d3338ef5c263b67`, and then
-`e0457b424196d8e9773b1ef402f7d1c501160ebc` on `main`; Coolify needed manual
-`soar-web` deployment `Force Start` actions for docs/state sync deploys,
-including queued deployment `iwhb44uuc5pqxixr7b9xv6ko`, and Web build-info
-reported `e0457b424196d8e9773b1ef402f7d1c501160ebc` after convergence. Public
-post-deploy smoke passes for API `/health`, API `/ready`, and Web `/`.
+`b1ba69edccc639e97943f37fb2b1e6249a62e87c` through follow-up docs/state
+commits, with the latest verified checkpoint before this record at
+`32c145181a8740ca3d7714c7ee83b9b450a57453` on `main`. Coolify needed manual
+intervention because stale queued/in-progress worker/API deployments blocked
+fresh web rollout; the coordinator cancelled the stale queue, triggered a
+fresh `soar-web` deploy, and Web build-info reported `32c14518` after
+convergence. Public post-deploy smoke passes for API `/health`, API `/ready`,
+and Web `/`.
 Authenticated deploy smoke is not claimed for the latest docs/state sync
 because the available Coolify credential is not a valid Soar application
 password for `ai@luckysparrow.ch` (`401 Invalid email or password`).
@@ -31,7 +31,7 @@ historical `72b547e` ETH/DOGE liveimport failure notes as the current release
 blocker.
 
 Historical 2026-05-21 protected V1 app proof status (superseded by the
-2026-05-23 `b1ba69ed` / `e0457b42` production proof above):
+2026-05-23 `b1ba69ed` / `32c14518` production proof above):
 `V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21` used approved protected
 application access without persisting secrets and advanced current production
 evidence for deployed `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`. Operator
