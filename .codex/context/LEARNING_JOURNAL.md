@@ -3077,28 +3077,26 @@ promise = connect().catch((error) => {
     one transient Prisma client rename error. Sequential reruns passed:
     `audit:data:db-isolated` (`24/24`, `15/15`, `2/2`) and go-live smoke
     (`45/45` API, `18/18` Web).
-### 2026-05-23 - Coolify injected Docker build args can be reset by redeclaration
+### 2026-05-23 - Coolify source commit build args need stage scope
 
 - Symptom: production Web `/api/build-info` exposed `gitSha: null` even after
   Coolify force-deployed the current `main` commit and the local Docker proof
   passed when `SOURCE_COMMIT` was provided as a build arg.
-- Root cause: Coolify generated a final Dockerfile that injected
-  `ARG SOURCE_COMMIT=<sha>` for the build stage, but the repository Dockerfile
-  then redeclared `ARG SOURCE_COMMIT` without a default in the same stage,
-  resetting the value before `RUN pnpm --filter web build`.
-- Guardrail: for Coolify-managed Docker builds, do not redeclare Coolify
-  injected args such as `SOURCE_COMMIT`, `SOURCE_BRANCH`, or
-  `COOLIFY_BRANCH` inside the stage after Coolify has injected them. Use them
-  directly in `RUN` commands and verify the generated Coolify deployment log
-  shows a non-empty value.
-- Evidence: Coolify deployment `wyyx5em0h9djlyilb8y9e3al` logged
-  `RUN SOURCE_COMMIT="" ...` despite importing commit `57e87bae`; removing
-  the local redeclarations lets Coolify's injected defaults remain in scope.
-- Follow-up: Coolify can still pass an empty `SOURCE_COMMIT` build arg through
-  generated compose even when it imports the correct commit. The Web build
-  metadata script therefore keeps GitHub branch readback as a final Docker
-  context fallback, and this fallback must be tested in a directory without
-  `.git`.
+- Root cause: the Soar Web Docker `build` stage used `$SOURCE_COMMIT` in a
+  `RUN` command, but the stage did not declare `ARG SOURCE_COMMIT`,
+  `ARG SOURCE_BRANCH`, or `ARG COOLIFY_BRANCH` in Dockerfile scope. Coolify's
+  Advanced settings already had `Inject Build Args to Dockerfile` and
+  `Include Source Commit in Build` enabled, but Docker build args must still be
+  in scope for the stage that consumes them.
+- Guardrail: when a Dockerfile stage consumes Coolify build args, declare the
+  matching `ARG` names in that stage immediately before the `RUN`/build step,
+  then verify the public `/api/build-info` reports a non-null git SHA after
+  deployment. Do not rely on GitHub branch fallback as the primary production
+  deploy-proof path.
+- Evidence: Coolify deployment logs imported commit
+  `7e3be068595aa07b01ae97c566f8a837c0632874`, but public build-info returned
+  `gitSha: null` and `metadataSource: unknown` until the Dockerfile stage
+  scope was corrected.
 
 ### 2026-05-23 - Full API Vitest can outlive the shell timeout on Windows
 
