@@ -21,6 +21,18 @@ const runtimeAggregateCacheEnabled =
   process.env.NODE_ENV !== 'test' && Number.isFinite(runtimeAggregateCacheTtlMs) && runtimeAggregateCacheTtlMs > 0;
 const runtimeAggregateCache = new Map<string, { expiresAt: number; value: RuntimeAggregateCacheValue }>();
 const runtimeAggregateInflight = new Map<string, Promise<RuntimeAggregateCacheValue>>();
+const runtimeAggregateMaxSessions = Number.parseInt(
+  process.env.RUNTIME_MONITORING_AGGREGATE_MAX_SESSIONS ?? '12',
+  10,
+);
+const runtimeAggregateMaxPerSession = Number.parseInt(
+  process.env.RUNTIME_MONITORING_AGGREGATE_MAX_PER_SESSION ?? '120',
+  10,
+);
+const runtimeAggregateSubqueryTimeoutMs = Number.parseInt(
+  process.env.RUNTIME_MONITORING_AGGREGATE_SUBQUERY_TIMEOUT_MS ?? '5000',
+  10,
+);
 
 const buildRuntimeAggregateCacheKey = (
   userId: string,
@@ -35,6 +47,19 @@ const buildRuntimeAggregateCacheKey = (
     String(query.sessionsLimit),
     String(query.perSessionLimit),
   ].join('|');
+
+const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number) => {
+  if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) return promise;
+  return Promise.race<T>([
+    promise,
+    new Promise<T>((_, reject) => {
+      const timer = setTimeout(() => {
+        clearTimeout(timer);
+        reject(new Error('runtime_aggregate_subquery_timeout'));
+      }, timeoutMs);
+    }),
+  ]);
+};
 
 const toDate = (value: Date | string | null | undefined): Date | null => {
   if (value == null) return null;
@@ -381,6 +406,17 @@ const getBotRuntimeMonitoringAggregateUncached = async (
   botId: string,
   query: GetBotRuntimeMonitoringAggregateQueryDto
 ) => {
+  const sessionsLimit = Math.max(
+    1,
+    Math.min(query.sessionsLimit, Number.isFinite(runtimeAggregateMaxSessions) ? runtimeAggregateMaxSessions : 12)
+  );
+  const perSessionLimit = Math.max(
+    1,
+    Math.min(
+      query.perSessionLimit,
+      Number.isFinite(runtimeAggregateMaxPerSession) ? runtimeAggregateMaxPerSession : 120
+    )
+  );
   const bot = await getOwnedBot(userId, botId);
   if (!bot) return null;
 
@@ -388,33 +424,33 @@ const getBotRuntimeMonitoringAggregateUncached = async (
     userId,
     botId,
     status: query.status,
-    limit: query.sessionsLimit,
+    limit: sessionsLimit,
   });
   if (sessions.length === 0) {
     return buildEmptyAggregatePayload({
       botId,
       mode: bot.mode,
       status: query.status,
-      perSessionLimit: query.perSessionLimit,
+      perSessionLimit,
     });
   }
 
   const payloadRows = await Promise.all(
     sessions.map(async (session) => {
       const [symbolStats, positions, trades] = await Promise.all([
-        listBotRuntimeSessionSymbolStats(userId, botId, session.id, {
+        withTimeout(listBotRuntimeSessionSymbolStats(userId, botId, session.id, {
           symbol: query.symbol,
-          limit: query.perSessionLimit,
+          limit: perSessionLimit,
           preferConfiguredStrategyContext: true,
-        }),
-        listBotRuntimeSessionPositions(userId, botId, session.id, {
+        }), runtimeAggregateSubqueryTimeoutMs),
+        withTimeout(listBotRuntimeSessionPositions(userId, botId, session.id, {
           symbol: query.symbol,
-          limit: query.perSessionLimit,
-        }),
-        listBotRuntimeSessionTrades(userId, botId, session.id, {
+          limit: perSessionLimit,
+        }), runtimeAggregateSubqueryTimeoutMs),
+        withTimeout(listBotRuntimeSessionTrades(userId, botId, session.id, {
           symbol: query.symbol,
-          limit: query.perSessionLimit,
-        }),
+          limit: perSessionLimit,
+        }), runtimeAggregateSubqueryTimeoutMs),
       ]);
 
       return {
@@ -442,7 +478,7 @@ const getBotRuntimeMonitoringAggregateUncached = async (
       botId,
       mode: bot.mode,
       status: query.status,
-      perSessionLimit: query.perSessionLimit,
+      perSessionLimit,
     });
   }
 
@@ -756,7 +792,7 @@ const getBotRuntimeMonitoringAggregateUncached = async (
   const tradeMeta = buildRuntimeAggregateTradesMeta({
     totalTrades,
     returnedItemsCount: tradeItems.length,
-    pageSize: query.perSessionLimit,
+    pageSize: perSessionLimit,
   });
 
   return {
