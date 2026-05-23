@@ -164,6 +164,6 @@ export const resolveSymbolTradingRulesMetadata = async (
     minAmount: rules?.minQuantity ?? null,
     minNotional: rules?.minNotional ?? null,
     amountPrecision: deriveAmountPrecisionFromStep(rules?.quantityStep ?? null),
+    contractSize: rules?.contractSize ?? null,
   };
 };
-

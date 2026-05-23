@@ -30,6 +30,17 @@ Do not turn uncertainty into optimism.
 
 ## Current Operational Override
 
+- 2026-05-23 `LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23`: local confidence for
+  `SOAR-ORDERS-001`, `SOAR-BOT-RUNTIME-001`, and exchange adapter behavior is
+  partially refreshed for Binance/Gate.io LIVE execution parity. A real
+  Gate.io issue was found and fixed locally: same-normalized spot/swap symbols
+  and derivative `contractSize` could make manual context, pretrade, and
+  runtime sizing misrepresent Gate.io order value. Focused exchange/orders/
+  runtime tests passed (`9` files / `129` tests) and API typecheck passed.
+  Production LIVE proof remains blocked until the fix is deployed and the
+  operator approves a minimum-contract-size order; Gate.io ADAUSDT cannot honor
+  a `<=1 USDT` cap because one contract is about `2.421 USDT`.
+
 - 2026-05-23 post-release docs/state deploy freshness: follow-up docs/state
   sync commits must prove the pushed `HEAD` through public Web build-info and
   public deploy smoke after deployment convergence. The latest verified public

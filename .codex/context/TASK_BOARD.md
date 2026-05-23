@@ -15,6 +15,22 @@ Last updated: 2026-05-23
   - sync task state, project state, planning docs, and learning journal when
     needed
 
+## IN PROGRESS
+
+- [ ] `LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23 release: verify Binance/Gate.io manual and automated LIVE execution parity`
+  - 2026-05-23: Operator asked whether the Gate.io ADAUSDT
+    `LIVE_PRETRADE_NOTIONAL_BELOW_MIN` failure could be caused by Binance
+    notional rules leaking into Gate.io, and requested coordinated proof that
+    both Binance and Gate.io can open positions through manual order and
+    automated bot channels.
+  - Current stage: verification. Local repair is partially verified: Gate.io
+    FUTURES now resolves the swap market before spot when both normalize to
+    `ADAUSDT`, and derivative notional uses exchange `contractSize` in manual
+    pretrade, runtime sizing, and funds checks. Live mutation remains blocked
+    until the fix is deployed and the operator approves a Gate.io minimum
+    executable size above the previous `1 USDT` cap. Evidence:
+    `docs/planning/live-exchange-execution-parity-2026-05-23-task.md`.
+
 ## DONE
 
 - [x] `RUNTIME-DCA-PROTECTION-DISPLAY-PARITY-2026-05-23 fix: keep dashboard TSL/TTP display behind DCA gates`

@@ -35,6 +35,8 @@ import { mergeRuntimeStrategyVotes, StrategyVote } from './runtimeSignalMerge';
 import {
   validateRuntimeExchangeOrder,
   RuntimeExchangeOrderGuardResult,
+  resolveRuntimeExchangeOrderRules,
+  RuntimeExchangeOrderRules,
 } from './runtimeExchangeOrderGuard.service';
 import {
   RuntimeSignalConditionLine,
@@ -174,6 +176,11 @@ type RuntimeSignalLoopDeps = {
     quantity: number;
     price: number;
   }) => Promise<RuntimeExchangeOrderGuardResult>;
+  resolveExchangeOrderRulesFn?: (input: {
+    exchange: ActiveBot['exchange'];
+    marketType: ActiveBot['marketType'];
+    symbol: string;
+  }) => Promise<RuntimeExchangeOrderRules | null>;
   listActiveBotsFromTopologyCache?: () => Promise<ActiveBot[]>;
   invalidateRuntimeTopologyCache?: () => void;
 };
@@ -196,6 +203,7 @@ const defaultDeps: RuntimeSignalLoopDeps = {
   recordRuntimeEvent: (params) => runtimeTelemetryService.recordRuntimeEvent(params),
   upsertRuntimeSymbolStat: (params) => runtimeTelemetryService.upsertRuntimeSymbolStat(params),
   validateExchangeOrderFn: (params) => validateRuntimeExchangeOrder(params),
+  resolveExchangeOrderRulesFn: (params) => resolveRuntimeExchangeOrderRules(params),
   listActiveBotsFromTopologyCache: () => runtimeTopologyCacheService.getActiveBots(),
   invalidateRuntimeTopologyCache: () => runtimeTopologyCacheService.invalidate(),
   acquireWarmupLock: (input) => acquireMarketStreamWarmupLock(input),
@@ -771,6 +779,7 @@ export class RuntimeSignalLoop {
       analyzePreTradeFn: (params) => this.deps.analyzePreTradeFn(params),
       createSignal: (params) => this.deps.createSignal(params),
       validateExchangeOrderFn: async (input) => this.deps.validateExchangeOrderFn?.(input),
+      resolveExchangeOrderRulesFn: async (input) => this.deps.resolveExchangeOrderRulesFn?.(input) ?? null,
       evaluateStrategy: (input) => this.evaluateStrategy(input),
       orchestrateFn: async (params) => this.deps.orchestrateFn(params as any),
     });

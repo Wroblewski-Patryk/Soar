@@ -9,6 +9,31 @@ repository history.
 
 ## Current Mission
 
+- Mission ID: `LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23`
+- Status: PARTIALLY_VERIFIED
+- Selected objective: verify and, if needed, repair Binance and Gate.io LIVE execution parity for both manual order and automated bot channels.
+- Why this mission now: the operator's Gate.io ADAUSDT manual short under `1 USDT` failed closed with `LIVE_PRETRADE_NOTIONAL_BELOW_MIN`, and the operator asked whether this could be a Binance-notional leak plus requested coordinated proof for both exchanges and both execution channels.
+- Release objective or product milestone advanced: live-trading confidence for exchange-specific order execution, fail-closed validation, and operator-visible minimum sizing.
+- First/next checkpoint: deploy the local exchange-rule repair, run production read-only preflights, then request explicit approval for a minimum executable Gate.io order size before any bounded live mutation.
+- Stop conditions: missing explicit approval for live mutation size/symbol/side, exchange minimum exceeds approved risk, production health/readiness failure, API key/wallet/market mismatch, raw secret persistence risk, or architecture mismatch requiring owner decision.
+- Parent validation gate: focused tests for changed code, API typecheck if backend changed, secret scan for protected context, diff check, production readback for any live proof.
+
+## Current Mission Checkpoint
+
+- 2026-05-23: Local investigation found no simple Binance notional leak, but
+  confirmed a Gate.io-specific defect. CCXT can expose both Gate.io spot
+  `ADA/USDT` and swap `ADA/USDT:USDT` under the same normalized `ADAUSDT`
+  lookup path; the connector now prefers the configured market type and filters
+  loaded markets accordingly. The order pipeline also now carries
+  `contractSize`; Gate.io ADAUSDT swap has `contractSize=10`, so `quantity=4`
+  means about `9.68 USDT` notional at `0.2421`, not about `0.97 USDT`.
+  One Gate.io ADAUSDT swap contract is about `2.42 USDT`, so the previous
+  operator cap `<= 1 USDT` cannot open that market. Focused API tests and API
+  typecheck passed locally. Live proof remains deployment- and
+  approval-gated.
+
+## Superseded Mission Snapshot
+
 - Mission ID: `REPO-SOT-FUNCTION-PARITY-2026-05-23`
 - Status: VERIFIED_PROD_RELEASE_GATE_READY
 - Selected objective: remove obsolete competing root template source-of-truth

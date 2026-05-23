@@ -25,13 +25,37 @@ export type RuntimeExchangeOrderGuardResult =
         notional: number;
         minQuantity: number | null;
         minNotional: number | null;
+        contractSize: number | null;
       };
     };
+
+export type RuntimeExchangeOrderRules = {
+  minQuantity: number | null;
+  minNotional: number | null;
+  quantityStep: number | null;
+  contractSize: number | null;
+};
 
 const isBelowThreshold = (value: number, threshold: number) => {
   const tolerance = Math.max(1e-12, Math.abs(threshold) * 1e-9);
   return value + tolerance < threshold;
 };
+
+export const resolveRuntimeExchangeOrderRules = async (
+  input: {
+    exchange: Exchange;
+    marketType: TradeMarket;
+    symbol: string;
+  },
+  deps: RuntimeExchangeOrderGuardDeps = defaultDeps
+): Promise<RuntimeExchangeOrderRules | null> =>
+  deps
+    .getSymbolRules({
+      exchange: input.exchange,
+      marketType: input.marketType,
+      symbol: input.symbol,
+    })
+    .catch(() => null);
 
 export const validateRuntimeExchangeOrder = async (
   input: {
@@ -45,26 +69,25 @@ export const validateRuntimeExchangeOrder = async (
 ): Promise<RuntimeExchangeOrderGuardResult> => {
   const quantity = Math.max(0, Number(input.quantity));
   const price = Math.max(0, Number(input.price));
-  const notional = quantity * price;
   if (!Number.isFinite(quantity) || !Number.isFinite(price) || quantity <= 0 || price <= 0) {
     return {
       allowed: true,
     };
   }
 
-  const rules = await deps
-    .getSymbolRules({
-      exchange: input.exchange,
-      marketType: input.marketType,
-      symbol: input.symbol,
-    })
-    .catch(() => null);
+  const rules = await resolveRuntimeExchangeOrderRules(input, deps);
 
   if (!rules) {
     return {
       allowed: true,
     };
   }
+
+  const contractSize =
+    typeof rules.contractSize === 'number' && Number.isFinite(rules.contractSize) && rules.contractSize > 0
+      ? rules.contractSize
+      : 1;
+  const notional = quantity * price * contractSize;
 
   if (typeof rules.minQuantity === 'number' && rules.minQuantity > 0) {
     if (isBelowThreshold(quantity, rules.minQuantity)) {
@@ -78,6 +101,7 @@ export const validateRuntimeExchangeOrder = async (
           notional,
           minQuantity: rules.minQuantity,
           minNotional: rules.minNotional,
+          contractSize: rules.contractSize,
         },
       };
     }
@@ -95,6 +119,7 @@ export const validateRuntimeExchangeOrder = async (
           notional,
           minQuantity: rules.minQuantity,
           minNotional: rules.minNotional,
+          contractSize: rules.contractSize,
         },
       };
     }

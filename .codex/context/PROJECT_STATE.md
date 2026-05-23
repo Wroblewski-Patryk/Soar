@@ -4,6 +4,24 @@ Last updated: 2026-05-23
 
 ## Current Candidate Deployment Status
 
+- `LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23` is locally partially verified
+  and production LIVE proof is intentionally blocked until deployment and a
+  fresh operator approval. The Gate.io ADAUSDT failure was not a simple Binance
+  notional leak. Local investigation found a real exchange-adapter gap:
+  Gate.io CCXT returns spot and swap markets whose symbols/ids both normalize
+  to `ADAUSDT`, so generic symbol resolution could select the spot market for
+  a futures/swap context. The fix now prefers configured market type, filters
+  market maps by market type, carries `contractSize` through symbol rules,
+  computes manual/pretrade notional as `quantity * markPrice * contractSize`,
+  and sizes runtime LIVE derivative orders with contract size before
+  orchestration and wallet funds checks. Read-only probe after the fix showed
+  Gate.io ADAUSDT swap `minAmount=1`, `contractSize=10`, mark about `0.2421`,
+  so the smallest honest ADAUSDT Gate.io position was about `2.421 USDT`; the
+  previous `<=1 USDT` cap is impossible for that contract. Validation passed:
+  focused API tests `9` files / `129` tests and API typecheck. No new
+  production LIVE mutation was performed. Evidence:
+  `docs/planning/live-exchange-execution-parity-2026-05-23-task.md`.
+
 - `RUNTIME-DCA-PROTECTION-DISPLAY-PARITY-2026-05-23` is locally verified.
   The operator reported Binance dashboard drift where a strategy with three
   DCA levels showed TSL after DCA count `2`, and `SOLUSDT` showed TSL while

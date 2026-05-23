@@ -20,6 +20,7 @@ type CcxtMarket = {
   id?: string;
   symbol?: string;
   active?: boolean;
+  contractSize?: number;
   limits?: CcxtMarketLimits;
   precision?: CcxtMarketPrecision;
   info?: {
@@ -42,6 +43,7 @@ export type ExchangeSymbolRules = {
   minQuantity: number | null;
   minNotional: number | null;
   quantityStep: number | null;
+  contractSize: number | null;
 };
 
 const parsedCacheTtlMs = Number.parseInt(
@@ -89,6 +91,7 @@ const parseFilterRules = (filters: unknown) => {
       minQuantity: null as number | null,
       minNotional: null as number | null,
       quantityStep: null as number | null,
+      contractSize: null as number | null,
     };
   }
 
@@ -135,6 +138,7 @@ const toSymbolRules = (market: CcxtMarket): ExchangeSymbolRules => {
     minQuantity,
     minNotional,
     quantityStep,
+    contractSize: asPositiveNumber(market.contractSize),
   };
 };
 

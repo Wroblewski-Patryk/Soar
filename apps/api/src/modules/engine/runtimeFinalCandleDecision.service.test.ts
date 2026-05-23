@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { processRuntimeFinalCandleDecision } from './runtimeFinalCandleDecision.service';
+import { resolveRuntimeWalletFundsExhausted } from './runtimeCapitalContext.service';
 
 vi.mock('./runtimeCapitalContext.service', () => ({
   resolveRuntimeReferenceBalance: vi.fn(async () => 10_000),
@@ -71,7 +72,7 @@ const baseEvent = {
 };
 
 const createContext = (options?: {
-  direction: 'LONG' | 'SHORT' | 'EXIT' | null;
+  direction?: 'LONG' | 'SHORT' | 'EXIT' | null;
   strategyInterval?: string;
   orchestrationResult?:
     | { status: 'opened'; orderId: string; positionId: string }
@@ -156,6 +157,39 @@ describe('runtimeFinalCandleDecision.service', () => {
             reason: 'no_votes',
           }),
         }),
+      })
+    );
+  });
+
+  it('sizes LIVE derivative orders with contract size before orchestration', async () => {
+    const walletFundsGuard = resolveRuntimeWalletFundsExhausted as ReturnType<typeof vi.fn>;
+    walletFundsGuard.mockClear();
+    const { context, orchestrateFn } = createContext({
+      botOverrides: {
+        mode: 'LIVE',
+        exchange: 'GATEIO' as 'BINANCE',
+      },
+    });
+    (context as any).resolveExchangeOrderRulesFn = vi.fn(async () => ({
+      minQuantity: 1,
+      minNotional: null,
+      quantityStep: 1,
+      contractSize: 10,
+    }));
+
+    await processRuntimeFinalCandleDecision(baseEvent, context as any);
+
+    expect(orchestrateFn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        quantity: expect.closeTo(4.97512438, 8),
+        markPrice: 100.5,
+        mode: 'LIVE',
+      })
+    );
+    expect(walletFundsGuard).toHaveBeenCalledWith(
+      expect.objectContaining({
+        addedQuantity: expect.closeTo(4.97512438, 8),
+        contractSize: 10,
       })
     );
   });

@@ -305,6 +305,7 @@ export const getManualOrderContext = async (
     minAmount: null,
     minNotional: null,
     amountPrecision: null,
+    contractSize: null,
   };
   let markPrice: number | null = null;
 
@@ -341,7 +342,12 @@ export const getManualOrderContext = async (
     minNotional: rules.minNotional,
     markPrice,
     amountPrecision: rules.amountPrecision,
+    contractSize: rules.contractSize,
   });
+  const contractSize =
+    typeof rules.contractSize === 'number' && Number.isFinite(rules.contractSize) && rules.contractSize > 0
+      ? rules.contractSize
+      : 1;
 
   const requestedQuantity =
     typeof query.quantity === 'number' && Number.isFinite(query.quantity) && query.quantity > 0
@@ -349,7 +355,7 @@ export const getManualOrderContext = async (
       : null;
   const estimatedNotional =
     requestedQuantity != null && markPrice != null
-      ? normalizeAmountFixed(requestedQuantity * markPrice, rules.amountPrecision)
+      ? normalizeAmountFixed(requestedQuantity * markPrice * contractSize, rules.amountPrecision)
       : null;
   const estimatedMargin =
     estimatedNotional != null ? estimatedNotional / Math.max(1, resolvedLeverage) : null;
@@ -369,6 +375,7 @@ export const getManualOrderContext = async (
       minAmount: rules.minAmount,
       amountPrecision: rules.amountPrecision,
       minNotional: rules.minNotional,
+      contractSize: rules.contractSize ?? null,
       minExecutableQty,
     },
     sideAwarePreview: {

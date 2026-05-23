@@ -16,6 +16,7 @@ describe('validateRuntimeExchangeOrder', () => {
           minQuantity: 0.01,
           minNotional: 5,
           quantityStep: 0.001,
+          contractSize: null,
         })),
       }
     );
@@ -39,6 +40,7 @@ describe('validateRuntimeExchangeOrder', () => {
           minQuantity: 0.001,
           minNotional: 5,
           quantityStep: 0.001,
+          contractSize: null,
         })),
       }
     );
@@ -46,6 +48,28 @@ describe('validateRuntimeExchangeOrder', () => {
     expect(decision.allowed).toBe(false);
     if (decision.allowed) return;
     expect(decision.reason).toBe('exchange_min_notional_not_met');
+  });
+
+  it('uses contract size when evaluating derivative notional', async () => {
+    const decision = await validateRuntimeExchangeOrder(
+      {
+        exchange: 'GATEIO',
+        marketType: 'FUTURES',
+        symbol: 'ADAUSDT',
+        quantity: 2,
+        price: 0.25,
+      },
+      {
+        getSymbolRules: vi.fn(async () => ({
+          minQuantity: 1,
+          minNotional: 5,
+          quantityStep: 1,
+          contractSize: 10,
+        })),
+      }
+    );
+
+    expect(decision).toEqual({ allowed: true });
   });
 
   it('allows when exchange rules are unavailable', async () => {

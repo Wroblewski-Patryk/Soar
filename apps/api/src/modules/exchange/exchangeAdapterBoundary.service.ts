@@ -106,6 +106,7 @@ type AuthenticatedConnectorLike = {
     minAmount: number | null;
     minNotional: number | null;
     amountPrecision: number | null;
+    contractSize?: number | null;
   }>;
   fetchMarkPrice: (symbol: string) => Promise<number>;
   convergeFuturesLeverageAndMargin: (params: {

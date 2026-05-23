@@ -55,6 +55,7 @@ describe('exchangeMetadataContract.service', () => {
       minQuantity: 0.005,
       minNotional: 10,
       quantityStep: 0.001,
+      contractSize: null,
     }));
 
     const rules = await resolveSymbolTradingRulesMetadata(
@@ -82,6 +83,7 @@ describe('exchangeMetadataContract.service', () => {
       minAmount: 0.005,
       minNotional: 10,
       amountPrecision: 3,
+      contractSize: null,
     });
   });
 });

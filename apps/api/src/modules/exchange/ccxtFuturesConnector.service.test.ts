@@ -134,6 +134,115 @@ describe('CcxtFuturesConnector scaffold', () => {
     );
   });
 
+  it('prefers Gate.io swap symbols over spot symbols when both normalize to the same key', async () => {
+    const client = createMockClient();
+    client.loadMarkets = vi.fn().mockResolvedValue({
+      'ADA/USDT': {
+        symbol: 'ADA/USDT',
+        id: 'ADA_USDT',
+        type: 'spot',
+        spot: true,
+        limits: { amount: { min: 0.01 }, cost: { min: 3 } },
+        precision: { amount: 0.01 },
+      },
+      'ADA/USDT:USDT': {
+        symbol: 'ADA/USDT:USDT',
+        id: 'ADA_USDT',
+        type: 'swap',
+        swap: true,
+        contractSize: 10,
+        limits: { amount: { min: 1 }, cost: {} },
+        precision: { amount: 1 },
+      },
+    });
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' },
+      vi.fn().mockResolvedValue(client)
+    );
+
+    await connector.placeOrder({
+      symbol: 'ADAUSDT',
+      type: 'market',
+      side: 'sell',
+      amount: 1,
+    });
+
+    expect(client.createOrder).toHaveBeenCalledWith(
+      'ADA/USDT:USDT',
+      'market',
+      'sell',
+      1,
+      undefined,
+      {}
+    );
+  });
+
+  it('filters loaded markets to the configured derivative market type', async () => {
+    const client = createMockClient();
+    client.loadMarkets = vi.fn().mockResolvedValue({
+      'ADA/USDT': {
+        symbol: 'ADA/USDT',
+        id: 'ADA_USDT',
+        type: 'spot',
+        spot: true,
+      },
+      'ADA/USDT:USDT': {
+        symbol: 'ADA/USDT:USDT',
+        id: 'ADA_USDT',
+        type: 'swap',
+        swap: true,
+      },
+    });
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' },
+      vi.fn().mockResolvedValue(client)
+    );
+
+    await expect(connector.loadMarketsMap()).resolves.toEqual({
+      'ADA/USDT:USDT': expect.objectContaining({
+        symbol: 'ADA/USDT:USDT',
+      }),
+    });
+  });
+
+  it('reads trading rules from the preferred Gate.io swap market', async () => {
+    const client = createMockClient();
+    const markets = {
+      'ADA/USDT': {
+        symbol: 'ADA/USDT',
+        id: 'ADA_USDT',
+        type: 'spot',
+        spot: true,
+        limits: { amount: { min: 0.01 }, cost: { min: 3 } },
+        precision: { amount: 0.01 },
+      },
+      'ADA/USDT:USDT': {
+        symbol: 'ADA/USDT:USDT',
+        id: 'ADA_USDT',
+        type: 'swap',
+        swap: true,
+        contractSize: 10,
+        limits: { amount: { min: 1 }, cost: {} },
+        precision: { amount: 1 },
+      },
+    };
+    client.loadMarkets = vi.fn().mockResolvedValue(markets);
+    (client as unknown as { market: (symbol: string) => unknown }).market = vi.fn(
+      (symbol: string) => markets[symbol as keyof typeof markets]
+    );
+    const connector = new CcxtFuturesConnector(
+      { exchangeId: 'gateio', marketType: 'swap' },
+      vi.fn().mockResolvedValue(client)
+    );
+
+    await expect(connector.getSymbolTradingRules('ADAUSDT')).resolves.toEqual({
+      minAmount: 1,
+      minNotional: null,
+      amountPrecision: 1,
+      contractSize: 10,
+    });
+  });
+
   it('fetches and normalizes recent public candles while dropping malformed rows', async () => {
     const client = createMockClient();
     client.fetchOHLCV = vi.fn().mockResolvedValue([

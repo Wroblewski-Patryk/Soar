@@ -4,6 +4,25 @@ Last updated: 2026-05-23
 
 ## Next Tiny Task
 
+Current live exchange execution parity:
+`LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23` is partially verified locally.
+The Gate.io under-`1 USDT` manual ADAUSDT short failure was not proven to be a
+Binance rule leak, but the investigation found two concrete exchange-parity
+gaps: Gate.io swap and spot markets can normalize to the same `ADAUSDT`
+symbol, so futures contexts must prefer the configured derivative market; and
+Gate.io swap order notional must include `contractSize`. The local fix now
+prefers configured market type, filters loaded CCXT markets by market type, and
+uses `contractSize` in manual pretrade, runtime LIVE sizing, and wallet funds
+guards. Read-only probes show Gate.io ADAUSDT swap has `minAmount=1`,
+`amountPrecision=1`, `contractSize=10`, mark about `0.2421`; one contract is
+about `2.421 USDT`, so the previous `<= 1 USDT` cap is impossible for that
+market. Validation passed: focused API tests `129/129` and API typecheck. Next
+exact task: run final hygiene checks, deploy the fix, run production read-only
+manual/bot preflights for Binance and Gate.io, then request explicit operator
+approval for the minimum executable live size before any new exchange-side
+mutation. Evidence:
+`docs/planning/live-exchange-execution-parity-2026-05-23-task.md`.
+
 Current runtime DCA protection display parity:
 `RUNTIME-DCA-PROTECTION-DISPLAY-PARITY-2026-05-23` is locally verified. The
 operator-reported Binance dashboard drift was reproduced at the read-model

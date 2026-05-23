@@ -504,12 +504,18 @@ export const resolveRuntimeWalletFundsExhausted = async (
     paperStartBalance: number;
     markPrice: number;
     addedQuantity: number;
+    contractSize?: number | null;
     leverage: number;
     nowMs: number;
   },
   deps: RuntimeCapitalContextDeps = defaultDeps
 ) => {
-  const requiredMargin = (input.markPrice * Math.max(0, input.addedQuantity)) / Math.max(1, input.leverage);
+  const contractSize =
+    typeof input.contractSize === 'number' && Number.isFinite(input.contractSize) && input.contractSize > 0
+      ? input.contractSize
+      : 1;
+  const requiredMargin =
+    (input.markPrice * Math.max(0, input.addedQuantity) * contractSize) / Math.max(1, input.leverage);
   if (!Number.isFinite(requiredMargin) || requiredMargin <= 0) return false;
 
   if (input.mode === 'PAPER') {

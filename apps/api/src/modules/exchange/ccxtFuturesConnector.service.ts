@@ -52,6 +52,37 @@ export class CcxtFuturesConnector {
       .replace(/[^A-Z0-9]/g, '');
   }
 
+  private isConfiguredMarketType(market: Record<string, unknown>) {
+    const type = typeof market.type === 'string' ? market.type.toLowerCase() : null;
+    if (this.config.marketType === 'spot') {
+      return market.spot === true || type === 'spot';
+    }
+    if (this.config.marketType === 'swap') {
+      return market.swap === true || type === 'swap';
+    }
+    return market.future === true || market.swap === true || type === 'future' || type === 'swap';
+  }
+
+  private getMarketSymbol(marketKey: string, market: Record<string, unknown>) {
+    return typeof market.symbol === 'string' && market.symbol.trim().length > 0
+      ? market.symbol
+      : marketKey;
+  }
+
+  private getMarketId(marketKey: string, market: Record<string, unknown>) {
+    return typeof market.id === 'string' && market.id.trim().length > 0 ? market.id : marketKey;
+  }
+
+  private marketMatchesSymbol(marketKey: string, market: Record<string, unknown>, normalizedTarget: string) {
+    const marketSymbol = this.getMarketSymbol(marketKey, market);
+    const marketId = this.getMarketId(marketKey, market);
+    return (
+      this.normalizeSymbolKey(marketKey) === normalizedTarget ||
+      this.normalizeSymbolKey(marketSymbol) === normalizedTarget ||
+      this.normalizeSymbolKey(marketId) === normalizedTarget
+    );
+  }
+
   private async resolveExchangeSymbol(symbol: string) {
     const client = await this.getOrCreateClient();
     const marketsRaw = await client.loadMarkets();
@@ -63,27 +94,26 @@ export class CcxtFuturesConnector {
     if (!normalizedTarget) return symbol;
 
     const directMarket = markets[symbol];
-    if (directMarket && typeof directMarket.symbol === 'string' && directMarket.symbol.trim().length > 0) {
+    if (
+      directMarket &&
+      this.isConfiguredMarketType(directMarket) &&
+      typeof directMarket.symbol === 'string' &&
+      directMarket.symbol.trim().length > 0
+    ) {
       return directMarket.symbol;
     }
 
+    let fallbackSymbol: string | null = null;
     for (const [marketKey, market] of Object.entries(markets)) {
-      const marketSymbol =
-        typeof market?.symbol === 'string' && market.symbol.trim().length > 0
-          ? market.symbol
-          : marketKey;
-      const marketId =
-        typeof market?.id === 'string' && market.id.trim().length > 0 ? market.id : marketKey;
-      if (
-        this.normalizeSymbolKey(marketKey) === normalizedTarget ||
-        this.normalizeSymbolKey(marketSymbol) === normalizedTarget ||
-        this.normalizeSymbolKey(marketId) === normalizedTarget
-      ) {
+      if (!this.marketMatchesSymbol(marketKey, market, normalizedTarget)) continue;
+      const marketSymbol = this.getMarketSymbol(marketKey, market);
+      if (this.isConfiguredMarketType(market)) {
         return marketSymbol;
       }
+      fallbackSymbol ??= marketSymbol;
     }
 
-    return symbol;
+    return fallbackSymbol ?? symbol;
   }
 
   async fetchMarkPrice(symbol: string) {
@@ -248,6 +278,7 @@ export class CcxtFuturesConnector {
     minAmount: number | null;
     minNotional: number | null;
     amountPrecision: number | null;
+    contractSize: number | null;
   }> {
     const client = await this.getOrCreateClient();
     const exchangeSymbol = await this.resolveExchangeSymbol(symbol);
@@ -280,6 +311,7 @@ export class CcxtFuturesConnector {
       minAmount: readNumber(amountLimits.min),
       minNotional: readNumber(costLimits.min),
       amountPrecision: readNumber(precision.amount),
+      contractSize: readNumber(market?.contractSize),
     };
   }
 
@@ -310,8 +342,9 @@ export class CcxtFuturesConnector {
       params.clientOrderId = request.clientOrderId;
     }
 
+    const exchangeSymbol = await this.resolveExchangeSymbol(request.symbol);
     const order = await client.createOrder(
-      request.symbol,
+      exchangeSymbol,
       request.type,
       request.side,
       request.amount,
@@ -473,7 +506,11 @@ export class CcxtFuturesConnector {
     const client = await this.getOrCreateClient();
     const marketMap = await client.loadMarkets();
     if (!marketMap || typeof marketMap !== 'object') return {};
-    return marketMap as Record<string, unknown>;
+    return Object.fromEntries(
+      Object.entries(marketMap as Record<string, Record<string, unknown>>).filter(([, market]) =>
+        this.isConfiguredMarketType(market)
+      )
+    );
   }
 
   async convergeFuturesLeverageAndMargin(input: {

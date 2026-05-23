@@ -7,6 +7,7 @@ type SymbolTradingRules = {
   minAmount: number | null;
   minNotional: number | null;
   amountPrecision: number | null;
+  contractSize?: number | null;
 };
 
 type CachedRules = {
@@ -81,8 +82,13 @@ export const computeMinExecutableQuantity = (params: {
   minNotional: number | null;
   markPrice: number | null;
   amountPrecision: number | null;
+  contractSize?: number | null;
 }) => {
   const candidates: number[] = [];
+  const contractSize =
+    typeof params.contractSize === 'number' && Number.isFinite(params.contractSize) && params.contractSize > 0
+      ? params.contractSize
+      : 1;
 
   if (typeof params.minAmount === 'number' && Number.isFinite(params.minAmount) && params.minAmount > 0) {
     candidates.push(params.minAmount);
@@ -96,7 +102,7 @@ export const computeMinExecutableQuantity = (params: {
     Number.isFinite(params.markPrice) &&
     params.markPrice > 0
   ) {
-    candidates.push(params.minNotional / params.markPrice);
+    candidates.push(params.minNotional / (params.markPrice * contractSize));
   }
 
   if (candidates.length === 0) return null;
@@ -118,7 +124,7 @@ export const computeMinExecutableQuantity = (params: {
   ) {
     const maxIterations = 10_000;
     let iterations = 0;
-    while (iterations < maxIterations && normalized * params.markPrice + 1e-9 < params.minNotional) {
+    while (iterations < maxIterations && normalized * params.markPrice * contractSize + 1e-9 < params.minNotional) {
       normalized += step;
       iterations += 1;
     }
@@ -246,6 +252,10 @@ export const enforceLivePretradeGuards = async (params: {
   }
 
   if (typeof rules.minNotional === 'number' && Number.isFinite(rules.minNotional) && rules.minNotional > 0) {
+    const contractSize =
+      typeof rules.contractSize === 'number' && Number.isFinite(rules.contractSize) && rules.contractSize > 0
+        ? rules.contractSize
+        : 1;
     let priceForNotional: number | null = null;
     if (typeof params.payload.price === 'number' && Number.isFinite(params.payload.price)) {
       priceForNotional = params.payload.price;
@@ -255,7 +265,7 @@ export const enforceLivePretradeGuards = async (params: {
     if (!(typeof priceForNotional === 'number' && Number.isFinite(priceForNotional) && priceForNotional > 0)) {
       throw orderErrors.livePretradeNotionalPriceUnavailable();
     }
-    const notional = quantity * priceForNotional;
+    const notional = quantity * priceForNotional * contractSize;
     if (approxLessThan(notional, rules.minNotional)) {
       throw orderErrors.livePretradeNotionalBelowMin();
     }

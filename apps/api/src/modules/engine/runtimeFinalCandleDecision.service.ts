@@ -8,7 +8,10 @@ import { mergeRuntimeStrategyVotes, StrategyVote } from './runtimeSignalMerge';
 import { ActiveBot, ActiveBotStrategy, resolveRuntimeOrderQuantity } from './runtimeSignalLoopDefaults';
 import { normalizeInterval } from './runtimeSignalLoopDefaults';
 import { RuntimeSignalConditionLine, StrategyEvaluation } from './runtimeSignalEvaluationTypes';
-import { RuntimeExchangeOrderGuardResult } from './runtimeExchangeOrderGuard.service';
+import {
+  RuntimeExchangeOrderGuardResult,
+  RuntimeExchangeOrderRules,
+} from './runtimeExchangeOrderGuard.service';
 
 type RuntimeSignalRouteEntry = {
   bot: ActiveBot;
@@ -76,6 +79,11 @@ type RuntimeFinalCandleDecisionContext = {
     | Promise<RuntimeExchangeOrderGuardResult | undefined>
     | RuntimeExchangeOrderGuardResult
     | undefined;
+  resolveExchangeOrderRulesFn?: (input: {
+    exchange: ActiveBot['exchange'];
+    marketType: ActiveBot['marketType'];
+    symbol: string;
+  }) => Promise<RuntimeExchangeOrderRules | null> | RuntimeExchangeOrderRules | null;
   evaluateStrategy: (input: {
     exchange: ActiveBot['exchange'];
     marketType: 'FUTURES' | 'SPOT';
@@ -530,12 +538,34 @@ export const processRuntimeFinalCandleDecision = async (
         paperStartBalance: bot.paperStartBalance,
         nowMs: context.nowMs(),
       });
+      const exchangeOrderRules =
+        bot.mode === 'LIVE'
+          ? await Promise.resolve(
+              context.resolveExchangeOrderRulesFn?.({
+                exchange: bot.exchange,
+                marketType: bot.marketType,
+                symbol: event.symbol,
+              })
+            ).catch(() => null)
+          : null;
+      const contractSize =
+        typeof exchangeOrderRules?.contractSize === 'number' &&
+        Number.isFinite(exchangeOrderRules.contractSize) &&
+        exchangeOrderRules.contractSize > 0
+          ? exchangeOrderRules.contractSize
+          : 1;
+      const minOrderQuantity =
+        typeof exchangeOrderRules?.minQuantity === 'number' &&
+        Number.isFinite(exchangeOrderRules.minQuantity) &&
+        exchangeOrderRules.minQuantity > 0
+          ? exchangeOrderRules.minQuantity
+          : context.runtimeSignalQuantity;
       const orderQuantity = resolveRuntimeOrderQuantity({
         strategy: selectedStrategy,
-        price: event.close,
+        price: event.close * contractSize,
         marketType: bot.marketType,
         referenceBalance,
-        runtimeSignalQuantity: context.runtimeSignalQuantity,
+        runtimeSignalQuantity: Math.max(context.runtimeSignalQuantity, minOrderQuantity),
       });
       const leverage = Math.max(1, selectedStrategy?.strategyLeverage ?? 1);
       if (bot.mode === 'LIVE') {
@@ -565,6 +595,7 @@ export const processRuntimeFinalCandleDecision = async (
               constraintReason: exchangeOrderValidation.reason,
               quantity: orderQuantity,
               markPrice: event.close,
+              contractSize,
               leverage,
               exchange: bot.exchange,
               marketType: bot.marketType,
@@ -588,6 +619,7 @@ export const processRuntimeFinalCandleDecision = async (
         paperStartBalance: bot.paperStartBalance,
         markPrice: event.close,
         addedQuantity: orderQuantity,
+        contractSize,
         leverage,
         nowMs: context.nowMs(),
       });
@@ -608,6 +640,7 @@ export const processRuntimeFinalCandleDecision = async (
             symbolGroupId: runtimeContext.symbolGroupId,
             quantity: orderQuantity,
             markPrice: event.close,
+            contractSize,
             leverage,
           },
           eventAt: signalEventAt,

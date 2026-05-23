@@ -45,6 +45,7 @@ describe('exchangeSymbolRules.service', () => {
       minQuantity: 0.001,
       minNotional: 10,
       quantityStep: 0.001,
+      contractSize: null,
     });
   });
 
@@ -145,6 +146,7 @@ describe('exchangeSymbolRules.service', () => {
       minQuantity: 0.0001,
       minNotional: 1,
       quantityStep: null,
+      contractSize: null,
     });
   });
 });
