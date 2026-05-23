@@ -15,9 +15,6 @@ FROM base AS deps
 RUN pnpm install --frozen-lockfile
 
 FROM deps AS build
-ARG SOURCE_COMMIT
-ARG SOURCE_BRANCH
-ARG COOLIFY_BRANCH
 COPY apps/web apps/web
 COPY libs/shared libs/shared
 COPY scripts scripts

@@ -3036,3 +3036,20 @@ promise = connect().catch((error) => {
     one transient Prisma client rename error. Sequential reruns passed:
     `audit:data:db-isolated` (`24/24`, `15/15`, `2/2`) and go-live smoke
     (`45/45` API, `18/18` Web).
+### 2026-05-23 - Coolify injected Docker build args can be reset by redeclaration
+
+- Symptom: production Web `/api/build-info` exposed `gitSha: null` even after
+  Coolify force-deployed the current `main` commit and the local Docker proof
+  passed when `SOURCE_COMMIT` was provided as a build arg.
+- Root cause: Coolify generated a final Dockerfile that injected
+  `ARG SOURCE_COMMIT=<sha>` for the build stage, but the repository Dockerfile
+  then redeclared `ARG SOURCE_COMMIT` without a default in the same stage,
+  resetting the value before `RUN pnpm --filter web build`.
+- Guardrail: for Coolify-managed Docker builds, do not redeclare Coolify
+  injected args such as `SOURCE_COMMIT`, `SOURCE_BRANCH`, or
+  `COOLIFY_BRANCH` inside the stage after Coolify has injected them. Use them
+  directly in `RUN` commands and verify the generated Coolify deployment log
+  shows a non-empty value.
+- Evidence: Coolify deployment `wyyx5em0h9djlyilb8y9e3al` logged
+  `RUN SOURCE_COMMIT="" ...` despite importing commit `57e87bae`; removing
+  the local redeclarations lets Coolify's injected defaults remain in scope.
