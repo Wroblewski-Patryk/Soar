@@ -30,6 +30,13 @@ Do not turn uncertainty into optimism.
 
 ## Current Operational Override
 
+- 2026-05-23 post-release docs/state deploy freshness: production Web
+  build-info reports `0ee013214ef82be61d08430e9d3338ef5c263b67` on `main`
+  after manual Coolify `soar-web` `Force Start`; public deploy smoke passes
+  for API `/health`, API `/ready`, and Web `/`. Authenticated deploy smoke is
+  not claimed for this latest docs/state sync because the available Coolify
+  credential is not a valid Soar application password for `ai@luckysparrow.ch`
+  (`401 Invalid email or password`).
 - 2026-05-23 `SOAR-OPERATIONS-001` and `SOAR-WORKERS-001`: deployed
   `b1ba69edccc639e97943f37fb2b1e6249a62e87c` has current production proof for
   build-info, deploy smoke, split-worker `/workers/ready`, restore drill,

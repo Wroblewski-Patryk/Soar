@@ -6,7 +6,7 @@ Last updated: 2026-05-23
 
 - `V1-PROTECTED-APP-PROOF-B1BA69ED-2026-05-23` is the current protected
   production release-gate truth, and
-  `db07214667a700ba02ea8210629655cf2becd7d6` is the current deployed `main`
+  `0ee013214ef82be61d08430e9d3338ef5c263b67` is the current deployed `main`
   build-info truth after the release-state sync commit. The `b1ba69ed` release
   proof passed build-info, deploy smoke, authenticated `/workers/ready`,
   split-worker topology, production DB restore drill, rollback proof,
@@ -16,10 +16,13 @@ Last updated: 2026-05-23
   `BNBUSDT`; both readbacks are `EXCHANGE_SYNC`, `BOT_MANAGED`,
   `OWNED_AND_MANAGED`, and `IN_SYNC`. Final preflight has no blockers and the
   full non-dry-run production release gate is `ready`. Follow-up deploy
-  `db07214667a700ba02ea8210629655cf2becd7d6` required manually forcing the
+  `0ee013214ef82be61d08430e9d3338ef5c263b67` required manually forcing the
   queued Coolify `soar-web` deployment, then Web build-info converged and
-  authenticated deploy smoke passed for API `/health`, API `/ready`, Web `/`,
-  and `/workers/ready`. Evidence:
+  public deploy smoke passed for API `/health`, API `/ready`, and Web `/`.
+  Authenticated deploy smoke is not claimed for that latest docs/state sync
+  because the available Coolify credential is not a valid Soar application
+  password for `ai@luckysparrow.ch` (`401 Invalid email or password`).
+  Evidence:
   `docs/operations/v1-production-activation-evidence-audit-2026-05-23.md`,
   `docs/planning/v1-production-activation-and-evidence-plan-2026-05-23.md`,
   `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,

@@ -52,8 +52,10 @@
   final preflight, and the full non-dry-run release gate supersede the
   2026-05-21 inline topology failure and the later stale-symbol
   `72b547e` liveimport attempt. Current deployed Web build-info is
-  `db07214667a700ba02ea8210629655cf2becd7d6` after a Coolify `soar-web` force
-  start; authenticated deploy smoke passes. The protected release gate evidence
+  `0ee013214ef82be61d08430e9d3338ef5c263b67` after a Coolify `soar-web` force
+  start; public deploy smoke passes. Authenticated deploy smoke is not claimed
+  for that latest docs/state sync because the available Coolify credential is
+  not a valid Soar application password. The protected release gate evidence
   for `b1ba69edccc639e97943f37fb2b1e6249a62e87c` is ready, including
   auto-discovered open runtime readbacks for `SOLUSDT` and `BNBUSDT`.
 

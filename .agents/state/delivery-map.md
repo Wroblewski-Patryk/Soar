@@ -9,11 +9,13 @@ Last updated: 2026-05-23
 - Primary user: trading operator
 - Primary outcome: Core bot, backtest, exchange, wallet, dashboard, and subscription journeys work with proof.
 - Top blockers: no current P0 production release blocker is recorded for the
-  deployed `db07214667a700ba02ea8210629655cf2becd7d6` proof packet. The
+  deployed `0ee013214ef82be61d08430e9d3338ef5c263b67` proof packet. The
   preceding protected release gate for `b1ba69edccc639e97943f37fb2b1e6249a62e87c`
   is ready, including `LIVEIMPORT-03 --symbols auto` for actual open runtime
   payloads `SOLUSDT` and `BNBUSDT`; follow-up Coolify deploy/build-info and
-  authenticated deploy smoke passed for `db072146`.
+  public deploy smoke passed for `0ee01321`. Authenticated smoke is not claimed
+  for the latest docs/state sync because the available Coolify credential is
+  not a Soar application password.
 - Next mission: post-release monitoring and the next bounded
   architecture-aligned product/runtime slice. LIVE order/cancel/close, unsafe
   LIVE position mutation, exchange-side mutation, and existing production data
@@ -52,7 +54,7 @@ Last updated: 2026-05-23
 | SOAR-DM-020 | UX/A11y/Mobile | Public/dashboard route rendering, state coverage, keyboard/focus, responsive/mobile shell, screenshots, and console health | Web, browser proof, a11y tests, route audit, production clickthrough | verified | `.agents/state/module-confidence-ledger.md` row `SOAR-UX-A11Y-MOBILE-001`; `V1-UX-A11Y-MOBILE-LOCAL-PROOF-2026-05-11`; `docs/operations/prod-ui-module-clickthrough-2fc90a08-2026-05-14.md`; `docs/operations/prod-ux-a11y-mobile-proof-2fc90a08-2026-05-14.md` | Keep proof fresh after future deploys; unnamed internal-control accessibility warnings remain post-V1 polish. |
 | SOAR-DM-021 | Subscriptions/Admin | Admin subscription plans, entitlement validation, user role/plan assignment, and protected admin routes | API, Web, DB, auth/role middleware, route audit, browser proof | verified | `.agents/state/module-confidence-ledger.md` row `SOAR-SUBSCRIPTIONS-ADMIN-001`; 2026-05-19 `AUD-18` Web admin/subscription pack (`4` files / `9` tests) and API admin/subscriptions pack (`5` files / `25` tests); production protected admin route proof. | Keep proof fresh after future deploys; non-destructive production entitlement mutation remains future admin-ops scope. |
 | SOAR-DM-006 | Profile API Keys | Create, test, store, rotate, revoke, delete, and audit exchange keys | web, API, exchange probes, tests, browser proof | verified | `.agents/state/module-confidence-ledger.md` row `SOAR-PROFILE-API-KEYS-001`; 2026-05-19 `AUD-06` API-key/probe/ownership and Web API-key evidence; production masked create/probe/audit/delete proof. | Keep proof fresh after future deploys; never store or print raw operator secrets in proof artifacts. |
-| SOAR-DM-002 | Release confidence | P0 journey inventory | web, API, runtime, ops, tests | verified | 2026-05-23 production release confidence is ready for `b1ba69edccc639e97943f37fb2b1e6249a62e87c`: build-info, deploy smoke, split-worker readiness, restore drill, rollback proof, production UI clickthrough, RC Gates 1-4, SLO health objectives, `LIVEIMPORT-03 --symbols auto` for `SOLUSDT`/`BNBUSDT`, final preflight, and the full non-dry-run release gate pass. Follow-up deploy `db07214667a700ba02ea8210629655cf2becd7d6` reached production build-info after Coolify `soar-web` force start and authenticated deploy smoke passed. | Keep release evidence fresh after future deploys; continue using auto-discovered liveimport readback and do not create LIVE order/position payloads without separate explicit operator approval. |
+| SOAR-DM-002 | Release confidence | P0 journey inventory | web, API, runtime, ops, tests | verified | 2026-05-23 production release confidence is ready for `b1ba69edccc639e97943f37fb2b1e6249a62e87c`: build-info, deploy smoke, split-worker readiness, restore drill, rollback proof, production UI clickthrough, RC Gates 1-4, SLO health objectives, `LIVEIMPORT-03 --symbols auto` for `SOLUSDT`/`BNBUSDT`, final preflight, and the full non-dry-run release gate pass. Follow-up docs/state deploy `0ee013214ef82be61d08430e9d3338ef5c263b67` reached production build-info after Coolify `soar-web` force start and public deploy smoke passed; authenticated smoke is not claimed for that docs-only sync because app auth was unavailable. | Keep release evidence fresh after future deploys; continue using auto-discovered liveimport readback and do not create LIVE order/position payloads without separate explicit operator approval. |
 
 ## Visual Slice Map
 

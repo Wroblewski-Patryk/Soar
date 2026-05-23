@@ -13,13 +13,15 @@ passed, and SLO health/readiness/5xx/queue-lag objectives passed with live
 order ratio `NO_DATA` only because no live order attempts occurred.
 `LIVEIMPORT-03` passes via read-only auto-discovery of the real open runtime
 symbols `SOLUSDT` and `BNBUSDT`. Final preflight has no blockers, and the full
-non-dry-run production release gate returned `ready`. The follow-up commit
-`db07214667a700ba02ea8210629655cf2becd7d6` is pushed to `main`, production
-Web build-info converged after a manual Coolify `soar-web` `Force Start`, and
-authenticated deploy smoke passed. Next exact task: post-release monitoring or
-select the next bounded product/runtime task; do not reopen the superseded
-ETH/DOGE liveimport blocker unless fresh production evidence contradicts the
-auto-discovered readback. Evidence:
+non-dry-run production release gate returned `ready`. The follow-up docs/state
+sync commit `0ee013214ef82be61d08430e9d3338ef5c263b67` is pushed to `main`,
+production Web build-info converged after a manual Coolify `soar-web`
+`Force Start`, and public deploy smoke passed. Authenticated deploy smoke is
+not claimed for this latest sync because the available Coolify credential is
+not a Soar application password (`401 Invalid email or password`). Next exact
+task: post-release monitoring or select the next bounded product/runtime task;
+do not reopen the superseded ETH/DOGE liveimport blocker unless fresh
+production evidence contradicts the auto-discovered readback. Evidence:
 `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
 `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,
 and

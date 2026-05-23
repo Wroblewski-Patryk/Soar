@@ -4,6 +4,13 @@ Last updated: 2026-05-23
 
 ## 2026-05-23 Production Deploy And Protected Release Gate
 
+- Post-release docs/state deploy freshness: production Web build-info now
+  reports `0ee013214ef82be61d08430e9d3338ef5c263b67` on `main` after manual
+  Coolify `soar-web` `Force Start`. Public deploy smoke passes for API
+  `/health`, API `/ready`, and Web `/`. Authenticated deploy smoke is not
+  claimed for this latest docs/state sync because the available Coolify
+  credential is not a valid Soar application password for `ai@luckysparrow.ch`
+  (`401 Invalid email or password`).
 - Production deploy for `b1ba69edccc639e97943f37fb2b1e6249a62e87c` is healthy:
   public Web build-info reports the expected SHA on `main`, deploy smoke
   passes for API `/health`, API `/ready`, Web `/`, and authenticated
