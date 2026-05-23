@@ -33,6 +33,14 @@ const runtimeAggregateSubqueryTimeoutMs = Number.parseInt(
   process.env.RUNTIME_MONITORING_AGGREGATE_SUBQUERY_TIMEOUT_MS ?? '5000',
   10,
 );
+const runtimeAggregateRunningSessionsCap = Number.parseInt(
+  process.env.RUNTIME_MONITORING_AGGREGATE_RUNNING_SESSIONS_CAP ?? '0',
+  10,
+);
+const runtimeAggregateCompletedSessionsCap = Number.parseInt(
+  process.env.RUNTIME_MONITORING_AGGREGATE_COMPLETED_SESSIONS_CAP ?? '0',
+  10,
+);
 
 const buildRuntimeAggregateCacheKey = (
   userId: string,
@@ -59,6 +67,37 @@ const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number) => {
       }, timeoutMs);
     }),
   ]);
+};
+
+const selectSessionsForAggregation = (sessions: RuntimeSessionListItem[]) => {
+  if (sessions.length <= 1) return sessions;
+
+  const running = sessions
+    .filter((session) => session.status === 'RUNNING')
+    .sort((left, right) => toTimestamp(right.lastHeartbeatAt) - toTimestamp(left.lastHeartbeatAt));
+  const nonRunning = sessions
+    .filter((session) => session.status !== 'RUNNING')
+    .sort((left, right) =>
+      toTimestamp(resolveAggregateSessionWindowEnd(right)) - toTimestamp(resolveAggregateSessionWindowEnd(left))
+    );
+
+  const runningCap = Number.isFinite(runtimeAggregateRunningSessionsCap) && runtimeAggregateRunningSessionsCap > 0
+    ? runtimeAggregateRunningSessionsCap
+    : running.length;
+  const completedCap = Number.isFinite(runtimeAggregateCompletedSessionsCap) && runtimeAggregateCompletedSessionsCap > 0
+    ? runtimeAggregateCompletedSessionsCap
+    : nonRunning.length;
+  const selected = [...running.slice(0, runningCap), ...nonRunning.slice(0, completedCap)];
+  if (selected.length === 0) {
+    return sessions.slice(0, Math.min(sessions.length, 3));
+  }
+
+  const seen = new Set<string>();
+  return selected.filter((session) => {
+    if (seen.has(session.id)) return false;
+    seen.add(session.id);
+    return true;
+  });
 };
 
 const toDate = (value: Date | string | null | undefined): Date | null => {
@@ -434,9 +473,10 @@ const getBotRuntimeMonitoringAggregateUncached = async (
       perSessionLimit,
     });
   }
+  const scopedSessions = selectSessionsForAggregation(sessions);
 
   const payloadRows = await Promise.all(
-    sessions.map(async (session) => {
+    scopedSessions.map(async (session) => {
       const [symbolStats, positions, trades] = await Promise.all([
         withTimeout(listBotRuntimeSessionSymbolStats(userId, botId, session.id, {
           symbol: query.symbol,
