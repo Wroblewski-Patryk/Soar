@@ -14,14 +14,15 @@ Last updated: 2026-05-23
   `LIVEIMPORT-03 --symbols auto` for actual open runtime payloads `SOLUSDT`
   and `BNBUSDT`; follow-up docs-state deploys must prove the pushed `HEAD`
   through public build-info plus public deploy smoke. The latest verified
-  docs/state checkpoint before this record is `32c14518` after Coolify
-  stale-queue cleanup and fresh `soar-web` deploy. Authenticated smoke is not
-  claimed for the latest docs/state sync because the available Coolify
-  credential is not a Soar application password.
-- Next mission: post-release monitoring and the next bounded
-  architecture-aligned product/runtime slice. LIVE order/cancel/close, unsafe
-  LIVE position mutation, exchange-side mutation, and existing production data
-  mutation remain blocked without separate explicit approval.
+  public checkpoint before this record is `878e199d` after Coolify stale-queue
+  cleanup, Web Docker build-arg scope repair, and fresh `soar-web` deploy.
+  Authenticated smoke is not claimed for the latest docs/state sync because
+  the available Coolify credential is not a Soar application password.
+- Next mission: the next bounded architecture-aligned product/runtime slice
+  after public post-release monitoring for `878e199d` passed. LIVE
+  order/cancel/close, unsafe LIVE position mutation, exchange-side mutation,
+  and existing production data mutation remain blocked without separate
+  explicit approval.
 
 ## Source Inputs
 

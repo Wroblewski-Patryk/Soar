@@ -132,12 +132,17 @@ Runtime command:
 Required environment variables:
 - `NODE_ENV=production`
 - `NEXT_PUBLIC_API_BASE_URL=https://api.<env-domain>`
+
+Build-time deploy identity variables:
 - `SOURCE_COMMIT=$SOURCE_COMMIT` when deploy-proof endpoints must expose the active web commit SHA
 - `SOURCE_BRANCH=$COOLIFY_BRANCH` when deploy-proof endpoints must expose the active deployed branch
 
 Deploy-proof note:
 - In Coolify `Advanced` settings for the web application, enable `Include Source Commit in Build` when the build process must see `SOURCE_COMMIT`.
-- The current Soar web build metadata path reads `SOURCE_COMMIT` / `SOURCE_BRANCH` first and falls back to repository git metadata only in local builds.
+- The current Soar web build metadata path reads sources in this order:
+  `SOURCE_COMMIT` / `SOURCE_BRANCH` environment or build args, repository
+  `git`, repository `.git` files, GitHub `main` branch readback, then
+  `unknown`.
 - Dockerfile stages that consume Coolify build args must declare the matching
   `ARG SOURCE_COMMIT`, `ARG SOURCE_BRANCH`, and `ARG COOLIFY_BRANCH` names in
   that stage before the Web build command; otherwise the deployment can import

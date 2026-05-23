@@ -14,23 +14,28 @@ order ratio `NO_DATA` only because no live order attempts occurred.
 `LIVEIMPORT-03` passes via read-only auto-discovery of the real open runtime
 symbols `SOLUSDT` and `BNBUSDT`. Final preflight has no blockers, and the full
 non-dry-run production release gate returned `ready`. Follow-up docs/state
-sync commits reached `main`; the latest verified docs/state checkpoint before
-this record is `32c145181a8740ca3d7714c7ee83b9b450a57453`. Coolify required
-queue recovery because stale queued/in-progress worker/API deployments blocked
-fresh web rollout; after cancelling that stale queue and triggering a fresh
-`soar-web` deploy, public build-info converged to `32c14518` and public smoke
-passed. Each later docs-only commit must be verified by public build-info for
-the pushed `HEAD` and public deploy smoke after deployment convergence.
+sync and deploy-proof commits reached `main`; the latest verified public
+checkpoint before this record is
+`878e199dd13cabc9a8a25b1ece83d0c483ec0c22`. Coolify required queue recovery
+because stale queued/in-progress worker/API deployments blocked fresh web
+rollout; after cancelling that stale queue, fixing Web Docker build-arg scope,
+and triggering a fresh `soar-web` deploy, public build-info converged to
+`878e199d` and public smoke passed. Each later docs-only commit must be
+verified by public build-info for the pushed `HEAD` and public deploy smoke
+after deployment convergence.
 Authenticated deploy smoke is not claimed for the latest docs-state sync
 because the available Coolify credential is not a Soar application password
-(`401 Invalid email or password`). Next exact task: post-release monitoring or
-select the next bounded product/runtime task;
-do not reopen the superseded ETH/DOGE liveimport blocker unless fresh
-production evidence contradicts the auto-discovered readback. Evidence:
+(`401 Invalid email or password`). Public post-release monitoring for
+`878e199d` passed `5/5` samples. Next exact task: select the next bounded
+product/runtime task; do not reopen the superseded ETH/DOGE liveimport blocker
+unless fresh production evidence contradicts the auto-discovered readback.
+Evidence:
 `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
 `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,
 and
-`docs/operations/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`.
+`docs/operations/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`,
+and
+`docs/operations/post-release-public-monitoring-878e199d-2026-05-23.md`.
 
 Current source-of-truth cleanup:
 `REPO-SOT-CLEANUP-2026-05-23` is verified locally. Confirmed canonical architecture
@@ -44,19 +49,12 @@ unless a new source-of-truth drift is found. Evidence:
 `docs/planning/repo-source-truth-cleanup-2026-05-23-task.md`.
 
 Current public deploy-proof follow-up:
-`WEB-PUBLIC-STATIC-READBACK-2026-05-22` is locally verified and ready to push.
-Production probes showed the public static root reachable while dynamic public
-routes were not reliably reachable, so `/auth/login`, `/auth/register`, and
-`/api/build-info` now prerender as static content. Validation passed: targeted
-auth cache contract `2/2`, `web build` with those three routes reported as
-`Static`, `web typecheck`, `quality:guardrails`, `git diff --check`, and local
-production HTTP smoke returning `200` for all three routes. Next exact task:
-restore VPS/public routing or use an operator Coolify context that can reach
-the Soar production resources, then rerun build-info and deploy smoke. Commit
-`1b351a51` is already pushed to `main`, but production readback is blocked:
-local probes time out and an external reader/proxy reports
-`ERR_ADDRESS_UNREACHABLE` for both `soar.luckysparrow.ch` and
-`vps.luckysparrow.ch`. Evidence:
+`WEB-PUBLIC-STATIC-READBACK-2026-05-22` is superseded by later production
+readback. Public Web `/api/build-info` now responds on the current production
+target and exposes `878e199dd13cabc9a8a25b1ece83d0c483ec0c22` on `main` after
+the Web Docker build-arg scope fix. Public smoke passes for API `/health`, API
+`/ready`, and Web `/`. Keep this as historical availability evidence unless a
+fresh production probe fails. Evidence:
 `docs/operations/deploy-freshness-1b351a51-2026-05-22.md`.
 
 Current money-path runtime audit follow-up:

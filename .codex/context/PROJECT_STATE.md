@@ -18,13 +18,14 @@ Last updated: 2026-05-23
   `OWNED_AND_MANAGED`, and `IN_SYNC`. Final preflight has no blockers and the
   full non-dry-run production release gate is `ready`. Follow-up deploys first
   required manually forcing queued Coolify `soar-web` deployments; the latest
-  verified docs/state checkpoint before this record is
-  `32c145181a8740ca3d7714c7ee83b9b450a57453`. Coolify had accumulated stale
-  queued/in-progress worker/API deployments, so the coordinator cancelled the
-  stale queue, triggered a fresh `soar-web` deploy from the approved Coolify UI
-  context, waited for Web build-info to converge to `32c14518`, and reran
-  public deploy smoke successfully for API `/health`, API `/ready`, and Web
-  `/`. Later docs-only commits must repeat the same
+  verified public production checkpoint before this record is
+  `878e199dd13cabc9a8a25b1ece83d0c483ec0c22`. Coolify had accumulated stale
+  queued/in-progress worker/API deployments and Web build metadata was missing
+  the Docker build-arg stage scope, so the coordinator cancelled the stale
+  queue, patched the Web Dockerfile, triggered a fresh `soar-web` deploy from
+  the approved Coolify UI context, waited for Web build-info to converge to
+  `878e199d`, and reran public deploy smoke successfully for API `/health`,
+  API `/ready`, and Web `/`. Later docs-only commits must repeat the same
   build-info plus public-smoke proof for the pushed `HEAD`. Authenticated
   deploy smoke is not claimed for the latest docs/state sync because the
   available Coolify credential is not a valid Soar application password for
@@ -60,12 +61,10 @@ Last updated: 2026-05-23
   tabs instead of the bot list. Validation passed: focused web
   route/middleware tests `7/7`, web typecheck, web build, docs parity,
   repository guardrails, and `git diff --check`. Follow-up production proof is
-  complete: commit `2fcd3799` was pushed to `main`, Coolify deployment
-  `gdurty4ay8jxnxzbimqpu32l` imported
-  `2fcd37995c031ff387e6b5d60aeff04c99399141`, Web build metadata wrote that
-  SHA with `metadataSource=github-branch`, rolling update completed, public
-  `/api/build-info` returns the same SHA on `main`, and public no-worker smoke
-  passed API `/health`, API `/ready`, and Web `/`. Evidence:
+  complete: commit `878e199dd13cabc9a8a25b1ece83d0c483ec0c22` is deployed on
+  `main`; public `/api/build-info` returns that SHA, public no-worker smoke
+  passes API `/health`, API `/ready`, and Web `/`, and public-only
+  post-release monitoring passed `5/5` probes. Evidence:
   `docs/planning/repo-source-truth-cleanup-2026-05-23-task.md`.
 
 - `WEB-PUBLIC-STATIC-READBACK-2026-05-22` is a public web deploy-proof repair
@@ -78,10 +77,10 @@ Last updated: 2026-05-23
   output showing all three routes as `Static`, `web typecheck`,
   `quality:guardrails`, `git diff --check`, and production-mode local HTTP
   smoke returning `200` for `/auth/login`, `/auth/register`, and
-  `/api/build-info`. Commit `1b351a51` was pushed to `main`, but production
-  readback is blocked: local probes timed out and an external reader/proxy
-  returned `ERR_ADDRESS_UNREACHABLE` for both `soar.luckysparrow.ch` and
-  `vps.luckysparrow.ch`. Evidence:
+  `/api/build-info`. Commit `1b351a51` was pushed to `main`; its production
+  readback blocker is historical and superseded by later public readbacks.
+  Current production Web build-info responds with `878e199d` and public smoke
+  passes for API `/health`, API `/ready`, and Web `/`. Evidence:
   `docs/operations/deploy-freshness-1b351a51-2026-05-22.md`.
 
 - `ARCH-RUNTIME-P1-002-004-MONEY-PATH-2026-05-22` is a local runtime/order

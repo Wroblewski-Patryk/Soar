@@ -58,6 +58,14 @@ Last updated: 2026-05-23
     converged to `32c14518`, and reran public deploy smoke successfully for
     API `/health`, API `/ready`, and Web `/`. No authenticated smoke is
     claimed for this docs/state checkpoint without a valid Soar app password.
+  - 2026-05-23 deploy metadata recovery follow-up: commit
+    `878e199dd13cabc9a8a25b1ece83d0c483ec0c22` fixed Web Docker build-arg
+    stage scope for deploy metadata. Coolify imported the right commit but
+    `/api/build-info` had reported `gitSha: null` until `ARG SOURCE_COMMIT`,
+    `ARG SOURCE_BRANCH`, and `ARG COOLIFY_BRANCH` were declared in the build
+    stage. After cancelling stale queued/in-progress deployments and
+    triggering `soar-web`, public Web build-info converged to `878e199d`, and
+    public deploy smoke passed for API `/health`, API `/ready`, and Web `/`.
   - Evidence:
     `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
     `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,
@@ -110,6 +118,17 @@ Last updated: 2026-05-23
     `https://soar.luckysparrow.ch/api/build-info` returns that SHA on `main`;
     `node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`
     passed API `/health`, API `/ready`, and Web `/`.
+  - 2026-05-23: Later production deploy-proof closure fixed the remaining
+    build metadata edge: `apps/web/Dockerfile` now declares `ARG SOURCE_COMMIT`,
+    `ARG SOURCE_BRANCH`, and `ARG COOLIFY_BRANCH` in the build stage before
+    `pnpm --filter web build`. Commit
+    `878e199dd13cabc9a8a25b1ece83d0c483ec0c22` is deployed on `main`; public
+    `/api/build-info` returns that SHA and public deploy smoke passes API
+    `/health`, API `/ready`, and Web `/`.
+  - 2026-05-23: Public post-release monitoring for `878e199d` passed `5/5`
+    samples over Web `/api/build-info`, API `/health`, API `/ready`, and Web
+    `/`. Evidence:
+    `docs/operations/post-release-public-monitoring-878e199d-2026-05-23.md`.
 
 - [x] `WEB-PUBLIC-STATIC-READBACK-2026-05-22 fix: prerender public proof routes`
   - 2026-05-22: Production availability proof found the public static root
@@ -121,14 +140,13 @@ Last updated: 2026-05-23
     all three routes `Static`, `web typecheck`, `quality:guardrails`,
     `git diff --check`, and local production HTTP smoke returning `200` for
     `/auth/login`, `/auth/register`, and `/api/build-info`. Commit
-    `1b351a51` is pushed to `main`. Production readback is currently blocked
-    before app proof: local probes time out and an external reader/proxy
-    returns `ERR_ADDRESS_UNREACHABLE` for the production web and Coolify
-    hostnames. Evidence:
-    `docs/operations/deploy-freshness-1b351a51-2026-05-22.md`. Next action:
-    restore VPS/public routing or use an operator Coolify context that can
-    reach the Soar production resources, then rerun build-info and deploy
-    smoke.
+    `1b351a51` is pushed to `main`. The production readback blocker for that
+    commit is historical and superseded by later deployments: current
+    production Web build-info responds with `878e199d` on `main`, public
+    deploy smoke passes API `/health`, API `/ready`, and Web `/`, and public
+    post-release monitoring passed `5/5` samples. Evidence:
+    `docs/operations/deploy-freshness-1b351a51-2026-05-22.md` and
+    `docs/operations/post-release-public-monitoring-878e199d-2026-05-23.md`.
 
 - [ ] `ARCH-CODE-RUNTIME-AUDIT-2026-05-22 audit: verify architecture-code runtime parity`
   - 2026-05-23 continuation: repaired `ARCH-RUNTIME-P1-006`. Complete

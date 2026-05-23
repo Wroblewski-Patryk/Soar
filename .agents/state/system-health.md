@@ -6,15 +6,16 @@ Last updated: 2026-05-23
 
 - Post-release docs/state deploy freshness: follow-up docs/state sync commits
   must prove the pushed `HEAD` through public Web build-info and public deploy
-  smoke after deployment convergence. The latest verified docs/state checkpoint
-  before this record is
-  `32c145181a8740ca3d7714c7ee83b9b450a57453`: Coolify had accumulated stale
+  smoke after deployment convergence. The latest verified public production
+  checkpoint before this record is
+  `878e199dd13cabc9a8a25b1ece83d0c483ec0c22`: Coolify had accumulated stale
   queued/in-progress worker/API deployments, so the coordinator cancelled the
   stale queue, triggered a fresh `soar-web` deploy from the approved Coolify UI
-  context, waited for public Web build-info to converge to `32c14518`, and
-  reran public deploy smoke successfully for API `/health`, API `/ready`, and
-  Web `/`. Authenticated deploy smoke is not claimed for the latest docs/state
-  sync because the available Coolify credential is not a valid Soar application
+  context, fixed the Web Docker build-arg scope for deploy metadata, waited for
+  public Web build-info to converge to `878e199d`, and reran public deploy
+  smoke successfully for API `/health`, API `/ready`, and Web `/`.
+  Authenticated deploy smoke is not claimed for the latest docs/state sync
+  because the available Coolify credential is not a valid Soar application
   password for `ai@luckysparrow.ch` (`401 Invalid email or password`).
 - Production deploy for `b1ba69edccc639e97943f37fb2b1e6249a62e87c` is healthy:
   public Web build-info reports the expected SHA on `main`, deploy smoke
@@ -35,8 +36,9 @@ Last updated: 2026-05-23
   gate is `ready`. Evidence:
   `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
   `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,
+  `docs/operations/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`,
   and
-  `docs/operations/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`.
+  `docs/operations/post-release-public-monitoring-878e199d-2026-05-23.md`.
 
 ## 2026-05-22 Architecture-Code Runtime Audit
 

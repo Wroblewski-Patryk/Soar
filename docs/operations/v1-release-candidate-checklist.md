@@ -58,6 +58,10 @@
   valid Soar application password. The protected release gate evidence for
   `b1ba69edccc639e97943f37fb2b1e6249a62e87c` is ready, including
   auto-discovered open runtime readbacks for `SOLUSDT` and `BNBUSDT`.
+- Latest public deploy-proof follow-up: commit
+  `878e199dd13cabc9a8a25b1ece83d0c483ec0c22` is deployed on `main` after Web
+  Docker build-arg stage-scope repair. Public `/api/build-info` returns that
+  SHA and public deploy smoke passes API `/health`, API `/ready`, and Web `/`.
 
 ### Mandatory Post-Deploy Validation Sequence (Runtime + Cache + Stream)
 1. API baseline:

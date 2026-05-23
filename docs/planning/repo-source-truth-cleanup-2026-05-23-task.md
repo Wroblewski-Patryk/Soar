@@ -103,7 +103,15 @@ area.
   - `pnpm run quality:guardrails` => PASS.
   - `git diff --check` => PASS with line-ending warnings only.
 - Manual checks: root tracked template scan, reference scan, ignored local artifact cleanup, production availability probe after VPS restart, Coolify project/team lookup, manual `soar-web` redeploy readback.
-- Reality status: verified for cleanup, local frontend route behavior, and local Docker build-info packaging. First production redeploy reached commit `b68d3464` in Coolify deployment history, but public `/api/build-info` reported `gitSha: null`; a follow-up deploy of `4aa39633` failed because copying `.git` is impossible in Coolify's generated Docker context. The current fix uses Coolify/Docker `SOURCE_COMMIT` build args instead and is ready for commit/push/redeploy.
+- Reality status: verified for cleanup, local frontend route behavior, local
+  Docker build-info packaging, and production deploy identity. Earlier
+  production redeploys proved several failure modes: public `/api/build-info`
+  reported `gitSha: null` when metadata was written into `.next` before Next
+  cleared it; copying `.git` failed because Coolify's generated Docker context
+  excludes `.git`; and using `$SOURCE_COMMIT` without declaring the build args
+  in the Web Docker stage left the deployed image with `metadataSource=unknown`.
+  The final Dockerfile fix declares the build args in the stage that consumes
+  them.
 - Follow-up reality: Coolify deployment `b7p9w45kzbnkfpwmyjg8mniy` imported
   commit `06ef5f39` and finished, but still logged
   `RUN SOURCE_COMMIT=""` and wrote `metadataSource=unknown`. The metadata
@@ -118,6 +126,13 @@ area.
   `https://soar.luckysparrow.ch/api/build-info` returns that SHA on `main`, and
   `node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`
   passed API `/health`, API `/ready`, and Web `/`.
+- Final deploy-metadata proof: commit
+  `878e199dd13cabc9a8a25b1ece83d0c483ec0c22` was pushed to `main` with
+  `ARG SOURCE_COMMIT`, `ARG SOURCE_BRANCH`, and `ARG COOLIFY_BRANCH` declared
+  in the Web Docker build stage. After stale queued/in-progress Coolify
+  deployments were cancelled and `soar-web` was triggered from the approved UI
+  context, public `/api/build-info` returned that SHA on `main`, and public
+  deploy smoke passed API `/health`, API `/ready`, and Web `/`.
 
 ## Architecture Evidence
 
