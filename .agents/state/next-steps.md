@@ -4,6 +4,21 @@ Last updated: 2026-05-23
 
 ## Next Tiny Task
 
+Current data/migrations local proof:
+`DATA-MODEL-ISOLATED-DB-PROOF-2026-05-23` is locally verified. Local
+Postgres/Redis were initially unavailable; Laragon was running but did not
+provide PostgreSQL, so Docker Desktop was started and `pnpm run
+go-live:infra:up` brought up `soar-postgres-1` and `soar-redis-1`.
+`pnpm run audit:data:db-isolated` passed with Prisma schema validation,
+migration status, full reset/replay of `55` migrations, wallets `24/24`,
+backtests `15/15`, and runtime repository `2/2`. `pnpm run
+ops:db:backup-restore:check-local` also passed. Production migration status
+and production backup/restore freshness remain protected ops proof, not local
+proof. Next exact task: choose another bounded non-production product/runtime
+gap, or collect protected production migration/restore evidence only when a
+valid production ops context is available. Evidence:
+`docs/planning/data-model-isolated-db-proof-2026-05-23-task.md`.
+
 Current assistant/AI foundation:
 `AI-ASSISTANT-FOUNDATION-PROTOCOL-HARNESS-2026-05-23` is locally verified.
 `DEC-AUD-002` remains the current assistant truth: bot-scoped config,

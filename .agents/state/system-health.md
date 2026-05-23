@@ -2,6 +2,20 @@
 
 Last updated: 2026-05-23
 
+## 2026-05-23 Data Model Local Proof
+
+- `DATA-MODEL-ISOLATED-DB-PROOF-2026-05-23` is locally verified. Docker
+  Desktop was started after local Postgres/Redis were unavailable, then
+  `pnpm run go-live:infra:up` started `soar-postgres-1` and `soar-redis-1`.
+  TCP checks passed on `localhost:5432` and `localhost:6379`.
+- `pnpm run audit:data:db-isolated` passed: Prisma schema validation,
+  migration status, full reset/replay of `55` migrations, wallets `24/24`,
+  backtests `15/15`, and runtime repository `2/2`.
+- `pnpm run ops:db:backup-restore:check-local` passed and wrote
+  `docs/operations/v1-db-restore-check-2026-05-23T13-05-22-623Z.md`.
+- Production migration status and production backup/restore freshness remain
+  protected ops proof and are not claimed by this local run.
+
 ## 2026-05-23 Production Deploy And Protected Release Gate
 
 - Deploy-proof recovery: after commit `49a59b69` was pushed and `soar-web` was

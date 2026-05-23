@@ -81,7 +81,11 @@ Start-Process -FilePath "C:\Program Files\Docker\Docker\Docker Desktop.exe" -Win
 - Avoid: classifying go-live smoke startup failure as an application regression
   before checking Docker engine and `localhost:5432` / `localhost:6379`.
 - Evidence: the first release-gate run failed on Docker engine connection; the
-  rerun passed after Docker Desktop became ready.
+  rerun passed after Docker Desktop became ready. 2026-05-23 data proof
+  reconfirmed the same pattern: `docker --context default info` initially
+  failed while `com.docker.service` was stopped; after starting Docker Desktop,
+  Docker reported version `28.3.2`, `pnpm run go-live:infra:up` started
+  `soar-postgres-1` and `soar-redis-1`, and the isolated DB audit passed.
 
 ### 2026-05-22 - Check Laragon and Postgres separately before DB-backed API tests
 - Context: architecture-code runtime audit needed DB-backed `orders.service`
@@ -105,7 +109,11 @@ corepack pnpm run go-live:infra:up
   running, or reporting a code regression when `localhost:5432` is closed.
 - Evidence: 2026-05-22 terminal output showed `laragon.exe` at
   `C:\laragon\laragon.exe`, MySQL processes under `C:\laragon\bin\mysql\...`,
-  and `TcpTestSucceeded=False` for `localhost:5432`.
+  and `TcpTestSucceeded=False` for `localhost:5432`. 2026-05-23 data proof
+  reconfirmed that Laragon can be running at `C:\laragon\laragon.exe` while
+  this Laragon install has Redis but no PostgreSQL executable under
+  `C:\laragon\bin`; the repo Postgres/Redis path was Docker Desktop plus
+  `pnpm run go-live:infra:up`.
 
 ### 2026-05-21 - Capture subagent reports before closing security lanes
 - Context: `SECURITY-RED-TEAM-HARDENING-2026-05-21` used delegated security

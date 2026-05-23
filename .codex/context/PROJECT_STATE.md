@@ -4,6 +4,19 @@ Last updated: 2026-05-23
 
 ## Current Candidate Deployment Status
 
+- `DATA-MODEL-ISOLATED-DB-PROOF-2026-05-23` is locally verified. After local
+  Postgres/Redis were unavailable and Laragon was found running without
+  PostgreSQL, Docker Desktop was started and `pnpm run go-live:infra:up`
+  brought up `soar-postgres-1` and `soar-redis-1`. `pnpm run
+  audit:data:db-isolated` passed with Prisma schema validation, migration
+  status, full reset/replay of `55` migrations, wallets `24/24`, backtests
+  `15/15`, and runtime repository `2/2`. `pnpm run
+  ops:db:backup-restore:check-local` passed and wrote
+  `docs/operations/v1-db-restore-check-2026-05-23T13-05-22-623Z.md`.
+  Production migration status and production backup/restore freshness remain a
+  separate protected ops gate. Evidence:
+  `docs/planning/data-model-isolated-db-proof-2026-05-23-task.md`.
+
 - `WEB-BUILD-INFO-RUNTIME-FALLBACK-2026-05-23` is verified and deployed for
   code commit `f822adef3381cd74412d6ee248a84298b9ac04be`. It repaired a
   deploy-proof regression where production Web build `ownhF2rz9PTbbfD7bjapg`

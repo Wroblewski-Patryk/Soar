@@ -17,6 +17,20 @@ Last updated: 2026-05-23
 
 ## DONE
 
+- [x] `DATA-MODEL-ISOLATED-DB-PROOF-2026-05-23 test/ops: refresh local migration and DB-backed data proof`
+  - 2026-05-23: Local Postgres/Redis were initially unavailable even though
+    Laragon was running; Docker Desktop was started and `pnpm run
+    go-live:infra:up` brought up the repo Postgres/Redis stack. `pnpm run
+    audit:data:db-isolated` passed with Prisma schema validation, migration
+    status, full reset/replay of `55` migrations, wallets `24/24`, backtests
+    `15/15`, and runtime repository `2/2`. Local backup/restore check passed.
+  - Production migration status and production backup/restore freshness remain
+    protected ops proof, not claimed by this local run.
+  - Evidence:
+    `docs/planning/data-model-isolated-db-proof-2026-05-23-task.md`,
+    `docs/operations/v1-db-restore-check-2026-05-23T13-05-22-623Z.md`, and
+    `docs/operations/_artifacts-db-restore-check-2026-05-23T13-05-22-623Z.txt`.
+
 - [x] `WEB-BUILD-INFO-RUNTIME-FALLBACK-2026-05-23 fix: recover deploy metadata when Coolify writes null SHA`
   - 2026-05-23: After commit `49a59b69` was manually deployed, production
     served Web build `ownhF2rz9PTbbfD7bjapg` but `/api/build-info` returned
