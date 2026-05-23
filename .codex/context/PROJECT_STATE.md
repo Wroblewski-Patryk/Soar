@@ -14,7 +14,13 @@ Last updated: 2026-05-23
   `/dashboard/positions`, routing them to the matching Dashboard Home runtime
   tabs instead of the bot list. Validation passed: focused web
   route/middleware tests `7/7`, web typecheck, web build, docs parity,
-  repository guardrails, and `git diff --check`. Evidence:
+  repository guardrails, and `git diff --check`. Follow-up production proof is
+  complete: commit `2fcd3799` was pushed to `main`, Coolify deployment
+  `gdurty4ay8jxnxzbimqpu32l` imported
+  `2fcd37995c031ff387e6b5d60aeff04c99399141`, Web build metadata wrote that
+  SHA with `metadataSource=github-branch`, rolling update completed, public
+  `/api/build-info` returns the same SHA on `main`, and public no-worker smoke
+  passed API `/health`, API `/ready`, and Web `/`. Evidence:
   `docs/planning/repo-source-truth-cleanup-2026-05-23-task.md`.
 
 - `WEB-PUBLIC-STATIC-READBACK-2026-05-22` is a public web deploy-proof repair

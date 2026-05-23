@@ -50,6 +50,15 @@ Last updated: 2026-05-23
     GitHub branch readback when env/git/.git-files are unavailable; fallback
     proof passed in a temporary no-`.git` directory with
     `metadataSource=github-branch`.
+  - 2026-05-23: Commit `2fcd3799` was pushed to `main` and deployed through
+    Coolify deployment `gdurty4ay8jxnxzbimqpu32l` after a manual `Force Start`
+    from queued state. Coolify logs prove import of
+    `2fcd37995c031ff387e6b5d60aeff04c99399141`, Web build metadata wrote
+    `gitSha=2fcd37995c031ff387e6b5d60aeff04c99399141` with
+    `source=github-branch`, and rolling update completed. Public
+    `https://soar.luckysparrow.ch/api/build-info` returns that SHA on `main`;
+    `node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`
+    passed API `/health`, API `/ready`, and Web `/`.
 
 - [x] `WEB-PUBLIC-STATIC-READBACK-2026-05-22 fix: prerender public proof routes`
   - 2026-05-22: Production availability proof found the public static root

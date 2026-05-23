@@ -109,6 +109,15 @@ area.
   `RUN SOURCE_COMMIT=""` and wrote `metadataSource=unknown`. The metadata
   script now has a final GitHub branch readback fallback for Docker contexts
   where `.git` and build args are unavailable.
+- Production proof: commit `2fcd3799` was pushed to `main` and deployed through
+  Coolify deployment `gdurty4ay8jxnxzbimqpu32l` after the queued deployment was
+  manually force-started. Coolify imported
+  `2fcd37995c031ff387e6b5d60aeff04c99399141`, wrote build metadata with
+  `gitSha=2fcd37995c031ff387e6b5d60aeff04c99399141` and
+  `source=github-branch`, and completed rolling update. Public
+  `https://soar.luckysparrow.ch/api/build-info` returns that SHA on `main`, and
+  `node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`
+  passed API `/health`, API `/ready`, and Web `/`.
 
 ## Architecture Evidence
 
@@ -139,8 +148,7 @@ area.
   local Docker image build-info proof, docs parity, repository guardrails, and
   diff check passed.
 - What is incomplete: full backtest multi-strategy merge parity remains a P1
-  product/schema implementation slice; production readback still needs a
-  second deploy after the build-info metadata fix is pushed.
-- Next steps: commit/push the build-info metadata fix, redeploy `soar-web`,
-  wait for production build-info to expose the new pushed SHA, then run smoke
-  checks.
+  product/schema implementation slice outside this cleanup/deploy proof.
+- Next steps: continue the architecture-to-code parity mission from the current
+  priority queue, with production deploy freshness now proven for Web commit
+  `2fcd3799`.
