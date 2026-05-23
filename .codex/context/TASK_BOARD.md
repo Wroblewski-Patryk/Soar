@@ -26,6 +26,11 @@ Last updated: 2026-05-23
     `15/15`, and runtime repository `2/2`. Local backup/restore check passed.
   - Production migration status and production backup/restore freshness remain
     protected ops proof, not claimed by this local run.
+  - 2026-05-23 deploy follow-up: the docs/state commit for this proof reached
+    production as `069aa36f4918cbf4ed062f50425288dff30a2b89`. Public Web
+    build-info reports that SHA on `main` with `metadataSource=github-branch`
+    and build id `orQiE9zTo_TVTcAoXpzI6`, and public smoke passes API
+    `/health`, API `/ready`, and Web `/`.
   - Evidence:
     `docs/planning/data-model-isolated-db-proof-2026-05-23-task.md`,
     `docs/operations/v1-db-restore-check-2026-05-23T13-05-22-623Z.md`, and
@@ -59,6 +64,17 @@ Last updated: 2026-05-23
     `docs/operations/ai-assistant-foundation-protocol-report-2026-05-23.md`,
     and
     `docs/operations/ai-assistant-foundation-protocol-scenarios-2026-05-23.json`.
+
+- [x] `DEPLOY-BUILD-INFO-FRESHNESS-GATE-HARDENING-2026-05-23 test/ops: reject runtime fallback deploy freshness false positives`
+  - 2026-05-23: Hardened `scripts/waitForWebBuildInfo.mjs` so deploy
+    freshness proof logs and validates `metadataSource` and `buildId`.
+    Matching SHA now passes by default only with build-time metadata sources
+    (`env`, `git`, `git-files`, `github-branch`) and a real production build
+    id. Runtime fallback sources such as `github-branch-runtime` fail by
+    default even when the SHA matches; `--allow-runtime-fallback` is reserved
+    for diagnostics.
+  - Evidence/task:
+    `docs/planning/deploy-build-info-freshness-gate-hardening-2026-05-23-task.md`.
 
 - [x] `V1-PROTECTED-APP-PROOF-B1BA69ED-2026-05-23 release: production proof and release gate ready`
   - 2026-05-23: Production deploy
@@ -109,6 +125,11 @@ Last updated: 2026-05-23
     stage. After cancelling stale queued/in-progress deployments and
     triggering `soar-web`, public Web build-info converged to `878e199d`, and
     public deploy smoke passed for API `/health`, API `/ready`, and Web `/`.
+  - 2026-05-23 latest public deploy checkpoint before this board update:
+    `069aa36f4918cbf4ed062f50425288dff30a2b89` is deployed on `main`; public
+    Web build-info reports `metadataSource=github-branch`, build id
+    `orQiE9zTo_TVTcAoXpzI6`, and public deploy smoke passes API `/health`,
+    API `/ready`, and Web `/`.
   - Evidence:
     `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
     `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,
@@ -165,12 +186,12 @@ Last updated: 2026-05-23
     build metadata edge: `apps/web/Dockerfile` now declares `ARG SOURCE_COMMIT`,
     `ARG SOURCE_BRANCH`, and `ARG COOLIFY_BRANCH` in the build stage before
     `pnpm --filter web build`. Commit
-    `878e199dd13cabc9a8a25b1ece83d0c483ec0c22` is deployed on `main`; public
-    `/api/build-info` returns that SHA and public deploy smoke passes API
-    `/health`, API `/ready`, and Web `/`.
-  - 2026-05-23: Public post-release monitoring for `878e199d` passed `5/5`
-    samples over Web `/api/build-info`, API `/health`, API `/ready`, and Web
-    `/`. Evidence:
+    `878e199dd13cabc9a8a25b1ece83d0c483ec0c22` was deployed on `main` and
+    later superseded by public checkpoint
+    `069aa36f4918cbf4ed062f50425288dff30a2b89`, where public Web build-info
+    and deploy smoke pass. Historical public post-release monitoring for
+    `878e199d` passed `5/5` samples over Web `/api/build-info`, API `/health`,
+    API `/ready`, and Web `/`. Evidence:
     `docs/operations/post-release-public-monitoring-878e199d-2026-05-23.md`.
 
 - [x] `WEB-PUBLIC-STATIC-READBACK-2026-05-22 fix: prerender public proof routes`
@@ -185,9 +206,10 @@ Last updated: 2026-05-23
     `/auth/login`, `/auth/register`, and `/api/build-info`. Commit
     `1b351a51` is pushed to `main`. The production readback blocker for that
     commit is historical and superseded by later deployments: current
-    production Web build-info responds with `878e199d` on `main`, public
-    deploy smoke passes API `/health`, API `/ready`, and Web `/`, and public
-    post-release monitoring passed `5/5` samples. Evidence:
+    production Web build-info responds with
+    `069aa36f4918cbf4ed062f50425288dff30a2b89` on `main`, public deploy smoke
+    passes API `/health`, API `/ready`, and Web `/`, and historical public
+    post-release monitoring for `878e199d` passed `5/5` samples. Evidence:
     `docs/operations/deploy-freshness-1b351a51-2026-05-22.md` and
     `docs/operations/post-release-public-monitoring-878e199d-2026-05-23.md`.
 

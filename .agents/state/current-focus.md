@@ -8,13 +8,14 @@ Last updated: 2026-05-23
 `V1-PROTECTED-APP-PROOF-B1BA69ED-2026-05-23` plus the post-push release-state
 sync is the active production release truth. Production was advanced from
 `b1ba69edccc639e97943f37fb2b1e6249a62e87c` through follow-up docs/state and
-deploy-proof commits, with the latest verified checkpoint before this record
-at `878e199dd13cabc9a8a25b1ece83d0c483ec0c22` on `main`. Coolify needed
-manual intervention because stale queued/in-progress worker/API deployments
-blocked fresh web rollout; the coordinator cancelled the stale queue, fixed
-Web Docker build-arg scope for deploy metadata, triggered a fresh `soar-web`
-deploy, and Web build-info reported `878e199d` after convergence. Public
-post-deploy smoke passes for API `/health`, API `/ready`, and Web `/`.
+deploy-proof commits. The latest verified public checkpoint before this record
+is `069aa36f4918cbf4ed062f50425288dff30a2b89` on `main`. It was pushed after
+the isolated data-model proof and verified by public Web build-info
+(`metadataSource=github-branch`, build id `orQiE9zTo_TVTcAoXpzI6`) plus public
+smoke for API `/health`, API `/ready`, and Web `/`. Earlier Coolify deploys
+needed manual intervention because stale queued/in-progress worker/API
+deployments blocked fresh web rollout; that operational pitfall remains
+relevant for future deploys.
 Authenticated deploy smoke is not claimed for the latest docs/state sync
 because the available Coolify credential is not a valid Soar application
 password for `ai@luckysparrow.ch` (`401 Invalid email or password`).
@@ -26,12 +27,14 @@ non-dry-run production release gate are `READY_FOR_PROTECTED_EVIDENCE` /
 `ready` for `b1ba69ed` evidence. Post-release docs/state sync commits must be
 verified by public build-info and public deploy smoke after each push because
 each docs-only commit changes the deploy SHA.
-Public post-release monitoring for `878e199d` passed `5/5` samples. Current
-focus is the next bounded product/runtime task; do not treat historical
-`72b547e` ETH/DOGE liveimport failure notes as the current release blocker.
+Public post-release monitoring for `878e199d` remains historical evidence, and
+fresh public smoke for `069aa36f` passed on 2026-05-23. Current focus is the
+next bounded product/runtime task plus deploy-proof gate hardening; do not
+treat historical `72b547e` ETH/DOGE liveimport failure notes as the current
+release blocker.
 
 Historical 2026-05-21 protected V1 app proof status (superseded by the
-2026-05-23 `b1ba69ed` / `878e199d` production proof above):
+2026-05-23 `b1ba69ed` protected proof and later public deploy checkpoints):
 `V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21` used approved protected
 application access without persisting secrets and advanced current production
 evidence for deployed `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`. Operator

@@ -14,7 +14,11 @@ Last updated: 2026-05-23
   ops:db:backup-restore:check-local` passed and wrote
   `docs/operations/v1-db-restore-check-2026-05-23T13-05-22-623Z.md`.
   Production migration status and production backup/restore freshness remain a
-  separate protected ops gate. Evidence:
+  separate protected ops gate. The docs/state commit for this proof was pushed
+  and production Web build-info later exposed
+  `069aa36f4918cbf4ed062f50425288dff30a2b89` on `main` with
+  `metadataSource=github-branch` and build id `orQiE9zTo_TVTcAoXpzI6`; public
+  smoke passed for API `/health`, API `/ready`, and Web `/`. Evidence:
   `docs/planning/data-model-isolated-db-proof-2026-05-23-task.md`.
 
 - `WEB-BUILD-INFO-RUNTIME-FALLBACK-2026-05-23` is verified and deployed for
@@ -30,6 +34,17 @@ Last updated: 2026-05-23
   protected `/workers/ready` are not claimed without valid Soar app
   credentials. Evidence/task:
   `docs/planning/web-build-info-runtime-fallback-2026-05-23-task.md`.
+
+- `DEPLOY-BUILD-INFO-FRESHNESS-GATE-HARDENING-2026-05-23` is locally verified.
+  The deploy freshness wait script no longer accepts a matching SHA by itself:
+  it logs and validates `metadataSource` plus `buildId`, accepts build-time
+  metadata sources by default, rejects runtime fallback sources such as
+  `github-branch-runtime`, and rejects non-real production build ids. Focused
+  node coverage proves the pass and false-positive fail cases. The current
+  production response for `069aa36f4918cbf4ed062f50425288dff30a2b89` passes
+  the stricter gate with `metadataSource=github-branch` and build id
+  `orQiE9zTo_TVTcAoXpzI6`; public smoke also passes. Evidence:
+  `docs/planning/deploy-build-info-freshness-gate-hardening-2026-05-23-task.md`.
 
 - `AI-ASSISTANT-FOUNDATION-PROTOCOL-HARNESS-2026-05-23` is locally verified.
   The current assistant architecture remains foundation/dry-run only under
@@ -58,14 +73,13 @@ Last updated: 2026-05-23
   full non-dry-run production release gate is `ready`. Follow-up deploys first
   required manually forcing queued Coolify `soar-web` deployments; the latest
   verified public production checkpoint before this record is
-  `878e199dd13cabc9a8a25b1ece83d0c483ec0c22`. Coolify had accumulated stale
-  queued/in-progress worker/API deployments and Web build metadata was missing
-  the Docker build-arg stage scope, so the coordinator cancelled the stale
-  queue, patched the Web Dockerfile, triggered a fresh `soar-web` deploy from
-  the approved Coolify UI context, waited for Web build-info to converge to
-  `878e199d`, and reran public deploy smoke successfully for API `/health`,
-  API `/ready`, and Web `/`. Later docs-only commits must repeat the same
-  build-info plus public-smoke proof for the pushed `HEAD`. Authenticated
+  `069aa36f4918cbf4ed062f50425288dff30a2b89`. Production Web build-info
+  reports that SHA on `main` with `metadataSource=github-branch` and build id
+  `orQiE9zTo_TVTcAoXpzI6`, and public deploy smoke passes for API `/health`,
+  API `/ready`, and Web `/`. Earlier Coolify deploys had accumulated stale
+  queued/in-progress worker/API deployments and required manual `soar-web`
+  recovery; future docs-only or code commits must repeat the same build-info
+  plus public-smoke proof for the pushed `HEAD`. Authenticated
   deploy smoke is not claimed for the latest docs/state sync because the
   available Coolify credential is not a valid Soar application password for
   `ai@luckysparrow.ch` (`401 Invalid email or password`).
@@ -100,10 +114,10 @@ Last updated: 2026-05-23
   tabs instead of the bot list. Validation passed: focused web
   route/middleware tests `7/7`, web typecheck, web build, docs parity,
   repository guardrails, and `git diff --check`. Follow-up production proof is
-  complete: commit `878e199dd13cabc9a8a25b1ece83d0c483ec0c22` is deployed on
-  `main`; public `/api/build-info` returns that SHA, public no-worker smoke
-  passes API `/health`, API `/ready`, and Web `/`, and public-only
-  post-release monitoring passed `5/5` probes. Evidence:
+  superseded by later public checkpoints; the current verified public
+  checkpoint before this record is
+  `069aa36f4918cbf4ed062f50425288dff30a2b89`, with public `/api/build-info`
+  and no-worker smoke passing. Evidence:
   `docs/planning/repo-source-truth-cleanup-2026-05-23-task.md`.
 
 - `WEB-PUBLIC-STATIC-READBACK-2026-05-22` is a public web deploy-proof repair
@@ -118,7 +132,8 @@ Last updated: 2026-05-23
   smoke returning `200` for `/auth/login`, `/auth/register`, and
   `/api/build-info`. Commit `1b351a51` was pushed to `main`; its production
   readback blocker is historical and superseded by later public readbacks.
-  Current production Web build-info responds with `878e199d` and public smoke
+  Current production Web build-info responds with
+  `069aa36f4918cbf4ed062f50425288dff30a2b89` on `main`, and public smoke
   passes for API `/health`, API `/ready`, and Web `/`. Evidence:
   `docs/operations/deploy-freshness-1b351a51-2026-05-22.md`.
 

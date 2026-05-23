@@ -44,26 +44,29 @@ symbols `SOLUSDT` and `BNBUSDT`. Final preflight has no blockers, and the full
 non-dry-run production release gate returned `ready`. Follow-up docs/state
 sync and deploy-proof commits reached `main`; the latest verified public
 checkpoint before this record is
-`878e199dd13cabc9a8a25b1ece83d0c483ec0c22`. Coolify required queue recovery
-because stale queued/in-progress worker/API deployments blocked fresh web
-rollout; after cancelling that stale queue, fixing Web Docker build-arg scope,
-and triggering a fresh `soar-web` deploy, public build-info converged to
-`878e199d` and public smoke passed. Each later docs-only commit must be
-verified by public build-info for the pushed `HEAD` and public deploy smoke
-after deployment convergence.
+`069aa36f4918cbf4ed062f50425288dff30a2b89`. Production Web build-info reports
+that SHA on `main` with `metadataSource=github-branch` and build id
+`orQiE9zTo_TVTcAoXpzI6`, and public smoke passes for API `/health`, API
+`/ready`, and Web `/`. Earlier deploys required Coolify queue recovery because
+stale queued/in-progress worker/API deployments blocked fresh web rollout.
+Each later docs-only or code commit must be verified by public build-info for
+the pushed `HEAD` and public deploy smoke after deployment convergence.
 Authenticated deploy smoke is not claimed for the latest docs-state sync
 because the available Coolify credential is not a Soar application password
 (`401 Invalid email or password`). Public post-release monitoring for
-`878e199d` passed `5/5` samples. Next exact task: select the next bounded
-product/runtime task; do not reopen the superseded ETH/DOGE liveimport blocker
-unless fresh production evidence contradicts the auto-discovered readback.
+`878e199d` remains historical evidence. Next exact task: finish
+`DEPLOY-BUILD-INFO-FRESHNESS-GATE-HARDENING-2026-05-23`, then select the next
+bounded product/runtime task; do not reopen the superseded ETH/DOGE liveimport
+blocker unless fresh production evidence contradicts the auto-discovered
+readback.
 Evidence:
 `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
 `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,
 and
 `docs/operations/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`,
 and
-`docs/operations/post-release-public-monitoring-878e199d-2026-05-23.md`.
+historical `docs/operations/post-release-public-monitoring-878e199d-2026-05-23.md`,
+plus fresh public smoke/build-info readback for `069aa36f` on 2026-05-23.
 
 Current source-of-truth cleanup:
 `REPO-SOT-CLEANUP-2026-05-23` is verified locally. Confirmed canonical architecture
@@ -79,9 +82,9 @@ unless a new source-of-truth drift is found. Evidence:
 Current public deploy-proof follow-up:
 `WEB-PUBLIC-STATIC-READBACK-2026-05-22` is superseded by later production
 readback. Public Web `/api/build-info` now responds on the current production
-target and exposes `878e199dd13cabc9a8a25b1ece83d0c483ec0c22` on `main` after
-the Web Docker build-arg scope fix. Public smoke passes for API `/health`, API
-`/ready`, and Web `/`. Keep this as historical availability evidence unless a
+target and exposes `069aa36f4918cbf4ed062f50425288dff30a2b89` on `main` after
+the isolated data-model proof deploy. Public smoke passes for API `/health`,
+API `/ready`, and Web `/`. Keep this as historical availability evidence unless a
 fresh production probe fails. Evidence:
 `docs/operations/deploy-freshness-1b351a51-2026-05-22.md`.
 

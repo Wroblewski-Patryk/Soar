@@ -22,6 +22,7 @@ const printUsage = () => {
       '  --timeout-seconds <number>  Overall timeout (default: 900)',
       '  --interval-seconds <number> Poll interval (default: 15)',
       '  --request-timeout-ms <num>  Per-request timeout (default: 10000)',
+      '  --allow-runtime-fallback    Diagnostics only: accept runtime fallback metadata',
       '  --help                     Show this message',
     ].join('\n')
   );
@@ -68,8 +69,24 @@ const resolveOptions = () => {
       readArgValue('--request-timeout-ms') || process.env.WEB_BUILD_INFO_REQUEST_TIMEOUT_MS,
       10000
     ),
+    allowRuntimeFallback:
+      hasFlag('--allow-runtime-fallback') ||
+      process.env.WEB_BUILD_INFO_ALLOW_RUNTIME_FALLBACK === '1',
   };
 };
+
+const allowedDeployMetadataSources = new Set(['env', 'git', 'git-files', 'github-branch']);
+
+const normalizeNonEmptyString = (value) =>
+  typeof value === 'string' && value.trim().length > 0 ? value.trim() : null;
+
+const isDeployMetadataSourceAccepted = (metadataSource, allowRuntimeFallback) => {
+  if (allowRuntimeFallback) return metadataSource !== null;
+  return allowedDeployMetadataSources.has(metadataSource);
+};
+
+const isDeployBuildIdAccepted = (buildId) =>
+  buildId !== null && buildId !== 'unknown-production-build' && buildId !== 'development';
 
 const fetchJsonWithTimeout = async (url, timeoutMs) => {
   const controller = new AbortController();
@@ -118,24 +135,35 @@ const main = async () => {
   const deadlineMs = Date.now() + options.timeoutSeconds * 1000;
   let attempt = 0;
   let lastSeenSha = null;
+  let lastSeenMetadataSource = null;
+  let lastSeenBuildId = null;
   let lastError = null;
 
   while (Date.now() <= deadlineMs) {
     attempt += 1;
     try {
       const result = await fetchJsonWithTimeout(options.buildInfoUrl, options.requestTimeoutMs);
-      const gitSha =
-        typeof result.payload?.gitSha === 'string' && result.payload.gitSha.trim().length > 0
-          ? result.payload.gitSha.trim()
-          : null;
+      const gitSha = normalizeNonEmptyString(result.payload?.gitSha);
+      const metadataSource = normalizeNonEmptyString(result.payload?.metadataSource);
+      const buildId = normalizeNonEmptyString(result.payload?.buildId);
       lastSeenSha = gitSha;
+      lastSeenMetadataSource = metadataSource;
+      lastSeenBuildId = buildId;
       lastError = null;
       console.log(
-        `[wait:web-build-info] attempt=${attempt} status=${result.status} gitSha=${gitSha ?? 'n/a'} expected=${options.expectedSha}`
+        `[wait:web-build-info] attempt=${attempt} status=${result.status} gitSha=${gitSha ?? 'n/a'} expected=${options.expectedSha} metadataSource=${metadataSource ?? 'n/a'} buildId=${buildId ?? 'n/a'}`
       );
       if (result.ok && gitSha?.startsWith(options.expectedSha)) {
-        console.log('[wait:web-build-info] PASS');
-        return;
+        if (!isDeployMetadataSourceAccepted(metadataSource, options.allowRuntimeFallback)) {
+          lastError = `unaccepted metadataSource=${metadataSource ?? 'n/a'}`;
+          console.log(`[wait:web-build-info] waiting: ${lastError}`);
+        } else if (!isDeployBuildIdAccepted(buildId)) {
+          lastError = `unaccepted buildId=${buildId ?? 'n/a'}`;
+          console.log(`[wait:web-build-info] waiting: ${lastError}`);
+        } else {
+          console.log('[wait:web-build-info] PASS');
+          return;
+        }
       }
     } catch (error) {
       lastError = error instanceof Error ? error.message : String(error);
@@ -148,7 +176,7 @@ const main = async () => {
   }
 
   throw new Error(
-    `Timed out waiting for ${options.buildInfoUrl} to expose ${options.expectedSha}; lastSeenSha=${lastSeenSha ?? 'n/a'} lastError=${lastError ?? 'n/a'}`
+    `Timed out waiting for ${options.buildInfoUrl} to expose ${options.expectedSha} with deploy metadata; lastSeenSha=${lastSeenSha ?? 'n/a'} lastSeenMetadataSource=${lastSeenMetadataSource ?? 'n/a'} lastSeenBuildId=${lastSeenBuildId ?? 'n/a'} lastError=${lastError ?? 'n/a'}`
   );
 };
 

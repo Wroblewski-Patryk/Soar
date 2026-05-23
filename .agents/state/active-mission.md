@@ -23,15 +23,18 @@ repository history.
 - First/next checkpoint: production release evidence for
   `b1ba69edccc639e97943f37fb2b1e6249a62e87c` is ready, and the latest verified
   public deploy checkpoint before this record is
-  `878e199dd13cabc9a8a25b1ece83d0c483ec0c22` after Coolify stale-queue
-  cleanup, Web Docker build-arg scope repair, and fresh `soar-web` deploy.
-  Public post-release monitoring for `878e199d` passed `5/5` samples.
+  `069aa36f4918cbf4ed062f50425288dff30a2b89` after the isolated data-model
+  proof docs/state commit. Production Web build-info reports that SHA on
+  `main` with `metadataSource=github-branch` and build id
+  `orQiE9zTo_TVTcAoXpzI6`; public smoke passes API `/health`, API `/ready`,
+  and Web `/`. Earlier public monitoring for `878e199d` remains historical.
   Follow-up docs/state deploys require public build-info and public smoke for
   the pushed `HEAD` after each commit because docs-only source-of-truth commits
   change the deploy SHA.
   Authenticated smoke is not claimed for the latest docs-state sync because
   the available Coolify credential is not a Soar application password.
-  Continue only with a newly selected bounded product/runtime task.
+  Continue with deploy-proof gate hardening, then select the next bounded
+  product/runtime task.
 - Stop conditions: required production credentials, raw secret access, real
   live-money mutation, destructive production action, architecture mismatch
   requiring product decision, or failing quality gate that cannot be safely

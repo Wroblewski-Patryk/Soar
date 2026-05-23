@@ -38,11 +38,14 @@ Last updated: 2026-05-23
   protected `b1ba69ed` proof packet. Follow-up docs-state deploys must prove
   the pushed `HEAD` via public Web build-info and public deploy smoke after
   deployment convergence. The latest verified public checkpoint before this
-  record is `878e199dd13cabc9a8a25b1ece83d0c483ec0c22` after cancelling stale
-  queued/in-progress Coolify worker/API deployments, fixing Web Docker
-  build-arg scope for deploy metadata, triggering a fresh `soar-web` deploy,
-  and passing public build-info plus smoke. Authenticated deploy smoke for the
-  latest docs/state sync is not claimed because the available Coolify
+  record is `069aa36f4918cbf4ed062f50425288dff30a2b89` after the isolated
+  data-model proof deploy. Production Web build-info reports that SHA on
+  `main` with `metadataSource=github-branch` and build id
+  `orQiE9zTo_TVTcAoXpzI6`, and public smoke passes for API `/health`, API
+  `/ready`, and Web `/`. Earlier deploys required cancelling stale
+  queued/in-progress Coolify worker/API deployments, so that remains an
+  operations pitfall rather than a current P0 release blocker. Authenticated
+  deploy smoke for the latest docs/state sync is not claimed because the available Coolify
   credential is not a valid Soar application password for `ai@luckysparrow.ch`
   (`401 Invalid email or password`).
   `LIVEIMPORT-03` passed with `--symbols auto` against the actual open runtime
@@ -51,7 +54,7 @@ Last updated: 2026-05-23
   order or position was created or mutated by Codex.
 
 - Historical 2026-05-21 protected V1 release update, superseded by the
-  2026-05-23 `b1ba69ed` / `878e199d` production proof above:
+  2026-05-23 `b1ba69ed` protected proof and later public deploy checkpoints:
   Protected app auth is no longer the only blocker for the current `dd1a1faf`
   release attempt. Fresh production UI clickthrough and rollback proof pass,
   and authenticated `LIVEIMPORT-03` reaches a RUNNING Binance FUTURES LIVE

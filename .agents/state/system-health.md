@@ -30,12 +30,13 @@ Last updated: 2026-05-23
   must prove the pushed `HEAD` through public Web build-info and public deploy
   smoke after deployment convergence. The latest verified public production
   checkpoint before this record is
-  `878e199dd13cabc9a8a25b1ece83d0c483ec0c22`: Coolify had accumulated stale
-  queued/in-progress worker/API deployments, so the coordinator cancelled the
-  stale queue, triggered a fresh `soar-web` deploy from the approved Coolify UI
-  context, fixed the Web Docker build-arg scope for deploy metadata, waited for
-  public Web build-info to converge to `878e199d`, and reran public deploy
-  smoke successfully for API `/health`, API `/ready`, and Web `/`.
+  `069aa36f4918cbf4ed062f50425288dff30a2b89`: after the isolated data-model
+  proof docs/state commit was pushed, production Web build-info reported that
+  SHA on `main` with `metadataSource=github-branch` and build id
+  `orQiE9zTo_TVTcAoXpzI6`; public deploy smoke passed for API `/health`, API
+  `/ready`, and Web `/`. Earlier Coolify deploys had accumulated stale
+  queued/in-progress worker/API deployments, so future deploys may still need
+  queue recovery before `soar-web` convergence.
   Authenticated deploy smoke is not claimed for the latest docs/state sync
   because the available Coolify credential is not a valid Soar application
   password for `ai@luckysparrow.ch` (`401 Invalid email or password`).
@@ -59,8 +60,9 @@ Last updated: 2026-05-23
   `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
   `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,
   `docs/operations/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`,
-  and
-  `docs/operations/post-release-public-monitoring-878e199d-2026-05-23.md`.
+  historical monitoring
+  `docs/operations/post-release-public-monitoring-878e199d-2026-05-23.md`,
+  and fresh public smoke/build-info readback for `069aa36f` on 2026-05-23.
 
 ## 2026-05-23 Assistant Foundation Protocol Harness
 

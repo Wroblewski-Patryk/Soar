@@ -33,10 +33,13 @@ Do not turn uncertainty into optimism.
 - 2026-05-23 post-release docs/state deploy freshness: follow-up docs/state
   sync commits must prove the pushed `HEAD` through public Web build-info and
   public deploy smoke after deployment convergence. The latest verified public
-  checkpoint is `2c76f42ed93363decec177dfb3f497e1b52f4665`; it required
-  cancelling stale queued/in-progress Coolify deployments and triggering a
-  fresh `soar-web` deploy. Public Web build-info converged to `2c76f42e`, and
-  public smoke passed API `/health`, API `/ready`, and Web `/`. Authenticated
+  checkpoint before this record is
+  `069aa36f4918cbf4ed062f50425288dff30a2b89`; production Web build-info
+  reports that SHA on `main` with `metadataSource=github-branch` and build id
+  `orQiE9zTo_TVTcAoXpzI6`, and public smoke passes API `/health`, API
+  `/ready`, and Web `/`. Earlier deploys required cancelling stale
+  queued/in-progress Coolify deployments and triggering a fresh `soar-web`
+  deploy, so queue recovery remains an operations pitfall. Authenticated
   deploy smoke is not claimed for the latest docs/state sync because the
   available Coolify credential is not a valid Soar application password for
   `ai@luckysparrow.ch` (`401 Invalid email or password`).
