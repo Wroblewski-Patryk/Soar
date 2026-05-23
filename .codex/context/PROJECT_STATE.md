@@ -4,6 +4,16 @@ Last updated: 2026-05-23
 
 ## Current Candidate Deployment Status
 
+- `ARCH-RUNTIME-P1-006-BACKTEST-MULTI-STRATEGY-MERGE-2026-05-23` is locally
+  verified as the next architecture-code audit repair. Complete immutable
+  multi-strategy backtest snapshots now replay through the same runtime
+  weighted/exit-priority signal merge contract, keep ambiguous link-only
+  snapshots fail-closed, persist the winning primary strategy on backtest
+  trades, and expose merge diagnostics in report/timeline payloads. Local
+  validation passed: runtime merge + backtest contract/job pack `24/24`,
+  replay/kernel parity pack `34/34`, and API typecheck. Evidence:
+  `docs/planning/architecture-code-runtime-audit-2026-05-22-task.md`.
+
 - `REPO-SOT-CLEANUP-2026-05-23` is verified locally after the operator noticed
   duplicate architecture-looking folders. Current governance confirms
   `docs/architecture/` is canonical, while root `architecture/` and related

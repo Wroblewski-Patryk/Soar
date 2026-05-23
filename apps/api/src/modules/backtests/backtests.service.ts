@@ -38,7 +38,10 @@ import {
   type BacktestSupplementalSeries as SupplementalSeries,
   fetchSupplementalSeries,
 } from './backtestDataGateway';
-import { simulateInterleavedPortfolio } from './backtestPortfolioSimulation.service';
+import {
+  simulateInterleavedPortfolio,
+} from './backtestPortfolioSimulation.service';
+import { resolveStrategyLinksFromSeed } from './backtestStrategyLinkSnapshots';
 import { createBacktestRunJob } from './backtestRunJob';
 import { BacktestRunQueue } from './backtestRunQueue';
 import { resolveWorkerOwnershipConfig } from '../../workers/workerOwnership';
@@ -673,7 +676,9 @@ export const getRunTimeline = async (
     resolveStrategyConfigFromSnapshot(strategySnapshot) ??
     (strategy?.config as Record<string, unknown> | undefined) ??
     null;
-  const indicatorSpecs = parseStrategyIndicators(strategyConfig);
+  const strategyLinks = resolveStrategyLinksFromSeed(seed);
+  const indicatorSourceConfig = strategyLinks[0]?.config ?? strategyConfig;
+  const indicatorSpecs = parseStrategyIndicators(indicatorSourceConfig);
   const indicatorWarmupCandles = indicatorSpecs.reduce((maxPeriod, spec) => Math.max(maxPeriod, spec.period), 0);
 
   const replaySymbols = resolveReplaySymbolsForTimeline({
@@ -782,6 +787,10 @@ export const getRunTimeline = async (
     leverage: marketType === 'SPOT' ? 1 : leverage,
     marginMode,
     strategyConfig,
+    primaryStrategyId: run.strategyId,
+    strategyLinks,
+    minDirectionalScore:
+      typeof seed.minDirectionalScore === 'number' ? Number(seed.minDirectionalScore) : undefined,
     fillModelConfig: {
       feeRate:
         typeof (seed as { feeRate?: unknown }).feeRate === 'number'
@@ -897,7 +906,23 @@ export const getRunTimeline = async (
           timestamp: entry.timestamp.toISOString(),
           side: entry.side,
           trigger: entry.trigger,
+          strategyId: entry.strategyId,
           mismatchReason: entry.mismatchReason,
+        })),
+      mergeSamples: symbolReplay.decisionTrace
+        .filter(
+          (entry) =>
+            entry.merge &&
+            entry.candleIndex >= chunkGlobalStart &&
+            entry.candleIndex < chunkGlobalEnd,
+        )
+        .slice(0, 50)
+        .map((entry) => ({
+          timestamp: entry.timestamp.toISOString(),
+          side: entry.side,
+          trigger: entry.trigger,
+          strategyId: entry.strategyId,
+          merge: entry.merge,
         })),
       fundingPoints: supplemental.fundingRates.length,
       openInterestPoints: supplemental.openInterest.length,

@@ -6,6 +6,7 @@ export type StrategyVote = {
   direction: SignalDirection;
   priority: number;
   weight: number;
+  marketGroupStrategyLinkId?: string;
 };
 
 type MergedStrategyDecision = {
@@ -34,6 +35,10 @@ export const mergeRuntimeStrategyVotes = (input: {
     .filter((vote) => vote.direction === 'EXIT')
     .sort((left, right) => {
       if (left.priority !== right.priority) return left.priority - right.priority;
+      const linkComparison = (left.marketGroupStrategyLinkId ?? '').localeCompare(
+        right.marketGroupStrategyLinkId ?? '',
+      );
+      if (linkComparison !== 0) return linkComparison;
       return left.strategyId.localeCompare(right.strategyId);
     });
 
@@ -47,12 +52,14 @@ export const mergeRuntimeStrategyVotes = (input: {
         reason: 'exit_priority',
         votes: votes.map((vote) => ({
           strategyId: vote.strategyId,
+          marketGroupStrategyLinkId: vote.marketGroupStrategyLinkId,
           direction: vote.direction,
           priority: vote.priority,
           weight: vote.weight,
         })),
         winner: {
           strategyId: winner.strategyId,
+          marketGroupStrategyLinkId: winner.marketGroupStrategyLinkId,
           priority: winner.priority,
           weight: winner.weight,
         },
@@ -76,6 +83,7 @@ export const mergeRuntimeStrategyVotes = (input: {
         scores: { longScore, shortScore, minDirectionalScore },
         votes: votes.map((vote) => ({
           strategyId: vote.strategyId,
+          marketGroupStrategyLinkId: vote.marketGroupStrategyLinkId,
           direction: vote.direction,
           priority: vote.priority,
           weight: vote.weight,
@@ -95,6 +103,7 @@ export const mergeRuntimeStrategyVotes = (input: {
         scores: { longScore, shortScore, minDirectionalScore },
         votes: votes.map((vote) => ({
           strategyId: vote.strategyId,
+          marketGroupStrategyLinkId: vote.marketGroupStrategyLinkId,
           direction: vote.direction,
           priority: vote.priority,
           weight: vote.weight,
@@ -108,7 +117,9 @@ export const mergeRuntimeStrategyVotes = (input: {
     .sort((left, right) => {
       if (left.priority !== right.priority) return left.priority - right.priority;
       if (left.weight !== right.weight) return right.weight - left.weight;
-      return left.strategyId.localeCompare(right.strategyId);
+      const strategyComparison = left.strategyId.localeCompare(right.strategyId);
+      if (strategyComparison !== 0) return strategyComparison;
+      return (left.marketGroupStrategyLinkId ?? '').localeCompare(right.marketGroupStrategyLinkId ?? '');
     });
 
   const winner = winnerVotes[0];
@@ -121,6 +132,7 @@ export const mergeRuntimeStrategyVotes = (input: {
       scores: { longScore, shortScore, minDirectionalScore },
       votes: votes.map((vote) => ({
         strategyId: vote.strategyId,
+        marketGroupStrategyLinkId: vote.marketGroupStrategyLinkId,
         direction: vote.direction,
         priority: vote.priority,
         weight: vote.weight,
@@ -128,6 +140,7 @@ export const mergeRuntimeStrategyVotes = (input: {
       winner: winner
         ? {
             strategyId: winner.strategyId,
+            marketGroupStrategyLinkId: winner.marketGroupStrategyLinkId,
             direction: winner.direction,
             priority: winner.priority,
             weight: winner.weight,

@@ -22,15 +22,16 @@ const DateTimeSchema = z.preprocess((value) => {
 const asRecord = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : null;
 
-const countConfiguredStrategies = (value: unknown) => {
-  if (!Array.isArray(value)) return 0;
-  return value.filter((item) => {
+const hasAmbiguousMultiStrategyValues = (value: unknown) => {
+  if (!Array.isArray(value)) return false;
+  return value.some((item) => {
     if (typeof item === 'string') return item.trim().length > 0;
     const row = asRecord(item);
     if (!row) return false;
     if (row.isEnabled === false) return false;
-    return typeof row.strategyId === 'string' && row.strategyId.trim().length > 0;
-  }).length;
+    if (typeof row.strategyId !== 'string' || row.strategyId.trim().length === 0) return true;
+    return !asRecord(row.config);
+  });
 };
 
 export const hasUnsupportedMultiStrategyBacktestSeed = (seedConfig: unknown) => {
@@ -51,7 +52,7 @@ export const hasUnsupportedMultiStrategyBacktestSeed = (seedConfig: unknown) => 
     contextSnapshot?.strategyLinks,
     marketGroupSnapshot?.strategyIds,
     marketGroupSnapshot?.strategyLinks,
-  ].some((value) => countConfiguredStrategies(value) > 1);
+  ].some(hasAmbiguousMultiStrategyValues);
 };
 
 export const CreateBacktestRunSchema = z.object({

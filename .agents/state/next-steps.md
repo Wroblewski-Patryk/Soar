@@ -64,11 +64,15 @@ readiness, VPS split-worker compose defaults, API DB readiness, rollback
 worker-readiness proof, durable Redis backtest queue ownership, and
 Redis-backed split-worker heartbeat readiness. Validation passed: focused API
 pack `88/88`, readiness/backtest/report pack `20/20`, backtest/worker
-follow-up packs, money-path follow-up packs, API/Web typecheck, script syntax
-checks, and VPS compose config with required env. Next exact task after this
-checkpoint: full backtest multi-strategy merge parity remains a product/schema
-slice; the current code fails fast on multi-strategy seed snapshots instead of
-silently simulating the single-strategy path. Evidence:
+follow-up packs, money-path follow-up packs, backtest multi-strategy merge
+parity packs, API/Web typecheck, script syntax checks, and VPS compose config
+with required env. Backtest multi-strategy parity is now locally fixed for
+complete immutable seed snapshots: replay uses the runtime weighted/exit
+priority merge policy, persists winning primary strategy provenance on trades,
+and exposes merge diagnostics in report/timeline payloads. Ambiguous link-only
+snapshots still fail closed. Next exact task after this checkpoint: run final
+repo guardrails/diff check, commit/push, then continue production split-worker
+and runtime journey proof after deploy. Evidence:
 `docs/planning/architecture-code-runtime-audit-2026-05-22-task.md`.
 
 Current active runtime parity checkpoint:

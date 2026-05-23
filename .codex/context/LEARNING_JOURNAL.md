@@ -3058,3 +3058,16 @@ promise = connect().catch((error) => {
   metadata script therefore keeps GitHub branch readback as a final Docker
   context fallback, and this fallback must be tested in a directory without
   `.git`.
+
+### 2026-05-23 - Full API Vitest can outlive the shell timeout on Windows
+
+- Symptom: `pnpm --filter api run test -- --run` exceeded a 15-minute shell
+  timeout without returning test output, but left child `pnpm`, `vitest`, and
+  `tinypool` node processes running under the Soar workspace.
+- Guardrail: after a timed-out full API Vitest run on Windows, inspect
+  workspace-owned node command lines before continuing:
+  `Get-CimInstance Win32_Process -Filter "name = 'node.exe'" | Where-Object { $_.CommandLine -like '*Soar*' -or $_.CommandLine -like '*vitest*' -or $_.CommandLine -like '*pnpm*' }`.
+  Stop only the PIDs from the timed-out validation run, then recheck.
+- Evidence: timed-out full API run left PIDs `40492`, `28936`, and `34532`;
+  narrow `Stop-Process` cleanup removed them and the follow-up process check
+  returned no Soar/vitest/pnpm node rows.

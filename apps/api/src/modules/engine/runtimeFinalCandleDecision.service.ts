@@ -275,7 +275,7 @@ export const processRuntimeFinalCandleDecision = async (
         strategyMatchesCandleInterval(strategy.strategyInterval, event.interval)
       );
       const strategyVotes: StrategyVote[] = eligibleStrategies
-        .map((strategy) => {
+        .map((strategy): StrategyVote | null => {
           const evaluation = context.evaluateStrategy({
             exchange: bot.exchange,
             marketType: bot.marketType,
@@ -294,6 +294,7 @@ export const processRuntimeFinalCandleDecision = async (
             direction,
             priority: strategy.priority ?? 100,
             weight: strategy.weight ?? 1,
+            marketGroupStrategyLinkId: strategy.marketGroupStrategyLinkId,
           } satisfies StrategyVote;
         })
         .filter((vote): vote is StrategyVote => Boolean(vote));

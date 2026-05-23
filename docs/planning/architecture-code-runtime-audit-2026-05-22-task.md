@@ -113,7 +113,7 @@ An integrated architecture-vs-code findings table for the four lanes, plus a sel
 | `ARCH-RUNTIME-P1-003` | P1 | Orders/exchange | LIVE retry submit path does not pass canonical `clientOrderId` through exchange boundary. | FIXED_LOCALLY | Runtime open/close/DCA paths now derive deterministic `soar_...` client order ids from dedupe keys and pass them through order service, exchange boundary, live adapter, and CCXT connector. Focused boundary/orders/runtime regressions passed. |
 | `ARCH-RUNTIME-P1-004` | P1 | Orders/exchange | `ACCOUNT_UPDATE quantity=0` can close a position without materialized close fill/trade/PnL truth. | FIXED_LOCALLY | Zero-quantity account updates now mark matching LIVE positions as `DRIFT`/`RECOVERING` without closing or assigning PnL/close attribution until fill truth arrives. Focused exchange-event regressions passed. |
 | `ARCH-RUNTIME-P1-005` | P1 | Backtest parity | Backtest candle gateway filters by `openTime <= endTime` instead of closed-candle `closeTime <= endTime`. | FIXED_LOCALLY | Gateway fetch and DB cache now use `closeTime <= endTime`; regressions cover network and DB-cache paths. |
-| `ARCH-RUNTIME-P1-006` | P1 | Backtest parity | Backtest request path is single-strategy and does not implement runtime signal merge for multi-strategy bot parity. | PARTIALLY_MITIGATED | Request validation now fails fast on multi-strategy seed snapshots instead of silently using the single-strategy path; full merge parity still requires a product/schema implementation slice. |
+| `ARCH-RUNTIME-P1-006` | P1 | Backtest parity | Backtest request path was single-strategy and did not implement runtime signal merge for multi-strategy bot parity. | FIXED_LOCALLY | Complete multi-strategy seed snapshots now replay through the shared runtime signal merge policy, preserve primary winning strategy provenance on persisted trades, and expose merge diagnostics in report/timeline payloads. Ambiguous link-only seeds still fail fast. |
 | `ARCH-RUNTIME-P1-014` | P1 | Backtest parity | Backtest lifecycle event naming exposed trailing stop as `TRAILING` while lifecycle contract uses `TSL`. | FIXED_LOCALLY | Backtest replay, report/timeline counts, and web timeline close-like event types now use `TSL`. |
 | `ARCH-RUNTIME-P1-007` | P1 | Reports | Reports count trades with `realizedPnl = null` as completed zero-PnL trades. | FIXED_LOCALLY | PAPER/LIVE report aggregation now counts only settled realized-PnL trades. |
 | `ARCH-RUNTIME-P1-008` | P1 | Ops/deploy | Deploy smoke can pass on `/workers/health` even when topology is degraded. | FIXED_LOCALLY | Deploy smoke now probes `/workers/ready` and fails degraded/not-ready worker payloads. |
@@ -134,6 +134,8 @@ An integrated architecture-vs-code findings table for the four lanes, plus a sel
   - `corepack pnpm --filter api exec vitest run src/modules/orders/orders.exchangeEvents.service.test.ts src/modules/orders/orders.exchangeEvents.accountUpdate.service.test.ts --run --sequence.concurrent=false` => PASS, `21/21`
   - `corepack pnpm --filter api exec vitest run src/modules/exchange/exchangeAdapterBoundary.service.test.ts src/modules/orders/orders.service.test.ts --run --sequence.concurrent=false` => PASS, `51/51`
   - `corepack pnpm --filter api exec vitest run src/modules/engine/executionOrchestrator.service.test.ts src/modules/engine/runtimePositionAutomation.service.test.ts --run --sequence.concurrent=false` => PASS, `55/55`
+  - `pnpm --filter api exec vitest run src/modules/engine/runtimeSignalMerge.test.ts src/modules/backtests/backtests.contract-remediation.test.ts src/modules/backtests/backtestRunJob.test.ts --run --reporter=dot` => PASS, `24/24`
+  - `pnpm --filter api exec vitest run src/modules/backtests/backtestReplayCore.test.ts src/modules/backtests/backtestRuntimeKernelParity.test.ts --run --reporter=dot` => PASS, `34/34`
   - `corepack pnpm --filter api run typecheck` => PASS
   - `corepack pnpm --filter web run typecheck` => PASS
   - `node --check scripts/deploySmokeCheck.mjs; node --check scripts/evaluateRollbackGuard.mjs` => PASS
@@ -146,7 +148,7 @@ An integrated architecture-vs-code findings table for the four lanes, plus a sel
 - Requirements matrix updated: not applicable for initial audit
 - Quality scenarios updated: not applicable for initial audit
 - Risk register updated: pending if new risks are confirmed
-- Reality status: partially verified; local runtime/order/backtest/report/readiness fixes are focused-test verified. Full backtest multi-strategy merge parity remains only partially mitigated by fail-fast validation and still needs a product/schema implementation slice. Durable backtest queue ownership and cross-container worker heartbeat proof are implemented locally but still need production split-worker readback after deploy.
+- Reality status: partially verified; local runtime/order/backtest/report/readiness fixes are focused-test verified. Backtest multi-strategy merge parity is now locally fixed for complete immutable seed snapshots and remains intentionally fail-closed for ambiguous link-only snapshots. Durable backtest queue ownership and cross-container worker heartbeat proof are implemented locally but still need production split-worker readback after deploy.
 
 ## Architecture Evidence
 - Architecture source reviewed:
@@ -158,9 +160,9 @@ An integrated architecture-vs-code findings table for the four lanes, plus a sel
   - `docs/architecture/reference/live-position-restart-continuity-contract.md`
   - `docs/architecture/reference/execution-lifecycle-parity-contract.md`
   - `docs/architecture/reference/position-management-pnl-lifecycle-contract.md`
-- Fits approved architecture: yes for the two local P0 fixes.
+- Fits approved architecture: yes for the local runtime/order/backtest/ops fixes.
 - Mismatch discovered: yes.
-- Decision required from user: no for local P0 fixes; yes or follow-up planning may be needed for multi-strategy backtest parity and durable worker queue ownership.
+- Decision required from user: no for local fixes; production split-worker readback remains an ops proof gate.
 - Approval reference if architecture changed: not applicable
 - Follow-up architecture doc updates: none planned unless implementation truth contradicts approved architecture
 
@@ -190,6 +192,7 @@ An integrated architecture-vs-code findings table for the four lanes, plus a sel
 - Repaired `ARCH-RUNTIME-P0-001`: stale unproven runtime execution dedupe remains `inflight` instead of allowing duplicate side-effect execution.
 - Repaired `ARCH-RUNTIME-P0-002`: LIVE `FILLED` without exchange fill quantity no longer synthesizes a fill or advances lifecycle; LIVE lifecycle no longer uses request price as fill price.
 - Repaired safe local P1s: dynamic strategy fallback display for imported LIVE rows, closed-candle backtest gateway windowing, settled-only report aggregation, deploy smoke worker readiness, VPS split-worker compose defaults, API DB readiness, and rollback worker-readiness proof.
+- Repaired `ARCH-RUNTIME-P1-006`: complete immutable multi-strategy backtest snapshots now replay through the same weighted/exit-priority signal merge contract used by runtime, carry winning strategy provenance into trades, and expose merge diagnostics. Ambiguous snapshots still fail fast rather than silently degrading to single-strategy behavior.
 
 ### 5. Verify and Test
 - Focused API packs passed `88/88` and readiness/backtest/report pack passed `20/20`; script syntax checks and VPS compose config passed. Local Postgres/Redis were started through repo infra after confirming Laragon/MySQL alone did not provide Postgres.

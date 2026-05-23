@@ -37,6 +37,41 @@ describe('mergeRuntimeStrategyVotes', () => {
     });
   });
 
+  it('uses market-group strategy link id as the EXIT tie-break after priority', () => {
+    const votes: StrategyVote[] = [
+      {
+        strategyId: 'strategy-a',
+        direction: 'EXIT',
+        priority: 10,
+        weight: 1,
+        marketGroupStrategyLinkId: 'link-b',
+      },
+      {
+        strategyId: 'strategy-b',
+        direction: 'EXIT',
+        priority: 10,
+        weight: 1,
+        marketGroupStrategyLinkId: 'link-a',
+      },
+    ];
+
+    const decision = mergeRuntimeStrategyVotes({
+      strategies: votes.map((vote) => strategy(vote.strategyId)),
+      votes,
+      minDirectionalScore: 1,
+    });
+
+    expect(decision.direction).toBe('EXIT');
+    expect(decision.strategyId).toBe('strategy-b');
+    expect(decision.metadata).toMatchObject({
+      reason: 'exit_priority',
+      winner: {
+        strategyId: 'strategy-b',
+        marketGroupStrategyLinkId: 'link-a',
+      },
+    });
+  });
+
   it('uses lower numeric priority before weight when selecting directional provenance', () => {
     const votes: StrategyVote[] = [
       { strategyId: 'strategy-heavy-normal', direction: 'LONG', priority: 100, weight: 10 },
@@ -57,6 +92,40 @@ describe('mergeRuntimeStrategyVotes', () => {
         strategyId: 'strategy-urgent-light',
         priority: 1,
         weight: 1,
+      },
+    });
+  });
+
+  it('uses market-group strategy link id as the final deterministic tie-break', () => {
+    const votes: StrategyVote[] = [
+      {
+        strategyId: 'strategy-same',
+        direction: 'LONG',
+        priority: 100,
+        weight: 1,
+        marketGroupStrategyLinkId: 'link-b',
+      },
+      {
+        strategyId: 'strategy-same',
+        direction: 'LONG',
+        priority: 100,
+        weight: 1,
+        marketGroupStrategyLinkId: 'link-a',
+      },
+    ];
+
+    const decision = mergeRuntimeStrategyVotes({
+      strategies: votes.map((vote) => strategy(vote.strategyId)),
+      votes,
+      minDirectionalScore: 1,
+    });
+
+    expect(decision.direction).toBe('LONG');
+    expect(decision.strategyId).toBe('strategy-same');
+    expect(decision.metadata).toMatchObject({
+      winner: {
+        strategyId: 'strategy-same',
+        marketGroupStrategyLinkId: 'link-a',
       },
     });
   });

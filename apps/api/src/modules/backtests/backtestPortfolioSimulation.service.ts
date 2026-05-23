@@ -7,8 +7,10 @@ import {
   parseStrategySignalRules,
   type StrategySignalDerivativesSeries,
 } from '../engine/strategySignalEvaluator';
+import { mergeRuntimeStrategyVotes, type StrategyVote } from '../engine/runtimeSignalMerge';
 import {
   computeRiskBasedOrderQuantity,
+  normalizeWalletRiskPercent,
 } from '../engine/positionSizing';
 import {
   type ReplayEventDraft,
@@ -33,6 +35,7 @@ import { alignTimedNumericPointsToCandles } from '../engine/sharedDerivativesSer
 
 type TradeDraft = {
   symbol: string;
+  strategyId: string | null;
   side: PositionSide;
   entryPrice: number;
   exitPrice: number;
@@ -56,6 +59,15 @@ type SymbolSimulationResult = {
 type InterleavedPortfolioSimulationResult = {
   perSymbol: Record<string, SymbolSimulationResult>;
   finalBalance: number;
+};
+
+export type BacktestStrategyLinkSnapshot = {
+  strategyId: string;
+  config?: Record<string, unknown> | null;
+  walletRiskPercent?: number | null;
+  priority?: number | null;
+  weight?: number | null;
+  marketGroupStrategyLinkId?: string | null;
 };
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
@@ -113,14 +125,44 @@ export const simulateInterleavedPortfolio = (input: {
   leverage: number;
   marginMode: 'CROSSED' | 'ISOLATED' | 'NONE';
   strategyConfig?: Record<string, unknown> | null;
+  primaryStrategyId?: string | null;
+  strategyLinks?: BacktestStrategyLinkSnapshot[];
+  minDirectionalScore?: number;
   fillModelConfig?: BacktestFillModelConfig;
   walletRiskPercent: number;
   initialBalance: number;
 }): InterleavedPortfolioSimulationResult => {
   const effectiveLeverage = input.marketType === 'SPOT' ? 1 : Math.max(1, input.leverage);
-  const rules = parseStrategySignalRules(input.strategyConfig);
-  const strategyModeEnabled = Boolean(input.strategyConfig && typeof input.strategyConfig === 'object');
-  const riskConfig = parseStrategyRiskConfig(input.strategyConfig);
+  const fallbackStrategyLinks: BacktestStrategyLinkSnapshot[] =
+    input.strategyLinks && input.strategyLinks.length > 0
+      ? input.strategyLinks
+      : input.strategyConfig && typeof input.strategyConfig === 'object'
+        ? [{
+            strategyId: input.primaryStrategyId ?? 'seed-strategy',
+            config: input.strategyConfig,
+            walletRiskPercent: input.walletRiskPercent,
+          }]
+        : [];
+  const strategyRuntimeLinks = fallbackStrategyLinks.map((strategy, index) => ({
+    strategyId: strategy.strategyId,
+    strategyInterval: null,
+    strategyConfig: strategy.config ?? null,
+    strategyLeverage: effectiveLeverage,
+    walletRisk: normalizeWalletRiskPercent(
+      strategy.walletRiskPercent ?? input.walletRiskPercent,
+      input.walletRiskPercent,
+    ),
+    priority: strategy.priority ?? 100,
+    weight: strategy.weight ?? 1,
+    marketGroupStrategyLinkId: strategy.marketGroupStrategyLinkId ?? `seed-link-${index}`,
+  }));
+  const strategyEvaluators = strategyRuntimeLinks.map((strategy) => ({
+    ...strategy,
+    rules: parseStrategySignalRules(strategy.strategyConfig),
+    riskConfig: parseStrategyRiskConfig(strategy.strategyConfig),
+  }));
+  const strategyModeEnabled = strategyEvaluators.length > 0;
+  const defaultRiskConfig = parseStrategyRiskConfig(input.strategyConfig);
   const fillModel = createHistoricalBacktestFillModel(input.fillModelConfig);
 
   const perSymbol: Record<string, SymbolSimulationResult> = Object.fromEntries(
@@ -174,6 +216,8 @@ export const simulateInterleavedPortfolio = (input: {
     trailingLossLimit?: number;
     trailingTakeProfitHigh?: number;
     trailingTakeProfitStep?: number;
+    strategyId: string | null;
+    riskConfig: ReturnType<typeof parseStrategyRiskConfig>;
   }>();
 
   let cashBalance = Math.max(0, input.initialBalance);
@@ -230,12 +274,43 @@ export const simulateInterleavedPortfolio = (input: {
     const indicatorCache = indicatorCacheBySymbol.get(symbol) ?? new Map<string, Array<number | null>>();
     indicatorCacheBySymbol.set(symbol, indicatorCache);
     const derivativesSeries = derivativesSeriesBySymbol.get(symbol);
+    const mergedDecision = strategyModeEnabled
+      ? mergeRuntimeStrategyVotes({
+          strategies: strategyRuntimeLinks,
+          votes: strategyEvaluators
+            .map((strategy): StrategyVote | null => {
+              if (!strategy.rules) return null;
+              const direction = evaluateStrategySignalAtIndex(strategy.rules, candles, index, indicatorCache, {
+                derivatives: derivativesSeries,
+              });
+              if (!direction) return null;
+              return {
+                strategyId: strategy.strategyId,
+                direction,
+                priority: strategy.priority ?? 100,
+                weight: strategy.weight ?? 1,
+                marketGroupStrategyLinkId: strategy.marketGroupStrategyLinkId,
+              };
+            })
+            .filter((vote): vote is StrategyVote => Boolean(vote)),
+          minDirectionalScore: input.minDirectionalScore ?? 1,
+        })
+      : null;
+    const mergedWinner = mergedDecision?.metadata?.winner;
+    const selectedStrategyLinkId =
+      mergedWinner && typeof mergedWinner === 'object'
+        ? (mergedWinner as { marketGroupStrategyLinkId?: unknown }).marketGroupStrategyLinkId
+        : null;
+    const selectedStrategy = mergedDecision?.strategyId
+      ? strategyEvaluators.find(
+          (strategy) =>
+            strategy.strategyId === mergedDecision.strategyId &&
+            (typeof selectedStrategyLinkId !== 'string' ||
+              strategy.marketGroupStrategyLinkId === selectedStrategyLinkId),
+        ) ?? strategyEvaluators.find((strategy) => strategy.strategyId === mergedDecision.strategyId)
+      : undefined;
     const direction = strategyModeEnabled
-      ? rules
-        ? evaluateStrategySignalAtIndex(rules, candles, index, indicatorCache, {
-            derivatives: derivativesSeries,
-          })
-        : null
+      ? mergedDecision?.direction
       : (() => {
         const base = previous.close > 0 ? previous.close : 1;
         const changePct = ((current.close - previous.close) / base) * 100;
@@ -275,6 +350,8 @@ export const simulateInterleavedPortfolio = (input: {
         timestamp: new Date(current.openTime),
         candleIndex: index,
         signal: direction,
+        strategyId: mergedDecision?.strategyId ?? null,
+        ...(mergedDecision ? { merge: mergedDecision.metadata } : {}),
         side: traceSide,
         trigger: strategyModeEnabled ? 'STRATEGY' : 'THRESHOLD',
         mismatchReason: decision.kind === 'ignore' ? decision.reason : null,
@@ -283,9 +360,10 @@ export const simulateInterleavedPortfolio = (input: {
 
     if (decision?.kind === 'open') {
       const entryPrice = fillModel.entryPrice(current.close, decision.positionSide as PositionSide);
+      const entryWalletRisk = selectedStrategy?.walletRisk ?? input.walletRiskPercent;
       const quantity = computeRiskBasedOrderQuantity({
         price: entryPrice,
-        walletRiskPercent: input.walletRiskPercent,
+        walletRiskPercent: entryWalletRisk,
         referenceBalance: calcReferenceBalance(),
         leverage: effectiveLeverage,
         minQuantity: 0.000001,
@@ -305,6 +383,8 @@ export const simulateInterleavedPortfolio = (input: {
           bestPrice: entryPrice,
           marginUsed: marginRequired,
           executedDcaLevelIndices: undefined,
+          strategyId: selectedStrategy?.strategyId ?? null,
+          riskConfig: selectedStrategy?.riskConfig ?? defaultRiskConfig,
         });
         pushEvent(symbol, 'ENTRY', decision.positionSide as PositionSide, new Date(current.openTime), entryPrice, null, index, sequence);
       }
@@ -318,6 +398,7 @@ export const simulateInterleavedPortfolio = (input: {
     }
 
     const position = open;
+    const riskConfig = position.riskConfig;
     if (position.side === 'LONG') position.bestPrice = Math.max(position.bestPrice, current.high);
     else position.bestPrice = Math.min(position.bestPrice, current.low);
 
@@ -495,6 +576,7 @@ export const simulateInterleavedPortfolio = (input: {
     }
     bucket.trades.push({
       symbol,
+      strategyId: position.strategyId,
       side: position.side as PositionSide,
       entryPrice: position.entryPrice,
       exitPrice,
@@ -545,6 +627,7 @@ export const simulateInterleavedPortfolio = (input: {
     const bucket = perSymbol[symbol];
     bucket.trades.push({
       symbol,
+      strategyId: position.strategyId,
       side: position.side as PositionSide,
       entryPrice: position.entryPrice,
       exitPrice,
@@ -571,6 +654,7 @@ export const simulateInterleavedPortfolio = (input: {
       timestamp: new Date(last.closeTime),
       candleIndex: candles.length - 1,
       signal: 'EXIT',
+      strategyId: position.strategyId,
       side: position.side as PositionSide,
       trigger: 'FINAL_CANDLE',
       mismatchReason: null,

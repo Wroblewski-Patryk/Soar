@@ -1,6 +1,6 @@
 # Module Confidence Ledger
 
-Last updated: 2026-05-22
+Last updated: 2026-05-23
 
 ## Purpose
 
@@ -552,6 +552,17 @@ Do not turn uncertainty into optimism.
   auth.
 
 ## Recent Updates
+
+- 2026-05-23 `ARCH-RUNTIME-P1-006-BACKTEST-MULTI-STRATEGY-MERGE` applies to
+  `SOAR-BACKTESTS-001`, `SOAR-BOT-RUNTIME-001`, and `SOAR-ENGINE-001`:
+  complete immutable multi-strategy backtest seed snapshots now replay through
+  the shared runtime weighted/exit-priority merge policy instead of silently
+  degrading to a single-strategy path. The winning primary strategy is
+  persisted on backtest trades, report/timeline parity diagnostics include
+  merge samples, final-candle runtime votes carry strategy-link provenance,
+  and ambiguous link-only snapshots still fail closed. Evidence: runtime merge
+  plus backtest contract/job pack passed (`24/24`), replay/kernel parity pack
+  passed (`34/34`), and API typecheck passed.
 
 - 2026-05-22 `ARCH-CODE-RUNTIME-AUDIT-2026-05-22` applies to
   `SOAR-ENGINE-001`, `SOAR-ORDERS-001`, `SOAR-BOT-RUNTIME-001`,

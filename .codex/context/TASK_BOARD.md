@@ -80,6 +80,13 @@ Last updated: 2026-05-23
     smoke.
 
 - [ ] `ARCH-CODE-RUNTIME-AUDIT-2026-05-22 audit: verify architecture-code runtime parity`
+  - 2026-05-23 continuation: repaired `ARCH-RUNTIME-P1-006`. Complete
+    immutable multi-strategy backtest snapshots now replay through the same
+    runtime weighted/exit-priority merge policy, persist the winning primary
+    strategy on backtest trades, and expose merge diagnostics in report and
+    timeline payloads. Ambiguous link-only snapshots still fail closed.
+    Validation passed: runtime merge + backtest contract/job pack `24/24`,
+    replay/kernel parity pack `34/34`, and API typecheck.
   - 2026-05-22 money-path continuation: locally repaired
     `ARCH-RUNTIME-P1-002`, `ARCH-RUNTIME-P1-003`, and
     `ARCH-RUNTIME-P1-004`. `ACCOUNT_UPDATE` now requires source API-key

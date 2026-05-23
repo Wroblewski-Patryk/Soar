@@ -5,6 +5,8 @@ import {
   BacktestMarketType,
   BacktestSupplementalSeries,
 } from './backtestDataGateway';
+import type { BacktestStrategyLinkSnapshot } from './backtestPortfolioSimulation.service';
+import { resolveStrategyLinksFromSeed } from './backtestStrategyLinkSnapshots';
 
 type MarginMode = 'CROSSED' | 'ISOLATED' | 'NONE';
 
@@ -45,6 +47,7 @@ type LifecycleEventCounts = {
 
 type SimulationTrade = {
   symbol: string;
+  strategyId?: string | null;
   side: PositionSide;
   entryPrice: number;
   exitPrice: number;
@@ -61,6 +64,8 @@ type SimulationTrace = {
   timestamp: Date;
   side: PositionSide | null;
   trigger: 'STRATEGY' | 'THRESHOLD' | 'FINAL_CANDLE';
+  strategyId?: string | null;
+  merge?: Record<string, unknown>;
   mismatchReason:
     | 'no_open_position'
     | 'no_flip_with_open_position'
@@ -152,6 +157,9 @@ type BacktestRunJobDeps = {
     leverage: number;
     marginMode: MarginMode;
     strategyConfig?: Record<string, unknown> | null;
+    primaryStrategyId?: string | null;
+    strategyLinks?: BacktestStrategyLinkSnapshot[];
+    minDirectionalScore?: number;
     fillModelConfig?: BacktestFillModelConfig;
     walletRiskPercent: number;
     initialBalance: number;
@@ -325,12 +333,21 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
       resolveStrategyConfigFromSnapshot(strategySnapshot) ??
       (strategy?.config as Record<string, unknown> | undefined) ??
       null;
-    const indicatorWarmupCandles = deps.resolveIndicatorWarmupCandles(strategyConfig);
+    const strategyLinks = resolveStrategyLinksFromSeed(seed);
+    const strategyConfigsForWarmup =
+      strategyLinks.length > 0 ? strategyLinks.map((link) => link.config ?? null) : [strategyConfig];
+    const indicatorWarmupCandles = Math.max(
+      0,
+      ...strategyConfigsForWarmup.map((config) => deps.resolveIndicatorWarmupCandles(config)),
+    );
     const strategyWalletRisk = deps.normalizeWalletRiskPercent(
       resolveStrategyWalletRiskFromSnapshot(strategySnapshot) ?? strategy?.walletRisk ?? 1,
       1
     );
-    const strategyRulesActive = Boolean(deps.parseStrategySignalRules(strategyConfig));
+    const strategyRulesActive =
+      strategyLinks.length > 0
+        ? strategyLinks.some((link) => Boolean(deps.parseStrategySignalRules(link.config ?? null)))
+        : Boolean(deps.parseStrategySignalRules(strategyConfig));
     const fillModelConfig: BacktestFillModelConfig = {
       feeRate:
         typeof (seed as { feeRate?: unknown }).feeRate === 'number'
@@ -364,12 +381,20 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
         timestamp: string;
         side: PositionSide | null;
         trigger: 'STRATEGY' | 'THRESHOLD' | 'FINAL_CANDLE';
+        strategyId?: string | null;
         mismatchReason:
           | 'no_open_position'
           | 'no_flip_with_open_position'
           | 'already_open_same_side'
           | 'manual_managed_symbol'
           | 'strategy_exit_trace_only';
+      }>;
+      mergeSamples: Array<{
+        timestamp: string;
+        side: PositionSide | null;
+        trigger: 'STRATEGY' | 'THRESHOLD' | 'FINAL_CANDLE';
+        strategyId?: string | null;
+        merge: Record<string, unknown>;
       }>;
       fundingPoints: number;
       openInterestPoints: number;
@@ -435,6 +460,7 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
             liquidationEvents: 0,
             mismatchCount: 0,
             mismatchSamples: [],
+            mergeSamples: [],
             fundingPoints: 0,
             openInterestPoints: 0,
             orderBookPoints: 0,
@@ -470,6 +496,10 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
           leverage: progress.leverage,
           marginMode: progress.marginMode,
           strategyConfig,
+          primaryStrategyId: run.strategyId,
+          strategyLinks,
+          minDirectionalScore:
+            typeof seed.minDirectionalScore === 'number' ? Number(seed.minDirectionalScore) : undefined,
           fillModelConfig,
           walletRiskPercent: strategyWalletRisk,
           initialBalance,
@@ -509,12 +539,23 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
                 timestamp: entry.timestamp.toISOString(),
                 side: entry.side,
                 trigger: entry.trigger,
+                strategyId: entry.strategyId,
                 mismatchReason: entry.mismatchReason as
                   | 'no_open_position'
                   | 'no_flip_with_open_position'
                   | 'already_open_same_side'
                   | 'manual_managed_symbol'
                   | 'strategy_exit_trace_only',
+              })),
+            mergeSamples: decisionTrace
+              .filter((entry) => entry.merge)
+              .slice(0, 25)
+              .map((entry) => ({
+                timestamp: entry.timestamp.toISOString(),
+                side: entry.side,
+                trigger: entry.trigger,
+                strategyId: entry.strategyId,
+                merge: entry.merge as Record<string, unknown>,
               })),
             fundingPoints: supplemental.fundingRates.length,
             openInterestPoints: supplemental.openInterest.length,
@@ -527,7 +568,7 @@ export const createBacktestRunJob = (deps: BacktestRunJobDeps) =>
             await deps.createBacktestTrades(
               trades.map((trade) => ({
                 userId: run.userId,
-                strategyId: run.strategyId,
+                strategyId: trade.strategyId ?? run.strategyId,
                 backtestRunId: run.id,
                 symbol: trade.symbol,
                 side: trade.side,

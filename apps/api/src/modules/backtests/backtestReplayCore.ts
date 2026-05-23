@@ -63,6 +63,8 @@ export type ReplayParityDecisionTrace = {
   timestamp: Date;
   candleIndex: number;
   signal: 'LONG' | 'SHORT' | 'EXIT';
+  strategyId?: string | null;
+  merge?: Record<string, unknown>;
   side: PositionSide | null;
   trigger: 'STRATEGY' | 'THRESHOLD' | 'FINAL_CANDLE';
   mismatchReason:

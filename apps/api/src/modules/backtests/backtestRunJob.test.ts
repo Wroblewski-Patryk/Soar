@@ -119,6 +119,183 @@ describe('createBacktestRunJob', () => {
     expect(lastRunUpdate?.status).toBe('COMPLETED');
   });
 
+  it('passes complete multi-strategy snapshots to replay and persists primary strategy provenance', async () => {
+    const simulateInterleavedPortfolio = vi.fn(
+      () =>
+        ({
+          perSymbol: {
+            BTCUSDT: {
+              trades: [
+                {
+                  symbol: 'BTCUSDT',
+                  strategyId: 'strategy-winner',
+                  side: 'LONG',
+                  entryPrice: 100,
+                  exitPrice: 110,
+                  quantity: 1,
+                  openedAt: new Date('2026-01-01T00:00:00.000Z'),
+                  closedAt: new Date('2026-01-01T00:01:00.000Z'),
+                  pnl: 10,
+                  fee: 0.5,
+                  exitReason: 'SIGNAL_EXIT',
+                  liquidated: false,
+                },
+              ],
+              liquidations: 0,
+              eventCounts: {
+                ENTRY: 1,
+                EXIT: 1,
+                DCA: 0,
+                TP: 0,
+                TTP: 0,
+                SL: 0,
+                TSL: 0,
+                LIQUIDATION: 0,
+              },
+              decisionTrace: [
+                {
+                  symbol: 'BTCUSDT',
+                  timestamp: new Date('2026-01-01T00:00:00.000Z'),
+                  candleIndex: 1,
+                  signal: 'LONG',
+                  side: 'LONG',
+                  trigger: 'STRATEGY',
+                  strategyId: 'strategy-winner',
+                  mismatchReason: null,
+                  merge: {
+                    reason: 'weighted_winner',
+                    winner: {
+                      strategyId: 'strategy-winner',
+                      marketGroupStrategyLinkId: 'link-winner',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          finalBalance: 10_010,
+        }) as any,
+    );
+    const createBacktestTrades = vi.fn(async () => undefined);
+    const upsertBacktestReportForRun = vi.fn(async () => undefined);
+
+    const runJob = createBacktestRunJob({
+      findBacktestRunById: vi.fn(async () => ({
+        id: 'run-multi-strategy',
+        userId: 'user-1',
+        symbol: 'BTCUSDT',
+        timeframe: '1m',
+        strategyId: 'strategy-legacy',
+        status: 'PENDING',
+        seedConfig: {
+          symbols: ['BTCUSDT'],
+          marketType: 'FUTURES',
+          leverage: 2,
+          marginMode: 'CROSSED',
+          initialBalance: 10_000,
+          maxCandles: 200,
+          minDirectionalScore: 2,
+          contextSnapshot: {
+            botMarketGroup: {
+              strategyLinks: [
+                {
+                  id: 'link-winner',
+                  strategyId: 'strategy-winner',
+                  priority: 10,
+                  weight: 2,
+                  walletRisk: 3,
+                  config: { signal: { long: [{ left: 'close', operator: '>', right: 1 }] } },
+                },
+                {
+                  id: 'link-secondary',
+                  strategyId: 'strategy-secondary',
+                  priority: 20,
+                  weight: 1,
+                  walletRisk: 1,
+                  config: { signal: { short: [{ left: 'close', operator: '<', right: 1 }] } },
+                },
+              ],
+            },
+          },
+        },
+      })),
+      safeUpdateRun: vi.fn(async () => true),
+      uniqueSorted: (values) => [...new Set(values)].sort(),
+      computeAdaptiveMaxCandles: vi.fn(() => 120),
+      resolveIndicatorWarmupCandles: () => 0,
+      normalizeWalletRiskPercent: () => 1,
+      parseStrategySignalRules: () => ({}),
+      findOwnedStrategySignalConfig: vi.fn(async () => null),
+      fetchKlines: vi.fn(async () => [
+        {
+          openTime: 0,
+          closeTime: 59_000,
+          open: 100,
+          high: 101,
+          low: 99,
+          close: 100,
+          volume: 1_000,
+        },
+        {
+          openTime: 60_000,
+          closeTime: 119_000,
+          open: 101,
+          high: 102,
+          low: 100,
+          close: 101,
+          volume: 1_100,
+        },
+      ]),
+      fetchSupplementalSeries: vi.fn(async () => ({
+        fundingRates: [],
+        openInterest: [],
+        orderBook: [],
+      })),
+      simulateInterleavedPortfolio,
+      createBacktestTrades,
+      deleteBacktestTradesForRun: vi.fn(async () => undefined),
+      countWinningBacktestTrades: vi.fn(async () => 1),
+      countLosingBacktestTrades: vi.fn(async () => 0),
+      upsertBacktestReportForRun,
+      computeSourceWindowMs: () => 14 * 24 * 60 * 60 * 1000,
+      maxDrawdownFromPnlSeries: () => 0,
+    });
+
+    await runJob('run-multi-strategy');
+
+    expect(simulateInterleavedPortfolio).toHaveBeenCalledTimes(1);
+    const simulationInput = (simulateInterleavedPortfolio as any).mock.calls[0]?.[0] as any;
+    expect(simulationInput.primaryStrategyId).toBe('strategy-legacy');
+    expect(simulationInput.minDirectionalScore).toBe(2);
+    expect(simulationInput.strategyLinks).toMatchObject([
+      {
+        strategyId: 'strategy-winner',
+        marketGroupStrategyLinkId: 'link-winner',
+        priority: 10,
+        weight: 2,
+        walletRiskPercent: 3,
+      },
+      {
+        strategyId: 'strategy-secondary',
+        marketGroupStrategyLinkId: 'link-secondary',
+        priority: 20,
+        weight: 1,
+        walletRiskPercent: 1,
+      },
+    ]);
+    const persistedTrades = (createBacktestTrades as any).mock.calls[0]?.[0] as any[];
+    expect(persistedTrades[0]?.strategyId).toBe('strategy-winner');
+    const reportPayload = (upsertBacktestReportForRun as any).mock.calls[0]?.[0] as any;
+    expect(reportPayload.create.metrics.parityDiagnostics[0].mergeSamples[0]).toMatchObject({
+      strategyId: 'strategy-winner',
+      merge: {
+        winner: {
+          marketGroupStrategyLinkId: 'link-winner',
+        },
+      },
+    });
+  });
+
   it('reuses persisted effectiveMaxCandles without applying adaptive reduction twice', async () => {
     const safeUpdateRun = vi.fn(async () => true);
     const fetchKlines = vi.fn(async () => [

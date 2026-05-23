@@ -289,7 +289,29 @@ describe('backtest parity remediation contracts', () => {
     ).toEqual(runSymbols);
   });
 
-  it('fails fast instead of accepting unsupported multi-strategy backtest seeds', () => {
+  it('accepts complete multi-strategy snapshots and fails fast on ambiguous link-only seeds', () => {
+    const completeSeedConfig = {
+      contextSnapshot: {
+        botMarketGroup: {
+          strategyLinks: [
+            {
+              strategyId: 'strategy-a',
+              priority: 10,
+              weight: 1,
+              isEnabled: true,
+              config: { openConditions: { direction: 'long' } },
+            },
+            {
+              strategyId: 'strategy-b',
+              priority: 20,
+              weight: 1,
+              isEnabled: true,
+              config: { openConditions: { direction: 'short' } },
+            },
+          ],
+        },
+      },
+    };
     const seedConfig = {
       contextSnapshot: {
         botMarketGroup: {
@@ -301,9 +323,16 @@ describe('backtest parity remediation contracts', () => {
       },
     };
 
+    expect(hasUnsupportedMultiStrategyBacktestSeed(completeSeedConfig)).toBe(false);
+    expect(CreateBacktestRunSchema.safeParse({
+      name: 'Complete multi-strategy backtest',
+      symbol: 'BTCUSDT',
+      timeframe: '1m',
+      seedConfig: completeSeedConfig,
+    }).success).toBe(true);
     expect(hasUnsupportedMultiStrategyBacktestSeed(seedConfig)).toBe(true);
     const parsed = CreateBacktestRunSchema.safeParse({
-      name: 'Unsupported multi-strategy backtest',
+      name: 'Ambiguous multi-strategy backtest',
       symbol: 'BTCUSDT',
       timeframe: '1m',
       seedConfig,
@@ -313,6 +342,79 @@ describe('backtest parity remediation contracts', () => {
     if (!parsed.success) {
       expect(parsed.error.issues[0]?.path).toEqual(['seedConfig']);
     }
+  });
+
+  it('merges complete multi-strategy snapshots with runtime merge provenance', () => {
+    const symbol = 'BTCUSDT';
+    const simulation = simulateInterleavedPortfolio({
+      symbols: [symbol],
+      candlesBySymbol: new Map([[symbol, makeCandles([100, 101, 102, 103])]]),
+      marketType: 'FUTURES',
+      leverage: 1,
+      marginMode: 'CROSSED',
+      walletRiskPercent: 10,
+      initialBalance: 10_000,
+      strategyLinks: [
+        {
+          strategyId: 'strategy-long-low-priority',
+          priority: 20,
+          weight: 2,
+          config: {
+            openConditions: {
+              direction: 'long',
+              indicatorsLong: [
+                { name: 'MOMENTUM', condition: '>', value: -999, params: { period: 1 } },
+              ],
+              indicatorsShort: [],
+            },
+            close: { mode: 'basic', tp: 10, sl: 10, ttp: [], tsl: [] },
+          },
+        },
+        {
+          strategyId: 'strategy-long-primary',
+          priority: 10,
+          weight: 1,
+          config: {
+            openConditions: {
+              direction: 'long',
+              indicatorsLong: [
+                { name: 'MOMENTUM', condition: '>', value: -999, params: { period: 1 } },
+              ],
+              indicatorsShort: [],
+            },
+            close: { mode: 'basic', tp: 10, sl: 10, ttp: [], tsl: [] },
+          },
+        },
+        {
+          strategyId: 'strategy-short',
+          priority: 5,
+          weight: 1,
+          config: {
+            openConditions: {
+              direction: 'short',
+              indicatorsLong: [],
+              indicatorsShort: [
+                { name: 'MOMENTUM', condition: '<', value: 999, params: { period: 1 } },
+              ],
+            },
+            close: { mode: 'basic', tp: 10, sl: 10, ttp: [], tsl: [] },
+          },
+        },
+      ],
+    });
+
+    const perSymbol = simulation.perSymbol[symbol];
+    expect(perSymbol.eventCounts.ENTRY).toBe(1);
+    expect(perSymbol.trades[0]?.strategyId).toBe('strategy-long-primary');
+    expect(perSymbol.decisionTrace[0]).toMatchObject({
+      signal: 'LONG',
+      strategyId: 'strategy-long-primary',
+      trigger: 'STRATEGY',
+    });
+    expect(perSymbol.decisionTrace[0]?.merge).toMatchObject({
+      reason: 'weighted_winner',
+      scores: { longScore: 3, shortScore: 1, minDirectionalScore: 1 },
+    });
   });
 
   it('uses terminal run finishedAt as timeline anchor instead of stale liveProgress', () => {
