@@ -17,6 +17,25 @@ Last updated: 2026-05-23
 
 ## DONE
 
+- [x] `GATEIO-LIVE-BOT-CONTEXT-REPAIR-2026-05-23 release: repair Gate.io market context and create inactive LIVE RSI bot`
+  - 2026-05-23: Production readback confirmed the reported bot-create blocker
+    was valid: wallet `Gate.io` was `LIVE / GATEIO / FUTURES / USDT`, but
+    market universe `Main gateio` had been saved as
+    `BINANCE / FUTURES / USDT`. Gate.io stored API-key read-only test passed
+    for futures, and Gate.io futures catalog returned data.
+  - Repair performed: updated `Main gateio`
+    (`1ec7933b-abdf-4343-be5f-d50f06b1252a`) to
+    `GATEIO / FUTURES / USDT` while preserving the whitelist, then created
+    inactive bot `Gate.io RSI 20/80`
+    (`ff5ed1a5-eda3-4efc-a5ad-3ba3db2be0b1`) with wallet
+    `076fe127-1287-4f0c-9cc3-149b6f7af3ae` and strategy
+    `3264841b-1efa-4a70-a8e9-b6cfa9ec1384`.
+  - Safety boundary: bot was not activated (`isActive=false`,
+    `liveOptIn=false`); no LIVE order, exchange position mutation, runtime
+    start, token/cookie/API-secret persistence, or raw secret artifact was
+    produced. Evidence:
+    `docs/planning/gateio-live-bot-context-repair-2026-05-23-task.md`.
+
 - [x] `PROTECTED-APP-TEST-CREDENTIAL-AVAILABILITY-2026-05-23 release: record approved Soar app account/API-key test context`
   - 2026-05-23: Operator confirmed that the Soar production application
     account `wroblewskipatryk@gmail.com` on

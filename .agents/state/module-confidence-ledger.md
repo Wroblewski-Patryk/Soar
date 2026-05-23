@@ -90,6 +90,20 @@ Do not turn uncertainty into optimism.
 ## Current Release Evidence Notes
 
 - 2026-05-23
+  `GATEIO-LIVE-BOT-CONTEXT-REPAIR-2026-05-23` applies to
+  `SOAR-PROFILE-API-KEYS-001`, `SOAR-WALLETS-001`, `SOAR-MARKETS-001`,
+  `SOAR-STRATEGIES-001`, and `SOAR-BOTS-001`: production readback confirmed
+  wallet `Gate.io` was correctly `LIVE / GATEIO / FUTURES / USDT`, while
+  market universe `Main gateio` had been saved as `BINANCE / FUTURES / USDT`,
+  causing the wallet-market context mismatch. Gate.io stored API-key read-only
+  probe passed for futures, Gate.io futures catalog returned data, `Main
+  gateio` was updated to `GATEIO / FUTURES / USDT`, and inactive bot
+  `Gate.io RSI 20/80` was created with the Gate.io wallet and `RSI 20 / 80`
+  strategy. This verifies inactive configuration only; LIVE activation and any
+  exchange-side mutation remain separately approval-gated. Evidence:
+  `docs/planning/gateio-live-bot-context-repair-2026-05-23-task.md`.
+
+- 2026-05-23
   `RUNTIME-EXECUTION-DEDUPE-OBSERVABILITY-2026-05-23` applies to
   `SOAR-BOT-RUNTIME-001`, `SOAR-ENGINE-001`, and `SOAR-OPERATIONS-001`:
   runtime execution dedupe acquire paths now emit architecture-required

@@ -4,6 +4,20 @@ Last updated: 2026-05-23
 
 ## Next Tiny Task
 
+Current Gate.io live bot setup:
+`GATEIO-LIVE-BOT-CONTEXT-REPAIR-2026-05-23` is verified for inactive bot
+creation. The operator-reported mismatch was caused by market universe
+`Main gateio` being saved as `BINANCE / FUTURES / USDT` while wallet
+`Gate.io` is `LIVE / GATEIO / FUTURES / USDT`. The Gate.io stored API key
+read-only futures probe passed, the market universe is now
+`GATEIO / FUTURES / USDT`, and inactive bot `Gate.io RSI 20/80`
+(`ff5ed1a5-eda3-4efc-a5ad-3ba3db2be0b1`) exists with the Gate.io wallet and
+`RSI 20 / 80` strategy. It remains `isActive=false` and `liveOptIn=false`.
+Next exact task if requested: run a separate approval-gated activation plan or
+UI clickthrough; do not activate LIVE trading or perform exchange mutation
+without explicit operator approval. Evidence:
+`docs/planning/gateio-live-bot-context-repair-2026-05-23-task.md`.
+
 Current protected app test credential context:
 `PROTECTED-APP-TEST-CREDENTIAL-AVAILABILITY-2026-05-23` is recorded as a
 no-secret source-of-truth update. The operator confirmed that the Soar

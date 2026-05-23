@@ -4,6 +4,23 @@ Last updated: 2026-05-23
 
 ## Current Candidate Deployment Status
 
+- `GATEIO-LIVE-BOT-CONTEXT-REPAIR-2026-05-23` is verified for the
+  operator-requested production configuration repair. The reported bot-create
+  blocker was caused by `Main gateio` being saved as
+  `BINANCE / FUTURES / USDT` while the selected wallet `Gate.io` was
+  `LIVE / GATEIO / FUTURES / USDT`; this correctly triggered the
+  wallet-market context mismatch guard. The Gate.io stored API key read-only
+  probe passed for futures, Gate.io futures catalog read returned data, the
+  `Main gateio` market universe was updated to `GATEIO / FUTURES / USDT`, and
+  inactive bot `Gate.io RSI 20/80`
+  (`ff5ed1a5-eda3-4efc-a5ad-3ba3db2be0b1`) was created using wallet
+  `076fe127-1287-4f0c-9cc3-149b6f7af3ae`, market universe
+  `1ec7933b-abdf-4343-be5f-d50f06b1252a`, and strategy
+  `3264841b-1efa-4a70-a8e9-b6cfa9ec1384`. The bot remains
+  `isActive=false` and `liveOptIn=false`; no LIVE activation, exchange order,
+  position mutation, or raw secret persistence occurred. Evidence:
+  `docs/planning/gateio-live-bot-context-repair-2026-05-23-task.md`.
+
 - `PROTECTED-APP-TEST-CREDENTIAL-AVAILABILITY-2026-05-23` records a new
   operator-confirmed protected test context: the Soar production application
   account `wroblewskipatryk@gmail.com` on `https://soar.luckysparrow.ch` has
