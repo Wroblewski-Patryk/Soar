@@ -4,21 +4,22 @@ Last updated: 2026-05-23
 
 ## Current Candidate Deployment Status
 
-- `V1-PROTECTED-APP-PROOF-B1BA69ED-2026-05-23` is the current production
-  release truth for deployed `b1ba69edccc639e97943f37fb2b1e6249a62e87c` on
-  `main`. Production Web build-info reports that SHA; deploy smoke passes for
-  API `/health`, API `/ready`, Web `/`, and authenticated `/workers/ready`;
-  split-worker topology is healthy; production DB restore drill passes through
-  the VPS Docker SSH context; rollback proof passes with
-  `shouldRollback=false`; production UI clickthrough passes; RC Gates 1-4 and
-  sign-off are current `PASS`; and the SLO window passes health/readiness/5xx
-  and queue-lag objectives with `NO_DATA` only for live order ratio because no
-  live order attempts occurred. `LIVEIMPORT-03` now passes by read-only
-  auto-discovering the real open runtime symbols `SOLUSDT` and `BNBUSDT`
-  rather than the legacy `ETHUSDT,DOGEUSDT` default; both readbacks are
-  `EXCHANGE_SYNC`, `BOT_MANAGED`, `OWNED_AND_MANAGED`, and `IN_SYNC`.
-  Final preflight has no blockers and the full non-dry-run production release
-  gate is `ready`. Evidence:
+- `V1-PROTECTED-APP-PROOF-B1BA69ED-2026-05-23` is the current protected
+  production release-gate truth, and
+  `db07214667a700ba02ea8210629655cf2becd7d6` is the current deployed `main`
+  build-info truth after the release-state sync commit. The `b1ba69ed` release
+  proof passed build-info, deploy smoke, authenticated `/workers/ready`,
+  split-worker topology, production DB restore drill, rollback proof,
+  production UI clickthrough, RC Gates 1-4, sign-off, and SLO
+  health/readiness/5xx/queue-lag objectives. `LIVEIMPORT-03` passes by
+  read-only auto-discovering the real open runtime symbols `SOLUSDT` and
+  `BNBUSDT`; both readbacks are `EXCHANGE_SYNC`, `BOT_MANAGED`,
+  `OWNED_AND_MANAGED`, and `IN_SYNC`. Final preflight has no blockers and the
+  full non-dry-run production release gate is `ready`. Follow-up deploy
+  `db07214667a700ba02ea8210629655cf2becd7d6` required manually forcing the
+  queued Coolify `soar-web` deployment, then Web build-info converged and
+  authenticated deploy smoke passed for API `/health`, API `/ready`, Web `/`,
+  and `/workers/ready`. Evidence:
   `docs/operations/v1-production-activation-evidence-audit-2026-05-23.md`,
   `docs/planning/v1-production-activation-and-evidence-plan-2026-05-23.md`,
   `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
@@ -26,7 +27,7 @@ Last updated: 2026-05-23
   and
   `docs/operations/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`.
   No production LIVE order, position, exchange mutation, or bot activation
-  change was performed by this proof.
+  change was performed by this proof or deploy follow-up.
 
 - `ARCH-RUNTIME-P1-006-BACKTEST-MULTI-STRATEGY-MERGE-2026-05-23` is locally
   verified as the next architecture-code audit repair. Complete immutable

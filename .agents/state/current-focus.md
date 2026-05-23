@@ -5,25 +5,26 @@ Last updated: 2026-05-23
 ## Active Focus
 
 2026-05-23 protected V1 production proof status:
-`V1-PROTECTED-APP-PROOF-72B547E1-2026-05-23` is the active production release
-truth for deployed `72b547e12351e078c49807fb25d56c27f64c6567`. Production
-build-info matches `main`; post-deploy smoke passes for API `/health`, API
-`/ready`, Web `/`, and authenticated `/workers/ready`; split-worker topology is
-healthy; production DB restore drill passes through the VPS Docker SSH context;
-rollback proof passes with `shouldRollback=false`; production UI clickthrough
-passes for public/dashboard/admin/legacy routes; RC Gates 1-4 and sign-off are
-current `PASS`; and the 30-minute SLO window passes health/readiness/5xx/queue
-lag with `NO_DATA` only for live order failure ratio because no live order
-attempts occurred. V1 is still `NO-GO`: `LIVEIMPORT-03` reached a running LIVE
-Binance Futures session, but `ETHUSDT` and `DOGEUSDT` both have no open
-runtime position/order payload and are marked `MISSING_FROM_RUNTIME_READBACK`.
-Current focus is a safe, explicitly approved way to observe or produce a
-qualifying open runtime payload, then rerun `LIVEIMPORT-03`, final preflight,
-and the non-dry-run release gate. Do not create a LIVE order or position
-without separate explicit operator approval.
+`V1-PROTECTED-APP-PROOF-B1BA69ED-2026-05-23` plus the post-push release-state
+sync is the active production release truth. Production was advanced from
+`b1ba69edccc639e97943f37fb2b1e6249a62e87c` to
+`db07214667a700ba02ea8210629655cf2becd7d6` on `main`; Coolify needed a manual
+`soar-web` deployment `Force Start`, and Web build-info now reports
+`db07214667a700ba02ea8210629655cf2becd7d6`. Post-deploy smoke passes for API
+`/health`, API `/ready`, Web `/`, and authenticated `/workers/ready`.
+`LIVEIMPORT-03` passed with `--symbols auto` against the real open runtime
+payloads discovered in production (`SOLUSDT`, `BNBUSDT`), both
+`EXCHANGE_SYNC`, `BOT_MANAGED`, `OWNED_AND_MANAGED`, and `IN_SYNC`; Codex did
+not create or mutate any LIVE order or position. Final preflight and the full
+non-dry-run production release gate are `READY_FOR_PROTECTED_EVIDENCE` /
+`ready` for `b1ba69ed` evidence, and the current `db072146` deploy has a
+fresh authenticated deploy smoke after build-info convergence. Current focus is
+post-release monitoring and the next bounded product/runtime task; do not treat
+historical `72b547e` ETH/DOGE liveimport failure notes as the current release
+blocker.
 
 Historical 2026-05-21 protected V1 app proof status (superseded by the
-2026-05-23 `72b547e` production proof above):
+2026-05-23 `b1ba69ed` / `db072146` production proof above):
 `V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21` used approved protected
 application access without persisting secrets and advanced current production
 evidence for deployed `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`. Operator

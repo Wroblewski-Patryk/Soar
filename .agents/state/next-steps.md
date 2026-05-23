@@ -5,17 +5,21 @@ Last updated: 2026-05-23
 ## Next Tiny Task
 
 Current protected release state:
-Production deploy `b1ba69edccc639e97943f37fb2b1e6249a62e87c` is healthy and
-freshly proven: build-info matches `main`, deploy smoke passes, authenticated
-`/workers/ready` passes in split-worker mode, restore drill passes, rollback
-proof passes, production UI clickthrough passes, RC Gates 1-4 pass, and SLO
-health/readiness/5xx/queue-lag objectives pass with live order ratio `NO_DATA`
-only because no live order attempts occurred. `LIVEIMPORT-03` now passes via
-read-only auto-discovery of the real open runtime symbols `SOLUSDT` and
-`BNBUSDT`. Final preflight has no blockers, and the full non-dry-run
-production release gate returned `ready`. Next exact task: commit/push the
-collector/state/evidence updates, then monitor Coolify deploy freshness for
-the pushed SHA. Evidence:
+Production release-gate proof for `b1ba69edccc639e97943f37fb2b1e6249a62e87c`
+is healthy and complete: build-info matched `main`, deploy smoke passed,
+authenticated `/workers/ready` passed in split-worker mode, restore drill
+passed, rollback proof passed, production UI clickthrough passed, RC Gates 1-4
+passed, and SLO health/readiness/5xx/queue-lag objectives passed with live
+order ratio `NO_DATA` only because no live order attempts occurred.
+`LIVEIMPORT-03` passes via read-only auto-discovery of the real open runtime
+symbols `SOLUSDT` and `BNBUSDT`. Final preflight has no blockers, and the full
+non-dry-run production release gate returned `ready`. The follow-up commit
+`db07214667a700ba02ea8210629655cf2becd7d6` is pushed to `main`, production
+Web build-info converged after a manual Coolify `soar-web` `Force Start`, and
+authenticated deploy smoke passed. Next exact task: post-release monitoring or
+select the next bounded product/runtime task; do not reopen the superseded
+ETH/DOGE liveimport blocker unless fresh production evidence contradicts the
+auto-discovered readback. Evidence:
 `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
 `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,
 and
@@ -26,7 +30,10 @@ Current source-of-truth cleanup:
 truth belongs in `docs/architecture/`, not root `architecture/`. Obsolete root
 template folders from 2026-05-03 are being removed while preserving referenced
 evidence under `docs/operations/`. The frontend legacy redirect drift for
-`/dashboard/orders` and `/dashboard/positions` is also fixed locally. Next exact task: commit/push, wait for production build-info to expose the pushed SHA, then run smoke checks. Evidence:
+`/dashboard/orders` and `/dashboard/positions` is also fixed. The cleanup and
+build-info deploy proof are already pushed and production-verified through the
+later release proof chain. Next exact task: keep this as historical evidence
+unless a new source-of-truth drift is found. Evidence:
 `docs/planning/repo-source-truth-cleanup-2026-05-23-task.md`.
 
 Current public deploy-proof follow-up:

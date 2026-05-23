@@ -4,16 +4,17 @@ Last updated: 2026-05-23
 
 ## Current Release Override
 
-- 2026-05-23 `REQ-FUNC-021` status is **blocked** for final V1 release
-  approval. Production deploy `72b547e12351e078c49807fb25d56c27f64c6567`
-  passes build-info, deploy smoke, authenticated `/workers/ready`,
-  split-worker topology, restore drill, rollback proof, production UI
-  clickthrough, RC Gates 1-4, and SLO health/readiness/5xx/queue-lag
-  objectives. The remaining required proof is `LIVEIMPORT-03`: current
-  readback failed closed because `ETHUSDT` and `DOGEUSDT` had no open runtime
-  position/order payload. Next proof is an approved qualifying open runtime
-  payload readback; LIVE order/position creation requires separate explicit
-  operator approval.
+- 2026-05-23 `REQ-FUNC-021` status is **verified for the current protected
+  production release gate**. Production deploy
+  `b1ba69edccc639e97943f37fb2b1e6249a62e87c` passed `LIVEIMPORT-03` with
+  `--symbols auto` using actual open runtime readbacks for `SOLUSDT` and
+  `BNBUSDT`; both symbols were `EXCHANGE_SYNC`, `BOT_MANAGED`,
+  `OWNED_AND_MANAGED`, and `IN_SYNC`, and Codex performed no LIVE order or
+  position mutation. Final preflight and the full non-dry-run production
+  release gate returned ready. Follow-up production deploy
+  `db07214667a700ba02ea8210629655cf2becd7d6` reached Web build-info after a
+  Coolify manual `soar-web` deployment `Force Start`, and authenticated deploy
+  smoke passed after convergence.
 
 | ID | Source | Requirement | Type | Journey/Module | Verification Method | Evidence | Status | Next Proof Or Fix | Last Updated |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -63,6 +64,17 @@ Last updated: 2026-05-23
 
 ## Verification Notes
 
+- 2026-05-23 `V1-PROTECTED-APP-PROOF-B1BA69ED-2026-05-23` updates
+  `REQ-FUNC-021`: `docs/operations/liveimport-03-prod-readback-2026-05-23.json`
+  now records a passed auto-discovered read-only runtime import proof for
+  `SOLUSDT` and `BNBUSDT`, final preflight
+  `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`
+  has no blockers, and
+  `docs/operations/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`
+  is ready. Post-push deployment of `db07214667a700ba02ea8210629655cf2becd7d6`
+  was forced through the queued Coolify `soar-web` deployment, build-info
+  converged, and authenticated deploy smoke passed. No LIVE exchange-side
+  mutation was run by Codex.
 - 2026-05-21 `V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21` updates
   `REQ-FUNC-021`: protected production UI clickthrough and rollback proof now
   pass for deployed `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`. `LIVEIMPORT-03`

@@ -21,22 +21,18 @@ Last updated: 2026-05-23
 ## Active Issues
 
 - 2026-05-23 protected V1 release update:
-  Production deploy `72b547e12351e078c49807fb25d56c27f64c6567` is healthy:
-  build-info matches `main`, deploy smoke passes, `/workers/ready` passes in
-  split-worker mode, production restore drill passes, rollback proof passes,
-  production UI clickthrough passes, RC Gates 1-4 pass, and the SLO window is
-  healthy except live order failure ratio `NO_DATA` because no live order
-  attempts occurred. V1 remains `NO-GO` for one active issue:
-  `LIVEIMPORT-03` failed closed because the running LIVE Binance Futures
-  session has no open runtime payload for `ETHUSDT` or `DOGEUSDT`
-  (`openCount=0`, `openOrdersCount=0`,
-  `importCompleteness=MISSING_FROM_RUNTIME_READBACK`). Remaining action is an
-  approved safe open runtime readback payload path and then rerun final
-  preflight/release gate. Do not create a LIVE order or position without
-  separate explicit operator approval.
+  No active P0 production release blocker is currently recorded for the
+  deployed `db07214667a700ba02ea8210629655cf2becd7d6` proof packet. Production
+  Web build-info matches `db072146` after a Coolify manual `soar-web`
+  deployment `Force Start`, authenticated deploy smoke passes, and the
+  immediately preceding protected release gate for `b1ba69ed` is ready.
+  `LIVEIMPORT-03` passed with `--symbols auto` against the actual open runtime
+  payloads visible in production (`SOLUSDT`, `BNBUSDT`), both
+  `EXCHANGE_SYNC`, `BOT_MANAGED`, `OWNED_AND_MANAGED`, and `IN_SYNC`; no LIVE
+  order or position was created or mutated by Codex.
 
 - Historical 2026-05-21 protected V1 release update, superseded by the
-  2026-05-23 `72b547e` production proof above:
+  2026-05-23 `b1ba69ed` / `db072146` production proof above:
   Protected app auth is no longer the only blocker for the current `dd1a1faf`
   release attempt. Fresh production UI clickthrough and rollback proof pass,
   and authenticated `LIVEIMPORT-03` reaches a RUNNING Binance FUTURES LIVE

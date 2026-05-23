@@ -48,11 +48,14 @@
 - [x] Incident contacts and escalation chain confirmed.
 
 ### Current Runtime Gate Override (2026-05-23)
-- Fresh production SLO and split-worker proof supersede the 2026-05-21 inline
-  topology failure for the current candidate:
-  `72b547e12351e078c49807fb25d56c27f64c6567`. `/workers/ready` is healthy,
-  Gate 2 is approved, and live order failure ratio is `NO_DATA` only because no
-  live order attempts occurred in the observation window.
+- Fresh production SLO, split-worker proof, `LIVEIMPORT-03 --symbols auto`,
+  final preflight, and the full non-dry-run release gate supersede the
+  2026-05-21 inline topology failure and the later stale-symbol
+  `72b547e` liveimport attempt. Current deployed Web build-info is
+  `db07214667a700ba02ea8210629655cf2becd7d6` after a Coolify `soar-web` force
+  start; authenticated deploy smoke passes. The protected release gate evidence
+  for `b1ba69edccc639e97943f37fb2b1e6249a62e87c` is ready, including
+  auto-discovered open runtime readbacks for `SOLUSDT` and `BNBUSDT`.
 
 ### Mandatory Post-Deploy Validation Sequence (Runtime + Cache + Stream)
 1. API baseline:
@@ -116,9 +119,14 @@
   `docs/operations/v1-slo-observation-2026-05-23T04-38-07-393Z.md`; the only
   `NO_DATA` objective is live order failure ratio because no live order
   attempts occurred.
-- Separate release blocker: `LIVEIMPORT-03` is still failed in
-  `docs/operations/liveimport-03-prod-readback-2026-05-23.json` because no
-  qualifying open runtime payload was visible.
+- `LIVEIMPORT-03` is satisfied by
+  `docs/operations/liveimport-03-prod-readback-2026-05-23.json` after the
+  runner used `--symbols auto` and read actual open runtime payloads for
+  `SOLUSDT` and `BNBUSDT`; no LIVE order or position was created by Codex.
+- Final protected release gate evidence is satisfied by
+  `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`
+  and
+  `docs/operations/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`.
 - Execution guide: `docs/operations/v1-rc-external-gates-runbook.md`.
 - SLO definitions and metric mapping: `docs/operations/v1-slo-catalog.md`.
 - Binance live bot-control verification checklist: `docs/operations/binance-live-ops-verification-checklist-2026-04-06.md`.

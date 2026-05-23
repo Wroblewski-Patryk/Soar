@@ -31,6 +31,13 @@ Last updated: 2026-05-23
   - Final preflight has no blockers and the non-dry-run production release
     gate is `ready`. No production LIVE order, position, exchange mutation, or
     bot activation change was performed by this proof.
+  - 2026-05-23 deploy follow-up: commit
+    `db07214667a700ba02ea8210629655cf2becd7d6` was pushed to `main`.
+    Coolify left the `soar-web` deployment queued, so the coordinator used the
+    approved Coolify UI context and clicked `Force Start`. Production
+    `/api/build-info` then converged to `db072146`, and authenticated deploy
+    smoke passed for API `/health`, API `/ready`, Web `/`, and
+    `/workers/ready`.
   - Evidence:
     `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
     `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,
