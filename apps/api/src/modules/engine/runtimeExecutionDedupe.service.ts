@@ -1,6 +1,7 @@
 import { Prisma, RuntimeExecutionCommandType } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { normalizeSymbol } from '../../lib/symbols';
+import { metricsStore } from '../../observability/metrics';
 
 const dedupeVersion = 'v1';
 
@@ -76,6 +77,14 @@ const retryableErrorClasses = parseRetryableErrorClasses(
 export const isRuntimeExecutionRetryableErrorClass = (errorClass?: string | null) => {
   if (!errorClass) return false;
   return retryableErrorClasses.has(normalizeErrorClass(errorClass));
+};
+
+const recordDedupeMetric = (input: {
+  outcome: 'hit' | 'miss' | 'inflight' | 'retry';
+  commandType?: RuntimeExecutionCommandType | null;
+  errorClass?: string | null;
+}) => {
+  metricsStore.recordRuntimeExecutionDedupe(input);
 };
 
 const toPrismaJson = (value: Record<string, unknown>): Prisma.InputJsonValue =>
@@ -257,6 +266,7 @@ export class RuntimeExecutionDedupeService {
           ttlExpiresAt,
         },
       });
+      recordDedupeMetric({ outcome: 'miss', commandType: input.commandType });
       return { outcome: 'execute', dedupeKey: input.dedupeKey };
     } catch (error) {
       if (!isUniqueViolation(error)) throw error;
@@ -266,6 +276,7 @@ export class RuntimeExecutionDedupeService {
       where: { dedupeKey: input.dedupeKey },
     });
     if (!existing) {
+      recordDedupeMetric({ outcome: 'miss', commandType: input.commandType });
       return { outcome: 'execute', dedupeKey: input.dedupeKey };
     }
 
@@ -276,6 +287,7 @@ export class RuntimeExecutionDedupeService {
           lastSeenAt: now,
         },
       });
+      recordDedupeMetric({ outcome: 'hit', commandType: input.commandType });
       return {
         outcome: 'reused',
         dedupeKey: input.dedupeKey,
@@ -310,6 +322,7 @@ export class RuntimeExecutionDedupeService {
                 errorClass: null,
               },
             });
+            recordDedupeMetric({ outcome: 'hit', commandType: input.commandType });
             return {
               outcome: 'reused',
               dedupeKey: input.dedupeKey,
@@ -333,6 +346,7 @@ export class RuntimeExecutionDedupeService {
                 positionId: resolvedPositionId,
               },
             });
+            recordDedupeMetric({ outcome: 'hit', commandType: input.commandType });
             return {
               outcome: 'reused',
               dedupeKey: input.dedupeKey,
@@ -365,6 +379,7 @@ export class RuntimeExecutionDedupeService {
                 errorClass: null,
               },
             });
+            recordDedupeMetric({ outcome: 'retry', commandType: input.commandType });
             return { outcome: 'execute', dedupeKey: input.dedupeKey };
           }
         }
@@ -384,8 +399,9 @@ export class RuntimeExecutionDedupeService {
               orderId: null,
               positionId: null,
               errorClass: null,
-            },
-          });
+          },
+        });
+          recordDedupeMetric({ outcome: 'retry', commandType: input.commandType });
           return { outcome: 'execute', dedupeKey: input.dedupeKey };
         }
       }
@@ -398,6 +414,7 @@ export class RuntimeExecutionDedupeService {
             lastSeenAt: now,
           },
         });
+        recordDedupeMetric({ outcome: 'inflight', commandType: input.commandType });
         return { outcome: 'inflight', dedupeKey: input.dedupeKey };
       }
       await prisma.runtimeExecutionDedupe.update({
@@ -406,6 +423,7 @@ export class RuntimeExecutionDedupeService {
           lastSeenAt: now,
         },
       });
+      recordDedupeMetric({ outcome: 'inflight', commandType: input.commandType });
       return { outcome: 'inflight', dedupeKey: input.dedupeKey };
     }
 
@@ -418,6 +436,11 @@ export class RuntimeExecutionDedupeService {
         data: {
           lastSeenAt: now,
         },
+      });
+      recordDedupeMetric({
+        outcome: 'hit',
+        commandType: input.commandType,
+        errorClass: existing.errorClass,
       });
       return {
         outcome: 'reused',
@@ -444,6 +467,11 @@ export class RuntimeExecutionDedupeService {
         positionId: null,
         errorClass: null,
       },
+    });
+    recordDedupeMetric({
+      outcome: 'retry',
+      commandType: input.commandType,
+      errorClass: existing.errorClass,
     });
     return { outcome: 'execute', dedupeKey: input.dedupeKey };
   }

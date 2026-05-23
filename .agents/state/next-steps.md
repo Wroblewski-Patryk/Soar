@@ -43,6 +43,16 @@ Next exact task: implement a real exchange-owned historical order-book
 boundary before claiming full non-Binance order-book parity, or continue the
 next architecture-audit runtime gap.
 
+Current runtime dedupe observability:
+`RUNTIME-EXECUTION-DEDUPE-OBSERVABILITY-2026-05-23` is locally verified.
+Runtime execution dedupe acquire paths now record miss, hit, inflight, and
+retry outcomes through the existing metrics store and expose those counters in
+`/metrics` with per-command buckets plus retry error-class buckets. Validation
+passed: runtime dedupe service tests `13/13`, API typecheck, and `/metrics`
+route tests `5/5` after `pnpm run go-live:infra:up` started local repo
+Postgres/Redis. Next exact task: commit/push, then verify the pushed `HEAD`
+through public build-info and public deploy smoke after Coolify convergence.
+
 Current protected release state:
 Production release-gate proof for `b1ba69edccc639e97943f37fb2b1e6249a62e87c`
 is healthy and complete: build-info matched `main`, deploy smoke passed,
@@ -55,9 +65,9 @@ symbols `SOLUSDT` and `BNBUSDT`. Final preflight has no blockers, and the full
 non-dry-run production release gate returned `ready`. Follow-up docs/state
 sync and deploy-proof commits reached `main`; the latest verified public
 checkpoint before this record is
-`069aa36f4918cbf4ed062f50425288dff30a2b89`. Production Web build-info reports
+`dd3191d73944f534800659b2dfd0bf5e0bd8b52f`. Production Web build-info reports
 that SHA on `main` with `metadataSource=github-branch` and build id
-`orQiE9zTo_TVTcAoXpzI6`, and public smoke passes for API `/health`, API
+`PrpSx-bTjsSwKw5bQemwh`, and public smoke passes for API `/health`, API
 `/ready`, and Web `/`. Earlier deploys required Coolify queue recovery because
 stale queued/in-progress worker/API deployments blocked fresh web rollout.
 Each later docs-only or code commit must be verified by public build-info for
@@ -66,7 +76,7 @@ Authenticated deploy smoke is not claimed for the latest docs-state sync
 because the available Coolify credential is not a Soar application password
 (`401 Invalid email or password`). Public post-release monitoring for
 `878e199d` remains historical evidence. Next exact task: finish
-`DEPLOY-BUILD-INFO-FRESHNESS-GATE-HARDENING-2026-05-23`, then select the next
+`RUNTIME-EXECUTION-DEDUPE-OBSERVABILITY-2026-05-23`, then select the next
 bounded product/runtime task; do not reopen the superseded ETH/DOGE liveimport
 blocker unless fresh production evidence contradicts the auto-discovered
 readback.
@@ -77,7 +87,7 @@ and
 `docs/operations/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`,
 and
 historical `docs/operations/post-release-public-monitoring-878e199d-2026-05-23.md`,
-plus fresh public smoke/build-info readback for `069aa36f` on 2026-05-23.
+plus fresh public smoke/build-info readback for `dd3191d7` on 2026-05-23.
 
 Current source-of-truth cleanup:
 `REPO-SOT-CLEANUP-2026-05-23` is verified locally. Confirmed canonical architecture
@@ -93,10 +103,10 @@ unless a new source-of-truth drift is found. Evidence:
 Current public deploy-proof follow-up:
 `WEB-PUBLIC-STATIC-READBACK-2026-05-22` is superseded by later production
 readback. Public Web `/api/build-info` now responds on the current production
-target and exposes `069aa36f4918cbf4ed062f50425288dff30a2b89` on `main` after
-the isolated data-model proof deploy. Public smoke passes for API `/health`,
-API `/ready`, and Web `/`. Keep this as historical availability evidence unless a
-fresh production probe fails. Evidence:
+target and exposes `dd3191d73944f534800659b2dfd0bf5e0bd8b52f` on `main` after
+the non-Binance order-book fail-closed deploy. Public smoke passes for API
+`/health`, API `/ready`, and Web `/`. Keep this as historical availability
+evidence unless a fresh production probe fails. Evidence:
 `docs/operations/deploy-freshness-1b351a51-2026-05-22.md`.
 
 Current money-path runtime audit follow-up:

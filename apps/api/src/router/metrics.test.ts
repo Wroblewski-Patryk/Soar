@@ -56,6 +56,22 @@ type MetricsPayload = {
       avgDelayMs: number;
       maxDelayMs: number;
     };
+    executionDedupe: {
+      hit: number;
+      miss: number;
+      inflight: number;
+      retry: number;
+      byCommand: Record<
+        string,
+        {
+          hit: number;
+          miss: number;
+          inflight: number;
+          retry: number;
+        }
+      >;
+      retryByErrorClass: Record<string, number>;
+    };
     hotPath: {
       listActiveBots: {
         total: number;
@@ -183,6 +199,14 @@ describe('metrics endpoint', () => {
     metricsStore.recordRuntimePreTradeLatency(12);
     metricsStore.recordRuntimeTouchSessionWrite();
     metricsStore.recordRuntimeSymbolStatsWrite();
+    metricsStore.recordRuntimeExecutionDedupe({ outcome: 'miss', commandType: 'OPEN' });
+    metricsStore.recordRuntimeExecutionDedupe({ outcome: 'hit', commandType: 'OPEN' });
+    metricsStore.recordRuntimeExecutionDedupe({ outcome: 'inflight', commandType: 'DCA' });
+    metricsStore.recordRuntimeExecutionDedupe({
+      outcome: 'retry',
+      commandType: 'CLOSE',
+      errorClass: 'timeout_error',
+    });
     metricsStore.recordRuntimeExecutionError('runtime_watchdog_sync_failure');
     metricsStore.recordAssistantSubagentTimeout();
 
@@ -224,6 +248,27 @@ describe('metrics endpoint', () => {
     );
     expect(after.runtime.hotPath.symbolStatsWrites).toBeGreaterThanOrEqual(
       before.runtime.hotPath.symbolStatsWrites + 1
+    );
+    expect(after.runtime.executionDedupe.miss).toBeGreaterThanOrEqual(
+      before.runtime.executionDedupe.miss + 1
+    );
+    expect(after.runtime.executionDedupe.hit).toBeGreaterThanOrEqual(
+      before.runtime.executionDedupe.hit + 1
+    );
+    expect(after.runtime.executionDedupe.inflight).toBeGreaterThanOrEqual(
+      before.runtime.executionDedupe.inflight + 1
+    );
+    expect(after.runtime.executionDedupe.retry).toBeGreaterThanOrEqual(
+      before.runtime.executionDedupe.retry + 1
+    );
+    expect(after.runtime.executionDedupe.byCommand.open.miss).toBeGreaterThanOrEqual(
+      (before.runtime.executionDedupe.byCommand.open?.miss ?? 0) + 1
+    );
+    expect(after.runtime.executionDedupe.byCommand.close.retry).toBeGreaterThanOrEqual(
+      (before.runtime.executionDedupe.byCommand.close?.retry ?? 0) + 1
+    );
+    expect(after.runtime.executionDedupe.retryByErrorClass.timeout_error).toBeGreaterThanOrEqual(
+      (before.runtime.executionDedupe.retryByErrorClass.timeout_error ?? 0) + 1
     );
     expect(after.runtime.executionErrors.runtime_watchdog_sync_failure ?? 0).toBeGreaterThanOrEqual(
       (before.runtime.executionErrors.runtime_watchdog_sync_failure ?? 0) + 1

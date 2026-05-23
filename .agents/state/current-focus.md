@@ -9,10 +9,11 @@ Last updated: 2026-05-23
 sync is the active production release truth. Production was advanced from
 `b1ba69edccc639e97943f37fb2b1e6249a62e87c` through follow-up docs/state and
 deploy-proof commits. The latest verified public checkpoint before this record
-is `069aa36f4918cbf4ed062f50425288dff30a2b89` on `main`. It was pushed after
-the isolated data-model proof and verified by public Web build-info
-(`metadataSource=github-branch`, build id `orQiE9zTo_TVTcAoXpzI6`) plus public
-smoke for API `/health`, API `/ready`, and Web `/`. Earlier Coolify deploys
+is `dd3191d73944f534800659b2dfd0bf5e0bd8b52f` on `main`. It was pushed after
+the non-Binance order-book fail-closed backtest repair and verified by public
+Web build-info (`metadataSource=github-branch`, build id
+`PrpSx-bTjsSwKw5bQemwh`) plus public smoke for API `/health`, API `/ready`,
+and Web `/`. Earlier Coolify deploys
 needed manual intervention because stale queued/in-progress worker/API
 deployments blocked fresh web rollout; that operational pitfall remains
 relevant for future deploys.
@@ -28,8 +29,8 @@ non-dry-run production release gate are `READY_FOR_PROTECTED_EVIDENCE` /
 verified by public build-info and public deploy smoke after each push because
 each docs-only commit changes the deploy SHA.
 Public post-release monitoring for `878e199d` remains historical evidence, and
-fresh public smoke for `069aa36f` passed on 2026-05-23. Current focus is the
-next bounded product/runtime task plus deploy-proof gate hardening; do not
+fresh public smoke for `dd3191d7` passed on 2026-05-23. Current focus is the
+next bounded product/runtime task plus runtime dedupe observability; do not
 treat historical `72b547e` ETH/DOGE liveimport failure notes as the current
 release blocker.
 

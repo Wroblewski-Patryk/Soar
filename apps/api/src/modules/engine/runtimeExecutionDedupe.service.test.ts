@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../../prisma/client';
+import { metricsStore } from '../../observability/metrics';
 import {
   buildCancelExecutionDedupeKey,
   buildCloseExecutionDedupeKey,
@@ -70,7 +71,32 @@ describe('runtimeExecutionDedupe retryability gate', () => {
     expect(isRuntimeExecutionRetryableErrorClass('ValidationError')).toBe(false);
   });
 
+  it('records a dedupe miss for first-time execution', async () => {
+    const before = metricsStore.snapshot().runtime.executionDedupe;
+    const service = new RuntimeExecutionDedupeService();
+    vi.spyOn(prisma.runtimeExecutionDedupe, 'create').mockResolvedValue({} as never);
+
+    const result = await service.acquire({
+      dedupeKey: 'v1|DCA|u1|bot-1|BTCUSDT|position-1|level:1|LONG',
+      commandType: 'DCA',
+      userId: 'u1',
+      botId: 'bot-1',
+      symbol: 'BTCUSDT',
+      commandFingerprint: { dcaLevelIndex: 1 },
+      now: new Date('2026-04-16T10:05:00.000Z'),
+    });
+
+    expect(result).toEqual({
+      outcome: 'execute',
+      dedupeKey: 'v1|DCA|u1|bot-1|BTCUSDT|position-1|level:1|LONG',
+    });
+    const after = metricsStore.snapshot().runtime.executionDedupe;
+    expect(after.miss).toBeGreaterThanOrEqual(before.miss + 1);
+    expect(after.byCommand.dca.miss).toBeGreaterThanOrEqual((before.byCommand.dca?.miss ?? 0) + 1);
+  });
+
   it('returns reused for FAILED terminal errors to avoid duplicate side effects', async () => {
+    const before = metricsStore.snapshot().runtime.executionDedupe;
     const service = new RuntimeExecutionDedupeService();
     vi.spyOn(prisma.runtimeExecutionDedupe, 'create').mockRejectedValue({ code: 'P2002' });
     vi.spyOn(prisma.runtimeExecutionDedupe, 'findUnique').mockResolvedValue({
@@ -113,6 +139,9 @@ describe('runtimeExecutionDedupe retryability gate', () => {
       orderId: null,
       positionId: null,
     });
+    const after = metricsStore.snapshot().runtime.executionDedupe;
+    expect(after.hit).toBeGreaterThanOrEqual(before.hit + 1);
+    expect(after.byCommand.open.hit).toBeGreaterThanOrEqual((before.byCommand.open?.hit ?? 0) + 1);
     expect(updateSpy).toHaveBeenCalledWith({
       where: { dedupeKey: 'v1|OPEN|u1|bot-1|BTCUSDT|group-1|1m|1000|59000|LONG' },
       data: expect.objectContaining({
@@ -122,6 +151,7 @@ describe('runtimeExecutionDedupe retryability gate', () => {
   });
 
   it('allows retry execution for FAILED retryable errors', async () => {
+    const before = metricsStore.snapshot().runtime.executionDedupe;
     const service = new RuntimeExecutionDedupeService();
     vi.spyOn(prisma.runtimeExecutionDedupe, 'create').mockRejectedValue({ code: 'P2002' });
     vi.spyOn(prisma.runtimeExecutionDedupe, 'findUnique').mockResolvedValue({
@@ -161,6 +191,14 @@ describe('runtimeExecutionDedupe retryability gate', () => {
       outcome: 'execute',
       dedupeKey: 'v1|CLOSE|u1|bot-1|BTCUSDT|position-1|EXIT',
     });
+    const after = metricsStore.snapshot().runtime.executionDedupe;
+    expect(after.retry).toBeGreaterThanOrEqual(before.retry + 1);
+    expect(after.byCommand.close.retry).toBeGreaterThanOrEqual(
+      (before.byCommand.close?.retry ?? 0) + 1
+    );
+    expect(after.retryByErrorClass.timeout_error).toBeGreaterThanOrEqual(
+      (before.retryByErrorClass.timeout_error ?? 0) + 1
+    );
     expect(updateSpy).toHaveBeenCalledWith({
       where: { dedupeKey: 'v1|CLOSE|u1|bot-1|BTCUSDT|position-1|EXIT' },
       data: expect.objectContaining({
@@ -171,6 +209,7 @@ describe('runtimeExecutionDedupe retryability gate', () => {
   });
 
   it('reuses submitted outcome while linked order is still open', async () => {
+    const before = metricsStore.snapshot().runtime.executionDedupe;
     const service = new RuntimeExecutionDedupeService();
     vi.spyOn(prisma.runtimeExecutionDedupe, 'create').mockRejectedValue({ code: 'P2002' });
     vi.spyOn(prisma.runtimeExecutionDedupe, 'findUnique').mockResolvedValue({
@@ -217,6 +256,9 @@ describe('runtimeExecutionDedupe retryability gate', () => {
       orderId: 'order-open-1',
       positionId: null,
     });
+    const after = metricsStore.snapshot().runtime.executionDedupe;
+    expect(after.hit).toBeGreaterThanOrEqual(before.hit + 1);
+    expect(after.byCommand.open.hit).toBeGreaterThanOrEqual((before.byCommand.open?.hit ?? 0) + 1);
     expect(updateSpy).toHaveBeenCalledWith({
       where: { dedupeKey: 'v1|OPEN|u1|bot-1|BTCUSDT|group-1|1m|1000|59000|LONG' },
       data: expect.objectContaining({
@@ -227,6 +269,7 @@ describe('runtimeExecutionDedupe retryability gate', () => {
   });
 
   it('allows retry when linked submitted order was canceled on exchange', async () => {
+    const before = metricsStore.snapshot().runtime.executionDedupe;
     const service = new RuntimeExecutionDedupeService();
     vi.spyOn(prisma.runtimeExecutionDedupe, 'create').mockRejectedValue({ code: 'P2002' });
     vi.spyOn(prisma.runtimeExecutionDedupe, 'findUnique').mockResolvedValue({
@@ -270,6 +313,11 @@ describe('runtimeExecutionDedupe retryability gate', () => {
       outcome: 'execute',
       dedupeKey: 'v1|OPEN|u1|bot-1|BTCUSDT|group-1|1m|1000|59000|LONG',
     });
+    const after = metricsStore.snapshot().runtime.executionDedupe;
+    expect(after.retry).toBeGreaterThanOrEqual(before.retry + 1);
+    expect(after.byCommand.open.retry).toBeGreaterThanOrEqual(
+      (before.byCommand.open?.retry ?? 0) + 1
+    );
     expect(updateSpy).toHaveBeenCalledWith({
       where: { dedupeKey: 'v1|OPEN|u1|bot-1|BTCUSDT|group-1|1m|1000|59000|LONG' },
       data: expect.objectContaining({
@@ -282,6 +330,7 @@ describe('runtimeExecutionDedupe retryability gate', () => {
   });
 
   it('allows execution when linked submitted order is a local orphan', async () => {
+    const before = metricsStore.snapshot().runtime.executionDedupe;
     const service = new RuntimeExecutionDedupeService();
     vi.spyOn(prisma.runtimeExecutionDedupe, 'create').mockRejectedValue({ code: 'P2002' });
     vi.spyOn(prisma.runtimeExecutionDedupe, 'findUnique').mockResolvedValue({
@@ -325,6 +374,11 @@ describe('runtimeExecutionDedupe retryability gate', () => {
       outcome: 'execute',
       dedupeKey: 'v1|OPEN|u1|bot-1|BTCUSDT|group-1|1m|1000|59000|LONG',
     });
+    const after = metricsStore.snapshot().runtime.executionDedupe;
+    expect(after.retry).toBeGreaterThanOrEqual(before.retry + 1);
+    expect(after.byCommand.open.retry).toBeGreaterThanOrEqual(
+      (before.byCommand.open?.retry ?? 0) + 1
+    );
     expect(updateSpy).toHaveBeenCalledWith({
       where: { dedupeKey: 'v1|OPEN|u1|bot-1|BTCUSDT|group-1|1m|1000|59000|LONG' },
       data: expect.objectContaining({
@@ -337,6 +391,7 @@ describe('runtimeExecutionDedupe retryability gate', () => {
   });
 
   it('keeps stale pending command inflight when no linked order can prove retry safety', async () => {
+    const before = metricsStore.snapshot().runtime.executionDedupe;
     const service = new RuntimeExecutionDedupeService();
     vi.spyOn(prisma.runtimeExecutionDedupe, 'create').mockRejectedValue({ code: 'P2002' });
     vi.spyOn(prisma.runtimeExecutionDedupe, 'findUnique').mockResolvedValue({
@@ -375,6 +430,11 @@ describe('runtimeExecutionDedupe retryability gate', () => {
       outcome: 'inflight',
       dedupeKey: 'v1|OPEN|u1|bot-1|BTCUSDT|group-1|1m|1000|59000|LONG',
     });
+    const after = metricsStore.snapshot().runtime.executionDedupe;
+    expect(after.inflight).toBeGreaterThanOrEqual(before.inflight + 1);
+    expect(after.byCommand.open.inflight).toBeGreaterThanOrEqual(
+      (before.byCommand.open?.inflight ?? 0) + 1
+    );
     expect(orderLookupSpy).not.toHaveBeenCalled();
     expect(updateSpy).toHaveBeenCalledWith({
       where: { dedupeKey: 'v1|OPEN|u1|bot-1|BTCUSDT|group-1|1m|1000|59000|LONG' },

@@ -30,10 +30,10 @@ Last updated: 2026-05-23
   must prove the pushed `HEAD` through public Web build-info and public deploy
   smoke after deployment convergence. The latest verified public production
   checkpoint before this record is
-  `069aa36f4918cbf4ed062f50425288dff30a2b89`: after the isolated data-model
-  proof docs/state commit was pushed, production Web build-info reported that
-  SHA on `main` with `metadataSource=github-branch` and build id
-  `orQiE9zTo_TVTcAoXpzI6`; public deploy smoke passed for API `/health`, API
+  `dd3191d73944f534800659b2dfd0bf5e0bd8b52f`: after the non-Binance
+  order-book fail-closed backtest repair was pushed, production Web build-info
+  reported that SHA on `main` with `metadataSource=github-branch` and build id
+  `PrpSx-bTjsSwKw5bQemwh`; public deploy smoke passed for API `/health`, API
   `/ready`, and Web `/`. Earlier Coolify deploys had accumulated stale
   queued/in-progress worker/API deployments, so future deploys may still need
   queue recovery before `soar-web` convergence.
@@ -62,7 +62,21 @@ Last updated: 2026-05-23
   `docs/operations/v1-release-gate-prod-b1ba69ed-2026-05-23-after-liveimport.md`,
   historical monitoring
   `docs/operations/post-release-public-monitoring-878e199d-2026-05-23.md`,
-  and fresh public smoke/build-info readback for `069aa36f` on 2026-05-23.
+  and fresh public smoke/build-info readback for `dd3191d7` on 2026-05-23.
+
+## 2026-05-23 Runtime Execution Dedupe Observability
+
+- `RUNTIME-EXECUTION-DEDUPE-OBSERVABILITY-2026-05-23` is locally verified.
+  Runtime dedupe acquire paths now record miss, hit, inflight, and retry
+  outcomes through the existing metrics store and expose them in `/metrics`
+  with per-command buckets plus retry error-class buckets.
+- Passed validation: runtime dedupe service tests `13/13`, API typecheck, and
+  `/metrics` route tests `5/5`.
+- Local environment note: the first `/metrics` route test run failed because
+  local Postgres on `localhost:5432` was unavailable; `pnpm run
+  go-live:infra:up` started repo Postgres/Redis and the rerun passed.
+  Production LIVE order, position, exchange, or bot activation mutation was not
+  performed.
 
 ## 2026-05-23 Assistant Foundation Protocol Harness
 

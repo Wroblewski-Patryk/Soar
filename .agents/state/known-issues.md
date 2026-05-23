@@ -38,10 +38,10 @@ Last updated: 2026-05-23
   protected `b1ba69ed` proof packet. Follow-up docs-state deploys must prove
   the pushed `HEAD` via public Web build-info and public deploy smoke after
   deployment convergence. The latest verified public checkpoint before this
-  record is `069aa36f4918cbf4ed062f50425288dff30a2b89` after the isolated
-  data-model proof deploy. Production Web build-info reports that SHA on
-  `main` with `metadataSource=github-branch` and build id
-  `orQiE9zTo_TVTcAoXpzI6`, and public smoke passes for API `/health`, API
+  record is `dd3191d73944f534800659b2dfd0bf5e0bd8b52f` after the
+  non-Binance order-book fail-closed deploy. Production Web build-info reports
+  that SHA on `main` with `metadataSource=github-branch` and build id
+  `PrpSx-bTjsSwKw5bQemwh`, and public smoke passes for API `/health`, API
   `/ready`, and Web `/`. Earlier deploys required cancelling stale
   queued/in-progress Coolify worker/API deployments, so that remains an
   operations pitfall rather than a current P0 release blocker. Authenticated

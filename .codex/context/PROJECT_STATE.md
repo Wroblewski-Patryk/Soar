@@ -40,10 +40,11 @@ Last updated: 2026-05-23
   it logs and validates `metadataSource` plus `buildId`, accepts build-time
   metadata sources by default, rejects runtime fallback sources such as
   `github-branch-runtime`, and rejects non-real production build ids. Focused
-  node coverage proves the pass and false-positive fail cases. The current
-  production response for `069aa36f4918cbf4ed062f50425288dff30a2b89` passes
-  the stricter gate with `metadataSource=github-branch` and build id
-  `orQiE9zTo_TVTcAoXpzI6`; public smoke also passes. Evidence:
+  node coverage proves the pass and false-positive fail cases. The latest
+  verified production response before this record for
+  `dd3191d73944f534800659b2dfd0bf5e0bd8b52f` passes the stricter gate with
+  `metadataSource=github-branch` and build id `PrpSx-bTjsSwKw5bQemwh`; public
+  smoke also passes. Evidence:
   `docs/planning/deploy-build-info-freshness-gate-hardening-2026-05-23-task.md`.
 
 - `AI-ASSISTANT-FOUNDATION-PROTOCOL-HARNESS-2026-05-23` is locally verified.
@@ -73,9 +74,9 @@ Last updated: 2026-05-23
   full non-dry-run production release gate is `ready`. Follow-up deploys first
   required manually forcing queued Coolify `soar-web` deployments; the latest
   verified public production checkpoint before this record is
-  `069aa36f4918cbf4ed062f50425288dff30a2b89`. Production Web build-info
+  `dd3191d73944f534800659b2dfd0bf5e0bd8b52f`. Production Web build-info
   reports that SHA on `main` with `metadataSource=github-branch` and build id
-  `orQiE9zTo_TVTcAoXpzI6`, and public deploy smoke passes for API `/health`,
+  `PrpSx-bTjsSwKw5bQemwh`, and public deploy smoke passes for API `/health`,
   API `/ready`, and Web `/`. Earlier Coolify deploys had accumulated stale
   queued/in-progress worker/API deployments and required manual `soar-web`
   recovery; future docs-only or code commits must repeat the same build-info
@@ -113,6 +114,15 @@ Last updated: 2026-05-23
   API typecheck. Evidence:
   `docs/planning/backtest-non-binance-order-book-fail-closed-2026-05-23-task.md`.
 
+- `RUNTIME-EXECUTION-DEDUPE-OBSERVABILITY-2026-05-23` is locally verified.
+  Runtime execution dedupe now records `hit`, `miss`, `inflight`, and `retry`
+  outcomes through the existing metrics store and exposes them in `/metrics`
+  with per-command buckets plus retry error-class buckets. Validation passed:
+  runtime dedupe service tests `13/13`, API typecheck, and `/metrics` route
+  tests `5/5` after repo Postgres/Redis were started with
+  `pnpm run go-live:infra:up`. Evidence:
+  `docs/planning/runtime-execution-dedupe-observability-2026-05-23-task.md`.
+
 - `REPO-SOT-CLEANUP-2026-05-23` is verified locally after the operator noticed
   duplicate architecture-looking folders. Current governance confirms
   `docs/architecture/` is canonical, while root `architecture/` and related
@@ -126,7 +136,7 @@ Last updated: 2026-05-23
   repository guardrails, and `git diff --check`. Follow-up production proof is
   superseded by later public checkpoints; the current verified public
   checkpoint before this record is
-  `069aa36f4918cbf4ed062f50425288dff30a2b89`, with public `/api/build-info`
+  `dd3191d73944f534800659b2dfd0bf5e0bd8b52f`, with public `/api/build-info`
   and no-worker smoke passing. Evidence:
   `docs/planning/repo-source-truth-cleanup-2026-05-23-task.md`.
 
@@ -143,7 +153,7 @@ Last updated: 2026-05-23
   `/api/build-info`. Commit `1b351a51` was pushed to `main`; its production
   readback blocker is historical and superseded by later public readbacks.
   Current production Web build-info responds with
-  `069aa36f4918cbf4ed062f50425288dff30a2b89` on `main`, and public smoke
+  `dd3191d73944f534800659b2dfd0bf5e0bd8b52f` on `main`, and public smoke
   passes for API `/health`, API `/ready`, and Web `/`. Evidence:
   `docs/operations/deploy-freshness-1b351a51-2026-05-22.md`.
 

@@ -34,9 +34,9 @@ Do not turn uncertainty into optimism.
   sync commits must prove the pushed `HEAD` through public Web build-info and
   public deploy smoke after deployment convergence. The latest verified public
   checkpoint before this record is
-  `069aa36f4918cbf4ed062f50425288dff30a2b89`; production Web build-info
+  `dd3191d73944f534800659b2dfd0bf5e0bd8b52f`; production Web build-info
   reports that SHA on `main` with `metadataSource=github-branch` and build id
-  `orQiE9zTo_TVTcAoXpzI6`, and public smoke passes API `/health`, API
+  `PrpSx-bTjsSwKw5bQemwh`, and public smoke passes API `/health`, API
   `/ready`, and Web `/`. Earlier deploys required cancelling stale
   queued/in-progress Coolify deployments and triggering a fresh `soar-web`
   deploy, so queue recovery remains an operations pitfall. Authenticated
@@ -88,6 +88,17 @@ Do not turn uncertainty into optimism.
 | SOAR-REL-001 | Release confidence | Release-critical module inventory and proof map | P0 | VERIFIED | High | 2026-05-14 final evidence pack: `docs/operations/v1-master-state-ledger-2026-05-14-final.md`, `docs/operations/v1-project-index-2026-05-14-final.md`, `docs/operations/v1-completion-scorecard-2026-05-14-final.md`, `docs/operations/v1-final-evidence-inventory-2026-05-14.md`, and `docs/operations/v1-100-percent-truth-audit-2026-05-14.md` define the current module-by-module proof map, score, evidence inventory, and scoped 100 percent verdict. 2026-05-14 ledger reconciliation promotes the stale Profile, Profile API Keys, Wallets, Markets, Strategies, Logs/Audit Trail, and Subscriptions/Admin rows to `VERIFIED` using already-accepted production-safe proof artifacts instead of collapsing unproven LIVE mutation scope. | None for the release-confidence inventory row. LIVE order/cancel/close, unsafe LIVE position mutation, existing-data mutation, and broader Gate.io/second-LIVE production shape remain outside the verified V1 scope unless separately approved. | Keep proof-map artifacts fresh after future scope changes or deploys; use new failing signals rather than stale proof gaps to reopen rows. | Planning | 2026-05-14 |
 
 ## Current Release Evidence Notes
+
+- 2026-05-23
+  `RUNTIME-EXECUTION-DEDUPE-OBSERVABILITY-2026-05-23` applies to
+  `SOAR-BOT-RUNTIME-001`, `SOAR-ENGINE-001`, and `SOAR-OPERATIONS-001`:
+  runtime execution dedupe acquire paths now emit architecture-required
+  miss/hit/inflight/retry observability through the existing metrics store and
+  `/metrics` payload, including per-command buckets and retry error-class
+  buckets. Evidence:
+  `docs/planning/runtime-execution-dedupe-observability-2026-05-23-task.md`;
+  runtime dedupe service tests passed (`13/13`), metrics route tests passed
+  (`5/5`) after repo Postgres/Redis startup, and API typecheck passed.
 
 - 2026-05-22
   `ARCH-RUNTIME-P1-002-004-MONEY-PATH-2026-05-22` applies to

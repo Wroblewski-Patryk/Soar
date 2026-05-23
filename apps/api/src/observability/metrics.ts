@@ -50,6 +50,19 @@ type MetricsSnapshot = {
       avgDelayMs: number;
       maxDelayMs: number;
     };
+    executionDedupe: {
+      hit: number;
+      miss: number;
+      inflight: number;
+      retry: number;
+      byCommand: Record<string, {
+        hit: number;
+        miss: number;
+        inflight: number;
+        retry: number;
+      }>;
+      retryByErrorClass: Record<string, number>;
+    };
     hotPath: {
       listActiveBots: {
         total: number;
@@ -113,6 +126,15 @@ class InMemoryMetricsStore {
   private runtimeReconciliationPending = 0;
   private runtimeReconciliationTotalDelayMs = 0;
   private runtimeReconciliationMaxDelayMs = 0;
+  private runtimeExecutionDedupeHit = 0;
+  private runtimeExecutionDedupeMiss = 0;
+  private runtimeExecutionDedupeInflight = 0;
+  private runtimeExecutionDedupeRetry = 0;
+  private readonly runtimeExecutionDedupeByCommand = new Map<
+    string,
+    { hit: number; miss: number; inflight: number; retry: number }
+  >();
+  private readonly runtimeExecutionDedupeRetryByErrorClass = new Map<string, number>();
   private runtimeHotPathListActiveBotsTotal = 0;
   private runtimeHotPathListActiveBotsTotalDurationMs = 0;
   private runtimeHotPathListActiveBotsMaxDurationMs = 0;
@@ -197,6 +219,42 @@ class InMemoryMetricsStore {
     if (pending) this.runtimeReconciliationPending += 1;
   }
 
+  recordRuntimeExecutionDedupe(input: {
+    outcome: 'hit' | 'miss' | 'inflight' | 'retry';
+    commandType?: string | null;
+    errorClass?: string | null;
+  }) {
+    const commandType = this.normalizeMetricKey(input.commandType ?? 'unknown', 32);
+    const bucket = this.runtimeExecutionDedupeByCommand.get(commandType) ?? {
+      hit: 0,
+      miss: 0,
+      inflight: 0,
+      retry: 0,
+    };
+
+    if (input.outcome === 'hit') {
+      this.runtimeExecutionDedupeHit += 1;
+      bucket.hit += 1;
+    }
+    if (input.outcome === 'miss') {
+      this.runtimeExecutionDedupeMiss += 1;
+      bucket.miss += 1;
+    }
+    if (input.outcome === 'inflight') {
+      this.runtimeExecutionDedupeInflight += 1;
+      bucket.inflight += 1;
+    }
+    if (input.outcome === 'retry') {
+      this.runtimeExecutionDedupeRetry += 1;
+      bucket.retry += 1;
+      const errorClass = this.normalizeMetricKey(input.errorClass ?? 'unknown', 64);
+      const current = this.runtimeExecutionDedupeRetryByErrorClass.get(errorClass) ?? 0;
+      this.runtimeExecutionDedupeRetryByErrorClass.set(errorClass, current + 1);
+    }
+
+    this.runtimeExecutionDedupeByCommand.set(commandType, bucket);
+  }
+
   recordRuntimeListActiveBots(durationMs: number) {
     const value = Number.isFinite(durationMs) ? Math.max(0, durationMs) : 0;
     this.runtimeHotPathListActiveBotsTotal += 1;
@@ -233,17 +291,17 @@ class InMemoryMetricsStore {
   }
 
   recordRuntimeExecutionError(errorClass: string) {
-    const key = this.normalizeRuntimeErrorClass(errorClass);
+    const key = this.normalizeMetricKey(errorClass, 64);
     const current = this.runtimeExecutionErrors.get(key) ?? 0;
     this.runtimeExecutionErrors.set(key, current + 1);
   }
 
-  private normalizeRuntimeErrorClass(errorClass: string) {
-    const normalized = String(errorClass ?? 'unknown')
+  private normalizeMetricKey(value: string, maxLength: number) {
+    const normalized = String(value ?? 'unknown')
       .trim()
       .toLowerCase()
       .replace(/[^a-z0-9_:-]+/g, '_')
-      .slice(0, 64);
+      .slice(0, maxLength);
     return normalized.length > 0 ? normalized : 'unknown';
   }
 
@@ -326,6 +384,21 @@ class InMemoryMetricsStore {
           totalDelayMs: this.runtimeReconciliationTotalDelayMs,
           avgDelayMs: runtimeReconciliationAvgMs,
           maxDelayMs: this.runtimeReconciliationMaxDelayMs,
+        },
+        executionDedupe: {
+          hit: this.runtimeExecutionDedupeHit,
+          miss: this.runtimeExecutionDedupeMiss,
+          inflight: this.runtimeExecutionDedupeInflight,
+          retry: this.runtimeExecutionDedupeRetry,
+          byCommand: Object.fromEntries(
+            Array.from(this.runtimeExecutionDedupeByCommand.entries()).map(([command, bucket]) => [
+              command,
+              { ...bucket },
+            ])
+          ),
+          retryByErrorClass: Object.fromEntries(
+            this.runtimeExecutionDedupeRetryByErrorClass.entries()
+          ),
         },
         hotPath: {
           listActiveBots: {

@@ -17,6 +17,23 @@ Last updated: 2026-05-23
 
 ## DONE
 
+- [x] `RUNTIME-EXECUTION-DEDUPE-OBSERVABILITY-2026-05-23 feat: expose runtime dedupe metrics`
+  - 2026-05-23: Architecture parity review found that
+    `docs/architecture/reference/runtime-execution-idempotency-contract.md`
+    requires runtime execution dedupe counters, but the existing metrics
+    payload did not expose hit/miss/inflight/retry outcomes. Added metrics to
+    the existing in-memory metrics store and `/metrics` payload with
+    per-command buckets plus retry error-class buckets; runtime acquire paths
+    now record miss, hit, inflight, and retry without changing dedupe safety
+    behavior.
+  - Validation passed: runtime dedupe service tests `13/13`, API typecheck,
+    and `/metrics` route tests `5/5`. The first `/metrics` run failed because
+    local Postgres on `localhost:5432` was unavailable; after
+    `pnpm run go-live:infra:up` started repo Postgres/Redis, the route test
+    passed.
+  - Evidence:
+    `docs/planning/runtime-execution-dedupe-observability-2026-05-23-task.md`.
+
 - [x] `DATA-MODEL-ISOLATED-DB-PROOF-2026-05-23 test/ops: refresh local migration and DB-backed data proof`
   - 2026-05-23: Local Postgres/Redis were initially unavailable even though
     Laragon was running; Docker Desktop was started and `pnpm run
@@ -137,9 +154,9 @@ Last updated: 2026-05-23
     triggering `soar-web`, public Web build-info converged to `878e199d`, and
     public deploy smoke passed for API `/health`, API `/ready`, and Web `/`.
   - 2026-05-23 latest public deploy checkpoint before this board update:
-    `069aa36f4918cbf4ed062f50425288dff30a2b89` is deployed on `main`; public
+    `dd3191d73944f534800659b2dfd0bf5e0bd8b52f` is deployed on `main`; public
     Web build-info reports `metadataSource=github-branch`, build id
-    `orQiE9zTo_TVTcAoXpzI6`, and public deploy smoke passes API `/health`,
+    `PrpSx-bTjsSwKw5bQemwh`, and public deploy smoke passes API `/health`,
     API `/ready`, and Web `/`.
   - Evidence:
     `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
@@ -199,7 +216,7 @@ Last updated: 2026-05-23
     `pnpm --filter web build`. Commit
     `878e199dd13cabc9a8a25b1ece83d0c483ec0c22` was deployed on `main` and
     later superseded by public checkpoint
-    `069aa36f4918cbf4ed062f50425288dff30a2b89`, where public Web build-info
+    `dd3191d73944f534800659b2dfd0bf5e0bd8b52f`, where public Web build-info
     and deploy smoke pass. Historical public post-release monitoring for
     `878e199d` passed `5/5` samples over Web `/api/build-info`, API `/health`,
     API `/ready`, and Web `/`. Evidence:
@@ -218,7 +235,7 @@ Last updated: 2026-05-23
     `1b351a51` is pushed to `main`. The production readback blocker for that
     commit is historical and superseded by later deployments: current
     production Web build-info responds with
-    `069aa36f4918cbf4ed062f50425288dff30a2b89` on `main`, public deploy smoke
+    `dd3191d73944f534800659b2dfd0bf5e0bd8b52f` on `main`, public deploy smoke
     passes API `/health`, API `/ready`, and Web `/`, and historical public
     post-release monitoring for `878e199d` passed `5/5` samples. Evidence:
     `docs/operations/deploy-freshness-1b351a51-2026-05-22.md` and

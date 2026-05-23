@@ -15,13 +15,15 @@ Last updated: 2026-05-23
   and `BNBUSDT`; follow-up docs-state deploys must prove the pushed `HEAD`
   through public build-info plus public deploy smoke. The latest verified
   public checkpoint before this record is
-  `069aa36f4918cbf4ed062f50425288dff30a2b89` after the isolated data-model
-  proof deploy; Web build-info reports `metadataSource=github-branch` and
-  build id `orQiE9zTo_TVTcAoXpzI6`, and public smoke passes.
+  `dd3191d73944f534800659b2dfd0bf5e0bd8b52f` after the non-Binance
+  order-book fail-closed deploy; Web build-info reports
+  `metadataSource=github-branch` and build id `PrpSx-bTjsSwKw5bQemwh`, and
+  public smoke passes.
   Authenticated smoke is not claimed for the latest docs/state sync because
   the available Coolify credential is not a Soar application password.
 - Next mission: the next bounded architecture-aligned product/runtime slice
-  after deploy-proof gate hardening and fresh public smoke for `069aa36f`. LIVE
+  after runtime execution dedupe observability and fresh public smoke for
+  `dd3191d7`. LIVE
   order/cancel/close, unsafe LIVE position mutation, exchange-side mutation,
   and existing production data mutation remain blocked without separate
   explicit approval.
