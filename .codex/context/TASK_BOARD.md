@@ -46,6 +46,10 @@ Last updated: 2026-05-23
     this latest docs/state sync because the available Coolify credential is not
     a valid Soar application password for `ai@luckysparrow.ch`
     (`401 Invalid email or password`).
+  - 2026-05-23 source-of-truth sync rule: docs-only deploy follow-ups are not
+    closed by the commit alone. The pushed `HEAD` must be observed through
+    public Web build-info and public deploy smoke after Coolify deployment
+    convergence; authenticated smoke remains separate app-auth scope.
   - Evidence:
     `docs/operations/liveimport-03-prod-readback-2026-05-23.json`,
     `docs/operations/v1-final-preflight-b1ba69ed-2026-05-23-after-liveimport.md`,
