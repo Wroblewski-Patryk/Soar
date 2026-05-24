@@ -149,6 +149,7 @@ export const resolveRuntimeCurrentPnlFraction = (input: {
   currentPrice: number;
   leverage: number;
   marginUsed?: number | null;
+  unrealizedPnl?: number | null;
   state: Pick<PositionManagementState, 'averageEntryPrice' | 'quantity'>;
 }) =>
   resolvePositionPnlFraction({
@@ -158,5 +159,5 @@ export const resolveRuntimeCurrentPnlFraction = (input: {
     quantity: input.state.quantity,
     leverage: input.leverage,
     marginUsed: input.marginUsed ?? null,
-    unrealizedPnl: null,
+    unrealizedPnl: input.unrealizedPnl ?? null,
   });
