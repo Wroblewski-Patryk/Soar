@@ -2,6 +2,11 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 const PUBLIC_FILE = /\.(.*)$/;
+const LEGACY_DASHBOARD_REDIRECTS: Record<string, string> = {
+  '/dashboard/exchanges': '/dashboard/profile#api',
+  '/dashboard/orders': '/dashboard/bots/runtime?legacy=orders',
+  '/dashboard/positions': '/dashboard/bots/runtime?legacy=positions',
+};
 
 const hasTokenCookie = (request: NextRequest): boolean => {
   const parsedTokens = request.cookies.getAll('token').filter((entry) => Boolean(entry.value));
@@ -18,8 +23,6 @@ const hasTokenCookie = (request: NextRequest): boolean => {
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const normalizedPath =
-    pathname !== '/' && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
 
   if (PUBLIC_FILE.test(pathname) || pathname.startsWith('/api')) {
     return NextResponse.next();
@@ -27,6 +30,11 @@ export function middleware(request: NextRequest) {
 
   if (!hasTokenCookie(request)) {
     return NextResponse.redirect(new URL('/auth/login', request.url));
+  }
+
+  const legacyRedirect = LEGACY_DASHBOARD_REDIRECTS[pathname];
+  if (legacyRedirect) {
+    return NextResponse.redirect(new URL(legacyRedirect, request.url));
   }
 
   // Auth token validation is authoritative on API side (/auth/me + requireAuth).
