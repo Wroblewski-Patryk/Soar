@@ -92,6 +92,49 @@ describe('imported external position id helpers', () => {
 });
 
 describe('reconcileExternalPositionsFromExchange', () => {
+  it('includes Gate.io synced LIVE keys in default reconciliation scope', async () => {
+    const user = await prisma.user.create({
+      data: {
+        email: `live-reconcile-gateio-key-scope-${randomUUID()}@example.com`,
+        password: 'hashed',
+      },
+    });
+    const apiKey = await prisma.apiKey.create({
+      data: {
+        userId: user.id,
+        label: 'Gate.io sync key',
+        exchange: 'GATEIO',
+        apiKey: 'GATEIO_SYNC_KEY',
+        apiSecret: 'GATEIO_SYNC_SECRET',
+        syncExternalPositions: true,
+      },
+    });
+    await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        name: 'Gate.io live futures',
+        mode: 'LIVE',
+        exchange: 'GATEIO',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        apiKeyId: apiKey.id,
+      },
+    });
+
+    const syncedApiKeys = await livePositionReconciliationDefaultDeps.listSyncedApiKeys();
+
+    expect(syncedApiKeys).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: apiKey.id,
+          userId: user.id,
+          exchange: 'GATEIO',
+          marketType: 'FUTURES',
+        }),
+      ])
+    );
+  });
+
   it('keeps orphan local rows out of default open synced external-id lookup', async () => {
     const user = await prisma.user.create({
       data: {

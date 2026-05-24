@@ -52,7 +52,7 @@ export const livePositionReconciliationDefaultDeps: ReconcileDeps = {
   listSyncedApiKeys: async () => {
     const apiKeys = await prisma.apiKey.findMany({
       where: {
-        exchange: 'BINANCE',
+        exchange: { in: ['BINANCE', 'GATEIO'] },
         syncExternalPositions: true,
       },
       select: {
