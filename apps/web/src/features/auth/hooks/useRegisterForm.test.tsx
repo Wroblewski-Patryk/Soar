@@ -1,5 +1,5 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useRegisterForm } from './useRegisterForm';
 import { I18nProvider } from '@/i18n/I18nProvider';
 
@@ -65,7 +65,12 @@ describe('useRegisterForm', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv('NODE_ENV', 'test');
     window.history.pushState({}, '', '/auth/register');
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   it('shows error toast when registration request fails', async () => {

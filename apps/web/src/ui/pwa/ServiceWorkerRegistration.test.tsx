@@ -1,5 +1,5 @@
 import { act, render, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import ServiceWorkerRegistration from "./ServiceWorkerRegistration";
 
 describe("ServiceWorkerRegistration", () => {
@@ -12,6 +12,10 @@ describe("ServiceWorkerRegistration", () => {
     env.NEXT_PUBLIC_SW_TEST_MODE = originalSwTestMode;
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
+  });
+
+  beforeEach(() => {
+    vi.stubEnv("NODE_ENV", "test");
   });
 
   it("registers service worker and performs update checks with activation handoff", async () => {

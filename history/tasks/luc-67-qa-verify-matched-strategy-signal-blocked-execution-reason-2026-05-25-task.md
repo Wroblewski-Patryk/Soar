@@ -36,6 +36,7 @@ Prove the behavior with repeatable automated checks and record the evidence path
 
 ## Notes
 - Running `pnpm --filter web run test -- ...` triggers full web suite in this workspace and currently surfaces unrelated known failures (`useLoginForm`, `useRegisterForm`, `ServiceWorkerRegistration`). This does not invalidate the focused `LUC-67` verification command above.
+- 2026-05-25 board follow-up (`comment 040bfa89-2286-4ba7-9973-59ac0715f794`) confirmed this QA scope is complete; optional browser/no-live proof is explicitly treated as a separate, PM-triggered proof task and not a blocker for `LUC-67`.
 
 ## Result Report
 - Task summary: QA verification completed for matched-strategy-signal + blocked-execution-reason behavior.

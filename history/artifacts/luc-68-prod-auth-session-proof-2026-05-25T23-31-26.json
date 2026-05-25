@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "today": "2026-05-25",
+  "generatedAt": "2026-05-25T21:31:26.317Z",
+  "expectedSha": "",
+  "buildInfo": {
+    "status": 200,
+    "ok": true,
+    "gitSha": "4c16305c97566b7680f4feb041601af2af0a0d31"
+  },
+  "steps": [
+    {
+      "name": "build-info freshness",
+      "result": "PASS",
+      "httpStatus": 200,
+      "notes": "deployed build matches expected SHA"
+    },
+    {
+      "name": "auth token resolved",
+      "result": "PASS",
+      "notes": "source=login"
+    },
+    {
+      "name": "unauthenticated dashboard redirects to login",
+      "result": "PASS",
+      "notes": "path=/auth/login"
+    },
+    {
+      "name": "authenticated dashboard renders",
+      "result": "PASS",
+      "notes": "path=/dashboard; text=679"
+    },
+    {
+      "name": "invalid token redirects to expired-session login",
+      "result": "PASS",
+      "notes": "path=/auth/login; search=?session=expired"
+    },
+    {
+      "name": "logout API clears session",
+      "result": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "auth me after logout fails closed",
+      "result": "PASS",
+      "httpStatus": 401
+    },
+    {
+      "name": "dashboard after logout redirects to login",
+      "result": "PASS",
+      "notes": "path=/auth/login"
+    }
+  ],
+  "blockers": []
+}

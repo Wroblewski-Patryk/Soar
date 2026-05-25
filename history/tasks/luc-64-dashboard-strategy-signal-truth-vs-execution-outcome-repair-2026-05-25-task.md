@@ -3,9 +3,9 @@
 ## Header
 - ID: LUC-64
 - Title: [Soar] Dashboard strategy-signal truth vs execution outcome repair
-- Task Type: planning
-- Current Stage: planning
-- Status: IN_PROGRESS
+- Task Type: implementation
+- Current Stage: implementation
+- Status: TODO
 - Owner: Engineering Delivery Lead (coordinator)
 - Depends on: DASH-RUNTIME-SIGNAL-CONDITION-ACTIVE-2026-05-25, LUC-46, LUC-45-C
 - Priority: P0
@@ -31,6 +31,9 @@ state parity before closure.
 Convert `LUC-64` from a broad symptom report into an executable, single-owner
 delivery packet with explicit lane ownership, proof gates, and closure criteria.
 
+## Current Stage
+- Current Stage: implementation
+
 ## Scope
 - Delivery decomposition and integration only.
 - No new product/runtime feature implementation in this issue.
@@ -38,6 +41,15 @@ delivery packet with explicit lane ownership, proof gates, and closure criteria.
   - `history/tasks/luc-64-dashboard-strategy-signal-truth-vs-execution-outcome-repair-2026-05-25-task.md`
   - `.codex/context/TASK_BOARD.md`
   - `.codex/context/PROJECT_STATE.md`
+
+## Current Evidence Snapshot
+- `A` is complete with evidence:
+  - `history/tasks/dashboard-runtime-signal-condition-active-2026-05-25-task.md`
+- `C` is complete with evidence:
+  - `history/tasks/luc-67-qa-verify-matched-strategy-signal-blocked-execution-reason-2026-05-25-task.md`
+- `B` is not integrated yet and is now split as the next narrow blocker:
+  - `history/tasks/luc-64-b-backend-runtime-signal-payload-separation-proof-2026-05-26-task.md`
+- `D` is blocked until `B` evidence is attached.
 
 ## Implementation Plan
 1. Lock the issue contract: strategy-condition truth and execution-outcome truth remain separated.
@@ -65,12 +77,14 @@ delivery packet with explicit lane ownership, proof gates, and closure criteria.
 - Strategy-condition activity and execution outcome remain explicitly separated in implementation and tests.
 - Evidence exists for blocked execution with matched signal condition visibility.
 - Source-of-truth files route the next executor through owners, proof, and dependency order.
+- Current heartbeat close condition: `LUC-64-B` produces explicit backend payload-semantics evidence and `LUC-64-D` records that evidence into parity/doc state.
 
 ## Definition of Done
 - [x] `LUC-64` has a delivery packet with single-owner lanes and integration order.
 - [x] Required evidence contract is defined for frontend, backend, QA, and docs parity.
 - [x] Board/project state are synced to this packet.
-- [ ] Specialist lane outputs are integrated with proof.
+- [ ] Backend blocker lane `LUC-64-B` evidence is integrated.
+- [ ] Docs/state parity lane `LUC-64-D` records backend evidence and residual risk.
 - [ ] Final issue disposition is set from integrated evidence.
 
 ## Validation Evidence
@@ -80,10 +94,28 @@ delivery packet with explicit lane ownership, proof gates, and closure criteria.
   - `.agents/state/active-mission.md`
   - `.codex/context/TASK_BOARD.md`
   - `.codex/context/PROJECT_STATE.md`
-- Tests: not applicable (planning/integration slice only)
+- Tests: targeted web signal-condition regression evidence is already present via `LUC-67`; backend contract checks remain pending.
 - Reality status: verified (for delivery decomposition), implementation pending in specialist lanes.
 
 ## Result Report
 - `LUC-64` is now an actionable multi-lane delivery contract instead of an unsliced critical issue.
 - Role boundary was preserved: no feature-code changes were performed by Delivery Lead.
-- Next heartbeat can execute directly through A/B ownership instead of re-planning.
+- 2026-05-26 stale-state cleanup integrated child progress into parent truth:
+  `A` and `C` are complete, parent is now explicitly `BLOCKED` only by missing
+  backend payload-separation evidence (`LUC-64-B`), and a narrow blocker packet
+  is published for immediate backend execution.
+- 2026-05-26 board stale-parent cleanup (`c7df4d14-c3e6-47d7-8a30-3f89e26bab5f`):
+  parent issue is intentionally returned to `TODO` for the next PM/Delivery cycle.
+  No live implementation run remains attached to the parent in this heartbeat.
+- 2026-05-26 continuation run `1e1d5591-bbb4-4257-bce6-d1507dd10b6a` failed with
+  `codex_transient_upstream` (model usage limit). This is an execution-capacity
+  incident, not a product/runtime regression. Parent status stays `TODO` and
+  blocker ownership remains `LUC-64-B` (Backend API Engineer payload-separation proof).
+- 2026-05-26 board model-cleanup comment (`bf496bbc-6469-4872-acbf-fd30cb9228c0`):
+  stale `in_progress` without a live run is not allowed. Parent is explicitly
+  returned to `TODO` for Delivery integration of child evidence and selection
+  of the next narrow blocker/repair lane.
+- 2026-05-26 reconciliation note:
+  if a wake payload still reports parent `in_progress`, treat it as stale
+  metadata drift and keep canonical parent status `TODO` until a new explicit
+  Delivery live run starts.

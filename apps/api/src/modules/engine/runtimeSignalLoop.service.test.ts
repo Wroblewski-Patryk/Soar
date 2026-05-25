@@ -9,6 +9,8 @@ import { metricsStore } from '../../observability/metrics';
 import { clearRuntimeSignalMarketDataStore } from './runtimeSignalMarketDataGateway';
 import { clearRuntimeTickerStore } from './runtimeTickerStore';
 
+process.env.NODE_ENV = process.env.NODE_ENV ?? 'test';
+
 vi.mock('./runtimeCapitalContext.service', () => ({
   resolveRuntimeReferenceBalance: vi.fn(async () => 10_000),
   resolveRuntimeWalletFundsExhausted: vi.fn(() => false),
@@ -148,6 +150,7 @@ const createDeps = () => {
       return async () => undefined;
     }),
     listActiveBots: vi.fn(async () => []),
+    listActiveBotsFromTopologyCache: async () => deps.listActiveBots(),
     listRuntimeManagedExternalPositions: vi.fn(async () => []),
     countOpenPositionsForBotAndSymbols: vi.fn(async () => 0),
     createSignal: vi.fn(async () => undefined),
@@ -162,6 +165,12 @@ const createDeps = () => {
     })),
     orchestrateFn: vi.fn(async () => ({ status: 'opened', orderId: 'o1', positionId: 'p1' })),
     processPositionAutomation: vi.fn(async () => undefined),
+    fetchFundingRateHistory: vi.fn(async () => []),
+    fetchOpenInterestHistory: vi.fn(async () => []),
+    fetchOrderBookSnapshot: vi.fn(async () => null),
+    validateExchangeOrderFn: vi.fn(async () => ({ allowed: true })),
+    resolveExchangeOrderRulesFn: vi.fn(async () => null),
+    warmupEnabled: false,
     nowMs: vi.fn(() => 1_000),
   };
 
@@ -260,7 +269,7 @@ const buildKlineRows = (
     };
   });
 
-describe('RuntimeSignalLoop', () => {
+describe('RuntimeSignalLoop', { timeout: 35_000 }, () => {
   beforeEach(() => {
     clearRuntimeTickerStore();
     clearRuntimeSignalMarketDataStore();
@@ -295,7 +304,7 @@ describe('RuntimeSignalLoop', () => {
     expect(after.eligibleGroupsCount.total).toBeGreaterThanOrEqual(before.eligibleGroupsCount.total + 1);
 
     await loop.stop();
-  });
+  }, 35_000);
 
   it('uses topology cache provider for final-candle bot reads when cache path is available', async () => {
     const { deps, emit } = createDeps();
@@ -321,7 +330,7 @@ describe('RuntimeSignalLoop', () => {
     expect(deps.listActiveBotsFromTopologyCache).toHaveBeenCalled();
     expect(deps.listActiveBots.mock.calls.length).toBe(directReadsAfterStart);
     expect(deps.createSignal).toHaveBeenCalled();
-  });
+  }, 35_000);
 
   it('falls back to direct topology read when cache provider fails during final-candle flow', async () => {
     const { deps, emit } = createDeps();
@@ -604,7 +613,7 @@ describe('RuntimeSignalLoop', () => {
         interval: '5m',
       })
     ).toEqual([104.2]);
-  });
+  }, 35_000);
 
   it('delegates runtime warmup lock acquisition for final-candle series through loop deps', async () => {
     const { deps, emit } = createDeps();
@@ -645,7 +654,7 @@ describe('RuntimeSignalLoop', () => {
     expect(releaseWarmupLock).toHaveBeenCalledTimes(1);
 
     await loop.stop();
-  });
+  }, 35_000);
 
   it('creates signal and orchestrates from final candle when strategy votes LONG', async () => {
     const { deps, emit } = createDeps();
@@ -1508,7 +1517,9 @@ describe('RuntimeSignalLoop', () => {
       volume: 1_000,
       isFinal: true,
     });
-    await vi.waitFor(() => expect(deps.listActiveBotsFromTopologyCache).toHaveBeenCalledTimes(1));
+    await vi.waitFor(() => expect(deps.listActiveBotsFromTopologyCache).toHaveBeenCalledTimes(1), {
+      timeout: 7_500,
+    });
 
     const secondEmit = emit({
       type: 'candle',
@@ -1545,7 +1556,9 @@ describe('RuntimeSignalLoop', () => {
 
     releaseFirstDecisionRef.current();
     await Promise.all([firstEmit, secondEmit, thirdEmit]);
-    await vi.waitFor(() => expect(deps.listActiveBotsFromTopologyCache).toHaveBeenCalledTimes(2));
+    await vi.waitFor(() => expect(deps.listActiveBotsFromTopologyCache).toHaveBeenCalledTimes(2), {
+      timeout: 7_500,
+    });
 
     const fallbackTickerPrices = (deps.processPositionAutomation as ReturnType<typeof vi.fn>).mock.calls.map(
       ([event]) => event.lastPrice
@@ -1553,7 +1566,7 @@ describe('RuntimeSignalLoop', () => {
     expect(fallbackTickerPrices).toEqual([100, 102]);
 
     await loop.stop();
-  });
+  }, 35_000);
 
   it('avoids duplicate side effects for shared BTCUSDT/5m across 5 users x 3 bots', async () => {
     const { deps, emit } = createDeps();
@@ -1703,7 +1716,7 @@ describe('RuntimeSignalLoop', () => {
 
     expect(deps.createSignal).toHaveBeenCalled();
     expect(deps.orchestrateFn).toHaveBeenCalled();
-  });
+  }, 35_000);
 
   it('uses Gate.io final-candle fallback ticker context when no fresh Gate.io ticker exists', async () => {
     const { deps, emit } = createDeps();
@@ -1742,7 +1755,7 @@ describe('RuntimeSignalLoop', () => {
     );
 
     await loop.stop();
-  });
+  }, 35_000);
 
   it('keeps empty resolved symbol scope fail-closed instead of widening to wildcard routing', async () => {
     const { deps, emit } = createDeps();

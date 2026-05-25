@@ -1,9 +1,203 @@
 # PROJECT_STATE
 
-Last updated: 2026-05-25
+Last updated: 2026-05-26
 
 ## Current Candidate Deployment Status
 
+- `LUC-70 [Soar][PM] No-stall queue expeditor` is closed as a completed
+  queue-motion checkpoint. Published
+  `history/tasks/luc-70-no-stall-queue-expeditor-2026-05-25-task.md`.
+  Scope is PM coordination only (no product/runtime implementation in this
+  lane). Critical unblock ownership is explicit and unchanged:
+  `LUC-46` owns deterministic backend/runtime final-candle closure evidence,
+  `LUC-47` owns one-stack temp-domain expected-SHA deploy smoke evidence, and
+  `LUC-45` remains the integration parent with strict sequence
+  `A+B -> C -> D -> E`. `LUC-48` may continue readiness-evidence prep but
+  cannot close polish readiness ahead of protected/browser freshness and `A/B`
+  closure. Continuation run `a103996a-f1fc-4be6-afb6-ed849ec77435` did not
+  attach fresh blocker closure evidence from `LUC-46` or `LUC-47`.
+  Board closeout comment `a8021860-4b8a-4a5b-942d-32aa18547bdd` marks this
+  individual routine issue `done` to avoid stale duplicate supervision state.
+  Ongoing supervision remains in the active 30-minute PM routine with live
+  continuation gate `LUC-46 + LUC-47 -> LUC-45-C`.
+
+- `LUC-69 [Soar][Ops Smoke] Verify Coolify read-only secret access` is
+  verified with fresh read-only evidence. Published
+  `history/tasks/luc-69-ops-smoke-verify-coolify-read-only-secret-access-2026-05-25-task.md`.
+  Ops probe confirms secret-based Coolify API access is valid for read-only
+  inventory endpoints in this session (`/api/v1/applications` => `200`, array `13`;
+  `/api/v1/resources` => `200`, array `17`) with no secret values recorded.
+  App-specific verification is also confirmed for discovered Soar entries:
+  `k126p7vqxs5cly2zc4y4g4rq` (`soar-api`) and
+  `ato4fqkncd6t38wzlle2m0rv` (`soar-web`) both return `200`.
+  Remaining action is to refresh the active `COOLIFY_SOAR_APP_ID` binding to one of
+  these valid IDs for consistent automation.
+  Board closeout confirms this refresh is out-of-scope for `LUC-69` smoke and must
+  run as a separate ops configuration follow-up issue.
+
+- `LUC-64 [Soar] Dashboard strategy-signal truth vs execution outcome repair`
+  is now parked as `todo` for the next PM/Delivery cycle after stale-state
+  reconciliation of child progress. Published
+  `history/tasks/luc-64-dashboard-strategy-signal-truth-vs-execution-outcome-repair-2026-05-25-task.md`.
+  Child-lane integration truth:
+  - `LUC-64-A` complete with evidence in
+    `history/tasks/dashboard-runtime-signal-condition-active-2026-05-25-task.md`.
+  - `LUC-64-C` complete with evidence in
+    `history/tasks/luc-67-qa-verify-matched-strategy-signal-blocked-execution-reason-2026-05-25-task.md`.
+  Remaining blocker is narrowed to backend payload-semantics proof:
+  - `LUC-64-B` packet:
+    `history/tasks/luc-64-b-backend-runtime-signal-payload-separation-proof-2026-05-26-task.md`
+  - Unblock owner: Backend API Engineer
+  - Unblock action: produce explicit evidence that matched strategy-condition
+    fields stay separated from execution outcome fields in runtime payloads.
+  Board stale-parent cleanup (`c7df4d14-c3e6-47d7-8a30-3f89e26bab5f`) requires
+  that this parent remain non-live until the next explicit PM/Delivery run.
+  Continuation incident on 2026-05-26:
+  run `1e1d5591-bbb4-4257-bce6-d1507dd10b6a` failed with
+  `codex_transient_upstream` (model usage limit). This does not change product
+  evidence or scope; parent remains parked as `todo` with the same backend
+  unblock owner/action.
+  Board model-cleanup comment (`bf496bbc-6469-4872-acbf-fd30cb9228c0`) confirms
+  stale `in_progress` without a live run must be cleared; `LUC-64` remains
+  explicitly `todo` until the next Delivery integration pass starts.
+
+- `LUC-63 [Soar][PM] No-stall queue expeditor` is now active as the
+  queue-motion control checkpoint for this heartbeat. Published
+  `history/tasks/luc-63-no-stall-queue-expeditor-2026-05-25-task.md`.
+  Scope is PM coordination only (no product/runtime code changes). No-stall
+  routing is explicit: `LUC-46` owns backend runtime Gate.io final-candle
+  closure proof, `LUC-47` owns temp-domain one-stack expected-SHA deploy smoke
+  proof, and `LUC-45` remains the integration parent with strict order
+  `A+B -> C -> D -> E`. `LUC-48-A/browser-proof` (previously `LUC-49`) may continue matrix prep in parallel but
+  cannot close polish readiness until protected/browser freshness and
+  QA/Security follow-up evidence are attached. Both owners now have explicit wake
+  requests logged in `LUC-63`. Current disposition: `done` for issue scope after board inbox cleanup. Ongoing no-stall supervision moved to the active 30-minute PM routine, so this issue is intentionally closed to avoid stale queue state.
+
+- `DASH-RUNTIME-SIGNAL-CONDITION-ACTIVE-2026-05-25` is verified locally for the
+  Paperclip Dashboard signal repair lane. Dashboard Home signal cards now derive
+  condition-active LONG/SHORT presentation and the signal header count from
+  explicit backend condition-line matches (`lastSignalConditionLines[].matched
+  === true`) instead of accepted execution state only. Runtime market-state
+  badges and `lastSignalMessage`/`lastSignalReason` remain separate, so an open
+  position or pre-trade block can stay visible without hiding the satisfied
+  strategy condition. Evidence:
+  `history/tasks/dashboard-runtime-signal-condition-active-2026-05-25-task.md`;
+  focused Web tests `9/9`, Web typecheck, Web lint, and diff check passed.
+  No production deploy or authenticated browser proof was run in this lane.
+
+- `LUC-62 [Soar][PM] V1 project control and lane supervision` is closed as
+  `done` for checkpoint scope after board inbox cleanup comment
+  `baf923dc-8805-4b70-94a6-4d9ba7cfb30e` (2026-05-25). This issue delivered
+  the PM supervision packet and alignment update, then intentionally handed
+  ongoing supervision to the 30-minute no-stall routine and active controller
+  lanes.
+  Published
+  `history/tasks/luc-62-v1-project-control-and-lane-supervision-2026-05-25-task.md`
+  with explicit lane supervision truth and gate order. Current PM posture:
+  `LUC-45` controller remains the integration parent; `LUC-46` and `LUC-47`
+  remain required upstream execution lanes; `LUC-48` and `LUC-48-A/browser-proof`
+  remain blocked on protected/browser proof freshness and shared web regression
+  isolation.
+  This lane introduces no product/runtime code changes and only updates
+  coordination truth to keep ownership and next gates explicit.
+
+- `LUC-47 [Soar][LUC-45-B] Ops stack rollout and smoke gate` is partially
+  verified and currently blocked by external deploy-control context.
+  Local pre-deploy safety gate is green after the API liveness correction:
+  `corepack pnpm run docker:coolify:config` PASS (API healthcheck `/health`,
+  `/ready` preserved for smoke), `corepack pnpm run
+  ops:coolify-stack:env-check:example` PASS (`16/16` required names present,
+  redacted output), and `corepack pnpm run quality:guardrails` PASS. Remaining
+  lane objective needs a temp-domain Coolify parallel-stack deploy for the
+  expected SHA plus API/Web/build-info/worker smoke artifacts before any
+  cutover recommendation.
+  Fresh read-only audit added definitive Coolify identifiers:
+  - project `Soar` UUID: `ogy0ozce7lub39mnwjwb4lwe`
+  - production environment id: `6`
+  - applications/workers in env `6`:
+    `soar-api`=`k126p7vqxs5cly2zc4y4g4rq`,
+    `soar-web`=`ato4fqkncd6t38wzlle2m0rv`,
+    `workers-market-data`=`sj0bh3pirqq1jf41bijaf77y`,
+    `workers-market-stream`=`d2oo1wwy8i55q27e5mdky0i4`,
+    `workers-backtest`=`gktawk85w6826z2bs8z123mz`,
+    `workers-execution`=`s2qz86w8c9hc5anajdtl5d8r`.
+  Continuation run on 2026-05-26 failed before lane execution with adapter
+  bootstrap `EEXIST` during auth symlink creation. Local verification confirms
+  source and runtime-target auth files exist and target is a regular file, so
+  this is runtime bootstrap conflict, not a Soar deploy/smoke result.
+
+- `LUC-45 [Soar] V1 audit-to-completion controller` is implemented and
+  verified for delivery-control scope. Published
+  `history/tasks/luc-45-v1-audit-to-completion-controller-2026-05-25-task.md`
+  as the active V1 controller packet with one accountable owner per lane and
+  strict gate order across unresolved blocker families:
+  `A backend runtime/API stability`, `B ops stack rollout`, `C QA repeatable
+  journey proof`, `D security boundary read-only proof`, and
+  `E docs/state parity sync`. Current status: controller is ready; lane
+  execution evidence is still pending and required before any V1 readiness
+  closure claim.
+  2026-05-25 kickoff continuation adds the execution-level handoff artifacts:
+  V1 gap register (`history/plans/luc-45-v1-gap-register-2026-05-25.md`),
+  V1 evidence ledger (`history/evidence/luc-45-v1-evidence-ledger-2026-05-25.md`),
+  and child lane packets `LUC-45-A..E` for Backend, Ops, QA, Security, and
+  Docs/State owners. This heartbeat still does not claim feature-level closure;
+  it enables immediate specialist execution with explicit owners and proofs.
+  2026-05-25 bridge handoff packet is also available at
+  `history/evidence/luc-45-v1-bridge-handoff-to-project-agent-2026-05-25.md`
+  and defines execution order, dependencies, and handoff continuation text.
+  Board comment `eb5b100d-73c6-451c-8ff1-9c8d6411f3b4` confirms that the first
+  parallel controller lanes are delegated as real child issues:
+  `LUC-46` (maps to `LUC-45-A`) and `LUC-47` (maps to `LUC-45-B`).
+  Controller integration remains in `LUC-45` and continues with `C -> D -> E`
+  after outputs from `LUC-46/LUC-47`.
+  Inbox cleanup comment `de3056a9-9afa-420c-b290-5819460308c8` upgrades parent
+  posture from passive `in_progress` to explicit controller `blocked` until
+  `LUC-46` and `LUC-47` publish unblock evidence. Unblock owners/actions:
+  Backend API Engineer closes runtime/API stability evidence in `LUC-46`; Ops
+  Release Lead closes rollout/smoke evidence in `LUC-47`.
+
+- `LUC-48 [Soar][Docs] Autonomous map inventory and UI polish readiness gate`
+  now includes a cross-layer readiness matrix and currently requires protected/auth
+  money-flow proof, backend/runtime stability, one-stack Coolify evidence, and
+  browser proof artifacts from child issue `LUC-48-A/browser-proof`
+  (currently represented in existing `LUC-49` child artifacts) for front-end state
+  matrix before full polish-readiness closure.
+  Published `history/tasks/luc-48-autonomous-map-inventory-and-ui-polish-readiness-gate-2026-05-25-task.md`
+  and source artifact
+  `docs/analysis/luc-48-autonomous-map-inventory-and-ui-polish-readiness-gate-2026-05-25.md`.
+  Added follow-up artifact:
+  `history/plans/luc-48-autonomous-map-inventory-and-ui-polish-readiness-gate-2026-05-25-full.md`.
+  Local evidence now includes route inventory checks and UI polish state matrix.
+  Current status: source-of-truth alignment is `implemented`; polish-readiness is
+  `blocked` until route-surface and protected/browser state verification from child
+  issue `LUC-48-A/browser-proof` is refreshed with authenticated/protected UI proof
+  and external temp-domain deploy evidence is attached. Active map/index drift routine
+  remains active while blocked to keep source-of-truth docs synchronized.
+  `LUC-48-A/browser-proof` (represented via existing `LUC-49` artifacts) now
+  published a dedicated frontend UI-state browser-proof artifact:
+  `docs/analysis/luc-49-ui-state-browser-proof-matrix-2026-05-25.md` and task
+  packet `history/tasks/luc-49-ui-state-browser-proof-matrix-2026-05-25-task.md`.
+  The matrix adds route-cluster `loading/empty/error/success` evidence status
+  with explicit freshness gaps. A focused verification checkpoint is now
+  green after test-mode stabilization in auth/SW tests, but route-state artifact
+  gaps keep lane status `implemented and blocked`.
+  Deficiency routing now explicitly covers required owner lanes:
+  Frontend, UX, Backend, QA, Product.
+  2026-05-25 stale-state cleanup comment
+  (`125fed04-69c5-4195-a5a3-51975ea90447`) confirms this lane must remain
+  blocked until fresh protected browser-proof artifacts are attached for:
+  dashboard/bots/admin and wallet/market/strategy/backtest/report/log/profile
+  route surfaces with `loading/empty/error` state evidence.
+  2026-05-25 model cleanup comment
+  (`07273b4a-1f02-4268-94f1-21194961db52`) further confirms stale passive
+  `in_progress` is invalid for this lane. Status remains `blocked` until
+  either fresh protected UI/browser-proof matrix evidence is attached or a
+  narrower repair lane is created with explicit owner/action.
+  Blocked lanes for V1 polish completion:
+  - Frontend (`LUC-48-A/browser-proof`) - refreshes for dashboard/bots/admin and remaining money-flow routes.
+  - QA (`LUC-45-C`) - attach route-level protected-state proof artifacts for remaining surfaces.
+  - Security/Ops/Auth (`LUC-45-D`) - provide protected auth-state context and boundary proof for sensitive routes.
+  - Backend/API (`LUC-46`) - clears runtime/backtests blockers preventing confident state proof in protected surfaces.
 
 - `LUC-40 [Soar][Data] Persistence and integrity known-state` is partially verified for the data-persistence lane. Published `history/tasks/luc-40-data-persistence-known-state-2026-05-25-task.md` with schema/migration integrity evidence and explicit unknowns. Verified: `corepack pnpm --filter api exec prisma validate` PASS, `corepack pnpm --filter api exec prisma migrate status --schema prisma/schema.prisma` PASS (`55` migrations, DB schema up to date), and `corepack pnpm run ops:db:backup-restore:check-local` PASS (`history/operations/v1-db-restore-check-2026-05-25T18-02-43-687Z.md`). Blocked by error for broader module proof in this heartbeat: focused API pack timed out after `124054ms`.
 
@@ -10621,3 +10815,27 @@ Last updated: 2026-05-25
 - Add only if the repository truly needs them.
 - Record their canonical paths here once they exist.
 
+
+
+- 2026-05-26 stale-state cleanup applied to `LUC-45` controller operations from
+  board comment `24f62373-1a53-444c-96d1-c88a9031bbb7`.
+  `LUC-45` keeps strict `A+B -> C -> D -> E` integration order and remains
+  `BLOCKED` until both upstream lanes close evidence contracts:
+  `LUC-46` (backend/runtime) and `LUC-47` (ops/deploy).
+  Active Delivery reconciliation routine is now explicit: every 2 hours,
+  controller owner reconciles child blocker/evidence truth and creates a new
+  child issue immediately when a newly discovered blocker cannot be owned by
+  existing lanes.
+
+## 2026-05-26 Delivery Reconciliation Pulse
+- `LUC-45` remains explicitly `BLOCKED` in controller lane while `LUC-46` (backend/runtime) and `LUC-47` (ops/deploy) evidence remain open.
+- 2-hour active Delivery routine continues to own reconciliation and blocker validation.
+- No new unblock evidence payload arrived in this cycle; parent status remains stable fail-closed.
+
+## 2026-05-26 Stale Parent Cleanup Update
+- `LUC-45` parent controller remains `BLOCKED` and must not appear as passive `in_progress` without a live reconciliation run.
+- Open blocker set now explicitly includes three proof lanes:
+  - `LUC-46` backend/runtime proof,
+  - `LUC-47` ops/deploy proof,
+  - `LUC-48-A/browser-proof` frontend proof lane.
+- Active V1 controller routine owns the next reconciliation pass and keeps fail-closed gate enforcement until all open proof lanes provide closure evidence.

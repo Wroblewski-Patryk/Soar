@@ -1,5 +1,5 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useLoginForm } from './useLoginForm';
 import { I18nProvider } from '@/i18n/I18nProvider';
 
@@ -63,8 +63,13 @@ describe('useLoginForm', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv('NODE_ENV', 'test');
     vi.useRealTimers();
     window.history.pushState({}, '', '/auth/login');
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   it('shows error toast when login request fails', async () => {

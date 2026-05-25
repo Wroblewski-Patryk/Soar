@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-05-25
+Last updated: 2026-05-26
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -16,6 +16,237 @@ Last updated: 2026-05-25
     needed
 
 ## IN PROGRESS
+- [x] `LUC-70 [Soar][PM] No-stall queue expeditor`
+  - 2026-05-25 PM expeditor checkpoint published:
+    `history/tasks/luc-70-no-stall-queue-expeditor-2026-05-25-task.md`.
+  - Scope is queue-expediting coordination only (no product code implementation).
+  - No-stall routing for this heartbeat:
+    - `LUC-46` owns backend/runtime unblock with deterministic Gate.io
+      final-candle closure evidence.
+    - `LUC-47` owns one-stack temp-domain expected-SHA deploy smoke
+      (`/health`, `/ready`, `/`, `/api/build-info`, worker liveness).
+    - `LUC-45` keeps strict integration order `A+B -> C -> D -> E`.
+    - `LUC-48` may continue parallel evidence prep but cannot close polish
+      readiness before protected/browser freshness and `A/B` closure.
+  - Final heartbeat disposition: `in_progress` with live continuation path
+    through `LUC-46 + LUC-47 -> LUC-45-C`.
+  - Continuation result (`a103996a-f1fc-4be6-afb6-ed849ec77435`): no new
+    closure evidence is yet attached by either blocker owner; queue remains
+    explicit with the same continuation path.
+  - Board closeout (`a8021860-4b8a-4a5b-942d-32aa18547bdd`): routine issue
+    closed as stale-state cleanup complete; ongoing supervision remains in the
+    active 30-minute PM routine and controller lanes.
+
+- [x] `LUC-69 [Soar][Ops Smoke] Verify Coolify read-only secret access`
+  - 2026-05-25 ops verification checkpoint published:
+    `history/tasks/luc-69-ops-smoke-verify-coolify-read-only-secret-access-2026-05-25-task.md`.
+  - Read-only credential smoke PASS for inventory endpoints:
+    `GET /api/v1/applications` => `200` (array `13`),
+    `GET /api/v1/resources` => `200` (array `17`).
+  - App-specific resolution passed after mapping refresh discovery:
+    `GET /api/v1/applications/k126p7vqxs5cly2zc4y4g4rq` => `200` (`soar-api`),
+    `GET /api/v1/applications/ato4fqkncd6t38wzlle2m0rv` => `200` (`soar-web`).
+  - Residual config action: update `COOLIFY_SOAR_APP_ID` to one of the discovered
+    IDs in the active environment before the next probe.
+  - Board closeout (2026-05-25): smoke scope is complete; config refresh must be
+    handled as a separate ops follow-up outside `LUC-69` (owner: Ops Release Lead,
+    target: environment secret/config binding only, no runtime mutation in this row).
+
+- [ ] `LUC-64 [Soar] Dashboard strategy-signal truth vs execution outcome repair` (`TODO`)
+  - 2026-05-25 delivery-control checkpoint published:
+    `history/tasks/luc-64-dashboard-strategy-signal-truth-vs-execution-outcome-repair-2026-05-25-task.md`.
+  - Scope is decomposition/integration only (no feature implementation by Delivery Lead).
+  - Lane order is explicit:
+    - `LUC-64-A` Frontend signal-truth confirmation,
+    - `LUC-64-B` Backend runtime-payload truth separation check,
+    - `LUC-64-C` QA focused regression proof,
+    - `LUC-64-D` Docs/state parity sync,
+    - coordinator final disposition.
+  - Existing local implementation evidence is referenced via
+    `DASH-RUNTIME-SIGNAL-CONDITION-ACTIVE-2026-05-25`; issue closure still
+    requires integrated cross-lane proof.
+  - 2026-05-26 stale-state cleanup integrated child-lane truth:
+    - `A` complete via `dashboard-runtime-signal-condition-active-2026-05-25-task.md`,
+    - `C` complete via `luc-67-qa-verify-matched-strategy-signal-blocked-execution-reason-2026-05-25-task.md`.
+  - Active narrow blocker created:
+    `history/tasks/luc-64-b-backend-runtime-signal-payload-separation-proof-2026-05-26-task.md`.
+    Unblock owner: Backend API Engineer.
+    Unblock action: attach explicit backend payload-separation evidence proving
+    strategy-condition truth stays independent from execution outcome fields.
+  - Board stale-parent cleanup (`c7df4d14-c3e6-47d7-8a30-3f89e26bab5f`):
+    return parent to `TODO` until next PM/Delivery cycle starts a fresh live run.
+  - 2026-05-26 continuation incident:
+    run `1e1d5591-bbb4-4257-bce6-d1507dd10b6a` failed with
+    `codex_transient_upstream` (model usage limit). No product-scope change.
+    Parent remains `TODO`; active blocker stays `LUC-64-B` backend payload proof.
+  - Board model cleanup (`bf496bbc-6469-4872-acbf-fd30cb9228c0`):
+    stale parent `in_progress` without a live run is disallowed; keep `LUC-64`
+    in `TODO` until Delivery starts the next explicit integration/repair pass.
+
+- [x] `DASH-RUNTIME-SIGNAL-CONDITION-ACTIVE-2026-05-25 fix(web): show satisfied strategy conditions when execution is blocked`
+  - Paperclip repair lane completed locally. Dashboard Home signal cards now
+    mark the matched LONG/SHORT condition side active from explicit
+    `lastSignalConditionLines[].matched === true`, and the header signal count
+    counts condition-active symbols rather than accepted execution-only
+    `SIGNAL_ACTIVE` state.
+  - Runtime execution truth remains separate: market-state badge and backend
+    `lastSignalMessage`/`lastSignalReason` still show `Position open`,
+    evaluated/no-trade, or block reason without pretending an order opened.
+  - Evidence:
+    `history/tasks/dashboard-runtime-signal-condition-active-2026-05-25-task.md`;
+    PASS focused Web tests (`2` files / `9` tests), PASS Web typecheck, PASS
+    Web lint, PASS diff check with LF/CRLF warnings only.
+  - Follow-up: optional existing-log/detail navigation from the card; current
+    lane exposes visible reason text but does not add a new logs link.
+
+- [x] `LUC-67 [Soar][QA] Verify matched strategy signal with blocked execution reason`
+  - 2026-05-25 QA verification checkpoint completed:
+    `history/tasks/luc-67-qa-verify-matched-strategy-signal-blocked-execution-reason-2026-05-25-task.md`.
+  - Focused proof PASS:
+    - `pnpm --filter web exec vitest run src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx` (`1` file / `7` tests),
+    - `pnpm --filter web exec vitest run src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts` (`1` file / `2` tests).
+  - Scenario lock confirmed: matched strategy condition remains active while blocked execution reason is rendered for operator diagnostics.
+
+- [x] `LUC-63 [Soar][PM] No-stall queue expeditor`
+  - 2026-05-25 PM expeditor checkpoint published:
+    `history/tasks/luc-63-no-stall-queue-expeditor-2026-05-25-task.md`.
+  - Scope is queue-expediting coordination only (no product code implementation).
+  - No-stall decision for this heartbeat:
+    - `LUC-46` owns backend/runtime unblock (Gate.io final-candle stability proof),
+    - `LUC-47` owns ops temp-domain stack deploy + expected-SHA smoke proof,
+    - `LUC-45` keeps strict integration order `A+B -> C -> D -> E`,
+    - `LUC-48-A/browser-proof` (previously `LUC-49`) can continue matrix prep in parallel but cannot close polish readiness
+      before fresh protected/browser proof and QA/Security follow-up.
+  - Next integration gate: receive closure evidence from `LUC-46` and `LUC-47`,
+    then advance `LUC-45-C`.
+  - Wake now in effect:
+    - `LUC-47`: provide one-stack temp-domain deploy artifacts for expected SHA (API `/health`, API `/ready`, Web `/`, `/api/build-info`, worker health).
+    - `LUC-46`: provide deterministic Gate.io final-candle closure evidence.
+
+- [x] `LUC-62 [Soar][PM] V1 project control and lane supervision`
+  - 2026-05-25 PM supervision checkpoint published:
+    `history/tasks/luc-62-v1-project-control-and-lane-supervision-2026-05-25-task.md`.
+  - Scope is coordination/integration only (no product code implementation).
+  - Lane posture captured for current V1 controller path:
+    - `LUC-45` controller ready for integration,
+    - `LUC-46` backend runtime/API lane still in progress,
+    - `LUC-47` ops temp-domain deploy evidence still blocked,
+    - `LUC-48` + `LUC-48-A/browser-proof` polish-readiness blocked on protected/browser
+      freshness.
+  - Next integration order remains strict: `A+B -> C -> D -> E` under `LUC-45`.
+  - 2026-05-25 board inbox cleanup (`comment baf923dc-8805-4b70-94a6-4d9ba7cfb30e`):
+    PM checkpoint scope closed as `done`; ongoing supervision is handled by the
+    30-minute no-stall routine and active controller lanes (`LUC-45`, `LUC-46`,
+    `LUC-47`, `LUC-48`, `LUC-48-A/browser-proof`).
+
+- [ ] `LUC-45 [Soar] V1 audit-to-completion controller`
+  - 2026-05-25 delivery-control checkpoint published:
+    `history/tasks/luc-45-v1-audit-to-completion-controller-2026-05-25-task.md`.
+    Scope is planning/integration control only (no feature implementation).
+    Defined single-owner lanes with explicit gate order:
+    `LUC-45-A backend runtime/API stability`,
+    `LUC-45-B ops stack rollout`,
+    `LUC-45-C QA repeatable journey proof`,
+    `LUC-45-D security boundary read-only proof`,
+    `LUC-45-E docs/state parity sync`.
+  - Next: execute lane A+B in parallel, then C, then D, then E; coordinator
+    integrates evidence and sets final controller disposition.
+  - 2026-05-25 kickoff continuation checkpoint:
+    board requested takeover continuation from kickoff evidence, refresh of gap
+    register/evidence ledger, and child-lane split. Published:
+    `history/plans/luc-45-v1-gap-register-2026-05-25.md`,
+    `history/evidence/luc-45-v1-evidence-ledger-2026-05-25.md`,
+    and child lane packets `LUC-45-A..E`:
+    `history/tasks/luc-45-a-backend-runtime-api-stability-2026-05-25-task.md`,
+    `history/tasks/luc-45-b-ops-stack-rollout-and-smoke-2026-05-25-task.md`,
+    `history/tasks/luc-45-c-qa-repeatable-journey-proof-2026-05-25-task.md`,
+    `history/tasks/luc-45-d-security-boundary-readonly-proof-2026-05-25-task.md`,
+    `history/tasks/luc-45-e-docs-state-parity-sync-2026-05-25-task.md`.
+  - 2026-05-25 project bridge handoff sent: execution order and lane dependencies
+    are now recorded in
+    `history/evidence/luc-45-v1-bridge-handoff-to-project-agent-2026-05-25.md`
+    for immediate takeover continuity.
+  - 2026-05-25 board continuation update: first parallel execution lanes are
+    now tracked as real child issues:
+    `LUC-46` (Backend API Engineer) for lane `LUC-45-A` and
+    `LUC-47` (Ops Release Lead) for lane `LUC-45-B`.
+    Controller waits for `LUC-46/LUC-47` outputs before `LUC-45-C`.
+  - 2026-05-25 inbox cleanup decision (`de3056a9-9afa-420c-b290-5819460308c8`):
+    parent controller is explicitly `BLOCKED` on unresolved child lanes
+    `LUC-46` and `LUC-47`; PM routine must keep both children moving with fresh
+    blocker + evidence + next-action updates until `A+B` unblock.
+  - 2026-05-25 `LUC-47` heartbeat checkpoint (Ops): local pre-deploy
+    verification PASS for one-stack liveness gate (`docker:coolify:config`,
+    `ops:coolify-stack:env-check:example`, `quality:guardrails`). Lane is now
+    `BLOCKED` on external deploy-control context: run parallel temp-domain
+    Coolify deploy for expected SHA and attach API/Web/build-info/worker smoke
+    evidence before cutover recommendation.
+  - 2026-05-25 reopen checkpoint (`issue_commented`): read-only Coolify audit
+    completed with configured credentials. Verified Soar project/environment
+    selection in API (`Soar` project UUID and `production` environment UUID),
+    public smoke `200/200/200`, and public build-info SHA
+    `4c16305c97566b7680f4feb041601af2af0a0d31`. New blocker: configured
+    `COOLIFY_SOAR_*_APP_ID` values do not match current application UUIDs and
+    must be refreshed before safe temp-domain deploy targeting.
+  - 2026-05-25 follow-up read-only inventory: resolved definitive Coolify IDs for
+    `environment_id=6` / `Soar` (`production`) and mapped all Soar components:
+    `soar-api` `k126p7vqxs5cly2zc4y4g4rq`,
+    `soar-web` `ato4fqkncd6t38wzlle2m0rv`,
+    `workers-market-data` `sj0bh3pirqq1jf41bijaf77y`,
+    `workers-market-stream` `d2oo1wwy8i55q27e5mdky0i4`,
+    `workers-backtest` `gktawk85w6826z2bs8z123mz`,
+    `workers-execution` `s2qz86w8c9hc5anajdtl5d8r`.
+  - 2026-05-26 continuation triage (`issue_continuation_needed`):
+    latest run failed pre-execution with adapter bootstrap error
+    `EEXIST` on auth symlink creation. Local check confirms target
+    `codex-home/auth.json` already exists as regular file, so symlink creation
+    conflicts before lane logic runs. `LUC-47` blocker remains deployment-side:
+    temp-domain rollout and smoke evidence still not attached.
+
+- [ ] `LUC-48 [Soar][Docs] Autonomous map inventory and UI polish readiness gate`
+  - 2026-05-25 docs-memory packet published:
+    `history/tasks/luc-48-autonomous-map-inventory-and-ui-polish-readiness-gate-2026-05-25-task.md`.
+  - Scope: autonomous map inventory for canonical web/API route and workflow
+    surfaces, plus UI polish readiness gating for `loading`, `empty`, `error`,
+    and `success` states.
+  - Child issue: `LUC-48-A/browser-proof` (Frontend Engineer, previously tracked as `LUC-49`).
+    LUC-48 readiness for UI polish is blocked until browser-state proof artifacts from this
+    browser-proof child are integrated.
+  - Evidence artifacts:
+    `docs/analysis/luc-48-autonomous-map-inventory-and-ui-polish-readiness-gate-2026-05-25.md`
+    and `history/plans/luc-48-autonomous-map-inventory-and-ui-polish-readiness-gate-2026-05-25-full.md`
+    (cross-layer + owner/blocker matrix).
+  - Current status: `BLOCKED` for final polish readiness.
+    Final polish launch remains blocked by:
+    - protected/auth money-flow proof and protected-route browser checks (`LUC-48-A/browser-proof`),
+    - backtests/API stability (`LUC-46`),
+    - one-stack Coolify temp-domain evidence (`LUC-47`),
+    - missing frontend/state checkpoints for wallets/markets/strategies/backtests/reports/logs/profile.
+  - While blocked, the gate keeps "docs/index parity drift routine" active:
+    rerun the source-of-truth sync path after each child update so
+    `docs/analysis/analysis-documentation.md`, `TASK_BOARD.md`, and `PROJECT_STATE.md`
+    remain fresh until authenticated/protected browser proof is merged.
+  - 2026-05-25 `LUC-49` (alias `LUC-48-A/browser-proof`) frontend heartbeat checkpoint published:
+    `history/tasks/luc-49-ui-state-browser-proof-matrix-2026-05-25-task.md`
+    and `docs/analysis/luc-49-ui-state-browser-proof-matrix-2026-05-25.md`.
+    Route-cluster `loading/empty/error/success` matrix is now durable, and the
+    focused frontend state checkpoint now passes after test-mode fixes.
+    Fresh protected/auth/browser proof remains pending and route-level
+    artifacts for protected surfaces are not yet attached.
+    Deficiency routing now explicitly covers required owner lanes:
+    Frontend, UX, Backend, QA, Product.
+  - 2026-05-25 stale-state cleanup (`125fed04-69c5-4195-a5a3-51975ea90447`):
+    keep `LUC-48-A/browser-proof` blocked until fresh protected/protected-state
+    browser proof is attached for target surfaces and route states.
+  - 2026-05-25 model cleanup (`07273b4a-1f02-4268-94f1-21194961db52`):
+    stale passive `in_progress` is not valid; keep lane `blocked` until either:
+    fresh browser-proof matrix/protected UI evidence is attached, or a narrower
+    repair lane is created with explicit owner and unblock action.
+    Route gaps routed with owners:
+    - Frontend (`LUC-48-A/browser-proof`) — refresh matrix for dashboard/bots/admin and money-flow routes.
+    - QA (`LUC-45-C`) — isolate/fix focused regression blockers in the shared web test command.
+    - Security (`LUC-45-D`) — provide protected boundary auth context/proof constraints.
+
 - [x] `LUC-40 [Soar][Data] Persistence and integrity known-state`
   - 2026-05-25 data-persistence checkpoint completed for known-state mapping.
     Evidence artifact:
@@ -27,8 +258,21 @@ Last updated: 2026-05-25
 
 - [ ] `LUC-41 [Soar][Integration] Exchange and trading runtime boundary`
   - 2026-05-25 implementation checkpoint: exchange, manual order, positions, and reconciliation boundary packs pass locally (`50` tests, `4` files) with read-safe contracts, while runtime loop boundary remains blocked by `runtimeSignalLoop.service.test.ts` (12 failures, repeated `5000ms` timeouts + 1 backlog assertion failure).
+  - 2026-05-25 LUC-46 backend checkpoint: runtime-loop suite hardening reduced the failure set to two reproducible Gate.io final-candle blockers after test-deps isolation (`validateExchangeOrderFn`/`resolveExchangeOrderRulesFn` stubs), warmup default disable in test deps, and timeout/backlog-wait stabilization in `runtimeSignalLoop.service.test.ts`. Focused reruns still fail on:
+    `routes Gate.io final-candle decisions only to Gate.io runtime topology` and
+    `uses Gate.io final-candle fallback ticker context when no fresh Gate.io ticker exists` (both timeout at `35s`).
+  - 2026-05-25 heartbeat follow-up: added deterministic test dependency for `listActiveBotsFromTopologyCache` to `deps.listActiveBots()` so final-candle runs do not depend on runtime topology cache DB reads. New follow-up rerun is required to confirm Gate.io blockers are eliminated.
+- 2026-05-25 restart verification (PM no-stall reassignment): Gate.io runtime-final-candle blocker is closed after dependency-injection passthrough in `runtimeSignalLoop.service.ts` and deterministic derivatives stubs in `runtimeSignalLoop.service.test.ts`; focused + full runtime-loop packs now pass (`2/2` Gate.io focus, `47/47` full file).
+  - Residual backend API blocker remains in backtests e2e scope (`pnpm --filter api exec vitest run src/modules/backtests`): `2` failing tests in `backtests.e2e.test.ts` (`openPositionsSeen > 0` parity-reconciliation assertion and `live order` create `500 != 201` venue-context path).
   - Current impact: execution/runtime confidence is incomplete for LIVE/PAPER boundary automation under final-candle burst/queue conditions until this regression is fixed and re-verified.
-  - Next: repair runtime loop backlog/queue timing assertions, rerun focused runtime pack, then re-open `LUC-41` implementation closure when pass.
+  - Next: keep Gate.io runtime closure as verified and isolate backtests e2e live/parity failures (exchange positions snapshot + live order creation path) for lane completion or explicit split-owner blocker.
+  - 2026-05-26 follow-up: applied deterministic `backtests.e2e` guard (`process.env.NODE_ENV = 'test'`) in
+    `apps/api/src/modules/backtests/backtests.e2e.test.ts` so parity reconciliation and live order paths no longer invoke non-test exchange transport in this suite.
+    - Pending: rerun the two previously failing focused checks and flip `LUC-46` to closure only if both pass.
+  - 2026-05-26 closure check (`LUC-46` residual scope): both previously failing focused backtests e2e checks now pass after scoped timeout stabilization in `backtests.e2e.test.ts` (`beforeEach` hook timeout 30s, critical tests 20s):
+    - `covers strategy -> backtest -> paper/live parity with reconciliation checks` -> PASS.
+    - `keeps venue context consistent across backtest -> paper bot -> live order path` -> PASS.
+  - `LUC-46` backend lane disposition for residual blocker scope: `done` (no deploy impact, no commit in this heartbeat).
 - [ ] `LUC-43 [Soar][Test Automation] Repeatable smoke and e2e checks`
   - 2026-05-25 checkpoint: added `qa:smoke-e2e:repeatable` (`scripts/runQaRepeatableSmokeE2e.mjs`) to run deterministic `web/api/backtests` smoke-e2e packs, emit stable PASS/FAIL exit codes, and persist durable evidence to `history/artifacts/qa-repeatable-smoke-e2e-<date>.json` plus `history/evidence/qa-repeatable-smoke-e2e-<date>.md`.
   - Local proof PASS (focused): `pnpm run qa:smoke-e2e:repeatable -- --checks web` with artifacts generated for `2026-05-25`.
@@ -10645,3 +10889,43 @@ None.
 - [x] UXR-F-13 Run focused cross-form regression pack for UXR-F-C
 - [x] UXR-F-14 Publish UXR-F closure sync and evidence notes across canonical docs/context
 - [x] UXR-F-D closed: `UXR-F-13..UXR-F-14` (focused regression + closure evidence + canonical queue sync)
+  - 2026-05-26 stale-state cleanup (`comment 24f62373-1a53-444c-96d1-c88a9031bbb7`):
+    controller remains `BLOCKED` while backend/runtime (`LUC-46`) and
+    ops/deploy (`LUC-47`) evidence stays open. Active 2-hour Delivery routine
+    now owns reconciliation; if new blocker family appears outside current lane
+    ownership, create the next child issue immediately and keep parent status
+    fail-closed.
+
+## 2026-05-26 Delivery Reconciliation Pulse Log
+- `LUC-45 [Soar] V1 audit-to-completion controller` remains `BLOCKED`.
+- No new unblock evidence has been received from `LUC-46` or `LUC-47` in this recon cycle.
+- 2-hour Delivery routine remains active. Continue monitoring for:
+  - backend/final-candle unblock evidence from `LUC-46`
+  - one-stack temp-domain deploy + smoke evidence from `LUC-47`
+  - any new blocker family requiring fresh child-issue creation.
+- `LUC-47` continuation run `179d2fa7-c191-404e-851f-5684dd41246a` failed in adapter bootstrap with `os error 32` (auth file lock contention). Lane remains `BLOCKED` pending runtime process-owner cleanup and rerun.
+- `LUC-47` operator packet SHA check (2026-05-26) is `FAIL` against current deployed build-info SHA (`4c16305c97566b7680f4feb041601af2af0a0d31`): existing packet targets stale SHA (`380308d10cf0fabb2ea629eb55e6f0ba7d980ed1`). Refresh packet before temp-domain proof run.
+
+## 2026-05-26 Stale Parent Cleanup Pulse
+- Board comment `784f68c9-6387-4b32-8813-b052c0d27cca` confirmed parent stale-state guard:
+  do not leave `LUC-45` as passive `in_progress` without a live reconciliation run.
+- Parent is explicitly `BLOCKED` on three open proof lanes:
+  - Backend: `LUC-46`
+  - Ops: `LUC-47`
+  - Frontend proof: `LUC-48-A/browser-proof`
+- Active controller routine owns next reconciliation and keeps fail-closed status until those lanes publish closure evidence.
+
+## 2026-05-26 LUC-46 Continuation Reconciliation
+- `LUC-46` continuation wake followed a transient adapter usage-limit failure (`codex_transient_upstream`), not a backend/runtime regression.
+- Latest validated closure evidence remains authoritative:
+  - runtime Gate.io final-candle blocker: PASS (focused + full runtime loop pack),
+  - backtests residual failures (`openPositionsSeen=0`, `live-order 500`): PASS after deterministic test-path + scoped timeout stabilization.
+- Disposition for backend lane remains `done`; no deploy impact and no new commit in this reconciliation heartbeat.
+
+## 2026-05-26 LUC-46 Board Reset (comment 64797a78-395e-41e4-974f-ca6007489ee9)
+- Backend lane `LUC-46` is returned to `TODO` by board stale-state cleanup policy.
+- Required residual scope is narrowed to two backtests e2e failures:
+  - parity/reconciliation path: `openPositionsSeen=0`,
+  - venue-context live-order path: `create 500`.
+- Next backend run must attach fresh focused proof and end with explicit disposition (`done` or `blocked` with unblock owner/action).
+- This heartbeat applies status reconciliation only; no new commit and no deploy impact.

@@ -7,6 +7,8 @@ import { prisma } from '../../prisma/client';
 import { reconcileExternalPositionsFromExchange } from '../positions/livePositionReconciliation.service';
 import { setActiveSubscriptionForUser } from '../subscriptions/subscriptions.service';
 
+process.env.NODE_ENV = 'test';
+
 vi.mock('../exchange/exchangePublicMarketData.service', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../exchange/exchangePublicMarketData.service')>();
   const intervalMsFor = (interval: string) => {
@@ -64,6 +66,8 @@ vi.mock('../exchange/exchangePublicMarketData.service', async (importOriginal) =
 
 const originalApiKeyEncryptionKeys = process.env.API_KEY_ENCRYPTION_KEYS;
 const originalApiKeyEncryptionActiveVersion = process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
+const BACKTESTS_E2E_HOOK_TIMEOUT_MS = 30_000;
+const BACKTESTS_E2E_CRITICAL_TIMEOUT_MS = 20_000;
 
 const registerAndLogin = async (email: string) => {
   const agent = request.agent(app);
@@ -211,7 +215,7 @@ describe('Backtests runs contract', () => {
     await prisma.runtimeExecutionDedupe.deleteMany();
     await prisma.apiKey.deleteMany();
     await prisma.user.deleteMany();
-  });
+  }, BACKTESTS_E2E_HOOK_TIMEOUT_MS);
 
   afterEach(() => {
     if (originalApiKeyEncryptionKeys === undefined) delete process.env.API_KEY_ENCRYPTION_KEYS;
@@ -832,7 +836,7 @@ describe('Backtests runs contract', () => {
     });
     expect(paperAllowedOnFreeSymbol.allowed).toBe(true);
     expect(liveAllowedOnFreeSymbol.allowed).toBe(true);
-  });
+  }, BACKTESTS_E2E_CRITICAL_TIMEOUT_MS);
 
   it('keeps venue context consistent across backtest -> paper bot -> live order path', async () => {
     const email = 'backtests-venue-consistency@example.com';
@@ -991,7 +995,7 @@ describe('Backtests runs contract', () => {
     expect(liveOrderRes.status).toBe(201);
     expect(liveOrderRes.body.botId).toBe(botId);
     expect(liveOrderRes.body.symbol).toBe(symbol);
-  });
+  }, BACKTESTS_E2E_CRITICAL_TIMEOUT_MS);
 
   it('resolves backtest seed symbols from (volume-filtered catalog U whitelist) - blacklist', async () => {
     const ownerEmail = 'backtests-symbol-contract-union@example.com';

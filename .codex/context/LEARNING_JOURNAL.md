@@ -3227,6 +3227,23 @@ Copy-Item -LiteralPath $src -Destination $dst -Force
 - Evidence:
   `history/tasks/luc-24-paperclip-agent-execution-smoke-test-2026-05-25-task.md`.
 
+### 2026-05-26 - Adapter auth symlink can fail with EEXIST when target file already exists
+- Context: `LUC-47` continuation heartbeat failed before task logic on adapter startup.
+- Symptom: adapter error `EEXIST: file already exists, symlink ...\.codex\auth.json -> ...\codex-home\auth.json`.
+- Root cause: runtime target `codex-home/auth.json` already exists as a regular file, so symlink creation conflicts.
+- Guardrail: on adapter `EEXIST` auth-link failures, treat it as runtime bootstrap conflict, verify source/target presence and target type first, and avoid classifying the issue as Soar runtime/deploy regression.
+- Preferred pattern:
+```powershell
+$src='C:\Users\wrobl\.codex\auth.json'
+$dst='...\codex-home\auth.json'
+Test-Path $src
+Test-Path $dst
+(Get-Item -LiteralPath $dst -Force).Attributes
+```
+- Avoid: retrying issue runs as product-lane failures when the adapter cannot reach issue logic.
+- Evidence:
+  `history/tasks/luc-45-b-ops-stack-rollout-and-smoke-2026-05-25-task.md` (2026-05-26 continuation checkpoint).
+
 ### 2026-05-25 - Adapter model compatibility can block all heartbeat execution
 - Symptom: session startup failed with invalid_request_error stating The 'gpt-5' model is not supported when using Codex with a ChatGPT account.
 - Root cause: adapter runtime/runtime model mapping used unsupported model for this account. This is not a Soar code defect.

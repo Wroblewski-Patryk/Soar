@@ -114,6 +114,14 @@ did not pass because the VPS became unreachable late in the observation.
   SSH `22` and HTTPS `443`; public API and web checks also failed to connect.
   This proves the deployment blocker is now VPS resource exhaustion or host
   instability under build load, not merely GitHub webhook drift.
+- Heartbeat follow-up at `2026-05-25T19:46Z` confirmed the VPS returned:
+  SSH `22`, API HTTPS `443`, `/health`, and `/ready` all responded. The
+  `soar-api` deploy `wudq5ujsrukro97x6arwqa0d` finished on
+  `58216dbf20bcb2a606802e7478a14dde564670b7`, but `soar-web` build-info still
+  reported `4c16305c97566b7680f4feb041601af2af0a0d31`. Disk remained tight at
+  `93%` used / `5.4G` free, with Docker images at `42.18GB` and `3.386GB`
+  reclaimable. Release remains `NO-GO`; next action is to stop doing
+  on-server multi-service builds until build storage/concurrency is fixed.
 
 ## Forbidden
 

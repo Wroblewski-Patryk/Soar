@@ -58,7 +58,12 @@ import { RuntimeSignalLoopSupervisor } from './runtimeSignalLoopSupervisor';
 import { processRuntimeFinalCandleDecision } from './runtimeFinalCandleDecision.service';
 import { enforceRuntimeOrderLifetimes } from './runtimeOrderLifetime.service';
 import { enforceRuntimePositionLifetimes } from './runtimePositionLifetime.service';
-import { fetchExchangePublicRecentCandles } from '../exchange/exchangePublicMarketData.service';
+import {
+  fetchExchangePublicFundingRateHistory,
+  fetchExchangePublicOpenInterestHistory,
+  fetchExchangePublicOrderBookSnapshot,
+  fetchExchangePublicRecentCandles,
+} from '../exchange/exchangePublicMarketData.service';
 
 export {
   deriveRuntimeGroupMaxOpenPositions,
@@ -166,6 +171,9 @@ type RuntimeSignalLoopDeps = {
   seriesQueueMaxPending?: number;
   warmupEnabled?: boolean;
   fetchRecentCandles?: typeof fetchExchangePublicRecentCandles;
+  fetchFundingRateHistory?: typeof fetchExchangePublicFundingRateHistory;
+  fetchOpenInterestHistory?: typeof fetchExchangePublicOpenInterestHistory;
+  fetchOrderBookSnapshot?: typeof fetchExchangePublicOrderBookSnapshot;
   acquireWarmupLock?: (
     input: RuntimeSignalWarmupLockInput
   ) => Promise<RuntimeSignalWarmupLockHandle>;
@@ -227,6 +235,12 @@ export class RuntimeSignalLoop {
     warmupEnabled: () => this.deps.warmupEnabled,
     fetchRecentCandles: (params) =>
       (this.deps.fetchRecentCandles ?? fetchExchangePublicRecentCandles)(params),
+    fetchFundingRateHistory: (params) =>
+      (this.deps.fetchFundingRateHistory ?? fetchExchangePublicFundingRateHistory)(params),
+    fetchOpenInterestHistory: (params) =>
+      (this.deps.fetchOpenInterestHistory ?? fetchExchangePublicOpenInterestHistory)(params),
+    fetchOrderBookSnapshot: (params) =>
+      (this.deps.fetchOrderBookSnapshot ?? fetchExchangePublicOrderBookSnapshot)(params),
     acquireWarmupLock: (input) =>
       this.deps.acquireWarmupLock?.(input) ??
       Promise.resolve({
