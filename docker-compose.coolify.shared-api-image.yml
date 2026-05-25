@@ -56,8 +56,8 @@ services:
         ]
       interval: 15s
       timeout: 5s
-      retries: 12
-      start_period: 45s
+      retries: 20
+      start_period: 180s
 
   web:
     build:
@@ -92,6 +92,7 @@ services:
       start_period: 45s
 
   workers-market-data:
+    profiles: ["workers"]
     image: *api-image
     restart: unless-stopped
     depends_on:
@@ -103,6 +104,7 @@ services:
     command: ["node", "dist/workers/marketData.worker.js"]
 
   workers-market-stream:
+    profiles: ["workers"]
     image: *api-image
     restart: unless-stopped
     depends_on:
@@ -114,6 +116,7 @@ services:
     command: ["node", "dist/workers/marketStream.worker.js"]
 
   workers-backtest:
+    profiles: ["workers"]
     image: *api-image
     restart: unless-stopped
     depends_on:
@@ -125,6 +128,7 @@ services:
     command: ["node", "dist/workers/backtest.worker.js"]
 
   workers-execution:
+    profiles: ["workers"]
     image: *api-image
     restart: unless-stopped
     depends_on:
