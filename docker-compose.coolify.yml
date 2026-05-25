@@ -1,0 +1,133 @@
+x-api-env: &api-env
+  NODE_ENV: ${NODE_ENV:-production}
+  DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required}
+  REDIS_URL: ${REDIS_URL:?REDIS_URL is required}
+  SERVER_PORT: ${SERVER_PORT:-3001}
+  SERVER_URL: ${SERVER_URL:-https://api.soar.luckysparrow.ch}
+  CLIENT_URL: ${CLIENT_URL:-https://soar.luckysparrow.ch}
+  CORS_ORIGINS: ${CORS_ORIGINS:-https://soar.luckysparrow.ch}
+  JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+  COOKIE_DOMAIN: ${COOKIE_DOMAIN:-}
+  COOKIE_SAME_SITE: ${COOKIE_SAME_SITE:-lax}
+  API_KEY_ENCRYPTION_KEYS: ${API_KEY_ENCRYPTION_KEYS:?API_KEY_ENCRYPTION_KEYS is required}
+  API_KEY_ENCRYPTION_ACTIVE_VERSION: ${API_KEY_ENCRYPTION_ACTIVE_VERSION:-v1}
+  API_KEY_ENCRYPTION: ${API_KEY_ENCRYPTION:-}
+  WORKER_MODE: ${WORKER_MODE:-split}
+  WORKER_MARKET_DATA_OWNERSHIP: ${WORKER_MARKET_DATA_OWNERSHIP:-worker}
+  WORKER_BACKTEST_OWNERSHIP: ${WORKER_BACKTEST_OWNERSHIP:-worker}
+  WORKER_MARKET_DATA_QUEUE: ${WORKER_MARKET_DATA_QUEUE:-market-data}
+  WORKER_BACKTEST_QUEUE: ${WORKER_BACKTEST_QUEUE:-backtest}
+  WORKER_EXECUTION_QUEUE: ${WORKER_EXECUTION_QUEUE:-execution}
+  COINGECKO_API_BASE_URL: ${COINGECKO_API_BASE_URL:-https://api.coingecko.com/api/v3}
+  COINGECKO_API_KEY: ${COINGECKO_API_KEY:-}
+  COIN_ICON_CACHE_TTL_MINUTES: ${COIN_ICON_CACHE_TTL_MINUTES:-360}
+  BINANCE_SPOT_REST_URL: ${BINANCE_SPOT_REST_URL:-https://api.binance.com}
+  BINANCE_FUTURES_REST_URL: ${BINANCE_FUTURES_REST_URL:-https://fapi.binance.com}
+  MARKET_STREAM_MARKET_TYPE: ${MARKET_STREAM_MARKET_TYPE:-FUTURES}
+  MARKET_STREAM_INTERVALS: ${MARKET_STREAM_INTERVALS:-5m}
+  MARKET_STREAM_SYMBOLS: ${MARKET_STREAM_SYMBOLS:-BTCUSDT,ETHUSDT,BNBUSDT}
+  MARKET_STREAM_SUBSCRIPTIONS_REFRESH_MS: ${MARKET_STREAM_SUBSCRIPTIONS_REFRESH_MS:-10000}
+  RUNTIME_SCAN_INTERVAL_MS: ${RUNTIME_SCAN_INTERVAL_MS:-5000}
+  RUNTIME_SCAN_MAX_SYMBOLS: ${RUNTIME_SCAN_MAX_SYMBOLS:-100}
+  RUNTIME_SIGNAL_LOOP_BOOTSTRAP_INTERVAL_MS: ${RUNTIME_SIGNAL_LOOP_BOOTSTRAP_INTERVAL_MS:-10000}
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    environment:
+      <<: *api-env
+      SERVICE_FQDN_API_3001: ${SERVICE_FQDN_API_3001:-https://api.soar.luckysparrow.ch}
+      NODE_OPTIONS: ${API_NODE_OPTIONS:---max-old-space-size=768}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"fetch('http://127.0.0.1:3001/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\"",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 12
+      start_period: 45s
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        SOURCE_COMMIT: ${SOURCE_COMMIT:?SOURCE_COMMIT is required}
+        SOURCE_BRANCH: ${SOURCE_BRANCH:-main}
+        COOLIFY_BRANCH: ${COOLIFY_BRANCH:-main}
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      SERVICE_FQDN_WEB_3002: ${SERVICE_FQDN_WEB_3002:-https://soar.luckysparrow.ch}
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 3002
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-https://api.soar.luckysparrow.ch}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      SOURCE_COMMIT: ${SOURCE_COMMIT:?SOURCE_COMMIT is required}
+      SOURCE_BRANCH: ${SOURCE_BRANCH:-main}
+      NODE_OPTIONS: ${WEB_NODE_OPTIONS:---max-old-space-size=512}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"fetch('http://127.0.0.1:3002/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\"",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 12
+      start_period: 45s
+
+  workers-market-data:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile.worker.market-data
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      <<: *api-env
+      NODE_OPTIONS: ${WORKER_NODE_OPTIONS:---max-old-space-size=384}
+
+  workers-market-stream:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile.worker.market-stream
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      <<: *api-env
+      NODE_OPTIONS: ${MARKET_STREAM_NODE_OPTIONS:---experimental-websocket --max-old-space-size=384}
+
+  workers-backtest:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile.worker.backtest
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      <<: *api-env
+      NODE_OPTIONS: ${WORKER_NODE_OPTIONS:---max-old-space-size=384}
+
+  workers-execution:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile.worker.execution
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      <<: *api-env
+      NODE_OPTIONS: ${WORKER_NODE_OPTIONS:---max-old-space-size=384}
