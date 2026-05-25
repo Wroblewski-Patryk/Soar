@@ -34,6 +34,31 @@ Project-local agent docs under `.agents/`, `.codex/agents/`, and old prompt
 catalogs are local fallback memory. They must not override the active
 Paperclip Softwarehouse roster or role instructions.
 
+## Git, Deploy, Coolify, And Account Safety
+
+Commits, pushes, and deployments are release operations.
+
+- Commit only coherent, validated, reversible work.
+- Do not push or deploy from a dirty worktree unless the user explicitly
+  approves a recorded emergency exception.
+- Do not deploy uncommitted local changes.
+- Before deploy, confirm source commit, target environment, migration risk,
+  required secrets, rollback path, and smoke plan.
+- After deploy, verify health checks, public routes, auth-sensitive smoke,
+  logs, and critical Soar journeys. Record evidence.
+- Coolify/VPS operations belong to Paperclip Ops Release Lead.
+- Secret and production account access belongs to Paperclip Security Review
+  Lead.
+- Production smoke design and account coverage belong to QA/Test Automation.
+- Store credentials only in Paperclip secrets or an explicitly approved local
+  encrypted secret store. Never write secret values, cookies, tokens, account
+  passwords, API keys, payment data, or exchange credentials into repo files,
+  screenshots, issue comments, generated artifacts, or logs.
+- Use AI/test accounts for normal production smoke. Use the user's real account
+  only for explicit, narrow checks that require its connected integrations, and
+  never mutate subscriptions, API keys, trading/live settings, exchange
+  settings, or external service state without exact approval.
+
 ## Coordinator Mandate - Default Chat Role
 
 Every new Codex chat in this repository starts as the `Coordinator`, not as a solo implementer.
