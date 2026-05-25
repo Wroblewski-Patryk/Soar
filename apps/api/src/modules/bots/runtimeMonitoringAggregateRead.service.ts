@@ -33,10 +33,7 @@ const runtimeAggregateSubqueryTimeoutMs = Number.parseInt(
   process.env.RUNTIME_MONITORING_AGGREGATE_SUBQUERY_TIMEOUT_MS ?? '5000',
   10,
 );
-const runtimeAggregateStaleTtlMs = Number.parseInt(
-  process.env.RUNTIME_MONITORING_AGGREGATE_STALE_TTL_MS ?? '45000',
-  10,
-);
+const runtimeAggregateStaleTtlMs = Number.parseInt(process.env.RUNTIME_MONITORING_AGGREGATE_STALE_TTL_MS ?? '45000', 10);
 const runtimeAggregateRunningSessionsCap = Number.parseInt(
   process.env.RUNTIME_MONITORING_AGGREGATE_RUNNING_SESSIONS_CAP ?? '0',
   10,
@@ -45,6 +42,7 @@ const runtimeAggregateCompletedSessionsCap = Number.parseInt(
   process.env.RUNTIME_MONITORING_AGGREGATE_COMPLETED_SESSIONS_CAP ?? '0',
   10,
 );
+const runtimeAggregateSessionConcurrency = Number.parseInt(process.env.RUNTIME_MONITORING_AGGREGATE_SESSION_CONCURRENCY ?? '2', 10);
 
 const buildRuntimeAggregateCacheKey = (
   userId: string,
@@ -71,6 +69,25 @@ const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number) => {
       }, timeoutMs);
     }),
   ]);
+};
+
+export const mapWithLimitedConcurrency = async <T, R>(
+  items: T[],
+  concurrency: number,
+  mapper: (item: T) => Promise<R>
+) => {
+  const limit = Number.isFinite(concurrency) && concurrency > 0 ? Math.floor(concurrency) : 1;
+  const results: R[] = new Array(items.length);
+  let nextIndex = 0;
+  const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (nextIndex < items.length) {
+      const currentIndex = nextIndex;
+      nextIndex += 1;
+      results[currentIndex] = await mapper(items[currentIndex]);
+    }
+  });
+  await Promise.all(workers);
+  return results;
 };
 
 const selectSessionsForAggregation = (sessions: RuntimeSessionListItem[]) => {
@@ -479,31 +496,51 @@ const getBotRuntimeMonitoringAggregateUncached = async (
   }
   const scopedSessions = selectSessionsForAggregation(sessions);
 
-  const payloadRows = await Promise.all(
-    scopedSessions.map(async (session) => {
-      const [symbolStats, positions, trades] = await Promise.all([
-        withTimeout(listBotRuntimeSessionSymbolStats(userId, botId, session.id, {
-          symbol: query.symbol,
-          limit: perSessionLimit,
-          preferConfiguredStrategyContext: true,
-        }), runtimeAggregateSubqueryTimeoutMs),
-        withTimeout(listBotRuntimeSessionPositions(userId, botId, session.id, {
-          symbol: query.symbol,
-          limit: perSessionLimit,
-        }), runtimeAggregateSubqueryTimeoutMs),
-        withTimeout(listBotRuntimeSessionTrades(userId, botId, session.id, {
-          symbol: query.symbol,
-          limit: perSessionLimit,
-        }), runtimeAggregateSubqueryTimeoutMs),
-      ]);
+  const payloadRows = await mapWithLimitedConcurrency(
+    scopedSessions,
+    runtimeAggregateSessionConcurrency,
+    async (session) => {
+      try {
+        const [symbolStats, positions, trades] = await Promise.all([
+          withTimeout(
+            listBotRuntimeSessionSymbolStats(userId, botId, session.id, {
+              symbol: query.symbol,
+              limit: perSessionLimit,
+              preferConfiguredStrategyContext: true,
+            }),
+            runtimeAggregateSubqueryTimeoutMs
+          ),
+          withTimeout(
+            listBotRuntimeSessionPositions(userId, botId, session.id, {
+              symbol: query.symbol,
+              limit: perSessionLimit,
+            }),
+            runtimeAggregateSubqueryTimeoutMs
+          ),
+          withTimeout(
+            listBotRuntimeSessionTrades(userId, botId, session.id, {
+              symbol: query.symbol,
+              limit: perSessionLimit,
+            }),
+            runtimeAggregateSubqueryTimeoutMs
+          ),
+        ]);
 
-      return {
-        session,
-        symbolStats,
-        positions,
-        trades,
-      };
-    })
+        return {
+          session,
+          symbolStats,
+          positions,
+          trades,
+        };
+      } catch {
+        return {
+          session,
+          symbolStats: null,
+          positions: null,
+          trades: null,
+        };
+      }
+    }
   );
 
   const completePayloadRows = payloadRows.filter(
