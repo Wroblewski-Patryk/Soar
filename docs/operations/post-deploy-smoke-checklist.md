@@ -19,7 +19,9 @@ Quickly confirm that the deployed revision is operational for critical user flow
 - For the Coolify Service Stack topology, API and Web stack healthchecks are
   green and all four worker containers are running after the API liveness gate.
   The API container healthcheck is `/health`; `/ready` remains a separate
-  release-readiness smoke item.
+  release-readiness smoke item. Web/workers may depend only on API
+  `service_started`, so this checklist is the acceptance gate for dependency
+  readiness.
 - For the Coolify Service Stack topology, `ops:coolify-stack:env-check` has
   passed in the deploy environment or an equivalent no-secret variable-name and
   value-shape readiness check has been captured.

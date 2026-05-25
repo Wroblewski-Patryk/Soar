@@ -63,7 +63,7 @@ services:
     restart: unless-stopped
     depends_on:
       api:
-        condition: service_healthy
+        condition: service_started
     environment:
       SERVICE_FQDN_WEB_3002: ${SERVICE_FQDN_WEB_3002:-https://soar.luckysparrow.ch}
       NODE_ENV: ${NODE_ENV:-production}
@@ -91,7 +91,7 @@ services:
     restart: unless-stopped
     depends_on:
       api:
-        condition: service_healthy
+        condition: service_started
     environment:
       <<: *api-env
       NODE_OPTIONS: ${WORKER_NODE_OPTIONS:---max-old-space-size=384}
@@ -103,7 +103,7 @@ services:
     restart: unless-stopped
     depends_on:
       api:
-        condition: service_healthy
+        condition: service_started
     environment:
       <<: *api-env
       NODE_OPTIONS: ${MARKET_STREAM_NODE_OPTIONS:---experimental-websocket --max-old-space-size=384}
@@ -115,7 +115,7 @@ services:
     restart: unless-stopped
     depends_on:
       api:
-        condition: service_healthy
+        condition: service_started
     environment:
       <<: *api-env
       NODE_OPTIONS: ${WORKER_NODE_OPTIONS:---max-old-space-size=384}
@@ -127,7 +127,7 @@ services:
     restart: unless-stopped
     depends_on:
       api:
-        condition: service_healthy
+        condition: service_started
     environment:
       <<: *api-env
       NODE_OPTIONS: ${WORKER_NODE_OPTIONS:---max-old-space-size=384}

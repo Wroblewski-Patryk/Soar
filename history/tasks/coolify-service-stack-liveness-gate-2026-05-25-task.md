@@ -89,4 +89,9 @@ explicit `/ready` verification before traffic cutover or acceptance.
 
 - In progress. Local manifest validation and guardrails passed after the
   liveness change. Production public API `/health` and `/ready` remained `200`
-  after VPS restart. Parallel stack redeploy and token cleanup remain open.
+  after VPS restart. The first redeploy of the liveness change still failed
+  during `docker compose up -d` because Web/workers waited on API
+  `service_healthy` before the compose command could finish. The manifest now
+  changes Web/worker dependencies to API `service_started`; readiness remains
+  enforced by explicit smoke before cutover. Parallel stack redeploy and token
+  cleanup remain open.

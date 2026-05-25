@@ -97,6 +97,9 @@ Container liveness for the Coolify Service Stack uses `/health`. Do not use
 `/ready` as the Docker healthcheck because it is a dependency/readiness gate
 and can block Web/workers from starting during a parallel-stack rollout. Always
 verify `/ready` separately in the post-deploy smoke before accepting traffic.
+Web and worker services depend on API `service_started`, not `service_healthy`,
+so `docker compose up -d` can finish while readiness is still being verified by
+explicit smoke checks.
 
 Required environment variables:
 - `NODE_ENV=production`
