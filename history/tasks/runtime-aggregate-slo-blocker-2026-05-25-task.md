@@ -88,6 +88,17 @@ did not pass because the VPS became unreachable late in the observation.
   deploy. The Redis readiness change was reverted immediately while keeping the
   fail-closed SLO/RC tooling hardening. Local rollback validation passed
   focused health/readiness tests, API typecheck, and guardrails.
+- Rollback commit `c08f852cc5a280e43cc9e0bcbb0c5fe770d6636e` reached
+  `origin/main`, but production build-info continued to report
+  `4c16305c97566b7680f4feb041601af2af0a0d31` after an extended wait.
+- Empty retrigger commit `ac9a5ea9e7da2e7dd6a5343153bb1b906f094918` was pushed
+  to `origin/main`; production still did not converge to the latest SHA within
+  the 15-minute build-info polling window.
+- Latest operational checks showed API `/health` responding, API `/ready`
+  intermittently returning `not_ready`, web build-info still pinned to
+  `4c16305c`, and Coolify `/login` returning HTTP 500. Current release status
+  is therefore `NO-GO` due to production deploy convergence and readiness
+  instability.
 
 ## Forbidden
 
