@@ -35,6 +35,7 @@ tags: [soar-map, test, testing, verified_local]
 ## Relations
 
 - verified_by <- [[SOAR-COMP-RUNTIME-SIGNALS-SECTION]] (verified_local)
+- verified_by <- [[SOAR-UTIL-RUNTIME-SIGNAL-CONDITION-STATE]] (verified_local)
 
 ## Evidence Rule
 

@@ -51,6 +51,7 @@ import {
   createOpenPositionsColumns,
   createTradesColumns,
 } from "./home-live-widgets/runtimeDataTablePresenters";
+import { hasMatchedSignalCondition } from "./home-live-widgets/runtimeSignalConditionState";
 import {
   buildRuntimeSidebarManualOrderPresenter,
   buildRuntimeSidebarTextPresenter,
@@ -276,8 +277,8 @@ export default function HomeLiveWidgets({ authConfirmed = true }: HomeLiveWidget
   const signalHeaderStats = useMemo(
     () => ({
       marketsCount: signalSymbols.length,
-      actionableSignalsCount: signalSymbols.reduce((count, item) => {
-        return item.runtimeMarketState === "SIGNAL_ACTIVE" ? count + 1 : count;
+      conditionActiveSignalsCount: signalSymbols.reduce((count, item) => {
+        return hasMatchedSignalCondition(item) ? count + 1 : count;
       }, 0),
     }),
     [signalSymbols]
@@ -949,7 +950,7 @@ export default function HomeLiveWidgets({ authConfirmed = true }: HomeLiveWidget
                 marketStateConfiguredOnlyLabel={t("dashboard.home.runtime.marketStateConfiguredOnly")}
                 marketStateUnresolvedLabel={t("dashboard.home.runtime.marketStateUnresolved")}
                 marketsCount={signalHeaderStats.marketsCount}
-                actionableSignalsCount={signalHeaderStats.actionableSignalsCount}
+                conditionActiveSignalsCount={signalHeaderStats.conditionActiveSignalsCount}
                 formatSignalScore={(value) => formatNumber(value, { maximumFractionDigits: 2 })}
                 renderSymbolLabel={renderRuntimeSymbol}
               />

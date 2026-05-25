@@ -62,7 +62,7 @@ describe("RuntimeSignalsSection", () => {
         marketStateConfiguredOnlyLabel="Market snapshot"
         marketStateUnresolvedLabel="Unresolved state"
         marketsCount={1}
-        actionableSignalsCount={0}
+        conditionActiveSignalsCount={0}
         formatSignalScore={(value) => String(value)}
       />
     );
@@ -70,6 +70,75 @@ describe("RuntimeSignalsSection", () => {
     expect(screen.getByText("Waiting for indicator data")).toBeInTheDocument();
     expect(screen.queryByText("n/a")).not.toBeInTheDocument();
     expect(screen.getByText("44.12")).toBeInTheDocument();
+  });
+
+  it("marks matched strategy conditions active even when execution was blocked", () => {
+    const { container } = render(
+      <RuntimeSignalsSection
+        signalSymbols={[
+          ({
+            id: "signal-rsi-blocked",
+            symbol: "BTCUSDT",
+            lastSignalDirection: null,
+            runtimeMarketState: "POSITION_OPEN",
+            lastSignalContextSource: "latest_decision",
+            lastSignalMessage: "Signal blocked because an open position already exists",
+            lastSignalConditionLines: [
+              {
+                scope: "LONG",
+                left: "RSI(14)",
+                value: "31.25",
+                operator: "<",
+                right: "20",
+                matched: false,
+              },
+              {
+                scope: "SHORT",
+                left: "RSI(14)",
+                value: "78.44",
+                operator: ">",
+                right: "75",
+                matched: true,
+              },
+            ],
+          } as unknown as RuntimeSymbolWithLive),
+        ]}
+        hasSignalOverflow={false}
+        signalRailRef={createRef<HTMLDivElement>()}
+        onScrollPrevious={vi.fn()}
+        onScrollNext={vi.fn()}
+        previousLabel="Prev"
+        nextLabel="Next"
+        longLabel="LONG"
+        shortLabel="SHORT"
+        noSignalDataLabel="No signal data"
+        conditionValueUnavailableLabel="Waiting for indicator data"
+        marketsLabel="Markets"
+        signalsLabel="Signals"
+        signalScoreLabel="Score"
+        signalScoreLongLabel="LONG"
+        signalScoreShortLabel="SHORT"
+        signalContextSourceLabel="Context source"
+        signalContextSourceLatestSignalLabel="Latest signal"
+        signalContextSourceLatestDecisionLabel="Latest decision"
+        signalContextSourceConfiguredFallbackLabel="Closed-candle snapshot"
+        signalContextSourceUnresolvedLabel="Unresolved"
+        marketStatePositionOpenLabel="Position open"
+        marketStateSignalActiveLabel="Accepted signal"
+        marketStateEvaluatedNoTradeLabel="Evaluated / no trade"
+        marketStateConfiguredOnlyLabel="Market snapshot"
+        marketStateUnresolvedLabel="Unresolved state"
+        marketsCount={1}
+        conditionActiveSignalsCount={1}
+        formatSignalScore={(value) => String(value)}
+      />
+    );
+
+    expect(screen.getByText("Position open")).toBeInTheDocument();
+    expect(screen.getByText("Signal blocked because an open position already exists")).toBeInTheDocument();
+    expect(screen.getByText("78.44")).toBeInTheDocument();
+    expect(container.querySelector('[data-signal-scope="SHORT"]')).toHaveAttribute("data-signal-active", "true");
+    expect(container.querySelector('[data-signal-scope="LONG"]')).toHaveAttribute("data-signal-active", "false");
   });
 
   it("renders deterministic context source labels on signal cards", () => {
@@ -120,7 +189,7 @@ describe("RuntimeSignalsSection", () => {
         marketStateConfiguredOnlyLabel="Market snapshot"
         marketStateUnresolvedLabel="Unresolved state"
         marketsCount={2}
-        actionableSignalsCount={1}
+        conditionActiveSignalsCount={1}
         formatSignalScore={(value) => String(value)}
       />
     );
@@ -172,7 +241,7 @@ describe("RuntimeSignalsSection", () => {
         marketStateConfiguredOnlyLabel="Market snapshot"
         marketStateUnresolvedLabel="Unresolved state"
         marketsCount={1}
-        actionableSignalsCount={0}
+        conditionActiveSignalsCount={0}
         formatSignalScore={(value) => String(value)}
       />
     );
@@ -241,7 +310,7 @@ describe("RuntimeSignalsSection", () => {
         marketStateConfiguredOnlyLabel="Market snapshot"
         marketStateUnresolvedLabel="Unresolved state"
         marketsCount={3}
-        actionableSignalsCount={0}
+        conditionActiveSignalsCount={0}
         formatSignalScore={(value) => String(value)}
       />
     );
@@ -318,7 +387,7 @@ describe("RuntimeSignalsSection", () => {
         marketStateConfiguredOnlyLabel="Market snapshot"
         marketStateUnresolvedLabel="Unresolved state"
         marketsCount={5}
-        actionableSignalsCount={1}
+        conditionActiveSignalsCount={1}
         formatSignalScore={(value) => String(value)}
       />
     );
@@ -368,7 +437,7 @@ describe("RuntimeSignalsSection", () => {
         marketStateConfiguredOnlyLabel="Market snapshot"
         marketStateUnresolvedLabel="Unresolved state"
         marketsCount={1}
-        actionableSignalsCount={0}
+        conditionActiveSignalsCount={0}
         formatSignalScore={(value) => String(value)}
       />
     );

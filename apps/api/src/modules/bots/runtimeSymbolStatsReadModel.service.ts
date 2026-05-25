@@ -82,6 +82,11 @@ const hasConcreteConditionValue = (
 const isReplaceableNoVoteReason = (reason: string | null | undefined) =>
   reason === 'No votes' || reason === 'Weak consensus' || reason === 'Tie';
 
+const resolveSignalConditionActive = (
+  lines: Array<{ scope: string; matched?: boolean | null }> | null | undefined,
+  scope: 'LONG' | 'SHORT'
+) => lines?.some((line) => line.scope === scope && line.matched === true) === true;
+
 export const composeRuntimeSymbolStatsReadModel = (params: {
   userId: string;
   botId: string;
@@ -250,6 +255,10 @@ export const composeRuntimeSymbolStatsReadModel = (params: {
       lastSignalConditionSummary: signalConditionSummary,
       lastSignalIndicatorSummary: indicatorSummary,
       lastSignalConditionLines: conditionLineSource.conditionLines,
+      lastSignalConditionActive: {
+        long: resolveSignalConditionActive(conditionLineSource.conditionLines, 'LONG'),
+        short: resolveSignalConditionActive(conditionLineSource.conditionLines, 'SHORT'),
+      },
       lastSignalScoreSummary: signalScoreSummary,
       snapshotAt: stat?.snapshotAt ?? params.sessionStartedAt,
       createdAt: stat?.createdAt ?? params.sessionCreatedAt,

@@ -4,6 +4,14 @@ Last updated: 2026-05-25
 
 ## Current Readiness Checkpoint
 
+- `DASH-RUNTIME-SIGNAL-CONDITION-ACTIVE-2026-05-25` VERIFIED LOCALLY. Dashboard
+  Home signal cards now use explicit matched strategy condition lines for
+  condition-active LONG/SHORT emphasis and header count while preserving
+  runtime state and block reason text separately. Validation passed focused
+  Web tests (`9/9`), Web typecheck, Web lint, and diff check. This is local
+  Dashboard repair proof only; no production deploy or authenticated browser
+  smoke was run.
+
 - `COOLIFY-SERVICE-STACK-LIVENESS-GATE-2026-05-25` IN PROGRESS. After the VPS
   restart, public production API `/health` and `/ready` returned `200`. The
   first parallel Coolify Compose Application build completed but startup failed

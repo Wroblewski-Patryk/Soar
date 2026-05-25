@@ -349,6 +349,12 @@ pnpm --filter web exec vitest run src/features/dashboard-home/hooks/useHomeLiveW
   - Dashboard Home signal cards render a compact localized source badge for
     latest-signal, legacy latest-decision, configured-fallback, and unresolved
     contexts.
+  - Dashboard Home signal card emphasis and header signal count are based on
+    explicit matched strategy condition lines (`matched=true`) for `LONG` or
+    `SHORT`, not only on accepted execution signals. Runtime state and
+    decision/block reasons remain separate badges/details from the same API
+    read model, so an open position or pre-trade block can be visible without
+    hiding the satisfied strategy condition.
 - Cross-route parity contract:
   - for the same selected bot, `/dashboard` and `/dashboard/bots/:id/preview` must stay parity-aligned for `signals`, `positions`, and `history`.
 - Runtime diagnostics contract:

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-25T17:03:23.666Z",
+  "generatedAt": "2026-05-25T20:54:39.538Z",
   "source": {
     "nodes": "docs/architecture/registry/nodes.csv",
     "relations": "docs/architecture/relations/dependencies.csv",
@@ -14167,7 +14167,7 @@
       "related_files": "apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx",
       "parent_id": "SOAR-COMP-HOME-LIVE-WIDGETS",
       "child_ids": "",
-      "depends_on": "SOAR-UTIL-RUNTIME-DERIVATIONS;SOAR-UTIL-RUNTIME-UI-HELPERS",
+      "depends_on": "SOAR-UTIL-RUNTIME-DERIVATIONS;SOAR-UTIL-RUNTIME-UI-HELPERS;SOAR-UTIL-RUNTIME-SIGNAL-CONDITION-STATE",
       "used_by": "SOAR-COMP-HOME-LIVE-WIDGETS",
       "ui_related": "SOAR-COMP-HOME-LIVE-WIDGETS",
       "api_related": "SOAR-API-BOT-RUNTIME-AGGREGATE",
@@ -14177,9 +14177,36 @@
       "agent_related": "",
       "risk_level": "critical",
       "completion_percent": "85",
-      "last_verified_at": "2026-05-24",
+      "last_verified_at": "2026-05-25",
       "verification_status": "verified_local",
       "notes": "Runtime signal surface."
+    },
+    {
+      "id": "SOAR-UTIL-RUNTIME-SIGNAL-CONDITION-STATE",
+      "name": "Dashboard runtime signal condition state",
+      "type": "utility",
+      "status": "verified_local",
+      "layer": "frontend",
+      "module": "web-dashboard-home",
+      "feature": "web-runtime-surfaces",
+      "description": "Helper that derives active strategy-condition LONG/SHORT state from backend condition lines without changing execution state truth.",
+      "file_path": "apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.ts",
+      "related_files": "apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts",
+      "parent_id": "SOAR-COMP-HOME-LIVE-WIDGETS",
+      "child_ids": "",
+      "depends_on": "SOAR-API-BOT-RUNTIME-AGGREGATE",
+      "used_by": "SOAR-COMP-HOME-LIVE-WIDGETS;SOAR-COMP-RUNTIME-SIGNALS-SECTION",
+      "ui_related": "SOAR-COMP-HOME-LIVE-WIDGETS",
+      "api_related": "SOAR-API-BOT-RUNTIME-AGGREGATE",
+      "database_related": "SOAR-DB-BOT;SOAR-DB-STRATEGY",
+      "tests_related": "SOAR-TEST-DASHBOARD-RUNTIME-SIGNALS",
+      "docs_related": "SOAR-DOC-WEB-DASHBOARD-HOME",
+      "agent_related": "",
+      "risk_level": "high",
+      "completion_percent": "85",
+      "last_verified_at": "2026-05-25",
+      "verification_status": "verified_local",
+      "notes": "Separates strategy condition activity from accepted execution signal truth."
     },
     {
       "id": "SOAR-UTIL-RUNTIME-DERIVATIONS",
@@ -24753,6 +24780,18 @@
       "notes": ""
     },
     {
+      "id": "REL-WEBRUNTIME-006A",
+      "source_id": "SOAR-COMP-RUNTIME-SIGNALS-SECTION",
+      "target_id": "SOAR-UTIL-RUNTIME-SIGNAL-CONDITION-STATE",
+      "relation_type": "uses",
+      "status": "verified_local",
+      "description": "Runtime signals UI derives strategy-condition-active LONG/SHORT state from backend condition lines separately from accepted execution state.",
+      "evidence": "apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.ts",
+      "owner": "Frontend",
+      "last_verified_at": "2026-05-25",
+      "notes": ""
+    },
+    {
       "id": "REL-WEBRUNTIME-007",
       "source_id": "SOAR-COMP-RUNTIME-ONBOARDING-SECTION",
       "target_id": "SOAR-UTIL-RUNTIME-UI-HELPERS",
@@ -24954,6 +24993,18 @@
       "evidence": "apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx",
       "owner": "QA",
       "last_verified_at": "2026-05-24",
+      "notes": ""
+    },
+    {
+      "id": "REL-WEBRUNTIME-023A",
+      "source_id": "SOAR-UTIL-RUNTIME-SIGNAL-CONDITION-STATE",
+      "target_id": "SOAR-TEST-DASHBOARD-RUNTIME-SIGNALS",
+      "relation_type": "verified_by",
+      "status": "verified_local",
+      "description": "Strategy-condition activity helper is covered by focused dashboard runtime signal tests.",
+      "evidence": "apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts",
+      "owner": "QA",
+      "last_verified_at": "2026-05-25",
       "notes": ""
     },
     {
@@ -28015,6 +28066,7 @@
         "SOAR-COMP-RUNTIME-SIDEBAR-SECTION",
         "SOAR-COMP-RUNTIME-ONBOARDING-SECTION",
         "SOAR-COMP-RUNTIME-SIGNALS-SECTION",
+        "SOAR-UTIL-RUNTIME-SIGNAL-CONDITION-STATE",
         "SOAR-UTIL-RUNTIME-DERIVATIONS",
         "SOAR-UTIL-RUNTIME-UI-HELPERS",
         "SOAR-UTIL-RUNTIME-TRADE-META",
@@ -28049,7 +28101,7 @@
       "evidence": "history/tasks/architecture-graph-web-runtime-surfaces-backfill-2026-05-24-task.md",
       "missing_links": "Fresh authenticated browser runtime journey remains separate",
       "risk_level": "critical",
-      "last_verified_at": "2026-05-24",
+      "last_verified_at": "2026-05-25",
       "notes": "Backfilled Web runtime surfaces across dashboard runtime sections helpers bot monitoring sections future signals portfolio history runtime APIs tests and docs."
     },
     {

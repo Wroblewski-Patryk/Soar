@@ -30,6 +30,14 @@ Do not turn uncertainty into optimism.
 
 ## Current Operational Override
 
+- 2026-05-25 `DASH-RUNTIME-SIGNAL-CONDITION-ACTIVE-2026-05-25`: confidence is
+  improved locally for `SOAR-DASHBOARD-001` and Web runtime signal surfaces.
+  Dashboard Home now counts and visually emphasizes explicit matched
+  `LONG`/`SHORT` strategy condition lines separately from accepted execution
+  signal truth. Blocked execution still renders the backend runtime state and
+  message/reason text. Focused proof passed RuntimeSignalsSection/helper tests
+  (`2` files / `9` tests), Web typecheck, Web lint, and diff check. Protected
+  production/browser readback remains outside this local repair lane.
 
 - 2026-05-25 `LUC-40-DATA-PERSISTENCE-KNOWN-STATE-2026-05-25`: data-persistence confidence is refreshed to evidence-backed `PARTIAL` for schema/migration integrity and ownership model coverage. `corepack pnpm --filter api exec prisma validate` passed, and `corepack pnpm --filter api exec prisma migrate status --schema prisma/schema.prisma` passed with `55` migrations and up-to-date schema. Known-state artifact: `history/tasks/luc-40-data-persistence-known-state-2026-05-25-task.md`. Residual gap: focused module API persistence pack timed out (`124054ms`), so entity-level runtime behavior remains partially verified until narrowed DB-backed packs complete.
 

@@ -716,6 +716,7 @@ const getBotRuntimeMonitoringAggregateUncached = async (
           shouldUseCurrentSignalContext
             ? item.lastSignalConditionLines
             : existing.lastSignalConditionLines,
+        lastSignalConditionActive: shouldUseCurrentSignalContext ? item.lastSignalConditionActive : existing.lastSignalConditionActive,
         lastSignalScoreSummary:
           shouldUseCurrentSignalContext
             ? item.lastSignalScoreSummary

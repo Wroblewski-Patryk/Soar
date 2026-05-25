@@ -8,6 +8,7 @@ import {
 } from "../../../../features/bots/utils/runtimeSignalLabelKeys";
 import InlinePager from "../../../../ui/components/InlinePager";
 import type { RuntimeSymbolWithLive, SignalPillValue } from "./types";
+import { hasMatchedSignalConditionScope } from "./runtimeSignalConditionState";
 
 type RuntimeSignalsSectionProps = {
   signalSymbols: RuntimeSymbolWithLive[];
@@ -37,7 +38,7 @@ type RuntimeSignalsSectionProps = {
   marketStateConfiguredOnlyLabel: string;
   marketStateUnresolvedLabel: string;
   marketsCount: number;
-  actionableSignalsCount: number;
+  conditionActiveSignalsCount: number;
   formatSignalScore: (value: number) => string;
   renderSymbolLabel?: (symbol: string) => ReactNode;
 };
@@ -147,7 +148,7 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
             <span className="inline-flex items-center gap-1.5">
             <LuSignal className="h-3.5 w-3.5 opacity-70" aria-hidden />
             <span className="opacity-70">{props.signalsLabel}:</span>
-            <span className="font-semibold">{props.actionableSignalsCount}</span>
+            <span className="font-semibold">{props.conditionActiveSignalsCount}</span>
           </span>
         </div>
       </div>
@@ -164,8 +165,10 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
             const lines = signal.lastSignalConditionLines ?? [];
             const longLines = lines.filter((line) => line.scope === "LONG");
             const shortLines = lines.filter((line) => line.scope === "SHORT");
-            const longActive = signalDirection === "LONG";
-            const shortActive = signalDirection === "SHORT";
+            const longConditionActive = hasMatchedSignalConditionScope(signal, "LONG");
+            const shortConditionActive = hasMatchedSignalConditionScope(signal, "SHORT");
+            const longActive = signalDirection === "LONG" || longConditionActive;
+            const shortActive = signalDirection === "SHORT" || shortConditionActive;
             const isNeutral = !longActive && !shortActive;
             const isConfiguredSnapshot =
               signal.runtimeMarketState === "CONFIGURED_ONLY" ||
@@ -213,14 +216,16 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
                   ) : null}
                   <div className="mt-3 grid grid-cols-2 gap-2.5 text-[11px] leading-4">
                     <div
+                      data-signal-scope="LONG"
+                      data-signal-active={longActive ? "true" : "false"}
                       className={`space-y-1.5 rounded-box transition-opacity duration-150 ${
-                        isConfiguredSnapshot
-                          ? "opacity-75"
-                          : longActive
+                        longActive
                             ? "opacity-100"
-                            : isNeutral
-                              ? "opacity-25 hover:opacity-100"
-                              : "opacity-50 hover:opacity-100"
+                            : isConfiguredSnapshot
+                              ? "opacity-75"
+                              : isNeutral
+                                ? "opacity-25 hover:opacity-100"
+                                : "opacity-50 hover:opacity-100"
                       }`}
                     >
                       <div className="mb-2 flex items-center gap-1">
@@ -257,14 +262,16 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
                       )}
                     </div>
                     <div
+                      data-signal-scope="SHORT"
+                      data-signal-active={shortActive ? "true" : "false"}
                       className={`space-y-1.5 rounded-box transition-opacity duration-150 ${
-                        isConfiguredSnapshot
-                          ? "opacity-75"
-                          : shortActive
+                        shortActive
                             ? "opacity-100"
-                            : isNeutral
-                              ? "opacity-25 hover:opacity-100"
-                              : "opacity-50 hover:opacity-100"
+                            : isConfiguredSnapshot
+                              ? "opacity-75"
+                              : isNeutral
+                                ? "opacity-25 hover:opacity-100"
+                                : "opacity-50 hover:opacity-100"
                       }`}
                     >
                       <div className="mb-2 flex items-center gap-1">

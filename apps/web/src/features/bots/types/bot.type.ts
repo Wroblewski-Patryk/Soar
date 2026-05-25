@@ -282,6 +282,10 @@ export type BotRuntimeSymbolStat = {
     right: string;
     matched?: boolean | null;
   }> | null;
+  lastSignalConditionActive?: {
+    long: boolean;
+    short: boolean;
+  } | null;
   lastSignalScoreSummary?: {
     longScore: number;
     shortScore: number;
