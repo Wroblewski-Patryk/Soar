@@ -1,10 +1,6 @@
-# Experimental follow-up topology for reducing Coolify build fanout after the
-# first Service Stack cutover is stable.
-#
-# Do not use this file for the first production stack migration. It intentionally
-# changes image/build semantics by using one API image for API plus all workers.
-# First prove docker-compose.coolify.yml in a parallel stack, then evaluate this
-# variant with local build/run proof and a separate Coolify parallel stack.
+# Reference topology for reducing Coolify build fanout by building one API
+# image and running API plus all workers from it with command overrides.
+# The primary Coolify stack manifest now uses the same build model.
 
 x-api-env: &api-env
   NODE_ENV: ${NODE_ENV:-production}
@@ -39,15 +35,14 @@ x-api-env: &api-env
   RUNTIME_SCAN_MAX_SYMBOLS: ${RUNTIME_SCAN_MAX_SYMBOLS:-100}
   RUNTIME_SIGNAL_LOOP_BOOTSTRAP_INTERVAL_MS: ${RUNTIME_SIGNAL_LOOP_BOOTSTRAP_INTERVAL_MS:-10000}
 
-x-api-image: &api-image
-  image: ${API_STACK_IMAGE:-soar-api-stack:${SOURCE_COMMIT:?SOURCE_COMMIT is required}}
-  build:
-    context: .
-    dockerfile: apps/api/Dockerfile
+x-api-image: &api-image ${API_STACK_IMAGE:-soar-api-stack:${SOURCE_COMMIT:?SOURCE_COMMIT is required}}
 
 services:
   api:
-    <<: *api-image
+    image: *api-image
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
     restart: unless-stopped
     environment:
       <<: *api-env
@@ -57,7 +52,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "node -e \"fetch('http://127.0.0.1:3001/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\"",
+          "node -e \"fetch('http://127.0.0.1:3001/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\"",
         ]
       interval: 15s
       timeout: 5s
@@ -75,7 +70,7 @@ services:
     restart: unless-stopped
     depends_on:
       api:
-        condition: service_healthy
+        condition: service_started
     environment:
       SERVICE_FQDN_WEB_3002: ${SERVICE_FQDN_WEB_3002:-https://soar.luckysparrow.ch}
       NODE_ENV: ${NODE_ENV:-production}
@@ -97,44 +92,44 @@ services:
       start_period: 45s
 
   workers-market-data:
-    <<: *api-image
+    image: *api-image
     restart: unless-stopped
     depends_on:
       api:
-        condition: service_healthy
+        condition: service_started
     environment:
       <<: *api-env
       NODE_OPTIONS: ${WORKER_NODE_OPTIONS:---max-old-space-size=384}
     command: ["node", "dist/workers/marketData.worker.js"]
 
   workers-market-stream:
-    <<: *api-image
+    image: *api-image
     restart: unless-stopped
     depends_on:
       api:
-        condition: service_healthy
+        condition: service_started
     environment:
       <<: *api-env
       NODE_OPTIONS: ${MARKET_STREAM_NODE_OPTIONS:---experimental-websocket --max-old-space-size=384}
     command: ["node", "dist/workers/marketStream.worker.js"]
 
   workers-backtest:
-    <<: *api-image
+    image: *api-image
     restart: unless-stopped
     depends_on:
       api:
-        condition: service_healthy
+        condition: service_started
     environment:
       <<: *api-env
       NODE_OPTIONS: ${WORKER_NODE_OPTIONS:---max-old-space-size=384}
     command: ["node", "dist/workers/backtest.worker.js"]
 
   workers-execution:
-    <<: *api-image
+    image: *api-image
     restart: unless-stopped
     depends_on:
       api:
-        condition: service_healthy
+        condition: service_started
     environment:
       <<: *api-env
       NODE_OPTIONS: ${WORKER_NODE_OPTIONS:---max-old-space-size=384}

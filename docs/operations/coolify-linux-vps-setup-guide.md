@@ -234,6 +234,9 @@ Why this exists:
   pressure and making same-SHA rollout harder;
 - recent production evidence showed API heap pressure and VPS reachability
   instability, so deploy fanout should be reduced before further release gates.
+- the active stack manifest builds the API image once and runs all four workers
+  from that image with command overrides, avoiding repeated API/worker image
+  builds on the VPS.
 
 First migration scope:
 - include app processes only:
@@ -319,14 +322,10 @@ The env check reports only variable names. It must not print secret values.
 
 Follow-up queue-reduction option:
 - `docker-compose.coolify.shared-api-image.yml` is an experimental second-stage
-  topology that builds one API image and runs the API plus all four workers from
-  that image with service command overrides.
-- Do not use it for the first production stack migration. First prove
-  `docker-compose.coolify.yml` in a parallel stack, capture smoke/SLO evidence,
-  and keep the old six Applications available for rollback.
-- After the first stack is stable, validate the shared-image variant with
-  `pnpm run docker:coolify:shared-api:config`, local build/run proof, and a
-  separate parallel Coolify stack before it can replace the first manifest.
+  reference manifest for the same shared-image semantics now used by the
+  primary `docker-compose.coolify.yml`.
+- Keep validating both manifests until the reference file is removed or folded
+  into a single canonical manifest.
 
 It fails if required variables are missing or still use placeholder material.
 

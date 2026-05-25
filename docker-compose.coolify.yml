@@ -31,8 +31,11 @@ x-api-env: &api-env
   RUNTIME_SCAN_MAX_SYMBOLS: ${RUNTIME_SCAN_MAX_SYMBOLS:-100}
   RUNTIME_SIGNAL_LOOP_BOOTSTRAP_INTERVAL_MS: ${RUNTIME_SIGNAL_LOOP_BOOTSTRAP_INTERVAL_MS:-10000}
 
+x-api-image: &api-image ${API_STACK_IMAGE:-soar-api-stack:${SOURCE_COMMIT:?SOURCE_COMMIT is required}}
+
 services:
   api:
+    image: *api-image
     build:
       context: .
       dockerfile: apps/api/Dockerfile
@@ -85,9 +88,7 @@ services:
       start_period: 45s
 
   workers-market-data:
-    build:
-      context: .
-      dockerfile: apps/api/Dockerfile.worker.market-data
+    image: *api-image
     restart: unless-stopped
     depends_on:
       api:
@@ -95,11 +96,10 @@ services:
     environment:
       <<: *api-env
       NODE_OPTIONS: ${WORKER_NODE_OPTIONS:---max-old-space-size=384}
+    command: ["node", "dist/workers/marketData.worker.js"]
 
   workers-market-stream:
-    build:
-      context: .
-      dockerfile: apps/api/Dockerfile.worker.market-stream
+    image: *api-image
     restart: unless-stopped
     depends_on:
       api:
@@ -107,11 +107,10 @@ services:
     environment:
       <<: *api-env
       NODE_OPTIONS: ${MARKET_STREAM_NODE_OPTIONS:---experimental-websocket --max-old-space-size=384}
+    command: ["node", "dist/workers/marketStream.worker.js"]
 
   workers-backtest:
-    build:
-      context: .
-      dockerfile: apps/api/Dockerfile.worker.backtest
+    image: *api-image
     restart: unless-stopped
     depends_on:
       api:
@@ -119,11 +118,10 @@ services:
     environment:
       <<: *api-env
       NODE_OPTIONS: ${WORKER_NODE_OPTIONS:---max-old-space-size=384}
+    command: ["node", "dist/workers/backtest.worker.js"]
 
   workers-execution:
-    build:
-      context: .
-      dockerfile: apps/api/Dockerfile.worker.execution
+    image: *api-image
     restart: unless-stopped
     depends_on:
       api:
@@ -131,3 +129,4 @@ services:
     environment:
       <<: *api-env
       NODE_OPTIONS: ${WORKER_NODE_OPTIONS:---max-old-space-size=384}
+    command: ["node", "dist/workers/execution.worker.js"]

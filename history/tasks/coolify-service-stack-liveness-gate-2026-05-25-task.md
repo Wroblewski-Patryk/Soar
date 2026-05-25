@@ -93,5 +93,8 @@ explicit `/ready` verification before traffic cutover or acceptance.
   during `docker compose up -d` because Web/workers waited on API
   `service_healthy` before the compose command could finish. The manifest now
   changes Web/worker dependencies to API `service_started`; readiness remains
-  enforced by explicit smoke before cutover. Parallel stack redeploy and token
-  cleanup remain open.
+  enforced by explicit smoke before cutover. A later deploy was cancelled after
+  the separate worker Dockerfiles still caused long repeated API image
+  build/export work on the VPS. The primary manifest now builds one API image
+  and runs workers from it through command overrides. Parallel stack redeploy
+  and token cleanup remain open.
