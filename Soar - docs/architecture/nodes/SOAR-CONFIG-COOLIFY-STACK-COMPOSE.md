@@ -19,7 +19,7 @@ tags: [soar-map, config, operations, verified_local]
 | --- | --- |
 | Description | Production-oriented Coolify Service Stack manifest for API Web and split worker app processes using external production Postgres and Redis. |
 | File path | docker-compose.coolify.yml |
-| Related files | .env.coolify.example, docker-compose.vps.yml |
+| Related files | .env.coolify.example, docker-compose.vps.yml, docker-compose.coolify.shared-api-image.yml |
 | Parent | [[SOAR-FEATURE-OPS-CONFIG-PIPELINE]] |
 | Children |  |
 | Depends on | [[SOAR-CONFIG-VPS-COMPOSE]], [[SOAR-DOC-COOLIFY-VPS]] |

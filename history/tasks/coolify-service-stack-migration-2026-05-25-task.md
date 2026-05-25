@@ -55,7 +55,7 @@
 | Coordinator | Active chat | AGENTS, active mission, task board | Integration, task closure, source-of-truth updates | Mission packet and final acceptance | Parent validation gate | IN_PROGRESS |
 | Ops/Architecture | Explorer lane + coordinator | Coolify docs, repo ops docs, compose files | Read-only findings | Risk report and cutover constraints | Lane report received | COMPLETE |
 | Implementation | Coordinator | Existing Dockerfiles and compose topology | `docker-compose.coolify.yml`, `.env.coolify.example`, `package.json` | Validated stack manifest | Docker compose config | COMPLETE |
-| QA/Test | Coordinator | Package scripts, compose validator | Validation commands | Compose and guardrail proof | PASS locally; production blocked | BLOCKED |
+| QA/Test | QA lane + coordinator | Package scripts, compose validator, env preflight | Validation commands and env check tests | Compose, env preflight, and guardrail proof | PASS locally; production blocked | BLOCKED |
 | Documentation/Memory | Coordinator | Operations docs/state files | Ops docs and state updates | Cutover/rollback guidance | Docs/graph/guardrails updated | COMPLETE |
 
 ### Lane Checks
@@ -131,6 +131,14 @@ Production Coolify compose manifest, env template, runbook updates, and validati
 
 ### 4. Execute Implementation
 - Implementation notes: added `docker-compose.coolify.yml`, `.env.coolify.example`, and `docker:coolify:config`.
+- Follow-up implementation notes: added `scripts/checkCoolifyStackEnv.mjs`,
+  `ops:coolify-stack:env-check`, and the experimental
+  `docker-compose.coolify.shared-api-image.yml` variant for a later
+  shared-API-image worker topology. The shared-image variant is explicitly not
+  the first production cutover path.
+- Release gate refinement: `ops:rc:gates:prod-pipeline` now passes the explicit
+  production API base URL so the production pipeline cannot silently rely on a
+  localhost default.
 
 ### 5. Verify and Test
 - Validation performed:
@@ -139,11 +147,20 @@ Production Coolify compose manifest, env template, runbook updates, and validati
   - `corepack pnpm run architecture:graph:generate`
   - `corepack pnpm run architecture:graph:drift:strict`
   - `corepack pnpm run quality:guardrails`
+  - `corepack pnpm run ops:coolify-stack:env-check:test`
+  - `corepack pnpm run ops:coolify-stack:env-check:example`
+  - `node scripts/checkCoolifyStackEnv.mjs --stack-env-file .env.coolify.example`
+  - `corepack pnpm run docker:coolify:shared-api:config`
   - `curl.exe -I --max-time 10 https://vps.luckysparrow.ch`
 - Result:
   - local compose and guardrails PASS;
+  - env-check unit tests PASS `8/8`;
+  - `.env.coolify.example` PASS only with `--allow-placeholders`;
+  - strict `.env.coolify.example` check fails as expected and prints only
+    variable names, proving placeholders cannot be promoted accidentally;
+  - experimental shared-API-image compose config PASS locally;
   - architecture graph generated `644` nodes / `802` relations / `27` chains;
-  - strict graph drift PASS `800/800` covered and `0` missing;
+  - strict graph drift PASS `806/806` covered and `0` missing;
   - production Coolify reachability BLOCKED because the HTTPS request timed out.
 
 ### 6. Self-Review
@@ -151,6 +168,9 @@ Production Coolify compose manifest, env template, runbook updates, and validati
 - Technical debt introduced: no, this separates production stack concerns from local/VPS fallback.
 - Scalability assessment: one stack should reduce deploy queue fanout; memory caps guard host stability but must be tuned with SLO evidence.
 - Refinements made: externalized DB/Redis, required versioned encryption keys and source SHA, added health dependency ordering.
+- QA lane refinement: env preflight now trims values, rejects recommended
+  placeholders, validates production URL/database/Redis/SHA/secret/keyring
+  shapes, and rejects missing `--stack-env-file` paths without printing values.
 
 ### 7. Update Documentation and Knowledge
 - Docs updated: `Soar - docs/operations/coolify-linux-vps-setup-guide.md`, `Soar - docs/operations/deployment-rollback-playbook.md`, `Soar - docs/operations/post-deploy-smoke-checklist.md`, architecture graph records.
@@ -173,7 +193,9 @@ Production Coolify compose manifest, env template, runbook updates, and validati
 
 ## Result Report
 - Reality status: implemented locally, production deployment blocked.
-- Files changed: Coolify stack manifest/env template, package script, operations runbooks, architecture graph records, source-of-truth state.
+- Files changed: Coolify stack manifest/env template, env preflight script/tests,
+  experimental shared-API-image stack variant, package scripts, operations
+  runbooks, architecture graph records, source-of-truth state.
 - Deployment impact: no production mutation was performed because Coolify/VPS was unreachable from this environment.
 - Residual risk: stack proxy/domain parsing and production env copy still require Coolify UI/API proof; old six Applications must stay as rollback until the stack passes smoke and SLO monitoring.
 - Next action: when `https://vps.luckysparrow.ch` is reachable, create a parallel Coolify Service Stack from `docker-compose.coolify.yml`, copy existing production env values, set `SOURCE_COMMIT`, deploy, run smoke, then cut over domains only after proof.

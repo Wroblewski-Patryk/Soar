@@ -47,6 +47,29 @@ repository history.
 
 ### Latest Checkpoint
 
+- `COOLIFY-SERVICE-STACK-MIGRATION-2026-05-25` is implemented locally and
+  deployment-blocked. The coordinator added `docker-compose.coolify.yml` and
+  `.env.coolify.example` for a single Coolify Service Stack covering API, Web,
+  and the four split workers, with existing production Postgres/Redis kept
+  external for the first cutover. API/Web healthchecks, worker dependency on
+  healthy API, exact Web `SOURCE_COMMIT` build args, service FQDN variables,
+  and Node memory guardrails are now encoded. Operations docs now define the
+  parallel-stack cutover and rollback path, and the architecture graph includes
+  `SOAR-CONFIG-COOLIFY-STACK-COMPOSE`. The env preflight now validates required
+  stack variables and value shapes without printing secret values, and the
+  shared-API-image compose variant is documented as a second-stage experiment
+  after the first stack cutover is stable. Local proof passed
+  `docker:coolify:config`, `docker:coolify:shared-api:config`,
+  `ops:coolify-stack:env-check:test`, `ops:coolify-stack:env-check:example`,
+  the expected strict placeholder failure for `.env.coolify.example`, graph
+  generation (`644` nodes / `802` relations / `27` chains), strict graph drift
+  (`806/806`, `0` missing), and `quality:guardrails`. Production deployment was not attempted because
+  `https://vps.luckysparrow.ch` timed out from this environment. Next gate:
+  when Coolify is reachable, create a parallel Service Stack, copy existing
+  production env values without exposing secrets, set `SOURCE_COMMIT`, deploy,
+  prove API/Web/build-info/workers, then cut over domains while retaining the
+  old six Applications as rollback.
+
 - `USER-ACTION-EVIDENCE-INDEX-2026-05-25` is verified locally and extends the
   function journey evidence layer into route/control-level repair routing.
   The coordinator added a generated `user-action-index.csv`, JSON/status

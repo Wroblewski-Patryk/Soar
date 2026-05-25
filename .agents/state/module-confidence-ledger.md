@@ -1240,6 +1240,18 @@ Do not turn uncertainty into optimism.
   `200`; guardrails and strict graph drift passed. This improves local/VPS
   parity but does not replace protected production evidence or LIVE mutation
   approval.
+- 2026-05-25 `COOLIFY-SERVICE-STACK-MIGRATION-2026-05-25` applies to
+  `SOAR-OPERATIONS-001` and `SOAR-WORKERS-001`: one-stack Coolify deployment
+  topology is implemented locally for API, Web, and four split workers while
+  keeping existing production Postgres/Redis external. Proof:
+  `docker:coolify:config`, `docker:coolify:shared-api:config`,
+  `ops:coolify-stack:env-check:test`, `ops:coolify-stack:env-check:example`,
+  expected strict placeholder failure, architecture graph generation, strict
+  graph drift `806/806`, and `quality:guardrails` passed. The shared-API-image
+  variant is second-stage only after first-stack production proof. Confidence
+  remains `PARTIAL/BLOCKED` for
+  production because Coolify/VPS HTTPS reachability timed out and the parallel
+  stack has not yet been deployed or smoke-tested.
 - 2026-05-24 `PROD-UI-LEGACY-DASHBOARD-REDIRECTS-2026-05-24` applies to
   `SOAR-UX-A11Y-MOBILE-001`, `SOAR-DASHBOARD-001`, and `SOAR-OPERATIONS-001`:
   production UI clickthrough exposed three removed legacy dashboard routes

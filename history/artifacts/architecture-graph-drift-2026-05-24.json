@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-05-24",
   "total": {
-    "total": 797,
-    "covered": 797,
+    "total": 806,
+    "covered": 806,
     "missing": 0
   },
   "categories": {
@@ -49,20 +49,20 @@
       "missingSamples": []
     },
     "moduleDocs": {
-      "total": 44,
-      "covered": 44,
+      "total": 45,
+      "covered": 45,
       "missing": 0,
       "missingSamples": []
     },
     "architectureDocs": {
-      "total": 65,
-      "covered": 65,
+      "total": 71,
+      "covered": 71,
       "missing": 0,
       "missingSamples": []
     },
     "configAndPipelines": {
-      "total": 9,
-      "covered": 9,
+      "total": 11,
+      "covered": 11,
       "missing": 0,
       "missingSamples": []
     }

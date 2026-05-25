@@ -38,6 +38,21 @@ If web/api are healthy and issue is isolated to workers:
 - rollback/restart worker services only,
 - keep web/api online.
 
+### D) Coolify Service Stack Cutover Rollback
+If the new Soar Service Stack fails after domain cutover:
+- keep the old six Applications available until at least one stable monitoring
+  window proves the stack;
+- for API/Web routing failures, reattach domains or traffic routing to the old
+  `soar-api` and `soar-web` Applications;
+- for worker-only failures, stop the stack worker containers and restart the
+  old worker Applications only when their SHA is schema-compatible;
+- for migration/schema failures, do not destroy or roll back schema ad hoc;
+  return only to a schema-compatible application version or use the approved
+  backup/restore drill path.
+
+The stack migration must not include production Postgres/Redis data movement
+unless a separate data migration plan and restore proof are approved.
+
 ## Rollback Entry Point
 - Tool: Coolify/manual operator rollback to the previous stable deployment.
 - Trigger: failed production deployment or failed required post-deploy gate.
@@ -54,6 +69,10 @@ If web/api are healthy and issue is isolated to workers:
 5. Mark incident status:
    - `ROLLED_BACK`,
    - `STABLE_RESTORED` (after all checks green).
+
+For Service Stack cutover rollback, also record whether old Applications were
+left running, stopped, or domain-detached, and whether any stack containers
+remain active for investigation.
 
 ## Migration-Aware Guard
 If failed release included schema migration:

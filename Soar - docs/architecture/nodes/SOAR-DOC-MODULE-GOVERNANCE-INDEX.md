@@ -19,7 +19,7 @@ tags: [soar-map, documentation, documentation, verified_local]
 | --- | --- |
 | Description | Module documentation governance and currently unmapped module reference docs. |
 | File path | docs/modules/module-documentation.md |
-| Related files | docs/modules/api-isolation.md, docs/modules/api-pagination.md, docs/modules/api-users.md, docs/modules/module-deep-dive-template.md, docs/modules/module-doc-status-index.md, docs/modules/system-modules.md |
+| Related files | docs/modules/README.md, docs/modules/api-isolation.md, docs/modules/api-pagination.md, docs/modules/api-users.md, docs/modules/module-deep-dive-template.md, docs/modules/module-doc-status-index.md, docs/modules/system-modules.md |
 | Parent | [[SOAR-FEATURE-ARCHITECTURE-EVIDENCE-GRAPH]] |
 | Children |  |
 | Depends on | [[SOAR-DOC-ARCHITECTURE-GRAPH-SYSTEM]] |

@@ -17,6 +17,25 @@ Last updated: 2026-05-25
 
 ## IN PROGRESS
 
+- [ ] `COOLIFY-SERVICE-STACK-MIGRATION-2026-05-25 release: migrate Soar app processes toward one Coolify Service Stack`
+  - 2026-05-25: Local implementation is ready, production deployment is
+    blocked by Coolify/VPS reachability. Added `docker-compose.coolify.yml`
+    and `.env.coolify.example` for one stack containing API, Web, and four
+    split workers, using existing production Postgres/Redis as external
+    services during first cutover. Added no-secret
+    `ops:coolify-stack:env-check` with shape validation, and an experimental
+    shared-API-image compose variant for a later post-cutover optimization.
+    Updated Coolify, smoke, rollback docs and architecture graph records.
+    Validation PASS: `docker:coolify:config`,
+    `docker:coolify:shared-api:config`,
+    `ops:coolify-stack:env-check:test`, env example check, expected strict
+    placeholder fail, architecture graph generate, strict graph drift
+    `806/806` covered and `0` missing, `quality:guardrails`. Deployment BLOCKED:
+    `curl.exe -I --max-time 10 https://vps.luckysparrow.ch` timed out. Next:
+    when Coolify is reachable, create parallel stack, copy existing prod env,
+    set exact `SOURCE_COMMIT`, deploy, run smoke/SLO, then stop or detach old
+    six Applications only after proof.
+
 - [ ] `SOAR-FULL-READINESS-COORDINATION-2026-05-23 release: coordinate full readiness proof and blockers`
   - 2026-05-23: Operator asked the coordinator to make Soar work fully and
     correctly. This is a multi-lane readiness mission, not a literal unscoped

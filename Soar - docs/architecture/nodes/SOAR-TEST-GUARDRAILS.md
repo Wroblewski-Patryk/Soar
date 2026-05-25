@@ -7,7 +7,7 @@ layer: testing
 module: quality
 feature: ops-config-pipeline
 risk_level: 90
-completion_percent: 2026-05-24
+completion_percent: 2026-05-25
 last_verified_at: verified_local
 verification_status: Quality gate used by this graph mission.
 tags: [soar-map, test, testing, verified_local]
@@ -22,7 +22,7 @@ tags: [soar-map, test, testing, verified_local]
 | Related files | scripts/repoGuardrails.test.mjs |
 | Parent | [[SOAR-FEATURE-OPS-CONFIG-PIPELINE]] |
 | Children |  |
-| Depends on | [[SOAR-CONFIG-ROOT-PACKAGE]], [[SOAR-CONFIG-API-PACKAGE]], [[SOAR-CONFIG-WEB-PACKAGE]], [[SOAR-CONFIG-LOCAL-COMPOSE]], [[SOAR-CONFIG-VPS-COMPOSE]] |
+| Depends on | [[SOAR-CONFIG-ROOT-PACKAGE]], [[SOAR-CONFIG-API-PACKAGE]], [[SOAR-CONFIG-WEB-PACKAGE]], [[SOAR-CONFIG-LOCAL-COMPOSE]], [[SOAR-CONFIG-VPS-COMPOSE]], [[SOAR-CONFIG-COOLIFY-STACK-COMPOSE]] |
 | Used by | [[SOAR-FEATURE-OPS-CONFIG-PIPELINE]] |
 | UI related |  |
 | API related |  |
@@ -40,6 +40,7 @@ tags: [soar-map, test, testing, verified_local]
 - checks -> [[SOAR-CONFIG-VPS-COMPOSE]] (verified_local)
 - defines_command <- [[SOAR-CONFIG-ROOT-PACKAGE]] (verified_local)
 - executes <- [[SOAR-PIPELINE-GITHUB-CI]] (verified_local)
+- verified_by <- [[SOAR-CONFIG-COOLIFY-STACK-COMPOSE]] (verified_local)
 
 ## Evidence Rule
 

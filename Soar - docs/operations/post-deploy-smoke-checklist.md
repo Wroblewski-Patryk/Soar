@@ -16,6 +16,11 @@ Quickly confirm that the deployed revision is operational for critical user flow
 - Deployment finished with green build/migration/health gates.
 - Candidate SHA and environment are known.
 - Worker services are running.
+- For the Coolify Service Stack topology, API and Web stack healthchecks are
+  green and all four worker containers are running after the API health gate.
+- For the Coolify Service Stack topology, `ops:coolify-stack:env-check` has
+  passed in the deploy environment or an equivalent no-secret variable-name and
+  value-shape readiness check has been captured.
 
 ## Smoke Checklist
 
@@ -58,6 +63,9 @@ Quickly confirm that the deployed revision is operational for critical user flow
 - market/signal updates visible in runtime within expected interval.
 - Coolify Redis resource is `running:healthy`; Redis restart-count growth or
   AOF corruption logs fail the smoke.
+- For Service Stack cutover, verify the old six Applications are still
+  available for rollback until this smoke and the required monitoring window
+  pass.
 
 ### 7) Data write baseline (paper-safe)
 - create one controlled paper bot/backtest action,

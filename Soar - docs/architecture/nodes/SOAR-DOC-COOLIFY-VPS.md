@@ -35,6 +35,7 @@ tags: [soar-map, documentation, documentation, verified_local]
 ## Relations
 
 - describes -> [[SOAR-CONFIG-VPS-COMPOSE]] (verified_local)
+- describes -> [[SOAR-CONFIG-COOLIFY-STACK-COMPOSE]] (verified_local)
 - documented_by <- [[SOAR-FEATURE-OPS-CONFIG-PIPELINE]] (verified_local)
 
 ## Evidence Rule

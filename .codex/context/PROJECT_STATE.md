@@ -4,6 +4,30 @@ Last updated: 2026-05-25
 
 ## Current Candidate Deployment Status
 
+- `COOLIFY-SERVICE-STACK-MIGRATION-2026-05-25` is implemented locally and
+  blocked on VPS/Coolify reachability for production deployment. The new
+  `docker-compose.coolify.yml` defines one Coolify Service Stack for Soar app
+  processes (`api`, `web`, and four split workers) while keeping existing
+  production Postgres/Redis external for the first cutover. `.env.coolify.example`
+  documents the required Coolify variables without secrets, including exact
+  `SOURCE_COMMIT`, service FQDNs, existing DB/Redis URLs, versioned encryption
+  keys, worker topology, and memory guardrails. The no-secret
+  `ops:coolify-stack:env-check` preflight now rejects missing values,
+  placeholders, invalid SHA/URL/secret/keyring shapes, and prints only
+  variable names. `docker-compose.coolify.shared-api-image.yml` is documented
+  as a later queue-reduction experiment, not the first cutover path. Operations
+  docs now describe parallel-stack cutover and rollback. Local proof passed
+  `docker:coolify:config`, `docker:coolify:shared-api:config`,
+  `ops:coolify-stack:env-check:test`, `ops:coolify-stack:env-check:example`,
+  expected placeholder-fail strict env check, architecture graph generation,
+  strict graph drift (`806/806`, `0` missing), and `quality:guardrails`.
+  Production mutation was not performed because
+  `curl.exe -I --max-time 10 https://vps.luckysparrow.ch` timed out. Next
+  action is to create/deploy the parallel stack only after Coolify is reachable,
+  then smoke API/Web/build-info/workers before detaching or stopping the old
+  six Applications. No production secret, DB migration, or LIVE exchange
+  mutation was performed.
+
 - `FUNCTION-JOURNEY-EVIDENCE-INDEX-2026-05-25` is verified locally. Soar now
   has generated route/function/API/user-action evidence indexes layered on the
   architecture graph: `function-chain-evidence-index.csv`,

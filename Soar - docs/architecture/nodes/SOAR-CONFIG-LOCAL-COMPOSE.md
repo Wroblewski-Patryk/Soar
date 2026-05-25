@@ -23,7 +23,7 @@ tags: [soar-map, config, operations, verified_local]
 | Parent | [[SOAR-FEATURE-OPS-CONFIG-PIPELINE]] |
 | Children |  |
 | Depends on | [[SOAR-CONFIG-ROOT-PACKAGE]] |
-| Used by | [[SOAR-CONFIG-VPS-COMPOSE]] |
+| Used by | [[SOAR-CONFIG-VPS-COMPOSE]], [[SOAR-CONFIG-COOLIFY-STACK-COMPOSE]] |
 | UI related |  |
 | API related |  |
 | Database related | [[SOAR-TEST-GUARDRAILS]] |

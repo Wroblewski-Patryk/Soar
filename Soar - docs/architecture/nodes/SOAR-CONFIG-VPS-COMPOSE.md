@@ -19,11 +19,11 @@ tags: [soar-map, config, operations, verified_local]
 | --- | --- |
 | Description | VPS/Coolify compose topology reference for deployed services. |
 | File path | docker-compose.vps.yml |
-| Related files | docker-compose.yml |
+| Related files | docker-compose.yml, docker-compose.coolify.yml |
 | Parent | [[SOAR-FEATURE-OPS-CONFIG-PIPELINE]] |
 | Children |  |
 | Depends on | [[SOAR-CONFIG-ROOT-PACKAGE]], [[SOAR-CONFIG-LOCAL-COMPOSE]] |
-| Used by | [[SOAR-PIPELINE-GITHUB-CI]] |
+| Used by | [[SOAR-CONFIG-COOLIFY-STACK-COMPOSE]] |
 | UI related |  |
 | API related |  |
 | Database related | [[SOAR-TEST-GUARDRAILS]] |
@@ -37,6 +37,7 @@ tags: [soar-map, config, operations, verified_local]
 - checks <- [[SOAR-TEST-GUARDRAILS]] (verified_local)
 - parallels <- [[SOAR-CONFIG-LOCAL-COMPOSE]] (verified_local)
 - describes <- [[SOAR-DOC-COOLIFY-VPS]] (verified_local)
+- extends <- [[SOAR-CONFIG-COOLIFY-STACK-COMPOSE]] (verified_local)
 
 ## Evidence Rule
 

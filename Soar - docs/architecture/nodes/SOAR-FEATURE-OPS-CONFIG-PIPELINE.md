@@ -7,9 +7,9 @@ layer: operations
 module: ops
 feature: ops-config-pipeline
 risk_level: 80
-completion_percent: 2026-05-24
+completion_percent: 2026-05-25
 last_verified_at: verified_local
-verification_status: Config/pipeline graph backfill only; no runtime behavior changed.
+verification_status: Config/pipeline graph includes the production Coolify Service Stack migration manifest.
 tags: [soar-map, feature, operations, verified_local]
 ---
 
@@ -21,7 +21,7 @@ tags: [soar-map, feature, operations, verified_local]
 | File path | docs/engineering/local-development.md |
 | Related files | docs/operations/coolify-linux-vps-setup-guide.md, docs/operations/post-deploy-smoke-checklist.md |
 | Parent |  |
-| Children | [[SOAR-CONFIG-ROOT-PACKAGE]], [[SOAR-CONFIG-PNPM-WORKSPACE]], [[SOAR-CONFIG-API-PACKAGE]], [[SOAR-CONFIG-WEB-PACKAGE]], [[SOAR-CONFIG-MOBILE-PACKAGE]], [[SOAR-CONFIG-SHARED-PACKAGE]], [[SOAR-CONFIG-LOCAL-COMPOSE]], [[SOAR-CONFIG-VPS-COMPOSE]], [[SOAR-PIPELINE-GITHUB-CI]] |
+| Children | [[SOAR-CONFIG-ROOT-PACKAGE]], [[SOAR-CONFIG-PNPM-WORKSPACE]], [[SOAR-CONFIG-API-PACKAGE]], [[SOAR-CONFIG-WEB-PACKAGE]], [[SOAR-CONFIG-MOBILE-PACKAGE]], [[SOAR-CONFIG-SHARED-PACKAGE]], [[SOAR-CONFIG-LOCAL-COMPOSE]], [[SOAR-CONFIG-VPS-COMPOSE]], [[SOAR-CONFIG-COOLIFY-STACK-COMPOSE]], [[SOAR-PIPELINE-GITHUB-CI]] |
 | Depends on | [[SOAR-DOC-LOCAL-DEVELOPMENT]], [[SOAR-DOC-COOLIFY-VPS]] |
 | Used by | [[SOAR-AGENT-COORDINATOR]] |
 | UI related |  |
@@ -38,6 +38,7 @@ tags: [soar-map, feature, operations, verified_local]
 - documented_by -> [[SOAR-DOC-LOCAL-DEVELOPMENT]] (verified_local)
 - documented_by -> [[SOAR-DOC-TESTING]] (verified_local)
 - documented_by -> [[SOAR-DOC-COOLIFY-VPS]] (verified_local)
+- has_source -> [[SOAR-CONFIG-COOLIFY-STACK-COMPOSE]] (verified_local)
 
 ## Evidence Rule
 

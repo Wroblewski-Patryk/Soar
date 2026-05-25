@@ -4,6 +4,28 @@ Last updated: 2026-05-25
 
 ## Next Tiny Task
 
+Coolify Service Stack migration:
+`COOLIFY-SERVICE-STACK-MIGRATION-2026-05-25` is locally ready and production
+blocked. `docker-compose.coolify.yml` and `.env.coolify.example` now define a
+single Coolify Service Stack for API, Web, and four split workers while using
+the existing production Postgres/Redis resources externally for the first
+cutover. Operations docs define the parallel-stack deploy, smoke, and rollback
+path. The stack env preflight rejects missing values, placeholders, invalid
+SHA/URL/secret/keyring shapes, and reports only variable names. The
+shared-API-image compose variant is available only as a later experiment after
+the first stack is stable. Local validation passed `docker:coolify:config`,
+`docker:coolify:shared-api:config`, `ops:coolify-stack:env-check:test`,
+`ops:coolify-stack:env-check:example`, expected strict placeholder failure,
+architecture graph generation, strict graph drift (`806/806`, `0` missing),
+and `quality:guardrails`. Production deployment was not attempted because
+`https://vps.luckysparrow.ch` timed out. Next exact task when Coolify is
+reachable: create the parallel Service Stack from `docker-compose.coolify.yml`,
+copy current production env values into Coolify without exposing secrets, set
+exact `SOURCE_COMMIT`, deploy, prove API `/health` and `/ready`, Web `/` and
+`/api/build-info`, worker container stability/runtime freshness, then cut over
+domains and keep old six Applications available as rollback until an SLO window
+passes.
+
 Function journey evidence:
 `FUNCTION-JOURNEY-EVIDENCE-INDEX-2026-05-25` is verified locally. Before
 starting any user-reported repair, use
