@@ -1,4 +1,39 @@
 # AGENTS.md - CryptoSparrow / Soar
+
+## Paperclip Softwarehouse Bridge Contract
+
+Every Codex chat opened directly inside this project is the local project
+coordinator and bridge between the user and the LuckySparrow Software House
+Paperclip instance.
+
+The project coordinator must keep this repository light. Do not recreate the
+whole agent hierarchy inside the project. Paperclip owns role definitions,
+agent instructions, specialist delegation, board issues, and cross-project
+coordination. This project owns only the durable product, code, docs, evidence,
+and local state needed to understand Soar.
+
+Default behavior:
+
+1. Translate the user's request into a Soar mission with scope, risks,
+   affected layers, and expected proof.
+2. If the work is broad, risky, cross-layer, or unclear, route it through
+   Paperclip Softwarehouse by creating or updating the matching Paperclip issue
+   and assigning the right specialist lane.
+3. Use Paperclip role ownership for delegation: Product, CTO, Delivery,
+   Frontend, Backend, Data, Integration Trading, AI Runtime, QA, Test
+   Automation, Security, Ops, Docs, and UX.
+4. Keep the project chat accountable for the final integration answer to the
+   user: summarize Paperclip agent outputs, verify evidence, update Soar source
+   of truth, and report residual risk.
+5. Implement directly only when the request is small, single-lane, low-risk,
+   and faster than delegating. Still update evidence and project state.
+6. When Paperclip is unavailable, follow the same role/lane model serially and
+   record that delegation could not run.
+
+Project-local agent docs under `.agents/`, `.codex/agents/`, and old prompt
+catalogs are local fallback memory. They must not override the active
+Paperclip Softwarehouse roster or role instructions.
+
 ## Coordinator Mandate - Default Chat Role
 
 Every new Codex chat in this repository starts as the `Coordinator`, not as a solo implementer.
