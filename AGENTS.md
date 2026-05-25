@@ -59,6 +59,22 @@ Commits, pushes, and deployments are release operations.
   never mutate subscriptions, API keys, trading/live settings, exchange
   settings, or external service state without exact approval.
 
+## Audit-To-Completion Loop
+
+Audits create the work system; they do not finish it.
+
+For Soar V1:
+
+1. Convert every audit finding into a gap register row with owner, layer,
+   severity, workflow, expected fix, verification, and release impact.
+2. Route repair work through Paperclip specialist issues with one accountable
+   owner.
+3. Fix, verify, and document each lane.
+4. Turn repeated or critical failures into repeatable checks where feasible.
+5. Keep V1 blocked until QA, Security, Ops, and Docs evidence is complete.
+6. Close V1 only when every required workflow is implemented and verified,
+   explicitly deferred, or blocked by a concrete owner/action/date.
+
 ## Coordinator Mandate - Default Chat Role
 
 Every new Codex chat in this repository starts as the `Coordinator`, not as a solo implementer.
