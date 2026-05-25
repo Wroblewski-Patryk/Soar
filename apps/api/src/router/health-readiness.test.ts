@@ -34,6 +34,7 @@ afterEach(async () => {
   restoreEnv('RUNTIME_LIVE_EMERGENCY_STOP', originalLiveEmergencyStop);
   __runtimeDependencyReadinessInternals.setPingRedisForTests(null);
   __runtimeDependencyReadinessInternals.setPingDatabaseForTests(null);
+  await __runtimeDependencyReadinessInternals.closeRedisClientForTests();
   await prisma.user.deleteMany({
     where: {
       email: {

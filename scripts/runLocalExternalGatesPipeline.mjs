@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { spawnSync } from 'node:child_process';
-import { readdir } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import {
   buildOpsRequestHeaders,
@@ -54,6 +54,7 @@ const parseArgs = () => {
     skipEvidenceCheck: false,
     strictEvidenceCheck: false,
     requireProductionGate2: false,
+    expectedSha: '',
     evidenceOutput: 'history/artifacts/_artifacts-rc-evidence-check-latest.json',
     windowDays: [7, 30],
   };
@@ -86,6 +87,7 @@ const parseArgs = () => {
     if (arg === '--skip-evidence-check') options.skipEvidenceCheck = true;
     if (arg === '--strict-evidence-check') options.strictEvidenceCheck = true;
     if (arg === '--require-production-gate2') options.requireProductionGate2 = true;
+    if (arg === '--expected-sha') options.expectedSha = args[index + 1] ?? options.expectedSha;
     if (arg === '--evidence-output') options.evidenceOutput = args[index + 1] ?? options.evidenceOutput;
     if (arg === '--window-days') {
       const raw = args[index + 1] ?? '';
@@ -125,7 +127,44 @@ const hasSloInputs = async () => {
   }
 };
 
-const buildStatusWithOfflineFallback = async (allowOffline) => {
+const findLatestSloObservationArtifact = async () => {
+  const operationsDir = path.resolve(process.cwd(), 'history', 'operations');
+  try {
+    const entries = await readdir(operationsDir);
+    const candidates = entries
+      .filter((name) => name.startsWith('_artifacts-slo-window-') && name.endsWith('.json'))
+      .sort((a, b) => b.localeCompare(a));
+    if (candidates.length === 0) return null;
+    return path.join(operationsDir, candidates[0]);
+  } catch {
+    return null;
+  }
+};
+
+const assertLatestSloObservationPassed = async () => {
+  const artifactPath = await findLatestSloObservationArtifact();
+  if (!artifactPath) {
+    throw new Error('SLO observation artifact was not created.');
+  }
+  const artifact = JSON.parse(await readFile(artifactPath, 'utf8'));
+  const overallStatus = String(artifact?.summary?.evaluation?.overallStatus ?? '').toUpperCase();
+  if (overallStatus !== 'PASS') {
+    const failed = Array.isArray(artifact?.summary?.evaluation?.failedObjectives)
+      ? artifact.summary.evaluation.failedObjectives.join(', ')
+      : 'unknown';
+    throw new Error(
+      `SLO observation failed with status ${overallStatus || 'UNKNOWN'} (${path.relative(
+        process.cwd(),
+        artifactPath
+      )}; failed objectives: ${failed || 'none'}).`
+    );
+  }
+};
+
+const expectedShaArgs = (expectedSha) =>
+  expectedSha ? ['--expected-sha', expectedSha] : [];
+
+const buildStatusWithOfflineFallback = async (allowOffline, expectedSha) => {
   if (allowOffline) {
     const hasInputs = await hasSloInputs();
     if (!hasInputs) {
@@ -137,13 +176,19 @@ const buildStatusWithOfflineFallback = async (allowOffline) => {
         'ops:rc:gates:status',
         '--',
         '--template-only',
+        ...expectedShaArgs(expectedSha),
       ]);
       return;
     }
   }
 
   try {
-    run('build RC external gates status', 'pnpm', ['run', 'ops:rc:gates:status']);
+    run('build RC external gates status', 'pnpm', [
+      'run',
+      'ops:rc:gates:status',
+      '--',
+      ...expectedShaArgs(expectedSha),
+    ]);
   } catch (error) {
     if (!allowOffline) {
       throw error;
@@ -156,6 +201,7 @@ const buildStatusWithOfflineFallback = async (allowOffline) => {
       'ops:rc:gates:status',
       '--',
       '--template-only',
+      ...expectedShaArgs(expectedSha),
     ]);
   }
 };
@@ -216,6 +262,7 @@ const main = () => {
           '--',
           '--profile',
           options.dbProfile,
+          ...expectedShaArgs(options.expectedSha),
         ]);
       }
 
@@ -235,9 +282,15 @@ const main = () => {
             'ops:rc:gates:status',
             '--',
             '--template-only',
+            ...expectedShaArgs(options.expectedSha),
           ]);
           if (!options.skipChecklistSync) {
-            run('sync RC checklist from gate status', 'pnpm', ['run', 'ops:rc:checklist:sync']);
+            run('sync RC checklist from gate status', 'pnpm', [
+              'run',
+              'ops:rc:checklist:sync',
+              '--',
+              ...expectedShaArgs(options.expectedSha),
+            ]);
           }
           if (!options.skipEvidenceCheck) {
             const evidenceArgs = [
@@ -289,6 +342,7 @@ const main = () => {
             ? { SLO_OPS_AUTH_HEADER_VALUE: authLayer.opsAuthHeaderValue }
             : {}),
         });
+        await assertLatestSloObservationPassed();
 
         if (!options.skipWindowReport) {
           for (const days of options.windowDays) {
@@ -303,9 +357,14 @@ const main = () => {
         }
       }
 
-      await buildStatusWithOfflineFallback(options.allowOffline);
+      await buildStatusWithOfflineFallback(options.allowOffline, options.expectedSha);
       if (!options.skipChecklistSync) {
-        run('sync RC checklist from gate status', 'pnpm', ['run', 'ops:rc:checklist:sync']);
+        run('sync RC checklist from gate status', 'pnpm', [
+          'run',
+          'ops:rc:checklist:sync',
+          '--',
+          ...expectedShaArgs(options.expectedSha),
+        ]);
       }
       if (!options.skipEvidenceCheck) {
         const evidenceArgs = [

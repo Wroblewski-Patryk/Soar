@@ -1,9 +1,20 @@
 #!/usr/bin/env node
 
+import { existsSync } from 'node:fs';
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const operationsDir = path.resolve(process.cwd(), 'docs', 'operations');
+const repoRoot = process.cwd();
+const resolveDocsRoot = () => {
+  const docsRoot = path.resolve(repoRoot, 'docs');
+  const migratedDocsRoot = path.resolve(repoRoot, 'Soar - docs');
+  if (existsSync(path.join(docsRoot, 'operations')) || !existsSync(migratedDocsRoot)) {
+    return docsRoot;
+  }
+  return migratedDocsRoot;
+};
+
+const operationsDir = path.join(resolveDocsRoot(), 'operations');
 const historyOperationsDir = path.resolve(process.cwd(), 'history', 'operations');
 
 const parseArgs = () => {
@@ -15,6 +26,7 @@ const parseArgs = () => {
     signoffPath: path.join(operationsDir, 'v1-rc-signoff-record.md'),
     templateOnly: false,
     today: '',
+    expectedSha: '',
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -29,6 +41,7 @@ const parseArgs = () => {
     if (arg === '--signoff-path') options.signoffPath = args[index + 1] ?? options.signoffPath;
     if (arg === '--template-only') options.templateOnly = true;
     if (arg === '--today') options.today = args[index + 1] ?? options.today;
+    if (arg === '--expected-sha') options.expectedSha = args[index + 1] ?? options.expectedSha;
   }
 
   return options;
@@ -367,6 +380,7 @@ const renderReport = ({
   gate3Runbook,
   gate4Signoff,
   generatedAt,
+  expectedSha = '',
 }) => {
   const artifactRel = path.relative(process.cwd(), artifactPath);
   const backupArtifactRel = backupGate.artifactPath
@@ -374,15 +388,16 @@ const renderReport = ({
     : 'n/a';
   const runbookRel = path.relative(process.cwd(), gate3Runbook.runbookPath);
   const signoffRel = path.relative(process.cwd(), gate4Signoff.signoffPath);
+  const gate2Pass = evaluation.queueLagPass && evaluation.probePass && evaluation.reliabilityPass;
   const gate2Label = gate2StatusLabel(
-    evaluation.queueLagPass,
+    gate2Pass,
     evaluation.productionEvidence,
     evaluation.details.environment
   );
   const gate1Label = gate1Runbook.evidenceComplete ? 'PASS' : backupGate.label;
   const manualFollowUps = buildManualFollowUps({
     gate1EvidenceComplete: gate1Runbook.evidenceComplete,
-    gate2QueueLagPass: evaluation.queueLagPass,
+    gate2QueueLagPass: gate2Pass,
     gate2ProductionEvidence: evaluation.productionEvidence,
     gate3EvidenceComplete: gate3Runbook.evidenceComplete,
     gate4Approved: gate4Signoff.approved,
@@ -390,6 +405,7 @@ const renderReport = ({
   const output = `# V1 RC External Gates Status
 
 Generated at (UTC): ${generatedAt}
+Expected SHA: \`${expectedSha || 'not provided'}\`
 
 Source artifact: \`${artifactRel}\`
 Observation window:
@@ -433,7 +449,7 @@ Observation window:
 
 ## Suggested Checklist Updates
 - Runtime and Operations Gates:
-  - Queue lag metrics reviewed and within baseline -> ${gate2Label}
+  - Production SLO metrics reviewed and within baseline -> ${gate2Label}
 - Exit Evidence Workpack:
   - ops(slo): define SLO targets and collect production observation window evidence -> ${gate2StatusLabel(
     evaluation.probePass && evaluation.reliabilityPass,
@@ -447,7 +463,14 @@ ${renderManualFollowUps(manualFollowUps)}
   return output;
 };
 
-const renderTemplateOnly = (backupGate, gate1Runbook, gate3Runbook, gate4Signoff, generatedAt) => {
+const renderTemplateOnly = (
+  backupGate,
+  gate1Runbook,
+  gate3Runbook,
+  gate4Signoff,
+  generatedAt,
+  expectedSha = ''
+) => {
   const backupArtifactRel = backupGate.artifactPath
     ? path.relative(process.cwd(), backupGate.artifactPath)
     : 'n/a';
@@ -464,6 +487,7 @@ const renderTemplateOnly = (backupGate, gate1Runbook, gate3Runbook, gate4Signoff
   return `# V1 RC External Gates Status
 
 Generated at (UTC): ${generatedAt}
+Expected SHA: \`${expectedSha || 'not provided'}\`
 
 Source artifact: not provided (template-only mode)
 
@@ -514,14 +538,24 @@ const main = async () => {
 
   if (options.templateOnly) {
     const outputPath = path.resolve(process.cwd(), options.output);
-    await writeFile(outputPath, renderTemplateOnly(backupGate, gate1Runbook, gate3Runbook, gate4Signoff, generatedAt));
+    await writeFile(
+      outputPath,
+      renderTemplateOnly(
+        backupGate,
+        gate1Runbook,
+        gate3Runbook,
+        gate4Signoff,
+        generatedAt,
+        options.expectedSha
+      )
+    );
     console.log(`RC external gates template written to: ${path.relative(process.cwd(), outputPath)}`);
     process.exit(0);
   }
 
   const inputPath = options.input
     ? path.resolve(process.cwd(), options.input)
-    : (await findLatestSloWindowReportArtifact()) ?? (await findLatestSloArtifact());
+    : (await findLatestSloArtifact()) ?? (await findLatestSloWindowReportArtifact());
 
   if (!inputPath) {
     throw new Error('No SLO artifact found. Run `pnpm run ops:slo:collect` first.');
@@ -537,6 +571,7 @@ const main = async () => {
     gate3Runbook,
     gate4Signoff,
     generatedAt,
+    expectedSha: options.expectedSha,
   });
 
   const outputPath = path.resolve(process.cwd(), options.output);

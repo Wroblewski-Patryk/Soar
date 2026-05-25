@@ -18,6 +18,7 @@ production SLO/RC gate.
 ## Scope
 
 - Backend runtime monitoring aggregate read service.
+- Backend runtime dependency readiness Redis probe behavior.
 - Focused aggregate concurrency regression coverage.
 - Architecture graph registry/note linkage for the new test file.
 - Mission, project state, risk, requirement, system-health, and task-board
@@ -34,6 +35,9 @@ production SLO/RC gate.
 4. Update the Obsidian-first architecture graph records for the new test file.
 5. Validate locally, commit once, push once, wait for Coolify deploy, and rerun
    production public smoke plus SLO/RC proof.
+6. If post-deploy SLO no longer shows aggregate 5xx/OOM but still fails on
+   `/ready` availability or latency, remove avoidable readiness probe pressure
+   before retrying SLO.
 
 ## Acceptance Criteria
 
@@ -44,12 +48,14 @@ production SLO/RC gate.
 - Architecture graph generation passes.
 - Repository guardrails pass with zero architecture graph drift.
 - Production activation remains blocked until post-deploy SLO/RC proof passes.
+- `/ready` must not create a new Redis TCP client for every probe when Redis is
+  already reachable.
 
 ## Definition Of Done
 
 This task is not fully done until the fix is deployed to production and the
-fresh SLO/RC gate passes. Local implementation is done when the scoped commit
-is created after all local validation gates pass.
+fresh SLO/RC gate passes. The code fix is deployed, but the fresh SLO/RC gate
+did not pass because the VPS became unreachable late in the observation.
 
 ## Result Report
 
@@ -65,7 +71,22 @@ is created after all local validation gates pass.
   - `corepack pnpm run lint`
   - `corepack pnpm run architecture:graph:generate`
   - `corepack pnpm run quality:guardrails`
-- Production result remains pending deploy and SLO/RC rerun.
+- Commit `287e77a1ef6aa79396cb485dafcf8d17a0fce033` reached public
+  build-info and public no-worker smoke passed.
+- Post-deploy SLO recorded `0` API 5xx delta and `2.59ms` average duration,
+  but overall status was `FAIL` because availability dropped to `fetch failed`
+  late in the window.
+- Follow-up network checks showed `141.227.149.67` unreachable on SSH `22` and
+  HTTPS `443` for API/Web/Coolify. Current blocker is VPS reachability, not a
+  proven remaining aggregate 5xx defect.
+- After VPS reachability returned, public no-worker and authenticated worker
+  smoke passed on `287e77a1`. A fresh 30-minute SLO still failed with
+  `/ready` availability `96.30%` and API average duration `572.85ms`, while
+  API 5xx delta stayed `0` and worker health/ready stayed `100%`.
+- Runtime dependency readiness now reuses a persistent Redis client for the
+  public/protected readiness ping instead of connecting and disconnecting on
+  every `/ready` probe. Local validation passed focused health/readiness
+  tests, API typecheck, repository lint, and guardrails.
 
 ## Forbidden
 
