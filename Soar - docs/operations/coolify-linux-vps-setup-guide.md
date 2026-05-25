@@ -93,6 +93,11 @@ Health checks:
 - `/health`
 - `/ready`
 
+Container liveness for the Coolify Service Stack uses `/health`. Do not use
+`/ready` as the Docker healthcheck because it is a dependency/readiness gate
+and can block Web/workers from starting during a parallel-stack rollout. Always
+verify `/ready` separately in the post-deploy smoke before accepting traffic.
+
 Required environment variables:
 - `NODE_ENV=production`
 - `DATABASE_URL=<coolify-postgres-url>`
@@ -264,7 +269,7 @@ Cutover order:
 3. Confirm backup/restore status for Postgres and Redis/AOF sanity.
 4. Deploy the new stack without deleting old resources.
 5. Confirm API health:
-   - stack `api` is healthy;
+   - stack `api` is healthy through the container liveness `/health` check;
    - public `https://api.soar.luckysparrow.ch/health` returns `200`;
    - public `https://api.soar.luckysparrow.ch/ready` returns `200`.
 6. Confirm Web health:

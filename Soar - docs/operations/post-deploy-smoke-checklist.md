@@ -17,7 +17,9 @@ Quickly confirm that the deployed revision is operational for critical user flow
 - Candidate SHA and environment are known.
 - Worker services are running.
 - For the Coolify Service Stack topology, API and Web stack healthchecks are
-  green and all four worker containers are running after the API health gate.
+  green and all four worker containers are running after the API liveness gate.
+  The API container healthcheck is `/health`; `/ready` remains a separate
+  release-readiness smoke item.
 - For the Coolify Service Stack topology, `ops:coolify-stack:env-check` has
   passed in the deploy environment or an equivalent no-secret variable-name and
   value-shape readiness check has been captured.

@@ -4,6 +4,17 @@ Last updated: 2026-05-25
 
 ## Current Readiness Checkpoint
 
+- `COOLIFY-SERVICE-STACK-LIVENESS-GATE-2026-05-25` IN PROGRESS. After the VPS
+  restart, public production API `/health` and `/ready` returned `200`. The
+  first parallel Coolify Compose Application build completed but startup failed
+  because API Docker health used `/ready`; dependent Web/workers waited on
+  `service_healthy`. The parallel stack was stopped and old production stayed
+  healthy. The manifest now uses `/health` for API container liveness and keeps
+  `/ready` as explicit post-deploy smoke before cutover. Local validation
+  passed `docker:coolify:config`, `ops:coolify-stack:env-check:test`,
+  `ops:coolify-stack:env-check:example`, and `quality:guardrails`. Next gate is
+  controlled temp-domain redeploy without cutting over production domains.
+
 - `FUNCTION-JOURNEY-EVIDENCE-INDEX-2026-05-25` VERIFIED LOCALLY. A generated
   function/web/API/user-action evidence index now exists on top of the
   architecture graph. It writes CSV indexes under

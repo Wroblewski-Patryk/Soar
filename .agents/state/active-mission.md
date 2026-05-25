@@ -10,7 +10,7 @@ repository history.
 ## Current Mission
 
 - Mission ID: `SOAR-FULL-READINESS-COORDINATION-2026-05-23`
-- Status: BLOCKED_ON_VPS_REACHABILITY
+- Status: IN_PROGRESS_PROD_STACK_DEPLOY
 - Selected objective: coordinate the next evidence-backed path toward Soar
   working correctly across current public production, local source-of-truth,
   runtime/trading safety, and remaining protected proof gates.
@@ -46,6 +46,22 @@ repository history.
   changes, then source-of-truth updates and final residual-risk report.
 
 ### Latest Checkpoint
+
+- `COOLIFY-SERVICE-STACK-LIVENESS-GATE-2026-05-25` is in progress. VPS
+  reachability returned after operator restart and public API `/health` plus
+  `/ready` are `200`. A parallel Docker Compose Application was created for
+  the new single-stack topology and the old six Applications had auto-deploy
+  disabled to avoid another six-way deploy fanout. The first stack deploy built
+  the API/Web images successfully but failed during startup because the API
+  Docker healthcheck used `/ready`, causing Web and worker services to block on
+  `condition: service_healthy`. The parallel stack was stopped and public
+  production remained healthy. The manifest now uses `/health` for API
+  container liveness while preserving `/ready` as the mandatory post-deploy
+  smoke. Local validation passed `docker:coolify:config`,
+  `ops:coolify-stack:env-check:test`, `ops:coolify-stack:env-check:example`,
+  and `quality:guardrails`. Next gate: commit/push this minimal fix, redeploy
+  the parallel stack to temp domains only, then run API/Web/build-info/worker
+  smoke before any production domain cutover.
 
 - `COOLIFY-SERVICE-STACK-MIGRATION-2026-05-25` is implemented locally and
   deployment-blocked. The coordinator added `docker-compose.coolify.yml` and

@@ -35,6 +35,19 @@ Last updated: 2026-05-25
     when Coolify is reachable, create parallel stack, copy existing prod env,
     set exact `SOURCE_COMMIT`, deploy, run smoke/SLO, then stop or detach old
     six Applications only after proof.
+  - 2026-05-25 restart/deploy follow-up: VPS reachability returned and public
+    API `/health` plus `/ready` returned `200`. A parallel Docker Compose
+    Application was created with old six Application auto-deploy disabled. The
+    first stack deploy built images successfully but failed during compose
+    startup because API Docker health used `/ready`, blocking Web/workers on
+    `service_healthy`. The parallel stack was stopped and old production
+    stayed healthy. `COOLIFY-SERVICE-STACK-LIVENESS-GATE-2026-05-25` changes
+    API container liveness to `/health`, keeps `/ready` as post-deploy smoke,
+    and passed `docker:coolify:config`,
+    `ops:coolify-stack:env-check:test`,
+    `ops:coolify-stack:env-check:example`, and `quality:guardrails`. Next:
+    commit/push the minimal fix, redeploy the parallel stack on temp domains,
+    then smoke API/Web/build-info/workers before any domain cutover.
 
 - [ ] `SOAR-FULL-READINESS-COORDINATION-2026-05-23 release: coordinate full readiness proof and blockers`
   - 2026-05-23: Operator asked the coordinator to make Soar work fully and

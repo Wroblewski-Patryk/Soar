@@ -5,7 +5,7 @@ Last updated: 2026-05-25
 ## Current Candidate Deployment Status
 
 - `COOLIFY-SERVICE-STACK-MIGRATION-2026-05-25` is implemented locally and
-  blocked on VPS/Coolify reachability for production deployment. The new
+  in controlled production rollout after VPS restart. The new
   `docker-compose.coolify.yml` defines one Coolify Service Stack for Soar app
   processes (`api`, `web`, and four split workers) while keeping existing
   production Postgres/Redis external for the first cutover. `.env.coolify.example`
@@ -21,12 +21,19 @@ Last updated: 2026-05-25
   `ops:coolify-stack:env-check:test`, `ops:coolify-stack:env-check:example`,
   expected placeholder-fail strict env check, architecture graph generation,
   strict graph drift (`806/806`, `0` missing), and `quality:guardrails`.
-  Production mutation was not performed because
-  `curl.exe -I --max-time 10 https://vps.luckysparrow.ch` timed out. Next
-  action is to create/deploy the parallel stack only after Coolify is reachable,
-  then smoke API/Web/build-info/workers before detaching or stopping the old
-  six Applications. No production secret, DB migration, or LIVE exchange
-  mutation was performed.
+  After Coolify became reachable, a parallel Docker Compose Application was
+  created with old six-Application auto-deploy disabled and production
+  public `/health` plus `/ready` staying `200`. The first parallel stack deploy
+  built API/Web successfully but failed during compose startup because API
+  Docker health used `/ready`, causing Web/workers to wait on a readiness gate.
+  The parallel stack was stopped, old production remained healthy, and the
+  manifest now uses `/health` for API liveness while keeping `/ready` as the
+  required post-deploy smoke. Validation for this liveness fix passed
+  `docker:coolify:config`, `ops:coolify-stack:env-check:test`,
+  `ops:coolify-stack:env-check:example`, and `quality:guardrails`. Next action
+  is a controlled redeploy to temp stack domains, then smoke
+  API/Web/build-info/workers before detaching or stopping the old six
+  Applications. No DB migration or LIVE exchange mutation was performed.
 
 - `FUNCTION-JOURNEY-EVIDENCE-INDEX-2026-05-25` is verified locally. Soar now
   has generated route/function/API/user-action evidence indexes layered on the
