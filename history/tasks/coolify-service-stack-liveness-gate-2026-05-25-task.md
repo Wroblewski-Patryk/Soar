@@ -5,7 +5,7 @@
 - Title: Use liveness healthcheck for first Coolify Service Stack rollout
 - Task Type: release
 - Current Stage: verification
-- Status: IN_PROGRESS
+- Status: BLOCKED
 - Owner: Ops/Release
 - Depends on: `COOLIFY-SERVICE-STACK-MIGRATION-2026-05-25`
 - Priority: P0
@@ -16,7 +16,7 @@
 - Iteration: 2026-05-25
 - Operation Mode: BUILDER
 - Mission ID: `SOAR-FULL-READINESS-COORDINATION-2026-05-23`
-- Mission Status: IN_PROGRESS
+- Mission Status: BLOCKED
 
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
@@ -87,7 +87,7 @@ explicit `/ready` verification before traffic cutover or acceptance.
 
 ## Result Report
 
-- In progress. Local manifest validation and guardrails passed after the
+- Partially verified and blocked. Local manifest validation and guardrails passed after the
   liveness change. Production public API `/health` and `/ready` remained `200`
   after VPS restart. The first redeploy of the liveness change still failed
   during `docker compose up -d` because Web/workers waited on API
@@ -96,5 +96,20 @@ explicit `/ready` verification before traffic cutover or acceptance.
   enforced by explicit smoke before cutover. A later deploy was cancelled after
   the separate worker Dockerfiles still caused long repeated API image
   build/export work on the VPS. The primary manifest now builds one API image
-  and runs workers from it through command overrides. Parallel stack redeploy
-  and token cleanup remain open.
+  and runs workers from it through command overrides.
+
+- The shared-image deploy for `6d77e941ecb6d66ddc9e1eed30e96ed79ac0049c`
+  finished in Coolify and production public `/health` stayed `ok` throughout.
+  Temp Web build-info passed and reported `gitSha=6d77e941...`. Temp API
+  smoke did not pass: resolving through the VPS with the temp API host returned
+  `503`, and the app status was `restarting:unknown`. Because logs showed at
+  least one worker heartbeat from the parallel stack, the coordinator stopped
+  the parallel app to avoid duplicate worker workload against the production
+  DB/Redis. Stop verification reached `exited:unhealthy`, while old production
+  `/health` remained `ok`.
+
+- Acceptance status: `BLOCKED`, not ready for domain cutover. The build fanout
+  problem is materially improved by the shared-image manifest, but the next
+  safe gate is API runtime/proxy diagnosis on the parallel stack with container
+  logs or Coolify terminal access, followed by temp API `/health` and `/ready`
+  proof before any production domain change.
