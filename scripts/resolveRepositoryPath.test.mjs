@@ -20,12 +20,12 @@ test('resolveRepositoryPath resolves regular repository paths', async () => {
 
 test('resolveRepositoryPath maps logical docs paths to migrated docs root when needed', async () => {
   const repoRoot = await mkdtemp(path.join(tmpdir(), 'soar-repo-path-'));
-  await mkdir(path.join(repoRoot, 'Soar - docs', 'analysis'), { recursive: true });
-  await writeFile(path.join(repoRoot, 'Soar - docs', 'analysis', 'documentation-drift.md'), '# Drift\n');
+  await mkdir(path.join(repoRoot, 'docs', 'analysis'), { recursive: true });
+  await writeFile(path.join(repoRoot, 'docs', 'analysis', 'documentation-drift.md'), '# Drift\n');
 
   assert.equal(
     resolveRepositoryPath(repoRoot, 'docs/analysis/documentation-drift.md'),
-    path.resolve(repoRoot, 'Soar - docs', 'analysis', 'documentation-drift.md'),
+    path.resolve(repoRoot, 'docs', 'analysis', 'documentation-drift.md'),
   );
   assert.equal(repositoryPathExists(repoRoot, 'docs/analysis/documentation-drift.md'), true);
 });

@@ -3,7 +3,7 @@
 ## Context
 
 The production readiness mission had a false release-evidence signal after the
-current documentation tree moved from `docs/operations` to `Soar - docs/operations`.
+current documentation tree moved from `docs/operations` to `docs/operations`.
 Several V1 release and RC helper scripts still used hard-coded
 `docs/operations` defaults, so preflight reported current RC artifacts as
 missing instead of reading the active operations docs.
@@ -33,7 +33,7 @@ behavior.
 
 ## Acceptance Criteria
 
-- Release scripts read `Soar - docs/operations` when `docs/operations` is not
+- Release scripts read `docs/operations` when `docs/operations` is not
   present.
 - Existing unit tests still pass.
 - No-secret production preflight detects RC artifacts as stale rather than

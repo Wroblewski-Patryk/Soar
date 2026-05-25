@@ -4,7 +4,7 @@ import { execFileSync, execSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
 
 const ROOT_DIR = process.cwd();
-const DOCS_ROOT_NAME = fs.existsSync(path.join(ROOT_DIR, "docs")) ? "docs" : "Soar - docs";
+const DOCS_ROOT_NAME = fs.existsSync(path.join(ROOT_DIR, "docs")) ? "docs" : "docs";
 const DOCS_ROOT_DIR = path.join(ROOT_DIR, DOCS_ROOT_NAME);
 const EXPECTED_LOCKFILE = "pnpm-lock.yaml";
 const FORBIDDEN_LOCKFILES = new Set([

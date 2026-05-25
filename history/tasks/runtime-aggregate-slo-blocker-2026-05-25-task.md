@@ -63,7 +63,7 @@ did not pass because the VPS became unreachable late in the observation.
   `apps/api/src/modules/bots/runtimeMonitoringAggregateRead.service.ts`.
 - Focused test added in
   `apps/api/src/modules/bots/runtimeMonitoringAggregateConcurrency.test.ts`.
-- Graph records updated under `Soar - docs/architecture`.
+- Graph records updated under `docs/architecture`.
 - Local validation passed:
   - `corepack pnpm --filter api exec vitest run src/modules/bots/runtimeMonitoringAggregateConcurrency.test.ts`
   - `corepack pnpm --filter api exec vitest run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts --sequence.concurrent=false --testTimeout=20000`

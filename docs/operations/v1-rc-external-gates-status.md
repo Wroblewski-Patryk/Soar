@@ -17,16 +17,16 @@ Observation window:
 ## Backup/Restore Evidence
 - Latest local artifact: `history\operations\_artifacts-db-restore-check-2026-05-25T01-18-21-188Z.txt`
 - Latest local result: PASS
-- Runbook source: `Soar - docs\operations\v1-rc-external-gates-runbook.md`
+- Runbook source: `docs\operations\v1-rc-external-gates-runbook.md`
 - Gate 1 runbook evidence complete: yes
 - Production validation: recorded
 
 ## Incident Readiness Evidence
-- Runbook source: `Soar - docs\operations\v1-rc-external-gates-runbook.md`
+- Runbook source: `docs\operations\v1-rc-external-gates-runbook.md`
 - Gate 3 evidence complete: yes
 
 ## Formal Sign-Off Evidence
-- Sign-off source: `Soar - docs\operations\v1-rc-signoff-record.md`
+- Sign-off source: `docs\operations\v1-rc-signoff-record.md`
 - Gate 4 approved status found: yes
 
 ## Derived Metrics (from SLO artifact)

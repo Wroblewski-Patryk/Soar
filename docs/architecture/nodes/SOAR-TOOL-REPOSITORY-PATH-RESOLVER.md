@@ -30,7 +30,7 @@ tags: [soar-map, utility, tooling, verified_local]
 | Tests related | [[SOAR-TEST-RELEASE-AUDIT-TOOLING]] |
 | Docs related | [[SOAR-DOC-LOCAL-DEVELOPMENT]], [[SOAR-DOC-TESTING]] |
 | Agent related | [[SOAR-AGENT-COORDINATOR]] |
-| Notes | Supports history artifacts and Soar - docs path compatibility for reusable audit validators. |
+| Notes | Supports history artifacts and docs path compatibility for reusable audit validators. |
 
 ## Relations
 

@@ -121,7 +121,7 @@ Implement local Docker parity scripts and docs, then validate compose rendering 
 - Reality status: verified
 
 ## Architecture Evidence
-- Architecture source reviewed: `Soar - docs/operations/coolify-linux-vps-setup-guide.md`, `Soar - docs/engineering/local-development.md`, `docker-compose.vps.yml`
+- Architecture source reviewed: `docs/operations/coolify-linux-vps-setup-guide.md`, `docs/engineering/local-development.md`, `docker-compose.vps.yml`
 - Fits approved architecture: yes
 - Mismatch discovered: yes, local infra-only compose did not mirror split-service VPS topology
 - Decision required from user: no
@@ -176,7 +176,7 @@ Implement local Docker parity scripts and docs, then validate compose rendering 
 - Refinements made: config command uses `.env.docker.example` so first validation is no-secret and copy-free.
 
 ### 7. Update Documentation and Knowledge
-- Docs updated: `Soar - docs/engineering/local-development.md`, `Soar - docs/operations/coolify-linux-vps-setup-guide.md`.
+- Docs updated: `docs/engineering/local-development.md`, `docs/operations/coolify-linux-vps-setup-guide.md`.
 - Context updated: `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, `.agents/state/active-mission.md`, `.agents/state/module-confidence-ledger.md`, `.agents/state/system-health.md`, `.agents/state/next-steps.md`, `.agents/state/quality-attribute-scenarios.md`, `.agents/state/risk-register.md`.
 - Learning journal updated: not applicable.
 

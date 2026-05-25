@@ -31,7 +31,7 @@ basic/security, upload, tests, and docs.
 - No runtime behavior changes.
 - No implementation refactor.
 - Preserve logical `docs/...` paths while using the current physical
-  `Soar - docs` docs root.
+  `docs` docs root.
 - Do not claim full repository graph coverage.
 
 ## Definition of Done

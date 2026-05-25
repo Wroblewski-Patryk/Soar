@@ -21,13 +21,13 @@ The no-secret V1 production preflight is the current release truth gate for the 
 Refresh no-secret preflight evidence and make the V1 preflight/release gate runners first-class graph nodes linked to tests, operator packet validation, docs, and the release audit tooling chain.
 
 ## Scope
-- `Soar - docs/architecture/registry/nodes.csv`
-- `Soar - docs/architecture/registry/features.csv`
-- `Soar - docs/architecture/registry/functions.csv`
-- `Soar - docs/architecture/registry/tests.csv`
-- `Soar - docs/architecture/registry/workflows.csv`
-- `Soar - docs/architecture/relations/dependencies.csv`
-- `Soar - docs/architecture/chains/chains.csv`
+- `docs/architecture/registry/nodes.csv`
+- `docs/architecture/registry/features.csv`
+- `docs/architecture/registry/functions.csv`
+- `docs/architecture/registry/tests.csv`
+- `docs/architecture/registry/workflows.csv`
+- `docs/architecture/relations/dependencies.csv`
+- `docs/architecture/chains/chains.csv`
 - generated architecture graph outputs
 - `history/artifacts/v1-preflight-production-no-secret-refresh-2026-05-24.json`
 - `history/releases/v1-preflight-production-no-secret-refresh-2026-05-24.md`

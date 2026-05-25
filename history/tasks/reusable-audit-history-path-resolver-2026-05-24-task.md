@@ -4,7 +4,7 @@
 
 After the documentation/history migration, reusable audit artifacts reference
 canonical `history/*` evidence paths and retained some logical `docs/*`
-source-of-truth paths that now resolve through the active `Soar - docs` root.
+source-of-truth paths that now resolve through the active `docs` root.
 The reusable audit aggregate `audit:manifest:verify` still used older path
 recognition in several checkers and failed before reaching the complete
 validation chain.
@@ -18,7 +18,7 @@ layout without weakening missing-path checks.
 
 - Keep path validation strict for real missing files.
 - Accept `history/*` as repository-owned evidence paths.
-- Resolve logical `docs/*` references through `Soar - docs` when the physical
+- Resolve logical `docs/*` references through `docs` when the physical
   `docs` root is absent.
 - Do not modify runtime behavior, production data, or LIVE exchange state.
 

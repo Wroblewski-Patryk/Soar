@@ -118,7 +118,7 @@
       "state": "stale",
       "required": true,
       "reason": "expected 2026-05-24, found 2026-05-23",
-      "path": "Soar - docs\\operations\\v1-rc-external-gates-status.md",
+      "path": "docs\\operations\\v1-rc-external-gates-status.md",
       "date": "2026-05-23"
     },
     {
@@ -127,7 +127,7 @@
       "state": "stale",
       "required": true,
       "reason": "expected 2026-05-24, found 2026-05-23",
-      "path": "Soar - docs\\operations\\v1-rc-signoff-record.md",
+      "path": "docs\\operations\\v1-rc-signoff-record.md",
       "date": "2026-05-23"
     },
     {
@@ -136,7 +136,7 @@
       "state": "stale",
       "required": true,
       "reason": "expected 2026-05-24, found 2026-05-23",
-      "path": "Soar - docs\\operations\\v1-release-candidate-checklist.md",
+      "path": "docs\\operations\\v1-release-candidate-checklist.md",
       "date": "2026-05-23"
     },
     {

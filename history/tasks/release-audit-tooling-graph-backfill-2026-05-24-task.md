@@ -19,13 +19,13 @@ The operator unblock validator, reusable audit validators, and shared repository
 Add release/audit tooling records, dependencies, tests, workflow, and execution chain to the architecture graph CSV source of truth, then regenerate graph outputs.
 
 ## Scope
-- `Soar - docs/architecture/registry/nodes.csv`
-- `Soar - docs/architecture/registry/features.csv`
-- `Soar - docs/architecture/registry/functions.csv`
-- `Soar - docs/architecture/registry/tests.csv`
-- `Soar - docs/architecture/registry/workflows.csv`
-- `Soar - docs/architecture/relations/dependencies.csv`
-- `Soar - docs/architecture/chains/chains.csv`
+- `docs/architecture/registry/nodes.csv`
+- `docs/architecture/registry/features.csv`
+- `docs/architecture/registry/functions.csv`
+- `docs/architecture/registry/tests.csv`
+- `docs/architecture/registry/workflows.csv`
+- `docs/architecture/relations/dependencies.csv`
+- `docs/architecture/chains/chains.csv`
 - generated graph node/chain/status/export outputs
 - project state and mission memory files
 
@@ -61,7 +61,7 @@ Add release/audit tooling records, dependencies, tests, workflow, and execution 
 - Reality status: verified
 
 ## Architecture Evidence
-- Architecture source reviewed: `AGENTS.md`; `.agents/state/active-mission.md`; `Soar - docs/architecture/registry/*.csv`; `scripts/generateArchitectureGraph.mjs`
+- Architecture source reviewed: `AGENTS.md`; `.agents/state/active-mission.md`; `docs/architecture/registry/*.csv`; `scripts/generateArchitectureGraph.mjs`
 - Fits approved architecture: yes
 - Mismatch discovered: no
 - Decision required from user: no

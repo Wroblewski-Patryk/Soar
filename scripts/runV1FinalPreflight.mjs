@@ -15,7 +15,7 @@ const REPO_ROOT = process.cwd();
 
 const resolveDocsRoot = () => {
   const docsRoot = path.resolve(REPO_ROOT, 'docs');
-  const migratedDocsRoot = path.resolve(REPO_ROOT, 'Soar - docs');
+  const migratedDocsRoot = path.resolve(REPO_ROOT, 'docs');
   if (existsSync(path.join(docsRoot, 'operations')) || !existsSync(migratedDocsRoot)) {
     return docsRoot;
   }

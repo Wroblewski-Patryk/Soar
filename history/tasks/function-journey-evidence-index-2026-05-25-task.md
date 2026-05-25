@@ -33,9 +33,9 @@ approval-gated LIVE proof.
 ## Scope
 - `scripts/generateFunctionJourneyIndexes.mjs`
 - `package.json`
-- `Soar - docs/architecture/indices/*.csv`
-- `Soar - docs/status/function-journey-index.md`
-- `Soar - docs/graphs/function-journey-index.json`
+- `docs/architecture/indices/*.csv`
+- `docs/status/function-journey-index.md`
+- `docs/graphs/function-journey-index.json`
 - `history/artifacts/function-journey-index-2026-05-25.json`
 - source-of-truth state and architecture documentation references
 
@@ -66,14 +66,14 @@ approval-gated LIVE proof.
 - Commands:
   - `pnpm run architecture:journey:index`
   - `pnpm run architecture:journey:index:strict`
-  - JSON parse check for `Soar - docs/graphs/function-journey-index.json`
+  - JSON parse check for `docs/graphs/function-journey-index.json`
   - JSON parse check for `history/artifacts/function-journey-index-2026-05-25.json`
 - Result: generated `27` function-chain rows, `36` web-journey rows, `96` API
   surface rows, `0` critical structural gaps, and `28` high proof gaps.
 - Reality status: verified
 
 ## Architecture Evidence
-- Architecture source reviewed: `Soar - docs/architecture/architecture-evidence-graph-system.md`
+- Architecture source reviewed: `docs/architecture/architecture-evidence-graph-system.md`
 - Fits approved architecture: yes
 - Mismatch discovered: no
 - Decision required from user: no

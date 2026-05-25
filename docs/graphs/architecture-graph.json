@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-05-25T15:28:54.687Z",
+  "generatedAt": "2026-05-25T17:03:23.666Z",
   "source": {
-    "nodes": "Soar - docs/architecture/registry/nodes.csv",
-    "relations": "Soar - docs/architecture/relations/dependencies.csv",
-    "chains": "Soar - docs/architecture/chains/chains.csv"
+    "nodes": "docs/architecture/registry/nodes.csv",
+    "relations": "docs/architecture/relations/dependencies.csv",
+    "chains": "docs/architecture/chains/chains.csv"
   },
   "nodes": [
     {
@@ -17284,7 +17284,7 @@
       "completion_percent": "100",
       "last_verified_at": "2026-05-24",
       "verification_status": "verified_local",
-      "notes": "Supports history artifacts and Soar - docs path compatibility for reusable audit validators."
+      "notes": "Supports history artifacts and docs path compatibility for reusable audit validators."
     },
     {
       "id": "SOAR-TOOL-OPERATOR-UNBLOCK-PACKET-CHECK",

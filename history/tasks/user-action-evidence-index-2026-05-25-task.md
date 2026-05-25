@@ -95,7 +95,7 @@ Verified local tooling plus generated artifacts and source-of-truth updates.
 - Reality status: verified locally.
 
 ## Architecture Evidence
-- Architecture source reviewed: `Soar - docs/architecture/architecture-evidence-graph-system.md`.
+- Architecture source reviewed: `docs/architecture/architecture-evidence-graph-system.md`.
 - Fits approved architecture: yes.
 - Mismatch discovered: no.
 - Decision required from user: no.

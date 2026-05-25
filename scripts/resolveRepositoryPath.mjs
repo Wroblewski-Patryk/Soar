@@ -8,7 +8,7 @@ export const resolveRepositoryPath = (repoRoot, relativePath) => {
 
     const migratedDocsPath = path.resolve(
       repoRoot,
-      'Soar - docs',
+      'docs',
       String(relativePath).slice('docs/'.length),
     );
     if (existsSync(migratedDocsPath)) return migratedDocsPath;

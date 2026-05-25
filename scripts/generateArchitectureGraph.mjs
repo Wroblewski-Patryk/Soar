@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
-const docsRootName = fs.existsSync(path.join(root, "docs")) ? "docs" : "Soar - docs";
+const docsRootName = fs.existsSync(path.join(root, "docs")) ? "docs" : "docs";
 const docsRoot = path.join(root, docsRootName);
 const registryDir = path.join(docsRoot, "architecture", "registry");
 const relationsDir = path.join(docsRoot, "architecture", "relations");

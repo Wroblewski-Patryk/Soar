@@ -173,7 +173,7 @@ Production Coolify compose manifest, env template, runbook updates, and validati
   shapes, and rejects missing `--stack-env-file` paths without printing values.
 
 ### 7. Update Documentation and Knowledge
-- Docs updated: `Soar - docs/operations/coolify-linux-vps-setup-guide.md`, `Soar - docs/operations/deployment-rollback-playbook.md`, `Soar - docs/operations/post-deploy-smoke-checklist.md`, architecture graph records.
+- Docs updated: `docs/operations/coolify-linux-vps-setup-guide.md`, `docs/operations/deployment-rollback-playbook.md`, `docs/operations/post-deploy-smoke-checklist.md`, architecture graph records.
 - Context updated: active mission/project state/task board/module/risk state updated for the blocked deployment.
 - Learning journal updated: not applicable; no new recurring local pitfall beyond existing VPS reachability blocker.
 

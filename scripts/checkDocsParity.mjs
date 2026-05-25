@@ -5,7 +5,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 
 const repoRoot = process.cwd();
-const docsRootName = existsSync(path.resolve(repoRoot, 'docs')) ? 'docs' : 'Soar - docs';
+const docsRootName = existsSync(path.resolve(repoRoot, 'docs')) ? 'docs' : 'docs';
 const docsRoot = path.resolve(repoRoot, docsRootName);
 
 const parseArgs = () => {

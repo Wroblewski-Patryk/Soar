@@ -30,7 +30,7 @@ evidence.
 - Keep documentation artifacts in English.
 - Use existing architecture graph CSV schema and generator behavior.
 - Preserve logical `docs/...` file paths even though this checkout currently
-  stores canonical docs under `Soar - docs/`.
+  stores canonical docs under `docs/`.
 - Do not claim full repository coverage while drift gaps remain.
 
 ## Definition Of Done
@@ -55,7 +55,7 @@ Implemented:
   monitoring composition, Web service/API links, test proof links, and module
   docs links.
 - Added `CHAIN-WEB-RUNTIME-SURFACES` in CSV and
-  `Soar - docs/architecture/chains/CHAIN-WEB-RUNTIME-SURFACES.md`.
+  `docs/architecture/chains/CHAIN-WEB-RUNTIME-SURFACES.md`.
 - Updated the architecture evidence graph coverage statement.
 
 Validation:

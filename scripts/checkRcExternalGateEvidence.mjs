@@ -7,7 +7,7 @@ import path from 'node:path';
 const repoRoot = process.cwd();
 const resolveDocsRoot = () => {
   const docsRoot = path.resolve(repoRoot, 'docs');
-  const migratedDocsRoot = path.resolve(repoRoot, 'Soar - docs');
+  const migratedDocsRoot = path.resolve(repoRoot, 'docs');
   if (existsSync(path.join(docsRoot, 'operations')) || !existsSync(migratedDocsRoot)) {
     return docsRoot;
   }

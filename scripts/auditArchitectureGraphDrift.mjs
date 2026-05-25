@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
-const docsRootName = fs.existsSync(path.join(root, "docs")) ? "docs" : "Soar - docs";
+const docsRootName = fs.existsSync(path.join(root, "docs")) ? "docs" : "docs";
 const docsRoot = path.join(root, docsRootName);
 const registryRoot = path.join(docsRoot, "architecture");
 const outputMarkdown = path.join(docsRoot, "status", "architecture-graph-drift.md");

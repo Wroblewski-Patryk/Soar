@@ -1,9 +1,9 @@
-﻿# Advanced Template Propagation Index - 2026-05-25
+# Advanced Template Propagation Index - 2026-05-25
 
 Purpose: advanced project creation structure propagated from !template.
 
 - Project: Soar
-- Documentation root used: Soar - docs
+- Documentation root used: docs
 - Files copied: 25
 - Existing files skipped: 0
 

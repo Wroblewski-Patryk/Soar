@@ -4,7 +4,7 @@
 
 The architecture evidence graph drift audit showed `configAndPipelines` at
 `0/9` coverage before this slice. The current workspace stores the project
-documentation tree under `Soar - docs`, so graph tooling also needed to resolve
+documentation tree under `docs`, so graph tooling also needed to resolve
 that active documentation root while preserving logical `docs/...` references.
 
 ## Goal
@@ -35,7 +35,7 @@ compose files, GitHub CI, guardrail proof, and local/deployment/testing docs.
   local/testing/Coolify documentation.
 - Added `CHAIN-OPS-CONFIG-PIPELINE`.
 - Added `REL-OPSCFG-*` relations.
-- Updated graph generation and drift audit scripts to use `Soar - docs` when
+- Updated graph generation and drift audit scripts to use `docs` when
   the canonical `docs` folder is not present in the working tree.
 - Drift audit now reports `configAndPipelines` as `9/9` covered.
 
@@ -55,4 +55,4 @@ compose files, GitHub CI, guardrail proof, and local/deployment/testing docs.
 
 This is graph traceability proof only. It does not replace a fresh remote CI
 run, protected production deployment proof, or a decision about whether the
-documentation directory should remain `Soar - docs` or return to `docs`.
+documentation directory should remain `docs` or return to `docs`.
