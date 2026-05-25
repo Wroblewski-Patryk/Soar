@@ -1,0 +1,62 @@
+---
+id: CHAIN-API-SUPPORT-ROUTES
+type: function_chain
+status: verified_local
+feature: api-support-routes
+risk_level: critical
+last_verified_at: 2026-05-24
+tags: [soar-map, function-chain, verified_local]
+---
+
+# API support routes chain
+
+- Feature: api-support-routes
+- Trigger: [[SOAR-ROUTER-API-ROOT]]
+- Tests: [[SOAR-TEST-API-SUPPORT-ROUTES]], [[SOAR-TEST-ICONS-API]], [[SOAR-TEST-MARKET-STREAM-API]], [[SOAR-TEST-PROFILE-BASIC-API]], [[SOAR-TEST-PROFILE-SECURITY-API]], [[SOAR-TEST-UPLOAD-API]]
+- Docs: [[SOAR-DOC-API-ROOT]], [[SOAR-DOC-API-PROFILE]], [[SOAR-DOC-API-ICONS]], [[SOAR-DOC-API-MARKET-STREAM]], [[SOAR-DOC-API-UPLOAD]], [[SOAR-DOC-API-ADMIN]]
+- Evidence: history/tasks/architecture-graph-api-support-routes-backfill-2026-05-24-task.md
+- Missing links: Fresh authenticated browser proof for profile/upload UI consumers remains separate
+
+## Execution Chain
+
+1. [[SOAR-FEATURE-API-SUPPORT-ROUTES]]
+2. [[SOAR-ROUTER-API-ROOT]]
+3. [[SOAR-ROUTER-DASHBOARD]]
+4. [[SOAR-ROUTER-ADMIN]]
+5. [[SOAR-API-ICON-LOOKUP]]
+6. [[SOAR-CONTROLLER-ICONS]]
+7. [[SOAR-TYPES-ICONS]]
+8. [[SOAR-SERVICE-ICONS]]
+9. [[SOAR-API-MARKET-STREAM-EVENTS]]
+10. [[SOAR-SERVICE-MARKET-STREAM-FANOUT]]
+11. [[SOAR-SERVICE-MARKET-STREAM]]
+12. [[SOAR-API-PROFILE-BASIC-GET]]
+13. [[SOAR-API-PROFILE-BASIC-UPDATE]]
+14. [[SOAR-API-PROFILE-BASIC-DELETE]]
+15. [[SOAR-CONTROLLER-PROFILE-BASIC]]
+16. [[SOAR-TYPES-PROFILE-BASIC]]
+17. [[SOAR-SERVICE-PROFILE-BASIC]]
+18. [[SOAR-API-PROFILE-SECURITY-PASSWORD]]
+19. [[SOAR-API-PROFILE-SECURITY-ACCOUNT]]
+20. [[SOAR-CONTROLLER-PROFILE-SECURITY]]
+21. [[SOAR-TYPES-PROFILE-SECURITY]]
+22. [[SOAR-SERVICE-PROFILE-SECURITY]]
+23. [[SOAR-API-UPLOAD-AVATAR]]
+24. [[SOAR-SERVICE-UPLOAD-AVATAR-PROCESSING]]
+25. [[SOAR-DB-USER]]
+26. [[SOAR-TEST-API-SUPPORT-ROUTES]]
+27. [[SOAR-TEST-ICONS-API]]
+28. [[SOAR-TEST-MARKET-STREAM-API]]
+29. [[SOAR-TEST-PROFILE-BASIC-API]]
+30. [[SOAR-TEST-PROFILE-SECURITY-API]]
+31. [[SOAR-TEST-UPLOAD-API]]
+32. [[SOAR-DOC-API-ROOT]]
+33. [[SOAR-DOC-API-PROFILE]]
+34. [[SOAR-DOC-API-ICONS]]
+35. [[SOAR-DOC-API-MARKET-STREAM]]
+36. [[SOAR-DOC-API-UPLOAD]]
+37. [[SOAR-DOC-API-ADMIN]]
+
+## Systemic Analysis Rule
+
+When checking this feature, inspect every node in the chain, every relation, related tests, side effects, docs, and missing evidence before reporting status.

@@ -1,0 +1,161 @@
+{
+  "generatedAt": "2026-05-24T19:10:59.191Z",
+  "target": {
+    "baseUrl": "https://api.soar.luckysparrow.ch",
+    "webBaseUrl": "https://soar.luckysparrow.ch",
+    "expectedSha": "0b7eb4c6e0767ce1d51b3ff68f0229f899781d31",
+    "buildInfo": {
+      "gitSha": "0b7eb4c6e0767ce1d51b3ff68f0229f899781d31",
+      "gitRef": "main",
+      "matchesExpected": true
+    },
+    "symbols": "auto"
+  },
+  "auth": {
+    "source": "login",
+    "tokenCaptured": false
+  },
+  "entries": [
+    {
+      "bot": {
+        "idHash": "860bd905e71a",
+        "nameHash": "80e0b67011e2",
+        "mode": "LIVE",
+        "exchange": "GATEIO",
+        "marketType": "FUTURES",
+        "liveOptIn": true,
+        "manageExternalPositions": true,
+        "walletIdHash": "d9c3f9ee997c",
+        "apiKeyIdHash": "22f60fd1caef",
+        "activeMarketGroups": null
+      },
+      "session": {
+        "idHash": "0fb50310806d",
+        "status": "RUNNING",
+        "startedAt": "2026-05-23T23:26:02.335Z",
+        "stoppedAt": null,
+        "eventsCount": 1
+      },
+      "discovery": {
+        "mode": "OPEN_RUNTIME_SYMBOLS",
+        "total": 0,
+        "openCount": 0,
+        "closedCount": 0,
+        "openOrdersCount": 0,
+        "showDynamicStopColumns": true,
+        "symbolsDiscovered": [],
+        "status": "NO_OPEN_RUNTIME_PAYLOAD"
+      },
+      "symbols": [],
+      "status": "NO_OPEN_RUNTIME_PAYLOAD"
+    },
+    {
+      "bot": {
+        "idHash": "0a12bb539700",
+        "nameHash": "b64ac05f17e6",
+        "mode": "LIVE",
+        "exchange": "BINANCE",
+        "marketType": "FUTURES",
+        "liveOptIn": true,
+        "manageExternalPositions": true,
+        "walletIdHash": "437d49588714",
+        "apiKeyIdHash": "6d9fa9f534a4",
+        "activeMarketGroups": null
+      },
+      "session": {
+        "idHash": "b32dee4ce5fd",
+        "status": "RUNNING",
+        "startedAt": "2026-05-23T23:26:02.281Z",
+        "stoppedAt": null,
+        "eventsCount": 69618
+      },
+      "discovery": {
+        "mode": "OPEN_RUNTIME_SYMBOLS",
+        "total": 18,
+        "openCount": 2,
+        "closedCount": 16,
+        "openOrdersCount": 3,
+        "showDynamicStopColumns": true,
+        "symbolsDiscovered": [
+          "DOGEUSDT",
+          "XRPUSDT"
+        ],
+        "status": "FOUND_OPEN_RUNTIME_SYMBOLS"
+      },
+      "symbols": [
+        {
+          "symbol": "DOGEUSDT",
+          "total": 4,
+          "openCount": 1,
+          "closedCount": 3,
+          "openOrdersCount": 0,
+          "showDynamicStopColumns": true,
+          "openItems": [
+            {
+              "idHash": "ce74476501bb",
+              "symbol": "DOGEUSDT",
+              "status": "OPEN",
+              "side": "SHORT",
+              "origin": "EXCHANGE_SYNC",
+              "managementMode": "BOT_MANAGED",
+              "syncState": "IN_SYNC",
+              "continuityState": "CONFIRMED",
+              "takeoverStatus": "OWNED_AND_MANAGED",
+              "strategyIdHash": null,
+              "strategyAutomationContextResolved": true,
+              "actionable": true,
+              "dcaPlannedLevelsCount": 3,
+              "trailingTakeProfitLevelsCount": 5,
+              "trailingStopLevelsCount": 0,
+              "openedAt": "2026-05-24T16:07:59.809Z"
+            }
+          ],
+          "importCompleteness": "VISIBLE"
+        },
+        {
+          "symbol": "XRPUSDT",
+          "total": 4,
+          "openCount": 1,
+          "closedCount": 3,
+          "openOrdersCount": 0,
+          "showDynamicStopColumns": true,
+          "openItems": [
+            {
+              "idHash": "2b7d010825e4",
+              "symbol": "XRPUSDT",
+              "status": "OPEN",
+              "side": "SHORT",
+              "origin": "EXCHANGE_SYNC",
+              "managementMode": "BOT_MANAGED",
+              "syncState": "IN_SYNC",
+              "continuityState": "CONFIRMED",
+              "takeoverStatus": "OWNED_AND_MANAGED",
+              "strategyIdHash": null,
+              "strategyAutomationContextResolved": true,
+              "actionable": true,
+              "dcaPlannedLevelsCount": 3,
+              "trailingTakeProfitLevelsCount": 5,
+              "trailingStopLevelsCount": 0,
+              "openedAt": "2026-05-24T16:07:44.090Z"
+            }
+          ],
+          "importCompleteness": "VISIBLE"
+        }
+      ],
+      "status": "PASS"
+    }
+  ],
+  "summary": {
+    "botsChecked": 2,
+    "botsWithRuntimeReadback": 1,
+    "botsWithoutRunningSession": 0,
+    "symbolsExpected": 2,
+    "symbolDiscoveryMode": "auto",
+    "symbolsVisible": [
+      "DOGEUSDT",
+      "XRPUSDT"
+    ],
+    "missingSymbols": [],
+    "entriesWithoutOpenRuntimePayload": 1
+  }
+}

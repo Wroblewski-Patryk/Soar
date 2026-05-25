@@ -6,8 +6,13 @@ export const canUseStrategyProtectionFallbackForDisplay = (input: {
   };
   strategyAutomationContextResolved: boolean;
   runtimeState: PositionManagementState | null;
+  hasRuntimeStateBasis?: boolean;
+  hasCanonicalPriceBasis?: boolean;
 }) => {
   if (!input.strategyAutomationContextResolved) return false;
   if (input.position.origin !== 'EXCHANGE_SYNC') return true;
-  return input.runtimeState != null;
+  return (
+    input.runtimeState != null ||
+    (input.hasRuntimeStateBasis === true && input.hasCanonicalPriceBasis === true)
+  );
 };

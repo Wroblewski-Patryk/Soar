@@ -1,8 +1,118 @@
 # Current Focus
 
-Last updated: 2026-05-23
+Last updated: 2026-05-24
 
 ## Active Focus
+
+2026-05-24 production readiness:
+`SOAR-FULL-READINESS-COORDINATION-2026-05-23` is the active mission again after
+graph enforcement closure. `PROD-FRESH-DEPLOY-380308D1-2026-05-24` resolves
+the public deploy-freshness blocker: Web/API/workers are deployed to
+`380308d10cf0fabb2ea629eb55e6f0ba7d980ed1`, public build-info returns that
+SHA, and public no-worker deploy smoke passes. Current blockers are protected
+evidence only: app auth/context for dashboard/admin UI and runtime readbacks,
+production DB restore context, rollback proof, RC evidence, and any
+approval-gated LIVE mutation. Next focus is protected read-only app journey
+proof when approved auth/context exists.
+
+2026-05-24 architecture evidence graph guardrail:
+`ARCH-GRAPH-STRICT-GUARDRAIL-2026-05-24` is verified. The current graph proof
+is `643` nodes, `798` relations, and `27` chains; strict drift reports
+`796/796` representative paths covered and `0` missing. `pnpm run
+quality:guardrails` now enforces this zero-drift condition and reports
+`Architecture graph drift: OK`. Future code, test, docs, config, workflow,
+agent, prompt, or pipeline changes must update graph CSV records in the same
+task before the touched surface is official.
+
+2026-05-24 architecture evidence graph:
+`ARCH-EVIDENCE-GRAPH-SYSTEM-2026-05-24` is partially verified for the
+foundation slice. `ARCH-GRAPH-MANUAL-ORDER-BACKFILL-2026-05-24` added the
+first detailed P0 money/runtime feature chain, and
+`ARCH-GRAPH-POSITIONS-BACKFILL-2026-05-24` added the adjacent Positions core
+chain, and `ARCH-GRAPH-BOT-RUNTIME-BACKFILL-2026-05-24` added Bot Runtime
+monitoring across runtime route, UI, Web service, API routes, controller, DTO,
+aggregate/read/command services, DB, tests, and docs. The current focus for
+graph work is no longer schema design; it is module-by-module backfill and
+drift detection. `ARCH-GRAPH-EXCHANGE-ADAPTER-BACKFILL-2026-05-24` added
+Exchange Adapter capability, authenticated/public read, connector,
+live-order, symbol-rules, and fee-reconciliation boundaries.
+`ARCH-GRAPH-WALLETS-BACKFILL-2026-05-24` added Wallets lifecycle, balance
+preview, paper reset, ledger analytics, exchange-boundary, DB, test, and docs
+mapping. `ARCH-GRAPH-PROFILE-API-KEYS-BACKFILL-2026-05-24` added Profile API
+Keys secret-handling, encrypted storage, connection probe, exchange-boundary,
+Wallets LIVE binding, Bot Runtime consumer, DB, test, and docs mapping.
+`ARCH-GRAPH-BOT-SETUP-BACKFILL-2026-05-24` added Bot setup and canonical
+topology across list/create/edit UI, Web service, bot lifecycle APIs,
+controller/DTO/service, context validation, activation policy, canonical
+market-group/strategy-link DB models, tests, and docs.
+`ARCH-GRAPH-STRATEGIES-BACKFILL-2026-05-24` added Strategies authoring and
+indicator catalog across list/create/edit UI, Web service, form mapping,
+presets, indicator catalog, strategy API routes, controller, DTO/validation,
+service, Strategy/Bot/MarketGroupStrategyLink DB guards, Bot Setup and Bot
+Runtime consumers, tests, and docs. Current proof: `pnpm run
+architecture:graph:generate` PASS with `261` nodes, `293` relations, and `12`
+chains. `ARCH-GRAPH-MARKETS-BACKFILL-2026-05-24` added Markets universe and
+catalog mapping across list/create/edit UI, Web service, market universe
+helpers, catalog endpoint, API routes, controller, DTOs, service,
+exchange-catalog/symbol resolver, MarketUniverse/SymbolGroup/Bot/
+BotMarketGroup DB guards, Bot Setup and Bot Runtime consumers, tests, and
+docs. Current proof: `pnpm run architecture:graph:generate` PASS with `286`
+nodes, `329` relations, and `13` chains. Do not treat unmapped code as
+graph-verified. `ARCH-GRAPH-BACKTESTS-BACKFILL-2026-05-24` added Backtests
+run lifecycle/replay mapping across list/create/detail UI, Web service, API
+routes, controller, DTOs, service, range resolver, queue/job, data gateway,
+replay core, fill model, report lifecycle, immutable strategy/market
+snapshots, BacktestRun/Trade/Report DB models, Strategy/Market dependencies,
+Reports consumer, tests, and docs. `ARCH-GRAPH-REPORTS-BACKFILL-2026-05-24`
+then promoted the Reports placeholder into a full chain across reports route,
+PerformanceReportsView, Web reports/backtests services, cross-mode API route,
+controller, aggregation service, BacktestReport/BacktestTrade/Trade/Bot read
+models, tests, and docs. `ARCH-GRAPH-LOGS-AUDIT-BACKFILL-2026-05-24` added
+Logs/Audit Trail across logs route, AuditTrailView, Web logs service, logs API
+route, controller, query schema, service, Log model, API-key/Bot Setup event
+producer links, tests, and docs. `ARCH-GRAPH-SUBSCRIPTIONS-ADMIN-BACKFILL-2026-05-24`
+then added Subscriptions/Admin across admin/profile UI, Web services, admin
+and profile subscription API routes, controllers, DTO schemas, services,
+entitlements, checkout intent persistence, DB models, tests, and docs.
+`ARCH-GRAPH-AI-ASSISTANT-FOUNDATION-BACKFILL-2026-05-24` then added AI
+Assistant foundation across assistant UI, Web service, assistant APIs,
+controller schemas, BotAssistantService, AssistantOrchestrator, assistant
+config/subagent DB models, tests, docs, red-team agent, and prompt protocol.
+`ARCH-GRAPH-OPS-CONFIG-PIPELINE-BACKFILL-2026-05-24` then added operations
+config and pipeline mapping across package manifests, workspace manifest,
+local/VPS compose topology, GitHub CI, guardrail proof, and local/testing/
+deployment docs. `ARCH-GRAPH-API-SUPPORT-ROUTES-BACKFILL-2026-05-24` then
+backfilled root/dashboard/admin aggregate routers plus icons, market-stream,
+profile basic/security, upload routes, services, tests, and docs.
+`ARCH-GRAPH-RUNTIME-SUPPORT-SERVICES-BACKFILL-2026-05-24` then backfilled bot/
+runtime/engine support services for ownership, projections, portfolio history,
+DCA visibility, market truth, signal display, paper runtime, pre-trade risk,
+rule evaluation, tests, and docs. `ARCH-GRAPH-API-PLATFORM-SAFETY-BACKFILL-2026-05-24`
+then backfilled API runtime config, critical secrets readiness, proxy trust,
+auth/rate-limit/origin/ops-network/request-logger middleware, error handling,
+logger, symbols, tests, and docs. Current proof: `pnpm run
+architecture:graph:generate` PASS with `520` nodes, `597` relations, and `22`
+chains. Do not treat unmapped code as graph-verified. `pnpm run
+architecture:graph:drift` now reports `796` inventoried files, `478` covered
+by graph CSV path references, `318` missing, `apiRoutes` at `22/22`, and
+`configAndPipelines` at `9/9` covered. The next graph slice should continue
+with scheduled jobs/workers, remaining API services/tests, module docs, Web
+components/tests, or drift-gap reduction.
+
+2026-05-24 full readiness source-of-truth cleanup:
+`SOAR-FULL-READINESS-COORDINATION-2026-05-23` is active. The current
+evidence-backed local source truth is now aligned: local `HEAD` and
+`origin/main` both point at
+`52be8b614d2da9ec05d368ac4fbd05f3ec8f8332`; local guardrails, docs parity,
+typecheck, and the focused runtime automation exchange-PnL/service/DCA parity
+pack pass (`3` files / `41` tests). Public Web/API is currently unreachable
+from this workstation: build-info, API `/health`, and API `/ready` timed out
+with `Failed to connect`. Transient auth/browser artifacts under `.tmp/` and
+`tmp/` were removed and ignored. Current focus is public reachability
+diagnosis, then authenticated app-journey triage/proof for the
+operator-reported broken flows and module-confidence updates from real journey
+evidence. Public no-secret health must not be reported as whole-product
+readiness.
 
 2026-05-23 pre-commit project organization polish:
 `PROJECT-ORGANIZATION-PRECOMMIT-POLISH-2026-05-23` is verified. Root
@@ -75,7 +185,7 @@ Validation passed with `0` stale moved-path hits, `0` missing relative
 markdown targets across `1732` docs/history files, repository guardrails, and
 docs parity. This did not change runtime behavior or production state.
 
-2026-05-23 protected V1 production proof status:
+Historical 2026-05-23 protected V1 production proof status:
 `V1-PROTECTED-APP-PROOF-B1BA69ED-2026-05-23` plus the post-push release-state
 sync is the active production release truth. Production was advanced from
 `b1ba69edccc639e97943f37fb2b1e6249a62e87c` through follow-up docs/state and
@@ -1301,3 +1411,22 @@ drill evidence.
   the remaining work is authenticated read-only dashboard/API evidence.
 - Keep `LIVEIMPORT-03` open until ETH/DOGE production runtime readback evidence
   is captured and redacted.
+
+## 2026-05-24 Architecture Evidence Graph Continuation
+
+Current mission: continue the Obsidian-first architecture evidence graph
+backfill until representative source/test/doc/config paths are mapped or
+explicitly reported as remaining drift.
+
+Latest checkpoint: `ARCH-GRAPH-FULL-DRIFT-CLOSURE-2026-05-24` is
+`verified_local`. The graph now covers the current representative source,
+test, documentation, config, and pipeline inventory.
+
+Evidence: `pnpm run architecture:graph:generate` passed with `635` nodes,
+`781` relations, and `26` chains. `pnpm run architecture:graph:drift` passed
+with `796/796` covered and `0` missing graph path references.
+
+Next focus: run guardrails/docs parity after source-of-truth sync, then keep
+future graph CSV updates mandatory in the same task as future code/docs
+changes. Do not treat graph traceability as fresh runtime journey, protected
+production, external security, or live exchange-side mutation proof.

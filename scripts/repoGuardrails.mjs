@@ -1,9 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
-import { execSync } from "node:child_process";
+import { execFileSync, execSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
 
 const ROOT_DIR = process.cwd();
+const DOCS_ROOT_NAME = fs.existsSync(path.join(ROOT_DIR, "docs")) ? "docs" : "Soar - docs";
+const DOCS_ROOT_DIR = path.join(ROOT_DIR, DOCS_ROOT_NAME);
 const EXPECTED_LOCKFILE = "pnpm-lock.yaml";
 const FORBIDDEN_LOCKFILES = new Set([
   "package-lock.json",
@@ -48,6 +50,7 @@ const DUPLICATE_HELPER_SNAPSHOT_PATH =
   "history/artifacts/_artifacts-cqlt-duplicate-helper-snapshot-2026-04-21.json";
 const CODE_QUALITY_GUARDRAILS_DOC_PATH = "docs/governance/code-quality-guardrails.md";
 const API_PACKAGE_JSON_PATH = "apps/api/package.json";
+const ARCHITECTURE_GRAPH_DRIFT_SCRIPT = "scripts/auditArchitectureGraphDrift.mjs";
 const RUNTIME_DOCKERFILES = [
   "apps/api/Dockerfile",
   "apps/web/Dockerfile",
@@ -68,6 +71,12 @@ const OPS_SCRIPT_SECRET_FLAG_PATTERN = new RegExp(
 );
 const TRACKED_ENV_FILE_RE = /(^|\/)\.env(?:\.|$)/;
 const TRACKED_ENV_FILE_ALLOWLIST_RE = /(^|\/)\.env(?:\..*)?\.example$/;
+const resolveRepoPath = (repoPath) => {
+  if (repoPath.startsWith("docs/")) {
+    return path.join(DOCS_ROOT_DIR, repoPath.slice("docs/".length));
+  }
+  return path.join(ROOT_DIR, repoPath);
+};
 const LOCAL_COPY_PATTERNS = [
   /copyByLocale/,
   /const\s+\w*copy\w*\s*=\s*locale\s*===/i,
@@ -490,7 +499,7 @@ const validateDuplicateHelperSnapshot = () => {
 };
 
 const validateCodeQualityGuardrailsDoc = () => {
-  const absolute = path.join(ROOT_DIR, CODE_QUALITY_GUARDRAILS_DOC_PATH);
+  const absolute = resolveRepoPath(CODE_QUALITY_GUARDRAILS_DOC_PATH);
   return fs.existsSync(absolute)
     ? []
     : [`Missing code-quality guardrails doc: ${CODE_QUALITY_GUARDRAILS_DOC_PATH}`];
@@ -605,9 +614,33 @@ export const validateOpsScriptsDoNotAcceptSecretCliArgs = ({
       ];
 };
 
+export const validateArchitectureGraphDriftCoverage = ({
+  rootDir = ROOT_DIR,
+  commandRunner = execFileSync,
+} = {}) => {
+  try {
+    commandRunner(process.execPath, [ARCHITECTURE_GRAPH_DRIFT_SCRIPT, "--fail-on-drift"], {
+      cwd: rootDir,
+      encoding: "utf8",
+      stdio: "pipe",
+    });
+  } catch (error) {
+    const output = [error?.stdout, error?.stderr]
+      .filter(Boolean)
+      .join("\n")
+      .trim();
+    return [
+      `Architecture graph drift guardrail failed.\nRun "pnpm run architecture:graph:generate" and update graph CSV records until "pnpm run architecture:graph:drift:strict" reports 0 missing.${output ? `\n\n${output}` : ""}`,
+    ];
+  }
+
+  return [];
+};
+
 const run = () => {
   const trackedFiles = readTrackedFiles();
   const errors = [
+    ...validateArchitectureGraphDriftCoverage(),
     ...validateLockfilePolicy(trackedFiles),
     ...validateSourceFileBudgets(trackedFiles),
     ...validateSourceFileLineBudgets(trackedFiles),
@@ -632,6 +665,7 @@ const run = () => {
   }
 
   console.log("Repository guardrails check passed.");
+  console.log(`- Architecture graph drift: OK (0 missing representative paths)`);
   console.log(`- Lockfile policy: OK (${EXPECTED_LOCKFILE} only)`);
   console.log(
     `- Source file budget: OK (api ${SOURCE_FILE_BUDGET_RULES[0].budget} bytes, web ${SOURCE_FILE_BUDGET_RULES[1].budget} bytes)`

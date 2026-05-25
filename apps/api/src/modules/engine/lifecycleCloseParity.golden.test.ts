@@ -28,6 +28,7 @@ const replayCloseReasonMap: Partial<Record<string, LifecycleCloseReason>> = {
   TP: 'take_profit',
   TTP: 'trailing_take_profit',
   SL: 'stop_loss',
+  TSL: 'trailing_stop',
   TRAILING: 'trailing_stop',
 };
 

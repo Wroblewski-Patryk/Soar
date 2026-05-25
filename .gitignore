@@ -16,6 +16,8 @@ docs/.obsidian/
 .agents/skills/ship_dashboard_feature_slice/
 **/package-lock.json
 output/
+.tmp/
+tmp/
 
 # Keep local runtime secrets out of version control.
 .env

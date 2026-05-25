@@ -296,7 +296,10 @@ describe('Runtime flow e2e (strategy -> backtest -> paper runtime)', () => {
             symbol: 'BTCUSDT',
           },
         }),
-      (value) => Boolean(value) && Number(value?.totalSignals ?? 0) >= 2
+      (value) =>
+        Boolean(value) &&
+        Number(value?.totalSignals ?? 0) >= 2 &&
+        Number(value?.lastPrice ?? 0) === 50000
     );
     expect(runtimeStats?.symbol).toBe('BTCUSDT');
     expect(Number(runtimeStats?.totalSignals ?? 0)).toBeGreaterThanOrEqual(2);

@@ -99,6 +99,21 @@ did not pass because the VPS became unreachable late in the observation.
   `4c16305c`, and Coolify `/login` returning HTTP 500. Current release status
   is therefore `NO-GO` due to production deploy convergence and readiness
   instability.
+- VPS root cause investigation found `/dev/sda1` at `100%` usage. Coolify
+  logs reported `No space left on device`, `coolify-db` recovery failures, and
+  Redis write/snapshot errors. Remote `docker builder prune -af` recovered
+  roughly 7 GB and restored Coolify, `coolify-db`, and API `/ready` to healthy.
+- Orphaned `coolify-helper` build containers were removed after their metadata
+  showed only `tail -f /dev/null`; no application data volumes were removed.
+- Latest failed deploy logs for `58216dbf20bcb2a606802e7478a14dde564670b7`
+  reported `SSH keys storage directory is not writable`; `/data/coolify/ssh`
+  ownership/mode were repaired according to Coolify's own error guidance and
+  the `coolify` container was restarted.
+- A controlled single-app redeploy of `soar-api` was queued as
+  `wudq5ujsrukro97x6arwqa0d`. During that deploy the VPS became unreachable on
+  SSH `22` and HTTPS `443`; public API and web checks also failed to connect.
+  This proves the deployment blocker is now VPS resource exhaustion or host
+  instability under build load, not merely GitHub webhook drift.
 
 ## Forbidden
 

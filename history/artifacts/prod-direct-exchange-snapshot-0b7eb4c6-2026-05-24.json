@@ -1,0 +1,100 @@
+{
+  "generatedAt": "2026-05-24T19:12:20.446Z",
+  "keys": [
+    {
+      "id": "4c7dd2b4-6d1d-4de0-a9ba-ce30f0f0d4c4",
+      "idHash": "6d9fa9f534a4",
+      "exchange": "BINANCE",
+      "marketType": null,
+      "labelHash": "d8a2fad22cfd",
+      "lastUsed": "2026-05-24T19:12:12.895Z",
+      "revokedAt": null,
+      "keyPreviewPresent": false
+    },
+    {
+      "id": "3914b405-496f-429e-ba98-d1c32729367d",
+      "idHash": "22f60fd1caef",
+      "exchange": "GATEIO",
+      "marketType": null,
+      "labelHash": "6eeaf8867f41",
+      "lastUsed": "2026-05-23T14:37:25.206Z",
+      "revokedAt": null,
+      "keyPreviewPresent": false
+    }
+  ],
+  "snapshots": [
+    {
+      "apiKeyIdHash": "6d9fa9f534a4",
+      "exchange": "BINANCE",
+      "status": 502,
+      "source": null,
+      "count": 0,
+      "nonZeroCount": 0,
+      "symbols": []
+    },
+    {
+      "apiKeyIdHash": "22f60fd1caef",
+      "exchange": "GATEIO",
+      "status": 200,
+      "source": "GATEIO",
+      "count": 1,
+      "nonZeroCount": 1,
+      "symbols": [
+        {
+          "symbol": "BNB/USDT:USDT",
+          "side": "long",
+          "contracts": 8,
+          "amount": null,
+          "notional": null,
+          "unrealizedPnlPresent": true
+        }
+      ]
+    }
+  ],
+  "takeover": {
+    "status": 200,
+    "total": 2,
+    "summary": {
+      "OWNED_AND_MANAGED": 2,
+      "UNOWNED": 0,
+      "AMBIGUOUS": 0,
+      "MANUAL_ONLY": 0
+    },
+    "items": [
+      {
+        "symbol": "DOGEUSDT",
+        "side": "SHORT",
+        "apiKeyIdHash": "6d9fa9f534a4",
+        "takeoverStatus": "OWNED_AND_MANAGED",
+        "syncState": "IN_SYNC",
+        "continuityState": "CONFIRMED",
+        "managementMode": "BOT_MANAGED"
+      },
+      {
+        "symbol": "XRPUSDT",
+        "side": "SHORT",
+        "apiKeyIdHash": "6d9fa9f534a4",
+        "takeoverStatus": "OWNED_AND_MANAGED",
+        "syncState": "IN_SYNC",
+        "continuityState": "CONFIRMED",
+        "managementMode": "BOT_MANAGED"
+      }
+    ]
+  },
+  "liveStatus": {
+    "status": 200,
+    "running": false,
+    "openPositionsSeen": 0,
+    "lastRunAt": null,
+    "workerHeartbeatAt": null,
+    "lastDiagnosticSummary": {
+      "CREATED": 0,
+      "UPDATED": 0,
+      "SKIPPED_ZERO_SIZE": 0,
+      "SKIPPED_UNRESOLVED_SIDE": 0,
+      "SKIPPED_UNRESOLVED_SYMBOL": 0,
+      "SKIPPED_MISSING_ENTRY_TRUTH": 0
+    },
+    "lastDiagnostics": []
+  }
+}

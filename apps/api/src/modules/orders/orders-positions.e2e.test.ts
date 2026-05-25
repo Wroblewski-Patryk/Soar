@@ -4,6 +4,8 @@ import { app } from '../../index';
 import { prisma } from '../../prisma/client';
 import { clearRuntimeSignalMarketDataStore } from '../engine/runtimeSignalMarketDataGateway';
 import { clearRuntimeTickerStore, upsertRuntimeTicker } from '../engine/runtimeTickerStore';
+import { ensureSubscriptionCatalog } from '../subscriptions/subscriptions.service';
+import { SubscriptionEntitlementsSchema } from '../subscriptions/subscriptionEntitlements.service';
 
 const manualContextConnectorOverride = vi.hoisted(() => ({
   current: null as null | ((params: { exchange: string; marketType: 'FUTURES' | 'SPOT' }) => {
@@ -93,6 +95,24 @@ const createMarketScope = async (params: {
   });
 };
 
+const allowLiveTradingForOrdersContract = async () => {
+  await ensureSubscriptionCatalog(prisma, { seedDefaults: true });
+  const freePlan = await prisma.subscriptionPlan.findUniqueOrThrow({
+    where: { code: 'FREE' },
+    select: { entitlements: true },
+  });
+  const entitlements = SubscriptionEntitlementsSchema.parse(freePlan.entitlements);
+  await prisma.subscriptionPlan.update({
+    where: { code: 'FREE' },
+    data: {
+      entitlements: {
+        ...entitlements,
+        features: { ...entitlements.features, liveTrading: true },
+      },
+    },
+  });
+};
+
 describe('Orders and positions read contract', () => {
   beforeEach(async () => {
     manualContextConnectorOverride.current = null;
@@ -122,6 +142,7 @@ describe('Orders and positions read contract', () => {
     await prisma.wallet.deleteMany();
     await prisma.apiKey.deleteMany();
     await prisma.user.deleteMany();
+    await allowLiveTradingForOrdersContract();
   });
 
   it('rejects unauthenticated access', async () => {

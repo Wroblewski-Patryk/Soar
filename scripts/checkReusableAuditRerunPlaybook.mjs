@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { repositoryPathExists } from './resolveRepositoryPath.mjs';
 
 const repoRoot = process.cwd();
 const expectedAuditIds = Array.from({ length: 24 }, (_, index) => `AUD-${String(index).padStart(2, '0')}`);
@@ -76,10 +76,10 @@ const collectRerunAuditIds = (playbook) =>
     Array.isArray(step.auditIds) ? step.auditIds : [],
   );
 const isRepositoryPath = (value) =>
-  typeof value === 'string' && /^(docs|\.agents|\.codex|apps|scripts)\//.test(value);
+  typeof value === 'string' && /^(docs|history|\.agents|\.codex|apps|scripts)\//.test(value);
 
 export const validateReusableAuditRerunPlaybook = (playbook, options = {}) => {
-  const exists = options.exists ?? ((relativePath) => existsSync(path.resolve(repoRoot, relativePath)));
+  const exists = options.exists ?? ((relativePath) => repositoryPathExists(repoRoot, relativePath));
   const baseline = playbook.baseline ?? {};
   const missingBaselineKeys = requiredBaselineKeys.filter((key) => !(key in baseline));
   const invalidBaselinePaths = requiredBaselineKeys

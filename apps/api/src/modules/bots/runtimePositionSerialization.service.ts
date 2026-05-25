@@ -82,10 +82,11 @@ const resolveAnchorBasedPnlFraction = (params: {
   });
 };
 
-const maxFiniteNumber = (left: number | null, right: number | null) => {
-  if (left == null) return right;
-  if (right == null) return left;
-  return Math.max(left, right);
+const maxFiniteNumber = (...values: Array<number | null>) => {
+  const finiteValues = values.filter((value): value is number =>
+    typeof value === 'number' && Number.isFinite(value)
+  );
+  return finiteValues.length > 0 ? Math.max(...finiteValues) : null;
 };
 
 export const resolveDcaExecutedLevels = (
@@ -194,8 +195,23 @@ export const resolveRuntimePositionDynamicStops = (
           marginUsed,
         })
       : favorableMovePercentFromLivePrice;
-  const favorableMovePercentForFallback =
-    maxFiniteNumber(favorableMovePercentFromAnchor, favorableMovePercentFromLivePrice);
+  const favorableMovePercentFromCanonicalPrice =
+    typeof marketPrice === 'number' && Number.isFinite(marketPrice)
+      ? resolvePositionPnlFraction({
+          side: positionSide,
+          entryPrice,
+          currentPrice: marketPrice,
+          quantity,
+          leverage: effectiveLeverage,
+          marginUsed,
+          unrealizedPnl: liveUnrealizedPnlFromPrice,
+        })
+      : null;
+  const favorableMovePercentForFallback = maxFiniteNumber(
+    favorableMovePercentFromAnchor,
+    favorableMovePercentFromLivePrice,
+    favorableMovePercentFromCanonicalPrice,
+  );
   const ttpTriggerPercent =
     ttpTriggerPercentFromState != null && ttpTriggerPercentFromState > 0
       ? ttpTriggerPercentFromState

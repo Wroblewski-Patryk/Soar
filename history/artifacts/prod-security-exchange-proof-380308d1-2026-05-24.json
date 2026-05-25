@@ -1,0 +1,88 @@
+{
+  "status": "PARTIAL",
+  "today": "2026-05-24",
+  "generatedAt": "2026-05-24T18:34:09.299Z",
+  "environment": "production",
+  "webBaseUrl": "https://soar.luckysparrow.ch",
+  "apiBaseUrl": "https://api.soar.luckysparrow.ch",
+  "expectedSha": "380308d10cf0fabb2ea629eb55e6f0ba7d980ed1",
+  "buildInfo": {
+    "status": 200,
+    "ok": true,
+    "gitSha": "380308d10cf0fabb2ea629eb55e6f0ba7d980ed1"
+  },
+  "steps": [
+    {
+      "name": "build-info freshness",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "deployed build matches expected SHA"
+    },
+    {
+      "name": "auth token resolved",
+      "status": "PASS",
+      "notes": "login:present"
+    },
+    {
+      "name": "security headers present",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "public readiness minimal response",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "unauthenticated protected route fail-closed",
+      "status": "PASS",
+      "httpStatus": 401
+    },
+    {
+      "name": "unauthenticated ops diagnostics fail-closed",
+      "status": "PASS",
+      "httpStatus": 401
+    },
+    {
+      "name": "unauthenticated metrics fail-closed",
+      "status": "PASS",
+      "httpStatus": 401
+    },
+    {
+      "name": "authenticated no-store profile read",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "profile api key list redaction",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "items=2"
+    },
+    {
+      "name": "untrusted origin state change fail-closed",
+      "status": "PASS",
+      "httpStatus": 403
+    },
+    {
+      "name": "unsupported exchange probe fail-closed",
+      "status": "PASS",
+      "httpStatus": 501,
+      "notes": "COINBASE API_KEY_PROBE unsupported"
+    },
+    {
+      "name": "binance futures catalog read-only",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "items=581"
+    },
+    {
+      "name": "proof execution stopped",
+      "status": "FAIL",
+      "notes": "gateio market catalog expected HTTP 200 but got 500"
+    }
+  ],
+  "blockers": [
+    "gateio market catalog expected HTTP 200 but got 500"
+  ]
+}

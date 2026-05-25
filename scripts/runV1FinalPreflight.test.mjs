@@ -280,8 +280,16 @@ test('buildRemediationHints maps known final V1 blockers to existing commands', 
     'env:production DB restore context',
     'evidence:prodUiClickthrough:missing',
     'evidence:prodUiClickthrough:stale',
+    'evidence:activationAudit:failed',
+    'evidence:activationPlan:failed',
+    'evidence:rcExternalGateStatus:stale',
     'evidence:rcSignoffRecord:failed',
+    'evidence:rcSignoffRecord:stale',
+    'evidence:rcChecklist:stale',
+    'evidence:liveImportReadback:stale',
+    'evidence:backupRestoreDrill:stale',
     'evidence:rollbackProof:failed',
+    'evidence:rollbackProof:stale',
     'unknown:blocker',
   ]);
 
@@ -294,8 +302,16 @@ test('buildRemediationHints maps known final V1 blockers to existing commands', 
       'env:production DB restore context',
       'evidence:prodUiClickthrough:missing',
       'evidence:prodUiClickthrough:stale',
+      'evidence:activationAudit:failed',
+      'evidence:activationPlan:failed',
+      'evidence:rcExternalGateStatus:stale',
       'evidence:rcSignoffRecord:failed',
+      'evidence:rcSignoffRecord:stale',
+      'evidence:rcChecklist:stale',
+      'evidence:liveImportReadback:stale',
+      'evidence:backupRestoreDrill:stale',
       'evidence:rollbackProof:failed',
+      'evidence:rollbackProof:stale',
     ],
   );
   assert.match(hints[0].command, /ops:liveimport:readback/);
@@ -304,8 +320,16 @@ test('buildRemediationHints maps known final V1 blockers to existing commands', 
   assert.match(hints[3].command, /ops:db:restore-drill:prod/);
   assert.match(hints[4].command, /ops:ui:prod-clickthrough/);
   assert.match(hints[5].command, /ops:ui:prod-clickthrough/);
-  assert.match(hints[6].command, /ops:rc:signoff:build/);
-  assert.match(hints[7].command, /ops:deploy:rollback-proof/);
+  assert.match(hints[6].command, /v1-production-activation-evidence-audit/);
+  assert.match(hints[7].command, /v1-production-activation-and-evidence-plan/);
+  assert.match(hints[8].command, /ops:rc:gates:prod-pipeline/);
+  assert.match(hints[9].command, /ops:rc:signoff:build/);
+  assert.match(hints[10].command, /ops:rc:signoff:build/);
+  assert.match(hints[11].command, /ops:rc:checklist:sync/);
+  assert.match(hints[12].command, /ops:liveimport:readback/);
+  assert.match(hints[13].command, /ops:db:restore-drill:prod/);
+  assert.match(hints[14].command, /ops:deploy:rollback-proof/);
+  assert.match(hints[15].command, /ops:deploy:rollback-proof/);
   const serialized = JSON.stringify(hints);
   assert.equal(serialized.includes('super-secret'), false);
 });

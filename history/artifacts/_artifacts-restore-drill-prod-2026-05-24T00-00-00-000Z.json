@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "profile": "prod",
+  "expectedSha": "24e9d3b8d51b4b4c4f1b25cad920096f2223b0ec",
+  "startedAt": "2026-05-25T01:06:40.891Z",
+  "endedAt": "2026-05-25T01:07:30.719Z",
+  "command": "node scripts/runBackupVerificationProfile.mjs --profile prod -- --",
+  "checks": {
+    "commandExitCodeZero": true,
+    "rawArtifactPresent": true,
+    "markdownReportPresent": true,
+    "backupRestoreResultPass": true
+  },
+  "backupRestore": {
+    "result": "PASS",
+    "rawArtifact": "history\\operations\\_artifacts-db-restore-check-2026-05-25T01-06-41-109Z.txt",
+    "reportArtifact": "history\\operations\\v1-db-restore-check-2026-05-25T01-06-41-109Z.md"
+  },
+  "stdoutPreview": "[ops:db:backup-verify] profile=prod container=x11cfnz1dd9x0yzccftqzcoe db=postgres user=postgres\nDB restore artifact: history\\operations\\_artifacts-db-restore-check-2026-05-25T01-06-41-109Z.txt\nDB restore report: history\\operations\\v1-db-restore-check-2026-05-25T01-06-41-109Z.md\n[ops:db:backup-verify] profile=prod PASS",
+  "stderrPreview": ""
+}

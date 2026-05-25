@@ -4,6 +4,7 @@ import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { repositoryPathExists } from './resolveRepositoryPath.mjs';
 
 const repoRoot = process.cwd();
 const requiredSourceKeys = [
@@ -97,10 +98,10 @@ Validates the reusable audit handoff JSON by checking:
 
 const pathExists = (relativePath) => {
   if (String(relativePath).endsWith('/**')) {
-    return existsSync(path.resolve(repoRoot, String(relativePath).slice(0, -3)));
+    return repositoryPathExists(repoRoot, String(relativePath).slice(0, -3));
   }
 
-  return existsSync(path.resolve(repoRoot, relativePath));
+  return repositoryPathExists(repoRoot, relativePath);
 };
 
 export const validateFullReusableAuditHandoff = (handoff, options = {}) => {

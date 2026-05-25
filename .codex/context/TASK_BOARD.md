@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-05-23
+Last updated: 2026-05-25
 
 ## Agent Workflow Refresh (2026-04-18)
 
@@ -16,6 +16,166 @@ Last updated: 2026-05-23
     needed
 
 ## IN PROGRESS
+
+- [ ] `SOAR-FULL-READINESS-COORDINATION-2026-05-23 release: coordinate full readiness proof and blockers`
+  - 2026-05-23: Operator asked the coordinator to make Soar work fully and
+    correctly. This is a multi-lane readiness mission, not a literal unscoped
+    100% claim. Current stage: verification/planning. 2026-05-24 cleanup
+    corrected stale active-state claims: local `HEAD` and `origin/main` both
+    point at `52be8b614d2da9ec05d368ac4fbd05f3ec8f8332` with
+    `HEAD...origin/main` at `0 0`. Public Web/API verification is currently
+    blocked: `curl` to Web build-info, API `/health`, and API `/ready` timed
+    out with `Failed to connect`. Local validation passed guardrails, docs parity, typecheck,
+    and the focused runtime automation exchange-PnL/service/DCA parity pack
+    (`3` files / `41` tests). Transient auth/browser artifacts under `.tmp/`
+    and `tmp/` were removed and the folders are ignored.
+  - 2026-05-24 public reachability refresh: Web/API/VPS DNS still resolves to
+    `141.227.149.67`; TCP now succeeds for Web `443`, API `443`, and VPS `22`.
+    API `/health`, API `/ready`, and Web `/` return `200`, and public
+    no-worker deploy smoke passes. Production Web build-info is reachable but
+    stale: deployed `51fa41efb1664d5cb2e8dbb81cbec33f11365ccd`, while local
+    `HEAD` and `origin/main` are both
+    `52be8b614d2da9ec05d368ac4fbd05f3ec8f8332`. No deploy/protected auth env
+    names are present in this shell. No deployment, protected auth action, or
+    LIVE mutation was attempted.
+  - 2026-05-24 fresh deploy checkpoint: Coolify deployed Web/API/workers to
+    `380308d10cf0fabb2ea629eb55e6f0ba7d980ed1` after the one-file API build
+    fix `fix(api): pass exchange pnl into runtime dca fraction`. Public Web
+    build-info reports that SHA with `metadataSource=github-branch` and build
+    id `nIAcUSY1pT2mPzUoi4OyK`; API `/health`, API `/ready`, and Web `/`
+    return `200`; public no-worker deploy smoke passes; Docker container tags
+    show API and all Soar workers running the same SHA. No-secret V1 preflight
+    now passes build-info and public smoke and remains blocked only on
+    protected auth/context plus missing release evidence gates.
+  - Next: run authenticated app-journey triage/proof for the user-reported
+    broken flows when app auth/context is available; separately run protected
+    liveimport, rollback, production UI, and DB restore proof when approved
+    inputs exist. Do not claim whole-product readiness and do not run LIVE
+    mutation without explicit operator approval.
+  - 2026-05-24 local Dashboard Home dependency checkpoint:
+    `WEB-DASHBOARD-SELECTED-BOT-LOAD-DEPS-2026-05-24` fixed the only current
+    repository lint warning without making selected-bot changes trigger a full
+    `load` callback identity change: the hook now syncs `selectedBotId` through
+    a ref read inside `load`. Full Web test rerun passed (`150` files / `534`
+    tests), the focused Dashboard regression pack passed (`26/26`), focused
+    hook tests passed (`4/4`), Web lint passed with no warnings/errors, Web
+    typecheck passed, repository lint passed with no warnings/errors,
+    guardrails passed, and strict architecture graph drift passed with
+    `796/796` covered and `0` missing. Evidence:
+    `history/tasks/web-dashboard-selected-bot-load-deps-2026-05-24-task.md`.
+  - 2026-05-24 local integrity build sweep:
+    `LOCAL-INTEGRITY-BUILD-SWEEP-2026-05-24` refreshed the broader local gates
+    after the current docs/graph/release-tooling/Dashboard updates. Full
+    API/Web typecheck passed, docs parity passed (`22/22` API, `16/16` Web,
+    `37/37` routes), reusable audit/operator aggregate passed, and full
+    workspace build passed for mobile scaffold placeholder, API `tsc`, and Web
+    production `next build`. Evidence:
+    `history/tasks/local-integrity-build-sweep-2026-05-24-task.md`.
+  - 2026-05-24 API local regression sweep:
+    `API-LOCAL-REGRESSION-SWEEP-2026-05-24` is verified locally. Fixed and
+    proved the API failures exposed by the readiness sweep: imported
+    `EXCHANGE_SYNC` dynamic TTP display now uses strategy fallback only when a
+    runtime-state basis exists plus canonical price truth; lifecycle close
+    parity recognizes `TSL`; reports count all mode trades while aggregating
+    PnL from settled `realizedPnl`; orders contract tests seed LIVE entitlement
+    instead of weakening production guards; runtime-flow waits for the final
+    ticker price; wallet/manual-order cleanup now covers shared backtest and
+    runtime tables; and the assistant protocol test reads the canonical
+    history artifact. Focused regression pack passed (`14` files / `107`
+    tests), full API Vitest passed after clean DB reset in one-worker mode,
+    API typecheck passed, lint passed, full workspace build passed, quality
+    guardrails passed, strict architecture graph drift passed (`796/796`
+    covered, `0` missing), and `git diff --check` found no whitespace errors
+    beyond LF/CRLF warnings. Evidence:
+    `history/tasks/api-local-regression-sweep-2026-05-24-task.md`.
+  - 2026-05-24 local Docker/Coolify parity:
+    `LOCAL-DOCKER-COOLIFY-PARITY-2026-05-24` is verified locally. Added root
+    `docker:app:*` scripts that reuse `docker-compose.vps.yml`, added
+    `.env.docker.example`, and updated local/Coolify runbooks so Windows local
+    Docker can mirror the VPS split-service shape without frequent deploy
+    pushes. Proof: compose config PASS, Docker build PASS for API/Web/four
+    worker images, short local container run returned API `/health` `200`,
+    API `/ready` `200`, Web `/` `200`, guardrails PASS, strict graph drift
+    PASS (`796/796`, `0` missing), and app/worker containers were cleaned up.
+    No production secrets or LIVE mutation were used.
+  - 2026-05-24 production UI legacy redirect fix:
+    `PROD-UI-LEGACY-DASHBOARD-REDIRECTS-2026-05-24` fixed the current
+    authenticated production UI audit failure for `/dashboard/exchanges`,
+    `/dashboard/orders`, and `/dashboard/positions`. One controlled commit
+    `0b7eb4c6` was pushed to `main`; Coolify deployed it; build-info now
+    reports `0b7eb4c6e0767ce1d51b3ff68f0229f899781d31`; public smoke passes;
+    production UI clickthrough passes. Auth proof passes on the new SHA.
+    Security/exchange proof is partial only because protected ops readiness
+    still requires separate ops auth, while the read-only exchange/security
+    steps through Binance and Gate.io catalog pass.
+  - 2026-05-24 Gate.io LIVE reconciliation scope:
+    `GATEIO-LIVE-RECONCILIATION-SCOPE-2026-05-24` is deployed and protected
+    read-only verified for Gate.io import visibility. Commit `24e9d3b8`
+    includes Gate.io in the default external-position reconciliation synced-key
+    scope and has DB-backed regression coverage. Local proof passed focused
+    reconciliation tests (`32/32`), API typecheck, repository lint,
+    guardrails, and strict graph drift. Coolify API deployment was recovered by
+    cancelling two stale API deployment jobs and forcing one fresh API deploy;
+    public API `/health`, API `/ready`, and Web build-info then passed on
+    `24e9d3b8`. App-internal orphan repair saw one Gate.io open position and
+    created `BNBUSDT` as `BOT_MANAGED`, `IN_SYNC`, and `CONFIRMED`.
+    `LIVEIMPORT-03` read-only proof passed for Gate.io with `BNBUSDT` visible
+    as `EXCHANGE_SYNC`, `OWNED_AND_MANAGED`, and `actionable: true` in
+    `history/artifacts/liveimport-03-prod-readback-24e9d3b8-2026-05-24.json`.
+    Binance runtime readback currently has no open runtime payload in that
+    artifact. No LIVE exchange-side order, cancel, close, or position mutation
+    was performed.
+  - 2026-05-24 protected proof refresh on `24e9d3b8`:
+    Production UI module clickthrough PASS, production auth-session browser
+    proof PASS, production security/exchange proof PASS, and production
+    rollback proof PASS. The first auth browser proof saw a transient logout
+    `502`; a direct API login/logout/me check immediately passed
+    `200/200/401`, and the rerun browser proof passed. Rerun V1 preflight now
+    accepts LIVEIMPORT-03 and production UI clickthrough as fresh. Remaining
+    blockers: production DB restore context, stale RC status/sign-off/checklist,
+    stale backup/restore drill, and activation audit/plan staying failed until
+    release evidence is complete. No LIVE exchange-side mutation was performed.
+  - 2026-05-25 production stability blocker:
+    restore drill, rollback proof, UI clickthrough, auth browser proof,
+    security/exchange proof, and LIVEIMPORT-03 were refreshed for `24e9d3b8`,
+    but the 30-minute RC/SLO observation failed. Production API logs showed
+    repeated heap out-of-memory restarts and 500s on
+    `/dashboard/bots/:id/runtime-monitoring/aggregate`. Local fix
+    `PROD-RUNTIME-AGGREGATE-SLO-BLOCKER-2026-05-25` limits aggregate session
+    fanout and converts a failed session subquery into an incomplete row that
+    is skipped by existing aggregate filtering. Local proof passed aggregate
+    concurrency `1/1`, aggregate e2e `18/18`, API typecheck, repository lint,
+    architecture graph generation, and quality guardrails. Next: commit/push
+    once state sync is complete, wait for Coolify deploy, then rerun public
+    smoke and the full SLO/RC gate. V1 remains `NO-GO` until that production
+    evidence passes.
+  - 2026-05-25 deploy/SLO follow-up:
+    commit `287e77a1ef6aa79396cb485dafcf8d17a0fce033` was pushed once and
+    reached public build-info. Public no-worker smoke passed. The 30-minute
+    SLO window had `0` API 5xx delta and `2.59ms` average duration, but failed
+    availability because late-window probes returned `fetch failed`. Follow-up
+    network checks showed `141.227.149.67` unreachable on SSH `22` and HTTPS
+    `443` for API/Web/Coolify. Current blocker is VPS reachability/host
+    availability; do not mark Gate 2 or V1 activation as PASS until the host
+    is reachable and a fresh SLO/RC window passes.
+  - 2026-05-25 function journey evidence index:
+    `FUNCTION-JOURNEY-EVIDENCE-INDEX-2026-05-25` added generated function,
+    web journey, and API evidence indexes so future fixes can start from
+    route/action/function/API proof boundaries instead of rediscovering gaps
+    by chat. Validation passed syntax, normal generation, strict generation,
+    and JSON parse checks. Current scan: `27` function chains, `36` web
+    journeys/pages, `96` API surfaces, `0` critical structural gaps, and `28`
+    high proof gaps. This is local traceability/repair-routing proof only, not
+    production readiness.
+  - 2026-05-25 user action evidence index:
+    `USER-ACTION-EVIDENCE-INDEX-2026-05-25` extends the repair map from UI
+    route/control to API/backend/data/test/proof boundaries. The new
+    `user-action-index.csv` covers `39` actions (`36` route visit/read rows and
+    `3` explicit UI controls), with `0` critical action gaps and `37` high
+    proof gaps. `pnpm run architecture:journey:triage -- --query
+    SOAR-UI-MANUAL-ORDER-SUBMIT` now traces the Dashboard manual-order action
+    to `/dashboard`, `SOAR-API-ORDER-OPEN`, manual-order chains, backend
+    services, DB models, tests, docs, evidence, and proof gaps.
 
 - [ ] `LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23 release: verify Binance/Gate.io manual and automated LIVE execution parity`
   - 2026-05-23: Operator asked whether the Gate.io ADAUSDT
@@ -53,6 +213,465 @@ Last updated: 2026-05-23
     `history/audits/live-exchange-execution-parity-2026-05-23-task.md`.
 
 ## DONE
+
+- [x] `V1-PROTECTED-INPUT-READINESS-REFRESH-380308D1-2026-05-24 release: refresh protected input readiness for current candidate`
+  - 2026-05-24: Refreshed the no-secret protected input readiness artifact for
+    deployed `380308d10cf0fabb2ea629eb55e6f0ba7d980ed1` using the latest
+    preflight/build-info timestamp `2026-05-24T16:46:29.583Z`. Result remains
+    `BLOCKED` with `0` matching protected input names. Operator packet
+    validation still passes and confirms protected input evidence matches the
+    packet. Evidence:
+    `history/tasks/v1-protected-input-readiness-refresh-380308d1-2026-05-24-task.md`.
+
+- [x] `V1-PREFLIGHT-RELEASE-GATE-GRAPH-REFRESH-2026-05-24 documentation: map V1 preflight and release gate runners`
+  - 2026-05-24: Refreshed the no-secret V1 production preflight for deployed
+    `380308d10cf0fabb2ea629eb55e6f0ba7d980ed1`: build-info PASS, public
+    smoke PASS, then BLOCKED on missing protected auth/context plus failed or
+    stale release evidence. Added graph nodes for `SOAR-TOOL-V1-FINAL-PREFLIGHT`
+    and `SOAR-TOOL-V1-RELEASE-GATE`, linked them into
+    `CHAIN-RELEASE-AUDIT-TOOLING`, and regenerated graph outputs. Validation
+    PASS: graph generate `643` nodes / `798` relations / `27` chains; strict
+    drift `796/796` covered / `0` missing; release/operator tests `40/40`;
+    operator unblock check PASS with `NO-GO`. Evidence:
+    `history/tasks/v1-preflight-release-gate-graph-refresh-2026-05-24-task.md`.
+
+- [x] `RELEASE-AUDIT-TOOLING-GRAPH-BACKFILL-2026-05-24 documentation: map release audit tooling into architecture graph`
+  - 2026-05-24: Added architecture graph records for release audit tooling:
+    the shared repository path resolver, latest operator unblock packet
+    validator, reusable audit validators, aggregate release/audit tests,
+    workflow node, relations, and `CHAIN-RELEASE-AUDIT-TOOLING`. Regenerated
+    graph outputs. Validation PASS: `architecture:graph:generate` => `641`
+    nodes / `791` relations / `27` chains; `architecture:graph:drift:strict`
+    => `796/796` covered and `0` missing. Evidence:
+    `history/tasks/release-audit-tooling-graph-backfill-2026-05-24-task.md`.
+
+- [x] `OPERATOR-UNBLOCK-DEFAULT-CURRENT-PACKET-2026-05-24 release: validate latest operator packet by default`
+  - 2026-05-24: Updated `ops:operator-unblock:check` so the default packet is
+    the latest dated `v1-operator-unblock-packet-*.json` in
+    `history/artifacts`, instead of the old `dd1a1faf` packet. Explicit
+    `--packet` still works for historical checks. Validation PASS: syntax
+    check; operator unblock tests `9/9`; default JSON validation selects
+    `history/artifacts/v1-operator-unblock-packet-380308d1-2026-05-24.json`;
+    release/operator test pack `40/40`; `audit:manifest:verify`. Evidence:
+    `history/tasks/operator-unblock-default-current-packet-2026-05-24-task.md`.
+
+- [x] `REUSABLE-AUDIT-HISTORY-PATH-RESOLVER-2026-05-24 chore: restore reusable audit path validation after docs/history migration`
+  - 2026-05-24: Updated reusable audit manifest, rerun playbook, handoff,
+    remediation-plan, rollup, and tooling-index checkers to accept canonical
+    `history/*` evidence paths where relevant and resolve logical `docs/*`
+    paths through the active `Soar - docs` root when `docs` is absent via a
+    shared `scripts/resolveRepositoryPath.mjs` helper. Validation PASS:
+    focused syntax checks; resolver/reusable audit tests `65/65`; manifest tests `14/14`; rerun
+    playbook tests `12/12`; handoff tests `10/10`; remediation/rollup/tooling
+    tests `26/26`;
+    `corepack pnpm run audit:manifest:verify`. Evidence:
+    `history/tasks/reusable-audit-history-path-resolver-2026-05-24-task.md`.
+
+- [x] `OPERATOR-UNBLOCK-READINESS-CONSISTENCY-2026-05-24 release: bind operator packet summary to readiness JSON`
+  - 2026-05-24: Hardened the operator unblock packet validator so it reads
+    the referenced protected-input readiness JSON and fails if SHA, status, or
+    matching-name count do not match the packet, or if the readiness JSON
+    cannot be read. Validation PASS: `node --check
+    scripts/checkOperatorUnblockPacket.mjs`; operator packet validator tests
+    `7/7`; current `380308d1` packet validation PASS with `Protected input
+    evidence matches packet: yes`. Evidence:
+    `history/tasks/operator-unblock-readiness-consistency-2026-05-24-task.md`.
+
+- [x] `RELEASE-OPERATOR-UNBLOCK-PACKET-380308D1-2026-05-24 release: publish current protected-proof operator packet`
+  - 2026-05-24: Published a current no-secret operator unblock packet for
+    deployed candidate `380308d10cf0fabb2ea629eb55e6f0ba7d980ed1`. Protected
+    input readiness found `0` matching protected input names in this shell, so
+    status remains `NO-GO`. Validation PASS:
+    `corepack pnpm run ops:operator-unblock:check -- --packet
+    history/artifacts/v1-operator-unblock-packet-380308d1-2026-05-24.json
+    --expected-sha 380308d10cf0fabb2ea629eb55e6f0ba7d980ed1`. Evidence:
+    `history/tasks/release-operator-unblock-packet-380308d1-2026-05-24-task.md`.
+
+- [x] `RELEASE-GATE-RC-SHA-BINDING-2026-05-24 release: bind RC approval docs to expected SHA`
+  - 2026-05-24: RC external gate status, sign-off, checklist sync, and RC
+    pipeline now support/propagate optional expected SHA metadata. Release
+    evidence readiness rejects fresh RC artifacts for the wrong deployment SHA.
+    Validation PASS: node syntax checks; release/preflight tests `31/31`;
+    production preflight passes build-info and public smoke, then blocks on
+    protected prerequisites plus stale/failed evidence. Evidence:
+    `history/tasks/release-gate-rc-sha-binding-2026-05-24-task.md`.
+
+- [x] `RELEASE-GATE-RESTORE-ROLLBACK-SHA-BINDING-2026-05-24 release: bind restore and rollback proof to expected SHA`
+  - 2026-05-24: Restore drill and rollback proof generators now accept
+    optional `--expected-sha`, include it in Markdown/JSON artifacts, and write
+    reports to canonical `history/evidence` plus raw JSON to
+    `history/artifacts`. Release evidence readiness now rejects fresh
+    restore/rollback proof for a mismatched SHA. Validation PASS: node syntax
+    checks; release/preflight tests `30/30`; production preflight passes
+    build-info and public smoke, then blocks on protected prerequisites plus
+    stale/failed evidence. Evidence:
+    `history/tasks/release-gate-restore-rollback-sha-binding-2026-05-24-task.md`.
+
+- [x] `RELEASE-GATE-EXPECTED-SHA-EVIDENCE-BINDING-2026-05-24 release: bind candidate evidence to expected SHA`
+  - 2026-05-24: Hardened release evidence readiness so activation audit,
+    activation plan, LIVEIMPORT readback, and production UI clickthrough must
+    include the expected deployment SHA when `--expected-sha` is provided.
+    Validation PASS: release/preflight tests `29/29`; rerun production
+    preflight passes build-info and public smoke, then blocks on protected
+    prerequisites plus stale/failed evidence. A transient `/ready` `503` was
+    observed once and cleared on follow-up deploy smoke plus five direct
+    `/ready` reads. Evidence:
+    `history/tasks/release-gate-expected-sha-evidence-binding-2026-05-24-task.md`.
+
+- [x] `RELEASE-PREFLIGHT-REMEDIATION-HINTS-2026-05-24 release: explain every current preflight blocker`
+  - 2026-05-24: Expanded final-preflight remediation hints for failed
+    activation audit/plan, stale RC status/signoff/checklist, stale
+    liveimport/UI/restore/rollback evidence, and protected prerequisite input
+    blockers. Validation PASS: release/preflight tests `28/28`; production
+    preflight prints next actions for every current blocker without secret
+    values. Evidence:
+    `history/tasks/release-preflight-remediation-hints-2026-05-24-task.md`.
+
+- [x] `RELEASE-GATE-HISTORY-EVIDENCE-RESOLVER-2026-05-24 release: classify canonical history evidence correctly`
+  - 2026-05-24: Release evidence readiness now searches canonical history
+    buckets for each evidence family instead of treating the active operations
+    docs directory as the only source. Added truthful 2026-05-24 activation
+    audit/plan artifacts with `Status: **BLOCKED**` for candidate `380308d1`.
+    Validation PASS: release/preflight tests `28/28`; production preflight
+    now reports activation as `FAILED` and prior protected evidence as `STALE`
+    rather than `MISSING`. Evidence:
+    `history/tasks/release-gate-history-evidence-resolver-2026-05-24-task.md`.
+
+- [x] `RELEASE-GATE-ACTIVATION-STATUS-HARDENING-2026-05-24 release: require explicit activation readiness`
+  - 2026-05-24: Hardened V1 release evidence so activation audit and
+    activation plan artifacts must explicitly report `Status: **READY**` or
+    `Status: **PASS**`; filename/date alone no longer satisfies the gate.
+    Validation PASS: `node --check` for touched release gate files;
+    `node --test scripts/runV1ReleaseGate.test.mjs
+    scripts/runV1FinalPreflight.test.mjs` (`28/28`). Production preflight
+    still passes build-info and public smoke, then blocks on real protected
+    prerequisites and missing/stale evidence. Evidence:
+    `history/tasks/release-gate-activation-status-hardening-2026-05-24-task.md`.
+
+- [x] `RELEASE-PREFLIGHT-ACTIVE-DOCS-ROOT-2026-05-24 release: resolve active operations docs for preflight`
+  - 2026-05-24: Fixed release/preflight and RC helper scripts so they resolve
+    the active operations docs root after the documentation migration to
+    `Soar - docs/operations`. Validation PASS: `node --check` for all touched
+    scripts; `node --test scripts/runV1ReleaseGate.test.mjs
+    scripts/runV1FinalPreflight.test.mjs` (`27/27`). No-secret production
+    preflight now passes build-info and public smoke, detects RC current docs
+    as stale for 2026-05-23 rather than missing, and remains blocked only on
+    protected prerequisites plus true missing/stale release evidence. Evidence:
+    `history/tasks/release-preflight-active-docs-root-2026-05-24-task.md`.
+
+- [x] `PROD-FRESH-DEPLOY-380308D1-2026-05-24 release: deploy current production candidate`
+  - 2026-05-24: Resolved the stale production deploy blocker. First deploy of
+    `52be8b61` exposed an API TypeScript build failure where
+    `unrealizedPnl` was passed into `resolveRuntimeCurrentPnlFraction` before
+    the helper type accepted it. Committed and pushed
+    `380308d10cf0fabb2ea629eb55e6f0ba7d980ed1` (`fix(api): pass exchange pnl
+    into runtime dca fraction`), then deployed Web/API/workers through
+    Coolify. Validation PASS: `corepack pnpm run typecheck`; focused
+    `runtimePositionAutomation.exchangePnl.test.ts` (`2/2`); public
+    build-info matches `380308d1`; Docker tags show API and all workers on
+    `380308d1`; public no-worker smoke passes. No-secret V1 preflight rerun
+    passes build-info and public smoke and remains blocked only on protected
+    auth/context and release evidence gates. Evidence:
+    `history/tasks/production-fresh-deploy-380308d1-2026-05-24-task.md`.
+
+- [x] `PROD-PUBLIC-REACHABILITY-REFRESH-2026-05-24 release: refresh public production reachability`
+  - 2026-05-24: Public production reachability is restored from this
+    workstation, but current production is not fresh against `origin/main`.
+    Validation: DNS resolves Web/API/VPS to `141.227.149.67`; TCP succeeds for
+    Web `443`, API `443`, and VPS `22`; Web build-info returns `200` with
+    deployed `gitSha=51fa41efb1664d5cb2e8dbb81cbec33f11365ccd`; API `/health`,
+    API `/ready`, and Web `/` return `200`; `pnpm run ops:deploy:smoke --
+    --web-base-url https://soar.luckysparrow.ch --api-base-url
+    https://api.soar.luckysparrow.ch --skip-workers` PASS. No-secret V1
+    preflight correctly BLOCKED on build-info freshness and missing protected
+    auth/evidence, writing
+    `history/artifacts/v1-preflight-public-reachability-refresh-2026-05-24.json`
+    and `history/releases/v1-preflight-public-reachability-refresh-2026-05-24.md`.
+    Evidence:
+    `history/tasks/prod-public-reachability-refresh-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-STRICT-GUARDRAIL-2026-05-24 feature: enforce graph drift through repository guardrails`
+  - 2026-05-24: Strict architecture graph drift is now part of
+    `pnpm run quality:guardrails`. Added `architecture:graph:drift:strict`,
+    wired the guardrail suite to fail on missing representative graph path
+    references, and added guardrail pass/fail unit coverage. Validation PASS:
+    `pnpm run architecture:graph:drift:strict` => `796/796` covered, `0`
+    missing; `node --test scripts/repoGuardrails.test.mjs` => `9/9`; `pnpm
+    run architecture:graph:generate` => `635` nodes, `781` relations, `26`
+    chains; `pnpm run quality:guardrails` PASS with `Architecture graph drift:
+    OK`; `pnpm run docs:parity:check` PASS. Evidence:
+    `history/tasks/architecture-graph-strict-guardrail-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-FULL-DRIFT-CLOSURE-2026-05-24 feature: close representative architecture graph drift`
+  - 2026-05-24: Completed the current representative architecture graph drift
+    closure across engine runtime core, market data/stream adapters, residual
+    Web/API evidence, API infrastructure residual tests, and module/
+    architecture governance docs. Validation PASS:
+    `pnpm run architecture:graph:generate` => `635` nodes, `781` relations,
+    `26` chains; `pnpm run architecture:graph:drift` => `796/796` covered,
+    `0` missing; `git diff --check` reports no whitespace errors beyond
+    existing LF/CRLF warnings. Evidence:
+    `history/tasks/architecture-graph-full-drift-closure-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-AUTH-SESSION-DEEP-BACKFILL-2026-05-24 feature: backfill Auth Session deep graph`
+  - 2026-05-24: Expanded the architecture evidence graph for Auth Session:
+    public landing/login/register pages, login/register forms, password
+    visibility control, auth hooks, Web auth service, AuthContext, API auth
+    routes/controller/service/cookie/JWT/errors/types, User model, Web/API auth
+    tests, docs links, and `CHAIN-AUTH-SESSION-DEEP`. Validation PASS:
+    `pnpm run architecture:graph:generate` (`573` nodes, `659` relations,
+    `24` chains) and `pnpm run architecture:graph:drift` (`534/796` covered,
+    `262` missing, `apiRoutes` `22/22`, `configAndPipelines` `9/9`). Evidence:
+    `history/tasks/architecture-graph-auth-session-deep-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-WEB-RUNTIME-SURFACES-BACKFILL-2026-05-24 feature: backfill Web runtime surface graph`
+  - 2026-05-24: Expanded the architecture evidence graph for Dashboard Home
+    runtime and Bots monitoring surfaces: runtime sidebar, onboarding,
+    signals, derivations, UI helpers, trade metadata, formatters, monitoring
+    tabs/sections, future signals, protection/attribution cells, portfolio
+    history, focused Web tests, docs links, and runtime API service links.
+    Validation PASS: `pnpm run architecture:graph:generate` (`543` nodes,
+    `624` relations, `23` chains) and `pnpm run architecture:graph:drift`
+    (`510/796` covered, `286` missing, `apiRoutes` `22/22`,
+    `configAndPipelines` `9/9`). Evidence:
+    `history/tasks/architecture-graph-web-runtime-surfaces-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-API-PLATFORM-SAFETY-BACKFILL-2026-05-24 feature: backfill API platform safety graph`
+  - 2026-05-24: Expanded the architecture evidence graph for API platform
+    safety: critical secrets readiness, proxy trust, runtime execution config,
+    env loading, auth/rate-limit/request-logger/ops-network/trusted-origin
+    middleware, error handling, shared errors, HTTP error mapping, logger,
+    symbols, focused config/middleware/lib tests, and docs. Validation PASS:
+    `pnpm run architecture:graph:generate` (`520` nodes, `597` relations,
+    `22` chains) and `pnpm run architecture:graph:drift` (`478/796` covered,
+    `318` missing, `apiRoutes` `22/22`, `configAndPipelines` `9/9`). Evidence:
+    `history/tasks/architecture-graph-api-platform-safety-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-RUNTIME-SUPPORT-SERVICES-BACKFILL-2026-05-24 feature: backfill runtime support service graph`
+  - 2026-05-24: Expanded the architecture evidence graph for bot/runtime/
+    engine support services: ownership, API-key resolution, LIVE consent,
+    projections, portfolio history, DCA display, market truth, signal display,
+    paper runtime, pre-trade risk, rule evaluation, focused tests, and docs.
+    Validation PASS: `pnpm run architecture:graph:generate` (`500` nodes,
+    `577` relations, `21` chains) and `pnpm run architecture:graph:drift`
+    (`466/796` covered, `330` missing, `apiRoutes` `22/22`,
+    `configAndPipelines` `9/9`). Evidence:
+    `history/tasks/architecture-graph-runtime-support-services-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-API-SUPPORT-ROUTES-BACKFILL-2026-05-24 feature: backfill API support route graph`
+  - 2026-05-24: Expanded the architecture evidence graph for root/dashboard/
+    admin API router composition and support route modules: icons lookup,
+    market-stream SSE, profile basic/security, and avatar upload. Added nodes,
+    typed API route/test/feature/workflow rows, relations, docs links, and
+    `CHAIN-API-SUPPORT-ROUTES`. Validation PASS: `pnpm run
+    architecture:graph:generate` (`461` nodes, `559` relations, `20` chains)
+    and `pnpm run architecture:graph:drift` (`425/796` covered, `371` missing,
+    `apiRoutes` `22/22`, `configAndPipelines` `9/9`). Evidence:
+    `history/tasks/architecture-graph-api-support-routes-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-OPS-CONFIG-PIPELINE-BACKFILL-2026-05-24 feature: backfill operations config/pipeline graph`
+  - 2026-05-24: Expanded the architecture evidence graph for operations
+    config and pipeline: root package scripts -> pnpm workspace -> API/Web/
+    Mobile/Shared package manifests -> local/VPS compose topology -> GitHub CI
+    workflow -> repository guardrails -> local/testing/deployment docs. Graph
+    tooling now resolves the active documentation root when this workspace uses
+    `Soar - docs`. Validation PASS: `pnpm run architecture:graph:generate`
+    (`426` nodes, `519` relations, `19` chains) and
+    `pnpm run architecture:graph:drift` (`404/796` covered, `392` missing,
+    `configAndPipelines` `9/9`). Evidence:
+    `history/tasks/architecture-graph-ops-config-pipeline-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-DRIFT-DETECTION-2026-05-24 chore: add architecture graph drift audit`
+  - 2026-05-24: Added `pnpm run architecture:graph:drift`, which compares
+    representative route/service/test/page/component/doc/config/pipeline files
+    against file paths referenced by architecture graph CSV records. Latest
+    informational audit PASS after Auth Session deep backfill: `796`
+    inventoried files, `534` covered by graph CSV path references, `262`
+    missing; `apiRoutes` is `22/22`. Outputs:
+    `docs/status/architecture-graph-drift.md` and
+    `history/artifacts/architecture-graph-drift-2026-05-24.json`. This is not
+    yet a failing gate; full backfill must reduce gaps before
+    `--fail-on-drift` can be enabled. Evidence:
+    `history/tasks/architecture-graph-drift-detection-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-AI-ASSISTANT-FOUNDATION-BACKFILL-2026-05-24 feature: backfill AI Assistant foundation graph`
+  - 2026-05-24: Expanded the architecture evidence graph for AI Assistant
+    foundation: assistant UI -> Web bot service -> assistant config/subagent/
+    dry-run APIs -> bots controller and schemas -> BotAssistantService ->
+    AssistantOrchestrator -> assistant config/subagent DB models -> tests ->
+    docs -> red-team agent/prompt protocol. Validation PASS:
+    `pnpm run architecture:graph:generate` (`411` nodes, `499` relations,
+    `18` chains). This is graph traceability proof, not fresh authenticated
+    browser proof, production assistant readback, or hot-path AI trading proof.
+    Evidence:
+    `history/tasks/architecture-graph-ai-assistant-foundation-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-SUBSCRIPTIONS-ADMIN-BACKFILL-2026-05-24 feature: backfill Subscriptions/Admin graph`
+  - 2026-05-24: Expanded the architecture evidence graph for
+    Subscriptions/Admin: admin/profile UI -> Web services -> admin users and
+    subscription plan APIs -> profile subscription and checkout APIs ->
+    controllers -> DTO schemas -> services -> entitlement guard -> checkout
+    intent persistence -> DB models -> tests -> docs. Validation PASS:
+    `pnpm run architecture:graph:generate` (`387` nodes, `463` relations,
+    `17` chains). This is graph traceability proof, not fresh authenticated
+    browser proof or production admin mutation proof. Evidence:
+    `history/tasks/architecture-graph-subscriptions-admin-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-LOGS-AUDIT-BACKFILL-2026-05-24 feature: backfill Logs/Audit Trail graph`
+  - 2026-05-24: Expanded the architecture evidence graph for Logs/Audit
+    Trail: logs dashboard route -> AuditTrailView -> Web logs service -> logs
+    API route -> controller -> query schema -> backend logs service -> Log DB
+    model -> API-key/Bot Setup event producer links -> tests -> docs.
+    Validation PASS: `pnpm run architecture:graph:generate` (`349` nodes,
+    `413` relations, `16` chains). This is graph traceability proof, not fresh
+    authenticated browser proof or production action-produced readback.
+    Evidence:
+    `history/tasks/architecture-graph-logs-audit-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-REPORTS-BACKFILL-2026-05-24 feature: backfill Reports performance evidence graph`
+  - 2026-05-24: Expanded the architecture evidence graph for Reports:
+    reports dashboard route -> PerformanceReportsView -> Web reports service
+    and Web backtests service -> cross-mode reports API route -> controller
+    -> backend reports service -> mode aggregation utility ->
+    BacktestReport/BacktestTrade/Trade/Bot read models -> tests -> docs.
+    Validation PASS: `pnpm run architecture:graph:generate` (`336` nodes,
+    `396` relations, `15` chains). This is graph traceability proof, not fresh
+    authenticated browser proof or production report readback. Evidence:
+    `history/tasks/architecture-graph-reports-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-BACKTESTS-BACKFILL-2026-05-24 feature: backfill Backtests replay graph`
+  - 2026-05-24: Expanded the architecture evidence graph for Backtests:
+    list/create/detail UI -> Web backtests service -> API routes ->
+    controller -> DTOs -> service -> range resolver -> queue/job -> data
+    gateway -> replay core -> fill model -> report lifecycle -> immutable
+    strategy/market snapshots -> BacktestRun/Trade/Report DB models -> tests
+    -> docs. Validation PASS: `pnpm run architecture:graph:generate` (`324`
+    nodes, `371` relations, `14` chains). This is graph traceability proof,
+    not fresh authenticated browser proof or heavy replay performance proof.
+    Evidence:
+    `history/tasks/architecture-graph-backtests-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-MARKETS-BACKFILL-2026-05-24 feature: backfill Markets universe graph`
+  - 2026-05-24: Expanded the architecture evidence graph for Markets:
+    list/create/edit UI -> Web markets service -> helper utilities -> catalog
+    endpoint -> market API routes -> controller -> DTOs -> service ->
+    exchange-catalog/symbol resolver -> MarketUniverse/SymbolGroup/Bot/
+    BotMarketGroup DB guards -> Bot Setup and Bot Runtime consumers -> tests
+    -> docs. Validation PASS: `pnpm run architecture:graph:generate` (`286`
+    nodes, `329` relations, `13` chains). This is graph traceability proof,
+    not fresh authenticated browser proof or production market mutation proof.
+    Evidence:
+    `history/tasks/architecture-graph-markets-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-STRATEGIES-BACKFILL-2026-05-24 feature: backfill Strategies authoring graph`
+  - 2026-05-24: Expanded the architecture evidence graph for Strategies:
+    list/create/edit UI -> Web strategies service -> form mapping/presets ->
+    indicator catalog -> strategy API routes -> controller -> DTO/validation
+    -> service -> Strategy/Bot/MarketGroupStrategyLink DB guards -> Bot Setup
+    and Bot Runtime consumers -> tests -> docs. Validation PASS: `pnpm run
+    architecture:graph:generate` (`261` nodes, `293` relations, `12` chains).
+    This is graph traceability proof, not fresh authenticated browser proof or
+    production strategy mutation proof. Evidence:
+    `history/tasks/architecture-graph-strategies-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-BOT-SETUP-BACKFILL-2026-05-24 feature: backfill Bot Setup topology graph`
+  - 2026-05-24: Expanded the architecture evidence graph for Bot Setup:
+    list/create/edit UI -> Web bots service -> bot lifecycle routes ->
+    controller -> DTOs -> context validation -> activation policy -> canonical
+    topology services -> DB -> tests -> docs. Validation PASS: `pnpm run
+    architecture:graph:generate` (`229` nodes, `251` relations, `11` chains).
+    This is graph traceability proof, not fresh authenticated browser proof or
+    LIVE activation proof. Evidence:
+    `history/tasks/architecture-graph-bot-setup-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-PROFILE-API-KEYS-BACKFILL-2026-05-24 feature: backfill Profile API Keys credential graph`
+  - 2026-05-24: Expanded the architecture evidence graph for Profile API
+    Keys: profile UI -> Web API-key service -> API-key routes -> controller ->
+    DTOs -> encrypted storage/probe services -> exchange probe boundary ->
+    API-key/log DB models -> Wallets/Bot Runtime consumers -> tests -> docs.
+    Validation PASS: `pnpm run architecture:graph:generate` (`202` nodes,
+    `212` relations, `10` chains). This is graph traceability proof, not fresh
+    authenticated browser proof or secret-bearing production probe proof.
+    Evidence:
+    `history/tasks/architecture-graph-profile-api-keys-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-WALLETS-BACKFILL-2026-05-24 feature: backfill Wallets lifecycle and analytics graph`
+  - 2026-05-24: Expanded the architecture evidence graph for Wallets: routes
+    and UI components -> Web wallet service -> wallet API routes -> controller
+    -> DTOs -> wallet service -> exchange capability/authenticated-read/
+    adapter-boundary links -> ledger/cashflow services -> DB -> tests -> docs.
+    Validation PASS: `pnpm run architecture:graph:generate` (`176` nodes,
+    `177` relations, `9` chains). This is graph traceability proof, not fresh
+    authenticated browser proof or LIVE mutation/readback proof. Evidence:
+    `history/tasks/architecture-graph-wallets-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-EXCHANGE-ADAPTER-BACKFILL-2026-05-24 feature: backfill Exchange Adapter capability graph`
+  - 2026-05-24: Expanded the architecture evidence graph for Exchange Adapter:
+    capability contracts -> authenticated/public read boundaries -> connector
+    factory -> live order adapter -> symbol rules -> fee reconciliation ->
+    consumers -> tests -> docs. Validation PASS: `pnpm run
+    architecture:graph:generate` (`142` nodes, `129` relations, `8` chains).
+    This is graph traceability proof, not fresh production exchange mutation
+    proof. Evidence:
+    `history/tasks/architecture-graph-exchange-adapter-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-BOT-RUNTIME-BACKFILL-2026-05-24 feature: backfill Bot Runtime monitoring graph`
+  - 2026-05-24: Expanded the architecture evidence graph for the P0 Bot
+    Runtime monitoring path: runtime route -> monitoring UI -> Web bots
+    service -> runtime API routes -> controller -> DTO -> aggregate/read/
+    command services -> DB -> tests -> docs. Validation PASS: `pnpm run
+    architecture:graph:generate` (`115` nodes, `103` relations, `7` chains).
+    This is graph traceability proof, not fresh authenticated production
+    runtime readback or LIVE mutation proof. Evidence:
+    `history/tasks/architecture-graph-bot-runtime-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-POSITIONS-BACKFILL-2026-05-24 feature: backfill Positions core execution graph`
+  - 2026-05-24: Expanded the architecture evidence graph for the adjacent P0
+    Positions path: legacy route -> Dashboard/runtime UI -> Web positions
+    service -> Positions API routes -> controller -> DTO -> service ->
+    exchange snapshot normalization -> LIVE reconciliation -> DB -> tests ->
+    docs. Validation PASS: `pnpm run architecture:graph:generate` (`93`
+    nodes, `80` relations, `6` chains). This is graph traceability proof, not
+    fresh production clickthrough or LIVE mutation proof. Evidence:
+    `history/tasks/architecture-graph-positions-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-GRAPH-MANUAL-ORDER-BACKFILL-2026-05-24 feature: backfill manual-order execution graph`
+  - 2026-05-24: Expanded the architecture evidence graph for the P0 manual
+    order path from a coarse seed to detailed UI -> Web service -> API route
+    -> controller -> DTO -> service -> pre-trade -> exchange boundary ->
+    lifecycle/exchange events -> DB -> tests -> docs mapping. Validation
+    PASS: `pnpm run architecture:graph:generate` (`67` nodes,
+    `51` relations, `5` chains), `pnpm run quality:guardrails`, and
+    `pnpm run docs:parity:check`. This is graph traceability proof, not fresh
+    runtime or LIVE mutation proof. Evidence:
+    `history/tasks/architecture-graph-manual-order-backfill-2026-05-24-task.md`.
+
+- [x] `ARCH-EVIDENCE-GRAPH-SYSTEM-2026-05-24 feature: establish Obsidian-first architecture evidence graph foundation`
+  - 2026-05-24: User requested a full project "digital nervous system" for
+    feature/function/component/test/docs dependency tracing. Foundation
+    implemented as CSV source-of-truth registries plus generated Obsidian
+    Markdown nodes and JSON graph export. Validation PASS:
+    `pnpm run architecture:graph:generate` (`45` nodes, `24` relations,
+    `4` chains), `pnpm run quality:guardrails`, and
+    `pnpm run docs:parity:check`. This is seed coverage, not full repository
+    backfill. Evidence:
+    `history/tasks/architecture-evidence-graph-system-2026-05-24-task.md`.
+
+- [x] `RUNTIME-DCA-EXCHANGE-PNL-THRESHOLD-2026-05-23 fix: align LIVE DCA thresholds with exchange PnL truth`
+  - 2026-05-23: Operator reported that a second DCA threshold at `50%` did
+    not fire while the Positions row showed loss beyond that threshold. Runtime
+    automation now uses exchange `unrealizedPnl / marginUsed` as PnL threshold
+    truth for `EXCHANGE_SYNC` positions when available, while keeping lifecycle
+    mark price as the submitted order price. Added a regression for a short
+    `SOLUSDT` row with about `-62.5%` exchange PnL, `currentAdds=1`, and
+    DCA levels `-25%` / `-50%`; it now submits DCA level index `1`.
+    Validation PASS: runtime automation exchange-PnL/service tests `38/38`,
+    position-management/DCA parity tests `27/27`, API typecheck, repository
+    guardrails, docs parity, and diff check. The new regression lives in
+    `runtimePositionAutomation.exchangePnl.test.ts` so the existing service
+    test file stays under the source-size guardrail. No production auth or
+    LIVE mutation was used. Evidence:
+    `history/tasks/runtime-dca-exchange-pnl-threshold-2026-05-23-task.md`.
 
 - [x] `PROJECT-ORGANIZATION-PRECOMMIT-POLISH-2026-05-23 refactor: align root and policy entrypoints before commit`
   - 2026-05-23: Final pre-commit organization polish after the docs/history

@@ -4,6 +4,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { repositoryPathExists } from './resolveRepositoryPath.mjs';
 
 const repoRoot = process.cwd();
 const requiredToolIds = [
@@ -92,7 +93,7 @@ Validates the reusable audit tooling index JSON by checking:
 `);
 };
 
-const defaultExists = (relativePath) => existsSync(path.resolve(repoRoot, relativePath));
+const defaultExists = (relativePath) => repositoryPathExists(repoRoot, relativePath);
 const defaultPackageScripts = () => {
   const packageJson = JSON.parse(readFileSync(path.resolve(repoRoot, 'package.json'), 'utf8'));
   return packageJson.scripts ?? {};

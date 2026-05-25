@@ -4,6 +4,7 @@ import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { repositoryPathExists } from './resolveRepositoryPath.mjs';
 
 const repoRoot = process.cwd();
 const expectedAuditIds = Array.from({ length: 24 }, (_, index) => `AUD-${String(index).padStart(2, '0')}`);
@@ -68,7 +69,7 @@ Validates the full reusable audit rollup JSON by checking:
 `);
 };
 
-const defaultExists = (relativePath) => existsSync(path.resolve(repoRoot, relativePath));
+const defaultExists = (relativePath) => repositoryPathExists(repoRoot, relativePath);
 const classifyAuditStatus = (status) => {
   const normalized = String(status ?? '').toLowerCase();
   if (normalized.startsWith('deferred')) return 'deferred';

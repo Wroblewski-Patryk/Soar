@@ -811,11 +811,9 @@ export const listBotRuntimeSessionPositions = async (
       ],
     });
     const marketPrice = marketPriceResult.price;
-    const runtimeState = selectRuntimeDisplayState({
-      position,
-      runtimeSnapshot: runtimePositionAutomationService.getPositionStateSnapshot(position.id),
-      persistedState: persistedRuntimeStatesByPositionId.get(position.id) ?? null,
-    });
+    const runtimeSnapshot = runtimePositionAutomationService.getPositionStateSnapshot(position.id);
+    const persistedRuntimeState = persistedRuntimeStatesByPositionId.get(position.id) ?? null;
+    const runtimeState = selectRuntimeDisplayState({ position, runtimeSnapshot, persistedState: persistedRuntimeState });
     const explicitDcaTradeCount = positionTrades.filter(
       (trade) => trade.lifecycleAction === 'DCA'
     ).length;
@@ -835,10 +833,13 @@ export const listBotRuntimeSessionPositions = async (
       dcaCount,
       'loss'
     );
-    const stateEntryPrice =
-      runtimeState && Number.isFinite(runtimeState.averageEntryPrice) && runtimeState.averageEntryPrice > 0
-        ? runtimeState.averageEntryPrice
-        : position.entryPrice;
+    const stateEntryPrice = runtimeState && Number.isFinite(runtimeState.averageEntryPrice) && runtimeState.averageEntryPrice > 0
+      ? runtimeState.averageEntryPrice
+      : position.entryPrice;
+    const hasCanonicalPriceBasis =
+      typeof marketPrice === 'number' && Number.isFinite(marketPrice) && marketPrice > 0 &&
+      Number.isFinite(position.entryPrice) && position.entryPrice > 0 &&
+      Number.isFinite(position.quantity) && position.quantity > 0;
     const {
       dynamicTtpStopLoss,
       dynamicTtpStopLossSource,
@@ -860,6 +861,8 @@ export const listBotRuntimeSessionPositions = async (
         position,
         strategyAutomationContextResolved,
         runtimeState,
+        hasRuntimeStateBasis: runtimeSnapshot != null || persistedRuntimeState != null,
+        hasCanonicalPriceBasis,
       }),
       allowTrailingTakeProfitProtection,
       allowTrailingStopProtection,

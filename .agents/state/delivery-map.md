@@ -1,6 +1,6 @@
 # Delivery Map
 
-Last updated: 2026-05-23
+Last updated: 2026-05-25
 
 ## Current Product Target
 
@@ -8,25 +8,22 @@ Last updated: 2026-05-23
 - Current release or milestone: V1 trading/runtime confidence
 - Primary user: trading operator
 - Primary outcome: Core bot, backtest, exchange, wallet, dashboard, and subscription journeys work with proof.
-- Top blockers: no current P0 production release blocker is recorded for the
-  protected release proof packet. The preceding protected release gate for
-  `b1ba69edccc639e97943f37fb2b1e6249a62e87c` is ready, including
-  `LIVEIMPORT-03 --symbols auto` for actual open runtime payloads `SOLUSDT`
-  and `BNBUSDT`; follow-up docs-state deploys must prove the pushed `HEAD`
-  through public build-info plus public deploy smoke. The latest verified
-  public checkpoint before this record is
-  `dd3191d73944f534800659b2dfd0bf5e0bd8b52f` after the non-Binance
-  order-book fail-closed deploy; Web build-info reports
-  `metadataSource=github-branch` and build id `PrpSx-bTjsSwKw5bQemwh`, and
-  public smoke passes.
-  Authenticated smoke is not claimed for the latest docs/state sync because
-  the available Coolify credential is not a Soar application password.
-- Next mission: the next bounded architecture-aligned product/runtime slice
-  after runtime execution dedupe observability and fresh public smoke for
-  `dd3191d7`. LIVE
-  order/cancel/close, unsafe LIVE position mutation, exchange-side mutation,
-  and existing production data mutation remain blocked without separate
-  explicit approval.
+- Top blockers: no current P0 public health blocker is recorded, but the
+  operator-reported broken app behavior still needs authenticated journey
+  proof. The preceding protected release gate for
+  `b1ba69edccc639e97943f37fb2b1e6249a62e87c` remains historical release
+  evidence. Current local source truth is
+  `52be8b614d2da9ec05d368ac4fbd05f3ec8f8332` on `main`: local `HEAD` and
+  `origin/main` match, and local guardrails/docs/typecheck/focused runtime DCA
+  tests pass. Current public Web/API reachability is blocked by connection
+  timeouts to build-info, API `/health`, and API `/ready`. Authenticated smoke
+  is not claimed by this cleanup checkpoint.
+- Next mission: diagnose public reachability/deploy health, then run
+  authenticated app-journey triage/proof for the reported broken flows and
+  update module confidence with the actual failing or verified evidence. LIVE
+  order/cancel/close, unsafe LIVE position mutation,
+  exchange-side mutation, and existing production data mutation remain blocked
+  without separate explicit approval.
 
 ## Source Inputs
 
@@ -37,11 +34,15 @@ Last updated: 2026-05-23
 | SRC-003 | UX | `docs/ux/` | Dashboard design and screen quality rules | active |
 | SRC-004 | audit | `docs/analysis/reusable-audit-registry.md`; `history/audits/audit-baseline-2026-05-19.md`; `history/audits/full-reusable-audit-rollup-2026-05-19.md` | Current reusable audit truth and repair queue | active |
 | SRC-005 | documentation navigation | `docs/soar-documentation-map.md`; `docs/maps/documentation-maps.md`; `history/history-overview.md` | Current docs entrypoints, Obsidian maps, and historical evidence boundary | active |
+| SRC-006 | architecture evidence graph | `docs/architecture/architecture-evidence-graph-system.md`; `docs/architecture/registry/nodes.csv`; `docs/architecture/relations/dependencies.csv`; `docs/architecture/chains/chains.csv`; `docs/graphs/architecture-graph.json` | Obsidian-first node, relation, chain, status, and graph-export foundation | active_seed |
 
 ## Module / Journey Map
 
 | ID | Module | Journey or screen | Layers needed | Current state | Evidence | Next mission |
 | --- | --- | --- | --- | --- | --- | --- |
+| SOAR-DM-022 | Architecture Evidence Graph | Feature-chain and impact-analysis registry | docs, CSV, generator, graph export, tests/status | verified_local | `ARCH-GRAPH-FULL-DRIFT-CLOSURE-2026-05-24`: graph generation passes with `635` nodes, `781` relations, and `26` chains. Drift audit inventories `796` representative source/test/doc/config/pipeline files, with `796` covered and `0` missing graph path references. Backfills cover P0/P1 feature chains plus engine runtime core, market data/stream adapters, residual Web/API evidence, API infrastructure residual tests, module docs, and architecture governance/contract docs. | Keep graph CSV updates mandatory with future code, test, docs, config, and workflow changes; graph traceability does not replace fresh runtime journey or protected production proof. |
+| SOAR-DM-023 | Function Journey Evidence Index | Route/action/function/API evidence routing | docs, CSV, generator, graph export, status/artifact | verified_local | `FUNCTION-JOURNEY-EVIDENCE-INDEX-2026-05-25`: `architecture:journey:index` generates `27` function-chain rows, `36` web journey rows, and `96` API surface rows with `0` critical structural gaps and `28` high proof gaps. | Use this index before fixing reported failures; close high proof gaps through authenticated browser/protected production proof, not by relabeling local evidence. |
+| SOAR-DM-024 | User Action Evidence Index | UI route/control to API/backend/test/proof triage | docs, CSV, generator, triage command, status/artifact | verified_local | `USER-ACTION-EVIDENCE-INDEX-2026-05-25`: `architecture:journey:index` now also generates `39` user action rows, `0` critical action gaps, and `37` high proof gaps. `architecture:journey:triage -- --query SOAR-UI-MANUAL-ORDER-SUBMIT` traces the Dashboard manual order action to `/dashboard`, `SOAR-API-ORDER-OPEN`, manual-order chains, backend services, DB models, tests, docs, and proof gaps. | Before changing a UI element or route, run triage for the affected action/route/API; do not mark protected or money-facing paths fully verified without browser/protected production proof. |
 | SOAR-DM-001 | Bots | Create, edit, delete, start/stop, monitor | web, API, DB, runtime, tests | verified | `.agents/state/module-confidence-ledger.md` row `SOAR-BOTS-001`; 2026-05-19 `AUD-10` Web bot/runtime pack (`8` files / `61` tests) and API bot/runtime pack (`10` files / `88` tests); 2026-05-14 disposable production fixture proof. | Keep proof fresh after future deploys; LIVE bot actions and broader Gate.io/second-LIVE production shape require separate explicit scope/proof. |
 | SOAR-DM-004 | Bot Runtime | Selected bot monitoring route, runtime sessions, positions, symbol stats, trades, redirects | web, API, DB, runtime, tests, browser proof | verified | `.agents/state/module-confidence-ledger.md` row `SOAR-BOT-RUNTIME-001`; local running/completed/worker telemetry proofs; `history/evidence/v1-production-dashboard-runtime-action-proof-457bce05-2026-05-14-task.md`; `history/evidence/prod-live-paper-simultaneous-runtime-readback-457bce05-2026-05-14.md`. | Keep proof fresh; Gate.io/second-LIVE production shape remains separate. |
 | SOAR-DM-003 | Dashboard Home | Selected bot, loading/error/empty states, wallet KPIs, positions/orders/trades runtime truth | web, runtime API contracts, tests, browser proof | verified | `.agents/state/module-confidence-ledger.md` row `SOAR-DASHBOARD-001`; local rendered/browser runtime proofs; `history/evidence/v1-production-dashboard-runtime-action-proof-457bce05-2026-05-14-task.md`; `history/plans/prod-ui-module-clickthrough-457bce05-2026-05-14.md`; `history/evidence/prod-live-paper-simultaneous-runtime-readback-457bce05-2026-05-14.md`. | Keep proof fresh; Gate.io/second-LIVE production shape remains separate. |

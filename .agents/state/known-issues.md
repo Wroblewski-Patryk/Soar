@@ -1,6 +1,31 @@
 # Known Issues
 
-Last updated: 2026-05-23
+Last updated: 2026-05-25
+
+## Active Issues
+
+- `PROD-VPS-REACHABILITY-2026-05-25` (P0 operations/release): production V1
+  remains `NO-GO` because the post-deploy SLO/RC window for commit `287e77a1`
+  failed availability after public probes returned `fetch failed`; follow-up
+  checks showed VPS IP `141.227.149.67` unreachable on SSH `22` and HTTPS
+  `443`. This is the current release blocker before any activation/signoff
+  claim. Next action: restore VPS/Coolify/API/Web reachability, inspect logs,
+  rerun public smoke, then rerun the fresh production SLO/RC gate.
+
+- `USER-ACTION-PROOF-GAPS-2026-05-25` (P1 documentation/process/QA): the
+  generated journey indexes are structurally usable, but most protected UI
+  action rows are still high proof gaps because they are local-only or require
+  fresh authenticated browser/protected production proof. Current generated
+  truth: `39` user actions, `0` critical action gaps, and `37` high proof
+  gaps. Next action: use `pnpm run architecture:journey:triage -- --query
+  <route-or-action>` before UI repairs, then close high gaps with real browser
+  proof or accepted protected-boundary records.
+
+- `GRAPH-BACKFILL-001` is superseded as an active issue by strict graph drift
+  and generated journey/action indexes. Current graph drift is `797/797`
+  covered with `0` missing, and `architecture:journey:index:strict` has `0`
+  critical structural gaps. Future graph drift remains a guardrail failure,
+  not an open active backlog item.
 
 ## Resolved Incidents
 
@@ -31,9 +56,27 @@ Last updated: 2026-05-23
   created with weak placeholder material, users may need to re-save those keys
   before live exchange operations can decrypt them.
 
-## Active Issues
+## Historical / Superseded Issue Notes
 
-- 2026-05-23 protected V1 release update:
+- 2026-05-24 operator-reported app readiness gap:
+  Local source state is current at
+  `52be8b614d2da9ec05d368ac4fbd05f3ec8f8332` on both `HEAD` and
+  `origin/main`, and local validation passes guardrails, docs parity,
+  typecheck, and focused runtime DCA tests. Public Web/API is currently
+  unreachable from this workstation: build-info, API `/health`, and API
+  `/ready` timed out with `Failed to connect`. DNS resolves Web/API/VPS
+  hostnames to `141.227.149.67`, but TCP fails on `80`, `443`, and `22`; Jina
+  reports `ERR_ADDRESS_UNREACHABLE`; SSH to `codex-vps` and `debian-vps`
+  times out. This does not prove the app journeys the operator says are still
+  broken. The active issue is now infrastructure reachability plus evidence and
+  reproduction: restore VPS/provider/Coolify access, rerun public smoke, then
+  run authenticated app-journey triage/proof for login, dashboard, bot/runtime
+  monitoring, manual order, and DCA behavior when proper app auth/context is
+  available; update module confidence with the exact failing or verified
+  journey. LIVE exchange mutation remains blocked without separate explicit
+  operator approval.
+
+- Historical 2026-05-23 protected V1 release update:
   No active P0 production release blocker is currently recorded for the
   protected `b1ba69ed` proof packet. Follow-up docs-state deploys must prove
   the pushed `HEAD` via public Web build-info and public deploy smoke after

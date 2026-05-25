@@ -1,12 +1,22 @@
 #!/usr/bin/env node
 
 import { spawnSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const VALID_ENVIRONMENTS = new Set(['local', 'stage', 'prod']);
-const currentOperationsDir = path.resolve(process.cwd(), 'docs', 'operations');
+const repoRoot = process.cwd();
+const resolveDocsRoot = () => {
+  const docsRoot = path.resolve(repoRoot, 'docs');
+  const migratedDocsRoot = path.resolve(repoRoot, 'Soar - docs');
+  if (existsSync(path.join(docsRoot, 'operations')) || !existsSync(migratedDocsRoot)) {
+    return docsRoot;
+  }
+  return migratedDocsRoot;
+};
+const currentOperationsDir = path.join(resolveDocsRoot(), 'operations');
 const historyOperationsDir = path.resolve(process.cwd(), 'history', 'operations');
 const SECRET_CLI_FLAGS = new Set([
   '--auth-token',
@@ -20,12 +30,19 @@ const EVIDENCE_FAMILIES = {
     label: 'activation evidence audit',
     requiredIn: new Set(['stage', 'prod']),
     matcher: /^v1-production-activation-evidence-audit-(\d{4}-\d{2}-\d{2})\.md$/,
+    searchDirType: 'historyAudits',
+    passPattern: /Status:\s*\*\*(?:READY|PASS)\*\*/i,
+    failedPassReason: 'artifact is fresh but does not report activation status READY or PASS',
+    requiresExpectedSha: true,
   },
   activationPlan: {
     label: 'activation execution plan',
     requiredIn: new Set(['stage', 'prod']),
     matcher: /^v1-production-activation-and-evidence-plan-(\d{4}-\d{2}-\d{2})\.md$/,
-    searchDirType: 'planning',
+    searchDirType: 'historyPlans',
+    passPattern: /Status:\s*\*\*(?:READY|PASS)\*\*/i,
+    failedPassReason: 'artifact is fresh but does not report activation status READY or PASS',
+    requiresExpectedSha: true,
   },
   rcExternalGateStatus: {
     label: 'RC external gates status',
@@ -41,6 +58,7 @@ const EVIDENCE_FAMILIES = {
       /Gate 4 approved status found:\s+yes/i,
     ],
     failedPassPatternsReason: 'artifact is fresh but does not show all RC gates PASS',
+    requiresExpectedSha: true,
   },
   rcSignoffRecord: {
     label: 'RC sign-off record',
@@ -50,6 +68,7 @@ const EVIDENCE_FAMILIES = {
     datePattern: /Date \(UTC\):\s*`?(\d{4}-\d{2}-\d{2})T/i,
     passPattern: /RC status:\s*`?APPROVED`?/i,
     failedPassReason: 'artifact is fresh but does not report RC status APPROVED',
+    requiresExpectedSha: true,
   },
   rcChecklist: {
     label: 'RC checklist verification block',
@@ -59,11 +78,13 @@ const EVIDENCE_FAMILIES = {
     datePattern: /Latest Verification \((\d{4}-\d{2}-\d{2})\)/i,
     passPattern: /G1=PASS`,\s*`G2=PASS`,\s*`G3=PASS`,\s*`G4=PASS`/i,
     failedPassReason: 'artifact is fresh but does not show all RC gates PASS',
+    requiresExpectedSha: true,
   },
   liveImportReadback: {
     label: 'LIVEIMPORT-03 runtime readback',
     requiredIn: new Set(['prod']),
     matcher: /^liveimport-03-prod-readback-(\d{4}-\d{2}-\d{2})\.json$/,
+    searchDirType: 'historyArtifacts',
     passPatterns: [
       /"botsWithRuntimeReadback":\s*[1-9]\d*/i,
       /"missingSymbols":\s*\[\s*\]/i,
@@ -71,11 +92,13 @@ const EVIDENCE_FAMILIES = {
     ],
     failedPassPatternsReason:
       'artifact is fresh but does not satisfy required runtime readback checks',
+    requiresExpectedSha: true,
   },
   prodUiClickthrough: {
     label: 'production UI clickthrough',
     requiredIn: new Set(['prod']),
     matcher: /^prod-ui-module-clickthrough-(?:[a-z0-9]+-)?(\d{4}-\d{2}-\d{2})\.md$/i,
+    searchDirType: 'historyPlans',
     datePattern: /Evidence date:\s*(\d{4}-\d{2}-\d{2})/i,
     passPatterns: [
       /Result:\s*\*\*PASS\*\*/i,
@@ -85,20 +108,25 @@ const EVIDENCE_FAMILIES = {
     ],
     failedPassPatternsReason:
       'artifact is fresh but does not satisfy authenticated production UI clickthrough checks',
+    requiresExpectedSha: true,
   },
   backupRestoreDrill: {
     label: 'backup/restore drill evidence',
     requiredIn: new Set(['prod']),
     matcher: /^v1-restore-drill-prod-(\d{4}-\d{2}-\d{2})T.*\.md$/,
+    searchDirType: 'historyEvidence',
     datePattern: /Generated at \(UTC\):\s*(\d{4}-\d{2}-\d{2})T/i,
     passPattern: /Status:\s*\*\*PASS\*\*/i,
+    requiresExpectedSha: true,
   },
   rollbackProof: {
     label: 'rollback proof pack',
     requiredIn: new Set(['prod']),
     matcher: /^v1-rollback-proof-prod-(\d{4}-\d{2}-\d{2})T.*\.md$/,
+    searchDirType: 'historyEvidence',
     datePattern: /Generated at \(UTC\):\s*(\d{4}-\d{2}-\d{2})T/i,
     passPattern: /Status:\s*\*\*PASS\*\*/i,
+    requiresExpectedSha: true,
   },
 };
 
@@ -301,19 +329,33 @@ export const buildExecutionPlanSummary = (options) => ({
 const formatCommand = (command, args) =>
   [command, ...args.map((value) => (/\s/.test(value) ? `"${value}"` : value))].join(' ');
 
-const resolveSearchDirs = (family, evidenceDir) => {
-  if (family.searchDirType === 'planning') {
-    return [path.resolve(evidenceDir, '..', 'planning')];
+const resolveSearchDirs = (family, evidenceDir, currentOpsDir, historyRoot) => {
+  if (family.searchDirType === 'historyAudits') {
+    return [path.join(historyRoot, 'audits'), evidenceDir];
+  }
+  if (family.searchDirType === 'historyPlans') {
+    return [
+      path.join(historyRoot, 'plans'),
+      path.join(historyRoot, 'planning'),
+      path.resolve(evidenceDir, '..', 'planning'),
+      evidenceDir,
+    ];
+  }
+  if (family.searchDirType === 'historyArtifacts') {
+    return [path.join(historyRoot, 'artifacts'), evidenceDir];
+  }
+  if (family.searchDirType === 'historyEvidence') {
+    return [path.join(historyRoot, 'evidence'), evidenceDir];
   }
   if (family.searchDirType === 'currentOperations') {
-    return [currentOperationsDir];
+    return [currentOpsDir];
   }
   return [evidenceDir];
 };
 
-const findLatestMatchingFile = async (family, evidenceDir) => {
+const findLatestMatchingFile = async (family, evidenceDir, currentOpsDir, historyRoot) => {
   let bestMatch = null;
-  for (const searchDir of resolveSearchDirs(family, evidenceDir)) {
+  for (const searchDir of resolveSearchDirs(family, evidenceDir, currentOpsDir, historyRoot)) {
     let dirEntries = [];
     try {
       dirEntries = await readDirSafe(searchDir);
@@ -356,7 +398,16 @@ const readFreshnessDate = async (family, evidence) => {
   return fileMatch?.[1] ?? '';
 };
 
-export const evaluateEvidenceReadiness = async ({ environment, evidenceDir, today }) => {
+const containsExpectedSha = (raw, expectedSha) => raw.includes(expectedSha);
+
+export const evaluateEvidenceReadiness = async ({
+  environment,
+  evidenceDir,
+  today,
+  expectedSha = '',
+  currentOperationsDir: currentOpsDir = evidenceDir,
+  historyRoot = path.resolve(evidenceDir, '..'),
+}) => {
   const evidence = [];
   const blockers = [];
 
@@ -375,7 +426,7 @@ export const evaluateEvidenceReadiness = async ({ environment, evidenceDir, toda
       continue;
     }
 
-    const match = await findLatestMatchingFile(family, evidenceDir);
+    const match = await findLatestMatchingFile(family, evidenceDir, currentOpsDir, historyRoot);
     if (!match) {
       const row = {
         key: familyKey,
@@ -411,6 +462,13 @@ export const evaluateEvidenceReadiness = async ({ environment, evidenceDir, toda
         reason =
           family.failedPassPatternsReason ??
           'artifact is fresh but does not satisfy required content checks';
+      }
+    }
+    if (state === 'fresh' && family.requiresExpectedSha && expectedSha) {
+      const raw = await readFile(match.absolutePath, 'utf8');
+      if (!containsExpectedSha(raw, expectedSha)) {
+        state = 'failed';
+        reason = 'artifact is fresh but is not tied to the expected deployment SHA';
       }
     }
 
@@ -539,6 +597,9 @@ const main = async () => {
     environment: options.environment,
     evidenceDir: path.resolve(process.cwd(), options.evidenceDir),
     today: options.today,
+    expectedSha: options.expectedSha,
+    currentOperationsDir,
+    historyRoot: path.resolve(process.cwd(), 'history'),
   });
   const steps = buildSteps(options);
   const summary = buildExecutionPlanSummary(options);

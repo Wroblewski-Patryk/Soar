@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { existsSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -48,7 +48,7 @@ const requiredAcceptanceFragments = [
 const parseArgs = () => {
   const args = process.argv.slice(2);
   const options = {
-    packet: 'history/artifacts/v1-operator-unblock-packet-dd1a1faf-2026-05-20.json',
+    packet: '',
     expectedSha: '',
     json: false,
     help: false,
@@ -92,6 +92,33 @@ Validates a no-secret V1 operator unblock packet by checking:
 
 const pathExists = (relativePath) => existsSync(path.resolve(repoRoot, relativePath));
 const hasFragment = (entries, fragment) => entries.some((entry) => String(entry).includes(fragment));
+const defaultPacketPattern = /^v1-operator-unblock-packet-.+-(\d{4}-\d{2}-\d{2})\.json$/;
+
+export const resolveDefaultOperatorPacketPath = ({ root = repoRoot } = {}) => {
+  const artifactsDir = path.resolve(root, 'history', 'artifacts');
+  const packets = readdirSync(artifactsDir, { withFileTypes: true })
+    .filter((entry) => entry.isFile())
+    .map((entry) => {
+      const match = entry.name.match(defaultPacketPattern);
+      if (!match) return null;
+      return {
+        date: match[1],
+        relativePath: `history/artifacts/${entry.name}`,
+      };
+    })
+    .filter(Boolean)
+    .sort((left, right) => {
+      const byDate = right.date.localeCompare(left.date);
+      if (byDate !== 0) return byDate;
+      return right.relativePath.localeCompare(left.relativePath);
+    });
+
+  if (packets.length === 0) {
+    throw new Error('No v1-operator-unblock-packet-*.json file found in history/artifacts.');
+  }
+
+  return packets[0].relativePath;
+};
 
 export const validateOperatorUnblockPacket = (packet, options = {}) => {
   const exists = options.exists ?? pathExists;
@@ -129,6 +156,17 @@ export const validateOperatorUnblockPacket = (packet, options = {}) => {
   const protectedInputReadinessOk =
     Number.isInteger(protectedInputReadiness.matchingProtectedInputNames) &&
     typeof protectedInputReadiness.status === 'string';
+  const protectedInputEvidence = options.protectedInputEvidence ?? null;
+  const protectedInputEvidenceError = options.protectedInputEvidenceError ?? null;
+  const protectedInputEvidenceMatches =
+    protectedInputEvidenceError === null && protectedInputEvidence
+      ? protectedInputEvidence.target?.gitSha === targetSha &&
+        protectedInputEvidence.status === protectedInputReadiness.status &&
+        protectedInputEvidence.matchingProtectedInputNamesPresent ===
+          protectedInputReadiness.matchingProtectedInputNames
+      : protectedInputEvidenceError === null
+        ? null
+        : false;
 
   const result = {
     packet: options.packetPath ?? null,
@@ -160,6 +198,8 @@ export const validateOperatorUnblockPacket = (packet, options = {}) => {
       ok: protectedInputReadinessOk,
       matchingProtectedInputNames: protectedInputReadiness.matchingProtectedInputNames ?? null,
       state: protectedInputReadiness.status ?? null,
+      evidenceMatches: protectedInputEvidenceMatches,
+      evidenceError: protectedInputEvidenceError,
     },
   };
 
@@ -172,7 +212,8 @@ export const validateOperatorUnblockPacket = (packet, options = {}) => {
     result.remainingProofSteps.missingFragments.length === 0 &&
     result.forbiddenWithoutApproval.missingFragments.length === 0 &&
     result.acceptanceRule.missingFragments.length === 0 &&
-    result.protectedInputReadiness.ok
+    result.protectedInputReadiness.ok &&
+    result.protectedInputReadiness.evidenceMatches !== false
       ? 'PASS'
       : 'FAIL';
 
@@ -186,11 +227,28 @@ const main = async () => {
     return;
   }
 
-  const packetPath = path.resolve(repoRoot, options.packet);
+  const selectedPacket = options.packet || resolveDefaultOperatorPacketPath({ root: repoRoot });
+  const packetPath = path.resolve(repoRoot, selectedPacket);
   const packet = JSON.parse(await readFile(packetPath, 'utf8'));
+  const protectedInputReadinessJsonPath = packet.evidence?.protectedInputReadinessJson
+    ? path.resolve(repoRoot, packet.evidence.protectedInputReadinessJson)
+    : '';
+  let protectedInputEvidence = null;
+  let protectedInputEvidenceError = null;
+
+  if (protectedInputReadinessJsonPath) {
+    try {
+      protectedInputEvidence = JSON.parse(await readFile(protectedInputReadinessJsonPath, 'utf8'));
+    } catch (error) {
+      protectedInputEvidenceError = error instanceof Error ? error.message : String(error);
+    }
+  }
+
   const result = validateOperatorUnblockPacket(packet, {
     packetPath: path.relative(repoRoot, packetPath).split(path.sep).join('/'),
     expectedSha: options.expectedSha,
+    protectedInputEvidence,
+    protectedInputEvidenceError,
   });
 
   if (options.json) {
@@ -205,6 +263,15 @@ const main = async () => {
     console.log(`- Missing proof steps: ${result.remainingProofSteps.missingFragments.length}`);
     console.log(`- Missing forbidden boundaries: ${result.forbiddenWithoutApproval.missingFragments.length}`);
     console.log(`- Missing acceptance fragments: ${result.acceptanceRule.missingFragments.length}`);
+    console.log(
+      `- Protected input evidence matches packet: ${
+        result.protectedInputReadiness.evidenceMatches === null
+          ? 'not checked'
+          : result.protectedInputReadiness.evidenceMatches
+            ? 'yes'
+            : 'no'
+      }`,
+    );
   }
 
   if (result.status !== 'PASS') {

@@ -1,0 +1,47 @@
+# Production Auth Session Browser Proof
+
+## Status
+
+- Result: **PASS**
+- Environment: production
+- Evidence date: 2026-05-24
+- Generated at (UTC): 2026-05-24T18:33:29.159Z
+- Expected SHA: `380308d10cf0fabb2ea629eb55e6f0ba7d980ed1`
+- Observed build-info SHA: `380308d10cf0fabb2ea629eb55e6f0ba7d980ed1`
+- Raw JSON: `history/artifacts/prod-auth-session-browser-proof-380308d1-2026-05-24.json`
+
+## Scope
+
+This proof verifies production auth browser and API session boundaries without
+writing credentials, cookies, tokens, or response bodies to artifacts.
+
+Covered:
+
+- unauthenticated protected route fail-closed redirect
+- authenticated protected route rendering
+- invalid-token protected route redirect to `session=expired`
+- logout API fail-closed readback
+- protected route redirect after logout
+
+## Steps
+
+| Step | Result | HTTP | Notes |
+| --- | --- | --- | --- |
+| build-info freshness | PASS | 200 | deployed build matches expected SHA |
+| auth token resolved | PASS | - | source=login |
+| unauthenticated dashboard redirects to login | PASS | - | path=/auth/login |
+| authenticated dashboard renders | PASS | - | path=/dashboard; text=143 |
+| invalid token redirects to expired-session login | PASS | - | path=/auth/login; search=?session=expired |
+| logout API clears session | PASS | 200 | - |
+| auth me after logout fails closed | PASS | 401 | - |
+| dashboard after logout redirects to login | PASS | - | path=/auth/login |
+
+## Blockers
+
+- none
+
+## Redaction Notes
+
+- Auth tokens, passwords, cookies, private headers, and response bodies are not
+  written to this artifact.
+- Browser evidence stores only route/status summaries and text lengths.

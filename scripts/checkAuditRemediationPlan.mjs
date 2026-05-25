@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import { readFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { repositoryPathExists } from './resolveRepositoryPath.mjs';
 
 const repoRoot = process.cwd();
 const requiredPhaseIds = ['P0', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6'];
@@ -69,7 +69,7 @@ Validates the reusable audit remediation master plan JSON by checking:
 
 const idsFrom = (items) => (Array.isArray(items) ? items.map((item) => item.id).filter(Boolean) : []);
 const uniqueDuplicates = (items) => [...new Set(items.filter((item, index, all) => all.indexOf(item) !== index))];
-const defaultExists = (relativePath) => existsSync(path.resolve(repoRoot, relativePath));
+const defaultExists = (relativePath) => repositoryPathExists(repoRoot, relativePath);
 
 export const validateAuditRemediationPlan = (plan, options = {}) => {
   const exists = options.exists ?? defaultExists;

@@ -1,7 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { mkdtemp, mkdir, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 
-import { validateOperatorUnblockPacket } from './checkOperatorUnblockPacket.mjs';
+import {
+  resolveDefaultOperatorPacketPath,
+  validateOperatorUnblockPacket,
+} from './checkOperatorUnblockPacket.mjs';
 
 const completePacket = (overrides = {}) => ({
   id: 'V1-OPERATOR-UNBLOCK-PACKET-DD1A1FAF-2026-05-20',
@@ -59,16 +65,25 @@ const completePacket = (overrides = {}) => ({
 });
 
 const allPathsExist = () => true;
+const protectedInputEvidence = {
+  target: {
+    gitSha: 'dd1a1faf79f8ac3581ca0a8c983481a3e30327ac',
+  },
+  status: 'BLOCKED',
+  matchingProtectedInputNamesPresent: 0,
+};
 
 test('validateOperatorUnblockPacket passes a complete no-secret packet', () => {
   const result = validateOperatorUnblockPacket(completePacket(), {
     exists: allPathsExist,
     expectedSha: 'dd1a1faf79f8ac3581ca0a8c983481a3e30327ac',
+    protectedInputEvidence,
   });
 
   assert.equal(result.status, 'PASS');
   assert.equal(result.target.statusOk, true);
   assert.equal(result.protectedInputReadiness.matchingProtectedInputNames, 0);
+  assert.equal(result.protectedInputReadiness.evidenceMatches, true);
 });
 
 test('validateOperatorUnblockPacket fails on SHA mismatch', () => {
@@ -133,4 +148,56 @@ test('validateOperatorUnblockPacket fails without the acceptance rule', () => {
     'secret-free evidence',
     'deployed target',
   ]);
+});
+
+test('validateOperatorUnblockPacket fails when protected input evidence does not match packet', () => {
+  const result = validateOperatorUnblockPacket(completePacket(), {
+    exists: allPathsExist,
+    expectedSha: 'dd1a1faf79f8ac3581ca0a8c983481a3e30327ac',
+    protectedInputEvidence: {
+      target: {
+        gitSha: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      },
+      status: 'PARTIAL',
+      matchingProtectedInputNamesPresent: 3,
+    },
+  });
+
+  assert.equal(result.status, 'FAIL');
+  assert.equal(result.protectedInputReadiness.evidenceMatches, false);
+});
+
+test('validateOperatorUnblockPacket fails when protected input evidence cannot be read', () => {
+  const result = validateOperatorUnblockPacket(completePacket(), {
+    exists: allPathsExist,
+    expectedSha: 'dd1a1faf79f8ac3581ca0a8c983481a3e30327ac',
+    protectedInputEvidenceError: 'ENOENT',
+  });
+
+  assert.equal(result.status, 'FAIL');
+  assert.equal(result.protectedInputReadiness.evidenceMatches, false);
+  assert.equal(result.protectedInputReadiness.evidenceError, 'ENOENT');
+});
+
+test('resolveDefaultOperatorPacketPath selects the latest dated packet', async () => {
+  const root = await mkdtemp(path.join(tmpdir(), 'soar-operator-packet-'));
+  const artifactsDir = path.join(root, 'history', 'artifacts');
+  await mkdir(artifactsDir, { recursive: true });
+  await writeFile(path.join(artifactsDir, 'v1-operator-unblock-packet-dd1a1faf-2026-05-20.json'), '{}\n');
+  await writeFile(path.join(artifactsDir, 'v1-operator-unblock-packet-380308d1-2026-05-24.json'), '{}\n');
+
+  assert.equal(
+    resolveDefaultOperatorPacketPath({ root }),
+    'history/artifacts/v1-operator-unblock-packet-380308d1-2026-05-24.json',
+  );
+});
+
+test('resolveDefaultOperatorPacketPath fails when no packet exists', async () => {
+  const root = await mkdtemp(path.join(tmpdir(), 'soar-operator-packet-'));
+  await mkdir(path.join(root, 'history', 'artifacts'), { recursive: true });
+
+  assert.throws(
+    () => resolveDefaultOperatorPacketPath({ root }),
+    /No v1-operator-unblock-packet-\*\.json file found/,
+  );
 });

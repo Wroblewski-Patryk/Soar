@@ -1,9 +1,20 @@
 #!/usr/bin/env node
 
+import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const operationsDir = path.resolve(process.cwd(), 'docs', 'operations');
+const repoRoot = process.cwd();
+const resolveDocsRoot = () => {
+  const docsRoot = path.resolve(repoRoot, 'docs');
+  const migratedDocsRoot = path.resolve(repoRoot, 'Soar - docs');
+  if (existsSync(path.join(docsRoot, 'operations')) || !existsSync(migratedDocsRoot)) {
+    return docsRoot;
+  }
+  return migratedDocsRoot;
+};
+
+const operationsDir = path.join(resolveDocsRoot(), 'operations');
 
 const parseArgs = () => {
   const args = process.argv.slice(2);

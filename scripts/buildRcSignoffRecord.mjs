@@ -1,9 +1,20 @@
 #!/usr/bin/env node
 
+import { existsSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const operationsDir = path.resolve(process.cwd(), 'docs', 'operations');
+const repoRoot = process.cwd();
+const resolveDocsRoot = () => {
+  const docsRoot = path.resolve(repoRoot, 'docs');
+  const migratedDocsRoot = path.resolve(repoRoot, 'Soar - docs');
+  if (existsSync(path.join(docsRoot, 'operations')) || !existsSync(migratedDocsRoot)) {
+    return docsRoot;
+  }
+  return migratedDocsRoot;
+};
+
+const operationsDir = path.join(resolveDocsRoot(), 'operations');
 
 const parseArgs = () => {
   const args = process.argv.slice(2);
@@ -17,6 +28,7 @@ const parseArgs = () => {
     ownerName: '',
     ownerContact: '',
     today: '',
+    expectedSha: '',
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -34,6 +46,7 @@ const parseArgs = () => {
     if (arg === '--owner-name') options.ownerName = args[index + 1] ?? options.ownerName;
     if (arg === '--owner-contact') options.ownerContact = args[index + 1] ?? options.ownerContact;
     if (arg === '--today') options.today = args[index + 1] ?? options.today;
+    if (arg === '--expected-sha') options.expectedSha = args[index + 1] ?? options.expectedSha;
   }
 
   options.statusPath = path.resolve(process.cwd(), options.statusPath);
@@ -119,6 +132,7 @@ const render = (options, gates) => {
 
 Release target: \`${options.releaseTarget}\`  
 Date (UTC): \`${timestamp}\`
+Expected SHA: \`${options.expectedSha || 'not provided'}\`
 
 ## Gate Evidence References
 - RC checklist: \`docs/operations/v1-release-candidate-checklist.md\`

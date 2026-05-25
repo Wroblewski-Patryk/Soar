@@ -1,6 +1,6 @@
 # Project Memory Index
 
-Last updated: 2026-05-19
+Last updated: 2026-05-24
 
 ## Purpose
 
@@ -10,6 +10,45 @@ Every non-trivial task must connect local code changes to the current product
 state, architecture intent, module confidence, and the next release objective.
 
 ## Current Architecture-Code Audit Baseline
+
+Current architecture evidence graph foundation:
+`ARCH-EVIDENCE-GRAPH-SYSTEM-2026-05-24`.
+
+- `docs/architecture/architecture-evidence-graph-system.md` defines the
+  Obsidian-first graph contract.
+- CSV source-of-truth files live under `docs/architecture/registry/`,
+  `docs/architecture/relations/dependencies.csv`, and
+  `docs/architecture/chains/chains.csv`.
+- Generated outputs live under `docs/architecture/nodes/`, `docs/graphs/`,
+  and `docs/status/`.
+- Validation commands: `pnpm run architecture:graph:generate`,
+  `pnpm run architecture:graph:drift:strict`, and
+  `pnpm run quality:guardrails`.
+- Latest graph proof: `635` nodes, `781` relations, `26` chains after full
+  2026-05-24 graph drift closure across P0/P1 feature chains, engine runtime
+  core, market data/stream adapters, residual Web/API evidence, and governance
+  documentation indexes.
+- Drift audit command: `pnpm run architecture:graph:drift`. Current result:
+  `796/796` representative files covered by graph CSV path references and
+  `0` missing. The strict drift audit is now part of repository guardrails, so
+  future code/docs changes must update graph CSV records in the same task to
+  keep `pnpm run quality:guardrails` green.
+- Function journey index layer: `FUNCTION-JOURNEY-EVIDENCE-INDEX-2026-05-25`.
+  `pnpm run architecture:journey:index` now generates
+  `docs/architecture/indices/function-chain-evidence-index.csv`,
+  `docs/architecture/indices/web-journey-index.csv`,
+  `docs/architecture/indices/api-surface-evidence-index.csv`,
+  `docs/architecture/indices/user-action-index.csv`,
+  `docs/graphs/function-journey-index.json`,
+  `docs/graphs/user-action-index.json`, and dated artifacts under
+  `history/artifacts/`. Current proof: `27` function-chain rows, `36` web
+  journey rows, `96` API surface rows, `39` user action rows, `0` critical
+  structural/action gaps, `28` high function/API proof gaps, and `37` high
+  user-action proof gaps. Use `pnpm run architecture:journey:triage -- --query
+  <route|api|action|chain>` before repairing a UI or API path. Treat these as
+  debugging and confidence indexes, not a replacement for fresh authenticated
+  browser, protected production, external security, or approval-gated LIVE
+  mutation proof.
 
 Latest discrepancy audit:
 `PROJECT-ARCHITECTURE-CODE-DISCREPANCY-AUDIT-2026-05-17`.

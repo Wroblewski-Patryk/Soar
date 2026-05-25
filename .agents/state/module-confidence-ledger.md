@@ -1,6 +1,6 @@
 # Module Confidence Ledger
 
-Last updated: 2026-05-23
+Last updated: 2026-05-25
 
 ## Purpose
 
@@ -29,6 +29,343 @@ Do not turn uncertainty into optimism.
 - `Low`: evidence is missing, stale, inferred, or chat-only.
 
 ## Current Operational Override
+
+- 2026-05-25 `FUNCTION-JOURNEY-EVIDENCE-INDEX-2026-05-25`: confidence for the
+  Architecture Evidence Graph and future debugging workflow is improved. The
+  new generated journey index maps current graph records into function-chain,
+  web-journey, and API-surface evidence CSVs plus JSON/Markdown summaries.
+  It now also generates a user-action index so UI routes and controls can be
+  traced through APIs, function chains, backend functions, data models, tests,
+  docs, evidence, and proof boundaries before repairs are claimed as done.
+  Proof passed: `node --check scripts/generateFunctionJourneyIndexes.mjs`,
+  `node --check scripts/generateUserActionIndex.mjs`,
+  `node --check scripts/triageJourneyEvidence.mjs`,
+  `pnpm run architecture:journey:index`,
+  `pnpm run architecture:journey:index:strict`, triage proof for
+  `SOAR-UI-MANUAL-ORDER-SUBMIT`, and JSON parse checks. Current result: `27`
+  function chains, `36` web journeys/pages, `96` API surfaces, `39` user
+  actions, `0` critical structural/action gaps, `28` high function/API proof
+  gaps, and `37` high user-action proof gaps. This is traceability and
+  repair-routing proof only; it does not upgrade local-only modules to
+  production verified.
+
+- 2026-05-25 `PROD-RUNTIME-AGGREGATE-SLO-BLOCKER-2026-05-25`: confidence for
+  `SOAR-BOT-RUNTIME-001` and release operations is reduced from protected
+  proof refresh to `PARTIAL/BLOCKED` for production activation. Fresh
+  read-only production evidence exists for restore, rollback, UI clickthrough,
+  auth session, security/exchange, and LIVEIMPORT-03 on `24e9d3b8`, but the
+  30-minute RC/SLO observation failed and production logs showed heap
+  out-of-memory restarts tied to the runtime monitoring aggregate endpoint.
+  Local mitigation limits aggregate fanout and skips failed per-session rows;
+  proof passed focused aggregate concurrency `1/1`, aggregate e2e `18/18`,
+  API typecheck, repository lint, architecture graph generation, and
+  `quality:guardrails`. Commit `287e77a1` is deployed and public no-worker
+  smoke passed. The post-deploy SLO window recorded `0` API 5xx delta and low
+  average latency, but failed availability after the host became unreachable
+  from local checks on SSH `22` and HTTPS `443`. Production confidence cannot
+  increase until VPS reachability is restored and a fresh SLO/RC gate passes.
+
+- 2026-05-24 `GATEIO-LIVE-RECONCILIATION-SCOPE-2026-05-24`: confidence is
+  improved for `SOAR-POSITIONS-001`, `SOAR-BOT-RUNTIME-001`, and
+  `SOAR-EXCHANGE-ADAPTER-001`. Commit `24e9d3b8d51b4b4c4f1b25cad920096f2223b0ec`
+  includes Gate.io in the default external-position reconciliation synced-key
+  scope and adds DB-backed regression coverage proving a Gate.io LIVE FUTURES
+  key is selected. Local proof passed focused reconciliation tests (`32/32`),
+  API typecheck, repository lint, `quality:guardrails`, and strict graph drift
+  (`796/796`, `0` missing). Production proof: Coolify API deploy converged to
+  `24e9d3b8`, public API `/health`, API `/ready`, and Web build-info passed,
+  app-internal orphan repair saw one Gate.io open position and created
+  `BNBUSDT` as `BOT_MANAGED`, `IN_SYNC`, and `CONFIRMED`, and `LIVEIMPORT-03`
+  read-only proof shows Gate.io `BNBUSDT` as `EXCHANGE_SYNC`,
+  `OWNED_AND_MANAGED`, and `actionable: true` in
+  `history/artifacts/liveimport-03-prod-readback-24e9d3b8-2026-05-24.json`.
+  Binance runtime readback currently has no open runtime payload in that
+  artifact. No LIVE exchange-side order, cancel, close, or position mutation
+  was performed.
+
+- 2026-05-24 `API-LOCAL-REGRESSION-SWEEP-2026-05-24`: local backend
+  confidence is refreshed for Bot Runtime, Orders, Reports, Wallets, Runtime
+  Flow, and AI Assistant Foundation. The sweep closed dynamic-stop display
+  fallback drift, lifecycle close parity `TSL` mapping, reports unsettled-trade
+  counting, orders contract LIVE entitlement setup, runtime-flow polling, and
+  DB cleanup gaps in wallet/manual-order tests. Focused regression proof passed
+  (`14` files / `107` tests), the full API Vitest suite passed after clean DB
+  reset in one-worker mode, API typecheck passed, repository lint passed, full
+  workspace build passed, quality guardrails passed, strict graph drift passed
+  with `796/796` covered and `0` missing, and diff check found no whitespace
+  errors beyond LF/CRLF warnings. This is local backend proof only; protected
+  production readbacks and LIVE mutation remain blocked by missing operator
+  inputs and explicit approval.
+
+- 2026-05-24 `LOCAL-INTEGRITY-BUILD-SWEEP-2026-05-24`: local repository
+  confidence is refreshed after the current graph/release-tooling/state and
+  Dashboard updates. Full API/Web typecheck passed, docs parity passed with
+  API `22/22`, Web `16/16`, and Routes `37/37`, reusable audit/operator
+  aggregate validation passed, and full workspace build passed for mobile
+  scaffold placeholder, API `tsc`, and Web production `next build`. This does
+  not upgrade protected production readiness; V1 remains `NO-GO` until
+  protected evidence gates pass.
+
+- 2026-05-24 `WEB-DASHBOARD-SELECTED-BOT-LOAD-DEPS-2026-05-24`: local
+  confidence is refreshed for `SOAR-DASHBOARD-001`. Dashboard Home's runtime
+  load callback now reads current selected-bot state through a synchronized ref,
+  closing the React hook lint drift without making bot selection a full reload
+  trigger. The initial full Web test rerun exposed three Dashboard selection
+  regressions, and the ref-based fix closed them. Focused hook tests passed
+  (`4/4`), focused Dashboard regression tests passed (`26/26`), full Web tests
+  passed (`150` files / `534` tests), Web lint passed with no warnings/errors,
+  Web typecheck passed, repository lint passed with no warnings/errors,
+  guardrails passed, and strict architecture graph drift passed with `796/796`
+  covered and `0` missing. Production Dashboard clickthrough and broader V1 GO
+  remain blocked on protected auth/context and release evidence gates.
+
+- 2026-05-24 `PROD-FRESH-DEPLOY-380308D1-2026-05-24`: operations/release
+  confidence improves from `publicly reachable but deploy freshness blocked`
+  to `publicly fresh and still protected-proof blocked`. Web/API/workers are
+  deployed to `380308d10cf0fabb2ea629eb55e6f0ba7d980ed1`; public build-info
+  returns that SHA with `metadataSource=github-branch`; API `/health`, API
+  `/ready`, and Web `/` return `200`; public no-worker deploy smoke passes;
+  Docker container tags show API and all Soar workers running the same SHA.
+  No-secret V1 preflight rerun passes build-info and public smoke, then blocks
+  only on protected auth/context and release evidence gates. Protected app
+  journeys, production UI clickthrough, LIVEIMPORT-03, rollback proof, restore
+  drill, RC evidence, and LIVE mutation remain unverified/blocked without
+  approved auth/context.
+
+- 2026-05-24 `PROD-PUBLIC-REACHABILITY-REFRESH-2026-05-24`: operations/release
+  confidence improves from `blocked by public reachability` to `publicly
+  reachable but deploy freshness blocked`. API `/health`, API `/ready`, and
+  Web `/` return `200`, TCP succeeds for Web/API/VPS public ports checked, and
+  public no-worker deploy smoke passes. Current production Web build-info is
+  stale at `51fa41efb1664d5cb2e8dbb81cbec33f11365ccd` while `origin/main` is
+  `52be8b614d2da9ec05d368ac4fbd05f3ec8f8332`. Protected app journeys,
+  production UI clickthrough, LIVEIMPORT-03, rollback proof, restore drill,
+  RC evidence, and LIVE mutation remain unverified/blocked without approved
+  auth or deploy control context.
+
+- 2026-05-24 `ARCH-GRAPH-STRICT-GUARDRAIL-2026-05-24`: graph confidence is
+  improved for the Architecture Evidence Graph system. Strict representative
+  drift is now enforced by `pnpm run quality:guardrails`, which runs the
+  architecture graph drift audit in fail-on-drift mode. Current proof:
+  `pnpm run architecture:graph:drift:strict` reports `796/796` covered and
+  `0` missing; `node --test scripts/repoGuardrails.test.mjs` passes `9/9`;
+  `pnpm run quality:guardrails` passes and reports `Architecture graph drift:
+  OK`. This is graph traceability enforcement, not runtime journey proof.
+
+- 2026-05-24 `RELEASE-AUDIT-TOOLING-GRAPH-BACKFILL-2026-05-24`: architecture
+  graph confidence is improved for release/audit tooling. The shared
+  repository path resolver, operator unblock packet validator, reusable audit
+  validators, aggregate tests, workflow node, and
+  `CHAIN-RELEASE-AUDIT-TOOLING` are now first-class graph records. Current
+  proof: `pnpm run architecture:graph:generate` reports `641` nodes, `791`
+  relations, and `27` chains; `pnpm run architecture:graph:drift:strict`
+  reports `796/796` covered and `0` missing. This does not change the V1
+  production `NO-GO` blocker for missing protected proof inputs.
+
+- 2026-05-24 `ARCH-EVIDENCE-GRAPH-SYSTEM-2026-05-24`: documentation/process
+  confidence is improved but not complete. The first Obsidian-first
+  architecture evidence graph foundation exists with CSV node registries,
+  relation rows, function-chain rows, generated Markdown node notes, generated
+  JSON graph export, and generated status. `pnpm run
+  architecture:graph:generate` passed with `45` nodes, `24` relations, and
+  `4` chains. This is a seed, not full repository coverage; unmapped modules,
+  routes, tests, docs, workers, config, migrations, prompts, and events remain
+  backfill work and must not be treated as graph-verified.
+
+- 2026-05-24 `ARCH-GRAPH-MANUAL-ORDER-BACKFILL-2026-05-24`: graph confidence
+  is improved for `SOAR-MANUAL-ORDERS-001` and `SOAR-ORDERS-001`. Manual
+  order execution now has detailed graph records for Dashboard UI, Web service
+  boundary, order API routes, controller, DTO schemas, orders service, manual
+  context service, quantity rules, pre-trade, execution orchestration,
+  lifecycle, exchange events, `OrderFill`, focused tests, Web tests, and docs.
+  `pnpm run architecture:graph:generate` now passes with `67` nodes,
+  `51` relations, and `5` chains. This is graph traceability proof, not fresh
+  runtime behavior proof or LIVE mutation approval.
+
+- 2026-05-24 `ARCH-GRAPH-POSITIONS-BACKFILL-2026-05-24`: graph confidence is
+  improved for `SOAR-POSITIONS-001`, `SOAR-DASHBOARD-001`, and adjacent
+  runtime money paths. Positions core now has detailed graph records for legacy
+  route behavior, Dashboard/runtime UI, Web positions service, Positions API
+  routes, controller, DTO schemas, positions service, exchange snapshot
+  normalization, LIVE reconciliation, `Position`/`Order`/`Trade`, focused
+  API/Web tests, and docs. `pnpm run architecture:graph:generate` now passes
+  with `93` nodes, `80` relations, and `6` chains. This is graph traceability
+  proof, not fresh production clickthrough proof or LIVE mutation approval.
+
+- 2026-05-24 `ARCH-GRAPH-BOT-RUNTIME-BACKFILL-2026-05-24`: graph confidence
+  is improved for `SOAR-BOT-RUNTIME-001`, `SOAR-DASHBOARD-001`, and adjacent
+  runtime money paths. Bot Runtime monitoring now has detailed graph records
+  for bot runtime routes, monitoring UI, Web bots service, runtime aggregate,
+  session, symbol-stat, position, trade, and close-position API routes,
+  controller, DTO schemas, aggregate/read/command services, runtime session and
+  trading models, API/Web tests, and docs. `pnpm run
+  architecture:graph:generate` now passes with `115` nodes, `103` relations,
+  and `7` chains. This is graph traceability proof, not fresh authenticated
+  production runtime readback or LIVE mutation approval.
+
+- 2026-05-24 `ARCH-GRAPH-EXCHANGE-ADAPTER-BACKFILL-2026-05-24`: graph
+  confidence is improved for `SOAR-EXCHANGE-ADAPTER-001`,
+  `SOAR-MANUAL-ORDERS-001`, `SOAR-POSITIONS-001`, and `SOAR-BOT-RUNTIME-001`.
+  Exchange Adapter now has detailed graph records for broad and exact
+  capability contracts, authenticated/public read boundaries, adapter
+  boundary, live order adapter, fee reconciliation, symbol rules, market
+  catalog, connector factory, CCXT futures connector, API-key probe client,
+  consumers, focused tests, and docs. `pnpm run architecture:graph:generate`
+  now passes with `142` nodes, `129` relations, and `8` chains. This is graph
+  traceability proof, not fresh production exchange mutation proof.
+
+- 2026-05-24 `ARCH-GRAPH-WALLETS-BACKFILL-2026-05-24`: graph confidence is
+  improved for `SOAR-WALLETS-001`, `SOAR-BOT-RUNTIME-001`,
+  `SOAR-MANUAL-ORDERS-001`, and `SOAR-EXCHANGE-ADAPTER-001`. Wallets now has
+  detailed graph records for wallet routes, list/create/edit/preview
+  components, Web wallet service, API routes, controller, DTO schemas, wallet
+  service, exchange capability/authenticated-read/adapter-boundary links,
+  ledger and cashflow services, Wallet/Bot/Position/Order data dependencies,
+  focused API/Web/ledger tests, and docs. `pnpm run
+  architecture:graph:generate` now passes with `176` nodes, `177` relations,
+  and `9` chains. This is graph traceability proof, not fresh authenticated
+  browser proof or approved LIVE mutation/readback proof.
+
+- 2026-05-24 `ARCH-GRAPH-PROFILE-API-KEYS-BACKFILL-2026-05-24`: graph
+  confidence is improved for Profile API Keys, `SOAR-WALLETS-001`,
+  `SOAR-BOT-RUNTIME-001`, and `SOAR-EXCHANGE-ADAPTER-001`. Profile API Keys
+  now has detailed graph records for profile API-key UI, Web service, API
+  routes, controller, DTOs, encrypted storage, connection probes, exchange
+  probe client boundary, API-key and log DB models, Wallets/Bot Runtime
+  consumers, focused API/Web/probe tests, and docs. `pnpm run
+  architecture:graph:generate` now passes with `202` nodes, `212` relations,
+  and `10` chains. This is graph traceability proof, not fresh authenticated
+  browser proof or secret-bearing production probe proof.
+
+- 2026-05-24 `ARCH-GRAPH-BOT-SETUP-BACKFILL-2026-05-24`: graph confidence is
+  improved for Bot Setup, `SOAR-BOT-RUNTIME-001`, `SOAR-WALLETS-001`, Profile
+  API Keys, Strategies, and Markets. Bot Setup now has detailed graph records
+  for bot list/create/edit routes, list/form components, Web bots service, bot
+  lifecycle API routes, controller, DTOs, context validation, activation
+  policy, canonical update scope, market-group/strategy-link topology services,
+  Bot/Wallet/API-key/Strategy/MarketUniverse/BotMarketGroup/
+  MarketGroupStrategyLink DB dependencies, focused API/Web tests, and docs.
+  `pnpm run architecture:graph:generate` now passes with `229` nodes, `251`
+  relations, and `11` chains. This is graph traceability proof, not fresh
+  authenticated browser proof or LIVE activation proof.
+
+- 2026-05-24 `ARCH-GRAPH-STRATEGIES-BACKFILL-2026-05-24`: graph confidence is
+  improved for `SOAR-STRATEGIES-001`, `SOAR-BOTS-001`, and
+  `SOAR-BOT-RUNTIME-001`. Strategies now has detailed graph records for
+  strategy list/create/edit routes, list/form/preset components, Web
+  strategies service, form mapping, presets, indicator catalog, strategy API
+  routes, controller, DTO/config validation, strategy service, Strategy/Bot/
+  MarketGroupStrategyLink DB guards, Bot Setup and Bot Runtime consumers,
+  focused API/Web/indicator/utility tests, and docs. `pnpm run
+  architecture:graph:generate` now passes with `261` nodes, `293` relations,
+  and `12` chains. This is graph traceability proof, not fresh authenticated
+  browser proof or production strategy mutation proof.
+
+- 2026-05-24 `ARCH-GRAPH-MARKETS-BACKFILL-2026-05-24`: graph confidence is
+  improved for `SOAR-MARKETS-001`, `SOAR-BOTS-001`, and
+  `SOAR-BOT-RUNTIME-001`. Markets now has detailed graph records for market
+  universe list/create/edit routes, table/form/multiselect components, Web
+  markets service, frontend helper utilities, catalog endpoint, API routes,
+  controller, DTOs, markets service, exchange-catalog/symbol resolver,
+  MarketUniverse/SymbolGroup/Bot/BotMarketGroup DB guards, Bot Setup and Bot
+  Runtime consumers, focused API/Web tests, and docs. `pnpm run
+  architecture:graph:generate` now passes with `286` nodes, `329` relations,
+  and `13` chains. This is graph traceability proof, not fresh authenticated
+  browser proof or production market mutation proof.
+
+- 2026-05-24 `ARCH-GRAPH-BACKTESTS-BACKFILL-2026-05-24`: graph confidence is
+  improved for `SOAR-BACKTESTS-001`, `SOAR-STRATEGIES-001`,
+  `SOAR-MARKETS-001`, and the Reports consumer path. Backtests now has
+  detailed graph records for backtest list/create/detail routes, list/create/
+  details components, Web backtests service, details view-model/presenter
+  utilities, backtest API routes, controller, DTOs, backtests service, range
+  resolver, run queue/job, data gateway, replay core, fill model, report
+  lifecycle, immutable strategy/market snapshot resolver, BacktestRun/
+  BacktestTrade/BacktestReport DB models, focused API/replay/Web tests, and
+  docs. `pnpm run architecture:graph:generate` now passes with `324` nodes,
+  `371` relations, and `14` chains. This is graph traceability proof, not
+  fresh authenticated browser proof or heavy replay performance proof.
+
+- 2026-05-24 `ARCH-GRAPH-REPORTS-BACKFILL-2026-05-24`: graph confidence is
+  improved for `SOAR-REPORTS-001`, `SOAR-BACKTESTS-001`, and report-read-model
+  impact analysis. Reports now has detailed graph records for the reports
+  dashboard route, `PerformanceReportsView`, Web reports service, Web
+  backtests service, cross-mode API route, controller, backend reports service,
+  mode aggregation utility, BacktestReport/BacktestTrade/Trade/Bot read
+  models, focused API/Web tests, and docs. `pnpm run
+  architecture:graph:generate` now passes with `336` nodes, `396` relations,
+  and `15` chains. This is graph traceability proof, not fresh authenticated
+  browser proof or production report readback.
+
+- 2026-05-24 `ARCH-GRAPH-LOGS-AUDIT-BACKFILL-2026-05-24`: graph confidence is
+  improved for `SOAR-LOGS-001`, Profile API Keys audit-event consumers, and
+  Bot Setup audit-event impact analysis. Logs/Audit Trail now has detailed
+  graph records for the logs route, `AuditTrailView`, Web logs service, logs
+  API route, controller, query schema, backend logs service, Log model,
+  API-key/Bot Setup producer links, focused API/Web tests, and docs. `pnpm run
+  architecture:graph:generate` now passes with `349` nodes, `413` relations,
+  and `16` chains. This is graph traceability proof, not fresh authenticated
+  browser proof or production action-produced readback.
+
+- 2026-05-24 `ARCH-GRAPH-SUBSCRIPTIONS-ADMIN-BACKFILL-2026-05-24`: graph
+  confidence is improved for `SOAR-SUBSCRIPTIONS-ADMIN-001`,
+  `SOAR-BOTS-001`, and adjacent entitlement-sensitive trading paths.
+  Subscriptions/Admin now has detailed graph records for admin subscriptions
+  and users routes, admin layout, profile subscription UI, frontend services,
+  admin users and plan APIs, profile subscription and checkout APIs,
+  controllers, DTO schemas, subscription services, entitlement guard, checkout
+  intent persistence, SubscriptionPlan/UserSubscription/PaymentIntent/User DB
+  models, focused API/entitlement/Web tests, and docs. `pnpm run
+  architecture:graph:generate` now passes with `387` nodes, `463` relations,
+  and `17` chains. This is graph traceability proof, not fresh authenticated
+  browser proof or production admin mutation proof.
+
+- 2026-05-24 `ARCH-GRAPH-AI-ASSISTANT-FOUNDATION-BACKFILL-2026-05-24`: graph
+  confidence is improved for `SOAR-ASSISTANT-AI-001`, `SOAR-BOTS-001`, and
+  AI governance impact analysis. AI Assistant foundation now has detailed graph
+  records for bot assistant routes, `BotsAssistantTab`, assistant controller
+  hook, Web bot service, assistant config/subagent/dry-run APIs, bots
+  controller schemas, `BotAssistantService`, `AssistantOrchestrator`,
+  BotAssistantConfig/BotSubagentConfig/Bot DB dependencies, focused
+  API/orchestrator/Web/protocol tests, assistant runtime docs, AI integration
+  docs, red-team agent, and prompt protocol. `pnpm run
+  architecture:graph:generate` now passes with `411` nodes, `499` relations,
+  and `18` chains. This is graph traceability proof, not fresh authenticated
+  browser proof, production assistant readback, model-backed red-team proof,
+  or hot-path AI trading approval.
+
+- 2026-05-24 `ARCH-GRAPH-DRIFT-DETECTION-2026-05-24`: documentation/process
+  confidence is improved for future graph completeness checks. `pnpm run
+  architecture:graph:drift` now inventories representative source, test, docs,
+  config, and pipeline files against graph CSV path references. Latest audit
+  after config/pipeline backfill: `404/796` covered and `392` missing, with
+  `configAndPipelines` at `9/9` covered. This is an informational backfill
+  guide, not a failing gate yet.
+
+- 2026-05-24 `ARCH-GRAPH-OPS-CONFIG-PIPELINE-BACKFILL-2026-05-24`:
+  documentation/process confidence is improved for operations and release
+  topology traceability. Operations config and pipeline now has graph records
+  for package manifests, pnpm workspace, local/VPS compose topology, GitHub CI,
+  repository guardrails, and local/testing/deployment docs. `pnpm run
+  architecture:graph:generate` passes with `426` nodes, `519` relations, and
+  `19` chains. This is graph traceability proof, not remote CI or protected
+  production deployment proof.
+
+- 2026-05-24 `SOAR-FULL-READINESS-COORDINATION-2026-05-23`: current
+  no-secret readiness confidence is partially verified, not absolute. Local
+  `HEAD` and `origin/main` both point at
+  `52be8b614d2da9ec05d368ac4fbd05f3ec8f8332`, with `HEAD...origin/main` at
+  `0 0`. Public Web/API is currently unreachable from this workstation (`curl`
+  to build-info, API `/health`, and API `/ready` timed out with `Failed to
+  connect`). Local guardrails, docs parity, typecheck, and focused runtime
+  automation exchange-PnL/service/DCA parity tests pass (`3` files / `41`
+  tests). Confidence remains blocked for public reachability, authenticated app
+  journeys that match the operator-reported broken flows, protected production
+  manual/bot readbacks, native mobile parity, deferred AI hot-path trading, and
+  any real LIVE exchange mutation without explicit operator approval.
+  Affected rows remain evidence-scoped rather than promoted: `SOAR-ORDERS-001`,
+  `SOAR-BOT-RUNTIME-001`, `SOAR-EXCHANGE-ADAPTER-001`, and
+  `SOAR-OPERATIONS-001`.
 
 - 2026-05-23 `DOC-LOCAL-INDEX-COHESION-2026-05-23`: documentation/process
   confidence is refreshed for graph cohesion. Current docs now connect
@@ -92,6 +429,20 @@ Do not turn uncertainty into optimism.
   Focused Web runtime table/view-model tests passed (`45/45`), Web typecheck,
   guardrails, and diff check passed. Production dashboard readback remains
   protected-auth scope.
+
+- 2026-05-23 `RUNTIME-DCA-EXCHANGE-PNL-THRESHOLD-2026-05-23`: local
+  confidence for `SOAR-BOT-RUNTIME-001`, `SOAR-ENGINE-001`, and
+  `SOAR-POSITIONS-001` is refreshed for an operator-reported DCA threshold
+  miss. LIVE `EXCHANGE_SYNC` position automation now uses exchange
+  `unrealizedPnl / marginUsed` as PnL threshold truth when available, while
+  retaining lifecycle mark price as the execution price. Regression coverage
+  proves a short `SOLUSDT` row showing about `-62.5%` exchange PnL with
+  `currentAdds=1` triggers the second `-50%` DCA level even when a newer
+  ticker price would model a smaller local drawdown. Validation passed:
+  runtime automation exchange-PnL/service tests `38/38`,
+  position-management/DCA parity tests `27/27`, API typecheck, repository
+  guardrails, docs parity, and diff check. Production readback and any LIVE
+  mutation remain protected-auth/operator-approval scope.
 
 - 2026-05-23 post-release docs/state deploy freshness: follow-up docs/state
   sync commits must prove the pushed `HEAD` through public Web build-info and
@@ -826,6 +1177,78 @@ Do not turn uncertainty into optimism.
   Focused API e2e passed for backtests, strategies, and markets (`44/44`).
   Bot history/versioned bot context and per-symbol best-parameter comparison
   remain separate follow-up slices.
+- 2026-05-24 `ARCH-GRAPH-API-SUPPORT-ROUTES-BACKFILL-2026-05-24` applies to
+  architecture evidence graph confidence: root/dashboard/admin API router
+  composition plus icons, market-stream, profile basic/security, and upload
+  support routes now have graph nodes, typed route rows, tests, docs, relations,
+  and `CHAIN-API-SUPPORT-ROUTES`. Proof: graph generation passed with `461`
+  nodes, `559` relations, and `20` chains; drift audit passed with `apiRoutes`
+  at `22/22`, total coverage `425/796`, and `371` remaining gaps. This is
+  graph/documentation proof only, not a fresh runtime journey proof.
+- 2026-05-24 `ARCH-GRAPH-RUNTIME-SUPPORT-SERVICES-BACKFILL-2026-05-24`
+  applies to architecture evidence graph confidence for bot/runtime/engine
+  internals: ownership, projections, portfolio history, DCA visibility, market
+  truth, signal display, paper runtime, pre-trade risk, rule evaluation,
+  focused tests, and docs now have graph records and
+  `CHAIN-RUNTIME-SUPPORT-SERVICES`. Proof: graph generation passed with `500`
+  nodes, `577` relations, and `21` chains; drift audit passed with `466/796`
+  covered and `330` remaining gaps. This is graph/documentation proof only,
+  not a fresh runtime journey or protected LIVE proof.
+- 2026-05-24 `ARCH-GRAPH-API-PLATFORM-SAFETY-BACKFILL-2026-05-24` applies to
+  architecture evidence graph confidence for API platform safety: runtime
+  config, critical secrets readiness, proxy trust, auth/rate-limit/origin/
+  ops-network/request-logger middleware, shared errors/logger/symbol utilities,
+  focused tests, docs, and `CHAIN-API-PLATFORM-SAFETY` now have graph records.
+  Proof: graph generation passed with `520` nodes, `597` relations, and `22`
+  chains; drift audit passed with `478/796` covered and `318` remaining gaps.
+  This is graph/documentation proof only, not a fresh adversarial security
+  review.
+- 2026-05-24 `ARCH-GRAPH-WEB-RUNTIME-SURFACES-BACKFILL-2026-05-24` applies
+  to architecture evidence graph confidence for Dashboard Home runtime and
+  Bots monitoring surfaces: runtime sidebar/onboarding/signals/helpers,
+  monitoring tabs/sections/future signals/protection/attribution/portfolio
+  surfaces, tests, docs, and runtime API service links now have graph records
+  and `CHAIN-WEB-RUNTIME-SURFACES`. Proof: graph generation passed with `543`
+  nodes, `624` relations, and `23` chains; drift audit passed with `510/796`
+  covered and `286` remaining gaps. This is graph/documentation proof only,
+  not a fresh browser journey proof.
+- 2026-05-24 `ARCH-GRAPH-AUTH-SESSION-DEEP-BACKFILL-2026-05-24` applies to
+  architecture evidence graph confidence for Auth Session: public auth pages,
+  login/register forms, password visibility, hooks, Web auth service,
+  AuthContext, API auth routes, controller, service, cookie/JWT/errors/types,
+  User model, tests, docs, and `CHAIN-AUTH-SESSION-DEEP` now have graph
+  records. Proof: graph generation passed with `573` nodes, `659` relations,
+  and `24` chains; drift audit passed with `534/796` covered and `262`
+  remaining gaps. This is graph/documentation proof only, not fresh production
+  auth browser proof.
+- 2026-05-24 `ARCH-GRAPH-FULL-DRIFT-CLOSURE-2026-05-24` applies to
+  architecture evidence graph confidence repository-wide for the current
+  representative inventory: engine runtime core, market data/stream adapters,
+  residual Web/API evidence, API infrastructure residual tests, module docs,
+  and architecture governance/contract docs now have graph records. Proof:
+  graph generation passed with `635` nodes, `781` relations, and `26` chains;
+  drift audit passed with `796/796` covered and `0` remaining gaps. This is
+  graph/documentation proof only, not fresh runtime journey, protected
+  production, external security, or live exchange-side mutation proof.
+- 2026-05-24 `LOCAL-DOCKER-COOLIFY-PARITY-2026-05-24` applies to
+  `SOAR-OPERATIONS-001`: local Docker app startup now mirrors the Coolify
+  split-service topology through root `docker:app:*` scripts that reuse
+  `docker-compose.vps.yml`, with `.env.docker.example` as the local-only env
+  template. Proof: compose config rendered API, Web, four workers, Postgres,
+  and Redis; Docker build passed for API/Web/four worker images; a short local
+  container run returned API `/health` `200`, API `/ready` `200`, and Web `/`
+  `200`; guardrails and strict graph drift passed. This improves local/VPS
+  parity but does not replace protected production evidence or LIVE mutation
+  approval.
+- 2026-05-24 `PROD-UI-LEGACY-DASHBOARD-REDIRECTS-2026-05-24` applies to
+  `SOAR-UX-A11Y-MOBILE-001`, `SOAR-DASHBOARD-001`, and `SOAR-OPERATIONS-001`:
+  production UI clickthrough exposed three removed legacy dashboard routes
+  returning `404`; Web middleware now redirects them to canonical protected
+  surfaces. Local proof passed focused middleware tests, Web typecheck, Web
+  lint, full Web tests, guardrails, strict graph drift, and diff check. Commit
+  `0b7eb4c6` is deployed; public smoke and production UI clickthrough pass on
+  that SHA. Security/exchange proof remains partial only for protected ops
+  readiness auth, while app-auth exchange/security checks pass.
 
 ## Maintenance Rules
 

@@ -1,9 +1,20 @@
 #!/usr/bin/env node
 
+import { existsSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const operationsDir = path.resolve(process.cwd(), 'docs', 'operations');
+const repoRoot = process.cwd();
+const resolveDocsRoot = () => {
+  const docsRoot = path.resolve(repoRoot, 'docs');
+  const migratedDocsRoot = path.resolve(repoRoot, 'Soar - docs');
+  if (existsSync(path.join(docsRoot, 'operations')) || !existsSync(migratedDocsRoot)) {
+    return docsRoot;
+  }
+  return migratedDocsRoot;
+};
+
+const operationsDir = path.join(resolveDocsRoot(), 'operations');
 
 const parseArgs = () => {
   const args = process.argv.slice(2);
@@ -12,6 +23,7 @@ const parseArgs = () => {
     signoffPath: path.join(operationsDir, 'v1-rc-signoff-record.md'),
     checklistPath: path.join(operationsDir, 'v1-release-candidate-checklist.md'),
     today: '',
+    expectedSha: '',
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -24,6 +36,7 @@ const parseArgs = () => {
     if (arg === '--signoff-path') options.signoffPath = args[index + 1] ?? options.signoffPath;
     if (arg === '--checklist-path') options.checklistPath = args[index + 1] ?? options.checklistPath;
     if (arg === '--today') options.today = args[index + 1] ?? options.today;
+    if (arg === '--expected-sha') options.expectedSha = args[index + 1] ?? options.expectedSha;
   }
 
   options.statusPath = path.resolve(process.cwd(), options.statusPath);
@@ -56,6 +69,17 @@ const refreshOutstandingExternalGates = (rawChecklist, isoDate, gate1, gate2, ga
       /- .*snapshot is `G1=.*$/m,
       `- current snapshot is \`G1=${gate1}\`, \`G2=${gate2}\`, \`G3=${gate3}\`, \`G4=${gate4}\` (synced ${isoDate}).`
     );
+
+const refreshExpectedSha = (rawChecklist, expectedSha) => {
+  const value = expectedSha || 'not provided';
+  if (/^Expected SHA:\s*`?.+?`?\s*$/m.test(rawChecklist)) {
+    return rawChecklist.replace(/^Expected SHA:\s*`?.+?`?\s*$/m, `Expected SHA: \`${value}\``);
+  }
+  return rawChecklist.replace(
+    /(### Latest Verification \(\d{4}-\d{2}-\d{2}\)\r?\n)/,
+    `$1Expected SHA: \`${value}\`\n`
+  );
+};
 
 const extractValueAfterLabel = (raw, label) => {
   const regex = new RegExp(`^\\s*${escapeRegExp(label)}\\s*(.*)$`, 'im');
@@ -107,6 +131,7 @@ const main = async () => {
 
   let nextChecklist = rawChecklist;
   nextChecklist = refreshLatestVerificationDate(nextChecklist, isoDate);
+  nextChecklist = refreshExpectedSha(nextChecklist, options.expectedSha);
   nextChecklist = refreshOutstandingExternalGates(nextChecklist, isoDate, gate1, gate2, gate3, gate4);
   nextChecklist = setChecklistCheckbox(nextChecklist, 'Queue lag metrics reviewed and within baseline.', gate2 === 'PASS');
   nextChecklist = setChecklistCheckbox(

@@ -201,7 +201,7 @@ describe('canUseStrategyProtectionFallbackForDisplay', () => {
     ).toBe(false);
   });
 
-  it('allows strategy fallback for canonical runtime-owned positions and imported positions with runtime state', () => {
+  it('allows strategy fallback for canonical runtime-owned positions and imported positions with runtime state or price basis', () => {
     expect(
       canUseStrategyProtectionFallbackForDisplay({
         position: { origin: 'BOT' },
@@ -219,6 +219,25 @@ describe('canUseStrategyProtectionFallbackForDisplay', () => {
           quantity: 1,
           currentAdds: 0,
         },
+      })
+    ).toBe(true);
+
+    expect(
+      canUseStrategyProtectionFallbackForDisplay({
+        position: { origin: 'EXCHANGE_SYNC' },
+        strategyAutomationContextResolved: true,
+        runtimeState: null,
+        hasCanonicalPriceBasis: true,
+      })
+    ).toBe(false);
+
+    expect(
+      canUseStrategyProtectionFallbackForDisplay({
+        position: { origin: 'EXCHANGE_SYNC' },
+        strategyAutomationContextResolved: true,
+        runtimeState: null,
+        hasRuntimeStateBasis: true,
+        hasCanonicalPriceBasis: true,
       })
     ).toBe(true);
   });

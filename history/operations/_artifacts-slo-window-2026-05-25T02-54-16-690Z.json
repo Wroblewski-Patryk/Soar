@@ -1,0 +1,6321 @@
+{
+  "startedAt": "2026-05-25T02:24:44.897Z",
+  "endedAt": "2026-05-25T02:54:16.689Z",
+  "options": {
+    "baseUrl": "https://api.soar.luckysparrow.ch",
+    "durationMinutes": 30,
+    "intervalSeconds": 30,
+    "authTokenProvided": true,
+    "opsBasicAuthConfigured": false,
+    "opsCustomHeaderConfigured": false,
+    "environment": "production",
+    "allowLocalProductionEvidence": false,
+    "targetProfile": "V1",
+    "thresholds": {
+      "apiAvailabilityPct": 99.9,
+      "workerAvailabilityPct": 99.5,
+      "api5xxRatioPct": 0.5,
+      "apiAvgDurationMs": 250,
+      "queueLagExecutionThreshold": 10,
+      "queueLagExecutionCompliancePct": 99,
+      "liveOrderFailureRatioPct": 1
+    }
+  },
+  "summary": {
+    "probes": {
+      "healthAvailabilityPct": 69.44444444444444,
+      "readyAvailabilityPct": 66.66666666666666,
+      "workersHealthAvailabilityPct": 69.44444444444444,
+      "workersReadyAvailabilityPct": 69.44444444444444
+    },
+    "http": {
+      "requestsDelta": 143,
+      "status5xxDelta": 0,
+      "errorRatioPct": 0,
+      "averageDurationMs": 2.5944055944055946
+    },
+    "queueLagExecution": {
+      "sampleCount": 25,
+      "p50": 0,
+      "p95": 0,
+      "max": 0,
+      "threshold": 10,
+      "withinThresholdPct": 100
+    },
+    "liveOrderPath": {
+      "orderAttemptsDelta": 0,
+      "orderFailuresDelta": 0,
+      "failureRatioPct": null
+    },
+    "evaluation": {
+      "targetProfile": "V1",
+      "thresholds": {
+        "targetProfile": "V1",
+        "apiAvailabilityPct": 99.9,
+        "workerAvailabilityPct": 99.5,
+        "api5xxRatioPct": 0.5,
+        "apiAvgDurationMs": 250,
+        "queueLagExecutionThreshold": 10,
+        "queueLagExecutionCompliancePct": 99,
+        "liveOrderFailureRatioPct": 1
+      },
+      "objectives": [
+        {
+          "id": "SLO-1A",
+          "label": "/health availability",
+          "comparator": ">=",
+          "threshold": 99.9,
+          "observed": 69.44444444444444,
+          "unit": "%",
+          "status": "FAIL",
+          "passed": false
+        },
+        {
+          "id": "SLO-1B",
+          "label": "/ready availability",
+          "comparator": ">=",
+          "threshold": 99.9,
+          "observed": 66.66666666666666,
+          "unit": "%",
+          "status": "FAIL",
+          "passed": false
+        },
+        {
+          "id": "SLO-4A",
+          "label": "/workers/health availability",
+          "comparator": ">=",
+          "threshold": 99.5,
+          "observed": 69.44444444444444,
+          "unit": "%",
+          "status": "FAIL",
+          "passed": false
+        },
+        {
+          "id": "SLO-4B",
+          "label": "/workers/ready availability",
+          "comparator": ">=",
+          "threshold": 99.5,
+          "observed": 69.44444444444444,
+          "unit": "%",
+          "status": "FAIL",
+          "passed": false
+        },
+        {
+          "id": "SLO-2",
+          "label": "API 5xx ratio",
+          "comparator": "<=",
+          "threshold": 0.5,
+          "observed": 0,
+          "unit": "%",
+          "status": "PASS",
+          "passed": true
+        },
+        {
+          "id": "SLO-3",
+          "label": "API average duration",
+          "comparator": "<=",
+          "threshold": 250,
+          "observed": 2.5944055944055946,
+          "unit": "ms",
+          "status": "PASS",
+          "passed": true
+        },
+        {
+          "id": "SLO-5",
+          "label": "Execution queue lag compliance",
+          "comparator": ">=",
+          "threshold": 99,
+          "observed": 100,
+          "unit": "%",
+          "status": "PASS",
+          "passed": true
+        },
+        {
+          "id": "SLO-6",
+          "label": "Live order failure ratio",
+          "comparator": "<=",
+          "threshold": 1,
+          "observed": null,
+          "unit": "%",
+          "status": "NO_DATA",
+          "passed": false
+        }
+      ],
+      "overallStatus": "FAIL",
+      "failedObjectiveIds": [
+        "SLO-1A",
+        "SLO-1B",
+        "SLO-4A",
+        "SLO-4B"
+      ],
+      "noDataObjectiveIds": [
+        "SLO-6"
+      ]
+    }
+  },
+  "samples": [
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 174,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:24:45.918Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:24:45.077Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 78,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:24:45.155Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 25,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:24:46.028Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:24:45.180Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 22,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:24:31.145Z",
+              "ageMs": 14909,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:24:35.361Z",
+              "ageMs": 10693,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:24:44.837Z",
+              "ageMs": 1217,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:24:44.344Z",
+              "ageMs": 1710,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:24:45.202Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 30,
+        "payload": {
+          "http": {
+            "requestsTotal": 445,
+            "status2xx": 408,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368237,
+            "avgDurationMs": 827.4988764044944
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:24:45.235Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 23,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:24:45.258Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 96,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:25:16.213Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:25:15.363Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 68,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:25:15.431Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 21,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:25:16.303Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:25:15.454Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 24,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:25:16.181Z",
+              "ageMs": 148,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:25:05.360Z",
+              "ageMs": 10969,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:25:14.865Z",
+              "ageMs": 1464,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:25:14.345Z",
+              "ageMs": 1984,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:25:15.479Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 24,
+        "payload": {
+          "http": {
+            "requestsTotal": 451,
+            "status2xx": 414,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368249,
+            "avgDurationMs": 816.5166297117516
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:25:15.504Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 20,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:25:15.524Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 63,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:25:46.442Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:25:45.590Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 93,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:25:45.683Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 29,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:25:46.565Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:25:45.712Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 20,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:25:46.207Z",
+              "ageMs": 377,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:25:35.361Z",
+              "ageMs": 11223,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:25:44.881Z",
+              "ageMs": 1703,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:25:44.345Z",
+              "ageMs": 2239,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:25:45.732Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 40,
+        "payload": {
+          "http": {
+            "requestsTotal": 457,
+            "status2xx": 420,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368278,
+            "avgDurationMs": 805.8599562363238
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:25:45.773Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 28,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:25:45.801Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 100,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:26:16.753Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:26:15.904Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 69,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:26:15.973Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 22,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:26:16.847Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:26:15.995Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 29,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:26:16.233Z",
+              "ageMs": 634,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:26:05.361Z",
+              "ageMs": 11506,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:26:14.909Z",
+              "ageMs": 1958,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:26:14.345Z",
+              "ageMs": 2522,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:26:16.024Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 31,
+        "payload": {
+          "http": {
+            "requestsTotal": 463,
+            "status2xx": 426,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368290,
+            "avgDurationMs": 795.4427645788337
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:26:16.056Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 18,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:26:16.074Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 107,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:26:47.036Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:26:46.186Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 80,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:26:46.266Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 21,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:26:47.140Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:26:46.287Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 22,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:26:35.049Z",
+              "ageMs": 12112,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:26:35.360Z",
+              "ageMs": 11801,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:26:44.933Z",
+              "ageMs": 2228,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:26:44.345Z",
+              "ageMs": 2816,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:26:46.309Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 23,
+        "payload": {
+          "http": {
+            "requestsTotal": 469,
+            "status2xx": 432,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368305,
+            "avgDurationMs": 785.2985074626865
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:26:46.334Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 19,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:26:46.353Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 85,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:27:17.291Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:27:16.452Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 80,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:27:16.533Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 19,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:27:17.405Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:27:16.553Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 18,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:27:05.069Z",
+              "ageMs": 12355,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:27:05.362Z",
+              "ageMs": 12062,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:27:14.957Z",
+              "ageMs": 2467,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:27:14.344Z",
+              "ageMs": 3080,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:27:16.571Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 27,
+        "payload": {
+          "http": {
+            "requestsTotal": 475,
+            "status2xx": 438,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368322,
+            "avgDurationMs": 775.4147368421053
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:27:16.599Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 18,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:27:16.617Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 75,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:27:47.557Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:27:46.705Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 73,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:27:46.779Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 21,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:27:47.652Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:27:46.800Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 25,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:27:35.096Z",
+              "ageMs": 12579,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:27:35.363Z",
+              "ageMs": 12312,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:27:44.984Z",
+              "ageMs": 2691,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:27:44.344Z",
+              "ageMs": 3331,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:27:46.825Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 24,
+        "payload": {
+          "http": {
+            "requestsTotal": 481,
+            "status2xx": 444,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368336,
+            "avgDurationMs": 765.7713097713098
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:27:46.849Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 21,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:27:46.870Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 77,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:28:17.810Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:28:16.956Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 79,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:28:17.035Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 21,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:28:17.909Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:28:17.056Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 18,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:28:05.121Z",
+              "ageMs": 12807,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:28:05.363Z",
+              "ageMs": 12565,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:28:15.009Z",
+              "ageMs": 2919,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:28:14.345Z",
+              "ageMs": 3583,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:28:17.074Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 37,
+        "payload": {
+          "http": {
+            "requestsTotal": 487,
+            "status2xx": 450,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368350,
+            "avgDurationMs": 756.3655030800821
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:28:17.113Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 22,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:28:17.135Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 89,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:28:48.083Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:28:47.229Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10509,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:28:57.738Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 64,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:28:58.656Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:28:57.803Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 71,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:28:50.157Z",
+              "ageMs": 8568,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:28:50.363Z",
+              "ageMs": 8362,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:28:45.037Z",
+              "ageMs": 13688,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:28:44.344Z",
+              "ageMs": 14381,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:28:57.874Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 20,
+        "payload": {
+          "http": {
+            "requestsTotal": 492,
+            "status2xx": 455,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368360,
+            "avgDurationMs": 748.69918699187
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:28:57.895Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 21,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:28:57.916Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 85,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:29:28.852Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:29:28.004Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 85,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:29:28.089Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 24,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:29:28.965Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:29:28.114Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 31,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:29:20.181Z",
+              "ageMs": 8813,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:29:20.363Z",
+              "ageMs": 8631,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:29:15.064Z",
+              "ageMs": 13930,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:29:14.344Z",
+              "ageMs": 14650,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:29:28.145Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 26,
+        "payload": {
+          "http": {
+            "requestsTotal": 498,
+            "status2xx": 461,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368389,
+            "avgDurationMs": 739.7369477911647
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:29:28.172Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 26,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:29:28.198Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 63,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:29:59.123Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:29:58.270Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 100,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:29:58.371Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 29,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:29:59.252Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:29:58.400Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 25,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:29:50.205Z",
+              "ageMs": 9074,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:29:50.362Z",
+              "ageMs": 8917,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:29:45.089Z",
+              "ageMs": 14190,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:29:44.345Z",
+              "ageMs": 14934,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:29:58.425Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 33,
+        "payload": {
+          "http": {
+            "requestsTotal": 504,
+            "status2xx": 467,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368403,
+            "avgDurationMs": 730.9583333333334
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:29:58.459Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 22,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:29:58.481Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 71,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:30:29.412Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:30:28.558Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 73,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:30:28.631Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 26,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:30:29.509Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:30:28.657Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 26,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:30:20.229Z",
+              "ageMs": 9307,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:30:20.363Z",
+              "ageMs": 9173,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:30:15.113Z",
+              "ageMs": 14423,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:30:29.345Z",
+              "ageMs": 191,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:30:28.683Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 25,
+        "payload": {
+          "http": {
+            "requestsTotal": 510,
+            "status2xx": 473,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368417,
+            "avgDurationMs": 722.3862745098039
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:30:28.708Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 29,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:30:28.737Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 70,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:30:59.672Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:30:58.819Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 75,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:30:58.895Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 21,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:30:59.769Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:30:58.917Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 38,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:30:50.256Z",
+              "ageMs": 9552,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:30:50.364Z",
+              "ageMs": 9444,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:30:45.139Z",
+              "ageMs": 14669,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:30:59.344Z",
+              "ageMs": 464,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:30:58.956Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 31,
+        "payload": {
+          "http": {
+            "requestsTotal": 516,
+            "status2xx": 479,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368430,
+            "avgDurationMs": 714.0116279069767
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:30:58.987Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 26,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:30:59.013Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 86,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:31:29.953Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:31:29.102Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 84,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:31:29.186Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 34,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:31:30.074Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:31:29.220Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 37,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:31:20.285Z",
+              "ageMs": 9826,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:31:20.373Z",
+              "ageMs": 9738,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:31:15.165Z",
+              "ageMs": 14946,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:31:29.345Z",
+              "ageMs": 766,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:31:29.258Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 39,
+        "payload": {
+          "http": {
+            "requestsTotal": 522,
+            "status2xx": 485,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368447,
+            "avgDurationMs": 705.8371647509579
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:31:29.297Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 20,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:31:29.317Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 72,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:32:00.249Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:31:59.396Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 71,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:31:59.467Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 20,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:32:00.342Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:31:59.487Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 21,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:31:50.310Z",
+              "ageMs": 10053,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:31:50.374Z",
+              "ageMs": 9989,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:32:00.205Z",
+              "ageMs": 158,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:31:59.345Z",
+              "ageMs": 1018,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:31:59.508Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 25,
+        "payload": {
+          "http": {
+            "requestsTotal": 528,
+            "status2xx": 491,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368462,
+            "avgDurationMs": 697.844696969697
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:31:59.533Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 21,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:31:59.554Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 75,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:32:30.487Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:32:29.632Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 79,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:32:29.712Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 19,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:32:30.586Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:32:29.732Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 22,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:32:20.329Z",
+              "ageMs": 10279,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:32:20.373Z",
+              "ageMs": 10235,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:32:30.229Z",
+              "ageMs": 379,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:32:19.489Z",
+              "ageMs": 11119,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:32:29.755Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 27,
+        "payload": {
+          "http": {
+            "requestsTotal": 534,
+            "status2xx": 497,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368475,
+            "avgDurationMs": 690.0280898876405
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:32:29.782Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 19,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:32:29.802Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 94,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:33:00.762Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:32:59.909Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 83,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:32:59.992Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 23,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:33:00.869Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:33:00.016Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 21,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:32:50.346Z",
+              "ageMs": 10545,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:32:50.373Z",
+              "ageMs": 10518,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:33:00.253Z",
+              "ageMs": 638,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:32:49.490Z",
+              "ageMs": 11401,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:33:00.037Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 25,
+        "payload": {
+          "http": {
+            "requestsTotal": 540,
+            "status2xx": 503,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368490,
+            "avgDurationMs": 682.3888888888889
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:33:00.063Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 19,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:33:00.082Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 61,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:33:31.002Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:33:30.147Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 74,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:33:30.222Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 26,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:33:31.103Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:33:30.248Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 22,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:33:20.373Z",
+              "ageMs": 10752,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:33:20.373Z",
+              "ageMs": 10752,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:33:30.277Z",
+              "ageMs": 848,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:33:19.490Z",
+              "ageMs": 11635,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:33:30.271Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 26,
+        "payload": {
+          "http": {
+            "requestsTotal": 546,
+            "status2xx": 509,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368503,
+            "avgDurationMs": 674.9139194139194
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:33:30.297Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 19,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:33:30.317Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 67,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:34:01.252Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:34:00.397Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 69,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:34:00.466Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 22,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:34:01.343Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:34:00.488Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 22,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:33:50.397Z",
+              "ageMs": 10968,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:33:50.374Z",
+              "ageMs": 10991,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:34:00.301Z",
+              "ageMs": 1064,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:33:49.491Z",
+              "ageMs": 11874,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:34:00.510Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 26,
+        "payload": {
+          "http": {
+            "requestsTotal": 552,
+            "status2xx": 515,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368518,
+            "avgDurationMs": 667.6050724637681
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:34:00.536Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 18,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:34:00.554Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 103,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:34:31.501Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:34:30.661Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 76,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:34:30.737Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 28,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:34:31.615Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:34:30.765Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 23,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:34:20.421Z",
+              "ageMs": 11220,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:34:20.373Z",
+              "ageMs": 11268,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:34:30.325Z",
+              "ageMs": 1316,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:34:19.491Z",
+              "ageMs": 12150,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:34:30.789Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 26,
+        "payload": {
+          "http": {
+            "requestsTotal": 558,
+            "status2xx": 521,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368540,
+            "avgDurationMs": 660.4659498207885
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:34:30.816Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 22,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:34:30.838Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 83,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:35:01.778Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:35:00.923Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 76,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:35:00.999Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 25,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:35:01.877Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:35:01.024Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 21,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:34:50.445Z",
+              "ageMs": 11454,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:34:50.419Z",
+              "ageMs": 11480,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:35:00.349Z",
+              "ageMs": 1550,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:34:49.490Z",
+              "ageMs": 12409,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:35:01.045Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 25,
+        "payload": {
+          "http": {
+            "requestsTotal": 564,
+            "status2xx": 527,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368554,
+            "avgDurationMs": 653.4645390070922
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:35:01.071Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 19,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:35:01.090Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 66,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:35:32.018Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:35:31.169Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 65,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:35:31.235Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 20,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:35:32.111Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:35:31.255Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 21,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:35:20.464Z",
+              "ageMs": 11667,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:35:20.419Z",
+              "ageMs": 11712,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:35:30.373Z",
+              "ageMs": 1758,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:35:19.492Z",
+              "ageMs": 12639,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:35:31.276Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 26,
+        "payload": {
+          "http": {
+            "requestsTotal": 570,
+            "status2xx": 533,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368567,
+            "avgDurationMs": 646.6087719298246
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:35:31.305Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 21,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:35:31.326Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 64,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:36:02.260Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:36:01.404Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 69,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:36:01.473Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 17,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:36:02.346Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:36:01.490Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 54,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:35:50.490Z",
+              "ageMs": 11876,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:35:50.419Z",
+              "ageMs": 11947,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:36:00.400Z",
+              "ageMs": 1966,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:35:49.493Z",
+              "ageMs": 12873,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:36:01.545Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 25,
+        "payload": {
+          "http": {
+            "requestsTotal": 576,
+            "status2xx": 539,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368582,
+            "avgDurationMs": 639.8993055555555
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:36:01.571Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 19,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:36:01.590Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 3339,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:36:35.708Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:36:34.932Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 290,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:36:35.222Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 48,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:36:36.105Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:36:35.270Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 40,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:36:35.527Z",
+              "ageMs": 621,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:36:35.418Z",
+              "ageMs": 730,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:36:30.414Z",
+              "ageMs": 5734,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:36:34.493Z",
+              "ageMs": 1655,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:36:35.311Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 78,
+        "payload": {
+          "http": {
+            "requestsTotal": 582,
+            "status2xx": 545,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368594,
+            "avgDurationMs": 633.3230240549829
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:36:35.390Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 79,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:36:35.469Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 477,
+        "payload": {
+          "status": "ok",
+          "service": "api",
+          "timestamp": "2026-05-25T02:37:06.687Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:37:05.950Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 170,
+        "payload": {
+          "status": "ready",
+          "service": "api"
+        },
+        "error": null,
+        "at": "2026-05-25T02:37:06.120Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 200,
+        "ok": true,
+        "durationMs": 30,
+        "payload": {
+          "status": "ok",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "timestamp": "2026-05-25T02:37:07.004Z"
+        },
+        "error": null,
+        "at": "2026-05-25T02:37:06.150Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 200,
+        "ok": true,
+        "durationMs": 21,
+        "payload": {
+          "status": "ready",
+          "service": "workers",
+          "mode": "split",
+          "environment": "deployed",
+          "ownership": {
+            "backtest": "worker",
+            "execution": "worker",
+            "marketData": "worker",
+            "marketStream": "worker"
+          },
+          "topologyStatus": "healthy",
+          "degradedReasons": [],
+          "requiredQueues": [
+            "WORKER_BACKTEST_QUEUE",
+            "WORKER_EXECUTION_QUEUE",
+            "WORKER_MARKET_DATA_QUEUE"
+          ],
+          "requiredWorkerFamilies": [
+            "backtest",
+            "execution",
+            "market-data",
+            "market-stream"
+          ],
+          "heartbeats": [
+            {
+              "worker": "backtest",
+              "lastHeartbeatAt": "2026-05-25T02:37:05.556Z",
+              "ageMs": 1470,
+              "status": "fresh"
+            },
+            {
+              "worker": "execution",
+              "lastHeartbeatAt": "2026-05-25T02:37:05.419Z",
+              "ageMs": 1607,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-data",
+              "lastHeartbeatAt": "2026-05-25T02:37:00.441Z",
+              "ageMs": 6585,
+              "status": "fresh"
+            },
+            {
+              "worker": "market-stream",
+              "lastHeartbeatAt": "2026-05-25T02:37:04.493Z",
+              "ageMs": 2533,
+              "status": "fresh"
+            }
+          ]
+        },
+        "error": null,
+        "at": "2026-05-25T02:37:06.171Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 200,
+        "ok": true,
+        "durationMs": 34,
+        "payload": {
+          "http": {
+            "requestsTotal": 588,
+            "status2xx": 551,
+            "status4xx": 1,
+            "status5xx": 36,
+            "totalDurationMs": 368608,
+            "avgDurationMs": 626.8843537414966
+          },
+          "exchange": {
+            "orderAttempts": 0,
+            "orderRetries": 0,
+            "orderFailures": 0
+          },
+          "worker": {
+            "queueLag": {
+              "marketData": 0,
+              "backtest": 0,
+              "execution": 0
+            }
+          },
+          "runtime": {
+            "groupEvaluation": {
+              "total": 0,
+              "totalDurationMs": 0,
+              "avgDurationMs": 0
+            },
+            "mergeOutcomes": {
+              "long": 0,
+              "short": 0,
+              "exit": 0,
+              "noTrade": 0
+            },
+            "signalLag": {
+              "total": 0,
+              "lastMs": 0,
+              "maxMs": 0,
+              "totalLagMs": 0,
+              "avgLagMs": 0
+            },
+            "restarts": {
+              "total": 0,
+              "noEvent": 0,
+              "noHeartbeat": 0
+            },
+            "reconciliation": {
+              "total": 0,
+              "pending": 0,
+              "totalDelayMs": 0,
+              "avgDelayMs": 0,
+              "maxDelayMs": 0
+            },
+            "executionDedupe": {
+              "hit": 0,
+              "miss": 0,
+              "inflight": 0,
+              "retry": 0,
+              "byCommand": {},
+              "retryByErrorClass": {}
+            },
+            "hotPath": {
+              "listActiveBots": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "eligibleGroupsCount": {
+                "total": 0,
+                "totalGroups": 0,
+                "avgGroupsPerEvaluation": 0,
+                "maxGroupsPerEvaluation": 0
+              },
+              "preTradeLatencyMs": {
+                "total": 0,
+                "totalDurationMs": 0,
+                "avgDurationMs": 0,
+                "maxDurationMs": 0
+              },
+              "touchSessionWrites": 0,
+              "symbolStatsWrites": 0
+            },
+            "executionErrors": {}
+          },
+          "assistant": {
+            "subagentTimeouts": 0
+          }
+        },
+        "error": null,
+        "at": "2026-05-25T02:37:06.206Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 200,
+        "ok": true,
+        "durationMs": 34,
+        "payload": {
+          "alerts": []
+        },
+        "error": null,
+        "at": "2026-05-25T02:37:06.240Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10628,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:37:46.871Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10627,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:37:57.498Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10591,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:38:08.089Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10627,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:38:18.716Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10595,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:38:29.311Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10583,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:38:39.894Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10667,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:39:20.571Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10589,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:39:31.160Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10600,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:39:41.760Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10599,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:39:52.359Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10622,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:40:02.981Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10570,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:40:13.551Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10647,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:40:54.207Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10622,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:41:04.829Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10613,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:41:15.442Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10622,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:41:26.064Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10611,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:41:36.675Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10600,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:41:47.275Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10591,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:42:27.866Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10616,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:42:38.482Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10649,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:42:49.131Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10567,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:42:59.698Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10596,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:43:10.294Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10601,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:43:20.895Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10662,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:44:01.561Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10614,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:44:12.175Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10621,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:44:22.796Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10596,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:44:33.392Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10615,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:44:44.007Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10575,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:44:54.582Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10651,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:45:35.234Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10584,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:45:45.818Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10600,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:45:56.418Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10600,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:46:07.018Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10627,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:46:17.645Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10614,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:46:28.259Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10634,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:47:08.896Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10610,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:47:19.506Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10613,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:47:30.119Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10589,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:47:40.708Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10578,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:47:51.286Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10619,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:48:01.905Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10623,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:48:42.534Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10599,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:48:53.133Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10587,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:49:03.720Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10634,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:49:14.354Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10655,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:49:25.009Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10652,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:49:35.661Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10583,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:50:16.251Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10586,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:50:26.837Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10664,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:50:37.501Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10604,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:50:48.105Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10583,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:50:58.688Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10597,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:51:09.285Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10624,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:51:49.922Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10596,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:52:00.518Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10623,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:52:11.141Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10646,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:52:21.787Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10625,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:52:32.412Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10588,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:52:43.000Z"
+      }
+    },
+    {
+      "/health": {
+        "endpoint": "/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10585,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:53:23.592Z"
+      },
+      "/ready": {
+        "endpoint": "/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10583,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:53:34.175Z"
+      },
+      "/workers/health": {
+        "endpoint": "/workers/health",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10583,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:53:44.758Z"
+      },
+      "/workers/ready": {
+        "endpoint": "/workers/ready",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10645,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:53:55.403Z"
+      },
+      "/metrics": {
+        "endpoint": "/metrics",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10641,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:54:06.044Z"
+      },
+      "/alerts": {
+        "endpoint": "/alerts",
+        "status": 0,
+        "ok": false,
+        "durationMs": 10645,
+        "payload": null,
+        "error": "fetch failed",
+        "at": "2026-05-25T02:54:16.689Z"
+      }
+    }
+  ]
+}

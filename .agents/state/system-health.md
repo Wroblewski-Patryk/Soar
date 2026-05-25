@@ -1,6 +1,224 @@
 # System Health
 
-Last updated: 2026-05-23
+Last updated: 2026-05-25
+
+## Current Readiness Checkpoint
+
+- `FUNCTION-JOURNEY-EVIDENCE-INDEX-2026-05-25` VERIFIED LOCALLY. A generated
+  function/web/API/user-action evidence index now exists on top of the
+  architecture graph. It writes CSV indexes under
+  `Soar - docs/architecture/indices`, JSON under `Soar - docs/graphs`, human
+  summaries under `Soar - docs/status`, and dated artifacts under
+  `history/artifacts`. Validation passed syntax, normal generation, strict
+  generation, triage proof for `SOAR-UI-MANUAL-ORDER-SUBMIT`, and JSON parse
+  checks. Current scan reports `0` critical structural/action gaps, `28` high
+  function/API proof gaps, and `37` high user-action proof gaps across `39`
+  indexed actions. This is a repair-routing health improvement, not production
+  readiness.
+
+- `PROD-RUNTIME-AGGREGATE-SLO-BLOCKER-2026-05-25` IMPLEMENTED LOCALLY /
+  DEPLOYED / PRODUCTION `NO-GO`. Fresh protected read-only production proofs passed for
+  `24e9d3b8`, including restore, rollback, LIVEIMPORT-03, UI clickthrough,
+  auth browser, and security/exchange evidence. The RC/SLO pipeline then
+  failed on availability/error-rate targets. Production API logs showed heap
+  out-of-memory restarts and 500s on the runtime monitoring aggregate route.
+  Local mitigation limits aggregate concurrency and fails per-session reads
+  closed. Validation passed focused concurrency `1/1`, aggregate e2e `18/18`,
+  API typecheck, repository lint, graph generation, and quality guardrails.
+  Commit `287e77a1` reached public build-info and public no-worker smoke
+  passed. The post-deploy SLO window recorded `0` API 5xx delta and `2.59ms`
+  average latency, but failed availability because late probes returned
+  `fetch failed`. Follow-up checks show `141.227.149.67` unreachable on SSH
+  `22` and HTTPS `443`. Next health gate is VPS reachability recovery plus
+  fresh public smoke and SLO/RC observation.
+
+- `API-LOCAL-REGRESSION-SWEEP-2026-05-24` VERIFIED LOCALLY. Backend/API
+  regression confidence is refreshed after fixing dynamic-stop display fallback
+  for imported LIVE positions with stale runtime state, lifecycle close `TSL`
+  parity, reports cross-mode unsettled-trade counting, orders LIVE entitlement
+  contract setup, runtime-flow polling, wallet/manual-order cleanup, and AI
+  protocol artifact path resolution. Focused regression proof passed (`14`
+  files / `107` tests), the full API Vitest suite passed after clean DB reset
+  in one-worker mode, API typecheck passed, repository lint passed, full
+  workspace build passed, quality guardrails passed, strict graph drift passed
+  with `796/796` covered and `0` missing, and diff check found no whitespace
+  errors beyond LF/CRLF warnings. This remains local proof; V1 production is
+  still `NO-GO` without protected inputs and protected evidence.
+
+- `LOCAL-INTEGRITY-BUILD-SWEEP-2026-05-24` VERIFIED LOCALLY. Full API/Web
+  typecheck passed, docs parity passed (`22/22` API, `16/16` Web, `37/37`
+  routes), reusable audit/operator aggregate passed, and full workspace build
+  passed. Mobile still reports scaffold-only build placeholder by design. This
+  is local repository health proof, not protected production release proof.
+
+- `WEB-DASHBOARD-SELECTED-BOT-LOAD-DEPS-2026-05-24` VERIFIED LOCALLY. The
+  current Web lint warning in Dashboard Home was fixed with a stable `load`
+  callback that reads selected-bot state through a synchronized ref. The first
+  full Web rerun exposed three Dashboard selection regressions; the final
+  ref-based fix passed the focused Dashboard regression pack (`26/26`) and the
+  full Web suite (`150` files / `534` tests). Repository lint, typecheck,
+  guardrails, and strict architecture graph drift also pass. This is local
+  code-quality proof, not protected production journey proof.
+
+- `PROD-FRESH-DEPLOY-380308D1-2026-05-24` PARTIALLY VERIFIED for public
+  no-secret production freshness. Public reachability remains healthy and the
+  stale production identity is resolved. Web build-info returns
+  `gitSha=380308d10cf0fabb2ea629eb55e6f0ba7d980ed1`,
+  `metadataSource=github-branch`, and build id `nIAcUSY1pT2mPzUoi4OyK`.
+  Coolify deployment queue evidence and Docker container tags show `soar-api`,
+  `workers-market-data`, `workers-market-stream`, `workers-backtest`, and
+  `workers-execution` running the same SHA. Public no-worker deploy smoke
+  passes API `/health`, API `/ready`, and Web `/`. The no-secret V1 preflight
+  rerun now passes build-info and public smoke and is correctly BLOCKED only on
+  protected auth/context and release evidence gates. No LIVE exchange mutation,
+  protected app UI/runtime readback, or production DB restore drill was run.
+
+- `RELEASE-PREFLIGHT-ACTIVE-DOCS-ROOT-2026-05-24` IMPLEMENTED/PARTIALLY
+  VERIFIED for release tooling. V1 release/preflight and RC helper scripts now
+  resolve `Soar - docs/operations` when `docs/operations` is absent. Release
+  tests pass `27/27`, and the production preflight now correctly reports
+  2026-05-23 RC artifacts as stale rather than missing while preserving the
+  protected-auth and evidence blockers.
+
+- `RELEASE-GATE-ACTIVATION-STATUS-HARDENING-2026-05-24` IMPLEMENTED/PARTIALLY
+  VERIFIED. Activation audit and activation plan artifacts now fail closed
+  unless their content explicitly reports `READY` or `PASS`. Release/preflight
+  tests pass `28/28`; production preflight still blocks on missing 2026-05-24
+  activation evidence and protected proof inputs.
+
+- `RELEASE-GATE-HISTORY-EVIDENCE-RESOLVER-2026-05-24` IMPLEMENTED/PARTIALLY
+  VERIFIED. Release evidence readiness resolves canonical history evidence
+  buckets and now reports current activation evidence as `FAILED/BLOCKED` plus
+  prior protected evidence as `STALE`, which is more accurate than the previous
+  false `MISSING` classification.
+
+- `RELEASE-PREFLIGHT-REMEDIATION-HINTS-2026-05-24` IMPLEMENTED/PARTIALLY
+  VERIFIED. The no-secret production preflight now emits next actions for all
+  current blockers while build-info and public smoke remain PASS.
+
+- `RELEASE-GATE-EXPECTED-SHA-EVIDENCE-BINDING-2026-05-24` IMPLEMENTED/PARTIALLY
+  VERIFIED. Release evidence for activation, LIVEIMPORT, and UI clickthrough
+  now requires the expected deployment SHA when provided. A transient public
+  `/ready` `503` occurred during the first rerun, but follow-up deploy smoke
+  and five direct `/ready` reads passed; the latest preflight build-info and
+  public smoke are PASS.
+
+- `RELEASE-GATE-RESTORE-ROLLBACK-SHA-BINDING-2026-05-24` IMPLEMENTED/PARTIALLY
+  VERIFIED. Future restore/rollback proof artifacts are candidate-aware and
+  stored in canonical evidence/artifact buckets; release/preflight tests pass
+  `30/30`, and the latest production preflight still passes build-info/public
+  smoke while blocking on protected/stale evidence.
+
+- `RELEASE-GATE-RC-SHA-BINDING-2026-05-24` IMPLEMENTED/PARTIALLY VERIFIED.
+  Future RC status/sign-off/checklist artifacts are candidate-aware, and
+  release/preflight tests pass `31/31`. Latest production preflight still
+  passes build-info/public smoke and blocks on protected/stale evidence.
+
+- `RELEASE-OPERATOR-UNBLOCK-PACKET-380308D1-2026-05-24` PARTIALLY VERIFIED /
+  `NO-GO`. The current protected-input readiness sweep for deployed SHA
+  `380308d10cf0fabb2ea629eb55e6f0ba7d980ed1` found `0` matching protected
+  input names in this shell. The corresponding operator unblock packet
+  validates successfully for that SHA and preserves the boundary that public
+  build-info/smoke cannot replace protected production proof.
+
+- `OPERATOR-UNBLOCK-READINESS-CONSISTENCY-2026-05-24` VERIFIED LOCALLY.
+  Operator unblock packet validation now cross-checks the referenced
+  protected-input readiness JSON and fails on SHA/status/count drift or an
+  unreadable readiness artifact. Current validator proof passes `7/7`, and the
+  current `380308d1` packet still passes.
+
+- `REUSABLE-AUDIT-HISTORY-PATH-RESOLVER-2026-05-24` VERIFIED LOCALLY.
+  Reusable audit manifest, rerun playbook, handoff, remediation-plan, rollup,
+  and tooling-index validators now accept current history evidence paths where
+  relevant and resolve logical `docs/*` references through `Soar - docs` when
+  needed via `scripts/resolveRepositoryPath.mjs`. The full
+  `audit:manifest:verify` aggregate passes.
+
+- `RELEASE-AUDIT-TOOLING-GRAPH-BACKFILL-2026-05-24` VERIFIED LOCALLY.
+  Release/audit tooling is now represented in the architecture evidence graph:
+  `SOAR-FEATURE-RELEASE-AUDIT-TOOLING`,
+  `SOAR-TOOL-REPOSITORY-PATH-RESOLVER`,
+  `SOAR-TOOL-OPERATOR-UNBLOCK-PACKET-CHECK`,
+  `SOAR-TOOL-REUSABLE-AUDIT-CHECKERS`,
+  `SOAR-TEST-RELEASE-AUDIT-TOOLING`, and
+  `CHAIN-RELEASE-AUDIT-TOOLING`. Graph generation passes with `641` nodes,
+  `791` relations, and `27` chains; strict graph drift remains `796/796`
+  covered and `0` missing.
+
+- `V1-PREFLIGHT-RELEASE-GATE-GRAPH-REFRESH-2026-05-24` PARTIALLY VERIFIED /
+  `NO-GO`. The current no-secret V1 preflight for deployed
+  `380308d10cf0fabb2ea629eb55e6f0ba7d980ed1` passes public build-info and
+  public API/Web smoke, then correctly blocks on missing protected auth/context
+  plus failed/stale release evidence. The V1 final preflight runner and V1
+  release gate runner are now graph nodes linked into
+  `CHAIN-RELEASE-AUDIT-TOOLING`. Graph generation passes with `643` nodes,
+  `798` relations, and `27` chains; strict drift remains `796/796` covered and
+  `0` missing; release/operator tests pass `40/40`.
+
+- `V1-PROTECTED-INPUT-READINESS-REFRESH-380308D1-2026-05-24` BLOCKED /
+  `NO-GO`. The protected input readiness sweep was refreshed for the current
+  candidate and latest preflight timestamp `2026-05-24T16:46:29.583Z`.
+  It still found `0` matching protected input names in this shell. The current
+  operator unblock packet validates successfully and reports
+  `Protected input evidence matches packet: yes`.
+
+- `OPERATOR-UNBLOCK-DEFAULT-CURRENT-PACKET-2026-05-24` VERIFIED LOCALLY.
+  `ops:operator-unblock:check` now selects the latest dated operator packet by
+  default. The current default validates
+  `history/artifacts/v1-operator-unblock-packet-380308d1-2026-05-24.json`,
+  and `audit:manifest:verify` passes with that behavior.
+
+- `ARCH-GRAPH-STRICT-GUARDRAIL-2026-05-24` VERIFIED for graph enforcement.
+  `pnpm run quality:guardrails` now includes strict architecture graph drift
+  validation. Current proof: strict drift reports `796/796` covered and `0`
+  missing; graph generation reports `643` nodes, `798` relations, and `27`
+  chains; guardrail unit tests pass `9/9`; quality guardrails pass with
+  `Architecture graph drift: OK`; docs parity passes. No dev server, browser,
+  Docker, database, or production process was started for this guardrail task.
+
+- `ARCH-EVIDENCE-GRAPH-SYSTEM-2026-05-24` PARTIALLY VERIFIED for the
+  documentation/tooling foundation. `pnpm run architecture:graph:generate`
+  passed with `45` nodes, `24` relations, and `4` chains. Follow-up
+  `ARCH-GRAPH-MANUAL-ORDER-BACKFILL-2026-05-24` backfilled the manual-order
+  P0 slice and graph generation now passes with `67` nodes, `51` relations,
+  and `5` chains; `pnpm run quality:guardrails` passed; `pnpm run
+  docs:parity:check` passed; and `git diff --check` found no whitespace
+  errors, only existing Windows LF/CRLF warnings. No dev server, browser,
+  Docker, database, or production process was started for this graph task.
+
+- `SOAR-FULL-READINESS-COORDINATION-2026-05-23` CHECKPOINTED/PARTIALLY
+  VERIFIED with a current public reachability blocker. The stale
+  deploy-freshness story was corrected, and final local Git validation shows
+  local `HEAD` and `origin/main` both at
+  `52be8b614d2da9ec05d368ac4fbd05f3ec8f8332` with `HEAD...origin/main` at
+  `0 0`.
+- Public no-secret checks are currently failing from this workstation: `curl`
+  to `https://soar.luckysparrow.ch/api/build-info`,
+  `https://api.soar.luckysparrow.ch/health`, and
+  `https://api.soar.luckysparrow.ch/ready` each timed out with `Failed to
+  connect` after roughly `21` seconds. Current production deploy identity and
+  health are therefore not verified by this cleanup checkpoint.
+- DNS resolves `soar.luckysparrow.ch`, `api.soar.luckysparrow.ch`, and
+  `vps-9a62b0a4.vps.ovh.net` to `141.227.149.67`, but TCP checks fail on
+  ports `80`, `443`, and `22`; `tracert` stops with destination host
+  unreachable after OVH-side hops; Jina external reader also reports
+  `ERR_ADDRESS_UNREACHABLE`; SSH to configured `codex-vps` and `debian-vps`
+  users times out. No `OVH`/`COOLIFY`/VPS deploy token env var is available in
+  this local session, so provider/Coolify restart remains operator-blocked.
+- Local source checks passed on the current dirty workspace: `pnpm run
+  quality:guardrails`, `pnpm run docs:parity:check`, `pnpm run typecheck`, and
+  the focused runtime automation exchange-PnL/service/DCA parity pack (`3`
+  files / `41` tests).
+- Web route cleanup checks passed after removing the stale `/dashboard/exchanges`
+  route from canonical docs: focused Web tests (`4` files / `8` tests) and
+  `pnpm --filter web run build`. The build still has an older unrelated
+  `react-hooks/exhaustive-deps` warning in
+  `useHomeLiveWidgetsController.ts`, but no route/exchange cleanup warning.
+- Local hygiene cleanup removed transient auth/browser artifacts from `.tmp/`
+  and `tmp/`; these folders are now ignored to keep cookie/CDP leftovers out of
+  future readiness scans. This checkpoint still does not prove public
+  reachability, authenticated app journeys, native mobile parity, deferred AI
+  hot-path behavior, or any approval-gated LIVE mutation.
 
 ## 2026-05-23 Documentation Knowledge System
 
@@ -150,6 +368,21 @@ Last updated: 2026-05-23
   go-live:infra:up` started repo Postgres/Redis and the rerun passed.
   Production LIVE order, position, exchange, or bot activation mutation was not
   performed.
+
+## 2026-05-23 Runtime DCA Exchange PnL Threshold
+
+- `RUNTIME-DCA-EXCHANGE-PNL-THRESHOLD-2026-05-23` is locally verified after an
+  operator-reported DCA miss where the dashboard row showed loss beyond the
+  configured second threshold.
+- Runtime automation now passes exchange `unrealizedPnl` into PnL threshold
+  evaluation for `EXCHANGE_SYNC` positions when that value is available. This
+  aligns DCA threshold decisions with the exchange PnL/margin truth shown to
+  operators, while keeping lifecycle mark price as the submitted order price.
+- Passed validation: runtime automation exchange-PnL/service tests `38/38`,
+  position-management/DCA parity tests `27/27`, API typecheck, repository
+  guardrails, docs parity, and diff check.
+- No production auth, bot activation, order, position, exchange mutation, or
+  live-money action was performed in this local repair.
 
 ## 2026-05-23 Assistant Foundation Protocol Harness
 
@@ -2736,10 +2969,18 @@ runtime contracts are changed.
 
 ## Deployment Impact
 
-The latest evidence-only restore-drill refresh has no runtime deployment
-impact. It closes the stale production DB restore-context blocker for the
-2026-05-10 evidence date, but it does not change application code, secrets,
-workers, exchange behavior, or live-money behavior.
+The latest deployed runtime change is `0b7eb4c6e0767ce1d51b3ff68f0229f899781d31`,
+which restores three legacy dashboard redirects in Web middleware. Coolify
+deployed the commit after one controlled push; Web build-info reached the new
+SHA after one transient `502` during handover. Public deploy smoke passes and
+production UI clickthrough passes on the new SHA. This change does not alter
+API runtime logic, secrets, worker code, exchange behavior, or live-money
+behavior.
+
+The local Docker/Coolify parity refresh also has low deployment impact. It
+changes root Docker app-stack scripts, a redacted local env example, and
+local/Coolify runbooks, but it remains unpushed in this checkpoint to avoid
+extra deploy churn.
 
 Production build-info reached `721fe8482922835a9419f0e529baeef4ff6a74c9`,
 which contains the V1 backend PAPER/LIVE adapter-pure runtime fix, refreshed

@@ -1,6 +1,6 @@
 # Regression Log
 
-Last updated: 2026-05-11
+Last updated: 2026-05-24
 
 ## Open Regressions
 
@@ -8,6 +8,29 @@ The broad V1 action audit remains open as a coverage gap, not a single code
 regression. See `history/audits/v1-product-action-audit-matrix-2026-05-10.md`.
 
 ## Fixed Or Prevented In This Slice
+
+- 2026-05-24: Prevented source-of-truth deploy drift during readiness
+  coordination. Symptom class: active mission/state/planning files could keep
+  telling future agents that local `main` was ahead of production after the
+  local branch had moved on. Fix: refreshed active readiness routers around
+  the current local/origin SHA
+  `52be8b614d2da9ec05d368ac4fbd05f3ec8f8332` and ignored/removed transient
+  `.tmp/` and `tmp/` auth/browser artifacts so cookie/CDP leftovers do not
+  pollute future scans. Validation: local guardrails, docs parity, typecheck,
+  focused runtime automation DCA tests, and diff check passed; public
+  build-info/API health/readiness checks timed out with `Failed to connect`
+  and remain a current reachability blocker.
+
+- 2026-05-23: Fixed LIVE exchange-synced DCA threshold truth drift. Symptom
+  class: an operator-visible position row could show PnL past a configured DCA
+  threshold, for example about `-62%` with a second `-50%` loss-side DCA level,
+  while runtime automation evaluated the threshold from a newer ticker-derived
+  modeled PnL instead of exchange `unrealizedPnl / marginUsed`. Fix:
+  `EXCHANGE_SYNC` runtime automation now passes exchange `unrealizedPnl` into
+  PnL threshold evaluation when available, while keeping mark price for order
+  execution. Validation: runtime automation exchange-PnL/service tests
+  `38/38`, position-management/DCA parity tests `27/27`, API typecheck,
+  repository guardrails, docs parity, and diff check passed.
 
 - 2026-05-21: Fixed LIVE exchange-backed cancel entitlement drift. Symptom
   class: manual cancel or runtime stale-order lifetime cancel could call the

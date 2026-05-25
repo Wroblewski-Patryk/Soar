@@ -4,6 +4,7 @@ import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { repositoryPathExists } from './resolveRepositoryPath.mjs';
 
 const repoRoot = process.cwd();
 
@@ -53,7 +54,7 @@ Validates a reusable audit artifact manifest by checking:
 };
 
 const isRepositoryPath = (value) =>
-  typeof value === 'string' && /^(docs|\.agents|\.codex|apps|scripts)\//.test(value);
+  typeof value === 'string' && /^(docs|history|\.agents|\.codex|apps|scripts)\//.test(value);
 
 const collectPaths = (value, paths = new Set()) => {
   if (Array.isArray(value)) {
@@ -103,7 +104,7 @@ const classifyAuditStatus = (status) => {
 };
 
 export const validateReusableAuditManifest = (manifest, options = {}) => {
-  const exists = options.exists ?? ((relativePath) => existsSync(path.resolve(repoRoot, relativePath)));
+  const exists = options.exists ?? ((relativePath) => repositoryPathExists(repoRoot, relativePath));
   const markdownText = typeof options.markdownText === 'string' ? options.markdownText : null;
   const audits = Array.isArray(manifest.audits) ? manifest.audits : [];
   const auditIds = new Set(audits.map((audit) => audit.id));

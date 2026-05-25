@@ -4,7 +4,8 @@ import { spawnSync } from 'node:child_process';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const operationsDir = path.resolve(process.cwd(), 'history', 'operations');
+const evidenceDir = path.resolve(process.cwd(), 'history', 'evidence');
+const artifactsDir = path.resolve(process.cwd(), 'history', 'artifacts');
 const SECRET_CLI_FLAGS = new Set([
   '--auth-token',
   '--auth-password',
@@ -25,6 +26,7 @@ const parseArgs = () => {
     opsAuthHeaderName: process.env.ROLLBACK_GUARD_OPS_AUTH_HEADER_NAME ?? '',
     opsAuthHeaderValue: process.env.ROLLBACK_GUARD_OPS_AUTH_HEADER_VALUE ?? '',
     today: '',
+    expectedSha: '',
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -42,6 +44,7 @@ const parseArgs = () => {
     if (arg === '--ops-basic-user') options.opsBasicUser = args[index + 1] ?? options.opsBasicUser;
     if (arg === '--ops-auth-header-name') options.opsAuthHeaderName = args[index + 1] ?? options.opsAuthHeaderName;
     if (arg === '--today') options.today = args[index + 1] ?? options.today;
+    if (arg === '--expected-sha') options.expectedSha = args[index + 1] ?? options.expectedSha;
   }
 
   return options;
@@ -85,6 +88,7 @@ const renderMarkdown = (payload, jsonPath) => `# V1 Rollback Proof (${payload.pr
 
 - Generated at (UTC): ${payload.endedAt}
 - Status: **${payload.status}**
+- Expected SHA: \`${payload.expectedSha || 'not provided'}\`
 - Command: \`${payload.command}\`
 - Base URL: \`${payload.baseUrl}\`
 - Rollback playbook: \`docs/operations/deployment-rollback-playbook.md\`
@@ -153,14 +157,16 @@ const main = async () => {
   };
   const status = Object.values(checks).every(Boolean) ? 'PASS' : 'FAIL';
 
-  await mkdir(operationsDir, { recursive: true });
+  await mkdir(evidenceDir, { recursive: true });
+  await mkdir(artifactsDir, { recursive: true });
   const stamp = evidenceStamp(options.today);
-  const jsonFile = path.join(operationsDir, `_artifacts-v1-rollback-proof-${options.profile}-${stamp}.json`);
-  const mdFile = path.join(operationsDir, `v1-rollback-proof-${options.profile}-${stamp}.md`);
+  const jsonFile = path.join(artifactsDir, `_artifacts-v1-rollback-proof-${options.profile}-${stamp}.json`);
+  const mdFile = path.join(evidenceDir, `v1-rollback-proof-${options.profile}-${stamp}.md`);
 
   const payload = {
     status,
     profile: options.profile,
+    expectedSha: options.expectedSha.trim() || null,
     baseUrl: options.baseUrl.trim(),
     startedAt,
     endedAt,

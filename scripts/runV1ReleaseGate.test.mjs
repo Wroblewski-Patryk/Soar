@@ -30,7 +30,12 @@ const writeLiveImportReadbackArtifact = (operationsDir, date = '2026-04-22', ove
     )}\n`,
   );
 
-const writeProdUiClickthroughArtifact = (operationsDir, date = '2026-04-22', suffix = 'abc12345') =>
+const writeProdUiClickthroughArtifact = (
+  operationsDir,
+  date = '2026-04-22',
+  suffix = 'abc12345',
+  expectedSha = ''
+) =>
   writeFile(
     path.join(operationsDir, `prod-ui-module-clickthrough-${suffix}-${date}.md`),
     [
@@ -40,6 +45,7 @@ const writeProdUiClickthroughArtifact = (operationsDir, date = '2026-04-22', suf
       '- Result: **PASS**',
       '- Environment: production',
       `- Evidence date: ${date}`,
+      `- Expected SHA: \`${expectedSha || 'not provided'}\``,
       '- Dashboard auth: token:present',
       '- Admin auth: token:present',
       '',
@@ -52,11 +58,13 @@ const writeProdUiClickthroughArtifact = (operationsDir, date = '2026-04-22', suf
     ].join('\n'),
   );
 
-const writeApprovedRcArtifacts = async (operationsDir, date = '2026-04-22') => {
+const writeApprovedRcArtifacts = async (operationsDir, date = '2026-04-22', expectedSha = '') => {
+  const shaLine = `Expected SHA: \`${expectedSha || 'not provided'}\``;
   await writeFile(
     path.join(operationsDir, 'v1-rc-external-gates-status.md'),
     [
       `Generated at (UTC): ${date}T15:13:58.943Z`,
+      shaLine,
       '- Gate 1 (Backup snapshot + restore validation): PASS',
       '- Gate 2 (Queue-lag baseline review): PASS',
       '- Gate 3 (Incident contacts + escalation confirmation): PASS',
@@ -67,11 +75,28 @@ const writeApprovedRcArtifacts = async (operationsDir, date = '2026-04-22') => {
   );
   await writeFile(
     path.join(operationsDir, 'v1-rc-signoff-record.md'),
-    `Date (UTC): \`${date}T15:13:58.943Z\`\n- RC status: \`APPROVED\`\n`,
+    `Date (UTC): \`${date}T15:13:58.943Z\`\n${shaLine}\n- RC status: \`APPROVED\`\n`,
   );
   await writeFile(
     path.join(operationsDir, 'v1-release-candidate-checklist.md'),
-    `### Latest Verification (${date})\n- current snapshot is \`G1=PASS\`, \`G2=PASS\`, \`G3=PASS\`, \`G4=PASS\`.\n`,
+    `### Latest Verification (${date})\n${shaLine}\n- current snapshot is \`G1=PASS\`, \`G2=PASS\`, \`G3=PASS\`, \`G4=PASS\`.\n`,
+  );
+};
+
+const writeActivationArtifacts = async (
+  operationsDir,
+  planningDir,
+  date = '2026-04-22',
+  expectedSha = ''
+) => {
+  const shaLine = expectedSha ? `\n- Candidate SHA: \`${expectedSha}\`\n` : '\n';
+  await writeFile(
+    path.join(operationsDir, `v1-production-activation-evidence-audit-${date}.md`),
+    `# audit\n\n## Result\n- Status: **READY**${shaLine}`,
+  );
+  await writeFile(
+    path.join(planningDir, `v1-production-activation-and-evidence-plan-${date}.md`),
+    `# plan\n\n## Current Status\n- Status: **READY**${shaLine}`,
   );
 };
 
@@ -212,8 +237,8 @@ test('evaluateEvidenceReadiness marks missing stage evidence as not ready', asyn
   }
 });
 
-test('evaluateEvidenceReadiness marks stale prod evidence with explicit blockers', async () => {
-  const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'v1-release-gate-stale-'));
+test('evaluateEvidenceReadiness rejects fresh activation artifacts without ready status', async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'v1-release-gate-activation-blocked-'));
   const operationsDir = path.join(tempRoot, 'operations');
   const planningDir = path.join(tempRoot, 'planning');
   try {
@@ -221,12 +246,157 @@ test('evaluateEvidenceReadiness marks stale prod evidence with explicit blockers
     await mkdir(planningDir, { recursive: true });
     await writeFile(
       path.join(operationsDir, 'v1-production-activation-evidence-audit-2026-04-22.md'),
-      '# audit\n',
+      '# audit\n\n## Result\n- Status: **BLOCKED**\n',
     );
     await writeFile(
       path.join(planningDir, 'v1-production-activation-and-evidence-plan-2026-04-22.md'),
-      '# plan\n',
+      '# plan\n\n## Current Status\n- Status: **BLOCKED**\n',
     );
+
+    const result = await evaluateEvidenceReadiness({
+      environment: 'stage',
+      evidenceDir: operationsDir,
+      today: '2026-04-22',
+    });
+
+    assert.equal(result.ready, false);
+    assert.deepEqual(result.blockers, ['activationAudit:failed', 'activationPlan:failed']);
+    assert.equal(result.evidence.find((row) => row.key === 'activationAudit')?.state, 'failed');
+    assert.equal(result.evidence.find((row) => row.key === 'activationPlan')?.state, 'failed');
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test('evaluateEvidenceReadiness rejects fresh activation artifacts for a different expected SHA', async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'v1-release-gate-sha-mismatch-'));
+  const operationsDir = path.join(tempRoot, 'operations');
+  const planningDir = path.join(tempRoot, 'planning');
+  try {
+    await mkdir(operationsDir, { recursive: true });
+    await mkdir(planningDir, { recursive: true });
+    await writeActivationArtifacts(operationsDir, planningDir, '2026-04-22', 'old-sha-123');
+
+    const result = await evaluateEvidenceReadiness({
+      environment: 'stage',
+      evidenceDir: operationsDir,
+      today: '2026-04-22',
+      expectedSha: 'new-sha-456',
+    });
+
+    assert.equal(result.ready, false);
+    assert.deepEqual(result.blockers, ['activationAudit:failed', 'activationPlan:failed']);
+    assert.equal(
+      result.evidence.find((row) => row.key === 'activationAudit')?.reason,
+      'artifact is fresh but is not tied to the expected deployment SHA',
+    );
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test('evaluateEvidenceReadiness rejects fresh restore and rollback proof for a different expected SHA', async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'v1-release-gate-proof-sha-mismatch-'));
+  const operationsDir = path.join(tempRoot, 'operations');
+  const planningDir = path.join(tempRoot, 'planning');
+  const evidenceDir = path.join(tempRoot, 'evidence');
+  try {
+    await mkdir(operationsDir, { recursive: true });
+    await mkdir(planningDir, { recursive: true });
+    await mkdir(evidenceDir, { recursive: true });
+    await writeActivationArtifacts(operationsDir, planningDir, '2026-04-22', 'new-sha-456');
+    await writeApprovedRcArtifacts(operationsDir, '2026-04-22', 'new-sha-456');
+    await writeLiveImportReadbackArtifact(operationsDir, '2026-04-22', {
+      target: { expectedSha: 'new-sha-456' },
+    });
+    await writeProdUiClickthroughArtifact(operationsDir, '2026-04-22', 'abc12345', 'new-sha-456');
+    await writeFile(
+      path.join(evidenceDir, 'v1-restore-drill-prod-2026-04-22T19-00-00-000Z.md'),
+      '- Generated at (UTC): 2026-04-22T19:00:00.000Z\n- Status: **PASS**\n- Expected SHA: `old-sha-123`\n',
+    );
+    await writeFile(
+      path.join(evidenceDir, 'v1-rollback-proof-prod-2026-04-22T19-05-00-000Z.md'),
+      '- Generated at (UTC): 2026-04-22T19:05:00.000Z\n- Status: **PASS**\n- Expected SHA: `old-sha-123`\n',
+    );
+
+    const result = await evaluateEvidenceReadiness({
+      environment: 'prod',
+      evidenceDir: operationsDir,
+      today: '2026-04-22',
+      expectedSha: 'new-sha-456',
+      historyRoot: tempRoot,
+    });
+
+    assert.equal(result.ready, false);
+    assert.deepEqual(result.blockers, ['backupRestoreDrill:failed', 'rollbackProof:failed']);
+    assert.equal(
+      result.evidence.find((row) => row.key === 'backupRestoreDrill')?.reason,
+      'artifact is fresh but is not tied to the expected deployment SHA',
+    );
+    assert.equal(
+      result.evidence.find((row) => row.key === 'rollbackProof')?.reason,
+      'artifact is fresh but is not tied to the expected deployment SHA',
+    );
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test('evaluateEvidenceReadiness rejects fresh RC artifacts for a different expected SHA', async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'v1-release-gate-rc-sha-mismatch-'));
+  const operationsDir = path.join(tempRoot, 'operations');
+  const planningDir = path.join(tempRoot, 'planning');
+  const evidenceDir = path.join(tempRoot, 'evidence');
+  try {
+    await mkdir(operationsDir, { recursive: true });
+    await mkdir(planningDir, { recursive: true });
+    await mkdir(evidenceDir, { recursive: true });
+    await writeActivationArtifacts(operationsDir, planningDir, '2026-04-22', 'new-sha-456');
+    await writeApprovedRcArtifacts(operationsDir, '2026-04-22', 'old-sha-123');
+    await writeLiveImportReadbackArtifact(operationsDir, '2026-04-22', {
+      target: { expectedSha: 'new-sha-456' },
+    });
+    await writeProdUiClickthroughArtifact(operationsDir, '2026-04-22', 'abc12345', 'new-sha-456');
+    await writeFile(
+      path.join(evidenceDir, 'v1-restore-drill-prod-2026-04-22T19-00-00-000Z.md'),
+      '- Generated at (UTC): 2026-04-22T19:00:00.000Z\n- Status: **PASS**\n- Expected SHA: `new-sha-456`\n',
+    );
+    await writeFile(
+      path.join(evidenceDir, 'v1-rollback-proof-prod-2026-04-22T19-05-00-000Z.md'),
+      '- Generated at (UTC): 2026-04-22T19:05:00.000Z\n- Status: **PASS**\n- Expected SHA: `new-sha-456`\n',
+    );
+
+    const result = await evaluateEvidenceReadiness({
+      environment: 'prod',
+      evidenceDir: operationsDir,
+      today: '2026-04-22',
+      expectedSha: 'new-sha-456',
+      historyRoot: tempRoot,
+    });
+
+    assert.equal(result.ready, false);
+    assert.deepEqual(result.blockers, [
+      'rcExternalGateStatus:failed',
+      'rcSignoffRecord:failed',
+      'rcChecklist:failed',
+    ]);
+    assert.equal(
+      result.evidence.find((row) => row.key === 'rcExternalGateStatus')?.reason,
+      'artifact is fresh but is not tied to the expected deployment SHA',
+    );
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test('evaluateEvidenceReadiness marks stale prod evidence with explicit blockers', async () => {
+  const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'v1-release-gate-stale-'));
+  const operationsDir = path.join(tempRoot, 'operations');
+  const planningDir = path.join(tempRoot, 'planning');
+  try {
+    await mkdir(operationsDir, { recursive: true });
+    await mkdir(planningDir, { recursive: true });
+    await writeActivationArtifacts(operationsDir, planningDir);
     await writeFile(
       path.join(operationsDir, 'v1-rc-external-gates-status.md'),
       'Generated at (UTC): 2026-04-19T15:13:58.943Z\n',
@@ -285,14 +455,7 @@ test('evaluateEvidenceReadiness accepts fresh prod rollback and backup proof', a
   try {
     await mkdir(operationsDir, { recursive: true });
     await mkdir(planningDir, { recursive: true });
-    await writeFile(
-      path.join(operationsDir, 'v1-production-activation-evidence-audit-2026-04-22.md'),
-      '# audit\n',
-    );
-    await writeFile(
-      path.join(planningDir, 'v1-production-activation-and-evidence-plan-2026-04-22.md'),
-      '# plan\n',
-    );
+    await writeActivationArtifacts(operationsDir, planningDir);
     await writeApprovedRcArtifacts(operationsDir);
     await writeLiveImportReadbackArtifact(operationsDir);
     await writeProdUiClickthroughArtifact(operationsDir);
@@ -329,14 +492,7 @@ test('evaluateEvidenceReadiness rejects fresh prod restore proof when artifact s
   try {
     await mkdir(operationsDir, { recursive: true });
     await mkdir(planningDir, { recursive: true });
-    await writeFile(
-      path.join(operationsDir, 'v1-production-activation-evidence-audit-2026-04-22.md'),
-      '# audit\n',
-    );
-    await writeFile(
-      path.join(planningDir, 'v1-production-activation-and-evidence-plan-2026-04-22.md'),
-      '# plan\n',
-    );
+    await writeActivationArtifacts(operationsDir, planningDir);
     await writeApprovedRcArtifacts(operationsDir);
     await writeLiveImportReadbackArtifact(operationsDir);
     await writeProdUiClickthroughArtifact(operationsDir);
@@ -370,14 +526,7 @@ test('evaluateEvidenceReadiness prefers the latest same-day prod restore proof a
   try {
     await mkdir(operationsDir, { recursive: true });
     await mkdir(planningDir, { recursive: true });
-    await writeFile(
-      path.join(operationsDir, 'v1-production-activation-evidence-audit-2026-04-22.md'),
-      '# audit\n',
-    );
-    await writeFile(
-      path.join(planningDir, 'v1-production-activation-and-evidence-plan-2026-04-22.md'),
-      '# plan\n',
-    );
+    await writeActivationArtifacts(operationsDir, planningDir);
     await writeApprovedRcArtifacts(operationsDir);
     await writeLiveImportReadbackArtifact(operationsDir);
     await writeProdUiClickthroughArtifact(operationsDir);
@@ -418,14 +567,7 @@ test('evaluateEvidenceReadiness rejects fresh prod RC artifacts that are not app
   try {
     await mkdir(operationsDir, { recursive: true });
     await mkdir(planningDir, { recursive: true });
-    await writeFile(
-      path.join(operationsDir, 'v1-production-activation-evidence-audit-2026-04-22.md'),
-      '# audit\n',
-    );
-    await writeFile(
-      path.join(planningDir, 'v1-production-activation-and-evidence-plan-2026-04-22.md'),
-      '# plan\n',
-    );
+    await writeActivationArtifacts(operationsDir, planningDir);
     await writeFile(
       path.join(operationsDir, 'v1-rc-external-gates-status.md'),
       [
@@ -484,14 +626,7 @@ test('evaluateEvidenceReadiness rejects fresh prod live-import readback without 
   try {
     await mkdir(operationsDir, { recursive: true });
     await mkdir(planningDir, { recursive: true });
-    await writeFile(
-      path.join(operationsDir, 'v1-production-activation-evidence-audit-2026-04-22.md'),
-      '# audit\n',
-    );
-    await writeFile(
-      path.join(planningDir, 'v1-production-activation-and-evidence-plan-2026-04-22.md'),
-      '# plan\n',
-    );
+    await writeActivationArtifacts(operationsDir, planningDir);
     await writeApprovedRcArtifacts(operationsDir);
     await writeLiveImportReadbackArtifact(operationsDir, '2026-04-22', {
       summary: {
@@ -530,14 +665,7 @@ test('evaluateEvidenceReadiness rejects fresh prod UI clickthrough without authe
   try {
     await mkdir(operationsDir, { recursive: true });
     await mkdir(planningDir, { recursive: true });
-    await writeFile(
-      path.join(operationsDir, 'v1-production-activation-evidence-audit-2026-04-22.md'),
-      '# audit\n',
-    );
-    await writeFile(
-      path.join(planningDir, 'v1-production-activation-and-evidence-plan-2026-04-22.md'),
-      '# plan\n',
-    );
+    await writeActivationArtifacts(operationsDir, planningDir);
     await writeApprovedRcArtifacts(operationsDir);
     await writeLiveImportReadbackArtifact(operationsDir);
     await writeFile(
@@ -585,14 +713,7 @@ test('evaluateEvidenceReadiness prefers newer prod UI clickthrough date over lex
   try {
     await mkdir(operationsDir, { recursive: true });
     await mkdir(planningDir, { recursive: true });
-    await writeFile(
-      path.join(operationsDir, 'v1-production-activation-evidence-audit-2026-05-12.md'),
-      '# audit\n',
-    );
-    await writeFile(
-      path.join(planningDir, 'v1-production-activation-and-evidence-plan-2026-05-12.md'),
-      '# plan\n',
-    );
+    await writeActivationArtifacts(operationsDir, planningDir, '2026-05-12');
     await writeApprovedRcArtifacts(operationsDir, '2026-05-12');
     await writeLiveImportReadbackArtifact(operationsDir, '2026-05-12');
     await writeProdUiClickthroughArtifact(operationsDir, '2026-05-10', 'fd8da90b');

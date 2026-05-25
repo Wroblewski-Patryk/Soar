@@ -1,0 +1,19 @@
+{
+  "generatedAt": "2026-05-25T03:11:16.272Z",
+  "gateLabels": {
+    "gate1": "PASS",
+    "gate2": "OPEN",
+    "gate3": "PASS",
+    "gate4": "PASS"
+  },
+  "counts": {
+    "gate1EvidenceFields": 5,
+    "gate3EvidenceFields": 5,
+    "missing": 1
+  },
+  "missing": [
+    "Gate2 status is not PASS (current: OPEN)"
+  ],
+  "strictPassed": false,
+  "gate2Policy": "PASS_ONLY"
+}

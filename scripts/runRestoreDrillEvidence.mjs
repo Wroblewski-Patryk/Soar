@@ -5,6 +5,8 @@ import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const operationsDir = path.resolve(process.cwd(), 'history', 'operations');
+const evidenceDir = path.resolve(process.cwd(), 'history', 'evidence');
+const artifactsDir = path.resolve(process.cwd(), 'history', 'artifacts');
 
 const parseArgs = () => {
   const args = process.argv.slice(2);
@@ -12,6 +14,7 @@ const parseArgs = () => {
     profile: 'local',
     passthrough: [],
     today: '',
+    expectedSha: '',
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -27,6 +30,11 @@ const parseArgs = () => {
     }
     if (arg === '--today') {
       options.today = args[index + 1] ?? options.today;
+      index += 1;
+      continue;
+    }
+    if (arg === '--expected-sha') {
+      options.expectedSha = args[index + 1] ?? options.expectedSha;
       index += 1;
       continue;
     }
@@ -73,6 +81,8 @@ const main = async () => {
   }
 
   await mkdir(operationsDir, { recursive: true });
+  await mkdir(evidenceDir, { recursive: true });
+  await mkdir(artifactsDir, { recursive: true });
 
   const commandArgs = [
     'scripts/runBackupVerificationProfile.mjs',
@@ -103,14 +113,15 @@ const main = async () => {
 
   const stamp = evidenceStamp(options.today);
   const jsonOutput = path.join(
-    operationsDir,
+    artifactsDir,
     `_artifacts-restore-drill-${options.profile}-${stamp}.json`
   );
-  const mdOutput = path.join(operationsDir, `v1-restore-drill-${options.profile}-${stamp}.md`);
+  const mdOutput = path.join(evidenceDir, `v1-restore-drill-${options.profile}-${stamp}.md`);
 
   const payload = {
     status,
     profile: options.profile,
+    expectedSha: options.expectedSha.trim() || null,
     startedAt,
     endedAt,
     command: `node ${commandArgs.join(' ')}`,
@@ -129,6 +140,7 @@ const main = async () => {
 
 - Generated at (UTC): ${endedAt}
 - Status: **${status}**
+- Expected SHA: \`${options.expectedSha.trim() || 'not provided'}\`
 - Command: \`${payload.command}\`
 - Raw artifact: \`${payload.backupRestore.rawArtifact ?? 'n/a'}\`
 - Report artifact: \`${payload.backupRestore.reportArtifact ?? 'n/a'}\`

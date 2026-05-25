@@ -1,0 +1,65 @@
+---
+id: CHAIN-WALLETS-CORE
+type: function_chain
+status: verified_local
+feature: wallets
+risk_level: critical
+last_verified_at: 2026-05-24
+tags: [soar-map, function-chain, verified_local]
+---
+
+# Wallets core lifecycle and analytics chain
+
+- Feature: wallets
+- Trigger: [[SOAR-FEATURE-WALLETS]]
+- Tests: [[SOAR-TEST-WALLETS-API]], [[SOAR-TEST-WALLET-LEDGER]], [[SOAR-TEST-WALLETS-WEB]]
+- Docs: [[SOAR-DOC-API-WALLETS]], [[SOAR-DOC-WEB-WALLETS]]
+- Evidence: docs/modules/api-wallets.md;docs/modules/web-wallets.md
+- Missing links: Fresh authenticated browser proof and approved LIVE mutation/readback remain separate
+
+## Execution Chain
+
+1. [[SOAR-FEATURE-WALLETS]]
+2. [[SOAR-PAGE-WALLETS-ROOT]]
+3. [[SOAR-PAGE-WALLETS-LIST]]
+4. [[SOAR-COMP-WALLETS-LIST-TABLE]]
+5. [[SOAR-PAGE-WALLET-CREATE]]
+6. [[SOAR-PAGE-WALLET-EDIT]]
+7. [[SOAR-PAGE-WALLET-PREVIEW]]
+8. [[SOAR-COMP-WALLET-FORM-PAGE-CONTENT]]
+9. [[SOAR-COMP-WALLET-CREATE-EDIT-FORM]]
+10. [[SOAR-COMP-WALLET-PREVIEW-PANEL]]
+11. [[SOAR-SERVICE-WEB-WALLETS]]
+12. [[SOAR-API-WALLET-LIST]]
+13. [[SOAR-API-WALLET-METADATA]]
+14. [[SOAR-API-WALLET-PREVIEW-BALANCE]]
+15. [[SOAR-API-WALLET-GET]]
+16. [[SOAR-API-WALLET-CREATE]]
+17. [[SOAR-API-WALLET-UPDATE]]
+18. [[SOAR-API-WALLET-DELETE]]
+19. [[SOAR-API-WALLET-RESET-PAPER]]
+20. [[SOAR-API-WALLET-PERFORMANCE-SUMMARY]]
+21. [[SOAR-API-WALLET-EQUITY-TIMELINE]]
+22. [[SOAR-API-WALLET-CASHFLOW-EVENTS]]
+23. [[SOAR-CONTROLLER-WALLETS]]
+24. [[SOAR-TYPES-WALLETS]]
+25. [[SOAR-SERVICE-WALLETS]]
+26. [[SOAR-SERVICE-WALLET-LEDGER]]
+27. [[SOAR-SERVICE-WALLET-CASHFLOW-CLASSIFIER]]
+28. [[SOAR-SERVICE-EXCHANGE-CAPABILITIES]]
+29. [[SOAR-SERVICE-EXCHANGE-MARKET-CATALOG]]
+30. [[SOAR-SERVICE-EXCHANGE-AUTH-READ]]
+31. [[SOAR-SERVICE-EXCHANGE-ADAPTER-BOUNDARY]]
+32. [[SOAR-DB-WALLET]]
+33. [[SOAR-DB-BOT]]
+34. [[SOAR-DB-POSITION]]
+35. [[SOAR-DB-ORDER]]
+36. [[SOAR-TEST-WALLETS-API]]
+37. [[SOAR-TEST-WALLET-LEDGER]]
+38. [[SOAR-TEST-WALLETS-WEB]]
+39. [[SOAR-DOC-API-WALLETS]]
+40. [[SOAR-DOC-WEB-WALLETS]]
+
+## Systemic Analysis Rule
+
+When checking this feature, inspect every node in the chain, every relation, related tests, side effects, docs, and missing evidence before reporting status.

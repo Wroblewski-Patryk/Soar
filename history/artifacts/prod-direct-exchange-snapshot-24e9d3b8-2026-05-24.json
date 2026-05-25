@@ -1,0 +1,192 @@
+﻿{
+    "checkedAt":  "2026-05-24T20:41:43.2086825Z",
+    "expectedSha":  "24e9d3b8d51b4b4c4f1b25cad920096f2223b0ec",
+    "buildInfo":  {
+                      "status":  200,
+                      "gitSha":  "24e9d3b8d51b4b4c4f1b25cad920096f2223b0ec",
+                      "matchesExpected":  true,
+                      "buildId":  "wunTvCOMusn-UucEExpgu"
+                  },
+    "apiKeyCount":  2,
+    "apiKeys":  [
+                    {
+                        "idHash":  "22f60fd1caef",
+                        "exchange":  "GATEIO",
+                        "syncExternalPositions":  true,
+                        "manageExternalPositions":  false
+                    },
+                    {
+                        "idHash":  "6d9fa9f534a4",
+                        "exchange":  "BINANCE",
+                        "syncExternalPositions":  true,
+                        "manageExternalPositions":  true
+                    }
+                ],
+    "snapshots":  [
+                      {
+                          "apiKeyIdHash":  "22f60fd1caef",
+                          "exchange":  "GATEIO",
+                          "status":  200,
+                          "source":  "GATEIO",
+                          "count":  null,
+                          "nonZeroCount":  null,
+                          "positions":  [
+                                            {
+                                                "symbol":  "BNB/USDT:USDT",
+                                                "normalizedSymbol":  null,
+                                                "side":  "long",
+                                                "contracts":  8,
+                                                "amount":  null,
+                                                "entryPrice":  657.45,
+                                                "markPrice":  655.2,
+                                                "unrealizedPnl":  -0.018
+                                            }
+                                        ]
+                      },
+                      {
+                          "apiKeyIdHash":  "6d9fa9f534a4",
+                          "exchange":  "BINANCE",
+                          "status":  502,
+                          "source":  null,
+                          "count":  0,
+                          "nonZeroCount":  null,
+                          "positions":  [
+
+                                        ]
+                      }
+                  ],
+    "takeover":  {
+                     "status":  200,
+                     "total":  2,
+                     "items":  [
+                                   {
+                                       "symbol":  "DOGEUSDT",
+                                       "exchange":  null,
+                                       "source":  null,
+                                       "ownershipStatus":  null,
+                                       "syncState":  "IN_SYNC",
+                                       "managementMode":  "BOT_MANAGED"
+                                   },
+                                   {
+                                       "symbol":  "XRPUSDT",
+                                       "exchange":  null,
+                                       "source":  null,
+                                       "ownershipStatus":  null,
+                                       "syncState":  "IN_SYNC",
+                                       "managementMode":  "BOT_MANAGED"
+                                   }
+                               ]
+                 },
+    "liveStatus":  {
+                       "status":  200,
+                       "body":  {
+                                    "running":  false,
+                                    "iterations":  0,
+                                    "lastRunAt":  null,
+                                    "lastDurationMs":  null,
+                                    "lastError":  null,
+                                    "openPositionsSeen":  0,
+                                    "lastDiagnosticSummary":  {
+                                                                  "CREATED":  0,
+                                                                  "UPDATED":  0,
+                                                                  "SKIPPED_ZERO_SIZE":  0,
+                                                                  "SKIPPED_UNRESOLVED_SIDE":  0,
+                                                                  "SKIPPED_UNRESOLVED_SYMBOL":  0,
+                                                                  "SKIPPED_MISSING_ENTRY_TRUTH":  0
+                                                              },
+                                    "lastPositionDiagnostics":  [
+
+                                                                ],
+                                    "workerHeartbeatAt":  null
+                                }
+                   },
+    "workersHealth":  {
+                          "status":  200,
+                          "body":  {
+                                       "status":  "ok",
+                                       "service":  "workers",
+                                       "mode":  "split",
+                                       "environment":  "deployed",
+                                       "ownership":  {
+                                                         "backtest":  "worker",
+                                                         "execution":  "worker",
+                                                         "marketData":  "worker",
+                                                         "marketStream":  "worker"
+                                                     },
+                                       "topologyStatus":  "healthy",
+                                       "degradedReasons":  [
+
+                                                           ],
+                                       "requiredWorkerFamilies":  [
+                                                                      "backtest",
+                                                                      "execution",
+                                                                      "market-data",
+                                                                      "market-stream"
+                                                                  ],
+                                       "timestamp":  "2026-05-24T20:41:43.895Z"
+                                   }
+                      },
+    "workersReady":  {
+                         "status":  200,
+                         "body":  {
+                                      "status":  "ready",
+                                      "service":  "workers",
+                                      "mode":  "split",
+                                      "environment":  "deployed",
+                                      "ownership":  {
+                                                        "backtest":  "worker",
+                                                        "execution":  "worker",
+                                                        "marketData":  "worker",
+                                                        "marketStream":  "worker"
+                                                    },
+                                      "topologyStatus":  "healthy",
+                                      "degradedReasons":  [
+
+                                                          ],
+                                      "requiredQueues":  [
+                                                             "WORKER_BACKTEST_QUEUE",
+                                                             "WORKER_EXECUTION_QUEUE",
+                                                             "WORKER_MARKET_DATA_QUEUE"
+                                                         ],
+                                      "requiredWorkerFamilies":  [
+                                                                     "backtest",
+                                                                     "execution",
+                                                                     "market-data",
+                                                                     "market-stream"
+                                                                 ],
+                                      "heartbeats":  [
+                                                         {
+                                                             "worker":  "backtest",
+                                                             "lastHeartbeatAt":  "2026-05-24T20:41:32.977Z",
+                                                             "ageMs":  10959,
+                                                             "status":  "fresh"
+                                                         },
+                                                         {
+                                                             "worker":  "execution",
+                                                             "lastHeartbeatAt":  "2026-05-24T20:41:40.706Z",
+                                                             "ageMs":  3230,
+                                                             "status":  "fresh"
+                                                         },
+                                                         {
+                                                             "worker":  "market-data",
+                                                             "lastHeartbeatAt":  "2026-05-24T20:41:36.759Z",
+                                                             "ageMs":  7177,
+                                                             "status":  "fresh"
+                                                         },
+                                                         {
+                                                             "worker":  "market-stream",
+                                                             "lastHeartbeatAt":  "2026-05-24T20:41:30.223Z",
+                                                             "ageMs":  13713,
+                                                             "status":  "fresh"
+                                                         }
+                                                     ]
+                                  }
+                     },
+    "ready":  {
+                  "status":  200,
+                  "body":  {
+                               "status":  "ready",
+                               "service":  "api"
+                           }
+              }
+}

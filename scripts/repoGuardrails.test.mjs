@@ -6,6 +6,7 @@ import test from "node:test";
 
 import {
   validateApiStartScript,
+  validateArchitectureGraphDriftCoverage,
   validateOpsScriptsDoNotAcceptSecretCliArgs,
   validateRuntimeDockerfilesRunAsNonRoot,
   validateTrackedEnvFilePolicy,
@@ -149,4 +150,37 @@ test("validateOpsScriptsDoNotAcceptSecretCliArgs accepts secret-free ops scripts
     }),
     [],
   );
+});
+
+test("validateArchitectureGraphDriftCoverage accepts zero-drift graph audit", () => {
+  const calls = [];
+  const errors = validateArchitectureGraphDriftCoverage({
+    rootDir: "C:/repo",
+    commandRunner: (command, args, options) => {
+      calls.push({ command, args, cwd: options.cwd });
+      return "Architecture graph drift audit generated: 796/796 covered, 0 missing.";
+    },
+  });
+
+  assert.deepEqual(errors, []);
+  assert.equal(calls.length, 1);
+  assert.deepEqual(calls[0].args, ["scripts/auditArchitectureGraphDrift.mjs", "--fail-on-drift"]);
+  assert.equal(calls[0].cwd, "C:/repo");
+});
+
+test("validateArchitectureGraphDriftCoverage rejects graph drift", () => {
+  const failure = new Error("drift");
+  failure.stdout = "Architecture graph drift audit generated: 795/796 covered, 1 missing.";
+  failure.stderr = "";
+
+  const errors = validateArchitectureGraphDriftCoverage({
+    commandRunner: () => {
+      throw failure;
+    },
+  });
+
+  assert.equal(errors.length, 1);
+  assert.match(errors[0], /Architecture graph drift guardrail failed/);
+  assert.match(errors[0], /architecture:graph:drift:strict/);
+  assert.match(errors[0], /1 missing/);
 });

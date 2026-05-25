@@ -250,6 +250,7 @@ export const useHomeLiveWidgetsController = ({
   const hasLoadedTradesRef = useRef(false);
   const loadInFlightRef = useRef(false);
   const loadStartedAtRef = useRef<number | null>(null);
+  const selectedBotIdRef = useRef<string | null>(null);
   const runtimeStreamEligibleRef = useRef(false);
   const runtimeStreamConnectedRef = useRef(false);
   const lastSseTickerAtRef = useRef<number | null>(null);
@@ -316,7 +317,10 @@ export const useHomeLiveWidgetsController = ({
               };
             }
             try {
-              const isPrimaryBot = selectedBotId == null ? bot.id === scope[0]?.id : bot.id === selectedBotId;
+              const currentSelectedBotId = selectedBotIdRef.current;
+              const isPrimaryBot = currentSelectedBotId == null
+                ? bot.id === scope[0]?.id
+                : bot.id === currentSelectedBotId;
               const sessionsLimit = isPrimaryBot
                 ? Math.min(sessions.length, AGGREGATE_SELECTED_SESSIONS_LIMIT)
                 : Math.min(sessions.length, AGGREGATE_SECONDARY_SESSIONS_LIMIT);
@@ -434,6 +438,10 @@ export const useHomeLiveWidgetsController = ({
     const saved = getLocalStorageItem(SELECTED_BOT_STORAGE_KEY);
     if (saved) setSelectedBotId(saved);
   }, []);
+
+  useEffect(() => {
+    selectedBotIdRef.current = selectedBotId;
+  }, [selectedBotId]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;

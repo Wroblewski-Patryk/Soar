@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 
 const repoRoot = process.cwd();
+const docsRootName = existsSync(path.resolve(repoRoot, 'docs')) ? 'docs' : 'Soar - docs';
+const docsRoot = path.resolve(repoRoot, docsRootName);
 
 const parseArgs = () => {
   const args = process.argv.slice(2);
@@ -37,6 +40,13 @@ const parseArgs = () => {
 };
 
 const toPosixPath = (value) => value.split(path.sep).join('/');
+
+const resolveRepoPath = (repoPath) => {
+  if (repoPath.startsWith('docs/')) {
+    return path.resolve(docsRoot, repoPath.slice('docs/'.length));
+  }
+  return path.resolve(repoRoot, repoPath);
+};
 
 const directoryExists = async (targetPath) => {
   try {
@@ -161,10 +171,9 @@ const main = async () => {
     process.exit(0);
   }
 
-  const moduleIndexPath = path.resolve(repoRoot, 'docs', 'modules', 'module-doc-status-index.md');
+  const moduleIndexPath = path.resolve(docsRoot, 'modules', 'module-doc-status-index.md');
   const routeMapPath = path.resolve(
-    repoRoot,
-    'docs',
+    docsRoot,
     'architecture',
     'reference',
     'dashboard-route-map.md'
@@ -227,7 +236,7 @@ const main = async () => {
     }
 
     if (row.status === 'Published') {
-      const docPath = path.resolve(repoRoot, row.targetDocPath);
+      const docPath = resolveRepoPath(row.targetDocPath);
       const publishedDocExists = await fileExists(docPath);
       if (!publishedDocExists) {
         mismatches.missingPublishedDeepDiveDocs.push({

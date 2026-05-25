@@ -20,6 +20,31 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-05-24 - Compare deployed SHA with local dirty fixes before redeploy
+- Context: `PROD-FRESH-DEPLOY-380308D1-2026-05-24` recovered production
+  freshness after public reachability returned.
+- Symptom: Coolify deployment of `52be8b61` failed API/worker builds with a
+  TypeScript error: `unrealizedPnl` was passed into
+  `resolveRuntimeCurrentPnlFraction`, but the helper input type on
+  `origin/main` did not accept it.
+- Root cause: the local workspace already contained the type fix, but it had
+  not been committed and pushed before the production deploy. Local typecheck
+  can pass against dirty workspace changes that Coolify cannot see.
+- Guardrail: before deploying a SHA, compare any local dirty fix in the failing
+  file against `origin/main`, then commit/push the minimal build fix and deploy
+  the new SHA.
+- Preferred pattern:
+```powershell
+git show origin/main:apps/api/src/modules/engine/runtimePositionAutomation.helpers.ts
+git diff -- apps/api/src/modules/engine/runtimePositionAutomation.helpers.ts
+corepack pnpm run typecheck
+corepack pnpm --filter api exec vitest run src/modules/engine/runtimePositionAutomation.exchangePnl.test.ts
+```
+- Avoid: retrying Coolify deploys for the same SHA when the build log points
+  at a local dirty change that is not in `origin/main`.
+- Evidence:
+  `history/tasks/production-fresh-deploy-380308d1-2026-05-24-task.md`.
+
 ### 2026-05-22 - Stage secret-keyring rollouts before enforcing startup gates
 - Context: `V1-LOGIN-API-STARTUP-HOTFIX-2026-05-22` investigated a production
   login outage after `beae3ada` deployed to `main`.
@@ -41,6 +66,35 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
   `.codex/context/TASK_BOARD.md` and
   `.codex/context/PROJECT_STATE.md` entry
   `V1-LOGIN-API-STARTUP-HOTFIX-2026-05-22`.
+
+### 2026-05-24 - Treat VPS route loss as infrastructure before app debugging
+- Context: full readiness coordination for the operator-reported broken Soar
+  app state.
+- Symptom: `soar.luckysparrow.ch`, `api.soar.luckysparrow.ch`, and
+  `vps-9a62b0a4.vps.ovh.net` resolved to `141.227.149.67`, but TCP checks to
+  ports `80`, `443`, and `22` failed. `curl` to Web build-info and API
+  `/health`/`/ready` timed out with `Failed to connect`; Jina external reader
+  returned `ERR_ADDRESS_UNREACHABLE`; SSH to both configured VPS users timed
+  out.
+- Root cause: not proven from local context, but the failure occurs before
+  HTTP, TLS, Coolify routing, or app code. It matches VPS/provider route,
+  firewall, powered-off host, or upstream network loss.
+- Guardrail: when all public hostnames on the same VPS IP fail at TCP and SSH
+  also times out, stop product-code churn and classify the checkpoint as
+  infrastructure reachability blocked until an operator restores VPS/provider
+  access.
+- Preferred pattern:
+```powershell
+Resolve-DnsName soar.luckysparrow.ch
+Test-NetConnection 141.227.149.67 -Port 443
+Test-NetConnection 141.227.149.67 -Port 22
+curl.exe -vkI --connect-timeout 15 --max-time 45 https://soar.luckysparrow.ch/
+ssh -o BatchMode=yes -o ConnectTimeout=15 codex-vps "hostname && uptime"
+```
+- Avoid: reporting app runtime, auth, DCA, or deploy SHA failure from public
+  smoke when the network cannot establish a TCP connection to the VPS.
+- Evidence:
+  `history/tasks/soar-full-readiness-coordination-2026-05-23-task.md`.
 
 ### 2026-05-23 - Use LIVEIMPORT auto-discovery before assuming legacy symbols
 - Context: `LIVEIMPORT-03` production readback on the 2026-05-23 release
@@ -3085,6 +3139,12 @@ promise = connect().catch((error) => {
     one transient Prisma client rename error. Sequential reruns passed:
     `audit:data:db-isolated` (`24/24`, `15/15`, `2/2`) and go-live smoke
     (`45/45` API, `18/18` Web).
+  - 2026-05-24 `API-LOCAL-REGRESSION-SWEEP-2026-05-24` confirmed the same
+    pitfall again: parallel DB-backed diagnostics polluted the shared local DB
+    and produced misleading FK/state failures. Correct proof came from clean
+    `prisma migrate reset --force --skip-seed` boundaries plus one-worker
+    Vitest runs; the focused regression pack passed (`14` files / `107`
+    tests), and the full API suite passed in one-worker mode.
 ### 2026-05-23 - Coolify source commit build args need stage scope
 
 - Symptom: production Web `/api/build-info` exposed `gitSha: null` even after

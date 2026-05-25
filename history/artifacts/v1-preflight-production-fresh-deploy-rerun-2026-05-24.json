@@ -1,0 +1,449 @@
+{
+  "status": "blocked",
+  "generatedAt": "2026-05-24T15:16:50.848Z",
+  "context": {
+    "apiBaseUrl": "https://api.soar.luckysparrow.ch",
+    "webBaseUrl": "https://soar.luckysparrow.ch",
+    "expectedSha": "380308d10cf0fabb2ea629eb55e6f0ba7d980ed1",
+    "today": "2026-05-24",
+    "buildInfoSkipped": false,
+    "publicSmokeSkipped": false
+  },
+  "buildInfo": {
+    "state": "pass",
+    "exitCode": 0
+  },
+  "publicSmoke": {
+    "state": "pass",
+    "exitCode": 0
+  },
+  "prerequisites": {
+    "required": [
+      {
+        "key": "liveimport auth",
+        "ok": false,
+        "required": [
+          "LIVEIMPORT_READBACK_AUTH_TOKEN",
+          "or LIVEIMPORT_READBACK_AUTH_EMAIL + LIVEIMPORT_READBACK_AUTH_PASSWORD"
+        ],
+        "satisfiedByEvidence": false,
+        "blocking": true
+      },
+      {
+        "key": "rollback guard auth",
+        "ok": false,
+        "required": [
+          "ROLLBACK_GUARD_AUTH_TOKEN",
+          "or ROLLBACK_GUARD_AUTH_EMAIL + ROLLBACK_GUARD_AUTH_PASSWORD"
+        ],
+        "satisfiedByEvidence": false,
+        "blocking": true
+      },
+      {
+        "key": "production UI dashboard auth",
+        "ok": false,
+        "required": [
+          "PROD_UI_AUDIT_AUTH_TOKEN",
+          "or PROD_UI_AUDIT_AUTH_EMAIL + PROD_UI_AUDIT_AUTH_PASSWORD"
+        ],
+        "satisfiedByEvidence": false,
+        "blocking": true
+      },
+      {
+        "key": "production UI admin auth",
+        "ok": false,
+        "required": [
+          "PROD_UI_AUDIT_ADMIN_TOKEN",
+          "or PROD_UI_AUDIT_ADMIN_EMAIL + PROD_UI_AUDIT_ADMIN_PASSWORD"
+        ],
+        "satisfiedByEvidence": false,
+        "blocking": true
+      },
+      {
+        "key": "production DB restore context",
+        "ok": false,
+        "required": [
+          "PROD_DB_CHECK_CONTAINER + PROD_DB_CHECK_USER + PROD_DB_CHECK_NAME",
+          "or PRODUCTION_DB_CHECK_CONTAINER + PRODUCTION_DB_CHECK_USER + PRODUCTION_DB_CHECK_NAME"
+        ],
+        "satisfiedByEvidence": false,
+        "blocking": true
+      }
+    ],
+    "optional": [
+      {
+        "key": "liveimport private OPS layer",
+        "ok": false,
+        "accepted": [
+          "LIVEIMPORT_READBACK_OPS_BASIC_USER + LIVEIMPORT_READBACK_OPS_BASIC_PASSWORD",
+          "or LIVEIMPORT_READBACK_OPS_AUTH_HEADER_NAME + LIVEIMPORT_READBACK_OPS_AUTH_HEADER_VALUE"
+        ],
+        "satisfiedByEvidence": false,
+        "blocking": false
+      },
+      {
+        "key": "rollback private OPS layer",
+        "ok": false,
+        "accepted": [
+          "ROLLBACK_GUARD_OPS_BASIC_USER + ROLLBACK_GUARD_OPS_BASIC_PASSWORD",
+          "or ROLLBACK_GUARD_OPS_AUTH_HEADER_NAME + ROLLBACK_GUARD_OPS_AUTH_HEADER_VALUE"
+        ],
+        "satisfiedByEvidence": false,
+        "blocking": false
+      }
+    ]
+  },
+  "evidence": [
+    {
+      "key": "activationAudit",
+      "label": "activation evidence audit",
+      "state": "missing",
+      "required": true,
+      "reason": "no matching artifact found",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "activationPlan",
+      "label": "activation execution plan",
+      "state": "missing",
+      "required": true,
+      "reason": "no matching artifact found",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "rcExternalGateStatus",
+      "label": "RC external gates status",
+      "state": "missing",
+      "required": true,
+      "reason": "no matching artifact found",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "rcSignoffRecord",
+      "label": "RC sign-off record",
+      "state": "missing",
+      "required": true,
+      "reason": "no matching artifact found",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "rcChecklist",
+      "label": "RC checklist verification block",
+      "state": "missing",
+      "required": true,
+      "reason": "no matching artifact found",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "liveImportReadback",
+      "label": "LIVEIMPORT-03 runtime readback",
+      "state": "missing",
+      "required": true,
+      "reason": "no matching artifact found",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "prodUiClickthrough",
+      "label": "production UI clickthrough",
+      "state": "missing",
+      "required": true,
+      "reason": "no matching artifact found",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "backupRestoreDrill",
+      "label": "backup/restore drill evidence",
+      "state": "missing",
+      "required": true,
+      "reason": "no matching artifact found",
+      "path": null,
+      "date": null
+    },
+    {
+      "key": "rollbackProof",
+      "label": "rollback proof pack",
+      "state": "missing",
+      "required": true,
+      "reason": "no matching artifact found",
+      "path": null,
+      "date": null
+    }
+  ],
+  "blockers": [
+    "env:liveimport auth",
+    "env:rollback guard auth",
+    "env:production UI dashboard auth",
+    "env:production UI admin auth",
+    "env:production DB restore context",
+    "evidence:activationAudit:missing",
+    "evidence:activationPlan:missing",
+    "evidence:rcExternalGateStatus:missing",
+    "evidence:rcSignoffRecord:missing",
+    "evidence:rcChecklist:missing",
+    "evidence:liveImportReadback:missing",
+    "evidence:prodUiClickthrough:missing",
+    "evidence:backupRestoreDrill:missing",
+    "evidence:rollbackProof:missing"
+  ],
+  "blockerDetails": [
+    {
+      "blocker": "env:liveimport auth",
+      "category": "protected_prerequisite",
+      "label": "LIVEIMPORT read-only auth",
+      "severity": "blocking",
+      "protectedInputRequired": true,
+      "finalEvidenceRequired": false,
+      "operatorActionRequired": true,
+      "requiredCapabilities": [
+        "production_application_auth"
+      ],
+      "remediationAvailable": true
+    },
+    {
+      "blocker": "env:rollback guard auth",
+      "category": "protected_prerequisite",
+      "label": "Rollback guard auth",
+      "severity": "blocking",
+      "protectedInputRequired": true,
+      "finalEvidenceRequired": false,
+      "operatorActionRequired": true,
+      "requiredCapabilities": [
+        "production_ops_auth"
+      ],
+      "remediationAvailable": true
+    },
+    {
+      "blocker": "env:production UI dashboard auth",
+      "category": "protected_prerequisite",
+      "label": "Production UI dashboard auth",
+      "severity": "blocking",
+      "protectedInputRequired": true,
+      "finalEvidenceRequired": false,
+      "operatorActionRequired": true,
+      "requiredCapabilities": [
+        "production_application_auth",
+        "authenticated_ui_clickthrough"
+      ],
+      "remediationAvailable": true
+    },
+    {
+      "blocker": "env:production UI admin auth",
+      "category": "protected_prerequisite",
+      "label": "Production UI admin auth",
+      "severity": "blocking",
+      "protectedInputRequired": true,
+      "finalEvidenceRequired": false,
+      "operatorActionRequired": true,
+      "requiredCapabilities": [
+        "production_admin_auth",
+        "authenticated_ui_clickthrough"
+      ],
+      "remediationAvailable": true
+    },
+    {
+      "blocker": "env:production DB restore context",
+      "category": "protected_prerequisite",
+      "label": "Production DB restore context",
+      "severity": "blocking",
+      "protectedInputRequired": true,
+      "finalEvidenceRequired": false,
+      "operatorActionRequired": true,
+      "requiredCapabilities": [
+        "production_db_coolify_access"
+      ],
+      "remediationAvailable": true
+    },
+    {
+      "blocker": "evidence:activationAudit:missing",
+      "category": "release_evidence",
+      "label": "activationAudit:missing",
+      "severity": "blocking",
+      "protectedInputRequired": true,
+      "finalEvidenceRequired": true,
+      "operatorActionRequired": true,
+      "requiredCapabilities": [
+        "release_evidence"
+      ],
+      "remediationAvailable": false
+    },
+    {
+      "blocker": "evidence:activationPlan:missing",
+      "category": "release_evidence",
+      "label": "activationPlan:missing",
+      "severity": "blocking",
+      "protectedInputRequired": true,
+      "finalEvidenceRequired": true,
+      "operatorActionRequired": true,
+      "requiredCapabilities": [
+        "release_evidence"
+      ],
+      "remediationAvailable": false
+    },
+    {
+      "blocker": "evidence:rcExternalGateStatus:missing",
+      "category": "release_evidence",
+      "label": "rcExternalGateStatus:missing",
+      "severity": "blocking",
+      "protectedInputRequired": true,
+      "finalEvidenceRequired": true,
+      "operatorActionRequired": true,
+      "requiredCapabilities": [
+        "release_evidence"
+      ],
+      "remediationAvailable": false
+    },
+    {
+      "blocker": "evidence:rcSignoffRecord:missing",
+      "category": "release_evidence",
+      "label": "rcSignoffRecord:missing",
+      "severity": "blocking",
+      "protectedInputRequired": true,
+      "finalEvidenceRequired": true,
+      "operatorActionRequired": true,
+      "requiredCapabilities": [
+        "release_evidence"
+      ],
+      "remediationAvailable": false
+    },
+    {
+      "blocker": "evidence:rcChecklist:missing",
+      "category": "release_evidence",
+      "label": "rcChecklist:missing",
+      "severity": "blocking",
+      "protectedInputRequired": true,
+      "finalEvidenceRequired": true,
+      "operatorActionRequired": true,
+      "requiredCapabilities": [
+        "release_evidence"
+      ],
+      "remediationAvailable": false
+    },
+    {
+      "blocker": "evidence:liveImportReadback:missing",
+      "category": "release_evidence",
+      "label": "LIVEIMPORT-03 runtime readback",
+      "severity": "blocking",
+      "protectedInputRequired": true,
+      "finalEvidenceRequired": true,
+      "operatorActionRequired": true,
+      "requiredCapabilities": [
+        "production_application_auth",
+        "protected_runtime_readback"
+      ],
+      "remediationAvailable": true
+    },
+    {
+      "blocker": "evidence:prodUiClickthrough:missing",
+      "category": "release_evidence",
+      "label": "Production UI clickthrough",
+      "severity": "blocking",
+      "protectedInputRequired": true,
+      "finalEvidenceRequired": true,
+      "operatorActionRequired": true,
+      "requiredCapabilities": [
+        "production_application_auth",
+        "production_admin_auth",
+        "authenticated_ui_clickthrough"
+      ],
+      "remediationAvailable": true
+    },
+    {
+      "blocker": "evidence:backupRestoreDrill:missing",
+      "category": "release_evidence",
+      "label": "backupRestoreDrill:missing",
+      "severity": "blocking",
+      "protectedInputRequired": true,
+      "finalEvidenceRequired": true,
+      "operatorActionRequired": true,
+      "requiredCapabilities": [
+        "release_evidence"
+      ],
+      "remediationAvailable": false
+    },
+    {
+      "blocker": "evidence:rollbackProof:missing",
+      "category": "release_evidence",
+      "label": "rollbackProof:missing",
+      "severity": "blocking",
+      "protectedInputRequired": true,
+      "finalEvidenceRequired": true,
+      "operatorActionRequired": true,
+      "requiredCapabilities": [
+        "release_evidence"
+      ],
+      "remediationAvailable": false
+    }
+  ],
+  "remediation": [
+    {
+      "blocker": "env:liveimport auth",
+      "title": "Provide read-only LIVEIMPORT auth",
+      "action": "Provide read-only production application auth for protected runtime readback.",
+      "requiredInputs": [
+        "LIVEIMPORT_READBACK_AUTH_TOKEN",
+        "or LIVEIMPORT_READBACK_AUTH_EMAIL + LIVEIMPORT_READBACK_AUTH_PASSWORD"
+      ],
+      "command": "$expectedSha = git rev-parse HEAD; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output history/evidence/liveimport-03-prod-readback-2026-05-08.json"
+    },
+    {
+      "blocker": "env:rollback guard auth",
+      "title": "Provide rollback guard auth",
+      "action": "Provide production auth for protected runtime freshness and alerts checks.",
+      "requiredInputs": [
+        "ROLLBACK_GUARD_AUTH_TOKEN",
+        "or ROLLBACK_GUARD_AUTH_EMAIL + ROLLBACK_GUARD_AUTH_PASSWORD"
+      ],
+      "command": "pnpm run ops:deploy:rollback-proof -- --profile prod --base-url https://api.soar.luckysparrow.ch"
+    },
+    {
+      "blocker": "env:production UI dashboard auth",
+      "title": "Provide production UI dashboard auth",
+      "action": "Provide approved production app auth for non-destructive dashboard module clickthrough.",
+      "requiredInputs": [
+        "PROD_UI_AUDIT_AUTH_TOKEN",
+        "or PROD_UI_AUDIT_AUTH_EMAIL + PROD_UI_AUDIT_AUTH_PASSWORD"
+      ],
+      "command": "pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate"
+    },
+    {
+      "blocker": "env:production UI admin auth",
+      "title": "Provide production UI admin auth",
+      "action": "Provide approved production admin app auth for non-destructive admin module clickthrough.",
+      "requiredInputs": [
+        "PROD_UI_AUDIT_ADMIN_TOKEN",
+        "or PROD_UI_AUDIT_ADMIN_EMAIL + PROD_UI_AUDIT_ADMIN_PASSWORD"
+      ],
+      "command": "pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate"
+    },
+    {
+      "blocker": "env:production DB restore context",
+      "title": "Provide production DB restore context",
+      "action": "Provide production DB/Coolify context before running the restore drill.",
+      "requiredInputs": [
+        "PROD_DB_CHECK_CONTAINER + PROD_DB_CHECK_USER + PROD_DB_CHECK_NAME",
+        "or PRODUCTION_DB_CHECK_CONTAINER + PRODUCTION_DB_CHECK_USER + PRODUCTION_DB_CHECK_NAME"
+      ],
+      "command": "pnpm run ops:db:restore-drill:prod"
+    },
+    {
+      "blocker": "evidence:liveImportReadback:missing",
+      "title": "Collect LIVEIMPORT-03 runtime readback",
+      "action": "Run the read-only collector after build-info confirms current HEAD and read-only auth is available.",
+      "command": "$expectedSha = git rev-parse HEAD; pnpm run ops:liveimport:readback -- --expected-sha $expectedSha --output history/evidence/liveimport-03-prod-readback-2026-05-08.json"
+    },
+    {
+      "blocker": "evidence:prodUiClickthrough:missing",
+      "title": "Run production UI clickthrough to PASS",
+      "action": "Run the no-secret production UI audit after dashboard and admin app auth are available.",
+      "command": "pnpm run ops:ui:prod-clickthrough -- --expected-sha $expectedSha --today $releaseDate"
+    }
+  ],
+  "note": "Preflight JSON is not final V1 release evidence and contains env names/readiness only, not secret values."
+}

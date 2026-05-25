@@ -40,8 +40,8 @@ const scenarioPath = path.resolve(
   process.cwd(),
   '..',
   '..',
-  'docs',
-  'operations',
+  'history',
+  'artifacts',
   'ai-assistant-foundation-protocol-scenarios-2026-05-23.json'
 );
 
