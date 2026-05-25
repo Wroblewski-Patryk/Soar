@@ -3197,3 +3197,46 @@ promise = connect().catch((error) => {
   `32c145181a8740ca3d7714c7ee83b9b450a57453`, and public smoke passed for API
   `/health`, API `/ready`, and Web `/`. Authenticated smoke was not claimed
   because the available Coolify credential is not a valid Soar app password.
+
+### 2026-05-25 - Windows auth symlink startup can fail before any heartbeat logic
+
+- Symptom: assigned heartbeat `LUC-22` failed immediately with
+  `EPERM: operation not permitted, symlink ...\.codex\auth.json -> ...\codex-home\auth.json`.
+- Root cause: Windows symlink creation can fail in shells without the required
+  privilege, even when the source auth file exists.
+- Guardrail: before triaging issue logic, verify that runtime auth target
+  `...\codex-home\auth.json` exists and matches the source auth file by hash.
+  If target parity already exists, record that evidence and avoid unrelated
+  code churn.
+- Evidence: source and target auth files both existed and matched SHA256
+  `1B87C869E3101DD3C690DC9800E9DA4D1B6F7B44424A9004EBE2B99F9B3B82CD` during
+  `LUC-22` repair lane execution.
+
+### 2026-05-25 - Windows auth symlink privilege blocks Paperclip adapter startup
+- Context: `LUC-24` adapter smoke heartbeat failed before Soar code execution.
+- Symptom: adapter run failed with `EPERM: operation not permitted, symlink ...\.codex\auth.json -> ...\codex-home\auth.json`.
+- Root cause: current Windows runtime lacks privilege for file symbolic-link creation (`New-Item -ItemType SymbolicLink` returns `Administrator privilege required for this operation.`).
+- Guardrail: for Windows adapter runs, do not require symlink creation for auth bootstrap when a valid target auth file can be copied or reused.
+- Preferred pattern:
+```powershell
+$src='C:\Users\wrobl\.codex\auth.json'
+$dst='...\codex-home\auth.json'
+Copy-Item -LiteralPath $src -Destination $dst -Force
+```
+- Avoid: classifying this as a Soar app regression or retrying identical adapter startup without changing auth-link strategy/privilege.
+- Evidence:
+  `history/tasks/luc-24-paperclip-agent-execution-smoke-test-2026-05-25-task.md`.
+
+### 2026-05-25 - Adapter model compatibility can block all heartbeat execution
+- Symptom: session startup failed with invalid_request_error stating The 'gpt-5' model is not supported when using Codex with a ChatGPT account.
+- Root cause: adapter runtime/runtime model mapping used unsupported model for this account. This is not a Soar code defect.
+- Impact: critical coordination work is blocked because issue execution cannot begin in this run.
+- Guardrail: unblock owner should map to a supported model profile or fallback compatibility mode before running issue tasks in this session.
+- Unblock owner/action: Paperclip platform runtime owner must adjust model-mapping/auth-link startup behavior and provide rerun evidence on next heartbeat.
+
+
+### 2026-05-25 - Clear stale adapter blocker when board confirms runtime fix
+- Context: board comment 8fd8cfc5-b627-418e-8e10-c4df93ddbba4 confirmed local Codex command and supported model profiles are active, and doctor check passes.
+- Guardrail: once platform owner confirms runtime unblock, portfolio coordination issues must move from BLOCKED to active queue and resume evidence tracking from Soar artifacts.
+- Avoid: carrying forward stale model/symlink blockers in issue status after explicit board-level unblock confirmation.
+

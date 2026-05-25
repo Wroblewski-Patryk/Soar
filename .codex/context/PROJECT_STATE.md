@@ -4,6 +4,70 @@ Last updated: 2026-05-25
 
 ## Current Candidate Deployment Status
 
+- `LUC-18-QA-REGRESSION-SMOKE-BASELINE-2026-05-25` is partially verified.
+  First runnable QA baseline was executed and documented in
+  `history/tasks/luc-18-qa-regression-smoke-baseline-2026-05-25.md`.
+  Implemented and verified: `quality:guardrails`, `lint`, `typecheck`, and
+  `test:go-live:web` (`18/18`). Blocked by error: `test:go-live:api` fails in
+  `src/modules/backtests/backtests.e2e.test.ts` with one assertion failure
+  (`expected 0 to be greater than 0` at line `768`) and one timeout (`5000ms`
+  at line `837`), with reconciliation stderr indicating exchange snapshot fetch
+  failure. Current QA release posture: web smoke gate is green; API critical
+  smoke remains red until backtests reconciliation instability is repaired.
+
+- `LUC-24-ADAPTER-SMOKE-SYMLINK-PERMISSION-2026-05-25` is resolved and
+  verified by board runtime evidence. Initial local reproduction confirmed the
+  Windows symlink privilege failure (`Administrator privilege required for this
+  operation`) and established this as runtime/harness behavior, not Soar app
+  code. Board closure then verified runtime fallback deployment:
+  `node scripts/doctor-luckysparrow-softwarehouse.mjs` reports `overall: pass`,
+  `8/8` LuckySparrow agents pass adapter probes, and Windows auth/skill
+  bootstrap no-link/copy fallbacks are active. Evidence:
+  `history/tasks/luc-24-paperclip-agent-execution-smoke-test-2026-05-25-task.md`.
+
+- `LUC-15` dashboard and decision posture is in coordination-mode:
+  `history/tasks/luc-15-live-project-status-and-decision-dashboard-2026-05-25-task.md`
+  records the live status objective and lane ownership. Child-lane follow-up files
+  now exist for Product, CTO, QA, Ops, Docs, UX, and Implementation.
+  2026-05-25 board comment cleared the stale platform execution blocker and
+  returned this lane to active portfolio coordination. Current posture:
+  `in_progress` with evidence-tracking ownership across child lanes; no runtime
+  Soar code changes were made in this checkpoint.
+
+- `LUC-22-FIRST-SAFE-REPAIR-LANE-2026-05-25` is implemented and verified for
+  local heartbeat-unblock evidence. The previously failed heartbeat ended with
+  Windows `EPERM` on auth symlink creation into Paperclip runtime
+  `codex-home`. Local verification confirms both auth files exist and are
+  hash-identical (`SHA256`:
+  `1B87C869E3101DD3C690DC9800E9DA4D1B6F7B44424A9004EBE2B99F9B3B82CD`)
+  between `C:\Users\wrobl\.codex\auth.json` and the runtime target
+  `...\codex-home\auth.json`. Durable evidence is captured in
+  `history/tasks/luc-22-first-safe-repair-lane-2026-05-25-task.md`. This
+  checkpoint confirms local auth-target parity but does not itself prove a full
+  external harness adapter rerun.
+
+- `LUC-17-ARCHITECTURE-FUNCTION-CHAIN-KNOWN-STATE-2026-05-25` is verified for
+  the CTO architecture lane. Published
+  `history/audits/cto-architecture-known-state-2026-05-25.md` with a
+  code-backed Soar module map (`apps/api`, `apps/web`, `libs/shared`,
+  `scripts`), key function-chain references from graph exports, doc trust
+  classification (accurate/stale/missing), and the minimum architecture index
+  required before safe non-trivial coding. Current posture: structural
+  traceability is implemented and verified locally; many high-risk protected
+  user actions remain local-only proof and still require protected production
+  evidence.
+
+- `LUC-19-RUNTIME-KNOWN-STATE-2026-05-25` is partially verified for the ops
+  runtime/deploy lane. Runtime truth was re-baselined from canonical
+  deployment docs, env templates, compose manifests, and package scripts.
+  No-secret checks passed: `pnpm run docker:coolify:config` and
+  `pnpm run ops:coolify-stack:env-check:example` (`required present: 16/16`).
+  Current matrix: local dev and local Docker parity are implemented and
+  verified; stage is intentionally parked (present in docs, behavior unknown);
+  production single-stack topology is implemented but not yet verified by a
+  fresh temp-domain stack redeploy after API liveness-gate correction.
+  Evidence: `history/tasks/luc-19-runtime-known-state-2026-05-25-task.md`.
+
 - `COOLIFY-SERVICE-STACK-MIGRATION-2026-05-25` is implemented locally and
   in controlled production rollout after VPS restart. The new
   `docker-compose.coolify.yml` defines one Coolify Service Stack for Soar app
@@ -10502,3 +10566,4 @@ Last updated: 2026-05-25
 ## Optional Project Docs
 - Add only if the repository truly needs them.
 - Record their canonical paths here once they exist.
+

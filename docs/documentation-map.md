@@ -1,6 +1,6 @@
 # Documentation Map
 
-Updated: YYYY-MM-DD
+Updated: 2026-05-25
 
 This is the main entrypoint for current project documentation.
 
@@ -37,6 +37,7 @@ audits, proof artifacts, release packets, and raw generated outputs belong in
 
 | Path | Role | Primary entry |
 | --- | --- | --- |
+| `docs/analysis/` | Documentation quality systems: inventory, drift, reusable-audit definitions. | `docs/analysis/documentation-drift.md` |
 | `docs/product/` | Product scope, vision, glossary, roadmap inputs, and known limits. | `docs/product/overview.md` |
 | `docs/decisions/` | Accepted, rejected, proposed, and superseded decisions. | `docs/decisions/README.md` |
 | `docs/architecture/` | Canonical runtime, ownership, data, contract, graph, and safety truth. | `docs/maps/architecture-map.md` |

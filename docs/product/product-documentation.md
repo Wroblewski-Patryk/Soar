@@ -16,6 +16,7 @@ which boundaries are intentional.
 | --- | --- |
 | Quick product overview | [overview.md](./overview.md) |
 | Full product specification | [product.md](./product.md) |
+| MVP known-state (compliance gate) | [known-state.md](./known-state.md) |
 | Long-range autonomous agent direction | [autonomous-agent-vision.md](./autonomous-agent-vision.md) |
 | AI product scope | [ai-integration.md](./ai-integration.md) |
 | MVP scope | [mvp_scope.md](./mvp_scope.md) |

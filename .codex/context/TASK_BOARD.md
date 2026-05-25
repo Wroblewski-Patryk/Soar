@@ -17,7 +17,33 @@ Last updated: 2026-05-25
 
 ## IN PROGRESS
 
+- [ ] `LUC-18-QA-REGRESSION-SMOKE-BASELINE-2026-05-25 qa: establish first reproducible QA baseline for Soar pilot`
+  - 2026-05-25 QA baseline checkpoint executed with required docs/script review
+    and safe-local-first verification. PASS:
+    `pnpm run quality:guardrails`, `pnpm run lint`, `pnpm run typecheck`,
+    `pnpm run test:go-live:web` (`3` files / `18` tests). FAIL:
+    `pnpm run test:go-live:api` (`1` file failed, `2` tests failed, `43`
+    passed) with reproducible backtests failures:
+    `AssertionError: expected 0 to be greater than 0`
+    (`src/modules/backtests/backtests.e2e.test.ts:768`) and
+    `Test timed out in 5000ms`
+    (`src/modules/backtests/backtests.e2e.test.ts:837`), plus reconciliation
+    stderr `Unable to fetch exchange positions snapshot.` Evidence:
+    `history/tasks/luc-18-qa-regression-smoke-baseline-2026-05-25.md`.
+  - Next: isolate `backtests.e2e` failure path and assign fix owner for
+    reconciliation/time-budget instability before promoting API smoke to a
+    release-safe gate.
+
 - [ ] `COOLIFY-SERVICE-STACK-MIGRATION-2026-05-25 release: migrate Soar app processes toward one Coolify Service Stack`
+  - 2026-05-25 ops known-state checkpoint (`LUC-19-RUNTIME-KNOWN-STATE-2026-05-25`):
+    runtime matrix refreshed from canonical ops docs, compose manifests, env
+    templates, and package scripts. Verified no-secret checks:
+    `docker:coolify:config` PASS and `ops:coolify-stack:env-check:example`
+    PASS (`required present: 16/16`, redacted output). Current truth: local
+    dev and local Docker parity are implemented and verified; stage remains
+    intentionally parked; production single-stack topology is implemented but
+    not yet re-verified after liveness-gate correction. Evidence:
+    `history/tasks/luc-19-runtime-known-state-2026-05-25-task.md`.
   - 2026-05-25: Local implementation is ready, production deployment is
     blocked by Coolify/VPS reachability. Added `docker-compose.coolify.yml`
     and `.env.coolify.example` for one stack containing API, Web, and four
@@ -245,6 +271,38 @@ Last updated: 2026-05-25
     `history/audits/live-exchange-execution-parity-2026-05-23-task.md`.
 
 ## DONE
+
+- [x] `LUC-15 Live project status and decision dashboard`
+  - 2026-05-25 board comment `c7fefae8-ea2c-48b4-a480-0ff5d7980993` closed
+    this setup scope to stop missing-disposition loops.
+  - Setup scope complete: parent dashboard and child lane graph were created
+    and synchronized after platform unblock.
+  - Ongoing Soar takeover work moves to dedicated lane issues:
+    `LUC-15-PRODUCT`, `LUC-15-CTO`, `LUC-15-QA`, `LUC-15-OPS`, `LUC-15-DOCS`,
+    `LUC-15-UX`, `LUC-15-IMPLEMENTATION`, with portfolio rollup anchored in
+    `LUC-12`.
+
+- [x] `LUC-22-FIRST-SAFE-REPAIR-LANE-2026-05-25 implementation: recover heartbeat auth-symlink blocker`
+  - 2026-05-25: Verified the failed heartbeat blocker path from issue `LUC-22`
+    after `EPERM` symlink startup failure. Runtime target
+    `...\\codex-home\\auth.json` exists as a regular file and matches
+    `C:\\Users\\wrobl\\.codex\\auth.json` by SHA256
+    (`1B87C869E3101DD3C690DC9800E9DA4D1B6F7B44424A9004EBE2B99F9B3B82CD`).
+    Added durable task evidence in
+    `history/tasks/luc-22-first-safe-repair-lane-2026-05-25-task.md`.
+    Scope remained documentation/state-only; no product/runtime feature code
+    changed.
+
+- [x] `LUC-17-ARCHITECTURE-FUNCTION-CHAIN-KNOWN-STATE-2026-05-25 cto: publish architecture known-state map`
+  - 2026-05-25: Completed CTO known-state audit for issue `LUC-17` using
+    architecture graph and journey/action indexes plus direct module/layout
+    scan across `apps`, `libs`, `scripts`, and root package scripts.
+    Published evidence-backed module responsibility map, key chain references,
+    doc trust classification (accurate/stale/missing), and the minimum
+    architecture index required before safe coding in
+    `history/audits/cto-architecture-known-state-2026-05-25.md`.
+    Captured task contract and validation in
+    `history/tasks/luc-17-architecture-function-chain-known-state-2026-05-25-task.md`.
 
 - [x] `V1-PROTECTED-INPUT-READINESS-REFRESH-380308D1-2026-05-24 release: refresh protected input readiness for current candidate`
   - 2026-05-24: Refreshed the no-secret protected input readiness artifact for
@@ -1041,6 +1099,23 @@ Last updated: 2026-05-25
     `history/audits/v1-production-activation-evidence-audit-2026-05-23.md`.
 
 ## BLOCKED
+
+- [x] `LUC-24-ADAPTER-SMOKE-SYMLINK-PERMISSION-2026-05-25 fix: unblock Paperclip agent smoke on Windows auth linking`
+  - 2026-05-25: Adapter heartbeat `fd44e9d6-66c8-4b1c-99dd-fb63c950ea62`
+    failed before Soar execution with `EPERM` while attempting symlink
+    `C:\Users\wrobl\.codex\auth.json -> ...\codex-home\auth.json`.
+  - Local reproduction with `New-Item -ItemType SymbolicLink` failed with
+    `Administrator privilege required for this operation.` The target
+    `...\codex-home\auth.json` exists as a regular file (not a symlink).
+  - Blocker owner/action: Paperclip runtime/harness must use a Windows-safe
+    auth-link strategy (copy/no-link fallback when target exists) or run with
+    symlink-capable privilege, then rerun adapter smoke.
+  - Evidence:
+    `history/tasks/luc-24-paperclip-agent-execution-smoke-test-2026-05-25-task.md`.
+  - 2026-05-25 closure: board verification confirms runtime fix is deployed;
+    doctor reports `overall: pass`, `8/8` agent probes pass, and Windows
+    auth bootstrap now uses no-link/copy fallback. Issue scope closed as
+    `done`; Soar product audits remain separate workstreams.
 
 ## READY
 

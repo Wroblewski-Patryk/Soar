@@ -17,6 +17,7 @@ and review evidence expectations for user-facing work.
 | Dashboard design system | [dashboard-design-system.md](./dashboard-design-system.md) |
 | Visual direction | [visual-direction-brief.md](./visual-direction-brief.md) |
 | Experience quality bar | [experience-quality-bar.md](./experience-quality-bar.md) |
+| Primary visual workflow known-state (LUC-21) | [luc-21-primary-workflow-visual-quality-audit-2026-05-25.md](./luc-21-primary-workflow-visual-quality-audit-2026-05-25.md) |
 | Screen quality checklist | [screen-quality-checklist.md](./screen-quality-checklist.md) |
 | UX anti-patterns | [anti-patterns.md](./anti-patterns.md) |
 | Design memory | [design-memory.md](./design-memory.md) |
