@@ -15,6 +15,23 @@ evidence.
   package.
 - Assistant output remains advisory unless execution policy allows action.
 
+## Chain Classifications
+
+This contract uses three chain classes; only one is implemented today:
+
+- **Advisory chain (implemented)**  
+  - `POST /dashboard/bots/:id/assistant-config/dry-run` with `mode=BACKTEST|PAPER`
+  - deterministic proposal output only
+  - no side effects
+- **Operator-assisted chain (not implemented as a hard floor in Soar yet)**  
+  - planned as trace visibility followed by an existing non-AI operator action path
+  - still requires existing bot/risk/product command flows (`bot`, `orders`,
+    `portfolio`, and execution command routes) to pass their own gates
+- **Executable chain (deferred and not implemented)**  
+  - any future auto-execution path requires separate product approval,
+    persisted execution trace, and dedicated AI red-team acceptance under
+    `REQ-AI-030`.
+
 ## Current Responsibilities
 1. Main assistant foundation:
    - load bot-scoped assistant configuration
@@ -85,6 +102,25 @@ for any future hot-path integration:
 - assistant cannot disable kill switch, bypass consent, or override risk caps.
 - assistant cannot issue action outside bot mode/policy permissions.
 - all assistant proposals are post-validated by runtime risk/execution guards.
+- `AssistantDryRunSchema` currently accepts only `mode=BACKTEST|PAPER`; `mode=LIVE`
+  is rejected at API boundary.
+
+## Tool and Context Boundaries
+- Tool calls in current chain are scoped to local assistant orchestration
+  internals (planner/subagent wiring), bot assistant/subagent DB lookups, and
+  trace writing.
+- No exchange adapter, order service, wallet transfer, subscription mutation, or
+  execution command tool is called from the current dry-run path.
+- Input context is user and bot scoped; bot ownership is enforced before
+  orchestration.
+- Prompt text and rationale are sanitized for trace persistence.
+
+## Prompt/Data Leakage Boundaries
+- The dry-run request body includes only `symbol`, `intervalWindow`, and `mode`.
+- No raw secrets, keys, or credentials are loaded into or returned by dry-run trace.
+- Current risk areas to keep explicit: user-controlled `mandate`/subagent role text and
+  injected context if future memory/context enrichment is added; these require redaction
+  and allowlist controls before enabling those inputs in executable chains.
 
 ## Audit and Explainability
 For current dry-run/foundation behavior, trace data must remain structured and
@@ -111,6 +147,16 @@ sanitized. For future hot-path assistant cycles, persist trace:
 - assistant disabled or unavailable:
   - runtime continues in strategy-only mode
   - decision trace contains `assistantMode: degraded`
+
+## Gate and Bypass Controls
+- AI outputs are advisory only for the implemented chain.
+- AI cannot bypass:
+  - subscription/entitlement checks,
+  - bot ownership and wallet capability checks,
+  - risk pre-trade gates,
+  - execution authority checks.
+- Any future executable AI chain must still pass existing trading/product/security gate
+  enforcement and fail closed if any gate rejects.
 
 ## Non-Goals for MVP Foundation
 - autonomous model retraining in runtime hot path

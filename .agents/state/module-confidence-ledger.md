@@ -30,6 +30,11 @@ Do not turn uncertainty into optimism.
 
 ## Current Operational Override
 
+
+- 2026-05-25 `LUC-40-DATA-PERSISTENCE-KNOWN-STATE-2026-05-25`: data-persistence confidence is refreshed to evidence-backed `PARTIAL` for schema/migration integrity and ownership model coverage. `corepack pnpm --filter api exec prisma validate` passed, and `corepack pnpm --filter api exec prisma migrate status --schema prisma/schema.prisma` passed with `55` migrations and up-to-date schema. Known-state artifact: `history/tasks/luc-40-data-persistence-known-state-2026-05-25-task.md`. Residual gap: focused module API persistence pack timed out (`124054ms`), so entity-level runtime behavior remains partially verified until narrowed DB-backed packs complete.
+
+- 2026-05-25 `LUC-42-AI-RUNTIME-BOUNDARY-DRYRUN-LIVE`: assistant runtime boundaries are confirmed as advisory-only for implemented dry-run. `AssistantDryRunSchema` now accepts only `BACKTEST|PAPER`; focused e2e verifies `POST /dashboard/bots/:id/assistant-config/dry-run` rejects `mode: LIVE` with `400`. Architecture boundary docs now classify chain classes (advisory/operator-assisted/executable) and explicit tool/context/bypass constraints under `SOAR-ASSISTANT-AI-001`. No hot-path trading/automation execution bypass was introduced.
+
 - 2026-05-25 `FUNCTION-JOURNEY-EVIDENCE-INDEX-2026-05-25`: confidence for the
   Architecture Evidence Graph and future debugging workflow is improved. The
   new generated journey index maps current graph records into function-chain,

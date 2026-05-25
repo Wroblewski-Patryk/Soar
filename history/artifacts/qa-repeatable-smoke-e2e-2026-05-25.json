@@ -1,0 +1,27 @@
+{
+  "issue": "LUC-43",
+  "date": "2026-05-25",
+  "artifactName": "qa-repeatable-smoke-e2e-2026-05-25",
+  "selectedChecks": [
+    "web"
+  ],
+  "continueOnFail": true,
+  "totals": {
+    "checks": 1,
+    "passed": 1,
+    "failed": 0
+  },
+  "results": [
+    {
+      "label": "Web smoke pack",
+      "command": "pnpm run test:go-live:web",
+      "startedAt": "2026-05-25T17:58:09.553Z",
+      "finishedAt": "2026-05-25T17:58:14.957Z",
+      "durationMs": 5404,
+      "exitCode": 0,
+      "status": "PASS",
+      "stdout": "\n> CryptoSparrow@1.0.0 test:go-live:web C:\\Personal\\Projekty\\Aplikacje\\Soar\n> pnpm --filter web exec vitest run src/features/bots/components/BotsManagement.test.tsx src/features/logs/components/AuditTrailView.test.tsx src/ui/layout/dashboard/Header.responsive.test.tsx\n\n\n RUN  v4.1.5 C:/Personal/Projekty/Aplikacje/Soar/apps/web\n\n\n Test Files  3 passed (3)\n      Tests  18 passed (18)\n   Start at  19:58:11\n   Duration  3.67s (transform 1.73s, setup 451ms, import 3.02s, tests 2.08s, environment 2.07s)\n\n",
+      "stderr": ""
+    }
+  ]
+}

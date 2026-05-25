@@ -11,6 +11,18 @@
 - Vitest for unit and integration tests.
 - Supertest for API endpoints.
 - Testing Library for UI behavior.
+- Repeatable QA smoke/e2e runner:
+  - `pnpm run qa:smoke-e2e:repeatable`
+  - Optional scope: `pnpm run qa:smoke-e2e:repeatable -- --checks web|api|backtests`
+  - Writes machine-readable output to `history/artifacts/qa-repeatable-smoke-e2e-<date>.json`
+    and summary evidence to `history/evidence/qa-repeatable-smoke-e2e-<date>.md`.
+- Expected runner outcomes:
+  - `--checks web` -> `apps/web` smoke pack (`3` files / `18` tests), expected `PASS`/`FAIL` in stdout and JSON status row.
+  - `--checks api` -> `auth + strategies + backtests + preTrade` API smoke pack, expected `PASS` for release-safe local baseline.
+  - `--checks backtests` -> focused `src/modules/backtests/backtests.e2e.test.ts`, expected `PASS`; known in this branch to fail on historical reconciliation instability and timeout.
+  - expected `json` structure:
+    - `totals.pass` and `totals.failed`
+    - per-check `status`, `exitCode`, `stdout`, `stderr`, and timing
 - Canonical web closure script for deterministic type generation:
   - `pnpm run web:verify:build-typecheck`
 - Canonical DB-backed audit isolation script:

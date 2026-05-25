@@ -16,6 +16,75 @@ Last updated: 2026-05-25
     needed
 
 ## IN PROGRESS
+- [x] `LUC-40 [Soar][Data] Persistence and integrity known-state`
+  - 2026-05-25 data-persistence checkpoint completed for known-state mapping.
+    Evidence artifact:
+    `history/tasks/luc-40-data-persistence-known-state-2026-05-25-task.md`.
+    Verified: `corepack pnpm --filter api exec prisma validate` PASS; `corepack pnpm --filter api exec prisma migrate status --schema prisma/schema.prisma` PASS (`55` migrations, schema up to date); `corepack pnpm run ops:db:backup-restore:check-local` PASS (`history/operations/v1-db-restore-check-2026-05-25T18-02-43-687Z.md`). Blocked by error for broader proof in this heartbeat: focused API pack timed out after `124054ms`.
+  - Next: rerun narrowed DB-backed API persistence packs (orders/positions/subscriptions/auth) with longer timeout and attach per-invariant proof.
+  - Risk routing: `RISK-DATA-SECRET-HANDLING-2026-05-25` and `RISK-DATA-BACKUP-RESTORE-2026-05-25` were added to `risk-register` for Security/Backend follow-up.
+
+
+- [ ] `LUC-41 [Soar][Integration] Exchange and trading runtime boundary`
+  - 2026-05-25 implementation checkpoint: exchange, manual order, positions, and reconciliation boundary packs pass locally (`50` tests, `4` files) with read-safe contracts, while runtime loop boundary remains blocked by `runtimeSignalLoop.service.test.ts` (12 failures, repeated `5000ms` timeouts + 1 backlog assertion failure).
+  - Current impact: execution/runtime confidence is incomplete for LIVE/PAPER boundary automation under final-candle burst/queue conditions until this regression is fixed and re-verified.
+  - Next: repair runtime loop backlog/queue timing assertions, rerun focused runtime pack, then re-open `LUC-41` implementation closure when pass.
+- [ ] `LUC-43 [Soar][Test Automation] Repeatable smoke and e2e checks`
+  - 2026-05-25 checkpoint: added `qa:smoke-e2e:repeatable` (`scripts/runQaRepeatableSmokeE2e.mjs`) to run deterministic `web/api/backtests` smoke-e2e packs, emit stable PASS/FAIL exit codes, and persist durable evidence to `history/artifacts/qa-repeatable-smoke-e2e-<date>.json` plus `history/evidence/qa-repeatable-smoke-e2e-<date>.md`.
+  - Local proof PASS (focused): `pnpm run qa:smoke-e2e:repeatable -- --checks web` with artifacts generated for `2026-05-25`.
+  - Next: run `--checks web,api,backtests` in QA lane and route any failing API/backtests evidence to repair owners.
+
+- [x] `LUC-42 [Soar][AI Runtime] Assistant and automation boundary`
+  - 2026-05-25 heartbeat (`AI-RUNTIME-BOUNDARY-DRYRUN-MODE-HARDENING-2026-05-25`): implemented fail-closed API boundary so assistant dry-run can no longer be submitted as `LIVE` mode. `AssistantDryRunSchema` now accepts only `BACKTEST | PAPER`, and a focused orchestration e2e assertion verifies `POST /dashboard/bots/:id/assistant-config/dry-run` with `mode: LIVE` returns `400`. This preserves the documented “dry-run only, no trading authority” contract at the API boundary.
+  - 2026-05-25 follow-up: documented chain classes and safety boundaries in `docs/architecture/11_assistant-runtime.md` and `docs/architecture/reference/assistant-runtime-contract.md` (advisory implemented; operator-assisted and executable deferred), including explicit tool/context boundaries, prompt/leakage risks, and non-bypass gate controls.
+  - Next for this slice: closed after docs + boundary-hardening proof; continue AI hot-path execution work under a separate approved issue once hot-path requirements pass.
+
+- [x] `LUC-37 [Soar][Delivery] Engineering breakdown and integration map`
+  - 2026-05-25: Delivery-lead decomposition checkpoint completed and published
+    in `history/tasks/luc-37-engineering-breakdown-and-integration-map-2026-05-25-task.md`.
+    Scope is planning/integration only (no feature code changes). Defined
+    specialist lanes `LUC-37-A..E` with single owners, dependencies,
+    verification contracts, and integration gate ownership:
+    `A backend/runtime reliability`, `B ops stack rollout`, `C QA journey
+    regression`, `D security boundary review`, `E docs/state parity sync`.
+  - Child execution issues created for `IN_PROGRESS` handoff:
+    - `LUC-37-A`: `history/tasks/luc-37-a-backend-runtime-and-trading-boundary-2026-05-25-task.md`
+    - `LUC-37-B`: `history/tasks/luc-37-b-coolify-stack-cutover-and-smoke-2026-05-25-task.md`
+    - `LUC-37-C`: `history/tasks/luc-37-c-journey-verification-and-qa-2026-05-25-task.md`
+    - `LUC-37-D`: `history/tasks/luc-37-d-security-auth-exchange-boundary-2026-05-25-task.md`
+    - `LUC-37-E`: `history/tasks/luc-37-e-docs-state-sync-and-journey-map-2026-05-25-task.md`
+  - 2026-05-25 board cleanup disposition (`comment 52fb8124-49c3-472d-8f1e-8384fa871751`):
+    parent lane closed after durable decomposition evidence; implementation
+    continues only in child lanes `LUC-37-A..E`.
+  - 2026-05-25 hierarchy-migration cleanup (`comment 18a14798-1eb6-4a77-a9a8-59aa63d58951`):
+    closure confirmed again to prevent reopening of the broad parent delivery
+    lane; remaining work stays in specialist child issues only.
+
+- [ ] `LUC-37-A [Soar][Delivery] Backend runtime and trading boundary`
+  - 2026-05-25: Child issue packet created in
+    `history/tasks/luc-37-a-backend-runtime-and-trading-boundary-2026-05-25-task.md`.
+  - Scope: backend API/runtime/trading reliability and backtests/runtime aggregate
+    correctness.
+
+- [ ] `LUC-37-B [Soar][Delivery] Coolify stack cutover and smoke`
+  - 2026-05-25: Child issue packet created in
+    `history/tasks/luc-37-b-coolify-stack-cutover-and-smoke-2026-05-25-task.md`.
+  - Scope: single-stack rollout readiness, temp-domain smoke, rollback rehearsal.
+
+- [ ] `LUC-37-C [Soar][Delivery] Journey verification and QA`
+  - 2026-05-25: Child issue packet created in
+    `history/tasks/luc-37-c-journey-verification-and-qa-2026-05-25-task.md`.
+  - Scope: high-gap journey proof matrix and browser/API verification packets.
+
+- [ ] `LUC-37-D [Soar][Delivery] Security boundary verification`
+  - 2026-05-25: Child issue packet created in
+    `history/tasks/luc-37-d-security-auth-exchange-boundary-2026-05-25-task.md`.
+  - Scope: auth/session and exchange-boundary read-only fail-closed proof.
+
+- [ ] `LUC-37-E [Soar][Delivery] Docs/state evidence sync`
+  - 2026-05-25: Child issue packet created in
+    `history/tasks/luc-37-e-docs-state-sync-and-journey-map-2026-05-25-task.md`.
+  - Scope: source-of-truth sync and module/risk/requirements alignment.
 
 - [ ] `LUC-18-QA-REGRESSION-SMOKE-BASELINE-2026-05-25 qa: establish first reproducible QA baseline for Soar pilot`
   - 2026-05-25 QA baseline checkpoint executed with required docs/script review
@@ -272,6 +341,19 @@ Last updated: 2026-05-25
 
 ## DONE
 
+- [x] `LUC-38 [Soar][Frontend] View map and browser workflow ownership`
+  - 2026-05-25: Published frontend-owned route/view ownership and browser
+    workflow contract in
+    `docs/status/view-map-browser-workflow-ownership.md`, sourced from
+    canonical route map and current `apps/web/src/app/**/page.tsx` inventory.
+    Added documentation-map linkage and durable task evidence in
+    `history/tasks/luc-38-frontend-view-map-browser-workflow-ownership-2026-05-25-task.md`.
+    Scope was documentation/state only; no backend/runtime behavior changed.
+  - 2026-05-25 liveness continuation: expanded the same status doc with
+    explicit `route -> view/component -> client API calls` mapping and added
+    regression/blocker ownership notes (`protected browser proof` blocker;
+    backtests smoke instability owned by backend/api lane).
+
 - [x] `LUC-15 Live project status and decision dashboard`
   - 2026-05-25 board comment `c7fefae8-ea2c-48b4-a480-0ff5d7980993` closed
     this setup scope to stop missing-disposition loops.
@@ -292,6 +374,11 @@ Last updated: 2026-05-25
     `history/tasks/luc-22-first-safe-repair-lane-2026-05-25-task.md`.
     Scope remained documentation/state-only; no product/runtime feature code
     changed.
+  - 2026-05-25 board cleanup: this legacy implementation lane is explicitly
+    cancelled/superseded by `LUC-37` Delivery and specialist layer lanes
+    (`Frontend`, `Backend`, `Data`, `Integration`, `AI Runtime`,
+    `Test Automation`, `Security`). Keep this row as historical repair
+    evidence only; do not reactivate as an execution lane.
 
 - [x] `LUC-17-ARCHITECTURE-FUNCTION-CHAIN-KNOWN-STATE-2026-05-25 cto: publish architecture known-state map`
   - 2026-05-25: Completed CTO known-state audit for issue `LUC-17` using
@@ -303,6 +390,15 @@ Last updated: 2026-05-25
     `history/audits/cto-architecture-known-state-2026-05-25.md`.
     Captured task contract and validation in
     `history/tasks/luc-17-architecture-function-chain-known-state-2026-05-25-task.md`.
+
+- [x] `LUC-39-BACKEND-API-SERVICE-BOUNDARY-KNOWN-STATE-2026-05-25 backend: publish API/service boundary known-state map`
+  - 2026-05-25: Completed backend known-state audit for API/service boundaries
+    using `apps/api/src/modules` inventory plus generated graph indexes.
+    Published route/controller/service/test surface counts (`20/18/118/49/169`),
+    listed current API route modules, and recorded proof-gap posture from
+    function-journey/user-action indexes (`0` critical structural gaps; high
+    proof gaps remain for protected/money/live paths). Evidence:
+    `history/tasks/luc-39-backend-api-service-boundary-known-state-2026-05-25.md`.
 
 - [x] `V1-PROTECTED-INPUT-READINESS-REFRESH-380308D1-2026-05-24 release: refresh protected input readiness for current candidate`
   - 2026-05-24: Refreshed the no-secret protected input readiness artifact for

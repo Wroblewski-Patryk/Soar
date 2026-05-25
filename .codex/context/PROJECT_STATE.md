@@ -4,6 +4,46 @@ Last updated: 2026-05-25
 
 ## Current Candidate Deployment Status
 
+
+- `LUC-40 [Soar][Data] Persistence and integrity known-state` is partially verified for the data-persistence lane. Published `history/tasks/luc-40-data-persistence-known-state-2026-05-25-task.md` with schema/migration integrity evidence and explicit unknowns. Verified: `corepack pnpm --filter api exec prisma validate` PASS, `corepack pnpm --filter api exec prisma migrate status --schema prisma/schema.prisma` PASS (`55` migrations, DB schema up to date), and `corepack pnpm run ops:db:backup-restore:check-local` PASS (`history/operations/v1-db-restore-check-2026-05-25T18-02-43-687Z.md`). Blocked by error for broader module proof in this heartbeat: focused API pack timed out after `124054ms`.
+
+- `LUC-43 [Soar][Test Automation] Repeatable smoke and e2e checks` is
+  implemented and partially verified for QA automation scope. Added
+  `scripts/runQaRepeatableSmokeE2e.mjs` and root script
+  `pnpm run qa:smoke-e2e:repeatable` to execute repeatable smoke/e2e packs
+  (`web`, `api`, `backtests`) with deterministic exit status and durable
+  artifacts in `history/artifacts/qa-repeatable-smoke-e2e-<date>.json` plus
+  `history/evidence/qa-repeatable-smoke-e2e-<date>.md`. Focused local proof
+  passed for `--checks web` on 2026-05-25. Full `api/backtests` run remains
+  pending and is expected to capture known `backtests.e2e` failures until
+  repair work lands.
+
+- `LUC-38 [Soar][Frontend] View map and browser workflow ownership` is
+  implemented and verified for documentation/state scope. Added a durable
+  frontend route-to-view ownership map and browser workflow contract in
+  `docs/status/view-map-browser-workflow-ownership.md`, linked from
+  `docs/documentation-map.md`, with task evidence at
+  `history/tasks/luc-38-frontend-view-map-browser-workflow-ownership-2026-05-25-task.md`.
+  Source inputs were the canonical dashboard route map and current
+  `apps/web/src/app/**/page.tsx` inventory. No backend/API/runtime behavior
+  changed.
+  Liveness continuation added explicit primary route/view/client-API mapping
+  plus regression status: no frontend regression reproduction attached to this
+  issue, protected-route browser proof remains auth-gated, and current
+  backtests smoke instability is tracked as backend/api-owned.
+
+- `LUC-37 [Soar][Delivery] Engineering breakdown and integration map` is
+  implemented and verified for planning/integration scope. A durable delivery
+  packet was published at
+  `history/tasks/luc-37-engineering-breakdown-and-integration-map-2026-05-25-task.md`
+  with single-owner lane decomposition (`LUC-37-A..E`), explicit dependency
+  chain, verification expectations, and integration gate ownership. Current
+  status: decomposition is ready; child lanes are created for delegated execution:
+  `LUC-37-A`, `LUC-37-B`, `LUC-37-C`, `LUC-37-D`, and `LUC-37-E`.
+  Execution proof remains pending in those lanes. Board cleanup and hierarchy
+  migration comments on 2026-05-25 confirmed parent-lane closure so this broad
+  coordination issue does not reopen while specialist lanes own implementation.
+
 - `LUC-18-QA-REGRESSION-SMOKE-BASELINE-2026-05-25` is partially verified.
   First runnable QA baseline was executed and documented in
   `history/tasks/luc-18-qa-regression-smoke-baseline-2026-05-25.md`.
@@ -25,14 +65,13 @@ Last updated: 2026-05-25
   bootstrap no-link/copy fallbacks are active. Evidence:
   `history/tasks/luc-24-paperclip-agent-execution-smoke-test-2026-05-25-task.md`.
 
-- `LUC-15` dashboard and decision posture is in coordination-mode:
-  `history/tasks/luc-15-live-project-status-and-decision-dashboard-2026-05-25-task.md`
-  records the live status objective and lane ownership. Child-lane follow-up files
-  now exist for Product, CTO, QA, Ops, Docs, UX, and Implementation.
-  2026-05-25 board comment cleared the stale platform execution blocker and
-  returned this lane to active portfolio coordination. Current posture:
-  `in_progress` with evidence-tracking ownership across child lanes; no runtime
-  Soar code changes were made in this checkpoint.
+- `LUC-15` setup scope is closed as `done` by board decision
+  `c7fefae8-ea2c-48b4-a480-0ff5d7980993`.
+  Source-of-truth closure artifact:
+  `history/tasks/luc-15-live-project-status-and-decision-dashboard-2026-05-25-task.md`.
+  Ongoing Soar takeover execution continues in dedicated child lane issues
+  (Product, CTO, QA, Ops, Docs, UX, Implementation) and portfolio baseline
+  `LUC-12`.
 
 - `LUC-22-FIRST-SAFE-REPAIR-LANE-2026-05-25` is implemented and verified for
   local heartbeat-unblock evidence. The previously failed heartbeat ended with
@@ -44,7 +83,10 @@ Last updated: 2026-05-25
   `...\codex-home\auth.json`. Durable evidence is captured in
   `history/tasks/luc-22-first-safe-repair-lane-2026-05-25-task.md`. This
   checkpoint confirms local auth-target parity but does not itself prove a full
-  external harness adapter rerun.
+  external harness adapter rerun. Board follow-up on 2026-05-25 explicitly
+  cancels the legacy broad implementation lane and supersedes it with
+  `LUC-37` Delivery plus specialist lanes; this `LUC-22` row is historical
+  evidence only.
 
 - `LUC-17-ARCHITECTURE-FUNCTION-CHAIN-KNOWN-STATE-2026-05-25` is verified for
   the CTO architecture lane. Published
@@ -56,6 +98,18 @@ Last updated: 2026-05-25
   traceability is implemented and verified locally; many high-risk protected
   user actions remain local-only proof and still require protected production
   evidence.
+
+- `LUC-39-BACKEND-API-SERVICE-BOUNDARY-KNOWN-STATE-2026-05-25` is implemented
+  and verified for the backend API lane. Published
+  `history/tasks/luc-39-backend-api-service-boundary-known-state-2026-05-25.md`
+  with an evidence-backed API/service boundary inventory from current source:
+  `20` route files, `18` controllers, `118` services, `49` API e2e tests, and
+  `169` test files under `apps/api/src/modules`. Route ownership map now
+  explicitly lists all current backend route modules and ties them to generated
+  architecture indexes (`function-journey-index`, `user-action-index`) for
+  route/controller/service/data/test/doc traceability. Current risk posture:
+  structural gaps are `0` at index level, while protected/money/live proof
+  gaps remain high and are intentionally outside this documentation-only slice.
 
 - `LUC-19-RUNTIME-KNOWN-STATE-2026-05-25` is partially verified for the ops
   runtime/deploy lane. Runtime truth was re-baselined from canonical

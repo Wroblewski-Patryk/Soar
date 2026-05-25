@@ -54,3 +54,12 @@ runtime and record verifiable evidence for the unblock.
 - Residual risk: Windows environments without symlink privilege can still fail
   if future startup paths force symbolic-link creation instead of file copy or
   existing-file reuse.
+
+## Board Disposition Update (2026-05-25)
+
+- Status update: `LUC-22` is cancelled by board decision and superseded by
+  `LUC-37` plus specialist delivery lanes (`Frontend`, `Backend`, `Data`,
+  `Integration`, `AI Runtime`, `Test Automation`, `Security`).
+- This task remains valid historical evidence for the auth-path blocker
+  recovery only and should not be used to reopen the legacy broad
+  implementation lane model.

@@ -158,7 +158,7 @@ export const UpsertBotSubagentConfigSchema = z.object({
 export const AssistantDryRunSchema = z.object({
   symbol: z.string().trim().min(1).max(40),
   intervalWindow: z.string().trim().min(1).max(20).default('5m'),
-  mode: z.enum(['BACKTEST', 'PAPER', 'LIVE']).default('PAPER'),
+  mode: z.enum(['BACKTEST', 'PAPER']).default('PAPER'),
 });
 
 export const BotRuntimeSessionStatusSchema = z.enum([

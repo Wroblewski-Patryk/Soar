@@ -51,6 +51,7 @@ audits, proof artifacts, release packets, and raw generated outputs belong in
 | `docs/security/` | Secure development, secrets, authorization, and sensitive-area policy. | `docs/security/security-baseline.md` |
 | `docs/ux/` | Design system, quality bars, evidence rules, and reusable pattern memory. | `docs/ux/design-system-contract.md` |
 | `docs/governance/` | Repository, agent, template, and delivery rules. | `docs/governance/template-usage.md` |
+| `docs/status/` | Generated and maintained implementation/proof status snapshots for route, journey, and ownership visibility. | `docs/status/view-map-browser-workflow-ownership.md` |
 
 ## Historical Lookup
 

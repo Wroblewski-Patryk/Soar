@@ -13,6 +13,20 @@ It supports:
 - deterministic orchestration contracts and isolated orchestrator tests
 - owner-scoped dry-run diagnostics
 
+## Chain Classification (Current Slice)
+- **Advisory**
+  - Implemented and active: `POST /dashboard/bots/:id/assistant-config/dry-run`
+  - returns trace-only proposal metadata (`LONG | SHORT | EXIT | NO_TRADE`) with
+    fail-closed outcomes.
+- **Operator-assisted**
+  - Planned, not yet implemented in this slice.
+  - would require explicit operator confirmation in separate product flow, and reuse of
+    existing bot/risk/trading command routes.
+- **Executable**
+  - Deferred and not implemented.
+  - would require separate product gating, persisted execution traces, and risk/product/security
+    approval as a new chain level.
+
 It does not currently claim an audited BACKTEST, PAPER, or LIVE trading
 decision-loop call site. Hot-path assistant orchestration is future/gated scope
 until implemented with fail-closed runtime integration, persisted traces, and
@@ -26,6 +40,7 @@ It may:
 - analyze structured context
 - coordinate bounded subagent roles
 - produce one deterministic proposal
+- provide operator-facing explainability traces
 
 It may not:
 - bypass safety guards
@@ -87,6 +102,27 @@ future hot-path assistant integration:
 
 ## Supporting Reference
 - `reference/assistant-runtime-contract.md`
+
+## Tool/Context Boundaries
+- Current boundaries:
+  - ownership-checked bot config/subagent reads
+  - deterministic dry-run planner/subagent orchestration
+  - structured trace output
+- Not in current slice:
+  - exchange adapter calls
+  - order/position mutation
+  - wallet allocation or entitlement mutation
+  - subscription/state mutation
+- Tool output never includes raw secrets.
+
+## Bypass Controls
+- AI trace output does not execute commands.
+- All money-impacting paths still route through existing non-AI command surfaces and their gate checks:
+  - bot ownership
+  - wallet mode/execution context
+  - subscription entitlements
+  - risk/pre-trade checks
+  - exchange execution authority.
 
 ## Related Files
 - [05 Strategy, Signal, and Decision Flow](./05_strategy-signal-and-decision-flow.md)

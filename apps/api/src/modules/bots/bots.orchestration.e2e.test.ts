@@ -222,5 +222,12 @@ describe('Bots module orchestration contract', () => {
     expect(Array.isArray(dryRunRes.body.outputs)).toBe(true);
     expect(dryRunRes.body.finalDecision).toBeDefined();
     expect(typeof dryRunRes.body.finalReason).toBe('string');
+
+    const liveDryRunRes = await owner.post(`/dashboard/bots/${botId}/assistant-config/dry-run`).send({
+      symbol: 'BTCUSDT',
+      intervalWindow: '5m',
+      mode: 'LIVE',
+    });
+    expect(liveDryRunRes.status).toBe(400);
   });
 });
