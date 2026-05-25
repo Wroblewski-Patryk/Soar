@@ -1,8 +1,6 @@
 import { createClient } from 'redis';
 import { prisma } from '../prisma/client';
 
-type RedisClient = ReturnType<typeof createClient>;
-
 type RuntimeDependencyIssue = {
   key: string;
   reason: string;
@@ -36,8 +34,6 @@ const isDatabaseRequired = () => process.env.DATABASE_REQUIRED !== 'false';
 
 let pingRedisOverride: (() => Promise<RedisPingResult>) | null = null;
 let pingDatabaseOverride: (() => Promise<DatabasePingResult>) | null = null;
-let redisClient: RedisClient | null = null;
-let redisClientUrl: string | null = null;
 
 const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number): Promise<T> => {
   let timer: NodeJS.Timeout | null = null;
@@ -62,37 +58,29 @@ const pingRedis = async (): Promise<RedisPingResult> => {
   }
 
   const timeoutMs = asPositiveInteger(process.env.READINESS_REDIS_TIMEOUT_MS, 1500);
+  const client = createClient({
+    url: redisUrl,
+    socket: {
+      connectTimeout: timeoutMs,
+      reconnectStrategy: false,
+    },
+  });
+
+  client.on('error', () => undefined);
+
   try {
-    if (!redisClient || redisClientUrl !== redisUrl) {
-      if (redisClient?.isOpen) {
-        await redisClient.quit().catch(() => undefined);
-      }
-      redisClient = createClient({
-        url: redisUrl,
-        socket: {
-          connectTimeout: timeoutMs,
-          reconnectStrategy: false,
-        },
-      });
-      redisClientUrl = redisUrl;
-      redisClient.on('error', () => undefined);
-    }
-    const client = redisClient;
-    if (!client.isOpen) {
-      await withTimeout(client.connect(), timeoutMs);
-    }
+    await withTimeout(client.connect(), timeoutMs);
     const response = await withTimeout(client.ping(), timeoutMs);
     return response === 'PONG'
       ? { ok: true }
       : { ok: false, reason: `unexpected PING response: ${response}` };
   } catch (error) {
-    if (redisClient?.isOpen) {
-      await redisClient.quit().catch(() => undefined);
-    }
-    redisClient = null;
-    redisClientUrl = null;
     const reason = error instanceof Error && error.message ? error.message : 'connection failed';
     return { ok: false, reason };
+  } finally {
+    if (client.isOpen) {
+      await client.disconnect().catch(() => undefined);
+    }
   }
 };
 
@@ -144,12 +132,5 @@ export const __runtimeDependencyReadinessInternals = {
   },
   setPingDatabaseForTests: (override: (() => Promise<DatabasePingResult>) | null) => {
     pingDatabaseOverride = override;
-  },
-  closeRedisClientForTests: async () => {
-    if (redisClient?.isOpen) {
-      await redisClient.quit().catch(() => undefined);
-    }
-    redisClient = null;
-    redisClientUrl = null;
   },
 };

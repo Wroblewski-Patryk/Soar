@@ -83,10 +83,11 @@ did not pass because the VPS became unreachable late in the observation.
   smoke passed on `287e77a1`. A fresh 30-minute SLO still failed with
   `/ready` availability `96.30%` and API average duration `572.85ms`, while
   API 5xx delta stayed `0` and worker health/ready stayed `100%`.
-- Runtime dependency readiness now reuses a persistent Redis client for the
-  public/protected readiness ping instead of connecting and disconnecting on
-  every `/ready` probe. Local validation passed focused health/readiness
-  tests, API typecheck, repository lint, and guardrails.
+- A persistent Redis readiness client experiment was deployed in `4c16305c`,
+  then treated as suspect after API `/health` began timing out shortly after
+  deploy. The Redis readiness change was reverted immediately while keeping the
+  fail-closed SLO/RC tooling hardening. Local rollback validation passed
+  focused health/readiness tests, API typecheck, and guardrails.
 
 ## Forbidden
 
