@@ -5120,7 +5120,7 @@ Last updated: 2026-05-26
     `33a2ebc468be3dbfab7c784f375672ebead5ae16`. Stale `soar-api` jobs for old
     SHAs were cancelled, one fresh `soar-api` redeploy finished on the same
     SHA, public API/Web smoke passed, and the Coolify queue was empty. Current
-    no-secret V1 preflight is public PASS and protected/formal BLOCKED.
+    no-secret V1 preflight is public PASS and protected/formal blocked.
     Evidence:
     `history/tasks/v1-coolify-deploy-queue-recovery-task-2026-05-10.md`,
     `history/plans/coolify-deploy-queue-recovery-33a2ebc4-2026-05-10.md`,
@@ -10618,16 +10618,16 @@ entries above:
 
 - Historical `V1EXCEL-04 ops(stage-refresh): rerun the latest authenticated stage release gate and smoke on the current candidate`
   - Scope: refresh stage rehearsal and smoke artifacts against the newest repository candidate instead of inheriting older activation evidence.
-  - 2026-04-29 status: BLOCKED. Public stage smoke is green, and dry-run rehearsal artifacts were regenerated, but authenticated stage OPS/private-route evidence remains blocked by missing credentials. Canonical status: `history/plans/v1excel-stage-refresh-2026-04-29.md`.
+  - 2026-04-29 status: blocked. Public stage smoke is green, and dry-run rehearsal artifacts were regenerated, but authenticated stage OPS/private-route evidence remains blocked by missing credentials. Canonical status: `history/plans/v1excel-stage-refresh-2026-04-29.md`.
 
 - Historical `V1EXCEL-05 ops(prod-refresh): rerun fresh production release-gate evidence families on the current candidate`
   - Scope: refresh prod release gate, post-deploy smoke, rollback proof, restore-drill proof, and related candidate-day artifacts.
-  - 2026-04-29 status: BLOCKED. Public prod smoke is green, but the prod release-gate dry-run still reports stale evidence families and protected OPS routes remain auth-gated from this session. Canonical status: `history/plans/v1excel-prod-refresh-2026-04-29.md`.
+  - 2026-04-29 status: blocked. Public prod smoke is green, but the prod release-gate dry-run still reports stale evidence families and protected OPS routes remain auth-gated from this session. Canonical status: `history/plans/v1excel-prod-refresh-2026-04-29.md`.
   - 2026-04-29 post-redeploy check: public prod smoke passed again on candidate `4514894127ad07cbe95415043658e10b8c0cf75d`; protected runtime and rollback probes still fail at the same `401` auth boundary. Follow-up note: `history/plans/v1excel-prod-post-deploy-check-2026-04-29.md`.
 
 - Historical `V1EXCEL-06 ops(runtime-observability): verify active LIVE worker/runtime diagnostics under current production truth`
   - Scope: confirm worker health, runtime freshness, event visibility, and operator diagnostics remain healthy under the current hardened `LIVE` candidate.
-  - 2026-04-29 status: BLOCKED. Stage and prod runtime observability probes both hit protected-route `401` boundaries without OPS auth; this proves the endpoint boundary but not current worker/runtime health. Canonical status: `history/plans/v1excel-runtime-observability-2026-04-29.md`.
+  - 2026-04-29 status: blocked. Stage and prod runtime observability probes both hit protected-route `401` boundaries without OPS auth; this proves the endpoint boundary but not current worker/runtime health. Canonical status: `history/plans/v1excel-runtime-observability-2026-04-29.md`.
   - 2026-05-01 production refresh: production runtime observability is green with authenticated evidence. Runtime freshness PASS, rollback guard PASS with `shouldRollback=false`, no reasons, no alerts, and `runningCount=4`. Stage runtime observability remains open. Task packet: `history/tasks/v1excel-06-prod-runtime-observability-task-2026-05-01.md`.
 
 - [x] `V1EXCEL-UNBLOCK ops(runbook): execute the final authenticated unblock sequence for GO readiness`
@@ -12088,3 +12088,30 @@ None.
 - Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain expected-SHA deploy smoke/readiness and worker readiness evidence with rollback note.
 - Evidence:
   `history/tasks/luc-202-no-stall-queue-expeditor-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-99 Resume Delta (issue_blockers_resolved, CTO)
+- Runtime binding presence restored in this runner (COOLIFY_BASE_URL/TOKEN/API_TOKEN present).
+- ops:protected-inputs:check moved from prior BLOCKED:0 to PARTIAL:9 for expected SHA 3fedb7a9170097b40accb6ccea1915064f383f11.
+- Temp expected-SHA smoke remains FAIL (fetch failed across API/Web/build-info).
+- New critical drift: production expected-SHA smoke for 3fedb7a9... now fails on web build-info mismatch (observed=71b8d503fd6fdfd7378dc67b2fa678799e2430f8).
+- Production control smoke for observed SHA 71b8d503... passes, confirming public stack drifted from prior parent expected SHA.
+- Disposition remains blocked; closure now additionally requires release-controller SHA reconciliation before parent LUC-98/LUC-47 unblock decision.
+
+
+
+
+## 2026-05-26 LUC-99 Resume Delta (finish_successful_run_handoff, Ops Release Lead)
+- Concrete recheck executed; lane remains blocked.
+- Protected-inputs: PARTIAL (9) for parent expected SHA 3fedb7a9....
+- Temp expected-SHA smoke: FAIL (fetch failed).
+- Prod expected-SHA smoke (3fedb7a9...): FAIL on web build-info mismatch; prod control smoke (71b8d503...): PASS.
+- Coolify resources snapshot now shows workers-market-stream status improvement to `running:unknown` (from prior exited:unhealthy), but no explicit readiness proof yet.
+- Remaining unblock gates: worker readiness proof + release-controller SHA reconciliation for parent closure packet.
+
+## 2026-05-26 LUC-99 Source-Scoped Recovery Delta (Ops Release Lead)
+- Concrete recheck executed in this heartbeat; disposition remains `blocked`.
+- Runtime bindings in this runner: `COOLIFY_BASE_URL/TOKEN/API_TOKEN` absent.
+- `ops:protected-inputs:check` for expected SHA `3fedb7a9170097b40accb6ccea1915064f383f11` -> `BLOCKED` (`0` matches).
+- Prod smoke for expected SHA still fails on build-info mismatch (observed `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`), while control smoke for observed SHA passes.
+- Temp smoke remains failed (`fetch failed`).
+- Unblock owner/action unchanged: Coolify operator + release controller must reconcile expected SHA and attach worker readiness recovery proof (or accepted deeper blocker packet) for parent closure (`LUC-98`/`LUC-47`).

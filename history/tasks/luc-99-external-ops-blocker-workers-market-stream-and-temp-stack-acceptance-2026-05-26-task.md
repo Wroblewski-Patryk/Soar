@@ -1,4 +1,4 @@
-﻿# Task
+# Task
 
 ## Header
 - ID: LUC-99
@@ -322,3 +322,58 @@ Leave a fresh evidence-backed disposition for LUC-99 and avoid stale `in_progres
   - unresolved gate remains authenticated worker-side closure for `workers-market-stream` or deeper authenticated Coolify blocker packet accepted by release controller.
 - Final disposition: `blocked`.
 - Unblock owner/action unchanged: Coolify operator + release controller.
+
+## 2026-05-26 Resume Delta (issue_blockers_resolved heartbeat, CTO)
+- Presence-only runtime check in this runner:
+  - COOLIFY_BASE_URL_PRESENT=True
+  - COOLIFY_TOKEN_PRESENT=True
+  - COOLIFY_API_TOKEN_PRESENT=True
+- Fresh checks executed:
+  - corepack pnpm run ops:protected-inputs:check -- --expected-sha 3fedb7a9170097b40accb6ccea1915064f383f11 -> PARTIAL (9 matching names)
+  - temp expected-SHA smoke (temp.soar/temp-api.soar) -> FAIL (fetch failed on API /health, API /ready, WEB /, WEB /api/build-info)
+  - prod expected-SHA smoke for 3fedb7a9170097b40accb6ccea1915064f383f11 -> FAIL (WEB /api/build-info gitSha mismatch observed 71b8d503fd6fdfd7378dc67b2fa678799e2430f8)
+  - prod control smoke for observed SHA 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 -> PASS
+- Gate interpretation:
+  - no-temp-stack decision remains accepted for temp acceptance routing,
+  - worker-side authenticated closure for workers-market-stream remains unresolved,
+  - new release-critical drift signal: production web build-info no longer matches expected SHA 3fedb7a9....
+- Final disposition for this heartbeat: blocked.
+- Unblock owner/action:
+  - Owner: Coolify operator + release controller.
+  - Action: reconcile deployment SHA drift (why production moved to 71b8d503...), refresh expected-SHA decision for parent closure, and provide worker-side readiness recovery proof or deeper blocker packet for workers-market-stream.
+
+
+
+
+## 2026-05-26 Resume Delta (finish_successful_run_handoff, Ops Release Lead)
+- Presence-only runtime check:
+  - COOLIFY_BASE_URL_PRESENT=True
+  - COOLIFY_TOKEN_PRESENT=True
+  - COOLIFY_API_TOKEN_PRESENT=True
+- Fresh verification:
+  - ops:protected-inputs:check for SHA 3fedb7a9170097b40accb6ccea1915064f383f11 -> PARTIAL (9 matching names)
+  - temp expected-SHA smoke (	emp.soar/	emp-api.soar) -> FAIL (fetch failed on API /health, API /ready, WEB /, WEB /api/build-info)
+  - prod smoke for expected SHA 3fedb7a9... -> FAIL on WEB /api/build-info mismatch (observed=71b8d503fd6fdfd7378dc67b2fa678799e2430f8)
+  - prod control smoke for observed SHA 71b8d503... -> PASS
+- Fresh read-only Coolify runtime snapshot:
+  - workers-market-stream (d2oo1wwy8i55q27e5mdky0i4) found with status unning:unknown
+  - updated_at=2026-05-26T17:40:57.000000Z
+  - git_commit_sha=HEAD
+- Gate interpretation:
+  - temp acceptance remains handled by accepted NO_TEMP_STACK decision,
+  - worker moved from exited:unhealthy to `running:unknown` (improvement, not final readiness proof),
+  - release SHA expectation still drifted from parent expected 3fedb7a9... to observed prod web 71b8d503....
+- Final disposition for this heartbeat: blocked.
+- Unblock owner/action:
+  - Owner: Coolify operator + release controller.
+  - Action: provide explicit readiness proof for workers-market-stream (not only running status) and reconcile parent expected-SHA decision (3fedb7a9... vs 71b8d503...) before LUC-98/LUC-47 closure.
+
+## 2026-05-26 Wake Delta (source_scoped_recovery_action, Ops Release Lead)
+- Fresh evidence was gathered in this heartbeat (no mutation):
+  - Coolify auth bindings absent in this runner (`COOLIFY_BASE_URL/TOKEN/API_TOKEN` not present).
+  - Protected-input readiness for expected SHA `3fedb7a9170097b40accb6ccea1915064f383f11` is `BLOCKED` (`0` matching names).
+  - Production smoke for expected SHA fails on web build-info mismatch (observed `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`).
+  - Production control smoke for observed SHA `71b8d503...` passes.
+  - Temp smoke remains failed (`fetch failed`) across required API/Web/build-info endpoints.
+- Final disposition in this wake remains `blocked`.
+- Unblock owner/action remains: Coolify operator + release controller must reconcile expected SHA and attach worker readiness recovery proof (or first-class deeper blocker packet) for parent closure (`LUC-98`/`LUC-47`).

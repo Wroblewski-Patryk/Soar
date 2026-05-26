@@ -11801,3 +11801,21 @@ Last updated: 2026-05-26
   Unblock owner/action remains unchanged: LUC-47 (Ops Release Lead + host operator) must publish temp-domain expected-SHA deploy smoke/readiness and worker readiness evidence with rollback note.
   Evidence:
   history/tasks/luc-202-no-stall-queue-expeditor-2026-05-26-task.md.
+
+- LUC-99 resume delta (2026-05-26, issue_blockers_resolved) executed with concrete revalidation and remains blocked.
+  Runtime Coolify auth bindings are present again in this runner; protected-input readiness improved to PARTIAL (9 matching names) for prior expected SHA 3fedb7a9170097b40accb6ccea1915064f383f11.
+  Temp expected-SHA smoke still fails (fetch failed), and a new release-critical drift was observed: production web build-info now reports 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 instead of 3fedb7a9....
+  Control smoke against observed SHA 71b8d503... passes, so parent closure must reconcile expected-SHA decision plus unresolved workers-market-stream readiness recovery/deeper-blocker evidence.
+
+
+
+
+- LUC-99 resume delta (2026-05-26, finish_successful_run_handoff) executed with concrete revalidation and remains blocked.
+  Runtime auth bindings were present; protected-input readiness stayed PARTIAL (9) for parent expected SHA 3fedb7a9....
+  Temp expected-SHA smoke remains failed, production expected-SHA smoke for 3fedb7a9... still fails on build-info mismatch, and production control smoke for observed SHA 71b8d503... passes.
+  Read-only Coolify snapshot now reports workers-market-stream as `running:unknown` (improved from exited:unhealthy) but without explicit readiness proof, so closure still requires worker-readiness evidence plus release-controller expected-SHA reconciliation.
+
+
+- `LUC-99` source-scoped recovery heartbeat (2026-05-26, Ops Release Lead) executed with concrete read-only checks and remains `blocked`.
+  In this runner, Coolify auth bindings are absent, protected-input readiness is `BLOCKED` (`0`), temp smoke remains failed (`fetch failed`), and production expected-SHA smoke still mismatches (`expected=3fedb7a9...`, `observed=71b8d503...`).
+  Control smoke for observed SHA passes; closure remains operator/release-controller owned (SHA reconciliation + worker readiness proof or accepted deeper blocker packet).
