@@ -66,3 +66,42 @@
   - Backtest -> paper/live reconciliation path is not release-safe until API smoke failures are resolved.
   - Prior adapter symlink EPERM remains an environment-level orchestration risk outside repo code.
 
+## Resume Delta (2026-05-26)
+- Reproduced focused backtests smoke via canonical runner:
+  - `pnpm run qa:smoke-e2e:repeatable -- --checks backtests --today 2026-05-26`
+  - artifact: `history/artifacts/qa-repeatable-smoke-e2e-2026-05-26.json`
+  - evidence: `history/evidence/qa-repeatable-smoke-e2e-2026-05-26.md`
+- Result: `FAIL` (`10` failed / `5` passed in `src/modules/backtests/backtests.e2e.test.ts`, duration `315534ms`).
+- Observed failure families:
+  - repeated timeout at `5000ms` in multiple backtests contract specs
+  - repeated FK cleanup failures in `beforeEach/cleanup` path (`prisma.user.deleteMany` at line `217`)
+  - inconsistent status assertions (`404 vs 200`, `500 vs 201`) indicating state contamination after cleanup failure
+- Updated QA conclusion:
+  - `test:go-live:api` is currently **red due to deterministic backtests e2e instability**, not a one-off flaky single assertion.
+  - Owner lane for fix should be backend (test isolation + cleanup order + timeout budget), with QA rerun gate on `qa:smoke-e2e:repeatable -- --checks backtests,api`.
+
+## Final Disposition
+- Status: `DONE` (issue scope completed).
+- Completed scope:
+  - baseline command set established,
+  - reproducible PASS/FAIL evidence captured,
+  - deterministic regression taxonomy documented.
+- Out-of-scope follow-up:
+  - backend repair of `backtests.e2e` cleanup/isolation defects.
+
+## Reopen Audit (2026-05-26T00:17Z)
+- Trigger: issue reopened via board comment (`capacity-controlled batch resume`).
+- Scope rule applied: narrow-lane only, no sibling-lane spawn/resume.
+- Action taken in this heartbeat:
+  - verified existing `DONE` evidence in `TASK_BOARD` and this task packet,
+  - no new test execution was required to satisfy issue scope.
+- Capacity-governor compliance:
+  - no parallel/sibling run activation from this lane,
+  - no expansion into backend remediation scope.
+- Final decision after reopen audit:
+  - keep `LUC-18` as `DONE`; unresolved `backtests.e2e` remediation remains external follow-up scope.
+
+## Handoff Closeout (2026-05-26T00:19Z)
+- Finish-successful-run handoff reviewed.
+- No new comment scope, blocker, or acceptance-criteria delta detected.
+- Lane remains closed as `DONE` with no additional execution required in this issue.
