@@ -2,6 +2,16 @@
 
 Last updated: 2026-05-26
 
+- `LUC-216 [Soar] Gap register and repair lane refresh` completed as a
+  delivery-coordination checkpoint. The canonical V1 gap register was
+  synchronized with current blocker truth: `GAP-L45-002` remains blocked under
+  `LUC-47` and now explicitly requires protected worker-readiness auth-path
+  evidence in closure routing; `GAP-L45-005` evidence now includes `LUC-216`
+  for docs/state parity tracking. This was a source-of-truth refresh only
+  (no code/deploy/runtime mutation). Evidence:
+  `history/tasks/luc-216-gap-register-and-repair-lane-refresh-2026-05-26-task.md`.
+  Finish-handoff continuation (`0/0` pending comments) confirmed no drift from
+  refreshed blocker routing; disposition remains `done`.
 - `COOLIFY-AUTO-DEPLOY-WORKER-RECOVERY-2026-05-26` completed as a bounded
   Ops/Release repair for the operator-reported Coolify push-deploy drift.
   The Soar project was found under the `LuckySparrow` team. `Auto Deploy` was
@@ -11858,3 +11868,100 @@ Last updated: 2026-05-26
   Disposition remains `cancelled` for duplicate consolidation.
   Evidence:
   history/tasks/luc-202-no-stall-queue-expeditor-2026-05-26-task.md.
+
+- `LUC-207` issue_reopened_via_comment heartbeat (2026-05-26) reconciled board comment `32ebd568-11b6-4ea5-9adf-dffe5e33ace7` and applied duplicate consolidation.
+  Canonical controller lane remains `LUC-45`; this lane is cancelled to avoid autonomous routine/controller duplication noise.
+  Scope remained coordination-only status governance with no commit/push/deploy/runtime mutation.
+  Disposition: `cancelled` (duplicate consolidation to `LUC-45`).
+  Evidence:
+  `history/tasks/luc-207-v1-audit-to-completion-controller-2026-05-26-task.md`.
+
+- `LUC-208 assigned heartbeat (2026-05-26)` executed one PM no-stall queue
+  expeditor checkpoint and remains `blocked`.
+  Wake payload was consumed from inline data first (`fallbackFetchNeeded=false`,
+  pending comments `0/0`) and introduced no new blocker-closure evidence.
+  Scope stayed PM coordination-only with fail-closed posture.
+  No commit/push/deploy/runtime mutation was performed.
+  Unblock owner/action remains unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+  Evidence:
+  `history/tasks/luc-208-no-stall-queue-expeditor-2026-05-26-task.md`.
+
+- `LUC-208` finish-handoff heartbeat (2026-05-26) reconciled from inline wake
+  payload first (`fallbackFetchNeeded=false`, pending comments `0/0`) and
+  remains `blocked`.
+  No new blocker-closure evidence arrived; scope stayed PM coordination-only
+  and fail-closed.
+  Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA smoke/readiness packet plus
+  worker readiness evidence with rollback note.
+  Evidence:
+  `history/tasks/luc-208-no-stall-queue-expeditor-2026-05-26-task.md`.
+
+- `LUC-99` child-completion reconciliation (2026-05-26) closed the external ops blocker via integrated child evidence.
+  `LUC-178` provided accepted `NO_TEMP_STACK` routing for temp acceptance, and `LUC-181` plus the Coolify recovery packet provided worker recovery/readback proof.
+  Parent closure payload for `LUC-98`/`LUC-47`/`LUC-12` is anchored to production SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`; LUC-99 disposition is now `done`.
+
+- `LUC-99` source-scoped recovery reconciliation (2026-05-26) corrected terminal status to `blocked` after concrete recheck.
+  Production parity on SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` still passes, but temp checks still fail (`fetch failed`) and worker probes remain protected (`401/401`), so acceptance evidence for terminal closure is incomplete.
+  Unblock remains operator-owned: authenticated worker readiness/log evidence (or accepted deeper-blocker packet) plus parent closure decision update.
+
+## 2026-05-26 Wake Delta (issue_assigned, Ops Release Lead, authenticated-boundary stability recheck)
+- Stage: `verification`
+- Scope: read-only verification only; no deploy/restart/runtime mutation.
+- Fresh command results:
+  - `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8`
+    => public checks `PASS`; protected `API /workers/ready -> 401`.
+  - `corepack pnpm run -s ops:deploy:smoke -- --base-url https://soar-temp.luckysparrow.ch --api-url https://temp-api.soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --skip-workers`
+    => `FAIL` (`fetch failed` across required API/Web/build-info endpoints).
+  - Presence-only auth/context check:
+    - `SOAR_API_TOKEN_PRESENT=False`
+    - `SOAR_API_KEY_PRESENT=False`
+    - `SOAR_SESSION_COOKIE_PRESENT=False`
+    - `COOLIFY_BASE_URL_PRESENT=True`
+    - `COOLIFY_TOKEN_PRESENT=True`
+    - `COOLIFY_API_TOKEN_PRESENT=True`
+- Interpretation:
+  - Production public SHA parity remains healthy on `71b8d503...`.
+  - Acceptance-grade worker readiness proof remains blocked on Soar app-level auth boundary (`/workers/ready`).
+  - Temp acceptance surface remains unreachable by direct smoke path.
+
+### Final Disposition
+- `blocked`
+
+### Unblock Owner / Action
+- Owner: Soar API auth credential owner + Coolify operator + release controller.
+- Action:
+  1. provide approved read-only app auth/session path that can pass `/workers/ready`,
+  2. attach authenticated readiness/log evidence for `workers-market-stream`,
+  3. publish parent closure decision update for `LUC-98` / `LUC-47` / `LUC-12` anchored to SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`.
+
+## 2026-05-26 Wake Delta (issue_continuation_needed, Ops runtime+smoke reconciliation)
+- Stage: `verification`
+- Scope: concrete read-only ops reconciliation; no deploy/restart/runtime mutation.
+- Fresh runtime signals:
+  - Coolify worker inventory:
+    - `WORKER_FOUND=True`
+    - `WORKER_STATUS=running:unknown`
+    - `WORKER_UPDATED_AT=2026-05-26T18:43:44.000000Z`
+    - `WORKER_ENV_ID=6`
+  - Coolify worker logs endpoint:
+    - `WORKER_LOGS_ENDPOINT=OK_NONEMPTY`
+- Fresh smoke checks for closure-target SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`:
+  - production full smoke => public checks `PASS`; protected `API /workers/ready -> 401`
+  - temp smoke (`--skip-workers`) => `FAIL` (`fetch failed` across required API/Web/build-info checks)
+- Interpretation:
+  - worker liveness is observable in Coolify (running state + non-empty logs),
+  - acceptance-grade readiness proof remains blocked on protected Soar app auth boundary (`/workers/ready`),
+  - temp direct acceptance path remains unavailable.
+
+### Final Disposition
+- `blocked`
+
+### Unblock Owner / Action
+- Owner: Soar API auth credential owner + Coolify operator + release controller.
+- Action:
+  1. provide approved read-only app auth/session path that can pass `/workers/ready`,
+  2. attach authenticated readiness proof (or equivalent protected readiness/log packet) for `workers-market-stream`,
+  3. publish parent closure decision update for `LUC-98` / `LUC-47` / `LUC-12` anchored to SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`.

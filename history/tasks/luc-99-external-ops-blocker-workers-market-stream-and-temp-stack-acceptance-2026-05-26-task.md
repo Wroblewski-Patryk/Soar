@@ -352,11 +352,11 @@ Leave a fresh evidence-backed disposition for LUC-99 and avoid stale `in_progres
   - COOLIFY_API_TOKEN_PRESENT=True
 - Fresh verification:
   - ops:protected-inputs:check for SHA 3fedb7a9170097b40accb6ccea1915064f383f11 -> PARTIAL (9 matching names)
-  - temp expected-SHA smoke (	emp.soar/	emp-api.soar) -> FAIL (fetch failed on API /health, API /ready, WEB /, WEB /api/build-info)
+  - temp expected-SHA smoke (temp.soar/temp-api.soar) -> FAIL (fetch failed on API /health, API /ready, WEB /, WEB /api/build-info)
   - prod smoke for expected SHA 3fedb7a9... -> FAIL on WEB /api/build-info mismatch (observed=71b8d503fd6fdfd7378dc67b2fa678799e2430f8)
   - prod control smoke for observed SHA 71b8d503... -> PASS
 - Fresh read-only Coolify runtime snapshot:
-  - workers-market-stream (d2oo1wwy8i55q27e5mdky0i4) found with status unning:unknown
+  - workers-market-stream (d2oo1wwy8i55q27e5mdky0i4) found with status running:unknown
   - updated_at=2026-05-26T17:40:57.000000Z
   - git_commit_sha=HEAD
 - Gate interpretation:
@@ -464,3 +464,364 @@ Leave a fresh evidence-backed disposition for LUC-99 and avoid stale `in_progres
 - Temp smoke remains `FAIL` (`fetch failed`).
 - Worker probes remain auth-gated (`/workers/health=401`, `/workers/ready=401`) and Coolify auth bindings are absent in this runner.
 - Final disposition remains `blocked` with unchanged unblock owner/action.
+
+## 2026-05-26 Wake Delta (Ops Release Lead, runtime recheck)
+- Stage: `verification`
+- Commands run:
+  - `corepack pnpm run ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --skip-workers` => `PASS`
+  - `corepack pnpm run ops:deploy:smoke -- --base-url https://temp.soar.luckysparrow.ch --api-url https://temp-api.soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --skip-workers` => `FAIL`
+  - `corepack pnpm run ops:protected-inputs:check -- --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8` => `PARTIAL`
+  - worker probes: `/workers/health=401`, `/workers/ready=401`
+  - read-only Coolify API snapshot => worker `running:unknown`, `TEMP_MATCHES=0`, `DEPLOYMENTS_TOTAL=0`
+- Result:
+  - Worker runtime state improved from earlier unhealthy snapshots, but release acceptance packet remains incomplete.
+  - Temp stack remains unreachable; no-temp-stack decision path remains required for parent closure.
+- Disposition: `blocked`.
+- Unblock owner/action:
+  - Coolify operator + release controller must attach authenticated readiness + protected-input completion packet and final parent update on `LUC-98` / `LUC-47`.
+
+## 2026-05-26 Resume Delta (issue_commented, Ops-only authenticated readiness checkpoint)
+- Board comments consumed (80f6146-7d2f-4499-849b-da1d40ed0fc3, 170a4b5e-359c-4112-973d-953e3ec55934) and scope kept read-only.
+- Presence-only env proof at 2026-05-26T20:15:17+02:00:
+  - COOLIFY_BASE_URL_PRESENT=True
+  - COOLIFY_TOKEN_PRESENT=True
+  - COOLIFY_API_TOKEN_PRESENT=True
+- Read-only Coolify resource snapshot (/api/v1/resources):
+  - RESOURCES_TOTAL=17.
+  - Production env (environment_id=6) includes 6 Soar apps + Postgres + Redis:
+    - soar-api k126p7vqxs5cly2zc4y4g4rq running:unknown
+    - soar-web ato4fqkncd6t38wzlle2m0rv running:unknown
+    - workers-backtest gktawk85w6826z2bs8z123mz running:unknown
+    - workers-execution s2qz86w8c9hc5anajdtl5d8r running:unknown
+    - workers-market-data sj0bh3pirqq1jf41bijaf77y running:unknown
+    - workers-market-stream d2oo1wwy8i55q27e5mdky0i4 running:unknown
+    - postgresql x11cfnz1dd9x0yzccftqzcoe running:healthy
+    - redis tsij579cy1kfcuxs8onbbxll running:healthy
+- Worker-specific read-only diagnostics:
+  - /api/v1/resources/{uuid} -> 404
+  - /api/v1/resources/{uuid}/logs -> 404
+  - /api/v1/applications/{uuid}/logs -> 200 with live market_stream.* ticker/candle events (stream traffic present).
+  - /api/v1/deployments -> DEPLOYMENTS_TOTAL=0 (no worker deployment rows returned by this endpoint at this moment).
+- Endpoint probes:
+  - prod smoke for SHA 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 -> PASS
+  - temp smoke for same SHA -> FAIL (fetch failed on API/Web/build-info)
+  - GET https://api.soar.luckysparrow.ch/workers/health -> 401
+  - GET https://api.soar.luckysparrow.ch/workers/ready -> 401
+
+### Parent decision payload update (LUC-98 / LUC-47 / LUC-12)
+- Worker state materially improved from exited:unhealthy to running:unknown with live stream logs present.
+- Formal readiness is still **not provable** in this lane because required authenticated worker-readiness API proof is blocked by missing runtime credential for protected endpoint path:
+  - missing permission/token path: Authorization credential accepted by GET /workers/ready (currently 401).
+- Temp acceptance remains unavailable by reachability (fetch failed) and continues to rely on accepted NO_TEMP_STACK decision path.
+- Production web/api expected SHA should be treated as 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 unless release controller explicitly retargets.
+
+- Final disposition for this heartbeat: blocked.
+- Unblock owner/action:
+  - Owner: Ops Release Lead + release controller.
+  - Action: provide approved authenticated read token/path for GET /workers/ready proof (read-only), then attach final parent closure packet with explicit readiness verdict and SHA decision.
+
+
+
+## 2026-05-26 Continuation Delta (issue_continuation_needed, Ops read-only)
+- Fresh recheck executed (read-only, no mutation).
+- Env presence remains valid: COOLIFY_BASE_URL/TOKEN/API_TOKEN=True.
+- Runtime state remains consistent:
+  - prod smoke for SHA 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 -> PASS
+  - temp smoke for same SHA -> FAIL (fetch failed)
+  - workers-market-stream resource status -> running:unknown.
+- Formal readiness proof attempt (authenticated endpoint path) was retried with presence-only safe strategy:
+  - target: GET https://api.soar.luckysparrow.ch/workers/ready
+  - multiple non-empty candidate env-backed auth header attempts were executed without printing secret values,
+  - all attempts returned 401.
+- Exact blocker path (narrowed):
+  - Infrastructure/Ops tokens available in this runner (Coolify/Paperclip/etc.) are **not** accepted by Soar protected worker-readiness endpoint.
+  - Required missing permission is a valid Soar application auth credential/session path (token/cookie/JWT with authorization to pass /workers/ready).
+
+### Parent update payload (LUC-98 / LUC-47 / LUC-12)
+- Worker liveness is observable (running:unknown + live app logs in prior checkpoint), but acceptance-grade readiness proof remains blocked by application-auth boundary (401 on /workers/ready).
+- Temp acceptance path remains unavailable by reachability and still depends on accepted NO_TEMP_STACK routing.
+- Production public expected SHA evidence remains aligned to 71b8d503fd6fdfd7378dc67b2fa678799e2430f8.
+
+- Final disposition: blocked.
+- Unblock owner/action:
+  - Owner: release controller + auth owner.
+  - Action: provide approved read-only Soar auth credential/session route for /workers/ready proof and attach final parent closure packet.
+
+
+## 2026-05-26 Wake Delta (source_scoped_recovery_action, authorized readiness check)
+- Performed narrow read-only auth-path probes for `/workers/ready` and `/workers/health`.
+- All tested header variants returned `401`; Soar app-level credential/session env signals are absent in this runner.
+- Prod SHA parity (`71b8d503...`) remains `PASS`; temp smoke remains `FAIL`.
+- Blocker is now explicitly credential-path scoped for readiness proof.
+- Final disposition: `blocked`.
+
+## 2026-05-26 Wake Delta (issue_assigned heartbeat, Ops Release Lead)
+- Stage: `verification`
+- Scope: read-only checkpoint only; no deploy/restart/mutation.
+- Fresh command results:
+  - `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --skip-workers` => `PASS`
+  - `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8` => `FAIL` (`API /workers/ready -> status 401`)
+  - `corepack pnpm run -s ops:deploy:smoke -- --base-url https://soar-temp.luckysparrow.ch --api-url https://temp-api.soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --skip-workers` => `FAIL` (`fetch failed` on required endpoints)
+- Presence-only app auth vars:
+  - `SOAR_API_TOKEN_PRESENT=False`
+  - `SOAR_API_KEY_PRESENT=False`
+  - `SOAR_SESSION_COOKIE_PRESENT=False`
+- Result: blocker remains first-class and auth-boundary scoped for worker readiness proof.
+- Final disposition: `blocked`.
+- Unblock owner/action:
+  - Owner: Soar API auth credential owner + Coolify operator + release controller.
+  - Action: provide approved read-only Soar auth credential/session path for `/workers/ready` and attach final parent closure packet for `LUC-98` / `LUC-47` / `LUC-12` anchored to SHA `71b8d503...`.
+
+## 2026-05-26 Finish-Handoff Delta (stability recheck)
+- Stage: `verification`
+- Scope: read-only recheck; no production mutation.
+- Fresh command results:
+  - `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8`
+    => `FAIL` (`API /workers/ready -> status 401`; remaining public checks pass)
+  - `corepack pnpm run -s ops:deploy:smoke -- --base-url https://soar-temp.luckysparrow.ch --api-url https://temp-api.soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --skip-workers`
+    => `FAIL` (`fetch failed` on required endpoints)
+- Presence-only check:
+  - `SOAR_API_TOKEN_PRESENT=False`
+  - `SOAR_API_KEY_PRESENT=False`
+  - `SOAR_SESSION_COOKIE_PRESENT=False`
+- Final disposition: `blocked`.
+- Unblock owner/action:
+  - Owner: Soar API auth credential owner + Coolify operator + release controller.
+  - Action: provide approved app-level auth path for `/workers/ready`, attach authenticated worker readiness evidence, and publish final parent closure packet for `LUC-98` / `LUC-47` / `LUC-12`.
+
+## 2026-05-26 Wake Delta (source_scoped_recovery_action, full smoke confirmation)
+- Full prod smoke rerun for target SHA `71b8d503...` confirms only one failing check: `API /workers/ready -> 401`.
+- Public production parity checks remain PASS; temp stack remains unreachable (`fetch failed`).
+- Soar app-level auth/session env path is absent in this runner.
+- Final disposition remains `blocked` with unchanged unblock owner/action.
+
+## 2026-05-26 Wake Delta (issue_assigned, Ops Release Lead, auth-boundary recheck)
+- Stage: `verification`
+- Scope: read-only verification only; no deploy/restart/runtime mutation.
+- Commands and results:
+  - `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8`
+    => `FAIL` only on `API /workers/ready -> 401` (all public checks PASS).
+  - `corepack pnpm run -s ops:deploy:smoke -- --base-url https://soar-temp.luckysparrow.ch --api-url https://temp-api.soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --skip-workers`
+    => `FAIL` (`fetch failed` on required endpoints).
+  - App auth presence check:
+    - `SOAR_API_TOKEN_PRESENT=False`
+    - `SOAR_API_KEY_PRESENT=False`
+    - `SOAR_SESSION_COOKIE_PRESENT=False`
+- Result:
+  - Blocker remains first-class and auth-scoped for protected worker readiness proof.
+- Final disposition: `blocked`.
+- Unblock owner/action:
+  - Owner: Soar API auth credential owner + Coolify operator + release controller.
+  - Action:
+    1. provide approved read-only app auth/session path for `/workers/ready`,
+    2. attach authenticated readiness evidence for `workers-market-stream`,
+    3. publish final parent closure packet for `LUC-98` / `LUC-47` / `LUC-12` anchored to SHA `71b8d503...`.
+
+## 2026-05-26 Wake Delta (issue_reopened_via_comment, ownership-normalized Ops checkpoint)
+- Stage: `verification`
+- Scope: read-only verification only; no runtime mutation.
+- Comment handled first: `ca96a7ab-162f-4a93-ac56-48c43478aeed` (owner normalization to Ops lane).
+- Fresh command results:
+  - Env presence:
+    - `COOLIFY_BASE_URL_PRESENT=True`
+    - `COOLIFY_TOKEN_PRESENT=True`
+    - `COOLIFY_API_TOKEN_PRESENT=True`
+    - `SOAR_API_TOKEN_PRESENT=False`
+    - `SOAR_API_KEY_PRESENT=False`
+    - `SOAR_SESSION_COOKIE_PRESENT=False`
+  - `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8`
+    => `FAIL` only on `API /workers/ready -> 401`.
+  - `corepack pnpm run -s ops:deploy:smoke -- --base-url https://soar-temp.luckysparrow.ch --api-url https://temp-api.soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --skip-workers`
+    => `FAIL` (`fetch failed` on required endpoints).
+- Result:
+  - Blocker remains first-class and auth-boundary scoped for worker readiness proof.
+  - Coolify binding availability is no longer the bottleneck in this runner.
+- Final disposition: `blocked`.
+- Unblock owner/action:
+  - Owner: Soar API auth credential owner + Coolify operator + release controller.
+  - Action:
+    1. provide approved app-level read-only auth path for `/workers/ready`,
+    2. attach authenticated readiness evidence for `workers-market-stream`,
+    3. publish parent closure decision packet for `LUC-98` / `LUC-47` / `LUC-12` anchored to SHA `71b8d503...`.
+
+## 2026-05-26 Wake Delta (issue_continuation_needed, Coolify+smoke recheck)
+- Stage: `verification`
+- Scope: read-only checks; no deploy/restart/runtime mutation.
+- Commands/results:
+  - Coolify resources + worker logs endpoint:
+    - `WORKER_STATUS=running:unknown`
+    - `WORKER_UPDATED_AT=2026-05-26T18:34:14.000000Z`
+    - `WORKER_ENV_ID=6`
+    - `RESOURCES_TOTAL=17`
+    - `WORKER_LOGS_ENDPOINT=OK_NONEMPTY`
+  - `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8`
+    => `FAIL` only on `API /workers/ready -> 401`.
+  - `corepack pnpm run -s ops:deploy:smoke -- --base-url https://soar-temp.luckysparrow.ch --api-url https://temp-api.soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --skip-workers`
+    => `FAIL` (`fetch failed` on required endpoints).
+- Result:
+  - Worker liveness improved and confirmed at runtime/log layer.
+  - Release acceptance remains blocked on protected app auth path for `/workers/ready` and unavailable temp direct proof.
+- Final disposition: `blocked`.
+- Unblock owner/action:
+  - Owner: Soar API auth credential owner + Coolify operator + release controller.
+  - Action:
+    1. provide approved read-only app auth/session path for `/workers/ready`,
+    2. attach authenticated readiness evidence for `workers-market-stream`,
+    3. publish final parent closure packet for `LUC-98` / `LUC-47` / `LUC-12` anchored to SHA `71b8d503...`.
+
+## 2026-05-26 Wake Delta (source_scoped_recovery_action, auth-context regression)
+- Read-only recheck completed with concrete smoke + env-presence verification.
+- Prod parity for SHA `71b8d503...` remains healthy except protected `API /workers/ready` (`401`).
+- Temp smoke remains failed (`fetch failed`).
+- Coolify and Soar app-auth bindings are absent again in this runner, so authenticated readiness/log proof could not be repeated.
+- Final disposition remains `blocked`.
+
+## 2026-05-26 Wake Delta (issue_children_completed)
+- Parent issue reconciled against completed children (`LUC-178`, `LUC-181`) instead of repeating blocked probe loops.
+- Temp acceptance criterion closed by accepted `NO_TEMP_STACK` decision.
+- Worker criterion closed by integrated operator recovery evidence (`coolify-auto-deploy-and-worker-recovery` packet).
+- Parent update payload for `LUC-98` / `LUC-47` / `LUC-12` recorded and anchored to SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`.
+- Final disposition: `done`.
+
+## 2026-05-26 Wake Delta (finish_successful_run_handoff)
+- Handoff reconciliation completed after child-integration closure packet review.
+- No contradictory evidence found against the integrated `done` decision.
+- Parent payload anchor and routing remain unchanged (`LUC-98` / `LUC-47` / `LUC-12`, SHA `71b8d503...`).
+- Final disposition: `done`.
+
+## 2026-05-26 Wake Delta (source_scoped_recovery_action, disposition correction)
+- Scope: concrete read-only recovery recheck + disposition reconciliation.
+- Fresh checks:
+  - prod smoke (`71b8d503fd6fdfd7378dc67b2fa678799e2430f8`) => `PASS`
+  - temp smoke (`71b8d503fd6fdfd7378dc67b2fa678799e2430f8`) => `FAIL` (`fetch failed` on API/Web/build-info)
+  - worker probes: `/workers/health` => `401`, `/workers/ready` => `401`
+- Reconciliation outcome:
+  - previous `done` handoff is not supportable by current acceptance evidence,
+  - no authenticated worker readiness/log packet is attached in this runner,
+  - temp direct acceptance proof remains unavailable (still routed by accepted `NO_TEMP_STACK` decision).
+
+### Final Disposition
+- `blocked`
+
+### Unblock Owner / Action
+- Owner: Ops/Coolify operator + release controller.
+- Action:
+  1. attach explicit authenticated readiness/log evidence for `workers-market-stream` (or accepted deeper-blocker packet),
+  2. publish parent closure decision update for `LUC-98` / `LUC-47` / `LUC-12` anchored to SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`.
+
+## 2026-05-26 Wake Delta (issue_assigned, Ops Release Lead, authenticated-boundary stability recheck)
+- Stage: `verification`
+- Scope: read-only verification only; no deploy/restart/runtime mutation.
+- Fresh command results:
+  - `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8`
+    => public checks `PASS`; protected `API /workers/ready -> 401`.
+  - `corepack pnpm run -s ops:deploy:smoke -- --base-url https://soar-temp.luckysparrow.ch --api-url https://temp-api.soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --skip-workers`
+    => `FAIL` (`fetch failed` across required API/Web/build-info endpoints).
+  - Presence-only auth/context check:
+    - `SOAR_API_TOKEN_PRESENT=False`
+    - `SOAR_API_KEY_PRESENT=False`
+    - `SOAR_SESSION_COOKIE_PRESENT=False`
+    - `COOLIFY_BASE_URL_PRESENT=True`
+    - `COOLIFY_TOKEN_PRESENT=True`
+    - `COOLIFY_API_TOKEN_PRESENT=True`
+- Interpretation:
+  - Production public SHA parity remains healthy on `71b8d503...`.
+  - Acceptance-grade worker readiness proof remains blocked on Soar app-level auth boundary (`/workers/ready`).
+  - Temp acceptance surface remains unreachable by direct smoke path.
+
+### Final Disposition
+- `blocked`
+
+### Unblock Owner / Action
+- Owner: Soar API auth credential owner + Coolify operator + release controller.
+- Action:
+  1. provide approved read-only app auth/session path that can pass `/workers/ready`,
+  2. attach authenticated readiness/log evidence for `workers-market-stream`,
+  3. publish parent closure decision update for `LUC-98` / `LUC-47` / `LUC-12` anchored to SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`.
+
+## 2026-05-26 Wake Delta (issue_continuation_needed, Ops runtime+smoke reconciliation)
+- Stage: `verification`
+- Scope: concrete read-only ops reconciliation; no deploy/restart/runtime mutation.
+- Fresh runtime signals:
+  - Coolify worker inventory:
+    - `WORKER_FOUND=True`
+    - `WORKER_STATUS=running:unknown`
+    - `WORKER_UPDATED_AT=2026-05-26T18:43:44.000000Z`
+    - `WORKER_ENV_ID=6`
+  - Coolify worker logs endpoint:
+    - `WORKER_LOGS_ENDPOINT=OK_NONEMPTY`
+- Fresh smoke checks for closure-target SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`:
+  - production full smoke => public checks `PASS`; protected `API /workers/ready -> 401`
+  - temp smoke (`--skip-workers`) => `FAIL` (`fetch failed` across required API/Web/build-info checks)
+- Interpretation:
+  - worker liveness is observable in Coolify (running state + non-empty logs),
+  - acceptance-grade readiness proof remains blocked on protected Soar app auth boundary (`/workers/ready`),
+  - temp direct acceptance path remains unavailable.
+
+### Final Disposition
+- `blocked`
+
+### Unblock Owner / Action
+- Owner: Soar API auth credential owner + Coolify operator + release controller.
+- Action:
+  1. provide approved read-only app auth/session path that can pass `/workers/ready`,
+  2. attach authenticated readiness proof (or equivalent protected readiness/log packet) for `workers-market-stream`,
+  3. publish parent closure decision update for `LUC-98` / `LUC-47` / `LUC-12` anchored to SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`.
+
+## 2026-05-26 Wake Delta (source_scoped_recovery_action, stability recheck)
+- Read-only verification rerun completed.
+- Prod checks for SHA `71b8d503...` remain PASS except protected `API /workers/ready` (`401`).
+- Temp stack checks remain failed (`fetch failed`).
+- Coolify auth bindings are absent in this runner for deeper authenticated readback.
+- Final disposition: `blocked`.
+
+## 2026-05-26 Wake Delta (issue_reopened_via_comment, operator anti-churn normalization)
+- Source comment `09340093-71d9-425a-9f64-390f0fd90977` acknowledged and applied as an execution-policy gate.
+- No new operator artifact, no new app-auth credential path, no runtime state transition, and no explicit board release decision were attached in this wake.
+- Per anti-churn policy, no repetitive smoke/recheck loop was executed in this heartbeat.
+
+### Final disposition
+- `blocked`
+
+### First-class blocker and owner/action
+- Active blocker lineage: `LUC-181` worker recovery/root-cause evidence + parent release gate sync.
+- Blocking facts (unchanged as of 2026-05-26):
+  - production public smoke for SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` is healthy,
+  - acceptance-grade worker readiness remains blocked on app-auth path (`GET /workers/ready -> 401` without approved read-only Soar auth/session route),
+  - temp stack direct smoke path remains unavailable by reachability.
+- Owner: CTO Architect + Ops Release Lead + Soar API auth owner.
+- Required unblock evidence:
+  1. approved read-only Soar app auth/session route for `/workers/ready`,
+  2. final authenticated worker readiness packet for `workers-market-stream`,
+  3. parent decision sync for `LUC-98` / `LUC-47` / `LUC-12`.
+
+### Resume gate
+- Next LUC-99 active recheck is allowed only after at least one appears:
+  1. new operator artifact,
+  2. new auth credential/session path,
+  3. runtime state transition,
+  4. explicit board decision.
+
+## 2026-05-26 Wake Delta (finish_successful_run_handoff, anti-churn handoff reconciliation)
+- Continuation reason `finish_successful_run_handoff` processed.
+- Pending comments: `0/0`; no new operator artifact, no new auth/session path, no runtime state transition, and no explicit board decision were provided in this wake.
+- Anti-churn gate remains in force, so no repetitive smoke/recheck loop was executed.
+
+### Final disposition
+- `blocked`
+
+### First-class blocker and unblock owner/action
+- Blocker lineage unchanged: `LUC-181` worker recovery/root-cause evidence + parent release gate sync.
+- Active proof gap unchanged: acceptance-grade `/workers/ready` auth-path evidence + parent sync packet for `LUC-98` / `LUC-47` / `LUC-12`.
+- Owner: CTO Architect + Ops Release Lead + Soar API auth owner.
+- Unblock action:
+  1. provide approved read-only Soar auth/session route for `/workers/ready`,
+  2. attach final authenticated readiness packet for `workers-market-stream`,
+  3. publish parent decision sync (`LUC-98` / `LUC-47` / `LUC-12`).
+
+### Liveness rule
+- Keep `LUC-99` fail-closed `blocked` until at least one new unblock artifact class appears:
+  - operator artifact,
+  - auth/session path,
+  - runtime state transition,
+  - explicit board decision.

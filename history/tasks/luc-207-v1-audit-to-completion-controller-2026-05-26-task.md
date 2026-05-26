@@ -1,0 +1,74 @@
+# LUC-207 - V1 Audit-To-Completion Controller (2026-05-26)
+
+## Context
+- Wake reason: `issue_assigned`.
+- Latest wake payload status: `in_progress`, pending comments `0/0`,
+  `fallbackFetchNeeded=false`.
+- Lane scope is delivery-lead coordination for V1 audit-to-completion control.
+
+## Goal
+- Execute one concrete controller heartbeat for `LUC-207` and leave a durable,
+  fail-closed disposition with explicit unblock owner/action.
+
+## Scope
+- Coordination-only blocker reconciliation for V1 audit-to-completion control.
+- Source-of-truth updates only: `TASK_BOARD`, `PROJECT_STATE`, `next-steps`,
+  and this task packet.
+
+## Implementation Plan
+1. Acknowledge inline wake payload first and confirm no new unblock evidence.
+2. Reconcile blocker topology against canonical parent bridge (`LUC-45`).
+3. Publish durable state updates in canonical project files.
+4. Keep disposition fail-closed until blocker evidence is attached.
+
+## Constraints
+- No feature/runtime/deploy mutation in this lane.
+- No commit/push required for this heartbeat.
+- Preserve first-class blocker contract: `LUC-47` owner/action unchanged.
+
+## Acceptance Criteria
+- `LUC-207` appears in canonical state artifacts with explicit disposition.
+- Disposition is non-ambiguous (`blocked` with concrete owner/action).
+- Wake-first reconciliation is recorded (no fallback fetch, no pending comments).
+
+## Definition of Done
+- [x] Durable task packet created for `LUC-207`.
+- [x] `TASK_BOARD` updated with checkpoint and disposition.
+- [x] `PROJECT_STATE` updated with same blocker contract.
+- [x] `next-steps` updated with exact next action.
+
+## Result Report
+- Outcome: `blocked` (fail-closed), actionable blocker unchanged.
+- Unblock owner/action:
+  `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain
+  expected-SHA deploy smoke/readiness and worker readiness evidence with
+  rollback note.
+- Continuation delta: `issue_assigned` reconciled from inline wake payload
+  (`fallbackFetchNeeded=false`), pending comments `0/0`, no new
+  blocker-closure evidence, and unchanged fail-closed disposition.
+- Files changed:
+  - `.codex/context/TASK_BOARD.md`
+  - `.codex/context/PROJECT_STATE.md`
+  - `.agents/state/next-steps.md`
+  - `history/tasks/luc-207-v1-audit-to-completion-controller-2026-05-26-task.md`
+
+## Continuation Delta - finish_successful_run_handoff
+- Wake consumed from inline payload first (`fallbackFetchNeeded=false`, pending comments `0/0`).
+- No new blocker-closure evidence arrived in this heartbeat.
+- Scope remained coordination-only and fail-closed (no code/runtime/deploy mutation).
+- Disposition remains `blocked` with unchanged unblock owner/action on `LUC-47`
+  (`Ops Release Lead` + host operator).
+
+## Continuation Delta - source_scoped_recovery_action
+- Wake consumed from inline payload first (`fallbackFetchNeeded=false`, pending comments `0/0`).
+- No new blocker-closure evidence arrived in this heartbeat.
+- Scope remained coordination-only and fail-closed (no code/runtime/deploy mutation).
+- Disposition remains `blocked` with unchanged unblock owner/action on `LUC-47`
+  (`Ops Release Lead` + host operator).
+
+## Continuation Delta - issue_reopened_via_comment
+- Board comment `32ebd568-11b6-4ea5-9adf-dffe5e33ace7` acknowledged and applied.
+- Reconciliation result: `LUC-207` is a duplicate of canonical controller lane
+  `LUC-45`; this lane is cancelled to reduce routine/controller noise.
+- Scope remained coordination-only status governance (no code/runtime/deploy mutation).
+- Final disposition for this heartbeat: `cancelled` (duplicate consolidation to `LUC-45`).
