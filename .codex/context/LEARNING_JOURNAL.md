@@ -20,6 +20,23 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-05-26 - Check Coolify Auto Deploy before code-level deploy debugging
+- Context: operator reported that Coolify deploys were not happening after Git pushes and one worker deployment hung for many hours before cancellation.
+- Symptom: production stayed on the pushed `origin/main` SHA while local work was ahead, `workers-market-stream` was exited, and a long webhook deployment had failed/canceled in Coolify.
+- Root cause: all six existing Soar Coolify Applications had `Auto Deploy` disabled even though the official Git App source path was configured.
+- Guardrail: before diagnosing app code, Dockerfiles, or GitHub webhook payloads, check the active Coolify team, project resources, `Advanced > Auto Deploy`, official Git App source settings, deployment queue status, and resource liveness.
+- Preferred pattern:
+```powershell
+node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha <origin-main-sha> --no-workers
+git rev-parse HEAD
+git rev-parse origin/main
+git rev-list --count origin/main..HEAD
+```
+- Avoid: retrying the same deployment or chasing code changes when the deploy trigger itself is disabled; avoid storing Coolify credentials or secret env values in evidence.
+- Evidence:
+  `history/tasks/coolify-auto-deploy-and-worker-recovery-2026-05-26-task.md`,
+  `history/evidence/coolify-auto-deploy-and-worker-recovery-2026-05-26.md`.
+
 ### 2026-05-26 - Prevent Codex auth symlink bootstrap collisions before runtime heartbeats
 - Context: repeated `LUC-47` continuation runs failed before lane logic with adapter bootstrap errors.
 - Symptom: adapter exits with `EEXIST` while creating

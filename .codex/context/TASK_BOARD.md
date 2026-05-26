@@ -2,6 +2,115 @@
 
 Last updated: 2026-05-26
 
+## 2026-05-26 Coolify Auto Deploy And Worker Recovery
+- Operator-reported Coolify deploy drift investigated directly in the
+  `LuckySparrow` team Soar project.
+- Root cause for push-deploy behavior: `Auto Deploy` was disabled on all six
+  Soar Applications despite the official Git App source path.
+- Action taken:
+  - `Auto Deploy` enabled and saved for `soar-api`, `soar-web`,
+    `workers-backtest`, `workers-execution`, `workers-market-data`, and
+    `workers-market-stream`.
+  - `workers-market-stream` recovered with one manual deployment:
+    `gqpmafky0oe2jr3rszkov2is`, commit
+    `3fedb7a9170097b40accb6ccea1915064f383f11`, status `Success`, duration
+    `05m 24s`.
+- Post-repair resource readback: API, Web, all four workers, PostgreSQL, and
+  Redis are `running`.
+- Public no-worker smoke on expected SHA `3fedb7a9...` passed for API
+  `/health`, API `/ready`, Web `/`, and Web `/api/build-info`.
+- Residual release risk: protected worker-token readiness, authenticated app
+  journeys, release-controller signoff, SLO/RC, restore/rollback, and any LIVE
+  mutation approval remain separate gates.
+- Source-control caveat: local `HEAD` is `62e8c4c7...` and is `38` commits
+  ahead of `origin/main`; Coolify production remains on pushed SHA
+  `3fedb7a9...` until coherent work is committed and pushed.
+- Evidence:
+  - `history/tasks/coolify-auto-deploy-and-worker-recovery-2026-05-26-task.md`
+  - `history/evidence/coolify-auto-deploy-and-worker-recovery-2026-05-26.md`
+
+## 2026-05-26 LUC-179 Finish-Handoff Recheck
+- Continuation `finish_successful_run_handoff` reconciled with no pending
+  comments (`0/0`) and no new unblock evidence.
+- Fresh heartbeat checks:
+  - prod expected-SHA smoke (`3fedb7a9...`) -> `PASS`
+  - temp-domain smoke (`soar-temp`) -> `FAIL` (`fetch failed`)
+  - SHA-bound operator packet check -> `PASS`
+- Scope stayed verification-only; no deploy/restart/rollback mutation.
+- Disposition remains `blocked`.
+- Unblock owner/action unchanged: Coolify operator + release controller must
+  accept the no-temp-stack decision packet or restore temp-stack acceptance
+  evidence.
+
+## 2026-05-26 LUC-179 Coolify Worker Recovery Or No-Temp-Stack Decision
+- Wake `issue_assigned` processed as critical Ops lane checkpoint for
+  `LUC-178` closure path.
+- Concrete action executed in this heartbeat:
+  - production expected-SHA smoke (`3fedb7a9...`) rerun -> `PASS`
+  - temp-domain smoke rerun -> `FAIL` (`fetch failed`)
+  - protected-input readiness -> `BLOCKED` (`0` matching names)
+  - read-only Coolify snapshot: `RESOURCES_TOTAL=17`, `TEMP_MATCHES=0`,
+    `APPLICATIONS_TOTAL=13`, `WORKER_APP=NOT_FOUND`, `DEPLOYMENTS_TOTAL=5`,
+    `WORKER_DEPLOYMENTS=0`
+- Durable output: explicit decision packet
+  `history/evidence/luc-178-no-temp-stack-decision-packet-2026-05-26.md`
+  with decision `NO_TEMP_STACK`.
+- Disposition: `blocked`.
+- Unblock owner/action:
+  - Coolify operator + release controller must either accept the no-temp-stack
+    packet for downstream closures or restore temp-stack route and attach full
+    acceptance packet (`temp-api`, `temp-web`, expected-SHA build-info, worker
+    readiness, rollback note).
+- Evidence:
+  - `history/tasks/luc-179-coolify-worker-recovery-or-no-temp-stack-decision-2026-05-26-task.md`
+  - `history/evidence/luc-179-coolify-worker-recovery-or-no-temp-stack-decision-2026-05-26.md`
+
+## 2026-05-26 LUC-175 Source-Control Queue Executor Gate
+- Wake `issue_assigned` processed as critical delivery-lead queue-gate
+  checkpoint for `LUC-103-P6`.
+- Scope remained coordination-only and fail-closed; no product/runtime
+  implementation, commit/push, or deploy mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+- Evidence:
+  `history/tasks/luc-175-source-control-queue-executor-gate-2026-05-26-task.md`.
+- Continuation `finish_successful_run_handoff` reconciled with no pending human
+  unblock input (`0/0`) and no new blocker-closure evidence.
+- Scope remained coordination-only and fail-closed.
+- Disposition remains `blocked` with unchanged unblock owner/action:
+  `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain
+  expected-SHA deploy smoke/readiness and worker readiness evidence with
+  rollback note.
+
+## 2026-05-26 LUC-174 No-Stall Queue Expeditor
+- Wake `issue_assigned` processed with concrete PM queue-expeditor checkpoint.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+- Evidence:
+  `history/tasks/luc-174-no-stall-queue-expeditor-2026-05-26-task.md`.
+- Continuation `finish_successful_run_handoff` reconciled with no pending
+  human unblock input (`0/0`) and no new blocker-closure evidence.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- Capacity governor preserved: no wake/reassign/reopen/new-lane action.
+- Disposition remains `blocked` with unchanged unblock owner/action:
+  `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain
+  expected-SHA deploy smoke/readiness and worker readiness evidence with
+  rollback note.
+- Continuation `source_scoped_recovery_action` reconciled from inline wake
+  payload first: no pending human unblock input (`0/0`) and no new
+  blocker-closure evidence.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- Capacity governor preserved: no wake/reassign/reopen/new-lane action.
+- Disposition remains `blocked` with unchanged unblock owner/action:
+  `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain
+  expected-SHA deploy smoke/readiness and worker readiness evidence with
+  rollback note.
 ## 2026-05-26 LUC-171 LUC-169 Provenance Packet Closure
 - Wake `issue_assigned` processed as strict evidence-only provenance closure
   lane for completed `LUC-169`.
@@ -11761,3 +11870,158 @@ None.
 - Cookbook v4 is aligned with canonical manifest v4 and supersedes cookbook v3 for execution.
 - Disposition remains `blocked` pending lane-by-lane closure execution.
 - Evidence: `history/tasks/luc-103-source-control-closure-2026-05-26-task.md`.
+
+
+## 2026-05-26 LUC-175 Source-Control Queue Executor Gate (`source_scoped_recovery_action`)
+- Inline wake payload was reconciled first (`fallback fetch: no`) with no pending human unblock input (`0/0`) and no new blocker-closure evidence.
+- Scope remained coordination-only and fail-closed; capacity governor preserved (`one live execution lane`).
+- Disposition remains `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain expected-SHA deploy smoke/readiness and worker readiness evidence with rollback note.
+- Evidence: `history/tasks/luc-175-source-control-queue-executor-gate-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-99 Reopened-Comment Controlled Restart (Ops Single Lane)
+- Board comment `0037e63d-0ec3-467c-ad4b-04c281f4d8a7` acknowledged and executed as a strict single-lane, read-only restart.
+- Fresh root blocker state is unchanged:
+  - `workers-market-stream` (`d2oo1wwy8i55q27e5mdky0i4`) => `exited:unhealthy`
+  - worker deployment queue still contains queued entry (`toi8dv1ls4oswrysgkfzxznb`, `status=queued`, `commit=HEAD`)
+  - Coolify resource inventory has no temp stack entries (`TEMP_MATCHES=0`)
+  - temp-domain expected-SHA smoke remains `FAIL` (fetch failures)
+  - prod expected-SHA smoke remains `PASS`
+  - public worker readiness endpoints remain auth-protected (`401`)
+- Disposition: `blocked`.
+- Unblock owner/action reduced to one packet: Coolify operator resolves queue + restores worker health; release controller records either full temp acceptance packet or explicit no-temp-stack decision for parent closures.
+
+## 2026-05-26 LUC-99 Finish-Handoff Stability Recheck
+- Read-only recheck performed; no state transition observed.
+- `workers-market-stream` remains `exited:unhealthy`; matching deployment remains `queued` (`toi8dv1ls4oswrysgkfzxznb`); `TEMP_MATCHES=0`; temp smoke still fails.
+- Disposition remains `blocked` with unchanged single owner/action packet.
+
+## 2026-05-26 LUC-99 Source-Scoped Recovery Recheck (Ops)
+- Concrete recheck executed in this heartbeat.
+- Temp smoke remains `FAIL` (`fetch failed` for temp API/Web/build-info).
+- Production expected-SHA smoke remains `PASS`.
+- Protected-input readiness remains `BLOCKED` (`0` matches).
+- Runtime Coolify auth bindings remain absent.
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged: Coolify operator + release controller must recover temp stack/authenticated Coolify path and provide closure evidence.
+
+## 2026-05-26 LUC-99 Child-Issue Completion Integration
+- Child completion (`LUC-178`) integrated as accepted `NO_TEMP_STACK` decision for this release cycle.
+- Temp-domain acceptance gate is now explicitly closed by decision path.
+- Remaining unresolved gate in this runner: authenticated Coolify worker-side closure for `workers-market-stream`.
+- Fresh runtime/smoke state:
+  - Coolify auth bindings absent,
+  - production expected-SHA smoke `PASS`,
+  - protected-input readiness `BLOCKED` (`0` matches).
+- Final disposition for this heartbeat: `blocked`.
+
+## 2026-05-26 LUC-99 Continuation Recheck
+- Concrete continuation recheck executed.
+- Coolify bindings absent in this runner.
+- Temp smoke remains `FAIL` (`fetch failed`), prod expected-SHA smoke remains `PASS`.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged: Coolify operator + release controller.
+
+## 2026-05-26 LUC-99 Resume Delta Recheck (source_scoped_recovery_action, Portfolio Director)
+- Concrete continuation rerun executed in this heartbeat.
+- Runtime bindings remain absent: `COOLIFY_BASE_URL=False`, `COOLIFY_TOKEN=False`, `COOLIFY_API_TOKEN=False`.
+- Fresh results:
+  - protected-input readiness: `BLOCKED` (`0` matching names),
+  - temp expected-SHA smoke: `FAIL` (`fetch failed`),
+  - prod expected-SHA smoke: `PASS`.
+- Gate status in this issue:
+  - temp-domain criterion remains closed by accepted `NO_TEMP_STACK` decision,
+  - remaining open criterion is worker-side authenticated Coolify closure evidence for `workers-market-stream` (or deeper blocker packet).
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged: Coolify operator + release controller.
+
+## 2026-05-26 LUC-99 Heartbeat Recheck (Ops Release Lead)
+- Presence-only env check is restored in runner: COOLIFY_BASE_URL=True, COOLIFY_TOKEN=True, COOLIFY_API_TOKEN=True.
+- Rechecks: protected-input readiness BLOCKED (0 matches), temp expected-SHA smoke FAIL (fetch failed), prod expected-SHA smoke PASS.
+- Disposition remains blocked: temp criterion remains satisfied via accepted NO_TEMP_STACK; unresolved closure item is worker-side authenticated proof/recovery for workers-market-stream plus protected-input readiness closure for expected SHA.
+
+## 2026-05-26 LUC-99 Resume Heartbeat Reconciliation (Ops Release Lead)
+- Coolify auth bindings present in runner; prod smoke PASS; temp smoke FAIL.
+- Read-only Coolify API confirms worker `d2oo1wwy8i55q27e5mdky0i4` remains `exited:unhealthy`, `TEMP_MATCHES=0`, and no current worker-linked deployment rows in `/deployments` snapshot.
+- Disposition remains `blocked`; owner/action unchanged: Coolify operator must provide worker recovery/readiness proof or deeper blocker packet for parent closure routing.
+
+## 2026-05-26 LUC-99 Deeper Blocker Packet (Ops Release Lead)
+- Read-only diagnostics confirm API-surface limitation for deeper logs: `/api/v1/resources/{uuid}` and `/api/v1/resources/{uuid}/logs` return `404` while `/api/v1/resources` remains accessible.
+- Authoritative resource inventory still reports `workers-market-stream` as `exited:unhealthy`; temp expected-SHA smoke still fails; prod expected-SHA smoke passes.
+- `ops:protected-inputs:check` improved to `PARTIAL` (9 matches) but closure packet is still incomplete.
+- Disposition remains `blocked`; next unblock requires operator-side logs/root-cause or worker recovery proof for parent closure routing.
+
+## 2026-05-26 LUC-99 Source-Scoped Recovery Recheck (post deeper-blocker)
+- Concrete recheck executed.
+- Protected-input readiness is `BLOCKED` (`0` matches) in this run (regression vs prior `PARTIAL` signal).
+- Temp expected-SHA smoke remains `FAIL`; prod expected-SHA smoke remains `PASS`.
+- Coolify auth bindings still absent in this runner.
+- Final disposition: `blocked` with unchanged unblock owner/action.
+
+## 2026-05-26 LUC-181 Workers-Market-Stream Root-Cause Packet (Ops)
+- Concrete issue-scoped packet published: `history/evidence/luc-181-workers-market-stream-operator-log-root-cause-packet-2026-05-26.md`.
+- Fresh checks in this heartbeat:
+  - prod expected-SHA smoke -> `PASS`
+  - temp expected-SHA smoke -> `FAIL` (`fetch failed`)
+  - protected-input readiness -> `PARTIAL` (9 matching names)
+  - Coolify resource inventory confirms `workers-market-stream` (`d2oo1wwy8i55q27e5mdky0i4`) remains `exited:unhealthy`.
+- Deeper log-path blocker remains explicit: `/api/v1/resources/{uuid}` and `/api/v1/resources/{uuid}/logs` return `404` in this runner.
+- Final disposition: `blocked`.
+- Unblock owner/action: Coolify operator + release controller must extract runtime logs from available authenticated Coolify path, publish root-cause statement, and either recover worker readiness or accept deeper blocker decision.
+
+## 2026-05-26 LUC-181 Resume Delta (root-cause hardening)
+- Added direct application-log endpoint proof for worker root-cause packet:
+  - `/api/v1/applications/d2oo1wwy8i55q27e5mdky0i4/logs` returns `400` with `Application is not running.`
+- This upgrades root-cause evidence from inventory-only (`exited:unhealthy`) to runtime-layer non-running confirmation.
+- Parent blocker chain updated in `history/evidence/luc-99-external-ops-blocker-workers-market-stream-and-temp-stack-acceptance-2026-05-26.md`.
+- Disposition for LUC-181 heartbeat: `blocked`.
+
+## 2026-05-26 LUC-181 Disposition Normalization (CTO heartbeat)
+- Scope: blocker-state normalization only (no deploy/restart/recovery mutation).
+- Reason: `in_review` was ambiguous without a concrete reviewer/approval interaction path.
+- Canonical fail-closed disposition for this lane is now explicit: `blocked`.
+- Unblock owner/action:
+  - Owner: Coolify operator + release controller.
+  - Action: attach one closure packet for this release cycle:
+    - authenticated worker runtime/container logs + timestamped root-cause + recovery/readiness proof, or
+    - explicit accepted deeper-blocker decision replacing direct recovery requirement.
+
+## 2026-05-26 LUC-181 Reopen Comment Reconciliation (control-plane sync)
+- Board comment `f9537967-1075-4717-8c68-f194cc573da1` acknowledged.
+- Control-plane status is aligned with the CTO lane disposition: `blocked` fail-closed.
+- No new unblock evidence arrived in this wake; owner/action remains unchanged.
+- No production mutation performed in this heartbeat.
+
+## 2026-05-26 LUC-181 Finish-Handoff Reconciliation
+- Continuation `finish_successful_run_handoff` reconciled with no pending comments (`0/0`) and no new unblock evidence.
+- Scope remained status-only for this issue; no deploy/restart/recovery mutation executed.
+- Disposition remains `blocked`.
+- Unblock owner/action unchanged:
+  - Owner: Coolify operator + release controller.
+  - Action: attach one closure packet (authenticated worker logs + recovery/readiness proof, or accepted deeper-blocker decision for this release cycle).
+
+## 2026-05-26 LUC-181 Source-Scoped Recovery Reconciliation
+- Continuation `source_scoped_recovery_action` reconciled from inline wake payload first (`fallbackFetchNeeded=false`).
+- Pending comments remained `0/0`; no new unblock evidence arrived.
+- Scope remained status-only governance; no deploy/restart/recovery mutation executed.
+- Disposition remains fail-closed `blocked`.
+- Unblock owner/action unchanged:
+  - Owner: Coolify operator + release controller.
+  - Action: attach one closure packet (authenticated worker logs + recovery/readiness proof, or accepted deeper-blocker decision for this release cycle).
+
+## 2026-05-26 LUC-181 Reopen Delta - Decision Gate Bound
+- New board comment acknowledged: `a3df1eb9-be8d-40a8-a84f-1f10a30ab6e1`.
+- Operator gate normalization is now bound to request-confirmation interaction:
+  `59c011b0-cc92-47b4-ae72-2a039556dd93`.
+- Decision branches captured for release control:
+  - `accept`: approve only the narrow `workers-market-stream` production recovery/readiness lane.
+  - `reject`: keep production untouched and accept existing runtime evidence as deeper-blocker decision for this release cycle.
+- No production mutation was performed in this heartbeat.
+- Heartbeat disposition: `in_review` (reviewer/approver path: `local-board` via interaction `59c011b0-cc92-47b4-ae72-2a039556dd93`).
+
+## 2026-05-26 LUC-181 Source-Scoped Recovery Action Reconciliation (decision gate pending)
+- Wake `source_scoped_recovery_action` consumed from inline payload (`fallbackFetchNeeded=false`); scope stayed issue-local for `LUC-181`.
+- Local source-of-truth scan confirms no newer decision artifact than interaction `59c011b0-cc92-47b4-ae72-2a039556dd93` and no new operator log/recovery packet.
+- No production mutation was executed in this heartbeat.
+- Heartbeat disposition: `in_review` (reviewer path remains `local-board` via interaction `59c011b0-cc92-47b4-ae72-2a039556dd93`).
+- If board rejects, lane closes as accepted deeper-blocker for this cycle; if board accepts, execute only narrow worker recovery/readiness lane.

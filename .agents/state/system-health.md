@@ -1,8 +1,21 @@
 # System Health
 
-Last updated: 2026-05-25
+Last updated: 2026-05-26
 
 ## Current Readiness Checkpoint
+
+- `COOLIFY-AUTO-DEPLOY-WORKER-RECOVERY-2026-05-26` VERIFIED for the bounded
+  deployment-automation repair. Coolify `Auto Deploy` is restored on the six
+  existing Soar Applications, `workers-market-stream` recovered with successful
+  deployment `gqpmafky0oe2jr3rszkov2is` on SHA
+  `3fedb7a9170097b40accb6ccea1915064f383f11`, and API/Web/all four
+  workers/PostgreSQL/Redis read back as running. Public no-worker production
+  smoke passed for API `/health`, API `/ready`, Web `/`, and Web
+  `/api/build-info`. This is not full release readiness: protected worker-token
+  checks, authenticated journeys, release signoff, SLO/RC, restore/rollback,
+  and LIVE exchange mutation approval remain separate gates. Local `HEAD`
+  remains `38` commits ahead of `origin/main`, so production is still on pushed
+  SHA `3fedb7a9...`.
 
 - `DASH-RUNTIME-SIGNAL-CONDITION-ACTIVE-2026-05-25` VERIFIED LOCALLY. Dashboard
   Home signal cards now use explicit matched strategy condition lines for

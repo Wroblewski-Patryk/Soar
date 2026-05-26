@@ -1,6 +1,6 @@
 # Module Confidence Ledger
 
-Last updated: 2026-05-25
+Last updated: 2026-05-26
 
 ## Purpose
 
@@ -29,6 +29,20 @@ Do not turn uncertainty into optimism.
 - `Low`: evidence is missing, stale, inferred, or chat-only.
 
 ## Current Operational Override
+
+- 2026-05-26 `COOLIFY-AUTO-DEPLOY-WORKER-RECOVERY-2026-05-26`: confidence for
+  `SOAR-OPERATIONS` and `SOAR-WORKERS` is improved for bounded deploy
+  automation and worker liveness. Coolify `Auto Deploy` is enabled and
+  persisted on the six existing Soar Applications, `workers-market-stream`
+  recovered with successful deployment `gqpmafky0oe2jr3rszkov2is` on SHA
+  `3fedb7a9170097b40accb6ccea1915064f383f11`, all Soar resources read back as
+  running, and public no-worker smoke passed for API `/health`, API `/ready`,
+  Web `/`, and Web `/api/build-info`. Confidence remains `PARTIAL/BLOCKED`
+  for full V1 production readiness because protected worker-token readiness,
+  authenticated app journeys, release signoff, SLO/RC, restore/rollback, and
+  LIVE mutation approval are outside this repair. Local `HEAD` is still `38`
+  commits ahead of `origin/main`, so those local commits are not deployed until
+  a coherent push occurs.
 
 - 2026-05-25 `DASH-RUNTIME-SIGNAL-CONDITION-ACTIVE-2026-05-25`: confidence is
   improved locally for `SOAR-DASHBOARD-001` and Web runtime signal surfaces.

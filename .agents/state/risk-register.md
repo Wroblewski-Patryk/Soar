@@ -1,6 +1,6 @@
 # Risk Register
 
-Last updated: 2026-05-25
+Last updated: 2026-05-26
 
 | ID | Area | Risk | Likelihood | Impact | Trigger | Mitigation | Status | Linked Requirement/Decision | Next Action | Last Updated |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -64,6 +64,17 @@ Last updated: 2026-05-25
 
 ## Risk Notes
 
+- 2026-05-26 `COOLIFY-AUTO-DEPLOY-WORKER-RECOVERY-2026-05-26` updates
+  Coolify deployment risk: the six existing Soar Applications had `Auto Deploy`
+  disabled, which stopped the expected push-triggered deploy path even though
+  the official Git App source was configured. By direct operator request,
+  `Auto Deploy` was re-enabled on `soar-api`, `soar-web`, and all four worker
+  Applications. `workers-market-stream` was recovered with successful deploy
+  `gqpmafky0oe2jr3rszkov2is` on SHA `3fedb7a9...`, all resources read back as
+  running, and public no-worker smoke passed. Residual risk remains: fanout
+  deploy pressure across six Applications must be monitored, protected worker
+  readiness still requires token-bearing proof, and the separate Service Stack
+  cutover remains blocked until intentionally resumed.
 - 2026-05-25 `USER-ACTION-EVIDENCE-INDEX-2026-05-25` mitigates the recurring
   risk that agents repair UI surfaces from local file inspection only. The new
   generated `user-action-index.csv` and `architecture:journey:triage` command
