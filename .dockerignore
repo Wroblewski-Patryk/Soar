@@ -17,6 +17,10 @@ coverage
 **/coverage
 *.log
 *.tmp
+core
+core.*
+**/core
+**/core.*
 tmp
 temp
 playwright-workers.log

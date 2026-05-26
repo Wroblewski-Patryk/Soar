@@ -20,6 +20,7 @@ COPY apps/api apps/api
 COPY libs/shared libs/shared
 RUN pnpm --filter api exec prisma generate
 RUN pnpm --filter api build
+RUN rm -f apps/api/core apps/api/core.*
 
 FROM node:20-bookworm-slim AS runtime
 ENV NODE_ENV=production
