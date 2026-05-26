@@ -5,12 +5,12 @@
 - Title: [Soar][Backend] Runtime signal payload separation proof (strategy-condition truth vs execution outcome)
 - Task Type: verification
 - Current Stage: verification
-- Status: READY
+- Status: DONE
 - Owner: Backend API Engineer
 - Depends on: DASH-RUNTIME-SIGNAL-CONDITION-ACTIVE-2026-05-25, LUC-67
 - Priority: P0
 - Mission ID: SOAR-FULL-READINESS-COORDINATION-2026-05-23
-- Mission Status: IN_PROGRESS
+- Mission Status: VERIFIED
 
 ## Context
 Parent issue `LUC-64` already has frontend behavior evidence (`A`) and focused QA
@@ -44,4 +44,16 @@ separation contract and did not regress while frontend/QA lanes progressed.
   - residual risk (if any).
 
 ## Result Report
-- Pending backend owner execution.
+- 2026-05-26 backend verification executed on `apps/api` runtime read-model surface:
+  - file: `apps/api/src/modules/bots/runtimeSymbolStatsReadModel.service.ts`
+  - separation contract fields verified:
+    - strategy-condition truth: `lastSignalConditionLines`, `lastSignalConditionActive`
+    - execution outcome truth: `lastSignalDirection`, `lastSignalMessage`, `lastSignalReason`, `runtimeMarketState`
+- Focused proof command:
+  - `pnpm --filter api exec vitest run src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts`
+  - result: PASS (`1` file, `6` tests).
+- Explicit blocked-execution parity scenario is covered by:
+  - `keeps explicit runtime block reasons attached to recovered snapshot condition matches`
+  - this proves matched condition truth (`lastSignalConditionActive.long === true`) can coexist with blocked runtime decision fields (`lastSignalMessage`, `lastSignalReason`) without conflation.
+- Residual risk:
+  - low for this payload contract at unit/service boundary; no additional backend behavior change was introduced in this lane.

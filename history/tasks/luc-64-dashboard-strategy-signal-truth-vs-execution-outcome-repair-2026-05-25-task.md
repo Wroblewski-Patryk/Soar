@@ -4,8 +4,8 @@
 - ID: LUC-64
 - Title: [Soar] Dashboard strategy-signal truth vs execution outcome repair
 - Task Type: implementation
-- Current Stage: implementation
-- Status: TODO
+- Current Stage: verification
+- Status: DONE
 - Owner: Engineering Delivery Lead (coordinator)
 - Depends on: DASH-RUNTIME-SIGNAL-CONDITION-ACTIVE-2026-05-25, LUC-46, LUC-45-C
 - Priority: P0
@@ -16,7 +16,7 @@
 - Iteration: 1
 - Operation Mode: BUILDER
 - Mission ID: SOAR-FULL-READINESS-COORDINATION-2026-05-23
-- Mission Status: CHECKPOINTED
+- Mission Status: VERIFIED
 
 ## Context
 Issue `LUC-64` targets a critical correctness boundary: Dashboard strategy-signal
@@ -83,9 +83,9 @@ delivery packet with explicit lane ownership, proof gates, and closure criteria.
 - [x] `LUC-64` has a delivery packet with single-owner lanes and integration order.
 - [x] Required evidence contract is defined for frontend, backend, QA, and docs parity.
 - [x] Board/project state are synced to this packet.
-- [ ] Backend blocker lane `LUC-64-B` evidence is integrated.
-- [ ] Docs/state parity lane `LUC-64-D` records backend evidence and residual risk.
-- [ ] Final issue disposition is set from integrated evidence.
+- [x] Backend blocker lane `LUC-64-B` evidence is integrated.
+- [x] Docs/state parity lane `LUC-64-D` records backend evidence and residual risk.
+- [x] Final issue disposition is set from integrated evidence.
 
 ## Validation Evidence
 - Manual checks:
@@ -119,3 +119,15 @@ delivery packet with explicit lane ownership, proof gates, and closure criteria.
   if a wake payload still reports parent `in_progress`, treat it as stale
   metadata drift and keep canonical parent status `TODO` until a new explicit
   Delivery live run starts.
+- 2026-05-26 continuation run b5835b80-771c-4d88-b532-141e13c06c89 failed pre-execution with adapter bootstrap EEXIST (auth symlink target already exists). Treat as runtime/harness incident; keep canonical parent status TODO and keep product blocker unchanged (LUC-64-B).
+- 2026-05-26 closure checkpoint:
+  backend lane `LUC-64-B` is now evidenced and closed via focused runtime read-model test pass
+  (`pnpm --filter api exec vitest run src/modules/bots/runtimeSymbolStatsReadModel.service.test.ts`, 1 file / 6 tests).
+  Parent `LUC-64` closure criteria are satisfied:
+  strategy-condition truth remains visible independently (`lastSignalConditionLines`, `lastSignalConditionActive`)
+  while execution outcome truth remains explicit (`lastSignalMessage`, `lastSignalReason`, `runtimeMarketState`).
+- 2026-05-26 successful-run handoff:
+  issue-level disposition is finalized as `done`; any stale wake payload showing
+  `in_progress` should be treated as metadata drift unless new scoped work is
+  explicitly opened on this issue.
+
