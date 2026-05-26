@@ -12491,3 +12491,113 @@ None.
   - auth/session path,
   - runtime state transition,
   - explicit board decision.
+
+## 2026-05-26 Wake Delta (issue_commented, SMOKE_* secret-ref resume checkpoint)
+- Source comment `8f96ce01-dd5b-477f-87b5-db71766f1993` consumed as a new eligible artifact class.
+- Scope executed exactly once, read-only only, no deploy/push/runtime mutation.
+
+### Presence-only env verification (no values)
+- `SMOKE_AUTH_TOKEN_PRESENT=False`
+- `SMOKE_AUTH_EMAIL_PRESENT=False`
+- `SMOKE_AUTH_PASSWORD_PRESENT=False`
+- `SMOKE_OPS_API_BASE_URL_PRESENT=False`
+- `SMOKE_OPS_WEB_BASE_URL_PRESENT=False`
+- `SMOKE_OPS_EXPECTED_SHA_PRESENT=False`
+- `SMOKE_OPS_BASE_URL_PRESENT=False`
+- `SMOKE_OPS_API_URL_PRESENT=False`
+
+### Single production smoke run
+- Command:
+  - `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8`
+- Result:
+  - PASS `API /health`
+  - PASS `API /ready`
+  - PASS `WEB /`
+  - PASS `WEB /api/build-info` (`gitSha=71b8d503fd6fdfd7378dc67b2fa678799e2430f8`)
+  - FAIL `API /workers/ready -> 401`
+
+### Final disposition
+- `blocked`
+
+### Exact missing secret/permission class
+- Missing secret-ref class in this runner: `SMOKE_AUTH_TOKEN`, `SMOKE_AUTH_EMAIL`, `SMOKE_AUTH_PASSWORD` (all absent).
+- Effective permission gap: no approved app-auth session/credential path available to pass protected readiness endpoint `/workers/ready`.
+
+### Unblock owner/action
+- Owner: Soar API auth owner + Ops Release Lead + Security/Test secret-ref owner.
+- Action:
+  1. map and expose valid secret refs for `SMOKE_AUTH_TOKEN` or (`SMOKE_AUTH_EMAIL` + `SMOKE_AUTH_PASSWORD`) to this lane runtime,
+  2. confirm agent permission scope allows protected `/workers/ready` proof,
+  3. rerun one read-only production smoke and publish parent sync packet for `LUC-98` / `LUC-47` / `LUC-12` only after auth proof passes.
+
+### Anti-loop rule
+- Do not loop further in this wake; wait for new secret/permission artifact.
+
+## 2026-05-26 Wake Delta (issue_continuation_needed, anti-churn no-new-artifact reconciliation)
+- Continuation reason `issue_continuation_needed` processed.
+- Pending comments: `0/0`; no new operator artifact, no new secret-ref/auth-path artifact, no runtime state transition, and no explicit board decision in this wake.
+- Per anti-churn policy, no repetitive smoke/recheck was executed.
+
+### Final disposition
+- `blocked`
+
+### First-class blocker (unchanged)
+- Protected worker-readiness proof remains blocked on auth/session boundary (`/workers/ready`).
+- Last verified secret-ref class gap in this runner remains:
+  - `SMOKE_AUTH_TOKEN`
+  - `SMOKE_AUTH_EMAIL`
+  - `SMOKE_AUTH_PASSWORD`
+- Parent sync requirement remains open for `LUC-98` / `LUC-47` / `LUC-12` once auth proof passes.
+
+### Unblock owner/action
+- Owner: Soar API auth owner + Ops Release Lead + Security/Test secret-ref owner.
+- Action:
+  1. expose valid `SMOKE_AUTH_*` secret refs to this lane runtime,
+  2. confirm permission scope for protected `/workers/ready`,
+  3. execute one read-only smoke checkpoint and publish parent sync packet only if readiness proof passes.
+
+## 2026-05-26 Wake Delta (source_scoped_recovery_action, LUC-99 secret-ref anti-churn checkpoint)
+- Inline wake consumed (fallbackFetchNeeded=false, 0/0 comments).
+- Single concrete presence-only check executed:
+  - SMOKE_AUTH_TOKEN_PRESENT=False
+  - SMOKE_AUTH_EMAIL_PRESENT=False
+  - SMOKE_AUTH_PASSWORD_PRESENT=False
+- No new unblock artifact class detected; anti-churn guard applied (no repeated smoke loop).
+- Final disposition: blocked.
+- Unblock owner/action unchanged: Soar API auth owner + Ops Release Lead + Security/Test secret-ref owner must expose valid SMOKE_AUTH_* refs and permit one authenticated /workers/ready proof before parent sync (LUC-98 / LUC-47 / LUC-12).
+
+## 2026-05-26 LUC-99 Wake Delta (issue_assigned, owner-correction single-run Ops checkpoint)
+- New board comment `4ddb4fa7-8cdd-4197-aef0-4299a9acb1d6` acknowledged and executed as requested.
+- Presence-only check (no values):
+  - `SMOKE_AUTH_TOKEN_PRESENT=True`
+  - `SMOKE_AUTH_EMAIL_PRESENT=True`
+  - `SMOKE_AUTH_PASSWORD_PRESENT=True`
+  - `SMOKE_OPS_COOLIFY_*_PRESENT=False` (optional vars absent)
+- Single production smoke for SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`:
+  - PASS `API /health`, `API /ready`, `WEB /`, `WEB /api/build-info`
+  - FAIL `API /workers/ready -> 401`
+- Final disposition: `blocked`.
+- First-class blocker class updated: no longer missing `SMOKE_AUTH_*`; active blocker is authz scope/permission for `/workers/ready` under current smoke principal.
+- Unblock owner/action: Soar API auth owner + Security/Test permission owner + Ops Release Lead must grant read-only `/workers/ready` access (or provide approved principal), then run one recheck and sync parents (`LUC-98`/`LUC-47`/`LUC-12`).
+
+## 2026-05-26 Wake Delta (finish_successful_run_handoff, anti-churn continuity checkpoint)
+- Wake consumed with `pending comments: 0/0` and no new operator/auth/runtime artifact in scope.
+- No replayed smoke loop in this heartbeat (anti-churn rule preserved).
+- Last verified execution snapshot (2026-05-26):
+  - `SMOKE_AUTH_TOKEN_PRESENT=True`
+  - `SMOKE_AUTH_EMAIL_PRESENT=True`
+  - `SMOKE_AUTH_PASSWORD_PRESENT=True`
+  - production smoke for SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`: public checks `PASS`, `/workers/ready` => `401`.
+
+### Final disposition
+- `blocked`
+
+### First-class blocker
+- Active blocker class remains authz/permission for protected readiness endpoint `/workers/ready` under current smoke principal.
+
+### Unblock owner/action
+- Owner: Soar API auth owner + Security/Test permission owner + Ops Release Lead.
+- Action:
+  1. grant/confirm explicit read-only access to `/workers/ready` for the smoke principal bound to `SMOKE_AUTH_*`,
+  2. run one read-only production smoke recheck,
+  3. if `/workers/ready` passes, publish parent sync packet for `LUC-98` / `LUC-47` / `LUC-12`.
