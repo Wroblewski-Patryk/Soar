@@ -70,3 +70,32 @@ implemented and partially verified (state and ownership evidence; no protected b
 ### Next steps
 - Assign frontend/UI lanes to close `Loading/Empty/Error/Success` state verification gaps by route cluster (protected/auth-sensitive contexts noted).
 - Route polish state should be refreshed after the first completed authenticated-browser or protected proof slice.
+
+## Checkpoint 2026-05-26 (wake reconciliation: stale failed-run instruction)
+- Trigger: wake payload continuation text asked to "inspect the failed run", while this docs lane's latest concrete run state is a successful handoff sync with no new protected browser-proof artifacts.
+- Action taken in this heartbeat:
+  - reconciled wake text against canonical lane artifacts (`TASK_BOARD`, `PROJECT_STATE`, `LUC-48`/`LUC-49` task packets),
+  - confirmed no new lane-specific execution failure to remediate in `LUC-48` docs scope,
+  - preserved explicit fail-closed status model (`blocked`, not passive `in_progress`).
+- Durable updates:
+  - synchronized source-of-truth notes in `.codex/context/TASK_BOARD.md` and `.codex/context/PROJECT_STATE.md` with this reconciliation.
+- Final disposition for this heartbeat:
+  - `blocked` (unblock owner/action unchanged: `LUC-48-A/browser-proof` publishes fresh protected route-state packet; QA/Security/Ops lanes attach dependent protected/auth evidence).
+
+## Checkpoint 2026-05-26 (children completed reconciliation)
+- Trigger: resume delta `issue_children_completed` with direct child summary `LUC-49 ... final disposition: done`.
+- Action taken in this heartbeat:
+  - integrated child-lane closure into parent docs/control lane,
+  - reconciled stale parser-miss blocker (non-product) against QA PASS protected browser proof on expected SHA `3fedb7a9170097b40accb6ccea1915064f383f11`,
+  - synchronized `.codex/context/TASK_BOARD.md` and `.codex/context/PROJECT_STATE.md` to mark parent scope complete.
+- Final disposition for this heartbeat:
+  - `done`.
+
+## Checkpoint 2026-05-26 (finish_successful_run_handoff reconciliation)
+- Trigger: wake `finish_successful_run_handoff` after successful run `fb9932f5-8380-40fd-bc45-535964cc16ca`.
+- Action taken in this heartbeat:
+  - verified there is no new child blocker, comment, or scope delta to execute,
+  - confirmed source-of-truth remains aligned (`TASK_BOARD`, `PROJECT_STATE`, this task packet),
+  - kept the lane closed to avoid stale `in_progress` drift.
+- Final disposition for this heartbeat:
+  - `done`.
