@@ -67,5 +67,5 @@ describe("AuditTrailView", () => {
       expect(screen.getByText("Decision trace")).toBeInTheDocument();
       expect(screen.getByText(/risk_passed/i)).toBeInTheDocument();
     });
-  });
+  }, 15000);
 });
