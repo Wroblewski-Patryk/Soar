@@ -17,7 +17,7 @@ const readArgValue = (flag) => {
 if (args.has('--help') || args.has('-h')) {
   process.stdout.write(
     [
-      'Usage: node scripts/deploySmokeCheck.mjs [--base-url <url>] [--api-base-url <url>] [--web-base-url <url>] [--no-workers|--skip-workers] [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--ops-basic-user <user>] [--ops-basic-password <password>] [--ops-auth-header-name <name>] [--ops-auth-header-value <value>]',
+      'Usage: node scripts/deploySmokeCheck.mjs [--base-url <url>] [--api-base-url <url>] [--web-base-url <url>] [--expected-sha <sha>] [--no-workers|--skip-workers] [--auth-token <token>] [--auth-email <email>] [--auth-password <password>] [--ops-basic-user <user>] [--ops-basic-password <password>] [--ops-auth-header-name <name>] [--ops-auth-header-value <value>]',
       '',
       'Env:',
       '  SMOKE_API_BASE_URL       (default: http://localhost:3001)',
@@ -47,6 +47,7 @@ const webBase = (readArgValue('--web-base-url') || process.env.SMOKE_WEB_BASE_UR
   '',
 );
 const timeoutMs = Number(process.env.SMOKE_TIMEOUT_MS || 8000);
+const expectedSha = (readArgValue('--expected-sha') || process.env.SMOKE_EXPECTED_SHA || '').trim();
 const authTokenArg = readArgValue('--auth-token');
 const authEmailArg = readArgValue('--auth-email');
 const authPasswordArg = readArgValue('--auth-password');
@@ -89,6 +90,12 @@ const checks = [
   { name: 'API /health', url: `${apiBase}/health`, method: 'GET', headers: authHeaders },
   { name: 'API /ready', url: `${apiBase}/ready`, method: 'GET', headers: authHeaders },
   { name: 'WEB /', url: `${webBase}/`, method: 'GET' },
+  {
+    name: expectedSha ? `WEB /api/build-info (gitSha=${expectedSha})` : 'WEB /api/build-info',
+    url: `${webBase}/api/build-info`,
+    method: 'GET',
+    expectBuildInfoSha: expectedSha || null,
+  },
 ];
 
 if (requireWorkers) {
@@ -127,6 +134,19 @@ const runCheck = async (check) => {
           ok: false,
           detail: `${response.status} ${body.status ?? 'unknown'}${body.topologyStatus ? ` topology=${body.topologyStatus}` : ''}`,
         };
+      }
+      if (check.expectBuildInfoSha) {
+        const observedSha = typeof body?.gitSha === 'string' ? body.gitSha.trim() : '';
+        if (!observedSha) {
+          return { ok: false, detail: `${response.status} missing gitSha` };
+        }
+        if (observedSha !== check.expectBuildInfoSha) {
+          return {
+            ok: false,
+            detail: `${response.status} gitSha mismatch observed=${observedSha} expected=${check.expectBuildInfoSha}`,
+          };
+        }
+        return { ok: true, detail: `${response.status} gitSha=${observedSha}` };
       }
       return { ok: true, detail: `${response.status}` };
     }
