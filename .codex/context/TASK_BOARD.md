@@ -2,6 +2,682 @@
 
 Last updated: 2026-05-26
 
+## 2026-05-26 LUC-171 LUC-169 Provenance Packet Closure
+- Wake `issue_assigned` processed as strict evidence-only provenance closure
+  lane for completed `LUC-169`.
+- Scope verified (`2` files): `LUC-169` task packet + `LUC-169` evidence
+  packet.
+- Verification results:
+  - presence check -> `PRESENT (2/2)`
+  - SHA256 provenance -> recorded for both files
+  - credential-value pattern scan -> `NO_CREDENTIAL_VALUES`
+- No deploy/runtime mutation, no commit/push decision, and no secret
+  disclosure.
+- Disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-171-luc-169-provenance-packet-closure-2026-05-26-task.md`
+  - `history/evidence/luc-171-luc-169-provenance-packet-closure-2026-05-26.md`
+## 2026-05-26 LUC-170 No-Stall Queue Expeditor
+- Wake `issue_assigned` processed with concrete PM queue-expeditor checkpoint.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+- Evidence:
+  `history/tasks/luc-170-no-stall-queue-expeditor-2026-05-26-task.md`.
+- Continuation `source_scoped_recovery_action` reconciled from inline wake
+  payload first: no pending human unblock input (`0/0`) and no new
+  blocker-closure evidence.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- Capacity governor preserved: no wake/reassign/reopen/new-lane action.
+- Disposition remains `blocked` with unchanged unblock owner/action:
+  `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain
+  expected-SHA deploy smoke/readiness and worker readiness evidence with
+  rollback note.
+## 2026-05-26 LUC-169 LUC-166 Provenance Packet Closure
+- Wake `issue_assigned` processed as strict evidence-only provenance closure
+  lane for completed `LUC-166`.
+- Scope verified (`2` files): `LUC-166` task packet + `LUC-166` evidence
+  packet.
+- Verification results:
+  - presence check -> `PRESENT (2/2)`
+  - SHA256 provenance -> recorded for both files
+  - credential-value pattern scan -> `NO_CREDENTIAL_VALUES`
+- No deploy/runtime mutation, no commit/push decision, and no secret
+  disclosure.
+- Disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-169-luc-166-provenance-packet-closure-2026-05-26-task.md`
+  - `history/evidence/luc-169-luc-166-provenance-packet-closure-2026-05-26.md`
+## 2026-05-26 LUC-166 LUC-164 Provenance Packet Closure
+- Wake `issue_assigned` processed as strict evidence-only provenance closure
+  lane for completed `LUC-164`.
+- Scope verified (`2` files): `LUC-164` task packet + `LUC-164` evidence
+  packet.
+- Verification results:
+  - presence check -> `PRESENT (2/2)`
+  - SHA256 provenance -> recorded for both files
+  - credential-value pattern scan -> `NO_CREDENTIAL_VALUES`
+- No deploy/runtime mutation, no commit/push decision, and no secret
+  disclosure.
+- Disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-166-luc-164-provenance-packet-closure-2026-05-26-task.md`
+  - `history/evidence/luc-166-luc-164-provenance-packet-closure-2026-05-26.md`
+
+## 2026-05-26 LUC-167 No-Stall Queue Expeditor
+- Continuation `finish_successful_run_handoff` reconciled with no pending
+  human unblock input (`0/0`) and no new blocker-closure evidence.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- Capacity governor preserved: no wake/reassign/reopen/new-lane action.
+- Disposition remains `blocked` with unchanged unblock owner/action:
+  `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain
+  expected-SHA deploy smoke/readiness and worker readiness evidence with
+  rollback note.
+- Evidence:
+  `history/tasks/luc-167-no-stall-queue-expeditor-2026-05-26-task.md`.
+- Continuation `source_scoped_recovery_action` reconciled from inline wake
+  payload first: no pending human unblock input (`0/0`) and no new
+  blocker-closure evidence.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- Capacity governor preserved: no wake/reassign/reopen/new-lane action.
+- Disposition remains `blocked` with unchanged unblock owner/action:
+  `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain
+  expected-SHA deploy smoke/readiness and worker readiness evidence with
+  rollback note.
+
+## 2026-05-26 LUC-165 No-Stall Queue Expeditor
+- Wake `issue_assigned` processed with concrete PM queue-expeditor checkpoint.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+- Evidence:
+  `history/tasks/luc-165-no-stall-queue-expeditor-2026-05-26-task.md`.
+- Continuation `finish_successful_run_handoff` reconciled with no pending
+  human unblock input (`0/0`) and no new blocker-closure evidence; disposition
+  remains `blocked` with unchanged `LUC-47` owner/action.
+- Continuation `process_lost_retry` reconciled with no pending human unblock
+  input (`0/0`) and no new blocker-closure evidence; disposition remains
+  `blocked` with unchanged `LUC-47` owner/action.
+- Continuation `source_scoped_recovery_action` reconciled with no pending
+  human unblock input (`0/0`) and no new blocker-closure evidence;
+  disposition remains `blocked` with unchanged `LUC-47` owner/action.
+
+## 2026-05-26 LUC-164 LUC-160 Provenance Packet Closure
+- Wake `issue_assigned` processed as strict evidence-only provenance closure
+  lane for completed `LUC-160`.
+- Scope verified (`2` files): `LUC-160` task packet + `LUC-160` evidence
+  packet.
+- Verification results:
+  - presence check -> `PRESENT (2/2)`
+  - SHA256 provenance -> recorded for both files
+  - credential-value pattern scan -> `NO_CREDENTIAL_VALUES`
+- No deploy/runtime mutation, no commit/push decision, and no secret
+  disclosure.
+- Disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-164-luc-160-provenance-packet-closure-2026-05-26-task.md`
+  - `history/evidence/luc-164-luc-160-provenance-packet-closure-2026-05-26.md`
+
+## 2026-05-26 LUC-162 Blocked-Lane Normalization
+- Wake `issue_assigned` processed as CTO architecture-governance checkpoint for
+  blocked-lane status normalization.
+- Scope: source-of-truth normalization only (`next-steps`, `TASK_BOARD`,
+  `PROJECT_STATE`, task packet); no product/runtime mutation.
+- Normalization applied:
+  - parent bridge `LUC-45` is explicitly modeled as `blocked` on one
+    first-class blocker (`LUC-47`).
+  - unblock ownership/action is explicit and stable:
+    `Ops Release Lead + host operator` must attach temp-domain expected-SHA
+    deploy smoke/readiness, worker readiness, and rollback note.
+  - idle-lane rule is codified: no passive `in_progress` without live execution.
+- Disposition: `done`.
+- Evidence:
+  `history/tasks/luc-162-normalize-blocked-lanes-first-class-blockers-2026-05-26-task.md`.
+- Continuation `finish_successful_run_handoff` reconciled with no pending human
+  input (`0/0`) and no new blocker-closure evidence; disposition remains
+  `done`.
+- Continuation `source_scoped_recovery_action` reconciled from inline wake
+  payload first (no fallback thread fetch): no pending comments (`0/0`), no
+  new blocker-closure evidence, and no blocker-contract drift detected.
+  Disposition remains `done`.
+- Continuation `issue_reopened_via_comment` reconciled from new board comment
+  `b6bfe304-ab6d-4beb-ae6e-a6f1898e0efd`: janitor moved lane to `todo` because
+  blocked-state dependency was reported missing.
+  Reconciliation check confirmed canonical first-class dependency remains
+  explicit (`LUC-45 -> LUC-47`) with unchanged unblock owner/action, so no
+  further mutation was required and disposition remains `done`.
+- Continuation `finish_successful_run_handoff` reconciled after reopen-cycle closure: no pending comments (`0/0`), no new blocker-closure evidence, and no blocker-contract drift; disposition remains `done`.
+- Continuation `source_scoped_recovery_action` reconciled as status-only: no pending comments (`0/0`), no new blocker-closure evidence, and no blocker-contract drift; disposition remains `done`.
+## 2026-05-26 LUC-160 LUC-158 Provenance Packet Closure
+- Wake `issue_assigned` processed as strict evidence-only provenance closure
+  lane for completed `LUC-158`.
+- Scope verified (`2` files): `LUC-158` task packet + `LUC-158` evidence
+  packet.
+- Verification results:
+  - presence check -> `PRESENT (2/2)`
+  - SHA256 provenance -> recorded for both files
+  - credential-value pattern scan -> `NO_CREDENTIAL_VALUES`
+- No deploy/runtime mutation, no commit/push decision, and no secret
+  disclosure.
+- Disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-160-luc-158-provenance-packet-closure-2026-05-26-task.md`
+  - `history/evidence/luc-160-luc-158-provenance-packet-closure-2026-05-26.md`
+
+## 2026-05-26 LUC-159 No-Stall Queue Expeditor
+- Wake `issue_assigned` processed with concrete PM queue-expeditor checkpoint.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+- Evidence:
+  `history/tasks/luc-159-no-stall-queue-expeditor-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-158 LUC-153 Coolify Health Evidence Closure
+- Wake `issue_assigned` processed as narrow Ops verification-only closure lane.
+- Scope verified (`2` files): LUC-153 task packet + LUC-153 evidence packet.
+- Verification results:
+  - presence check -> `PRESENT (2/2)`
+  - SHA256 provenance -> recorded for both files
+  - credential-value pattern scan -> `NO_CREDENTIAL_VALUES`
+- No deploy/runtime mutation, no commit/push decision, and no secret disclosure.
+- Disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-158-luc-153-coolify-health-evidence-closure-2026-05-26-task.md`
+  - `history/evidence/luc-158-luc-153-coolify-health-evidence-closure-2026-05-26.md`
+
+## 2026-05-26 LUC-156 No-Stall Queue Expeditor
+- Wake `issue_assigned` processed with concrete PM queue-expeditor checkpoint.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+- Evidence:
+  `history/tasks/luc-156-no-stall-queue-expeditor-2026-05-26-task.md`.
+- Continuation `finish_successful_run_handoff` reconciled with no pending human
+  unblock input (`0/0`) and no new blocker-closure evidence; disposition
+  remains `blocked` with unchanged `LUC-47` owner/action.
+
+## 2026-05-26 LUC-153 Coolify Production Deploy Health Sweep
+- Wake `issue_assigned` processed as critical Ops verification checkpoint.
+- Read-only production sweep executed without deploy/runtime mutation.
+- Verification results:
+  - public smoke (`/health`, `/ready`, `/`, `/api/build-info`) -> `PASS`
+  - deployed build-info SHA -> `3fedb7a9170097b40accb6ccea1915064f383f11`
+  - Coolify production resource snapshot (`environment_id=6`) -> `8` resources
+  - fleet gate -> `FAILED` (`workers-market-stream=exited:unhealthy`)
+- Disposition: `blocked`.
+- Unblock owner/action: Ops Release Lead + host operator must run authenticated worker recovery and attach expected-SHA temp-domain smoke/readiness + worker readiness + rollback note.
+- Evidence:
+  - `history/tasks/luc-153-coolify-production-deploy-health-sweep-2026-05-26-task.md`
+  - `history/evidence/luc-153-coolify-production-health-sweep-2026-05-26.md`
+- Continuation `finish_successful_run_handoff` reconciled with no pending human
+  unblock input (`0/0`) and no new blocker-closure evidence; disposition
+  remains `blocked` with unchanged unblock owner/action.
+- Continuation `source_scoped_recovery_action` reconciled from inline wake
+  payload first (no fallback thread fetch): no pending human unblock input
+  (`0/0`), no new blocker-closure evidence, no scope change, and no new lane
+  wake/reassign actions under capacity governor.
+- Disposition remains `blocked` with unchanged unblock owner/action:
+  Ops Release Lead + host operator must attach authenticated
+  `workers-market-stream` recovery evidence with expected-SHA temp-domain
+  smoke/readiness packet and rollback note.
+
+## 2026-05-26 LUC-152 Latest Closure Provenance Packets
+- Wake `issue_assigned` processed as strict evidence-lane checkpoint for
+  `LUC-103-P5S`.
+- Scope verified (`3` files): latest closure task packets `LUC-151`,
+  `LUC-148`, and `LUC-147`.
+- Verification results:
+  - presence check -> `PRESENT` (`3/3`)
+  - SHA256 provenance -> recorded for all `3` files
+  - credential-value pattern scan -> `NO_CREDENTIAL_VALUES`
+- No deploy/runtime mutation, commit/push decision, or secret disclosure.
+- Disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-152-latest-closure-provenance-packets-2026-05-26-task.md`
+  - `history/evidence/luc-152-latest-closure-provenance-packets-2026-05-26.md`
+
+## 2026-05-26 LUC-151 V1 Audit-To-Completion Controller
+- Wake `issue_assigned` processed with concrete controller reconciliation for
+  V1 audit-to-completion scope.
+- Scope remained delivery-lead coordination only and fail-closed against the
+  parent release controller.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach expected-SHA temp-domain deploy smoke/readiness packet,
+  worker readiness evidence, and rollback note.
+- Evidence:
+  `history/tasks/luc-151-v1-audit-to-completion-controller-2026-05-26-task.md`.
+- Continuation `finish_successful_run_handoff` reconciled with no pending human
+  unblock input (`0/0`) and no new blocker-closure evidence; disposition
+  remains `blocked` with unchanged `LUC-47` owner/action.
+- Continuation `source_scoped_recovery_action` reconciled as status-only with
+  no pending human unblock input (`0/0`) and no new blocker-closure evidence;
+  capacity governor preserved and disposition remains `blocked` with unchanged
+  `LUC-47` owner/action.
+
+## 2026-05-26 LUC-148 No-Stall Queue Expeditor
+- Wake `issue_assigned` processed with concrete PM queue-expeditor checkpoint.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+- Evidence:
+  `history/tasks/luc-148-no-stall-queue-expeditor-2026-05-26-task.md`.
+- Continuation `finish_successful_run_handoff` reconciled with no pending human
+  unblock input and no new blocker-closure evidence; disposition remains
+  `blocked` with unchanged `LUC-47` owner/action.
+- Continuation `source_scoped_recovery_action` reconciled as status-only with
+  no pending human unblock input (`0/0`) and no new blocker-closure evidence;
+  capacity governor preserved and disposition remains `blocked` with unchanged
+  `LUC-47` owner/action.
+
+## 2026-05-26 LUC-146 No-Stall Queue Expeditor
+- Wake `issue_assigned` processed with concrete PM queue-expeditor checkpoint.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+- Evidence:
+  `history/tasks/luc-146-no-stall-queue-expeditor-2026-05-26-task.md`.
+- Continuation `finish_successful_run_handoff` reconciled with no pending human
+  unblock input and no new blocker-closure evidence; disposition remains
+  `blocked` with unchanged `LUC-47` owner/action.
+
+## 2026-05-26 LUC-145 Recent Closure Provenance Packets
+- Wake `issue_assigned` processed as strict evidence-lane checkpoint for
+  `LUC-103-P5R`.
+- Scope verified (`3` files): recent closure task packets `LUC-141`,
+  `LUC-142`, and `LUC-143`.
+- Verification results:
+  - presence check -> `PRESENT` (`3/3`)
+  - SHA256 provenance -> recorded for all `3` files
+  - credential-value pattern scan -> `NO_CREDENTIAL_VALUES`
+- No deploy/runtime mutation, commit/push decision, or secret disclosure.
+- Disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-145-recent-closure-provenance-packets-2026-05-26-task.md`
+  - `history/evidence/luc-145-recent-closure-provenance-packets-2026-05-26.md`
+
+## 2026-05-26 LUC-143 No-Stall Queue Expeditor
+- Wake `issue_assigned` processed with concrete PM queue-expeditor checkpoint.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+- Evidence:
+  `history/tasks/luc-143-no-stall-queue-expeditor-2026-05-26-task.md`.
+- Continuation `finish_successful_run_handoff` reconciled with no new unblock
+  input and no new blocker-closure evidence; disposition remains `blocked`
+  with unchanged `LUC-47` owner/action.
+
+## 2026-05-26 LUC-142 History Evidence Closure Bundle
+- Wake `issue_assigned` processed as narrow history/evidence verification
+  checkpoint for `LUC-103-NO-LUC-B`.
+- Strict-scope verification executed on `NO_LUC.history-evidence` bundle:
+  - presence check -> `PRESENT` (`3/3`)
+  - markdown H1 sanity -> `PASS` (`3/3`)
+  - SHA256 provenance recorded for all files
+  - credential-value pattern scan -> `NO_CREDENTIAL_VALUES`
+- No deploy/runtime mutation, no commit/push decision, and no secret
+  disclosure in this checkpoint.
+- Disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-142-history-evidence-closure-bundle-2026-05-26-task.md`
+  - `history/evidence/luc-142-history-evidence-closure-bundle-2026-05-26.md`
+
+## 2026-05-26 LUC-141 No-Stall Queue Expeditor
+- Wake `issue_assigned` processed with concrete PM queue-expeditor checkpoint.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+- Evidence:
+  `history/tasks/luc-141-no-stall-queue-expeditor-2026-05-26-task.md`.
+- Continuation `finish_successful_run_handoff` reconciled with no new unblock
+  input and no new blocker-closure evidence; disposition remains `blocked`
+  with unchanged `LUC-47` owner/action.
+- Continuation `source_scoped_recovery_action` reconciled as status-only with
+  no pending human unblock input (`0/0`) and no new blocker-closure evidence;
+  capacity governor preserved and disposition remains `blocked` with unchanged
+  `LUC-47` owner/action.
+
+## 2026-05-26 LUC-140 Closure-Lane Provenance Packets
+- Wake `issue_assigned` processed as strict evidence-lane checkpoint for
+  `LUC-103-P5Q`.
+- Scope verified (`5` files): closure-lane evidence packets
+  `LUC-130`, `LUC-131`, `LUC-132`, `LUC-135`, `LUC-137`.
+- Verification results:
+  - presence check -> `PRESENT` (`5/5`)
+  - SHA256 provenance -> recorded for all `5` files
+  - credential-value pattern scan -> `NO_CREDENTIAL_VALUES`
+- No deploy/runtime mutation, commit/push decision, or secret disclosure.
+- Disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-140-closure-lane-provenance-packets-2026-05-26-task.md`
+  - `history/evidence/luc-140-closure-lane-provenance-packets-2026-05-26.md`
+
+## 2026-05-26 LUC-138 No-Stall Queue Expeditor
+- Wake `issue_assigned` processed with concrete PM queue-expeditor checkpoint.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+- Evidence:
+  `history/tasks/luc-138-no-stall-queue-expeditor-2026-05-26-task.md`.
+- Continuation `finish_successful_run_handoff` reconciled with no new unblock
+  input and no new blocker-closure evidence; disposition remains `blocked`
+  with unchanged `LUC-47` owner/action.
+
+## 2026-05-26 LUC-137 Docs Operations Closure Bundle
+- Wake `issue_assigned` processed as narrow docs-operations verification
+  checkpoint for `LUC-103-NO-LUC-A`.
+- Strict-scope verification executed on `NO_LUC.docs-operations` bundle:
+  - presence check -> `PRESENT` (`4/4`)
+  - JSON parse sanity -> `PASS` (`2/2`)
+  - markdown H1 sanity -> `PASS` (`2/2`)
+  - SHA256 provenance recorded for all files
+  - credential-value pattern scan -> `NO_CREDENTIAL_VALUES`
+- No deploy/runtime mutation, no secret disclosure, and no cross-lane edits
+  were performed in this checkpoint.
+- Disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-137-docs-operations-closure-bundle-2026-05-26-task.md`
+  - `history/evidence/luc-137-docs-operations-closure-bundle-2026-05-26.md`
+
+## 2026-05-26 LUC-136 No-Stall Queue Expeditor
+- Continuation `source_scoped_recovery_action` reconciled as status-only
+  checkpoint with no pending comment (`0/0`) and no new unblock evidence.
+- Capacity governor preserved: no wake/reassign/reopen/new-lane action in this
+  recovery heartbeat.
+- Disposition remains `blocked` with unchanged unblock owner/action: `LUC-47`
+  (`Ops Release Lead` + host operator) must attach temp-domain expected-SHA
+  deploy smoke/readiness + worker readiness evidence with rollback note.
+- Wake `issue_assigned` processed with concrete PM queue-expeditor checkpoint.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+- Evidence:
+  `history/tasks/luc-136-no-stall-queue-expeditor-2026-05-26-task.md`.
+- Continuation `finish_successful_run_handoff` reconciled with no new unblock
+  input and no new blocker-closure evidence; disposition remains `blocked`
+  with unchanged `LUC-47` owner/action.
+
+## 2026-05-26 LUC-135 Source-Control Closure Artifacts Lane
+- Wake `issue_assigned` processed as narrow source-control closure checkpoint
+  for `LUC-103-P5P`.
+- Strict-scope verification executed on `LUC-103` closure artifact bundle
+  (`5` files):
+  - presence check -> `PRESENT` (`5/5`)
+  - markdown H1 sanity -> `PASS` (`3/3`)
+  - JSON parse sanity -> `PASS` (`2/2`)
+  - SHA256 provenance recorded for all files
+  - credential-value pattern scan -> `NO_CREDENTIAL_VALUES`
+- No deploy/runtime mutation, no commit/push decision, and no secret
+  disclosure in this checkpoint.
+- Disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-135-source-control-closure-artifacts-lane-2026-05-26-task.md`
+  - `history/evidence/luc-135-source-control-closure-artifacts-lane-2026-05-26.md`
+
+## 2026-05-26 LUC-133 No-Stall Queue Expeditor
+- Wake `issue_assigned` processed with concrete PM queue-expeditor checkpoint.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+- Evidence:
+  `history/tasks/luc-133-no-stall-queue-expeditor-2026-05-26-task.md`.
+- Continuation `finish_successful_run_handoff` reconciled with no new unblock
+  input and no new blocker-closure evidence; disposition remains `blocked`
+  with unchanged `LUC-47` owner/action.
+
+## 2026-05-26 LUC-132 LUC-19 Runtime Readiness Task Closure
+- Wake `issue_assigned` processed as narrow Ops verification checkpoint for
+  `LUC-103-P5O`.
+- Strict-scope verification executed on `LUC-19` runtime-readiness task
+  artifacts (`4` files):
+  - presence check -> `PRESENT` (`4/4`)
+  - markdown H1 sanity -> `PASS`
+  - SHA256 provenance recorded for all files
+  - credential-value pattern scan -> `NO_CREDENTIAL_VALUES`
+- No deploy/runtime mutation and no secret disclosure in this checkpoint.
+- Disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-132-luc-19-runtime-readiness-task-closure-2026-05-26-task.md`
+  - `history/evidence/luc-132-luc-19-runtime-readiness-task-closure-2026-05-26.md`
+
+## 2026-05-26 LUC-131 LUC-86 Latest Health-Sweep Task Closure
+- Wake `issue_assigned` processed as narrow Ops verification checkpoint for
+  `LUC-103-P5N`.
+- Strict-scope verification executed on latest LUC-86 health-sweep artifacts:
+  - presence check -> `PRESENT` (`2/2`)
+  - markdown H1 sanity -> `PASS`
+  - SHA256 provenance recorded for both files
+  - credential-value pattern scan -> `NO_CREDENTIAL_VALUES`
+- No deploy/runtime mutation, no restart/deploy action, and no secret
+  disclosure in this checkpoint.
+- Disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-131-luc-86-latest-health-sweep-task-closure-2026-05-26-task.md`
+  - `history/evidence/luc-131-luc-86-latest-health-sweep-task-closure-2026-05-26.md`
+
+## 2026-05-26 LUC-129 No-Stall Queue Expeditor (issue_commented delta)
+- Wake `issue_commented` reconciled from latest comment
+  `fe88ade7-6522-4cd2-8ad3-61e7055f3b56` with no new unblock input.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+- Evidence:
+  `history/tasks/luc-129-no-stall-queue-expeditor-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-129 No-Stall Queue Expeditor
+- Wake `issue_assigned` processed with concrete PM queue-expeditor checkpoint.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+- Evidence:
+  `history/tasks/luc-129-no-stall-queue-expeditor-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-128 LUC-45 V1 Controller Docs Closure
+- Wake `issue_assigned` processed as docs/state parity closure for
+  `LUC-103-P5L`.
+- Scope executed: source-of-truth reconciliation only (no runtime/deploy
+  mutation).
+- Reconciliation applied:
+  - `LUC-45-E` lane packet status corrected from stale `IN_PROGRESS` to
+    fail-closed `BLOCKED` in
+    `history/tasks/luc-45-e-docs-state-parity-sync-2026-05-25-task.md`.
+  - canonical parity synced in:
+    - `.codex/context/TASK_BOARD.md`
+    - `.codex/context/PROJECT_STATE.md`
+- Controller truth remains unchanged: `LUC-45` parent remains blocked with
+  strict gate order `A+B -> C -> D -> E`.
+- Disposition: `done`.
+- Evidence:
+  `history/tasks/luc-128-luc-45-v1-controller-docs-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-126 V1 Audit-To-Completion Controller
+- Wake `finish_successful_run_handoff` processed with actionable controller
+  reconciliation (no pending human comment, no fresh closure packet).
+- Wake `source_scoped_recovery_action` reconciled with the same fail-closed
+  topology (no pending human comment, no fresh closure packet, no stale
+  `in_progress` drift).
+- Scope executed: fail-closed parent-control sync only (no product/runtime
+  implementation, no deploy mutation).
+- Current blocker topology for this controller heartbeat:
+  - active blocker remains `LUC-47` (Ops Release Lead + host operator),
+    requiring expected-SHA temp-domain deploy/smoke/readiness packet with
+    worker readiness and rollback note.
+- Capacity governor preserved (`<=5` active live runs); no new child lanes were
+  opened by this controller run.
+- Disposition: `blocked`.
+- Evidence:
+  `history/tasks/luc-126-v1-audit-to-completion-controller-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-127 LUC-64 Backend Runtime Signal Docs Closure
+- Wake `issue_assigned` processed as backend docs/state parity closure for
+  `LUC-103-P5K`.
+- Scope executed: source-of-truth reconciliation only (no runtime/deploy
+  mutation).
+- Reconciliation applied:
+  - `LUC-64-B` backend payload-separation evidence promoted from stale
+    blocker wording to completed evidence truth.
+  - canonical parity synced in:
+    - `.codex/context/TASK_BOARD.md`
+    - `.codex/context/PROJECT_STATE.md`
+- Backend evidence source remains:
+  `history/tasks/luc-64-b-backend-runtime-signal-payload-separation-proof-2026-05-26-task.md`
+  with focused API test PASS (`1` file / `6` tests).
+- Disposition: `done`.
+- Evidence:
+  `history/tasks/luc-127-luc-64-backend-runtime-signal-docs-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-125 LUC-49 UI State Browser Proof Matrix Closure
+- Wake `issue_assigned` processed as QA source-of-truth closure for `LUC-103-P5J`.
+- Scope executed: reconcile `LUC-49` status drift where protected packet evidence was already PASS but stale fields still reported `blocked`.
+- Reconciliation applied:
+  - `history/tasks/luc-49-ui-state-browser-proof-matrix-2026-05-25-task.md` header status aligned to `DONE`.
+  - `history/tasks/luc-49-ui-state-browser-proof-matrix-2026-05-25-task.md` reality status aligned to protected-packet PASS objective.
+  - `docs/analysis/luc-49-ui-state-browser-proof-matrix-2026-05-25.md` lane-status line aligned to `done` for protected objective scope.
+- No runtime/deploy mutation, commit, or push performed in this heartbeat.
+- Disposition: `done`.
+- Residual risk/next owner: remaining route-cluster `loading/empty/error` evidence expansion stays in follow-up frontend+QA scope and is not re-opened as a blocker for `LUC-49` protected-packet closure objective.
+- Evidence: `history/tasks/luc-125-luc-49-ui-state-browser-proof-matrix-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-122 No-Stall Queue Expeditor
+- Wake `issue_assigned` processed with concrete PM queue-expeditor checkpoint.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain expected-SHA deploy smoke/readiness and worker readiness evidence with rollback note.
+- Evidence: `history/tasks/luc-122-no-stall-queue-expeditor-2026-05-26-task.md`.
+- Continuation `finish_successful_run_handoff` reconciled with no new blocker-closure evidence; disposition stays `blocked` with unchanged `LUC-47` owner/action.
+- Continuation `source_scoped_recovery_action` reconciled with no new blocker-closure evidence and no stale `in_progress` drift; disposition remains `blocked` with unchanged `LUC-47` owner/action.
+
+## 2026-05-26 LUC-119 LUC-98 Release Permit Evidence Closure
+- Wake `issue_assigned` processed as narrow Ops verification checkpoint for `LUC-103-P5G`.
+- Fresh allowed-operation heartbeat executed for `workers-market-stream`:
+  - operator unblock packet check for
+    `history/artifacts/v1-operator-unblock-packet-3fedb7a9-2026-05-26.json` -> `PASS`
+  - Coolify pre-state: `workers-market-stream` (`d2oo1wwy8i55q27e5mdky0i4`) = `exited:unhealthy`
+  - restart call accepted: `Deployment already queued for this commit.`
+  - 60s polling (`6` checks) showed no recovery; status remained `exited:unhealthy`
+- No deploy mutation, push, or secret disclosure in this checkpoint.
+- Disposition: `blocked`.
+- Unblock owner/action: Ops Release Lead + Coolify operator + local-board release controller must clear queue/crash-loop cause, recover worker health with proof, and attach temp-domain expected-SHA acceptance packet with rollback note.
+- Evidence:
+  `history/tasks/luc-119-luc-98-release-permit-evidence-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-118 LUC-107 Coolify Health Evidence Closure
+- Wake `issue_assigned` processed as narrow Ops verification checkpoint for `LUC-103-P5F`.
+- Strict-scope verification executed on `LUC-107` bundle (`4` files):
+  - presence check -> `ALL_PRESENT`
+  - markdown H1 sanity -> `HEADERS_OK`
+  - credential-value pattern scan -> `NO_CREDENTIAL_VALUES`
+  - scope check -> only lane files (`??` untracked lane artifacts)
+- No deploy mutation, push, restart, or secret disclosure in this checkpoint.
+- Disposition: `done`.
+- Evidence: `history/tasks/luc-118-luc-107-coolify-health-evidence-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-117 LUC-47 Release Smoke Blocker Evidence Closure
+- Wake `issue_assigned` processed as narrow Ops Release checkpoint for `LUC-103-P5E`.
+- Fresh no-secret verification completed on current public candidate:
+  - `https://soar.luckysparrow.ch/api/build-info` -> `gitSha=3fedb7a9170097b40accb6ccea1915064f383f11`
+  - public smoke: API `/health` `200`, API `/ready` `200`, Web `/` `200`
+  - worker readiness endpoint without ops auth remains protected: `401` (expected)
+  - `ops:operator-unblock:check` for
+    `history/artifacts/v1-operator-unblock-packet-3fedb7a9-2026-05-26.json`
+    against expected SHA `3fedb7a9170097b40accb6ccea1915064f383f11` -> `PASS`
+- No deploy mutation, push, or secret disclosure in this checkpoint.
+- Disposition: `blocked`.
+- Unblock owner/action: scheduled Coolify operator + local-board release controller must execute temp-domain parallel deploy and attach full acceptance packet (`temp-api`, `temp-web`, four workers) with rollback/cutover note for the same SHA.
+- Finish-successful-run delta reconciliation: LUC-47 evidence bundle provenance/syntax + no-secret scan was rechecked; commit remains intentionally skipped due to mixed dirty worktree and unsafe single-owner commit boundary in this run context.
+- Source-scoped recovery delta (same lane, same scope): targeted credential-pattern scan across the five required `LUC-47` evidence files returned no matches; markdown heading check returned all `OK_HEADING`.
+- Reopen alignment (comment `1638e171-bd1b-43d4-817f-b8619426c296`): evidence bundle was committed as `1c767b7a` with blocker-only scope; no functional closure claim for `LUC-47`.
+- LUC-117 source-control slice disposition updated to `done`; remaining blocker ownership stays in `LUC-47` (temp-domain acceptance packet for SHA `3fedb7a9170097b40accb6ccea1915064f383f11`).
+- Finish-successful-run handoff reconciliation: no new delta required; source-of-truth parity for `LUC-117` remains valid and unchanged (`done`), with functional blocker still anchored to `LUC-47`.
+- Evidence: `history/tasks/luc-117-release-smoke-blocker-evidence-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-116 No-Stall Queue Expeditor
+- Wake `finish_successful_run_handoff` processed with concrete PM queue-expeditor checkpoint.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain expected-SHA deploy smoke/readiness and worker readiness evidence with rollback note.
+- Evidence: `history/tasks/luc-116-no-stall-queue-expeditor-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-114 QA Repeatable Smoke Evidence Closure
+- Wake `issue_assigned` processed with concrete QA repeatable smoke closure for
+  `LUC-103` partition `P5C`.
+- Executed repeatable smoke runner on `2026-05-26`:
+  - `pnpm run qa:smoke-e2e:repeatable -- --checks web --today 2026-05-26` -> PASS
+  - `pnpm run qa:smoke-e2e:repeatable -- --checks api --today 2026-05-26` -> PASS
+- Fresh QA evidence artifacts:
+  - `history/artifacts/qa-repeatable-smoke-e2e-2026-05-26.json`
+  - `history/evidence/qa-repeatable-smoke-e2e-2026-05-26.md`
+- Disposition: `done`.
+- Evidence:
+  `history/tasks/luc-114-qa-repeatable-smoke-evidence-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-113 Docs Analysis Provenance Closure
+- Wake `issue_assigned` processed with concrete docs-memory provenance closure for `LUC-103` partition `P5B` (`docs/analysis/*` only).
+- Published per-file owner attribution + commit/no-commit decisions:
+  `docs/analysis/luc-113-docs-analysis-provenance-closure-2026-05-26.md`.
+- Scope excluded runtime/code-path/deploy mutations.
+- Disposition: `done`.
+- Evidence: `history/tasks/luc-113-docs-analysis-provenance-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-112 Architecture Awareness Docs Graph Closure
+- Wake `issue_assigned` processed with concrete architecture-doc closure action.
+- Scope: documentation and source-of-truth parity only (no runtime/deploy/code-path mutation).
+- Contract update completed in `docs/architecture/architecture-evidence-graph-system.md` to include canonical awareness exports (`architecture-awareness.json/csv`, `architecture-graph.mmd`, `architecture-awareness-report.md`).
+- Validation: `pnpm run architecture:graph:drift:strict` PASS (`809/809` covered, `0` missing).
+- Disposition: `done`.
+- Evidence: `history/tasks/luc-112-architecture-awareness-docs-graph-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-110 No-Stall Queue Expeditor
+- Wake `issue_assigned` processed with concrete PM queue-expeditor checkpoint.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action: `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain expected-SHA deploy smoke/readiness and worker readiness evidence with rollback note.
+- Evidence: `history/tasks/luc-110-no-stall-queue-expeditor-2026-05-26-task.md`.
+- Continuation `finish_successful_run_handoff` reconciled with no new blocker-closure evidence; disposition stays `blocked` with unchanged `LUC-47` owner/action.
+
 ## 2026-05-26 LUC-109 State-Ledger Provenance Closure
 - Wake `issue_assigned` processed with concrete PM-only provenance checkpoint.
 - Scope was explicitly restricted to `LUC-103` partition `P4-state-ledgers` (`6` tracked state/context files); `P5-history-docs-bundle` remained excluded from this lane.
@@ -60,7 +736,7 @@ Last updated: 2026-05-26
     handled as a separate ops follow-up outside `LUC-69` (owner: Ops Release Lead,
     target: environment secret/config binding only, no runtime mutation in this row).
 
-- [ ] `LUC-64 [Soar] Dashboard strategy-signal truth vs execution outcome repair` (`TODO`)
+- [x] `LUC-64 [Soar] Dashboard strategy-signal truth vs execution outcome repair` (`DONE`)
   - 2026-05-25 delivery-control checkpoint published:
     `history/tasks/luc-64-dashboard-strategy-signal-truth-vs-execution-outcome-repair-2026-05-25-task.md`.
   - Scope is decomposition/integration only (no feature implementation by Delivery Lead).
@@ -76,20 +752,16 @@ Last updated: 2026-05-26
   - 2026-05-26 stale-state cleanup integrated child-lane truth:
     - `A` complete via `dashboard-runtime-signal-condition-active-2026-05-25-task.md`,
     - `C` complete via `luc-67-qa-verify-matched-strategy-signal-blocked-execution-reason-2026-05-25-task.md`.
-  - Active narrow blocker created:
+  - Backend lane `LUC-64-B` is complete with explicit payload-separation
+    evidence:
     `history/tasks/luc-64-b-backend-runtime-signal-payload-separation-proof-2026-05-26-task.md`.
-    Unblock owner: Backend API Engineer.
-    Unblock action: attach explicit backend payload-separation evidence proving
-    strategy-condition truth stays independent from execution outcome fields.
+    Proof confirms matched strategy-condition truth remains independent from
+    execution outcome fields.
   - Board stale-parent cleanup (`c7df4d14-c3e6-47d7-8a30-3f89e26bab5f`):
     return parent to `TODO` until next PM/Delivery cycle starts a fresh live run.
-  - 2026-05-26 continuation incident:
-    run `1e1d5591-bbb4-4257-bce6-d1507dd10b6a` failed with
-    `codex_transient_upstream` (model usage limit). No product-scope change.
-    Parent remains `TODO`; active blocker stays `LUC-64-B` backend payload proof.
-  - Board model cleanup (`bf496bbc-6469-4872-acbf-fd30cb9228c0`):
-    stale parent `in_progress` without a live run is disallowed; keep `LUC-64`
-    in `TODO` until Delivery starts the next explicit integration/repair pass.
+  - 2026-05-26 docs/state parity closure (`LUC-127`) reconciled stale blocker
+    wording after `LUC-64-B` backend proof completion; parent now remains
+    explicitly `DONE`.
 
 - [x] `DASH-RUNTIME-SIGNAL-CONDITION-ACTIVE-2026-05-25 fix(web): show satisfied strategy conditions when execution is blocked`
   - Paperclip repair lane completed locally. Dashboard Home signal cards now
@@ -10938,3 +11610,154 @@ None.
 - Next backend run must attach fresh focused proof and end with explicit disposition (`done` or `blocked` with unblock owner/action).
 - This heartbeat applies status reconciliation only; no new commit and no deploy impact.
 
+
+## 2026-05-26 LUC-103 Child Completion Integrated (LUC-109)
+- Confirmed child commit `2bfc4bcecd0fc569b37c56de0ce611e41df33402` closed `P4-state-ledgers`.
+- Remaining dirty scope is now `P5` only:
+  - tracked modified: `26`
+  - untracked: `80`
+- Added owner-ready provenance breakdown for tracked and untracked `P5` files in `LUC-103` task report.
+- Disposition: `blocked`.
+- Unblock owner/action: Engineering Delivery Lead executes owner-scoped closure commit/no-commit decisions per lane; no mixed `P5` bulk commit allowed.
+- Evidence: `history/tasks/luc-103-source-control-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-103 Finish-Handoff Owner Manifest
+- Added closure-enabling artifact: `history/artifacts/luc-103-p5-owner-manifest-2026-05-26.json`.
+- Manifest includes per-file owner attribution and owner summary for remaining `P5` scope.
+- Goal: convert mixed `P5` remainder into owner-scoped commit/no-commit execution without additional manual triage.
+- Disposition: `blocked` pending owner execution of manifest-driven closure.
+- Evidence: `history/tasks/luc-103-source-control-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-103 Post-Children Recheck (112/113/114)
+- Confirmed child closure commits landed:
+  - `697cea39` (`LUC-112`),
+  - `eee3f4ea` (`LUC-113`),
+  - `cc0c28a6` (`LUC-114`).
+- Remaining mixed-lane scope still present after integration (`24` tracked, `72` untracked).
+- Source-control closure remains fail-closed `blocked` until remaining owner-scoped bundles are closed or explicitly no-commit dispositioned.
+- Evidence: `history/tasks/luc-103-source-control-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-103 Queue Artifact Normalization
+- Added `history/artifacts/luc-103-remaining-closure-queue-2026-05-26.json` for execution ordering of remaining owner-scoped closure bundles.
+- Corrected queue data quality in same heartbeat (`tracked/untracked` counters normalized to numeric values; no `null` counters remain).
+- Disposition stays `blocked` pending owner execution of queue-driven closure.
+- Evidence: `history/tasks/luc-103-source-control-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-103 Priority Closure Pack Published
+- Added `history/artifacts/luc-103-priority-closure-pack-2026-05-26.md`.
+- Pack translates queue+manifest into immediate execution order (Top 12 lanes) with owner/counts/minimal verification per lane.
+- Highest-volume remainder remains `NO_LUC (33)` then `LUC-86 (12)`.
+- Disposition remains `blocked` pending owner execution of lane-by-lane closure.
+- Evidence: `history/tasks/luc-103-source-control-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-115 LUC-86 Ops Evidence Closure
+- Resume delta `finish_successful_run_handoff` processed with strict-scope closure for `LUC-103-P5D`.
+- Verified only the `LUC-86` bundle (`11` evidence files + `1` task file): existence PASS, markdown H1 sanity PASS, scoped secret-pattern scan PASS.
+- No runtime/deploy mutation and no cross-lane edits.
+- Disposition: `done`.
+- Evidence: `history/tasks/luc-115-luc-86-ops-evidence-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-115 Reopen Reconciliation (comment 8d6069de)
+- Reopen via board comment reconciled against commit `14cfc384e3c10c550d82c68db903788a4039f76b` (`ops: close LUC-115 LUC-86 evidence bundle`).
+- Commit scope verified as exactly `13` files: `11` LUC-86 evidence docs + `2` task packets (`LUC-86`, `LUC-115`).
+- Validation alignment confirmed: markdown H1 sanity pass; credential/token scan reports only benign no-secret wording and no secret values.
+- Push/deploy not performed in this lane.
+- Final disposition: `done`.
+
+## 2026-05-26 LUC-121 Frontend Map Inventory Evidence Closure
+- Reconciled stale map-readiness wording after `LUC-48-A/browser-proof` protected packet merge.
+- Confirmed protected route-reachability proof remains `PASS` on expected SHA `3fedb7a9170097b40accb6ccea1915064f383f11`.
+- Updated analysis artifacts to keep status fail-closed and specific:
+  - auth-context blocker is closed for protected packet scope,
+  - remaining frontend readiness gap is route-cluster `loading/empty/error` artifact coverage.
+- Evidence docs updated:
+  - `docs/analysis/luc-48-autonomous-map-inventory-and-ui-polish-readiness-gate-2026-05-25.md`
+  - `docs/analysis/luc-49-ui-state-browser-proof-matrix-2026-05-25.md`
+  - `docs/analysis/analysis-documentation.md`
+- Disposition: `done` (docs/state sync only; no deploy/runtime mutation).
+
+## 2026-05-26 LUC-103 Open-Lane Queue Rebased After New Child Closures
+- Confirmed closure commits for `LUC-115/117/118/119/120/121` are present in git history.
+- Rebased remaining queue now explicitly lists unresolved lanes only.
+- Largest remaining bundle is still `NO_LUC` (`33` files), followed by `LUC-103` meta (`4`) and `LUC-19` (`4`).
+- Disposition stays `blocked` pending remaining owner-scoped child closures.
+- Evidence: `history/tasks/luc-103-source-control-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-103 NO_LUC Path-Owner Decomposition
+- Added `history/artifacts/luc-103-no-luc-path-owner-split-2026-05-26.md`.
+- Largest remainder (`NO_LUC=33`) is now decomposed into 7 concrete sub-bundles with file-level listings.
+- This removes remaining ambiguity for next owner-scoped closure slices.
+- Disposition remains `blocked` pending execution of those sub-bundles.
+- Evidence: `history/tasks/luc-103-source-control-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-130 LUC-88 Productivity Review Evidence Closure
+- Scoped CTO closure heartbeat for `[Soar][LUC-103-P5M]` completed.
+- Verified `LUC-88` evidence/task artifacts via presence+SHA256 proof and published closure packet.
+- Synced canonical state ledgers for durable disposition traceability.
+- Disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-130-luc-88-productivity-review-evidence-closure-2026-05-26-task.md`
+  - `history/evidence/luc-130-luc-88-productivity-review-evidence-closure-2026-05-26.md`
+
+## 2026-05-26 LUC-103 Open-Lane Manifest v2 Published
+- Added refreshed remainder artifact: `history/artifacts/luc-103-open-lane-manifest-v2-2026-05-26.json`.
+- Manifest reflects post-child state including `LUC-125/127/128/130/131` closures.
+- Current unresolved head remains `NO_LUC (33)`, then `LUC-103 (5)` and `LUC-19 (4)`.
+- Disposition remains `blocked` pending execution of this manifest queue.
+- Evidence: `history/tasks/luc-103-source-control-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-103 Stage Cookbook Published
+- Added `history/artifacts/luc-103-lane-stage-cookbook-2026-05-26.md`.
+- Artifact maps open-lane manifest v2 to exact lane-scoped `git add` commands for execution.
+- Disposition remains `blocked` pending owner execution of cookbook lane closures.
+- Evidence: `history/tasks/luc-103-source-control-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-103 Closure Gate Scorecard Added
+- Published `history/artifacts/luc-103-closure-gate-scorecard-2026-05-26.md` as objective closure-gate tracker.
+- Current state: `15` closed child lanes, `28` open lanes, `67` open files.
+- Disposition remains `blocked` pending completion of remaining lane closures.
+- Evidence: `history/tasks/luc-103-source-control-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-147 History Plans Closure Bundle
+- Scoped closure lane `LUC-103-NO-LUC-C` completed for `NO_LUC.history-plans`.
+- Verified `8` history-plan artifacts with presence `PRESENT (8/8)`, markdown H1 sanity `PASS (8/8)`, and credential-pattern scan `NO_CREDENTIAL_VALUES`.
+- Recorded SHA256 provenance for all scoped files and published durable task/evidence packets.
+- Disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-147-history-plans-closure-bundle-2026-05-26-task.md`
+  - `history/evidence/luc-147-history-plans-closure-bundle-2026-05-26.md`
+
+
+
+
+
+
+
+
+
+## 2026-05-26 LUC-103 Manifest Drift Correction (v3)
+- Published canonical raw dirty-tree queue: `history/artifacts/luc-103-open-lane-manifest-v3-2026-05-26.json`.
+- Prior subtraction-based queue is now superseded due to large new child-lane influx.
+- Current raw snapshot: tracked `18`, untracked `55`, total `73`, lanes `49`.
+- Disposition remains `blocked`; next closures should consume v3 only.
+- Evidence: `history/tasks/luc-103-source-control-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-103 v3 Execution Pack Added
+- Added `history/artifacts/luc-103-lane-stage-cookbook-v3-2026-05-26.md`.
+- Added `history/artifacts/luc-103-manifest-v2-v3-delta-2026-05-26.md` to document queue drift.
+- Canonical execution input remains manifest v3 + cookbook v3.
+- Disposition remains `blocked` pending owner closure execution.
+- Evidence: `history/tasks/luc-103-source-control-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-103 Manifest v4 Published
+- Added `history/artifacts/luc-103-open-lane-manifest-v4-2026-05-26.json`.
+- Added `history/artifacts/luc-103-manifest-v3-v4-delta-2026-05-26.md`.
+- Current canonical queue is v4 (raw dirty-tree source of truth).
+- Disposition remains `blocked` pending owner-scoped closure execution.
+- Evidence: `history/tasks/luc-103-source-control-closure-2026-05-26-task.md`.
+
+## 2026-05-26 LUC-103 Cookbook v4 Published
+- Added `history/artifacts/luc-103-lane-stage-cookbook-v4-2026-05-26.md`.
+- Cookbook v4 is aligned with canonical manifest v4 and supersedes cookbook v3 for execution.
+- Disposition remains `blocked` pending lane-by-lane closure execution.
+- Evidence: `history/tasks/luc-103-source-control-closure-2026-05-26-task.md`.

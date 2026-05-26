@@ -529,3 +529,124 @@ Disposition: `blocked`.
 Unblock owner/action:
 - Owner: Engineering Delivery Lead.
 - Action: execute remaining lane closures until scorecard reaches open lanes/files = 0 and done-gate checklist is fully satisfied.
+
+## 2026-05-26 Heartbeat Delta (issue_children_completed) - manifest drift correction
+
+Concrete action completed:
+- Replaced stale subtraction-based queue with raw, source-of-truth lane manifest from current dirty tree:
+  - `history/artifacts/luc-103-open-lane-manifest-v3-2026-05-26.json`
+
+Why:
+- Child lane set expanded materially (`LUC-142/145/147/152/153/158/160/164/166/...`), so previous manually-maintained `closed-list` subtraction was no longer reliable.
+
+v3 snapshot (from current `git status`):
+- tracked: `18`
+- untracked: `55`
+- total open files: `73`
+- lanes detected: `49`
+- top lanes:
+  - `NO_LUC` -> `19`
+  - `LUC-103` -> `3`
+  - `LUC-169` -> `2`
+  - `LUC-171` -> `2`
+
+Verification in this heartbeat:
+- `git status --short`
+- raw-manifest generation
+- `ConvertFrom-Json` parse + top-lanes readback
+
+Commit/push/deploy:
+- Commit: none
+- Push: not needed
+- Deploy impact: none
+
+Disposition: `blocked`.
+Unblock owner/action:
+- Owner: Engineering Delivery Lead.
+- Action: use `luc-103-open-lane-manifest-v3-2026-05-26.json` as canonical queue for remaining closures; do not rely on older subtraction manifests.
+
+## 2026-05-26 Heartbeat Delta (finish_successful_run_handoff) - v3 execution pack
+
+Concrete actions completed:
+- Generated v3 stage cookbook from raw manifest:
+  - `history/artifacts/luc-103-lane-stage-cookbook-v3-2026-05-26.md`
+- Generated manifest drift report:
+  - `history/artifacts/luc-103-manifest-v2-v3-delta-2026-05-26.md`
+
+Purpose:
+- enforce execution on current raw queue (`v3`),
+- make manifest drift explicit for auditability and avoid stale lane instructions.
+
+Verification:
+- JSON parse/read of `open-lane-manifest-v3`
+- markdown readback generated artifacts
+
+Commit/push/deploy:
+- Commit: none
+- Push: not needed
+- Deploy impact: none
+
+Disposition: `blocked`.
+Unblock owner/action:
+- Owner: Engineering Delivery Lead.
+- Action: execute closures using `luc-103-lane-stage-cookbook-v3-2026-05-26.md`; treat `v2` artifacts as historical only.
+
+## 2026-05-26 Heartbeat Delta (issue_children_completed) - manifest v4 refresh
+
+Concrete actions completed:
+- Published refreshed raw lane manifest:
+  - `history/artifacts/luc-103-open-lane-manifest-v4-2026-05-26.json`
+- Published drift report against previous canonical queue:
+  - `history/artifacts/luc-103-manifest-v3-v4-delta-2026-05-26.md`
+
+v4 snapshot:
+- tracked: `19`
+- untracked: `56`
+- total open files: `75`
+- lanes: `48`
+- top lanes:
+  - `NO_LUC` -> `19`
+  - `LUC-103` -> `7`
+  - `LUC-130` -> `2`
+  - `LUC-132` -> `2`
+  - `LUC-169` -> `2`
+
+Verification:
+- `git status --short`
+- raw manifest v4 generation
+- JSON parse/readback of v4
+- v3->v4 delta generation
+
+Commit/push/deploy:
+- Commit: none
+- Push: not needed
+- Deploy impact: none
+
+Disposition: `blocked`.
+Unblock owner/action:
+- Owner: Engineering Delivery Lead.
+- Action: use `luc-103-open-lane-manifest-v4-2026-05-26.json` as current closure queue; supersede v3 for execution sequencing.
+
+## 2026-05-26 Heartbeat Delta (finish_successful_run_handoff) - cookbook v4
+
+Concrete action completed:
+- Generated lane stage cookbook aligned with current canonical queue `v4`:
+  - `history/artifacts/luc-103-lane-stage-cookbook-v4-2026-05-26.md`
+
+Purpose:
+- direct lane-by-lane stage commands from latest raw manifest,
+- removes risk of executing stale `v3` command pack after queue drift.
+
+Verification:
+- Parsed `history/artifacts/luc-103-open-lane-manifest-v4-2026-05-26.json`
+- Generated markdown cookbook and confirmed write success.
+
+Commit/push/deploy:
+- Commit: none
+- Push: not needed
+- Deploy impact: none
+
+Disposition: `blocked`.
+Unblock owner/action:
+- Owner: Engineering Delivery Lead.
+- Action: execute remaining closures using `luc-103-open-lane-manifest-v4-2026-05-26.json` + `luc-103-lane-stage-cookbook-v4-2026-05-26.md`.
