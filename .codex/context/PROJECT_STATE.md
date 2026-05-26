@@ -2,6 +2,11 @@
 
 Last updated: 2026-05-26
 
+- `LUC-109 assigned heartbeat (2026-05-26)` executed concrete PM-only provenance closure checkpoint and remains `blocked`.
+  Scope was explicitly bounded to `LUC-103` partition `P4-state-ledgers` (`6` tracked state/context files) with fail-closed exclusion of `P5-history-docs-bundle`. No commit/push/deploy/runtime mutation was performed in this lane. Unblock owner/action: Engineering Delivery Lead must finalize owner-scoped close/no-commit disposition for the `P4` bundle, then lane owners close `P5` and rerun final `LUC-103` closure.
+  Evidence:
+  `history/tasks/luc-103-source-control-closure-2026-05-26-task.md`.
+
 ## Current Candidate Deployment Status
 
 - `LUC-70 [Soar][PM] No-stall queue expeditor` is closed as a completed
@@ -10839,3 +10844,4 @@ Last updated: 2026-05-26
   - `LUC-47` ops/deploy proof,
   - `LUC-48-A/browser-proof` frontend proof lane.
 - Active V1 controller routine owns the next reconciliation pass and keeps fail-closed gate enforcement until all open proof lanes provide closure evidence.
+

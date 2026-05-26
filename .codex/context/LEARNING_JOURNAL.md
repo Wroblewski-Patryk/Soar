@@ -20,6 +20,39 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-05-26 - Prevent Codex auth symlink bootstrap collisions before runtime heartbeats
+- Context: repeated `LUC-47` continuation runs failed before lane logic with adapter bootstrap errors.
+- Symptom: adapter exits with `EEXIST` while creating
+  `C:\Users\wrobl\.codex\auth.json -> ...\codex-home\auth.json`, and some reruns also show file-lock-style contention patterns.
+- Root cause: both source and destination `auth.json` paths already exist as regular files (not symlinks), while concurrent Codex processes amplify contention during bootstrap.
+- Guardrail: before rerunning a blocked heartbeat after adapter bootstrap failure, verify both auth paths type and reduce stale parallel Codex runtime processes on the host.
+- Preferred pattern:
+```powershell
+$src='C:\Users\wrobl\.codex\auth.json'
+$dst='C:\Personal\Projekty\Aplikacje\Paperclip_Softwarehouse\.paperclip\runtime\home\instances\default\companies\f13051a7-d0aa-4261-9254-d3ab90735de5\codex-home\auth.json'
+Get-Item $src,$dst | Select-Object FullName,Attributes,LinkType,Length,LastWriteTime
+Get-Process codex,node,node_repl -ErrorAction SilentlyContinue | Select-Object ProcessName,Id,StartTime,Path
+```
+- Avoid: retry loops that treat adapter bootstrap `EEXIST` as a product/runtime regression in Soar.
+- Evidence:
+  `history/tasks/luc-45-b-ops-stack-rollout-and-smoke-2026-05-25-task.md` (2026-05-26 continuation checkpoints).
+
+### 2026-05-26 - Treat QA repeatable runner timeout as inconclusive until artifacts are checked
+- Context: `LUC-18` backtests smoke reruns from Codex shell with long tool timeouts.
+- Symptom: shell call ends with timeout (`command timed out`) even when `qa-repeatable-smoke-e2e` already wrote JSON/MD evidence for the same run window.
+- Root cause: long-running Vitest e2e + process/IO overhead can outlive the shell tool timeout boundary, so timeout status alone can misclassify a run as "no evidence".
+- Guardrail: after QA runner timeout, always check `history/artifacts/qa-repeatable-smoke-e2e-<date>.json` and paired `history/evidence/*.md` before rerunning.
+- Preferred pattern:
+```powershell
+pnpm run qa:smoke-e2e:repeatable -- --checks backtests --today 2026-05-26
+Get-Item history/artifacts/qa-repeatable-smoke-e2e-2026-05-26.json
+Get-Item history/evidence/qa-repeatable-smoke-e2e-2026-05-26.md
+```
+- Avoid: assuming "no result" from timeout alone, or rerunning immediately without reading already-written artifacts.
+- Evidence:
+  `history/tasks/luc-18-qa-regression-smoke-baseline-2026-05-25.md`,
+  `history/artifacts/qa-repeatable-smoke-e2e-2026-05-26.json`.
+
 ### 2026-05-24 - Compare deployed SHA with local dirty fixes before redeploy
 - Context: `PROD-FRESH-DEPLOY-380308D1-2026-05-24` recovered production
   freshness after public reachability returned.
@@ -3256,4 +3289,11 @@ Test-Path $dst
 - Context: board comment 8fd8cfc5-b627-418e-8e10-c4df93ddbba4 confirmed local Codex command and supported model profiles are active, and doctor check passes.
 - Guardrail: once platform owner confirms runtime unblock, portfolio coordination issues must move from BLOCKED to active queue and resume evidence tracking from Soar artifacts.
 - Avoid: carrying forward stale model/symlink blockers in issue status after explicit board-level unblock confirmation.
+
+
+## 2026-05-26 - LUC-86 janitor stale-loop guard
+- Pattern: issue repeatedly flips to stale in_progress with zero live runs, then janitor resets to `todo`.
+- Cause: passive status left between heartbeats for a known external blocker.
+- Rule: for external blockers with no active command/process, keep issue disposition `blocked` by default; use `in_progress` only during active live execution heartbeat.
+- Trigger file/evidence: history/evidence/luc-86-janitor-stale-loop-guard-2026-05-26.md.
 

@@ -2,6 +2,14 @@
 
 Last updated: 2026-05-26
 
+## 2026-05-26 LUC-109 State-Ledger Provenance Closure
+- Wake `issue_assigned` processed with concrete PM-only provenance checkpoint.
+- Scope was explicitly restricted to `LUC-103` partition `P4-state-ledgers` (`6` tracked state/context files); `P5-history-docs-bundle` remained excluded from this lane.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action: Engineering Delivery Lead must finalize owner-scoped close/no-commit disposition for the `P4` bundle, then lane owners close `P5` and rerun final `LUC-103` closure.
+- Evidence: `history/tasks/luc-103-source-control-closure-2026-05-26-task.md`.
+
 ## Agent Workflow Refresh (2026-04-18)
 
 - This board is the canonical execution queue for CryptoSparrow / Soar.
@@ -10929,3 +10937,4 @@ None.
   - venue-context live-order path: `create 500`.
 - Next backend run must attach fresh focused proof and end with explicit disposition (`done` or `blocked` with unblock owner/action).
 - This heartbeat applies status reconciliation only; no new commit and no deploy impact.
+

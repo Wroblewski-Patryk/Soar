@@ -1,8 +1,15 @@
 # Next Steps
 
-Last updated: 2026-05-25
+Last updated: 2026-05-26
 
 ## Next Tiny Task
+
+PM no-stall queue expeditor:
+`LUC-108 [Soar][PM] No-stall queue expeditor` is checkpointed as `blocked`.
+Next exact PM move remains unchanged: keep parent `LUC-45` fail-closed and
+advance queue only when `LUC-47` attaches temp-domain expected-SHA deploy smoke
+and worker readiness evidence with rollback note (owner: Ops Release Lead +
+host operator).
 
 Coolify Service Stack migration:
 `COOLIFY-SERVICE-STACK-MIGRATION-2026-05-25` is locally ready and production
@@ -3427,3 +3434,140 @@ On "rob dalej", "rób dalej", "kontynuuj", "continue", or "next":
 2. The next release-critical action is still protected production proof for
    the current `380308d1` candidate. Without approved protected inputs, choose
    only bounded local gaps and keep V1 as `NO-GO`.
+
+## 2026-05-26 LUC-90 No-Stall Queue Expeditor Next Action
+
+1. Keep `LUC-45` parent controller fail-closed `blocked` until both proof gates
+   are attached and reviewed:
+   - `LUC-47`: temp-domain expected-SHA deploy smoke/readiness packet.
+   - `LUC-48-A/browser-proof`: protected-route browser-state packet with
+     `loading/empty/error/success` coverage for `/dashboard`, `/dashboard/bots*`,
+     `/admin/*`.
+2. Use `in_progress` only during an active live run; otherwise keep lane state
+   as `blocked` or `todo` with explicit owner/action.
+3. After either child lane closes, run immediate parent reconciliation for
+   `LUC-45` gate order `A+B -> C -> D -> E`; do not start `C` before `B` proof
+   is genuinely closed.
+4. PM checkpoint evidence for this rule-set:
+   `history/tasks/luc-90-no-stall-queue-expeditor-2026-05-26-task.md`.
+5. Keep `LUC-90` itself in `blocked` (not passive `in_progress`) until at
+   least one blocker lane lands fresh closure evidence:
+   - `LUC-47`: current-SHA packet refresh + temp-domain smoke/readiness packet.
+   - `LUC-48-A/browser-proof`: protected-route browser-state packet.
+
+## 2026-05-26 LUC-90 Wake Delta Next Action
+
+1. Preserve capacity governor: do not exceed `5` active live runs; do not open
+   extra execution lanes while `LUC-47` and `LUC-48-A/browser-proof` remain the
+   only first-class blockers for `LUC-45`.
+2. Keep `LUC-90` fail-closed `blocked` until one blocker lane lands fresh
+   closure evidence; no passive `in_progress`.
+3. When a blocker closes, run immediate parent reconciliation for `LUC-45`
+   using strict gate order `A+B -> C -> D -> E`.
+
+## 2026-05-26 LUC-90 Reopened Comment Next Action
+
+1. Integrate the latest verified bridge inputs as fixed truth for PM routing:
+   - `LUC-86`: production/Coolify health confirmed on SHA `3fedb7a9...`,
+     topology `project -> production -> 8 resources`, no secrets exposed.
+   - `LUC-49`: protected-route proof remains `BLOCKED_AUTH`; local focused
+     web vitests are PASS (`8` files / `17` tests).
+2. Keep no-stall batch narrow and safe: run only `2/5` owner lanes now
+   (`LUC-47`, `LUC-48-A/browser-proof`); do not open additional lanes until
+   one of these two produces fresh closure evidence.
+3. Keep fail-closed blocker ownership explicit:
+   - `LUC-47` owner/action: temp-domain expected-SHA smoke/readiness packet
+     + worker readiness evidence.
+   - `LUC-48-A/browser-proof` owner/action: protected-route browser-state packet
+     for `/dashboard`, `/dashboard/bots*`, `/admin/*`; prerequisite owner
+     `local-board/auth-context owner` must provide approved prod auth/browser
+     context first.
+4. Keep `LUC-90` and parent bridge `LUC-45` as `blocked` when idle; use
+   `in_progress` only during live reconciliation run.
+
+## 2026-05-26 LUC-90 Handoff Next Action
+
+1. Until new child evidence appears, keep PM batch width fixed at `2/5` and do
+   not open additional owner lanes.
+2. Maintain explicit unblock ownership:
+   - `LUC-47`: temp-domain expected-SHA smoke/readiness + worker readiness.
+   - `LUC-48-A/browser-proof`: authenticated protected-route packet for
+     `/dashboard`, `/dashboard/bots*`, `/admin/*` after approved auth context
+     is provided by `local-board/auth-context owner`.
+3. Keep controller bridge fail-closed: `LUC-45` stays `blocked` until both
+   blocker packets are attached and verified; `LUC-46` remains treated as
+   closed for gate `A`.
+
+## 2026-05-26 LUC-90 Source-Scoped Recovery Next Action (CTO heartbeat)
+
+1. Keep no-stall capacity governor unchanged: hold active PM lanes at `2/5`
+   (`LUC-47`, `LUC-48-A/browser-proof`) and do not open new lanes before fresh
+   closure evidence lands.
+2. Keep `LUC-90` and parent bridge `LUC-45` fail-closed `blocked` when idle;
+   use `in_progress` only during a live reconciliation run.
+3. Preserve named unblock owners/actions without widening scope:
+   - `LUC-47` (`Ops Release Lead` + host operator): expected-SHA temp-domain
+     smoke/readiness packet plus worker readiness evidence.
+   - `LUC-48-A/browser-proof` (`Frontend + QA`) with `local-board/auth-context owner`
+     prerequisite: approved production auth context and protected-route packet
+     for `/dashboard`, `/dashboard/bots*`, `/admin/*`.
+
+## 2026-05-26 LUC-95 No-Stall Queue Expeditor Next Action
+
+1. Keep PM no-stall topology fail-closed and narrow: active blocker lanes remain
+   exactly `LUC-47` and `LUC-48-A/browser-proof`; do not open additional lanes
+   before fresh closure evidence appears.
+2. Keep `LUC-95` and parent bridge `LUC-45` as `blocked` when idle; use
+   `in_progress` only during a live reconciliation run.
+3. Preserve explicit unblock owner/actions:
+   - `LUC-47` (`Ops Release Lead` + host operator): expected-SHA temp-domain
+     deploy smoke/readiness + worker readiness packet.
+   - `LUC-48-A/browser-proof` (`Frontend + QA`, prerequisite
+     `local-board/auth-context owner`): authenticated protected-route packet
+     for `/dashboard`, `/dashboard/bots*`, `/admin/*`.
+4. After first real blocker closure, run immediate parent reconciliation for
+   gate order `A+B -> C -> D -> E`; do not start `C` before `B` is proven closed.
+
+## 2026-05-26 LUC-95 Source-Scoped Recovery Next Action
+
+1. Keep fail-closed PM posture unchanged after source-scoped recovery wake:
+   `LUC-95` and `LUC-45` remain `blocked` when idle; use `in_progress` only
+   during a live reconciliation run.
+2. Maintain narrow active-lane batch at `2/5`:
+   - `LUC-47` owner/action remains expected-SHA temp-domain smoke/readiness
+     plus worker readiness packet.
+   - `LUC-48-A/browser-proof` owner/action remains authenticated protected-route
+     browser-state packet for `/dashboard`, `/dashboard/bots*`, `/admin/*`.
+3. Do not open additional owner lanes before fresh closure evidence appears
+   from one of the two blocker lanes above.
+
+## 2026-05-26 LUC-96 No-Stall Queue Expeditor Next Action
+
+1. Keep PM topology fail-closed and narrow: active blocker lanes remain exactly `LUC-47` and `LUC-48-A/browser-proof` until fresh closure evidence appears.
+2. Keep `LUC-96` and `LUC-45` as `blocked` when idle; use `in_progress` only during a live reconciliation run.
+3. Preserve explicit unblock owner/actions:
+   - `LUC-47` (`Ops Release Lead` + host operator): expected-SHA temp-domain deploy smoke/readiness + worker readiness packet.
+   - `LUC-48-A/browser-proof` (`Frontend + QA`, prerequisite `local-board/auth-context owner`): authenticated protected-route packet for `/dashboard`, `/dashboard/bots*`, `/admin/*`.
+4. After first blocker closure, run immediate parent reconciliation in gate order `A+B -> C -> D -> E`.
+
+## 2026-05-26 LUC-100 No-Stall Queue Expeditor Next Action
+
+1. Keep parent bridge `LUC-45` fail-closed `blocked` while `LUC-47` remains open.
+2. Treat `LUC-47` as the only active first-class blocker lane for this PM scope:
+   - `LUC-47` (`Ops Release Lead` + host operator): temp-domain expected-SHA smoke/readiness packet plus worker readiness and rollback note.
+3. Keep `LUC-48` and `LUC-49` treated as closed for this parent routing checkpoint.
+4. Use `in_progress` only during active reconciliation; keep `LUC-100` as `blocked` when idle.
+
+## 2026-05-26 LUC-100 Source-Scoped Recovery Delta Next Action
+
+1. Keep PM topology unchanged after source-scoped recovery wake: `LUC-45` and `LUC-100` remain `blocked` when idle.
+2. Maintain single active blocker lane in this PM scope:
+   - `LUC-47` owner/action stays unchanged (temp-domain expected-SHA smoke/readiness + worker readiness + rollback note).
+3. Keep `LUC-48` and `LUC-49` treated as closed for this parent routing checkpoint.
+4. Do not open additional owner lanes before fresh closure evidence lands on `LUC-47`.
+
+## 2026-05-26 LUC-102 No-Stall Queue Expeditor Next Action
+1. Keep PM no-stall topology fail-closed and narrow: `LUC-45` remains `blocked`, with `LUC-47` as the only active first-class blocker lane in this parent scope.
+2. Keep `LUC-102` and `LUC-45` as `blocked` when idle; use `in_progress` only during live reconciliation runs.
+3. Do not widen active owner lanes above current capacity posture (`2/5`) without fresh closure evidence on `LUC-47`.
+4. Immediately advance controller sequencing after `LUC-47` closure packet lands (temp-domain expected-SHA smoke/readiness + worker readiness + rollback note).
