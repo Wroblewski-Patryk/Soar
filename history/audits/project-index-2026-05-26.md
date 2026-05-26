@@ -1,0 +1,1089 @@
+# Project Index
+
+Generated at: 2026-05-26T17:29:17.779Z
+Evidence date: 2026-05-26
+
+## Purpose
+
+This index is a local, no-network map of the current Soar repository. It is not
+V1 approval evidence. Use it as the starting point for module-by-module audits
+and fixes.
+
+## V1 Product Action Matrix
+
+Source: `docs/operations/v1-product-action-audit-matrix-2026-05-10.md`
+
+- none
+
+## V1 Audit Work Map
+
+This table is the working map for finishing V1. It connects each matrix row to
+the likely code and validation surfaces. The priority is audit order, not
+business value.
+
+| Priority | V1 row | Status | Risk | API | Web | Routes | Candidate tests | Next proof |
+| ---: | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+
+
+## V1 Audit Work Details
+
+
+
+## API Modules
+
+| Module | Route files | Controller files | Service files | Test files | TS files |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| admin | 2 | 2 | 2 | 2 | 10 |
+| auth | 1 | 1 | 2 | 5 | 14 |
+| backtests | 1 | 1 | 5 | 12 | 28 |
+| bots | 1 | 1 | 53 | 32 | 88 |
+| engine | 0 | 0 | 44 | 48 | 109 |
+| exchange | 0 | 0 | 34 | 16 | 41 |
+| icons | 1 | 1 | 1 | 1 | 5 |
+| isolation | 0 | 0 | 0 | 1 | 1 |
+| logs | 1 | 1 | 1 | 1 | 5 |
+| market-data | 0 | 0 | 4 | 2 | 6 |
+| market-stream | 1 | 0 | 4 | 6 | 11 |
+| markets | 1 | 1 | 2 | 1 | 7 |
+| orders | 1 | 1 | 9 | 12 | 24 |
+| pagination | 0 | 0 | 0 | 1 | 1 |
+| positions | 1 | 1 | 7 | 11 | 27 |
+| profile | 4 | 4 | 6 | 6 | 24 |
+| reports | 1 | 1 | 2 | 2 | 5 |
+| strategies | 2 | 2 | 3 | 3 | 12 |
+| subscriptions | 0 | 0 | 4 | 1 | 9 |
+| upload | 1 | 0 | 0 | 2 | 3 |
+| users | 0 | 0 | 0 | 0 | 1 |
+| wallets | 1 | 1 | 5 | 4 | 11 |
+
+## Web Features
+
+| Feature | Component-like files | Test files | TS/TSX files |
+| --- | ---: | ---: | ---: |
+| admin | 4 | 3 | 10 |
+| auth | 13 | 5 | 15 |
+| backtest | 16 | 10 | 29 |
+| bots | 19 | 10 | 34 |
+| dashboard-home | 38 | 24 | 44 |
+| exchanges | 2 | 2 | 4 |
+| icons | 0 | 0 | 3 |
+| logs | 2 | 1 | 4 |
+| markets | 5 | 2 | 8 |
+| orders | 0 | 0 | 0 |
+| positions | 0 | 0 | 1 |
+| profile | 12 | 6 | 23 |
+| reports | 2 | 1 | 3 |
+| shared | 2 | 2 | 4 |
+| strategies | 17 | 10 | 29 |
+| wallets | 9 | 3 | 11 |
+
+## Web Routes
+
+- /auth/login (apps/web/src/app/(public)/auth/login/page.tsx)
+- /auth/register (apps/web/src/app/(public)/auth/register/page.tsx)
+- / (apps/web/src/app/(public)/page.tsx)
+- /admin (apps/web/src/app/admin/page.tsx)
+- /admin/subscriptions (apps/web/src/app/admin/subscriptions/page.tsx)
+- /admin/users (apps/web/src/app/admin/users/page.tsx)
+- /dashboard/backtests/[id] (apps/web/src/app/dashboard/backtests/[id]/page.tsx)
+- /dashboard/backtests/create (apps/web/src/app/dashboard/backtests/create/page.tsx)
+- /dashboard/backtests/list (apps/web/src/app/dashboard/backtests/list/page.tsx)
+- /dashboard/bots/[id]/assistant (apps/web/src/app/dashboard/bots/[id]/assistant/page.tsx)
+- /dashboard/bots/[id]/edit (apps/web/src/app/dashboard/bots/[id]/edit/page.tsx)
+- /dashboard/bots/[id] (apps/web/src/app/dashboard/bots/[id]/page.tsx)
+- /dashboard/bots/[id]/preview (apps/web/src/app/dashboard/bots/[id]/preview/page.tsx)
+- /dashboard/bots/[id]/runtime (apps/web/src/app/dashboard/bots/[id]/runtime/page.tsx)
+- /dashboard/bots/assistant (apps/web/src/app/dashboard/bots/assistant/page.tsx)
+- /dashboard/bots/create (apps/web/src/app/dashboard/bots/create/page.tsx)
+- /dashboard/bots/new (apps/web/src/app/dashboard/bots/new/page.tsx)
+- /dashboard/bots (apps/web/src/app/dashboard/bots/page.tsx)
+- /dashboard/bots/runtime (apps/web/src/app/dashboard/bots/runtime/page.tsx)
+- /dashboard/logs (apps/web/src/app/dashboard/logs/page.tsx)
+- /dashboard/markets/[id]/edit (apps/web/src/app/dashboard/markets/[id]/edit/page.tsx)
+- /dashboard/markets/create (apps/web/src/app/dashboard/markets/create/page.tsx)
+- /dashboard/markets/list (apps/web/src/app/dashboard/markets/list/page.tsx)
+- /dashboard (apps/web/src/app/dashboard/page.tsx)
+- /dashboard/profile (apps/web/src/app/dashboard/profile/page.tsx)
+- /dashboard/reports (apps/web/src/app/dashboard/reports/page.tsx)
+- /dashboard/strategies/[id]/edit (apps/web/src/app/dashboard/strategies/[id]/edit/page.tsx)
+- /dashboard/strategies/[id] (apps/web/src/app/dashboard/strategies/[id]/page.tsx)
+- /dashboard/strategies/create (apps/web/src/app/dashboard/strategies/create/page.tsx)
+- /dashboard/strategies/list (apps/web/src/app/dashboard/strategies/list/page.tsx)
+- /dashboard/wallets/[id]/edit (apps/web/src/app/dashboard/wallets/[id]/edit/page.tsx)
+- /dashboard/wallets/[id] (apps/web/src/app/dashboard/wallets/[id]/page.tsx)
+- /dashboard/wallets/[id]/preview (apps/web/src/app/dashboard/wallets/[id]/preview/page.tsx)
+- /dashboard/wallets/create (apps/web/src/app/dashboard/wallets/create/page.tsx)
+- /dashboard/wallets/list (apps/web/src/app/dashboard/wallets/list/page.tsx)
+- /dashboard/wallets (apps/web/src/app/dashboard/wallets/page.tsx)
+- /offline (apps/web/src/app/offline/page.tsx)
+
+## Workers
+
+- `apps/api/src/workers/backtest.worker.ts`
+- `apps/api/src/workers/execution.worker.ts`
+- `apps/api/src/workers/marketData.worker.ts`
+- `apps/api/src/workers/marketStream.worker.ts`
+- `apps/api/src/workers/marketStreamSubscriptions.service.ts`
+- `apps/api/src/workers/marketStreamWorkerConfig.ts`
+- `apps/api/src/workers/workerBootstrap.ts`
+- `apps/api/src/workers/workerHeartbeat.ts`
+- `apps/api/src/workers/workerOwnership.ts`
+
+## Test Inventory
+
+- Total test/spec files: 362
+- API tests: 195
+- Web tests: 151
+- Script tests: 16
+- Other tests: 0
+
+## Package Scripts
+
+- `api/dev`
+- `architecture:graph:drift`
+- `architecture:graph:drift:strict`
+- `architecture:graph:generate`
+- `architecture:journey:index`
+- `architecture:journey:index:strict`
+- `architecture:journey:triage`
+- `audit:data:db-isolated`
+- `audit:handoff:check`
+- `audit:handoff:check:test`
+- `audit:manifest:check`
+- `audit:manifest:check:test`
+- `audit:manifest:compare`
+- `audit:manifest:compare:test`
+- `audit:manifest:verify`
+- `audit:remediation-plan:check`
+- `audit:remediation-plan:check:test`
+- `audit:rerun-playbook:check`
+- `audit:rerun-playbook:check:test`
+- `audit:rollup:check`
+- `audit:rollup:check:test`
+- `audit:tooling-index:check`
+- `audit:tooling-index:check:test`
+- `backend:dev`
+- `backend/dev`
+- `build`
+- `client/dev`
+- `docker:app:build`
+- `docker:app:config`
+- `docker:app:down`
+- `docker:app:logs`
+- `docker:app:ps`
+- `docker:app:up`
+- `docker:coolify:config`
+- `docker:coolify:shared-api:config`
+- `docs:parity:check`
+- `docs:parity:endpoints:api`
+- `frontend:dev`
+- `frontend/dev`
+- `go-live:infra:down`
+- `go-live:infra:up`
+- `i18n:audit:route-reachable:web`
+- `lint`
+- `ops:coolify-stack:env-check`
+- `ops:coolify-stack:env-check:example`
+- `ops:coolify-stack:env-check:test`
+- `ops:cutover:dry-run`
+- `ops:data:backfill:venue-context`
+- `ops:data:backfill:venue-context:dry`
+- `ops:db:backup-restore:check-local`
+- `ops:db:backup-verify`
+- `ops:db:backup-verify:local`
+- `ops:db:backup-verify:prod`
+- `ops:db:backup-verify:stage`
+- `ops:db:restore-drill`
+- `ops:db:restore-drill:local`
+- `ops:db:restore-drill:prod`
+- `ops:db:restore-drill:stage`
+- `ops:deploy:rollback-guard`
+- `ops:deploy:rollback-proof`
+- `ops:deploy:rollback-proof:prod`
+- `ops:deploy:rollback-proof:stage`
+- `ops:deploy:runtime-freshness`
+- `ops:deploy:smoke`
+- `ops:deploy:wait-web-build-info`
+- `ops:exchange:gateio-market-stream-smoke`
+- `ops:live:controlled-proof`
+- `ops:liveimport:readback`
+- `ops:operator-unblock:check`
+- `ops:operator-unblock:check:test`
+- `ops:prod-auth:proof`
+- `ops:prod-fixture:action-proof`
+- `ops:prod-positions:proof`
+- `ops:prod-security-exchange:proof`
+- `ops:prod-ux:proof`
+- `ops:project:index`
+- `ops:project:known-state`
+- `ops:project:ledger`
+- `ops:project:scan`
+- `ops:project:scorecard`
+- `ops:protected-inputs:check`
+- `ops:protected-inputs:check:test`
+- `ops:rc:checklist:sync`
+- `ops:rc:gates:evidence:check`
+- `ops:rc:gates:evidence:check:strict:prod`
+- `ops:rc:gates:local-pipeline`
+- `ops:rc:gates:local-pipeline:strict`
+- `ops:rc:gates:local-pipeline:strict:prod`
+- `ops:rc:gates:prod-pipeline`
+- `ops:rc:gates:refresh`
+- `ops:rc:gates:refresh:strict`
+- `ops:rc:gates:refresh:strict:prod`
+- `ops:rc:gates:refresh:summary`
+- `ops:rc:gates:refresh:summary:strict`
+- `ops:rc:gates:refresh:summary:strict:prod`
+- `ops:rc:gates:status`
+- `ops:rc:gates:summary`
+- `ops:rc:signoff:build`
+- `ops:release:v1:gate`
+- `ops:release:v1:preflight`
+- `ops:release:v1:stage-rehearsal`
+- `ops:slo:collect`
+- `ops:slo:window-report`
+- `ops:ui:prod-clickthrough`
+- `prod-like:start`
+- `prod-like/start`
+- `qa:smoke-e2e:repeatable`
+- `quality:guardrails`
+- `quality:guardrails:test`
+- `server/dev`
+- `test`
+- `test:bot:v2:baseline`
+- `test:go-live:api`
+- `test:go-live:api:with-infra`
+- `test:go-live:client`
+- `test:go-live:server`
+- `test:go-live:server:with-infra`
+- `test:go-live:smoke`
+- `test:go-live:web`
+- `typecheck`
+- `web:verify:build-typecheck`
+- `web/dev`
+- `workers:dev`
+- `workers:prod`
+- `workers/dev`
+- `workers/prod`
+
+## Open Queue Markers
+
+Showing up to 40 unchecked markers from the canonical queue sources.
+
+- .codex/context/TASK_BOARD.md:931 - [ ] `LUC-45 [Soar] V1 audit-to-completion controller`
+- .codex/context/TASK_BOARD.md:995 - [ ] `LUC-48 [Soar][Docs] Autonomous map inventory and UI polish readiness gate`
+- .codex/context/TASK_BOARD.md:1048 - [ ] `LUC-41 [Soar][Integration] Exchange and trading runtime boundary`
+- .codex/context/TASK_BOARD.md:1065 - [ ] `LUC-43 [Soar][Test Automation] Repeatable smoke and e2e checks`
+- .codex/context/TASK_BOARD.md:1096 - [ ] `LUC-37-A [Soar][Delivery] Backend runtime and trading boundary`
+- .codex/context/TASK_BOARD.md:1102 - [ ] `LUC-37-B [Soar][Delivery] Coolify stack cutover and smoke`
+- .codex/context/TASK_BOARD.md:1107 - [ ] `LUC-37-C [Soar][Delivery] Journey verification and QA`
+- .codex/context/TASK_BOARD.md:1112 - [ ] `LUC-37-D [Soar][Delivery] Security boundary verification`
+- .codex/context/TASK_BOARD.md:1117 - [ ] `LUC-37-E [Soar][Delivery] Docs/state evidence sync`
+- .codex/context/TASK_BOARD.md:1122 - [ ] `LUC-18-QA-REGRESSION-SMOKE-BASELINE-2026-05-25 qa: establish first reproducible QA baseline for Soar pilot`
+- .codex/context/TASK_BOARD.md:1139 - [ ] `COOLIFY-SERVICE-STACK-MIGRATION-2026-05-25 release: migrate Soar app processes toward one Coolify Service Stack`
+- .codex/context/TASK_BOARD.md:1180 - [ ] `SOAR-FULL-READINESS-COORDINATION-2026-05-23 release: coordinate full readiness proof and blockers`
+- .codex/context/TASK_BOARD.md:1340 - [ ] `LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23 release: verify Binance/Gate.io manual and automated LIVE execution parity`
+- .codex/context/TASK_BOARD.md:2324 - [ ] `ARCH-CODE-RUNTIME-AUDIT-2026-05-22 audit: verify architecture-code runtime parity`
+- .codex/context/TASK_BOARD.md:2412 - [ ] `V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21 release: finish current protected AUD-19 evidence`
+- .codex/context/TASK_BOARD.md:2472 - [ ] `MONEY-FLOW-SECURITY-CANCEL-ENTITLEMENT-2026-05-21 fix: fail closed LIVE exchange-backed cancel after entitlement downgrade`
+- docs/planning/mvp-next-commits.md:11 - [ ] `SOAR-FULL-READINESS-COORDINATION-2026-05-23 release: coordinate full readiness proof and blockers`
+
+## Architecture And Module Sources
+
+- `docs/architecture/01_overview-and-principles.md`
+- `docs/architecture/02_system-topology.md`
+- `docs/architecture/03_domain-model.md`
+- `docs/architecture/04_runtime-contexts.md`
+- `docs/architecture/05_strategy-signal-and-decision-flow.md`
+- `docs/architecture/06_execution-lifecycle.md`
+- `docs/architecture/07_modes-parity-and-data.md`
+- `docs/architecture/08_operator-surfaces-and-routing.md`
+- `docs/architecture/09_integrations-deployment-and-runtime-services.md`
+- `docs/architecture/10_safety-entitlements-and-risk.md`
+- `docs/architecture/11_assistant-runtime.md`
+- `docs/architecture/12_documentation-governance.md`
+- `docs/architecture/agent-system-primitives.md`
+- `docs/architecture/architecture-documentation.md`
+- `docs/architecture/architecture-evidence-graph-system.md`
+- `docs/architecture/architecture-source-of-truth.md`
+- `docs/architecture/archive/architecture-archive.md`
+- `docs/architecture/archive/bot-v2-create-update-contract.md`
+- `docs/architecture/archive/database.md`
+- `docs/architecture/archive/legacy-cryptobot-positions-analysis.md`
+- `docs/architecture/archive/modules.md`
+- `docs/architecture/archive/runtime-critical-path-decomposition-contract.md`
+- `docs/architecture/archive/system-architecture.md`
+- `docs/architecture/archive/tech-stack.md`
+- `docs/architecture/archive/trading-logic.md`
+- `docs/architecture/chains/CHAIN-AI-ASSISTANT-FOUNDATION.md`
+- `docs/architecture/chains/CHAIN-API-PLATFORM-SAFETY.md`
+- `docs/architecture/chains/CHAIN-API-SUPPORT-ROUTES.md`
+- `docs/architecture/chains/CHAIN-AUTH-SESSION-DEEP.md`
+- `docs/architecture/chains/CHAIN-AUTH-SESSION.md`
+- `docs/architecture/chains/CHAIN-BACKTESTS.md`
+- `docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md`
+- `docs/architecture/chains/CHAIN-BOT-SETUP.md`
+- `docs/architecture/chains/CHAIN-DASHBOARD-RUNTIME.md`
+- `docs/architecture/chains/CHAIN-ENGINE-RUNTIME-CORE.md`
+- `docs/architecture/chains/CHAIN-EXCHANGE-ADAPTER-DEEP.md`
+- `docs/architecture/chains/CHAIN-LOGS-AUDIT.md`
+- `docs/architecture/chains/CHAIN-MANUAL-ORDER-DEEP.md`
+- `docs/architecture/chains/CHAIN-MANUAL-ORDER.md`
+- `docs/architecture/chains/CHAIN-MARKET-DATA-STREAM-ADAPTERS.md`
+- `docs/architecture/chains/CHAIN-MARKETS.md`
+- `docs/architecture/chains/CHAIN-OPS-CONFIG-PIPELINE.md`
+- `docs/architecture/chains/CHAIN-POSITIONS-CORE.md`
+- `docs/architecture/chains/CHAIN-PROFILE-API-KEYS.md`
+- `docs/architecture/chains/CHAIN-RELEASE-AUDIT-TOOLING.md`
+- `docs/architecture/chains/CHAIN-REPORTS.md`
+- `docs/architecture/chains/CHAIN-RUNTIME-DCA-PNL.md`
+- `docs/architecture/chains/CHAIN-RUNTIME-SUPPORT-SERVICES.md`
+- `docs/architecture/chains/CHAIN-STRATEGIES.md`
+- `docs/architecture/chains/CHAIN-SUBSCRIPTIONS-ADMIN.md`
+- `docs/architecture/chains/CHAIN-WALLETS-CORE.md`
+- `docs/architecture/chains/CHAIN-WEB-RUNTIME-SURFACES.md`
+- `docs/architecture/chains/README.md`
+- `docs/architecture/codebase-map.md`
+- `docs/architecture/data-ownership-map.md`
+- `docs/architecture/nodes/SOAR-AGENT-AI-RED-TEAM.md`
+- `docs/architecture/nodes/SOAR-AGENT-COORDINATOR.md`
+- `docs/architecture/nodes/SOAR-API-ADMIN-SUBSCRIPTION-PLAN-UPDATE.md`
+- `docs/architecture/nodes/SOAR-API-ADMIN-SUBSCRIPTION-PLANS-LIST.md`
+- `docs/architecture/nodes/SOAR-API-ADMIN-USERS-LIST.md`
+- `docs/architecture/nodes/SOAR-API-ADMIN-USERS-UPDATE.md`
+- `docs/architecture/nodes/SOAR-API-AUTH-LOGIN.md`
+- `docs/architecture/nodes/SOAR-API-AUTH-LOGOUT.md`
+- `docs/architecture/nodes/SOAR-API-AUTH-ME.md`
+- `docs/architecture/nodes/SOAR-API-AUTH-REGISTER.md`
+- `docs/architecture/nodes/SOAR-API-BACKTEST-RUN-CREATE.md`
+- `docs/architecture/nodes/SOAR-API-BACKTEST-RUN-DELETE.md`
+- `docs/architecture/nodes/SOAR-API-BACKTEST-RUN-GET.md`
+- `docs/architecture/nodes/SOAR-API-BACKTEST-RUN-LIST.md`
+- `docs/architecture/nodes/SOAR-API-BACKTEST-RUN-REPORT.md`
+- `docs/architecture/nodes/SOAR-API-BACKTEST-RUN-TIMELINE.md`
+- `docs/architecture/nodes/SOAR-API-BACKTEST-RUN-TRADES.md`
+- `docs/architecture/nodes/SOAR-API-BOT-ASSISTANT-CONFIG-GET.md`
+- `docs/architecture/nodes/SOAR-API-BOT-ASSISTANT-CONFIG-UPSERT.md`
+- `docs/architecture/nodes/SOAR-API-BOT-ASSISTANT-DRY-RUN.md`
+- `docs/architecture/nodes/SOAR-API-BOT-CREATE.md`
+- `docs/architecture/nodes/SOAR-API-BOT-DELETE.md`
+- `docs/architecture/nodes/SOAR-API-BOT-GET.md`
+- `docs/architecture/nodes/SOAR-API-BOT-LIST.md`
+- `docs/architecture/nodes/SOAR-API-BOT-MARKET-GROUP-CREATE.md`
+- `docs/architecture/nodes/SOAR-API-BOT-MARKET-GROUP-STRATEGY-ATTACH.md`
+- `docs/architecture/nodes/SOAR-API-BOT-MARKET-GROUPS-LIST.md`
+- `docs/architecture/nodes/SOAR-API-BOT-RUNTIME-AGGREGATE.md`
+- `docs/architecture/nodes/SOAR-API-BOT-RUNTIME-CLOSE-POSITION.md`
+- `docs/architecture/nodes/SOAR-API-BOT-RUNTIME-GRAPH.md`
+- `docs/architecture/nodes/SOAR-API-BOT-RUNTIME-POSITIONS.md`
+- `docs/architecture/nodes/SOAR-API-BOT-RUNTIME-SESSION-GET.md`
+- `docs/architecture/nodes/SOAR-API-BOT-RUNTIME-SESSIONS.md`
+- `docs/architecture/nodes/SOAR-API-BOT-RUNTIME-SYMBOL-STATS.md`
+- `docs/architecture/nodes/SOAR-API-BOT-RUNTIME-TRADES.md`
+- `docs/architecture/nodes/SOAR-API-BOT-SUBAGENT-DELETE.md`
+- `docs/architecture/nodes/SOAR-API-BOT-SUBAGENT-UPSERT.md`
+- `docs/architecture/nodes/SOAR-API-BOT-UPDATE.md`
+- `docs/architecture/nodes/SOAR-API-ICON-LOOKUP.md`
+- `docs/architecture/nodes/SOAR-API-LOGS-LIST.md`
+- `docs/architecture/nodes/SOAR-API-MANUAL-CONTEXT.md`
+- `docs/architecture/nodes/SOAR-API-MARKET-CATALOG.md`
+- `docs/architecture/nodes/SOAR-API-MARKET-STREAM-EVENTS.md`
+- `docs/architecture/nodes/SOAR-API-MARKET-UNIVERSE-CREATE.md`
+- `docs/architecture/nodes/SOAR-API-MARKET-UNIVERSE-DELETE.md`
+- `docs/architecture/nodes/SOAR-API-MARKET-UNIVERSE-GET.md`
+- `docs/architecture/nodes/SOAR-API-MARKET-UNIVERSE-LIST.md`
+- `docs/architecture/nodes/SOAR-API-MARKET-UNIVERSE-UPDATE.md`
+- `docs/architecture/nodes/SOAR-API-ORDER-CANCEL.md`
+- `docs/architecture/nodes/SOAR-API-ORDER-CLOSE.md`
+- `docs/architecture/nodes/SOAR-API-ORDER-GET.md`
+- `docs/architecture/nodes/SOAR-API-ORDER-LIST.md`
+- `docs/architecture/nodes/SOAR-API-ORDER-OPEN.md`
+- `docs/architecture/nodes/SOAR-API-POSITION-EXCHANGE-SNAPSHOT.md`
+- `docs/architecture/nodes/SOAR-API-POSITION-GET.md`
+- `docs/architecture/nodes/SOAR-API-POSITION-LIST.md`
+- `docs/architecture/nodes/SOAR-API-POSITION-LIVE-STATUS.md`
+- `docs/architecture/nodes/SOAR-API-POSITION-MANAGEMENT-MODE.md`
+- `docs/architecture/nodes/SOAR-API-POSITION-MANUAL-UPDATE.md`
+- `docs/architecture/nodes/SOAR-API-POSITION-ORPHAN-REPAIR.md`
+- `docs/architecture/nodes/SOAR-API-POSITION-TAKEOVER-REBIND.md`
+- `docs/architecture/nodes/SOAR-API-POSITION-TAKEOVER-STATUS.md`
+- `docs/architecture/nodes/SOAR-API-PROFILE-APIKEY-CREATE.md`
+- `docs/architecture/nodes/SOAR-API-PROFILE-APIKEY-DELETE.md`
+- `docs/architecture/nodes/SOAR-API-PROFILE-APIKEY-LIST.md`
+- `docs/architecture/nodes/SOAR-API-PROFILE-APIKEY-REVOKE.md`
+- `docs/architecture/nodes/SOAR-API-PROFILE-APIKEY-ROTATE.md`
+- `docs/architecture/nodes/SOAR-API-PROFILE-APIKEY-STORED-TEST.md`
+- `docs/architecture/nodes/SOAR-API-PROFILE-APIKEY-TEST.md`
+- `docs/architecture/nodes/SOAR-API-PROFILE-APIKEY-UPDATE.md`
+- `docs/architecture/nodes/SOAR-API-PROFILE-BASIC-DELETE.md`
+- `docs/architecture/nodes/SOAR-API-PROFILE-BASIC-GET.md`
+- `docs/architecture/nodes/SOAR-API-PROFILE-BASIC-UPDATE.md`
+- `docs/architecture/nodes/SOAR-API-PROFILE-SECURITY-ACCOUNT.md`
+- `docs/architecture/nodes/SOAR-API-PROFILE-SECURITY-PASSWORD.md`
+- `docs/architecture/nodes/SOAR-API-PROFILE-SUBSCRIPTION-CHECKOUT.md`
+- `docs/architecture/nodes/SOAR-API-PROFILE-SUBSCRIPTION-GET.md`
+- `docs/architecture/nodes/SOAR-API-REPORTS-CROSS-MODE-PERFORMANCE.md`
+- `docs/architecture/nodes/SOAR-API-STRATEGY-CREATE.md`
+- `docs/architecture/nodes/SOAR-API-STRATEGY-DELETE.md`
+- `docs/architecture/nodes/SOAR-API-STRATEGY-EXPORT.md`
+- `docs/architecture/nodes/SOAR-API-STRATEGY-GET.md`
+- `docs/architecture/nodes/SOAR-API-STRATEGY-IMPORT.md`
+- `docs/architecture/nodes/SOAR-API-STRATEGY-INDICATORS.md`
+- `docs/architecture/nodes/SOAR-API-STRATEGY-LIST.md`
+- `docs/architecture/nodes/SOAR-API-STRATEGY-UPDATE.md`
+- `docs/architecture/nodes/SOAR-API-UPLOAD-AVATAR.md`
+- `docs/architecture/nodes/SOAR-API-WALLET-CASHFLOW-EVENTS.md`
+- `docs/architecture/nodes/SOAR-API-WALLET-CREATE.md`
+- `docs/architecture/nodes/SOAR-API-WALLET-DELETE.md`
+- `docs/architecture/nodes/SOAR-API-WALLET-EQUITY-TIMELINE.md`
+- `docs/architecture/nodes/SOAR-API-WALLET-GET.md`
+- `docs/architecture/nodes/SOAR-API-WALLET-LIST.md`
+- `docs/architecture/nodes/SOAR-API-WALLET-METADATA.md`
+- `docs/architecture/nodes/SOAR-API-WALLET-PERFORMANCE-SUMMARY.md`
+- `docs/architecture/nodes/SOAR-API-WALLET-PREVIEW-BALANCE.md`
+- `docs/architecture/nodes/SOAR-API-WALLET-RESET-PAPER.md`
+- `docs/architecture/nodes/SOAR-API-WALLET-UPDATE.md`
+- `docs/architecture/nodes/SOAR-COMP-ADMIN-LAYOUT-SHELL.md`
+- `docs/architecture/nodes/SOAR-COMP-ADMIN-SUBSCRIPTIONS-PAGE.md`
+- `docs/architecture/nodes/SOAR-COMP-ADMIN-USERS-PAGE.md`
+- `docs/architecture/nodes/SOAR-COMP-API-KEY-FORM.md`
+- `docs/architecture/nodes/SOAR-COMP-API-KEYS-LIST.md`
+- `docs/architecture/nodes/SOAR-COMP-AUDIT-TRAIL-VIEW.md`
+- `docs/architecture/nodes/SOAR-COMP-BACKTEST-CREATE-FORM.md`
+- `docs/architecture/nodes/SOAR-COMP-BACKTEST-DETAIL-PRESENTERS.md`
+- `docs/architecture/nodes/SOAR-COMP-BACKTEST-RUN-DETAILS.md`
+- `docs/architecture/nodes/SOAR-COMP-BACKTESTS-LIST-VIEW.md`
+- `docs/architecture/nodes/SOAR-COMP-BOT-CREATE-EDIT-FORM.md`
+- `docs/architecture/nodes/SOAR-COMP-BOT-FORM-PAGE-CONTENT.md`
+- `docs/architecture/nodes/SOAR-COMP-BOTS-ASSISTANT-TAB.md`
+- `docs/architecture/nodes/SOAR-COMP-BOTS-LIST-TABLE.md`
+- `docs/architecture/nodes/SOAR-COMP-BOTS-MANAGEMENT-TABS.md`
+- `docs/architecture/nodes/SOAR-COMP-BOTS-MANAGEMENT.md`
+- `docs/architecture/nodes/SOAR-COMP-BOTS-MONITORING-ATTRIBUTION-PILLS.md`
+- `docs/architecture/nodes/SOAR-COMP-BOTS-MONITORING-PROTECTION-CELL.md`
+- `docs/architecture/nodes/SOAR-COMP-BOTS-MONITORING-SECTIONS.md`
+- `docs/architecture/nodes/SOAR-COMP-BOTS-MONITORING-TAB.md`
+- `docs/architecture/nodes/SOAR-COMP-BOTS-PORTFOLIO-HISTORY-SECTION.md`
+- `docs/architecture/nodes/SOAR-COMP-EXCHANGE-CONNECTIONS-VIEW.md`
+- `docs/architecture/nodes/SOAR-COMP-HOME-LIVE-WIDGETS.md`
+- `docs/architecture/nodes/SOAR-COMP-LIVE-MARKET-BAR.md`
+- `docs/architecture/nodes/SOAR-COMP-LOGIN-FORM.md`
+- `docs/architecture/nodes/SOAR-COMP-MARKET-SEARCHABLE-MULTISELECT.md`
+- `docs/architecture/nodes/SOAR-COMP-MARKET-UNIVERSE-FORM.md`
+- `docs/architecture/nodes/SOAR-COMP-MARKET-UNIVERSES-TABLE.md`
+- `docs/architecture/nodes/SOAR-COMP-MONITORING-FUTURE-SIGNALS.md`
+- `docs/architecture/nodes/SOAR-COMP-PERFORMANCE-REPORTS-VIEW.md`
+- `docs/architecture/nodes/SOAR-COMP-PROFILE-BASIC-FORM.md`
+- `docs/architecture/nodes/SOAR-COMP-PROFILE-SECURITY.md`
+- `docs/architecture/nodes/SOAR-COMP-PROFILE-SUBSCRIPTION.md`
+- `docs/architecture/nodes/SOAR-COMP-REGISTER-FORM.md`
+- `docs/architecture/nodes/SOAR-COMP-RUNTIME-DATA-PRESENTERS.md`
+- `docs/architecture/nodes/SOAR-COMP-RUNTIME-DATA-SECTION.md`
+- `docs/architecture/nodes/SOAR-COMP-RUNTIME-ONBOARDING-SECTION.md`
+- `docs/architecture/nodes/SOAR-COMP-RUNTIME-SIDEBAR-SECTION.md`
+- `docs/architecture/nodes/SOAR-COMP-RUNTIME-SIGNALS-SECTION.md`
+- `docs/architecture/nodes/SOAR-COMP-SORTABLE-THRESHOLD-LIST-EDITOR.md`
+- `docs/architecture/nodes/SOAR-COMP-STRATEGIES-LIST.md`
+- `docs/architecture/nodes/SOAR-COMP-STRATEGY-FORM-SECTIONS.md`
+- `docs/architecture/nodes/SOAR-COMP-STRATEGY-FORM.md`
+- `docs/architecture/nodes/SOAR-COMP-STRATEGY-PRESET-PICKER.md`
+- `docs/architecture/nodes/SOAR-COMP-WALLET-CREATE-EDIT-FORM.md`
+- `docs/architecture/nodes/SOAR-COMP-WALLET-FORM-PAGE-CONTENT.md`
+- `docs/architecture/nodes/SOAR-COMP-WALLET-PREVIEW-PANEL.md`
+- `docs/architecture/nodes/SOAR-COMP-WALLETS-LIST-TABLE.md`
+- `docs/architecture/nodes/SOAR-CONFIG-API-PACKAGE.md`
+- `docs/architecture/nodes/SOAR-CONFIG-COOLIFY-STACK-COMPOSE.md`
+- `docs/architecture/nodes/SOAR-CONFIG-CRITICAL-SECRETS-READINESS.md`
+- `docs/architecture/nodes/SOAR-CONFIG-LOCAL-COMPOSE.md`
+- `docs/architecture/nodes/SOAR-CONFIG-MOBILE-PACKAGE.md`
+- `docs/architecture/nodes/SOAR-CONFIG-PNPM-WORKSPACE.md`
+- `docs/architecture/nodes/SOAR-CONFIG-PROXY-TRUST.md`
+- `docs/architecture/nodes/SOAR-CONFIG-ROOT-PACKAGE.md`
+- `docs/architecture/nodes/SOAR-CONFIG-RUNTIME-EXECUTION.md`
+- `docs/architecture/nodes/SOAR-CONFIG-SHARED-PACKAGE.md`
+- `docs/architecture/nodes/SOAR-CONFIG-VPS-COMPOSE.md`
+- `docs/architecture/nodes/SOAR-CONFIG-WEB-PACKAGE.md`
+- `docs/architecture/nodes/SOAR-CONTEXT-WEB-AUTH.md`
+- `docs/architecture/nodes/SOAR-CONTROLLER-ADMIN-SUBSCRIPTION-PLANS.md`
+- `docs/architecture/nodes/SOAR-CONTROLLER-ADMIN-USERS.md`
+- `docs/architecture/nodes/SOAR-CONTROLLER-AUTH.md`
+- `docs/architecture/nodes/SOAR-CONTROLLER-BACKTESTS.md`
+- `docs/architecture/nodes/SOAR-CONTROLLER-BOTS.md`
+- `docs/architecture/nodes/SOAR-CONTROLLER-ICONS.md`
+- `docs/architecture/nodes/SOAR-CONTROLLER-LOGS.md`
+- `docs/architecture/nodes/SOAR-CONTROLLER-MARKETS.md`
+- `docs/architecture/nodes/SOAR-CONTROLLER-ORDERS.md`
+- `docs/architecture/nodes/SOAR-CONTROLLER-POSITIONS.md`
+- `docs/architecture/nodes/SOAR-CONTROLLER-PROFILE-API-KEYS.md`
+- `docs/architecture/nodes/SOAR-CONTROLLER-PROFILE-BASIC.md`
+- `docs/architecture/nodes/SOAR-CONTROLLER-PROFILE-SECURITY.md`
+- `docs/architecture/nodes/SOAR-CONTROLLER-PROFILE-SUBSCRIPTION.md`
+- `docs/architecture/nodes/SOAR-CONTROLLER-REPORTS.md`
+- `docs/architecture/nodes/SOAR-CONTROLLER-STRATEGIES.md`
+- `docs/architecture/nodes/SOAR-CONTROLLER-WALLETS.md`
+- `docs/architecture/nodes/SOAR-DB-API-KEY.md`
+- `docs/architecture/nodes/SOAR-DB-BACKTEST-REPORT.md`
+- `docs/architecture/nodes/SOAR-DB-BACKTEST-RUN.md`
+- `docs/architecture/nodes/SOAR-DB-BACKTEST-TRADE.md`
+- `docs/architecture/nodes/SOAR-DB-BOT-ASSISTANT-CONFIG.md`
+- `docs/architecture/nodes/SOAR-DB-BOT-MARKET-GROUP.md`
+- `docs/architecture/nodes/SOAR-DB-BOT-SUBAGENT-CONFIG.md`
+- `docs/architecture/nodes/SOAR-DB-BOT.md`
+- `docs/architecture/nodes/SOAR-DB-LOG.md`
+- `docs/architecture/nodes/SOAR-DB-MARKET-GROUP-STRATEGY-LINK.md`
+- `docs/architecture/nodes/SOAR-DB-MARKET-UNIVERSE.md`
+- `docs/architecture/nodes/SOAR-DB-ORDER-FILL.md`
+- `docs/architecture/nodes/SOAR-DB-ORDER.md`
+- `docs/architecture/nodes/SOAR-DB-PAYMENT-INTENT.md`
+- `docs/architecture/nodes/SOAR-DB-POSITION.md`
+- `docs/architecture/nodes/SOAR-DB-RUNTIME-SESSION.md`
+- `docs/architecture/nodes/SOAR-DB-STRATEGY.md`
+- `docs/architecture/nodes/SOAR-DB-SUBSCRIPTION-PLAN.md`
+- `docs/architecture/nodes/SOAR-DB-SYMBOL-GROUP.md`
+- `docs/architecture/nodes/SOAR-DB-TRADE.md`
+- `docs/architecture/nodes/SOAR-DB-USER-SUBSCRIPTION.md`
+- `docs/architecture/nodes/SOAR-DB-USER.md`
+- `docs/architecture/nodes/SOAR-DB-WALLET.md`
+- `docs/architecture/nodes/SOAR-DOC-AI-INTEGRATION.md`
+- `docs/architecture/nodes/SOAR-DOC-AI-TESTING-PROTOCOL.md`
+- `docs/architecture/nodes/SOAR-DOC-API-ADMIN.md`
+- `docs/architecture/nodes/SOAR-DOC-API-AUTH.md`
+- `docs/architecture/nodes/SOAR-DOC-API-BACKTESTS.md`
+- `docs/architecture/nodes/SOAR-DOC-API-BOTS.md`
+- `docs/architecture/nodes/SOAR-DOC-API-ICONS.md`
+- `docs/architecture/nodes/SOAR-DOC-API-LOGS.md`
+- `docs/architecture/nodes/SOAR-DOC-API-MARKET-STREAM.md`
+- `docs/architecture/nodes/SOAR-DOC-API-MARKETS.md`
+- `docs/architecture/nodes/SOAR-DOC-API-ORDERS.md`
+- `docs/architecture/nodes/SOAR-DOC-API-POSITIONS.md`
+- `docs/architecture/nodes/SOAR-DOC-API-PROFILE.md`
+- `docs/architecture/nodes/SOAR-DOC-API-REPORTS.md`
+- `docs/architecture/nodes/SOAR-DOC-API-ROOT.md`
+- `docs/architecture/nodes/SOAR-DOC-API-STRATEGIES.md`
+- `docs/architecture/nodes/SOAR-DOC-API-SUBSCRIPTIONS.md`
+- `docs/architecture/nodes/SOAR-DOC-API-UPLOAD.md`
+- `docs/architecture/nodes/SOAR-DOC-API-WALLETS.md`
+- `docs/architecture/nodes/SOAR-DOC-ARCHITECTURE-CONTRACT-INDEX.md`
+- `docs/architecture/nodes/SOAR-DOC-ARCHITECTURE-GOVERNANCE-INDEX.md`
+- `docs/architecture/nodes/SOAR-DOC-ARCHITECTURE-GRAPH-SYSTEM.md`
+- `docs/architecture/nodes/SOAR-DOC-ASSISTANT-RUNTIME-CONTRACT.md`
+- `docs/architecture/nodes/SOAR-DOC-ASSISTANT-RUNTIME.md`
+- `docs/architecture/nodes/SOAR-DOC-CODEBASE-MAP.md`
+- `docs/architecture/nodes/SOAR-DOC-COOLIFY-VPS.md`
+- `docs/architecture/nodes/SOAR-DOC-DASHBOARD-ROUTE-MAP.md`
+- `docs/architecture/nodes/SOAR-DOC-DATA-MODEL.md`
+- `docs/architecture/nodes/SOAR-DOC-EXCHANGE-OWNERSHIP.md`
+- `docs/architecture/nodes/SOAR-DOC-EXECUTION-LIFECYCLE.md`
+- `docs/architecture/nodes/SOAR-DOC-LIVE-POSITION-RESTART.md`
+- `docs/architecture/nodes/SOAR-DOC-LOCAL-DEVELOPMENT.md`
+- `docs/architecture/nodes/SOAR-DOC-MODULE-GOVERNANCE-INDEX.md`
+- `docs/architecture/nodes/SOAR-DOC-POSITION-PNL-LIFECYCLE.md`
+- `docs/architecture/nodes/SOAR-DOC-TESTING.md`
+- `docs/architecture/nodes/SOAR-DOC-TRACEABILITY.md`
+- `docs/architecture/nodes/SOAR-DOC-VENUE-CONTEXT.md`
+- `docs/architecture/nodes/SOAR-DOC-WEB-ADMIN.md`
+- `docs/architecture/nodes/SOAR-DOC-WEB-AUTH.md`
+- `docs/architecture/nodes/SOAR-DOC-WEB-BACKTESTS.md`
+- `docs/architecture/nodes/SOAR-DOC-WEB-BOTS.md`
+- `docs/architecture/nodes/SOAR-DOC-WEB-DASHBOARD-HOME.md`
+- `docs/architecture/nodes/SOAR-DOC-WEB-EXCHANGES.md`
+- `docs/architecture/nodes/SOAR-DOC-WEB-ICONS.md`
+- `docs/architecture/nodes/SOAR-DOC-WEB-LOGS.md`
+- `docs/architecture/nodes/SOAR-DOC-WEB-MARKETS.md`
+- `docs/architecture/nodes/SOAR-DOC-WEB-ORDERS.md`
+- `docs/architecture/nodes/SOAR-DOC-WEB-POSITIONS.md`
+- `docs/architecture/nodes/SOAR-DOC-WEB-PROFILE.md`
+- `docs/architecture/nodes/SOAR-DOC-WEB-REPORTS.md`
+- `docs/architecture/nodes/SOAR-DOC-WEB-SHARED.md`
+- `docs/architecture/nodes/SOAR-DOC-WEB-STRATEGIES.md`
+- `docs/architecture/nodes/SOAR-DOC-WEB-WALLETS.md`
+- `docs/architecture/nodes/SOAR-FEATURE-AI-ASSISTANT-FOUNDATION.md`
+- `docs/architecture/nodes/SOAR-FEATURE-API-PLATFORM-SAFETY.md`
+- `docs/architecture/nodes/SOAR-FEATURE-API-SUPPORT-ROUTES.md`
+- `docs/architecture/nodes/SOAR-FEATURE-ARCHITECTURE-EVIDENCE-GRAPH.md`
+- `docs/architecture/nodes/SOAR-FEATURE-AUTH-SESSION.md`
+- `docs/architecture/nodes/SOAR-FEATURE-BACKTESTS.md`
+- `docs/architecture/nodes/SOAR-FEATURE-BOT-RUNTIME.md`
+- `docs/architecture/nodes/SOAR-FEATURE-BOT-SETUP.md`
+- `docs/architecture/nodes/SOAR-FEATURE-DASHBOARD-RUNTIME.md`
+- `docs/architecture/nodes/SOAR-FEATURE-ENGINE-RUNTIME-CORE.md`
+- `docs/architecture/nodes/SOAR-FEATURE-EXCHANGE-ADAPTER.md`
+- `docs/architecture/nodes/SOAR-FEATURE-LOGS-AUDIT.md`
+- `docs/architecture/nodes/SOAR-FEATURE-MANUAL-ORDER.md`
+- `docs/architecture/nodes/SOAR-FEATURE-MARKET-DATA-STREAM-ADAPTERS.md`
+- `docs/architecture/nodes/SOAR-FEATURE-MARKETS.md`
+- `docs/architecture/nodes/SOAR-FEATURE-OPS-CONFIG-PIPELINE.md`
+- `docs/architecture/nodes/SOAR-FEATURE-POSITIONS.md`
+- `docs/architecture/nodes/SOAR-FEATURE-PROFILE-API-KEYS.md`
+- `docs/architecture/nodes/SOAR-FEATURE-RELEASE-AUDIT-TOOLING.md`
+- `docs/architecture/nodes/SOAR-FEATURE-REPORTS.md`
+- `docs/architecture/nodes/SOAR-FEATURE-RUNTIME-DCA-PNL.md`
+- `docs/architecture/nodes/SOAR-FEATURE-RUNTIME-SUPPORT-SERVICES.md`
+- `docs/architecture/nodes/SOAR-FEATURE-STRATEGIES.md`
+- `docs/architecture/nodes/SOAR-FEATURE-SUBSCRIPTIONS-ADMIN.md`
+- `docs/architecture/nodes/SOAR-FEATURE-WALLETS.md`
+- `docs/architecture/nodes/SOAR-FEATURE-WEB-RESIDUAL-SURFACES.md`
+- `docs/architecture/nodes/SOAR-FEATURE-WEB-RUNTIME-SURFACES.md`
+- `docs/architecture/nodes/SOAR-HOOK-BOTS-ASSISTANT-CONTROLLER.md`
+- `docs/architecture/nodes/SOAR-HOOK-BOTS-LIST-CONTROLLER.md`
+- `docs/architecture/nodes/SOAR-HOOK-BOTS-MONITORING-CONTROLLER.md`
+- `docs/architecture/nodes/SOAR-HOOK-CLOSE-RUNTIME-POSITION-ACTION.md`
+- `docs/architecture/nodes/SOAR-HOOK-COIN-ICON-LOOKUP.md`
+- `docs/architecture/nodes/SOAR-HOOK-MANUAL-ORDER-CONTROLLER.md`
+- `docs/architecture/nodes/SOAR-HOOK-RUNTIME-SELECTION-VIEWMODEL.md`
+- `docs/architecture/nodes/SOAR-HOOK-USE-API-KEYS.md`
+- `docs/architecture/nodes/SOAR-HOOK-USE-HYDRATION-READY.md`
+- `docs/architecture/nodes/SOAR-HOOK-USE-LOGIN-FORM.md`
+- `docs/architecture/nodes/SOAR-HOOK-USE-REGISTER-FORM.md`
+- `docs/architecture/nodes/SOAR-HOOK-USE-USER.md`
+- `docs/architecture/nodes/SOAR-LIB-ENV.md`
+- `docs/architecture/nodes/SOAR-LIB-ERRORS.md`
+- `docs/architecture/nodes/SOAR-LIB-HTTP-ERROR-MAPPER.md`
+- `docs/architecture/nodes/SOAR-LIB-LOGGER.md`
+- `docs/architecture/nodes/SOAR-LIB-SYMBOLS.md`
+- `docs/architecture/nodes/SOAR-MIDDLEWARE-ERROR-HANDLER.md`
+- `docs/architecture/nodes/SOAR-MIDDLEWARE-OPS-NETWORK.md`
+- `docs/architecture/nodes/SOAR-MIDDLEWARE-RATE-LIMIT.md`
+- `docs/architecture/nodes/SOAR-MIDDLEWARE-REQUEST-LOGGER.md`
+- `docs/architecture/nodes/SOAR-MIDDLEWARE-REQUIRE-AUTH.md`
+- `docs/architecture/nodes/SOAR-MIDDLEWARE-TRUSTED-ORIGIN.md`
+- `docs/architecture/nodes/SOAR-PAGE-ADMIN-ROOT.md`
+- `docs/architecture/nodes/SOAR-PAGE-ADMIN-SUBSCRIPTIONS.md`
+- `docs/architecture/nodes/SOAR-PAGE-ADMIN-USERS.md`
+- `docs/architecture/nodes/SOAR-PAGE-BACKTEST-CREATE.md`
+- `docs/architecture/nodes/SOAR-PAGE-BACKTEST-DETAIL.md`
+- `docs/architecture/nodes/SOAR-PAGE-BACKTESTS-LIST.md`
+- `docs/architecture/nodes/SOAR-PAGE-BOT-ASSISTANT.md`
+- `docs/architecture/nodes/SOAR-PAGE-BOT-CREATE.md`
+- `docs/architecture/nodes/SOAR-PAGE-BOT-DETAIL-ALIAS.md`
+- `docs/architecture/nodes/SOAR-PAGE-BOT-EDIT.md`
+- `docs/architecture/nodes/SOAR-PAGE-BOT-NEW-ALIAS.md`
+- `docs/architecture/nodes/SOAR-PAGE-BOT-PREVIEW.md`
+- `docs/architecture/nodes/SOAR-PAGE-BOT-RUNTIME.md`
+- `docs/architecture/nodes/SOAR-PAGE-BOTS-LIST.md`
+- `docs/architecture/nodes/SOAR-PAGE-DASHBOARD.md`
+- `docs/architecture/nodes/SOAR-PAGE-LOGIN.md`
+- `docs/architecture/nodes/SOAR-PAGE-LOGS.md`
+- `docs/architecture/nodes/SOAR-PAGE-MARKET-CREATE.md`
+- `docs/architecture/nodes/SOAR-PAGE-MARKET-EDIT.md`
+- `docs/architecture/nodes/SOAR-PAGE-MARKETS-LIST.md`
+- `docs/architecture/nodes/SOAR-PAGE-OFFLINE.md`
+- `docs/architecture/nodes/SOAR-PAGE-POSITIONS-LEGACY.md`
+- `docs/architecture/nodes/SOAR-PAGE-PROFILE.md`
+- `docs/architecture/nodes/SOAR-PAGE-PUBLIC-HOME.md`
+- `docs/architecture/nodes/SOAR-PAGE-REGISTER.md`
+- `docs/architecture/nodes/SOAR-PAGE-REPORTS.md`
+- `docs/architecture/nodes/SOAR-PAGE-STRATEGIES-LIST.md`
+- `docs/architecture/nodes/SOAR-PAGE-STRATEGY-CREATE.md`
+- `docs/architecture/nodes/SOAR-PAGE-STRATEGY-EDIT.md`
+- `docs/architecture/nodes/SOAR-PAGE-STRATEGY-ID-ROOT.md`
+- `docs/architecture/nodes/SOAR-PAGE-WALLET-CREATE.md`
+- `docs/architecture/nodes/SOAR-PAGE-WALLET-EDIT.md`
+- `docs/architecture/nodes/SOAR-PAGE-WALLET-ID-ROOT.md`
+- `docs/architecture/nodes/SOAR-PAGE-WALLET-PREVIEW.md`
+- `docs/architecture/nodes/SOAR-PAGE-WALLETS-LIST.md`
+- `docs/architecture/nodes/SOAR-PAGE-WALLETS-ROOT.md`
+- `docs/architecture/nodes/SOAR-PIPELINE-GITHUB-CI.md`
+- `docs/architecture/nodes/SOAR-PROMPT-AI-RED-TEAM.md`
+- `docs/architecture/nodes/SOAR-ROUTER-ADMIN.md`
+- `docs/architecture/nodes/SOAR-ROUTER-API-ROOT.md`
+- `docs/architecture/nodes/SOAR-ROUTER-DASHBOARD.md`
+- `docs/architecture/nodes/SOAR-SERVICE-ADMIN-SUBSCRIPTION-PLANS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-ADMIN-USERS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-ASSISTANT-ORCHESTRATOR.md`
+- `docs/architecture/nodes/SOAR-SERVICE-AUTH-COOKIE.md`
+- `docs/architecture/nodes/SOAR-SERVICE-AUTH-ERRORS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-AUTH-JWT.md`
+- `docs/architecture/nodes/SOAR-SERVICE-AUTH-SESSION-TOKEN.md`
+- `docs/architecture/nodes/SOAR-SERVICE-AUTH.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BACKTEST-DATA-GATEWAY.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BACKTEST-FILL-MODEL.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BACKTEST-RANGE.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BACKTEST-REPLAY-CORE.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BACKTEST-REPORT-LIFECYCLE.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BACKTEST-RUN-JOB.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BACKTEST-RUN-QUEUE.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BACKTEST-STRATEGY-SNAPSHOTS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BACKTEST-WEB-VIEWMODEL.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BACKTESTS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BINANCE-PUBLIC-REST.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BINANCE-STREAM.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BINANCE-USER-DATA-STREAM.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BOT-ACTIVATION-POLICY.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BOT-API-KEY-RESOLVER.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BOT-ASSISTANT.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BOT-CANONICAL-UPDATE-SCOPE.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BOT-CONTEXT-VALIDATION.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BOT-LIVE-CONSENT.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BOT-MARKET-GROUPS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BOT-OWNERSHIP.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BOT-PORTFOLIO-HISTORY-READ.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BOT-READ-PROJECTION.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BOT-RESPONSE-MAPPER.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BOT-STRATEGY-PROJECTION-DRIFT.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BOT-WRITE-VALIDATION.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BOTS-MONITORING-AGGREGATE.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BOTS-RUNTIME-READ.md`
+- `docs/architecture/nodes/SOAR-SERVICE-BOTS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-CCXT-FUTURES-CONNECTOR.md`
+- `docs/architecture/nodes/SOAR-SERVICE-CCXT-SPOT-CONNECTOR.md`
+- `docs/architecture/nodes/SOAR-SERVICE-ENGINE-ORDER-TYPES.md`
+- `docs/architecture/nodes/SOAR-SERVICE-EXCHANGE-ADAPTER-BOUNDARY.md`
+- `docs/architecture/nodes/SOAR-SERVICE-EXCHANGE-API-KEY-PROBE-CLIENT.md`
+- `docs/architecture/nodes/SOAR-SERVICE-EXCHANGE-AUTH-READ-CONTRACT.md`
+- `docs/architecture/nodes/SOAR-SERVICE-EXCHANGE-AUTH-READ.md`
+- `docs/architecture/nodes/SOAR-SERVICE-EXCHANGE-CAPABILITIES.md`
+- `docs/architecture/nodes/SOAR-SERVICE-EXCHANGE-CONNECTOR-FACTORY.md`
+- `docs/architecture/nodes/SOAR-SERVICE-EXCHANGE-EXECUTION-CAPABILITY.md`
+- `docs/architecture/nodes/SOAR-SERVICE-EXCHANGE-MARKET-CATALOG.md`
+- `docs/architecture/nodes/SOAR-SERVICE-EXCHANGE-PUBLIC-MARKET-DATA.md`
+- `docs/architecture/nodes/SOAR-SERVICE-EXCHANGE-PUBLIC-READ.md`
+- `docs/architecture/nodes/SOAR-SERVICE-EXCHANGE-REGISTRY.md`
+- `docs/architecture/nodes/SOAR-SERVICE-EXCHANGE-SYMBOL-RULES.md`
+- `docs/architecture/nodes/SOAR-SERVICE-EXECUTION-ORCHESTRATOR.md`
+- `docs/architecture/nodes/SOAR-SERVICE-ICONS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-IMPORTED-POSITION-HISTORY-HYDRATOR.md`
+- `docs/architecture/nodes/SOAR-SERVICE-INDICATOR-ADAPTER.md`
+- `docs/architecture/nodes/SOAR-SERVICE-LIVE-FEE-RECONCILIATION.md`
+- `docs/architecture/nodes/SOAR-SERVICE-LIVE-ORDER-ADAPTER.md`
+- `docs/architecture/nodes/SOAR-SERVICE-LIVE-POSITION-RECONCILIATION.md`
+- `docs/architecture/nodes/SOAR-SERVICE-LOGS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-MANUAL-CONTEXT.md`
+- `docs/architecture/nodes/SOAR-SERVICE-MARKET-CATALOG-SYMBOL-RESOLVER.md`
+- `docs/architecture/nodes/SOAR-SERVICE-MARKET-DATA.md`
+- `docs/architecture/nodes/SOAR-SERVICE-MARKET-STREAM-FANOUT.md`
+- `docs/architecture/nodes/SOAR-SERVICE-MARKET-STREAM.md`
+- `docs/architecture/nodes/SOAR-SERVICE-MARKET-UNIVERSE-HELPERS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-MARKETS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-ORDER-EXCHANGE-EVENTS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-ORDER-LIFECYCLE.md`
+- `docs/architecture/nodes/SOAR-SERVICE-ORDER-QUANTITY-RULES.md`
+- `docs/architecture/nodes/SOAR-SERVICE-ORDERS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-PAPER-LIFECYCLE.md`
+- `docs/architecture/nodes/SOAR-SERVICE-PAPER-RUNTIME.md`
+- `docs/architecture/nodes/SOAR-SERVICE-PAYMENT-CHECKOUT.md`
+- `docs/architecture/nodes/SOAR-SERVICE-POSITION-MANAGEMENT.md`
+- `docs/architecture/nodes/SOAR-SERVICE-POSITION-SNAPSHOT-NORMALIZATION.md`
+- `docs/architecture/nodes/SOAR-SERVICE-POSITIONS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-PRETRADE-RISK.md`
+- `docs/architecture/nodes/SOAR-SERVICE-PRETRADE.md`
+- `docs/architecture/nodes/SOAR-SERVICE-PROFILE-API-KEY-PROBE.md`
+- `docs/architecture/nodes/SOAR-SERVICE-PROFILE-API-KEYS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-PROFILE-BASIC-CACHE.md`
+- `docs/architecture/nodes/SOAR-SERVICE-PROFILE-BASIC.md`
+- `docs/architecture/nodes/SOAR-SERVICE-PROFILE-SECURITY.md`
+- `docs/architecture/nodes/SOAR-SERVICE-PROFILE-SUBSCRIPTION.md`
+- `docs/architecture/nodes/SOAR-SERVICE-REPORT-MODE-AGGREGATOR.md`
+- `docs/architecture/nodes/SOAR-SERVICE-REPORTS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RULE-EVALUATOR.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-AGGREGATE.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-AUTOMATION.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-CAPITAL-CONTEXT.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-DCA-PROTECTION-DISPLAY.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-EXCHANGE-ORDER-GUARD.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-EXECUTION-DEDUPE.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-EXTERNAL-POSITION-OWNER.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-FINAL-CANDLE-DECISION.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-LIFECYCLE-MARK-PRICE.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-MARKET-DATA-FALLBACK.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-MARKET-TRUTH-STATE.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-METRICS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-ORDER-LIFETIME.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-POSITION-COMMAND.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-POSITION-LIFETIME.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-POSITIONS-READ.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-SCAN-LOOP.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-SESSIONS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-SIGNAL-CONDITION-LINES.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-SIGNAL-CONDITION-SUMMARY.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-SIGNAL-INDICATORS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-SIGNAL-LOOP.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-SIGNAL-STATS-FORMATTING.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-STRATEGY-CONFIG-PARSER.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-STRATEGY-DISPLAY-BY-SYMBOL.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-SYMBOL-CATALOG-RESOLVER.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-SYMBOL-STATS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-SYMBOL-UNIVERSE.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-TELEMETRY.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-TOPOLOGY-CACHE.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-TRADE-ACTION-REASON.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-TRADE-LIFECYCLE.md`
+- `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-TRADES.md`
+- `docs/architecture/nodes/SOAR-SERVICE-SIMULATOR.md`
+- `docs/architecture/nodes/SOAR-SERVICE-STRATEGIES.md`
+- `docs/architecture/nodes/SOAR-SERVICE-STRATEGY-CONFIG-VALIDATION.md`
+- `docs/architecture/nodes/SOAR-SERVICE-STRATEGY-FORM-MAPPER.md`
+- `docs/architecture/nodes/SOAR-SERVICE-STRATEGY-INDICATORS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-STRATEGY-PRESETS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-SUBSCRIPTION-ENTITLEMENTS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-SUBSCRIPTIONS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-UPLOAD-AVATAR-PROCESSING.md`
+- `docs/architecture/nodes/SOAR-SERVICE-WALLET-CASHFLOW-CLASSIFIER.md`
+- `docs/architecture/nodes/SOAR-SERVICE-WALLET-LEDGER.md`
+- `docs/architecture/nodes/SOAR-SERVICE-WALLETS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-WEB-ADMIN-SUBSCRIPTIONS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-WEB-ADMIN-USERS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-WEB-API-KEYS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-WEB-AUTH.md`
+- `docs/architecture/nodes/SOAR-SERVICE-WEB-BACKTESTS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-WEB-BOTS-API.md`
+- `docs/architecture/nodes/SOAR-SERVICE-WEB-ICONS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-WEB-LOGS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-WEB-MARKETS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-WEB-PROFILE-SECURITY.md`
+- `docs/architecture/nodes/SOAR-SERVICE-WEB-PROFILE-SUBSCRIPTION.md`
+- `docs/architecture/nodes/SOAR-SERVICE-WEB-REPORTS.md`
+- `docs/architecture/nodes/SOAR-SERVICE-WEB-STRATEGIES.md`
+- `docs/architecture/nodes/SOAR-SERVICE-WEB-WALLETS.md`
+- `docs/architecture/nodes/SOAR-TEST-AI-ASSISTANT-API.md`
+- `docs/architecture/nodes/SOAR-TEST-AI-ASSISTANT-ORCHESTRATOR.md`
+- `docs/architecture/nodes/SOAR-TEST-AI-ASSISTANT-WEB.md`
+- `docs/architecture/nodes/SOAR-TEST-AI-PROTOCOL-HARNESS.md`
+- `docs/architecture/nodes/SOAR-TEST-API-AUTH-COOKIE.md`
+- `docs/architecture/nodes/SOAR-TEST-API-AUTH-ERRORS.md`
+- `docs/architecture/nodes/SOAR-TEST-API-AUTH-JWT.md`
+- `docs/architecture/nodes/SOAR-TEST-API-AUTH-SERVICE.md`
+- `docs/architecture/nodes/SOAR-TEST-API-AUTH-SESSION-DEEP.md`
+- `docs/architecture/nodes/SOAR-TEST-API-CONFIG-SAFETY.md`
+- `docs/architecture/nodes/SOAR-TEST-API-INFRASTRUCTURE-RESIDUAL.md`
+- `docs/architecture/nodes/SOAR-TEST-API-LIB-SAFETY.md`
+- `docs/architecture/nodes/SOAR-TEST-API-MIDDLEWARE-SAFETY.md`
+- `docs/architecture/nodes/SOAR-TEST-API-PLATFORM-SAFETY.md`
+- `docs/architecture/nodes/SOAR-TEST-API-RESIDUAL-EVIDENCE.md`
+- `docs/architecture/nodes/SOAR-TEST-API-SUPPORT-ROUTES.md`
+- `docs/architecture/nodes/SOAR-TEST-ARCHITECTURE-GRAPH.md`
+- `docs/architecture/nodes/SOAR-TEST-AUTH-SESSION.md`
+- `docs/architecture/nodes/SOAR-TEST-BACKTEST-REPLAY.md`
+- `docs/architecture/nodes/SOAR-TEST-BACKTEST-WEB-UTILITIES.md`
+- `docs/architecture/nodes/SOAR-TEST-BACKTESTS-API.md`
+- `docs/architecture/nodes/SOAR-TEST-BACKTESTS-WEB.md`
+- `docs/architecture/nodes/SOAR-TEST-BOT-OWNERSHIP.md`
+- `docs/architecture/nodes/SOAR-TEST-BOT-PORTFOLIO-HISTORY.md`
+- `docs/architecture/nodes/SOAR-TEST-BOT-RUNTIME-API.md`
+- `docs/architecture/nodes/SOAR-TEST-BOT-RUNTIME-WEB.md`
+- `docs/architecture/nodes/SOAR-TEST-BOT-SETUP-API.md`
+- `docs/architecture/nodes/SOAR-TEST-BOT-SETUP-WEB.md`
+- `docs/architecture/nodes/SOAR-TEST-BOT-STRATEGY-PROJECTION-DRIFT.md`
+- `docs/architecture/nodes/SOAR-TEST-BOTS-MONITORING-FUTURE-SIGNALS.md`
+- `docs/architecture/nodes/SOAR-TEST-BOTS-PORTFOLIO-HISTORY-WEB.md`
+- `docs/architecture/nodes/SOAR-TEST-CCXT-FUTURES-CONNECTOR.md`
+- `docs/architecture/nodes/SOAR-TEST-DASHBOARD-RUNTIME-HELPERS.md`
+- `docs/architecture/nodes/SOAR-TEST-DASHBOARD-RUNTIME-RESIDUAL-WEB.md`
+- `docs/architecture/nodes/SOAR-TEST-DASHBOARD-RUNTIME-SIGNALS.md`
+- `docs/architecture/nodes/SOAR-TEST-DASHBOARD-RUNTIME.md`
+- `docs/architecture/nodes/SOAR-TEST-ENGINE-RUNTIME-CORE.md`
+- `docs/architecture/nodes/SOAR-TEST-EXCHANGE-ADAPTER-BOUNDARY.md`
+- `docs/architecture/nodes/SOAR-TEST-EXCHANGE-ADAPTER.md`
+- `docs/architecture/nodes/SOAR-TEST-EXCHANGE-API-KEY-PROBE.md`
+- `docs/architecture/nodes/SOAR-TEST-EXCHANGE-AUTH-READ.md`
+- `docs/architecture/nodes/SOAR-TEST-EXCHANGE-CAPABILITY-CONTRACTS.md`
+- `docs/architecture/nodes/SOAR-TEST-EXCHANGE-CONNECTOR-FACTORY.md`
+- `docs/architecture/nodes/SOAR-TEST-EXCHANGE-MARKET-CATALOG.md`
+- `docs/architecture/nodes/SOAR-TEST-EXCHANGE-PUBLIC-MARKET-DATA.md`
+- `docs/architecture/nodes/SOAR-TEST-EXCHANGE-PUBLIC-READ.md`
+- `docs/architecture/nodes/SOAR-TEST-EXCHANGE-SYMBOL-RULES.md`
+- `docs/architecture/nodes/SOAR-TEST-GUARDRAILS.md`
+- `docs/architecture/nodes/SOAR-TEST-ICONS-API.md`
+- `docs/architecture/nodes/SOAR-TEST-LIVE-FEE-RECONCILIATION.md`
+- `docs/architecture/nodes/SOAR-TEST-LIVE-ORDER-ADAPTER.md`
+- `docs/architecture/nodes/SOAR-TEST-LOGS-API.md`
+- `docs/architecture/nodes/SOAR-TEST-LOGS-WEB.md`
+- `docs/architecture/nodes/SOAR-TEST-MANUAL-ORDER.md`
+- `docs/architecture/nodes/SOAR-TEST-MARKET-DATA-STREAM-ADAPTERS.md`
+- `docs/architecture/nodes/SOAR-TEST-MARKET-STREAM-API.md`
+- `docs/architecture/nodes/SOAR-TEST-MARKETS-API.md`
+- `docs/architecture/nodes/SOAR-TEST-MARKETS-WEB.md`
+- `docs/architecture/nodes/SOAR-TEST-ORDER-EXCHANGE-EVENTS.md`
+- `docs/architecture/nodes/SOAR-TEST-ORDER-POSITIONS-E2E.md`
+- `docs/architecture/nodes/SOAR-TEST-ORDER-QUANTITY-RULES.md`
+- `docs/architecture/nodes/SOAR-TEST-ORDER-SERVICE.md`
+- `docs/architecture/nodes/SOAR-TEST-PAPER-RUNTIME.md`
+- `docs/architecture/nodes/SOAR-TEST-POSITIONS-RECONCILIATION.md`
+- `docs/architecture/nodes/SOAR-TEST-POSITIONS-SERVICE.md`
+- `docs/architecture/nodes/SOAR-TEST-POSITIONS-SNAPSHOT.md`
+- `docs/architecture/nodes/SOAR-TEST-POSITIONS-TAKEOVER-ORPHAN.md`
+- `docs/architecture/nodes/SOAR-TEST-PROFILE-API-KEY-PROBE.md`
+- `docs/architecture/nodes/SOAR-TEST-PROFILE-API-KEYS-API.md`
+- `docs/architecture/nodes/SOAR-TEST-PROFILE-API-KEYS-WEB.md`
+- `docs/architecture/nodes/SOAR-TEST-PROFILE-BASIC-API.md`
+- `docs/architecture/nodes/SOAR-TEST-PROFILE-SECURITY-API.md`
+- `docs/architecture/nodes/SOAR-TEST-RELEASE-AUDIT-TOOLING.md`
+- `docs/architecture/nodes/SOAR-TEST-REPORTS-API.md`
+- `docs/architecture/nodes/SOAR-TEST-REPORTS-WEB.md`
+- `docs/architecture/nodes/SOAR-TEST-RUNTIME-DCA-PNL.md`
+- `docs/architecture/nodes/SOAR-TEST-RUNTIME-EXTERNAL-POSITION-OWNER.md`
+- `docs/architecture/nodes/SOAR-TEST-RUNTIME-STRATEGY-CONTEXT.md`
+- `docs/architecture/nodes/SOAR-TEST-RUNTIME-SUPPORT-SERVICES.md`
+- `docs/architecture/nodes/SOAR-TEST-STRATEGIES-API.md`
+- `docs/architecture/nodes/SOAR-TEST-STRATEGIES-WEB.md`
+- `docs/architecture/nodes/SOAR-TEST-STRATEGY-FORM-UTILS.md`
+- `docs/architecture/nodes/SOAR-TEST-STRATEGY-INDICATORS.md`
+- `docs/architecture/nodes/SOAR-TEST-SUBSCRIPTIONS-ADMIN-API.md`
+- `docs/architecture/nodes/SOAR-TEST-SUBSCRIPTIONS-ADMIN-WEB.md`
+- `docs/architecture/nodes/SOAR-TEST-SUBSCRIPTIONS-ENTITLEMENTS.md`
+- `docs/architecture/nodes/SOAR-TEST-UPLOAD-API.md`
+- `docs/architecture/nodes/SOAR-TEST-WALLET-LEDGER.md`
+- `docs/architecture/nodes/SOAR-TEST-WALLETS-API.md`
+- `docs/architecture/nodes/SOAR-TEST-WALLETS-WEB.md`
+- `docs/architecture/nodes/SOAR-TEST-WEB-AUTH-CONTEXT.md`
+- `docs/architecture/nodes/SOAR-TEST-WEB-AUTH-FORM-TYPES.md`
+- `docs/architecture/nodes/SOAR-TEST-WEB-AUTH-FORMS.md`
+- `docs/architecture/nodes/SOAR-TEST-WEB-AUTH-HOOKS.md`
+- `docs/architecture/nodes/SOAR-TEST-WEB-AUTH-PUBLIC.md`
+- `docs/architecture/nodes/SOAR-TEST-WEB-EXCHANGE-CONNECTIONS.md`
+- `docs/architecture/nodes/SOAR-TEST-WEB-MANUAL-ORDER.md`
+- `docs/architecture/nodes/SOAR-TEST-WEB-POSITIONS.md`
+- `docs/architecture/nodes/SOAR-TEST-WEB-PROFILE-BASIC-SECURITY.md`
+- `docs/architecture/nodes/SOAR-TEST-WEB-RESIDUAL-SURFACES.md`
+- `docs/architecture/nodes/SOAR-TEST-WEB-RUNTIME-SURFACES.md`
+- `docs/architecture/nodes/SOAR-TEST-WEB-SHELL-UI.md`
+- `docs/architecture/nodes/SOAR-TOOL-OPERATOR-UNBLOCK-PACKET-CHECK.md`
+- `docs/architecture/nodes/SOAR-TOOL-REPOSITORY-PATH-RESOLVER.md`
+- `docs/architecture/nodes/SOAR-TOOL-REUSABLE-AUDIT-CHECKERS.md`
+- `docs/architecture/nodes/SOAR-TOOL-V1-FINAL-PREFLIGHT.md`
+- `docs/architecture/nodes/SOAR-TOOL-V1-RELEASE-GATE.md`
+- `docs/architecture/nodes/SOAR-TYPES-ADMIN-SUBSCRIPTION-PLANS.md`
+- `docs/architecture/nodes/SOAR-TYPES-ADMIN-USERS.md`
+- `docs/architecture/nodes/SOAR-TYPES-AUTH.md`
+- `docs/architecture/nodes/SOAR-TYPES-BACKTESTS.md`
+- `docs/architecture/nodes/SOAR-TYPES-BOTS.md`
+- `docs/architecture/nodes/SOAR-TYPES-DASHBOARD-RUNTIME.md`
+- `docs/architecture/nodes/SOAR-TYPES-ICONS.md`
+- `docs/architecture/nodes/SOAR-TYPES-LOGS.md`
+- `docs/architecture/nodes/SOAR-TYPES-MARKETS.md`
+- `docs/architecture/nodes/SOAR-TYPES-ORDERS.md`
+- `docs/architecture/nodes/SOAR-TYPES-POSITIONS.md`
+- `docs/architecture/nodes/SOAR-TYPES-PROFILE-API-KEYS.md`
+- `docs/architecture/nodes/SOAR-TYPES-PROFILE-BASIC.md`
+- `docs/architecture/nodes/SOAR-TYPES-PROFILE-SECURITY.md`
+- `docs/architecture/nodes/SOAR-TYPES-STRATEGIES.md`
+- `docs/architecture/nodes/SOAR-TYPES-WALLETS.md`
+- `docs/architecture/nodes/SOAR-TYPES-WEB-AUTH-FORMS.md`
+- `docs/architecture/nodes/SOAR-UI-PASSWORD-VISIBILITY-TOGGLE.md`
+- `docs/architecture/nodes/SOAR-UTIL-BACKTEST-RUN-DETAILS-COPY.md`
+- `docs/architecture/nodes/SOAR-UTIL-BOTS-MONITORING-FORMATTERS.md`
+- `docs/architecture/nodes/SOAR-UTIL-BOTS-MONITORING-LABELS.md`
+- `docs/architecture/nodes/SOAR-UTIL-RUNTIME-DERIVATIONS.md`
+- `docs/architecture/nodes/SOAR-UTIL-RUNTIME-FORMATTERS.md`
+- `docs/architecture/nodes/SOAR-UTIL-RUNTIME-SIGNAL-CONDITION-STATE.md`
+- `docs/architecture/nodes/SOAR-UTIL-RUNTIME-TRADE-META.md`
+- `docs/architecture/nodes/SOAR-UTIL-RUNTIME-UI-HELPERS.md`
+- `docs/architecture/nodes/SOAR-UTIL-WEB-EXCHANGE-CAPABILITIES.md`
+- `docs/architecture/nodes/SOAR-WEB-POSITIONS-SERVICE.md`
+- `docs/architecture/nodes/SOAR-WORKER-MARKET-STREAM-SUBSCRIPTIONS.md`
+- `docs/architecture/nodes/SOAR-WORKFLOW-AI-ASSISTANT-FOUNDATION-CHAIN.md`
+- `docs/architecture/nodes/SOAR-WORKFLOW-API-PLATFORM-SAFETY-CHAIN.md`
+- `docs/architecture/nodes/SOAR-WORKFLOW-API-SUPPORT-ROUTES-CHAIN.md`
+- `docs/architecture/nodes/SOAR-WORKFLOW-AUTH-SESSION-DEEP-CHAIN.md`
+- `docs/architecture/nodes/SOAR-WORKFLOW-BACKTESTS-CHAIN.md`
+- `docs/architecture/nodes/SOAR-WORKFLOW-BOT-SETUP-CHAIN.md`
+- `docs/architecture/nodes/SOAR-WORKFLOW-ENGINE-RUNTIME-CORE-CHAIN.md`
+- `docs/architecture/nodes/SOAR-WORKFLOW-LOGS-AUDIT-CHAIN.md`
+- `docs/architecture/nodes/SOAR-WORKFLOW-MARKET-DATA-STREAM-ADAPTERS-CHAIN.md`
+- `docs/architecture/nodes/SOAR-WORKFLOW-MARKETS-CHAIN.md`
+- `docs/architecture/nodes/SOAR-WORKFLOW-OPS-CONFIG-PIPELINE-CHAIN.md`
+- `docs/architecture/nodes/SOAR-WORKFLOW-PROFILE-API-KEYS-CHAIN.md`
+- `docs/architecture/nodes/SOAR-WORKFLOW-RELEASE-AUDIT-TOOLING-CHAIN.md`
+- `docs/architecture/nodes/SOAR-WORKFLOW-REPORTS-CHAIN.md`
+- `docs/architecture/nodes/SOAR-WORKFLOW-RUNTIME-SUPPORT-SERVICES-CHAIN.md`
+- `docs/architecture/nodes/SOAR-WORKFLOW-STRATEGIES-CHAIN.md`
+- `docs/architecture/nodes/SOAR-WORKFLOW-SUBSCRIPTIONS-ADMIN-CHAIN.md`
+- `docs/architecture/nodes/SOAR-WORKFLOW-WALLETS-CORE-CHAIN.md`
+- `docs/architecture/nodes/SOAR-WORKFLOW-WEB-RUNTIME-SURFACES-CHAIN.md`
+- `docs/architecture/README.md`
+- `docs/architecture/reference/admin-frontend-architecture.md`
+- `docs/architecture/reference/app-shell-template-split-contract.md`
+- `docs/architecture/reference/architecture-reference-contracts.md`
+- `docs/architecture/reference/assistant-runtime-contract.md`
+- `docs/architecture/reference/coin-icon-source-contract.md`
+- `docs/architecture/reference/dashboard-loading-ux-contract.md`
+- `docs/architecture/reference/dashboard-route-map.md`
+- `docs/architecture/reference/dashboard-signal-panel-ia-contract.md`
+- `docs/architecture/reference/dashboard-trade-history-financial-semantics-contract.md`
+- `docs/architecture/reference/dca-ladder-display-contract.md`
+- `docs/architecture/reference/dynamic-stop-display-contract.md`
+- `docs/architecture/reference/exchange-access-ownership-matrix.md`
+- `docs/architecture/reference/execution-lifecycle-parity-contract.md`
+- `docs/architecture/reference/indicator-registry-parity-contract.md`
+- `docs/architecture/reference/live-exchange-protection-order-contract.md`
+- `docs/architecture/reference/live-fee-reconciliation-contract.md`
+- `docs/architecture/reference/live-futures-lifecycle-price-contract.md`
+- `docs/architecture/reference/live-paper-runtime-safety-contract.md`
+- `docs/architecture/reference/live-position-restart-continuity-contract.md`
+- `docs/architecture/reference/live-protection-state-parity-contract.md`
+- `docs/architecture/reference/live-runtime-lifecycle-parity-contract.md`
+- `docs/architecture/reference/live-safety-and-contract-truth-remediation-contract.md`
+- `docs/architecture/reference/live-wallet-cashflow-ledger-contract.md`
+- `docs/architecture/reference/maintainability-remediation-contract.md`
+- `docs/architecture/reference/numeric-input-policy.md`
+- `docs/architecture/reference/position-close-attribution-contract.md`
+- `docs/architecture/reference/position-lifecycle-parity-matrix.md`
+- `docs/architecture/reference/position-management-pnl-lifecycle-contract.md`
+- `docs/architecture/reference/runtime-execution-idempotency-contract.md`
+- `docs/architecture/reference/runtime-signal-merge-contract.md`
+- `docs/architecture/reference/scalability-anti-drift-delivery-contract.md`
+- `docs/architecture/reference/strategy-evaluation-parity-contract.md`
+- `docs/architecture/reference/stream-transport-contract.md`
+- `docs/architecture/reference/subscription-tier-entitlements-contract.md`
+- `docs/architecture/reference/v1-production-activation-contract.md`
+- `docs/architecture/reference/venue-context-source-of-truth-contract.md`
+- `docs/architecture/reference/wallet-source-of-truth-contract.md`
+- `docs/architecture/reference/web-container-split-contract.md`
+- `docs/architecture/registry/architecture-registry-guide.md`
+- `docs/architecture/registry/README.md`
+- `docs/architecture/system-architecture.md`
+- `docs/architecture/tech-stack.md`
+- `docs/architecture/traceability-matrix.md`
+- `docs/modules/api-admin.md`
+- `docs/modules/api-auth.md`
+- `docs/modules/api-backtests.md`
+- `docs/modules/api-bots.md`
+- `docs/modules/api-engine.md`
+- `docs/modules/api-exchange.md`
+- `docs/modules/api-icons.md`
+- `docs/modules/api-isolation.md`
+- `docs/modules/api-logs.md`
+- `docs/modules/api-market-data.md`
+- `docs/modules/api-market-stream.md`
+- `docs/modules/api-markets.md`
+- `docs/modules/api-orders.md`
+- `docs/modules/api-pagination.md`
+- `docs/modules/api-positions.md`
+- `docs/modules/api-profile.md`
+- `docs/modules/api-reports.md`
+- `docs/modules/api-root.md`
+- `docs/modules/api-strategies.md`
+- `docs/modules/api-subscriptions.md`
+- `docs/modules/api-upload.md`
+- `docs/modules/api-users.md`
+- `docs/modules/api-wallets.md`
+- `docs/modules/module-deep-dive-template.md`
+- `docs/modules/module-doc-status-index.md`
+- `docs/modules/module-documentation.md`
+- `docs/modules/module-registry.md`
+- `docs/modules/README.md`
+- `docs/modules/system-modules.md`
+- `docs/modules/web-admin.md`
+- `docs/modules/web-auth.md`
+- `docs/modules/web-backtest.md`
+- `docs/modules/web-bots.md`
+- `docs/modules/web-dashboard-home.md`
+- `docs/modules/web-exchanges.md`
+- `docs/modules/web-icons.md`
+- `docs/modules/web-logs.md`
+- `docs/modules/web-markets.md`
+- `docs/modules/web-orders.md`
+- `docs/modules/web-positions.md`
+- `docs/modules/web-profile.md`
+- `docs/modules/web-reports.md`
+- `docs/modules/web-shared.md`
+- `docs/modules/web-strategies.md`
+- `docs/modules/web-wallets.md`
+
+## Use In Next Work
+
+1. Pick one V1 matrix row that is not `PASS`.
+2. Use this index to find the matching API module, Web feature, route, tests,
+   and worker surface.
+3. Add focused evidence before calling the row complete.
+4. Update the V1 matrix and task/context state after the slice.

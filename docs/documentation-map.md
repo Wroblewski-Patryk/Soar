@@ -32,6 +32,7 @@ audits, proof artifacts, release packets, and raw generated outputs belong in
 | Runtime, worker, agent, or side-effect change | `docs/governance/agent-runtime-contract.md` or relevant architecture doc | pipelines, tests, operations runbooks | architecture, runtime playbook, evidence |
 | Release, deploy, rollback, or production proof | `docs/maps/release-ops-map.md` | operations runbooks, system health, release history | operations docs, system health, release evidence |
 | Need proof for a claim | `docs/maps/agent-work-map.md` | `history/evidence/`, `history/releases/`, `history/audits/` | task record and relevant state file |
+| Need current known-state / V1 readiness truth | `docs/status/known-state-readiness.md` | latest `history/audits/project-index-*`, `v1-static-issue-scan-*`, `v1-master-state-ledger-*`, and `history/releases/v1-completion-scorecard-*` | known-state status, queue classification, proof gaps |
 
 ## Current Source Of Truth
 
@@ -52,6 +53,7 @@ audits, proof artifacts, release packets, and raw generated outputs belong in
 | `docs/ux/` | Design system, quality bars, evidence rules, and reusable pattern memory. | `docs/ux/design-system-contract.md` |
 | `docs/governance/` | Repository, agent, template, and delivery rules. | `docs/governance/template-usage.md` |
 | `docs/status/` | Generated and maintained implementation/proof status snapshots for route, journey, and ownership visibility. | `docs/status/view-map-browser-workflow-ownership.md` |
+| `docs/status/known-state-readiness.md` | Current operational truth for whether Soar is known enough for safe autonomous development and V1 release routing. | `docs/status/known-state-readiness.md` |
 
 ## Historical Lookup
 

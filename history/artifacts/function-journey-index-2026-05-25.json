@@ -423,12 +423,12 @@
       "data_models": "",
       "tests": "SOAR-TEST-GUARDRAILS; SOAR-DOC-LOCAL-DEVELOPMENT; SOAR-DOC-COOLIFY-VPS; SOAR-DOC-TESTING",
       "docs": "SOAR-DOC-LOCAL-DEVELOPMENT; SOAR-DOC-TESTING; SOAR-DOC-COOLIFY-VPS; SOAR-AGENT-COORDINATOR",
-      "evidence": "history/tasks/architecture-graph-ops-config-pipeline-backfill-2026-05-24-task.md",
-      "gaps": "missing_proof:Remote CI run status and protected production deployment proof remain separate; production_or_browser_proof_not_implied",
+      "evidence": "history/tasks/coolify-service-stack-migration-2026-05-25-task.md",
+      "gaps": "missing_proof:Production Coolify stack deployment and protected proof remain separate; production_or_browser_proof_not_implied",
       "gap_severity": "high",
       "risk_level": "high",
-      "last_verified_at": "2026-05-24",
-      "notes": "Backfilled operations config and pipeline chain across package manifests workspace compose topology CI workflow guardrails and docs."
+      "last_verified_at": "2026-05-25",
+      "notes": "Extended operations config and pipeline chain with the production Coolify Service Stack migration manifest."
     },
     {
       "id": "CHAIN-API-SUPPORT-ROUTES",
@@ -503,7 +503,7 @@
       "entry_pages": "SOAR-PAGE-DASHBOARD",
       "ui_nodes": "SOAR-PAGE-DASHBOARD; SOAR-COMP-HOME-LIVE-WIDGETS; SOAR-COMP-RUNTIME-DATA-SECTION; SOAR-COMP-RUNTIME-DATA-PRESENTERS; SOAR-COMP-RUNTIME-SIDEBAR-SECTION; SOAR-COMP-RUNTIME-ONBOARDING-SECTION; SOAR-COMP-RUNTIME-SIGNALS-SECTION; SOAR-COMP-BOTS-MANAGEMENT; SOAR-COMP-BOTS-MANAGEMENT-TABS; SOAR-COMP-BOTS-MONITORING-TAB; SOAR-COMP-BOTS-MONITORING-SECTIONS; SOAR-COMP-BOTS-MONITORING-PROTECTION-CELL; SOAR-COMP-BOTS-MONITORING-ATTRIBUTION-PILLS; SOAR-COMP-BOTS-PORTFOLIO-HISTORY-SECTION; SOAR-COMP-MONITORING-FUTURE-SIGNALS",
       "api_routes": "SOAR-API-BOT-RUNTIME-AGGREGATE; SOAR-API-BOT-RUNTIME-POSITIONS",
-      "functions": "SOAR-UTIL-RUNTIME-DERIVATIONS; SOAR-UTIL-RUNTIME-UI-HELPERS; SOAR-UTIL-RUNTIME-TRADE-META; SOAR-UTIL-RUNTIME-FORMATTERS; SOAR-UTIL-BOTS-MONITORING-FORMATTERS; SOAR-UTIL-BOTS-MONITORING-LABELS; SOAR-SERVICE-WEB-BOTS-API",
+      "functions": "SOAR-UTIL-RUNTIME-SIGNAL-CONDITION-STATE; SOAR-UTIL-RUNTIME-DERIVATIONS; SOAR-UTIL-RUNTIME-UI-HELPERS; SOAR-UTIL-RUNTIME-TRADE-META; SOAR-UTIL-RUNTIME-FORMATTERS; SOAR-UTIL-BOTS-MONITORING-FORMATTERS; SOAR-UTIL-BOTS-MONITORING-LABELS; SOAR-SERVICE-WEB-BOTS-API",
       "data_models": "SOAR-DB-BOT; SOAR-DB-POSITION; SOAR-DB-ORDER; SOAR-DB-TRADE",
       "tests": "SOAR-TEST-WEB-RUNTIME-SURFACES; SOAR-TEST-DASHBOARD-RUNTIME-HELPERS; SOAR-TEST-DASHBOARD-RUNTIME-SIGNALS; SOAR-TEST-BOTS-MONITORING-FUTURE-SIGNALS; SOAR-TEST-BOTS-PORTFOLIO-HISTORY-WEB; SOAR-TEST-DASHBOARD-RUNTIME; SOAR-TEST-WEB-MANUAL-ORDER; SOAR-TEST-BOT-RUNTIME-WEB; SOAR-TEST-BOT-RUNTIME-API; SOAR-TEST-RUNTIME-DCA-PNL; SOAR-TEST-MANUAL-ORDER",
       "docs": "SOAR-DOC-WEB-DASHBOARD-HOME; SOAR-DOC-WEB-BOTS; SOAR-DOC-WEB-ORDERS; SOAR-DOC-API-BOTS; SOAR-DOC-DATA-MODEL",
@@ -511,7 +511,7 @@
       "gaps": "missing_proof:Fresh authenticated browser runtime journey remains separate; production_or_browser_proof_not_implied",
       "gap_severity": "high",
       "risk_level": "critical",
-      "last_verified_at": "2026-05-24",
+      "last_verified_at": "2026-05-25",
       "notes": "Backfilled Web runtime surfaces across dashboard runtime sections helpers bot monitoring sections future signals portfolio history runtime APIs tests and docs."
     },
     {

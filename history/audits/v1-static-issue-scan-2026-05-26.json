@@ -1,0 +1,26 @@
+{
+  "generatedAt": "2026-05-26T17:29:18.689Z",
+  "evidenceDate": "2026-05-26",
+  "projectIndex": "history/audits/project-index-2026-05-26.json",
+  "summary": {
+    "totalFindings": 1,
+    "bySeverity": {
+      "P1": 1
+    },
+    "byCategory": {
+      "queue-open-work": 1
+    },
+    "sourceFilesScanned": 692,
+    "sourceMarkers": 29
+  },
+  "findings": [
+    {
+      "id": "QUEUE_OPEN_ITEMS_EXIST",
+      "severity": "P1",
+      "category": "queue-open-work",
+      "title": "17 unchecked queue markers remain",
+      "evidence": ".codex/context/TASK_BOARD.md:931 - [ ] `LUC-45 [Soar] V1 audit-to-completion controller` | .codex/context/TASK_BOARD.md:995 - [ ] `LUC-48 [Soar][Docs] Autonomous map inventory and UI polish readiness gate` | .codex/context/TASK_BOARD.md:1048 - [ ] `LUC-41 [Soar][Integration] Exchange and trading runtime boundary` | .codex/context/TASK_BOARD.md:1065 - [ ] `LUC-43 [Soar][Test Automation] Repeatable smoke and e2e checks` | .codex/context/TASK_BOARD.md:1096 - [ ] `LUC-37-A [Soar][Delivery] Backend runtime and trading boundary` | .codex/context/TASK_BOARD.md:1102 - [ ] `LUC-37-B [Soar][Delivery] Coolify stack cutover and smoke` | .codex/context/TASK_BOARD.md:1107 - [ ] `LUC-37-C [Soar][Delivery] Journey verification and QA` | .codex/context/TASK_BOARD.md:1112 - [ ] `LUC-37-D [Soar][Delivery] Security boundary verification`",
+      "recommendation": "Classify each as executable, blocked by auth/approval, or historical carryover."
+    }
+  ]
+}

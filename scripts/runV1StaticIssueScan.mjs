@@ -124,6 +124,32 @@ const readTextIfExists = async (targetPath) => {
   return readFile(targetPath, 'utf8');
 };
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const readJsonWithRetry = async (targetPath, { attempts = 5, delayMs = 200 } = {}) => {
+  let lastError = null;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    const text = await readTextIfExists(targetPath);
+    if (text.trim().length > 0) {
+      try {
+        return JSON.parse(text);
+      } catch (error) {
+        lastError = error;
+      }
+    } else {
+      lastError = new Error(`JSON file is empty or missing: ${targetPath}`);
+    }
+
+    if (attempt < attempts) {
+      await sleep(delayMs);
+    }
+  }
+
+  throw new Error(
+    `Could not read complete JSON from ${targetPath} after ${attempts} attempts: ${lastError?.message ?? 'unknown error'}`,
+  );
+};
+
 const parseArgs = () => {
   const options = {
     today: new Date().toISOString().slice(0, 10),
@@ -475,7 +501,7 @@ const summarizeBy = (items, key) =>
 
 const buildScan = async (options) => {
   const indexPath = path.resolve(repoRoot, options.index);
-  const projectIndex = JSON.parse(await readTextIfExists(indexPath));
+  const projectIndex = await readJsonWithRetry(indexPath);
   const [sourceMarkers, surfaceFindings] = await Promise.all([
     scanSourceMarkers(),
     collectSurfaceFindings(projectIndex),

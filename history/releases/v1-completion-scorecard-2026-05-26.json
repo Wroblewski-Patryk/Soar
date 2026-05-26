@@ -1,0 +1,103 @@
+{
+  "generatedAt": "2026-05-26T17:29:19.810Z",
+  "evidenceDate": "2026-05-26",
+  "status": "NO-GO",
+  "sourceLedger": "history/audits/v1-master-state-ledger-2026-05-26.json",
+  "scoringModel": {
+    "warning": "Percentages are a planning signal, not release approval. V1 is GO only when all release rows have accepted proof and no formal gate is blocked.",
+    "weights": {
+      "P0": 5,
+      "P1": 3,
+      "P2": 1
+    },
+    "statusScore": {
+      "PASS": {
+        "implementation": 1,
+        "evidence": 1,
+        "release": 1
+      },
+      "PASS_LOCAL": {
+        "implementation": 0.9,
+        "evidence": 0.65,
+        "release": 0.45
+      },
+      "PARTIAL_LOCAL": {
+        "implementation": 0.65,
+        "evidence": 0.35,
+        "release": 0.2
+      },
+      "UNVERIFIED": {
+        "implementation": 0.45,
+        "evidence": 0,
+        "release": 0
+      },
+      "BLOCKED_AUTH": {
+        "implementation": 0.35,
+        "evidence": 0,
+        "release": 0
+      },
+      "FAIL": {
+        "implementation": 0.1,
+        "evidence": 0,
+        "release": 0
+      }
+    }
+  },
+  "summary": {
+    "implementationEstimatePercent": 0,
+    "evidenceCoveragePercent": 0,
+    "releaseReadinessPercent": 0,
+    "moduleCounts": {},
+    "p0Total": 0,
+    "p0NotReleaseReady": 0,
+    "blockedModules": [],
+    "concreteNonProofGaps": 1
+  },
+  "phaseReadiness": [
+    {
+      "phase": "Map state",
+      "readinessPercent": 100,
+      "status": "DONE",
+      "note": "Project index, static scan, and master ledger exist."
+    },
+    {
+      "phase": "Prove action behavior",
+      "readinessPercent": 0,
+      "status": "IN_PROGRESS",
+      "note": "Module action proofs are still missing or partial for one or more rows."
+    },
+    {
+      "phase": "Repair confirmed failures",
+      "readinessPercent": 55,
+      "status": "IN_PROGRESS",
+      "note": "Only repair after proof or static gap triage identifies a concrete defect."
+    },
+    {
+      "phase": "Production-safe proof",
+      "readinessPercent": 0,
+      "status": "BLOCKED",
+      "note": "Production-safe clickthrough, protected auth, SLO, rollback, or runtime readback is not closed."
+    },
+    {
+      "phase": "Release decision",
+      "readinessPercent": 0,
+      "status": "BLOCKED",
+      "note": "Release remains blocked while proof gaps or formal gates are open."
+    }
+  ],
+  "topBlockers": [],
+  "nextWorkOrder": [],
+  "moduleScores": [],
+  "p1NotReleaseReady": [],
+  "concreteNonProofGaps": [
+    {
+      "id": "QUEUE_OPEN_ITEMS_EXIST",
+      "severity": "P1",
+      "category": "queue-open-work",
+      "title": "17 unchecked queue markers remain",
+      "evidence": ".codex/context/TASK_BOARD.md:931 - [ ] `LUC-45 [Soar] V1 audit-to-completion controller` | .codex/context/TASK_BOARD.md:995 - [ ] `LUC-48 [Soar][Docs] Autonomous map inventory and UI polish readiness gate` | .codex/context/TASK_BOARD.md:1048 - [ ] `LUC-41 [Soar][Integration] Exchange and trading runtime boundary` | .codex/context/TASK_BOARD.md:1065 - [ ] `LUC-43 [Soar][Test Automation] Repeatable smoke and e2e checks` | .codex/context/TASK_BOARD.md:1096 - [ ] `LUC-37-A [Soar][Delivery] Backend runtime and trading boundary` | .codex/context/TASK_BOARD.md:1102 - [ ] `LUC-37-B [Soar][Delivery] Coolify stack cutover and smoke` | .codex/context/TASK_BOARD.md:1107 - [ ] `LUC-37-C [Soar][Delivery] Journey verification and QA` | .codex/context/TASK_BOARD.md:1112 - [ ] `LUC-37-D [Soar][Delivery] Security boundary verification`",
+      "recommendation": "Classify each as executable, blocked by auth/approval, or historical carryover.",
+      "bucket": "toClassifyQueue"
+    }
+  ]
+}

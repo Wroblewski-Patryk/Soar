@@ -1,2 +1,7 @@
 Command,Type,Purpose,Safety class,Requires approval,Required capability,Evidence,Owner,Notes
-npm test,shell,Run tests,safe_read,no,,Command output,Engineering,Example only.
+pnpm run ops:project:known-state,shell,Refresh complete known-state baseline in safe sequential order,safe_write,no,local shell,Updated docs/status docs/graphs docs/architecture/indices history/audits history/releases,Docs/QA/PM,"Preferred command before broad autonomous handoff; prevents project-index/static-scan race."
+pnpm run architecture:graph:drift:strict,shell,Verify architecture graph representative path coverage,safe_read,no,local shell,Passing output,CTO/Docs,"Expected 0 missing."
+pnpm run architecture:journey:index:strict,shell,Refresh journey and user-action evidence indexes,safe_write,no,local shell,Generated indexes and high-gap counts,CTO/QA,"Fails on critical gaps; high gaps require follow-up triage."
+pnpm run docs:parity:check,shell,Verify docs parity for API Web and routes,safe_read,no,local shell,Passing output,Docs,"Should pass before handoff."
+pnpm run quality:guardrails,shell,Run repository guardrails,safe_read,no,local shell,Passing output,Engineering,"Required before commit."
+pnpm run qa:smoke-e2e:repeatable -- --checks web api backtests,shell,Run repeatable QA smoke evidence packs,safe_write,no,local shell,history/artifacts and history/evidence smoke output,QA,"Use when QA lane is unblocked and required local inputs exist."

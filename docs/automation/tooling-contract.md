@@ -1,6 +1,6 @@
 # Tooling Contract
 
-Last updated: YYYY-MM-DD
+Last updated: 2026-05-26
 
 ## Purpose
 
@@ -19,6 +19,17 @@ This contract complements `docs/operations/approval-aware-agent-command-flow.md`
 ## Command Catalog
 
 Use `agent-command-catalog.csv` as the machine-readable index.
+
+## Known-State Refresh Contract
+
+Agents must use `pnpm run ops:project:known-state` for broad Soar status
+refreshes. It serializes dependent generators so project index, static scan,
+master ledger, and scorecard cannot race each other.
+
+The command is allowed to update generated docs/status, graph/index, audit, and
+release evidence files. It does not prove protected production behavior by
+itself; production, auth-sensitive, exchange, Coolify, and live-account checks
+still require the relevant Ops/Security/QA gate and redacted evidence.
 
 ## Maintenance Rule
 
