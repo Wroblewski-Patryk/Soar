@@ -1,0 +1,50 @@
+# LUC-147 History Plans Closure Bundle Evidence (2026-05-26)
+
+## Summary
+- Issue: `LUC-147` (`[Soar][LUC-103-NO-LUC-C] History plans closure bundle`)
+- Lane scope: `NO_LUC.history-plans`
+- Disposition: `done`
+
+## Verified Files
+- `history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26.md`
+- `history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-auth-resume.md`
+- `history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-finish-handoff.md`
+- `history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-handoff-rerun.md`
+- `history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-heartbeat.md`
+- `history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-rerun.md`
+- `history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-secret-refresh-rerun.md`
+- `history/plans/prod-ui-module-clickthrough-4c16305c-2026-05-26.md`
+
+## Verification Outcomes
+- Presence: `PRESENT` (`8/8`)
+- Markdown H1 sanity: `PASS` (`8/8`)
+- Credential-like pattern scan: `NO_CREDENTIAL_VALUES`
+
+## SHA256 Provenance
+- `history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26.md`:
+  `8723CF1D17B941625108FB035F54D2B93F602ECE6A1CCE7065DBF2EB45D2CFBA`
+- `history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-auth-resume.md`:
+  `3E8EFA1E3108E6C190EE1DF70D45BC82BC75A781565E0C1E315E12D4670FE68F`
+- `history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-finish-handoff.md`:
+  `F0F60ADAEF3D44F94959EEF2A1265DA34FBCDD030C85E4A5441E5F9A0E55A066`
+- `history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-handoff-rerun.md`:
+  `90A0FB8B97255AD50A242CB4499E673954CE4B396D638A9677E9F806F33B4289`
+- `history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-heartbeat.md`:
+  `F33CB8CA5523293B9F4DCB774769D6798942A7EDB79B97BB589D95355545CBCF`
+- `history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-rerun.md`:
+  `67B3833D6316DB1ADB34CAF582E496F3A7EF6DD9CA5DF160594D3BFC34714E3A`
+- `history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-secret-refresh-rerun.md`:
+  `BB75CC2578828F271F96227C77BE5940B8947A13E711AE3B3FFC90BC557A516D`
+- `history/plans/prod-ui-module-clickthrough-4c16305c-2026-05-26.md`:
+  `5E4EF66E4904BFFC54AD85D9C4D2D9EB498DDA334B97B36BD4B059E52C0E59FC`
+
+## Commands Used
+- Presence check and scoped file existence verification.
+- Markdown first-line H1 check (`^#\\s`).
+- SHA256 via `Get-FileHash`.
+- Credential-pattern scan via `Select-String`.
+
+## Source-Control Disposition
+- Commit decision: `no-commit` (evidence record only).
+- Push decision: `not performed`.
+- Deploy decision: `not performed`.
