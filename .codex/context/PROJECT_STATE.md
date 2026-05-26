@@ -11802,6 +11802,21 @@ Last updated: 2026-05-26
   Evidence:
   history/tasks/luc-202-no-stall-queue-expeditor-2026-05-26-task.md.
 
+- LUC-204 assigned heartbeat (2026-05-26) executed a concrete PM no-stall queue-expeditor checkpoint and remains blocked.
+  Latest wake payload was acknowledged first (fallbackFetchNeeded=false, pending comments 0/0); no new blocker-closure evidence arrived.
+  Scope stayed coordination-only and fail-closed against parent LUC-45.
+  No commit/push/deploy/runtime mutation was performed in this lane.
+  Unblock owner/action remains unchanged: LUC-47 (Ops Release Lead + host operator) must publish temp-domain expected-SHA deploy smoke/readiness and worker readiness evidence with rollback note.
+  Evidence:
+  history/tasks/luc-204-no-stall-queue-expeditor-2026-05-26-task.md.
+
+- LUC-204 finish_successful_run_handoff heartbeat (2026-05-26) was reconciled as a status-only PM queue-expeditor continuation checkpoint.
+  Inline wake payload was consumed first (fallbackFetchNeeded=false); pending comments remained 0/0 and no new blocker-closure evidence arrived.
+  Scope remained coordination-only and fail-closed with no deploy/runtime/code mutation.
+  Disposition remains blocked; unblock owner/action unchanged: LUC-47 (Ops Release Lead + host operator) must attach temp-domain expected-SHA smoke/readiness packet plus worker readiness and rollback note.
+  Evidence:
+  history/tasks/luc-204-no-stall-queue-expeditor-2026-05-26-task.md.
+
 - LUC-99 resume delta (2026-05-26, issue_blockers_resolved) executed with concrete revalidation and remains blocked.
   Runtime Coolify auth bindings are present again in this runner; protected-input readiness improved to PARTIAL (9 matching names) for prior expected SHA 3fedb7a9170097b40accb6ccea1915064f383f11.
   Temp expected-SHA smoke still fails (fetch failed), and a new release-critical drift was observed: production web build-info now reports 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 instead of 3fedb7a9....
@@ -11819,3 +11834,27 @@ Last updated: 2026-05-26
 - `LUC-99` source-scoped recovery heartbeat (2026-05-26, Ops Release Lead) executed with concrete read-only checks and remains `blocked`.
   In this runner, Coolify auth bindings are absent, protected-input readiness is `BLOCKED` (`0`), temp smoke remains failed (`fetch failed`), and production expected-SHA smoke still mismatches (`expected=3fedb7a9...`, `observed=71b8d503...`).
   Control smoke for observed SHA passes; closure remains operator/release-controller owned (SHA reconciliation + worker readiness proof or accepted deeper blocker packet).
+
+- `LUC-99` reopened-comment reconciliation heartbeat (2026-05-26, Ops Release Lead scope) completed with concrete read-only evidence and remains `blocked`.
+  Release-controller SHA target is now explicitly reconciled to `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` based on current production parity smoke (old expected `3fedb7a9...` fails mismatch).
+  Worker readiness is still not provable in this runner (`/workers/health` and `/workers/ready` both `401`, no Coolify auth bindings), so a first-class deeper blocker packet was recorded and parent payload prepared for `LUC-98`, `LUC-47`, and `LUC-12`.
+
+- `LUC-99` source-scoped recovery wake (2026-05-26, resumed recheck) executed with concrete read-only evidence and remains `blocked`.
+  Production parity on closure-target SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` still passes, temp endpoints still fail (`fetch failed`), and this runner lacks Coolify auth bindings needed for authenticated worker-readiness/log proof.
+  Next unblock remains operator-owned: attach authenticated `workers-market-stream` readiness/log packet (or accepted deeper blocker decision) and publish parent closure decision update for `LUC-98` / `LUC-47` / `LUC-12`.
+
+- `LUC-99` reopened-via-comment manual disposition sync (2026-05-26) executed with concrete read-only checks and remains `blocked`.
+  Production parity at SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` still passes; temp endpoints still fail (`fetch failed`); worker public probes remain protected (`401/401`).
+  No authenticated worker-readiness packet could be produced in this run, so parent closure remains blocked pending operator/release-controller evidence and update.
+
+- `LUC-99` finish-successful-run handoff recheck (2026-05-26) executed with concrete read-only evidence and remains `blocked`.
+  Production parity at SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` still passes, while temp endpoints remain unreachable (`fetch failed`) and worker probes remain `401/401`.
+  Closure still requires authenticated worker readiness/log evidence (or accepted deeper-blocker packet) plus parent decision sync.
+
+- LUC-202 reopened-comment consolidation heartbeat (2026-05-26) acknowledged board instruction `c07a03c8-2278-49b8-a24a-58e27f316535`.
+  This PM lane is now treated as duplicate/superseded by canonical lane `LUC-204`.
+  Root blocker routing remains unchanged (`LUC-99` via `LUC-47`).
+  No implementation/deploy/runtime mutation was performed.
+  Disposition remains `cancelled` for duplicate consolidation.
+  Evidence:
+  history/tasks/luc-202-no-stall-queue-expeditor-2026-05-26-task.md.

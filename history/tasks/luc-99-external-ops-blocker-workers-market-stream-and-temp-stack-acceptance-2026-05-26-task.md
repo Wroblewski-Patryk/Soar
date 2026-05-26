@@ -377,3 +377,90 @@ Leave a fresh evidence-backed disposition for LUC-99 and avoid stale `in_progres
   - Temp smoke remains failed (`fetch failed`) across required API/Web/build-info endpoints.
 - Final disposition in this wake remains `blocked`.
 - Unblock owner/action remains: Coolify operator + release controller must reconcile expected SHA and attach worker readiness recovery proof (or first-class deeper blocker packet) for parent closure (`LUC-98`/`LUC-47`).
+
+## 2026-05-26 Wake Delta (issue_reopened_via_comment, release-controller reconciliation)
+- Executed narrow read-only reconciliation scope from comment `3ed53428-4429-45ce-af9e-c5e19ba7eaa7`.
+- Parent expected SHA decision in this heartbeat: set closure target to `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` based on prod parity smoke (`71b8d503...` PASS, `3fedb7a9...` FAIL mismatch).
+- Worker readiness could not be proven beyond prior status hints:
+  - public `/workers/health` and `/workers/ready` both returned `401`,
+  - Coolify auth bindings absent in this runner (`COOLIFY_BASE_URL/TOKEN/API_TOKEN` false).
+- First-class deeper blocker packet recorded with explicit owner/action and parent update payload for `LUC-98`, `LUC-47`, and `LUC-12`.
+- Final disposition: `blocked`.
+
+## 2026-05-26 Wake Delta (finish_successful_run_handoff)
+- Read-only handoff reconciliation executed with concrete recheck.
+- Prod expected SHA `71b8d503...` remains `PASS` end-to-end.
+- Worker readiness remains unproven in this runner (`/workers/health=401`, `/workers/ready=401`, no Coolify auth bindings).
+- Parent payload (`LUC-98`, `LUC-47`, `LUC-12`) remains unchanged from prior reconciliation.
+- Final disposition: `blocked`.
+
+## 2026-05-26 Wake Delta (source_scoped_recovery_action, resumed recheck)
+- Scope: read-only reconciliation for LUC-99; no deploy/restart/runtime mutation.
+- Runtime auth bindings in this runner:
+  - `COOLIFY_BASE_URL_PRESENT=False`
+  - `COOLIFY_TOKEN_PRESENT=False`
+  - `COOLIFY_API_TOKEN_PRESENT=False`
+- Fresh checks executed:
+  - `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --skip-workers` => `PASS`
+  - `corepack pnpm run -s ops:deploy:smoke -- --base-url https://temp.soar.luckysparrow.ch --api-url https://temp-api.soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --skip-workers` => `FAIL` (`fetch failed` on API `/health`, API `/ready`, WEB `/`, WEB `/api/build-info`)
+- Gate interpretation:
+  - parent closure target SHA `71b8d503...` remains stable for production parity,
+  - temp acceptance remains unavailable as direct proof path,
+  - authenticated worker-readiness/log packet for `workers-market-stream` cannot be produced from this runner without Coolify auth context.
+
+### Final Disposition
+- `blocked`
+
+### Unblock Owner / Action
+- Owner: Coolify operator + release controller.
+- Action:
+  1. attach authenticated worker readiness/log packet for `workers-market-stream` (or accepted deeper blocker decision),
+  2. publish parent block/unblock decision update for `LUC-98`, `LUC-47`, and `LUC-12` anchored to SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`.
+
+## 2026-05-26 Wake Delta (issue_reopened_via_comment, manual disposition sync)
+- Source comment reconciled: `a72e4488-b381-4e2e-8c1e-c939ae9f789a`.
+- Scope executed: read-only verification + status synchronization; no deploy/restart/mutation.
+- Fresh checks:
+  - prod smoke (`71b8d503fd6fdfd7378dc67b2fa678799e2430f8`) => `PASS`
+  - temp smoke (`71b8d503fd6fdfd7378dc67b2fa678799e2430f8`) => `FAIL` (`fetch failed` on API/Web/build-info)
+  - worker probes: `/workers/health` => `401`, `/workers/ready` => `401`
+- Interpretation:
+  - parent closure target SHA remains `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`,
+  - worker readiness still not proven with authenticated evidence,
+  - temp direct proof path remains unavailable and continues to rely on accepted no-temp routing decision.
+
+### Final Disposition
+- `blocked`
+
+### Unblock Owner / Action
+- Owner: Ops/Coolify operator + release controller.
+- Action:
+  1. attach explicit authenticated readiness/log evidence for `workers-market-stream` (or accepted deeper-blocker packet),
+  2. update parent closure decision for `LUC-98`, `LUC-47`, `LUC-12` anchored to SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`.
+
+## 2026-05-26 Wake Delta (finish_successful_run_handoff, stability recheck)
+- Scope: read-only stability recheck for LUC-99; no deploy/restart/runtime mutation.
+- Fresh checks:
+  - prod smoke (`71b8d503fd6fdfd7378dc67b2fa678799e2430f8`) => `PASS`
+  - temp smoke (`71b8d503fd6fdfd7378dc67b2fa678799e2430f8`) => `FAIL` (`fetch failed` on API/Web/build-info)
+  - worker probes: `/workers/health` => `401`, `/workers/ready` => `401`
+- Interpretation:
+  - parent closure target SHA `71b8d503...` remains stable on production,
+  - temp direct acceptance path remains unavailable,
+  - worker readiness remains unproven without authenticated packet.
+
+### Final Disposition
+- `blocked`
+
+### Unblock Owner / Action
+- Owner: Ops/Coolify operator + release controller.
+- Action:
+  1. attach authenticated readiness/log evidence for `workers-market-stream` (or accepted deeper-blocker packet),
+  2. publish/update parent decision packet for `LUC-98` / `LUC-47` / `LUC-12` anchored to SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`.
+
+## 2026-05-26 Wake Delta (source_scoped_recovery_action)
+- Read-only stability recheck executed with concrete commands.
+- Prod smoke for closure-target SHA `71b8d503...` remains `PASS`.
+- Temp smoke remains `FAIL` (`fetch failed`).
+- Worker probes remain auth-gated (`/workers/health=401`, `/workers/ready=401`) and Coolify auth bindings are absent in this runner.
+- Final disposition remains `blocked` with unchanged unblock owner/action.

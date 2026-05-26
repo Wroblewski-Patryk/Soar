@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-26T17:34:36.230Z",
+  "generatedAt": "2026-05-26T18:06:19.779Z",
   "source": {
     "nodes": "docs/architecture/registry/nodes.csv",
     "relations": "docs/architecture/relations/dependencies.csv",

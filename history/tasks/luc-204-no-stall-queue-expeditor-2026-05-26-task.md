@@ -1,4 +1,4 @@
-# LUC-202 - No-Stall Queue Expeditor (2026-05-26)
+# LUC-204 - No-Stall Queue Expeditor (2026-05-26)
 
 ## Context
 - Wake reason: `issue_assigned`.
@@ -7,7 +7,7 @@
 - Parent PM bridge remains `LUC-45`; first-class blocker remains `LUC-47`.
 
 ## Goal
-- Execute one concrete PM queue-expeditor heartbeat for `LUC-202` and leave a
+- Execute one concrete PM queue-expeditor heartbeat for `LUC-204` and leave a
   truthful, fail-closed disposition with explicit unblock owner/action.
 
 ## Scope
@@ -27,12 +27,12 @@
 - Preserve single-blocker contract: `LUC-47` owner/action unchanged.
 
 ## Acceptance Criteria
-- `LUC-202` appears in canonical state artifacts with explicit disposition.
+- `LUC-204` appears in canonical state artifacts with explicit disposition.
 - Disposition is not ambiguous (`blocked` with concrete owner/action).
 - Wake-first reconciliation is recorded (no fallback fetch, no pending comments).
 
 ## Definition of Done
-- [x] Durable task packet created for `LUC-202`.
+- [x] Durable task packet created for `LUC-204`.
 - [x] `TASK_BOARD` updated with checkpoint and disposition.
 - [x] `PROJECT_STATE` updated with same blocker contract.
 - [x] `next-steps` updated with exact next action.
@@ -50,11 +50,11 @@
   - `.codex/context/TASK_BOARD.md`
   - `.codex/context/PROJECT_STATE.md`
   - `.agents/state/next-steps.md`
-  - `history/tasks/luc-202-no-stall-queue-expeditor-2026-05-26-task.md`
+  - `history/tasks/luc-204-no-stall-queue-expeditor-2026-05-26-task.md`
 
-## Continuation Delta - issue_reopened_via_comment
-- Board comment `c07a03c8-2278-49b8-a24a-58e27f316535` acknowledged as authoritative consolidation instruction.
-- `LUC-202` is a duplicate lane and is superseded by canonical PM lane `LUC-204`.
-- Root blocker routing stays unchanged: `LUC-99` via `LUC-47`.
-- No implementation/deploy/runtime action was executed in this heartbeat.
-- Disposition for this lane remains `cancelled` (duplicate consolidation).
+## Continuation Delta - finish_successful_run_handoff
+- Wake consumed from inline payload first (`fallbackFetchNeeded=false`, pending comments `0/0`).
+- No new blocker-closure evidence arrived in this heartbeat.
+- Scope remained coordination-only and fail-closed (no code/runtime/deploy mutation).
+- Disposition remains `blocked` with unchanged unblock owner/action on `LUC-47`
+  (`Ops Release Lead` + host operator).

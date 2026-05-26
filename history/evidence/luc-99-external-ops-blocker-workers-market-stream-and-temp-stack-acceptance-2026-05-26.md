@@ -349,3 +349,163 @@ blocked.
 - Unblock owner/action:
   - Owner: Coolify operator + release controller.
   - Action: reconcile parent SHA decision, provide explicit worker readiness evidence (or accepted deeper blocker packet), and publish final parent closure decision for `LUC-98` / `LUC-47`.
+
+## 2026-05-26 Release-Controller Reconciliation Delta (issue_reopened_via_comment)
+- Scope executed exactly as requested: narrow reconciliation only, read-only checks, no deploy/restart/mutation.
+
+### 1) Parent expected SHA reconciliation
+- Fresh prod smoke results:
+  - expected `3fedb7a9170097b40accb6ccea1915064f383f11` => `FAIL` (web build-info mismatch)
+  - expected `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` => `PASS`
+- Decision for this lane: **current parent closure target SHA should be `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`**.
+- Rationale: it is the only SHA with full current production API/Web/build-info parity in this heartbeat.
+
+### 2) Worker readiness proof (read-only)
+- Public worker probes:
+  - `GET /workers/health` => `401`
+  - `GET /workers/ready` => `401`
+- Runtime Coolify auth bindings in this runner:
+  - `COOLIFY_BASE_URL_PRESENT=False`
+  - `COOLIFY_TOKEN_PRESENT=False`
+  - `COOLIFY_API_TOKEN_PRESENT=False`
+- Conclusion: explicit readiness evidence beyond prior `running:unknown` cannot be proven in this runner.
+
+### 3) First-class deeper blocker packet
+- Blocker class: authenticated worker-readiness evidence unavailable.
+- Why first-class: release closure requires explicit readiness proof, but this run can only obtain unauthenticated `401` probes and has no active Coolify auth context.
+- Owner/action:
+  - Owner: Coolify operator + release controller.
+  - Action:
+    1. capture authenticated readiness/log packet for `workers-market-stream` (or accepted deeper-blocker decision with root cause),
+    2. re-anchor parent closure packet to SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`,
+    3. publish parent block/unblock decision update for `LUC-98`, `LUC-47`, `LUC-12`.
+
+### 4) Parent update payload (ready-to-post)
+- `LUC-98`: parent expected SHA reconciled to `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` from live production build-info parity; worker readiness proof remains unresolved -> keep blocked until authenticated worker packet lands.
+- `LUC-47`: temp stack remains unreachable (`fetch failed`) and no authenticated worker readiness proof in this runner -> keep blocked with same owner lane.
+- `LUC-12`: release controller should inherit the same closure target SHA (`71b8d503...`) and fail-closed blocker state until worker authenticated readiness/deeper-blocker packet is attached.
+
+### 5) Final disposition for this wake
+- `blocked`
+
+## 2026-05-26 Finish-Successful-Run Handoff Delta (LUC-99)
+- Continuation reason handled: `finish_successful_run_handoff`.
+- Concrete read-only recheck executed in this heartbeat (no mutation).
+
+### Stability recheck
+- Production closure target SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` remains valid:
+  - prod smoke for expected `71b8d503...` => `PASS` (API/Web/build-info parity)
+- Worker readiness remains unproven in this runner:
+  - `GET /workers/health` => `401`
+  - `GET /workers/ready` => `401`
+  - `COOLIFY_BASE_URL_PRESENT=False`
+  - `COOLIFY_TOKEN_PRESENT=False`
+  - `COOLIFY_API_TOKEN_PRESENT=False`
+
+### Parent payload stability
+- `LUC-98`, `LUC-47`, `LUC-12` payload from previous reconciliation remains unchanged:
+  - keep parent closure target SHA anchored to `71b8d503...`,
+  - keep lane fail-closed blocked until authenticated worker readiness proof (or accepted deeper blocker packet) is attached.
+
+### Final disposition
+- `blocked`
+
+### Unblock owner/action
+- Owner: Coolify operator + release controller.
+- Action: attach authenticated worker readiness/log packet for `workers-market-stream` (or accepted deeper blocker decision) and publish final parent unblock/block decision for `LUC-98`/`LUC-47`/`LUC-12`.
+
+## 2026-05-26 Wake Delta (source_scoped_recovery_action, resumed recheck)
+- Scope: read-only reconciliation for LUC-99; no deploy/restart/runtime mutation.
+- Runtime auth bindings in this runner:
+  - `COOLIFY_BASE_URL_PRESENT=False`
+  - `COOLIFY_TOKEN_PRESENT=False`
+  - `COOLIFY_API_TOKEN_PRESENT=False`
+- Fresh checks executed:
+  - `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --skip-workers` => `PASS`
+  - `corepack pnpm run -s ops:deploy:smoke -- --base-url https://temp.soar.luckysparrow.ch --api-url https://temp-api.soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --skip-workers` => `FAIL` (`fetch failed` on API `/health`, API `/ready`, WEB `/`, WEB `/api/build-info`)
+- Gate interpretation:
+  - parent closure target SHA `71b8d503...` remains stable for production parity,
+  - temp acceptance remains unavailable as direct proof path,
+  - authenticated worker-readiness/log packet for `workers-market-stream` cannot be produced from this runner without Coolify auth context.
+
+### Final Disposition
+- `blocked`
+
+### Unblock Owner / Action
+- Owner: Coolify operator + release controller.
+- Action:
+  1. attach authenticated worker readiness/log packet for `workers-market-stream` (or accepted deeper blocker decision),
+  2. publish parent block/unblock decision update for `LUC-98`, `LUC-47`, and `LUC-12` anchored to SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`.
+
+## 2026-05-26 Wake Delta (issue_reopened_via_comment, manual disposition sync)
+- Source comment reconciled: `a72e4488-b381-4e2e-8c1e-c939ae9f789a`.
+- Scope executed: read-only verification + status synchronization; no deploy/restart/mutation.
+- Fresh checks:
+  - prod smoke (`71b8d503fd6fdfd7378dc67b2fa678799e2430f8`) => `PASS`
+  - temp smoke (`71b8d503fd6fdfd7378dc67b2fa678799e2430f8`) => `FAIL` (`fetch failed` on API/Web/build-info)
+  - worker probes: `/workers/health` => `401`, `/workers/ready` => `401`
+- Interpretation:
+  - parent closure target SHA remains `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`,
+  - worker readiness still not proven with authenticated evidence,
+  - temp direct proof path remains unavailable and continues to rely on accepted no-temp routing decision.
+
+### Final Disposition
+- `blocked`
+
+### Unblock Owner / Action
+- Owner: Ops/Coolify operator + release controller.
+- Action:
+  1. attach explicit authenticated readiness/log evidence for `workers-market-stream` (or accepted deeper-blocker packet),
+  2. update parent closure decision for `LUC-98`, `LUC-47`, `LUC-12` anchored to SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`.
+
+## 2026-05-26 Wake Delta (finish_successful_run_handoff, stability recheck)
+- Scope: read-only stability recheck for LUC-99; no deploy/restart/runtime mutation.
+- Fresh checks:
+  - prod smoke (`71b8d503fd6fdfd7378dc67b2fa678799e2430f8`) => `PASS`
+  - temp smoke (`71b8d503fd6fdfd7378dc67b2fa678799e2430f8`) => `FAIL` (`fetch failed` on API/Web/build-info)
+  - worker probes: `/workers/health` => `401`, `/workers/ready` => `401`
+- Interpretation:
+  - parent closure target SHA `71b8d503...` remains stable on production,
+  - temp direct acceptance path remains unavailable,
+  - worker readiness remains unproven without authenticated packet.
+
+### Final Disposition
+- `blocked`
+
+### Unblock Owner / Action
+- Owner: Ops/Coolify operator + release controller.
+- Action:
+  1. attach authenticated readiness/log evidence for `workers-market-stream` (or accepted deeper-blocker packet),
+  2. publish/update parent decision packet for `LUC-98` / `LUC-47` / `LUC-12` anchored to SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`.
+
+## 2026-05-26 Source-Scoped Recovery Delta (stability checkpoint)
+- Continuation reason handled: `source_scoped_recovery_action`.
+- Concrete read-only checks rerun in this heartbeat (no mutation).
+
+### Fresh verification
+- Prod smoke (expected SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`) => `PASS`
+  - API `/health` 200
+  - API `/ready` 200
+  - WEB `/` 200
+  - WEB `/api/build-info` 200 with matching `gitSha=71b8d503fd6fdfd7378dc67b2fa678799e2430f8`
+- Temp smoke (same SHA) => `FAIL` (`fetch failed` on API `/health`, API `/ready`, WEB `/`, WEB `/api/build-info`)
+- Worker public probes remain auth-gated:
+  - `/workers/health` => `401`
+  - `/workers/ready` => `401`
+- Coolify auth bindings in this runner:
+  - `COOLIFY_BASE_URL_PRESENT=False`
+  - `COOLIFY_TOKEN_PRESENT=False`
+  - `COOLIFY_API_TOKEN_PRESENT=False`
+
+### Interpretation
+- Parent closure target SHA remains anchored to `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`.
+- Worker readiness still cannot be explicitly proven from this runner; blocker status is unchanged.
+
+### Final disposition
+- `blocked`
+
+### Unblock owner/action
+- Owner: Coolify operator + release controller.
+- Action:
+  1. attach authenticated worker readiness/log packet for `workers-market-stream` (or accepted deeper-blocker packet),
+  2. publish final parent unblock/block decision packet for `LUC-98` / `LUC-47` / `LUC-12` anchored to SHA `71b8d503...`.

@@ -12089,6 +12089,19 @@ None.
 - Evidence:
   `history/tasks/luc-202-no-stall-queue-expeditor-2026-05-26-task.md`.
 
+## 2026-05-26 LUC-204 No-Stall Queue Expeditor
+- Wake `issue_assigned` processed with concrete PM queue-expeditor checkpoint.
+- Latest wake payload acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`); no new unblock evidence arrived.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain expected-SHA deploy smoke/readiness and worker readiness evidence with rollback note.
+- Evidence:
+  `history/tasks/luc-204-no-stall-queue-expeditor-2026-05-26-task.md`.
+- Continuation `finish_successful_run_handoff` reconciled from inline wake payload first (`fallbackFetchNeeded=false`, `0/0` comments).
+- No new blocker-closure evidence arrived; scope stayed coordination-only and fail-closed.
+- Disposition remains `blocked` with unchanged unblock owner/action on `LUC-47`.
+
 ## 2026-05-26 LUC-99 Resume Delta (issue_blockers_resolved, CTO)
 - Runtime binding presence restored in this runner (COOLIFY_BASE_URL/TOKEN/API_TOKEN present).
 - ops:protected-inputs:check moved from prior BLOCKED:0 to PARTIAL:9 for expected SHA 3fedb7a9170097b40accb6ccea1915064f383f11.
@@ -12115,3 +12128,55 @@ None.
 - Prod smoke for expected SHA still fails on build-info mismatch (observed `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`), while control smoke for observed SHA passes.
 - Temp smoke remains failed (`fetch failed`).
 - Unblock owner/action unchanged: Coolify operator + release controller must reconcile expected SHA and attach worker readiness recovery proof (or accepted deeper blocker packet) for parent closure (`LUC-98`/`LUC-47`).
+
+## 2026-05-26 LUC-99 Reopened-Comment Reconciliation (release-controller narrow scope)
+- Concrete read-only reconciliation completed for comment `3ed53428-4429-45ce-af9e-c5e19ba7eaa7`.
+- Parent closure target SHA decision for this lane: `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` (prod parity PASS), replacing stale expected `3fedb7a9...` signal (prod mismatch FAIL).
+- Worker readiness remains unproven in this runner (`/workers/health=401`, `/workers/ready=401`, no active Coolify auth bindings).
+- First-class deeper blocker packet was recorded with explicit owner/action and parent update payload for `LUC-98`, `LUC-47`, and `LUC-12`.
+- Disposition remains `blocked` until authenticated worker readiness evidence (or accepted deeper blocker decision) is attached.
+
+## 2026-05-26 LUC-99 Finish-Handoff Reconciliation
+- Concrete read-only stability recheck completed; no mutation performed.
+- Prod closure-target SHA `71b8d503...` remains valid (`PASS` smoke).
+- Worker readiness remains unproven in this runner (`401` probes + absent Coolify auth bindings).
+- Parent payload for `LUC-98`/`LUC-47`/`LUC-12` remains unchanged.
+- Disposition remains `blocked`.
+
+## 2026-05-26 LUC-99 Wake Delta (source_scoped_recovery_action, resumed recheck)
+- Concrete read-only recheck executed in this heartbeat; no deploy/restart/mutation.
+- Runtime binding state in this runner: `COOLIFY_BASE_URL/TOKEN/API_TOKEN` all absent.
+- Prod smoke for closure-target SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` -> `PASS`.
+- Temp smoke for the same SHA -> `FAIL` (`fetch failed` on API/Web/build-info endpoints).
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: Coolify operator + release controller must attach authenticated `workers-market-stream` readiness/log packet (or accepted deeper blocker decision) and publish parent decision update for `LUC-98`/`LUC-47`/`LUC-12`.
+
+## 2026-05-26 LUC-99 Wake Delta (issue_reopened_via_comment, manual disposition sync)
+- Board comment `a72e4488-b381-4e2e-8c1e-c939ae9f789a` reconciled with concrete read-only recheck.
+- Prod smoke for closure-target SHA `71b8d503...` -> `PASS`; temp smoke -> `FAIL`; worker public probes -> `401/401`.
+- No live execution path exists in this runner for authenticated worker readiness proof.
+- Disposition set/kept as `blocked` (no stale `in_progress`).
+- Unblock owner/action unchanged: Ops/Coolify operator + release controller must provide explicit worker readiness evidence (or accepted deeper-blocker packet) and publish parent update for `LUC-98`/`LUC-47`/`LUC-12`.
+
+## 2026-05-26 LUC-99 Wake Delta (finish_successful_run_handoff, stability recheck)
+- Concrete read-only recheck executed; no mutation.
+- Prod smoke on closure-target SHA `71b8d503...` => `PASS`.
+- Temp smoke on closure-target SHA `71b8d503...` => `FAIL` (`fetch failed`).
+- Worker probes remain protected (`/workers/health=401`, `/workers/ready=401`).
+- Disposition remains `blocked`; no live continuation path in this runner.
+- Unblock owner/action unchanged: Ops/Coolify operator + release controller must attach authenticated worker readiness/log evidence (or accepted deeper-blocker packet) and update parent decision for `LUC-98`/`LUC-47`/`LUC-12`.
+
+## 2026-05-26 LUC-99 Source-Scoped Recovery Stability Check
+- Concrete read-only rerun completed.
+- Production SHA parity (`71b8d503...`) remains healthy.
+- Temp stack remains unreachable and worker readiness remains unproven in this runner (`401` probes + missing Coolify auth bindings).
+- Disposition remains fail-closed `blocked`; owner/action unchanged.
+
+## 2026-05-26 LUC-202 Reopened-Comment Consolidation
+- Board comment `c07a03c8-2278-49b8-a24a-58e27f316535` acknowledged.
+- This lane is confirmed duplicate and superseded by canonical PM lane `LUC-204`.
+- Root blocker chain remains unchanged: `LUC-99` via `LUC-47`.
+- No implementation/deploy/runtime mutation was performed.
+- Disposition: `cancelled` (duplicate consolidation).
+- Evidence:
+  `history/tasks/luc-202-no-stall-queue-expeditor-2026-05-26-task.md`.
