@@ -53,6 +53,10 @@ Generated Obsidian and export files:
 - `docs/architecture/chains/*.md`
 - `docs/graphs/architecture-graph.json`
 - `docs/graphs/architecture-graph.md`
+- `docs/graphs/architecture-awareness.json`
+- `docs/graphs/architecture-awareness.csv`
+- `docs/graphs/architecture-graph.mmd`
+- `docs/status/architecture-awareness-report.md`
 - `docs/status/architecture-map-status.md`
 - `docs/status/architecture-graph-drift.md`
 
