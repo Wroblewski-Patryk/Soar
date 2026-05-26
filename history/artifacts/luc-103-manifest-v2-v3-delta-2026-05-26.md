@@ -1,0 +1,29 @@
+﻿# LUC-103 Manifest Delta v2 -> v3 (2026-05-26)
+
+- v2 lanes: 28
+- v3 lanes: 49
+- Added lanes in v3: 22
+  - LUC-115
+  - LUC-117
+  - LUC-121
+  - LUC-128
+  - LUC-130
+  - LUC-132
+  - LUC-133
+  - LUC-136
+  - LUC-138
+  - LUC-141
+  - LUC-143
+  - LUC-146
+  - LUC-148
+  - LUC-151
+  - LUC-156
+  - LUC-159
+  - LUC-162
+  - LUC-165
+  - LUC-167
+  - LUC-169
+  - LUC-170
+  - LUC-171
+- Removed lanes in v3: 1
+  - LUC-19
