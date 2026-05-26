@@ -1,0 +1,235 @@
+﻿{
+    "generatedAt":  "2026-05-26T07:24:08",
+    "issue":  "LUC-103",
+    "snapshot":  {
+                     "tracked":  24,
+                     "untracked":  72,
+                     "total":  96
+                 },
+    "queue":  [
+                  {
+                      "lane":  "LUC-100",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-102",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-103",
+                      "tracked":  1,
+                      "untracked":  2,
+                      "total":  3,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-107",
+                      "tracked":  0,
+                      "untracked":  4,
+                      "total":  4,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-108",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-110",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-15",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-16",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-17",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-19",
+                      "tracked":  0,
+                      "untracked":  4,
+                      "total":  4,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-20",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-21",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-24",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-38",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-40",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-41",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-45",
+                      "tracked":  3,
+                      "untracked":  0,
+                      "total":  3,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-47",
+                      "tracked":  0,
+                      "untracked":  5,
+                      "total":  5,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-48",
+                      "tracked":  2,
+                      "untracked":  0,
+                      "total":  2,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-49",
+                      "tracked":  2,
+                      "untracked":  0,
+                      "total":  2,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-64",
+                      "tracked":  2,
+                      "untracked":  0,
+                      "total":  2,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-81",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-86",
+                      "tracked":  0,
+                      "untracked":  12,
+                      "total":  12,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-88",
+                      "tracked":  0,
+                      "untracked":  2,
+                      "total":  2,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-90",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-91",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-94",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-95",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-96",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-98",
+                      "tracked":  0,
+                      "untracked":  3,
+                      "total":  3,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "LUC-99",
+                      "tracked":  0,
+                      "untracked":  2,
+                      "total":  2,
+                      "verification":  "owner-scope diff review + smallest lane-relevant check (docs/evidence syntax/provenance)"
+                  },
+                  {
+                      "lane":  "NO_LUC",
+                      "tracked":  5,
+                      "untracked":  28,
+                      "total":  33,
+                      "verification":  "provenance/path-owner review + json parse spot-check for *.json + markdown sanity"
+                  }
+              ]
+}

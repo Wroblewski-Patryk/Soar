@@ -1,0 +1,808 @@
+﻿{
+    "generatedAt":  "2026-05-26T06:59:58",
+    "issue":  "LUC-103",
+    "heartbeatReason":  "finish_successful_run_handoff",
+    "totals":  {
+                   "trackedModified":  27,
+                   "untracked":  75,
+                   "total":  102
+               },
+    "ownerSummary":  [
+                         {
+                             "owner":  "Unknown",
+                             "gitState":  "tracked_modified",
+                             "count":  1
+                         },
+                         {
+                             "owner":  "Docs",
+                             "gitState":  "tracked_modified",
+                             "count":  3
+                         },
+                         {
+                             "owner":  "Frontend",
+                             "gitState":  "tracked_modified",
+                             "count":  3
+                         },
+                         {
+                             "owner":  "QA",
+                             "gitState":  "tracked_modified",
+                             "count":  5
+                         },
+                         {
+                             "owner":  "Architecture",
+                             "gitState":  "tracked_modified",
+                             "count":  3
+                         },
+                         {
+                             "owner":  "QA/Ops",
+                             "gitState":  "tracked_modified",
+                             "count":  2
+                         },
+                         {
+                             "owner":  "Delivery",
+                             "gitState":  "tracked_modified",
+                             "count":  6
+                         },
+                         {
+                             "owner":  "Integration",
+                             "gitState":  "tracked_modified",
+                             "count":  1
+                         },
+                         {
+                             "owner":  "Data",
+                             "gitState":  "tracked_modified",
+                             "count":  1
+                         },
+                         {
+                             "owner":  "Backend",
+                             "gitState":  "tracked_modified",
+                             "count":  2
+                         },
+                         {
+                             "owner":  "Docs",
+                             "gitState":  "untracked",
+                             "count":  1
+                         },
+                         {
+                             "owner":  "Architecture",
+                             "gitState":  "untracked",
+                             "count":  3
+                         },
+                         {
+                             "owner":  "Ops",
+                             "gitState":  "untracked",
+                             "count":  24
+                         },
+                         {
+                             "owner":  "Delivery",
+                             "gitState":  "untracked",
+                             "count":  19
+                         },
+                         {
+                             "owner":  "QA/Ops",
+                             "gitState":  "untracked",
+                             "count":  19
+                         },
+                         {
+                             "owner":  "Unknown",
+                             "gitState":  "untracked",
+                             "count":  9
+                         }
+                     ],
+    "items":  [
+                  {
+                      "path":  ".codex/context/TASK_BOARD.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "NO_LUC",
+                      "owner":  "Unknown",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "docs/analysis/analysis-documentation.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "NO_LUC",
+                      "owner":  "Docs",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "docs/analysis/documentation-drift.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "NO_LUC",
+                      "owner":  "Docs",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "docs/analysis/luc-20-docs-index-template-feedback-audit-2026-05-25.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-20",
+                      "owner":  "Docs",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "docs/analysis/luc-48-autonomous-map-inventory-and-ui-polish-readiness-gate-2026-05-25.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-48",
+                      "owner":  "Frontend",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "docs/analysis/luc-49-ui-state-browser-proof-matrix-2026-05-25.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-49",
+                      "owner":  "QA",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "docs/graphs/architecture-graph.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "NO_LUC",
+                      "owner":  "Architecture",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/artifacts/qa-repeatable-smoke-e2e-2026-05-25.json",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/audits/luc-21-primary-workflow-visual-quality-audit-2026-05-25.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-21",
+                      "owner":  "QA",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/qa-repeatable-smoke-e2e-2026-05-25.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/tasks/luc-103-source-control-closure-2026-05-26-task.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-103",
+                      "owner":  "Delivery",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-15-live-project-status-and-decision-dashboard-2026-05-25-task.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-15",
+                      "owner":  "Delivery",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-16-readiness-map-task-2026-05-25.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-16",
+                      "owner":  "Delivery",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-17-architecture-function-chain-known-state-2026-05-25-task.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-17",
+                      "owner":  "Architecture",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-18-qa-regression-smoke-baseline-2026-05-25.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-18",
+                      "owner":  "QA",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-24-paperclip-agent-execution-smoke-test-2026-05-25-task.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-24",
+                      "owner":  "Integration",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-38-frontend-view-map-browser-workflow-ownership-2026-05-25-task.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-38",
+                      "owner":  "Frontend",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-40-data-persistence-known-state-2026-05-25-task.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-40",
+                      "owner":  "Data",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-41-runtime-boundary-checkpoint-2026-05-25.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-41",
+                      "owner":  "Architecture",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-43-repeatable-smoke-e2e-checks-2026-05-25-task.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-43",
+                      "owner":  "QA",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-45-a-backend-runtime-api-stability-2026-05-25-task.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-45",
+                      "owner":  "Delivery",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-45-b-ops-stack-rollout-and-smoke-2026-05-25-task.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-45",
+                      "owner":  "Delivery",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-45-v1-audit-to-completion-controller-2026-05-25-task.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-45",
+                      "owner":  "Delivery",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-48-autonomous-map-inventory-and-ui-polish-readiness-gate-2026-05-25-task.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-48",
+                      "owner":  "Frontend",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-49-ui-state-browser-proof-matrix-2026-05-25-task.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-49",
+                      "owner":  "QA",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-64-b-backend-runtime-signal-payload-separation-proof-2026-05-26-task.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-64",
+                      "owner":  "Backend",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-64-dashboard-strategy-signal-truth-vs-execution-outcome-repair-2026-05-25-task.md",
+                      "gitState":  "tracked_modified",
+                      "laneId":  "LUC-64",
+                      "owner":  "Backend",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "docs/analysis/luc-81-docs-memory-loop-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-81",
+                      "owner":  "Docs",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "docs/graphs/architecture-awareness.csv",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "Architecture",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "docs/graphs/architecture-awareness.json",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "Architecture",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "docs/graphs/architecture-graph.mmd",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "Architecture",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "docs/operations/_artifacts-prod-ui-module-clickthrough-2026-05-26.json",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "docs/operations/api-endpoint-docs-parity-2026-05-26/",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "docs/operations/prod-ui-module-clickthrough-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "docs/status/architecture-awareness-report.md",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "Delivery",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/artifacts/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-auth-resume.json",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/artifacts/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-finish-handoff.json",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/artifacts/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-handoff-rerun.json",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/artifacts/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-heartbeat.json",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/artifacts/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-rerun.json",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/artifacts/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-secret-refresh-rerun.json",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/artifacts/prod-ui-module-clickthrough-3fedb7a9-2026-05-26.json",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/artifacts/prod-ui-module-clickthrough-4c16305c-2026-05-26.json",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/artifacts/prod-ux-a11y-mobile-proof-3fedb7a9-2026-05-26-screenshots/",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/artifacts/prod-ux-a11y-mobile-proof-3fedb7a9-2026-05-26.json",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/artifacts/qa-repeatable-smoke-e2e-2026-05-26.json",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/artifacts/v1-operator-unblock-packet-3fedb7a9-2026-05-26.json",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/artifacts/v1-operator-unblock-packet-4c16305c-2026-05-26.json",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/artifacts/v1-protected-input-readiness-3fedb7a9-2026-05-26.json",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/artifacts/v1-protected-input-readiness-4c16305c-2026-05-26.json",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/evidence/luc-107-coolify-production-health-sweep-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-107",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-107-finish-successful-run-handoff-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-107",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-107-source-scoped-recovery-action-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-107",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-47-blocker-reconciliation-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-47",
+                      "owner":  "Unknown",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-47-scheduled-release-smoke-checklist-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-47",
+                      "owner":  "Unknown",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-47-successful-run-handoff-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-47",
+                      "owner":  "Unknown",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-47-temp-domain-blocker-resnapshot-2026-05-26T03-15Z.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-47",
+                      "owner":  "Unknown",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-47-temp-domain-blocker-snapshot-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-47",
+                      "owner":  "Unknown",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-86-containment-dependency-handoff-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-86",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-86-coolify-production-health-sweep-2026-05-26-final.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-86",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-86-janitor-followup-checkpoint-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-86",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-86-janitor-normalization-checkpoint-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-86",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-86-janitor-normalization-repeat-checkpoint-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-86",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-86-janitor-repeat-checkpoint-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-86",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-86-janitor-resume-checkpoint-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-86",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-86-janitor-reversion-checkpoint-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-86",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-86-janitor-stale-loop-guard-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-86",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-86-successful-handoff-final-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-86",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-86-successful-run-handoff-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-86",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-88-productivity-review-for-luc-86-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-88",
+                      "owner":  "Delivery",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-98-release-permit-temp-stack-workers-market-stream-recovery-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-98",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-98-temp-stack-and-workers-market-stream-recovery-2026-05-26T05-24+02-00.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-98",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/luc-99-external-ops-blocker-workers-market-stream-and-temp-stack-acceptance-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-99",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/evidence/prod-ux-a11y-mobile-proof-3fedb7a9-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/evidence/qa-repeatable-smoke-e2e-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/evidence/v1-protected-input-readiness-3fedb7a9-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/evidence/v1-protected-input-readiness-4c16305c-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "QA/Ops",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-auth-resume.md",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "Delivery",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-finish-handoff.md",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "Delivery",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-handoff-rerun.md",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "Delivery",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-heartbeat.md",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "Delivery",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-rerun.md",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "Delivery",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-secret-refresh-rerun.md",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "Delivery",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/plans/prod-ui-module-clickthrough-3fedb7a9-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "Delivery",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/plans/prod-ui-module-clickthrough-4c16305c-2026-05-26.md",
+                      "gitState":  "untracked",
+                      "laneId":  "NO_LUC",
+                      "owner":  "Delivery",
+                      "attribution":  "path-owner"
+                  },
+                  {
+                      "path":  "history/tasks/luc-100-no-stall-queue-expeditor-2026-05-26-task.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-100",
+                      "owner":  "Delivery",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-102-no-stall-queue-expeditor-2026-05-26-task.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-102",
+                      "owner":  "Delivery",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-107-coolify-production-deploy-health-sweep-2026-05-26-task.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-107",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-108-no-stall-queue-expeditor-2026-05-26-task.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-108",
+                      "owner":  "Delivery",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-19-board-hygiene-status-alignment-2026-05-26-task.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-19",
+                      "owner":  "Unknown",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-19-protected-input-readiness-refresh-2026-05-26-task.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-19",
+                      "owner":  "Unknown",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-19-runtime-readiness-refresh-2026-05-26-task.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-19",
+                      "owner":  "Unknown",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-19-worker-proof-auth-gate-2026-05-26-task.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-19",
+                      "owner":  "Unknown",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-86-coolify-production-deploy-health-sweep-2026-05-26-task.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-86",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-88-review-productivity-for-luc-86-2026-05-26-task.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-88",
+                      "owner":  "Delivery",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-90-no-stall-queue-expeditor-2026-05-26-task.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-90",
+                      "owner":  "Delivery",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-91-no-stall-queue-expeditor-2026-05-26-task.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-91",
+                      "owner":  "Delivery",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-94-v1-audit-to-completion-controller-2026-05-26-task.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-94",
+                      "owner":  "Delivery",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-95-no-stall-queue-expeditor-2026-05-26-task.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-95",
+                      "owner":  "Delivery",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-96-no-stall-queue-expeditor-2026-05-26-task.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-96",
+                      "owner":  "Delivery",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-98-release-permit-temp-stack-workers-market-stream-recovery-2026-05-26-task.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-98",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  },
+                  {
+                      "path":  "history/tasks/luc-99-external-ops-blocker-workers-market-stream-and-temp-stack-acceptance-2026-05-26-task.md",
+                      "gitState":  "untracked",
+                      "laneId":  "LUC-99",
+                      "owner":  "Ops",
+                      "attribution":  "luc-tag"
+                  }
+              ]
+}
