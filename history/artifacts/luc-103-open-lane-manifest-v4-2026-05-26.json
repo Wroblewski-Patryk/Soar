@@ -1,0 +1,385 @@
+﻿{
+    "generatedAt":  "2026-05-26T15:53:04",
+    "issue":  "LUC-103",
+    "mode":  "raw_dirty_lane_manifest",
+    "totals":  {
+                   "tracked":  19,
+                   "untracked":  56,
+                   "total":  75
+               },
+    "lanes":  [
+                  {
+                      "lane":  "NO_LUC",
+                      "tracked":  5,
+                      "untracked":  14,
+                      "total":  19,
+                      "paths":  [
+                                    ".agents/state/next-steps.md",
+                                    ".codex/context/PROJECT_STATE.md",
+                                    ".codex/context/TASK_BOARD.md",
+                                    "docs/analysis/analysis-documentation.md",
+                                    "docs/analysis/documentation-drift.md",
+                                    "history/artifacts/prod-ui-module-clickthrough-3fedb7a9-2026-05-26.json",
+                                    "history/artifacts/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-auth-resume.json",
+                                    "history/artifacts/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-finish-handoff.json",
+                                    "history/artifacts/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-handoff-rerun.json",
+                                    "history/artifacts/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-heartbeat.json",
+                                    "history/artifacts/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-rerun.json",
+                                    "history/artifacts/prod-ui-module-clickthrough-3fedb7a9-2026-05-26-secret-refresh-rerun.json",
+                                    "history/artifacts/prod-ui-module-clickthrough-4c16305c-2026-05-26.json",
+                                    "history/artifacts/prod-ux-a11y-mobile-proof-3fedb7a9-2026-05-26.json",
+                                    "history/artifacts/prod-ux-a11y-mobile-proof-3fedb7a9-2026-05-26-screenshots/",
+                                    "history/artifacts/v1-operator-unblock-packet-3fedb7a9-2026-05-26.json",
+                                    "history/artifacts/v1-operator-unblock-packet-4c16305c-2026-05-26.json",
+                                    "history/artifacts/v1-protected-input-readiness-3fedb7a9-2026-05-26.json",
+                                    "history/artifacts/v1-protected-input-readiness-4c16305c-2026-05-26.json"
+                                ]
+                  },
+                  {
+                      "lane":  "LUC-103",
+                      "tracked":  1,
+                      "untracked":  6,
+                      "total":  7,
+                      "paths":  [
+                                    "history/artifacts/luc-103-closure-gate-scorecard-2026-05-26.md",
+                                    "history/artifacts/luc-103-lane-stage-cookbook-2026-05-26.md",
+                                    "history/artifacts/luc-103-lane-stage-cookbook-v3-2026-05-26.md",
+                                    "history/artifacts/luc-103-manifest-v2-v3-delta-2026-05-26.md",
+                                    "history/artifacts/luc-103-open-lane-manifest-v2-2026-05-26.json",
+                                    "history/artifacts/luc-103-open-lane-manifest-v3-2026-05-26.json",
+                                    "history/tasks/luc-103-source-control-closure-2026-05-26-task.md"
+                                ]
+                  },
+                  {
+                      "lane":  "LUC-130",
+                      "tracked":  0,
+                      "untracked":  2,
+                      "total":  2,
+                      "paths":  [
+                                    "history/evidence/luc-130-luc-88-productivity-review-evidence-closure-2026-05-26.md",
+                                    "history/tasks/luc-130-luc-88-productivity-review-evidence-closure-2026-05-26-task.md"
+                                ]
+                  },
+                  {
+                      "lane":  "LUC-132",
+                      "tracked":  0,
+                      "untracked":  2,
+                      "total":  2,
+                      "paths":  [
+                                    "history/evidence/luc-132-luc-19-runtime-readiness-task-closure-2026-05-26.md",
+                                    "history/tasks/luc-132-luc-19-runtime-readiness-task-closure-2026-05-26-task.md"
+                                ]
+                  },
+                  {
+                      "lane":  "LUC-169",
+                      "tracked":  0,
+                      "untracked":  2,
+                      "total":  2,
+                      "paths":  [
+                                    "history/evidence/luc-169-luc-166-provenance-packet-closure-2026-05-26.md",
+                                    "history/tasks/luc-169-luc-166-provenance-packet-closure-2026-05-26-task.md"
+                                ]
+                  },
+                  {
+                      "lane":  "LUC-100",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-100-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-102",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-102-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-108",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-108-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-110",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-110-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-115",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-115-luc-86-ops-evidence-closure-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-116",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-116-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-117",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-117-release-smoke-blocker-evidence-closure-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-121",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-121-frontend-map-inventory-evidence-closure-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-122",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-122-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-126",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-126-v1-audit-to-completion-controller-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-128",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-128-luc-45-v1-controller-docs-closure-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-129",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-129-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-133",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-133-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-136",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-136-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-138",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-138-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-141",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-141-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-143",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-143-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-146",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-146-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-148",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-148-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-15",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-15-live-project-status-and-decision-dashboard-2026-05-25-task.md"
+                  },
+                  {
+                      "lane":  "LUC-151",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-151-v1-audit-to-completion-controller-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-156",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-156-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-159",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-159-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-16",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-16-readiness-map-task-2026-05-25.md"
+                  },
+                  {
+                      "lane":  "LUC-162",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-162-normalize-blocked-lanes-first-class-blockers-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-165",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-165-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-167",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-167-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-17",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-17-architecture-function-chain-known-state-2026-05-25-task.md"
+                  },
+                  {
+                      "lane":  "LUC-170",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-170-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-20",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "paths":  "docs/analysis/luc-20-docs-index-template-feedback-audit-2026-05-25.md"
+                  },
+                  {
+                      "lane":  "LUC-21",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "paths":  "history/audits/luc-21-primary-workflow-visual-quality-audit-2026-05-25.md"
+                  },
+                  {
+                      "lane":  "LUC-24",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-24-paperclip-agent-execution-smoke-test-2026-05-25-task.md"
+                  },
+                  {
+                      "lane":  "LUC-38",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-38-frontend-view-map-browser-workflow-ownership-2026-05-25-task.md"
+                  },
+                  {
+                      "lane":  "LUC-40",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-40-data-persistence-known-state-2026-05-25-task.md"
+                  },
+                  {
+                      "lane":  "LUC-41",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-41-runtime-boundary-checkpoint-2026-05-25.md"
+                  },
+                  {
+                      "lane":  "LUC-45",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-45-e-docs-state-parity-sync-2026-05-25-task.md"
+                  },
+                  {
+                      "lane":  "LUC-81",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "docs/analysis/luc-81-docs-memory-loop-2026-05-26.md"
+                  },
+                  {
+                      "lane":  "LUC-86",
+                      "tracked":  1,
+                      "untracked":  0,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-86-coolify-production-deploy-health-sweep-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-90",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-90-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-91",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-91-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-94",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-94-v1-audit-to-completion-controller-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-95",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-95-no-stall-queue-expeditor-2026-05-26-task.md"
+                  },
+                  {
+                      "lane":  "LUC-96",
+                      "tracked":  0,
+                      "untracked":  1,
+                      "total":  1,
+                      "paths":  "history/tasks/luc-96-no-stall-queue-expeditor-2026-05-26-task.md"
+                  }
+              ]
+}

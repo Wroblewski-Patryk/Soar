@@ -13,6 +13,14 @@ Mode: operator-run, evidence-first, no secret disclosure
 - [ ] Coolify project/environment targets are confirmed for Soar production context.
 - [ ] Old six-app production shape remains untouched before evidence pass.
 
+## Production Account Test Contract (Mandatory For Any Real-Account Smoke)
+- [ ] Test objective is explicit and scoped (`what exactly must be proven`).
+- [ ] Allowed actions are explicitly listed.
+- [ ] Forbidden actions are explicitly listed (`no subscription mutation`, `no API key mutation`, `no exchange/live-risk setting changes`, unless explicitly approved).
+- [ ] Cleanup/reset step is explicit (state reset owner + method).
+- [ ] Named owner is explicit for the run packet.
+- [ ] Evidence packet includes a redaction note (`no secret/token/session value disclosure`).
+
 ## Deploy Step (Operator)
 - [ ] Execute parallel one-stack deploy on temporary domains in Coolify.
 - [ ] Record deploy start/end timestamps.

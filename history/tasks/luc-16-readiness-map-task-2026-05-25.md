@@ -92,4 +92,12 @@ Publish a concrete sellable/private-use readiness map with explicit workflows an
 - Files changed: `docs/product/capability-map.md`.
 - How tested: repository evidence review against canonical docs and state records.
 - What is incomplete: production activation and protected proof gates remain blocked by runtime aggregate stability and protected-input chain reopening.
-- Next steps: close remaining readiness blockers and promote map status to verified when protected production evidence reopens.
+- Follow-up ownership (out of scope for LUC-16): readiness blockers
+  `REQ-FUNC-021` and production runtime aggregate stability must be closed in
+  their owning runtime/ops lanes before any global release-ready claim is
+  promoted.
+- LUC-16 continuation status: no live continuation path; issue scope remains
+  complete (`DONE`) unless product docs are explicitly reopened by board.
+- Board hygiene closeout (2026-05-25): Paperclip issue status aligned to
+  `done`; this lane is intentionally non-live until a new board-scoped
+  product-doc change explicitly reopens LUC-16.

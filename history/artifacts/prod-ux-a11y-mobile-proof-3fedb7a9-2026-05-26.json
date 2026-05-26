@@ -1,0 +1,205 @@
+{
+  "status": "FAIL",
+  "today": "2026-05-26",
+  "generatedAt": "2026-05-26T01:39:58.536Z",
+  "environment": "production",
+  "webBaseUrl": "https://soar.luckysparrow.ch",
+  "apiBaseUrl": "https://api.soar.luckysparrow.ch",
+  "expectedSha": "3fedb7a9170097b40accb6ccea1915064f383f11",
+  "buildInfo": {
+    "status": 200,
+    "ok": true,
+    "gitSha": "3fedb7a9170097b40accb6ccea1915064f383f11"
+  },
+  "auth": "missing",
+  "pages": [
+    {
+      "name": "dashboard desktop",
+      "path": "/dashboard",
+      "url": "https://soar.luckysparrow.ch/dashboard",
+      "viewport": "1366x900 desktop",
+      "status": "FAIL",
+      "screenshot": "history\\artifacts\\prod-ux-a11y-mobile-proof-3fedb7a9-2026-05-26-screenshots\\dashboard-desktop.png",
+      "notes": "protected route rendered login page; console/runtime event observed: error:Failed to load resource: the server responded with a status of 401 () | error:Failed to load resource: the server responded with a status of 401 ()",
+      "checks": {
+        "title": "Soar",
+        "lang": "en",
+        "visibleTextLength": 331,
+        "bodyPreview": "Skip to main content Soar Login Register Sign in to Soar Access your control center and monitor markets, positions, and bot runtime in one place. Email Password Remember this dev",
+        "headingCount": 1,
+        "buttonCount": 12,
+        "linkCount": 5,
+        "inputCount": 4,
+        "unnamedButtons": 0,
+        "unnamedLinks": 0,
+        "unnamedInputs": 1,
+        "unnamedButtonExamples": [],
+        "unnamedLinkExamples": [],
+        "unnamedInputExamples": [
+          "<input type=\"checkbox\" readonly=\"\">"
+        ],
+        "horizontalOverflow": 0,
+        "frameworkOverlay": false,
+        "activeElement": "BODY:Skip to main contentSoarLoginRegisterSign in to SoarAccess your control center and monitor markets, positions, and "
+      },
+      "badEvents": [
+        "error:Failed to load resource: the server responded with a status of 401 ()",
+        "error:Failed to load resource: the server responded with a status of 401 ()"
+      ],
+      "warnings": [
+        "unnamed inputs=1"
+      ]
+    },
+    {
+      "name": "wallets desktop",
+      "path": "/dashboard/wallets/list",
+      "url": "https://soar.luckysparrow.ch/dashboard/wallets/list",
+      "viewport": "1366x900 desktop",
+      "status": "FAIL",
+      "screenshot": "history\\artifacts\\prod-ux-a11y-mobile-proof-3fedb7a9-2026-05-26-screenshots\\wallets-desktop.png",
+      "notes": "protected route rendered login page; console/runtime event observed: error:Failed to load resource: the server responded with a status of 401 ()",
+      "checks": {
+        "title": "Soar",
+        "lang": "en",
+        "visibleTextLength": 331,
+        "bodyPreview": "Skip to main content Soar Login Register Sign in to Soar Access your control center and monitor markets, positions, and bot runtime in one place. Email Password Remember this dev",
+        "headingCount": 1,
+        "buttonCount": 12,
+        "linkCount": 5,
+        "inputCount": 4,
+        "unnamedButtons": 0,
+        "unnamedLinks": 0,
+        "unnamedInputs": 1,
+        "unnamedButtonExamples": [],
+        "unnamedLinkExamples": [],
+        "unnamedInputExamples": [
+          "<input type=\"checkbox\" readonly=\"\">"
+        ],
+        "horizontalOverflow": 0,
+        "frameworkOverlay": false,
+        "activeElement": "BODY:Skip to main contentSoarLoginRegisterSign in to SoarAccess your control center and monitor markets, positions, and "
+      },
+      "badEvents": [
+        "error:Failed to load resource: the server responded with a status of 401 ()"
+      ],
+      "warnings": [
+        "unnamed inputs=1"
+      ]
+    },
+    {
+      "name": "bots desktop",
+      "path": "/dashboard/bots",
+      "url": "https://soar.luckysparrow.ch/dashboard/bots",
+      "viewport": "1366x900 desktop",
+      "status": "FAIL",
+      "screenshot": "history\\artifacts\\prod-ux-a11y-mobile-proof-3fedb7a9-2026-05-26-screenshots\\bots-desktop.png",
+      "notes": "protected route rendered login page; console/runtime event observed: error:Failed to load resource: the server responded with a status of 401 ()",
+      "checks": {
+        "title": "Soar",
+        "lang": "en",
+        "visibleTextLength": 331,
+        "bodyPreview": "Skip to main content Soar Login Register Sign in to Soar Access your control center and monitor markets, positions, and bot runtime in one place. Email Password Remember this dev",
+        "headingCount": 1,
+        "buttonCount": 12,
+        "linkCount": 5,
+        "inputCount": 4,
+        "unnamedButtons": 0,
+        "unnamedLinks": 0,
+        "unnamedInputs": 1,
+        "unnamedButtonExamples": [],
+        "unnamedLinkExamples": [],
+        "unnamedInputExamples": [
+          "<input type=\"checkbox\" readonly=\"\">"
+        ],
+        "horizontalOverflow": 0,
+        "frameworkOverlay": false,
+        "activeElement": "BODY:Skip to main contentSoarLoginRegisterSign in to SoarAccess your control center and monitor markets, positions, and "
+      },
+      "badEvents": [
+        "error:Failed to load resource: the server responded with a status of 401 ()"
+      ],
+      "warnings": [
+        "unnamed inputs=1"
+      ]
+    },
+    {
+      "name": "profile desktop",
+      "path": "/dashboard/profile",
+      "url": "https://soar.luckysparrow.ch/dashboard/profile",
+      "viewport": "1366x900 desktop",
+      "status": "FAIL",
+      "screenshot": "history\\artifacts\\prod-ux-a11y-mobile-proof-3fedb7a9-2026-05-26-screenshots\\profile-desktop.png",
+      "notes": "protected route rendered login page; console/runtime event observed: error:Failed to load resource: the server responded with a status of 401 ()",
+      "checks": {
+        "title": "Soar",
+        "lang": "en",
+        "visibleTextLength": 331,
+        "bodyPreview": "Skip to main content Soar Login Register Sign in to Soar Access your control center and monitor markets, positions, and bot runtime in one place. Email Password Remember this dev",
+        "headingCount": 1,
+        "buttonCount": 12,
+        "linkCount": 5,
+        "inputCount": 4,
+        "unnamedButtons": 0,
+        "unnamedLinks": 0,
+        "unnamedInputs": 1,
+        "unnamedButtonExamples": [],
+        "unnamedLinkExamples": [],
+        "unnamedInputExamples": [
+          "<input type=\"checkbox\" readonly=\"\">"
+        ],
+        "horizontalOverflow": 0,
+        "frameworkOverlay": false,
+        "activeElement": "BODY:Skip to main contentSoarLoginRegisterSign in to SoarAccess your control center and monitor markets, positions, and "
+      },
+      "badEvents": [
+        "error:Failed to load resource: the server responded with a status of 401 ()"
+      ],
+      "warnings": [
+        "unnamed inputs=1"
+      ]
+    },
+    {
+      "name": "dashboard mobile",
+      "path": "/dashboard",
+      "url": "https://soar.luckysparrow.ch/dashboard",
+      "viewport": "390x844 mobile",
+      "status": "FAIL",
+      "screenshot": "history\\artifacts\\prod-ux-a11y-mobile-proof-3fedb7a9-2026-05-26-screenshots\\dashboard-mobile.png",
+      "notes": "protected route rendered login page; console/runtime event observed: error:Failed to load resource: the server responded with a status of 401 (); mobile menu click target missing",
+      "checks": {
+        "title": "Soar",
+        "lang": "en",
+        "visibleTextLength": 331,
+        "bodyPreview": "Skip to main content Soar Login Register Sign in to Soar Access your control center and monitor markets, positions, and bot runtime in one place. Email Password Remember this dev",
+        "headingCount": 1,
+        "buttonCount": 12,
+        "linkCount": 5,
+        "inputCount": 4,
+        "unnamedButtons": 0,
+        "unnamedLinks": 0,
+        "unnamedInputs": 1,
+        "unnamedButtonExamples": [],
+        "unnamedLinkExamples": [],
+        "unnamedInputExamples": [
+          "<input type=\"checkbox\" readonly=\"\">"
+        ],
+        "horizontalOverflow": 0,
+        "frameworkOverlay": false,
+        "activeElement": "A:Skip to main content"
+      },
+      "badEvents": [
+        "error:Failed to load resource: the server responded with a status of 401 ()"
+      ],
+      "warnings": [
+        "unnamed inputs=1"
+      ],
+      "mobileMenu": {
+        "clicked": false,
+        "label": ""
+      }
+    }
+  ],
+  "blockers": [
+    "dashboard auth missing"
+  ]
+}

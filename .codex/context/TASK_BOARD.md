@@ -12025,3 +12025,45 @@ None.
 - No production mutation was executed in this heartbeat.
 - Heartbeat disposition: `in_review` (reviewer path remains `local-board` via interaction `59c011b0-cc92-47b4-ae72-2a039556dd93`).
 - If board rejects, lane closes as accepted deeper-blocker for this cycle; if board accepts, execute only narrow worker recovery/readiness lane.
+
+## 2026-05-26 LUC-199 No-Stall Queue Expeditor
+- Wake issue_assigned processed with concrete PM queue-expeditor checkpoint.
+- Latest wake payload acknowledged first (fallbackFetchNeeded=false, comments 0/0); no new unblock evidence arrived.
+- Scope remained coordination-only and fail-closed against parent LUC-45.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: blocked.
+- Unblock owner/action unchanged: LUC-47 (Ops Release Lead + host operator) must attach temp-domain expected-SHA deploy smoke/readiness and worker readiness evidence with rollback note.
+- Evidence:
+  history/tasks/luc-199-no-stall-queue-expeditor-2026-05-26-task.md.
+
+## 2026-05-26 LUC-199 Finish-Handoff Reconciliation
+- Continuation finish_successful_run_handoff consumed from inline wake payload first (fallbackFetchNeeded=false).
+- Pending comments remained 0/0; no new blocker-closure evidence arrived.
+- Scope stayed coordination-only and fail-closed; no wake/reassign/reopen/new-lane action executed.
+- Disposition remains blocked.
+- Unblock owner/action unchanged: LUC-47 (Ops Release Lead + host operator) must attach temp-domain expected-SHA smoke/readiness packet plus worker readiness and rollback note.
+- Evidence: history/tasks/luc-199-no-stall-queue-expeditor-2026-05-26-task.md.
+
+## 2026-05-26 LUC-199 Issue-Status-Changed Reconciliation
+- Continuation issue_status_changed consumed from inline wake payload first (fallbackFetchNeeded=false).
+- Pending comments remained 0/0; no new blocker-closure evidence arrived.
+- Scope stayed coordination-only and fail-closed; no wake/reassign/reopen/new-lane action executed.
+- Disposition remains blocked.
+- Unblock owner/action unchanged: LUC-47 (Ops Release Lead + host operator) must attach temp-domain expected-SHA smoke/readiness packet plus worker readiness and rollback note.
+- Evidence: history/tasks/luc-199-no-stall-queue-expeditor-2026-05-26-task.md.
+
+## 2026-05-26 LUC-199 Continuation-Needed Reconciliation
+- Continuation issue_continuation_needed consumed from inline wake payload first (fallbackFetchNeeded=false).
+- Pending comments remained 0/0; no new blocker-closure evidence arrived.
+- Scope stayed coordination-only and fail-closed; no wake/reassign/reopen/new-lane action executed.
+- Disposition remains blocked.
+- Unblock owner/action unchanged: LUC-47 (Ops Release Lead + host operator) must attach temp-domain expected-SHA smoke/readiness packet plus worker readiness and rollback note.
+- Evidence: history/tasks/luc-199-no-stall-queue-expeditor-2026-05-26-task.md.
+
+## 2026-05-26 LUC-199 Source-Scoped Recovery Reconciliation
+- Continuation source_scoped_recovery_action consumed from inline wake payload first (fallbackFetchNeeded=false).
+- Pending comments remained 0/0; no new blocker-closure evidence arrived.
+- Scope stayed coordination-only and fail-closed; no wake/reassign/reopen/new-lane action executed.
+- Disposition remains blocked.
+- Unblock owner/action unchanged: LUC-47 (Ops Release Lead + host operator) must attach temp-domain expected-SHA smoke/readiness packet plus worker readiness and rollback note.
+- Evidence: history/tasks/luc-199-no-stall-queue-expeditor-2026-05-26-task.md.

@@ -5,7 +5,7 @@
 - Title: [Soar][LUC-103-P5E] LUC-47 release smoke blocker evidence closure
 - Task Type: release
 - Current Stage: verification
-- Status: BLOCKED
+- Status: DONE
 - Owner: Ops Release Lead
 - Depends on: LUC-47
 - Priority: critical
@@ -61,7 +61,7 @@ Close the blocker-evidence gap with fresh, truthful ops proof and explicit unblo
   - rollback/cutover note bound to the same candidate SHA
 
 ## Final Disposition
-- `blocked`
+- `done` (source-control evidence closure complete)
 
 ## Unblock Owner And Action
 - Owner: scheduled Coolify operator + local-board release controller.
@@ -72,12 +72,19 @@ Close the blocker-evidence gap with fresh, truthful ops proof and explicit unblo
   4. attach rollback posture and cutover recommendation.
 
 ## Source-Control Closure
-- Files changed: this task packet + task board update.
+- Commit recorded by local-board comment: `1c767b7a` (`ops: record LUC-117 release smoke blocker evidence`).
+- Files in commit scope:
+  - `history/evidence/luc-47-blocker-reconciliation-2026-05-26.md`
+  - `history/evidence/luc-47-scheduled-release-smoke-checklist-2026-05-26.md`
+  - `history/evidence/luc-47-successful-run-handoff-2026-05-26.md`
+  - `history/evidence/luc-47-temp-domain-blocker-resnapshot-2026-05-26T03-15Z.md`
+  - `history/evidence/luc-47-temp-domain-blocker-snapshot-2026-05-26.md`
+  - `history/tasks/luc-117-release-smoke-blocker-evidence-closure-2026-05-26-task.md`
 - Verification commands/results:
   - build-info readback: PASS
   - public smoke endpoints: PASS (`200/200/200`, worker readiness unauth `401` expected)
   - operator packet check: PASS
-- Commit SHA: not committed
+- Commit SHA: `1c767b7a`
 - Push status: not needed
 - Deploy impact: none
 
@@ -103,4 +110,12 @@ Close the blocker-evidence gap with fresh, truthful ops proof and explicit unblo
 - Re-ran top-level markdown heading check for the same five files.
   - result: all files start with valid `# ` heading.
 - Scope decision: no additional files were staged; no commit created in this heartbeat.
-- Final disposition remains `blocked` until temp-domain acceptance packet is attached and clean owner-scoped commit boundary is available.
+- Final disposition for `LUC-117` remains `done`; functional release blocker remains in `LUC-47` until temp-domain acceptance packet is attached.
+
+## Finish-Successful-Run Handoff Reconciliation (2026-05-26)
+- Resume delta `finish_successful_run_handoff` processed with no new scope changes.
+- Revalidated source-of-truth parity:
+  - task packet remains `Status: DONE`,
+  - board row keeps `LUC-117` as done source-control slice,
+  - functional blocker ownership remains explicitly in `LUC-47`.
+- Commit/push/deploy activity in this reconciliation heartbeat: none.

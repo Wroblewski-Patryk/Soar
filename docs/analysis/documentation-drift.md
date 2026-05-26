@@ -1,6 +1,6 @@
 # Documentation Drift Report
 
-Updated: 2026-05-23
+Updated: 2026-05-26
 
 Purpose: record known gaps between documentation and implementation so future
 agents can repair them deliberately. This is a living report, not a proof that
@@ -21,6 +21,7 @@ all behavior is fully verified.
 | Mobile implementation exists as `apps/mobile`, but V1 traceability is web/API-centric. | `apps/mobile` directory exists; no active module docs found in inspected docs. | Future mobile work could drift from API/web contracts. | GAP: create mobile module registry when mobile becomes active. |
 | Endpoint-level docs parity was not generated from route files. | Route files are source; `scripts/auditApiEndpointDocsParity.mjs` now generates endpoint parity from Express routes and module docs. 2026-05-19 rerun reports `109` endpoints, `109` documented, `0` gaps. | Route additions can still drift from docs if the parity command is skipped. | Repaired; rerun `pnpm run docs:parity:endpoints:api` whenever API routes or module docs change. |
 | Some web feature test mappings are not fully enumerated. | Static pass saw web feature files; exact tests were not exhaustively mapped in this iteration. | Traceability can point to module-level coverage instead of exact test files. | GAP: expand module deep dives during future feature edits. |
+| UX scorecard still contains unresolved placeholders (`TBD`). | `docs/ux/ui-scorecard.md` lines 95, 98, 101 show `TBD` values. | UX quality reporting can look complete while key score dimensions remain unspecified. | GAP: UX + Docs Memory to replace with measured values or explicit defer metadata (owner/date/reason). |
 
 ## Endpoint Drift Watchlist
 Endpoint docs must be checked whenever these route files change:

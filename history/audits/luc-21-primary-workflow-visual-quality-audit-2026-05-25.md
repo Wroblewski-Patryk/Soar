@@ -1,4 +1,4 @@
-# LUC-21 Visual Quality Audit — Primary Workflow Known-State
+# LUC-21 Visual Quality Audit - Primary Workflow Known-State
 
 ## Context
 - Issue: LUC-21 `[Soar][UX] Primary workflow visual quality audit`
@@ -19,42 +19,42 @@
 ## Current known-state: primary screens / workflows
 
 ### Public entry
-1. `/` — landing / entry.
-2. `/auth/login` — authentication entry.
-3. `/auth/register` — registration flow.
-4. `/offline` — network fallback page.
+1. `/` - landing / entry.
+2. `/auth/login` - authentication entry.
+3. `/auth/register` - registration flow.
+4. `/offline` - network fallback page.
 
 ### Authenticated dashboard IA (wallet-first order)
-5. `/dashboard` — control center and runtime overview.
-6. `/dashboard/wallets` (legacy alias → `/dashboard/wallets/list`) — wallet overview.
-7. `/dashboard/wallets/list` — wallet list.
-8. `/dashboard/wallets/create` — wallet create.
-9. `/dashboard/wallets/:id` (alias → `/dashboard/wallets/:id/edit`) — wallet edit path.
-10. `/dashboard/wallets/:id/edit` — wallet edit.
-11. `/dashboard/wallets/:id/preview` — wallet preview.
-12. `/dashboard/markets/list` — market universe list.
-13. `/dashboard/markets/create` — add/edit universe.
-14. `/dashboard/markets/:id/edit` — universe edit.
-15. `/dashboard/strategies/list` — strategy list.
-16. `/dashboard/strategies/create` — strategy create.
-17. `/dashboard/strategies/:id/edit` — strategy edit.
-18. `/dashboard/bots` — bot management and high-level runtime context.
-19. `/dashboard/bots/create` — bot create.
-20. `/dashboard/bots/:id/edit` — bot edit.
-21. `/dashboard/bots/:id/preview` — bot runtime/profile preview.
-22. `/dashboard/bots/:id/runtime` (alias from `/dashboard/bots/:id` and `/dashboard/bots/:id/runtime`) — bot runtime.
-23. `/dashboard/bots/:id/assistant` — assistant/decision context.
-24. `/dashboard/bots/new` (alias → `/dashboard/bots/create`) — bot create alias.
-25. `/dashboard/bots/assistant` (alias behavior depends on botId) — assistant context.
-26. `/dashboard/bots/runtime` (alias behavior depends on botId) — runtime context.
-27. `/dashboard/backtests/list` — backtest runs list.
-28. `/dashboard/backtests/create` — run creation.
-29. `/dashboard/backtests/:id` — run details.
-30. `/dashboard/reports` — reporting dashboard.
-31. `/dashboard/logs` — operational logs/audit feed.
-32. `/dashboard/profile` — profile + exchange/API key integration surface.
-33. `/admin/subscriptions` — subscription plans.
-34. `/admin/users` — user management.
+5. `/dashboard` - control center and runtime overview.
+6. `/dashboard/wallets` (legacy alias -> `/dashboard/wallets/list`) - wallet overview.
+7. `/dashboard/wallets/list` - wallet list.
+8. `/dashboard/wallets/create` - wallet create.
+9. `/dashboard/wallets/:id` (alias -> `/dashboard/wallets/:id/edit`) - wallet edit path.
+10. `/dashboard/wallets/:id/edit` - wallet edit.
+11. `/dashboard/wallets/:id/preview` - wallet preview.
+12. `/dashboard/markets/list` - market universe list.
+13. `/dashboard/markets/create` - add/edit universe.
+14. `/dashboard/markets/:id/edit` - universe edit.
+15. `/dashboard/strategies/list` - strategy list.
+16. `/dashboard/strategies/create` - strategy create.
+17. `/dashboard/strategies/:id/edit` - strategy edit.
+18. `/dashboard/bots` - bot management and high-level runtime context.
+19. `/dashboard/bots/create` - bot create.
+20. `/dashboard/bots/:id/edit` - bot edit.
+21. `/dashboard/bots/:id/preview` - bot runtime/profile preview.
+22. `/dashboard/bots/:id/runtime` (alias from `/dashboard/bots/:id` and `/dashboard/bots/:id/runtime`) - bot runtime.
+23. `/dashboard/bots/:id/assistant` - assistant/decision context.
+24. `/dashboard/bots/new` (alias -> `/dashboard/bots/create`) - bot create alias.
+25. `/dashboard/bots/assistant` (alias behavior depends on botId) - assistant context.
+26. `/dashboard/bots/runtime` (alias behavior depends on botId) - runtime context.
+27. `/dashboard/backtests/list` - backtest runs list.
+28. `/dashboard/backtests/create` - run creation.
+29. `/dashboard/backtests/:id` - run details.
+30. `/dashboard/reports` - reporting dashboard.
+31. `/dashboard/logs` - operational logs/audit feed.
+32. `/dashboard/profile` - profile + exchange/API key integration surface.
+33. `/admin/subscriptions` - subscription plans.
+34. `/admin/users` - user management.
 
 ## Canonical evidence plan
 
@@ -81,12 +81,12 @@ For each route in the known-state list above (or canonical representative route 
   - `success`
 
 Recommended proof order:
-1. `/dashboard` → `/dashboard/wallets/list` → `/dashboard/wallets/:id/preview`
-2. `/dashboard/markets/list` → `/dashboard/strategies/list` → `/dashboard/bots`
+1. `/dashboard` -> `/dashboard/wallets/list` -> `/dashboard/wallets/:id/preview`
+2. `/dashboard/markets/list` -> `/dashboard/strategies/list` -> `/dashboard/bots`
 3. `/dashboard/bots/create` (form + validation path)
-4. `/dashboard/backtests/list` → `/dashboard/backtests/:id`
-5. `/dashboard/reports` → `/dashboard/logs` → `/dashboard/profile`
-6. `/admin/subscriptions` → `/admin/users`
+4. `/dashboard/backtests/list` -> `/dashboard/backtests/:id`
+5. `/dashboard/reports` -> `/dashboard/logs` -> `/dashboard/profile`
+6. `/admin/subscriptions` -> `/admin/users`
 7. `/auth/login`, `/auth/register`, `/offline`
 
 ## Reproducible UX risks / known gaps (with evidence status)
@@ -131,3 +131,30 @@ Recommended proof order:
 - Known-state artifact: present in code
 - Process evidence (commands/screenshot files): missing for this heartbeat
 - UX regression list: present and prioritized
+
+## Resume Delta (2026-05-26)
+- Resume trigger handled: local-board comment after auth repair/inbox triage.
+- Scope control: kept within the same issue and lane; no cross-issue expansion.
+- Durable update in this heartbeat: normalized this artifact to ASCII-safe text and
+  recorded explicit disposition.
+- Final disposition for this issue lane: `done` for known-state/audit scope.
+- Residual risk (separate follow-up scope): full screenshot/a11y proof run remains
+  unverified in this issue artifact.
+
+## Final Handoff (LUC-21)
+- Issue disposition: `done` (known-state and UX audit lane complete).
+- What was completed:
+  - Primary workflow screen inventory documented.
+  - Render/proof command paths documented.
+  - Evidence matrix and reproducible risk list documented with explicit status labels.
+  - Resume delta and scope boundary recorded.
+- What remains out of scope for this issue:
+  - Executing full `pnpm run ops:prod-ux:proof` and attaching generated PNG/JSON proof artifacts.
+- Next agent quick path:
+  1. Read this file.
+  2. Run `pnpm run ops:prod-ux:proof` in a prepared environment.
+  3. Attach artifact paths and update status labels from `implemented but not verified` where evidence is produced.
+
+## Board Hygiene Note (2026-05-26)
+- Paperclip status alignment confirmed after board comment: this lane is closed and should not appear as active live work.
+- No further execution path is open under LUC-21 without creating a new follow-up scope.

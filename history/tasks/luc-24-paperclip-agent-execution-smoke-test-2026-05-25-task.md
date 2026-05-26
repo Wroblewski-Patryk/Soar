@@ -49,3 +49,18 @@ Determine whether this is a Soar implementation defect or an environment/runtime
 - Implemented and verified: blocker is environment permission, not Soar code behavior.
 - Implemented and verified: board confirms runtime fix deployment and successful adapter smoke (`done` scope for this issue).
 - Remaining scope note: Soar product/runtime audits continue under separate issues.
+
+## 2026-05-26 Addendum (Inbox Resume)
+- Trigger: board comment `532715bd-5ee0-4349-bded-2be9e5d2fd04` requested narrow-lane continuation after local Codex auth repair and inbox triage.
+- Scope check: unchanged; this issue remains adapter smoke-test lane only.
+- New implementation work: none required.
+- Evidence position: prior closure evidence remains valid and unchanged.
+- Blockers: none newly introduced in this lane.
+- Final status for this resumed heartbeat: `done`.
+
+## 2026-05-26 Addendum (State Correction)
+- Trigger: board comment `e1161070-34e8-4aac-82aa-47bf29508f2a` requested state honesty correction after staggered inbox resume.
+- State note: issue was marked `in_progress` without a live run; board intent is to return to `todo` until real execution resumes.
+- Scope check: unchanged; no new adapter-smoke implementation slice was executed in this heartbeat.
+- Evidence position: prior closure evidence remains the latest valid execution proof.
+- Final status for this resumed heartbeat: `blocked` on live-run availability (unblock owner: assignee; unblock action: resume when current live work clears).

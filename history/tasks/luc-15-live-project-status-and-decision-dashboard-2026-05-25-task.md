@@ -81,3 +81,14 @@ into lane-scoped child issues.
 - Closing decision: board comment `c7fefae8-ea2c-48b4-a480-0ff5d7980993`.
 - Continuation path: execution and proof tracking continue in child lanes and
   portfolio baseline `LUC-12`.
+- 2026-05-26 resume note: after local Codex auth repair and inbox triage,
+  this issue was re-checked in narrow-lane mode. No new `LUC-15` setup work
+  was required; status remains `DONE` and scope stays delegated to child lanes.
+- 2026-05-26 board state correction (`0be985c0-430b-4186-94de-b96fbdd00e00`):
+  issue tracker status was returned to `todo` due to no live run at that
+  moment. Scope/result remains unchanged: setup closure is complete and
+  continuation stays in child lanes plus `LUC-12`.
+- 2026-05-26 board hygiene alignment (`bc84e9df-8f94-4be6-80b1-dd6ab7e38f38`):
+  Paperclip status was aligned to avoid showing this closed lane as live work
+  without an active run. Final disposition remains `done` with durable
+  evidence already recorded.

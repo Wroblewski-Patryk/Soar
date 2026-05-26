@@ -62,3 +62,38 @@ Produce an evidence-backed architecture map with code-path references, identify 
   1. Run `pnpm run architecture:journey:triage -- --query <route|api|action|chain>` before each non-trivial change.
   2. Burn down high proof gaps starting with protected money/exchange actions.
   3. Keep `architecture:graph:drift:strict` and journey index regeneration mandatory in delivery gates.
+
+## Resume Delta 2026-05-26
+- Resume trigger: local-board comment (`dc58a101-6c73-45ed-9845-eda10d18ce09`) to continue narrow assigned lane and set honest final status.
+- Verification: confirmed presence of core LUC-17 artifacts and canonical state references:
+  - `history/audits/cto-architecture-known-state-2026-05-25.md`
+  - `history/tasks/luc-17-architecture-function-chain-known-state-2026-05-25-task.md`
+  - `.codex/context/TASK_BOARD.md` entry exists
+  - `.codex/context/PROJECT_STATE.md` entry exists
+- Additional scope implemented: none (intentional scope lock).
+- Final disposition for this issue lane: `done`.
+
+## Successful Run Handoff 2026-05-26
+- Wake reason: `finish_successful_run_handoff`.
+- Lane outcome reconfirmed: no additional implementation required; prior evidence remains valid and discoverable.
+- Remaining scope in this issue lane: none.
+- Final disposition: `done`.
+
+## Inbox State Correction 2026-05-26
+- Resume trigger: local-board comment (`fee40f09-17a0-40b7-9543-03194fd418c4`) indicating staggered inbox correction: issue should return to `todo` until live work capacity is available.
+- Action taken in this heartbeat: no implementation scope added; recorded administrative state correction only.
+- Unblock owner: local-board / assignee scheduling.
+- Unblock action: reactivate this issue from `todo` when current live work clears.
+- Disposition for this wake: `blocked` (board-priority gating, not technical failure).
+
+## Successful Run Handoff 2026-05-26 (Post-Correction)
+- Wake reason: `finish_successful_run_handoff`.
+- Scope lock reaffirmed: no new implementation or verification slice executed.
+- Effective issue-lane status remains board-gated per prior correction.
+- Disposition for this wake: `done` (handoff complete).
+
+## Board Hygiene Alignment 2026-05-26
+- Resume trigger: local-board comment (`c2ed4533-aea4-4ab7-a23a-a3547f54bf59`).
+- Alignment note: agent history already records durable evidence and terminal `done` disposition for this lane.
+- Action in this heartbeat: administrative sync only; no scope expansion.
+- Final disposition for this wake: `done`.

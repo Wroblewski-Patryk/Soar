@@ -1,6 +1,6 @@
 # Regression Log
 
-Last updated: 2026-05-24
+Last updated: 2026-05-26
 
 ## Open Regressions
 
@@ -8,6 +8,15 @@ The broad V1 action audit remains open as a coverage gap, not a single code
 regression. See `history/audits/v1-product-action-audit-matrix-2026-05-10.md`.
 
 ## Fixed Or Prevented In This Slice
+
+- 2026-05-26: Refreshed repeatable Web/API regression evidence baseline for
+  current QA lane (`LUC-194`). Symptom class: stale regression confidence when
+  fresh smoke proof is missing for the active heartbeat. Fix: executed
+  repeatable smoke e2e runner for `web,api` and published fresh machine+human
+  artifacts (`history/artifacts/qa-repeatable-smoke-e2e-2026-05-26.json`,
+  `history/evidence/qa-repeatable-smoke-e2e-2026-05-26.md`). Validation:
+  command `pnpm run qa:smoke-e2e:repeatable -- --checks web,api` passed with
+  both packs green.
 
 - 2026-05-24: Prevented source-of-truth deploy drift during readiness
   coordination. Symptom class: active mission/state/planning files could keep

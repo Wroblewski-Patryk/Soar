@@ -1,6 +1,6 @@
 # Active Mission Packet
 
-Last updated: 2026-05-25
+Last updated: 2026-05-26
 
 Use this file as the first operational router for `pracuj dalej`, `rob dalej`,
 `kontynuuj`, `next`, and similar continuation nudges. Keep it short enough that
@@ -46,6 +46,15 @@ repository history.
   changes, then source-of-truth updates and final residual-risk report.
 
 ### Latest Checkpoint
+
+- `LUC-191-DAILY-STATUS-REFRESH-2026-05-26` completed as a PM
+  coordination-only checkpoint. The active blocker topology is unchanged and
+  fail-closed: parent `LUC-45` remains blocked by `LUC-47` with explicit
+  owner/action (`Ops Release Lead` + host operator -> temp-domain expected-SHA
+  smoke/readiness packet with worker readiness and rollback note). The runner
+  consumed inline wake scope with no pending comment delta (`0/0`) and no new
+  unblock evidence. Source-of-truth ledgers were refreshed for daily status
+  continuity.
 
 - `COOLIFY-SERVICE-STACK-LIVENESS-GATE-2026-05-25` is in progress. VPS
   reachability returned after operator restart and public API `/health` plus

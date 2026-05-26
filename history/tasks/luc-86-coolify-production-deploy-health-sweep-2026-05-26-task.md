@@ -58,5 +58,21 @@ Capture no-secret production deploy-health evidence for current Soar production 
 - Owner: local-board / host operator.
 - Action: run runtime with elevated symlink privileges or update bootstrap to avoid symlink creation when target file already exists; then resume LUC-86/LUC-47 temp-domain smoke execution.
 
+## 2026-05-26 Resume Delta (issue_children_completed)
+- Wake integrated: direct child review lane `LUC-88` is completed (`done`), so no
+  additional productivity-triage dependency remains on this issue.
+- Scope reconciliation: this issue's requested read-only production deploy
+  health sweep is already evidenced and does not require production mutation.
+- Source-of-truth alignment: canonical project state now records explicit
+  closure for `LUC-86` read-only scope with final evidence packet:
+  `history/evidence/luc-86-coolify-production-health-sweep-2026-05-26-final.md`.
+
+## 2026-05-26 Resume Delta (finish_successful_run_handoff)
+- Wake reconciled with the current packet state: no new blocker, dependency, or
+  production-scope mutation request was introduced.
+- Anti-stale closure reaffirmed: `LUC-86` stays closed for requested read-only
+  health-sweep scope and should not return to passive `in_progress` without a
+  fresh explicit scope change.
+
 ## Final Disposition
-`blocked`
+`done` (for requested read-only health-sweep scope)

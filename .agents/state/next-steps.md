@@ -3723,3 +3723,23 @@ On "rob dalej", "rób dalej", "kontynuuj", "continue", or "next":
    - `LUC-47` owner/action stays unchanged (temp-domain expected-SHA smoke/readiness + worker readiness + rollback note).
 3. Keep `LUC-48` and `LUC-49` treated as closed for this parent routing checkpoint.
 4. Do not open additional owner lanes before fresh closure evidence lands on `LUC-47`.
+
+## 2026-05-26 LUC-199 No-Stall Queue Expeditor Next Action
+1. Keep parent bridge LUC-45 fail-closed blocked while LUC-47 remains open.
+2. Treat LUC-47 as the only active first-class blocker lane for this PM scope:
+   - LUC-47 (Ops Release Lead + host operator): temp-domain expected-SHA smoke/readiness packet plus worker readiness and rollback note.
+3. Keep LUC-48 and LUC-49 treated as closed for this parent routing checkpoint.
+4. Use in_progress only during active reconciliation; keep LUC-199 as blocked when idle.
+## 2026-05-26 LUC-199 Finish-Handoff Next Action
+1. Keep PM topology unchanged after finish_successful_run_handoff: LUC-45 and LUC-199 remain blocked when idle.
+2. Maintain single active blocker lane in this PM scope:
+   - LUC-47 owner/action stays unchanged (temp-domain expected-SHA smoke/readiness + worker readiness + rollback note).
+3. Keep LUC-48 and LUC-49 treated as closed for this parent routing checkpoint.
+4. Do not open additional owner lanes before fresh closure evidence lands on LUC-47.
+
+## 2026-05-26 LUC-199 Source-Scoped Recovery Next Action
+1. Keep PM topology unchanged after source_scoped_recovery_action: LUC-45 and LUC-199 remain blocked when idle.
+2. Maintain single active blocker lane in this PM scope:
+   - LUC-47 owner/action stays unchanged (temp-domain expected-SHA smoke/readiness + worker readiness + rollback note).
+3. Keep LUC-48 and LUC-49 treated as closed for this parent routing checkpoint.
+4. Do not open additional owner lanes before fresh closure evidence lands on LUC-47.

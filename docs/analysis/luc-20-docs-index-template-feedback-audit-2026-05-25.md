@@ -91,3 +91,22 @@ Disposition for docs lane: the journey-triage step is now executed and recorded;
 - No additional code/runtime changes were required for this lane.
 - Infra-level adapter lock error (`EBUSY` around `auth.json`) is out-of-scope for docs artifact integrity and already handled as session-level noise in prior handoff notes.
 - Next owner action: none; future updates should follow this same audit template when docs shape or template boundary changes.
+
+## Resume Note (2026-05-26)
+
+- Resumed after local Codex auth repair and inbox triage per board comment `8512a3c1-a501-4b5e-90f4-c79c7e636540`.
+- Re-validated lane scope: docs/index/template feedback audit only; no scope expansion performed.
+- Artifact integrity remains intact; no new docs/template drift introduced during resume.
+- Final status for this lane remains `done`.
+
+## Final Follow-up Check (2026-05-26)
+
+- Pending comments for LUC-20: `0`.
+- No additional lane actions required after successful run handoff.
+- Final disposition confirmed: `done`.
+
+## Board Status Alignment (2026-05-26)
+
+- Processed board hygiene comment `9876fb1d-1b52-43dc-993a-f93b44295aea`.
+- Lane state remains closed with durable evidence in this artifact.
+- This issue should not be treated as active/live work without a new explicit reopen signal.

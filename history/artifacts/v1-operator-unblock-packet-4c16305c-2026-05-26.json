@@ -1,0 +1,59 @@
+{
+  "id": "V1-OPERATOR-UNBLOCK-PACKET-4C16305C-2026-05-26",
+  "date": "2026-05-26",
+  "status": "NO-GO",
+  "target": {
+    "webBaseUrl": "https://soar.luckysparrow.ch",
+    "apiBaseUrl": "https://api.soar.luckysparrow.ch",
+    "gitSha": "4c16305c97566b7680f4feb041601af2af0a0d31",
+    "gitRef": "main",
+    "buildInfoCheckedAt": "2026-05-25T23:21:40.600Z"
+  },
+  "evidence": {
+    "preflight": "history/releases/v1-preflight-production-rc-pipeline-sha-binding-2026-05-24.md",
+    "preflightJson": "history/artifacts/v1-preflight-production-rc-pipeline-sha-binding-2026-05-24.json",
+    "protectedInputReadiness": "history/evidence/v1-protected-input-readiness-4c16305c-2026-05-26.md",
+    "protectedInputReadinessJson": "history/artifacts/v1-protected-input-readiness-4c16305c-2026-05-26.json"
+  },
+  "currentGateSnapshot": {
+    "publicBuildInfo": "PASS for 4c16305c97566b7680f4feb041601af2af0a0d31",
+    "publicSmoke": "PASS",
+    "activationAudit": "BLOCKED for 2026-05-26",
+    "protectedEvidence": "BLOCKED because protected input families are missing in this shell",
+    "finalReleaseGate": "NO-GO"
+  },
+  "protectedInputReadiness": {
+    "matchingProtectedInputNames": 0,
+    "status": "BLOCKED"
+  },
+  "requiredInputs": [
+    "LIVEIMPORT_READBACK_AUTH_TOKEN or LIVEIMPORT_READBACK_AUTH_EMAIL + LIVEIMPORT_READBACK_AUTH_PASSWORD",
+    "ROLLBACK_GUARD_AUTH_TOKEN or ROLLBACK_GUARD_AUTH_EMAIL + ROLLBACK_GUARD_AUTH_PASSWORD",
+    "PROD_UI_AUDIT_AUTH_TOKEN or PROD_UI_AUDIT_AUTH_EMAIL + PROD_UI_AUDIT_AUTH_PASSWORD",
+    "PROD_UI_AUDIT_ADMIN_TOKEN or PROD_UI_AUDIT_ADMIN_EMAIL + PROD_UI_AUDIT_ADMIN_PASSWORD",
+    "PROD_DB_CHECK_CONTAINER + PROD_DB_CHECK_USER + PROD_DB_CHECK_NAME or PRODUCTION_DB_CHECK_CONTAINER + PRODUCTION_DB_CHECK_USER + PRODUCTION_DB_CHECK_NAME",
+    "Engineering/Product/Operations/RC owner names and RC owner contact"
+  ],
+  "remainingProofSteps": [
+    "no-secret final preflight",
+    "protected input readiness sweep",
+    "build-info wait if needed",
+    "production DB restore drill PASS",
+    "LIVEIMPORT-03 protected runtime readback",
+    "rollback proof PASS",
+    "Gate 2 production SLO evidence PASS",
+    "Gate 4 sign-off APPROVED",
+    "strict RC evidence check PASS",
+    "production UI clickthrough PASS",
+    "final release gate ready",
+    "generated V1 state refresh"
+  ],
+  "forbiddenWithoutExplicitApproval": [
+    "production data mutation beyond approved proof scope",
+    "LIVE order submit/cancel/close",
+    "exchange-side mutation",
+    "existing production data mutation",
+    "fabricated approval or substituting public smoke for protected proof"
+  ],
+  "acceptanceRule": "Final release gate ready with same-date protected, redacted, secret-free evidence for the deployed target."
+}

@@ -66,3 +66,10 @@ Publish a canonical frontend-owned view map and workflow ownership contract tied
 - Added regression reproduction status with exact blocker wording for protected
   browser proof and cross-lane owner note for the backtests smoke instability
   (`backend/api` lane).
+
+## Resume Checkpoint (2026-05-26)
+- Board comment acknowledged after local Codex auth repair and inbox triage.
+- Scope remained narrow and unchanged for `LUC-38` frontend lane.
+- No additional frontend code/runtime changes were needed; existing acceptance
+  evidence remains current in `docs/status/view-map-browser-workflow-ownership.md`.
+- Honest status for this lane remains `done`.
