@@ -4,6 +4,7 @@ import { hashPassword, comparePassword } from '../../utils/hash';
 import { serverUrl } from '../../config/runtime';
 import { getSessionJwtExpiresIn } from './auth.session';
 import { signAuthToken } from './auth.jwt';
+import { INVALID_CREDENTIALS_MESSAGE } from './auth.errors';
 import { publicUserSelect } from '../users/publicUser';
 import { ensureDefaultSubscriptionForUser, ensureSubscriptionCatalog } from '../subscriptions/subscriptions.service';
 
@@ -15,7 +16,7 @@ export const registerUser = async (
   }); 
 
   if (existing) {
-    throw new Error('User with this email already exists');
+    throw new Error(INVALID_CREDENTIALS_MESSAGE);
   }
 
   const hashed = await hashPassword(input.password);
@@ -52,13 +53,13 @@ export const loginUser = async (input: LoginInput) => {
   });
 
   if (!user) {
-    throw new Error('Invalid email or password');
+    throw new Error(INVALID_CREDENTIALS_MESSAGE);
   }
 
   const isValid = await comparePassword(input.password, user.password);
 
   if (!isValid) {
-    throw new Error('Invalid email or password');
+    throw new Error(INVALID_CREDENTIALS_MESSAGE);
   }
 
   const token = signAuthToken(

@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { prisma } from '../../prisma/client';
 import { registerUser } from './auth.service';
+import { INVALID_CREDENTIALS_MESSAGE } from './auth.errors';
 
 describe('registerUser', () => {
   beforeEach(async () => {
@@ -70,7 +71,7 @@ describe('registerUser', () => {
         email: 'duplikat@user.com',
         password: 'test123',
       })
-    ).rejects.toThrow('User with this email already exists');
+    ).rejects.toThrow(INVALID_CREDENTIALS_MESSAGE);
   });
 });
 
