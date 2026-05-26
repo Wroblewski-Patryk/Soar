@@ -44,6 +44,17 @@ Do not turn uncertainty into optimism.
   commits ahead of `origin/main`, so those local commits are not deployed until
   a coherent push occurs.
 
+- 2026-05-26 `COOLIFY-PUSH-DEPLOY-FANOUT-71B8D503-2026-05-26`: confidence for
+  `SOAR-OPERATIONS` and `SOAR-WORKERS` is improved again from trigger-only
+  repair to production convergence proof. Push-triggered deployment rows were
+  created, host blockers were repaired, Docker image bloat from `apps/api/core`
+  dumps was mitigated, and all six Soar Applications now run
+  `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`. Public no-worker smoke passed,
+  Redis/Postgres read back healthy, and disk has `18G` available. Confidence
+  remains `PARTIAL/BLOCKED` for full release readiness because protected worker
+  token checks, authenticated journeys, SLO/RC, restore/rollback, and LIVE
+  mutation approval are outside this repair.
+
 - 2026-05-25 `DASH-RUNTIME-SIGNAL-CONDITION-ACTIVE-2026-05-25`: confidence is
   improved locally for `SOAR-DASHBOARD-001` and Web runtime signal surfaces.
   Dashboard Home now counts and visually emphasizes explicit matched

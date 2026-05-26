@@ -37,6 +37,21 @@ git rev-list --count origin/main..HEAD
   `history/tasks/coolify-auto-deploy-and-worker-recovery-2026-05-26-task.md`,
   `history/evidence/coolify-auto-deploy-and-worker-recovery-2026-05-26.md`.
 
+### 2026-05-26 - Preflight VPS disk before Coolify full fanout deploys
+- Context: after Auto Deploy was restored, a push to `main` triggered all six Soar Applications and exposed host-level deployment instability.
+- Symptom: Coolify returned Redis `MISCONF`, API `/ready` returned `503`, deployments failed/canceled, production Postgres entered recovery pressure, and deployment logs later reported `/data/coolify/ssh` was not writable.
+- Root cause: the VPS root filesystem was full (`100%`, `0` available). API/worker image builds also produced or retained huge `apps/api/core` files in layers and paid expensive recursive ownership costs during worker builds.
+- Guardrail: before full fanout deploys, check `df -h /` and `docker system df`; if free space is low, prune build cache before deployment and avoid parallel waves. Keep core dumps out of Docker contexts and build layers.
+- Preferred pattern:
+```powershell
+ssh codex-vps "df -h /; docker system df"
+ssh codex-vps "docker builder prune -af; docker system prune -f"
+pnpm run docker:app:config
+```
+- Avoid: pushing a full six-Application fanout while `/` is near full, or retrying failed deploys before checking Coolify Redis/Postgres/disk health.
+- Evidence:
+  `history/evidence/coolify-auto-deploy-and-worker-recovery-2026-05-26.md`.
+
 ### 2026-05-26 - Prevent Codex auth symlink bootstrap collisions before runtime heartbeats
 - Context: repeated `LUC-47` continuation runs failed before lane logic with adapter bootstrap errors.
 - Symptom: adapter exits with `EEXIST` while creating

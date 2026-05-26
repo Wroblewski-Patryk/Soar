@@ -19,6 +19,17 @@ Last updated: 2026-05-26
   Evidence:
   `history/tasks/coolify-auto-deploy-and-worker-recovery-2026-05-26-task.md`,
   `history/evidence/coolify-auto-deploy-and-worker-recovery-2026-05-26.md`.
+  Push-test closure: `6f9ea8d21b1dc6aadf8e34a13be33931b9859f7e` proved
+  GitHub-to-Coolify deployment rows appeared for all six Applications, then the
+  fanout exposed host disk exhaustion, Coolify Redis `MISCONF`, production
+  Postgres recovery pressure, and Coolify SSH directory permission failure.
+  Host disk was reclaimed without deleting data volumes, Coolify/Postgres/Redis
+  recovered, Docker image hardening was pushed in
+  `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`, and all six Soar Applications
+  now run that SHA. Final public no-worker smoke passed on `71b8d503...`; disk
+  readback was `18G` available / `76%` used. V1 remains not fully release-ready
+  because protected worker-token/authenticated/SLO/restore-rollback gates are
+  still separate.
 - `LUC-179 finish_successful_run_handoff heartbeat (2026-05-26)` was
   reconciled as an ops verification-only recheck and remains `blocked`.
   No pending human unblock input was present (`0/0`).
@@ -11782,3 +11793,11 @@ Last updated: 2026-05-26
   Disposition remains blocked; unblock owner/action unchanged: LUC-47 (Ops Release Lead + host operator) must attach temp-domain expected-SHA smoke/readiness packet plus worker readiness and rollback note.
   Evidence:
   history/tasks/luc-199-no-stall-queue-expeditor-2026-05-26-task.md.
+
+- LUC-202 assigned heartbeat (2026-05-26) executed a concrete PM no-stall queue-expeditor checkpoint and remains blocked.
+  Latest wake payload was acknowledged first (fallbackFetchNeeded=false, pending comments 0/0); no new blocker-closure evidence arrived.
+  Scope stayed coordination-only and fail-closed against parent LUC-45.
+  No commit/push/deploy/runtime mutation was performed in this lane.
+  Unblock owner/action remains unchanged: LUC-47 (Ops Release Lead + host operator) must publish temp-domain expected-SHA deploy smoke/readiness and worker readiness evidence with rollback note.
+  Evidence:
+  history/tasks/luc-202-no-stall-queue-expeditor-2026-05-26-task.md.

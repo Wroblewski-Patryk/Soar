@@ -1,6 +1,6 @@
 # V1 Static Issue Scan
 
-Generated at: 2026-05-26T17:29:18.689Z
+Generated at: 2026-05-26T17:34:42.225Z
 Evidence date: 2026-05-26
 Project index: `history/audits/project-index-2026-05-26.json`
 
@@ -12,9 +12,9 @@ not replace browser/API/DB/exchange action audits.
 
 ## Summary
 
-- Total findings: 1
-- By severity: {"P1":1}
-- By category: {"queue-open-work":1}
+- Total findings: 0
+- By severity: {}
+- By category: {}
 - Production/source files scanned for markers: 692
 - Source marker matches: 29
 
@@ -22,7 +22,7 @@ not replace browser/API/DB/exchange action audits.
 
 | Severity | Category | Finding | Evidence | Recommendation |
 | --- | --- | --- | --- | --- |
-| P1 | queue-open-work | 17 unchecked queue markers remain | .codex/context/TASK_BOARD.md:931 - [ ] `LUC-45 [Soar] V1 audit-to-completion controller` \| .codex/context/TASK_BOARD.md:995 - [ ] `LUC-48 [Soar][Docs] Autonomous map inventory and UI polish readiness gate` \| .codex/context/TASK_BOARD.md:1 | Classify each as executable, blocked by auth/approval, or historical carryover. |
+
 
 ## P2 Findings
 

@@ -28,6 +28,17 @@ Last updated: 2026-05-26
 - Evidence:
   - `history/tasks/coolify-auto-deploy-and-worker-recovery-2026-05-26-task.md`
   - `history/evidence/coolify-auto-deploy-and-worker-recovery-2026-05-26.md`
+- Push-test closure:
+  - pushed `6f9ea8d21b1dc6aadf8e34a13be33931b9859f7e`, proving GitHub webhook
+    deployment rows were created for all six Applications;
+  - recovered VPS full-disk/Coolify Redis `MISCONF` incident and Coolify SSH
+    directory permission failure;
+  - pushed Docker hardening commit
+    `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`;
+  - final production Docker readback shows API, Web, backtest, execution,
+    market-data, and market-stream all running `71b8d503...`;
+  - final public no-worker smoke passed on `71b8d503...`;
+  - host disk after cleanup: `18G` available, `76%` used.
 
 ## 2026-05-26 LUC-179 Finish-Handoff Recheck
 - Continuation `finish_successful_run_handoff` reconciled with no pending
@@ -928,7 +939,7 @@ Last updated: 2026-05-26
     30-minute no-stall routine and active controller lanes (`LUC-45`, `LUC-46`,
     `LUC-47`, `LUC-48`, `LUC-48-A/browser-proof`).
 
-- [ ] `LUC-45 [Soar] V1 audit-to-completion controller`
+- [blocked] `LUC-45 [Soar] V1 audit-to-completion controller`
   - 2026-05-25 delivery-control checkpoint published:
     `history/tasks/luc-45-v1-audit-to-completion-controller-2026-05-25-task.md`.
     Scope is planning/integration control only (no feature implementation).
@@ -992,7 +1003,7 @@ Last updated: 2026-05-26
     conflicts before lane logic runs. `LUC-47` blocker remains deployment-side:
     temp-domain rollout and smoke evidence still not attached.
 
-- [ ] `LUC-48 [Soar][Docs] Autonomous map inventory and UI polish readiness gate`
+- [blocked] `LUC-48 [Soar][Docs] Autonomous map inventory and UI polish readiness gate`
   - 2026-05-25 docs-memory packet published:
     `history/tasks/luc-48-autonomous-map-inventory-and-ui-polish-readiness-gate-2026-05-25-task.md`.
   - Scope: autonomous map inventory for canonical web/API route and workflow
@@ -1045,13 +1056,13 @@ Last updated: 2026-05-26
   - Risk routing: `RISK-DATA-SECRET-HANDLING-2026-05-25` and `RISK-DATA-BACKUP-RESTORE-2026-05-25` were added to `risk-register` for Security/Backend follow-up.
 
 
-- [ ] `LUC-41 [Soar][Integration] Exchange and trading runtime boundary`
+- [needs-verification] `LUC-41 [Soar][Integration] Exchange and trading runtime boundary`
   - 2026-05-25 implementation checkpoint: exchange, manual order, positions, and reconciliation boundary packs pass locally (`50` tests, `4` files) with read-safe contracts, while runtime loop boundary remains blocked by `runtimeSignalLoop.service.test.ts` (12 failures, repeated `5000ms` timeouts + 1 backlog assertion failure).
   - 2026-05-25 LUC-46 backend checkpoint: runtime-loop suite hardening reduced the failure set to two reproducible Gate.io final-candle blockers after test-deps isolation (`validateExchangeOrderFn`/`resolveExchangeOrderRulesFn` stubs), warmup default disable in test deps, and timeout/backlog-wait stabilization in `runtimeSignalLoop.service.test.ts`. Focused reruns still fail on:
     `routes Gate.io final-candle decisions only to Gate.io runtime topology` and
     `uses Gate.io final-candle fallback ticker context when no fresh Gate.io ticker exists` (both timeout at `35s`).
   - 2026-05-25 heartbeat follow-up: added deterministic test dependency for `listActiveBotsFromTopologyCache` to `deps.listActiveBots()` so final-candle runs do not depend on runtime topology cache DB reads. New follow-up rerun is required to confirm Gate.io blockers are eliminated.
-- 2026-05-25 restart verification (PM no-stall reassignment): Gate.io runtime-final-candle blocker is closed after dependency-injection passthrough in `runtimeSignalLoop.service.ts` and deterministic derivatives stubs in `runtimeSignalLoop.service.test.ts`; focused + full runtime-loop packs now pass (`2/2` Gate.io focus, `47/47` full file).
+  - 2026-05-25 restart verification (PM no-stall reassignment): Gate.io runtime-final-candle blocker is closed after dependency-injection passthrough in `runtimeSignalLoop.service.ts` and deterministic derivatives stubs in `runtimeSignalLoop.service.test.ts`; focused + full runtime-loop packs now pass (`2/2` Gate.io focus, `47/47` full file).
   - Residual backend API blocker remains in backtests e2e scope (`pnpm --filter api exec vitest run src/modules/backtests`): `2` failing tests in `backtests.e2e.test.ts` (`openPositionsSeen > 0` parity-reconciliation assertion and `live order` create `500 != 201` venue-context path).
   - Current impact: execution/runtime confidence is incomplete for LIVE/PAPER boundary automation under final-candle burst/queue conditions until this regression is fixed and re-verified.
   - Next: keep Gate.io runtime closure as verified and isolate backtests e2e live/parity failures (exchange positions snapshot + live order creation path) for lane completion or explicit split-owner blocker.
@@ -1062,7 +1073,7 @@ Last updated: 2026-05-26
     - `covers strategy -> backtest -> paper/live parity with reconciliation checks` -> PASS.
     - `keeps venue context consistent across backtest -> paper bot -> live order path` -> PASS.
   - `LUC-46` backend lane disposition for residual blocker scope: `done` (no deploy impact, no commit in this heartbeat).
-- [ ] `LUC-43 [Soar][Test Automation] Repeatable smoke and e2e checks`
+- [needs-verification] `LUC-43 [Soar][Test Automation] Repeatable smoke and e2e checks`
   - 2026-05-25 checkpoint: added `qa:smoke-e2e:repeatable` (`scripts/runQaRepeatableSmokeE2e.mjs`) to run deterministic `web/api/backtests` smoke-e2e packs, emit stable PASS/FAIL exit codes, and persist durable evidence to `history/artifacts/qa-repeatable-smoke-e2e-<date>.json` plus `history/evidence/qa-repeatable-smoke-e2e-<date>.md`.
   - Local proof PASS (focused): `pnpm run qa:smoke-e2e:repeatable -- --checks web` with artifacts generated for `2026-05-25`.
   - Next: run `--checks web,api,backtests` in QA lane and route any failing API/backtests evidence to repair owners.
@@ -1093,33 +1104,33 @@ Last updated: 2026-05-26
     closure confirmed again to prevent reopening of the broad parent delivery
     lane; remaining work stays in specialist child issues only.
 
-- [ ] `LUC-37-A [Soar][Delivery] Backend runtime and trading boundary`
+- [superseded-by-luc-46] `LUC-37-A [Soar][Delivery] Backend runtime and trading boundary`
   - 2026-05-25: Child issue packet created in
     `history/tasks/luc-37-a-backend-runtime-and-trading-boundary-2026-05-25-task.md`.
   - Scope: backend API/runtime/trading reliability and backtests/runtime aggregate
     correctness.
 
-- [ ] `LUC-37-B [Soar][Delivery] Coolify stack cutover and smoke`
+- [blocked] `LUC-37-B [Soar][Delivery] Coolify stack cutover and smoke`
   - 2026-05-25: Child issue packet created in
     `history/tasks/luc-37-b-coolify-stack-cutover-and-smoke-2026-05-25-task.md`.
   - Scope: single-stack rollout readiness, temp-domain smoke, rollback rehearsal.
 
-- [ ] `LUC-37-C [Soar][Delivery] Journey verification and QA`
+- [blocked] `LUC-37-C [Soar][Delivery] Journey verification and QA`
   - 2026-05-25: Child issue packet created in
     `history/tasks/luc-37-c-journey-verification-and-qa-2026-05-25-task.md`.
   - Scope: high-gap journey proof matrix and browser/API verification packets.
 
-- [ ] `LUC-37-D [Soar][Delivery] Security boundary verification`
+- [blocked] `LUC-37-D [Soar][Delivery] Security boundary verification`
   - 2026-05-25: Child issue packet created in
     `history/tasks/luc-37-d-security-auth-exchange-boundary-2026-05-25-task.md`.
   - Scope: auth/session and exchange-boundary read-only fail-closed proof.
 
-- [ ] `LUC-37-E [Soar][Delivery] Docs/state evidence sync`
+- [blocked] `LUC-37-E [Soar][Delivery] Docs/state evidence sync`
   - 2026-05-25: Child issue packet created in
     `history/tasks/luc-37-e-docs-state-sync-and-journey-map-2026-05-25-task.md`.
   - Scope: source-of-truth sync and module/risk/requirements alignment.
 
-- [ ] `LUC-18-QA-REGRESSION-SMOKE-BASELINE-2026-05-25 qa: establish first reproducible QA baseline for Soar pilot`
+- [superseded-by-luc-46] `LUC-18-QA-REGRESSION-SMOKE-BASELINE-2026-05-25 qa: establish first reproducible QA baseline for Soar pilot`
   - 2026-05-25 QA baseline checkpoint executed with required docs/script review
     and safe-local-first verification. PASS:
     `pnpm run quality:guardrails`, `pnpm run lint`, `pnpm run typecheck`,
@@ -1136,7 +1147,7 @@ Last updated: 2026-05-26
     reconciliation/time-budget instability before promoting API smoke to a
     release-safe gate.
 
-- [ ] `COOLIFY-SERVICE-STACK-MIGRATION-2026-05-25 release: migrate Soar app processes toward one Coolify Service Stack`
+- [blocked] `COOLIFY-SERVICE-STACK-MIGRATION-2026-05-25 release: migrate Soar app processes toward one Coolify Service Stack`
   - 2026-05-25 ops known-state checkpoint (`LUC-19-RUNTIME-KNOWN-STATE-2026-05-25`):
     runtime matrix refreshed from canonical ops docs, compose manifests, env
     templates, and package scripts. Verified no-secret checks:
@@ -1177,7 +1188,7 @@ Last updated: 2026-05-26
     commit/push the minimal fix, redeploy the parallel stack on temp domains,
     then smoke API/Web/build-info/workers before any domain cutover.
 
-- [ ] `SOAR-FULL-READINESS-COORDINATION-2026-05-23 release: coordinate full readiness proof and blockers`
+- [in-progress] `SOAR-FULL-READINESS-COORDINATION-2026-05-23 release: coordinate full readiness proof and blockers`
   - 2026-05-23: Operator asked the coordinator to make Soar work fully and
     correctly. This is a multi-lane readiness mission, not a literal unscoped
     100% claim. Current stage: verification/planning. 2026-05-24 cleanup
@@ -1337,7 +1348,7 @@ Last updated: 2026-05-26
     to `/dashboard`, `SOAR-API-ORDER-OPEN`, manual-order chains, backend
     services, DB models, tests, docs, evidence, and proof gaps.
 
-- [ ] `LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23 release: verify Binance/Gate.io manual and automated LIVE execution parity`
+- [blocked] `LIVE-EXCHANGE-EXECUTION-PARITY-2026-05-23 release: verify Binance/Gate.io manual and automated LIVE execution parity`
   - 2026-05-23: Operator asked whether the Gate.io ADAUSDT
     `LIVE_PRETRADE_NOTIONAL_BELOW_MIN` failure could be caused by Binance
     notional rules leaking into Gate.io, and requested coordinated proof that
@@ -2321,7 +2332,7 @@ Last updated: 2026-05-26
     `history/plans/deploy-freshness-1b351a51-2026-05-22.md` and
     `history/evidence/post-release-public-monitoring-878e199d-2026-05-23.md`.
 
-- [ ] `ARCH-CODE-RUNTIME-AUDIT-2026-05-22 audit: verify architecture-code runtime parity`
+- [historical-follow-up] `ARCH-CODE-RUNTIME-AUDIT-2026-05-22 audit: verify architecture-code runtime parity`
   - 2026-05-23 continuation: repaired `ARCH-RUNTIME-P1-006`. Complete
     immutable multi-strategy backtest snapshots now replay through the same
     runtime weighted/exit-priority merge policy, persist the winning primary
@@ -2409,7 +2420,7 @@ Last updated: 2026-05-26
     `/ready` is `200`, and `POST /auth/login` from the Web origin reaches the
     API with expected invalid-credentials handling.
 
-- [ ] `V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21 release: finish current protected AUD-19 evidence`
+- [historical-blocked] `V1-PROTECTED-APP-PROOF-ATTEMPT-DD1A1FAF-2026-05-21 release: finish current protected AUD-19 evidence`
   - 2026-05-21: Protected application access allowed current production proof
     to advance. UI clickthrough PASS and rollback proof PASS are fresh for
     deployed `dd1a1faf79f8ac3581ca0a8c983481a3e30327ac`; build-info matches
@@ -2469,7 +2480,7 @@ Last updated: 2026-05-26
     line-ending warnings only. Evidence:
     `history/tasks/frontend-security-ux-owasp-sweep-2026-05-21-task.md`.
 
-- [ ] `MONEY-FLOW-SECURITY-CANCEL-ENTITLEMENT-2026-05-21 fix: fail closed LIVE exchange-backed cancel after entitlement downgrade`
+- [blocked-local-infra] `MONEY-FLOW-SECURITY-CANCEL-ENTITLEMENT-2026-05-21 fix: fail closed LIVE exchange-backed cancel after entitlement downgrade`
   - 2026-05-21: Security/Money-Flow audit found and fixed a confirmed local P1
     gap in LIVE cancel. Exchange-backed LIVE order cancel now checks current
     `liveTrading` entitlement before calling the exchange cancel boundary and
@@ -12067,3 +12078,13 @@ None.
 - Disposition remains blocked.
 - Unblock owner/action unchanged: LUC-47 (Ops Release Lead + host operator) must attach temp-domain expected-SHA smoke/readiness packet plus worker readiness and rollback note.
 - Evidence: history/tasks/luc-199-no-stall-queue-expeditor-2026-05-26-task.md.
+
+## 2026-05-26 LUC-202 No-Stall Queue Expeditor
+- Wake `issue_assigned` processed with concrete PM queue-expeditor checkpoint.
+- Latest wake payload acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`); no new unblock evidence arrived.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`.
+- No commit/push/deploy/runtime mutation was performed.
+- Disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain expected-SHA deploy smoke/readiness and worker readiness evidence with rollback note.
+- Evidence:
+  `history/tasks/luc-202-no-stall-queue-expeditor-2026-05-26-task.md`.

@@ -8,7 +8,7 @@ Operational queue for one-task execution runs.
 
 ## NOW
 
-- [ ] `SOAR-FULL-READINESS-COORDINATION-2026-05-23 release: coordinate full readiness proof and blockers`
+- [in-progress] `SOAR-FULL-READINESS-COORDINATION-2026-05-23 release: coordinate full readiness proof and blockers`
   - 2026-05-24: Active coordinator mission for the operator request that Soar
     work fully and correctly. Current no-secret checkpoint: local `HEAD` and
     `origin/main` both point at

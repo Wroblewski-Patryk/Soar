@@ -81,3 +81,49 @@ Coolify can deploy only pushed commits. A later coherent commit/push is still re
 - Full V1 readiness is still not proven by this task because protected worker-token checks, authenticated browser journeys, release-controller signoff, SLO/RC observation, rollback/restore packets, and any LIVE exchange mutation approval remain separate gates.
 - Auto Deploy fanout across six Applications is restored by direct operator request. If future deployment fanout causes queue pressure again, disablement must be an explicit recorded release decision with a replacement manual deploy plan.
 - The newer single Service Stack migration remains a separate blocked/cutover path and was not attempted here.
+
+## 2026-05-26 Push-Test And Host Recovery Addendum
+
+After the initial Auto Deploy restoration, commit `6f9ea8d21b1dc6aadf8e34a13be33931b9859f7e` was pushed to `main` to prove the GitHub-to-Coolify trigger path. The webhook path worked: all six Applications received deployment records for the pushed SHA. The fanout then exposed two host-level blockers:
+
+| Blocker | Evidence | Recovery |
+| --- | --- | --- |
+| VPS root filesystem full | `df -h /` showed `/dev/sdb1` at `100%` with `0` available; Coolify returned Redis `MISCONF`; API `/ready` returned `503`. | Pruned Docker build cache/system artifacts, vacuumed journals, truncated oversized `btmp`; free space recovered to a stable post-run `18G` available / `76%` used. |
+| Coolify SSH key directory not writable | Failed deployment log reported `/data/coolify/ssh` was not writable and instructed host repair. | Applied the host permission repair from the Coolify error (`chown`/`chmod`) and restarted Coolify. |
+
+The first push also revealed that API/worker Docker builds could create huge `apps/api/core` files in image layers and waste time/space on recursive ownership changes. Commit `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` fixed this by ignoring/removing core dumps from Docker build context/output and removing redundant recursive worker-image `chown` steps. It was validated locally with:
+
+```powershell
+pnpm run quality:guardrails
+pnpm run docker:app:config
+pnpm run typecheck
+```
+
+Final production readback after the host repair and controlled redeploys:
+
+| Resource | Image / SHA | Status |
+| --- | --- | --- |
+| `soar-api` | `k126p7vqxs5cly2zc4y4g4rq:71b8d503fd6fdfd7378dc67b2fa678799e2430f8` | running |
+| `soar-web` | `ato4fqkncd6t38wzlle2m0rv:71b8d503fd6fdfd7378dc67b2fa678799e2430f8` | running |
+| `workers-backtest` | `gktawk85w6826z2bs8z123mz:71b8d503fd6fdfd7378dc67b2fa678799e2430f8` | running |
+| `workers-execution` | `s2qz86w8c9hc5anajdtl5d8r:71b8d503fd6fdfd7378dc67b2fa678799e2430f8` | running |
+| `workers-market-data` | `sj0bh3pirqq1jf41bijaf77y:71b8d503fd6fdfd7378dc67b2fa678799e2430f8` | running |
+| `workers-market-stream` | `d2oo1wwy8i55q27e5mdky0i4:71b8d503fd6fdfd7378dc67b2fa678799e2430f8` | running |
+| Soar Redis | `redis:7.2` | healthy; recent RDB saves succeeded |
+| Soar PostgreSQL | production Postgres container | healthy; recovered after disk pressure |
+| Coolify Redis | `redis:7-alpine` | healthy |
+
+Final public no-worker smoke:
+
+```powershell
+node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --no-workers
+```
+
+Result: API `/health` PASS, API `/ready` PASS, Web `/` PASS, Web `/api/build-info` PASS with `gitSha=71b8d503fd6fdfd7378dc67b2fa678799e2430f8`.
+
+Residual notes:
+
+- Auto Deploy is proven to trigger from GitHub push.
+- Full fanout on the current small VPS is still disk-pressure-sensitive; monitor `/` usage before large deploy bursts.
+- Protected worker readiness remains token-gated and was not converted into public evidence in this task.
+- Production Postgres logs contain repeated duplicate-key messages from runtime execution dedupe. Containers are healthy, but that runtime behavior should be reviewed separately before treating V1 as fully release-ready.

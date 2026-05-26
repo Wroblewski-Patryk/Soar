@@ -17,6 +17,19 @@ Last updated: 2026-05-26
   remains `38` commits ahead of `origin/main`, so production is still on pushed
   SHA `3fedb7a9...`.
 
+- `COOLIFY-PUSH-DEPLOY-FANOUT-71B8D503-2026-05-26` VERIFIED for public
+  deploy automation and six-Application runtime convergence. A push to
+  `main` triggered Coolify deployments, exposed VPS full-disk/Coolify Redis
+  `MISCONF` and Coolify SSH directory permission failures, and was recovered by
+  host cleanup, service restarts, permission repair, and Docker image hardening
+  commit `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`. Final Docker readback
+  shows API, Web, backtest, execution, market-data, and market-stream all
+  running `71b8d503...`; Soar Redis/Postgres and Coolify Redis are healthy;
+  public no-worker smoke passed; disk is `76%` used with `18G` available.
+  Remaining blockers are protected worker-token readiness, authenticated
+  journey proof, SLO/RC, restore/rollback, and separate review of repeated
+  runtime dedupe duplicate-key log noise.
+
 - `DASH-RUNTIME-SIGNAL-CONDITION-ACTIVE-2026-05-25` VERIFIED LOCALLY. Dashboard
   Home signal cards now use explicit matched strategy condition lines for
   condition-active LONG/SHORT emphasis and header count while preserving

@@ -4,19 +4,22 @@ Last updated: 2026-05-26
 
 ## 2026-05-26 Coolify Deploy Automation Recovery Next Action
 
-1. Treat Coolify six-Application `Auto Deploy` and `workers-market-stream`
-   liveness as recovered for the existing production topology.
+1. Treat Coolify six-Application `Auto Deploy`, push-triggered deployment
+   rows, and final six-Application convergence to `71b8d503...` as recovered
+   for the existing production topology.
 2. Do not claim full V1 release readiness from this checkpoint. Remaining
    release gates still require protected worker-token readiness, authenticated
    app journeys, release-controller signoff, SLO/RC, restore/rollback evidence,
    and explicit approval for any LIVE mutation.
-3. Before expecting production to move beyond SHA `3fedb7a9...`, commit and
-   push a coherent, validated local change set. The local workspace currently
-   has `HEAD=62e8c4c7...`, which is `38` commits ahead of `origin/main`, and
-   Coolify can deploy only pushed commits.
+3. Monitor VPS disk before and during future full fanout deploys. The current
+   host has proved sensitive to containerd/build-cache growth; keep at least
+   several GB free before triggering all six Applications.
 4. Keep the separate Coolify Service Stack migration blocked unless an
    operator intentionally resumes that cutover path with temp-domain smoke and
    rollback evidence.
+5. Open a separate runtime/backend review for repeated production
+   `RuntimeExecutionDedupe_dedupeKey_key` duplicate-key log noise observed
+   after recovery.
 
 ## 2026-05-26 LUC-179 Ops Lane Next Action
 
@@ -3743,3 +3746,10 @@ On "rob dalej", "rób dalej", "kontynuuj", "continue", or "next":
    - LUC-47 owner/action stays unchanged (temp-domain expected-SHA smoke/readiness + worker readiness + rollback note).
 3. Keep LUC-48 and LUC-49 treated as closed for this parent routing checkpoint.
 4. Do not open additional owner lanes before fresh closure evidence lands on LUC-47.
+
+## 2026-05-26 LUC-202 No-Stall Queue Expeditor Next Action
+1. Keep parent bridge `LUC-45` fail-closed `blocked` while `LUC-47` remains open.
+2. Treat `LUC-47` as the only active first-class blocker lane for this PM scope:
+   - `LUC-47` (`Ops Release Lead` + host operator): temp-domain expected-SHA smoke/readiness packet plus worker readiness and rollback note.
+3. Keep `LUC-48` and `LUC-49` treated as closed for this parent routing checkpoint.
+4. Use `in_progress` only during active reconciliation; keep `LUC-202` as `blocked` when idle.

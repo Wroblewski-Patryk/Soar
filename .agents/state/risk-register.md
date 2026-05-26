@@ -75,6 +75,15 @@ Last updated: 2026-05-26
   deploy pressure across six Applications must be monitored, protected worker
   readiness still requires token-bearing proof, and the separate Service Stack
   cutover remains blocked until intentionally resumed.
+- 2026-05-26 `COOLIFY-PUSH-DEPLOY-FANOUT-71B8D503-2026-05-26` adds a concrete
+  operations risk note: full six-Application deploy fanout can exhaust the
+  current VPS root filesystem through containerd/build-cache/image growth,
+  causing Coolify Redis `MISCONF`, production readiness failures, Postgres
+  recovery pressure, and failed deployment queue writes. Immediate recovery
+  succeeded with no data-volume deletion, but future release operations should
+  preflight disk, prune build cache between large deploy waves, and consider a
+  larger disk or the single-stack/shared-image deployment path before treating
+  full fanout as low-risk.
 - 2026-05-25 `USER-ACTION-EVIDENCE-INDEX-2026-05-25` mitigates the recurring
   risk that agents repair UI surfaces from local file inspection only. The new
   generated `user-action-index.csv` and `architecture:journey:triage` command

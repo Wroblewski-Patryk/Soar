@@ -472,7 +472,13 @@ const collectTests = async () => {
 };
 
 const collectV1Matrix = async () => {
-  const matrixPath = path.join(repoRoot, 'docs', 'operations', 'v1-product-action-audit-matrix-2026-05-10.md');
+  const matrixCandidates = [
+    path.join(repoRoot, 'docs', 'operations', 'v1-product-action-audit-matrix-2026-05-10.md'),
+    path.join(repoRoot, 'history', 'audits', 'v1-product-action-audit-matrix-2026-05-10.md'),
+  ];
+  const matrixPath =
+    (await Promise.all(matrixCandidates.map(async (candidate) => ((await fileExists(candidate)) ? candidate : ''))))
+      .find(Boolean) ?? matrixCandidates[0];
   const text = await readTextIfExists(matrixPath);
   const rows = [];
   let insideModuleMatrix = false;

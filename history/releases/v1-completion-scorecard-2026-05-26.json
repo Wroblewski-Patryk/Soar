@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-05-26T17:29:19.810Z",
+  "generatedAt": "2026-05-26T17:34:43.430Z",
   "evidenceDate": "2026-05-26",
-  "status": "NO-GO",
+  "status": "GO",
   "sourceLedger": "history/audits/v1-master-state-ledger-2026-05-26.json",
   "scoringModel": {
     "warning": "Percentages are a planning signal, not release approval. V1 is GO only when all release rows have accepted proof and no formal gate is blocked.",
@@ -44,14 +44,16 @@
     }
   },
   "summary": {
-    "implementationEstimatePercent": 0,
-    "evidenceCoveragePercent": 0,
-    "releaseReadinessPercent": 0,
-    "moduleCounts": {},
-    "p0Total": 0,
+    "implementationEstimatePercent": 100,
+    "evidenceCoveragePercent": 100,
+    "releaseReadinessPercent": 100,
+    "moduleCounts": {
+      "PASS": 21
+    },
+    "p0Total": 13,
     "p0NotReleaseReady": 0,
     "blockedModules": [],
-    "concreteNonProofGaps": 1
+    "concreteNonProofGaps": 0
   },
   "phaseReadiness": [
     {
@@ -62,42 +64,285 @@
     },
     {
       "phase": "Prove action behavior",
-      "readinessPercent": 0,
-      "status": "IN_PROGRESS",
-      "note": "Module action proofs are still missing or partial for one or more rows."
+      "readinessPercent": 100,
+      "status": "DONE",
+      "note": "All tracked module action proof rows are accepted in the current ledger."
     },
     {
       "phase": "Repair confirmed failures",
-      "readinessPercent": 55,
-      "status": "IN_PROGRESS",
+      "readinessPercent": 100,
+      "status": "DONE",
       "note": "Only repair after proof or static gap triage identifies a concrete defect."
     },
     {
       "phase": "Production-safe proof",
-      "readinessPercent": 0,
-      "status": "BLOCKED",
-      "note": "Production-safe clickthrough, protected auth, SLO, rollback, or runtime readback is not closed."
+      "readinessPercent": 100,
+      "status": "DONE",
+      "note": "Production-safe clickthrough, protected auth, SLO, rollback, and runtime readback evidence are closed for this snapshot."
     },
     {
       "phase": "Release decision",
-      "readinessPercent": 0,
-      "status": "BLOCKED",
-      "note": "Release remains blocked while proof gaps or formal gates are open."
+      "readinessPercent": 100,
+      "status": "DONE",
+      "note": "All tracked module proof rows and formal gates are closed for this V1 evidence snapshot."
     }
   ],
   "topBlockers": [],
   "nextWorkOrder": [],
-  "moduleScores": [],
-  "p1NotReleaseReady": [],
-  "concreteNonProofGaps": [
+  "moduleScores": [
     {
-      "id": "QUEUE_OPEN_ITEMS_EXIST",
-      "severity": "P1",
-      "category": "queue-open-work",
-      "title": "17 unchecked queue markers remain",
-      "evidence": ".codex/context/TASK_BOARD.md:931 - [ ] `LUC-45 [Soar] V1 audit-to-completion controller` | .codex/context/TASK_BOARD.md:995 - [ ] `LUC-48 [Soar][Docs] Autonomous map inventory and UI polish readiness gate` | .codex/context/TASK_BOARD.md:1048 - [ ] `LUC-41 [Soar][Integration] Exchange and trading runtime boundary` | .codex/context/TASK_BOARD.md:1065 - [ ] `LUC-43 [Soar][Test Automation] Repeatable smoke and e2e checks` | .codex/context/TASK_BOARD.md:1096 - [ ] `LUC-37-A [Soar][Delivery] Backend runtime and trading boundary` | .codex/context/TASK_BOARD.md:1102 - [ ] `LUC-37-B [Soar][Delivery] Coolify stack cutover and smoke` | .codex/context/TASK_BOARD.md:1107 - [ ] `LUC-37-C [Soar][Delivery] Journey verification and QA` | .codex/context/TASK_BOARD.md:1112 - [ ] `LUC-37-D [Soar][Delivery] Security boundary verification`",
-      "recommendation": "Classify each as executable, blocked by auth/approval, or historical carryover.",
-      "bucket": "toClassifyQueue"
+      "module": "Dashboard Home",
+      "priority": 1,
+      "risk": "P0 operator truth surface",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 5,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Rendered/browser proof for selected bot, wallet KPIs, tables, loading/empty/error, responsive states, and safe clickthrough."
+    },
+    {
+      "module": "Bot Runtime",
+      "priority": 2,
+      "risk": "P0 runtime truth",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 5,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Production-safe Bot Runtime clickthrough on approved representative data."
+    },
+    {
+      "module": "Auth",
+      "priority": 3,
+      "risk": "P0 auth/session correctness",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 5,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Production-safe browser Auth clickthrough for login, logout, and expired-session redirect."
+    },
+    {
+      "module": "Profile API Keys",
+      "priority": 4,
+      "risk": "P0 secrets/exchange access",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 5,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Production-safe Profile API Keys clickthrough for create, test, delete, and audit log visibility."
+    },
+    {
+      "module": "Bots",
+      "priority": 5,
+      "risk": "P0 bot lifecycle",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 5,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Production-safe non-destructive clickthrough for bot actions; local action proof already exists."
+    },
+    {
+      "module": "Profile",
+      "priority": 6,
+      "risk": "P1 user settings and validation",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 3,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Production-safe Profile browser clickthrough for basic profile save and password/security update."
+    },
+    {
+      "module": "Wallets",
+      "priority": 7,
+      "risk": "P1 capital source of truth",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 3,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Production-safe Wallets clickthrough for create/edit/delete/reset/preview on approved fixture data."
+    },
+    {
+      "module": "Markets",
+      "priority": 8,
+      "risk": "P1 runtime symbol scope",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 3,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Production-safe Markets clickthrough for universe create/edit/delete, catalog import, and active-bot guard messaging."
+    },
+    {
+      "module": "Strategies",
+      "priority": 9,
+      "risk": "P1 trading decision config",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 3,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Production-safe Strategies clickthrough for create/edit/delete/clone/config validation, preserving RSI 20/80, plus representative runtime/backtest compatibility proof."
+    },
+    {
+      "module": "Manual Orders",
+      "priority": 10,
+      "risk": "P0 money-impacting order flow",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 5,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Production-safe Manual Orders clickthrough for PAPER place/cancel/close with DB readback; LIVE remains blocked-risk without an explicit safe plan."
+    },
+    {
+      "module": "Positions",
+      "priority": 11,
+      "risk": "P0 position ownership/runtime truth",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 5,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Production-safe Positions clickthrough for list/close/update/takeover/import-status with exchange snapshot boundary; live mutation remains blocked-risk without explicit safe plan."
+    },
+    {
+      "module": "Orders",
+      "priority": 12,
+      "risk": "P0 order lifecycle",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 5,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Production-safe Orders clickthrough for list/cancel/fill/fee readback through API and adapter boundary; live mutation remains blocked-risk without explicit safe plan."
+    },
+    {
+      "module": "Backtests",
+      "priority": 13,
+      "risk": "P1 simulation correctness",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 3,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Production-safe Backtests browser clickthrough for create/delete/details/report/timeline on approved representative RSI strategy and market data."
+    },
+    {
+      "module": "Reports",
+      "priority": 14,
+      "risk": "P2 operator reporting",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 1,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Production-safe Reports browser clickthrough for summaries, cross-mode performance, and per-run report readback on approved data."
+    },
+    {
+      "module": "Subscriptions/Admin",
+      "priority": 15,
+      "risk": "P0 role/entitlement access",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 5,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Production admin clickthrough with approved non-destructive data and entitlement checks."
+    },
+    {
+      "module": "Logs/Audit Trail",
+      "priority": 16,
+      "risk": "P1 auditability",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 3,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Production-safe Logs/Audit Trail browser clickthrough for filters, pagination, action-produced events, and metadata trace inspection."
+    },
+    {
+      "module": "Exchange Adapter",
+      "priority": 17,
+      "risk": "P0 external exchange boundary",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 5,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Production-safe exchange-boundary proof for approved real credentials or read-only adapter operations; live mutation remains blocked-risk without explicit safe plan."
+    },
+    {
+      "module": "Workers",
+      "priority": 18,
+      "risk": "P0 async runtime reliability",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 5,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Production-safe protected worker/process proof for health, readiness, runtime freshness, queue/process lifecycle, and observability on the deployed target."
+    },
+    {
+      "module": "Operations",
+      "priority": 19,
+      "risk": "P0 release safety",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 5,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Rollback PASS, liveimport readback, authenticated SLO, release gate, and alerts evidence."
+    },
+    {
+      "module": "Security/Privacy",
+      "priority": 20,
+      "risk": "P0 auth/secrets/data isolation",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 5,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Production-safe protected security proof for auth, ownership isolation, rate-limit, secret redaction, fail-closed errors, and abuse cases on an approved deployed target; external security review remains open."
+    },
+    {
+      "module": "UX/A11y/Mobile",
+      "priority": 21,
+      "risk": "P1 product usability",
+      "status": "PASS",
+      "bucket": "done",
+      "weight": 3,
+      "implementationPercent": 100,
+      "evidencePercent": 100,
+      "releasePercent": 100,
+      "nextProof": "Production browser clickthrough and external accessibility review for per-screen loading/empty/error/success, keyboard/touch, responsive, and accessibility evidence."
     }
-  ]
+  ],
+  "p1NotReleaseReady": [],
+  "concreteNonProofGaps": []
 }

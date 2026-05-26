@@ -129,3 +129,27 @@ A verified ops recovery packet covering root cause, mutation, smoke evidence, an
 
 ## Result Report
 Root cause for the reported push-deploy drift was Coolify configuration: `Auto Deploy` was off on all six Soar Applications even though they used the official Git App integration. The long-running worker deployment was visible in `workers-market-stream` history as failed/canceled around 2026-05-25/2026-05-26, and the worker resource was exited before recovery. Auto Deploy is now restored for all six Applications, the market-stream worker has a successful recovery deploy on production SHA `3fedb7a9170097b40accb6ccea1915064f383f11`, and all Soar resources are running. Full V1 release readiness remains blocked on protected-token/authenticated evidence and separate release gates.
+
+## 2026-05-26 Push-Test Closure
+
+The GitHub-to-Coolify path was tested by pushing `6f9ea8d21b1dc6aadf8e34a13be33931b9859f7e`, which created webhook deployment rows for all six Soar Applications. The deploy fanout exposed a VPS/Coolify incident rather than a Git trigger failure:
+
+- `/` was full (`100%`, `0` available), causing Coolify Redis `MISCONF`, API `/ready` `503`, and unstable deployment queue state.
+- Coolify later failed deployments because `/data/coolify/ssh` was not writable after the disk incident.
+- API/worker Docker builds were producing or retaining huge `apps/api/core` files in layers and still had redundant recursive ownership work in worker images.
+
+Repairs completed:
+
+- reclaimed host disk without deleting app data volumes;
+- restarted Coolify Redis, production Postgres, and Coolify where needed;
+- applied the Coolify-reported SSH directory permission repair;
+- pushed `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` with Docker image hardening for core dump exclusion/removal and worker chown removal;
+- cancelled stale failed/queued deployments from the broken fanout;
+- redeployed remaining Applications to `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`.
+
+Final status:
+
+- all six Soar Applications are running image SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`;
+- Soar Redis, production Postgres, and Coolify Redis are healthy;
+- host disk is `76%` used with `18G` available after cleanup;
+- public no-worker deploy smoke passed for API `/health`, API `/ready`, Web `/`, and Web `/api/build-info`.
