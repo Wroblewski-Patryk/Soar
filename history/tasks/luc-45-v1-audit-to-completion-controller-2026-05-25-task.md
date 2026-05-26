@@ -148,3 +148,22 @@ Create an executable audit-to-completion controller that maps V1 findings to sin
   - Ops proof lane: `LUC-47`
   - Frontend proof lane: `LUC-48-A/browser-proof`
 - Active V1 controller routine owns the next reconciliation run and keeps parent fail-closed until all three proof lanes provide closure evidence for gate advancement.
+
+## 2026-05-25 Reopen Recovery Checkpoint (Comments dc0ee7e7-1632-4d99-a94e-20d50ef93363, f8097f41-4e7e-47b3-b113-3b978e988c3b)
+- Session resumed after local Codex auth repair and inbox triage; scope stays narrow to the assigned controller lane (`LUC-45`).
+- Stale-parent rule remains enforced: do not hold parent as passive `in_progress` without a live Delivery reconciliation run.
+- Parent controller status remains `BLOCKED` on active child proof lanes:
+  - Backend: `LUC-46`
+  - Ops: `LUC-47`
+  - Frontend/UI proof: `LUC-48-A/browser-proof`
+- Active 2-hour controller routine remains the live continuation path and reconciles immediately after child updates land.
+- No scope expansion in this heartbeat beyond controller reconciliation/state truth sync.
+
+## 2026-05-26 CTO Reconciliation Delta (Wake: source_scoped_recovery_action)
+- Latest child-lane truth was reconciled against canonical board/state updates before any scope movement.
+- `LUC-46` is treated as closed for current controller gate (`LUC-45-A`) based on fresh closure evidence already logged on 2026-05-26 (`backtests.e2e` full PASS `15/15` in lane history).
+- Parent `LUC-45` remains fail-closed `BLOCKED`, but blocker set is now narrowed to live unresolved proof lanes only:
+  - Ops rollout/readiness proof: `LUC-47` (owner: Ops Release Lead; action: temp-domain deploy + smoke/readiness packet bound to expected SHA).
+  - Frontend protected browser-state proof: `LUC-48-A/browser-proof` (owner: Frontend + QA; action: protected route-state evidence packet for `/dashboard`, `/dashboard/bots*`, `/admin/*` with required states).
+- Controller continuation path is unchanged: after `LUC-47` and `LUC-48-A/browser-proof` closure evidence, advance to `LUC-45-C -> LUC-45-D -> LUC-45-E` integration gates.
+- Final disposition for this heartbeat: `blocked`.
