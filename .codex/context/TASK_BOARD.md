@@ -1,3 +1,43 @@
+## 2026-05-28 LUC-241 Unblock Workers/Ready Smoke Principal Permissions (issue_continuation_needed bounded continuity checkpoint)
+- Wake `issue_continuation_needed` consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`) with no new unblock comment/artifact delta.
+- Concrete action in this heartbeat:
+  - read-only auth-artifact presence + token-shape checkpoint,
+  - lane-host reachability probes (`soar-api` health/ready, `soar-web` root/build-info),
+  - DNS/TCP sanity check for `soar-api.luckysparrow.ch:443`.
+- Result (`2026-05-28T01:12:48+02:00`):
+  - `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`,
+  - `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`,
+  - token shape unchanged (`LEN=36`, dot parts `1`),
+  - all lane-host probes returned `fetch failed`,
+  - `Test-NetConnection` reported name resolution failure and `TcpTestSucceeded=False`.
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged:
+  1. Ops must use canonical hosts only: `https://api.soar.luckysparrow.ch` and `https://soar.luckysparrow.ch`.
+  2. Auth/security owner confirms fresh valid approved read-only principal/session artifact for `GET /workers/ready`.
+  3. Then Ops executes exactly one worker-included smoke recheck.
+- Note: the DNS/egress failure above is tied to stale/non-canonical lane hosts, not to the canonical Soar production hosts established by LUC-390.
+- Evidence:
+  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+
+## 2026-05-28 LUC-241 Unblock Workers/Ready Smoke Principal Permissions (issue_reopened_via_comment single auth/smoke recheck)
+- Comment `59fb3169-ce9f-40d4-aab6-d8847e7c6dba` acknowledged first; instruction executed exactly as requested: one read-only auth/smoke recheck for protected `/workers/ready`.
+- Concrete action in this heartbeat:
+  - single `ops:deploy:smoke` run with expected SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`,
+  - single token auth probe for `/auth/me` and `/workers/ready`.
+- Result (`2026-05-28T01:11:25+02:00`):
+  - `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`,
+  - token shape unchanged (`LEN=36`, dot parts `1`),
+  - smoke failed with `fetch failed` on `API /health`, `API /ready`, `WEB /`, `WEB /api/build-info`, `API /workers/ready`,
+  - auth probe also `fetch failed` for `/auth/me` and `/workers/ready`.
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged:
+  1. Ops must use canonical hosts only: `https://api.soar.luckysparrow.ch` and `https://soar.luckysparrow.ch`.
+  2. Auth/security owner confirms fresh valid approved read-only principal/session artifact for `GET /workers/ready`.
+  3. Then Ops executes exactly one worker-included smoke recheck.
+- Note: this recheck used stale/non-canonical hosts (`soar-api.luckysparrow.ch`, `soar-web.luckysparrow.ch`), so it should not override LUC-390's canonical-host evidence.
+- Evidence:
+  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+
 ## 2026-05-28 LUC-175 Source-Control Queue Executor Gate (`issue_continuation_needed`)
 - Wake `issue_continuation_needed` consumed from inline payload
   (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).

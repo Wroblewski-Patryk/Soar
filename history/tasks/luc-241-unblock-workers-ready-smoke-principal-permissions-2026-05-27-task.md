@@ -82,6 +82,66 @@ Verify whether current smoke principal can authenticate and pass protected `GET 
   2. Then Soar API auth credential owner + Security/Test permission owner provide or confirm a fresh valid approved read-only principal/session artifact for `GET /workers/ready`.
   3. Then Ops runs exactly one worker-included smoke recheck.
 
+## Continuation Checkpoint (issue_reopened_via_comment, 2026-05-28, comment 59fb3169-ce9f-40d4-aab6-d8847e7c6dba)
+- Latest board comment acknowledged first: gate freshness watcher requested exactly one read-only auth/smoke recheck for protected `/workers/ready`.
+- Concrete action executed in this heartbeat (single recheck only; no deploy/restart/runtime mutation):
+  - `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://soar-api.luckysparrow.ch --web-base-url https://soar-web.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8`
+  - token probe with current `SMOKE_AUTH_TOKEN`:
+    - `GET /auth/me`
+    - `GET /workers/ready`
+- Timestamp: `2026-05-28T01:11:25+02:00`.
+- Presence/token-shape snapshot:
+  - `SMOKE_AUTH_TOKEN=True`
+  - `SMOKE_AUTH_EMAIL=True`
+  - `SMOKE_AUTH_PASSWORD=True`
+  - `SOAR_API_TOKEN=False`
+  - `SOAR_API_KEY=False`
+  - `SOAR_SESSION_COOKIE=False`
+  - `SMOKE_AUTH_TOKEN_LEN=36`
+  - `SMOKE_AUTH_TOKEN_DOT_PARTS=1`
+- Recheck result:
+  - Smoke:
+    - FAIL `API /health -> fetch failed`
+    - FAIL `API /ready -> fetch failed`
+    - FAIL `WEB / -> fetch failed`
+    - FAIL `WEB /api/build-info -> fetch failed`
+    - FAIL `API /workers/ready -> fetch failed`
+  - Auth probe:
+    - `GET /auth/me -> fetch failed`
+    - `GET /workers/ready -> fetch failed`
+- Interpretation:
+  - this recheck used stale/non-canonical lane hosts (`soar-api.luckysparrow.ch`, `soar-web.luckysparrow.ch`).
+  - prior LUC-390 evidence says canonical production hosts are `api.soar.luckysparrow.ch` and `soar.luckysparrow.ch`; canonical public checks passed there.
+  - do not infer canonical production outage from this stale-host `fetch failed` evidence.
+- Final disposition for this continuation heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Ops uses canonical hosts only: `https://api.soar.luckysparrow.ch` and `https://soar.luckysparrow.ch`.
+  2. Auth/security owner confirms a fresh valid approved read-only principal/session artifact for `GET /workers/ready`.
+  3. Then Ops executes exactly one worker-included smoke recheck.
+
+## Continuation Checkpoint (issue_continuation_needed, 2026-05-28)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`) with no new comment-scoped unblock artifact.
+- Concrete action in this heartbeat (bounded read-only continuity checkpoint; no repeated full smoke):
+  - auth-artifact presence and token-shape checkpoint,
+  - public lane-host reachability probes (`/health`, `/ready`, web `/`, web `build-info`),
+  - DNS/TCP sanity check (`Test-NetConnection` on `soar-api.luckysparrow.ch:443`).
+- Timestamp: `2026-05-28T01:12:48+02:00`.
+- Result:
+  - `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`
+  - `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`
+  - token shape unchanged (`SMOKE_AUTH_TOKEN_LEN=36`, `SMOKE_AUTH_TOKEN_DOT_PARTS=1`)
+  - all lane-host HTTP probes returned `fetch failed`
+  - `Test-NetConnection` reported name-resolution failure and `TcpTestSucceeded=False`.
+- Interpretation:
+  - no unblock delta in this wake.
+  - the DNS/egress failure is tied to stale/non-canonical lane hosts, not to the canonical Soar production hosts established by LUC-390.
+  - the protected gate remains the canonical `/workers/ready` auth/session proof path.
+- Final disposition for this continuation heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Ops uses canonical hosts only: `https://api.soar.luckysparrow.ch` and `https://soar.luckysparrow.ch`.
+  2. Auth/security owner confirms a fresh valid approved read-only principal/session artifact for `GET /workers/ready`.
+  3. Then Ops executes exactly one worker-included smoke recheck.
+
 ## Continuation Checkpoint (finish_successful_run_handoff, 2026-05-27)
 - Wake delta processed with concrete recheck action.
 - New secret-path signal in this run:
