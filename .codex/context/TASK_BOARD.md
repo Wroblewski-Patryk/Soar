@@ -13574,3 +13574,22 @@ None.
 - Evidence:
   `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
 
+
+## 2026-05-28 LUC-175 Source-Control Queue Executor Gate (`issue_commented`, control-loop unblock)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `1/1`, latest comment id `f2640c8a-3c88-4971-bd25-d1ab2730c7ec`).
+- Policy delta applied: local source-control closure is decoupled from protected production-gate blockers (`LUC-241`/`LUC-47` still gate push/deploy/protected smoke; they do not block local diff classification, local validation, or local commit/no-commit closure).
+- Concrete action in this heartbeat:
+  - full dirty-group classification executed:
+    - `product-code`: 2 files (`assistantOrchestrator` service + test),
+    - `state/control`: 6 files,
+    - `docs/evidence/plans`: 15 files,
+  - local validation for product-code group:
+    - `pnpm --filter api exec vitest run src/modules/engine/assistantOrchestrator.service.test.ts --reporter=verbose` -> `7/7 pass`,
+    - `pnpm --filter api run typecheck` -> `pass`,
+  - commit/no-commit disposition:
+    - `product-code` -> commit-eligible in local lane,
+    - `state/control` + `docs/evidence/plans` -> explicit no-commit in this heartbeat, preserved as-is.
+- Safety contract maintained: no revert, no push, no deploy, no restart, no protected smoke, no secret disclosure.
+- Final disposition: `in_progress` (live continuation path exists: finalize local commit for validated product-code group).
+- Evidence:
+  `history/tasks/luc-175-source-control-queue-executor-gate-2026-05-26-task.md`.

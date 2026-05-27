@@ -12398,3 +12398,13 @@ Last updated: 2026-05-28
 
 - `LUC-386 Mobile module docs baseline (2026-05-28)` is now explicitly recorded as complete for the scaffold-only scope. `docs/modules/mobile-module-index.md` and `docs/modules/mobile-bootstrap.md` are present; `docs/modules/module-doc-status-index.md` includes `Mobile Surface`; `docs/modules/module-registry.md` includes `Mobile Module Registry`; and `.agents/state/module-confidence-ledger.md` (`SOAR-MOBILE-001`) now references this docs baseline. Native/mobile implementation remains deferred by design until activation approval.
 
+
+- `LUC-175 [Soar][LUC-103-P6]` heartbeat (`issue_commented`, 2026-05-28) consumed comment `f2640c8a-3c88-4971-bd25-d1ab2730c7ec` and applied control-loop unblock policy for local source-control closure lanes.
+  Local closure is now explicitly decoupled from protected production gates: `LUC-241`/`LUC-47` continue to block deploy/restart/push/protected smoke, but do not block local diff classification, local validation, and local commit/no-commit disposition.
+  Concrete execution completed:
+  1) full dirty-group classification (`product-code=2`, `state/control=6`, `docs/evidence/plans=15`),
+  2) local validation for product-code group (`assistantOrchestrator`): targeted vitest `7/7 pass` + `api` typecheck pass,
+  3) disposition split: product-code is local commit-eligible; non-product groups remain no-commit/preserved in this heartbeat.
+  No revert, no push, no deploy/restart/protected smoke, no secret disclosure.
+  Evidence:
+  `history/tasks/luc-175-source-control-queue-executor-gate-2026-05-26-task.md`.

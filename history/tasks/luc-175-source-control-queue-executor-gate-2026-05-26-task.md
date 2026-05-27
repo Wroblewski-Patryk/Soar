@@ -139,3 +139,22 @@ evidence.
     expected-SHA deploy smoke/readiness + worker readiness evidence + rollback
     note.
 - Final disposition for this heartbeat: `blocked`.
+
+## 2026-05-28 Wake Delta (issue_commented, comment `f2640c8a-3c88-4971-bd25-d1ab2730c7ec`)
+- Pending comment consumed from inline wake payload (`fallbackFetchNeeded=false`, comments `1/1`).
+- Board policy delta applied: local source-control closure is decoupled from protected production-gate blockers (`LUC-241`/`LUC-47` still gate push/deploy/protected smoke, but not local diff classification/validation/commit-no-commit closure).
+- Concrete action in this heartbeat:
+  - classified every current dirty group in this repository snapshot:
+    - `product-code`: 2 modified files (`apps/api/src/modules/engine/assistantOrchestrator.service.ts`, `apps/api/src/modules/engine/assistantOrchestrator.service.test.ts`),
+    - `state/control`: 6 modified files (`.agents/state/*`, `.codex/context/*`),
+    - `docs/evidence/plans`: 15 files (mixed modified/untracked in `docs/*` and `history/*`),
+  - validated the product-code group locally before commit decision:
+    - `pnpm --filter api exec vitest run src/modules/engine/assistantOrchestrator.service.test.ts --reporter=verbose` -> `1 file, 7 tests passed`,
+    - `pnpm --filter api run typecheck` -> `pass`,
+  - commit disposition applied:
+    - `product-code` group -> `commit-eligible` (local evidence-backed),
+    - `state/control` + `docs/evidence/plans` groups -> `no-commit in this heartbeat` (outside this narrow closure slice; preserved without revert).
+- Safety contract honored:
+  - preserved existing user/agent work (no auto-revert),
+  - no push/deploy/restart/protected smoke/secret disclosure.
+- Final disposition for this heartbeat: `in_progress` (live continuation path: finish local commit of validated product-code group and keep remaining groups explicitly no-commit/owner-routed).
