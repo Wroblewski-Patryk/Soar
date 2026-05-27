@@ -1,8 +1,44 @@
 # System Health
 
-Last updated: 2026-05-26
+Last updated: 2026-05-27
 
 ## Current Readiness Checkpoint
+
+- `LUC-285-SAFE-LANE-ARCH-STATUS-REFRESH-2026-05-27-SOURCE-SCOPED-RECOVERY`
+  VERIFIED for non-production status continuity. Wake
+  `source_scoped_recovery_action` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`)
+  and a concrete drift recheck was executed across
+  `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`,
+  `.agents/state/system-health.md`, `.agents/state/active-mission.md`, and
+  `history/plans/luc-45-v1-gap-register-2026-05-25.md`.
+  Result: no drift in blocker-truth routing; unblock owner/action remains
+  `LUC-47` (Ops Release Lead + host operator) for temp-domain expected-SHA
+  smoke/readiness + worker readiness + rollback note.
+  Scope stayed docs/state only (no runtime/deploy mutation).
+
+- `LUC-285-SAFE-LANE-ARCH-STATUS-REFRESH-2026-05-27-CONTINUATION` VERIFIED for
+  non-production status continuity. Wake `issue_continuation_needed` was
+  consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`)
+  and a concrete drift recheck was executed across
+  `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`,
+  `.agents/state/system-health.md`, `.agents/state/active-mission.md`, and
+  `history/plans/luc-45-v1-gap-register-2026-05-25.md`.
+  Result: no drift in blocker-truth routing; unblock owner/action remains
+  `LUC-47` (Ops Release Lead + host operator) for temp-domain expected-SHA
+  smoke/readiness + worker readiness + rollback note.
+  Scope stayed docs/state only (no runtime/deploy mutation).
+
+- `LUC-285-SAFE-LANE-ARCH-STATUS-REFRESH-2026-05-27` VERIFIED for
+  non-production architecture/status parity while release gate remains blocked.
+  The heartbeat consumed inline wake scope first (`fallbackFetchNeeded=false`,
+  comments `0/0`) and refreshed source-of-truth routing without mutating
+  runtime/deploy state: V1 gap register evidence lineage now includes
+  `LUC-285`, and board/project state are synchronized on unchanged first-class
+  blocker truth (`LUC-47` owned by Ops Release Lead + host operator for
+  temp-domain expected-SHA smoke/readiness, worker readiness, and rollback
+  note). This checkpoint is documentation/status continuity only and does not
+  reduce protected production gate requirements.
 
 - `COOLIFY-AUTO-DEPLOY-WORKER-RECOVERY-2026-05-26` VERIFIED for the bounded
   deployment-automation repair. Coolify `Auto Deploy` is restored on the six

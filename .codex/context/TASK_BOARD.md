@@ -2,6 +2,55 @@
 
 Last updated: 2026-05-27
 
+## 2026-05-27 LUC-285 [Soar][Safe Lane] Non-production architecture/status refresh while gate is blocked (source-scoped recovery)
+- Wake `source_scoped_recovery_action` processed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete safe-lane action in this heartbeat: blocker/state drift recheck
+  across active board/state/system-health/mission files and V1 gap-register
+  linkage.
+- Result: no drift in blocker routing or unblock ownership/action; gate remains
+  fail-closed to `LUC-47`.
+- Scope remained non-production docs/state only (no code/runtime/deploy mutation).
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness +
+  worker readiness evidence + rollback note.
+- Evidence:
+  `history/tasks/luc-285-safe-lane-non-production-architecture-status-refresh-2026-05-27-source-scoped-recovery-task.md`.
+
+## 2026-05-27 LUC-285 [Soar][Safe Lane] Non-production architecture/status refresh while gate is blocked (continuation)
+- Wake `issue_continuation_needed` processed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`).
+- Concrete safe-lane action in this heartbeat: docs/state drift recheck across
+  active board/state/system-health/mission files and V1 gap register linkage.
+- Result: no drift in blocker truth or ownership/action; gate routing remains
+  fail-closed to `LUC-47`.
+- Scope remained non-production docs/state only (no code/runtime/deploy mutation).
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness +
+  worker readiness evidence + rollback note.
+- Evidence:
+  `history/tasks/luc-285-safe-lane-non-production-architecture-status-refresh-2026-05-27-continuation-task.md`.
+
+## 2026-05-27 LUC-285 [Soar][Safe Lane] Non-production architecture/status refresh while gate is blocked
+- Wake `issue_assigned` processed with concrete docs-memory refresh action.
+- Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`,
+  comments `0/0`, latest comment id `unknown`); no new unblock evidence or
+  comment-scoped scope delta arrived.
+- Non-production refresh completed for blocker-truth parity:
+  - V1 gap register lineage updated with `LUC-285` evidence.
+  - Task board and project state synchronized with unchanged first-class
+    blocker routing.
+- Scope remained docs/state/architecture-status only (no code/runtime/deploy
+  mutation).
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness +
+  worker readiness evidence + rollback note.
+- Evidence:
+  `history/tasks/luc-285-safe-lane-non-production-architecture-status-refresh-2026-05-27-task.md`.
+
 ## 2026-05-27 LUC-263 No-Stall Queue Expeditor
 - Wake `process_lost_retry` processed with concrete PM queue-expeditor
   reconciliation.

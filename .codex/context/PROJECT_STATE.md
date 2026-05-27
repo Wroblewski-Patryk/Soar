@@ -2,6 +2,51 @@
 
 Last updated: 2026-05-27
 
+- `LUC-285 source_scoped_recovery_action heartbeat (2026-05-27)` executed as a
+  bounded non-production parity checkpoint and remains `blocked`.
+  Inline wake was consumed first (`fallbackFetchNeeded=false`, comments `0/0`,
+  latest comment id `unknown`); no new unblock evidence or scope delta arrived.
+  Concrete action: rechecked drift across task board, project state, system
+  health, active mission, and V1 gap-register lineage.
+  Result: no blocker-routing drift; unblock owner/action remains `LUC-47`
+  (`Ops Release Lead` + host operator) with required temp-domain expected-SHA
+  smoke/readiness + worker readiness + rollback note.
+  Scope remained docs/state/architecture-status only (no code/runtime/deploy
+  mutation).
+  Evidence:
+  `history/tasks/luc-285-safe-lane-non-production-architecture-status-refresh-2026-05-27-source-scoped-recovery-task.md`.
+
+- `LUC-285 issue_continuation_needed heartbeat (2026-05-27)` executed as a
+  bounded non-production parity checkpoint and remains `blocked`.
+  Inline wake was consumed first (`fallbackFetchNeeded=false`, comments `0/0`);
+  no new unblock evidence or comment-scoped delta arrived.
+  Concrete action: rechecked drift across task board, project state, system
+  health, active mission, and V1 gap-register lineage.
+  Result: no blocker-routing drift; unblock owner/action remains `LUC-47`
+  (`Ops Release Lead` + host operator) with required temp-domain expected-SHA
+  smoke/readiness + worker readiness + rollback note.
+  Scope remained docs/state/architecture-status only (no code/runtime/deploy
+  mutation).
+  Evidence:
+  `history/tasks/luc-285-safe-lane-non-production-architecture-status-refresh-2026-05-27-continuation-task.md`.
+
+- `LUC-285 [Soar][Safe Lane] Non-production architecture/status refresh while
+  gate is blocked` heartbeat executed on 2026-05-27 with concrete
+  docs-memory/state synchronization and remains `blocked`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`,
+  comments `0/0`, latest comment id `unknown`); no new unblock evidence or
+  comment-scoped delta arrived.
+  Non-production parity refresh completed:
+  V1 gap register lineage includes `LUC-285`, and board/state routing is
+  synchronized with unchanged first-class blocker truth.
+  Scope remained docs/state/architecture-status only (no code/runtime/deploy
+  mutation).
+  Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness +
+  worker readiness evidence + rollback note.
+  Evidence:
+  `history/tasks/luc-285-safe-lane-non-production-architecture-status-refresh-2026-05-27-task.md`.
+
 - `LUC-263 process_lost_retry heartbeat (2026-05-27)` executed a concrete PM
   no-stall reconciliation and remains `blocked`.
   Inline wake scope was consumed first (`fallbackFetchNeeded=false`,

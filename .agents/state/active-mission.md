@@ -1,6 +1,6 @@
 # Active Mission Packet
 
-Last updated: 2026-05-26
+Last updated: 2026-05-27
 
 Use this file as the first operational router for `pracuj dalej`, `rob dalej`,
 `kontynuuj`, `next`, and similar continuation nudges. Keep it short enough that
@@ -46,6 +46,35 @@ repository history.
   changes, then source-of-truth updates and final residual-risk report.
 
 ### Latest Checkpoint
+
+- `LUC-285-SAFE-LANE-ARCH-STATUS-REFRESH-2026-05-27-SOURCE-SCOPED-RECOVERY`
+  completed as a bounded docs-memory continuity checkpoint. Wake
+  `source_scoped_recovery_action` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`)
+  and no new unblock evidence arrived. A concrete drift recheck across
+  board/state/system-health/mission files and V1 gap-register lineage found no
+  routing change. Blocker ownership remains unchanged (`LUC-47` -> Ops Release
+  Lead + host operator for temp-domain expected-SHA smoke/readiness + worker
+  readiness + rollback note). No code/runtime/deploy mutation was performed.
+
+- `LUC-285-SAFE-LANE-ARCH-STATUS-REFRESH-2026-05-27-CONTINUATION` completed
+  as a bounded docs-memory continuity checkpoint. Wake
+  `issue_continuation_needed` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`) and no new unblock evidence
+  arrived. A concrete drift recheck across board/state/system-health/mission
+  files and V1 gap-register lineage found no routing change. Blocker ownership
+  remains unchanged (`LUC-47` -> Ops Release Lead + host operator for
+  temp-domain expected-SHA smoke/readiness + worker readiness + rollback note).
+  No code/runtime/deploy mutation was performed.
+
+- `LUC-285-SAFE-LANE-ARCH-STATUS-REFRESH-2026-05-27` completed as a bounded
+  non-production docs-memory checkpoint. Inline wake scope was acknowledged
+  first (`fallbackFetchNeeded=false`, comments `0/0`) and no new unblock
+  evidence arrived. Source-of-truth parity was refreshed: gap-register evidence
+  lineage now includes `LUC-285`, board/project state were synchronized, and
+  blocker ownership remains unchanged (`LUC-47` -> Ops Release Lead + host
+  operator for temp-domain expected-SHA smoke/readiness + worker readiness +
+  rollback note). No code/runtime/deploy mutation was performed.
 
 - `LUC-191-DAILY-STATUS-REFRESH-2026-05-26` completed as a PM
   coordination-only checkpoint. The active blocker topology is unchanged and
