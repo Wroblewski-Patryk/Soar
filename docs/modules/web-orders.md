@@ -80,14 +80,22 @@ parallel page.
   tasks and focused tests.
 
 ## 8. Test Coverage and Evidence
-Relevant evidence:
+Tests:
+| Test file | Scope | Level |
+| --- | --- | --- |
+| `apps/web/src/middleware.test.ts` | Legacy `/dashboard/orders` redirect to runtime route | Unit/integration |
+| `apps/web/src/features/dashboard-home/components/HomeLiveWidgets.manual-order.test.tsx` | Manual order rendering and action flow in dashboard runtime surface | Component |
+| `apps/web/src/features/dashboard-home/components/HomeLiveWidgets.manual-order-scope.test.tsx` | Manual-order scope guards and fail-closed UI boundaries | Component |
+| `apps/web/src/features/dashboard-home/components/HomeLiveWidgets.manual-order-venue.test.tsx` | Venue/capability presentation for manual orders | Component |
+| `apps/web/src/features/dashboard-home/components/HomeLiveWidgets.open-orders-actions.test.tsx` | Open-order action availability and command UX | Component |
+| `apps/web/src/features/dashboard-home/components/HomeLiveWidgets.open-orders-source.test.tsx` | Order source provenance labeling | Component |
+| `apps/web/src/features/bots/components/bots-management/MonitoringFutureSignalsSection.test.tsx` | Runtime order/signal monitoring table behavior in bot runtime | Component |
+
+Evidence:
 - `history/evidence/v1-orders-local-proof-task-2026-05-11.md`
 - `history/evidence/v1-manual-orders-local-proof-task-2026-05-11.md`
 - `docs/planning/v1-dashboard-runtime-table-action-audit-2026-05-10-task.md`
 - `history/evidence/v1-bot-runtime-paper-session-browser-proof-task-2026-05-11.md`
-- `apps/web/src/middleware.test.ts`
-- Dashboard Home focused order/action tests under
-  `apps/web/src/features/dashboard-home/components/`
 
 ## 9. Open Issues and Follow-Ups
 - Production-safe Orders clickthrough remains required before V1 release

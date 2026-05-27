@@ -13642,3 +13642,28 @@ None.
 - Final disposition: `in_progress` (live continuation path exists: finalize local commit for validated product-code group).
 - Evidence:
   `history/tasks/luc-175-source-control-queue-executor-gate-2026-05-26-task.md`.
+
+## 2026-05-28 LUC-387 [Soar][ARB-003] Expand module deep dives with exact `Tests` tables for web features with inferred coverage
+- Wake `issue_status_changed` consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- No new human comment delta in this wake; execution proceeded directly on the ARB-003 documentation repair slice.
+- Concrete action:
+  - replaced inferred/non-normalized coverage in `web-orders`, `web-positions`, `web-icons`, and `web-shared` module deep dives with explicit `Tests` tables and exact file paths,
+  - updated drift language in `docs/analysis/documentation-drift.md` and maintenance guidance in `docs/architecture/traceability-matrix.md`.
+- Verification:
+  - PowerShell `Test-Path` sweep over all newly documented test files -> `ALL_PATHS_EXIST`.
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-387-arb-003-web-tests-table-expansion-2026-05-28-task.md`.
+
+## 2026-05-28 LUC-387 Continuation (finish_successful_run_handoff)
+- Wake `finish_successful_run_handoff` consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete closeout action in this heartbeat:
+  - executed ARB-003 verification contract with `rg` across updated module deep dives,
+  - confirmed explicit `Tests` table structure is present in `web-orders`, `web-positions`, `web-icons`, and `web-shared`,
+  - confirmed drift/traceability entries now reflect repaired status with maintenance guidance.
+- Verification excerpts:
+  - `rg` matched `| Test file | Scope | Level |` in all four targeted module docs,
+  - `rg` matched repaired drift row in `docs/analysis/documentation-drift.md` and maintenance row in `docs/architecture/traceability-matrix.md`.
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-387-arb-003-web-tests-table-expansion-2026-05-28-task.md`.

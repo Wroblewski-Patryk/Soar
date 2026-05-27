@@ -50,8 +50,18 @@ Out of scope:
 - Fail-soft formatting should prefer neutral empty output over invented trading state.
 
 ## 8. Test Coverage and Evidence
-- `pnpm --filter web test -- src/features/shared/dcaLadderCell.test.tsx src/features/shared/runtimeMonitoringFormatters.test.ts`
-- Covered indirectly by dashboard-home and bots runtime component tests.
+Tests:
+| Test file | Scope | Level |
+| --- | --- | --- |
+| `apps/web/src/features/shared/dcaLadderCell.test.tsx` | DCA ladder helper rendering and value semantics | Component |
+| `apps/web/src/features/shared/runtimeMonitoringFormatters.test.ts` | Shared runtime table/status formatting helpers | Unit |
+| `apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeDataTablePresenters.test.tsx` | Downstream integration of shared runtime formatting in dashboard tables | Component |
+| `apps/web/src/features/bots/utils/trailingStopDisplay.test.ts` | Shared display conventions reused by bot/runtime monitoring surfaces | Unit |
+
+Suggested validation command:
+```powershell
+pnpm --filter web test -- src/features/shared/dcaLadderCell.test.tsx src/features/shared/runtimeMonitoringFormatters.test.ts src/features/dashboard-home/components/home-live-widgets/runtimeDataTablePresenters.test.tsx src/features/bots/utils/trailingStopDisplay.test.ts
+```
 
 ## 9. Open Issues and Follow-Ups
 - Keep this module limited to cross-feature helpers; move single-consumer code back to the owning feature.

@@ -55,10 +55,17 @@ Out of scope:
 - Symbol normalization avoids duplicated requests for equivalent symbols.
 
 ## 8. Test Coverage and Evidence
-- No dedicated module-local tests currently.
-- Behavior is indirectly exercised by dashboard-home and bots component test suites.
+Tests:
+| Test file | Scope | Level |
+| --- | --- | --- |
+| `apps/web/src/ui/components/AssetSymbol.test.tsx` | Symbol badge rendering with icon fallback behavior | Component |
+| `apps/web/src/features/dashboard-home/components/HomeLiveWidgets.test.tsx` | Runtime symbol rendering paths that consume icon lookups | Component |
+| `apps/web/src/features/bots/components/BotsManagement.test.tsx` | Bot runtime/list symbol rendering paths with icon hydration | Component |
+
+Evidence:
+- No dedicated `apps/web/src/features/icons/*.test.*` file exists yet.
+- Current coverage is consumer-driven through dashboard-home/bots/UI component suites.
 
 ## 9. Open Issues and Follow-Ups
 - Add unit tests for hook deduplication and cancellation behavior.
 - Consider shared cache layer for cross-component icon lookup reuse.
-

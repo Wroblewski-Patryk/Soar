@@ -84,14 +84,22 @@ orders, and imported exchange provenance.
   labels, actionability, TTP/TSL display, close attribution, and provenance.
 
 ## 8. Test Coverage and Evidence
-Relevant evidence:
+Tests:
+| Test file | Scope | Level |
+| --- | --- | --- |
+| `apps/web/src/middleware.test.ts` | Legacy `/dashboard/positions` redirect to runtime route | Unit/integration |
+| `apps/web/src/features/dashboard-home/components/HomeLiveWidgets.runtime-origin.test.tsx` | Runtime position provenance/source labels | Component |
+| `apps/web/src/features/dashboard-home/components/HomeLiveWidgets.runtime-table-audit.test.tsx` | Runtime table position/order consistency and state rendering | Component |
+| `apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeDataTablePresenters.test.tsx` | Position-row presentation and value formatting | Component |
+| `apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeDerivations.test.ts` | Derived runtime position state (ownership/actionability helpers) | Unit |
+| `apps/web/src/features/bots/utils/runtimeOpenPositionDerivations.test.ts` | Bot-runtime open-position derivations and continuity logic | Unit |
+| `apps/web/src/features/bots/components/BotsManagement.test.tsx` | Bot runtime positions panel integration behavior | Component |
+
+Evidence:
 - `history/evidence/v1-positions-local-proof-task-2026-05-11.md`
 - `docs/planning/v1-dashboard-runtime-table-action-audit-2026-05-10-task.md`
 - `history/audits/v1-dashboard-home-selected-bot-rendered-audit-task-2026-05-11.md`
 - `history/evidence/v1-bot-runtime-paper-session-browser-proof-task-2026-05-11.md`
-- `apps/web/src/middleware.test.ts`
-- Dashboard Home focused position/runtime tests under
-  `apps/web/src/features/dashboard-home/components/`
 
 ## 9. Open Issues and Follow-Ups
 - Production-safe Positions clickthrough remains required before V1 release

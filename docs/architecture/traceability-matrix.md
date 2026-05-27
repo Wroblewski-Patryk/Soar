@@ -31,7 +31,7 @@ means the trace is incomplete or needs a stronger future evidence pass.
 | Endpoint-level generated API matrix is not yet machine-generated from route files. | Manual traceability can drift when routes change. | Add a docs parity check that compares route files with this matrix and `dashboard-route-map.md`. |
 | Full architecture evidence graph backfill is not complete. | The graph system exists, but only seed P0/P1 chains are mapped; unmapped code must not be treated as officially proven by the graph. | Backfill `docs/architecture/registry/nodes.csv`, relation rows, and chain rows module by module, starting with active P0 money/runtime flows. |
 | Mobile app traceability is not covered beyond acknowledging `apps/mobile`. | Future mobile work could drift from V1 web/API contracts. | Create mobile module docs when mobile becomes active. |
-| Some web feature test mappings are inferred from module coverage rather than enumerated per file. | New agents may need extra search for exact test files. | Extend module deep dives with a standard `Tests` table during future module edits. |
+| Web feature test mappings can drift if module deep dives are not updated when tests move/rename. | Traceability can become stale after refactors even when tests still exist. | Keep module deep-dive `Tests` tables synchronized with exact file paths during feature/test edits. |
 | Historical planning files contain unchecked boxes that are not active work. | New agents can misread old plans as current tasks. | Continue active queue sync tasks and keep historical files out of the canonical reading path. |
 
 ## Maintenance

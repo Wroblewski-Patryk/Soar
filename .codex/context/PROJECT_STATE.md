@@ -12413,3 +12413,5 @@
   No revert, no push, no deploy/restart/protected smoke, no secret disclosure.
   Evidence:
   `history/tasks/luc-175-source-control-queue-executor-gate-2026-05-26-task.md`.
+
+- `LUC-387 [ARB-003]` is complete for the targeted inferred-coverage slice. Web deep dives for `orders`, `positions`, `icons`, and `shared` now include exact-file `Tests` tables, and drift/traceability wording was updated from unresolved inferred coverage to repaired-with-maintenance guidance. Evidence: `history/tasks/luc-387-arb-003-web-tests-table-expansion-2026-05-28-task.md`.
