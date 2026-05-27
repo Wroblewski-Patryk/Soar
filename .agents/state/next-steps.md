@@ -2,6 +2,15 @@
 
 Last updated: 2026-05-27
 
+## 2026-05-27 LUC-263 PM No-Stall Next Action
+
+1. Keep `LUC-263` fail-closed `blocked` while `LUC-47` remains open.
+2. Preserve single first-class blocker ownership/action:
+   - `LUC-47` (`Ops Release Lead` + host operator): temp-domain expected-SHA
+     deploy smoke/readiness packet + worker readiness evidence + rollback note.
+3. Do not widen or reopen sibling PM no-stall lanes without fresh
+   blocker-closure evidence on `LUC-47`.
+
 ## 2026-05-27 LUC-251 Duplicate Closure Routing
 
 1. Treat `LUC-251` as cancelled duplicate and do not run additional execution on this lane.

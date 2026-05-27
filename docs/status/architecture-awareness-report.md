@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-05-26T02:15:14.125Z
+Generated: 2026-05-27T02:15:57.657Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -8,124 +8,127 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 
 | Type | Count |
 | --- | ---: |
-| agent | 65 |
-| api_endpoint | 167 |
+| agent | 52 |
+| api_endpoint | 37 |
 | component | 97 |
-| document | 2706 |
-| feature | 211 |
-| function | 2603 |
+| document | 2843 |
+| feature | 212 |
+| function | 2607 |
 | migration | 56 |
 | model | 106 |
-| module | 17 |
+| module | 15 |
 | project | 1 |
 | route | 346 |
-| task | 516 |
+| task | 603 |
 | test | 363 |
 
 ## Counts By Status
 
 | Status | Count |
 | --- | ---: |
-| blocked | 477 |
-| deprecated | 7 |
-| implemented | 5631 |
-| in_progress | 9 |
-| tested | 624 |
-| verified | 506 |
+| blocked | 12 |
+| deprecated | 8 |
+| implemented | 6089 |
+| in_progress | 8 |
+| tested | 627 |
+| verified | 594 |
 
 ## Health Signals
 
-- Implementation entities without inferred tests: 2181
-- Implementation entities without inferred docs: 927
+- Implementation entities without inferred tests: 2056
+- Implementation entities without inferred docs: 798
+- Entities without owner attribution: 0
 - Disconnected entities: 0
 
 ## Top Missing Test Links
 
 - api_endpoint: USE /avatars (apps/api/src/index.ts#/avatars)
-- api_endpoint: GET / (apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.routes.ts#/)
-- api_endpoint: PUT /:code (apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.routes.ts#/:code)
-- api_endpoint: GET / (apps/api/src/modules/admin/users/users.routes.ts#/)
-- api_endpoint: PATCH /:userId (apps/api/src/modules/admin/users/users.routes.ts#/:userId)
 - api_endpoint: POST /login (apps/api/src/modules/auth/auth.routes.ts#/login)
 - api_endpoint: POST /logout (apps/api/src/modules/auth/auth.routes.ts#/logout)
 - api_endpoint: GET /me (apps/api/src/modules/auth/auth.routes.ts#/me)
 - api_endpoint: POST /register (apps/api/src/modules/auth/auth.routes.ts#/register)
-- api_endpoint: GET /runs (apps/api/src/modules/backtests/backtests.routes.ts#/runs)
-- api_endpoint: POST /runs (apps/api/src/modules/backtests/backtests.routes.ts#/runs)
-- api_endpoint: GET /runs/:id (apps/api/src/modules/backtests/backtests.routes.ts#/runs/:id)
-- api_endpoint: DELETE /runs/:id (apps/api/src/modules/backtests/backtests.routes.ts#/runs/:id)
-- api_endpoint: GET /runs/:id/report (apps/api/src/modules/backtests/backtests.routes.ts#/runs/:id/report)
-- api_endpoint: GET /runs/:id/timeline (apps/api/src/modules/backtests/backtests.routes.ts#/runs/:id/timeline)
-- api_endpoint: GET /runs/:id/trades (apps/api/src/modules/backtests/backtests.routes.ts#/runs/:id/trades)
-- api_endpoint: POST /auth/register (apps/api/src/modules/bots/bots.e2e.shared.ts#/auth/register)
-- api_endpoint: POST /dashboard/strategies (apps/api/src/modules/bots/bots.e2e.shared.ts#/dashboard/strategies)
-- api_endpoint: GET / (apps/api/src/modules/bots/bots.routes.ts#/)
-- api_endpoint: POST / (apps/api/src/modules/bots/bots.routes.ts#/)
-- api_endpoint: GET /:id (apps/api/src/modules/bots/bots.routes.ts#/:id)
-- api_endpoint: PUT /:id (apps/api/src/modules/bots/bots.routes.ts#/:id)
-- api_endpoint: DELETE /:id (apps/api/src/modules/bots/bots.routes.ts#/:id)
-- api_endpoint: GET /:id/assistant-config (apps/api/src/modules/bots/bots.routes.ts#/:id/assistant-config)
-- api_endpoint: PUT /:id/assistant-config (apps/api/src/modules/bots/bots.routes.ts#/:id/assistant-config)
-- api_endpoint: POST /:id/assistant-config/dry-run (apps/api/src/modules/bots/bots.routes.ts#/:id/assistant-config/dry-run)
-- api_endpoint: PUT /:id/assistant-config/subagents/:slotIndex (apps/api/src/modules/bots/bots.routes.ts#/:id/assistant-config/subagents/:slotIndex)
-- api_endpoint: DELETE /:id/assistant-config/subagents/:slotIndex (apps/api/src/modules/bots/bots.routes.ts#/:id/assistant-config/subagents/:slotIndex)
-- api_endpoint: GET /:id/market-groups (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups)
-- api_endpoint: POST /:id/market-groups (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups)
-- api_endpoint: GET /:id/market-groups/:groupId (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups/:groupId)
-- api_endpoint: PUT /:id/market-groups/:groupId (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups/:groupId)
-- api_endpoint: DELETE /:id/market-groups/:groupId (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups/:groupId)
-- api_endpoint: GET /:id/market-groups/:groupId/strategies (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups/:groupId/strategies)
-- api_endpoint: POST /:id/market-groups/:groupId/strategies (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups/:groupId/strategies)
-- api_endpoint: PUT /:id/market-groups/:groupId/strategies/:linkId (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups/:groupId/strategies/:linkId)
-- api_endpoint: DELETE /:id/market-groups/:groupId/strategies/:linkId (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups/:groupId/strategies/:linkId)
-- api_endpoint: PUT /:id/market-groups/:groupId/strategies/reorder (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups/:groupId/strategies/reorder)
-- api_endpoint: GET /:id/portfolio-history (apps/api/src/modules/bots/bots.routes.ts#/:id/portfolio-history)
-- api_endpoint: GET /:id/runtime-graph (apps/api/src/modules/bots/bots.routes.ts#/:id/runtime-graph)
+- api_endpoint: GET / (apps/api/src/router/admin.routes.ts#/)
+- api_endpoint: USE /subscriptions/plans (apps/api/src/router/admin.routes.ts#/subscriptions/plans)
+- api_endpoint: USE /users (apps/api/src/router/admin.routes.ts#/users)
+- api_endpoint: GET / (apps/api/src/router/dashboard.routes.ts#/)
+- api_endpoint: USE /backtests (apps/api/src/router/dashboard.routes.ts#/backtests)
+- api_endpoint: USE /bots (apps/api/src/router/dashboard.routes.ts#/bots)
+- api_endpoint: USE /icons (apps/api/src/router/dashboard.routes.ts#/icons)
+- api_endpoint: USE /logs (apps/api/src/router/dashboard.routes.ts#/logs)
+- api_endpoint: USE /market-stream (apps/api/src/router/dashboard.routes.ts#/market-stream)
+- api_endpoint: USE /markets (apps/api/src/router/dashboard.routes.ts#/markets)
+- api_endpoint: USE /orders (apps/api/src/router/dashboard.routes.ts#/orders)
+- api_endpoint: USE /positions (apps/api/src/router/dashboard.routes.ts#/positions)
+- api_endpoint: USE /profile/apiKeys (apps/api/src/router/dashboard.routes.ts#/profile/apiKeys)
+- api_endpoint: USE /profile/basic (apps/api/src/router/dashboard.routes.ts#/profile/basic)
+- api_endpoint: USE /profile/security (apps/api/src/router/dashboard.routes.ts#/profile/security)
+- api_endpoint: USE /profile/subscription (apps/api/src/router/dashboard.routes.ts#/profile/subscription)
+- api_endpoint: USE /reports (apps/api/src/router/dashboard.routes.ts#/reports)
+- api_endpoint: USE /strategies (apps/api/src/router/dashboard.routes.ts#/strategies)
+- api_endpoint: USE /wallets (apps/api/src/router/dashboard.routes.ts#/wallets)
+- api_endpoint: GET / (apps/api/src/router/index.ts#/)
+- api_endpoint: USE /admin (apps/api/src/router/index.ts#/admin)
+- api_endpoint: USE /auth (apps/api/src/router/index.ts#/auth)
+- api_endpoint: USE /dashboard (apps/api/src/router/index.ts#/dashboard)
+- api_endpoint: GET /health (apps/api/src/router/index.ts#/health)
+- api_endpoint: GET /metrics (apps/api/src/router/index.ts#/metrics)
+- api_endpoint: GET /ready (apps/api/src/router/index.ts#/ready)
+- api_endpoint: GET /ready/details (apps/api/src/router/index.ts#/ready/details)
+- api_endpoint: USE /upload (apps/api/src/router/index.ts#/upload)
+- api_endpoint: GET /workers/health (apps/api/src/router/index.ts#/workers/health)
+- api_endpoint: GET /workers/ready (apps/api/src/router/index.ts#/workers/ready)
+- api_endpoint: GET /workers/runtime-freshness (apps/api/src/router/index.ts#/workers/runtime-freshness)
+- component: PasswordVisibilityToggle.tsx (apps/web/src/features/auth/components/PasswordVisibilityToggle.tsx)
+- component: backtestRunDetailsCharts.tsx (apps/web/src/features/backtest/components/backtestRunDetailsCharts.tsx)
+- component: BacktestRunDetailsTabPanels.tsx (apps/web/src/features/backtest/components/BacktestRunDetailsTabPanels.tsx)
+- component: BotsMonitoringAttributionPills.tsx (apps/web/src/features/bots/components/bots-management/BotsMonitoringAttributionPills.tsx)
 
 ## Top Missing Doc Links
 
 - api_endpoint: USE /avatars (apps/api/src/index.ts#/avatars)
-- api_endpoint: GET / (apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.routes.ts#/)
-- api_endpoint: PUT /:code (apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.routes.ts#/:code)
-- api_endpoint: GET / (apps/api/src/modules/admin/users/users.routes.ts#/)
-- api_endpoint: PATCH /:userId (apps/api/src/modules/admin/users/users.routes.ts#/:userId)
 - api_endpoint: POST /login (apps/api/src/modules/auth/auth.routes.ts#/login)
 - api_endpoint: POST /logout (apps/api/src/modules/auth/auth.routes.ts#/logout)
 - api_endpoint: GET /me (apps/api/src/modules/auth/auth.routes.ts#/me)
 - api_endpoint: POST /register (apps/api/src/modules/auth/auth.routes.ts#/register)
-- api_endpoint: GET /runs (apps/api/src/modules/backtests/backtests.routes.ts#/runs)
-- api_endpoint: POST /runs (apps/api/src/modules/backtests/backtests.routes.ts#/runs)
-- api_endpoint: GET /runs/:id (apps/api/src/modules/backtests/backtests.routes.ts#/runs/:id)
-- api_endpoint: DELETE /runs/:id (apps/api/src/modules/backtests/backtests.routes.ts#/runs/:id)
-- api_endpoint: GET /runs/:id/report (apps/api/src/modules/backtests/backtests.routes.ts#/runs/:id/report)
-- api_endpoint: GET /runs/:id/timeline (apps/api/src/modules/backtests/backtests.routes.ts#/runs/:id/timeline)
-- api_endpoint: GET /runs/:id/trades (apps/api/src/modules/backtests/backtests.routes.ts#/runs/:id/trades)
-- api_endpoint: POST /auth/register (apps/api/src/modules/bots/bots.e2e.shared.ts#/auth/register)
-- api_endpoint: POST /dashboard/strategies (apps/api/src/modules/bots/bots.e2e.shared.ts#/dashboard/strategies)
-- api_endpoint: GET / (apps/api/src/modules/bots/bots.routes.ts#/)
-- api_endpoint: POST / (apps/api/src/modules/bots/bots.routes.ts#/)
-- api_endpoint: GET /:id (apps/api/src/modules/bots/bots.routes.ts#/:id)
-- api_endpoint: PUT /:id (apps/api/src/modules/bots/bots.routes.ts#/:id)
-- api_endpoint: DELETE /:id (apps/api/src/modules/bots/bots.routes.ts#/:id)
-- api_endpoint: GET /:id/assistant-config (apps/api/src/modules/bots/bots.routes.ts#/:id/assistant-config)
-- api_endpoint: PUT /:id/assistant-config (apps/api/src/modules/bots/bots.routes.ts#/:id/assistant-config)
-- api_endpoint: POST /:id/assistant-config/dry-run (apps/api/src/modules/bots/bots.routes.ts#/:id/assistant-config/dry-run)
-- api_endpoint: PUT /:id/assistant-config/subagents/:slotIndex (apps/api/src/modules/bots/bots.routes.ts#/:id/assistant-config/subagents/:slotIndex)
-- api_endpoint: DELETE /:id/assistant-config/subagents/:slotIndex (apps/api/src/modules/bots/bots.routes.ts#/:id/assistant-config/subagents/:slotIndex)
-- api_endpoint: GET /:id/market-groups (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups)
-- api_endpoint: POST /:id/market-groups (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups)
-- api_endpoint: GET /:id/market-groups/:groupId (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups/:groupId)
-- api_endpoint: PUT /:id/market-groups/:groupId (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups/:groupId)
-- api_endpoint: DELETE /:id/market-groups/:groupId (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups/:groupId)
-- api_endpoint: GET /:id/market-groups/:groupId/strategies (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups/:groupId/strategies)
-- api_endpoint: POST /:id/market-groups/:groupId/strategies (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups/:groupId/strategies)
-- api_endpoint: PUT /:id/market-groups/:groupId/strategies/:linkId (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups/:groupId/strategies/:linkId)
-- api_endpoint: DELETE /:id/market-groups/:groupId/strategies/:linkId (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups/:groupId/strategies/:linkId)
-- api_endpoint: PUT /:id/market-groups/:groupId/strategies/reorder (apps/api/src/modules/bots/bots.routes.ts#/:id/market-groups/:groupId/strategies/reorder)
-- api_endpoint: GET /:id/portfolio-history (apps/api/src/modules/bots/bots.routes.ts#/:id/portfolio-history)
-- api_endpoint: GET /:id/runtime-graph (apps/api/src/modules/bots/bots.routes.ts#/:id/runtime-graph)
+- api_endpoint: GET / (apps/api/src/router/admin.routes.ts#/)
+- api_endpoint: USE /subscriptions/plans (apps/api/src/router/admin.routes.ts#/subscriptions/plans)
+- api_endpoint: USE /users (apps/api/src/router/admin.routes.ts#/users)
+- api_endpoint: GET / (apps/api/src/router/dashboard.routes.ts#/)
+- api_endpoint: USE /backtests (apps/api/src/router/dashboard.routes.ts#/backtests)
+- api_endpoint: USE /bots (apps/api/src/router/dashboard.routes.ts#/bots)
+- api_endpoint: USE /icons (apps/api/src/router/dashboard.routes.ts#/icons)
+- api_endpoint: USE /logs (apps/api/src/router/dashboard.routes.ts#/logs)
+- api_endpoint: USE /market-stream (apps/api/src/router/dashboard.routes.ts#/market-stream)
+- api_endpoint: USE /markets (apps/api/src/router/dashboard.routes.ts#/markets)
+- api_endpoint: USE /orders (apps/api/src/router/dashboard.routes.ts#/orders)
+- api_endpoint: USE /positions (apps/api/src/router/dashboard.routes.ts#/positions)
+- api_endpoint: USE /profile/apiKeys (apps/api/src/router/dashboard.routes.ts#/profile/apiKeys)
+- api_endpoint: USE /profile/basic (apps/api/src/router/dashboard.routes.ts#/profile/basic)
+- api_endpoint: USE /profile/security (apps/api/src/router/dashboard.routes.ts#/profile/security)
+- api_endpoint: USE /profile/subscription (apps/api/src/router/dashboard.routes.ts#/profile/subscription)
+- api_endpoint: USE /reports (apps/api/src/router/dashboard.routes.ts#/reports)
+- api_endpoint: USE /strategies (apps/api/src/router/dashboard.routes.ts#/strategies)
+- api_endpoint: USE /wallets (apps/api/src/router/dashboard.routes.ts#/wallets)
+- api_endpoint: GET / (apps/api/src/router/index.ts#/)
+- api_endpoint: USE /admin (apps/api/src/router/index.ts#/admin)
+- api_endpoint: GET /alerts (apps/api/src/router/index.ts#/alerts)
+- api_endpoint: USE /auth (apps/api/src/router/index.ts#/auth)
+- api_endpoint: USE /dashboard (apps/api/src/router/index.ts#/dashboard)
+- api_endpoint: GET /health (apps/api/src/router/index.ts#/health)
+- api_endpoint: GET /metrics (apps/api/src/router/index.ts#/metrics)
+- api_endpoint: GET /ready (apps/api/src/router/index.ts#/ready)
+- api_endpoint: GET /ready/details (apps/api/src/router/index.ts#/ready/details)
+- api_endpoint: USE /upload (apps/api/src/router/index.ts#/upload)
+- api_endpoint: GET /workers/health (apps/api/src/router/index.ts#/workers/health)
+- api_endpoint: GET /workers/ready (apps/api/src/router/index.ts#/workers/ready)
+- api_endpoint: GET /workers/runtime-freshness (apps/api/src/router/index.ts#/workers/runtime-freshness)
+- component: AuthContext.tsx (apps/web/src/context/AuthContext.tsx)
+- component: AdminLayoutShell.tsx (apps/web/src/features/admin/layout/AdminLayoutShell.tsx)
+- component: LoginForm.tsx (apps/web/src/features/auth/components/LoginForm.tsx)
 
 ## Notes
 
 - This is an inferred baseline. CTO/Docs Memory must promote or correct important relations.
+- Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 0, relation entries: 0).
+- Override summary: excluded files 0, entity overrides 0, relation overrides 0, critical entities tagged 0.
 - `verified` still requires fresh command/browser/deploy evidence, not only file presence.

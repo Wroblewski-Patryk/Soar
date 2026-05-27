@@ -2,6 +2,20 @@
 
 Last updated: 2026-05-27
 
+## 2026-05-27 LUC-263 No-Stall Queue Expeditor
+- Wake `process_lost_retry` processed with concrete PM queue-expeditor
+  reconciliation.
+- Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`,
+  comments `0/0`, latest comment id `unknown`); no unblock delta arrived.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`
+  (no code/runtime/deploy mutation).
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness +
+  worker readiness evidence + rollback note.
+- Evidence:
+  `history/tasks/luc-263-no-stall-queue-expeditor-2026-05-27-task.md`.
+
 ## 2026-05-27 LUC-251 No-Stall Queue Expeditor - Duplicate Cancellation Reconcile
 - Wake `issue_reopened_via_comment` consumed with pending comments `1/1`;
   latest comment `086a98cf-cf89-4142-8cc4-eeb0110c3240` acknowledged inline.

@@ -2,6 +2,19 @@
 
 Last updated: 2026-05-27
 
+- `LUC-263 process_lost_retry heartbeat (2026-05-27)` executed a concrete PM
+  no-stall reconciliation and remains `blocked`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`,
+  comments `0/0`, latest comment id `unknown`); no new unblock artifact
+  arrived in this heartbeat.
+  Scope remained coordination-only and fail-closed with no code/runtime/deploy
+  mutation.
+  Unblock owner/action remains unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness +
+  worker readiness evidence + rollback note.
+  Evidence:
+  `history/tasks/luc-263-no-stall-queue-expeditor-2026-05-27-task.md`.
+
 - `LUC-251 issue_reopened_via_comment heartbeat (2026-05-27)` consumed one
   pending comment (`1/1`) and reconciled board routing as duplicate closure.
   Comment `086a98cf-cf89-4142-8cc4-eeb0110c3240` explicitly cancels `LUC-251`
