@@ -39,6 +39,8 @@ const requiredValidationFragments = [
   'audit:manifest:verify',
   'audit:handoff:check',
   'docs:parity:check',
+  'docs:parity:endpoints:api',
+  'i18n:audit:route-reachable:web',
   'quality:guardrails',
   'git diff --check',
 ];

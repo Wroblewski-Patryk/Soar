@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "generatedAtUtc": "2026-05-22T15:31:31.509Z",
+  "generatedAtUtc": "2026-05-27T23:08:26.311Z",
   "rootDir": ".",
   "scope": {
     "scannedSourceFiles": 302,
-    "routePages": 38,
+    "routePages": 37,
     "routeReachableFiles": 289
   },
   "summary": {
@@ -245,18 +245,6 @@
       "topModuleFiles": []
     },
     {
-      "routePage": "apps/web/src/app/dashboard/exchanges/page.tsx",
-      "reachableFilesCount": 69,
-      "issueFilesCount": 0,
-      "moduleIssueFilesCount": 0,
-      "sharedIssueFilesCount": 0,
-      "score": {
-        "module": 0,
-        "shared": 0
-      },
-      "topModuleFiles": []
-    },
-    {
       "routePage": "apps/web/src/app/dashboard/logs/page.tsx",
       "reachableFilesCount": 88,
       "issueFilesCount": 0,
@@ -306,7 +294,7 @@
     },
     {
       "routePage": "apps/web/src/app/dashboard/page.tsx",
-      "reachableFilesCount": 126,
+      "reachableFilesCount": 127,
       "issueFilesCount": 0,
       "moduleIssueFilesCount": 0,
       "sharedIssueFilesCount": 0,

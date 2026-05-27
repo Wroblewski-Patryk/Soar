@@ -239,10 +239,19 @@
   - Soar API auth credential owner + Security/Test permission owner must provide/confirm a fresh valid approved read-only principal/session artifact accepted by API auth and authorized for `GET /workers/ready`, then Ops executes exactly one worker-included smoke recheck.
 - Evidence:
   `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
-# TASK_BOARD
-
-Last updated: 2026-05-28
-
+## 2026-05-28 LUC-389 [Soar][ARB-005] Mandatory pipeline hook/checklist enforcement for docs parity + web route audit
+- Wake `issue_continuation_needed` consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - verified CI guardrail job enforces both `docs:parity:endpoints:api` and `i18n:audit:route-reachable:web`,
+  - verified reusable-audit checklist validators require both commands,
+  - executed focused QA verification pack.
+- Validation:
+  - `node --test scripts/checkAuditRemediationPlan.test.mjs scripts/checkFullReusableAuditHandoff.test.mjs scripts/checkReusableAuditRerunPlaybook.test.mjs scripts/checkReusableAuditToolingIndex.test.mjs` -> `39/39 PASS`
+  - `pnpm run docs:parity:endpoints:api` -> `PASS` (`109/109`, `gaps=0`)
+  - `pnpm run i18n:audit:route-reachable:web` -> `PASS` (`findings=0`)
+- Final disposition: `done`.
+- Evidence:
+  `history/tasks/luc-389-pipeline-hook-checklist-enforcement-2026-05-28-task.md`.
 ## 2026-05-28 LUC-175 Source-Control Queue Executor Gate (`issue_commented`)
 - Wake `issue_commented` consumed from inline payload
   (`fallbackFetchNeeded=false`, comments `1/1`, latest comment id

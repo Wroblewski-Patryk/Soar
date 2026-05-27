@@ -29,6 +29,12 @@ jobs:
       - name: Run repository guardrails
         run: pnpm run quality:guardrails
 
+      - name: Run API endpoint docs parity
+        run: pnpm run docs:parity:endpoints:api
+
+      - name: Run web route-reachable i18n audit
+        run: pnpm run i18n:audit:route-reachable:web
+
   web-checks:
     name: Web checks
     runs-on: ubuntu-latest

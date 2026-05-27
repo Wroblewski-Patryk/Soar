@@ -66,6 +66,8 @@
     "corepack pnpm run audit:manifest:verify PASS after accepted decisions",
     "corepack pnpm run audit:handoff:check PASS",
     "corepack pnpm run docs:parity:check PASS",
+    "corepack pnpm run docs:parity:endpoints:api PASS",
+    "corepack pnpm run i18n:audit:route-reachable:web PASS",
     "focused exchange API pack PASS: 4 files / 21 tests",
     "focused assistant API pack PASS: 2 files / 6 tests",
     "focused assistant Web route pack PASS: 2 files / 3 tests",

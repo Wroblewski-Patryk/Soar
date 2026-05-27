@@ -50,6 +50,8 @@ const handoff = (overrides = {}) => ({
     'corepack pnpm run audit:manifest:verify PASS',
     'corepack pnpm run audit:handoff:check PASS',
     'corepack pnpm run docs:parity:check PASS',
+    'corepack pnpm run docs:parity:endpoints:api PASS',
+    'corepack pnpm run i18n:audit:route-reachable:web PASS',
     'corepack pnpm run quality:guardrails PASS',
     'git diff --check PASS',
     'no chrome-headless-shell process left running',
@@ -198,6 +200,8 @@ test('validateFullReusableAuditHandoff fails when latest validation omits requir
   assert.deepEqual(result.latestValidation.missingFragments, [
     'audit:handoff:check',
     'docs:parity:check',
+    'docs:parity:endpoints:api',
+    'i18n:audit:route-reachable:web',
     'quality:guardrails',
     'git diff --check',
   ]);
@@ -210,6 +214,8 @@ test('validateFullReusableAuditHandoff fails when latest validation omits cleanu
         'corepack pnpm run audit:manifest:verify PASS',
         'corepack pnpm run audit:handoff:check PASS',
         'corepack pnpm run docs:parity:check PASS',
+        'corepack pnpm run docs:parity:endpoints:api PASS',
+        'corepack pnpm run i18n:audit:route-reachable:web PASS',
         'corepack pnpm run quality:guardrails PASS',
         'git diff --check PASS',
         'no chrome-headless-shell process left running',

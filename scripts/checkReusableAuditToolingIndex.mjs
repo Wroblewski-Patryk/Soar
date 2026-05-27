@@ -41,6 +41,8 @@ const requiredClosureCommandFragments = [
   'audit:remediation-plan:check',
   'audit:tooling-index:check',
   'docs:parity:check',
+  'docs:parity:endpoints:api',
+  'i18n:audit:route-reachable:web',
   'quality:guardrails',
   'git diff --check',
 ];

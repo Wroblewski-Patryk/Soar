@@ -1,8 +1,13 @@
 - `LUC-385-ARB-001-SECURITY-GATE-2026-05-28` is verified locally for the Security lane. The assistant orchestrator now fail-closes `LIVE` mode by default (`live_mode_disabled_fail_closed`) unless `ASSISTANT_HOTPATH_LIVE_ENABLED=true`, and sanitizes user-controlled trace metadata (`requestId`, `botId`, `botMarketGroupId`, `symbol`, `role`) before trace writes. Focused proof: `pnpm --filter api exec vitest run src/modules/engine/assistantOrchestrator.service.test.ts --reporter=basic` (`7/7`). This does not activate deferred ARB-001 hot-path scope; Product/CTO activation decision plus persisted DB trace integration and red-team packet remain open.
-# PROJECT_STATE
-
-Last updated: 2026-05-28
-
+- `LUC-389 [Soar][ARB-005]` heartbeat executed on 2026-05-28 and is `done`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  QA verification confirmed mandatory enforcement for `docs:parity:endpoints:api` and `i18n:audit:route-reachable:web` in CI guardrails and reusable-audit checklist validators.
+  Focused verification results:
+  - validator tests (`checkAuditRemediationPlan`, `checkFullReusableAuditHandoff`, `checkReusableAuditRerunPlaybook`, `checkReusableAuditToolingIndex`) => `39/39 PASS`
+  - `pnpm run docs:parity:endpoints:api` => `PASS` (`Endpoints 109`, `documented 109`, `gaps 0`)
+  - `pnpm run i18n:audit:route-reachable:web` => `PASS` (`findings=0`)
+  Evidence:
+  `history/tasks/luc-389-pipeline-hook-checklist-enforcement-2026-05-28-task.md`.
 - `LUC-175 [Soar][LUC-103-P6] Source-control queue executor gate` heartbeat
   executed on 2026-05-28 (`issue_commented`) and remains `blocked`.
   Inline wake scope was consumed first (`fallbackFetchNeeded=false`,
