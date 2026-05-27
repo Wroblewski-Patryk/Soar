@@ -250,4 +250,68 @@ describe('orchestrateAssistantDecision', () => {
     expect(result.finalDecision).toBe('NO_TRADE');
     expect(result.finalReason).toBe('mandate_long_only');
   });
+
+  it('fails closed for LIVE mode when hot-path is not enabled', async () => {
+    const result = await orchestrateAssistantDecision(
+      {
+        ...baseInput,
+        requestId: 'req-live-1',
+        botId: 'bot-live-1',
+        mode: 'LIVE',
+      },
+      {
+        planner: {
+          createPlan: vi.fn(async () => ({
+            planId: 'plan-live',
+            steps: [{ slotIndex: 1, role: 'TREND', task: 'ignored' }],
+          })),
+        },
+        subagentGateway: {
+          runStep: vi.fn(async () => ({
+            proposal: 'LONG' as const,
+            confidence: 0.9,
+            rationale: 'ignored',
+          })),
+        },
+        traceWriter: { write: vi.fn(async () => undefined) },
+        nowMs: () => 1000,
+      }
+    );
+
+    expect(result.mode).toBe('strategy_only');
+    expect(result.finalDecision).toBe('NO_TRADE');
+    expect(result.finalReason).toBe('live_mode_disabled_fail_closed');
+  });
+
+  it('sanitizes trace metadata fields from user-controlled config', async () => {
+    const result = await orchestrateAssistantDecision(
+      {
+        ...baseInput,
+        requestId: 'req-meta-\u0000<script>alert(1)</script>',
+        symbol: 'btcusdt\u0000<script>alert(1)</script>',
+        subagents: [{ slotIndex: 1, role: 'RISK\u0000<script>alert(1)</script>', enabled: true, timeoutMs: 200 }],
+      },
+      {
+        planner: {
+          createPlan: vi.fn(async () => ({
+            planId: 'plan-meta',
+            steps: [{ slotIndex: 1, role: 'RISK', task: 'analyze' }],
+          })),
+        },
+        subagentGateway: {
+          runStep: vi.fn(async () => ({
+            proposal: 'NO_TRADE' as const,
+            confidence: 0.4,
+            rationale: 'safe',
+          })),
+        },
+        traceWriter: { write: vi.fn(async () => undefined) },
+        nowMs: () => 1000,
+      }
+    );
+
+    expect(result.requestId).not.toContain('\u0000');
+    expect(result.symbol).toBe('BTCUSDT <SCRIPT>ALERT(1)</SCRIPT>');
+    expect(result.statuses[0]?.role).not.toContain('\u0000');
+  });
 });
