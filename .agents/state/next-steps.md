@@ -1,7 +1,84 @@
 # Next Steps
 
-Last updated: 2026-05-26
+Last updated: 2026-05-27
 
+## 2026-05-27 LUC-251 Duplicate Closure Routing
+
+1. Treat `LUC-251` as cancelled duplicate and do not run additional execution on this lane.
+2. Route PM no-stall continuity exclusively through canonical lane `LUC-244`.
+3. Keep durable evidence for `LUC-251` in history only; operational progression belongs to `LUC-244`.
+
+## 2026-05-27 LUC-251 PM No-Stall Next Action
+
+1. Keep `LUC-251` fail-closed `blocked` while `LUC-47` remains open.
+2. Preserve single first-class blocker ownership/action:
+   - `LUC-47` (`Ops Release Lead` + host operator): temp-domain expected-SHA
+     deploy smoke/readiness packet + worker readiness evidence + rollback note.
+3. Do not reopen or widen PM queue lanes until fresh blocker-closure evidence
+   for `LUC-47` is attached.
+
+## 2026-05-27 LUC-251 Continuation Next Action
+
+1. Keep `LUC-251` status-only and fail-closed while continuation wakes carry
+   no new unblock artifacts (`fallbackFetchNeeded=false`, comments `0/0`).
+2. Preserve unchanged unblock contract on `LUC-47`:
+   - `LUC-47` (`Ops Release Lead` + host operator): temp-domain expected-SHA
+     smoke/readiness packet + worker readiness evidence + rollback note.
+3. Reconcile this lane again only when fresh blocker-closure evidence appears.
+
+## 2026-05-27 LUC-235 PM No-Stall Next Action
+
+1. Keep `LUC-235` fail-closed `blocked` while `LUC-47` remains open.
+2. Preserve single first-class blocker ownership/action:
+   - `LUC-47` (`Ops Release Lead` + host operator): temp-domain expected-SHA
+     deploy smoke/readiness packet + worker readiness evidence + rollback note.
+3. Do not reopen or widen PM queue lanes until fresh blocker-closure evidence
+   for `LUC-47` is attached.
+## 2026-05-27 LUC-230 PM No-Stall Next Action
+
+1. Keep `LUC-230` fail-closed `blocked` while `LUC-47` remains open.
+2. Preserve single first-class blocker ownership/action:
+   - `LUC-47` (`Ops Release Lead` + host operator): temp-domain expected-SHA
+     deploy smoke/readiness packet + worker readiness evidence + rollback note.
+3. Do not reopen or widen PM queue lanes until fresh blocker-closure evidence
+   for `LUC-47` is attached.
+
+## 2026-05-27 LUC-230 Continuation Next Action
+
+1. Keep `LUC-230` status-only and fail-closed while continuation wakes carry
+   no new unblock artifacts (`fallbackFetchNeeded=false`, comments `0/0`).
+2. Preserve unchanged unblock contract on `LUC-47`:
+   - `LUC-47` (`Ops Release Lead` + host operator): temp-domain expected-SHA
+     smoke/readiness packet + worker readiness evidence + rollback note.
+3. Reconcile this lane again only when fresh blocker-closure evidence appears.
+
+## 2026-05-27 LUC-227 Autonomous Idle And Map Drift Sweep
+
+1. Sweep status: `done`; no idle-lane contract drift and no route-family drift
+   detected.
+2. Keep this as a bounded docs-memory checkpoint and rerun only after
+   route-impacting Web changes or PM lane-status contract changes.
+3. Keep protected browser proof in auth-gated frontend/QA lanes; docs-memory
+   parity does not substitute protected journey verification.
+
+## 2026-05-27 LUC-228 V1 Audit-To-Completion Controller Next Action
+
+1. Keep `LUC-228` fail-closed `blocked` while first-class blocker `LUC-47`
+   remains open.
+2. Preserve unblock owner/action without scope drift:
+   - `LUC-47` (`Ops Release Lead` + host operator): temp-domain expected-SHA
+     deploy smoke/readiness packet + worker readiness evidence + rollback note.
+3. Do not reopen duplicate controller lanes; route canonical controller
+   sequencing through parent `LUC-45`.
+
+## 2026-05-27 LUC-221 PM No-Stall Next Action
+
+1. Keep `LUC-221` fail-closed `blocked` while `LUC-47` remains open.
+2. Preserve single first-class blocker ownership/action:
+   - `LUC-47` (`Ops Release Lead` + host operator): temp-domain expected-SHA
+     deploy smoke/readiness packet + worker readiness evidence + rollback note.
+3. Do not reopen or widen PM queue lanes until fresh blocker-closure evidence
+   for `LUC-47` is attached.
 ## 2026-05-26 Coolify Deploy Automation Recovery Next Action
 
 1. Treat Coolify six-Application `Auto Deploy`, push-triggered deployment
@@ -3788,3 +3865,33 @@ On "rob dalej", "rób dalej", "kontynuuj", "continue", or "next":
    - `LUC-47` (`Ops Release Lead` + host operator): temp-domain expected-SHA smoke/readiness packet plus worker readiness and rollback note.
 3. Keep `LUC-48` and `LUC-49` treated as closed for this parent routing checkpoint.
 4. Use `in_progress` only during active reconciliation; keep `LUC-208` as `blocked` when idle.
+
+## 2026-05-26 LUC-219 No-Stall Queue Expeditor Next Action
+1. Keep parent bridge `LUC-45` fail-closed `blocked` while `LUC-47` remains open.
+2. Treat `LUC-47` as the only active first-class blocker lane for this PM scope:
+   - `LUC-47` (`Ops Release Lead` + host operator): temp-domain expected-SHA smoke/readiness packet plus worker readiness and rollback note.
+3. Keep `LUC-48` and `LUC-49` treated as closed for this parent routing checkpoint.
+4. Use `in_progress` only during active reconciliation; keep `LUC-219` as `blocked` when idle.
+
+## 2026-05-26 LUC-219 Continuation Next Action
+1. Keep `LUC-219` status-only and fail-closed while wake delta has no new unblock artifacts (`0/0` comments).
+2. Preserve unchanged unblock contract on `LUC-47` (Ops Release Lead + host operator, temp-domain expected-SHA smoke/readiness + worker readiness + rollback note).
+3. Reconcile again only when a new blocker-closure artifact appears.
+
+## 2026-05-26 LUC-219 Source-Scoped Recovery Next Action
+1. Keep `LUC-219` fail-closed `blocked` after source-scoped recovery wake with `0/0` pending comments.
+2. Do not widen lanes or reopen completed siblings without fresh unblock artifact on `LUC-47`.
+3. Preserve unblock owner/action unchanged:
+   - `LUC-47` (`Ops Release Lead` + host operator): temp-domain expected-SHA smoke/readiness packet + worker readiness evidence + rollback note.
+
+
+
+## 2026-05-27 LUC-244 PM No-Stall Next Action
+
+1. Keep `LUC-244` fail-closed `blocked` while `LUC-47` remains open.
+2. Preserve single first-class blocker ownership/action:
+   - `LUC-47` (`Ops Release Lead` + host operator): temp-domain expected-SHA
+     deploy smoke/readiness packet + worker readiness evidence + rollback note.
+3. Treat `LUC-244` as canonical PM routine chain lane and redirect/cancel
+   duplicate sibling no-stall lanes into this issue until fresh blocker-closure
+   evidence for `LUC-47` is attached.

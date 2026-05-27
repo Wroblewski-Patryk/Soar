@@ -1,6 +1,6 @@
 # View Map And Browser Workflow Ownership
 
-Updated: 2026-05-26
+Updated: 2026-05-27
 Issue: `LUC-38` (Frontend)
 Owner lane: `frontend-engineer`
 
@@ -84,6 +84,19 @@ For each changed route, frontend ownership includes proving:
   `implemented and verified` for current route families (`public`, `dashboard`,
   `admin`, `offline`).
 - No new route-family drift found in this sweep.
+- Protected browser journey proof remains a separate gate and is still
+  `implemented but not verified`.
+
+## 2026-05-27 Autonomous Drift Sweep (`LUC-227`)
+
+- Route map drift check re-run against `apps/web/src/app/**/page.tsx`: `37`
+  page entries discovered.
+- Canonical route inventory parity against
+  `docs/architecture/reference/dashboard-route-map.md` remains
+  `implemented and verified` for route families (`public`, `dashboard`,
+  `admin`, `offline`).
+- Idle-lane fail-closed posture rechecked in active state files; no passive
+  `in_progress` policy drift detected in PM no-stall routing clauses.
 - Protected browser journey proof remains a separate gate and is still
   `implemented but not verified`.
 

@@ -1,7 +1,173 @@
 # PROJECT_STATE
 
-Last updated: 2026-05-26
+Last updated: 2026-05-27
 
+- `LUC-251 issue_reopened_via_comment heartbeat (2026-05-27)` consumed one
+  pending comment (`1/1`) and reconciled board routing as duplicate closure.
+  Comment `086a98cf-cf89-4142-8cc4-eeb0110c3240` explicitly cancels `LUC-251`
+  as a duplicate sibling of canonical PM no-stall lane `LUC-244`; this lane is
+  now execution-closed and should not be resumed.
+  Scope remained coordination-only (no code/runtime/deploy mutation).
+  Disposition for this heartbeat: `done` (duplicate-cancelled, routed to `LUC-244`).
+  Evidence:
+  `history/tasks/luc-251-no-stall-queue-expeditor-2026-05-27-task.md`.
+- `LUC-251 assigned heartbeat (2026-05-27)` executed a concrete PM no-stall
+  queue-expeditor checkpoint and remains `blocked`.
+  Inline wake was consumed first (`fallbackFetchNeeded=false`, comments `0/0`);
+  no new blocker-closure evidence arrived in this heartbeat.
+  Scope remained coordination-only and fail-closed (no code/runtime/deploy
+  mutation).
+  Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+  Evidence:
+  `history/tasks/luc-251-no-stall-queue-expeditor-2026-05-27-task.md`.
+- `LUC-251 finish_successful_run_handoff heartbeat (2026-05-27)` was
+  reconciled as a status-only PM no-stall checkpoint and remains `blocked`.
+  Inline wake carried no unblock delta (`fallbackFetchNeeded=false`,
+  comments `0/0`), so blocker contract is unchanged.
+  Unblock owner/action remains `LUC-47` (`Ops Release Lead` + host operator):
+  temp-domain expected-SHA smoke/readiness + worker readiness + rollback note.
+  Evidence:
+  `history/tasks/luc-251-no-stall-queue-expeditor-2026-05-27-task.md`.
+
+- `LUC-246 [Soar] Gap register and repair lane refresh` completed as a
+  delivery-coordination checkpoint on 2026-05-27.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments
+  `0/0`); no new comment-scope unblock evidence arrived.
+  The canonical V1 gap register was refreshed with unchanged blocker truth:
+  `GAP-L45-002` remains blocked under `LUC-47` with protected worker-readiness
+  auth-path evidence required for closure, and `GAP-L45-005` evidence lineage
+  now includes `LUC-246` for docs/state parity continuity.
+  Scope remained source-of-truth synchronization only (no code/runtime/deploy
+  mutation). Evidence:
+  `history/tasks/luc-246-gap-register-and-repair-lane-refresh-2026-05-27-task.md`.
+  Continuation `issue_continuation_needed` (`0/0` comments) found no
+  blocker-routing drift and no scope delta; disposition remains `done`.
+  Continuation `finish_successful_run_handoff` (`0/0` comments) found no
+  blocker-routing drift and no scope delta; disposition remains `done`.
+  Continuation `source_scoped_recovery_action` (`0/0` comments) found no
+  blocker-routing drift, no unblock evidence delta, and no scope delta;
+  disposition remains `done`.
+- `LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions`
+  heartbeat executed on 2026-05-27 with concrete read-only verification and
+  remains `blocked`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments
+  `0/0`).
+  Production full smoke on expected SHA
+  `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` passed public checks
+  (`/health`, `/ready`, web `/`, build-info SHA) and failed only on protected
+  `API /workers/ready -> 401`.
+  Auth-path probe narrowed the blocker: configured smoke login principal
+  (`SMOKE_AUTH_EMAIL`/`SMOKE_AUTH_PASSWORD`) returned `400` on `POST /auth/login`
+  and produced no session token in this runner.
+  Scope remained verification-only with no deploy/runtime mutation.
+  Unblock owner/action: Soar API auth credential owner + Security/Test
+  permission owner must provide approved read-only principal/session path that
+  both authenticates and is authorized for `GET /workers/ready`, then Ops
+  reruns one full smoke with worker probe and publishes parent closure packet.
+  Evidence:
+  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+- `LUC-241 finish_successful_run_handoff continuation (2026-05-27)` executed a
+  concrete protected-proof recheck and remains `blocked`.
+  New artifact signal in this run: `SMOKE_AUTH_TOKEN` is present, but full
+  production smoke still fails only on `API /workers/ready -> 401` while public
+  checks stay green.
+  Direct token probe shows the provided principal is not valid for current API
+  session/auth validation:
+  `GET /auth/me -> 401 (Session expired)`,
+  `GET /workers/health -> 401 (Invalid token)`,
+  `GET /workers/ready -> 401 (Invalid token)`.
+  Unblock owner/action unchanged: Soar API auth credential owner + Security/Test
+  permission owner must provide/refresh an approved read-only principal/session
+  path that both authenticates and is authorized for protected worker readiness
+  proof, then Ops reruns one worker-included smoke.
+- `LUC-235 assigned heartbeat (2026-05-27)` executed a concrete PM no-stall
+  queue-expeditor checkpoint and remains `blocked`.
+  Inline wake was consumed first (`fallbackFetchNeeded=false`, comments `0/0`);
+  no new blocker-closure evidence arrived in this heartbeat.
+  Scope remained coordination-only and fail-closed (no code/runtime/deploy
+  mutation).
+  Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+  Evidence:
+  `history/tasks/luc-235-no-stall-queue-expeditor-2026-05-27-task.md`.
+- `LUC-233 [Soar] Gap register and repair lane refresh` completed as a
+  delivery-coordination checkpoint on 2026-05-27.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments
+  `0/0`); no new comment-scope unblock evidence arrived.
+  The canonical V1 gap register was refreshed with unchanged blocker truth:
+  `GAP-L45-002` remains blocked under `LUC-47` with protected worker-readiness
+  auth-path evidence required for closure, and `GAP-L45-005` evidence lineage
+  now includes `LUC-233` for docs/state parity continuity.
+  Scope remained source-of-truth synchronization only (no code/runtime/deploy
+  mutation). Evidence:
+  `history/tasks/luc-233-gap-register-and-repair-lane-refresh-2026-05-27-task.md`.
+  Continuation `finish_successful_run_handoff` (`0/0` comments) found no
+  blocker-routing drift; disposition remains `done`.
+- `LUC-230 assigned heartbeat (2026-05-27)` executed a concrete PM no-stall
+  queue-expeditor checkpoint and remains `blocked`.
+  Inline wake was consumed first (`fallbackFetchNeeded=false`, comments `0/0`);
+  no new blocker-closure evidence arrived in this heartbeat.
+  Scope remained coordination-only and fail-closed (no code/runtime/deploy
+  mutation).
+  Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+  Evidence:
+  `history/tasks/luc-230-no-stall-queue-expeditor-2026-05-27-task.md`.
+- `LUC-230 issue_continuation_needed heartbeat (2026-05-27)` was reconciled
+  from inline wake payload first (`fallbackFetchNeeded=false`, comments `0/0`)
+  and remains `blocked`.
+  No new blocker-closure evidence arrived; scope stayed coordination-only and
+  fail-closed (no code/runtime/deploy mutation).
+  Unblock owner/action remains unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+  Evidence:
+  `history/tasks/luc-230-no-stall-queue-expeditor-2026-05-27-task.md`.
+- `LUC-227 assigned heartbeat (2026-05-27)` completed a bounded docs-memory
+  autonomous idle and map-drift sweep with disposition `done`.
+  Inline wake scope was consumed first; no comment delta was present.
+  Concrete rechecks were executed: idle-lane fail-closed clauses in active
+  state docs, current `apps/web/src/app/**/page.tsx` route inventory, and
+  canonical parity against
+  `docs/architecture/reference/dashboard-route-map.md`.
+  Result: no idle-lane contract drift and no route-family drift (`37`
+  current `page.tsx` routes across `public/dashboard/admin/offline` families).
+  Scope remained docs/state parity only (no code/runtime/deploy mutation).
+  Evidence:
+  `history/tasks/luc-227-autonomous-idle-and-map-drift-sweep-2026-05-27-task.md`.
+  Continuation wake `finish_successful_run_handoff` was reconciled from inline
+  payload first (`fallbackFetchNeeded=false`, comments `0/0`); no new drift or
+  blocker delta arrived and disposition remains `done`.
+- `LUC-228 assigned heartbeat (2026-05-27)` executed a concrete V1
+  audit-to-completion controller checkpoint and remains `blocked`.
+  Inline wake was consumed first (`fallbackFetchNeeded=false`, comments `0/0`);
+  no new blocker-closure evidence arrived in this heartbeat.
+  Scope remained coordination-only and fail-closed (no code/runtime/deploy
+  mutation).
+  Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+  Evidence:
+  `history/tasks/luc-228-v1-audit-to-completion-controller-2026-05-27-task.md`.
+  Continuation wake `finish_successful_run_handoff` was reconciled from inline
+  payload first (`fallbackFetchNeeded=false`, comments `0/0`); no new
+  blocker-closure evidence arrived and disposition remains `blocked` with
+  unchanged unblock owner/action.
+- `LUC-221 assigned heartbeat (2026-05-27)` executed a concrete PM no-stall
+  queue-expeditor checkpoint and remains `blocked`.
+  Inline wake was consumed first (`fallbackFetchNeeded=false`, comments `0/0`);
+  no new blocker-closure evidence arrived in this heartbeat.
+  Scope remained coordination-only and fail-closed (no code/runtime/deploy
+  mutation).
+  Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+  Evidence:
+  `history/tasks/luc-221-no-stall-queue-expeditor-2026-05-27-task.md`.
 - `LUC-216 [Soar] Gap register and repair lane refresh` completed as a
   delivery-coordination checkpoint. The canonical V1 gap register was
   synchronized with current blocker truth: `GAP-L45-002` remains blocked under
@@ -117,6 +283,31 @@ Last updated: 2026-05-26
   worker readiness evidence with rollback note.
   Evidence:
   `history/tasks/luc-174-no-stall-queue-expeditor-2026-05-26-task.md`.
+- `LUC-219 assigned heartbeat (2026-05-26)` executed a concrete PM no-stall
+  queue-expeditor checkpoint and remains `blocked`.
+- Scope remained coordination-only and fail-closed against parent `LUC-45`;
+  no code/runtime/deploy mutation was performed.
+- Unblock owner/action unchanged:
+  `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain
+  expected-SHA deploy smoke/readiness and worker readiness evidence with
+  rollback note.
+- Evidence:
+  `history/tasks/luc-219-no-stall-queue-expeditor-2026-05-26-task.md`.
+- `LUC-219 continuation heartbeat (2026-05-26)` reconciled from inline wake
+  payload first (`issue_continuation_needed`, `fallbackFetchNeeded=false`,
+  pending comments `0/0`).
+- No new blocker-closure evidence arrived; disposition remains fail-closed
+  `blocked` with unchanged unblock owner/action on `LUC-47`.
+- `LUC-219 source_scoped_recovery_action heartbeat (2026-05-26)` was
+  reconciled from inline wake payload first (`fallbackFetchNeeded=false`,
+  pending comments `0/0`) and remains `blocked`.
+- Latest status was acknowledged before generic exploration; no new unblock
+  artifact arrived.
+- Scope remained PM coordination-only and fail-closed (no code/runtime/deploy
+  mutation).
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA smoke/readiness packet,
+  worker readiness evidence, and rollback note.
 - `LUC-171 assigned heartbeat (2026-05-26)` completed as `done` for
   `LUC-169` provenance packet closure.
   Scope was strict to `2` artifacts:
@@ -11965,3 +12156,55 @@ Last updated: 2026-05-26
   1. provide approved read-only app auth/session path that can pass `/workers/ready`,
   2. attach authenticated readiness proof (or equivalent protected readiness/log packet) for `workers-market-stream`,
   3. publish parent closure decision update for `LUC-98` / `LUC-47` / `LUC-12` anchored to SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`.
+
+
+- `LUC-221 finish_successful_run_handoff heartbeat (2026-05-27)` was
+  reconciled as a status-only PM no-stall checkpoint and remains `blocked`.
+  Inline wake carried no new unblock delta (`fallbackFetchNeeded=false`,
+  comments `0/0`), so blocker contract is unchanged.
+  Unblock owner/action remains `LUC-47` (`Ops Release Lead` + host operator):
+  temp-domain expected-SHA smoke/readiness + worker readiness + rollback note.
+  Evidence:
+  `history/tasks/luc-221-no-stall-queue-expeditor-2026-05-27-task.md`.
+
+
+- `LUC-244 assigned heartbeat (2026-05-27)` executed a concrete PM no-stall
+  queue-expeditor checkpoint and remains `blocked`.
+  Inline wake was consumed first (`fallbackFetchNeeded=false`, comments `0/0`);
+  no new blocker-closure evidence arrived in this heartbeat.
+  Scope remained coordination-only and fail-closed (no code/runtime/deploy
+  mutation).
+  Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host
+  operator) must attach temp-domain expected-SHA deploy smoke/readiness and
+  worker readiness evidence with rollback note.
+  Evidence:
+  `history/tasks/luc-244-no-stall-queue-expeditor-2026-05-27-task.md`.
+- `LUC-244 finish_successful_run_handoff heartbeat (2026-05-27)` was
+  reconciled as a status-only PM no-stall checkpoint and remains `blocked`.
+  Inline wake carried no new unblock delta (`fallbackFetchNeeded=false`,
+  comments `0/0`), so blocker contract is unchanged.
+  Unblock owner/action remains `LUC-47` (`Ops Release Lead` + host operator):
+  temp-domain expected-SHA smoke/readiness + worker readiness + rollback note.
+  Evidence:
+  `history/tasks/luc-244-no-stall-queue-expeditor-2026-05-27-task.md`.
+
+- `LUC-244 source_scoped_recovery_action heartbeat (2026-05-27)` was
+  reconciled as a status-only PM no-stall checkpoint and remains `blocked`.
+  Inline wake carried no unblock delta (`fallbackFetchNeeded=false`, comments
+  `0/0`, latest comment id `unknown`), so blocker contract is unchanged.
+  Unblock owner/action remains `LUC-47` (`Ops Release Lead` + host operator):
+  temp-domain expected-SHA smoke/readiness + worker readiness + rollback note.
+  Evidence:
+  `history/tasks/luc-244-no-stall-queue-expeditor-2026-05-27-task.md`.
+- `LUC-244 issue_reopened_via_comment heartbeat (2026-05-27)` consumed one
+  pending board comment (`330a9de1-3c40-4bbd-b64d-cffb9b5e4d54`) and remains
+  `blocked`.
+  Comment scope was triaged as coordination routing only: keep `LUC-244` as the
+  canonical PM routine chain issue, cancel/redirect duplicate sibling lanes
+  here, and keep blocker linkage explicit to `LUC-47`.
+  No new blocker-closure evidence was attached, so unblock owner/action is
+  unchanged: `LUC-47` (`Ops Release Lead` + host operator) must attach
+  temp-domain expected-SHA deploy smoke/readiness + worker readiness + rollback
+  note.
+  Evidence:
+  `history/tasks/luc-244-no-stall-queue-expeditor-2026-05-27-task.md`.
