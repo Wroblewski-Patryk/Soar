@@ -47,6 +47,35 @@ repository history.
 
 ### Latest Checkpoint
 
+- `LUC-376-READ-ONLY-SOURCE-CONTROL-CLASSIFICATION-2026-05-27` completed as a bounded gate-hold queue-hygiene checkpoint. Wake `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`). Concrete action: read-only `git status` classification of drift by class. Result: `state=4`, `docs=3`, `evidence=2`, and `runtime/product code=0`. No code/runtime/deploy mutation was performed.
+- `LUC-322-SAFE-LANE-ARCH-STATUS-REFRESH-2026-05-27` completed as a bounded
+  non-production docs-memory checkpoint. Wake `issue_assigned` was consumed
+  from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest
+  comment id `unknown`) and no new unblock evidence arrived. A concrete drift
+  recheck across board/state/system-health/mission files and V1 gap-register
+  lineage found no routing change. Blocker ownership remains unchanged
+  (`LUC-47` -> Ops Release Lead + host operator for temp-domain expected-SHA
+  smoke/readiness + worker readiness + rollback note). No code/runtime/deploy
+  mutation was performed.
+- `LUC-322-SAFE-LANE-ARCH-STATUS-REFRESH-2026-05-27-HANDOFF` completed as a
+  bounded docs-memory continuity checkpoint. Wake
+  `finish_successful_run_handoff` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`)
+  and no new unblock evidence arrived. A concrete drift recheck across
+  board/state/system-health/mission files and V1 gap-register lineage found no
+  routing change. Blocker ownership remains unchanged (`LUC-47` -> Ops Release
+  Lead + host operator for temp-domain expected-SHA smoke/readiness + worker
+  readiness + rollback note). No code/runtime/deploy mutation was performed.
+- `LUC-322-SAFE-LANE-ARCH-STATUS-REFRESH-2026-05-27-SOURCE-SCOPED-RECOVERY`
+  completed as a bounded docs-memory continuity checkpoint. Wake
+  `source_scoped_recovery_action` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`)
+  and no new unblock evidence arrived. A concrete drift recheck across
+  board/state/system-health/mission files and V1 gap-register lineage found no
+  routing change. Blocker ownership remains unchanged (`LUC-47` -> Ops Release
+  Lead + host operator for temp-domain expected-SHA smoke/readiness + worker
+  readiness + rollback note). No code/runtime/deploy mutation was performed.
+
 - `LUC-285-SAFE-LANE-ARCH-STATUS-REFRESH-2026-05-27-SOURCE-SCOPED-RECOVERY`
   completed as a bounded docs-memory continuity checkpoint. Wake
   `source_scoped_recovery_action` was consumed from inline payload
@@ -853,3 +882,4 @@ repository history.
 | 2026-05-24 | Protected input readiness refresh for current V1 candidate | BLOCKED/NO-GO: refreshed the no-secret protected-input readiness artifact for deployed `380308d1` using latest preflight timestamp; current shell still has `0` matching protected input names, and the operator unblock packet still validates against the refreshed readiness JSON. | `history/tasks/v1-protected-input-readiness-refresh-380308d1-2026-05-24-task.md`; `history/evidence/v1-protected-input-readiness-380308d1-2026-05-24.md`; `history/artifacts/v1-protected-input-readiness-380308d1-2026-05-24.json`; `ops:protected-inputs:check`; `ops:operator-unblock:check` | Provide approved protected inputs and real approver context before executing protected proof commands. |
 | 2026-05-24 | Web Dashboard selected-bot load dependency closure | VERIFIED_LOCAL: fixed the current React hook lint drift with a stable `load` callback that reads current selected-bot state from a synchronized ref, avoiding reload-triggered selection regressions. This is local dependency-contract proof only; production Dashboard clickthrough and full V1 GO remain protected-input blocked. | `history/tasks/web-dashboard-selected-bot-load-deps-2026-05-24-task.md`; focused Dashboard hook tests `4/4`; focused Dashboard regression pack `26/26`; full Web tests `150` files / `534` tests; Web lint; Web typecheck; repository lint; guardrails; strict architecture graph drift `796/796` | Continue only with approved protected context or the next bounded local gap; do not claim full production readiness from this local proof. |
 | 2026-05-24 | Local integrity build sweep | VERIFIED_LOCAL: refreshed broader local gates after the recent graph/release-tooling/state and Dashboard hook updates. Full API/Web typecheck passed, docs parity passed, reusable audit/operator aggregate passed, and full workspace build passed. This is local integrity proof only; protected production release evidence is still absent. | `history/tasks/local-integrity-build-sweep-2026-05-24-task.md`; `typecheck`; `docs:parity:check`; `audit:manifest:verify`; `build` | Keep V1 at `NO-GO` until protected production proof inputs and approver context exist; otherwise continue with the next bounded local gap. |
+

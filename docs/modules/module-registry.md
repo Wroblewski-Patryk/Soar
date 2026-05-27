@@ -1,6 +1,6 @@
 # Module Registry
 
-Updated: 2026-05-24
+Updated: 2026-05-28
 
 Purpose: connect code modules to deep-dive docs, pipeline usage, routes/data,
 tests, and known gaps. This registry reuses the existing module deep dives
@@ -57,6 +57,11 @@ instead of replacing them.
 | admin | Admin users/subscriptions. | `/admin*` | Admin management | admin | admin tests if present | `web-admin.md` | None found. |
 | icons | Icon lookup hook/service. | Shared | Dashboard/runtime display | icons | icons tests if present | `web-icons.md` | None found. |
 | shared | Shared feature helpers. | Internal/shared | Multiple pipelines | multiple | helper tests where present | `web-shared.md` | Keep ownership explicit to avoid cross-feature duplication. |
+
+## Mobile Module Registry
+| Module | Responsibility | Public Interface | Used By Pipelines | Related API | Tests | Doc | Known Gaps |
+|---|---|---|---|---|---|---|---|
+| bootstrap | Native/mobile scope boundary and scaffold baseline. | None (no production mobile routes/screens). | Mobile activation governance only (no runtime pipeline usage yet). | None yet (web/API contracts are reused conceptually only). | Placeholder script echoes in `apps/mobile/package.json` (`dev/build/test`). | `mobile-bootstrap.md` | No Expo Router app shell, no implemented screens, no native build/test pipeline, and no mobile-specific API contracts yet. |
 
 ## Maintenance
 - Add a new row here when a new module appears under `apps/api/src/modules` or

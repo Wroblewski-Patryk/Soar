@@ -95,3 +95,47 @@ evidence.
   - `LUC-47` (`Ops Release Lead` + host operator): attach temp-domain
     expected-SHA smoke/readiness + worker readiness packet with rollback note.
 - Final disposition for this heartbeat: `blocked`.
+
+## 2026-05-28 Wake Delta (issue_assignment_recovery)
+- Inline wake payload acknowledged first (`fallbackFetchNeeded=false`) with no
+  pending comment delta (`0/0`) and no new blocker-closure artifact.
+- Concrete action in this heartbeat:
+  - revalidated canonical gate routing in `.codex/context/TASK_BOARD.md`,
+    `.codex/context/PROJECT_STATE.md`, and `.agents/state/next-steps.md`,
+  - rechecked blocker-evidence references for `LUC-47` in source-of-truth
+    files to confirm no new closure packet was attached.
+- Capacity governor preserved: one live execution lane, no queue widening.
+- Unblock owner/action remains unchanged:
+  - `LUC-47` (`Ops Release Lead` + host operator): attach temp-domain
+    expected-SHA deploy smoke/readiness + worker readiness evidence + rollback
+    note.
+- Final disposition for this heartbeat: `blocked`.
+
+## 2026-05-28 Wake Delta (issue_commented, comment `7cb0c750-35fb-4f43-bd63-40c3683ee573`)
+- Pending comment consumed from inline wake payload (`fallbackFetchNeeded=false`, comments `1/1`).
+- Comment content classified as bookkeeping-only: live-run janitor synchronized issue status to `in_progress` so active-run counts stay accurate; no product/deploy/runtime/secret mutation.
+- Concrete action in this heartbeat:
+  - reconciled janitor status-sync note with canonical gate files,
+  - revalidated that no new `LUC-47` unblock evidence packet landed in wake scope,
+  - preserved fail-closed blocker routing and one-lane capacity governor.
+- Unblock owner/action remains unchanged:
+  - `LUC-47` (`Ops Release Lead` + host operator): attach temp-domain expected-SHA deploy smoke/readiness + worker readiness evidence + rollback note.
+- Final disposition for this heartbeat: `blocked`.
+
+## 2026-05-28 Wake Delta (issue_continuation_needed)
+- Inline wake payload acknowledged first (`fallbackFetchNeeded=false`) with no
+  pending comment delta (`0/0`) and no new unblock artifact.
+- Concrete action in this heartbeat:
+  - rechecked queue inputs for `LUC-103` execution gate,
+  - confirmed canonical `manifest v4` and `cookbook v4` artifacts are present
+    and still the active controller input (`history/artifacts/luc-103-open-lane-manifest-v4-2026-05-26.json`,
+    `history/artifacts/luc-103-lane-stage-cookbook-v4-2026-05-26.md`),
+  - confirmed no fresh owner-closure/no-commit resolution was attached for the
+    remaining gate blocker path in this wake scope.
+- Capacity governor preserved (`one live lane`), no queue widening and no
+  deploy/push mutation.
+- Unblock owner/action remains unchanged:
+  - `LUC-47` (`Ops Release Lead` + host operator): attach temp-domain
+    expected-SHA deploy smoke/readiness + worker readiness evidence + rollback
+    note.
+- Final disposition for this heartbeat: `blocked`.

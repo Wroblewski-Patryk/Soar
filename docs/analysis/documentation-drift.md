@@ -1,6 +1,6 @@
 # Documentation Drift Report
 
-Updated: 2026-05-26
+Updated: 2026-05-27
 
 Purpose: record known gaps between documentation and implementation so future
 agents can repair them deliberately. This is a living report, not a proof that
@@ -18,7 +18,7 @@ all behavior is fully verified.
 | Module deep dives were published but not connected to pipelines in one registry. | `module-doc-status-index.md` showed published docs. | Agents could know module docs exist without seeing system-flow usage. | Repaired with `docs/modules/module-registry.md`. |
 | Historical planning, audit, release, and evidence files could look active inside current docs. | 2026-05-23 documentation restructuring moved completed task contracts, old plans, audits, readable evidence, release packets, and raw artifacts into semantic `history/` folders. | Agents may still over-trust history if they skip current docs and state files. | Repaired structurally for current docs; future agents must use history as evidence, not as behavior owner. |
 | Documentation was graph-connected but not always decision-routable. | 2026-05-23 follow-up added work routes, verification routing, and usefulness requirements to the main documentation map, agent work map, and contributing rules. | Agents could browse a coherent graph but still miss the right current source, evidence path, or closeout update. | Repaired for main entrypoints; continue improving module-level `Pipelines`, `Tests`, and `Evidence` sections as modules are touched. |
-| Mobile implementation exists as `apps/mobile`, but V1 traceability is web/API-centric. | `apps/mobile` directory exists; no active module docs found in inspected docs. | Future mobile work could drift from API/web contracts. | GAP: create mobile module registry when mobile becomes active. |
+| Mobile implementation exists as `apps/mobile`, but V1 traceability was web/API-centric. | `apps/mobile` directory exists as scaffold-only scope. Mobile module docs/index and registry rows are now present: `docs/modules/mobile-module-index.md`, `docs/modules/mobile-bootstrap.md`, `docs/modules/module-registry.md`, and `docs/modules/module-doc-status-index.md`. | Mobile activation can still drift if future native implementation bypasses these docs/registry updates. | Repaired for current scaffold phase; on mobile feature activation, add new `mobile-*.md` docs and registry rows in the same task. |
 | Endpoint-level docs parity was not generated from route files. | Route files are source; `scripts/auditApiEndpointDocsParity.mjs` now generates endpoint parity from Express routes and module docs. 2026-05-19 rerun reports `109` endpoints, `109` documented, `0` gaps. | Route additions can still drift from docs if the parity command is skipped. | Repaired; rerun `pnpm run docs:parity:endpoints:api` whenever API routes or module docs change. |
 | Some web feature test mappings are not fully enumerated. | Static pass saw web feature files; exact tests were not exhaustively mapped in this iteration. | Traceability can point to module-level coverage instead of exact test files. | GAP: expand module deep dives during future feature edits. |
 | UX scorecard still contains unresolved placeholders (`TBD`). | `docs/ux/ui-scorecard.md` lines 95, 98, 101 show `TBD` values. | UX quality reporting can look complete while key score dimensions remain unspecified. | GAP: UX + Docs Memory to replace with measured values or explicit defer metadata (owner/date/reason). |
@@ -62,5 +62,5 @@ Pipeline docs must be checked whenever these areas change:
    `traceability-matrix.md`.
 4. Expand each module deep dive with normalized `Pipelines`, `Tests`, and
    `Evidence` sections as the module is next touched.
-5. Add mobile module registry and traceability only when mobile work becomes
-   active.
+5. On mobile feature activation, expand `mobile-*.md` docs beyond bootstrap and
+   keep module registry/traceability synchronized in the same lane.

@@ -1,7 +1,93 @@
+- `LUC-385-ARB-001-SECURITY-GATE-2026-05-28` is verified locally for the Security lane. The assistant orchestrator now fail-closes `LIVE` mode by default (`live_mode_disabled_fail_closed`) unless `ASSISTANT_HOTPATH_LIVE_ENABLED=true`, and sanitizes user-controlled trace metadata (`requestId`, `botId`, `botMarketGroupId`, `symbol`, `role`) before trace writes. Focused proof: `pnpm --filter api exec vitest run src/modules/engine/assistantOrchestrator.service.test.ts --reporter=basic` (`7/7`). This does not activate deferred ARB-001 hot-path scope; Product/CTO activation decision plus persisted DB trace integration and red-team packet remain open.
 # PROJECT_STATE
 
-Last updated: 2026-05-27
+Last updated: 2026-05-28
 
+- `LUC-175 [Soar][LUC-103-P6] Source-control queue executor gate` heartbeat
+  executed on 2026-05-28 (`issue_commented`) and remains `blocked`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`,
+  comments `1/1`, latest comment id
+  `7cb0c750-35fb-4f43-bd63-40c3683ee573`).
+  Comment was bookkeeping-only: live-run janitor synced issue status to
+  `in_progress` for active-run counting; no product/deploy/runtime mutation.
+  Concrete action: reconciled janitor status-sync note in canonical gate files
+  and revalidated no new `LUC-47` blocker-closure evidence in this wake scope.
+  Result: queue executor gate remains fail-closed with capacity governor
+  preserved (`one live lane`).
+  Unblock owner/action unchanged:
+  `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain
+  expected-SHA deploy smoke/readiness + worker readiness evidence + rollback
+  note.
+  Evidence:
+  `history/tasks/luc-175-source-control-queue-executor-gate-2026-05-26-task.md`.
+
+- `LUC-175 [Soar][LUC-103-P6] Source-control queue executor gate` heartbeat
+  executed on 2026-05-28 (`issue_assignment_recovery`) and remains `blocked`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`,
+  comments `0/0`, latest comment id `unknown`).
+  Concrete action: fail-closed source-control gate revalidation across canonical
+  state files plus blocker-evidence reference sweep for `LUC-47`.
+  Result: no new blocker-closure evidence landed in this wake scope and queue
+  executor routing remains unchanged with capacity governor preserved (`one live
+  lane`).
+  Unblock owner/action unchanged:
+  `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain
+  expected-SHA deploy smoke/readiness + worker readiness evidence + rollback
+  note.
+  Evidence:
+  `history/tasks/luc-175-source-control-queue-executor-gate-2026-05-26-task.md`.
+
+- `LUC-175 [Soar][LUC-103-P6] Source-control queue executor gate` continuation
+  heartbeat executed on 2026-05-28 (`issue_continuation_needed`) and remains
+  `blocked`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`,
+  comments `0/0`, latest comment id `unknown`).
+  Concrete action: `LUC-103` controller input checkpoint confirmed canonical
+  `manifest v4` + `cookbook v4` are present and still authoritative execution
+  inputs, while no new owner-scoped closure/no-commit artifact landed for this
+  gate path in the wake scope.
+  Capacity governor remains unchanged (`one live lane`), with no queue
+  widening, push, or deploy mutation.
+  Unblock owner/action unchanged:
+  `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain
+  expected-SHA deploy smoke/readiness + worker readiness evidence + rollback
+  note.
+  Evidence:
+  `history/tasks/luc-175-source-control-queue-executor-gate-2026-05-26-task.md`.
+
+- `LUC-390 [Soar][Infra Gate] Diagnose production DNS/network failure for LUC-241` heartbeat executed on 2026-05-28 and is `done`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`), then a concrete production DNS/network diagnosis was executed.
+  Root-cause was narrowed to hostname targeting drift rather than infrastructure outage:
+  `soar-api.luckysparrow.ch` and `soar-web.luckysparrow.ch` returned DNS NXDOMAIN, while canonical production domains (`api.soar.luckysparrow.ch`, `soar.luckysparrow.ch`, `vps.luckysparrow.ch`) resolved to `141.227.149.67`, passed TCP checks, and returned healthy public HTTP responses.
+  Canonical deploy smoke confirmed the same: public checks pass; only protected `API /workers/ready` remains `401`.
+  Effect: infra-network blocker for `LUC-241` is cleared when canonical targets are used; the remaining blocker is auth/permission for protected worker readiness proof.
+  Evidence:
+  `history/artifacts/luc-390-dns-network-diagnostic-2026-05-28.json`,
+  `history/tasks/luc-390-infra-gate-diagnose-production-dns-network-failure-for-luc-241-2026-05-28-task.md`.
+
+- `LUC-386 [Soar][ARB-002] Add docs/modules/mobile-*.md index + module registry rows once mobile lane is active` heartbeat executed on 2026-05-28 and is `done`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action: published scaffold-phase mobile module docs/index and integrated mobile rows into canonical module registries and drift tracking.
+  Files added: `docs/modules/mobile-module-index.md`, `docs/modules/mobile-bootstrap.md`.
+  Files updated: `docs/modules/module-registry.md`, `docs/modules/module-doc-status-index.md`, `docs/modules/system-modules.md`, `docs/modules/README.md`, `docs/analysis/documentation-drift.md`, `.codex/context/TASK_BOARD.md`.
+  Verification: `rg -n "mobile-module-index|mobile-bootstrap|Mobile Module Registry|Mobile Surface" docs/modules docs/analysis/documentation-drift.md`.
+  Evidence:
+  `history/tasks/luc-386-mobile-module-registry-index-2026-05-28-task.md`.
+
+- `LUC-384 [Soar][Architecture Planning] Convert architecture docs into executable repair backlog` heartbeat executed on 2026-05-28 and is `done`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action: transformed architecture/documentation findings into a delegation-ready repair backlog (`ARB-001..ARB-008`) with owner lanes, severity, executable fix slices, verification contracts, and dependency classes.
+  Scope remained planning/docs-state only (no code/runtime/deploy mutation).
+  Evidence:
+  `history/tasks/luc-384-architecture-docs-to-repair-backlog-2026-05-28-task.md`.
+
+- `LUC-376 [Soar][Gate Hold] Read-only source-control classification for docs/state/evidence drift` heartbeat executed on 2026-05-27 and is `done`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action: read-only classification of current worktree drift.
+  Classification outcome: `state=4`, `docs=3`, `evidence=2`, `runtime/product code=0`.
+  Scope remained queue-hygiene/docs-state-evidence only (no runtime/deploy mutation).
+  Evidence:
+  `history/tasks/luc-376-read-only-source-control-classification-docs-state-evidence-drift-2026-05-27-task.md`.
 - `LUC-285 source_scoped_recovery_action heartbeat (2026-05-27)` executed as a
   bounded non-production parity checkpoint and remains `blocked`.
   Inline wake was consumed first (`fallbackFetchNeeded=false`, comments `0/0`,
@@ -12308,3 +12394,7 @@ Last updated: 2026-05-27
   note.
   Evidence:
   `history/tasks/luc-244-no-stall-queue-expeditor-2026-05-27-task.md`.
+
+
+- `LUC-386 Mobile module docs baseline (2026-05-28)` is now explicitly recorded as complete for the scaffold-only scope. `docs/modules/mobile-module-index.md` and `docs/modules/mobile-bootstrap.md` are present; `docs/modules/module-doc-status-index.md` includes `Mobile Surface`; `docs/modules/module-registry.md` includes `Mobile Module Registry`; and `.agents/state/module-confidence-ledger.md` (`SOAR-MOBILE-001`) now references this docs baseline. Native/mobile implementation remains deferred by design until activation approval.
+

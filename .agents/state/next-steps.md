@@ -1,6 +1,25 @@
 # Next Steps
 
-Last updated: 2026-05-27
+Last updated: 2026-05-28
+
+## 2026-05-28 LUC-175 Issue-Commented Continuation Next Action
+
+1. Treat comment `7cb0c750-35fb-4f43-bd63-40c3683ee573` as bookkeeping-only; do not widen scope from janitor `in_progress` sync alone.
+2. Keep `LUC-175` fail-closed `blocked` while `LUC-47` remains open.
+3. Preserve unchanged unblock contract:
+   - `LUC-47` (`Ops Release Lead` + host operator): temp-domain expected-SHA deploy smoke/readiness packet + worker readiness evidence + rollback note.
+4. Keep capacity governor unchanged (`one live lane`) until fresh blocker-closure evidence lands.
+
+## 2026-05-28 LUC-175 Source-Control Queue Executor Gate Recovery Next Action
+
+1. Keep `LUC-175` fail-closed `blocked` while `LUC-47` remains open.
+2. Preserve single first-class blocker ownership/action:
+   - `LUC-47` (`Ops Release Lead` + host operator): temp-domain expected-SHA
+     deploy smoke/readiness packet + worker readiness evidence + rollback note.
+3. Keep capacity governor unchanged (`one live lane`) and do not widen
+   source-control queue execution without fresh `LUC-47` closure evidence.
+4. Keep `LUC-103` execution input pinned to canonical `manifest v4` +
+   `cookbook v4` until explicit checkpoint-level refresh is approved.
 
 ## 2026-05-27 LUC-263 PM No-Stall Next Action
 

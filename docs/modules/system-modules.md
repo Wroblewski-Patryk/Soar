@@ -62,6 +62,15 @@ Updated: 2026-05-24
 - Richer paper/live runtime controls and state transitions.
 - Manual trade ticket UX beyond current API-first operational actions.
 
+## Mobile Areas (Current)
+- `mobile-bootstrap`. `apps/mobile` remains scaffold-only (`README`,
+  placeholder scripts, and `src/.gitkeep`) with no production native runtime.
+
+## Mobile Areas (Planned)
+- Expo Router app shell and navigation.
+- Mobile route/screen parity model with existing web/API contracts.
+- Native build/test contracts replacing scaffold echo scripts.
+
 ## Dashboard IA Order (MVP)
 - `dashboard` (Control Center with risk and operations priority).
 - `dashboard/profile#api`.

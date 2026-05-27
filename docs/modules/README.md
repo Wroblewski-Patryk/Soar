@@ -21,6 +21,8 @@ behavior.
   repository-wide module map
 - `module-doc-status-index.md`
   deep-dive coverage tracker
+- `mobile-module-index.md`
+  index for `mobile-*.md` docs
 - `module-deep-dive-template.md`
   canonical template for new module documentation
 

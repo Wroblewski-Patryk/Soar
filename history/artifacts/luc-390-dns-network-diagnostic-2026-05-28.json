@@ -1,0 +1,239 @@
+﻿{
+    "issue":  "LUC-390",
+    "timestamp":  "2026-05-28T00:29:31.8441640+02:00",
+    "summary":  "Focused production DNS/network reachability diagnostic for LUC-241 unblock gate",
+    "dns":  [
+                {
+                    "host":  "soar-api.luckysparrow.ch",
+                    "ok":  false,
+                    "addresses":  [
+
+                                  ],
+                    "error":  "soar-api.luckysparrow.ch : Nazwa DNS nie istnieje"
+                },
+                {
+                    "host":  "soar-web.luckysparrow.ch",
+                    "ok":  false,
+                    "addresses":  [
+
+                                  ],
+                    "error":  "soar-web.luckysparrow.ch : Nazwa DNS nie istnieje"
+                },
+                {
+                    "host":  "api.soar.luckysparrow.ch",
+                    "ok":  true,
+                    "addresses":  [
+                                      "141.227.149.67"
+                                  ],
+                    "error":  null
+                },
+                {
+                    "host":  "soar.luckysparrow.ch",
+                    "ok":  true,
+                    "addresses":  [
+                                      "141.227.149.67"
+                                  ],
+                    "error":  null
+                },
+                {
+                    "host":  "vps.luckysparrow.ch",
+                    "ok":  true,
+                    "addresses":  [
+                                      "141.227.149.67"
+                                  ],
+                    "error":  null
+                },
+                {
+                    "host":  "vps-9a62b0a4.vps.ovh.net",
+                    "ok":  true,
+                    "addresses":  [
+                                      "141.227.149.67"
+                                  ],
+                    "error":  null
+                }
+            ],
+    "tcp":  [
+                {
+                    "host":  "soar-api.luckysparrow.ch",
+                    "port":  443,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "soar-api.luckysparrow.ch",
+                    "port":  22,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "soar-api.luckysparrow.ch",
+                    "port":  80,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "soar-web.luckysparrow.ch",
+                    "port":  443,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "soar-web.luckysparrow.ch",
+                    "port":  22,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "soar-web.luckysparrow.ch",
+                    "port":  80,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "api.soar.luckysparrow.ch",
+                    "port":  443,
+                    "dnsResolved":  true,
+                    "remoteAddress":  "Address            : 1133896589\r\nAddressFamily      : InterNetwork\r\nScopeId            : \r\nIsIPv6Multicast    : False\r\nIsIPv6LinkLocal    : False\r\nIsIPv6SiteLocal    : False\r\nIsIPv6Teredo       : False\r\nIsIPv4MappedToIPv6 : False\r\nIPAddressToString  : 141.227.149.67",
+                    "tcpSucceeded":  true
+                },
+                {
+                    "host":  "api.soar.luckysparrow.ch",
+                    "port":  22,
+                    "dnsResolved":  true,
+                    "remoteAddress":  "Address            : 1133896589\r\nAddressFamily      : InterNetwork\r\nScopeId            : \r\nIsIPv6Multicast    : False\r\nIsIPv6LinkLocal    : False\r\nIsIPv6SiteLocal    : False\r\nIsIPv6Teredo       : False\r\nIsIPv4MappedToIPv6 : False\r\nIPAddressToString  : 141.227.149.67",
+                    "tcpSucceeded":  true
+                },
+                {
+                    "host":  "api.soar.luckysparrow.ch",
+                    "port":  80,
+                    "dnsResolved":  true,
+                    "remoteAddress":  "Address            : 1133896589\r\nAddressFamily      : InterNetwork\r\nScopeId            : \r\nIsIPv6Multicast    : False\r\nIsIPv6LinkLocal    : False\r\nIsIPv6SiteLocal    : False\r\nIsIPv6Teredo       : False\r\nIsIPv4MappedToIPv6 : False\r\nIPAddressToString  : 141.227.149.67",
+                    "tcpSucceeded":  true
+                },
+                {
+                    "host":  "soar.luckysparrow.ch",
+                    "port":  443,
+                    "dnsResolved":  true,
+                    "remoteAddress":  "Address            : 1133896589\r\nAddressFamily      : InterNetwork\r\nScopeId            : \r\nIsIPv6Multicast    : False\r\nIsIPv6LinkLocal    : False\r\nIsIPv6SiteLocal    : False\r\nIsIPv6Teredo       : False\r\nIsIPv4MappedToIPv6 : False\r\nIPAddressToString  : 141.227.149.67",
+                    "tcpSucceeded":  true
+                },
+                {
+                    "host":  "soar.luckysparrow.ch",
+                    "port":  22,
+                    "dnsResolved":  true,
+                    "remoteAddress":  "Address            : 1133896589\r\nAddressFamily      : InterNetwork\r\nScopeId            : \r\nIsIPv6Multicast    : False\r\nIsIPv6LinkLocal    : False\r\nIsIPv6SiteLocal    : False\r\nIsIPv6Teredo       : False\r\nIsIPv4MappedToIPv6 : False\r\nIPAddressToString  : 141.227.149.67",
+                    "tcpSucceeded":  true
+                },
+                {
+                    "host":  "soar.luckysparrow.ch",
+                    "port":  80,
+                    "dnsResolved":  true,
+                    "remoteAddress":  "Address            : 1133896589\r\nAddressFamily      : InterNetwork\r\nScopeId            : \r\nIsIPv6Multicast    : False\r\nIsIPv6LinkLocal    : False\r\nIsIPv6SiteLocal    : False\r\nIsIPv6Teredo       : False\r\nIsIPv4MappedToIPv6 : False\r\nIPAddressToString  : 141.227.149.67",
+                    "tcpSucceeded":  true
+                },
+                {
+                    "host":  "vps.luckysparrow.ch",
+                    "port":  443,
+                    "dnsResolved":  true,
+                    "remoteAddress":  "Address            : 1133896589\r\nAddressFamily      : InterNetwork\r\nScopeId            : \r\nIsIPv6Multicast    : False\r\nIsIPv6LinkLocal    : False\r\nIsIPv6SiteLocal    : False\r\nIsIPv6Teredo       : False\r\nIsIPv4MappedToIPv6 : False\r\nIPAddressToString  : 141.227.149.67",
+                    "tcpSucceeded":  true
+                },
+                {
+                    "host":  "vps.luckysparrow.ch",
+                    "port":  22,
+                    "dnsResolved":  true,
+                    "remoteAddress":  "Address            : 1133896589\r\nAddressFamily      : InterNetwork\r\nScopeId            : \r\nIsIPv6Multicast    : False\r\nIsIPv6LinkLocal    : False\r\nIsIPv6SiteLocal    : False\r\nIsIPv6Teredo       : False\r\nIsIPv4MappedToIPv6 : False\r\nIPAddressToString  : 141.227.149.67",
+                    "tcpSucceeded":  true
+                },
+                {
+                    "host":  "vps.luckysparrow.ch",
+                    "port":  80,
+                    "dnsResolved":  true,
+                    "remoteAddress":  "Address            : 1133896589\r\nAddressFamily      : InterNetwork\r\nScopeId            : \r\nIsIPv6Multicast    : False\r\nIsIPv6LinkLocal    : False\r\nIsIPv6SiteLocal    : False\r\nIsIPv6Teredo       : False\r\nIsIPv4MappedToIPv6 : False\r\nIPAddressToString  : 141.227.149.67",
+                    "tcpSucceeded":  true
+                },
+                {
+                    "host":  "vps-9a62b0a4.vps.ovh.net",
+                    "port":  443,
+                    "dnsResolved":  true,
+                    "remoteAddress":  "Address            : 1133896589\r\nAddressFamily      : InterNetwork\r\nScopeId            : \r\nIsIPv6Multicast    : False\r\nIsIPv6LinkLocal    : False\r\nIsIPv6SiteLocal    : False\r\nIsIPv6Teredo       : False\r\nIsIPv4MappedToIPv6 : False\r\nIPAddressToString  : 141.227.149.67",
+                    "tcpSucceeded":  true
+                },
+                {
+                    "host":  "vps-9a62b0a4.vps.ovh.net",
+                    "port":  22,
+                    "dnsResolved":  true,
+                    "remoteAddress":  "Address            : 1133896589\r\nAddressFamily      : InterNetwork\r\nScopeId            : \r\nIsIPv6Multicast    : False\r\nIsIPv6LinkLocal    : False\r\nIsIPv6SiteLocal    : False\r\nIsIPv6Teredo       : False\r\nIsIPv4MappedToIPv6 : False\r\nIPAddressToString  : 141.227.149.67",
+                    "tcpSucceeded":  true
+                },
+                {
+                    "host":  "vps-9a62b0a4.vps.ovh.net",
+                    "port":  80,
+                    "dnsResolved":  true,
+                    "remoteAddress":  "Address            : 1133896589\r\nAddressFamily      : InterNetwork\r\nScopeId            : \r\nIsIPv6Multicast    : False\r\nIsIPv6LinkLocal    : False\r\nIsIPv6SiteLocal    : False\r\nIsIPv6Teredo       : False\r\nIsIPv4MappedToIPv6 : False\r\nIPAddressToString  : 141.227.149.67",
+                    "tcpSucceeded":  true
+                }
+            ],
+    "http":  [
+                 {
+                     "url":  "https://soar-api.luckysparrow.ch/health",
+                     "ok":  false,
+                     "statusCode":  null,
+                     "error":  "curl.exe : curl: (6) Could not resolve host: soar-api.luckysparrow.ch\r\nAt line:39 char:13\r\n+     $resp = curl.exe -sS -m 12 -o NUL -w \"%{http_code}\" $u 2\u003e\u00261;\r\n+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (curl: (6) Could...luckysparrow.ch:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n000"
+                 },
+                 {
+                     "url":  "https://soar-api.luckysparrow.ch/ready",
+                     "ok":  false,
+                     "statusCode":  null,
+                     "error":  "curl.exe : curl: (6) Could not resolve host: soar-api.luckysparrow.ch\r\nAt line:39 char:13\r\n+     $resp = curl.exe -sS -m 12 -o NUL -w \"%{http_code}\" $u 2\u003e\u00261;\r\n+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (curl: (6) Could...luckysparrow.ch:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n000"
+                 },
+                 {
+                     "url":  "https://soar-web.luckysparrow.ch/",
+                     "ok":  false,
+                     "statusCode":  null,
+                     "error":  "curl.exe : curl: (6) Could not resolve host: soar-web.luckysparrow.ch\r\nAt line:39 char:13\r\n+     $resp = curl.exe -sS -m 12 -o NUL -w \"%{http_code}\" $u 2\u003e\u00261;\r\n+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (curl: (6) Could...luckysparrow.ch:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n000"
+                 },
+                 {
+                     "url":  "https://soar-web.luckysparrow.ch/api/build-info",
+                     "ok":  false,
+                     "statusCode":  null,
+                     "error":  "curl.exe : curl: (6) Could not resolve host: soar-web.luckysparrow.ch\r\nAt line:39 char:13\r\n+     $resp = curl.exe -sS -m 12 -o NUL -w \"%{http_code}\" $u 2\u003e\u00261;\r\n+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (curl: (6) Could...luckysparrow.ch:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n000"
+                 },
+                 {
+                     "url":  "https://api.soar.luckysparrow.ch/health",
+                     "ok":  true,
+                     "statusCode":  200,
+                     "error":  null
+                 },
+                 {
+                     "url":  "https://api.soar.luckysparrow.ch/ready",
+                     "ok":  true,
+                     "statusCode":  200,
+                     "error":  null
+                 },
+                 {
+                     "url":  "https://soar.luckysparrow.ch/",
+                     "ok":  true,
+                     "statusCode":  200,
+                     "error":  null
+                 },
+                 {
+                     "url":  "https://soar.luckysparrow.ch/api/build-info",
+                     "ok":  true,
+                     "statusCode":  200,
+                     "error":  null
+                 },
+                 {
+                     "url":  "https://vps.luckysparrow.ch/",
+                     "ok":  true,
+                     "statusCode":  302,
+                     "error":  null
+                 }
+             ]
+}

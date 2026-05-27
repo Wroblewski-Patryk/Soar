@@ -2,7 +2,7 @@
 type: docs_index
 status: canonical
 area: analysis
-last_verified: 2026-05-26
+last_verified: 2026-05-27
 ---
 
 # Analysis Documentation
@@ -14,6 +14,7 @@ audit definitions. Dated audit runs belong in `history/audits/`.
 
 | File | Use when |
 | --- | --- |
+| [LUC-333 docs and memory loop checkpoint](./luc-333-docs-memory-loop-2026-05-27.md) | Current docs-memory checkpoint for Soar docs known-state refresh, template parity, stale-marker ownership, and maintenance continuity. |
 | [LUC-197 docs and memory loop checkpoint](./luc-197-docs-memory-loop-2026-05-26.md) | Current docs-memory checkpoint for Soar docs known-state refresh, template parity, stale-marker ownership, and maintenance continuity. |
 | [Documentation inventory](./documentation-inventory.md) | Understanding the current docs inventory and folder roles. |
 | [Documentation drift](./documentation-drift.md) | Checking known documentation drift categories. |
