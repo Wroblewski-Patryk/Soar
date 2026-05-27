@@ -95,6 +95,48 @@ Last updated: 2026-05-27
   permission owner must provide/refresh an approved read-only principal/session
   path that both authenticates and is authorized for protected worker readiness
   proof, then Ops reruns one worker-included smoke.
+- `LUC-241 issue_assigned continuation (2026-05-27)` consumed pending comment
+  `f38ed02c-300f-4d13-8012-46528c87634e` and executed the requested narrow
+  read-only verification lane.
+  Production full smoke on expected SHA
+  `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` again passed public checks and
+  failed protected `API /workers/ready -> 401`.
+  Direct token probe remained unauthorized:
+  `GET /auth/me -> 401`,
+  `GET /workers/health -> 401`,
+  `GET /workers/ready -> 401`.
+  Disposition remains `blocked`; unblock owner/action unchanged:
+  Soar API auth credential owner + Security/Test permission owner must
+  refresh/rotate an approved read-only principal/session path that both
+  authenticates and is authorized for `GET /workers/ready`, then Ops reruns one
+  worker-included smoke and publishes parent closure packet only if proof
+  passes.
+- `LUC-241 issue_continuation_needed continuation (2026-05-27)` executed one
+  additional read-only smoke/auth recheck and remains `blocked`.
+  Full smoke stayed fail-closed on the same protected endpoint:
+  public checks `PASS`, `API /workers/ready -> 401`.
+  Auth artifact detail was tightened: `SMOKE_AUTH_TOKEN` is present but is not
+  JWT-shaped (`length=36`, `parts=1`), and protected probes still fail
+  (`GET /auth/me -> 401`, `GET /workers/ready -> 401`).
+  Unblock owner/action unchanged: Soar API auth credential owner +
+  Security/Test permission owner must provide/rotate a valid approved read-only
+  principal/session artifact that satisfies protected API auth contract, then
+  Ops reruns one worker-included smoke.
+- `LUC-241 issue_reopened_via_comment continuation (2026-05-27)` consumed board
+  comment `5e3f1b49-782a-438b-bc58-ac3dc6f9fc15` and performed explicit
+  fail-closed status synchronization only.
+  Per comment instruction, this lane remains `blocked` and no further reruns
+  are executed until a new valid approved read-only principal/session path is
+  provided by credential owner.
+  Resume condition is unchanged: new credential artifact first, then one
+  worker-included smoke recheck.
+- `LUC-241 issue_continuation_needed continuation (2026-05-27)` executed a
+  status-hold checkpoint with no new comment delta and no new unblock artifact
+  class.
+  Concrete action was limited to credential-artifact presence verification only;
+  no smoke/probe reruns were executed per active fail-closed instruction.
+  Lane remains `blocked` with unchanged resume gate: valid approved read-only
+  principal/session artifact first, then one worker-included smoke recheck.
 - `LUC-235 assigned heartbeat (2026-05-27)` executed a concrete PM no-stall
   queue-expeditor checkpoint and remains `blocked`.
   Inline wake was consumed first (`fallbackFetchNeeded=false`, comments `0/0`);

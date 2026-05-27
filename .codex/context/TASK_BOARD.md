@@ -103,6 +103,44 @@ Last updated: 2026-05-27
 - Disposition remains `blocked`; unblock owner/action unchanged (auth owner +
   Security/Test permission owner must provide valid read-only principal/session
   path for protected readiness proof).
+- Continuation `issue_assigned` consumed with pending comment `1/1` (latest
+  `f38ed02c-300f-4d13-8012-46528c87634e`) and executed as requested with one
+  narrow read-only recheck.
+- Recheck evidence:
+  - production smoke on expected SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`:
+    public checks `PASS`, protected `API /workers/ready -> 401`
+  - token probe: `/auth/me -> 401`, `/workers/health -> 401`,
+    `/workers/ready -> 401`
+- Disposition remains `blocked`; exact unblock unchanged: Soar API auth
+  credential owner + Security/Test permission owner must refresh/rotate an
+  approved read-only principal/session path that authenticates and is
+  authorized for `GET /workers/ready`, then Ops reruns one worker-included
+  smoke.
+- Continuation `issue_continuation_needed` executed with another concrete
+  read-only recheck.
+- Recheck evidence remains fail-closed:
+  - production smoke public checks `PASS`, protected
+    `API /workers/ready -> 401`.
+  - `SMOKE_AUTH_TOKEN` shape check: present, length `36`, JWT parts `1`
+    (not `x.y.z`).
+  - protected probe: `/auth/me -> 401`, `/workers/ready -> 401`.
+- Disposition remains `blocked`; unblock owner/action unchanged (auth owner +
+  Security/Test permission owner must provide a valid read-only principal or
+  session artifact that conforms to API protected bearer/session contract).
+- Continuation `issue_reopened_via_comment` consumed pending comment `1/1`
+  (`5e3f1b49-782a-438b-bc58-ac3dc6f9fc15`) with explicit instruction to close
+  lane back to `blocked` and stop reruns until new credential artifact arrives.
+- Action in this heartbeat: status-sync only; no further smoke/probe reruns.
+- Disposition remains `blocked`; resume condition unchanged:
+  valid approved read-only principal/session artifact from credential owner,
+  then one worker-included smoke recheck.
+- Continuation `issue_continuation_needed` processed with no comment delta
+  (`0/0`) and no new unblock artifact class.
+- Action in this heartbeat: credential-artifact presence check only; no
+  smoke/probe reruns (per prior fail-closed instruction).
+- Disposition remains `blocked`; resume condition unchanged:
+  new valid approved principal/session artifact, then one worker-included
+  smoke recheck.
 
 ## 2026-05-27 LUC-235 No-Stall Queue Expeditor
 - Wake `issue_assigned` processed with concrete PM queue-expeditor checkpoint.
