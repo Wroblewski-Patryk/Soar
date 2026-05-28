@@ -13934,3 +13934,89 @@ None.
 - Drift classification: blocker severity increased from prior `PARTIAL` to `BLOCKED` for protected-input readiness in this runner context.
 - Final disposition: `blocked`.
 - Unblock owner/action updated with runtime-context restoration requirement for protected-input families before window execution.
+
+## 2026-05-28 LUC-405 [Soar][ARB-006][Ops] Issue-assigned continuation (readiness oscillation addendum)
+- Wake acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`); issue remains dependency-blocked.
+- Concrete action:
+  - reran `ops:protected-inputs:check` for `2026-05-28` / SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` => `PARTIAL` (`matching names=9`),
+  - published stability-gate addendum:
+    - `history/releases/luc-405-arb-006-protected-input-readiness-oscillation-addendum-2026-05-28.md`.
+- Drift note: same-day oscillation now confirmed (`BLOCKED:0` -> `PARTIAL:9`), so window remains `NO-GO` until two consecutive same-context readiness checks pass with full required families.
+- Disposition: `blocked`.
+
+## 2026-05-28 LUC-405 [Soar][ARB-006][Ops] Continuation (dual-check + parent checklist update)
+- Wake acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`); issue remains dependency-blocked.
+- Concrete action:
+  - `corepack pnpm run -s ops:operator-unblock:check` => `PASS` (`NO-GO: yes`, packet integrity intact),
+  - `corepack pnpm run -s ops:protected-inputs:check -- --today 2026-05-28 --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --git-ref main ...` => `PARTIAL` (`matching names=9`; missing families unchanged),
+  - published parent-ready checklist update:
+    - `history/releases/luc-405-luc-402-parent-unblock-checklist-update-2026-05-28.md`.
+- Final disposition: `blocked`.
+- Unblock owner/action:
+  1. Soar auth credential owner + Security/Test owner: approved read-only principal/session for protected `GET /workers/ready`.
+  2. Ops + QA + Security + release controller: restore missing protected-input families and satisfy two consecutive same-context readiness checks before executing `ARB6-WIN-2026-05-30-A`.
+
+## 2026-05-28 LUC-405 [Soar][ARB-006][Ops] Source-scoped recovery (runtime-instability recheck)
+- Wake `source_scoped_recovery_action` consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action:
+  - validated parent-facing unblock checklist update artifact,
+  - reran dual checks for same date/SHA.
+- Results:
+  - `operator-unblock`: `PASS` (`NO-GO: yes`),
+  - `protected-inputs`: `BLOCKED` (`matching names=0`).
+- Drift classification: runtime-context instability persists (`PARTIAL (9)` snapshot vs current `BLOCKED (0)` run).
+- Final disposition: `blocked`.
+- Unblock owner/action updated: require two consecutive protected-input readiness runs in the same runner context with required-family presence before window execution.
+
+## 2026-05-28 LUC-405 [Soar][ARB-006][Ops] issue_children_completed reconciliation
+- Wake `issue_children_completed` consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Child signal integrated: `LUC-413` was cancelled as governance/meta lane; no new unblock evidence entered the parent critical path.
+- Parent contract unchanged: `NO-GO`, read-only no-mutation window, auth boundary for `/workers/ready`, and same-context readiness stability gate.
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged.
+
+## 2026-05-28 LUC-405 [Soar][ARB-006][Ops] issue_assigned (human fail-closed recovery comment triage)
+- Wake acknowledged first with pending human comment `5e0e31a2-e7f7-4b81-a2b9-2d41a45cdaea` (`fallbackFetchNeeded=false`).
+- Comment impact: issue explicitly remains fail-closed; blocker scope and no-mutation constraints unchanged (`no push/deploy/restart/protected smoke/production mutation/secret access`).
+- Concrete action:
+  - reran `corepack pnpm run -s ops:operator-unblock:check` => `PASS` (`NO-GO: yes`, packet integrity intact),
+  - reaffirmed blocker ownership/action for protected `/workers/ready` principal + protected-input families.
+- Final disposition: `blocked`.
+
+## 2026-05-28 LUC-405 [Soar][ARB-006][Ops] issue_children_completed (productivity-review anti-churn integration)
+- Integrated direct child outcomes:
+  - `LUC-413` cancelled as governance/meta anti-loop,
+  - `LUC-415` completed with low-yield continuation warning after initial productive outputs.
+- Concrete action:
+  - published `history/releases/luc-405-continuation-control-addendum-2026-05-28.md`.
+- New execution rule for this blocked issue:
+  - generic continuation wakes without new protected-input/auth signal do not trigger repetitive rechecks,
+  - dual-check reruns now require explicit trigger signal (new principal/session, restored families, or board-requested revalidation window).
+- Final disposition: `blocked`.
+
+## 2026-05-28 LUC-405 [Soar][ARB-006][Ops] issue_continuation_needed (no-trigger state-sync)
+- Wake consumed (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Applied continuation-control policy from `history/releases/luc-405-continuation-control-addendum-2026-05-28.md`.
+- No trigger present for dual-check rerun (no new auth principal/session signal, no protected-input restoration signal, no board-requested SHA/date revalidation).
+- Concrete action: durable state-sync checkpoint only; repetitive protected recheck intentionally skipped to avoid low-yield churn.
+- Final disposition: `blocked`.
+
+## 2026-05-28 LUC-405 [Soar][ARB-006][Ops] Source-scoped recovery (state-sync-only anti-churn)
+- Wake `source_scoped_recovery_action` consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action: state-sync-only reconciliation applied; no rerun executed because no new unblock artifacts/signals were provided.
+- Contract unchanged: fail-closed `blocked`, `NO-GO`, read-only no-mutation window, same-runner readiness-stability gate.
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged.
+
+## 2026-05-28 LUC-405 [Soar][ARB-006][Ops] issue_assigned heartbeat (trigger-safe packet integrity checkpoint)
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); issue remains dependency-blocked.
+- Concrete action:
+  - `corepack pnpm run -s ops:operator-unblock:check` => `PASS`.
+  - Contract markers remained fail-closed and aligned: `NO-GO: yes`, `Target SHA ok: yes`, `Protected input evidence matches packet: yes`, and zero missing packet fragments/paths.
+- Execution policy:
+  - no new approved protected principal/session and no new restored protected-input family signal arrived in this wake,
+  - dual-check rerun intentionally skipped under continuation anti-churn guard.
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar auth credential owner + Security/Test owner: approved read-only principal/session for protected `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: restore required protected-input families and produce two consecutive non-regressing same-context readiness runs before `ARB6-WIN-2026-05-30-A`.

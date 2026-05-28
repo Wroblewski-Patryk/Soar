@@ -12572,3 +12572,39 @@
 
 - `LUC-405 [Soar][ARB-006][Ops]` source-scoped recovery checkpoint (2026-05-28) reran dual checks and observed readiness drift: `operator-unblock` stayed `PASS/NO-GO`, while `protected-inputs` regressed to `BLOCKED` (`0` matching protected names) in the current runtime context.
   Disposition remains `blocked`; unblock now explicitly includes restoring protected-input families in the active runner context before window execution.
+
+## 2026-05-28 - LUC-405 protected-input readiness oscillation control (Ops)
+- Heartbeat reran `ops:protected-inputs:check` for SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` and returned `PARTIAL` (`matching names: 9`) after earlier same-day `BLOCKED` (`0`) drift.
+- Added explicit stability gate artifact:
+  - `history/releases/luc-405-arb-006-protected-input-readiness-oscillation-addendum-2026-05-28.md`
+- Gate rule: `ARB6-WIN-2026-05-30-A` remains `NO-GO` until approved read-only auth for `GET /workers/ready` is present and two consecutive same-context readiness checks show full required protected-input families.
+- Disposition remains `blocked`; no production mutation performed.
+
+## 2026-05-28 - LUC-405 continuation checkpoint (Ops)
+- Rechecked protected evidence gate with dual verification:
+  - `ops:operator-unblock:check` => `PASS` (`NO-GO: yes`),
+  - `ops:protected-inputs:check` => `PARTIAL` (`matching names: 9`; required families still missing outside `PROD_UI_*` / `PROD_UI_AUDIT_*`).
+- Published parent unblock checklist update artifact:
+  - `history/releases/luc-405-luc-402-parent-unblock-checklist-update-2026-05-28.md`
+- Release posture remains `blocked/NO-GO`; no mutation actions executed.
+
+- `LUC-405 [Soar][ARB-006][Ops]` source-scoped recovery checkpoint (2026-05-28) confirmed runtime-context instability: checklist snapshot showed `PARTIAL (9)` but immediate rerun returned `BLOCKED (0)` for protected inputs, while `operator-unblock` stayed `PASS/NO-GO`.
+  Disposition remains `blocked`; unblock now requires two consecutive non-regressing protected-input runs in the same runner context before evidence-window execution.
+
+- `LUC-405 [Soar][ARB-006][Ops]` processed `issue_children_completed` (2026-05-28): child `LUC-413` cancellation was reconciled as governance-only with no new unblock evidence; parent remains fail-closed `blocked` with unchanged owner/action gate.
+
+- `LUC-405 [Soar][ARB-006][Ops]` processed human fail-closed recovery comment `5e0e31a2-e7f7-4b81-a2b9-2d41a45cdaea` on 2026-05-28.
+  Impact was triage-only: issue remains dependency-blocked with unchanged no-mutation boundaries (no push/deploy/restart/protected smoke/production mutation/secret access).
+  Minimal live checkpoint executed: `corepack pnpm run -s ops:operator-unblock:check` => `PASS` with `NO-GO: yes` and intact packet/protected-input contract.
+  Disposition remains `blocked`; unblock owner/action unchanged (approved read-only principal/session for protected `GET /workers/ready` + restoration/stability of required protected-input families before `ARB6-WIN-2026-05-30-A`).
+
+- `LUC-405 [Soar][ARB-006][Ops]` continuation wake (`issue_continuation_needed`, 2026-05-28) consumed with no new unblock trigger signal.
+  In line with `history/releases/luc-405-continuation-control-addendum-2026-05-28.md`, this heartbeat executed `state-sync only` (no repetitive protected dual-check rerun).
+  Disposition remains `blocked` with unchanged unblock owners/actions: approved read-only principal/session for protected `GET /workers/ready` and restoration/stability of required protected-input families before `ARB6-WIN-2026-05-30-A`.
+
+- `LUC-405 [Soar][ARB-006][Ops]` source-scoped recovery checkpoint (2026-05-28) applied state-sync-only anti-churn reconciliation (no new unblock signals, no rerun), keeping fail-closed `blocked` status and unchanged owner/action gate.
+
+- `LUC-405 [Soar][ARB-006][Ops]` issue_assigned heartbeat (2026-05-28) completed a trigger-safe read-only packet integrity checkpoint and remains `blocked`.
+  Execution: `corepack pnpm run -s ops:operator-unblock:check` => `PASS` (`NO-GO: yes`, `Target SHA ok: yes`, packet/protected-input alignment intact).
+  No new approved protected principal/session or protected-input family restoration signal was present, so repetitive dual-check reruns remained suppressed by anti-churn policy.
+  Unblock owner/action unchanged: approved read-only principal/session for protected `GET /workers/ready`, then restoration/stability of required protected-input families with two consecutive non-regressing same-context readiness runs before `ARB6-WIN-2026-05-30-A`.

@@ -213,3 +213,119 @@ Produce a current, no-secret readiness package for protected evidence execution,
 - First-class unblock owner/action:
   1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for `GET /workers/ready`.
   2. Ops Release Lead + QA + Security + release controller: restore required protected-input families in the active runtime context (`LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_UI_AUDIT_*`/`PROD_UI_*`, `SOAR_PROD_*`, `PROD_DB_CHECK_*`/`PRODUCTION_DB_CHECK_*`, `RC_*`, `GATE* / GATE_*`) and rerun protected-input readiness for same date/SHA before window execution.
+
+## Continuation Checkpoint (issue_assigned heartbeat, 2026-05-28, readiness oscillation addendum)
+- Wake acknowledged first: no pending comments (`0/0`), `fallbackFetchNeeded=false`, issue remains dependency-blocked.
+- Concrete action in this heartbeat:
+  - reran `corepack pnpm run -s ops:protected-inputs:check -- --today 2026-05-28 --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --git-ref main --json-output history/artifacts/v1-protected-input-readiness-71b8d503-2026-05-28.json --markdown-output history/evidence/v1-protected-input-readiness-71b8d503-2026-05-28.md` => `PARTIAL` (`matching names: 9`),
+  - published oscillation-control addendum with explicit gate rule for window execution:
+    - `history/releases/luc-405-arb-006-protected-input-readiness-oscillation-addendum-2026-05-28.md`.
+- Drift classification:
+  - same-day signal oscillation observed (`BLOCKED:0` -> `PARTIAL:9`) across checkpoints; runtime context stability remains required before window execution.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action (updated with stability gate):
+  1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: restore missing protected-input families and satisfy two consecutive readiness checks in the same runner context before executing `ARB6-WIN-2026-05-30-A`.
+
+## Continuation Checkpoint (issue_continuation_needed, 2026-05-28, dual-check + parent checklist update)
+- Wake acknowledged first: no pending comments (`0/0`), `fallbackFetchNeeded=false`, issue remains dependency-blocked.
+- Concrete action in this heartbeat:
+  - reran `corepack pnpm run -s ops:operator-unblock:check` => `PASS` (`NO-GO: yes`, packet integrity intact),
+  - reran `corepack pnpm run -s ops:protected-inputs:check -- --today 2026-05-28 --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --git-ref main --json-output history/artifacts/v1-protected-input-readiness-71b8d503-2026-05-28.json --markdown-output history/evidence/v1-protected-input-readiness-71b8d503-2026-05-28.md` => `PARTIAL` (`matching names: 9`),
+  - published parent unblock checklist update:
+    - `history/releases/luc-405-luc-402-parent-unblock-checklist-update-2026-05-28.md`.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: restore missing protected-input families and satisfy two consecutive same-context readiness checks before window execution.
+
+## Continuation Checkpoint (source_scoped_recovery_action, 2026-05-28, runtime-instability recheck)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - verified parent-facing checklist artifact `history/releases/luc-405-luc-402-parent-unblock-checklist-update-2026-05-28.md`,
+  - reran `corepack pnpm run -s ops:operator-unblock:check` => `PASS` (`NO-GO: yes`, packet contract intact),
+  - reran `corepack pnpm run -s ops:protected-inputs:check -- --today 2026-05-28 --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --git-ref main ...` => `BLOCKED` (`matching protected input names present: 0`).
+- Drift observation:
+  - latest checklist snapshot records `PARTIAL (9)` with `PROD_UI_*` families present,
+  - current runner execution returned `BLOCKED (0)` (all families missing), indicating runtime-context instability.
+- Final disposition for this heartbeat: `blocked`.
+- First-class unblock owner/action:
+  1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: restore required protected-input families in the active runner context and produce two consecutive `ops:protected-inputs:check` runs with non-regressing required-family presence before executing `ARB6-WIN-2026-05-30-A`.
+
+## Continuation Checkpoint (issue_children_completed, 2026-05-28, child-cancel reconciliation)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Child-lane reconciliation:
+  - direct child `LUC-413` (`Review productivity for LUC-405`) is cancelled by governance intent (one-agent-one-active-lane / anti-loop),
+  - no new protected-input/auth evidence was produced by the child lane,
+  - parent scope, blockers, and no-mutation window contract remain unchanged.
+- Concrete action in this heartbeat:
+  - integrated child completion signal into parent issue evidence trail,
+  - preserved existing fail-closed gate (`NO-GO`) and runtime-stability requirement before window execution.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: restore required protected-input families in active runner context and produce two consecutive non-regressing readiness runs before executing `ARB6-WIN-2026-05-30-A`.
+
+## Continuation Checkpoint (issue_assigned + human fail-closed comment, 2026-05-28, blocker-state reaffirmation)
+- Wake acknowledged first: consumed comment `5e0e31a2-e7f7-4b81-a2b9-2d41a45cdaea` (`fallbackFetchNeeded=false`), explicitly confirming fail-closed recovery and unchanged blocker contract.
+- Concrete action in this heartbeat:
+  - reran `corepack pnpm run -s ops:operator-unblock:check` => `PASS` (`Status NO-GO: yes`, packet/protected-input contract intact),
+  - reconciled human comment into parent lane posture: no push, deploy, restart, protected smoke, production mutation, or secret access.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: restore required protected-input families in active runner context and produce two consecutive non-regressing readiness runs before executing `ARB6-WIN-2026-05-30-A`.
+
+## Continuation Checkpoint (issue_children_completed, 2026-05-28, productivity-review integration + anti-churn control)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Child-lane signal integrated:
+  - `LUC-413` cancelled (governance anti-loop),
+  - `LUC-415` done with finding: initial outputs productive, later heartbeats low-yield churn.
+- Concrete action in this heartbeat:
+  - published continuation control addendum to gate rechecks behind real unblock signals:
+    - `history/releases/luc-405-continuation-control-addendum-2026-05-28.md`.
+- Operational change:
+  - generic `issue_children_completed` without new auth/protected-input evidence is now state-sync only,
+  - dual-check reruns are trigger-based (new principal/session, restored families, or explicit board revalidation request).
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: restore required protected-input families in active runner context and produce two consecutive non-regressing readiness runs before executing `ARB6-WIN-2026-05-30-A`.
+
+## Continuation Checkpoint (issue_continuation_needed, 2026-05-28, no-trigger state-sync)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Trigger evaluation against continuation-control addendum:
+  - no new approved read-only principal/session signal for protected `GET /workers/ready`,
+  - no confirmed restoration signal for required protected-input families in active runner context,
+  - no explicit board/parent revalidation request for named SHA/date window.
+- Concrete action in this heartbeat:
+  - applied `state-sync only` policy from `history/releases/luc-405-continuation-control-addendum-2026-05-28.md`,
+  - refreshed durable blocker checkpoint without running repetitive protected rechecks.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: restore required protected-input families in active runner context and produce two consecutive non-regressing readiness runs before executing `ARB6-WIN-2026-05-30-A`.
+
+## Continuation Checkpoint (source_scoped_recovery_action, 2026-05-28, state-sync-only anti-churn)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - executed state-sync-only reconciliation (no dual-check rerun) because no new unblock signal arrived for approved `/workers/ready` principal/session or protected-input family restoration,
+  - re-affirmed active gate contract: `NO-GO`, read-only no-mutation window, and same-runner stability requirement before `ARB6-WIN-2026-05-30-A`.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: restore required protected-input families and produce two consecutive non-regressing readiness runs in the same runner context before window execution.
+
+## Continuation Checkpoint (issue_assigned heartbeat, 2026-05-28, packet-integrity trigger-safe recheck)
+- Wake acknowledged first from inline payload: `fallbackFetchNeeded=false`, no pending comments, latest comment id `unknown`; issue remains dependency-blocked.
+- Concrete action in this heartbeat:
+  - executed single read-only integrity check: `corepack pnpm run -s ops:operator-unblock:check`,
+  - result: `PASS` with `Status NO-GO: yes`, `Target SHA ok: yes`, and packet/protected-input alignment intact (`Protected input evidence matches packet: yes`).
+- Trigger policy application:
+  - no new approved protected principal/session signal and no new restored protected-input family evidence were provided in this wake,
+  - therefore no repetitive dual-check loop was executed; the heartbeat remained fail-closed and anti-churn compliant.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for protected `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: restore required protected-input families in active runner context and produce two consecutive non-regressing readiness runs in the same runner context before executing `ARB6-WIN-2026-05-30-A`.
