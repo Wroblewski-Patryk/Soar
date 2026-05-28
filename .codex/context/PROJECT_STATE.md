@@ -1,3 +1,20 @@
+- `LUC-508 [Soar][Architecture Planning]` continuation heartbeat (`finish_successful_run_handoff`) executed on 2026-05-28 and remains `done`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action: revalidated artifact/state linkage and reconciled continuation-summary touched-scope drift; `LUC-508` scope is planning/state only and does not include `server/workers/frontend` or `.github/workflows/ci.yml`.
+  Verification:
+  - `git status --short`
+  - `rg -n "LUC-508|server/workers/frontend|\\.github/workflows/ci.yml|finish_successful_run_handoff" .codex/context/TASK_BOARD.md .codex/context/PROJECT_STATE.md history/tasks/luc-508-architecture-docs-executable-repair-backlog-2026-05-28-task.md`
+
+- `LUC-508 [Soar][Architecture Planning] Convert architecture docs into executable repair backlog` heartbeat executed on 2026-05-28 and is `done`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  PM coordination refreshed executable backlog control truth at
+  `history/plans/luc-508-architecture-repair-backlog-control-map-2026-05-28.md`:
+  - reconciled canonical backlog (`LUC-384`) and execution baseline (`LUC-408`) with latest ARB lane outcomes,
+  - confirmed `ARB-007` closure (`LUC-403`) and preserved fail-closed blockers for `ARB-001` and `ARB-006`,
+  - kept specialist implementation delegated; this lane is planning/state only.
+  Evidence:
+  `history/tasks/luc-508-architecture-docs-executable-repair-backlog-2026-05-28-task.md`.
+
 - `LUC-403 [Soar][ARB-007]` handoff closure heartbeat (`finish_successful_run_handoff`) executed on 2026-05-28 and remains `done`.
   Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action: revalidated guard-note coverage and project/task state linkage; no blocker or scope drift detected.
@@ -12691,3 +12708,23 @@
   Commit/push/deploy disposition after supervisor review: `local commit required` / `not needed` / `none`.
   Evidence:
   `history/tasks/luc-442-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28-task.md`.
+
+- `LUC-512 [Soar][Source Control Closure]` heartbeat executed on 2026-05-28 and is `done`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action: executed local source-control classification for `LUC-402` sidecar continuity and verified dirty scope remains non-runtime.
+  Result: `state/control=2`, `task-evidence=2`, `runtime/product code=0`; commit/push/deploy = `local commit required` / `not needed` / `none`.
+  Evidence:
+  `history/tasks/luc-512-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28-task.md`.
+
+- `LUC-512 [Soar][Source Control Closure]` issue_commented follow-up (`2026-05-28`, comment `e438c221-8225-48fc-adc7-78869518e59b`) executed and kept `done`.
+  Comment was acknowledged first and treated as sidecar-only local source-control closure scope while protected delivery for `LUC-402` remains dependency-blocked.
+  Minimal checkpoint reclassified current local dirty set as state/evidence/planning only: `state/control=2`, `task-evidence=3`, `runtime/product code=0`.
+  Commit/push/deploy disposition: `local commit required` / `not needed` / `none`.
+  Evidence:
+  `history/tasks/luc-512-source-control-closure-comment-followup-2026-05-28-task.md`.
+
+- `LUC-512 [Soar][Source Control Closure]` issue_continuation_needed sync (`2026-05-28`) executed and kept `done`.
+  No new comment/unblock delta was present (`fallbackFetchNeeded=false`, comments `0/0`), so this heartbeat performed state-sync-only verification.
+  Classification remained unchanged: `state/control=2`, `task-evidence=3`, `runtime/product code=0`; commit/push/deploy stays `local commit required` / `not needed` / `none`.
+  Evidence:
+  `history/tasks/luc-512-source-control-closure-comment-followup-2026-05-28-task.md`.

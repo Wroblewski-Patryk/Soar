@@ -1,3 +1,27 @@
+## 2026-05-28 LUC-508 [Soar][Architecture Planning] finish_successful_run_handoff reconciliation
+- Wake `finish_successful_run_handoff` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated `LUC-508` artifact linkage and state parity across task/plan/board/project state files,
+  - reconciled continuation-summary touched-scope drift: this lane changed only planning/state artifacts (no `server/workers/frontend` and no `.github/workflows/ci.yml` edits in `LUC-508` scope).
+- Verification:
+  - `git status --short`
+  - `rg -n "LUC-508|server/workers/frontend|\\.github/workflows/ci.yml|finish_successful_run_handoff" .codex/context/TASK_BOARD.md .codex/context/PROJECT_STATE.md history/tasks/luc-508-architecture-docs-executable-repair-backlog-2026-05-28-task.md`
+- Final disposition: `done`.
+
+## 2026-05-28 LUC-508 [Soar][Architecture Planning] Convert architecture docs into executable repair backlog
+- Wake scope consumed from inline payload first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - published refreshed control map `history/plans/luc-508-architecture-repair-backlog-control-map-2026-05-28.md`,
+  - reconciled `LUC-384` backlog and `LUC-408` execution baseline with latest ARB lane outcomes,
+  - synchronized ARB status truth: `ARB-007` is closed (`LUC-403`), remaining blockers are `ARB-001` and `ARB-006`.
+- Final disposition: `done`.
+- Remaining explicit blockers:
+  1. `ARB-001` (`LUC-385`) blocked on Product/CTO activation-scope decision.
+  2. `ARB-006` (`LUC-402`) blocked on protected inputs plus `ARB6-EV-001..008` child execution issuance.
+- Evidence:
+  `history/plans/luc-508-architecture-repair-backlog-control-map-2026-05-28.md`,
+  `history/tasks/luc-508-architecture-docs-executable-repair-backlog-2026-05-28-task.md`.
+
 ## 2026-05-28 LUC-403 [Soar][ARB-007] finish_successful_run_handoff closure
 - Wake `finish_successful_run_handoff` consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
@@ -14157,3 +14181,39 @@ None.
 - Final disposition: `done`; documentation/state evidence requires local commit after supervisor review.
 - Evidence:
   - `history/tasks/luc-442-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28-task.md`
+
+## 2026-05-28 LUC-512 [Soar][Source Control Closure] classify and close local dirty state for LUC-402
+- Wake `issue_assigned` consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - executed local source-control classification for `LUC-402` sidecar continuity,
+  - verified dirty scope is state/evidence/planning only,
+  - recorded explicit commit/push/deploy disposition.
+- Classification result: `state/control=2`, `task-evidence=2`, `runtime/product code=0`.
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-512-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28-task.md`.
+
+## 2026-05-28 LUC-512 [Soar][Source Control Closure] issue_commented follow-up (local repair sidecar)
+- Wake `issue_commented` consumed first from inline payload (`fallbackFetchNeeded=false`, pending comments `1/1`, latest comment id `e438c221-8225-48fc-adc7-78869518e59b`).
+- Comment impact acknowledged first: lane remains local source-control closure only while protected delivery gates for `LUC-402` remain dependency-blocked.
+- Concrete action:
+  - reran minimal local dirty-state classification checks,
+  - reconfirmed current dirty scope has `runtime/product code=0`,
+  - preserved explicit local-commit/no-push/no-deploy disposition for this heartbeat.
+- Classification result: `state/control=2`, `task-evidence=3`, `runtime/product code=0`.
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-512-source-control-closure-comment-followup-2026-05-28-task.md`
+  - `history/tasks/luc-512-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28-task.md`
+
+## 2026-05-28 LUC-512 [Soar][Source Control Closure] issue_continuation_needed disposition sync
+- Wake `issue_continuation_needed` consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action:
+  - reran minimal local dirty-state classification (`git status --short`),
+  - confirmed no scope delta since prior checkpoint,
+  - preserved explicit local-commit/no-push/no-deploy sidecar disposition.
+- Classification remains: `state/control=2`, `task-evidence=3`, `runtime/product code=0`.
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-512-source-control-closure-comment-followup-2026-05-28-task.md`
+  - `history/tasks/luc-512-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28-task.md`
