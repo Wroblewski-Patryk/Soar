@@ -71,6 +71,23 @@
 - Evidence:
   `history/plans/luc-402-arb-006-evidence-task-register-2026-05-28.md`.
 
+## 2026-05-28 LUC-402 [Soar][ARB-006] issue_commented local repair/source-control lane triage
+- Comment `f032103a-df8a-4d18-944d-eadd1e635452` acknowledged first; scope narrowed to local source-control closure actions only under fail-closed protected-delivery policy.
+- Concrete action in this heartbeat:
+  - validated existing ARB-006 dated register integrity (`ARB6-EV-001..008` unchanged),
+  - recorded explicit local-lane closure packet with affected capability/chains/files, validation evidence, regression risk, and commit/no-commit decision.
+- Validation:
+  - `git status --short`
+  - `rg -n "LUC-402|ARB-006|local repair|source-control" .agents/state/active-mission.md .codex/context/TASK_BOARD.md .codex/context/PROJECT_STATE.md`
+- Commit decision: `not committed` (narrow triage/state-sync lane; dependency-blocked protected execution remains outside allowed scope).
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged:
+  1. Delivery/PM creates and assigns child execution issues from `ARB6-EV-001..008`.
+  2. Security/Test credential owner provides approved protected principal/session artifacts.
+  3. Ops+QA+Security execute `LUC-405` protected window package and publish parent unblock disposition.
+- Evidence:
+  `history/tasks/luc-402-arb-006-local-repair-source-control-lane-2026-05-28-task.md`.
+
 ## 2026-05-28 LUC-404 [Soar][ARB-008] Add regression suite for exact exchange capability contract
 - Wake scope consumed from inline payload first (`fallbackFetchNeeded=false`,
   comments `0/0`, latest comment id `unknown`).
@@ -14028,3 +14045,92 @@ None.
 - Unblock owner/action unchanged:
   1. Soar auth credential owner + Security/Test owner: approved read-only principal/session for protected `GET /workers/ready`.
   2. Ops Release Lead + QA + Security + release controller: restore required protected-input families and produce two consecutive non-regressing same-context readiness runs before `ARB6-WIN-2026-05-30-A`.
+
+## 2026-05-28 LUC-418 [Soar] [Known State] Evidence collection and architecture baseline
+- Wake `issue_assigned` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action:
+  - captured architecture baseline from canonical generated artifacts,
+  - synchronized known-state checkpoint into mission/board/project context,
+  - preserved strict no-mutation boundary (no deploy, no runtime, no protected evidence execution).
+- Baseline evidence:
+  - `docs/graphs/architecture-awareness.json`: `generated_at=2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`,
+  - `docs/status/architecture-awareness-report.md`: disconnected entities `0`; inferred-coverage gaps remain (`implementation entities without inferred tests=2056`, `without inferred docs=798`).
+- Blocker routing unchanged: V1 remains fail-closed `blocked/NO-GO` pending protected evidence owner path (`LUC-47` plus protected input/evidence owners).
+- Final disposition for this checkpoint: `done` (scope completed as PM known-state baseline).
+- Evidence artifact:
+  - `history/tasks/luc-418-known-state-evidence-architecture-baseline-2026-05-28-task.md`.
+
+## 2026-05-28 LUC-418 [Soar] finish_successful_run_handoff disposition sync
+- Wake `finish_successful_run_handoff` consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action: reconciled issue-local disposition from transient `in_progress` to evidence-backed `done` for the known-state baseline scope.
+- No additional runtime/code/deploy action was required; prior checkpoint artifacts remain current and sufficient.
+- Final disposition: `done`.
+- Evidence remains:
+  - `history/tasks/luc-418-known-state-evidence-architecture-baseline-2026-05-28-task.md`
+  - `.agents/state/active-mission.md`
+  - `.codex/context/TASK_BOARD.md`
+  - `.codex/context/PROJECT_STATE.md`
+
+- LUC-431 [Soar][Source Control Closure] heartbeat executed on 2026-05-28 and is done.
+  Inline wake scope was consumed first (fallbackFetchNeeded=false, comments 0/0, latest comment id unknown).
+  Concrete action: classified current dirty worktree for LUC-402 continuity and verified that drift is state/evidence only (state/control=3, task-evidence=2, runtime/product code=0).
+  Commit/push/deploy disposition: not committed / not needed / none (coordination-only closure lane).
+  Evidence:
+  history/tasks/luc-431-source-control-closure-classify-local-dirty-state-for-luc-402-2026-05-28-task.md.
+
+## 2026-05-28 LUC-431 [Soar][Source Control Closure] issue_commented follow-up
+- Wake `issue_commented` consumed first from inline payload (`fallbackFetchNeeded=false`, pending comments `1/1`, latest comment id `827fcda9-240a-414f-a42a-71f9f9f9a4ea`).
+- Comment impact acknowledged: this issue remains a local sidecar source-control closure lane only while protected delivery for `LUC-402` stays dependency-blocked.
+- Concrete action:
+  - reran dirty-state classification and verified lane scope remained state/evidence only,
+  - confirmed `runtime/product code=0` in current dirty set,
+  - recorded explicit commit/no-commit disposition for this heartbeat.
+- Classification result: `state/control=3`, `task-evidence=3`, `runtime/product code=0`.
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-431-source-control-closure-comment-followup-2026-05-28-task.md`
+  - `history/tasks/luc-431-source-control-closure-classify-local-dirty-state-for-luc-402-2026-05-28-task.md`
+
+## 2026-05-28 LUC-431 [Soar][Source Control Closure] finish_successful_run_handoff disposition sync
+- Wake `finish_successful_run_handoff` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action: revalidated local dirty-state groups for this sidecar lane and confirmed no runtime/product code drift was introduced since prior `done` packet.
+- Classification remains: `state/control=3`, `task-evidence=3`, `runtime/product code=0`.
+- Commit/push/deploy disposition unchanged: `not committed` / `not needed` / `none`.
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-431-source-control-closure-comment-followup-2026-05-28-task.md`
+  - `history/tasks/luc-431-source-control-closure-classify-local-dirty-state-for-luc-402-2026-05-28-task.md`
+
+## 2026-05-28 LUC-433 [Soar][Source Control Closure] classify and close local dirty state for LUC-402
+- Wake `issue_assigned` consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - classified current local dirty tree,
+  - confirmed lane scope is state/evidence only,
+  - recorded explicit commit/push/deploy disposition.
+- Classification result: `state/control=3`, `task-evidence=4`, `runtime/product code=0`.
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-433-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28-task.md`.
+
+## 2026-05-28 LUC-433 [Soar][Source Control Closure] issue_commented follow-up (local repair sidecar)
+- Wake `issue_commented` consumed first from inline payload (`fallbackFetchNeeded=false`, pending comments `1/1`, latest comment id `e5003ea1-8d54-44ab-9a71-d09c8ab29391`).
+- Comment impact acknowledged first: lane remains local source-control closure only while protected delivery gates for `LUC-402` remain dependency-blocked.
+- Concrete action:
+  - reran minimal local dirty-state classification checks,
+  - reconfirmed `runtime/product code=0` in current dirty set,
+  - preserved explicit no-commit/no-push/no-deploy disposition for this heartbeat.
+- Classification result: `state/control=3`, `task-evidence=5`, `runtime/product code=0`.
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-433-source-control-closure-comment-followup-2026-05-28-task.md`
+  - `history/tasks/luc-433-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28-task.md`
+
+## 2026-05-28 LUC-433 [Soar][Source Control Closure] finish_successful_run_handoff disposition sync
+- Wake `finish_successful_run_handoff` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action: revalidated sidecar local dirty-state classification and confirmed no runtime/product code drift since previous `done` checkpoint.
+- Classification remains: `state/control=3`, `task-evidence=5`, `runtime/product code=0`.
+- Commit/push/deploy disposition unchanged: `not committed` / `not needed` / `none`.
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-433-source-control-closure-finish-successful-run-handoff-2026-05-28-task.md`
+  - `history/tasks/luc-433-source-control-closure-comment-followup-2026-05-28-task.md`

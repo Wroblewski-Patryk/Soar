@@ -45,6 +45,17 @@
   Evidence:
   `history/plans/luc-402-arb-006-evidence-task-register-2026-05-28.md`.
 
+- `LUC-402 [Soar][ARB-006]` issue_commented heartbeat executed on 2026-05-28 and remains `blocked`.
+  Inline comment `f032103a-df8a-4d18-944d-eadd1e635452` (`softwarehouse-local-repair-lane-starter:v1`) was acknowledged first and treated as a local source-control closure lane, not a protected-deliverable unblock.
+  Concrete action: published local-lane closure evidence packet with affected capability/chains/files, validation command results, residual risk, and explicit commit/no-commit decision.
+  Validation in lane scope:
+  - `git status --short`
+  - `rg -n "LUC-402|ARB-006|local repair|source-control" .agents/state/active-mission.md .codex/context/TASK_BOARD.md .codex/context/PROJECT_STATE.md`
+  Commit/push/deploy outcome: `not committed` / `not needed` / deploy impact `none`.
+  Blocker contract unchanged: parent remains fail-closed on `LUC-405` protected window + input-readiness owners/actions before any protected evidence execution or unblock publication.
+  Evidence:
+  `history/tasks/luc-402-arb-006-local-repair-source-control-lane-2026-05-28-task.md`.
+
 - `LUC-404 [Soar][ARB-008]` heartbeat executed on 2026-05-28 and is `done`.
   Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments
   `0/0`, latest comment id `unknown`).
@@ -12612,3 +12623,57 @@
 - `LUC-405 [Soar][ARB-006][Ops]` resume-delta `finish_successful_run_handoff` (2026-05-28) was disposition-synced to `blocked` with unchanged fail-closed contract.
   No new auth/protected-input unblock signal was present, so anti-churn trigger policy remained in force and no repetitive dual-check rerun was executed.
   Unblock owner/action unchanged: approved read-only principal/session for protected `GET /workers/ready`, then restoration/stability of required protected-input families with two consecutive non-regressing same-context readiness runs before `ARB6-WIN-2026-05-30-A`.
+
+- `LUC-418 known-state evidence baseline (2026-05-28)` is now checkpointed and synchronized. PM captured current architecture baseline from canonical generated artifacts with no runtime mutation: `architecture-awareness.json` generated `2026-05-27T02:15:57.657Z` (`entities=7338`, `relations=14300`) and status report still showing disconnected entities `0` with inferred-proof gaps (`tests=2056`, `docs=798`). Release posture remains unchanged: V1 stays `blocked/NO-GO` on protected evidence owner path (`LUC-47` and protected proof/input owners). Evidence: `history/tasks/luc-418-known-state-evidence-architecture-baseline-2026-05-28-task.md`.
+
+- `LUC-418 finish_successful_run_handoff (2026-05-28)` reconciled to `done` for the PM known-state baseline scope. No new blockers introduced; blocker topology for V1 remains unchanged outside this issue scope (`LUC-47` + protected evidence owners).
+
+## 2026-05-28 LUC-431 [Soar][Source Control Closure] classify local dirty state for LUC-402
+- Wake issue_assigned consumed from inline payload (fallbackFetchNeeded=false, comments 0/0, latest comment id unknown).
+- Concrete action in this heartbeat:
+  - classified current dirty worktree into source-control closure groups,
+  - confirmed no runtime/product code drift in this lane,
+  - recorded explicit commit/push/deploy disposition.
+- Classification result: state/control=3, task-evidence=2, runtime/product code=0.
+- Final disposition: done.
+- Evidence:
+  history/tasks/luc-431-source-control-closure-classify-local-dirty-state-for-luc-402-2026-05-28-task.md.
+
+## 2026-05-28 - LUC-431 issue_commented follow-up (local sidecar closure)
+- Processed board comment `827fcda9-240a-414f-a42a-71f9f9f9a4ea` as local sidecar-only scope for source-control closure.
+- Revalidated current dirty-state classification with no runtime/product code mutation in lane scope.
+- Recorded explicit no-commit closure disposition for this heartbeat under blocked protected-delivery dependencies.
+- Evidence:
+  - `history/tasks/luc-431-source-control-closure-comment-followup-2026-05-28-task.md`
+  - `history/tasks/luc-431-source-control-closure-classify-local-dirty-state-for-luc-402-2026-05-28-task.md`
+
+## 2026-05-28 - LUC-431 finish_successful_run_handoff sync
+- Processed resume-delta handoff with no comment/unblock delta.
+- Revalidated local source-control closure classification; lane remains state/evidence-only with no runtime/product code mutation.
+- Disposition remains `done` with unchanged no-commit decision.
+- Evidence:
+  - `history/tasks/luc-431-source-control-closure-comment-followup-2026-05-28-task.md`
+  - `history/tasks/luc-431-source-control-closure-classify-local-dirty-state-for-luc-402-2026-05-28-task.md`
+
+- `LUC-433 [Soar][Source Control Closure]` heartbeat executed on 2026-05-28 and is `done`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action: classified local dirty worktree for `LUC-402` and recorded explicit source-control disposition.
+  Result: `state/control=3`, `task-evidence=4`, `runtime/product code=0`; commit/push/deploy = `not committed` / `not needed` / `none`.
+  Evidence:
+  `history/tasks/luc-433-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28-task.md`.
+
+## 2026-05-28 - LUC-433 issue_commented follow-up (local repair sidecar closure)
+- Processed board comment `e5003ea1-8d54-44ab-9a71-d09c8ab29391` first and treated it as sidecar-only local source-control closure scope.
+- Revalidated local dirty-state classification; lane remains state/evidence-only with no runtime/product code mutation.
+- Recorded explicit no-commit closure disposition under unchanged protected-gate dependency block in parent flow.
+- Evidence:
+  - `history/tasks/luc-433-source-control-closure-comment-followup-2026-05-28-task.md`
+  - `history/tasks/luc-433-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28-task.md`
+
+## 2026-05-28 - LUC-433 finish_successful_run_handoff sync
+- Processed resume-delta handoff with no new comment/unblock signal.
+- Revalidated local source-control closure classification; lane remains state/evidence-only with `runtime/product code=0`.
+- Disposition remains `done` with unchanged no-commit decision.
+- Evidence:
+  - `history/tasks/luc-433-source-control-closure-finish-successful-run-handoff-2026-05-28-task.md`
+  - `history/tasks/luc-433-source-control-closure-comment-followup-2026-05-28-task.md`
