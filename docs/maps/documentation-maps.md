@@ -9,6 +9,7 @@ last_verified: 2026-05-23
 
 Use these maps as human and agent entrypoints. They intentionally link to a
 small set of high-signal documents instead of every historical proof file.
+Guard note: history is evidence, not active owner.
 
 ## Maps
 

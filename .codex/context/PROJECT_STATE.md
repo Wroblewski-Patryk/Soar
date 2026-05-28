@@ -1,3 +1,11 @@
+- `LUC-403 [Soar][ARB-007]` handoff closure heartbeat (`finish_successful_run_handoff`) executed on 2026-05-28 and remains `done`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action: revalidated guard-note coverage and project/task state linkage; no blocker or scope drift detected.
+
+- `LUC-403 [Soar][ARB-007]` continuation reconciliation completed on 2026-05-28: finish/handoff and continuation wakes confirmed no additional implementation required; scope is docs/governance memory only with explicit guard-note coverage and evidence logged in `TASK_BOARD`.
+
+- `LUC-403 [Soar][ARB-007]` completed on 2026-05-28 (`done`): high-traffic documentation entrypoints now carry explicit guard text `history is evidence, not active owner` to reduce owner-state confusion between current docs/state and historical evidence. Updated files: `README.md`, `docs/documentation-overview.md`, `docs/soar-documentation-map.md`, `docs/maps/documentation-maps.md`.
+
 - `LUC-408 [Soar][Architecture Planning]` continuation heartbeat (`finish_successful_run_handoff`) executed on 2026-05-28 and remains `done`.
   Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action: artifact-link reconciliation confirmed LUC-408 execution map/task packet remain present and authoritative; no new blocker/comment delta arrived in this wake.
@@ -9,7 +17,7 @@
   `history/plans/luc-408-architecture-repair-backlog-execution-map-2026-05-28.md`:
   - every backlog row `ARB-001..ARB-008` is now mapped to a concrete execution lane/status/owner action,
   - blocked rows keep first-class blocker classes (`decision_gate`, `protected_input_gate`),
-  - remaining low-coupling execution work was narrowed to one next delegation action: start existing `LUC-403` for `ARB-007` in the Docs Memory lane.
+  - remaining low-coupling execution work was narrowed to `LUC-403` for `ARB-007`; that lane is now completed and recorded above.
   Scope remained planning/state only (no code/runtime/deploy mutation).
   Evidence:
   `history/tasks/luc-408-architecture-docs-executable-repair-backlog-2026-05-28-task.md`.

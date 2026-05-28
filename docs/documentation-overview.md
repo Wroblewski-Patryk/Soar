@@ -4,6 +4,7 @@ This folder contains canonical project documentation grouped by responsibility.
 Historical task records, dated plans, audits, release evidence, and raw
 artifacts live in `../history/` so `docs/` stays focused on current source of
 truth.
+Guard note: history is evidence, not active owner.
 
 ## Engineering System Map
 - `soar-documentation-map.md` is the central engineering documentation

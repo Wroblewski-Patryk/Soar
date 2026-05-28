@@ -16,6 +16,9 @@ Monorepo with:
   audits, release evidence, and raw generated artifacts.
 - Current documentation belongs in `docs/`; historical proof and generated
   output belong in `history/`.
+- Guard note: history is evidence, not active owner. Treat historical files as
+  proof lineage; use `docs/`, `.agents/state/`, and `.codex/context/` for
+  current ownership and active decisions.
 - Before autonomous agent work, read `AGENTS.md` and the active state files it
   names.
 

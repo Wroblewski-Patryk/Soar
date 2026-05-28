@@ -1,3 +1,34 @@
+## 2026-05-28 LUC-403 [Soar][ARB-007] finish_successful_run_handoff closure
+- Wake `finish_successful_run_handoff` consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated explicit guard-note presence in all intended high-traffic entrypoints,
+  - revalidated local state sync rows for `LUC-403` in task/project memory.
+- Verification:
+  - `rg -n "history is evidence, not active owner|LUC-403" README.md docs/soar-documentation-map.md docs/documentation-overview.md docs/maps/documentation-maps.md .codex/context/TASK_BOARD.md .codex/context/PROJECT_STATE.md` returned expected matches.
+- Final disposition: `done`.
+
+## 2026-05-28 LUC-403 [Soar][ARB-007] finish_successful_run_handoff + continuation reconciliation
+- Wake scope consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated guard-note presence across all intended high-traffic entrypoints;
+  - reconciled touched-scope drift from continuation summary: this issue changed docs/state files only (no `server/workers/frontend` or `.github/workflows/ci.yml` edits in LUC-403 scope).
+- Verification:
+  - `rg -n "history is evidence, not active owner|LUC-403" README.md docs/soar-documentation-map.md docs/documentation-overview.md docs/maps/documentation-maps.md .codex/context/TASK_BOARD.md .codex/context/PROJECT_STATE.md` => expected guard + issue evidence matches.
+- Final disposition: `done`.
+
+## 2026-05-28 LUC-403 [Soar][ARB-007] Add explicit “history is evidence, not active owner” guard note to high-traffic docs entrypoints
+- Wake `issue_status_changed` consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - added explicit guard note text `history is evidence, not active owner` to high-traffic docs entrypoints:
+    - `README.md`
+    - `docs/documentation-overview.md`
+    - `docs/soar-documentation-map.md`
+    - `docs/maps/documentation-maps.md`
+  - kept `history/history-overview.md` unchanged because it already contains explicit non-owner/current-truth guidance.
+- Verification:
+  - `rg -n "history is evidence, not active owner" README.md docs/soar-documentation-map.md docs/documentation-overview.md docs/maps/documentation-maps.md` => `4` matches.
+- Final disposition: `done`.
+
 ## 2026-05-28 LUC-408 [Soar][Architecture Planning] finish_successful_run_handoff reconciliation
 - Wake `finish_successful_run_handoff` consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
@@ -7,14 +38,14 @@
 - Remaining cross-issue blockers unchanged (owned outside LUC-408 lane):
   1. `ARB-001` (`LUC-385`) decision gate (`Product + CTO`).
   2. `ARB-006` (`LUC-402`) protected input gate (`Delivery + Security/Test + Ops`).
-  3. `LUC-403` ready to start for `ARB-007` (Docs Memory lane).
+  3. `LUC-403` completed for `ARB-007` (Docs Memory lane).
 
 ## 2026-05-28 LUC-408 [Soar][Architecture Planning] Convert architecture docs into executable repair backlog
 - Wake scope consumed from inline payload first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
   - created execution map `history/plans/luc-408-architecture-repair-backlog-execution-map-2026-05-28.md`,
   - mapped `ARB-001..ARB-008` to active execution lanes, status, blocker class, and next owner action,
-  - identified remaining low-coupling execution row: `ARB-007` is tracked as `LUC-403` and ready for Docs Memory execution.
+  - identified remaining low-coupling execution row: `ARB-007` was tracked as `LUC-403` and is now completed.
 - Final disposition: `done`.
 - Remaining explicit blockers:
   1. `ARB-001` (`LUC-385`) blocked on Product/CTO activation-scope decision.

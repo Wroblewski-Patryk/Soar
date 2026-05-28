@@ -14,6 +14,7 @@ This is the main entrypoint for current Soar documentation. Use it to choose
 the right map, then move into the specific folder. Historical task files, old
 plans, audits, proof artifacts, release packets, and raw outputs live in
 [History](../history/history-overview.md), not in canonical docs.
+Guard note: history is evidence, not active owner.
 
 ## Choose A Map
 
