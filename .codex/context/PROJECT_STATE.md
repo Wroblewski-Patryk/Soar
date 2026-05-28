@@ -1,3 +1,13 @@
+- `LUC-388 [Soar][ARB-004]` heartbeat executed on 2026-05-28 and is `done`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments
+  `0/0`, latest comment id `unknown`).
+  UX/docs lane replaced unresolved template placeholders in
+  `docs/ux/ui-scorecard.md` with explicit defer metadata (`owner/date/reason`)
+  for `Strongest Areas`, `Weakest Areas`, and `Required Fixes Before Approval`.
+  Verification: `rg -n "\\bTBD\\b" docs/ux/ui-scorecard.md` returned no matches.
+  Evidence:
+  `history/tasks/luc-388-arb-004-ui-scorecard-tbd-metrics-2026-05-28-task.md`.
+
 - `LUC-385-ARB-001-SECURITY-GATE-2026-05-28` is verified locally for the Security lane. The assistant orchestrator now fail-closes `LIVE` mode by default (`live_mode_disabled_fail_closed`) unless `ASSISTANT_HOTPATH_LIVE_ENABLED=true`, and sanitizes user-controlled trace metadata (`requestId`, `botId`, `botMarketGroupId`, `symbol`, `role`) before trace writes. Focused proof: `pnpm --filter api exec vitest run src/modules/engine/assistantOrchestrator.service.test.ts --reporter=basic` (`7/7`). This does not activate deferred ARB-001 hot-path scope; Product/CTO activation decision plus persisted DB trace integration and red-team packet remain open.
 - `LUC-389 [Soar][ARB-005]` heartbeat executed on 2026-05-28 and is `done`.
   Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).

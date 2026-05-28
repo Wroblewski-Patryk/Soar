@@ -1,3 +1,17 @@
+## 2026-05-28 LUC-388 [Soar][ARB-004] Replace `TBD` metrics in UX scorecard
+- Wake scope consumed from inline payload first (`fallbackFetchNeeded=false`, comments `0/0`).
+- Concrete action in this heartbeat:
+  - patched `docs/ux/ui-scorecard.md` review-template placeholders to explicit defer metadata (`owner/date/reason`),
+  - added traceable task artifact for this lane.
+- Result:
+  - `Strongest Areas`, `Weakest Areas`, and `Required Fixes Before Approval` no longer contain raw `TBD`;
+  - each row now carries defer metadata with owner/date/reason, satisfying ARB-004 contract.
+- Verification:
+  - `rg -n "\\bTBD\\b" docs/ux/ui-scorecard.md` returned no matches.
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-388-arb-004-ui-scorecard-tbd-metrics-2026-05-28-task.md`.
+
 ## 2026-05-28 LUC-241 Unblock Workers/Ready Smoke Principal Permissions (issue_continuation_needed bounded continuity checkpoint)
 - Wake `issue_continuation_needed` consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`) with no new unblock comment/artifact delta.
 - Concrete action in this heartbeat:

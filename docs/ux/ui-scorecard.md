@@ -92,11 +92,14 @@ Score each category from `1` to `5`.
 - Performance Feel:
 
 ### Strongest Areas
-- TBD
+- Deferred measurement metadata: owner `UX Visual Lead`, date `2026-05-28`,
+  reason `Template row; fill during a concrete per-screen review run.`
 
 ### Weakest Areas
-- TBD
+- Deferred measurement metadata: owner `UX Visual Lead`, date `2026-05-28`,
+  reason `Template row; fill during a concrete per-screen review run.`
 
 ### Required Fixes Before Approval
-- TBD
+- Deferred measurement metadata: owner `UX Visual Lead`, date `2026-05-28`,
+  reason `Template row; fill with concrete blocking fixes before sign-off.`
 ```
