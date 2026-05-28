@@ -12677,3 +12677,17 @@
 - Evidence:
   - `history/tasks/luc-433-source-control-closure-finish-successful-run-handoff-2026-05-28-task.md`
   - `history/tasks/luc-433-source-control-closure-comment-followup-2026-05-28-task.md`
+
+- `LUC-442 [Soar][Source Control Closure]` heartbeat executed on 2026-05-28 and is `done`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action: executed local source-control classification for `LUC-402` sidecar continuity and verified clean worktree (`git status --short` returned no entries).
+  Result: `state/control=0`, `task-evidence=0`, `runtime/product code=0`; commit/push/deploy = `local commit required after supervisor review` / `not needed` / `none`.
+  Evidence:
+  `history/tasks/luc-442-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28-task.md`.
+
+- `LUC-442 [Soar][Source Control Closure]` issue_commented follow-up (`2026-05-28`, comment `5f1ddcf6-aa60-47b8-b4b0-fa28be2adaca`) executed and kept `done`.
+  Comment was acknowledged first and treated as sidecar-only local source-control closure scope while protected delivery for `LUC-402` remains dependency-blocked.
+  Minimal checkpoint reclassified current local dirty set as lane-local docs/state only: `state/control=2`, `task-evidence=1`, `runtime/product code=0`.
+  Commit/push/deploy disposition after supervisor review: `local commit required` / `not needed` / `none`.
+  Evidence:
+  `history/tasks/luc-442-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28-task.md`.

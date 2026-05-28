@@ -14106,9 +14106,9 @@ None.
 - Concrete action in this heartbeat:
   - classified current local dirty tree,
   - confirmed lane scope is state/evidence only,
-  - recorded explicit commit/push/deploy disposition.
+  - recorded explicit commit/push/deploy disposition for supervisor preservation.
 - Classification result: `state/control=3`, `task-evidence=4`, `runtime/product code=0`.
-- Final disposition: `done`.
+- Final disposition: `done`; documentation/state evidence requires local commit after supervisor review.
 - Evidence:
   - `history/tasks/luc-433-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28-task.md`.
 
@@ -14134,3 +14134,26 @@ None.
 - Evidence:
   - `history/tasks/luc-433-source-control-closure-finish-successful-run-handoff-2026-05-28-task.md`
   - `history/tasks/luc-433-source-control-closure-comment-followup-2026-05-28-task.md`
+
+## 2026-05-28 LUC-442 [Soar][Source Control Closure] classify and close local dirty state for LUC-402
+- Wake `issue_assigned` consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - executed local source-control classification for the LUC-402 sidecar lane,
+  - verified current worktree is clean (`git status --short` returned no entries),
+  - recorded explicit commit/push/deploy disposition.
+- Classification result: `state/control=0`, `task-evidence=0`, `runtime/product code=0` (clean worktree).
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-442-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28-task.md`.
+
+## 2026-05-28 LUC-442 [Soar][Source Control Closure] issue_commented follow-up (local repair sidecar)
+- Wake `issue_commented` consumed first from inline payload (`fallbackFetchNeeded=false`, pending comments `1/1`, latest comment id `5f1ddcf6-aa60-47b8-b4b0-fa28be2adaca`).
+- Comment impact acknowledged first: lane remains local source-control closure only while protected delivery gates for `LUC-402` remain dependency-blocked.
+- Concrete action:
+  - reran minimal local dirty-state classification checks,
+  - reconfirmed lane scope remains state/evidence only with `runtime/product code=0`,
+  - updated disposition to local commit/no-push/no-deploy after supervisor review.
+- Classification result: `state/control=2`, `task-evidence=1`, `runtime/product code=0`.
+- Final disposition: `done`; documentation/state evidence requires local commit after supervisor review.
+- Evidence:
+  - `history/tasks/luc-442-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28-task.md`
