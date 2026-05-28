@@ -736,3 +736,86 @@ Verify whether current smoke principal can authenticate and pass protected `GET 
 - Evidence:
   - `history/artifacts/luc-390-dns-network-diagnostic-2026-05-28.json`
   - `history/tasks/luc-390-infra-gate-diagnose-production-dns-network-failure-for-luc-241-2026-05-28-task.md`
+
+## Continuation Checkpoint (issue_reopened_via_comment, 2026-05-28, comment d4ff1cff-0a15-4f04-9576-cea986905a7d)
+- Latest board comment acknowledged first: gate freshness watcher requested exactly one read-only auth/smoke recheck for protected `/workers/ready`.
+- Concrete action executed in this heartbeat (single recheck only; no deploy/restart/runtime mutation):
+  - `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://soar-api.luckysparrow.ch --web-base-url https://soar-web.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8`
+  - token probe with current `SMOKE_AUTH_TOKEN`:
+    - `GET /auth/me`
+    - `GET /workers/ready`
+- Timestamp: `2026-05-28T02:02:43+02:00`.
+- Presence/token-shape snapshot:
+  - `SMOKE_AUTH_TOKEN=True`
+  - `SMOKE_AUTH_EMAIL=True`
+  - `SMOKE_AUTH_PASSWORD=True`
+  - `SMOKE_AUTH_TOKEN_LEN=36`
+  - `SMOKE_AUTH_TOKEN_DOT_PARTS=1`
+- Recheck result:
+  - Smoke:
+    - FAIL `API /health -> fetch failed`
+    - FAIL `API /ready -> fetch failed`
+    - FAIL `WEB / -> fetch failed`
+    - FAIL `WEB /api/build-info -> fetch failed`
+    - FAIL `API /workers/ready -> fetch failed`
+  - Auth probe:
+    - `GET /auth/me -> fetch failed`
+    - `GET /workers/ready -> fetch failed`
+- Interpretation:
+  - this run used stale/non-canonical lane hosts (`soar-api`/`soar-web`) which are DNS-failing per `LUC-390`, so credential/session authorization could not be evaluated.
+- Final disposition for this continuation heartbeat: `blocked`.
+- Unblock owner/action:
+  1. Ops recheck host contract on next approved wake: use canonical hosts only (`https://api.soar.luckysparrow.ch`, `https://soar.luckysparrow.ch`).
+  2. Auth/security owner confirms fresh valid approved read-only principal/session artifact for `GET /workers/ready`.
+  3. Then Ops executes exactly one worker-included smoke recheck.
+
+## Continuation Checkpoint (issue_continuation_needed, 2026-05-28 canonical host recheck)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`) and executed as one concrete read-only recheck on canonical production hosts.
+- Concrete action in this heartbeat (no deploy/restart/runtime mutation):
+  - `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8`
+  - token auth probe with current `SMOKE_AUTH_TOKEN`:
+    - `GET /auth/me`
+    - `GET /workers/ready`
+- Timestamp: `2026-05-28T02:04:24+02:00`.
+- Presence/token-shape snapshot:
+  - `SMOKE_AUTH_TOKEN=True`
+  - `SMOKE_AUTH_EMAIL=True`
+  - `SMOKE_AUTH_PASSWORD=True`
+  - `SMOKE_AUTH_TOKEN_LEN=36`
+  - `SMOKE_AUTH_TOKEN_DOT_PARTS=1`
+- Recheck result:
+  - Smoke:
+    - PASS `API /health -> 200`
+    - PASS `API /ready -> 200`
+    - PASS `WEB / -> 200`
+    - PASS `WEB /api/build-info -> 200` (expected SHA matched)
+    - FAIL `API /workers/ready -> 401`
+  - Auth probe:
+    - `GET /auth/me -> 401` (`Session expired. Please sign in again.`)
+    - `GET /workers/ready -> 401` (`Invalid token`)
+- Interpretation:
+  - canonical network/reachability path is healthy,
+  - protected proof remains blocked strictly on auth/session/permission path for current smoke token.
+- Final disposition for this continuation heartbeat: `blocked`.
+- Unblock owner/action:
+  1. Soar API auth credential owner + Security/Test permission owner must provide/confirm a fresh valid approved read-only principal/session artifact accepted by API auth and authorized for `GET /workers/ready`.
+  2. Then Ops executes exactly one worker-included smoke recheck.
+
+## Continuation Checkpoint (source_scoped_recovery_action, 2026-05-28)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action executed in this heartbeat: one read-only presence-only auth artifact checkpoint (no smoke/probe rerun; anti-churn and cancellation-reason confirmation respected).
+- Timestamp: `2026-05-28T02:05:19+02:00`.
+- Presence-only result (no secret values):
+  - `SMOKE_AUTH_TOKEN=False`
+  - `SMOKE_AUTH_EMAIL=False`
+  - `SMOKE_AUTH_PASSWORD=False`
+  - `SOAR_API_TOKEN=False`
+  - `SOAR_API_KEY=False`
+  - `SOAR_SESSION_COOKIE=False`
+- Interpretation:
+  - no new unblock artifact class in this wake,
+  - `SMOKE_AUTH_*` bindings are absent in this runtime, so protected recheck path is not actionable.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action:
+  1. Soar API auth credential owner + Security/Test secret-ref owner must restore approved `SMOKE_AUTH_*` bindings for this lane runtime.
+  2. After artifact restore (or explicit board gate approval), Ops executes exactly one worker-included smoke recheck.

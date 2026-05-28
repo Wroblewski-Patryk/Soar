@@ -1,3 +1,40 @@
+## 2026-05-28 LUC-241 Unblock Workers/Ready Smoke Principal Permissions (issue_continuation_needed canonical host recheck)
+- Wake `issue_continuation_needed` consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`).
+- Concrete action in this heartbeat:
+  - one read-only `ops:deploy:smoke` recheck on canonical hosts (`https://api.soar.luckysparrow.ch`, `https://soar.luckysparrow.ch`) with expected SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`,
+  - one token auth probe for `/auth/me` and `/workers/ready`.
+- Result (`2026-05-28T02:04:24+02:00`):
+  - `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`,
+  - token shape unchanged (`LEN=36`, dot parts `1`),
+  - smoke: PASS `API /health`, `API /ready`, `WEB /`, `WEB /api/build-info`; FAIL `API /workers/ready -> 401`,
+  - auth probe: `GET /auth/me -> 401` (`Session expired. Please sign in again.`), `GET /workers/ready -> 401` (`Invalid token`).
+- Final disposition: `blocked`.
+- Unblock owner/action:
+  1. Soar API auth credential owner + Security/Test permission owner provides/confirms a fresh valid approved read-only principal/session artifact accepted by API auth and authorized for `GET /workers/ready`.
+  2. Then Ops executes exactly one worker-included smoke recheck.
+- Evidence:
+  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+
+## 2026-05-28 LUC-241 Unblock Workers/Ready Smoke Principal Permissions (issue_reopened_via_comment single recheck on stale lane hosts)
+- Comment `d4ff1cff-0a15-4f04-9576-cea986905a7d` acknowledged first; instruction executed as a single read-only auth/smoke recheck for protected `/workers/ready`.
+- Concrete action in this heartbeat:
+  - one `ops:deploy:smoke` run (`expected SHA 71b8d503fd6fdfd7378dc67b2fa678799e2430f8`) against `soar-api`/`soar-web` lane hosts,
+  - one token auth probe for `/auth/me` and `/workers/ready`.
+- Result (`2026-05-28T02:02:43+02:00`):
+  - `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`,
+  - token shape unchanged (`LEN=36`, dot parts `1`),
+  - smoke failed with `fetch failed` on all checks,
+  - auth probe failed with `fetch failed` for both protected endpoints.
+- Interpretation:
+  - recheck was executed on stale/non-canonical hostnames that are DNS-failing per `LUC-390`, so auth/permission proof was not evaluable in this run.
+- Final disposition: `blocked`.
+- Unblock owner/action:
+  1. Ops must use canonical hosts on next approved recheck: `https://api.soar.luckysparrow.ch` and `https://soar.luckysparrow.ch`.
+  2. Auth/security owner confirms fresh valid approved read-only principal/session artifact for `GET /workers/ready`.
+  3. Then Ops executes exactly one worker-included smoke recheck.
+- Evidence:
+  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+
 ## 2026-05-28 LUC-388 [Soar][ARB-004] Replace `TBD` metrics in UX scorecard
 - Wake scope consumed from inline payload first (`fallbackFetchNeeded=false`, comments `0/0`).
 - Concrete action in this heartbeat:
@@ -13681,3 +13718,20 @@ None.
 - Final disposition: `done`.
 - Evidence:
   - `history/tasks/luc-387-arb-003-web-tests-table-expansion-2026-05-28-task.md`.
+
+## 2026-05-28 LUC-241 Unblock Workers/Ready Smoke Principal Permissions (source_scoped_recovery_action continuation)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat: one read-only presence-only auth artifact checkpoint (no smoke/probe rerun; anti-churn).
+- Presence result (`2026-05-28T02:05:19+02:00`):
+  - `SMOKE_AUTH_TOKEN=False`
+  - `SMOKE_AUTH_EMAIL=False`
+  - `SMOKE_AUTH_PASSWORD=False`
+  - `SOAR_API_TOKEN=False`
+  - `SOAR_API_KEY=False`
+  - `SOAR_SESSION_COOKIE=False`
+- Interpretation: no new unblock artifact class; runtime is missing `SMOKE_AUTH_*` bindings, so protected `/workers/ready` recheck is not actionable in this wake.
+- Final disposition: `blocked`.
+- Unblock owner/action:
+  - Soar API auth credential owner + Security/Test secret-ref owner restore approved `SMOKE_AUTH_*` bindings for this runtime; then Ops executes exactly one worker-included smoke recheck (or on explicit board gate approval).
+- Evidence:
+  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.

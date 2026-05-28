@@ -12425,3 +12425,23 @@
   `history/tasks/luc-175-source-control-queue-executor-gate-2026-05-26-task.md`.
 
 - `LUC-387 [ARB-003]` is complete for the targeted inferred-coverage slice. Web deep dives for `orders`, `positions`, `icons`, and `shared` now include exact-file `Tests` tables, and drift/traceability wording was updated from unresolved inferred coverage to repaired-with-maintenance guidance. Evidence: `history/tasks/luc-387-arb-003-web-tests-table-expansion-2026-05-28-task.md`.
+
+- `LUC-241 source_scoped_recovery_action heartbeat (2026-05-28)` executed one
+  concrete read-only presence-only auth artifact checkpoint and remains `blocked`.
+  Inline wake was consumed first (`fallbackFetchNeeded=false`, comments `0/0`,
+  latest comment id `unknown`).
+  Checkpoint timestamp: `2026-05-28T02:05:19+02:00`.
+  Presence-only result:
+  `SMOKE_AUTH_TOKEN=False`, `SMOKE_AUTH_EMAIL=False`,
+  `SMOKE_AUTH_PASSWORD=False`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`,
+  `SOAR_SESSION_COOKIE=False`.
+  Interpretation: no new unblock artifact class appeared; `SMOKE_AUTH_*`
+  bindings are absent in this runtime, so protected `/workers/ready` recheck
+  path is not actionable in this wake.
+  Unblock owner/action:
+  Soar API auth credential owner + Security/Test secret-ref owner must restore
+  approved `SMOKE_AUTH_*` bindings for this runtime; then Ops executes exactly
+  one worker-included smoke recheck (or on explicit board gate approval).
+  Scope remained read-only verification/docs-state sync (no deploy/restart/runtime mutation).
+  Evidence:
+  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
