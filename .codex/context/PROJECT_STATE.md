@@ -12500,3 +12500,11 @@
   Unblock owner/action is explicit:
   1. Soar auth credential owner + Security/Test owner deliver approved read-only principal/session for `GET /workers/ready` before `2026-05-30 08:30 Europe/Berlin`.
   2. Ops Release Lead + QA + Security + release controller execute `ARB6-WIN-2026-05-30-A` and publish parent unblock disposition on `LUC-402`.
+
+- `LUC-405 [Soar][ARB-006][Ops]` reopened-comment delta was reconciled on 2026-05-28 (`comment 617054fc-2da8-4aac-90a2-395aeb6b8d07`).
+  Board-confirmed source-control closure commit `6d3f4769` was validated to include the declared LUC-405 evidence package artifacts and the protected evidence window packet.
+  Status remains `blocked` / `NO-GO` with unchanged unblock contract: approved read-only principal/session for `GET /workers/ready` plus completion of missing protected evidence families before parent `LUC-402` unblock publication.
+
+- `LUC-405 [Soar][ARB-006][Ops]` continuation heartbeat (2026-05-28, no new comments) completed an anti-drift recheck and remains `blocked/NO-GO`.
+  Window packet and blocker contract are still consistent (`ARB6-WIN-2026-05-30-A`, protected `GET /workers/ready` auth boundary, and missing protected evidence families).
+  Unblock owner/action unchanged.

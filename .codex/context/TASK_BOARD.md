@@ -13786,3 +13786,24 @@ None.
 - Unblock owner/action:
   1. Soar auth credential owner + Security/Test owner deliver approved read-only principal/session for `GET /workers/ready` before `2026-05-30 08:30 Europe/Berlin`.
   2. Ops Release Lead + QA + Security + release controller execute read-only window `ARB6-WIN-2026-05-30-A` (`2026-05-30 09:00-11:00 Europe/Berlin`) and publish parent unblock status on `LUC-402`.
+
+## 2026-05-28 LUC-405 [Soar][ARB-006][Ops] Reopened comment reconciliation
+- Wake `issue_reopened_via_comment` consumed first (`fallbackFetchNeeded=false`, comments `1/1`, latest comment id `617054fc-2da8-4aac-90a2-395aeb6b8d07`).
+- Board comment acknowledged: blocked-lane source-control closure commit `6d3f4769` recorded with LUC-405 evidence package artifacts committed.
+- Concrete action:
+  - verified commit file list includes all declared LUC-405 artifacts and window packet,
+  - synchronized task artifact continuation with this comment delta and unchanged fail-closed NO-GO posture.
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar auth credential owner + Security/Test owner provide approved read-only principal/session for `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller complete missing protected evidence families and execute approved read-only window for parent `LUC-402` unblock note.
+
+## 2026-05-28 LUC-405 [Soar][ARB-006][Ops] Continuation (no-comment anti-drift)
+- Wake `issue_continuation_needed` consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action:
+  - executed anti-drift consistency recheck across the LUC-405 window packet and task blocker contract (window id, auth boundary, missing families),
+  - confirmed fail-closed `blocked/NO-GO` posture remains valid with unchanged owner/action.
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar auth credential owner + Security/Test owner provide approved read-only principal/session authorized for `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller complete missing protected evidence families and execute approved read-only window packet; then publish parent `LUC-402` unblock status.

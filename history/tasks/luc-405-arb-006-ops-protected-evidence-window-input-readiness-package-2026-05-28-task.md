@@ -97,3 +97,23 @@ Produce a current, no-secret readiness package for protected evidence execution,
   2. Ops Release Lead + QA + Security + release controller: approve and execute window `ARB6-WIN-2026-05-30-A` (`2026-05-30 09:00-11:00 Europe/Berlin`) in read-only mode and publish parent unblock note on `LUC-402`.
 - Paperclip control-plane note:
   - This runtime does not expose Paperclip issue-update API tools; status/comment sync must be applied by the board-integrated runner or PM lane using the same evidence packet paths.
+
+## Continuation Checkpoint (issue_reopened_via_comment, 2026-05-28, comment 617054fc-2da8-4aac-90a2-395aeb6b8d07)
+- Latest board comment acknowledged first: source-control closure commit `6d3f4769` recorded with evidence-package artifacts committed; disposition remains `BLOCKED/NO-GO`.
+- Concrete action in this heartbeat:
+  - verified commit `6d3f4769` contains the declared LUC-405 evidence packet files (`history/plans/luc-402-arb-006-evidence-task-register-2026-05-28.md`, `history/artifacts/luc-405-protected-evidence-window-input-readiness-2026-05-28.json`, `history/artifacts/v1-protected-input-readiness-71b8d503-2026-05-28.json`, `history/evidence/v1-protected-input-readiness-71b8d503-2026-05-28.md`, `history/releases/luc-405-arb-006-protected-evidence-window-packet-2026-05-28.md`),
+  - synchronized task evidence with reopened-comment delta and preserved fail-closed no-mutation gate.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action (unchanged):
+  1. Soar auth credential owner + Security/Test owner: supply approved read-only principal/session authorized for `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: provide missing protected evidence families (`LIVEIMPORT_READBACK`, `ROLLBACK_GUARD`, `SOAR_PROD`, `PROD_DB_CHECK`/`PRODUCTION_DB_CHECK`, `RC`, `GATE`) and execute approved read-only window packet for parent `LUC-402` update.
+
+## Continuation Checkpoint (issue_continuation_needed, 2026-05-28, no-comment anti-drift)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated consistency between the executable window packet and task blockers using exact marker checks for window ID, protected auth boundary (`GET /workers/ready`), and missing protected families,
+  - confirmed blocked/no-go contract remains unchanged with read-only no-mutation scope.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar auth credential owner + Security/Test owner provide approved read-only principal/session authorized for `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller close missing protected evidence families (`LIVEIMPORT_READBACK`, `ROLLBACK_GUARD`, `SOAR_PROD`, `PROD_DB_CHECK`/`PRODUCTION_DB_CHECK`, `RC`, `GATE`) and execute the approved read-only window packet for parent `LUC-402` unblock publication.
