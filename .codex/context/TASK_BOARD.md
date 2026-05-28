@@ -14020,3 +14020,11 @@ None.
 - Unblock owner/action unchanged:
   1. Soar auth credential owner + Security/Test owner: approved read-only principal/session for protected `GET /workers/ready`.
   2. Ops Release Lead + QA + Security + release controller: restore required protected-input families and produce two consecutive non-regressing same-context readiness runs before `ARB6-WIN-2026-05-30-A`.
+
+## 2026-05-28 LUC-405 [Soar][ARB-006][Ops] finish_successful_run_handoff disposition sync
+- Wake delta processed with no new unblock signal (`fallbackFetchNeeded=false`, pending comments `0/0`).
+- Concrete action: synchronized lane disposition from transient handoff `in_progress` back to fail-closed `blocked` truth; anti-churn trigger policy remains active (no repetitive reruns without new unblock evidence).
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar auth credential owner + Security/Test owner: approved read-only principal/session for protected `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: restore required protected-input families and produce two consecutive non-regressing same-context readiness runs before `ARB6-WIN-2026-05-30-A`.

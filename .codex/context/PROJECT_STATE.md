@@ -12608,3 +12608,7 @@
   Execution: `corepack pnpm run -s ops:operator-unblock:check` => `PASS` (`NO-GO: yes`, `Target SHA ok: yes`, packet/protected-input alignment intact).
   No new approved protected principal/session or protected-input family restoration signal was present, so repetitive dual-check reruns remained suppressed by anti-churn policy.
   Unblock owner/action unchanged: approved read-only principal/session for protected `GET /workers/ready`, then restoration/stability of required protected-input families with two consecutive non-regressing same-context readiness runs before `ARB6-WIN-2026-05-30-A`.
+
+- `LUC-405 [Soar][ARB-006][Ops]` resume-delta `finish_successful_run_handoff` (2026-05-28) was disposition-synced to `blocked` with unchanged fail-closed contract.
+  No new auth/protected-input unblock signal was present, so anti-churn trigger policy remained in force and no repetitive dual-check rerun was executed.
+  Unblock owner/action unchanged: approved read-only principal/session for protected `GET /workers/ready`, then restoration/stability of required protected-input families with two consecutive non-regressing same-context readiness runs before `ARB6-WIN-2026-05-30-A`.

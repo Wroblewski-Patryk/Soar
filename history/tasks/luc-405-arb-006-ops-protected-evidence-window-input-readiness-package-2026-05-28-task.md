@@ -329,3 +329,13 @@ Produce a current, no-secret readiness package for protected evidence execution,
 - Unblock owner/action unchanged:
   1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for protected `GET /workers/ready`.
   2. Ops Release Lead + QA + Security + release controller: restore required protected-input families in active runner context and produce two consecutive non-regressing readiness runs in the same runner context before executing `ARB6-WIN-2026-05-30-A`.
+
+## Continuation Checkpoint (finish_successful_run_handoff, 2026-05-28, disposition-sync closeout)
+- Wake delta acknowledged: `finish_successful_run_handoff` arrived with no new comments/signals (`fallbackFetchNeeded=false`, `0/0` pending).
+- Concrete action in this heartbeat:
+  - performed disposition sync for this lane from transient `in_progress` handoff state back to fail-closed lane truth,
+  - preserved anti-churn rule: no dual-check rerun without new auth/principal or protected-input restoration evidence.
+- Final disposition for this heartbeat: `blocked`.
+- First-class unblock owner/action unchanged:
+  1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for protected `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: restore required protected-input families in active runner context and produce two consecutive non-regressing same-context readiness runs before executing `ARB6-WIN-2026-05-30-A`.
