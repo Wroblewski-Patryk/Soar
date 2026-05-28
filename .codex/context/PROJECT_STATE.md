@@ -12728,3 +12728,9 @@
   Classification remained unchanged: `state/control=2`, `task-evidence=3`, `runtime/product code=0`; commit/push/deploy stays `local commit required` / `not needed` / `none`.
   Evidence:
   `history/tasks/luc-512-source-control-closure-comment-followup-2026-05-28-task.md`.
+
+- `LUC-512 [Soar][Source Control Closure]` source_scoped_recovery_action sync (`2026-05-28`) executed and kept `done`.
+  Wake payload had no new comment/unblock delta (`fallbackFetchNeeded=false`, comments `0/0`), and this heartbeat executed concrete local reclassification.
+  Classification result: `state/control=2`, `task-evidence=4`, `runtime/product code=0`; commit/push/deploy stays `local commit required` / `not needed` / `none`.
+  Evidence:
+  `history/tasks/luc-512-source-control-closure-source-scoped-recovery-action-2026-05-28-task.md`.

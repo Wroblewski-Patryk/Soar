@@ -14217,3 +14217,16 @@ None.
 - Evidence:
   - `history/tasks/luc-512-source-control-closure-comment-followup-2026-05-28-task.md`
   - `history/tasks/luc-512-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-28-task.md`
+
+## 2026-05-28 LUC-512 [Soar][Source Control Closure] source_scoped_recovery_action disposition sync
+- Wake `source_scoped_recovery_action` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action:
+  - reran minimal local dirty-state classification (`git status --short`),
+  - confirmed no runtime/product code drift in the current dirty set,
+  - recorded explicit local-commit/no-push/no-deploy sidecar disposition for this heartbeat.
+- Classification result: `state/control=2`, `task-evidence=4`, `runtime/product code=0`.
+- Final disposition: `done`.
+- Source-control disposition: `local commit required`; no push/deploy/restart/protected smoke.
+- Evidence:
+  - `history/tasks/luc-512-source-control-closure-source-scoped-recovery-action-2026-05-28-task.md`
+  - `history/tasks/luc-512-source-control-closure-comment-followup-2026-05-28-task.md`
