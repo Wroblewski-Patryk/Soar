@@ -13872,6 +13872,41 @@ None.
 - Evidence:
   `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
 
+## 2026-05-28 LUC-241 Unblock Workers/Ready Smoke Principal Permissions (issue_reopened_via_comment continuation)
+- Wake consumed with pending comment `1/1` (`56478cae-42c0-4619-bb27-2cfa60cc174c`) and comment request acknowledged first.
+- Longevity-doctor stale-evidence request was handled with concrete fresh gate evidence in this heartbeat.
+- Concrete action (read-only):
+  - presence-only auth checkpoint at `2026-05-28T15:21:41+02:00`:
+    `SMOKE_AUTH_TOKEN=False`, `SMOKE_AUTH_EMAIL=False`,
+    `SMOKE_AUTH_PASSWORD=False`, `SOAR_API_TOKEN=False`,
+    `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`;
+  - one canonical-host smoke recheck on expected SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`:
+    public checks `PASS`, protected `API /workers/ready -> 401`.
+- Final disposition: `blocked`.
+- Explicit next-review condition:
+  - run next active protected recheck only when at least one appears:
+    restored approved `SMOKE_AUTH_*` bindings, fresh valid approved principal/session artifact, or explicit board gate approval for exactly one protected recheck.
+- Evidence:
+  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+
+## 2026-05-28 LUC-241 Unblock Workers/Ready Smoke Principal Permissions (issue_continuation_needed continuation)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat: one read-only presence-only auth artifact checkpoint (status-sync only; no smoke/probe rerun).
+- Presence result (`2026-05-28T15:23:16+02:00`):
+  - `SMOKE_AUTH_TOKEN=False`
+  - `SMOKE_AUTH_EMAIL=False`
+  - `SMOKE_AUTH_PASSWORD=False`
+  - `SOAR_API_TOKEN=False`
+  - `SOAR_API_KEY=False`
+  - `SOAR_SESSION_COOKIE=False`
+- Interpretation: no new unblock artifact class in this wake; protected recheck remains paused by guardrail.
+- Final disposition: `blocked`.
+- Next review condition unchanged:
+  - active protected recheck only after one of:
+    restored approved `SMOKE_AUTH_*` bindings, fresh valid approved principal/session artifact, or explicit board gate approval for exactly one protected recheck.
+- Evidence:
+  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+
 ## 2026-05-28 LUC-405 [Soar][ARB-006][Ops] Protected evidence window and input readiness package (source_scoped_recovery_action)
 - Wake scope consumed from inline payload first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
@@ -14230,3 +14265,9 @@ None.
 - Evidence:
   - `history/tasks/luc-512-source-control-closure-source-scoped-recovery-action-2026-05-28-task.md`
   - `history/tasks/luc-512-source-control-closure-comment-followup-2026-05-28-task.md`
+
+## 2026-05-28T15:24:52+02:00 - LUC-241 heartbeat checkpoint
+- Status: blocked (unchanged).
+- Action taken: read-only credential-presence checkpoint only; protected smoke recheck skipped due to missing SMOKE_AUTH_* artifact class.
+- Evidence: history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md.
+- Unblock owner/action: Soar auth credential owner + Security/Test secret-ref owner restore approved SMOKE_AUTH_*; then Ops runs one protected /workers/ready recheck.

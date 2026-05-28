@@ -819,3 +819,67 @@ Verify whether current smoke principal can authenticate and pass protected `GET 
 - Unblock owner/action:
   1. Soar API auth credential owner + Security/Test secret-ref owner must restore approved `SMOKE_AUTH_*` bindings for this lane runtime.
   2. After artifact restore (or explicit board gate approval), Ops executes exactly one worker-included smoke recheck.
+
+## Continuation Checkpoint (issue_reopened_via_comment, 2026-05-28, comment 56478cae-42c0-4619-bb27-2cfa60cc174c)
+- Latest board comment acknowledged first: longevity-doctor flagged stale blocker evidence and requested either fresh gate evidence or explicit blocked next-review condition.
+- Concrete action executed in this heartbeat (read-only, no deploy/restart/runtime mutation):
+  1. fresh auth-artifact presence checkpoint,
+  2. one canonical-host production smoke recheck.
+- Timestamp: `2026-05-28T15:21:41+02:00` (presence), smoke executed immediately after.
+- Presence-only result (no secret values):
+  - `SMOKE_AUTH_TOKEN=False`
+  - `SMOKE_AUTH_EMAIL=False`
+  - `SMOKE_AUTH_PASSWORD=False`
+  - `SOAR_API_TOKEN=False`
+  - `SOAR_API_KEY=False`
+  - `SOAR_SESSION_COOKIE=False`
+- Smoke command:
+  - `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8`
+- Smoke result:
+  - PASS `API /health -> 200`
+  - PASS `API /ready -> 200`
+  - PASS `WEB / -> 200`
+  - PASS `WEB /api/build-info -> 200` (expected SHA matched)
+  - FAIL `API /workers/ready -> 401`
+- Interpretation:
+  - fresh gate evidence attached (staleness concern addressed),
+  - public canonical path remains healthy,
+  - protected readiness remains blocked on auth/session/permission path with missing `SMOKE_AUTH_*` bindings in this runtime.
+- Final disposition for this heartbeat: `blocked`.
+- Explicit next review condition (blocked-root guardrail):
+  1. re-open active verification only when at least one appears: restored approved `SMOKE_AUTH_*` bindings, fresh valid approved read-only principal/session artifact, or explicit board gate approval for exactly one protected recheck;
+  2. otherwise keep status sync-only and no repeated smoke loops.
+
+## Continuation Checkpoint (issue_continuation_needed, 2026-05-28)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat: one read-only presence-only auth artifact checkpoint (status-sync only; no smoke/probe rerun per active next-review condition).
+- Timestamp: `2026-05-28T15:23:16+02:00`.
+- Presence-only result (no secret values):
+  - `SMOKE_AUTH_TOKEN=False`
+  - `SMOKE_AUTH_EMAIL=False`
+  - `SMOKE_AUTH_PASSWORD=False`
+  - `SOAR_API_TOKEN=False`
+  - `SOAR_API_KEY=False`
+  - `SOAR_SESSION_COOKIE=False`
+- Interpretation:
+  - no new unblock artifact class arrived in this wake,
+  - active protected recheck path remains not actionable.
+- Final disposition for this heartbeat: `blocked`.
+- Explicit next review condition unchanged:
+  1. re-open active verification only when at least one appears: restored approved `SMOKE_AUTH_*` bindings, fresh valid approved read-only principal/session artifact, or explicit board gate approval for exactly one protected recheck;
+  2. otherwise keep status sync-only and no repeated smoke loops.
+
+## Heartbeat - 2026-05-28T15:24:52+02:00 (source_scoped_recovery_action)
+- Wake acknowledged first: no new comment/unblock delta (fallbackFetchNeeded=false, 0/0 comments), so only minimal actionable checkpoint executed.
+- Concrete action: read-only smoke auth artifact presence scan in current runner context.
+  - SMOKE_AUTH_TOKEN=False
+  - SMOKE_AUTH_EMAIL=False
+  - SMOKE_AUTH_PASSWORD=False
+  - SOAR_API_TOKEN=False
+  - SOAR_API_KEY=False
+  - SOAR_SESSION_COOKIE=False
+- Decision: protected /workers/ready recheck not executed because required auth artifact class is absent.
+- Final disposition for this heartbeat: blocked.
+- Unblock owner/action:
+  1. Soar auth credential owner + Security/Test secret-ref owner restore approved SMOKE_AUTH_* bindings for this runtime.
+  2. Ops Release Lead executes exactly one read-only protected recheck for GET /workers/ready after restoration and publishes evidence with rollback-impact note.

@@ -12547,6 +12547,51 @@
   Evidence:
   `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
 
+- `LUC-241 issue_reopened_via_comment heartbeat (2026-05-28)` consumed pending
+  comment `56478cae-42c0-4619-bb27-2cfa60cc174c` and executed a concrete
+  stale-evidence freshness response while remaining `blocked`.
+  Comment request acknowledged first: attach fresh gate evidence or keep blocked
+  with explicit next-review condition.
+  Concrete read-only action in this heartbeat:
+  1. presence-only auth artifact checkpoint at `2026-05-28T15:21:41+02:00`:
+     `SMOKE_AUTH_TOKEN=False`, `SMOKE_AUTH_EMAIL=False`,
+     `SMOKE_AUTH_PASSWORD=False`, `SOAR_API_TOKEN=False`,
+     `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`,
+  2. one canonical-host smoke rerun on expected SHA
+     `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`:
+     `PASS` public checks and `FAIL API /workers/ready -> 401`.
+  Interpretation: fresh gate evidence attached; protected readiness remains
+  blocked on auth/session/permission path with missing runtime `SMOKE_AUTH_*`
+  bindings.
+  Explicit next-review condition recorded:
+  run next active protected recheck only when at least one appears:
+  restored approved `SMOKE_AUTH_*` bindings, fresh valid approved principal/session
+  artifact, or explicit board gate approval for exactly one protected recheck.
+  Scope remained read-only verification/docs-state sync (no deploy/restart/runtime mutation).
+  Evidence:
+  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+
+- `LUC-241 issue_continuation_needed heartbeat (2026-05-28)` executed a
+  concrete read-only status-sync checkpoint and remains `blocked`.
+  Inline wake consumed first (`fallbackFetchNeeded=false`, comments `0/0`,
+  latest comment id `unknown`) with no new approval/comment delta.
+  Concrete action: one presence-only auth artifact checkpoint at
+  `2026-05-28T15:23:16+02:00` (no smoke/probe rerun per active next-review condition).
+  Presence-only result:
+  `SMOKE_AUTH_TOKEN=False`, `SMOKE_AUTH_EMAIL=False`,
+  `SMOKE_AUTH_PASSWORD=False`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`,
+  `SOAR_SESSION_COOKIE=False`.
+  Interpretation: no new unblock artifact class appeared; protected recheck
+  remains paused by guardrail.
+  Next review condition unchanged:
+  re-open active verification only when at least one appears:
+  restored approved `SMOKE_AUTH_*` bindings, fresh valid approved
+  principal/session artifact, or explicit board gate approval for exactly one
+  protected recheck.
+  Scope remained read-only verification/docs-state sync (no deploy/restart/runtime mutation).
+  Evidence:
+  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+
 - `LUC-405 [Soar][ARB-006][Ops]` heartbeat checkpointed on 2026-05-28 and remains `blocked`.
   Executable window packet is in place (`history/releases/luc-405-arb-006-protected-evidence-window-packet-2026-05-28.md`) with window `2026-05-30 09:00-11:00 Europe/Berlin`, read-only fail-closed sequence, and no-mutation gate.
   Unblock owner/action is explicit:
@@ -12734,3 +12779,8 @@
   Classification result: `state/control=2`, `task-evidence=4`, `runtime/product code=0`; commit/push/deploy stays `local commit required` / `not needed` / `none`.
   Evidence:
   `history/tasks/luc-512-source-control-closure-source-scoped-recovery-action-2026-05-28-task.md`.
+
+- LUC-241 source-scoped recovery heartbeat (2026-05-28T15:24:52+02:00) executed concrete read-only status checkpoint and remains blocked.
+  Presence scan in runner context: SMOKE_AUTH_TOKEN=False, SMOKE_AUTH_EMAIL=False, SMOKE_AUTH_PASSWORD=False, SOAR_API_TOKEN=False, SOAR_API_KEY=False, SOAR_SESSION_COOKIE=False.
+  No protected /workers/ready rerun was allowed because required auth artifact class is absent.
+  Unblock owner/action unchanged: Soar auth credential owner + Security/Test secret-ref owner restore approved SMOKE_AUTH_*, then Ops executes exactly one read-only protected recheck and publishes evidence + rollback-impact note.
