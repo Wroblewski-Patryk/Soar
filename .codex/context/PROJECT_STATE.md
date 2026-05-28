@@ -12784,3 +12784,7 @@
   Presence scan in runner context: SMOKE_AUTH_TOKEN=False, SMOKE_AUTH_EMAIL=False, SMOKE_AUTH_PASSWORD=False, SOAR_API_TOKEN=False, SOAR_API_KEY=False, SOAR_SESSION_COOKIE=False.
   No protected /workers/ready rerun was allowed because required auth artifact class is absent.
   Unblock owner/action unchanged: Soar auth credential owner + Security/Test secret-ref owner restore approved SMOKE_AUTH_*, then Ops executes exactly one read-only protected recheck and publishes evidence + rollback-impact note.
+
+- `LUC-516 known-state evidence baseline (2026-05-28)` is now checkpointed and synchronized. PM captured current architecture baseline from canonical generated artifacts with no runtime mutation: `architecture-awareness.json` generated `2026-05-27T02:15:57.657Z` (`entities=7338`, `relations=14300`) and status report still showing disconnected entities `0` with inferred-proof gaps (`tests=2056`, `docs=798`). Release posture remains unchanged: V1 stays `blocked/NO-GO` on protected evidence owner path (`LUC-47` and protected proof/input owners). Evidence: `history/tasks/luc-516-known-state-evidence-architecture-baseline-2026-05-28-task.md`.
+
+- `LUC-516 finish_successful_run_handoff (2026-05-28)` reconciled to `done` after read-only baseline recheck; metrics remained stable (`generatedAt=2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`) and blocker topology stayed unchanged (`LUC-47` + protected proof/input owners). Evidence: `history/tasks/luc-516-known-state-evidence-architecture-baseline-2026-05-28-task.md`.

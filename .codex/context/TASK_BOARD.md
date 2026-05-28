@@ -14271,3 +14271,28 @@ None.
 - Action taken: read-only credential-presence checkpoint only; protected smoke recheck skipped due to missing SMOKE_AUTH_* artifact class.
 - Evidence: history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md.
 - Unblock owner/action: Soar auth credential owner + Security/Test secret-ref owner restore approved SMOKE_AUTH_*; then Ops runs one protected /workers/ready recheck.
+## 2026-05-28 LUC-516 [Soar] [Known State] Evidence collection and architecture baseline
+- Wake `issue_assigned` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Latest wake impact acknowledged first: this heartbeat required an issue-scoped known-state baseline under `LUC-516` (not only prior `LUC-418` lineage).
+- Concrete action:
+  - captured architecture baseline from canonical generated artifacts,
+  - synchronized known-state checkpoint into mission/board/project context under `LUC-516`,
+  - preserved strict no-mutation boundary (no deploy, no runtime, no protected evidence execution).
+- Baseline evidence:
+  - `architecture-awareness.json`: `generatedAt=2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`.
+  - `architecture-awareness-report.md`: `disconnected entities=0`, inferred proof gaps `tests=2056`, `docs=798`.
+- Release posture continuity: unchanged; V1 remains `blocked/NO-GO` on protected evidence owner path (`LUC-47` plus protected proof/input owners).
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-516-known-state-evidence-architecture-baseline-2026-05-28-task.md`
+
+## 2026-05-28 LUC-516 [Soar] finish_successful_run_handoff disposition sync
+- Wake `finish_successful_run_handoff` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action: executed read-only baseline recheck for `LUC-516` and confirmed no drift in architecture metrics or blocker topology.
+- Recheck result:
+  - `architecture-awareness.json` remains `generatedAt=2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`.
+  - known-state posture remains `disconnected=0`, inferred gaps `tests=2056`, `docs=798`.
+  - V1 release posture unchanged: `blocked/NO-GO` on protected-evidence owner path (`LUC-47` + protected proof/input owners).
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-516-known-state-evidence-architecture-baseline-2026-05-28-task.md`
