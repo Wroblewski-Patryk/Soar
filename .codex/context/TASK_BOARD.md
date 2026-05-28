@@ -13910,3 +13910,27 @@ None.
 - Result: `PARTIAL` / `NO-GO` unchanged; fail-closed `blocked` contract remains valid.
 - Final disposition: `blocked`.
 - Unblock owner/action unchanged.
+
+## 2026-05-28 LUC-405 [Soar][ARB-006][Ops] Issue-assigned continuation (input-readiness sign-off)
+- Wake acknowledged first (`fallbackFetchNeeded=false`, pending comments `0/0`); issue remains dependency-blocked.
+- Published durable owner/input readiness artifact:
+  - `history/releases/luc-405-arb-006-window-input-readiness-signoff-2026-05-28.md`
+- Artifact defines T-30 (`2026-05-30 08:30 Europe/Berlin`) pass/fail readiness table for protected auth and missing families (`LIVEIMPORT_READBACK`, `ROLLBACK_GUARD`, `SOAR_PROD`, `PROD_DB_CHECK`/`PRODUCTION_DB_CHECK`, `RC`, `GATE`) under no-mutation scope.
+- Disposition for this heartbeat: `blocked` (unblock owners/actions unchanged).
+
+## 2026-05-28 LUC-405 [Soar][ARB-006][Ops] Resume-delta continuation (readiness recheck)
+- Wake consumed (`fallbackFetchNeeded=false`, comments `0/0`); issue remains dependency-blocked.
+- Evidence refresh:
+  - `ops:operator-unblock:check` => `PASS` (`NO-GO: yes`, packet integrity intact),
+  - `ops:protected-inputs:check` => `PARTIAL` (`9` matching names; missing families unchanged).
+- Disposition: `blocked` (unblock owners/actions unchanged).
+
+## 2026-05-28 LUC-405 [Soar][ARB-006][Ops] Source-scoped recovery (dual-check drift)
+- Wake `source_scoped_recovery_action` consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action: reran `ops:operator-unblock:check` and `ops:protected-inputs:check` for `2026-05-28` / SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`.
+- Results:
+  - `operator-unblock`: `PASS` (`NO-GO: yes`),
+  - `protected-inputs`: `BLOCKED` (`matching names=0`; all required families missing in current runtime context).
+- Drift classification: blocker severity increased from prior `PARTIAL` to `BLOCKED` for protected-input readiness in this runner context.
+- Final disposition: `blocked`.
+- Unblock owner/action updated with runtime-context restoration requirement for protected-input families before window execution.

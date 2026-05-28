@@ -10,8 +10,8 @@
 
 ## Result
 
-- Status: `PARTIAL`
-- Matching protected input names present: `9`
+- Status: `BLOCKED`
+- Matching protected input names present: `0`
 - V1 release status: `NO-GO`
 
 ## Checked Input Families
@@ -20,8 +20,8 @@
 | --- | --- | --- | --- |
 | `LIVEIMPORT_READBACK_*` | missing | 0 | Protected LIVEIMPORT-03 production runtime readback |
 | `ROLLBACK_GUARD_*` | missing | 0 | Protected production rollback/runtime freshness proof |
-| `PROD_UI_AUDIT_*` | present | 9 | Authenticated production dashboard/admin UI clickthrough |
-| `PROD_UI_*` | present | 9 | Legacy production UI audit input family |
+| `PROD_UI_AUDIT_*` | missing | 0 | Authenticated production dashboard/admin UI clickthrough |
+| `PROD_UI_*` | missing | 0 | Legacy production UI audit input family |
 | `SOAR_PROD_*` | missing | 0 | Production app/operator context |
 | `PROD_DB_CHECK_*` | missing | 0 | Production DB restore context |
 | `PRODUCTION_DB_CHECK_*` | missing | 0 | Alternate production DB restore context |
@@ -31,7 +31,7 @@
 ## Observed Output
 
 ```text
-MATCHING_PROTECTED_INPUT_NAMES_PRESENT
+NO_MATCHING_PROTECTED_INPUT_NAMES_PRESENT
 ```
 
 ## Release Impact

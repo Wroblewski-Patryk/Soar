@@ -12557,3 +12557,18 @@
 - Release posture remains `blocked/NO-GO`; unblock contract unchanged (`GET /workers/ready` approved read-only principal/session plus missing protected evidence families before parent `LUC-402` unblock publication).
 
 - `LUC-405 [Soar][ARB-006][Ops]` source-scoped recovery checkpoint (2026-05-28) validated protected-input artifact parity (`PARTIAL`, `NO-GO`, missing families unchanged) and kept disposition `blocked` with unchanged unblock owners/actions.
+
+## 2026-05-28 - LUC-405 input-readiness sign-off artifact (Ops)
+- Added executable protected-window input readiness sheet:
+  - `history/releases/luc-405-arb-006-window-input-readiness-signoff-2026-05-28.md`
+- The sheet captures owner/status/evidence fields for all currently missing protected families and enforces a hard T-30 stop rule (`2026-05-30 08:30 Europe/Berlin`) if any row remains `BLOCKED`.
+- Release posture unchanged: `blocked/NO-GO` until read-only auth principal for protected `GET /workers/ready` and all protected families are marked `READY`.
+
+## 2026-05-28 - LUC-405 resume-delta readiness checkpoint (Ops)
+- Revalidated protected-window contract after resume delta:
+  - `ops:operator-unblock:check` stayed `PASS` with explicit `NO-GO: yes`,
+  - `ops:protected-inputs:check` stayed `PARTIAL` (only `PROD_UI_*` / `PROD_UI_AUDIT_*` present, all other required families still missing).
+- Release posture unchanged: `blocked/NO-GO`; no-mutation evidence window may not execute until auth boundary and missing protected families are closed.
+
+- `LUC-405 [Soar][ARB-006][Ops]` source-scoped recovery checkpoint (2026-05-28) reran dual checks and observed readiness drift: `operator-unblock` stayed `PASS/NO-GO`, while `protected-inputs` regressed to `BLOCKED` (`0` matching protected names) in the current runtime context.
+  Disposition remains `blocked`; unblock now explicitly includes restoring protected-input families in the active runner context before window execution.

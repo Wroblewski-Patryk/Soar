@@ -181,3 +181,35 @@ Produce a current, no-secret readiness package for protected evidence execution,
 - Unblock owner/action unchanged:
   1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for `GET /workers/ready`.
   2. Ops Release Lead + QA + Security + release controller: close missing protected evidence families and execute approved read-only window packet for parent `LUC-402` unblock publication.
+
+## Continuation Checkpoint (issue_assigned heartbeat, 2026-05-28, input-readiness sign-off sheet)
+- Wake acknowledged first: no pending comments (`0/0`), `fallbackFetchNeeded=false`, issue remains dependency-blocked.
+- Concrete action in this heartbeat:
+  - published explicit pre-window owner/input sign-off artifact:
+    - `history/releases/luc-405-arb-006-window-input-readiness-signoff-2026-05-28.md`
+  - artifact converts blocker families into a T-30 readiness table with owner, status, and evidence-reference fields and preserves the no-mutation safety boundary.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action (unchanged):
+  1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for GET /workers/ready.
+  2. Ops Release Lead + QA + Security + release controller: close missing protected evidence families and flip all sign-off rows to READY before 2026-05-30 08:30 Europe/Berlin.
+
+## Continuation Checkpoint (issue_continuation_needed, 2026-05-28, readiness recheck after resume delta)
+- Wake acknowledged first: no pending comments (`0/0`), `fallbackFetchNeeded=false`, issue remains dependency-blocked.
+- Concrete action in this heartbeat:
+  - reran `corepack pnpm run -s ops:operator-unblock:check` => `PASS` (`Status NO-GO: yes`, packet/protected-evidence contract intact),
+  - reran `corepack pnpm run -s ops:protected-inputs:check -- --today 2026-05-28 --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --git-ref main ...` => `PARTIAL` (matching names `9`; missing families unchanged).
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: close missing protected evidence families (`LIVEIMPORT_READBACK`, `ROLLBACK_GUARD`, `SOAR_PROD`, `PROD_DB_CHECK`/`PRODUCTION_DB_CHECK`, `RC`, `GATE`) and execute approved read-only window packet for parent `LUC-402` unblock publication.
+
+## Continuation Checkpoint (source_scoped_recovery_action, 2026-05-28, dual-check drift)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran `corepack pnpm run -s ops:operator-unblock:check` => `PASS` (`Status NO-GO: yes`, packet contract intact),
+  - reran `corepack pnpm run -s ops:protected-inputs:check -- --today 2026-05-28 --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --git-ref main ...` => `BLOCKED` (`matching protected input names present: 0`).
+- Drift noted vs prior checkpoint: readiness regressed from `PARTIAL (9)` to `BLOCKED (0)` in current runtime context.
+- Final disposition for this heartbeat: `blocked`.
+- First-class unblock owner/action:
+  1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: restore required protected-input families in the active runtime context (`LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_UI_AUDIT_*`/`PROD_UI_*`, `SOAR_PROD_*`, `PROD_DB_CHECK_*`/`PRODUCTION_DB_CHECK_*`, `RC_*`, `GATE* / GATE_*`) and rerun protected-input readiness for same date/SHA before window execution.

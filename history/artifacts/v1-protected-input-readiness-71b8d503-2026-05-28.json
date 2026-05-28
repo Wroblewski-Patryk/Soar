@@ -1,7 +1,7 @@
 {
   "id": "V1-PROTECTED-INPUT-READINESS-71B8D503-2026-05-28",
   "date": "2026-05-28",
-  "status": "PARTIAL",
+  "status": "BLOCKED",
   "releaseStatus": "NO-GO",
   "scope": "current execution shell only",
   "secretHandling": "no secret values printed, copied, or stored",
@@ -10,7 +10,7 @@
     "gitRef": "main",
     "buildInfoCheckedAt": null
   },
-  "matchingProtectedInputNamesPresent": 9,
+  "matchingProtectedInputNamesPresent": 0,
   "families": [
     {
       "family": "LIVEIMPORT_READBACK_*",
@@ -26,15 +26,15 @@
     },
     {
       "family": "PROD_UI_AUDIT_*",
-      "state": "present",
+      "state": "missing",
       "purpose": "Authenticated production dashboard/admin UI clickthrough",
-      "matchingNamesPresent": 9
+      "matchingNamesPresent": 0
     },
     {
       "family": "PROD_UI_*",
-      "state": "present",
+      "state": "missing",
       "purpose": "Legacy production UI audit input family",
-      "matchingNamesPresent": 9
+      "matchingNamesPresent": 0
     },
     {
       "family": "SOAR_PROD_*",
@@ -67,6 +67,6 @@
       "matchingNamesPresent": 0
     }
   ],
-  "observedOutput": "MATCHING_PROTECTED_INPUT_NAMES_PRESENT",
+  "observedOutput": "NO_MATCHING_PROTECTED_INPUT_NAMES_PRESENT",
   "nextAction": "Execute the current operator unblock packet only after approved protected inputs and real approver fields are available."
 }
