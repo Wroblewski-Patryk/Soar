@@ -1,3 +1,19 @@
+- `LUC-408 [Soar][Architecture Planning]` continuation heartbeat (`finish_successful_run_handoff`) executed on 2026-05-28 and remains `done`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action: artifact-link reconciliation confirmed LUC-408 execution map/task packet remain present and authoritative; no new blocker/comment delta arrived in this wake.
+  Result: no status drift; lane stays closed as planning-complete.
+
+- `LUC-408 [Soar][Architecture Planning] Convert architecture docs into executable repair backlog` heartbeat executed on 2026-05-28 and is `done`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  PM coordination published an execution-ready ARB map at
+  `history/plans/luc-408-architecture-repair-backlog-execution-map-2026-05-28.md`:
+  - every backlog row `ARB-001..ARB-008` is now mapped to a concrete execution lane/status/owner action,
+  - blocked rows keep first-class blocker classes (`decision_gate`, `protected_input_gate`),
+  - remaining low-coupling execution work was narrowed to one next delegation action: start existing `LUC-403` for `ARB-007` in the Docs Memory lane.
+  Scope remained planning/state only (no code/runtime/deploy mutation).
+  Evidence:
+  `history/tasks/luc-408-architecture-docs-executable-repair-backlog-2026-05-28-task.md`.
+
 - `LUC-402 [Soar][ARB-006]` heartbeat executed on 2026-05-28 and is `blocked`.
   Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments
   `0/0`, latest comment id `unknown`).
@@ -12521,3 +12537,15 @@
 
 - `LUC-405 [Soar][ARB-006][Ops]` source-scoped recovery checkpoint (2026-05-28) reran `ops:operator-unblock:check` and confirmed `PASS` with `NO-GO: yes`.
   Contract remains fail-closed `blocked` pending approved read-only principal/session for `GET /workers/ready` and closure of missing protected evidence families.
+
+## 2026-05-28 - LUC-405 Ops heartbeat continuation
+- Reran `ops:operator-unblock:check` as minimal protected-window contract checkpoint.
+- Result remains `PASS` with explicit `NO-GO` (`Status NO-GO: yes`) and packet/readiness consistency (`Protected input evidence matches packet: yes`, missing packet fragments/paths: `0`).
+- Release posture unchanged: `blocked` on approved read-only auth principal/session for protected `GET /workers/ready` plus completion/execution of protected evidence window chain for parent `LUC-402`.
+
+## 2026-05-28 - LUC-405 protected-input readiness continuation
+- Reran `ops:protected-inputs:check` for `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` with dated JSON/Markdown outputs.
+- Result remains `PARTIAL` with matching protected names `9`; missing families are unchanged (`LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `SOAR_PROD_*`, `PROD_DB_CHECK_*`, `PRODUCTION_DB_CHECK_*`, `RC_*`, `GATE*` / `GATE_*`).
+- Release posture remains `blocked/NO-GO`; unblock contract unchanged (`GET /workers/ready` approved read-only principal/session plus missing protected evidence families before parent `LUC-402` unblock publication).
+
+- `LUC-405 [Soar][ARB-006][Ops]` source-scoped recovery checkpoint (2026-05-28) validated protected-input artifact parity (`PARTIAL`, `NO-GO`, missing families unchanged) and kept disposition `blocked` with unchanged unblock owners/actions.
