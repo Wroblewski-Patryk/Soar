@@ -1,0 +1,53 @@
+{
+  "issueId": "LUC-405",
+  "title": "[Soar][ARB-006][Ops] Coordinate protected evidence window and input readiness package",
+  "generatedAt": "2026-05-28",
+  "scope": "read_only_verification",
+  "expectedSha": "71b8d503fd6fdfd7378dc67b2fa678799e2430f8",
+  "checks": {
+    "deploySmokeCanonical": {
+      "status": "blocked",
+      "summary": {
+        "apiHealth": "pass",
+        "apiReady": "pass",
+        "webRoot": "pass",
+        "webBuildInfo": "pass",
+        "workersReady": "fail_401"
+      }
+    },
+    "protectedInputReadiness": {
+      "status": "partial",
+      "matchingNames": 9,
+      "families": {
+        "LIVEIMPORT_READBACK": 0,
+        "ROLLBACK_GUARD": 0,
+        "PROD_UI_AUDIT": 9,
+        "PROD_UI": 9,
+        "SOAR_PROD": 0,
+        "PROD_DB_CHECK": 0,
+        "PRODUCTION_DB_CHECK": 0,
+        "RC": 0,
+        "GATE": 0
+      }
+    },
+    "operatorUnblockPacket": {
+      "status": "pass",
+      "noGo": true,
+      "targetShaOk": true,
+      "protectedInputEvidenceMatchesPacket": true
+    }
+  },
+  "disposition": "blocked",
+  "blockers": [
+    {
+      "id": "AUTH-WORKERS-READY",
+      "owner": "Soar API auth credential owner + Security/Test permission owner",
+      "action": "Provide a fresh approved read-only principal/session accepted by API auth and authorized for GET /workers/ready."
+    },
+    {
+      "id": "PROTECTED-EVIDENCE-FAMILIES",
+      "owner": "Ops + QA + Security + Release controller",
+      "action": "Complete missing protected evidence families for LIVEIMPORT, rollback/restore, DB checks, RC/gate records, then rerun packet validation."
+    }
+  ]
+}

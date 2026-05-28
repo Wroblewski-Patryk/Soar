@@ -1,3 +1,52 @@
+- `LUC-402 [Soar][ARB-006]` heartbeat executed on 2026-05-28 and is `blocked`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments
+  `0/0`, latest comment id `unknown`).
+  Ops coordination converted ARB-006 high proof gaps into a dated execution
+  register:
+  - created `history/plans/luc-402-arb-006-evidence-task-register-2026-05-28.md`,
+  - mapped critical high-gap chains from
+    `docs/status/function-journey-index.md` into `ARB6-EV-001..008`,
+  - each row now has owner, target date, evidence class (`public`/`protected`),
+    verification contract, and first-class blocker.
+  Backlog sync:
+  - `history/plans/luc-384-architecture-repair-backlog-2026-05-28.md`
+    updated `ARB-006` status to
+    `execution_register_ready_blocked_on_inputs`.
+  Unblock owner/action:
+  1. Delivery/PM creates and assigns child execution issues from
+     `ARB6-EV-001..008`.
+  2. Security/Test credential owner provides approved protected
+     principal/session artifacts.
+  3. Ops runs one bounded protected evidence checkpoint per ready child task.
+  Evidence:
+  `history/plans/luc-402-arb-006-evidence-task-register-2026-05-28.md`.
+
+- `LUC-404 [Soar][ARB-008]` heartbeat executed on 2026-05-28 and is `done`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments
+  `0/0`, latest comment id `unknown`).
+  QA lane added focused regression hardening for exchange capability contracts:
+  - asserted fail-closed execution unsupported error details for exact
+    `(exchange, marketType, operation)` tuples in
+    `exchangeExecutionCapabilityContract.service.test.ts`,
+  - added `exchangeCapabilityContract.regression.test.ts` that scans
+    `apps/api/src/modules` and fails if CCXT-specific types
+    (`CcxtFuturesOrderFill`, `CcxtWalletCashflowHistoryEntry`) or
+    `exchange/ccxtFuturesConnector.types` imports appear outside
+    `modules/exchange`.
+  Verification:
+  - focused vitest pack (`exchangeExecutionCapabilityContract`,
+    `exchangeAuthenticatedReadContract`, `exchangeCapabilityContract.regression`)
+    => `6/6 PASS`.
+  - focused downstream regression pack (`orders.exchangeEvents.helpers`,
+    `walletCashflowClassifier.service`) => `27/27 PASS`.
+  - `pnpm --filter api run typecheck` => `PASS`.
+  Contract diff review confirms tuple contract and neutral type boundary remain
+  intact (`supportsExchangeExecutionCapability(exchange, marketType, operation)`
+  is canonical; `orders/wallets` consume neutral aliases from
+  `exchangeData.types`).
+  Evidence:
+  `history/tasks/luc-404-arb-008-exchange-capability-regression-suite-2026-05-28-task.md`.
+
 - `LUC-388 [Soar][ARB-004]` heartbeat executed on 2026-05-28 and is `done`.
   Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments
   `0/0`, latest comment id `unknown`).
@@ -12445,3 +12494,9 @@
   Scope remained read-only verification/docs-state sync (no deploy/restart/runtime mutation).
   Evidence:
   `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+
+- `LUC-405 [Soar][ARB-006][Ops]` heartbeat checkpointed on 2026-05-28 and remains `blocked`.
+  Executable window packet is in place (`history/releases/luc-405-arb-006-protected-evidence-window-packet-2026-05-28.md`) with window `2026-05-30 09:00-11:00 Europe/Berlin`, read-only fail-closed sequence, and no-mutation gate.
+  Unblock owner/action is explicit:
+  1. Soar auth credential owner + Security/Test owner deliver approved read-only principal/session for `GET /workers/ready` before `2026-05-30 08:30 Europe/Berlin`.
+  2. Ops Release Lead + QA + Security + release controller execute `ARB6-WIN-2026-05-30-A` and publish parent unblock disposition on `LUC-402`.

@@ -33,4 +33,20 @@ describe('exchangeExecutionCapabilityContract.service', () => {
       ExchangeExecutionCapabilityUnsupportedError
     );
   });
+
+  it('fails closed with exact exchange/marketType/operation details when unsupported', () => {
+    expect.assertions(2);
+
+    try {
+      assertExchangeExecutionCapabilitySupport('COINBASE', 'SPOT', 'LIVE_ORDER_CANCEL');
+    } catch (error) {
+      expect(error).toBeInstanceOf(ExchangeExecutionCapabilityUnsupportedError);
+      expect((error as ExchangeExecutionCapabilityUnsupportedError).toDetails()).toEqual({
+        code: 'EXCHANGE_EXECUTION_CAPABILITY_UNSUPPORTED',
+        exchange: 'COINBASE',
+        marketType: 'SPOT',
+        operation: 'LIVE_ORDER_CANCEL',
+      });
+    }
+  });
 });

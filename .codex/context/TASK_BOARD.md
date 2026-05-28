@@ -1,3 +1,42 @@
+## 2026-05-28 LUC-402 [Soar][ARB-006] Convert high proof gaps into dated protected/public evidence tasks per critical chain
+- Wake scope consumed from inline payload first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - created dated ARB-006 execution register at
+    `history/plans/luc-402-arb-006-evidence-task-register-2026-05-28.md`,
+  - converted high-gap critical chains from `docs/status/function-journey-index.md`
+    into explicit tasks `ARB6-EV-001..008` with owner/date/evidence-class/verification contract,
+  - synced `LUC-384` backlog row status to
+    `execution_register_ready_blocked_on_inputs`.
+- Final disposition: `blocked`.
+- Unblock owner/action:
+  1. Delivery/PM creates and assigns child issues from `ARB6-EV-001..008` in register order.
+  2. Security/Test credential owner provides approved protected principal/session artifacts for protected evidence tasks.
+  3. Ops executes one bounded protected evidence run per ready child and attaches evidence packet paths.
+- Evidence:
+  `history/plans/luc-402-arb-006-evidence-task-register-2026-05-28.md`.
+
+## 2026-05-28 LUC-404 [Soar][ARB-008] Add regression suite for exact exchange capability contract
+- Wake scope consumed from inline payload first (`fallbackFetchNeeded=false`,
+  comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - added focused regression test
+    `apps/api/src/modules/exchange/exchangeCapabilityContract.regression.test.ts`
+    to enforce CCXT-type boundary (`CcxtFuturesOrderFill`,
+    `CcxtWalletCashflowHistoryEntry`) outside `modules/exchange`,
+  - hardened execution capability contract tests to assert exact unsupported
+    error details for `(exchange, marketType, operation)`.
+- Verification:
+  - `pnpm --filter api exec vitest run src/modules/exchange/exchangeExecutionCapabilityContract.service.test.ts src/modules/exchange/exchangeAuthenticatedReadContract.service.test.ts src/modules/exchange/exchangeCapabilityContract.regression.test.ts` => `6/6 PASS`
+  - `pnpm --filter api exec vitest run src/modules/orders/orders.exchangeEvents.helpers.test.ts src/modules/wallets/walletCashflowClassifier.service.test.ts` => `27/27 PASS`
+  - `pnpm --filter api run typecheck` => `PASS`
+- Contract diff review:
+  - `supportsExchangeExecutionCapability(exchange, marketType, operation)` remains canonical tuple capability truth;
+  - authenticated-read support remains mapped to that exact tuple contract;
+  - `orders` and `wallets` continue importing neutral aliases from `exchangeData.types`.
+- Final disposition: `done`.
+- Evidence:
+  `history/tasks/luc-404-arb-008-exchange-capability-regression-suite-2026-05-28-task.md`.
+
 ## 2026-05-28 LUC-241 Unblock Workers/Ready Smoke Principal Permissions (issue_continuation_needed canonical host recheck)
 - Wake `issue_continuation_needed` consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`).
 - Concrete action in this heartbeat:
@@ -13735,3 +13774,15 @@ None.
   - Soar API auth credential owner + Security/Test secret-ref owner restore approved `SMOKE_AUTH_*` bindings for this runtime; then Ops executes exactly one worker-included smoke recheck (or on explicit board gate approval).
 - Evidence:
   `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+
+## 2026-05-28 LUC-405 [Soar][ARB-006][Ops] Protected evidence window and input readiness package (source_scoped_recovery_action)
+- Wake scope consumed from inline payload first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated protected evidence window packet and unblock checklist in
+    `history/releases/luc-405-arb-006-protected-evidence-window-packet-2026-05-28.md`,
+  - synced task artifact continuation checkpoint with explicit owner/action/date in
+    `history/tasks/luc-405-arb-006-ops-protected-evidence-window-input-readiness-package-2026-05-28-task.md`.
+- Final disposition: `blocked`.
+- Unblock owner/action:
+  1. Soar auth credential owner + Security/Test owner deliver approved read-only principal/session for `GET /workers/ready` before `2026-05-30 08:30 Europe/Berlin`.
+  2. Ops Release Lead + QA + Security + release controller execute read-only window `ARB6-WIN-2026-05-30-A` (`2026-05-30 09:00-11:00 Europe/Berlin`) and publish parent unblock status on `LUC-402`.

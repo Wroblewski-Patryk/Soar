@@ -1,0 +1,72 @@
+{
+  "id": "V1-PROTECTED-INPUT-READINESS-71B8D503-2026-05-28",
+  "date": "2026-05-28",
+  "status": "PARTIAL",
+  "releaseStatus": "NO-GO",
+  "scope": "current execution shell only",
+  "secretHandling": "no secret values printed, copied, or stored",
+  "target": {
+    "gitSha": "71b8d503fd6fdfd7378dc67b2fa678799e2430f8",
+    "gitRef": "main",
+    "buildInfoCheckedAt": null
+  },
+  "matchingProtectedInputNamesPresent": 9,
+  "families": [
+    {
+      "family": "LIVEIMPORT_READBACK_*",
+      "state": "missing",
+      "purpose": "Protected LIVEIMPORT-03 production runtime readback",
+      "matchingNamesPresent": 0
+    },
+    {
+      "family": "ROLLBACK_GUARD_*",
+      "state": "missing",
+      "purpose": "Protected production rollback/runtime freshness proof",
+      "matchingNamesPresent": 0
+    },
+    {
+      "family": "PROD_UI_AUDIT_*",
+      "state": "present",
+      "purpose": "Authenticated production dashboard/admin UI clickthrough",
+      "matchingNamesPresent": 9
+    },
+    {
+      "family": "PROD_UI_*",
+      "state": "present",
+      "purpose": "Legacy production UI audit input family",
+      "matchingNamesPresent": 9
+    },
+    {
+      "family": "SOAR_PROD_*",
+      "state": "missing",
+      "purpose": "Production app/operator context",
+      "matchingNamesPresent": 0
+    },
+    {
+      "family": "PROD_DB_CHECK_*",
+      "state": "missing",
+      "purpose": "Production DB restore context",
+      "matchingNamesPresent": 0
+    },
+    {
+      "family": "PRODUCTION_DB_CHECK_*",
+      "state": "missing",
+      "purpose": "Alternate production DB restore context",
+      "matchingNamesPresent": 0
+    },
+    {
+      "family": "RC_*",
+      "state": "missing",
+      "purpose": "Release-candidate gate context",
+      "matchingNamesPresent": 0
+    },
+    {
+      "family": "GATE* / GATE_*",
+      "state": "missing",
+      "purpose": "Gate approver context",
+      "matchingNamesPresent": 0
+    }
+  ],
+  "observedOutput": "MATCHING_PROTECTED_INPUT_NAMES_PRESENT",
+  "nextAction": "Execute the current operator unblock packet only after approved protected inputs and real approver fields are available."
+}
