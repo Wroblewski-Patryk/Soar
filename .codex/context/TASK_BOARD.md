@@ -13807,3 +13807,24 @@ None.
 - Unblock owner/action unchanged:
   1. Soar auth credential owner + Security/Test owner provide approved read-only principal/session authorized for `GET /workers/ready`.
   2. Ops Release Lead + QA + Security + release controller complete missing protected evidence families and execute approved read-only window packet; then publish parent `LUC-402` unblock status.
+
+### 2026-05-28 - LUC-405 Ops heartbeat checkpoint
+- Revalidated no-mutation unblock contract for ARB-006 protected evidence window.
+- Verification:
+  - `corepack pnpm run -s ops:operator-unblock:check` => `PASS` (`NO-GO: yes`).
+  - `corepack pnpm run -s ops:protected-inputs:check -- --today 2026-05-28 --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --git-ref main ...` => `PARTIAL` (missing protected families unchanged).
+- Disposition: `blocked`.
+- Unblock owners/actions unchanged: auth read-only principal for `/workers/ready` + completion of missing protected evidence families before executing `ARB6-WIN-2026-05-30-A`.
+
+### 2026-05-28 - LUC-405 parent unblock comment packet
+- Added parent-ready unblock comment artifact for `LUC-402`:
+  - `history/releases/luc-405-luc-402-parent-unblock-comment-packet-2026-05-28.md`
+- Packet contains executable window details, owners/actions, approval gates, and explicit `blocked` recommendation until dependencies clear.
+- Disposition: `blocked` (dependencies external to Ops lane remain).
+
+## 2026-05-28 LUC-405 [Soar][ARB-006][Ops] Source-scoped recovery (operator-unblock recheck)
+- Wake `source_scoped_recovery_action` consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action: reran `ops:operator-unblock:check` as minimal live contract checkpoint.
+- Result: `PASS` with `NO-GO: yes`; packet/protected-evidence contract remains intact.
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged (auth principal for `GET /workers/ready` + missing protected families + approved read-only window execution before parent `LUC-402` unblock publication).

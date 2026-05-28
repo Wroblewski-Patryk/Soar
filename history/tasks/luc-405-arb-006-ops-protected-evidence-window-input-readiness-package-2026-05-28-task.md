@@ -117,3 +117,35 @@ Produce a current, no-secret readiness package for protected evidence execution,
 - Unblock owner/action unchanged:
   1. Soar auth credential owner + Security/Test owner provide approved read-only principal/session authorized for `GET /workers/ready`.
   2. Ops Release Lead + QA + Security + release controller close missing protected evidence families (`LIVEIMPORT_READBACK`, `ROLLBACK_GUARD`, `SOAR_PROD`, `PROD_DB_CHECK`/`PRODUCTION_DB_CHECK`, `RC`, `GATE`) and execute the approved read-only window packet for parent `LUC-402` unblock publication.
+
+## Continuation Checkpoint (issue_assigned heartbeat, 2026-05-28, ops revalidation)
+- Wake acknowledged first: no pending comments (`0/0`), `fallbackFetchNeeded=false`, issue assigned and still dependency-blocked.
+- Concrete action in this heartbeat:
+  - reran `corepack pnpm run -s ops:operator-unblock:check` -> `PASS` (`NO-GO: yes`, packet/protected evidence contract intact),
+  - reran `corepack pnpm run -s ops:protected-inputs:check -- --today 2026-05-28 --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --git-ref main ...` -> `PARTIAL` (protected families still missing).
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action (unchanged):
+  1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: close missing protected evidence families (`LIVEIMPORT_READBACK`, `ROLLBACK_GUARD`, `SOAR_PROD`, `PROD_DB_CHECK`/`PRODUCTION_DB_CHECK`, `RC`, `GATE`) and execute approved read-only window packet for parent `LUC-402` unblock publication.
+
+## Continuation Checkpoint (finish_successful_run_handoff, 2026-05-28, parent-comment packet)
+- Wake delta acknowledged first: `finish_successful_run_handoff`, no pending comments (`0/0`), `fallbackFetchNeeded=false`.
+- Concrete action in this heartbeat:
+  - published a ready-to-post parent unblock comment packet for `LUC-402` with owner/action/window/approvals and explicit blocked recommendation:
+    - `history/releases/luc-405-luc-402-parent-unblock-comment-packet-2026-05-28.md`
+  - packet is aligned to the existing no-mutation window contract (`ARB6-WIN-2026-05-30-A`) and current verification state (`operator-unblock PASS`, `protected-inputs PARTIAL`).
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar auth credential owner + Security/Test owner: approved read-only principal/session for `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: close missing protected evidence families and approve/execute window.
+
+## Continuation Checkpoint (source_scoped_recovery_action, 2026-05-28, operator-unblock recheck)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); issue remains dependency-blocked.
+- Concrete action in this heartbeat:
+  - reran `corepack pnpm run -s ops:operator-unblock:check` as minimal live checkpoint,
+  - result: `PASS` with `Status NO-GO: yes` and `Protected input evidence matches packet: yes`,
+  - verified parent-comment packet remains aligned with current blocked/no-mutation contract.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: close missing protected evidence families (`LIVEIMPORT_READBACK`, `ROLLBACK_GUARD`, `SOAR_PROD`, `PROD_DB_CHECK`/`PRODUCTION_DB_CHECK`, `RC`, `GATE`) and execute approved read-only window packet for parent `LUC-402` unblock publication.

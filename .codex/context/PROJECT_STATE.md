@@ -12508,3 +12508,16 @@
 - `LUC-405 [Soar][ARB-006][Ops]` continuation heartbeat (2026-05-28, no new comments) completed an anti-drift recheck and remains `blocked/NO-GO`.
   Window packet and blocker contract are still consistent (`ARB6-WIN-2026-05-30-A`, protected `GET /workers/ready` auth boundary, and missing protected evidence families).
   Unblock owner/action unchanged.
+
+## 2026-05-28 - LUC-405 protected evidence window revalidation (Ops)
+- `ops:operator-unblock:check`: PASS, packet stays fail-closed and no-mutation.
+- `ops:protected-inputs:check` for SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`: PARTIAL; protected families still missing (`LIVEIMPORT_READBACK`, `ROLLBACK_GUARD`, `SOAR_PROD`, `PROD_DB_CHECK`/`PRODUCTION_DB_CHECK`, `RC`, `GATE`).
+- Project release posture for ARB-006 remains `NO-GO / BLOCKED` pending named external owners.
+
+## 2026-05-28 - LUC-405 parent unblock publication packet
+- Published `history/releases/luc-405-luc-402-parent-unblock-comment-packet-2026-05-28.md` for direct parent (`LUC-402`) posting.
+- Packet encodes: window `ARB6-WIN-2026-05-30-A`, expected SHA, no-mutation gate, named owners/actions, and required approvals.
+- ARB-006 release posture remains `BLOCKED/NO-GO` pending auth principal and missing protected evidence families.
+
+- `LUC-405 [Soar][ARB-006][Ops]` source-scoped recovery checkpoint (2026-05-28) reran `ops:operator-unblock:check` and confirmed `PASS` with `NO-GO: yes`.
+  Contract remains fail-closed `blocked` pending approved read-only principal/session for `GET /workers/ready` and closure of missing protected evidence families.
