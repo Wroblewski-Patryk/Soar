@@ -1,3 +1,13 @@
+- `LUC-732 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-29 and is `done`.
+  Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action:
+  - captured local dirty-state evidence (`git status --short --branch`, `git diff --name-only`, `git diff --cached --name-only`),
+  - classified dirty scope as non-runtime (`state/control=3`, `task-evidence=1`, `runtime/product code=0`),
+  - recorded explicit closure disposition for this sidecar lane.
+  Residual risk unchanged: parent `LUC-402` protected delivery remains dependency-blocked outside this local source-control lane.
+  Evidence:
+  `history/tasks/luc-732-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+
 - `LUC-709 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-29 and is `done`.
   Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action:
@@ -13116,6 +13126,12 @@
 - `LUC-696 issue_continuation_needed (2026-05-29)` reconciled to `done` with read-only continuity recheck. Baseline metrics and blocker topology remained stable (`generated_at=2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`, `disconnected=0`, inferred gaps `tests=2056`, `docs=798`; blocker path `LUC-47` + protected proof/input owners). Evidence: `history/tasks/luc-696-known-state-evidence-architecture-baseline-2026-05-29-task.md`.
 
 - `LUC-696 source_scoped_recovery_action (2026-05-29)` reconciled to `done` with read-only continuity recheck. Baseline metrics and blocker topology remained stable (`generated_at=2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`, `disconnected=0`, inferred gaps `tests=2056`, `docs=798`; blocker path `LUC-47` + protected proof/input owners). Evidence: `history/tasks/luc-696-known-state-evidence-architecture-baseline-2026-05-29-task.md`.
+
+- `LUC-696 issue_reopened_via_comment (2026-05-29)` is now fail-closed `blocked` as a process/recovery-path lane. Board comment `59c6a2d0-f4be-4fdd-8698-b0f2ecae556b` classified this issue as recovery-path attention with active recovery action `af4afbfa-c8bd-4254-8769-1475c993ce6a` (`stranded_assigned_issue`, active). Concrete action in this heartbeat was state reconciliation only (no runtime mutation). Unblock owner/action: Portfolio Director must restore a live execution path or record explicit manual resolution and close the active recovery action. Evidence: `history/tasks/luc-696-known-state-evidence-architecture-baseline-2026-05-29-task.md`.
+
+- `LUC-696 issue_reopened_via_comment (2026-05-29, superseding reconciliation)` remains fail-closed `blocked`. Latest board comment `78264df5-2c88-4f0a-b6a1-5a144b62a896` reports issue drift to `in_progress` without live execution path (`executionRunId=null`) and without active recovery action attached. Concrete action in this heartbeat was liveness-state correction only (no runtime mutation): keep this lane blocked until owner provides real liveness or explicit manual closure. Unblock owner/action: Portfolio Director (`5f817ed2-b988-4c14-b726-0e9645ee3a4f`) must start a real live run or post manual-resolution closure. Evidence: `history/tasks/luc-696-known-state-evidence-architecture-baseline-2026-05-29-task.md`.
+
+- `LUC-696 finish_successful_run_handoff (2026-05-29, liveness guard)` remains fail-closed `blocked`. Wake carried no new comment delta, but continuation state still drifted to `in_progress` without a proven live execution path for this lane. Concrete action in this heartbeat was blocked-triage reapplication only (no runtime mutation). Unblock owner/action remains unchanged: Portfolio Director (`5f817ed2-b988-4c14-b726-0e9645ee3a4f`) must start a real live run or post manual-resolution closure. Evidence: `history/tasks/luc-696-known-state-evidence-architecture-baseline-2026-05-29-task.md`.
 
 - `LUC-700 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-29 and is `done`.
   Wake `issue_assigned` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).

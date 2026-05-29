@@ -5,7 +5,7 @@
 - Title: [Soar] [Known State] Evidence collection and architecture baseline
 - Task Type: research
 - Current Stage: verification
-- Status: DONE
+- Status: BLOCKED
 - Owner: Soar Project Manager
 - Priority: P0
 - Mission ID: SOAR-FULL-READINESS-COORDINATION-2026-05-23
@@ -75,3 +75,24 @@ Persist a dated architecture baseline snapshot and synchronize issue-scoped know
 - Recheck snapshot: `generated_at=2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`, `disconnected=0`, inferred gaps `tests=2056`, `docs=798`.
 - V1 posture unchanged: `blocked/NO-GO` on protected-evidence owner path (`LUC-47` + protected proof/input owners).
 - Disposition for this continuation: `done`.
+
+## Handoff Reconciliation (issue_reopened_via_comment, 2026-05-29)
+- Wake comment consumed first: `59c6a2d0-f4be-4fdd-8698-b0f2ecae556b` (`fallbackFetchNeeded=false`).
+- Recovery-path triage from board accepted as authoritative for this lane: `LUC-696` is currently a `process/recovery-path blocker`, not a feature/engineering blocker.
+- Concrete action: synchronized task/board/project/mission state to fail-closed `blocked` until recovery action `af4afbfa-c8bd-4254-8769-1475c993ce6a` is explicitly resolved.
+- Required unblock owner/action: Portfolio Director must either restore a live execution path for `LUC-696` or record explicit manual resolution and close the active recovery action.
+- Disposition for this continuation: `blocked`.
+
+## Handoff Reconciliation (issue_reopened_via_comment, 2026-05-29, superseding)
+- Wake comment consumed first: `78264df5-2c88-4f0a-b6a1-5a144b62a896` (`fallbackFetchNeeded=false`).
+- Board state reconciliation accepted as latest truth: issue was moved to `in_progress` without live execution path (`executionRunId=null`) and without active recovery action attached.
+- Concrete action: synchronized fail-closed status to keep `LUC-696` in `blocked` under blocked-triage policy until real liveness exists.
+- Required unblock owner/action (unchanged owner, updated condition): Portfolio Director must either start a real live run for this issue or post manual-resolution closure.
+- Disposition for this continuation: `blocked`.
+
+## Handoff Reconciliation (finish_successful_run_handoff, 2026-05-29, liveness guard)
+- Wake delta consumed with `fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`.
+- Read-only liveness recheck: continuation payload still presents issue status drift to `in_progress` while this lane has no proven live execution path.
+- Concrete action: re-applied fail-closed blocked-triage state for `LUC-696` (no runtime mutation).
+- Required unblock owner/action: Portfolio Director must start a real live run for this issue or post manual-resolution closure.
+- Disposition for this continuation: `blocked`.

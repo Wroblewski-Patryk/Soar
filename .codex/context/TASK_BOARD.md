@@ -1,3 +1,17 @@
+## 2026-05-29 LUC-732 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - captured local dirty-state evidence (`git status --short --branch`, `git diff --name-only`, `git diff --cached --name-only`),
+  - classified dirty set as non-runtime (`state/control=3`, `task-evidence=1`, `runtime/product code=0`),
+  - verified no staged scope before closure updates.
+- Closure disposition:
+  - commit: `completed` (local)
+  - push: `not needed`
+  - deploy impact: `none`
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-732-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`
+
 ## 2026-05-29 LUC-709 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402
 - Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
@@ -14840,6 +14854,33 @@ None.
 - Recheck result: `generated_at=2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`, `disconnected=0`, inferred gaps `tests=2056`, `docs=798`.
 - V1 posture unchanged: `blocked/NO-GO` on protected-evidence owner path (`LUC-47` + protected proof/input owners).
 - Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-696-known-state-evidence-architecture-baseline-2026-05-29-task.md`
+
+## 2026-05-29 LUC-696 [Soar] issue_reopened_via_comment recovery-path triage sync
+- Wake comment consumed first: `59c6a2d0-f4be-4fdd-8698-b0f2ecae556b` (`fallbackFetchNeeded=false`).
+- Board triage accepted: `LUC-696` is a `process/recovery-path blocker` with active recovery action `af4afbfa-c8bd-4254-8769-1475c993ce6a` (`kind=stranded_assigned_issue`, `status=active`).
+- Concrete action: synchronized fail-closed status for this lane and halted further `done` churn until recovery action resolution.
+- Required unblock owner/action: Portfolio Director must either restore a live execution path for this issue or record explicit manual resolution and close the active recovery action.
+- Final disposition: `blocked`.
+- Evidence:
+  - `history/tasks/luc-696-known-state-evidence-architecture-baseline-2026-05-29-task.md`
+
+## 2026-05-29 LUC-696 [Soar] issue_reopened_via_comment liveness-reconciliation sync
+- Wake comment consumed first: `78264df5-2c88-4f0a-b6a1-5a144b62a896` (`fallbackFetchNeeded=false`, comments `1/1`).
+- Superseding board truth: issue was moved to `in_progress` without live execution path (`executionRunId=null`) and with no active recovery action attached.
+- Concrete action: enforced blocked-triage fail-closed posture and synchronized lane status to remain `blocked` until real liveness exists.
+- Required unblock owner/action: Portfolio Director (`5f817ed2-b988-4c14-b726-0e9645ee3a4f`) must either start a real live run or post manual-resolution closure.
+- Final disposition: `blocked`.
+- Evidence:
+  - `history/tasks/luc-696-known-state-evidence-architecture-baseline-2026-05-29-task.md`
+
+## 2026-05-29 LUC-696 [Soar] finish_successful_run_handoff liveness-guard sync
+- Wake `finish_successful_run_handoff` consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Continuation summary still drifts to `in_progress` without proven live execution path for this lane.
+- Concrete action: re-applied fail-closed blocked-triage status for `LUC-696`; no runtime mutation.
+- Required unblock owner/action: Portfolio Director must start a real live run or post manual-resolution closure.
+- Final disposition: `blocked`.
 - Evidence:
   - `history/tasks/luc-696-known-state-evidence-architecture-baseline-2026-05-29-task.md`
 
