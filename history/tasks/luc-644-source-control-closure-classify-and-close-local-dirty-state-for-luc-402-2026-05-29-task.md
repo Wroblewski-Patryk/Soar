@@ -85,3 +85,15 @@ Reclassify current dirty state, confirm whether this lane can be closed without 
   - commit: `already closed` via `2bc01123`
   - push: `not performed`
   - deploy impact: `none`
+
+## Continuation Heartbeat 2026-05-29 (finish_successful_run_handoff)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`).
+- Concrete revalidation:
+  - `git status --short` -> clean,
+  - `git log --oneline -n 3` -> confirms closure lineage (`2bc01123`, `7d21146f`),
+  - `git show --name-only -n 1 7d21146f` -> continuation evidence scope only (`TASK_BOARD`, `PROJECT_STATE`, `LUC-644 task artifact`).
+- Final disposition:
+  - status: `done`
+  - commit: `already closed` (`2bc01123`, `7d21146f`)
+  - push: `not performed`
+  - deploy impact: `none`

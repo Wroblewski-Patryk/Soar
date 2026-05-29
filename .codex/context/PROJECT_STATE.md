@@ -1,3 +1,16 @@
+- `LUC-644 [Soar][Source Control Closure]` continuation heartbeat (`finish_successful_run_handoff`) executed on 2026-05-29 and remains `done`.
+  Inline wake payload consumed first (`fallbackFetchNeeded=false`, comments `0/0`).
+  Concrete action:
+  - revalidated clean local worktree (`git status --short`),
+  - confirmed closure lineage in local git history (`git log --oneline -n 3`),
+  - verified latest continuation commit scope (`git show --name-only -n 1 7d21146f`) is evidence/state-only.
+  Closure disposition unchanged:
+  - commit closure already recorded (`2bc01123`, `7d21146f`)
+  - push: `not performed`
+  - deploy impact: `none`
+  Evidence:
+  `history/tasks/luc-644-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+
 - `LUC-644 [Soar][Source Control Closure]` continuation heartbeat (`issue_continuation_needed`) executed on 2026-05-29 and remains `done`.
   Inline wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`).
   Concrete action:

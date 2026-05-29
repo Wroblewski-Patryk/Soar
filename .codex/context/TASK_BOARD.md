@@ -1,3 +1,13 @@
+## 2026-05-29 LUC-644 [Soar][Source Control Closure] finish_successful_run_handoff post-closure sync
+- Wake `finish_successful_run_handoff` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`).
+- Concrete action:
+  - reran local closure checkpoint (`git status --short`) -> clean,
+  - revalidated closure lineage (`git log --oneline -n 3`),
+  - verified continuation commit scope (`git show --name-only -n 1 7d21146f`) -> evidence/state-only files.
+- Final disposition: `done` (closure already committed as `2bc01123` + `7d21146f`; no push/deploy).
+- Evidence:
+  - `history/tasks/luc-644-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`
+
 ## 2026-05-29 LUC-644 [Soar][Source Control Closure] issue_continuation_needed post-closure verification
 - Wake `issue_continuation_needed` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`).
 - Concrete action:
