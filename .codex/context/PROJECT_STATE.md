@@ -1,3 +1,21 @@
+- `LUC-668 [Soar][Source Control Closure]` continuation wake (`issue_commented`) executed on 2026-05-29 and is `done`.
+  Wake comment `ef3ba029-add4-487b-8c0c-739a548733d1` was acknowledged first and constrained the lane to local source-control closure only.
+  Concrete action:
+  - refreshed dirty-state evidence and reclassified current dirty set,
+  - confirmed docs/history/evidence/context-only scope with zero runtime/product code impact,
+  - ran targeted redaction scan over dirty files (no secret values found),
+  - completed one local source-control closure commit for the full docs/evidence/state dirty set.
+  Residual risk unchanged: parent `LUC-402` protected delivery remains dependency-blocked outside this sidecar lane.
+
+- `LUC-668 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-29 and is `done`.
+  Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action:
+  - captured local dirty-state evidence (`git status --short`, `git diff --name-only`, `git diff --cached --name-only`),
+  - classified current dirty set as non-runtime (`state/control=2`, `task-evidence=1`, `release-artifact-evidence=2`, `runtime/product code=0`),
+  - published closure disposition (`commit=not committed`, `push=not needed`, `deploy impact=none`).
+  Evidence:
+  `history/tasks/luc-668-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+
 - `LUC-660 [Soar][Source Control Closure]` continuation heartbeat (`issue_commented`) executed on 2026-05-29 and is `done`.
   Wake comment `e32e1895-c2f3-49cd-b823-305b53087e50` was acknowledged first from inline payload (`fallbackFetchNeeded=false`).
   Concrete action:
@@ -13032,3 +13050,12 @@
 
 - `LUC-386` continuation reconciliation (2026-05-29): validated local dirty scope is docs/state-only (`.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`). No runtime/product-code mutation is present in this lane; continuation-summary touched entries `server/workers/frontend` and `.github/workflows/ci.yml` are not actionable for current docs-memory scope. Status remains `done` pending explicit Product/CTO mobile runtime activation.
 
+
+- `LUC-405 [Soar][ARB-006][Ops]` wake `issue_blockers_resolved` (2026-05-29) was validated with live evidence and remains `blocked`.
+  `ops:protected-inputs:check` for `2026-05-29` stayed `PARTIAL` (`matching names=9`; required families still missing), while `ops:operator-unblock:check` stayed `PASS` with `NO-GO: yes`.
+  Conclusion: unblock claim is not yet confirmed; owner/action contract remains unchanged before `ARB6-WIN-2026-05-30-A`.
+
+- `LUC-405 [Soar][ARB-006][Ops]` continuation wake on 2026-05-29 (`issue_continuation_needed`) was handled via artifact-based anti-churn verification and remains `blocked`.
+  Latest readiness artifacts still report `PARTIAL` / `NO-GO` with missing required protected families, so unblock contract remains unchanged.
+
+- `LUC-405 [Soar][ARB-006][Ops]` source-scoped recovery checkpoint on 2026-05-29 validated latest artifact presence (`PARTIAL`, `NO-GO`, matching names `9`) with unchanged missing protected families; anti-churn no-rerun state-sync applied and disposition stays `blocked`.

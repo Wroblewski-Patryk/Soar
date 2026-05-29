@@ -1,3 +1,41 @@
+## 2026-05-29 LUC-668 continuation [source-control closure, issue_commented]
+- Wake comment acknowledged first: `ef3ba029-add4-487b-8c0c-739a548733d1`.
+- Comment impact: lane remains local-only source-control closure for `LUC-402`; protected delivery remains out-of-scope and blocked.
+- Concrete action:
+  - refreshed dirty-state evidence (`git status --short`, `git diff --name-only`, `git diff --cached --name-only`),
+  - confirmed dirty set is docs/history/evidence/context only,
+  - ran targeted redaction scan on dirty files and detected no secret values,
+  - closed local dirty state with one source-control evidence commit per closure contract.
+- Updated classification:
+  - `state/control=2`
+  - `task-evidence=2`
+  - `release-artifact-evidence=2`
+  - `runtime/product code=0`
+- Closure disposition:
+  - commit: `completed` (local)
+  - push: `not needed`
+  - deploy impact: `none`
+- Final disposition: `done`.
+
+## 2026-05-29 LUC-668 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action:
+  - captured local dirty-state evidence (`git status --short`, `git diff --name-only`, `git diff --cached --name-only`),
+  - classified all dirty entries by lane and runtime impact,
+  - published closure disposition for this sidecar lane without widening protected-delivery scope.
+- Classification:
+  - `state/control=2`
+  - `task-evidence=1`
+  - `release-artifact-evidence=2`
+  - `runtime/product code=0`
+- Closure disposition:
+  - commit: `not committed`
+  - push: `not needed`
+  - deploy impact: `none`
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-668-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`
+
 ## 2026-05-29 LUC-660 continuation [source-control closure, issue_commented]
 - Wake acknowledged first from inline payload (`fallbackFetchNeeded=false`, pending comments `1/1`, latest comment id `e32e1895-c2f3-49cd-b823-305b53087e50`).
 - Action in this heartbeat:
@@ -14690,3 +14728,24 @@ None.
 - Conclusion: continuation summary touched-file list is stale/not attributable to current LUC-386 write scope.
 - Final disposition: `done` (no further executable work until mobile runtime activation gate is explicitly opened).
 
+
+## 2026-05-29 LUC-405 [Soar][ARB-006][Ops] issue_blockers_resolved verification
+- Wake reason `issue_blockers_resolved` was actively verified via live rechecks.
+- Concrete action:
+  - `ops:protected-inputs:check` for `2026-05-29` / SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` => `PARTIAL` (`matching names=9`),
+  - `ops:operator-unblock:check` => `PASS` (`NO-GO: yes`, packet integrity intact).
+- Outcome: blocker-resolved claim not evidenced in current runtime context; required protected families remain missing (`LIVEIMPORT_READBACK`, `ROLLBACK_GUARD`, `SOAR_PROD`, `PROD_DB_CHECK`/`PRODUCTION_DB_CHECK`, `RC`, `GATE`).
+- Final disposition: `blocked`.
+
+## 2026-05-29 LUC-405 [Soar][ARB-006][Ops] issue_continuation_needed (artifact-based anti-churn verification)
+- No comment delta and no fallback fetch requirement.
+- Concrete action: verified latest 2026-05-29 protected-input readiness JSON/Markdown artifacts.
+- Result unchanged: `PARTIAL` / `NO-GO`, matching names `9`, required families still missing (`LIVEIMPORT_READBACK`, `ROLLBACK_GUARD`, `SOAR_PROD`, `PROD_DB_CHECK`/`PRODUCTION_DB_CHECK`, `RC`, `GATE`).
+- Final disposition: `blocked` (no new unblock signal).
+
+## 2026-05-29 LUC-405 [Soar][ARB-006][Ops] Source-scoped recovery (artifact-presence state-sync)
+- Wake `source_scoped_recovery_action` consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action: verified presence/consistency of latest readiness artifacts from `2026-05-29` and applied no-rerun anti-churn state-sync.
+- Current contract unchanged: `PARTIAL` + `NO-GO`, unchanged missing protected families, fail-closed `blocked`.
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged.

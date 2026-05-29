@@ -339,3 +339,43 @@ Produce a current, no-secret readiness package for protected evidence execution,
 - First-class unblock owner/action unchanged:
   1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for protected `GET /workers/ready`.
   2. Ops Release Lead + QA + Security + release controller: restore required protected-input families in active runner context and produce two consecutive non-regressing same-context readiness runs before executing `ARB6-WIN-2026-05-30-A`.
+
+## Continuation Checkpoint (issue_blockers_resolved, 2026-05-29, blocker-claim verification recheck)
+- Wake delta acknowledged: `issue_blockers_resolved` with no comment delta (`fallbackFetchNeeded=false`, pending comments `0/0`).
+- Concrete action in this heartbeat:
+  - reran protected readiness sweep for current date:
+    - `corepack pnpm run -s ops:protected-inputs:check -- --today 2026-05-29 --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8 --git-ref main --json-output history/artifacts/v1-protected-input-readiness-71b8d503-2026-05-29.json --markdown-output history/evidence/v1-protected-input-readiness-71b8d503-2026-05-29.md` => `PARTIAL` (`matching names: 9`),
+  - reran packet integrity guard:
+    - `corepack pnpm run -s ops:operator-unblock:check` => `PASS` (`NO-GO: yes`, packet/protected-input contract intact).
+- Verification result:
+  - blocker-resolved claim not confirmed in runtime evidence,
+  - required families still missing: `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `SOAR_PROD_*`, `PROD_DB_CHECK_*`, `PRODUCTION_DB_CHECK_*`, `RC_*`, `GATE* / GATE_*`.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for protected `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: restore required protected-input families and produce two consecutive non-regressing same-context readiness runs before executing `ARB6-WIN-2026-05-30-A`.
+
+## Continuation Checkpoint (issue_continuation_needed, 2026-05-29, no-new-signal artifact verification)
+- Wake delta acknowledged: `issue_continuation_needed` (`fallbackFetchNeeded=false`, pending comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - validated latest dated readiness artifacts instead of rerunning duplicate checks:
+    - `history/artifacts/v1-protected-input-readiness-71b8d503-2026-05-29.json`
+    - `history/evidence/v1-protected-input-readiness-71b8d503-2026-05-29.md`
+  - verification confirms unchanged blocker state: `PARTIAL`, `releaseStatus=NO-GO`, matching names `9`, with required families still missing (`LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `SOAR_PROD_*`, `PROD_DB_CHECK_*`, `PRODUCTION_DB_CHECK_*`, `RC_*`, `GATE* / GATE_*`).
+- Decision:
+  - no new unblock signal detected, so continuation remains anti-churn and fail-closed.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for protected `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: restore required protected-input families and produce two consecutive non-regressing same-context readiness runs before executing `ARB6-WIN-2026-05-30-A`.
+
+## Continuation Checkpoint (source_scoped_recovery_action, 2026-05-29, artifact-presence state-sync)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - verified latest 2026-05-29 readiness artifacts are present and consistent with parent blocker narrative (`PARTIAL`, `NO-GO`, matching protected names `9`),
+  - confirmed missing families remain unchanged (`LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `SOAR_PROD_*`, `PROD_DB_CHECK_*`, `PRODUCTION_DB_CHECK_*`, `RC_*`, `GATE* / GATE_*`),
+  - applied anti-churn state-sync only (no rerun) due to no new unblock signal.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar auth credential owner + Security/Test owner: provide approved read-only principal/session authorized for `GET /workers/ready`.
+  2. Ops Release Lead + QA + Security + release controller: restore required protected-input families and produce two consecutive non-regressing same-context readiness runs before executing `ARB6-WIN-2026-05-30-A`.
