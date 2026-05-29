@@ -1,3 +1,78 @@
+- `LUC-644 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-29 and is `done`.
+  Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action:
+  - reran dirty-state verification (`git status --short`, `git diff --name-only`),
+  - confirmed current dirty set is state/control + task-evidence only (`state/control=4`, `task-evidence=2`, `runtime/product code=0`),
+  - published source-control closure disposition (`commit=not committed`, `push=not needed`, `deploy impact=none`).
+  Evidence:
+  `history/tasks/luc-644-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+
+- `LUC-636 [Soar][Source Control Closure]` continuation heartbeat (`finish_successful_run_handoff`, post-issue-assigned reconciliation) executed on 2026-05-29 and is `done`.
+  Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action: reran local dirty-state verification and reconciled continuation-summary touched-routes drift against current local scope.
+  Revalidation result:
+  - dirty classification unchanged (`state/control=4`, `task-evidence=2`, `runtime/product code=0`),
+  - no local dirty/runtime entries for `server/workers/frontend`, `.github/workflows/ci.yml`, `scripts/build-architecture-awareness-index.mjs`, `scripts/check-two-project-readiness.mjs`, `scripts/run-live-run-janitor.mjs`,
+  - closure disposition remains `commit=not committed`, `push=not needed`, `deploy impact=none`.
+  Evidence:
+  `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+
+- `LUC-636 [Soar][Source Control Closure]` continuation heartbeat (`issue_assigned`, `softwarehouse-local-repair-lane-starter:v1`) executed on 2026-05-29 and is `done`.
+  Wake comment `21cae26c-1515-4ea8-85f7-686eb6fffb2b` was acknowledged first from inline payload (`fallbackFetchNeeded=false`).
+  Comment impact: keep lane restricted to local source-control closure while `LUC-402` protected delivery remains fail-closed.
+  Revalidation result:
+  - dirty classification unchanged (`state/control=4`, `task-evidence=2`, `runtime/product code=0`),
+  - closure disposition remains `commit=not committed`, `push=not needed`, `deploy impact=none`.
+  Evidence:
+  `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+
+- `LUC-636 [Soar][Source Control Closure]` continuation heartbeat (`finish_successful_run_handoff`) executed on 2026-05-29 and remains `done`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action: reran local dirty-state verification and reconciled continuation-summary touched-scope drift for this issue.
+  Scope reconciliation:
+  - no `server/workers/frontend` change in `LUC-636` lane,
+  - no `.github/workflows/ci.yml` change in `LUC-636` lane,
+  - lane remains state/evidence-only (`state/control=4`, `task-evidence=2`, `runtime/product code=0`).
+  Closure disposition remains `commit=not committed`, `push=not needed`, `deploy impact=none`.
+  Evidence:
+  `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+
+- `LUC-636 [Soar][Source Control Closure]` continuation heartbeat (`issue_commented`) executed on 2026-05-29 and is `done`.
+  Wake comment `d0f0eb04-06bd-4fd0-bf36-1a8f3fcb7bc4` was acknowledged first from inline payload (`fallbackFetchNeeded=false`).
+  Comment impact: keep the lane limited to local dirty-state closure while `LUC-402` remains dependency-blocked on protected gates.
+  Revalidation result:
+  - dirty classification remains non-runtime (`state/control=4`, `task-evidence=2`, `runtime/product code=0`),
+  - closure disposition stays `commit=not committed`, `push=not needed`, `deploy impact=none`.
+  Evidence:
+  `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+
+- `LUC-636 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-29 and is `done`.
+  Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action:
+  - classified current local dirty state for `LUC-402` sidecar continuity,
+  - inspected dirty tracked diffs and confirmed drift is docs/state/task-evidence only (`state/control=4`, `task-evidence=1`, `runtime/product code=0`),
+  - published explicit closure disposition (`commit=not committed`, `push=not needed`, `deploy impact=none`).
+  Residual risk:
+  1. Existing dirty state remains and should be intentionally closed by owner of `LUC-633` artifacts before release mutation work.
+  2. Parent protected-delivery flow for `LUC-402` remains blocked on protected-input owners and child execution issuance.
+  Evidence:
+  `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+
+- `LUC-633 [Soar][Gate] source_scoped_recovery_action reconciliation` heartbeat executed on 2026-05-29 and is `done`.
+  Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`).
+  Reconciliation result: canonical decision and gate artifacts were already consistent (`DEC-ARB-002`, `ARB-002=done_gated`, explicit reopen trigger), so no additional mutation was required.
+
+- `LUC-633 [Soar][Gate] Decide mobile lane activation trigger for ARB-002 doc registry work` heartbeat executed on 2026-05-29 and is `done`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  PM coordination published a durable decision gate for ARB-002 reopen routing:
+  - added `DEC-ARB-002` in `.agents/state/decision-register.md`,
+  - updated `history/plans/luc-583-architecture-repair-backlog-control-map-2026-05-29.md` so `ARB-002` is `done_gated` with `decision_gate`.
+  Reopen trigger is explicit and fail-closed; both conditions are required:
+  1. Product/CTO-approved mobile issue enters `in_progress` with Frontend/Mobile owner.
+  2. The issue includes non-scaffold runtime scope in `apps/mobile` (not docs/index/scaffold-only edits).
+  Evidence:
+  `history/tasks/luc-633-mobile-lane-activation-trigger-2026-05-29-task.md`.
+
 - `LUC-583 [Soar][Architecture Planning]` continuation heartbeat (`finish_successful_run_handoff`) executed on 2026-05-29 and remains `done`.
   Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action: revalidated artifact/state linkage and reconciled continuation-summary touched-scope drift; `LUC-583` scope is planning/state only and does not include `server/workers/frontend` or `.github/workflows/ci.yml`.
@@ -12816,3 +12891,40 @@
 - Decision outcome: Soar V1 keeps assistant runtime hot-path orchestration deactivated for `BACKTEST/PAPER/LIVE`; foundation + dry-run remains the active scope.
 - Gate routing: `in_review` with CTO as named reviewer before any AI Runtime/Security activation implementation child issues.
 - Runtime/deploy mutation: none.
+
+- `LUC-636 [Soar][Source Control Closure]` source_scoped_recovery_action sync (`2026-05-29`) executed and kept `done`.
+  Wake payload had no new comment/unblock delta (`fallbackFetchNeeded=false`, comments `0/0`), and this heartbeat executed concrete local reclassification.
+  Classification remains `state/control=4`, `task-evidence=2`, `runtime/product code=0`; commit/push/deploy stays `not committed` / `not needed` / `none`.
+  Evidence:
+  `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+
+- `LUC-636 [Soar][Source Control Closure]` issue_reopened_via_comment resolution (`2026-05-29`) executed and kept `done`.
+  Wake comment `a448a445-0f2c-4683-9386-6fe5011e8d77` explicitly cleared board-level missing-disposition stall for local source-control closure (`project_source_control_closure_needed`) while protected delivery remained fail-closed.
+  Concrete local reclassification confirmed `current` dirty set is state/control + task-evidence only, `stale=none`, `out-of-scope runtime/product code=none`.
+  Numeric summary remained `state/control=4`, `task-evidence=2`, `runtime/product code=0`; commit/push/deploy stayed `not committed` / `not needed` / `none`.
+  Evidence:
+  `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+
+- `LUC-636 [Soar][Source Control Closure]` finish_successful_run_handoff post-reopen sync (`2026-05-29`) executed and kept `done`.
+  Wake had no new comment delta (`0/0`) and triggered concrete local recheck with touched-routes reconciliation.
+  Confirmed no `server/workers/frontend` and no `.github/workflows/ci.yml` mutation in this lane; dirty scope stayed state/control + task-evidence only.
+  Classification remained `current` only (`state/control=4`, `task-evidence=2`), with `stale=none` and `out-of-scope runtime/product code=none`; commit/push/deploy stayed `not committed` / `not needed` / `none`.
+  Evidence:
+  `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+
+## 2026-05-29 LUC-636 [Soar][Source Control Closure] source_scoped_recovery_action disposition-closure sync
+- Wake `source_scoped_recovery_action` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action:
+  - reran local dirty-state verification (`git status --short`, `git diff --name-only`),
+  - synced closure evidence for final disposition on this recovery wake.
+- Classification remains:
+  - `state/control=4`
+  - `task-evidence=2`
+  - `runtime/product code=0`
+- Closure disposition:
+  - commit: `not committed`
+  - push: `not needed`
+  - deploy impact: `none`
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`

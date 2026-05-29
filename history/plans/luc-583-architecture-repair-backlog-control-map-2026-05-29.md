@@ -13,7 +13,7 @@ Refresh executable architecture-repair backlog ownership and blocker truth for c
 | Backlog ID | Execution lane | Status | Owner | Next action | Blocker class |
 | --- | --- | --- | --- | --- | --- |
 | ARB-001 | `LUC-385` | blocked_on_decision | Product + CTO | Publish explicit activation-scope decision for assistant hot-path rollout before reopening implementation. | decision_gate |
-| ARB-002 | `LUC-386` | done | PM + Docs Memory | Keep as closed baseline; reopen only on mobile scope expansion. | none |
+| ARB-002 | `LUC-386` | done_gated | PM + Docs Memory | Keep as closed baseline. Reopen only when `DEC-ARB-002` trigger is met: Product/CTO-approved mobile issue is `in_progress` and includes non-scaffold runtime scope in `apps/mobile`. | decision_gate |
 | ARB-003 | `LUC-387` | done | PM + QA/Test | Keep module confidence + requirement parity checks in future edits. | none |
 | ARB-004 | `LUC-388` | done | PM + UX | Keep scorecard rows explicit and dated (no template placeholders). | none |
 | ARB-005 | `LUC-389` | done | PM + Delivery | Keep CI validator/checklist enforcement active in reruns. | none |
