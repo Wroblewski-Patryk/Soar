@@ -1,3 +1,20 @@
+- `LUC-644 [Soar][Source Control Closure]` continuation heartbeat (`issue_continuation_needed`) executed on 2026-05-29 and remains `done`.
+  Inline wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`).
+  Concrete action:
+  - revalidated local post-closure source-control state (`git status --short`, `git diff --name-only`) -> clean,
+  - reconciled continuation-summary touched-routes drift with current worktree,
+  - rechecked closure commit scope via `git show --name-only -n 1 2bc01123` (docs/state/evidence only).
+  Scope reconciliation:
+  - no local dirty/runtime entries for `server/workers/frontend`, `.github/workflows/ci.yml`,
+    `scripts/build-architecture-awareness-index.mjs`, `scripts/check-two-project-readiness.mjs`,
+    `scripts/run-live-run-janitor.mjs`.
+  Closure disposition remains:
+  - commit: `already closed` (`2bc01123`)
+  - push: `not performed`
+  - deploy impact: `none`
+  Evidence:
+  `history/tasks/luc-644-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+
 - `LUC-644 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-29 and is `done`.
   Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action:

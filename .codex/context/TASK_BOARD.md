@@ -1,3 +1,22 @@
+## 2026-05-29 LUC-644 [Soar][Source Control Closure] issue_continuation_needed post-closure verification
+- Wake `issue_continuation_needed` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`).
+- Concrete action:
+  - revalidated post-closure local source-control state for this lane,
+  - reconciled continuation-summary touched-routes drift against current local worktree.
+- Verification:
+  - `git status --short` -> clean,
+  - `git diff --name-only` -> clean,
+  - `git show --name-only -n 1 2bc01123` -> docs/state/evidence-only closure commit.
+- Scope reconciliation:
+  - no dirty/runtime entry for `server/workers/frontend`,
+  - no dirty/runtime entry for `.github/workflows/ci.yml`,
+  - no dirty/runtime entry for `scripts/build-architecture-awareness-index.mjs`,
+  - no dirty/runtime entry for `scripts/check-two-project-readiness.mjs`,
+  - no dirty/runtime entry for `scripts/run-live-run-janitor.mjs`.
+- Final disposition: `done` (closure already committed as `2bc01123`; no push/deploy).
+- Evidence:
+  - `history/tasks/luc-644-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`
+
 ## 2026-05-29 LUC-644 [Soar][Source Control Closure] issue_assigned classification closure
 - Wake `issue_assigned` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action:

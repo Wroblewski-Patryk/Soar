@@ -67,3 +67,21 @@ Reclassify current dirty state, confirm whether this lane can be closed without 
 - Next owner:
   1. Delivery/PM to decide and execute coherent docs/state commit grouping.
   2. LUC-402 unblock owners (Delivery + Security/Test + Ops) for protected-gate continuation.
+
+## Continuation Heartbeat 2026-05-29 (issue_continuation_needed)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`).
+- Concrete revalidation:
+  - `git status --short` -> clean worktree,
+  - `git diff --name-only` -> no remaining dirty files,
+  - `git show --name-only -n 1 2bc01123` -> confirms closure commit touched docs/state/evidence only.
+- Scope reconciliation:
+  - no local dirty/runtime entry for `server/workers/frontend`,
+  - no local dirty/runtime entry for `.github/workflows/ci.yml`,
+  - no local dirty/runtime entry for `scripts/build-architecture-awareness-index.mjs`,
+  - no local dirty/runtime entry for `scripts/check-two-project-readiness.mjs`,
+  - no local dirty/runtime entry for `scripts/run-live-run-janitor.mjs`.
+- Final disposition for this continuation wake:
+  - status: `done`
+  - commit: `already closed` via `2bc01123`
+  - push: `not performed`
+  - deploy impact: `none`
