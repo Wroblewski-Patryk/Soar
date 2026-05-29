@@ -14810,12 +14810,11 @@ None.
   - classified current dirty set as non-runtime (`state/control=3`, `task-evidence=1`, `runtime/product code=0`),
   - published closure disposition for this lane.
 - Closure disposition:
-  - commit: `not committed` (cross-issue state/evidence set, not a coherent LUC-700-only unit)
+  - commit: `committed locally` (`22427858`, operational evidence-only closure across `LUC-700`, `LUC-696`, `LUC-241`)
   - push: `not needed`
   - deploy impact: `none`
 - Residual risk:
-  1. existing unrelated dirty state remains and should be closed by owning lanes before release mutation work,
-  2. parent protected-delivery lane `LUC-402` remains dependency-blocked outside this local sidecar checkpoint.
+  1. parent protected-delivery lane `LUC-402` remains dependency-blocked outside this local sidecar checkpoint.
 - Evidence:
   - `history/tasks/luc-700-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`
 - Final disposition: `done`.
