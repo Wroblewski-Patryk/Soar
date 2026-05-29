@@ -1,3 +1,17 @@
+## 2026-05-30 LUC-755 [Soar][Source Control Closure] source_scoped_recovery_action clean-state recheck
+- Wake `source_scoped_recovery_action` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran local source-control checks (`git status --short --branch`, `git diff --name-only`, `git diff --cached --name-only`),
+  - confirmed clean worktree (`main...origin/main [ahead 55]`) with no dirty tracked or staged scope,
+  - classified groups for this checkpoint: `current=none`, `stale=none`, `out-of-scope=none`, `runtime/product code=0`.
+- Closure disposition:
+  - commit: `not needed` (no dirty set to close)
+  - push: `not needed`
+  - deploy impact: `none`
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-755-source-control-closure-source-scoped-recovery-recheck-2026-05-30-task.md`
+
 ## 2026-05-30 LUC-755 [Soar][Source Control Closure] finish_successful_run_handoff verification
 - Wake `finish_successful_run_handoff` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
