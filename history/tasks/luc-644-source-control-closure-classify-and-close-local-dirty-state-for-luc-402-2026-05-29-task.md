@@ -127,3 +127,15 @@ Reclassify current dirty state, confirm whether this lane can be closed without 
   - push: `forbidden/not performed`,
   - deploy impact: `none`.
 - Final disposition target for this wake: `done` after local evidence-only commit is created.
+
+## Continuation Heartbeat 2026-05-29 (finish_successful_run_handoff after `8f572a6f`)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete revalidation:
+  - `git status --short` -> clean,
+  - `git log --oneline -n 5` -> confirms newest closure commit `8f572a6f` on top of prior LUC-644 closure chain,
+  - no additional dirty groups detected (`current/stale/out-of-scope` all empty in this heartbeat).
+- Final disposition:
+  - status: `done`
+  - commit: `already closed` (`8f572a6f`)
+  - push: `not performed`
+  - deploy impact: `none`
