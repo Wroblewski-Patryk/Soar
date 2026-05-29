@@ -1,3 +1,20 @@
+- `LUC-583 [Soar][Architecture Planning]` continuation heartbeat (`finish_successful_run_handoff`) executed on 2026-05-29 and remains `done`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action: revalidated artifact/state linkage and reconciled continuation-summary touched-scope drift; `LUC-583` scope is planning/state only and does not include `server/workers/frontend` or `.github/workflows/ci.yml`.
+  Verification:
+  - `git status --short`
+  - `rg -n "LUC-583|server/workers/frontend|\\.github/workflows/ci.yml|finish_successful_run_handoff" .codex/context/TASK_BOARD.md .codex/context/PROJECT_STATE.md history/tasks/luc-583-architecture-docs-executable-repair-backlog-2026-05-29-task.md`
+
+- `LUC-583 [Soar][Architecture Planning] Convert architecture docs into executable repair backlog` heartbeat executed on 2026-05-29 and is `done`.
+  Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  PM coordination refreshed executable backlog control truth at
+  `history/plans/luc-583-architecture-repair-backlog-control-map-2026-05-29.md`:
+  - reconciled canonical backlog (`LUC-384`) and prior execution/control maps (`LUC-408`, `LUC-508`) with latest ARB lane outcomes,
+  - preserved fail-closed blocker truth: `ARB-001` (`LUC-385`) and `ARB-006` (`LUC-402`) remain the only open blockers,
+  - kept specialist execution delegated; this lane is planning/state only.
+  Evidence:
+  `history/tasks/luc-583-architecture-docs-executable-repair-backlog-2026-05-29-task.md`.
+
 - `LUC-508 [Soar][Architecture Planning]` continuation heartbeat (`finish_successful_run_handoff`) executed on 2026-05-28 and remains `done`.
   Inline wake scope was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action: revalidated artifact/state linkage and reconciled continuation-summary touched-scope drift; `LUC-508` scope is planning/state only and does not include `server/workers/frontend` or `.github/workflows/ci.yml`.
@@ -12788,3 +12805,7 @@
 - `LUC-516 known-state evidence baseline (2026-05-28)` is now checkpointed and synchronized. PM captured current architecture baseline from canonical generated artifacts with no runtime mutation: `architecture-awareness.json` generated `2026-05-27T02:15:57.657Z` (`entities=7338`, `relations=14300`) and status report still showing disconnected entities `0` with inferred-proof gaps (`tests=2056`, `docs=798`). Release posture remains unchanged: V1 stays `blocked/NO-GO` on protected evidence owner path (`LUC-47` and protected proof/input owners). Evidence: `history/tasks/luc-516-known-state-evidence-architecture-baseline-2026-05-28-task.md`.
 
 - `LUC-516 finish_successful_run_handoff (2026-05-28)` reconciled to `done` after read-only baseline recheck; metrics remained stable (`generatedAt=2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`) and blocker topology stayed unchanged (`LUC-47` + protected proof/input owners). Evidence: `history/tasks/luc-516-known-state-evidence-architecture-baseline-2026-05-28-task.md`.
+
+- `LUC-579 known-state evidence baseline (2026-05-29)` is now checkpointed and synchronized. PM captured current architecture baseline from canonical generated artifacts with no runtime mutation: `architecture-awareness.json` generated `2026-05-27T02:15:57.657Z` (`entities=7338`, `relations=14300`) and status report still showing disconnected entities `0` with inferred-proof gaps (`tests=2056`, `docs=798`). Release posture remains unchanged: V1 stays `blocked/NO-GO` on protected evidence owner path (`LUC-47` and protected proof/input owners). Evidence: `history/tasks/luc-579-known-state-evidence-architecture-baseline-2026-05-29-task.md`.
+
+- `LUC-579 finish_successful_run_handoff (2026-05-29)` reconciled to `done` after read-only baseline recheck; metrics remained stable (`generatedAt=2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`) and blocker topology stayed unchanged (`LUC-47` + protected proof/input owners). Evidence: `history/tasks/luc-579-known-state-evidence-architecture-baseline-2026-05-29-task.md`.

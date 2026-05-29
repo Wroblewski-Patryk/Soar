@@ -1,3 +1,27 @@
+## 2026-05-29 LUC-583 [Soar][Architecture Planning] finish_successful_run_handoff reconciliation
+- Wake `finish_successful_run_handoff` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated `LUC-583` artifact linkage and state parity across task/plan/board/project state files,
+  - reconciled continuation-summary touched-scope drift: this lane changed only planning/state artifacts (no `server/workers/frontend` and no `.github/workflows/ci.yml` edits in `LUC-583` scope).
+- Verification:
+  - `git status --short`
+  - `rg -n "LUC-583|server/workers/frontend|\\.github/workflows/ci.yml|finish_successful_run_handoff" .codex/context/TASK_BOARD.md .codex/context/PROJECT_STATE.md history/tasks/luc-583-architecture-docs-executable-repair-backlog-2026-05-29-task.md`
+- Final disposition: `done`.
+
+## 2026-05-29 LUC-583 [Soar][Architecture Planning] Convert architecture docs into executable repair backlog
+- Wake scope consumed from inline payload first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - published refreshed control map `history/plans/luc-583-architecture-repair-backlog-control-map-2026-05-29.md`,
+  - reconciled canonical backlog (`LUC-384`) and prior execution/control maps (`LUC-408`, `LUC-508`) with current ARB lane outcomes,
+  - preserved fail-closed blocker truth: only `ARB-001` and `ARB-006` remain blocked.
+- Final disposition: `done`.
+- Remaining explicit blockers:
+  1. `ARB-001` (`LUC-385`) blocked on Product/CTO activation-scope decision.
+  2. `ARB-006` (`LUC-402`) blocked on protected inputs plus `ARB6-EV-001..008` child execution issuance.
+- Evidence:
+  `history/plans/luc-583-architecture-repair-backlog-control-map-2026-05-29.md`,
+  `history/tasks/luc-583-architecture-docs-executable-repair-backlog-2026-05-29-task.md`.
+
 ## 2026-05-28 LUC-508 [Soar][Architecture Planning] finish_successful_run_handoff reconciliation
 - Wake `finish_successful_run_handoff` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
@@ -14296,3 +14320,29 @@ None.
 - Final disposition: `done`.
 - Evidence:
   - `history/tasks/luc-516-known-state-evidence-architecture-baseline-2026-05-28-task.md`
+
+## 2026-05-29 LUC-579 [Soar] [Known State] Evidence collection and architecture baseline
+- Wake `issue_assigned` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Latest wake impact acknowledged first: this heartbeat required an issue-scoped known-state baseline under `LUC-579`.
+- Concrete action:
+  - captured architecture baseline from canonical generated artifacts,
+  - synchronized known-state checkpoint into mission/board/project context under `LUC-579`,
+  - preserved strict no-mutation boundary (no deploy, no runtime, no protected evidence execution).
+- Baseline evidence:
+  - `architecture-awareness.json`: `generatedAt=2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`.
+  - `architecture-awareness-report.md`: `disconnected entities=0`, inferred proof gaps `tests=2056`, `docs=798`.
+- Release posture continuity: unchanged; V1 remains `blocked/NO-GO` on protected evidence owner path (`LUC-47` plus protected proof/input owners).
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-579-known-state-evidence-architecture-baseline-2026-05-29-task.md`
+
+## 2026-05-29 LUC-579 [Soar] finish_successful_run_handoff disposition sync
+- Wake `finish_successful_run_handoff` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action: executed read-only baseline recheck for `LUC-579` and confirmed no drift in architecture metrics or blocker topology.
+- Recheck result:
+  - `architecture-awareness.json` remains `generatedAt=2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`.
+  - known-state posture remains `disconnected=0`, inferred gaps `tests=2056`, `docs=798`.
+  - V1 release posture unchanged: `blocked/NO-GO` on protected-evidence owner path (`LUC-47` + protected proof/input owners).
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-579-known-state-evidence-architecture-baseline-2026-05-29-task.md`
