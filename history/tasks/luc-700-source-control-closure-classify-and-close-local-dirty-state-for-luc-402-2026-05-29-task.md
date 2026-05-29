@@ -48,12 +48,11 @@ Classify current local dirty state, confirm safety boundaries, and publish closu
 - `runtime/product code=0`
 
 ## Closure Disposition
-- commit: `not committed` (dirty set belongs to existing cross-issue state/evidence lanes, not a coherent LUC-700-only change unit)
-- push: `not needed`
+- commit: `committed locally` (`22427858`, operational evidence-only closure across `LUC-700`, `LUC-696`, `LUC-241`)
+- push: `not needed` (forbidden in this lane)
 - deploy impact: `none`
 - residual risk:
-  1. existing unrelated dirty state remains and must be closed by owning lane before release mutation work;
-  2. parent protected-delivery lane `LUC-402` remains dependency-blocked outside this local classification checkpoint.
+  1. parent protected-delivery lane `LUC-402` remains dependency-blocked outside this local classification checkpoint.
 
 ## Result Report
 - Action taken: completed local source-control closure classification for `LUC-700` and published explicit non-runtime disposition.
@@ -62,4 +61,6 @@ Classify current local dirty state, confirm safety boundaries, and publish closu
   - `.agents/state/active-mission.md`
   - `.codex/context/TASK_BOARD.md`
   - `.codex/context/PROJECT_STATE.md`
+- Local commit evidence:
+  - `22427858` `chore(evidence): close local docs/state dirty set for LUC-700 LUC-696 LUC-241`
 - Final disposition: `done`.
