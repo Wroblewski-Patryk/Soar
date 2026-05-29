@@ -66,3 +66,15 @@ Classify current local dirty state, confirm runtime/product impact, and publish 
   1. `LUC-402` protected delivery remains dependency-blocked and unchanged by this sidecar lane.
 - Next owner:
   1. `LUC-402` unblock owners (Delivery + Security/Test + Ops) for protected-gate continuation.
+
+## Continuation Checkpoint (issue_continuation_needed, 2026-05-29)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Local closure re-check:
+  - `git status --short` -> clean worktree (no dirty files),
+  - `git rev-parse --short HEAD` -> `c93f7278`,
+  - `git log -1 --pretty=%s` -> `chore: close docs-only dirty state evidence for LUC-660 LUC-657 LUC-405`.
+- Disposition reaffirmed:
+  - commit: already completed in prior heartbeat (`c93f7278`)
+  - push: `not needed`
+  - deploy impact: `none`
+  - final: `done`
