@@ -1,3 +1,23 @@
+## 2026-05-29 LUC-742 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - captured local dirty-state evidence (`git status --short`, `git diff --name-only`, `git diff --cached --name-only`),
+  - classified dirty set as non-runtime and not owned by `LUC-402` implementation (`state/control=2`, `task-evidence=1`, `runtime/product code=0`),
+  - confirmed staged scope is empty and preserved unrelated dirty state without revert.
+- Dirty files classified:
+  - `.codex/context/PROJECT_STATE.md` (`state/control`, `LUC-241` lane state sync)
+  - `.codex/context/TASK_BOARD.md` (`state/control`, `LUC-241` lane state sync)
+  - `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md` (`task-evidence`)
+- Closure disposition:
+  - commit: `not committed`
+  - push: `not needed`
+  - deploy impact: `none`
+- Final disposition: `done`.
+- Residual risk:
+  1. parent protected-delivery lane `LUC-402` remains dependency-blocked outside this local source-control checkpoint.
+- Evidence:
+  - `history/tasks/luc-742-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`
+
 ## 2026-05-29 LUC-732 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402
 - Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
@@ -51,6 +71,37 @@
 - Evidence:
   - `history/plans/luc-705-architecture-repair-backlog-control-map-2026-05-29.md`
   - `history/tasks/luc-705-architecture-docs-executable-repair-backlog-2026-05-29-task.md`
+
+## 2026-05-29 LUC-241 continuation [issue_continuation_needed, post-approved-single-recheck hold]
+- Wake payload acknowledged first: `issue_continuation_needed` with no new comments (`pending 0/0`, `latest comment id: unknown`).
+- Wake impact: no new approval/session artifact or permission delta was provided after the already-consumed one-time gate approval and single protected recheck.
+- Concrete action in this heartbeat:
+  - reconciled lane state against latest recorded execution (`2026-05-29T22:18:41.2907995+02:00` single protected recheck),
+  - enforced no-repeat rule for protected probing (no second `/workers/ready` recheck without new owner-provided auth/session fact),
+  - preserved unchanged unblock owner/action for the authz-boundary blocker.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
+  2. Then Ops Release Lead runs exactly one new read-only protected recheck and publishes redaction-safe evidence.
+
+## 2026-05-29 LUC-241 continuation [issue_reopened_via_comment, approved single protected recheck executed]
+- Wake comment acknowledged first: `7b48ecf9-70dc-4f3d-aab2-342701093f53` (`softwarehouse-gate-approval:LUC-241:v1`).
+- Comment impact: lane became actionable for exactly one narrow read-only protected auth/smoke recheck; no deploy/restart/runtime mutation and no scope expansion allowed.
+- Concrete action in this heartbeat:
+  - executed exactly one canonical-host smoke command (workers included) at `2026-05-29T22:18:41.2907995+02:00`:
+    `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`
+  - result:
+    - `PASS` `API /health -> 200`
+    - `PASS` `API /ready -> 200`
+    - `PASS` `WEB / -> 200`
+    - `PASS` `WEB /api/build-info -> 200`
+    - `FAIL` protected endpoint `API /workers/ready -> status 401`
+- Final disposition for this heartbeat: `blocked`.
+- Next blocker:
+  - affected endpoint/resource: `GET https://api.soar.luckysparrow.ch/workers/ready` (protected route remains unauthorized for current approved smoke principal/session).
+- Unblock owner/action:
+  1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
+  2. After that owner confirmation, Ops Release Lead runs exactly one new read-only protected recheck and publishes redaction-safe evidence.
 
 ## 2026-05-29 LUC-241 continuation [issue_reopened_via_comment, waiting-for-human gate enforced]
 - Wake comment acknowledged first: `c6abf7cd-893b-43ff-a18e-8673123ff621`.
@@ -14899,3 +14950,20 @@ None.
 - Evidence:
   - `history/tasks/luc-700-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`
 - Final disposition: `done`.
+
+## 2026-05-29 LUC-241 Unblock Workers/Ready Smoke Principal Permissions (source_scoped_recovery_action continuation)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat: one read-only presence-only auth artifact checkpoint (no protected smoke rerun; no-repeat policy preserved).
+- Presence result (`2026-05-29T22:20:04+02:00`):
+  - `SMOKE_AUTH_TOKEN=False`
+  - `SMOKE_AUTH_EMAIL=False`
+  - `SMOKE_AUTH_PASSWORD=False`
+  - `SOAR_API_TOKEN=False`
+  - `SOAR_API_KEY=False`
+  - `SOAR_SESSION_COOKIE=False`
+- Interpretation: no new unblock artifact class; protected `/workers/ready` recheck remains not actionable in this wake.
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged:
+  - Soar API auth credential owner + Security/Test permission owner provide/confirm fresh valid approved read-only ADMIN principal/session artifact for protected `GET /workers/ready`; then Ops Release Lead executes exactly one new read-only protected recheck and publishes redaction-safe proof.
+- Evidence:
+  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.

@@ -883,3 +883,20 @@ Verify whether current smoke principal can authenticate and pass protected `GET 
 - Unblock owner/action:
   1. Soar auth credential owner + Security/Test secret-ref owner restore approved SMOKE_AUTH_* bindings for this runtime.
   2. Ops Release Lead executes exactly one read-only protected recheck for GET /workers/ready after restoration and publishes evidence with rollback-impact note.
+
+## Heartbeat - 2026-05-29T22:20:04+02:00 (source_scoped_recovery_action)
+- Wake acknowledged first: no new comment/unblock delta (`fallbackFetchNeeded=false`, `0/0` comments), and no-repeat policy for protected rechecks remains active.
+- Concrete action: read-only smoke auth artifact presence scan in current runner context (no protected smoke rerun).
+  - `SMOKE_AUTH_TOKEN=False`
+  - `SMOKE_AUTH_EMAIL=False`
+  - `SMOKE_AUTH_PASSWORD=False`
+  - `SOAR_API_TOKEN=False`
+  - `SOAR_API_KEY=False`
+  - `SOAR_SESSION_COOKIE=False`
+- Interpretation:
+  - no new unblock artifact class appeared,
+  - protected `/workers/ready` recheck path remains not actionable in this wake.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
+  2. Then Ops Release Lead runs exactly one new read-only protected recheck and publishes redaction-safe proof.
