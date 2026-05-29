@@ -1,3 +1,28 @@
+## 2026-05-29 LUC-755 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402
+- Wake `issue_commented` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `1/1`, latest comment id `814f7cd8-c108-44cc-ba55-6ed6b0d07018`).
+- Concrete action in this heartbeat:
+  - captured local dirty-state evidence (`git status --short --branch`, `git diff --name-only`, `git diff --cached --name-only`),
+  - classified dirty set as non-runtime and outside `LUC-402` implementation lane (`architecture-evidence/generated-docs=4`, `state/control=2`, `task-evidence=1`, `runtime/product code=0`),
+  - confirmed staged scope is empty, ran targeted redaction scan over dirty files (no secret-pattern match),
+  - closed the full docs/history/context dirty set with one local source-control closure commit.
+- Dirty files classified:
+  - `.codex/context/PROJECT_STATE.md` (`state/control`)
+  - `.codex/context/TASK_BOARD.md` (`state/control`)
+  - `docs/graphs/architecture-awareness.csv` (`architecture-evidence/generated-docs`)
+  - `docs/graphs/architecture-awareness.json` (`architecture-evidence/generated-docs`)
+  - `docs/graphs/architecture-graph.md` (`architecture-evidence/generated-docs`)
+  - `docs/status/architecture-awareness-report.md` (`architecture-evidence/generated-docs`)
+  - `history/tasks/luc-755-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md` (`task-evidence`)
+- Closure disposition:
+  - commit: `completed` (local)
+  - push: `not needed`
+  - deploy impact: `none`
+- Final disposition: `done`.
+- Residual risk:
+  1. Parent protected-delivery lane `LUC-402` remains dependency-blocked outside this local source-control checkpoint.
+- Evidence:
+  - `history/tasks/luc-755-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`
+
 ## 2026-05-29 LUC-742 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402
 - Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:

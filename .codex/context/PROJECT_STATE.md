@@ -1,3 +1,16 @@
+- `LUC-755 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-29 and is `done`.
+  Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `1/1`, latest comment id `814f7cd8-c108-44cc-ba55-6ed6b0d07018`).
+  Concrete action:
+  - captured local dirty-state evidence (`git status --short --branch`, `git diff --name-only`, `git diff --cached --name-only`),
+  - classified dirty scope as non-runtime and outside `LUC-402` implementation lane (`architecture-evidence/generated-docs=4`, `state/control=2`, `task-evidence=1`, `runtime/product code=0`),
+  - ran targeted redaction scan over dirty files (no secret-pattern match),
+  - closed the full docs/history/context dirty set with one local source-control closure commit and recorded explicit closure disposition.
+  Residual risk unchanged:
+  1. dirty set remains generated architecture-awareness doc scope.
+  2. parent `LUC-402` protected delivery remains dependency-blocked outside this local source-control lane.
+  Evidence:
+  `history/tasks/luc-755-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+
 - `LUC-742 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-29 and is `done`.
   Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action:
