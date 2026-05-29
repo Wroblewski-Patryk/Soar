@@ -97,3 +97,17 @@ Reclassify current dirty state, confirm whether this lane can be closed without 
   - commit: `already closed` (`2bc01123`, `7d21146f`)
   - push: `not performed`
   - deploy impact: `none`
+
+## Continuation Heartbeat 2026-05-29 (source_scoped_recovery_action)
+- Wake consumed from inline payload first (`fallbackFetchNeeded=false`, comments `0/0`).
+- Wake inconsistency acknowledged and resolved for this lane:
+  - payload issue metadata reported `blocked`,
+  - continuation packet and local evidence confirm `done`.
+- Concrete revalidation:
+  - `git status --short` -> clean,
+  - `git log --oneline -n 5` -> closure commits still present (`2bc01123`, `7d21146f`, `3a61a0c1`).
+- Final disposition:
+  - status: `done` (no reopen conditions detected)
+  - commit: `already closed` (`2bc01123`, `7d21146f`, `3a61a0c1`)
+  - push: `not performed`
+  - deploy impact: `none`

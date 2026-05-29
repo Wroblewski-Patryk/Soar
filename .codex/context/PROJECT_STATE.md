@@ -1,3 +1,15 @@
+- `LUC-644 [Soar][Source Control Closure]` source-scoped recovery heartbeat executed on 2026-05-29 and remains `done`.
+  Inline wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`).
+  Consistency resolution in this heartbeat:
+  - wake metadata flagged the issue as `blocked`,
+  - continuation summary and local closure evidence confirm closed state.
+  Revalidation:
+  - `git status --short` -> clean,
+  - `git log --oneline -n 5` -> confirms closure lineage includes `2bc01123`, `7d21146f`, `3a61a0c1`.
+  Final disposition: `done` (no reopen trigger detected).
+  Evidence:
+  `history/tasks/luc-644-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+
 - `LUC-644 [Soar][Source Control Closure]` continuation heartbeat (`finish_successful_run_handoff`) executed on 2026-05-29 and remains `done`.
   Inline wake payload consumed first (`fallbackFetchNeeded=false`, comments `0/0`).
   Concrete action:

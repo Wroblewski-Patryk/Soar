@@ -1,3 +1,13 @@
+## 2026-05-29 LUC-644 [Soar][Source Control Closure] source_scoped_recovery_action consistency closure
+- Wake `source_scoped_recovery_action` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`).
+- Wake impact: payload metadata reported `blocked`, but continuation summary and local git evidence already indicated closure; this heartbeat normalized disposition for the lane.
+- Concrete action:
+  - reran local state check (`git status --short`) -> clean,
+  - revalidated closure lineage (`git log --oneline -n 5`) -> closure commits still present (`2bc01123`, `7d21146f`, `3a61a0c1`).
+- Final disposition: `done` (no reopen trigger detected).
+- Evidence:
+  - `history/tasks/luc-644-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`
+
 ## 2026-05-29 LUC-644 [Soar][Source Control Closure] finish_successful_run_handoff post-closure sync
 - Wake `finish_successful_run_handoff` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`).
 - Concrete action:
