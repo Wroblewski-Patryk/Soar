@@ -1,3 +1,19 @@
+## 2026-05-30 LUC-762 [Soar][Source Control Closure] source_scoped_recovery_action clean-state recheck
+- Wake `source_scoped_recovery_action` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran local source-control checks (`git status --short --branch`, `git diff --name-only`, `git diff --cached --name-only`),
+  - confirmed clean worktree (`main...origin/main [ahead 56]`) with no dirty tracked/staged scope,
+  - classified checkpoint groups as empty (`current=none`, `stale=none`, `out-of-scope=none`, `runtime/product code=0`).
+- Closure disposition:
+  - commit: `not needed` (no dirty set to close)
+  - push: `not needed`
+  - deploy impact: `none`
+- Final disposition: `done`.
+- Residual blocker/owner unchanged:
+  1. Parent protected-delivery lane `LUC-402` remains dependency-blocked outside this local source-control sidecar lane.
+- Evidence:
+  - `history/tasks/luc-762-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-30-task.md`
+
 ## 2026-05-30 LUC-762 [Soar][Source Control Closure] classify-and-close local dirty state for LUC-402
 - Wake consumed from inline payload first (`issue_assigned`, comments `0/0`, `fallbackFetchNeeded=false`).
 - Concrete action in this heartbeat:

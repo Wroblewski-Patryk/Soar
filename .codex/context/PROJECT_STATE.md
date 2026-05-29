@@ -1,3 +1,16 @@
+- `LUC-762 [Soar][Source Control Closure]` source-scoped recovery clean-state heartbeat executed on 2026-05-30 and is `done`.
+  Inline wake was consumed first (`source_scoped_recovery_action`, comments `0/0`, `fallbackFetchNeeded=false`).
+  Concrete action:
+  - reran local source-control checks (`git status --short --branch`, `git diff --name-only`, `git diff --cached --name-only`),
+  - confirmed clean worktree (`main...origin/main [ahead 56]`) with no tracked/staged dirty set,
+  - classified dirty groups as empty (`current=none`, `stale=none`, `out-of-scope=none`, `runtime/product code=0`).
+  Closure disposition:
+  - commit: `not needed` (no dirty set)
+  - push: `not needed`
+  - deploy impact: `none`
+  Next owner/action unchanged:
+  1. `LUC-402` protected-input unblock owners continue dependency closure outside this sidecar lane.
+
 - `LUC-762 [Soar][Source Control Closure]` local dirty-state classification heartbeat executed on 2026-05-30 and is `done`.
   Inline wake was consumed first (`issue_assigned`, comments `0/0`, `fallbackFetchNeeded=false`).
   Concrete action:
