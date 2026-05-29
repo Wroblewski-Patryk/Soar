@@ -1,3 +1,76 @@
+## 2026-05-29 LUC-660 continuation [source-control closure, issue_commented]
+- Wake acknowledged first from inline payload (`fallbackFetchNeeded=false`, pending comments `1/1`, latest comment id `e32e1895-c2f3-49cd-b823-305b53087e50`).
+- Action in this heartbeat:
+  - reran local dirty-state inspection (`git status --short`, `git diff --name-only`, `git diff --cached --name-only`),
+  - confirmed docs/state/release/task-only dirty scope and zero runtime/product-code drift,
+  - executed source-control closure commit per docs-only cross-issue rule.
+- Classification:
+  - `state/control=2`
+  - `release-evidence=2`
+  - `task-evidence=2`
+  - `runtime/product code=0`
+- Closure disposition:
+  - commit: `committed` (operational evidence closure for `LUC-660`, `LUC-657`, `LUC-405`)
+  - push: `not needed`
+  - deploy impact: `none`
+- Final disposition: `done`.
+
+## 2026-05-29 LUC-660 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action:
+  - reran local dirty-state verification (`git status --short`, `git diff --name-only`),
+  - classified current dirty set and confirmed no runtime/product code drift in this lane.
+- Classification:
+  - `state/control=2`
+  - `release-evidence=2`
+  - `task-evidence=1`
+  - `runtime/product code=0`
+- Closure disposition:
+  - commit: `not committed`
+  - push: `not needed`
+  - deploy impact: `none`
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-660-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`
+## 2026-05-29 LUC-657 [Soar][ARB-006][Security] continuation (source_scoped_recovery_action)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action:
+  - revalidated lane against CTO/Security boundary contract: approval-evidence scope only, no runtime mutation/deploy work,
+  - reconfirmed approval artifact remains valid and unchanged for protected readiness input class,
+  - synchronized explicit parent unblock trigger for `LUC-405` in canonical state.
+- Final disposition: `done`.
+- Unchanged next owner/action:
+  1. Auth credential owner provides fresh valid artifact matching approved read-only class.
+  2. Ops runs exactly one canonical-host protected recheck for `GET /workers/ready` and publishes redaction-safe proof.
+
+## 2026-05-29 LUC-657 [Soar][ARB-006][Security] continuation (issue_continuation_needed)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- No new approval-policy delta was present in this wake; prior Security approval remains valid and unchanged.
+- Concrete action:
+  - closure-sync verification of local lane scope (`git status --short`),
+  - continued explicit handoff trigger for parent `LUC-405` retained without scope widening.
+- Final disposition: `done`.
+- Unchanged next owner/action:
+  1. Auth credential owner provides fresh valid artifact matching approved class.
+  2. Ops runs exactly one canonical-host protected recheck for `GET /workers/ready`.
+
+## 2026-05-29 LUC-657 [Soar][ARB-006][Security] approve read-only principal/session class for protected readiness endpoint
+- Wake payload acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action:
+  - reviewed protected route guard chain for `GET /workers/ready` (`requireAuth` + `requireRole('ADMIN')` + `requireOpsNetwork`),
+  - reviewed existing auth/readiness tests for expected protected behavior,
+  - published security approval artifact with constraints, rejection criteria, and redaction policy.
+- Decision:
+  - `APPROVED_WITH_CONSTRAINTS` for principal/session **class** only; no runtime artifact validity claim.
+- Follow-up gate unchanged:
+  1. Auth credential owner provides fresh approved artifact matching class.
+  2. Ops runs exactly one canonical-host protected recheck and publishes evidence.
+- Final disposition: `done` (security approval lane complete).
+- Evidence:
+  - `history/releases/luc-657-arb-006-security-approval-read-only-principal-session-2026-05-29.md`
+  - `history/releases/luc-405-arb-006-window-input-readiness-signoff-2026-05-28.md`
+  - `history/tasks/luc-657-arb-006-security-approve-read-only-principal-session-2026-05-29-task.md`
+
 ## 2026-05-29 LUC-386 [Soar][ARB-002] source_scoped_recovery_action reconciliation
 - Wake payload acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Wake impact: metadata marked issue as `blocked`, but continuation summary and canonical gate artifacts confirm closure state.
@@ -14616,3 +14689,4 @@ None.
   - `.github/workflows/ci.yml` exists but is not modified in this lane.
 - Conclusion: continuation summary touched-file list is stale/not attributable to current LUC-386 write scope.
 - Final disposition: `done` (no further executable work until mobile runtime activation gate is explicitly opened).
+

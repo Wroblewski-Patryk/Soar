@@ -17,7 +17,7 @@ Single-page readiness form for Ops/Security/QA/Release to confirm protected-inpu
 ## Required Inputs (must all be `READY` by 2026-05-30 08:30 Europe/Berlin)
 | Input | Owner | Status (`READY`/`BLOCKED`) | Evidence path or reference | Last update (local time) |
 | --- | --- | --- | --- | --- |
-| Approved read-only principal/session for protected `GET /workers/ready` | Auth credential owner + Security/Test owner | `BLOCKED` | pending | 2026-05-28 |
+| Approved read-only principal/session for protected `GET /workers/ready` | Auth credential owner + Security/Test owner | `READY` | `history/releases/luc-657-arb-006-security-approval-read-only-principal-session-2026-05-29.md` | 2026-05-29 |
 | `LIVEIMPORT_READBACK_*` family | Ops + QA + Security | `BLOCKED` | pending | 2026-05-28 |
 | `ROLLBACK_GUARD_*` family | Ops + release controller | `BLOCKED` | pending | 2026-05-28 |
 | `SOAR_PROD_*` family | Ops + release controller | `BLOCKED` | pending | 2026-05-28 |
@@ -27,7 +27,7 @@ Single-page readiness form for Ops/Security/QA/Release to confirm protected-inpu
 | Expected SHA confirmation `71b8d503fd6fdfd7378dc67b2fa678799e2430f8` | Release controller | `BLOCKED` | pending | 2026-05-28 |
 
 ## Execution Permit Checklist
-- [ ] Security approves principal/session class and redaction posture.
+- [x] Security approves principal/session class and redaction posture.
 - [ ] QA approves protected step scope (`ARB6-EV-001` only).
 - [ ] Release controller approves SHA and window execution.
 - [ ] Ops confirms no-mutation gate remains intact before start.

@@ -1,3 +1,49 @@
+- `LUC-660 [Soar][Source Control Closure]` continuation heartbeat (`issue_commented`) executed on 2026-05-29 and is `done`.
+  Wake comment `e32e1895-c2f3-49cd-b823-305b53087e50` was acknowledged first from inline payload (`fallbackFetchNeeded=false`).
+  Concrete action:
+  - reran local closure checks (`git status --short`, `git diff --name-only`, `git diff --cached --name-only`),
+  - reconfirmed dirty scope is docs/state/release/task evidence only (`state/control=2`, `release-evidence=2`, `task-evidence=2`, `runtime/product code=0`),
+  - closed docs-only cross-issue dirty set with one operational evidence commit for `LUC-660`, `LUC-657`, `LUC-405`.
+  Disposition:
+  - commit: `committed`
+  - push: `not needed`
+  - deploy impact: `none`
+  Evidence:
+  `history/tasks/luc-660-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+
+- `LUC-660 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-29 and is `done`.
+  Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action:
+  - reran local dirty-state verification (`git status --short`, `git diff --name-only`),
+  - classified current dirty set as state/release/task evidence only (`state/control=2`, `release-evidence=2`, `task-evidence=1`, `runtime/product code=0`),
+  - published closure disposition (`commit=not committed`, `push=not needed`, `deploy impact=none`).
+  Evidence:
+  `history/tasks/luc-660-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.
+- `LUC-657 [Soar][ARB-006][Security]` source-scoped recovery heartbeat executed on 2026-05-29 and is `done`.
+  Inline wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Continuation action:
+  - reconfirmed Security lane remains approval-only (no deploy/runtime mutation),
+  - reconfirmed prior approval evidence remains valid without policy delta for read-only protected readiness class,
+  - preserved exact unblock trigger for parent `LUC-405`:
+    1. Auth credential owner provides fresh valid artifact matching approved class.
+    2. Ops Release Lead runs one canonical-host protected recheck for `GET /workers/ready` and publishes redaction-safe proof.
+  Evidence:
+  `.codex/context/TASK_BOARD.md`,
+  `history/tasks/luc-657-arb-006-security-approve-read-only-principal-session-2026-05-29-task.md`.
+
+- `LUC-657 [Soar][ARB-006][Security]` heartbeat executed on 2026-05-29 and is `done`.
+  Inline wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Security-lane output:
+  - approved read-only principal/session **class** for protected `GET /workers/ready` with constraints:
+    API-authenticated session, `ADMIN` role, ops-network boundary, read-only readiness use only;
+  - published explicit rejection criteria (invalid/expired/unaccepted artifact, non-admin/non-ops path, scope widening);
+  - confirmed redaction posture (no secret values in files/comments/artifacts/logs).
+  Remaining blocker is operational, not policy: a fresh valid approved artifact still must be provided and proven via one canonical-host protected recheck.
+  Evidence:
+  `history/releases/luc-657-arb-006-security-approval-read-only-principal-session-2026-05-29.md`,
+  `history/releases/luc-405-arb-006-window-input-readiness-signoff-2026-05-28.md`,
+  `history/tasks/luc-657-arb-006-security-approve-read-only-principal-session-2026-05-29-task.md`.
+
 - `LUC-386 [Soar][ARB-002]` source-scoped recovery heartbeat executed on 2026-05-29 and is `done`.
   Inline wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Consistency reconciliation in this heartbeat:
@@ -12985,3 +13031,4 @@
 - `LUC-386` reconciliation (2026-05-29): child gate issue `LUC-633` is `done` and confirms `DEC-ARB-002`. Current ARB-002 scope remains complete for scaffold-only mobile docs/registry coverage; any new mobile module doc expansion is blocked by design until Product/CTO-approved mobile runtime activation is explicitly started.
 
 - `LUC-386` continuation reconciliation (2026-05-29): validated local dirty scope is docs/state-only (`.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`). No runtime/product-code mutation is present in this lane; continuation-summary touched entries `server/workers/frontend` and `.github/workflows/ci.yml` are not actionable for current docs-memory scope. Status remains `done` pending explicit Product/CTO mobile runtime activation.
+
