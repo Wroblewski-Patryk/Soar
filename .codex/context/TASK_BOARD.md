@@ -1,3 +1,43 @@
+## 2026-05-29 LUC-709 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - captured local dirty-state evidence (`git status --short --branch`, `git diff --name-only`, `git diff --cached --name-only`),
+  - classified dirty set as non-runtime (`state/control=2`, `planning-evidence=1`, `task-evidence=1`, `runtime/product code=0`),
+  - verified no staged scope and no secrets in changed files (targeted text scan for token/password/key patterns returned empty),
+  - closed full local dirty set with one source-control evidence commit for this closure lane.
+- Dirty set closed by commit:
+  - `.codex/context/PROJECT_STATE.md`
+  - `.codex/context/TASK_BOARD.md`
+  - `history/plans/luc-705-architecture-repair-backlog-control-map-2026-05-29.md`
+  - `history/tasks/luc-705-architecture-docs-executable-repair-backlog-2026-05-29-task.md`
+  - `history/tasks/luc-709-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`
+- Closure disposition:
+  - commit: `completed` (local)
+  - push: `not needed`
+  - deploy impact: `none`
+- Final disposition: `done`.
+
+## 2026-05-29 LUC-705 [Soar][Architecture Planning] finish_successful_run_handoff reconciliation
+- Wake `finish_successful_run_handoff` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated `LUC-705` artifact/state linkage across plan/task/board/project-state files,
+  - confirmed decision-gate routing remains explicit (`DEC-ARB-001`, `DEC-ARB-002`) and unchanged,
+  - confirmed active blocker truth remains unchanged: only `ARB-006` (`LUC-402`) is active-blocked on protected-input ownership + `ARB6-EV-001..008` execution issuance.
+- Final disposition: `done` (continuation sync complete; no new implementation scope).
+- Verification:
+  - `rg -n "LUC-705|finish_successful_run_handoff|DEC-ARB-001|DEC-ARB-002|ARB-006" .codex/context/TASK_BOARD.md .codex/context/PROJECT_STATE.md history/tasks/luc-705-architecture-docs-executable-repair-backlog-2026-05-29-task.md history/plans/luc-705-architecture-repair-backlog-control-map-2026-05-29.md`
+
+## 2026-05-29 LUC-705 [Soar][Architecture Planning] Convert architecture docs into executable repair backlog
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - refreshed executable ARB control map from canonical backlog + execution lineage,
+  - synchronized gate truth: `DEC-ARB-001` and `DEC-ARB-002` are explicit decision gates (`done_gated`) for `ARB-001` and `ARB-002`,
+  - preserved fail-closed active blocker truth: `ARB-006` (`LUC-402`) remains blocked on protected-input ownership and `ARB6-EV-001..008` execution issuance.
+- Final disposition: `done` (planning/state lane complete, no runtime/deploy mutation).
+- Evidence:
+  - `history/plans/luc-705-architecture-repair-backlog-control-map-2026-05-29.md`
+  - `history/tasks/luc-705-architecture-docs-executable-repair-backlog-2026-05-29-task.md`
+
 ## 2026-05-29 LUC-241 continuation [issue_reopened_via_comment, waiting-for-human gate enforced]
 - Wake comment acknowledged first: `c6abf7cd-893b-43ff-a18e-8673123ff621`.
 - Comment impact: gate classification from `LUC-687` cleanup is explicit: `LUC-241` stays `active waiting-for-human`; no protected recheck is legal until accepted approval fact exists in `LUC-686`.
