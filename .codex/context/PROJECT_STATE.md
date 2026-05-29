@@ -1,3 +1,13 @@
+- `LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions` continuation wake (`issue_reopened_via_comment`) executed on 2026-05-29 and is `blocked`.
+  Wake comment `c6abf7cd-893b-43ff-a18e-8673123ff621` was acknowledged first.
+  Gate policy was tightened by board cleanup `LUC-687`: classify `LUC-241` as active waiting-for-human and forbid additional protected `/workers/ready` checks until a fresh approved principal/session fact is accepted in `LUC-686`.
+  Heartbeat action:
+  - enforced fail-closed execution boundary (no protected recheck in this run),
+  - preserved explicit unblock chain and owner handoff.
+  Unblock owner/action:
+  1. `local-board` accepts and publishes the approval/session fact in `LUC-686`.
+  2. Ops Release Lead runs exactly one read-only canonical-host protected recheck for `GET /workers/ready` and publishes redaction-safe proof.
+
 - `LUC-668 [Soar][Source Control Closure]` recovery wake (`issue_reopened_via_comment`) executed on 2026-05-29 and is `done`.
   Wake comment `d0dce46b-66c4-42a6-8f54-93b4b9a91982` was acknowledged first and confirmed this was a missing-final-disposition recovery only.
   Concrete action:
@@ -13066,3 +13076,21 @@
   Latest readiness artifacts still report `PARTIAL` / `NO-GO` with missing required protected families, so unblock contract remains unchanged.
 
 - `LUC-405 [Soar][ARB-006][Ops]` source-scoped recovery checkpoint on 2026-05-29 validated latest artifact presence (`PARTIAL`, `NO-GO`, matching names `9`) with unchanged missing protected families; anti-churn no-rerun state-sync applied and disposition stays `blocked`.
+
+- `LUC-696 known-state evidence baseline (2026-05-29)` is now checkpointed and synchronized. PM captured current architecture baseline from canonical generated artifacts with no runtime mutation: `architecture-awareness.json` generated `2026-05-27T02:15:57.657Z` (`entities=7338`, `relations=14300`) and status report still showing disconnected entities `0` with inferred-proof gaps (`tests=2056`, `docs=798`). Release posture remains unchanged: V1 stays `blocked/NO-GO` on protected evidence owner path (`LUC-47` and protected proof/input owners). Evidence: `history/tasks/luc-696-known-state-evidence-architecture-baseline-2026-05-29-task.md`.
+
+- `LUC-696 issue_continuation_needed (2026-05-29)` reconciled to `done` with read-only continuity recheck. Baseline metrics and blocker topology remained stable (`generated_at=2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`, `disconnected=0`, inferred gaps `tests=2056`, `docs=798`; blocker path `LUC-47` + protected proof/input owners). Evidence: `history/tasks/luc-696-known-state-evidence-architecture-baseline-2026-05-29-task.md`.
+
+- `LUC-696 source_scoped_recovery_action (2026-05-29)` reconciled to `done` with read-only continuity recheck. Baseline metrics and blocker topology remained stable (`generated_at=2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`, `disconnected=0`, inferred gaps `tests=2056`, `docs=798`; blocker path `LUC-47` + protected proof/input owners). Evidence: `history/tasks/luc-696-known-state-evidence-architecture-baseline-2026-05-29-task.md`.
+
+- `LUC-700 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-29 and is `done`.
+  Wake `issue_assigned` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action:
+  - reran local dirty-state verification (`git status --short --branch`, `git diff --name-only`, `git diff --cached --name-only`),
+  - classified current dirty set as non-runtime (`state/control=3`, `task-evidence=1`, `runtime/product code=0`),
+  - published closure disposition (`commit=not committed`, `push=not needed`, `deploy impact=none`).
+  Residual risk:
+  1. existing unrelated dirty state remains and should be closed by owning lanes before release mutation work,
+  2. parent protected-delivery lane `LUC-402` remains dependency-blocked outside this local sidecar checkpoint.
+  Evidence:
+  `history/tasks/luc-700-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`.

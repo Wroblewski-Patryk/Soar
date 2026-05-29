@@ -1,3 +1,15 @@
+## 2026-05-29 LUC-241 continuation [issue_reopened_via_comment, waiting-for-human gate enforced]
+- Wake comment acknowledged first: `c6abf7cd-893b-43ff-a18e-8673123ff621`.
+- Comment impact: gate classification from `LUC-687` cleanup is explicit: `LUC-241` stays `active waiting-for-human`; no protected recheck is legal until accepted approval fact exists in `LUC-686`.
+- Concrete action in this heartbeat:
+  - consumed wake payload and reconciled lane policy against latest board instruction,
+  - recorded fail-closed execution boundary: do **not** rerun protected `GET /workers/ready` before accepted `LUC-686` approval fact for a fresh approved principal/session,
+  - preserved unchanged unblock contract and ownership for the next legal move.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action:
+  1. `local-board` accepts and publishes the approval/session fact in `LUC-686`.
+  2. Ops Release Lead executes exactly one read-only canonical-host protected recheck for `GET /workers/ready` and publishes redaction-safe evidence.
+
 ## 2026-05-29 LUC-668 continuation [source-control closure, issue_reopened_via_comment]
 - Wake comment acknowledged first: `d0dce46b-66c4-42a6-8f54-93b4b9a91982`.
 - Comment impact: this recovery wake is disposition-only (`successful_run_missing_state`), not implementation-gap work.
@@ -14758,3 +14770,52 @@ None.
 - Current contract unchanged: `PARTIAL` + `NO-GO`, unchanged missing protected families, fail-closed `blocked`.
 - Final disposition: `blocked`.
 - Unblock owner/action unchanged.
+
+## 2026-05-29 LUC-696 [Soar] [Known State] Evidence collection and architecture baseline
+- Wake `issue_assigned` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - captured architecture baseline from canonical generated artifacts,
+  - synchronized known-state evidence routing for `LUC-696` with no runtime mutation,
+  - preserved unchanged V1 blocker topology continuity.
+- Baseline snapshot:
+  - `architecture-awareness.json` remains `generatedAt=2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`.
+  - `architecture-awareness-report.md` remains `disconnected=0`, inferred gaps `tests=2056`, `docs=798`.
+- V1 posture: unchanged `blocked/NO-GO` on protected-evidence owner path (`LUC-47` + protected proof/input owners).
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-696-known-state-evidence-architecture-baseline-2026-05-29-task.md`
+
+## 2026-05-29 LUC-696 [Soar] issue_continuation_needed disposition sync
+- Wake `issue_continuation_needed` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action: executed read-only baseline continuity recheck for `LUC-696` and validated no metric drift.
+- Recheck result: `generated_at=2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`, `disconnected=0`, inferred gaps `tests=2056`, `docs=798`.
+- V1 posture unchanged: `blocked/NO-GO` on protected-evidence owner path (`LUC-47` + protected proof/input owners).
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-696-known-state-evidence-architecture-baseline-2026-05-29-task.md`
+
+## 2026-05-29 LUC-696 [Soar] source_scoped_recovery_action disposition sync
+- Wake `source_scoped_recovery_action` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action: executed read-only baseline continuity recheck for `LUC-696` and validated no metric drift.
+- Recheck result: `generated_at=2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`, `disconnected=0`, inferred gaps `tests=2056`, `docs=798`.
+- V1 posture unchanged: `blocked/NO-GO` on protected-evidence owner path (`LUC-47` + protected proof/input owners).
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-696-known-state-evidence-architecture-baseline-2026-05-29-task.md`
+
+## 2026-05-29 LUC-700 [Soar][Source Control Closure] classify and close local dirty state for LUC-402
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran local dirty-state verification (`git status --short --branch`, `git diff --name-only`, `git diff --cached --name-only`),
+  - classified current dirty set as non-runtime (`state/control=3`, `task-evidence=1`, `runtime/product code=0`),
+  - published closure disposition for this lane.
+- Closure disposition:
+  - commit: `not committed` (cross-issue state/evidence set, not a coherent LUC-700-only unit)
+  - push: `not needed`
+  - deploy impact: `none`
+- Residual risk:
+  1. existing unrelated dirty state remains and should be closed by owning lanes before release mutation work,
+  2. parent protected-delivery lane `LUC-402` remains dependency-blocked outside this local sidecar checkpoint.
+- Evidence:
+  - `history/tasks/luc-700-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`
+- Final disposition: `done`.
