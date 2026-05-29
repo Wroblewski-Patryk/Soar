@@ -12809,3 +12809,10 @@
 - `LUC-579 known-state evidence baseline (2026-05-29)` is now checkpointed and synchronized. PM captured current architecture baseline from canonical generated artifacts with no runtime mutation: `architecture-awareness.json` generated `2026-05-27T02:15:57.657Z` (`entities=7338`, `relations=14300`) and status report still showing disconnected entities `0` with inferred-proof gaps (`tests=2056`, `docs=798`). Release posture remains unchanged: V1 stays `blocked/NO-GO` on protected evidence owner path (`LUC-47` and protected proof/input owners). Evidence: `history/tasks/luc-579-known-state-evidence-architecture-baseline-2026-05-29-task.md`.
 
 - `LUC-579 finish_successful_run_handoff (2026-05-29)` reconciled to `done` after read-only baseline recheck; metrics remained stable (`generatedAt=2026-05-27T02:15:57.657Z`, `entities=7338`, `relations=14300`) and blocker topology stayed unchanged (`LUC-47` + protected proof/input owners). Evidence: `history/tasks/luc-579-known-state-evidence-architecture-baseline-2026-05-29-task.md`.
+
+## 2026-05-29 LUC-616 ARB-001 activation-scope decision packet (Product lane)
+- Wake `issue_assigned` was consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action: published Product decision packet `history/plans/luc-616-arb-001-activation-scope-decision-2026-05-29.md` and added decision register row `DEC-ARB-001`.
+- Decision outcome: Soar V1 keeps assistant runtime hot-path orchestration deactivated for `BACKTEST/PAPER/LIVE`; foundation + dry-run remains the active scope.
+- Gate routing: `in_review` with CTO as named reviewer before any AI Runtime/Security activation implementation child issues.
+- Runtime/deploy mutation: none.

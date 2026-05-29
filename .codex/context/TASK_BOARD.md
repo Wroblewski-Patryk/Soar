@@ -14346,3 +14346,17 @@ None.
 - Final disposition: `done`.
 - Evidence:
   - `history/tasks/luc-579-known-state-evidence-architecture-baseline-2026-05-29-task.md`
+
+## 2026-05-29 LUC-616 [Soar][ARB-001 Gate] Decide activation scope for assistant hot-path orchestration
+- Wake `issue_assigned` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - published explicit Product activation-scope packet at `history/plans/luc-616-arb-001-activation-scope-decision-2026-05-29.md`,
+  - recorded durable decision row `DEC-ARB-001` in `.agents/state/decision-register.md`,
+  - preserved fail-closed boundary: no runtime hot-path activation for `BACKTEST/PAPER/LIVE` in Soar V1 scope.
+- Final disposition: `in_review`.
+- Reviewer/gate owner:
+  1. CTO reviews and confirms/refines activation envelope before any implementation-child issuance.
+- Evidence:
+  - `history/plans/luc-616-arb-001-activation-scope-decision-2026-05-29.md`
+  - `history/tasks/luc-616-arb-001-activation-scope-decision-2026-05-29-task.md`
+  - `.agents/state/decision-register.md`
