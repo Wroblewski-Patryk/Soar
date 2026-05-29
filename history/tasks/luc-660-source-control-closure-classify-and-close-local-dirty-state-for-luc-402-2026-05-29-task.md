@@ -78,3 +78,15 @@ Classify current local dirty state, confirm runtime/product impact, and publish 
   - push: `not needed`
   - deploy impact: `none`
   - final: `done`
+
+## Continuation Checkpoint (source_scoped_recovery_action, 2026-05-29)
+- Wake acknowledged with no new issue comment to triage (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Local source-control closure verification:
+  - `git status --short` -> clean worktree (no dirty files),
+  - `git rev-parse --short HEAD` -> `f9613c77`,
+  - `git log -1 --pretty='%h %ad %s' --date=iso` -> `f9613c77 2026-05-29 12:44:56 +0200 docs: record LUC-660 continuation clean-state checkpoint`.
+- Disposition reaffirmed:
+  - commit: `not needed` (no new dirty state to classify/close)
+  - push: `not needed`
+  - deploy impact: `none`
+  - final: `done`
