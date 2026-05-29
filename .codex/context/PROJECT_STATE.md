@@ -1,3 +1,14 @@
+- `LUC-386 [Soar][ARB-002]` source-scoped recovery heartbeat executed on 2026-05-29 and is `done`.
+  Inline wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Consistency reconciliation in this heartbeat:
+  - wake metadata flagged `blocked`,
+  - local scope and canonical records confirm prior closure for scaffold-only mobile docs/registry work,
+  - reopen remains fail-closed behind `DEC-ARB-002` (Product/CTO-approved mobile runtime activation).
+  Final disposition: `done` (no valid unblock action in current gate state).
+  Evidence:
+  `.codex/context/TASK_BOARD.md`,
+  `.codex/context/PROJECT_STATE.md`.
+
 - `LUC-644 [Soar][Source Control Closure]` source-scoped recovery heartbeat executed on 2026-05-29 and remains `done`.
   Inline wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`).
   Consistency resolution in this heartbeat:
@@ -12970,3 +12981,7 @@
 - Final disposition: `done`.
 - Evidence:
   - `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`
+
+- `LUC-386` reconciliation (2026-05-29): child gate issue `LUC-633` is `done` and confirms `DEC-ARB-002`. Current ARB-002 scope remains complete for scaffold-only mobile docs/registry coverage; any new mobile module doc expansion is blocked by design until Product/CTO-approved mobile runtime activation is explicitly started.
+
+- `LUC-386` continuation reconciliation (2026-05-29): validated local dirty scope is docs/state-only (`.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`). No runtime/product-code mutation is present in this lane; continuation-summary touched entries `server/workers/frontend` and `.github/workflows/ci.yml` are not actionable for current docs-memory scope. Status remains `done` pending explicit Product/CTO mobile runtime activation.

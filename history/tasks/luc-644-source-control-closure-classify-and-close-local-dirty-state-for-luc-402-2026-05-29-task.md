@@ -111,3 +111,19 @@ Reclassify current dirty state, confirm whether this lane can be closed without 
   - commit: `already closed` (`2bc01123`, `7d21146f`, `3a61a0c1`)
   - push: `not performed`
   - deploy impact: `none`
+
+## Continuation Heartbeat 2026-05-29 (issue_commented `75717235-0576-43e0-9c2a-fd778b4abf40`)
+- Wake comment acknowledged first and treated as a local-repair/source-control lane starter with protected delivery still fail-closed.
+- Concrete revalidation in this heartbeat:
+  - `git status --short` -> dirty set contains only `.codex/context/TASK_BOARD.md` and `.codex/context/PROJECT_STATE.md`,
+  - `git diff --name-only` -> confirms docs/state-only scope,
+  - runtime/product code dirty files: `0`.
+- Classification:
+  - `state/control=2`
+  - `task-evidence=0`
+  - `runtime/product code=0`
+- Closure decision:
+  - commit: `required` (docs/state-only dirty set; no secret-bearing/runtime files observed),
+  - push: `forbidden/not performed`,
+  - deploy impact: `none`.
+- Final disposition target for this wake: `done` after local evidence-only commit is created.

@@ -1,3 +1,15 @@
+## 2026-05-29 LUC-386 [Soar][ARB-002] source_scoped_recovery_action reconciliation
+- Wake payload acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Wake impact: metadata marked issue as `blocked`, but continuation summary and canonical gate artifacts confirm closure state.
+- Concrete action:
+  - revalidated local lane scope (`git status --short`) -> only state-context files are dirty in this heartbeat,
+  - rechecked LUC-386/ARB-002 records in `TASK_BOARD` + `PROJECT_STATE` -> scaffold-scope docs and module-registry work already complete,
+  - reconfirmed reopen contract from `DEC-ARB-002` (Product/CTO-approved mobile runtime activation required).
+- Final disposition: `done` (deliverable remains closed; no unblock action is valid before activation gate).
+- Evidence:
+  - `.codex/context/TASK_BOARD.md`
+  - `.codex/context/PROJECT_STATE.md`
+
 ## 2026-05-29 LUC-644 [Soar][Source Control Closure] source_scoped_recovery_action consistency closure
 - Wake `source_scoped_recovery_action` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`).
 - Wake impact: payload metadata reported `blocked`, but continuation summary and local git evidence already indicated closure; this heartbeat normalized disposition for the lane.
@@ -14586,3 +14598,21 @@ None.
 - Final disposition: `done`.
 - Evidence:
   - `history/tasks/luc-636-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-29-task.md`
+
+## 2026-05-29 LUC-386 Mobile Docs Registry (issue_children_completed reconciliation)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Child completion processed: `LUC-633` is `done` and confirms gate fact `DEC-ARB-002`.
+- Decision impact: ARB-002 documentation work is complete for the current scaffold-only mobile lane; further expansion is explicitly gated until Product/CTO-approved mobile runtime activation enters `in_progress`.
+- Concrete action in this heartbeat: reconciled parent continuity after prior control-plane cancellation by recording child-gate outcome and parent closure basis in project memory.
+- Final disposition: `done`.
+
+## 2026-05-29 LUC-386 issue_continuation_needed status reconciliation
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action: reran local source-scope classification to validate continuation-summary touched-files drift.
+- Verification result:
+  - `git status --short` -> only `.codex/context/TASK_BOARD.md` and `.codex/context/PROJECT_STATE.md` are dirty,
+  - `git diff --name-only` confirms no runtime/product/code changes in this lane,
+  - `server/workers/frontend` is not present in this workspace path,
+  - `.github/workflows/ci.yml` exists but is not modified in this lane.
+- Conclusion: continuation summary touched-file list is stale/not attributable to current LUC-386 write scope.
+- Final disposition: `done` (no further executable work until mobile runtime activation gate is explicitly opened).
