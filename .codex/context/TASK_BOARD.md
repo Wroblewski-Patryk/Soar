@@ -1,3 +1,12 @@
+## 2026-05-29 LUC-668 continuation [source-control closure, issue_reopened_via_comment]
+- Wake comment acknowledged first: `d0dce46b-66c4-42a6-8f54-93b4b9a91982`.
+- Comment impact: this recovery wake is disposition-only (`successful_run_missing_state`), not implementation-gap work.
+- Concrete action:
+  - revalidated local closure evidence anchor (`git status --short` clean, HEAD `f4898a2d1540dc091c4b1dc370bd56b49f63c85e`),
+  - confirmed no remaining runnable scope in this sidecar lane,
+  - preserved parent-lane blocker ownership on `LUC-402` chain (`LUC-405` and protected-gate downstream owners).
+- Final disposition: `done`.
+
 ## 2026-05-29 LUC-668 continuation [source-control closure, issue_commented]
 - Wake comment acknowledged first: `ef3ba029-add4-487b-8c0c-739a548733d1`.
 - Comment impact: lane remains local-only source-control closure for `LUC-402`; protected delivery remains out-of-scope and blocked.

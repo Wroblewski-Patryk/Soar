@@ -1,3 +1,10 @@
+- `LUC-668 [Soar][Source Control Closure]` recovery wake (`issue_reopened_via_comment`) executed on 2026-05-29 and is `done`.
+  Wake comment `d0dce46b-66c4-42a6-8f54-93b4b9a91982` was acknowledged first and confirmed this was a missing-final-disposition recovery only.
+  Concrete action:
+  - revalidated local closure evidence anchor (`git status --short` clean, HEAD `f4898a2d1540dc091c4b1dc370bd56b49f63c85e`),
+  - confirmed no additional local dirty-state scope remained in this sidecar lane,
+  - preserved parent `LUC-402` blocker chain ownership (`LUC-405` + protected-gate downstream lanes) without mutation.
+
 - `LUC-668 [Soar][Source Control Closure]` continuation wake (`issue_commented`) executed on 2026-05-29 and is `done`.
   Wake comment `ef3ba029-add4-487b-8c0c-739a548733d1` was acknowledged first and constrained the lane to local source-control closure only.
   Concrete action:

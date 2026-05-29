@@ -91,3 +91,14 @@ Classify current local dirty state, confirm runtime/product impact, and publish 
   - deploy impact: `none`
 - Residual risk unchanged:
   1. Parent `LUC-402` remains dependency-blocked by protected delivery gates outside this sidecar lane.
+
+## Continuation Checkpoint (issue_reopened_via_comment, 2026-05-29, blocked-triage correction)
+- Wake comment acknowledged first: `d0dce46b-66c4-42a6-8f54-93b4b9a91982`.
+- Comment impact on action:
+  - recovery reason is missing final disposition only (`successful_run_missing_state`),
+  - no implementation reopening required for this sidecar lane.
+- Concrete action in this heartbeat:
+  - revalidated local closure anchors (`git status --short` clean; HEAD `f4898a2d1540dc091c4b1dc370bd56b49f63c85e`),
+  - confirmed no remaining runnable dirty-state scope for `LUC-668`,
+  - kept parent `LUC-402` blocker chain unchanged (`LUC-405` + protected-gate downstream ownership).
+- Final disposition (this heartbeat): `done`.
