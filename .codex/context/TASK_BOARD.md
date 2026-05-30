@@ -1,3 +1,46 @@
+## 2026-05-30 LUC-777 [Soar][Source Control Closure] classify-and-close local dirty state for LUC-402
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Wake impact: concrete source-control closure was required in this heartbeat (not planning-only).
+- Classification from local git evidence:
+  - dirty tracked files: `.agents/state/active-mission.md`, `.agents/state/system-health.md`, `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`.
+  - dirty untracked file: `history/tasks/luc-774-safe-lane-non-production-architecture-status-refresh-2026-05-30-task.md`.
+  - lane scope classification: `state/control=4`, `task-evidence=1`, `runtime/product code=0`, `LUC-402 scoped dirty files=0`.
+- Closure action:
+  - staged and committed the full docs/state/evidence dirty set as one local source-control closure unit.
+- Final source-control disposition:
+  - commit: `completed` (`a2e79cc9`)
+  - push: `not needed`
+  - deploy impact: `none`
+- Residual risk unchanged:
+  1. Parent protected-delivery lane `LUC-402` remains dependency-blocked outside this local sidecar closure lane.
+- Evidence:
+  - `history/tasks/luc-777-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-30-task.md`
+
+## 2026-05-30 LUC-774 continuation [issue_continuation_needed, safe-lane drift continuity]
+- Wake `issue_continuation_needed` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Wake impact: no new comment or unblock evidence, so the next action remained bounded docs-memory continuity verification only.
+- Concrete safe-lane action in this heartbeat:
+  - drift recheck across `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, `.agents/state/system-health.md`, `.agents/state/active-mission.md`, and `history/plans/luc-45-v1-gap-register-2026-05-25.md`,
+  - architecture-awareness continuity recheck from `docs/graphs/architecture-awareness.json` and `docs/status/architecture-awareness-report.md` (`generated_at=2026-05-29T21:57:07.511Z`, inferred gaps unchanged: tests `2056`, docs `798`, disconnected entities `0`).
+- Result: no blocker-routing drift; release gate remains fail-closed to `LUC-47`.
+- Scope stayed non-production docs/state/evidence only (no code/runtime/deploy mutation).
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain expected-SHA deploy smoke/readiness + worker readiness evidence + rollback note.
+- Evidence:
+  `history/tasks/luc-774-safe-lane-non-production-architecture-status-refresh-2026-05-30-task.md`.
+
+## 2026-05-30 LUC-774 [Soar][Safe Lane] Non-production architecture/status refresh while gate is blocked
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete safe-lane action in this heartbeat:
+  - drift recheck across `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, `.agents/state/system-health.md`, `.agents/state/active-mission.md`, and `history/plans/luc-45-v1-gap-register-2026-05-25.md`,
+  - architecture-awareness status recheck from `docs/graphs/architecture-awareness.json` and `docs/status/architecture-awareness-report.md` (`generated_at=2026-05-29T21:57:07.511Z`, inferred gaps unchanged: tests `2056`, docs `798`, disconnected entities `0`).
+- Result: no drift in blocker routing or ownership/action; release gate remains fail-closed to `LUC-47`.
+- Scope remained non-production docs/state/evidence only (no code/runtime/deploy mutation).
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain expected-SHA deploy smoke/readiness + worker readiness evidence + rollback note.
+- Evidence:
+  `history/tasks/luc-774-safe-lane-non-production-architecture-status-refresh-2026-05-30-task.md`.
+
 ## 2026-05-30 LUC-241 continuation [source_scoped_recovery_action, guarded status-sync]
 - Wake payload acknowledged first: `source_scoped_recovery_action` (`pending 0/0`, `latest comment id: unknown`, `fallbackFetchNeeded=false`).
 - Wake impact: no new approval/comment fact for another protected probe.

@@ -1,9 +1,41 @@
 # System Health
 
-Last updated: 2026-05-27
+Last updated: 2026-05-30
 
 ## Current Readiness Checkpoint
 
+- `LUC-774-SAFE-LANE-ARCH-STATUS-REFRESH-2026-05-30-CONTINUATION` VERIFIED
+  for non-production status continuity while gate remains blocked. Wake
+  `issue_continuation_needed` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`)
+  and a concrete drift recheck was executed across
+  `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`,
+  `.agents/state/system-health.md`, `.agents/state/active-mission.md`, and
+  `history/plans/luc-45-v1-gap-register-2026-05-25.md`.
+  Architecture-awareness baseline continuity was rechecked from
+  `docs/graphs/architecture-awareness.json` + `docs/status/architecture-awareness-report.md`
+  (`generated_at=2026-05-29T21:57:07.511Z`; inferred gaps unchanged: tests
+  `2056`, docs `798`, disconnected entities `0`).
+  Result: no drift in blocker-truth routing; unblock owner/action remains
+  `LUC-47` (Ops Release Lead + host operator) for temp-domain expected-SHA
+  smoke/readiness + worker readiness + rollback note.
+  Scope stayed docs/state only (no runtime/deploy mutation).
+- `LUC-774-SAFE-LANE-ARCH-STATUS-REFRESH-2026-05-30` VERIFIED for
+  non-production status continuity while gate remains blocked. Wake
+  `issue_assigned` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`)
+  and a concrete drift recheck was executed across
+  `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`,
+  `.agents/state/system-health.md`, `.agents/state/active-mission.md`, and
+  `history/plans/luc-45-v1-gap-register-2026-05-25.md`.
+  Architecture-awareness baseline continuity was rechecked from
+  `docs/graphs/architecture-awareness.json` + `docs/status/architecture-awareness-report.md`
+  (`generated_at=2026-05-29T21:57:07.511Z`; inferred gaps unchanged: tests
+  `2056`, docs `798`, disconnected entities `0`).
+  Result: no drift in blocker-truth routing; unblock owner/action remains
+  `LUC-47` (Ops Release Lead + host operator) for temp-domain expected-SHA
+  smoke/readiness + worker readiness + rollback note.
+  Scope stayed docs/state only (no runtime/deploy mutation).
 - `LUC-376-READ-ONLY-SOURCE-CONTROL-CLASSIFICATION-2026-05-27` VERIFIED for gate-hold queue hygiene. Wake `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`) and a concrete read-only worktree classification was executed.
   Result: changed files are limited to `state(4)`, `docs(3)`, and `evidence(2)` with `runtime/product code(0)`.
   Scope stayed docs/state/evidence only (no runtime/deploy mutation).

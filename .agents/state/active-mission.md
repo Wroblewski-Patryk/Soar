@@ -1,6 +1,6 @@
 # Active Mission Packet
 
-Last updated: 2026-05-27
+Last updated: 2026-05-30
 
 Use this file as the first operational router for `pracuj dalej`, `rob dalej`,
 `kontynuuj`, `next`, and similar continuation nudges. Keep it short enough that
@@ -47,6 +47,29 @@ repository history.
 
 ### Latest Checkpoint
 
+- `LUC-774-SAFE-LANE-ARCH-STATUS-REFRESH-2026-05-30-CONTINUATION` completed
+  as a bounded non-production docs-memory checkpoint. Wake
+  `issue_continuation_needed` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`)
+  and no new unblock evidence arrived. A concrete drift recheck across
+  board/state/system-health/mission files and V1 gap-register lineage found no
+  routing change; architecture-awareness baseline remained stable
+  (`generated_at=2026-05-29T21:57:07.511Z`, inferred gaps unchanged: tests
+  `2056`, docs `798`, disconnected entities `0`). Blocker ownership remains
+  unchanged (`LUC-47` -> Ops Release Lead + host operator for temp-domain
+  expected-SHA smoke/readiness + worker readiness + rollback note). No
+  code/runtime/deploy mutation was performed.
+- `LUC-774-SAFE-LANE-ARCH-STATUS-REFRESH-2026-05-30` completed as a bounded
+  non-production docs-memory checkpoint. Wake `issue_assigned` was consumed
+  from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest
+  comment id `unknown`) and no new unblock evidence arrived. A concrete drift
+  recheck across board/state/system-health/mission files and V1 gap-register
+  lineage found no routing change; architecture-awareness baseline remained
+  stable (`generated_at=2026-05-29T21:57:07.511Z`, inferred gaps unchanged:
+  tests `2056`, docs `798`, disconnected entities `0`). Blocker ownership
+  remains unchanged (`LUC-47` -> Ops Release Lead + host operator for
+  temp-domain expected-SHA smoke/readiness + worker readiness + rollback note).
+  No code/runtime/deploy mutation was performed.
 - `LUC-376-READ-ONLY-SOURCE-CONTROL-CLASSIFICATION-2026-05-27` completed as a bounded gate-hold queue-hygiene checkpoint. Wake `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`). Concrete action: read-only `git status` classification of drift by class. Result: `state=4`, `docs=3`, `evidence=2`, and `runtime/product code=0`. No code/runtime/deploy mutation was performed.
 - `LUC-322-SAFE-LANE-ARCH-STATUS-REFRESH-2026-05-27` completed as a bounded
   non-production docs-memory checkpoint. Wake `issue_assigned` was consumed

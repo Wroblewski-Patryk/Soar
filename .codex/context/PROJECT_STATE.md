@@ -1,3 +1,34 @@
+- `LUC-777 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-30 and is `done`.
+  Inline wake was consumed first (`issue_assigned`, `fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action:
+  - captured local source-control evidence (`git status --short --branch`, `git diff --name-only`, `git diff --cached --name-only`),
+  - classified dirty set as non-runtime and outside `LUC-402` implementation lane (`state/control=4`, `task-evidence=1`, `runtime/product code=0`, `LUC-402 scoped dirty files=0`),
+  - closed full local dirty set with one source-control closure commit.
+  Closure disposition:
+  - commit: `a2e79cc9` (`chore(evidence): close docs-state dirty set for LUC-777 LUC-774 LUC-402`)
+  - push: `not needed`
+  - deploy impact: `none`
+  Residual risk unchanged:
+  1. parent protected-delivery lane `LUC-402` remains dependency-blocked outside this local source-control sidecar lane.
+
+- `LUC-774 [Soar][Safe Lane] Non-production architecture/status refresh while gate is blocked` continuation heartbeat (`issue_continuation_needed`) executed on 2026-05-30 and is `blocked`.
+  Inline wake was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`) with no comment delta.
+  Concrete action:
+  - rechecked blocker/state drift across `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, `.agents/state/system-health.md`, `.agents/state/active-mission.md`, and `history/plans/luc-45-v1-gap-register-2026-05-25.md`,
+  - rechecked architecture-awareness continuity: `docs/graphs/architecture-awareness.json` generated `2026-05-29T21:57:07.511Z`; status report continuity unchanged (`inferred test gaps=2056`, `inferred docs gaps=798`, `disconnected entities=0`).
+  Result: no blocker-routing drift; release gate remains fail-closed to `LUC-47`.
+  Unblock owner/action unchanged:
+  1. `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain expected-SHA deploy smoke/readiness + worker readiness evidence + rollback note.
+
+- `LUC-774 [Soar][Safe Lane] Non-production architecture/status refresh while gate is blocked` heartbeat executed on 2026-05-30 and is `blocked`.
+  Inline wake was consumed first (`issue_assigned`, comments `0/0`, `fallbackFetchNeeded=false`).
+  Concrete action:
+  - rechecked blocker/state drift across `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, `.agents/state/system-health.md`, `.agents/state/active-mission.md`, and `history/plans/luc-45-v1-gap-register-2026-05-25.md`,
+  - rechecked architecture-awareness baseline: `docs/graphs/architecture-awareness.json` generated `2026-05-29T21:57:07.511Z`; status report continuity unchanged (`inferred test gaps=2056`, `inferred docs gaps=798`, `disconnected entities=0`).
+  Result: no blocker-routing drift; release gate remains fail-closed to `LUC-47`.
+  Unblock owner/action unchanged:
+  1. `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain expected-SHA deploy smoke/readiness + worker readiness evidence + rollback note.
+
 - `LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions` source-scoped recovery heartbeat executed on 2026-05-30 and is `blocked`.
   Inline wake had no new comments/facts (`pending 0/0`), so protected probe path stayed non-actionable.
   Concrete action:
