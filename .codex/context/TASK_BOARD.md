@@ -1,3 +1,53 @@
+## 2026-05-30 LUC-812 continuation [finish_successful_run_handoff]
+- Wake `finish_successful_run_handoff` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran known-state continuity recheck across `.agents/state/active-mission.md`, `.agents/state/system-health.md`, `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, and `history/plans/luc-45-v1-gap-register-2026-05-25.md`,
+  - reran architecture-awareness baseline readback from `docs/graphs/architecture-awareness.json` and `docs/status/architecture-awareness-report.md`.
+- Handoff reconciliation result:
+  - no metric drift (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
+  - no blocker-routing drift; fail-closed owner/action remains `LUC-47` (Ops Release Lead + host operator),
+  - no new local follow-up lane beyond already published `LUC-47` -> `GAP-L45-006` -> `GAP-L45-003` -> `GAP-L45-004` chain.
+- Scope stayed docs/state/evidence only (no runtime/deploy mutation).
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-812-known-state-refresh-evidence-delta-and-next-repair-lanes-2026-05-30-task.md`
+
+## 2026-05-30 LUC-812 continuation [issue_commented wake reconciliation]
+- Wake comment `431c6c8f-0273-4e32-80f7-d219ed2a70c2` (`softwarehouse-known-state-refresh-wakeup:v1`) acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `1/1`).
+- Concrete action in this heartbeat:
+  - reran canonical known-state recheck across `.agents/state/active-mission.md`, `.agents/state/system-health.md`, `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, and `history/plans/luc-45-v1-gap-register-2026-05-25.md`,
+  - reran architecture-awareness baseline readback from `docs/graphs/architecture-awareness.json` and `docs/status/architecture-awareness-report.md`.
+- Evidence delta result:
+  - no metric drift (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
+  - no blocker-routing drift; fail-closed owner/action remains `LUC-47` (Ops Release Lead + host operator).
+- Next legal repair lanes remain unchanged and explicit:
+  1. `LUC-47` Ops/Release lane: temp-domain expected-SHA API/Web/build-info/worker readiness packet + rollback note.
+  2. `GAP-L45-006` Delivery lane: commit/push closure packet after `LUC-47` unblock evidence.
+  3. `GAP-L45-003` QA lane: deterministic `qa:smoke-e2e:repeatable -- --checks web,api,backtests` on active release SHA.
+  4. `GAP-L45-004` Security lane: protected read-only auth/session/exchange evidence packet.
+- Scope stayed docs/state/evidence only (no runtime/deploy mutation).
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-812-known-state-refresh-evidence-delta-and-next-repair-lanes-2026-05-30-task.md`
+
+## 2026-05-30 LUC-812 [Soar] [Known State Refresh] Evidence delta and next repair lanes
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - rechecked canonical known-state files (`.agents/state/active-mission.md`, `.agents/state/system-health.md`, `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, `history/plans/luc-45-v1-gap-register-2026-05-25.md`),
+  - revalidated architecture-awareness baseline (`docs/graphs/architecture-awareness.json`, `docs/status/architecture-awareness-report.md`).
+- Evidence delta result:
+  - no metric drift vs prior checkpoint (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
+  - no blocker-routing drift; first-class owner/action remains `LUC-47` (Ops Release Lead + host operator).
+- Next repair lanes (explicit owner + proof target):
+  1. `LUC-47` Ops/Release lane: temp-domain expected-SHA API/Web/build-info/worker readiness packet + rollback note.
+  2. `GAP-L45-006` Delivery lane: commit/push closure packet after `LUC-47` unblock evidence.
+  3. `GAP-L45-003` QA lane: deterministic `qa:smoke-e2e:repeatable -- --checks web,api,backtests` on active release SHA.
+  4. `GAP-L45-004` Security lane: protected read-only auth/session/exchange evidence packet.
+- Scope stayed docs/state/evidence only (no runtime/deploy mutation).
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-812-known-state-refresh-evidence-delta-and-next-repair-lanes-2026-05-30-task.md`
+
 ## 2026-05-30 LUC-810 [Soar][Source Control Closure] classify-and-close local dirty state for LUC-402
 - Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Baseline dirty-set note before edits:
