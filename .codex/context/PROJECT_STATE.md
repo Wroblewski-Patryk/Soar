@@ -1,3 +1,37 @@
+- `LUC-810 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-30 and is `done`.
+  Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Baseline note before edits:
+  - observed dirty files: `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, `history/plans/luc-807-architecture-repair-backlog-control-map-2026-05-30.md`, `history/tasks/luc-807-architecture-docs-executable-repair-backlog-2026-05-30-task.md`.
+  - ownership assumption: completed `LUC-807` planning/state evidence; no runtime ownership overlap.
+  Concrete action:
+  - classified dirty set as non-runtime and outside `LUC-402` implementation lane (`state/control=2`, `planning-evidence=1`, `task-evidence=1`, `runtime/product code=0`, `LUC-402 scoped dirty files=0`),
+  - created task contract artifact for this closure heartbeat,
+  - committed the full classified dirty set as one reversible source-control closure commit.
+  Verification:
+  - `git status --short`
+  - `git diff -- .codex/context/PROJECT_STATE.md`
+  - `git diff -- .codex/context/TASK_BOARD.md`
+  - `git log --oneline -n 1`
+
+- `LUC-807 [Soar][Architecture Planning]` continuation heartbeat (`finish_successful_run_handoff`) executed on 2026-05-30 and remains `done`.
+  Inline wake payload was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action:
+  - revalidated `LUC-807` artifact/state parity across plan/task/board/project-state files,
+  - confirmed decision-gate truth remains unchanged (`DEC-ARB-001` for `ARB-001`, `DEC-ARB-002` for `ARB-002`),
+  - confirmed active blocker truth remains unchanged: `ARB-006` (`LUC-402`) is the only active ARB blocker (`protected_input_gate`) pending protected-input ownership and `ARB6-EV-001..008` execution issuance.
+  Verification:
+  - `rg -n "LUC-807|finish_successful_run_handoff|DEC-ARB-001|DEC-ARB-002|ARB-006" .codex/context/TASK_BOARD.md .codex/context/PROJECT_STATE.md history/tasks/luc-807-architecture-docs-executable-repair-backlog-2026-05-30-task.md history/plans/luc-807-architecture-repair-backlog-control-map-2026-05-30.md`
+
+- `LUC-807 [Soar][Architecture Planning] Convert architecture docs into executable repair backlog` heartbeat executed on 2026-05-30 and is `done`.
+  Inline wake was consumed first (`issue_assigned`, `fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action:
+  - refreshed architecture-repair backlog control map with canonical execution lineage,
+  - synchronized decision-gate truth: `ARB-001` remains `done_gated` via accepted `DEC-ARB-001` and `ARB-002` remains `done_gated` via accepted `DEC-ARB-002`,
+  - preserved fail-closed active blocker truth: `ARB-006` (`LUC-402`) remains the only active ARB blocker pending protected-input ownership and `ARB6-EV-001..008` execution issuance.
+  Evidence:
+  `history/plans/luc-807-architecture-repair-backlog-control-map-2026-05-30.md`,
+  `history/tasks/luc-807-architecture-docs-executable-repair-backlog-2026-05-30-task.md`.
+
 - `LUC-785 [Soar][Source Control Closure]` heartbeat executed on 2026-05-30 and is `done`.
   Inline wake was consumed first (`issue_assigned`, `fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action:

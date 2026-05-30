@@ -1,3 +1,41 @@
+## 2026-05-30 LUC-810 [Soar][Source Control Closure] classify-and-close local dirty state for LUC-402
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Baseline dirty-set note before edits:
+  - observed dirty files: `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, `history/plans/luc-807-architecture-repair-backlog-control-map-2026-05-30.md`, `history/tasks/luc-807-architecture-docs-executable-repair-backlog-2026-05-30-task.md`
+  - ownership assumption: planning/state evidence from completed `LUC-807` lane
+  - intended touched files for this lane: `TASK_BOARD`, `PROJECT_STATE`, `history/tasks/luc-810-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-30-task.md`
+  - verification boundary: local git scope classification + no runtime/deploy mutation.
+- Concrete action in this heartbeat:
+  - classified dirty set as non-runtime and outside `LUC-402` implementation lane (`state/control=2`, `planning-evidence=1`, `task-evidence=1`, `runtime/product code=0`, `LUC-402 scoped dirty files=0`),
+  - closed source-control sidecar lane by committing the full classified set in one coherent evidence commit.
+- Final disposition: `done`.
+- Verification:
+  - `git status --short`
+  - `git diff -- .codex/context/PROJECT_STATE.md`
+  - `git diff -- .codex/context/TASK_BOARD.md`
+  - `git log --oneline -n 1`
+
+## 2026-05-30 LUC-807 [Soar][Architecture Planning] finish_successful_run_handoff reconciliation
+- Wake `finish_successful_run_handoff` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated `LUC-807` artifact/state linkage across plan/task/board/project-state files,
+  - confirmed decision-gate routing remains explicit (`DEC-ARB-001`, `DEC-ARB-002`) and unchanged,
+  - confirmed active blocker truth remains unchanged: only `ARB-006` (`LUC-402`) is active-blocked on protected-input ownership + `ARB6-EV-001..008` execution issuance.
+- Final disposition: `done` (continuation sync complete; no new implementation scope).
+- Verification:
+  - `rg -n "LUC-807|finish_successful_run_handoff|DEC-ARB-001|DEC-ARB-002|ARB-006" .codex/context/TASK_BOARD.md .codex/context/PROJECT_STATE.md history/tasks/luc-807-architecture-docs-executable-repair-backlog-2026-05-30-task.md history/plans/luc-807-architecture-repair-backlog-control-map-2026-05-30.md`
+
+## 2026-05-30 LUC-807 [Soar][Architecture Planning] Convert architecture docs into executable repair backlog
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - refreshed executable ARB control map from canonical backlog + execution lineage,
+  - synchronized decision-gate truth: `ARB-001` remains `done_gated` via accepted `DEC-ARB-001` and `ARB-002` remains `done_gated` via accepted `DEC-ARB-002`,
+  - preserved fail-closed active blocker truth: `ARB-006` (`LUC-402`) remains blocked on protected-input ownership and `ARB6-EV-001..008` execution issuance.
+- Final disposition: `done` (planning/state lane complete, no runtime/deploy mutation).
+- Evidence:
+  - `history/plans/luc-807-architecture-repair-backlog-control-map-2026-05-30.md`
+  - `history/tasks/luc-807-architecture-docs-executable-repair-backlog-2026-05-30-task.md`
+
 ## 2026-05-30 LUC-785 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402
 - Wake `issue_assigned` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
