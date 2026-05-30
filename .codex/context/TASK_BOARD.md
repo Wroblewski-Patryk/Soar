@@ -1,3 +1,17 @@
+## 2026-05-30 LUC-777 continuation [issue_commented, local sidecar closure confirmation]
+- Wake comment `5c701730-315d-4212-9b28-bb2ccfbb286e` acknowledged first and treated as sidecar-only local source-control closure scope while `LUC-402` protected delivery remains dependency-blocked.
+- Concrete action in this heartbeat:
+  - reran local source-control checkpoint (`git status --short --branch`),
+  - confirmed clean worktree (`main...origin/main [ahead 60]`) with no tracked or staged dirty set,
+  - revalidated prior closure evidence exists in `history/tasks/luc-777-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-30-task.md`.
+- Final disposition:
+  - commit: `not needed` (no new dirty set)
+  - push: `not needed`
+  - deploy impact: `none`
+  - issue status decision: `done`
+- Residual blocker unchanged:
+  1. `LUC-402` remains dependency-blocked in protected delivery lanes outside this local sidecar closure issue.
+
 ## 2026-05-30 LUC-777 [Soar][Source Control Closure] classify-and-close local dirty state for LUC-402
 - Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Wake impact: concrete source-control closure was required in this heartbeat (not planning-only).
