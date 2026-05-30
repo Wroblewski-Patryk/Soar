@@ -1,3 +1,81 @@
+## 2026-05-30 LUC-923 continuation [issue_commented, local sidecar closure reaffirmation]
+- Wake comment `e3a98d61-dd7c-4402-b531-c7cd8a70b2c2` acknowledged first and treated as a local source-control closure sidecar while `LUC-402` remains dependency-blocked on protected delivery gates.
+- Concrete action in this heartbeat:
+  - reran local dirty-state evidence capture (`git status --short --branch`, `git diff --name-only`, `git ls-files --others --exclude-standard`),
+  - reclassified dirty scope as `state/control=2`, `planning-evidence=1`, `task-evidence=3`, `runtime/product code=0`, `LUC-402 scoped dirty files=0`,
+  - reaffirmed no-commit disposition because the dirty set is an active cross-issue evidence lane already in progress.
+- Closure disposition:
+  - commit: `not committed`
+  - push: `not needed`
+  - deploy impact: `none`
+- Final disposition: `done`.
+
+## 2026-05-30 LUC-923 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - captured local dirty-state evidence (`git status --short --branch`, `git diff --name-only`),
+  - classified dirty scope as `state/control=2`, `planning-evidence=1`, `task-evidence=2`, `runtime/product code=0`, `LUC-402 scoped dirty files=0`,
+  - confirmed no runtime/product drift and kept lane bounded to source-control closure evidence.
+- Closure disposition:
+  - commit: `not committed` (dirty set belongs to already-active evidence lanes; no runtime/product mutation in this sidecar checkpoint)
+  - push: `not needed`
+  - deploy impact: `none`
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-923-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-30-task.md`
+
+## 2026-05-30 LUC-241 continuation [issue_continuation_needed, post-autonomous-recheck hold]
+- Wake payload acknowledged first: `issue_continuation_needed` with no new comments (`pending 0/0`, `latest comment id: unknown`).
+- Wake impact: no fresh approval fact for another protected probe after already-consumed autonomous single-recheck window.
+- Concrete action in this heartbeat:
+  - executed one read-only auth-presence checkpoint at `2026-05-30T22:24:43.4415798+02:00` (secret-safe booleans only),
+  - snapshot: `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`,
+  - enforced no-repeat guard: no additional `/workers/ready` recheck without new explicit board approval.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
+  2. Then Ops Release Lead runs exactly one new read-only protected recheck and publishes redaction-safe evidence.
+
+## 2026-05-30 LUC-241 continuation [issue_reopened_via_comment, autonomous-gate single recheck refresh]
+- Wake comment acknowledged first: `eab86b4d-4207-457d-a124-eeeb7ef3ca4b` (`softwarehouse-autonomous-gate-approval:LUC-241:v1`).
+- Comment impact: autonomous standing policy approved exactly one narrow read-only protected auth/smoke recheck for `/workers/ready`; no deploy/restart/mutation/scope expansion allowed.
+- Concrete action in this heartbeat:
+  - executed exactly one canonical-host protected smoke recheck at `2026-05-30T22:23:04.8829677+02:00`:
+    `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`
+  - result:
+    - `PASS` `API /health -> 200`
+    - `PASS` `API /ready -> 200`
+    - `PASS` `WEB / -> 200`
+    - `PASS` `WEB /api/build-info -> 200`
+    - `FAIL` protected endpoint `API /workers/ready -> status 401`
+- Final disposition for this heartbeat: `blocked`.
+- Next blocker:
+  - affected endpoint/resource: `GET https://api.soar.luckysparrow.ch/workers/ready` remains unauthorized for current smoke principal/session path.
+- Unblock owner/action unchanged:
+  1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
+  2. Then Ops Release Lead runs exactly one new read-only protected recheck and publishes redaction-safe evidence.
+
+## 2026-05-30 LUC-919 continuation [issue_continuation_needed wake reconciliation]
+- Wake `issue_continuation_needed` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated `history/plans/luc-919-architecture-repair-backlog-control-map-2026-05-30.md` against canonical ARB lineage,
+  - confirmed decision-gated closure remains unchanged: `ARB-001` via `DEC-ARB-001` and `ARB-002` via `DEC-ARB-002`,
+  - confirmed active blocker truth unchanged: only `ARB-006` (`LUC-402`) is blocked on protected-input ownership and `ARB6-EV-001..008` execution issuance.
+- Final disposition: `done` (planning/state continuation closure, no runtime/deploy mutation).
+- Evidence:
+  - `history/plans/luc-919-architecture-repair-backlog-control-map-2026-05-30.md`
+  - `history/tasks/luc-919-architecture-docs-executable-repair-backlog-2026-05-30-task.md`
+
+## 2026-05-30 LUC-919 [Soar][Architecture Planning] Convert architecture docs into executable repair backlog
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - refreshed executable ARB control map from canonical backlog + execution lineage,
+  - synchronized decision-gate truth: `ARB-001` remains `done_gated` via accepted `DEC-ARB-001` and `ARB-002` remains `done_gated` via accepted `DEC-ARB-002`,
+  - preserved fail-closed active blocker truth: `ARB-006` (`LUC-402`) remains blocked on protected-input ownership and `ARB6-EV-001..008` execution issuance.
+- Final disposition: `done` (planning/state lane complete, no runtime/deploy mutation).
+- Evidence:
+  - `history/plans/luc-919-architecture-repair-backlog-control-map-2026-05-30.md`
+  - `history/tasks/luc-919-architecture-docs-executable-repair-backlog-2026-05-30-task.md`
 ## 2026-05-30 LUC-871 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402
 - Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
@@ -15496,6 +15574,23 @@ None.
 - Evidence:
   `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
 
+## 2026-05-30 LUC-241 Unblock Workers/Ready Smoke Principal Permissions (source_scoped_recovery_action continuation)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat: one read-only presence-only auth artifact checkpoint (status-sync only; no protected smoke rerun).
+- Presence result (`2026-05-30T22:26:45+02:00`):
+  - `SMOKE_AUTH_TOKEN=True`
+  - `SMOKE_AUTH_EMAIL=True`
+  - `SMOKE_AUTH_PASSWORD=True`
+  - `SOAR_API_TOKEN=False`
+  - `SOAR_API_KEY=False`
+  - `SOAR_SESSION_COOKIE=False`
+- Interpretation: auth-binding class remains present, but no fresh board approval arrived in this wake for another protected `/workers/ready` probe.
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged:
+  - Soar API auth credential owner + Security/Test permission owner provide/confirm fresh valid approved read-only ADMIN principal/session artifact for protected `GET /workers/ready`; then Ops Release Lead executes exactly one new read-only protected recheck and publishes redaction-safe proof.
+- Evidence:
+  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+
 ## 2026-05-30 LUC-241 Unblock Workers/Ready Smoke Principal Permissions (issue_reopened_via_comment continuation, autonomous gate)
 - Wake consumed with pending comment `1/1` (`a5f323c8-9843-4efe-aa28-70045392c88c`) and explicit autonomous gate approval acknowledged first.
 - Board-approved scope executed exactly once (read-only only):
@@ -15612,4 +15707,5 @@ None.
   - Soar API auth credential owner + Security/Test permission owner provide/confirm fresh valid approved read-only ADMIN principal/session artifact for protected `GET /workers/ready`; then Ops Release Lead executes exactly one new read-only protected recheck and publishes redaction-safe proof.
 - Evidence:
   `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+
 
