@@ -1,3 +1,17 @@
+## 2026-05-30 LUC-871 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - captured local dirty set from `git status --short` and `git diff --name-only`,
+  - classified dirty scope as `state/control=2`, `task-evidence=1`, `runtime/product code=0`, `LUC-402 scoped dirty files=0`,
+  - closed the full local classified set with one source-control evidence commit.
+- Closure disposition:
+  - commit: `completed` (local closure commit for LUC-871),
+  - push: `not needed`,
+  - deploy impact: `none`.
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-871-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-30-task.md`
+
 ## 2026-05-30 LUC-835 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402
 - Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
@@ -305,6 +319,18 @@
 - Unblock owner/action unchanged: `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain expected-SHA deploy smoke/readiness + worker readiness evidence + rollback note.
 - Evidence:
   `history/tasks/luc-774-safe-lane-non-production-architecture-status-refresh-2026-05-30-task.md`.
+
+## 2026-05-30 LUC-241 continuation [source_scoped_recovery_action, noon status-sync]
+- Wake payload acknowledged first: `source_scoped_recovery_action` (`pending 0/0`, `latest comment id: unknown`, `fallbackFetchNeeded=false`).
+- Wake impact: no new approval/comment fact for another protected probe.
+- Concrete action in this heartbeat:
+  - executed one read-only auth-presence checkpoint at `2026-05-30T12:44:54.2475403+02:00` (secret-safe booleans only),
+  - snapshot: `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`,
+  - enforced no-repeat protected-probe guard: no additional `/workers/ready` recheck without fresh explicit board approval.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
+  2. Then Ops Release Lead runs exactly one new read-only protected recheck and publishes redaction-safe evidence.
 
 ## 2026-05-30 LUC-241 continuation [issue_continuation_needed, autonomous-window consumed hold]
 - Wake payload acknowledged first: `issue_continuation_needed` with no new comments (`pending 0/0`, `latest comment id: unknown`).
@@ -15464,6 +15490,39 @@ None.
   - one canonical-host protected smoke recheck on expected SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`:
     public checks `PASS`, protected `API /workers/ready -> 401`.
 - Interpretation: approved one-time recheck executed and captured; protected readiness remains blocked at auth/session/permission boundary.
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged:
+  - Soar API auth credential owner + Security/Test permission owner provide/confirm fresh valid approved read-only ADMIN principal/session artifact for protected `GET /workers/ready`; then Ops Release Lead executes exactly one new read-only protected recheck and publishes redaction-safe proof.
+- Evidence:
+  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+
+## 2026-05-30 LUC-241 Unblock Workers/Ready Smoke Principal Permissions (issue_reopened_via_comment continuation, autonomous gate)
+- Wake consumed with pending comment `1/1` (`a5f323c8-9843-4efe-aa28-70045392c88c`) and explicit autonomous gate approval acknowledged first.
+- Board-approved scope executed exactly once (read-only only):
+  - one presence-only auth checkpoint at `2026-05-30T12:41:51+02:00`:
+    `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`,
+    `SMOKE_AUTH_PASSWORD=True`, `SOAR_API_TOKEN=False`,
+    `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`;
+  - one canonical-host protected smoke recheck on expected SHA `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`:
+    public checks `PASS`, protected `API /workers/ready -> 401`.
+- Interpretation: approved one-time recheck executed and captured; protected readiness remains blocked on auth/session/permission boundary.
+- Final disposition: `blocked`.
+- Unblock owner/action unchanged:
+  - Soar API auth credential owner + Security/Test permission owner provide/confirm fresh valid approved read-only ADMIN principal/session artifact for protected `GET /workers/ready`; then Ops Release Lead executes exactly one new read-only protected recheck and publishes redaction-safe proof.
+- Evidence:
+  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+
+## 2026-05-30 LUC-241 Unblock Workers/Ready Smoke Principal Permissions (issue_continuation_needed continuation)
+- Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat: one read-only presence-only auth artifact checkpoint (status-sync only; no protected smoke rerun).
+- Presence result (`2026-05-30T12:43:24+02:00`):
+  - `SMOKE_AUTH_TOKEN=True`
+  - `SMOKE_AUTH_EMAIL=True`
+  - `SMOKE_AUTH_PASSWORD=True`
+  - `SOAR_API_TOKEN=False`
+  - `SOAR_API_KEY=False`
+  - `SOAR_SESSION_COOKIE=False`
+- Interpretation: auth-binding class remains present, but no fresh board approval arrived in this wake for another protected `/workers/ready` probe.
 - Final disposition: `blocked`.
 - Unblock owner/action unchanged:
   - Soar API auth credential owner + Security/Test permission owner provide/confirm fresh valid approved read-only ADMIN principal/session artifact for protected `GET /workers/ready`; then Ops Release Lead executes exactly one new read-only protected recheck and publishes redaction-safe proof.

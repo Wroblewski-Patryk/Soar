@@ -1,3 +1,16 @@
+- `LUC-871 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-30 and is `done`.
+  Wake `issue_assigned` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action:
+  - captured local dirty state via `git status --short` and `git diff --name-only`,
+  - classified current dirty scope as `state/control=2`, `task-evidence=1`, `runtime/product code=0`, `LUC-402 scoped dirty files=0`,
+  - closed the full local classified set with one source-control evidence commit.
+  Closure disposition:
+  - commit: `completed` (local closure commit for `LUC-871`)
+  - push: `not needed`
+  - deploy impact: `none`
+  Residual risk:
+  1. Parent protected-delivery lane `LUC-402` remains dependency-blocked outside this source-control sidecar closure.
+
 - `LUC-835 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402` heartbeat executed on 2026-05-30 and is `done`.
   Wake `issue_assigned` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action:
@@ -255,6 +268,16 @@
   Result: no blocker-routing drift; release gate remains fail-closed to `LUC-47`.
   Unblock owner/action unchanged:
   1. `LUC-47` (`Ops Release Lead` + host operator) must attach temp-domain expected-SHA deploy smoke/readiness + worker readiness evidence + rollback note.
+
+- `LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions` source-scoped recovery heartbeat executed on 2026-05-30 and is `blocked`.
+  Inline wake had no new comments/facts (`pending 0/0`), so no additional protected recheck was actionable.
+  Concrete action:
+  - ran one read-only auth-presence checkpoint at `2026-05-30T12:44:54.2475403+02:00` (secret-safe booleans only),
+  - observed `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`.
+  Disposition remains fail-closed `blocked`; unblock chain unchanged.
+  Unblock owner/action unchanged:
+  1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
+  2. Ops Release Lead executes exactly one new read-only protected recheck and publishes redaction-safe proof.
 
 - `LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions` continuation wake (`issue_continuation_needed`) executed on 2026-05-30 and is `blocked`.
   Wake carried no new comments/facts (`pending 0/0`), so no additional protected recheck was actionable.
@@ -13614,6 +13637,57 @@
      public checks `PASS`, protected `API /workers/ready -> 401`.
   Interpretation: board-approved one-time recheck was executed exactly once and
   evidence captured; protected readiness remains blocked on
+  auth/session/permission boundary.
+  Unblock owner/action unchanged:
+  Soar API auth credential owner + Security/Test permission owner must
+  provide/confirm fresh valid approved read-only ADMIN principal/session
+  artifact accepted by API auth and authorized for protected
+  `GET /workers/ready`; then Ops Release Lead executes exactly one new
+  read-only protected recheck and publishes redaction-safe proof.
+  Scope remained read-only verification/docs-state sync
+  (no deploy/restart/runtime mutation).
+  Evidence:
+  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+
+- `LUC-241 issue_continuation_needed heartbeat (2026-05-30)` executed a
+  concrete read-only status checkpoint and remains `blocked`.
+  Inline wake consumed first (`fallbackFetchNeeded=false`, comments `0/0`,
+  latest comment id `unknown`); no new unblock delta was present.
+  Concrete action: one presence-only auth artifact checkpoint at
+  `2026-05-30T12:43:24+02:00` (status-sync only; no protected smoke rerun).
+  Presence-only result:
+  `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`,
+  `SMOKE_AUTH_PASSWORD=True`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`,
+  `SOAR_SESSION_COOKIE=False`.
+  Interpretation: auth-binding class remains present, but no fresh board
+  approval arrived in this wake for another protected `/workers/ready` probe.
+  Unblock owner/action unchanged:
+  Soar API auth credential owner + Security/Test permission owner must
+  provide/confirm fresh valid approved read-only ADMIN principal/session
+  artifact accepted by API auth and authorized for protected
+  `GET /workers/ready`; then Ops Release Lead executes exactly one new
+  read-only protected recheck and publishes redaction-safe proof.
+  Scope remained read-only verification/docs-state sync
+  (no deploy/restart/runtime mutation).
+  Evidence:
+  `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+
+- `LUC-241 issue_reopened_via_comment heartbeat (2026-05-30)` consumed pending
+  comment `a5f323c8-9843-4efe-aa28-70045392c88c` and executed the approved
+  one-time autonomous recheck lane while remaining `blocked`.
+  Comment approval was acknowledged first:
+  `softwarehouse-autonomous-gate-approval:LUC-241:v1`.
+  Concrete read-only action in this heartbeat:
+  1. one presence-only auth artifact checkpoint at
+     `2026-05-30T12:41:51+02:00`:
+     `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`,
+     `SMOKE_AUTH_PASSWORD=True`, `SOAR_API_TOKEN=False`,
+     `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`,
+  2. one canonical-host smoke recheck on expected SHA
+     `71b8d503fd6fdfd7378dc67b2fa678799e2430f8`:
+     public checks `PASS`, protected `API /workers/ready -> 401`.
+  Interpretation: approved one-time recheck was executed exactly once and
+  captured; protected readiness remains blocked on
   auth/session/permission boundary.
   Unblock owner/action unchanged:
   Soar API auth credential owner + Security/Test permission owner must

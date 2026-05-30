@@ -1098,7 +1098,69 @@ Verify whether current smoke principal can authenticate and pass protected `GET 
   1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
   2. Then Ops Release Lead runs exactly one new read-only protected recheck and publishes redaction-safe proof.
 
+## Heartbeat - 2026-05-30T12:44:54+02:00 (source_scoped_recovery_action)
+- Wake acknowledged first: no new comment/unblock delta (`fallbackFetchNeeded=false`, `0/0` comments).
+- Concrete action: one read-only auth artifact presence scan in current runner context (status-sync only; no protected smoke rerun).
+  - `SMOKE_AUTH_TOKEN=True`
+  - `SMOKE_AUTH_EMAIL=True`
+  - `SMOKE_AUTH_PASSWORD=True`
+  - `SOAR_API_TOKEN=False`
+  - `SOAR_API_KEY=False`
+  - `SOAR_SESSION_COOKIE=False`
+- Interpretation:
+  - auth-binding class remains present,
+  - no fresh board approval arrived in this wake for another protected `/workers/ready` probe.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
+  2. Then Ops Release Lead runs exactly one new read-only protected recheck and publishes redaction-safe proof.
+
 ## Heartbeat - 2026-05-30T06:34:18+02:00 (source_scoped_recovery_action)
+- Wake acknowledged first: no new comment/unblock delta (`fallbackFetchNeeded=false`, `0/0` comments).
+- Concrete action: one read-only auth artifact presence scan in current runner context (status-sync only; no protected smoke rerun).
+  - `SMOKE_AUTH_TOKEN=True`
+  - `SMOKE_AUTH_EMAIL=True`
+  - `SMOKE_AUTH_PASSWORD=True`
+  - `SOAR_API_TOKEN=False`
+  - `SOAR_API_KEY=False`
+  - `SOAR_SESSION_COOKIE=False`
+- Interpretation:
+  - auth-binding class remains present,
+  - no fresh board approval arrived in this wake for another protected `/workers/ready` probe.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
+  2. Then Ops Release Lead runs exactly one new read-only protected recheck and publishes redaction-safe proof.
+
+## Heartbeat - 2026-05-30T12:41:51+02:00 (issue_reopened_via_comment, comment a5f323c8-9843-4efe-aa28-70045392c88c)
+- Latest board comment acknowledged first: `softwarehouse-autonomous-gate-approval:LUC-241:v1` approved exactly one narrow read-only protected auth/smoke recheck.
+- Concrete action executed in this heartbeat (no deploy/restart/runtime mutation):
+  1. one presence-only auth artifact checkpoint,
+  2. one canonical-host protected smoke recheck.
+- Presence snapshot (no secret values):
+  - `SMOKE_AUTH_TOKEN=True`
+  - `SMOKE_AUTH_EMAIL=True`
+  - `SMOKE_AUTH_PASSWORD=True`
+  - `SOAR_API_TOKEN=False`
+  - `SOAR_API_KEY=False`
+  - `SOAR_SESSION_COOKIE=False`
+- Smoke command:
+  - `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 71b8d503fd6fdfd7378dc67b2fa678799e2430f8`
+- Smoke result:
+  - PASS `API /health -> 200`
+  - PASS `API /ready -> 200`
+  - PASS `WEB / -> 200`
+  - PASS `WEB /api/build-info -> 200` (expected SHA matched)
+  - FAIL `API /workers/ready -> 401`
+- Interpretation:
+  - approved one-time recheck executed exactly once and captured,
+  - protected readiness remains blocked on auth/session/permission boundary.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
+  2. Then Ops Release Lead runs exactly one new read-only protected recheck and publishes redaction-safe proof.
+
+## Heartbeat - 2026-05-30T12:43:24+02:00 (issue_continuation_needed)
 - Wake acknowledged first: no new comment/unblock delta (`fallbackFetchNeeded=false`, `0/0` comments).
 - Concrete action: one read-only auth artifact presence scan in current runner context (status-sync only; no protected smoke rerun).
   - `SMOKE_AUTH_TOKEN=True`
