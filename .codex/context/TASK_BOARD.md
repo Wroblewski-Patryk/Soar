@@ -1,3 +1,69 @@
+## 2026-05-30 LUC-785 [Soar][Source Control Closure] Classify and close local dirty state for LUC-402
+- Wake `issue_assigned` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - captured local dirty-state evidence (`git status --short --branch`, `git diff --name-only`, `git diff --cached --name-only`),
+  - classified dirty scope as state/control + task-evidence only (no runtime/product code),
+  - closed the full local dirty set with one source-control evidence commit.
+- Classification summary:
+  - dirty tracked files: `.agents/state/active-mission.md`, `.agents/state/system-health.md`, `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`
+  - dirty untracked evidence file: `history/tasks/luc-784-known-state-refresh-evidence-delta-and-next-repair-lanes-2026-05-30-task.md`
+  - lane scope classification: `state/control=4`, `task-evidence=1`, `runtime/product code=0`, `LUC-402 scoped dirty files=0`
+- Closure disposition:
+  - commit: `completed` (see `history/tasks/luc-785-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-30-task.md`)
+  - push: `not needed`
+  - deploy impact: `none`
+- Residual risk:
+  1. Parent protected-delivery lane `LUC-402` remains dependency-blocked outside this local sidecar closure lane.
+- Evidence:
+  - `history/tasks/luc-785-source-control-closure-classify-and-close-local-dirty-state-for-luc-402-2026-05-30-task.md`
+
+## 2026-05-30 LUC-784 continuation [finish_successful_run_handoff]
+- Wake `finish_successful_run_handoff` consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran known-state continuity recheck across `.agents/state/active-mission.md`, `.agents/state/system-health.md`, `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, and `history/plans/luc-45-v1-gap-register-2026-05-25.md`,
+  - reran architecture-awareness baseline readback from `docs/graphs/architecture-awareness.json` and `docs/status/architecture-awareness-report.md`.
+- Handoff reconciliation result:
+  - no metric drift (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
+  - no blocker-routing drift; fail-closed owner/action remains `LUC-47` (Ops Release Lead + host operator),
+  - no new local follow-up lane beyond already published `LUC-47` -> `GAP-L45-006` -> `GAP-L45-003` -> `GAP-L45-004` chain.
+- Scope stayed docs/state/evidence only (no runtime/deploy mutation).
+- Final disposition for this wake: `done`.
+
+## 2026-05-30 LUC-784 continuation [issue_commented wake reconciliation]
+- Wake comment `0597d0e2-ac02-49dc-8a28-5b623ccd0e82` (`softwarehouse-known-state-refresh-wakeup:v1`) acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `1/1`).
+- Concrete action in this heartbeat:
+  - reran canonical known-state recheck across `.agents/state/active-mission.md`, `.agents/state/system-health.md`, `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, and `history/plans/luc-45-v1-gap-register-2026-05-25.md`,
+  - reran architecture-awareness baseline readback from `docs/graphs/architecture-awareness.json` and `docs/status/architecture-awareness-report.md`.
+- Evidence delta result:
+  - no metric drift (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
+  - no blocker-routing drift; fail-closed owner/action remains `LUC-47` (Ops Release Lead + host operator).
+- Next legal repair lanes remain unchanged and explicit:
+  1. `LUC-47` Ops/Release lane: temp-domain expected-SHA API/Web/build-info/worker readiness packet + rollback note.
+  2. `GAP-L45-006` Delivery lane: commit/push closure packet after `LUC-47` unblock evidence.
+  3. `GAP-L45-003` QA lane: deterministic `qa:smoke-e2e:repeatable -- --checks web,api,backtests` on active release SHA.
+  4. `GAP-L45-004` Security lane: protected read-only auth/session/exchange evidence packet.
+- Scope stayed docs/state/evidence only (no runtime/deploy mutation).
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-784-known-state-refresh-evidence-delta-and-next-repair-lanes-2026-05-30-task.md`
+
+## 2026-05-30 LUC-784 [Soar] [Known State Refresh] Evidence delta and next repair lanes
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - rechecked canonical known-state files (`.agents/state/active-mission.md`, `.agents/state/system-health.md`, `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, `history/plans/luc-45-v1-gap-register-2026-05-25.md`),
+  - revalidated architecture-awareness baseline (`docs/graphs/architecture-awareness.json`, `docs/status/architecture-awareness-report.md`).
+- Evidence delta result:
+  - no metric drift vs prior checkpoint (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
+  - no blocker-routing drift; first-class owner/action remains `LUC-47` (Ops Release Lead + host operator).
+- Next repair lanes (explicit owner + proof target):
+  1. `LUC-47` Ops/Release lane: temp-domain expected-SHA API/Web/build-info/worker readiness packet + rollback note.
+  2. `GAP-L45-006` Delivery lane: commit/push closure packet after `LUC-47` unblock evidence.
+  3. `GAP-L45-003` QA lane: deterministic `qa:smoke-e2e:repeatable -- --checks web,api,backtests` on active release SHA.
+  4. `GAP-L45-004` Security lane: protected read-only auth/session/exchange evidence packet.
+- Scope stayed docs/state/evidence only (no runtime/deploy mutation).
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-784-known-state-refresh-evidence-delta-and-next-repair-lanes-2026-05-30-task.md`
 ## 2026-05-30 LUC-777 continuation [finish_successful_run_handoff]
 - Wake `finish_successful_run_handoff` consumed from inline payload first (`fallbackFetchNeeded=false`, comments `0/0`).
 - Concrete action:
@@ -15251,3 +15317,4 @@ None.
   - Soar API auth credential owner + Security/Test permission owner provide/confirm fresh valid approved read-only ADMIN principal/session artifact for protected `GET /workers/ready`; then Ops Release Lead executes exactly one new read-only protected recheck and publishes redaction-safe proof.
 - Evidence:
   `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+
