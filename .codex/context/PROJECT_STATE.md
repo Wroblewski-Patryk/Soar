@@ -1,3 +1,91 @@
+## 2026-05-31 LUC-1115 source-control closure for LUC-1068/LUC-1075/LUC-1112 dirty set
+- `LUC-1115 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1068-LUC-1075-LUC-1112` executed and closed as `done`.
+- Wake `issue_assigned` processed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Classification outcome:
+  - all local dirty paths were continuity docs/context artifacts for `LUC-1075` and `LUC-1112`,
+  - no runtime, deploy, secrets, account, or code-surface mutation detected.
+- Dirty-set closure outcome:
+  - grouped into one coherent source-control closure package and committed under `LUC-1115`,
+  - `LUC-1068` remains `done` and is not reopened by this closure.
+- Evidence:
+  - `history/tasks/luc-1115-source-control-closure-classify-and-close-local-dirty-state-for-luc-1068-luc-1075-luc-1112-2026-05-31-task.md`
+  - `.codex/context/TASK_BOARD.md`
+  - `.codex/context/PROJECT_STATE.md`
+
+## 2026-05-31 LUC-1075 continuation reconciliation (source_scoped_recovery_action)
+- Wake `source_scoped_recovery_action` processed as read-only triage continuity and marked `done`.
+- Concrete action:
+  - reran reconciliation of canonical `LUC-1075`/`LUC-1068`/`LUC-1065` artifacts,
+  - confirmed no new contradictory blocker/classification facts were introduced.
+- State remains unchanged:
+  - `LUC-1068` stays `done` and does not reopen.
+  - next legal action remains in `LUC-1065` lineage under `LUC-1075/LUC-175` guarded policy path.
+- Commit policy in this lane remains `no-commit` (classification-only continuity).
+- Evidence:
+  - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+  - `.codex/context/TASK_BOARD.md`
+  - `.codex/context/PROJECT_STATE.md`
+
+## 2026-05-31 LUC-1075 continuation reconciliation (finish_successful_run_handoff)
+- Wake `finish_successful_run_handoff` processed as read-only triage continuity and marked `done`.
+- Concrete action:
+  - reran reconciliation of `LUC-1075` canonical task/context artifacts after run `e08c9005-7ce7-4dcf-9f10-e65477055618`,
+  - confirmed no new contradictory blocker/classification facts were introduced.
+- State remains unchanged:
+  - `LUC-1068` stays `done` and does not reopen.
+  - next legal action remains in `LUC-1065` lineage under `LUC-1075/LUC-175` guarded policy path.
+- Commit policy in this lane remains `no-commit` (classification-only continuity).
+- Evidence:
+  - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+  - `.codex/context/TASK_BOARD.md`
+  - `.codex/context/PROJECT_STATE.md`
+
+## 2026-05-31 LUC-1075 continuation reconciliation (project_source_control_closure_needed)
+- Wake from comment `7b57401b-f243-49a4-aabf-1162cee1a1c5` processed as read-only source-control closure continuity and marked `done`.
+- Concrete action:
+  - reviewed `LUC-1113` routed classification package for Soar dirty groups,
+  - confirmed all scoped paths are context/evidence artifacts tied to `LUC-1112` planning closure,
+  - confirmed no secret/token leakage indicators and no runtime/deploy mutation in this lane.
+- State remains unchanged:
+  - `LUC-1068` stays `done` and does not reopen.
+  - next legal action remains in `LUC-1065` blocker lineage under `LUC-1075/LUC-175` guarded path: restore canonical availability first, then one read-only health sweep evidence refresh.
+- Commit policy in this lane remains `no-commit` (classification-only evidence handoff).
+- Evidence:
+  - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+  - `history/plans/luc-1112-architecture-repair-backlog-control-map-2026-05-31.md`
+  - `history/tasks/luc-1112-architecture-docs-executable-repair-backlog-2026-05-31-task.md`
+
+## 2026-05-31 LUC-1112 continuation reconciliation (finish_successful_run_handoff)
+- Wake `finish_successful_run_handoff` was processed as a read-only continuity checkpoint and is `done`.
+- Concrete action:
+  - revalidated `LUC-1112` backlog-conversion artifacts against canonical context,
+  - confirmed ARB owner/status/blocker mapping remains consistent with prior closure.
+- State remains unchanged:
+  - `ARB-001` and `ARB-002` stay `done_gated` (`DEC-ARB-001`, `DEC-ARB-002`),
+  - `ARB-006` via `LUC-402` remains the only active blocker pending `ARB6-EV-001..008`.
+- Evidence:
+  - `history/plans/luc-1112-architecture-repair-backlog-control-map-2026-05-31.md`
+  - `history/tasks/luc-1112-architecture-docs-executable-repair-backlog-2026-05-31-task.md`
+
+## 2026-05-31 LUC-1112 architecture backlog conversion refresh
+- `LUC-1112 [Soar][Architecture Planning] Convert architecture docs into executable repair backlog` heartbeat executed on 2026-05-31 and is `done`.
+- Wake `issue_assigned` was acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action:
+  - revalidated canonical ARB lineage and gate decisions across `LUC-384..LUC-919`,
+  - published refreshed control map artifact for `LUC-1112`,
+  - synchronized source-of-truth state with explicit active blocker routing.
+- Current ARB truth after refresh:
+  - `ARB-001`: `done_gated` via `DEC-ARB-001`
+  - `ARB-002`: `done_gated` via `DEC-ARB-002`
+  - `ARB-003`, `ARB-004`, `ARB-005`, `ARB-007`, `ARB-008`: `done`
+  - `ARB-006` (`LUC-402`): only active blocker (`blocked_on_protected_inputs`) pending `ARB6-EV-001..008` issuance/execution.
+- Next legal action:
+  1. Delivery + Security/Test + Ops issue and execute `ARB6-EV-001..008` child evidence tasks under `LUC-402`.
+  2. Keep `LUC-1112` closed unless ARB lineage or accepted decision-gate truth is superseded.
+- Evidence:
+  - `history/plans/luc-1112-architecture-repair-backlog-control-map-2026-05-31.md`
+  - `history/tasks/luc-1112-architecture-docs-executable-repair-backlog-2026-05-31-task.md`
+
 ## 2026-05-31 LUC-1108 source-control closure classification
 - Classified local dirty set requested by `LUC-1108` as fully owned by `LUC-1105` continuity context/evidence artifacts.
 - Dirty paths at classification time:

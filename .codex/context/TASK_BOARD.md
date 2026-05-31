@@ -1,3 +1,99 @@
+## 2026-05-31 LUC-1115 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1068-LUC-1075-LUC-1112
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - classified local dirty paths and mapped them to owning issue lineage,
+  - verified dirty set is docs/context-only and contains no runtime/deploy/account mutations.
+- Classified dirty set:
+  - `.codex/context/PROJECT_STATE.md` -> continuity evidence entries for `LUC-1075` and `LUC-1112`
+  - `.codex/context/TASK_BOARD.md` -> continuity evidence entries for `LUC-1075` and `LUC-1112`
+  - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md` -> continuation reconciliation evidence for `LUC-1075`
+  - `history/plans/luc-1112-architecture-repair-backlog-control-map-2026-05-31.md` -> architecture planning control-map artifact for `LUC-1112`
+  - `history/tasks/luc-1112-architecture-docs-executable-repair-backlog-2026-05-31-task.md` -> task contract and result report for `LUC-1112`
+- Closure decision:
+  - grouped set is valid and in-scope for one source-control-closure commit under `LUC-1115`.
+  - no reopen trigger for `LUC-1068`; classification remains `done`.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1115-source-control-closure-classify-and-close-local-dirty-state-for-luc-1068-luc-1075-luc-1112-2026-05-31-task.md`
+  - `.codex/context/TASK_BOARD.md`
+  - `.codex/context/PROJECT_STATE.md`
+
+## 2026-05-31 LUC-1075 continuation [source_scoped_recovery_action]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran read-only triage continuity verification for `LUC-1068` classification and `LUC-1065` blocker lineage routing,
+  - confirmed no contradictory evidence exists to reopen `LUC-1068`.
+- Classification/routing remain unchanged:
+  - `LUC-1068` remains `done`.
+  - next legal action remains under `LUC-1065` (`LUC-1075/LUC-175` guarded path, restore canonical availability then one read-only health sweep evidence refresh).
+- Commit decision in this triage lane remains `no-commit`.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+  - `.codex/context/TASK_BOARD.md`
+  - `.codex/context/PROJECT_STATE.md`
+
+## 2026-05-31 LUC-1075 continuation [finish_successful_run_handoff]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran read-only continuity reconciliation for `LUC-1075` artifacts and state entries after run `e08c9005-7ce7-4dcf-9f10-e65477055618`,
+  - confirmed no contradictory evidence was introduced for `LUC-1068` classification or downstream routing.
+- Classification/routing remain unchanged:
+  - `LUC-1068` remains `done`.
+  - next legal action remains under `LUC-1065` (`LUC-1075/LUC-175` guarded path, restore canonical availability then one read-only health sweep evidence refresh).
+- Commit decision in this triage lane remains `no-commit`.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+  - `.codex/context/TASK_BOARD.md`
+  - `.codex/context/PROJECT_STATE.md`
+
+## 2026-05-31 LUC-1075 continuation [project_source_control_closure_needed]
+- Wake acknowledged from comment `7b57401b-f243-49a4-aabf-1162cee1a1c5` (`fallbackFetchNeeded=false`).
+- Concrete action in this heartbeat:
+  - reviewed autonomy-governor routed `LUC-1113` read-only source-control closure classification package,
+  - validated classified dirty groups are context/evidence only (`PROJECT_STATE`, `TASK_BOARD`, `LUC-1112` plan/task artifacts),
+  - confirmed secret/token redaction check result remains clean and no repo/runtime mutation occurred in this lane.
+- Classification decision remains unchanged:
+  - `LUC-1068` stays `done` as closed source-control-closure sidecar.
+  - next legal action remains routed via `LUC-1065` under `LUC-1075/LUC-175` protected gate path (restore canonical availability, then one read-only health sweep with fresh evidence).
+- Commit decision in this triage lane: `no-commit` (classification-only continuity).
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+  - `history/plans/luc-1112-architecture-repair-backlog-control-map-2026-05-31.md`
+  - `history/tasks/luc-1112-architecture-docs-executable-repair-backlog-2026-05-31-task.md`
+
+## 2026-05-31 LUC-1112 continuation [finish_successful_run_handoff]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran read-only ARB lineage consistency check across `LUC-1112` control-map/task artifacts and canonical state files,
+  - confirmed no drift against prior closure routing.
+- Continuation outcome (unchanged):
+  - `ARB-001` and `ARB-002` remain `done_gated` via accepted decisions (`DEC-ARB-001`, `DEC-ARB-002`),
+  - `ARB-006` (`LUC-402`) remains the only active architecture-repair blocker pending `ARB6-EV-001..008` issuance/execution,
+  - no new blocker or reopen trigger found for `LUC-1112`.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/plans/luc-1112-architecture-repair-backlog-control-map-2026-05-31.md`
+  - `history/tasks/luc-1112-architecture-docs-executable-repair-backlog-2026-05-31-task.md`
+
+## 2026-05-31 LUC-1112 [Soar][Architecture Planning] Convert architecture docs into executable repair backlog
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated canonical architecture-repair lineage (`LUC-384` -> `LUC-919`) and decision gates (`DEC-ARB-001`, `DEC-ARB-002`),
+  - refreshed executable ownership/status for `ARB-001..ARB-008`,
+  - published new control-map artifact and synchronized source-of-truth context.
+- Outcome:
+  - `ARB-001`: `done_gated` (`DEC-ARB-001`)
+  - `ARB-002`: `done_gated` (`DEC-ARB-002`)
+  - `ARB-003`, `ARB-004`, `ARB-005`, `ARB-007`, `ARB-008`: `done`
+  - `ARB-006` (`LUC-402`): only active blocker (`blocked_on_protected_inputs`) pending `ARB6-EV-001..008` issuance/execution.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/plans/luc-1112-architecture-repair-backlog-control-map-2026-05-31.md`
+  - `history/tasks/luc-1112-architecture-docs-executable-repair-backlog-2026-05-31-task.md`
+
 ## 2026-05-31 LUC-1108 [Soar][Source Control Closure] Classify and close LUC-1105 context/evidence dirty set
 - Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
