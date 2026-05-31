@@ -1,3 +1,12 @@
+## 2026-05-31 LUC-1148 continuation [issue_continuation_needed]
+- Wake `issue_continuation_needed` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran local source-control closure verification (`git status --short --branch`, `git log --oneline -n 6`),
+  - confirmed closure commit `505924bc` remains present and no new dirty paths exist.
+- Final disposition for this wake: `done` (no additional classification or closure commit required).
+- Evidence:
+  - `history/tasks/luc-1148-source-control-closure-issue-continuation-needed-2026-05-31-task.md`
+
 ## 2026-05-31 LUC-1154 continuation [source_scoped_recovery_action]
 - Wake `source_scoped_recovery_action` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
