@@ -1,3 +1,31 @@
+## 2026-05-31 LUC-1108 source-control closure classification
+- Classified local dirty set requested by `LUC-1108` as fully owned by `LUC-1105` continuity context/evidence artifacts.
+- Dirty paths at classification time:
+  - `.codex/context/PROJECT_STATE.md`
+  - `.codex/context/TASK_BOARD.md`
+  - `history/evidence/luc-1105-coolify-production-deploy-health-sweep-2026-05-31.md`
+  - `history/tasks/luc-1105-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
+- Runtime/product/deploy mutation paths in dirty set: `0`.
+- Disposition: `done` for classification lane; no commit/push/deploy action executed in this heartbeat.
+- Evidence:
+  - `history/tasks/luc-1108-source-control-closure-classify-and-close-luc-1105-context-evidence-dirty-set-2026-05-31-task.md`
+## 2026-05-31 LUC-1105 continuation (finish_successful_run_handoff)
+- Executed one additional read-only continuity recheck after prior `done` sweep.
+- Canonical public endpoints remained healthy (`200` across API `/health`, API `/ready`, Web `/`, Web `/api/build-info`).
+- Build-info parity remained unchanged on `main` (`gitSha=6839cd6b8884e26eca735ce32cea98c1dadccfbe`, `metadataSource=github-branch`).
+- Disposition: `done`; no production mutation performed.
+- Evidence:
+  - `history/evidence/luc-1105-coolify-production-deploy-health-sweep-2026-05-31.md`
+  - `history/tasks/luc-1105-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
+## 2026-05-31 LUC-1105 coolify production deploy health sweep
+- Executed one read-only public health sweep on canonical Soar production hosts after prior degraded (`503`) continuity evidence.
+- Captured source snapshot: `HEAD=a314b8742a2318f5fe22b0442ccc7f68ed67a54d`, `origin/main=6839cd6b8884e26eca735ce32cea98c1dadccfbe`.
+- Result: `https://api.soar.luckysparrow.ch/health`, `https://api.soar.luckysparrow.ch/ready`, `https://soar.luckysparrow.ch/`, and `https://soar.luckysparrow.ch/api/build-info` all returned `200`.
+- Build-info readback confirms deploy parity on `main` (`gitSha=6839cd6b8884e26eca735ce32cea98c1dadccfbe`, `metadataSource=github-branch`).
+- Disposition: `done`; no deploy/restart/rollback/env mutation performed.
+- Evidence:
+  - `history/evidence/luc-1105-coolify-production-deploy-health-sweep-2026-05-31.md`
+  - `history/tasks/luc-1105-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
 ## 2026-05-31 LUC-1075 continuation [source_scoped_recovery_action]
 - Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
@@ -14621,3 +14649,5 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   First-class unblock owner/action unchanged:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical Soar runtime availability and publish no-mutation incident note for the ongoing 503 interval.
   2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected /workers/ready recheck and publishes redaction-safe evidence.
+
+

@@ -1,3 +1,47 @@
+## 2026-05-31 LUC-1108 [Soar][Source Control Closure] Classify and close LUC-1105 context/evidence dirty set
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - captured dirty baseline with `git status --short`,
+  - inspected `TASK_BOARD`/`PROJECT_STATE` diffs and new `LUC-1105` history artifacts,
+  - classified each dirty path by issue ownership and layer.
+- Classification outcome:
+  - dirty paths are fully attributable to `LUC-1105` continuity context/evidence artifacts,
+  - runtime/product/deploy mutation paths in dirty set: `0`.
+- Final disposition for this wake: `done` (classification and closure evidence complete; no commit/push/deploy in this lane).
+- Evidence:
+  - `history/tasks/luc-1108-source-control-closure-classify-and-close-luc-1105-context-evidence-dirty-set-2026-05-31-task.md`
+## 2026-05-31 LUC-1105 continuation [finish_successful_run_handoff]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - executed additional read-only continuity smoke on canonical API/Web endpoints,
+  - captured build-info readback parity check.
+- Continuation outcome:
+  - `PASS API /health -> 200`
+  - `PASS API /ready -> 200`
+  - `PASS WEB / -> 200`
+  - `PASS WEB /api/build-info -> 200`
+  - build-info unchanged: `gitSha=6839cd6b8884e26eca735ce32cea98c1dadccfbe`, `gitRef=main`, `metadataSource=github-branch`.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1105-coolify-production-deploy-health-sweep-2026-05-31.md`
+  - `history/tasks/luc-1105-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
+## 2026-05-31 LUC-1105 [Soar] Coolify production deploy health sweep
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - captured source snapshot (`HEAD`: `a314b8742a2318f5fe22b0442ccc7f68ed67a54d`, `origin/main`: `6839cd6b8884e26eca735ce32cea98c1dadccfbe`),
+  - executed canonical read-only public deploy smoke on API/Web endpoints,
+  - verified endpoint statuses with direct `curl` probes,
+  - captured build-info readback for deploy-freshness parity.
+- Outcome:
+  - `https://api.soar.luckysparrow.ch/health -> 200`
+  - `https://api.soar.luckysparrow.ch/ready -> 200`
+  - `https://soar.luckysparrow.ch/ -> 200`
+  - `https://soar.luckysparrow.ch/api/build-info -> 200`
+  - build-info `gitSha=6839cd6b8884e26eca735ce32cea98c1dadccfbe`, `gitRef=main`, `metadataSource=github-branch`.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1105-coolify-production-deploy-health-sweep-2026-05-31.md`
+  - `history/tasks/luc-1105-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
 ## 2026-05-31 LUC-1075 continuation [source_scoped_recovery_action]
 - Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
@@ -16797,3 +16841,5 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
 - First-class unblock owner/action unchanged:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical Soar runtime availability and publish no-mutation incident note for the 503 interval.
   2. After recovery and fresh explicit gate approval, Ops Release Lead executes exactly one new read-only protected /workers/ready recheck and publishes redaction-safe evidence.
+
+
