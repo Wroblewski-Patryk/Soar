@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-05-29T21:57:07.511Z
+Generated: 2026-05-31T20:42:36.027Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,32 +11,32 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 37 |
 | component | 97 |
-| document | 2906 |
-| feature | 212 |
-| function | 2607 |
+| document | 3001 |
+| feature | 221 |
+| function | 8228 |
 | migration | 56 |
-| model | 106 |
+| model | 275 |
 | module | 15 |
 | project | 1 |
 | route | 346 |
-| task | 646 |
-| test | 364 |
+| task | 702 |
+| test | 365 |
 
 ## Counts By Status
 
 | Status | Count |
 | --- | ---: |
-| blocked | 13 |
+| blocked | 14 |
 | deprecated | 8 |
-| implemented | 6151 |
-| in_progress | 8 |
-| tested | 628 |
-| verified | 637 |
+| implemented | 12044 |
+| in_progress | 9 |
+| tested | 630 |
+| verified | 691 |
 
 ## Health Signals
 
-- Implementation entities without inferred tests: 2056
-- Implementation entities without inferred docs: 798
+- Implementation entities without inferred tests: 200
+- Implementation entities without inferred docs: 200
 - Entities without owner attribution: 0
 - Disconnected entities: 0
 

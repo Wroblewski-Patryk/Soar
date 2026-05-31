@@ -1,3 +1,56 @@
+## 2026-05-31 LUC-1154 continuation [source_scoped_recovery_action]
+- Wake `source_scoped_recovery_action` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - executed scanner refresh `node scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` from `C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse`,
+  - reran canonical drift recheck across `.agents/state/active-mission.md`, `.agents/state/system-health.md`, `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, and `history/plans/luc-45-v1-gap-register-2026-05-25.md`.
+- Evidence delta result:
+  - baseline changed vs prior checkpoint: `generated_at=2026-05-31T20:42:36.027Z`, entities `13396` (was `7338`), relations `20522` (was `14300`), inferred test/doc gaps now `200/200` (were `2056/798`), disconnected entities `0`,
+  - blocker routing unchanged; fail-closed owner/action remains `LUC-47`.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1154-known-state-refresh-evidence-delta-and-next-repair-lanes-2026-05-31-task.md`
+
+## 2026-05-31 LUC-1154 continuation [finish_successful_run_handoff]
+- Wake `finish_successful_run_handoff` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran canonical drift recheck across `.agents/state/active-mission.md`, `.agents/state/system-health.md`, `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, and `history/plans/luc-45-v1-gap-register-2026-05-25.md`,
+  - reran architecture-awareness baseline readback from `docs/graphs/architecture-awareness.json` and `docs/status/architecture-awareness-report.md`.
+- Delta result:
+  - no metric drift (`generated_at=2026-05-29T21:57:07.511Z`, inferred gaps unchanged: tests `2056`, docs `798`, disconnected entities `0`),
+  - no blocker-routing drift; fail-closed owner/action remains `LUC-47`.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1154-known-state-refresh-evidence-delta-and-next-repair-lanes-2026-05-31-task.md`
+## 2026-05-31 LUC-1154 continuation [issue_commented]
+- Wake `issue_commented` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `1/1`, latest comment id `bb9b6d99-ade0-4e41-8021-605d4afc6e9d`).
+- Comment impact on this heartbeat:
+  - keep scope as known-state refresh only, with concrete action required before disposition.
+- Concrete action in this heartbeat:
+  - reran canonical drift recheck across `.agents/state/active-mission.md`, `.agents/state/system-health.md`, `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, and `history/plans/luc-45-v1-gap-register-2026-05-25.md`,
+  - reran architecture-awareness baseline readback from `docs/graphs/architecture-awareness.json` and `docs/status/architecture-awareness-report.md`.
+- Delta result:
+  - no metric drift (`generated_at=2026-05-29T21:57:07.511Z`, inferred gaps unchanged: tests `2056`, docs `798`, disconnected entities `0`),
+  - no blocker-routing drift; fail-closed owner/action remains `LUC-47`.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1154-known-state-refresh-evidence-delta-and-next-repair-lanes-2026-05-31-task.md`
+## 2026-05-31 LUC-1154 [Soar] [Known State Refresh] Evidence delta and next repair lanes
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - rechecked canonical known-state files (`.agents/state/active-mission.md`, `.agents/state/system-health.md`, `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`, `history/plans/luc-45-v1-gap-register-2026-05-25.md`),
+  - revalidated architecture-awareness baseline (`docs/graphs/architecture-awareness.json`, `docs/status/architecture-awareness-report.md`).
+- Evidence delta result:
+  - no metric drift vs prior checkpoint (`generated_at=2026-05-29T21:57:07.511Z`, inferred test gaps `2056`, inferred docs gaps `798`, disconnected entities `0`),
+  - no blocker-routing drift; first-class owner/action remains `LUC-47` (Ops Release Lead + host operator).
+- Next repair lanes (explicit owner + proof target):
+  1. `LUC-47` Ops/Release lane: temp-domain expected-SHA API/Web/build-info/worker readiness packet + rollback note.
+  2. `GAP-L45-006` Delivery lane: commit/push closure packet after `LUC-47` unblock evidence.
+  3. `GAP-L45-003` QA lane: deterministic `qa:smoke-e2e:repeatable -- --checks web,api,backtests` on active release SHA.
+  4. `GAP-L45-004` Security lane: protected read-only auth/session/exchange evidence packet.
+- Scope stayed docs/state/evidence only (no runtime/deploy mutation).
+- Final disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-1154-known-state-refresh-evidence-delta-and-next-repair-lanes-2026-05-31-task.md`
 ## 2026-05-31 LUC-1148 continuation [source_scoped_recovery_action]
 - Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
@@ -17248,3 +17301,15 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
 - Final disposition for this wake: `done`.
 - Evidence:
   - `history/tasks/luc-1148-source-control-closure-finish-successful-run-handoff-2026-05-31-task.md`
+
+
+## 2026-05-31 LUC-1148 continuation [issue_commented]
+- Wake `issue_commented` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `1/1`, latest comment id `73477930-b96b-43d4-a18c-2a267afc9f1f`).
+- Comment impact on this heartbeat:
+  - execute autonomous local repair/source-control lane now, but keep protected delivery fail-closed.
+- Concrete action:
+  - classified current dirty set (`.agents/.codex/docs/history` only) as docs/state/evidence closure-eligible;
+  - revalidated no runtime/product paths in dirty scope;
+  - produced closure artifact `history/tasks/luc-1148-source-control-closure-comment-73477930-local-repair-lane-2026-05-31-task.md`.
+- Commit decision: `committed locally` (docs/history/evidence/context only), `not pushed`, deploy impact `none`.
+- Final disposition for this wake: `done`.
