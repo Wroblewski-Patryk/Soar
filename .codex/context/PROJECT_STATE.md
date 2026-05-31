@@ -1,3 +1,17 @@
+## 2026-05-31 LUC-1126 source-control closure for LUC-405/LUC-1123 dirty set
+- `LUC-1126 [Soar][Source Control Closure] Classify and close local dirty state for LUC-405-LUC-1123` executed as a closure sidecar lane.
+- Wake `issue_assigned` processed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Dirty-worktree baseline:
+  - `.codex/context/PROJECT_STATE.md`
+  - `.codex/context/TASK_BOARD.md`
+  - `history/tasks/luc-1123-softwarehouse-blocked-triage-classify-luc-405-and-produce-next-legal-action-2026-05-31-task.md`
+- Classification outcome:
+  - all dirty paths are documentation/state continuity artifacts tied to `LUC-1123`.
+  - runtime/product/deploy/account/secret mutation paths in dirty set: `0`.
+- Final disposition:
+  - `LUC-1126` closed as `done`.
+- Evidence:
+  - `history/tasks/luc-1126-source-control-closure-classify-and-close-local-dirty-state-for-luc-405-luc-1123-2026-05-31-task.md`
 ## 2026-05-31 LUC-1122 continuation reconciliation (finish_successful_run_handoff)
 - Wake `finish_successful_run_handoff` processed as closure continuity verification and marked `done`.
 - Concrete action:
@@ -14857,4 +14871,15 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - `LUC-1068` stays `done` and does not reopen.
   - one legal next action remains in `LUC-1065` lineage under `LUC-1075/LUC-175` guarded policy path.
 - Commit policy in this lane remains `no-commit` (classification-only continuity).
+
+
+- `LUC-1123 [Softwarehouse][Blocked Triage]` (2026-05-31): classified `LUC-405` as still fail-closed `blocked/NO-GO` with unchanged protected-family gaps and no valid blocker-resolved evidence.
+  Next legal action remains trigger-gated by continuation-control contract: wait for explicit trigger, then run one same-context dual-check (`ops:operator-unblock:check` + `ops:protected-inputs:check`) and publish parent unblock only on complete/stable readiness.
+  Evidence: `history/tasks/luc-1123-softwarehouse-blocked-triage-classify-luc-405-and-produce-next-legal-action-2026-05-31-task.md`.
+
+- `LUC-1123` continuation wake `finish_successful_run_handoff` (2026-05-31) reconciled to `done` with anti-drift closure.
+  No scope expansion: touched files remain docs/state only (`TASK_BOARD`, `PROJECT_STATE`, `history/tasks/luc-1123...task.md`), and continuation-summary touched-route claims (`server/workers/frontend`, `.github/workflows/ci.yml`, `scripts/buildObsidianVaultLayer.mjs`) are not attributable to this lane.
+
+- `LUC-1123` continuation wake `source_scoped_recovery_action` (2026-05-31) reconciled to `done` as read-only triage continuity.
+  Revalidation confirmed no new blocker-resolved trigger for `LUC-405`; fail-closed `blocked/NO-GO` classification remains unchanged with existing trigger-gated next action.
 

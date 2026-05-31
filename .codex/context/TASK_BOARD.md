@@ -1,3 +1,22 @@
+## 2026-05-31 LUC-1126 [Soar][Source Control Closure] Classify and close local dirty state for LUC-405-LUC-1123
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - captured dirty baseline with `git status --short --branch`,
+  - mapped each dirty path to `LUC-1123` continuity evidence scope,
+  - verified no runtime/product/deploy/account/secret mutation in the dirty set.
+- Classified dirty paths:
+  - `.codex/context/PROJECT_STATE.md`
+  - `.codex/context/TASK_BOARD.md`
+  - `history/tasks/luc-1123-softwarehouse-blocked-triage-classify-luc-405-and-produce-next-legal-action-2026-05-31-task.md`
+- Closure decision:
+  - dirty set is docs/state continuity only; safe to close as source-control sidecar lane.
+- Final disposition for this wake: `done`.
+- Commit/push/deploy disposition:
+  - commit: `committed` (closure packet in this lane)
+  - push: `not needed`
+  - deploy impact: `none`
+- Evidence:
+  - `history/tasks/luc-1126-source-control-closure-classify-and-close-local-dirty-state-for-luc-405-luc-1123-2026-05-31-task.md`
 ## 2026-05-31 LUC-1122 continuation [finish_successful_run_handoff]
 - Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
@@ -17066,5 +17085,39 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
   - `LUC-1068` remains `done`.
   - exactly one legal next action remains under `LUC-1065` owner path (Ops Release Lead + platform/Coolify runtime owner -> restore canonical availability -> one read-only health sweep evidence refresh).
 - Follow-up issue decision: none (single legal lane already explicit).
+- Final disposition for this wake: `done`.
+
+
+## 2026-05-31 LUC-1123 [Softwarehouse][Blocked Triage] Classify LUC-405 and produce next legal action
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); no new comment delta to consume.
+- Concrete action:
+  - reviewed latest canonical `LUC-405` evidence in task board/project state and continuation control addendum,
+  - verified `LUC-405` remains fail-closed `blocked/NO-GO` (`protected-inputs=PARTIAL`, `operator-unblock=PASS + NO-GO`, missing required protected families unchanged).
+- Classification outcome: `LUC-405` remains `blocked`; blocker-resolved claim is not evidenced.
+- Next legal action (owner/action gate):
+  1. Keep `LUC-405` blocked until one trigger from continuation control appears (approved read-only principal/session; credential-owner protected-family restore confirmation; explicit board/parent named SHA/date revalidation request).
+  2. On trigger, Ops lane runs dual-check (`ops:operator-unblock:check` + `ops:protected-inputs:check`) in same runner context.
+  3. Publish parent unblock only if complete stable readiness is proven; otherwise remain blocked with blocker delta.
+- Final disposition for this heartbeat: `done`.
+- Evidence: `history/tasks/luc-1123-softwarehouse-blocked-triage-classify-luc-405-and-produce-next-legal-action-2026-05-31-task.md`
+
+## 2026-05-31 LUC-1123 continuation [finish_successful_run_handoff]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action:
+  - performed anti-drift liveness closure for this triage lane,
+  - validated the only touched files for `LUC-1123` remain docs/state artifacts:
+    - `.codex/context/TASK_BOARD.md`
+    - `.codex/context/PROJECT_STATE.md`
+    - `history/tasks/luc-1123-softwarehouse-blocked-triage-classify-luc-405-and-produce-next-legal-action-2026-05-31-task.md`
+  - classified continuation-summary `Files / Routes Touched` entries (`server/workers/frontend`, `.github/workflows/ci.yml`, `scripts/buildObsidianVaultLayer.mjs`) as not attributable to `LUC-1123`.
+- Outcome: no new blocker fact and no additional legal lane created; prior `LUC-405` blocked classification stands unchanged.
+- Final disposition for this wake: `done`.
+
+## 2026-05-31 LUC-1123 continuation [source_scoped_recovery_action]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); no new comment delta to consume.
+- Concrete action:
+  - reran read-only triage reconciliation for `LUC-1123` against latest local source-of-truth entries and task artifact evidence,
+  - reconfirmed `LUC-405` remains fail-closed `blocked/NO-GO` with unchanged protected-family readiness gaps and no blocker-resolved trigger fact.
+- Outcome: no new legal branch was created; existing trigger-gated next action for `LUC-405` remains unchanged.
 - Final disposition for this wake: `done`.
 
