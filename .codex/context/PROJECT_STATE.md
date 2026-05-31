@@ -14923,3 +14923,12 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - `LUC-1123` continuation wake `source_scoped_recovery_action` (2026-05-31) reconciled to `done` as read-only triage continuity.
   Revalidation confirmed no new blocker-resolved trigger for `LUC-405`; fail-closed `blocked/NO-GO` classification remains unchanged with existing trigger-gated next action.
 
+
+- `LUC-1128 [Soar][Source Control Closure]` continuation wake `source_scoped_recovery_action` executed on 2026-05-31 and is `done`.
+  Wake was acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); no comment delta required triage.
+  Concrete action (read-only local closure continuity check at 2026-05-31T20:53:50.3659854+02:00):
+  - `git status --short` -> clean worktree (no dirty paths),
+  - `git log --oneline -n 8` -> continuity closure chain present (`7797e880`, `843a6deb`, `cae7917e`).
+  Disposition: no new dirty-state classification or closure commit required in this wake; sidecar lane remains closed.
+  Evidence:
+  - `history/tasks/luc-1128-soar-source-control-closure-classify-and-close-local-dirty-state-for-luc-973-luc-1127-2026-05-31-task.md`
