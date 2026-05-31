@@ -14530,3 +14530,55 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   Closure disposition: `not committed` / `not needed` / `none`.
   Evidence:
   `history/tasks/luc-1083-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-luc-1080-2026-05-31-task.md`.
+
+- `LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions` continuation wake (`issue_reopened_via_comment`) executed on 2026-05-31 and remains `blocked`.
+  Board comment `softwarehouse-autonomous-gate-approval:LUC-241:v1` (id `f12260b0-fb30-42c4-9dca-cc45ebe2fe59`) was acknowledged first and consumed as exactly one authorized read-only recheck.
+  Concrete action:
+  - executed one canonical-host smoke recheck:
+    `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`
+  - result:
+    - `API /health -> 503`
+    - `API /ready -> 503`
+    - `WEB / -> 503`
+    - `WEB /api/build-info -> 503`
+    - `API /workers/ready -> 503`
+  - auth artifact presence checkpoint (no secret values):
+    `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`.
+  No deploy/restart/runtime mutation/push was performed.
+  First-class unblock owner/action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for this `503` interval.
+  2. After recovery and fresh explicit gate approval, execute exactly one read-only protected `/workers/ready` recheck and publish redaction-safe evidence.
+
+- `LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions` continuation wake (`finish_successful_run_handoff`) executed on 2026-05-31 and remains `blocked`.
+  Wake was acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action (read-only continuity checkpoint; no additional protected rerun):
+  - auth artifact presence: `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`.
+  - canonical public probes:
+    - `https://api.soar.luckysparrow.ch/health -> 503`
+    - `https://api.soar.luckysparrow.ch/ready -> 503`
+    - `https://soar.luckysparrow.ch/ -> 503`
+    - `https://soar.luckysparrow.ch/api/build-info -> 503`
+  Interpretation: blocker state unchanged; canonical runtime availability remains degraded.
+  First-class unblock owner/action unchanged:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for this `503` interval.
+  2. After recovery and fresh explicit gate approval, execute exactly one read-only protected `/workers/ready` recheck and publish redaction-safe evidence.
+
+- LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions continuation wake (source_scoped_recovery_action) executed on 2026-05-31 and is locked.
+  Wake was acknowledged from inline payload (allbackFetchNeeded=false, comments  /0, latest comment id unknown).
+  Concrete action (read-only continuity checkpoint at 2026-05-31T16:46:49.5006511+02:00):
+  - auth artifact presence: SMOKE_AUTH_TOKEN=True, SMOKE_AUTH_EMAIL=True, SMOKE_AUTH_PASSWORD=True, SOAR_API_TOKEN=False, SOAR_API_KEY=False, SOAR_SESSION_COOKIE=False.
+  - canonical public probes: https://api.soar.luckysparrow.ch/health -> 503, https://api.soar.luckysparrow.ch/ready -> 503, https://soar.luckysparrow.ch/ -> 503, https://soar.luckysparrow.ch/api/build-info -> 503.
+  Disposition remains fail-closed locked; canonical runtime availability blocker is unchanged and protected /workers/ready recheck is not actionable in this wake.
+  First-class unblock owner/action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for the ongoing 503 interval.
+  2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected /workers/ready recheck and publishes redaction-safe evidence.
+
+- `LUC-1097 [Soar][Source Control Closure] Classify and close local dirty state for LUC-241` heartbeat (`issue_commented`) executed on 2026-05-31 and is `done`.
+  Wake comment `217c7b3b-799f-469a-aba9-8b3b62f884b8` (`softwarehouse-local-repair-lane-starter:v1`) was acknowledged first and consumed as sidecar-only local source-control closure while `LUC-241` remains dependency-blocked.
+  Concrete action in this heartbeat:
+  - captured dirty baseline via `git status --short --branch` + `git diff --name-only`,
+  - classified all dirty paths as `LUC-241` continuity ownership,
+  - confirmed runtime/product/deploy dirty paths remain `0`.
+  Final disposition for this wake: `done`.
+  Evidence:
+  - `history/tasks/luc-1097-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-2026-05-31-task.md`

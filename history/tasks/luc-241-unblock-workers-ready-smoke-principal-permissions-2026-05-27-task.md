@@ -1580,3 +1580,74 @@ Verify whether current smoke principal can authenticate and pass protected `GET 
   - all dirty files belong to `LUC-241` continuity docs/state evidence; runtime/product source files in dirty set remain `0`.
 - Closure action:
   - sidecar lane `LUC-1064` authorizes one coherent local docs/state/evidence commit for this continuity set (no push/deploy).
+
+## Heartbeat - 2026-05-31T16:43:58.0101878+02:00 (issue_reopened_via_comment, comment f12260b0-fb30-42c4-9dca-cc45ebe2fe59)
+- Latest board comment acknowledged first: autonomous standing policy approved exactly one narrow read-only protected `/workers/ready` auth/smoke recheck.
+- Concrete action in this heartbeat (single recheck only; no deploy/restart/runtime mutation/push):
+  - `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`
+  - auth-artifact presence checkpoint (no secret values):
+    - `SMOKE_AUTH_TOKEN=True`
+    - `SMOKE_AUTH_EMAIL=True`
+    - `SMOKE_AUTH_PASSWORD=True`
+    - `SOAR_API_TOKEN=False`
+    - `SOAR_API_KEY=False`
+    - `SOAR_SESSION_COOKIE=False`
+- Recheck result:
+  - `FAIL API /health -> status 503`
+  - `FAIL API /ready -> status 503`
+  - `FAIL WEB / -> status 503`
+  - `FAIL WEB /api/build-info -> status 503`
+  - `FAIL API /workers/ready -> status 503`
+- Interpretation:
+  - the one authorized recheck lane was consumed exactly once,
+  - canonical runtime availability remains degraded (`503`), so this wake cannot produce authz proof for protected readiness.
+- Final disposition for this heartbeat: `blocked`.
+- First-class unblock owner/action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for this `503` interval.
+  2. After recovery and fresh explicit gate approval, Ops Release Lead executes exactly one new read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
+
+## Heartbeat - 2026-05-31T16:45:09.0940822+02:00 (finish_successful_run_handoff)
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat (read-only continuity checkpoint; no additional protected rerun):
+  - auth artifact presence:
+    - `SMOKE_AUTH_TOKEN=True`
+    - `SMOKE_AUTH_EMAIL=True`
+    - `SMOKE_AUTH_PASSWORD=True`
+    - `SOAR_API_TOKEN=False`
+    - `SOAR_API_KEY=False`
+    - `SOAR_SESSION_COOKIE=False`
+  - canonical public probes:
+    - `https://api.soar.luckysparrow.ch/health -> 503`
+    - `https://api.soar.luckysparrow.ch/ready -> 503`
+    - `https://soar.luckysparrow.ch/ -> 503`
+    - `https://soar.luckysparrow.ch/api/build-info -> 503`
+- Interpretation:
+  - blocker state unchanged after the previously consumed one-shot recheck approval,
+  - canonical runtime availability remains degraded, so protected readiness proof cannot progress in this wake.
+- Final disposition for this heartbeat: `blocked`.
+- First-class unblock owner/action unchanged:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for this `503` interval.
+  2. After recovery and fresh explicit gate approval, Ops Release Lead executes exactly one new read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
+
+## Heartbeat - 2026-05-31T16:46:49.5006511+02:00 (source_scoped_recovery_action)
+- Wake acknowledged first from inline payload (allbackFetchNeeded=false, comments  /0, latest comment id unknown).
+- Concrete action in this heartbeat (read-only continuity checkpoint; no protected smoke recheck):
+  - auth artifact presence:
+    - SMOKE_AUTH_TOKEN=True
+    - SMOKE_AUTH_EMAIL=True
+    - SMOKE_AUTH_PASSWORD=True
+    - SOAR_API_TOKEN=False
+    - SOAR_API_KEY=False
+    - SOAR_SESSION_COOKIE=False
+  - canonical public probes:
+    - https://api.soar.luckysparrow.ch/health -> 503
+    - https://api.soar.luckysparrow.ch/ready -> 503
+    - https://soar.luckysparrow.ch/ -> 503
+    - https://soar.luckysparrow.ch/api/build-info -> 503
+- Interpretation:
+  - blocker state unchanged after previous continuity checkpoints,
+  - canonical runtime availability remains degraded, so protected /workers/ready recheck is not actionable in this wake.
+- Final disposition for this heartbeat: locked.
+- First-class unblock owner/action unchanged:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for this 503 interval.
+  2. After recovery and fresh explicit gate approval, Ops Release Lead executes exactly one new read-only protected /workers/ready recheck and publishes redaction-safe evidence.
