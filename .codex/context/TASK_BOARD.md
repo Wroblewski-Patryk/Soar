@@ -1,3 +1,64 @@
+## 2026-05-31 LUC-1122 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1119-LUC-1120-LUC-1121
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - captured local dirty baseline from `git status --short --branch`,
+  - mapped each dirty path to owning continuity lanes (`LUC-1120`, `LUC-1121`),
+  - verified no runtime/product/deploy scope appeared in the dirty set.
+- Classified dirty paths:
+  - `.codex/context/PROJECT_STATE.md`
+  - `.codex/context/TASK_BOARD.md`
+  - `history/tasks/luc-1120-blocked-triage-classify-luc-1119-and-produce-next-legal-action-2026-05-31-task.md`
+  - `history/tasks/luc-1121-state-reconciliation-correct-luc-1119-disposition-drift-2026-05-31-task.md`
+- Classification decision:
+  - dirty set is docs/state continuity only; no reopen trigger for `LUC-1119`, `LUC-1120`, or `LUC-1121`.
+- Final disposition for this wake: `done`.
+- Commit/push/deploy disposition:
+  - commit: `not committed` (classification-only heartbeat).
+  - push: `not needed`.
+  - deploy impact: `none`.
+- Evidence:
+  - `history/tasks/luc-1122-source-control-closure-classify-and-close-local-dirty-state-for-luc-1119-luc-1120-luc-1121-2026-05-31-task.md`
+## 2026-05-31 LUC-1120 continuation [finish_successful_run_handoff]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran read-only continuity verification for `LUC-1120` closure evidence across task artifact and canonical context files,
+  - confirmed blocker `LUC-1121` remains `done` and target `LUC-1119` remains `done`.
+- Classification/routing remain unchanged:
+  - no new blocker found,
+  - no additional follow-up lane required.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1120-blocked-triage-classify-luc-1119-and-produce-next-legal-action-2026-05-31-task.md`
+  - `.codex/context/TASK_BOARD.md`
+  - `.codex/context/PROJECT_STATE.md`
+
+## 2026-05-31 LUC-1120 [Softwarehouse][Blocked Triage] Classify LUC-1119 and produce next legal action
+- Wake `issue_blockers_resolved` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated that prior blocker `LUC-1121` is closed as `done`,
+  - reconfirmed `LUC-1119` remains `done` with no contradictory evidence,
+  - recorded final legal disposition for the triage lane.
+- Classification result:
+  - blocker path is resolved; no additional follow-up issue required.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1120-blocked-triage-classify-luc-1119-and-produce-next-legal-action-2026-05-31-task.md`
+  - `history/tasks/luc-1121-state-reconciliation-correct-luc-1119-disposition-drift-2026-05-31-task.md`
+  - `history/tasks/luc-1119-source-control-closure-classify-and-close-local-dirty-state-for-luc-1068-luc-1075-2026-05-31-task.md`
+
+## 2026-05-31 LUC-1121 [Softwarehouse][State Reconciliation] Correct LUC-1119 disposition drift
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated canonical `LUC-1119` closure artifact and context entries,
+  - classified mismatch as issue-tracker disposition lag (not repository-truth inconsistency),
+  - published explicit reconciliation closure packet for this lane.
+- Disposition correction:
+  - `LUC-1119` remains `done`; no reopen trigger found.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1119-source-control-closure-classify-and-close-local-dirty-state-for-luc-1068-luc-1075-2026-05-31-task.md`
+  - `history/tasks/luc-1121-state-reconciliation-correct-luc-1119-disposition-drift-2026-05-31-task.md`
+
 ## 2026-05-31 LUC-1119 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1068-LUC-1075
 - Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
@@ -16994,3 +17055,4 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
   - exactly one legal next action remains under `LUC-1065` owner path (Ops Release Lead + platform/Coolify runtime owner -> restore canonical availability -> one read-only health sweep evidence refresh).
 - Follow-up issue decision: none (single legal lane already explicit).
 - Final disposition for this wake: `done`.
+

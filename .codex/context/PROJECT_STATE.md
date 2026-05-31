@@ -1,3 +1,56 @@
+## 2026-05-31 LUC-1122 source-control closure for LUC-1119/LUC-1120/LUC-1121 dirty set
+- `LUC-1122 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1119-LUC-1120-LUC-1121` executed as a coordination-only closure lane.
+- Wake `issue_assigned` processed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Dirty-worktree baseline in this heartbeat:
+  - `.codex/context/PROJECT_STATE.md`
+  - `.codex/context/TASK_BOARD.md`
+  - `history/tasks/luc-1120-blocked-triage-classify-luc-1119-and-produce-next-legal-action-2026-05-31-task.md`
+  - `history/tasks/luc-1121-state-reconciliation-correct-luc-1119-disposition-drift-2026-05-31-task.md`
+- Classification outcome:
+  - all dirty paths are continuity state/evidence artifacts tied to `LUC-1120` and `LUC-1121` closure lineage,
+  - runtime/product/deploy mutation paths in dirty set: `0`.
+- Final disposition:
+  - `LUC-1122` closed as `done`.
+- Evidence:
+  - `history/tasks/luc-1122-source-control-closure-classify-and-close-local-dirty-state-for-luc-1119-luc-1120-luc-1121-2026-05-31-task.md`
+## 2026-05-31 LUC-1120 continuation reconciliation (finish_successful_run_handoff)
+- Wake `finish_successful_run_handoff` processed as a read-only continuity checkpoint and marked `done`.
+- Concrete action:
+  - revalidated `LUC-1120` closure evidence packet against canonical context,
+  - confirmed `LUC-1121` remains `done` and `LUC-1119` remains `done` with no contradictory evidence.
+- State remains unchanged:
+  - `LUC-1120` stays `done`; no additional legal lane required.
+- Evidence:
+  - `history/tasks/luc-1120-blocked-triage-classify-luc-1119-and-produce-next-legal-action-2026-05-31-task.md`
+  - `.codex/context/TASK_BOARD.md`
+  - `.codex/context/PROJECT_STATE.md`
+
+## 2026-05-31 LUC-1120 blocked triage closure for LUC-1119 classification lane
+- `LUC-1120 [Softwarehouse][Blocked Triage] Classify LUC-1119 and produce next legal action` executed as a blocker-resolution verification lane.
+- Wake `issue_blockers_resolved` processed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action:
+  - revalidated `LUC-1121` closure (`done`) and `LUC-1119` final disposition (`done`) from canonical context and task artifacts,
+  - confirmed no residual blocker remained for this triage lane.
+- Final disposition:
+  - `LUC-1120` closed as `done`.
+- Evidence:
+  - `history/tasks/luc-1120-blocked-triage-classify-luc-1119-and-produce-next-legal-action-2026-05-31-task.md`
+  - `history/tasks/luc-1121-state-reconciliation-correct-luc-1119-disposition-drift-2026-05-31-task.md`
+
+## 2026-05-31 LUC-1121 state reconciliation for LUC-1119 disposition drift
+- `LUC-1121 [Softwarehouse][State Reconciliation] Correct LUC-1119 disposition drift` executed as a reconciliation-only lane.
+- Wake `issue_assigned` processed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action:
+  - revalidated `LUC-1119` closure artifact and source-of-truth context entries,
+  - classified mismatch as external issue-tracker status lag, not repository-state inconsistency,
+  - published closure packet for this correction lane.
+- Final disposition:
+  - `LUC-1119` remains `done`; no reopen trigger found.
+  - `LUC-1121` closed as `done`.
+- Evidence:
+  - `history/tasks/luc-1119-source-control-closure-classify-and-close-local-dirty-state-for-luc-1068-luc-1075-2026-05-31-task.md`
+  - `history/tasks/luc-1121-state-reconciliation-correct-luc-1119-disposition-drift-2026-05-31-task.md`
+
 ## 2026-05-31 LUC-1119 source-control closure for LUC-1068/LUC-1075 dirty set
 - `LUC-1119 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1068-LUC-1075` executed as a source-control hygiene lane.
 - Wake `issue_assigned` processed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -14794,3 +14847,4 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - `LUC-1068` stays `done` and does not reopen.
   - one legal next action remains in `LUC-1065` lineage under `LUC-1075/LUC-175` guarded policy path.
 - Commit policy in this lane remains `no-commit` (classification-only continuity).
+
