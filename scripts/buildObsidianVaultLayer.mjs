@@ -185,7 +185,7 @@ const docsByFolder = [...new Set(markdownFiles.map((file) => docsRel(path.dirnam
     return {
       Folder: folder,
       Files: folderFiles.length,
-      Entry: fs.existsSync(path.join(docsRoot, entry)) ? wiki(entry, entry) : wiki(docsRel(fallback), docsRel(fallback)),
+      Entry: fs.existsSync(path.join(docsRoot, entry)) ? `[[${entry}]]` : `[[${docsRel(fallback)}]]`,
     };
   });
 
@@ -231,23 +231,23 @@ const featureAtlas = countBy(nodes, "feature")
 
 const visualMaps = [
   {
-    Map: wiki("maps/soar-obsidian-dashboard.canvas", "Dashboard Canvas"),
+    Map: "[[maps/soar-obsidian-dashboard.canvas]]",
     Use: "Start here; shows the docs command layer and AI/Paperclip entrypoints.",
   },
   {
-    Map: wiki("maps/soar-function-journey.canvas", "Function Journey Canvas"),
+    Map: "[[maps/soar-function-journey.canvas]]",
     Use: "Shows the evidence flow from product intent to action, chain, API, web, and proof gaps.",
   },
   {
-    Map: wiki("maps/soar-chain-map.canvas", "Chain Map"),
+    Map: "[[maps/soar-chain-map.canvas]]",
     Use: "Shows all generated function chains grouped by feature and status.",
   },
   {
-    Map: wiki("maps/soar-action-proof-map.canvas", "Action Proof Map"),
+    Map: "[[maps/soar-action-proof-map.canvas]]",
     Use: "Shows high-risk user actions and their proof boundaries.",
   },
   {
-    Map: wiki("maps/soar-docs-folder-map.canvas", "Docs Folder Map"),
+    Map: "[[maps/soar-docs-folder-map.canvas]]",
     Use: "Shows top-level docs folders and their entry notes.",
   },
 ];

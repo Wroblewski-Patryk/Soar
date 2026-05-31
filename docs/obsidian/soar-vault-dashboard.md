@@ -37,30 +37,30 @@ Use this as the first opened note in Obsidian. It connects the repository, gener
 
 | Folder | Files | Entry |
 | --- | --- | --- |
-| . | 5 | [[README.md\|README.md]] |
-| adr | 3 | [[adr/README.md\|adr/README.md]] |
-| analysis | 12 | [[analysis/README.md\|analysis/README.md]] |
-| architecture | 744 | [[architecture/README.md\|architecture/README.md]] |
-| automation | 3 | [[automation/README.md\|automation/README.md]] |
-| contracts | 2 | [[contracts/README.md\|contracts/README.md]] |
-| decisions | 2 | [[decisions/README.md\|decisions/README.md]] |
-| engineering | 3 | [[engineering/README.md\|engineering/README.md]] |
-| flows | 2 | [[flows/README.md\|flows/README.md]] |
-| governance | 21 | [[governance/README.md\|governance/README.md]] |
-| graphs | 2 | [[graphs/README.md\|graphs/README.md]] |
-| maps | 7 | [[maps/README.md\|maps/README.md]] |
-| modules | 47 | [[modules/README.md\|modules/README.md]] |
-| obsidian | 8 | [[obsidian/README.md\|obsidian/README.md]] |
-| operations | 70 | [[operations/README.md\|operations/README.md]] |
-| pipelines | 11 | [[pipelines/README.md\|pipelines/README.md]] |
-| planning | 18 | [[planning/README.md\|planning/README.md]] |
-| product | 17 | [[product/README.md\|product/README.md]] |
-| quality | 2 | [[quality/README.md\|quality/README.md]] |
-| releases | 3 | [[releases/README.md\|releases/README.md]] |
-| security | 9 | [[security/README.md\|security/README.md]] |
-| status | 10 | [[status/README.md\|status/README.md]] |
-| testing | 2 | [[testing/README.md\|testing/README.md]] |
-| ux | 22 | [[ux/README.md\|ux/README.md]] |
+| . | 5 | [[README.md]] |
+| adr | 3 | [[adr/README.md]] |
+| analysis | 12 | [[analysis/README.md]] |
+| architecture | 744 | [[architecture/README.md]] |
+| automation | 3 | [[automation/README.md]] |
+| contracts | 2 | [[contracts/README.md]] |
+| decisions | 2 | [[decisions/README.md]] |
+| engineering | 3 | [[engineering/README.md]] |
+| flows | 2 | [[flows/README.md]] |
+| governance | 21 | [[governance/README.md]] |
+| graphs | 2 | [[graphs/README.md]] |
+| maps | 7 | [[maps/README.md]] |
+| modules | 47 | [[modules/README.md]] |
+| obsidian | 8 | [[obsidian/README.md]] |
+| operations | 70 | [[operations/README.md]] |
+| pipelines | 11 | [[pipelines/README.md]] |
+| planning | 18 | [[planning/README.md]] |
+| product | 17 | [[product/README.md]] |
+| quality | 2 | [[quality/README.md]] |
+| releases | 3 | [[releases/README.md]] |
+| security | 9 | [[security/README.md]] |
+| status | 10 | [[status/README.md]] |
+| testing | 2 | [[testing/README.md]] |
+| ux | 22 | [[ux/README.md]] |
 
 ## Graph Data
 
@@ -129,11 +129,11 @@ Use this as the first opened note in Obsidian. It connects the repository, gener
 
 | Map | Use |
 | --- | --- |
-| [[maps/soar-obsidian-dashboard.canvas\|Dashboard Canvas]] | Start here; shows the docs command layer and AI/Paperclip entrypoints. |
-| [[maps/soar-function-journey.canvas\|Function Journey Canvas]] | Shows the evidence flow from product intent to action, chain, API, web, and proof gaps. |
-| [[maps/soar-chain-map.canvas\|Chain Map]] | Shows all generated function chains grouped by feature and status. |
-| [[maps/soar-action-proof-map.canvas\|Action Proof Map]] | Shows high-risk user actions and their proof boundaries. |
-| [[maps/soar-docs-folder-map.canvas\|Docs Folder Map]] | Shows top-level docs folders and their entry notes. |
+| [[maps/soar-obsidian-dashboard.canvas]] | Start here; shows the docs command layer and AI/Paperclip entrypoints. |
+| [[maps/soar-function-journey.canvas]] | Shows the evidence flow from product intent to action, chain, API, web, and proof gaps. |
+| [[maps/soar-chain-map.canvas]] | Shows all generated function chains grouped by feature and status. |
+| [[maps/soar-action-proof-map.canvas]] | Shows high-risk user actions and their proof boundaries. |
+| [[maps/soar-docs-folder-map.canvas]] | Shows top-level docs folders and their entry notes. |
 
 ## Dataview: Current Project Docs
 

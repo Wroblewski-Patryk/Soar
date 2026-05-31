@@ -15,11 +15,11 @@ This folder is the Obsidian-facing command layer for Soar docs. It does not repl
 
 ## Canvas Maps
 
-- [[maps/soar-obsidian-dashboard.canvas|Dashboard Canvas]]
-- [[maps/soar-function-journey.canvas|Function Journey Canvas]]
-- [[maps/soar-chain-map.canvas|Chain Map]]
-- [[maps/soar-action-proof-map.canvas|Action Proof Map]]
-- [[maps/soar-docs-folder-map.canvas|Docs Folder Map]]
+- [[maps/soar-obsidian-dashboard.canvas]]
+- [[maps/soar-function-journey.canvas]]
+- [[maps/soar-chain-map.canvas]]
+- [[maps/soar-action-proof-map.canvas]]
+- [[maps/soar-docs-folder-map.canvas]]
 
 ## Rule
 
