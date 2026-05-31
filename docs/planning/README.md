@@ -10,4 +10,3 @@ Use this folder for active plans, next work, open decisions, ideas, and work-pac
 - [[open-decisions.md|Open Decisions]]
 - [[planning-catalog-index.md|Planning Catalog Index]]
 - [[idea-to-function-chain-playbook.md|Idea To Function Chain Playbook]]
-

@@ -23,10 +23,10 @@ Use this as the first opened note in Obsidian. It connects the repository, gener
 
 ## Vault Inventory
 
-- Markdown files: 1006
+- Markdown files: 1025
 - CSV indexes/registries: 28
 - JSON graph/status exports: 7
-- Canvas maps: 7
+- Canvas maps: 5
 - Architecture registry nodes: 645
 - Function chains: 27
 - User action rows: 39
@@ -38,29 +38,29 @@ Use this as the first opened note in Obsidian. It connects the repository, gener
 | Folder | Files | Entry |
 | --- | --- | --- |
 | . | 5 | [[README.md\|README.md]] |
-| adr | 2 | [[adr/0001-agent-governance-baseline.md\|adr/0001-agent-governance-baseline.md]] |
-| analysis | 11 | [[analysis/analysis-documentation.md\|analysis/analysis-documentation.md]] |
+| adr | 3 | [[adr/README.md\|adr/README.md]] |
+| analysis | 12 | [[analysis/README.md\|analysis/README.md]] |
 | architecture | 744 | [[architecture/README.md\|architecture/README.md]] |
-| automation | 2 | [[automation/guardrail-commands.md\|automation/guardrail-commands.md]] |
-| contracts | 1 | [[contracts/contract-memory.md\|contracts/contract-memory.md]] |
+| automation | 3 | [[automation/README.md\|automation/README.md]] |
+| contracts | 2 | [[contracts/README.md\|contracts/README.md]] |
 | decisions | 2 | [[decisions/README.md\|decisions/README.md]] |
-| engineering | 2 | [[engineering/local-development.md\|engineering/local-development.md]] |
-| flows | 1 | [[flows/flow-memory.md\|flows/flow-memory.md]] |
-| governance | 20 | [[governance/governance-documentation.md\|governance/governance-documentation.md]] |
-| graphs | 1 | [[graphs/architecture-graph.md\|graphs/architecture-graph.md]] |
-| maps | 6 | [[maps/agent-work-map.md\|maps/agent-work-map.md]] |
+| engineering | 3 | [[engineering/README.md\|engineering/README.md]] |
+| flows | 2 | [[flows/README.md\|flows/README.md]] |
+| governance | 21 | [[governance/README.md\|governance/README.md]] |
+| graphs | 2 | [[graphs/README.md\|graphs/README.md]] |
+| maps | 7 | [[maps/README.md\|maps/README.md]] |
 | modules | 47 | [[modules/README.md\|modules/README.md]] |
 | obsidian | 8 | [[obsidian/README.md\|obsidian/README.md]] |
-| operations | 69 | [[operations/operations-documentation.md\|operations/operations-documentation.md]] |
-| pipelines | 10 | [[pipelines/access-session.md\|pipelines/access-session.md]] |
-| planning | 17 | [[planning/planning-documentation.md\|planning/planning-documentation.md]] |
-| product | 16 | [[product/product-documentation.md\|product/product-documentation.md]] |
-| quality | 1 | [[quality/quality-attribute-scenarios.md\|quality/quality-attribute-scenarios.md]] |
-| releases | 2 | [[releases/release-template.md\|releases/release-template.md]] |
-| security | 8 | [[security/security-documentation.md\|security/security-documentation.md]] |
-| status | 9 | [[status/advanced-template-propagation-index-2026-05-25.md\|status/advanced-template-propagation-index-2026-05-25.md]] |
-| testing | 1 | [[testing/testing-memory.md\|testing/testing-memory.md]] |
-| ux | 21 | [[ux/ux-documentation.md\|ux/ux-documentation.md]] |
+| operations | 70 | [[operations/README.md\|operations/README.md]] |
+| pipelines | 11 | [[pipelines/README.md\|pipelines/README.md]] |
+| planning | 18 | [[planning/README.md\|planning/README.md]] |
+| product | 17 | [[product/README.md\|product/README.md]] |
+| quality | 2 | [[quality/README.md\|quality/README.md]] |
+| releases | 3 | [[releases/README.md\|releases/README.md]] |
+| security | 9 | [[security/README.md\|security/README.md]] |
+| status | 10 | [[status/README.md\|status/README.md]] |
+| testing | 2 | [[testing/README.md\|testing/README.md]] |
+| ux | 22 | [[ux/README.md\|ux/README.md]] |
 
 ## Graph Data
 

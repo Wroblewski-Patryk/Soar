@@ -11,4 +11,3 @@ Use this folder for runbooks, deployment, rollback, proof collection, and operat
 - [[rollback-and-recovery.md|Rollback And Recovery]]
 - [[service-reliability-and-observability.md|Service Reliability And Observability]]
 - [[v1-release-gate-runbook.md|V1 Release Gate Runbook]]
-

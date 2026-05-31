@@ -13,4 +13,3 @@ Use this folder for generated graph exports and visual graph sources.
 ## Rule
 
 These files are generated or derived. Update the source registries under `architecture/registry`, `architecture/relations`, and `architecture/chains`, then regenerate.
-

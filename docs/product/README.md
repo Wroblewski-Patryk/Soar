@@ -11,4 +11,3 @@ Use this folder for product intent, scope, user model, roadmap, and limits.
 - [[capability-map.md|Capability Map]]
 - [[user-model.md|User Model]]
 - [[known-limits.md|Known Limits]]
-

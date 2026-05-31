@@ -15,4 +15,3 @@ Use this folder for curated navigation maps and Obsidian canvas files.
 - [[soar-chain-map.canvas|Soar Chain Map]]
 - [[soar-action-proof-map.canvas|Soar Action Proof Map]]
 - [[soar-docs-folder-map.canvas|Soar Docs Folder Map]]
-

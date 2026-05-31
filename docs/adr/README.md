@@ -6,4 +6,3 @@ Use this folder for architecture decision records.
 
 - [[architecture-decision-records.md|Architecture Decision Records]]
 - [[0001-agent-governance-baseline.md|ADR 0001 Agent Governance Baseline]]
-

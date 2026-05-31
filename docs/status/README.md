@@ -10,4 +10,3 @@ Use this folder for current generated or maintained status snapshots.
 - [[architecture-awareness-report.md|Architecture Awareness Report]]
 - [[architecture-graph-drift.md|Architecture Graph Drift]]
 - [[view-map-browser-workflow-ownership.md|View Map Browser Workflow Ownership]]
-
