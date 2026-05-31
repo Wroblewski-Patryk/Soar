@@ -13985,3 +13985,12 @@
   Scope remained QA verification/docs-state sync only (no main-workspace runtime code mutation).
   Evidence:
   `history/tasks/luc-963-regression-proof-dca-before-close-2026-05-31-task.md`.
+
+- `LUC-973 issue_assigned heartbeat (2026-05-31)` executed concrete read-only deploy/route verification and is `blocked`.
+  Wake consumed first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Fresh smoke shows production expected SHA drift: prior target `71b8d503...` now fails build-info mismatch with observed `2dc983ce...`; prod smoke on `2dc983ce...` passes public checks while protected `GET /workers/ready` remains `401`.
+  Temp-domain smoke on `2dc983ce...` remains failed (`fetch failed`), and `ops:coolify-stack:env-check` in this runner reports required vars `0/16` (names-only redacted output).
+  Scope stayed read-only verification/docs-state sync (no deploy/restart/runtime mutation).
+  Unblock owner/action: Soar API auth credential owner + Security/Test permission owner provide approved read-only principal/session for protected `/workers/ready`; Coolify operator + release controller provide temp-domain recovery evidence or accepted no-temp-stack decision; then Ops reruns one protected+temp read-only checkpoint.
+  Evidence:
+  `history/tasks/luc-973-verify-last-failed-deploys-and-route-repair-2026-05-31-task.md`.

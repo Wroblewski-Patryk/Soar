@@ -15811,3 +15811,21 @@ None.
 - Final disposition for this heartbeat: `done`.
 - Evidence:
   - `history/tasks/luc-962-dca-before-close-regression-proof-and-fix-closure-2026-05-31.md`
+
+## 2026-05-31 LUC-973 [Soar][Coolify] Verify last failed deploys and route repair
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete read-only verification executed:
+  - prod smoke on expected `71b8d503...` => `FAIL` (`WEB /api/build-info` mismatch observed `2dc983ce...`; `API /workers/ready` -> `401`),
+  - prod smoke on observed `2dc983ce...` => public checks `PASS`; `API /workers/ready` -> `401`,
+  - temp smoke on observed `2dc983ce...` (`--skip-workers`) => `FAIL` (`fetch failed` on API/Web endpoints),
+  - `ops:coolify-stack:env-check` => `FAIL` (`required present 0/16`, names-only redacted output).
+- Interpretation:
+  - production has drifted to deploy SHA `2dc983ce...` and public routes are healthy at that SHA,
+  - protected worker readiness route remains auth-gated (`401`),
+  - temp route/deploy repair remains unproven (`fetch failed`).
+- Final disposition: `blocked`.
+- Unblock owner/action:
+  - Soar API auth credential owner + Security/Test permission owner provide approved read-only auth principal/session for protected `GET /workers/ready`.
+  - Coolify operator + release controller provide temp-domain recovery evidence or explicit accepted no-temp-stack decision for this issue chain.
+- Evidence:
+  - `history/tasks/luc-973-verify-last-failed-deploys-and-route-repair-2026-05-31-task.md`
