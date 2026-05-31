@@ -1,3 +1,41 @@
+## 2026-05-31 LUC-1128 [Soar][Source Control Closure] Classify and close local dirty state for LUC-973-LUC-1127
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - inspected worktree and commit context for dirty-state ownership (`git status --short`, scoped diffs, recent commit stream),
+  - classified each dirty path to prior lane `LUC-1127` and its dependency chain (`LUC-973`),
+  - packaged closure evidence and committed same-lane bundle without unrelated files.
+- Classification result:
+  - `M .codex/context/PROJECT_STATE.md` -> `LUC-1127` closure-state entry.
+  - `M .codex/context/TASK_BOARD.md` -> `LUC-1127` closure-state entry.
+  - `?? history/tasks/luc-1127-softwarehouse-blocked-triage-classify-luc-973-and-produce-next-legal-action-2026-05-31-task.md` -> canonical task artifact for `LUC-1127`.
+  - ownership is coherent; no conflict with unrelated lanes.
+- Verification:
+  - `git status --short` (pre and post commit),
+  - `git diff -- .codex/context/PROJECT_STATE.md`,
+  - `git diff -- .codex/context/TASK_BOARD.md`,
+  - `git log --oneline -n 1`.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1128-soar-source-control-closure-classify-and-close-local-dirty-state-for-luc-973-luc-1127-2026-05-31-task.md`
+
+## 2026-05-31 LUC-1127 [Softwarehouse][Blocked Triage] Classify LUC-973 and produce next legal action
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated canonical `LUC-973` evidence packet (`issue_assigned`, `finish_successful_run_handoff`, `issue_commented` continuations),
+  - reconciled blocker facts against current task/context state entries.
+- Classification result:
+  - `LUC-973` remains `blocked`.
+  - protected readiness proof remains gated (`GET /workers/ready` still requires approved read-only auth principal/session),
+  - temp-domain recovery evidence remains missing.
+- Next legal action:
+  1. Security/Test + credential owner provide approved read-only auth path for protected `/workers/ready`.
+  2. Coolify operator/release controller provide temp-domain recovery evidence or explicit accepted no-temp-stack decision.
+  3. Ops Release Lead runs one approved read-only recheck and publishes redaction-safe evidence.
+- Final disposition for this wake: `done` (triage lane complete; classified blocker remains external).
+- Evidence:
+  - `history/tasks/luc-973-verify-last-failed-deploys-and-route-repair-2026-05-31-task.md`
+  - `history/tasks/luc-1127-softwarehouse-blocked-triage-classify-luc-973-and-produce-next-legal-action-2026-05-31-task.md`
+
 ## 2026-05-31 LUC-1126 [Soar][Source Control Closure] Classify and close local dirty state for LUC-405-LUC-1123
 - Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:

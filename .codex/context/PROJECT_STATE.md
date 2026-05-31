@@ -1,3 +1,32 @@
+## 2026-05-31 LUC-1128 source-control closure for LUC-973/LUC-1127 dirty set
+- `LUC-1128 [Soar][Source Control Closure] Classify and close local dirty state for LUC-973-LUC-1127` executed as a closure sidecar lane.
+- Wake `issue_assigned` processed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Dirty worktree classification before closure:
+  - `M .codex/context/PROJECT_STATE.md` -> prior lane continuation (`LUC-1127`) evidence sync.
+  - `M .codex/context/TASK_BOARD.md` -> prior lane continuation (`LUC-1127`) evidence sync.
+  - `?? history/tasks/luc-1127-softwarehouse-blocked-triage-classify-luc-973-and-produce-next-legal-action-2026-05-31-task.md` -> untracked task artifact from `LUC-1127`.
+- Resolution:
+  - all three paths are same-lane artifacts in range `LUC-973` to `LUC-1127`,
+  - no unrelated ownership conflict detected,
+  - closure bundle committed with scoped evidence only.
+- Evidence:
+  - `history/tasks/luc-1127-softwarehouse-blocked-triage-classify-luc-973-and-produce-next-legal-action-2026-05-31-task.md`
+  - `history/tasks/luc-1128-soar-source-control-closure-classify-and-close-local-dirty-state-for-luc-973-luc-1127-2026-05-31-task.md`
+
+## 2026-05-31 LUC-1127 blocked triage classification for LUC-973
+- `LUC-1127 [Softwarehouse][Blocked Triage] Classify LUC-973 and produce next legal action` executed as a triage-only lane and marked `done`.
+- Wake `issue_assigned` processed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Classification outcome:
+  - `LUC-973` remains `blocked`.
+  - public deploy/readiness evidence exists for public endpoints, but protected `/workers/ready` remains auth-gated and temp-domain recovery remains unproven.
+- Next legal action remains external to this triage lane:
+  1. Security/Test + credential owner provide approved read-only auth principal/session for protected `/workers/ready`.
+  2. Coolify operator/release controller provide temp-domain recovery evidence or explicit accepted no-temp-stack decision.
+  3. Ops Release Lead executes one approved read-only recheck and publishes redaction-safe evidence.
+- Evidence:
+  - `history/tasks/luc-973-verify-last-failed-deploys-and-route-repair-2026-05-31-task.md`
+  - `history/tasks/luc-1127-softwarehouse-blocked-triage-classify-luc-973-and-produce-next-legal-action-2026-05-31-task.md`
+
 ## 2026-05-31 LUC-1126 source-control closure for LUC-405/LUC-1123 dirty set
 - `LUC-1126 [Soar][Source Control Closure] Classify and close local dirty state for LUC-405-LUC-1123` executed as a closure sidecar lane.
 - Wake `issue_assigned` processed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
