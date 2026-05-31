@@ -17217,3 +17217,14 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
   - `pnpm --filter api exec vitest run src/middleware/requireRole.test.ts src/middleware/requireOpsNetwork.test.ts` -> PASS.
 - Disposition: `done` (local source-control closure complete for this bundle).
 - Durable artifact: `history/tasks/luc-1148-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-luc-1144-luc-1145-luc-1146-2026-05-31-task.md`.
+
+## 2026-05-31 LUC-1148 continuation [issue_commented, local repair lane starter]
+- Wake `issue_commented` acknowledged first from inline payload (`fallbackFetchNeeded=false`, pending comments `1/1`, latest comment id `4527d3e2-b96a-4186-b145-5d5be1076fd6`).
+- Comment impact: `softwarehouse-local-repair-lane-starter:v1` confirms this sidecar stays limited to local source-control closure while target `LUC-241` remains dependency-blocked by protected gates.
+- Concrete action in this heartbeat:
+  - revalidated closure commit presence (`7fdc4907`) and clean worktree state (`git status --short --branch` -> no dirty paths),
+  - reconfirmed minimal verification evidence from closure heartbeat (`vitest` middleware scope: `8/8 PASS`),
+  - persisted continuation evidence-only follow-up packet for this comment wake.
+- Final disposition for this wake: `done` (no reopen, no new dirty-set closure required).
+- Evidence:
+  - `history/tasks/luc-1148-source-control-closure-comment-followup-2026-05-31-task.md`
