@@ -1,3 +1,37 @@
+## 2026-05-31 LUC-1068 [Soar][Source Control Closure] local dirty state classification for LUC-1065
+- Classified active dirty paths as fully scoped to `LUC-1065` continuity/evidence artifacts.
+- Verified no runtime/product/deploy file paths in the dirty set (`0`).
+- Recorded closure disposition as `done` for the source-control sidecar lane.
+- Evidence:
+  - `history/tasks/luc-1068-source-control-closure-classify-and-close-local-dirty-state-for-luc-1065-2026-05-31-task.md`.
+
+## 2026-05-31 LUC-1065 continuation (source_scoped_recovery_action)
+- Executed one additional read-only continuity sweep on canonical Soar production hosts.
+- Captured source snapshot: `HEAD=fe041ecf324f4dcbb5b587875e2338c73d032eab`, `origin/main=2dc983ced4a4c66e31e7f37264710c124955e57b`.
+- Result unchanged: API `/health`, API `/ready`, Web `/`, and Web `/api/build-info` all return `503`.
+- Disposition remains `blocked`; no production mutation performed.
+- Unblock owner/action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for the `503` interval.
+  2. After recovery, rerun one read-only production health sweep and publish fresh evidence.
+
+## 2026-05-31 LUC-1065 continuation (finish_successful_run_handoff)
+- Executed one additional read-only continuity diagnostic (`HEAD` probes) on canonical production endpoints.
+- Result unchanged: `/health`, `/ready`, web `/`, and `/api/build-info` all return `503`.
+- Verified failed-deploy diagnosis child lane artifact exists: `history/tasks/luc-1027-child-read-only-failed-deploy-diagnosis-2026-05-31-task.md`.
+- Disposition remains `blocked`; no production mutation performed.
+- Unblock owner/action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for the `503` interval.
+  2. After recovery, rerun one read-only production health sweep and publish fresh evidence.
+
+## 2026-05-31 LUC-1065 coolify production deploy health sweep
+- Executed one read-only public health sweep on canonical Soar production hosts.
+- Result: https://api.soar.luckysparrow.ch/health, .../ready, https://soar.luckysparrow.ch/, and /api/build-info all returned 503.
+- Disposition: blocked due to degraded production availability; no deploy/restart/rollback/env mutation performed.
+- Evidence: history/evidence/luc-1065-coolify-production-deploy-health-sweep-2026-05-31.md.
+- Unblock owner/action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for the 503 interval.
+  2. After recovery, rerun one read-only production health sweep and publish fresh evidence.
+
 ## 2026-05-31 LUC-1033 continuation (source_scoped_recovery_action)
 - Revalidated local canonical evidence after wake payload reported `blocked`.
 - Status drift classified as stale: triage lane remains closed and evidence-backed.
@@ -14430,3 +14464,4 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   Closure disposition for this lane: `committed locally` / `not pushed` / `none`.
   Evidence:
   `history/tasks/luc-1064-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-2026-05-31-task.md`.
+

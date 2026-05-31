@@ -1,3 +1,65 @@
+## 2026-05-31 LUC-1068 [Soar][Source Control Closure] classify and close local dirty state for LUC-1065
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Dirty baseline captured via `git status --short` and classified as fully scoped to `LUC-1065` continuity/evidence paths.
+- Classification summary:
+  - docs/state: `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`
+  - evidence/task artifacts: `history/evidence/luc-1065-coolify-production-deploy-health-sweep-2026-05-31.md`, `history/tasks/luc-1065-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
+  - runtime/product/deploy paths in dirty set: `0`
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1068-source-control-closure-classify-and-close-local-dirty-state-for-luc-1065-2026-05-31-task.md`
+
+## 2026-05-31 LUC-1065 continuation [source_scoped_recovery_action]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - executed read-only continuity diagnostics on canonical endpoints,
+  - captured source snapshot (`HEAD`: `fe041ecf324f4dcbb5b587875e2338c73d032eab`, `origin/main`: `2dc983ced4a4c66e31e7f37264710c124955e57b`),
+  - reconfirmed all four endpoints remain `503`.
+- Endpoint diagnostics:
+  - `https://api.soar.luckysparrow.ch/health -> 503`
+  - `https://api.soar.luckysparrow.ch/ready -> 503`
+  - `https://soar.luckysparrow.ch/ -> 503`
+  - `https://soar.luckysparrow.ch/api/build-info -> 503`
+- Final disposition for this wake: `blocked`.
+- First-class unblock owner/action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for the `503` interval.
+  2. After recovery, rerun one read-only production health sweep and publish fresh evidence.
+
+## 2026-05-31 LUC-1065 continuation [finish_successful_run_handoff]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - executed additional read-only HTTP HEAD diagnostics on canonical endpoints,
+  - reconfirmed all four endpoints remain `503`,
+  - verified failed-deploy diagnosis child lane artifact exists (`history/tasks/luc-1027-child-read-only-failed-deploy-diagnosis-2026-05-31-task.md`).
+- Endpoint diagnostics:
+  - `https://api.soar.luckysparrow.ch/health -> 503` (`Server` header not present)
+  - `https://api.soar.luckysparrow.ch/ready -> 503` (`Server` header not present)
+  - `https://soar.luckysparrow.ch/ -> 503` (`Server` header not present)
+  - `https://soar.luckysparrow.ch/api/build-info -> 503` (`Server` header not present)
+- Final disposition for this wake: `blocked`.
+- First-class unblock owner/action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for the `503` interval.
+  2. After recovery, rerun one read-only production health sweep and publish fresh evidence.
+
+## 2026-05-31 LUC-1065 [Soar] Coolify production deploy health sweep
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - captured source snapshot (`HEAD`: `fe041ecf324f4dcbb5b587875e2338c73d032eab`, `origin/main`: `2dc983ced4a4c66e31e7f37264710c124955e57b`),
+  - executed canonical read-only public deploy smoke on API/Web endpoints,
+  - verified endpoint statuses with direct `Invoke-WebRequest` probes.
+- Outcome:
+  - `https://api.soar.luckysparrow.ch/health -> 503`
+  - `https://api.soar.luckysparrow.ch/ready -> 503`
+  - `https://soar.luckysparrow.ch/ -> 503`
+  - `https://soar.luckysparrow.ch/api/build-info -> 503`
+- Final disposition for this wake: `blocked`.
+- First-class unblock owner/action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for the `503` interval.
+  2. After recovery, rerun one read-only production health sweep and publish fresh evidence.
+- Evidence:
+  - `history/evidence/luc-1065-coolify-production-deploy-health-sweep-2026-05-31.md`
+  - `history/tasks/luc-1065-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
+
 ## 2026-05-31 LUC-1033 continuation [source_scoped_recovery_action]
 - Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
@@ -16510,3 +16572,4 @@ ode --check scripts/buildObsidianVaultLayer.mjs -> PASS,
 - Final disposition for this wake: `done`.
 - Evidence:
   - `history/tasks/luc-1064-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-2026-05-31-task.md`
+
