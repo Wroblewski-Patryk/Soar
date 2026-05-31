@@ -137,6 +137,10 @@ function statusOrder(value) {
   }[value] ?? 9;
 }
 
+function canvasSafeId(value) {
+  return String(value).replace(/[^a-zA-Z0-9_-]/g, "-").slice(0, 80);
+}
+
 function write(relativeOutputPath, content) {
   const filePath = path.join(docsRoot, relativeOutputPath);
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
@@ -144,8 +148,9 @@ function write(relativeOutputPath, content) {
   return filePath;
 }
 
-function canvasNode(id, x, y, width, height, textOrFile, type = "text") {
+function canvasNode(id, x, y, width, height, textOrFile, type = "text", color = undefined) {
   const base = { id, type, x, y, width, height };
+  if (color) base.color = color;
   if (type === "file") return { ...base, file: textOrFile };
   return { ...base, text: textOrFile };
 }
@@ -162,7 +167,7 @@ const docsFiles = walkFiles(docsRoot).filter((file) => !file.includes(`${path.se
 const markdownFiles = docsFiles.filter((file) => file.endsWith(".md"));
 const csvFiles = docsFiles.filter((file) => file.endsWith(".csv"));
 const jsonFiles = docsFiles.filter((file) => file.endsWith(".json"));
-const canvasFiles = docsFiles.filter((file) => file.endsWith(".canvas"));
+const canvasFiles = docsFiles.filter((file) => file.endsWith(".canvas") && !docsRel(file).startsWith("obsidian/_inbox/"));
 
 const nodes = readCsv("docs/architecture/registry/nodes.csv");
 const chains = readCsv("docs/architecture/chains/chains.csv");
@@ -224,6 +229,48 @@ const featureAtlas = countBy(nodes, "feature")
     return { Feature, Nodes: Count, Chains: chainCount, Actions: actionCount, Pages: pageCount, APIs: apiCount };
   });
 
+const visualMaps = [
+  {
+    Map: wiki("maps/soar-obsidian-dashboard.canvas", "Dashboard Canvas"),
+    Use: "Start here; shows the docs command layer and AI/Paperclip entrypoints.",
+  },
+  {
+    Map: wiki("maps/soar-function-journey.canvas", "Function Journey Canvas"),
+    Use: "Shows the evidence flow from product intent to action, chain, API, web, and proof gaps.",
+  },
+  {
+    Map: wiki("maps/soar-chain-map.canvas", "Chain Map"),
+    Use: "Shows all generated function chains grouped by feature and status.",
+  },
+  {
+    Map: wiki("maps/soar-action-proof-map.canvas", "Action Proof Map"),
+    Use: "Shows high-risk user actions and their proof boundaries.",
+  },
+  {
+    Map: wiki("maps/soar-docs-folder-map.canvas", "Docs Folder Map"),
+    Use: "Shows top-level docs folders and their entry notes.",
+  },
+];
+
+const folderEntryRows = docsByFolder.map((row) => ({
+  Folder: row.Folder,
+  Files: row.Files,
+  Entry: row.Entry,
+  Role:
+    {
+      ".": "Root entrypoints and documentation policy.",
+      architecture: "Canonical runtime, graph, contracts, and ownership truth.",
+      modules: "Implementation-facing module ownership and tests.",
+      operations: "Runbooks, deploy, rollback, proof, and operator workflows.",
+      product: "Product intent, scope, users, roadmap, and limits.",
+      planning: "Plans, open decisions, queues, and work packages.",
+      maps: "Human/agent navigation maps and canvas surfaces.",
+      obsidian: "Obsidian-first dashboard, AI brief, and cleanup layer.",
+      status: "Generated current-state snapshots and proof status.",
+      ux: "Design system, quality bar, and visual workflow.",
+    }[row.Folder] ?? "Supporting documentation folder.",
+}));
+
 write(
   "obsidian/README.md",
   `# Soar Obsidian Layer
@@ -237,13 +284,13 @@ This folder is the Obsidian-facing command layer for Soar docs. It does not repl
 - ${wiki("obsidian/soar-vault-dashboard.md", "Soar Vault Dashboard")}
 - ${wiki("obsidian/code-to-docs-atlas.md", "Code To Docs Atlas")}
 - ${wiki("obsidian/function-journey-hotlist.md", "Function Journey Hotlist")}
+- ${wiki("obsidian/visual-map-index.md", "Visual Map Index")}
 - ${wiki("obsidian/paperclip-cleanup-brief.md", "Paperclip Cleanup Brief")}
 - ${wiki("obsidian/ai-navigation-brief.md", "AI Navigation Brief")}
 
 ## Canvas Maps
 
-- ${wiki("maps/soar-obsidian-dashboard.canvas", "Soar Obsidian Dashboard Canvas")}
-- ${wiki("maps/soar-function-journey.canvas", "Soar Function Journey Canvas")}
+${visualMaps.map((row) => `- ${row.Map}`).join("\n")}
 
 ## Rule
 
@@ -269,6 +316,7 @@ Use this as the first opened note in Obsidian. It connects the repository, gener
 | Engineering traceability hub | ${wiki("soar-documentation-map.md", "Soar Documentation Map")} |
 | Obsidian-specific atlas | ${wiki("obsidian/code-to-docs-atlas.md", "Code To Docs Atlas")} |
 | Function/action proof gaps | ${wiki("obsidian/function-journey-hotlist.md", "Function Journey Hotlist")} |
+| Visual canvas maps | ${wiki("obsidian/visual-map-index.md", "Visual Map Index")} |
 | Product intent | ${wiki("maps/product-map.md", "Product Map")} |
 | Architecture map | ${wiki("maps/architecture-map.md", "Architecture Map")} |
 | Release and ops map | ${wiki("maps/release-ops-map.md", "Release/Ops Map")} |
@@ -308,6 +356,10 @@ ${table(chainStatusCounts)}
 ### Action Gap Severity
 
 ${table(actionSeverityCounts)}
+
+## Visual Maps
+
+${table(visualMaps)}
 
 ## Dataview: Current Project Docs
 
@@ -403,6 +455,43 @@ TABLE file.mtime AS Updated
 FROM "status"
 SORT file.mtime DESC
 \`\`\`
+`,
+);
+
+write(
+  "obsidian/visual-map-index.md",
+  `# Visual Map Index
+
+Updated: ${today}
+
+Use this note when you want to browse Soar as node maps rather than as long markdown files.
+
+## Canvas Maps
+
+${table(visualMaps)}
+
+## Generated Graph Files
+
+| File | Use |
+| --- | --- |
+| ${wiki("graphs/architecture-graph.md", "architecture-graph.md")} | Mermaid-rendered architecture graph in Markdown. |
+| ${wiki("graphs/architecture-graph.mmd", "architecture-graph.mmd")} | Mermaid source for external rendering or editing. |
+| ${wiki("graphs/architecture-graph.json", "architecture-graph.json")} | Machine-readable architecture graph export. |
+| ${wiki("graphs/function-journey-index.json", "function-journey-index.json")} | Machine-readable journey proof index. |
+| ${wiki("graphs/user-action-index.json", "user-action-index.json")} | Machine-readable user action proof index. |
+
+## Folder Entries
+
+${table(folderEntryRows)}
+
+## Obsidian Use
+
+Open the canvas files directly from this note, or use graph view and filter to:
+
+- \`path:architecture\` for architecture and graph node docs;
+- \`path:obsidian\` for the command layer;
+- \`path:maps\` for curated map entrypoints;
+- \`-path:history\` when you want only current source-of-truth docs.
 `,
 );
 
@@ -527,6 +616,96 @@ writeCanvas(
     canvasEdge("f7", "proof", "hotlist", "interpretation"),
   ],
 );
+
+const chainMapNodes = [
+  canvasNode("index", -520, -180, 340, 150, "obsidian/function-journey-hotlist.md", "file", "4"),
+  canvasNode("registry", -520, 40, 340, 150, "architecture/chains/chains.csv", "file", "5"),
+];
+const chainMapEdges = [canvasEdge("chain-index-registry", "index", "registry", "generated from")];
+const chainFeatures = [...new Set(functionChains.map((chain) => chain.feature).filter(Boolean))]
+  .sort((left, right) => left.localeCompare(right));
+chainFeatures.forEach((feature, index) => {
+  const featureId = `feature-${canvasSafeId(feature)}`;
+  const x = -40 + (index % 3) * 430;
+  const y = -520 + Math.floor(index / 3) * 300;
+  chainMapNodes.push(canvasNode(featureId, x, y, 330, 110, `Feature: ${feature}`, "text", "2"));
+  chainMapEdges.push(canvasEdge(`feature-edge-${index}`, "registry", featureId, "groups"));
+
+  functionChains
+    .filter((chain) => chain.feature === feature)
+    .forEach((chain, chainIndex) => {
+      const chainId = `chain-${canvasSafeId(chain.id)}`;
+      const color = chain.gap_severity === "none" ? "4" : chain.status === "partially_verified" ? "3" : "1";
+      chainMapNodes.push(
+        canvasNode(
+          chainId,
+          x,
+          y + 140 + chainIndex * 125,
+          330,
+          100,
+          `${chain.id}\nstatus: ${chain.status}\ngap: ${chain.gap_severity || "none"}`,
+          "text",
+          color,
+        ),
+      );
+      chainMapEdges.push(canvasEdge(`chain-edge-${chainId}`, featureId, chainId, "chain"));
+    });
+});
+
+writeCanvas("maps/soar-chain-map.canvas", chainMapNodes, chainMapEdges);
+
+const actionMapNodes = [
+  canvasNode("hotlist", -560, -80, 340, 150, "obsidian/function-journey-hotlist.md", "file", "4"),
+  canvasNode("actions-csv", -560, 150, 340, 150, "architecture/indices/user-action-index.csv", "file", "5"),
+];
+const actionMapEdges = [canvasEdge("action-source", "hotlist", "actions-csv", "source")];
+hotActions.forEach((action, index) => {
+  const actionId = `action-${canvasSafeId(action.Action)}`;
+  const x = -80 + (index % 3) * 430;
+  const y = -520 + Math.floor(index / 3) * 190;
+  const color = action.Severity === "critical" ? "1" : action.Severity === "high" ? "3" : "6";
+  actionMapNodes.push(
+    canvasNode(
+      actionId,
+      x,
+      y,
+      350,
+      150,
+      `${action.Action}\nroute: ${action.Route}\nboundary: ${action.Boundary}\nproof: ${action["Proof status"]}`,
+      "text",
+      color,
+    ),
+  );
+  actionMapEdges.push(canvasEdge(`action-edge-${index}`, "actions-csv", actionId, action.Severity));
+});
+
+writeCanvas("maps/soar-action-proof-map.canvas", actionMapNodes, actionMapEdges);
+
+const folderMapNodes = [
+  canvasNode("dashboard", -620, -80, 360, 150, "obsidian/soar-vault-dashboard.md", "file", "4"),
+  canvasNode("readme", -620, 130, 360, 150, "README.md", "file", "5"),
+];
+const folderMapEdges = [canvasEdge("folder-dashboard-readme", "dashboard", "readme", "docs root")];
+folderEntryRows.forEach((folder, index) => {
+  const folderId = `folder-${canvasSafeId(folder.Folder)}`;
+  const x = -120 + (index % 4) * 370;
+  const y = -560 + Math.floor(index / 4) * 190;
+  folderMapNodes.push(
+    canvasNode(
+      folderId,
+      x,
+      y,
+      320,
+      130,
+      `${folder.Folder}\nfiles: ${folder.Files}\n${folder.Role}`,
+      "text",
+      folder.Folder === "obsidian" || folder.Folder === "maps" ? "4" : "6",
+    ),
+  );
+  folderMapEdges.push(canvasEdge(`folder-edge-${index}`, "dashboard", folderId, "folder"));
+});
+
+writeCanvas("maps/soar-docs-folder-map.canvas", folderMapNodes, folderMapEdges);
 
 console.log(`Obsidian vault layer written to ${rel(outputRoot)}`);
 console.log(`Canvas maps written under ${rel(mapsRoot)}`);

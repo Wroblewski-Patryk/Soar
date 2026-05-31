@@ -14,6 +14,7 @@ Use this as the first opened note in Obsidian. It connects the repository, gener
 | Engineering traceability hub | [[soar-documentation-map.md|Soar Documentation Map]] |
 | Obsidian-specific atlas | [[obsidian/code-to-docs-atlas.md|Code To Docs Atlas]] |
 | Function/action proof gaps | [[obsidian/function-journey-hotlist.md|Function Journey Hotlist]] |
+| Visual canvas maps | [[obsidian/visual-map-index.md|Visual Map Index]] |
 | Product intent | [[maps/product-map.md|Product Map]] |
 | Architecture map | [[maps/architecture-map.md|Architecture Map]] |
 | Release and ops map | [[maps/release-ops-map.md|Release/Ops Map]] |
@@ -22,10 +23,10 @@ Use this as the first opened note in Obsidian. It connects the repository, gener
 
 ## Vault Inventory
 
-- Markdown files: 1004
+- Markdown files: 1006
 - CSV indexes/registries: 28
 - JSON graph/status exports: 7
-- Canvas maps: 4
+- Canvas maps: 7
 - Architecture registry nodes: 645
 - Function chains: 27
 - User action rows: 39
@@ -49,7 +50,7 @@ Use this as the first opened note in Obsidian. It connects the repository, gener
 | graphs | 1 | [[graphs/architecture-graph.md\|graphs/architecture-graph.md]] |
 | maps | 6 | [[maps/agent-work-map.md\|maps/agent-work-map.md]] |
 | modules | 47 | [[modules/README.md\|modules/README.md]] |
-| obsidian | 6 | [[obsidian/README.md\|obsidian/README.md]] |
+| obsidian | 8 | [[obsidian/README.md\|obsidian/README.md]] |
 | operations | 69 | [[operations/operations-documentation.md\|operations/operations-documentation.md]] |
 | pipelines | 10 | [[pipelines/access-session.md\|pipelines/access-session.md]] |
 | planning | 17 | [[planning/planning-documentation.md\|planning/planning-documentation.md]] |
@@ -123,6 +124,16 @@ Use this as the first opened note in Obsidian. It connects the repository, gener
 | --- | --- |
 | high | 37 |
 | none | 2 |
+
+## Visual Maps
+
+| Map | Use |
+| --- | --- |
+| [[maps/soar-obsidian-dashboard.canvas\|Dashboard Canvas]] | Start here; shows the docs command layer and AI/Paperclip entrypoints. |
+| [[maps/soar-function-journey.canvas\|Function Journey Canvas]] | Shows the evidence flow from product intent to action, chain, API, web, and proof gaps. |
+| [[maps/soar-chain-map.canvas\|Chain Map]] | Shows all generated function chains grouped by feature and status. |
+| [[maps/soar-action-proof-map.canvas\|Action Proof Map]] | Shows high-risk user actions and their proof boundaries. |
+| [[maps/soar-docs-folder-map.canvas\|Docs Folder Map]] | Shows top-level docs folders and their entry notes. |
 
 ## Dataview: Current Project Docs
 

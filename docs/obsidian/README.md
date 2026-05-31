@@ -9,13 +9,17 @@ This folder is the Obsidian-facing command layer for Soar docs. It does not repl
 - [[obsidian/soar-vault-dashboard.md|Soar Vault Dashboard]]
 - [[obsidian/code-to-docs-atlas.md|Code To Docs Atlas]]
 - [[obsidian/function-journey-hotlist.md|Function Journey Hotlist]]
+- [[obsidian/visual-map-index.md|Visual Map Index]]
 - [[obsidian/paperclip-cleanup-brief.md|Paperclip Cleanup Brief]]
 - [[obsidian/ai-navigation-brief.md|AI Navigation Brief]]
 
 ## Canvas Maps
 
-- [[maps/soar-obsidian-dashboard.canvas|Soar Obsidian Dashboard Canvas]]
-- [[maps/soar-function-journey.canvas|Soar Function Journey Canvas]]
+- [[maps/soar-obsidian-dashboard.canvas|Dashboard Canvas]]
+- [[maps/soar-function-journey.canvas|Function Journey Canvas]]
+- [[maps/soar-chain-map.canvas|Chain Map]]
+- [[maps/soar-action-proof-map.canvas|Action Proof Map]]
+- [[maps/soar-docs-folder-map.canvas|Docs Folder Map]]
 
 ## Rule
 

@@ -1,0 +1,466 @@
+{
+  "nodes": [
+    {
+      "id": "hotlist",
+      "type": "file",
+      "x": -560,
+      "y": -80,
+      "width": 340,
+      "height": 150,
+      "color": "4",
+      "file": "obsidian/function-journey-hotlist.md"
+    },
+    {
+      "id": "actions-csv",
+      "type": "file",
+      "x": -560,
+      "y": 150,
+      "width": 340,
+      "height": 150,
+      "color": "5",
+      "file": "architecture/indices/user-action-index.csv"
+    },
+    {
+      "id": "action-SOAR-ACTION-UI-MANUAL-ORDER-SUBMIT",
+      "type": "text",
+      "x": -80,
+      "y": -520,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-UI-MANUAL-ORDER-SUBMIT\nroute: /dashboard\nboundary: protected; money_or_exchange; mutation\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-UI-PASSWORD-VISIBILITY-TOGGLE",
+      "type": "text",
+      "x": 350,
+      "y": -520,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-UI-PASSWORD-VISIBILITY-TOGGLE\nroute: apps/web/src/features/auth/components/PasswordVisibilityToggle.tsx\nboundary: read_or_navigation\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-ADMIN-ROOT",
+      "type": "text",
+      "x": 780,
+      "y": -520,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-ADMIN-ROOT\nroute: /admin\nboundary: protected; read_or_navigation\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-ADMIN-SUBSCRIPTIONS",
+      "type": "text",
+      "x": -80,
+      "y": -330,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-ADMIN-SUBSCRIPTIONS\nroute: /admin/subscriptions\nboundary: protected; mutation\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-ADMIN-USERS",
+      "type": "text",
+      "x": 350,
+      "y": -330,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-ADMIN-USERS\nroute: /admin/users\nboundary: protected; mutation\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-BACKTEST-CREATE",
+      "type": "text",
+      "x": 780,
+      "y": -330,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-BACKTEST-CREATE\nroute: /dashboard/backtests/create\nboundary: protected; mutation\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-BACKTEST-DETAIL",
+      "type": "text",
+      "x": -80,
+      "y": -140,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-BACKTEST-DETAIL\nroute: /dashboard/backtests/:id\nboundary: protected; read_or_navigation\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-BACKTESTS-LIST",
+      "type": "text",
+      "x": 350,
+      "y": -140,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-BACKTESTS-LIST\nroute: /dashboard/backtests/list\nboundary: protected; destructive\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-BOT-ASSISTANT",
+      "type": "text",
+      "x": 780,
+      "y": -140,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-BOT-ASSISTANT\nroute: /dashboard/bots/:id/assistant\nboundary: protected; read_or_navigation\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-BOT-CREATE",
+      "type": "text",
+      "x": -80,
+      "y": 50,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-BOT-CREATE\nroute: /dashboard/bots/create\nboundary: protected; mutation\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-BOT-DETAIL-ALIAS",
+      "type": "text",
+      "x": 350,
+      "y": 50,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-BOT-DETAIL-ALIAS\nroute: /dashboard/bots/:id\nboundary: protected; read_or_navigation\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-BOT-EDIT",
+      "type": "text",
+      "x": 780,
+      "y": 50,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-BOT-EDIT\nroute: /dashboard/bots/:id/edit\nboundary: protected; mutation\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-BOT-NEW-ALIAS",
+      "type": "text",
+      "x": -80,
+      "y": 240,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-BOT-NEW-ALIAS\nroute: /dashboard/bots/new\nboundary: protected; mutation\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-BOT-PREVIEW",
+      "type": "text",
+      "x": 350,
+      "y": 240,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-BOT-PREVIEW\nroute: /dashboard/bots/:id/preview\nboundary: protected; read_or_navigation\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-BOT-RUNTIME",
+      "type": "text",
+      "x": 780,
+      "y": 240,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-BOT-RUNTIME\nroute: /dashboard/bots/:id/runtime\nboundary: protected; read_or_navigation\nproof: partially_verified"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-BOTS-LIST",
+      "type": "text",
+      "x": -80,
+      "y": 430,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-BOTS-LIST\nroute: /dashboard/bots\nboundary: protected; destructive\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-DASHBOARD",
+      "type": "text",
+      "x": 350,
+      "y": 430,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-DASHBOARD\nroute: /dashboard\nboundary: protected; read_or_navigation\nproof: partially_verified"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-LOGS",
+      "type": "text",
+      "x": 780,
+      "y": 430,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-LOGS\nroute: /dashboard/logs\nboundary: protected; read_or_navigation\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-MARKET-CREATE",
+      "type": "text",
+      "x": -80,
+      "y": 620,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-MARKET-CREATE\nroute: /dashboard/markets/create\nboundary: protected; mutation\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-MARKET-EDIT",
+      "type": "text",
+      "x": 350,
+      "y": 620,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-MARKET-EDIT\nroute: /dashboard/markets/:id/edit\nboundary: protected; mutation\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-MARKETS-LIST",
+      "type": "text",
+      "x": 780,
+      "y": 620,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-MARKETS-LIST\nroute: /dashboard/markets/list\nboundary: protected; destructive\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-OFFLINE",
+      "type": "text",
+      "x": -80,
+      "y": 810,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-OFFLINE\nroute: /offline\nboundary: read_or_navigation\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-POSITIONS-LEGACY",
+      "type": "text",
+      "x": 350,
+      "y": 810,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-POSITIONS-LEGACY\nroute: apps/web/src/middleware.ts\nboundary: protected; read_or_navigation\nproof: verified_local_only"
+    },
+    {
+      "id": "action-SOAR-ACTION-VISIT-PAGE-PROFILE",
+      "type": "text",
+      "x": 780,
+      "y": 810,
+      "width": 350,
+      "height": 150,
+      "color": "3",
+      "text": "SOAR-ACTION-VISIT-PAGE-PROFILE\nroute: /dashboard/profile\nboundary: protected; mutation\nproof: verified_local_only"
+    }
+  ],
+  "edges": [
+    {
+      "id": "action-source",
+      "fromNode": "hotlist",
+      "fromSide": "right",
+      "toNode": "actions-csv",
+      "toSide": "left",
+      "label": "source"
+    },
+    {
+      "id": "action-edge-0",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-UI-MANUAL-ORDER-SUBMIT",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-1",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-UI-PASSWORD-VISIBILITY-TOGGLE",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-2",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-ADMIN-ROOT",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-3",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-ADMIN-SUBSCRIPTIONS",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-4",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-ADMIN-USERS",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-5",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-BACKTEST-CREATE",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-6",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-BACKTEST-DETAIL",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-7",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-BACKTESTS-LIST",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-8",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-BOT-ASSISTANT",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-9",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-BOT-CREATE",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-10",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-BOT-DETAIL-ALIAS",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-11",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-BOT-EDIT",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-12",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-BOT-NEW-ALIAS",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-13",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-BOT-PREVIEW",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-14",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-BOT-RUNTIME",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-15",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-BOTS-LIST",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-16",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-DASHBOARD",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-17",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-LOGS",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-18",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-MARKET-CREATE",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-19",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-MARKET-EDIT",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-20",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-MARKETS-LIST",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-21",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-OFFLINE",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-22",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-POSITIONS-LEGACY",
+      "toSide": "left",
+      "label": "high"
+    },
+    {
+      "id": "action-edge-23",
+      "fromNode": "actions-csv",
+      "fromSide": "right",
+      "toNode": "action-SOAR-ACTION-VISIT-PAGE-PROFILE",
+      "toSide": "left",
+      "label": "high"
+    }
+  ]
+}

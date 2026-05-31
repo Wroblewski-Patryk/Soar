@@ -1,0 +1,970 @@
+{
+  "nodes": [
+    {
+      "id": "index",
+      "type": "file",
+      "x": -520,
+      "y": -180,
+      "width": 340,
+      "height": 150,
+      "color": "4",
+      "file": "obsidian/function-journey-hotlist.md"
+    },
+    {
+      "id": "registry",
+      "type": "file",
+      "x": -520,
+      "y": 40,
+      "width": 340,
+      "height": 150,
+      "color": "5",
+      "file": "architecture/chains/chains.csv"
+    },
+    {
+      "id": "feature-ai-assistant-foundation",
+      "type": "text",
+      "x": -40,
+      "y": -520,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: ai-assistant-foundation"
+    },
+    {
+      "id": "chain-CHAIN-AI-ASSISTANT-FOUNDATION",
+      "type": "text",
+      "x": -40,
+      "y": -380,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-AI-ASSISTANT-FOUNDATION\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-api-platform-safety",
+      "type": "text",
+      "x": 390,
+      "y": -520,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: api-platform-safety"
+    },
+    {
+      "id": "chain-CHAIN-API-PLATFORM-SAFETY",
+      "type": "text",
+      "x": 390,
+      "y": -380,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-API-PLATFORM-SAFETY\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-api-support-routes",
+      "type": "text",
+      "x": 820,
+      "y": -520,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: api-support-routes"
+    },
+    {
+      "id": "chain-CHAIN-API-SUPPORT-ROUTES",
+      "type": "text",
+      "x": 820,
+      "y": -380,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-API-SUPPORT-ROUTES\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-auth-session",
+      "type": "text",
+      "x": -40,
+      "y": -220,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: auth-session"
+    },
+    {
+      "id": "chain-CHAIN-AUTH-SESSION",
+      "type": "text",
+      "x": -40,
+      "y": -80,
+      "width": 330,
+      "height": 100,
+      "color": "4",
+      "text": "CHAIN-AUTH-SESSION\nstatus: verified\ngap: none"
+    },
+    {
+      "id": "chain-CHAIN-AUTH-SESSION-DEEP",
+      "type": "text",
+      "x": -40,
+      "y": 45,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-AUTH-SESSION-DEEP\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-backtests",
+      "type": "text",
+      "x": 390,
+      "y": -220,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: backtests"
+    },
+    {
+      "id": "chain-CHAIN-BACKTESTS",
+      "type": "text",
+      "x": 390,
+      "y": -80,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-BACKTESTS\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-bot-runtime",
+      "type": "text",
+      "x": 820,
+      "y": -220,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: bot-runtime"
+    },
+    {
+      "id": "chain-CHAIN-BOT-RUNTIME-CORE",
+      "type": "text",
+      "x": 820,
+      "y": -80,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-BOT-RUNTIME-CORE\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-bot-setup",
+      "type": "text",
+      "x": -40,
+      "y": 80,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: bot-setup"
+    },
+    {
+      "id": "chain-CHAIN-BOT-SETUP",
+      "type": "text",
+      "x": -40,
+      "y": 220,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-BOT-SETUP\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-dashboard-runtime",
+      "type": "text",
+      "x": 390,
+      "y": 80,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: dashboard-runtime"
+    },
+    {
+      "id": "chain-CHAIN-DASHBOARD-RUNTIME",
+      "type": "text",
+      "x": 390,
+      "y": 220,
+      "width": 330,
+      "height": 100,
+      "color": "3",
+      "text": "CHAIN-DASHBOARD-RUNTIME\nstatus: partially_verified\ngap: high"
+    },
+    {
+      "id": "feature-engine-runtime-core",
+      "type": "text",
+      "x": 820,
+      "y": 80,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: engine-runtime-core"
+    },
+    {
+      "id": "chain-CHAIN-ENGINE-RUNTIME-CORE",
+      "type": "text",
+      "x": 820,
+      "y": 220,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-ENGINE-RUNTIME-CORE\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-exchange-adapter",
+      "type": "text",
+      "x": -40,
+      "y": 380,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: exchange-adapter"
+    },
+    {
+      "id": "chain-CHAIN-EXCHANGE-ADAPTER-DEEP",
+      "type": "text",
+      "x": -40,
+      "y": 520,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-EXCHANGE-ADAPTER-DEEP\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-logs-audit",
+      "type": "text",
+      "x": 390,
+      "y": 380,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: logs-audit"
+    },
+    {
+      "id": "chain-CHAIN-LOGS-AUDIT",
+      "type": "text",
+      "x": 390,
+      "y": 520,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-LOGS-AUDIT\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-manual-order",
+      "type": "text",
+      "x": 820,
+      "y": 380,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: manual-order"
+    },
+    {
+      "id": "chain-CHAIN-MANUAL-ORDER",
+      "type": "text",
+      "x": 820,
+      "y": 520,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-MANUAL-ORDER\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "chain-CHAIN-MANUAL-ORDER-DEEP",
+      "type": "text",
+      "x": 820,
+      "y": 645,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-MANUAL-ORDER-DEEP\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-market-data-stream-adapters",
+      "type": "text",
+      "x": -40,
+      "y": 680,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: market-data-stream-adapters"
+    },
+    {
+      "id": "chain-CHAIN-MARKET-DATA-STREAM-ADAPTERS",
+      "type": "text",
+      "x": -40,
+      "y": 820,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-MARKET-DATA-STREAM-ADAPTERS\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-markets",
+      "type": "text",
+      "x": 390,
+      "y": 680,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: markets"
+    },
+    {
+      "id": "chain-CHAIN-MARKETS",
+      "type": "text",
+      "x": 390,
+      "y": 820,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-MARKETS\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-ops-config-pipeline",
+      "type": "text",
+      "x": 820,
+      "y": 680,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: ops-config-pipeline"
+    },
+    {
+      "id": "chain-CHAIN-OPS-CONFIG-PIPELINE",
+      "type": "text",
+      "x": 820,
+      "y": 820,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-OPS-CONFIG-PIPELINE\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-positions",
+      "type": "text",
+      "x": -40,
+      "y": 980,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: positions"
+    },
+    {
+      "id": "chain-CHAIN-POSITIONS-CORE",
+      "type": "text",
+      "x": -40,
+      "y": 1120,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-POSITIONS-CORE\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-profile-api-keys",
+      "type": "text",
+      "x": 390,
+      "y": 980,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: profile-api-keys"
+    },
+    {
+      "id": "chain-CHAIN-PROFILE-API-KEYS",
+      "type": "text",
+      "x": 390,
+      "y": 1120,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-PROFILE-API-KEYS\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-release-audit-tooling",
+      "type": "text",
+      "x": 820,
+      "y": 980,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: release-audit-tooling"
+    },
+    {
+      "id": "chain-CHAIN-RELEASE-AUDIT-TOOLING",
+      "type": "text",
+      "x": 820,
+      "y": 1120,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-RELEASE-AUDIT-TOOLING\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-reports",
+      "type": "text",
+      "x": -40,
+      "y": 1280,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: reports"
+    },
+    {
+      "id": "chain-CHAIN-REPORTS",
+      "type": "text",
+      "x": -40,
+      "y": 1420,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-REPORTS\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-runtime-dca-pnl",
+      "type": "text",
+      "x": 390,
+      "y": 1280,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: runtime-dca-pnl"
+    },
+    {
+      "id": "chain-CHAIN-RUNTIME-DCA-PNL",
+      "type": "text",
+      "x": 390,
+      "y": 1420,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-RUNTIME-DCA-PNL\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-runtime-support-services",
+      "type": "text",
+      "x": 820,
+      "y": 1280,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: runtime-support-services"
+    },
+    {
+      "id": "chain-CHAIN-RUNTIME-SUPPORT-SERVICES",
+      "type": "text",
+      "x": 820,
+      "y": 1420,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-RUNTIME-SUPPORT-SERVICES\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-strategies",
+      "type": "text",
+      "x": -40,
+      "y": 1580,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: strategies"
+    },
+    {
+      "id": "chain-CHAIN-STRATEGIES",
+      "type": "text",
+      "x": -40,
+      "y": 1720,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-STRATEGIES\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-subscriptions-admin",
+      "type": "text",
+      "x": 390,
+      "y": 1580,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: subscriptions-admin"
+    },
+    {
+      "id": "chain-CHAIN-SUBSCRIPTIONS-ADMIN",
+      "type": "text",
+      "x": 390,
+      "y": 1720,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-SUBSCRIPTIONS-ADMIN\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-wallets",
+      "type": "text",
+      "x": 820,
+      "y": 1580,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: wallets"
+    },
+    {
+      "id": "chain-CHAIN-WALLETS-CORE",
+      "type": "text",
+      "x": 820,
+      "y": 1720,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-WALLETS-CORE\nstatus: verified_local\ngap: high"
+    },
+    {
+      "id": "feature-web-runtime-surfaces",
+      "type": "text",
+      "x": -40,
+      "y": 1880,
+      "width": 330,
+      "height": 110,
+      "color": "2",
+      "text": "Feature: web-runtime-surfaces"
+    },
+    {
+      "id": "chain-CHAIN-WEB-RUNTIME-SURFACES",
+      "type": "text",
+      "x": -40,
+      "y": 2020,
+      "width": 330,
+      "height": 100,
+      "color": "1",
+      "text": "CHAIN-WEB-RUNTIME-SURFACES\nstatus: verified_local\ngap: high"
+    }
+  ],
+  "edges": [
+    {
+      "id": "chain-index-registry",
+      "fromNode": "index",
+      "fromSide": "right",
+      "toNode": "registry",
+      "toSide": "left",
+      "label": "generated from"
+    },
+    {
+      "id": "feature-edge-0",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-ai-assistant-foundation",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-AI-ASSISTANT-FOUNDATION",
+      "fromNode": "feature-ai-assistant-foundation",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-AI-ASSISTANT-FOUNDATION",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-1",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-api-platform-safety",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-API-PLATFORM-SAFETY",
+      "fromNode": "feature-api-platform-safety",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-API-PLATFORM-SAFETY",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-2",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-api-support-routes",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-API-SUPPORT-ROUTES",
+      "fromNode": "feature-api-support-routes",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-API-SUPPORT-ROUTES",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-3",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-auth-session",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-AUTH-SESSION",
+      "fromNode": "feature-auth-session",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-AUTH-SESSION",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-AUTH-SESSION-DEEP",
+      "fromNode": "feature-auth-session",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-AUTH-SESSION-DEEP",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-4",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-backtests",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-BACKTESTS",
+      "fromNode": "feature-backtests",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-BACKTESTS",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-5",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-bot-runtime",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-BOT-RUNTIME-CORE",
+      "fromNode": "feature-bot-runtime",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-BOT-RUNTIME-CORE",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-6",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-bot-setup",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-BOT-SETUP",
+      "fromNode": "feature-bot-setup",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-BOT-SETUP",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-7",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-dashboard-runtime",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-DASHBOARD-RUNTIME",
+      "fromNode": "feature-dashboard-runtime",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-DASHBOARD-RUNTIME",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-8",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-engine-runtime-core",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-ENGINE-RUNTIME-CORE",
+      "fromNode": "feature-engine-runtime-core",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-ENGINE-RUNTIME-CORE",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-9",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-exchange-adapter",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-EXCHANGE-ADAPTER-DEEP",
+      "fromNode": "feature-exchange-adapter",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-EXCHANGE-ADAPTER-DEEP",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-10",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-logs-audit",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-LOGS-AUDIT",
+      "fromNode": "feature-logs-audit",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-LOGS-AUDIT",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-11",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-manual-order",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-MANUAL-ORDER",
+      "fromNode": "feature-manual-order",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-MANUAL-ORDER",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-MANUAL-ORDER-DEEP",
+      "fromNode": "feature-manual-order",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-MANUAL-ORDER-DEEP",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-12",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-market-data-stream-adapters",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-MARKET-DATA-STREAM-ADAPTERS",
+      "fromNode": "feature-market-data-stream-adapters",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-MARKET-DATA-STREAM-ADAPTERS",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-13",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-markets",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-MARKETS",
+      "fromNode": "feature-markets",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-MARKETS",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-14",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-ops-config-pipeline",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-OPS-CONFIG-PIPELINE",
+      "fromNode": "feature-ops-config-pipeline",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-OPS-CONFIG-PIPELINE",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-15",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-positions",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-POSITIONS-CORE",
+      "fromNode": "feature-positions",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-POSITIONS-CORE",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-16",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-profile-api-keys",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-PROFILE-API-KEYS",
+      "fromNode": "feature-profile-api-keys",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-PROFILE-API-KEYS",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-17",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-release-audit-tooling",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-RELEASE-AUDIT-TOOLING",
+      "fromNode": "feature-release-audit-tooling",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-RELEASE-AUDIT-TOOLING",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-18",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-reports",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-REPORTS",
+      "fromNode": "feature-reports",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-REPORTS",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-19",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-runtime-dca-pnl",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-RUNTIME-DCA-PNL",
+      "fromNode": "feature-runtime-dca-pnl",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-RUNTIME-DCA-PNL",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-20",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-runtime-support-services",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-RUNTIME-SUPPORT-SERVICES",
+      "fromNode": "feature-runtime-support-services",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-RUNTIME-SUPPORT-SERVICES",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-21",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-strategies",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-STRATEGIES",
+      "fromNode": "feature-strategies",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-STRATEGIES",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-22",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-subscriptions-admin",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-SUBSCRIPTIONS-ADMIN",
+      "fromNode": "feature-subscriptions-admin",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-SUBSCRIPTIONS-ADMIN",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-23",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-wallets",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-WALLETS-CORE",
+      "fromNode": "feature-wallets",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-WALLETS-CORE",
+      "toSide": "left",
+      "label": "chain"
+    },
+    {
+      "id": "feature-edge-24",
+      "fromNode": "registry",
+      "fromSide": "right",
+      "toNode": "feature-web-runtime-surfaces",
+      "toSide": "left",
+      "label": "groups"
+    },
+    {
+      "id": "chain-edge-chain-CHAIN-WEB-RUNTIME-SURFACES",
+      "fromNode": "feature-web-runtime-surfaces",
+      "fromSide": "right",
+      "toNode": "chain-CHAIN-WEB-RUNTIME-SURFACES",
+      "toSide": "left",
+      "label": "chain"
+    }
+  ]
+}

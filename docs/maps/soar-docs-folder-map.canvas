@@ -1,0 +1,466 @@
+{
+  "nodes": [
+    {
+      "id": "dashboard",
+      "type": "file",
+      "x": -620,
+      "y": -80,
+      "width": 360,
+      "height": 150,
+      "color": "4",
+      "file": "obsidian/soar-vault-dashboard.md"
+    },
+    {
+      "id": "readme",
+      "type": "file",
+      "x": -620,
+      "y": 130,
+      "width": 360,
+      "height": 150,
+      "color": "5",
+      "file": "README.md"
+    },
+    {
+      "id": "folder--",
+      "type": "text",
+      "x": -120,
+      "y": -560,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": ".\nfiles: 5\nRoot entrypoints and documentation policy."
+    },
+    {
+      "id": "folder-adr",
+      "type": "text",
+      "x": 250,
+      "y": -560,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "adr\nfiles: 2\nSupporting documentation folder."
+    },
+    {
+      "id": "folder-analysis",
+      "type": "text",
+      "x": 620,
+      "y": -560,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "analysis\nfiles: 11\nSupporting documentation folder."
+    },
+    {
+      "id": "folder-architecture",
+      "type": "text",
+      "x": 990,
+      "y": -560,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "architecture\nfiles: 744\nCanonical runtime, graph, contracts, and ownership truth."
+    },
+    {
+      "id": "folder-automation",
+      "type": "text",
+      "x": -120,
+      "y": -370,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "automation\nfiles: 2\nSupporting documentation folder."
+    },
+    {
+      "id": "folder-contracts",
+      "type": "text",
+      "x": 250,
+      "y": -370,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "contracts\nfiles: 1\nSupporting documentation folder."
+    },
+    {
+      "id": "folder-decisions",
+      "type": "text",
+      "x": 620,
+      "y": -370,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "decisions\nfiles: 2\nSupporting documentation folder."
+    },
+    {
+      "id": "folder-engineering",
+      "type": "text",
+      "x": 990,
+      "y": -370,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "engineering\nfiles: 2\nSupporting documentation folder."
+    },
+    {
+      "id": "folder-flows",
+      "type": "text",
+      "x": -120,
+      "y": -180,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "flows\nfiles: 1\nSupporting documentation folder."
+    },
+    {
+      "id": "folder-governance",
+      "type": "text",
+      "x": 250,
+      "y": -180,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "governance\nfiles: 20\nSupporting documentation folder."
+    },
+    {
+      "id": "folder-graphs",
+      "type": "text",
+      "x": 620,
+      "y": -180,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "graphs\nfiles: 1\nSupporting documentation folder."
+    },
+    {
+      "id": "folder-maps",
+      "type": "text",
+      "x": 990,
+      "y": -180,
+      "width": 320,
+      "height": 130,
+      "color": "4",
+      "text": "maps\nfiles: 6\nHuman/agent navigation maps and canvas surfaces."
+    },
+    {
+      "id": "folder-modules",
+      "type": "text",
+      "x": -120,
+      "y": 10,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "modules\nfiles: 47\nImplementation-facing module ownership and tests."
+    },
+    {
+      "id": "folder-obsidian",
+      "type": "text",
+      "x": 250,
+      "y": 10,
+      "width": 320,
+      "height": 130,
+      "color": "4",
+      "text": "obsidian\nfiles: 8\nObsidian-first dashboard, AI brief, and cleanup layer."
+    },
+    {
+      "id": "folder-operations",
+      "type": "text",
+      "x": 620,
+      "y": 10,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "operations\nfiles: 69\nRunbooks, deploy, rollback, proof, and operator workflows."
+    },
+    {
+      "id": "folder-pipelines",
+      "type": "text",
+      "x": 990,
+      "y": 10,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "pipelines\nfiles: 10\nSupporting documentation folder."
+    },
+    {
+      "id": "folder-planning",
+      "type": "text",
+      "x": -120,
+      "y": 200,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "planning\nfiles: 17\nPlans, open decisions, queues, and work packages."
+    },
+    {
+      "id": "folder-product",
+      "type": "text",
+      "x": 250,
+      "y": 200,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "product\nfiles: 16\nProduct intent, scope, users, roadmap, and limits."
+    },
+    {
+      "id": "folder-quality",
+      "type": "text",
+      "x": 620,
+      "y": 200,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "quality\nfiles: 1\nSupporting documentation folder."
+    },
+    {
+      "id": "folder-releases",
+      "type": "text",
+      "x": 990,
+      "y": 200,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "releases\nfiles: 2\nSupporting documentation folder."
+    },
+    {
+      "id": "folder-security",
+      "type": "text",
+      "x": -120,
+      "y": 390,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "security\nfiles: 8\nSupporting documentation folder."
+    },
+    {
+      "id": "folder-status",
+      "type": "text",
+      "x": 250,
+      "y": 390,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "status\nfiles: 9\nGenerated current-state snapshots and proof status."
+    },
+    {
+      "id": "folder-testing",
+      "type": "text",
+      "x": 620,
+      "y": 390,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "testing\nfiles: 1\nSupporting documentation folder."
+    },
+    {
+      "id": "folder-ux",
+      "type": "text",
+      "x": 990,
+      "y": 390,
+      "width": 320,
+      "height": 130,
+      "color": "6",
+      "text": "ux\nfiles: 21\nDesign system, quality bar, and visual workflow."
+    }
+  ],
+  "edges": [
+    {
+      "id": "folder-dashboard-readme",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "readme",
+      "toSide": "left",
+      "label": "docs root"
+    },
+    {
+      "id": "folder-edge-0",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder--",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-1",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-adr",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-2",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-analysis",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-3",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-architecture",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-4",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-automation",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-5",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-contracts",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-6",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-decisions",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-7",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-engineering",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-8",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-flows",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-9",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-governance",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-10",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-graphs",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-11",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-maps",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-12",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-modules",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-13",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-obsidian",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-14",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-operations",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-15",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-pipelines",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-16",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-planning",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-17",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-product",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-18",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-quality",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-19",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-releases",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-20",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-security",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-21",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-status",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-22",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-testing",
+      "toSide": "left",
+      "label": "folder"
+    },
+    {
+      "id": "folder-edge-23",
+      "fromNode": "dashboard",
+      "fromSide": "right",
+      "toNode": "folder-ux",
+      "toSide": "left",
+      "label": "folder"
+    }
+  ]
+}
