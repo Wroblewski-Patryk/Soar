@@ -1,4 +1,9 @@
 ## 2026-05-31 LUC-1128 [Soar][Source Control Closure] Classify and close local dirty state for LUC-973-LUC-1127
+- Wake `issue_commented` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `1/1`, latest comment id `3dfe95f9-2419-4c46-9656-e53db8738745`).
+- Continuation action:
+  - revalidated source-control closure commit `cae7917e` and worktree cleanliness (`git status --short` => clean),
+  - fixed closure artifact gap by replacing placeholder commit line with concrete hash in the `LUC-1128` task document.
+- Disposition for this wake: `done` (no new local dirty state; sidecar objective remains complete).
 - Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
   - inspected worktree and commit context for dirty-state ownership (`git status --short`, scoped diffs, recent commit stream),

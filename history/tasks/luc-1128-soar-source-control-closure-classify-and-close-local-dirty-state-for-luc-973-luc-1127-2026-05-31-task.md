@@ -50,7 +50,7 @@ Classify ownership of current local dirty state within range `LUC-973` to `LUC-1
   - recorded closure in `.codex/context/PROJECT_STATE.md` and `.codex/context/TASK_BOARD.md`,
   - preserved canonical `LUC-1127` task artifact,
   - committed scoped bundle.
-- Commit: pending insertion after commit command.
+- Commit: `cae7917e` (`docs: close local source-control continuity for LUC-973 LUC-1127`).
 - Push: not needed.
 - Deploy impact: none.
 - Residual risk: low; limited to future stale-doc drift if later lanes edit the same context files without immediate closure sidecar.

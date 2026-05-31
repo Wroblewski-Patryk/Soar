@@ -1,5 +1,10 @@
 ## 2026-05-31 LUC-1128 source-control closure for LUC-973/LUC-1127 dirty set
 - `LUC-1128 [Soar][Source Control Closure] Classify and close local dirty state for LUC-973-LUC-1127` executed as a closure sidecar lane.
+- Continuation wake from board comment `3dfe95f9-2419-4c46-9656-e53db8738745` acknowledged (`issue_commented`, `comments 1/1`).
+- Continuation verification:
+  - closure commit `cae7917e` remains present,
+  - local worktree remains clean after closure (`git status --short` => no output),
+  - task artifact updated to replace placeholder commit note with concrete commit evidence.
 - Wake `issue_assigned` processed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Dirty worktree classification before closure:
   - `M .codex/context/PROJECT_STATE.md` -> prior lane continuation (`LUC-1127`) evidence sync.
