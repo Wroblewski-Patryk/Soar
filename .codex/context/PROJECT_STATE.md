@@ -1,3 +1,58 @@
+- `LUC-966 [Soar][Source Control Closure]` heartbeat (`issue_commented`) executed on 2026-05-31 and is `done`.
+  Wake comment `26a69e48-705c-49dd-b269-e8c79d0f9b46` was acknowledged first and constrained scope to sidecar local source-control closure only, while target delivery remains dependency-blocked by protected gates.
+  Concrete action:
+  - captured local dirty-worktree baseline (`git status --short`),
+  - classified each dirty path into one of the requested lanes (`LUC-959`, `LUC-963`, `LUC-965`),
+  - confirmed no unrelated runtime mutation and no secret-like artifacts in the classified set.
+  Closure disposition:
+  - commit: `not committed`
+  - push: `not needed`
+  - deploy impact: `none`
+  Evidence:
+  `history/tasks/luc-966-source-control-closure-classify-and-close-local-dirty-state-for-luc-959-luc-963-luc-965-2026-05-31-task.md`.
+
+- `LUC-965 [Soar][Non-DCA Closure Coordination]` continuation heartbeat (`source_scoped_recovery_action`) executed on 2026-05-31 and is `done`.
+  Wake `source_scoped_recovery_action` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action:
+  - converted residual non-DCA gaps into explicit closure lanes with owner/proof/unblock contracts,
+  - fixed execution order to `SOAR-OPERATIONS-001` -> `SOAR-DATA-001` -> `SOAR-ASSISTANT-AI-001`,
+  - kept this heartbeat in coordination scope only (no runtime/deploy mutation).
+  Closure disposition:
+  - commit: `not committed`
+  - push: `not needed`
+  - deploy impact: `none`
+  Evidence:
+  `history/tasks/luc-965-non-dca-closure-lane-delegation-2026-05-31-task.md`.
+
+- `LUC-965 [Soar][Non-DCA Functional Research]` continuation heartbeat (`finish_successful_run_handoff`) executed on 2026-05-31 and is `done`.
+  Wake `finish_successful_run_handoff` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action:
+  - completed non-DCA architecture-to-runtime reconciliation from canonical state ledgers (`module-confidence-ledger`, `known-issues`, `risk-register`, `requirements-verification-matrix`),
+  - confirmed non-DCA core functional modules remain evidence-backed `VERIFIED` in accepted scope,
+  - isolated remaining high-impact non-DCA gaps to:
+    1. `SOAR-OPERATIONS-001` (`P0`, `PARTIAL`) - protected release evidence chain still open,
+    2. `SOAR-DATA-001` (`P0`, `PARTIALLY VERIFIED`) - protected production migration/restore freshness not refreshed,
+    3. `SOAR-ASSISTANT-AI-001` (`P1`, `PARTIAL`) - no audited hot-path model runtime/red-team packet.
+  Closure disposition:
+  - commit: `not committed`
+  - push: `not needed`
+  - deploy impact: `none`
+  Evidence:
+  `history/tasks/luc-965-non-dca-functional-architecture-gap-map-2026-05-31-task.md`.
+
+- `LUC-965 [Soar][Code Research] reszta badan kodu` heartbeat executed on 2026-05-31 and is `done`.
+  Wake `issue_assigned` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action:
+  - executed repository static code-research scan using the latest available project index,
+  - generated `history/audits/v1-static-issue-scan-2026-05-31.md` and `history/audits/v1-static-issue-scan-2026-05-31.json`,
+  - scan result recorded `Findings: 0` and `By severity: {}`.
+  Closure disposition:
+  - commit: `not committed`
+  - push: `not needed`
+  - deploy impact: `none`
+  Evidence:
+  `history/tasks/luc-965-reszta-badan-kodu-2026-05-31-task.md`.
+
 - `LUC-923 [Soar][Source Control Closure]` continuation wake (`issue_commented`) executed on 2026-05-30 and is `done`.
   Wake comment `e3a98d61-dd7c-4402-b531-c7cd8a70b2c2` was acknowledged first and constrained scope to local source-control closure only while `LUC-402` protected delivery remains dependency-blocked.
   Concrete action:
@@ -13911,3 +13966,22 @@
   `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
 
 
+
+- `LUC-959 issue_assigned heartbeat (2026-05-31)` executed a concrete coordination traceability check and is `done`.
+  Wake scope was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action: local traceability scan `rg -n "LUC-959|luc-959" -S .` found no existing `LUC-959` record (`not good` classification), then repaired the gap by creating
+  `history/tasks/luc-959-check-and-fix-if-not-good-2026-05-31-task.md` and syncing `TASK_BOARD`/`PROJECT_STATE` entries.
+  Scope remained docs/state/evidence only (no runtime/product/deploy mutation).
+
+- `LUC-959 finish_successful_run_handoff heartbeat (2026-05-31)` was re-scoped to the real runtime objective and moved to `blocked` with explicit specialist owners.
+  Wake scope was acknowledged first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action: architecture/evidence/code-path scan confirmed DCA/TP/SL/TTP/TSL contracts and prior parity repairs are present locally, so the remaining gap is active runtime verification/fix + release proof rather than missing architecture docs.
+  Blocker is role-bound execution dependency: PM lane cannot implement code or perform deploy ownership checks. Unblock owners/actions are explicit: Engineering Delivery Lead (fix + SHA/push), QA/Test (focused regression proof), Ops Release Lead (Coolify redeploy + smoke/build-info parity).
+
+- `LUC-963 issue_assigned heartbeat (2026-05-31)` delivered QA fail-before/pass-after regression proof for the DCA-before-close fix boundary.
+  Wake scope was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action: resolved fix SHA `6b1d3e9a`, prepared isolated `before` (`6b1d3e9a^`) and `after` (`6b1d3e9a`) worktrees, normalized dependencies (`pnpm install --frozen-lockfile` + `pnpm --filter api exec prisma generate`), then ran identical extracted DCA-before-close assertions in both revisions.
+  Evidence outcome: `before` fails (`2/2`, dynamic TSL/TTP still exposed while DCA pending) and `after` passes (`2/2`), proving the regression boundary.
+  Scope remained QA verification/docs-state sync only (no main-workspace runtime code mutation).
+  Evidence:
+  `history/tasks/luc-963-regression-proof-dca-before-close-2026-05-31-task.md`.

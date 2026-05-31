@@ -28,3 +28,5 @@ the next similar mission brief, lane registry, docs, or task plan.
 Close a row only after the next mission brief, task template, lane registry,
 source-of-truth doc, or state file has been updated so the same gap is less
 likely to repeat.
+
+| RLG-006 | 2026-05-31 | `LUC-959` | unclear_owner | Issue objective required runtime implementation + deploy verification, but PM lane initially closed only traceability and marked done. | `history/tasks/luc-959-check-and-fix-if-not-good-2026-05-31-task.md` continuation; wake objective text requiring code+deploy outcomes. | For any PM wake containing runtime correctness + deploy asks, force early lane split (Delivery/QA/Ops) before first closure and prohibit PM-only `done` without specialist evidence. | `.agents/state/active-mission.md`; `.codex/context/TASK_BOARD.md`; `.codex/context/PROJECT_STATE.md` | open |

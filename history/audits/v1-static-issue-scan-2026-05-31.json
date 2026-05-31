@@ -1,0 +1,13 @@
+{
+  "generatedAt": "2026-05-31T00:21:59.264Z",
+  "evidenceDate": "2026-05-31",
+  "projectIndex": "history/audits/project-index-2026-05-26.json",
+  "summary": {
+    "totalFindings": 0,
+    "bySeverity": {},
+    "byCategory": {},
+    "sourceFilesScanned": 692,
+    "sourceMarkers": 29
+  },
+  "findings": []
+}
