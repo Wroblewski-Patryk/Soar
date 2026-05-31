@@ -1,3 +1,34 @@
+## 2026-05-31 LUC-1119 source-control closure for LUC-1068/LUC-1075 dirty set
+- `LUC-1119 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1068-LUC-1075` executed as a source-control hygiene lane.
+- Wake `issue_assigned` processed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Dirty-worktree baseline before edits:
+  - observed dirty files:
+    - `.codex/context/PROJECT_STATE.md`
+    - `.codex/context/TASK_BOARD.md`
+    - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+  - ownership assumption: all belong to same continuity chain (`LUC-1075` reconciliation artifacts).
+  - verification boundary: `git status --porcelain=v1 -b`, `git diff -- <path>`, and task-artifact evidence only.
+- Closure classification:
+  - all dirty paths are documentation/state continuity artifacts.
+  - no runtime/deploy/account/secret mutation found in this lane.
+  - `LUC-1068` remains `done`; no contradictory evidence requiring reopen.
+- Closure artifact:
+  - `history/tasks/luc-1119-source-control-closure-classify-and-close-local-dirty-state-for-luc-1068-luc-1075-2026-05-31-task.md`
+
+## 2026-05-31 LUC-1075 continuation reconciliation (finish_successful_run_handoff-2)
+- Wake `finish_successful_run_handoff` processed as read-only triage continuity and marked `done`.
+- Concrete action:
+  - reran reconciliation across canonical `LUC-1075` task artifact and `LUC-1068`/`LUC-1065` evidence artifacts,
+  - confirmed no contradictory classification or blocker facts were introduced.
+- State remains unchanged:
+  - `LUC-1068` stays `done` and does not reopen.
+  - one legal next action remains in `LUC-1065` lineage under `LUC-1075/LUC-175` guarded policy path.
+- Commit policy in this lane remains `no-commit` (classification-only continuity).
+- Evidence:
+  - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+  - `history/tasks/luc-1068-source-control-closure-classify-and-close-local-dirty-state-for-luc-1065-2026-05-31-task.md`
+  - `history/tasks/luc-1065-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
+
 ## 2026-05-31 LUC-1115 source-control closure for LUC-1068/LUC-1075/LUC-1112 dirty set
 - `LUC-1115 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1068-LUC-1075-LUC-1112` executed and closed as `done`.
 - Wake `issue_assigned` processed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -11,6 +42,20 @@
   - `history/tasks/luc-1115-source-control-closure-classify-and-close-local-dirty-state-for-luc-1068-luc-1075-luc-1112-2026-05-31-task.md`
   - `.codex/context/TASK_BOARD.md`
   - `.codex/context/PROJECT_STATE.md`
+
+## 2026-05-31 LUC-1075 continuation reconciliation (issue_reopened_via_comment)
+- Wake `issue_reopened_via_comment` processed from comment `103dfbf8-8f70-4a02-a9a4-bb03e7efb348` (`softwarehouse-blocked-triage-lane-starter:v2`) and marked `done`.
+- Concrete action:
+  - reran read-only reconciliation of `LUC-1075` triage artifact with `LUC-1068` closure evidence and `LUC-1065` blocker evidence,
+  - confirmed no unresolved blockers remain in `LUC-1068` and no contradictory facts were introduced.
+- State remains unchanged:
+  - `LUC-1068` stays `done` and does not reopen.
+  - one legal next action remains in `LUC-1065` lineage under guarded `LUC-1075/LUC-175` policy path.
+- Commit policy in this lane remains `no-commit` (classification-only continuity).
+- Evidence:
+  - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+  - `history/tasks/luc-1068-source-control-closure-classify-and-close-local-dirty-state-for-luc-1065-2026-05-31-task.md`
+  - `history/tasks/luc-1065-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
 
 ## 2026-05-31 LUC-1075 continuation reconciliation (source_scoped_recovery_action)
 - Wake `source_scoped_recovery_action` processed as read-only triage continuity and marked `done`.
@@ -14739,3 +14784,13 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected /workers/ready recheck and publishes redaction-safe evidence.
 
 
+
+## 2026-05-31 LUC-1075 continuation reconciliation (source_scoped_recovery_action-2)
+- Wake `source_scoped_recovery_action` processed as read-only triage continuity and marked `done`.
+- Concrete action:
+  - reran reconciliation across canonical `LUC-1075` task artifact and `LUC-1068`/`LUC-1065` evidence artifacts,
+  - confirmed no contradictory classification or blocker facts were introduced.
+- State remains unchanged:
+  - `LUC-1068` stays `done` and does not reopen.
+  - one legal next action remains in `LUC-1065` lineage under `LUC-1075/LUC-175` guarded policy path.
+- Commit policy in this lane remains `no-commit` (classification-only continuity).

@@ -112,3 +112,39 @@ Produce an evidence-backed status classification for `LUC-1068` and route the ne
   - `LUC-1068` remains `done` as a closed source-control-closure sidecar lane.
   - next legal action remains under `LUC-1065` lineage (Ops Release Lead + platform/Coolify runtime owner -> restore canonical availability -> one read-only health sweep evidence refresh).
 - Final disposition for this continuation wake: `done`.
+
+## Continuation (issue_reopened_via_comment - local-board recovery)
+- Wake `issue_reopened_via_comment` acknowledged from comment `103dfbf8-8f70-4a02-a9a4-bb03e7efb348` (`softwarehouse-blocked-triage-lane-starter:v2`, `fallbackFetchNeeded=false`, comments `1/1`).
+- Concrete action in this heartbeat:
+  - revalidated target-lane evidence (`LUC-1068`) and downstream blocker evidence (`LUC-1065`),
+  - confirmed this recovery wake is disposition-only and does not introduce new blocker facts.
+- Final classification remains unchanged:
+  - `LUC-1068` remains `done` (no unresolved source-control closure blocker).
+  - one legal next action remains routed via `LUC-1065`: Ops Release Lead + platform/Coolify runtime owner restore canonical availability, then one read-only health sweep evidence refresh.
+- Follow-up lane decision:
+  - no additional child lane created (already one legal next lane exists and is explicit).
+- Final disposition for this wake: `done`.
+
+## Continuation (finish_successful_run_handoff - reconciliation-2)
+- Wake `finish_successful_run_handoff` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Re-ran read-only continuity reconciliation for:
+  - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+  - `history/tasks/luc-1068-source-control-closure-classify-and-close-local-dirty-state-for-luc-1065-2026-05-31-task.md`
+  - `history/tasks/luc-1065-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
+- No contradictory facts were introduced by prior reconciliation runs.
+- Classification and routing remain unchanged:
+  - `LUC-1068` remains `done` and does not reopen.
+  - exactly one legal next action remains under `LUC-1065` lineage (Ops Release Lead + platform/Coolify runtime owner -> restore canonical availability -> one read-only health sweep evidence refresh).
+- Final disposition for this continuation wake: `done`.
+
+## Continuation (source_scoped_recovery_action - reconciliation-2)
+- Wake `source_scoped_recovery_action` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Re-ran read-only triage continuity verification for:
+  - `history/tasks/luc-1068-source-control-closure-classify-and-close-local-dirty-state-for-luc-1065-2026-05-31-task.md`
+  - `history/tasks/luc-1065-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
+  - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+- No contradictory evidence was found that would justify reopening `LUC-1068`.
+- Classification and next legal action remain unchanged:
+  - `LUC-1068` remains `done` as a closed source-control-closure sidecar lane.
+  - next legal action remains under `LUC-1065` lineage (Ops Release Lead + platform/Coolify runtime owner -> restore canonical availability -> one read-only health sweep evidence refresh).
+- Final disposition for this continuation wake: `done`.

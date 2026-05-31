@@ -1,3 +1,34 @@
+## 2026-05-31 LUC-1119 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1068-LUC-1075
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - captured dirty-worktree baseline and ownership assumptions for the `LUC-1068/LUC-1075` set,
+  - revalidated dirty paths by diff and confirmed docs/context-only continuity scope,
+  - produced closure artifact for this lane.
+- Classified dirty paths:
+  - `.codex/context/PROJECT_STATE.md`
+  - `.codex/context/TASK_BOARD.md`
+  - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+- Classification/routing decision:
+  - dirty set is safe documentation/state continuity work only.
+  - `LUC-1068` remains `done`; next legal runtime lane remains under `LUC-1065` lineage.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1119-source-control-closure-classify-and-close-local-dirty-state-for-luc-1068-luc-1075-2026-05-31-task.md`
+
+## 2026-05-31 LUC-1075 continuation [finish_successful_run_handoff]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran read-only triage continuity reconciliation for `LUC-1075`, `LUC-1068`, and `LUC-1065` evidence artifacts.
+- Classification/routing remain unchanged:
+  - `LUC-1068` remains `done`.
+  - exactly one legal next action remains under `LUC-1065` owner path (Ops Release Lead + platform/Coolify runtime owner -> restore canonical availability -> one read-only health sweep evidence refresh).
+- Follow-up issue decision: none (single legal lane already explicit).
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+  - `history/tasks/luc-1068-source-control-closure-classify-and-close-local-dirty-state-for-luc-1065-2026-05-31-task.md`
+  - `history/tasks/luc-1065-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
+
 ## 2026-05-31 LUC-1115 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1068-LUC-1075-LUC-1112
 - Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
@@ -17,6 +48,20 @@
   - `history/tasks/luc-1115-source-control-closure-classify-and-close-local-dirty-state-for-luc-1068-luc-1075-luc-1112-2026-05-31-task.md`
   - `.codex/context/TASK_BOARD.md`
   - `.codex/context/PROJECT_STATE.md`
+
+## 2026-05-31 LUC-1075 continuation [issue_reopened_via_comment]
+- Wake acknowledged from comment `103dfbf8-8f70-4a02-a9a4-bb03e7efb348` (`softwarehouse-blocked-triage-lane-starter:v2`, `fallbackFetchNeeded=false`, comments `1/1`).
+- Concrete action in this heartbeat:
+  - reran read-only triage verification for `LUC-1068` classification and `LUC-1065` blocker lineage.
+- Classification/routing remain unchanged:
+  - `LUC-1068` remains `done` (no unresolved blocker in source-control closure lane).
+  - exactly one legal next lane remains: `LUC-1065` owner path (Ops Release Lead + platform/Coolify runtime owner -> restore canonical availability -> one read-only health sweep evidence refresh).
+- Follow-up issue decision: none (existing single legal lane already explicit).
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+  - `history/tasks/luc-1068-source-control-closure-classify-and-close-local-dirty-state-for-luc-1065-2026-05-31-task.md`
+  - `history/tasks/luc-1065-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
 
 ## 2026-05-31 LUC-1075 continuation [source_scoped_recovery_action]
 - Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -16939,3 +16984,13 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
   2. After recovery and fresh explicit gate approval, Ops Release Lead executes exactly one new read-only protected /workers/ready recheck and publishes redaction-safe evidence.
 
 
+
+## 2026-05-31 LUC-1075 continuation [source_scoped_recovery_action-2]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran read-only triage continuity reconciliation for `LUC-1075`, `LUC-1068`, and `LUC-1065` evidence artifacts.
+- Classification/routing remain unchanged:
+  - `LUC-1068` remains `done`.
+  - exactly one legal next action remains under `LUC-1065` owner path (Ops Release Lead + platform/Coolify runtime owner -> restore canonical availability -> one read-only health sweep evidence refresh).
+- Follow-up issue decision: none (single legal lane already explicit).
+- Final disposition for this wake: `done`.
