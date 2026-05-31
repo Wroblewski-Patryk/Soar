@@ -14932,3 +14932,17 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   Disposition: no new dirty-state classification or closure commit required in this wake; sidecar lane remains closed.
   Evidence:
   - `history/tasks/luc-1128-soar-source-control-closure-classify-and-close-local-dirty-state-for-luc-973-luc-1127-2026-05-31-task.md`
+
+- `LUC-1145 [Soar][LUC-241][Security] Read-only permission decision packet for /workers/ready smoke` heartbeat (`issue_commented`) executed on 2026-05-31 and is `done`.
+  - Wake comment `d7ce0bed-ac62-4498-b5d3-1df4f7bb57c6` acknowledged; lane-normalizer metadata does not change security verdict scope.
+  - Security decision packet published: `APPROVED_WITH_CONSTRAINTS` for read-only protected smoke class (`requireAuth + requireRole('ADMIN') + requireOpsNetwork`) on `GET /workers/ready`.
+  - Local proof command: `rg -n "requireOpsAccess|workers/ready|requireRole\('ADMIN'\)|requireOpsNetwork" apps/api/src/router/index.ts apps/api/src/router/workers-health-readiness.test.ts -S`.
+  - Residual blocker unchanged: canonical runtime availability is currently degraded (`503`), so protected permission-path execution remains non-actionable until Ops/runtime recovery.
+  - Unblock owner/action: Ops Release Lead + platform/Coolify runtime owner restore availability; Security/Test + auth credential owner confirm fresh approved read-only principal/session; then execute exactly one protected read-only recheck and publish redaction-safe evidence.
+
+- `LUC-1148 [Soar][Source Control Closure] Classify and close local dirty state for LUC-241-LUC-1144-LUC-1145-LUC-1146` heartbeat (`issue_assigned`) executed on 2026-05-31 and is `done`.
+  - Wake acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  - Dirty-state classification mapped all local paths to requested bundle ownership (`LUC-1144` backend/doc auth map, `LUC-1145` security packet, `LUC-1146` QA classification, continuity state sync files).
+  - Minimal verification executed: `pnpm --filter api exec vitest run src/middleware/requireRole.test.ts src/middleware/requireOpsNetwork.test.ts` -> PASS.
+  - Closure action: one local source-control closure commit created; no push/deploy in this heartbeat.
+  - Evidence: `history/tasks/luc-1148-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-luc-1144-luc-1145-luc-1146-2026-05-31-task.md`.

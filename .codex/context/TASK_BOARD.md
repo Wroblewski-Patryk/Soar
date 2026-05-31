@@ -17177,3 +17177,43 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
   - `git log --oneline -n 8` -> closure continuity commits present: `7797e880`, `843a6deb`, `cae7917e`.
 - Outcome: no additional classification or no-commit decision delta required; issue lane remains closed.
 - Final disposition for this wake: `done`.
+
+## 2026-05-31 LUC-1145 security permission packet closure
+- Wake `issue_commented` acknowledged from inline payload (`fallbackFetchNeeded=false`, latest comment `d7ce0bed-ac62-4498-b5d3-1df4f7bb57c6`).
+- Concrete action:
+  - finalized security decision packet for protected read-only smoke permissions on `GET /workers/ready`,
+  - published durable artifact: `history/releases/luc-1145-workers-ready-read-only-permission-decision-packet-2026-05-31.md`,
+  - recorded task contract/result: `history/tasks/luc-1145-read-only-permission-decision-packet-for-workers-ready-smoke-2026-05-31-task.md`.
+- Decision: `APPROVED_WITH_CONSTRAINTS` (auth + `ADMIN` role + ops network required; no mutation scope).
+- Verification evidence: `rg -n "requireOpsAccess|workers/ready|requireRole\('ADMIN'\)|requireOpsNetwork" apps/api/src/router/index.ts apps/api/src/router/workers-health-readiness.test.ts -S`.
+- Disposition: `done` for this security lane.
+- Residual risk: runtime `503` availability blocker remains upstream; one-shot protected recheck is deferred until recovery.
+
+## 2026-05-31 LUC-1146 minimal smoke evidence refresh [source_scoped_recovery_action]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); no new human delta changed blocker scope.
+- Concrete action:
+  - executed one fresh read-only HTTP status probe on canonical hosts via `curl.exe`,
+  - observed statuses: `API /health 200`, `API /ready 200`, `WEB / 200`, `WEB /api/build-info 200`, `API /workers/ready 401`.
+- Classification refresh:
+  - public availability path: `implemented and verified`,
+  - protected `GET /workers/ready`: `blocked by error` (`401`),
+  - protected readiness payload proof: `missing` (auth boundary not passed in this lane).
+- Durable evidence: `history/tasks/luc-1146-workers-ready-minimal-smoke-evidence-classification-2026-05-31-task.md`.
+- Final disposition for this wake: `blocked`.
+
+## 2026-05-31 LUC-1148 [Soar][Source Control Closure] Classify and close local dirty state for LUC-241-LUC-1144-LUC-1145-LUC-1146
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - captured dirty baseline (`git status --short --branch`) and classified ownership for every path,
+  - confirmed dirty set coherence with `LUC-241/LUC-1144/LUC-1145/LUC-1146` continuity scope,
+  - ran minimal backend-auth verification for touched test/doc scope,
+  - prepared one closure commit to restore clean worktree.
+- Classification outcome:
+  - backend/docs lane (`LUC-1144`): `apps/api/src/middleware/requireRole.test.ts`, `docs/modules/api-root.md`, `history/tasks/luc-1144-...task.md`.
+  - security lane (`LUC-1145`): `history/releases/luc-1145-workers-ready-read-only-permission-decision-packet-2026-05-31.md`, `history/tasks/luc-1145-...task.md`.
+  - qa lane (`LUC-1146`): `history/tasks/luc-1146-workers-ready-minimal-smoke-evidence-classification-2026-05-31-task.md`.
+  - continuity sync: `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`.
+- Verification evidence:
+  - `pnpm --filter api exec vitest run src/middleware/requireRole.test.ts src/middleware/requireOpsNetwork.test.ts` -> PASS.
+- Disposition: `done` (local source-control closure complete for this bundle).
+- Durable artifact: `history/tasks/luc-1148-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-luc-1144-luc-1145-luc-1146-2026-05-31-task.md`.

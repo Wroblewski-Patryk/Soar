@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/router`
 - Owner: backend/platform-ops
-- Last updated: 2026-05-19
+- Last updated: 2026-05-31
 - Related planning task: `API-ENDPOINT-DOCS-GAP-CLOSURE-2026-05-19`
 
 ## Canonical Architecture Linkage
@@ -87,6 +87,25 @@ Out of scope:
 - Dashboard and admin routers apply no-store headers and route-level auth
   middleware before module routes execute.
 
+### Source-Level Auth Map: `GET /workers/ready`
+- Route definition:
+  - `apps/api/src/router/index.ts` -> `router.get('/workers/ready', ...requireOpsAccess, ...)`
+- Middleware chain (`requireOpsAccess` in declaration order):
+  1. `requireAuth` (`apps/api/src/middleware/requireAuth.ts`)
+     - Requires a valid authenticated session/token and populates `req.user`.
+     - Fail-closed response: `401 Unauthorized`.
+  2. `requireRole('ADMIN')` (`apps/api/src/middleware/requireRole.ts`)
+     - Requires `req.user.role === 'ADMIN'`.
+     - Fail-closed response: `403 Forbidden`.
+  3. `requireOpsNetwork` (`apps/api/src/middleware/requireOpsNetwork.ts`)
+     - Requires source IP to satisfy explicit allowlist or private-network policy.
+     - Fail-closed response: `403 Forbidden`.
+- Effective access contract:
+  - Principal must be authenticated, have `ADMIN` role, and originate from an
+    allowed operations network.
+  - Any missing condition denies access before worker-readiness payload
+    evaluation.
+
 ## 7. Observability and Operations
 - These routes are the baseline for local smoke checks, production deploy
   smoke, worker topology checks, and runtime freshness diagnostics.
@@ -103,6 +122,7 @@ Out of scope:
 ```powershell
 pnpm run test:go-live:smoke
 pnpm --filter api run test -- src/router --run
+pnpm --filter api exec vitest run src/middleware/requireRole.test.ts src/middleware/requireOpsNetwork.test.ts
 ```
 
 ## 9. Open Issues and Follow-Ups
