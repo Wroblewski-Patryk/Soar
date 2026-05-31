@@ -14306,3 +14306,5 @@
 - LUC-997 (2026-05-31, comment f9b218b...): local source-control closure lane switched from repeated 
 o-commit to closure commit path after targeted revalidation (
 ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan no secret values). Operational rule applied: docs/history/context/evidence dirty set must be locally committed rather than left mixed by issue boundaries.
+
+- LUC-997 closed on 2026-05-31 after post-commit recheck: local worktree clean and closure commit  86218a1ba2a5a3e819bc8000aba18b1b16aa496 recorded; no push/deploy executed in this lane.

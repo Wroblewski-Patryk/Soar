@@ -208,3 +208,12 @@ Classify current dirty files by ownership and close the lane with explicit next 
 ode --check scripts/buildObsidianVaultLayer.mjs -> PASS.
   - targeted dirty-path redaction scan with high-signal credential/key patterns -> no secret-value hits.
 - Decision: closure commit required (docs/history/context/evidence-only local dirty set; no secret exposure; local lane allowed to commit).
+
+## 2026-05-31 finish_successful_run_handoff - final closure checkpoint
+- Wake delta: no pending comments ( /0), continuation required final disposition.
+- Final recheck:
+  - git status --short -> clean tree.
+  - git rev-parse HEAD ->  86218a1ba2a5a3e819bc8000aba18b1b16aa496.
+  - last commit -> chore: close local docs/evidence dirty state for LUC-241 and LUC-997.
+- Push/deploy not executed (outside lane allowance).
+- Disposition: done.

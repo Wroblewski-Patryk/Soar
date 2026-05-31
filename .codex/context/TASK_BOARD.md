@@ -16298,3 +16298,11 @@ ode --check scripts/buildObsidianVaultLayer.mjs -> PASS,
   - reran targeted dirty-path redaction scan with high-signal secret/key patterns -> no secret-value matches.
 - Commit/no-commit decision updated to commit by closure contract because dirty set is docs/history/evidence/context/agent-state plus local docs-generation script and has no secret risk.
 - Commit intent: one local operational evidence commit covering all current dirty paths to close local source-control state for linked lanes (LUC-241, LUC-997).
+
+## 2026-05-31 LUC-997 continuation [finish_successful_run_handoff, closure finalized]
+- No new wake comments ( /0); executed strict post-commit closure recheck only.
+- Recheck results:
+  - git status --short -> clean worktree,
+  - closure commit present at  86218a1ba2a5a3e819bc8000aba18b1b16aa496 (chore: close local docs/evidence dirty state for LUC-241 and LUC-997).
+- Push/deploy status: not performed (forbidden by lane scope).
+- Final disposition for LUC-997: done (source-control closure objective satisfied with local commit evidence).
