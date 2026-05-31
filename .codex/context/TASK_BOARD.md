@@ -1,3 +1,38 @@
+## 2026-05-31 LUC-1033 continuation [source_scoped_recovery_action]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated `LUC-1033` canonical evidence across task artifact + source-of-truth context files,
+  - confirmed wake-level `blocked` flag is stale relative to already-closed triage evidence.
+- Classification remains unchanged: `LUC-962` remains `done`; next legal lane remains Ops/Security blocker resolution under `LUC-973` (`/workers/ready` approved read-only auth path + one approved recheck).
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1033-blocked-triage-classify-luc-962-and-produce-next-legal-action-2026-05-31-task.md`
+
+## 2026-05-31 LUC-1033 continuation [finish_successful_run_handoff]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated `LUC-1033` classification artifacts and commit-evidence links,
+  - confirmed no post-checkpoint contradictory evidence for reopening `LUC-962`.
+- Final classification unchanged: `LUC-962` remains `done`; next legal lane remains Ops/Security blocker resolution under `LUC-973` (`/workers/ready` approved read-only auth path + one approved recheck).
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1033-blocked-triage-classify-luc-962-and-produce-next-legal-action-2026-05-31-task.md`
+## 2026-05-31 LUC-1033 [Softwarehouse][Blocked Triage] Classify LUC-962 and produce next legal action
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reviewed canonical `LUC-962` task artifact and source-control closure notes,
+  - verified commit `2dc983ced4a4c66e31e7f37264710c124955e57b` exists and scope matches declared lane files,
+  - reconciled downstream deploy/runtime evidence from `LUC-973` (public SHA parity proven, protected readiness still blocked outside `LUC-962` scope).
+- Classification result:
+  - `LUC-962`: `done` (closed regression-proof lane; no contradictory evidence).
+- Next legal action:
+  1. Keep `LUC-962` closed unless contradictory runtime/logic evidence appears.
+  2. Route continuation to Ops/Security blocker lane (`LUC-973`/workers-readiness lineage): provide approved read-only auth path for protected `/workers/ready`, then execute exactly one approved read-only recheck and publish redaction-safe evidence.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-962-dca-before-close-regression-proof-and-fix-closure-2026-05-31.md`
+  - `history/tasks/luc-973-verify-last-failed-deploys-and-route-repair-2026-05-31-task.md`
+  - `history/tasks/luc-1033-blocked-triage-classify-luc-962-and-produce-next-legal-action-2026-05-31-task.md`
 ## 2026-05-31 LUC-1026 continuation [source_scoped_recovery_action]
 - Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
@@ -16380,3 +16415,5 @@ ode --check scripts/buildObsidianVaultLayer.mjs -> PASS,
 - Evidence:
   - `history/evidence/luc-1027-coolify-production-deploy-health-sweep-2026-05-31.md`
   - `history/tasks/luc-1027-child-read-only-failed-deploy-diagnosis-2026-05-31-task.md`
+
+

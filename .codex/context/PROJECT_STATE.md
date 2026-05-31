@@ -1,3 +1,16 @@
+## 2026-05-31 LUC-1033 continuation (source_scoped_recovery_action)
+- Revalidated local canonical evidence after wake payload reported `blocked`.
+- Status drift classified as stale: triage lane remains closed and evidence-backed.
+- Disposition reaffirmed: `LUC-962` remains `done`; continuation remains external (`LUC-973` Ops/Security protected readiness blocker path).
+
+## 2026-05-31 LUC-1033 continuation (finish_successful_run_handoff)
+- Revalidated prior blocked-triage conclusion; no contradictory evidence found.
+- Disposition reaffirmed: `LUC-962` remains `done`; continuation remains external (`LUC-973` Ops/Security protected readiness blocker path).
+## 2026-05-31 LUC-1033 blocked-triage classification
+- Classified `LUC-962` as `done` from canonical artifact + commit evidence.
+- Verified closure commit exists: `2dc983ced4a4c66e31e7f37264710c124955e57b` (scope-limited to expected regression test + task evidence file).
+- Confirmed downstream public deploy SHA parity already exists in `LUC-973`; remaining blocker is outside `LUC-962` (protected `/workers/ready` auth/readiness evidence path).
+- Next legal action: keep `LUC-962` closed; continue Ops/Security blocker lane for protected readiness proof and one approved recheck.
 - `LUC-1026 [Softwarehouse][Blocked Triage]` continuation wake (`source_scoped_recovery_action`) executed on 2026-05-31 and is `done`.
   Wake was acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action: artifact consistency recheck across task/state records confirmed no triage drift.
@@ -14364,3 +14377,5 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   Evidence:
   - `history/evidence/luc-1027-coolify-production-deploy-health-sweep-2026-05-31.md`
   - `history/tasks/luc-1027-child-read-only-failed-deploy-diagnosis-2026-05-31-task.md`
+
+
