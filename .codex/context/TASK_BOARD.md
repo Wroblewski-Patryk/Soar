@@ -15829,3 +15829,54 @@ None.
   - Coolify operator + release controller provide temp-domain recovery evidence or explicit accepted no-temp-stack decision for this issue chain.
 - Evidence:
   - `history/tasks/luc-973-verify-last-failed-deploys-and-route-repair-2026-05-31-task.md`
+
+## 2026-05-31 LUC-973 continuation [finish_successful_run_handoff]
+- Wake had no new comment delta (`0/0`), so execution continued on missing acceptance slice: identify last two failed deploys and route concrete repair owner.
+- Read-only Coolify checks in this runner:
+  - env presence confirmed for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`/`COOLIFY_TOKEN`, `COOLIFY_LOGIN_*`, and Soar app/resource IDs (names-only, no values disclosed),
+  - `GET /api/v1/applications` => `200` (Soar app inventory visible),
+  - `GET /api/v1/deployments` and `GET /api/v1/deployments?status=failed` => `200 []` in this API scope,
+  - `GET /api/v1/applications/{soar-api,soar-web}/logs` => `200`.
+- Last-two failed deploy evidence (reconstructed from restart metadata + logs due empty deployments list):
+  1. `soar-api` (`k126p7...`): `last_restart_at=2026-05-31T00:25:11Z`, `last_restart_type=crash`, `restart_count=2`, `status=running:unknown`, source mode `main/HEAD`.
+  2. `soar-web` (`ato4fq...`): `last_restart_at=2026-05-31T00:52:12Z`, `last_restart_type=crash`, `restart_count=25`, `status=running:unknown`, source mode `main/HEAD`.
+     - redaction-safe failure excerpt from logs: repeated `ENOSPC` (`no space left on device`) in Corepack/pnpm cache mkdir under `/home/node/.cache/node/corepack/v1/...`.
+- SHA parity relation to `LUC-962`:
+  - production public build-info still points to `2dc983ced4a4c66e31e7f37264710c124955e57b` (prior checkpoint), but Coolify app source mode is floating `main/HEAD`; deterministic deploy-object proof remains missing in API list endpoints.
+- Final disposition: `blocked`.
+- Unblock owner/action:
+  - Ops Release/Coolify operator under explicit release permit: recover disk headroom for web build runtime cache path, rerun only `soar-web` deploy, then publish expected-SHA smoke/build-info proof and deploy object evidence.
+- Evidence:
+  - `history/tasks/luc-973-verify-last-failed-deploys-and-route-repair-2026-05-31-task.md`
+  - `history/artifacts/luc-973-soar-api-logs-2026-05-31.json`
+  - `history/artifacts/luc-973-soar-web-logs-2026-05-31.json`
+
+## 2026-05-31 LUC-973 continuation [issue_commented]
+- Pending comment `1/1` consumed first: `69b9fc09-6eaa-45ad-8bf8-215bbb7c9e0b`.
+- Comment impact accepted exactly: keep lane `blocked` (not `in_progress`) after read-only deploy diagnosis.
+- No scope expansion approved in this wake (still no redeploy/restart/protected smoke approval).
+- Facts unchanged from prior evidence packet:
+  - prod public checks pass on build-info SHA `2dc983ce...`,
+  - protected `/workers/ready` remains `401`,
+  - temp route smoke remains `fetch failed`.
+- Final disposition for this continuation: `blocked`.
+- Unblock owner/action unchanged:
+  - provide approved read-only principal/session for `/workers/ready`,
+  - provide Coolify/temp-domain recovery evidence or accepted no-temp-stack decision,
+  - then run one read-only Ops recheck.
+- Evidence:
+  - `history/tasks/luc-973-verify-last-failed-deploys-and-route-repair-2026-05-31-task.md`
+
+## 2026-05-31 LUC-966 continuation [issue_commented]
+- Pending comment `1/1` consumed first: `8cb08774-ed76-40b3-aac8-434f96bd2863` (`softwarehouse-local-repair-lane-starter:v1`).
+- Concrete source-control closure action in this heartbeat:
+  - reran local dirty-state baseline (`git status --short`, `git rev-parse --short HEAD`, `git log -1 --pretty=%B`),
+  - reclassified dirty paths against issue scope:
+    - `current`: none for `LUC-959/LUC-963/LUC-965` closure lane,
+    - `out-of-scope active`: `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, `history/tasks/luc-973-verify-last-failed-deploys-and-route-repair-2026-05-31-task.md`, `history/artifacts/luc-973-soar-api-logs-2026-05-31.json`, `history/artifacts/luc-973-soar-web-logs-2026-05-31.json`,
+    - `stale`: none detected.
+- Commit/no-commit decision:
+  - `no-commit` in `LUC-966` lane, because remaining dirty set is actively owned by `LUC-973` evidence lane and committing here would mix issue ownership.
+- Final disposition for this continuation: `blocked`.
+- Unblock owner/action:
+  - `LUC-973` owner lane must commit or otherwise close the listed out-of-scope dirty paths; after that, rerun one `LUC-966` clean-tree recheck and close.

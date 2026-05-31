@@ -13994,3 +13994,26 @@
   Unblock owner/action: Soar API auth credential owner + Security/Test permission owner provide approved read-only principal/session for protected `/workers/ready`; Coolify operator + release controller provide temp-domain recovery evidence or accepted no-temp-stack decision; then Ops reruns one protected+temp read-only checkpoint.
   Evidence:
   `history/tasks/luc-973-verify-last-failed-deploys-and-route-repair-2026-05-31-task.md`.
+
+- `LUC-973 finish_successful_run_handoff heartbeat (2026-05-31)` added concrete failed-deploy reconstruction and repair-lane routing; disposition remains `blocked`.
+  No new wake comment delta (`0/0`) changed scope, so continuation executed missing acceptance checks directly.
+  Read-only Coolify API in this runner returns app inventory (`/applications=200`) while deployments list endpoints return empty arrays (`/deployments=200 []`, `?status=failed=200 []`).
+  Using app restart metadata plus logs, last two failed deploy events are evidenced as crash restarts: `soar-api` at `2026-05-31T00:25:11Z` and `soar-web` at `2026-05-31T00:52:12Z`.
+  `soar-web` logs include repeated `ENOSPC` Corepack/pnpm cache mkdir failures (`/home/node/.cache/node/corepack/v1/...`), giving a concrete resource-specific root cause lane (host disk headroom/runtime cache path).
+  Source mode for both apps remains floating `main/HEAD`; prior public build-info parity for `2dc983ce...` stands, but deterministic deploy-object proof is still absent from current API list endpoints.
+  Unblock owner/action: Ops Release/Coolify operator under explicit release permit recovers disk headroom and reruns `soar-web` deploy, then publishes expected-SHA smoke/build-info proof plus deploy-object evidence.
+  Evidence: `history/tasks/luc-973-verify-last-failed-deploys-and-route-repair-2026-05-31-task.md`, `history/artifacts/luc-973-soar-api-logs-2026-05-31.json`, `history/artifacts/luc-973-soar-web-logs-2026-05-31.json`.
+
+- `LUC-973 issue_commented heartbeat (2026-05-31)` consumed local-board comment `69b9fc09-6eaa-45ad-8bf8-215bbb7c9e0b` first and performed disposition-sync closure.
+  Comment requires this lane to remain `blocked` (not `in_progress`) after read-only diagnosis; scope did not reopen mutation actions.
+  Operational fact set remains unchanged: production public parity on `2dc983ce...` is healthy, protected `/workers/ready` remains `401`, temp route smoke remains `fetch failed`.
+  No redeploy/restart/protected smoke approval exists in this wake.
+  Unblock owner/action unchanged: approved read-only principal/session for `/workers/ready` plus Coolify/temp-domain recovery evidence (or accepted no-temp-stack decision), then one Ops read-only recheck.
+  Evidence: `history/tasks/luc-973-verify-last-failed-deploys-and-route-repair-2026-05-31-task.md`.
+
+- `LUC-966 issue_commented heartbeat (2026-05-31)` consumed local-board comment `8cb08774-ed76-40b3-aac8-434f96bd2863` first and executed concrete local source-control reclassification.
+  Baseline check (`git status --short`) shows no remaining dirty paths from `LUC-959/LUC-963/LUC-965`; all current dirty entries are active `LUC-973` docs/state/evidence artifacts.
+  Commit/no-commit decision in this heartbeat: `no-commit` for `LUC-966` to avoid cross-issue ownership mixing on an out-of-scope dirty set.
+  Heartbeat disposition for this continuation is `blocked` until `LUC-973` lane closes its dirty paths, then one clean-tree recheck can close `LUC-966`.
+  Evidence:
+  `history/tasks/luc-966-source-control-closure-classify-and-close-local-dirty-state-for-luc-959-luc-963-luc-965-2026-05-31-task.md`.

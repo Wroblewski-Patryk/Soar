@@ -84,3 +84,46 @@ Classify current local dirty workspace state and close the source-control sideca
 - Recheck command run:
   - `rg -n "LUC-959|LUC-963|LUC-965|LUC-966" .codex/context .agents/state docs history -S`
 - Recheck result: lane attribution and closure evidence links remain present and consistent with sidecar mandate.
+
+## Continuation Checkpoint (issue_commented) - 2026-05-31
+
+### Wake impact acknowledged first
+- Consumed pending comment `8cb08774-ed76-40b3-aac8-434f96bd2863` (`softwarehouse-local-repair-lane-starter:v1`) before any generic exploration.
+- The comment re-opened a narrow local source-control closure checkpoint for this lane.
+
+### Concrete action in this heartbeat
+- Re-ran local source-control baseline:
+  - `git status --short`
+  - `git rev-parse --short HEAD`
+  - `git log -1 --pretty=%B`
+- Reclassified current dirty set against `LUC-966` target scope (`LUC-959/LUC-963/LUC-965`):
+  - `current`: none
+  - `out-of-scope active`: `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, `history/tasks/luc-973-verify-last-failed-deploys-and-route-repair-2026-05-31-task.md`, `history/artifacts/luc-973-soar-api-logs-2026-05-31.json`, `history/artifacts/luc-973-soar-web-logs-2026-05-31.json`
+  - `stale`: none detected
+
+### Commit / no-commit decision
+- Decision: `no-commit` in `LUC-966` lane.
+- Reason: remaining dirty set is actively owned by `LUC-973`; committing here would cross issue ownership boundaries and violate clean closure attribution.
+
+### Heartbeat disposition
+- `blocked`.
+- Unblock owner/action: `LUC-973` lane owner closes the listed dirty paths (commit or explicit closure route), then rerun one clean-tree `LUC-966` recheck and close.
+
+## Continuation Checkpoint (finish_successful_run_handoff) - 2026-05-31
+
+### Delta handling
+- No new comment delta (`0/0`), so this heartbeat executed closure completion for the currently active docs/history/evidence dirty set.
+
+### Concrete action
+- Rechecked dirty baseline and scope:
+  - dirty tracked: `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, `history/tasks/luc-966-...task.md`, `history/tasks/luc-973-...task.md`
+  - dirty untracked: `history/artifacts/luc-973-soar-api-logs-2026-05-31.json`, `history/artifacts/luc-973-soar-web-logs-2026-05-31.json`
+- Classified scope: docs/state/evidence/history only (`runtime/product code=0`).
+- Ran redaction scan over the dirty set for secret-like patterns; no secret value disclosure found.
+
+### Commit / no-commit decision
+- Decision updated to `commit` for this heartbeat per cross-issue closure rule (docs/state/evidence-only set should not remain locally dirty).
+- Commit includes LUC references: `LUC-966`, `LUC-973`, `LUC-959`, `LUC-963`, `LUC-965`.
+
+### Expected disposition after commit
+- `done` for this sidecar closure lane once clean-tree check passes.
