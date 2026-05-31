@@ -12,6 +12,7 @@ audits, proof artifacts, release packets, and raw generated outputs belong in
 
 | Need | Go to |
 | --- | --- |
+| Obsidian vault dashboard, canvas maps, AI navigation, cleanup queue | `docs/obsidian/soar-vault-dashboard.md` |
 | Product intent, scope, roadmap, user value, limits | `docs/maps/product-map.md` |
 | Durable decisions and ADRs | `docs/decisions/README.md` |
 | System shape, contracts, modules, architecture truth | `docs/maps/architecture-map.md` |
@@ -53,6 +54,7 @@ audits, proof artifacts, release packets, and raw generated outputs belong in
 | `docs/ux/` | Design system, quality bars, evidence rules, and reusable pattern memory. | `docs/ux/design-system-contract.md` |
 | `docs/governance/` | Repository, agent, template, and delivery rules. | `docs/governance/template-usage.md` |
 | `docs/status/` | Generated and maintained implementation/proof status snapshots for route, journey, and ownership visibility. | `docs/status/view-map-browser-workflow-ownership.md` |
+| `docs/obsidian/` | Obsidian-first navigation layer for dashboarding, canvas maps, AI navigation, and Paperclip cleanup delegation. | `docs/obsidian/soar-vault-dashboard.md` |
 | `docs/status/known-state-readiness.md` | Current operational truth for whether Soar is known enough for safe autonomous development and V1 release routing. | `docs/status/known-state-readiness.md` |
 
 ## Historical Lookup

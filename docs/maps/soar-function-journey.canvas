@@ -1,0 +1,125 @@
+{
+  "nodes": [
+    {
+      "id": "product",
+      "type": "file",
+      "x": -920,
+      "y": -100,
+      "width": 300,
+      "height": 150,
+      "file": "maps/product-map.md"
+    },
+    {
+      "id": "journey",
+      "type": "file",
+      "x": -520,
+      "y": -100,
+      "width": 330,
+      "height": 150,
+      "file": "architecture/indices/user-action-index.csv"
+    },
+    {
+      "id": "chains",
+      "type": "file",
+      "x": -100,
+      "y": -100,
+      "width": 330,
+      "height": 150,
+      "file": "architecture/indices/function-chain-evidence-index.csv"
+    },
+    {
+      "id": "api",
+      "type": "file",
+      "x": 320,
+      "y": -220,
+      "width": 330,
+      "height": 150,
+      "file": "architecture/indices/api-surface-evidence-index.csv"
+    },
+    {
+      "id": "web",
+      "type": "file",
+      "x": 320,
+      "y": 20,
+      "width": 330,
+      "height": 150,
+      "file": "architecture/indices/web-journey-index.csv"
+    },
+    {
+      "id": "hotlist",
+      "type": "file",
+      "x": 760,
+      "y": -100,
+      "width": 340,
+      "height": 150,
+      "file": "obsidian/function-journey-hotlist.md"
+    },
+    {
+      "id": "proof",
+      "type": "text",
+      "x": -520,
+      "y": 180,
+      "width": 760,
+      "height": 140,
+      "text": "Proof rule: local tests, browser proof, production readback, and approved live mutations are different evidence levels. Keep them separate in docs and graph rows."
+    }
+  ],
+  "edges": [
+    {
+      "id": "f1",
+      "fromNode": "product",
+      "fromSide": "right",
+      "toNode": "journey",
+      "toSide": "left",
+      "label": "user actions"
+    },
+    {
+      "id": "f2",
+      "fromNode": "journey",
+      "fromSide": "right",
+      "toNode": "chains",
+      "toSide": "left",
+      "label": "function path"
+    },
+    {
+      "id": "f3",
+      "fromNode": "chains",
+      "fromSide": "right",
+      "toNode": "api",
+      "toSide": "left",
+      "label": "API surface"
+    },
+    {
+      "id": "f4",
+      "fromNode": "chains",
+      "fromSide": "right",
+      "toNode": "web",
+      "toSide": "left",
+      "label": "route/page"
+    },
+    {
+      "id": "f5",
+      "fromNode": "api",
+      "fromSide": "right",
+      "toNode": "hotlist",
+      "toSide": "left",
+      "label": "gaps"
+    },
+    {
+      "id": "f6",
+      "fromNode": "web",
+      "fromSide": "right",
+      "toNode": "hotlist",
+      "toSide": "left",
+      "label": "gaps"
+    },
+    {
+      "id": "f7",
+      "fromNode": "proof",
+      "fromSide": "right",
+      "toNode": "hotlist",
+      "toSide": "left",
+      "label": "interpretation"
+    }
+  ]
+}

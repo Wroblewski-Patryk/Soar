@@ -9,6 +9,7 @@ apps/api/tmp-*.log
 playwright-*.log
 history/artifacts/_artifacts-rc-evidence-check-latest.json
 docs/.obsidian/
+docs/Bez nazwy*
 .agents/skills/build_worker_job_pipeline/
 .agents/skills/implement_exchange_api_key_flow/
 .agents/skills/run_release_gate_checks/

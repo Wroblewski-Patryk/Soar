@@ -48,6 +48,15 @@ or architecture truth:
 
 ## Starter Canonical Docs
 
+- Obsidian Vault Layer:
+  - `obsidian/README.md`
+  - `obsidian/soar-vault-dashboard.md`
+  - `obsidian/code-to-docs-atlas.md`
+  - `obsidian/function-journey-hotlist.md`
+  - `obsidian/ai-navigation-brief.md`
+  - `obsidian/paperclip-cleanup-brief.md`
+  - `maps/soar-obsidian-dashboard.canvas`
+  - `maps/soar-function-journey.canvas`
 - Main Map:
   - `documentation-map.md`
   - `maps/documentation-maps.md`

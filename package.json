@@ -20,6 +20,7 @@
     "prod-like/start": "node scripts/start-local-prod-like.mjs",
     "prod-like:start": "pnpm run prod-like/start",
     "docs:parity:check": "node scripts/checkDocsParity.mjs",
+    "obsidian:vault:build": "node scripts/buildObsidianVaultLayer.mjs",
     "docs:parity:endpoints:api": "node scripts/auditApiEndpointDocsParity.mjs",
     "architecture:graph:generate": "node scripts/generateArchitectureGraph.mjs",
     "architecture:graph:drift": "node scripts/auditArchitectureGraphDrift.mjs",
