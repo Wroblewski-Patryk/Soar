@@ -309,9 +309,9 @@
   - reviewed current diffs for continuity/docs-generator scope (`git diff -- ...`),
   - reran targeted secret-pattern scan over all dirty paths (no secret-value hits).
 - Classification refresh:
-  - `current` (belongs to active blocked continuity around `LUC-241`):  
+  - `current` (belongs to active blocked continuity around `LUC-241`):
     `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`
-  - `out_of_scope` for this sidecar lane (separate docs-generation owner):  
+  - `out_of_scope` for this sidecar lane (separate docs-generation owner):
     `scripts/buildObsidianVaultLayer.mjs`, `docs/obsidian/README.md`, `docs/obsidian/soar-vault-dashboard.md`, `docs/obsidian/docs-health-report.md`, `docs/obsidian/feature-index.md`, `docs/obsidian/proof-gap-register.md`, `docs/obsidian/route-action-map.md`
   - `stale`: none detected in this heartbeat (no contradictory/replaced dirty chunk found).
 - Commit/no-commit decision: `no-commit` (mixed ownership persists; cross-lane staging forbidden).
@@ -16539,20 +16539,20 @@ None.
   3. Run one clean-tree `LUC-997` recheck and close.
 
 ## 2026-05-31 LUC-997 continuation [issue_assigned, local repair lane commit closure]
-- Pending comment 1/1 consumed first: f9b218b-dba7-4089-963e-8d6f50b3b70f (softwarehouse-local-repair-lane-starter:v1).
+- Pending comment 1/1 consumed first: f9b218b-dba7-4089-963e-8d6f50b3b70f (softwarehouse-local-repair-lane-starter:v1).
 - Concrete source-control closure action in this heartbeat:
   - reran dirty baseline (git status --short) and confirmed mixed 16-path docs/state/evidence/script set,
-  - ran minimal touched-layer validation: 
+  - ran minimal touched-layer validation:
 ode --check scripts/buildObsidianVaultLayer.mjs -> PASS,
   - reran targeted dirty-path redaction scan with high-signal secret/key patterns -> no secret-value matches.
 - Commit/no-commit decision updated to commit by closure contract because dirty set is docs/history/evidence/context/agent-state plus local docs-generation script and has no secret risk.
 - Commit intent: one local operational evidence commit covering all current dirty paths to close local source-control state for linked lanes (LUC-241, LUC-997).
 
 ## 2026-05-31 LUC-997 continuation [finish_successful_run_handoff, closure finalized]
-- No new wake comments ( /0); executed strict post-commit closure recheck only.
+- No new wake comments (/0); executed strict post-commit closure recheck only.
 - Recheck results:
   - git status --short -> clean worktree,
-  - closure commit present at  86218a1ba2a5a3e819bc8000aba18b1b16aa496 (chore: close local docs/evidence dirty state for LUC-241 and LUC-997).
+  - closure commit present at 86218a1ba2a5a3e819bc8000aba18b1b16aa496 (chore: close local docs/evidence dirty state for LUC-241 and LUC-997).
 - Push/deploy status: not performed (forbidden by lane scope).
 - Final disposition for LUC-997: done (source-control closure objective satisfied with local commit evidence).
 
@@ -16690,8 +16690,35 @@ ode --check scripts/buildObsidianVaultLayer.mjs -> PASS,
 - First-class unblock owner/action unchanged:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for this `503` interval.
   2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
+
 ## 2026-05-31 LUC-241 continuation [source_scoped_recovery_action]
-- Wake acknowledged from inline payload (allbackFetchNeeded=false, comments  /0, latest comment id unknown).
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat (read-only continuity checkpoint; no additional protected rerun):
+  - auth/context presence:
+    - `SMOKE_AUTH_TOKEN=True`
+    - `SMOKE_AUTH_EMAIL=True`
+    - `SMOKE_AUTH_PASSWORD=True`
+    - `SOAR_API_TOKEN=False`
+    - `SOAR_API_KEY=False`
+    - `SOAR_SESSION_COOKIE=False`
+    - `COOLIFY_BASE_URL=True`
+    - `COOLIFY_TOKEN=True`
+    - `COOLIFY_API_TOKEN=True`
+  - canonical probes:
+    - `https://api.soar.luckysparrow.ch/health -> 503`
+    - `https://api.soar.luckysparrow.ch/ready -> 503`
+    - `https://soar.luckysparrow.ch/ -> ERR`
+    - `https://soar.luckysparrow.ch/api/build-info -> ERR`
+  - read-only Coolify probe:
+    - `COOLIFY /api/v1/health -> ERR` (runner-side null-reference error path).
+- Interpretation:
+  - blocker state unchanged; canonical API remains degraded.
+- Final disposition for this wake: `blocked`.
+- First-class unblock owner/action unchanged:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for this `503` interval.
+  2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
+## 2026-05-31 LUC-241 continuation [source_scoped_recovery_action]
+- Wake acknowledged from inline payload (allbackFetchNeeded=false, comments /0, latest comment id unknown).
 - Concrete action in this heartbeat:
   - read-only continuity checkpoint at 2026-05-31T16:46:49.5006511+02:00.
   - auth artifact presence:
@@ -16707,7 +16734,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs -> PASS,
     - https://soar.luckysparrow.ch/ -> 503
     - https://soar.luckysparrow.ch/api/build-info -> 503
 - Interpretation: blocker state unchanged; canonical runtime availability remains degraded, so protected /workers/ready recheck is not actionable in this wake.
-- Final disposition for this wake: locked.
+- Final disposition for this wake: locked.
 - First-class unblock owner/action unchanged:
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for this 503 interval.
   2. After recovery and fresh explicit gate approval, Ops Release Lead executes exactly one new read-only protected /workers/ready recheck and publishes redaction-safe evidence.
@@ -16722,3 +16749,51 @@ ode --check scripts/buildObsidianVaultLayer.mjs -> PASS,
 - Final disposition for this wake: `done`.
 - Evidence:
   - `history/tasks/luc-1097-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-2026-05-31-task.md`
+## 2026-05-31 LUC-241 continuation [issue_reopened_via_comment]
+- Latest board comment acknowledged first: operator-release-approval:soar-push-coolify-readonly:v1 (195e9ac4-4020-4b3c-8763-73d5c4aec7a9).
+- Concrete action in this heartbeat (approved scope only; no deploy/restart/rollback/env mutation):
+  1. git push origin main for Soar: result Everything up-to-date.
+  2. Remote head verification:
+efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
+  3. Read-only deploy smoke on canonical hosts with approved expected SHA:
+     - corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 6839cd6b8884e26eca735ce32cea98c1dadccfbe
+     - result: FAIL API /health -> 503, FAIL API /ready -> 503, FAIL WEB / -> 503, FAIL WEB /api/build-info -> 503, FAIL API /workers/ready -> 503.
+  4. Read-only Coolify API status probes (presence-only + HTTP status, no secret disclosure):
+     - COOLIFY_BASE_URL_PRESENT=True, COOLIFY_TOKEN_PRESENT=True, COOLIFY_API_TOKEN_PRESENT=True
+     - /api/v1/version -> 200, /api/v1/health -> 200, /api/v1/applications -> 200.
+- Interpretation:
+  - push scope is complete and remote SHA is aligned to approved 6839cd6b....
+  - Coolify control-plane API is reachable/readable in this runner.
+  - canonical Soar runtime remains unavailable (503) on both public and protected checks, so /workers/ready permission proof remains blocked by upstream runtime availability.
+- Final disposition for this wake: locked.
+- First-class unblock owner/action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical Soar runtime availability (/health, /ready, /, /api/build-info) and publish no-mutation incident note for this 503 interval.
+  2. After recovery and fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected /workers/ready recheck and publishes redaction-safe evidence.
+## 2026-05-31 LUC-241 continuation [finish_successful_run_handoff]
+- Wake acknowledged from inline payload (allbackFetchNeeded=false, comments /0, latest comment id unknown).
+- Concrete action in this heartbeat (read-only continuity checkpoint):
+  - timestamp: 2026-05-31T17:41:22.3907937+02:00
+  - auth/context artifact presence:
+    - SMOKE_AUTH_TOKEN=True
+    - SMOKE_AUTH_EMAIL=True
+    - SMOKE_AUTH_PASSWORD=True
+    - SOAR_API_TOKEN=False
+    - SOAR_API_KEY=False
+    - SOAR_SESSION_COOKIE=False
+    - COOLIFY_BASE_URL=True
+    - COOLIFY_TOKEN=True
+    - COOLIFY_API_TOKEN=True
+  - canonical Soar probes:
+    - https://api.soar.luckysparrow.ch/health -> 503
+    - https://api.soar.luckysparrow.ch/ready -> 503
+    - https://soar.luckysparrow.ch/ -> 503
+    - https://soar.luckysparrow.ch/api/build-info -> 503
+  - read-only Coolify control-plane probe:
+    - COOLIFY /api/v1/health -> 200
+- Interpretation:
+  - push/reconcile lane remains complete from prior heartbeat,
+  - Coolify control-plane is reachable, but canonical Soar runtime remains degraded (503), so protected /workers/ready authorization proof is still blocked by upstream availability.
+- Final disposition for this wake: locked.
+- First-class unblock owner/action unchanged:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical Soar runtime availability and publish no-mutation incident note for the 503 interval.
+  2. After recovery and fresh explicit gate approval, Ops Release Lead executes exactly one new read-only protected /workers/ready recheck and publishes redaction-safe evidence.
