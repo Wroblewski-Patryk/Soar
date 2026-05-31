@@ -60,6 +60,15 @@
 - Final disposition: `done`.
 - Evidence:
   - `history/tasks/luc-1154-known-state-refresh-evidence-delta-and-next-repair-lanes-2026-05-31-task.md`
+## 2026-05-31 LUC-1148 continuation [source_scoped_recovery_action-2]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran read-only local source-control continuity checks for `LUC-1148` (`git status --short --branch`, `git log --oneline -n 6`),
+  - confirmed no new local dirty paths and no drift in closure continuity commits.
+- Final disposition for this wake: `done` (sidecar closure lane remains complete).
+- Evidence:
+  - `history/tasks/luc-1148-source-control-closure-source-scoped-recovery-action-2-2026-05-31-task.md`
+
 ## 2026-05-31 LUC-1148 continuation [source_scoped_recovery_action]
 - Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
