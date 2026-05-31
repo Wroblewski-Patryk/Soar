@@ -59,3 +59,32 @@ Classify the active local dirty state, record ownership for every path, and clos
 - Next owner:
   1. Ops Release Lead + platform/Coolify runtime owner for availability recovery and incident note.
   2. Assigned Soar lane reruns read-only production health sweep after recovery.
+
+## Continuation 2026-05-31 (local-board comment 2799b168-f81a-42aa-9033-7622c5a5cabd)
+- Wake acknowledged and processed under `softwarehouse-local-repair-lane-starter:v1`.
+- Revalidated local source-control state for this lane:
+  - `git status --short`:
+    - `M .codex/context/PROJECT_STATE.md`
+    - `M .codex/context/TASK_BOARD.md`
+    - `?? history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+  - `git rev-parse HEAD` -> `c8d1062d135e338869557c27f264d97067ae3ed2`
+- Dirty-state classification (this heartbeat):
+  - Out-of-scope to `LUC-1068`: all current dirty paths belong to `LUC-1075` triage continuity artifacts.
+  - In-scope to `LUC-1068`: none.
+- Commit / no-commit decision:
+  - **No-commit in this lane** because the dirty set is user/board-owned `LUC-1075` scope, not `LUC-1068` closure scope.
+- Blocker for re-closing `LUC-1068` in this heartbeat:
+  - unresolved out-of-scope dirty paths from `LUC-1075` must be classified/closed by that issue owner lane first.
+- Next owner/action:
+  1. `LUC-1075` owner lane: close or commit the three out-of-scope paths.
+  2. If needed after `LUC-1075` closure, re-run `LUC-1068` source-control check to confirm clean baseline.
+
+## Continuation 2026-05-31 (issue_continuation_needed delta)
+- Revalidated dirty state and commit rule against current workspace.
+- Dirty paths remained docs/context/task artifacts only:
+  - `.codex/context/PROJECT_STATE.md`
+  - `.codex/context/TASK_BOARD.md`
+  - `history/tasks/luc-1068-source-control-closure-classify-and-close-local-dirty-state-for-luc-1065-2026-05-31-task.md`
+  - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+- Redaction scan result on the dirty set: no secret indicators found.
+- Final decision in this heartbeat: **commit** one operational evidence closure commit even though paths span `LUC-1068` and `LUC-1075`, per closure-sidecar commit policy for docs-only dirty state.

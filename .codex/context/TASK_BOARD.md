@@ -1,3 +1,42 @@
+## 2026-05-31 LUC-1075 continuation [source_scoped_recovery_action]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated `LUC-1075` classification evidence for `LUC-1068` and downstream `LUC-1065` blocker lineage,
+  - confirmed no contradictory evidence for reopening `LUC-1068`.
+- Final classification unchanged:
+  - `LUC-1068` remains `done`.
+  - next legal action remains in `LUC-1065` blocker lineage (Ops Release Lead + platform/Coolify runtime owner -> restore canonical availability -> one read-only health sweep evidence refresh).
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+## 2026-05-31 LUC-1075 continuation [finish_successful_run_handoff]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated `LUC-1075` canonical triage artifacts and source-of-truth entries,
+  - confirmed no contradictory evidence for reopening `LUC-1068`.
+- Final classification unchanged:
+  - `LUC-1068` remains `done`.
+  - next legal action remains in `LUC-1065` blocker lineage (Ops Release Lead + platform/Coolify runtime owner -> restore canonical availability -> one read-only health sweep evidence refresh).
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
+  - `history/tasks/luc-1068-source-control-closure-classify-and-close-local-dirty-state-for-luc-1065-2026-05-31-task.md`
+## 2026-05-31 LUC-1075 [Softwarehouse][Blocked Triage] Classify LUC-1068 and produce next legal action
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reviewed canonical `LUC-1068` task artifact and context closure notes,
+  - verified `LUC-1068` scope remained source-control closure only,
+  - reconciled downstream blocker lineage with current `LUC-1065` production `503` evidence.
+- Classification result:
+  - `LUC-1068`: `done` (closed source-control-closure sidecar; no contradictory evidence).
+- Next legal action:
+  1. Keep `LUC-1068` closed unless contradictory source-control evidence appears.
+  2. Continue active blocker resolution in `LUC-1065` lineage: Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note; then execute one read-only production health sweep with fresh evidence.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1068-source-control-closure-classify-and-close-local-dirty-state-for-luc-1065-2026-05-31-task.md`
+  - `history/tasks/luc-1065-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
+  - `history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md`
 ## 2026-05-31 LUC-1068 [Soar][Source Control Closure] classify and close local dirty state for LUC-1065
 - Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Dirty baseline captured via `git status --short` and classified as fully scoped to `LUC-1065` continuity/evidence paths.
@@ -16572,4 +16611,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs -> PASS,
 - Final disposition for this wake: `done`.
 - Evidence:
   - `history/tasks/luc-1064-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-2026-05-31-task.md`
+
+
+
 
