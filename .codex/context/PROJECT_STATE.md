@@ -33,6 +33,21 @@
   2. Keep `LUC-919` closed unless canonical backlog or accepted decision-gate truth is superseded.
   Evidence:
   `history/tasks/luc-1026-blocked-triage-classify-luc-919-and-produce-next-legal-action-2026-05-31-task.md`.
+- `LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions` continuation wake (`source_scoped_recovery_action`) executed on 2026-05-31 and is `blocked`.
+  Wake was acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action (read-only continuity checkpoint):
+  - auth artifact presence at `2026-05-31T11:34:27.7120206+02:00`:
+    `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`.
+  - canonical public probes:
+    `https://api.soar.luckysparrow.ch/health -> 503`,
+    `https://api.soar.luckysparrow.ch/ready -> 503`,
+    `https://soar.luckysparrow.ch/ -> 503`,
+    `https://soar.luckysparrow.ch/api/build-info -> 503`.
+  Disposition remains fail-closed `blocked`; canonical availability blocker is unchanged and protected `/workers/ready` recheck is not actionable in this wake.
+  First-class unblock owner/action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for the ongoing `503` interval.
+  2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
+
 - `LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions` continuation wake (`finish_successful_run_handoff`) executed on 2026-05-31 and is `blocked`.
   Wake was acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action (read-only continuity checkpoint):
@@ -170,6 +185,34 @@
   2. Obsidian/docs lane owner closes the seven-file docs-generation diff.
   Evidence:
   `history/tasks/luc-997-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-2026-05-31-task.md`.
+
+- `LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions` continuation wake (`issue_continuation_needed`) executed on 2026-05-31 and is `blocked`.
+  Wake carried no new approval/comment delta (`fallbackFetchNeeded=false`, comments `0/0`), so this heartbeat stayed on read-only continuity checks.
+  Concrete action:
+  - fresh fact at `2026-05-31T11:33:11.3613827+02:00`,
+  - auth artifacts: `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`,
+  - canonical public probes remained `503` for `/health`, `/ready`, web `/`, and web `/api/build-info`.
+  Disposition stays fail-closed `blocked`; protected `/workers/ready` proof remains non-actionable until runtime recovery and explicit one-shot gate approval.
+  Explicit next review condition/time:
+  - next review at `2026-05-31T13:00:00Z` or earlier only when canonical `200` recovery fact and/or explicit protected-rerun approval arrives.
+  Unblock owner/action unchanged:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for ongoing `503` interval.
+  2. Soar API auth credential owner + Security/Test permission owner provide/confirm fresh valid approved read-only auth/session artifact for protected `GET /workers/ready`.
+  3. After (1) and (2), and with fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
+
+- `LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions` continuation wake (`issue_reopened_via_comment`) executed on 2026-05-31 and is `blocked`.
+  Wake comment `a9332f5d-a584-4ffb-aced-234368514eec` (stale-gate escalation) was acknowledged first.
+  Concrete action:
+  - produced a fresh operational fact after required threshold at `2026-05-31T11:31:52.0447924+02:00`,
+  - auth artifacts: `SMOKE_AUTH_TOKEN=True`, `SMOKE_AUTH_EMAIL=True`, `SMOKE_AUTH_PASSWORD=True`, `SOAR_API_TOKEN=False`, `SOAR_API_KEY=False`, `SOAR_SESSION_COOKIE=False`,
+  - canonical public probes remained `503` for `/health`, `/ready`, web `/`, and web `/api/build-info`.
+  Disposition stays fail-closed `blocked`; protected `/workers/ready` proof remains non-actionable until runtime availability recovers and explicit one-shot gate approval exists.
+  Explicit next review condition/time:
+  - next review at `2026-05-31T12:30:00Z` or earlier only when canonical `200` recovery fact and/or explicit protected-rerun approval arrives.
+  Unblock owner/action unchanged:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for ongoing `503` interval.
+  2. Soar API auth credential owner + Security/Test permission owner provide/confirm fresh valid approved read-only auth/session artifact for protected `GET /workers/ready`.
+  3. After (1) and (2), and with fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
 
 - `LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions` continuation wake (`source_scoped_recovery_action`) executed on 2026-05-31 and is `blocked`.
   Wake carried no new approval/comment delta (`fallbackFetchNeeded=false`, comments `0/0`), so this heartbeat stayed on read-only continuity checks.
@@ -14379,3 +14422,11 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   - `history/tasks/luc-1027-child-read-only-failed-deploy-diagnosis-2026-05-31-task.md`
 
 
+- `LUC-1064 [Soar][Source Control Closure]` heartbeat executed on 2026-05-31 and closed as `done`.
+  Wake `issue_assigned` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Dirty baseline contained exactly three tracked files and all were classified as single-lane `LUC-241` continuity scope:
+  `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`.
+  Runtime/product/deploy files in dirty set: `0`.
+  Closure disposition for this lane: `committed locally` / `not pushed` / `none`.
+  Evidence:
+  `history/tasks/luc-1064-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-2026-05-31-task.md`.
