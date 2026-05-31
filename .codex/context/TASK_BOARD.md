@@ -1,3 +1,37 @@
+## 2026-05-31 LUC-1026 continuation [source_scoped_recovery_action]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran `LUC-1026` artifact consistency check across task/state records,
+  - confirmed no triage drift: `LUC-919` stays `done` and only legal next-action lane remains `LUC-402` (`ARB-006`) pending `ARB6-EV-001..008`.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1026-blocked-triage-classify-luc-919-and-produce-next-legal-action-2026-05-31-task.md`
+## 2026-05-31 LUC-1026 continuation [finish_successful_run_handoff]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - rechecked triage classification artifacts for `LUC-919` and confirmed no contradictory evidence,
+  - reaffirmed single legal next-action lane remains `LUC-402` (`ARB-006`) with `ARB6-EV-001..008` child issuance/execution.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1026-blocked-triage-classify-luc-919-and-produce-next-legal-action-2026-05-31-task.md`
+## 2026-05-31 LUC-1026 [Softwarehouse][Blocked Triage] Classify LUC-919 and produce next legal action
+- Wake `issue_assigned` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated canonical `LUC-919` control-map artifact and closure task evidence,
+  - confirmed `LUC-919` remains planning-lane `done` with no contradictory unblock/reopen evidence,
+  - confirmed only active blocker in this ARB lineage remains `ARB-006` via `LUC-402` (`blocked_on_protected_inputs`) pending `ARB6-EV-001..008` execution issuance.
+- Classification result:
+  - `LUC-919`: `done` (closed planning lane; not a live blocker),
+  - `ARB-001` and `ARB-002`: `done_gated` by accepted decisions (`DEC-ARB-001`, `DEC-ARB-002`),
+  - active legal/actionable blocker lane: `LUC-402` / `ARB-006` only.
+- Next legal action:
+  1. Delivery + Security/Test + Ops create/assign and execute `ARB6-EV-001..008` child evidence lanes under `LUC-402`.
+  2. Keep `LUC-919` closed unless backlog lineage or decision-gate truth changes.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/plans/luc-919-architecture-repair-backlog-control-map-2026-05-30.md`
+  - `history/tasks/luc-919-architecture-docs-executable-repair-backlog-2026-05-30-task.md`
+  - `history/tasks/luc-1026-blocked-triage-classify-luc-919-and-produce-next-legal-action-2026-05-31-task.md`
 ## 2026-05-31 LUC-241 continuation [finish_successful_run_handoff, continuity checkpoint]
 - Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action (read-only, no protected rerun):
@@ -16306,3 +16340,43 @@ ode --check scripts/buildObsidianVaultLayer.mjs -> PASS,
   - closure commit present at  86218a1ba2a5a3e819bc8000aba18b1b16aa496 (chore: close local docs/evidence dirty state for LUC-241 and LUC-997).
 - Push/deploy status: not performed (forbidden by lane scope).
 - Final disposition for LUC-997: done (source-control closure objective satisfied with local commit evidence).
+
+
+## 2026-05-31 LUC-1027 [Soar] Coolify production deploy health sweep
+- Wake `issue_assigned` was acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - executed read-only canonical production smoke:
+    `node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --skip-workers`
+  - captured source-ref snapshot: `HEAD=83ddd20e3046926b214e380d57d0701e642260c2`, `origin/main=2dc983ced4a4c66e31e7f37264710c124955e57b`,
+  - confirmed direct public probe recheck on canonical hosts in the same interval.
+- Outcome:
+  - `API /health -> 503`
+  - `API /ready -> 503`
+  - `WEB / -> 503`
+  - `WEB /api/build-info -> 503`
+- Disposition: `blocked`.
+- First-class unblock owner/action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for the `503` interval.
+  2. After recovery, rerun one read-only production health sweep and publish fresh SHA/build-info/readiness evidence.
+- Evidence:
+  - `history/tasks/luc-1027-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
+  - `history/evidence/luc-1027-coolify-production-deploy-health-sweep-2026-05-31.md`
+## 2026-05-31 LUC-1027 continuation [finish_successful_run_handoff]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - executed required dedicated read-only failed-deploy diagnosis child lane (separate from protected-smoke approval):
+    - `history/tasks/luc-1027-child-read-only-failed-deploy-diagnosis-2026-05-31-task.md`
+  - read-only Coolify API diagnosis confirms Soar resource failure topology in `environment_id=6`:
+    - `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream` -> `exited:unhealthy`
+    - shared `postgresql` + `redis` -> `running:healthy`
+  - public canonical probes remain `503` for API/Web/build-info.
+  - deploy-object lineage remained unresolved in this token context (`/deployments` returned no recent rows).
+  - binding drift noted: `COOLIFY_SOAR_PROJECT_ID` maps to project `n8n` instead of `Soar`.
+- Final disposition for this wake: `blocked`.
+- First-class unblock owner/action:
+  1. Ops Release Lead + Coolify operator: under explicit release mutation permit, inspect failed Soar deploy objects/logs for `environment_id=6` and publish root-cause packet.
+  2. Security/ops credential owner: correct Soar project binding (or provide explicit approved query path) so read-only deploy lineage is deterministic.
+  3. If recovery requires production mutation, keep fail-closed until explicit permit names resource, action, expected source, rollback path, and smoke plan.
+- Evidence:
+  - `history/evidence/luc-1027-coolify-production-deploy-health-sweep-2026-05-31.md`
+  - `history/tasks/luc-1027-child-read-only-failed-deploy-diagnosis-2026-05-31-task.md`

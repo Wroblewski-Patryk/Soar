@@ -1,3 +1,25 @@
+- `LUC-1026 [Softwarehouse][Blocked Triage]` continuation wake (`source_scoped_recovery_action`) executed on 2026-05-31 and is `done`.
+  Wake was acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action: artifact consistency recheck across task/state records confirmed no triage drift.
+  Classification remains unchanged: `LUC-919` stays `done`, `ARB-001` and `ARB-002` remain `done_gated`, and only legal next-action lane remains `ARB-006` via `LUC-402` pending `ARB6-EV-001..008` issuance/execution.
+  Evidence:
+  `history/tasks/luc-1026-blocked-triage-classify-luc-919-and-produce-next-legal-action-2026-05-31-task.md`.
+- `LUC-1026 [Softwarehouse][Blocked Triage]` continuation wake (`finish_successful_run_handoff`) executed on 2026-05-31 and is `done`.
+  Wake was acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Revalidation confirms no triage drift: `LUC-919` remains closed (`done`), decision-gated rows remain unchanged, and only actionable blocker lineage remains `ARB-006` via `LUC-402` pending `ARB6-EV-001..008` issuance/execution.
+  Evidence:
+  `history/tasks/luc-1026-blocked-triage-classify-luc-919-and-produce-next-legal-action-2026-05-31-task.md`.
+- `LUC-1026 [Softwarehouse][Blocked Triage] Classify LUC-919 and produce next legal action` heartbeat executed on 2026-05-31 and is `done`.
+  Wake `issue_assigned` was acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action:
+  - revalidated `history/plans/luc-919-architecture-repair-backlog-control-map-2026-05-30.md` and `history/tasks/luc-919-architecture-docs-executable-repair-backlog-2026-05-30-task.md`,
+  - classified `LUC-919` as closed planning lane (`done`) with no contradictory reopen evidence,
+  - confirmed only active blocker in this lineage remains `ARB-006` via `LUC-402` (`blocked_on_protected_inputs`) pending `ARB6-EV-001..008` issuance/execution.
+  Next legal action is fail-closed and explicit:
+  1. Delivery + Security/Test + Ops create/assign and run `ARB6-EV-001..008` child evidence lanes under `LUC-402`.
+  2. Keep `LUC-919` closed unless canonical backlog or accepted decision-gate truth is superseded.
+  Evidence:
+  `history/tasks/luc-1026-blocked-triage-classify-luc-919-and-produce-next-legal-action-2026-05-31-task.md`.
 - `LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions` continuation wake (`finish_successful_run_handoff`) executed on 2026-05-31 and is `blocked`.
   Wake was acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
   Concrete action (read-only continuity checkpoint):
@@ -14308,3 +14330,37 @@ o-commit to closure commit path after targeted revalidation (
 ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan no secret values). Operational rule applied: docs/history/context/evidence dirty set must be locally committed rather than left mixed by issue boundaries.
 
 - LUC-997 closed on 2026-05-31 after post-commit recheck: local worktree clean and closure commit  86218a1ba2a5a3e819bc8000aba18b1b16aa496 recorded; no push/deploy executed in this lane.
+
+
+- `LUC-1027 [Soar] Coolify production deploy health sweep` heartbeat executed on 2026-05-31 and is `blocked`.
+  Wake `issue_assigned` was acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Read-only canonical public smoke failed for all probes:
+  - `https://api.soar.luckysparrow.ch/health -> 503`
+  - `https://api.soar.luckysparrow.ch/ready -> 503`
+  - `https://soar.luckysparrow.ch/ -> 503`
+  - `https://soar.luckysparrow.ch/api/build-info -> 503`
+  Source snapshot in the same run: `HEAD=83ddd20e3046926b214e380d57d0701e642260c2`, `origin/main=2dc983ced4a4c66e31e7f37264710c124955e57b`.
+  No deploy/restart/rollback/env/database mutation was performed.
+  First-class unblock owner/action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for the `503` interval.
+  2. After recovery, rerun one read-only production health sweep and publish fresh SHA/build-info/readiness evidence.
+  Evidence:
+  - `history/tasks/luc-1027-soar-coolify-production-deploy-health-sweep-2026-05-31-task.md`
+  - `history/evidence/luc-1027-coolify-production-deploy-health-sweep-2026-05-31.md`
+- `LUC-1027 [Soar]` continuation wake (`finish_successful_run_handoff`) executed on 2026-05-31 and remains `blocked`.
+  Wake was acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action:
+  - created and executed dedicated read-only failed-deploy diagnosis child lane:
+    `history/tasks/luc-1027-child-read-only-failed-deploy-diagnosis-2026-05-31-task.md`.
+  - Coolify read-only snapshot confirms full Soar app failure topology in `environment_id=6`:
+    `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream` are `exited:unhealthy`;
+    Soar `postgresql` + `redis` remain `running:healthy`.
+  - canonical public endpoints remain unavailable (`503` for `/health`, `/ready`, `/`, `/api/build-info`).
+  - deployment lineage ambiguity remains in this token context (`/api/v1/deployments` returned no recent rows), and runtime binding drift exists (`COOLIFY_SOAR_PROJECT_ID` resolves to project `n8n`, not `Soar`).
+  First-class unblock owner/action:
+  1. Ops Release Lead + Coolify operator: under explicit release mutation permit, inspect failed Soar deploy objects/logs for `environment_id=6` and publish root-cause packet.
+  2. Security/ops credential owner: correct Soar project binding (or approved explicit query path) to restore deterministic read-only deploy lineage for Soar.
+  3. Any production recovery mutation remains fail-closed until explicit permit names resource/action/source/rollback/smoke.
+  Evidence:
+  - `history/evidence/luc-1027-coolify-production-deploy-health-sweep-2026-05-31.md`
+  - `history/tasks/luc-1027-child-read-only-failed-deploy-diagnosis-2026-05-31-task.md`
