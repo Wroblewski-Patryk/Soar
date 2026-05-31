@@ -8,6 +8,10 @@ This folder is the Obsidian-facing command layer for Soar docs. It does not repl
 
 - [[obsidian/soar-vault-dashboard.md|Soar Vault Dashboard]]
 - [[obsidian/code-to-docs-atlas.md|Code To Docs Atlas]]
+- [[obsidian/feature-index.md|Feature Index]]
+- [[obsidian/route-action-map.md|Route Action Map]]
+- [[obsidian/proof-gap-register.md|Proof Gap Register]]
+- [[obsidian/docs-health-report.md|Docs Health Report]]
 - [[obsidian/function-journey-hotlist.md|Function Journey Hotlist]]
 - [[obsidian/visual-map-index.md|Visual Map Index]]
 - [[obsidian/paperclip-cleanup-brief.md|Paperclip Cleanup Brief]]

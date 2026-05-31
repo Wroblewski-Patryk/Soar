@@ -1177,6 +1177,112 @@ Verify whether current smoke principal can authenticate and pass protected `GET 
   1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
   2. Then Ops Release Lead runs exactly one new read-only protected recheck and publishes redaction-safe proof.
 
+## Heartbeat - 2026-05-31T04:44:48+02:00 (issue_reopened_via_comment, comment bffa6ae8-0d8d-4265-8208-d05a696e85be)
+- Latest board comment acknowledged first: `softwarehouse-autonomous-gate-approval:LUC-241:v1` approved exactly one narrow read-only protected auth/smoke recheck.
+- Concrete action executed in this heartbeat (single recheck only; no deploy/restart/runtime mutation):
+  - `pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`
+- Recheck result:
+  - `FAIL` `API /health -> status 503`
+  - `FAIL` `API /ready -> status 503`
+  - `FAIL` `WEB / -> status 503`
+  - `FAIL` `WEB /api/build-info -> status 503`
+  - `FAIL` protected `API /workers/ready -> status 503`
+- Interpretation:
+  - autonomous one-time recheck was consumed exactly once in this wake,
+  - canonical runtime availability remains degraded (`503`), so protected authz boundary on `/workers/ready` is still not reachable.
+- Final disposition for this heartbeat: `blocked`.
+- First-class blockers / unblock owner-action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for this `503` interval.
+  2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one new read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
+
+## Heartbeat - 2026-05-31T04:46:00+02:00 (finish_successful_run_handoff)
+- Wake acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat (read-only continuity checkpoint; no protected rerun):
+  - auth artifact presence:
+    - `SMOKE_AUTH_TOKEN=False`
+    - `SMOKE_AUTH_EMAIL=False`
+    - `SMOKE_AUTH_PASSWORD=False`
+    - `SOAR_API_TOKEN=False`
+    - `SOAR_API_KEY=False`
+    - `SOAR_SESSION_COOKIE=False`
+  - canonical public probes:
+    - `https://api.soar.luckysparrow.ch/health -> 503`
+    - `https://api.soar.luckysparrow.ch/ready -> 503`
+    - `https://soar.luckysparrow.ch/ -> 503`
+    - `https://soar.luckysparrow.ch/api/build-info -> 503`
+- Interpretation:
+  - no live continuation path in this wake (no fresh approval delta, runtime still unavailable, auth artifacts absent),
+  - protected `/workers/ready` recheck remains non-actionable.
+- Final disposition for this heartbeat: `blocked`.
+- First-class blockers / unblock owner-action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for the `503` interval.
+  2. Soar API auth credential owner + Security/Test permission owner restore/confirm approved read-only smoke auth artifact path for this lane runtime.
+  3. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one new read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
+
+## Heartbeat - 2026-05-31T04:51:21+02:00 (source_scoped_recovery_action)
+- Wake acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat (read-only continuity checkpoint; no protected rerun):
+  - auth artifact presence:
+    - `SMOKE_AUTH_TOKEN=True`
+    - `SMOKE_AUTH_EMAIL=True`
+    - `SMOKE_AUTH_PASSWORD=True`
+    - `SOAR_API_TOKEN=False`
+    - `SOAR_API_KEY=False`
+    - `SOAR_SESSION_COOKIE=False`
+  - canonical public probes:
+    - `https://api.soar.luckysparrow.ch/health -> 503`
+    - `https://api.soar.luckysparrow.ch/ready -> 503`
+    - `https://soar.luckysparrow.ch/ -> 503`
+    - `https://soar.luckysparrow.ch/api/build-info -> 503`
+- Interpretation:
+  - blocker state is unchanged in this wake: canonical production availability remains degraded,
+  - protected `/workers/ready` proof remains non-actionable without availability recovery and fresh explicit gate approval.
+- Final disposition for this heartbeat: `blocked`.
+- First-class blockers / unblock owner-action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for the ongoing `503` interval.
+  2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one new read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
+
+## Heartbeat - 2026-05-31T04:53:53+02:00 (issue_reopened_via_comment, comment 58d38d43-eb8e-4261-9121-a61e32ebb463)
+- Latest board comment acknowledged first: `softwarehouse-runtime-gate-binding-repair:LUC-241:v1` approved exactly one narrow Soar gate recheck.
+- Concrete action executed in this heartbeat (single recheck only; no deploy/restart/runtime mutation):
+  - `pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`
+- Recheck result:
+  - `FAIL` `API /health -> status 503`
+  - `FAIL` `API /ready -> status 503`
+  - `FAIL` `WEB / -> status 503`
+  - `FAIL` `WEB /api/build-info -> status 503`
+  - `FAIL` protected `API /workers/ready -> status 503`
+- Interpretation:
+  - one-time approved gate recheck was consumed exactly once in this wake,
+  - canonical production availability remains degraded (`503`), so protected authz proof remains unresolved.
+- Final disposition for this heartbeat: `blocked`.
+- First-class blockers / unblock owner-action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for this `503` interval.
+  2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one new read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
+
+## Heartbeat - 2026-05-31T04:54:48+02:00 (finish_successful_run_handoff)
+- Wake acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat (read-only continuity checkpoint; no protected rerun):
+  - auth artifact presence:
+    - `SMOKE_AUTH_TOKEN=True`
+    - `SMOKE_AUTH_EMAIL=True`
+    - `SMOKE_AUTH_PASSWORD=True`
+    - `SOAR_API_TOKEN=False`
+    - `SOAR_API_KEY=False`
+    - `SOAR_SESSION_COOKIE=False`
+  - canonical public probes:
+    - `https://api.soar.luckysparrow.ch/health -> 503`
+    - `https://api.soar.luckysparrow.ch/ready -> 503`
+    - `https://soar.luckysparrow.ch/ -> 503`
+    - `https://soar.luckysparrow.ch/api/build-info -> 503`
+- Interpretation:
+  - blocker state unchanged in this wake: canonical availability remains degraded,
+  - without fresh gate approval and with public `503` active, protected `/workers/ready` recheck is not actionable.
+- Final disposition for this heartbeat: `blocked`.
+- First-class blockers / unblock owner-action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for the ongoing `503` interval.
+  2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one new read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
+
 ## Heartbeat - 2026-05-30T22:23:04+02:00 (issue_reopened_via_comment, eab86b4d-4207-457d-a124-eeeb7ef3ca4b)
 - Latest board comment acknowledged first: `softwarehouse-autonomous-gate-approval:LUC-241:v1`.
 - Concrete action executed in this heartbeat (single recheck only; no deploy/restart/runtime mutation):
@@ -1212,6 +1318,29 @@ Verify whether current smoke principal can authenticate and pass protected `GET 
   1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
   2. Then Ops Release Lead runs exactly one new read-only protected recheck and publishes redaction-safe proof.
 
+## Heartbeat - 2026-05-31T04:23:18+02:00 (source_scoped_recovery_action)
+- Wake acknowledged first: no new comment/unblock delta (`fallbackFetchNeeded=false`, `0/0` comments).
+- Concrete action (read-only continuity checkpoint, no protected rerun):
+  - auth artifact presence:
+    - `SMOKE_AUTH_TOKEN=True`
+    - `SMOKE_AUTH_EMAIL=True`
+    - `SMOKE_AUTH_PASSWORD=True`
+    - `SOAR_API_TOKEN=False`
+    - `SOAR_API_KEY=False`
+    - `SOAR_SESSION_COOKIE=False`
+  - canonical public probes:
+    - `https://api.soar.luckysparrow.ch/health -> 503`
+    - `https://api.soar.luckysparrow.ch/ready -> 503`
+    - `https://soar.luckysparrow.ch/ -> 503`
+    - `https://soar.luckysparrow.ch/api/build-info -> 503`
+- Interpretation:
+  - auth-binding class remains present in runner context,
+  - canonical production availability is degraded (`503`) and blocks meaningful protected gate confirmation in this wake.
+- Final disposition for this heartbeat: `blocked`.
+- First-class blockers / unblock owner-action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical availability and publish no-mutation incident note.
+  2. After availability restoration and fresh board approval, Ops runs exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe proof.
+
 ## Heartbeat - 2026-05-30T22:26:45+02:00 (source_scoped_recovery_action)
 - Wake acknowledged first: no new comment/unblock delta (`fallbackFetchNeeded=false`, `0/0` comments).
 - Concrete action: one read-only auth artifact presence scan in current runner context (status-sync only; no protected smoke rerun).
@@ -1228,3 +1357,137 @@ Verify whether current smoke principal can authenticate and pass protected `GET 
 - Unblock owner/action unchanged:
   1. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only ADMIN principal/session artifact accepted by API auth and authorized for protected `GET /workers/ready`.
   2. Then Ops Release Lead runs exactly one new read-only protected recheck and publishes redaction-safe proof.
+
+## Heartbeat - 2026-05-31T04:20:22+02:00 (issue_reopened_via_comment, comment d0cb7bb0-07fc-435c-8631-fb07206b6d85)
+- Latest board comment acknowledged first: `softwarehouse-runtime-gate-binding-repair:LUC-241:v1` approved exactly one Soar recheck after runtime secret binding repair.
+- Concrete action executed in this heartbeat (single recheck only; no deploy/restart/runtime mutation):
+  - `pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`
+- Recheck result:
+  - `FAIL` `API /health -> status 503`
+  - `FAIL` `API /ready -> status 503`
+  - `FAIL` `WEB / -> status 503`
+  - `FAIL` `WEB /api/build-info -> status 503`
+  - `FAIL` protected `API /workers/ready -> status 503`
+- Interpretation:
+  - this wake's one authorized recheck did not reach authz evaluation boundary; canonical production endpoints were unavailable (`503`) during this window.
+  - blocker is currently upstream runtime availability, and `/workers/ready` authorization remains unresolved.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability (`/health`, `/ready`, `/`, `/api/build-info` back to `200`) and publish no-mutation incident note for this `503` interval.
+  2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one new read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
+
+## Heartbeat - 2026-05-31T04:22:03+02:00 (issue_continuation_needed)
+- Wake acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat (read-only continuity checkpoint; no protected smoke recheck):
+  - auth artifact presence:
+    - `SMOKE_AUTH_TOKEN=True`
+    - `SMOKE_AUTH_EMAIL=True`
+    - `SMOKE_AUTH_PASSWORD=True`
+    - `SOAR_API_TOKEN=False`
+    - `SOAR_API_KEY=False`
+    - `SOAR_SESSION_COOKIE=False`
+  - canonical public probes:
+    - `https://api.soar.luckysparrow.ch/health -> 503`
+    - `https://api.soar.luckysparrow.ch/ready -> 503`
+    - `https://soar.luckysparrow.ch/ -> 503`
+    - `https://soar.luckysparrow.ch/api/build-info -> 503`
+- Interpretation:
+  - runtime availability blocker persists on canonical endpoints,
+  - without fresh gate approval and with public `503` still active, protected `/workers/ready` recheck remains non-actionable in this wake.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for ongoing `503` interval.
+  2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
+
+## Heartbeat - 2026-05-31T04:47:06+02:00 (source_scoped_recovery_action)
+- Wake acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat (read-only continuity checkpoint; no protected smoke recheck):
+  - auth artifact presence:
+    - `SMOKE_AUTH_TOKEN=False`
+    - `SMOKE_AUTH_EMAIL=False`
+    - `SMOKE_AUTH_PASSWORD=False`
+    - `SOAR_API_TOKEN=False`
+    - `SOAR_API_KEY=False`
+    - `SOAR_SESSION_COOKIE=False`
+  - canonical public probes:
+    - `https://api.soar.luckysparrow.ch/health -> 503`
+    - `https://api.soar.luckysparrow.ch/ready -> 503`
+    - `https://soar.luckysparrow.ch/ -> 503`
+    - `https://soar.luckysparrow.ch/api/build-info -> 503`
+- Interpretation:
+  - runtime availability blocker persists on canonical endpoints,
+  - auth artifact class is absent in this runner context,
+  - protected `/workers/ready` path remains non-actionable in this wake.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for ongoing `503` interval.
+  2. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only auth/session artifact for protected `GET /workers/ready`.
+  3. After (1) and (2), and with fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
+
+## Heartbeat - 2026-05-31T04:48:53+02:00 (issue_reopened_via_comment, comment 2539ce8e-a5bf-458a-b13b-92bf22d9c8fb)
+- Latest board comment acknowledged first: `softwarehouse-runtime-gate-binding-repair:LUC-241:v1` approved exactly one Soar recheck after runtime secret binding repair.
+- Concrete action executed in this heartbeat (single recheck only; no deploy/restart/runtime mutation):
+  - `pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`
+- Recheck result:
+  - `FAIL` `API /health -> status 503`
+  - `FAIL` `API /ready -> status 503`
+  - `FAIL` `WEB / -> status 503`
+  - `FAIL` `WEB /api/build-info -> status 503`
+  - `FAIL` protected `API /workers/ready -> status 503`
+- Interpretation:
+  - this wake's one authorized recheck did not reach authz evaluation boundary; canonical production endpoints were unavailable (`503`) during this window.
+  - blocker is currently upstream runtime availability, and `/workers/ready` authorization remains unresolved.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability (`/health`, `/ready`, `/`, `/api/build-info` back to `200`) and publish no-mutation incident note for this `503` interval.
+  2. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only auth/session artifact for protected `GET /workers/ready`.
+  3. After (1) and (2), and with fresh explicit gate approval, Ops Release Lead executes exactly one new read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
+
+## Heartbeat - 2026-05-31T04:50:07+02:00 (issue_continuation_needed)
+- Wake acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat (read-only continuity checkpoint; no protected smoke recheck):
+  - auth artifact presence:
+    - `SMOKE_AUTH_TOKEN=True`
+    - `SMOKE_AUTH_EMAIL=True`
+    - `SMOKE_AUTH_PASSWORD=True`
+    - `SOAR_API_TOKEN=False`
+    - `SOAR_API_KEY=False`
+    - `SOAR_SESSION_COOKIE=False`
+  - canonical public probes:
+    - `https://api.soar.luckysparrow.ch/health -> 503`
+    - `https://api.soar.luckysparrow.ch/ready -> 503`
+    - `https://soar.luckysparrow.ch/ -> 503`
+    - `https://soar.luckysparrow.ch/api/build-info -> 503`
+- Interpretation:
+  - runtime availability blocker persists on canonical endpoints,
+  - `SMOKE_AUTH_*` presence alone is insufficient while canonical runtime remains unavailable,
+  - protected `/workers/ready` path remains non-actionable in this wake.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for ongoing `503` interval.
+  2. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only auth/session artifact for protected `GET /workers/ready`.
+  3. After (1) and (2), and with fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
+
+## Heartbeat - 2026-05-31T04:55:51+02:00 (source_scoped_recovery_action)
+- Wake acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat (read-only continuity checkpoint; no protected smoke recheck):
+  - auth artifact presence:
+    - `SMOKE_AUTH_TOKEN=True`
+    - `SMOKE_AUTH_EMAIL=True`
+    - `SMOKE_AUTH_PASSWORD=True`
+    - `SOAR_API_TOKEN=False`
+    - `SOAR_API_KEY=False`
+    - `SOAR_SESSION_COOKIE=False`
+  - canonical public probes:
+    - `https://api.soar.luckysparrow.ch/health -> 503`
+    - `https://api.soar.luckysparrow.ch/ready -> 503`
+    - `https://soar.luckysparrow.ch/ -> 503`
+    - `https://soar.luckysparrow.ch/api/build-info -> 503`
+- Interpretation:
+  - runtime availability blocker persists on canonical endpoints,
+  - `SMOKE_AUTH_*` presence does not unblock protected `/workers/ready` path while canonical runtime remains unavailable.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action unchanged:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for ongoing `503` interval.
+  2. Soar API auth credential owner + Security/Test permission owner provide/confirm a fresh valid approved read-only auth/session artifact for protected `GET /workers/ready`.
+  3. After (1) and (2), and with fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.

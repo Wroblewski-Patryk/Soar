@@ -76,6 +76,13 @@ function docsRel(filePath) {
   return posix(path.relative(docsRoot, filePath));
 }
 
+function splitRefs(value) {
+  return String(value || "")
+    .split(/[;|]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 function walkFiles(root) {
   if (!fs.existsSync(root)) return [];
   const files = [];
@@ -229,6 +236,118 @@ const featureAtlas = countBy(nodes, "feature")
     return { Feature, Nodes: Count, Chains: chainCount, Actions: actionCount, Pages: pageCount, APIs: apiCount };
   });
 
+const chainById = new Map(functionChains.map((chain) => [chain.id, chain]));
+const nodeById = new Map(nodes.map((node) => [node.id, node]));
+
+const featureIndexRows = featureAtlas.map((feature) => {
+  const featureChains = functionChains.filter((chain) => chain.feature === feature.Feature);
+  const featureActions = userActions.filter((action) => action.feature === feature.Feature);
+  const worstChain = featureChains
+    .slice()
+    .sort((left, right) => statusOrder(left.gap_severity) - statusOrder(right.gap_severity))[0];
+  const proofGapCount =
+    featureChains.filter((chain) => chain.gap_severity && chain.gap_severity !== "none").length +
+    featureActions.filter((action) => action.gap_severity && action.gap_severity !== "none").length;
+  return {
+    Feature: feature.Feature,
+    Nodes: feature.Nodes,
+    Chains: feature.Chains,
+    Actions: feature.Actions,
+    Pages: feature.Pages,
+    APIs: feature.APIs,
+    "Proof gaps": proofGapCount,
+    "Worst chain": worstChain?.id ?? "none",
+    "Worst severity": worstChain?.gap_severity ?? "none",
+  };
+});
+
+const routeActionRows = webJourneys
+  .slice()
+  .sort((left, right) => left.feature.localeCompare(right.feature) || left.id.localeCompare(right.id))
+  .map((journey) => {
+    const routeActions = userActions.filter((action) =>
+      splitRefs(action.page_nodes).includes(journey.id) ||
+      action.route_or_entrypoint === journey.route_or_file ||
+      action.feature === journey.feature,
+    );
+    return {
+      Route: journey.route_or_file,
+      Page: journey.id,
+      Feature: journey.feature,
+      Status: journey.verification_status || journey.status,
+      Chains: journey.chains || "none",
+      Actions: routeActions.length,
+      "Gap severity": journey.gap_severity || "none",
+      Gaps: journey.gaps || "none",
+    };
+  });
+
+const proofGapRows = [
+  ...functionChains
+    .filter((chain) => chain.gap_severity && chain.gap_severity !== "none")
+    .map((chain) => ({
+      Type: "chain",
+      Severity: chain.gap_severity,
+      ID: chain.id,
+      Feature: chain.feature,
+      Status: chain.status,
+      Boundary: chain.risk_level || "",
+      Gap: chain.gaps,
+      Evidence: chain.evidence,
+    })),
+  ...userActions
+    .filter((action) => action.gap_severity && action.gap_severity !== "none")
+    .map((action) => ({
+      Type: "action",
+      Severity: action.gap_severity,
+      ID: action.id,
+      Feature: action.feature,
+      Status: action.proof_status,
+      Boundary: action.safety_boundary,
+      Gap: action.gaps,
+      Evidence: action.evidence,
+    })),
+].sort((left, right) => statusOrder(left.Severity) - statusOrder(right.Severity) || left.ID.localeCompare(right.ID));
+
+const datedDocs = markdownFiles
+  .map((file) => docsRel(file))
+  .filter((file) => /(^|\/)(luc-\d+|.*\d{4}-\d{2}-\d{2}|.*audit.*|.*proof.*)/i.test(file))
+  .sort((left, right) => left.localeCompare(right))
+  .slice(0, 80)
+  .map((file) => ({
+    File: `[[${file}]]`,
+    Folder: file.split("/")[0],
+    "Review reason": /luc-\d+/i.test(file) ? "dated task-style doc" : "dated/audit/proof naming",
+  }));
+
+const graphSourceRows = [
+  {
+    Source: "[[architecture/registry/nodes.csv]]",
+    Rows: nodes.length,
+    Owns: "features, pages, APIs, services, data, tests, docs, and agent nodes",
+  },
+  {
+    Source: "[[architecture/chains/chains.csv]]",
+    Rows: chains.length,
+    Owns: "end-to-end function chains",
+  },
+  {
+    Source: "[[architecture/relations/dependencies.csv]]",
+    Rows: readCsv("docs/architecture/relations/dependencies.csv").length,
+    Owns: "directed dependency and usage relations",
+  },
+  {
+    Source: "[[architecture/indices/user-action-index.csv]]",
+    Rows: userActions.length,
+    Owns: "user-visible action proof mapping",
+  },
+  {
+    Source: "[[architecture/indices/function-chain-evidence-index.csv]]",
+    Rows: functionChains.length,
+    Owns: "generated chain evidence summary",
+  },
+];
+
 const visualMaps = [
   {
     Map: "[[maps/soar-obsidian-dashboard.canvas]]",
@@ -283,6 +402,10 @@ This folder is the Obsidian-facing command layer for Soar docs. It does not repl
 
 - ${wiki("obsidian/soar-vault-dashboard.md", "Soar Vault Dashboard")}
 - ${wiki("obsidian/code-to-docs-atlas.md", "Code To Docs Atlas")}
+- ${wiki("obsidian/feature-index.md", "Feature Index")}
+- ${wiki("obsidian/route-action-map.md", "Route Action Map")}
+- ${wiki("obsidian/proof-gap-register.md", "Proof Gap Register")}
+- ${wiki("obsidian/docs-health-report.md", "Docs Health Report")}
 - ${wiki("obsidian/function-journey-hotlist.md", "Function Journey Hotlist")}
 - ${wiki("obsidian/visual-map-index.md", "Visual Map Index")}
 - ${wiki("obsidian/paperclip-cleanup-brief.md", "Paperclip Cleanup Brief")}
@@ -315,6 +438,10 @@ Use this as the first opened note in Obsidian. It connects the repository, gener
 | Current documentation map | ${wiki("documentation-map.md", "Documentation Map")} |
 | Engineering traceability hub | ${wiki("soar-documentation-map.md", "Soar Documentation Map")} |
 | Obsidian-specific atlas | ${wiki("obsidian/code-to-docs-atlas.md", "Code To Docs Atlas")} |
+| Feature matrix | ${wiki("obsidian/feature-index.md", "Feature Index")} |
+| Route/action matrix | ${wiki("obsidian/route-action-map.md", "Route Action Map")} |
+| Proof gap register | ${wiki("obsidian/proof-gap-register.md", "Proof Gap Register")} |
+| Docs health report | ${wiki("obsidian/docs-health-report.md", "Docs Health Report")} |
 | Function/action proof gaps | ${wiki("obsidian/function-journey-hotlist.md", "Function Journey Hotlist")} |
 | Visual canvas maps | ${wiki("obsidian/visual-map-index.md", "Visual Map Index")} |
 | Product intent | ${wiki("maps/product-map.md", "Product Map")} |
@@ -423,6 +550,107 @@ ${table(featureAtlas)}
 3. Use ${wiki("obsidian/function-journey-hotlist.md", "Function Journey Hotlist")} to see proof gaps.
 4. Open linked module docs under ${wiki("modules/README.md", "Modules")}.
 5. Touch code only after identifying the owner doc and test/proof path.
+`,
+);
+
+write(
+  "obsidian/feature-index.md",
+  `# Feature Index
+
+Updated: ${today}
+
+This index groups Soar by product/architecture feature and shows how much graph, route, API, action, and proof surface each feature has.
+
+## Feature Matrix
+
+${table(featureIndexRows)}
+
+## Use
+
+1. Pick the feature you are about to touch.
+2. Open the matching chains from ${wiki("architecture/chains/README.md", "Architecture Chains")}.
+3. Check ${wiki("obsidian/proof-gap-register.md", "Proof Gap Register")} before claiming behavior is complete.
+4. Update the graph source rows if routes, APIs, tests, or docs changed.
+`,
+);
+
+write(
+  "obsidian/route-action-map.md",
+  `# Route Action Map
+
+Updated: ${today}
+
+This map connects web/page journeys to generated user action proof data. It is the fastest way to inspect what a screen or route is supposed to prove.
+
+## Routes And Actions
+
+${table(routeActionRows)}
+
+## Use
+
+- If a user reports a UI issue, start with the route row.
+- Follow its chain IDs into ${wiki("architecture/indices/function-chain-evidence-index.csv", "function-chain-evidence-index.csv")}.
+- Check user actions in ${wiki("architecture/indices/user-action-index.csv", "user-action-index.csv")}.
+- Run or add proof before changing the status.
+`,
+);
+
+write(
+  "obsidian/proof-gap-register.md",
+  `# Proof Gap Register
+
+Updated: ${today}
+
+This register lists generated chain and action proof gaps. It is a working queue for making Soar safer to change autonomously.
+
+## Gaps
+
+${table(proofGapRows)}
+
+## Proof Levels
+
+| Proof level | Meaning |
+| --- | --- |
+| local test | Unit, integration, or local E2E confidence. Useful, but not production proof. |
+| browser proof | Rendered user journey proof in a browser. Required for UI claims. |
+| protected readback | Authenticated or environment-specific readback after a deployed action. |
+| approved live mutation | Explicitly approved external/money-facing action. Never infer from local tests. |
+
+## Close A Gap
+
+1. Find the source chain/action row.
+2. Add or run the missing proof.
+3. Update graph registry or chain source.
+4. Regenerate journey indexes.
+5. Regenerate this Obsidian layer.
+`,
+);
+
+write(
+  "obsidian/docs-health-report.md",
+  `# Docs Health Report
+
+Updated: ${today}
+
+This report focuses on documentation structure, generated sources, and cleanup candidates.
+
+## Folder Entries
+
+${table(folderEntryRows)}
+
+## Graph Sources
+
+${table(graphSourceRows)}
+
+## Dated Docs Review Queue
+
+These files are not automatically wrong. They are candidates to review because their names suggest historical task, audit, or proof material. If they still describe current truth, distill that truth into the owning current doc and keep or move the dated file deliberately.
+
+${table(datedDocs)}
+
+## Inbox
+
+Unnamed Obsidian scratch files were moved to ${wiki("obsidian/_inbox/README.md", "Obsidian Inbox")}. Review before deleting.
 `,
 );
 

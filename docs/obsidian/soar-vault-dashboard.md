@@ -13,6 +13,10 @@ Use this as the first opened note in Obsidian. It connects the repository, gener
 | Current documentation map | [[documentation-map.md|Documentation Map]] |
 | Engineering traceability hub | [[soar-documentation-map.md|Soar Documentation Map]] |
 | Obsidian-specific atlas | [[obsidian/code-to-docs-atlas.md|Code To Docs Atlas]] |
+| Feature matrix | [[obsidian/feature-index.md|Feature Index]] |
+| Route/action matrix | [[obsidian/route-action-map.md|Route Action Map]] |
+| Proof gap register | [[obsidian/proof-gap-register.md|Proof Gap Register]] |
+| Docs health report | [[obsidian/docs-health-report.md|Docs Health Report]] |
 | Function/action proof gaps | [[obsidian/function-journey-hotlist.md|Function Journey Hotlist]] |
 | Visual canvas maps | [[obsidian/visual-map-index.md|Visual Map Index]] |
 | Product intent | [[maps/product-map.md|Product Map]] |

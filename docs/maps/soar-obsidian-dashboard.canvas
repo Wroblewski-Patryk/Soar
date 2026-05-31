@@ -1,134 +1,21 @@
 {
-  "nodes": [
-    {
-      "id": "vault",
-      "type": "file",
-      "x": -760,
-      "y": -80,
-      "width": 360,
-      "height": 180,
-      "file": "obsidian/soar-vault-dashboard.md"
-    },
-    {
-      "id": "docs-map",
-      "type": "file",
-      "x": -280,
-      "y": -260,
-      "width": 320,
-      "height": 160,
-      "file": "documentation-map.md"
-    },
-    {
-      "id": "soar-map",
-      "type": "file",
-      "x": -280,
-      "y": -40,
-      "width": 320,
-      "height": 160,
-      "file": "soar-documentation-map.md"
-    },
-    {
-      "id": "atlas",
-      "type": "file",
-      "x": 160,
-      "y": -260,
-      "width": 340,
-      "height": 160,
-      "file": "obsidian/code-to-docs-atlas.md"
-    },
-    {
-      "id": "hotlist",
-      "type": "file",
-      "x": 160,
-      "y": -40,
-      "width": 340,
-      "height": 160,
-      "file": "obsidian/function-journey-hotlist.md"
-    },
-    {
-      "id": "ai",
-      "type": "file",
-      "x": 600,
-      "y": -260,
-      "width": 320,
-      "height": 160,
-      "file": "obsidian/ai-navigation-brief.md"
-    },
-    {
-      "id": "paperclip",
-      "type": "file",
-      "x": 600,
-      "y": -40,
-      "width": 320,
-      "height": 160,
-      "file": "obsidian/paperclip-cleanup-brief.md"
-    },
-    {
-      "id": "source",
-      "type": "text",
-      "x": -280,
-      "y": 190,
-      "width": 760,
-      "height": 140,
-      "text": "Canonical rule: current truth stays in docs; dated evidence and task history stay in ../history; generated indexes must be refreshed after graph changes."
-    }
-  ],
-  "edges": [
-    {
-      "id": "e1",
-      "fromNode": "vault",
-      "fromSide": "right",
-      "toNode": "docs-map",
-      "toSide": "left",
-      "label": "start"
-    },
-    {
-      "id": "e2",
-      "fromNode": "vault",
-      "fromSide": "right",
-      "toNode": "soar-map",
-      "toSide": "left",
-      "label": "engineering"
-    },
-    {
-      "id": "e3",
-      "fromNode": "soar-map",
-      "fromSide": "right",
-      "toNode": "atlas",
-      "toSide": "left",
-      "label": "graph data"
-    },
-    {
-      "id": "e4",
-      "fromNode": "atlas",
-      "fromSide": "right",
-      "toNode": "hotlist",
-      "toSide": "left",
-      "label": "proof gaps"
-    },
-    {
-      "id": "e5",
-      "fromNode": "hotlist",
-      "fromSide": "right",
-      "toNode": "ai",
-      "toSide": "left",
-      "label": "agent route"
-    },
-    {
-      "id": "e6",
-      "fromNode": "ai",
-      "fromSide": "right",
-      "toNode": "paperclip",
-      "toSide": "left",
-      "label": "delegate"
-    },
-    {
-      "id": "e7",
-      "fromNode": "source",
-      "fromSide": "right",
-      "toNode": "atlas",
-      "toSide": "left",
-      "label": "regenerate"
-    }
-  ]
+	"nodes":[
+		{"id":"vault","type":"file","x":-760,"y":-80,"width":360,"height":180,"file":"obsidian/soar-vault-dashboard.md"},
+		{"id":"docs-map","type":"file","x":-280,"y":-260,"width":320,"height":160,"file":"documentation-map.md"},
+		{"id":"soar-map","type":"file","x":-280,"y":-40,"width":320,"height":160,"file":"soar-documentation-map.md"},
+		{"id":"atlas","type":"file","x":160,"y":-260,"width":340,"height":160,"file":"obsidian/code-to-docs-atlas.md"},
+		{"id":"hotlist","type":"file","x":160,"y":-40,"width":340,"height":160,"file":"obsidian/function-journey-hotlist.md"},
+		{"id":"ai","type":"file","x":600,"y":-260,"width":320,"height":160,"file":"obsidian/ai-navigation-brief.md"},
+		{"id":"paperclip","type":"file","x":600,"y":-40,"width":320,"height":160,"file":"obsidian/paperclip-cleanup-brief.md"},
+		{"id":"source","type":"text","x":-280,"y":190,"width":760,"height":140,"text":"Canonical rule: current truth stays in docs; dated evidence and task history stay in ../history; generated indexes must be refreshed after graph changes."}
+	],
+	"edges":[
+		{"id":"e1","fromNode":"vault","fromSide":"right","toNode":"docs-map","toSide":"left","label":"start"},
+		{"id":"e2","fromNode":"vault","fromSide":"right","toNode":"soar-map","toSide":"left","label":"engineering"},
+		{"id":"e3","fromNode":"soar-map","fromSide":"right","toNode":"atlas","toSide":"left","label":"graph data"},
+		{"id":"e4","fromNode":"atlas","fromSide":"right","toNode":"hotlist","toSide":"left","label":"proof gaps"},
+		{"id":"e5","fromNode":"hotlist","fromSide":"right","toNode":"ai","toSide":"left","label":"agent route"},
+		{"id":"e6","fromNode":"ai","fromSide":"right","toNode":"paperclip","toSide":"left","label":"delegate"},
+		{"id":"e7","fromNode":"source","fromSide":"right","toNode":"atlas","toSide":"left","label":"regenerate"}
+	]
 }
