@@ -1,0 +1,66 @@
+﻿{
+    "issue":  "LUC-1080",
+    "runId":  "b672c1f2-72a9-45f9-8fb7-a1663f883a49",
+    "capturedAt":  "2026-05-31T14:33:08.3822694+02:00",
+    "mode":  "read_only_diagnostic_recheck",
+    "dns":  [
+                {
+                    "host":  "soar-api.luckysparrow.ch",
+                    "status":  "error",
+                    "error":  "soar-api.luckysparrow.ch : Nazwa DNS nie istnieje"
+                },
+                {
+                    "host":  "soar-web.luckysparrow.ch",
+                    "status":  "error",
+                    "error":  "soar-web.luckysparrow.ch : Nazwa DNS nie istnieje"
+                },
+                {
+                    "host":  "api.soar.luckysparrow.ch",
+                    "status":  "resolved",
+                    "values":  [
+                                   "141.227.149.67"
+                               ]
+                },
+                {
+                    "host":  "soar.luckysparrow.ch",
+                    "status":  "resolved",
+                    "values":  [
+                                   "141.227.149.67"
+                               ]
+                },
+                {
+                    "host":  "vps.luckysparrow.ch",
+                    "status":  "resolved",
+                    "values":  [
+                                   "141.227.149.67"
+                               ]
+                }
+            ],
+    "http":  [
+                 {
+                     "url":  "https://api.soar.luckysparrow.ch/health",
+                     "statusCode":  503,
+                     "ok":  false,
+                     "error":  "Serwer zdalny zwrócił błąd: (503) Serwer jest niedostępny."
+                 },
+                 {
+                     "url":  "https://api.soar.luckysparrow.ch/ready",
+                     "statusCode":  503,
+                     "ok":  false,
+                     "error":  "Serwer zdalny zwrócił błąd: (503) Serwer jest niedostępny."
+                 },
+                 {
+                     "url":  "https://soar.luckysparrow.ch/",
+                     "statusCode":  503,
+                     "ok":  false,
+                     "error":  "Serwer zdalny zwrócił błąd: (503) Serwer jest niedostępny."
+                 },
+                 {
+                     "url":  "https://soar.luckysparrow.ch/api/build-info",
+                     "statusCode":  503,
+                     "ok":  false,
+                     "error":  "Serwer zdalny zwrócił błąd: (503) Serwer jest niedostępny."
+                 }
+             ],
+    "conclusion":  "Canonical DNS still resolves; canonical endpoints still return 503; this remains runtime/platform degradation not DNS/network outage."
+}

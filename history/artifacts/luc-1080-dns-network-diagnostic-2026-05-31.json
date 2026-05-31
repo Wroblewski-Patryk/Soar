@@ -1,0 +1,239 @@
+﻿{
+    "issue":  "LUC-1080",
+    "timestamp":  "2026-05-31T14:29:56.8731549+02:00",
+    "summary":  "Production DNS/network diagnostic for LUC-241 blocker context",
+    "dns":  [
+                {
+                    "host":  "soar-api.luckysparrow.ch",
+                    "ok":  false,
+                    "addresses":  [
+
+                                  ],
+                    "error":  "soar-api.luckysparrow.ch : Nazwa DNS nie istnieje"
+                },
+                {
+                    "host":  "soar-web.luckysparrow.ch",
+                    "ok":  false,
+                    "addresses":  [
+
+                                  ],
+                    "error":  "soar-web.luckysparrow.ch : Nazwa DNS nie istnieje"
+                },
+                {
+                    "host":  "api.soar.luckysparrow.ch",
+                    "ok":  true,
+                    "addresses":  [
+                                      "141.227.149.67"
+                                  ],
+                    "error":  null
+                },
+                {
+                    "host":  "soar.luckysparrow.ch",
+                    "ok":  true,
+                    "addresses":  [
+                                      "141.227.149.67"
+                                  ],
+                    "error":  null
+                },
+                {
+                    "host":  "vps.luckysparrow.ch",
+                    "ok":  true,
+                    "addresses":  [
+                                      "141.227.149.67"
+                                  ],
+                    "error":  null
+                },
+                {
+                    "host":  "vps-9a62b0a4.vps.ovh.net",
+                    "ok":  true,
+                    "addresses":  [
+                                      "141.227.149.67"
+                                  ],
+                    "error":  null
+                }
+            ],
+    "tcp":  [
+                {
+                    "host":  "soar-api.luckysparrow.ch",
+                    "port":  443,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "soar-api.luckysparrow.ch",
+                    "port":  80,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "soar-api.luckysparrow.ch",
+                    "port":  22,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "soar-web.luckysparrow.ch",
+                    "port":  443,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "soar-web.luckysparrow.ch",
+                    "port":  80,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "soar-web.luckysparrow.ch",
+                    "port":  22,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "api.soar.luckysparrow.ch",
+                    "port":  443,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "api.soar.luckysparrow.ch",
+                    "port":  80,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "api.soar.luckysparrow.ch",
+                    "port":  22,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "soar.luckysparrow.ch",
+                    "port":  443,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "soar.luckysparrow.ch",
+                    "port":  80,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "soar.luckysparrow.ch",
+                    "port":  22,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "vps.luckysparrow.ch",
+                    "port":  443,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "vps.luckysparrow.ch",
+                    "port":  80,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "vps.luckysparrow.ch",
+                    "port":  22,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "vps-9a62b0a4.vps.ovh.net",
+                    "port":  443,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "vps-9a62b0a4.vps.ovh.net",
+                    "port":  80,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                },
+                {
+                    "host":  "vps-9a62b0a4.vps.ovh.net",
+                    "port":  22,
+                    "dnsResolved":  false,
+                    "remoteAddress":  "",
+                    "tcpSucceeded":  false
+                }
+            ],
+    "http":  [
+                 {
+                     "url":  "https://soar-api.luckysparrow.ch/health",
+                     "ok":  false,
+                     "statusCode":  null,
+                     "error":  "Nie można rozpoznać nazwy zdalnej: \u0027soar-api.luckysparrow.ch\u0027"
+                 },
+                 {
+                     "url":  "https://soar-api.luckysparrow.ch/ready",
+                     "ok":  false,
+                     "statusCode":  null,
+                     "error":  "Nie można rozpoznać nazwy zdalnej: \u0027soar-api.luckysparrow.ch\u0027"
+                 },
+                 {
+                     "url":  "https://soar-web.luckysparrow.ch/",
+                     "ok":  false,
+                     "statusCode":  null,
+                     "error":  "Nie można rozpoznać nazwy zdalnej: \u0027soar-web.luckysparrow.ch\u0027"
+                 },
+                 {
+                     "url":  "https://soar-web.luckysparrow.ch/api/build-info",
+                     "ok":  false,
+                     "statusCode":  null,
+                     "error":  "Nie można rozpoznać nazwy zdalnej: \u0027soar-web.luckysparrow.ch\u0027"
+                 },
+                 {
+                     "url":  "https://api.soar.luckysparrow.ch/health",
+                     "ok":  false,
+                     "statusCode":  503,
+                     "error":  "Serwer zdalny zwrócił błąd: (503) Serwer jest niedostępny."
+                 },
+                 {
+                     "url":  "https://api.soar.luckysparrow.ch/ready",
+                     "ok":  false,
+                     "statusCode":  503,
+                     "error":  "Serwer zdalny zwrócił błąd: (503) Serwer jest niedostępny."
+                 },
+                 {
+                     "url":  "https://soar.luckysparrow.ch/",
+                     "ok":  false,
+                     "statusCode":  503,
+                     "error":  "Serwer zdalny zwrócił błąd: (503) Serwer jest niedostępny."
+                 },
+                 {
+                     "url":  "https://soar.luckysparrow.ch/api/build-info",
+                     "ok":  false,
+                     "statusCode":  503,
+                     "error":  "Serwer zdalny zwrócił błąd: (503) Serwer jest niedostępny."
+                 },
+                 {
+                     "url":  "https://vps.luckysparrow.ch/",
+                     "ok":  false,
+                     "statusCode":  null,
+                     "error":  "Odwołanie do obiektu nie zostało ustawione na wystąpienie obiektu."
+                 }
+             ]
+}

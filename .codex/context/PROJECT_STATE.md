@@ -14507,3 +14507,26 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 
 
 
+- `LUC-1080 [Soar][Infra Gate] Diagnose production DNS/network failure for LUC-241` heartbeat (`issue_assigned`) executed on 2026-05-31 and is `done`.
+  - Read-only artifact: `history/artifacts/luc-1080-dns-network-diagnostic-2026-05-31.json`.
+  - Legacy targets `soar-api.luckysparrow.ch` and `soar-web.luckysparrow.ch` remain `NXDOMAIN`.
+  - Canonical DNS still resolves (`api.soar.luckysparrow.ch`, `soar.luckysparrow.ch`, `vps.luckysparrow.ch` -> `141.227.149.67`), while canonical public probes currently return `503`.
+  - Outcome: DNS/network gate cleared for canonical hostnames; active blocker remains runtime availability recovery for `LUC-241` before one approved protected readiness recheck.
+- `LUC-1080 [Soar][Infra Gate] Diagnose production DNS/network failure for LUC-241` continuation wake (`issue_continuation_needed`) executed on 2026-05-31 and is `done`.
+  - Read-only continuity artifact: `history/artifacts/luc-1080-dns-network-diagnostic-2026-05-31-continuation.json`.
+  - No diagnostic drift: legacy hosts unresolved, canonical hosts reachable but service responses remain `503`.
+  - Scope decision unchanged: DNS/network diagnosis complete; runtime availability recovery remains in `LUC-241` blocker lineage.
+
+- `LUC-1083 [Soar][Source Control Closure] Classify and close local dirty state for LUC-241-LUC-1080` heartbeat (`issue_assigned`) executed on 2026-05-31 and is `done`.
+  Wake was acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+  Concrete action in this heartbeat:
+  - captured dirty baseline with `git status --short --branch`,
+  - classified all dirty paths for `LUC-241/LUC-1080` continuity scope,
+  - confirmed no `runtime/product/deploy` paths in the dirty set (`0`).
+  Classification summary:
+  - `state/control=2` (`.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`),
+  - `task-evidence=4` (`history/artifacts/luc-1080-dns-network-diagnostic-2026-05-31*.json`, `history/tasks/luc-1080-infra-gate-diagnose-production-dns-network-failure-for-luc-241-2026-05-31-task.md`),
+  - `runtime/product/deploy=0`.
+  Closure disposition: `not committed` / `not needed` / `none`.
+  Evidence:
+  `history/tasks/luc-1083-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-luc-1080-2026-05-31-task.md`.

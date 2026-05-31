@@ -16615,3 +16615,37 @@ ode --check scripts/buildObsidianVaultLayer.mjs -> PASS,
 
 
 
+## 2026-05-31 LUC-1080 [Soar][Infra Gate] Diagnose production DNS/network failure for LUC-241
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - executed read-only DNS/HTTP diagnostic sweep and wrote artifact `history/artifacts/luc-1080-dns-network-diagnostic-2026-05-31.json`.
+- Classification result:
+  - legacy hosts `soar-api.*` / `soar-web.*` remain `NXDOMAIN`.
+  - canonical hosts resolve to `141.227.149.67`.
+  - canonical public endpoints currently return `503` (`/health`, `/ready`, web `/`, `/api/build-info`).
+- Final disposition for this wake: `done`.
+- First-class unblock owner/action:
+  1. Ops Release Lead + platform/Coolify runtime owner restore canonical runtime availability (`503` -> healthy).
+  2. After recovery and approval, run one read-only protected `/workers/ready` recheck for `LUC-241`.
+## 2026-05-31 LUC-1080 continuation [issue_continuation_needed]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - executed one read-only HTTP continuity recheck and wrote `history/artifacts/luc-1080-dns-network-diagnostic-2026-05-31-continuation.json`.
+- Outcome unchanged:
+  - legacy `soar-api.*` / `soar-web.*` still unresolved.
+  - canonical endpoints still return `503`.
+- Final disposition for this wake: `done` (diagnostic scope complete, no new infra classification delta).
+
+## 2026-05-31 LUC-1083 [Soar][Source Control Closure] Classify and close local dirty state for LUC-241-LUC-1080
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - captured dirty baseline with `git status --short --branch`,
+  - classified all dirty paths into scope groups,
+  - confirmed `runtime/product/deploy` path count remained `0`.
+- Classification result:
+  - `state/control=2` (`.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`)
+  - `task-evidence=4` (`history/artifacts/luc-1080-dns-network-diagnostic-2026-05-31*.json`, `history/tasks/luc-1080-infra-gate-diagnose-production-dns-network-failure-for-luc-241-2026-05-31-task.md`)
+  - `runtime/product/deploy=0`
+- Closure disposition: `done` (`not committed` / `not needed` / `none`).
+- Evidence:
+  - `history/tasks/luc-1083-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-luc-1080-2026-05-31-task.md`

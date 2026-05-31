@@ -1,0 +1,37 @@
+﻿{
+    "issue":  "LUC-1080",
+    "timestamp":  "2026-05-31T14:31:20.8778628+02:00",
+    "kind":  "continuation-checkpoint",
+    "http":  [
+                 {
+                     "url":  "https://soar-api.luckysparrow.ch/health",
+                     "ok":  false,
+                     "status":  null,
+                     "err":  "Nie można rozpoznać nazwy zdalnej: \u0027soar-api.luckysparrow.ch\u0027"
+                 },
+                 {
+                     "url":  "https://soar-web.luckysparrow.ch/",
+                     "ok":  false,
+                     "status":  null,
+                     "err":  "Nie można rozpoznać nazwy zdalnej: \u0027soar-web.luckysparrow.ch\u0027"
+                 },
+                 {
+                     "url":  "https://api.soar.luckysparrow.ch/health",
+                     "ok":  false,
+                     "status":  503,
+                     "err":  "Serwer zdalny zwrócił błąd: (503) Serwer jest niedostępny."
+                 },
+                 {
+                     "url":  "https://api.soar.luckysparrow.ch/ready",
+                     "ok":  false,
+                     "status":  503,
+                     "err":  "Serwer zdalny zwrócił błąd: (503) Serwer jest niedostępny."
+                 },
+                 {
+                     "url":  "https://soar.luckysparrow.ch/",
+                     "ok":  false,
+                     "status":  503,
+                     "err":  "Serwer zdalny zwrócił błąd: (503) Serwer jest niedostępny."
+                 }
+             ]
+}
