@@ -270,6 +270,107 @@ describe('position management', () => {
     expect(result.closeReason).toBe('take_profit');
   });
 
+  it('keeps DCA-before-close sequencing for TP/SL/TTP/TSL when same-tick DCA also triggers', () => {
+    const baseState = {
+      averageEntryPrice: 100,
+      quantity: 2,
+      currentAdds: 0,
+    };
+
+    const tp = evaluatePositionManagement(
+      {
+        side: 'LONG',
+        currentPrice: 106,
+        takeProfitPrice: 105,
+        dca: {
+          enabled: true,
+          maxAdds: 1,
+          levelPercents: [0.05],
+          addSizeFractions: [0.5],
+          stepPercent: 0.05,
+          addSizeFraction: 0.5,
+        },
+      },
+      baseState,
+    );
+
+    const sl = evaluatePositionManagement(
+      {
+        side: 'LONG',
+        currentPrice: 94,
+        stopLossPrice: 95,
+        dca: {
+          enabled: true,
+          maxAdds: 1,
+          levelPercents: [-0.05],
+          addSizeFractions: [0.5],
+          stepPercent: 0.05,
+          addSizeFraction: 0.5,
+        },
+      },
+      baseState,
+    );
+
+    const ttp = evaluatePositionManagement(
+      {
+        side: 'LONG',
+        currentPrice: 106,
+        trailingTakeProfit: {
+          enabled: true,
+          armPercent: 0.05,
+          trailPercent: 0.01,
+        },
+        dca: {
+          enabled: true,
+          maxAdds: 1,
+          levelPercents: [0.05],
+          addSizeFractions: [0.5],
+          stepPercent: 0.05,
+          addSizeFraction: 0.5,
+        },
+      },
+      {
+        ...baseState,
+        trailingTakeProfitHighPercent: 0.12,
+        trailingTakeProfitStepPercent: 0.01,
+      },
+    );
+
+    const tsl = evaluatePositionManagement(
+      {
+        side: 'LONG',
+        currentPrice: 94,
+        trailingLoss: {
+          enabled: true,
+          startPercent: -0.02,
+          stepPercent: 0.01,
+        },
+        dca: {
+          enabled: true,
+          maxAdds: 1,
+          levelPercents: [-0.05],
+          addSizeFractions: [0.5],
+          stepPercent: 0.05,
+          addSizeFraction: 0.5,
+        },
+      },
+      {
+        ...baseState,
+        trailingLossLimitPercent: -0.01,
+      },
+    );
+
+    for (const outcome of [tp, sl, ttp, tsl]) {
+      expect(outcome.dcaExecuted).toBe(true);
+      expect(outcome.nextState.currentAdds).toBe(1);
+      expect(outcome.shouldClose).toBe(true);
+    }
+    expect(tp.closeReason).toBe('take_profit');
+    expect(sl.closeReason).toBe('stop_loss');
+    expect(ttp.closeReason).toBe('trailing_take_profit');
+    expect(tsl.closeReason).toBe('trailing_stop');
+  });
+
   it('executes positive and negative DCA lanes independently from closest threshold', () => {
     const profitAdd = evaluatePositionManagement(
       {
