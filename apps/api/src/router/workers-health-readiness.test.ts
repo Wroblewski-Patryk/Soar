@@ -1,7 +1,12 @@
 import request from 'supertest';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { app } from '../index';
 import { prisma } from '../prisma/client';
+import { signAuthToken } from '../modules/auth/auth.jwt';
+
+const originalNodeEnv = process.env.NODE_ENV;
+process.env.NODE_ENV = 'test';
+const originalJwtSecret = process.env.JWT_SECRET;
 
 const workerHeartbeatClientMock = vi.hoisted(() => ({
   readMany: vi.fn(),
@@ -17,6 +22,24 @@ const originalBacktestQueue = process.env.WORKER_BACKTEST_QUEUE;
 const originalExecutionQueue = process.env.WORKER_EXECUTION_QUEUE;
 const originalMarketDataOwnership = process.env.WORKER_MARKET_DATA_OWNERSHIP;
 const originalBacktestOwnership = process.env.WORKER_BACKTEST_OWNERSHIP;
+type MockAuthUser = {
+  id: string;
+  email: string;
+  role: 'USER' | 'ADMIN';
+  sessionVersion: number;
+};
+const authUsers = new Map<string, MockAuthUser>();
+
+beforeEach(() => {
+  process.env.NODE_ENV = 'test';
+  process.env.JWT_SECRET = 'jwt-primary-generated-material-32-plus';
+  authUsers.clear();
+  vi.spyOn(prisma.user, 'findUnique').mockImplementation(async (args: any) => {
+    const id = args?.where?.id;
+    if (typeof id !== 'string') return null;
+    return authUsers.get(id) ?? null;
+  });
+});
 
 afterEach(() => {
   process.env.WORKER_MODE = originalWorkerMode;
@@ -25,29 +48,35 @@ afterEach(() => {
   process.env.WORKER_EXECUTION_QUEUE = originalExecutionQueue;
   process.env.WORKER_MARKET_DATA_OWNERSHIP = originalMarketDataOwnership;
   process.env.WORKER_BACKTEST_OWNERSHIP = originalBacktestOwnership;
+  if (originalJwtSecret === undefined) delete process.env.JWT_SECRET;
+  else process.env.JWT_SECRET = originalJwtSecret;
+  vi.restoreAllMocks();
   workerHeartbeatClientMock.readMany.mockReset();
 });
 
-const createAdminAgent = async () => {
-  const email = `workers-admin-${Date.now()}-${Math.random()}@example.com`;
-  const agent = request.agent(app);
-  const registerRes = await agent.post('/auth/register').send({
-    email,
-    password: 'Admin12#$',
-  });
-  expect(registerRes.status).toBe(201);
+afterAll(() => {
+  process.env.NODE_ENV = originalNodeEnv;
+});
 
-  await prisma.user.update({
-    where: { email },
-    data: { role: 'ADMIN' },
-  });
-
-  const loginRes = await agent.post('/auth/login').send({
+const createAuthHeader = (role: 'USER' | 'ADMIN') => {
+  const id = `workers-${role.toLowerCase()}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const email = `${id}@example.com`;
+  authUsers.set(id, {
+    id,
     email,
-    password: 'Admin12#$',
+    role,
+    sessionVersion: 1,
   });
-  expect(loginRes.status).toBe(200);
-  return agent;
+  const token = signAuthToken(
+    {
+      userId: id,
+      email,
+      role,
+      sessionVersion: 1,
+    },
+    '1h'
+  );
+  return `Bearer ${token}`;
 };
 
 describe('workers health and readiness endpoints', () => {
@@ -57,26 +86,32 @@ describe('workers health and readiness endpoints', () => {
   });
 
   it('returns workers health status', async () => {
-    const adminAgent = await createAdminAgent();
+    const authHeader = createAuthHeader('ADMIN');
     process.env.WORKER_MODE = 'inline';
-    const res = await adminAgent.get('/workers/health');
+    const res = await request(app).get('/workers/health').set('Authorization', authHeader);
     expect(res.status).toBe(200);
     expect(res.body.status).toBe('ok');
     expect(res.body.service).toBe('workers');
     expect(res.body.mode).toBe('inline');
   });
 
+  it('rejects authenticated non-admin principal for workers readiness', async () => {
+    const authHeader = createAuthHeader('USER');
+    const res = await request(app).get('/workers/ready').set('Authorization', authHeader);
+    expect(res.status).toBe(403);
+  });
+
   it('returns ready in non-split mode', async () => {
-    const adminAgent = await createAdminAgent();
+    const authHeader = createAuthHeader('ADMIN');
     process.env.WORKER_MODE = 'inline';
-    const res = await adminAgent.get('/workers/ready');
+    const res = await request(app).get('/workers/ready').set('Authorization', authHeader);
     expect(res.status).toBe(200);
     expect(res.body.status).toBe('ready');
     expect(res.body.mode).toBe('inline');
   });
 
   it('returns ready in split mode when backtest and market-data ownership stays inline', async () => {
-    const adminAgent = await createAdminAgent();
+    const authHeader = createAuthHeader('ADMIN');
     process.env.WORKER_MODE = 'split';
     process.env.WORKER_MARKET_DATA_OWNERSHIP = 'inline';
     process.env.WORKER_BACKTEST_OWNERSHIP = 'inline';
@@ -88,7 +123,7 @@ describe('workers health and readiness endpoints', () => {
       { worker: 'market-stream', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
     ]);
 
-    const res = await adminAgent.get('/workers/ready');
+    const res = await request(app).get('/workers/ready').set('Authorization', authHeader);
     expect(res.status).toBe(200);
     expect(res.body.status).toBe('ready');
     expect(res.body.mode).toBe('split');
@@ -96,7 +131,7 @@ describe('workers health and readiness endpoints', () => {
   });
 
   it('returns not_ready in split mode when required queues are missing', async () => {
-    const adminAgent = await createAdminAgent();
+    const authHeader = createAuthHeader('ADMIN');
     process.env.WORKER_MODE = 'split';
     process.env.WORKER_MARKET_DATA_OWNERSHIP = 'worker';
     process.env.WORKER_BACKTEST_OWNERSHIP = 'worker';
@@ -104,7 +139,7 @@ describe('workers health and readiness endpoints', () => {
     process.env.WORKER_BACKTEST_QUEUE = '';
     process.env.WORKER_EXECUTION_QUEUE = '';
 
-    const res = await adminAgent.get('/workers/ready');
+    const res = await request(app).get('/workers/ready').set('Authorization', authHeader);
     expect(res.status).toBe(503);
     expect(res.body.status).toBe('not_ready');
     expect(res.body.missing).toContain('WORKER_MARKET_DATA_QUEUE');
@@ -113,7 +148,7 @@ describe('workers health and readiness endpoints', () => {
   });
 
   it('returns ready in split mode when queue envs are provided', async () => {
-    const adminAgent = await createAdminAgent();
+    const authHeader = createAuthHeader('ADMIN');
     process.env.WORKER_MODE = 'split';
     process.env.WORKER_MARKET_DATA_OWNERSHIP = 'worker';
     process.env.WORKER_BACKTEST_OWNERSHIP = 'worker';
@@ -127,7 +162,7 @@ describe('workers health and readiness endpoints', () => {
       { worker: 'market-stream', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
     ]);
 
-    const res = await adminAgent.get('/workers/ready');
+    const res = await request(app).get('/workers/ready').set('Authorization', authHeader);
     expect(res.status).toBe(200);
     expect(res.body.status).toBe('ready');
     expect(res.body.mode).toBe('split');
@@ -135,7 +170,7 @@ describe('workers health and readiness endpoints', () => {
   });
 
   it('returns not_ready in split mode when a required worker heartbeat is stale', async () => {
-    const adminAgent = await createAdminAgent();
+    const authHeader = createAuthHeader('ADMIN');
     process.env.WORKER_MODE = 'split';
     process.env.WORKER_MARKET_DATA_OWNERSHIP = 'worker';
     process.env.WORKER_BACKTEST_OWNERSHIP = 'worker';
@@ -149,7 +184,7 @@ describe('workers health and readiness endpoints', () => {
       { worker: 'market-stream', status: 'fresh', lastHeartbeatAt: new Date().toISOString(), ageMs: 1 },
     ]);
 
-    const res = await adminAgent.get('/workers/ready');
+    const res = await request(app).get('/workers/ready').set('Authorization', authHeader);
     expect(res.status).toBe(503);
     expect(res.body.status).toBe('not_ready');
     expect(res.body.staleWorkers).toEqual(['market-data']);

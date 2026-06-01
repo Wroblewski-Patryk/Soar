@@ -668,7 +668,7 @@ export const reconcileExternalPositionsFromExchange = async (
             })
           ) {
             await deps.processOwnedSyncedPositionAutomation({
-              exchange: 'BINANCE',
+              exchange: apiKey.exchange ?? 'BINANCE',
               marketType: apiKey.marketType ?? 'FUTURES',
               symbol: normalizedSymbol,
               markPrice: position.markPrice as number,
@@ -747,7 +747,7 @@ export const reconcileExternalPositionsFromExchange = async (
             })
           ) {
             await deps.processOwnedSyncedPositionAutomation({
-              exchange: 'BINANCE',
+              exchange: apiKey.exchange ?? 'BINANCE',
               marketType: apiKey.marketType ?? 'FUTURES',
               symbol: normalizedSymbol,
               markPrice: position.markPrice as number,
