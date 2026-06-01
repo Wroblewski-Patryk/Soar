@@ -294,6 +294,7 @@ export const dashboardHomeEn = {
     "signalContextSourceLatestDecision": "Latest decision",
     "signalContextSourceConfiguredFallback": "Closed-candle snapshot",
     "signalContextSourceUnresolved": "Unresolved",
+    "runtimeStateLabel": "Runtime state",
     "marketStatePositionOpen": "Position open",
     "marketStateSignalActive": "Accepted signal",
     "marketStateEvaluatedNoTrade": "Evaluated / no trade",

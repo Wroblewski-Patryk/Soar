@@ -134,7 +134,7 @@ describe("RuntimeSignalsSection", () => {
       />
     );
 
-    expect(screen.getByText("Position open")).toBeInTheDocument();
+    expect(screen.getByText((_, node) => node?.textContent === "Runtime state: Position open")).toBeInTheDocument();
     expect(screen.getByText("Signal blocked because an open position already exists")).toBeInTheDocument();
     expect(screen.getByText("78.44")).toBeInTheDocument();
     expect(container.querySelector('[data-signal-scope="SHORT"]')).toHaveAttribute("data-signal-active", "true");
@@ -392,11 +392,11 @@ describe("RuntimeSignalsSection", () => {
       />
     );
 
-    expect(screen.getByText("Position open")).toBeInTheDocument();
-    expect(screen.getByText("Accepted signal")).toBeInTheDocument();
-    expect(screen.getByText("Evaluated / no trade")).toBeInTheDocument();
-    expect(screen.getByText("Market snapshot")).toBeInTheDocument();
-    expect(screen.getByText("Unresolved state")).toBeInTheDocument();
+    expect(screen.getByText((_, node) => node?.textContent === "Runtime state: Position open")).toBeInTheDocument();
+    expect(screen.getByText((_, node) => node?.textContent === "Runtime state: Accepted signal")).toBeInTheDocument();
+    expect(screen.getByText((_, node) => node?.textContent === "Runtime state: Evaluated / no trade")).toBeInTheDocument();
+    expect(screen.getByText((_, node) => node?.textContent === "Runtime state: Market snapshot")).toBeInTheDocument();
+    expect(screen.getByText((_, node) => node?.textContent === "Runtime state: Unresolved state")).toBeInTheDocument();
   });
 
   it("fails closed to unresolved labels for unknown backend runtime signal values", () => {
@@ -442,7 +442,7 @@ describe("RuntimeSignalsSection", () => {
       />
     );
 
-    expect(screen.getByText("Unresolved state")).toBeInTheDocument();
+    expect(screen.getByText((_, node) => node?.textContent === "Runtime state: Unresolved state")).toBeInTheDocument();
     expect(screen.getByText("Unresolved source")).toBeInTheDocument();
     expect(screen.queryByText("FUTURE_BACKEND_STATE")).not.toBeInTheDocument();
     expect(screen.queryByText("future_backend_source")).not.toBeInTheDocument();

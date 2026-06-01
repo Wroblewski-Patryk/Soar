@@ -54,4 +54,27 @@ describe("runtimeSignalConditionState", () => {
     expect(hasMatchedSignalConditionScope(symbol, "LONG")).toBe(false);
     expect(hasMatchedSignalConditionScope(symbol, "SHORT")).toBe(true);
   });
+
+  it("keeps signal semantics tied to matched strategy conditions, not runtime market state", () => {
+    const configuredSnapshotWithMatch = {
+      runtimeMarketState: "CONFIGURED_ONLY",
+      lastSignalContextSource: "configured_fallback",
+      lastSignalConditionLines: [
+        { scope: "LONG", left: "RSI(14)", value: "19.2", operator: "<", right: "20", matched: true },
+      ],
+    } as unknown as RuntimeSymbolWithLive;
+
+    const acceptedSignalWithoutConditionMatch = {
+      runtimeMarketState: "SIGNAL_ACTIVE",
+      lastSignalContextSource: "latest_signal",
+      lastSignalConditionLines: [
+        { scope: "SHORT", left: "RSI(14)", value: "61.0", operator: ">", right: "80", matched: false },
+      ],
+    } as unknown as RuntimeSymbolWithLive;
+
+    expect(hasMatchedSignalCondition(configuredSnapshotWithMatch)).toBe(true);
+    expect(hasMatchedSignalConditionScope(configuredSnapshotWithMatch, "LONG")).toBe(true);
+    expect(hasMatchedSignalCondition(acceptedSignalWithoutConditionMatch)).toBe(false);
+    expect(hasMatchedSignalConditionScope(acceptedSignalWithoutConditionMatch, "SHORT")).toBe(false);
+  });
 });

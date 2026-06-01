@@ -944,6 +944,7 @@ export default function HomeLiveWidgets({ authConfirmed = true }: HomeLiveWidget
                   "dashboard.home.runtime.signalContextSourceConfiguredFallback"
                 )}
                 signalContextSourceUnresolvedLabel={t("dashboard.home.runtime.signalContextSourceUnresolved")}
+                runtimeStateLabel={t("dashboard.home.runtime.runtimeStateLabel")}
                 marketStatePositionOpenLabel={t("dashboard.home.runtime.marketStatePositionOpen")}
                 marketStateSignalActiveLabel={t("dashboard.home.runtime.marketStateSignalActive")}
                 marketStateEvaluatedNoTradeLabel={t("dashboard.home.runtime.marketStateEvaluatedNoTrade")}

@@ -32,6 +32,7 @@ type RuntimeSignalsSectionProps = {
   signalContextSourceLatestDecisionLabel: string;
   signalContextSourceConfiguredFallbackLabel: string;
   signalContextSourceUnresolvedLabel: string;
+  runtimeStateLabel?: string;
   marketStatePositionOpenLabel: string;
   marketStateSignalActiveLabel: string;
   marketStateEvaluatedNoTradeLabel: string;
@@ -101,6 +102,7 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
   const resolveMarketStateLabel = (state: RuntimeSymbolWithLive["runtimeMarketState"]) => {
     return marketStateLabels[resolveRuntimeMarketStateLabelSuffix(state)];
   };
+  const runtimeStateLabel = props.runtimeStateLabel ?? "Runtime state";
 
   const sortedSignalSymbols = useMemo(() => {
     const stateRank = (state: string | null | undefined) => {
@@ -188,9 +190,6 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
                     <p className="min-w-0 font-semibold tracking-wide">
                       {props.renderSymbolLabel ? props.renderSymbolLabel(signal.symbol) : signal.symbol}
                     </p>
-                    <span className="badge badge-outline badge-xs shrink-0">
-                      {marketStateLabel}
-                    </span>
                     <span
                       className="badge badge-ghost badge-xs shrink-0"
                       title={`${props.signalContextSourceLabel}: ${contextSourceLabel}`}
@@ -198,6 +197,9 @@ export default function RuntimeSignalsSection(props: RuntimeSignalsSectionProps)
                       {contextSourceLabel}
                     </span>
                   </div>
+                  <p className="mt-2 text-[10px] uppercase tracking-wide opacity-65">
+                    {runtimeStateLabel}: {marketStateLabel}
+                  </p>
                   {scoreSummary ? (
                     <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] uppercase tracking-wide opacity-70">
                       <span>{props.signalScoreLabel}</span>

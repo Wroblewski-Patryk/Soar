@@ -1,4 +1,4 @@
-export const dashboardHomePt = {
+﻿export const dashboardHomePt = {
   "loadWidgets": "A carregar widgets do snapshot live",
   "loadWidgetsErrorTitle": "Nao foi possivel carregar os widgets do painel",
   "loadWidgetsErrorDescription": "Nao foi possivel obter os widgets do painel.",
@@ -25,7 +25,7 @@ export const dashboardHomePt = {
   "strategyLabPrimaryAction": "Estrategias",
   "strategyLabSecondaryAction": "Backtests",
   "executionReviewTitle": "Faixa de revisao de execucao",
-  "executionReviewDescription": "Revê resultados de execucao, itens pendentes e exposicao atual.",
+  "executionReviewDescription": "RevĂŞ resultados de execucao, itens pendentes e exposicao atual.",
   "executionReviewPrimaryAction": "Ordens",
   "executionReviewSecondaryAction": "Posicoes",
   "laneStepOne": "Passo 1",
@@ -294,6 +294,7 @@ export const dashboardHomePt = {
     "signalContextSourceLatestDecision": "Decisao mais recente",
     "signalContextSourceConfiguredFallback": "Snapshot da vela fechada",
     "signalContextSourceUnresolved": "Nao resolvido",
+    "runtimeStateLabel": "Estado do runtime",
     "marketStatePositionOpen": "Posicao aberta",
     "marketStateSignalActive": "Sinal aceite",
     "marketStateEvaluatedNoTrade": "Avaliado / sem entrada",
@@ -379,3 +380,4 @@ export const dashboardHomePt = {
     "updatedAt": "Updated at: {value}"
   }
 } as const;
+
