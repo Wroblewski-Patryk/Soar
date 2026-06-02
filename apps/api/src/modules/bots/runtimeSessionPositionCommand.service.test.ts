@@ -22,6 +22,7 @@ const mocks = vi.hoisted(() => ({
   fetchFallbackTickerPrices: vi.fn(),
   createPublicExchangeConnector: vi.fn(),
   resolveExternalPositionOwnershipIndex: vi.fn(),
+  getPendingSubmittedDcaOrderIdForPosition: vi.fn(),
   assertSubscriptionAllowsLiveTrading: vi.fn(),
 }));
 
@@ -31,6 +32,12 @@ vi.mock('../../prisma/client', () => ({
 
 vi.mock('../engine/executionOrchestrator.service', () => ({
   orchestrateRuntimeSignal: mocks.orchestrateRuntimeSignal,
+}));
+
+vi.mock('../engine/runtimeExecutionDedupe.service', () => ({
+  runtimeExecutionDedupeService: {
+    getPendingSubmittedDcaOrderIdForPosition: mocks.getPendingSubmittedDcaOrderIdForPosition,
+  },
 }));
 
 vi.mock('./botOwnership.service', () => ({
@@ -91,6 +98,7 @@ describe('closeBotRuntimeSessionPosition', () => {
       fetchMarkPrice: vi.fn(async () => Number.NaN),
       disconnect: vi.fn(async () => undefined),
     });
+    mocks.getPendingSubmittedDcaOrderIdForPosition.mockResolvedValue(null);
     mocks.assertSubscriptionAllowsLiveTrading.mockResolvedValue(undefined);
   });
 
@@ -180,6 +188,37 @@ describe('closeBotRuntimeSessionPosition', () => {
       status: 'closed',
       orderId: 'order-1',
       positionId: 'position-1',
+    });
+  });
+
+  it('keeps manual close submitted while a submitted DCA is still pending fill', async () => {
+    mocks.prisma.position.findFirst.mockResolvedValue({
+      id: 'position-1',
+      botId: 'bot-1',
+      walletId: 'wallet-live-1',
+      strategyId: 'strategy-1',
+      symbol: 'BTCUSDT',
+      quantity: 0.5,
+      entryPrice: 50_000,
+      origin: 'BOT',
+      externalId: null,
+      continuityState: 'CONFIRMED',
+    });
+    mocks.getPendingSubmittedDcaOrderIdForPosition.mockResolvedValue('order-dca-pending-1');
+
+    const result = await closeBotRuntimeSessionPosition(
+      'user-1',
+      'bot-1',
+      'session-1',
+      'position-1',
+      { riskAck: true }
+    );
+
+    expect(mocks.getPendingSubmittedDcaOrderIdForPosition).toHaveBeenCalledWith('position-1');
+    expect(mocks.orchestrateRuntimeSignal).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      status: 'submitted',
+      orderId: 'order-dca-pending-1',
     });
   });
 

@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { prisma } from '../../prisma/client';
+import { buildDcaExecutionDedupeKey } from '../engine/runtimeExecutionDedupe.service';
 import { DCA_ADVANCED_STRATEGY_CONFIG } from './bots.e2e.fixtures';
 import {
   createMarketGroup,
@@ -19,13 +20,13 @@ const getUserIdByEmail = async (email: string) => {
 };
 
 const createBotWithRuntimeSession = async (params: {
+  owner: Awaited<ReturnType<typeof registerAndLogin>>;
   ownerEmail: string;
   strategyId: string;
 }) => {
-  const owner = await registerAndLogin(params.ownerEmail);
   const marketGroupId = await createMarketGroup(params.ownerEmail, 'FUTURES');
   const ownerUserId = await getUserIdByEmail(params.ownerEmail);
-  const botRes = await owner.post('/dashboard/bots').send(
+  const botRes = await params.owner.post('/dashboard/bots').send(
     createPayload({
       strategyId: params.strategyId,
       marketGroupId,
@@ -33,6 +34,7 @@ const createBotWithRuntimeSession = async (params: {
   );
   expect(botRes.status).toBe(201);
   const botId = botRes.body.id as string;
+  const walletId = botRes.body.walletId as string;
 
   const session = await prisma.botRuntimeSession.create({
     data: {
@@ -46,7 +48,7 @@ const createBotWithRuntimeSession = async (params: {
     select: { id: true },
   });
 
-  return { owner, ownerUserId, botId, sessionId: session.id };
+  return { ownerUserId, botId, walletId, sessionId: session.id };
 };
 
 describe('Runtime close authority route-level pack', () => {
@@ -116,7 +118,8 @@ describe('Runtime close authority route-level pack', () => {
       DCA_ADVANCED_STRATEGY_CONFIG
     );
 
-    const { botId, ownerUserId, sessionId } = await createBotWithRuntimeSession({
+    const { botId, ownerUserId, sessionId, walletId } = await createBotWithRuntimeSession({
+      owner,
       ownerEmail,
       strategyId,
     });
@@ -125,6 +128,8 @@ describe('Runtime close authority route-level pack', () => {
       data: {
         userId: ownerUserId,
         botId,
+        walletId,
+        strategyId,
         symbol: 'BTCUSDT',
         side: 'LONG',
         status: 'OPEN',
@@ -137,11 +142,13 @@ describe('Runtime close authority route-level pack', () => {
       },
     });
 
-    await prisma.order.create({
+    const pendingDcaOrder = await prisma.order.create({
       data: {
         userId: ownerUserId,
         botId,
         positionId: position.id,
+        walletId,
+        strategyId,
         symbol: 'BTCUSDT',
         side: 'BUY',
         type: 'MARKET',
@@ -151,6 +158,33 @@ describe('Runtime close authority route-level pack', () => {
         origin: 'BOT',
         managementMode: 'BOT_MANAGED',
         syncState: 'IN_SYNC',
+      },
+      select: { id: true },
+    });
+    await prisma.runtimeExecutionDedupe.create({
+      data: {
+        dedupeKey: buildDcaExecutionDedupeKey({
+          userId: ownerUserId,
+          botId,
+          symbol: 'BTCUSDT',
+          positionId: position.id,
+          dcaLevelIndex: 0,
+          positionSide: 'LONG',
+        }),
+        dedupeVersion: 'v1',
+        commandType: 'DCA',
+        userId: ownerUserId,
+        botId,
+        symbol: 'BTCUSDT',
+        status: 'PENDING',
+        commandFingerprint: {
+          positionId: position.id,
+          dcaLevelIndex: 0,
+          positionSide: 'LONG',
+        },
+        orderId: pendingDcaOrder.id,
+        positionId: position.id,
+        ttlExpiresAt: new Date(Date.now() + 60_000),
       },
     });
     seedRuntimeTicker('BTCUSDT', 42_200);
@@ -169,5 +203,56 @@ describe('Runtime close authority route-level pack', () => {
     });
     expect(stillOpenPosition.status).toBe('OPEN');
     expect(stillOpenPosition.closedAt).toBeNull();
+  });
+
+  it('allows close when no pending DCA order exists (DCA-exhausted path)', async () => {
+    const ownerEmail = 'route-pack-dca-exhausted-owner@example.com';
+    const owner = await registerAndLogin(ownerEmail);
+    const strategyId = await createStrategy(
+      owner,
+      'Route Pack DCA-exhausted Strategy',
+      DCA_ADVANCED_STRATEGY_CONFIG
+    );
+
+    const { botId, ownerUserId, sessionId, walletId } = await createBotWithRuntimeSession({
+      owner,
+      ownerEmail,
+      strategyId,
+    });
+
+    const position = await prisma.position.create({
+      data: {
+        userId: ownerUserId,
+        botId,
+        walletId,
+        strategyId,
+        symbol: 'BTCUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        quantity: 0.1,
+        entryPrice: 42_000,
+        leverage: 3,
+        origin: 'BOT',
+        managementMode: 'BOT_MANAGED',
+        syncState: 'IN_SYNC',
+      },
+    });
+    seedRuntimeTicker('BTCUSDT', 42_300);
+
+    const closeRes = await owner
+      .post(`/dashboard/bots/${botId}/runtime-sessions/${sessionId}/positions/${position.id}/close`)
+      .send({ riskAck: true });
+
+    expect(closeRes.status).toBe(200);
+    expect(closeRes.body.status).toBe('closed');
+    expect(closeRes.body.positionId).toBe(position.id);
+    expect(closeRes.body.orderId).toEqual(expect.any(String));
+
+    const closedPosition = await prisma.position.findUniqueOrThrow({
+      where: { id: position.id },
+      select: { status: true, closedAt: true },
+    });
+    expect(closedPosition.status).toBe('CLOSED');
+    expect(closedPosition.closedAt).not.toBeNull();
   });
 });

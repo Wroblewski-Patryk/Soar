@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { RuntimePositionAutomationService } from './runtimePositionAutomation.service';
+import { runtimePositionStateStore } from './runtimePositionState.store';
 
 const buildBotExecutionContext = (strategyId = 'strat-runtime-dca-close-parity') => ({
   walletId: 'wallet-runtime-dca-close-parity',
@@ -35,6 +36,10 @@ const buildBotExecutionContext = (strategyId = 'strat-runtime-dca-close-parity')
 });
 
 describe('RuntimePositionAutomationService DCA/close parity', () => {
+  vi.spyOn(runtimePositionStateStore, 'getPositionRuntimeState').mockResolvedValue(null);
+  vi.spyOn(runtimePositionStateStore, 'setPositionRuntimeState').mockResolvedValue();
+  vi.spyOn(runtimePositionStateStore, 'deletePositionRuntimeState').mockResolvedValue();
+
   it('keeps runtime TP blocked while profit-side DCA levels remain pending', async () => {
     process.env.RUNTIME_TRAILING_ENABLED = 'false';
     process.env.RUNTIME_DCA_ENABLED = 'false';

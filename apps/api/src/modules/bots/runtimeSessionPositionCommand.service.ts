@@ -1,6 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/client';
 import { orchestrateRuntimeSignal } from '../engine/executionOrchestrator.service';
+import { runtimeExecutionDedupeService } from '../engine/runtimeExecutionDedupe.service';
 import { resolveRuntimeLifecycleMarkPrice } from '../engine/runtimeLifecycleMarkPrice.service';
 import { CloseBotRuntimePositionDto } from './bots.types';
 import { getOwnedBotRuntimeSession } from './botOwnership.service';
@@ -259,6 +260,15 @@ export const closeBotRuntimeSessionPosition = async (
     if (claimed.count === 0) {
       return { status: 'ignored', reason: 'no_open_position' };
     }
+  }
+
+  const pendingDcaOrderId =
+    await runtimeExecutionDedupeService.getPendingSubmittedDcaOrderIdForPosition(position.id);
+  if (pendingDcaOrderId) {
+    return {
+      status: 'submitted' as const,
+      orderId: pendingDcaOrderId,
+    };
   }
 
   const botExchange = botContext.exchange ?? 'BINANCE';

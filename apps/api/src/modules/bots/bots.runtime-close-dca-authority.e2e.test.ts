@@ -1,5 +1,6 @@
 import { describe, beforeEach, expect, it } from 'vitest';
 import { prisma } from '../../prisma/client';
+import { buildDcaExecutionDedupeKey } from '../engine/runtimeExecutionDedupe.service';
 import { upsertRuntimeTicker } from '../engine/runtimeTickerStore';
 import {
   createMarketGroup,
@@ -73,7 +74,7 @@ describe('Runtime close route DCA-first authority pack', () => {
       select: { id: true },
     });
 
-    await prisma.order.create({
+    const pendingDcaOrder = await prisma.order.create({
       data: {
         userId: ownerUser.id,
         botId,
@@ -86,10 +87,36 @@ describe('Runtime close route DCA-first authority pack', () => {
         status: 'OPEN',
         quantity: 0.01,
         price: 63_500,
-        mode: 'LIVE',
         origin: 'BOT',
         managementMode: 'BOT_MANAGED',
         syncState: 'IN_SYNC',
+      },
+      select: { id: true },
+    });
+    await prisma.runtimeExecutionDedupe.create({
+      data: {
+        dedupeKey: buildDcaExecutionDedupeKey({
+          userId: ownerUser.id,
+          botId,
+          symbol: 'BTCUSDT',
+          positionId: position.id,
+          dcaLevelIndex: 0,
+          positionSide: 'LONG',
+        }),
+        dedupeVersion: 'v1',
+        commandType: 'DCA',
+        userId: ownerUser.id,
+        botId,
+        symbol: 'BTCUSDT',
+        status: 'PENDING',
+        commandFingerprint: {
+          positionId: position.id,
+          dcaLevelIndex: 0,
+          positionSide: 'LONG',
+        },
+        orderId: pendingDcaOrder.id,
+        positionId: position.id,
+        ttlExpiresAt: new Date(Date.now() + 60_000),
       },
     });
 
