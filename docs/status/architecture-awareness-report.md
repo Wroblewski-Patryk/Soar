@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-05-31T20:42:36.027Z
+Generated: 2026-06-01T06:58:07.926Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,27 +11,27 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 37 |
 | component | 97 |
-| document | 3001 |
+| document | 3056 |
 | feature | 221 |
-| function | 8228 |
+| function | 8231 |
 | migration | 56 |
 | model | 275 |
 | module | 15 |
 | project | 1 |
 | route | 346 |
-| task | 702 |
-| test | 365 |
+| task | 732 |
+| test | 368 |
 
 ## Counts By Status
 
 | Status | Count |
 | --- | ---: |
-| blocked | 14 |
-| deprecated | 8 |
-| implemented | 12044 |
+| blocked | 15 |
+| deprecated | 9 |
+| implemented | 12097 |
 | in_progress | 9 |
-| tested | 630 |
-| verified | 691 |
+| tested | 636 |
+| verified | 721 |
 
 ## Health Signals
 
@@ -81,7 +81,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - component: PasswordVisibilityToggle.tsx (apps/web/src/features/auth/components/PasswordVisibilityToggle.tsx)
 - component: backtestRunDetailsCharts.tsx (apps/web/src/features/backtest/components/backtestRunDetailsCharts.tsx)
 - component: BacktestRunDetailsTabPanels.tsx (apps/web/src/features/backtest/components/BacktestRunDetailsTabPanels.tsx)
-- component: BotsMonitoringAttributionPills.tsx (apps/web/src/features/bots/components/bots-management/BotsMonitoringAttributionPills.tsx)
+- component: BacktestRunHeaderSection.tsx (apps/web/src/features/backtest/components/BacktestRunHeaderSection.tsx)
 
 ## Top Missing Doc Links
 

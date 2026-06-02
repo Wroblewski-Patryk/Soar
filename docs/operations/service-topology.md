@@ -1,6 +1,6 @@
 # Service Topology
 
-Last updated: YYYY-MM-DD
+Last updated: 2026-06-02
 
 ## Purpose
 
@@ -11,15 +11,34 @@ surfaces.
 
 | Service | Runtime | Path / image | Depends on | Exposes | Health/readiness | Owner |
 | --- | --- | --- | --- | --- | --- | --- |
-| web |  |  | api |  |  |  |
-| api |  |  | database/cache |  |  |  |
-| worker |  |  | queue/database |  |  |  |
+| web | Coolify application `soar-web` | `/apps/web/Dockerfile` | api | `https://soar.luckysparrow.ch` | `/`, `/api/build-info` | Ops Release Lead |
+| api | Coolify application `soar-api` | `/apps/api/Dockerfile` | postgresql, redis, external providers | `https://api.soar.luckysparrow.ch` | `/health`, `/ready`, protected `/workers/ready` | Ops Release Lead |
+| workers-backtest | Coolify application `workers-backtest` | `/apps/api/Dockerfile.worker.backtest` | postgresql, redis | private | worker freshness through protected readiness | Ops Release Lead |
+| workers-execution | Coolify application `workers-execution` | `/apps/api/Dockerfile.worker.execution` | postgresql, redis, exchange APIs | private | worker freshness through protected readiness | Ops Release Lead |
+| workers-market-data | Coolify application `workers-market-data` | `/apps/api/Dockerfile.worker.market-data` | postgresql, redis, market-data providers | private | worker freshness through protected readiness | Ops Release Lead |
+| workers-market-stream | Coolify application `workers-market-stream` | `/apps/api/Dockerfile.worker.market-stream` | postgresql, redis, exchange stream APIs | private | worker freshness through protected readiness | Ops Release Lead |
+| postgresql | Coolify standalone PostgreSQL `postgresql` | managed service | persistent volume | private | Coolify resource status `running:healthy` in LUC-1422 readback | Ops Release Lead / DB owner |
+| redis | Coolify standalone Redis `redis` | managed service | persistent volume | private | Coolify resource status `running:healthy` in LUC-1422 readback | Ops Release Lead |
 
 ## Dependency Graph
 
 ```text
 user -> web -> api -> database
 api -> queue -> worker -> external provider
+```
+
+Production Coolify inventory is verified as a resource hierarchy:
+
+```text
+Coolify Soar project -> production environment id 6
+  -> soar-web
+  -> soar-api
+  -> workers-backtest
+  -> workers-execution
+  -> workers-market-data
+  -> workers-market-stream
+  -> postgresql
+  -> redis
 ```
 
 ## Maintenance Rule

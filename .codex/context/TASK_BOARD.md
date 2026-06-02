@@ -1,3 +1,388 @@
+## 2026-06-02 LUC-1196 continuation [issue_blockers_resolved]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Blocker `LUC-1419` resolved; local PostgreSQL reachable (`127.0.0.1:5432`).
+- Concrete action:
+  - implemented close-command guard for active submitted DCA dedupe before manual runtime close orchestration;
+  - updated route fixtures to seed production-shaped pending DCA state (active order + PENDING DCA dedupe).
+- Verification:
+  - `bots.runtime-close-authority.route-pack.e2e.test.ts` -> PASS (`3/3`);
+  - `bots.runtime-close-dca-authority.e2e.test.ts` -> PASS (`2/2`);
+  - focused `bots.e2e.test.ts` pending-DCA close scenario -> PASS (`1/1`, `26` skipped);
+  - `runtimeExecutionDedupe.service.test.ts` + `runtimeSessionPositionCommand.service.test.ts` -> PASS (`26/26`);
+  - `pnpm --filter api run typecheck` -> FAIL only in unrelated active lanes: `positions.orphan-repair.contract.e2e.test.ts`, `workers-health-readiness.test.ts`.
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1196-runtime-close-dca-first-route-pack-2026-06-01.md`
+  - `history/tasks/luc-1196-soar-backend-luc-1188-add-dca-first-close-authority-route-level-pack-runtime-position-close-endpoint-2026-06-01-task.md`
+## 2026-06-02 LUC-1196 continuation [source_scoped_recovery_action]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action:
+  - reran focused route pack: `pnpm --filter api exec vitest run src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts --reporter=verbose`;
+  - reran DB-independent command seam pack: `pnpm --filter api exec vitest run src/modules/bots/runtimeSessionPositionCommand.service.test.ts --reporter=verbose`;
+  - checked `127.0.0.1:5432` and Docker server availability.
+- Verification:
+  - route pack `FAIL`: `3/3` blocked before endpoint assertions by Prisma unable to reach `localhost:5432`;
+  - command seam `PASS`: `11/11`;
+  - local Postgres closed; Docker server unavailable.
+- First-class blocker created:
+  - `LUC-1419` `[Soar][Ops][LUC-1196] Restore local DB-backed API e2e runtime for close-authority route proof`.
+- Disposition for this wake: `blocked` by `LUC-1419`.
+- Evidence:
+  - `history/evidence/luc-1196-runtime-close-dca-first-route-pack-2026-06-01.md`
+  - `history/tasks/luc-1196-soar-backend-luc-1188-add-dca-first-close-authority-route-level-pack-runtime-position-close-endpoint-2026-06-01-task.md`
+## 2026-06-02 LUC-1412 [Ops][Soar] Reconcile Coolify resource inventory
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API resource projection;
+  - confirmed production environment id `6` still contains eight resources: six applications plus PostgreSQL and Redis;
+  - updated operations source truth and evidence packets.
+- Verification:
+  - `GET /api/v1/projects/{configured-project-id}` -> pass
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass
+  - `GET /api/v1/resources` -> pass (`17` total rows, `8` Soar production resources)
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1412-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1412-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+## 2026-06-02 LUC-1408 [Ops][Soar] Reconcile Coolify resource inventory
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API resource projection;
+  - confirmed production environment id `6` still contains eight resources: six applications plus PostgreSQL and Redis;
+  - updated operations source truth and evidence packets.
+- Verification:
+  - `GET /api/v1/projects/{configured-project-id}` -> pass
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass
+  - `GET /api/v1/resources` -> pass (`17` total rows, `8` Soar production resources)
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1408-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1408-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1402 [Ops][Soar] Reconcile Coolify resource inventory
+- Wake `issue_continuation_needed` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API resource projection;
+  - confirmed production environment id `6` contains eight resources: six applications plus PostgreSQL and Redis;
+  - updated operations source truth and evidence packets.
+- Verification:
+  - `GET /api/v1/projects/{configured-project-id}` -> pass
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass
+  - `GET /api/v1/resources` -> pass
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1402-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1402-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+## 2026-06-02 LUC-1398 [Operator][Coolify] Bind Coolify read-only production status access
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - verified required Coolify env binding names are present without printing values;
+  - ran authenticated read-only Coolify API probes;
+  - confirmed `COOLIFY_SOAR_PROJECT_ID` resolves to project `Soar`;
+  - confirmed list endpoints expose Soar production app/data resources for redacted status reconciliation.
+- Verification:
+  - `GET /api/v1/version` -> `200`
+  - `GET /api/v1/projects` -> `200`
+  - `GET /api/v1/projects/{COOLIFY_SOAR_PROJECT_ID}` -> `200`, project `Soar`
+  - `GET /api/v1/applications` -> `200`, 13 rows
+  - `GET /api/v1/resources` -> `200`, 17 rows
+  - direct API/Web app-id alias probes -> `404`, recorded as resource-specific alias caveat
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1398-coolify-read-only-production-status-access-2026-06-02.md`
+  - `history/tasks/luc-1398-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md`
+## 2026-06-01 LUC-1277 continuation [finish_successful_run_handoff]
+- Added separate read-only failed-deploy diagnosis lane artifact.
+- Command run: node scripts/checkPostDeployRuntimeFreshness.mjs --base-url https://api.soar.luckysparrow.ch
+- Result: HTTP 401 without protected credentials (expected fail-closed behavior).
+- No production mutation performed.
+- Final disposition for this wake: done.
+- Evidence:
+  - history/evidence/luc-1277-coolify-production-deploy-health-sweep-2026-06-01.md
+  - history/tasks/luc-1277-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md## 2026-06-01 LUC-1277 [Soar] Coolify production deploy health sweep
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - captured source snapshot (`HEAD`, `origin/main`);
+  - ran public read-only production smoke for API/Web health and build-info;
+  - captured fail-closed protected readiness probe without credentials (`/workers/ready -> 401`).
+- Verification:
+  - `git rev-parse HEAD`
+  - `git rev-parse origin/main`
+  - `node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --skip-workers`
+  - `Invoke-RestMethod https://soar.luckysparrow.ch/api/build-info`
+  - `Invoke-WebRequest https://api.soar.luckysparrow.ch/workers/ready` (no token)
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1277-coolify-production-deploy-health-sweep-2026-06-01.md`
+  - `history/tasks/luc-1277-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md`## 2026-06-01 LUC-1256 [Soar] [Known State] Evidence collection and architecture baseline
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran canonical known-state drift recheck across mission/system/board/project/gap-register sources,
+  - reran full architecture-awareness refresh command with extended timeout:
+    `node scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`.
+- Evidence delta result:
+  - baseline refreshed (`generated_at=2026-06-01T08:39:17.036Z`, entities `13487`, relations `20685`, inferred test gaps `200`, inferred docs gaps `200`, disconnected entities `0`),
+  - blocker routing remains unchanged in fail-closed order: `LUC-47` -> `GAP-L45-006` -> `GAP-L45-003` -> `GAP-L45-004`.
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1256-known-state-evidence-architecture-baseline-2026-06-01-task.md`
+## 2026-06-01 LUC-1247 continuation [finish_successful_run_handoff]
+- Wake `finish_successful_run_handoff` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran anti-drift consistency check across `LUC-1247` control map, task contract, and canonical state files,
+  - confirmed no routing drift: `ARB-001/ARB-002` remain `done_gated`, `ARB-006` remains sole active blocker via `LUC-402`.
+- Verification:
+  - `rg -n "LUC-1247|ARB-006|DEC-ARB-001|DEC-ARB-002|control_map_refreshed" history/plans/luc-1247-architecture-repair-backlog-control-map-2026-06-01.md history/tasks/luc-1247-architecture-docs-executable-repair-backlog-2026-06-01-task.md .codex/context/TASK_BOARD.md .codex/context/PROJECT_STATE.md -S`
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/plans/luc-1247-architecture-repair-backlog-control-map-2026-06-01.md`
+  - `history/tasks/luc-1247-architecture-docs-executable-repair-backlog-2026-06-01-task.md`
+## 2026-06-01 LUC-1247 [Soar][Architecture Planning] Convert architecture docs into executable repair backlog
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reconciled canonical ARB backlog lineage and latest control-map artifacts,
+  - refreshed executable owner/status/blocker map for `ARB-001..ARB-008`,
+  - preserved fail-closed blocker routing (`ARB-006` / `LUC-402`) with no scope expansion.
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/plans/luc-1247-architecture-repair-backlog-control-map-2026-06-01.md`
+  - `history/tasks/luc-1247-architecture-docs-executable-repair-backlog-2026-06-01-task.md`
+## 2026-06-01 LUC-1237 continuation [finish_successful_run_handoff]
+- Added separate read-only failed-deploy diagnosis lane artifact.
+- Command run: node scripts/checkPostDeployRuntimeFreshness.mjs --base-url https://api.soar.luckysparrow.ch
+- Result: HTTP 401 without protected credentials (expected fail-closed behavior).
+- No production mutation performed.
+- Final disposition for this wake: done.
+- Evidence:
+  - history/evidence/luc-1237-coolify-production-deploy-health-sweep-2026-06-01.md
+  - history/tasks/luc-1237-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md
+## 2026-06-01 LUC-1237 [Soar] Coolify production deploy health sweep
+- Wake issue_assigned acknowledged from inline payload (fallbackFetchNeeded=false, comments 0/0, latest comment id unknown).
+- Concrete action in this heartbeat:
+  - captured source snapshot (HEAD, origin/main);
+  - ran public read-only production smoke for API/Web health and build-info;
+  - captured fail-closed protected readiness probe status without credentials (/workers/ready -> 401).
+- Verification:
+  - git rev-parse HEAD
+  - git rev-parse origin/main
+  - node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --skip-workers
+  - Invoke-RestMethod https://soar.luckysparrow.ch/api/build-info
+  - Invoke-WebRequest https://api.soar.luckysparrow.ch/workers/ready (no token)
+- Disposition for this wake: done.
+- Evidence:
+  - history/evidence/luc-1237-coolify-production-deploy-health-sweep-2026-06-01.md
+  - history/tasks/luc-1237-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md
+## 2026-06-01 LUC-1197 [Soar][Backend+Ops][LUC-1188] Unblock workers/ready contract suite and close readiness proof gap
+- Wake `issue_continuation_needed` acknowledged and executed as actionable backend verification/repair slice.
+- Concrete action in this heartbeat:
+  - removed flaky auth bootstrap dependency (`/auth/register`, `/auth/login`) from `workers-health-readiness` contract test path,
+  - introduced deterministic signed auth principal path for ADMIN/USER assertions,
+  - reran full workers readiness contract suite.
+- Verification:
+  - `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts --reporter=verbose` -> PASS (`8/8`).
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1197-workers-ready-contract-suite-closure-2026-06-01.md`
+  - `history/tasks/luc-1197-soar-backend-ops-luc-1188-unblock-workers-ready-contract-suite-and-close-readiness-proof-gap-2026-06-01-task.md`
+## 2026-06-01 LUC-1190 continuation [finish_successful_run_handoff]
+- Concrete action in this heartbeat:
+  - revalidated security gate packet completeness against acceptance scope (principal scope, deny cases, expected `401/403`, redaction rules),
+  - confirmed Security lane artifact remains `DONE` and unchanged in policy intent.
+- Disposition for this wake: `done`.
+- Handoff remains:
+  1. Ops Release Lead executes one protected read-only smoke run with approved artifact and publishes redacted result.
+- Evidence:
+  - `history/releases/luc-1190-workers-ready-smoke-principal-authorization-gate-2026-06-01.md`
+  - `history/tasks/luc-1190-workers-ready-security-smoke-principal-authorization-gate-2026-06-01-task.md`
+## 2026-06-01 LUC-1190 continuation [issue_continuation_needed]
+- Concrete action in this heartbeat:
+  - added operator-ready step checklist with required scope, negative checks, expected statuses (`401`/`403`), and redaction rules;
+  - added explicit safety statement: policy-safe only under gate contract, runtime execution currently blocked until fresh approved artifact and stable auth/bootstrap preconditions.
+- Final disposition for Security lane: `done`.
+- Handoff owner:
+  1. Ops Release Lead executes one protected read-only smoke run using approved artifact and publishes redacted result.
+- Evidence:
+  - `history/releases/luc-1190-workers-ready-smoke-principal-authorization-gate-2026-06-01.md`
+  - `history/tasks/luc-1190-workers-ready-security-smoke-principal-authorization-gate-2026-06-01-task.md`
+## 2026-06-01 LUC-1190 [Soar][Workers Ready][Security Worker] Define smoke-principal authorization gate and fail-closed checks
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - published canonical authorization gate for protected smoke `GET /workers/ready`;
+  - defined explicit fail-closed checks for unauthenticated, non-admin, and non-ops-network requests;
+  - preserved strict read-only scope and redaction rules.
+- Verification:
+  - `rg -n "requireOpsAccess|router.get\('/workers/ready'|requireRole\('ADMIN'\)|requireOpsNetwork" apps/api/src/router/index.ts -S` -> PASS (guard chain present).
+  - `rg -n "rejects unauthenticated access|rejects authenticated non-admin principal for workers readiness" apps/api/src/router/workers-health-readiness.test.ts -S` -> PASS (fail-closed intent present).
+- Disposition for this wake: `in_review`.
+- Reviewer/gate owner:
+  1. Security/Test credential owner confirms fresh approved read-only smoke principal/session artifact.
+  2. Ops Release Lead executes one protected read-only smoke run and publishes redacted evidence.
+- Evidence:
+  - `history/releases/luc-1190-workers-ready-smoke-principal-authorization-gate-2026-06-01.md`
+  - `history/tasks/luc-1190-workers-ready-security-smoke-principal-authorization-gate-2026-06-01-task.md`
+## 2026-06-01 LUC-1174 [Soar][V1 Conformance][Backend] Verify exchange, positions, DCA/TSL, and worker readiness contracts
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `1/1`, latest comment id `9d911578-4a7c-4918-b2aa-16d4f6b4e0b0`).
+- Comment impact applied first: executed `softwarehouse-local-repair-lane-starter:v1` in fail-closed local mode (`no push/deploy/restart`).
+- Concrete action in this heartbeat:
+  - verified exchange->positions->automation contract slice using focused DB-independent tests in `livePositionReconciliation.service.test.ts`;
+  - verified workers readiness fail-closed unauthenticated path;
+  - executed full workers readiness suite to classify readiness-contract status end-to-end.
+- Verification:
+  - `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts -t "uses api-key exchange when hydrating owned LIVE automation after exchange-sync create|uses api-key exchange when hydrating owned LIVE automation after exchange-sync update|assigns different exact owners for different symbols|ignores other-market owners when seeding reconciliation cleanup candidates" --reporter=verbose` -> PASS (`4` passed, `30` skipped).
+  - `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts -t "rejects unauthenticated access" --reporter=verbose` -> PASS (`1` passed, `7` skipped).
+  - `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts --reporter=verbose` -> FAIL (`7` failed, `1` passed): `/auth/register` returned `500` (expected `201`) in admin/user bootstrap helpers; one timeout observed.
+- Disposition for this wake: `blocked`.
+- Unblock owner/action:
+  1. Backend owner: stabilize auth registration bootstrap in workers-readiness test runtime.
+  2. Backend/QA lane: rerun full `workers-health-readiness.test.ts` and attach passing closure packet.
+- 2026-06-01 continuation (`issue_continuation_needed`):
+  - implemented test-runtime stabilization in `apps/api/src/router/workers-health-readiness.test.ts` by forcing `NODE_ENV='test'` during suite execution;
+  - reran full suite: `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts --reporter=verbose` -> FAIL (`7` failed, `1` passed);
+  - failure signature refined: Redis timeout cascade removed in this run; remaining blocker is `/auth/register` returning `500` during authenticated helper bootstrap.
+  - wake disposition: `blocked` (owner/action unchanged: Backend auth-bootstrap fix + Backend/QA closure rerun).
+- Source-control closure decision:
+  - `not committed` in this verification lane (evidence/state sync only; unrelated dirty set remains active).
+- Evidence:
+  - `history/evidence/luc-1174-backend-contract-verification-2026-06-01.md`
+  - `history/tasks/luc-1174-soar-v1-conformance-backend-verify-exchange-positions-dca-tsl-workers-readiness-contracts-2026-06-01-task.md`
+- 2026-06-01 continuation (`source_scoped_recovery_action`):
+  - re-ran full suite: `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts --reporter=verbose`;
+  - command timed out after `124s`; suite stayed `FAIL` (`7` failed, `1` passed);
+  - blocker signature hardened: repeated Redis connectivity failure (`ECONNREFUSED` on `localhost:6379`) and readiness test timeouts;
+  - disposition remains `blocked` with updated owner/action: Backend/Ops local-runtime Redis readiness + Backend/QA rerun closure packet.
+## 2026-05-31 LUC-1166 [Soar][Gate.io][QA] Verify position ingestion readiness after adapter fix
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `1/1`, latest comment id `5b05348d-c692-4f72-9009-9531cff13ebe`).
+- Comment impact applied first: executed local repair/source-control lane in fail-closed mode (no push/deploy/restart).
+- Concrete action in this heartbeat:
+  - verified adapter-fix delta in LIVE reconciliation chain: owned automation hydration now forwards `apiKey.exchange` instead of hardcoded `BINANCE`;
+  - verified added Gate.io regressions for create/update exchange-sync hydration paths in `livePositionReconciliation.service.test.ts`;
+  - ran targeted suite:
+    - `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts src/router/workers-health-readiness.test.ts --reporter=verbose`
+- Result:
+  - Gate.io hydration regressions pass;
+  - overall suite remains blocked by local DB dependency (`Can't reach database server at localhost:5432`) and one readiness timeout.
+- Source-control closure decision:
+  - `not committed` in this PM verification lane (broad unrelated dirty implementation set is active; this lane owns verification evidence only).
+- Disposition for this wake: `blocked`.
+- Unblock owner/action:
+  1. Backend/QA execution lane: rerun the same targeted suites with local PostgreSQL test dependency available.
+  2. Backend owner: complete scoped source-control closure for owned implementation files and attach commit SHA to `LUC-1166`.
+- Evidence:
+  - `history/evidence/luc-1166-gateio-position-ingestion-readiness-after-adapter-fix-2026-05-31.md`
+  - `history/tasks/luc-1166-soar-gateio-qa-verify-position-ingestion-readiness-after-adapter-fix-2026-05-31-task.md`
+- 2026-06-01 continuation (`finish_successful_run_handoff`):
+  - Added DB-independent acceptance-matrix verification with focused tests:
+    - `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts -t "uses api-key exchange when hydrating owned LIVE automation after exchange-sync|continues syncing healthy api keys when one api key fetch fails|ignores other-market owners when seeding reconciliation cleanup candidates|assigns different exact owners for different symbols" --reporter=verbose` -> PASS (`5` passed, `29` skipped).
+    - `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts -t "rejects unauthenticated access" --reporter=verbose` -> PASS (`1` passed, `7` skipped).
+  - Updated acceptance matrix state:
+    - `verified`: open-position ingestion, empty-account path, upstream error-class continuity.
+    - `partially verified`: auth failure class (unauthenticated pass, non-admin pending DB-backed run).
+    - `implemented but not verified`: persistence sync class (blocked by `localhost:5432` dependency).
+    - `present in code, behavior unknown`: UI/API display path in this lane.
+  - Disposition remains `blocked` until DB-backed and display-path proofs are completed by Backend/QA owner.
+- 2026-06-01 continuation (`issue_continuation_needed`):
+  - Re-ran the same DB-independent verification set to confirm deterministic continuity in this wake:
+    - `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts -t "uses api-key exchange when hydrating owned LIVE automation after exchange-sync|continues syncing healthy api keys when one api key fetch fails|ignores other-market owners when seeding reconciliation cleanup candidates|assigns different exact owners for different symbols" --reporter=verbose` -> PASS (`5` passed, `29` skipped).
+    - `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts -t "rejects unauthenticated access" --reporter=verbose` -> PASS (`1` passed, `7` skipped).
+  - No scope expansion and no source-control/deploy mutation performed in this heartbeat.
+  - Final disposition for this wake: `blocked` (unchanged unblock owner/action: Backend/QA DB-backed proof + scoped source-control closure).
+
+## 2026-05-31 LUC-1161 continuation [finish_successful_run_handoff]
+- Wake `finish_successful_run_handoff` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran production smoke (`ops:deploy:smoke`) and refreshed `build-info` readback.
+- Result unchanged:
+  - `API /health=200`, `API /ready=200`, `WEB /=200`, `WEB /api/build-info=200`,
+  - `API /workers/ready=401`.
+- Readiness decision:
+  - public probes remain green but are not sufficient for full readiness;
+  - restart evidence cadence + protected readiness gate keep `LUC-241` blocked.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1161-public-green-endpoints-vs-restart-evidence-reconciliation-2026-05-31.md`
+  - `history/tasks/luc-1161-soar-qa-reconcile-public-green-endpoints-with-restart-evidence-2026-05-31-task.md`
+## 2026-05-31 LUC-1161 [Soar][QA] Reconcile public green endpoints with restart evidence
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `1/1`, latest comment id `8656d299-2f05-49c4-bbf7-9da48c2eb06a`).
+- Comment impact applied first: executed local repair/source-control lane in fail-closed mode (no push/deploy/restart) and produced a reconciliation packet.
+- Concrete action in this heartbeat:
+  - reran production smoke once (`ops:deploy:smoke`) and refreshed `build-info` readback;
+  - reconciled fresh public-green probes with existing restart evidence from `LUC-1160` and protected readiness evidence from `LUC-1163`.
+- Reconciliation result:
+  - public routes are green (`/health`, `/ready`, `/`, `/api/build-info` all `200`);
+  - protected `/workers/ready` remains `401`;
+  - prior API restart/crash indicator remains documented (`last_restart_type=crash`, `last_restart_at=2026-05-31T21:08:45Z`), root cause still unproven.
+- Final disposition for this wake: `done` (issue-scoped reconciliation packet complete).
+- Evidence:
+  - `history/evidence/luc-1161-public-green-endpoints-vs-restart-evidence-reconciliation-2026-05-31.md`
+  - `history/tasks/luc-1161-soar-qa-reconcile-public-green-endpoints-with-restart-evidence-2026-05-31-task.md`
+## 2026-05-31 LUC-1167 [Soar][Bot Signals] Verify active-bot signal dashboard semantics
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - verified selected-bot signal semantics contract in canonical module docs (`docs/modules/web-dashboard-home.md`, section `SOPR`);
+  - added focused web regression in runtime signal condition helper tests to lock that dashboard signal semantics are condition-match driven (`matched=true`) and independent from runtime market-state badges.
+- Continuation delta (`finish_successful_run_handoff`):
+  - refined signal card semantics so runtime market state is explicitly presented as `Runtime state: ...` metadata instead of a signal-like status badge;
+  - kept signal activity logic tied to strategy-condition match state;
+  - added locale key `runtimeStateLabel` across dashboard-home namespaces.
+- Verification:
+  - `pnpm --filter web exec vitest run src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts` -> PASS (`1` file, `3` tests).
+  - `pnpm --filter web exec vitest run src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts src/i18n/translations.test.ts` -> PASS (`3` files, `16` tests).
+  - `pnpm --filter web exec vitest run src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts` -> PASS (`2` files, `10` tests, 2026-05-31 recheck).
+- Files changed:
+  - `apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts`
+  - `apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.tsx`
+  - `apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx`
+  - `apps/web/src/features/dashboard-home/components/HomeLiveWidgets.tsx`
+  - `apps/web/src/i18n/namespaces/dashboard-home.en.ts`
+  - `apps/web/src/i18n/namespaces/dashboard-home.pl.ts`
+  - `apps/web/src/i18n/namespaces/dashboard-home.de-CH.ts`
+  - `apps/web/src/i18n/namespaces/dashboard-home.pt.ts`
+  - `.codex/context/TASK_BOARD.md`
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1167-soar-bot-signals-verify-active-bot-signal-dashboard-semantics-2026-05-31-task.md`.
+
+## 2026-05-31 LUC-1160 [Soar][Production Stability] Diagnose Coolify restart loop and runtime crash cause
+- Wake `issue_continuation_needed` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this continuation heartbeat:
+  - reran public production smoke (`ops:deploy:smoke`) for API/Web,
+  - attempted protected runtime freshness readback (`ops:deploy:runtime-freshness`) and captured auth gate failure (`401`),
+  - ran 20-sample public availability window for `/health` and `/ready` (3-second cadence).
+- Results:
+  - public smoke PASS: `/health=200`, `/ready=200`, `/=200`, `/api/build-info=200`;
+  - availability sample PASS: `20/20` success for both `/health` and `/ready`;
+  - protected runtime freshness remains blocked by auth (`401`) in this lane.
+- Disposition for this wake: `blocked`.
+- Unblock owner/action:
+  1. Ops Release Lead + platform/Coolify owner: extract pre-crash host/Coolify logs/events around `2026-05-31T21:08:45Z`.
+  2. Security-approved read-only principal: provide protected probe path for `/workers/ready`, `/alerts`, `/metrics`.
+- Evidence:
+  - `history/tasks/luc-1160-soar-production-stability-diagnose-coolify-restart-loop-and-runtime-crash-cause-2026-05-31-task.md`
+  - `history/evidence/luc-1160-coolify-restart-loop-diagnosis-2026-05-31.md`
+
+## 2026-05-31 LUC-1164 [Soar][LUC-241][Backend] Trace /workers/ready auth chain and produce fix-ready map
+- Wake `issue_continuation_needed` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - traced protected auth chain for `GET /workers/ready` from route to middleware and token verification,
+  - produced fix-ready breakpoint map with fail codes and minimal repair options for Security/Ops handoff.
+- Continuation delta in this heartbeat:
+  - executed focused runtime verification `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts --reporter=verbose`,
+  - observed upstream test bootstrap blocker: `/auth/register` returned `500` (expected `201`) in `createAdminAgent/createUserAgent`, so protected `/workers/ready` assertions were not reached in 7 cases.
+- Verified chain:
+  1. `requireAuth` (`401`/`503` fail-closed),
+  2. `requireRole('ADMIN')` (`403`),
+  3. `requireOpsNetwork` (`403`, proxy/allowlist policy).
+- Highest-probability blockers documented: admin role mismatch, trusted-proxy mismatch, ops allowlist mismatch, session-version drift.
+- Fix-ready sequencing update: first unblock `/auth/register` stability in this test/runtime context, then re-run `/workers/ready` auth-chain assertions.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1164-soar-luc-241-backend-trace-workers-ready-auth-chain-and-fix-ready-map-2026-05-31-task.md`
 ## 2026-05-31 LUC-1148 continuation [issue_continuation_needed]
 - Wake `issue_continuation_needed` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
@@ -17123,7 +17508,7 @@ ode --check scripts/buildObsidianVaultLayer.mjs -> PASS,
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical production availability and publish no-mutation incident note for this `503` interval.
   2. After availability recovery and fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected `/workers/ready` recheck and publishes redaction-safe evidence.
 ## 2026-05-31 LUC-241 continuation [source_scoped_recovery_action]
-- Wake acknowledged from inline payload (allbackFetchNeeded=false, comments /0, latest comment id unknown).
+- Wake acknowledged from inline payload (fallbackFetchNeeded=false, comments 0/0, latest comment id unknown).
 - Concrete action in this heartbeat:
   - read-only continuity checkpoint at 2026-05-31T16:46:49.5006511+02:00.
   - auth artifact presence:
@@ -17175,7 +17560,7 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
   1. Ops Release Lead + platform/Coolify runtime owner restore canonical Soar runtime availability (/health, /ready, /, /api/build-info) and publish no-mutation incident note for this 503 interval.
   2. After recovery and fresh explicit gate approval, Ops Release Lead executes exactly one read-only protected /workers/ready recheck and publishes redaction-safe evidence.
 ## 2026-05-31 LUC-241 continuation [finish_successful_run_handoff]
-- Wake acknowledged from inline payload (allbackFetchNeeded=false, comments /0, latest comment id unknown).
+- Wake acknowledged from inline payload (fallbackFetchNeeded=false, comments 0/0, latest comment id unknown).
 - Concrete action in this heartbeat (read-only continuity checkpoint):
   - timestamp: 2026-05-31T17:41:22.3907937+02:00
   - auth/context artifact presence:
@@ -17331,3 +17716,995 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
   - produced closure artifact `history/tasks/luc-1148-source-control-closure-comment-73477930-local-repair-lane-2026-05-31-task.md`.
 - Commit decision: `committed locally` (docs/history/evidence/context only), `not pushed`, deploy impact `none`.
 - Final disposition for this wake: `done`.
+
+## 2026-05-31 LUC-1163 verification checkpoint [issue_assigned]
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - executed `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`,
+  - captured production build-info (`gitSha=6839cd6b8884e26eca735ce32cea98c1dadccfbe`, `buildId=9_MzvzTWKAhz25Nco5xPY`),
+  - published decision-matrix evidence packet.
+- Result: public checks PASS (`/health`, `/ready`, `/`, `/api/build-info`), protected `GET /workers/ready` FAIL (`401`).
+- Disposition: `blocked` for release-readiness proof on protected auth boundary.
+- Evidence:
+  - `history/artifacts/luc-1163-workers-ready-smoke-recheck-2026-05-31.json`
+  - `history/tasks/luc-1163-workers-ready-smoke-recheck-with-decision-matrix-2026-05-31-task.md`
+
+## 2026-05-31 LUC-1163 continuation checkpoint [issue_continuation_needed]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran one canonical production smoke command on current hosts:
+    - `corepack pnpm run -s ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`
+  - refreshed build-info readback (`gitSha=6839cd6b8884e26eca735ce32cea98c1dadccfbe`, `buildId=9_MzvzTWKAhz25Nco5xPY`).
+- Result: public checks remain `PASS` and protected `GET /workers/ready` remains `FAIL` (`401`).
+- Disposition: `blocked` (no new unblock artifact; protected authz proof still missing).
+- Evidence:
+  - `history/artifacts/luc-1163-workers-ready-smoke-recheck-2026-05-31.json`
+  - `history/tasks/luc-1163-workers-ready-smoke-recheck-with-decision-matrix-2026-05-31-task.md`
+
+
+## 2026-05-31 LUC-1160 [Soar][Production Stability] Diagnose Coolify restart loop and runtime crash cause
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran public production probes and captured restored `200` status on API/Web/build-info endpoints,
+  - executed read-only Coolify API diagnostics for Soar applications and extracted restart indicators,
+  - collected API log snapshot artifact from Coolify application logs endpoint.
+- Diagnosis result:
+  - no active restart loop confirmed at end of heartbeat,
+  - `soar-api` shows recovered crash signal (`last_restart_type=crash`, `last_restart_at=2026-05-31T21:08:45.000000Z`, `restart_count=2`),
+  - all Soar worker apps report `restart_count=0` in the same snapshot,
+  - root-cause classification remains unproven from available retained log window.
+- Final disposition for this heartbeat: `in_progress` (needs pre-crash host-level logs + protected worker/alerts probe).
+- Evidence:
+  - `history/tasks/luc-1160-soar-production-stability-diagnose-coolify-restart-loop-and-runtime-crash-cause-2026-05-31-task.md`
+  - `history/evidence/luc-1160-coolify-restart-loop-diagnosis-2026-05-31.md`
+
+## 2026-05-31 LUC-1162 security validation checkpoint [issue_continuation_needed]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action:
+  - validated protected route guard chain for `GET /workers/ready` in source (`requireAuth` + `requireRole('ADMIN')` + `requireOpsNetwork`),
+  - ran targeted authz verification:
+    - `PASS` `src/middleware/requireRole.test.ts`
+    - `PASS` `src/middleware/requireOpsNetwork.test.ts`
+    - `FAIL` DB-backed suites (`src/middleware/requireAuth.test.ts`, `src/router/workers-health-readiness.test.ts`) due to local runner dependency gap (`localhost:5432` unavailable),
+  - classified blocker as principal/session proof gap (`401` lineage) plus local DB-dependent verification limitation, not a missing route permission check.
+- Disposition: `blocked`.
+- Unblock owner/action:
+  1. Ops/Auth credential owner provides fresh approved read-only ADMIN principal/session artifact accepted by API auth.
+  2. QA/Ops executes exactly one approved protected recheck for `GET /workers/ready` and publishes redaction-safe evidence.
+- Evidence:
+  - `history/tasks/luc-1162-soar-luc-241-security-validate-workers-ready-principal-permission-path-2026-05-31-task.md`
+
+## 2026-05-31 LUC-1162 security verification follow-up [issue_assigned]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action:
+  - added explicit regression coverage for permission-path principal rejection on protected endpoint:
+    - `apps/api/src/router/workers-health-readiness.test.ts`: new case `rejects authenticated non-admin principal for workers readiness` (`GET /workers/ready` => expected `403`).
+  - attempted focused execution:
+    - `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts`
+    - result: suite fails before endpoint assertions because local `POST /auth/register` returns `500` in test runtime (pre-existing env/runtime failure in this runner context).
+- Disposition: `blocked`.
+- Unblock owner/action:
+  1. API/runtime owner restores local test prereqs for auth registration path in runner context (so DB-backed route tests can execute).
+  2. Security/QA reruns focused suite and confirms `USER` principal remains fail-closed (`403`) on `GET /workers/ready`.
+- Evidence:
+  - `apps/api/src/router/workers-health-readiness.test.ts`
+
+
+
+
+
+## 2026-06-01 LUC-1186 verification checkpoint [issue_assigned]
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - executed `git rev-parse HEAD` and `git rev-parse origin/main`,
+  - executed `node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --skip-workers`,
+  - captured build-info readback from `https://soar.luckysparrow.ch/api/build-info`.
+- Result: public checks PASS (`/health`, `/ready`, `/`, `/api/build-info` all `200`); build-info parity reports `gitSha=6839cd6b8884e26eca735ce32cea98c1dadccfbe` on `main`.
+- Disposition: `done`.
+- Evidence:
+  - `history/tasks/luc-1186-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md`
+  - `history/evidence/luc-1186-coolify-production-deploy-health-sweep-2026-06-01.md`
+
+## 2026-06-01 LUC-1175 [Soar][V1 Conformance][Frontend] Verify dashboard, active bot context, signals, and trading UX display
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `1/1`, latest comment id `ade2a817-daef-45d7-a7e3-7d1ddf2e1d95`).
+- Comment impact applied first: executed `softwarehouse-local-repair-lane-starter:v1` in local fail-closed mode.
+- Concrete action in this heartbeat:
+  - inspected frontend runtime-signal/dashboard diff for touched capability;
+  - ran focused verification suite for runtime signal semantics and display;
+  - classified closure readiness and persisted evidence packet.
+- Verification:
+  - `pnpm --filter web exec vitest run src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts --reporter=verbose` -> PASS (`2` files, `10` tests).
+- Risk classification:
+  - i18n encoding-corruption indicators present in modified locale files (`dashboard-home.de-CH.ts`, `dashboard-home.pt.ts`), so frontend conformance cannot be safely closed in this wake.
+- Disposition for this wake: `blocked`.
+- Unblock owner/action:
+  1. Frontend owner: repair locale encoding/text integrity in touched dashboard-home namespaces.
+  2. QA/Frontend owner: rerun focused runtime-signal + locale integrity validation and attach closure packet.
+- Source-control closure decision:
+  - `not committed` in this PM verification lane (state/evidence updates only; broader multi-lane dirty set remains active).
+- Evidence:
+  - `history/tasks/luc-1175-soar-v1-conformance-frontend-verify-dashboard-active-bot-context-signals-and-trading-ux-display-2026-06-01-task.md`
+  - `history/evidence/luc-1175-frontend-dashboard-signals-trading-ux-display-verification-2026-06-01.md`
+
+## 2026-06-01 LUC-1175 continuation [finish_successful_run_handoff]
+- Wake `finish_successful_run_handoff` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran focused runtime-signal + translation validation suite;
+  - performed explicit encoding-corruption grep on touched locale files;
+  - linked semantics coverage to existing `LUC-1167` lane evidence (no duplication).
+- Verification:
+  - `pnpm --filter web exec vitest run src/i18n/translations.test.ts src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts --reporter=verbose` -> PASS (`3` files, `16` tests).
+  - `rg -n "Ã|â€|?export" apps/web/src/i18n/namespaces/dashboard-home.de-CH.ts apps/web/src/i18n/namespaces/dashboard-home.pt.ts -S` -> MATCH (encoding-corruption indicators reproduced).
+- Disposition for this wake: `blocked`.
+- Unblock owner/action unchanged:
+  1. Frontend owner repairs locale encoding/text integrity for touched dashboard-home namespaces.
+  2. QA/Frontend owner reruns focused runtime-signal + locale integrity proof and attaches closure packet.
+- Source-control closure decision:
+  - `not committed` in this PM verification lane (evidence/state updates only).
+- Evidence:
+  - `history/tasks/luc-1175-soar-v1-conformance-frontend-verify-dashboard-active-bot-context-signals-and-trading-ux-display-2026-06-01-task.md`
+  - `history/evidence/luc-1175-frontend-dashboard-signals-trading-ux-display-verification-2026-06-01.md`
+
+## 2026-06-01 LUC-1175 continuation [source_scoped_recovery_action]
+- Wake `source_scoped_recovery_action` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran focused runtime-signal + translation validation suite;
+  - reran explicit corruption-marker scan for touched locale files;
+  - revalidated no-duplication linkage to `LUC-1167` semantics lane.
+- Verification:
+  - `pnpm --filter web exec vitest run src/i18n/translations.test.ts src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts --reporter=verbose` -> PASS (`3` files, `16` tests).
+  - `rg -n "Ä‚|Ã¢â‚¬|ï»¿export|Ã|â€|?export" apps/web/src/i18n/namespaces/dashboard-home.de-CH.ts apps/web/src/i18n/namespaces/dashboard-home.pt.ts -S` -> MATCH (mojibake/BOM markers reproduced).
+- Disposition for this wake: `blocked`.
+- Unblock owner/action unchanged:
+  1. Frontend owner repairs locale encoding/text integrity in `dashboard-home.de-CH.ts` and `dashboard-home.pt.ts`.
+  2. QA/Frontend owner reruns focused suite + corruption-marker scan and publishes closure packet.
+- Source-control closure decision:
+  - `not committed` in this PM verification lane (evidence/state updates only; no implementation changes).
+- Evidence:
+  - `history/tasks/luc-1175-soar-v1-conformance-frontend-verify-dashboard-active-bot-context-signals-and-trading-ux-display-2026-06-01-task.md`
+  - `history/evidence/luc-1175-frontend-dashboard-signals-trading-ux-display-verification-2026-06-01.md`
+
+
+## 2026-06-01 LUC-1188 [Soar][V1 Conformance][Backend Worker] Build endpoint-to-contract drift matrix for DCA/TSL and positions flow
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - built a backend endpoint-to-contract drift matrix for positions + DCA/TSL runtime flow + worker readiness route.
+  - traced canonical contract docs, route registration, implementation entrypoints, and proof sources in tests.
+- Matrix artifact:
+  - `history/evidence/luc-1188-endpoint-to-contract-drift-matrix-dca-tsl-positions-2026-06-01.md`
+- Key findings:
+  - no route-definition drift between documented `/dashboard/positions` endpoints and registered router paths.
+  - conformance proof gaps remain for `POST /dashboard/positions/orphan-repair` (dedicated endpoint test missing) and consolidated route-level DCA/TSL authority pack.
+  - `/workers/ready` remains `blocked by error` in current verification lane due to auth/bootstrap and local runtime dependency instability already observed in focused suites.
+- Task packet:
+  - `history/tasks/luc-1188-soar-v1-conformance-backend-worker-endpoint-to-contract-drift-matrix-dca-tsl-positions-2026-06-01-task.md`
+- Disposition for this wake: `in_review` (Backend QA / Delivery review of matrix + follow-up lane split).
+
+
+## 2026-06-01 LUC-1189 [Soar][V1 Conformance][Test Automation Worker] Turn acceptance matrix rows into executable regression checks
+- Wake `issue_continuation_needed` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`).
+- Concrete action in this heartbeat:
+  - added API script `test:conformance:acceptance-matrix`
+  - mapped acceptance-matrix classes to executable focused regressions without DB dependency.
+- Verification:
+  - `pnpm --filter api run test:conformance:acceptance-matrix` -> PASS
+  - targeted results: reconciliation `5 passed`; auth gates `8 passed`; display semantics `2 passed`.
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1189-soar-v1-conformance-test-automation-worker-turn-acceptance-matrix-rows-into-executable-regression-checks-2026-06-01-task.md`
+  - `history/evidence/luc-1189-acceptance-matrix-executable-regression-pack-2026-06-01.md`
+## 2026-06-01 LUC-1190 continuation [source_scoped_recovery_action]
+- Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Comment-impact note: no new human comment changed scope; action in this heartbeat is status-recovery alignment between issue disposition and already-published security evidence.
+- Concrete action in this heartbeat:
+  - revalidated canonical gate packet and task artifact for `LUC-1190` against required scope (principal scope, explicit `401/403` deny matrix, redaction rules, fail-closed policy statement);
+  - confirmed lane output is complete and unchanged: Security gate definition remains evidence-backed and owner-ready for protected read-only smoke execution.
+- Final disposition for this wake: `done`.
+- Next owner (unchanged handoff):
+  1. Ops Release Lead executes one protected read-only `/workers/ready` smoke run using approved principal artifact and publishes redacted result.
+- Evidence:
+  - `history/releases/luc-1190-workers-ready-smoke-principal-authorization-gate-2026-06-01.md`
+  - `history/tasks/luc-1190-workers-ready-security-smoke-principal-authorization-gate-2026-06-01-task.md`
+
+## 2026-06-01 LUC-1195 [Soar][Backend][LUC-1188] Consolidate DCA/TSL route-level conformance pack for runtime positions read
+- Wake acknowledged from inline payload (fallbackFetchNeeded=false, comments 0/0, latest comment id unknown).
+- No new comment delta changed scope; concrete action in this heartbeat was source-scoped recovery on blocked lane through conformance-pack consolidation.
+- Durable outputs:
+  - history/evidence/luc-1195-dca-tsl-route-level-conformance-pack-runtime-positions-read-2026-06-01.md`r
+  - history/tasks/luc-1195-soar-backend-luc-1188-consolidate-dca-tsl-route-level-conformance-pack-runtime-positions-read-2026-06-01-task.md`r
+- Consolidation result: route-level DCA/TSL assertions exist across tests but remain distributed; parent remains fail-closed until focused pack is implemented and executed.
+- Disposition: locked.
+- Unblock owner/action:
+  1. Backend API Engineer: implement focused route-level conformance pack for runtime positions read + close routes.
+  2. QA/Test Automation: run focused pack and publish deterministic pass/fail evidence mapped to both routes.
+
+## 2026-06-01 LUC-1195 [Soar][Backend][LUC-1188] Consolidate DCA/TSL route-level conformance pack for runtime positions read
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - consolidated a dedicated backend conformance command for runtime positions DCA/TSL route-level coverage:
+    - `pnpm --filter api run test:conformance:runtime-positions-dca-tsl-routes`;
+  - wired the command to focused route-level e2e checks for:
+    - dynamic `TTP/TSL` runtime positions payload mapping,
+    - imported runtime DCA visibility and stale DCA reopen guard.
+- Verification:
+  - `pnpm --filter api run test:conformance:runtime-positions-dca-tsl-routes` -> FAIL/BLOCKED:
+    - `PrismaClientInitializationError: Can't reach database server at localhost:5432`
+    - failure occurs during e2e state reset (`resetBotsE2eState`).
+- Disposition for this wake: `blocked`.
+- Unblock owner/action:
+  1. Backend/Ops local runtime owner: restore local Postgres availability on `localhost:5432`.
+  2. Backend QA lane: rerun `test:conformance:runtime-positions-dca-tsl-routes` and attach pass/fail closure packet.
+- Evidence:
+  - `history/tasks/luc-1195-soar-backend-luc-1188-consolidate-dca-tsl-route-conformance-pack-runtime-positions-read-2026-06-01-task.md`
+  - `history/evidence/luc-1195-runtime-positions-read-dca-tsl-route-conformance-pack-2026-06-01.md`
+
+## 2026-06-01 LUC-1194 [Soar][Backend][LUC-1188] Add endpoint contract test for POST /dashboard/positions/orphan-repair
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - added dedicated endpoint contract test file `apps/api/src/modules/positions/positions.orphan-repair.contract.e2e.test.ts`;
+  - covered fail-closed unauthenticated path (`401`) and authenticated response contract shape for `POST /dashboard/positions/orphan-repair`;
+  - asserted orchestration calls contract (`repairLegacyOpenPositions` + `reconcileExternalPositionsFromExchange` + `rebindExternalTakeoverOwnership`) with scoped user id.
+- Verification:
+  - `pnpm --filter api exec vitest run src/modules/positions/positions.orphan-repair.contract.e2e.test.ts --reporter=verbose` -> PASS (`2` passed, `0` failed).
+- Disposition for this wake: `done`.
+
+## 2026-06-01 LUC-1195 [Soar][Backend][LUC-1188] Consolidate DCA/TSL route-level conformance pack for runtime positions read
+- Wake `issue_continuation_needed` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - consolidated and executed route-level conformance pack command:
+    - `pnpm --filter api run test:conformance:runtime-positions-dca-tsl-routes`;
+  - verified route chain coverage targets:
+    - `GET /dashboard/bots/:id/runtime-sessions/:sessionId/positions`
+    - `POST /dashboard/bots/:id/runtime-sessions/:sessionId/positions/:positionId/close`
+  - attempted local dependency unblock with `docker compose ps`.
+- Verification result:
+  - conformance pack run -> `FAIL` (blocked by local runtime dependency):
+    - `PrismaClientInitializationError`: `Can't reach database server at localhost:5432`.
+  - Docker engine unavailable on host:
+    - `open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified`.
+- Disposition for this wake: `blocked`.
+- Unblock owner/action:
+  1. Backend/Ops local-runtime owner: start reachable local DB/cache test dependencies.
+  2. Backend/QA lane: rerun route-level conformance pack and publish closure evidence.
+- Evidence:
+  - `history/evidence/luc-1195-runtime-positions-read-dca-tsl-route-conformance-pack-2026-06-01.md`
+  - `history/tasks/luc-1195-soar-backend-luc-1188-consolidate-dca-tsl-route-level-conformance-pack-runtime-positions-read-2026-06-01-task.md`
+
+## 2026-06-01 LUC-1197 [Soar][Backend+Ops][LUC-1188] Unblock workers/ready contract suite and close readiness proof gap
+- Wake acknowledged first from inline payload (`reason=source_scoped_recovery_action`, `fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - executed fresh full contract-suite verification for workers readiness:
+    - `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts --reporter=verbose`;
+  - captured current blocker signature and converted it into explicit one-owner unblock lanes.
+- Verification result:
+  - `FAIL` (`7 failed`, `1 passed`, single file failed).
+  - failure classes:
+    1. helper bootstrap path returns `500` where setup expects `201` (auth/register setup class),
+    2. two route tests timeout at `5000ms` before readiness assertions complete,
+    3. `/workers/ready` route-level readiness proof remains unverified.
+- Final disposition for this wake: `blocked`.
+- Unblock owner/action:
+  1. Backend API owner: stabilize auth/bootstrap helper path used by readiness suite setup.
+  2. Ops/Runtime owner: provide deterministic local runtime dependency preconditions for suite execution.
+  3. Backend QA owner: rerun full suite and publish closure packet to reclassify readiness contract status.
+- Evidence:
+  - `history/tasks/luc-1197-soar-backend-ops-luc-1188-unblock-workers-ready-contract-suite-and-close-readiness-proof-gap-2026-06-01-task.md`
+  - `history/evidence/luc-1197-workers-ready-contract-suite-unblock-and-readiness-proof-gap-2026-06-01.md`
+
+## 2026-06-01 LUC-1197 [Soar][Backend+Ops][LUC-1188] Unblock workers/ready contract suite and close readiness proof gap
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - removed `/auth/register` + `/auth/login` bootstrap coupling from `workers-health-readiness` contract suite;
+  - implemented deterministic auth harness via `signAuthToken` + in-memory principal map + `prisma.user.findUnique` spy;
+  - preserved fail-closed assertions (`401` unauthenticated, `403` non-admin) and readiness contract assertions for split/inline modes.
+- Verification:
+  - `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts --reporter=verbose` -> PASS (`8` passed).
+  - `pnpm --filter api run test:conformance:acceptance-matrix` -> PASS.
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1197-soar-backend-ops-luc-1188-unblock-workers-ready-contract-suite-and-close-readiness-proof-gap-2026-06-01-task.md`
+  - `history/evidence/luc-1197-workers-ready-contract-suite-unblock-and-proof-closure-2026-06-01.md`
+
+
+## 2026-06-01 LUC-1197 continuation [source_scoped_recovery_action]
+- Wake acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Comment-impact note: prior repository closure artifacts for `LUC-1197` exist, so this continuation records fresh executable truth for current workspace state.
+- Concrete action in this heartbeat:
+  - reran full suite `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts --reporter=verbose`.
+- Result:
+  - `FAIL` (`7 failed`, `1 passed`), with repeated setup `500` vs expected `201` and timeout classes.
+- Final disposition for this wake: `blocked`.
+- Unblock owner/action:
+  1. Backend API owner stabilizes auth/bootstrap setup path used by readiness suite.
+  2. Ops/Runtime owner ensures deterministic local dependency preconditions.
+  3. Backend QA reruns full suite and publishes closure packet.
+- Evidence:
+  - `history/tasks/luc-1197-source-scoped-recovery-workers-ready-suite-reblock-2026-06-01-task.md`
+  - `history/evidence/luc-1197-source-scoped-recovery-workers-ready-suite-reblock-2026-06-01.md`
+## 2026-06-01 LUC-1196 [Soar][Backend][LUC-1188] Add DCA-first close authority route-level pack for runtime position close endpoint
+- Wake `issue_continuation_needed` acknowledged and executed as actionable backend test-pack slice.
+- Concrete action in this heartbeat:
+  - added dedicated route-level e2e pack for `POST /dashboard/bots/:id/runtime-sessions/:sessionId/positions/:positionId/close`:
+    - fail-closed `riskAck` contract,
+    - DCA-first close-authority behavior when pending DCA order is still open (`submitted` result, position remains `OPEN`).
+- Files changed:
+  - `apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts`
+- Verification:
+  - `pnpm --filter api exec vitest run src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts` -> FAIL (environment blocker: Prisma cannot reach `localhost:5432`).
+- Disposition for this wake: `blocked`.
+- Unblock owner/action:
+  1. Backend/QA lane starts local Postgres test dependency on `localhost:5432`.
+  2. Rerun focused route-pack test command and attach PASS closure evidence.
+## 2026-06-01 LUC-1196 [Soar][Backend][LUC-1188] Add DCA-first close authority route-level pack for runtime position close endpoint
+- Wake `source_scoped_recovery_action` acknowledged and executed as actionable backend test-lane slice.
+- Concrete action in this heartbeat:
+  - added focused route-level e2e pack for runtime close endpoint:
+    - `apps/api/src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts`,
+  - covered two conformance lanes:
+    1. pending DCA -> close remains fill-based (`submitted`, position remains `OPEN`),
+    2. no pending DCA -> close can complete (`closed`, position transitions to `CLOSED`).
+- Verification:
+  - `pnpm --filter api exec vitest run src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts --reporter=verbose` -> FAIL (`PrismaClientInitializationError`: `Can't reach database server at localhost:5432`).
+- Disposition for this wake: `blocked`.
+- Unblock owner/action:
+  1. Backend/Ops lane: provide local PostgreSQL test dependency on `localhost:5432`.
+  2. Backend QA lane: rerun the same focused route-level suite and attach closure packet.
+- Evidence:
+  - `history/evidence/luc-1196-runtime-close-dca-first-route-pack-2026-06-01.md`
+  - `history/tasks/luc-1196-soar-backend-luc-1188-add-dca-first-close-authority-route-level-pack-runtime-position-close-endpoint-2026-06-01-task.md`
+
+## 2026-06-01 LUC-1176 [Soar][V1 Conformance][QA] Build V1 acceptance matrix and regression evidence map
+- Wake `issue_assigned` with comment `softwarehouse-local-repair-lane-starter:v1` acknowledged first and executed in local fail-closed mode.
+- Concrete action in this heartbeat:
+  - consolidated V1 conformance acceptance classes from `LUC-1188`, `LUC-1189`, `LUC-1194`, `LUC-1195`, `LUC-1196`, `LUC-1197`;
+  - rebuilt one PM acceptance matrix + regression evidence map packet;
+  - reran canonical DB-independent matrix command.
+- Verification:
+  - `pnpm --filter api run test:conformance:acceptance-matrix` -> PASS.
+- Outcome:
+  - verified rows: ingestion ownership reconciliation, auth fail-closed gates, runtime display semantics, orphan-repair endpoint contract, local workers/ready suite;
+  - blocked rows: route-level DCA/TSL packs (`LUC-1195`, `LUC-1196`) due to local DB dependency (`localhost:5432` unavailable).
+- Final disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1176-soar-v1-conformance-qa-build-v1-acceptance-matrix-and-regression-evidence-map-2026-06-01-task.md`
+  - `history/evidence/luc-1176-v1-acceptance-matrix-and-regression-evidence-map-2026-06-01.md`
+
+## 2026-06-01 - LUC-1177 [Soar][V1 Conformance][Ops] Reconcile deploy, Coolify restart evidence, and release readiness gates
+- Wake comment `softwarehouse-local-repair-lane-starter:v1` acknowledged first and executed under local repair/source-control closure constraints.
+- Concrete action in this heartbeat:
+  - reconciled deploy/restart/readiness evidence across `LUC-1186`, `LUC-1190`, and `LUC-1197` into one fail-closed ops packet;
+  - classified release readiness as `blocked` pending one protected read-only `/workers/ready` smoke with approved principal/session artifact.
+- Evidence:
+  - `history/tasks/luc-1177-soar-v1-conformance-ops-reconcile-deploy-coolify-restart-evidence-and-release-readiness-gates-2026-06-01-task.md`
+  - `history/evidence/luc-1177-deploy-restart-release-readiness-reconciliation-2026-06-01.md`
+- Commit/push/deploy:
+  - commit: `not committed` (broad unrelated runtime/product dirty set present in workspace)
+  - push: `not needed`
+  - deploy impact: `none`
+
+## 2026-06-01 LUC-1177 continuation (finish_successful_run_handoff)
+- Reconciled `LUC-1160` + `LUC-1161` findings into `LUC-1177` packet with unchanged fail-closed verdict.
+- Fresh read-only smoke recheck PASS: `/health`, `/ready`, `/`, `/api/build-info` all `200`.
+- Source-control reconciliation captured:
+  - local `HEAD=89bbf392...`,
+  - `origin/main=6839cd6b...`,
+  - production evidence ref `6839cd6b...` (deployed aligns with `origin/main`, not local `HEAD`).
+- Gate that blocks push/deploy/restart remains explicit:
+  1. missing protected approved principal/session `/workers/ready` smoke proof,
+  2. missing pre-crash retention evidence for `2026-05-31T21:08:45Z`,
+  3. current lane policy forbids mutation.
+- Disposition: `done` for reconciliation lane scope.
+- Evidence:
+  - `history/evidence/luc-1177-deploy-restart-release-readiness-reconciliation-2026-06-01.md`
+  - `history/tasks/luc-1177-soar-v1-conformance-ops-reconcile-deploy-coolify-restart-evidence-and-release-readiness-gates-2026-06-01-task.md`
+
+## 2026-06-01 LUC-1223 [Soar][Source Control Closure] classify and close local dirty state for LUC-241-LUC-1160-LUC-1161-LUC-1162-plus-17
+- Wake `issue_commented` acknowledged first with sidecar instruction `softwarehouse-local-repair-lane-starter:v1`.
+- Concrete action in this heartbeat:
+  - recaptured local dirty set (`git status --porcelain=v1 -uall`),
+  - classified ownership scope as mixed runtime/state/history (`17/2/43`, total `62`),
+  - ran high-signal secret-value scan across dirty paths -> no leak indicators.
+- Disposition for local source-control closure in this wake:
+  - `not committed` (runtime/product dirty paths still active and cross-lane)
+  - `not pushed`
+  - deploy impact `none`
+- Final disposition for this lane heartbeat: `done` (classification/closure decision delivered with evidence; no protected delivery mutation).
+- Evidence:
+  - `history/evidence/luc-1223-source-control-closure-classification-2026-06-01.md`
+  - `history/tasks/luc-1223-soar-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-luc-1160-luc-1161-luc-1162-plus-17-2026-06-01-task.md`
+
+## 2026-06-01 LUC-1223 [Soar][Source Control Closure] Classify and close local dirty state for LUC-241-LUC-1160-LUC-1161-LUC-1162-plus-17
+- Wake `issue_assignment_recovery` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`).
+- Concrete action in this heartbeat:
+  - executed source-control closure inventory (`git status --short`, `git diff --name-only`, `git ls-files --others --exclude-standard`);
+  - classified dirty workspace into four buckets: state ledgers, backend runtime/tests, frontend signals/i18n, history evidence/tasks;
+  - confirmed PM lane non-mutation closure (no revert/reset/clean/commit/push/deploy).
+- Disposition for this wake: `done` (classification/closure scope complete).
+- Commit/push/deploy:
+  - commit: `not committed` (mixed multi-lane dirty set, requires Delivery split)
+  - push: `not needed`
+  - deploy impact: `none`
+- Evidence:
+  - `history/tasks/luc-1223-source-control-closure-classify-and-close-local-dirty-state-2026-06-01-task.md`
+  - `history/evidence/luc-1223-source-control-closure-dirty-state-classification-2026-06-01.md`
+
+## 2026-06-01 LUC-1223 reopen delta [issue_reopened_via_comment]
+- Comment `softwarehouse-local-repair-lane-starter:v1` acknowledged first; lane rerun in fail-closed source-control mode.
+- Concrete action:
+  - published explicit `remaining dirty paths` inventory and no-commit blocker packet;
+  - removed duplicate short-form `LUC-1223` task/evidence file pair created in prior heartbeat to avoid closure ambiguity.
+- Final disposition for this wake: `blocked`.
+- Blocker owner/action:
+  1. Engineering Delivery Lead sidecar splits mixed dirty runtime/frontend/history/state scope into coherent owner batches.
+  2. Owning specialists commit scoped batches with minimal verification and SHA evidence.
+  3. `LUC-1223` reruns closure checkpoint after split commits.
+- Evidence:
+  - `history/tasks/luc-1223-soar-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-luc-1160-luc-1161-luc-1162-plus-17-2026-06-01-task.md`
+  - `history/evidence/luc-1223-reopen-remaining-dirty-paths-and-blocker-2026-06-01.md`
+
+## 2026-06-01 LUC-1223 finish_successful_run_handoff
+- Revalidated dirty tree after reopen closure packet; remaining mixed runtime/frontend/history/state dirty paths are unchanged.
+- Confirmed blocker still active: PM source-control lane cannot safely commit mixed multi-owner scope.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action:
+  1. Engineering Delivery Lead splits dirty set into coherent ownership commit batches.
+  2. Lane owners run minimal scoped checks and commit with SHA evidence.
+  3. Re-run `LUC-1223` closure checkpoint.
+- Evidence:
+  - `history/evidence/luc-1223-reopen-remaining-dirty-paths-and-blocker-2026-06-01.md`
+
+## 2026-06-01 LUC-1223 source_scoped_recovery_action (cancellation-reason checkpoint)
+- Wake payload acknowledged first from inline packet (`reason=source_scoped_recovery_action`, `fallbackFetchNeeded=false`, comments `0/0`, latest comment `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated dirty workspace boundary via `git status --short`;
+  - confirmed blocker continuity with no ownership split delta in current PM lane;
+  - confirmed no runtime/product mutation, no source-control mutation, no deploy mutation.
+- Final disposition for this heartbeat: `blocked`.
+- Unblock owner/action (unchanged):
+  1. Engineering Delivery Lead: split mixed dirty runtime/frontend/history/state set into single-owner commit batches.
+  2. Lane owners: run minimal scoped validation and produce commit SHA evidence per batch.
+  3. Re-run `LUC-1223` closure checkpoint after split commits.
+- Evidence:
+  - `history/evidence/luc-1223-reopen-remaining-dirty-paths-and-blocker-2026-06-01.md`
+
+## 2026-06-01 LUC-1223 autonomous local repair lane checkpoint (comment 361fc702-9a88-438f-86af-0d5e589c6ea1)
+- Wake comment acknowledged first; lane remains scoped to local source-control closure under fail-closed policy.
+- Concrete action: reran `git status --short` + `git status --porcelain=v1 --branch`; dirty scope remains mixed cross-lane and unchanged.
+- Final disposition: `blocked`.
+- Commit/push/deploy: `not committed` / `not needed` / `none`.
+- Unblock owner/action:
+  1. Engineering Delivery Lead splits remaining paths into single-owner commit batches.
+  2. Lane owners run minimal scoped validation and commit with SHA evidence.
+  3. Re-run `LUC-1223` closure checkpoint.
+- Evidence:
+  - `history/evidence/luc-1223-reopen-remaining-dirty-paths-and-blocker-2026-06-01.md`
+  - `history/tasks/luc-1223-soar-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-luc-1160-luc-1161-luc-1162-plus-17-2026-06-01-task.md`
+
+## 2026-06-01 LUC-1223 continuation split packet (issue_continuation_needed)
+- Concrete action completed: transformed blocker into explicit owner-batch execution packet from fresh dirty-tree classification.
+- Batch map:
+  1. `BATCH-A-BACKEND-RUNTIME-TESTS` (9)
+  2. `BATCH-B-FRONTEND-SIGNALS-I18N` (8)
+  3. `BATCH-C-HISTORY-EVIDENCE-TASKS` (46)
+  4. `BATCH-D-PROJECT-STATE-LEDGERS` (2)
+- Validation: `git status --short`.
+- Disposition: `blocked` (no batch commit SHA evidence yet).
+- Unblock owner/action: Engineering Delivery Lead assigns and executes A/B/C/D commit sequence, then reruns closure checkpoint.
+- Evidence:
+  - `history/evidence/luc-1223-reopen-remaining-dirty-paths-and-blocker-2026-06-01.md`
+  - `history/tasks/luc-1223-soar-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-luc-1160-luc-1161-luc-1162-plus-17-2026-06-01-task.md`
+
+## 2026-06-01 LUC-1223 recovery continuation (source_scoped_recovery_action)
+- Concrete action: reran `git status --short` and reconfirmed split packet counts (`A=9`, `B=8`, `C=46`, `D=2`).
+- No new batch commit SHA evidence exists in this heartbeat.
+- Disposition: `blocked`.
+- Unblock owner/action: Engineering Delivery Lead executes A/B/C/D commit sequence, then rerun closure checkpoint.
+- Evidence:
+  - `history/evidence/luc-1223-reopen-remaining-dirty-paths-and-blocker-2026-06-01.md`
+
+
+
+
+
+
+
+
+## 2026-06-01 LUC-1247 continuation [source_scoped_recovery_action]
+- Wake `source_scoped_recovery_action` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Comment-impact handling: no new human comment to triage; execution resumed from the latest continuation packet first.
+- Concrete action in this heartbeat:
+  - revalidated `LUC-1247` closure state against canonical control artifacts and context ledgers,
+  - confirmed executable repair backlog routing is unchanged (`ARB-001/ARB-002` remain `done_gated`, `ARB-006` remains active blocker via `LUC-402`).
+- Verification:
+  - `rg -n "LUC-1247|ARB-006|done_gated|source_scoped_recovery_action" history/plans/luc-1247-architecture-repair-backlog-control-map-2026-06-01.md history/tasks/luc-1247-architecture-docs-executable-repair-backlog-2026-06-01-task.md .codex/context/TASK_BOARD.md .codex/context/PROJECT_STATE.md -S`
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/plans/luc-1247-architecture-repair-backlog-control-map-2026-06-01.md`
+  - `history/tasks/luc-1247-architecture-docs-executable-repair-backlog-2026-06-01-task.md`
+
+
+## 2026-06-01 LUC-1256 continuation [issue_commented]
+- Wake `issue_commented` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `1/1`, latest comment id `865ac40f-a81c-4258-9bf8-67966a9fa07c`).
+- Comment impact applied first: executed `softwarehouse-known-state-wakeup:v1` as local evidence collection + repair-lane conversion (no push/deploy/restart/protected smoke).
+- Evidence delta result unchanged: `generated_at=2026-05-31T20:42:36.027Z`, entities `13396`, relations `20522`, inferred test gaps `200`, inferred docs gaps `200`, disconnected entities `0`.
+- Concrete next repair lanes:
+  1. `KS-LANE-01-API-ROUTE-TEST-LINKS` (`Backend + QA`) route-level test linking for top missing API routes.
+  2. `KS-LANE-02-API-ROUTE-DOC-LINKS` (`Docs Memory + Backend`) canonical doc linking for the same API route families.
+  3. `KS-LANE-03-WEB-COMPONENT-LINKS` (`Frontend + QA + Docs`) test/doc linking for top missing web components.
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1256-known-state-evidence-architecture-baseline-2026-06-01-task.md`
+
+## 2026-06-01 LUC-1256 continuation [finish_successful_run_handoff]
+- Wake `finish_successful_run_handoff` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - attempted architecture-awareness refresh: `node scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` from `Paperclip_Softwarehouse`.
+  - refresh command timed out at `124055ms`; no partial mutation was promoted as new baseline.
+  - revalidated baseline from canonical generated artifacts (`docs/graphs/architecture-awareness.json`, `docs/status/architecture-awareness-report.md`).
+- Baseline continuity:
+  - `generated_at=2026-05-31T20:42:36.027Z`, entities `13396`, relations `20522`, inferred gaps tests `200`, docs `200`, disconnected entities `0`.
+- Routing continuity (unchanged):
+  - existing fail-closed chain remains active: `LUC-47` -> `GAP-L45-006` -> `GAP-L45-003` -> `GAP-L45-004`.
+  - known-state repair lanes remain unchanged: `KS-LANE-01-API-ROUTE-TEST-LINKS`, `KS-LANE-02-API-ROUTE-DOC-LINKS`, `KS-LANE-03-WEB-COMPONENT-LINKS`.
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1256-known-state-evidence-architecture-baseline-2026-06-01-task.md`
+
+## 2026-06-01 LUC-1223 autonomous local repair lane refresh (comment 8de91d7d-472f-4794-8e63-eb6294da0b46)
+- Wake `softwarehouse-local-repair-lane-starter:v1` acknowledged before any generic action.
+- Validation rerun:
+  - `git status --short`
+  - `git status --porcelain=v1 -uall`
+- Refreshed dirty classification: `total=80`, `runtime=17`, `state=3`, `history=51`, `docs=9`.
+- Commit decision: `not committed` (mixed multi-owner runtime + docs/state scope).
+- Push/deploy: `not needed` / `none`.
+- Disposition: `blocked`.
+- Unblock owner/action:
+  1. Engineering Delivery Lead refreshes owner split with docs/state deltas.
+  2. Backend/Frontend owners commit runtime batches with scoped validation + SHA evidence.
+  3. Docs/PM commits remaining history/state/docs scope and reruns closure checkpoint.
+
+## 2026-06-01 LUC-1223 finish_successful_run_handoff continuation
+- Performed concrete closure-lane recheck (`git status --porcelain=v1 -uall`).
+- Dirty-state counts remain unchanged: `total=80`, `apps=17`, `state=3`, `history=51`, `docs=9`.
+- Decision unchanged: PM lane cannot safely produce a coherent single-owner commit.
+- Disposition: `blocked`.
+- Unblock owner/action:
+  1. Engineering Delivery Lead refreshes ownership split and assigns commit batches.
+  2. Backend/Frontend owners land runtime commits with validation + SHAs.
+  3. Docs/PM closes residual batches and reruns checkpoint.
+
+## 2026-06-01 LUC-1223 issue_continuation_needed checkpoint
+- Actioned continuation with concrete recheck (`git status --porcelain=v1 -uall`).
+- Dirty scope unchanged: `80` paths (`apps=17`, `state=3`, `history=51`, `docs=9`).
+- Decision unchanged: `blocked` pending Delivery-led owner-batch commit SHAs.
+
+
+
+## 2026-06-01 LUC-1223 reopen via comment checkpoint
+- Acknowledged latest board comment and executed autonomous local repair lane.
+- Recovery from previous failed run: local closure commands now succeed; failure classified as adapter-level for prior run.
+- Fresh dirty-state snapshot: `total=82`, `apps=17`, `state=3`, `history=53`, `docs=9`.
+- Disposition: `blocked` (mixed multi-owner scope still prevents PM-lane commit).
+
+## 2026-06-01 LUC-1223 finish_successful_run_handoff continuity
+- Revalidated dirty tree (`git status --porcelain=v1 -uall`); counts unchanged at `82`.
+- Disposition unchanged: `blocked` pending Delivery split + owner commits with SHAs.
+
+## 2026-06-01 LUC-1223 recovery continuation (source_scoped_recovery_action, docs-aware recount)
+- Ran `git status --porcelain=v1 -uall` and refreshed classification counts.
+- Snapshot: `total=82`, `apps=17`, `state=3`, `history=53`, `docs=9`.
+- Disposition: `blocked`.
+- Unblock owner/action:
+  1. Engineering Delivery Lead republishes split with docs-aware ownership.
+  2. Lane owners commit scoped batches with SHA evidence.
+  3. Rerun closure checkpoint after batch commits.
+- Evidence:
+  - `history/evidence/luc-1223-reopen-remaining-dirty-paths-and-blocker-2026-06-01.md`
+
+## 2026-06-01 LUC-1223 continuation checkpoint
+- Concrete recheck run; dirty-state counts unchanged at `82`.
+- Disposition: `blocked` (unchanged owner-action chain).
+
+## 2026-06-01 LUC-1223 reopen via comment checkpoint (001c5795-07a5-48b1-8b7f-5ee5e1bd3f40)
+- Wake comment acknowledged first; lane remains local source-control closure only.
+- Cancellation reason confirmed: prior run was cancelled by control plane, not by local command/runtime error.
+- Concrete action: reran git status --porcelain=v1 -uall and refreshed counters.
+- Snapshot unchanged: total=82, apps=17, state=3, history=53, docs=9.
+- Decision: not committed (mixed multi-owner scope).
+- Disposition: blocked with unchanged unblock chain (Delivery split -> runtime SHAs -> docs/state/history closeout -> rerun checkpoint).
+
+## 2026-06-01 Continuation (issue_continuation_needed, no-comment delta)
+- Wake delta handled with concrete source-control recheck under local closure sidecar scope.
+- Validation rerun:
+  - git status --porcelain=v1 -uall
+- Snapshot unchanged:
+  - total=82, apps=17, state=3, history=53, docs=9.
+- Commit decision: not committed (mixed multi-owner runtime + state + docs + history scope).
+- Push/deploy: not needed / none.
+- Disposition: blocked.
+- Unblock owner/action unchanged:
+  1. Engineering Delivery Lead republishes ownership split for current 82-path set.
+  2. Backend/Frontend lane owners commit runtime batches with scoped validation + SHA evidence.
+  3. Docs/PM lane closes residual history/state/docs batches and reruns LUC-1223 closure checkpoint.
+
+## 2026-06-01 LUC-1223 recovery continuation (source_scoped_recovery_action, refined 5-batch split)
+- Revalidated workspace with `git status --porcelain=v1 -uall`.
+- Snapshot unchanged: `total=82`, `apps=17`, `state=3`, `history=53`, `docs=9`.
+- Split refinement applied: docs moved to explicit `BATCH-E-ARCH-DOCS-GRAPHS-STATUS` (`9`).
+- Disposition: `blocked`.
+- Unblock owner/action:
+  1. Engineering Delivery Lead executes A+B with SHAs.
+  2. Docs/Delivery executes C+E with SHAs.
+  3. PM executes D and reruns closure checkpoint.
+- Evidence:
+  - `history/evidence/luc-1223-reopen-remaining-dirty-paths-and-blocker-2026-06-01.md`
+
+## 2026-06-01 LUC-1306 [Soar][Operator] Wznowic naprawe DCA/TSL i doprowadzic aplikacje do poprawnego dzialania
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reproduced focused runtime DCA/TSL parity failure (`runtimePositionAutomation.dcaTpParity.test.ts`) -> timeout `2/2`;
+  - diagnosed false-negative source: test-runtime persistence dependency via `runtimePositionStateStore`;
+  - applied scoped test fix by mocking state-store get/set/delete methods;
+  - reran focused suite -> PASS `2/2`.
+- Additional gate status:
+  - route-level close-authority e2e remains blocked locally without PostgreSQL (`localhost:5432`).
+- Disposition for this wake: `in_progress` (live continuation path: DB-backed route e2e proof).
+- Evidence:
+  - `history/tasks/luc-1306-soar-operator-resume-dca-tsl-repair-2026-06-01-task.md`
+  - `history/evidence/luc-1306-dca-tsl-runtime-parity-checkpoint-2026-06-01.md`
+
+## 2026-06-01 LUC-1306 continuation [finish_successful_run_handoff]
+- Wake `finish_successful_run_handoff` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - advanced from unit-level DCA/TSL parity proof to DB-backed route-level close-authority gate;
+  - ran `pnpm --filter api exec vitest run src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts --reporter=verbose`.
+- Result:
+  - FAIL (`2/2`) with `PrismaClientInitializationError` (`Can't reach database server at localhost:5432`) before route assertions;
+  - runner has no available Docker engine and no local PostgreSQL service/binaries.
+- Disposition for this wake: `blocked`.
+- Unblock owner/action:
+  1. Ops/Environment owner provides DB runtime for Paperclip lane (`localhost:5432` compatible).
+  2. Backend+QA rerun the close-authority e2e pack and attach closure evidence.
+- Evidence:
+  - `history/tasks/luc-1306-soar-operator-resume-dca-tsl-repair-2026-06-01-task.md`
+  - `history/evidence/luc-1306-dca-tsl-runtime-parity-checkpoint-2026-06-01.md`
+
+## 2026-06-01 LUC-1307 [Soar] Coolify production deploy health sweep
+- Wake `issue_continuation_needed` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`).
+- Concrete action in this heartbeat:
+  - executed read-only production deploy smoke (`/health`, `/ready`, `/`, `/api/build-info`);
+  - captured source snapshot (`HEAD`, `origin/main`) and build-info parity;
+  - executed unauthenticated protected probe (`/workers/ready`) for fail-closed confirmation.
+- Result:
+  - public smoke PASS (`200` on all public probes);
+  - build-info reports `gitSha=6839cd6b8884e26eca735ce32cea98c1dadccfbe` (`main`);
+  - protected `/workers/ready` returns `401` without token (expected fail-closed behavior).
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/tasks/luc-1307-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md`
+  - `history/evidence/luc-1307-coolify-production-deploy-health-sweep-2026-06-01.md`
+
+## 2026-06-01 LUC-962 continuation (issue_blockers_resolved)
+- Wake `issue_blockers_resolved` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Comment impact: previous blocker state in issue metadata is stale relative to already-pushed fix/proof lane; this heartbeat performed closure normalization audit.
+- Concrete closure audit in this heartbeat:
+  - verified lane SHA is on remote main: `2dc983ced4a4c66e31e7f37264710c124955e57b` (`SHA_ON_ORIGIN_MAIN=TRUE`),
+  - confirmed lane proof artifact exists:
+    `history/tasks/luc-962-dca-before-close-regression-proof-and-fix-closure-2026-05-31.md`,
+  - confirmed task-board evidence row already records source-control recovery + push closure.
+- Source-control disposition:
+  - commit: `2dc983ced4a4c66e31e7f37264710c124955e57b`
+  - push: `pushed` (`origin/main` contains SHA)
+  - deploy impact: `none`.
+- Final disposition for this heartbeat: `done`.
+
+## 2026-06-01 LUC-1196 continuation [issue_reopened_via_comment]
+- Wake comment `8dfbe42c-c0ae-4995-b86a-a65fcb323353` was applied first.
+- Comment impact:
+  - attempted to switch verification to deterministic DB-backed route-test path from `LUC-1315`.
+  - in this repository checkout, referenced path/helper is not present as provided (`server/src/__tests__/issue-scheduled-retry-routes.test.ts`, `@paperclipai/db::startEmbeddedPostgresTestDatabase`).
+- Concrete action in this heartbeat:
+  - extended route-level pack with missing acceptance lane:
+    - `allows close when no pending DCA order exists (DCA-exhausted path)`
+    - file: `apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts`.
+  - reran focused route-level pack:
+    - `pnpm --filter api exec vitest run src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts --reporter=verbose`.
+- Verification result:
+  - `FAIL` (`3` tests blocked) due local DB dependency not reachable: `Can't reach database server at localhost:5432`.
+- Disposition for this wake: `blocked`.
+- Unblock owner/action:
+  1. Backend test-infra owner: port/adapt the deterministic embedded-Postgres harness used in `LUC-1315` into this Soar API test runtime (or provide equivalent Soar-native command/path).
+  2. Backend QA lane: rerun the same focused route pack and attach closure evidence once deterministic DB harness is available.
+- Evidence:
+  - `history/evidence/luc-1196-runtime-close-dca-first-route-pack-2026-06-01.md`
+  - `history/tasks/luc-1196-soar-backend-luc-1188-add-dca-first-close-authority-route-level-pack-runtime-position-close-endpoint-2026-06-01-task.md`
+
+## 2026-06-01 LUC-962 continuation (issue_continuation_needed normalization)
+- Wake `issue_continuation_needed` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Comment impact: issue reopened/continued despite completed lane evidence; this heartbeat executed explicit no-op closure audit to prevent stale `in_progress` looping.
+- Concrete audit:
+  - remote contains fix commit `2dc983ced4a4c66e31e7f37264710c124955e57b` (`SHA_ON_ORIGIN_MAIN=TRUE`),
+  - proof artifact present: `history/tasks/luc-962-dca-before-close-regression-proof-and-fix-closure-2026-05-31.md`,
+  - prior closure-normalization entry already present in board (`issue_blockers_resolved`).
+- Decision:
+  - no further executable implementation/delegation scope remains for `LUC-962` in this lane,
+  - canonical disposition remains `done`.
+- Final disposition for this heartbeat: `done`.
+
+## 2026-06-01 LUC-1196 continuation [issue_continuation_needed]
+- Cancellation reason from prior run confirmed: `Cancelled by control plane`.
+- Concrete unblock retry in this heartbeat:
+  - checked local DB reachability: `127.0.0.1:5432` -> `CLOSED`.
+  - checked native services: no local `postgres`/`redis` services registered.
+  - checked Docker engine: client present, engine unavailable (`//./pipe/dockerDesktopLinuxEngine` missing).
+  - attempted to start Docker Desktop service (`com.docker.service`) -> failed (`CouldNotStartService`).
+- Validation rerun was not executable because DB dependency remains unavailable before test bootstrap.
+- Disposition for this wake: `blocked`.
+- Unblock owner/action:
+  1. Ops/Environment owner: restore runnable local container runtime (Docker Desktop engine) or provide equivalent local PostgreSQL/Redis availability for API e2e tests.
+  2. Backend QA lane: rerun `pnpm --filter api exec vitest run src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts --reporter=verbose` and attach pass evidence.
+- Evidence:
+  - `history/evidence/luc-1196-runtime-close-dca-first-route-pack-2026-06-01.md`
+  - `history/tasks/luc-1196-soar-backend-luc-1188-add-dca-first-close-authority-route-level-pack-runtime-position-close-endpoint-2026-06-01-task.md`
+
+## 2026-06-01 LUC-962 continuation (source_scoped_recovery_action)
+- Wake `source_scoped_recovery_action` acknowledged first from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Comment impact: none (no new user/board delta); heartbeat treated as disposition-reconciliation guard to prevent reopening a closed regression lane.
+- Concrete audit:
+  - closure SHA remains on remote main: `2dc983ced4a4c66e31e7f37264710c124955e57b`,
+  - closure proof artifact remains present: `history/tasks/luc-962-dca-before-close-regression-proof-and-fix-closure-2026-05-31.md`,
+  - prior board closures exist for both `issue_blockers_resolved` and `issue_continuation_needed normalization`.
+- Decision:
+  - no executable implementation, verification, or delegation scope remains in `LUC-962`,
+  - canonical disposition remains `done`.
+- Final disposition for this heartbeat: `done`.
+
+## 2026-06-01 - LUC-1223 reopen delta (comment 258feda2-99c0-49c0-bc4e-9180e529022e)
+- Local closure lane recheck executed: `git status --short` + porcelain-class recount.
+- Dirty set improved from prior 82 snapshot to `72` paths.
+- Current split: `apps=2`, `state=3`, `docs=9`, `history=58` (`A=0`, `B=14`, `E=58`).
+- Decision: `not committed`; disposition remains `blocked` pending `LUC-1300` closure evidence and final residual reconciliation in `LUC-1223`.
+
+## 2026-06-01 - LUC-1223 finish_successful_run_handoff continuation
+- Recheck executed (`git status --short` + porcelain recount) with no comment delta.
+- Snapshot remained stable: `total=72`, `A=0`, `B=14`, `E=58` (`apps=2`, `state=3`, `docs=9`, `history=58`).
+- Residual runtime ownership narrowed to 2 API-test paths only; closure remains blocked pending child `LUC-1300` SHA-validated closure, then residual docs/state/history reconciliation in parent.
+
+## 2026-06-01 - LUC-1223 reopen via comment (bfa644c0-3c22-433a-baf7-e05648734cd3)
+- Processed `softwarehouse-local-repair-lane-starter:v1` and executed fresh closure-lane recheck.
+- Snapshot unchanged: `total=72` (`A=0`, `B=14`, `E=58`) with residual runtime narrowed to 2 `apps/api` test files.
+- Decision remains fail-closed (`not committed`, no push/deploy); blocker path unchanged: child `LUC-1300` then parent residual reconciliation.
+
+## 2026-06-01 - LUC-1223 continuation (issue_continuation_needed, no-comment wake)
+- Fresh closure-lane recheck executed; snapshot unchanged at `72` dirty paths (`apps=2`, `state=3`, `docs=9`, `history=58`).
+- Residual runtime scope remains 2 `apps/api` test files only; fail-closed decision unchanged (`not committed`, no push/deploy).
+- Blocker path unchanged: child `LUC-1300` runtime closure evidence first, then parent residual reconciliation and clean-tree checkpoint.
+
+## 2026-06-02 LUC-1223 continuation [issue_reopened_via_comment]
+- Wake comment `4dc325ba-7372-4366-9ece-f98942a464d4` (`softwarehouse-local-repair-lane-starter:v1`) was acknowledged first.
+- Concrete action: reran `git status --short` and porcelain bucket recount.
+- Snapshot unchanged: `total=72`, `modified=14`, `untracked=58`, buckets `apps=2`, `agents_state=1`, `codex_state=2`, `docs=9`, `history=58`.
+- Decision remains fail-closed: `not committed` / `not needed` / `none`.
+- Issue disposition: `blocked` pending child `LUC-1300` runtime-file closure and parent residual docs/state/history closure checkpoint.
+
+## 2026-06-02 LUC-1223 continuation [issue_continuation_needed]
+- No-comment wake handled with concrete source-control recheck.
+- Snapshot unchanged: `total=72`, `modified=14`, `untracked=58`; buckets `apps=2`, `agents_state=1`, `codex_state=2`, `docs=9`, `history=58`.
+- Cancellation-check result: no cancellation signal in this wake payload and no local lane execution fault observed.
+- Decision remains fail-closed: `not committed` / `not needed` / `none`.
+- Disposition remains `blocked` pending child `LUC-1300` runtime closure and parent residual history/state/docs checkpoint.
+
+## 2026-06-02 LUC-1223 continuation [issue_commented]
+- Processed latest board comment first (`5d11df20-9c84-42eb-ae75-0d1b6ea9acae`, `softwarehouse-local-repair-lane-starter:v1`).
+- Local source-control closure checkpoint rerun confirms unchanged mixed dirty scope: `72` paths (`apps=2`, `agents_state=1`, `codex_state=2`, `docs=9`, `history=58`).
+- Closure remains fail-closed and `blocked`: no commit in PM lane while 2 runtime/API-test files remain open; push/deploy `not needed` / `none`.
+- Next owner path unchanged: child `LUC-1300` runtime closure with SHA evidence, then parent `LUC-1223` residual docs/state/history closeout.
+
+## 2026-06-02 LUC-1223 continuation [finish_successful_run_handoff]
+- Continuity recheck completed with unchanged mixed dirty scope (`72`).
+- Cancellation reason confirmed for this wake: no cancellation signal and no local lane fault.
+- Source-control closure disposition remains fail-closed `blocked` (`not committed` / `not needed` / deploy `none`) pending child `LUC-1300` runtime closure evidence.
+
+## 2026-06-02 LUC-1371 [Ops][Soar] Reconcile Coolify resource inventory
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - ran read-only Coolify API inventory queries for projects, environments, applications, services, databases, and resources;
+  - found the configured `COOLIFY_SOAR_PROJECT_ID` env binding is a placeholder and direct project-scoped lookup returns `404`;
+  - recovered by resolving the Soar project from `/projects` in memory and querying its production environment without storing full ids;
+  - confirmed canonical Soar production inventory from `/resources`: 6 application resources plus PostgreSQL and Redis.
+- Verification:
+  - `GET /api/v1/projects`
+  - `GET /api/v1/projects/{resolved-soar-project}/environments`
+  - `GET /api/v1/applications`
+  - `GET /api/v1/services`
+  - `GET /api/v1/databases`
+  - `GET /api/v1/resources`
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1371-coolify-resource-inventory-2026-06-02.md`
+  - `history/tasks/luc-1371-soar-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1371 [Ops][Soar] Reconcile Coolify resource inventory
+- Wake `issue_continuation_needed` handled with concrete read-only Coolify API reconciliation.
+- Latest run-error context applied: prior heartbeat failures were adapter/model failures, not domain blockers; this run resumed the actionable inventory work.
+- Concrete action:
+  - confirmed Coolify and Paperclip bindings were present without printing secret values,
+  - listed Coolify projects and resolved `Soar`,
+  - queried Soar `production` environment with the API-listed Soar project UUID,
+  - projected only allowlisted resource fields into a redacted evidence packet.
+- Result:
+  - inventory verified as `8` resources: `6` applications, `0` services, `1` PostgreSQL, `1` Redis,
+  - app resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`,
+  - data resources: `postgresql`, `redis`,
+  - apps report `running:unknown`; Postgres/Redis report `running:healthy`.
+- Config drift:
+  - `COOLIFY_SOAR_PROJECT_ID` did not match the API-listed Soar project UUID in this runner.
+  - Ops/Security should refresh the Paperclip secret binding before project-scoped automation depends on it.
+- Production mutation: none.
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1371-coolify-resource-inventory-2026-06-02.md`
+  - `history/tasks/luc-1371-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+## 2026-06-02 LUC-1223 continuation [issue_reopened_via_comment]
+- Latest board comment handled first: `2f6854b5-40d0-45db-867c-7c742d3641a6` (`softwarehouse-local-repair-lane-starter:v1`).
+- Local source-control closure checkpoint rerun:
+  - `git status --short`
+  - full dirty bucket recount.
+- Snapshot changed from `72` to `81` dirty paths:
+  - `modified=16`, `untracked=65`;
+  - `apps=2`, `agents_state=2`, `codex_state=3`, `docs=9`, `history=65`.
+- Runtime blocker remains limited to 2 `apps/api` test files; new drift is state/context/history evidence from later lanes.
+- Closure remains fail-closed `blocked`: commit `not committed`, push `not needed`, deploy impact `none`.
+- Unblock path: child `LUC-1300` runtime/API-test closure with SHA evidence, then parent `LUC-1223` expanded residual `history/state/docs/context` closeout.
+
+## 2026-06-02 LUC-1223 continuation [issue_reopened_via_comment, blocker refinement]
+- Latest board comment handled first: `38253ca0-e130-4834-b6de-0fa2858f0be3` (`softwarehouse-local-repair-lane-starter:v1`).
+- Local source-control closure checkpoint rerun:
+  - `git status --short`
+  - full dirty bucket recount
+  - Paperclip blocker lookup for residual runtime owners.
+- Snapshot unchanged from prior checkpoint: `81` dirty paths (`modified=16`, `untracked=65`; `apps=2`, `agents_state=2`, `codex_state=3`, `docs=9`, `history=65`).
+- Runtime blocker remains limited to 2 `apps/api` test files.
+- Blocker refinement: `LUC-1300` is already `done`; active non-terminal blockers are `LUC-1196` and `LUC-1306`.
+- Closure remains fail-closed `blocked`: commit `not committed`, push `not needed`, deploy impact `none`.
+- Unblock path: `LUC-1196` + `LUC-1306` close residual runtime ownership with validation/SHA evidence, then parent `LUC-1223` closes expanded residual `history/state/docs/context`.
+
+## 2026-06-02 LUC-1399 [Ops][Soar] Reconcile Coolify resource inventory
+- Wake `issue_assigned` handled from inline payload first (`fallbackFetchNeeded=false`, comments `0/0`).
+- Latest issue comment impact: duplicate owner run was cancelled by live-run janitor, so this heartbeat finished the kept owner lane and did not repeat checkout.
+- Concrete action:
+  - refreshed read-only Coolify API inventory without printing secret values;
+  - verified configured project lookup, environments lookup, production environment lookup, and `/resources` projection;
+  - reconciled production inventory as eight resources in production environment id `6`: API, Web, four worker applications, PostgreSQL, and Redis;
+  - updated the operations deployment contract and LUC-1399 evidence/task packets.
+- Result:
+  - applications are `running:unknown`;
+  - PostgreSQL and Redis are `running:healthy`;
+  - earlier LUC-1371 project-id binding drift was not reproduced in this runner and is now a watch item, not an active inventory blocker.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, or account mutation.
+- Evidence:
+  - `history/evidence/luc-1399-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1399-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1196 continuation [issue_status_changed]
+- Issue status changed back to `in_progress`; blocker was rechecked instead of assuming it cleared.
+- Concrete action:
+  - `127.0.0.1:5432` remains `CLOSED`.
+  - Docker engine remains unavailable (`dockerDesktopLinuxEngine` pipe missing).
+  - Reran focused route-pack: `pnpm --filter api exec vitest run src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts --reporter=verbose`.
+- Verification result:
+  - `FAIL` before endpoint assertions (`3` tests blocked in `resetBotsE2eState` by Prisma connection failure to `localhost:5432`).
+- Disposition for this wake: `blocked`.
+- Unblock owner/action:
+  1. Ops/Environment owner restores DB-backed API e2e runtime.
+  2. Backend QA reruns focused route-pack proof and updates the `LUC-1188` close-authority row after PASS.
+- Evidence:
+  - `history/evidence/luc-1196-runtime-close-dca-first-route-pack-2026-06-01.md`
+  - `history/tasks/luc-1196-soar-backend-luc-1188-add-dca-first-close-authority-route-level-pack-runtime-position-close-endpoint-2026-06-01-task.md`
+
+## 2026-06-02 LUC-1416 [Ops][Soar] Reconcile Coolify resource inventory
+- Wake `issue_assigned` handled from inline payload first (`fallbackFetchNeeded=false`, comments `0/0`).
+- Concrete action:
+  - refreshed read-only Coolify API inventory without printing secret values;
+  - verified configured project lookup, environments lookup, production environment lookup, and `/resources` projection;
+  - reconciled production inventory as eight resources in production environment id `6`: API, Web, four worker applications, PostgreSQL, and Redis;
+  - updated the operations deployment contract and LUC-1416 evidence/task packets.
+- Result:
+  - applications are `running:unknown`;
+  - PostgreSQL and Redis are `running:healthy`;
+  - configured project lookup and production environment lookup both succeeded.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, or account mutation.
+- Evidence:
+  - `history/evidence/luc-1416-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1416-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1306 continuation [issue_status_changed]
+- Wake scoped to LUC-1306 only; no pending comment delta and no thread refetch required.
+- Concrete action:
+  - rechecked local e2e runtime prerequisites: Docker unavailable, no local PostgreSQL binaries/services, and `localhost:5432` unreachable;
+  - reran unit-level DCA/TSL parity proof:
+    - `pnpm --filter api exec vitest run src/modules/engine/runtimePositionAutomation.dcaTpParity.test.ts --reporter=verbose` -> PASS (`2/2`);
+  - confirmed via Paperclip heartbeat context that LUC-1306 was still `in_progress` without first-class blocker and located `LUC-1196` as the existing Backend/API route-level DCA-first close-authority lane.
+- Disposition: `blocked`.
+- First-class blocker: `LUC-1196` (`1244f931-5304-4d58-99a0-ebceda942196`).
+- Unblock owner/action:
+  1. Backend test-infra / Ops environment owner provides deterministic DB-backed API e2e runtime.
+  2. Backend QA reruns `pnpm --filter api exec vitest run src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts --reporter=verbose` and attaches route-level closure evidence.
+- Evidence:
+  - `history/evidence/luc-1306-dca-tsl-runtime-parity-checkpoint-2026-06-01.md`
+  - `history/tasks/luc-1306-soar-operator-resume-dca-tsl-repair-2026-06-01-task.md`
+
+## 2026-06-02 LUC-1196 continuation [issue_continuation_needed]
+- Concrete action in this heartbeat:
+  - ran `pnpm --filter api run typecheck` to validate the route-pack code path independent of DB runtime;
+  - fixed `apps/api/src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts` seed shape (`Order.mode` removed);
+  - fixed related runtime close pending-DCA test in `apps/api/src/modules/bots/bots.e2e.test.ts` to use existing shared helpers and `seedRuntimeTicker`.
+- Verification:
+  - second `pnpm --filter api run typecheck` -> FAIL, but no remaining errors from `LUC-1196` or runtime-close pack files;
+  - remaining typecheck blockers are separate lanes: `positions.orphan-repair.contract.e2e.test.ts` and `workers-health-readiness.test.ts`.
+- Disposition for this wake: `blocked`.
+- Unblock owner/action:
+  1. Ops/Environment owner restores DB-backed API e2e runtime.
+  2. Backend QA reruns focused route-pack proof and updates the `LUC-1188` close-authority row after PASS.
+- Evidence:
+  - `history/evidence/luc-1196-runtime-close-dca-first-route-pack-2026-06-01.md`
+  - `history/tasks/luc-1196-soar-backend-luc-1188-add-dca-first-close-authority-route-level-pack-runtime-position-close-endpoint-2026-06-01-task.md`
+
+## 2026-06-02 LUC-1419 [Soar][Ops][LUC-1196] Restore local DB-backed API e2e runtime
+- Wake `issue_continuation_needed` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action:
+  - verified local PostgreSQL reachability at `127.0.0.1:5432`;
+  - verified Docker server availability (`28.3.2`) and compose service state;
+  - reran focused route pack for parent `LUC-1196`.
+- Verification:
+  - `Test-NetConnection 127.0.0.1 -Port 5432` -> `TcpTestSucceeded: True`.
+  - `docker version --format '{{.Server.Version}}'` -> `28.3.2`.
+  - `docker compose ps` -> `soar-postgres-1` and `soar-redis-1` running on loopback ports.
+  - `pnpm --filter api exec vitest run src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts --reporter=verbose` -> FAIL after endpoint assertions (`2/3` pass; pending-DCA assertion receives `closed` instead of expected `submitted`).
+- Disposition for this wake: `done` for Ops/runtime; remaining failure belongs to Backend/QA on parent `LUC-1196`.
+- Evidence:
+  - `history/evidence/luc-1419-local-db-backed-api-e2e-runtime-restore-2026-06-02.md`
+  - `history/tasks/luc-1419-restore-local-db-backed-api-e2e-runtime-for-close-authority-route-proof-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1422 [Ops][Soar] Reconcile Coolify resource inventory
+- Wake `issue_assigned` handled from inline payload first (`fallbackFetchNeeded=false`, comments `0/0`).
+- Concrete action:
+  - refreshed read-only Coolify API inventory without printing secret values;
+  - verified configured project lookup, environments lookup, production environment lookup, and `/resources` projection;
+  - reconciled production inventory as eight resources in production environment id `6`: API, Web, four worker applications, PostgreSQL, and Redis;
+  - updated the operations deployment contract and LUC-1422 evidence/task packets.
+- Result:
+  - applications are `running:unknown`;
+  - PostgreSQL and Redis are `running:healthy`;
+  - configured project lookup and production environment lookup both succeeded.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, account mutation, or secret readback.
+- Evidence:
+  - `history/evidence/luc-1422-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1422-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1306 continuation [issue_blockers_resolved]
+- Wake scoped to LUC-1306 only; `LUC-1196` blocker is now `done`.
+- Environment delta: Docker engine responds (`28.3.2`) and `localhost:5432` is reachable.
+- Concrete verification:
+  - `pnpm --filter api exec vitest run src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts --reporter=verbose` -> PASS (`2/2`);
+  - `pnpm --filter api exec vitest run src/modules/engine/runtimePositionAutomation.dcaTpParity.test.ts --reporter=verbose` -> PASS (`2/2`).
+- Closure result:
+  - route-level close authority stays fill-based when pending DCA exists;
+  - route-level close is allowed when no pending DCA exists;
+  - runtime TP/SL DCA-side parity remains green.
+- Source-control/deploy disposition: direct code changes in this heartbeat `none`; commit `not created`; push `not needed`; deploy/restart/env/database/account/live-trading mutation `none`.
+- Disposition: `done`.
+- Evidence:
+  - `history/evidence/luc-1306-dca-tsl-runtime-parity-checkpoint-2026-06-01.md`
+  - `history/tasks/luc-1306-soar-operator-resume-dca-tsl-repair-2026-06-01-task.md`
+
+## 2026-06-02 LUC-1223 continuation [issue_blockers_resolved]
+- Wake handled: previous blockers `LUC-1196` and `LUC-1306` resolved, but local dirty tree is still not closure-ready.
+- Fresh source-control checkpoint:
+  - `total=114`, `modified=25`, `untracked=89`;
+  - `apps=7`, `agents_state=3`, `codex_state=3`, `docs=12`, `history=89`.
+- Runtime dirty scope expanded to 7 `apps/api` paths after blocker resolution.
+- Created child `LUC-1423` for backend/runtime source-control closure with SHA evidence.
+- Parent `LUC-1223` remains fail-closed `blocked`: commit `not committed`, push `not needed`, deploy impact `none`.
+- Next owner/action: `LUC-1423` closes expanded runtime dirty scope; then parent `LUC-1223` closes residual `history/state/docs/context`.

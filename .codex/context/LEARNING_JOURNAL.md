@@ -3329,3 +3329,9 @@ Test-Path $dst
 - Rule: for external blockers with no active command/process, keep issue disposition `blocked` by default; use `in_progress` only during active live execution heartbeat.
 - Trigger file/evidence: history/evidence/luc-86-janitor-stale-loop-guard-2026-05-26.md.
 
+
+## 2026-06-02 - Coolify API Inventory Output Must Be Allowlisted
+- Context: LUC-1371 read-only Coolify environment payloads include secret-bearing fields such as database URLs, tokens, labels, and proxy/server internals.
+- Pitfall: printing raw Coolify environment JSON is unsafe even when the request is read-only inventory.
+- Rule: for Coolify inventory work, project to an explicit allowlist before output or storage: resource type, name, status, branch, Dockerfile path, FQDN presence, last-online timestamp, restart count, and boolean server status. Do not persist UUIDs, URLs, env values, labels, tokens, internal DB URLs, proxy config, or full server settings.
+- Applied immediately: LUC-1371 evidence stores only redacted/allowlisted resource inventory.

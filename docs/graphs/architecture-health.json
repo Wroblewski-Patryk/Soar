@@ -1,39 +1,39 @@
 {
-  "generated_at": "2026-05-31T20:42:36.027Z",
+  "generated_at": "2026-06-01T06:58:07.926Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 13396,
-    "relations": 20522,
+    "entities": 13487,
+    "relations": 20685,
     "by_type": {
       "agent": 52,
       "api_endpoint": 37,
       "component": 97,
-      "document": 3001,
+      "document": 3056,
       "feature": 221,
-      "function": 8228,
+      "function": 8231,
       "migration": 56,
       "model": 275,
       "module": 15,
       "project": 1,
       "route": 346,
-      "task": 702,
-      "test": 365
+      "task": 732,
+      "test": 368
     },
     "by_status": {
-      "blocked": 14,
-      "deprecated": 8,
-      "implemented": 12044,
+      "blocked": 15,
+      "deprecated": 9,
+      "implemented": 12097,
       "in_progress": 9,
-      "tested": 630,
-      "verified": 691
+      "tested": 636,
+      "verified": 721
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 7684,
+      "count": 7685,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -344,6 +344,14 @@
           "type": "component",
           "name": "BacktestRunDetailsTabPanels.tsx",
           "path": "apps/web/src/features/backtest/components/BacktestRunDetailsTabPanels.tsx",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "component:backtestrunheadersection-tsx:d4a0bd9c32",
+          "type": "component",
+          "name": "BacktestRunHeaderSection.tsx",
+          "path": "apps/web/src/features/backtest/components/BacktestRunHeaderSection.tsx",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -1624,14 +1632,6 @@
           "type": "feature",
           "name": "buildObsidianVaultLayer.mjs",
           "path": "scripts/buildObsidianVaultLayer.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:buildopsrequestheaders-mjs:66c1bc4e5f",
-          "type": "feature",
-          "name": "buildOpsRequestHeaders.mjs",
-          "path": "scripts/buildOpsRequestHeaders.mjs",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         }
@@ -3251,7 +3251,7 @@
       "items": []
     },
     "tasks_without_architecture": {
-      "count": 702,
+      "count": 732,
       "items": [
         {
           "id": "task:agent-operating-system-task-2026-05-07:04d1de2b03",
@@ -4806,6 +4806,14 @@
           "owner": "Engineering Delivery Lead"
         },
         {
+          "id": "task:task-contract:f8afad2552",
+          "type": "task",
+          "name": "Task Contract",
+          "path": "history/tasks/luc-1148-source-control-closure-comment-73477930-local-repair-lane-2026-05-31-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
           "id": "task:task:4ed8a8ebe1",
           "type": "task",
           "name": "Task",
@@ -4822,34 +4830,26 @@
           "owner": "Engineering Delivery Lead"
         },
         {
+          "id": "task:task-contract:a3e81e1568",
+          "type": "task",
+          "name": "Task Contract",
+          "path": "history/tasks/luc-1148-source-control-closure-issue-continuation-needed-2026-05-31-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:ededfd1508",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-1148-source-control-closure-source-scoped-recovery-action-2-2026-05-31-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
           "id": "task:task:938e4124be",
           "type": "task",
           "name": "Task",
           "path": "history/tasks/luc-1148-source-control-closure-source-scoped-recovery-action-2026-05-31-task.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:luc-115-luc-86-ops-evidence-closure-2026-05-26:c22069664f",
-          "type": "task",
-          "name": "LUC-115 - LUC-86 Ops evidence closure (2026-05-26)",
-          "path": "history/tasks/luc-115-luc-86-ops-evidence-closure-2026-05-26-task.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:03b4397f6d",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/luc-1154-known-state-refresh-evidence-delta-and-next-repair-lanes-2026-05-31-task.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:77461ff0cc",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/luc-116-no-stall-queue-expeditor-2026-05-26-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead"
         }

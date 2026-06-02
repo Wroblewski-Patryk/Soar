@@ -1,6 +1,6 @@
 # Module Confidence Ledger
 
-Last updated: 2026-05-26
+Last updated: 2026-06-02
 
 ## Purpose
 
@@ -29,6 +29,120 @@ Do not turn uncertainty into optimism.
 - `Low`: evidence is missing, stale, inferred, or chat-only.
 
 ## Current Operational Override
+- 2026-06-02 `LUC-1422-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for production target
+  inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T05:33:33Z` verified the configured Soar project binding,
+  production environment id `6`, and eight redacted resources: six applications
+  (`soar-api`, `soar-web`, `workers-backtest`, `workers-execution`,
+  `workers-market-data`, `workers-market-stream`) plus PostgreSQL and Redis.
+  This is a no-drift inventory refresh only; it does not claim full application
+  readiness, protected `/workers/ready`, SLO, restore/rollback, or deploy
+  mutation readiness. Evidence:
+  `history/evidence/luc-1422-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1419`: local DB-backed API e2e runtime is restored for the
+  close-authority route pack. `127.0.0.1:5432` is reachable, Docker server
+  reports `28.3.2`, and compose shows local Postgres/Redis running on loopback
+  ports. The focused route pack now reaches endpoint assertions (`2/3` pass);
+  remaining red result is backend behavior/test-contract drift in the
+  pending-DCA case (`closed` response where `submitted` is expected), not an
+  Ops runtime blocker. Evidence:
+  `history/evidence/luc-1419-local-db-backed-api-e2e-runtime-restore-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1418-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for production target
+  inventory truth. Fresh read-only Coolify API readback verified the configured
+  Soar project binding, production environment id `6`, and eight redacted
+  resources: six applications (`soar-api`, `soar-web`, `workers-backtest`,
+  `workers-execution`, `workers-market-data`, `workers-market-stream`) plus
+  PostgreSQL and Redis. This is a no-drift inventory refresh only; it does not
+  claim full application readiness, protected `/workers/ready`, SLO,
+  restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1418-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1196` source-scoped recovery: confidence for runtime close
+  route-level DCA-first authority remains `BLOCKED` for endpoint proof, while
+  the command seam remains locally healthy. Focused route pack
+  `bots.runtime-close-authority.route-pack.e2e.test.ts` failed `3/3` before
+  endpoint assertions because Prisma cannot reach `localhost:5432`; Docker
+  server is unavailable. DB-independent
+  `runtimeSessionPositionCommand.service.test.ts` passed `11/11`. First-class
+  blocker: `LUC-1419` restores local DB-backed API e2e runtime, then Backend/QA
+  reruns the focused route pack before any `VERIFIED` claim.
+
+- 2026-06-02 `LUC-1196` issue_blockers_resolved closure: confidence for runtime
+  close route-level DCA-first authority is upgraded to verified for the focused
+  endpoint scope. Local PostgreSQL was reachable, close-command code now checks
+  active submitted DCA dedupe before close orchestration, and focused proof
+  passed: route pack `3/3`, DCA route pack `2/2`, focused broad bots e2e
+  pending-DCA close scenario `1/1`, and dedupe/command service tests `26/26`.
+  Full API typecheck still fails in unrelated active lanes
+  (`positions.orphan-repair.contract.e2e.test.ts`,
+  `workers-health-readiness.test.ts`).
+
+- 2026-06-02 `LUC-1306` issue_blockers_resolved closure: coordinator-level
+  operator lane is closed against the same runtime DCA-first target after fresh
+  rerun evidence in this wake. Proof passed:
+  `bots.runtime-close-dca-authority.e2e.test.ts` (`2/2`) and
+  `runtimePositionAutomation.dcaTpParity.test.ts` (`2/2`). No code, deploy,
+  restart, env, database administration, account, or LIVE trading mutation was
+  performed in the coordinator heartbeat.
+
+- 2026-06-02 `LUC-1416-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for production target
+  inventory truth. Fresh read-only Coolify API readback verified the configured
+  Soar project binding, production environment id `6`, and eight redacted
+  resources: six applications (`soar-api`, `soar-web`, `workers-backtest`,
+  `workers-execution`, `workers-market-data`, `workers-market-stream`) plus
+  PostgreSQL and Redis. This is a no-drift inventory refresh only; it does not
+  claim full application readiness, protected `/workers/ready`, SLO,
+  restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1416-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1412-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for production target
+  inventory truth. Fresh read-only Coolify API readback verified the configured
+  Soar project binding, production environment id `6`, and eight redacted
+  resources: six applications (`soar-api`, `soar-web`, `workers-backtest`,
+  `workers-execution`, `workers-market-data`, `workers-market-stream`) plus
+  PostgreSQL and Redis. This is a no-drift inventory refresh only; it does not
+  claim full application readiness, protected `/workers/ready`, SLO,
+  restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1412-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1408-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for production target
+  inventory truth. Fresh read-only Coolify API readback verified the configured
+  Soar project binding, production environment id `6`, and eight redacted
+  resources: six applications (`soar-api`, `soar-web`, `workers-backtest`,
+  `workers-execution`, `workers-market-data`, `workers-market-stream`) plus
+  PostgreSQL and Redis. This is a no-drift inventory refresh only; it does not
+  claim full application readiness, protected `/workers/ready`, SLO,
+  restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1408-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1405-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for production target
+  inventory truth. Fresh read-only Coolify API readback verified the configured
+  Soar project binding, production environment id `6`, and eight redacted
+  resources: six applications (`soar-api`, `soar-web`, `workers-backtest`,
+  `workers-execution`, `workers-market-data`, `workers-market-stream`) plus
+  PostgreSQL and Redis. This upgrades resource-inventory truth only; it does
+  not claim full application readiness, protected `/workers/ready`, SLO,
+  restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1405-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1402-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` is improved for production target
+  inventory truth. Fresh read-only Coolify API readback verified the Soar
+  project production environment id `6` and eight redacted resources: six
+  applications (`soar-api`, `soar-web`, `workers-backtest`,
+  `workers-execution`, `workers-market-data`, `workers-market-stream`) plus
+  PostgreSQL and Redis. This upgrades resource-inventory truth only; it does
+  not claim full application readiness, protected `/workers/ready`, SLO,
+  restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1402-coolify-resource-inventory-reconciliation-2026-06-02.md`.
 
 - 2026-05-26 `COOLIFY-AUTO-DEPLOY-WORKER-RECOVERY-2026-05-26`: confidence for
   `SOAR-OPERATIONS` and `SOAR-WORKERS` is improved for bounded deploy
