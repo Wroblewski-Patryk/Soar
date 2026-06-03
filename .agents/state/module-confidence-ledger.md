@@ -30,6 +30,96 @@ Do not turn uncertainty into optimism.
 
 ## Current Operational Override
 
+- 2026-06-03 `LUC-1764-PROD-DB-CHECK-RUNNER-INPUT-BINDING-2026-06-03`:
+  confidence for production DB restore-readiness remains `BLOCKED` for the
+  protected ARB-006 data lane. The Ops runner-input binding lane confirmed the
+  Security contract requires one complete accepted `PROD_DB_CHECK_*` or
+  `PRODUCTION_DB_CHECK_*` family through an approved encrypted runtime path.
+  Names-only runner readback found all accepted DB profile names and
+  `DOCKER_HOST` missing. Paperclip company secret-store metadata returned
+  HTTP `403 Board access required`, so this runner cannot bind company
+  secrets. `pnpm run ops:db:backup-verify:prod` failed closed before DB access
+  with `Missing container for profile "prod"`. No secret values, repo `.env`
+  write, database connection, restore, schema change, migration, data write,
+  deploy, restart, rollback, Coolify mutation, account mutation, protected
+  smoke, or live-trading action occurred. Evidence:
+  `history/tasks/luc-1764-inject-protected-prod-db-check-runner-inputs-2026-06-03-task.md`.
+
+- 2026-06-03 `LUC-1767-ROLLBACK-GUARD-RUNNER-INPUT-BINDING-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains `BLOCKED` for the current
+  protected rollback guard proof chain. Names-only runner scan found no
+  `ROLLBACK_GUARD_*` variables, and `GET /api/companies/{companyId}/secrets`
+  returned `403 Forbidden`, so this run could not bind company secrets. The
+  protected-input readiness checker returned `PARTIAL` only because unrelated
+  `PROD_UI_AUDIT_*` names are present; `ROLLBACK_GUARD_*` remained missing
+  (`0`). No secret values, deploy, restart, rollback execution, env edit,
+  database action, production config mutation, account mutation, protected
+  response-body capture, or live-trading action occurred. Evidence:
+  `history/evidence/luc-1767-rollback-guard-runner-input-readiness-6839cd6b-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1763-ROLLBACK-GUARD-INPUT-BINDING-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains `BLOCKED` for protected
+  rollback proof input readiness. Fresh names-only runner readback found no
+  `ROLLBACK_GUARD*` names, and protected-input readiness returned `PARTIAL`
+  only because unrelated `PROD_UI_AUDIT_*` names exist; `ROLLBACK_GUARD_*`
+  remains `missing (0)`. Paperclip company secrets metadata readback returned
+  `Board access required`, so Security Review Lead cannot bind or confirm
+  company-level secrets directly. First-class blocker `LUC-1767` is assigned
+  to Portfolio Director for board-capable secret/env binding. Approved
+  account/session class is read-only production operator proof context for
+  rollback guard endpoints only. No deploy, restart, rollback execution, env
+  edit, database action, production config mutation, account mutation,
+  subscription/payment mutation, exchange/API-key mutation, external service
+  mutation, secret readback, cookie/session export, protected response-body
+  capture, or live-trading action occurred. Evidence:
+  `history/evidence/luc-1763-rollback-guard-input-readiness-6839cd6b-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1754-LIVEIMPORT-READBACK-PROTECTED-EVIDENCE-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains partial and blocked for current
+  protected `LIVEIMPORT_READBACK` evidence. Fresh production build-info
+  readback at `2026-06-03T13:12:53.834Z` returned
+  `6839cd6b8884e26eca735ce32cea98c1dadccfbe` on `main`; protected-input
+  readiness for that SHA/date returned `BLOCKED` with `0` matching protected
+  input names and missing `LIVEIMPORT_READBACK_*`. The existing collector
+  failed closed before protected runtime/imported-position readback because no
+  approved read-only production auth/session was available in this runner. No
+  protected payload, exchange mutation, order placement, account setting
+  change, deploy, restart, rollback, DB write, secret disclosure, or
+  live-trading action was performed. Evidence:
+  `history/evidence/luc-1754-liveimport-readback-failclosed-6839cd6b-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1761-BIND-APP-SMOKE-SESSION-2026-06-03`:
+  confidence for the Security protected app smoke-session gate is `VERIFIED`,
+  while production protected app/browser journey evidence remains owned by
+  QA/Test under `LUC-1756`. After `LUC-1766` completed, names-only readback
+  found `PROD_UI_AUDIT_AUTH_TOKEN` plus existing admin/API/Web URL names
+  present. Portfolio bound Security-approved `SMOKE_AUTH_TOKEN` as
+  `PROD_UI_AUDIT_AUTH_TOKEN` and did not bind email/password aliases.
+  `pnpm run -s ops:protected-inputs:check` returned `PARTIAL` with
+  `matchingProtectedInputNamesPresent=6` because unrelated protected families
+  remain missing; the app smoke proof family is now available for QA/Test.
+  Security approval allows `PROD_UI_AUDIT_AUTH_TOKEN` for read-only
+  authenticated app/dashboard proof and keeps `PROD_UI_AUDIT_ADMIN_*` limited
+  to non-mutating admin-route proof. No secret values, browser protected
+  journey, deploy, restart, rollback, env edit, account mutation, subscription
+  mutation, API-key mutation, exchange setting change, external service
+  mutation, live-trading action, secret readback, cookie export, or protected
+  response-body capture occurred. Evidence:
+  `history/evidence/luc-1761-protected-app-session-approved-readiness-6839cd6b-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1757-PROD-DB-CHECK-PROTECTED-EVIDENCE-2026-06-03`:
+  confidence for production DB restore-readiness remains `BLOCKED` for the
+  protected ARB-006 data lane. Names-only readback found both accepted
+  production profile families absent: `PROD_DB_CHECK_*` and
+  `PRODUCTION_DB_CHECK_*`. `pnpm run ops:db:backup-verify:prod` failed closed
+  before DB access because the production container/profile input is missing.
+  No secret values, database connection, restore, schema change, migration,
+  data write, deploy, restart, rollback, Coolify mutation, account mutation,
+  protected smoke, or live-trading action occurred. First-class blocker
+  `LUC-1762` is assigned to Security Review Lead for protected runner/input
+  availability. Evidence:
+  `history/evidence/luc-1757-prod-db-check-protected-evidence-2026-06-03.md`.
+
 - 2026-06-03 `LUC-1709-RESTORE-SOAR-GUARDRAILS-SOURCE-CONTROL-CLOSURE-2026-06-03`:
   confidence for `SOAR-ARCHITECTURE-EVIDENCE-GRAPH` and
   `SOAR-QUALITY-GUARDRAILS` is verified locally for the source-control closure

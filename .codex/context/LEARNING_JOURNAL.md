@@ -3376,3 +3376,9 @@ Test-Path $dst
   raw Coolify environment/resource object.
 - Applied immediately: `LUC-1587` stored and posted only redacted allowlisted
   evidence; no raw Coolify payload was written to repo files or issue comments.
+## 2026-06-03 - Protected route HTML is not session validity
+
+- Context: [LUC-1756](/LUC/issues/LUC-1756) resumed after `PROD_UI_AUDIT_AUTH_TOKEN` was bound by name.
+- Pitfall: `scripts/runProdUiModuleClickthroughAudit.mjs` can pass protected route HTML checks with any non-empty `token` cookie because web middleware only checks cookie presence. This does not prove `/auth/me` session validity or real browser authenticated rendering.
+- Evidence: redacted `/auth/me` returned HTTP `401` and `runProdAuthSessionBrowserProof` kept `/dashboard` on `/auth/login`, while route HTML clickthrough passed.
+- Rule: For protected production app evidence, require `/auth/me` HTTP 200 or real browser authenticated rendering in addition to route HTML reachability before marking proof done.

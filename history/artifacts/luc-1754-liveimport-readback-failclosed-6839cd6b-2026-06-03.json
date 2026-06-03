@@ -1,0 +1,52 @@
+{
+  "id": "LUC-1754-LIVEIMPORT-READBACK-FAILCLOSED-6839CD6B-2026-06-03",
+  "issue": "LUC-1754",
+  "generatedAt": "2026-06-03T13:13:25Z",
+  "target": {
+    "apiBaseUrl": "https://api.soar.luckysparrow.ch",
+    "webBaseUrl": "https://soar.luckysparrow.ch",
+    "buildInfo": {
+      "gitSha": "6839cd6b8884e26eca735ce32cea98c1dadccfbe",
+      "gitRef": "main",
+      "checkedAt": "2026-06-03T13:12:53.834Z"
+    },
+    "symbols": "auto"
+  },
+  "scope": "read-only authenticated LIVEIMPORT runtime/imported-position readback attempt",
+  "secretHandling": "no secret values printed, copied, or stored",
+  "commands": [
+    {
+      "command": "Invoke-RestMethod https://soar.luckysparrow.ch/api/build-info",
+      "result": "PASS",
+      "summary": "Production web build-info readback returned gitSha 6839cd6b8884e26eca735ce32cea98c1dadccfbe on main."
+    },
+    {
+      "command": "node scripts/checkProtectedInputReadiness.mjs --today 2026-06-03 --expected-sha 6839cd6b8884e26eca735ce32cea98c1dadccfbe --git-ref main --build-info-checked-at 2026-06-03T13:12:53.834Z --json-output history/artifacts/luc-1754-protected-input-readiness-6839cd6b-2026-06-03.json --markdown-output history/evidence/luc-1754-protected-input-readiness-6839cd6b-2026-06-03.md",
+      "result": "BLOCKED",
+      "summary": "Protected input readiness found 0 matching protected input names; LIVEIMPORT_READBACK_* is missing."
+    },
+    {
+      "command": "node scripts/collectLiveImportReadbackEvidence.mjs --expected-sha 6839cd6b8884e26eca735ce32cea98c1dadccfbe --symbols auto --output history/artifacts/luc-1754-liveimport-readback-6839cd6b-2026-06-03.json",
+      "result": "FAIL_CLOSED",
+      "summary": "Collector stopped before protected runtime readback because no LIVEIMPORT_READBACK_AUTH_TOKEN or LIVEIMPORT_READBACK_AUTH_EMAIL plus LIVEIMPORT_READBACK_AUTH_PASSWORD was present. No runtime/imported-position data was fetched."
+    }
+  ],
+  "redactionChecks": {
+    "rawSecretsStored": false,
+    "authTokenStored": false,
+    "passwordStored": false,
+    "cookieStored": false,
+    "exchangeCredentialStored": false
+  },
+  "result": {
+    "status": "BLOCKED",
+    "reason": "Missing approved read-only production app auth/session for LIVEIMPORT_READBACK.",
+    "runtimeReadbackCollected": false,
+    "importedPositionEvidenceCollected": false,
+    "releaseImpact": "LIVEIMPORT_READBACK protected evidence remains absent for the current production SHA/date."
+  },
+  "nextAction": {
+    "owner": "Security Review Lead plus Ops/Release owner path",
+    "action": "Provide or bind an approved transient read-only production principal/session in the LIVEIMPORT_READBACK_* family, then wake LUC-1754 for the same command against the current build-info SHA."
+  }
+}

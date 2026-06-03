@@ -1,3 +1,265 @@
+## 2026-06-03 LUC-1764 [Soar][ARB-006][Ops] Inject protected PROD_DB_CHECK runner inputs
+- Status: blocked on board-capable protected secret/runtime input binding.
+- Scope:
+  - consumed the scoped wake for [LUC-1764](/LUC/issues/LUC-1764);
+  - acknowledged comment `039f1746-ae5a-44b8-be37-4943889d2c9d` as a local repair/source-control lane;
+  - read parent [LUC-1762](/LUC/issues/LUC-1762) `security-runner-input-contract`;
+  - checked accepted production DB profile input names without printing values;
+  - checked Paperclip company secret-store metadata access without value readback;
+  - ran the native production DB backup verification command.
+- Evidence:
+  - `GET /api/issues/{issueId}/heartbeat-context` -> pass; issue read as `in_progress`, priority `critical`, parent [LUC-1762](/LUC/issues/LUC-1762), blocks [LUC-1762](/LUC/issues/LUC-1762);
+  - contract requires either `PROD_DB_CHECK_CONTAINER + PROD_DB_CHECK_USER + PROD_DB_CHECK_NAME` or `PRODUCTION_DB_CHECK_CONTAINER + PRODUCTION_DB_CHECK_USER + PRODUCTION_DB_CHECK_NAME`;
+  - names-only readback -> all accepted DB profile names missing; `DOCKER_HOST` missing;
+  - `GET /api/companies/{companyId}/secrets` -> HTTP `403`, `Board access required`;
+  - `pnpm run ops:db:backup-verify:prod` -> FAIL before DB access with `Missing container for profile "prod"`.
+- Disposition:
+  - current runner cannot inject protected inputs because it has no accepted DB profile names and cannot access the board-only Paperclip secret store;
+  - unblock owner/action: board-capable secret/runtime owner injects one complete accepted family through Paperclip secrets or another approved encrypted runtime path, optionally `DOCKER_HOST` if approved VPS Docker access is needed;
+  - Data reruns `pnpm run ops:db:backup-verify:prod` after binding.
+- Deployment impact: none; no secret value readback, repo `.env` write, DB connection, restore, schema change, migration, data write, deploy, restart, rollback, Coolify mutation, account mutation, protected smoke, or live-trading action occurred.
+- Artifact:
+  - `history/tasks/luc-1764-inject-protected-prod-db-check-runner-inputs-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1775 [Soar][ARB-006][Portfolio] Bind fresh valid PROD_UI_AUDIT app session
+- Status: blocked on board-capable credential owner/operator action.
+- Scope:
+  - consumed the scoped wake for [LUC-1775](/LUC/issues/LUC-1775);
+  - read Portfolio/Paperclip credential safety rules and parent blocker context;
+  - performed names-only runtime checks and redacted production `/auth/me`
+    token checks without printing secrets, cookies, emails, passwords, or
+    protected response bodies;
+  - checked Paperclip company secret-store access without secret value readback.
+- Evidence:
+  - `GET /api/issues/LUC-1775/heartbeat-context` -> pass; issue read as
+    `in_progress`, priority `critical`, blocks [LUC-1774](/LUC/issues/LUC-1774);
+  - names-only readback -> `PROD_UI_AUDIT_AUTH_TOKEN` and `SMOKE_AUTH_TOKEN`
+    present; `SMOKE_AUTH_EMAIL` present but not email-shaped;
+  - redacted `GET /auth/me` with `PROD_UI_AUDIT_AUTH_TOKEN` -> HTTP `401`, no
+    user id, no role;
+  - redacted `GET /auth/me` with `SMOKE_AUTH_TOKEN` -> HTTP `401`, no user id,
+    no role;
+  - `GET /api/companies/{companyId}/secrets` -> HTTP `403`, so this Portfolio
+    runner cannot bind company secrets directly.
+- Disposition:
+  - no valid source or target app session exists in this runner;
+  - aliasing `SMOKE_AUTH_TOKEN` again cannot satisfy acceptance because the
+    source token itself is invalid;
+  - unblock owner/action: board-capable credential owner/operator binds a fresh
+    valid non-expired `PROD_UI_AUDIT_AUTH_TOKEN`, or real
+    `PROD_UI_AUDIT_AUTH_EMAIL + PROD_UI_AUDIT_AUTH_PASSWORD`, and proves
+    redacted `/auth/me` HTTP `200`.
+- Deployment impact: none; no deploy, restart, rollback, env edit, DB write,
+  account mutation, subscription mutation, API-key mutation, exchange mutation,
+  live-trading action, secret value readback, cookie export, logout, or
+  protected response-body capture occurred.
+- Artifact:
+  - `history/tasks/luc-1775-bind-fresh-valid-prod-ui-audit-app-session-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1774 [Soar][ARB-006][Security] Provide valid PROD_UI_AUDIT session for protected app proof
+- Status: blocked on first-class blocker [LUC-1775](/LUC/issues/LUC-1775).
+- Scope:
+  - consumed the scoped wake for [LUC-1774](/LUC/issues/LUC-1774);
+  - read Security credential/session rules and parent [LUC-1756](/LUC/issues/LUC-1756) context;
+  - performed redacted, read-only production session checks without printing secrets, cookies, emails, passwords, or response bodies;
+  - avoided logout because it intentionally increments `sessionVersion` and invalidates sessions.
+- Evidence:
+  - `GET /api/issues/LUC-1774/heartbeat-context` -> pass; issue read as `in_progress`, priority `critical`, parent [LUC-1756](/LUC/issues/LUC-1756), zero blockers;
+  - current `PROD_UI_AUDIT_AUTH_TOKEN` via redacted `GET /auth/me` -> HTTP `401`, no user id, no role;
+  - `SMOKE_AUTH_EMAIL + SMOKE_AUTH_PASSWORD` redacted login attempt -> HTTP `400`, stored email ref is not email-shaped, no session token returned;
+  - current `PROD_UI_AUDIT_ADMIN_TOKEN` via redacted `GET /auth/me` -> HTTP `401`, no user id, no role;
+  - `PROD_UI_AUDIT_ADMIN_EMAIL + PROD_UI_AUDIT_ADMIN_PASSWORD` redacted login attempt -> HTTP `400`, stored email ref is not email-shaped, no session token returned.
+- Security disposition:
+  - no valid reusable app/dashboard session is available in this runner;
+  - `PROD_UI_AUDIT_AUTH_TOKEN` must be rotated/rebound to a fresh non-expired session token, or a real `PROD_UI_AUDIT_AUTH_EMAIL + PROD_UI_AUDIT_AUTH_PASSWORD` pair must be bound so QA/Test can mint a fresh token;
+  - [LUC-1775](/LUC/issues/LUC-1775) owns the board-capable credential binding action and must prove redacted `/auth/me` HTTP `200` before [LUC-1756](/LUC/issues/LUC-1756) reruns protected browser proof.
+- Forbidden boundary preserved: no secret value readback, cookie/session export, protected response-body capture, logout, account mutation, subscription mutation, API-key mutation, exchange setting mutation, external service mutation, deploy, restart, rollback, DB write, or live-trading action.
+- Deployment impact: none.
+- Artifact:
+  - `history/tasks/luc-1774-provide-valid-prod-ui-audit-session-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1769 [Soar][ARB-006][Security] Approve source read-only app smoke auth class for QA binding
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1769](/LUC/issues/LUC-1769);
+  - read Security credential/session rules and downstream [LUC-1766](/LUC/issues/LUC-1766) context;
+  - performed names-only source/target env presence checks without printing values;
+  - performed redacted shape checks for the existing `SMOKE_AUTH_*` source class.
+- Evidence:
+  - `GET /api/issues/LUC-1769/heartbeat-context` -> pass; issue read as `in_progress`, priority `critical`, zero blockers, blocks [LUC-1766](/LUC/issues/LUC-1766);
+  - names-only readback -> `SMOKE_AUTH_TOKEN`, `SMOKE_AUTH_EMAIL`, `SMOKE_AUTH_PASSWORD`, and `PROD_UI_AUDIT_ADMIN_*` present; `PROD_UI_AUDIT_AUTH_*` and `SOAR_PROD_AUTH_*` absent;
+  - redacted shape check -> `SMOKE_AUTH_TOKEN` present/non-empty and opaque, `SMOKE_AUTH_EMAIL` present but not email-shaped, `SMOKE_AUTH_PASSWORD` present/non-empty.
+- Security disposition:
+  - approved source binding: `SMOKE_AUTH_TOKEN` may be bound as `PROD_UI_AUDIT_AUTH_TOKEN` for one read-only production app/dashboard smoke principal/session;
+  - not approved: `SMOKE_AUTH_EMAIL + SMOKE_AUTH_PASSWORD` as `PROD_UI_AUDIT_AUTH_EMAIL + PROD_UI_AUDIT_AUTH_PASSWORD` from this run, because the email ref did not validate as email-shaped;
+  - not approved: `PROD_UI_AUDIT_ADMIN_*` as app/dashboard smoke class; it remains non-mutating admin-route proof only.
+- Permitted QA scope: read-only authenticated app/dashboard route/state proof, redirect/auth-state proof, visible state classification, responsive/accessibility observation, and redacted status metadata.
+- Forbidden: subscriptions, API keys, trading/live settings, exchange settings, external service state, user real account state, cookie/session export, secret value print/readback, protected response-body capture, deploy, restart, rollback, database mutation, and live-trading action.
+- Revocation/cleanup: Portfolio/credential owner owns source/target token rotation or removal after the ARB-006 protected QA proof window, or immediately on suspected exposure/scope failure.
+- Deployment impact: none; no deploy, restart, rollback, env edit, database action, account mutation, protected browser run, live-trading action, secret readback, or protected payload capture occurred.
+- Artifact:
+  - `history/evidence/luc-1769-source-read-only-app-smoke-auth-approval-2026-06-03.md`
+  - `history/tasks/luc-1769-approve-source-read-only-app-smoke-auth-class-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1765 [Soar][ARB-006][Security/Ops] Bind LIVEIMPORT_READBACK read-only production principal
+- Status: blocked on first-class blocker [LUC-1768](/LUC/issues/LUC-1768).
+- Scope:
+  - consumed the scoped wake for [LUC-1765](/LUC/issues/LUC-1765);
+  - read Security credential/session rules and downstream [LUC-1754](/LUC/issues/LUC-1754) context;
+  - checked the current runner for `LIVEIMPORT_READBACK_*` auth and OPS names without printing values;
+  - checked Paperclip agent env metadata for Security Review Lead and Integration Trading Engineer without secret value readback;
+  - confirmed company secret list/create routes are board-only in the Paperclip source;
+  - created [LUC-1768](/LUC/issues/LUC-1768) for Portfolio Director to bind encrypted secret refs.
+- Evidence:
+  - `GET /api/issues/LUC-1765/heartbeat-context` -> pass; issue read as `in_progress`, priority `critical`, blocking [LUC-1754](/LUC/issues/LUC-1754);
+  - names-only runner scan -> `LIVEIMPORT_READBACK_AUTH_TOKEN`, `LIVEIMPORT_READBACK_AUTH_EMAIL`, `LIVEIMPORT_READBACK_AUTH_PASSWORD`, and optional OPS names all missing;
+  - `GET /api/companies/{companyId}/agents` -> Security Review Lead and Integration Trading Engineer adapter env keys empty;
+  - Paperclip source check -> `/api/companies/:companyId/secrets` list/create routes call `assertBoard`;
+  - `POST /api/companies/{companyId}/issues` -> created [LUC-1768](/LUC/issues/LUC-1768);
+  - `PATCH /api/issues/LUC-1765` -> status `blocked`, `blockedByIssueIds=[LUC-1768]`.
+- Security disposition:
+  - approved account/session class remains one least-privilege read-only Soar production app principal/session for protected readback only;
+  - accepted inputs: `LIVEIMPORT_READBACK_AUTH_TOKEN` or `LIVEIMPORT_READBACK_AUTH_EMAIL + LIVEIMPORT_READBACK_AUTH_PASSWORD`; optional OPS layer only if the route requires it;
+  - forbidden: raw secret values in repo/comments/artifacts/logs/screenshots/plaintext config, cookie/session export, protected payload capture, deploy, restart, rollback, DB write, account mutation, subscription/payment mutation, exchange/API-key mutation, order placement, and live-trading action.
+- Deployment impact: none; no deploy, restart, rollback, env edit, database action, account mutation, protected proof rerun, secret readback, or live-trading action was performed.
+- Remaining: [LUC-1768](/LUC/issues/LUC-1768) immediately rechecked the gate and is itself blocked because Portfolio Director also lacks board-only secret-store access; the unblock owner is a board-capable secret owner who can bind encrypted `LIVEIMPORT_READBACK_*` refs, then [LUC-1765](/LUC/issues/LUC-1765) clears and [LUC-1754](/LUC/issues/LUC-1754) can rerun the existing collector with `--symbols auto`.
+- Artifact:
+  - `history/tasks/luc-1765-bind-liveimport-readback-read-only-production-principal-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1763 [Soar][ARB-006][Security] Bind ROLLBACK_GUARD protected inputs for rollback proof
+- Status: blocked on first-class blocker [LUC-1767](/LUC/issues/LUC-1767).
+- Scope:
+  - consumed the scoped wake for [LUC-1763](/LUC/issues/LUC-1763);
+  - read Security credential/session rules and parent [LUC-1755](/LUC/issues/LUC-1755) rollback proof context;
+  - checked current runner input names without printing values;
+  - attempted Paperclip company secrets metadata readback and confirmed this agent lacks board access;
+  - created [LUC-1767](/LUC/issues/LUC-1767) for Portfolio Director to bind or confirm one complete accepted `ROLLBACK_GUARD_*` family.
+- Evidence:
+  - `GET /api/issues/LUC-1763/heartbeat-context` -> pass; issue read as `in_progress`, priority `critical`, zero first-class blockers;
+  - names-only runner scan -> no `ROLLBACK_GUARD*` or adjacent rollback names present; unrelated `PROD_UI_AUDIT_*` names are present but do not satisfy rollback proof;
+  - `GET /api/companies/{companyId}/secrets` -> `Board access required`;
+  - `pnpm run -s ops:protected-inputs:check -- --today 2026-06-03 --expected-sha 6839cd6b8884e26eca735ce32cea98c1dadccfbe --git-ref main --build-info-checked-at 2026-06-03T13:12:53.834Z --json-output history/artifacts/luc-1763-rollback-guard-input-readiness-6839cd6b-2026-06-03.json --markdown-output history/evidence/luc-1763-rollback-guard-input-readiness-6839cd6b-2026-06-03.md` -> `PARTIAL` overall, but `ROLLBACK_GUARD_*: missing (0)`.
+- Security disposition:
+  - approved account/session class: read-only production operator proof context for rollback guard endpoints only;
+  - accepted family remains `ROLLBACK_GUARD_AUTH_TOKEN` or `ROLLBACK_GUARD_AUTH_EMAIL` + `ROLLBACK_GUARD_AUTH_PASSWORD`, with optional private OPS layer if production requires it;
+  - forbidden: secret value print/readback, cookie/session export, protected response-body capture, deploy, restart, rollback execution, database action, account mutation, subscription/payment mutation, exchange setting/API-key mutation, external service mutation, and live-trading action.
+- Deployment impact: none; no deploy, restart, rollback execution, env edit, database action, account mutation, protected proof rerun, secret readback, or live-trading action was performed.
+- Remaining: Portfolio Director completes [LUC-1767](/LUC/issues/LUC-1767), then [LUC-1755](/LUC/issues/LUC-1755) reruns rollback proof against current production SHA.
+- Artifact:
+  - `history/evidence/luc-1763-rollback-guard-input-readiness-6839cd6b-2026-06-03.md`
+  - `history/tasks/luc-1763-bind-rollback-guard-protected-inputs-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1761 [Soar][ARB-006][Security] Bind approved SOAR_PROD protected app smoke session
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1761](/LUC/issues/LUC-1761);
+  - read Security credential/session rules and the parent [LUC-1756](/LUC/issues/LUC-1756) blocked proof;
+  - checked the current runner for approved protected app/auth input names without printing values;
+  - ran the existing protected-input readiness command for production SHA `6839cd6b8884e26eca735ce32cea98c1dadccfbe`;
+  - recorded the Security approval boundary for the partial admin proof family;
+  - created [LUC-1766](/LUC/issues/LUC-1766), then resumed after that blocker was resolved;
+  - verified the approved read-only app smoke token alias is now present by name.
+- Evidence:
+  - `GET /api/issues/LUC-1761/heartbeat-context` -> pass; issue read as `in_progress`, priority `critical`, zero first-class blockers;
+  - names-only protected env scan -> present: `PROD_UI_AUDIT_ADMIN_EMAIL`, `PROD_UI_AUDIT_ADMIN_PASSWORD`, `PROD_UI_AUDIT_ADMIN_TOKEN`, `PROD_UI_AUDIT_API_BASE_URL`, `PROD_UI_AUDIT_WEB_BASE_URL`;
+  - names-only protected env scan -> missing complete read-only app/dashboard family: `SOAR_PROD_*` and `PROD_UI_AUDIT_AUTH_*`;
+  - `pnpm run -s ops:protected-inputs:check -- --today 2026-06-03 --expected-sha 6839cd6b8884e26eca735ce32cea98c1dadccfbe --git-ref main --build-info-checked-at 2026-06-03T13:13:08.769Z --json-output history/artifacts/luc-1761-protected-app-session-readiness-6839cd6b-2026-06-03.json --markdown-output history/evidence/luc-1761-protected-app-session-readiness-6839cd6b-2026-06-03.md` -> `PARTIAL`, `matchingProtectedInputNamesPresent=5`.
+  - blocker-resolved names-only protected env scan -> `PROD_UI_AUDIT_AUTH_TOKEN` present;
+  - [LUC-1766](/LUC/issues/LUC-1766) continuation summary -> Portfolio bound Security-approved `SMOKE_AUTH_TOKEN` as `PROD_UI_AUDIT_AUTH_TOKEN`, and did not bind email/password aliases;
+  - `pnpm run -s ops:protected-inputs:check -- --today 2026-06-03 --expected-sha 6839cd6b8884e26eca735ce32cea98c1dadccfbe --git-ref main --build-info-checked-at 2026-06-03T13:13:08.769Z --json-output history/artifacts/luc-1761-protected-app-session-approved-readiness-6839cd6b-2026-06-03.json --markdown-output history/evidence/luc-1761-protected-app-session-approved-readiness-6839cd6b-2026-06-03.md` -> `PARTIAL`, `matchingProtectedInputNamesPresent=6`, `PROD_UI_AUDIT_*` present.
+- Security disposition:
+  - approved for QA/Test: `PROD_UI_AUDIT_AUTH_TOKEN` may be used for read-only authenticated app/dashboard smoke proof under [LUC-1756](/LUC/issues/LUC-1756);
+  - approved for QA/Test: current `PROD_UI_AUDIT_ADMIN_*` names may be used only for non-mutating admin-route proof under the no-mutation production smoke contract;
+  - forbidden: subscription mutation, API-key mutation, trading/live setting mutation, exchange setting mutation, external service state mutation, user real account mutation, cookie/session export, secret value print, secret readback, and protected response-body capture.
+- Deployment impact: none; no deploy, restart, rollback, env edit, database action, account mutation, protected browser session, live-trading action, or secret disclosure.
+- Remaining: QA/Test reruns [LUC-1756](/LUC/issues/LUC-1756) using `PROD_UI_AUDIT_AUTH_TOKEN` plus the existing API/Web base URL names; protected evidence must stay redacted and non-mutating.
+- Artifact:
+  - `history/evidence/luc-1761-protected-app-session-readiness-6839cd6b-2026-06-03.md`
+  - `history/evidence/luc-1761-protected-app-session-approved-readiness-6839cd6b-2026-06-03.md`
+  - `history/tasks/luc-1761-bind-approved-soar-prod-protected-app-smoke-session-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1755 [Soar][ARB-006][Delivery+Ops] Produce ROLLBACK_GUARD protected evidence
+- Status: blocked on first-class blocker [LUC-1763](/LUC/issues/LUC-1763); evidence packet produced and fail-closed.
+- Scope:
+  - consumed the scoped wake for [LUC-1755](/LUC/issues/LUC-1755);
+  - used current protected-input readiness evidence showing `0` matching protected input names, including `ROLLBACK_GUARD_*`;
+  - ran guarded production rollback proof without secret CLI flags;
+  - produced a redaction-safe rollback guard packet with rollback path, owner, stop conditions, target SHA/date, and no-mutation statement;
+  - created [LUC-1763](/LUC/issues/LUC-1763) for Security Review Lead to bind approved protected rollback guard inputs.
+- Evidence:
+  - production target SHA from current public build-info evidence: `6839cd6b8884e26eca735ce32cea98c1dadccfbe`;
+  - names-only env scan -> no `ROLLBACK_GUARD_*` names present in current shell;
+  - `pnpm run ops:deploy:rollback-proof -- --profile prod --base-url https://api.soar.luckysparrow.ch --today 2026-06-03 --expected-sha 6839cd6b8884e26eca735ce32cea98c1dadccfbe` -> expected FAIL/fail-closed, generated JSON/Markdown evidence;
+  - rollback decision -> `shouldRollback=true`, reasons `workers_ready_endpoint_http_401`, `runtime_freshness_endpoint_http_401`, `alerts_endpoint_http_401`;
+  - `git diff --check` -> pass with line-ending warnings only.
+- Deployment impact: none; no deploy, restart, rollback execution, env change, database action, production config change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1755-rollback-guard-protected-evidence-6839cd6b-2026-06-03.md`
+  - `history/evidence/v1-rollback-proof-prod-2026-06-03T00-00-00-000Z.md`
+  - `history/artifacts/_artifacts-v1-rollback-proof-prod-2026-06-03T00-00-00-000Z.json`
+  - `history/tasks/luc-1755-rollback-guard-protected-evidence-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1756 [Soar][ARB-006][QA] Produce SOAR_PROD protected app evidence
+- Status: blocked.
+- Scope:
+  - consumed the scoped wake for [LUC-1756](/LUC/issues/LUC-1756);
+  - verified public production build-info SHA/date for current target;
+  - checked the current runner for protected app/auth input names without printing values;
+  - ran the existing protected-input readiness command and regression test;
+  - recorded explicit blocked evidence rather than substituting public smoke for protected app proof;
+  - created [LUC-1761](/LUC/issues/LUC-1761) for Security Review Lead to bind or approve the protected app smoke session.
+- Evidence:
+  - `GET /api/issues/LUC-1756/heartbeat-context` -> pass; issue read as `in_progress`, priority `critical`, zero first-class blockers;
+  - `Invoke-RestMethod https://soar.luckysparrow.ch/api/build-info` -> `gitSha=6839cd6b8884e26eca735ce32cea98c1dadccfbe`, `gitRef=main`, `checkedAt=2026-06-03T13:13:08.769Z`;
+  - names-only protected env scan -> zero matches for `SOAR_PROD_*`, `PROD_AUTH_*`, `PROD_UI_AUDIT_*`, and adjacent approved proof families;
+  - `pnpm run -s ops:protected-inputs:check -- --today 2026-06-03 --expected-sha 6839cd6b8884e26eca735ce32cea98c1dadccfbe --git-ref main --build-info-checked-at 2026-06-03T13:13:08.769Z --json-output history/artifacts/luc-1756-soar-prod-protected-app-readiness-6839cd6b-2026-06-03.json --markdown-output history/evidence/luc-1756-soar-prod-protected-app-evidence-blocked-6839cd6b-2026-06-03.md` -> `BLOCKED`, `matchingProtectedInputNamesPresent=0`;
+  - `pnpm run -s ops:protected-inputs:check:test` -> PASS, `3/3`.
+- Deployment impact: none; no deploy, restart, rollback, env edit, database action, account mutation, subscription mutation, exchange setting change, protected browser session, live-trading action, secret value print, or secret readback.
+- Remaining: [LUC-1761](/LUC/issues/LUC-1761) must bind an approved read-only production app account/session class before QA/Test can run authenticated route/state/responsive/accessibility proof.
+- Artifact:
+  - `history/evidence/luc-1756-soar-prod-protected-app-evidence-blocked-6839cd6b-2026-06-03.md`
+  - `history/tasks/luc-1756-soar-prod-protected-app-evidence-2026-06-03-task.md`
+
+### Continuation - 2026-06-03 blocker resolved wake
+- Status: blocked on [LUC-1774](/LUC/issues/LUC-1774).
+- Scope:
+  - resumed after [LUC-1761](/LUC/issues/LUC-1761) was done;
+  - confirmed `PROD_UI_AUDIT_AUTH_TOKEN` is present by name;
+  - ran protected app proof commands without printing secret values;
+  - separated route HTML reachability from valid authenticated app session proof.
+- Evidence:
+  - public build-info readback -> SHA `6839cd6b8884e26eca735ce32cea98c1dadccfbe`, ref `main`;
+  - `pnpm run -s ops:protected-inputs:check -- --json` -> `PARTIAL`, `matchingProtectedInputNamesPresent=3`;
+  - `node scripts/runProdAuthSessionBrowserProof.mjs --i-understand-production-auth-proof ...` -> FAIL, authenticated `/dashboard` stayed on `/auth/login`;
+  - redacted `GET /auth/me` with `Cookie: token=<redacted>` -> HTTP `401`;
+  - `node scripts/runProdUiModuleClickthroughAudit.mjs ...` -> PASS route HTML coverage, limited because it does not prove session validity.
+- Deployment impact: none; no deploy, restart, rollback, env edit, DB write, account mutation, subscription mutation, API-key mutation, exchange setting mutation, external service mutation, live-trading action, secret value print, or secret readback.
+- Remaining: [LUC-1774](/LUC/issues/LUC-1774) must provide a valid non-expired read-only production app session before QA/Test can rerun browser/API proof.
+- Artifact:
+  - `history/evidence/luc-1756-prod-auth-session-browser-proof-6839cd6b-2026-06-03.md`
+  - `history/evidence/luc-1756-prod-auth-me-session-validity-failed-6839cd6b-2026-06-03.md`
+  - `history/evidence/luc-1756-prod-ui-module-clickthrough-6839cd6b-2026-06-03.md`
+
+## 2026-06-03 LUC-1757 [Soar][ARB-006][Data] Produce PROD_DB_CHECK protected evidence
+- Status: blocked.
+- Scope:
+  - consumed the scoped `LUC-1757` wake with no pending comments;
+  - read issue heartbeat context and confirmed it blocks `LUC-1758` and `LUC-1759`;
+  - inspected the existing production DB profile script and RC runbook contract;
+  - performed names-only protected input presence readback for both accepted production DB profile families;
+  - ran the native production DB verification profile.
+- Evidence:
+  - `GET /api/issues/LUC-1757/heartbeat-context` -> pass; issue read as `in_progress`, critical, zero first-class blockers;
+  - names-only readback -> all required `PROD_DB_CHECK_*` and `PRODUCTION_DB_CHECK_*` vars missing;
+  - `git rev-parse HEAD` -> `d182a9e1d6c9fe129f4567cacb0bfd35fb3c3458`;
+  - `pnpm run ops:db:backup-verify:prod` -> fail-closed before DB access due to missing production profile container input.
+- Deployment impact: none; no schema change, migration, DB connection, restore execution, data write, deploy, restart, rollback, Coolify mutation, account mutation, protected secret readback, or live-trading action.
+- Remaining: `LUC-1762` is assigned to Security Review Lead to provide a protected runner/session with a complete `PROD_DB_CHECK_*` or `PRODUCTION_DB_CHECK_*` family, with Ops coordination as needed; then the data lane reruns `pnpm run ops:db:backup-verify:prod`.
+- Artifact:
+  - `history/evidence/luc-1757-prod-db-check-protected-evidence-2026-06-03.md`
+  - `history/tasks/luc-1757-prod-db-check-protected-evidence-2026-06-03-task.md`
+  - Paperclip blocker: `LUC-1762`
+
 ## 2026-06-03 LUC-1739 [Operator][Coolify] Bind Coolify read-only production status access
 - Status: done.
 - Scope:
@@ -20811,3 +21073,43 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
 - Artifacts:
   - `history/evidence/luc-1615-coolify-resource-inventory-reconciliation-2026-06-02.md`
   - `history/tasks/luc-1615-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+## 2026-06-03 LUC-1754 [Soar][ARB-006][Integration+QA] Produce LIVEIMPORT_READBACK protected evidence
+- Status: blocked.
+- Scope:
+  - consumed the scoped wake for [LUC-1754](/LUC/issues/LUC-1754);
+  - confirmed the issue is critical, assigned, in progress, and has zero first-class blockers;
+  - corrected target truth from current production `/api/build-info`: `6839cd6b8884e26eca735ce32cea98c1dadccfbe` on `main` at `2026-06-03T13:12:53.834Z`;
+  - ran names-only protected-input readiness for the current SHA/date;
+  - attempted the existing `LIVEIMPORT_READBACK` collector with `--symbols auto`;
+  - recorded redaction-safe fail-closed evidence rather than substituting public build-info for protected runtime proof.
+- Evidence:
+  - `GET /api/issues/LUC-1754/heartbeat-context` -> pass; issue read as `in_progress`, priority `critical`, zero first-class blockers;
+  - public `/api/build-info` -> pass; SHA `6839cd6b8884e26eca735ce32cea98c1dadccfbe`, ref `main`;
+  - `node scripts/checkProtectedInputReadiness.mjs --today 2026-06-03 --expected-sha 6839cd6b8884e26eca735ce32cea98c1dadccfbe ...` -> `BLOCKED`, `0` matching protected input names, `LIVEIMPORT_READBACK_*` missing;
+  - `node scripts/collectLiveImportReadbackEvidence.mjs --expected-sha 6839cd6b8884e26eca735ce32cea98c1dadccfbe --symbols auto ...` -> expected exit `1`, fail-closed before protected runtime/imported-position readback because approved read-only production auth/session was absent.
+- Deployment impact: none; no deploy, restart, rollback, env change, DB write, account setting change, exchange mutation, order placement, protected payload readback, secret disclosure, or live-trading action.
+- Remaining: [LUC-1765](/LUC/issues/LUC-1765) must provide or bind an approved transient read-only production principal/session in the `LIVEIMPORT_READBACK_*` family, then wake [LUC-1754](/LUC/issues/LUC-1754) to rerun the existing collector against the current production SHA.
+- Artifacts:
+  - `history/evidence/luc-1754-liveimport-readback-failclosed-6839cd6b-2026-06-03.md`
+  - `history/artifacts/luc-1754-liveimport-readback-failclosed-6839cd6b-2026-06-03.json`
+  - `history/evidence/luc-1754-protected-input-readiness-6839cd6b-2026-06-03.md`
+  - `history/artifacts/luc-1754-protected-input-readiness-6839cd6b-2026-06-03.json`
+  - `history/tasks/luc-1754-liveimport-readback-protected-evidence-2026-06-03-task.md`
+## 2026-06-03 LUC-1767 [Soar][ARB-006][Board] Bind ROLLBACK_GUARD protected runner inputs
+- Status: blocked.
+- Scope:
+  - consumed the scoped wake for [LUC-1767](/LUC/issues/LUC-1767);
+  - read Paperclip heartbeat context and confirmed parent [LUC-1763](/LUC/issues/LUC-1763), priority `critical`, and no first-class blockers;
+  - checked current runner names only for `ROLLBACK_GUARD_*`;
+  - attempted the Paperclip company secret-management path without printing values;
+  - ran the existing protected-input readiness checker for current production SHA.
+- Evidence:
+  - `GET /api/issues/LUC-1767/heartbeat-context` -> pass; issue read as `in_progress`, critical, assigned to Portfolio Director, parent [LUC-1763](/LUC/issues/LUC-1763);
+  - names-only runner scan -> no `ROLLBACK_GUARD_*` names present;
+  - `GET /api/companies/{companyId}/secrets` -> `403 Forbidden`, so this run cannot bind company secrets;
+  - `pnpm run -s ops:protected-inputs:check -- --today 2026-06-03 --expected-sha 6839cd6b8884e26eca735ce32cea98c1dadccfbe --git-ref main --build-info-checked-at 2026-06-03T13:13:08.769Z --json-output history/artifacts/luc-1767-rollback-guard-runner-input-readiness-6839cd6b-2026-06-03.json --markdown-output history/evidence/luc-1767-rollback-guard-runner-input-readiness-6839cd6b-2026-06-03.md` -> `PARTIAL`, `ROLLBACK_GUARD_*: missing (0)`.
+- Deployment impact: none; no deploy, restart, rollback execution, env edit, database action, production config mutation, account mutation, protected response-body capture, secret value print/readback, or live-trading mutation.
+- Remaining: a true board/operator owner with Paperclip secret-management permission must bind `ROLLBACK_GUARD_AUTH_TOKEN` or `ROLLBACK_GUARD_AUTH_EMAIL` + `ROLLBACK_GUARD_AUTH_PASSWORD` plus any required OPS auth layer, then Security/Ops reruns [LUC-1755](/LUC/issues/LUC-1755).
+- Artifact:
+  - `history/evidence/luc-1767-rollback-guard-runner-input-readiness-6839cd6b-2026-06-03.md`
+  - `history/tasks/luc-1767-bind-rollback-guard-protected-runner-inputs-2026-06-03-task.md`
