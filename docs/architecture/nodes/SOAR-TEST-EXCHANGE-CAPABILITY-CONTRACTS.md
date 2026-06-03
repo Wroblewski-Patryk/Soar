@@ -35,6 +35,7 @@ tags: [soar-map, test, testing, verified_local]
 ## Relations
 
 - verified_by <- [[SOAR-FEATURE-EXCHANGE-ADAPTER]] (verified_local)
+- verified_by <- [[SOAR-FEATURE-EXCHANGE-ADAPTER]] (verified_local)
 
 ## Evidence Rule
 

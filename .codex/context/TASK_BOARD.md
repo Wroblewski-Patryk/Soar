@@ -1,3 +1,46 @@
+## 2026-06-03 LUC-1709 [Guardrails][Source Control] Restore Soar guardrails so LUC-1707 docs/evidence can commit
+- Status: done.
+- Scope:
+  - reproduced `pnpm run quality:guardrails` failure on architecture graph drift plus two API test-size budget offenders;
+  - repaired graph registry integrity by adding missing mobile documentation nodes required by existing relations;
+  - mapped four missing API test paths into existing architecture graph test aggregate records;
+  - documented explicit temporary API test-size allowlist entries for two existing oversized money/runtime contract hubs;
+  - regenerated architecture graph artifacts.
+- Evidence:
+  - `pnpm run architecture:graph:generate` -> PASS (`647` nodes, `807` relations, `27` chains);
+  - `pnpm run architecture:graph:drift:strict` -> PASS (`816/816` covered, `0` missing);
+  - `pnpm run quality:guardrails:test` -> PASS (`9/9`);
+  - `pnpm run quality:guardrails` -> PASS;
+  - `git diff --check` -> PASS with line-ending warnings only.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, account mutation, protected smoke, live-trading mutation, or secret readback.
+- Source-control closure: local commit planned after this record; push not needed.
+- Artifact:
+  - `history/tasks/luc-1709-restore-soar-guardrails-source-control-closure-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1707 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - acknowledged the latest local repair/source-control lane starter comment and kept release gates fail-closed;
+  - verified Coolify read-only production status bindings are present by name without printing values;
+  - confirmed current Coolify selector id `0`, name `LuckySparrow`;
+  - confirmed configured project `Soar` and environment `production` resolve through authenticated read-only API;
+  - confirmed production inventory remains eight canonical resources by environment-id/global reconciliation: six applications plus PostgreSQL and Redis;
+  - reconciled the known redacted PostgreSQL companion row from the global resources endpoint without treating it as a ninth production-environment deploy target.
+- Evidence:
+  - `GET /api/issues/LUC-1707/heartbeat-context` -> pass; issue read back as `in_progress`, priority `critical`, zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T07:08:32Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications and zero generic services;
+  - `GET /api/v1/resources` -> pass, `17` visible rows, `8` rows matching production environment id `6`, and `9` Soar-relevant safe projection rows because of one redacted PostgreSQL companion row.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, protected smoke, live-trading mutation, or secret readback.
+- Source-control closure: not committed because `pnpm run quality:guardrails` failed outside this issue's Coolify binding proof on unrelated architecture graph drift/file-size blockers. Follow-up sidecar: `LUC-1709`, assigned to Engineering Delivery Lead.
+- Artifacts:
+  - `history/evidence/luc-1707-coolify-read-only-production-status-access-2026-06-03.md`
+  - `history/tasks/luc-1707-operator-coolify-bind-read-only-production-status-access-2026-06-03-task.md`
+
 ## 2026-06-03 LUC-1679 [Operator][Coolify] Confirm expected Coolify team/workspace
 - Status: done.
 - Scope:

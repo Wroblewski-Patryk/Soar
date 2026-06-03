@@ -1,11 +1,11 @@
 # Architecture Map Status
 
-Last generated: 2026-05-27T23:08:45.563Z
+Last generated: 2026-06-03T07:19:08.087Z
 
 | Metric | Value |
 | --- | --- |
-| Nodes | 645 |
-| Relations | 804 |
+| Nodes | 647 |
+| Relations | 807 |
 | Function chains | 27 |
 | Missing relation targets | 0 |
 | Missing chain targets | 0 |

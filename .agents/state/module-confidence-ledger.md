@@ -30,6 +30,38 @@ Do not turn uncertainty into optimism.
 
 ## Current Operational Override
 
+- 2026-06-03 `LUC-1709-RESTORE-SOAR-GUARDRAILS-SOURCE-CONTROL-CLOSURE-2026-06-03`:
+  confidence for `SOAR-ARCHITECTURE-EVIDENCE-GRAPH` and
+  `SOAR-QUALITY-GUARDRAILS` is verified locally for the source-control closure
+  lane. `pnpm run architecture:graph:generate` passed with `647` nodes,
+  `807` relations, and `27` chains; strict graph drift passed with `816/816`
+  covered and `0` missing; `pnpm run quality:guardrails:test` passed `9/9`;
+  `pnpm run quality:guardrails` passed. The repair updated graph registry
+  coverage and documented two explicit temporary API test-size allowlist
+  entries for existing oversized test contract hubs. This does not improve or
+  claim runtime production readiness, protected smoke, deploy readiness, or
+  live-trading safety. Evidence:
+  `history/tasks/luc-1709-restore-soar-guardrails-source-control-closure-2026-06-03-task.md`.
+
+- 2026-06-03 `LUC-1707-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify read-only
+  production status access binding truth. Fresh binding proof at
+  `2026-06-03T07:08:32Z` verified required binding names are present without
+  value disclosure, current selector id `0` name `LuckySparrow`, configured
+  project `Soar`, production environment `production` id `6`, and eight
+  canonical production-environment resources by environment-id/global
+  reconciliation: six applications plus PostgreSQL and Redis. Applications
+  remain `running:unknown` at the Coolify inventory projection layer;
+  PostgreSQL and Redis report `running:healthy` from global resource readback.
+  `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent in this runner, but
+  this is not an active blocker while current-team and project-scoped reads
+  succeed. No deploy, restart, rollback, env edit, database action, team
+  setting change, account action, protected smoke, secret readback, or
+  live-trading action was performed. This does not claim full application
+  readiness, protected smoke, SLO, restore/rollback, or deploy mutation
+  readiness. Evidence:
+  `history/evidence/luc-1707-coolify-read-only-production-status-access-2026-06-03.md`.
+
 - 2026-06-03 `LUC-1673-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-03`:
   confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
   resource inventory truth. Fresh read-only Coolify API readback at

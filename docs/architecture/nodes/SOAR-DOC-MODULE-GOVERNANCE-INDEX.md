@@ -35,6 +35,7 @@ tags: [soar-map, documentation, documentation, verified_local]
 ## Relations
 
 - related_to -> [[SOAR-DOC-ARCHITECTURE-GRAPH-SYSTEM]] (verified_local)
+- documents -> [[SOAR-DOC-MOBILE-MODULE-INDEX]] (verified_local)
 - documents <- [[SOAR-FEATURE-ARCHITECTURE-EVIDENCE-GRAPH]] (verified_local)
 
 ## Evidence Rule

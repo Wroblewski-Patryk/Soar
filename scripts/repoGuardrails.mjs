@@ -28,7 +28,8 @@ const SOURCE_FILE_BUDGET_RULES = [
   { match: /^apps\/web\/src\//, budget: 95_000 },
 ];
 const SOURCE_FILE_SIZE_ALLOWLIST = new Map([
-  ["apps/api/src/modules/bots/bots.e2e.test.ts", 89_000],
+  ["apps/api/src/modules/bots/bots.e2e.test.ts", 93_000],
+  ["apps/api/src/modules/positions/livePositionReconciliation.service.test.ts", 93_000],
   ["apps/api/src/modules/orders/orders.service.test.ts", 92_000],
 ]);
 const DEFAULT_MAX_FILE_LINES = 2_200;

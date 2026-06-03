@@ -31,7 +31,26 @@ refreshed/reconciled for `LUC-1399`, `LUC-1402`, `LUC-1405`, `LUC-1408`,
 `LUC-1579`, `LUC-1581`, `LUC-1584`, `LUC-1593`, `LUC-1599`, `LUC-1605`,
 `LUC-1610` on 2026-06-02, and `LUC-1620` / `LUC-1624` / `LUC-1630` /
 `LUC-1634` / `LUC-1641` / `LUC-1645` / `LUC-1651` / `LUC-1656` /
-`LUC-1662` / `LUC-1666` / `LUC-1673` on 2026-06-03.
+`LUC-1662` / `LUC-1666` / `LUC-1673` / `LUC-1707` on 2026-06-03.
+
+Latest read-only access binding checkpoint: `LUC-1707` at
+`2026-06-03T07:08:32Z`, refreshing the prior `LUC-1677` proof. Runtime
+bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`,
+`COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+`COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and
+`COOLIFY_SOAR_API_APP_ID` without values printed. Authenticated read-only
+Coolify reads resolved current selector id `0`, name `LuckySparrow`, project
+`Soar`, production environment `production` id `6`, and the canonical
+eight-resource production-environment inventory by environment-id/global
+reconciliation: six applications plus PostgreSQL and Redis. Application rows
+report `running:unknown`; PostgreSQL and Redis report `running:healthy` from
+global resource readback. `COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain
+absent in this runner, but the selector readback is not an active blocker while
+current-team and project-scoped reads succeed. This heartbeat performed no
+deploy, restart, rollback, env edit, database action, team setting change,
+account action, protected smoke, secret readback, or live-trading action.
+Evidence:
+`history/evidence/luc-1707-coolify-read-only-production-status-access-2026-06-03.md`.
 
 Latest team/workspace selector checkpoint: `LUC-1678` at
 `2026-06-03T05:38:12Z`. Authenticated read-only Coolify API calls confirmed
