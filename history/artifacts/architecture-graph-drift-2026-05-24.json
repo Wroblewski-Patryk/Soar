@@ -1,9 +1,9 @@
 {
   "generatedAt": "2026-05-24",
   "total": {
-    "total": 812,
+    "total": 816,
     "covered": 812,
-    "missing": 0
+    "missing": 4
   },
   "categories": {
     "apiRoutes": {
@@ -19,10 +19,15 @@
       "missingSamples": []
     },
     "apiTests": {
-      "total": 196,
+      "total": 200,
       "covered": 196,
-      "missing": 0,
-      "missingSamples": []
+      "missing": 4,
+      "missingSamples": [
+        "apps/api/src/middleware/requireRole.test.ts",
+        "apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts",
+        "apps/api/src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts",
+        "apps/api/src/modules/positions/positions.orphan-repair.contract.e2e.test.ts"
+      ]
     },
     "webPages": {
       "total": 37,

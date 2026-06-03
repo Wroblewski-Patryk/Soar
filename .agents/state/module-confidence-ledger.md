@@ -1,6 +1,6 @@
 # Module Confidence Ledger
 
-Last updated: 2026-06-02
+Last updated: 2026-06-03
 
 ## Purpose
 
@@ -29,6 +29,742 @@ Do not turn uncertainty into optimism.
 - `Low`: evidence is missing, stale, inferred, or chat-only.
 
 ## Current Operational Override
+
+- 2026-06-03 `LUC-1673-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-03T05:36:00Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production` id `6`, and eight canonical production-environment resources:
+  `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`,
+  `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`.
+  The global resources endpoint returned `17` visible rows, the same eight
+  rows by production environment id, and nine Soar-relevant rows by safe
+  name/type projection because Coolify exposes one redacted PostgreSQL
+  companion row. Treat that companion row as a global-list alias, not a ninth
+  production-environment deploy/smoke target. This proof does not claim full
+  application readiness, protected smoke, SLO, restore/rollback, or deploy
+  mutation readiness. Evidence:
+  `history/evidence/luc-1673-coolify-resource-inventory-reconciliation-2026-06-03.md`.
+- 2026-06-03 `LUC-1668-COOLIFY-TEAM-WORKSPACE-CONFIRMATION-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify
+  team/workspace selector truth. Fresh read-only Coolify API readback at
+  `2026-06-03T05:08:45Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, and production environment
+  `production` id `6` with six application rows. Explicit
+  `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` bindings remain absent, but this
+  is not an active blocker while current-team and project-scoped reads succeed.
+  No deploy, restart, rollback, env edit, database action, team setting change,
+  account action, secret readback, or live trading action was performed. This
+  proof does not claim full application readiness, protected smoke, SLO,
+  restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1668-coolify-team-workspace-confirmation-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1666-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-03T05:05:10Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production` id `6`, and eight canonical production-environment resources:
+  `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`,
+  `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`.
+  The global resources endpoint returned `17` visible rows, the same eight
+  rows by production environment id, and nine Soar-relevant rows by safe
+  name/type projection because Coolify exposes one redacted PostgreSQL
+  companion row. Treat that companion row as a global-list alias, not a ninth
+  production-environment deploy/smoke target. This proof does not claim full
+  application readiness, protected smoke, SLO, restore/rollback, or deploy
+  mutation readiness. Evidence:
+  `history/evidence/luc-1666-coolify-resource-inventory-reconciliation-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1662-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-03T04:36:40Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production` id `6`, and eight canonical production-environment resources:
+  six applications plus PostgreSQL and Redis. The global resources endpoint
+  showed `17` visible rows, the same eight rows by production environment id,
+  and nine Soar-relevant rows by safe name/type projection because Coolify
+  exposes one additional redacted PostgreSQL companion row; it remains a
+  global-list alias/companion row, not a ninth production-environment deploy or
+  smoke target. Applications remain `running:unknown` at the Coolify inventory
+  projection layer; PostgreSQL and Redis report `running:healthy`. No deploy,
+  restart, rollback, env edit, database action, team setting change, account
+  action, secret readback, or live trading action was performed. This does not
+  claim full application readiness, protected smoke, SLO, restore/rollback, or
+  deploy mutation readiness. Evidence:
+  `history/evidence/luc-1662-coolify-resource-inventory-reconciliation-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1656-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-03T04:08:03Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production`, and eight canonical production-environment resources: six
+  applications plus PostgreSQL and Redis. The global resources endpoint showed
+  the same eight rows by production environment id and nine Soar-relevant rows
+  by safe name/type projection because Coolify exposes one additional redacted
+  PostgreSQL companion row; it remains a global-list alias/companion row, not a
+  ninth production-environment deploy or smoke target. Applications remain
+  `running:unknown` at the Coolify inventory projection layer; PostgreSQL and
+  Redis report `running:healthy`. No deploy, restart, rollback, env edit,
+  database action, team setting change, account action, secret readback, or
+  live trading action was performed. This does not claim full application
+  readiness, protected smoke, SLO, restore/rollback, or deploy mutation
+  readiness. Evidence:
+  `history/evidence/luc-1656-coolify-resource-inventory-reconciliation-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1656-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-03T04:04:30Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production` id `6`, and eight canonical production-environment resources:
+  six applications plus PostgreSQL and Redis. The global resources endpoint
+  showed the same eight rows by production environment id and nine
+  Soar-relevant rows by safe name/type projection because Coolify exposes one
+  additional redacted PostgreSQL companion row; it remains a global-list
+  alias/companion row, not a ninth production-environment deploy or smoke
+  target. Applications remain `running:unknown` at the Coolify inventory
+  projection layer; PostgreSQL and Redis report `running:healthy`. No deploy,
+  restart, rollback, env edit, database action, team setting change, account
+  action, secret readback, or live trading action was performed. This does not
+  claim full application readiness, protected smoke, SLO, restore/rollback, or
+  deploy mutation readiness. Evidence:
+  `history/evidence/luc-1656-coolify-resource-inventory-reconciliation-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1651-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-03T03:33:27Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production` id `6`, and eight canonical production-environment resources:
+  six applications plus PostgreSQL and Redis. The global resources endpoint
+  showed the same eight rows by production environment id and nine
+  Soar-relevant rows by safe name/type projection because Coolify exposes one
+  additional redacted PostgreSQL companion row; it remains a global-list
+  alias/companion row, not a ninth production-environment deploy or smoke
+  target. Applications remain `running:unknown` at the Coolify inventory
+  projection layer; PostgreSQL and Redis report `running:healthy`. No deploy,
+  restart, rollback, env edit, database action, team setting change, account
+  action, secret readback, or live trading action was performed. This does not
+  claim full application readiness, protected smoke, SLO, restore/rollback, or
+  deploy mutation readiness. Evidence:
+  `history/evidence/luc-1651-coolify-resource-inventory-reconciliation-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1650-COOLIFY-TEAM-WORKSPACE-CONFIRMATION-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify
+  team/workspace selector truth. Fresh read-only Coolify API readback at
+  `2026-06-03T03:33:50Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production` id `6`, and the canonical eight-resource production environment
+  shape: six applications, PostgreSQL, and Redis. `COOLIFY_SOAR_TEAM_ID` /
+  `COOLIFY_TEAM_ID` remain absent in this runner, but this is not an active
+  blocker while current-team and project-scoped reads succeed. No deploy,
+  restart, rollback, env edit, database action, team setting change, account
+  action, secret readback, or live-trading action was performed. This does not
+  claim full application readiness, protected smoke, SLO, restore/rollback, or
+  deploy mutation readiness. Evidence:
+  `history/evidence/luc-1650-coolify-team-workspace-confirmation-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1647-COOLIFY-TEAM-WORKSPACE-CONFIRMATION-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify
+  team/workspace selector truth. Fresh read-only Coolify API readback at
+  `2026-06-03T03:08:26Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production` id `6`, and the canonical eight-resource production environment
+  shape: six applications, PostgreSQL, and Redis. `COOLIFY_SOAR_TEAM_ID` /
+  `COOLIFY_TEAM_ID` remain absent in this runner, but this is not an active
+  blocker while current-team and project-scoped reads succeed. No deploy,
+  restart, rollback, env edit, database action, team setting change, account
+  action, secret readback, or live-trading action was performed. This does not
+  by itself verify production smoke, SLO, restore/rollback, or deploy mutation
+  readiness. Evidence:
+  `history/evidence/luc-1647-coolify-team-workspace-confirmation-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1645-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-03T03:07:02Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production`, and eight canonical production-environment resources: six
+  applications plus PostgreSQL and Redis. The global resources endpoint showed
+  the same eight rows by production environment id and nine Soar-relevant rows
+  by safe name/type projection because Coolify exposes one additional redacted
+  PostgreSQL companion row; it remains a global-list alias/companion row, not
+  a ninth production-environment deploy or smoke target. Applications remain
+  `running:unknown` at the Coolify inventory projection layer; PostgreSQL and
+  Redis report `running:healthy`. No deploy, restart, rollback, env edit,
+  database action, team setting change, account action, secret readback, or
+  live trading action was performed. This does not claim full application
+  readiness, protected smoke, SLO, restore/rollback, or deploy mutation
+  readiness. Evidence:
+  `history/evidence/luc-1645-coolify-resource-inventory-reconciliation-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1644-COOLIFY-TEAM-WORKSPACE-CONFIRMATION-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify
+  team/workspace selector truth. Fresh read-only Coolify API readback at
+  `2026-06-03T03:03:27Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production` id `6`, and the canonical eight-resource production environment
+  shape: six applications, PostgreSQL, and Redis. `COOLIFY_SOAR_TEAM_ID` /
+  `COOLIFY_TEAM_ID` remain absent in this runner, but this is not an active
+  blocker while current-team and project-scoped reads succeed. No deploy,
+  restart, rollback, env edit, database action, team setting change, account
+  action, secret readback, or live-trading action was performed. This does not
+  by itself verify production smoke, SLO, restore/rollback, or deploy mutation
+  readiness. Evidence:
+  `history/evidence/luc-1644-coolify-team-workspace-confirmation-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1639-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify read-only
+  production status access binding truth. Fresh binding proof at
+  `2026-06-03T02:34:15Z` verified required binding names are present without
+  value disclosure, current selector id `0` name `LuckySparrow`, configured
+  project `Soar`, production environment `production`, and eight production
+  resources: six applications plus PostgreSQL and Redis. Applications remain
+  `running:unknown` at the Coolify inventory projection layer; PostgreSQL and
+  Redis report `running:healthy`. `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID`
+  remain absent in this runner, but this is not an active blocker while
+  current-team and project-scoped reads succeed. No deploy, restart, rollback,
+  env edit, database action, team setting change, account action, secret
+  readback, or live-trading action was performed. This does not claim full
+  application readiness, protected smoke, SLO, restore/rollback, or deploy
+  mutation readiness. Evidence:
+  `history/evidence/luc-1639-coolify-read-only-production-status-access-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1641-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-03T02:34:56Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production`, and eight canonical production-environment resources: six
+  applications plus PostgreSQL and Redis. The global resources endpoint still
+  exposes `postgresql-database-*`; it remains a
+  global-list PostgreSQL alias/companion row, not a ninth
+  production-environment deploy or smoke target. Applications remain
+  `running:unknown` at the Coolify inventory projection layer; PostgreSQL and
+  Redis report `running:healthy`. No deploy, restart, rollback, env edit,
+  database action, team setting change, account action, secret readback, or
+  live trading action was performed. This does not claim full application readiness, protected
+  smoke, SLO, restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1641-coolify-resource-inventory-reconciliation-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1634-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-03T02:03:30Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production`, and eight canonical production-environment resources: six
+  applications plus PostgreSQL and Redis. The global resources endpoint still
+  exposes `postgresql-database-*`; it remains a
+  global-list PostgreSQL alias/companion row, not a ninth
+  production-environment deploy or smoke target. Applications remain
+  `running:unknown` at the Coolify inventory projection layer; PostgreSQL and
+  Redis report `running:healthy`. No deploy, restart, rollback, env edit,
+  database action, team setting change, account action, or live trading action
+  was performed. This does not claim full application readiness, protected
+  smoke, SLO, restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1634-coolify-resource-inventory-reconciliation-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1633-COOLIFY-TEAM-WORKSPACE-CONFIRMATION-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify
+  team/workspace selector truth. Fresh read-only Coolify API readback at
+  `2026-06-03T02:03:22Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production` id `6`, and the canonical eight-resource production environment
+  shape: six applications, PostgreSQL, and Redis. `COOLIFY_SOAR_TEAM_ID` /
+  `COOLIFY_TEAM_ID` remain absent in this runner, but this is not an active
+  blocker while current-team and project-scoped reads succeed. No deploy,
+  restart, rollback, env edit, database action, team setting change, account
+  action, secret readback, or live-trading action was performed. This does not
+  by itself verify production smoke, SLO, restore/rollback, or deploy mutation
+  readiness. Evidence:
+  `history/evidence/luc-1633-coolify-team-workspace-confirmation-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1630-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-03T01:37:14Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production`, and eight canonical production-environment resources: six
+  applications plus PostgreSQL and Redis. The global resources endpoint still
+  exposes `postgresql-database-*`; it remains a
+  global-list PostgreSQL alias/companion row, not a ninth
+  production-environment deploy or smoke target. Applications remain
+  `running:unknown` at the Coolify inventory projection layer; PostgreSQL and
+  Redis report `running:healthy`. No deploy, restart, rollback, env edit,
+  database action, team setting change, account action, or live trading action
+  was performed. This does not claim full application readiness, protected
+  smoke, SLO, restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1630-coolify-resource-inventory-reconciliation-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1624-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-03T01:05:03Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production` id `6`, and eight canonical production-environment resources:
+  six applications plus PostgreSQL and Redis. The global resources endpoint
+  still exposes `postgresql-database-*`; it remains
+  a global-list PostgreSQL alias/companion row, not a ninth
+  production-environment deploy or smoke target. Applications remain
+  `running:unknown` at the Coolify inventory projection layer; PostgreSQL and
+  Redis report `running:healthy`. No deploy, restart, rollback, env edit,
+  database action, team setting change, account action, or live trading action
+  was performed. This does not claim full application readiness, protected
+  smoke, SLO, restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1624-coolify-resource-inventory-reconciliation-2026-06-03.md`.
+
+- 2026-06-03 `LUC-1620-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-03`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-03T00:38:06Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production` id `6`, and eight canonical production-environment resources:
+  six applications plus PostgreSQL and Redis. The global resources endpoint
+  still exposes `postgresql-database-*`; it remains
+  a global-list PostgreSQL alias/companion row, not a ninth
+  production-environment deploy or smoke target. Applications remain
+  `running:unknown` at the Coolify inventory projection layer; PostgreSQL and
+  Redis report `running:healthy`. No deploy, restart, rollback, env edit,
+  database action, team setting change, account action, or live trading action
+  was performed. This does not claim full application readiness, protected
+  smoke, SLO, restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1620-coolify-resource-inventory-reconciliation-2026-06-03.md`.
+
+- 2026-06-02 `LUC-1610-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T22:11:28Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production`, and eight canonical production-environment resources: six
+  applications plus PostgreSQL and Redis. The global resources endpoint still
+  exposes `postgresql-database-*`; this is recorded as
+  a global-list PostgreSQL alias/companion row, not as a ninth
+  production-environment deploy or smoke target. Applications remain
+  `running:unknown` at the Coolify inventory projection layer; PostgreSQL and
+  Redis report `running:healthy`. No deploy, restart, rollback, env edit,
+  database action, team setting change, account action, or live trading action
+  was performed. This does not claim full application readiness, protected
+  smoke, SLO, restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1610-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1605-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T21:52:06Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production`, and eight canonical production-environment resources: six
+  applications plus PostgreSQL and Redis. The global resources endpoint still
+  exposes `postgresql-database-*`; this is recorded as
+  a global-list PostgreSQL alias/companion row, not as a ninth
+  production-environment deploy or smoke target. Applications remain
+  `running:unknown` at the Coolify inventory projection layer; PostgreSQL and
+  Redis report `running:healthy`. No deploy, restart, rollback, env edit,
+  database action, team setting change, account action, or live trading action
+  was performed. This does not claim full application readiness, protected
+  smoke, SLO, restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1605-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1599-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T21:03:57Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production` id `6`, and eight canonical production-environment resources:
+  six applications plus PostgreSQL and Redis. The global resources endpoint
+  also exposes `postgresql-database-*`; this is
+  recorded as a global-list PostgreSQL alias/companion row, not as a ninth
+  production-environment deploy or smoke target. Applications remain
+  `running:unknown` at the Coolify inventory projection layer; PostgreSQL and
+  Redis report `running:healthy`. No deploy, restart, rollback, env edit,
+  database action, team setting change, account action, or live trading action
+  was performed. This does not claim full application readiness, protected
+  smoke, SLO, restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1599-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1594-COOLIFY-TEAM-WORKSPACE-CONFIRMATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify
+  team/workspace selector truth. Fresh read-only Coolify API readback at
+  `2026-06-02T20:55:41Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, and production environment
+  `production` id `6`. The global resources readback showed nine
+  Soar-relevant rows because Coolify exposes both `postgresql` and
+  `postgresql-database-*`; this does not change the
+  selector conclusion. `COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain
+  absent in this runner, but current-team and project-scoped reads succeeded,
+  so this is not an active blocker for status reconciliation. No deploy,
+  restart, rollback, env edit, database action, team setting change, account
+  action, or live trading action was performed. This does not claim full
+  application readiness, protected smoke, SLO, restore/rollback, or deploy
+  mutation readiness. Evidence:
+  `history/evidence/luc-1594-coolify-team-workspace-confirmation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1593-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T20:54:06Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production` id `6`, and eight redacted production resources: six
+  applications plus PostgreSQL and Redis. Applications remain
+  `running:unknown` at the Coolify inventory projection layer; PostgreSQL and
+  Redis report `running:healthy`. No deploy, restart, rollback, env edit,
+  database action, team setting change, account action, or live trading action
+  was performed. This does not claim full application readiness, protected
+  smoke, SLO, restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1593-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1591-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for Coolify production
+  status access. Fresh read-only Coolify API readback at
+  `2026-06-02T20:51:41Z` verified required binding names are present without
+  value disclosure, current selector id `0` name `LuckySparrow`, configured
+  project `Soar`, production environment `production`, and eight redacted
+  production resources. `COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain
+  absent in this runner, but current-team and project-scoped reads succeeded,
+  so this is not an active blocker for status reconciliation. No deploy,
+  restart, rollback, env edit, database action, team setting change, account
+  action, or live trading action was performed. This does not claim full
+  application readiness, protected smoke, SLO, restore/rollback, or deploy
+  mutation readiness. Evidence:
+  `history/evidence/luc-1591-coolify-read-only-production-status-access-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1586-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for Coolify production
+  status access. Fresh read-only Coolify API readback at
+  `2026-06-02T19:12:52Z` verified required binding names are present without
+  value disclosure, current selector id `0` name `LuckySparrow`, configured
+  project `Soar`, production environment `production`, and eight redacted
+  production resources. `COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain
+  absent in this runner, but current-team and project-scoped reads succeeded,
+  so this is not an active blocker for status reconciliation. No deploy,
+  restart, rollback, env edit, database action, team setting change, account
+  action, or live trading action was performed. This does not claim full
+  application readiness, protected smoke, SLO, restore/rollback, or deploy
+  mutation readiness. Evidence:
+  `history/evidence/luc-1586-coolify-read-only-production-status-access-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1584-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T19:08:59Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production` id `6`, and eight redacted production resources: six
+  applications plus PostgreSQL and Redis. Applications remain
+  `running:unknown` at the Coolify inventory projection layer; PostgreSQL and
+  Redis report `running:healthy`. No deploy, restart, rollback, env edit,
+  database action, team setting change, account action, or live trading action
+  was performed. This does not claim full application readiness, protected
+  smoke, SLO, restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1584-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1579-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for Coolify production
+  status access. Fresh read-only Coolify API readback at
+  `2026-06-02T19:03:37Z` verified required binding names are present without
+  value disclosure, current selector id `0` name `LuckySparrow`, configured
+  project `Soar`, production environment `production`, and eight redacted
+  production resources. `COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain
+  absent in this runner, but current-team and project-scoped reads succeeded,
+  so this is not an active blocker for status reconciliation. No deploy,
+  restart, rollback, env edit, database action, team setting change, account
+  action, or live trading action was performed. This does not claim full
+  application readiness, protected smoke, SLO, restore/rollback, or deploy
+  mutation readiness. Evidence:
+  `history/evidence/luc-1579-coolify-read-only-production-status-access-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1581-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T19:03:20Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production` id `6`, and eight redacted production resources: six
+  applications plus PostgreSQL and Redis. Applications remain
+  `running:unknown` at the Coolify inventory projection layer; PostgreSQL and
+  Redis report `running:healthy`. No deploy, restart, rollback, env edit,
+  database action, team setting change, account action, or live trading action
+  was performed. This does not claim full application readiness, protected
+  smoke, SLO, restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1581-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1575-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T18:33:56Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production`, and eight redacted production resources: six applications plus
+  PostgreSQL and Redis. Applications remain `running:unknown` at the Coolify
+  inventory projection layer; PostgreSQL and Redis report `running:healthy`.
+  No deploy, restart, rollback, env edit, database action, team setting
+  change, account action, or live trading action was performed. This does not
+  claim full application readiness, protected smoke, SLO, restore/rollback, or
+  deploy mutation readiness. Evidence:
+  `history/evidence/luc-1575-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1574-COOLIFY-TEAM-WORKSPACE-CONFIRMATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` improves for Coolify team/workspace
+  selector truth. Fresh read-only Coolify API readback at
+  `2026-06-02T18:34:30Z` verified the expected selector is team id `0`, name
+  `LuckySparrow`. Under that selector, the configured Soar project resolves to
+  project `Soar`, environment `production`, and eight redacted production
+  resources. `COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain absent in this
+  runner, but the selector is explicitly recorded as non-secret config truth
+  for this issue. No deploy, restart, rollback, env edit, database action, team
+  setting change, account action, or live trading action was performed. This
+  does not claim full application readiness, protected smoke, SLO,
+  restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1574-coolify-team-workspace-confirmation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1569-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T18:04:49Z` verified current selector id `0` name
+  `LuckySparrow`, configured project `Soar`, production environment
+  `production`, and eight redacted production resources: six applications plus
+  PostgreSQL and Redis. Applications remain `running:unknown` at the Coolify
+  inventory projection layer; PostgreSQL and Redis report `running:healthy`.
+  No deploy, restart, rollback, env edit, database action, team setting
+  change, account action, or live trading action was performed. This does not
+  claim full application readiness, protected smoke, SLO, restore/rollback, or
+  deploy mutation readiness. Evidence:
+  `history/evidence/luc-1569-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1554-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T17:04:40Z` verified configured project `Soar`, production
+  environment `production`, and eight redacted production resources: six
+  applications plus PostgreSQL and Redis. Applications remain
+  `running:unknown` at the Coolify inventory projection layer; PostgreSQL and
+  Redis report `running:healthy`. No deploy, restart, rollback, env edit,
+  database action, team setting change, account action, or live trading action
+  was performed. This does not claim full application readiness, protected
+  smoke, SLO, restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1554-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1549-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify production
+  resource inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T16:35:16Z` verified configured project `Soar`, production
+  environment `production`, and eight redacted production resources: six
+  applications plus PostgreSQL and Redis. Applications remain
+  `running:unknown` at the Coolify inventory projection layer; PostgreSQL and
+  Redis report `running:healthy`. No deploy, restart, rollback, env edit,
+  database action, team setting change, account action, or live trading action
+  was performed. This does not claim full application readiness, protected
+  smoke, SLO, restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1549-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1539-COOLIFY-TEAM-WORKSPACE-CONFIRMATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` improves for Coolify team/workspace
+  selector truth. Fresh read-only Coolify API readback at
+  `2026-06-02T16:08:15Z` verified the expected selector is team id `0`, name
+  `LuckySparrow`. Under that selector, the configured Soar project resolves to
+  project `Soar`, environment `production`, and eight redacted production
+  resources. `COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain absent in this
+  runner, but the selector is explicitly recorded as non-secret config truth
+  for this issue. No deploy, restart, rollback, env edit, database action, team
+  setting change, account action, or live trading action was performed. This
+  does not claim full application readiness, protected smoke, SLO,
+  restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1539-coolify-team-workspace-confirmation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1529-COOLIFY-TEAM-WORKSPACE-CONFIRMATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` improves for Coolify team/workspace
+  selector truth. Fresh read-only Coolify API readback at
+  `2026-06-02T15:33:12Z` verified the expected selector is team id `0`, name
+  `LuckySparrow`. Under that selector, the configured Soar project resolves to
+  project `Soar`, environment `production`, and eight redacted production
+  resources. `COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain absent in this
+  runner, but the selector is explicitly recorded as non-secret config truth
+  for this issue. No deploy, restart, rollback, env edit, database action, team
+  setting change, account action, or live trading action was performed. This
+  does not claim full application readiness, protected `/workers/ready`, SLO,
+  restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1529-coolify-team-workspace-confirmation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1518-COOLIFY-TEAM-WORKSPACE-CONFIRMATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` improves for Coolify team/workspace
+  selector truth. Fresh read-only Coolify API readback at
+  `2026-06-02T14:34:15Z` verified the expected selector is team id `0`, name
+  `LuckySparrow`. Under that selector, the configured Soar project resolves to
+  project `Soar`, environment `production`, and eight redacted production
+  resources. `COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain absent in this
+  runner, but the selector is now explicitly recorded as non-secret config
+  truth for this issue. No deploy, restart, rollback, env edit, database
+  action, team setting change, account action, or live trading action was
+  performed. Evidence:
+  `history/evidence/luc-1518-coolify-team-workspace-confirmation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1507-COOLIFY-TEAM-WORKSPACE-CONFIRMATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` improves for Coolify team/workspace
+  selector truth. Fresh read-only Coolify API readback at
+  `2026-06-02T14:03:35Z` verified the expected selector is team id `0`, name
+  `LuckySparrow`; prior UI memory called id `0` `Root Team`, while current API
+  naming is `LuckySparrow`. Under that selector, the configured Soar project
+  resolves to `Soar`, environment `production`, and the expected eight
+  production resources. `COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain
+  absent, but the exact selector is now recorded as non-secret config truth.
+  This does not claim full application readiness, protected `/workers/ready`,
+  SLO, restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1507-coolify-team-workspace-confirmation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1496-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for Coolify production
+  deploy-status access binding. Fresh read-only probes at
+  `2026-06-02T13:03:28Z` verified required binding names are present,
+  authenticated Coolify read endpoints succeed, the configured project binding
+  resolves to `Soar`, and the production environment exposes six application
+  resources plus PostgreSQL and Redis. `COOLIFY_SOAR_TEAM_ID` and
+  `COOLIFY_TEAM_ID` are absent, but project-scoped reads succeed, so this is
+  not an active blocker. The issue's latest blocked state was duplicate-run
+  janitor context only, with no first-class `blockedBy` issue. This does not
+  claim full application readiness, protected `/workers/ready`, SLO,
+  restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1496-coolify-read-only-production-status-access-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1479-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for production target
+  inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T09:33:58Z` verified the configured Soar project binding and
+  eight redacted resources: six applications (`soar-api`, `soar-web`,
+  `workers-backtest`, `workers-execution`, `workers-market-data`,
+  `workers-market-stream`) plus PostgreSQL and Redis. Application inventory
+  status remains `running:unknown`; PostgreSQL and Redis report
+  `running:healthy`. This is a no-drift inventory refresh only; it does not
+  claim full application readiness, protected `/workers/ready`, SLO,
+  restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1479-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1476-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for production target
+  inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T09:08:32Z` verified the configured Soar project binding and
+  eight redacted resources: six applications (`soar-api`, `soar-web`,
+  `workers-backtest`, `workers-execution`, `workers-market-data`,
+  `workers-market-stream`) plus PostgreSQL and Redis. Application inventory
+  status remains `running:unknown`; PostgreSQL and Redis report
+  `running:healthy`. This is a no-drift inventory refresh only; it does not
+  claim full application readiness, protected `/workers/ready`, SLO,
+  restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1476-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1473-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for production target
+  inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T09:03:08Z` verified the configured Soar project binding and
+  eight redacted resources: six applications (`soar-api`, `soar-web`,
+  `workers-backtest`, `workers-execution`, `workers-market-data`,
+  `workers-market-stream`) plus PostgreSQL and Redis. Application inventory
+  status remains `running:unknown`; PostgreSQL and Redis report
+  `running:healthy`. This is a no-drift inventory refresh only; it does not
+  claim full application readiness, protected `/workers/ready`, SLO,
+  restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1473-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1467-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for Coolify production
+  deploy-status access binding. Fresh read-only probes verified required
+  binding names are present, authenticated Coolify read endpoints succeed, the
+  configured project binding resolves to `Soar`, and the production environment
+  exposes six application resources plus PostgreSQL and Redis. `COOLIFY_SOAR_TEAM_ID`
+  and `COOLIFY_TEAM_ID` are absent, but project-scoped reads succeed, so this is
+  not an active blocker. This does not claim full application readiness,
+  protected `/workers/ready`, SLO, restore/rollback, or deploy mutation
+  readiness. Evidence:
+  `history/evidence/luc-1467-coolify-read-only-production-status-access-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1466-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for production target
+  inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T08:34:07Z` verified the configured Soar project binding,
+  production environment id `6`, and eight redacted resources: six applications
+  (`soar-api`, `soar-web`, `workers-backtest`, `workers-execution`,
+  `workers-market-data`, `workers-market-stream`) plus PostgreSQL and Redis.
+  Application inventory status remains `running:unknown`; PostgreSQL and Redis
+  report `running:healthy`. This is a no-drift inventory refresh only; it does
+  not claim full application readiness, protected `/workers/ready`, SLO,
+  restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1466-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1460-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for production target
+  inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T08:07:50Z` verified the configured Soar project binding,
+  production environment id `6`, and eight redacted resources: six applications
+  (`soar-api`, `soar-web`, `workers-backtest`, `workers-execution`,
+  `workers-market-data`, `workers-market-stream`) plus PostgreSQL and Redis.
+  Application inventory status remains `running:unknown`; PostgreSQL and Redis
+  report `running:healthy`. This is a no-drift inventory refresh only; it does
+  not claim full application readiness, protected `/workers/ready`, SLO,
+  restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1460-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1455-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for production target
+  inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T07:33:30Z` verified the configured Soar project binding,
+  production environment id `6`, and eight redacted resources: six applications
+  (`soar-api`, `soar-web`, `workers-backtest`, `workers-execution`,
+  `workers-market-data`, `workers-market-stream`) plus PostgreSQL and Redis.
+  Application inventory status remains `running:unknown`; PostgreSQL and Redis
+  report `running:healthy`. This is a no-drift inventory refresh only; it does
+  not claim full application readiness, protected `/workers/ready`, SLO,
+  restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1455-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1448-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for production target
+  inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T07:04:34Z` verified the configured Soar project binding,
+  production environment id `6`, and eight redacted resources: six applications
+  (`soar-api`, `soar-web`, `workers-backtest`, `workers-execution`,
+  `workers-market-data`, `workers-market-stream`) plus PostgreSQL and Redis.
+  Application inventory status remains `running:unknown`; PostgreSQL and Redis
+  report `running:healthy`. This is a no-drift inventory refresh only; it does
+  not claim full application readiness, protected `/workers/ready`, SLO,
+  restore/rollback, or deploy mutation readiness. Evidence:
+  `history/evidence/luc-1448-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1444-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for production target
+  inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T06:34:19Z` verified the configured Soar project binding,
+  production environment id `6`, and eight redacted resources: six applications
+  (`soar-api`, `soar-web`, `workers-backtest`, `workers-execution`,
+  `workers-market-data`, `workers-market-stream`) plus PostgreSQL and Redis.
+  This is a no-drift inventory refresh only; it does not claim full application
+  readiness, protected `/workers/ready`, SLO, restore/rollback, or deploy
+  mutation readiness. Evidence:
+  `history/evidence/luc-1444-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1443-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS`:
+  confidence for `SOAR-OPERATIONS-001` is improved for Coolify production
+  deploy-status access binding. Fresh read-only probes verified required
+  binding names are present, authenticated Coolify read endpoints succeed, the
+  configured project binding resolves to `Soar`, and project/list inventory can
+  observe six application resources plus PostgreSQL and Redis. Direct
+  `COOLIFY_SOAR_API_APP_ID` and `COOLIFY_SOAR_WEB_APP_ID` aliases still return
+  `404`, so direct resource-alias automation remains a Security/Ops refresh
+  follow-up if needed. This does not claim full application readiness,
+  protected `/workers/ready`, SLO, restore/rollback, or deploy mutation
+  readiness. Evidence:
+  `history/evidence/luc-1443-coolify-read-only-production-status-access-2026-06-02.md`.
+
+- 2026-06-02 `LUC-1434-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
+  confidence for `SOAR-OPERATIONS-001` remains improved for production target
+  inventory truth. Fresh read-only Coolify API readback at
+  `2026-06-02T06:03:39Z` verified the configured Soar project binding,
+  production environment id `6`, and eight redacted resources: six applications
+  (`soar-api`, `soar-web`, `workers-backtest`, `workers-execution`,
+  `workers-market-data`, `workers-market-stream`) plus PostgreSQL and Redis.
+  This is a no-drift inventory refresh only; it does not claim full application
+  readiness, protected `/workers/ready`, SLO, restore/rollback, or deploy
+  mutation readiness. Evidence:
+  `history/evidence/luc-1434-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
 - 2026-06-02 `LUC-1422-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02`:
   confidence for `SOAR-OPERATIONS-001` remains improved for production target
   inventory truth. Fresh read-only Coolify API readback at

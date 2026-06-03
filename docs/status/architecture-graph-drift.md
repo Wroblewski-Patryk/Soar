@@ -6,9 +6,9 @@ This audit compares representative source, test, documentation, config, and pipe
 
 ## Summary
 
-| Total inventoried files | 812 |
+| Total inventoried files | 816 |
 | Covered by graph CSV paths | 812 |
-| Missing graph path references | 0 |
+| Missing graph path references | 4 |
 
 ## Categories
 
@@ -16,7 +16,7 @@ This audit compares representative source, test, documentation, config, and pipe
 | --- | ---: | ---: | ---: |
 | apiRoutes | 22 | 22 | 0 |
 | apiServices | 119 | 119 | 0 |
-| apiTests | 196 | 196 | 0 |
+| apiTests | 200 | 196 | 4 |
 | webPages | 37 | 37 | 0 |
 | webComponents | 119 | 119 | 0 |
 | webHooksAndServices | 40 | 40 | 0 |
@@ -37,7 +37,10 @@ This audit compares representative source, test, documentation, config, and pipe
 
 ### apiTests
 
-- None.
+- `apps/api/src/middleware/requireRole.test.ts`
+- `apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts`
+- `apps/api/src/modules/bots/bots.runtime-close-dca-authority.e2e.test.ts`
+- `apps/api/src/modules/positions/positions.orphan-repair.contract.e2e.test.ts`
 
 ### webPages
 

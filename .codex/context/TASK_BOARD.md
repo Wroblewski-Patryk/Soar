@@ -1,3 +1,1809 @@
+## 2026-06-03 LUC-1679 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - acknowledged the latest duplicate-owner janitor comment and continued only the kept owner lane;
+  - verified expected Coolify team/workspace selector through fresh read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1679/heartbeat-context` -> pass; issue read back as `LUC-1679`, status `blocked`, priority `high`, zero first-class blockers;
+  - latest issue comment -> duplicate-owner janitor; no product, deploy, production, secret, or project-code mutation performed by duplicate lane;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T05:37:45Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, environment `production`, id `6`, six application rows.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1679-coolify-team-workspace-confirmation-2026-06-03.md`
+  - `history/tasks/luc-1679-confirm-coolify-team-workspace-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1678 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through fresh read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1678/heartbeat-context` -> pass; issue read back as `LUC-1678`, status `blocked`, priority `high`, zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T05:38:12Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, environment `production`, id `6`, six application rows, one PostgreSQL row, one Redis row, and zero generic service rows.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1678-coolify-team-workspace-confirmation-2026-06-03.md`
+  - `history/tasks/luc-1678-confirm-coolify-team-workspace-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1672 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through fresh read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1672/heartbeat-context` -> pass; issue read back as `LUC-1672`, status `in_progress`, priority `high`, zero first-class blockers;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T05:34:32Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, environment `production`, id `6`, six application rows.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1672-coolify-team-workspace-confirmation-2026-06-03.md`
+  - `history/tasks/luc-1672-confirm-coolify-team-workspace-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1673 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight canonical resources: six applications plus PostgreSQL and Redis;
+  - reconciled the global resources endpoint's extra PostgreSQL alias/companion row without treating it as a ninth production-environment deploy target;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1673/heartbeat-context` -> pass; issue read back as `blocked`, priority `critical`, zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T05:36:00Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis; PostgreSQL restart count `52`, Redis restart count `682`, and API restart count `5` remain smoke/SLO watch items;
+  - `GET /api/v1/resources` -> pass, `17` visible rows, `8` rows matching the production environment id, and `9` Soar-relevant global rows in the allowlisted name/type projection due the redacted PostgreSQL alias/companion row.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1673-coolify-resource-inventory-reconciliation-2026-06-03.md`
+  - `history/tasks/luc-1673-reconcile-coolify-resource-inventory-2026-06-03-task.md`
+## 2026-06-03 LUC-1677 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - verified Coolify read-only production status bindings are present by name without printing values;
+  - confirmed current Coolify selector id `0`, name `LuckySparrow`;
+  - confirmed configured project `Soar` and environment `production` resolve through authenticated read-only API;
+  - confirmed production environment topology remains eight canonical resources: six applications plus PostgreSQL and Redis;
+  - reconciled the known redacted PostgreSQL companion row from the global resources endpoint without treating it as a ninth production-environment deploy target.
+- Evidence:
+  - `GET /api/issues/LUC-1677/heartbeat-context` -> pass; issue read back as `blocked`, priority `critical`, zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T05:39:51Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis;
+  - `GET /api/v1/resources` -> pass, `17` visible rows; Soar allowlisted projection includes six applications, PostgreSQL, Redis, and one redacted PostgreSQL companion row.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1677-coolify-read-only-production-status-access-2026-06-03.md`
+  - `history/tasks/luc-1677-operator-coolify-bind-read-only-production-status-access-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1668 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through fresh read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1668/heartbeat-context` -> pass; issue read back as `LUC-1668`, status `in_progress`, priority `high`, zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T05:08:45Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, environment `production`, id `6`, six application rows.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1668-coolify-team-workspace-confirmation-2026-06-03.md`
+  - `history/tasks/luc-1668-confirm-coolify-team-workspace-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1666 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight canonical resources: six applications plus PostgreSQL and Redis;
+  - reconciled the global resources endpoint's extra PostgreSQL alias/companion row without treating it as a ninth production-environment deploy target;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1666/heartbeat-context` -> pass; issue read back as `in_progress`, priority `critical`, zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T05:05:10Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis; PostgreSQL restart count `52`, Redis restart count `682`, and API restart count `5` remain smoke/SLO watch items;
+  - `GET /api/v1/resources` -> pass, `17` visible rows, `8` rows matching the production environment id, and `9` Soar-relevant global rows in the allowlisted name/type projection due the redacted PostgreSQL alias/companion row.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1666-coolify-resource-inventory-reconciliation-2026-06-03.md`
+  - `history/tasks/luc-1666-reconcile-coolify-resource-inventory-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1661 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through fresh read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1661/heartbeat-context` -> pass; issue read back as `LUC-1661`, status `in_progress`, priority `high`, zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T04:35:05Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, environment `production`, id `6`, six applications plus PostgreSQL and Redis.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1661-coolify-team-workspace-confirmation-2026-06-03.md`
+  - `history/tasks/luc-1661-confirm-coolify-team-workspace-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1662 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight canonical resources: six applications plus PostgreSQL and Redis;
+  - reconciled the global resources endpoint's extra PostgreSQL alias/companion row without treating it as a ninth production-environment deploy target;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1662/heartbeat-context` -> pass; issue read back as `in_progress`, priority `critical`, zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T04:36:40Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis; PostgreSQL restart count `52`, Redis restart count `682`, and API restart count `5` remain smoke/SLO watch items;
+  - `GET /api/v1/resources` -> pass, `17` visible rows, `8` rows matching the production environment id, and `9` Soar-relevant global rows in the allowlisted name/type projection due the redacted PostgreSQL alias/companion row.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1662-coolify-resource-inventory-reconciliation-2026-06-03.md`
+  - `history/tasks/luc-1662-reconcile-coolify-resource-inventory-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1656 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - refreshed authenticated read-only Coolify API production-environment resource projection after blockers `LUC-1654` and `LUC-1655` resolved;
+  - confirmed the Soar production environment still contains eight canonical resources: six applications plus PostgreSQL and Redis;
+  - reconciled the global resources endpoint's extra PostgreSQL alias/companion row without treating it as a ninth production-environment deploy target;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1656/heartbeat-context` -> pass; issue read back as `in_progress`, priority `critical`, zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T04:08:03Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis; PostgreSQL restart count `52`, Redis restart count `682`, and API restart count `5` remain smoke/SLO watch items;
+  - `GET /api/v1/resources` -> pass, `17` visible rows, `8` rows matching the production environment id, and `9` Soar-relevant global rows in the allowlisted name/type projection due the redacted PostgreSQL alias/companion row.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1656-coolify-resource-inventory-reconciliation-2026-06-03.md`
+  - `history/tasks/luc-1656-reconcile-coolify-resource-inventory-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1655 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through fresh read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1655/heartbeat-context` -> pass; issue read back as `LUC-1655`, status `in_progress`, priority `high`, zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T04:03:57Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, environment `production`, id `6`, six applications plus PostgreSQL and Redis.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1655-coolify-team-workspace-confirmation-2026-06-03.md`
+  - `history/tasks/luc-1655-confirm-coolify-team-workspace-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1654 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - verified Coolify read-only production status bindings are present by name without printing values;
+  - confirmed current Coolify selector id `0`, name `LuckySparrow`;
+  - confirmed configured project `Soar` and environment `production` resolve through authenticated read-only API;
+  - confirmed production environment topology remains eight canonical resources: six applications plus PostgreSQL and Redis;
+  - reconciled the known redacted PostgreSQL companion row from the global resources endpoint without treating it as a ninth production-environment deploy target.
+- Evidence:
+  - `GET /api/issues/LUC-1654/heartbeat-context` -> pass; issue read back as `in_progress`, priority `critical`, zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T04:04:08Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis;
+  - `GET /api/v1/resources` -> pass, `17` visible rows; Soar allowlisted projection includes six applications, PostgreSQL, Redis, and one redacted PostgreSQL companion row.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1654-coolify-read-only-production-status-access-2026-06-03.md`
+  - `history/tasks/luc-1654-operator-coolify-bind-read-only-production-status-access-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1656 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight canonical resources: six applications plus PostgreSQL and Redis;
+  - reconciled the global resources endpoint's extra PostgreSQL alias/companion row without treating it as a ninth production-environment deploy target;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1656/heartbeat-context` -> pass; issue read back as `in_progress`, priority `critical`, zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T04:04:30Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis; PostgreSQL restart count `52`, Redis restart count `682`, and API restart count `5` remain smoke/SLO watch items;
+  - `GET /api/v1/resources` -> pass, `17` visible rows, `8` rows matching the production environment id, and `9` Soar-relevant global rows in the allowlisted name/type projection due the redacted PostgreSQL alias/companion row.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1656-coolify-resource-inventory-reconciliation-2026-06-03.md`
+  - `history/tasks/luc-1656-reconcile-coolify-resource-inventory-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1651 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight canonical resources: six applications plus PostgreSQL and Redis;
+  - reconciled the global resources endpoint's extra PostgreSQL alias/companion row without treating it as a ninth production-environment deploy target;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1651/heartbeat-context` -> pass; issue read back as `in_progress`, priority `critical`, zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T03:33:27Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis; PostgreSQL restart count `52`, Redis restart count `682`, and API restart count `5` remain smoke/SLO watch items;
+  - `GET /api/v1/resources` -> pass, `17` visible rows, `8` rows matching the production environment id, and `9` Soar-relevant global rows in the allowlisted name/type projection due the redacted PostgreSQL alias/companion row.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1651-coolify-resource-inventory-reconciliation-2026-06-03.md`
+  - `history/tasks/luc-1651-reconcile-coolify-resource-inventory-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1650 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through fresh read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1650/heartbeat-context` -> pass; issue read back as `LUC-1650`, status `in_progress`, priority `high`, zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T03:33:50Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, environment `production`, id `6`, six applications plus PostgreSQL and Redis.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1650-coolify-team-workspace-confirmation-2026-06-03.md`
+  - `history/tasks/luc-1650-confirm-coolify-team-workspace-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1647 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through fresh read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1647/heartbeat-context` -> pass; issue read back as `LUC-1647`, status `in_progress`, priority `high`, zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T03:08:26Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, environment `production`, id `6`, six applications plus PostgreSQL and Redis.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1647-coolify-team-workspace-confirmation-2026-06-03.md`
+  - `history/tasks/luc-1647-confirm-coolify-team-workspace-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1644 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through fresh read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1644/heartbeat-context` -> pass; issue read back as `LUC-1644`, status `in_progress`, priority `high`, zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T03:03:27Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, environment `production`, id `6`, six applications plus PostgreSQL and Redis.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1644-coolify-team-workspace-confirmation-2026-06-03.md`
+  - `history/tasks/luc-1644-confirm-coolify-team-workspace-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1645 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight canonical resources: six applications plus PostgreSQL and Redis;
+  - reconciled the global resources endpoint's extra PostgreSQL alias/companion row without treating it as a ninth production-environment deploy target;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1645/heartbeat-context` -> pass; issue read back as `in_progress`, priority `critical`, zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T03:07:02Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present as the single environment;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis; PostgreSQL restart count `52`, Redis restart count `682`, and API restart count `5` remain smoke/SLO watch items;
+  - `GET /api/v1/resources` -> pass, `17` visible rows, `8` rows matching the production environment id, and `9` Soar-relevant global rows in the allowlisted name/type projection due the redacted PostgreSQL alias/companion row.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1645-coolify-resource-inventory-reconciliation-2026-06-03.md`
+  - `history/tasks/luc-1645-reconcile-coolify-resource-inventory-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1640 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through fresh read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1640/heartbeat-context` -> pass; issue read back as `LUC-1640`, status `blocked`, priority `high`, zero first-class blockers; stale blocked disposition resolved by fresh proof;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T02:34:02Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, environment `production`, id `6`, six applications plus PostgreSQL and Redis.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1640-coolify-team-workspace-confirmation-2026-06-03.md`
+  - `history/tasks/luc-1640-confirm-coolify-team-workspace-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1641 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight canonical resources: six applications plus PostgreSQL and Redis;
+  - reconciled the global resources endpoint's extra PostgreSQL alias/companion row without treating it as a ninth production-environment deploy target;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1641/heartbeat-context` -> pass; issue read back as `blocked`, priority `critical`, zero first-class blockers;
+  - `GET /api/issues/LUC-1641/comments` -> pass; only comment was duplicate-run janitor context, not an access blocker;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T02:34:56Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present as the single environment;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis; PostgreSQL restart count `52`, Redis restart count `682`, and API restart count `5` remain smoke/SLO watch items;
+  - `GET /api/v1/resources` -> pass, `17` visible rows and `9` Soar-relevant global rows in the allowlisted all-resource projection due the PostgreSQL alias/companion row.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1641-coolify-resource-inventory-reconciliation-2026-06-03.md`
+  - `history/tasks/luc-1641-reconcile-coolify-resource-inventory-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1639 [Operator][Coolify] Bind Coolify read-only production status access
+
+- Status: DONE
+- Owner: Ops Release Lead
+- Result:
+  - verified Coolify read-only production status bindings are present by name without printing values;
+  - confirmed authenticated Coolify API readback resolves selector `0` / `LuckySparrow`, project `Soar`, environment `production`, and eight production resources;
+  - `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent but are not an active blocker while current-team and project-scoped reads succeed;
+  - no deploy, restart, rollback, env edit, database action, team setting change, account action, secret readback, or live-trading action was performed.
+- Validation:
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current`, project, environments, production environment, and resources read-only probes -> pass at `2026-06-03T02:34:15Z`;
+  - production inventory count -> six applications, one PostgreSQL, one Redis.
+- Evidence:
+  - `history/evidence/luc-1639-coolify-read-only-production-status-access-2026-06-03.md`
+  - `history/tasks/luc-1639-operator-coolify-bind-read-only-production-status-access-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1636 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through fresh read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1636/heartbeat-context` -> pass; issue read back as `LUC-1636`, status `in_progress`, priority `high`, no blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T02:08:05Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, environment `production`, id `6`, six applications plus PostgreSQL and Redis.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1636-coolify-team-workspace-confirmation-2026-06-03.md`
+  - `history/tasks/luc-1636-confirm-coolify-team-workspace-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1634 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight canonical resources: six applications plus PostgreSQL and Redis;
+  - reconciled the global resources endpoint's extra PostgreSQL alias/companion row without treating it as a ninth production-environment deploy target;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1634/heartbeat-context` -> pass; issue read back as `in_progress`, priority `critical`, zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T02:03:30Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present as the single environment;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis; PostgreSQL restart count `52`, Redis restart count `682`, and API restart count `5` remain smoke/SLO watch items;
+  - `GET /api/v1/resources` -> pass, `17` visible rows and `9` Soar-relevant global rows due the PostgreSQL alias/companion row.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1634-coolify-resource-inventory-reconciliation-2026-06-03.md`
+  - `history/tasks/luc-1634-reconcile-coolify-resource-inventory-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1633 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through fresh read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1633/heartbeat-context` -> pass; issue read back as `LUC-1633`, status `in_progress`, priority `high`, no blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T02:03:22Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, environment `production`, id `6`, six applications plus PostgreSQL and Redis.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1633-coolify-team-workspace-confirmation-2026-06-03.md`
+  - `history/tasks/luc-1633-confirm-coolify-team-workspace-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1629 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through fresh read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1629/heartbeat-context` -> pass; issue read back as `LUC-1629`, status `in_progress`, priority `high`, no blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T01:34:10Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, environment `production`, id `6`, six applications plus PostgreSQL and Redis.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1629-coolify-team-workspace-confirmation-2026-06-03.md`
+  - `history/tasks/luc-1629-confirm-coolify-team-workspace-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1630 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight canonical resources: six applications plus PostgreSQL and Redis;
+  - reconciled the global resources endpoint's extra PostgreSQL alias/companion row without treating it as a ninth production-environment deploy target;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1630/heartbeat-context` -> pass; issue read back as `blocked`, priority `critical`, zero first-class blockers; latest watchdog comment blocked this sibling only to avoid duplicate live Ops lanes behind `LUC-1629`;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T01:37:14Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis; PostgreSQL restart count `52` and Redis restart count `682` remain smoke/SLO watch items;
+  - `GET /api/v1/resources` -> pass, 17 visible rows and 9 Soar-relevant global rows due the PostgreSQL alias/companion row.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1630-coolify-resource-inventory-reconciliation-2026-06-03.md`
+  - `history/tasks/luc-1630-reconcile-coolify-resource-inventory-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1626 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through fresh read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1626/heartbeat-context` -> pass; issue read back as `LUC-1626`, status `in_progress`, priority `high`, no blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T01:10:42Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` and production readback -> pass, environment `production`, id `6`;
+  - production environment inventory -> six applications plus PostgreSQL and Redis.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1626-coolify-team-workspace-2026-06-03.md`
+  - `history/tasks/luc-1626-confirm-coolify-team-workspace-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1623 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through fresh read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/{task-id}/heartbeat-context` -> pass; issue read back as `LUC-1623`, status `in_progress`, priority `high`, no blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T01:04:29Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1623-coolify-team-workspace-confirmation-2026-06-03.md`
+  - `history/tasks/luc-1623-confirm-coolify-team-workspace-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1624 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight canonical resources: six applications plus PostgreSQL and Redis;
+  - reconciled the global resources endpoint's extra PostgreSQL alias/companion row without treating it as a ninth production-environment deploy target;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1624/heartbeat-context` -> pass; issue was stale `blocked` with zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T01:06:15Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis; Redis restart count `682` remains a smoke/SLO watch item;
+  - `GET /api/v1/resources` -> pass, 17 visible rows and 9 Soar-relevant global rows due the PostgreSQL alias/companion row.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1624-coolify-resource-inventory-reconciliation-2026-06-03.md`
+  - `history/tasks/luc-1624-reconcile-coolify-resource-inventory-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1620 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight canonical resources: six applications plus PostgreSQL and Redis;
+  - reconciled the global resources endpoint's extra PostgreSQL alias/companion row without treating it as a ninth production-environment deploy target;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1620/heartbeat-context` -> pass; issue was stale `blocked` with zero first-class blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T00:38:06Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis;
+  - `GET /api/v1/resources` -> pass, 17 visible rows and 9 Soar-relevant global rows due the PostgreSQL alias/companion row.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1620-coolify-resource-inventory-reconciliation-2026-06-03.md`
+  - `history/tasks/luc-1620-reconcile-coolify-resource-inventory-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1619 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through fresh read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/{task-id}/heartbeat-context` -> pass; issue read back as `LUC-1619`, status `in_progress`, priority `high`, no blockers;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T00:36:17Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1619-coolify-team-workspace-confirmation-2026-06-03.md`
+  - `history/tasks/luc-1619-confirm-coolify-team-workspace-2026-06-03-task.md`
+
+## 2026-06-02 LUC-1614 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through fresh read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/{task-id}` -> pass; issue read back as `LUC-1614`, status `in_progress`, priority `high`;
+  - names-only Paperclip and Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T22:33:52Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1614-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1614-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1611 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through fresh read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1611/heartbeat-context` -> pass; issue read back as `blocked` with zero first-class blockers;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T22:14:29Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1611-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1611-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1610 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight canonical resources: six applications plus PostgreSQL and Redis;
+  - reconciled the global resources endpoint's extra PostgreSQL alias/companion row without treating it as a ninth production-environment deploy target;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1610/heartbeat-context` -> pass; stale duplicate-run janitor blocker comment, no first-class blockers;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T22:11:28Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis;
+  - `GET /api/v1/resources` -> pass, 17 visible rows and 9 Soar-relevant global rows due the PostgreSQL alias/companion row.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1610-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1610-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1609 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through fresh read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1609/heartbeat-context` -> pass; issue had no comments and no first-class blockers;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T22:08:15Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1609-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1609-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1605 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight canonical resources: six applications plus PostgreSQL and Redis;
+  - reconciled the global resources endpoint's extra PostgreSQL alias/companion row without treating it as a ninth production-environment deploy target;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1605/heartbeat-context` -> pass; issue had no comments and no first-class blockers;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T21:52:06Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis;
+  - `GET /api/v1/resources` -> pass, 17 visible rows and 9 Soar-relevant global rows due the PostgreSQL alias/companion row.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1605-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1605-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1604 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1604/heartbeat-context` -> pass; issue had no comments and no first-class blockers;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T21:50:29Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1604-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1604-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1601 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1601/heartbeat-context` -> pass; issue had no first-class blockers;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T21:09:36Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1601-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1601-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1598 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed configured project `Soar` and environment `production` resolve under selector `0` / `LuckySparrow`;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1598/heartbeat-context` -> pass; no comments and no first-class blockers;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T21:04:18Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1598-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1598-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1599 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight canonical resources: six applications plus PostgreSQL and Redis;
+  - reconciled the global resources endpoint's extra PostgreSQL alias/companion row without treating it as a ninth production-environment deploy target;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1599/heartbeat-context` -> pass; stale duplicate-run janitor blocker comment, no first-class blockers;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T21:03:57Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, production environment id `6` (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` visible rows; `9` Soar-relevant global rows due the PostgreSQL alias/companion row).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1599-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1599-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1593 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1593/heartbeat-context` -> pass; stale blocked status had no first-class blockers;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T20:54:06Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, production environment id `6` (`6` applications, `1` PostgreSQL, `1` Redis, `0` generic services);
+  - `GET /api/v1/resources` -> pass (`17` visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1593-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1593-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1591 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - verified Coolify read-only production status bindings are present by name without printing values;
+  - confirmed authenticated Coolify API readback resolves selector `0` / `LuckySparrow`, project `Soar`, environment `production`, and eight production resources;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1591/heartbeat-context` -> pass; no comments and no first-class blockers;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T20:51:41Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis;
+  - `GET /api/v1/resources` -> pass (`17` visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1591-coolify-read-only-production-status-access-2026-06-02.md`
+  - `history/tasks/luc-1591-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1586 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - verified Coolify read-only production status bindings are present by name without printing values;
+  - confirmed authenticated Coolify API readback resolves selector `0` / `LuckySparrow`, project `Soar`, environment `production`, and eight production resources;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1586/heartbeat-context` -> pass; no comments and no first-class blockers;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T19:12:52Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis;
+  - `GET /api/v1/resources` -> pass (`17` visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1586-coolify-read-only-production-status-access-2026-06-02.md`
+  - `history/tasks/luc-1586-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1584 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - names-only Coolify env binding check -> pass;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T19:08:59Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, production environment id `6` (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1584-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1584-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1583 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed configured Soar project and production environment still resolve under that selector;
+  - recorded no mutation boundary for deploy/restart/rollback/env/database/team/account/live-trading actions.
+- Evidence:
+  - `GET /api/issues/LUC-1583/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` -> absent in this runner;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T19:09:11Z`, id `0`, name `LuckySparrow`;
+  - configured project read -> pass, project `Soar`;
+  - production environment read -> pass, environment `production`, id `6`;
+  - resource projection -> pass, six applications plus PostgreSQL and Redis;
+  - resource status projection -> applications `running:unknown`, PostgreSQL `running:healthy`, Redis `running:healthy`.
+- Safe next proof: rerun the Coolify resource reconciler when inventory freshness is needed; selector is no longer an active blocker.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1583-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/evidence/luc-1583-coolify-team-workspace-selector-2026-06-02.md`
+  - `history/tasks/luc-1583-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1585 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed current selector id `0`, name `LuckySparrow`;
+  - confirmed the configured Soar project and production environment are visible under that selector.
+- Evidence:
+  - `GET /api/issues/LUC-1585/heartbeat-context` -> pass; issue had no first-class blockers;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` -> absent in this runner;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T19:12:54Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/{configured-production-environment}` -> pass at `2026-06-02T19:12:54Z` (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Safe next proof: rerun the Coolify resource reconciler and compare discovered project/resources against expected topology.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1585-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1585-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1581 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - names-only Coolify env binding check -> pass;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T19:03:20Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, production environment id `6` (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1581-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1581-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1575 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - names-only Coolify env binding check -> pass;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T18:33:56Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` returned;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1575-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1575-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1571 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed current selector id `0`, name `LuckySparrow`;
+  - confirmed the configured Soar project and production environment are visible under that selector.
+- Evidence:
+  - `GET /api/issues/LUC-1571/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` -> absent in this runner;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T18:11:24Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/{configured-production-environment}` -> pass at `2026-06-02T18:11:24Z` (`6` applications, `1` PostgreSQL, `1` Redis).
+- Safe next proof: rerun the Coolify resource reconciler and compare discovered project/resources against expected topology.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1571-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1571-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1568 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed current selector id `0`, name `LuckySparrow`;
+  - confirmed the configured Soar project and production environment are visible under that selector.
+- Evidence:
+  - `GET /api/issues/LUC-1568/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` -> absent in this runner;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T18:03:58Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/{configured-production-environment}` -> pass at `2026-06-02T18:03:58Z` (`6` applications, `1` PostgreSQL, `1` Redis).
+- Safe next proof: rerun the Coolify resource reconciler and compare discovered project/resources against expected topology.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1568-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1568-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1569 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - names-only Coolify env binding check -> pass;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T18:04:49Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` returned;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1569-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1569-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1564 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed current selector id `0`, name `LuckySparrow`;
+  - confirmed the configured Soar project and production environment are visible under that selector.
+- Evidence:
+  - `GET /api/issues/LUC-1564/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` -> absent in this runner;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T17:33:59Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/{configured-production-environment}` -> pass at `2026-06-02T17:33:59Z` (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Safe next proof: rerun the Coolify resource reconciler and compare discovered project/resources against expected topology.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1564-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1564-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1559 [Recovery][Coolify] Apply LUC-1553 selector confirmation closure
+- Status: done.
+- Scope:
+  - consumed recovery wake for the already verified `LUC-1553` Coolify selector lane;
+  - accepted the `LUC-1553` proof for selector id `0`, name `LuckySparrow`, project `Soar`, production environment, and eight-resource topology;
+  - updated local source truth so `LUC-1553` no longer appears delegated to recovery closure.
+- Evidence:
+  - `GET /api/issues/LUC-1559/heartbeat-context` -> pass; parent `LUC-1553` is `done`;
+  - existing source evidence remains `history/evidence/luc-1553-coolify-team-workspace-confirmation-2026-06-02.md`;
+  - `git diff --check` on touched closure files -> pass.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/tasks/luc-1559-apply-luc-1553-selector-confirmation-closure-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1556 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed current selector id `0`, name `LuckySparrow`;
+  - confirmed the configured Soar project and production environment are visible under that selector.
+- Evidence:
+  - `GET /api/issues/LUC-1556/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T17:11:40Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/{configured-production-environment}` -> pass at `2026-06-02T17:11:40Z` (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1556-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1556-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1560 [Ops][Coolify] Verify Soar expected Coolify team/workspace binding
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed current selector id `0`, name `LuckySparrow`;
+  - confirmed the configured Soar project and production environment are visible under that selector.
+- Evidence:
+  - `GET /api/issues/LUC-1560/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` -> absent in this runner;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T17:13:03Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/{configured-production-environment}` -> pass at `2026-06-02T17:13:03Z` (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Safe next proof: rerun the Coolify resource reconciler and compare discovered project/resources against expected topology.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1560-coolify-team-workspace-binding-2026-06-02.md`
+  - `history/tasks/luc-1560-confirm-coolify-team-workspace-binding-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1553 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done; Paperclip recovery closure applied by `[LUC-1559](/LUC/issues/LUC-1559)`.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed current selector id `0`, name `LuckySparrow`;
+  - confirmed the configured Soar project and production environment are visible under that selector.
+- Evidence:
+  - `GET /api/issues/LUC-1553/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T17:08:25Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/{configured-production-environment}` -> pass at `2026-06-02T17:08:25Z` (`6` applications, `1` PostgreSQL, `1` Redis).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Paperclip disposition:
+  - attempted `PATCH /api/issues/LUC-1553` to `done` -> rejected: `Agent cannot mutate another agent's issue`;
+  - current source owner: recovery agent `2c4c03b3-3a08-4092-88e4-25197ba75113`;
+  - recovery issue `[LUC-1559](/LUC/issues/LUC-1559)` accepted this evidence and applied final closure.
+- Artifacts:
+  - `history/evidence/luc-1553-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1553-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1554 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - names-only Coolify env binding check -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1554-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1554-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1548 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed current selector id `0`, name `LuckySparrow`;
+  - confirmed the configured Soar project and production environment are visible under that selector.
+- Evidence:
+  - `GET /api/issues/LUC-1548/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T16:34:09Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/{configured-production-environment}` -> pass (`6` applications, `1` PostgreSQL, `1` Redis).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1548-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1548-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1549 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - names-only Coolify env binding check -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1549-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1549-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1541 [Recovery][LUC-1533] Apply Coolify selector confirmation closure
+- Status: done.
+- Scope:
+  - consumed source-scoped recovery wake for the already verified Coolify selector lane;
+  - accepted the `LUC-1533` proof for selector id `0`, name `LuckySparrow`, project `Soar`, production environment, and eight-resource topology;
+  - updated local source truth so `LUC-1533` no longer appears blocked on recovery closure.
+- Evidence:
+  - `GET /api/issues/LUC-1541/heartbeat-context` -> pass;
+  - existing source evidence remains `history/evidence/luc-1533-coolify-team-workspace-confirmation-2026-06-02.md`;
+  - `git diff --check` on touched closure files -> pass.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/tasks/luc-1541-apply-coolify-selector-confirmation-closure-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1539 [Ops][Coolify] Bind or record expected Soar Coolify team/workspace selector
+- Status: evidence ready; Paperclip issue status remains `in_progress` due stale run ownership, with recovery delegated to `LUC-1544`.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed current selector id `0`, name `LuckySparrow`;
+  - confirmed the configured Soar project and production environment are visible under that selector.
+- Evidence:
+  - `POST /api/issues/{LUC-1539}/checkout` -> pass;
+  - `GET /api/issues/{LUC-1539}/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T16:06:45Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/{configured-production-environment}` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass, redacted list count `17`.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Board disposition: selector evidence is complete and the issue thread has done comments, but `PATCH /api/issues/LUC-1539` from run `e31d61f5-5423-4018-a308-676868eb5e63` was rejected with `Issue run ownership conflict`; checkout recovery also failed. Recovery child `LUC-1544` is assigned to the CTO Architect to clear stale run ownership or apply the recorded closure.
+- Artifacts:
+  - `history/evidence/luc-1539-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1539-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1542 [Recovery][LUC-1537] Apply completed Coolify selector disposition
+- Status: source-side disposition complete; Paperclip closure blocked by stale checkout/run ownership. Parent `[LUC-1537](/LUC/issues/LUC-1537)` is done; `[LUC-1542](/LUC/issues/LUC-1542)` rejects current Portfolio Director status/comment/release mutation because its checkout/execution run remains `e2c55bb6-4760-4c89-b9f7-00bb1cb3ceca`. Child `[LUC-1545](/LUC/issues/LUC-1545)` is assigned to CTO Architect to clear the control-plane blocker.
+- Scope:
+  - consumed source-scoped recovery wake for the already verified Coolify selector lane;
+  - confirmed parent `[LUC-1537](/LUC/issues/LUC-1537)` is `done` through Paperclip heartbeat context and issue readback;
+  - attempted to apply the project source-of-truth disposition, then recorded the ACL and stale-run blockers after Paperclip rejected status update, comments, release, and fresh checkout;
+  - confirmed latest issue readback is `in_progress` under recovery owner `5f817ed2-b988-4c14-b726-0e9645ee3a4f`.
+- Evidence:
+  - `POST /api/issues/LUC-1542/checkout` -> pass;
+  - `GET /api/issues/LUC-1542/heartbeat-context` -> pass, issue `in_progress`, parent `[LUC-1537](/LUC/issues/LUC-1537)` status `done`;
+  - `GET /api/issues/7d961f61-696f-47d6-8c7f-f4a1df7eeff7` -> pass, parent status `done`, completed at `2026-06-02T16:07:20.791Z`;
+  - `PATCH /api/issues/3468e6d7-9bef-4dcd-b7b2-5d4497cef353` -> failed with `Agent cannot mutate another agent's issue`;
+  - `POST /api/issues/3468e6d7-9bef-4dcd-b7b2-5d4497cef353/comments` -> failed with the same ACL rejection;
+  - latest `GET /api/issues/3468e6d7-9bef-4dcd-b7b2-5d4497cef353` -> pass, issue status `in_progress`, assignee/recovery owner `5f817ed2-b988-4c14-b726-0e9645ee3a4f`;
+  - current Portfolio Director close/comment/release attempts -> `409 Conflict` due stale checkout/execution run ownership;
+  - child `[LUC-1545](/LUC/issues/LUC-1545)` created for stale checkout/run ownership cleanup;
+  - existing parent evidence remains `history/evidence/luc-1537-coolify-team-workspace-confirmation-2026-06-02.md`.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Unblock owner/action: CTO Architect owns child `[LUC-1545](/LUC/issues/LUC-1545)` to release or transfer stale checkout/run ownership, then close `[LUC-1542](/LUC/issues/LUC-1542)` as done using recorded evidence.
+- Artifacts:
+  - `history/evidence/luc-1542-coolify-selector-disposition-recovery-2026-06-02.md`
+  - `history/tasks/luc-1542-apply-completed-coolify-selector-disposition-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1534 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - classified the prior adapter `EEXIST` auth-symlink failure as harness setup drift before Soar domain work;
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - names-only Coolify env binding check -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1534-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1534-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1543 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed current selector id `0`, name `LuckySparrow`;
+  - confirmed the configured Soar project and production environment are visible under that selector.
+- Evidence:
+  - `GET /api/issues/LUC-1543/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T16:08:57Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/{configured-production-environment}` -> pass (`6` applications, `1` PostgreSQL, `1` Redis).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1543-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1543-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1537 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done; parent issue is closed, while recovery issue `[LUC-1542](/LUC/issues/LUC-1542)` remains `in_progress` under Paperclip recovery ownership and no longer blocks the Coolify selector evidence itself.
+- Scope:
+  - recovered from prior adapter symlink failure context before domain verification;
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed current selector id `0`, name `LuckySparrow`;
+  - confirmed the configured Soar project and production environment are visible under that selector.
+- Evidence:
+  - `GET /api/issues/LUC-1537/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T16:05:55Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/{configured-production-environment}` -> pass (`6` applications, `1` PostgreSQL, `1` Redis).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Paperclip control-plane note: `PATCH /api/issues/LUC-1537` and `POST /api/issues/LUC-1537/comments` were rejected for actor `01dd0c79-172b-4848-80eb-40692f07ccbb`; follow-up `LUC-1542` was created for the current checkout owner to apply `done` or release/reassign the checkout.
+- Artifacts:
+  - `history/evidence/luc-1537-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1537-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1533 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done; Paperclip closure applied through recovery issue `LUC-1541`.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed current selector id `0`, name `LuckySparrow`;
+  - reconciled prior UI memory that called id `0` `Root Team` with current API naming;
+  - confirmed the configured Soar project and production environment are visible under that selector.
+- Evidence:
+  - `GET /api/issues/LUC-1533/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T16:03:08Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/{configured-production-environment}` -> pass at `2026-06-02T16:03:21Z` (`6` applications, `1` PostgreSQL, `1` Redis).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Board disposition: recovery issue [LUC-1541](/LUC/issues/LUC-1541) accepted this evidence and applied final closure for [LUC-1533](/LUC/issues/LUC-1533).
+- Paperclip closure: applied by CTO recovery owner; no Ops rerun required.
+- Artifacts:
+  - `history/evidence/luc-1533-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1533-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1531 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed current selector id `0`, name `LuckySparrow`;
+  - confirmed the configured Soar project and production environment are visible under that selector.
+- Evidence:
+  - `GET /api/issues/LUC-1531/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T15:35:00Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/{configured-production-environment}` -> pass (`6` applications, `1` PostgreSQL, `1` Redis).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1531-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1531-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1529 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed current selector id `0`, name `LuckySparrow`;
+  - reconciled prior UI memory that called id `0` `Root Team` with current API naming;
+  - confirmed the configured Soar project and production environment are visible under that selector.
+- Evidence:
+  - `GET /api/issues/LUC-1529/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/{configured-production-environment}` -> pass (`6` applications, `1` PostgreSQL, `1` Redis).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1529-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1529-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1530 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1530/heartbeat-context` -> pass;
+  - Coolify env binding names check -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1530-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1530-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1526 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1526/heartbeat-context` -> pass;
+  - Coolify env binding names check -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1526-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1526-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1523 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1523/heartbeat-context` -> pass;
+  - Coolify env binding names check -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1523-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1523-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1518 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed current selector id `0`, name `LuckySparrow`;
+  - confirmed the configured Soar project and production environment are visible under that selector.
+- Evidence:
+  - `GET /api/issues/LUC-1518/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/{configured-production-environment}` -> pass (`6` applications, `1` PostgreSQL, `1` Redis).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1518-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1518-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1519 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1519/heartbeat-context` -> pass;
+  - Coolify env binding names check -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1519-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1519-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1515 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1515/heartbeat-context` -> pass;
+  - Coolify env binding names check -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1515-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1515-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1514 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed current selector id `0`, name `LuckySparrow`;
+  - reconciled prior UI memory that called id `0` `Root Team` with current API naming;
+  - confirmed the configured Soar project and production environment are visible under that selector.
+- Evidence:
+  - `GET /api/issues/LUC-1514/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/{configured-production-environment}` -> pass (`6` applications, `1` PostgreSQL, `1` Redis).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1514-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1514-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1508 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1508/heartbeat-context` -> pass;
+  - Coolify env binding names check -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1508-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1508-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1507 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed current selector id `0`, name `LuckySparrow`;
+  - reconciled prior UI memory that called id `0` `Root Team` with current API naming;
+  - confirmed the configured Soar project and production environment are visible under that selector.
+- Evidence:
+  - `GET /api/issues/LUC-1507/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass;
+  - `GET /api/v1/teams/current` -> pass, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/{configured-production-environment}` -> pass (`6` applications, `1` PostgreSQL, `1` Redis).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1507-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1507-confirm-coolify-team-workspace-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1502 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1502/heartbeat-context` -> pass;
+  - Coolify env binding names check -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1502-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1502-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1497 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1497/heartbeat-context` -> pass;
+  - issue comments read -> duplicate-run janitor comments only;
+  - Coolify env binding names check -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1497-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1497-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1496 [Operator][Coolify] Bind Coolify read-only production status access
+- Wake `issue_continuation_needed` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); checkout was already claimed by the harness and was not repeated.
+- Paperclip heartbeat context showed stale `blocked` state from duplicate-run janitor comment `07b842ad-cbd3-49f0-beae-e151f53f19e9`; `GET /api/issues/LUC-1496` showed no first-class `blockedBy` issues, so the kept owner lane completed the proof.
+- Concrete action in this heartbeat:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API project/environment/resource readback;
+  - confirmed configured project `Soar`, production environment `production`, and eight production resources: six applications plus PostgreSQL and Redis;
+  - updated redacted evidence and task contract.
+- Verification:
+  - `GET /api/issues/LUC-1496/heartbeat-context` -> pass;
+  - `GET /api/issues/LUC-1496` -> pass, no first-class blockers;
+  - latest comments read -> pass, duplicate-run janitor note only;
+  - env binding names-only check -> pass for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`;
+  - `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` absent, not blocking because project-scoped reads succeeded;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1496-coolify-read-only-production-status-access-2026-06-02.md`
+  - `history/tasks/luc-1496-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1488 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1488/heartbeat-context` -> pass;
+  - Coolify env binding names check -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1488-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1488-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1485 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1485/heartbeat-context` -> pass;
+  - Coolify env binding names check -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, production environment id `6`;
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1485-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1485-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1479 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1479/heartbeat-context` -> pass;
+  - Coolify env binding names check -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass;
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1479-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1479-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1476 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1476/heartbeat-context` -> pass;
+  - Coolify env binding names check -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass;
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1476-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1476-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1472 [Operator][Coolify] Bind Coolify read-only production status access
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); checkout was already claimed by the harness and was not repeated.
+- Concrete action in this heartbeat:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API project/environment/resource readback;
+  - confirmed configured project `Soar`, production environment id `6`, and eight production resources: six applications plus PostgreSQL and Redis;
+  - updated redacted evidence and task contract.
+- Verification:
+  - `GET /api/issues/LUC-1472/heartbeat-context` -> pass;
+  - env binding names-only check -> pass for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`;
+  - `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` absent, not blocking because project-scoped reads succeeded;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1472-coolify-read-only-production-status-access-2026-06-02.md`
+  - `history/tasks/luc-1472-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1473 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed the Soar production environment still contains eight resources: six applications plus PostgreSQL and Redis;
+  - preserved the resource-by-resource deploy verification target list without relying on a legacy single app id.
+- Evidence:
+  - `GET /api/issues/LUC-1473/heartbeat-context` -> pass;
+  - Coolify env binding names check -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass;
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1473-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1473-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1466 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed production environment id `6` still contains eight resources: six applications plus PostgreSQL and Redis;
+  - updated operations source truth for resource-by-resource deploy verification.
+- Evidence:
+  - `GET /api/issues/LUC-1466/heartbeat-context` -> pass;
+  - Coolify env binding names check -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, production environment id `6`;
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, account mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1466-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1466-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1467 [Operator][Coolify] Bind Coolify read-only production status access
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); checkout was already claimed by the harness and was not repeated.
+- Concrete action in this heartbeat:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API project/environment/resource readback;
+  - confirmed configured project `Soar`, production environment id `6`, and eight production resources: six applications plus PostgreSQL and Redis;
+  - updated operations source truth and evidence packets.
+- Verification:
+  - `GET /api/issues/LUC-1467/heartbeat-context` -> pass;
+  - env binding names-only check -> pass for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1467-coolify-read-only-production-status-access-2026-06-02.md`
+  - `history/tasks/luc-1467-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1459 [Operator][Coolify] Bind Coolify read-only production status access
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); checkout was already claimed by the harness and was not repeated.
+- Concrete action in this heartbeat:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API project/environment/resource readback;
+  - confirmed configured project `Soar`, production environment id `6`, and eight production resources: six applications plus PostgreSQL and Redis;
+  - confirmed Paperclip secret metadata inspection is board-only for this agent (`Board access required`);
+  - updated operations source truth and evidence packets.
+- Verification:
+  - `GET /api/issues/LUC-1459/heartbeat-context` -> pass;
+  - env binding names-only check -> pass for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1459-coolify-read-only-production-status-access-2026-06-02.md`
+  - `history/tasks/luc-1459-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1455 [Ops][Soar] Reconcile Coolify resource inventory
+- Wake `issue_continuation_needed` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); existing comment was duplicate-run janitor context only.
+- Concrete action in this heartbeat:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed production environment id `6` still contains eight resources: six applications plus PostgreSQL and Redis;
+  - updated operations source truth and evidence packets.
+- Verification:
+  - `GET /api/issues/LUC-1455/heartbeat-context` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1455-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1455-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+## 2026-06-02 LUC-1448 [Ops][Soar] Reconcile Coolify resource inventory
+- Wake `issue_continuation_needed` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); existing comment was duplicate-run janitor context only.
+- Concrete action in this heartbeat:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed production environment id `6` still contains eight resources: six applications plus PostgreSQL and Redis;
+  - updated operations source truth and evidence packets.
+- Verification:
+  - `GET /api/issues/LUC-1448/heartbeat-context` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1448-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1448-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+## 2026-06-02 LUC-1444 [Ops][Soar] Reconcile Coolify resource inventory
+- Wake `issue_continuation_needed` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); existing comment was duplicate-run janitor context only.
+- Concrete action in this heartbeat:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed production environment id `6` still contains eight resources: six applications plus PostgreSQL and Redis;
+  - updated operations source truth and evidence packets.
+- Verification:
+  - `GET /api/issues/LUC-1444/heartbeat-context` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1444-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1444-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+## 2026-06-02 LUC-1437 [Security][Soar] Refresh approved production smoke principal for protected workers/ready
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - revalidated the `LUC-1190` security gate for protected `GET /workers/ready` smoke: authenticated Soar session, `ADMIN` role, ops-network path, read-only readiness scope, redacted evidence only;
+  - inspected current smoke auth script contract and binding names without printing values;
+  - ran redacted binding shape checks: `SMOKE_AUTH_TOKEN` present but not JWT-shaped, `SMOKE_AUTH_EMAIL` present but not email-shaped, `SMOKE_AUTH_PASSWORD` present but value not inspected;
+  - created first-class blocker `LUC-1438` assigned to QA Regression Lead to refresh/provide a valid approved production smoke auth binding/session.
+- Verification:
+  - `GET /api/issues/LUC-1437/heartbeat-context` -> pass;
+  - `Get-ChildItem Env:SMOKE_AUTH*,Env:SOAR_API*,Env:SOAR_SESSION*` -> pass (names/lengths only);
+  - redacted shape check -> current bindings cannot be approved for protected smoke rerun.
+- Disposition for this wake: `blocked` by `LUC-1438`.
+- Evidence:
+  - `history/evidence/luc-1437-workers-ready-smoke-principal-refresh-gate-2026-06-02.md`
+  - `history/tasks/luc-1437-refresh-approved-production-smoke-principal-for-workers-ready-2026-06-02-task.md`
 ## 2026-06-02 LUC-1196 continuation [issue_blockers_resolved]
 - Wake acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Blocker `LUC-1419` resolved; local PostgreSQL reachable (`127.0.0.1:5432`).
@@ -31,7 +1837,7 @@
   - `history/evidence/luc-1196-runtime-close-dca-first-route-pack-2026-06-01.md`
   - `history/tasks/luc-1196-soar-backend-luc-1188-add-dca-first-close-authority-route-level-pack-runtime-position-close-endpoint-2026-06-01-task.md`
 ## 2026-06-02 LUC-1412 [Ops][Soar] Reconcile Coolify resource inventory
-- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Wake `issue_continuation_needed` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); existing comment was duplicate-run janitor context only.
 - Concrete action in this heartbeat:
   - verified Coolify env binding names are present without printing values;
   - refreshed authenticated read-only Coolify API resource projection;
@@ -47,7 +1853,7 @@
   - `history/evidence/luc-1412-coolify-resource-inventory-reconciliation-2026-06-02.md`
   - `history/tasks/luc-1412-reconcile-coolify-resource-inventory-2026-06-02-task.md`
 ## 2026-06-02 LUC-1408 [Ops][Soar] Reconcile Coolify resource inventory
-- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Wake `issue_continuation_needed` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); existing comment was duplicate-run janitor context only.
 - Concrete action in this heartbeat:
   - verified Coolify env binding names are present without printing values;
   - refreshed authenticated read-only Coolify API resource projection;
@@ -2475,7 +4281,7 @@
   - `rg -n "history is evidence, not active owner|LUC-403" README.md docs/soar-documentation-map.md docs/documentation-overview.md docs/maps/documentation-maps.md .codex/context/TASK_BOARD.md .codex/context/PROJECT_STATE.md` => expected guard + issue evidence matches.
 - Final disposition: `done`.
 
-## 2026-05-28 LUC-403 [Soar][ARB-007] Add explicit “history is evidence, not active owner” guard note to high-traffic docs entrypoints
+## 2026-05-28 LUC-403 [Soar][ARB-007] Add explicit â€śhistory is evidence, not active ownerâ€ť guard note to high-traffic docs entrypoints
 - Wake `issue_status_changed` consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
 - Concrete action in this heartbeat:
   - added explicit guard note text `history is evidence, not active owner` to high-traffic docs entrypoints:
@@ -4438,9 +6244,9 @@
     fresh browser-proof matrix/protected UI evidence is attached, or a narrower
     repair lane is created with explicit owner and unblock action.
     Route gaps routed with owners:
-    - Frontend (`LUC-48-A/browser-proof`) — refresh matrix for dashboard/bots/admin and money-flow routes.
-    - QA (`LUC-45-C`) — isolate/fix focused regression blockers in the shared web test command.
-    - Security (`LUC-45-D`) — provide protected boundary auth context/proof constraints.
+    - Frontend (`LUC-48-A/browser-proof`) â€” refresh matrix for dashboard/bots/admin and money-flow routes.
+    - QA (`LUC-45-C`) â€” isolate/fix focused regression blockers in the shared web test command.
+    - Security (`LUC-45-D`) â€” provide protected boundary auth context/proof constraints.
 
 - [x] `LUC-40 [Soar][Data] Persistence and integrity known-state`
   - 2026-05-25 data-persistence checkpoint completed for known-state mapping.
@@ -4474,7 +6280,7 @@
   - Next: run `--checks web,api,backtests` in QA lane and route any failing API/backtests evidence to repair owners.
 
 - [x] `LUC-42 [Soar][AI Runtime] Assistant and automation boundary`
-  - 2026-05-25 heartbeat (`AI-RUNTIME-BOUNDARY-DRYRUN-MODE-HARDENING-2026-05-25`): implemented fail-closed API boundary so assistant dry-run can no longer be submitted as `LIVE` mode. `AssistantDryRunSchema` now accepts only `BACKTEST | PAPER`, and a focused orchestration e2e assertion verifies `POST /dashboard/bots/:id/assistant-config/dry-run` with `mode: LIVE` returns `400`. This preserves the documented “dry-run only, no trading authority” contract at the API boundary.
+  - 2026-05-25 heartbeat (`AI-RUNTIME-BOUNDARY-DRYRUN-MODE-HARDENING-2026-05-25`): implemented fail-closed API boundary so assistant dry-run can no longer be submitted as `LIVE` mode. `AssistantDryRunSchema` now accepts only `BACKTEST | PAPER`, and a focused orchestration e2e assertion verifies `POST /dashboard/bots/:id/assistant-config/dry-run` with `mode: LIVE` returns `400`. This preserves the documented â€śdry-run only, no trading authorityâ€ť contract at the API boundary.
   - 2026-05-25 follow-up: documented chain classes and safety boundaries in `docs/architecture/11_assistant-runtime.md` and `docs/architecture/reference/assistant-runtime-contract.md` (advisory implemented; operator-assisted and executable deferred), including explicit tool/context boundaries, prompt/leakage risks, and non-bypass gate controls.
   - Next for this slice: closed after docs + boundary-hardening proof; continue AI hot-path execution work under a separate approved issue once hot-path requirements pass.
 
@@ -14151,7 +15957,7 @@ entries above:
   - 2026-04-26: Closed after real-account production browser verification on the affected account. The deployed dashboard no longer reuses stale previous-symbol manual-order context price after bot/symbol switches, and authenticated production submit on the real account now follows current `botId + symbol` truth instead of freezing a previous-symbol `markPrice` into the request payload. Validation PASS locally: `pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.manual-order.test.tsx src/features/dashboard-home/hooks/useManualOrderController.test.tsx`, `pnpm --filter web run typecheck`, `pnpm run quality:guardrails`, `pnpm --filter web run build`; production browser verification PASS after manual Coolify deploy.
 
 - [x] `V1LIVE-PROD-2026-04-26-B api(prod-position-truth): recover imported leverage truth and stale local LIVE cleanup on the affected account`
-  - 2026-04-26: Closed after real-account production verification on the affected live bot. `positions.service.ts` now reads leverage truth from nested raw Binance Futures payload fields and can infer leverage from notional/margin when the explicit field is absent, while `livePositionReconciliation.service.ts` now treats open-orders fetch as fail-soft for stale local managed LIVE cleanup and rounds imported leverage truth before persistence. Production proof after manual Coolify deploys and authenticated `POST /dashboard/positions/orphan-repair`: stale `BNBUSDT` no longer remains in runtime `openItems` and is now closed as `ORPHAN_LOCAL`, the imported `DOGEUSDT` exchange snapshot exposes `leverage≈15`, and the runtime/live position now persists `leverage=15` instead of degrading to `1x` or `14`. Validation PASS: `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`, `pnpm --filter api run build`.
+  - 2026-04-26: Closed after real-account production verification on the affected live bot. `positions.service.ts` now reads leverage truth from nested raw Binance Futures payload fields and can infer leverage from notional/margin when the explicit field is absent, while `livePositionReconciliation.service.ts` now treats open-orders fetch as fail-soft for stale local managed LIVE cleanup and rounds imported leverage truth before persistence. Production proof after manual Coolify deploys and authenticated `POST /dashboard/positions/orphan-repair`: stale `BNBUSDT` no longer remains in runtime `openItems` and is now closed as `ORPHAN_LOCAL`, the imported `DOGEUSDT` exchange snapshot exposes `leverageâ‰15`, and the runtime/live position now persists `leverage=15` instead of degrading to `1x` or `14`. Validation PASS: `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`, `pnpm --filter api run build`.
 
 - [x] `V1LIVE-02 test(api-exchange-red): lock adapter selection to exact user/bot exchange context`
   - 2026-04-26: Add failing coverage proving that live execution and authenticated exchange reads resolve from the exact selected `exchange + marketType` context. Binance must be the first implemented adapter family, not a hidden default when another exchange is selected or unsupported.
@@ -14607,7 +16413,7 @@ None.
 - [x] `PROD-AUTH-HOTFIX prevent stale cached auth shells after deploy`
   - 2026-04-23: Reproduced production login successfully with direct API calls and browser automation, verified that the remaining drift vector was stale public auth page delivery, then marked `/auth/login` and `/auth/register` as dynamic/non-revalidated and locked the contract with a focused regression test. Validation PASS: `pnpm --filter web exec vitest run src/app/(public)/auth/authPageCacheContract.test.ts`, `pnpm run quality:guardrails`.
 - [x] `V1FACT-FOLLOWUP3 formal sign-off closure`
-  - 2026-04-22: Filled engineering/product/operations sign-offs and rollback owner in `docs/operations/v1-rc-signoff-record.md`, fixed the Gate 4 circular approval logic in `scripts/buildRcSignoffRecord.mjs`, and refreshed RC status/checklist to `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`. Validation PASS: `pnpm run ops:rc:signoff:build -- --engineering-name "Patryk Wróblewski" --product-name "Patryk Wróblewski" --operations-name "Patryk Wróblewski" --owner-name "Patryk Wróblewski" --owner-contact "<redacted>"`, `pnpm run ops:rc:gates:status`, `pnpm run ops:rc:checklist:sync`.
+  - 2026-04-22: Filled engineering/product/operations sign-offs and rollback owner in `docs/operations/v1-rc-signoff-record.md`, fixed the Gate 4 circular approval logic in `scripts/buildRcSignoffRecord.mjs`, and refreshed RC status/checklist to `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS`. Validation PASS: `pnpm run ops:rc:signoff:build -- --engineering-name "Patryk WrĂłblewski" --product-name "Patryk WrĂłblewski" --operations-name "Patryk WrĂłblewski" --owner-name "Patryk WrĂłblewski" --owner-contact "<redacted>"`, `pnpm run ops:rc:gates:status`, `pnpm run ops:rc:checklist:sync`.
 - [x] `V1FACT-FOLLOWUP2 prod restore proof recovery + final non-dry-run gate`
   - 2026-04-22: Executed the prod restore drill inside Coolify production postgres (`x11cfnz1dd9x0yzccftqzcoe`), captured fresh PASS artifacts, fixed `scripts/runV1ReleaseGate.mjs` so same-day evidence picks the latest timestamped artifact instead of an older same-day file, and reran the full prod release gate without `--dry-run` to `PASS`. Remaining blocker is now formal `Gate 4` sign-off completion only. Validation PASS: `node --test scripts/runV1ReleaseGate.test.mjs`, `pnpm run quality:guardrails`, `pnpm run ops:release:v1:gate -- --environment prod --skip-local-quality --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --auth-email prod-ops-admin@luckysparrow.ch --auth-password <redacted>`, `pnpm run ops:rc:gates:status`, `pnpm run ops:rc:signoff:build`, `pnpm run ops:rc:checklist:sync`.
 - [x] `V1FACT-FOLLOWUP prod gate truth refresh after real rollback/SLO evidence`
@@ -17834,7 +19640,7 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
   - linked semantics coverage to existing `LUC-1167` lane evidence (no duplication).
 - Verification:
   - `pnpm --filter web exec vitest run src/i18n/translations.test.ts src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts --reporter=verbose` -> PASS (`3` files, `16` tests).
-  - `rg -n "�|�|?export" apps/web/src/i18n/namespaces/dashboard-home.de-CH.ts apps/web/src/i18n/namespaces/dashboard-home.pt.ts -S` -> MATCH (encoding-corruption indicators reproduced).
+  - `rg -n "ďż˝|ďż˝|?export" apps/web/src/i18n/namespaces/dashboard-home.de-CH.ts apps/web/src/i18n/namespaces/dashboard-home.pt.ts -S` -> MATCH (encoding-corruption indicators reproduced).
 - Disposition for this wake: `blocked`.
 - Unblock owner/action unchanged:
   1. Frontend owner repairs locale encoding/text integrity for touched dashboard-home namespaces.
@@ -17853,7 +19659,7 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
   - revalidated no-duplication linkage to `LUC-1167` semantics lane.
 - Verification:
   - `pnpm --filter web exec vitest run src/i18n/translations.test.ts src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts --reporter=verbose` -> PASS (`3` files, `16` tests).
-  - `rg -n "Ă|â€|﻿export|�|�|?export" apps/web/src/i18n/namespaces/dashboard-home.de-CH.ts apps/web/src/i18n/namespaces/dashboard-home.pt.ts -S` -> MATCH (mojibake/BOM markers reproduced).
+  - `rg -n "Ä‚|Ă˘â‚¬|ď»żexport|ďż˝|ďż˝|?export" apps/web/src/i18n/namespaces/dashboard-home.de-CH.ts apps/web/src/i18n/namespaces/dashboard-home.pt.ts -S` -> MATCH (mojibake/BOM markers reproduced).
 - Disposition for this wake: `blocked`.
 - Unblock owner/action unchanged:
   1. Frontend owner repairs locale encoding/text integrity in `dashboard-home.de-CH.ts` and `dashboard-home.pt.ts`.
@@ -18708,3 +20514,216 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
 - Created child `LUC-1423` for backend/runtime source-control closure with SHA evidence.
 - Parent `LUC-1223` remains fail-closed `blocked`: commit `not committed`, push `not needed`, deploy impact `none`.
 - Next owner/action: `LUC-1423` closes expanded runtime dirty scope; then parent `LUC-1223` closes residual `history/state/docs/context`.
+
+## 2026-06-02 LUC-1434 [Ops][Soar] Reconcile Coolify resource inventory
+- Wake `issue_continuation_needed` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); existing comment was duplicate-run janitor context only.
+- Concrete action in this heartbeat:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API resource projection;
+  - confirmed production environment id `6` still contains eight resources: six applications plus PostgreSQL and Redis;
+  - updated operations source truth and evidence packets.
+- Verification:
+  - `GET /api/v1/projects/{configured-project-id}` -> pass
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass
+  - `GET /api/v1/resources` -> pass (`17` total rows, `8` Soar production resources)
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1434-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1434-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1443 [Operator][Coolify] Bind Coolify read-only production status access
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - verified required Coolify env binding names are present without printing values;
+  - ran authenticated read-only Coolify API probes for version, projects, configured project, applications, and resources;
+  - confirmed the configured project binding resolves to `Soar`;
+  - confirmed Soar production resources remain observable through project/list inventory: six applications plus PostgreSQL and Redis.
+- Verification:
+  - `GET /api/v1/version` -> pass
+  - `GET /api/v1/projects` -> pass
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`
+  - `GET /api/v1/applications` -> pass (`13` rows)
+  - `GET /api/v1/resources` -> pass (`17` rows)
+  - direct `COOLIFY_SOAR_API_APP_ID` and `COOLIFY_SOAR_WEB_APP_ID` probes -> `404`, so project/list inventory remains the approved path.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, account mutation, or secret readback.
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1443-coolify-read-only-production-status-access-2026-06-02.md`
+  - `history/tasks/luc-1443-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1460 [Ops][Soar] Reconcile Coolify resource inventory
+- Wake `issue_continuation_needed` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); existing comment was duplicate-run janitor context only.
+- Concrete action in this heartbeat:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed production environment id `6` still contains eight resources: six applications plus PostgreSQL and Redis;
+  - updated operations source truth and evidence packets.
+- Verification:
+  - `GET /api/issues/LUC-1460/heartbeat-context` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1460-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1460-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1482 [Ops][Soar] Reconcile Coolify resource inventory
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); checkout was already claimed by the harness and was not repeated.
+- Concrete action in this heartbeat:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed configured project resolves to `Soar`;
+  - confirmed production environment id `6` still contains eight resources: six applications plus PostgreSQL and Redis;
+  - updated operations source truth and evidence packets.
+- Verification:
+  - `GET /api/v1/projects/{configured-project-id}` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1482-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1482-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+## 2026-06-02 LUC-1532 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - verified Coolify read-only status binding names without printing values;
+  - confirmed current Coolify selector id `0`, name `LuckySparrow`;
+  - confirmed configured Soar project, production environment, and eight-resource inventory are readable through authenticated read-only Coolify API calls.
+- Evidence:
+  - `GET /api/issues/LUC-1532/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T16:01:58Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, production environment object returned;
+  - `GET /api/v1/projects/{configured-project-id}/{configured-production-environment}` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1532-coolify-read-only-production-status-access-2026-06-02.md`
+  - `history/tasks/luc-1532-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md`
+## 2026-06-02 LUC-1565 [Ops][Soar] Reconcile Coolify resource inventory
+
+- Wake `issue_assigned` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); checkout was already claimed by the harness and was not repeated.
+- Concrete action in this heartbeat:
+  - verified Coolify env binding names are present without printing values;
+  - refreshed authenticated read-only Coolify API production-environment resource projection;
+  - confirmed configured project resolves to `Soar`;
+  - confirmed current Coolify selector id `0`, name `LuckySparrow`;
+  - confirmed production still contains eight resources: six applications plus PostgreSQL and Redis;
+  - updated operations source truth and evidence packets.
+- Verification:
+  - `GET /api/issues/LUC-1565/heartbeat-context` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/teams/current` -> pass, selector id `0`, name `LuckySparrow`;
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Disposition for this wake: `done`.
+- Evidence:
+  - `history/evidence/luc-1565-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1565-reconcile-coolify-resource-inventory-2026-06-02-task.md`
+## 2026-06-02 LUC-1579 [Operator][Coolify] Bind Coolify read-only production status access
+
+- Status: done.
+- Scope:
+  - verified required Coolify read-only binding names without printing values;
+  - confirmed current Coolify selector id `0`, name `LuckySparrow`;
+  - confirmed configured Soar project, production environment, and eight-resource inventory are readable through authenticated read-only Coolify API calls.
+- Evidence:
+  - `GET /api/issues/LUC-1579/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T19:03:37Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, production environment present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass (`6` applications, `1` PostgreSQL, `1` Redis);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1579-coolify-read-only-production-status-access-2026-06-02.md`
+  - `history/tasks/luc-1579-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md`
+## 2026-06-02 LUC-1587 [Operator][Coolify] Confirm expected Coolify team/workspace
+
+- Status: done.
+- Scope:
+  - confirmed current Coolify selector id `0`, name `LuckySparrow`;
+  - verified configured Soar project and production environment visibility under that selector;
+  - verified the redacted production topology remains six applications plus PostgreSQL and Redis.
+- Evidence:
+  - `GET /api/issues/LUC-1587/heartbeat-context` -> pass;
+  - names-only Coolify env binding check -> pass without storing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T19:12:30Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, production environment present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis;
+  - `GET /api/v1/resources` -> pass, seventeen visible rows.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live trading mutation, or secret storage.
+- Artifacts:
+  - `history/evidence/luc-1587-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1587-confirm-coolify-team-workspace-2026-06-02-task.md`
+## 2026-06-02 LUC-1592 [Operator][Coolify] Confirm expected Coolify team/workspace
+- Status: done.
+- Scope:
+  - verified expected Coolify team/workspace selector through read-only API;
+  - confirmed current selector id `0`, name `LuckySparrow`;
+  - confirmed the configured Soar project and production environment are visible under that selector.
+- Evidence:
+  - `GET /api/issues/LUC-1592/heartbeat-context` -> pass; issue had no first-class blockers;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` -> absent in this runner;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T20:51:42Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/{configured-production-environment}` -> pass at `2026-06-02T20:51:42Z` (`6` applications plus PostgreSQL/Redis topology);
+  - `GET /api/v1/resources` -> pass (`17` total visible rows).
+- Safe next proof: rerun the Coolify resource reconciler and compare discovered project/resources against expected topology.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, secret readback, live trading mutation, or secret storage.
+- Artifacts:
+  - `history/evidence/luc-1592-coolify-team-workspace-confirmation-2026-06-02.md`
+  - `history/tasks/luc-1592-confirm-coolify-team-workspace-2026-06-02-task.md`
+## 2026-06-02 LUC-1597 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - verified Coolify read-only production status bindings are present by name without printing values;
+  - confirmed authenticated Coolify API readback resolves selector `0` / `LuckySparrow`, project `Soar`, environment `production` id `6`, and eight production resources;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `GET /api/issues/LUC-1597/heartbeat-context` -> pass; no comments and no first-class blockers;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams` -> pass, two teams visible;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T21:04:05Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, production environment id `6`, six applications plus PostgreSQL and Redis;
+  - `GET /api/v1/resources` -> pass (`17` visible rows).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1597-coolify-read-only-production-status-access-2026-06-02.md`
+  - `history/tasks/luc-1597-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md`
+
+## 2026-06-02 LUC-1615 Coolify Resource Inventory Reconciliation
+
+- Status: done.
+- Scope:
+  - verified configured Coolify project binding resolves to `Soar`;
+  - confirmed current selector id `0`, name `LuckySparrow`;
+  - confirmed production environment inventory remains eight canonical resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`.
+- Evidence:
+  - `GET /api/issues/LUC-1615/heartbeat-context` -> pass; no comments and no first-class blockers;
+  - names-only Coolify env binding check -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-02T22:34:16Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> pass, `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, six applications plus PostgreSQL and Redis;
+  - `GET /api/v1/resources` -> pass, `17` visible rows and `9` Soar-relevant rows including the PostgreSQL companion row.
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1615-coolify-resource-inventory-reconciliation-2026-06-02.md`
+  - `history/tasks/luc-1615-reconcile-coolify-resource-inventory-2026-06-02-task.md`

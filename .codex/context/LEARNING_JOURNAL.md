@@ -20,6 +20,16 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-06-02 - Preserve invalid-UTF8 context files during state prepends
+- Context: LUC-1444 Ops heartbeat needed to update `.codex/context/PROJECT_STATE.md` and `.codex/context/TASK_BOARD.md`.
+- Symptom: `apply_patch` failed with `invalid utf-8 sequence` when reading both files.
+- Root cause: existing context files contain at least one non-UTF8 byte sequence, so UTF-8 patch tooling cannot parse them.
+- Guardrail: do not rewrite or normalize the whole file during a heartbeat; preserve existing bytes and prepend ASCII/UTF-8 entries only when source-truth updates are required.
+- Preferred pattern: read the file as bytes, prepend a UTF-8 ASCII-safe entry, and write the concatenated byte array back without decoding the original content.
+- Avoid: opening these files through tools that decode and rewrite the full content until an explicit encoding cleanup task is approved.
+- Evidence:
+  `history/evidence/luc-1444-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
 ### 2026-05-26 - Check Coolify Auto Deploy before code-level deploy debugging
 - Context: operator reported that Coolify deploys were not happening after Git pushes and one worker deployment hung for many hours before cancellation.
 - Symptom: production stayed on the pushed `origin/main` SHA while local work was ahead, `workers-market-stream` was exited, and a long webhook deployment had failed/canceled in Coolify.
@@ -3335,3 +3345,34 @@ Test-Path $dst
 - Pitfall: printing raw Coolify environment JSON is unsafe even when the request is read-only inventory.
 - Rule: for Coolify inventory work, project to an explicit allowlist before output or storage: resource type, name, status, branch, Dockerfile path, FQDN presence, last-online timestamp, restart count, and boolean server status. Do not persist UUIDs, URLs, env values, labels, tokens, internal DB URLs, proxy config, or full server settings.
 - Applied immediately: LUC-1371 evidence stores only redacted/allowlisted resource inventory.
+
+### 2026-06-02 - Patch tool cannot edit invalid UTF-8 context files
+- Context: LUC-1460 needed source-of-truth updates in `.codex/context/PROJECT_STATE.md` and `.codex/context/TASK_BOARD.md`.
+- Symptom: `apply_patch` failed with `invalid utf-8 sequence` for both files.
+- Guardrail: when a context file has invalid UTF-8, avoid broad rewrite or normalization during an unrelated heartbeat. Append a narrow ASCII/UTF-8 note with PowerShell and record the encoding cleanup as a separate maintenance concern if it blocks future structured edits.
+- Avoid: rewriting large state files just to satisfy a small Ops evidence update.
+### 2026-06-02 - PowerShell version may reject null-coalescing syntax
+
+- Symptom: an inline PowerShell read-only Coolify probe failed before external
+  API calls completed with parser errors around the `??` null-coalescing
+  operator.
+- Root cause: the active shell does not support that newer PowerShell syntax.
+- Guardrail: for heartbeat-safe inline PowerShell, use explicit helper
+  functions or `if ($null -ne $value -and [string]$value -ne '')` conditionals
+  instead of `??`, especially in environment/secret-adjacent probes where reruns
+  should stay small and deterministic.
+
+### 2026-06-02 - Coolify production environment probes must never print raw objects
+
+- Context: `LUC-1587` team/workspace confirmation.
+- Symptom: an exploratory read-only PowerShell probe converted the full Coolify
+  production environment object to JSON in transient local tool output.
+- Root cause: the probe inspected object shape before projecting to the
+  approved allowlist.
+- Guardrail: for Coolify production environment checks, first inspect only
+  top-level property names or immediately project to explicit allowlists:
+  team id/name, project name, environment id/name, resource counts, resource
+  names, status, Dockerfile path, and FQDN presence. Never `ConvertTo-Json` a
+  raw Coolify environment/resource object.
+- Applied immediately: `LUC-1587` stored and posted only redacted allowlisted
+  evidence; no raw Coolify payload was written to repo files or issue comments.
