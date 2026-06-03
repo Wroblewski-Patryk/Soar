@@ -17,8 +17,8 @@ surfaces.
 | workers-execution | Coolify application `workers-execution` | `/apps/api/Dockerfile.worker.execution` | postgresql, redis, exchange APIs | private | worker freshness through protected readiness | Ops Release Lead |
 | workers-market-data | Coolify application `workers-market-data` | `/apps/api/Dockerfile.worker.market-data` | postgresql, redis, market-data providers | private | worker freshness through protected readiness | Ops Release Lead |
 | workers-market-stream | Coolify application `workers-market-stream` | `/apps/api/Dockerfile.worker.market-stream` | postgresql, redis, exchange stream APIs | private | worker freshness through protected readiness | Ops Release Lead |
-| postgresql | Coolify standalone PostgreSQL `postgresql` | managed service | persistent volume | private | Coolify resource status `running:healthy` in LUC-1673 readback | Ops Release Lead / DB owner |
-| redis | Coolify standalone Redis `redis` | managed service | persistent volume | private | Coolify resource status `running:healthy` in LUC-1673 readback | Ops Release Lead |
+| postgresql | Coolify standalone PostgreSQL `postgresql` | managed service | persistent volume | private | Coolify resource status `running:healthy` in LUC-1696 readback | Ops Release Lead / DB owner |
+| redis | Coolify standalone Redis `redis` | managed service | persistent volume | private | Coolify resource status `running:healthy` in LUC-1696 readback | Ops Release Lead |
 
 ## Dependency Graph
 
@@ -41,7 +41,7 @@ Coolify Soar project -> production environment id 6
   -> redis
 ```
 
-`LUC-1673` reconciliation note: the global Coolify resources endpoint also
+`LUC-1696` reconciliation note: the global Coolify resources endpoint still
 exposes one redacted `postgresql-database-*` companion row. Treat that as a
 global-list PostgreSQL alias/companion row, not as an additional
 production-environment deployable resource. The canonical production

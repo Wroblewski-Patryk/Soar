@@ -31,7 +31,7 @@ refreshed/reconciled for `LUC-1399`, `LUC-1402`, `LUC-1405`, `LUC-1408`,
 `LUC-1579`, `LUC-1581`, `LUC-1584`, `LUC-1593`, `LUC-1599`, `LUC-1605`,
 `LUC-1610` on 2026-06-02, and `LUC-1620` / `LUC-1624` / `LUC-1630` /
 `LUC-1634` / `LUC-1641` / `LUC-1645` / `LUC-1651` / `LUC-1656` /
-`LUC-1662` / `LUC-1666` / `LUC-1673` / `LUC-1707` on 2026-06-03.
+`LUC-1662` / `LUC-1666` / `LUC-1673` / `LUC-1696` / `LUC-1707` on 2026-06-03.
 
 Latest read-only access binding checkpoint: `LUC-1707` at
 `2026-06-03T07:08:32Z`, refreshing the prior `LUC-1677` proof. Runtime
@@ -65,6 +65,27 @@ project-scoped reads succeed. This heartbeat performed no deploy, restart,
 rollback, env edit, database action, team setting change, account action,
 secret readback, or live-trading action. Evidence:
 `history/evidence/luc-1678-coolify-team-workspace-confirmation-2026-06-03.md`.
+
+Latest `LUC-1696` production-environment inventory readback:
+`2026-06-03T14:27:04Z`. Authenticated read-only Coolify API calls reconfirmed
+current selector id `0` name `LuckySparrow`, configured project `Soar`,
+single active environment `production` id `6`, and the canonical
+eight-resource production environment inventory. The production environment
+endpoint returned six applications plus PostgreSQL and Redis, with zero
+generic services. The global resources endpoint returned `17` visible rows,
+eight rows matching the production environment id, and nine Soar-relevant rows
+in the safe name/type projection because Coolify exposes both `postgresql` and
+one redacted PostgreSQL companion row. Treat the extra global PostgreSQL row as
+a global-list alias/companion row, not as a ninth production-environment deploy
+or smoke target. Application rows report `running:unknown`; PostgreSQL and
+Redis report `running:healthy`. PostgreSQL restart count is `52`, Redis
+restart count is `682`, API restart count is `5`, and the other app/worker
+restart counts are `0`, so restart history remains a later smoke/SLO watch
+item, not an inventory blocker. Legacy app id aliases were not used as source
+truth. This heartbeat performed no deploy, restart, rollback, env edit,
+database action, team setting change, account action, protected smoke, secret
+readback, or live-trading action. Evidence:
+`history/evidence/luc-1696-coolify-resource-inventory-reconciliation-2026-06-03.md`.
 
 Previous team/workspace selector checkpoint: `LUC-1679` at
 `2026-06-03T05:37:45Z`. Authenticated read-only Coolify API calls confirmed

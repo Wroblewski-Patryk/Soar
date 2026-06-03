@@ -1,3 +1,26 @@
+## 2026-06-03 LUC-1696 [Ops][Soar] Reconcile Coolify resource inventory
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1696](/LUC/issues/LUC-1696);
+  - acknowledged the latest user comment as the unblock for single-owner read-only inventory only;
+  - preserved the no push/deploy/restart/rollback/env/database/team/account/protected-smoke/secret-disclosure boundary;
+  - performed read-only Coolify project/environment/resource inventory reconciliation with allowlisted metadata only.
+- Evidence:
+  - `GET /api/issues/LUC-1696/heartbeat-context` -> pass; issue read as critical with zero first-class blockers;
+  - names-only binding readback -> required Paperclip and Coolify names present without values printed;
+  - `GET /api/v1/teams/current` -> current selector id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> project resolves to `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> six applications, PostgreSQL, Redis, zero generic services;
+  - `GET /api/v1/resources` -> `17` visible rows, `8` production-environment id matches, `9` Soar-relevant allowlisted rows because of one redacted PostgreSQL companion row.
+- Disposition:
+  - canonical production environment remains eight resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`;
+  - the extra global `postgresql-database-*` row remains an alias/companion row, not a ninth deploy or smoke target;
+  - app inventory status remains `running:unknown`; PostgreSQL/Redis report `running:healthy`.
+- Deployment impact: none; no secret values, raw resource ids, generated DB suffixes, deploy, restart, rollback, env edit, database action, team setting change, account action, protected smoke, or live-trading action occurred.
+- Artifacts:
+  - `history/evidence/luc-1696-coolify-resource-inventory-reconciliation-2026-06-03.md`
+  - `history/tasks/luc-1696-reconcile-coolify-resource-inventory-2026-06-03-task.md`
+
 ## 2026-06-03 LUC-1764 [Soar][ARB-006][Ops] Inject protected PROD_DB_CHECK runner inputs
 - Status: blocked on board-capable protected secret/runtime input binding.
 - Scope:
