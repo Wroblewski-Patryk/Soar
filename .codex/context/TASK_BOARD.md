@@ -1,3 +1,26 @@
+## 2026-06-03 LUC-1800 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1800](/LUC/issues/LUC-1800);
+  - acknowledged comment `d842b9d7-0366-4c35-98ca-c4831225aae5` as an autonomous local repair/source-control lane;
+  - preserved the no push/deploy/restart/rollback/env/database/team/account/protected-smoke/secret-disclosure boundary;
+  - performed read-only Coolify project/environment/resource status access verification with allowlisted metadata only.
+- Evidence:
+  - names-only binding readback -> required Coolify names present without values printed;
+  - `GET /api/v1/teams/current` -> current selector name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> project resolves to `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> six applications, PostgreSQL, Redis, zero generic services;
+  - `GET /api/v1/resources` -> `17` visible rows;
+  - `pnpm run ops:coolify-stack:env-check:test` -> PASS (`8/8`).
+- Disposition:
+  - Coolify read-only production status access remains verified for project/environment/resource reconciliation;
+  - canonical production environment remains eight resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`;
+  - app inventory status remains `running:unknown`; PostgreSQL/Redis report `running:healthy`.
+- Deployment impact: none; no secret values, raw resource ids, generated DB suffixes, deploy, restart, rollback, env edit, database action, team setting change, account action, protected smoke, or live-trading action occurred.
+- Artifacts:
+  - `history/evidence/luc-1800-coolify-read-only-production-status-access-2026-06-03.md`
+  - `history/tasks/luc-1800-operator-coolify-bind-read-only-production-status-access-2026-06-03-task.md`
+
 ## 2026-06-03 LUC-1696 [Ops][Soar] Reconcile Coolify resource inventory
 - Status: done.
 - Scope:
@@ -8,6 +31,7 @@
 - Evidence:
   - `GET /api/issues/LUC-1696/heartbeat-context` -> pass; issue read as critical with zero first-class blockers;
   - names-only binding readback -> required Paperclip and Coolify names present without values printed;
+  - reopen refresh at `2026-06-03T14:31:43Z` -> unchanged canonical inventory;
   - `GET /api/v1/teams/current` -> current selector id `0`, name `LuckySparrow`;
   - `GET /api/v1/projects/{configured-project-id}` -> project resolves to `Soar`;
   - `GET /api/v1/projects/{configured-project-id}/production` -> six applications, PostgreSQL, Redis, zero generic services;
@@ -21136,3 +21160,24 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
 - Artifact:
   - `history/evidence/luc-1767-rollback-guard-runner-input-readiness-6839cd6b-2026-06-03.md`
   - `history/tasks/luc-1767-bind-rollback-guard-protected-runner-inputs-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1786 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - consumed the delegated scoped wake for [LUC-1786](/LUC/issues/LUC-1786);
+  - verified required Coolify binding names are present without printing values;
+  - confirmed authenticated read-only Coolify API readback resolves selector `0` / `LuckySparrow`, project `Soar`, environment `production` id `6`, and eight canonical production resources;
+  - recorded optional team-id bindings as absent but non-blocking while current-team and project-scoped reads succeed.
+- Evidence:
+  - `POST /api/issues/{issueId}/checkout` -> pass; issue moved to `in_progress`;
+  - `GET /api/issues/{issueId}/heartbeat-context` -> pass; issue read as critical with zero first-class blockers;
+  - names-only Coolify binding scan -> pass without printing values;
+  - `GET /api/v1/teams/current` -> pass at `2026-06-03T14:35:07Z`, id `0`, name `LuckySparrow`;
+  - `GET /api/v1/projects/{configured-project-id}` -> pass, project `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> pass, production environment id `6`, six applications plus PostgreSQL and Redis;
+  - `GET /api/v1/resources` -> pass (`17` visible rows, `8` matched production resources);
+  - `pnpm run ops:coolify-stack:env-check:test` -> pass (`8/8`).
+- Deployment impact: none; no deploy, restart, rollback, env change, database action, team setting change, account mutation, protected smoke, live-trading mutation, or secret readback.
+- Artifacts:
+  - `history/evidence/luc-1786-coolify-read-only-production-status-access-2026-06-03.md`
+  - `history/tasks/luc-1786-operator-coolify-bind-read-only-production-status-access-2026-06-03-task.md`

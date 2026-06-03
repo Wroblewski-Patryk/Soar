@@ -3361,6 +3361,9 @@ Test-Path $dst
   functions or `if ($null -ne $value -and [string]$value -ne '')` conditionals
   instead of `??`, especially in environment/secret-adjacent probes where reruns
   should stay small and deterministic.
+- Evidence: reproduced during the 2026-06-03 `LUC-1696` read-only Coolify
+  inventory refresh; replacing `??` with an explicit `Prop` helper allowed the
+  same read-only projection to complete without exposing secret values.
 
 ### 2026-06-02 - Coolify production environment probes must never print raw objects
 

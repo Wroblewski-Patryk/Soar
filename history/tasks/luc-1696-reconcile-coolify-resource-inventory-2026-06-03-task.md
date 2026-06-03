@@ -183,3 +183,13 @@ current production environment resources.
 - What is incomplete: readiness smoke is still separate from inventory proof.
 - Next steps: post-push deploy verification should check each of the eight resources and then run API/Web/worker readiness smoke.
 - Decisions made: global `postgresql-database-*` remains an alias/companion row, not a ninth production-environment deploy target.
+
+## Reopen Refresh
+
+- Refreshed at: 2026-06-03T14:31:43Z.
+- Trigger: [LUC-1696](/LUC/issues/LUC-1696) was reopened after the prior
+  owner-path blocker was resolved for single-owner read-only inventory.
+- Outcome: unchanged inventory; eight canonical production-environment
+  resources remain confirmed.
+- Additional guardrail applied: inline Windows PowerShell probes avoid `??` and
+  use explicit helper functions for compatibility.

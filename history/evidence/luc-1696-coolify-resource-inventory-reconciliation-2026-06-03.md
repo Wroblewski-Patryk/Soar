@@ -48,6 +48,18 @@ companion row outside the production environment id match:
 PostgreSQL alias/companion row, not as a ninth production deploy or smoke
 target.
 
+## Reopen Refresh
+
+- Refreshed at: 2026-06-03T14:31:43Z
+- Trigger: issue reopened after the owner-path blocker was resolved for
+  single-owner read-only inventory.
+- Result: unchanged; the production environment still resolves to the same
+  eight canonical resources listed above.
+- Safety: refresh used read-only Coolify `GET` calls and the same allowlisted
+  projection. No secret values, raw resource ids, deploys, restarts, rollbacks,
+  env edits, database actions, team setting changes, protected smoke, or
+  production mutations were performed.
+
 ## Result
 
 `LUC-1696` is reconciled: Coolify production still has the expected canonical
