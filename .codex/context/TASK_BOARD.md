@@ -1,3 +1,44 @@
+## 2026-06-03 LUC-1739 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - consumed the scoped local repair/source-control lane wake for LUC-1739;
+  - acknowledged latest comment `6e2b66ad-8db3-43bd-b508-f391806ce878` as requiring source-control closure while protected delivery remains fail-closed;
+  - read LUC-1739 heartbeat context and confirmed the issue was active, critical, assigned, and unblocked;
+  - classified current dirty paths as docs/history/evidence/context/agent-state only;
+  - recorded this closure task and synchronized active mission/project state/task board;
+  - locally committed the validated closure.
+- Evidence:
+  - `GET /api/issues/LUC-1739/heartbeat-context` -> pass; issue read as `in_progress`, priority `critical`, zero first-class blockers;
+  - initial `git status --short` -> `.agents/state/active-mission.md`, `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, and `history/tasks/luc-1734-restore-owner-path-for-coolify-inventory-lane-2026-06-03-task.md` dirty;
+  - `git diff --check` -> pass with line-ending warnings only;
+  - `pnpm run quality:guardrails` -> pass;
+  - post-commit `git status --short` -> clean.
+- Deployment impact: none; no push, deploy, restart, rollback, env change, database action, team setting change, account mutation, protected smoke, live-trading mutation, secret readback, Coolify config mutation, or runtime/product code change.
+- Source-control closure: local commit created for docs/state/evidence closure; push remains forbidden by the wake.
+- Artifact:
+  - `history/tasks/luc-1739-coolify-read-only-access-source-control-closure-2026-06-03-task.md`
+
+## 2026-06-03 LUC-1734 [Soar][Ops] Restore owner path for Coolify inventory lane
+- Status: blocked.
+- Scope:
+  - consumed the scoped wake for the LUC-1734 owner-path gate;
+  - verified parent LUC-1696 was still assigned to Ops Release Lead while that agent was manually paused;
+  - attempted the requested agent resume through Paperclip API;
+  - created LUC-1735 for a board-capable owner to resume Ops Release Lead or assign an equivalent active Ops-capable owner;
+  - moved LUC-1696 out of false runnable posture by blocking it on LUC-1735;
+  - moved LUC-1734 to blocked on the same first-class blocker.
+- Evidence:
+  - `GET /api/issues/LUC-1734/heartbeat-context` -> pass; parent LUC-1696 read as `todo`, assigned to Ops Release Lead;
+  - `GET /api/companies/{companyId}/agents` -> pass; Ops Release Lead read as `paused`, `pauseReason=manual`, `pausedAt=2026-06-03T05:37:49.009Z`;
+  - `POST /api/agents/01dd0c79-172b-4848-80eb-40692f07ccbb/resume` -> failed with `Board access required`;
+  - `POST /api/companies/{companyId}/issues` -> created LUC-1735 assigned to Portfolio Director;
+  - `PATCH /api/issues/LUC-1696` -> blocked with LUC-1735 as first-class blocker;
+  - `PATCH /api/issues/LUC-1734` -> blocked with LUC-1735 as first-class blocker.
+- Deployment impact: none; no push, deploy, restart, rollback, env change, database action, team setting change, account mutation, protected smoke, live-trading mutation, secret readback, or repo code mutation.
+- Remaining: Portfolio Director or another board-capable owner completes LUC-1735, then LUC-1696 can return to `todo` and wake the active read-only Coolify inventory owner.
+- Artifact:
+  - `history/tasks/luc-1734-restore-owner-path-for-coolify-inventory-lane-2026-06-03-task.md`
+
 ## 2026-06-03 LUC-1709 [Guardrails][Source Control] Restore Soar guardrails so LUC-1707 docs/evidence can commit
 - Status: done.
 - Scope:
