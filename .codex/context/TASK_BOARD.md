@@ -1,3 +1,20 @@
+## 2026-06-05 LUC-2046 [Soar][Source Control Closure] Classify and close local dirty state for LUC-2045
+- Status: verified.
+- Scope:
+  - consumed the scoped wake for [LUC-2046](/LUC/issues/LUC-2046);
+  - classified two untracked [LUC-2045](/LUC/issues/LUC-2045) history artifacts as coherent task/evidence work;
+  - preserved the no push/deploy/restart/rollback/env/database/team/account/protected-smoke/secret-disclosure/live-trading boundary.
+- Evidence:
+  - baseline `git status --short` -> `2` untracked task/evidence paths, runtime/product code `0`;
+  - `git diff --check` -> PASS;
+  - added-line redaction scan -> PASS.
+- Disposition:
+  - local source-control closure commit created for the coherent docs/state/evidence set;
+  - push status: not pushed / not needed;
+  - deploy impact: none.
+- Artifact:
+  - `history/tasks/luc-2046-source-control-close-local-dirty-state-for-luc-2045-2026-06-05-task.md`
+
 ## 2026-06-05 LUC-2044 [Soar][Source Control Closure] Classify and close local dirty state
 - Status: verified.
 - Scope:
