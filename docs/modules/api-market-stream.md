@@ -38,6 +38,11 @@ Out of scope:
   - endpoint: `GET /dashboard/market-stream/events`
   - supports `symbols` filter and `interval` filter.
   - emits event IDs, heartbeat comments (`: ping`), and periodic `health` events.
+- Data source contract:
+  - the SSE route subscribes to the in-process market-stream fanout and
+    observes worker-published market events.
+  - no persisted DB model is expected for the route; subscription/fanout
+    relations are the canonical graph data source.
 - Guardrails:
   - hard symbol limit (`MARKET_STREAM_MAX_SYMBOLS = 20`).
 
@@ -85,6 +90,10 @@ Out of scope:
 ```powershell
 pnpm --filter api test -- src/modules/market-stream/binanceStream.service.test.ts src/modules/market-stream/exchangePollingStream.service.test.ts src/modules/market-stream/marketStream.routes.contract.test.ts src/modules/market-stream/marketStream.routes.e2e.test.ts
 ```
+- 2026-06-04 source proof:
+  - architecture graph relations `REL-APISUPPORT-014` and
+    `REL-MARKET-DATA-011` record fanout and worker-backed source semantics for
+    the route; no route-level DB relation is expected.
 
 ## 9. Open Issues and Follow-Ups
 - Gate.io worker source selection is regression-locked as explicit opt-in via

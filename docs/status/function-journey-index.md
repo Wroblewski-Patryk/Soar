@@ -61,18 +61,11 @@ This index connects user-visible entrypoints, graph function chains, API routes,
 | high | CHAIN-MARKET-DATA-STREAM-ADAPTERS | market-data-stream-adapters | verified_local | missing_proof:Fresh live exchange stream proof remains separate; production_or_browser_proof_not_implied |
 | high | SOAR-PAGE-DASHBOARD | dashboard-runtime | partially_verified | page_status:partially_verified |
 | high | SOAR-API-BOT-RUNTIME-POSITIONS | dashboard-runtime | partially_verified | api_status:partially_verified |
-| medium | SOAR-PAGE-BOT-NEW-ALIAS | bot-setup | verified_local | not_in_function_chain |
-| medium | SOAR-PAGE-BOT-DETAIL-ALIAS | bot-setup | verified_local | not_in_function_chain |
-| medium | SOAR-PAGE-OFFLINE | web-residual-surfaces | verified_local | not_in_function_chain |
 | medium | SOAR-API-ORDER-LIST | manual-order | verified | not_in_function_chain |
 | medium | SOAR-API-ORDER-GET | manual-order | verified | not_in_function_chain |
 | medium | SOAR-API-ORDER-CANCEL | manual-order | verified | not_in_function_chain |
 | medium | SOAR-API-ORDER-CLOSE | manual-order | verified | not_in_function_chain |
 | medium | SOAR-API-POSITION-MANAGEMENT-MODE | positions | verified_local | not_in_function_chain |
-| medium | SOAR-API-STRATEGY-INDICATORS | strategies | verified_local | no_data_or_explicit_na |
-| medium | SOAR-API-MARKET-CATALOG | markets | verified_local | no_data_or_explicit_na |
-| medium | SOAR-API-ICON-LOOKUP | api-support-routes | verified_local | no_data_or_explicit_na |
-| medium | SOAR-API-MARKET-STREAM-EVENTS | api-support-routes | verified_local | no_data_or_explicit_na |
 
 ## Use
 

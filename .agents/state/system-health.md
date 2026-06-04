@@ -1,5 +1,30 @@
 # System Health
 
+- `LUC-1948-MAP-BOTS-TYPES-TEST-GRAPH-REGISTRY-2026-06-04` VERIFIED as a
+  bounded Docs Memory architecture graph registry checkpoint. Wake payload was
+  scoped to [LUC-1948](/LUC/issues/LUC-1948), checkout was already claimed by
+  the harness, and no issue-thread refetch was needed (`fallbackFetchNeeded=false`).
+  `apps/api/src/modules/bots/bots.types.test.ts` is mapped to existing
+  `SOAR-TEST-AI-ASSISTANT-API` ownership because it proves
+  `AssistantDryRunSchema` accepts `BACKTEST`/`PAPER` and rejects `LIVE`.
+  Final strict drift also mapped adjacent same-gate API test omissions to
+  existing middleware/auth owner nodes. Validation passed: `pnpm run
+  architecture:graph:generate` (`647` nodes / `810` relations / `27` chains),
+  `pnpm run architecture:graph:drift:strict` (`820/820` covered / `0`
+  missing), and focused API tests for the four newly mapped files (`4` files /
+  `10` tests). Scope stayed docs/graph/state
+  only; no runtime/product behavior, deploy, restart, rollback, env, database,
+  account, secret, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-1948-map-bots-types-test-into-architecture-graph-registry-2026-06-04-task.md`.
+
+- `LUC-1944-ASSISTANT-DRY-RUN-BOUNDARY-SCHEMA-DRIFT-2026-06-04` PARTIALLY_VERIFIED/DONE as a bounded AI Runtime security-review closure. Wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`), and checkout had already been claimed by the harness. API dry-run input is now explicitly limited to `BACKTEST | PAPER`, the dry-run service revalidates the mode before calling the broader orchestrator, disabled-main dry-run suppresses enabled subagent rows, assistant role/model-profile schemas are allowlisted, the Web dry-run client no longer types `LIVE` as an accepted payload, Web role/profile controls use allowlist selects, and default `LIVE` orchestrator input remains fail-closed as `strategy_only` / `NO_TRADE`. Focused no-DB AI Runtime/API tests passed (`4` files / `8` tests) and Web typecheck passed. Full API typecheck remains blocked by unrelated existing test typing errors in positions orphan-repair and workers readiness tests. DB-backed route e2e was attempted but blocked before assertions because local PostgreSQL `localhost:5432` is unavailable. No deploy/restart/rollback/env/database/account/secret/live-trading mutation occurred. Evidence: `history/tasks/luc-1944-assistant-dry-run-boundary-schema-drift-2026-06-04-task.md`.
+
+- `LUC-1939-RESIDUAL-PAGE-CHAIN-SEMANTICS-MEDIUM-GRAPH-GAPS-2026-06-04` VERIFIED as a bounded Docs Memory graph semantics cleanup checkpoint. Wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`), and checkout had already been claimed by the harness. Scoped graph source truth now places `SOAR-PAGE-BOT-NEW-ALIAS` and `SOAR-PAGE-BOT-DETAIL-ALIAS` in `CHAIN-BOT-SETUP`; `SOAR-PAGE-OFFLINE` is documented and generated as an accepted offline app-shell fallback with no function-chain requirement. Regenerated `web-journey-index.csv` reports empty gaps and `gap_severity=none` for all three scoped page rows, and `docs/status/function-journey-index.md` no longer lists them as medium `not_in_function_chain` gaps. Validation passed: `pnpm run architecture:graph:generate` (`647` nodes / `810` relations / `27` chains), `pnpm run architecture:journey:index` (`0` critical function gaps; user-action medium gaps `0`), and `pnpm run architecture:graph:drift:strict` (`816/816` covered, `0` missing). Scope stayed docs/graph/state only; no runtime/product behavior, deploy, restart, rollback, env, database, account, secret, or live-trading mutation occurred. Evidence: `history/tasks/luc-1939-residual-page-chain-semantics-medium-graph-gaps-2026-06-04-task.md`.
+
+- `LUC-1940-API-DATA-NA-SEMANTICS-2026-06-04` PARTIALLY_VERIFIED/DONE as a bounded Backend API graph-semantics cleanup. The four target API surfaces (`SOAR-API-STRATEGY-INDICATORS`, `SOAR-API-MARKET-CATALOG`, `SOAR-API-ICON-LOOKUP`, `SOAR-API-MARKET-STREAM-EVENTS`) no longer emit `no_data_or_explicit_na`; each now has explicit data/source semantics in regenerated journey artifacts. Validation passed for generator syntax, journey index, graph generate, strict graph drift, strict journey index, direct four-row JSON readback, focused no-DB API/source tests (`3` files / `10` tests), and `git diff --check` with LF/CRLF warnings only. DB-backed e2e route packs were attempted but blocked before route assertions because local PostgreSQL `localhost:5432` is unavailable and Docker Desktop engine is not running. No runtime behavior, deploy, restart, rollback, env, secret, account, database, or live-trading mutation occurred. Evidence: `history/tasks/luc-1940-api-data-na-semantics-medium-graph-gaps-2026-06-04-task.md`.
+
+- `LUC-1933-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-04` VERIFIED as a bounded Ops read-only access binding checkpoint. Wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`), and the harness had already claimed checkout, so checkout was not repeated. Runtime binding check verified `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID` are present without printing values; `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` are absent but not required because authenticated read-only Coolify API readback at `2026-06-04T08:48:23Z` resolved current selector id `0`, name `LuckySparrow`, project `Soar`, production environment `production`, and eight production resources: six applications plus PostgreSQL and Redis. Application inventory status remains `running:unknown`; data services report `running:healthy`. `GET /api/v1/resources` returned `17` visible rows. `pnpm run ops:coolify-stack:env-check:test` passed (`8/8`). Scope stayed read-only docs/evidence/state only; no deploy/restart/rollback/env/database/team/account/secret/live-trading mutation was performed. Evidence: `history/evidence/luc-1933-coolify-read-only-production-status-access-2026-06-04.md`, `history/tasks/luc-1933-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md`.
+
 - `LUC-1925-SOURCE-CONTROL-CLOSE-LUC-1910-LUC-1916-LUC-1919-2026-06-04` VERIFIED as a bounded PM source-control closure checkpoint for [LUC-1910](/LUC/issues/LUC-1910), [LUC-1916](/LUC/issues/LUC-1916), [LUC-1919](/LUC/issues/LUC-1919), and current follow-on docs/evidence for [LUC-1926](/LUC/issues/LUC-1926). Dirty state was classified as docs/state/evidence only, with runtime/product code dirty count `0`. Baseline classification was posted to [LUC-1925](/LUC/issues/LUC-1925) before project mutation. `git diff --check` passed, targeted dirty-path redaction scan found no secret-value/key-material hits, `pnpm run quality:guardrails` passed, and the coherent set was committed locally. No push, deploy, restart, rollback, env edit, database action, team setting change, account action, protected smoke, secret disclosure, or live-trading mutation occurred. Evidence: `history/tasks/luc-1925-source-control-close-local-dirty-state-for-luc-1910-luc-1916-luc-1919-2026-06-04-task.md`.
 
 - `LUC-1926-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-04` VERIFIED as a bounded Ops read-only access binding checkpoint. Wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`), and the harness had already claimed checkout, so checkout was not repeated. Runtime binding check verified `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID` are present without printing values; `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` are absent but not required because authenticated read-only Coolify API readback at `2026-06-04T07:47:26Z` resolved current selector id `0`, name `LuckySparrow`, project `Soar`, production environment `production`, and eight production resources: six applications plus PostgreSQL and Redis. Application inventory status remains `running:unknown`; data services report `running:healthy`. `pnpm run ops:coolify-stack:env-check:test` passed (`8/8`). Scope stayed read-only docs/evidence/state only; no deploy/restart/rollback/env/database/team/account/secret/live-trading mutation was performed. Evidence: `history/evidence/luc-1926-coolify-read-only-production-status-access-2026-06-04.md`, `history/tasks/luc-1926-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md`.
@@ -3373,3 +3398,32 @@ shell still lacks those credentials and approvals.
 ## 2026-06-02 LUC-1565 Coolify Resource Inventory Reconciliation
 
 - `LUC-1565-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02` VERIFIED for read-only production resource inventory. Fresh authenticated Coolify API readback at `2026-06-02T17:34:56Z` confirmed configured project `Soar`, production environment `production`, current selector id `0` name `LuckySparrow`, and eight canonical resources: API, Web, four worker applications, PostgreSQL, and Redis. Application inventory status remains `running:unknown`; PostgreSQL and Redis report `running:healthy`. No deploy, restart, rollback, env edit, database action, team setting change, account action, live trading action, or secret value disclosure occurred. Evidence: `history/evidence/luc-1565-coolify-resource-inventory-reconciliation-2026-06-02.md`; task packet: `history/tasks/luc-1565-reconcile-coolify-resource-inventory-2026-06-02-task.md`.
+- 2026-06-04 `LUC-1946` improves API platform safety: rate-limit Redis client
+  `error` events now flow through the existing redacted module logger instead
+  of raw console logging. Focused middleware proof passed (`7/7`), no deploy or
+  runtime mutation occurred, and full API typecheck remains blocked by
+  unrelated existing test typing errors outside this middleware path. Evidence:
+  `history/tasks/luc-1946-route-rate-limit-redis-client-errors-through-redacted-logger-2026-06-04-task.md`.
+- 2026-06-04 `LUC-1945` adds a repeatable no-protected-smoke adversarial API
+  platform / assistant regression pack. Command:
+  `pnpm run test:adversarial:api-assistant` -> PASS (`8` files / `29` tests).
+  Coverage includes rate-limit production Redis fail-closed behavior, redacted
+  logger output, trusted-origin cookie write guard, JWT/session rejection,
+  assistant protocol scenarios, invalid assistant dry-run `LIVE` rejection,
+  and default LIVE assistant hot-path fail-closed behavior. This is local
+  regression proof only and does not claim production, protected-auth, or LIVE
+  hot-path parity evidence. Evidence:
+  `history/tasks/luc-1945-adversarial-api-assistant-regression-proof-2026-06-04-task.md`.
+- 2026-06-04 `LUC-1952` closes the local source-control state for the
+  LUC-1933/LUC-1939/LUC-1940/LUC-1941/LUC-1944/LUC-1945/LUC-1946/LUC-1948/
+  LUC-1951 cluster. In-scope dirty paths were current and coherent; stale and
+  real secret-risk paths were not found; fake test fixtures
+  `super-secret-password` and `session-token-secret` were reviewed as
+  non-credentials. `git diff --check`, targeted dirty-path secret scan,
+  `pnpm run quality:guardrails`,
+  `pnpm run test:adversarial:api-assistant`, and
+  `pnpm --filter web run typecheck` passed. Local commit created; push/deploy
+  not performed. Remaining dirty paths are only concurrent LUC-1953 Ops
+  evidence/task artifacts owned by open [LUC-1953](/LUC/issues/LUC-1953).
+  Evidence:
+  `history/tasks/luc-1952-source-control-close-local-dirty-state-for-luc-1933-luc-1939-luc-1940-luc-1941-plus-5-2026-06-04-task.md`.

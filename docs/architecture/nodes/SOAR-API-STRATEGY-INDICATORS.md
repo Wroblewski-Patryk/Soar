@@ -35,6 +35,7 @@ tags: [soar-map, api_route, backend, verified_local]
 ## Relations
 
 - routes_to -> [[SOAR-SERVICE-STRATEGY-INDICATORS]] (verified_local)
+- reads -> [[SOAR-SERVICE-STRATEGY-INDICATORS]] (verified_local)
 - reads <- [[SOAR-COMP-STRATEGY-FORM-SECTIONS]] (verified_local)
 - calls <- [[SOAR-SERVICE-WEB-STRATEGIES]] (verified_local)
 

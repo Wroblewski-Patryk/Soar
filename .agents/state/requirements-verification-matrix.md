@@ -249,6 +249,16 @@ Last updated: 2026-05-25
   `0` missing; `node --test scripts/repoGuardrails.test.mjs` passed `9/9`;
   `pnpm run quality:guardrails` passed and reported `Architecture graph
   drift: OK`.
+- 2026-06-04 `LUC-1945-ADVERSARIAL-API-ASSISTANT-REGRESSION-PROOF-2026-06-04`
+  updates `REQ-DOC-024` / API platform safety and AI assistant foundation
+  verification expectations: `pnpm run test:adversarial:api-assistant`
+  provides a repeatable local adversarial regression pack for rate-limit
+  fail-closed behavior, logger redaction, trusted-origin cookie write guard,
+  auth token/session rejection, assistant protocol scenarios, assistant
+  fail-closed/circuit/metadata sanitization, dry-run `LIVE` rejection, and
+  default LIVE assistant hot-path fail-closed behavior. Proof passed (`8`
+  files / `29` tests). Boundary: this does not verify protected production
+  auth, DB-backed route e2e, or LIVE hot-path assistant parity.
 - 2026-05-19 `AUDIT-RERUN-PLAYBOOK-BASELINE-PATH-VALUE-CHECK-2026-05-19`
   updates `REQ-FUNC-021` and `REQ-AUDIT-031`: `audit:rerun-playbook:check`
   now fails when required baseline values are empty or are not repository

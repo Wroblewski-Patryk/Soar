@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-03T07:19:08.087Z",
+  "generatedAt": "2026-06-04T09:18:04.814Z",
   "source": {
     "nodes": "docs/architecture/registry/nodes.csv",
     "relations": "docs/architecture/relations/dependencies.csv",
@@ -20910,6 +20910,18 @@
       "notes": ""
     },
     {
+      "id": "REL-STRATEGIES-043",
+      "source_id": "SOAR-API-STRATEGY-INDICATORS",
+      "target_id": "SOAR-SERVICE-STRATEGY-INDICATORS",
+      "relation_type": "reads",
+      "status": "verified_local",
+      "description": "Indicator catalog route reads static strategy indicator registry metadata through the strategy indicators service.",
+      "evidence": "apps/api/src/modules/strategies/indicators/indicators.service.ts",
+      "owner": "Backend",
+      "last_verified_at": "2026-06-04",
+      "notes": "Added for LUC-1940 data-source semantics; no DB relation is expected."
+    },
+    {
       "id": "REL-STRATEGIES-035",
       "source_id": "SOAR-FEATURE-STRATEGIES",
       "target_id": "SOAR-FEATURE-BOT-SETUP",
@@ -21232,6 +21244,18 @@
       "owner": "Backend",
       "last_verified_at": "2026-05-24",
       "notes": ""
+    },
+    {
+      "id": "REL-MARKETS-040",
+      "source_id": "SOAR-API-MARKET-CATALOG",
+      "target_id": "SOAR-SERVICE-EXCHANGE-MARKET-CATALOG",
+      "relation_type": "uses",
+      "status": "verified_local",
+      "description": "Market catalog route resolves exchange-backed public market metadata through the exchange market catalog service rather than a persisted DB model.",
+      "evidence": "apps/api/src/modules/markets/markets.service.ts",
+      "owner": "Backend",
+      "last_verified_at": "2026-06-04",
+      "notes": "Added for LUC-1940 data-source semantics; market universe DB relations belong to CRUD routes."
     },
     {
       "id": "REL-MARKETS-020",
@@ -23968,6 +23992,18 @@
       "owner": "Backend",
       "last_verified_at": "2026-05-24",
       "notes": ""
+    },
+    {
+      "id": "REL-APISUPPORT-041",
+      "source_id": "SOAR-API-ICON-LOOKUP",
+      "target_id": "SOAR-SERVICE-ICONS",
+      "relation_type": "uses",
+      "status": "verified_local",
+      "description": "Icon lookup route resolves metadata through the icon resolver cache external provider curated catalog and placeholder fallback; no persisted data model is expected.",
+      "evidence": "apps/api/src/modules/icons/icons.service.ts",
+      "owner": "Backend",
+      "last_verified_at": "2026-06-04",
+      "notes": "Added for LUC-1940 data-source semantics."
     },
     {
       "id": "REL-APISUPPORT-012",
@@ -27593,8 +27629,10 @@
         "SOAR-PAGE-BOTS-LIST",
         "SOAR-COMP-BOTS-LIST-TABLE",
         "SOAR-PAGE-BOT-CREATE",
+        "SOAR-PAGE-BOT-NEW-ALIAS",
         "SOAR-PAGE-BOT-EDIT",
         "SOAR-PAGE-BOT-PREVIEW",
+        "SOAR-PAGE-BOT-DETAIL-ALIAS",
         "SOAR-COMP-BOT-FORM-PAGE-CONTENT",
         "SOAR-COMP-BOT-CREATE-EDIT-FORM",
         "SOAR-SERVICE-WEB-BOTS-API",
@@ -27633,8 +27671,8 @@
       "evidence": "docs/modules/api-bots.md;docs/modules/web-bots.md",
       "missing_links": "Fresh authenticated browser proof and LIVE activation proof remain separate",
       "risk_level": "critical",
-      "last_verified_at": "2026-05-24",
-      "notes": "Backfilled Bot Setup chain across list/create/edit UI Web service lifecycle API routes controller DTO context validation activation policy canonical topology DB tests and docs."
+      "last_verified_at": "2026-06-04",
+      "notes": "Backfilled Bot Setup chain across list/create/edit UI Web service lifecycle API routes controller DTO context validation activation policy canonical topology DB tests docs and compatibility alias pages."
     },
     {
       "id": "CHAIN-STRATEGIES",

@@ -1,6 +1,6 @@
 # Module Confidence Ledger
 
-Last updated: 2026-06-03
+Last updated: 2026-06-04
 
 ## Purpose
 
@@ -29,6 +29,64 @@ Do not turn uncertainty into optimism.
 - `Low`: evidence is missing, stale, inferred, or chat-only.
 
 ## Current Operational Override
+
+- 2026-06-04 `LUC-1953-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-04`:
+  confidence for `SOAR-OPERATIONS-001` remains high for Coolify read-only
+  production status access binding truth. Fresh read-only Coolify API readback
+  at `2026-06-04T09:48:12Z` verified required binding names are present
+  without value disclosure, configured project `Soar`, production environment
+  `production`, six application resources, PostgreSQL, Redis, zero generic
+  services, `17` visible global resource rows, and eight production-environment
+  resources. `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent in this
+  runner, but this is not an active blocker while project-scoped reads succeed.
+  `pnpm run ops:coolify-stack:env-check:test` passed (`8/8`). No deploy,
+  restart, rollback, env edit, database action, team setting change, account
+  action, protected smoke, secret readback, or live-trading action was
+  performed. This does not claim full application readiness, database health,
+  protected smoke, SLO, restore/rollback, or deploy mutation readiness.
+  Evidence:
+  `history/evidence/luc-1953-coolify-read-only-production-status-access-2026-06-04.md`.
+
+- 2026-06-04 `LUC-1948-MAP-BOTS-TYPES-TEST-GRAPH-REGISTRY-2026-06-04`:
+  confidence for the Architecture Evidence Graph and assistant dry-run safety
+  test registry is verified locally. `apps/api/src/modules/bots/bots.types.test.ts`
+  is now mapped under `SOAR-TEST-AI-ASSISTANT-API`, preserving the existing AI
+  Assistant foundation ownership for `AssistantDryRunSchema` advisory-mode
+  safety. Final strict drift also mapped adjacent same-gate API test omissions
+  to their existing middleware/auth owner nodes. Validation passed: `pnpm run
+  architecture:graph:generate` (`647` nodes / `810` relations / `27` chains),
+  `pnpm run architecture:graph:drift:strict` (`820/820` covered / `0`
+  missing), and focused API tests for the four newly mapped files (`4` files /
+  `10` tests). This is graph/test traceability proof only, not fresh browser,
+  production, deploy, database, or runtime behavior proof. Evidence:
+  `history/tasks/luc-1948-map-bots-types-test-into-architecture-graph-registry-2026-06-04-task.md`.
+
+- 2026-06-04 `LUC-1944-ASSISTANT-DRY-RUN-BOUNDARY-SCHEMA-DRIFT-2026-06-04`:
+  confidence for the AI Assistant foundation/dry-run boundary is improved to
+  `PARTIAL` with current local proof. The implemented dry-run API/client
+  contract is now `BACKTEST | PAPER` only, internal service handoff reparses
+  the dry-run mode schema before calling the broader orchestrator,
+  disabled-main dry-run suppresses enabled subagent rows, assistant
+  role/model-profile schemas are allowlisted, and default `LIVE` orchestrator
+  input remains fail-closed as `strategy_only` / `NO_TRADE`. Evidence passed:
+  focused no-DB AI Runtime/API tests (`4` files / `8` tests) and Web
+  typecheck. Missing proof: DB-backed dry-run route e2e is
+  blocked by unavailable local PostgreSQL, and full API typecheck is blocked by
+  unrelated existing test typing errors. Evidence:
+  `history/tasks/luc-1944-assistant-dry-run-boundary-schema-drift-2026-06-04-task.md`.
+
+- 2026-06-04 `LUC-1939-RESIDUAL-PAGE-CHAIN-SEMANTICS-MEDIUM-GRAPH-GAPS-2026-06-04`:
+  confidence for the Architecture Evidence Graph journey index is improved
+  for residual Web page semantics. `SOAR-PAGE-BOT-NEW-ALIAS` and
+  `SOAR-PAGE-BOT-DETAIL-ALIAS` are explicit members of `CHAIN-BOT-SETUP`;
+  `SOAR-PAGE-OFFLINE` is an accepted offline app-shell fallback with no
+  function-chain requirement. Regenerated journey rows show all three scoped
+  pages with empty gaps and `gap_severity=none`. Validation passed:
+  `pnpm run architecture:graph:generate`, `pnpm run architecture:journey:index`,
+  and `pnpm run architecture:graph:drift:strict`. This is graph/documentation
+  traceability proof only, not fresh browser, production, deploy, or runtime
+  behavior proof. Evidence:
+  `history/tasks/luc-1939-residual-page-chain-semantics-medium-graph-gaps-2026-06-04-task.md`.
 
 - 2026-06-03 `LUC-1764-PROD-DB-CHECK-RUNNER-INPUT-BINDING-2026-06-03`:
   confidence for production DB restore-readiness remains `BLOCKED` for the
@@ -2271,6 +2329,27 @@ Do not turn uncertainty into optimism.
   `0b7eb4c6` is deployed; public smoke and production UI clickthrough pass on
   that SHA. Security/exchange proof remains partial only for protected ops
   readiness auth, while app-auth exchange/security checks pass.
+- 2026-06-04 `LUC-1946-RATE-LIMIT-REDIS-LOGGER-2026-06-04` applies to
+  `SOAR-SECURITY-PRIVACY-001` / `SOAR-MIDDLEWARE-RATE-LIMIT`: rate-limit Redis
+  client `error` events now use the existing redacted module logger instead of
+  raw `console.error`, preserving production fail-closed behavior. Focused
+  proof passed `pnpm --filter api exec vitest run src/middleware/rateLimit.test.ts`
+  (`1` file / `7` tests), and a targeted grep found no remaining raw
+  `Redis rate-limit client error` console path in the touched middleware files.
+  Full API typecheck is still blocked by unrelated existing test typing errors
+  in positions orphan-repair and workers readiness tests.
+- 2026-06-04 `LUC-1945-ADVERSARIAL-API-ASSISTANT-REGRESSION-PROOF-2026-06-04`
+  applies to `SOAR-SECURITY-PRIVACY-001`, `SOAR-FEATURE-API-PLATFORM-SAFETY`,
+  `SOAR-FEATURE-AUTH-SESSION`, and `SOAR-FEATURE-AI-ASSISTANT-FOUNDATION`:
+  added repeatable local adversarial regression command
+  `pnpm run test:adversarial:api-assistant`. Proof passed (`8` files / `29`
+  tests) across rate-limit fail-closed/redacted logging, trusted-origin
+  cookie write guard, JWT/session candidate rejection, assistant protocol
+  scenarios, assistant fail-closed/circuit/metadata sanitization, dry-run
+  `LIVE` schema rejection, and default LIVE assistant hot-path fail-closed
+  behavior. This improves local regression confidence only; protected smoke,
+  DB-backed auth route e2e, production account proof, and LIVE hot-path
+  assistant parity remain outside this checkpoint unless separately approved.
 
 ## Maintenance Rules
 

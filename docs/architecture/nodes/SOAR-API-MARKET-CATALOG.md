@@ -35,6 +35,7 @@ tags: [soar-map, api_route, backend, verified_local]
 ## Relations
 
 - routes_to -> [[SOAR-CONTROLLER-MARKETS]] (verified_local)
+- uses -> [[SOAR-SERVICE-EXCHANGE-MARKET-CATALOG]] (verified_local)
 - calls <- [[SOAR-SERVICE-WEB-MARKETS]] (verified_local)
 
 ## Evidence Rule

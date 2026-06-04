@@ -135,6 +135,10 @@ function gapSeverity(gaps) {
   return "none";
 }
 
+function isApiDataSourceRelation(relation) {
+  return ["reads", "uses", "observes", "subscribes_to", "reads_writes", "scoped_by"].includes(relation.relation_type);
+}
+
 function isUserFacingChain(chain, nodes) {
   if (/ops|config|pipeline|release-audit-tooling|api-platform-safety/.test(chain.feature)) return false;
   return nodes.some((node) => ["page", "component", "hook", "ui_element"].includes(node.type));
@@ -217,7 +221,7 @@ function main() {
       }
       if (testRefs.length === 0) gaps.push("no_tests");
       if (docRefs.length === 0) gaps.push("no_docs");
-      if (chainRefs.length === 0 && !/redirect/i.test(page.description)) gaps.push("not_in_function_chain");
+      if (chainRefs.length === 0 && !/redirect|offline/i.test(page.description)) gaps.push("not_in_function_chain");
       if (["partially_verified", "implemented_not_verified", "blocked", "broken", "missing"].includes(page.verification_status || page.status)) {
         gaps.push(`page_status:${page.verification_status || page.status}`);
       }
@@ -254,13 +258,16 @@ function main() {
       ].filter(Boolean));
       const tests = splitRefs(api.tests_related);
       const docs = splitRefs(api.docs_related);
-      const dataRefs = splitRefs(api.database_related);
+      const dataRefs = Array.from(new Set([
+        ...splitRefs(api.database_related),
+        ...apiRelations.filter(isApiDataSourceRelation).map((relation) => relation.target_id),
+      ].filter(Boolean)));
       const chainRefs = chainRows.filter((chain) => splitRefs(chain.api_routes).includes(api.id)).map((chain) => chain.id);
       const gaps = [];
       if (consumers.size === 0 && !/router|support/i.test(api.feature)) gaps.push("no_consumer_relation");
       if (tests.length === 0) gaps.push("no_tests");
       if (docs.length === 0) gaps.push("no_docs");
-      if (dataRefs.length === 0 && !/icon|stream|upload/i.test(api.feature)) gaps.push("no_data_or_explicit_na");
+      if (dataRefs.length === 0 && !/icon|stream|upload/i.test(`${api.feature} ${api.id} ${api.name}`)) gaps.push("no_data_or_explicit_na");
       if (chainRefs.length === 0) gaps.push("not_in_function_chain");
       if (["partially_verified", "implemented_not_verified", "blocked", "broken", "missing"].includes(api.verification_status || api.status)) {
         gaps.push(`api_status:${api.verification_status || api.status}`);

@@ -1,3 +1,149 @@
+## 2026-06-04 LUC-1951 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1951](/LUC/issues/LUC-1951);
+  - preserved the no push/deploy/restart/rollback/env/database/team/account/protected-smoke/secret-disclosure boundary;
+  - performed read-only Coolify project/environment/resource status access verification with allowlisted metadata only.
+- Evidence:
+  - names-only binding readback -> required Coolify names present without values printed;
+  - `GET /api/v1/projects/{configured-project-id}` -> project resolves to `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> six applications, PostgreSQL, Redis;
+  - `GET /api/v1/resources` -> `17` visible rows;
+  - `pnpm run ops:coolify-stack:env-check:test` -> PASS (`8/8`).
+- Disposition:
+  - Coolify read-only production status access remains verified for project/environment/resource reconciliation;
+  - canonical production environment remains eight resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`;
+  - app inventory status remains `running:unknown`; PostgreSQL/Redis report `running:healthy`.
+- Artifact:
+  - `history/tasks/luc-1951-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md`
+  - `history/evidence/luc-1951-coolify-read-only-production-status-access-2026-06-04.md`
+
+## 2026-06-04 LUC-1944 [Soar][AI Runtime] Close assistant dry-run boundary and schema drift from security review
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1944](/LUC/issues/LUC-1944);
+  - tightened API dry-run mode schema around `BACKTEST | PAPER`;
+  - added a service-level dry-run mode reparse before orchestrator handoff;
+  - added canonical assistant role and model-profile allowlists;
+  - suppressed enabled subagent rows at dry-run orchestration handoff when `mainAgentEnabled=false`;
+  - removed `LIVE` from the Web dry-run client payload type and replaced role/profile free-text controls with allowlist selects;
+  - updated AI Runtime regressions so `BACKTEST/PAPER` remain deterministic while default `LIVE` hot-path stays fail-closed.
+- Evidence:
+  - `pnpm --filter api exec vitest run src/modules/bots/bots.types.test.ts src/modules/bots/botAssistant.service.test.ts src/modules/engine/assistantOrchestrator.parity.test.ts src/modules/engine/assistantOrchestrator.protocol.test.ts` -> PASS (`4` files / `8` tests);
+  - `pnpm --filter web run typecheck` -> PASS;
+  - `pnpm --filter api run typecheck` -> FAIL on unrelated pre-existing test typing errors in `positions.orphan-repair.contract.e2e.test.ts` and `workers-health-readiness.test.ts`;
+  - focused DB-backed assistant route e2e attempted but blocked before assertions because local PostgreSQL `localhost:5432` is unavailable;
+  - no listener remained on local port `3001` after the failed e2e.
+- Artifact:
+  - `history/tasks/luc-1944-assistant-dry-run-boundary-schema-drift-2026-06-04-task.md`
+- Follow-up:
+  - [LUC-1948](/LUC/issues/LUC-1948) owns graph registry coverage for the new `apps/api/src/modules/bots/bots.types.test.ts` file.
+- Deployment impact: none.
+
+## 2026-06-04 LUC-1948 [Soar][Docs] Map bots types test into architecture graph registry
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1948](/LUC/issues/LUC-1948);
+  - mapped `apps/api/src/modules/bots/bots.types.test.ts` into the existing `SOAR-TEST-AI-ASSISTANT-API` architecture graph test node;
+  - mapped adjacent same-gate API test omissions exposed by strict drift to existing AI Assistant API, API middleware safety, and API auth session test nodes;
+  - preserved the no runtime/product/deploy/restart/rollback/secret/account/database/live-trading mutation boundary.
+- Evidence:
+  - `docs/architecture/registry/tests.csv` now links the bots types schema safety test to AI Assistant API proof and keeps the strict drift inventory covered;
+  - `pnpm run architecture:graph:generate` -> PASS (`647` nodes / `810` relations / `27` chains);
+  - `pnpm run architecture:graph:drift:strict` -> PASS (`820/820` covered / `0` missing);
+  - focused API tests for newly mapped files -> PASS (`4` files / `10` tests).
+- Artifact:
+  - `history/tasks/luc-1948-map-bots-types-test-into-architecture-graph-registry-2026-06-04-task.md`
+- Deployment impact: none.
+- Next:
+  - [LUC-1941](/LUC/issues/LUC-1941) can recheck/close the medium graph cleanup queue.
+
+## 2026-06-04 LUC-1941 [Soar][QA] Verify medium graph cleanup queue closure
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1941](/LUC/issues/LUC-1941) after [LUC-1939](/LUC/issues/LUC-1939) and [LUC-1940](/LUC/issues/LUC-1940) blockers resolved;
+  - verified the seven [LUC-1938](/LUC/issues/LUC-1938) `ARCH-MED-001..007` cleanup candidates no longer report scoped medium gaps;
+  - preserved the no runtime/product/deploy/restart/rollback/secret/account/database/live-trading mutation boundary.
+- Evidence:
+  - direct generated-index readback -> all seven scoped candidates have `gap_severity=none` and empty `gaps`;
+  - `pnpm run architecture:journey:index:strict` -> PASS (`27` chains, `36` web journeys, `96` API surfaces, `0` critical gaps; user action index `0` critical and `0` medium gaps);
+  - initial `pnpm run architecture:graph:drift:strict` -> FAIL (`816/817` covered, `1` missing): `apps/api/src/modules/bots/bots.types.test.ts`;
+  - created [LUC-1948](/LUC/issues/LUC-1948) for Docs Memory Lead to map `apps/api/src/modules/bots/bots.types.test.ts` into the architecture graph/test registry;
+  - resumed after [LUC-1948](/LUC/issues/LUC-1948) resolved: `pnpm run architecture:graph:drift:strict` -> PASS (`820/820` covered, `0` missing);
+  - resumed after [LUC-1948](/LUC/issues/LUC-1948) resolved: `pnpm run architecture:journey:index:strict` -> PASS (`27` chains, `36` web journeys, `96` API surfaces, `0` critical gaps; user action index `0` critical and `0` medium gaps).
+- Artifact:
+  - `history/tasks/luc-1941-medium-graph-cleanup-queue-closure-2026-06-04-task.md`
+- Deployment impact: none.
+
+## 2026-06-04 LUC-1940 [Soar][Backend] Resolve API data/N-A semantics for medium graph gaps
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1940](/LUC/issues/LUC-1940);
+  - resolved ambiguous `no_data_or_explicit_na` semantics for `SOAR-API-STRATEGY-INDICATORS`, `SOAR-API-MARKET-CATALOG`, `SOAR-API-ICON-LOOKUP`, and `SOAR-API-MARKET-STREAM-EVENTS`;
+  - updated graph dependency relations, journey-index generator semantics, focused module docs, and regenerated architecture/journey artifacts;
+  - preserved the no runtime behavior/deploy/restart/rollback/secret/account/database/live-trading mutation boundary.
+- Evidence:
+  - four target API surfaces now have `gap_severity=none` and empty `gaps` in `docs/graphs/function-journey-index.json`;
+  - direct data-source readback: strategy indicators -> `SOAR-SERVICE-STRATEGY-INDICATORS`; market catalog -> `SOAR-SERVICE-EXCHANGE-MARKET-CATALOG`; icon lookup -> `SOAR-SERVICE-ICONS`; market stream events -> `SOAR-SERVICE-MARKET-STREAM-FANOUT; SOAR-WORKER-MARKET-STREAM-SUBSCRIPTIONS`;
+  - `node --check scripts/generateFunctionJourneyIndexes.mjs` -> PASS;
+  - `pnpm run architecture:journey:index` -> PASS (`27` chains, `36` web journeys, `96` API surfaces, `0` critical gaps, `28` high gaps);
+  - `pnpm run architecture:graph:generate` -> PASS (`647` nodes, `810` relations, `27` chains);
+  - `pnpm run architecture:graph:drift:strict` -> PASS (`816/816` covered, `0` missing);
+  - `pnpm run architecture:journey:index:strict` -> PASS;
+  - focused no-DB API/source tests -> PASS (`3` files / `10` tests);
+  - DB-backed e2e route packs were attempted but blocked before assertions because local PostgreSQL `localhost:5432` is unavailable and Docker Desktop engine is not running.
+- Artifacts:
+  - `history/tasks/luc-1940-api-data-na-semantics-medium-graph-gaps-2026-06-04-task.md`
+- Next:
+  - [LUC-1941](/LUC/issues/LUC-1941) QA can verify medium graph cleanup queue closure from regenerated artifacts; rerun DB-backed e2e when local infra is available.
+
+## 2026-06-04 LUC-1939 [Soar][Docs] Resolve residual page chain semantics for medium graph gaps
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1939](/LUC/issues/LUC-1939);
+  - cleaned `ARCH-MED-001..003` for `SOAR-PAGE-BOT-NEW-ALIAS`, `SOAR-PAGE-BOT-DETAIL-ALIAS`, and `SOAR-PAGE-OFFLINE`;
+  - preserved the no runtime/product/deploy/restart/rollback/secret/account/database/live-trading mutation boundary.
+- Evidence:
+  - `SOAR-PAGE-BOT-NEW-ALIAS` now appears in generated `web-journey-index.csv` with `chains=CHAIN-BOT-SETUP`, empty `gaps`, and `gap_severity=none`;
+  - `SOAR-PAGE-BOT-DETAIL-ALIAS` now appears in generated `web-journey-index.csv` with `chains=CHAIN-BOT-SETUP`, empty `gaps`, and `gap_severity=none`;
+  - `SOAR-PAGE-OFFLINE` now appears in generated `web-journey-index.csv` with empty `gaps` and `gap_severity=none` as an accepted offline fallback surface;
+  - `docs/status/function-journey-index.md` no longer lists the three scoped page nodes as medium `not_in_function_chain` gaps.
+- Validation:
+  - `pnpm run architecture:graph:generate` -> PASS (`647` nodes / `810` relations / `27` chains);
+  - `pnpm run architecture:journey:index` -> PASS (`27` chains / `36` web journeys / `96` API surfaces / `0` critical function gaps; user-action medium gaps `0`);
+  - `pnpm run architecture:graph:drift:strict` -> PASS (`816/816` covered, `0` missing);
+  - `pnpm run quality:guardrails` -> PASS.
+- Deployment impact: none.
+- Artifacts:
+  - `history/tasks/luc-1939-residual-page-chain-semantics-medium-graph-gaps-2026-06-04-task.md`
+- Worktree note:
+  - existing dirty Ops evidence/state for [LUC-1933](/LUC/issues/LUC-1933) and neighboring API data-source semantics from [LUC-1940](/LUC/issues/LUC-1940) were present in the workspace and were left intact.
+
+## 2026-06-04 LUC-1933 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1933](/LUC/issues/LUC-1933);
+  - preserved the no push/deploy/restart/rollback/env/database/team/account/protected-smoke/secret-disclosure boundary;
+  - performed read-only Coolify project/environment/resource status access verification with allowlisted metadata only.
+- Evidence:
+  - names-only binding readback -> required Coolify names present without values printed;
+  - `GET /api/v1/teams/current` -> current selector id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> project resolves to `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> six applications, PostgreSQL, Redis, zero generic services;
+  - `GET /api/v1/resources` -> `17` visible rows;
+  - `pnpm run ops:coolify-stack:env-check:test` -> PASS (`8/8`).
+- Disposition:
+  - Coolify read-only production status access remains verified for project/environment/resource reconciliation;
+  - canonical production environment remains eight resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`;
+  - app inventory status remains `running:unknown`; PostgreSQL/Redis report `running:healthy`.
+- Deployment impact: none; no secret values, raw resource ids, generated DB suffixes, deploy, restart, rollback, env edit, database action, team setting change, account action, protected smoke, or live-trading action occurred.
+- Artifacts:
+  - `history/evidence/luc-1933-coolify-read-only-production-status-access-2026-06-04.md`
+  - `history/tasks/luc-1933-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md`
+
 ## 2026-06-04 LUC-1926 [Operator][Coolify] Bind Coolify read-only production status access
 - Status: done.
 - Scope:
@@ -21687,3 +21833,115 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
 - Deployment impact: none; no deploy, restart, rollback, env edit, database action, team setting change, account action, protected smoke, live-trading action, or secret disclosure occurred.
 - Artifacts:
   - `history/tasks/luc-1925-source-control-close-local-dirty-state-for-luc-1910-luc-1916-luc-1919-2026-06-04-task.md`
+
+## 2026-06-04 LUC-1946 [Soar][Backend] Route rate-limit Redis client errors through redacted logger
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1946](/LUC/issues/LUC-1946);
+  - replaced the raw rate-limit Redis client error `console.error` path with
+    the existing redacted `rate-limit` module logger event
+    `redis_client_error`;
+  - preserved the no deploy/restart/env/database/account/protected-smoke/
+    secret-disclosure/live-trading mutation boundary.
+- Evidence:
+  - `pnpm --filter api exec vitest run src/middleware/rateLimit.test.ts` -> PASS
+    (`1` file / `7` tests);
+  - targeted grep for the old raw Redis rate-limit console path in touched
+    middleware files -> PASS by no matches;
+  - `pnpm --filter api run typecheck` -> BLOCKED by unrelated existing test
+    typing errors in `positions.orphan-repair.contract.e2e.test.ts` and
+    `workers-health-readiness.test.ts`.
+- Deployment impact: none.
+- Artifact:
+  - `history/tasks/luc-1946-route-rate-limit-redis-client-errors-through-redacted-logger-2026-06-04-task.md`
+
+## 2026-06-04 LUC-1945 [Soar][QA] Add adversarial regression proof for API platform and assistant review gaps
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1945](/LUC/issues/LUC-1945) after
+    first-class blocker [LUC-1944](/LUC/issues/LUC-1944) resolved;
+  - added repeatable root/API scripts for the focused adversarial pack using
+    package-relative Vitest paths;
+  - added no-DB unit coverage for trusted-origin cookie writes and auth
+    session-token candidate rejection.
+- Evidence:
+  - `pnpm run test:adversarial:api-assistant` -> PASS (`8` files / `29`
+    tests).
+- Coverage:
+  - rate-limit production Redis unavailable fail-closed behavior;
+  - rate-limit Redis client error redaction through the module logger;
+  - trusted-origin cookie-backed write guard;
+  - JWT issuer/audience/rotation rejection plus session candidate claim
+    rejection and duplicate-token ordering;
+  - assistant protocol scenarios and fail-closed/circuit/metadata sanitization;
+  - assistant dry-run `LIVE` schema rejection;
+  - default LIVE assistant hot-path fail-closed as `strategy_only` / `NO_TRADE`.
+- Residual boundary:
+  - this is local adversarial regression proof only; it does not claim
+    protected production auth, DB-backed route e2e, account mutation, or LIVE
+    assistant hot-path parity.
+- Deployment impact: none; no deploy, restart, rollback, env edit, database
+  action, account action, protected smoke, secret disclosure, or live-trading
+  action occurred.
+- Artifact:
+  - `history/tasks/luc-1945-adversarial-api-assistant-regression-proof-2026-06-04-task.md`
+
+## 2026-06-04 LUC-1953 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1953](/LUC/issues/LUC-1953);
+  - verified required Coolify binding names without value disclosure;
+  - ran authenticated read-only Coolify API reads for configured project,
+    production environment, environment resources, and global resource count;
+  - preserved the no deploy/restart/rollback/env-edit/database/team/account/
+    protected-smoke/secret-disclosure/live-trading mutation boundary.
+- Evidence:
+  - Paperclip heartbeat context read [LUC-1953](/LUC/issues/LUC-1953) as
+    `in_progress`, critical, with zero first-class blockers;
+  - Coolify readback at `2026-06-04T09:48:12Z` resolved project `Soar`,
+    environment `production`, six applications, PostgreSQL, Redis, zero generic
+    services, `17` visible global rows, and eight production-environment
+    resources;
+  - `pnpm run ops:coolify-stack:env-check:test` -> PASS (`8/8`).
+- Residual boundary:
+  - application readiness, database health, protected worker readiness, deploy
+    mutation, rollback, and protected smoke remain separate gates.
+- Deployment impact: none.
+- Artifacts:
+  - `history/evidence/luc-1953-coolify-read-only-production-status-access-2026-06-04.md`
+  - `history/tasks/luc-1953-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md`
+
+## 2026-06-04 LUC-1952 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1933/LUC-1939/LUC-1940/LUC-1941 plus five
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1952](/LUC/issues/LUC-1952);
+  - classified the local dirty set from [LUC-1933](/LUC/issues/LUC-1933),
+    [LUC-1939](/LUC/issues/LUC-1939), [LUC-1940](/LUC/issues/LUC-1940),
+    [LUC-1941](/LUC/issues/LUC-1941), [LUC-1944](/LUC/issues/LUC-1944),
+    [LUC-1945](/LUC/issues/LUC-1945), [LUC-1946](/LUC/issues/LUC-1946),
+    [LUC-1948](/LUC/issues/LUC-1948), and [LUC-1951](/LUC/issues/LUC-1951);
+  - preserved the no push/deploy/restart/rollback/env/database/account/
+    protected-smoke/secret-disclosure/live-trading mutation boundary;
+  - made one local source-control closure commit for the coherent in-scope
+    cluster.
+- Classification:
+  - current runtime/API/Web hardening, focused tests, graph/index docs,
+    Coolify read-only evidence, project state, and task artifacts;
+  - stale paths: none;
+  - out-of-scope concurrent paths left unstaged: LUC-1953 Ops evidence/task
+    artifacts, owned by open [LUC-1953](/LUC/issues/LUC-1953);
+  - secret-risk paths: none; fake credential-shaped test fixtures
+    `super-secret-password` and `session-token-secret` were reviewed as
+    non-credential fixture data.
+- Evidence:
+  - baseline classification posted to [LUC-1952](/LUC/issues/LUC-1952) before
+    project mutation;
+  - `git diff --check` -> PASS;
+  - targeted dirty-path secret scan -> PASS;
+  - `pnpm run quality:guardrails` -> PASS;
+  - `pnpm run test:adversarial:api-assistant` -> PASS (`8` files / `29`
+    tests);
+  - `pnpm --filter web run typecheck` -> PASS.
+- Deployment impact: none.
+- Artifact:
+  - `history/tasks/luc-1952-source-control-close-local-dirty-state-for-luc-1933-luc-1939-luc-1940-luc-1941-plus-5-2026-06-04-task.md`

@@ -92,6 +92,31 @@ describe('rate limit identity resolution', () => {
 });
 
 describe('rate limit degradation policy', () => {
+  it('logs Redis client errors through the redacted module logger', () => {
+    process.env.NODE_ENV = 'production';
+    const logSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    __rateLimitInternals.logRedisClientError(
+      new Error('redis auth failed redis://:super-secret-password@cache.internal:6379')
+    );
+
+    expect(logSpy).toHaveBeenCalledTimes(1);
+    const payload = JSON.parse(logSpy.mock.calls[0]?.[0] as string) as Record<string, unknown>;
+
+    expect(payload).toMatchObject({
+      level: 'error',
+      module: 'rate-limit',
+      event: 'redis_client_error',
+      error: {
+        name: 'Error',
+        message: '[REDACTED]',
+        stack: '[REDACTED]',
+      },
+    });
+    expect(JSON.stringify(payload)).not.toContain('super-secret-password');
+    expect(JSON.stringify(payload)).not.toContain('cache.internal');
+  });
+
   it('fails closed in production when redis is unavailable', async () => {
     process.env.NODE_ENV = 'production';
     process.env.RATE_LIMIT_ENABLE_TEST_MODE = 'true';

@@ -617,6 +617,8 @@ export type UpdateBotInput = Partial<{
 }>;
 
 export type AssistantSafetyMode = "STRICT" | "BALANCED" | "EXPERIMENTAL";
+export type AssistantModelProfile = "balanced";
+export type AssistantRole = "TREND" | "MOMENTUM" | "RISK" | "MICROSTRUCTURE" | "GENERAL";
 
 export type BotAssistantConfig = {
   id: string;
@@ -624,7 +626,7 @@ export type BotAssistantConfig = {
   botId: string;
   mainAgentEnabled: boolean;
   mandate?: string | null;
-  modelProfile: string;
+  modelProfile: AssistantModelProfile;
   safetyMode: AssistantSafetyMode;
   maxDecisionLatencyMs: number;
   createdAt?: string;
@@ -636,9 +638,9 @@ export type BotSubagentConfig = {
   userId: string;
   botId: string;
   slotIndex: number;
-  role: string;
+  role: AssistantRole;
   enabled: boolean;
-  modelProfile: string;
+  modelProfile: AssistantModelProfile;
   timeoutMs: number;
   safetyMode: AssistantSafetyMode;
   createdAt?: string;

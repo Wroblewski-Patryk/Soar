@@ -63,6 +63,10 @@ const rateLimitKey = (
   keyScope: NonNullable<RateLimitOptions['keyScope']>
 ) => `${req.method}:${req.baseUrl}${req.path}:${resolveRateLimitSubject(req, keyScope)}`;
 
+const logRedisClientError = (error: unknown) => {
+  logger.error('redis_client_error', { error });
+};
+
 type RedisClient = ReturnType<typeof createClient>;
 let redisClientPromise: Promise<RedisClient | null> | null = null;
 let redisClientFailedAtMs: number | null = null;
@@ -90,9 +94,7 @@ const getRedisClient = async () => {
       const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
       const client = createClient({ url: redisUrl });
 
-      client.on('error', (error) => {
-        console.error('Redis rate-limit client error:', error);
-      });
+      client.on('error', logRedisClientError);
 
       await client.connect();
       return client;
@@ -202,6 +204,7 @@ export const createRateLimiter = ({ windowMs, max, keyScope = 'user' }: RateLimi
 
 export const __rateLimitInternals = {
   resolveRateLimitSubject,
+  logRedisClientError,
   resetForTests: () => {
     redisClientPromise = null;
     redisClientFailedAtMs = null;

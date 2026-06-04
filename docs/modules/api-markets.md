@@ -50,6 +50,11 @@ Out of scope:
   - blacklist always subtracts from the final set.
 - Catalog contract includes:
   - `exchange`, `marketType`, `baseCurrency`, `baseCurrencies`, `markets[]`.
+- Catalog data source:
+  - `GET /dashboard/markets/catalog` resolves public exchange market metadata
+    through `getSupportedExchangeMarketCatalog`.
+  - the catalog route is intentionally not `MarketUniverse` DB-backed; market
+    universe persistence belongs to the CRUD endpoints.
 - Guardrails:
   - active-bot usage block for updates/deletes (`MARKET_UNIVERSE_USED_BY_ACTIVE_BOT`).
   - historical backtest usage block for deletes (`MARKET_UNIVERSE_LINKED_RECORDS`).
@@ -97,6 +102,9 @@ Out of scope:
 - 2026-05-14 snapshot-history proof:
   - `markets.e2e.test.ts` verifies universe deletion returns `409` while owned
     historical backtest runs reference the universe.
+- 2026-06-04 catalog source proof:
+  - architecture graph relation `REL-MARKETS-040` records the catalog route's
+    exchange-market-catalog data source; no route-level DB relation is expected.
 - Suggested validation command:
 ```powershell
 pnpm --filter api test -- src/modules/markets/markets.e2e.test.ts
