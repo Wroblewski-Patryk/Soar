@@ -36,16 +36,16 @@ refreshed/reconciled for `LUC-1399`, `LUC-1402`, `LUC-1405`, `LUC-1408`,
 `LUC-1831` / `LUC-1843` on 2026-06-03, and `LUC-1850` / `LUC-1857` /
 `LUC-1872` / `LUC-1875` / `LUC-1878` / `LUC-1885` / `LUC-1890` /
 `LUC-1898` / `LUC-1901` / `LUC-1910` / `LUC-1916` / `LUC-1919` /
-`LUC-1926` / `LUC-1933` on 2026-06-04.
+`LUC-1926` / `LUC-1933` / `LUC-1969` / `LUC-1973` on 2026-06-04.
 
-Latest read-only access binding checkpoint: `LUC-1933` at
-`2026-06-04T08:48:23Z`, refreshing the prior `LUC-1926` proof. Runtime
+Latest read-only access binding checkpoint: `LUC-1973` at
+`2026-06-04T12:06:24Z`, refreshing the prior `LUC-1969` proof. Runtime
 bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`,
 `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
 `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and
 `COOLIFY_SOAR_API_APP_ID` without values printed. Authenticated read-only
-Coolify reads resolved current selector id `0` name `LuckySparrow`, project
-`Soar`, production environment `production`, and the canonical eight-resource
+Coolify reads resolved project `Soar`, production environment `production`,
+and the canonical eight-resource
 production-environment inventory: six applications plus PostgreSQL and Redis.
 The global resources endpoint returned `17` visible rows. The
 project/environment hierarchy remains the authoritative production status scope
@@ -58,16 +58,16 @@ This heartbeat performed no deploy, restart, rollback, env edit, database
 action, team setting change, account action, protected smoke, secret readback,
 or live-trading action.
 Evidence:
-`history/evidence/luc-1933-coolify-read-only-production-status-access-2026-06-04.md`.
+`history/evidence/luc-1973-coolify-read-only-production-status-access-2026-06-04.md`.
 
-Previous read-only access binding checkpoint: `LUC-1926` at
-`2026-06-04T07:47:26Z`, refreshing the prior `LUC-1919` proof. Runtime
+Previous read-only access binding checkpoint: `LUC-1969` at
+`2026-06-04T11:47:06Z`, refreshing the prior `LUC-1933` proof. Runtime
 bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`,
 `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
 `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and
 `COOLIFY_SOAR_API_APP_ID` without values printed. Authenticated read-only
-Coolify reads resolved current selector id `0` name `LuckySparrow`, project
-`Soar`, production environment `production`, and the canonical eight-resource
+Coolify reads resolved project `Soar`, production environment `production`,
+and the canonical eight-resource
 production-environment inventory: six applications plus PostgreSQL and Redis.
 The global resources endpoint returned `17` visible rows. The
 project/environment hierarchy remains the authoritative production status scope
@@ -80,7 +80,7 @@ This heartbeat performed no deploy, restart, rollback, env edit, database
 action, team setting change, account action, protected smoke, secret readback,
 or live-trading action.
 Evidence:
-`history/evidence/luc-1926-coolify-read-only-production-status-access-2026-06-04.md`.
+`history/evidence/luc-1969-coolify-read-only-production-status-access-2026-06-04.md`.
 
 Previous read-only access binding checkpoint: `LUC-1919` at
 `2026-06-04T06:35:51Z`, refreshing the prior `LUC-1916` proof. Runtime
