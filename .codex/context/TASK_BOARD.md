@@ -1,3 +1,46 @@
+## 2026-06-04 LUC-1893 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1890
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1893](/LUC/issues/LUC-1893);
+  - classified local dirty state left by [LUC-1890](/LUC/issues/LUC-1890);
+  - preserved the no push/deploy/restart/protected-smoke/live-account-mutation/secret-disclosure boundary;
+  - made one local source-control closure commit for coherent docs/state/evidence changes.
+- Classification:
+  - current docs/source-of-truth updates for [LUC-1890](/LUC/issues/LUC-1890): `.agents/state/active-mission.md`, `.agents/state/system-health.md`, `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, `docs/operations/coolify-vps-deployment-contract.md`, `docs/operations/runtime-config-ledger.csv`;
+  - current task/evidence artifacts for [LUC-1890](/LUC/issues/LUC-1890): `history/evidence/luc-1890-coolify-read-only-production-status-access-2026-06-04.md`, `history/tasks/luc-1890-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md`;
+  - current closure artifact for [LUC-1893](/LUC/issues/LUC-1893): `history/tasks/luc-1893-source-control-close-local-dirty-state-for-luc-1890-2026-06-04-task.md`;
+  - stale/out-of-scope/runtime-product-code files: none.
+- Evidence:
+  - `git status --short` before closure showed docs/state/evidence only and runtime/product code dirty count `0`;
+  - `git diff --check` -> PASS;
+  - targeted dirty-path redaction scan -> no secret-value/key-material hits; keyword-only mentions were reviewed as safe documentation text;
+  - local commit created; push not needed and not performed.
+- Deployment impact: none; no deploy, restart, rollback, env edit, database action, team setting change, account action, protected smoke, secret disclosure, or production mutation occurred.
+
+## 2026-06-04 LUC-1890 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1890](/LUC/issues/LUC-1890);
+  - preserved the no push/deploy/restart/rollback/env/database/team/account/protected-smoke/secret-disclosure boundary;
+  - performed read-only Coolify project/environment/resource status access verification with allowlisted metadata only.
+- Evidence:
+  - names-only binding readback -> required Coolify names present without values printed;
+  - `GET /api/v1/teams/current` -> current selector id `0`, name `LuckySparrow`;
+  - `GET /api/v1/teams` -> two teams visible;
+  - `GET /api/v1/projects/{configured-project-id}` -> project resolves to `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> six applications, PostgreSQL, Redis, zero generic services;
+  - `GET /api/v1/resources` -> `17` visible rows;
+  - `pnpm run ops:coolify-stack:env-check:test` -> PASS (`8/8`).
+- Disposition:
+  - Coolify read-only production status access remains verified for project/environment/resource reconciliation;
+  - canonical production environment remains eight resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`;
+  - app inventory status remains `running:unknown`; PostgreSQL/Redis report `running:healthy`.
+- Deployment impact: none; no secret values, raw resource ids, generated DB suffixes, deploy, restart, rollback, env edit, database action, team setting change, account action, protected smoke, or live-trading action occurred.
+- Artifacts:
+  - `history/evidence/luc-1890-coolify-read-only-production-status-access-2026-06-04.md`
+  - `history/tasks/luc-1890-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md`
+
 ## 2026-06-04 LUC-1889 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1885
 - Status: done.
 - Scope:
