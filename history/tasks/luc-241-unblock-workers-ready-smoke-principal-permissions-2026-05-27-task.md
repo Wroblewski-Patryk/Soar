@@ -52,6 +52,34 @@ Verify whether current smoke principal can authenticate and pass protected `GET 
   1. Soar API auth credential owner + Security/Test permission owner must provide a valid approved read-only smoke principal/session path that successfully authenticates (`/auth/login`) and is authorized for `GET /workers/ready`.
   2. Ops Release Lead reruns one full production smoke with worker probe and publishes parent closure packet for `LUC-98` / `LUC-47` / `LUC-12` if the protected check passes.
 
+## Heartbeat - 2026-06-04T12:14:31.6384953+02:00 (issue_assigned, comment 4405dd29-e2f8-4dc5-acf2-d3fca538a487)
+- Latest comment acknowledged first: fail-closed gate correction says [LUC-241](/LUC/issues/LUC-241) remains blocked under Ops ownership and forbids push, deploy, restart, production mutation, protected recheck, and secret disclosure until fresh operator approval, credential metadata, or approved read-only `/workers/ready` recheck evidence exists.
+- Concrete action in this heartbeat (read-only metadata/public availability checkpoint; no protected `/workers/ready` recheck):
+  - auth/context metadata:
+    - `SMOKE_AUTH_TOKEN=True`, length `36`, dot parts `1`
+    - `SMOKE_AUTH_EMAIL=True`, email-shaped `False`
+    - `SMOKE_AUTH_PASSWORD=True`
+    - `SOAR_API_TOKEN=False`
+    - `SOAR_API_KEY=False`
+    - `SOAR_SESSION_COOKIE=False`
+    - `COOLIFY_BASE_URL=True`
+    - `COOLIFY_API_TOKEN=True`
+    - `COOLIFY_TOKEN=True`
+  - canonical public probes:
+    - `https://api.soar.luckysparrow.ch/health -> 200`
+    - `https://api.soar.luckysparrow.ch/ready -> 200`
+    - `https://soar.luckysparrow.ch/ -> 200`
+    - `https://soar.luckysparrow.ch/api/build-info -> 200`
+- Interpretation:
+  - canonical public runtime availability has recovered versus the previous `503` interval,
+  - the approved [LUC-1190](/LUC/issues/LUC-1190) protected smoke gate still requires a valid authenticated Soar session, `ADMIN` role, ops-network path, and read-only scope before protected `/workers/ready` smoke,
+  - current runner credential metadata still matches the known invalid class from [LUC-1437](/LUC/issues/LUC-1437): token is opaque/non-JWT-shaped and email binding is not email-shaped, with no valid app session/API token/session cookie available.
+- Final disposition for this heartbeat: `blocked`.
+- First-class unblock owner/action:
+  1. QA/Security credential owner for [LUC-1438](/LUC/issues/LUC-1438) must bind or provide a fresh approved read-only production Soar app session/principal accepted by API auth and authorized for `GET /workers/ready`.
+  2. After that credential/principal artifact and fresh explicit gate approval, Ops Release Lead executes exactly one protected read-only `/workers/ready` recheck and publishes redaction-safe evidence.
+- Deployment impact: none. No push, deploy, restart, rollback, env edit, database action, account action, protected smoke, secret value readback, or live-trading mutation occurred.
+
 ## Continuation Checkpoint (source_scoped_recovery_action, 2026-05-30)
 - Wake consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`) as status-recovery heartbeat with no new unblock fact.
 - Concrete action:

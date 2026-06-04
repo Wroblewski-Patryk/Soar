@@ -1,3 +1,44 @@
+## 2026-06-04 LUC-1968 [Soar][Source Control Closure] Classify and close local dirty state for LUC-241
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1968](/LUC/issues/LUC-1968);
+  - classified local dirty state left by [LUC-241](/LUC/issues/LUC-241);
+  - preserved coherent docs/state/evidence only;
+  - created local source-control closure evidence and committed it locally.
+- Evidence:
+  - state/control paths: `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, `.agents/state/active-mission.md`;
+  - task/evidence paths: `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`, `history/tasks/luc-1968-source-control-close-local-dirty-state-for-luc-241-2026-06-04-task.md`;
+  - runtime/product code dirty count: `0`;
+  - stale/out-of-scope files: `0`;
+  - `git diff --check` -> PASS;
+  - targeted closure-path redaction scan -> PASS;
+  - `pnpm run quality:guardrails` -> PASS.
+- Disposition:
+  - source-control closure is complete locally;
+  - push status: not pushed, not requested;
+  - deploy impact: none;
+  - [LUC-241](/LUC/issues/LUC-241) protected readiness proof remains blocked on [LUC-1438](/LUC/issues/LUC-1438), not on local source control.
+- Artifact:
+  - `history/tasks/luc-1968-source-control-close-local-dirty-state-for-luc-241-2026-06-04-task.md`
+
+## 2026-06-04 LUC-241 [Soar][LUC-99-B] Unblock workers/ready smoke principal permissions
+- Status: blocked.
+- Scope:
+  - consumed the scoped wake for [LUC-241](/LUC/issues/LUC-241);
+  - acknowledged fail-closed gate correction comment `4405dd29-e2f8-4dc5-acf2-d3fca538a487` before repo work;
+  - preserved no push/deploy/restart/rollback/env/database/account/protected-smoke/secret-disclosure boundary;
+  - performed fresh credential metadata and public route availability checks only.
+- Evidence:
+  - credential metadata: `SMOKE_AUTH_TOKEN` present, length `36`, dot parts `1`; `SMOKE_AUTH_EMAIL` present but email-shaped `False`; `SMOKE_AUTH_PASSWORD` present; `SOAR_API_TOKEN`, `SOAR_API_KEY`, and `SOAR_SESSION_COOKIE` absent;
+  - public probes at `2026-06-04T12:14:31.6384953+02:00`: `API /health=200`, `API /ready=200`, `WEB /=200`, `WEB /api/build-info=200`;
+  - [LUC-1190](/LUC/issues/LUC-1190) gate still requires valid authenticated app session, `ADMIN` role, ops-network path, and read-only scope before protected `/workers/ready` smoke.
+- Disposition:
+  - canonical public runtime availability is recovered versus the prior `503` interval;
+  - protected readiness proof remains blocked on the invalid current credential/principal class from [LUC-1437](/LUC/issues/LUC-1437);
+  - next owner/action: [LUC-1438](/LUC/issues/LUC-1438) QA/Security credential owner must bind or provide a fresh approved read-only production Soar app session/principal, then Ops runs exactly one protected read-only `/workers/ready` recheck after fresh explicit gate approval.
+- Artifact:
+  - `history/tasks/luc-241-unblock-workers-ready-smoke-principal-permissions-2026-05-27-task.md`
+
 ## 2026-06-04 LUC-1951 [Operator][Coolify] Bind Coolify read-only production status access
 - Status: done.
 - Scope:
