@@ -1,3 +1,147 @@
+## 2026-06-05 LUC-2044 [Soar][Source Control Closure] Classify and close local dirty state
+- Status: verified.
+- Scope:
+  - consumed the scoped wake for [LUC-2044](/LUC/issues/LUC-2044);
+  - classified dirty docs/state/evidence groups for [LUC-2014](/LUC/issues/LUC-2014), [LUC-2018](/LUC/issues/LUC-2018), [LUC-2020](/LUC/issues/LUC-2020), [LUC-2021](/LUC/issues/LUC-2021), [LUC-2022](/LUC/issues/LUC-2022), [LUC-2034](/LUC/issues/LUC-2034), [LUC-2039](/LUC/issues/LUC-2039), and [LUC-2043](/LUC/issues/LUC-2043);
+  - preserved the no push/deploy/restart/rollback/env/database/team/account/protected-smoke/secret-disclosure/live-trading boundary.
+- Evidence:
+  - `git status --short --branch` -> branch `main...origin/main` ahead with docs/state/evidence dirty paths only;
+  - `git diff --stat` -> docs/state/evidence modifications plus history evidence/task artifacts;
+  - `git diff --check` -> PASS;
+  - added-line redaction scan -> PASS after reviewing generated route/document id `patch-dashboard-profile-security-password` as a false positive, not a stored value.
+- Disposition:
+  - local source-control closure commit created for the coherent docs/state/evidence set;
+  - push status: not pushed;
+  - deploy impact: none;
+  - remaining dirty paths are the two [LUC-2045](/LUC/issues/LUC-2045) artifacts, delegated to [LUC-2046](/LUC/issues/LUC-2046).
+- Artifact:
+  - `history/tasks/luc-2044-source-control-close-local-dirty-state-for-luc-2014-luc-2018-luc-2020-luc-2021-plus-4-2026-06-05-task.md`
+
+## 2026-06-04 LUC-2039 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-2039](/LUC/issues/LUC-2039);
+  - preserved the no push/deploy/restart/rollback/env/database/team/account/protected-smoke/secret-disclosure boundary;
+  - performed read-only Coolify project/environment/resource status access verification with allowlisted metadata only.
+- Evidence:
+  - wake payload -> `in_progress`, priority `critical`, zero pending comments, `fallbackFetchNeeded=false`;
+  - names-only binding readback -> required Coolify names present without values printed;
+  - `GET /api/v1/projects/{configured-project-id}` -> project resolves to `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> six applications, PostgreSQL, Redis, zero generic services;
+  - `GET /api/v1/resources` -> `17` visible rows, not used as release authority;
+  - `pnpm run ops:coolify-stack:env-check:test` -> PASS (`8/8`).
+- Disposition:
+  - Coolify read-only production status access remains verified for project/environment/resource reconciliation;
+  - canonical production environment remains eight resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`;
+  - app inventory status remains `running:unknown`; PostgreSQL and Redis report `running:healthy`;
+  - optional team binding names remain absent but are not an active blocker while project-scoped reads succeed.
+- Artifact:
+  - `history/tasks/luc-2039-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md`
+  - `history/evidence/luc-2039-coolify-read-only-production-status-access-2026-06-04.md`
+
+## 2026-06-04 LUC-2034 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-2034](/LUC/issues/LUC-2034);
+  - preserved the no push/deploy/restart/rollback/env/database/team/account/protected-smoke/secret-disclosure boundary;
+  - performed read-only Coolify project/environment/resource status access verification with allowlisted metadata only.
+- Evidence:
+  - wake payload -> `in_progress`, priority `critical`, zero pending comments, `fallbackFetchNeeded=false`;
+  - names-only binding readback -> required Coolify names present without values printed;
+  - `GET /api/v1/projects/{configured-project-id}` -> project resolves to `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> six applications, PostgreSQL, Redis, zero generic services;
+  - `GET /api/v1/resources` -> `1` visible row in this least-privilege runner session, not used as release authority;
+  - `pnpm run ops:coolify-stack:env-check:test` -> PASS (`8/8`).
+- Disposition:
+  - Coolify read-only production status access remains verified for project/environment/resource reconciliation;
+  - canonical production environment remains eight resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`;
+  - app inventory status remains `running:unknown`; PostgreSQL and Redis report `running:healthy`;
+  - optional team binding names remain absent but are not an active blocker while project-scoped reads succeed.
+- Artifact:
+  - `history/tasks/luc-2034-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md`
+  - `history/evidence/luc-2034-coolify-read-only-production-status-access-2026-06-04.md`
+
+## 2026-06-04 LUC-2020 [Soar][Architecture Audit] Normalize inferred link report noise for aggregate routes and generated/config files
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-2020](/LUC/issues/LUC-2020);
+  - preserved raw inferred-link counts while adding actionable and classified-noise report signals;
+  - preserved no runtime/product behavior mutation, no route behavior mutation, no production access, no deploy/restart/rollback, no secrets/accounts/protected smoke, and no live-trading action.
+- Evidence:
+  - `node --check C:\Personal\Projekty\Aplikacje\Paperclip_Softwarehouse\scripts\build-architecture-awareness-index.mjs` -> PASS;
+  - scanner refresh `node scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar` -> PASS;
+  - focused architecture-health readback -> raw missing tests `7681`, actionable missing tests `940`, raw missing docs `976`, actionable missing docs `241`, classified inferred-link noise `7322`;
+  - top actionable samples -> no auth/upload/root/dashboard/admin API false-positive matches;
+  - `pnpm run architecture:graph:drift:strict` -> PASS (`820/820` covered / `0` missing).
+- Disposition:
+  - report noise normalization is verified;
+  - raw counts remain inspectable in `docs/graphs/architecture-health.json` and `docs/status/architecture-awareness-report.md`;
+  - no child issue is required from this lane.
+- Artifact:
+  - `history/tasks/luc-2020-normalize-inferred-link-report-noise-2026-06-04-task.md`
+
+## 2026-06-04 LUC-2022 [Soar][Architecture Audit] Normalize Web feature component graph/doc relations from existing evidence
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-2022](/LUC/issues/LUC-2022);
+  - preserved no runtime/product behavior mutation, no production access, no deploy/restart/rollback, no secrets/accounts/protected smoke, and no live-trading action;
+  - normalized existing Web component `docs_related` registry evidence into explicit graph `documented_by` relations.
+- Evidence:
+  - local relation audit -> `MISSING_COMPONENT_DOC_RELATIONS=0`;
+  - normalized relation count -> `WEBCOMP_DOC_RELATIONS=32`;
+  - `pnpm run architecture:graph:generate` -> PASS (`647` nodes / `842` relations / `27` chains);
+  - `pnpm run architecture:graph:drift:strict` -> PASS (`820/820` covered / `0` missing).
+- Disposition:
+  - Web feature component graph/doc relation drift is closed for components already carrying `docs_related` evidence in `components.csv`;
+  - no child issue is required from this lane.
+- Artifact:
+  - `history/tasks/luc-2022-normalize-web-feature-component-graph-doc-relations-2026-06-04-task.md`
+
+## 2026-06-04 LUC-2018 [Soar][Architecture Audit] API platform safety and assistant red-team proof map
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-2018](/LUC/issues/LUC-2018);
+  - audited `CHAIN-API-PLATFORM-SAFETY` and `CHAIN-AI-ASSISTANT-FOUNDATION` against current graph/docs/tests;
+  - preserved no source code/product runtime mutation, no protected smoke, no production account access, no secrets, and no LIVE trading action.
+- Evidence:
+  - Paperclip heartbeat context -> `in_progress`, high priority, no blockers, zero comments;
+  - chain docs and function-chain evidence rows inspected;
+  - `AI_TESTING_PROTOCOL.md`, assistant runtime contract, runtime signal merge contract, risk register, and requirements matrix reviewed;
+  - `pnpm run test:adversarial:api-assistant` -> PASS (`8` files / `29` tests).
+- Disposition:
+  - API platform safety is verified locally for current architecture and adversarial regression scope;
+  - AI assistant foundation is verified locally for dry-run/foundation and default LIVE fail-closed scope;
+  - no new defect child issue is required from this lane;
+  - protected production auth, DB-backed route e2e, and executable assistant hot-path red-team proof remain separate gates.
+- Artifact:
+  - `history/tasks/luc-2018-api-platform-safety-assistant-red-team-proof-map-2026-06-04-task.md`
+
+## 2026-06-04 LUC-2014 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-2014](/LUC/issues/LUC-2014);
+  - preserved the no push/deploy/restart/rollback/env/database/team/account/protected-smoke/secret-disclosure boundary;
+  - performed read-only Coolify project/environment/resource status access verification with allowlisted metadata only.
+- Evidence:
+  - wake payload -> `in_progress`, priority `critical`, zero pending comments, `fallbackFetchNeeded=false`;
+  - names-only binding readback -> required Coolify names present without values printed;
+  - `GET /api/v1/projects/{configured-project-id}` -> project resolves to `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> six applications, PostgreSQL, Redis, zero generic services;
+  - typed production object shape -> `postgresqls` and `redis` keys hold the data-store resources;
+  - `GET /api/v1/resources` -> `17` visible rows, not used as release authority;
+  - `pnpm run ops:coolify-stack:env-check:test` -> PASS (`8/8`).
+- Disposition:
+  - Coolify read-only production status access remains verified for project/environment/resource reconciliation;
+  - canonical production environment remains eight resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`;
+  - app inventory status remains `running:unknown`; PostgreSQL and Redis report `running:healthy`;
+  - optional team binding names remain absent but are not an active blocker while project-scoped reads succeed.
+- Artifact:
+  - `history/tasks/luc-2014-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md`
+  - `history/evidence/luc-2014-coolify-read-only-production-status-access-2026-06-04.md`
+
 ## 2026-06-04 LUC-2004 [Operator][Coolify] Bind Coolify read-only production status access
 - Status: done.
 - Scope:
@@ -22254,3 +22398,12 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
 - Deployment impact: none.
 - Artifact:
   - `history/tasks/luc-1952-source-control-close-local-dirty-state-for-luc-1933-luc-1939-luc-1940-luc-1941-plus-5-2026-06-04-task.md`
+- 2026-06-04 `LUC-2021 [Soar][Frontend Audit] Triage shared UI inferred test/doc link gaps`
+  is done. Shared UI inferred architecture-awareness test/doc gaps were
+  classified for `apps/web/src/ui/**` and `apps/web/src/features/shared/**`.
+  `docs/modules/web-shared.md` now records the tested shared primitives,
+  scanner relation boundary, validation command, and real follow-up candidates
+  (`ConfirmModal`, `FormModal`, `useAsyncConfirm`, brand/navigation helpers,
+  and skeleton primitives). Focused Web tests passed (`16` files / `87`
+  tests). Scope stayed docs/evidence/state only; deploy impact none. Evidence:
+  `history/tasks/luc-2021-shared-ui-inferred-test-doc-link-gap-triage-2026-06-04-task.md`.

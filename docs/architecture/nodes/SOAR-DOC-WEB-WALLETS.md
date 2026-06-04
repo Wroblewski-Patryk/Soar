@@ -35,6 +35,10 @@ tags: [soar-map, documentation, documentation, verified_local]
 ## Relations
 
 - documented_by <- [[SOAR-FEATURE-WALLETS]] (verified_local)
+- documented_by <- [[SOAR-COMP-WALLETS-LIST-TABLE]] (verified_local)
+- documented_by <- [[SOAR-COMP-WALLET-FORM-PAGE-CONTENT]] (verified_local)
+- documented_by <- [[SOAR-COMP-WALLET-CREATE-EDIT-FORM]] (verified_local)
+- documented_by <- [[SOAR-COMP-WALLET-PREVIEW-PANEL]] (verified_local)
 
 ## Evidence Rule
 

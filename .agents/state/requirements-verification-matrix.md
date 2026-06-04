@@ -4,6 +4,22 @@ Last updated: 2026-05-25
 
 ## Current Release Override
 
+- 2026-06-04 `LUC-2021` updates `REQ-DOC-029` and `REQ-DOC-030`: shared UI
+  inferred test/doc link gaps were triaged against current architecture
+  artifacts and focused Web tests. `docs/modules/web-shared.md` now names the
+  shared UI evidence boundary, scanner relation incompleteness, and real
+  follow-up candidates. Focused proof passed: `pnpm --filter web test -- ...`
+  (`16` files / `87` tests). This verifies local shared UI evidence mapping
+  only; fresh browser, production, protected, and release readiness proof remain
+  separate gates.
+- 2026-06-04 `LUC-2018` Security Review proof map updates `REQ-DOC-019`,
+  `REQ-DOC-024`, and `REQ-AI-030`: `CHAIN-API-PLATFORM-SAFETY` and
+  `CHAIN-AI-ASSISTANT-FOUNDATION` were classified against current graph/docs
+  and fresh local adversarial proof. `pnpm run test:adversarial:api-assistant`
+  passed (`8` files / `29` tests). This verifies local adversarial regression
+  and assistant foundation fail-closed behavior only; protected production
+  auth, DB-backed route e2e, and executable assistant hot-path red-team proof
+  remain separate gates.
 - 2026-05-25 `REQ-FUNC-003` and `REQ-FUNC-021` are **production activation
   blocked** by runtime aggregate stability, not by missing local code proof.
   Fresh protected read-only production evidence passed for `24e9d3b8`

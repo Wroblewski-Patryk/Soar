@@ -35,6 +35,7 @@ tags: [soar-map, component, frontend, verified_local]
 ## Relations
 
 - uses -> [[SOAR-HOOK-BOTS-ASSISTANT-CONTROLLER]] (verified_local)
+- documented_by -> [[SOAR-DOC-WEB-BOTS]] (verified_local)
 - renders <- [[SOAR-COMP-BOTS-MANAGEMENT]] (verified_local)
 - verifies <- [[SOAR-TEST-AI-ASSISTANT-WEB]] (verified_local)
 

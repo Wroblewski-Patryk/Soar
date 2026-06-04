@@ -1,11 +1,11 @@
 # Dependency Report
 
-Generated: 2026-06-03T12:02:27.201Z
+Generated: 2026-06-04T17:00:33.358Z
 
 ## Summary
 
-- Dependency relations: 2817
-- Entities with dependencies: 763
+- Dependency relations: 2837
+- Entities with dependencies: 767
 
 ## Dependency Edges
 
@@ -752,6 +752,7 @@ Generated: 2026-06-03T12:02:27.201Z
 | auth.controller.ts | uses | auth.session.ts | apps/api/src/modules/auth/auth.session |
 | auth.controller.ts | uses | auth.jwt.test.ts | apps/api/src/modules/auth/auth.jwt |
 | auth.controller.ts | uses | auth.jwt.ts | apps/api/src/modules/auth/auth.jwt |
+| auth.controller.ts | uses | sessionToken.test.ts | apps/api/src/modules/auth/sessionToken |
 | auth.controller.ts | uses | sessionToken.ts | apps/api/src/modules/auth/sessionToken |
 | auth.controller.ts | uses | auth.cookie.test.ts | apps/api/src/modules/auth/auth.cookie |
 | auth.controller.ts | uses | auth.cookie.ts | apps/api/src/modules/auth/auth.cookie |
@@ -810,4 +811,3 @@ Generated: 2026-06-03T12:02:27.201Z
 | backtestRange.service.ts | uses | marketCatalogSymbolResolver.service.ts | apps/api/src/modules/markets/marketCatalogSymbolResolver.service |
 | backtestRange.service.ts | uses | backtests.types.ts | apps/api/src/modules/backtests/backtests.types |
 | backtestRange.service.ts | uses | backtestDataGateway.test.ts | apps/api/src/modules/backtests/backtestDataGateway |
-| backtestRange.service.ts | uses | backtestDataGateway.ts | apps/api/src/modules/backtests/backtestDataGateway |

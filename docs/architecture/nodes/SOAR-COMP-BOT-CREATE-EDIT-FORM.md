@@ -38,6 +38,7 @@ tags: [soar-map, component, frontend, verified_local]
 - uses -> [[SOAR-SERVICE-WEB-WALLETS]] (verified_local)
 - selects -> [[SOAR-DB-STRATEGY]] (verified_local)
 - selects -> [[SOAR-DB-MARKET-UNIVERSE]] (verified_local)
+- documented_by -> [[SOAR-DOC-WEB-BOTS]] (verified_local)
 - contains <- [[SOAR-COMP-BOT-FORM-PAGE-CONTENT]] (verified_local)
 
 ## Evidence Rule

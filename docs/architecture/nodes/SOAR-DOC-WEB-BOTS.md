@@ -38,6 +38,11 @@ tags: [soar-map, documentation, documentation, verified_local]
 - documented_by <- [[SOAR-FEATURE-BOT-SETUP]] (verified_local)
 - documented_by <- [[SOAR-FEATURE-WEB-RUNTIME-SURFACES]] (verified_local)
 - documented_by <- [[SOAR-FEATURE-WEB-RESIDUAL-SURFACES]] (verified_local)
+- documented_by <- [[SOAR-COMP-BOTS-MANAGEMENT]] (verified_local)
+- documented_by <- [[SOAR-COMP-BOTS-LIST-TABLE]] (verified_local)
+- documented_by <- [[SOAR-COMP-BOT-FORM-PAGE-CONTENT]] (verified_local)
+- documented_by <- [[SOAR-COMP-BOT-CREATE-EDIT-FORM]] (verified_local)
+- documented_by <- [[SOAR-COMP-BOTS-ASSISTANT-TAB]] (verified_local)
 
 ## Evidence Rule
 

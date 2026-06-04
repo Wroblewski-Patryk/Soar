@@ -35,6 +35,7 @@ tags: [soar-map, documentation, documentation, verified]
 ## Relations
 
 - documented_by <- [[SOAR-FEATURE-AUTH-SESSION]] (verified_local)
+- documented_by <- [[SOAR-COMP-LOGIN-FORM]] (verified)
 
 ## Evidence Rule
 

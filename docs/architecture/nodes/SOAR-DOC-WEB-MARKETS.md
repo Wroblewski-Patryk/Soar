@@ -35,6 +35,9 @@ tags: [soar-map, documentation, documentation, verified_local]
 ## Relations
 
 - documented_by <- [[SOAR-FEATURE-MARKETS]] (verified_local)
+- documented_by <- [[SOAR-COMP-MARKET-UNIVERSES-TABLE]] (verified_local)
+- documented_by <- [[SOAR-COMP-MARKET-UNIVERSE-FORM]] (verified_local)
+- documented_by <- [[SOAR-COMP-MARKET-SEARCHABLE-MULTISELECT]] (verified_local)
 
 ## Evidence Rule
 

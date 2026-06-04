@@ -2,6 +2,61 @@
 
 Last updated: 2026-06-04
 
+- 2026-06-04 `LUC-2020-NORMALIZE-INFERRED-LINK-REPORT-NOISE-2026-06-04`
+  improves Architecture Evidence Graph confidence for report triage quality.
+  The architecture-awareness health/report layer now keeps raw inferred missing
+  test/doc counts inspectable while adding actionable missing-link signals and
+  classified noise detail for curated graph-covered rows, generated/vendor
+  docs-vault plugin files, config/resource files, and top-level app mounts.
+  Refreshed Soar exports report raw missing tests `7681` / actionable `940`,
+  raw missing docs `976` / actionable `241`, and classified inferred-link
+  noise `7322`. Focused readback confirmed auth/upload/root/dashboard/admin API
+  false positives no longer appear in top actionable samples. Validation
+  passed: scanner syntax check, scanner refresh, and `pnpm run
+  architecture:graph:drift:strict` (`820/820` covered / `0` missing). This is
+  docs/report/graph triage proof only, not runtime, browser, production,
+  deploy, protected, database, or route behavior proof. Evidence:
+  `history/tasks/luc-2020-normalize-inferred-link-report-noise-2026-06-04-task.md`.
+
+- 2026-06-04 `LUC-2022-WEB-COMPONENT-DOC-RELATION-NORMALIZATION-2026-06-04`
+  improves Architecture Evidence Graph confidence for Web feature component
+  documentation traceability. Existing component registry `docs_related`
+  evidence is now represented as explicit graph relations for all scoped Web
+  components (`32` relations, `0` missing). Validation passed:
+  `pnpm run architecture:graph:generate` (`647` nodes / `842` relations /
+  `27` chains) and `pnpm run architecture:graph:drift:strict` (`820/820`
+  covered / `0` missing). This is docs/graph traceability proof only, not
+  fresh browser, production, deploy, protected, database, or runtime behavior
+  proof. Evidence:
+  `history/tasks/luc-2022-normalize-web-feature-component-graph-doc-relations-2026-06-04-task.md`.
+
+- 2026-06-04 `LUC-2021-SHARED-UI-INFERRED-LINK-GAP-TRIAGE-2026-06-04`
+  applies to `web-shared` and `SOAR-FEATURE-WEB-RESIDUAL-SURFACES`:
+  Frontend classified shared UI architecture-awareness inferred test/doc link
+  gaps without runtime mutation. Existing focused Web proof covers shared
+  feature helpers, table/state/status/tabs/theme primitives, form primitives,
+  layout primitives, and PWA registration. Focused validation passed:
+  `pnpm --filter web test -- ...` (`16` files / `87` tests). Remaining shared
+  UI follow-up candidates are targeted primitive tests for `ConfirmModal`,
+  `FormModal`, `useAsyncConfirm`, brand/navigation helpers, and skeleton
+  loaders if those surfaces change or Docs Memory promotes stable
+  per-component graph nodes. Evidence:
+  `history/tasks/luc-2021-shared-ui-inferred-test-doc-link-gap-triage-2026-06-04-task.md`.
+
+- 2026-06-04 `LUC-2018-API-PLATFORM-SAFETY-ASSISTANT-RED-TEAM-PROOF-MAP-2026-06-04`
+  applies to `SOAR-SECURITY-PRIVACY-001`, `SOAR-FEATURE-API-PLATFORM-SAFETY`,
+  and `SOAR-FEATURE-AI-ASSISTANT-FOUNDATION`: Security Review classified
+  `CHAIN-API-PLATFORM-SAFETY` and `CHAIN-AI-ASSISTANT-FOUNDATION` against
+  current graph/docs/tests and reran fresh local proof. `pnpm run
+  test:adversarial:api-assistant` passed (`8` files / `29` tests). API platform
+  safety remains locally verified for current architecture/adversarial
+  regression scope. AI assistant foundation remains locally verified for
+  dry-run/foundation and default LIVE fail-closed scope. Protected production
+  auth, DB-backed route e2e, and executable assistant hot-path red-team proof
+  remain separate gates; no new defect child issue was required from this lane.
+  Evidence:
+  `history/tasks/luc-2018-api-platform-safety-assistant-red-team-proof-map-2026-06-04-task.md`.
+
 ## Purpose
 
 This ledger is the quick reality map for Soar. It tracks whether each important

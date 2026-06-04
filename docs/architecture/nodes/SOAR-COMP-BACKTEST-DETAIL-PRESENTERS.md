@@ -36,6 +36,7 @@ tags: [soar-map, component, frontend, verified_local]
 
 - uses -> [[SOAR-SERVICE-BACKTEST-WEB-VIEWMODEL]] (verified_local)
 - verified_by -> [[SOAR-TEST-BACKTEST-WEB-UTILITIES]] (verified_local)
+- documented_by -> [[SOAR-DOC-WEB-BACKTESTS]] (verified_local)
 - composes <- [[SOAR-COMP-BACKTEST-RUN-DETAILS]] (verified_local)
 
 ## Evidence Rule

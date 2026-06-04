@@ -35,6 +35,7 @@ tags: [soar-map, component, frontend, verified_local]
 ## Relations
 
 - uses -> [[SOAR-HOOK-USE-API-KEYS]] (verified_local)
+- documented_by -> [[SOAR-DOC-WEB-PROFILE]] (verified_local)
 - contains <- [[SOAR-PAGE-PROFILE]] (verified_local)
 
 ## Evidence Rule

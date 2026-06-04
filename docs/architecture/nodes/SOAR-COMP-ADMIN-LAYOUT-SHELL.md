@@ -34,6 +34,7 @@ tags: [soar-map, component, frontend, verified_local]
 
 ## Relations
 
+- documented_by -> [[SOAR-DOC-WEB-ADMIN]] (verified_local)
 - renders_with <- [[SOAR-PAGE-ADMIN-SUBSCRIPTIONS]] (verified_local)
 - renders_with <- [[SOAR-PAGE-ADMIN-USERS]] (verified_local)
 

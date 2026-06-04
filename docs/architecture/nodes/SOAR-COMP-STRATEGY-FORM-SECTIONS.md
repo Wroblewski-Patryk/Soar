@@ -35,6 +35,7 @@ tags: [soar-map, component, frontend, verified_local]
 ## Relations
 
 - reads -> [[SOAR-API-STRATEGY-INDICATORS]] (verified_local)
+- documented_by -> [[SOAR-DOC-WEB-STRATEGIES]] (verified_local)
 - composes <- [[SOAR-COMP-STRATEGY-FORM]] (verified_local)
 
 ## Evidence Rule
