@@ -1,6 +1,6 @@
 # Coolify VPS Deployment Contract
 
-Last updated: 2026-06-03
+Last updated: 2026-06-04
 
 This contract describes the current Soar production deployment target. Coolify
 must be treated as a hierarchy:
@@ -33,27 +33,30 @@ refreshed/reconciled for `LUC-1399`, `LUC-1402`, `LUC-1405`, `LUC-1408`,
 `LUC-1634` / `LUC-1641` / `LUC-1645` / `LUC-1651` / `LUC-1656` /
 `LUC-1662` / `LUC-1666` / `LUC-1673` / `LUC-1696` / `LUC-1707` /
 `LUC-1786` / `LUC-1790` / `LUC-1800` / `LUC-1822` / `LUC-1828` /
-`LUC-1831` on
-2026-06-03.
+`LUC-1831` / `LUC-1843` on 2026-06-03, and `LUC-1850` / `LUC-1857`
+on 2026-06-04.
 
-Latest read-only access binding checkpoint: `LUC-1831` at
-`2026-06-03T18:04:01Z`, refreshing the prior `LUC-1828` proof. Runtime
+Latest read-only access binding checkpoint: `LUC-1857` at
+`2026-06-03T23:10:12Z`, refreshing the prior `LUC-1850` proof. Runtime
 bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`,
-`COOLIFY_TOKEN`, and `COOLIFY_SOAR_PROJECT_ID` without values printed.
-Authenticated read-only Coolify reads resolved current selector name
-`LuckySparrow`, project `Soar`, production environment `production`, and the
-canonical eight-resource production-environment inventory by environment-id
-reconciliation: six applications plus PostgreSQL and Redis. The global
-resources endpoint returned `17` visible rows, with `8` matching the production
-environment scope. Application rows report `running:unknown`; PostgreSQL and
-Redis report `running:healthy` from production environment readback.
-`COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain absent in this runner, but
-the selector readback is not an active blocker while current-team and
-project-scoped reads succeed. This heartbeat performed no deploy, restart,
-rollback, env edit, database action, team setting change, account action,
-protected smoke, secret readback, or live-trading action.
+`COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+`COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and
+`COOLIFY_SOAR_API_APP_ID` without values printed. Authenticated read-only
+Coolify reads resolved current selector id `0` name `LuckySparrow`, project
+`Soar`, production environment `production`, and the canonical eight-resource
+production-environment inventory: six applications plus PostgreSQL and Redis.
+The global resources endpoint returned `17` visible rows. Coolify also exposes
+a redacted PostgreSQL companion row in the global resources list; treat it as
+an alias/companion row, not as a ninth production deploy or smoke target.
+Application rows report `running:unknown`; PostgreSQL and Redis report
+`running:healthy` from production environment readback. `COOLIFY_SOAR_TEAM_ID`
+and `COOLIFY_TEAM_ID` remain absent in this runner, but the selector readback
+is not an active blocker while current-team and project-scoped reads succeed.
+This heartbeat performed no deploy, restart, rollback, env edit, database
+action, team setting change, account action, protected smoke, secret readback,
+or live-trading action.
 Evidence:
-`history/evidence/luc-1831-coolify-read-only-production-status-access-2026-06-03.md`.
+`history/evidence/luc-1850-coolify-read-only-production-status-access-2026-06-04.md`.
 
 Latest team/workspace selector checkpoint: `LUC-1678` at
 `2026-06-03T05:38:12Z`. Authenticated read-only Coolify API calls confirmed

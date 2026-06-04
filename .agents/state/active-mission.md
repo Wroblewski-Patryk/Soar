@@ -1,6 +1,6 @@
 # Active Mission Packet
 
-Last updated: 2026-06-03
+Last updated: 2026-06-04
 
 Use this file as the first operational router for `pracuj dalej`, `rob dalej`,
 `kontynuuj`, `next`, and similar continuation nudges. Keep it short enough that
@@ -8,6 +8,8 @@ a fresh coordinator can choose the next checkpoint without rereading the whole
 repository history.
 
 ## Current Mission
+
+- `LUC-1857-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-04` is done as a bounded Ops read-only production status access checkpoint. Wake `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); checkout was already claimed by the harness and was not repeated. Fresh read-only Coolify API readback at `2026-06-03T23:10:12Z` confirmed required binding names are present without value disclosure, current selector id `0` name `LuckySparrow`, configured project `Soar`, production environment `production`, six application resources, PostgreSQL, Redis, zero generic services, `17` visible global resource rows, and `8` production-environment resources. `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent but are not an active blocker while current-team and project-scoped reads succeed. `pnpm run ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart, rollback, env edit, database action, team setting change, account action, protected smoke, secret value readback, raw resource id storage, generated DB suffix storage, or live-trading action occurred. Evidence: `history/evidence/luc-1857-coolify-read-only-production-status-access-2026-06-04.md`, `history/tasks/luc-1857-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md`.
 
 - `LUC-1843-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-03` is done as a bounded Ops read-only production status access checkpoint. Wake `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`); checkout was already claimed by the harness and was not repeated. Fresh read-only Coolify API readback at `2026-06-03T21:02:39Z` confirmed required binding names are present without value disclosure, current selector name `LuckySparrow`, configured project `Soar`, production environment `production`, six application resources, PostgreSQL, Redis, zero generic services, `17` visible global resource rows, and `8` production-environment resources. `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent but are not an active blocker while current-team and project-scoped reads succeed. `pnpm run ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart, rollback, env edit, database action, team setting change, account action, protected smoke, secret value readback, raw resource id storage, generated DB suffix storage, or live-trading action occurred. Evidence: `history/evidence/luc-1843-coolify-read-only-production-status-access-2026-06-03.md`, `history/tasks/luc-1843-operator-coolify-bind-read-only-production-status-access-2026-06-03-task.md`.
 
