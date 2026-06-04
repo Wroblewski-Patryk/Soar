@@ -34,10 +34,10 @@ refreshed/reconciled for `LUC-1399`, `LUC-1402`, `LUC-1405`, `LUC-1408`,
 `LUC-1662` / `LUC-1666` / `LUC-1673` / `LUC-1696` / `LUC-1707` /
 `LUC-1786` / `LUC-1790` / `LUC-1800` / `LUC-1822` / `LUC-1828` /
 `LUC-1831` / `LUC-1843` on 2026-06-03, and `LUC-1850` / `LUC-1857` /
-`LUC-1872` / `LUC-1875` on 2026-06-04.
+`LUC-1872` / `LUC-1875` / `LUC-1878` on 2026-06-04.
 
-Latest read-only access binding checkpoint: `LUC-1875` at
-`2026-06-04T02:35:44Z`, refreshing the prior `LUC-1872` proof. Runtime
+Latest read-only access binding checkpoint: `LUC-1878` at
+`2026-06-04T02:47:18Z`, refreshing the prior `LUC-1875` proof. Runtime
 bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`,
 `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
 `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and
@@ -56,7 +56,7 @@ This heartbeat performed no deploy, restart, rollback, env edit, database
 action, team setting change, account action, protected smoke, secret readback,
 or live-trading action.
 Evidence:
-`history/evidence/luc-1875-coolify-read-only-production-status-access-2026-06-04.md`.
+`history/evidence/luc-1878-coolify-read-only-production-status-access-2026-06-04.md`.
 
 Latest team/workspace selector checkpoint: `LUC-1678` at
 `2026-06-03T05:38:12Z`. Authenticated read-only Coolify API calls confirmed
