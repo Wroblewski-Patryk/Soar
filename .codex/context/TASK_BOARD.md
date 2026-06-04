@@ -1,3 +1,50 @@
+## 2026-06-04 LUC-1996 [Soar][Source Control Closure] Classify and close local dirty state for LUC-1993
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1996](/LUC/issues/LUC-1996);
+  - classified local dirty state left by [LUC-1993](/LUC/issues/LUC-1993);
+  - preserved no push/deploy/restart/rollback/env/database/team/account/protected-smoke/secret-disclosure/live-trading boundary.
+- Classification:
+  - state/control: `4`;
+  - operations docs/ledger: `2`;
+  - task/evidence: `3`;
+  - runtime/product code: `0`;
+  - stale/out-of-scope: `0`.
+- Evidence:
+  - `git diff --check` -> pass;
+  - targeted redaction scan over closure paths -> pass;
+  - `pnpm run quality:guardrails` -> pass;
+  - local closure commit created.
+- Disposition:
+  - coherent docs/state/evidence-only set committed locally;
+  - push status: not needed;
+  - deploy impact: none.
+- Artifact:
+  - `history/tasks/luc-1996-source-control-close-local-dirty-state-for-luc-1993-2026-06-04-task.md`
+
+## 2026-06-04 LUC-1993 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-1993](/LUC/issues/LUC-1993);
+  - preserved the no push/deploy/restart/rollback/env/database/team/account/protected-smoke/secret-disclosure boundary;
+  - performed read-only Coolify project/environment/resource status access verification with allowlisted metadata only.
+- Evidence:
+  - Paperclip heartbeat context -> `in_progress`, priority `critical`, zero first-class blockers, no comments;
+  - names-only binding readback -> required Coolify names present without values printed;
+  - `GET /api/v1/projects/{configured-project-id}` -> project resolves to `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> six applications, PostgreSQL, Redis, zero generic services;
+  - `GET /api/v1/resources` -> `1` visible row in this least-privilege runner session, not used as release authority;
+  - `pnpm run ops:coolify-stack:env-check:test` -> PASS (`8/8`).
+- Disposition:
+  - Coolify read-only production status access remains verified for project/environment/resource reconciliation;
+  - canonical production environment remains eight resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`;
+  - app inventory status remains `running:unknown`; PostgreSQL and Redis report `running:healthy`;
+  - optional team binding names remain absent but are not an active blocker while project-scoped reads succeed.
+- Artifact:
+  - `history/tasks/luc-1993-operator-coolify-bind-read-only-production-status-access-2026-06-04-task.md`
+  - `history/evidence/luc-1993-coolify-read-only-production-status-access-2026-06-04.md`
+
 ## 2026-06-04 LUC-1990 [Operator][Coolify] Bind Coolify read-only production status access
 - Status: done.
 - Scope:

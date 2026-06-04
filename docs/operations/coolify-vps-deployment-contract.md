@@ -37,10 +37,34 @@ refreshed/reconciled for `LUC-1399`, `LUC-1402`, `LUC-1405`, `LUC-1408`,
 `LUC-1872` / `LUC-1875` / `LUC-1878` / `LUC-1885` / `LUC-1890` /
 `LUC-1898` / `LUC-1901` / `LUC-1910` / `LUC-1916` / `LUC-1919` /
 `LUC-1926` / `LUC-1933` / `LUC-1969` / `LUC-1973` / `LUC-1977` /
-`LUC-1982` / `LUC-1987` / `LUC-1990`
+`LUC-1982` / `LUC-1987` / `LUC-1990` / `LUC-1993`
 on 2026-06-04.
 
-Latest read-only access binding checkpoint: `LUC-1990` at
+Latest read-only access binding checkpoint: `LUC-1993` at
+`2026-06-04T14:16:42Z`, refreshing the prior `LUC-1990` proof. Runtime
+bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`,
+`COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+`COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and
+`COOLIFY_SOAR_API_APP_ID` without values printed. Authenticated read-only
+Coolify reads resolved project `Soar`, production environment `production`,
+and the canonical eight-resource
+production-environment inventory: six applications plus PostgreSQL and Redis.
+The global resources endpoint returned `1` visible row in this least-privilege
+runner session and was not used as release authority. The project/environment
+hierarchy remains the authoritative production status scope for this binding
+proof.
+Application rows report `running:unknown`; PostgreSQL reports
+`running:healthy`; Redis reports `running:healthy` from production environment
+readback. `COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain absent in this
+runner, but the selector readback is not an active blocker while current-team
+and project-scoped reads succeed.
+This heartbeat performed no deploy, restart, rollback, env edit, database
+action, team setting change, account action, protected smoke, secret readback,
+or live-trading action.
+Evidence:
+`history/evidence/luc-1993-coolify-read-only-production-status-access-2026-06-04.md`.
+
+Previous read-only access binding checkpoint: `LUC-1990` at
 `2026-06-04T14:05:13Z`, refreshing the prior `LUC-1987` proof. Runtime
 bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`,
 `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
