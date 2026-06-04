@@ -35,10 +35,10 @@ refreshed/reconciled for `LUC-1399`, `LUC-1402`, `LUC-1405`, `LUC-1408`,
 `LUC-1786` / `LUC-1790` / `LUC-1800` / `LUC-1822` / `LUC-1828` /
 `LUC-1831` / `LUC-1843` on 2026-06-03, and `LUC-1850` / `LUC-1857` /
 `LUC-1872` / `LUC-1875` / `LUC-1878` / `LUC-1885` / `LUC-1890` /
-`LUC-1898` on 2026-06-04.
+`LUC-1898` / `LUC-1901` on 2026-06-04.
 
-Latest read-only access binding checkpoint: `LUC-1898` at
-`2026-06-04T05:04:58Z`, refreshing the prior `LUC-1890` proof. Runtime
+Latest read-only access binding checkpoint: `LUC-1901` at
+`2026-06-04T05:16:05Z`, refreshing the prior `LUC-1898` proof. Runtime
 bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`,
 `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
 `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and
@@ -46,9 +46,10 @@ bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`,
 Coolify reads resolved current selector id `0` name `LuckySparrow`, project
 `Soar`, production environment `production`, and the canonical eight-resource
 production-environment inventory: six applications plus PostgreSQL and Redis.
-The global resources endpoint returned `17` visible rows. Coolify also exposes
-a redacted PostgreSQL companion row in the global resources list; treat it as
-an alias/companion row, not as a ninth production deploy or smoke target.
+The global resources endpoint was not used as release authority for this
+checkpoint because the latest least-privilege projection returned a narrower
+visible set than prior inventory proofs. The project/environment hierarchy
+remains the authoritative production status scope for this binding proof.
 Application rows report `running:unknown`; PostgreSQL and Redis report
 `running:healthy` from production environment readback. `COOLIFY_SOAR_TEAM_ID`
 and `COOLIFY_TEAM_ID` remain absent in this runner, but the selector readback
@@ -57,7 +58,7 @@ This heartbeat performed no deploy, restart, rollback, env edit, database
 action, team setting change, account action, protected smoke, secret readback,
 or live-trading action.
 Evidence:
-`history/evidence/luc-1898-coolify-read-only-production-status-access-2026-06-04.md`.
+`history/evidence/luc-1901-coolify-read-only-production-status-access-2026-06-04.md`.
 
 Latest team/workspace selector checkpoint: `LUC-1678` at
 `2026-06-03T05:38:12Z`. Authenticated read-only Coolify API calls confirmed
