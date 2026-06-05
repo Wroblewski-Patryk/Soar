@@ -1,6 +1,40 @@
 # Module Confidence Ledger
 
-Last updated: 2026-06-04
+Last updated: 2026-06-05
+
+- 2026-06-05 `LUC-2057-LOCAL-PROTECTED-WALLET-ROUTE-ACTION-PROOF`
+  improves `web-wallets` local protected-route confidence. Test Automation
+  added a repeatable CDP/browser harness at
+  `scripts/runLocalProtectedRouteActionProof.mjs` and script alias
+  `pnpm run qa:local-protected-route-actions:proof`. Fresh proof passed for
+  `SOAR-ACTION-VISIT-PAGE-WALLETS-ROOT`,
+  `SOAR-ACTION-VISIT-PAGE-WALLETS-LIST`, and
+  `SOAR-ACTION-VISIT-PAGE-WALLET-CREATE`: unauthenticated wallet list access
+  fails closed to `/auth/login`; local-cookie gated wallet root/list/create
+  routes reach expected paths; and the list-page add action navigates to
+  `/dashboard/wallets/create`. Validation passed: script syntax check and full
+  local harness run. This is local-only browser route/action proof, not API
+  database mutation proof, production auth proof, exchange proof, deploy proof,
+  or live-trading proof. Evidence:
+  `history/evidence/luc-2057-local-protected-wallet-route-action-proof-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2054-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05`
+  applies to production Ops release confidence: read-only Coolify API status
+  access remains verified for Soar project/environment/resource reconciliation.
+  Runtime binding names are present without value disclosure for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID`; optional team
+  binding names remain absent but project-scoped reads succeed. Fresh readback
+  at `2026-06-04T23:40:30Z` resolved project `Soar`, environment
+  `production`, six applications, PostgreSQL, Redis, zero generic services,
+  and `17` visible global resource rows. Application inventory status remains
+  `running:unknown`; PostgreSQL and Redis report `running:healthy`.
+  Validation passed: `pnpm run ops:coolify-stack:env-check:test` (`8/8`).
+  This is read-only status access proof only, not deploy, restart, rollback,
+  protected smoke, database health beyond inventory, or live-trading proof.
+  Evidence:
+  `history/evidence/luc-2054-coolify-read-only-production-status-access-2026-06-05.md`.
 
 - 2026-06-04 `LUC-2020-NORMALIZE-INFERRED-LINK-REPORT-NOISE-2026-06-04`
   improves Architecture Evidence Graph confidence for report triage quality.

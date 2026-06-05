@@ -1,3 +1,69 @@
+## 2026-06-05 LUC-2064 [Soar][Source Control Closure] Classify current LUC-402 dirty packet
+- Status: verified.
+- Scope:
+  - consumed the scoped wake for [LUC-2064](/LUC/issues/LUC-2064);
+  - classified the current [LUC-402](/LUC/issues/LUC-402) dirty packet from stale board janitor follow-up;
+  - preserved the no push/deploy/restart/protected-smoke/production-mutation/secret-disclosure boundary.
+- Classification:
+  - [LUC-2054](/LUC/issues/LUC-2054) Ops read-only Coolify evidence and runtime ledger/state updates -> commit-ready;
+  - [LUC-2055](/LUC/issues/LUC-2055) API platform safety review task artifact -> commit-ready;
+  - [LUC-2057](/LUC/issues/LUC-2057) local protected wallet route proof harness, package script, evidence/artifact, and state updates -> commit-ready;
+  - source-control closure artifact/state update -> commit-ready.
+- Evidence:
+  - `git diff --check` -> PASS;
+  - `node --check scripts/runLocalProtectedRouteActionProof.mjs` -> PASS;
+  - dirty-path credential scan -> PASS after reviewing no-secret wording and the synthetic local fixture token `luc-2057-local-fixture-token`.
+- Disposition:
+  - local closure commit created for the coherent packet;
+  - push status: not pushed / not needed;
+  - deploy impact: none;
+  - [LUC-402](/LUC/issues/LUC-402) protected evidence blockers remain intact.
+- Artifact:
+  - `history/tasks/luc-2064-source-control-classify-current-luc-402-dirty-packet-2026-06-05-task.md`
+
+## 2026-06-05 LUC-2057 [Soar][Test Automation] Build browser proof harness for local-only protected route actions
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-2057](/LUC/issues/LUC-2057);
+  - added a project-native local browser/CDP harness for the wallets protected-route action cluster;
+  - kept the proof local-only and non-mutating: no wallet create/update/delete submit, no exchange call, no production account, no deploy.
+- Evidence:
+  - `node --check scripts/runLocalProtectedRouteActionProof.mjs` -> PASS;
+  - `pnpm run qa:local-protected-route-actions:proof -- --today 2026-06-05` -> PASS;
+  - covered `SOAR-ACTION-VISIT-PAGE-WALLETS-ROOT`, `SOAR-ACTION-VISIT-PAGE-WALLETS-LIST`, and `SOAR-ACTION-VISIT-PAGE-WALLET-CREATE`;
+  - browser proof verified unauthenticated fail-closed redirect to `/auth/login`, local-cookie protected route reachability, `/dashboard/wallets` redirect to `/dashboard/wallets/list`, and list-page create/add navigation to `/dashboard/wallets/create`;
+  - cleanup check found no remaining listener on port `3217` and no harness browser process on `9347`.
+- Disposition:
+  - repeatable command is now `pnpm run qa:local-protected-route-actions:proof`;
+  - production protected proof remains outside this local harness and linked to [LUC-241](/LUC/issues/LUC-241) for approved auth/session access.
+- Artifact:
+  - `history/evidence/luc-2057-local-protected-wallet-route-action-proof-2026-06-05.md`
+  - `history/artifacts/luc-2057-local-protected-wallet-route-action-proof-2026-06-05.json`
+
+## 2026-06-05 LUC-2054 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-2054](/LUC/issues/LUC-2054);
+  - preserved the no push/deploy/restart/rollback/env/database/team/account/protected-smoke/secret-disclosure boundary;
+  - performed read-only Coolify project/environment/resource status access verification with allowlisted metadata only.
+- Evidence:
+  - wake payload -> `in_progress`, priority `critical`, zero pending comments, `fallbackFetchNeeded=false`;
+  - names-only binding readback -> required Coolify names present without values printed;
+  - `GET /api/v1/projects/{configured-project-id}` -> project resolves to `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> six applications, PostgreSQL, Redis, zero generic services;
+  - `GET /api/v1/resources` -> `17` visible rows, not used as release authority;
+  - Redis object-shape readback -> payload uses `redis`, not `redises`; Redis reports `running:healthy`;
+  - `pnpm run ops:coolify-stack:env-check:test` -> PASS (`8/8`).
+- Disposition:
+  - Coolify read-only production status access remains verified for project/environment/resource reconciliation;
+  - canonical production environment remains eight resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`;
+  - app inventory status remains `running:unknown`; PostgreSQL and Redis report `running:healthy`;
+  - optional team binding names remain absent but are not an active blocker while project-scoped reads succeed.
+- Artifact:
+  - `history/tasks/luc-2054-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`
+  - `history/evidence/luc-2054-coolify-read-only-production-status-access-2026-06-05.md`
+
 ## 2026-06-05 LUC-2046 [Soar][Source Control Closure] Classify and close local dirty state for LUC-2045
 - Status: verified.
 - Scope:
