@@ -1,6 +1,6 @@
 # Active Mission Packet
 
-Last updated: 2026-06-05
+Last updated: 2026-06-06
 
 Use this file as the first operational router for `pracuj dalej`, `rob dalej`,
 `kontynuuj`, `next`, and similar continuation nudges. Keep it short enough that
@@ -9,8 +9,47 @@ repository history.
 
 ## Current Mission
 
+- `LUC-2340-SOURCE-CONTROL-CLOSURE-POST-LUC-2312-2026-06-06` closed the
+  post-[LUC-2312](/LUC/issues/LUC-2312) V1 controller dirty state as a bounded
+  source-control hygiene lane. Wake `issue_continuation_needed` was consumed
+  from inline payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout
+  was already claimed by the harness and was not repeated. Baseline before this
+  closure artifact/state update was `HEAD`
+  `10f1cfce94533e96a65b487d8cd0b1e9dff8f59e`, with `12` modified and `12`
+  untracked paths spanning Backend runtime aggregate repair, Ops read-only
+  proof docs, source-of-truth state, and task/evidence artifacts from
+  [LUC-2300](/LUC/issues/LUC-2300), [LUC-2316](/LUC/issues/LUC-2316),
+  [LUC-2319](/LUC/issues/LUC-2319), [LUC-2321](/LUC/issues/LUC-2321),
+  [LUC-2328](/LUC/issues/LUC-2328), [LUC-2329](/LUC/issues/LUC-2329), and
+  [LUC-2333](/LUC/issues/LUC-2333). Validation passed: `git diff --check` and
+  API typecheck. Closure artifact:
+  `history/tasks/luc-2340-source-control-close-post-luc-2312-v1-controller-dirty-state-2026-06-06-task.md`.
+  No push, deploy, restart, rollback, migration, account, secret, exchange,
+  protected-smoke, or live-trading action occurred.
+
+- `LUC-2333-RUNTIME-AGGREGATE-TRADE-ROW-REPAIR-2026-06-06` is verified
+  locally as the Backend API repair after [LUC-2317](/LUC/issues/LUC-2317) QA
+  reran [LUC-2328](/LUC/issues/LUC-2328) and still saw HTTP `200` with empty
+  trade rows/totals. Wake `issue_assigned` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already claimed
+  by the harness and was not repeated. Repair: aggregate nested-reader
+  timeout/error fallback is now isolated per subquery, so a slow symbol-stats
+  or positions read no longer drops the whole session row or erases valid
+  sibling trade totals/items. Validation passed: original combined DB-backed
+  aggregate e2e under `--testTimeout=30000` and API typecheck. Bounded hidden
+  trade proof returned `trades.total=260`, `trades.items.length=5`, and bounded
+  `trade.findMany`; neighboring trade-total proof returned one visible row and
+  `trades.total=2`. No production deploy, restart, rollback, migration,
+  account, secret, exchange, protected smoke, or live-trading action occurred.
+  Evidence:
+  `history/tasks/luc-2333-complete-runtime-aggregate-trade-row-repair-after-qa-rerun-2026-06-06-task.md`
+  and
+  `history/evidence/luc-2333-runtime-aggregate-trade-row-repair-after-qa-rerun-2026-06-06.md`.
+  Next proof: [LUC-2317](/LUC/issues/LUC-2317) QA should resume the same
+  combined command from the parent issue.
+
 - `LUC-2300-BOUND-RUNTIME-AGGREGATE-MATERIALIZATION-2026-06-05` is
-  implemented and partially verified as the Backend API follow-up to
+  verified locally as the Backend API follow-up to
   [LUC-2291](/LUC/issues/LUC-2291). Wake `issue_assigned` was consumed from
   inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment
   id `unknown`); checkout was already claimed by the harness and was not
@@ -18,17 +57,22 @@ repository history.
   runtime trade visible rows now use DB sorting/paging for DB-sortable views,
   trade total/fees use DB `count`/`aggregate`, carry-over position ids are
   capped, and lifecycle support trade rows in trade/position readers have
-  explicit caps. Validation passed: API typecheck and aggregate concurrency
-  helper test. Focused DB-backed aggregate e2e regression was added but local
-  execution was blocked before assertions because Postgres on `localhost:5432`
-  was unavailable in `resetBotsE2eState`. No production mutation, deploy,
-  restart, migration, account/secret/exchange, or live-trading action occurred.
+  explicit caps. Validation passed: API typecheck, aggregate concurrency
+  helper test, DB-backed trade-total proof, and DB-backed bounded hidden-trade
+  proof after the local Postgres blocker resolved. Follow-up repairs
+  [LUC-2328](/LUC/issues/LUC-2328) and [LUC-2333](/LUC/issues/LUC-2333)
+  closed the proof gaps around Prisma spy binding, aggregate subquery timeout,
+  and per-subquery fallback preserving valid trade rows. No production
+  mutation, deploy, restart, migration, account/secret/exchange, or
+  live-trading action occurred.
   Evidence:
   `history/tasks/luc-2300-bound-runtime-aggregate-trade-position-materialization-2026-06-05-task.md`
   and
-  `history/evidence/luc-2300-runtime-aggregate-bounded-materialization-2026-06-05.md`.
-  Next proof: rerun focused aggregate e2e with local Postgres available before
-  release promotion.
+  `history/evidence/luc-2300-runtime-aggregate-bounded-materialization-2026-06-05.md`
+  and
+  `history/evidence/luc-2300-runtime-aggregate-db-backed-proof-2026-06-06.md`.
+  Next proof belongs to release/Ops/QA: production promotion, protected runtime
+  smoke, and post-deploy aggregate/SLO proof.
 
 - `LUC-2302-SOAR-WEB-NEXT-RECOVERY-DECISION-2026-06-05` completed as the CTO
   recovery-path decision after [LUC-2293](/LUC/issues/LUC-2293) rollback failed

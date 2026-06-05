@@ -524,7 +524,10 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
       })),
     });
 
-    const tradeFindManySpy = vi.spyOn(prisma.trade, 'findMany');
+    const originalTradeFindMany = prisma.trade.findMany.bind(prisma.trade);
+    const tradeFindManySpy = vi
+      .spyOn(prisma.trade, 'findMany')
+      .mockImplementation((args) => originalTradeFindMany(args));
 
     const aggregateRes = await owner.get(`/dashboard/bots/${botId}/runtime-monitoring/aggregate`).query({
       perSessionLimit: 5,

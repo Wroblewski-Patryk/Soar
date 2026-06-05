@@ -15,9 +15,12 @@ Backend code-only implementation for Bot Runtime aggregate materialization.
 ## Verification
 - PASS: `pnpm --filter api exec tsc --noEmit --pretty false`
 - PASS: `pnpm --filter api exec vitest run src/modules/bots/runtimeMonitoringAggregateConcurrency.test.ts --run`
-- BLOCKED: focused DB-backed aggregate e2e did not reach assertions because
-  local Postgres on `localhost:5432` was unavailable during
-  `resetBotsE2eState`.
+- PASS after blocker resolution:
+  `pnpm --filter api exec vitest run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts --run --sequence.concurrent=false --testTimeout=60000 --testNamePattern "keeps aggregate trade totals truthful"`
+  (`1` passed / `18` skipped).
+- PASS after blocker resolution:
+  `pnpm --filter api exec vitest run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts --run --sequence.concurrent=false --testTimeout=60000 --testNamePattern "bounds aggregate hidden trade materialization"`
+  (`1` passed / `18` skipped).
 - PASS: scoped `git diff --check` on changed backend files.
 
 ## Safety

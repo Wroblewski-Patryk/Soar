@@ -5,7 +5,7 @@
 - Title: Bound runtime aggregate trade/position materialization
 - Task Type: fix
 - Current Stage: verification
-- Status: PARTIALLY_VERIFIED
+- Status: DONE
 - Owner: Backend API Engineer
 - Priority: P0
 - Module Confidence Rows: Bot Runtime
@@ -61,19 +61,21 @@ unbounded trade/position support materialization for hidden historical rows.
 ## Validation Evidence
 - PASS: `pnpm --filter api exec tsc --noEmit --pretty false`
 - PASS: `pnpm --filter api exec vitest run src/modules/bots/runtimeMonitoringAggregateConcurrency.test.ts --run`
-- BLOCKED: `pnpm --filter api exec vitest run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts --run --sequence.concurrent=false --testNamePattern "bounded aggregate hidden trade materialization|keeps aggregate trade totals truthful"` did not reach the new regression because local Postgres was unavailable:
-  `Can't reach database server at localhost:5432` from `resetBotsE2eState`.
+- PASS after blocker resolution:
+  `pnpm --filter api exec vitest run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts --run --sequence.concurrent=false --testTimeout=60000 --testNamePattern "keeps aggregate trade totals truthful"`
+  (`1` passed / `18` skipped).
+- PASS after blocker resolution:
+  `pnpm --filter api exec vitest run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts --run --sequence.concurrent=false --testTimeout=60000 --testNamePattern "bounds aggregate hidden trade materialization"`
+  (`1` passed / `18` skipped).
 - PASS: `git diff --check -- apps/api/src/modules/bots/runtimeSessionTradesRead.service.ts apps/api/src/modules/bots/runtimeSessionTradesRead.repository.ts apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts apps/api/src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`
 
 ## Definition Of Done
 - Implemented: yes.
 - Focused compile proof: verified.
-- DB-backed behavioral proof: implemented but blocked by unavailable local DB.
+- DB-backed behavioral proof: verified after local DB blocker resolution.
 - Production deploy/restart/db/account/secret/exchange/live-trading mutation:
   none.
 
 ## Residual Risk
-DB-backed aggregate e2e must be rerun once local Postgres is available before
-this fix is promoted through a release path. The bounded support caps preserve
-normal visible-row behavior but intentionally prevent unbounded hidden lifecycle
-support materialization.
+No remaining backend acceptance blocker for this issue. Production promotion
+still requires the normal release/Ops gate and post-deploy aggregate/SLO proof.

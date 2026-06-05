@@ -1,5 +1,59 @@
 # System Health
 
+- `LUC-2333-RUNTIME-AGGREGATE-TRADE-ROW-REPAIR-2026-06-06`
+  VERIFIED locally after the failed [LUC-2317](/LUC/issues/LUC-2317) QA rerun.
+  Aggregate fanout now isolates nested-reader timeout/error fallback per
+  subquery, preserving valid trade rows/totals instead of dropping the whole
+  session row. PASS original combined DB-backed aggregate e2e with
+  `--testTimeout=30000`: neighboring trade-total proof returned one visible
+  row and `trades.total=2`; bounded hidden trade proof returned
+  `trades.total=260`, `trades.items.length=5`, and bounded `trade.findMany`
+  calls. PASS API typecheck. Evidence:
+  `history/tasks/luc-2333-complete-runtime-aggregate-trade-row-repair-after-qa-rerun-2026-06-06-task.md`,
+  `history/evidence/luc-2333-runtime-aggregate-trade-row-repair-after-qa-rerun-2026-06-06.md`.
+
+- `LUC-2328-RUNTIME-AGGREGATE-TRADE-TOTALS-DB-PROOF-2026-06-06`
+  VERIFIED locally for the Bot Runtime aggregate DB-backed trade-total proof.
+  The focused e2e now proves `260` hidden trades with `perSessionLimit=5`
+  return truthful aggregate totals and bounded visible rows. API typecheck
+  passes. The fix preserves Prisma delegate binding in the proof spy and raises
+  the aggregate subquery default timeout to `15000ms` while keeping the
+  environment override. No production mutation occurred. Evidence:
+  `history/tasks/luc-2328-repair-runtime-aggregate-trade-totals-db-backed-proof-2026-06-06-task.md`,
+  `history/evidence/luc-2328-runtime-aggregate-trade-totals-db-backed-proof-2026-06-06.md`.
+
+- `LUC-2319-LOCAL-DB-REDIS-INFRA-2026-06-06` VERIFIED for local test infra.
+  Docker Desktop recovered from missing/500 Linux engine pipe after the
+  documented local startup path. `docker info` now succeeds. Local Soar test
+  endpoints are reachable on `127.0.0.1:5432` and `127.0.0.1:6379`, backed by
+  `soar-postgres-1` (`postgres:15`) and `soar-redis-1` (`redis:7`). Focused
+  aggregate e2e now reaches API runtime aggregate endpoint and returns `200`,
+  but fails backend assertion at
+  `apps/api/src/modules/bots/bots.monitoring-aggregate.e2e.test.ts:534`:
+  `trades.total` is `0`, expected `260`. Containers remain running
+  intentionally for QA handoff. No production mutation occurred. Evidence:
+  `history/tasks/luc-2319-restore-local-db-redis-infra-for-aggregate-e2e-proof-2026-06-06-task.md`,
+  `history/evidence/luc-2319-local-db-redis-infra-restored-2026-06-06.md`.
+
+- `LUC-2321-COOLIFY-PRODUCTION-DEPLOY-HEALTH-SWEEP-2026-06-06`
+  VERIFIED as a read-only Soar production deploy health sweep. Local `HEAD` is
+  `10f1cfce94533e96a65b487d8cd0b1e9dff8f59e`, while `origin/main` and
+  production Web build-info both report
+  `a70d7881b69e605c537af5f81cbeb74dc81e9329`; local ahead-of-origin source was
+  not used as deploy input. Public smoke passed: API `/health` `200`, API
+  `/ready` `200`, Web `/` `200`, Web `/api/build-info` `200` with expected
+  `gitSha`. Unauthenticated `/workers/ready` returned `401`, preserving
+  fail-closed behavior. Coolify read-only projection resolved project `Soar`,
+  production environment `production`, six applications, PostgreSQL, Redis,
+  zero generic services, and `17` visible global resource rows. Application
+  rows report `running:unknown`; PostgreSQL and Redis report
+  `running:healthy`. `pnpm run ops:coolify-stack:env-check:test` passed
+  (`8/8`). No deploy, restart, rollback, env/database/Redis/team/account,
+  protected-smoke, secret, exchange, or live-trading mutation occurred.
+  Evidence:
+  `history/tasks/luc-2321-coolify-production-deploy-health-sweep-2026-06-06-task.md`,
+  `history/evidence/luc-2321-coolify-production-deploy-health-sweep-2026-06-06.md`.
+
 - `LUC-2308-SOAR-WEB-FIXED-WRAPPER-DEPLOY-VERIFICATION-2026-06-05`
   VERIFIED as the production Web recovery proof for fixed source
   `a70d7881b69e605c537af5f81cbeb74dc81e9329`. `origin/main` matched the

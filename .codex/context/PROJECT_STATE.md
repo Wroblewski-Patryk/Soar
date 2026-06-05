@@ -1,3 +1,58 @@
+- 2026-06-06 `LUC-2340` closed the post-[LUC-2312](/LUC/issues/LUC-2312) V1
+  controller dirty state as a source-control hygiene lane. Baseline before the
+  closure artifact/state update was `HEAD`
+  `10f1cfce94533e96a65b487d8cd0b1e9dff8f59e`, with `12` modified and `12`
+  untracked paths spanning Backend runtime aggregate repair, Ops read-only
+  proof docs, source-of-truth state, and task/evidence artifacts for
+  [LUC-2300](/LUC/issues/LUC-2300), [LUC-2316](/LUC/issues/LUC-2316),
+  [LUC-2319](/LUC/issues/LUC-2319), [LUC-2321](/LUC/issues/LUC-2321),
+  [LUC-2328](/LUC/issues/LUC-2328), [LUC-2329](/LUC/issues/LUC-2329), and
+  [LUC-2333](/LUC/issues/LUC-2333). Validation passed: `git diff --check` and
+  API typecheck. No push, deploy, restart, rollback, account, secret, exchange,
+  protected-smoke, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2340-source-control-close-post-luc-2312-v1-controller-dirty-state-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2328` verified the Backend API DB-backed runtime aggregate
+  trade-total proof after [LUC-2319](/LUC/issues/LUC-2319) restored local DB
+  access and [LUC-2329](/LUC/issues/LUC-2329) narrowed the blocker. The
+  focused e2e spy now preserves Prisma `trade.findMany` delegate binding while
+  still proving bounded `take` values, and the aggregate subquery default
+  timeout is `15000ms` with environment override preserved. Validation passed:
+  focused aggregate e2e for `260` hidden trades with `perSessionLimit=5`, and
+  API typecheck. No production mutation occurred. Evidence:
+  `history/tasks/luc-2328-repair-runtime-aggregate-trade-totals-db-backed-proof-2026-06-06-task.md`
+  and
+  `history/evidence/luc-2328-runtime-aggregate-trade-totals-db-backed-proof-2026-06-06.md`.
+
+- 2026-06-06 `LUC-2321` completed a read-only Coolify production deploy health
+  sweep. Source snapshot recorded local `HEAD`
+  `10f1cfce94533e96a65b487d8cd0b1e9dff8f59e`, while `origin/main` and
+  production Web build-info both report
+  `a70d7881b69e605c537af5f81cbeb74dc81e9329`; local ahead-of-origin state was
+  not used as deploy input. Public no-workers smoke passed for API `/health`,
+  API `/ready`, Web `/`, and Web `/api/build-info`; direct unauthenticated
+  `/workers/ready` returned fail-closed `401`. Authenticated Coolify
+  read-only projection resolved project `Soar`, environment `production`, six
+  application resources, PostgreSQL, Redis, zero generic services, and `17`
+  visible global resource rows. Application metadata still reports
+  `running:unknown`; PostgreSQL and Redis report `running:healthy`. No
+  production mutation occurred. Evidence:
+  `history/tasks/luc-2321-coolify-production-deploy-health-sweep-2026-06-06-task.md`
+  and
+  `history/evidence/luc-2321-coolify-production-deploy-health-sweep-2026-06-06.md`.
+
+- 2026-06-06 `LUC-2316` completed a narrow Ops read-only Coolify production
+  status access refresh. Runtime binding names are present without value
+  disclosure, and an authenticated read-only projection at
+  `2026-06-05T22:20:38Z` resolved selector `LuckySparrow`, project `Soar`,
+  environment `production`, six application resources, PostgreSQL, Redis, zero
+  generic services, and `17` visible global resource rows not used as release
+  authority. Application rows still report `running:unknown`; PostgreSQL and
+  Redis report `running:healthy`. No production mutation occurred. Evidence:
+  `history/tasks/luc-2316-operator-coolify-bind-read-only-production-status-access-2026-06-06-task.md`
+  and
+  `history/evidence/luc-2316-coolify-read-only-production-status-access-2026-06-06.md`.
+
 - 2026-06-05 `LUC-2305` completed the redacted Ops investigation selected by
   [LUC-2302](/LUC/issues/LUC-2302). Production Web remains unavailable while
   API is healthy: API `/health` and `/ready` are `200`, Web `/` and
@@ -15,20 +70,25 @@
   image/startup contract repair; Ops needs a separate release mutation permit
   before any deploy/restart/rollback recovery.
 
-- 2026-06-05 `LUC-2300` partially verified the Backend API runtime aggregate
+- 2026-06-05 `LUC-2300` verified locally the Backend API runtime aggregate
   bounded-materialization fix after [LUC-2291](/LUC/issues/LUC-2291). Runtime
   trade reads now page visible rows at the database layer for DB-sortable
   views, compute trade total/fees via DB `count`/`aggregate`, and cap
   carry-over/lifecycle support materialization in trade and position readers.
   Validation passed: `pnpm --filter api exec tsc --noEmit --pretty false` and
   `pnpm --filter api exec vitest run src/modules/bots/runtimeMonitoringAggregateConcurrency.test.ts --run`.
-  Focused DB-backed aggregate e2e regression was added but could not execute
-  locally because Postgres on `localhost:5432` was unavailable in
-  `resetBotsE2eState`. No production mutation, deploy, restart, migration,
-  account/secret/exchange, or live-trading action occurred. Evidence:
+  After local Postgres was restored, DB-backed trade-total and bounded
+  hidden-trade aggregate proofs passed with `--testTimeout=60000`; follow-up
+  repairs [LUC-2328](/LUC/issues/LUC-2328) and [LUC-2333](/LUC/issues/LUC-2333)
+  closed the proof gaps around Prisma spy binding, aggregate subquery timeout,
+  and per-subquery fallback preserving valid trade rows. No production
+  mutation, deploy, restart, migration, account/secret/exchange, or
+  live-trading action occurred. Evidence:
   `history/tasks/luc-2300-bound-runtime-aggregate-trade-position-materialization-2026-06-05-task.md`
   and
-  `history/evidence/luc-2300-runtime-aggregate-bounded-materialization-2026-06-05.md`.
+  `history/evidence/luc-2300-runtime-aggregate-bounded-materialization-2026-06-05.md`;
+  resume proof:
+  `history/evidence/luc-2300-runtime-aggregate-db-backed-proof-2026-06-06.md`.
 
 - 2026-06-05 `LUC-2302` completed the CTO/Ops decision after
   [LUC-2293](/LUC/issues/LUC-2293) rollback failed closed. Selected next path:
@@ -17386,6 +17446,28 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - 2026-06-02 `LUC-1479` Ops Coolify resource inventory reconciliation is verified and done. Fresh read-only Coolify API readback at `2026-06-02T09:33:58Z` confirmed configured project `Soar`, production environment present, and eight redacted production resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`. Applications report `running:unknown`; PostgreSQL/Redis report `running:healthy`. No deploy, restart, rollback, env edit, database action, team setting change, account action, or live trading action was performed. Evidence: `history/evidence/luc-1479-coolify-resource-inventory-reconciliation-2026-06-02.md`, `history/tasks/luc-1479-reconcile-coolify-resource-inventory-2026-06-02-task.md`.
 - 2026-06-02 `LUC-1482` Ops Coolify resource inventory reconciliation is verified and done. Fresh read-only Coolify API readback at `2026-06-02T10:03:06Z` confirmed configured project `Soar`, production environment id `6`, and eight redacted production resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`. Applications report `running:unknown`; PostgreSQL/Redis report `running:healthy`. No deploy, restart, rollback, env edit, database action, team setting change, account action, or live trading action was performed. Evidence: `history/evidence/luc-1482-coolify-resource-inventory-reconciliation-2026-06-02.md`, `history/tasks/luc-1482-reconcile-coolify-resource-inventory-2026-06-02-task.md`.
 - 2026-06-02 `LUC-1532` Operator Coolify read-only production status access binding is verified and done. Runtime bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_API_APP_ID`, and `COOLIFY_SOAR_WEB_APP_ID` without values printed; `COOLIFY_SOAR_TEAM_ID`/`COOLIFY_TEAM_ID` are absent but not an active blocker because authenticated Coolify read-only API readback at `2026-06-02T16:01:58Z` confirmed current selector id `0`, name `LuckySparrow`, configured project `Soar`, production environment `production`, and eight redacted production resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`. Applications report `running:unknown`; PostgreSQL/Redis report `running:healthy`. No deploy, restart, rollback, env edit, database action, team change, account action, or live trading action was performed. Evidence: `history/evidence/luc-1532-coolify-read-only-production-status-access-2026-06-02.md`, `history/tasks/luc-1532-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md`.
+## 2026-06-06 LUC-2333 Runtime Aggregate Trade Row Repair
+
+- [LUC-2333](/LUC/issues/LUC-2333) is verified locally and ready to unblock the
+  [LUC-2317](/LUC/issues/LUC-2317) QA rerun.
+- The aggregate endpoint failure mode after [LUC-2328](/LUC/issues/LUC-2328)
+  was not missing trade data. With a longer subquery timeout, the DB-backed
+  proof passed. The real defect was aggregate fanout dropping the whole session
+  row when one nested reader timed out or errored, which erased valid sibling
+  trade totals/items.
+- `runtimeMonitoringAggregateRead.service.ts` now uses per-subquery empty
+  fallback payloads so symbol-stats/positions/trades failure is isolated to
+  that section instead of nulling the entire session row.
+- Verification passed:
+  `pnpm --filter api exec vitest run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts -t "bounds aggregate hidden trade materialization while preserving trade totals|keeps aggregate trade totals truthful when visible trade rows are limited" --reporter=verbose --testTimeout=30000`
+  and `pnpm --filter api exec tsc --noEmit --pretty false`.
+- No deploy, restart, rollback, migration, account mutation, secret readback,
+  exchange mutation, protected smoke, or live-trading action occurred.
+- Evidence:
+  `history/evidence/luc-2333-runtime-aggregate-trade-row-repair-after-qa-rerun-2026-06-06.md`;
+  task packet:
+  `history/tasks/luc-2333-complete-runtime-aggregate-trade-row-repair-after-qa-rerun-2026-06-06-task.md`.
+
 ## 2026-06-02 LUC-1565 Coolify Resource Inventory Reconciliation
 
 - `LUC-1565-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02` VERIFIED for read-only production resource inventory. Fresh authenticated Coolify API readback at `2026-06-02T17:34:56Z` confirmed configured project `Soar`, production environment `production`, current selector id `0` name `LuckySparrow`, and eight canonical resources: API, Web, four worker applications, PostgreSQL, and Redis. Application inventory status remains `running:unknown`; PostgreSQL and Redis report `running:healthy`. No deploy, restart, rollback, env edit, database action, team setting change, account action, live trading action, or secret value disclosure occurred. Evidence: `history/evidence/luc-1565-coolify-resource-inventory-reconciliation-2026-06-02.md`; task packet: `history/tasks/luc-1565-reconcile-coolify-resource-inventory-2026-06-02-task.md`.
@@ -17442,3 +17524,27 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `history/evidence/luc-2293-soar-web-rollback-to-previous-candidate-2026-06-05.md`;
   task packet:
   `history/tasks/luc-2293-controlled-soar-web-rollback-to-previous-candidate-2026-06-05-task.md`.
+
+## 2026-06-06 LUC-2319 Local DB/Redis Infra Restored
+
+- [LUC-2319](/LUC/issues/LUC-2319) restored the local Soar DB/Redis test
+  endpoints needed by [LUC-2317](/LUC/issues/LUC-2317).
+- Docker Desktop initially still returned `500`/missing Linux engine pipe, then
+  recovered after the documented local-development startup path. `docker info`
+  now succeeds and reports two running containers.
+- Local endpoints are reachable:
+  - `soar-postgres-1` image `postgres:15`, `127.0.0.1:5432->5432/tcp`;
+  - `soar-redis-1` image `redis:7`, `127.0.0.1:6379->6379/tcp`.
+- Focused aggregate e2e no longer fails before assertions on Prisma
+  connectivity. With `--testTimeout=30000`, the endpoint returned `200` but
+  the test failed at
+  `apps/api/src/modules/bots/bots.monitoring-aggregate.e2e.test.ts:534`:
+  `trades.total` was `0`, expected `260`.
+- Local containers were left running intentionally for immediate QA handoff.
+  Stop them after QA with `docker stop soar-postgres-1 soar-redis-1`.
+- Deployment impact: none. No production, secret, account, exchange, or
+  live-trading mutation occurred.
+- Evidence:
+  `history/evidence/luc-2319-local-db-redis-infra-restored-2026-06-06.md`;
+  task packet:
+  `history/tasks/luc-2319-restore-local-db-redis-infra-for-aggregate-e2e-proof-2026-06-06-task.md`.

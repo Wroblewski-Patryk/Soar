@@ -30,7 +30,7 @@ const runtimeAggregateMaxPerSession = Number.parseInt(
   10,
 );
 const runtimeAggregateSubqueryTimeoutMs = Number.parseInt(
-  process.env.RUNTIME_MONITORING_AGGREGATE_SUBQUERY_TIMEOUT_MS ?? '5000',
+  process.env.RUNTIME_MONITORING_AGGREGATE_SUBQUERY_TIMEOUT_MS ?? '15000',
   10,
 );
 const runtimeAggregateStaleTtlMs = Number.parseInt(process.env.RUNTIME_MONITORING_AGGREGATE_STALE_TTL_MS ?? '45000', 10);
@@ -461,6 +461,88 @@ const buildEmptyAggregatePayload = (params: {
   };
 };
 
+const buildEmptyAggregateSymbolStatsPayload = (params: {
+  session: RuntimeSessionListItem;
+}): RuntimeSymbolStatsResponse => ({
+  sessionId: params.session.id,
+  items: [],
+  summary: {
+    totalSignals: 0,
+    longEntries: 0,
+    shortEntries: 0,
+    exits: 0,
+    dcaCount: 0,
+    closedTrades: 0,
+    winningTrades: 0,
+    losingTrades: 0,
+    realizedPnl: 0,
+    unrealizedPnl: 0,
+    totalPnl: 0,
+    grossProfit: 0,
+    grossLoss: 0,
+    feesPaid: 0,
+    openPositionCount: 0,
+    openPositionQty: 0,
+  },
+});
+
+const buildEmptyAggregatePositionsPayload = (params: {
+  session: RuntimeSessionListItem;
+}): RuntimePositionsResponse => {
+  const finishedAt = resolveAggregateSessionWindowEnd(params.session);
+  return {
+    sessionId: params.session.id,
+    total: 0,
+    openCount: 0,
+    closedCount: 0,
+    openOrdersCount: 0,
+    showDynamicStopColumns: false,
+    window: {
+      startedAt: params.session.startedAt,
+      finishedAt,
+    },
+    summary: {
+      realizedPnl: 0,
+      unrealizedPnl: 0,
+      feesPaid: 0,
+      openPositionQty: 0,
+      referenceBalance: null,
+      freeCash: null,
+      accountBalance: null,
+      baseCurrency: null,
+      capitalSource: null,
+      allocationMode: null,
+      allocationValue: null,
+      paperResetAt: null,
+    },
+    openOrders: [],
+    openItems: [],
+    historyItems: [],
+  };
+};
+
+const buildEmptyAggregateTradesPayload = (params: {
+  session: RuntimeSessionListItem;
+  perSessionLimit: number;
+}): RuntimeTradesResponse => {
+  const finishedAt = resolveAggregateSessionWindowEnd(params.session);
+  return {
+    sessionId: params.session.id,
+    total: 0,
+    feesPaid: 0,
+    meta: buildRuntimeAggregateTradesMeta({
+      totalTrades: 0,
+      returnedItemsCount: 0,
+      pageSize: params.perSessionLimit,
+    }),
+    window: {
+      startedAt: params.session.startedAt,
+      finishedAt,
+    },
+    items: [],
+  };
+};
+
 const getBotRuntimeMonitoringAggregateUncached = async (
   userId: string,
   botId: string,
@@ -500,46 +582,37 @@ const getBotRuntimeMonitoringAggregateUncached = async (
     scopedSessions,
     runtimeAggregateSessionConcurrency,
     async (session) => {
-      try {
-        const [symbolStats, positions, trades] = await Promise.all([
-          withTimeout(
-            listBotRuntimeSessionSymbolStats(userId, botId, session.id, {
-              symbol: query.symbol,
-              limit: perSessionLimit,
-              preferConfiguredStrategyContext: true,
-            }),
-            runtimeAggregateSubqueryTimeoutMs
-          ),
-          withTimeout(
-            listBotRuntimeSessionPositions(userId, botId, session.id, {
-              symbol: query.symbol,
-              limit: perSessionLimit,
-            }),
-            runtimeAggregateSubqueryTimeoutMs
-          ),
-          withTimeout(
-            listBotRuntimeSessionTrades(userId, botId, session.id, {
-              symbol: query.symbol,
-              limit: perSessionLimit,
-            }),
-            runtimeAggregateSubqueryTimeoutMs
-          ),
-        ]);
+      const [symbolStats, positions, trades] = await Promise.all([
+        withTimeout(
+          listBotRuntimeSessionSymbolStats(userId, botId, session.id, {
+            symbol: query.symbol,
+            limit: perSessionLimit,
+            preferConfiguredStrategyContext: true,
+          }),
+          runtimeAggregateSubqueryTimeoutMs
+        ).catch(() => buildEmptyAggregateSymbolStatsPayload({ session })),
+        withTimeout(
+          listBotRuntimeSessionPositions(userId, botId, session.id, {
+            symbol: query.symbol,
+            limit: perSessionLimit,
+          }),
+          runtimeAggregateSubqueryTimeoutMs
+        ).catch(() => buildEmptyAggregatePositionsPayload({ session })),
+        withTimeout(
+          listBotRuntimeSessionTrades(userId, botId, session.id, {
+            symbol: query.symbol,
+            limit: perSessionLimit,
+          }),
+          runtimeAggregateSubqueryTimeoutMs
+        ).catch(() => buildEmptyAggregateTradesPayload({ session, perSessionLimit })),
+      ]);
 
-        return {
-          session,
-          symbolStats,
-          positions,
-          trades,
-        };
-      } catch {
-        return {
-          session,
-          symbolStats: null,
-          positions: null,
-          trades: null,
-        };
-      }
+      return {
+        session,
+        symbolStats,
+        positions,
+        trades,
+      };
     }
   );
 

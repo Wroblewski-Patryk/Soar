@@ -1,6 +1,55 @@
 # Module Confidence Ledger
 
-Last updated: 2026-06-05
+Last updated: 2026-06-06
+
+- 2026-06-06 `LUC-2333-RUNTIME-AGGREGATE-TRADE-ROW-REPAIR-2026-06-06`
+  applies to Bot Runtime aggregate and production API reliability confidence.
+  Backend repaired the post-QA rerun failure where the aggregate endpoint
+  returned HTTP `200` but omitted persisted trade rows/totals. Root cause:
+  aggregate fanout nulled the whole session row when one nested reader timed
+  out or errored, erasing valid sibling trade results. The aggregate reader now
+  applies per-subquery empty fallback payloads, preserving truthful trade
+  totals/items when symbol-stats or positions are slow. Evidence: PASS original
+  combined DB-backed aggregate e2e with `--testTimeout=30000`; bounded hidden
+  trade proof returned `trades.total === 260` and `trades.items.length === 5`;
+  neighboring proof returned one visible row and `trades.total === 2`; API
+  typecheck PASS. Confidence: `verified local`, still release-gated for
+  production promotion, protected runtime smoke, and SLO proof. Evidence:
+  `history/tasks/luc-2333-complete-runtime-aggregate-trade-row-repair-after-qa-rerun-2026-06-06-task.md`,
+  `history/evidence/luc-2333-runtime-aggregate-trade-row-repair-after-qa-rerun-2026-06-06.md`.
+
+- 2026-06-06 `LUC-2328-RUNTIME-AGGREGATE-TRADE-TOTALS-DB-PROOF-2026-06-06`
+  applies to Bot Runtime aggregate and production API reliability confidence.
+  Backend repaired the DB-backed aggregate proof after [LUC-2319](/LUC/issues/LUC-2319)
+  restored local Postgres/Redis and [LUC-2329](/LUC/issues/LUC-2329)
+  narrowed the blocker to aggregate `trades.total=0`. The focused e2e spy now
+  preserves Prisma `trade.findMany` delegate binding while still asserting
+  bounded materialization, and the aggregate subquery default timeout is
+  `15000ms` with the existing environment override preserved. Status:
+  verified locally. Evidence: PASS focused DB-backed aggregate e2e for `260`
+  hidden trades with `perSessionLimit=5` and PASS API typecheck. No production
+  mutation occurred. Evidence:
+  `history/tasks/luc-2328-repair-runtime-aggregate-trade-totals-db-backed-proof-2026-06-06-task.md`,
+  `history/evidence/luc-2328-runtime-aggregate-trade-totals-db-backed-proof-2026-06-06.md`.
+
+- 2026-06-06 `LUC-2329-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-06-06`
+  applies to V1 audit-to-completion coordination, Bot Runtime release
+  confidence, production Ops health evidence, and source-control discipline.
+  Engineering Delivery Lead refreshed the gap register after [LUC-2319](/LUC/issues/LUC-2319)
+  restored local DB/Redis and [LUC-2321](/LUC/issues/LUC-2321) confirmed
+  production public health. Current critical runtime gap is now narrower:
+  focused aggregate e2e reaches API/DB and returns HTTP `200`, but fails at
+  `apps/api/src/modules/bots/bots.monitoring-aggregate.e2e.test.ts:534`
+  because `trades.total` is `0` instead of expected `260`. Active owner lane
+  exists: [LUC-2328](/LUC/issues/LUC-2328) Backend repair is `in_progress`;
+  [LUC-2317](/LUC/issues/LUC-2317) QA proof remains blocked/covered by that
+  child. Production public API/Web health is recovered on `origin/main`
+  `a70d7881b69e605c537af5f81cbeb74dc81e9329`, but protected account/worker
+  readiness remains unproven and local `HEAD` is ahead at
+  `10f1cfce94533e96a65b487d8cd0b1e9dff8f59e`. Status: coordination
+  register verified; runtime aggregate release confidence still blocked by
+  [LUC-2328](/LUC/issues/LUC-2328). Evidence:
+  `history/tasks/luc-2329-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
 
 - 2026-06-05 `LUC-2305-SOAR-WEB-CONTAINER-RUNTIME-CRASH-INVESTIGATION-2026-06-05`
   applies to production Web runtime confidence and Ops release confidence.
@@ -24,15 +73,17 @@ Last updated: 2026-06-05
   runtime trade visible rows now use DB sorting/paging, trade total/fees use DB
   `count`/`aggregate`, carry-over position ids are capped, and lifecycle
   support trade rows in both trade and position readers have explicit caps.
-  Validation passed: API typecheck and aggregate concurrency helper test.
-  Focused DB-backed aggregate e2e regression was added for `260` hidden trades
-  with `perSessionLimit=5`, but local execution was blocked before assertions
-  because Postgres on `localhost:5432` was unavailable in `resetBotsE2eState`.
-  Status: implemented, partially verified. Required next proof: rerun focused
-  aggregate e2e with local Postgres available before release promotion.
+  Validation passed: API typecheck, aggregate concurrency helper test, focused
+  DB-backed trade-total proof, and focused bounded hidden-trade proof after the
+  local Postgres blocker resolved. Follow-up repairs [LUC-2328](/LUC/issues/LUC-2328)
+  and [LUC-2333](/LUC/issues/LUC-2333) closed the proof gaps around Prisma spy
+  binding, aggregate subquery timeout, and per-subquery fallback preserving
+  valid trade rows. Status: verified local. Production promotion remains
+  release/Ops gated.
   Evidence:
   `history/tasks/luc-2300-bound-runtime-aggregate-trade-position-materialization-2026-06-05-task.md`,
-  `history/evidence/luc-2300-runtime-aggregate-bounded-materialization-2026-06-05.md`.
+  `history/evidence/luc-2300-runtime-aggregate-bounded-materialization-2026-06-05.md`,
+  `history/evidence/luc-2300-runtime-aggregate-db-backed-proof-2026-06-06.md`.
 
 - 2026-06-05 `LUC-2297-SOAR-WEB-CRASH-LOG-RETRIEVAL-2026-06-05`
   applies to production Web runtime confidence and Ops release confidence.

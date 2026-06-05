@@ -41,7 +41,7 @@ refreshed/reconciled for `LUC-1399`, `LUC-1402`, `LUC-1405`, `LUC-1408`,
 `LUC-2004`
 on 2026-06-04, and `LUC-2069` / `LUC-2072` / `LUC-2094` / `LUC-2136` /
 `LUC-2149` / `LUC-2153` / `LUC-2171` / `LUC-2181` / `LUC-2228` on
-2026-06-05.
+2026-06-05, and `LUC-2316` on 2026-06-06.
 
 Latest resource inventory reconciliation: `LUC-1787` at
 `2026-06-05T15:27:09Z`. The board/operator refreshed Coolify access and
@@ -65,7 +65,28 @@ account action, protected smoke, secret value readback, raw resource id
 storage, screenshot, or live-trading action. Evidence:
 `history/evidence/luc-1787-coolify-resource-inventory-reconciliation-2026-06-05.md`.
 
-Latest read-only access binding checkpoint: `LUC-2264` at
+Latest read-only access binding checkpoint: `LUC-2316` at
+`2026-06-05T22:20:38Z`, refreshing the prior `LUC-2313` proof. Runtime
+bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`,
+`COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+`COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`,
+`COOLIFY_SOAR_API_APP_ID`, `COOLIFY_SOAR_TEAM_ID`, and `COOLIFY_TEAM_ID`
+without values printed. Authenticated read-only Coolify reads resolved
+selector `LuckySparrow`, project `Soar`, production environment `production`,
+and the canonical eight-resource production-environment inventory: six
+applications plus PostgreSQL and Redis. The teams endpoint returned one visible
+row and the global resources endpoint returned `17` visible rows; neither is
+used as release authority. The
+project/environment hierarchy remains the authoritative production status
+scope for this binding proof. Application rows report `running:unknown`;
+PostgreSQL and Redis report `running:healthy` from the production environment
+readback. Current selector and project-scoped reads succeeded. This heartbeat performed
+no deploy, restart, rollback, env edit, database action, team setting change,
+account action, protected smoke, secret readback, or live-trading action.
+Evidence:
+`history/evidence/luc-2316-coolify-read-only-production-status-access-2026-06-06.md`.
+
+Previous read-only access binding checkpoint: `LUC-2264` at
 `2026-06-05T18:53:12Z`, refreshing the prior `LUC-2260` proof. Runtime
 bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`,
 `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
