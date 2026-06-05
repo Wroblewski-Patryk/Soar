@@ -40,7 +40,8 @@ refreshed/reconciled for `LUC-1399`, `LUC-1402`, `LUC-1405`, `LUC-1408`,
 `LUC-1982` / `LUC-1987` / `LUC-1990` / `LUC-1993` / `LUC-1997` /
 `LUC-2004`
 on 2026-06-04, and `LUC-2069` / `LUC-2072` / `LUC-2094` / `LUC-2136` /
-`LUC-2149` / `LUC-2153` / `LUC-2171` / `LUC-2181` on 2026-06-05.
+`LUC-2149` / `LUC-2153` / `LUC-2171` / `LUC-2181` / `LUC-2228` on
+2026-06-05.
 
 Latest resource inventory reconciliation: `LUC-1787` at
 `2026-06-05T15:27:09Z`. The board/operator refreshed Coolify access and
@@ -64,7 +65,26 @@ account action, protected smoke, secret value readback, raw resource id
 storage, screenshot, or live-trading action. Evidence:
 `history/evidence/luc-1787-coolify-resource-inventory-reconciliation-2026-06-05.md`.
 
-Latest read-only access binding checkpoint: `LUC-2181` at
+Latest read-only access binding checkpoint: `LUC-2228` at
+`2026-06-05T15:55:09Z`, refreshing the prior `LUC-2225` proof. Runtime
+bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`,
+`COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+`COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`,
+`COOLIFY_SOAR_API_APP_ID`, `COOLIFY_SOAR_TEAM_ID`, and `COOLIFY_TEAM_ID`
+without values printed. Authenticated read-only Coolify reads resolved
+selector `LuckySparrow`, project `Soar`, production environment `production`,
+and the canonical eight-resource production-environment inventory: six
+applications plus PostgreSQL and Redis. The global resources endpoint returned
+`17` visible rows and was not used as release authority. The
+project/environment hierarchy remains the authoritative production status
+scope for this binding proof. Application rows report `running:unknown`;
+PostgreSQL and Redis report `present:status-unexposed` from the allowlisted
+projection. This heartbeat performed no deploy, restart, rollback, env edit,
+database action, team setting change, account action, protected smoke, secret
+readback, or live-trading action. Evidence:
+`history/evidence/luc-2228-coolify-read-only-production-status-access-2026-06-05.md`.
+
+Previous read-only access binding checkpoint: `LUC-2181` at
 `2026-06-05T11:26:28Z`, refreshing the prior `LUC-2171` proof. Runtime
 bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`,
 `COOLIFY_TOKEN`, and `COOLIFY_SOAR_PROJECT_ID` without values printed.
