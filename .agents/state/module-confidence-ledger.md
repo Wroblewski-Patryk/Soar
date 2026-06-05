@@ -2,6 +2,54 @@
 
 Last updated: 2026-06-05
 
+- 2026-06-05 `LUC-2305-SOAR-WEB-CONTAINER-RUNTIME-CRASH-INVESTIGATION-2026-06-05`
+  applies to production Web runtime confidence and Ops release confidence.
+  Status: failed for production Web availability, verified for crash
+  classification. API remains healthy (`/health` and `/ready` `200`) while
+  Web remains unavailable (`/` and `/api/build-info` `503`). Coolify reports
+  `soar-web` `restarting:unknown` with crash restart signal at
+  `2026-06-05T21:18:51Z`. Approved read-only host log proof confirms repeated
+  `MODULE_NOT_FOUND` for `[APP_ROOT]/scripts/runWebNextProductionCommand.mjs`,
+  followed by pnpm recursive start failure and exit `1`. Root cause class:
+  `web image/startup packaging`. Required next proof:
+  Frontend/Engineering validates the image/startup repair, then Ops runs a
+  separately permitted recovery deploy/restart path and Web build-info smoke.
+  Evidence:
+  `history/tasks/luc-2305-redacted-soar-web-container-runtime-crash-investigation-2026-06-05-task.md`,
+  `history/evidence/luc-2305-soar-web-container-runtime-crash-investigation-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2300-BOUND-RUNTIME-AGGREGATE-MATERIALIZATION-2026-06-05`
+  applies to Bot Runtime and production API reliability confidence. Backend API
+  bounded the nested runtime aggregate trade/position materialization path:
+  runtime trade visible rows now use DB sorting/paging, trade total/fees use DB
+  `count`/`aggregate`, carry-over position ids are capped, and lifecycle
+  support trade rows in both trade and position readers have explicit caps.
+  Validation passed: API typecheck and aggregate concurrency helper test.
+  Focused DB-backed aggregate e2e regression was added for `260` hidden trades
+  with `perSessionLimit=5`, but local execution was blocked before assertions
+  because Postgres on `localhost:5432` was unavailable in `resetBotsE2eState`.
+  Status: implemented, partially verified. Required next proof: rerun focused
+  aggregate e2e with local Postgres available before release promotion.
+  Evidence:
+  `history/tasks/luc-2300-bound-runtime-aggregate-trade-position-materialization-2026-06-05-task.md`,
+  `history/evidence/luc-2300-runtime-aggregate-bounded-materialization-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2297-SOAR-WEB-CRASH-LOG-RETRIEVAL-2026-06-05`
+  applies to production Web runtime confidence and Ops release confidence.
+  Status: failed for production Web availability, verified for read-only crash
+  diagnosis. Coolify still reports `soar-web` `restarting:unknown` with
+  `last_restart_type=crash` at `2026-06-05T20:58:25Z`. Approved read-only
+  `codex-vps` Docker inspection found the target-SHA Web container in a
+  restart loop. Current logs repeatedly fail with `MODULE_NOT_FOUND` for
+  `[APP_ROOT]/scripts/runWebNextProductionCommand.mjs`, then pnpm recursive
+  start failure and exit `1`. Public smoke remains API `/health` `200`, API
+  `/ready` `200`, Web `/` `503`, Web `/api/build-info` `503`. Root cause
+  class: `web image/startup packaging`. Required next proof:
+  [LUC-2304](/LUC/issues/LUC-2304) repairs the production Web image/startup
+  contract, then Ops runs a separately permitted deploy/recovery and public Web
+  build-info smoke. No production mutation occurred. Evidence:
+  `history/evidence/luc-2297-soar-web-crash-log-retrieval-2026-06-05.md`.
+
 - 2026-06-05 `LUC-2255-FRESH-BROWSER-PROOF-PUBLIC-READ-ONLY-WEB-ACTIONS-2026-06-05`
   applies to Web public/auth route confidence. Frontend QA added a reusable
   fresh-browser proof runner for public/read-only routes and local public
@@ -3321,3 +3369,21 @@ Do not turn uncertainty into optimism.
   pass.
 - Link evidence to test names, commands, screenshots, smoke notes, commits, or
   task IDs. Chat-only evidence is not enough.
+
+## 2026-06-05 LUC-2304 Web Runtime Image Start Wrapper
+
+- `LUC-2304-WEB-RUNTIME-WRAPPER-2026-06-05` applies to
+  `SOAR-OPERATIONS-001` / Web production runtime image confidence. The
+  production crash root cause from [LUC-2297](/LUC/issues/LUC-2297) was a
+  runtime-image packaging drift: `apps/web/package.json` starts through
+  `scripts/runWebNextProductionCommand.mjs`, but `apps/web/Dockerfile` did not
+  copy that repo-root wrapper into the runtime stage. Local repair now copies
+  `/app/scripts/runWebNextProductionCommand.mjs` into the Web runtime image and
+  adds a repository guardrail for the package/Dockerfile contract. Proof:
+  `node --test scripts\repoGuardrails.test.mjs` PASS (`11/11`);
+  `pnpm --filter web run build` PASS; local wrapper start served `/` `200` and
+  `/api/build-info` `200` on port `32104`. Docker image build remains
+  environment-blocked in this runner because Docker Desktop is unavailable.
+  Production Web recovery remains pending separate source-control closure/push
+  and Ops release mutation proof. Evidence:
+  `history/evidence/luc-2304-web-runtime-start-wrapper-fix-2026-06-05.md`.

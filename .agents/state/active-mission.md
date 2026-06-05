@@ -9,6 +9,178 @@ repository history.
 
 ## Current Mission
 
+- `LUC-2300-BOUND-RUNTIME-AGGREGATE-MATERIALIZATION-2026-06-05` is
+  implemented and partially verified as the Backend API follow-up to
+  [LUC-2291](/LUC/issues/LUC-2291). Wake `issue_assigned` was consumed from
+  inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment
+  id `unknown`); checkout was already claimed by the harness and was not
+  repeated. Backend bounded nested Bot Runtime aggregate materialization:
+  runtime trade visible rows now use DB sorting/paging for DB-sortable views,
+  trade total/fees use DB `count`/`aggregate`, carry-over position ids are
+  capped, and lifecycle support trade rows in trade/position readers have
+  explicit caps. Validation passed: API typecheck and aggregate concurrency
+  helper test. Focused DB-backed aggregate e2e regression was added but local
+  execution was blocked before assertions because Postgres on `localhost:5432`
+  was unavailable in `resetBotsE2eState`. No production mutation, deploy,
+  restart, migration, account/secret/exchange, or live-trading action occurred.
+  Evidence:
+  `history/tasks/luc-2300-bound-runtime-aggregate-trade-position-materialization-2026-06-05-task.md`
+  and
+  `history/evidence/luc-2300-runtime-aggregate-bounded-materialization-2026-06-05.md`.
+  Next proof: rerun focused aggregate e2e with local Postgres available before
+  release promotion.
+
+- `LUC-2302-SOAR-WEB-NEXT-RECOVERY-DECISION-2026-06-05` completed as the CTO
+  recovery-path decision after [LUC-2293](/LUC/issues/LUC-2293) rollback failed
+  closed. Wake `issue_assigned` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already claimed
+  by the harness and was not repeated. Selected next legal path: read-only
+  redacted `soar-web` container/runtime crash investigation, including
+  crash/exit class and proxy/upstream classification before any new deploy,
+  restart, rollback, env, account, or source/image mutation. Fresh read-only
+  smoke still shows API `/health` `200`, API `/ready` `200`, Web `/` `503`,
+  Web `/api/build-info` `503`; `pnpm run ops:coolify-stack:env-check:test`
+  passed (`8/8`). Evidence:
+  `history/tasks/luc-2302-select-next-soar-web-recovery-path-after-rollback-failed-closed-2026-06-05-task.md`
+  and
+  `history/evidence/luc-2302-soar-web-next-recovery-decision-2026-06-05.md`.
+  [LUC-2305](/LUC/issues/LUC-2305) owns the diagnostic permit and proof path.
+
+- `LUC-2285-CLEAR-SOAR-WEB-QUEUE-REDEPLOY-MAIN-SHA-2026-06-05` is blocked
+  after the permitted `soar-web` queue/redeploy recovery path failed closed.
+  Wake `issue_continuation_needed` was consumed from inline payload
+  (`fallbackFetchNeeded=false`); latest board comment
+  `softwarehouse-live-run-janitor:cancel_duplicate_owner_run:LUC-2285:v1` was
+  acknowledged as a duplicate-run cleanup that kept one owner lane. Source
+  remained valid (`HEAD == origin/main ==
+  6e31d814046b640ad529d1cd57f968ba6f67b05e`). Coolify readback showed no
+  stale queued `soar-web` rows at inspection time and one active target
+  deployment for the exact SHA (`in_progress`, API-triggered, created
+  `2026-06-05T20:53:02Z`). Public Web did not recover: six-minute build-info
+  wait returned only `503`, one `502`, and one request abort; final deploy
+  smoke stayed API `200/200`, Web `503/503`. Final Coolify readback showed
+  `soar-web=restarting:unknown`, `last_restart_type=crash`,
+  `last_restart_at=2026-06-05T20:58:25Z`, zero visible `soar-web` deployment
+  rows, and app logs endpoint `400 Application is not running.` No rollback,
+  second deploy, restart, env/database/team/account/protected-smoke, secret,
+  exchange, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2285-clear-soar-web-queued-deployments-and-redeploy-main-sha-2026-06-05-task.md`
+  and
+  `history/evidence/luc-2285-soar-web-queue-clear-redeploy-main-sha-2026-06-05.md`.
+  Next legal action requires a fresh rollback or host-level recovery permit.
+
+- `LUC-2291-SOAR-API-HEAP-OOM-ROOT-CAUSE-2026-06-05` is completed as a
+  Backend API investigation with a partially verified likely root cause.
+  [LUC-2279](/LUC/issues/LUC-2279) confirmed a V8 heap OOM crash near
+  `2044 MB` at `2026-05-31T21:07:45.498997780Z`, followed by restart,
+  successful Prisma migrate, and API `server_started`. Source inspection ruled
+  down API boot and migration as the likely crash path and tied the remaining
+  code-local risk to authenticated Bot Runtime
+  `/dashboard/bots/:id/runtime-monitoring/aggregate`. Existing risk
+  `RISK-PROD-RUNTIME-AGGREGATE-OOM-2026-05-25` already linked production
+  OOM/500s to aggregate; mitigation commit `287e77a1` is an ancestor of crash
+  source `6839cd6b8884e26eca735ce32cea98c1dadccfbe`, so the May 31 OOM
+  occurred after the first fanout cap. Remaining backend risk is nested runtime
+  positions/trades readers materializing production-sized trade sets in memory
+  before visible-row slicing. Evidence:
+  `history/tasks/luc-2291-investigate-soar-api-node-heap-oom-root-cause-2026-06-05-task.md`
+  and
+  `history/evidence/luc-2291-soar-api-node-heap-oom-root-cause-2026-06-05.md`.
+  Follow-up implementation is [LUC-2300](/LUC/issues/LUC-2300) for bounded
+  runtime aggregate trade/position materialization; no production mutation
+  occurred.
+
+- `LUC-2279-RETRIEVE-REDACTED-PRE-CRASH-COOLIFY-HOST-LOGS-2026-06-05`
+  resumed after [LUC-2281](/LUC/issues/LUC-2281) approved the bounded
+  redaction-safe host-log export path and is verified. Ops used the configured
+  VPS SSH path as non-root `codex`; raw host output stayed in process memory
+  and was not persisted. The initial post-security filter used literal
+  `soar-api`; the blocker-resolved resume corrected this to the approved
+  Coolify resource alias and found the resource-named API container. Docker
+  logs for `2026-05-31T20:50:00Z..2026-05-31T21:20:00Z` retained `373` lines
+  and contained the crash signature: V8 allocation pressure near `2044 MB`,
+  then Node fatal `JavaScript heap out of memory` at
+  `2026-05-31T21:07:45.498997780Z`, followed by automatic restart/migrate and
+  API `server_started` at `2026-05-31T21:08:00.015720071Z`. Classification:
+  `memory/OOM/resource pressure`. [LUC-2291](/LUC/issues/LUC-2291) is assigned
+  to Backend API Engineer for durable memory/OOM investigation. No deploy,
+  restart, rollback, env/database/account mutation, protected smoke, secret
+  disclosure, or live-trading action occurred. Evidence:
+  `history/tasks/luc-2279-retrieve-redacted-pre-crash-coolify-host-logs-for-soar-api-restart-2026-06-05-task.md`
+  and
+  `history/evidence/luc-2279-soar-api-pre-crash-host-log-retrieval-2026-06-05.md`.
+
+- `LUC-2286-CHOOSE-NEXT-SOAR-WEB-RECOVERY-ACTION-2026-06-05` failed closed and
+  then completed as a recovery decision after [LUC-2289](/LUC/issues/LUC-2289)
+  resolved. Wake `issue_assigned` was
+  consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`);
+  checkout was already claimed by the harness and was not repeated. Ops chose
+  the prepared [LUC-2282](/LUC/issues/LUC-2282) permit and triggered exactly
+  one `soar-web` redeploy from pushed `main`
+  `6e31d814046b640ad529d1cd57f968ba6f67b05e`. The deploy request was accepted
+  and queued, but Web build-info stayed `503` for 10 attempts over 150 seconds.
+  Final public smoke remained API `200/200` and Web `503/503`; Coolify still
+  showed `soar-web` `restarting:unknown` with queued deployment rows. No API,
+  worker, Postgres, Redis, env, team/account, secret, protected-smoke,
+  rollback, force-start, exchange, live-trading, second restart, or second
+  deploy mutation occurred. Security Review Lead now owns
+  [LUC-2289](/LUC/issues/LUC-2289) to approve redacted deployment-log/history
+  export before any rollback or second recovery mutation. Resume wake
+  `issue_blockers_resolved` read the Security approval and retrieved only
+  projected `soar-web` deployment-history/log evidence. Public smoke remained
+  API `200/200`, Web `503/503`; Coolify still reported
+  `restarting:unknown`; same-SHA `6e31d814046b640ad529d1cd57f968ba6f67b05e`
+  deploy history showed finished build/start/rolling-update events but no Web
+  recovery; prior finished source candidate
+  `b894e5dd30614dfd2035e91e3d848c842d3ff380` was selected. Ops created
+  [LUC-2293](/LUC/issues/LUC-2293) as the separate one-rollback permit. No
+  rollback, force-start, restart, env/database/team/account/protected-smoke,
+  secret, exchange, live-trading, or second deploy mutation occurred in the
+  resume heartbeat. Evidence:
+  `history/tasks/luc-2286-choose-next-soar-web-recovery-action-after-restart-503-2026-06-05-task.md`
+  and `history/evidence/luc-2286-soar-web-redeploy-failed-closed-2026-06-05.md`.
+
+- `LUC-2280-CONTROLLED-SOAR-WEB-RESTART-2026-06-05` consumed the critical Ops
+  release-mutation wake and exhausted the one-restart permit without recovery.
+  The issue description supplied complete permit fields for `Soar / production`
+  resource `soar-web`. Precheck confirmed API `200/200`, Web `503/503`, source
+  `HEAD == origin/main == 6e31d814046b640ad529d1cd57f968ba6f67b05e`, and only
+  an unrelated pre-existing dirty history note. One Coolify restart request at
+  `2026-06-05T20:40:31Z` returned `Deployment already queued for this commit.`
+  After roughly 90 seconds, Web stayed `503/503` and Coolify stayed
+  `soar-web=restarting:unknown`. No second restart, deploy, rollback, env,
+  database, team/account, protected smoke, secret, or live-trading mutation was
+  performed. Paperclip reconciled [LUC-2280](/LUC/issues/LUC-2280) to `done`
+  with failed-recovery disposition. The valid separate rollback/redeploy path is
+  [LUC-2282](/LUC/issues/LUC-2282). Duplicate [LUC-2284](/LUC/issues/LUC-2284)
+  was created before refreshed board state showed [LUC-2282](/LUC/issues/LUC-2282)
+  and could not be cancelled from this run because it is locked to another
+  execution run; treat it as cleanup-only. Obsolete recovery issue
+  [LUC-2288](/LUC/issues/LUC-2288) was cancelled. Evidence:
+  `history/tasks/luc-2280-controlled-soar-web-restart-for-503-restarting-state-2026-06-05-task.md`
+  and `history/evidence/luc-2280-controlled-soar-web-restart-2026-06-05.md`.
+
+- `LUC-2282-PREPARE-SOAR-WEB-ROLLBACK-OR-REDEPLOY-PERMIT-2026-06-05` is done
+  as a bounded Ops release-gate preparation checkpoint. Wake `issue_assigned`
+  was consumed from inline payload (`fallbackFetchNeeded=false`, comments
+  `0/0`, latest comment id `unknown`); checkout was already claimed by the
+  harness and was not repeated. Read-only public smoke confirmed API remains
+  reachable (`/health` `200`, `/ready` `200`) while `soar-web` remains failed
+  (`/` `503`, `/api/build-info` `503`). Read-only Coolify metadata for
+  `soar-web` showed `restarting:unknown`, `last_restart_type=crash`,
+  `last_restart_at=2026-06-05T20:36:37Z`, and `restart_count=54`; app logs
+  endpoint returned `400 Application is not running.` Source ref is
+  deployable from `origin/main` at exact SHA
+  `6e31d814046b640ad529d1cd57f968ba6f67b05e`. Prepared permit authorizes
+  exactly one `soar-web` redeploy from that SHA, excludes API/DB/Redis/workers/
+  env/team/account/protected-smoke/secret/exchange/live-trading mutation, and
+  fails closed after eight 15-second web/build-info polls. Rollback execution
+  remains unauthorized until a previous stable deployment/image is named from
+  Security/Ops-approved host/Coolify deployment-log export or deployment
+  history readback. Evidence:
+  `history/tasks/luc-2282-prepare-soar-web-rollback-or-redeploy-permit-2026-06-05-task.md`
+  and `history/evidence/luc-2282-soar-web-redeploy-permit-2026-06-05.md`.
+
 - `LUC-2255-FRESH-BROWSER-PROOF-PUBLIC-READ-ONLY-WEB-ACTIONS-2026-06-05`
   is locally verified after blocker resolution. Original wake `issue_assigned`
   added `scripts/runPublicReadOnlyBrowserProof.mjs`, captured fresh production
@@ -2225,3 +2397,5 @@ repository history.
 - `LUC-1416-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02` completed as a bounded Ops read-only inventory reconciliation checkpoint. Wake `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`). Fresh Coolify API readback confirmed configured project/environment lookup succeeds and production environment id `6` still contains eight resources: six applications (`soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`) plus PostgreSQL and Redis. Applications report `running:unknown`; PostgreSQL/Redis report `running:healthy`. Operations source truth was updated in `docs/operations/coolify-vps-deployment-contract.md`, `docs/operations/service-topology.md`, and `docs/operations/runtime-config-ledger.csv`. No deploy/restart/rollback/env/database mutation was performed. Evidence: `history/evidence/luc-1416-coolify-resource-inventory-reconciliation-2026-06-02.md`.
 
 - `LUC-1418-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-02` completed as a bounded Ops read-only inventory reconciliation checkpoint. Wake `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`). Fresh Coolify API readback confirmed configured project/environment lookup succeeds and production environment id `6` still contains eight resources: six applications (`soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`) plus PostgreSQL and Redis. Applications report `running:unknown`; PostgreSQL/Redis report `running:healthy`. Operations source truth was updated in `docs/operations/coolify-vps-deployment-contract.md`, `docs/operations/service-topology.md`, and `docs/operations/runtime-config-ledger.csv`. No deploy/restart/rollback/env/database mutation was performed. Evidence: `history/evidence/luc-1418-coolify-resource-inventory-reconciliation-2026-06-02.md`.
+
+- `LUC-2304-WEB-RUNTIME-START-WRAPPER-2026-06-05` completed as a bounded Frontend runtime-packaging checkpoint. Wake `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`). The Web runtime Dockerfile now copies `/app/scripts/runWebNextProductionCommand.mjs`, matching the `apps/web/package.json` production start contract that failed in [LUC-2297](/LUC/issues/LUC-2297). A repository guardrail now detects the missing-wrapper package/Dockerfile drift. Local proof passed guardrail tests (`11/11`), Web production build, and wrapper-start HTTP probes for `/` and `/api/build-info` (`200`). Docker image build was environment-blocked by unavailable Docker Desktop. No production mutation was performed. Evidence: `history/evidence/luc-2304-web-runtime-start-wrapper-fix-2026-06-05.md`.

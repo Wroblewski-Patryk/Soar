@@ -71,6 +71,10 @@ type RuntimeManagedPositionRow = Awaited<ReturnType<typeof listRuntimeManagedPos
 type RuntimePositionTradeRow = Awaited<ReturnType<typeof listRuntimePositionTradeRows>>[number];
 
 const RUNTIME_OPEN_ORDER_DEDUPE_CANDIDATE_LIMIT = 500;
+const RUNTIME_POSITION_SUPPORT_TRADE_ROW_CAP = Number.parseInt(
+  process.env.RUNTIME_POSITION_SUPPORT_TRADE_ROW_CAP ?? '2000',
+  10
+);
 
 const resolveRuntimeTakeoverStatus = (input: {
   origin: string;
@@ -155,6 +159,9 @@ const nullableIdentityMatches = (left: string | null, right: string | null) =>
 
 const strategyIdentityMatches = (positionStrategyId: string | null, tradeStrategyId: string | null) =>
   !positionStrategyId || !tradeStrategyId || positionStrategyId === tradeStrategyId;
+
+const toPositiveIntOrUndefined = (value: number) =>
+  Number.isFinite(value) && value > 0 ? Math.floor(value) : undefined;
 
 const isSupplementalDcaTradeForOpenPosition = (
   position: RuntimeManagedPositionRow,
@@ -600,42 +607,50 @@ export const listBotRuntimeSessionPositions = async (
 
   const [trades, lastSymbolPrices, openOrders, strategyConfigs] = await Promise.all([
     listRuntimePositionTradeRows({
-      userId,
-      OR: [
-        {
-          positionId: { in: continuityPositionIds },
-        },
-        {
-          ...botScopedTradeWhere,
-          managementMode: 'BOT_MANAGED',
-          symbol: { in: symbols },
-          executedAt: {
-            gte: lifecycleTradeWindowStart,
-            lte: windowEnd,
+      where: {
+        userId,
+        OR: [
+          {
+            positionId: { in: continuityPositionIds },
           },
-        },
-        ...(inheritedExecutionContext.mode === 'LIVE' && botContext.walletId
-          ? [
-              {
-                botId,
-                walletId: null,
-                managementMode: 'BOT_MANAGED' as const,
-                symbol: { in: symbols },
-                executedAt: {
-                  gte: lifecycleTradeWindowStart,
-                  lte: windowEnd,
+          {
+            ...botScopedTradeWhere,
+            managementMode: 'BOT_MANAGED',
+            symbol: { in: symbols },
+            executedAt: {
+              gte: lifecycleTradeWindowStart,
+              lte: windowEnd,
+            },
+          },
+          ...(inheritedExecutionContext.mode === 'LIVE' && botContext.walletId
+            ? [
+                {
+                  botId,
+                  walletId: null,
+                  managementMode: 'BOT_MANAGED' as const,
+                  symbol: { in: symbols },
+                  executedAt: {
+                    gte: lifecycleTradeWindowStart,
+                    lte: windowEnd,
+                  },
                 },
-              },
-            ]
-          : []),
-        ...buildBotlessWalletTradeFallbackWhere({
-          mode: inheritedExecutionContext.mode,
-          walletId: botContext.walletId,
-          symbols,
-          windowStart: lifecycleTradeWindowStart,
-          windowEnd,
-        }),
-      ],
+              ]
+            : []),
+          ...buildBotlessWalletTradeFallbackWhere({
+            mode: inheritedExecutionContext.mode,
+            walletId: botContext.walletId,
+            symbols,
+            windowStart: lifecycleTradeWindowStart,
+            windowEnd,
+          }),
+        ],
+      },
+      take: toPositiveIntOrUndefined(
+        Math.max(
+          RUNTIME_POSITION_SUPPORT_TRADE_ROW_CAP,
+          query.limit * 20
+        )
+      ),
     }),
     listRuntimePositionLastPrices({
       sessionId,

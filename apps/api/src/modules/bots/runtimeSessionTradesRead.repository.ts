@@ -64,19 +64,31 @@ export const getRuntimeTradeBotContext = async (userId: string, botId: string) =
     },
   });
 
-export const listRuntimeTradeCarryOverPositionIds = async (where: Prisma.PositionWhereInput) =>
+export const listRuntimeTradeCarryOverPositionIds = async (
+  where: Prisma.PositionWhereInput,
+  take?: number
+) =>
   (
     await prisma.position.findMany({
       where,
+      ...(take ? { take } : {}),
       select: {
         id: true,
       },
     })
   ).map((position) => position.id);
 
-export const listRuntimeTradeRows = async (where: Prisma.TradeWhereInput) =>
+export const listRuntimeTradeRows = async (params: {
+  where: Prisma.TradeWhereInput;
+  orderBy?: Prisma.TradeOrderByWithRelationInput[];
+  skip?: number;
+  take?: number;
+}) =>
   prisma.trade.findMany({
-    where,
+    where: params.where,
+    ...(params.orderBy ? { orderBy: params.orderBy } : {}),
+    ...(params.skip != null ? { skip: params.skip } : {}),
+    ...(params.take != null ? { take: params.take } : {}),
     select: {
       id: true,
       symbol: true,
@@ -99,6 +111,17 @@ export const listRuntimeTradeRows = async (where: Prisma.TradeWhereInput) =>
       strategyId: true,
       origin: true,
       managementMode: true,
+    },
+  });
+
+export const countRuntimeTradeRows = async (where: Prisma.TradeWhereInput) =>
+  prisma.trade.count({ where });
+
+export const sumRuntimeTradeFees = async (where: Prisma.TradeWhereInput) =>
+  prisma.trade.aggregate({
+    where,
+    _sum: {
+      fee: true,
     },
   });
 
@@ -149,11 +172,15 @@ export const listRuntimeTradeAnchorPositionRows = async (
   });
 
 export const listRuntimeTradePositionTradeRows = async (
-  where: Prisma.TradeWhereInput
+  params: {
+    where: Prisma.TradeWhereInput;
+    take?: number;
+  }
 ) =>
   prisma.trade.findMany({
-    where,
+    where: params.where,
     orderBy: [{ executedAt: 'asc' }, { createdAt: 'asc' }],
+    ...(params.take != null ? { take: params.take } : {}),
     select: {
       id: true,
       positionId: true,

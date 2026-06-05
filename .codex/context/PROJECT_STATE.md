@@ -1,3 +1,204 @@
+- 2026-06-05 `LUC-2305` completed the redacted Ops investigation selected by
+  [LUC-2302](/LUC/issues/LUC-2302). Production Web remains unavailable while
+  API is healthy: API `/health` and `/ready` are `200`, Web `/` and
+  `/api/build-info` are `503`. Coolify reports `soar-web`
+  `restarting:unknown`, `last_restart_type=crash`,
+  `last_restart_at=2026-06-05T21:18:51Z`, and app logs endpoint `400 Bad
+  Request`. Read-only `codex-vps` Docker log tail confirms repeated
+  `MODULE_NOT_FOUND` for `[APP_ROOT]/scripts/runWebNextProductionCommand.mjs`,
+  pnpm recursive start failure, and exit `1`. Classification:
+  `web image/startup packaging`. No production mutation occurred. Evidence:
+  `history/tasks/luc-2305-redacted-soar-web-container-runtime-crash-investigation-2026-06-05-task.md`
+  and
+  `history/evidence/luc-2305-soar-web-container-runtime-crash-investigation-2026-06-05.md`.
+  Next owner/action: Frontend/Engineering must finish and verify the Web
+  image/startup contract repair; Ops needs a separate release mutation permit
+  before any deploy/restart/rollback recovery.
+
+- 2026-06-05 `LUC-2300` partially verified the Backend API runtime aggregate
+  bounded-materialization fix after [LUC-2291](/LUC/issues/LUC-2291). Runtime
+  trade reads now page visible rows at the database layer for DB-sortable
+  views, compute trade total/fees via DB `count`/`aggregate`, and cap
+  carry-over/lifecycle support materialization in trade and position readers.
+  Validation passed: `pnpm --filter api exec tsc --noEmit --pretty false` and
+  `pnpm --filter api exec vitest run src/modules/bots/runtimeMonitoringAggregateConcurrency.test.ts --run`.
+  Focused DB-backed aggregate e2e regression was added but could not execute
+  locally because Postgres on `localhost:5432` was unavailable in
+  `resetBotsE2eState`. No production mutation, deploy, restart, migration,
+  account/secret/exchange, or live-trading action occurred. Evidence:
+  `history/tasks/luc-2300-bound-runtime-aggregate-trade-position-materialization-2026-06-05-task.md`
+  and
+  `history/evidence/luc-2300-runtime-aggregate-bounded-materialization-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2302` completed the CTO/Ops decision after
+  [LUC-2293](/LUC/issues/LUC-2293) rollback failed closed. Selected next path:
+  read-only redacted `soar-web` container/runtime crash investigation before
+  any further source/image, proxy, restart, rollback, env, account, or
+  database mutation. Fresh public smoke still shows API `/health` and `/ready`
+  `200`, Web `/` and `/api/build-info` `503` for expected rollback SHA
+  `b894e5dd30614dfd2035e91e3d848c842d3ff380`; `pnpm run
+  ops:coolify-stack:env-check:test` passed (`8/8`). Evidence:
+  `history/tasks/luc-2302-select-next-soar-web-recovery-path-after-rollback-failed-closed-2026-06-05-task.md`
+  and
+  `history/evidence/luc-2302-soar-web-next-recovery-decision-2026-06-05.md`.
+  [LUC-2305](/LUC/issues/LUC-2305) owns the diagnostic permit and proof.
+
+- 2026-06-05 `LUC-2285` is blocked after the narrow `soar-web` queued
+  deployment cleanup/redeploy permit failed closed. Source remained
+  `HEAD == origin/main == 6e31d814046b640ad529d1cd57f968ba6f67b05e`.
+  Coolify readback initially showed no stale visible queued `soar-web` rows and
+  one active same-SHA deployment, but Web build-info did not converge over six
+  minutes. Final smoke stayed API `200/200`, Web `503/503`; final Coolify
+  readback showed `soar-web=restarting:unknown`, fresh crash timestamp
+  `2026-06-05T20:58:25Z`, zero visible `soar-web` deployment rows, and app
+  logs endpoint `400 Application is not running.` No rollback, second deploy,
+  restart, env/database/team/account/protected-smoke, secret, exchange, or
+  live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2285-clear-soar-web-queued-deployments-and-redeploy-main-sha-2026-06-05-task.md`
+  and
+  `history/evidence/luc-2285-soar-web-queue-clear-redeploy-main-sha-2026-06-05.md`.
+  Next production mutation requires a fresh rollback or host-level recovery
+  permit.
+
+- 2026-06-05 `LUC-2291` completed the Backend API heap-OOM root-cause
+  investigation for the `soar-api` crash reported by
+  [LUC-2279](/LUC/issues/LUC-2279). Classification is `partially verified`:
+  boot/migration/Coolify-healthcheck paths are ruled down, and the likely
+  code-local path is authenticated Bot Runtime
+  `/dashboard/bots/:id/runtime-monitoring/aggregate`. Existing aggregate OOM
+  mitigation `287e77a1` is already an ancestor of crash source
+  `6839cd6b8884e26eca735ce32cea98c1dadccfbe`, so the May 31 crash happened
+  after the first fanout cap; remaining risk is nested runtime positions/trades
+  readers loading production-sized trade sets into Node memory before slicing
+  visible rows. Evidence:
+  `history/tasks/luc-2291-investigate-soar-api-node-heap-oom-root-cause-2026-06-05-task.md`
+  and
+  `history/evidence/luc-2291-soar-api-node-heap-oom-root-cause-2026-06-05.md`.
+  No production mutation occurred. [LUC-2300](/LUC/issues/LUC-2300) owns
+  bounded materialization and focused regression proof.
+
+- 2026-06-05 `LUC-2289` Security approved a constrained redaction-safe
+  deployment-history and deployment-log export path for failed `soar-web`
+  recovery after [LUC-2286](/LUC/issues/LUC-2286). Scope is read-only
+  `Soar / production / soar-web` evidence only. Ops may post a redacted
+  summary/artifact link with normalized resource alias, deployment status,
+  timestamps, branch, exact git source SHA, exit code/error class, and public
+  image tag/digest only when required after registry/id redaction. Forbidden
+  from issue/docs/artifacts: secret values, tokens, cookies, auth headers, env
+  values, account data, exchange credentials, raw Coolify resource/deployment
+  ids, generated database suffixes, generated app/container names,
+  container/network/volume ids, internal networks/IPs, host paths, and raw
+  unredacted logs. No production command or mutation was run by Security.
+  Rollback target remains unknown until Ops retrieves approved redacted
+  evidence. Artifact:
+  `history/tasks/luc-2289-approve-redacted-soar-web-deployment-log-export-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2286` Ops executed the selected Web-only recovery permit
+  after [LUC-2280](/LUC/issues/LUC-2280) restart did not clear production Web
+  `503`. Source `origin/main` was confirmed at
+  `6e31d814046b640ad529d1cd57f968ba6f67b05e`. Exactly one `soar-web` Coolify
+  deploy was accepted and queued. Web build-info polling then failed for 150
+  seconds with status `503`, and final smoke still showed API `/health` and
+  `/ready` `200` while Web `/` and `/api/build-info` returned `503`. Coolify
+  still reports `soar-web` `restarting:unknown` with queued deployment rows.
+  The permit failed closed: no rollback, second restart, second deploy,
+  force-start, env/database/team/account/protected-smoke/secret/exchange, or
+  live-trading action occurred. [LUC-2289](/LUC/issues/LUC-2289) now blocks
+  the next recovery decision with Security-approved redacted deployment-log/
+  history export. Evidence:
+  `history/tasks/luc-2286-choose-next-soar-web-recovery-action-after-restart-503-2026-06-05-task.md`,
+  `history/evidence/luc-2286-soar-web-redeploy-failed-closed-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2286` resumed after [LUC-2289](/LUC/issues/LUC-2289)
+  approved constrained redacted `soar-web` deployment-history/log retrieval.
+  Ops retrieved only projected evidence: API remains `200/200`, Web remains
+  `503/503`, Coolify still reports `soar-web` `restarting:unknown`, a same-SHA
+  `6e31d814046b640ad529d1cd57f968ba6f67b05e` deployment finished with
+  normalized build/start/rolling-update completion events but did not recover
+  Web, and the immediately preceding finished source candidate is
+  `b894e5dd30614dfd2035e91e3d848c842d3ff380`. Ops created
+  [LUC-2293](/LUC/issues/LUC-2293) as the explicit one-rollback permit. No
+  rollback, second deploy, restart, force-start, env/database/team/account,
+  protected-smoke, secret, exchange, or live-trading mutation occurred in the
+  resume heartbeat.
+
+- 2026-06-05 `LUC-2278` Ops attempted the authorized one-time production Web
+  recovery for `soar-web` after commit
+  `6e31d814046b640ad529d1cd57f968ba6f67b05e`. Local `HEAD` and `origin/main`
+  both matched the expected SHA. Coolify metadata for only
+  `ato4fqkncd6t38wzlle2m0rv` showed `soar-web` as `restarting:unknown`, with
+  older `b894e5dd...` deployments still `in_progress` and `6e31d814...`
+  deployments queued. Exactly one Web-only deploy request was accepted. Web
+  build-info polling for 10 minutes still returned `503`, and final probes
+  showed API health `200 OK` while Web build-info remained
+  `503 Service Unavailable` with body `no available server`. No API, worker,
+  database, Redis, env, account, secret, rollback, restart, or live-trading
+  action occurred. Production Web remains blocked on Coolify/platform
+  intervention to clear or complete the stuck Web queue/runtime state. Evidence:
+  `history/tasks/luc-2278-recover-soar-production-web-deploy-after-6e31d814-2026-06-05-task.md`,
+  `history/evidence/luc-2278-soar-web-coolify-recovery-attempt-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2279` resumed after [LUC-2281](/LUC/issues/LUC-2281)
+  approved a bounded redaction-safe host-log export path. Ops used the
+  configured VPS SSH path as non-root `codex`; raw host output stayed in
+  process memory and was not persisted. The initial post-security filter used
+  literal `soar-api`; the blocker-resolved resume corrected this to the
+  approved Coolify resource alias and found the resource-named API container.
+  Docker logs for `2026-05-31T20:50:00Z..2026-05-31T21:20:00Z` retained `373`
+  lines and contained the crash signature: V8 Mark-Compact allocation pressure
+  near `2044 MB`, followed by Node fatal `JavaScript heap out of memory` at
+  `2026-05-31T21:07:45.498997780Z`, then automatic restart/migrate and
+  `server_started` at `2026-05-31T21:08:00.015720071Z`. Classification is
+  `memory/OOM/resource pressure`. Current inspect state does not preserve the
+  historical crash exit code; Docker events returned `0` retained rows for the
+  current container in the incident window. [LUC-2291](/LUC/issues/LUC-2291)
+  is assigned to Backend API Engineer for durable memory/OOM investigation.
+  No deploy, restart, rollback, env edit, database action, protected smoke,
+  account action, secret disclosure, or live-trading action occurred.
+
+- 2026-06-05 `LUC-2280` Ops executed the critical release permit for one
+  controlled `soar-web` restart after Web remained `503` and API remained
+  healthy. Precheck: API `/health` and `/ready` -> `200`; Web `/` and
+  `/api/build-info` -> `503`; `ops:deploy:smoke --no-workers` failed only Web
+  checks. Source state matched the permit (`HEAD == origin/main ==
+  6e31d814046b640ad529d1cd57f968ba6f67b05e`) with only an unrelated
+  pre-existing history note dirty. The single restart request returned
+  `Deployment already queued for this commit.` Polling and final smoke showed
+  no recovery: Web stayed `503/503`, Coolify stayed `soar-web`
+  `restarting:unknown`, API stayed `200/200`. No further mutation was
+  performed. Paperclip reconciled [LUC-2280](/LUC/issues/LUC-2280) to `done`.
+  [LUC-2282](/LUC/issues/LUC-2282) owns the separate rollback or redeploy
+  permit. Duplicate [LUC-2284](/LUC/issues/LUC-2284) was created before the
+  refreshed board state showed [LUC-2282](/LUC/issues/LUC-2282) and could not
+  be cancelled from this run because it is locked to another execution run;
+  treat it as cleanup-only. Obsolete recovery issue
+  [LUC-2288](/LUC/issues/LUC-2288) was cancelled. Evidence:
+  `history/tasks/luc-2280-controlled-soar-web-restart-for-503-restarting-state-2026-06-05-task.md`,
+  `history/evidence/luc-2280-controlled-soar-web-restart-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2279` Ops attempted read-only retrieval of redacted
+  pre-crash Coolify host logs for the `soar-api` crash restart inherited from
+  [LUC-1160](/LUC/issues/LUC-1160). Authenticated Coolify metadata and
+  deployment history were reachable. Current `soar-api` metadata still reports
+  crash restart drift (`last_restart_type=crash`,
+  `last_restart_at=2026-06-01T16:14:03Z`, `restart_count=5`), while the parent
+  May 31 incident remains historical (`2026-05-31T21:08:45Z`,
+  `restart_count=2`). The runtime app log tail starts at
+  `2026-06-03T14:35:04.875Z`, so it cannot cover the May 31 pre-crash window.
+  The retained May 31 deployment log proves successful deploy/start before the
+  crash but was not stored raw because it contains build-time secret-adjacent
+  material and internal generated names. Root cause remains `unknown`;
+  [LUC-2281](/LUC/issues/LUC-2281) approved the constrained host-log export
+  path, and Ops used the existing `codex-vps` SSH alias after approval. That
+  read-only path found no visible `soar-api` container row, no retained Docker
+  events, and no matching journal lines for the May 31 incident window.
+  Validation passed:
+  `pnpm run ops:coolify-stack:env-check:test` (`8/8`). No deploy, restart,
+  rollback, env edit, database action, protected smoke, account action,
+  secret disclosure, or live-trading action occurred. Evidence:
+  `history/tasks/luc-2279-retrieve-redacted-pre-crash-coolify-host-logs-for-soar-api-restart-2026-06-05-task.md`,
+  `history/evidence/luc-2279-soar-api-pre-crash-host-log-retrieval-2026-06-05.md`.
+
 - 2026-06-05 `LUC-2255` Frontend QA public/read-only browser proof is locally
   verified after [LUC-2261](/LUC/issues/LUC-2261) resolved the local Web
   build/start blocker. Added `scripts/runPublicReadOnlyBrowserProof.mjs` and
@@ -17207,3 +17408,37 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
 - 2026-06-05 `LUC-2099` Operator Coolify read-only production status access binding is verified and done. Runtime bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`, `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID` without values printed; `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent but not an active blocker because authenticated read-only Coolify API readback at `2026-06-05T06:52:51Z` confirmed project `Soar`, environment `production`, six applications, PostgreSQL, Redis, zero generic services, `17` visible global resource rows, and eight production-environment resources. Applications report `running:unknown`; PostgreSQL/Redis report `running:healthy`. `pnpm run ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart, rollback, env edit, database action, account action, protected smoke, secret disclosure, or live-trading action occurred. Evidence: `history/evidence/luc-2099-coolify-read-only-production-status-access-2026-06-05.md`, `history/tasks/luc-2099-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`.
 - 2026-06-05 `LUC-2107` Test Automation route/API matrix parity guardrail is verified and done locally. Added repeatable command `pnpm run docs:parity:route-api-matrix` and focused test command `pnpm run docs:parity:route-api-matrix:test` to compare generated Web route and Express API endpoint inventories with `docs/architecture/traceability-matrix.md` and `docs/architecture/reference/dashboard-route-map.md`. Fresh proof passed: focused checker tests (`5/5`), live matrix parity (`37` Web routes / `109` API endpoints / `0` gaps), docs parity, architecture graph generate (`649` nodes / `842` relations / `27` chains), strict graph drift (`822/822`), and `quality:guardrails`. No runtime route behavior, deploy, env, account, secret, protected smoke, or live-trading mutation occurred. Evidence: `history/artifacts/luc-2107-api-endpoint-docs-parity-2026-06-05/route-api-matrix-parity-2026-06-05.md`, `history/tasks/luc-2107-route-api-matrix-parity-guardrail-2026-06-05-task.md`.
 - 2026-06-05 `LUC-2137` Docs Memory residual tooling doc-link classification is verified and done locally. The residual architecture-awareness top missing doc-link family for release/ops/protected-proof/RC/local-dev/backup-restore/journey-index scripts is classified in `docs/automation/guardrail-commands.md`, and 38 sampled script paths now have canonical `docs/architecture/relations/documentation-links.csv` owner rows (`targets=38`, `linked=38`, `missing=0`; duplicate exact entity/doc rows `0`). Fresh graph proof passed: `pnpm run architecture:graph:generate` (`651` nodes / `842` relations / `27` chains) and `pnpm run architecture:graph:drift:strict` (`822/822` covered / `0` missing). No deploy, restart, secret readback, protected smoke, runtime behavior change, or production proof was performed. Fresh architecture-awareness before/after counts remain deferred because `scripts/build-architecture-awareness-index.mjs` is not present in this checkout. Evidence: `history/tasks/luc-2137-residual-tooling-doc-link-classification-2026-06-05-task.md`.
+- 2026-06-05 `LUC-2304` fixes the code-side production Web image startup
+  wrapper regression identified by [LUC-2297](/LUC/issues/LUC-2297). The Web
+  runtime Dockerfile now copies
+  `/app/scripts/runWebNextProductionCommand.mjs`, and repo guardrails now fail
+  if the Web package depends on that wrapper without the runtime-stage copy.
+  Proof passed: `node --test scripts\repoGuardrails.test.mjs` (`11/11`),
+  `pnpm --filter web run build`, and local production-wrapper start serving
+  `/` plus `/api/build-info` as `200`. Docker image build could not run because
+  Docker Desktop is unavailable in this runner. No production mutation occurred;
+  next recovery requires source-control closure/push and a separate Ops release
+  permit. Evidence:
+  `history/evidence/luc-2304-web-runtime-start-wrapper-fix-2026-06-05.md`.
+## 2026-06-05 LUC-2293 controlled soar-web rollback failed closed
+
+- [LUC-2293](/LUC/issues/LUC-2293) executed one permitted production
+  `soar-web` rollback/redeploy attempt to previous finished source candidate
+  `b894e5dd30614dfd2035e91e3d848c842d3ff380`.
+- Precheck confirmed API `/health` and `/ready` `200`, Web `/` and
+  `/api/build-info` `503`, and local/remote `origin/main`
+  `6e31d814046b640ad529d1cd57f968ba6f67b05e`, so the action was intentionally
+  not a branch-head deploy.
+- Postcheck failed closed: all eight 15-second Web polls stayed `503`,
+  build-info stayed `n/a`, and final API `/health` plus `/ready` remained
+  `200`.
+- Focused local regression passed:
+  `pnpm run ops:coolify-stack:env-check:test` (`8/8`).
+- No second deploy/restart/rollback/env/API/worker/database/protected-smoke/
+  exchange/live-trading mutation was performed.
+- [LUC-2293](/LUC/issues/LUC-2293) is blocked by
+  [LUC-2302](/LUC/issues/LUC-2302), the active CTO/Ops recovery decision issue.
+- Evidence:
+  `history/evidence/luc-2293-soar-web-rollback-to-previous-candidate-2026-06-05.md`;
+  task packet:
+  `history/tasks/luc-2293-controlled-soar-web-rollback-to-previous-candidate-2026-06-05-task.md`.

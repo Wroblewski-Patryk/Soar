@@ -172,10 +172,14 @@ export const listRuntimeOpenOrders = async (params: {
     },
   });
 
-export const listRuntimePositionTradeRows = async (where: Prisma.TradeWhereInput) =>
+export const listRuntimePositionTradeRows = async (params: {
+  where: Prisma.TradeWhereInput;
+  take?: number;
+}) =>
   prisma.trade.findMany({
-    where,
+    where: params.where,
     orderBy: [{ executedAt: 'asc' }, { createdAt: 'asc' }],
+    ...(params.take != null ? { take: params.take } : {}),
     select: {
       id: true,
       botId: true,
