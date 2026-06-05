@@ -9,6 +9,23 @@ repository history.
 
 ## Current Mission
 
+- `LUC-2086-SOURCE-CONTROL-CLOSURE-2026-06-05` is verified as a bounded
+  source-control closure checkpoint for the [LUC-2079](/LUC/issues/LUC-2079)
+  through [LUC-2085](/LUC/issues/LUC-2085) local dirty packet. Wake
+  `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`,
+  comments `0/0`, latest comment id `unknown`); checkout was already claimed by
+  the harness and was not repeated. Dirty state was classified as coherent
+  docs/evidence/state work: state/control `1`, operations ledger `1`,
+  task/evidence `4`, runtime/product code `0`, stale/out-of-scope `0`. No
+  current dirty paths were found for [LUC-2080](/LUC/issues/LUC-2080),
+  [LUC-2081](/LUC/issues/LUC-2081), [LUC-2082](/LUC/issues/LUC-2082),
+  [LUC-2083](/LUC/issues/LUC-2083), or [LUC-2084](/LUC/issues/LUC-2084).
+  Validation passed: `git diff --check` and targeted dirty-path redaction scan.
+  A local closure commit was created. No push, deploy, restart, rollback, env
+  edit, database action, team/account setting change, protected smoke, secret
+  disclosure, screenshot, or live-trading action occurred. Evidence:
+  `history/tasks/luc-2086-source-control-close-local-dirty-state-for-luc-2079-luc-2085-2026-06-05-task.md`.
+
 - `LUC-2072-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05` is done as
   a bounded Ops read-only production status access checkpoint. Wake
   `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`,

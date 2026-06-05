@@ -1,3 +1,15 @@
+- 2026-06-05 `LUC-2086` source-control closure classified the local dirty state
+  for `LUC-2079` through `LUC-2085` as coherent docs/evidence/state work:
+  state/control `1`, operations ledger `1`, task/evidence `4`,
+  runtime/product code `0`, stale/out-of-scope `0`. No current dirty paths were
+  found for `LUC-2080`, `LUC-2081`, `LUC-2082`, `LUC-2083`, or `LUC-2084`.
+  Validation passed: `git diff --check` and targeted dirty-path redaction scan.
+  A local closure commit was created; push not needed; deploy impact none. No
+  push, deploy, restart, rollback, environment edit, database action, team or
+  account setting change, protected smoke, secret disclosure, screenshot, or
+  live-trading action occurred. Evidence:
+  `history/tasks/luc-2086-source-control-close-local-dirty-state-for-luc-2079-luc-2085-2026-06-05-task.md`.
+
 - 2026-06-05 `LUC-2072` Operator Coolify read-only production status access
   binding is verified and done. Runtime bindings are present for
   `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
