@@ -1,3 +1,43 @@
+- 2026-06-05 `LUC-2072` Operator Coolify read-only production status access
+  binding is verified and done. Runtime bindings are present for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID` without values
+  printed; `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent but not an
+  active blocker because authenticated read-only Coolify API readback at
+  `2026-06-05T03:33:51Z` confirmed project `Soar`, environment `production`,
+  six applications, PostgreSQL, Redis, zero generic services, and `17` visible
+  global resource rows. Applications report `running:unknown`;
+  PostgreSQL/Redis report `running:healthy`. `pnpm run
+  ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
+  heartbeat to `in_progress`, priority `critical`, zero pending comments, and
+  `fallbackFetchNeeded=false`. No push, deploy, restart, rollback, env edit,
+  database action, team setting change, account action, protected smoke,
+  secret value readback, raw resource id storage, generated DB suffix storage,
+  screenshot, or live-trading action was performed. Evidence:
+  `history/evidence/luc-2072-coolify-read-only-production-status-access-2026-06-05.md`,
+  `history/tasks/luc-2072-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2069` Operator Coolify read-only production status access
+  binding is verified and done. Runtime bindings are present for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID` without values
+  printed; `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent but not an
+  active blocker because authenticated read-only Coolify API readback at
+  `2026-06-05T03:20:28Z` confirmed project `Soar`, environment `production`,
+  six applications, PostgreSQL, Redis, zero generic services, and `17` visible
+  global resource rows. Applications report `running:unknown`;
+  PostgreSQL/Redis report `running:healthy`. `pnpm run
+  ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
+  heartbeat to `in_progress`, priority `critical`, zero pending comments, and
+  `fallbackFetchNeeded=false`. No push, deploy, restart, rollback, env edit,
+  database action, team setting change, account action, protected smoke,
+  secret value readback, raw resource id storage, generated DB suffix storage,
+  screenshot, or live-trading action was performed. Evidence:
+  `history/evidence/luc-2069-coolify-read-only-production-status-access-2026-06-05.md`,
+  `history/tasks/luc-2069-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`.
+
 - 2026-06-05 `LUC-2064` source-control closure classified the current `LUC-402` dirty packet from stale board janitor follow-up as coherent commit-ready local evidence/state work: `LUC-2054` Ops read-only Coolify evidence and runtime ledger/state updates, `LUC-2055` API platform safety review task artifact, `LUC-2057` local protected wallet route proof harness/package script/evidence/artifact/state updates, and this closure artifact. Validation passed: `git diff --check`, `node --check scripts/runLocalProtectedRouteActionProof.mjs`, and dirty-path credential scan after reviewing no-secret wording plus the synthetic local fixture token `luc-2057-local-fixture-token`. Local closure commit created; push not needed; deploy impact none. `LUC-402` protected production evidence blockers remain intact. Evidence: `history/tasks/luc-2064-source-control-classify-current-luc-402-dirty-packet-2026-06-05-task.md`.
 
 - 2026-06-05 `LUC-2057` Test Automation local protected route action proof is verified and done for the wallets cluster. Added `scripts/runLocalProtectedRouteActionProof.mjs` and `pnpm run qa:local-protected-route-actions:proof`, a local-only CDP/browser harness that starts a temporary Next server, uses a synthetic local cookie for the Web middleware gate, and cleans up server/browser state. Fresh proof passed for `SOAR-ACTION-VISIT-PAGE-WALLETS-ROOT`, `SOAR-ACTION-VISIT-PAGE-WALLETS-LIST`, and `SOAR-ACTION-VISIT-PAGE-WALLET-CREATE`: unauthenticated `/dashboard/wallets/list` redirects fail-closed to `/auth/login`, `/dashboard/wallets` redirects to `/dashboard/wallets/list` with the local cookie gate, list/create routes render behind the gate, and the list-page add action navigates to `/dashboard/wallets/create`. Validation passed: `node --check scripts/runLocalProtectedRouteActionProof.mjs` and `pnpm run qa:local-protected-route-actions:proof -- --today 2026-06-05`. Cleanup check found no remaining listener on port `3217` and no harness browser process on `9347`. No production account, exchange, wallet mutation, deploy, restart, rollback, env edit, database action, protected production smoke, secret disclosure, screenshot, or live-trading action occurred. Production protected proof remains linked to [LUC-241](/LUC/issues/LUC-241). Evidence: `history/evidence/luc-2057-local-protected-wallet-route-action-proof-2026-06-05.md`, `history/artifacts/luc-2057-local-protected-wallet-route-action-proof-2026-06-05.json`.

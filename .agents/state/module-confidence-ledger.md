@@ -2,6 +2,42 @@
 
 Last updated: 2026-06-05
 
+- 2026-06-05 `LUC-2072-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05`
+  applies to production Ops release confidence: read-only Coolify API status
+  access remains verified for Soar project/environment/resource reconciliation.
+  Runtime binding names are present without value disclosure for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID`; optional team
+  binding names remain absent but project-scoped reads succeed. Fresh readback
+  at `2026-06-05T03:33:51Z` resolved project `Soar`, environment
+  `production`, six applications, PostgreSQL, Redis, zero generic services,
+  and `17` visible global resource rows. Application inventory status remains
+  `running:unknown`; PostgreSQL and Redis report `running:healthy`.
+  Validation passed: `pnpm run ops:coolify-stack:env-check:test` (`8/8`).
+  This is read-only status access proof only, not deploy, restart, rollback,
+  protected smoke, database health beyond inventory, SLO, restore/rollback, or
+  live-trading proof. Evidence:
+  `history/evidence/luc-2072-coolify-read-only-production-status-access-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2069-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05`
+  applies to production Ops release confidence: read-only Coolify API status
+  access remains verified for Soar project/environment/resource reconciliation.
+  Runtime binding names are present without value disclosure for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID`; optional team
+  binding names remain absent but project-scoped reads succeed. Fresh readback
+  at `2026-06-05T03:20:28Z` resolved project `Soar`, environment
+  `production`, six applications, PostgreSQL, Redis, zero generic services,
+  and `17` visible global resource rows. Application inventory status remains
+  `running:unknown`; PostgreSQL and Redis report `running:healthy`.
+  Validation passed: `pnpm run ops:coolify-stack:env-check:test` (`8/8`).
+  This is read-only status access proof only, not deploy, restart, rollback,
+  protected smoke, database health beyond inventory, SLO, restore/rollback, or
+  live-trading proof. Evidence:
+  `history/evidence/luc-2069-coolify-read-only-production-status-access-2026-06-05.md`.
+
 - 2026-06-05 `LUC-2057-LOCAL-PROTECTED-WALLET-ROUTE-ACTION-PROOF`
   improves `web-wallets` local protected-route confidence. Test Automation
   added a repeatable CDP/browser harness at

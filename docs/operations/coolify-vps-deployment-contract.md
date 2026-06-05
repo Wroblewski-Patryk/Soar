@@ -1,6 +1,6 @@
 # Coolify VPS Deployment Contract
 
-Last updated: 2026-06-04
+Last updated: 2026-06-05
 
 This contract describes the current Soar production deployment target. Coolify
 must be treated as a hierarchy:
@@ -39,10 +39,10 @@ refreshed/reconciled for `LUC-1399`, `LUC-1402`, `LUC-1405`, `LUC-1408`,
 `LUC-1926` / `LUC-1933` / `LUC-1969` / `LUC-1973` / `LUC-1977` /
 `LUC-1982` / `LUC-1987` / `LUC-1990` / `LUC-1993` / `LUC-1997` /
 `LUC-2004`
-on 2026-06-04.
+on 2026-06-04, and `LUC-2069` / `LUC-2072` on 2026-06-05.
 
-Latest read-only access binding checkpoint: `LUC-2004` at
-`2026-06-04T15:48:55Z`, refreshing the prior `LUC-1997` proof. Runtime
+Latest read-only access binding checkpoint: `LUC-2072` at
+`2026-06-05T03:33:51Z`, refreshing the prior `LUC-2069` proof. Runtime
 bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`,
 `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
 `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and
@@ -63,7 +63,7 @@ This heartbeat performed no deploy, restart, rollback, env edit, database
 action, team setting change, account action, protected smoke, secret readback,
 or live-trading action.
 Evidence:
-`history/evidence/luc-2004-coolify-read-only-production-status-access-2026-06-04.md`.
+`history/evidence/luc-2072-coolify-read-only-production-status-access-2026-06-05.md`.
 
 Previous read-only access binding checkpoint: `LUC-1997` at
 `2026-06-04T14:46:54Z`, refreshing the prior `LUC-1993` proof. Runtime
