@@ -1,3 +1,34 @@
+- 2026-06-05 `LUC-2095` source-control closure for `LUC-2094` is verified.
+  Dirty state was classified as coherent docs/evidence/state work:
+  state/control `5`, operations docs/ledger `2`, task/evidence `3` including
+  the closure artifact, runtime/product code `0`, stale/out-of-scope `0`.
+  Validation passed: `git diff --check` and targeted dirty-path redaction scan.
+  A local closure commit was created. Push status: not pushed/not needed.
+  Deploy impact: none. No production mutation, deploy, restart, rollback, env
+  edit, database action, account/team setting change, protected smoke, secret
+  disclosure, screenshot, or live-trading action occurred. Evidence:
+  `history/tasks/luc-2095-source-control-close-local-dirty-state-for-luc-2094-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2094` Operator Coolify read-only production status access
+  binding is verified and done. Runtime bindings are present for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID` without values
+  printed; `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent but not an
+  active blocker because authenticated read-only Coolify API readback at
+  `2026-06-05T06:18:48Z` confirmed project `Soar`, environment `production`,
+  six applications, PostgreSQL, Redis, zero generic services, and `17` visible
+  global resource rows. Applications report `running:unknown`;
+  PostgreSQL/Redis report `running:healthy`. `pnpm run
+  ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
+  heartbeat to `in_progress`, priority `critical`, zero pending comments, and
+  `fallbackFetchNeeded=false`. No push, deploy, restart, rollback, env edit,
+  database action, team setting change, account action, protected smoke,
+  secret value readback, raw resource id storage, generated DB suffix storage,
+  screenshot, or live-trading action was performed. Evidence:
+  `history/evidence/luc-2094-coolify-read-only-production-status-access-2026-06-05.md`,
+  `history/tasks/luc-2094-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`.
+
 - 2026-06-05 `LUC-2091` Operator Coolify read-only production status access
   binding is verified and done. Runtime bindings are present for
   `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,

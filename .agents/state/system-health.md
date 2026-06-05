@@ -1,5 +1,27 @@
 # System Health
 
+- `LUC-2094-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05` VERIFIED as
+  a bounded Ops read-only access binding checkpoint. Wake payload was consumed
+  first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id
+  `unknown`), and the harness had already claimed checkout, so checkout was not
+  repeated. Runtime binding check verified `COOLIFY_BASE_URL`,
+  `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`, `COOLIFY_TOKEN`,
+  `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and
+  `COOLIFY_SOAR_API_APP_ID` are present without printing values;
+  `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` are absent but not required
+  because authenticated read-only Coolify API readback at
+  `2026-06-05T06:18:48Z` resolved project `Soar`, production environment
+  `production`, and eight production resources: six applications plus
+  PostgreSQL and Redis. Application inventory status remains
+  `running:unknown`; PostgreSQL and Redis report `running:healthy`.
+  `GET /api/v1/resources` returned `17` visible rows and was not used as
+  release authority. `pnpm run ops:coolify-stack:env-check:test` passed
+  (`8/8`). Scope stayed read-only docs/evidence/state only; no
+  deploy/restart/rollback/env/database/team/account/secret/live-trading
+  mutation was performed. Evidence:
+  `history/evidence/luc-2094-coolify-read-only-production-status-access-2026-06-05.md`,
+  `history/tasks/luc-2094-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`.
+
 - `LUC-2072-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05` VERIFIED as a bounded Ops read-only access binding checkpoint. Wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`), and the harness had already claimed checkout, so checkout was not repeated. Runtime binding check verified `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`, `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID` are present without printing values; `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` are absent but not required because authenticated read-only Coolify API readback at `2026-06-05T03:33:51Z` resolved project `Soar`, production environment `production`, and eight production resources: six applications plus PostgreSQL and Redis. Application inventory status remains `running:unknown`; PostgreSQL and Redis report `running:healthy`. `GET /api/v1/resources` returned `17` visible rows and was not used as release authority. `pnpm run ops:coolify-stack:env-check:test` passed (`8/8`). Scope stayed read-only docs/evidence/state only; no deploy/restart/rollback/env/database/team/account/secret/live-trading mutation was performed. Evidence: `history/evidence/luc-2072-coolify-read-only-production-status-access-2026-06-05.md`, `history/tasks/luc-2072-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`.
 
 - `LUC-2064-SOURCE-CONTROL-CLOSURE-2026-06-05` VERIFIED as a bounded Engineering Delivery source-control closure checkpoint. The current [LUC-402](/LUC/issues/LUC-402) dirty packet was classified as coherent commit-ready local evidence/state work: [LUC-2054](/LUC/issues/LUC-2054) Ops read-only Coolify evidence and runtime ledger/state updates, [LUC-2055](/LUC/issues/LUC-2055) API platform safety review task artifact, [LUC-2057](/LUC/issues/LUC-2057) local protected wallet route proof harness/package script/evidence/artifact/state updates, and this closure artifact. Validation passed: `git diff --check`, `node --check scripts/runLocalProtectedRouteActionProof.mjs`, and dirty-path credential scan after reviewing no-secret wording plus the synthetic local fixture token `luc-2057-local-fixture-token`. Local closure commit created; push not needed; deploy impact none. No production mutation, deploy, restart, rollback, protected smoke, account action, secret disclosure, screenshot, or live-trading action occurred. [LUC-402](/LUC/issues/LUC-402) protected evidence blockers remain intact. Evidence: `history/tasks/luc-2064-source-control-classify-current-luc-402-dirty-packet-2026-06-05-task.md`.
