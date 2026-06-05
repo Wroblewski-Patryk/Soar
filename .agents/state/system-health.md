@@ -1,5 +1,23 @@
 # System Health
 
+- `LUC-2225-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05` VERIFIED as
+  a bounded Ops read-only access binding checkpoint. Wake payload was consumed
+  first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id
+  `unknown`), and the harness had already claimed checkout, so checkout was not
+  repeated. Fresh read-only Coolify API readback at `2026-06-05T15:43:58Z`
+  resolved selector `LuckySparrow`, project `Soar`, production environment
+  label `production`, and eight canonical production resources/classes:
+  `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`,
+  `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`.
+  Counts: six applications, one PostgreSQL, one Redis, zero generic services,
+  `1` visible global resource row in this runner. Application rows remain
+  `running:unknown`; PostgreSQL and Redis classes are present with health
+  status not exposed by this allowlisted projection. Focused validation
+  passed: `pnpm run ops:coolify-stack:env-check:test` (`8/8`). Scope stayed
+  read-only; no deploy/restart/rollback/env/database/team/account/secret/live-
+  trading mutation was performed. Evidence:
+  `history/evidence/luc-2225-coolify-read-only-production-status-access-2026-06-05.md`.
+
 - `LUC-2222-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05` VERIFIED as
   a bounded Ops read-only access binding checkpoint. Wake payload was consumed
   first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id
