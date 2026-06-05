@@ -31,6 +31,7 @@ WORKDIR /app
 
 COPY --from=build --chown=node:node /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/
 COPY --from=build --chown=node:node /app/node_modules /app/node_modules
+COPY --from=build --chown=node:node /app/scripts/runWebNextProductionCommand.mjs /app/scripts/runWebNextProductionCommand.mjs
 COPY --from=build --chown=node:node /app/apps/web /app/apps/web
 COPY --from=build --chown=node:node /app/libs/shared /app/libs/shared
 

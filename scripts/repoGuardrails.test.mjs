@@ -10,6 +10,7 @@ import {
   validateOpsScriptsDoNotAcceptSecretCliArgs,
   validateRuntimeDockerfilesRunAsNonRoot,
   validateTrackedEnvFilePolicy,
+  validateWebRuntimeImageIncludesStartWrapper,
 } from "./repoGuardrails.mjs";
 
 const writeApiPackage = (rootDir, startScript) => {
@@ -88,6 +89,60 @@ test("validateRuntimeDockerfilesRunAsNonRoot rejects root runtime stage", () => 
 
   assert.equal(errors.length, 1);
   assert.match(errors[0], /USER node/);
+});
+
+const writeWebPackage = (rootDir, startScript = "node ../../scripts/runWebNextProductionCommand.mjs start") => {
+  const webDir = path.join(rootDir, "apps", "web");
+  fs.mkdirSync(webDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(webDir, "package.json"),
+    JSON.stringify(
+      {
+        scripts: {
+          build: "node ../../scripts/runWebNextProductionCommand.mjs build",
+          start: startScript,
+        },
+      },
+      null,
+      2,
+    ),
+  );
+};
+
+test("validateWebRuntimeImageIncludesStartWrapper accepts runtime wrapper copy", () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), "soar-guardrails-web-wrapper-safe-"));
+  writeWebPackage(rootDir);
+  writeDockerfile(
+    rootDir,
+    "apps/web/Dockerfile",
+    [
+      "COPY --from=build --chown=node:node /app/scripts/runWebNextProductionCommand.mjs /app/scripts/runWebNextProductionCommand.mjs",
+      "USER node",
+      "CMD [\"pnpm\", \"--filter\", \"web\", \"start\"]",
+    ].join("\n"),
+  );
+
+  assert.deepEqual(validateWebRuntimeImageIncludesStartWrapper({ rootDir }), []);
+});
+
+test("validateWebRuntimeImageIncludesStartWrapper rejects missing runtime wrapper copy", () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), "soar-guardrails-web-wrapper-missing-"));
+  writeWebPackage(rootDir);
+  writeDockerfile(
+    rootDir,
+    "apps/web/Dockerfile",
+    [
+      "COPY --from=build --chown=node:node /app/apps/web /app/apps/web",
+      "USER node",
+      "CMD [\"pnpm\", \"--filter\", \"web\", \"start\"]",
+    ].join("\n"),
+  );
+
+  const errors = validateWebRuntimeImageIncludesStartWrapper({ rootDir });
+
+  assert.equal(errors.length, 1);
+  assert.match(errors[0], /production start wrapper/);
+  assert.match(errors[0], /runWebNextProductionCommand\.mjs/);
 });
 
 test("validateTrackedEnvFilePolicy allows templates but rejects tracked runtime env files", () => {

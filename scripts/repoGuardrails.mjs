@@ -51,6 +51,9 @@ const DUPLICATE_HELPER_SNAPSHOT_PATH =
   "history/artifacts/_artifacts-cqlt-duplicate-helper-snapshot-2026-04-21.json";
 const CODE_QUALITY_GUARDRAILS_DOC_PATH = "docs/governance/code-quality-guardrails.md";
 const API_PACKAGE_JSON_PATH = "apps/api/package.json";
+const WEB_PACKAGE_JSON_PATH = "apps/web/package.json";
+const WEB_DOCKERFILE_PATH = "apps/web/Dockerfile";
+const WEB_PRODUCTION_START_WRAPPER = "scripts/runWebNextProductionCommand.mjs";
 const ARCHITECTURE_GRAPH_DRIFT_SCRIPT = "scripts/auditArchitectureGraphDrift.mjs";
 const RUNTIME_DOCKERFILES = [
   "apps/api/Dockerfile",
@@ -572,6 +575,60 @@ export const validateRuntimeDockerfilesRunAsNonRoot = ({
     : [`Runtime Dockerfiles must run as non-root:\n${errors.map((error) => `  - ${error}`).join("\n")}`];
 };
 
+export const validateWebRuntimeImageIncludesStartWrapper = ({
+  rootDir = ROOT_DIR,
+  webPackageJsonPath = WEB_PACKAGE_JSON_PATH,
+  webDockerfilePath = WEB_DOCKERFILE_PATH,
+  startWrapperPath = WEB_PRODUCTION_START_WRAPPER,
+} = {}) => {
+  const packageAbsolute = path.join(rootDir, webPackageJsonPath);
+  const dockerfileAbsolute = path.join(rootDir, webDockerfilePath);
+
+  if (!fs.existsSync(packageAbsolute)) {
+    return [`Missing Web package manifest: ${webPackageJsonPath}`];
+  }
+
+  if (!fs.existsSync(dockerfileAbsolute)) {
+    return [`Missing Web Dockerfile: ${webDockerfilePath}`];
+  }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(fs.readFileSync(packageAbsolute, "utf8"));
+  } catch (error) {
+    return [`Invalid Web package manifest JSON at ${webPackageJsonPath}: ${String(error)}`];
+  }
+
+  const startScript = parsed?.scripts?.start;
+  const buildScript = parsed?.scripts?.build;
+  const dependsOnWrapper =
+    typeof startScript === "string" && startScript.includes(startWrapperPath)
+      ? true
+      : typeof buildScript === "string" && buildScript.includes(startWrapperPath);
+
+  if (!dependsOnWrapper) return [];
+
+  const content = fs.readFileSync(dockerfileAbsolute, "utf8");
+  const runtimeStage = content.split(/\nFROM\s+node:20-bookworm-slim\s+AS\s+runtime\b/i)[1] ?? "";
+
+  if (!runtimeStage) {
+    return [`${webDockerfilePath} must define a node runtime stage for the Web production image.`];
+  }
+
+  const wrapperCopyPattern = new RegExp(
+    String.raw`^\s*COPY\b[^\n]*--from=build[^\n]*\/app\/${escapeRegex(startWrapperPath)}\b[^\n]*\/app\/${escapeRegex(
+      startWrapperPath,
+    )}\b`,
+    "m",
+  );
+
+  return wrapperCopyPattern.test(runtimeStage)
+    ? []
+    : [
+        `Web runtime image must include the production start wrapper required by ${webPackageJsonPath}.\n  - ${webDockerfilePath}: runtime stage must copy /app/${startWrapperPath} from the build stage to /app/${startWrapperPath}.`,
+      ];
+};
+
 export const validateTrackedEnvFilePolicy = ({ trackedFiles = readTrackedFiles() } = {}) => {
   const offenders = trackedFiles.filter(
     (filePath) => TRACKED_ENV_FILE_RE.test(filePath) && !TRACKED_ENV_FILE_ALLOWLIST_RE.test(filePath)
@@ -653,6 +710,7 @@ const run = () => {
     ...validateCodeQualityGuardrailsDoc(),
     ...validateApiStartScript(),
     ...validateRuntimeDockerfilesRunAsNonRoot(),
+    ...validateWebRuntimeImageIncludesStartWrapper(),
     ...validateTrackedEnvFilePolicy({ trackedFiles }),
     ...validateOpsScriptsDoNotAcceptSecretCliArgs({ trackedFiles }),
   ];
@@ -682,6 +740,7 @@ const run = () => {
   );
   console.log(`- API start script: OK (production-safe launcher)`);
   console.log(`- Runtime Dockerfiles: OK (non-root runtime user)`);
+  console.log(`- Web runtime image: OK (production start wrapper present)`);
   console.log(`- Env file policy: OK (only redacted .env examples tracked)`);
   console.log(`- Ops script secret argv policy: OK (secret-bearing CLI args rejected)`);
 };
