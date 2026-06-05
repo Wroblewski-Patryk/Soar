@@ -158,3 +158,18 @@ The same explicitness rule applies to worker ownership drift:
 ## Related Files
 - [02 System Topology](./02_system-topology.md)
 - [08 Operator Surfaces and Routing](./08_operator-surfaces-and-routing.md)
+
+## Architecture-Awareness Doc-Link Classification
+
+Last classified: 2026-06-05 under [LUC-2186](/LUC/issues/LUC-2186).
+
+| Source entity | Owner doc | Classification | Expected proof |
+| --- | --- | --- | --- |
+| `apps/api/src/workers/backtest.worker.ts` | `docs/architecture/09_integrations-deployment-and-runtime-services.md` | Split backtest worker process entrypoint for the canonical deployed worker topology. | Architecture-awareness `documents` relation from this doc plus worker health/readiness proof when worker behavior changes. |
+| `apps/api/src/workers/execution.worker.ts` | `docs/architecture/09_integrations-deployment-and-runtime-services.md` | Split execution worker process entrypoint for the canonical deployed worker topology. | Architecture-awareness `documents` relation from this doc plus worker health/readiness and execution safety proof when behavior changes. |
+| `apps/api/src/workers/marketData.worker.ts` | `docs/architecture/09_integrations-deployment-and-runtime-services.md` | Split market-data worker process entrypoint for the canonical deployed worker topology. | Architecture-awareness `documents` relation from this doc plus worker health/readiness proof when behavior changes. |
+| `apps/api/src/workers/marketStream.worker.ts` | `docs/architecture/09_integrations-deployment-and-runtime-services.md` | Split market-stream worker process entrypoint for the canonical deployed worker topology. | Architecture-awareness `documents` relation from this doc plus stream/worker readiness proof when behavior changes. |
+| `apps/api/src/workers/marketStreamWorkerConfig.ts` | `docs/architecture/09_integrations-deployment-and-runtime-services.md` | Market-stream worker config boundary for deployed stream ownership and degraded-state reporting. | Architecture-awareness `documents` relation from this doc plus market-stream worker config tests when behavior changes. |
+| `apps/api/src/workers/workerBootstrap.ts` | `docs/architecture/09_integrations-deployment-and-runtime-services.md` | Shared worker bootstrap boundary for split-worker process startup and ownership clarity. | Architecture-awareness `documents` relation from this doc plus worker bootstrap/health proof when behavior changes. |
+| `apps/api/src/workers/workerHeartbeat.ts` | `docs/architecture/09_integrations-deployment-and-runtime-services.md` | Worker heartbeat contract used by readiness and topology diagnostics. | Architecture-awareness `documents` relation from this doc plus worker heartbeat tests when behavior changes. |
+| `apps/api/src/workers/workerOwnership.ts` | `docs/architecture/09_integrations-deployment-and-runtime-services.md` | Worker ownership classifier that separates split deployed baseline from local/degraded inline modes. | Architecture-awareness `documents` relation from this doc plus worker ownership tests when behavior changes. |

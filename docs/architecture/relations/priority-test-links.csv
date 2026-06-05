@@ -1,0 +1,70 @@
+entity_path,test_path,reason
+apps/web/src/ui/components/DataTable.tsx,apps/web/src/ui/components/DataTable.test.tsx,LUC-2164 direct shared table relation
+apps/web/src/ui/components/FooterPreferencesSwitchers.tsx,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2164 shared primitive relation
+apps/web/src/ui/components/ProfileButton.tsx,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2164 shared primitive relation
+apps/web/src/ui/forms/FormAlert.tsx,apps/web/src/ui/forms/FormFields.test.tsx,LUC-2164 shared form field relation
+apps/web/src/ui/forms/FormField.tsx,apps/web/src/ui/forms/FormFields.test.tsx,LUC-2164 shared form field relation
+apps/web/src/ui/forms/FormGrid.tsx,apps/web/src/ui/forms/FormPrimitives.test.tsx,LUC-2164 shared form primitive relation
+apps/web/src/ui/forms/FormMobileActionBar.tsx,apps/web/src/ui/forms/FormPrimitives.test.tsx,LUC-2164 shared form primitive relation
+apps/web/src/ui/forms/FormPageShell.tsx,apps/web/src/ui/forms/FormPrimitives.test.tsx,LUC-2164 shared form primitive relation
+apps/web/src/ui/forms/FormSectionCard.tsx,apps/web/src/ui/forms/FormPrimitives.test.tsx,LUC-2164 shared form primitive relation
+apps/web/src/ui/forms/FormValidationSummary.tsx,apps/web/src/ui/forms/validationFeedback.test.ts,LUC-2164 shared validation relation
+apps/web/src/ui/layout/dashboard/Footer.tsx,apps/web/src/ui/layout/dashboard/Footer.layout.test.tsx,LUC-2164 dashboard footer layout relation
+apps/web/src/ui/layout/dashboard/Header.tsx,apps/web/src/ui/layout/dashboard/Header.responsive.test.tsx,LUC-2164 dashboard header layout relation
+apps/web/src/ui/layout/dashboard/PageTitle.tsx,apps/web/src/ui/layout/dashboard/PageTitle.a11y.test.tsx,LUC-2164 dashboard title accessibility relation
+apps/web/src/ui/layout/public/Footer.tsx,apps/web/src/ui/layout/public/Footer.layout.test.tsx,LUC-2164 public footer layout relation
+apps/web/src/ui/layout/public/Header.tsx,apps/web/src/ui/layout/public/Header.test.tsx,LUC-2164 public header layout relation
+apps/web/src/features/strategies/utils/strategyThresholdItems.ts,apps/web/src/lib/sharedWebUtilities.test.ts,LUC-2164 strategy threshold utility relation
+apps/web/src/lib/api.ts,apps/web/src/lib/api.test.ts,LUC-2164 shared lib relation
+apps/web/src/lib/forms.ts,apps/web/src/lib/sharedWebUtilities.test.ts,LUC-2164 shared lib aggregate relation
+apps/web/src/lib/getAxiosMessage.ts,apps/web/src/lib/errorResolver.test.ts,LUC-2164 axios message error relation
+apps/web/src/lib/handleError.ts,apps/web/src/lib/errorResolver.test.ts,LUC-2164 error handling relation
+apps/web/src/lib/marketStream.ts,apps/web/src/lib/sharedWebUtilities.test.ts,LUC-2164 shared lib aggregate relation
+apps/web/src/security/themeBootstrap.ts,apps/web/src/lib/sharedWebUtilities.test.ts,LUC-2164 theme bootstrap utility relation
+apps/web/src/ui/hooks/useDetailsDropdown.ts,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2164 details dropdown primitive relation
+apps/web/src/ui/layout/dashboard/headerControlStyles.ts,apps/web/src/lib/sharedWebUtilities.test.ts,LUC-2164 dashboard header style utility relation
+apps/web/vitest.setup.ts,apps/web/src/vitestSetupSupport.test.tsx,LUC-2199 Web test-harness setup support relation
+libs/shared/index.d.ts,apps/web/src/features/exchanges/exchangeCapabilities.test.ts,LUC-2199 shared declaration consumer type relation
+apps/api/src/modules/positions/livePositionReconciliation.helpers.ts,apps/api/src/modules/positions/livePositionReconciliation.service.test.ts,LUC-2187 positions reconciliation helper relation
+apps/api/src/utils/crypto.ts,apps/api/src/utils/crypto.test.ts,LUC-2187 API-key crypto helper relation
+apps/api/src/modules/orders/positionFillMath.ts,apps/api/src/modules/orders/positionFillMath.test.ts,LUC-2187 order fill math helper relation
+apps/web/vitest.setup.ts,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2198 Web test setup aggregate relation
+libs/shared/index.d.ts,apps/web/src/lib/sharedWebUtilities.test.ts,LUC-2198 shared type surface aggregate relation
+scripts/auditApiEndpointDocsParity.mjs,scripts/checkReusableAuditToolingIndex.test.mjs,LUC-2198 docs parity tooling aggregate relation
+scripts/auditArchitectureGraphDrift.mjs,scripts/repoGuardrails.test.mjs,LUC-2198 graph drift guardrail relation
+scripts/auditRouteReachableI18n.mjs,scripts/checkReusableAuditToolingIndex.test.mjs,LUC-2198 i18n audit tooling aggregate relation
+scripts/buildObsidianVaultLayer.mjs,scripts/checkReusableAuditToolingIndex.test.mjs,LUC-2198 docs tooling aggregate relation
+scripts/buildOpsRequestHeaders.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 ops request header release-gate relation
+scripts/buildProjectIndex.mjs,scripts/checkReusableAuditToolingIndex.test.mjs,LUC-2198 known-state tooling aggregate relation
+scripts/buildRcExternalGateStatus.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 RC gate status release-gate relation
+scripts/buildRcSignoffRecord.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 RC signoff release-gate relation
+scripts/buildSloWindowReport.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 SLO report release-gate relation
+scripts/buildV1CompletionScorecard.mjs,scripts/checkReusableAuditToolingIndex.test.mjs,LUC-2198 V1 scorecard tooling aggregate relation
+scripts/buildV1MasterStateLedger.mjs,scripts/checkReusableAuditToolingIndex.test.mjs,LUC-2198 V1 ledger tooling aggregate relation
+scripts/checkDocsParity.mjs,scripts/checkReusableAuditToolingIndex.test.mjs,LUC-2198 docs parity tooling aggregate relation
+scripts/checkPostDeployRuntimeFreshness.mjs,scripts/runV1FinalPreflight.test.mjs,LUC-2198 post-deploy runtime freshness preflight relation
+scripts/checkRcExternalGateEvidence.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 RC evidence release-gate relation
+scripts/collectLiveImportReadbackEvidence.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 live import readback release-gate relation
+scripts/collectNonGateioRuntimeReadback.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 non-Gateio readback release-gate relation
+scripts/collectSloEvidence.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 SLO collector release-gate relation
+scripts/deploySmokeCheck.mjs,scripts/runV1FinalPreflight.test.mjs,LUC-2198 deploy smoke preflight relation
+scripts/dev-backend.mjs,scripts/repoGuardrails.test.mjs,LUC-2198 dev backend guardrail relation
+scripts/dev-frontend.mjs,scripts/repoGuardrails.test.mjs,LUC-2198 dev frontend guardrail relation
+scripts/dev-workers.mjs,scripts/repoGuardrails.test.mjs,LUC-2198 dev workers guardrail relation
+scripts/evaluateRollbackGuard.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 rollback guard release-gate relation
+scripts/generateFunctionJourneyIndexes.mjs,scripts/repoGuardrails.test.mjs,LUC-2198 journey index graph guardrail relation
+scripts/generateUserActionIndex.mjs,scripts/repoGuardrails.test.mjs,LUC-2198 user action index graph guardrail relation
+scripts/goLiveSmoke.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 go-live smoke release-gate relation
+scripts/resolveOpsAuthToken.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 ops auth release-gate relation
+scripts/runAud07IsolatedDbPacks.mjs,scripts/checkReusableAuditToolingIndex.test.mjs,LUC-2198 isolated DB audit tooling relation
+scripts/runBackupVerificationProfile.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 backup verification release-gate relation
+scripts/runControlledLiveSessionProof.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 controlled live proof release-gate relation
+scripts/runCutoverDryRun.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 cutover dry-run release-gate relation
+scripts/runKnownStateRefresh.mjs,scripts/checkReusableAuditToolingIndex.test.mjs,LUC-2198 known-state refresh tooling relation
+scripts/runLocalExternalGatesPipeline.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 local external gates release-gate relation
+scripts/runLocalProtectedRouteActionProof.mjs,scripts/repoGuardrails.test.mjs,LUC-2198 local protected route proof guardrail relation
+scripts/runProdAuthSessionBrowserProof.mjs,scripts/runV1FinalPreflight.test.mjs,LUC-2198 prod auth session preflight relation
+scripts/runProdFixtureActionProof.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 prod fixture action release-gate relation
+scripts/runProdPositionsProof.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 prod positions proof release-gate relation
+scripts/runProdSecurityExchangeProof.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 prod security exchange release-gate relation
+scripts/runProdUiModuleClickthroughAudit.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 prod UI clickthrough release-gate relation

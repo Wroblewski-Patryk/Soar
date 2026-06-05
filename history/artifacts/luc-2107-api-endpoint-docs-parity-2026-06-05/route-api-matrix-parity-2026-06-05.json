@@ -1,0 +1,18 @@
+{
+  "generatedAt": "2026-06-05T07:04:49.590Z",
+  "status": "PASS",
+  "scope": "Generated guardrail comparing Next page routes and Express API endpoints with traceability-matrix.md and dashboard-route-map.md coverage patterns.",
+  "counts": {
+    "webRoutes": 37,
+    "apiEndpoints": 109,
+    "traceabilityRows": 16,
+    "dashboardRouteMapInventoryRoutes": 37,
+    "gaps": 0
+  },
+  "gaps": {
+    "webRoutesMissingInTraceabilityMatrix": [],
+    "webRoutesMissingInDashboardRouteMap": [],
+    "apiEndpointsMissingInTraceabilityMatrix": [],
+    "dashboardApiEndpointsMissingInRouteMap": []
+  }
+}

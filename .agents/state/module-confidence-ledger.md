@@ -2,6 +2,622 @@
 
 Last updated: 2026-06-05
 
+- 2026-06-05 `LUC-2222-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05`
+  applies to production Ops release confidence: read-only Coolify API status
+  access remains verified for Soar project/environment/resource reconciliation.
+  Runtime binding names are present without value disclosure for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID`; optional team
+  binding names remain absent but project-scoped reads succeed. Fresh readback
+  at `2026-06-05T15:34:58Z` resolved project `Soar`, environment
+  `production`, six applications, PostgreSQL, Redis, zero generic services,
+  eight production-environment resources, and `17` visible global resource
+  rows. Application inventory status remains `running:unknown`; PostgreSQL and
+  Redis report `running:healthy` from the production environment readback.
+  Validation passed: `pnpm run ops:coolify-stack:env-check:test` (`8/8`).
+  This is read-only status access proof only, not deploy, restart, rollback,
+  protected smoke, database health beyond inventory, SLO, restore/rollback, or
+  live-trading proof. Evidence:
+  `history/evidence/luc-2222-coolify-read-only-production-status-access-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2198-SCRIPT-TOOLING-MISSING-TEST-RELATION-REPAIR-2026-06-05`
+  applies to Architecture Evidence Graph confidence and release/audit tooling
+  test traceability. Test Automation validated `40` direct scanner-readable
+  test relation rows for current top script/tooling samples and refreshed the
+  architecture-awareness exports. Targeted relation readback found `0` missing
+  referenced files and `0` duplicate exact pairs; focused script/tooling Node
+  tests passed (`49/49`); architecture-awareness refresh passed (`14320`
+  entities / `22430` relations, generated `2026-06-05T12:36:20.092Z`); and
+  strict graph drift passed (`824/824`, `0` missing). This is verified
+  relation proof, not new runtime, protected production, deploy, secret,
+  exchange, DB-backed, or live-trading proof. Evidence:
+  `history/tasks/luc-2198-repair-script-tooling-missing-test-relation-backlog-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2204-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05`
+  applies to production Ops release confidence: read-only Coolify API status
+  access remains verified for Soar project/environment/resource reconciliation.
+  Runtime binding names are present without value disclosure for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID`; optional team
+  binding names remain absent but project-scoped reads succeed. Fresh readback
+  at `2026-06-05T12:39:24Z` resolved project `Soar`, environment
+  `production`, six applications, PostgreSQL, Redis, zero generic services,
+  eight production-environment resources, and `17` visible global resource
+  rows. Application inventory status remains `running:unknown`; PostgreSQL and
+  Redis report `running:healthy` from the production environment readback.
+  Validation passed: `pnpm run ops:coolify-stack:env-check:test` (`8/8`).
+  This is read-only status access proof only, not deploy, restart, rollback,
+  protected smoke, database health beyond inventory, SLO, restore/rollback, or
+  live-trading proof. Evidence:
+  `history/evidence/luc-2204-coolify-read-only-production-status-access-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2199-WEB-SUPPORT-SURFACE-MISSING-TEST-AUDIT-2026-06-05`
+  applies to `web-shared` and Architecture Evidence Graph test confidence.
+  The Web support/type rows `apps/web/vitest.setup.ts` and
+  `libs/shared/index.d.ts` are no longer open support-surface missing-test
+  samples after focused proof and direct priority test links. Evidence: Web
+  focused tests PASS (`2` files / `4` tests), architecture-awareness refresh
+  PASS (`14322` entities / `22433` relations, generated
+  `2026-06-05T12:40:45.169Z`), actionable missing-test rows `859`, graph
+  generate PASS, strict drift PASS (`824/824`, `0` missing). Task:
+  `history/tasks/luc-2199-audit-web-support-surface-missing-test-rows-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2200-MONEY-FACING-RUNTIME-MISSING-TEST-FAMILY-AUDIT`
+  applies to `SOAR-ENGINE-001`, `SOAR-EXCHANGE-ADAPTER-001`,
+  `SOAR-ORDERS-001`, `SOAR-MANUAL-ORDERS-001`, `SOAR-POSITIONS-001`, and
+  Architecture Evidence Graph test confidence. Integration Trading audited
+  residual missing-test signals for `CHAIN-ENGINE-RUNTIME-CORE`,
+  `CHAIN-EXCHANGE-ADAPTER-DEEP`, `CHAIN-MANUAL-ORDER-DEEP`, and
+  `CHAIN-POSITIONS-CORE` against the architecture-awareness report generated
+  `2026-06-05T12:00:45.591Z`. Static graph readback found `43` API
+  implementation file rows with `228` function/entity-level missing direct
+  `tests` links, but every filtered file has curated graph test coverage
+  relation to an existing focused or aggregate test file. No new missing local
+  pure-function test was isolated after the LUC-2187 order-fill/math closure.
+  Focused DB-free representative proof passed (`6` files / `45` tests). A
+  larger representative pack timed out and is not counted as proof. DB-backed
+  positions/order lifecycle proof remains local-Postgres dependent; protected
+  production/live readback remains gated by [LUC-241](/LUC/issues/LUC-241).
+  Evidence:
+  `history/tasks/luc-2200-money-facing-runtime-residual-missing-test-families-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2197-CURRENT-ACTIONABLE-MISSING-TEST-ROWS-2026-06-05`
+  applies to Architecture Evidence Graph and cross-module test confidence.
+  Test Automation reconstructed the current scanner actionable missing-test
+  filter from the `2026-06-05T12:33:42.151Z` architecture-awareness export and
+  matched graph health exactly: raw missing tests `7654`, actionable
+  missing-test rows `859`, actionable missing-doc rows `0`. The current
+  actionable rows are classified as aggregate local/release/Ops scripts,
+  protected production proof collectors, aggregate script/tooling proof, Web
+  residual support, API engine/runtime helpers, API tooling, API positions and
+  API-key crypto helper relation granularity, API bots, worker/observability,
+  Web build-info proxies, generic API utilities, and auth/session helpers. This
+  is verified classification only, not new runtime
+  proof, DB-backed proof, protected production proof, deploy, secret, exchange,
+  or live-trading proof. Evidence:
+  `history/tasks/luc-2197-classify-current-actionable-missing-test-rows-architecture-awareness-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2188-DYNAMIC-PROTECTED-ROUTE-FIXTURE-PROOF-2026-06-05`
+  applies to protected dynamic route/action proof confidence for Web wallets,
+  strategies, markets, bots, and backtests. Test Automation added synthetic
+  fixture-ID dynamic route rows to the local protected route/action proof
+  runner and verified the static fixture-route mode. Validation passed:
+  `node --check scripts/runLocalProtectedRouteActionProof.mjs` and
+  `pnpm run qa:local-protected-route-actions:proof -- --today 2026-06-05
+  --issue LUC-2188 --clusters wallets,strategies,markets,bots,backtests
+  --dynamic-fixtures-only --include-dynamic-fixtures
+  --static-dynamic-fixture-proof --cdp-timeout-ms 5000`. Evidence readback:
+  status `PASS`, `12` dynamic route rows PASS, `1` fail-closed browser row
+  BLOCKED, failures `0`, blockers `0`, static mapping `PASS`. This is local
+  static fixture-ID route/source/index proof only, not rendered browser proof,
+  DB-backed API fixture proof, protected production proof, deploy, secret,
+  exchange, or LIVE proof. Evidence:
+  `history/tasks/luc-2188-dynamic-protected-route-fixture-proof-2026-06-05-task.md`;
+  `history/evidence/luc-2188-local-protected-route-action-proof-matrix-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2186-RESIDUAL-MISSING-DOC-RELATION-CLOSURE-2026-06-05`
+  applies to Architecture Evidence Graph confidence, API positions/profile/
+  users/root/observability/queue/prisma/workers documentation confidence, and
+  Web shell/auth documentation confidence. Docs Memory added direct
+  scanner-readable documentation relations for the residual `32` actionable
+  missing-doc rows and refreshed the architecture-awareness exports. Current
+  report generated `2026-06-05T12:00:45.591Z` shows actionable missing docs
+  `0` (down from `32`). Validation passed: targeted relation readback (`32`
+  linked / `0` missing / `0` duplicate exact rows), graph generate, strict
+  graph drift (`823/823`, `0` missing), docs parity, Softwarehouse
+  architecture-awareness refresh, and targeted diff check with CRLF warnings
+  only. Evidence:
+  `history/tasks/luc-2186-close-residual-actionable-missing-doc-relation-rows-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2187-HIGH-SIGNAL-MISSING-TEST-RELATION-FAMILIES-2026-06-05`
+  applies to `SOAR-POSITIONS-001`, `SOAR-PROFILE-API-KEYS-001`,
+  `SOAR-ORDERS-001`, `SOAR-MANUAL-ORDERS-001`, and Architecture Evidence
+  Graph confidence. Test Automation inspected the remaining high-signal
+  missing-test relation families named by `LUC-2175`: API positions helpers,
+  API-key crypto helpers, and order fill/math helpers. Existing focused proof
+  is sufficient for positions helper id build/parse/scope behavior and crypto
+  versioned encryption/decryption behavior; order fill math now has a focused
+  unit test for weighted entry price, new-position fill, invalid fill-price
+  fail-closed behavior, and negative input normalization. Direct test
+  relations were added in `docs/architecture/relations/priority-test-links.csv`.
+  Validation passed for crypto + fill math (`8/8`), positions helper subset
+  (`1/1`), graph generate, strict graph drift (`823/823`, `0` missing), and
+  targeted diff check. Full DB-backed reconciliation default-deps proof is
+  blocked by local Postgres unavailability at `localhost:5432`, not by a new
+  code regression. Evidence:
+  `history/tasks/luc-2187-inspect-high-signal-missing-test-relation-families-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2176-LOCAL-ROUTE-ACTION-PROOF-MATRIX-REMAINING-NON-PRODUCTION-FAMILIES`
+  applies to `web-reports`, `web-logs`, `web-profile`, `web-admin`, and the
+  protected route/action proof harness. Test Automation extended the local
+  harness with selected-cluster execution and timeout-safe CDP behavior, then
+  verified reports, logs, profile, admin subscriptions, and admin users with
+  `6/6` PASS route rows, static mapping `PASS`, and blockers `0`. This is
+  local protected route reachability only, not production auth, DB-backed data,
+  profile/admin mutation, exchange, deployment, or LIVE proof. Evidence:
+  `history/tasks/luc-2176-extend-local-route-action-proof-matrix-remaining-non-production-families-2026-06-05-task.md`;
+  `history/evidence/luc-2176-local-protected-route-action-proof-matrix-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2145-LIVE-EXCHANGE-READBACK-MATRIX-2026-06-05`
+  applies to `SOAR-MANUAL-ORDERS-001`, `SOAR-ORDERS-001`,
+  `SOAR-BOT-RUNTIME-001`, `SOAR-ENGINE-001`, `SOAR-EXCHANGE-ADAPTER-001`,
+  and market-data stream adapter confidence. Integration Trading converted the
+  five critical live exchange chains into a no-mutation readback matrix:
+  `CHAIN-MANUAL-ORDER-DEEP`, `CHAIN-RUNTIME-DCA-PNL`,
+  `CHAIN-EXCHANGE-ADAPTER-DEEP`, `CHAIN-ENGINE-RUNTIME-CORE`, and
+  `CHAIN-MARKET-DATA-STREAM-ADAPTERS`. Existing status remains
+  `verified_local`; the update adds evidence routing only. Protected
+  production readback remains gated by [LUC-241](/LUC/issues/LUC-241) and
+  Security/Ops/QA session handling. Any LIVE order/cancel/close remains
+  fail-closed until a separate approval names exchange, account, symbol, side,
+  size, max risk, cleanup/readback, and rollback/kill-switch context. No
+  runtime behavior, deploy, restart, rollback, database/account/API-key/
+  exchange mutation, protected smoke, secret readback, or LIVE action occurred.
+  Evidence:
+  `history/tasks/luc-2145-live-exchange-critical-chain-no-mutation-readback-matrix-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2174-REMAINING-ACTIONABLE-MISSING-DOC-ROWS-2026-06-05`
+  applies to Architecture Evidence Graph documentation traceability and API
+  root/auth/wallets/backtests/bots/engine/orders module documentation
+  confidence. Docs Memory classified the current top actionable missing-doc
+  backend helper families after the June 5 graph refresh and added direct
+  scanner-readable documentation links for `40` targets. Targeted CSV readback
+  passed (`40` linked / `0` missing / `0` duplicate exact rows).
+  Architecture-awareness refresh generated `2026-06-05T10:58:31.707Z` with
+  `14282` entities and `22292` relations; actionable missing docs improved
+  from `72` to `32`. Strict graph drift passed (`822/822`, `0` missing), and
+  docs parity passed (`API 22/22`, `Web 16/16`, `Routes 37/37`). This is
+  documentation relation proof only, not runtime, DB-backed, production,
+  deploy, secret, exchange, or live-trading proof. Evidence:
+  `history/tasks/luc-2174-classify-remaining-actionable-missing-doc-rows-after-graph-refresh-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2175-REMAINING-ACTIONABLE-MISSING-TEST-ROWS-2026-06-05`
+  applies to Architecture Evidence Graph and cross-module test confidence.
+  Test Automation reconstructed and classified the full `896` actionable
+  missing-test rows from the `2026-06-05T10:58:31.707Z` architecture-awareness
+  graph refresh. The largest families are aggregate script/tooling proof
+  (`354`), protected production proof collectors (`147`), local/release/Ops
+  aggregate scripts (`147`), Web residual support (`85`), and API engine/runtime
+  helpers (`62`). Existing proof remains represented by predecessor lanes
+  [LUC-2156](/LUC/issues/LUC-2156), [LUC-2157](/LUC/issues/LUC-2157), and
+  [LUC-2164](/LUC/issues/LUC-2164). This is verified classification only, not
+  new runtime proof, DB-backed proof rerun, protected production proof, deploy,
+  secret, exchange, or live-trading proof. Evidence:
+  `history/tasks/luc-2175-classify-remaining-actionable-missing-test-rows-after-graph-refresh-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2177-SEMANTIC-API-PARITY-AUDIT-2026-06-05` applies to
+  backend API contract confidence for `api-orders`, `api-positions`,
+  `api-bots`, `api-profile`, `api-subscriptions`, `api-admin`, and
+  `api-reports`. Backend API Engineer audited representative high-risk
+  dashboard/admin route/controller/type/service/doc/test chains beyond the
+  [LUC-2107](/LUC/issues/LUC-2107) route inventory guardrail. Route/API matrix
+  parity passed (`37` Web routes, `109` API endpoints, `0` gaps), and focused
+  reports aggregation proof passed (`reports.service.test.ts`, `2/2`). Static
+  inspection found explicit DTO/query parsing or justified no-input read
+  contracts for the sampled families and no confirmed semantic DTO/response
+  mismatch. This is local/static representative audit proof, not exhaustive
+  generated response-shape diffing, DB-backed e2e rerun, protected production
+  readback, deploy, secret, exchange, or live-trading proof. Evidence:
+  `history/tasks/luc-2177-semantic-route-api-dto-response-parity-audit-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2173-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05`
+  applies to production Ops release confidence: read-only Coolify API status
+  access remains verified for Soar project/environment/resource reconciliation.
+  Runtime binding names are present without value disclosure for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID`; optional team
+  binding names remain absent but project-scoped reads succeed. Fresh readback
+  at `2026-06-05T10:52:27Z` resolved project `Soar`, environment
+  `production`, six applications, PostgreSQL, Redis, zero generic services,
+  eight production-environment resources, and `17` visible global resource
+  rows. Application inventory status remains `running:unknown`; PostgreSQL and
+  Redis report `running:healthy` from the production environment readback.
+  Validation passed: `pnpm run ops:coolify-stack:env-check:test` (`8/8`).
+  This is read-only status access proof only, not deploy, restart, rollback,
+  protected smoke, database health beyond inventory, SLO, restore/rollback, or
+  live-trading proof. Evidence:
+  `history/evidence/luc-2173-coolify-read-only-production-status-access-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2165-SECOND-WAVE-SCRIPT-TOOLING-RELATION-BACKLOG-2026-06-05`
+  applies to documentation, architecture awareness tooling, API script/tooling,
+  Prisma/data tooling, and protected proof-runner traceability confidence.
+  Docs Memory classified second-wave script/tooling relation rows across
+  fragment-level proof-runner helper doc-link gaps, `apps/api/scripts` tooling
+  doc-link gaps, Prisma/data tooling doc-link gaps, missing-test relation
+  backlog, protected proof collectors, and no-action scanner noise. Direct
+  documentation links were added for `15` sample rows. Targeted CSV readback
+  passed (`15` linked / `0` missing / `0` duplicate exact rows).
+  Architecture-awareness refresh generated `2026-06-05T10:29:09.030Z` with
+  `14269` entities and `22200` relations; actionable missing docs improved
+  from `108` to `74`, and every added sample row reads back with
+  `documents=1`. Strict graph drift passed (`822/822`, `0` missing). This is
+  documentation relation proof only, not runtime, production, deployment,
+  protected-smoke, secret, exchange, or live-trading proof. Evidence:
+  `history/tasks/luc-2165-classify-second-wave-script-tooling-relation-backlog-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2164-SHARED-WEB-UI-MISSING-TEST-RELATION-RECONCILIATION-2026-06-05`
+  applies to `web-shared` and Architecture Evidence Graph test confidence.
+  Test Automation converted the prior evidence-present shared Web UI/form/
+  layout/lib/theme/dropdown/header missing-test classification into
+  scanner-readable direct `tests` relations through
+  `docs/architecture/relations/priority-test-links.csv`. Focused Web proof
+  passed (`28` files / `145` tests). Architecture-awareness readback generated
+  `2026-06-05T10:28:04.175Z` with `14267` entities and `22197` relations;
+  actionable missing tests improved from `920` to `896`, and targeted
+  LUC-2164 priority paths remaining in actionable missing-test samples read
+  back as `0`. `apps/web/vitest.setup.ts` and `libs/shared/index.d.ts` remain
+  classified support/type surfaces, not user-facing UI test gaps. Strict graph
+  drift passed (`822/822`, `0` missing). This is local architecture relation
+  proof only, not runtime, production, deployment, protected-smoke, secret,
+  exchange, or live-trading proof. Evidence:
+  `history/tasks/luc-2164-reconcile-shared-web-ui-missing-test-relation-rows-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2163-BACKEND-MODEL-DOC-LINK-NORMALIZATION-2026-06-05`
+  applies to Architecture Evidence Graph, API engine, API exchange, API
+  orders, API positions, API profile, API subscriptions, service reliability,
+  deployment readiness, Web bots, Web icons, and Web profile documentation
+  confidence. Docs Memory normalized current backend model-family missing-doc
+  rows to canonical owner docs and classified the owner-doc proof boundary.
+  Direct relation readback passed (`22` rows present and unique).
+  Architecture-awareness refresh generated `2026-06-05T10:29:09.030Z` with
+  `14272` entities and `22205` relations; actionable missing docs improved
+  from `108` to `74`, and the prior backend model sample family no longer
+  appears in top actionable missing-doc rows. Validation passed:
+  architecture graph generate, strict graph drift (`822/822`, `0` missing),
+  docs parity, architecture-awareness exporter refresh, and targeted diff
+  check with CRLF warnings only. This is documentation traceability proof, not
+  runtime behavior, protected production, deployment, exchange, or live-trading
+  proof. Evidence:
+  `history/tasks/luc-2163-normalize-backend-model-missing-doc-links-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2162-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05`
+  applies to production Ops release confidence: read-only Coolify API status
+  access remains verified for Soar project/environment/resource reconciliation.
+  Runtime binding names are present without value disclosure for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID`; optional team
+  binding names remain absent but project-scoped reads succeed. Fresh readback
+  at `2026-06-05T10:23:19Z` resolved project `Soar`, environment
+  `production`, six applications, PostgreSQL, Redis, zero generic services,
+  eight production-environment resources, and `17` visible global resource
+  rows. Application inventory status remains `running:unknown`; PostgreSQL and
+  Redis report `running:healthy` from the global status projection. Validation
+  passed: `pnpm run ops:coolify-stack:env-check:test` (`8/8`). This is
+  read-only status access proof only, not deploy, restart, rollback, protected
+  smoke, database health beyond inventory, SLO, restore/rollback, or
+  live-trading proof. Evidence:
+  `history/evidence/luc-2162-coolify-read-only-production-status-access-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2157-API-RUNTIME-HELPER-MISSING-TEST-RELATION-BACKLOG-2026-06-05`
+  applies to `api-auth`, `api-bots`, `api-engine`, `api-root`, and
+  Architecture Evidence Graph test confidence. Test Automation classified the
+  current API/runtime helper missing-test relation bucket across auth session
+  helpers, API root/workers diagnostics, bot setup, bot runtime read/command/
+  repository helpers, engine runtime helpers, and protected exchange/readback
+  surfaces. Existing focused or aggregate local proof is present for the major
+  families, and no new focused coverage gap or runtime defect was isolated.
+  Validation passed for the pure API/runtime helper pack (`6` files / `37`
+  tests) and `pnpm run architecture:graph:drift:strict` (`822/822`, `0`
+  missing). Representative DB-backed auth and worker runtime tests could not
+  complete because Prisma cannot reach local Postgres at `localhost:5432`; this
+  is an environment blocker for rerun proof, not a newly classified product
+  defect. Protected production proof remains [LUC-241](/LUC/issues/LUC-241) /
+  Ops/Security scope. Evidence:
+  `history/tasks/luc-2157-classify-api-runtime-helper-missing-test-relation-backlog-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2155-DOCUMENTATION-LINKS-INGESTION-ACTIONABLE-MISSING-DOCS-2026-06-05`
+  applies to Architecture Evidence Graph, API bots, API engine, and
+  release-audit-tooling documentation confidence. Docs Memory verified that
+  curated `docs/architecture/relations/documentation-links.csv` rows now ingest
+  into `documents` relations for the requested script samples, added exporter
+  retry handling for Windows busy/unknown write failures, and classified
+  `BotDomainError` plus `orderTypes.types.ts` against existing API module docs.
+  Actionable missing docs improved from `148` to `108`; the five requested
+  script entities and two backend model entities each have `documents=1` and
+  are absent from the top missing-doc report. Validation passed: scanner
+  refresh (`14258` entities / `22125` relations), exporter `node --check`,
+  architecture graph generate, strict graph drift (`822/822`, `0` missing),
+  docs parity, and diff checks with CRLF warnings only. This is documentation
+  traceability proof, not runtime behavior or production proof. Evidence:
+  `history/tasks/luc-2155-repair-documentation-links-ingestion-actionable-missing-docs-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2156-SCRIPT-TOOLING-MISSING-TEST-RELATION-BACKLOG-2026-06-05`
+  applies to Architecture Evidence Graph, release-audit-tooling, and
+  ops-config-pipeline confidence. Test Automation classified the current
+  script/tooling missing-test relation rows from the architecture-awareness
+  report generated `2026-06-05T09:10:34.335Z`. Focused tests already exist for
+  readiness/release/reusable-audit/route-matrix tooling where appropriate;
+  other validator and evidence-builder scripts are covered by aggregate
+  package commands, generated artifact readback, or approval-gated protected
+  proof. No new focused coverage gap or runtime/tooling defect was isolated.
+  Validation passed: focused/aggregate script test pack (`136/136`), `pnpm run
+  architecture:graph:drift:strict` (`822/822`, `0` missing), and targeted
+  `git diff --check`. Remaining signal is scanner direct-relation
+  incompleteness or optional future focused tests for concrete regressions, not
+  a current QA blocker. Evidence:
+  `history/tasks/luc-2156-classify-script-tooling-missing-test-relation-backlog-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2149-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05`
+  applies to production Ops release confidence: read-only Coolify API status
+  access remains verified for Soar project/environment/resource reconciliation.
+  Runtime binding names are present without value disclosure for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID`; optional team
+  binding names remain absent but project-scoped reads succeed. Fresh readback
+  at `2026-06-05T09:52:00Z` resolved project `Soar`, environment
+  `production`, six applications, PostgreSQL, Redis, zero generic services,
+  eight production-environment resources, and `17` visible global resource
+  rows. Application inventory status remains `running:unknown`; PostgreSQL and
+  Redis report `running:healthy`. Validation passed: `pnpm run
+  ops:coolify-stack:env-check:test` (`8/8`). This is read-only status access
+  proof only, not deploy, restart, rollback, protected smoke, database health
+  beyond inventory, SLO, restore/rollback, or live-trading proof. Evidence:
+  `history/evidence/luc-2149-coolify-read-only-production-status-access-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2139-LOCAL-PROTECTED-ACTION-PROOF-MATRIX-MARKETS-BOTS-BACKTESTS-2026-06-05`
+  applies to `web-markets`, `web-bots`, `web-backtest`, and protected route
+  action proof confidence. Test Automation extended
+  `scripts/runLocalProtectedRouteActionProof.mjs` from wallets/strategies to a
+  five-cluster matrix covering wallets, strategies, markets, bots, and
+  backtests. Fresh validation passed: `node --check
+  scripts/runLocalProtectedRouteActionProof.mjs` and `pnpm run
+  qa:local-protected-route-actions:proof -- --today 2026-06-05`. JSON readback
+  confirms `19/19` PASS rows, static mapping `PASS`, and blockers `0`, with
+  local-cookie route reachability and list-page create navigation for the
+  requested markets/bots/backtests clusters. Backtest detail proof is synthetic
+  local fixture route reachability only. Cleanup found no matching owned
+  Node/Chrome/cmd validation processes; only `TIME_WAIT` sockets on ports
+  `3217` and `9347` with owning process `0`. Scope stayed local-only and
+  non-mutating: no production session, owner account, exchange key, form
+  submit, market/bot/backtest mutation, DB mutation, deploy, restart, rollback,
+  secret disclosure, or LIVE action occurred. Evidence:
+  `history/evidence/luc-2139-local-protected-route-action-proof-matrix-2026-06-05.md`,
+  `history/artifacts/luc-2139-local-protected-route-action-proof-matrix-2026-06-05.json`,
+  `history/tasks/luc-2139-expand-local-protected-action-proof-matrix-markets-bots-backtests-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2138-SHARED-WEB-UI-MISSING-TEST-RELATION-BACKLOG-2026-06-05`
+  applies to `web-shared` and Architecture Evidence Graph test confidence.
+  Test Automation reclassified the current top shared Web UI/forms/layout/lib
+  missing-test samples from the architecture-awareness report generated
+  `2026-06-05T09:10:34.335Z`. `DataTable`, shared primitives, form primitives,
+  dashboard/public layout, PWA, shared lib utilities, theme bootstrap,
+  dropdown/header helpers, test setup, and type declaration surfaces either
+  have focused/aggregate local proof or are better classified as test-harness /
+  type-surface relation backlog. No new focused coverage gap was found.
+  Validation passed: focused shared Web test pack (`28` files / `145` tests)
+  and `pnpm run architecture:graph:drift:strict` (`822/822`, `0` missing).
+  Remaining signal is scanner/direct-relation incompleteness, not a current
+  runtime UI defect or Test Automation blocker. Evidence:
+  `history/tasks/luc-2138-classify-shared-web-ui-missing-test-relation-backlog-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2132-SCRIPT-TOOLING-DOC-TEST-LINKS-2026-06-05`
+  applies to Architecture Evidence Graph, release-audit-tooling, and
+  ops-config-pipeline confidence. Docs Memory classified script/tooling
+  missing doc/test samples by owner lane and added direct doc relations for
+  clear documentation owners in
+  `docs/architecture/relations/documentation-links.csv`. The repair table now
+  lives in `docs/automation/guardrail-commands.md` and separates direct doc
+  closures from aggregate/focused test-link recommendations. Post-change
+  architecture-awareness report generated `2026-06-05T09:08:28.191Z` reports
+  actionable missing docs `148`, actionable missing tests `919`, classified
+  noise `7377`, and disconnected entities `0`; original sampled script/tooling
+  doc-link rows no longer appear in top actionable missing doc-link samples.
+  Validation passed: `pnpm run architecture:graph:generate`,
+  architecture-awareness scanner refresh (`14237` entities / `22052`
+  relations), and `pnpm run architecture:graph:drift:strict` (`822/822`, `0`
+  missing). This is docs/evidence proof only, not runtime, route, protected,
+  production, deploy, account, exchange, or live-trading proof. Evidence:
+  `history/tasks/luc-2132-classify-script-tooling-missing-doc-test-links-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2131-WEB-LIB-I18N-DOC-TEST-LINK-NORMALIZATION-2026-06-05`
+  applies to `web-shared` and Architecture Evidence Graph confidence. Docs
+  Memory normalized direct documentation links for shared Web i18n, generic
+  `apps/web/src/lib` utilities, theme bootstrap, data-table/form/dropdown
+  helpers, and dashboard header style helpers in
+  `docs/architecture/relations/documentation-links.csv`. `docs/modules/web-shared.md`
+  now separates owner/module/status/expected proof for focused tests,
+  aggregate tests, and direct scanner relation incompleteness. Post-change
+  architecture-awareness report generated `2026-06-05T09:08:28.191Z` reports
+  actionable missing docs `148` (down from `188`), actionable missing tests
+  `919`, classified noise `7377`, and disconnected entities `0`; the Web
+  i18n/lib/helper rows no longer appear in top actionable missing doc-link
+  samples. Validation passed: `pnpm run architecture:graph:generate` and
+  `pnpm run architecture:graph:drift:strict` (`822/822`, `0` missing).
+  Architecture-awareness scanner wrote exports and readback succeeded
+  (`14237` entities / `22052` relations), but the process timed out after
+  printing its export summary. This is docs/evidence proof only, not runtime,
+  route, protected, production, deploy, account, exchange, or live-trading
+  proof. Evidence:
+  `history/tasks/luc-2131-normalize-web-lib-i18n-missing-doc-test-link-samples-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2132-SCRIPT-TOOLING-DOC-TEST-LINKS-2026-06-05`
+  applies to Architecture Evidence Graph, release-audit-tooling, and
+  ops-config-pipeline confidence. Docs Memory classified script/tooling
+  missing doc/test samples from [LUC-2123](/LUC/issues/LUC-2123) across
+  documentation/graph validators, known-state builders,
+  release/observability builders, Coolify/protected-input readiness,
+  production readback collectors, and test/runtime support shims. Direct
+  documentation links were added in
+  `docs/architecture/relations/documentation-links.csv` where ownership was
+  clear, and `docs/automation/guardrail-commands.md` now records the repair
+  table. Post-change architecture-awareness report generated
+  `2026-06-05T09:10:34.335Z` reports actionable missing docs `148` (down from
+  `188`), actionable missing tests `919`, classified noise `7377`, and
+  disconnected entities `0`; the original sampled script/tooling doc-link rows
+  no longer appear in top actionable missing doc-link samples. Validation
+  passed: `pnpm run architecture:graph:generate`, scanner refresh from
+  `Paperclip_Softwarehouse` (`14237` entities / `22052` relations / `7097`
+  files), and `pnpm run architecture:graph:drift:strict` (`822/822`, `0`
+  missing). This is docs/evidence proof only, not runtime, route, protected,
+  production, deploy, account, exchange, or live-trading proof. Evidence:
+  `history/tasks/luc-2132-classify-script-tooling-missing-doc-test-links-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2130-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05`
+  applies to production Ops release confidence: read-only Coolify API status
+  access remains verified for Soar project/environment/resource reconciliation.
+  Runtime binding names are present without value disclosure for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID`; optional team
+  binding names remain absent but project-scoped reads succeed. Fresh readback
+  at `2026-06-05T09:05:51Z` resolved project `Soar`, environment
+  `production`, six applications, PostgreSQL, Redis, zero generic services,
+  eight production-environment resources, and `17` visible global resource
+  rows. Application inventory status remains `running:unknown`; PostgreSQL and
+  Redis report `running:healthy`. Validation passed: `pnpm run
+  ops:coolify-stack:env-check:test` (`8/8`). This is read-only status access
+  proof only, not deploy, restart, rollback, protected smoke, database health
+  beyond inventory, SLO, restore/rollback, or live-trading proof. Evidence:
+  `history/evidence/luc-2130-coolify-read-only-production-status-access-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2123-ACTIONABLE-GRAPH-MISSING-DOC-TEST-LINKS-2026-06-05`
+  applies to `web-bots`, `web-shared`, `web-strategies`, and Architecture
+  Evidence Graph confidence. Docs Memory classified top actionable missing
+  doc/test samples from the current architecture-awareness report and
+  normalized direct documentation links for nine stable Web utility files:
+  bot runtime derivations/labels/surface/trailing-stop helpers, shared DCA and
+  runtime monitoring helpers, and strategy indicator/threshold helpers.
+  Post-change architecture-awareness readback reports actionable missing docs
+  `188` (down from `197`), actionable missing tests `919`, classified noise
+  `7377`, and disconnected entities `0`; normalized utility rows no longer
+  appear in top actionable missing doc-link samples. Validation passed:
+  architecture graph generation, architecture-awareness scanner refresh, and
+  strict graph drift (`822/822`, `0` missing). Remaining Web lib/i18n and
+  script/tooling samples are follow-up classification candidates, not known
+  runtime defects; they were split into [LUC-2131](/LUC/issues/LUC-2131) and
+  [LUC-2132](/LUC/issues/LUC-2132). Evidence:
+  `history/tasks/luc-2123-classify-actionable-graph-missing-doc-test-links-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2124-LOCAL-PROTECTED-ROUTE-ACTION-PROOF-MATRIX-2026-06-05`
+  applies to `web-wallets`, `web-strategies`, and protected route action proof
+  confidence. The local CDP/browser harness in
+  `scripts/runLocalProtectedRouteActionProof.mjs` now uses cluster metadata
+  instead of a wallet-only action list and covers wallets plus strategies.
+  Fresh proof passed eight rows: wallet unauthenticated fail-closed redirect,
+  wallet root/list/create route reachability, wallet list-page create
+  navigation, strategies list/create route reachability, and strategies
+  list-page create navigation. Validation passed: `node --check
+  scripts/runLocalProtectedRouteActionProof.mjs` and `pnpm run
+  qa:local-protected-route-actions:proof -- --today 2026-06-05`. Cleanup proof
+  found no owned listener/browser process left on ports `3217`/`9347`.
+  Boundary remains local-only: no form submission, production auth/session,
+  wallet/strategy mutation, exchange call, DB mutation, deploy, restart,
+  rollback, secret disclosure, account action, or live-trading proof occurred.
+  Evidence:
+  `history/evidence/luc-2124-local-protected-route-action-proof-matrix-2026-06-05.md`,
+  `history/artifacts/luc-2124-local-protected-route-action-proof-matrix-2026-06-05.json`.
+
+- 2026-06-05 `LUC-2122-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05`
+  applies to production Ops release confidence: read-only Coolify API status
+  access remains verified for Soar project/environment/resource reconciliation.
+  Runtime binding names are present without value disclosure for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID`; optional team
+  binding names remain absent but project-scoped reads succeed. Fresh readback
+  at `2026-06-05T08:51:47Z` resolved project `Soar`, environment
+  `production`, six applications, PostgreSQL, Redis, zero generic services,
+  eight production-environment resources, and `17` visible global resource
+  rows. Application inventory status remains `running:unknown`; PostgreSQL and
+  Redis report `running:healthy`. Validation passed: `pnpm run
+  ops:coolify-stack:env-check:test` (`8/8`). This is read-only status access
+  proof only, not deploy, restart, rollback, protected smoke, database health
+  beyond inventory, SLO, restore/rollback, or live-trading proof. Evidence:
+  `history/evidence/luc-2122-coolify-read-only-production-status-access-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2112-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05`
+  applies to production Ops release confidence: read-only Coolify API status
+  access remains verified for Soar project/environment/resource reconciliation.
+  Runtime binding names are present without value disclosure for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID`; optional team
+  binding names remain absent but project-scoped reads succeed. Fresh readback
+  at `2026-06-05T07:23:02Z` resolved project `Soar`, environment
+  `production`, six applications, PostgreSQL, Redis, zero generic services,
+  and `17` visible global resource rows. Application inventory status remains
+  `running:unknown`; PostgreSQL reports `running:healthy`; Redis resource
+  presence is verified but status is `running:unknown` in this redacted
+  readback. Validation passed: `pnpm run ops:coolify-stack:env-check:test`
+  (`8/8`). This is read-only status access proof only, not deploy, restart,
+  rollback, protected smoke, Redis health beyond inventory presence, database
+  health beyond inventory, SLO, restore/rollback, or live-trading proof.
+  Evidence:
+  `history/evidence/luc-2112-coolify-read-only-production-status-access-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2106-SHARED-WEB-UI-MISSING-TEST-LINKS-2026-06-05`
+  applies to `web-shared` and Architecture Evidence Graph test confidence:
+  Test Automation classified top actionable shared Web UI missing-test samples
+  from the current architecture-awareness report. Existing focused tests cover
+  table, form, layout, PWA, modal, loading, navigation, and shared utility
+  clusters; `FooterPreferencesSwitchers` and `ProfileButton` direct primitive
+  coverage was added to `SharedUiPrimitives.test.tsx`. Validation passed:
+  focused primitive test (`11/11`), shared UI validation command (`17` files /
+  `98` tests), and strict architecture graph drift (`822/822`, `0` missing).
+  Remaining signal is scanner/direct-relation incompleteness, not a known
+  runtime UI defect. Evidence:
+  `history/tasks/luc-2106-classify-shared-web-ui-missing-test-links-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2107-ROUTE-API-MATRIX-GUARDRAIL-2026-06-05` applies to
+  architecture/docs/test automation confidence: generated Web route and API
+  endpoint inventory now has a repeatable parity check against
+  `docs/architecture/traceability-matrix.md` and
+  `docs/architecture/reference/dashboard-route-map.md`. Current state:
+  verified locally. Validation passed:
+  `pnpm run docs:parity:route-api-matrix:test` (`5/5`),
+  `pnpm run docs:parity:route-api-matrix` (`37` Web routes / `109` API
+  endpoints / `0` gaps), endpoint docs parity (`109/109`, `0` gaps),
+  `pnpm run docs:parity:check`, `pnpm run architecture:graph:generate`
+  (`651` nodes / `842` relations / `27` chains),
+  `pnpm run architecture:graph:drift:strict` (`822/822`, `0` missing), and
+  `pnpm run quality:guardrails`. This is traceability guardrail proof only,
+  not semantic DTO/response contract generation, runtime journey proof,
+  protected production proof, or release readiness. Evidence:
+  `history/tasks/luc-2107-route-api-matrix-parity-guardrail-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2099-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05`
+  applies to production Ops release confidence: read-only Coolify API status
+  access remains verified for Soar project/environment/resource reconciliation.
+  Runtime binding names are present without value disclosure for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID`; optional team
+  binding names remain absent but project-scoped reads succeed. Fresh readback
+  at `2026-06-05T06:52:51Z` resolved project `Soar`, environment
+  `production`, six applications, PostgreSQL, Redis, zero generic services,
+  and `17` visible global resource rows. Application inventory status remains
+  `running:unknown`; PostgreSQL and Redis report `running:healthy`.
+  Validation passed: `pnpm run ops:coolify-stack:env-check:test` (`8/8`).
+  This is read-only status access proof only, not deploy, restart, rollback,
+  protected smoke, database health beyond inventory, SLO, restore/rollback, or
+  live-trading proof. Evidence:
+  `history/evidence/luc-2099-coolify-read-only-production-status-access-2026-06-05.md`.
+
 - 2026-06-05 `LUC-2094-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05`
   applies to production Ops release confidence: read-only Coolify API status
   access remains verified for Soar project/environment/resource reconciliation.
@@ -130,6 +746,19 @@ Last updated: 2026-06-05
   loaders if those surfaces change or Docs Memory promotes stable
   per-component graph nodes. Evidence:
   `history/tasks/luc-2021-shared-ui-inferred-test-doc-link-gap-triage-2026-06-04-task.md`.
+
+- 2026-06-05 `LUC-2105-NORMALIZE-SHARED-WEB-UI-DOC-LINKS-2026-06-05`
+  applies to `web-shared`, `SOAR-DOC-WEB-SHARED`, `SOAR-DOC-WEB-ICONS`, and
+  the Architecture Evidence Graph: shared generated `apps/web/src/ui/**`,
+  `apps/web/src/i18n/I18nProvider.tsx`, layout/PWA, and `AssetSymbol` doc
+  gaps are now mapped through
+  `docs/architecture/relations/documentation-links.csv`. Architecture
+  awareness readback improved actionable missing docs from `241` to `205`, and
+  shared UI component rows no longer appear in top actionable missing doc
+  links. After [LUC-2107](/LUC/issues/LUC-2107) resolved its out-of-scope test
+  graph coverage, `pnpm run architecture:graph:drift:strict` passed
+  (`822/822` covered / `0` missing). Evidence:
+  `history/tasks/luc-2105-normalize-shared-web-ui-doc-link-gaps-2026-06-05-task.md`.
 
 - 2026-06-04 `LUC-2018-API-PLATFORM-SAFETY-ASSISTANT-RED-TEAM-PROOF-MAP-2026-06-04`
   applies to `SOAR-SECURITY-PRIVACY-001`, `SOAR-FEATURE-API-PLATFORM-SAFETY`,
@@ -2493,6 +3122,15 @@ Do not turn uncertainty into optimism.
   behavior. This improves local regression confidence only; protected smoke,
   DB-backed auth route e2e, production account proof, and LIVE hot-path
   assistant parity remain outside this checkpoint unless separately approved.
+- 2026-06-05 `LUC-2107-ROUTE-API-MATRIX-GUARDRAIL-2026-06-05` applies to
+  architecture/docs drift confidence for Web route and API endpoint coverage:
+  added repeatable generated guardrail command
+  `pnpm run docs:parity:route-api-matrix` plus focused tests. Proof passed:
+  checker tests (`5/5`), live parity (`37` Web routes / `109` API endpoints /
+  `0` gaps), docs parity, graph generate (`649` nodes / `842` relations /
+  `27` chains), strict graph drift (`822/822`), and `quality:guardrails`.
+  This is route/API inventory documentation coverage proof only; semantic DTO
+  and response-body parity remain outside this checkpoint.
 
 ## Maintenance Rules
 

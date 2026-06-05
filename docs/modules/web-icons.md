@@ -69,3 +69,11 @@ Evidence:
 ## 9. Open Issues and Follow-Ups
 - Add unit tests for hook deduplication and cancellation behavior.
 - Consider shared cache layer for cross-component icon lookup reuse.
+
+## 10. Architecture-Awareness Doc-Link Classification
+
+Last classified: 2026-06-05 under [LUC-2163](/LUC/issues/LUC-2163).
+
+| Source entity | Owner doc | Classification | Expected proof |
+| --- | --- | --- | --- |
+| `apps/web/src/features/icons/types/icon.type.ts` | `docs/modules/web-icons.md` | Icon lookup DTO/type contract consumed by trading symbol UI surfaces. | Architecture-awareness `documents` relation from this doc plus consumer-driven icon/rendering tests when behavior changes. |

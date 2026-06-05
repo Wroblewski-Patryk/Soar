@@ -69,7 +69,7 @@ Wallet placement rule:
 | Web Route Pattern | Web Feature Ownership | Primary API Contract | Backend Module Ownership | Guardrails |
 |---|---|---|---|---|
 | `/auth/login`, `/auth/register` | `features/auth` | `/auth/login`, `/auth/register`, `/auth/me`, `/auth/logout` | `api/auth` | Public pages; authenticated session redirects user to `/dashboard`. |
-| `/dashboard` | `features/dashboard-home` | `/dashboard/bots*`, `/dashboard/market-stream/events`, `/dashboard/icons/lookup` | `api/bots`, `api/market-stream`, `api/icons` | Requires dashboard session; stale runtime data warning and read-safe fallback states. |
+| `/dashboard` | `features/dashboard-home` | `/dashboard/bots*`, `/dashboard/market-stream/events`, `/dashboard/icons/lookup`, `/dashboard/orders*`, `/dashboard/positions*` | `api/bots`, `api/market-stream`, `api/icons`, `api/orders`, `api/positions` | Requires dashboard session; stale runtime data warning and read-safe fallback states. |
 | `/dashboard/profile` | `features/profile` + `features/exchanges` | `/dashboard/profile/basic`, `/dashboard/profile/apiKeys*`, `/dashboard/profile/security/*`, `/dashboard/profile/subscription`, `/upload/avatar` | `api/profile`, `api/subscriptions`, `api/upload` | Sensitive actions require explicit confirmation/password input. |
 | `/dashboard/wallets*` | `features/wallets` | `/dashboard/wallets*` | `api/wallets` | Wallet is required prerequisite for bot creation (`walletId`-first contract) and must stay before Markets in dashboard IA. |
 | `/dashboard/markets*` | `features/markets` | `/dashboard/markets/universes*`, `/dashboard/markets/catalog` | `api/markets` | Edit path fails closed when market universe is used by active bot. |

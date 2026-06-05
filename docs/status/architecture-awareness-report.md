@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-06-04T17:00:33.358Z
+Generated: 2026-06-05T12:40:45.169Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,16 +11,16 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 37 |
 | component | 97 |
-| document | 3450 |
-| feature | 221 |
-| function | 8239 |
+| document | 3554 |
+| feature | 223 |
+| function | 8283 |
 | migration | 56 |
-| model | 275 |
+| model | 276 |
 | module | 15 |
 | project | 1 |
 | route | 346 |
-| task | 940 |
-| test | 372 |
+| task | 1005 |
+| test | 377 |
 
 ## Counts By Status
 
@@ -28,111 +28,71 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | --- | ---: |
 | blocked | 19 |
 | deprecated | 7 |
-| implemented | 12492 |
+| implemented | 12640 |
 | in_progress | 9 |
-| tested | 646 |
-| verified | 928 |
+| tested | 654 |
+| verified | 993 |
 
 ## Health Signals
 
-- Raw implementation entities without inferred tests: 7681
-- Actionable implementation entities without inferred tests: 940
-- Raw implementation entities without inferred docs: 976
-- Actionable implementation entities without inferred docs: 241
-- Classified inferred-link noise: 7322
+- Raw implementation entities without inferred tests: 7654
+- Actionable implementation entities without inferred tests: 859
+- Raw implementation entities without inferred docs: 738
+- Actionable implementation entities without inferred docs: 0
+- Classified inferred-link noise: 7377
 - Entities without owner attribution: 0
 - Disconnected entities: 0
 
 ## Top Actionable Missing Test Links
 
-- component: AppLogoLink.tsx (apps/web/src/ui/components/AppLogoLink.tsx)
-- component: ConfirmModal.tsx (apps/web/src/ui/components/ConfirmModal.tsx)
-- component: DataTable.tsx (apps/web/src/ui/components/DataTable.tsx)
-- component: FooterPreferencesSwitchers.tsx (apps/web/src/ui/components/FooterPreferencesSwitchers.tsx)
-- component: FormModal.tsx (apps/web/src/ui/components/FormModal.tsx)
-- component: InlinePager.tsx (apps/web/src/ui/components/InlinePager.tsx)
-- component: SkeletonCardBlock.tsx (apps/web/src/ui/components/loading/SkeletonCardBlock.tsx)
-- component: SkeletonFormBlock.tsx (apps/web/src/ui/components/loading/SkeletonFormBlock.tsx)
-- component: SkeletonKpiRow.tsx (apps/web/src/ui/components/loading/SkeletonKpiRow.tsx)
-- component: SkeletonTableRows.tsx (apps/web/src/ui/components/loading/SkeletonTableRows.tsx)
-- component: ProfileButton.tsx (apps/web/src/ui/components/ProfileButton.tsx)
-- component: SkipToContentLink.tsx (apps/web/src/ui/components/SkipToContentLink.tsx)
-- component: useAsyncConfirm.tsx (apps/web/src/ui/components/useAsyncConfirm.tsx)
-- component: FormAlert.tsx (apps/web/src/ui/forms/FormAlert.tsx)
-- component: FormField.tsx (apps/web/src/ui/forms/FormField.tsx)
-- component: FormGrid.tsx (apps/web/src/ui/forms/FormGrid.tsx)
-- component: FormMobileActionBar.tsx (apps/web/src/ui/forms/FormMobileActionBar.tsx)
-- component: FormPageShell.tsx (apps/web/src/ui/forms/FormPageShell.tsx)
-- component: FormSectionCard.tsx (apps/web/src/ui/forms/FormSectionCard.tsx)
-- component: FormValidationSummary.tsx (apps/web/src/ui/forms/FormValidationSummary.tsx)
-- component: Footer.tsx (apps/web/src/ui/layout/dashboard/Footer.tsx)
-- component: Header.tsx (apps/web/src/ui/layout/dashboard/Header.tsx)
-- component: PageTitle.tsx (apps/web/src/ui/layout/dashboard/PageTitle.tsx)
-- component: Footer.tsx (apps/web/src/ui/layout/public/Footer.tsx)
-- component: Header.tsx (apps/web/src/ui/layout/public/Header.tsx)
-- feature: strategyThresholdItems.ts (apps/web/src/features/strategies/utils/strategyThresholdItems.ts)
-- feature: api.ts (apps/web/src/lib/api.ts)
-- feature: cloneNaming.ts (apps/web/src/lib/cloneNaming.ts)
-- feature: forms.ts (apps/web/src/lib/forms.ts)
-- feature: getAxiosMessage.ts (apps/web/src/lib/getAxiosMessage.ts)
-- feature: handleError.ts (apps/web/src/lib/handleError.ts)
-- feature: marketStream.ts (apps/web/src/lib/marketStream.ts)
-- feature: storage.ts (apps/web/src/lib/storage.ts)
-- feature: symbols.ts (apps/web/src/lib/symbols.ts)
-- feature: text.ts (apps/web/src/lib/text.ts)
-- feature: time.ts (apps/web/src/lib/time.ts)
-- feature: themeBootstrap.ts (apps/web/src/security/themeBootstrap.ts)
-- feature: tabContentFrame.ts (apps/web/src/ui/components/tabContentFrame.ts)
-- feature: useDetailsDropdown.ts (apps/web/src/ui/hooks/useDetailsDropdown.ts)
-- feature: dashboardRoutes.ts (apps/web/src/ui/layout/dashboard/dashboardRoutes.ts)
+- feature: runProdUxA11yMobileProof.mjs (scripts/runProdUxA11yMobileProof.mjs)
+- feature: runQaRepeatableSmokeE2e.mjs (scripts/runQaRepeatableSmokeE2e.mjs)
+- feature: runRcRefreshSummaryStrict.mjs (scripts/runRcRefreshSummaryStrict.mjs)
+- feature: runRestoreDrillEvidence.mjs (scripts/runRestoreDrillEvidence.mjs)
+- feature: runRollbackProofEvidence.mjs (scripts/runRollbackProofEvidence.mjs)
+- feature: runV1StaticIssueScan.mjs (scripts/runV1StaticIssueScan.mjs)
+- feature: start-local-prod-like.mjs (scripts/start-local-prod-like.mjs)
+- feature: start-workers-prod.mjs (scripts/start-workers-prod.mjs)
+- feature: summarizeRcGates.mjs (scripts/summarizeRcGates.mjs)
+- feature: syncRcChecklistFromGateStatus.mjs (scripts/syncRcChecklistFromGateStatus.mjs)
+- feature: triageJourneyEvidence.mjs (scripts/triageJourneyEvidence.mjs)
+- feature: verifyLocalBackupRestore.mjs (scripts/verifyLocalBackupRestore.mjs)
+- feature: writeWebBuildMetadata.mjs (scripts/writeWebBuildMetadata.mjs)
+- function: main (apps/api/prisma/seed.ts#main)
+- function: buildRunInputs (apps/api/scripts/assistant-load-benchmark.ts#buildRunInputs)
+- function: percentile (apps/api/scripts/assistant-load-benchmark.ts#percentile)
+- function: run (apps/api/scripts/assistant-load-benchmark.ts#run)
+- function: run (apps/api/scripts/backfillBacktestVenueContext.ts#run)
+- function: buildArtifactDir (apps/api/scripts/bot-v2-preflight-report.ts#buildArtifactDir)
+- function: main (apps/api/scripts/bot-v2-preflight-report.ts#main)
+- function: nowStamp (apps/api/scripts/bot-v2-preflight-report.ts#nowStamp)
+- function: renderMarkdown (apps/api/scripts/bot-v2-preflight-report.ts#renderMarkdown)
+- function: toIso (apps/api/scripts/bot-v2-preflight-report.ts#toIso)
+- function: main (apps/api/scripts/exportPaperRuntimeSnapshot.ts#main)
+- function: toIso (apps/api/scripts/exportPaperRuntimeSnapshot.ts#toIso)
+- function: buildMarkdown (apps/api/scripts/gateioMarketStreamSourceSmoke.ts#buildMarkdown)
+- function: normalizeOutputPath (apps/api/scripts/gateioMarketStreamSourceSmoke.ts#normalizeOutputPath)
+- function: run (apps/api/scripts/gateioMarketStreamSourceSmoke.ts#run)
+- function: ensureUser (apps/api/scripts/importPaperRuntimeSnapshot.ts#ensureUser)
+- function: main (apps/api/scripts/importPaperRuntimeSnapshot.ts#main)
+- function: percentile (apps/api/scripts/load-test.mjs#percentile)
+- function: runWorker (apps/api/scripts/load-test.mjs#runWorker)
+- function: forwardSignal (apps/api/scripts/start-with-migrate.mjs#forwardSignal)
+- function: runMigrations (apps/api/scripts/start-with-migrate.mjs#runMigrations)
+- function: main (apps/api/scripts/verifyWalletDbFoundation.ts#main)
+- function: readCount (apps/api/scripts/verifyWalletDbFoundation.ts#readCount)
+- function: toStamp (apps/api/scripts/verifyWalletDbFoundation.ts#toStamp)
+- function: getSessionJwtExpiresIn (apps/api/src/modules/auth/auth.session.ts#getSessionJwtExpiresIn)
+- function: getSessionTtlMs (apps/api/src/modules/auth/auth.session.ts#getSessionTtlMs)
+- function: createPayload (apps/api/src/modules/bots/bots.e2e.shared.ts#createPayload)
 
 ## Top Actionable Missing Doc Links
 
-- component: I18nProvider.tsx (apps/web/src/i18n/I18nProvider.tsx)
-- component: AppLogoLink.tsx (apps/web/src/ui/components/AppLogoLink.tsx)
-- component: AssetSymbol.tsx (apps/web/src/ui/components/AssetSymbol.tsx)
-- component: ConfirmModal.tsx (apps/web/src/ui/components/ConfirmModal.tsx)
-- component: DataTable.tsx (apps/web/src/ui/components/DataTable.tsx)
-- component: FooterPreferencesSwitchers.tsx (apps/web/src/ui/components/FooterPreferencesSwitchers.tsx)
-- component: FormModal.tsx (apps/web/src/ui/components/FormModal.tsx)
-- component: InlinePager.tsx (apps/web/src/ui/components/InlinePager.tsx)
-- component: SkeletonCardBlock.tsx (apps/web/src/ui/components/loading/SkeletonCardBlock.tsx)
-- component: SkeletonFormBlock.tsx (apps/web/src/ui/components/loading/SkeletonFormBlock.tsx)
-- component: SkeletonKpiRow.tsx (apps/web/src/ui/components/loading/SkeletonKpiRow.tsx)
-- component: SkeletonTableRows.tsx (apps/web/src/ui/components/loading/SkeletonTableRows.tsx)
-- component: ProfileButton.tsx (apps/web/src/ui/components/ProfileButton.tsx)
-- component: SkipToContentLink.tsx (apps/web/src/ui/components/SkipToContentLink.tsx)
-- component: StatusBadge.tsx (apps/web/src/ui/components/StatusBadge.tsx)
-- component: TableUi.tsx (apps/web/src/ui/components/TableUi.tsx)
-- component: Tabs.tsx (apps/web/src/ui/components/Tabs.tsx)
-- component: ThemeSwitch.tsx (apps/web/src/ui/components/ThemeSwitch.tsx)
-- component: useAsyncConfirm.tsx (apps/web/src/ui/components/useAsyncConfirm.tsx)
-- component: ViewState.tsx (apps/web/src/ui/components/ViewState.tsx)
-- component: FormAlert.tsx (apps/web/src/ui/forms/FormAlert.tsx)
-- component: FormField.tsx (apps/web/src/ui/forms/FormField.tsx)
-- component: FormFields.tsx (apps/web/src/ui/forms/FormFields.tsx)
-- component: FormGrid.tsx (apps/web/src/ui/forms/FormGrid.tsx)
-- component: FormMobileActionBar.tsx (apps/web/src/ui/forms/FormMobileActionBar.tsx)
-- component: FormPageShell.tsx (apps/web/src/ui/forms/FormPageShell.tsx)
-- component: FormSectionCard.tsx (apps/web/src/ui/forms/FormSectionCard.tsx)
-- component: FormValidationSummary.tsx (apps/web/src/ui/forms/FormValidationSummary.tsx)
-- component: DashboardRouteProgress.tsx (apps/web/src/ui/layout/dashboard/DashboardRouteProgress.tsx)
-- component: Footer.tsx (apps/web/src/ui/layout/dashboard/Footer.tsx)
-- component: Header.tsx (apps/web/src/ui/layout/dashboard/Header.tsx)
-- component: IsometricModeToggle.tsx (apps/web/src/ui/layout/dashboard/IsometricModeToggle.tsx)
-- component: LanguageSwitcher.tsx (apps/web/src/ui/layout/dashboard/LanguageSwitcher.tsx)
-- component: PageTitle.tsx (apps/web/src/ui/layout/dashboard/PageTitle.tsx)
-- component: RiskNoticeFooter.tsx (apps/web/src/ui/layout/dashboard/RiskNoticeFooter.tsx)
-- component: SafetyBar.tsx (apps/web/src/ui/layout/dashboard/SafetyBar.tsx)
-- component: Footer.tsx (apps/web/src/ui/layout/public/Footer.tsx)
-- component: Header.tsx (apps/web/src/ui/layout/public/Header.tsx)
-- component: ServiceWorkerRegistration.tsx (apps/web/src/ui/pwa/ServiceWorkerRegistration.tsx)
-- feature: runtimeOpenPositionDerivations.ts (apps/web/src/features/bots/utils/runtimeOpenPositionDerivations.ts)
 
 ## Classified Inferred-Link Noise
 
 - config_only_file: 65
-- curated_graph_covered: 1481
+- curated_graph_covered: 1536
 - generated_vendor_docs_vault_plugin: 5775
 - top_level_app_mount: 1
 
@@ -182,7 +142,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 ## Notes
 
 - This is an inferred baseline. CTO/Docs Memory must promote or correct important relations.
-- Curated graph coverage input: `C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.json` (covered paths: 954).
+- Curated graph coverage input: `C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.json` (covered paths: 976).
 - Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 0, relation entries: 0).
 - Override summary: excluded files 0, entity overrides 0, relation overrides 0, critical entities tagged 0.
 - `verified` still requires fresh command/browser/deploy evidence, not only file presence.

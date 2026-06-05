@@ -81,3 +81,10 @@ pnpm --filter web test -- src/features/auth/components/LoginForm.test.tsx src/fe
 - Forgot-password UX is intentionally deferred and currently represented as static hint text.
 - Consider i18n migration for remaining hardcoded auth component labels.
 
+## 10. Architecture-Awareness Doc-Link Classification
+
+Last classified: 2026-06-05 under [LUC-2186](/LUC/issues/LUC-2186).
+
+| Source entity | Owner doc | Classification | Expected proof |
+| --- | --- | --- | --- |
+| `apps/web/src/features/auth/pages/LoginPage.tsx` | `docs/modules/web-auth.md` | Login page entrypoint that composes the auth form workflow and public auth route shell. | Architecture-awareness `documents` relation from this doc plus focused Web auth form/page tests when login behavior changes. |

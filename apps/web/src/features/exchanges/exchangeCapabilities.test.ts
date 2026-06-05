@@ -1,8 +1,19 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, expectTypeOf, it } from 'vitest';
 
-import { EXCHANGE_OPTIONS, supportsExchangeCapability } from './exchangeCapabilities';
+import {
+  EXCHANGE_CAPABILITIES,
+  EXCHANGE_OPTIONS,
+  type ExchangeCapability,
+  type ExchangeOption,
+  supportsExchangeCapability,
+} from './exchangeCapabilities';
 
 describe('exchangeCapabilities', () => {
+  it('keeps shared declaration types aligned with UI exchange options', () => {
+    expectTypeOf<(typeof EXCHANGE_OPTIONS)[number]>().toEqualTypeOf<ExchangeOption>();
+    expectTypeOf<(typeof EXCHANGE_CAPABILITIES)[number]>().toEqualTypeOf<ExchangeCapability>();
+  });
+
   it('keeps Gate.io UI capability gating aligned with staged adapter rollout', () => {
     expect(EXCHANGE_OPTIONS).toContain('GATEIO');
 

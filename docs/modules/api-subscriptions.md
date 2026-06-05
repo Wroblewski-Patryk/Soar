@@ -95,3 +95,11 @@ pnpm --filter api exec vitest run src/modules/subscriptions/subscriptionEntitlem
 - Add dedicated e2e for checkout intent provider and URL sanitization contract.
 - Add webhook-driven subscription state transitions for the future production
   billing lifecycle after the provider operating model is approved.
+
+## 10. Architecture-Awareness Doc-Link Classification
+
+Last classified: 2026-06-05 under [LUC-2163](/LUC/issues/LUC-2163).
+
+| Source entity | Owner doc | Classification | Expected proof |
+| --- | --- | --- | --- |
+| `apps/api/src/modules/subscriptions/payments/paymentGateway.types.ts` | `docs/modules/api-subscriptions.md` | Payment gateway abstraction contract for checkout intent provider integration. | Architecture-awareness `documents` relation from this doc plus checkout/payment-provider tests when behavior changes. |

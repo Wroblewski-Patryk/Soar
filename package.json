@@ -22,6 +22,8 @@
     "docs:parity:check": "node scripts/checkDocsParity.mjs",
     "obsidian:vault:build": "node scripts/buildObsidianVaultLayer.mjs",
     "docs:parity:endpoints:api": "node scripts/auditApiEndpointDocsParity.mjs",
+    "docs:parity:route-api-matrix": "node scripts/checkRouteApiMatrixParity.mjs",
+    "docs:parity:route-api-matrix:test": "node --test scripts/checkRouteApiMatrixParity.test.mjs",
     "architecture:graph:generate": "node scripts/generateArchitectureGraph.mjs",
     "architecture:graph:drift": "node scripts/auditArchitectureGraphDrift.mjs",
     "architecture:graph:drift:strict": "node scripts/auditArchitectureGraphDrift.mjs --fail-on-drift",

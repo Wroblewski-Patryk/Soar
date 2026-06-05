@@ -130,6 +130,24 @@ pnpm --filter api exec vitest run src/modules/bots/bots.e2e.test.ts src/modules/
 - Continue splitting oversized read/command surfaces where maintainability pressure is high.
 - Complete error taxonomy migration for deterministic controller mapping.
 
+## 9A. Architecture-Awareness Doc-Link Classification
+
+Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
+
+| Source entity | Owner doc | Classification | Expected proof |
+| --- | --- | --- | --- |
+| `apps/api/src/modules/bots/bots.errors.ts#BotDomainError` | `docs/modules/api-bots.md` | Bot-domain error taxonomy and controller mapping contract owned by the API bots module. | Architecture-awareness `documents` relation from this doc plus existing bot runtime/API test packs when behavior changes. |
+| `apps/api/src/modules/bots/bots.e2e.fixtures.ts` | `docs/modules/api-bots.md` | Bot API e2e fixture factory surface used by bot lifecycle/runtime proof packs. | Direct doc relation plus focused bot e2e tests when fixture contracts change. |
+| `apps/api/src/modules/bots/bots.e2e.shared.ts` | `docs/modules/api-bots.md` | Shared bot e2e setup/assertion helpers for lifecycle, entitlement, runtime, and topology tests. | Direct doc relation plus focused bot e2e tests when helper semantics change. |
+| `apps/api/src/modules/bots/bots.errors.ts` | `docs/modules/api-bots.md` | File-level bot-domain error taxonomy and fail-closed controller mapping. | Direct doc relation plus bot command/read error tests when errors change. |
+| `apps/api/src/modules/bots/bots.repository.ts` | `docs/modules/api-bots.md` | Bot persistence repository boundary for bot lifecycle and topology reads/writes. | Direct doc relation plus bot lifecycle/repository-facing e2e tests when persistence behavior changes. |
+| `apps/api/src/modules/bots/botsRuntimeRead.repository.ts` | `docs/modules/api-bots.md` | Runtime read repository boundary for bot monitoring/session read models. | Direct doc relation plus bot runtime monitoring tests when read shape changes. |
+| `apps/api/src/modules/bots/runtimeExchangeSyncedPositionPrice.ts` | `docs/modules/api-bots.md` | Bot runtime helper for exchange-synced position price truth in selected-bot monitoring. | Direct doc relation plus runtime monitoring/takeover tests when price-source behavior changes. |
+| `apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts` | `docs/modules/api-bots.md` | Runtime session helper for DCA count display/automation context. | Direct doc relation plus runtime position monitoring tests when DCA count semantics change. |
+| `apps/api/src/modules/bots/runtimeSessionPositionWindow.ts` | `docs/modules/api-bots.md` | Runtime session window helper for selected-bot position/trade read boundaries. | Direct doc relation plus runtime session read tests when window semantics change. |
+| `apps/api/src/modules/bots/runtimeSessionTradeFallbackScope.ts` | `docs/modules/api-bots.md` | Trade fallback scope helper for botless wallet/runtime readback cases. | Direct doc relation plus runtime session positions/read tests when fallback scope changes. |
+| `apps/api/src/modules/bots/runtimeStrategyProtectionFallbackDisplay.ts` | `docs/modules/api-bots.md` | Runtime display helper that labels strategy-derived protection fallback as prospective rather than exchange/runtime-final truth. | Direct doc relation plus runtime monitoring protection-display tests when display semantics change. |
+
 ## 10. Dashboard Ownership and Actionability Contract (`UXR-01`)
 - Runtime positions read model (`listBotRuntimeSessionPositions`) is scoped to `managementMode=BOT_MANAGED` only.
 - Dashboard `positions` rows for selected bot are allowed from:

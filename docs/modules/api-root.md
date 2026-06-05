@@ -128,3 +128,17 @@ pnpm --filter api exec vitest run src/middleware/requireRole.test.ts src/middlew
 ## 9. Open Issues and Follow-Ups
 - Keep root/ops endpoint docs aligned with deploy smoke and worker topology
   contracts whenever readiness or diagnostics routes change.
+
+## 10. Architecture-Awareness Doc-Link Classification
+
+Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
+
+| Source entity | Owner doc | Classification | Expected proof |
+| --- | --- | --- | --- |
+| `apps/api/src/middleware/noStoreHeaders.ts` | `docs/modules/api-root.md` | Root/dashboard/admin middleware helper that enforces no-store behavior on auth-sensitive API surfaces. | Architecture-awareness `documents` relation from this doc plus router/middleware tests when header behavior changes. |
+| `apps/api/src/types/express.d.ts` | `docs/modules/api-root.md` | Express request typing extension for authenticated API router and middleware contracts. | Architecture-awareness `documents` relation from this doc plus API typecheck/router tests when middleware typing changes. |
+| `apps/api/src/utils/apiError.ts` | `docs/modules/api-root.md` | Shared API error response helper used by protected and public router surfaces. | Architecture-awareness `documents` relation from this doc plus API error tests when response semantics change. |
+| `apps/api/src/utils/crypto.ts` | `docs/modules/api-root.md` | Shared API crypto utility boundary for secure server-side value handling. | Architecture-awareness `documents` relation from this doc plus crypto tests when encryption/hash behavior changes. |
+| `apps/api/src/utils/errorExposure.ts` | `docs/modules/api-root.md` | Shared error-exposure classifier for operator-readable errors without leaking sensitive internals. | Architecture-awareness `documents` relation from this doc plus router/error tests when exposure policy changes. |
+| `apps/api/src/utils/formatZodError.ts` | `docs/modules/api-root.md` | Shared validation-error formatter for API request DTO failures. | Architecture-awareness `documents` relation from this doc plus route validation tests when DTO error shape changes. |
+| `apps/api/src/utils/hash.ts` | `docs/modules/api-root.md` | Shared password/hash utility boundary used by auth and security-sensitive API flows. | Architecture-awareness `documents` relation from this doc plus auth/profile security tests when hash behavior changes. |

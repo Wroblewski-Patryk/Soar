@@ -169,3 +169,11 @@ pnpm --filter api exec vitest run src/modules/backtests/backtests.e2e.test.ts sr
   - `degraded=true` only when run is terminal and report assembly is missing or
     failed,
   - `reason` present for degraded/pending fallback paths.
+
+## 12. Architecture-Awareness Doc-Link Classification
+
+Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
+
+| Source entity | Owner doc | Classification | Expected proof |
+| --- | --- | --- | --- |
+| `apps/api/src/modules/backtests/backtestIndicatorSpecs.ts` | `docs/modules/api-backtests.md` | Backtest indicator parsing and warmup helper extracted from the replay pipeline while preserving parity with shared series tests. | Architecture-awareness `documents` relation from this doc plus backtest indicator/timeline/replay tests when behavior changes. |

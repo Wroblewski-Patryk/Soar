@@ -17,8 +17,8 @@ surfaces.
 | workers-execution | Coolify application `workers-execution` | `/apps/api/Dockerfile.worker.execution` | postgresql, redis, exchange APIs | private | worker freshness through protected readiness | Ops Release Lead |
 | workers-market-data | Coolify application `workers-market-data` | `/apps/api/Dockerfile.worker.market-data` | postgresql, redis, market-data providers | private | worker freshness through protected readiness | Ops Release Lead |
 | workers-market-stream | Coolify application `workers-market-stream` | `/apps/api/Dockerfile.worker.market-stream` | postgresql, redis, exchange stream APIs | private | worker freshness through protected readiness | Ops Release Lead |
-| postgresql | Coolify standalone PostgreSQL `postgresql` | managed service | persistent volume | private | Coolify resource status `running:healthy` in LUC-2069 readback | Ops Release Lead / DB owner |
-| redis | Coolify standalone Redis `redis` | managed service | persistent volume | private | Coolify resource status `running:healthy` in LUC-2069 readback | Ops Release Lead |
+| postgresql | Coolify standalone PostgreSQL `postgresql` | managed service | persistent volume | private | Coolify resource status `running:healthy` in LUC-1787 readback | Ops Release Lead / DB owner |
+| redis | Coolify standalone Redis `redis` | managed service | persistent volume | private | Coolify resource status `running:healthy` in LUC-1787 readback | Ops Release Lead |
 
 ## Dependency Graph
 
@@ -47,11 +47,26 @@ global-list PostgreSQL alias/companion row, not as an additional
 production-environment deployable resource. The canonical production
 environment inventory remains the eight rows above.
 
-`LUC-2069` read-only binding refresh: project-scoped Coolify reads at
-`2026-06-05T03:20:28Z` still resolve the same eight production-environment
-resources. Application inventory status remains `running:unknown`; PostgreSQL
-and Redis report `running:healthy`. The global resources endpoint returned
-`17` visible rows and remains non-authoritative for deployment scope.
+`LUC-2153` split-worker topology proof reconciliation: latest read-only
+project-scoped Coolify evidence from `LUC-2149` at `2026-06-05T09:52:00Z`
+still resolves the same eight production-environment resources. This verifies
+the production resource topology has four separate worker applications:
+`workers-market-data`, `workers-market-stream`, `workers-backtest`, and
+`workers-execution`. It does not by itself verify protected worker readiness or
+runtime freshness because application inventory status remains
+`running:unknown`; PostgreSQL and Redis report `running:healthy`. The global
+resources endpoint returned `17` visible rows and remains non-authoritative for
+deployment scope.
+
+`LUC-1787` resource inventory reconciliation: latest read-only project-scoped
+Coolify evidence from `2026-06-05T15:27:09Z` still resolves the same eight
+production-environment resources under selector `LuckySparrow`, project
+`Soar`, production environment `production` id `6`. The deploy governor should
+use this project/environment inventory as the resource-by-resource target list.
+Application rows report `running:unknown`; PostgreSQL and Redis report
+`running:healthy`. No raw resource ids, secret values, URLs, labels, deploys,
+restarts, rollbacks, env edits, database actions, team/account changes,
+protected smoke, screenshots, or live-trading actions were performed.
 
 ## Maintenance Rule
 

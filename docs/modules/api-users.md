@@ -61,3 +61,11 @@ pnpm --filter api test -- src/modules/auth/auth.e2e.test.ts src/modules/profile/
 ## 9. Open Issues and Follow-Ups
 - Keep this projection aligned when user schema evolves.
 - If multiple projections emerge, define naming policy (`public`, `minimal`, `admin-extended`) to prevent contract drift.
+
+## 10. Architecture-Awareness Doc-Link Classification
+
+Last classified: 2026-06-05 under [LUC-2186](/LUC/issues/LUC-2186).
+
+| Source entity | Owner doc | Classification | Expected proof |
+| --- | --- | --- | --- |
+| `apps/api/src/modules/users/publicUser.ts` | `docs/modules/api-users.md` | Canonical public-user projection that prevents password/private field exposure in auth/profile/admin responses. | Architecture-awareness `documents` relation from this doc plus auth/profile/admin integration tests when user response shape changes. |

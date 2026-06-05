@@ -84,3 +84,11 @@ pnpm --filter api test -- src/modules/auth/auth.e2e.test.ts src/modules/auth/aut
 ## 9. Open Issues and Follow-Ups
 - Migrate remaining message-string failures to typed auth errors in optimization wave.
 - Continue hardening session invalidation semantics around account deletion and password rotation.
+
+## 10. Architecture-Awareness Doc-Link Classification
+
+Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
+
+| Source entity | Owner doc | Classification | Expected proof |
+| --- | --- | --- | --- |
+| `apps/api/src/modules/auth/auth.session.ts` | `docs/modules/api-auth.md` | Auth session helper boundary for current-user/session bootstrap behavior and fail-closed session response shaping. | Architecture-awareness `documents` relation from this doc plus auth session/cookie/JWT tests when behavior changes. |

@@ -61,3 +61,15 @@ After a production incident, failed deploy, or serious smoke failure:
 - record detection gap
 - record fix and rollback outcome
 - add a regression, alert, runbook update, or task-board follow-up
+
+## Architecture-Awareness Doc-Link Classification
+
+Last classified: 2026-06-05 under [LUC-2163](/LUC/issues/LUC-2163).
+
+| Source entity | Owner doc | Classification | Expected proof |
+| --- | --- | --- | --- |
+| `InMemoryMetricsStore` | `docs/operations/service-reliability-and-observability.md` | API/runtime metrics store used by health, metrics, runtime, and worker observability evidence. | Architecture-awareness `documents` relation from this doc plus focused metrics/alerts/worker readiness tests when behavior changes. |
+| `apps/api/src/observability/alerts.ts` | `docs/operations/service-reliability-and-observability.md` | Alert projection used by protected operations diagnostics and release readiness checks. | Architecture-awareness `documents` relation from this doc plus alerts/router tests when behavior changes. |
+| `apps/api/src/observability/metrics.ts` | `docs/operations/service-reliability-and-observability.md` | API/runtime metrics collection surface used by health, metrics, runtime, and worker observability evidence. | Architecture-awareness `documents` relation from this doc plus metrics/router tests when behavior changes. |
+| `apps/api/src/observability/runtimeFreshness.ts` | `docs/operations/service-reliability-and-observability.md` | Runtime freshness classifier used by protected diagnostics, release gates, and worker readiness evidence. | Architecture-awareness `documents` relation from this doc plus runtime freshness tests when behavior changes. |
+| `apps/api/src/queue/queueTuning.ts` | `docs/operations/service-reliability-and-observability.md` | Queue tuning and lag thresholds that feed worker reliability and degraded-state evidence. | Architecture-awareness `documents` relation from this doc plus queue tuning tests when behavior changes. |

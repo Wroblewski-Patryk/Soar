@@ -34,15 +34,59 @@ refreshed/reconciled for `LUC-1399`, `LUC-1402`, `LUC-1405`, `LUC-1408`,
 `LUC-1662` / `LUC-1666` / `LUC-1673` / `LUC-1696` / `LUC-1707` /
 `LUC-1786` / `LUC-1790` / `LUC-1800` / `LUC-1822` / `LUC-1828` /
 `LUC-1831` / `LUC-1843` on 2026-06-03, and `LUC-1850` / `LUC-1857` /
-`LUC-1872` / `LUC-1875` / `LUC-1878` / `LUC-1885` / `LUC-1890` /
+`LUC-1787` / `LUC-1872` / `LUC-1875` / `LUC-1878` / `LUC-1885` / `LUC-1890` /
 `LUC-1898` / `LUC-1901` / `LUC-1910` / `LUC-1916` / `LUC-1919` /
 `LUC-1926` / `LUC-1933` / `LUC-1969` / `LUC-1973` / `LUC-1977` /
 `LUC-1982` / `LUC-1987` / `LUC-1990` / `LUC-1993` / `LUC-1997` /
 `LUC-2004`
-on 2026-06-04, and `LUC-2069` / `LUC-2072` / `LUC-2094` on 2026-06-05.
+on 2026-06-04, and `LUC-2069` / `LUC-2072` / `LUC-2094` / `LUC-2136` /
+`LUC-2149` / `LUC-2153` / `LUC-2171` / `LUC-2181` on 2026-06-05.
 
-Latest read-only access binding checkpoint: `LUC-2094` at
-`2026-06-05T06:18:48Z`, refreshing the prior `LUC-2091` proof. Runtime
+Latest resource inventory reconciliation: `LUC-1787` at
+`2026-06-05T15:27:09Z`. The board/operator refreshed Coolify access and
+resource refs without exposing secret values, and Ops verified the target
+through authenticated read-only Coolify API calls. Runtime bindings are present
+for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`,
+`COOLIFY_SOAR_PROJECT_ID`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+`COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID` without values
+printed. `COOLIFY_SOAR_POSTGRES_ID`, `COOLIFY_SOAR_REDIS_ID`, and
+`COOLIFY_SOAR_APP_ID` were not materialized under those probed legacy env names
+in this runner, but this is not a release-scope blocker because the
+authoritative inventory source is the Coolify project/environment hierarchy,
+not raw resource id disclosure. Authenticated read-only Coolify reads resolved
+selector `LuckySparrow`, project `Soar`, production environment `production`
+id `6`, six applications, PostgreSQL, Redis, zero generic services, `17`
+visible global resource rows, and the canonical eight-resource
+production-environment inventory. Application rows report `running:unknown`;
+PostgreSQL and Redis report `running:healthy`. This heartbeat performed no
+deploy, restart, rollback, env edit, database action, team setting change,
+account action, protected smoke, secret value readback, raw resource id
+storage, screenshot, or live-trading action. Evidence:
+`history/evidence/luc-1787-coolify-resource-inventory-reconciliation-2026-06-05.md`.
+
+Latest read-only access binding checkpoint: `LUC-2181` at
+`2026-06-05T11:26:28Z`, refreshing the prior `LUC-2171` proof. Runtime
+bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`,
+`COOLIFY_TOKEN`, and `COOLIFY_SOAR_PROJECT_ID` without values printed.
+Authenticated read-only Coolify reads resolved project `Soar`, production
+environment `production`, and the canonical eight-resource
+production-environment inventory: six applications plus PostgreSQL and Redis.
+The global resources endpoint returned `1` visible row in this least-privilege
+runner and was not used as release authority. The project/environment hierarchy
+remains the authoritative production status scope for this binding proof.
+Application rows report
+`running:unknown`; PostgreSQL reports `running:healthy`; Redis reports
+`running:healthy` from production environment readback.
+`COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain absent in this runner, but
+the selector readback is not an active blocker while current project-scoped
+reads succeed. This heartbeat performed no deploy, restart, rollback, env
+edit, database action, team setting change, account action, protected smoke,
+secret readback, or live-trading action. Evidence:
+`history/evidence/luc-2181-coolify-read-only-production-status-access-2026-06-05.md`.
+
+Latest split-worker topology proof reconciliation: `LUC-2153` on 2026-06-05,
+using the `LUC-2149` read-only Coolify proof captured at
+`2026-06-05T09:52:00Z`. Runtime
 bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`,
 `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
 `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and
@@ -56,14 +100,22 @@ hierarchy remains the authoritative production status scope for this binding
 proof.
 Application rows report `running:unknown`; PostgreSQL reports
 `running:healthy`; Redis reports `running:healthy` from production environment
-readback. `COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain absent in this
+readback. Split-worker resource topology is verified because the production
+environment contains four separate worker applications:
+`workers-market-data`, `workers-market-stream`, `workers-backtest`, and
+`workers-execution`. Full worker readiness remains a separate protected smoke
+requirement because Coolify application inventory alone does not prove
+`/workers/ready`, queue ownership, runtime freshness, or worker log health.
+`COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain absent in this
 runner, but the selector readback is not an active blocker while current-team
 and project-scoped reads succeed.
 This heartbeat performed no deploy, restart, rollback, env edit, database
 action, team setting change, account action, protected smoke, secret readback,
 or live-trading action.
 Evidence:
-`history/evidence/luc-2072-coolify-read-only-production-status-access-2026-06-05.md`.
+`history/evidence/luc-2149-coolify-read-only-production-status-access-2026-06-05.md`
+and
+`history/evidence/luc-2153-split-worker-topology-proof-gap-reconciliation-2026-06-05.md`.
 
 Previous read-only access binding checkpoint: `LUC-1997` at
 `2026-06-04T14:46:54Z`, refreshing the prior `LUC-1993` proof. Runtime
@@ -1281,6 +1333,87 @@ Current inventory count: six applications plus PostgreSQL and Redis.
   `running:healthy`. This heartbeat performed no deploy, restart, rollback,
   env edit, database action, team setting change, account action, live trading
   action, or secret readback.
+
+- LUC-2099 read-only access binding refresh confirmed `COOLIFY_BASE_URL`,
+  `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and
+  `COOLIFY_SOAR_API_APP_ID` are present by name in the Ops runner without value
+  disclosure. `COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain absent, but
+  project-scoped readbacks succeeded. Read-only probes at
+  `2026-06-05T06:52:51Z` resolved project `Soar`, environment `production`,
+  six applications, zero generic services, `17` visible global resource rows,
+  and the same eight-resource production inventory. Application rows report
+  `running:unknown` in Coolify inventory; PostgreSQL and Redis report
+  `running:healthy`. This heartbeat performed no deploy, restart, rollback,
+  env edit, database action, team setting change, account action, live trading
+  action, or secret readback.
+
+- LUC-2112 read-only access binding refresh confirmed `COOLIFY_BASE_URL`,
+  `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and
+  `COOLIFY_SOAR_API_APP_ID` are present by name in the Ops runner without value
+  disclosure. `COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain absent, but
+  project-scoped readbacks succeeded. Read-only probes at
+  `2026-06-05T07:23:02Z` resolved project `Soar`, environment `production`,
+  six applications, zero generic services, `17` visible global resource rows,
+  and the same eight-resource production inventory. Application rows report
+  `running:unknown` in Coolify inventory; PostgreSQL reports
+  `running:healthy`; Redis resource presence is verified but status is
+  `running:unknown` in this redacted readback. This heartbeat performed no
+  deploy, restart, rollback, env edit, database action, team setting change,
+  account action, live trading action, or secret readback.
+
+- LUC-2149 read-only access binding refresh confirmed `COOLIFY_BASE_URL`,
+  `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and
+  `COOLIFY_SOAR_API_APP_ID` are present by name in the Ops runner without value
+  disclosure. `COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain absent, but
+  project-scoped readbacks succeeded. Read-only probes at
+  `2026-06-05T09:52:00Z` resolved project `Soar`, environment `production`,
+  six applications, zero generic services, `17` visible global resource rows,
+  and the same eight-resource production inventory. Application rows report
+  `running:unknown`; PostgreSQL and Redis report `running:healthy`. This
+  heartbeat performed no deploy, restart, rollback, env edit, database action,
+  team setting change, account action, protected smoke, live trading action, or
+  secret readback.
+
+- LUC-2153 split-worker topology proof-gap reconciliation classifies the
+  production architecture claim as resource-topology verified and readiness
+  partially verified. Verified: Coolify project/environment reads show separate
+  `workers-market-data`, `workers-market-stream`, `workers-backtest`, and
+  `workers-execution` application resources beside `soar-api`, `soar-web`,
+  PostgreSQL, and Redis. Gap retained: Coolify application status
+  `running:unknown` is not equivalent to protected `/workers/ready`, worker
+  queue ownership, runtime freshness, or log-health proof. Required release
+  gate remains resource-level worker liveness/freshness for all four workers
+  with an approved read-only principal.
+
+- LUC-2162 read-only access binding refresh confirmed `COOLIFY_BASE_URL`,
+  `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and
+  `COOLIFY_SOAR_API_APP_ID` are present by name in the Ops runner without value
+  disclosure. `COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain absent, but
+  project-scoped readbacks succeeded. Read-only probes at
+  `2026-06-05T10:23:19Z` resolved project `Soar`, environment `production`,
+  six applications, zero generic services, `17` visible global resource rows,
+  and the same eight-resource production inventory. Application rows report
+  `running:unknown`; PostgreSQL and Redis report `running:healthy` from the
+  global status projection. This heartbeat performed no deploy, restart,
+  rollback, env edit, database action, team setting change, account action,
+  protected smoke, live trading action, or secret readback.
+
+- LUC-2171 read-only access binding refresh confirmed `COOLIFY_BASE_URL`,
+  `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`, and `COOLIFY_SOAR_PROJECT_ID` are
+  present by name in the Ops runner without value disclosure.
+  `COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` remain absent, but
+  project-scoped readbacks succeeded. Read-only probes at
+  `2026-06-05T10:35:32Z` resolved project `Soar`, environment `production`,
+  six applications, zero generic services, `17` visible global resource rows,
+  and the same eight-resource production inventory. Application rows report
+  `running:unknown`; PostgreSQL and Redis report `running:healthy` from
+  production environment readback. This heartbeat performed no deploy,
+  restart, rollback, env edit, database action, team setting change, account
+  action, protected smoke, live trading action, or secret readback.
 
 ## Release Requirements
 

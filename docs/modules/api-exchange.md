@@ -107,3 +107,11 @@ pnpm --filter api test -- src/modules/profile/apiKey/exchangeApiKeyProbe.service
   `(exchange, marketType, operation)` support wherever new flows are added.
 - Keep direct CCXT/client construction inside `modules/exchange`; feature
   modules consume exchange-owned boundaries only.
+
+## 10. Architecture-Awareness Doc-Link Classification
+
+Last classified: 2026-06-05 under [LUC-2163](/LUC/issues/LUC-2163).
+
+| Source entity | Owner doc | Classification | Expected proof |
+| --- | --- | --- | --- |
+| `apps/api/src/modules/exchange/exchangeData.types.ts` | `docs/modules/api-exchange.md` | Exchange authenticated/public read payload type contracts consumed by orders, positions, wallets, and market flows. | Architecture-awareness `documents` relation from this doc plus focused exchange authenticated-read/adapter tests when behavior changes. |

@@ -5,7 +5,7 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/strategies`
 - Owner: frontend/strategy-builder
-- Last updated: 2026-05-14
+- Last updated: 2026-06-05
 - Related planning task: `DCP-09`
 
 ## 1. Purpose and Scope
@@ -74,6 +74,8 @@ Out of scope:
   - `strategyPresets.test.ts`
   - `StrategyForm.map.test.ts`
   - `strategyNumericInput.test.ts`
+  - `indicatorPresentation.test.ts`
+  - `indicatorTaxonomy.test.ts`
 - 2026-05-14 inactive-bot edit proof:
   - `app/dashboard/strategies/[id]/edit/page.test.tsx` verifies the edit page
     submits the loaded form when the backend allows the linked inactive-bot
@@ -85,6 +87,24 @@ Out of scope:
 ```powershell
 pnpm --filter web test -- src/app/dashboard/strategies/list/page.test.tsx src/app/dashboard/strategies/create/page.test.tsx src/app/dashboard/strategies/[id]/page.test.tsx src/app/dashboard/strategies/[id]/edit/page.test.tsx src/features/strategies/components/StrategyPresetPicker.test.tsx src/features/strategies/components/StrategyFormSections/Indicators.test.tsx src/features/strategies/presets/strategyPresets.test.ts src/features/strategies/utils/StrategyForm.map.test.ts src/features/strategies/utils/strategyNumericInput.test.ts
 ```
+
+## 8A. Architecture-Awareness Gap Triage
+
+`LUC-2123` classified the 2026-06-05 architecture-awareness top actionable
+missing doc-link samples for strategy utilities. The sampled utilities are
+stable strategy form and indicator-presentation helpers with existing module
+ownership and focused tests; the missing signal was direct file-to-doc
+relation coverage.
+
+| Strategy utility | Current evidence | Triage status | Next action |
+| --- | --- | --- | --- |
+| `indicatorPresentation.ts` | Covered by `indicatorPresentation.test.ts` and `SOAR-TEST-STRATEGY-FORM-UTILS`; strategy indicator presentation is owned by this module. | Doc-link normalized; test evidence present. | Keep with strategy utility validation when indicator labels or display logic change. |
+| `indicatorTaxonomy.ts` | Covered by `indicatorTaxonomy.test.ts` and `SOAR-TEST-STRATEGY-FORM-UTILS`; taxonomy supports the indicator section contract. | Doc-link normalized; test evidence present. | Keep with strategy utility validation when taxonomy buckets change. |
+| `strategyThresholdItems.ts` | Used by open/close/additional strategy form sections and represented by strategy form utility graph nodes; no direct standalone test is listed in the current top sample. | Documentation mapped; test relation remains a candidate. | Test Automation should add or confirm direct focused proof if threshold item behavior changes or if scanner output requires per-file test closure. |
+
+This triage is documentation and evidence classification only. It does not
+claim fresh browser, protected production, deployment, API mutation, or
+live-trading proof.
 
 ## 9. Open Issues and Follow-Ups
 - Migrate remaining static labels to full i18n coverage for complete locale parity.

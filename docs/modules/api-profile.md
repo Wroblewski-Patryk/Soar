@@ -95,3 +95,20 @@ pnpm --filter api test -- src/modules/profile/basic/basic.e2e.test.ts src/module
 ## 9. Open Issues and Follow-Ups
 - Replace remaining string-matched errors with typed error taxonomy.
 - Continue reducing duplicated validation logic between profile subdomains where feasible.
+
+## 10. Architecture-Awareness Doc-Link Classification
+
+Last classified: 2026-06-05 under [LUC-2163](/LUC/issues/LUC-2163).
+
+| Source entity | Owner doc | Classification | Expected proof |
+| --- | --- | --- | --- |
+| `ProfileSecurityDomainError` | `docs/modules/api-profile.md` | Typed profile-security error taxonomy for password/account security fail-closed behavior. | Architecture-awareness `documents` relation from this doc plus focused profile security e2e tests when behavior changes. |
+| `apps/api/src/modules/profile/security/security.errors.ts` | `docs/modules/api-profile.md` | Profile-security error taxonomy file for password/account-deletion fail-closed behavior. | Architecture-awareness `documents` relation from this doc plus focused profile security e2e tests when behavior changes. |
+
+## 21. Architecture-Awareness Test-Link Classification
+
+Last classified: 2026-06-05 under [LUC-2187](/LUC/issues/LUC-2187).
+
+| Source entity | Focused test | Classification |
+| --- | --- | --- |
+| `apps/api/src/utils/crypto.ts` | `apps/api/src/utils/crypto.test.ts` | Existing focused crypto utility coverage verifies AES-GCM versioned encryption/decryption, legacy CBC read compatibility, active-version key selection, and fail-closed legacy-only writes. `LUC-2187` added a direct scanner-readable test relation. |

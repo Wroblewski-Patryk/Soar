@@ -121,3 +121,24 @@ pnpm --filter api test -- src/modules/positions/positions.service.test.ts src/mo
 ## 9. Open Issues and Follow-Ups
 - Continue hardening takeover ambiguity handling as additional exchanges are enabled.
 - Align error taxonomy with typed API-level mapping strategy.
+
+## 10. Architecture-Awareness Doc-Link Classification
+
+Last classified: 2026-06-05 under [LUC-2163](/LUC/issues/LUC-2163).
+
+| Source entity | Owner doc | Classification | Expected proof |
+| --- | --- | --- | --- |
+| `apps/api/src/modules/positions/livePositionReconciliation.types.ts` | `docs/modules/api-positions.md` | LIVE reconciliation and takeover read-model type boundary for imported/exchange-synced position ownership states. | Architecture-awareness `documents` relation from this doc plus live reconciliation/takeover tests when behavior changes. |
+| `apps/api/src/modules/positions/livePositionReconciliation.diagnostics.ts` | `docs/modules/api-positions.md` | LIVE reconciliation diagnostics and operator-readable continuity status helper boundary. | Architecture-awareness `documents` relation from this doc plus reconciliation diagnostics tests when behavior changes. |
+| `apps/api/src/modules/positions/livePositionReconciliation.helpers.ts` | `docs/modules/api-positions.md` | Shared LIVE reconciliation helper boundary for recovered/imported position continuity decisions. | Architecture-awareness `documents` relation from this doc plus live reconciliation tests when behavior changes. |
+| `apps/api/src/modules/positions/livePositionReconciliation.history.ts` | `docs/modules/api-positions.md` | LIVE reconciliation history projection helper boundary for position lifecycle evidence. | Architecture-awareness `documents` relation from this doc plus live reconciliation/history tests when behavior changes. |
+| `apps/api/src/modules/positions/livePositionReconciliationApiKeys.ts` | `docs/modules/api-positions.md` | API-key selection helper used by position reconciliation snapshot reads without exposing secret values. | Architecture-awareness `documents` relation from this doc plus positions snapshot/reconciliation tests when behavior changes. |
+| `apps/api/src/modules/positions/positionCloseAttribution.ts` | `docs/modules/api-positions.md` | Position close-attribution helper for classifying external/local lifecycle close reasons. | Architecture-awareness `documents` relation from this doc plus position lifecycle tests when behavior changes. |
+
+## 21. Architecture-Awareness Test-Link Classification
+
+Last classified: 2026-06-05 under [LUC-2187](/LUC/issues/LUC-2187).
+
+| Source entity | Focused test | Classification |
+| --- | --- | --- |
+| `apps/api/src/modules/positions/livePositionReconciliation.helpers.ts` | `apps/api/src/modules/positions/livePositionReconciliation.service.test.ts` | Existing focused helper coverage verifies imported external-position id build/parse/scope behavior. `LUC-2187` added a direct scanner-readable test relation; DB-backed default-dependency reconciliation proof remains separate and requires local Postgres. |

@@ -20,6 +20,33 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-06-05 - CDP dynamic route proof can hang on Windows
+- Context: LUC-2188 added local proof coverage for dynamic protected route
+  actions using `scripts/runLocalProtectedRouteActionProof.mjs`.
+- Symptom: rendered dynamic-route attempts repeatedly timed out on CDP
+  `Page.navigate` or `Runtime.evaluate`, and one shell run outlived the command
+  timeout while leaving a proof-owned Next/Chrome process tree.
+- Root cause: not fully isolated; the failure is in the local CDP/browser proof
+  path under Windows, especially around dynamic protected routes with client
+  API loading. It is not evidence of a Soar route regression by itself.
+- Guardrail: when this runner times out, inspect and clean only processes whose
+  command line includes `runLocalProtectedRouteActionProof`,
+  `luc-2057-local-browser`, `remote-debugging-port=9347`, or
+  `next dev -p 3217`; then use static fixture-route proof unless rendered
+  browser proof is explicitly required.
+- Preferred pattern:
+```powershell
+Get-CimInstance Win32_Process | Where-Object {
+  ($_.Name -in @('node.exe','chrome.exe','msedge.exe')) -and
+  ($_.CommandLine -match 'runLocalProtectedRouteActionProof|luc-2057-local-browser|remote-debugging-port=9347|next dev -p 3217')
+}
+pnpm run qa:local-protected-route-actions:proof -- --issue LUC-2188 --clusters wallets,strategies,markets,bots,backtests --dynamic-fixtures-only --include-dynamic-fixtures --static-dynamic-fixture-proof
+```
+- Avoid: broad browser process kills or claiming rendered browser/API fixture
+  proof from the static route matrix.
+- Evidence:
+  `history/tasks/luc-2188-dynamic-protected-route-fixture-proof-2026-06-05-task.md`.
+
 ### 2026-06-02 - Preserve invalid-UTF8 context files during state prepends
 - Context: LUC-1444 Ops heartbeat needed to update `.codex/context/PROJECT_STATE.md` and `.codex/context/TASK_BOARD.md`.
 - Symptom: `apply_patch` failed with `invalid utf-8 sequence` when reading both files.

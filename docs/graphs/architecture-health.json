@@ -1,39 +1,39 @@
 {
-  "generated_at": "2026-06-04T17:00:33.358Z",
+  "generated_at": "2026-06-05T12:40:45.169Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 14101,
-    "relations": 21737,
+    "entities": 14322,
+    "relations": 22433,
     "by_type": {
       "agent": 52,
       "api_endpoint": 37,
       "component": 97,
-      "document": 3450,
-      "feature": 221,
-      "function": 8239,
+      "document": 3554,
+      "feature": 223,
+      "function": 8283,
       "migration": 56,
-      "model": 275,
+      "model": 276,
       "module": 15,
       "project": 1,
       "route": 346,
-      "task": 940,
-      "test": 372
+      "task": 1005,
+      "test": 377
     },
     "by_status": {
       "blocked": 19,
       "deprecated": 7,
-      "implemented": 12492,
+      "implemented": 12640,
       "in_progress": 9,
-      "tested": 646,
-      "verified": 928
+      "tested": 654,
+      "verified": 993
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 7681,
+      "count": 7654,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -532,22 +532,6 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "component:datatable-tsx:988feded77",
-          "type": "component",
-          "name": "DataTable.tsx",
-          "path": "apps/web/src/ui/components/DataTable.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:footerpreferencesswitchers-tsx:b81b564e69",
-          "type": "component",
-          "name": "FooterPreferencesSwitchers.tsx",
-          "path": "apps/web/src/ui/components/FooterPreferencesSwitchers.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "component:formmodal-tsx:f6bc2327e8",
           "type": "component",
           "name": "FormModal.tsx",
@@ -596,14 +580,6 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "component:profilebutton-tsx:267e777c79",
-          "type": "component",
-          "name": "ProfileButton.tsx",
-          "path": "apps/web/src/ui/components/ProfileButton.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "component:skiptocontentlink-tsx:63f32b3624",
           "type": "component",
           "name": "SkipToContentLink.tsx",
@@ -616,102 +592,6 @@
           "type": "component",
           "name": "useAsyncConfirm.tsx",
           "path": "apps/web/src/ui/components/useAsyncConfirm.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formalert-tsx:12f553a4d7",
-          "type": "component",
-          "name": "FormAlert.tsx",
-          "path": "apps/web/src/ui/forms/FormAlert.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formfield-tsx:b4c43624cb",
-          "type": "component",
-          "name": "FormField.tsx",
-          "path": "apps/web/src/ui/forms/FormField.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formgrid-tsx:f8ff41d511",
-          "type": "component",
-          "name": "FormGrid.tsx",
-          "path": "apps/web/src/ui/forms/FormGrid.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formmobileactionbar-tsx:0436d76cc9",
-          "type": "component",
-          "name": "FormMobileActionBar.tsx",
-          "path": "apps/web/src/ui/forms/FormMobileActionBar.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formpageshell-tsx:203bfa73e4",
-          "type": "component",
-          "name": "FormPageShell.tsx",
-          "path": "apps/web/src/ui/forms/FormPageShell.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formsectioncard-tsx:05e99f4ee6",
-          "type": "component",
-          "name": "FormSectionCard.tsx",
-          "path": "apps/web/src/ui/forms/FormSectionCard.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formvalidationsummary-tsx:db776feef5",
-          "type": "component",
-          "name": "FormValidationSummary.tsx",
-          "path": "apps/web/src/ui/forms/FormValidationSummary.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:footer-tsx:b91554c0e9",
-          "type": "component",
-          "name": "Footer.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/Footer.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:header-tsx:3589c0557b",
-          "type": "component",
-          "name": "Header.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/Header.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:pagetitle-tsx:fa4b8fcc8a",
-          "type": "component",
-          "name": "PageTitle.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/PageTitle.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:footer-tsx:61f81a59a1",
-          "type": "component",
-          "name": "Footer.tsx",
-          "path": "apps/web/src/ui/layout/public/Footer.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:header-tsx:5cf6c6a94f",
-          "type": "component",
-          "name": "Header.tsx",
-          "path": "apps/web/src/ui/layout/public/Header.tsx",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -984,14 +864,6 @@
           "type": "feature",
           "name": "useStrategyForm.ts",
           "path": "apps/web/src/features/strategies/hooks/useStrategyForm.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:strategythresholditems-ts:32d34bd236",
-          "type": "feature",
-          "name": "strategyThresholdItems.ts",
-          "path": "apps/web/src/features/strategies/utils/strategyThresholdItems.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -1372,50 +1244,10 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "feature:api-ts:6bcde6a546",
-          "type": "feature",
-          "name": "api.ts",
-          "path": "apps/web/src/lib/api.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "feature:clonenaming-ts:401f99e2cc",
           "type": "feature",
           "name": "cloneNaming.ts",
           "path": "apps/web/src/lib/cloneNaming.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:forms-ts:01e629871e",
-          "type": "feature",
-          "name": "forms.ts",
-          "path": "apps/web/src/lib/forms.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:getaxiosmessage-ts:b637be51b3",
-          "type": "feature",
-          "name": "getAxiosMessage.ts",
-          "path": "apps/web/src/lib/getAxiosMessage.ts",
-          "status": "deprecated",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:handleerror-ts:25b3290b5e",
-          "type": "feature",
-          "name": "handleError.ts",
-          "path": "apps/web/src/lib/handleError.ts",
-          "status": "deprecated",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:marketstream-ts:34eedab340",
-          "type": "feature",
-          "name": "marketStream.ts",
-          "path": "apps/web/src/lib/marketStream.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -1452,14 +1284,6 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "feature:themebootstrap-ts:d317cecfec",
-          "type": "feature",
-          "name": "themeBootstrap.ts",
-          "path": "apps/web/src/security/themeBootstrap.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "feature:index-ts:e10f7ccccc",
           "type": "feature",
           "name": "index.ts",
@@ -1484,14 +1308,6 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "feature:usedetailsdropdown-ts:594eaefdb0",
-          "type": "feature",
-          "name": "useDetailsDropdown.ts",
-          "path": "apps/web/src/ui/hooks/useDetailsDropdown.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "feature:dashboardroutes-ts:44436f65d6",
           "type": "feature",
           "name": "dashboardRoutes.ts",
@@ -1500,26 +1316,10 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "feature:headercontrolstyles-ts:6771b3742f",
-          "type": "feature",
-          "name": "headerControlStyles.ts",
-          "path": "apps/web/src/ui/layout/dashboard/headerControlStyles.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "feature:vitest-config-ts:91de816294",
           "type": "feature",
           "name": "vitest.config.ts",
           "path": "apps/web/vitest.config.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:vitest-setup-ts:57094a6e46",
-          "type": "feature",
-          "name": "vitest.setup.ts",
-          "path": "apps/web/vitest.setup.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -1588,14 +1388,6 @@
           "owner": "Docs Memory Lead"
         },
         {
-          "id": "feature:index-d-ts:feee8a9219",
-          "type": "feature",
-          "name": "index.d.ts",
-          "path": "libs/shared/index.d.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "feature:index-js:f6716b7db6",
           "type": "feature",
           "name": "index.js",
@@ -1604,41 +1396,249 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "feature:auditapiendpointdocsparity-mjs:50674e3984",
+          "id": "feature:generatearchitecturegraph-mjs:be0df22bf9",
           "type": "feature",
-          "name": "auditApiEndpointDocsParity.mjs",
-          "path": "scripts/auditApiEndpointDocsParity.mjs",
+          "name": "generateArchitectureGraph.mjs",
+          "path": "scripts/generateArchitectureGraph.mjs",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "feature:auditarchitecturegraphdrift-mjs:32f5eec431",
+          "id": "feature:runproduxa11ymobileproof-mjs:14daad352c",
           "type": "feature",
-          "name": "auditArchitectureGraphDrift.mjs",
-          "path": "scripts/auditArchitectureGraphDrift.mjs",
+          "name": "runProdUxA11yMobileProof.mjs",
+          "path": "scripts/runProdUxA11yMobileProof.mjs",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "feature:auditroutereachablei18n-mjs:c768c0a77a",
+          "id": "feature:runqarepeatablesmokee2e-mjs:e3a9ad7d4c",
           "type": "feature",
-          "name": "auditRouteReachableI18n.mjs",
-          "path": "scripts/auditRouteReachableI18n.mjs",
+          "name": "runQaRepeatableSmokeE2e.mjs",
+          "path": "scripts/runQaRepeatableSmokeE2e.mjs",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "feature:buildobsidianvaultlayer-mjs:bea712135d",
+          "id": "feature:runrcrefreshsummarystrict-mjs:7db43a5c3e",
           "type": "feature",
-          "name": "buildObsidianVaultLayer.mjs",
-          "path": "scripts/buildObsidianVaultLayer.mjs",
+          "name": "runRcRefreshSummaryStrict.mjs",
+          "path": "scripts/runRcRefreshSummaryStrict.mjs",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:runrestoredrillevidence-mjs:41488cab13",
+          "type": "feature",
+          "name": "runRestoreDrillEvidence.mjs",
+          "path": "scripts/runRestoreDrillEvidence.mjs",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:runrollbackproofevidence-mjs:dd8acfed21",
+          "type": "feature",
+          "name": "runRollbackProofEvidence.mjs",
+          "path": "scripts/runRollbackProofEvidence.mjs",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:runv1staticissuescan-mjs:8b1fcefe10",
+          "type": "feature",
+          "name": "runV1StaticIssueScan.mjs",
+          "path": "scripts/runV1StaticIssueScan.mjs",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:start-local-prod-like-mjs:0e8be3b111",
+          "type": "feature",
+          "name": "start-local-prod-like.mjs",
+          "path": "scripts/start-local-prod-like.mjs",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:start-workers-prod-mjs:2ccde5b36b",
+          "type": "feature",
+          "name": "start-workers-prod.mjs",
+          "path": "scripts/start-workers-prod.mjs",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:summarizercgates-mjs:798d6f969c",
+          "type": "feature",
+          "name": "summarizeRcGates.mjs",
+          "path": "scripts/summarizeRcGates.mjs",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:syncrcchecklistfromgatestatus-mjs:885eea5112",
+          "type": "feature",
+          "name": "syncRcChecklistFromGateStatus.mjs",
+          "path": "scripts/syncRcChecklistFromGateStatus.mjs",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:triagejourneyevidence-mjs:875b4055d3",
+          "type": "feature",
+          "name": "triageJourneyEvidence.mjs",
+          "path": "scripts/triageJourneyEvidence.mjs",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:verifylocalbackuprestore-mjs:901f6b76f9",
+          "type": "feature",
+          "name": "verifyLocalBackupRestore.mjs",
+          "path": "scripts/verifyLocalBackupRestore.mjs",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:writewebbuildmetadata-mjs:527d41f19f",
+          "type": "feature",
+          "name": "writeWebBuildMetadata.mjs",
+          "path": "scripts/writeWebBuildMetadata.mjs",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:main:5c983a2584",
+          "type": "function",
+          "name": "main",
+          "path": "apps/api/prisma/seed.ts#main",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:buildruninputs:cc7e4f1c03",
+          "type": "function",
+          "name": "buildRunInputs",
+          "path": "apps/api/scripts/assistant-load-benchmark.ts#buildRunInputs",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:percentile:06d20038f6",
+          "type": "function",
+          "name": "percentile",
+          "path": "apps/api/scripts/assistant-load-benchmark.ts#percentile",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:run:76a85c6bd7",
+          "type": "function",
+          "name": "run",
+          "path": "apps/api/scripts/assistant-load-benchmark.ts#run",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:run:913d91787a",
+          "type": "function",
+          "name": "run",
+          "path": "apps/api/scripts/backfillBacktestVenueContext.ts#run",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:buildartifactdir:e089235ff7",
+          "type": "function",
+          "name": "buildArtifactDir",
+          "path": "apps/api/scripts/bot-v2-preflight-report.ts#buildArtifactDir",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:main:023a43dfd2",
+          "type": "function",
+          "name": "main",
+          "path": "apps/api/scripts/bot-v2-preflight-report.ts#main",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:nowstamp:e71545e870",
+          "type": "function",
+          "name": "nowStamp",
+          "path": "apps/api/scripts/bot-v2-preflight-report.ts#nowStamp",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:rendermarkdown:4902c501ae",
+          "type": "function",
+          "name": "renderMarkdown",
+          "path": "apps/api/scripts/bot-v2-preflight-report.ts#renderMarkdown",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:toiso:53b8fcaa48",
+          "type": "function",
+          "name": "toIso",
+          "path": "apps/api/scripts/bot-v2-preflight-report.ts#toIso",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:main:aea673da08",
+          "type": "function",
+          "name": "main",
+          "path": "apps/api/scripts/exportPaperRuntimeSnapshot.ts#main",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:toiso:3370b99f11",
+          "type": "function",
+          "name": "toIso",
+          "path": "apps/api/scripts/exportPaperRuntimeSnapshot.ts#toIso",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:buildmarkdown:83b12dc82f",
+          "type": "function",
+          "name": "buildMarkdown",
+          "path": "apps/api/scripts/gateioMarketStreamSourceSmoke.ts#buildMarkdown",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizeoutputpath:8864581722",
+          "type": "function",
+          "name": "normalizeOutputPath",
+          "path": "apps/api/scripts/gateioMarketStreamSourceSmoke.ts#normalizeOutputPath",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:run:1819a4b5e9",
+          "type": "function",
+          "name": "run",
+          "path": "apps/api/scripts/gateioMarketStreamSourceSmoke.ts#run",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:ensureuser:4d60cdb829",
+          "type": "function",
+          "name": "ensureUser",
+          "path": "apps/api/scripts/importPaperRuntimeSnapshot.ts#ensureUser",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "implementation_without_docs": {
-      "count": 976,
+      "count": 738,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -2401,318 +2401,6 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "component:i18nprovider-tsx:e2b655d80e",
-          "type": "component",
-          "name": "I18nProvider.tsx",
-          "path": "apps/web/src/i18n/I18nProvider.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:applogolink-tsx:764f83c867",
-          "type": "component",
-          "name": "AppLogoLink.tsx",
-          "path": "apps/web/src/ui/components/AppLogoLink.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:assetsymbol-tsx:750977b33b",
-          "type": "component",
-          "name": "AssetSymbol.tsx",
-          "path": "apps/web/src/ui/components/AssetSymbol.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:confirmmodal-tsx:6874e70107",
-          "type": "component",
-          "name": "ConfirmModal.tsx",
-          "path": "apps/web/src/ui/components/ConfirmModal.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:datatable-tsx:988feded77",
-          "type": "component",
-          "name": "DataTable.tsx",
-          "path": "apps/web/src/ui/components/DataTable.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:footerpreferencesswitchers-tsx:b81b564e69",
-          "type": "component",
-          "name": "FooterPreferencesSwitchers.tsx",
-          "path": "apps/web/src/ui/components/FooterPreferencesSwitchers.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formmodal-tsx:f6bc2327e8",
-          "type": "component",
-          "name": "FormModal.tsx",
-          "path": "apps/web/src/ui/components/FormModal.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:inlinepager-tsx:b72028e3b7",
-          "type": "component",
-          "name": "InlinePager.tsx",
-          "path": "apps/web/src/ui/components/InlinePager.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:skeletoncardblock-tsx:9d76607dfc",
-          "type": "component",
-          "name": "SkeletonCardBlock.tsx",
-          "path": "apps/web/src/ui/components/loading/SkeletonCardBlock.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:skeletonformblock-tsx:fd613b8f9f",
-          "type": "component",
-          "name": "SkeletonFormBlock.tsx",
-          "path": "apps/web/src/ui/components/loading/SkeletonFormBlock.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:skeletonkpirow-tsx:8e5b840afe",
-          "type": "component",
-          "name": "SkeletonKpiRow.tsx",
-          "path": "apps/web/src/ui/components/loading/SkeletonKpiRow.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:skeletontablerows-tsx:ca4a753c4f",
-          "type": "component",
-          "name": "SkeletonTableRows.tsx",
-          "path": "apps/web/src/ui/components/loading/SkeletonTableRows.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:profilebutton-tsx:267e777c79",
-          "type": "component",
-          "name": "ProfileButton.tsx",
-          "path": "apps/web/src/ui/components/ProfileButton.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:skiptocontentlink-tsx:63f32b3624",
-          "type": "component",
-          "name": "SkipToContentLink.tsx",
-          "path": "apps/web/src/ui/components/SkipToContentLink.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:statusbadge-tsx:a15a75bbbc",
-          "type": "component",
-          "name": "StatusBadge.tsx",
-          "path": "apps/web/src/ui/components/StatusBadge.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:tableui-tsx:a00ea28769",
-          "type": "component",
-          "name": "TableUi.tsx",
-          "path": "apps/web/src/ui/components/TableUi.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:tabs-tsx:345227e49e",
-          "type": "component",
-          "name": "Tabs.tsx",
-          "path": "apps/web/src/ui/components/Tabs.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:themeswitch-tsx:b5c6ee46e5",
-          "type": "component",
-          "name": "ThemeSwitch.tsx",
-          "path": "apps/web/src/ui/components/ThemeSwitch.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:useasyncconfirm-tsx:a6bb9334d3",
-          "type": "component",
-          "name": "useAsyncConfirm.tsx",
-          "path": "apps/web/src/ui/components/useAsyncConfirm.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:viewstate-tsx:3ff6a5410f",
-          "type": "component",
-          "name": "ViewState.tsx",
-          "path": "apps/web/src/ui/components/ViewState.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formalert-tsx:12f553a4d7",
-          "type": "component",
-          "name": "FormAlert.tsx",
-          "path": "apps/web/src/ui/forms/FormAlert.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formfield-tsx:b4c43624cb",
-          "type": "component",
-          "name": "FormField.tsx",
-          "path": "apps/web/src/ui/forms/FormField.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formfields-tsx:5fe8161c93",
-          "type": "component",
-          "name": "FormFields.tsx",
-          "path": "apps/web/src/ui/forms/FormFields.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formgrid-tsx:f8ff41d511",
-          "type": "component",
-          "name": "FormGrid.tsx",
-          "path": "apps/web/src/ui/forms/FormGrid.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formmobileactionbar-tsx:0436d76cc9",
-          "type": "component",
-          "name": "FormMobileActionBar.tsx",
-          "path": "apps/web/src/ui/forms/FormMobileActionBar.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formpageshell-tsx:203bfa73e4",
-          "type": "component",
-          "name": "FormPageShell.tsx",
-          "path": "apps/web/src/ui/forms/FormPageShell.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formsectioncard-tsx:05e99f4ee6",
-          "type": "component",
-          "name": "FormSectionCard.tsx",
-          "path": "apps/web/src/ui/forms/FormSectionCard.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formvalidationsummary-tsx:db776feef5",
-          "type": "component",
-          "name": "FormValidationSummary.tsx",
-          "path": "apps/web/src/ui/forms/FormValidationSummary.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:dashboardrouteprogress-tsx:d35a8e04c0",
-          "type": "component",
-          "name": "DashboardRouteProgress.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/DashboardRouteProgress.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:footer-tsx:b91554c0e9",
-          "type": "component",
-          "name": "Footer.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/Footer.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:header-tsx:3589c0557b",
-          "type": "component",
-          "name": "Header.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/Header.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:isometricmodetoggle-tsx:b726f10f62",
-          "type": "component",
-          "name": "IsometricModeToggle.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/IsometricModeToggle.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:languageswitcher-tsx:f4ce9253f8",
-          "type": "component",
-          "name": "LanguageSwitcher.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/LanguageSwitcher.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:pagetitle-tsx:fa4b8fcc8a",
-          "type": "component",
-          "name": "PageTitle.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/PageTitle.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:risknoticefooter-tsx:c3c04f1cb2",
-          "type": "component",
-          "name": "RiskNoticeFooter.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/RiskNoticeFooter.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:safetybar-tsx:68a781e92c",
-          "type": "component",
-          "name": "SafetyBar.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/SafetyBar.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:footer-tsx:61f81a59a1",
-          "type": "component",
-          "name": "Footer.tsx",
-          "path": "apps/web/src/ui/layout/public/Footer.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:header-tsx:5cf6c6a94f",
-          "type": "component",
-          "name": "Header.tsx",
-          "path": "apps/web/src/ui/layout/public/Header.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:serviceworkerregistration-tsx:c6ee427930",
-          "type": "component",
-          "name": "ServiceWorkerRegistration.tsx",
-          "path": "apps/web/src/ui/pwa/ServiceWorkerRegistration.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "feature:eslint-config-mjs:d28e34a0fe",
           "type": "feature",
           "name": "eslint.config.mjs",
@@ -2929,38 +2617,6 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "feature:runtimeopenpositionderivations-ts:bfd8412792",
-          "type": "feature",
-          "name": "runtimeOpenPositionDerivations.ts",
-          "path": "apps/web/src/features/bots/utils/runtimeOpenPositionDerivations.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runtimesignallabelkeys-ts:a57e60ea78",
-          "type": "feature",
-          "name": "runtimeSignalLabelKeys.ts",
-          "path": "apps/web/src/features/bots/utils/runtimeSignalLabelKeys.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runtimesurfacetruth-ts:5a12344a69",
-          "type": "feature",
-          "name": "runtimeSurfaceTruth.ts",
-          "path": "apps/web/src/features/bots/utils/runtimeSurfaceTruth.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:trailingstopdisplay-ts:14d16d2336",
-          "type": "feature",
-          "name": "trailingStopDisplay.ts",
-          "path": "apps/web/src/features/bots/utils/trailingStopDisplay.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "feature:formatters-ts:4f80effc6e",
           "type": "feature",
           "name": "formatters.ts",
@@ -3153,22 +2809,6 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "feature:dcaladdercell-tsx:e92dddf1e1",
-          "type": "feature",
-          "name": "dcaLadderCell.tsx",
-          "path": "apps/web/src/features/shared/dcaLadderCell.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runtimemonitoringformatters-ts:aac58968dd",
-          "type": "feature",
-          "name": "runtimeMonitoringFormatters.ts",
-          "path": "apps/web/src/features/shared/runtimeMonitoringFormatters.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "feature:usestrategyform-ts:6f79cc4b60",
           "type": "feature",
           "name": "useStrategyForm.ts",
@@ -3181,22 +2821,6 @@
           "type": "feature",
           "name": "strategyPresets.ts",
           "path": "apps/web/src/features/strategies/presets/strategyPresets.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:indicatorpresentation-ts:cb09a4c525",
-          "type": "feature",
-          "name": "indicatorPresentation.ts",
-          "path": "apps/web/src/features/strategies/utils/indicatorPresentation.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:indicatortaxonomy-ts:f4b970a24f",
-          "type": "feature",
-          "name": "indicatorTaxonomy.ts",
-          "path": "apps/web/src/features/strategies/utils/indicatorTaxonomy.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -3225,666 +2849,402 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "feature:strategythresholditems-ts:32d34bd236",
-          "type": "feature",
-          "name": "strategyThresholdItems.ts",
-          "path": "apps/web/src/features/strategies/utils/strategyThresholdItems.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "feature:actions-ts:2ab1643a06",
           "type": "feature",
           "name": "actions.ts",
           "path": "apps/web/src/features/wallets/components/wallet-create-edit-form/actions.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:state-ts:25257ae959",
+          "type": "feature",
+          "name": "state.ts",
+          "path": "apps/web/src/features/wallets/components/wallet-create-edit-form/state.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:wallets-service-ts:6a19f5a8d2",
+          "type": "feature",
+          "name": "wallets.service.ts",
+          "path": "apps/web/src/features/wallets/services/wallets.service.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:admin-de-ch-ts:4aa08254c7",
+          "type": "feature",
+          "name": "admin.de-CH.ts",
+          "path": "apps/web/src/i18n/namespaces/admin.de-CH.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:admin-en-ts:84f4f8e890",
+          "type": "feature",
+          "name": "admin.en.ts",
+          "path": "apps/web/src/i18n/namespaces/admin.en.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:admin-pl-ts:b0c39536f5",
+          "type": "feature",
+          "name": "admin.pl.ts",
+          "path": "apps/web/src/i18n/namespaces/admin.pl.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:admin-pt-ts:a99bcf17eb",
+          "type": "feature",
+          "name": "admin.pt.ts",
+          "path": "apps/web/src/i18n/namespaces/admin.pt.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:auth-de-ch-ts:7fb5b5cd2c",
+          "type": "feature",
+          "name": "auth.de-CH.ts",
+          "path": "apps/web/src/i18n/namespaces/auth.de-CH.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:auth-en-ts:52d0fc354c",
+          "type": "feature",
+          "name": "auth.en.ts",
+          "path": "apps/web/src/i18n/namespaces/auth.en.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:auth-pl-ts:ed8466d2c7",
+          "type": "feature",
+          "name": "auth.pl.ts",
+          "path": "apps/web/src/i18n/namespaces/auth.pl.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:auth-pt-ts:65df7b2420",
+          "type": "feature",
+          "name": "auth.pt.ts",
+          "path": "apps/web/src/i18n/namespaces/auth.pt.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-backtests-de-ch-ts:86b3252b7c",
+          "type": "feature",
+          "name": "dashboard-backtests.de-CH.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-backtests.de-CH.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-backtests-en-ts:4fb025a18c",
+          "type": "feature",
+          "name": "dashboard-backtests.en.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-backtests.en.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-backtests-pl-ts:0e8de2e080",
+          "type": "feature",
+          "name": "dashboard-backtests.pl.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-backtests.pl.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-backtests-pt-ts:a610259b69",
+          "type": "feature",
+          "name": "dashboard-backtests.pt.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-backtests.pt.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-bots-de-ch-ts:e513a147fe",
+          "type": "feature",
+          "name": "dashboard-bots.de-CH.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-bots.de-CH.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-bots-en-ts:9fd871e444",
+          "type": "feature",
+          "name": "dashboard-bots.en.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-bots.en.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-bots-pl-ts:11573d6a9d",
+          "type": "feature",
+          "name": "dashboard-bots.pl.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-bots.pl.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-bots-pt-ts:b06d1962db",
+          "type": "feature",
+          "name": "dashboard-bots.pt.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-bots.pt.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-home-de-ch-ts:0f88399cb7",
+          "type": "feature",
+          "name": "dashboard-home.de-CH.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-home.de-CH.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-home-en-ts:f51c6909dd",
+          "type": "feature",
+          "name": "dashboard-home.en.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-home.en.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-home-pl-ts:e31c50d075",
+          "type": "feature",
+          "name": "dashboard-home.pl.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-home.pl.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-home-pt-ts:87116ef839",
+          "type": "feature",
+          "name": "dashboard-home.pt.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-home.pt.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-markets-de-ch-ts:fb825530a1",
+          "type": "feature",
+          "name": "dashboard-markets.de-CH.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-markets.de-CH.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-markets-en-ts:6334bfa07d",
+          "type": "feature",
+          "name": "dashboard-markets.en.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-markets.en.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-markets-pl-ts:aae411aa42",
+          "type": "feature",
+          "name": "dashboard-markets.pl.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-markets.pl.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-markets-pt-ts:2f00e50cf7",
+          "type": "feature",
+          "name": "dashboard-markets.pt.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-markets.pt.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-reports-de-ch-ts:14273a6728",
+          "type": "feature",
+          "name": "dashboard-reports.de-CH.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-reports.de-CH.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-reports-en-ts:4886ea9c3b",
+          "type": "feature",
+          "name": "dashboard-reports.en.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-reports.en.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-reports-pl-ts:f9c198bb49",
+          "type": "feature",
+          "name": "dashboard-reports.pl.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-reports.pl.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-reports-pt-ts:9edc711f85",
+          "type": "feature",
+          "name": "dashboard-reports.pt.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-reports.pt.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-shell-de-ch-ts:91fa00f5e2",
+          "type": "feature",
+          "name": "dashboard-shell.de-CH.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-shell.de-CH.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-shell-en-ts:c1d4c3190e",
+          "type": "feature",
+          "name": "dashboard-shell.en.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-shell.en.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-shell-pl-ts:ac0407998d",
+          "type": "feature",
+          "name": "dashboard-shell.pl.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-shell.pl.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-shell-pt-ts:0c29e9ad50",
+          "type": "feature",
+          "name": "dashboard-shell.pt.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-shell.pt.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-strategies-de-ch-ts:c239c9afab",
+          "type": "feature",
+          "name": "dashboard-strategies.de-CH.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-strategies.de-CH.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-strategies-en-ts:322bc4e72a",
+          "type": "feature",
+          "name": "dashboard-strategies.en.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-strategies.en.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-strategies-pl-ts:b85578bb16",
+          "type": "feature",
+          "name": "dashboard-strategies.pl.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-strategies.pl.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-strategies-pt-ts:3c1dd07cad",
+          "type": "feature",
+          "name": "dashboard-strategies.pt.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-strategies.pt.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-wallets-de-ch-ts:cd66dfaec7",
+          "type": "feature",
+          "name": "dashboard-wallets.de-CH.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-wallets.de-CH.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-wallets-en-ts:1df499a6be",
+          "type": "feature",
+          "name": "dashboard-wallets.en.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-wallets.en.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-wallets-pl-ts:86b661c7c0",
+          "type": "feature",
+          "name": "dashboard-wallets.pl.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-wallets.pl.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:dashboard-wallets-pt-ts:af6f5fd587",
+          "type": "feature",
+          "name": "dashboard-wallets.pt.ts",
+          "path": "apps/web/src/i18n/namespaces/dashboard-wallets.pt.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:public-de-ch-ts:b9780332af",
+          "type": "feature",
+          "name": "public.de-CH.ts",
+          "path": "apps/web/src/i18n/namespaces/public.de-CH.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:public-en-ts:7d58dd176e",
+          "type": "feature",
+          "name": "public.en.ts",
+          "path": "apps/web/src/i18n/namespaces/public.en.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:public-pl-ts:c8d4146c3d",
+          "type": "feature",
+          "name": "public.pl.ts",
+          "path": "apps/web/src/i18n/namespaces/public.pl.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:public-pt-ts:c36b7211c9",
+          "type": "feature",
+          "name": "public.pt.ts",
+          "path": "apps/web/src/i18n/namespaces/public.pt.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:middleware-ts:c3e7254298",
+          "type": "feature",
+          "name": "middleware.ts",
+          "path": "apps/web/src/middleware.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:index-ts:e10f7ccccc",
+          "type": "feature",
+          "name": "index.ts",
+          "path": "apps/web/src/ui/components/loading/index.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "actionable_implementation_without_tests": {
-      "count": 940,
+      "count": 859,
       "items": [
-        {
-          "id": "component:applogolink-tsx:764f83c867",
-          "type": "component",
-          "name": "AppLogoLink.tsx",
-          "path": "apps/web/src/ui/components/AppLogoLink.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:confirmmodal-tsx:6874e70107",
-          "type": "component",
-          "name": "ConfirmModal.tsx",
-          "path": "apps/web/src/ui/components/ConfirmModal.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:datatable-tsx:988feded77",
-          "type": "component",
-          "name": "DataTable.tsx",
-          "path": "apps/web/src/ui/components/DataTable.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:footerpreferencesswitchers-tsx:b81b564e69",
-          "type": "component",
-          "name": "FooterPreferencesSwitchers.tsx",
-          "path": "apps/web/src/ui/components/FooterPreferencesSwitchers.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formmodal-tsx:f6bc2327e8",
-          "type": "component",
-          "name": "FormModal.tsx",
-          "path": "apps/web/src/ui/components/FormModal.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:inlinepager-tsx:b72028e3b7",
-          "type": "component",
-          "name": "InlinePager.tsx",
-          "path": "apps/web/src/ui/components/InlinePager.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:skeletoncardblock-tsx:9d76607dfc",
-          "type": "component",
-          "name": "SkeletonCardBlock.tsx",
-          "path": "apps/web/src/ui/components/loading/SkeletonCardBlock.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:skeletonformblock-tsx:fd613b8f9f",
-          "type": "component",
-          "name": "SkeletonFormBlock.tsx",
-          "path": "apps/web/src/ui/components/loading/SkeletonFormBlock.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:skeletonkpirow-tsx:8e5b840afe",
-          "type": "component",
-          "name": "SkeletonKpiRow.tsx",
-          "path": "apps/web/src/ui/components/loading/SkeletonKpiRow.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:skeletontablerows-tsx:ca4a753c4f",
-          "type": "component",
-          "name": "SkeletonTableRows.tsx",
-          "path": "apps/web/src/ui/components/loading/SkeletonTableRows.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:profilebutton-tsx:267e777c79",
-          "type": "component",
-          "name": "ProfileButton.tsx",
-          "path": "apps/web/src/ui/components/ProfileButton.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:skiptocontentlink-tsx:63f32b3624",
-          "type": "component",
-          "name": "SkipToContentLink.tsx",
-          "path": "apps/web/src/ui/components/SkipToContentLink.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:useasyncconfirm-tsx:a6bb9334d3",
-          "type": "component",
-          "name": "useAsyncConfirm.tsx",
-          "path": "apps/web/src/ui/components/useAsyncConfirm.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formalert-tsx:12f553a4d7",
-          "type": "component",
-          "name": "FormAlert.tsx",
-          "path": "apps/web/src/ui/forms/FormAlert.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formfield-tsx:b4c43624cb",
-          "type": "component",
-          "name": "FormField.tsx",
-          "path": "apps/web/src/ui/forms/FormField.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formgrid-tsx:f8ff41d511",
-          "type": "component",
-          "name": "FormGrid.tsx",
-          "path": "apps/web/src/ui/forms/FormGrid.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formmobileactionbar-tsx:0436d76cc9",
-          "type": "component",
-          "name": "FormMobileActionBar.tsx",
-          "path": "apps/web/src/ui/forms/FormMobileActionBar.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formpageshell-tsx:203bfa73e4",
-          "type": "component",
-          "name": "FormPageShell.tsx",
-          "path": "apps/web/src/ui/forms/FormPageShell.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formsectioncard-tsx:05e99f4ee6",
-          "type": "component",
-          "name": "FormSectionCard.tsx",
-          "path": "apps/web/src/ui/forms/FormSectionCard.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formvalidationsummary-tsx:db776feef5",
-          "type": "component",
-          "name": "FormValidationSummary.tsx",
-          "path": "apps/web/src/ui/forms/FormValidationSummary.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:footer-tsx:b91554c0e9",
-          "type": "component",
-          "name": "Footer.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/Footer.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:header-tsx:3589c0557b",
-          "type": "component",
-          "name": "Header.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/Header.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:pagetitle-tsx:fa4b8fcc8a",
-          "type": "component",
-          "name": "PageTitle.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/PageTitle.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:footer-tsx:61f81a59a1",
-          "type": "component",
-          "name": "Footer.tsx",
-          "path": "apps/web/src/ui/layout/public/Footer.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:header-tsx:5cf6c6a94f",
-          "type": "component",
-          "name": "Header.tsx",
-          "path": "apps/web/src/ui/layout/public/Header.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:strategythresholditems-ts:32d34bd236",
-          "type": "feature",
-          "name": "strategyThresholdItems.ts",
-          "path": "apps/web/src/features/strategies/utils/strategyThresholdItems.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:api-ts:6bcde6a546",
-          "type": "feature",
-          "name": "api.ts",
-          "path": "apps/web/src/lib/api.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:clonenaming-ts:401f99e2cc",
-          "type": "feature",
-          "name": "cloneNaming.ts",
-          "path": "apps/web/src/lib/cloneNaming.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:forms-ts:01e629871e",
-          "type": "feature",
-          "name": "forms.ts",
-          "path": "apps/web/src/lib/forms.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:getaxiosmessage-ts:b637be51b3",
-          "type": "feature",
-          "name": "getAxiosMessage.ts",
-          "path": "apps/web/src/lib/getAxiosMessage.ts",
-          "status": "deprecated",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:handleerror-ts:25b3290b5e",
-          "type": "feature",
-          "name": "handleError.ts",
-          "path": "apps/web/src/lib/handleError.ts",
-          "status": "deprecated",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:marketstream-ts:34eedab340",
-          "type": "feature",
-          "name": "marketStream.ts",
-          "path": "apps/web/src/lib/marketStream.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:storage-ts:a05fe5490a",
-          "type": "feature",
-          "name": "storage.ts",
-          "path": "apps/web/src/lib/storage.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:symbols-ts:c373fcbc03",
-          "type": "feature",
-          "name": "symbols.ts",
-          "path": "apps/web/src/lib/symbols.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:text-ts:cb6cccaefb",
-          "type": "feature",
-          "name": "text.ts",
-          "path": "apps/web/src/lib/text.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:time-ts:5c9cc0ad22",
-          "type": "feature",
-          "name": "time.ts",
-          "path": "apps/web/src/lib/time.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:themebootstrap-ts:d317cecfec",
-          "type": "feature",
-          "name": "themeBootstrap.ts",
-          "path": "apps/web/src/security/themeBootstrap.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:tabcontentframe-ts:b8de24c977",
-          "type": "feature",
-          "name": "tabContentFrame.ts",
-          "path": "apps/web/src/ui/components/tabContentFrame.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:usedetailsdropdown-ts:594eaefdb0",
-          "type": "feature",
-          "name": "useDetailsDropdown.ts",
-          "path": "apps/web/src/ui/hooks/useDetailsDropdown.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:dashboardroutes-ts:44436f65d6",
-          "type": "feature",
-          "name": "dashboardRoutes.ts",
-          "path": "apps/web/src/ui/layout/dashboard/dashboardRoutes.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:headercontrolstyles-ts:6771b3742f",
-          "type": "feature",
-          "name": "headerControlStyles.ts",
-          "path": "apps/web/src/ui/layout/dashboard/headerControlStyles.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:vitest-setup-ts:57094a6e46",
-          "type": "feature",
-          "name": "vitest.setup.ts",
-          "path": "apps/web/vitest.setup.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:index-d-ts:feee8a9219",
-          "type": "feature",
-          "name": "index.d.ts",
-          "path": "libs/shared/index.d.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:auditapiendpointdocsparity-mjs:50674e3984",
-          "type": "feature",
-          "name": "auditApiEndpointDocsParity.mjs",
-          "path": "scripts/auditApiEndpointDocsParity.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:auditarchitecturegraphdrift-mjs:32f5eec431",
-          "type": "feature",
-          "name": "auditArchitectureGraphDrift.mjs",
-          "path": "scripts/auditArchitectureGraphDrift.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:auditroutereachablei18n-mjs:c768c0a77a",
-          "type": "feature",
-          "name": "auditRouteReachableI18n.mjs",
-          "path": "scripts/auditRouteReachableI18n.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:buildobsidianvaultlayer-mjs:bea712135d",
-          "type": "feature",
-          "name": "buildObsidianVaultLayer.mjs",
-          "path": "scripts/buildObsidianVaultLayer.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:buildopsrequestheaders-mjs:66c1bc4e5f",
-          "type": "feature",
-          "name": "buildOpsRequestHeaders.mjs",
-          "path": "scripts/buildOpsRequestHeaders.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:buildprojectindex-mjs:2c3679d7c0",
-          "type": "feature",
-          "name": "buildProjectIndex.mjs",
-          "path": "scripts/buildProjectIndex.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:buildrcexternalgatestatus-mjs:8f1d1026b2",
-          "type": "feature",
-          "name": "buildRcExternalGateStatus.mjs",
-          "path": "scripts/buildRcExternalGateStatus.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:buildrcsignoffrecord-mjs:77d27fa371",
-          "type": "feature",
-          "name": "buildRcSignoffRecord.mjs",
-          "path": "scripts/buildRcSignoffRecord.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:buildslowindowreport-mjs:70e75bb5a1",
-          "type": "feature",
-          "name": "buildSloWindowReport.mjs",
-          "path": "scripts/buildSloWindowReport.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:buildv1completionscorecard-mjs:b8dbe9e6c8",
-          "type": "feature",
-          "name": "buildV1CompletionScorecard.mjs",
-          "path": "scripts/buildV1CompletionScorecard.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:buildv1masterstateledger-mjs:75171af1f6",
-          "type": "feature",
-          "name": "buildV1MasterStateLedger.mjs",
-          "path": "scripts/buildV1MasterStateLedger.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:checkdocsparity-mjs:8604fa7266",
-          "type": "feature",
-          "name": "checkDocsParity.mjs",
-          "path": "scripts/checkDocsParity.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:checkpostdeployruntimefreshness-mjs:3dae784c81",
-          "type": "feature",
-          "name": "checkPostDeployRuntimeFreshness.mjs",
-          "path": "scripts/checkPostDeployRuntimeFreshness.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:checkrcexternalgateevidence-mjs:6f41d93c9c",
-          "type": "feature",
-          "name": "checkRcExternalGateEvidence.mjs",
-          "path": "scripts/checkRcExternalGateEvidence.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:collectliveimportreadbackevidence-mjs:2e717e03df",
-          "type": "feature",
-          "name": "collectLiveImportReadbackEvidence.mjs",
-          "path": "scripts/collectLiveImportReadbackEvidence.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:collectnongateioruntimereadback-mjs:6184270832",
-          "type": "feature",
-          "name": "collectNonGateioRuntimeReadback.mjs",
-          "path": "scripts/collectNonGateioRuntimeReadback.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:collectsloevidence-mjs:05d3fe8dab",
-          "type": "feature",
-          "name": "collectSloEvidence.mjs",
-          "path": "scripts/collectSloEvidence.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:deploysmokecheck-mjs:13db81eaf6",
-          "type": "feature",
-          "name": "deploySmokeCheck.mjs",
-          "path": "scripts/deploySmokeCheck.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:dev-backend-mjs:6e3373794f",
-          "type": "feature",
-          "name": "dev-backend.mjs",
-          "path": "scripts/dev-backend.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:dev-frontend-mjs:083f4cc0e0",
-          "type": "feature",
-          "name": "dev-frontend.mjs",
-          "path": "scripts/dev-frontend.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:dev-workers-mjs:7150fb4f10",
-          "type": "feature",
-          "name": "dev-workers.mjs",
-          "path": "scripts/dev-workers.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:evaluaterollbackguard-mjs:2ee9ffb741",
-          "type": "feature",
-          "name": "evaluateRollbackGuard.mjs",
-          "path": "scripts/evaluateRollbackGuard.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:generatefunctionjourneyindexes-mjs:20f327f194",
-          "type": "feature",
-          "name": "generateFunctionJourneyIndexes.mjs",
-          "path": "scripts/generateFunctionJourneyIndexes.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:generateuseractionindex-mjs:87be913756",
-          "type": "feature",
-          "name": "generateUserActionIndex.mjs",
-          "path": "scripts/generateUserActionIndex.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:golivesmoke-mjs:3570a61f3e",
-          "type": "feature",
-          "name": "goLiveSmoke.mjs",
-          "path": "scripts/goLiveSmoke.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:resolveopsauthtoken-mjs:88436883b4",
-          "type": "feature",
-          "name": "resolveOpsAuthToken.mjs",
-          "path": "scripts/resolveOpsAuthToken.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runaud07isolateddbpacks-mjs:11e712ccd9",
-          "type": "feature",
-          "name": "runAud07IsolatedDbPacks.mjs",
-          "path": "scripts/runAud07IsolatedDbPacks.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runbackupverificationprofile-mjs:67075082b0",
-          "type": "feature",
-          "name": "runBackupVerificationProfile.mjs",
-          "path": "scripts/runBackupVerificationProfile.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runcontrolledlivesessionproof-mjs:90b8eb48a2",
-          "type": "feature",
-          "name": "runControlledLiveSessionProof.mjs",
-          "path": "scripts/runControlledLiveSessionProof.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runcutoverdryrun-mjs:2023d6927f",
-          "type": "feature",
-          "name": "runCutoverDryRun.mjs",
-          "path": "scripts/runCutoverDryRun.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runknownstaterefresh-mjs:7351d400d0",
-          "type": "feature",
-          "name": "runKnownStateRefresh.mjs",
-          "path": "scripts/runKnownStateRefresh.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runlocalexternalgatespipeline-mjs:499ae45ce1",
-          "type": "feature",
-          "name": "runLocalExternalGatesPipeline.mjs",
-          "path": "scripts/runLocalExternalGatesPipeline.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runprodauthsessionbrowserproof-mjs:18b5018bf7",
-          "type": "feature",
-          "name": "runProdAuthSessionBrowserProof.mjs",
-          "path": "scripts/runProdAuthSessionBrowserProof.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runprodfixtureactionproof-mjs:1e3f696407",
-          "type": "feature",
-          "name": "runProdFixtureActionProof.mjs",
-          "path": "scripts/runProdFixtureActionProof.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runprodpositionsproof-mjs:ea68d553c1",
-          "type": "feature",
-          "name": "runProdPositionsProof.mjs",
-          "path": "scripts/runProdPositionsProof.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runprodsecurityexchangeproof-mjs:cf738ef8a9",
-          "type": "feature",
-          "name": "runProdSecurityExchangeProof.mjs",
-          "path": "scripts/runProdSecurityExchangeProof.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runproduimoduleclickthroughaudit-mjs:96d01fcd23",
-          "type": "feature",
-          "name": "runProdUiModuleClickthroughAudit.mjs",
-          "path": "scripts/runProdUiModuleClickthroughAudit.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
         {
           "id": "feature:runproduxa11ymobileproof-mjs:14daad352c",
           "type": "feature",
@@ -4806,14 +4166,6 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "function:computepositionaddupdate:6aacfd61a3",
-          "type": "function",
-          "name": "computePositionAddUpdate",
-          "path": "apps/api/src/modules/orders/positionFillMath.ts#computePositionAddUpdate",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "function:buildimportedexternalpositionid:f9c51e404c",
           "type": "function",
           "name": "buildImportedExternalPositionId",
@@ -4844,1619 +4196,666 @@
           "path": "apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#buildLegacyImportedExternalPositionId",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:buildlegacyimportedexternalpositionsymbolprefix:5afc21843c",
+          "type": "function",
+          "name": "buildLegacyImportedExternalPositionSymbolPrefix",
+          "path": "apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#buildLegacyImportedExternalPositionSymbolPrefix",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:buildpositionidentity:9b272a1d66",
+          "type": "function",
+          "name": "buildPositionIdentity",
+          "path": "apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#buildPositionIdentity",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:extractsymbolfromexternalid:e41f1b9f2a",
+          "type": "function",
+          "name": "extractSymbolFromExternalId",
+          "path": "apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#extractSymbolFromExternalId",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:isimportedexternalpositionkeyinmarketscope:f269f81fad",
+          "type": "function",
+          "name": "isImportedExternalPositionKeyInMarketScope",
+          "path": "apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#isImportedExternalPositionKeyInMarketScope",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizeimportedleverage:f548193229",
+          "type": "function",
+          "name": "normalizeImportedLeverage",
+          "path": "apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#normalizeImportedLeverage",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizesymbol:cf5b803293",
+          "type": "function",
+          "name": "normalizeSymbol",
+          "path": "apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#normalizeSymbol",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolvecanonicalentryprice:d9f6faa9ec",
+          "type": "function",
+          "name": "resolveCanonicalEntryPrice",
+          "path": "apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#resolveCanonicalEntryPrice",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolverecoveredcontinuitystate:49526300fc",
+          "type": "function",
+          "name": "resolveRecoveredContinuityState",
+          "path": "apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#resolveRecoveredContinuityState",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolverecoveredmanagementmode:8b2955aada",
+          "type": "function",
+          "name": "resolveRecoveredManagementMode",
+          "path": "apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#resolveRecoveredManagementMode",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:shouldtreataslifecyclereplacement:aaf7f90bcb",
+          "type": "function",
+          "name": "shouldTreatAsLifecycleReplacement",
+          "path": "apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#shouldTreatAsLifecycleReplacement",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:hydratereconciledimportedpositionhistory:0b51c29c45",
+          "type": "function",
+          "name": "hydrateReconciledImportedPositionHistory",
+          "path": "apps/api/src/modules/positions/livePositionReconciliation.history.ts#hydrateReconciledImportedPositionHistory",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolveimportedclosedhistoryclosedat:51d8ce249d",
+          "type": "function",
+          "name": "resolveImportedClosedHistoryClosedAt",
+          "path": "apps/api/src/modules/positions/livePositionReconciliation.history.ts#resolveImportedClosedHistoryClosedAt",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizereason:2aa9bdc30a",
+          "type": "function",
+          "name": "normalizeReason",
+          "path": "apps/api/src/modules/positions/positionCloseAttribution.ts#normalizeReason",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:parseenvdate:765a220fb0",
+          "type": "function",
+          "name": "parseEnvDate",
+          "path": "apps/api/src/observability/runtimeFreshness.ts#parseEnvDate",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:decrypt:8953e00e0d",
+          "type": "function",
+          "name": "decrypt",
+          "path": "apps/api/src/utils/crypto.ts#decrypt",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:decryptlegacycbc:91d5136ca7",
+          "type": "function",
+          "name": "decryptLegacyCbc",
+          "path": "apps/api/src/utils/crypto.ts#decryptLegacyCbc",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:encrypt:0f1d56a553",
+          "type": "function",
+          "name": "encrypt",
+          "path": "apps/api/src/utils/crypto.ts#encrypt",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:getactivekey:56bf7d4393",
+          "type": "function",
+          "name": "getActiveKey",
+          "path": "apps/api/src/utils/crypto.ts#getActiveKey",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:getkeyforversion:91cc6a29f0",
+          "type": "function",
+          "name": "getKeyForVersion",
+          "path": "apps/api/src/utils/crypto.ts#getKeyForVersion",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:isproduction:c98f741e35",
+          "type": "function",
+          "name": "isProduction",
+          "path": "apps/api/src/utils/errorExposure.ts#isProduction",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:formatzoderror:d66d635305",
+          "type": "function",
+          "name": "formatZodError",
+          "path": "apps/api/src/utils/formatZodError.ts#formatZodError",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:sendvalidationerror:8dcb9101e8",
+          "type": "function",
+          "name": "sendValidationError",
+          "path": "apps/api/src/utils/formatZodError.ts#sendValidationError",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:comparepassword:44e706892c",
+          "type": "function",
+          "name": "comparePassword",
+          "path": "apps/api/src/utils/hash.ts#comparePassword",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:hashpassword:ab7453d294",
+          "type": "function",
+          "name": "hashPassword",
+          "path": "apps/api/src/utils/hash.ts#hashPassword",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:ensureruntimesignalloopstarted:7b89988fd3",
+          "type": "function",
+          "name": "ensureRuntimeSignalLoopStarted",
+          "path": "apps/api/src/workers/execution.worker.ts#ensureRuntimeSignalLoopStarted",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:buildsubscriptionfingerprint:beabe833d7",
+          "type": "function",
+          "name": "buildSubscriptionFingerprint",
+          "path": "apps/api/src/workers/marketStream.worker.ts#buildSubscriptionFingerprint",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:logsubscriptionsrefreshfailure:e3cad7f210",
+          "type": "function",
+          "name": "logSubscriptionsRefreshFailure",
+          "path": "apps/api/src/workers/marketStream.worker.ts#logSubscriptionsRefreshFailure",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:shutdown:23929f98e1",
+          "type": "function",
+          "name": "shutdown",
+          "path": "apps/api/src/workers/marketStream.worker.ts#shutdown",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:startorreloadworker:d48a0d2283",
+          "type": "function",
+          "name": "startOrReloadWorker",
+          "path": "apps/api/src/workers/marketStream.worker.ts#startOrReloadWorker",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:bootstrapworker:a0f6d9a00b",
+          "type": "function",
+          "name": "bootstrapWorker",
+          "path": "apps/api/src/workers/workerBootstrap.ts#bootstrapWorker",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:logworkerevent:367fd4b38c",
+          "type": "function",
+          "name": "logWorkerEvent",
+          "path": "apps/api/src/workers/workerBootstrap.ts#logWorkerEvent",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:recordheartbeat:88b76a8418",
+          "type": "function",
+          "name": "recordHeartbeat",
+          "path": "apps/api/src/workers/workerBootstrap.ts#recordHeartbeat",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:rootlayout:d028a09a5a",
+          "type": "function",
+          "name": "RootLayout",
+          "path": "apps/web/src/app/(public)/layout.tsx#RootLayout",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:get:807079aaaa",
+          "type": "function",
+          "name": "GET",
+          "path": "apps/web/src/app/api/build-info/route.ts#GET",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:readtrimmedenv:bdbd608e41",
+          "type": "function",
+          "name": "readTrimmedEnv",
+          "path": "apps/web/src/app/api/build-info/route.ts#readTrimmedEnv",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolvebuildid:a79f050730",
+          "type": "function",
+          "name": "resolveBuildId",
+          "path": "apps/web/src/app/api/build-info/route.ts#resolveBuildId",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolvegitreffromenv:ca041a40de",
+          "type": "function",
+          "name": "resolveGitRefFromEnv",
+          "path": "apps/web/src/app/api/build-info/route.ts#resolveGitRefFromEnv",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolvegitshafromenv:162420d83c",
+          "type": "function",
+          "name": "resolveGitShaFromEnv",
+          "path": "apps/web/src/app/api/build-info/route.ts#resolveGitShaFromEnv",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolvegitshafromgithubbranch:b8fedebf53",
+          "type": "function",
+          "name": "resolveGitShaFromGithubBranch",
+          "path": "apps/web/src/app/api/build-info/route.ts#resolveGitShaFromGithubBranch",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:rootlayout:675c09782a",
+          "type": "function",
+          "name": "RootLayout",
+          "path": "apps/web/src/app/dashboard/layout.tsx#RootLayout",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:rootlayout:76ced2ee97",
+          "type": "function",
+          "name": "RootLayout",
+          "path": "apps/web/src/app/layout.tsx#RootLayout",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:manifest:2ad9adbf9a",
+          "type": "function",
+          "name": "manifest",
+          "path": "apps/web/src/app/manifest.ts#manifest",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:loginpage:b272dd795c",
+          "type": "function",
+          "name": "LoginPage",
+          "path": "apps/web/src/features/auth/pages/LoginPage.tsx#LoginPage",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolveruntimeopenpositionmargin:48f0c7d2eb",
+          "type": "function",
+          "name": "resolveRuntimeOpenPositionMargin",
+          "path": "apps/web/src/features/bots/utils/runtimeOpenPositionDerivations.ts#resolveRuntimeOpenPositionMargin",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:sumruntimeopenpositionmargin:c8cb471707",
+          "type": "function",
+          "name": "sumRuntimeOpenPositionMargin",
+          "path": "apps/web/src/features/bots/utils/runtimeOpenPositionDerivations.ts#sumRuntimeOpenPositionMargin",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:sumruntimeopenpositionunrealized:1cbeef3315",
+          "type": "function",
+          "name": "sumRuntimeOpenPositionUnrealized",
+          "path": "apps/web/src/features/bots/utils/runtimeOpenPositionDerivations.ts#sumRuntimeOpenPositionUnrealized",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:hasruntimedynamicstoprowtruth:0140b1dbe4",
+          "type": "function",
+          "name": "hasRuntimeDynamicStopRowTruth",
+          "path": "apps/web/src/features/bots/utils/runtimeSurfaceTruth.ts#hasRuntimeDynamicStopRowTruth",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:prunestickyfavorablemovemap:0f0883d236",
+          "type": "function",
+          "name": "pruneStickyFavorableMoveMap",
+          "path": "apps/web/src/features/bots/utils/trailingStopDisplay.ts#pruneStickyFavorableMoveMap",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolvefallbackttpprotectedpercent:826da3b842",
+          "type": "function",
+          "name": "resolveFallbackTtpProtectedPercent",
+          "path": "apps/web/src/features/bots/utils/trailingStopDisplay.ts#resolveFallbackTtpProtectedPercent",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:formatdefaultdcalevel:5a85bb223b",
+          "type": "function",
+          "name": "formatDefaultDcaLevel",
+          "path": "apps/web/src/features/shared/dcaLadderCell.tsx#formatDefaultDcaLevel",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:renderdcaladdercell:fd0e720e79",
+          "type": "function",
+          "name": "renderDcaLadderCell",
+          "path": "apps/web/src/features/shared/dcaLadderCell.tsx#renderDcaLadderCell",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:formatruntimetradefeemeta:f3bb1c910e",
+          "type": "function",
+          "name": "formatRuntimeTradeFeeMeta",
+          "path": "apps/web/src/features/shared/runtimeMonitoringFormatters.ts#formatRuntimeTradeFeeMeta",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:toruntimecloseinitiatorpillclass:f45587cef4",
+          "type": "function",
+          "name": "toRuntimeCloseInitiatorPillClass",
+          "path": "apps/web/src/features/shared/runtimeMonitoringFormatters.ts#toRuntimeCloseInitiatorPillClass",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:toruntimeclosereasonpillclass:315798f264",
+          "type": "function",
+          "name": "toRuntimeCloseReasonPillClass",
+          "path": "apps/web/src/features/shared/runtimeMonitoringFormatters.ts#toRuntimeCloseReasonPillClass",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:toruntimetradelifecyclebadgeclass:91a4872123",
+          "type": "function",
+          "name": "toRuntimeTradeLifecycleBadgeClass",
+          "path": "apps/web/src/features/shared/runtimeMonitoringFormatters.ts#toRuntimeTradeLifecycleBadgeClass",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:toruntimetradelifecyclepillclass:5d4791641b",
+          "type": "function",
+          "name": "toRuntimeTradeLifecyclePillClass",
+          "path": "apps/web/src/features/shared/runtimeMonitoringFormatters.ts#toRuntimeTradeLifecyclePillClass",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:createclientid:f6416da8dd",
+          "type": "function",
+          "name": "createClientId",
+          "path": "apps/web/src/features/strategies/utils/strategyThresholdItems.ts#createClientId",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:detectroutepath:df86a4b559",
+          "type": "function",
+          "name": "detectRoutePath",
+          "path": "apps/web/src/i18n/I18nProvider.tsx#detectRoutePath",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:i18nprovider:909224afda",
+          "type": "function",
+          "name": "I18nProvider",
+          "path": "apps/web/src/i18n/I18nProvider.tsx#I18nProvider",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizetimezonepreference:bfd0982935",
+          "type": "function",
+          "name": "normalizeTimeZonePreference",
+          "path": "apps/web/src/i18n/I18nProvider.tsx#normalizeTimeZonePreference",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:reportmissingtranslation:674070e208",
+          "type": "function",
+          "name": "reportMissingTranslation",
+          "path": "apps/web/src/i18n/I18nProvider.tsx#reportMissingTranslation",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:syncroutepath:45b048564f",
+          "type": "function",
+          "name": "syncRoutePath",
+          "path": "apps/web/src/i18n/I18nProvider.tsx#syncRoutePath",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:usei18n:26d64208e3",
+          "type": "function",
+          "name": "useI18n",
+          "path": "apps/web/src/i18n/I18nProvider.tsx#useI18n",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:formatcurrency:6633d59bbe",
+          "type": "function",
+          "name": "formatCurrency",
+          "path": "apps/web/src/i18n/useLocaleFormatting.ts#formatCurrency",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:formatdate:6443965d86",
+          "type": "function",
+          "name": "formatDate",
+          "path": "apps/web/src/i18n/useLocaleFormatting.ts#formatDate",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:formatdatetime:6deba56c4a",
+          "type": "function",
+          "name": "formatDateTime",
+          "path": "apps/web/src/i18n/useLocaleFormatting.ts#formatDateTime",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:formatdatetimewithseconds:917224b44f",
+          "type": "function",
+          "name": "formatDateTimeWithSeconds",
+          "path": "apps/web/src/i18n/useLocaleFormatting.ts#formatDateTimeWithSeconds",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:formatnumber:d0d004b5e7",
+          "type": "function",
+          "name": "formatNumber",
+          "path": "apps/web/src/i18n/useLocaleFormatting.ts#formatNumber",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:formatpercent:4327a95dd6",
+          "type": "function",
+          "name": "formatPercent",
+          "path": "apps/web/src/i18n/useLocaleFormatting.ts#formatPercent",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:formattime:b22f539bcb",
+          "type": "function",
+          "name": "formatTime",
+          "path": "apps/web/src/i18n/useLocaleFormatting.ts#formatTime",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:hardredirect:5252828cbb",
+          "type": "function",
+          "name": "hardRedirect",
+          "path": "apps/web/src/lib/api.ts#hardRedirect",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:isprotectedroute:0c16abcb87",
+          "type": "function",
+          "name": "isProtectedRoute",
+          "path": "apps/web/src/lib/api.ts#isProtectedRoute",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:hasformtext:e067888d31",
+          "type": "function",
+          "name": "hasFormText",
+          "path": "apps/web/src/lib/forms.ts#hasFormText",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizeformbasecurrency:b1f47dce18",
+          "type": "function",
+          "name": "normalizeFormBaseCurrency",
+          "path": "apps/web/src/lib/forms.ts#normalizeFormBaseCurrency",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizeformsymbol:3e004113d9",
+          "type": "function",
+          "name": "normalizeFormSymbol",
+          "path": "apps/web/src/lib/forms.ts#normalizeFormSymbol",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizeformtext:b9fb442f25",
+          "type": "function",
+          "name": "normalizeFormText",
+          "path": "apps/web/src/lib/forms.ts#normalizeFormText",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolveformerrormessage:74a52990ef",
+          "type": "function",
+          "name": "resolveFormErrorMessage",
+          "path": "apps/web/src/lib/forms.ts#resolveFormErrorMessage",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:getaxiosmessage:923079c8fb",
+          "type": "function",
+          "name": "getAxiosMessage",
+          "path": "apps/web/src/lib/getAxiosMessage.ts#getAxiosMessage",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:buildmarketstreameventsurl:375fbc9735",
+          "type": "function",
+          "name": "buildMarketStreamEventsUrl",
+          "path": "apps/web/src/lib/marketStream.ts#buildMarketStreamEventsUrl",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:createmarketstreameventsource:961d267412",
+          "type": "function",
+          "name": "createMarketStreamEventSource",
+          "path": "apps/web/src/lib/marketStream.ts#createMarketStreamEventSource",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizenumericinput:cf8a9c37ec",
+          "type": "function",
+          "name": "normalizeNumericInput",
+          "path": "apps/web/src/lib/numericInput.ts#normalizeNumericInput",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "actionable_implementation_without_docs": {
-      "count": 241,
-      "items": [
-        {
-          "id": "component:i18nprovider-tsx:e2b655d80e",
-          "type": "component",
-          "name": "I18nProvider.tsx",
-          "path": "apps/web/src/i18n/I18nProvider.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:applogolink-tsx:764f83c867",
-          "type": "component",
-          "name": "AppLogoLink.tsx",
-          "path": "apps/web/src/ui/components/AppLogoLink.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:assetsymbol-tsx:750977b33b",
-          "type": "component",
-          "name": "AssetSymbol.tsx",
-          "path": "apps/web/src/ui/components/AssetSymbol.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:confirmmodal-tsx:6874e70107",
-          "type": "component",
-          "name": "ConfirmModal.tsx",
-          "path": "apps/web/src/ui/components/ConfirmModal.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:datatable-tsx:988feded77",
-          "type": "component",
-          "name": "DataTable.tsx",
-          "path": "apps/web/src/ui/components/DataTable.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:footerpreferencesswitchers-tsx:b81b564e69",
-          "type": "component",
-          "name": "FooterPreferencesSwitchers.tsx",
-          "path": "apps/web/src/ui/components/FooterPreferencesSwitchers.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formmodal-tsx:f6bc2327e8",
-          "type": "component",
-          "name": "FormModal.tsx",
-          "path": "apps/web/src/ui/components/FormModal.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:inlinepager-tsx:b72028e3b7",
-          "type": "component",
-          "name": "InlinePager.tsx",
-          "path": "apps/web/src/ui/components/InlinePager.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:skeletoncardblock-tsx:9d76607dfc",
-          "type": "component",
-          "name": "SkeletonCardBlock.tsx",
-          "path": "apps/web/src/ui/components/loading/SkeletonCardBlock.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:skeletonformblock-tsx:fd613b8f9f",
-          "type": "component",
-          "name": "SkeletonFormBlock.tsx",
-          "path": "apps/web/src/ui/components/loading/SkeletonFormBlock.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:skeletonkpirow-tsx:8e5b840afe",
-          "type": "component",
-          "name": "SkeletonKpiRow.tsx",
-          "path": "apps/web/src/ui/components/loading/SkeletonKpiRow.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:skeletontablerows-tsx:ca4a753c4f",
-          "type": "component",
-          "name": "SkeletonTableRows.tsx",
-          "path": "apps/web/src/ui/components/loading/SkeletonTableRows.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:profilebutton-tsx:267e777c79",
-          "type": "component",
-          "name": "ProfileButton.tsx",
-          "path": "apps/web/src/ui/components/ProfileButton.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:skiptocontentlink-tsx:63f32b3624",
-          "type": "component",
-          "name": "SkipToContentLink.tsx",
-          "path": "apps/web/src/ui/components/SkipToContentLink.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:statusbadge-tsx:a15a75bbbc",
-          "type": "component",
-          "name": "StatusBadge.tsx",
-          "path": "apps/web/src/ui/components/StatusBadge.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:tableui-tsx:a00ea28769",
-          "type": "component",
-          "name": "TableUi.tsx",
-          "path": "apps/web/src/ui/components/TableUi.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:tabs-tsx:345227e49e",
-          "type": "component",
-          "name": "Tabs.tsx",
-          "path": "apps/web/src/ui/components/Tabs.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:themeswitch-tsx:b5c6ee46e5",
-          "type": "component",
-          "name": "ThemeSwitch.tsx",
-          "path": "apps/web/src/ui/components/ThemeSwitch.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:useasyncconfirm-tsx:a6bb9334d3",
-          "type": "component",
-          "name": "useAsyncConfirm.tsx",
-          "path": "apps/web/src/ui/components/useAsyncConfirm.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:viewstate-tsx:3ff6a5410f",
-          "type": "component",
-          "name": "ViewState.tsx",
-          "path": "apps/web/src/ui/components/ViewState.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formalert-tsx:12f553a4d7",
-          "type": "component",
-          "name": "FormAlert.tsx",
-          "path": "apps/web/src/ui/forms/FormAlert.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formfield-tsx:b4c43624cb",
-          "type": "component",
-          "name": "FormField.tsx",
-          "path": "apps/web/src/ui/forms/FormField.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formfields-tsx:5fe8161c93",
-          "type": "component",
-          "name": "FormFields.tsx",
-          "path": "apps/web/src/ui/forms/FormFields.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formgrid-tsx:f8ff41d511",
-          "type": "component",
-          "name": "FormGrid.tsx",
-          "path": "apps/web/src/ui/forms/FormGrid.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formmobileactionbar-tsx:0436d76cc9",
-          "type": "component",
-          "name": "FormMobileActionBar.tsx",
-          "path": "apps/web/src/ui/forms/FormMobileActionBar.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formpageshell-tsx:203bfa73e4",
-          "type": "component",
-          "name": "FormPageShell.tsx",
-          "path": "apps/web/src/ui/forms/FormPageShell.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formsectioncard-tsx:05e99f4ee6",
-          "type": "component",
-          "name": "FormSectionCard.tsx",
-          "path": "apps/web/src/ui/forms/FormSectionCard.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:formvalidationsummary-tsx:db776feef5",
-          "type": "component",
-          "name": "FormValidationSummary.tsx",
-          "path": "apps/web/src/ui/forms/FormValidationSummary.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:dashboardrouteprogress-tsx:d35a8e04c0",
-          "type": "component",
-          "name": "DashboardRouteProgress.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/DashboardRouteProgress.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:footer-tsx:b91554c0e9",
-          "type": "component",
-          "name": "Footer.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/Footer.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:header-tsx:3589c0557b",
-          "type": "component",
-          "name": "Header.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/Header.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:isometricmodetoggle-tsx:b726f10f62",
-          "type": "component",
-          "name": "IsometricModeToggle.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/IsometricModeToggle.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:languageswitcher-tsx:f4ce9253f8",
-          "type": "component",
-          "name": "LanguageSwitcher.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/LanguageSwitcher.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:pagetitle-tsx:fa4b8fcc8a",
-          "type": "component",
-          "name": "PageTitle.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/PageTitle.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:risknoticefooter-tsx:c3c04f1cb2",
-          "type": "component",
-          "name": "RiskNoticeFooter.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/RiskNoticeFooter.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:safetybar-tsx:68a781e92c",
-          "type": "component",
-          "name": "SafetyBar.tsx",
-          "path": "apps/web/src/ui/layout/dashboard/SafetyBar.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:footer-tsx:61f81a59a1",
-          "type": "component",
-          "name": "Footer.tsx",
-          "path": "apps/web/src/ui/layout/public/Footer.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:header-tsx:5cf6c6a94f",
-          "type": "component",
-          "name": "Header.tsx",
-          "path": "apps/web/src/ui/layout/public/Header.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:serviceworkerregistration-tsx:c6ee427930",
-          "type": "component",
-          "name": "ServiceWorkerRegistration.tsx",
-          "path": "apps/web/src/ui/pwa/ServiceWorkerRegistration.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runtimeopenpositionderivations-ts:bfd8412792",
-          "type": "feature",
-          "name": "runtimeOpenPositionDerivations.ts",
-          "path": "apps/web/src/features/bots/utils/runtimeOpenPositionDerivations.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runtimesignallabelkeys-ts:a57e60ea78",
-          "type": "feature",
-          "name": "runtimeSignalLabelKeys.ts",
-          "path": "apps/web/src/features/bots/utils/runtimeSignalLabelKeys.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runtimesurfacetruth-ts:5a12344a69",
-          "type": "feature",
-          "name": "runtimeSurfaceTruth.ts",
-          "path": "apps/web/src/features/bots/utils/runtimeSurfaceTruth.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:trailingstopdisplay-ts:14d16d2336",
-          "type": "feature",
-          "name": "trailingStopDisplay.ts",
-          "path": "apps/web/src/features/bots/utils/trailingStopDisplay.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:dcaladdercell-tsx:e92dddf1e1",
-          "type": "feature",
-          "name": "dcaLadderCell.tsx",
-          "path": "apps/web/src/features/shared/dcaLadderCell.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runtimemonitoringformatters-ts:aac58968dd",
-          "type": "feature",
-          "name": "runtimeMonitoringFormatters.ts",
-          "path": "apps/web/src/features/shared/runtimeMonitoringFormatters.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:indicatorpresentation-ts:cb09a4c525",
-          "type": "feature",
-          "name": "indicatorPresentation.ts",
-          "path": "apps/web/src/features/strategies/utils/indicatorPresentation.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:indicatortaxonomy-ts:f4b970a24f",
-          "type": "feature",
-          "name": "indicatorTaxonomy.ts",
-          "path": "apps/web/src/features/strategies/utils/indicatorTaxonomy.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:strategythresholditems-ts:32d34bd236",
-          "type": "feature",
-          "name": "strategyThresholdItems.ts",
-          "path": "apps/web/src/features/strategies/utils/strategyThresholdItems.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:guardrails-seed-regression-tsx:685203f56a",
-          "type": "feature",
-          "name": "guardrails.seed-regression.tsx",
-          "path": "apps/web/src/i18n/__fixtures__/guardrails.seed-regression.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:namespaceregistry-ts:a155c5bc2b",
-          "type": "feature",
-          "name": "namespaceRegistry.ts",
-          "path": "apps/web/src/i18n/namespaceRegistry.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:translations-ts:b0c5004649",
-          "type": "feature",
-          "name": "translations.ts",
-          "path": "apps/web/src/i18n/translations.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:uselocaleformatting-ts:35610219de",
-          "type": "feature",
-          "name": "useLocaleFormatting.ts",
-          "path": "apps/web/src/i18n/useLocaleFormatting.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:useoptionali18n-ts:f37737d93e",
-          "type": "feature",
-          "name": "useOptionalI18n.ts",
-          "path": "apps/web/src/i18n/useOptionalI18n.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:api-ts:6bcde6a546",
-          "type": "feature",
-          "name": "api.ts",
-          "path": "apps/web/src/lib/api.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:async-ts:fe6a47343a",
-          "type": "feature",
-          "name": "async.ts",
-          "path": "apps/web/src/lib/async.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:clonenaming-ts:401f99e2cc",
-          "type": "feature",
-          "name": "cloneNaming.ts",
-          "path": "apps/web/src/lib/cloneNaming.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:errorresolver-ts:a4b8a7d081",
-          "type": "feature",
-          "name": "errorResolver.ts",
-          "path": "apps/web/src/lib/errorResolver.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:forms-ts:01e629871e",
-          "type": "feature",
-          "name": "forms.ts",
-          "path": "apps/web/src/lib/forms.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:getaxiosmessage-ts:b637be51b3",
-          "type": "feature",
-          "name": "getAxiosMessage.ts",
-          "path": "apps/web/src/lib/getAxiosMessage.ts",
-          "status": "deprecated",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:handleerror-ts:25b3290b5e",
-          "type": "feature",
-          "name": "handleError.ts",
-          "path": "apps/web/src/lib/handleError.ts",
-          "status": "deprecated",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:marketstream-ts:34eedab340",
-          "type": "feature",
-          "name": "marketStream.ts",
-          "path": "apps/web/src/lib/marketStream.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:navigation-ts:ff463cc8d4",
-          "type": "feature",
-          "name": "navigation.ts",
-          "path": "apps/web/src/lib/navigation.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:numericinput-ts:552667647f",
-          "type": "feature",
-          "name": "numericInput.ts",
-          "path": "apps/web/src/lib/numericInput.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:publicapibaseurl-ts:f27a89a26e",
-          "type": "feature",
-          "name": "publicApiBaseUrl.ts",
-          "path": "apps/web/src/lib/publicApiBaseUrl.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:storage-ts:a05fe5490a",
-          "type": "feature",
-          "name": "storage.ts",
-          "path": "apps/web/src/lib/storage.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:symbols-ts:c373fcbc03",
-          "type": "feature",
-          "name": "symbols.ts",
-          "path": "apps/web/src/lib/symbols.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:text-ts:cb6cccaefb",
-          "type": "feature",
-          "name": "text.ts",
-          "path": "apps/web/src/lib/text.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:time-ts:5c9cc0ad22",
-          "type": "feature",
-          "name": "time.ts",
-          "path": "apps/web/src/lib/time.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:themebootstrap-ts:d317cecfec",
-          "type": "feature",
-          "name": "themeBootstrap.ts",
-          "path": "apps/web/src/security/themeBootstrap.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:usedatatablecolumnvisibilitystate-ts:e4b022e267",
-          "type": "feature",
-          "name": "useDataTableColumnVisibilityState.ts",
-          "path": "apps/web/src/ui/components/data-table/useDataTableColumnVisibilityState.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:tabcontentframe-ts:b8de24c977",
-          "type": "feature",
-          "name": "tabContentFrame.ts",
-          "path": "apps/web/src/ui/components/tabContentFrame.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:validationfeedback-ts:25b7c400ef",
-          "type": "feature",
-          "name": "validationFeedback.ts",
-          "path": "apps/web/src/ui/forms/validationFeedback.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:usedetailsdropdown-ts:594eaefdb0",
-          "type": "feature",
-          "name": "useDetailsDropdown.ts",
-          "path": "apps/web/src/ui/hooks/useDetailsDropdown.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:dashboardroutes-ts:44436f65d6",
-          "type": "feature",
-          "name": "dashboardRoutes.ts",
-          "path": "apps/web/src/ui/layout/dashboard/dashboardRoutes.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:headercontrolstyles-ts:6771b3742f",
-          "type": "feature",
-          "name": "headerControlStyles.ts",
-          "path": "apps/web/src/ui/layout/dashboard/headerControlStyles.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:vitest-setup-ts:57094a6e46",
-          "type": "feature",
-          "name": "vitest.setup.ts",
-          "path": "apps/web/vitest.setup.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:index-d-ts:feee8a9219",
-          "type": "feature",
-          "name": "index.d.ts",
-          "path": "libs/shared/index.d.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:auditapiendpointdocsparity-mjs:50674e3984",
-          "type": "feature",
-          "name": "auditApiEndpointDocsParity.mjs",
-          "path": "scripts/auditApiEndpointDocsParity.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:auditarchitecturegraphdrift-mjs:32f5eec431",
-          "type": "feature",
-          "name": "auditArchitectureGraphDrift.mjs",
-          "path": "scripts/auditArchitectureGraphDrift.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:auditroutereachablei18n-mjs:c768c0a77a",
-          "type": "feature",
-          "name": "auditRouteReachableI18n.mjs",
-          "path": "scripts/auditRouteReachableI18n.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:buildobsidianvaultlayer-mjs:bea712135d",
-          "type": "feature",
-          "name": "buildObsidianVaultLayer.mjs",
-          "path": "scripts/buildObsidianVaultLayer.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:buildopsrequestheaders-mjs:66c1bc4e5f",
-          "type": "feature",
-          "name": "buildOpsRequestHeaders.mjs",
-          "path": "scripts/buildOpsRequestHeaders.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:buildprojectindex-mjs:2c3679d7c0",
-          "type": "feature",
-          "name": "buildProjectIndex.mjs",
-          "path": "scripts/buildProjectIndex.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:buildrcexternalgatestatus-mjs:8f1d1026b2",
-          "type": "feature",
-          "name": "buildRcExternalGateStatus.mjs",
-          "path": "scripts/buildRcExternalGateStatus.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:buildrcsignoffrecord-mjs:77d27fa371",
-          "type": "feature",
-          "name": "buildRcSignoffRecord.mjs",
-          "path": "scripts/buildRcSignoffRecord.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:buildslowindowreport-mjs:70e75bb5a1",
-          "type": "feature",
-          "name": "buildSloWindowReport.mjs",
-          "path": "scripts/buildSloWindowReport.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:buildv1completionscorecard-mjs:b8dbe9e6c8",
-          "type": "feature",
-          "name": "buildV1CompletionScorecard.mjs",
-          "path": "scripts/buildV1CompletionScorecard.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:buildv1masterstateledger-mjs:75171af1f6",
-          "type": "feature",
-          "name": "buildV1MasterStateLedger.mjs",
-          "path": "scripts/buildV1MasterStateLedger.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:checkcoolifystackenv-mjs:77a7d69212",
-          "type": "feature",
-          "name": "checkCoolifyStackEnv.mjs",
-          "path": "scripts/checkCoolifyStackEnv.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:checkdocsparity-mjs:8604fa7266",
-          "type": "feature",
-          "name": "checkDocsParity.mjs",
-          "path": "scripts/checkDocsParity.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:checkpostdeployruntimefreshness-mjs:3dae784c81",
-          "type": "feature",
-          "name": "checkPostDeployRuntimeFreshness.mjs",
-          "path": "scripts/checkPostDeployRuntimeFreshness.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:checkprotectedinputreadiness-mjs:e10651bf3c",
-          "type": "feature",
-          "name": "checkProtectedInputReadiness.mjs",
-          "path": "scripts/checkProtectedInputReadiness.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:checkrcexternalgateevidence-mjs:6f41d93c9c",
-          "type": "feature",
-          "name": "checkRcExternalGateEvidence.mjs",
-          "path": "scripts/checkRcExternalGateEvidence.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:collectliveimportreadbackevidence-mjs:2e717e03df",
-          "type": "feature",
-          "name": "collectLiveImportReadbackEvidence.mjs",
-          "path": "scripts/collectLiveImportReadbackEvidence.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:collectnongateioruntimereadback-mjs:6184270832",
-          "type": "feature",
-          "name": "collectNonGateioRuntimeReadback.mjs",
-          "path": "scripts/collectNonGateioRuntimeReadback.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:collectsloevidence-mjs:05d3fe8dab",
-          "type": "feature",
-          "name": "collectSloEvidence.mjs",
-          "path": "scripts/collectSloEvidence.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:comparereusableauditmanifests-mjs:5ad8819544",
-          "type": "feature",
-          "name": "compareReusableAuditManifests.mjs",
-          "path": "scripts/compareReusableAuditManifests.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:deploysmokecheck-mjs:13db81eaf6",
-          "type": "feature",
-          "name": "deploySmokeCheck.mjs",
-          "path": "scripts/deploySmokeCheck.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:dev-backend-mjs:6e3373794f",
-          "type": "feature",
-          "name": "dev-backend.mjs",
-          "path": "scripts/dev-backend.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:dev-frontend-mjs:083f4cc0e0",
-          "type": "feature",
-          "name": "dev-frontend.mjs",
-          "path": "scripts/dev-frontend.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:dev-workers-mjs:7150fb4f10",
-          "type": "feature",
-          "name": "dev-workers.mjs",
-          "path": "scripts/dev-workers.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:evaluaterollbackguard-mjs:2ee9ffb741",
-          "type": "feature",
-          "name": "evaluateRollbackGuard.mjs",
-          "path": "scripts/evaluateRollbackGuard.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:generatefunctionjourneyindexes-mjs:20f327f194",
-          "type": "feature",
-          "name": "generateFunctionJourneyIndexes.mjs",
-          "path": "scripts/generateFunctionJourneyIndexes.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:generateuseractionindex-mjs:87be913756",
-          "type": "feature",
-          "name": "generateUserActionIndex.mjs",
-          "path": "scripts/generateUserActionIndex.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:golivesmoke-mjs:3570a61f3e",
-          "type": "feature",
-          "name": "goLiveSmoke.mjs",
-          "path": "scripts/goLiveSmoke.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:resolveopsauthtoken-mjs:88436883b4",
-          "type": "feature",
-          "name": "resolveOpsAuthToken.mjs",
-          "path": "scripts/resolveOpsAuthToken.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runaud07isolateddbpacks-mjs:11e712ccd9",
-          "type": "feature",
-          "name": "runAud07IsolatedDbPacks.mjs",
-          "path": "scripts/runAud07IsolatedDbPacks.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runbackupverificationprofile-mjs:67075082b0",
-          "type": "feature",
-          "name": "runBackupVerificationProfile.mjs",
-          "path": "scripts/runBackupVerificationProfile.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runcontrolledlivesessionproof-mjs:90b8eb48a2",
-          "type": "feature",
-          "name": "runControlledLiveSessionProof.mjs",
-          "path": "scripts/runControlledLiveSessionProof.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runcutoverdryrun-mjs:2023d6927f",
-          "type": "feature",
-          "name": "runCutoverDryRun.mjs",
-          "path": "scripts/runCutoverDryRun.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runknownstaterefresh-mjs:7351d400d0",
-          "type": "feature",
-          "name": "runKnownStateRefresh.mjs",
-          "path": "scripts/runKnownStateRefresh.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runlocalexternalgatespipeline-mjs:499ae45ce1",
-          "type": "feature",
-          "name": "runLocalExternalGatesPipeline.mjs",
-          "path": "scripts/runLocalExternalGatesPipeline.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runprodauthsessionbrowserproof-mjs:18b5018bf7",
-          "type": "feature",
-          "name": "runProdAuthSessionBrowserProof.mjs",
-          "path": "scripts/runProdAuthSessionBrowserProof.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runprodfixtureactionproof-mjs:1e3f696407",
-          "type": "feature",
-          "name": "runProdFixtureActionProof.mjs",
-          "path": "scripts/runProdFixtureActionProof.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runprodpositionsproof-mjs:ea68d553c1",
-          "type": "feature",
-          "name": "runProdPositionsProof.mjs",
-          "path": "scripts/runProdPositionsProof.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runprodsecurityexchangeproof-mjs:cf738ef8a9",
-          "type": "feature",
-          "name": "runProdSecurityExchangeProof.mjs",
-          "path": "scripts/runProdSecurityExchangeProof.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runproduimoduleclickthroughaudit-mjs:96d01fcd23",
-          "type": "feature",
-          "name": "runProdUiModuleClickthroughAudit.mjs",
-          "path": "scripts/runProdUiModuleClickthroughAudit.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runproduxa11ymobileproof-mjs:14daad352c",
-          "type": "feature",
-          "name": "runProdUxA11yMobileProof.mjs",
-          "path": "scripts/runProdUxA11yMobileProof.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runqarepeatablesmokee2e-mjs:e3a9ad7d4c",
-          "type": "feature",
-          "name": "runQaRepeatableSmokeE2e.mjs",
-          "path": "scripts/runQaRepeatableSmokeE2e.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runrcrefreshsummarystrict-mjs:7db43a5c3e",
-          "type": "feature",
-          "name": "runRcRefreshSummaryStrict.mjs",
-          "path": "scripts/runRcRefreshSummaryStrict.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runrestoredrillevidence-mjs:41488cab13",
-          "type": "feature",
-          "name": "runRestoreDrillEvidence.mjs",
-          "path": "scripts/runRestoreDrillEvidence.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runrollbackproofevidence-mjs:dd8acfed21",
-          "type": "feature",
-          "name": "runRollbackProofEvidence.mjs",
-          "path": "scripts/runRollbackProofEvidence.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runv1stagerehearsal-mjs:6249bd92dc",
-          "type": "feature",
-          "name": "runV1StageRehearsal.mjs",
-          "path": "scripts/runV1StageRehearsal.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:runv1staticissuescan-mjs:8b1fcefe10",
-          "type": "feature",
-          "name": "runV1StaticIssueScan.mjs",
-          "path": "scripts/runV1StaticIssueScan.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:start-local-prod-like-mjs:0e8be3b111",
-          "type": "feature",
-          "name": "start-local-prod-like.mjs",
-          "path": "scripts/start-local-prod-like.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:start-workers-prod-mjs:2ccde5b36b",
-          "type": "feature",
-          "name": "start-workers-prod.mjs",
-          "path": "scripts/start-workers-prod.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:summarizercgates-mjs:798d6f969c",
-          "type": "feature",
-          "name": "summarizeRcGates.mjs",
-          "path": "scripts/summarizeRcGates.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:syncrcchecklistfromgatestatus-mjs:885eea5112",
-          "type": "feature",
-          "name": "syncRcChecklistFromGateStatus.mjs",
-          "path": "scripts/syncRcChecklistFromGateStatus.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:triagejourneyevidence-mjs:875b4055d3",
-          "type": "feature",
-          "name": "triageJourneyEvidence.mjs",
-          "path": "scripts/triageJourneyEvidence.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:verifylocalbackuprestore-mjs:901f6b76f9",
-          "type": "feature",
-          "name": "verifyLocalBackupRestore.mjs",
-          "path": "scripts/verifyLocalBackupRestore.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:waitforwebbuildinfo-mjs:acc7ad2d05",
-          "type": "feature",
-          "name": "waitForWebBuildInfo.mjs",
-          "path": "scripts/waitForWebBuildInfo.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "feature:writewebbuildmetadata-mjs:527d41f19f",
-          "type": "feature",
-          "name": "writeWebBuildMetadata.mjs",
-          "path": "scripts/writeWebBuildMetadata.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:botdomainerror:39b64d5a94",
-          "type": "model",
-          "name": "BotDomainError",
-          "path": "apps/api/src/modules/bots/bots.errors.ts#BotDomainError",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:ordertypes-types-ts:c1aa7aac83",
-          "type": "model",
-          "name": "orderTypes.types.ts",
-          "path": "apps/api/src/modules/engine/orderTypes.types.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:positionmanagement-types-ts:bcf1b4c0ff",
-          "type": "model",
-          "name": "positionManagement.types.ts",
-          "path": "apps/api/src/modules/engine/positionManagement.types.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:ruleevaluator-types-ts:e233144357",
-          "type": "model",
-          "name": "ruleEvaluator.types.ts",
-          "path": "apps/api/src/modules/engine/ruleEvaluator.types.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:runtimepositionautomation-types-ts:a89435b9fa",
-          "type": "model",
-          "name": "runtimePositionAutomation.types.ts",
-          "path": "apps/api/src/modules/engine/runtimePositionAutomation.types.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:runtimepositionstatestore:0eb3d546cd",
-          "type": "model",
-          "name": "RuntimePositionStateStore",
-          "path": "apps/api/src/modules/engine/runtimePositionState.store.ts#RuntimePositionStateStore",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:runtimesignaldecisionengine:d0fd2a236b",
-          "type": "model",
-          "name": "RuntimeSignalDecisionEngine",
-          "path": "apps/api/src/modules/engine/runtimeSignalDecisionEngine.ts#RuntimeSignalDecisionEngine",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:runtimesignalevaluationtypes-ts:569069ffc0",
-          "type": "model",
-          "name": "runtimeSignalEvaluationTypes.ts",
-          "path": "apps/api/src/modules/engine/runtimeSignalEvaluationTypes.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:runtimesignalmarketdatagateway:7720bbb943",
-          "type": "model",
-          "name": "RuntimeSignalMarketDataGateway",
-          "path": "apps/api/src/modules/engine/runtimeSignalMarketDataGateway.ts#RuntimeSignalMarketDataGateway",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:runtimesignalseriestypes-ts:a9e593d98d",
-          "type": "model",
-          "name": "runtimeSignalSeriesTypes.ts",
-          "path": "apps/api/src/modules/engine/runtimeSignalSeriesTypes.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:simulator-types-ts:1cafa4264a",
-          "type": "model",
-          "name": "simulator.types.ts",
-          "path": "apps/api/src/modules/engine/simulator.types.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:exchangedata-types-ts:9685d7f8a5",
-          "type": "model",
-          "name": "exchangeData.types.ts",
-          "path": "apps/api/src/modules/exchange/exchangeData.types.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:orderdomainerror:6dc45325a6",
-          "type": "model",
-          "name": "OrderDomainError",
-          "path": "apps/api/src/modules/orders/orders.errors.ts#OrderDomainError",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:livepositionreconciliation-types-ts:d7cfb8bdbe",
-          "type": "model",
-          "name": "livePositionReconciliation.types.ts",
-          "path": "apps/api/src/modules/positions/livePositionReconciliation.types.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:profilesecuritydomainerror:fbbb613a53",
-          "type": "model",
-          "name": "ProfileSecurityDomainError",
-          "path": "apps/api/src/modules/profile/security/security.errors.ts#ProfileSecurityDomainError",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:paymentgateway-types-ts:ffdd0f3068",
-          "type": "model",
-          "name": "paymentGateway.types.ts",
-          "path": "apps/api/src/modules/subscriptions/payments/paymentGateway.types.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:inmemorymetricsstore:40eed65541",
-          "type": "model",
-          "name": "InMemoryMetricsStore",
-          "path": "apps/api/src/observability/metrics.ts#InMemoryMetricsStore",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:workerheartbeatclient:4f81cd09f8",
-          "type": "model",
-          "name": "WorkerHeartbeatClient",
-          "path": "apps/api/src/workers/workerHeartbeat.ts#WorkerHeartbeatClient",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:bot-type-ts:56abdf1882",
-          "type": "model",
-          "name": "bot.type.ts",
-          "path": "apps/web/src/features/bots/types/bot.type.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:icon-type-ts:19b7403c39",
-          "type": "model",
-          "name": "icon.type.ts",
-          "path": "apps/web/src/features/icons/types/icon.type.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:user-type-ts:d593d0ce2a",
-          "type": "model",
-          "name": "user.type.ts",
-          "path": "apps/web/src/features/profile/types/user.type.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:cdpclient:23cc1e2778",
-          "type": "model",
-          "name": "CdpClient",
-          "path": "scripts/runProdAuthSessionBrowserProof.mjs#CdpClient",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:cdpclient:6f825c2dd3",
-          "type": "model",
-          "name": "CdpClient",
-          "path": "scripts/runProdUxA11yMobileProof.mjs#CdpClient",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:prisma-config-ts:8d4969dab6",
-          "type": "route",
-          "name": "prisma.config.ts",
-          "path": "apps/api/prisma.config.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:seed-ts:e1fb6e7e0f",
-          "type": "route",
-          "name": "seed.ts",
-          "path": "apps/api/prisma/seed.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:readme-md:f32791e104",
-          "type": "route",
-          "name": "README.md",
-          "path": "apps/api/prisma/snapshots/README.md",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:assistant-load-benchmark-ts:2de3100811",
-          "type": "route",
-          "name": "assistant-load-benchmark.ts",
-          "path": "apps/api/scripts/assistant-load-benchmark.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:backfillbacktestvenuecontext-ts:99b0bca6a9",
-          "type": "route",
-          "name": "backfillBacktestVenueContext.ts",
-          "path": "apps/api/scripts/backfillBacktestVenueContext.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:bot-v2-preflight-report-ts:ed1ac6f7da",
-          "type": "route",
-          "name": "bot-v2-preflight-report.ts",
-          "path": "apps/api/scripts/bot-v2-preflight-report.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:exportpaperruntimesnapshot-ts:d0f2679144",
-          "type": "route",
-          "name": "exportPaperRuntimeSnapshot.ts",
-          "path": "apps/api/scripts/exportPaperRuntimeSnapshot.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:gateiomarketstreamsourcesmoke-ts:161c99d8d6",
-          "type": "route",
-          "name": "gateioMarketStreamSourceSmoke.ts",
-          "path": "apps/api/scripts/gateioMarketStreamSourceSmoke.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:importpaperruntimesnapshot-ts:ed103e2195",
-          "type": "route",
-          "name": "importPaperRuntimeSnapshot.ts",
-          "path": "apps/api/scripts/importPaperRuntimeSnapshot.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:load-test-mjs:4eb226d8f2",
-          "type": "route",
-          "name": "load-test.mjs",
-          "path": "apps/api/scripts/load-test.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:start-with-migrate-mjs:1b273b1ad7",
-          "type": "route",
-          "name": "start-with-migrate.mjs",
-          "path": "apps/api/scripts/start-with-migrate.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:verifywalletdbfoundation-ts:6205e9831c",
-          "type": "route",
-          "name": "verifyWalletDbFoundation.ts",
-          "path": "apps/api/scripts/verifyWalletDbFoundation.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:capitalallocation-ts:7772c12bab",
-          "type": "route",
-          "name": "capitalAllocation.ts",
-          "path": "apps/api/src/lib/capitalAllocation.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:nostoreheaders-ts:05dc208e8b",
-          "type": "route",
-          "name": "noStoreHeaders.ts",
-          "path": "apps/api/src/middleware/noStoreHeaders.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:auth-session-ts:acb7f8af80",
-          "type": "route",
-          "name": "auth.session.ts",
-          "path": "apps/api/src/modules/auth/auth.session.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:backtestindicatorspecs-ts:7936411f71",
-          "type": "route",
-          "name": "backtestIndicatorSpecs.ts",
-          "path": "apps/api/src/modules/backtests/backtestIndicatorSpecs.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:bots-e2e-fixtures-ts:6f9a72f85f",
-          "type": "route",
-          "name": "bots.e2e.fixtures.ts",
-          "path": "apps/api/src/modules/bots/bots.e2e.fixtures.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:bots-e2e-shared-ts:20647be641",
-          "type": "route",
-          "name": "bots.e2e.shared.ts",
-          "path": "apps/api/src/modules/bots/bots.e2e.shared.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:bots-errors-ts:ef1d74b5e9",
-          "type": "route",
-          "name": "bots.errors.ts",
-          "path": "apps/api/src/modules/bots/bots.errors.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:bots-repository-ts:ce2ffcb941",
-          "type": "route",
-          "name": "bots.repository.ts",
-          "path": "apps/api/src/modules/bots/bots.repository.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:botsruntimeread-repository-ts:790cc06984",
-          "type": "route",
-          "name": "botsRuntimeRead.repository.ts",
-          "path": "apps/api/src/modules/bots/botsRuntimeRead.repository.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:runtimeexchangesyncedpositionprice-ts:fbccdda698",
-          "type": "route",
-          "name": "runtimeExchangeSyncedPositionPrice.ts",
-          "path": "apps/api/src/modules/bots/runtimeExchangeSyncedPositionPrice.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:runtimesessionpositiondcacount-ts:5e90310320",
-          "type": "route",
-          "name": "runtimeSessionPositionDcaCount.ts",
-          "path": "apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:runtimesessionpositionwindow-ts:ebec174dab",
-          "type": "route",
-          "name": "runtimeSessionPositionWindow.ts",
-          "path": "apps/api/src/modules/bots/runtimeSessionPositionWindow.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:runtimesessiontradefallbackscope-ts:ed10e149dc",
-          "type": "route",
-          "name": "runtimeSessionTradeFallbackScope.ts",
-          "path": "apps/api/src/modules/bots/runtimeSessionTradeFallbackScope.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:runtimestrategyprotectionfallbackdisplay-ts:5082b77398",
-          "type": "route",
-          "name": "runtimeStrategyProtectionFallbackDisplay.ts",
-          "path": "apps/api/src/modules/bots/runtimeStrategyProtectionFallbackDisplay.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:lifecyclecloseparity-golden-ts:934a40bf56",
-          "type": "route",
-          "name": "lifecycleCloseParity.golden.ts",
-          "path": "apps/api/src/modules/engine/fixtures/lifecycleCloseParity.golden.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:positionpnlsemantics-ts:6c6d5eb3de",
-          "type": "route",
-          "name": "positionPnlSemantics.ts",
-          "path": "apps/api/src/modules/engine/positionPnlSemantics.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:positionsizing-ts:9da488a64c",
-          "type": "route",
-          "name": "positionSizing.ts",
-          "path": "apps/api/src/modules/engine/positionSizing.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:runtimebotexecutioncontext-ts:27c350400c",
-          "type": "route",
-          "name": "runtimeBotExecutionContext.ts",
-          "path": "apps/api/src/modules/engine/runtimeBotExecutionContext.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:runtimeexchangesyncedpositionprice-ts:654df0a9d7",
-          "type": "route",
-          "name": "runtimeExchangeSyncedPositionPrice.ts",
-          "path": "apps/api/src/modules/engine/runtimeExchangeSyncedPositionPrice.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:runtimeexecutionclientorderid-ts:5d9ba76e13",
-          "type": "route",
-          "name": "runtimeExecutionClientOrderId.ts",
-          "path": "apps/api/src/modules/engine/runtimeExecutionClientOrderId.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:runtimeimportedpositionownership-ts:e0405d3374",
-          "type": "route",
-          "name": "runtimeImportedPositionOwnership.ts",
-          "path": "apps/api/src/modules/engine/runtimeImportedPositionOwnership.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:runtimepositionautomationdefaultpositiondeps-ts:69de9b9d71",
-          "type": "route",
-          "name": "runtimePositionAutomationDefaultPositionDeps.ts",
-          "path": "apps/api/src/modules/engine/runtimePositionAutomationDefaultPositionDeps.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:runtimepositionautomationskiptelemetry-ts:8c2377aec1",
-          "type": "route",
-          "name": "runtimePositionAutomationSkipTelemetry.ts",
-          "path": "apps/api/src/modules/engine/runtimePositionAutomationSkipTelemetry.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:runtimepositionautomationstaterebase-ts:1e1719d135",
-          "type": "route",
-          "name": "runtimePositionAutomationStateRebase.ts",
-          "path": "apps/api/src/modules/engine/runtimePositionAutomationStateRebase.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:runtimepositionautomationtelemetry-ts:65c8c44b35",
-          "type": "route",
-          "name": "runtimePositionAutomationTelemetry.ts",
-          "path": "apps/api/src/modules/engine/runtimePositionAutomationTelemetry.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:runtimepositionstate-store-ts:22e095b727",
-          "type": "route",
-          "name": "runtimePositionState.store.ts",
-          "path": "apps/api/src/modules/engine/runtimePositionState.store.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:runtimesignaldecisionengine-ts:73695e28e2",
-          "type": "route",
-          "name": "runtimeSignalDecisionEngine.ts",
-          "path": "apps/api/src/modules/engine/runtimeSignalDecisionEngine.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:runtimesignalmarketdatagateway-ts:de55bc4540",
-          "type": "route",
-          "name": "runtimeSignalMarketDataGateway.ts",
-          "path": "apps/api/src/modules/engine/runtimeSignalMarketDataGateway.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:runtimesignalmerge-ts:063e59245d",
-          "type": "route",
-          "name": "runtimeSignalMerge.ts",
-          "path": "apps/api/src/modules/engine/runtimeSignalMerge.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:runtimetickerstore-ts:b5a749955f",
-          "type": "route",
-          "name": "runtimeTickerStore.ts",
-          "path": "apps/api/src/modules/engine/runtimeTickerStore.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:sharedcandlepatternseries-ts:37fcc25c8e",
-          "type": "route",
-          "name": "sharedCandlePatternSeries.ts",
-          "path": "apps/api/src/modules/engine/sharedCandlePatternSeries.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:sharedderivativesseries-ts:49d1c761fd",
-          "type": "route",
-          "name": "sharedDerivativesSeries.ts",
-          "path": "apps/api/src/modules/engine/sharedDerivativesSeries.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:sharedexecutioncore-ts:ebf2945b9b",
-          "type": "route",
-          "name": "sharedExecutionCore.ts",
-          "path": "apps/api/src/modules/engine/sharedExecutionCore.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        }
-      ]
+      "count": 0,
+      "items": []
     },
     "classified_inferred_link_noise": {
-      "count": 7322,
+      "count": 7377,
       "by_reason": {
         "config_only_file": 65,
-        "curated_graph_covered": 1481,
+        "curated_graph_covered": 1536,
         "generated_vendor_docs_vault_plugin": 5775,
         "top_level_app_mount": 1
       },
@@ -6997,6 +5396,96 @@
           "type": "component",
           "name": "sections.tsx",
           "path": "apps/web/src/features/wallets/components/wallet-create-edit-form/sections.tsx",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "component:applogolink-tsx:764f83c867",
+          "type": "component",
+          "name": "AppLogoLink.tsx",
+          "path": "apps/web/src/ui/components/AppLogoLink.tsx",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "component:confirmmodal-tsx:6874e70107",
+          "type": "component",
+          "name": "ConfirmModal.tsx",
+          "path": "apps/web/src/ui/components/ConfirmModal.tsx",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "component:formmodal-tsx:f6bc2327e8",
+          "type": "component",
+          "name": "FormModal.tsx",
+          "path": "apps/web/src/ui/components/FormModal.tsx",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "component:inlinepager-tsx:b72028e3b7",
+          "type": "component",
+          "name": "InlinePager.tsx",
+          "path": "apps/web/src/ui/components/InlinePager.tsx",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "component:skeletoncardblock-tsx:9d76607dfc",
+          "type": "component",
+          "name": "SkeletonCardBlock.tsx",
+          "path": "apps/web/src/ui/components/loading/SkeletonCardBlock.tsx",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "component:skeletonformblock-tsx:fd613b8f9f",
+          "type": "component",
+          "name": "SkeletonFormBlock.tsx",
+          "path": "apps/web/src/ui/components/loading/SkeletonFormBlock.tsx",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "component:skeletonkpirow-tsx:8e5b840afe",
+          "type": "component",
+          "name": "SkeletonKpiRow.tsx",
+          "path": "apps/web/src/ui/components/loading/SkeletonKpiRow.tsx",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "component:skeletontablerows-tsx:ca4a753c4f",
+          "type": "component",
+          "name": "SkeletonTableRows.tsx",
+          "path": "apps/web/src/ui/components/loading/SkeletonTableRows.tsx",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "component:skiptocontentlink-tsx:63f32b3624",
+          "type": "component",
+          "name": "SkipToContentLink.tsx",
+          "path": "apps/web/src/ui/components/SkipToContentLink.tsx",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "component:useasyncconfirm-tsx:a6bb9334d3",
+          "type": "component",
+          "name": "useAsyncConfirm.tsx",
+          "path": "apps/web/src/ui/components/useAsyncConfirm.tsx",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -7731,6 +6220,51 @@
           "reason": "config_only_file"
         },
         {
+          "id": "feature:clonenaming-ts:401f99e2cc",
+          "type": "feature",
+          "name": "cloneNaming.ts",
+          "path": "apps/web/src/lib/cloneNaming.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "feature:storage-ts:a05fe5490a",
+          "type": "feature",
+          "name": "storage.ts",
+          "path": "apps/web/src/lib/storage.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "feature:symbols-ts:c373fcbc03",
+          "type": "feature",
+          "name": "symbols.ts",
+          "path": "apps/web/src/lib/symbols.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "feature:text-ts:cb6cccaefb",
+          "type": "feature",
+          "name": "text.ts",
+          "path": "apps/web/src/lib/text.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "feature:time-ts:5c9cc0ad22",
+          "type": "feature",
+          "name": "time.ts",
+          "path": "apps/web/src/lib/time.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
           "id": "feature:index-ts:e10f7ccccc",
           "type": "feature",
           "name": "index.ts",
@@ -7740,6 +6274,15 @@
           "reason": "config_only_file"
         },
         {
+          "id": "feature:tabcontentframe-ts:b8de24c977",
+          "type": "feature",
+          "name": "tabContentFrame.ts",
+          "path": "apps/web/src/ui/components/tabContentFrame.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
           "id": "feature:index-ts:224fc49d4a",
           "type": "feature",
           "name": "index.ts",
@@ -7747,6 +6290,15 @@
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "config_only_file"
+        },
+        {
+          "id": "feature:dashboardroutes-ts:44436f65d6",
+          "type": "feature",
+          "name": "dashboardRoutes.ts",
+          "path": "apps/web/src/ui/layout/dashboard/dashboardRoutes.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
         },
         {
           "id": "feature:vitest-config-ts:91de816294",
@@ -8107,159 +6659,6 @@
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
-        },
-        {
-          "id": "function:shouldallowinmemoryfallback:0c50a74ec7",
-          "type": "function",
-          "name": "shouldAllowInMemoryFallback",
-          "path": "apps/api/src/middleware/rateLimit.ts#shouldAllowInMemoryFallback",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "function:isallowedbynetwork:37f72847ca",
-          "type": "function",
-          "name": "isAllowedByNetwork",
-          "path": "apps/api/src/middleware/requireOpsNetwork.ts#isAllowedByNetwork",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "function:requireopsnetwork:8f64faa8df",
-          "type": "function",
-          "name": "requireOpsNetwork",
-          "path": "apps/api/src/middleware/requireOpsNetwork.ts#requireOpsNetwork",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "function:listusers:8a2608985c",
-          "type": "function",
-          "name": "listUsers",
-          "path": "apps/api/src/modules/admin/users/users.controller.ts#listUsers",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "function:updateuser:ea3eed9a5a",
-          "type": "function",
-          "name": "updateUser",
-          "path": "apps/api/src/modules/admin/users/users.controller.ts#updateUser",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "function:clearsession:a174a4b7f1",
-          "type": "function",
-          "name": "clearSession",
-          "path": "apps/api/src/modules/auth/auth.controller.ts#clearSession",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "function:clearsessioncookie:667949011e",
-          "type": "function",
-          "name": "clearSessionCookie",
-          "path": "apps/api/src/modules/auth/auth.controller.ts#clearSessionCookie",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "function:login:33fd3c119c",
-          "type": "function",
-          "name": "login",
-          "path": "apps/api/src/modules/auth/auth.controller.ts#login",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "function:logout:aba24168f5",
-          "type": "function",
-          "name": "logout",
-          "path": "apps/api/src/modules/auth/auth.controller.ts#logout",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "function:me:4ef644a761",
-          "type": "function",
-          "name": "me",
-          "path": "apps/api/src/modules/auth/auth.controller.ts#me",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "function:register:78f96f4570",
-          "type": "function",
-          "name": "register",
-          "path": "apps/api/src/modules/auth/auth.controller.ts#register",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "function:setsessioncookie:340c605797",
-          "type": "function",
-          "name": "setSessionCookie",
-          "path": "apps/api/src/modules/auth/auth.controller.ts#setSessionCookie",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "function:cachekeyforcandles:6d4944d0b8",
-          "type": "function",
-          "name": "cacheKeyForCandles",
-          "path": "apps/api/src/modules/backtests/backtestDataGateway.ts#cacheKeyForCandles",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "function:cachekeyforsupplemental:e37c93d0ee",
-          "type": "function",
-          "name": "cacheKeyForSupplemental",
-          "path": "apps/api/src/modules/backtests/backtestDataGateway.ts#cacheKeyForSupplemental",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "function:hascontinuouscandleintervals:ba206688f0",
-          "type": "function",
-          "name": "hasContinuousCandleIntervals",
-          "path": "apps/api/src/modules/backtests/backtestDataGateway.ts#hasContinuousCandleIntervals",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "function:openinterestperiodfortimeframe:976b18d6e7",
-          "type": "function",
-          "name": "openInterestPeriodForTimeframe",
-          "path": "apps/api/src/modules/backtests/backtestDataGateway.ts#openInterestPeriodForTimeframe",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "function:prunegatewaycache:d666a4a1ff",
-          "type": "function",
-          "name": "pruneGatewayCache",
-          "path": "apps/api/src/modules/backtests/backtestDataGateway.ts#pruneGatewayCache",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
         }
       ]
     },
@@ -8272,7 +6671,7 @@
       "items": []
     },
     "tasks_without_architecture": {
-      "count": 940,
+      "count": 1005,
       "items": [
         {
           "id": "task:agent-operating-system-task-2026-05-07:04d1de2b03",
@@ -9877,7 +8276,7 @@
       ]
     },
     "implementation_without_task": {
-      "count": 976,
+      "count": 979,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
