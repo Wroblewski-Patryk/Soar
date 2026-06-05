@@ -1,6 +1,6 @@
 # Architecture Map Status
 
-Last generated: 2026-06-05T16:04:56.930Z
+Last generated: 2026-06-05T19:26:00.514Z
 
 | Metric | Value |
 | --- | --- |

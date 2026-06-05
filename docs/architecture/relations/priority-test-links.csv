@@ -92,3 +92,45 @@ apps/api/src/modules/engine/strategyIndicatorRegistry.ts#getStrategyIndicatorReg
 apps/api/src/modules/engine/strategyIndicatorRegistry.ts#getStrategyIndicatorRegistryEntry,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2230 strategy indicator registry parity relation
 apps/api/src/modules/engine/strategySignalAnalysis.ts#ensurePattern,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2230 strategy analysis pattern indicator parity relation
 apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureRsi,apps/api/src/modules/engine/strategySignalAnalysis.test.ts,LUC-2230 strategy analysis RSI fallback relation
+apps/api/scripts/assistant-load-benchmark.ts#buildRunInputs,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 assistant load benchmark input builder relation
+apps/api/scripts/assistant-load-benchmark.ts#percentile,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 assistant load benchmark percentile relation
+apps/api/scripts/assistant-load-benchmark.ts#run,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 assistant load benchmark import-safe wrapper relation
+apps/api/scripts/backfillBacktestVenueContext.ts#run,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 backtest venue context import-safe wrapper relation
+apps/api/scripts/bot-v2-preflight-report.ts#buildArtifactDir,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 bot v2 preflight artifact directory relation
+apps/api/scripts/bot-v2-preflight-report.ts#main,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 bot v2 preflight import-safe wrapper relation
+apps/api/scripts/bot-v2-preflight-report.ts#nowStamp,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 bot v2 preflight timestamp relation
+apps/api/scripts/bot-v2-preflight-report.ts#renderMarkdown,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 bot v2 preflight markdown renderer relation
+apps/api/scripts/bot-v2-preflight-report.ts#toIso,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 bot v2 preflight date formatter relation
+apps/api/scripts/exportPaperRuntimeSnapshot.ts#main,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 paper runtime snapshot export import-safe wrapper relation
+apps/api/scripts/exportPaperRuntimeSnapshot.ts#toIso,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 paper runtime snapshot date formatter relation
+apps/api/scripts/gateioMarketStreamSourceSmoke.ts#buildMarkdown,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 Gate.io market stream markdown renderer relation
+apps/api/scripts/gateioMarketStreamSourceSmoke.ts#normalizeOutputPath,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 Gate.io market stream output path relation
+apps/api/scripts/gateioMarketStreamSourceSmoke.ts#run,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 Gate.io market stream import-safe wrapper relation
+apps/api/scripts/importPaperRuntimeSnapshot.ts#ensureUser,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 paper runtime snapshot user dependency-injected relation
+apps/api/scripts/importPaperRuntimeSnapshot.ts#main,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 paper runtime snapshot import import-safe wrapper relation
+apps/api/scripts/load-test.mjs#main,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 API load test import-safe wrapper relation
+apps/api/scripts/load-test.mjs#percentile,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 API load test percentile relation
+apps/api/scripts/load-test.mjs#runWorker,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 API load test mocked worker relation
+apps/api/scripts/start-with-migrate.mjs#forwardSignal,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 API start signal forwarding relation
+apps/api/scripts/start-with-migrate.mjs#main,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 API start import-safe wrapper relation
+apps/api/scripts/start-with-migrate.mjs#runMigrations,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 API start migration dependency-injected relation
+apps/api/scripts/start-with-migrate.mjs#startApi,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 API start process wrapper import-safe relation
+apps/api/scripts/verifyWalletDbFoundation.ts#main,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 wallet DB foundation import-safe wrapper relation
+apps/api/scripts/verifyWalletDbFoundation.ts#readCount,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 wallet DB foundation count reader dependency-injected relation
+apps/api/scripts/verifyWalletDbFoundation.ts#toStamp,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 wallet DB foundation timestamp relation
+scripts/runProdUxA11yMobileProof.mjs,scripts/releaseOpsScriptContracts.test.mjs,LUC-2252 production UX proof wrapper safety contract relation
+scripts/runQaRepeatableSmokeE2e.mjs,scripts/releaseOpsScriptContracts.test.mjs,LUC-2252 repeatable smoke wrapper package/test-command contract relation
+scripts/runRcRefreshSummaryStrict.mjs,scripts/releaseOpsScriptContracts.test.mjs,LUC-2252 RC refresh summary strict wrapper relation
+scripts/runRestoreDrillEvidence.mjs,scripts/releaseOpsScriptContracts.test.mjs,LUC-2252 restore drill evidence wrapper relation
+scripts/runRollbackProofEvidence.mjs,scripts/releaseOpsScriptContracts.test.mjs,LUC-2252 rollback proof evidence wrapper relation
+scripts/runV1StaticIssueScan.mjs,scripts/releaseOpsScriptContracts.test.mjs,LUC-2252 static issue scan contract relation
+scripts/start-local-prod-like.mjs,scripts/releaseOpsScriptContracts.test.mjs,LUC-2252 local prod-like launcher safety contract relation
+scripts/start-workers-prod.mjs,scripts/releaseOpsScriptContracts.test.mjs,LUC-2252 production worker launcher safety contract relation
+scripts/summarizeRcGates.mjs,scripts/releaseOpsScriptContracts.test.mjs,LUC-2252 RC gates summary contract relation
+scripts/syncRcChecklistFromGateStatus.mjs,scripts/releaseOpsScriptContracts.test.mjs,LUC-2252 RC checklist sync contract relation
+scripts/triageJourneyEvidence.mjs,scripts/releaseOpsScriptContracts.test.mjs,LUC-2252 journey evidence triage contract relation
+scripts/verifyLocalBackupRestore.mjs,scripts/releaseOpsScriptContracts.test.mjs,LUC-2252 local backup restore verifier contract relation
+scripts/writeWebBuildMetadata.mjs,scripts/releaseOpsScriptContracts.test.mjs,LUC-2252 Web build metadata writer contract relation
+apps/api/src/modules/auth/auth.session.ts#getSessionJwtExpiresIn,apps/api/src/modules/auth/auth.session.test.ts,LUC-2254 auth session JWT expiry helper relation
+apps/api/src/modules/auth/auth.session.ts#getSessionTtlMs,apps/api/src/modules/auth/auth.session.test.ts,LUC-2254 auth session TTL helper relation
+apps/api/src/modules/bots/bots.e2e.shared.ts#createPayload,apps/api/src/modules/bots/bots.e2e.shared.test.ts,LUC-2254 bots shared create payload helper relation

@@ -6,10 +6,10 @@ status: verified_local
 layer: testing
 module: architecture
 feature: release-audit-tooling
-risk_level:
-completion_percent: high
-last_verified_at: 100
-verification_status: 2026-06-05
+risk_level: high
+completion_percent: 100
+last_verified_at: 2026-06-05
+verification_status: verified_local
 tags: [soar-map, test, testing, verified_local]
 ---
 
@@ -30,7 +30,7 @@ tags: [soar-map, test, testing, verified_local]
 | Tests related |  |
 | Docs related | [[SOAR-TEST-RELEASE-AUDIT-TOOLING]] |
 | Agent related | [[SOAR-DOC-TESTING]] |
-| Notes | verified_local |
+| Notes | Focused proof for LUC-2107 guardrail command. |
 
 ## Relations
 

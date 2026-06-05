@@ -17,8 +17,8 @@ surfaces.
 | workers-execution | Coolify application `workers-execution` | `/apps/api/Dockerfile.worker.execution` | postgresql, redis, exchange APIs | private | worker freshness through protected readiness | Ops Release Lead |
 | workers-market-data | Coolify application `workers-market-data` | `/apps/api/Dockerfile.worker.market-data` | postgresql, redis, market-data providers | private | worker freshness through protected readiness | Ops Release Lead |
 | workers-market-stream | Coolify application `workers-market-stream` | `/apps/api/Dockerfile.worker.market-stream` | postgresql, redis, exchange stream APIs | private | worker freshness through protected readiness | Ops Release Lead |
-| postgresql | Coolify standalone PostgreSQL `postgresql` | managed service | persistent volume | private | Coolify resource status `running:healthy` in LUC-2239 readback | Ops Release Lead / DB owner |
-| redis | Coolify standalone Redis `redis` | managed service | persistent volume | private | Coolify resource status `running:healthy` in LUC-2239 readback | Ops Release Lead |
+| postgresql | Coolify standalone PostgreSQL `postgresql` | managed service | persistent volume | private | Coolify resource status `running:healthy` in LUC-2264 readback | Ops Release Lead / DB owner |
+| redis | Coolify standalone Redis `redis` | managed service | persistent volume | private | Coolify resource status `running:healthy` in LUC-2264 readback | Ops Release Lead |
 
 ## Dependency Graph
 
@@ -68,16 +68,17 @@ Application rows report `running:unknown`; PostgreSQL and Redis report
 restarts, rollbacks, env edits, database actions, team/account changes,
 protected smoke, screenshots, or live-trading actions were performed.
 
-`LUC-2239` read-only production status access refresh: latest project-scoped
-Coolify evidence from `2026-06-05T17:05:41Z` reconfirmed selector
+`LUC-2264` read-only production status access refresh: latest project-scoped
+Coolify evidence from `2026-06-05T18:53:12Z` reconfirmed selector
 `LuckySparrow`, project `Soar`, production environment `production`, six
 applications, PostgreSQL, Redis, zero generic services, `17` visible global
 resource rows, and the same eight canonical production-environment resources.
 Team selector bindings `COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` were
-present by name without values printed. Application rows still report
-`running:unknown`; PostgreSQL and Redis report `running:healthy`. This remains
-read-only topology/status evidence only; protected smoke and deploy mutation
-readiness are separate release gates.
+present by name without values printed. The teams list endpoint returned `0`
+rows in this runner, but current selector and project-scoped reads succeeded.
+Application rows still report `running:unknown`; PostgreSQL and Redis report
+`running:healthy`. This remains read-only topology/status evidence only;
+protected smoke and deploy mutation readiness are separate release gates.
 
 ## Maintenance Rule
 

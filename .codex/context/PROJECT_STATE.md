@@ -1,3 +1,165 @@
+- 2026-06-05 `LUC-2255` Frontend QA public/read-only browser proof is locally
+  verified after [LUC-2261](/LUC/issues/LUC-2261) resolved the local Web
+  build/start blocker. Added `scripts/runPublicReadOnlyBrowserProof.mjs` and
+  local public `/terms` and `/privacy` routes after production fresh-browser
+  proof found register-page prefetch 404s. Production proof artifact still
+  records current deployed truth: public home, login, and offline passed, while
+  register failed until the local route fixes are deployed. Final local
+  production-server browser proof passed for desktop/mobile public home, login,
+  register, terms, privacy, offline, plus login/register password visibility
+  toggles with `0` browser issues. Focused Web tests and Web typecheck passed.
+  No protected auth/session, deploy, database, account, exchange, secret, or
+  LIVE action occurred. Production PASS remains deploy-dependent and separate
+  from protected proof. Evidence:
+  `history/tasks/luc-2255-fresh-browser-proof-public-read-only-web-actions-2026-06-05-task.md`,
+  `history/evidence/luc-2255-public-read-only-browser-proof-2026-06-05.md`,
+  `history/evidence/luc-2255-local-public-read-only-browser-proof-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2264` Operator Coolify read-only production status access
+  binding is verified and done. Runtime bindings are present for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, `COOLIFY_SOAR_API_APP_ID`,
+  `COOLIFY_SOAR_TEAM_ID`, and `COOLIFY_TEAM_ID` without values printed.
+  Authenticated read-only Coolify readback at `2026-06-05T18:53:12Z`
+  confirmed selector `LuckySparrow`, configured project `Soar`, production
+  environment `production`, six applications, PostgreSQL, Redis, zero generic
+  services, `17` visible global resource rows, and the canonical
+  eight-resource production environment. Application inventory status remains
+  `running:unknown`; PostgreSQL and Redis report `running:healthy`. The teams
+  list endpoint returned `0` rows in this runner, while current selector and
+  project-scoped reads succeeded. Validation passed:
+  `pnpm run ops:coolify-stack:env-check:test` (`8/8`). Scope stayed read-only;
+  no deploy, restart, rollback, env edit, database action, team setting change,
+  protected smoke, secret value disclosure, screenshot, account action, or live
+  trading action occurred. Evidence:
+  `history/tasks/luc-2264-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`,
+  `history/evidence/luc-2264-coolify-read-only-production-status-access-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2261` Frontend QA repaired the local Web build/start
+  blocker for public browser proof. Web build/start now runs through
+  `scripts/runWebNextProductionCommand.mjs`, which forces the production
+  environment required by Next even when the heartbeat shell inherits
+  `NODE_ENV=development`, invokes the local Next CLI directly, and forwards
+  start args correctly on Windows. The public browser proof runner now treats
+  local Web-only `/auth/me` API connection refusal as out-of-scope noise and
+  waits for the password-toggle state update before reading the input type.
+  Validation passed: script syntax checks, `pnpm --filter web run build`,
+  `pnpm --filter web run typecheck`, local production HTTP checks on
+  `127.0.0.1:3101` (`/`, `/auth/login`, `/auth/register`, `/terms`,
+  `/privacy`, `/offline` -> `200`; deliberate missing route -> `404`), and
+  fresh local browser proof (`PASS`) for desktop/mobile public routes and
+  login/register password visibility toggles. The local server and proof
+  browsers were stopped (`Port3101Listeners=0`, `ProofBrowsers=0`). No backend,
+  deploy, protected smoke, secret, account, database, exchange, or LIVE action
+  occurred. Evidence:
+  `history/tasks/luc-2261-repair-local-web-build-start-blocker-public-browser-proof-2026-06-05-task.md`,
+  `history/evidence/luc-2261-local-public-read-only-browser-proof-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2253` Backend API repaired the named API script/tooling
+  missing-test relation bucket. Added import-safe helper exports and
+  dependency-injected DB-adjacent helpers for the target scripts, added
+  `apps/api/scripts/apiScriptTooling.test.ts`, and added `26` direct
+  scanner-readable function-level rows in
+  `docs/architecture/relations/priority-test-links.csv`. Validation passed:
+  focused API script proof (`1` file / `7` tests), targeted relation readback
+  (`26` rows, `0` missing paths, `0` duplicate pairs), MJS syntax checks,
+  graph generate (`651` nodes / `842` relations / `27` chains),
+  architecture-awareness refresh (`14388` entities / `22625` relations,
+  generated `2026-06-05T18:23:53.329Z`), and report readback (`0` assigned
+  targets remain in top actionable samples; actionable missing-test rows
+  `816`). Strict drift remains blocked by unrelated public Web page graph
+  drift for `/privacy` and `/terms`; API typecheck remains blocked by
+  unrelated positions orphan-repair and workers readiness test typing
+  failures. No DB/network script execution, deploy, protected smoke, secret,
+  account, exchange, or LIVE action occurred. Evidence:
+  `history/tasks/luc-2253-repair-api-script-tooling-missing-test-relations-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2260` Operator Coolify read-only production status access
+  binding is verified and done. Runtime bindings are present for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID` without values
+  printed. Team selector bindings are also present by name without values.
+  Authenticated read-only Coolify readback at `2026-06-05T18:25:22Z`
+  confirmed selector `LuckySparrow`, configured project `Soar`, production
+  environment `production`, six applications, PostgreSQL, Redis, zero generic
+  services, `17` visible global resource rows, and the canonical
+  eight-resource production environment. Application inventory status remains
+  `running:unknown`; PostgreSQL and Redis report `running:healthy`.
+  Validation passed: `pnpm run ops:coolify-stack:env-check:test` (`8/8`).
+  Scope stayed read-only; no deploy, restart, rollback, env edit, database
+  action, team setting change, protected smoke, secret value disclosure,
+  screenshot, account action, or live trading action occurred. Evidence:
+  `history/tasks/luc-2260-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`,
+  `history/evidence/luc-2260-coolify-read-only-production-status-access-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2255` Frontend QA public/read-only browser proof is
+  partially verified and blocked for final closure. Added
+  `scripts/runPublicReadOnlyBrowserProof.mjs` and local public `/terms` and
+  `/privacy` routes after production fresh-browser proof found register-page
+  prefetch 404s. Production proof artifact currently fails because the
+  deployed bundle still lacks those targets; public home, login, and offline
+  route rows passed on desktop and mobile. Focused Web tests passed (`2` files
+  / `7` tests) and Web typecheck passed. The prior local rendered proof
+  blocker was superseded by LUC-2261, which verified local Web build/start and
+  local public browser proof. No protected auth/session, deploy, database, account, exchange,
+  secret, or LIVE action occurred. Evidence:
+  `history/tasks/luc-2255-fresh-browser-proof-public-read-only-web-actions-2026-06-05-task.md`,
+  `history/evidence/luc-2255-public-read-only-browser-proof-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2252` Test Automation repaired the top release/Ops script
+  missing-test relations from the architecture-awareness report. Added
+  `scripts/releaseOpsScriptContracts.test.mjs` and direct
+  `docs/architecture/relations/priority-test-links.csv` rows for 13 target
+  scripts. Validation passed: focused test (`2/2`), targeted relation
+  readback (`13` targets, `0` missing, `0` duplicate exact pairs),
+  architecture-awareness refresh (`14380` entities / `22584` relations,
+  generated `2026-06-05T18:01:10.084Z`), report readback
+  (`actionableMissingTests=837`, no LUC-2252 targets in top sample), graph
+  generate (`651` nodes / `842` relations / `27` chains), and strict graph
+  drift (`827/827`, `0` missing). Scope stayed local/non-mutating; no deploy,
+  restart, protected smoke, browser, Docker, DB/account/env mutation, secret,
+  exchange, or LIVE action occurred. Evidence:
+  `history/tasks/luc-2252-repair-top-release-ops-script-missing-test-relations-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2254` Backend API closed the auth/session helper
+  missing-test link bucket. Added pure API helper tests for
+  `getSessionJwtExpiresIn`, `getSessionTtlMs`, and bots shared
+  `createPayload`; added `3` direct scanner-readable rows in
+  `docs/architecture/relations/priority-test-links.csv`. Validation passed:
+  focused API helper tests (`2` files / `5` tests), targeted relation
+  readback (`3` rows, `0` missing test files, `0` duplicate exact pairs, `0`
+  target helper strings remaining in the refreshed report),
+  architecture-awareness refresh (`14382` entities / `22615` relations,
+  generated `2026-06-05T18:06:29.890Z`), graph generate (`651` nodes /
+  `842` relations / `27` chains), and strict drift (`827/827`, `0`
+  missing). Actionable missing-test rows moved from `835` to `816`, and the
+  refreshed actionable missing-test sample no longer lists the three assigned
+  helper names. No auth semantics, token policy, cookie
+  settings, production config, deploy, protected smoke, secret, account,
+  exchange, or LIVE action changed. Evidence:
+  `history/tasks/luc-2254-close-auth-session-helper-missing-test-links-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2251` Operator Coolify read-only production status access
+  binding is verified and done. Runtime bindings are present for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID` without values
+  printed. Team selector bindings are also present by name without values.
+  Authenticated read-only Coolify readback at `2026-06-05T17:52:31Z`
+  confirmed selector `LuckySparrow`, configured project `Soar`, production
+  environment `production`, six applications, PostgreSQL, Redis, zero generic
+  services, `17` visible global resource rows, and the canonical
+  eight-resource production environment. Application inventory status remains
+  `running:unknown`; PostgreSQL and Redis report `running:healthy`.
+  Validation passed: `pnpm run ops:coolify-stack:env-check:test` (`8/8`).
+  Scope stayed read-only; no deploy, restart, rollback, env edit, database
+  action, team setting change, protected smoke, secret value disclosure,
+  screenshot, account action, or live trading action occurred. Evidence:
+  `history/tasks/luc-2251-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`,
+  `history/evidence/luc-2251-coolify-read-only-production-status-access-2026-06-05.md`.
+
 - 2026-06-05 `LUC-2239` Operator Coolify read-only production status access
   binding is verified and done. Runtime bindings are present for
   `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,

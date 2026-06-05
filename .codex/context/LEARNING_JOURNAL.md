@@ -20,6 +20,30 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-06-05 - CDP proof Edge process can outlive cleaned ports
+- Context: LUC-2255 reran `scripts/runPublicReadOnlyBrowserProof.mjs` against
+  local production Web on `127.0.0.1:3101` with CDP port `9365`.
+- Symptom: browser proof returned PASS and the `9365` listener disappeared
+  after cleanup attempts, but Windows still reported one proof-owned
+  `msedge.exe` PID with `--remote-debugging-port=9365` and denied termination
+  through `taskkill`, `Stop-Process`, and `wmic process call terminate`.
+- Root cause: not fully isolated; likely a Windows/Edge process cleanup
+  anomaly after the CDP proof run. It is not evidence of a route failure.
+- Guardrail: after CDP browser proof, check both TCP listeners and command-line
+  process rows. Treat no active listener as the stronger safety signal, but
+  record any exact proof-owned orphan PID and avoid broad browser kills.
+- Preferred pattern:
+```powershell
+Get-NetTCPConnection -LocalPort <webPort>,<cdpPort> -ErrorAction SilentlyContinue
+Get-CimInstance Win32_Process | Where-Object {
+  $_.CommandLine -like '*remote-debugging-port=<cdpPort>*'
+}
+```
+- Avoid: killing unrelated Chrome/Edge user sessions or claiming perfect
+  cleanup when a proof-owned orphan PID remains.
+- Evidence:
+  `history/tasks/luc-2255-fresh-browser-proof-public-read-only-web-actions-2026-06-05-task.md`.
+
 ### 2026-06-05 - CDP dynamic route proof can hang on Windows
 - Context: LUC-2188 added local proof coverage for dynamic protected route
   actions using `scripts/runLocalProtectedRouteActionProof.mjs`.

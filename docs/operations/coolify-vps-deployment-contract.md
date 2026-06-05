@@ -65,8 +65,8 @@ account action, protected smoke, secret value readback, raw resource id
 storage, screenshot, or live-trading action. Evidence:
 `history/evidence/luc-1787-coolify-resource-inventory-reconciliation-2026-06-05.md`.
 
-Latest read-only access binding checkpoint: `LUC-2228` at
-`2026-06-05T15:55:09Z`, refreshing the prior `LUC-2225` proof. Runtime
+Latest read-only access binding checkpoint: `LUC-2264` at
+`2026-06-05T18:53:12Z`, refreshing the prior `LUC-2260` proof. Runtime
 bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`,
 `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
 `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`,
@@ -78,11 +78,13 @@ applications plus PostgreSQL and Redis. The global resources endpoint returned
 `17` visible rows and was not used as release authority. The
 project/environment hierarchy remains the authoritative production status
 scope for this binding proof. Application rows report `running:unknown`;
-PostgreSQL and Redis report `present:status-unexposed` from the allowlisted
-projection. This heartbeat performed no deploy, restart, rollback, env edit,
-database action, team setting change, account action, protected smoke, secret
-readback, or live-trading action. Evidence:
-`history/evidence/luc-2228-coolify-read-only-production-status-access-2026-06-05.md`.
+PostgreSQL and Redis report `running:healthy` from the production environment
+readback. The teams list endpoint returned `0` rows in this runner, but
+current selector and project-scoped reads succeeded. This heartbeat performed
+no deploy, restart, rollback, env edit, database action, team setting change,
+account action, protected smoke, secret readback, or live-trading action.
+Evidence:
+`history/evidence/luc-2264-coolify-read-only-production-status-access-2026-06-05.md`.
 
 Previous read-only access binding checkpoint: `LUC-2181` at
 `2026-06-05T11:26:28Z`, refreshing the prior `LUC-2171` proof. Runtime

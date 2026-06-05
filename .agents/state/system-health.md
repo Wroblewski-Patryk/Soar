@@ -1,5 +1,24 @@
 # System Health
 
+- `LUC-2264-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05` VERIFIED as
+  a bounded Ops read-only access binding checkpoint. Wake payload was consumed
+  first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id
+  `unknown`), and the harness had already claimed checkout, so checkout was not
+  repeated. Fresh read-only Coolify API readback at `2026-06-05T18:53:12Z`
+  resolved selector `LuckySparrow`, project `Soar`, production environment
+  `production`, and eight canonical production resources: `soar-api`,
+  `soar-web`, `workers-backtest`, `workers-execution`,
+  `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`.
+  Counts: six applications, one PostgreSQL, one Redis, zero generic services,
+  `17` visible global resource rows. Application rows remain
+  `running:unknown`; PostgreSQL and Redis report `running:healthy`. The teams
+  list endpoint returned `0` rows in this runner, while current selector and
+  project-scoped reads succeeded. Focused validation passed:
+  `pnpm run ops:coolify-stack:env-check:test` (`8/8`). Scope stayed read-only;
+  no deploy/restart/rollback/env/database/team/account/secret/live-trading
+  mutation was performed. Evidence:
+  `history/evidence/luc-2264-coolify-read-only-production-status-access-2026-06-05.md`.
+
 - `LUC-2230-CURRENT-ACTIONABLE-MISSING-TEST-RELATION-BUCKET-CLOSURE-2026-06-05`
   VERIFIED as a bounded Test Automation architecture-awareness relation repair
   checkpoint. Added `24` direct `priority-test-links.csv` rows for current

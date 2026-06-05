@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { prisma } from '../src/prisma/client';
 
 type CliOptions = {
@@ -49,16 +50,16 @@ const parseArgs = (): CliOptions => {
   return options;
 };
 
-const nowStamp = () => new Date().toISOString().replace(/[:.]/g, '-');
+export const nowStamp = () => new Date().toISOString().replace(/[:.]/g, '-');
 
-const buildArtifactDir = (outputDirArg: string | null) => {
+export const buildArtifactDir = (outputDirArg: string | null) => {
   if (outputDirArg) return path.resolve(process.cwd(), outputDirArg);
   return path.resolve(process.cwd(), '..', '..', 'docs', 'operations');
 };
 
-const toIso = (value: Date) => value.toISOString();
+export const toIso = (value: Date) => value.toISOString();
 
-const renderMarkdown = (report: {
+export const renderMarkdown = (report: {
   generatedAt: string;
   totals: {
     bots: number;
@@ -119,7 +120,7 @@ ${unmappedRows}
 `;
 };
 
-const main = async () => {
+export const main = async () => {
   const options = parseArgs();
   if (options.help) {
     console.log(
@@ -225,11 +226,13 @@ const main = async () => {
   console.log(`Bot V2 preflight report: ${path.relative(process.cwd(), mdPath)}`);
 };
 
-main()
-  .catch((error) => {
-    console.error('[bot-v2-preflight] failed:', error instanceof Error ? error.message : String(error));
-    process.exitCode = 1;
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main()
+    .catch((error) => {
+      console.error('[bot-v2-preflight] failed:', error instanceof Error ? error.message : String(error));
+      process.exitCode = 1;
+    })
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
+}

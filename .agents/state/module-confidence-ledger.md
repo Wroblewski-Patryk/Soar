@@ -2,6 +2,156 @@
 
 Last updated: 2026-06-05
 
+- 2026-06-05 `LUC-2255-FRESH-BROWSER-PROOF-PUBLIC-READ-ONLY-WEB-ACTIONS-2026-06-05`
+  applies to Web public/auth route confidence. Frontend QA added a reusable
+  fresh-browser proof runner for public/read-only routes and local public
+  `/terms` and `/privacy` targets after production register-page proof found
+  `404` prefetches. Production proof currently passes public home, login, and
+  offline on desktop/mobile, but fails register on the deployed bundle until
+  the local route fixes are deployed. Focused Web tests passed (`2` files /
+  `7` tests), Web typecheck passed, and after [LUC-2261](/LUC/issues/LUC-2261)
+  repaired local Web build/start, final local production-server browser proof
+  passed for desktop/mobile public home, login, register, terms, privacy,
+  offline, and login/register password visibility toggles with `0` browser
+  issues. No protected auth, form submit, account mutation, deploy, DB, secret,
+  exchange, or LIVE proof was claimed. Evidence:
+  `history/tasks/luc-2255-fresh-browser-proof-public-read-only-web-actions-2026-06-05-task.md`,
+  `history/evidence/luc-2255-local-public-read-only-browser-proof-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2264-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05`
+  applies to production Ops release confidence: read-only Coolify API status
+  access remains verified for Soar project/environment/resource reconciliation.
+  Runtime binding names are present without value disclosure for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, `COOLIFY_SOAR_API_APP_ID`,
+  `COOLIFY_SOAR_TEAM_ID`, and `COOLIFY_TEAM_ID`. Fresh readback at
+  `2026-06-05T18:53:12Z` resolved selector `LuckySparrow`, project `Soar`,
+  environment `production`, six applications, PostgreSQL, Redis, zero generic
+  services, eight production-environment resources, and `17` visible global
+  resource rows. The teams list endpoint returned `0` rows in this runner, but
+  current selector and project-scoped reads succeeded. Application inventory
+  status remains `running:unknown`; PostgreSQL and Redis report
+  `running:healthy` from the production environment readback. Validation
+  passed: `pnpm run ops:coolify-stack:env-check:test` (`8/8`). This is
+  read-only status access proof only, not deploy, restart, rollback, protected
+  smoke, database health beyond inventory, SLO, restore/rollback, or
+  live-trading proof. Evidence:
+  `history/evidence/luc-2264-coolify-read-only-production-status-access-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2253-API-SCRIPT-TOOLING-MISSING-TEST-RELATION-REPAIR-2026-06-05`
+  applies to Architecture Evidence Graph and API script/tooling confidence.
+  Backend API added import-safe helper exports and DB-free focused proof for
+  the named API scripts, plus `26` direct scanner-readable function-level
+  `tests` rows in `docs/architecture/relations/priority-test-links.csv`.
+  Validation passed: `pnpm --filter api exec vitest run scripts/apiScriptTooling.test.ts --run`
+  (`1` file / `7` tests), targeted relation readback (`26` rows, `0` missing
+  paths, `0` duplicate exact pairs), MJS syntax checks, graph generate
+  (`651` nodes / `842` relations / `27` chains), architecture-awareness
+  refresh (`14388` entities / `22625` relations, generated
+  `2026-06-05T18:23:53.329Z`), and report readback (`0` assigned target rows
+  remaining in top actionable samples; actionable missing-test rows `816`).
+  Strict graph drift is blocked by unrelated public Web pages
+  `apps/web/src/app/(public)/privacy/page.tsx` and
+  `apps/web/src/app/(public)/terms/page.tsx`; API typecheck is blocked by
+  unrelated test typing failures in positions orphan-repair and workers
+  readiness tests. No DB/network script execution, deploy, protected smoke,
+  secret, account, exchange, or live-trading action occurred. Evidence:
+  `history/tasks/luc-2253-repair-api-script-tooling-missing-test-relations-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2261-REPAIR-LOCAL-WEB-BUILD-START-BLOCKER-PUBLIC-BROWSER-PROOF-2026-06-05`
+  applies to Web public/auth route confidence and local rendered proof
+  confidence. Frontend QA repaired the local Web build/start blocker by
+  routing Web build/start through a production-env Next wrapper, then verified
+  local public/read-only route rendering and password visibility toggles in a
+  fresh browser. Validation passed: `node --check
+  scripts/runWebNextProductionCommand.mjs`, `node --check
+  scripts/runPublicReadOnlyBrowserProof.mjs`, `pnpm --filter web run build`,
+  `pnpm --filter web run typecheck`, local production HTTP route checks on
+  `127.0.0.1:3101`, and
+  `node scripts/runPublicReadOnlyBrowserProof.mjs --issue LUC-2261
+  --web-base-url http://127.0.0.1:3101 ...` with status `PASS`. Previous
+  local blocker `Next /404 prerender <Html> should not be imported outside of
+  pages/_document` did not recur. Validation-owned local Web and browser
+  processes were cleaned up (`Port3101Listeners=0`, `ProofBrowsers=0`). This
+  is local public/read-only proof only, not protected production auth proof,
+  deploy, secret/account/database/exchange mutation, or live-trading proof.
+  Evidence:
+  `history/tasks/luc-2261-repair-local-web-build-start-blocker-public-browser-proof-2026-06-05-task.md`,
+  `history/evidence/luc-2261-local-public-read-only-browser-proof-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2260-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05`
+  applies to production Ops release confidence: read-only Coolify API status
+  access remains verified for Soar project/environment/resource reconciliation.
+  Runtime binding names are present without value disclosure for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID`; team selector
+  binding names are also present by name without values printed. Fresh
+  readback at `2026-06-05T18:25:22Z` resolved selector `LuckySparrow`, project
+  `Soar`, environment `production`, six applications, PostgreSQL, Redis, zero
+  generic services, eight production-environment resources, and `17` visible
+  global resource rows. Application inventory status remains
+  `running:unknown`; PostgreSQL and Redis report `running:healthy` from the
+  production environment readback. Validation passed:
+  `pnpm run ops:coolify-stack:env-check:test` (`8/8`). This is read-only
+  status access proof only, not deploy, restart, rollback, protected smoke,
+  database health beyond inventory, SLO, restore/rollback, or live-trading
+  proof. Evidence:
+  `history/evidence/luc-2260-coolify-read-only-production-status-access-2026-06-05.md`.
+
+- 2026-06-05 `LUC-2255-FRESH-BROWSER-PROOF-PUBLIC-READ-ONLY-WEB-ACTIONS-2026-06-05`
+  applies to Web public/auth route confidence. Frontend QA added a reusable
+  fresh-browser proof runner for public/read-only routes and local public
+  `/terms` and `/privacy` targets after production register-page proof found
+  `404` prefetches. Production proof currently passes public home, login, and
+  offline on desktop/mobile, but fails register on the deployed bundle until
+  the local route fixes are deployed. Focused Web tests passed (`2` files /
+  `7` tests) and Web typecheck passed. The prior local rendered browser proof
+  blocker is superseded by LUC-2261, which verified local Web build/start and
+  local public browser proof. No protected auth,
+  form submit, account mutation, deploy, DB, secret, exchange, or LIVE proof
+  was claimed. Evidence:
+  `history/tasks/luc-2255-fresh-browser-proof-public-read-only-web-actions-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2254-AUTH-SESSION-HELPER-MISSING-TEST-LINKS-2026-06-05`
+  applies to API Auth, API Bots, and Architecture Evidence Graph test
+  traceability. Backend API added focused pure tests for
+  `getSessionJwtExpiresIn`, `getSessionTtlMs`, and the bots shared
+  `createPayload` helper, plus `3` direct scanner-readable relation rows in
+  `docs/architecture/relations/priority-test-links.csv`. Validation passed:
+  focused API helper tests (`2` files / `5` tests), targeted relation
+  readback (`3` rows, `0` missing test files, `0` duplicate exact pairs, `0`
+  target helper strings remaining in the refreshed report),
+  architecture-awareness refresh (`14382` entities / `22615` relations,
+  generated `2026-06-05T18:06:29.890Z`), graph generate (`651` nodes /
+  `842` relations / `27` chains), and strict graph drift (`827/827`, `0`
+  missing). Actionable missing-test rows moved from `835` to `816`, and the
+  refreshed actionable sample no longer lists the three assigned helper
+  names. A DB-backed bots E2E attempt remained blocked by
+  local Postgres unavailability at `localhost:5432`, so final proof used the
+  DB-free helper layer. No auth semantics, token policy, cookie settings,
+  production config, deploy, protected smoke, secret, account, exchange, or
+  live-trading action changed. Evidence:
+  `history/tasks/luc-2254-close-auth-session-helper-missing-test-links-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2252-RELEASE-OPS-SCRIPT-MISSING-TEST-RELATIONS-2026-06-05`
+  applies to Architecture Evidence Graph and release/Ops script traceability
+  confidence. Test Automation added a focused static contract test for the top
+  release/Ops script wrappers and direct scanner-readable `tests` rows for
+  `13` target scripts in `docs/architecture/relations/priority-test-links.csv`.
+  Validation passed: `node --test scripts/releaseOpsScriptContracts.test.mjs`
+  (`2/2`), targeted relation readback (`13` rows, `0` missing entity/test
+  paths, `0` duplicate exact pairs), architecture-awareness refresh (`14380`
+  entities / `22584` relations, generated `2026-06-05T18:01:10.084Z`), report
+  readback (`actionableMissingTests=837`, `0` LUC-2252 targets remaining in
+  top actionable sample), graph generate, and strict graph drift (`827/827`,
+  `0` missing). This is local relation/static contract proof only, not
+  protected production smoke, deploy, restart, env/database/account mutation,
+  secret readback, exchange mutation, Docker/browser proof, or live-trading
+  proof. Evidence:
+  `history/tasks/luc-2252-repair-top-release-ops-script-missing-test-relations-2026-06-05-task.md`.
+
 - 2026-06-05 `LUC-2230-CURRENT-ACTIONABLE-MISSING-TEST-RELATION-BUCKET-CLOSURE-2026-06-05`
   applies to Architecture Evidence Graph, API Bots, and API Engine test
   traceability confidence. Test Automation added `24` direct

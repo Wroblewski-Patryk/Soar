@@ -74,10 +74,10 @@ const parseArgs = (argv: string[]): CliOptions => {
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 
-const normalizeOutputPath = (repoRoot: string, value: string, fallback: string) =>
+export const normalizeOutputPath = (repoRoot: string, value: string, fallback: string) =>
   path.resolve(repoRoot, value || fallback);
 
-const buildMarkdown = (report: Record<string, unknown>) => {
+export const buildMarkdown = (report: Record<string, unknown>) => {
   const events = report.events as MarketStreamEvent[];
   const ticker = events.find((event) => event.type === 'ticker');
   const candle = events.find((event) => event.type === 'candle');
@@ -109,7 +109,7 @@ const buildMarkdown = (report: Record<string, unknown>) => {
   ].join('\n');
 };
 
-const run = async () => {
+export const run = async () => {
   const options = parseArgs(process.argv.slice(2));
   const events: MarketStreamEvent[] = [];
   const warnings: unknown[] = [];
@@ -181,7 +181,9 @@ const run = async () => {
   }
 };
 
-void run().catch((error) => {
-  process.stderr.write(`[gateio-market-stream-smoke] failed: ${error instanceof Error ? error.message : error}\n`);
-  process.exitCode = 1;
-});
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  void run().catch((error) => {
+    process.stderr.write(`[gateio-market-stream-smoke] failed: ${error instanceof Error ? error.message : error}\n`);
+    process.exitCode = 1;
+  });
+}

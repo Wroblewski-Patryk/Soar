@@ -1,11 +1,11 @@
 # Dependency Report
 
-Generated: 2026-06-05T16:02:05.428Z
+Generated: 2026-06-05T18:23:53.329Z
 
 ## Summary
 
-- Dependency relations: 2860
-- Entities with dependencies: 771
+- Dependency relations: 2891
+- Entities with dependencies: 774
 
 ## Dependency Edges
 
@@ -749,6 +749,7 @@ Generated: 2026-06-05T16:02:05.428Z
 | auth.controller.ts | uses | client.ts | apps/api/src/prisma/client |
 | auth.controller.ts | uses | auth.errors.test.ts | apps/api/src/modules/auth/auth.errors |
 | auth.controller.ts | uses | auth.errors.ts | apps/api/src/modules/auth/auth.errors |
+| auth.controller.ts | uses | auth.session.test.ts | apps/api/src/modules/auth/auth.session |
 | auth.controller.ts | uses | auth.session.ts | apps/api/src/modules/auth/auth.session |
 | auth.controller.ts | uses | auth.jwt.test.ts | apps/api/src/modules/auth/auth.jwt |
 | auth.controller.ts | uses | auth.jwt.ts | apps/api/src/modules/auth/auth.jwt |
@@ -765,6 +766,7 @@ Generated: 2026-06-05T16:02:05.428Z
 | auth.service.ts | uses | auth.types.ts | apps/api/src/modules/auth/auth.types |
 | auth.service.ts | uses | hash.ts | apps/api/src/utils/hash |
 | auth.service.ts | uses | runtime.ts | apps/api/src/config/runtime |
+| auth.service.ts | uses | auth.session.test.ts | apps/api/src/modules/auth/auth.session |
 | auth.service.ts | uses | auth.session.ts | apps/api/src/modules/auth/auth.session |
 | auth.service.ts | uses | auth.jwt.test.ts | apps/api/src/modules/auth/auth.jwt |
 | auth.service.ts | uses | auth.jwt.ts | apps/api/src/modules/auth/auth.jwt |
@@ -809,5 +811,3 @@ Generated: 2026-06-05T16:02:05.428Z
 | backtestRange.service.ts | uses | backtests.repository.ts | apps/api/src/modules/backtests/backtests.repository |
 | backtestRange.service.ts | uses | backtestTimeframe.ts | apps/api/src/modules/backtests/backtestTimeframe |
 | backtestRange.service.ts | uses | marketCatalogSymbolResolver.service.ts | apps/api/src/modules/markets/marketCatalogSymbolResolver.service |
-| backtestRange.service.ts | uses | backtests.types.ts | apps/api/src/modules/backtests/backtests.types |
-| backtestRange.service.ts | uses | backtestDataGateway.test.ts | apps/api/src/modules/backtests/backtestDataGateway |

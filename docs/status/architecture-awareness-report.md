@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-06-05T16:02:05.428Z
+Generated: 2026-06-05T18:23:53.329Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,16 +11,16 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 37 |
 | component | 97 |
-| document | 3567 |
-| feature | 223 |
-| function | 8283 |
+| document | 3577 |
+| feature | 224 |
+| function | 8305 |
 | migration | 56 |
-| model | 276 |
+| model | 277 |
 | module | 15 |
 | project | 1 |
-| route | 346 |
-| task | 1012 |
-| test | 377 |
+| route | 348 |
+| task | 1018 |
+| test | 381 |
 
 ## Counts By Status
 
@@ -28,66 +28,70 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | --- | ---: |
 | blocked | 19 |
 | deprecated | 7 |
-| implemented | 12653 |
+| implemented | 12687 |
 | in_progress | 9 |
-| tested | 654 |
-| verified | 1000 |
+| tested | 660 |
+| verified | 1006 |
 
 ## Health Signals
 
-- Raw implementation entities without inferred tests: 7630
-- Actionable implementation entities without inferred tests: 835
-- Raw implementation entities without inferred docs: 738
-- Actionable implementation entities without inferred docs: 0
+- Raw implementation entities without inferred tests: 7611
+- Actionable implementation entities without inferred tests: 816
+- Raw implementation entities without inferred docs: 742
+- Actionable implementation entities without inferred docs: 4
 - Classified inferred-link noise: 7377
 - Entities without owner attribution: 0
 - Disconnected entities: 0
 
 ## Top Actionable Missing Test Links
 
-- feature: runProdUxA11yMobileProof.mjs (scripts/runProdUxA11yMobileProof.mjs)
-- feature: runQaRepeatableSmokeE2e.mjs (scripts/runQaRepeatableSmokeE2e.mjs)
-- feature: runRcRefreshSummaryStrict.mjs (scripts/runRcRefreshSummaryStrict.mjs)
-- feature: runRestoreDrillEvidence.mjs (scripts/runRestoreDrillEvidence.mjs)
-- feature: runRollbackProofEvidence.mjs (scripts/runRollbackProofEvidence.mjs)
-- feature: runV1StaticIssueScan.mjs (scripts/runV1StaticIssueScan.mjs)
-- feature: start-local-prod-like.mjs (scripts/start-local-prod-like.mjs)
-- feature: start-workers-prod.mjs (scripts/start-workers-prod.mjs)
-- feature: summarizeRcGates.mjs (scripts/summarizeRcGates.mjs)
-- feature: syncRcChecklistFromGateStatus.mjs (scripts/syncRcChecklistFromGateStatus.mjs)
-- feature: triageJourneyEvidence.mjs (scripts/triageJourneyEvidence.mjs)
-- feature: verifyLocalBackupRestore.mjs (scripts/verifyLocalBackupRestore.mjs)
-- feature: writeWebBuildMetadata.mjs (scripts/writeWebBuildMetadata.mjs)
+- feature: runPublicReadOnlyBrowserProof.mjs (scripts/runPublicReadOnlyBrowserProof.mjs)
 - function: main (apps/api/prisma/seed.ts#main)
-- function: buildRunInputs (apps/api/scripts/assistant-load-benchmark.ts#buildRunInputs)
-- function: percentile (apps/api/scripts/assistant-load-benchmark.ts#percentile)
-- function: run (apps/api/scripts/assistant-load-benchmark.ts#run)
-- function: run (apps/api/scripts/backfillBacktestVenueContext.ts#run)
-- function: buildArtifactDir (apps/api/scripts/bot-v2-preflight-report.ts#buildArtifactDir)
-- function: main (apps/api/scripts/bot-v2-preflight-report.ts#main)
-- function: nowStamp (apps/api/scripts/bot-v2-preflight-report.ts#nowStamp)
-- function: renderMarkdown (apps/api/scripts/bot-v2-preflight-report.ts#renderMarkdown)
-- function: toIso (apps/api/scripts/bot-v2-preflight-report.ts#toIso)
-- function: main (apps/api/scripts/exportPaperRuntimeSnapshot.ts#main)
-- function: toIso (apps/api/scripts/exportPaperRuntimeSnapshot.ts#toIso)
-- function: buildMarkdown (apps/api/scripts/gateioMarketStreamSourceSmoke.ts#buildMarkdown)
-- function: normalizeOutputPath (apps/api/scripts/gateioMarketStreamSourceSmoke.ts#normalizeOutputPath)
-- function: run (apps/api/scripts/gateioMarketStreamSourceSmoke.ts#run)
-- function: ensureUser (apps/api/scripts/importPaperRuntimeSnapshot.ts#ensureUser)
-- function: main (apps/api/scripts/importPaperRuntimeSnapshot.ts#main)
-- function: percentile (apps/api/scripts/load-test.mjs#percentile)
-- function: runWorker (apps/api/scripts/load-test.mjs#runWorker)
-- function: forwardSignal (apps/api/scripts/start-with-migrate.mjs#forwardSignal)
-- function: runMigrations (apps/api/scripts/start-with-migrate.mjs#runMigrations)
-- function: main (apps/api/scripts/verifyWalletDbFoundation.ts#main)
-- function: readCount (apps/api/scripts/verifyWalletDbFoundation.ts#readCount)
-- function: toStamp (apps/api/scripts/verifyWalletDbFoundation.ts#toStamp)
-- function: getSessionJwtExpiresIn (apps/api/src/modules/auth/auth.session.ts#getSessionJwtExpiresIn)
-- function: getSessionTtlMs (apps/api/src/modules/auth/auth.session.ts#getSessionTtlMs)
-- function: createPayload (apps/api/src/modules/bots/bots.e2e.shared.ts#createPayload)
+- function: resetBotsE2eState (apps/api/src/modules/bots/bots.e2e.shared.ts#resetBotsE2eState)
+- function: seedRuntimeTicker (apps/api/src/modules/bots/bots.e2e.shared.ts#seedRuntimeTicker)
+- function: getBotWithStrategyProjectionById (apps/api/src/modules/bots/bots.repository.ts#getBotWithStrategyProjectionById)
+- function: getOwnedBotWithStrategyProjection (apps/api/src/modules/bots/bots.repository.ts#getOwnedBotWithStrategyProjection)
+- function: listOwnedBotsWithStrategyProjection (apps/api/src/modules/bots/bots.repository.ts#listOwnedBotsWithStrategyProjection)
+- function: getRuntimeSymbolLiveRows (apps/api/src/modules/bots/botsRuntimeRead.repository.ts#getRuntimeSymbolLiveRows)
+- function: getRuntimeSymbolStatsBaseData (apps/api/src/modules/bots/botsRuntimeRead.repository.ts#getRuntimeSymbolStatsBaseData)
+- function: listMarketCandles (apps/api/src/modules/bots/botsRuntimeRead.repository.ts#listMarketCandles)
+- function: listRuntimeFallbackSymbolsFromEvents (apps/api/src/modules/bots/botsRuntimeRead.repository.ts#listRuntimeFallbackSymbolsFromEvents)
+- function: listRuntimeSymbolStatsRowsForSymbols (apps/api/src/modules/bots/botsRuntimeRead.repository.ts#listRuntimeSymbolStatsRowsForSymbols)
+- function: listStrategiesByIds (apps/api/src/modules/bots/botsRuntimeRead.repository.ts#listStrategiesByIds)
+- function: computePriceFromPnlFraction (apps/api/src/modules/engine/positionPnlSemantics.ts#computePriceFromPnlFraction)
+- function: computeUnrealizedPnlFromPrice (apps/api/src/modules/engine/positionPnlSemantics.ts#computeUnrealizedPnlFromPrice)
+- function: resolveModeledMarginUsed (apps/api/src/modules/engine/positionPnlSemantics.ts#resolveModeledMarginUsed)
+- function: resolvePositionPnlFraction (apps/api/src/modules/engine/positionPnlSemantics.ts#resolvePositionPnlFraction)
+- function: clamp (apps/api/src/modules/engine/positionSizing.ts#clamp)
+- function: computeRiskBasedOrderQuantity (apps/api/src/modules/engine/positionSizing.ts#computeRiskBasedOrderQuantity)
+- function: normalizeWalletRiskPercent (apps/api/src/modules/engine/positionSizing.ts#normalizeWalletRiskPercent)
+- function: round (apps/api/src/modules/engine/positionSizing.ts#round)
+- function: recordRuntimeAutomationSkipTelemetry (apps/api/src/modules/engine/runtimePositionAutomationSkipTelemetry.ts#recordRuntimeAutomationSkipTelemetry)
+- function: resolveRuntimeAutomationTelemetryMode (apps/api/src/modules/engine/runtimePositionAutomationSkipTelemetry.ts#resolveRuntimeAutomationTelemetryMode)
+- function: hasMaterialCanonicalBasisDrift (apps/api/src/modules/engine/runtimePositionAutomationStateRebase.ts#hasMaterialCanonicalBasisDrift)
+- function: recordRuntimeDcaFundsExhaustedTelemetry (apps/api/src/modules/engine/runtimePositionAutomationTelemetry.ts#recordRuntimeDcaFundsExhaustedTelemetry)
+- function: recordRuntimeProtectionCloseDecisionTelemetry (apps/api/src/modules/engine/runtimePositionAutomationTelemetry.ts#recordRuntimeProtectionCloseDecisionTelemetry)
+- function: toFiniteNonNegativeInt (apps/api/src/modules/engine/runtimePositionState.store.ts#toFiniteNonNegativeInt)
+- function: clampPeriod (apps/api/src/modules/engine/sharedIndicatorSeries.ts#clampPeriod)
+- function: ensureAdx (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureAdx)
+- function: ensureAtr (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureAtr)
+- function: ensureBollinger (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureBollinger)
+- function: ensureCci (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureCci)
+- function: ensureDonchian (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureDonchian)
+- function: ensureEma (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureEma)
+- function: ensureFundingRate (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureFundingRate)
+- function: ensureFundingRateZScore (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureFundingRateZScore)
+- function: ensureMacd (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureMacd)
+- function: ensureMomentum (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureMomentum)
+- function: ensureOpenInterest (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOpenInterest)
+- function: ensureOpenInterestDelta (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOpenInterestDelta)
 
 ## Top Actionable Missing Doc Links
 
+- feature: runPublicReadOnlyBrowserProof.mjs (scripts/runPublicReadOnlyBrowserProof.mjs)
+- model: CdpClient (scripts/runPublicReadOnlyBrowserProof.mjs#CdpClient)
+- route: page.tsx (apps/web/src/app/(public)/privacy/page.tsx)
+- route: page.tsx (apps/web/src/app/(public)/terms/page.tsx)
 
 ## Classified Inferred-Link Noise
 

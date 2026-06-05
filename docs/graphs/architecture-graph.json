@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-05T16:04:56.930Z",
+  "generatedAt": "2026-06-05T19:26:00.514Z",
   "source": {
     "nodes": "docs/architecture/registry/nodes.csv",
     "relations": "docs/architecture/relations/dependencies.csv",
@@ -17496,11 +17496,11 @@
       "tests_related": "",
       "docs_related": "SOAR-TEST-ROUTE-API-MATRIX-PARITY",
       "agent_related": "SOAR-DOC-TRACEABILITY;SOAR-DOC-DASHBOARD-ROUTE-MAP",
-      "risk_level": "",
-      "completion_percent": "high",
-      "last_verified_at": "100",
-      "verification_status": "2026-06-05",
-      "notes": "verified_local"
+      "risk_level": "high",
+      "completion_percent": "100",
+      "last_verified_at": "2026-06-05",
+      "verification_status": "verified_local",
+      "notes": "Added for LUC-2107 route/API matrix parity guardrail."
     },
     {
       "id": "SOAR-TEST-ROUTE-API-MATRIX-PARITY",
@@ -17523,11 +17523,11 @@
       "tests_related": "",
       "docs_related": "SOAR-TEST-RELEASE-AUDIT-TOOLING",
       "agent_related": "SOAR-DOC-TESTING",
-      "risk_level": "",
-      "completion_percent": "high",
-      "last_verified_at": "100",
-      "verification_status": "2026-06-05",
-      "notes": "verified_local"
+      "risk_level": "high",
+      "completion_percent": "100",
+      "last_verified_at": "2026-06-05",
+      "verification_status": "verified_local",
+      "notes": "Focused proof for LUC-2107 guardrail command."
     },
     {
       "id": "SOAR-TEST-SHARED-WEB-UTILITIES",
@@ -28665,11 +28665,11 @@
       ],
       "tests_related": "SOAR-TEST-API-PLATFORM-SAFETY;SOAR-TEST-API-CONFIG-SAFETY;SOAR-TEST-API-MIDDLEWARE-SAFETY;SOAR-TEST-API-LIB-SAFETY",
       "docs_related": "SOAR-DOC-API-ROOT;SOAR-DOC-LOCAL-DEVELOPMENT;SOAR-DOC-TESTING",
-      "evidence": "history/tasks/architecture-graph-api-platform-safety-backfill-2026-05-24-task.md",
-      "missing_links": "Fresh adversarial security review remains separate",
+      "evidence": "history/tasks/architecture-graph-api-platform-safety-backfill-2026-05-24-task.md;history/evidence/luc-2231-api-platform-safety-adversarial-review-2026-06-05.md",
+      "missing_links": "production_or_browser_proof_not_implied",
       "risk_level": "critical",
-      "last_verified_at": "2026-05-24",
-      "notes": "Backfilled API platform safety chain across config readiness proxy/runtime execution middleware guards shared errors logging symbols tests and docs."
+      "last_verified_at": "2026-06-05",
+      "notes": "Fresh Security Review adversarial pass covered auth/session token parsing trusted-origin ops-network rate-limit degradation proxy trust critical-secret readiness error/log redaction and security headers. DB-backed route e2e was blocked by unavailable local Postgres/Docker; protected production/browser proof remains separate."
     },
     {
       "id": "CHAIN-WEB-RUNTIME-SURFACES",

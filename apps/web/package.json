@@ -6,9 +6,9 @@
     "dev": "next dev -p 3002",
     "devt": "next dev --turbopack",
     "typecheck": "tsc --noEmit",
-    "build": "node ../../scripts/writeWebBuildMetadata.mjs && next build",
+    "build": "node ../../scripts/runWebNextProductionCommand.mjs build",
     "verify:build-typecheck": "pnpm run build && pnpm run typecheck",
-    "start": "next start",
+    "start": "node ../../scripts/runWebNextProductionCommand.mjs start",
     "lint": "next lint",
     "test": "vitest"
   },

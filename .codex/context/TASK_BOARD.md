@@ -1,3 +1,253 @@
+- 2026-06-05 `LUC-2264 [Operator][Coolify] Bind Coolify read-only production
+  status access`
+  - Status: done.
+  - Scope:
+    - consumed the scoped wake for [LUC-2264](/LUC/issues/LUC-2264);
+    - verified read-only Coolify binding names without printing values;
+    - confirmed Soar production status access through `project -> production
+      environment -> resources`;
+    - recorded redacted task/evidence artifacts and source-of-truth updates.
+  - Evidence:
+    - authenticated read-only Coolify readback at `2026-06-05T18:53:12Z` ->
+      PASS for selector `LuckySparrow`, project `Soar`, production
+      environment `production`, six applications, PostgreSQL, Redis, zero
+      generic services, `17` visible global resource rows, and the canonical
+      eight-resource production environment;
+    - `pnpm run ops:coolify-stack:env-check:test` -> PASS (`8/8`).
+  - Residual risk:
+    - application inventory status remains `running:unknown`, so protected
+      runtime readiness still requires separate smoke;
+    - teams list returned `0` rows in this runner, but current selector and
+      project-scoped reads succeeded.
+  - Artifact:
+    - `history/tasks/luc-2264-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`
+    - `history/evidence/luc-2264-coolify-read-only-production-status-access-2026-06-05.md`
+
+- 2026-06-05 `LUC-2261 [Soar][Frontend QA] Repair local Web build/start
+  blocker for public browser proof`
+  - Status: done.
+  - Scope:
+    - consumed scoped wake for [LUC-2261](/LUC/issues/LUC-2261);
+    - repaired inherited `NODE_ENV=development` local Web build/start failure
+      by routing Web build/start through a production-env Next wrapper;
+    - repaired local public proof runner handling for Web-only `/auth/me`
+      connection refusal and password-toggle state readback;
+    - kept backend/API behavior, protected auth proof, production deploy,
+      secret/account/database/exchange, and LIVE actions out of scope.
+  - Evidence:
+    - `node --check scripts/runWebNextProductionCommand.mjs` -> PASS;
+    - `node --check scripts/runPublicReadOnlyBrowserProof.mjs` -> PASS;
+    - `pnpm --filter web run build` -> PASS; previous Next `/404`
+      `<Html> should not be imported outside of pages/_document` failure did
+      not recur;
+    - `pnpm --filter web run typecheck` -> PASS;
+    - local production HTTP route proof on `127.0.0.1:3101` -> `/`,
+      `/auth/login`, `/auth/register`, `/terms`, `/privacy`, `/offline` all
+      `200`, deliberate missing route `404`;
+    - local fresh browser proof -> PASS for desktop/mobile public routes and
+      login/register password visibility toggles.
+  - Cleanup:
+    - local production Web server stopped;
+    - proof browser processes stopped;
+    - readback: `Port3101Listeners=0`, `ProofBrowsers=0`.
+  - Residual risk:
+    - Next build still emits an existing non-fatal ESLint plugin warning for
+      missing `eslint-plugin-react-hooks`; build exit code was `0`;
+    - this does not claim protected/authenticated production proof or deploy.
+  - Artifact:
+    - `history/tasks/luc-2261-repair-local-web-build-start-blocker-public-browser-proof-2026-06-05-task.md`
+    - `history/evidence/luc-2261-local-public-read-only-browser-proof-2026-06-05.md`
+
+- 2026-06-05 `LUC-2253 [Soar][Backend QA] Repair API script and tooling
+  missing-test relations`
+  - Status: done with unrelated gate blockers recorded.
+  - Scope:
+    - consumed the scoped wake for [LUC-2253](/LUC/issues/LUC-2253);
+    - made the named API script helper surfaces import-safe;
+    - added DB-free focused helper proof in
+      `apps/api/scripts/apiScriptTooling.test.ts`;
+    - added `26` direct scanner-readable function-level relation rows in
+      `docs/architecture/relations/priority-test-links.csv`;
+    - avoided DB/network script execution, migration/process spawning from
+      tests, protected smoke, deploy, env/account mutation, secret readback,
+      exchange mutation, and LIVE action.
+  - Evidence:
+    - `pnpm --filter api exec vitest run scripts/apiScriptTooling.test.ts --run`
+      -> PASS (`1` file / `7` tests);
+    - targeted relation readback -> PASS (`26` rows, `0` missing referenced
+      paths, `0` duplicate exact pairs);
+    - `node --check apps/api/scripts/load-test.mjs` and
+      `node --check apps/api/scripts/start-with-migrate.mjs` -> PASS;
+    - `pnpm run architecture:graph:generate` -> PASS (`651` nodes / `842`
+      relations / `27` chains);
+    - architecture-awareness refresh -> PASS (`14388` entities / `22625`
+      relations), generated `2026-06-05T18:23:53.329Z`;
+    - report readback -> PASS (`0` assigned targets remain in top actionable
+      samples; actionable missing-test rows `816`).
+  - Blocked gates:
+    - `pnpm run architecture:graph:drift:strict` -> FAIL (`826/828` covered)
+      from unrelated public Web pages
+      `apps/web/src/app/(public)/privacy/page.tsx` and
+      `apps/web/src/app/(public)/terms/page.tsx`;
+    - `pnpm --filter api run typecheck` -> FAIL from unrelated test typing
+      issues in
+      `src/modules/positions/positions.orphan-repair.contract.e2e.test.ts(77,26)`
+      and `src/router/workers-health-readiness.test.ts(37,58)`.
+  - Residual risk:
+    - wrapper entry points are import-safe and type-present in focused tests,
+      but DB/network/migration/process-spawning execution paths were not run
+      in this DB-free local proof.
+  - Artifact:
+    - `history/tasks/luc-2253-repair-api-script-tooling-missing-test-relations-2026-06-05-task.md`
+
+- 2026-06-05 `LUC-2255 [Soar][Frontend QA] Fresh browser proof for
+  public/read-only web actions`
+  - Status: done.
+  - Scope:
+    - consumed the scoped wake for [LUC-2255](/LUC/issues/LUC-2255);
+    - added a reusable fresh-browser public/read-only proof runner;
+    - captured current production truth for public home/login/register/offline
+      plus password visibility toggle;
+    - fixed local missing public `/terms` and `/privacy` targets discovered by
+      production register prefetch 404s;
+    - kept protected auth/session, form submit, account, exchange, deploy,
+      database, secret, and LIVE boundaries out of scope.
+  - Evidence:
+    - `node --check scripts/runPublicReadOnlyBrowserProof.mjs` -> PASS;
+    - production proof artifact -> FAIL: home/login/offline passed on desktop
+      and mobile; register failed because current production still returns
+      `404` for `/terms` and `/privacy`; initial toggle rows failed before the
+      runner locator was corrected locally;
+    - `pnpm --filter web exec vitest run src/context/AuthContext.test.tsx src/ui/layout/public/Header.test.tsx`
+      -> PASS (`2` files / `7` tests);
+    - `pnpm --filter web run typecheck` -> PASS.
+    - resumed local proof after [LUC-2261](/LUC/issues/LUC-2261) resolved the
+      preview blocker -> PASS for desktop/mobile public home, login, register,
+      terms, privacy, offline, and login/register password visibility toggles
+      with `0` browser issues:
+      `history/evidence/luc-2255-local-public-read-only-browser-proof-2026-06-05.md`.
+  - Superseded blocker:
+    - the prior local rendered browser proof blocker was repaired by
+      [LUC-2261](/LUC/issues/LUC-2261), which verified local Web build/start
+      and local public browser proof.
+  - Residual risk:
+    - production remains failing until the local public route fixes are
+      deployed and the proof is rerun against production;
+    - this issue does not claim protected/authenticated release proof.
+    - Windows retained one proof-owned orphan Edge process (`msedge.exe` PID
+      `40008`) without active `3101`/`9365` listeners after `taskkill`,
+      `Stop-Process`, and `wmic terminate` attempts; pitfall recorded in
+      `.codex/context/LEARNING_JOURNAL.md`.
+  - Artifact:
+    - `history/tasks/luc-2255-fresh-browser-proof-public-read-only-web-actions-2026-06-05-task.md`
+    - `history/evidence/luc-2255-public-read-only-browser-proof-2026-06-05.md`
+    - `history/evidence/luc-2255-local-public-read-only-browser-proof-2026-06-05.md`
+
+- 2026-06-05 `LUC-2260 [Operator][Coolify] Bind Coolify read-only production
+  status access`
+  - Status: done.
+  - Scope:
+    - consumed the scoped wake for [LUC-2260](/LUC/issues/LUC-2260);
+    - verified read-only Coolify binding names without printing values;
+    - confirmed Soar production status access through `project -> production
+      environment -> resources`;
+    - recorded redacted task/evidence artifacts and source-of-truth updates.
+  - Evidence:
+    - authenticated read-only Coolify readback at `2026-06-05T18:25:22Z` ->
+      selector `LuckySparrow`, project `Soar`, environment `production`, six
+      applications, PostgreSQL, Redis, zero generic services, `17` visible
+      global resource rows;
+    - canonical production environment resource count -> `8`;
+    - `pnpm run ops:coolify-stack:env-check:test` -> PASS (`8/8`).
+  - Residual risk:
+    - application inventory status remains `running:unknown`; separate
+      protected smoke and deploy/readiness issues still own runtime readiness;
+    - no production mutation was authorized or performed.
+  - Artifact:
+    - `history/tasks/luc-2260-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`
+    - `history/evidence/luc-2260-coolify-read-only-production-status-access-2026-06-05.md`
+
+- 2026-06-05 `LUC-2252 [Soar][Test Automation] Repair top release/Ops script
+  missing-test relations`
+  - Status: done.
+  - Scope:
+    - consumed scoped wake for [LUC-2252](/LUC/issues/LUC-2252);
+    - added focused static contract coverage for the 13 named release/Ops
+      script wrappers without launching protected or long-running commands;
+    - added direct scanner-readable test links for every target script.
+  - Evidence:
+    - `node --test scripts/releaseOpsScriptContracts.test.mjs` -> PASS
+      (`2/2`);
+    - targeted relation readback -> PASS (`13` targets, `0` missing rows,
+      `0` missing referenced files, `0` duplicate exact pairs);
+    - architecture-awareness refresh -> PASS (`14380` entities / `22584`
+      relations), generated `2026-06-05T18:01:10.084Z`;
+    - report readback -> `actionableMissingTests=837`, `0` LUC-2252 targets
+      remaining in the top actionable sample;
+    - graph generate -> PASS (`651` nodes / `842` relations / `27` chains);
+    - strict graph drift -> PASS (`827/827`, `0` missing).
+  - Residual risk:
+    - remaining actionable missing-test rows are outside this lane;
+    - protected production proof collectors still require separate approved
+      protected-input lanes;
+    - no deploy, restart, protected smoke, browser, Docker, database, account,
+      exchange, secret, or LIVE action occurred.
+  - Artifact:
+    - `history/tasks/luc-2252-repair-top-release-ops-script-missing-test-relations-2026-06-05-task.md`
+
+- 2026-06-05 `LUC-2254 [Soar][Backend API] Close auth/session helper
+  missing-test links`
+  - Status: done.
+  - Scope:
+    - consumed the scoped wake for [LUC-2254](/LUC/issues/LUC-2254);
+    - added pure API helper coverage for `getSessionJwtExpiresIn`,
+      `getSessionTtlMs`, and bots shared `createPayload`;
+    - added `3` direct scanner-readable test relation rows;
+    - preserved auth semantics, token policy, cookie settings, production
+      config, deploy, protected smoke, secret, account, exchange, and LIVE
+      boundaries.
+  - Evidence:
+    - focused API helper tests -> PASS (`2` files / `5` tests);
+    - direct relation readback -> PASS (`3` rows, `0` missing test files,
+      `0` duplicate exact pairs, `0` target helper strings remaining in the
+      refreshed report);
+    - architecture-awareness refresh -> PASS (`14382` entities / `22615`
+      relations), generated `2026-06-05T18:06:29.890Z`;
+    - actionable missing-test rows -> `835` to `816`, with assigned helper
+      names absent from the refreshed actionable missing-test sample;
+    - graph generate -> PASS (`651` nodes / `842` relations / `27` chains);
+    - strict graph drift -> PASS (`827/827`, `0` missing).
+  - Residual risk:
+    - DB-backed bots E2E was not claimed because local Postgres at
+      `localhost:5432` was unavailable; final proof is DB-free helper-layer
+      coverage, which matches this issue scope.
+  - Artifact:
+    - `history/tasks/luc-2254-close-auth-session-helper-missing-test-links-2026-06-05-task.md`
+
+- 2026-06-05 `LUC-2251 [Operator][Coolify] Bind Coolify read-only production
+  status access`
+  - Status: done.
+  - Scope:
+    - consumed the scoped wake for [LUC-2251](/LUC/issues/LUC-2251);
+    - verified read-only Coolify binding names without printing values;
+    - confirmed Soar production status access through `project -> production
+      environment -> resources`;
+    - recorded redacted task/evidence artifacts and source-of-truth updates.
+  - Evidence:
+    - authenticated read-only Coolify readback at `2026-06-05T17:52:31Z` ->
+      selector `LuckySparrow`, project `Soar`, environment `production`, six
+      applications, PostgreSQL, Redis, zero generic services, `17` visible
+      global resource rows;
+    - canonical production environment resource count -> `8`;
+    - `pnpm run ops:coolify-stack:env-check:test` -> PASS (`8/8`).
+  - Residual risk:
+    - application inventory status remains `running:unknown`; separate
+      protected smoke and deploy/readiness issues still own runtime readiness;
+    - no production mutation was authorized or performed.
+  - Artifact:
+    - `history/tasks/luc-2251-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`
+    - `history/evidence/luc-2251-coolify-read-only-production-status-access-2026-06-05.md`
+
 - 2026-06-05 `LUC-2239 [Operator][Coolify] Bind Coolify read-only production
   status access`
   - Status: done.

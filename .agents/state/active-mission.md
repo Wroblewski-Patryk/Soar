@@ -9,6 +9,165 @@ repository history.
 
 ## Current Mission
 
+- `LUC-2255-FRESH-BROWSER-PROOF-PUBLIC-READ-ONLY-WEB-ACTIONS-2026-06-05`
+  is locally verified after blocker resolution. Original wake `issue_assigned`
+  added `scripts/runPublicReadOnlyBrowserProof.mjs`, captured fresh production
+  browser evidence, and added local public `/terms` and `/privacy` routes after
+  production register-page prefetch returned `404` for both targets. Resume
+  wake `issue_blockers_resolved` followed [LUC-2261](/LUC/issues/LUC-2261),
+  which repaired local Web build/start. Final local browser proof passed on
+  `http://127.0.0.1:3101` for desktop/mobile public home, login, register,
+  terms, privacy, offline, and login/register password visibility toggles with
+  `0` browser issues. No protected auth/session, deploy, restart,
+  database/account/env mutation, secret readback, exchange mutation, form
+  submit, or live-trading action occurred. Production PASS remains
+  deploy-dependent. Evidence:
+  `history/tasks/luc-2255-fresh-browser-proof-public-read-only-web-actions-2026-06-05-task.md`
+  and `history/evidence/luc-2255-local-public-read-only-browser-proof-2026-06-05.md`.
+
+- `LUC-2264-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05` is done as
+  a bounded Ops read-only production status access checkpoint. Wake
+  `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`,
+  comments `0/0`, latest comment id `unknown`); checkout was already claimed
+  by the harness and was not repeated. Fresh read-only Coolify API readback at
+  `2026-06-05T18:53:12Z` confirmed required binding names are present without
+  value disclosure, selector `LuckySparrow`, configured project `Soar`,
+  production environment `production`, six applications, PostgreSQL, Redis,
+  zero generic services, `17` visible global resource rows, and the canonical
+  eight production-environment resources. Validation passed:
+  `pnpm run ops:coolify-stack:env-check:test` (`8/8`). The teams list endpoint
+  returned `0` rows in this runner, but current selector and project-scoped
+  reads succeeded. No deploy, restart, rollback, env edit, database action,
+  team/account action, protected smoke, secret value readback, raw resource id
+  storage, generated DB suffix storage, screenshot, or live-trading action
+  occurred. Evidence:
+  `history/tasks/luc-2264-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`
+  and
+  `history/evidence/luc-2264-coolify-read-only-production-status-access-2026-06-05.md`.
+
+- `LUC-2261-REPAIR-LOCAL-WEB-BUILD-START-BLOCKER-PUBLIC-BROWSER-PROOF-2026-06-05`
+  is verified and done as a bounded Frontend QA local build/start repair
+  checkpoint. Wake `issue_assigned` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`);
+  checkout was already claimed by the harness and was not repeated. The local
+  Web build/start blocker inherited from LUC-2255 was repaired by adding
+  `scripts/runWebNextProductionCommand.mjs` and routing Web build/start through
+  a production-env Next wrapper, plus focused local-browser proof runner
+  fixes for Web-only `/auth/me` connection-refused noise and password-toggle
+  state readback. Validation passed: script syntax checks, Web build, Web
+  typecheck, local production HTTP route checks on `127.0.0.1:3101`, and
+  local fresh-browser proof (`PASS`) for public home/login/register/terms/
+  privacy/offline on desktop/mobile and login/register password visibility
+  toggles. The local Web server and proof browsers were stopped
+  (`Port3101Listeners=0`, `ProofBrowsers=0`). No backend/API behavior, deploy,
+  protected smoke, secret/account/database/exchange mutation, or live-trading
+  action occurred. Evidence:
+  `history/tasks/luc-2261-repair-local-web-build-start-blocker-public-browser-proof-2026-06-05-task.md`
+  and
+  `history/evidence/luc-2261-local-public-read-only-browser-proof-2026-06-05.md`.
+
+- `LUC-2253-API-SCRIPT-TOOLING-MISSING-TEST-RELATION-REPAIR-2026-06-05`
+  is verified as a bounded Backend API architecture-awareness relation repair
+  checkpoint, with unrelated workspace gate blockers recorded. Wake
+  `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`,
+  comments `0/0`, latest comment id `unknown`); checkout was already claimed
+  by the harness and was not repeated. Added import-safe helper exports and
+  dependency-injected DB-adjacent helpers for the named API scripts, added
+  `apps/api/scripts/apiScriptTooling.test.ts`, and added `26` direct
+  scanner-readable [LUC-2253](/LUC/issues/LUC-2253) function-level `tests`
+  rows in `docs/architecture/relations/priority-test-links.csv`. Validation
+  passed: focused API script proof (`1` file / `7` tests), targeted relation
+  readback (`26` rows, `0` missing paths, `0` duplicate exact pairs), MJS
+  syntax checks for `load-test.mjs` and `start-with-migrate.mjs`, graph
+  generate (`651` nodes / `842` relations / `27` chains), architecture-awareness
+  refresh (`14388` entities / `22625` relations, generated
+  `2026-06-05T18:23:53.329Z`), and report readback (`0` assigned target rows
+  remain in top actionable samples; actionable missing-test rows `816`).
+  Strict drift is blocked by unrelated Web pages
+  `apps/web/src/app/(public)/privacy/page.tsx` and
+  `apps/web/src/app/(public)/terms/page.tsx`; API typecheck is blocked by
+  unrelated test typing failures in
+  `src/modules/positions/positions.orphan-repair.contract.e2e.test.ts(77,26)`
+  and `src/router/workers-health-readiness.test.ts(37,58)`. No DB/network
+  script execution, protected smoke, deploy, restart, rollback, env/database/
+  account mutation, secret readback, exchange mutation, or live-trading action
+  occurred. Evidence:
+  `history/tasks/luc-2253-repair-api-script-tooling-missing-test-relations-2026-06-05-task.md`.
+
+- `LUC-2255-FRESH-BROWSER-PROOF-PUBLIC-READ-ONLY-WEB-ACTIONS-2026-06-05`
+  is partially verified and blocked for final rendered closure. Wake
+  `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`,
+  comments `0/0`, latest comment id `unknown`); checkout was already claimed
+  by the harness and was not repeated. Added
+  `scripts/runPublicReadOnlyBrowserProof.mjs`, captured fresh production
+  browser evidence, and added local public `/terms` and `/privacy` routes after
+  production register-page prefetch returned `404` for both targets. Focused
+  validation passed: script syntax, Web Auth/Header tests (`2` files / `7`
+  tests), and Web typecheck. The prior local rendered proof blocker is
+  superseded by LUC-2261, which verified local Web build/start and local
+  public browser proof. No protected auth/session, deploy, restart, database/account/env
+  mutation, secret readback, exchange mutation, form submit, or live-trading
+  action occurred. Evidence:
+  `history/tasks/luc-2255-fresh-browser-proof-public-read-only-web-actions-2026-06-05-task.md`
+  and `history/evidence/luc-2255-public-read-only-browser-proof-2026-06-05.md`.
+
+- `LUC-2260-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05` is done as
+  a bounded Ops read-only production status access checkpoint. Wake
+  `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`,
+  comments `0/0`, latest comment id `unknown`); checkout was already claimed
+  by the harness and was not repeated. Fresh read-only Coolify API readback at
+  `2026-06-05T18:25:22Z` confirmed required binding names are present without
+  value disclosure, selector `LuckySparrow`, configured project `Soar`,
+  production environment `production`, six applications, PostgreSQL, Redis,
+  zero generic services, `17` visible global resource rows, and the canonical
+  eight production-environment resources. Validation passed:
+  `pnpm run ops:coolify-stack:env-check:test` (`8/8`). No deploy, restart,
+  rollback, env edit, database action, team/account action, protected smoke,
+  secret value readback, raw resource id storage, generated DB suffix storage,
+  screenshot, or live-trading action occurred. Evidence:
+  `history/tasks/luc-2260-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`
+  and
+  `history/evidence/luc-2260-coolify-read-only-production-status-access-2026-06-05.md`.
+
+- `LUC-2254-AUTH-SESSION-HELPER-MISSING-TEST-LINKS-2026-06-05` is done as a
+  bounded Backend API helper traceability checkpoint. Wake
+  `issue_continuation_needed` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`);
+  checkout was already claimed by the harness and was not repeated. Added pure
+  API helper tests for `getSessionJwtExpiresIn`, `getSessionTtlMs`, and bots
+  shared `createPayload`, plus `3` direct scanner-readable `tests` rows in
+  `docs/architecture/relations/priority-test-links.csv`. Validation passed:
+  focused API helper tests (`2` files / `5` tests), targeted relation readback
+  (`3` rows, `0` missing test files, `0` duplicate exact pairs, `0` target
+  helper strings remaining in the refreshed report), scanner syntax check,
+  architecture-awareness refresh (`14382` entities / `22615` relations,
+  generated `2026-06-05T18:06:29.890Z`), graph generate (`651` nodes / `842`
+  relations / `27` chains), and strict graph drift (`827/827`, `0` missing).
+  No auth semantics, token policy, cookie settings, production config,
+  DB-backed bots E2E claim, protected smoke, deploy, restart, env/database/
+  account mutation, secret readback, exchange mutation, or live-trading action
+  occurred. Evidence:
+  `history/tasks/luc-2254-close-auth-session-helper-missing-test-links-2026-06-05-task.md`.
+
+- `LUC-2252-RELEASE-OPS-SCRIPT-MISSING-TEST-RELATIONS-2026-06-05` is verified
+  as a bounded Test Automation architecture-awareness relation repair
+  checkpoint. Wake `issue_assigned` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`);
+  checkout was already claimed by the harness and was not repeated. Added a
+  focused static contract test for the 13 named release/Ops script wrappers
+  and direct scanner-readable `tests` rows for every target in
+  `docs/architecture/relations/priority-test-links.csv`. Validation passed:
+  focused Node test (`2/2`), targeted relation readback (`13` rows,
+  `0` missing entity/test paths, `0` duplicate exact pairs),
+  architecture-awareness refresh (`14380` entities / `22584` relations,
+  generated `2026-06-05T18:01:10.084Z`), report readback with `0` LUC-2252
+  targets still in the top actionable sample, graph generate (`651` nodes /
+  `842` relations / `27` chains), and strict graph drift (`827/827`,
+  `0` missing). No protected production smoke, deploy, restart, browser,
+  Docker, env/database/account mutation, secret readback, exchange mutation,
+  or live-trading action occurred. Evidence:
+  `history/tasks/luc-2252-repair-top-release-ops-script-missing-test-relations-2026-06-05-task.md`.
+
 - `LUC-2239-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05` is done as
   a bounded Ops read-only production status access checkpoint. The
   `softwarehouse-local-repair-lane-starter:v1` wake comment was acknowledged
