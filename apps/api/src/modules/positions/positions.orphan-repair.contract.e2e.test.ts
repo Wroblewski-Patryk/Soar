@@ -46,7 +46,18 @@ describe('POST /dashboard/positions/orphan-repair contract', () => {
     const takeoverRebind = {
       scanned: 1,
       rebound: 1,
+      ambiguous: 0,
+      unowned: 0,
+      skippedOwned: 0,
       unresolved: 0,
+      scannedByOrigin: {
+        EXCHANGE_SYNC: 1,
+        BOT: 0,
+      },
+      reboundByOrigin: {
+        EXCHANGE_SYNC: 1,
+        BOT: 0,
+      },
     };
     const liveStatus = {
       running: true,

@@ -34,11 +34,11 @@ beforeEach(() => {
   process.env.NODE_ENV = 'test';
   process.env.JWT_SECRET = 'jwt-primary-generated-material-32-plus';
   authUsers.clear();
-  vi.spyOn(prisma.user, 'findUnique').mockImplementation(async (args: any) => {
+  vi.spyOn(prisma.user, 'findUnique').mockImplementation((async (args: any) => {
     const id = args?.where?.id;
     if (typeof id !== 'string') return null;
     return authUsers.get(id) ?? null;
-  });
+  }) as unknown as typeof prisma.user.findUnique);
 });
 
 afterEach(() => {
