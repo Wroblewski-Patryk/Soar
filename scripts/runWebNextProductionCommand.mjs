@@ -50,7 +50,15 @@ try {
     await run(process.execPath, [path.join(repoRoot, 'scripts', 'writeWebBuildMetadata.mjs')]);
   }
 
-  await run(process.execPath, [nextCli, command, ...args]);
+  const startArgs = command === 'start'
+    ? [
+        ...(!args.includes('-p') && !args.includes('--port') ? ['-p', process.env.PORT || '3002'] : []),
+        ...(!args.includes('-H') && !args.includes('--hostname') ? ['-H', '0.0.0.0'] : []),
+        ...args,
+      ]
+    : args;
+
+  await run(process.execPath, [nextCli, command, ...startArgs]);
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));
   process.exit(1);
