@@ -1,3 +1,22 @@
+- 2026-06-05 `LUC-2239` Operator Coolify read-only production status access
+  binding is verified and done. Runtime bindings are present for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID` without values
+  printed. Team selector bindings are also present by name without values.
+  Authenticated read-only Coolify readback at `2026-06-05T17:05:41Z`
+  confirmed selector `LuckySparrow`, configured project `Soar`, production
+  environment `production`, six applications, PostgreSQL, Redis, zero generic
+  services, `17` visible global resource rows, and the canonical
+  eight-resource production environment. Application inventory status remains
+  `running:unknown`; PostgreSQL and Redis report `running:healthy`.
+  Validation passed: `pnpm run ops:coolify-stack:env-check:test` (`8/8`).
+  Scope stayed read-only; no deploy, restart, rollback, env edit, database
+  action, team setting change, protected smoke, secret value disclosure,
+  screenshot, account action, or live trading action occurred. Evidence:
+  `history/tasks/luc-2239-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`,
+  `history/evidence/luc-2239-coolify-read-only-production-status-access-2026-06-05.md`.
+
 - 2026-06-05 `LUC-2230` Test Automation closed the current local actionable
   missing-test relation bucket slice. Added `24` direct scanner-readable
   `tests` rows for focused API runtime helper families in

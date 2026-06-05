@@ -9,6 +9,25 @@ repository history.
 
 ## Current Mission
 
+- `LUC-2239-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05` is done as
+  a bounded Ops read-only production status access checkpoint. The
+  `softwarehouse-local-repair-lane-starter:v1` wake comment was acknowledged
+  first and treated as authorization for this narrow local source-control
+  closure lane while protected delivery remains fail-closed. Checkout was
+  already claimed by the harness and was not repeated. Fresh read-only Coolify
+  API readback at `2026-06-05T17:05:41Z` confirmed required binding names are
+  present without value disclosure, selector `LuckySparrow`, configured project
+  `Soar`, production environment `production`, six applications, PostgreSQL,
+  Redis, zero generic services, `17` visible global resource rows, and the
+  canonical eight production-environment resources. Validation passed:
+  `pnpm run ops:coolify-stack:env-check:test` (`8/8`). No deploy, restart,
+  rollback, env edit, database action, team/account action, protected smoke,
+  secret value readback, raw resource id storage, generated DB suffix storage,
+  screenshot, or live-trading action occurred. Evidence:
+  `history/tasks/luc-2239-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`
+  and
+  `history/evidence/luc-2239-coolify-read-only-production-status-access-2026-06-05.md`.
+
 - `LUC-2230-CURRENT-ACTIONABLE-MISSING-TEST-RELATION-BUCKET-CLOSURE-2026-06-05`
   is verified as a bounded Test Automation architecture-awareness relation
   repair checkpoint. Wake `issue_assigned` was consumed from inline payload

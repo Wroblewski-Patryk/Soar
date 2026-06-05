@@ -1,3 +1,29 @@
+- 2026-06-05 `LUC-2239 [Operator][Coolify] Bind Coolify read-only production
+  status access`
+  - Status: done.
+  - Scope:
+    - consumed the scoped wake for [LUC-2239](/LUC/issues/LUC-2239);
+    - acknowledged `softwarehouse-local-repair-lane-starter:v1` as the
+      authorization for a narrow local source-control closure lane;
+    - verified read-only Coolify binding names without printing values;
+    - confirmed Soar production status access through `project -> production
+      environment -> resources`;
+    - recorded redacted task/evidence artifacts and source-of-truth updates.
+  - Evidence:
+    - authenticated read-only Coolify readback at `2026-06-05T17:05:41Z` ->
+      selector `LuckySparrow`, project `Soar`, environment `production`, six
+      applications, PostgreSQL, Redis, zero generic services, `17` visible
+      global resource rows;
+    - canonical production environment resource count -> `8`;
+    - `pnpm run ops:coolify-stack:env-check:test` -> PASS (`8/8`).
+  - Residual risk:
+    - application inventory status remains `running:unknown`; separate
+      protected smoke and deploy/readiness issues still own runtime readiness;
+    - no production mutation was authorized or performed.
+  - Artifact:
+    - `history/tasks/luc-2239-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`
+    - `history/evidence/luc-2239-coolify-read-only-production-status-access-2026-06-05.md`
+
 - 2026-06-05 `LUC-2230 [Soar][Test Automation] Close current actionable
   missing-test relation buckets`
   - Status: done.
