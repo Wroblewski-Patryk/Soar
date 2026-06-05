@@ -1,6 +1,6 @@
 # Function Journey Evidence Index
 
-Last generated: 2026-05-25
+Last generated: 2026-06-05
 
 This index connects user-visible entrypoints, graph function chains, API routes, tests, docs, evidence artifacts, and explicit gaps. It is generated from the architecture graph CSV source of truth and is meant to answer: what works, what is only locally proven, and what still lacks browser or production proof.
 
@@ -10,7 +10,7 @@ This index connects user-visible entrypoints, graph function chains, API routes,
 - `docs/architecture/indices/web-journey-index.csv`
 - `docs/architecture/indices/api-surface-evidence-index.csv`
 - `docs/graphs/function-journey-index.json`
-- `history/artifacts/function-journey-index-2026-05-25.json`
+- `history/artifacts/function-journey-index-2026-06-05.json`
 
 ## Summary
 

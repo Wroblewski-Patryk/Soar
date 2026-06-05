@@ -2,6 +2,21 @@
 
 Last updated: 2026-06-05
 
+- 2026-06-05 `LUC-2230-CURRENT-ACTIONABLE-MISSING-TEST-RELATION-BUCKET-CLOSURE-2026-06-05`
+  applies to Architecture Evidence Graph, API Bots, and API Engine test
+  traceability confidence. Test Automation added `24` direct
+  scanner-readable `tests` rows for focused local runtime helper families in
+  `docs/architecture/relations/priority-test-links.csv`. Targeted readback
+  found `0` missing entity/test paths and `0` duplicate exact pairs; focused
+  API helper tests passed (`6` files / `39` tests); architecture-awareness
+  refresh passed (`14342` entities / `22490` relations, generated
+  `2026-06-05T16:02:05.428Z`) and reduced actionable missing-test rows
+  `859` -> `835`; graph generate passed and strict drift passed (`824/824`,
+  `0` missing). This is local relation/test proof only, not protected
+  production, deploy, secret, exchange, DB-backed, or live-trading proof.
+  Evidence:
+  `history/tasks/luc-2230-close-current-actionable-missing-test-relation-buckets-2026-06-05-task.md`.
+
 - 2026-06-05 `LUC-2222-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05`
   applies to production Ops release confidence: read-only Coolify API status
   access remains verified for Soar project/environment/resource reconciliation.
@@ -773,6 +788,19 @@ Last updated: 2026-06-05
   remain separate gates; no new defect child issue was required from this lane.
   Evidence:
   `history/tasks/luc-2018-api-platform-safety-assistant-red-team-proof-map-2026-06-04-task.md`.
+
+- 2026-06-05 `LUC-2231-API-PLATFORM-SAFETY-ADVERSARIAL-REVIEW-2026-06-05`
+  applies to `SOAR-SECURITY-PRIVACY-001` and
+  `SOAR-FEATURE-API-PLATFORM-SAFETY`: Security Review performed the fresh
+  adversarial local review for `CHAIN-API-PLATFORM-SAFETY` across auth/session
+  token parsing, trusted-origin, ops-network, rate-limit degradation, proxy
+  trust, critical-secret readiness, security headers, and error/log redaction.
+  Focused non-DB security packs passed. DB-backed route-level auth/trusted
+  origin proof remains environment-blocked by unavailable local Postgres and
+  Docker in this heartbeat, and protected production/browser proof remains
+  outside this lane. No confirmed product defect or implementation child issue
+  was found. Evidence:
+  `history/evidence/luc-2231-api-platform-safety-adversarial-review-2026-06-05.md`.
 
 ## Purpose
 

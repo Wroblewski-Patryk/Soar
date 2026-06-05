@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
-const today = "2026-05-25";
+const today = new Date().toISOString().slice(0, 10);
 const docsRootName = fs.existsSync(path.join(root, "docs")) ? "docs" : "docs";
 const docsRoot = path.join(root, docsRootName);
 const architectureRoot = path.join(docsRoot, "architecture");

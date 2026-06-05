@@ -1,3 +1,56 @@
+- 2026-06-05 `LUC-2230 [Soar][Test Automation] Close current actionable
+  missing-test relation buckets`
+  - Status: done.
+  - Scope:
+    - consumed the scoped wake for [LUC-2230](/LUC/issues/LUC-2230);
+    - added `24` direct scanner-readable test relations for focused local API
+      runtime helper buckets;
+    - preserved protected/prod proof collector rows as separate approval-gated
+      work instead of claiming weak local coverage.
+  - Evidence:
+    - targeted relation readback -> PASS (`24` rows, `0` missing entity/test
+      paths, `0` duplicate exact pairs);
+    - focused API helper tests -> PASS (`6` files / `39` tests);
+    - Softwarehouse architecture-awareness refresh -> PASS (`14342` entities /
+      `22490` relations), generated `2026-06-05T16:02:05.428Z`;
+    - actionable missing-test rows -> `859` to `835`, with `0` [LUC-2230](/LUC/issues/LUC-2230)
+      targets remaining in actionable samples;
+    - graph generate -> PASS (`651` nodes / `842` relations / `27` chains);
+    - strict graph drift -> PASS (`824/824`, `0` missing).
+  - Residual risk:
+    - `835` actionable missing-test rows remain, led by protected proof
+      collectors, script/tooling rows without focused local tests,
+      local/release/Ops aggregate scripts, and API script/helper functions;
+    - no production/protected/browser/deploy/live-trading action was performed.
+  - Artifact:
+    - `history/tasks/luc-2230-close-current-actionable-missing-test-relation-buckets-2026-06-05-task.md`
+
+- 2026-06-05 `LUC-2233 [Soar][Docs] Refresh journey evidence indexes after
+  current graph state`
+  - Status: done.
+  - Scope:
+    - consumed the scoped wake for [LUC-2233](/LUC/issues/LUC-2233);
+    - refreshed function-journey and user-action evidence indexes from current
+      graph registry sources;
+    - fixed the generators so dated history artifacts use the current runtime
+      date instead of a stale hardcoded `2026-05-25` label.
+  - Evidence:
+    - `node --check scripts/generateFunctionJourneyIndexes.mjs` -> PASS;
+    - `node --check scripts/generateUserActionIndex.mjs` -> PASS;
+    - `pnpm run architecture:journey:index:strict` -> PASS (`0` critical
+      function-journey gaps, `28` high function-journey gaps; `0` critical
+      user-action gaps, `37` high user-action gaps);
+    - generated artifacts:
+      `history/artifacts/function-journey-index-2026-06-05.json` and
+      `history/artifacts/user-action-index-2026-06-05.json`.
+  - Residual risk:
+    - high gaps remain protected/browser/production/live-proof gaps owned by
+      specialist QA/Security/Ops/runtime lanes;
+    - `pnpm run architecture:journey:triage` requires `--query` and is not a
+      global validation command.
+  - Artifact:
+    - `history/tasks/luc-2233-refresh-journey-evidence-indexes-current-graph-state-2026-06-05-task.md`
+
 - 2026-06-05 `LUC-2222 [Operator][Coolify] Bind Coolify read-only production
   status access`
   - Status: done.

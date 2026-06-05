@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-06-05T12:40:45.169Z",
+  "generated_at": "2026-06-05T16:02:05.428Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 14322,
-    "relations": 22433,
+    "entities": 14342,
+    "relations": 22490,
     "by_type": {
       "agent": 52,
       "api_endpoint": 37,
       "component": 97,
-      "document": 3554,
+      "document": 3567,
       "feature": 223,
       "function": 8283,
       "migration": 56,
@@ -19,21 +19,21 @@
       "module": 15,
       "project": 1,
       "route": 346,
-      "task": 1005,
+      "task": 1012,
       "test": 377
     },
     "by_status": {
       "blocked": 19,
       "deprecated": 7,
-      "implemented": 12640,
+      "implemented": 12653,
       "in_progress": 9,
       "tested": 654,
-      "verified": 993
+      "verified": 1000
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 7654,
+      "count": 7630,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -3243,7 +3243,7 @@
       ]
     },
     "actionable_implementation_without_tests": {
-      "count": 859,
+      "count": 835,
       "items": [
         {
           "id": "feature:runproduxa11ymobileproof-mjs:14daad352c",
@@ -3654,22 +3654,6 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "function:resolveruntimepositiondcacount:4196596f76",
-          "type": "function",
-          "name": "resolveRuntimePositionDcaCount",
-          "path": "apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts#resolveRuntimePositionDcaCount",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:canusestrategyprotectionfallbackfordisplay:2281c13e72",
-          "type": "function",
-          "name": "canUseStrategyProtectionFallbackForDisplay",
-          "path": "apps/api/src/modules/bots/runtimeStrategyProtectionFallbackDisplay.ts#canUseStrategyProtectionFallbackForDisplay",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "function:computepricefrompnlfraction:9cde1375c6",
           "type": "function",
           "name": "computePriceFromPnlFraction",
@@ -3734,30 +3718,6 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "function:derivepricefromunrealizedpnl:83ddcb06ef",
-          "type": "function",
-          "name": "derivePriceFromUnrealizedPnl",
-          "path": "apps/api/src/modules/engine/runtimeExchangeSyncedPositionPrice.ts#derivePriceFromUnrealizedPnl",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:resolvepreferredruntimeorexchangesyncedprice:19e0645d1e",
-          "type": "function",
-          "name": "resolvePreferredRuntimeOrExchangeSyncedPrice",
-          "path": "apps/api/src/modules/engine/runtimeExchangeSyncedPositionPrice.ts#resolvePreferredRuntimeOrExchangeSyncedPrice",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:selectfreshestruntimecandidate:7429c949b6",
-          "type": "function",
-          "name": "selectFreshestRuntimeCandidate",
-          "path": "apps/api/src/modules/engine/runtimeExchangeSyncedPositionPrice.ts#selectFreshestRuntimeCandidate",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "function:recordruntimeautomationskiptelemetry:a286c3cb9b",
           "type": "function",
           "name": "recordRuntimeAutomationSkipTelemetry",
@@ -3806,146 +3766,10 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "function:clearruntimesignalmarketdatastore:1d1a612dfd",
-          "type": "function",
-          "name": "clearRuntimeSignalMarketDataStore",
-          "path": "apps/api/src/modules/engine/runtimeSignalMarketDataGateway.ts#clearRuntimeSignalMarketDataStore",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:mergeruntimesignalcandles:cc0dbb3712",
-          "type": "function",
-          "name": "mergeRuntimeSignalCandles",
-          "path": "apps/api/src/modules/engine/runtimeSignalMarketDataGateway.ts#mergeRuntimeSignalCandles",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:parsebookrow:ad4a95203b",
-          "type": "function",
-          "name": "parseBookRow",
-          "path": "apps/api/src/modules/engine/runtimeSignalMarketDataGateway.ts#parseBookRow",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:detectbearishengulfing:e9dbf06706",
-          "type": "function",
-          "name": "detectBearishEngulfing",
-          "path": "apps/api/src/modules/engine/sharedCandlePatternSeries.ts#detectBearishEngulfing",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:detectbullishengulfing:32e55e8902",
-          "type": "function",
-          "name": "detectBullishEngulfing",
-          "path": "apps/api/src/modules/engine/sharedCandlePatternSeries.ts#detectBullishEngulfing",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:detectdoji:6c67378a17",
-          "type": "function",
-          "name": "detectDoji",
-          "path": "apps/api/src/modules/engine/sharedCandlePatternSeries.ts#detectDoji",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:detecteveningstar:2f76b95ef2",
-          "type": "function",
-          "name": "detectEveningStar",
-          "path": "apps/api/src/modules/engine/sharedCandlePatternSeries.ts#detectEveningStar",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:detecthammer:02576f9bed",
-          "type": "function",
-          "name": "detectHammer",
-          "path": "apps/api/src/modules/engine/sharedCandlePatternSeries.ts#detectHammer",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:detectinsidebar:9f2b31c4ff",
-          "type": "function",
-          "name": "detectInsideBar",
-          "path": "apps/api/src/modules/engine/sharedCandlePatternSeries.ts#detectInsideBar",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:detectmorningstar:21d8aeed4f",
-          "type": "function",
-          "name": "detectMorningStar",
-          "path": "apps/api/src/modules/engine/sharedCandlePatternSeries.ts#detectMorningStar",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:detectoutsidebar:9de5344afe",
-          "type": "function",
-          "name": "detectOutsideBar",
-          "path": "apps/api/src/modules/engine/sharedCandlePatternSeries.ts#detectOutsideBar",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:detectshootingstar:7528ad2dd9",
-          "type": "function",
-          "name": "detectShootingStar",
-          "path": "apps/api/src/modules/engine/sharedCandlePatternSeries.ts#detectShootingStar",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:isbearish:79ab8fd35b",
-          "type": "function",
-          "name": "isBearish",
-          "path": "apps/api/src/modules/engine/sharedCandlePatternSeries.ts#isBearish",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:isbullish:9b14d138e4",
-          "type": "function",
-          "name": "isBullish",
-          "path": "apps/api/src/modules/engine/sharedCandlePatternSeries.ts#isBullish",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:lowershadow:beec52fde3",
-          "type": "function",
-          "name": "lowerShadow",
-          "path": "apps/api/src/modules/engine/sharedCandlePatternSeries.ts#lowerShadow",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "function:clampperiod:0d7f7539a3",
           "type": "function",
           "name": "clampPeriod",
           "path": "apps/api/src/modules/engine/sharedIndicatorSeries.ts#clampPeriod",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:getstrategyindicatorregistry:1d698bf54c",
-          "type": "function",
-          "name": "getStrategyIndicatorRegistry",
-          "path": "apps/api/src/modules/engine/strategyIndicatorRegistry.ts#getStrategyIndicatorRegistry",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:getstrategyindicatorregistryentry:0d87618cd2",
-          "type": "function",
-          "name": "getStrategyIndicatorRegistryEntry",
-          "path": "apps/api/src/modules/engine/strategyIndicatorRegistry.ts#getStrategyIndicatorRegistryEntry",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -4086,26 +3910,10 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "function:ensurepattern:f9494d78a0",
-          "type": "function",
-          "name": "ensurePattern",
-          "path": "apps/api/src/modules/engine/strategySignalAnalysis.ts#ensurePattern",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "function:ensureroc:9de31064b4",
           "type": "function",
           "name": "ensureRoc",
           "path": "apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureRoc",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:ensurersi:30e800b9c7",
-          "type": "function",
-          "name": "ensureRsi",
-          "path": "apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureRsi",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -4842,6 +4650,198 @@
           "type": "function",
           "name": "normalizeNumericInput",
           "path": "apps/web/src/lib/numericInput.ts#normalizeNumericInput",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolvemaxdecimals:cb13cdcafe",
+          "type": "function",
+          "name": "resolveMaxDecimals",
+          "path": "apps/web/src/lib/numericInput.ts#resolveMaxDecimals",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:sanitize:d032e70f0c",
+          "type": "function",
+          "name": "sanitize",
+          "path": "apps/web/src/lib/numericInput.ts#sanitize",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:stepfromdecimals:ac13a67f4a",
+          "type": "function",
+          "name": "stepFromDecimals",
+          "path": "apps/web/src/lib/numericInput.ts#stepFromDecimals",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:getstorageitem:03d72bfc0b",
+          "type": "function",
+          "name": "getStorageItem",
+          "path": "apps/web/src/security/themeBootstrap.ts#getStorageItem",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizethemepreference:69a2ddf1d1",
+          "type": "function",
+          "name": "normalizeThemePreference",
+          "path": "apps/web/src/security/themeBootstrap.ts#normalizeThemePreference",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolvesystemtheme:85911a504b",
+          "type": "function",
+          "name": "resolveSystemTheme",
+          "path": "apps/web/src/security/themeBootstrap.ts#resolveSystemTheme",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:applysearch:d3a0f5d995",
+          "type": "function",
+          "name": "applySearch",
+          "path": "apps/web/src/ui/components/DataTable.tsx#applySearch",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:commitpageinput:50901d2747",
+          "type": "function",
+          "name": "commitPageInput",
+          "path": "apps/web/src/ui/components/DataTable.tsx#commitPageInput",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:comparevalues:936ad4abaf",
+          "type": "function",
+          "name": "compareValues",
+          "path": "apps/web/src/ui/components/DataTable.tsx#compareValues",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:datatable:b43003c235",
+          "type": "function",
+          "name": "DataTable",
+          "path": "apps/web/src/ui/components/DataTable.tsx#DataTable",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:gotopage:3524d19646",
+          "type": "function",
+          "name": "goToPage",
+          "path": "apps/web/src/ui/components/DataTable.tsx#goToPage",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:handleescape:485b3b2cde",
+          "type": "function",
+          "name": "handleEscape",
+          "path": "apps/web/src/ui/components/DataTable.tsx#handleEscape",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:handlepageinputchange:b59d8ccbc0",
+          "type": "function",
+          "name": "handlePageInputChange",
+          "path": "apps/web/src/ui/components/DataTable.tsx#handlePageInputChange",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:handlepagesizechange:ccfef64482",
+          "type": "function",
+          "name": "handlePageSizeChange",
+          "path": "apps/web/src/ui/components/DataTable.tsx#handlePageSizeChange",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:handlepointerdown:dbe83131f1",
+          "type": "function",
+          "name": "handlePointerDown",
+          "path": "apps/web/src/ui/components/DataTable.tsx#handlePointerDown",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:handlesort:cc10f9f266",
+          "type": "function",
+          "name": "handleSort",
+          "path": "apps/web/src/ui/components/DataTable.tsx#handleSort",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:setqueryvalue:3d9d7e9f85",
+          "type": "function",
+          "name": "setQueryValue",
+          "path": "apps/web/src/ui/components/DataTable.tsx#setQueryValue",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:footerpreferencesswitchers:8fdc3977eb",
+          "type": "function",
+          "name": "FooterPreferencesSwitchers",
+          "path": "apps/web/src/ui/components/FooterPreferencesSwitchers.tsx#FooterPreferencesSwitchers",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:profilebutton:3bb71e8858",
+          "type": "function",
+          "name": "ProfileButton",
+          "path": "apps/web/src/ui/components/ProfileButton.tsx#ProfileButton",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:statusbadge:ba6e7b48e4",
+          "type": "function",
+          "name": "StatusBadge",
+          "path": "apps/web/src/ui/components/StatusBadge.tsx#StatusBadge",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:tabletonebadge:61cdd9d721",
+          "type": "function",
+          "name": "TableToneBadge",
+          "path": "apps/web/src/ui/components/TableUi.tsx#TableToneBadge",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:syncfromhash:fec2c596ed",
+          "type": "function",
+          "name": "syncFromHash",
+          "path": "apps/web/src/ui/components/Tabs.tsx#syncFromHash",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:handlechange:7b7287ba42",
+          "type": "function",
+          "name": "handleChange",
+          "path": "apps/web/src/ui/components/ThemeSwitch.tsx#handleChange",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:successstate:4f352b9ad5",
+          "type": "function",
+          "name": "SuccessState",
+          "path": "apps/web/src/ui/components/ViewState.tsx#SuccessState",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         }
@@ -6671,7 +6671,7 @@
       "items": []
     },
     "tasks_without_architecture": {
-      "count": 1005,
+      "count": 1012,
       "items": [
         {
           "id": "task:agent-operating-system-task-2026-05-07:04d1de2b03",

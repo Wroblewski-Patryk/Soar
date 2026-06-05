@@ -1,5 +1,41 @@
 # System Health
 
+- `LUC-2230-CURRENT-ACTIONABLE-MISSING-TEST-RELATION-BUCKET-CLOSURE-2026-06-05`
+  VERIFIED as a bounded Test Automation architecture-awareness relation repair
+  checkpoint. Added `24` direct `priority-test-links.csv` rows for current
+  local API runtime helper buckets. Targeted readback found `0` missing
+  entity/test paths and `0` duplicate exact pairs; focused API helper tests
+  passed (`6` files / `39` tests); architecture-awareness refresh passed
+  (`14342` entities / `22490` relations, generated
+  `2026-06-05T16:02:05.428Z`), reducing actionable missing-test rows `859` ->
+  `835`; graph generate passed (`651` nodes / `842` relations / `27` chains);
+  strict drift passed (`824/824`, `0` missing). Scope stayed local
+  architecture/test traceability only; no runtime, protected browser smoke,
+  deploy, restart, rollback, env, database, account, secret, exchange, or LIVE
+  action occurred. Evidence:
+  `history/tasks/luc-2230-close-current-actionable-missing-test-relation-buckets-2026-06-05-task.md`.
+
+- `LUC-2233-REFRESH-JOURNEY-EVIDENCE-INDEXES-CURRENT-GRAPH-STATE-2026-06-05`
+  VERIFIED as a bounded Docs Memory journey evidence index refresh checkpoint.
+  Wake payload was consumed first (`fallbackFetchNeeded=false`, comments
+  `0/0`, latest comment id `unknown`), and checkout had already been claimed
+  by the harness, so checkout was not repeated. The function-journey and
+  user-action generators now derive artifact dates from the current runtime
+  date instead of preserving the stale `2026-05-25` label. Refreshed generated
+  outputs now point to `2026-06-05` artifacts:
+  `history/artifacts/function-journey-index-2026-06-05.json` and
+  `history/artifacts/user-action-index-2026-06-05.json`. Validation passed:
+  `node --check` for both generator scripts and
+  `pnpm run architecture:journey:index:strict` (`27` chains / `36` web
+  journeys / `96` API surfaces / `0` critical function-journey gaps / `28`
+  high function-journey gaps; `39` user actions / `0` critical action gaps /
+  `37` high action gaps). `pnpm run architecture:journey:triage` was attempted
+  and classified not applicable as a global validator because it requires
+  `--query`. Scope stayed docs/index/history only; no runtime, protected
+  browser smoke, deploy, restart, rollback, env, database, account, secret,
+  exchange, or LIVE action occurred. Evidence:
+  `history/tasks/luc-2233-refresh-journey-evidence-indexes-current-graph-state-2026-06-05-task.md`.
+
 - `LUC-2225-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05` VERIFIED as
   a bounded Ops read-only access binding checkpoint. Wake payload was consumed
   first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id

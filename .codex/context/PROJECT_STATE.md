@@ -1,3 +1,33 @@
+- 2026-06-05 `LUC-2230` Test Automation closed the current local actionable
+  missing-test relation bucket slice. Added `24` direct scanner-readable
+  `tests` rows for focused API runtime helper families in
+  `docs/architecture/relations/priority-test-links.csv`. Targeted relation
+  readback passed (`24` rows, `0` missing entity/test paths, `0` duplicate
+  exact pairs); focused API helper tests passed (`6` files / `39` tests);
+  architecture-awareness refresh passed (`14342` entities / `22490` relations,
+  generated `2026-06-05T16:02:05.428Z`) and reduced actionable missing-test
+  rows `859` -> `835`; graph generate passed and strict drift passed
+  (`824/824`, `0` missing). Scope stayed local traceability/test proof only;
+  no runtime, protected smoke, deploy, secret, account, exchange, or LIVE
+  action occurred. Evidence:
+  `history/tasks/luc-2230-close-current-actionable-missing-test-relation-buckets-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2233` Docs Memory refreshed journey evidence indexes after
+  the current graph state. The function-journey and user-action generators now
+  derive dated artifact names from the current runtime date instead of a stale
+  hardcoded `2026-05-25` label. Generated status docs now point to
+  `history/artifacts/function-journey-index-2026-06-05.json` and
+  `history/artifacts/user-action-index-2026-06-05.json`. Validation passed:
+  `node --check` for both generator scripts and
+  `pnpm run architecture:journey:index:strict` (`0` critical function-journey
+  gaps, `28` high function-journey gaps; `0` critical user-action gaps, `37`
+  high user-action gaps). `pnpm run architecture:journey:triage` was attempted
+  and classified not applicable as a global check because it requires
+  `--query`. Scope stayed docs/index/history only; no runtime, deploy,
+  protected smoke, secret, account, exchange, or LIVE action occurred.
+  Evidence:
+  `history/tasks/luc-2233-refresh-journey-evidence-indexes-current-graph-state-2026-06-05-task.md`.
+
 - 2026-06-05 `LUC-2222` Operator Coolify read-only production status access
   binding is verified and done. Runtime bindings are present for
   `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,

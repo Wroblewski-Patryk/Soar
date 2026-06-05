@@ -68,3 +68,27 @@ scripts/runProdFixtureActionProof.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198
 scripts/runProdPositionsProof.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 prod positions proof release-gate relation
 scripts/runProdSecurityExchangeProof.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 prod security exchange release-gate relation
 scripts/runProdUiModuleClickthroughAudit.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 prod UI clickthrough release-gate relation
+apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts#resolveRuntimePositionDcaCount,apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts,LUC-2230 runtime DCA count helper direct relation
+apps/api/src/modules/bots/runtimeStrategyProtectionFallbackDisplay.ts#canUseStrategyProtectionFallbackForDisplay,apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts,LUC-2230 strategy protection fallback display helper direct relation
+apps/api/src/modules/engine/runtimeExchangeSyncedPositionPrice.ts#derivePriceFromUnrealizedPnl,apps/api/src/modules/engine/runtimeLifecycleMarkPrice.service.test.ts,LUC-2230 exchange-synced runtime price helper relation
+apps/api/src/modules/engine/runtimeExchangeSyncedPositionPrice.ts#resolvePreferredRuntimeOrExchangeSyncedPrice,apps/api/src/modules/engine/runtimeLifecycleMarkPrice.service.test.ts,LUC-2230 exchange-synced runtime price helper relation
+apps/api/src/modules/engine/runtimeExchangeSyncedPositionPrice.ts#selectFreshestRuntimeCandidate,apps/api/src/modules/engine/runtimeLifecycleMarkPrice.service.test.ts,LUC-2230 runtime candidate price helper relation
+apps/api/src/modules/engine/runtimeSignalMarketDataGateway.ts#clearRuntimeSignalMarketDataStore,apps/api/src/modules/engine/runtimeSignalMarketDataGateway.test.ts,LUC-2230 runtime signal market-data store relation
+apps/api/src/modules/engine/runtimeSignalMarketDataGateway.ts#mergeRuntimeSignalCandles,apps/api/src/modules/engine/runtimeSignalMarketDataGateway.test.ts,LUC-2230 runtime signal candle merge relation
+apps/api/src/modules/engine/runtimeSignalMarketDataGateway.ts#parseBookRow,apps/api/src/modules/engine/runtimeSignalMarketDataGateway.test.ts,LUC-2230 runtime order-book parsing relation
+apps/api/src/modules/engine/sharedCandlePatternSeries.ts#detectBearishEngulfing,apps/api/src/modules/engine/sharedCandlePatternSeries.test.ts,LUC-2230 shared candle pattern aggregate relation
+apps/api/src/modules/engine/sharedCandlePatternSeries.ts#detectBullishEngulfing,apps/api/src/modules/engine/sharedCandlePatternSeries.test.ts,LUC-2230 shared candle pattern aggregate relation
+apps/api/src/modules/engine/sharedCandlePatternSeries.ts#detectDoji,apps/api/src/modules/engine/sharedCandlePatternSeries.test.ts,LUC-2230 shared candle pattern aggregate relation
+apps/api/src/modules/engine/sharedCandlePatternSeries.ts#detectEveningStar,apps/api/src/modules/engine/sharedCandlePatternSeries.test.ts,LUC-2230 shared candle pattern aggregate relation
+apps/api/src/modules/engine/sharedCandlePatternSeries.ts#detectHammer,apps/api/src/modules/engine/sharedCandlePatternSeries.test.ts,LUC-2230 shared candle pattern aggregate relation
+apps/api/src/modules/engine/sharedCandlePatternSeries.ts#detectInsideBar,apps/api/src/modules/engine/sharedCandlePatternSeries.test.ts,LUC-2230 shared candle pattern aggregate relation
+apps/api/src/modules/engine/sharedCandlePatternSeries.ts#detectMorningStar,apps/api/src/modules/engine/sharedCandlePatternSeries.test.ts,LUC-2230 shared candle pattern aggregate relation
+apps/api/src/modules/engine/sharedCandlePatternSeries.ts#detectOutsideBar,apps/api/src/modules/engine/sharedCandlePatternSeries.test.ts,LUC-2230 shared candle pattern aggregate relation
+apps/api/src/modules/engine/sharedCandlePatternSeries.ts#detectShootingStar,apps/api/src/modules/engine/sharedCandlePatternSeries.test.ts,LUC-2230 shared candle pattern aggregate relation
+apps/api/src/modules/engine/sharedCandlePatternSeries.ts#isBearish,apps/api/src/modules/engine/sharedCandlePatternSeries.test.ts,LUC-2230 shared candle polarity helper relation
+apps/api/src/modules/engine/sharedCandlePatternSeries.ts#isBullish,apps/api/src/modules/engine/sharedCandlePatternSeries.test.ts,LUC-2230 shared candle polarity helper relation
+apps/api/src/modules/engine/sharedCandlePatternSeries.ts#lowerShadow,apps/api/src/modules/engine/sharedCandlePatternSeries.test.ts,LUC-2230 shared candle shadow helper relation
+apps/api/src/modules/engine/strategyIndicatorRegistry.ts#getStrategyIndicatorRegistry,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2230 strategy indicator registry parity relation
+apps/api/src/modules/engine/strategyIndicatorRegistry.ts#getStrategyIndicatorRegistryEntry,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2230 strategy indicator registry parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensurePattern,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2230 strategy analysis pattern indicator parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureRsi,apps/api/src/modules/engine/strategySignalAnalysis.test.ts,LUC-2230 strategy analysis RSI fallback relation

@@ -9,6 +9,25 @@ repository history.
 
 ## Current Mission
 
+- `LUC-2230-CURRENT-ACTIONABLE-MISSING-TEST-RELATION-BUCKET-CLOSURE-2026-06-05`
+  is verified as a bounded Test Automation architecture-awareness relation
+  repair checkpoint. Wake `issue_assigned` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`);
+  checkout was already claimed by the harness and was not repeated. Added `24`
+  direct scanner-readable `tests` rows for current local API runtime helper
+  buckets in `docs/architecture/relations/priority-test-links.csv`. Targeted
+  readback found `0` missing entity/test paths and `0` duplicate exact pairs;
+  focused API helper proof passed (`6` files / `39` tests);
+  architecture-awareness refresh passed (`14342` entities / `22490`
+  relations, generated `2026-06-05T16:02:05.428Z`) and reduced actionable
+  missing-test rows `859` -> `835`; all `24` [LUC-2230](/LUC/issues/LUC-2230)
+  targets are absent from actionable missing-test samples. Graph generate
+  passed (`651` nodes / `842` relations / `27` chains), and strict graph drift
+  passed (`824/824`, `0` missing). No runtime behavior, browser/protected
+  smoke, deploy, restart, rollback, env/database/account mutation, secret
+  readback, exchange mutation, or live-trading action occurred. Evidence:
+  `history/tasks/luc-2230-close-current-actionable-missing-test-relation-buckets-2026-06-05-task.md`.
+
 - `LUC-2222-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05` is done as
   a bounded Ops read-only production status access checkpoint. Wake
   `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`,
