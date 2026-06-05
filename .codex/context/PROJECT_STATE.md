@@ -1,3 +1,23 @@
+- 2026-06-05 `LUC-2091` Operator Coolify read-only production status access
+  binding is verified and done. Runtime bindings are present for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID` without values
+  printed; `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent but not an
+  active blocker because authenticated read-only Coolify API readback at
+  `2026-06-05T06:05:12Z` confirmed project `Soar`, environment `production`,
+  six applications, PostgreSQL, Redis, zero generic services, and `17` visible
+  global resource rows. Applications report `running:unknown`;
+  PostgreSQL/Redis report `running:healthy`. `pnpm run
+  ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
+  heartbeat to `in_progress`, priority `critical`, zero pending comments, and
+  `fallbackFetchNeeded=false`. No push, deploy, restart, rollback, env edit,
+  database action, team setting change, account action, protected smoke,
+  secret value readback, raw resource id storage, generated DB suffix storage,
+  screenshot, or live-trading action was performed. Evidence:
+  `history/evidence/luc-2091-coolify-read-only-production-status-access-2026-06-05.md`,
+  `history/tasks/luc-2091-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`.
+
 - 2026-06-05 `LUC-2086` source-control closure classified the local dirty state
   for `LUC-2079` through `LUC-2085` as coherent docs/evidence/state work:
   state/control `1`, operations ledger `1`, task/evidence `4`,
@@ -9,6 +29,26 @@
   account setting change, protected smoke, secret disclosure, screenshot, or
   live-trading action occurred. Evidence:
   `history/tasks/luc-2086-source-control-close-local-dirty-state-for-luc-2079-luc-2085-2026-06-05-task.md`.
+
+- 2026-06-05 `LUC-2087` Operator Coolify read-only production status access
+  binding is verified and done. Runtime bindings are present for
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID` without values
+  printed; `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent but not an
+  active blocker because authenticated read-only Coolify API readback at
+  `2026-06-05T05:49:41Z` confirmed project `Soar`, environment `production`,
+  six applications, PostgreSQL, Redis, zero generic services, and `17` visible
+  global resource rows. Applications report `running:unknown`;
+  PostgreSQL/Redis report `running:healthy`. `pnpm run
+  ops:coolify-stack:env-check:test` passed (`8/8`). Wake payload scoped the
+  heartbeat to `in_progress`, priority `critical`, zero pending comments, and
+  `fallbackFetchNeeded=false`. No push, deploy, restart, rollback, env edit,
+  database action, team setting change, account action, protected smoke,
+  secret value readback, raw resource id storage, generated DB suffix storage,
+  screenshot, or live-trading action was performed. Evidence:
+  `history/evidence/luc-2087-coolify-read-only-production-status-access-2026-06-05.md`,
+  `history/tasks/luc-2087-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`.
 
 - 2026-06-05 `LUC-2072` Operator Coolify read-only production status access
   binding is verified and done. Runtime bindings are present for

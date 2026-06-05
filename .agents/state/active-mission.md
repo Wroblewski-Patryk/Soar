@@ -9,6 +9,24 @@ repository history.
 
 ## Current Mission
 
+- `LUC-2091-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05` is done as
+  a bounded Ops read-only production status access checkpoint. Wake
+  `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`,
+  comments `0/0`, latest comment id `unknown`); checkout was already claimed by
+  the harness and was not repeated. Fresh read-only Coolify API readback at
+  `2026-06-05T06:05:12Z` confirmed required binding names are present without
+  value disclosure, configured project `Soar`, production environment
+  `production`, six applications, PostgreSQL, Redis, zero generic services,
+  `17` visible global resource rows, and `8` production-environment resources.
+  `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` remain absent but are not an active
+  blocker while project-scoped reads succeed. `pnpm run
+  ops:coolify-stack:env-check:test` passed (`8/8`). No push, deploy, restart,
+  rollback, env edit, database action, team setting change, account action,
+  protected smoke, secret value readback, raw resource id storage, generated DB
+  suffix storage, screenshot, or live-trading action occurred. Evidence:
+  `history/evidence/luc-2091-coolify-read-only-production-status-access-2026-06-05.md`,
+  `history/tasks/luc-2091-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`.
+
 - `LUC-2086-SOURCE-CONTROL-CLOSURE-2026-06-05` is verified as a bounded
   source-control closure checkpoint for the [LUC-2079](/LUC/issues/LUC-2079)
   through [LUC-2085](/LUC/issues/LUC-2085) local dirty packet. Wake

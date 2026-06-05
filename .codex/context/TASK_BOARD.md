@@ -1,3 +1,27 @@
+## 2026-06-05 LUC-2091 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-2091](/LUC/issues/LUC-2091);
+  - preserved the no push/deploy/restart/rollback/env/database/team/account/protected-smoke/secret-disclosure boundary;
+  - performed read-only Coolify project/environment/resource status access verification with allowlisted metadata only.
+- Evidence:
+  - wake payload -> `in_progress`, priority `critical`, zero pending comments, `fallbackFetchNeeded=false`;
+  - names-only binding readback -> required Coolify names present without values printed;
+  - `GET /api/v1/projects/{configured-project-id}` -> project resolves to `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> six applications, PostgreSQL, Redis, zero generic services;
+  - `GET /api/v1/resources` -> `17` visible rows, not used as release authority;
+  - data-service object-shape readback -> PostgreSQL and Redis report `running:healthy`;
+  - `pnpm run ops:coolify-stack:env-check:test` -> PASS (`8/8`).
+- Disposition:
+  - Coolify read-only production status access remains verified for project/environment/resource reconciliation;
+  - canonical production environment remains eight resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`;
+  - app inventory status remains `running:unknown`; PostgreSQL and Redis report `running:healthy`;
+  - optional team binding names remain absent but are not an active blocker while project-scoped reads succeed.
+- Artifact:
+  - `history/tasks/luc-2091-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`
+  - `history/evidence/luc-2091-coolify-read-only-production-status-access-2026-06-05.md`
+
 ## 2026-06-05 LUC-2086 [Soar][Source Control Closure] Close local dirty state for LUC-2079-LUC-2085
 - Status: done.
 - Scope:
@@ -22,6 +46,30 @@
   - deploy impact none.
 - Artifact:
   - `history/tasks/luc-2086-source-control-close-local-dirty-state-for-luc-2079-luc-2085-2026-06-05-task.md`
+
+## 2026-06-05 LUC-2087 [Operator][Coolify] Bind Coolify read-only production status access
+- Status: done.
+- Scope:
+  - consumed the scoped wake for [LUC-2087](/LUC/issues/LUC-2087);
+  - preserved the no push/deploy/restart/rollback/env/database/team/account/protected-smoke/secret-disclosure boundary;
+  - performed read-only Coolify project/environment/resource status access verification with allowlisted metadata only.
+- Evidence:
+  - wake payload -> `in_progress`, priority `critical`, zero pending comments, `fallbackFetchNeeded=false`;
+  - names-only binding readback -> required Coolify names present without values printed;
+  - `GET /api/v1/projects/{configured-project-id}` -> project resolves to `Soar`;
+  - `GET /api/v1/projects/{configured-project-id}/environments` -> `production` present;
+  - `GET /api/v1/projects/{configured-project-id}/production` -> six applications, PostgreSQL, Redis, zero generic services;
+  - `GET /api/v1/resources` -> `17` visible rows, not used as release authority;
+  - data-service object-shape readback -> PostgreSQL and Redis report `running:healthy`;
+  - `pnpm run ops:coolify-stack:env-check:test` -> PASS (`8/8`).
+- Disposition:
+  - Coolify read-only production status access remains verified for project/environment/resource reconciliation;
+  - canonical production environment remains eight resources: `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`;
+  - app inventory status remains `running:unknown`; PostgreSQL and Redis report `running:healthy`;
+  - optional team binding names remain absent but are not an active blocker while project-scoped reads succeed.
+- Artifact:
+  - `history/tasks/luc-2087-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`
+  - `history/evidence/luc-2087-coolify-read-only-production-status-access-2026-06-05.md`
 
 ## 2026-06-05 LUC-2085 [Operator][Coolify] Bind Coolify read-only production status access
 - Status: done.
