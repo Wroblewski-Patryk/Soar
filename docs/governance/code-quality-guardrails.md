@@ -125,6 +125,12 @@ temporarily allowlisted while queued decomposition tasks remain active:
 - `apps/api/src/modules/bots/botsCommand.service.ts`
 - `apps/api/src/modules/backtests/backtests.service.ts`
 
+2026-06-06 Backend closure: [LUC-2367](/LUC/issues/LUC-2367) decomposed the
+Bot Runtime aggregate read-model files below the `1000`-line production
+threshold and removed them from the staged-decomposition exception set. The
+split preserved the bounded materialization, timeout, fallback, ownership, and
+aggregate projection contracts in helper modules.
+
 ## Forbidden Exceptions
 
 - wildcard allowlists by folder or feature

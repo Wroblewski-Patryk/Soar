@@ -1,9 +1,9 @@
 {
   "generatedAt": "2026-05-24",
   "total": {
-    "total": 828,
-    "covered": 826,
-    "missing": 2
+    "total": 831,
+    "covered": 831,
+    "missing": 0
   },
   "categories": {
     "apiRoutes": {
@@ -13,8 +13,8 @@
       "missingSamples": []
     },
     "apiServices": {
-      "total": 119,
-      "covered": 119,
+      "total": 122,
+      "covered": 122,
       "missing": 0,
       "missingSamples": []
     },
@@ -26,12 +26,9 @@
     },
     "webPages": {
       "total": 39,
-      "covered": 37,
-      "missing": 2,
-      "missingSamples": [
-        "apps/web/src/app/(public)/privacy/page.tsx",
-        "apps/web/src/app/(public)/terms/page.tsx"
-      ]
+      "covered": 39,
+      "missing": 0,
+      "missingSamples": []
     },
     "webComponents": {
       "total": 119,

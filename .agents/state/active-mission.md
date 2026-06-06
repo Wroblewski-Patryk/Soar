@@ -9,6 +9,61 @@ repository history.
 
 ## Current Mission
 
+- `LUC-2374-SOURCE-CLOSURE-DE3DB789-2026-06-06` is verified locally as the CTO
+  source-control closure before any renewed push decision for candidate
+  `de3db789177cd497447343395d335fca6a84444c`. Wake `issue_assigned` was
+  consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`);
+  checkout was already claimed by the harness and was not repeated. Dirty
+  state was classified as Backend runtime aggregate extraction, release
+  guardrail/architecture graph closure, protected proof blocker evidence, and
+  source-of-truth updates. Compile blockers found during closure were fixed in
+  the aggregate projector/fallback extraction and Bot Portfolio date parsing.
+  Validation passed: API typecheck, `quality:guardrails`, and
+  `git diff --check` with LF/CRLF warnings only. Local commit recorded the
+  coherent closure set. No push, deploy, restart, rollback,
+  env/database/account, secret, exchange, protected smoke, or live-trading
+  action occurred. Evidence:
+  `history/tasks/luc-2374-close-dirty-source-state-before-de3db789-push-decision-2026-06-06-task.md`.
+  Next proof: [LUC-2365](/LUC/issues/LUC-2365) can only reconsider push after
+  protected runtime/worker/SLO proof and explicit Ops mutation permit remain
+  satisfied.
+
+- `LUC-2373-RESIDUAL-GUARDRAIL-DRIFT-2026-06-06` is verified locally as the TSA
+  guardrail repair after [LUC-2365](/LUC/issues/LUC-2365) rechecked the
+  candidate `de3db789` push/promotion path and still found residual graph
+  drift. Wake `issue_assigned` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already claimed
+  by the harness and was not repeated. Repair: mapped the active aggregate
+  helper files into existing Bot Runtime graph nodes, regenerated graph
+  outputs, and restored guardrails. Validation passed:
+  `architecture:graph:generate` (`653` nodes / `842` relations / `27` chains),
+  strict graph drift (`831/831`, `0` missing), and `quality:guardrails`.
+  No push, deploy, restart, rollback, env/database/account, secret, exchange,
+  protected smoke, or live-trading action occurred. Evidence:
+  `history/tasks/luc-2373-repair-residual-guardrail-drift-after-luc-2365-recheck-2026-06-06-task.md`.
+  Next proof: source-control closure can rerun with guardrails green; production
+  promotion still requires protected runtime/worker/SLO proof and explicit Ops
+  mutation permit.
+
+- `LUC-2366-PROTECTED-RUNTIME-WORKER-SLO-PROOF-DE3DB789-2026-06-06` is
+  blocked / no-go as the QVE protected proof refresh for candidate
+  `de3db789177cd497447343395d335fca6a84444c`. Wake `issue_assigned` was
+  consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`);
+  checkout was already claimed by the harness and was not repeated. Fresh
+  fail-closed proof: V1 preflight confirmed production Web build-info still
+  exposes `a70d7881b69e605c537af5f81cbeb74dc81e9329`, public API/Web smoke
+  passes, protected input readiness is only `PARTIAL`, runtime freshness
+  returns HTTP `401`, and strict RC evidence leaves Gate 2 `OPEN`. No push,
+  deploy, restart, rollback, env/database/account, secret, exchange, protected
+  payload capture, or live-trading action occurred. Evidence:
+  `history/tasks/luc-2366-refresh-protected-runtime-worker-slo-proof-de3db789-2026-06-06-task.md`,
+  `history/evidence/luc-2366-v1-preflight-de3db789-2026-06-06.md`,
+  `history/evidence/luc-2366-protected-input-readiness-de3db789-2026-06-06.md`.
+  Next proof requires [LUC-2365](/LUC/issues/LUC-2365) deploy freshness for
+  `de3db789` plus [LUC-2372](/LUC/issues/LUC-2372) approved protected
+  runtime/rollback/DB/RC inputs before rerunning runtime freshness, SLO window,
+  RC status, and checklist.
+
 - `LUC-2356-NO-STALL-QUEUE-EXPEDITOR-2026-06-06` completed as a PM
   coordination checkpoint for the current post-aggregate repair critical path.
   Wake `issue_assigned` was consumed from inline payload

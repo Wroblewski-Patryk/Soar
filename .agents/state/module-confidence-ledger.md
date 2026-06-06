@@ -2,6 +2,45 @@
 
 Last updated: 2026-06-06
 
+- 2026-06-06 `LUC-2373-RESIDUAL-GUARDRAIL-DRIFT-2026-06-06` applies to Bot
+  Runtime aggregate, architecture evidence graph, and release guardrail
+  confidence. Residual drift after the [LUC-2365](/LUC/issues/LUC-2365) recheck
+  is repaired locally: the active aggregate helper files are mapped to the
+  existing graph nodes, strict graph
+  drift passes `831/831` with `0` missing, and repository guardrails pass.
+  Status: release guardrail `verified local`; Bot Runtime production promotion
+  remains gated by source-control closure, protected proof, and Ops mutation
+  permit. Evidence:
+  `history/tasks/luc-2373-repair-residual-guardrail-drift-after-luc-2365-recheck-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2372-PROTECTED-RUNTIME-SLO-INPUTS-2026-06-06` applies to Bot
+  Runtime workers, release operations, and protected production proof
+  confidence. Security/Ops confirmed the current heartbeat environment has
+  production UI audit/admin input names but lacks the runtime/SLO-critical
+  protected families required for [LUC-2366](/LUC/issues/LUC-2366):
+  `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_DB_CHECK_*` /
+  `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE*`. Status: `blocked`; protected
+  runtime worker SLO proof for `de3db789` is not approved to run from this
+  environment until the missing families are bound through approved secret
+  handling. Evidence:
+  `history/tasks/luc-2372-bind-protected-runtime-worker-slo-proof-inputs-de3db789-2026-06-06-task.md`,
+  `history/evidence/luc-2372-protected-runtime-slo-input-readiness-de3db789-2026-06-06.md`.
+
+- 2026-06-06 `LUC-2364-RELEASE-GUARDRAILS-2026-06-06` applies to Bot Runtime
+  aggregate maintainability confidence, architecture evidence graph
+  confidence, and release guardrail confidence. The guardrail blocker from
+  [LUC-2361](/LUC/issues/LUC-2361) is repaired locally: public `/privacy` and
+  `/terms` pages are mapped in graph registry/generated nodes, strict graph
+  drift passes `828/828` with `0` missing, and repository guardrails pass.
+  The two Bot Runtime read-model monoliths are not decomposed in this release
+  gate; they are explicit single-file staged-decomposition exceptions:
+  `runtimeMonitoringAggregateRead.service.ts` and
+  `runtimeSessionPositionsRead.service.ts`. Status: release guardrail
+  `verified local`; Bot Runtime behavior unchanged; maintainability follow-up
+  [LUC-2368](/LUC/issues/LUC-2368) remains required to remove the temporary
+  allowlist. Evidence:
+  `history/tasks/luc-2364-repair-release-guardrails-blocking-de3db789-2026-06-06-task.md`.
+
 - 2026-06-06 `LUC-2351-RUNTIME-AGGREGATE-SOURCE-CLOSURE-RERUN-2026-06-06`
   applies to Bot Runtime aggregate and source-control closure confidence.
   Backend re-repaired the exact aggregate e2e after [LUC-2341](/LUC/issues/LUC-2341)
@@ -3484,3 +3523,22 @@ Do not turn uncertainty into optimism.
   Production Web recovery remains pending separate source-control closure/push
   and Ops release mutation proof. Evidence:
   `history/evidence/luc-2304-web-runtime-start-wrapper-fix-2026-06-05.md`.
+
+## 2026-06-06 LUC-2366 Protected Runtime Worker SLO Proof
+
+- `LUC-2366-PROTECTED-RUNTIME-WORKER-SLO-2026-06-06` applies to
+  `SOAR-OPERATIONS-001`, `SOAR-WORKERS-001`, and Bot Runtime protected
+  production confidence.
+- Confidence remains `BLOCKED / NO-GO`: public API/Web smoke is green, but
+  production build-info still serves `a70d7881b69e605c537af5f81cbeb74dc81e9329`
+  instead of candidate `de3db789177cd497447343395d335fca6a84444c`, protected
+  runtime freshness fails closed with HTTP `401`, and strict RC Gate 2 evidence
+  is `OPEN`.
+- Protected input readiness is only `PARTIAL` because `PROD_UI_AUDIT_*` names
+  are present while the runtime/rollback/DB/RC/Gate families required for this
+  proof path are missing.
+- Evidence:
+  `history/tasks/luc-2366-refresh-protected-runtime-worker-slo-proof-de3db789-2026-06-06-task.md`,
+  `history/evidence/luc-2366-v1-preflight-de3db789-2026-06-06.md`,
+  `history/evidence/luc-2366-protected-input-readiness-de3db789-2026-06-06.md`,
+  `history/artifacts/luc-2366-rc-gate-evidence-check-de3db789-2026-06-06.json`.

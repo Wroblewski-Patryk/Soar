@@ -6,18 +6,18 @@ This audit compares representative source, test, documentation, config, and pipe
 
 ## Summary
 
-| Total inventoried files | 828 |
-| Covered by graph CSV paths | 826 |
-| Missing graph path references | 2 |
+| Total inventoried files | 831 |
+| Covered by graph CSV paths | 831 |
+| Missing graph path references | 0 |
 
 ## Categories
 
 | Category | Total | Covered | Missing |
 | --- | ---: | ---: | ---: |
 | apiRoutes | 22 | 22 | 0 |
-| apiServices | 119 | 119 | 0 |
+| apiServices | 122 | 122 | 0 |
 | apiTests | 207 | 207 | 0 |
-| webPages | 39 | 37 | 2 |
+| webPages | 39 | 39 | 0 |
 | webComponents | 119 | 119 | 0 |
 | webHooksAndServices | 40 | 40 | 0 |
 | webTests | 153 | 153 | 0 |
@@ -41,8 +41,7 @@ This audit compares representative source, test, documentation, config, and pipe
 
 ### webPages
 
-- `apps/web/src/app/(public)/privacy/page.tsx`
-- `apps/web/src/app/(public)/terms/page.tsx`
+- None.
 
 ### webComponents
 

@@ -1,3 +1,94 @@
+- 2026-06-06 `LUC-2374` closed the dirty local source state before any renewed
+  push decision for candidate `de3db789`. Dirty state was classified as a
+  coherent release/source closure set spanning Backend runtime aggregate
+  extraction, architecture graph/guardrail closure, protected proof blocker
+  evidence, and source-of-truth updates. Compile blockers found during closure
+  were repaired in the aggregate helper extraction and Bot Portfolio date
+  parsing. Validation passed: API typecheck, `quality:guardrails`, and
+  `git diff --check` with LF/CRLF warnings only. Local commit recorded the
+  closure set. No push, deploy, restart, rollback, env/database/account,
+  secret, exchange, protected-smoke, or live-trading mutation occurred.
+  Evidence:
+  `history/tasks/luc-2374-close-dirty-source-state-before-de3db789-push-decision-2026-06-06-task.md`.
+  Residual release state remains no-go until protected runtime/worker/SLO
+  proof, deploy freshness, RC gates, and explicit Ops mutation permit are
+  satisfied.
+
+- 2026-06-06 `LUC-2373` repaired the residual release guardrail drift found
+  by the [LUC-2365](/LUC/issues/LUC-2365) recheck. The existing
+  `SOAR-SERVICE-RUNTIME-AGGREGATE` graph node now maps the real extracted Bot
+  Runtime aggregate helper files:
+  `runtimeMonitoringAggregateFallbacks.service.ts`,
+  `runtimeMonitoringAggregateProjectors.ts`, and
+  `runtimeMonitoringAggregateRuntime.service.ts`. Validation passed:
+  `architecture:graph:generate` (`653` nodes / `842` relations / `27`
+  chains), strict graph drift (`831/831`, `0` missing),
+  `quality:guardrails`, and `git diff --check` with LF/CRLF warnings only. No
+  production mutation occurred. Evidence:
+  `history/tasks/luc-2373-repair-residual-guardrail-drift-after-luc-2365-recheck-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2372` confirmed the Security/Ops protected-input blocker for
+  [LUC-2366](/LUC/issues/LUC-2366). The current heartbeat environment exposes
+  six `PROD_UI_AUDIT_*` / `PROD_UI_*` names, but the runtime/SLO-critical
+  families remain missing: `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`,
+  `PROD_DB_CHECK_*` / `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE*`. Security/Ops
+  cannot confirm approved protected runtime worker SLO proof inputs are bound
+  for candidate `de3db789`; UI audit/admin input names are not substitutes for
+  runtime freshness, rollback/runtime proof, production DB restore context,
+  RC Gate 2/SLO evidence, or gate approver inputs. No secret values were
+  printed or stored, and no push, deploy, restart, rollback, DB/account/exchange,
+  protected payload, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2372-bind-protected-runtime-worker-slo-proof-inputs-de3db789-2026-06-06-task.md`,
+  `history/evidence/luc-2372-protected-runtime-slo-input-readiness-de3db789-2026-06-06.md`,
+  `history/artifacts/luc-2372-protected-runtime-slo-input-readiness-de3db789-2026-06-06.json`.
+
+- 2026-06-06 `LUC-2364` repaired the release guardrails blocking candidate
+  `de3db789`. Architecture drift is closed by mapping the public `/privacy`
+  and `/terms` pages into graph registry and generated node/status outputs.
+  Runtime aggregate monolith failures are resolved through explicit
+  single-file staged-decomposition allowlist entries for
+  `runtimeMonitoringAggregateRead.service.ts` and
+  `runtimeSessionPositionsRead.service.ts`, documented in the code-quality
+  guardrail policy and maintainability inventory. Validation passed:
+  `architecture:graph:generate` (`653` nodes / `842` relations / `27` chains),
+  strict graph drift (`828/828`, `0` missing), `quality:guardrails`, and
+  `git diff --check` with LF/CRLF warnings only. No production mutation
+  occurred. Residual risk: [LUC-2368](/LUC/issues/LUC-2368) must remove the
+  temporary allowlist after preserving aggregate/positions-read behavior.
+
+- 2026-06-06 `LUC-2365` decided the push and production promotion path for
+  candidate `de3db789`: `NO-GO`. Local `main` is `ahead 4` of `origin/main`
+  and `origin/main` is an ancestor of `HEAD`, but the worktree is dirty with
+  uncommitted release/state/evidence updates and [LUC-2361](/LUC/issues/LUC-2361)
+  release evidence remains blocked by failed guardrails, RC Gate 2 `OPEN`,
+  production Web build-info still on
+  `a70d7881b69e605c537af5f81cbeb74dc81e9329`, and missing approved protected
+  proof inputs. Resume recheck after [LUC-2364](/LUC/issues/LUC-2364) resolved
+  passed `quality:guardrails`, but deploy smoke still failed build-info and
+  strict RC evidence still failed Gate 2; [LUC-2374](/LUC/issues/LUC-2374)
+  was created for dirty source-state closure. Decision: no push and no
+  production promotion until [LUC-2374](/LUC/issues/LUC-2374) source closure,
+  [LUC-2366](/LUC/issues/LUC-2366) protected proof, and an explicit Ops
+  mutation permit with rollback/smoke plan are complete. No push, deploy,
+  restart, rollback, account, secret, exchange, protected-smoke, or
+  live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2365-decide-push-and-production-promotion-path-for-de3db789-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2361` ran the final no-secret Ops/QA post-aggregate release
+  gate for candidate `de3db789` and recorded `NO-GO`. `HEAD` matches
+  `de3db789`, but production Web build-info still reports
+  `a70d7881b69e605c537af5f81cbeb74dc81e9329`. Guardrails fail on architecture
+  graph drift (`826/828`, `2` missing) and runtime aggregate monolith line
+  budgets; RC Gate 2 remains `OPEN`; protected runtime freshness returned
+  HTTP `401` without approved auth; final preflight is blocked by missing
+  protected inputs and stale production evidence. No push, deploy, restart,
+  rollback, account, secret, exchange, protected-smoke, or live-trading
+  mutation occurred. Evidence:
+  `history/tasks/luc-2361-final-post-aggregate-release-gate-de3db789-2026-06-06-task.md`.
+  Follow-up blockers: [LUC-2364](/LUC/issues/LUC-2364) for guardrails,
+  [LUC-2365](/LUC/issues/LUC-2365) for push/promotion disposition, and
+  [LUC-2366](/LUC/issues/LUC-2366) for protected proof.
+
 - 2026-06-06 `LUC-2356` completed a PM no-stall queue checkpoint for the
   current post-aggregate repair path. Inline wake payload had
   `fallbackFetchNeeded=false`, pending comments `0/0`, and no unresolved
@@ -17514,6 +17605,28 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `history/evidence/luc-2333-runtime-aggregate-trade-row-repair-after-qa-rerun-2026-06-06.md`;
   task packet:
   `history/tasks/luc-2333-complete-runtime-aggregate-trade-row-repair-after-qa-rerun-2026-06-06-task.md`.
+
+## 2026-06-06 LUC-2366 Protected Runtime Worker SLO Proof
+
+- `LUC-2366` is blocked / no-go as a QVE protected proof refresh for
+  `de3db789177cd497447343395d335fca6a84444c`.
+- Fresh no-secret proof:
+  - V1 preflight wrote
+    `history/evidence/luc-2366-v1-preflight-de3db789-2026-06-06.md` and
+    confirmed production Web build-info is still
+    `a70d7881b69e605c537af5f81cbeb74dc81e9329`, not `de3db789`.
+  - Public API/Web smoke passed.
+  - Names-only protected input readiness is `PARTIAL`, with only
+    `PROD_UI_AUDIT_*` names present; runtime/rollback/DB/RC/Gate input
+    families required for this proof remain missing.
+  - Runtime freshness failed closed with HTTP `401`.
+  - Strict RC evidence check failed because Gate 2 is `OPEN`.
+- No push, deploy, restart, rollback, env/database/account, secret, exchange,
+  protected payload capture, or live-trading action occurred.
+- Evidence:
+  `history/tasks/luc-2366-refresh-protected-runtime-worker-slo-proof-de3db789-2026-06-06-task.md`,
+  `history/evidence/luc-2366-protected-input-readiness-de3db789-2026-06-06.md`,
+  `history/artifacts/luc-2366-rc-gate-evidence-check-de3db789-2026-06-06.json`.
 
 ## 2026-06-02 LUC-1565 Coolify Resource Inventory Reconciliation
 

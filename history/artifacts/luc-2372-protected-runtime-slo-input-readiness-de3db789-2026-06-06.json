@@ -1,0 +1,103 @@
+{
+  "id": "LUC-2372-PROTECTED-RUNTIME-SLO-INPUT-READINESS-DE3DB789-2026-06-06",
+  "issue": "LUC-2372",
+  "date": "2026-06-06",
+  "status": "BLOCKED",
+  "releaseStatus": "NO-GO",
+  "scope": "current Paperclip heartbeat environment names only",
+  "secretHandling": "no secret values printed, copied, or stored",
+  "target": {
+    "gitSha": "de3db789177cd497447343395d335fca6a84444c",
+    "gitRef": "HEAD"
+  },
+  "approvedForProtectedRuntimeWorkerSloProof": false,
+  "matchingProtectedInputNamesPresent": 6,
+  "families": [
+    {
+      "family": "LIVEIMPORT_READBACK_*",
+      "state": "missing",
+      "matchingNamesPresent": 0,
+      "matchingNames": [],
+      "purpose": "Protected LIVEIMPORT-03 production runtime readback"
+    },
+    {
+      "family": "ROLLBACK_GUARD_*",
+      "state": "missing",
+      "matchingNamesPresent": 0,
+      "matchingNames": [],
+      "purpose": "Protected production rollback/runtime freshness proof"
+    },
+    {
+      "family": "PROD_UI_AUDIT_*",
+      "state": "present",
+      "matchingNamesPresent": 6,
+      "matchingNames": [
+        "PROD_UI_AUDIT_ADMIN_EMAIL",
+        "PROD_UI_AUDIT_ADMIN_PASSWORD",
+        "PROD_UI_AUDIT_ADMIN_TOKEN",
+        "PROD_UI_AUDIT_API_BASE_URL",
+        "PROD_UI_AUDIT_AUTH_TOKEN",
+        "PROD_UI_AUDIT_WEB_BASE_URL"
+      ],
+      "purpose": "Authenticated production dashboard/admin UI clickthrough"
+    },
+    {
+      "family": "PROD_UI_*",
+      "state": "present",
+      "matchingNamesPresent": 6,
+      "matchingNames": [
+        "PROD_UI_AUDIT_ADMIN_EMAIL",
+        "PROD_UI_AUDIT_ADMIN_PASSWORD",
+        "PROD_UI_AUDIT_ADMIN_TOKEN",
+        "PROD_UI_AUDIT_API_BASE_URL",
+        "PROD_UI_AUDIT_AUTH_TOKEN",
+        "PROD_UI_AUDIT_WEB_BASE_URL"
+      ],
+      "purpose": "Legacy production UI audit input family"
+    },
+    {
+      "family": "SOAR_PROD_*",
+      "state": "missing",
+      "matchingNamesPresent": 0,
+      "matchingNames": [],
+      "purpose": "Production app/operator context"
+    },
+    {
+      "family": "PROD_DB_CHECK_*",
+      "state": "missing",
+      "matchingNamesPresent": 0,
+      "matchingNames": [],
+      "purpose": "Production DB restore context"
+    },
+    {
+      "family": "PRODUCTION_DB_CHECK_*",
+      "state": "missing",
+      "matchingNamesPresent": 0,
+      "matchingNames": [],
+      "purpose": "Alternate production DB restore context"
+    },
+    {
+      "family": "RC_*",
+      "state": "missing",
+      "matchingNamesPresent": 0,
+      "matchingNames": [],
+      "purpose": "Release-candidate gate context"
+    },
+    {
+      "family": "GATE* / GATE_*",
+      "state": "missing",
+      "matchingNamesPresent": 0,
+      "matchingNames": [],
+      "purpose": "Gate approver context"
+    }
+  ],
+  "blockingFamilies": [
+    "LIVEIMPORT_READBACK_*",
+    "ROLLBACK_GUARD_*",
+    "PROD_DB_CHECK_* or PRODUCTION_DB_CHECK_*",
+    "RC_*",
+    "GATE* / GATE_*"
+  ],
+  "unblockOwner": "Security/Ops secret owner with approved transient read-only production proof authority",
+  "nextAction": "Bind approved read-only production runtime, rollback, DB restore, RC, and gate approver inputs in Paperclip secrets or approved encrypted runtime injection, then wake QA/Ops to rerun LUC-2366 protected proof."
+}

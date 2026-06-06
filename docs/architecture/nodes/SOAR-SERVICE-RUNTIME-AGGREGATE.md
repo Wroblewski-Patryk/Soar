@@ -8,7 +8,7 @@ module: api-bots
 feature: bot-runtime
 risk_level: critical
 completion_percent: 90
-last_verified_at: 2026-05-24
+last_verified_at: 2026-06-06
 verification_status: verified_local
 tags: [soar-map, service, backend, verified_local]
 ---
@@ -19,7 +19,7 @@ tags: [soar-map, service, backend, verified_local]
 | --- | --- |
 | Description | Aggregate runtime monitoring service combining sessions symbol stats positions trades and market truth state. |
 | File path | apps/api/src/modules/bots/runtimeMonitoringAggregateRead.service.ts |
-| Related files |  |
+| Related files | apps/api/src/modules/bots/runtimeMonitoringAggregateFallbacks.service.ts, apps/api/src/modules/bots/runtimeMonitoringAggregateProjectors.ts, apps/api/src/modules/bots/runtimeMonitoringAggregateRuntime.service.ts |
 | Parent | [[SOAR-FEATURE-BOT-RUNTIME]] |
 | Children |  |
 | Depends on | [[SOAR-SERVICE-RUNTIME-SESSIONS]], [[SOAR-SERVICE-RUNTIME-POSITIONS-READ]], [[SOAR-SERVICE-RUNTIME-SYMBOL-STATS]], [[SOAR-SERVICE-RUNTIME-TRADES]] |
@@ -30,7 +30,7 @@ tags: [soar-map, service, backend, verified_local]
 | Tests related | [[SOAR-TEST-BOT-RUNTIME-API]] |
 | Docs related | [[SOAR-DOC-API-BOTS]] |
 | Agent related |  |
-| Notes | Primary runtime read-model aggregator. |
+| Notes | Primary runtime read-model aggregator; fallback runtime and projector helpers are extracted aggregate helpers. |
 
 ## Relations
 

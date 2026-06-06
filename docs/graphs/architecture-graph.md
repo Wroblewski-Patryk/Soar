@@ -2,7 +2,7 @@
 
 Generated from CSV source-of-truth registries.
 
-- Nodes: 651
+- Nodes: 653
 - Relations: 842
 - Function chains: 27
 
