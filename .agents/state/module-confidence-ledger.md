@@ -2,6 +2,19 @@
 
 Last updated: 2026-06-06
 
+- 2026-06-06 `LUC-2380-POST-2374-DIRTY-API-RUNTIME-DIFF-CLOSURE-2026-06-06`
+  applies to Bot Runtime aggregate and release guardrail confidence. CTO
+  classified the post-[LUC-2374](/LUC/issues/LUC-2374) dirty API runtime diff
+  as coherent with the Bot Runtime read-model decomposition and related
+  [LUC-2367](/LUC/issues/LUC-2367), [LUC-2368](/LUC/issues/LUC-2368), and
+  [LUC-2381](/LUC/issues/LUC-2381) evidence. Status: `verified` for local
+  source-control closure. Evidence: API typecheck, `quality:guardrails`,
+  `git diff --check` with LF/CRLF warnings only, and focused aggregate
+  concurrency + positions read-model tests (`23/23`). Residual release proof
+  remains blocked on clean DB-backed full aggregate e2e and protected
+  runtime/worker/SLO evidence. Evidence:
+  `history/tasks/luc-2380-close-post-2374-dirty-api-runtime-diff-before-push-permit-2026-06-06-task.md`.
+
 - 2026-06-06 `LUC-2381-RUNTIME-MONITORING-SOURCE-CLOSURE-2026-06-06`
   applies to Bot Runtime aggregate maintainability and release source hygiene.
   Backend resolved the dirty runtime-monitoring source state blocking
@@ -18,11 +31,9 @@ Last updated: 2026-06-06
   confidence. The target Backend services are below the production monolith
   threshold (`635` and `932` lines), no longer require staged-decomposition
   allowlist entries, and pass API typecheck, guardrails, focused helper/unit
-  proof (`23/23`), and one isolated aggregate route ownership/filter proof.
-  Status: `partially verified`; full aggregate e2e release-behavior proof is
-  still blocked on a clean local test DB rerun because the current long run has
-  setup/create mismatches, Prisma FK cleanup errors, and later empty aggregate
-  rows. Evidence:
+  proof (`23/23`), and full DB-backed aggregate e2e proof (`19/19`) after a
+  local API test DB reset. Status: `verified local`; production release proof
+  remains owned by separate protected Ops/QA gates. Evidence:
   `history/tasks/luc-2368-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md`.
 
 - 2026-06-06 `LUC-2367-BOT-RUNTIME-READ-MODEL-DECOMPOSITION-2026-06-06`

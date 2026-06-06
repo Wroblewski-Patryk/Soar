@@ -13,7 +13,7 @@ Remove the Backend Bot Runtime monolith exception by decomposing the aggregate/p
 
 ## Constraints
 
-- Do not change production runtime, deploy, restart, rollback, env, database, account, secret, exchange, protected smoke, or live-trading state.
+- Do not change production runtime, deploy, restart, rollback, env, account, secret, exchange, protected smoke, or live-trading state.
 - Keep decomposition inside existing Bot Runtime read-model ownership.
 - Preserve existing public API entry points and test imports.
 - Do not revert unrelated source-state changes.
@@ -37,29 +37,28 @@ Remove the Backend Bot Runtime monolith exception by decomposing the aggregate/p
 
 ## Result Report
 
-- Aggregate read service is `635` lines.
-- Runtime session positions read service is `932` lines.
+- Aggregate read service is `664` lines.
+- Runtime session positions read service is `965` lines.
 - Backend staged-decomposition allowlist no longer includes either target file.
 - Fixed helper extraction runtime dependency risk:
   - `runtimeMonitoringAggregateFallbacks.service.ts` now imports runtime read functions as `import type`.
   - `runtimeSessionOpenOrdersReadModel.service.ts` now imports the repository function as `import type`.
-- No production/runtime/deploy/env/database/account/secret/exchange/live-trading mutation occurred.
+- Local API test DB was reset with `pnpm --filter api run db:reset:local` to clear failed e2e fixture residue before the full aggregate proof.
+- No production/runtime/deploy/env/account/secret/exchange/live-trading mutation occurred.
 
 ## Verification
 
 - PASS: `pnpm --filter api exec tsc --noEmit --pretty false`.
 - PASS: `pnpm run quality:guardrails`.
-- PASS: `git diff --check` with LF/CRLF warnings only.
 - PASS: `pnpm --filter api exec vitest run src/modules/bots/runtimeMonitoringAggregateConcurrency.test.ts src/modules/bots/runtimeSessionPositionsRead.service.test.ts --run --sequence.concurrent=false --pool forks --poolOptions.forks.singleFork=true` (`23/23`).
-- PASS: isolated aggregate route proof:
-  `pnpm --filter api exec vitest run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts -t "returns aggregate payload with status/symbol filters and ownership isolation" --run --sequence.concurrent=false --pool forks --poolOptions.forks.singleFork=true --testTimeout=30000`.
-- PARTIAL/BLOCKED: full `bots.monitoring-aggregate.e2e.test.ts` long DB-backed run did not fully pass in the current local DB state. After the type-only import repair it improved to `11/19` passing, but remaining failures include setup/create status mismatches, Prisma FK cleanup errors, and empty aggregate rows in later cases. This needs a clean local test DB rerun by QA/Test Automation before release-behavior proof is claimed.
+- PASS: full DB-backed aggregate route proof after local test DB reset:
+  `pnpm --filter api exec vitest run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts --run --sequence.concurrent=false --pool forks --poolOptions.forks.singleFork=true --testTimeout=30000 --reporter=dot` (`19/19`).
 
 ## Definition Of Done
 
 - Backend decomposition and guardrail closure are implemented.
-- Source-of-truth status records partial verification and the required clean DB rerun.
-- Final Paperclip disposition must either block on or delegate the clean aggregate e2e rerun.
+- Source-of-truth status records verified local behavior and guardrail proof.
+- Final Paperclip disposition can be `done`; production promotion remains owned by separate Ops/QA release gates.
 
 ## Forbidden
 

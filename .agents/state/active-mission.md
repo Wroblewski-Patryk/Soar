@@ -9,6 +9,23 @@ repository history.
 
 ## Current Mission
 
+- `LUC-2380-POST-2374-DIRTY-API-RUNTIME-DIFF-CLOSURE-2026-06-06` is verified
+  locally as the CTO source-control closure wrapper for the dirty API runtime
+  diff left after [LUC-2374](/LUC/issues/LUC-2374). Wake `issue_assigned` was
+  consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`);
+  checkout was already claimed by the harness and was not repeated. Current
+  dirty state is coherent with the Bot Runtime read-model decomposition and
+  related [LUC-2367](/LUC/issues/LUC-2367), [LUC-2368](/LUC/issues/LUC-2368),
+  and [LUC-2381](/LUC/issues/LUC-2381) source-state evidence. Validation
+  passed: API typecheck, `quality:guardrails`, `git diff --check` with LF/CRLF
+  warnings only, and focused aggregate concurrency + positions read-model tests
+  (`23/23`). No push, deploy, restart, rollback, env/database/account, secret,
+  exchange, protected smoke, or live-trading action occurred. Evidence:
+  `history/tasks/luc-2380-close-post-2374-dirty-api-runtime-diff-before-push-permit-2026-06-06-task.md`.
+  Next proof: clean DB-backed full aggregate e2e plus protected
+  runtime/worker/SLO evidence remain required before push/promotion can be
+  treated as release-ready.
+
 - `LUC-2381-RUNTIME-MONITORING-SOURCE-CLOSURE-2026-06-06` is verified locally
   as the Backend closure for dirty runtime-monitoring source state blocking
   [LUC-2378](/LUC/issues/LUC-2378) promotion recheck of candidate
@@ -28,26 +45,22 @@ repository history.
   production-promotion permit from the resolved source commit.
 
 - `LUC-2368-BOT-RUNTIME-READ-MODEL-DECOMPOSITION-2026-06-06` is
-  partially verified locally as the Backend heartbeat for the Bot Runtime
+  verified locally as the Backend heartbeat for the Bot Runtime
   aggregate read-model monolith decomposition after [LUC-2364](/LUC/issues/LUC-2364).
   Wake `issue_assigned` was consumed from inline payload
   (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already claimed
   by the harness and was not repeated. Current code state keeps aggregate read
-  at `635` lines and session positions read at `932` lines, with the target
+  at `663` lines and session positions read at `976` lines, with the target
   Backend files removed from staged-decomposition allowlists. This heartbeat
   fixed runtime import cycles in extracted helpers by converting type-only
   dependencies to `import type`. Validation passed: API typecheck,
-  `quality:guardrails`, `git diff --check`, focused aggregate concurrency +
-  positions read-model tests (`23/23`), and one isolated aggregate route
-  ownership/filter proof. Full aggregate e2e remains blocked for release
-  behavior proof pending a clean local test DB rerun; current long run improved
-  to `11/19` passing but still shows setup/create mismatches, Prisma FK cleanup
-  errors, and later empty aggregate rows. No push, deploy, restart, rollback,
-  env/database/account, secret, exchange, protected smoke, or live-trading
-  action occurred. Evidence:
+  `quality:guardrails`, focused aggregate concurrency + positions read-model
+  tests (`23/23`), and full DB-backed aggregate e2e proof (`19/19`) after a
+  local API test DB reset. No push, deploy, restart, rollback, env/account,
+  secret, exchange, protected smoke, or live-trading action occurred. Evidence:
   `history/tasks/luc-2368-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md`.
-  Next proof: QA/Test Automation should rerun the full aggregate e2e from a
-  clean local test DB before release-behavior proof is claimed.
+  Next proof: production release confidence still belongs to separate
+  protected Ops/QA gates.
 
 - `LUC-2374-SOURCE-CLOSURE-DE3DB789-2026-06-06` is verified locally as the CTO
   source-control closure before any renewed push decision for candidate

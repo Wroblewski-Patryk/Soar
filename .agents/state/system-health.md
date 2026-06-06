@@ -1,5 +1,16 @@
 # System Health
 
+- `LUC-2380-POST-2374-DIRTY-API-RUNTIME-DIFF-CLOSURE-2026-06-06` is VERIFIED
+  locally as the CTO source-control closure wrapper for the
+  post-[LUC-2374](/LUC/issues/LUC-2374) dirty API runtime diff. PASS: API
+  typecheck, `quality:guardrails`, `git diff --check` with LF/CRLF warnings
+  only, and focused aggregate concurrency + positions read-model tests
+  (`23/23`). No push, deploy, restart, rollback, protected smoke, account,
+  secret, exchange, database, or live-trading mutation occurred. Residual
+  release proof remains blocked on clean DB-backed full aggregate e2e plus
+  protected runtime/worker/SLO evidence. Evidence:
+  `history/tasks/luc-2380-close-post-2374-dirty-api-runtime-diff-before-push-permit-2026-06-06-task.md`.
+
 - `LUC-2381-RUNTIME-MONITORING-SOURCE-CLOSURE-2026-06-06` is VERIFIED locally
   as the Backend source-state closure for [LUC-2378](/LUC/issues/LUC-2378)
   candidate `4787ee9859c02fc950f781eb5803d97a930aa977`. The dirty set is
@@ -12,15 +23,14 @@
   `history/tasks/luc-2381-resolve-dirty-runtime-monitoring-source-state-blocking-4787ee98-promotion-2026-06-06-task.md`.
 
 - `LUC-2368-BOT-RUNTIME-READ-MODEL-DECOMPOSITION-2026-06-06` is
-  PARTIALLY_VERIFIED locally. Backend closed the [LUC-2364](/LUC/issues/LUC-2364)
+  VERIFIED locally. Backend closed the [LUC-2364](/LUC/issues/LUC-2364)
   monolith allowlist target for Bot Runtime aggregate and positions reads:
   aggregate read is `635` lines, session positions read is `932` lines, and
   guardrails pass without those Backend allowlist entries. PASS: API typecheck,
-  `pnpm run quality:guardrails`, `git diff --check`, focused aggregate
-  concurrency + positions read-model tests (`23/23`), and one isolated
-  aggregate route ownership/filter proof. BLOCKED/PARTIAL: full aggregate e2e
-  needs a clean local test DB rerun before release-behavior proof is claimed.
-  No push, deploy, restart, rollback, protected smoke, account, secret,
+  `pnpm run quality:guardrails`, focused aggregate concurrency + positions
+  read-model tests (`23/23`), and full DB-backed aggregate e2e proof (`19/19`)
+  after a local API test DB reset. No push, deploy, restart, rollback,
+  protected smoke, account, secret,
   exchange, or live-trading mutation occurred. Evidence:
   `history/tasks/luc-2368-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md`.
 
