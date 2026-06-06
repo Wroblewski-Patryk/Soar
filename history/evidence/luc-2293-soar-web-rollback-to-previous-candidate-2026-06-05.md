@@ -100,4 +100,3 @@ The next action must be a separate CTO/Ops decision between:
 3. another explicit source or image permit.
 
 This issue must not chain another production mutation.
-

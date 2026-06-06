@@ -61,4 +61,3 @@ Result: failed closed.
 - Residual risk: production Web remains `503`; rollback is still blocked until
   a previous stable deployment/image or source ref is selected from approved
   redacted log/history evidence under [LUC-2289](/LUC/issues/LUC-2289).
-

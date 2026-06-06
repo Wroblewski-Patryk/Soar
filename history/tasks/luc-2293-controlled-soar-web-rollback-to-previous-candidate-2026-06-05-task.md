@@ -76,4 +76,3 @@ Result: failed closed.
   executed; production Web remains unhealthy.
 - Residual risk: public Web remains `503`; next mutation requires a new
   CTO/Ops decision and a separate permit.
-

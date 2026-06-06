@@ -80,4 +80,3 @@ Next owner/action:
   and choose the next recovery action under a separate permit.
 - Rollback remains unauthorized until the previous stable deployment/image or
   source ref is identified from approved evidence.
-
