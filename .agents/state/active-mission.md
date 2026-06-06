@@ -9,6 +9,22 @@ repository history.
 
 ## Current Mission
 
+- `LUC-2367-BOT-RUNTIME-READ-MODEL-DECOMPOSITION-2026-06-06` is verified
+  locally after the blocker-resolved wake. Wake `issue_blockers_resolved` was
+  consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`);
+  checkout was already claimed by the harness and was not repeated. The Bot
+  Runtime aggregate read-model files remain below the production monolith
+  threshold (`664` and `965` lines), the staged-decomposition allowlist entries
+  are gone, and validation passed: API typecheck, `quality:guardrails`, focused
+  aggregate concurrency + positions read-model tests (`23/23`), and full
+  DB-backed aggregate e2e proof (`19/19`) after a local API test DB reset. No
+  push, deploy, restart, rollback, env/account, secret, exchange, protected
+  smoke, or live-trading action occurred.
+  Evidence:
+  `history/tasks/luc-2367-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md`.
+  Next proof: production release confidence remains owned by separate
+  protected Ops/QA gates.
+
 - `LUC-2380-POST-2374-DIRTY-API-RUNTIME-DIFF-CLOSURE-2026-06-06` is verified
   locally as the CTO source-control closure wrapper for the dirty API runtime
   diff left after [LUC-2374](/LUC/issues/LUC-2374). Wake `issue_assigned` was

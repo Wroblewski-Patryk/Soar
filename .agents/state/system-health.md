@@ -25,7 +25,7 @@
 - `LUC-2368-BOT-RUNTIME-READ-MODEL-DECOMPOSITION-2026-06-06` is
   VERIFIED locally. Backend closed the [LUC-2364](/LUC/issues/LUC-2364)
   monolith allowlist target for Bot Runtime aggregate and positions reads:
-  aggregate read is `635` lines, session positions read is `932` lines, and
+  aggregate read is `664` lines, session positions read is `965` lines, and
   guardrails pass without those Backend allowlist entries. PASS: API typecheck,
   `pnpm run quality:guardrails`, focused aggregate concurrency + positions
   read-model tests (`23/23`), and full DB-backed aggregate e2e proof (`19/19`)

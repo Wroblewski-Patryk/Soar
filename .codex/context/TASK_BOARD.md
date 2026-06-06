@@ -49,8 +49,8 @@
   - Scope: Backend follow-up to remove the temporary [LUC-2364](/LUC/issues/LUC-2364)
     monolith allowlist for Bot Runtime aggregate and session positions reads.
   - Code result:
-    - `runtimeMonitoringAggregateRead.service.ts` is `635` lines.
-    - `runtimeSessionPositionsRead.service.ts` is `932` lines.
+    - `runtimeMonitoringAggregateRead.service.ts` is `664` lines.
+    - `runtimeSessionPositionsRead.service.ts` is `965` lines.
     - target Backend files are no longer in `STAGED_DECOMPOSITION_ALLOWLIST`.
     - type-only imports removed runtime cycles in aggregate fallback and
       session open-order helper modules.
