@@ -11,9 +11,10 @@
     - local commit recorded the coherent closure set.
   - No mutation: no push, deploy, restart, rollback, env/account, secret,
     exchange, protected-smoke, or live-trading action.
+  - Paperclip readback:
+    - [LUC-2380](/LUC/issues/LUC-2380) and [LUC-2393](/LUC/issues/LUC-2393)
+      now read back as `done`.
   - Next owner/action:
-    - [LUC-2393](/LUC/issues/LUC-2393) must reconcile stale
-      [LUC-2380](/LUC/issues/LUC-2380) Paperclip blocked state;
     - [LUC-2378](/LUC/issues/LUC-2378) owns the next CTO/Ops push and
       production-promotion path recheck after source/control blockers are
       closed.
@@ -44,7 +45,8 @@
       still `blocked` with no first-class blockers while repo evidence records
       it as verified local; direct PM comment on [LUC-2380](/LUC/issues/LUC-2380)
       was rejected by least-privilege, so [LUC-2393](/LUC/issues/LUC-2393) was
-      created and assigned to CTO to reconcile the status.
+      created and assigned to CTO to reconcile the status; it later read back
+      as `done`.
   - No mutation: no code/runtime/deploy/push/restart/rollback/env/account,
     secret, exchange, protected-smoke, or live-trading action.
   - Artifact:

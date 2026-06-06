@@ -6,9 +6,10 @@
   changed. Validation: `git diff --check` passed with LF/CRLF warnings only;
   local commit recorded the closure set. No push, deploy, restart, rollback,
   env/account, secret, exchange, protected-smoke, or live-trading mutation
-  occurred. Next proof remains [LUC-2378](/LUC/issues/LUC-2378) CTO/Ops
-  recheck after [LUC-2393](/LUC/issues/LUC-2393) reconciles stale
-  [LUC-2380](/LUC/issues/LUC-2380) Paperclip blocked state.
+  occurred. Paperclip final readback showed [LUC-2380](/LUC/issues/LUC-2380)
+  and [LUC-2393](/LUC/issues/LUC-2393) are now `done`; next proof remains
+  [LUC-2378](/LUC/issues/LUC-2378) CTO/Ops recheck, still fail-closed on
+  protected proof gates.
   Evidence:
   `history/tasks/luc-2394-close-luc-2390-pm-coordination-dirty-state-before-push-permit-2026-06-06-task.md`.
 
@@ -26,7 +27,7 @@
   Paperclip readback after closure showed [LUC-2380](/LUC/issues/LUC-2380)
   still `blocked` without first-class blockers despite local verified
   evidence, so bounded CTO reconciliation follow-up
-  [LUC-2393](/LUC/issues/LUC-2393) was created.
+  [LUC-2393](/LUC/issues/LUC-2393) was created and later read back as `done`.
   Evidence:
   `history/tasks/luc-2390-no-stall-queue-expeditor-2026-06-06-task.md`. No
   code/runtime/deploy/push/restart/rollback/env/account/secret/exchange/

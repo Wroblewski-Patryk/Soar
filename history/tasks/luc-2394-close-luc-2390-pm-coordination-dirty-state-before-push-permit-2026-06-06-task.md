@@ -159,5 +159,5 @@ No mutation:
 Residual risk:
 
 - This closes only PM coordination dirty state. It does not approve release or production promotion.
-- [LUC-2393](/LUC/issues/LUC-2393) still owns reconciliation of the stale [LUC-2380](/LUC/issues/LUC-2380) Paperclip blocked state.
+- Paperclip final readback showed [LUC-2380](/LUC/issues/LUC-2380) and [LUC-2393](/LUC/issues/LUC-2393) are now `done`; do not reopen that stale blocked-state lane.
 - [LUC-2378](/LUC/issues/LUC-2378) still owns the next push/promotion path recheck and must remain fail-closed until the protected proof gates are satisfied.
