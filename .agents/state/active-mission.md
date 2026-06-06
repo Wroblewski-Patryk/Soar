@@ -9,6 +9,42 @@ repository history.
 
 ## Current Mission
 
+- `LUC-2394-PM-COORDINATION-SOURCE-CLOSURE-2026-06-06` is verified locally as
+  the CTO source-control closure for PM coordination dirty state left by
+  [LUC-2390](/LUC/issues/LUC-2390). Dirty state was classified as
+  source-of-truth/task evidence only: active mission, next steps, project
+  state, task board, the [LUC-2390](/LUC/issues/LUC-2390) task artifact, and
+  the [LUC-2394](/LUC/issues/LUC-2394) closure artifact. No product/runtime
+  code changed. Validation: `git diff --check` passed with LF/CRLF warnings
+  only; local commit recorded the closure set. No push, deploy, restart,
+  rollback, env/account, secret, exchange, protected-smoke, or live-trading
+  action occurred. Next proof remains [LUC-2378](/LUC/issues/LUC-2378)
+  CTO/Ops recheck after [LUC-2393](/LUC/issues/LUC-2393) reconciles the stale
+  [LUC-2380](/LUC/issues/LUC-2380) Paperclip blocked state.
+  Evidence:
+  `history/tasks/luc-2394-close-luc-2390-pm-coordination-dirty-state-before-push-permit-2026-06-06-task.md`.
+
+- `LUC-2390-NO-STALL-QUEUE-EXPEDITOR-2026-06-06` completed as a PM
+  coordination checkpoint for the post-source-closure critical path. Wake
+  `issue_assigned` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already claimed
+  by the harness and was not repeated. No duplicate Backend repair lane is
+  needed after [LUC-2380](/LUC/issues/LUC-2380) and
+  [LUC-2381](/LUC/issues/LUC-2381) verified local source closure. Next
+  executable owner/action is [LUC-2378](/LUC/issues/LUC-2378) CTO/Ops recheck
+  of the push and production-promotion path for candidate
+  `4787ee9859c02fc950f781eb5803d97a930aa977`. Protected release confidence
+  remains fail-closed through [LUC-2365](/LUC/issues/LUC-2365),
+  [LUC-2372](/LUC/issues/LUC-2372), and [LUC-2366](/LUC/issues/LUC-2366).
+  Paperclip issue read attempts timed out locally, so scoped wake payload plus
+  local source-of-truth files were used. After closure, Paperclip readback
+  showed [LUC-2380](/LUC/issues/LUC-2380) still `blocked` without first-class
+  blockers; direct comment was rejected by least-privilege, so bounded CTO
+  reconciliation follow-up [LUC-2393](/LUC/issues/LUC-2393) was created. No
+  code/runtime/deploy/push/restart/rollback/env/account/secret/exchange/
+  protected-smoke/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2390-no-stall-queue-expeditor-2026-06-06-task.md`.
+
 - `LUC-2367-BOT-RUNTIME-READ-MODEL-DECOMPOSITION-2026-06-06` is verified
   locally after the blocker-resolved wake. Wake `issue_blockers_resolved` was
   consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`);

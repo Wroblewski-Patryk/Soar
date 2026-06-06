@@ -1,3 +1,37 @@
+- 2026-06-06 `LUC-2394` closed the [LUC-2390](/LUC/issues/LUC-2390) PM
+  coordination dirty state before any push-permit recheck. Dirty state was
+  source-of-truth/task evidence only: active mission, next steps, project
+  state, task board, [LUC-2390](/LUC/issues/LUC-2390) task artifact, and
+  [LUC-2394](/LUC/issues/LUC-2394) closure artifact. No product/runtime code
+  changed. Validation: `git diff --check` passed with LF/CRLF warnings only;
+  local commit recorded the closure set. No push, deploy, restart, rollback,
+  env/account, secret, exchange, protected-smoke, or live-trading mutation
+  occurred. Next proof remains [LUC-2378](/LUC/issues/LUC-2378) CTO/Ops
+  recheck after [LUC-2393](/LUC/issues/LUC-2393) reconciles stale
+  [LUC-2380](/LUC/issues/LUC-2380) Paperclip blocked state.
+  Evidence:
+  `history/tasks/luc-2394-close-luc-2390-pm-coordination-dirty-state-before-push-permit-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2390` completed the PM no-stall queue-expeditor checkpoint
+  for the current post-source-closure critical path. The scoped wake had no
+  new comments (`fallbackFetchNeeded=false`, `0/0`) and checkout was already
+  claimed by the harness. Routing result: do not open duplicate Backend repair
+  after [LUC-2380](/LUC/issues/LUC-2380) and
+  [LUC-2381](/LUC/issues/LUC-2381); next executable owner/action is
+  [LUC-2378](/LUC/issues/LUC-2378) CTO/Ops recheck of the push and
+  production-promotion path for candidate
+  `4787ee9859c02fc950f781eb5803d97a930aa977`; protected release confidence
+  remains fail-closed through [LUC-2365](/LUC/issues/LUC-2365),
+  [LUC-2372](/LUC/issues/LUC-2372), and [LUC-2366](/LUC/issues/LUC-2366).
+  Paperclip readback after closure showed [LUC-2380](/LUC/issues/LUC-2380)
+  still `blocked` without first-class blockers despite local verified
+  evidence, so bounded CTO reconciliation follow-up
+  [LUC-2393](/LUC/issues/LUC-2393) was created.
+  Evidence:
+  `history/tasks/luc-2390-no-stall-queue-expeditor-2026-06-06-task.md`. No
+  code/runtime/deploy/push/restart/rollback/env/account/secret/exchange/
+  protected-smoke/live-trading mutation occurred.
+
 - 2026-06-06 `LUC-2380` verified local source-control closure for the
   post-[LUC-2374](/LUC/issues/LUC-2374) dirty API runtime diff before any push
   permit is reconsidered. The dirty set was classified as coherent Bot Runtime

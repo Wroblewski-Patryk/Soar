@@ -2,6 +2,26 @@
 
 Last updated: 2026-05-28
 
+## 2026-06-06 LUC-2390 PM No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2390](/LUC/issues/LUC-2390) as a completed coordination
+   checkpoint, not a Backend repair lane.
+2. Do not open duplicate Backend repair after [LUC-2380](/LUC/issues/LUC-2380)
+   and [LUC-2381](/LUC/issues/LUC-2381) verified local source closure.
+3. Route the next executable release-path action to
+   [LUC-2378](/LUC/issues/LUC-2378): CTO/Ops recheck of push and
+   production-promotion path for candidate
+   `4787ee9859c02fc950f781eb5803d97a930aa977`.
+4. First reconcile [LUC-2393](/LUC/issues/LUC-2393), created for CTO after
+   Paperclip readback showed [LUC-2380](/LUC/issues/LUC-2380) still `blocked`
+   despite local verified evidence. [LUC-2393](/LUC/issues/LUC-2393) must mark
+   [LUC-2380](/LUC/issues/LUC-2380) `done` or replace passive `blocked` with
+   a named first-class blocker/owner/action.
+5. Keep protected release confidence fail-closed until
+   [LUC-2365](/LUC/issues/LUC-2365), [LUC-2372](/LUC/issues/LUC-2372), and
+   [LUC-2366](/LUC/issues/LUC-2366) provide legal promotion disposition,
+   approved protected inputs, and protected runtime/worker/SLO proof.
+
 ## 2026-05-28 LUC-175 Issue-Commented Continuation Next Action
 
 1. Treat comment `7cb0c750-35fb-4f43-bd63-40c3683ee573` as bookkeeping-only; do not widen scope from janitor `in_progress` sync alone.

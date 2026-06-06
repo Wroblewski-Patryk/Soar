@@ -1,3 +1,55 @@
+- 2026-06-06 `LUC-2394 [Soar][CTO/Source] Close LUC-2390 PM coordination dirty state before push permit`
+  - Status: done / local source-control closure.
+  - Scope: source-control closure for the PM coordination dirty state left by
+    [LUC-2390](/LUC/issues/LUC-2390).
+  - Dirty set classification:
+    - source-of-truth/task evidence only;
+    - no product/runtime code;
+    - no deploy/runtime/protected proof surface.
+  - Validation:
+    - `git diff --check` passed with LF/CRLF warnings only;
+    - local commit recorded the coherent closure set.
+  - No mutation: no push, deploy, restart, rollback, env/account, secret,
+    exchange, protected-smoke, or live-trading action.
+  - Next owner/action:
+    - [LUC-2393](/LUC/issues/LUC-2393) must reconcile stale
+      [LUC-2380](/LUC/issues/LUC-2380) Paperclip blocked state;
+    - [LUC-2378](/LUC/issues/LUC-2378) owns the next CTO/Ops push and
+      production-promotion path recheck after source/control blockers are
+      closed.
+  - Artifact:
+    - `history/tasks/luc-2394-close-luc-2390-pm-coordination-dirty-state-before-push-permit-2026-06-06-task.md`
+
+- 2026-06-06 `LUC-2390 [Soar][PM] No-stall queue expeditor`
+  - Status: done / coordination checkpoint.
+  - Scope: PM no-stall routing for the post-source-closure critical path.
+  - Wake handling:
+    - consumed inline wake payload first;
+    - `fallbackFetchNeeded=false`;
+    - pending comments `0/0`;
+    - checkout was already claimed by the harness and was not repeated;
+    - direct Paperclip issue read attempts timed out locally, so scoped wake
+      payload plus repo source-of-truth files were used.
+  - Routing result:
+    - no duplicate Backend repair lane is needed after
+      [LUC-2380](/LUC/issues/LUC-2380) and [LUC-2381](/LUC/issues/LUC-2381)
+      verified local source closure;
+    - next executable owner/action is [LUC-2378](/LUC/issues/LUC-2378)
+      CTO/Ops recheck of the push and production-promotion path for candidate
+      `4787ee9859c02fc950f781eb5803d97a930aa977`;
+    - protected release confidence remains fail-closed through
+      [LUC-2365](/LUC/issues/LUC-2365), [LUC-2372](/LUC/issues/LUC-2372), and
+      [LUC-2366](/LUC/issues/LUC-2366).
+    - Paperclip readback after closure showed [LUC-2380](/LUC/issues/LUC-2380)
+      still `blocked` with no first-class blockers while repo evidence records
+      it as verified local; direct PM comment on [LUC-2380](/LUC/issues/LUC-2380)
+      was rejected by least-privilege, so [LUC-2393](/LUC/issues/LUC-2393) was
+      created and assigned to CTO to reconcile the status.
+  - No mutation: no code/runtime/deploy/push/restart/rollback/env/account,
+    secret, exchange, protected-smoke, or live-trading action.
+  - Artifact:
+    - `history/tasks/luc-2390-no-stall-queue-expeditor-2026-06-06-task.md`
+
 - 2026-06-06 `LUC-2380 [Soar][CTO/Source] Close post-2374 dirty API runtime diff before push permit`
   - Status: done / verified local.
   - Scope: source-control closure wrapper for the dirty Bot Runtime API diff
