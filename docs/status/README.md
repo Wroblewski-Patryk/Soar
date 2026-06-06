@@ -8,5 +8,6 @@ Use this folder for current generated or maintained status snapshots.
 - [[function-journey-index.md|Function Journey Index]]
 - [[user-action-index.md|User Action Index]]
 - [[architecture-awareness-report.md|Architecture Awareness Report]]
+- [[task-entity-link-backfill-priority-2026-06-06.md|Task Entity Link Backfill Priority]]
 - [[architecture-graph-drift.md|Architecture Graph Drift]]
 - [[view-map-browser-workflow-ownership.md|View Map Browser Workflow Ownership]]

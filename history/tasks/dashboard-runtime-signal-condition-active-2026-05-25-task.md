@@ -14,6 +14,15 @@
 - Mission ID: `SOAR-FULL-READINESS-COORDINATION-2026-05-23`
 - Mission Status: VERIFIED
 
+## Architecture Links
+
+- Primary feature/module: Dashboard runtime signal condition visibility.
+- Architecture nodes: SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-PAGE-DASHBOARD; SOAR-COMP-HOME-LIVE-WIDGETS; SOAR-API-BOT-RUNTIME-POSITIONS.
+- Function chains: docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md; docs/architecture/chains/CHAIN-DASHBOARD-RUNTIME.md.
+- Affected files: apps/web/src/features/dashboard-home; apps/api/src/modules/bots; docs/modules/web-dashboard-home.md; docs/modules/api-bots.md.
+- Tests/proof: focused runtime/dashboard checks and validation evidence recorded in this task.
+- Docs updated: dashboard runtime module docs, task board, project state, and module confidence ledger.
+
 ## Context
 User feedback reported that Dashboard Home active bot signal cards should show
 raw/current strategy condition direction when conditions such as `RSI(14) > 75`

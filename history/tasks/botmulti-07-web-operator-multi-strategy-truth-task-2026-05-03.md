@@ -12,6 +12,15 @@
 - Iteration: 2026-05-03 post-V1 BOTMULTI activation, iteration 7
 - Operation Mode: BUILDER
 
+## Architecture Links
+
+- Primary feature/module: Operator-facing multi-strategy bot truth.
+- Architecture nodes: SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-PAGE-DASHBOARD; SOAR-COMP-HOME-LIVE-WIDGETS; SOAR-DB-BOT; SOAR-DB-STRATEGY.
+- Function chains: docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md; docs/architecture/chains/CHAIN-STRATEGIES-CORE.md.
+- Affected files: apps/web/src/features/bots; apps/web/src/features/dashboard-home; docs/modules/web-bots.md; docs/modules/web-dashboard-home.md.
+- Tests/proof: focused web validation and guardrail evidence recorded in this task's Validation Evidence.
+- Docs updated: web bot/dashboard module docs, task board, project state, and BOTMULTI planning notes.
+
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

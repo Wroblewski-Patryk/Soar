@@ -1,6 +1,6 @@
 # Task Synchronization Report
 
-Generated: 2026-06-05T18:23:53.329Z
+Generated: 2026-06-06T16:24:34.647Z
 
 ## Contract
 
@@ -8,8 +8,8 @@ Every task should identify the feature/module it changes, dependency expectation
 
 ## Signals
 
-- Tasks without architecture links: 1018
-- Implementation entities without task links: 983
+- Tasks without architecture links: 1061
+- Implementation entities without task links: 979
 - Verified entities without proof evidence: 0
 
 ## Tasks Without Architecture Links
@@ -47,32 +47,6 @@ Every task should identify the feature/module it changes, dependency expectation
 - Task (history/tasks/aud07-isolated-db-runner-2026-05-19-task.md)
 - Task (history/tasks/aud09-neutral-exchange-type-aliases-2026-05-19-task.md)
 - Backend Permission And Data-Isolation Review Task (history/tasks/backend-permission-isolation-review-2026-05-21-task.md)
-- BACKTEST-NON-BINANCE-ORDER-BOOK-FAIL-CLOSED-2026-05-23 (history/tasks/backtest-non-binance-order-book-fail-closed-2026-05-23-task.md)
-- BHIST-01 Bot Portfolio History and Capital Events Task (history/tasks/bhist-01-bot-portfolio-history-and-capital-events-task-2026-05-01.md)
-- Task (history/tasks/binance-futures-api-key-probe-scope-fix-task-2026-05-10.md)
-- Task (history/tasks/bot-delete-active-paper-confirmation-task-2026-05-11.md)
-- BOTDRIFT-01 Bot Read Projection Canonical Context Task (history/tasks/botdrift-01-bot-read-projection-canonical-context-task-2026-05-03.md)
-- BOTDRIFT-02 Bot Update Canonical Guard Task (history/tasks/botdrift-02-bot-update-canonical-guard-task-2026-05-03.md)
-- Task (history/tasks/botmulti-00-planning-task-2026-04-29.md)
-- Task (history/tasks/botmulti-01-post-v1-multi-strategy-contract-task-2026-05-03.md)
-- Task (history/tasks/botmulti-03-canonical-topology-migration-task-2026-05-03.md)
-- Task (history/tasks/botmulti-04-api-write-multi-strategy-task-2026-05-03.md)
-- Task (history/tasks/botmulti-05-runtime-signal-merge-task-2026-05-03.md)
-- Task (history/tasks/botmulti-06-runtime-risk-lifecycle-ownership-task-2026-05-03.md)
-- Task (history/tasks/botmulti-07-web-operator-multi-strategy-truth-task-2026-05-03.md)
-- Task (history/tasks/botmulti-08-architecture-runtime-closure-task-2026-05-03.md)
-- Task (history/tasks/botmulti-09-containment-supersede-00169d7f-2026-05-12-task.md)
-- Task (history/tasks/botmulti-09-current-production-containment-task-2026-05-09.md)
-- Task (history/tasks/botmulti-09-production-deploy-task-2026-05-03.md)
-- Coolify Auto Deploy And Worker Recovery - 2026-05-26 (history/tasks/coolify-auto-deploy-and-worker-recovery-2026-05-26-task.md)
-- Coolify Service Stack Liveness Gate Task (history/tasks/coolify-service-stack-liveness-gate-2026-05-25-task.md)
-- COOLIFY-SERVICE-STACK-MIGRATION-2026-05-25 (history/tasks/coolify-service-stack-migration-2026-05-25-task.md)
-- Coolify Stack Profile-Gated Cutover - 2026-05-25 (history/tasks/coolify-stack-profile-gated-cutover-2026-05-25-task.md)
-- Task (history/tasks/current-executable-v1-boundary-3c5da343-task-2026-05-09.md)
-- Task (history/tasks/current-focus-4ee1672e-sync-task-2026-05-09.md)
-- Dashboard Runtime Current-State Aggregate Task 2026-05-09 (history/tasks/dashboard-runtime-current-state-aggregate-task-2026-05-09.md)
-- Task (history/tasks/dashboard-runtime-signal-condition-active-2026-05-25-task.md)
-- Dashboard Runtime Widget Aggregate Current Render Task 2026-05-09 (history/tasks/dashboard-runtime-widget-aggregate-current-render-task-2026-05-09.md)
 - Task (history/tasks/dashdisplay-01-prod-dashboard-display-polish-task-2026-05-02.md)
 - DASHDRIFT-02 Position Edit Strategy Display Task (history/tasks/dashdrift-02-position-edit-strategy-display-task-2026-05-03.md)
 - Task (history/tasks/dashdrift-03-dynamic-stop-columns-canonical-task-2026-05-03.md)
@@ -80,20 +54,46 @@ Every task should identify the feature/module it changes, dependency expectation
 - Task (history/tasks/dashdrift-05-symbol-stats-filter-canonical-scope-task-2026-05-03.md)
 - Task (history/tasks/dashsignals-01-indicator-value-pending-display-task-2026-05-02.md)
 - Task (history/tasks/dashsignals-02-indicator-recovery-before-unavailable-task-2026-05-02.md)
-- Task (history/tasks/deploy-freshness-010b4f8b-task-2026-05-09.md)
-- Task (history/tasks/deploy-freshness-1dc55d96-task-2026-05-09.md)
-- Task (history/tasks/deploy-freshness-30b027b7-task-2026-05-09.md)
-- Task (history/tasks/deploy-freshness-3c5da343-task-2026-05-09.md)
-- Task (history/tasks/deploy-freshness-4792fbca-task-2026-05-09.md)
-- Task (history/tasks/deploy-freshness-4ee1672e-task-2026-05-09.md)
-- Task (history/tasks/deploy-freshness-55469cdc-task-2026-05-09.md)
-- Task (history/tasks/deploy-freshness-6c54bb5d-task-2026-05-09.md)
-- Task (history/tasks/deploy-freshness-90cd07d6-task-2026-05-08.md)
-- DEPLOY-FRESHNESS-9C125683 (history/tasks/deploy-freshness-9c125683-task-2026-05-10.md)
-- Task (history/tasks/deploy-freshness-ba3d852d-task-2026-05-09.md)
-- Task (history/tasks/deploy-freshness-c50e1e7c-task-2026-05-09.md)
-- Deploy Freshness e8cd748e Task (2026-05-09) (history/tasks/deploy-freshness-e8cd748e-task-2026-05-09.md)
-- Task (history/tasks/deploy-lag-1f1d9c12-task-2026-05-09.md)
+- Task (history/tasks/deploy-lag-d355df93-follow-up-task-2026-05-09.md)
+- DEPLOY-LAG-E70F5CF6-2026-05-10 (history/tasks/deploy-lag-e70f5cf6-task-2026-05-10.md)
+- Task (history/tasks/deploy-web-build-hotfix-validation-task-2026-04-25.md)
+- Task (history/tasks/doc-content-graph-hygiene-2026-05-23-task.md)
+- Task (history/tasks/doc-final-content-clarity-scan-2026-05-23-task.md)
+- Task (history/tasks/doc-hub-filename-semantics-2026-05-23-task.md)
+- Task (history/tasks/doc-knowledge-system-restructure-2026-05-23-task.md)
+- Task (history/tasks/doc-knowledge-taxonomy-refinement-2026-05-23-task.md)
+- Task (history/tasks/doc-local-index-cohesion-2026-05-23-task.md)
+- Task (history/tasks/doc-usability-routing-improvement-2026-05-23-task.md)
+- Task (history/tasks/docmap-01-engineering-documentation-system-map-task-2026-05-03.md)
+- Task (history/tasks/docsync-2026-04-28-historical-status-normalization-task.md)
+- Task (history/tasks/docsync-2026-04-28-planning-catalog-refresh-task.md)
+- Task (history/tasks/docsync-2026-04-28-stale-active-plan-status-sync-task.md)
+- Task (history/tasks/docsync-2026-05-01-mvp-blocked-section-task.md)
+- Task (history/tasks/docsync-2026-05-01-no-autonomous-now-task.md)
+- Task (history/tasks/docsync-2026-05-01-queue-auth-blocker-task.md)
+- Task (history/tasks/docsync-2026-05-01-ready-blocked-separation-task.md)
+- Task (history/tasks/docsync-2026-05-01-v1excel-historical-carryover-task.md)
+- Task (history/tasks/docsync-v1-current-phase-truth-task-2026-04-25.md)
+- Task (history/tasks/docsync-v1excel-superseded-gates-task-2026-05-02.md)
+- Task (history/tasks/docsync-v1final-01-superseded-gate-status-task-2026-05-02.md)
+- Task (history/tasks/ethdca-01-live-dca-first-tsl-hardening-task-2026-05-02.md)
+- EXCHANGE2-01 Gate.io Fail-Closed Placeholder Task (2026-05-08) (history/tasks/exchange2-01-gateio-fail-closed-placeholder-task-2026-05-08.md)
+- EXCHANGE2-02 Gate.io Public Market Catalog Task (2026-05-08) (history/tasks/exchange2-02-gateio-public-market-catalog-task-2026-05-08.md)
+- EXCHANGE2-03 Runtime Market Event Exchange Boundary Task (2026-05-08) (history/tasks/exchange2-03-runtime-market-event-exchange-boundary-task-2026-05-08.md)
+- EXCHANGE2-04 Gate.io Public Market Data Reader Task (2026-05-08) (history/tasks/exchange2-04-gateio-public-market-data-reader-task-2026-05-08.md)
+- EXCHANGE2-05 Gate.io Market-Stream Polling Task (2026-05-08) (history/tasks/exchange2-05-gateio-market-stream-polling-task-2026-05-08.md)
+- EXCHANGE2-06 Gate.io Runtime Consumption Regression Task (2026-05-08) (history/tasks/exchange2-06-gateio-runtime-consumption-regression-task-2026-05-08.md)
+- EXCHANGE2-07 Gate.io Market Stream Fanout Regression Task (2026-05-08) (history/tasks/exchange2-07-gateio-market-stream-fanout-regression-task-2026-05-08.md)
+- EXCHANGE2-09 Gate.io Market Stream Worker Config Task (2026-05-08) (history/tasks/exchange2-09-gateio-market-stream-worker-config-task-2026-05-08.md)
+- EXCHANGE2-10 Gate.io Web Capability Gating Task (2026-05-08) (history/tasks/exchange2-10-gateio-web-capability-gating-task-2026-05-08.md)
+- EXCHANGE2-11 Gate.io Wallet/Bot UI Gating Task (2026-05-08) (history/tasks/exchange2-11-gateio-wallet-bot-ui-gating-task-2026-05-08.md)
+- EXCHANGE2-12 Gate.io API Wallet Fail-Closed Task (2026-05-08) (history/tasks/exchange2-12-gateio-api-wallet-fail-closed-task-2026-05-08.md)
+- EXCHANGE2-13 Gate.io API Wallet Update Fail-Closed Task (2026-05-08) (history/tasks/exchange2-13-gateio-api-wallet-update-fail-closed-task-2026-05-08.md)
+- EXCHANGE2-14 Gate.io Stored API-Key Probe Fail-Closed Task (2026-05-08) (history/tasks/exchange2-14-gateio-stored-api-key-probe-fail-closed-task-2026-05-08.md)
+- EXCHANGE2-15 Gate.io Wallet Balance Preview Fail-Closed Task (2026-05-08) (history/tasks/exchange2-15-gateio-wallet-balance-preview-fail-closed-task-2026-05-08.md)
+- Task (history/tasks/exchange2-16-gateio-positions-snapshot-fail-closed-task-2026-05-08.md)
+- Task (history/tasks/exchange2-17-gateio-reconciliation-snapshots-fail-closed-task-2026-05-08.md)
+- Task (history/tasks/exchange2-18-gateio-live-submit-boundary-task-2026-05-08.md)
 
 ## Implementation Without Task Links
 
@@ -166,7 +166,6 @@ Every task should identify the feature/module it changes, dependency expectation
 - component: RuntimeSidebarSection.tsx (apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeSidebarSection.tsx)
 - component: RuntimeSignalsSection.tsx (apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.tsx)
 - component: runtimeUiHelpers.tsx (apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeUiHelpers.tsx)
-- component: HomeLiveWidgets.tsx (apps/web/src/features/dashboard-home/components/HomeLiveWidgets.tsx)
 - component: LiveMarketBar.tsx (apps/web/src/features/dashboard-home/components/LiveMarketBar.tsx)
 - component: ExchangeConnectionsView.tsx (apps/web/src/features/exchanges/components/ExchangeConnectionsView.tsx)
 - component: AuditTrailView.tsx (apps/web/src/features/logs/components/AuditTrailView.tsx)
@@ -177,3 +176,4 @@ Every task should identify the feature/module it changes, dependency expectation
 - component: ApiKeysList.tsx (apps/web/src/features/profile/components/ApiKeysList.tsx)
 - component: BasicForm.tsx (apps/web/src/features/profile/components/BasicForm.tsx)
 - component: Security.tsx (apps/web/src/features/profile/components/Security.tsx)
+- component: Subscription.tsx (apps/web/src/features/profile/components/Subscription.tsx)

@@ -12,6 +12,15 @@
 - Iteration: 2026-05-09-dashboard-runtime-current-state
 - Operation Mode: BUILDER
 
+## Architecture Links
+
+- Primary feature/module: Dashboard runtime current-state aggregate.
+- Architecture nodes: SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-API-BOT-RUNTIME-AGGREGATE; SOAR-COMP-HOME-LIVE-WIDGETS; SOAR-DB-RUNTIME-SESSION.
+- Function chains: docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md.
+- Affected files: apps/api/src/modules/bots; apps/web/src/features/dashboard-home/components/HomeLiveWidgets.tsx.
+- Tests/proof: dashboard runtime aggregate proof recorded in this task's verification/result sections.
+- Docs updated: docs/modules/api-bots.md; docs/modules/web-dashboard-home.md; project state/task board entries listed in this task.
+
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

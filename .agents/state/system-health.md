@@ -1,5 +1,323 @@
 # System Health
 
+- `LUC-2522-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-06-06` is VERIFIED as a
+  TSA controller checkpoint. Paperclip heartbeat-context and live issue
+  readback succeeded. Current V1 release confidence remains fail-closed through
+  [LUC-2372](/LUC/issues/LUC-2372), [LUC-2366](/LUC/issues/LUC-2366),
+  [LUC-2361](/LUC/issues/LUC-2361), and [LUC-2378](/LUC/issues/LUC-2378).
+  Protected smoke-auth/worker readiness remains fail-closed through
+  [LUC-2505](/LUC/issues/LUC-2505), [LUC-1438](/LUC/issues/LUC-1438),
+  [LUC-241](/LUC/issues/LUC-241), [LUC-47](/LUC/issues/LUC-47), and
+  [LUC-244](/LUC/issues/LUC-244). [LUC-2506](/LUC/issues/LUC-2506),
+  [LUC-2507](/LUC/issues/LUC-2507), and [LUC-2520](/LUC/issues/LUC-2520) read
+  back as `done`, so no duplicate specialist lane is needed. `pnpm
+  softwarehouse:control-tick` is not exposed in this checkout, and
+  `scripts/run-live-run-janitor.mjs` is absent. No code/runtime/deploy/push/
+  restart/rollback/env/account/secret/exchange/protected-smoke/live-trading
+  mutation occurred. Evidence:
+  `history/tasks/luc-2522-v1-audit-to-completion-controller-2026-06-06-task.md`.
+
+- `LUC-2520-CORRECT-LUC-241-BLOCKED-DISPOSITION-2026-06-06` is VERIFIED as a
+  DRE/Ops issue-topology correction. Live readback before correction showed
+  [LUC-241](/LUC/issues/LUC-241) as `todo` despite first-class blocker
+  [LUC-1438](/LUC/issues/LUC-1438). [LUC-241](/LUC/issues/LUC-241) now reads
+  back as `blocked` by [LUC-1438](/LUC/issues/LUC-1438); downstream
+  [LUC-244](/LUC/issues/LUC-244) and [LUC-47](/LUC/issues/LUC-47) now show
+  `LUC-241:blocked`. No code/runtime/deploy/push/restart/rollback/env/account/
+  secret/exchange/protected-smoke/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2520-correct-luc-241-blocked-disposition-2026-06-06-task.md`.
+
+- `LUC-2508-NO-STALL-QUEUE-EXPEDITOR-2026-06-06` is VERIFIED as a PM
+  coordination checkpoint. Scoped wake payload had no pending comments
+  (`fallbackFetchNeeded=false`, `0/0`) and checkout was already claimed by the
+  harness. Paperclip live readback and heartbeat-context succeeded for
+  [LUC-2508](/LUC/issues/LUC-2508), with no comments, children, or first-class
+  blockers. Queue routing is unchanged: [LUC-244](/LUC/issues/LUC-244) remains
+  blocked by [LUC-47](/LUC/issues/LUC-47) and [LUC-241](/LUC/issues/LUC-241);
+  release confidence remains fail-closed through [LUC-2372](/LUC/issues/LUC-2372),
+  [LUC-2366](/LUC/issues/LUC-2366), [LUC-2361](/LUC/issues/LUC-2361), and
+  [LUC-2378](/LUC/issues/LUC-2378); [LUC-2505](/LUC/issues/LUC-2505) remains
+  blocked for protected smoke-auth endpoint acceptance. [LUC-2506](/LUC/issues/LUC-2506)
+  and [LUC-2507](/LUC/issues/LUC-2507) now read back as `done`. No duplicate
+  specialist lane is needed. `pnpm softwarehouse:control-tick` still is not
+  exposed in this checkout, and `scripts/run-live-run-janitor.mjs` is absent.
+  No code/runtime/deploy/push/restart/rollback/env/account/secret/exchange/
+  protected-smoke/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2508-no-stall-queue-expeditor-2026-06-06-task.md`.
+
+- `LUC-2507-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-06` is VERIFIED as a TSA
+  coordination/register checkpoint. Scoped wake payload had no pending comments
+  (`fallbackFetchNeeded=false`, `0/0`) and checkout was already claimed by the
+  harness. Paperclip heartbeat-context and live issue readbacks succeeded.
+  Current V1 release confidence remains fail-closed through
+  [LUC-2372](/LUC/issues/LUC-2372), [LUC-2366](/LUC/issues/LUC-2366),
+  [LUC-2361](/LUC/issues/LUC-2361), and [LUC-2378](/LUC/issues/LUC-2378).
+  [LUC-2505](/LUC/issues/LUC-2505) remains the blocked Security/Ops lane for
+  protected smoke-auth endpoint acceptance. [LUC-2506](/LUC/issues/LUC-2506)
+  has completed local DRE hardening evidence but still reads back from live API
+  as `in_progress`, so DRE/Ops owns status sync or concrete remaining-work
+  closure. No duplicate specialist lane is needed. No code/runtime/deploy/
+  push/restart/rollback/env/account/secret/exchange/protected-smoke/
+  live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2507-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
+
+- `LUC-2506-WEB-BUILD-INFO-SOURCE-PROVENANCE-2026-06-06` is VERIFIED locally
+  for Web deploy provenance hardening. Build metadata generation and the
+  runtime `/api/build-info` route no longer substitute GitHub branch head when
+  source metadata is absent; deploy wait now accepts only `metadataSource=env`,
+  `git`, or `git-files` by default. PASS: writer tests `2/2`, wait-gate tests
+  `4/4`, release/Ops aggregate tests `8/8`, Web typecheck, and repository
+  guardrails. No deploy, restart, rollback, env/database/account/secret/
+  exchange/protected-smoke/live-trading mutation occurred. Current production
+  provenance is not changed until a future approved deploy readback proves this
+  code path. Evidence:
+  `history/evidence/luc-2506-web-build-info-source-provenance-2026-06-06.md`.
+
+- `LUC-2504-SOAR-WEB-FAILED-DEPLOY-DIAGNOSIS-2026-06-06` is VERIFIED for
+  read-only deploy diagnosis. Current public Web `/` and `/api/build-info` are
+  reachable at `56d8d440bfe0fd9ee692e9f669e35414d85d2493`; Coolify
+  `soar-web` metadata still carries configured `git_commit_sha=b894e5dd...`,
+  but no active queued/in-progress/failed deployment rows are visible to the
+  current token. Web Server Action mismatch logs appear static after the
+  recovery window. No production mutation occurred or is justified by this
+  evidence. Residual deploy-confidence risk remains: build-info currently uses
+  `metadataSource=github-branch`, so it is not authoritative container-source
+  provenance. Follow-up [LUC-2506](/LUC/issues/LUC-2506) owns that hardening
+  lane with a live DRE execution path and without authorizing production
+  mutation. Evidence:
+  `history/evidence/luc-2504-soar-web-failed-deploy-diagnosis-2026-06-06.md`.
+
+- `LUC-2499-COOLIFY-PRODUCTION-DEPLOY-HEALTH-SWEEP-2026-06-06` is
+  PARTIALLY_VERIFIED as a read-only production deploy health checkpoint.
+  Current public production health is green for pushed SHA
+  `56d8d440bfe0fd9ee692e9f669e35414d85d2493`: API `/health` `200`, API
+  `/ready` `200`, Web `/` `200`, Web `/api/build-info` `200`, and
+  unauthenticated `/workers/ready` `401` fail-closed. Coolify read-only
+  projection resolves selector `LuckySparrow`, project `Soar`, environment
+  `production`, six applications, PostgreSQL, Redis, zero generic services,
+  and `17` visible global resource rows. Fresh residual deploy risk:
+  `soar-web` Coolify metadata reports `git_commit_sha=b894e5dd...` while public
+  build-info reports `56d8d440...`, and Web logs contain recent Next.js Server
+  Action mismatch errors. No deploy, restart, rollback, env/database/account/
+  secret/exchange/protected-smoke/live-trading mutation occurred. Evidence:
+  `history/evidence/luc-2499-coolify-production-deploy-health-sweep-2026-06-06.md`.
+
+- `LUC-2497-AUTONOMOUS-IDLE-MAP-DRIFT-SWEEP-2026-06-06` is VERIFIED for
+  docs-memory/map parity health. Strict architecture graph drift passed
+  (`837/837`, `0` missing) and docs parity passed (API `22/22`, Web `16/16`,
+  Routes `39/39`). No current route-map or architecture graph drift was found,
+  so no duplicate map or specialist lane was opened. No code/runtime/deploy/
+  push/restart/rollback/env/account/secret/exchange/protected-smoke/
+  live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2497-autonomous-idle-and-map-drift-sweep-2026-06-06-task.md`.
+
+- `LUC-2487-NO-STALL-QUEUE-EXPEDITOR-2026-06-06` is VERIFIED as a PM
+  coordination checkpoint. Scoped wake payload had no pending comments
+  (`fallbackFetchNeeded=false`, `0/0`) and checkout was already claimed by the
+  harness. Paperclip heartbeat-context readback succeeded. Required control
+  command `pnpm softwarehouse:control-tick` failed because it is not exposed in
+  this checkout, and `scripts/run-live-run-janitor.mjs` is absent. Direct issue
+  readback confirmed [LUC-244](/LUC/issues/LUC-244) remains the canonical PM
+  no-stall lane and is `blocked`; [LUC-2372](/LUC/issues/LUC-2372),
+  [LUC-2366](/LUC/issues/LUC-2366), [LUC-2361](/LUC/issues/LUC-2361), and
+  [LUC-2378](/LUC/issues/LUC-2378) remain blocked/fail-closed;
+  [LUC-2481](/LUC/issues/LUC-2481) and [LUC-2482](/LUC/issues/LUC-2482)
+  are `done`. No duplicate Backend, source-control, PM, Ops, Security/Ops, QA,
+  TSA, or release lane is needed. No code/runtime/deploy/push/restart/
+  rollback/env/account/secret/exchange/protected-smoke/live-trading mutation
+  occurred. Evidence:
+  `history/tasks/luc-2487-no-stall-queue-expeditor-2026-06-06-task.md`.
+
+- `LUC-2482-NO-STALL-QUEUE-EXPEDITOR-2026-06-06` is VERIFIED as a PM
+  coordination checkpoint. Scoped wake payload had no pending comments
+  (`fallbackFetchNeeded=false`, `0/0`) and checkout was already claimed by the
+  harness. Paperclip heartbeat-context readback succeeded. Required control
+  command `pnpm softwarehouse:control-tick` failed because it is not exposed in
+  this checkout. Live issue readback confirmed [LUC-244](/LUC/issues/LUC-244)
+  remains the canonical PM no-stall lane and is `blocked`;
+  [LUC-2372](/LUC/issues/LUC-2372), [LUC-2366](/LUC/issues/LUC-2366),
+  [LUC-2361](/LUC/issues/LUC-2361), and [LUC-2378](/LUC/issues/LUC-2378)
+  remain blocked/fail-closed; [LUC-2481](/LUC/issues/LUC-2481) is `done`. No
+  duplicate Backend, source-control, PM, Ops, Security/Ops, QA, TSA, or
+  release lane is needed. No code/runtime/deploy/push/restart/rollback/env/
+  account/secret/exchange/protected-smoke/live-trading mutation occurred.
+  Evidence:
+  `history/tasks/luc-2482-no-stall-queue-expeditor-2026-06-06-task.md`.
+
+- `LUC-2481-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-06` is VERIFIED as a TSA
+  coordination/register checkpoint. Scoped wake payload had no pending comments
+  (`fallbackFetchNeeded=false`, `0/0`) and checkout was already claimed by the
+  harness. Paperclip heartbeat-context readback succeeded, and live issue
+  readback confirmed the current fail-closed chain remains first-class:
+  [LUC-2372](/LUC/issues/LUC-2372) is `blocked`;
+  [LUC-2366](/LUC/issues/LUC-2366) is `blocked` by
+  [LUC-2372](/LUC/issues/LUC-2372) plus already-done
+  [LUC-2365](/LUC/issues/LUC-2365); [LUC-2361](/LUC/issues/LUC-2361)
+  is `blocked` by [LUC-2366](/LUC/issues/LUC-2366) plus already-done
+  [LUC-2365](/LUC/issues/LUC-2365) and
+  [LUC-2364](/LUC/issues/LUC-2364); [LUC-2378](/LUC/issues/LUC-2378)
+  is `blocked` by [LUC-2361](/LUC/issues/LUC-2361). No duplicate Backend,
+  source-control, PM, Ops, Security/Ops, QA, TSA, or release lane is needed.
+  No code/runtime/deploy/push/restart/rollback/env/account/secret/exchange/
+  protected-smoke/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2481-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
+
+- `LUC-2475-DEPLOY-SMOKE-ABORT-HANDLING-2026-06-06` is VERIFIED for public
+  deploy smoke abort handling. The smoke script now retries transient
+  fetch abort/timeout/fetch-failed errors once by default and prints retry
+  diagnostics; real HTTP/readiness/build-info failures remain fail-closed.
+  Validation passed: `node --test scripts/deploySmokeCheck.test.mjs` (`2/2`),
+  `node --test scripts/releaseOpsScriptContracts.test.mjs scripts/deploySmokeCheck.test.mjs`
+  (`4/4`), `pnpm run quality:guardrails`, and public no-workers smoke against
+  production SHA `56d8d440bfe0fd9ee692e9f669e35414d85d2493`. The moving abort
+  symptom from [LUC-2456](/LUC/issues/LUC-2456) should be treated as
+  runner/network instability when future smoke output recovers with a
+  `transient retry:` row; exhausted retries remain a product-health smoke
+  failure until direct probes prove otherwise. Evidence:
+  `history/evidence/luc-2475-deploy-smoke-abort-handling-2026-06-06.md`.
+
+- `LUC-2465-COOLIFY-PRODUCTION-DEPLOY-HEALTH-SWEEP-2026-06-06` is VERIFIED as
+  a read-only Soar production deploy health sweep. Local `HEAD`, `origin/main`,
+  and production Web build-info all report
+  `56d8d440bfe0fd9ee692e9f669e35414d85d2493`. Public smoke passed: API
+  `/health` `200`, API `/ready` `200`, Web `/` `200`, and Web
+  `/api/build-info` `200` with expected `gitSha`. Unauthenticated
+  `/workers/ready` returned `401`, preserving fail-closed behavior. Coolify
+  read-only projection resolved project `Soar`, production environment
+  `production`, six applications, PostgreSQL, Redis, zero generic services, and
+  `17` visible global resource rows. Application rows report
+  `running:unknown`; PostgreSQL and Redis report `running:healthy`.
+  `pnpm run ops:coolify-stack:env-check:test` passed (`8/8`). No deploy,
+  restart, rollback, env/database/Redis/account/team, protected-smoke, secret,
+  exchange, or live-trading mutation occurred. Evidence:
+  `history/evidence/luc-2465-coolify-production-deploy-health-sweep-2026-06-06.md`,
+  `history/tasks/luc-2465-coolify-production-deploy-health-sweep-2026-06-06-task.md`.
+  Residual release confidence still requires protected worker/dashboard/account,
+  SLO, rollback, and live runtime proof in separate lanes.
+
+- `LUC-2460-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-06` is VERIFIED as a TSA
+  coordination/register checkpoint with degraded Paperclip readback. Scoped
+  wake payload had no pending comments (`fallbackFetchNeeded=false`, `0/0`)
+  and checkout was already claimed by the harness. Paperclip
+  `heartbeat-context` and focused issue search timed out, so no fresh
+  board-status contradiction was available in this heartbeat. Current release
+  health routing remains fail-closed through [LUC-2372](/LUC/issues/LUC-2372),
+  [LUC-2366](/LUC/issues/LUC-2366), [LUC-2361](/LUC/issues/LUC-2361), and
+  [LUC-2378](/LUC/issues/LUC-2378). No duplicate Backend, source-control, PM,
+  Ops, Security/Ops, QA, TSA, or release lane is needed. No code/runtime/
+  deploy/push/restart/rollback/env/account/secret/exchange/protected-smoke/
+  live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2460-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
+
+- `LUC-2461-SECURITY-ACCOUNT-ACCESS-GATE-SWEEP-2026-06-06` is BLOCKED as a
+  Security account-access/protected-input gate checkpoint. Production
+  build-info for the current sweep reports
+  `56d8d440bfe0fd9ee692e9f669e35414d85d2493` on `main`. Names-only readiness
+  is `PARTIAL`: `PROD_UI_AUDIT_*` / `PROD_UI_*` names are present, but
+  runtime/SLO-critical and release-approval families are missing:
+  `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_DB_CHECK_*` /
+  `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE*`. No secret values, cookies,
+  tokens, account values, protected payloads, deploy, restart, rollback,
+  database mutation, account mutation, exchange mutation, or live-trading
+  action occurred. Evidence:
+  `history/evidence/luc-2461-security-account-access-gate-readiness-56d8d440-2026-06-06.md`.
+
+- `LUC-2457-NO-STALL-QUEUE-EXPEDITOR-2026-06-06` is VERIFIED as a PM
+  coordination/release-routing checkpoint. Paperclip heartbeat-context
+  readback succeeded and showed no comments, child issues, blockers, or active
+  execution workspace. `pnpm softwarehouse:control-tick` is still not exposed
+  as a direct Soar command, and `scripts/run-live-run-janitor.mjs` is absent in
+  this checkout. No duplicate Backend, source-control, PM, Ops, Security/Ops,
+  QA, TSA, or release lane is needed. [LUC-2372](/LUC/issues/LUC-2372) remains
+  the active protected-input blocker; downstream release health remains
+  fail-closed through [LUC-2366](/LUC/issues/LUC-2366),
+  [LUC-2361](/LUC/issues/LUC-2361), and [LUC-2378](/LUC/issues/LUC-2378). No
+  code/runtime/deploy/push/restart/rollback/env/account/secret/exchange/
+  protected-smoke/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2457-no-stall-queue-expeditor-2026-06-06-task.md`.
+
+- `LUC-2463-AUTONOMOUS-IDLE-MAP-DRIFT-SWEEP-2026-06-06` is VERIFIED for
+  docs-memory/map parity health. Strict architecture graph drift passed
+  (`831/831`, `0` missing) and docs parity passed (API `22/22`, Web `16/16`,
+  Routes `39/39`). No current route-map or architecture graph drift was found,
+  so no duplicate map or specialist lane was opened. `pnpm
+  softwarehouse:control-tick` remains unavailable as a direct Soar command and
+  `scripts/run-live-run-janitor.mjs` remains absent; this is tooling drift, not
+  release evidence. No code/runtime/deploy/push/restart/rollback/env/account/
+  secret/exchange/protected-smoke/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2463-autonomous-idle-and-map-drift-sweep-2026-06-06-task.md`.
+
+- `LUC-2443-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-06` is VERIFIED as a TSA
+  coordination/register checkpoint. Paperclip heartbeat-context readback
+  succeeded, and live issue readback confirmed the current release chain
+  remains first-class and blocked: [LUC-2372](/LUC/issues/LUC-2372),
+  [LUC-2366](/LUC/issues/LUC-2366), [LUC-2361](/LUC/issues/LUC-2361),
+  [LUC-2378](/LUC/issues/LUC-2378), and [LUC-2438](/LUC/issues/LUC-2438) are
+  blocked with no active run; [LUC-2419](/LUC/issues/LUC-2419),
+  [LUC-2422](/LUC/issues/LUC-2422), [LUC-2432](/LUC/issues/LUC-2432), and
+  [LUC-2440](/LUC/issues/LUC-2440) are done. No duplicate Backend,
+  source-control, PM, Ops, Security/Ops, QA, TSA, or release lane is needed.
+  No code/runtime/deploy/push/restart/rollback/env/account/secret/exchange/
+  protected-smoke/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2443-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
+
+- `LUC-2440-NO-STALL-QUEUE-EXPEDITOR-2026-06-06` is VERIFIED as a PM
+  coordination/release-routing checkpoint. Paperclip API readback timed out
+  during the heartbeat, but the scoped wake payload had no pending comments and
+  current local source-of-truth already records the active blocker topology.
+  No duplicate Backend, source-control, PM, Ops, Security/Ops, QA, TSA, or
+  release lane is needed. [LUC-2372](/LUC/issues/LUC-2372) remains the active
+  protected-input blocker; downstream release health remains fail-closed
+  through [LUC-2366](/LUC/issues/LUC-2366), [LUC-2361](/LUC/issues/LUC-2361),
+  and [LUC-2378](/LUC/issues/LUC-2378). No code/runtime/deploy/push/restart/
+  rollback/env/account/secret/exchange/protected-smoke/live-trading mutation
+  occurred. Evidence:
+  `history/tasks/luc-2440-no-stall-queue-expeditor-2026-06-06-task.md`.
+
+- `LUC-2432-NO-STALL-QUEUE-EXPEDITOR-2026-06-06` is VERIFIED as a PM
+  coordination/release-routing checkpoint. Paperclip API readback timed out
+  during the heartbeat, but the scoped wake payload had no pending comments and
+  current local source-of-truth already records the active blocker topology.
+  No duplicate Backend, source-control, PM, Ops, Security/Ops, TSA, or release
+  lane is needed. [LUC-2372](/LUC/issues/LUC-2372) remains the active
+  protected-input blocker; downstream release health remains fail-closed
+  through [LUC-2366](/LUC/issues/LUC-2366), [LUC-2361](/LUC/issues/LUC-2361),
+  and [LUC-2378](/LUC/issues/LUC-2378). No code/runtime/deploy/push/restart/
+  rollback/env/account/secret/exchange/protected-smoke/live-trading mutation
+  occurred. Evidence:
+  `history/tasks/luc-2432-no-stall-queue-expeditor-2026-06-06-task.md`.
+
+- `LUC-2422-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-06` is VERIFIED as a TSA
+  coordination/release-routing checkpoint. [LUC-2419](/LUC/issues/LUC-2419)
+  is done as the protected-input owner-action refresh, but the active release
+  blocker remains [LUC-2372](/LUC/issues/LUC-2372), which is still blocked on
+  missing runtime/SLO-critical protected input families. Downstream release
+  health remains fail-closed through [LUC-2366](/LUC/issues/LUC-2366),
+  [LUC-2361](/LUC/issues/LUC-2361), and [LUC-2378](/LUC/issues/LUC-2378). No
+  duplicate Backend, source-control, PM, Ops, Security/Ops, or TSA lane was
+  opened. No code/runtime/deploy/push/restart/rollback/env/account/secret/
+  exchange/protected-smoke/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2422-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
+
+- `LUC-2417-COOLIFY-PRODUCTION-DEPLOY-HEALTH-SWEEP-2026-06-06` is VERIFIED as
+  a read-only Soar production deploy health sweep. Local `HEAD`, `origin/main`,
+  and production Web build-info all report
+  `56d8d440bfe0fd9ee692e9f669e35414d85d2493`. Public smoke passed: API
+  `/health` `200`, API `/ready` `200`, Web `/` `200`, and Web
+  `/api/build-info` `200` with expected `gitSha`. Unauthenticated
+  `/workers/ready` returned `401`, preserving fail-closed behavior. Coolify
+  read-only projection resolved project `Soar`, production environment
+  `production`, six applications, PostgreSQL, Redis, zero generic services, and
+  `17` visible global resource rows. Application rows report
+  `running:unknown`; PostgreSQL and Redis report `running:healthy`.
+  `pnpm run ops:coolify-stack:env-check:test` passed (`8/8`). No deploy,
+  restart, rollback, env/database/Redis/account/team, protected-smoke, secret,
+  exchange, or live-trading mutation occurred. Evidence:
+  `history/evidence/luc-2417-coolify-production-deploy-health-sweep-2026-06-06.md`,
+  `history/tasks/luc-2417-coolify-production-deploy-health-sweep-2026-06-06-task.md`.
+  Residual release confidence still requires protected worker/dashboard/account,
+  SLO, rollback, and live runtime proof in separate lanes.
+
 - `LUC-2395-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-06` is VERIFIED as a TSA
   coordination/release-routing refresh. Current health routing after
   [LUC-2394](/LUC/issues/LUC-2394): no duplicate Backend or source-control
@@ -4496,6 +4814,31 @@ shell still lacks those credentials and approvals.
   assistant protocol scenarios, invalid assistant dry-run `LIVE` rejection,
   and default LIVE assistant hot-path fail-closed behavior. This is local
   regression proof only and does not claim production, protected-auth, or LIVE
+## 2026-06-06 LUC-2408 Coolify Read-Only Production Status Access
+
+- Status: `VERIFIED` for DRE-owned Coolify read-only production status access.
+- Wake context: latest triage comment from [LUC-2427](/LUC/issues/LUC-2427)
+  confirmed this is a Coolify/runtime evidence issue for DRE; checkout was
+  already claimed by the harness and was not repeated.
+- Current binding signal: names-only scan confirmed `COOLIFY_BASE_URL`,
+  `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+  `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_TEAM_ID`, and
+  `COOLIFY_TEAM_ID` are present without values printed.
+- Coolify read-only signal: authenticated GET projection at
+  `2026-06-06T05:26:58Z` resolved selector `LuckySparrow`, project `Soar`,
+  environment `production`, six applications, PostgreSQL, Redis, zero generic
+  services, and eight production resources. Application inventory remains
+  `running:unknown`; PostgreSQL and Redis report `running:healthy`.
+- Focused validation: `pnpm run ops:coolify-stack:env-check:test` passed
+  (`8/8`).
+- No production mutation, deploy, restart, rollback, env/database/Redis/team/
+  account change, secret value readback, protected smoke, exchange action, or
+  live-trading action occurred.
+- Evidence:
+  `history/evidence/luc-2408-coolify-read-only-production-status-access-2026-06-06.md`;
+  task packet:
+  `history/tasks/luc-2408-operator-coolify-bind-read-only-production-status-access-2026-06-06-task.md`.
+
   hot-path parity evidence. Evidence:
   `history/tasks/luc-1945-adversarial-api-assistant-regression-proof-2026-06-04-task.md`.
 - 2026-06-04 `LUC-1952` closes the local source-control state for the
@@ -4576,3 +4919,20 @@ shell still lacks those credentials and approvals.
   `history/artifacts/luc-2366-rc-gate-evidence-check-de3db789-2026-06-06.json`.
 - No production mutation, secret value readback, protected payload capture, or
   live-trading action occurred.
+
+## 2026-06-06 LUC-2456 Regression Evidence Sweep
+
+- Safe local regression health is green for guardrails, docs parity, strict
+  graph drift, focused Web go-live tests, and Coolify env checker tests.
+- Public production direct probes are green for API `/health`, API `/ready`,
+  Web `/`, and Web `/api/build-info` at
+  `56d8d440bfe0fd9ee692e9f669e35414d85d2493`; unauthenticated
+  `/workers/ready` remains fail-closed at `401`.
+- Canonical `ops:deploy:smoke --no-workers` is `PARTIAL/UNSTABLE`: two runs
+  failed with `This operation was aborted` on different public endpoints while
+  direct probes passed. This is routed to [LUC-2475](/LUC/issues/LUC-2475) as
+  a Test Automation follow-up and is not production release evidence.
+- No deploy, restart, rollback, env/database/account, secret, exchange,
+  protected-smoke, or live-trading mutation occurred.
+- Evidence:
+  `history/evidence/luc-2456-regression-evidence-sweep-2026-06-06.md`.

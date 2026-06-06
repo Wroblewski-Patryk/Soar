@@ -12,6 +12,15 @@
 - Iteration: 13
 - Operation Mode: BUILDER
 
+## Architecture Links
+
+- Primary feature/module: Bot read projection canonical context.
+- Architecture nodes: SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-API-BOT-LIST; SOAR-API-BOT-GET; SOAR-DB-BOT.
+- Function chains: docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md; docs/architecture/chains/CHAIN-BOT-SETUP.md.
+- Affected files: apps/api/src/modules/bots; apps/web/src/features/bots.
+- Tests/proof: canonical read projection proof described in this task's Result Report.
+- Docs updated: BOTDRIFT planning/context docs referenced by this task.
+
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

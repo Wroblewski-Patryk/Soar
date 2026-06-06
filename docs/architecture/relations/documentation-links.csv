@@ -112,6 +112,8 @@ scripts/runKnownStateRefresh.mjs,docs/automation/tooling-contract.md
 scripts/runLocalExternalGatesPipeline.mjs,docs/operations/post-deploy-smoke-checklist.md
 scripts/runLocalProtectedRouteActionProof.mjs,docs/engineering/testing.md
 scripts/runLocalProtectedRouteActionProof.mjs#CdpClient,docs/engineering/testing.md
+scripts/runPublicReadOnlyBrowserProof.mjs,docs/engineering/testing.md
+scripts/runPublicReadOnlyBrowserProof.mjs#CdpClient,docs/engineering/testing.md
 scripts/runProdAuthSessionBrowserProof.mjs,docs/operations/post-deploy-smoke-checklist.md
 scripts/runProdAuthSessionBrowserProof.mjs#CdpClient,docs/operations/post-deploy-smoke-checklist.md
 scripts/runProdFixtureActionProof.mjs,docs/operations/post-deploy-smoke-checklist.md
@@ -126,6 +128,7 @@ scripts/runRestoreDrillEvidence.mjs,docs/operations/deployment-rollback-playbook
 scripts/runRollbackProofEvidence.mjs,docs/operations/deployment-rollback-playbook.md
 scripts/runV1StageRehearsal.mjs,docs/operations/v1-release-gate-runbook.md
 scripts/runV1StaticIssueScan.mjs,docs/automation/tooling-contract.md
+scripts/runWebNextProductionCommand.mjs,docs/engineering/local-development.md
 scripts/start-local-prod-like.mjs,docs/engineering/local-development.md
 scripts/start-workers-prod.mjs,docs/engineering/local-development.md
 scripts/summarizeRcGates.mjs,docs/operations/post-deploy-smoke-checklist.md

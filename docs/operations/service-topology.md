@@ -1,6 +1,6 @@
 # Service Topology
 
-Last updated: 2026-06-05
+Last updated: 2026-06-06
 
 ## Purpose
 
@@ -79,6 +79,16 @@ rows in this runner, but current selector and project-scoped reads succeeded.
 Application rows still report `running:unknown`; PostgreSQL and Redis report
 `running:healthy`. This remains read-only topology/status evidence only;
 protected smoke and deploy mutation readiness are separate release gates.
+
+`LUC-2223` resource inventory reconciliation: latest project-scoped Coolify
+evidence from `2026-06-06T18:25:12Z` reconfirmed selector `LuckySparrow`,
+project `Soar`, production environment `production`, six applications,
+PostgreSQL, Redis, zero generic services, `17` visible global resource rows,
+and the same eight canonical production-environment resources. Application
+rows still report `running:unknown`; PostgreSQL and Redis report
+`running:healthy`. This closes the stale inventory issue for downstream
+resource-by-resource deploy/status verification, but it is not a deploy,
+restart, rollback, protected-smoke, or release approval.
 
 ## Maintenance Rule
 

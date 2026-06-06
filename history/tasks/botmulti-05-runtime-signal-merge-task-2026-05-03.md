@@ -12,6 +12,15 @@
 - Iteration: 2026-05-03 post-V1 BOTMULTI activation, iteration 5
 - Operation Mode: TESTER
 
+## Architecture Links
+
+- Primary feature/module: Runtime signal merge for multi-strategy bots.
+- Architecture nodes: SOAR-FEATURE-ENGINE-RUNTIME-CORE; SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-DB-BOT; SOAR-FEATURE-STRATEGIES.
+- Function chains: docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md; docs/architecture/chains/CHAIN-STRATEGIES.md.
+- Affected files: apps/api/src/modules/engine; apps/api/src/modules/bots.
+- Tests/proof: runtime signal merge tests and validation recorded in this task.
+- Docs updated: BOTMULTI planning/context docs.
+
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

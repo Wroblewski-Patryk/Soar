@@ -47,6 +47,10 @@ Failure effect: prod rollback trigger if post-deploy.
 Required:
 - web root route returns HTTP `200`,
 - web can reach API baseline endpoint through configured `NEXT_PUBLIC_API_BASE_URL`.
+- `/api/build-info` exposes the selected candidate SHA from authoritative
+  build metadata (`metadataSource=env`, `git`, or `git-files`). Missing SHA,
+  `unknown`, runtime-only metadata, or GitHub branch-head fallback metadata
+  are inconclusive and fail closed for deploy provenance.
 
 Failure effect: prod rollback trigger if post-deploy.
 

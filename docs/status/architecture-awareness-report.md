@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-06-05T18:23:53.329Z
+Generated: 2026-06-06T16:24:34.647Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,66 +11,48 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 37 |
 | component | 97 |
-| document | 3577 |
-| feature | 224 |
-| function | 8305 |
+| document | 3706 |
+| feature | 225 |
+| function | 8324 |
 | migration | 56 |
 | model | 277 |
 | module | 15 |
 | project | 1 |
-| route | 348 |
-| task | 1018 |
-| test | 381 |
+| route | 352 |
+| task | 1101 |
+| test | 388 |
 
 ## Counts By Status
 
 | Status | Count |
 | --- | ---: |
-| blocked | 19 |
+| blocked | 24 |
 | deprecated | 7 |
-| implemented | 12687 |
+| implemented | 12830 |
 | in_progress | 9 |
-| tested | 660 |
-| verified | 1006 |
+| tested | 674 |
+| verified | 1087 |
 
 ## Health Signals
 
-- Raw implementation entities without inferred tests: 7611
-- Actionable implementation entities without inferred tests: 816
-- Raw implementation entities without inferred docs: 742
-- Actionable implementation entities without inferred docs: 4
-- Classified inferred-link noise: 7377
+- Raw implementation entities without inferred tests: 7608
+- Actionable implementation entities without inferred tests: 804
+- Raw implementation entities without inferred docs: 737
+- Actionable implementation entities without inferred docs: 0
+- Classified inferred-link noise: 7386
 - Entities without owner attribution: 0
 - Disconnected entities: 0
 
 ## Top Actionable Missing Test Links
 
-- feature: runPublicReadOnlyBrowserProof.mjs (scripts/runPublicReadOnlyBrowserProof.mjs)
 - function: main (apps/api/prisma/seed.ts#main)
 - function: resetBotsE2eState (apps/api/src/modules/bots/bots.e2e.shared.ts#resetBotsE2eState)
 - function: seedRuntimeTicker (apps/api/src/modules/bots/bots.e2e.shared.ts#seedRuntimeTicker)
 - function: getBotWithStrategyProjectionById (apps/api/src/modules/bots/bots.repository.ts#getBotWithStrategyProjectionById)
 - function: getOwnedBotWithStrategyProjection (apps/api/src/modules/bots/bots.repository.ts#getOwnedBotWithStrategyProjection)
 - function: listOwnedBotsWithStrategyProjection (apps/api/src/modules/bots/bots.repository.ts#listOwnedBotsWithStrategyProjection)
-- function: getRuntimeSymbolLiveRows (apps/api/src/modules/bots/botsRuntimeRead.repository.ts#getRuntimeSymbolLiveRows)
-- function: getRuntimeSymbolStatsBaseData (apps/api/src/modules/bots/botsRuntimeRead.repository.ts#getRuntimeSymbolStatsBaseData)
 - function: listMarketCandles (apps/api/src/modules/bots/botsRuntimeRead.repository.ts#listMarketCandles)
-- function: listRuntimeFallbackSymbolsFromEvents (apps/api/src/modules/bots/botsRuntimeRead.repository.ts#listRuntimeFallbackSymbolsFromEvents)
-- function: listRuntimeSymbolStatsRowsForSymbols (apps/api/src/modules/bots/botsRuntimeRead.repository.ts#listRuntimeSymbolStatsRowsForSymbols)
 - function: listStrategiesByIds (apps/api/src/modules/bots/botsRuntimeRead.repository.ts#listStrategiesByIds)
-- function: computePriceFromPnlFraction (apps/api/src/modules/engine/positionPnlSemantics.ts#computePriceFromPnlFraction)
-- function: computeUnrealizedPnlFromPrice (apps/api/src/modules/engine/positionPnlSemantics.ts#computeUnrealizedPnlFromPrice)
-- function: resolveModeledMarginUsed (apps/api/src/modules/engine/positionPnlSemantics.ts#resolveModeledMarginUsed)
-- function: resolvePositionPnlFraction (apps/api/src/modules/engine/positionPnlSemantics.ts#resolvePositionPnlFraction)
-- function: clamp (apps/api/src/modules/engine/positionSizing.ts#clamp)
-- function: computeRiskBasedOrderQuantity (apps/api/src/modules/engine/positionSizing.ts#computeRiskBasedOrderQuantity)
-- function: normalizeWalletRiskPercent (apps/api/src/modules/engine/positionSizing.ts#normalizeWalletRiskPercent)
-- function: round (apps/api/src/modules/engine/positionSizing.ts#round)
-- function: recordRuntimeAutomationSkipTelemetry (apps/api/src/modules/engine/runtimePositionAutomationSkipTelemetry.ts#recordRuntimeAutomationSkipTelemetry)
-- function: resolveRuntimeAutomationTelemetryMode (apps/api/src/modules/engine/runtimePositionAutomationSkipTelemetry.ts#resolveRuntimeAutomationTelemetryMode)
-- function: hasMaterialCanonicalBasisDrift (apps/api/src/modules/engine/runtimePositionAutomationStateRebase.ts#hasMaterialCanonicalBasisDrift)
-- function: recordRuntimeDcaFundsExhaustedTelemetry (apps/api/src/modules/engine/runtimePositionAutomationTelemetry.ts#recordRuntimeDcaFundsExhaustedTelemetry)
-- function: recordRuntimeProtectionCloseDecisionTelemetry (apps/api/src/modules/engine/runtimePositionAutomationTelemetry.ts#recordRuntimeProtectionCloseDecisionTelemetry)
 - function: toFiniteNonNegativeInt (apps/api/src/modules/engine/runtimePositionState.store.ts#toFiniteNonNegativeInt)
 - function: clampPeriod (apps/api/src/modules/engine/sharedIndicatorSeries.ts#clampPeriod)
 - function: ensureAdx (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureAdx)
@@ -85,18 +67,32 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - function: ensureMomentum (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureMomentum)
 - function: ensureOpenInterest (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOpenInterest)
 - function: ensureOpenInterestDelta (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOpenInterestDelta)
+- function: ensureOpenInterestMa (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOpenInterestMa)
+- function: ensureOpenInterestZScore (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOpenInterestZScore)
+- function: ensureOrderBookDepthRatio (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOrderBookDepthRatio)
+- function: ensureOrderBookImbalance (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOrderBookImbalance)
+- function: ensureOrderBookSpreadBps (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOrderBookSpreadBps)
+- function: ensureRoc (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureRoc)
+- function: ensureSma (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureSma)
+- function: ensureStochastic (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureStochastic)
+- function: ensureStochRsi (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureStochRsi)
+- function: pushConditionLine (apps/api/src/modules/engine/strategySignalAnalysis.ts#pushConditionLine)
+- function: pushIndicatorSummary (apps/api/src/modules/engine/strategySignalAnalysis.ts#pushIndicatorSummary)
+- function: pushRule (apps/api/src/modules/engine/strategySignalAnalysis.ts#pushRule)
+- function: withFallback (apps/api/src/modules/engine/strategySignalAnalysis.ts#withFallback)
+- function: buildImportedExternalPositionId (apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#buildImportedExternalPositionId)
+- function: buildImportedExternalPositionIds (apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#buildImportedExternalPositionIds)
+- function: buildImportedExternalPositionMarketPrefix (apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#buildImportedExternalPositionMarketPrefix)
+- function: buildLegacyImportedExternalPositionId (apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#buildLegacyImportedExternalPositionId)
+- function: buildLegacyImportedExternalPositionSymbolPrefix (apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#buildLegacyImportedExternalPositionSymbolPrefix)
 
 ## Top Actionable Missing Doc Links
 
-- feature: runPublicReadOnlyBrowserProof.mjs (scripts/runPublicReadOnlyBrowserProof.mjs)
-- model: CdpClient (scripts/runPublicReadOnlyBrowserProof.mjs#CdpClient)
-- route: page.tsx (apps/web/src/app/(public)/privacy/page.tsx)
-- route: page.tsx (apps/web/src/app/(public)/terms/page.tsx)
 
 ## Classified Inferred-Link Noise
 
 - config_only_file: 65
-- curated_graph_covered: 1536
+- curated_graph_covered: 1545
 - generated_vendor_docs_vault_plugin: 5775
 - top_level_app_mount: 1
 
@@ -146,7 +142,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 ## Notes
 
 - This is an inferred baseline. CTO/Docs Memory must promote or correct important relations.
-- Curated graph coverage input: `C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.json` (covered paths: 976).
+- Curated graph coverage input: `C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.json` (covered paths: 982).
 - Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 0, relation entries: 0).
 - Override summary: excluded files 0, entity overrides 0, relation overrides 0, critical entities tagged 0.
 - `verified` still requires fresh command/browser/deploy evidence, not only file presence.

@@ -1,6 +1,787 @@
 # Next Steps
 
-Last updated: 2026-05-28
+Last updated: 2026-06-06
+
+## 2026-06-06 LUC-2537 PM No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2537](/LUC/issues/LUC-2537) as a completed PM coordination
+   checkpoint, not a product-code, runtime, deploy, protected-smoke, or
+   source-control implementation lane.
+2. DRE owns [LUC-2406](/LUC/issues/LUC-2406), now `in_progress`, for the
+   source-control closure sidecar to [LUC-2403](/LUC/issues/LUC-2403).
+3. TSA owns [LUC-2407](/LUC/issues/LUC-2407), now `in_progress`, as the
+   canonical safe architecture-planning lane. Keep duplicates
+   [LUC-2528](/LUC/issues/LUC-2528) and [LUC-2531](/LUC/issues/LUC-2531)
+   blocked behind [LUC-2407](/LUC/issues/LUC-2407) unless that lane is
+   cancelled or explicitly superseded.
+4. Preserve [LUC-244](/LUC/issues/LUC-244) as the canonical PM no-stall lane,
+   currently blocked through [LUC-47](/LUC/issues/LUC-47),
+   [LUC-241](/LUC/issues/LUC-241), and [LUC-2505](/LUC/issues/LUC-2505).
+5. Preserve the protected release chain:
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+6. Tooling drift remains: `pnpm softwarehouse:control-tick` is named by issue
+   contracts but is not exposed in this checkout, and
+   `scripts/run-live-run-janitor.mjs` is absent.
+
+## 2026-06-06 LUC-2527 Gap Register And Repair Lane Refresh Next Action
+
+1. Treat [LUC-2527](/LUC/issues/LUC-2527) as a completed TSA coordination
+   checkpoint, not a product-code, runtime, deploy, or protected-smoke lane.
+2. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, QA,
+   TSA, or release-path issues from this checkpoint. Live readback confirmed
+   the existing owner lanes cover the active blockers.
+3. Preserve the protected release chain:
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+4. Preserve the protected smoke-auth/worker gate chain:
+   [LUC-2505](/LUC/issues/LUC-2505) ->
+   [LUC-1438](/LUC/issues/LUC-1438) ->
+   [LUC-241](/LUC/issues/LUC-241) ->
+   [LUC-47](/LUC/issues/LUC-47) ->
+   [LUC-244](/LUC/issues/LUC-244).
+5. Treat [LUC-2506](/LUC/issues/LUC-2506),
+   [LUC-2507](/LUC/issues/LUC-2507),
+   [LUC-2520](/LUC/issues/LUC-2520),
+   [LUC-2522](/LUC/issues/LUC-2522), and
+   [LUC-2524](/LUC/issues/LUC-2524) as done per live readback.
+6. Next executable release owner/action remains Security/Ops on
+   [LUC-2372](/LUC/issues/LUC-2372) and [LUC-2505](/LUC/issues/LUC-2505),
+   with QA/Ops downstream only after prerequisites close.
+
+## 2026-06-06 LUC-2524 PM No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2524](/LUC/issues/LUC-2524) as a completed PM coordination
+   checkpoint, not a product-code, runtime, deploy, or protected-smoke lane.
+2. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, QA,
+   TSA, or release-path issues from this checkpoint. Live readback confirmed
+   the active owner lanes already cover the current blockers.
+3. Preserve the canonical PM no-stall lane:
+   [LUC-244](/LUC/issues/LUC-244) remains blocked by
+   [LUC-47](/LUC/issues/LUC-47) plus [LUC-241](/LUC/issues/LUC-241).
+4. Preserve the protected smoke-auth/worker gate chain:
+   [LUC-2505](/LUC/issues/LUC-2505) ->
+   [LUC-1438](/LUC/issues/LUC-1438) ->
+   [LUC-241](/LUC/issues/LUC-241) ->
+   [LUC-47](/LUC/issues/LUC-47) ->
+   [LUC-244](/LUC/issues/LUC-244).
+5. Preserve the protected release chain:
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+6. Treat [LUC-2506](/LUC/issues/LUC-2506),
+   [LUC-2507](/LUC/issues/LUC-2507),
+   [LUC-2520](/LUC/issues/LUC-2520), and
+   [LUC-2522](/LUC/issues/LUC-2522) as done per live readback.
+7. Tooling drift remains: `pnpm softwarehouse:control-tick` is named by the
+   issue contract but is not exposed in this checkout, and
+   `scripts/run-live-run-janitor.mjs` is absent.
+
+## 2026-06-06 LUC-2223 Coolify Resource Inventory Next Action
+
+1. Treat [LUC-2223](/LUC/issues/LUC-2223) as complete for read-only Coolify
+   resource inventory reconciliation.
+2. Downstream [LUC-2513](/LUC/issues/LUC-2513) may consume the canonical target
+   list: `soar-web`, `soar-api`, `workers-backtest`, `workers-execution`,
+   `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`.
+3. Do not treat this as deploy, restart, rollback, env-edit, protected-smoke,
+   or release approval. Application inventory status remains `running:unknown`;
+   PostgreSQL and Redis report `running:healthy`.
+4. Full release confidence still requires separate public health, protected
+   `/workers/ready`, worker freshness, rollback/SLO, account/auth, and
+   post-deploy proof gates.
+
+## 2026-06-06 LUC-2522 V1 Audit-To-Completion Controller Next Action
+
+1. Treat [LUC-2522](/LUC/issues/LUC-2522) as a completed TSA controller
+   checkpoint, not a product-code, runtime, deploy, or protected-smoke lane.
+2. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, QA,
+   TSA, or release-path issues from this checkpoint. Live readback confirmed
+   existing owner lanes cover the active blockers.
+3. Preserve the protected release chain:
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+4. Preserve the protected smoke-auth/worker gate chain:
+   [LUC-2505](/LUC/issues/LUC-2505) ->
+   [LUC-1438](/LUC/issues/LUC-1438) ->
+   [LUC-241](/LUC/issues/LUC-241) ->
+   [LUC-47](/LUC/issues/LUC-47) ->
+   [LUC-244](/LUC/issues/LUC-244).
+5. Treat [LUC-2506](/LUC/issues/LUC-2506),
+   [LUC-2507](/LUC/issues/LUC-2507), and
+   [LUC-2520](/LUC/issues/LUC-2520) as done per live readback.
+6. Tooling drift remains: `pnpm softwarehouse:control-tick` is named by the
+   issue contract but is not exposed in this checkout, and
+   `scripts/run-live-run-janitor.mjs` is absent.
+
+## 2026-06-06 LUC-2520 LUC-241 Blocked Disposition Next Action
+
+1. Treat [LUC-2520](/LUC/issues/LUC-2520) as complete: [LUC-241](/LUC/issues/LUC-241)
+   now reads back as `blocked`, not `todo`, while preserving
+   [LUC-1438](/LUC/issues/LUC-1438) as its first-class blocker.
+2. Do not treat [LUC-241](/LUC/issues/LUC-241) as runnable until
+   [LUC-1438](/LUC/issues/LUC-1438) unblocks.
+3. Preserve the protected smoke-auth owner path:
+   [LUC-1438](/LUC/issues/LUC-1438) remains blocked by
+   [LUC-2505](/LUC/issues/LUC-2505), and [LUC-2505](/LUC/issues/LUC-2505)
+   remains the endpoint-acceptance gate for supported smoke auth binding.
+4. Downstream PM/Ops routing should now read [LUC-244](/LUC/issues/LUC-244)
+   and [LUC-47](/LUC/issues/LUC-47) as blocked by `LUC-241:blocked`, avoiding
+   duplicate no-stall or Ops lanes for the stale status.
+
+## 2026-06-06 LUC-2517 PM No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2517](/LUC/issues/LUC-2517) as a completed PM coordination
+   checkpoint, not a product-code or release-mutation lane.
+2. Child [LUC-2520](/LUC/issues/LUC-2520) has completed the required status
+   correction: [LUC-241](/LUC/issues/LUC-241) now reads back as `blocked`
+   while preserving first-class blocker [LUC-1438](/LUC/issues/LUC-1438).
+3. Preserve the blocker chain:
+   [LUC-2505](/LUC/issues/LUC-2505) ->
+   [LUC-1438](/LUC/issues/LUC-1438) ->
+   [LUC-241](/LUC/issues/LUC-241) ->
+   [LUC-47](/LUC/issues/LUC-47) ->
+   [LUC-244](/LUC/issues/LUC-244).
+4. Keep the protected release chain fail-closed:
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+5. Tooling drift remains: `pnpm softwarehouse:control-tick` is named by the
+   issue contract but is not exposed as a direct Soar command in this checkout,
+   and `scripts/run-live-run-janitor.mjs` is absent.
+
+## 2026-06-06 LUC-2514 PM No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2514](/LUC/issues/LUC-2514) as a completed PM coordination
+   checkpoint, not a product-code or release-mutation lane.
+2. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, QA,
+   TSA, or release-path issues. Live readback confirmed [LUC-244](/LUC/issues/LUC-244)
+   remains the canonical PM no-stall lane and is blocked by
+   [LUC-47](/LUC/issues/LUC-47) plus [LUC-241](/LUC/issues/LUC-241).
+3. Preserve the upstream worker/smoke blocker path:
+   [LUC-241](/LUC/issues/LUC-241) is `todo` and blocked by
+   [LUC-1438](/LUC/issues/LUC-1438); [LUC-2505](/LUC/issues/LUC-2505)
+   remains blocked until a supported smoke auth binding is accepted by
+   `/workers/ready`.
+4. Keep the current protected release chain fail-closed:
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+5. Treat [LUC-2506](/LUC/issues/LUC-2506),
+   [LUC-2507](/LUC/issues/LUC-2507), and
+   [LUC-2508](/LUC/issues/LUC-2508) as done per live API readback; no
+   duplicate provenance, register-refresh, or PM no-stall lane is needed.
+6. Tooling drift remains: `pnpm softwarehouse:control-tick` is named by the
+   issue contract but is not exposed as a direct Soar command in this checkout,
+   and `scripts/run-live-run-janitor.mjs` is absent.
+
+## 2026-06-06 LUC-2508 PM No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2508](/LUC/issues/LUC-2508) as a completed PM coordination
+   checkpoint, not a product-code or release-mutation lane.
+2. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, QA,
+   TSA, or release-path issues. Live readback confirmed [LUC-244](/LUC/issues/LUC-244)
+   remains the canonical PM no-stall lane and is blocked by
+   [LUC-47](/LUC/issues/LUC-47) plus [LUC-241](/LUC/issues/LUC-241).
+3. Keep the current protected release chain fail-closed:
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+4. Keep [LUC-2505](/LUC/issues/LUC-2505) as the Security/Ops smoke-auth
+   endpoint acceptance blocker for [LUC-1438](/LUC/issues/LUC-1438).
+5. Treat [LUC-2506](/LUC/issues/LUC-2506) and [LUC-2507](/LUC/issues/LUC-2507)
+   as done per live API readback; no duplicate provenance or register-refresh
+   lane is needed.
+6. Tooling drift remains: `pnpm softwarehouse:control-tick` is named by the
+   issue contract but is not exposed as a direct Soar command in this checkout,
+   and `scripts/run-live-run-janitor.mjs` is absent.
+
+## 2026-06-06 LUC-2507 Gap Register And Repair Lane Refresh Next Action
+
+1. Treat [LUC-2507](/LUC/issues/LUC-2507) as a completed TSA coordination
+   checkpoint, not a product-code or release-mutation lane.
+2. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, QA,
+   TSA, or release-path issues from this checkpoint. Live readback confirmed
+   the existing protected release chain remains:
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+3. Keep [LUC-2505](/LUC/issues/LUC-2505) as the Security/Ops owner for
+   protected smoke-auth binding acceptance by `/workers/ready`; names-only
+   presence is not sufficient.
+4. [LUC-2506](/LUC/issues/LUC-2506) has local completed DRE hardening evidence
+   but live API still reports `in_progress`; DRE/Ops should status-sync it or
+   record concrete remaining work. Do not create a duplicate provenance lane.
+5. Next executable release owner/action remains Security/Ops on
+   [LUC-2372](/LUC/issues/LUC-2372) and [LUC-2505](/LUC/issues/LUC-2505),
+   with QA/Ops downstream through [LUC-2366](/LUC/issues/LUC-2366),
+   [LUC-2361](/LUC/issues/LUC-2361), and [LUC-2378](/LUC/issues/LUC-2378)
+   only after prerequisites close.
+
+## 2026-06-06 LUC-2506 Web Build-Info Source Provenance Next Action
+
+1. Treat [LUC-2506](/LUC/issues/LUC-2506) as completed local DRE hardening:
+   build metadata and the runtime route no longer derive deploy provenance from
+   GitHub branch head, and deploy wait rejects `github-branch*` by default.
+2. Future Web deploy/redeploy lanes must provide `SOURCE_COMMIT` or equivalent
+   authoritative build metadata and wait for `/api/build-info` to report the
+   target SHA with `metadataSource=env`, `git`, or `git-files`.
+3. Do not treat current production readback as updated by this task; no
+   deploy/restart/rollback/env mutation occurred.
+4. Keep V1 release confidence fail-closed until the existing protected
+   worker/dashboard/account/SLO/rollback/live runtime gates are complete.
+
+## 2026-06-06 LUC-2505 Smoke Auth Binding Workers Ready Next Action
+
+1. Treat [LUC-2505](/LUC/issues/LUC-2505) as blocked, not done: supported
+   smoke binding names are now present, but none of the available token or
+   login bindings is accepted by Soar API auth for protected
+   `GET /workers/ready`.
+2. Current proof: public API/Web/build-info checks pass for
+   `56d8d440bfe0fd9ee692e9f669e35414d85d2493`, while
+   `SMOKE_AUTH_TOKEN` and process-local `PROD_UI_AUDIT_ADMIN_TOKEN` mapping
+   return `/workers/ready` `401`; `SMOKE_AUTH_EMAIL`/`SMOKE_AUTH_PASSWORD`
+   and process-local admin audit email/password mapping fail login with
+   `400 Validation failed`.
+3. Do not unblock [LUC-1438](/LUC/issues/LUC-1438) from names-only binding
+   presence. Endpoint acceptance is the gate.
+4. Required unblock owner/action: board-capable Security/Ops secret-store owner
+   rotates or provisions a production-smoke appropriate `ADMIN`
+   principal/session accepted by Soar API auth, then exposes it through
+   `SMOKE_AUTH_TOKEN` or `SMOKE_AUTH_EMAIL` + `SMOKE_AUTH_PASSWORD` without
+   exposing values.
+5. After the accepted binding is installed, wake [LUC-1438](/LUC/issues/LUC-1438)
+   for the exact worker-included smoke rerun.
+
+## 2026-06-06 LUC-2499 Coolify Production Deploy Health Sweep Next Action
+
+1. Treat [LUC-2504](/LUC/issues/LUC-2504) as the completed read-only child
+   diagnosis for the `soar-web` metadata/build-info mismatch from
+   [LUC-2499](/LUC/issues/LUC-2499).
+2. Do not redeploy, restart, rollback, clear queues, edit env, or mutate
+   production from this finding alone. Current public Web is reachable and
+   available deployment endpoints show no queued/in-progress/failed rows.
+3. Preserve the caveat for release gates: Web `/api/build-info` currently
+   reports `metadataSource=github-branch`, so it is public freshness evidence
+   but not authoritative container-source provenance until build-time source
+   metadata is restored.
+4. Use [LUC-2506](/LUC/issues/LUC-2506) as the DRE follow-up for authoritative
+   Web build-info source-provenance hardening. It has a live DRE execution path
+   in Paperclip, is not a production mutation permit, and must request explicit
+   approval if env/deploy/restart changes are needed.
+5. Treat the static Next.js Server Action mismatch log as stale-client/deploy
+   transition noise unless it starts growing again or coincides with public Web
+   failure.
+6. Full V1 release confidence remains blocked through the existing protected
+   evidence chain; this read-only diagnosis does not replace protected worker,
+   dashboard, account, SLO, rollback, or live runtime proof.
+
+## 2026-06-06 LUC-2499 Coolify Production Deploy Health Sweep Previous Action
+
+1. Treat [LUC-2499](/LUC/issues/LUC-2499) as a completed read-only DRE
+   production health checkpoint with a separate deploy-diagnosis follow-up.
+2. Current public production health is green for pushed SHA
+   `56d8d440bfe0fd9ee692e9f669e35414d85d2493`; API `/health`, API `/ready`,
+   Web `/`, and Web `/api/build-info` passed, while unauthenticated
+   `/workers/ready` remains fail-closed at `401`.
+3. Coolify topology resolves under selector `LuckySparrow`, project `Soar`,
+   environment `production`: six applications, PostgreSQL, Redis, zero generic
+   services, and `17` visible global resource rows.
+4. Fresh deploy-diagnosis finding: `soar-web` Coolify metadata reports
+   `git_commit_sha=b894e5dd...` while public build-info reports
+   `56d8d440...`, and Web logs include recent Next.js Server Action mismatch
+   errors. Do not redeploy/restart/rollback from this finding alone.
+5. Next owner/action: read-only child diagnosis lane correlates recent failed
+   `soar-web` deploy/rollback history and logs. If it identifies a required
+   production mutation, request explicit approval with affected resource,
+   source ref, rollback plan, and smoke plan.
+
+## 2026-06-06 LUC-2497 Autonomous Idle And Map Drift Sweep Next Action
+
+1. Treat [LUC-2497](/LUC/issues/LUC-2497) as a completed docs-memory/map
+   parity checkpoint, not a product-code, runtime, or release-mutation lane.
+2. Do not open duplicate map, Backend, source-control, PM, Ops, Security/Ops,
+   QA, TSA, or release lanes from this checkpoint. Current validation is clean:
+   architecture graph drift `837/837`, docs parity API `22/22`, Web `16/16`,
+   Routes `39/39`.
+3. Next executable release owner/action remains Security/Ops on
+   [LUC-2372](/LUC/issues/LUC-2372), then QA/Ops downstream through
+   [LUC-2366](/LUC/issues/LUC-2366), [LUC-2361](/LUC/issues/LUC-2361), and
+   [LUC-2378](/LUC/issues/LUC-2378). This docs sweep does not change release
+   confidence.
+
+## 2026-06-06 LUC-2490 PM No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2490](/LUC/issues/LUC-2490) as a completed PM coordination
+   checkpoint, not a product-code or release-mutation lane.
+2. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, QA,
+   TSA, or release-path issues. Direct readback confirmed canonical
+   [LUC-244](/LUC/issues/LUC-244) remains `blocked`, and the current V1
+   protected release chain remains:
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+3. Keep [LUC-244](/LUC/issues/LUC-244) as the canonical PM no-stall lane while
+   it exists; it currently reads back as blocked by
+   [LUC-47](/LUC/issues/LUC-47) and [LUC-241](/LUC/issues/LUC-241).
+4. Next executable owner/action: Security/Ops keeps
+   [LUC-2372](/LUC/issues/LUC-2372) blocked with exact missing protected input
+   families or binds approved names-only availability for
+   `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_DB_CHECK_*` /
+   `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE*`.
+5. Tooling drift remains: `pnpm softwarehouse:control-tick` is named by issue
+   contracts but is not exposed as a direct Soar command in this checkout, and
+   `scripts/run-live-run-janitor.mjs` is absent.
+
+## 2026-06-06 LUC-2487 PM No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2487](/LUC/issues/LUC-2487) as a completed PM coordination
+   checkpoint, not a product-code or release-mutation lane.
+2. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, QA,
+   TSA, or release-path issues. Direct readback confirmed the existing current
+   chain remains:
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+3. Keep [LUC-244](/LUC/issues/LUC-244) as the canonical PM no-stall lane while
+   it exists; do not create sibling no-stall issues manually from this
+   checkpoint.
+4. Next executable owner/action: Security/Ops keeps
+   [LUC-2372](/LUC/issues/LUC-2372) blocked with exact missing protected input
+   families or binds approved names-only availability for
+   `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_DB_CHECK_*` /
+   `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE*`.
+5. Tooling drift remains: `pnpm softwarehouse:control-tick` is named by issue
+   contracts but is not exposed as a direct Soar command in this checkout, and
+   `scripts/run-live-run-janitor.mjs` is absent.
+
+## 2026-06-06 LUC-2482 PM No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2482](/LUC/issues/LUC-2482) as a completed PM coordination
+   checkpoint, not a product-code or release-mutation lane.
+2. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, QA,
+   TSA, or release-path issues. Live readback confirmed the existing current
+   chain remains:
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+3. Keep [LUC-244](/LUC/issues/LUC-244) as the canonical PM no-stall lane while
+   it exists; do not create sibling no-stall issues manually from this
+   checkpoint.
+4. Next executable owner/action: Security/Ops keeps
+   [LUC-2372](/LUC/issues/LUC-2372) blocked with exact missing protected input
+   families or binds approved names-only availability for
+   `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_DB_CHECK_*` /
+   `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE*`.
+5. Tooling drift remains: `pnpm softwarehouse:control-tick` is named by issue
+   contracts but is not exposed as a direct Soar command in this checkout.
+
+## 2026-06-06 LUC-2481 Gap Register And Repair Lane Refresh Next Action
+
+1. Treat [LUC-2481](/LUC/issues/LUC-2481) as a completed TSA coordination
+   checkpoint, not a product-code or release-mutation lane.
+2. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, QA,
+   TSA, or release-path issues. Live readback confirmed the existing chain:
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+3. Already-done prerequisite lanes [LUC-2365](/LUC/issues/LUC-2365) and
+   [LUC-2364](/LUC/issues/LUC-2364) should not be reopened from this register
+   refresh.
+4. Next executable owner/action: Security/Ops keeps
+   [LUC-2372](/LUC/issues/LUC-2372) blocked with exact missing protected input
+   families or binds approved names-only availability for
+   `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_DB_CHECK_*` /
+   `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE*`.
+5. After [LUC-2372](/LUC/issues/LUC-2372) unblocks, QA reruns
+   [LUC-2366](/LUC/issues/LUC-2366); only then can
+   [LUC-2361](/LUC/issues/LUC-2361) and
+   [LUC-2378](/LUC/issues/LUC-2378) move toward release disposition.
+
+## 2026-06-06 LUC-2475 Deploy Smoke Abort Handling Next Action
+
+1. Treat [LUC-2475](/LUC/issues/LUC-2475) as completed Test Automation
+   hardening for public deploy smoke abort diagnostics.
+2. Use `SMOKE_TRANSIENT_RETRIES=0` only when a no-retry diagnostic run is
+   explicitly desired; the default `1` retries only transient fetch abort,
+   timeout, or fetch-failed failures.
+3. Do not classify HTTP status failures, readiness degradation, missing
+   build-info SHA, or SHA mismatch as runner instability; those remain
+   fail-closed smoke failures.
+4. For [LUC-2456](/LUC/issues/LUC-2456), a future PASS row with
+   `transient retry:` is runner/network instability. A future FAIL after
+   exhausted transient retries remains a product-health smoke failure until
+   direct endpoint probes prove otherwise.
+
+## 2026-06-06 LUC-2465 Coolify Production Deploy Health Sweep Next Action
+
+1. Treat [LUC-2465](/LUC/issues/LUC-2465) as a completed read-only DRE/Ops
+   production health sweep, not a release-mutation lane.
+2. Current public production health remains verified at
+   `56d8d440bfe0fd9ee692e9f669e35414d85d2493`: API `/health` and `/ready`
+   passed, Web `/` and `/api/build-info` passed, and unauthenticated
+   `/workers/ready` returned `401` fail-closed.
+3. Coolify production topology remains unchanged: project `Soar`, environment
+   `production`, six applications, PostgreSQL, Redis, zero generic services,
+   and `17` visible global resource rows. Application metadata still reports
+   `running:unknown`; PostgreSQL and Redis report `running:healthy`.
+4. Do not use this sweep as protected release proof. Next executable release
+   owner/action remains Security/Ops on [LUC-2372](/LUC/issues/LUC-2372), then
+   QA/Ops downstream through [LUC-2366](/LUC/issues/LUC-2366),
+   [LUC-2361](/LUC/issues/LUC-2361), and [LUC-2378](/LUC/issues/LUC-2378).
+
+## 2026-06-06 LUC-2456 Regression Evidence Sweep Next Action
+
+1. Treat [LUC-2456](/LUC/issues/LUC-2456) as done for the QA sweep itself.
+2. Do not rerun the same public smoke loop from [LUC-2456](/LUC/issues/LUC-2456)
+   unless new product-health evidence appears; the direct public probes passed
+   while the canonical runner was unstable.
+3. Route the remaining action through [LUC-2475](/LUC/issues/LUC-2475): Test
+   Automation must reproduce, explain, or harden `scripts/deploySmokeCheck.mjs`
+   abort handling for public no-workers smoke without masking real endpoint
+   failures.
+4. Safe evidence from the sweep remains current: guardrails, docs parity,
+   strict graph drift, Web go-live tests, Coolify env checker tests, direct
+   public API/Web probes, and unauthenticated worker `401` fail-closed.
+5. Protected V1 runtime/worker/SLO/rollback/RC/input proof remains separate and
+   fail-closed through the existing protected gate chain.
+
+## 2026-06-06 LUC-2461 Security And Account-Access Gate Sweep Next Action
+
+1. Treat [LUC-2461](/LUC/issues/LUC-2461) as a blocked Security checkpoint,
+   not a product-code, deploy, account-mutation, or live-trading lane.
+2. Current names-only readiness for production SHA
+   `56d8d440bfe0fd9ee692e9f669e35414d85d2493` is `PARTIAL`: UI audit/admin
+   input names are present, but runtime/SLO/release approval families remain
+   missing.
+3. Required unblock owner/action: board-capable Security/Ops secret owner binds
+   `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, one accepted production DB
+   check family (`PROD_DB_CHECK_*` or `PRODUCTION_DB_CHECK_*`), `RC_*`, and
+   `GATE*` through approved encrypted runtime injection, without exposing
+   values.
+4. After the missing families are bound, wake [LUC-2366](/LUC/issues/LUC-2366)
+   for protected runtime/worker/SLO proof. Until then, keep
+   [LUC-2366](/LUC/issues/LUC-2366), [LUC-2361](/LUC/issues/LUC-2361), and
+   [LUC-2378](/LUC/issues/LUC-2378) fail-closed.
+5. Do not substitute public build-info, public smoke, or UI audit auth presence
+   for liveimport, rollback, DB restore, RC, or approver proof.
+
+## 2026-06-06 LUC-2464 V1 Audit-To-Completion Controller Next Action
+
+1. Treat [LUC-2464](/LUC/issues/LUC-2464) as a blocked TSA controller
+   checkpoint, not a product-code or release-mutation lane.
+2. The controller's missing first-class blocker linkage was repaired:
+   [LUC-2464](/LUC/issues/LUC-2464) is blocked by
+   [LUC-2372](/LUC/issues/LUC-2372).
+3. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, QA,
+   TSA, or release lanes. The active chain remains
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+4. Next executable owner/action: Security/Ops keeps
+   [LUC-2372](/LUC/issues/LUC-2372) blocked with exact missing protected input
+   families or binds approved names-only availability for
+   `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_DB_CHECK_*` /
+   `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE*`.
+5. After [LUC-2372](/LUC/issues/LUC-2372) unblocks, QA reruns
+   [LUC-2366](/LUC/issues/LUC-2366); only then can [LUC-2361](/LUC/issues/LUC-2361)
+   and [LUC-2378](/LUC/issues/LUC-2378) move toward release disposition.
+
+## 2026-06-06 LUC-2460 Gap Register And Repair Lane Refresh Next Action
+
+1. Treat [LUC-2460](/LUC/issues/LUC-2460) as a completed TSA coordination
+   checkpoint, not a product-code or release-mutation lane.
+2. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, QA,
+   TSA, or release-path issues. The current chain remains first-class:
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+3. Next executable owner/action: Security/Ops keeps
+   [LUC-2372](/LUC/issues/LUC-2372) blocked with exact missing protected input
+   families or binds approved names-only availability for
+   `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_DB_CHECK_*` /
+   `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE*`.
+4. After [LUC-2372](/LUC/issues/LUC-2372) unblocks, QA reruns
+   [LUC-2366](/LUC/issues/LUC-2366); only then can
+   [LUC-2361](/LUC/issues/LUC-2361) and
+   [LUC-2378](/LUC/issues/LUC-2378) move toward release disposition.
+5. Paperclip status readback degraded in this heartbeat: `heartbeat-context`
+   and focused issue search timed out. Use the next successful board readback
+   to reconcile statuses if a later wake carries new unblock evidence.
+
+## 2026-06-06 LUC-2449 Daily Project Status Refresh Next Action
+
+1. Treat [LUC-2449](/LUC/issues/LUC-2449) as a completed daily PM status
+   refresh, not a product-code or release-mutation lane.
+2. Current release posture remains fail-closed: public API/Web health and
+   production build freshness are verified at
+   `56d8d440bfe0fd9ee692e9f669e35414d85d2493`, but V1 release confidence is
+   still `NO-GO` until protected proof gates close.
+3. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, QA,
+   TSA, or release lanes. The current chain remains
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+4. Next executable owner/action: Security/Ops keeps
+   [LUC-2372](/LUC/issues/LUC-2372) blocked with exact missing protected input
+   families or binds approved names-only availability for
+   `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_DB_CHECK_*` /
+   `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE*`.
+5. Tooling drift remains: `pnpm softwarehouse:control-tick` is named by issue
+   contracts but is not exposed as a direct Soar command in this checkout.
+
+## 2026-06-06 LUC-2463 Autonomous Idle And Map Drift Sweep Next Action
+
+1. Treat [LUC-2463](/LUC/issues/LUC-2463) as a completed docs-memory/map
+   parity checkpoint, not a product-code, runtime, or release-mutation lane.
+2. Do not open duplicate map, Backend, source-control, PM, Ops, Security/Ops,
+   QA, TSA, or release lanes from this checkpoint. Current validation is clean:
+   architecture graph drift `831/831`, docs parity API `22/22`, Web `16/16`,
+   Routes `39/39`.
+3. Tooling drift remains unchanged: `pnpm softwarehouse:control-tick` is named
+   by issue contracts but is not exposed as a direct Soar command, and
+   `scripts/run-live-run-janitor.mjs` is absent in this checkout.
+4. Next executable release owner/action remains Security/Ops on
+   [LUC-2372](/LUC/issues/LUC-2372), then QA/Ops downstream through
+   [LUC-2366](/LUC/issues/LUC-2366), [LUC-2361](/LUC/issues/LUC-2361), and
+   [LUC-2378](/LUC/issues/LUC-2378). This docs sweep does not change release
+   confidence.
+
+## 2026-06-06 LUC-2457 PM No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2457](/LUC/issues/LUC-2457) as a completed PM coordination
+   checkpoint, not a product-code or release-mutation lane.
+2. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, QA,
+   TSA, or release-path issues. [LUC-2449](/LUC/issues/LUC-2449),
+   [LUC-2443](/LUC/issues/LUC-2443), and [LUC-2440](/LUC/issues/LUC-2440)
+   already refreshed current PM/TSA status and routing.
+3. Current critical path remains [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) -> [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+4. Next executable owner/action: Security/Ops keeps
+   [LUC-2372](/LUC/issues/LUC-2372) blocked with exact missing protected input
+   families or binds approved names-only availability for
+   `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_DB_CHECK_*` /
+   `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE*`.
+5. Tooling drift remains: `pnpm softwarehouse:control-tick` and
+   `scripts/run-live-run-janitor.mjs` are not available in this Soar checkout.
+
+## 2026-06-06 LUC-2443 Gap Register And Repair Lane Refresh Next Action
+
+1. Treat [LUC-2443](/LUC/issues/LUC-2443) as a completed TSA coordination
+   checkpoint, not a product-code or release-mutation lane.
+2. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, QA,
+   TSA, or release-path issues. The current chain is already first-class:
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+3. Next executable owner/action: Security/Ops keeps
+   [LUC-2372](/LUC/issues/LUC-2372) blocked with exact missing protected input
+   families or binds approved names-only availability for
+   `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_DB_CHECK_*` /
+   `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE*`.
+4. After [LUC-2372](/LUC/issues/LUC-2372) unblocks, QA reruns
+   [LUC-2366](/LUC/issues/LUC-2366); only then can [LUC-2361](/LUC/issues/LUC-2361)
+   and [LUC-2378](/LUC/issues/LUC-2378) move toward release disposition.
+5. Tooling drift remains: `pnpm softwarehouse:control-tick` did not produce a
+   usable control packet in this heartbeat and `scripts/run-live-run-janitor.mjs`
+   is absent in the Soar workspace.
+
+## 2026-06-06 LUC-2440 PM No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2440](/LUC/issues/LUC-2440) as a completed PM coordination
+   checkpoint, not a product-code or release-mutation lane.
+2. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, QA,
+   TSA, or release-path issues. [LUC-2419](/LUC/issues/LUC-2419),
+   [LUC-2422](/LUC/issues/LUC-2422), [LUC-2432](/LUC/issues/LUC-2432), and
+   [LUC-2438](/LUC/issues/LUC-2438) already closed the latest owner-action,
+   register, PM routing, and controller refreshes.
+3. Current critical path remains [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) -> [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+4. Next executable owner/action: Security/Ops keeps
+   [LUC-2372](/LUC/issues/LUC-2372) blocked with exact missing protected input
+   families or binds approved names-only availability for
+   `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_DB_CHECK_*` /
+   `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE*`.
+5. Paperclip API readback timed out during the [LUC-2440](/LUC/issues/LUC-2440)
+   heartbeat; use the local task artifact and next successful issue readback
+   to reconcile board status if needed.
+
+## 2026-06-06 LUC-2438 V1 Audit-To-Completion Controller Next Action
+
+1. Treat [LUC-2438](/LUC/issues/LUC-2438) as a blocked TSA controller
+   checkpoint, not a product-code or release-mutation lane.
+2. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, QA, or
+   TSA issues. [LUC-2419](/LUC/issues/LUC-2419), [LUC-2422](/LUC/issues/LUC-2422),
+   and [LUC-2432](/LUC/issues/LUC-2432) already closed the latest owner-action,
+   register, and PM routing refreshes.
+3. Current critical path remains [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) -> [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+4. Next executable owner/action: Security/Ops keeps
+   [LUC-2372](/LUC/issues/LUC-2372) blocked with exact missing protected input
+   families or binds approved names-only availability for
+   `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_DB_CHECK_*` /
+   `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE*`.
+5. After [LUC-2372](/LUC/issues/LUC-2372) unblocks, QA reruns
+   [LUC-2366](/LUC/issues/LUC-2366); only then can [LUC-2361](/LUC/issues/LUC-2361)
+   and [LUC-2378](/LUC/issues/LUC-2378) move toward release disposition.
+
+## 2026-06-06 LUC-2432 PM No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2432](/LUC/issues/LUC-2432) as a completed PM coordination
+   checkpoint, not a product-code or release-mutation lane.
+2. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, TSA,
+   or release-path issues. [LUC-2419](/LUC/issues/LUC-2419) already completed
+   the protected-input owner-action refresh; the active blocker remains
+   [LUC-2372](/LUC/issues/LUC-2372).
+3. Current critical path remains [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) -> [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+4. Next executable owner/action: Security/Ops keeps
+   [LUC-2372](/LUC/issues/LUC-2372) blocked with exact missing protected input
+   families or binds approved names-only availability for
+   `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_DB_CHECK_*` /
+   `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE*`.
+5. Paperclip API readback timed out during the [LUC-2432](/LUC/issues/LUC-2432)
+   heartbeat; use the local task artifact and next successful issue readback
+   to reconcile board status if needed.
+
+## 2026-06-06 LUC-2422 Gap Register And Repair Lane Refresh Next Action
+
+1. Treat [LUC-2422](/LUC/issues/LUC-2422) as a completed TSA coordination
+   checkpoint, not a product-code or release-mutation lane.
+2. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, or TSA
+   repair issues. [LUC-2419](/LUC/issues/LUC-2419) already refreshed the
+   protected-input owner action and is `done`; the underlying active blocker is
+   still [LUC-2372](/LUC/issues/LUC-2372).
+3. Current critical path remains:
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+4. Next executable owner/action: Security/Ops keeps
+   [LUC-2372](/LUC/issues/LUC-2372) blocked with exact missing protected input
+   families or binds approved names-only input availability for
+   `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_DB_CHECK_*` /
+   `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE*`.
+5. After [LUC-2372](/LUC/issues/LUC-2372) unblocks, QA reruns
+   [LUC-2366](/LUC/issues/LUC-2366); only then can [LUC-2361](/LUC/issues/LUC-2361)
+   and [LUC-2378](/LUC/issues/LUC-2378) move toward release disposition.
+
+## 2026-06-06 LUC-2418 PM No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2418](/LUC/issues/LUC-2418) as a completed PM coordination
+   checkpoint.
+2. Do not open duplicate release, Backend, Ops, Security/Ops, TSA,
+   source-control, or PM lanes. The active gate chain is first-class:
+   [LUC-2372](/LUC/issues/LUC-2372) -> [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) -> [LUC-2378](/LUC/issues/LUC-2378).
+3. Current next owner/action is [LUC-2419](/LUC/issues/LUC-2419), assigned to
+   Security/Ops, to reconfirm [LUC-2372](/LUC/issues/LUC-2372) protected input
+   gate ownership or keep it blocked with exact missing families and next
+   review condition.
+4. After [LUC-2372](/LUC/issues/LUC-2372) unblocks, route back to
+   [LUC-2366](/LUC/issues/LUC-2366) protected runtime/worker/SLO proof, then
+   [LUC-2361](/LUC/issues/LUC-2361) final gate, then
+   [LUC-2378](/LUC/issues/LUC-2378) promotion disposition.
+5. Note unresolved tooling drift: `pnpm softwarehouse:control-tick` remains
+   named by the issue contract but is not exposed as a direct repo command in
+   this checkout.
+
+## 2026-06-06 LUC-2417 Coolify Production Deploy Health Sweep Next Action
+
+1. Treat [LUC-2417](/LUC/issues/LUC-2417) as a completed read-only production
+   health checkpoint: public API/Web health is green and production Web
+   build-info matches current `origin/main` /
+   `56d8d440bfe0fd9ee692e9f669e35414d85d2493`.
+2. Do not rerun deploy, restart, rollback, env, database/Redis, account,
+   exchange, or live-trading mutations from this issue; it was verification
+   only.
+3. Keep protected release confidence separate: worker/dashboard/account/SLO,
+   rollback, and live runtime proof still require approved protected inputs and
+   dedicated release/QA/Ops lanes.
+4. Treat Coolify application `running:unknown` metadata as advisory only;
+   production acceptance remains public API/Web health plus protected worker
+   proof when that lane is authorized.
+
+## 2026-06-06 LUC-2414 Autonomous Idle And Map Drift Sweep Next Action
+
+1. Treat [LUC-2414](/LUC/issues/LUC-2414) as a completed docs-memory/map drift
+   repair checkpoint.
+2. Do not reopen route-map parity drift for `/privacy` and `/terms`;
+   `pnpm run docs:parity:check` now passes with `Routes 39/39`, and
+   `pnpm run architecture:graph:drift:strict` still passes with `831/831`.
+3. Route stale [LUC-2409](/LUC/issues/LUC-2409) `in_progress` status drift to
+   [LUC-2416](/LUC/issues/LUC-2416), assigned to Soar PM, instead of editing
+   another owner lane from docs stewardship.
+4. Keep release confidence fail-closed through the existing protected gates:
+   [LUC-2372](/LUC/issues/LUC-2372) protected-input binding,
+   [LUC-2366](/LUC/issues/LUC-2366) protected runtime/worker/SLO proof, and
+   [LUC-2378](/LUC/issues/LUC-2378) push/promotion disposition.
+5. Note unresolved tooling drift: `pnpm softwarehouse:control-tick` remains
+   named by the issue contract but is not exposed as a direct repo command in
+   this checkout.
+
+## 2026-06-06 LUC-2409 PM No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2409](/LUC/issues/LUC-2409) as a completed PM coordination
+   checkpoint, not a Backend, Ops, Security/Ops, TSA, or source-control repair
+   lane.
+2. Do not create duplicate release-path or protected-input lanes:
+   [LUC-2378](/LUC/issues/LUC-2378) is already the candidate
+   `4787ee9859c02fc950f781eb5803d97a930aa977` push/promotion lane, and
+   [LUC-2372](/LUC/issues/LUC-2372) is already the Security/Ops protected-input
+   binding lane.
+3. Current next owner/action: [LUC-2372](/LUC/issues/LUC-2372) Security/Ops
+   secret owner must bind or confirm approved transient read-only production
+   proof input families (`LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`,
+   `PROD_DB_CHECK_*` / `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE*`) without
+   exposing secret values.
+4. After [LUC-2372](/LUC/issues/LUC-2372) unblocks, route back to
+   [LUC-2366](/LUC/issues/LUC-2366) protected runtime/worker/SLO proof, then
+   [LUC-2378](/LUC/issues/LUC-2378) Ops push/promotion disposition. Keep
+   protected release confidence fail-closed until those gates are proven.
+5. Note: `pnpm softwarehouse:control-tick` is named by the issue contract but
+   is not exposed as a direct repo script in this checkout; use Paperclip
+   readback plus canonical state until the control command is installed or the
+   issue contract is corrected.
+
+## 2026-06-06 LUC-2403 PM No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2403](/LUC/issues/LUC-2403) as a completed PM coordination
+   checkpoint, not a Backend, TSA, or source-control repair lane.
+2. Do not open duplicate repair work after [LUC-2395](/LUC/issues/LUC-2395)
+   refreshed the register and [LUC-2394](/LUC/issues/LUC-2394) closed the PM
+   coordination dirty state.
+3. Route the next executable release-path action to
+   [LUC-2378](/LUC/issues/LUC-2378): CTO/Ops recheck of push and
+   production-promotion path for candidate
+   `4787ee9859c02fc950f781eb5803d97a930aa977`.
+4. Keep protected release confidence fail-closed until
+   [LUC-2365](/LUC/issues/LUC-2365), [LUC-2372](/LUC/issues/LUC-2372), and
+   [LUC-2366](/LUC/issues/LUC-2366) provide legal promotion disposition,
+   approved protected inputs, and protected runtime/worker/SLO proof.
 
 ## 2026-06-06 LUC-2395 Gap Register And Repair Lane Refresh Next Action
 

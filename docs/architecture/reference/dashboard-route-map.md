@@ -1,9 +1,10 @@
 # Dashboard Route-to-Feature-to-API Contract (Canonical)
 
-Updated: 2026-05-24
+Updated: 2026-06-06
 
 Purpose: keep one canonical mapping of web routes to frontend feature ownership, API contracts, and security/operational guardrails.
-Latest docs parity artifact: `history/artifacts/_artifacts-docs-parity-2026-04-16T22-37-19-622Z.json` (`PASS`).
+Latest docs parity check: [LUC-2414](/LUC/issues/LUC-2414) reran
+`pnpm run docs:parity:check` on 2026-06-06 (`PASS`, routes `39/39`).
 
 ## Canonical Web Route Inventory (V1)
 ### Dashboard
@@ -48,6 +49,8 @@ Latest docs parity artifact: `history/artifacts/_artifacts-docs-parity-2026-04-1
 - `/auth/login`
 - `/auth/register`
 - `/offline`
+- `/privacy`
+- `/terms`
 
 ## Dashboard Navigation IA Contract (Wallet-First)
 Canonical top-level dashboard order:
@@ -80,7 +83,7 @@ Wallet placement rule:
 | `/dashboard/logs` | `features/logs` | `/dashboard/logs` | `api/logs` | User-scoped audit reads only; severity/source filters validated server-side. |
 | `/admin/subscriptions` | `features/admin/subscriptions` | `/admin/subscriptions/plans*` | `api/admin/subscriptionPlans` | Requires admin role server-side (`requireRole('ADMIN')`). |
 | `/admin/users` | `features/admin/users` | `/admin/users*` | `api/admin/users` | Requires admin role server-side; UI prevents self-demotion action. |
-| `/`, `/offline` | `app/(public)`, offline page | none (or auth session probe) | n/a | Public entry points; no privileged route contract. |
+| `/`, `/offline`, `/privacy`, `/terms` | `app/(public)`, offline/legal pages | none (or auth session probe) | n/a | Public entry points; no privileged route contract. |
 
 ## Legacy and Redirect Contract
 | Legacy / Alias Route | Canonical Target | Enforcement Layer |

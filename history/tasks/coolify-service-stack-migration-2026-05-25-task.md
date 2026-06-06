@@ -18,6 +18,15 @@
 - Mission ID: SOAR-FULL-READINESS-COORDINATION-2026-05-23
 - Mission Status: BLOCKED
 
+## Architecture Links
+
+- Primary feature/module: Coolify Service Stack migration and production topology.
+- Architecture nodes: SOAR-FEATURE-RELEASE-OPS; SOAR-DOC-DEPLOYMENT-GATE; SOAR-FEATURE-RUNTIME-SUPPORT-SERVICES.
+- Function chains: docs/architecture/chains/CHAIN-RUNTIME-SUPPORT-SERVICES.md.
+- Affected files: docker-compose.coolify.yml; docker-compose.coolify.shared-api-image.yml; docs/operations.
+- Tests/proof: migration blocker and local parity evidence recorded in this task.
+- Docs updated: operations/readiness state files named by this task.
+
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

@@ -1,6 +1,384 @@
 # Module Confidence Ledger
 
+- 2026-06-06 `LUC-2527-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-06`
+  applies to V1 audit-to-completion coordination, protected release-gate
+  routing, and protected workers-ready gate routing. Status: coordination
+  `verified`; no product/runtime confidence changed. Paperclip
+  heartbeat-context and live issue readbacks confirmed the current protected
+  release chain remains first-class and blocked:
+  [LUC-2372](/LUC/issues/LUC-2372) ->
+  [LUC-2366](/LUC/issues/LUC-2366) ->
+  [LUC-2361](/LUC/issues/LUC-2361) ->
+  [LUC-2378](/LUC/issues/LUC-2378). Protected worker smoke-auth remains
+  blocked through [LUC-2505](/LUC/issues/LUC-2505),
+  [LUC-1438](/LUC/issues/LUC-1438), [LUC-241](/LUC/issues/LUC-241),
+  [LUC-47](/LUC/issues/LUC-47), and [LUC-244](/LUC/issues/LUC-244).
+  [LUC-2506](/LUC/issues/LUC-2506), [LUC-2507](/LUC/issues/LUC-2507),
+  [LUC-2520](/LUC/issues/LUC-2520), [LUC-2522](/LUC/issues/LUC-2522), and
+  [LUC-2524](/LUC/issues/LUC-2524) read back as `done`. No duplicate
+  Backend, source-control, PM, Ops, Security/Ops, QA, TSA, or release lane was
+  opened. Evidence:
+  `history/tasks/luc-2527-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2223-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-06`
+  applies to `SOAR-OPERATIONS-001` Coolify production resource inventory.
+  Status: read-only topology/status `verified`; full release readiness remains
+  protected-proof blocked. Paperclip heartbeat-context confirmed
+  [LUC-2223](/LUC/issues/LUC-2223) was stale `in_progress`, critical, and
+  blocking [LUC-2513](/LUC/issues/LUC-2513). Fresh authenticated read-only
+  Coolify projection at `2026-06-06T18:25:12Z` resolved selector
+  `LuckySparrow`, project `Soar`, environment `production`, six applications,
+  PostgreSQL, Redis, zero generic services, `17` visible global resource rows,
+  and the canonical eight-resource production-environment inventory.
+  Application rows report `running:unknown`; PostgreSQL and Redis report
+  `running:healthy`. `pnpm run ops:coolify-stack:env-check:test` passed
+  `8/8`. No production mutation or secret disclosure occurred. Evidence:
+  `history/evidence/luc-2223-coolify-resource-inventory-reconciliation-2026-06-06.md`;
+  `history/tasks/luc-2223-coolify-resource-inventory-reconciliation-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2522-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-06-06`
+  applies to V1 audit-to-completion coordination, protected release-gate
+  routing, and protected workers-ready gate routing. Status: coordination
+  `verified`; no product/runtime confidence changed. Paperclip
+  heartbeat-context and live issue readbacks confirmed the protected release
+  chain remains blocked through [LUC-2372](/LUC/issues/LUC-2372),
+  [LUC-2366](/LUC/issues/LUC-2366), [LUC-2361](/LUC/issues/LUC-2361), and
+  [LUC-2378](/LUC/issues/LUC-2378). Protected worker smoke-auth remains
+  blocked through [LUC-2505](/LUC/issues/LUC-2505),
+  [LUC-1438](/LUC/issues/LUC-1438), [LUC-241](/LUC/issues/LUC-241),
+  [LUC-47](/LUC/issues/LUC-47), and [LUC-244](/LUC/issues/LUC-244).
+  [LUC-2506](/LUC/issues/LUC-2506), [LUC-2507](/LUC/issues/LUC-2507), and
+  [LUC-2520](/LUC/issues/LUC-2520) read back as `done`. No duplicate
+  Backend, source-control, PM, Ops, Security/Ops, QA, TSA, or release lane was
+  opened. Evidence:
+  `history/tasks/luc-2522-v1-audit-to-completion-controller-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2520-CORRECT-LUC-241-BLOCKED-DISPOSITION-2026-06-06`
+  applies to V1 release coordination and protected workers-ready gate routing.
+  Status: coordination `verified`; no product/runtime confidence changed.
+  Paperclip live readback before correction showed [LUC-241](/LUC/issues/LUC-241)
+  as `todo` while blocked by [LUC-1438](/LUC/issues/LUC-1438). DRE/Ops
+  corrected [LUC-241](/LUC/issues/LUC-241) to `blocked`, preserving
+  [LUC-1438](/LUC/issues/LUC-1438) as first-class blocker. Dependent readback
+  now shows [LUC-244](/LUC/issues/LUC-244) and [LUC-47](/LUC/issues/LUC-47)
+  blocked by `LUC-241:blocked`. Evidence:
+  `history/tasks/luc-2520-correct-luc-241-blocked-disposition-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2508-NO-STALL-QUEUE-EXPEDITOR-2026-06-06`
+  applies to V1 release coordination and protected release-gate routing.
+  Status: coordination `verified`; no product/runtime confidence changed.
+  Paperclip live issue readback confirmed [LUC-244](/LUC/issues/LUC-244)
+  remains the canonical PM no-stall lane and is blocked by
+  [LUC-47](/LUC/issues/LUC-47) plus [LUC-241](/LUC/issues/LUC-241). The current
+  protected release chain remains first-class and blocked:
+  [LUC-2372](/LUC/issues/LUC-2372) ->
+  [LUC-2366](/LUC/issues/LUC-2366) ->
+  [LUC-2361](/LUC/issues/LUC-2361) ->
+  [LUC-2378](/LUC/issues/LUC-2378). [LUC-2505](/LUC/issues/LUC-2505) remains
+  blocked for protected smoke-auth endpoint acceptance. [LUC-2506](/LUC/issues/LUC-2506)
+  and [LUC-2507](/LUC/issues/LUC-2507) read back as `done`. No duplicate
+  Backend, source-control, PM, Ops, Security/Ops, QA, TSA, or release lane was
+  opened. Evidence:
+  `history/tasks/luc-2508-no-stall-queue-expeditor-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2507-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-06`
+  applies to V1 audit-to-completion coordination, protected release-gate
+  routing, and deploy source-provenance routing. Status: coordination
+  `verified`; no product/runtime confidence changed. Paperclip
+  heartbeat-context and live issue readbacks confirmed the current protected
+  release chain remains first-class and blocked:
+  [LUC-2372](/LUC/issues/LUC-2372) ->
+  [LUC-2366](/LUC/issues/LUC-2366) ->
+  [LUC-2361](/LUC/issues/LUC-2361) ->
+  [LUC-2378](/LUC/issues/LUC-2378). Newer related work is already owned:
+  [LUC-2505](/LUC/issues/LUC-2505) is blocked for protected smoke-auth
+  endpoint acceptance, and [LUC-2506](/LUC/issues/LUC-2506) needs DRE/Ops
+  status sync because local source-of-truth records completed hardening
+  evidence while live API still reports `in_progress`. No duplicate Backend,
+  source-control, PM, Ops, Security/Ops, QA, TSA, or release lane was opened.
+  Evidence:
+  `history/tasks/luc-2507-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2506-WEB-BUILD-INFO-SOURCE-PROVENANCE-2026-06-06`
+  applies to `SOAR-OPERATIONS-001` deploy provenance confidence. Status:
+  `verified local`; production readback remains pending a future approved
+  deploy. Web build metadata generation and `/api/build-info` no longer use
+  GitHub branch-head fallback as source provenance, and deploy wait rejects
+  `github-branch*` metadata by default. Validation passed: writer tests `2/2`,
+  wait-gate tests `4/4`, release/Ops aggregate tests `8/8`, Web typecheck, and
+  repository guardrails. Evidence:
+  `history/evidence/luc-2506-web-build-info-source-provenance-2026-06-06.md`;
+  `history/tasks/luc-2506-restore-authoritative-web-build-info-source-provenance-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2504-SOAR-WEB-FAILED-DEPLOY-DIAGNOSIS-2026-06-06`
+  applies to `SOAR-OPERATIONS-001` production deploy diagnosis. Status:
+  read-only diagnosis `verified`; full release readiness remains partial and
+  protected-proof blocked. Current public Web is reachable and build-info
+  returns `56d8d440bfe0fd9ee692e9f669e35414d85d2493`; Coolify `soar-web`
+  metadata still carries configured `git_commit_sha=b894e5dd...`, but no
+  active queued/in-progress/failed deployment rows are visible to the current
+  token. Web Server Action mismatch logs are static and do not justify a
+  production mutation by themselves. Residual risk: build-info uses
+  `metadataSource=github-branch`, so release gates should not treat it as
+  authoritative container-source proof until build-time source metadata is
+  restored. Follow-up [LUC-2506](/LUC/issues/LUC-2506) owns that DRE hardening
+  lane with a live execution path and is not a production mutation permit.
+  Evidence:
+  `history/evidence/luc-2504-soar-web-failed-deploy-diagnosis-2026-06-06.md`;
+  `history/tasks/luc-2504-soar-web-failed-deploy-diagnosis-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2497-AUTONOMOUS-IDLE-MAP-DRIFT-SWEEP-2026-06-06`
+  applies to documentation/map parity and architecture evidence graph
+  confidence. Status: `verified`; no product/runtime confidence changed.
+  Strict architecture graph drift passed with `837/837` covered and `0`
+  missing. Docs parity passed with API `22/22`, Web `16/16`, and Routes
+  `39/39`. No duplicate map, Backend, source-control, PM, Ops, Security/Ops,
+  QA, TSA, or release lane was opened. Evidence:
+  `history/tasks/luc-2497-autonomous-idle-and-map-drift-sweep-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2490-NO-STALL-QUEUE-EXPEDITOR-2026-06-06`
+  applies to V1 audit-to-completion coordination and protected release-gate
+  routing. Status: coordination `verified`; no product/runtime confidence
+  changed. Paperclip heartbeat-context and direct issue readbacks confirmed
+  canonical PM no-stall lane [LUC-244](/LUC/issues/LUC-244) remains blocked,
+  and the current protected release chain remains first-class:
+  [LUC-2372](/LUC/issues/LUC-2372) blocks
+  [LUC-2366](/LUC/issues/LUC-2366),
+  [LUC-2366](/LUC/issues/LUC-2366) blocks
+  [LUC-2361](/LUC/issues/LUC-2361), and
+  [LUC-2361](/LUC/issues/LUC-2361) blocks
+  [LUC-2378](/LUC/issues/LUC-2378). [LUC-2481](/LUC/issues/LUC-2481),
+  [LUC-2482](/LUC/issues/LUC-2482), and
+  [LUC-2487](/LUC/issues/LUC-2487) are already done, so no duplicate
+  Backend/source-control/PM/Ops/Security/Ops/QA/TSA/release lane was opened.
+  Evidence:
+  `history/tasks/luc-2490-no-stall-queue-expeditor-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2482-NO-STALL-QUEUE-EXPEDITOR-2026-06-06`
+  applies to V1 audit-to-completion coordination and protected release-gate
+  routing. Status: coordination `verified`; no product/runtime confidence
+  changed. Paperclip heartbeat-context and focused live issue readbacks
+  confirmed the canonical PM no-stall lane [LUC-244](/LUC/issues/LUC-244)
+  remains blocked, and the current release chain remains first-class:
+  [LUC-2372](/LUC/issues/LUC-2372) blocks
+  [LUC-2366](/LUC/issues/LUC-2366),
+  [LUC-2366](/LUC/issues/LUC-2366) blocks
+  [LUC-2361](/LUC/issues/LUC-2361), and
+  [LUC-2361](/LUC/issues/LUC-2361) blocks
+  [LUC-2378](/LUC/issues/LUC-2378). [LUC-2481](/LUC/issues/LUC-2481) is
+  already done, so no duplicate Backend/source-control/PM/Ops/Security/Ops/
+  QA/TSA/release lane was opened. Evidence:
+  `history/tasks/luc-2482-no-stall-queue-expeditor-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2481-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-06`
+  applies to V1 audit-to-completion coordination and protected release-gate
+  routing. Status: coordination `verified`; no product/runtime confidence
+  changed. Paperclip heartbeat-context and live issue readbacks confirmed the
+  current blocker chain remains first-class: [LUC-2372](/LUC/issues/LUC-2372)
+  blocks [LUC-2366](/LUC/issues/LUC-2366), [LUC-2366](/LUC/issues/LUC-2366)
+  blocks [LUC-2361](/LUC/issues/LUC-2361), and
+  [LUC-2361](/LUC/issues/LUC-2361) blocks
+  [LUC-2378](/LUC/issues/LUC-2378). Already-done prerequisite blockers
+  [LUC-2365](/LUC/issues/LUC-2365) and
+  [LUC-2364](/LUC/issues/LUC-2364) do not require new lanes. No duplicate
+  Backend/source-control/PM/Ops/Security/Ops/QA/TSA/release lane was opened.
+  Evidence:
+  `history/tasks/luc-2481-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2475-DEPLOY-SMOKE-ABORT-HANDLING-2026-06-06` applies to
+  Operations deploy smoke and public production health confidence. Status:
+  `verified`. `scripts/deploySmokeCheck.mjs` now retries transient
+  fetch abort/timeout/fetch-failed errors once by default and records retry
+  context in the row detail, while HTTP status failures, readiness degradation,
+  missing build-info SHA, and SHA mismatches remain fail-closed without retry.
+  Focused regression tests passed (`2/2`), release/Ops script contract tests
+  plus the new smoke tests passed (`4/4`), repository guardrails passed, and
+  public no-workers production smoke passed for
+  `56d8d440bfe0fd9ee692e9f669e35414d85d2493`. Evidence:
+  `history/evidence/luc-2475-deploy-smoke-abort-handling-2026-06-06.md`;
+  `history/tasks/luc-2475-stabilize-public-deploy-smoke-abort-handling-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2464-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-06-06`
+  applies to V1 audit-to-completion coordination and protected release-gate
+  routing. Status: coordination `blocked` with first-class blocker linkage
+  repaired; no product/runtime confidence changed. [LUC-2464](/LUC/issues/LUC-2464)
+  now points to [LUC-2372](/LUC/issues/LUC-2372) as the active Security/Ops
+  protected-input blocker. Release confidence remains blocked/fail-closed
+  through [LUC-2372](/LUC/issues/LUC-2372) ->
+  [LUC-2366](/LUC/issues/LUC-2366) ->
+  [LUC-2361](/LUC/issues/LUC-2361) ->
+  [LUC-2378](/LUC/issues/LUC-2378). Evidence:
+  `history/tasks/luc-2464-v1-audit-to-completion-controller-2026-06-06-task.md`.
+
 Last updated: 2026-06-06
+
+- 2026-06-06 `LUC-2465-COOLIFY-PRODUCTION-DEPLOY-HEALTH-SWEEP-2026-06-06`
+  applies to production deploy health and Coolify production topology
+  confidence. Status: `verified` for read-only public API/Web health and
+  production build freshness. Local `HEAD`, `origin/main`, and production Web
+  build-info all report `56d8d440bfe0fd9ee692e9f669e35414d85d2493`; public
+  smoke passed for API `/health`, API `/ready`, Web `/`, and Web
+  `/api/build-info`; unauthenticated `/workers/ready` returned `401`
+  fail-closed. Coolify read-only projection matches the canonical topology:
+  six applications, PostgreSQL, Redis, zero generic services, and `17` visible
+  global resource rows. Residual confidence remains limited for protected
+  worker/dashboard/account/SLO/rollback/live-runtime proof, which was outside
+  this read-only sweep. Evidence:
+  `history/evidence/luc-2465-coolify-production-deploy-health-sweep-2026-06-06.md`,
+  `history/tasks/luc-2465-coolify-production-deploy-health-sweep-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2460-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-06`
+  applies to V1 audit-to-completion coordination and protected release-gate
+  routing. Status: coordination `verified`; no product/runtime confidence
+  changed. Scoped wake had no pending comments and no fallback fetch
+  requirement, but Paperclip `heartbeat-context` and focused issue search
+  timed out in this heartbeat. Current source-of-truth remains unchanged from
+  [LUC-2443](/LUC/issues/LUC-2443): [LUC-2372](/LUC/issues/LUC-2372) remains
+  the active protected-input blocker, and downstream release confidence
+  remains fail-closed through [LUC-2366](/LUC/issues/LUC-2366),
+  [LUC-2361](/LUC/issues/LUC-2361), and
+  [LUC-2378](/LUC/issues/LUC-2378). No duplicate Backend/source-control/PM/
+  Ops/Security/Ops/QA/TSA/release lane was opened. Evidence:
+  `history/tasks/luc-2460-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2461-SECURITY-ACCOUNT-ACCESS-GATE-SWEEP-2026-06-06`
+  applies to V1 release-gate security/account-access confidence. Status:
+  `blocked`, fail-closed. Current production build-info is
+  `56d8d440bfe0fd9ee692e9f669e35414d85d2493`, and names-only protected input
+  readiness is `PARTIAL`: production UI audit/admin names are present, but
+  `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, production DB check, `RC_*`,
+  and `GATE*` families remain missing. This does not change product/runtime
+  module confidence and does not unblock [LUC-2366](/LUC/issues/LUC-2366).
+  Evidence:
+  `history/tasks/luc-2461-security-account-access-gate-sweep-2026-06-06-task.md`;
+  `history/evidence/luc-2461-security-account-access-gate-readiness-56d8d440-2026-06-06.md`.
+
+- 2026-06-06 `LUC-2457-NO-STALL-QUEUE-EXPEDITOR-2026-06-06`
+  applies to V1 audit-to-completion coordination and protected release-gate
+  routing. Status: coordination `verified`; no product/runtime confidence
+  changed. Paperclip heartbeat-context readback succeeded for
+  [LUC-2457](/LUC/issues/LUC-2457), and local source-of-truth confirmed the
+  routing remains unchanged: [LUC-2372](/LUC/issues/LUC-2372) remains the
+  active protected-input blocker, and downstream release confidence remains
+  blocked/fail-closed through [LUC-2366](/LUC/issues/LUC-2366),
+  [LUC-2361](/LUC/issues/LUC-2361), and [LUC-2378](/LUC/issues/LUC-2378). No
+  duplicate Backend/source-control/PM/Ops/Security/Ops/QA/TSA/release lane was
+  opened. Evidence:
+  `history/tasks/luc-2457-no-stall-queue-expeditor-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2463-AUTONOMOUS-IDLE-MAP-DRIFT-SWEEP-2026-06-06`
+  applies to architecture route-map confidence, docs parity, and coordination
+  memory. Status: `verified` for documentation/index parity; no product,
+  runtime, deploy, or trading confidence changed. Proof: strict architecture
+  graph drift passed with `831/831` covered and `0` missing; docs parity passed
+  with API `22/22`, Web `16/16`, and Routes `39/39`. Known tooling drift
+  remains: `pnpm softwarehouse:control-tick` is not exposed as a direct Soar
+  command and `scripts/run-live-run-janitor.mjs` is absent in this checkout.
+  Evidence:
+  `history/tasks/luc-2463-autonomous-idle-and-map-drift-sweep-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2449-DAILY-PROJECT-STATUS-REFRESH-2026-06-06`
+  applies to Soar V1 project status, production deploy health confidence, and
+  protected release-gate routing. Status: PM status `verified`; no product or
+  runtime behavior changed. Local `HEAD`, `origin/main`, and production Web
+  build-info all report `56d8d440bfe0fd9ee692e9f669e35414d85d2493`; public
+  API/Web health remains verified from the [LUC-2417](/LUC/issues/LUC-2417)
+  read-only sweep. Release confidence remains blocked/fail-closed because
+  [LUC-2372](/LUC/issues/LUC-2372) still lacks approved protected runtime/SLO
+  input families, with [LUC-2366](/LUC/issues/LUC-2366),
+  [LUC-2361](/LUC/issues/LUC-2361), and [LUC-2378](/LUC/issues/LUC-2378)
+  downstream. Evidence:
+  `history/tasks/luc-2449-daily-project-status-refresh-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2443-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-06`
+  applies to V1 audit-to-completion coordination and protected release-gate
+  routing. Status: coordination `verified`; no product/runtime confidence
+  changed. Live Paperclip readback confirmed [LUC-2372](/LUC/issues/LUC-2372),
+  [LUC-2366](/LUC/issues/LUC-2366), [LUC-2361](/LUC/issues/LUC-2361),
+  [LUC-2378](/LUC/issues/LUC-2378), and [LUC-2438](/LUC/issues/LUC-2438)
+  remain blocked, while [LUC-2419](/LUC/issues/LUC-2419),
+  [LUC-2422](/LUC/issues/LUC-2422), [LUC-2432](/LUC/issues/LUC-2432), and
+  [LUC-2440](/LUC/issues/LUC-2440) are done. No duplicate Backend/
+  source-control/PM/Ops/Security/Ops/QA/TSA/release lane was opened. Evidence:
+  `history/tasks/luc-2443-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2440-NO-STALL-QUEUE-EXPEDITOR-2026-06-06`
+  applies to V1 audit-to-completion coordination and protected release-gate
+  routing. Status: coordination `verified`; no product/runtime confidence
+  changed. The PM lane used the scoped wake payload and local source-of-truth
+  after Paperclip API readback timed out. Current routing remains unchanged:
+  [LUC-2372](/LUC/issues/LUC-2372) remains the active protected-input blocker,
+  and downstream release confidence remains blocked/fail-closed through
+  [LUC-2366](/LUC/issues/LUC-2366), [LUC-2361](/LUC/issues/LUC-2361), and
+  [LUC-2378](/LUC/issues/LUC-2378). No duplicate Backend/source-control/PM/
+  Ops/Security/Ops/QA/TSA/release lane was opened. Evidence:
+  `history/tasks/luc-2440-no-stall-queue-expeditor-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2432-NO-STALL-QUEUE-EXPEDITOR-2026-06-06`
+  applies to V1 audit-to-completion coordination and protected release-gate
+  routing. Status: coordination `verified`; no product/runtime confidence
+  changed. The PM lane used the scoped wake payload and local source-of-truth
+  after Paperclip API readback timed out. Current routing remains unchanged:
+  [LUC-2419](/LUC/issues/LUC-2419) is done, [LUC-2372](/LUC/issues/LUC-2372)
+  remains the active protected-input blocker, and downstream release confidence
+  remains blocked/fail-closed through [LUC-2366](/LUC/issues/LUC-2366),
+  [LUC-2361](/LUC/issues/LUC-2361), and [LUC-2378](/LUC/issues/LUC-2378). No
+  duplicate Backend/source-control/PM/Ops/Security/Ops/TSA/release lane was
+  opened. Evidence:
+  `history/tasks/luc-2432-no-stall-queue-expeditor-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2422-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-06`
+  applies to V1 audit-to-completion coordination, protected release-gate
+  routing, and repair-lane ownership confidence. Status: coordination
+  `verified`; no product/runtime confidence changed. Current register truth:
+  [LUC-2419](/LUC/issues/LUC-2419) is done as the Security/Ops owner-action
+  refresh, while [LUC-2372](/LUC/issues/LUC-2372) remains the active protected
+  input blocker. Downstream release confidence remains blocked/fail-closed
+  through [LUC-2366](/LUC/issues/LUC-2366),
+  [LUC-2361](/LUC/issues/LUC-2361), and [LUC-2378](/LUC/issues/LUC-2378). No
+  duplicate Backend/source-control/PM/Ops/Security/Ops/TSA lane was opened.
+  Evidence:
+  `history/tasks/luc-2422-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2417-COOLIFY-PRODUCTION-DEPLOY-HEALTH-SWEEP-2026-06-06`
+  applies to production deploy health and Coolify production topology
+  confidence. Status: `verified` for read-only public API/Web health and
+  production build freshness. Local `HEAD`, `origin/main`, and production Web
+  build-info all report `56d8d440bfe0fd9ee692e9f669e35414d85d2493`; public
+  smoke passed for API `/health`, API `/ready`, Web `/`, and Web
+  `/api/build-info`; unauthenticated `/workers/ready` returned `401`
+  fail-closed. Coolify read-only projection matches the canonical topology:
+  six applications, PostgreSQL, Redis, zero generic services, and `17` visible
+  global resource rows. Residual confidence remains limited for protected
+  worker/dashboard/account/SLO/rollback/live-runtime proof, which was outside
+  this read-only sweep. Evidence:
+  `history/evidence/luc-2417-coolify-production-deploy-health-sweep-2026-06-06.md`,
+  `history/tasks/luc-2417-coolify-production-deploy-health-sweep-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2418-NO-STALL-QUEUE-EXPEDITOR-2026-06-06`
+  applies to V1 audit-to-completion coordination and protected release-gate
+  routing. Status: coordination `verified`; no product/runtime confidence
+  changed. Paperclip readback confirmed prior [LUC-2409](/LUC/issues/LUC-2409)
+  status drift is closed through [LUC-2416](/LUC/issues/LUC-2416), and the
+  active fail-closed chain remains [LUC-2372](/LUC/issues/LUC-2372) ->
+  [LUC-2366](/LUC/issues/LUC-2366) ->
+  [LUC-2361](/LUC/issues/LUC-2361) ->
+  [LUC-2378](/LUC/issues/LUC-2378). Security/Ops follow-up
+  [LUC-2419](/LUC/issues/LUC-2419) now owns the stale protected-input gate
+  owner-action refresh. Evidence:
+  `history/tasks/luc-2418-no-stall-queue-expeditor-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2414-AUTONOMOUS-IDLE-MAP-DRIFT-SWEEP-2026-06-06`
+  applies to architecture route-map confidence, documentation parity, and V1
+  coordination memory. Status: `verified` for docs/index parity. The route-map
+  inventory now includes public legal routes `/privacy` and `/terms`, matching
+  existing architecture nodes and route-reachable Web pages. Evidence:
+  `pnpm run docs:parity:check` PASS (`API 22/22`, `Web 16/16`, `Routes 39/39`),
+  `pnpm run architecture:graph:drift:strict` PASS (`831/831`, `0` missing),
+  and `git diff --check` PASS with LF/CRLF warnings only. Release confidence
+  remains blocked by protected proof gates; this checkpoint does not change
+  runtime, product, deploy, or trading readiness. Evidence:
+  `history/tasks/luc-2414-autonomous-idle-and-map-drift-sweep-2026-06-06-task.md`.
 
 - 2026-06-06 `LUC-2395-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-06`
   applies to V1 audit-to-completion coordination, Bot Runtime release
@@ -3600,3 +3978,36 @@ Do not turn uncertainty into optimism.
   `history/evidence/luc-2366-v1-preflight-de3db789-2026-06-06.md`,
   `history/evidence/luc-2366-protected-input-readiness-de3db789-2026-06-06.md`,
   `history/artifacts/luc-2366-rc-gate-evidence-check-de3db789-2026-06-06.json`.
+
+## 2026-06-06 LUC-2456 Regression Evidence Sweep
+
+- `LUC-2456-REGRESSION-EVIDENCE-SWEEP-2026-06-06` applies to
+  `SOAR-OPERATIONS-001`, architecture/docs parity confidence, and Web
+  go-live regression confidence.
+- Confidence is `PARTIALLY_VERIFIED`: local guardrails, docs parity, strict
+  architecture drift, focused Web go-live tests, and Coolify env checker tests
+  passed. Direct public API/Web probes also passed for current SHA
+  `56d8d440bfe0fd9ee692e9f669e35414d85d2493`, and unauthenticated worker
+  readiness returned `401` fail-closed.
+- Residual regression: canonical `ops:deploy:smoke --no-workers` failed twice
+  with `This operation was aborted` on different public endpoints while direct
+  probes passed. Treat this as evidence-tooling instability until the Test
+  Automation follow-up [LUC-2475](/LUC/issues/LUC-2475) proves or fixes the
+  root cause.
+- Evidence:
+  `history/evidence/luc-2456-regression-evidence-sweep-2026-06-06.md`,
+  `history/tasks/luc-2456-regression-evidence-sweep-2026-06-06-task.md`.
+## 2026-06-06 LUC-2499 Operations Deploy Health Delta
+
+- Module row: `SOAR-OPERATIONS-001`.
+- Status delta: `PARTIAL` remains appropriate. Public production API/Web health
+  is verified for pushed SHA `56d8d440bfe0fd9ee692e9f669e35414d85d2493`, and
+  Coolify topology readback is verified, but Web deploy metadata/log
+  correlation is incomplete and protected worker/dashboard/account/SLO/
+  rollback/live runtime proof remains outside this sweep.
+- Evidence:
+  `history/evidence/luc-2499-coolify-production-deploy-health-sweep-2026-06-06.md`;
+  `history/tasks/luc-2499-coolify-production-deploy-health-sweep-2026-06-06-task.md`.
+- Next proof/fix: read-only child diagnosis for `soar-web` deploy history and
+  Server Action mismatch logs; request explicit production mutation approval
+  only if that diagnosis identifies a required redeploy/restart/rollback.

@@ -1,11 +1,11 @@
 # Dependency Report
 
-Generated: 2026-06-05T18:23:53.329Z
+Generated: 2026-06-06T16:24:34.647Z
 
 ## Summary
 
-- Dependency relations: 2891
-- Entities with dependencies: 774
+- Dependency relations: 2925
+- Entities with dependencies: 782
 
 ## Dependency Edges
 
@@ -798,6 +798,7 @@ Generated: 2026-06-05T18:23:53.329Z
 | backtestPortfolioSimulation.service.ts | uses | strategySignalEvaluator.ts | apps/api/src/modules/engine/strategySignalEvaluator |
 | backtestPortfolioSimulation.service.ts | uses | runtimeSignalMerge.test.ts | apps/api/src/modules/engine/runtimeSignalMerge |
 | backtestPortfolioSimulation.service.ts | uses | runtimeSignalMerge.ts | apps/api/src/modules/engine/runtimeSignalMerge |
+| backtestPortfolioSimulation.service.ts | uses | positionSizing.test.ts | apps/api/src/modules/engine/positionSizing |
 | backtestPortfolioSimulation.service.ts | uses | positionSizing.ts | apps/api/src/modules/engine/positionSizing |
 | backtestPortfolioSimulation.service.ts | uses | backtestReplayCore.test.ts | apps/api/src/modules/backtests/backtestReplayCore |
 | backtestPortfolioSimulation.service.ts | uses | backtestReplayCore.ts | apps/api/src/modules/backtests/backtestReplayCore |
@@ -810,4 +811,3 @@ Generated: 2026-06-05T18:23:53.329Z
 | backtestRange.service.ts | uses | symbols.ts | apps/api/src/lib/symbols |
 | backtestRange.service.ts | uses | backtests.repository.ts | apps/api/src/modules/backtests/backtests.repository |
 | backtestRange.service.ts | uses | backtestTimeframe.ts | apps/api/src/modules/backtests/backtestTimeframe |
-| backtestRange.service.ts | uses | marketCatalogSymbolResolver.service.ts | apps/api/src/modules/markets/marketCatalogSymbolResolver.service |

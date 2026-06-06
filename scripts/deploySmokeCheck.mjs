@@ -23,6 +23,7 @@ if (args.has('--help') || args.has('-h')) {
       '  SMOKE_API_BASE_URL       (default: http://localhost:3001)',
       '  SMOKE_WEB_BASE_URL       (default: http://localhost:3002)',
       '  SMOKE_TIMEOUT_MS         (default: 8000)',
+      '  SMOKE_TRANSIENT_RETRIES  (default: 1; retries fetch abort/timeout failures only)',
       '  SMOKE_AUTH_TOKEN         (optional bearer token for protected OPS endpoints)',
       '  SMOKE_AUTH_EMAIL         (optional admin email used to auto-login and obtain token)',
       '  SMOKE_AUTH_PASSWORD      (optional admin password used to auto-login and obtain token)',
@@ -47,6 +48,7 @@ const webBase = (readArgValue('--web-base-url') || process.env.SMOKE_WEB_BASE_UR
   '',
 );
 const timeoutMs = Number(process.env.SMOKE_TIMEOUT_MS || 8000);
+const transientRetryCount = Math.max(0, Number(process.env.SMOKE_TRANSIENT_RETRIES || 1));
 const expectedSha = (readArgValue('--expected-sha') || process.env.SMOKE_EXPECTED_SHA || '').trim();
 const authTokenArg = readArgValue('--auth-token');
 const authEmailArg = readArgValue('--auth-email');
@@ -108,7 +110,24 @@ if (requireWorkers) {
   });
 }
 
-const runCheck = async (check) => {
+const describeTransientError = (error) => {
+  if (!(error instanceof Error)) {
+    return String(error);
+  }
+  if (error.name === 'AbortError') {
+    return `timeout after ${timeoutMs}ms (${error.message})`;
+  }
+  return error.message;
+};
+
+const isTransientFetchError = (error) =>
+  error instanceof Error &&
+  (error.name === 'AbortError' ||
+    error.name === 'TimeoutError' ||
+    error.message === 'fetch failed' ||
+    error.message === 'This operation was aborted');
+
+const runCheckAttempt = async (check) => {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -152,10 +171,43 @@ const runCheck = async (check) => {
     }
     return { ok: false, detail: `status ${response.status}` };
   } catch (error) {
-    return { ok: false, detail: error instanceof Error ? error.message : String(error) };
+    return {
+      ok: false,
+      detail: describeTransientError(error),
+      retryable: isTransientFetchError(error),
+    };
   } finally {
     clearTimeout(timer);
   }
+};
+
+const runCheck = async (check) => {
+  const transientFailures = [];
+  const maxAttempts = transientRetryCount + 1;
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    // eslint-disable-next-line no-await-in-loop
+    const result = await runCheckAttempt(check);
+    if (result.ok) {
+      if (transientFailures.length === 0) {
+        return result;
+      }
+      return {
+        ...result,
+        detail: `${result.detail} after ${attempt} attempts (transient retry: ${transientFailures.join('; ')})`,
+      };
+    }
+    if (!result.retryable || attempt === maxAttempts) {
+      if (transientFailures.length === 0) {
+        return result;
+      }
+      return {
+        ...result,
+        detail: `${result.detail} after ${attempt} attempts (transient retry: ${transientFailures.join('; ')})`,
+      };
+    }
+    transientFailures.push(`attempt ${attempt}: ${result.detail}`);
+  }
+  return { ok: false, detail: 'exhausted smoke check attempts' };
 };
 
 const results = [];

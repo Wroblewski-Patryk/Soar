@@ -12,6 +12,15 @@
 - Iteration: 2026-05-09
 - Operation Mode: BUILDER
 
+## Architecture Links
+
+- Primary feature/module: Multi-strategy current-production containment.
+- Architecture nodes: SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-API-BOT-RUNTIME-POSITIONS; SOAR-DB-RUNTIME-SESSION; SOAR-FEATURE-MANUAL-ORDER.
+- Function chains: docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md; docs/architecture/chains/CHAIN-RELEASE-OPS.md.
+- Affected files: history/tasks/botmulti-09-production-deploy-task-2026-05-03.md; docs/planning/mvp-next-commits.md; active state docs; task board; project state.
+- Tests/proof: public production build-info/current-production reconciliation recorded in this task's Validation Evidence.
+- Docs updated: operations/status docs and active source-of-truth context files.
+
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

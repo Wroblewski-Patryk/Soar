@@ -14,6 +14,15 @@
 - Iteration: 30
 - Operation Mode: TESTER
 
+## Architecture Links
+
+- Primary feature/module: Production deploy lag detection and release truth.
+- Architecture nodes: SOAR-DOC-TRACEABILITY; SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-API-BOT-RUNTIME-POSITIONS.
+- Function chains: docs/architecture/chains/CHAIN-RELEASE-OPS.md.
+- Affected files: history/plans/deploy-lag-1f1d9c12-2026-05-09.md; active state docs; docs/planning/mvp-next-commits.md; task board; project state.
+- Tests/proof: build-info timeout windows, public smoke, diff scope audit, and later build-info correction recorded in this task.
+- Docs updated: deploy lag evidence, planning, current focus, system health, task board, and project state.
+
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

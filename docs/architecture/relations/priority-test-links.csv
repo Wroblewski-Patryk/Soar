@@ -68,6 +68,8 @@ scripts/runProdFixtureActionProof.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198
 scripts/runProdPositionsProof.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 prod positions proof release-gate relation
 scripts/runProdSecurityExchangeProof.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 prod security exchange release-gate relation
 scripts/runProdUiModuleClickthroughAudit.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 prod UI clickthrough release-gate relation
+scripts/runPublicReadOnlyBrowserProof.mjs,scripts/releaseOpsScriptContracts.test.mjs,LUC-2420 public read-only browser proof wrapper safety contract relation
+scripts/runWebNextProductionCommand.mjs,scripts/releaseOpsScriptContracts.test.mjs,LUC-2420 Web Next production command wrapper safety contract relation
 apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts#resolveRuntimePositionDcaCount,apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts,LUC-2230 runtime DCA count helper direct relation
 apps/api/src/modules/bots/runtimeStrategyProtectionFallbackDisplay.ts#canUseStrategyProtectionFallbackForDisplay,apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts,LUC-2230 strategy protection fallback display helper direct relation
 apps/api/src/modules/engine/runtimeExchangeSyncedPositionPrice.ts#derivePriceFromUnrealizedPnl,apps/api/src/modules/engine/runtimeLifecycleMarkPrice.service.test.ts,LUC-2230 exchange-synced runtime price helper relation
@@ -134,3 +136,10 @@ scripts/writeWebBuildMetadata.mjs,scripts/releaseOpsScriptContracts.test.mjs,LUC
 apps/api/src/modules/auth/auth.session.ts#getSessionJwtExpiresIn,apps/api/src/modules/auth/auth.session.test.ts,LUC-2254 auth session JWT expiry helper relation
 apps/api/src/modules/auth/auth.session.ts#getSessionTtlMs,apps/api/src/modules/auth/auth.session.test.ts,LUC-2254 auth session TTL helper relation
 apps/api/src/modules/bots/bots.e2e.shared.ts#createPayload,apps/api/src/modules/bots/bots.e2e.shared.test.ts,LUC-2254 bots shared create payload helper relation
+apps/api/src/modules/bots/botsRuntimeRead.repository.ts,apps/api/src/modules/bots/botsRuntimeRead.repository.test.ts,LUC-2475 drift closure existing bot runtime read repository test relation
+apps/api/src/modules/engine/positionPnlSemantics.ts,apps/api/src/modules/engine/positionPnlSemantics.test.ts,LUC-2475 drift closure existing position PnL semantics test relation
+apps/api/src/modules/engine/positionSizing.ts,apps/api/src/modules/engine/positionSizing.test.ts,LUC-2475 drift closure existing position sizing test relation
+apps/api/src/modules/engine/runtimePositionAutomationSkipTelemetry.ts,apps/api/src/modules/engine/runtimePositionAutomationSkipTelemetry.test.ts,LUC-2475 drift closure existing runtime automation skip telemetry test relation
+apps/api/src/modules/engine/runtimePositionAutomationStateRebase.ts,apps/api/src/modules/engine/runtimePositionAutomationStateRebase.test.ts,LUC-2475 drift closure existing runtime automation state rebase test relation
+apps/api/src/modules/engine/runtimePositionAutomationTelemetry.ts,apps/api/src/modules/engine/runtimePositionAutomationTelemetry.test.ts,LUC-2475 drift closure existing runtime automation telemetry test relation
+scripts/deploySmokeCheck.mjs,scripts/deploySmokeCheck.test.mjs,LUC-2475 deploy smoke transient abort retry and fail-closed status regression relation

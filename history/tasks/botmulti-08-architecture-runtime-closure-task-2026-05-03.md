@@ -12,6 +12,15 @@
 - Iteration: 2026-05-03 post-V1 BOTMULTI activation, iteration 8
 - Operation Mode: BUILDER
 
+## Architecture Links
+
+- Primary feature/module: Multi-strategy runtime architecture closure.
+- Architecture nodes: SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-API-BOT-RUNTIME-POSITIONS; SOAR-DB-RUNTIME-SESSION; SOAR-DB-BOT; SOAR-DB-STRATEGY.
+- Function chains: docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md; docs/architecture/chains/CHAIN-STRATEGIES-CORE.md.
+- Affected files: focused API/runtime/web tests; docs/architecture runtime/signal references; docs/modules/api-bots.md; docs/modules/web-bots.md.
+- Tests/proof: BOTMULTI API, runtime, and web closure evidence recorded in this task's Validation Evidence.
+- Docs updated: architecture/runtime evidence, module docs, task board, and project state.
+
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

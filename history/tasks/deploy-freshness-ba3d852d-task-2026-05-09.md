@@ -13,6 +13,15 @@
 - Iteration: 33
 - Operation Mode: ARCHITECT
 
+## Architecture Links
+
+- Primary feature/module: Production deploy freshness and V1 release evidence.
+- Architecture nodes: SOAR-DOC-TRACEABILITY; SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-API-BOT-RUNTIME-POSITIONS.
+- Function chains: docs/architecture/chains/CHAIN-RELEASE-OPS.md.
+- Affected files: history/plans/deploy-freshness-ba3d852d-2026-05-09.md; history/artifacts/_artifacts-v1-final-preflight-ba3d852d-2026-05-09.json; active state docs; task board; project state.
+- Tests/proof: production build-info, public smoke, final preflight, and docs validation recorded in this task.
+- Docs updated: release evidence, deploy evidence, current focus, system health, task board, and project state.
+
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

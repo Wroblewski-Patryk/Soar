@@ -149,12 +149,17 @@ Deploy-proof note:
 - In Coolify `Advanced` settings for the web application, enable `Include Source Commit in Build` when the build process must see `SOURCE_COMMIT`.
 - The current Soar web build metadata path reads sources in this order:
   `SOURCE_COMMIT` / `SOURCE_BRANCH` environment or build args, repository
-  `git`, repository `.git` files, GitHub `main` branch readback, then
-  `unknown`.
+  `git`, repository `.git` files, then `unknown`. It must not derive deploy
+  provenance from the GitHub `main` branch head, because branch head proves the
+  repository state, not the source used by the built Web image.
 - Dockerfile stages that consume Coolify build args must declare the matching
   `ARG SOURCE_COMMIT`, `ARG SOURCE_BRANCH`, and `ARG COOLIFY_BRANCH` names in
   that stage before the Web build command; otherwise the deployment can import
   the right commit while `/api/build-info` still reports `gitSha: null`.
+- Treat `/api/build-info` as authoritative source provenance only when
+  `metadataSource` is `env`, `git`, or `git-files`. `unknown`,
+  `env-runtime`, and any historical `github-branch*` value are diagnostic
+  signals, not release-gate provenance.
 
 ## Step 5: Add Workers Service
 

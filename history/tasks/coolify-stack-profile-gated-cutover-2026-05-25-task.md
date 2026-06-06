@@ -22,6 +22,15 @@ Make the Coolify stack migration safe to perform in two phases:
   readiness proof.
 - Do not print or commit production secrets.
 
+## Architecture Links
+
+- Primary feature/module: Coolify stack profile-gated rollout.
+- Architecture nodes: SOAR-FEATURE-RELEASE-OPS; SOAR-DOC-DEPLOYMENT-GATE; SOAR-FEATURE-RUNTIME-SUPPORT-SERVICES.
+- Function chains: docs/architecture/chains/CHAIN-RUNTIME-SUPPORT-SERVICES.md.
+- Affected files: docker-compose.coolify.yml; docker-compose.coolify.shared-api-image.yml; docs/operations/coolify-linux-vps-setup-guide.md.
+- Tests/proof: local stack syntax and env checks recorded in this task's Result Report.
+- Docs updated: operations documentation for two-phase rollout.
+
 ## Definition Of Done
 
 - Worker services are profile-gated in the Coolify stack manifests.

@@ -12,6 +12,15 @@
 - Iteration: 2026-05-03 post-V1 BOTMULTI activation
 - Operation Mode: ARCHITECT
 
+## Architecture Links
+
+- Primary feature/module: Multi-strategy bot contract and runtime topology.
+- Architecture nodes: SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-FEATURE-MANUAL-ORDER; SOAR-DB-BOT; SOAR-DB-STRATEGY.
+- Function chains: docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md; docs/architecture/chains/CHAIN-STRATEGIES-CORE.md.
+- Affected files: docs/architecture/03_domain-model.md; docs/architecture/04_runtime-contexts.md; docs/architecture/05_strategy-signal-and-decision-flow.md; docs/architecture/06_execution-lifecycle.md; docs/architecture/reference/runtime-signal-merge-contract.md.
+- Tests/proof: repository guardrails and architecture review evidence recorded in this task's Validation Evidence.
+- Docs updated: architecture docs, BOTMULTI planning packet, task board, and project state.
+
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

@@ -271,3 +271,9 @@ Every new or changed function must update the graph in the same task:
 5. Update requirement/module confidence when behavior or proof changed.
 6. Record residual missing links as `missing`, `blocked`, or
    `implemented_not_verified`, never as implicit success.
+
+Every new completed task file must also carry enough traceability for the
+awareness sync to connect work back to architecture. Add an `Architecture
+Links` block naming the primary feature/module, architecture nodes, function
+chains, affected files, tests/proof, and docs updated. The current dated
+backfill priority note is `docs/status/task-entity-link-backfill-priority-2026-06-06.md`.

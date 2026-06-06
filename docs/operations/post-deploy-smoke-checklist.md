@@ -28,6 +28,17 @@ Quickly confirm that the deployed revision is operational for critical user flow
 
 ## Smoke Checklist
 
+### Scripted smoke diagnostics
+- Preferred public smoke command:
+  `pnpm run ops:deploy:smoke -- --base-url <api-url> --web-base-url <web-url> --expected-sha <sha> --no-workers`.
+- `SMOKE_TRANSIENT_RETRIES` defaults to `1` and retries only transient
+  fetch abort/timeout/fetch-failed errors. HTTP status failures, degraded
+  readiness, missing build-info SHA, and SHA mismatches remain fail-closed and
+  are not retried.
+- A PASS row containing `transient retry:` should be classified as recovered
+  runner/network instability. A FAIL row after exhausted transient retries
+  remains a smoke failure until direct endpoint probes prove otherwise.
+
 ### 1) API baseline
 - `GET /health` returns `200`.
 - `GET /ready` returns `200`.
@@ -39,7 +50,11 @@ Quickly confirm that the deployed revision is operational for critical user flow
 - root page returns `200`.
 - canonical login page `/auth/login` loads without runtime error.
 - static assets load correctly (no broken chunks).
-- `/api/build-info` exposes the deployed candidate SHA.
+- `/api/build-info` exposes the deployed candidate SHA with authoritative
+  source provenance: `metadataSource=env`, `metadataSource=git`, or
+  `metadataSource=git-files`. Branch-head fallbacks such as `github-branch`
+  or `github-branch-runtime` are diagnostics only and fail the deploy
+  provenance gate.
 
 ### 3) Auth baseline
 - valid login works,

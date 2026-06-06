@@ -13,6 +13,15 @@
 - Iteration: 28
 - Operation Mode: BUILDER
 
+## Architecture Links
+
+- Primary feature/module: Production deploy freshness and public access verification.
+- Architecture nodes: SOAR-DOC-TRACEABILITY; SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-API-BOT-RUNTIME-POSITIONS.
+- Function chains: docs/architecture/chains/CHAIN-RELEASE-OPS.md.
+- Affected files: history/plans/deploy-freshness-c50e1e7c-2026-05-09.md; docs/architecture/09_integrations-deployment-and-runtime-services.md; scripts/waitForWebBuildInfo.mjs; scripts/deploySmokeCheck.mjs; scripts/runV1FinalPreflight.mjs; release artifacts, active state docs, task board, and project state.
+- Tests/proof: build-info wait, public deploy smoke, final preflight, guardrails, and docs parity recorded in this task.
+- Docs updated: deploy/release evidence and active source-of-truth context files.
+
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

@@ -12,6 +12,15 @@
 - Iteration: 2026-05-09-source-truth-deploy
 - Operation Mode: BUILDER
 
+## Architecture Links
+
+- Primary feature/module: Production deploy freshness and public smoke evidence.
+- Architecture nodes: SOAR-DOC-TRACEABILITY; SOAR-FEATURE-DASHBOARD-RUNTIME; SOAR-API-BOT-RUNTIME-POSITIONS.
+- Function chains: docs/architecture/chains/CHAIN-RELEASE-OPS.md.
+- Affected files: history/plans/deploy-freshness-55469cdc-2026-05-09.md; history/releases/v1-final-preflight-55469cdc-2026-05-09.md; history/artifacts/_artifacts-v1-final-preflight-55469cdc-2026-05-09.json; active state docs.
+- Tests/proof: build-info wait, public smoke, final preflight, guardrails, docs parity, and diff checks recorded in this task.
+- Docs updated: deploy evidence, release evidence, current focus, system health, task board, and project state.
+
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are planned.
 - [x] No loop step is being skipped.

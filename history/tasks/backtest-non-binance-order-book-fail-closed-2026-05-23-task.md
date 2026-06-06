@@ -1,5 +1,14 @@
 # BACKTEST-NON-BINANCE-ORDER-BOOK-FAIL-CLOSED-2026-05-23
 
+## Architecture Links
+
+- Primary feature/module: Backtest exchange order-book fail-closed behavior.
+- Architecture nodes: SOAR-FEATURE-BACKTESTS; SOAR-FEATURE-EXCHANGE-ADAPTER; SOAR-TEST-BACKTESTS.
+- Function chains: docs/architecture/chains/CHAIN-BACKTESTS-CORE.md; docs/architecture/chains/CHAIN-EXCHANGE-ADAPTER.md.
+- Affected files: apps/api/src/modules/backtests/backtestRunJob.ts; apps/api/src/modules/backtests/backtestRunJob.test.ts; source-of-truth state for Backtests / Exchange Adapter requirements.
+- Tests/proof: focused backtest/order-book fail-closed validation recorded in this task's Validation Evidence.
+- Docs updated: backtest/exchange module docs and relevant task/context ledgers.
+
 ## Context
 
 Backtest supplemental futures data for non-Binance venues uses the Exchange

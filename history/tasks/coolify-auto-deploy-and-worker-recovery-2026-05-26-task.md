@@ -18,6 +18,15 @@
 - Mission ID: COOLIFY-AUTO-DEPLOY-WORKER-RECOVERY-2026-05-26
 - Mission Status: VERIFIED
 
+## Architecture Links
+
+- Primary feature/module: Coolify production deployment automation and worker recovery.
+- Architecture nodes: SOAR-FEATURE-RELEASE-OPS; SOAR-DOC-DEPLOYMENT-GATE; SOAR-WORKER-MARKET-STREAM-SUBSCRIPTIONS.
+- Function chains: docs/architecture/chains/CHAIN-MARKET-DATA-STREAM-ADAPTERS.md.
+- Affected files: docs/operations; history/evidence; Coolify application settings evidence.
+- Tests/proof: public no-worker production smoke and Coolify readback recorded in this task.
+- Docs updated: source-of-truth and evidence files listed in this task.
+
 ## Process Self-Audit
 - [x] All seven autonomous loop steps are represented.
 - [x] Exactly one priority task was selected: restore deploy trigger behavior and recover the stopped worker.

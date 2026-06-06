@@ -1,6 +1,6 @@
 # Coolify VPS Deployment Contract
 
-Last updated: 2026-06-05
+Last updated: 2026-06-06
 
 This contract describes the current Soar production deployment target. Coolify
 must be treated as a hierarchy:
@@ -65,7 +65,39 @@ account action, protected smoke, secret value readback, raw resource id
 storage, screenshot, or live-trading action. Evidence:
 `history/evidence/luc-1787-coolify-resource-inventory-reconciliation-2026-06-05.md`.
 
-Latest read-only access binding checkpoint: `LUC-2316` at
+Latest read-only access binding checkpoint: `LUC-2408` at
+`2026-06-06T05:26:58Z`, refreshing the prior `LUC-2316` proof. Runtime
+bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`,
+`COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,
+`COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_TEAM_ID`, and
+`COOLIFY_TEAM_ID` without values printed. Authenticated read-only Coolify reads
+resolved selector `LuckySparrow`, project `Soar`, production environment
+`production`, and the canonical eight-resource production-environment
+inventory: six applications plus PostgreSQL and Redis. The teams endpoint
+returned one visible row and the global resources endpoint returned one visible
+row; neither is used as release authority. The project/environment hierarchy
+remains the authoritative production status scope for this binding proof.
+Application rows report `running:unknown`; PostgreSQL and Redis report
+`running:healthy` from the production environment readback. This heartbeat
+performed no deploy, restart, rollback, env edit, database action, team setting
+change, account action, protected smoke, secret readback, or live-trading
+action. Evidence:
+`history/evidence/luc-2408-coolify-read-only-production-status-access-2026-06-06.md`.
+
+Latest resource inventory reconciliation checkpoint: `LUC-2223` at
+`2026-06-06T18:25:12Z`. The longevity doctor routed the stale critical issue
+to DRE for read-only reconciliation. Authenticated Coolify project/environment
+reads resolved selector `LuckySparrow`, project `Soar`, production environment
+`production`, six applications, PostgreSQL, Redis, zero generic services, `17`
+visible global resource rows, and the canonical eight-resource
+production-environment inventory. Application rows report `running:unknown`;
+PostgreSQL and Redis report `running:healthy`. This heartbeat performed no
+deploy, restart, rollback, env edit, database action, Redis action, team
+setting change, account action, protected smoke, secret readback, raw resource
+id storage, screenshot, or live-trading action. Evidence:
+`history/evidence/luc-2223-coolify-resource-inventory-reconciliation-2026-06-06.md`.
+
+Previous read-only access binding checkpoint: `LUC-2316` at
 `2026-06-05T22:20:38Z`, refreshing the prior `LUC-2313` proof. Runtime
 bindings are present for `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`,
 `COOLIFY_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`,

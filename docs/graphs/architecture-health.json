@@ -1,39 +1,39 @@
 {
-  "generated_at": "2026-06-05T18:23:53.329Z",
+  "generated_at": "2026-06-06T16:24:34.647Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 14388,
-    "relations": 22625,
+    "entities": 14631,
+    "relations": 23147,
     "by_type": {
       "agent": 52,
       "api_endpoint": 37,
       "component": 97,
-      "document": 3577,
-      "feature": 224,
-      "function": 8305,
+      "document": 3706,
+      "feature": 225,
+      "function": 8324,
       "migration": 56,
       "model": 277,
       "module": 15,
       "project": 1,
-      "route": 348,
-      "task": 1018,
-      "test": 381
+      "route": 352,
+      "task": 1101,
+      "test": 388
     },
     "by_status": {
-      "blocked": 19,
+      "blocked": 24,
       "deprecated": 7,
-      "implemented": 12687,
+      "implemented": 12830,
       "in_progress": 9,
-      "tested": 660,
-      "verified": 1006
+      "tested": 674,
+      "verified": 1087
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 7611,
+      "count": 7608,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -1404,14 +1404,6 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "feature:runpublicreadonlybrowserproof-mjs:34b2504d2f",
-          "type": "feature",
-          "name": "runPublicReadOnlyBrowserProof.mjs",
-          "path": "scripts/runPublicReadOnlyBrowserProof.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "function:main:5c983a2584",
           "type": "function",
           "name": "main",
@@ -1634,11 +1626,19 @@
           "path": "apps/api/src/middleware/rateLimit.ts#rateLimitKey",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolveratelimitsubject:f8e3823411",
+          "type": "function",
+          "name": "resolveRateLimitSubject",
+          "path": "apps/api/src/middleware/rateLimit.ts#resolveRateLimitSubject",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "implementation_without_docs": {
-      "count": 742,
+      "count": 737,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -2189,14 +2189,6 @@
           "type": "component",
           "name": "runtimeUiHelpers.tsx",
           "path": "apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeUiHelpers.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:homelivewidgets-tsx:e522983c63",
-          "type": "component",
-          "name": "HomeLiveWidgets.tsx",
-          "path": "apps/web/src/features/dashboard-home/components/HomeLiveWidgets.tsx",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -3239,20 +3231,20 @@
           "path": "apps/web/src/ui/components/loading/index.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:tabcontentframe-ts:b8de24c977",
+          "type": "feature",
+          "name": "tabContentFrame.ts",
+          "path": "apps/web/src/ui/components/tabContentFrame.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "actionable_implementation_without_tests": {
-      "count": 816,
+      "count": 804,
       "items": [
-        {
-          "id": "feature:runpublicreadonlybrowserproof-mjs:34b2504d2f",
-          "type": "feature",
-          "name": "runPublicReadOnlyBrowserProof.mjs",
-          "path": "scripts/runPublicReadOnlyBrowserProof.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
         {
           "id": "function:main:5c983a2584",
           "type": "function",
@@ -3302,22 +3294,6 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "function:getruntimesymbolliverows:9b372525b5",
-          "type": "function",
-          "name": "getRuntimeSymbolLiveRows",
-          "path": "apps/api/src/modules/bots/botsRuntimeRead.repository.ts#getRuntimeSymbolLiveRows",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:getruntimesymbolstatsbasedata:14dfe19710",
-          "type": "function",
-          "name": "getRuntimeSymbolStatsBaseData",
-          "path": "apps/api/src/modules/bots/botsRuntimeRead.repository.ts#getRuntimeSymbolStatsBaseData",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "function:listmarketcandles:29ac1bc1c7",
           "type": "function",
           "name": "listMarketCandles",
@@ -3326,130 +3302,10 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "function:listruntimefallbacksymbolsfromevents:2e7320eab6",
-          "type": "function",
-          "name": "listRuntimeFallbackSymbolsFromEvents",
-          "path": "apps/api/src/modules/bots/botsRuntimeRead.repository.ts#listRuntimeFallbackSymbolsFromEvents",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:listruntimesymbolstatsrowsforsymbols:e7220ab1e9",
-          "type": "function",
-          "name": "listRuntimeSymbolStatsRowsForSymbols",
-          "path": "apps/api/src/modules/bots/botsRuntimeRead.repository.ts#listRuntimeSymbolStatsRowsForSymbols",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "function:liststrategiesbyids:38309ab35e",
           "type": "function",
           "name": "listStrategiesByIds",
           "path": "apps/api/src/modules/bots/botsRuntimeRead.repository.ts#listStrategiesByIds",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:computepricefrompnlfraction:9cde1375c6",
-          "type": "function",
-          "name": "computePriceFromPnlFraction",
-          "path": "apps/api/src/modules/engine/positionPnlSemantics.ts#computePriceFromPnlFraction",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:computeunrealizedpnlfromprice:e4cbdd55e0",
-          "type": "function",
-          "name": "computeUnrealizedPnlFromPrice",
-          "path": "apps/api/src/modules/engine/positionPnlSemantics.ts#computeUnrealizedPnlFromPrice",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:resolvemodeledmarginused:3d3393a11f",
-          "type": "function",
-          "name": "resolveModeledMarginUsed",
-          "path": "apps/api/src/modules/engine/positionPnlSemantics.ts#resolveModeledMarginUsed",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:resolvepositionpnlfraction:947c7a7b45",
-          "type": "function",
-          "name": "resolvePositionPnlFraction",
-          "path": "apps/api/src/modules/engine/positionPnlSemantics.ts#resolvePositionPnlFraction",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:clamp:390705fdb9",
-          "type": "function",
-          "name": "clamp",
-          "path": "apps/api/src/modules/engine/positionSizing.ts#clamp",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:computeriskbasedorderquantity:1eb94d06f5",
-          "type": "function",
-          "name": "computeRiskBasedOrderQuantity",
-          "path": "apps/api/src/modules/engine/positionSizing.ts#computeRiskBasedOrderQuantity",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:normalizewalletriskpercent:0ea3631614",
-          "type": "function",
-          "name": "normalizeWalletRiskPercent",
-          "path": "apps/api/src/modules/engine/positionSizing.ts#normalizeWalletRiskPercent",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:round:6af7327794",
-          "type": "function",
-          "name": "round",
-          "path": "apps/api/src/modules/engine/positionSizing.ts#round",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:recordruntimeautomationskiptelemetry:a286c3cb9b",
-          "type": "function",
-          "name": "recordRuntimeAutomationSkipTelemetry",
-          "path": "apps/api/src/modules/engine/runtimePositionAutomationSkipTelemetry.ts#recordRuntimeAutomationSkipTelemetry",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:resolveruntimeautomationtelemetrymode:6c9445b9ae",
-          "type": "function",
-          "name": "resolveRuntimeAutomationTelemetryMode",
-          "path": "apps/api/src/modules/engine/runtimePositionAutomationSkipTelemetry.ts#resolveRuntimeAutomationTelemetryMode",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:hasmaterialcanonicalbasisdrift:93c2b631a5",
-          "type": "function",
-          "name": "hasMaterialCanonicalBasisDrift",
-          "path": "apps/api/src/modules/engine/runtimePositionAutomationStateRebase.ts#hasMaterialCanonicalBasisDrift",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:recordruntimedcafundsexhaustedtelemetry:299b2eb6ff",
-          "type": "function",
-          "name": "recordRuntimeDcaFundsExhaustedTelemetry",
-          "path": "apps/api/src/modules/engine/runtimePositionAutomationTelemetry.ts#recordRuntimeDcaFundsExhaustedTelemetry",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:recordruntimeprotectionclosedecisiontelemetry:00f6f9836a",
-          "type": "function",
-          "name": "recordRuntimeProtectionCloseDecisionTelemetry",
-          "path": "apps/api/src/modules/engine/runtimePositionAutomationTelemetry.ts#recordRuntimeProtectionCloseDecisionTelemetry",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -3962,22 +3818,6 @@
           "type": "function",
           "name": "RootLayout",
           "path": "apps/web/src/app/(public)/layout.tsx#RootLayout",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:privacypage:f2f6248c65",
-          "type": "function",
-          "name": "PrivacyPage",
-          "path": "apps/web/src/app/(public)/privacy/page.tsx#PrivacyPage",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:termspage:ec67a0bc1c",
-          "type": "function",
-          "name": "TermsPage",
-          "path": "apps/web/src/app/(public)/terms/page.tsx#TermsPage",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -4844,51 +4684,178 @@
           "path": "scripts/auditApiEndpointDocsParity.mjs#joinRoute",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:main:c33ce402fc",
+          "type": "function",
+          "name": "main",
+          "path": "scripts/auditApiEndpointDocsParity.mjs#main",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:modulenameforroutefile:91f9b38244",
+          "type": "function",
+          "name": "moduleNameForRouteFile",
+          "path": "scripts/auditApiEndpointDocsParity.mjs#moduleNameForRouteFile",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizeroutepart:bd65d148b8",
+          "type": "function",
+          "name": "normalizeRoutePart",
+          "path": "scripts/auditApiEndpointDocsParity.mjs#normalizeRoutePart",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:parseargs:f507bd8549",
+          "type": "function",
+          "name": "parseArgs",
+          "path": "scripts/auditApiEndpointDocsParity.mjs#parseArgs",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:parseimports:4d0412b2d5",
+          "type": "function",
+          "name": "parseImports",
+          "path": "scripts/auditApiEndpointDocsParity.mjs#parseImports",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:readdoctext:db1b509c9f",
+          "type": "function",
+          "name": "readDocText",
+          "path": "scripts/auditApiEndpointDocsParity.mjs#readDocText",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolveimportpath:6bb9a8c9cf",
+          "type": "function",
+          "name": "resolveImportPath",
+          "path": "scripts/auditApiEndpointDocsParity.mjs#resolveImportPath",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:routementionvariants:7538035946",
+          "type": "function",
+          "name": "routeMentionVariants",
+          "path": "scripts/auditApiEndpointDocsParity.mjs#routeMentionVariants",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:toposix:bf7627cd2f",
+          "type": "function",
+          "name": "toPosix",
+          "path": "scripts/auditApiEndpointDocsParity.mjs#toPosix",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:collectcoveredpaths:fabf01f970",
+          "type": "function",
+          "name": "collectCoveredPaths",
+          "path": "scripts/auditArchitectureGraphDrift.mjs#collectCoveredPaths",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:inventory:bf1bdd6443",
+          "type": "function",
+          "name": "inventory",
+          "path": "scripts/auditArchitectureGraphDrift.mjs#inventory",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:parsecsv:47f124f1f8",
+          "type": "function",
+          "name": "parseCsv",
+          "path": "scripts/auditArchitectureGraphDrift.mjs#parseCsv",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:summarizedrift:d211a05222",
+          "type": "function",
+          "name": "summarizeDrift",
+          "path": "scripts/auditArchitectureGraphDrift.mjs#summarizeDrift",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:torepopath:ce10b0cf83",
+          "type": "function",
+          "name": "toRepoPath",
+          "path": "scripts/auditArchitectureGraphDrift.mjs#toRepoPath",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:walk:0d189b7181",
+          "type": "function",
+          "name": "walk",
+          "path": "scripts/auditArchitectureGraphDrift.mjs#walk",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:analyzefilesource:005793e45e",
+          "type": "function",
+          "name": "analyzeFileSource",
+          "path": "scripts/auditRouteReachableI18n.mjs#analyzeFileSource",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:buildroutereachability:e5e32efa21",
+          "type": "function",
+          "name": "buildRouteReachability",
+          "path": "scripts/auditRouteReachableI18n.mjs#buildRouteReachability",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:collectancestorlayouts:9a76d50d2f",
+          "type": "function",
+          "name": "collectAncestorLayouts",
+          "path": "scripts/auditRouteReachableI18n.mjs#collectAncestorLayouts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:collectpatternmatches:78fdd00e03",
+          "type": "function",
+          "name": "collectPatternMatches",
+          "path": "scripts/auditRouteReachableI18n.mjs#collectPatternMatches",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:isauditexcludedfile:7c1d139b5b",
+          "type": "function",
+          "name": "isAuditExcludedFile",
+          "path": "scripts/auditRouteReachableI18n.mjs#isAuditExcludedFile",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "actionable_implementation_without_docs": {
-      "count": 4,
-      "items": [
-        {
-          "id": "feature:runpublicreadonlybrowserproof-mjs:34b2504d2f",
-          "type": "feature",
-          "name": "runPublicReadOnlyBrowserProof.mjs",
-          "path": "scripts/runPublicReadOnlyBrowserProof.mjs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "model:cdpclient:ffff0b6c70",
-          "type": "model",
-          "name": "CdpClient",
-          "path": "scripts/runPublicReadOnlyBrowserProof.mjs#CdpClient",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:page-tsx:4bc9c15a6c",
-          "type": "route",
-          "name": "page.tsx",
-          "path": "apps/web/src/app/(public)/privacy/page.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "route:page-tsx:f108848252",
-          "type": "route",
-          "name": "page.tsx",
-          "path": "apps/web/src/app/(public)/terms/page.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        }
-      ]
+      "count": 0,
+      "items": []
     },
     "classified_inferred_link_noise": {
-      "count": 7377,
+      "count": 7386,
       "by_reason": {
         "config_only_file": 65,
-        "curated_graph_covered": 1536,
+        "curated_graph_covered": 1545,
         "generated_vendor_docs_vault_plugin": 5775,
         "top_level_app_mount": 1
       },
@@ -6704,7 +6671,7 @@
       "items": []
     },
     "tasks_without_architecture": {
-      "count": 1018,
+      "count": 1061,
       "items": [
         {
           "id": "task:agent-operating-system-task-2026-05-07:04d1de2b03",
@@ -6971,214 +6938,6 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "task:backtest-non-binance-order-book-fail-closed-2026-05-23:fa7d994728",
-          "type": "task",
-          "name": "BACKTEST-NON-BINANCE-ORDER-BOOK-FAIL-CLOSED-2026-05-23",
-          "path": "history/tasks/backtest-non-binance-order-book-fail-closed-2026-05-23-task.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:bhist-01-bot-portfolio-history-and-capital-events-task:f4932dbe7b",
-          "type": "task",
-          "name": "BHIST-01 Bot Portfolio History and Capital Events Task",
-          "path": "history/tasks/bhist-01-bot-portfolio-history-and-capital-events-task-2026-05-01.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:b5e9d03948",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/binance-futures-api-key-probe-scope-fix-task-2026-05-10.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:c4054413f1",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/bot-delete-active-paper-confirmation-task-2026-05-11.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:botdrift-01-bot-read-projection-canonical-context-task:5bcfa3d6de",
-          "type": "task",
-          "name": "BOTDRIFT-01 Bot Read Projection Canonical Context Task",
-          "path": "history/tasks/botdrift-01-bot-read-projection-canonical-context-task-2026-05-03.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:botdrift-02-bot-update-canonical-guard-task:d7cf111912",
-          "type": "task",
-          "name": "BOTDRIFT-02 Bot Update Canonical Guard Task",
-          "path": "history/tasks/botdrift-02-bot-update-canonical-guard-task-2026-05-03.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:14c6b24780",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/botmulti-00-planning-task-2026-04-29.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:ec82a39964",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/botmulti-01-post-v1-multi-strategy-contract-task-2026-05-03.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:b80c4ab358",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/botmulti-03-canonical-topology-migration-task-2026-05-03.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:c528572748",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/botmulti-04-api-write-multi-strategy-task-2026-05-03.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:8885f804cb",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/botmulti-05-runtime-signal-merge-task-2026-05-03.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:4d1c739e58",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/botmulti-06-runtime-risk-lifecycle-ownership-task-2026-05-03.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:1317a2178a",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/botmulti-07-web-operator-multi-strategy-truth-task-2026-05-03.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:705a202cd5",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/botmulti-08-architecture-runtime-closure-task-2026-05-03.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:5d392424f6",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/botmulti-09-containment-supersede-00169d7f-2026-05-12-task.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:d0574fe21f",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/botmulti-09-current-production-containment-task-2026-05-09.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:d7f5f52e6e",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/botmulti-09-production-deploy-task-2026-05-03.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:coolify-auto-deploy-and-worker-recovery-2026-05-26:b99a704cbd",
-          "type": "task",
-          "name": "Coolify Auto Deploy And Worker Recovery - 2026-05-26",
-          "path": "history/tasks/coolify-auto-deploy-and-worker-recovery-2026-05-26-task.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:coolify-service-stack-liveness-gate-task:088e2ed985",
-          "type": "task",
-          "name": "Coolify Service Stack Liveness Gate Task",
-          "path": "history/tasks/coolify-service-stack-liveness-gate-2026-05-25-task.md",
-          "status": "blocked",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:coolify-service-stack-migration-2026-05-25:7006202444",
-          "type": "task",
-          "name": "COOLIFY-SERVICE-STACK-MIGRATION-2026-05-25",
-          "path": "history/tasks/coolify-service-stack-migration-2026-05-25-task.md",
-          "status": "blocked",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:coolify-stack-profile-gated-cutover-2026-05-25:c24faafdc3",
-          "type": "task",
-          "name": "Coolify Stack Profile-Gated Cutover - 2026-05-25",
-          "path": "history/tasks/coolify-stack-profile-gated-cutover-2026-05-25-task.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:0d42051f88",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/current-executable-v1-boundary-3c5da343-task-2026-05-09.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:c876788105",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/current-focus-4ee1672e-sync-task-2026-05-09.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:dashboard-runtime-current-state-aggregate-task-2026-05-09:04d02141e9",
-          "type": "task",
-          "name": "Dashboard Runtime Current-State Aggregate Task 2026-05-09",
-          "path": "history/tasks/dashboard-runtime-current-state-aggregate-task-2026-05-09.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:f3bb6b161e",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/dashboard-runtime-signal-condition-active-2026-05-25-task.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:dashboard-runtime-widget-aggregate-current-render-task-2026-05-09:9daa556da3",
-          "type": "task",
-          "name": "Dashboard Runtime Widget Aggregate Current Render Task 2026-05-09",
-          "path": "history/tasks/dashboard-runtime-widget-aggregate-current-render-task-2026-05-09.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "task:task:d6e9b97974",
           "type": "task",
           "name": "Task",
@@ -7231,118 +6990,6 @@
           "type": "task",
           "name": "Task",
           "path": "history/tasks/dashsignals-02-indicator-recovery-before-unavailable-task-2026-05-02.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:06507d77b2",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/deploy-freshness-010b4f8b-task-2026-05-09.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:234241dcc3",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/deploy-freshness-1dc55d96-task-2026-05-09.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:2c1e1a8915",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/deploy-freshness-30b027b7-task-2026-05-09.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:b8accdf38f",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/deploy-freshness-3c5da343-task-2026-05-09.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:ca3a927c88",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/deploy-freshness-4792fbca-task-2026-05-09.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:01bf85cf43",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/deploy-freshness-4ee1672e-task-2026-05-09.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:3f844e0d4c",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/deploy-freshness-55469cdc-task-2026-05-09.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:2c5a6dbb15",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/deploy-freshness-6c54bb5d-task-2026-05-09.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:35392fc0c0",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/deploy-freshness-90cd07d6-task-2026-05-08.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:deploy-freshness-9c125683:e08e777e63",
-          "type": "task",
-          "name": "DEPLOY-FRESHNESS-9C125683",
-          "path": "history/tasks/deploy-freshness-9c125683-task-2026-05-10.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:87a2030f8a",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/deploy-freshness-ba3d852d-task-2026-05-09.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:bc30c783df",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/deploy-freshness-c50e1e7c-task-2026-05-09.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:deploy-freshness-e8cd748e-task-2026-05-09:7b6aea0dcc",
-          "type": "task",
-          "name": "Deploy Freshness e8cd748e Task (2026-05-09)",
-          "path": "history/tasks/deploy-freshness-e8cd748e-task-2026-05-09.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:4158009a48",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/deploy-lag-1f1d9c12-task-2026-05-09.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead"
         },
@@ -8305,11 +7952,331 @@
           "path": "history/tasks/luc-1148-source-control-closure-source-scoped-recovery-action-2026-05-31-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-115-luc-86-ops-evidence-closure-2026-05-26:c22069664f",
+          "type": "task",
+          "name": "LUC-115 - LUC-86 Ops evidence closure (2026-05-26)",
+          "path": "history/tasks/luc-115-luc-86-ops-evidence-closure-2026-05-26-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:03b4397f6d",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-1154-known-state-refresh-evidence-delta-and-next-repair-lanes-2026-05-31-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:77461ff0cc",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-116-no-stall-queue-expeditor-2026-05-26-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-1160-soar-production-stability-diagnose-coolify-restart-loop-and-runtime-crash-cause-2:165294b858",
+          "type": "task",
+          "name": "luc-1160-soar-production-stability-diagnose-coolify-restart-loop-and-runtime-crash-cause-2026-05-31-task",
+          "path": "history/tasks/luc-1160-soar-production-stability-diagnose-coolify-restart-loop-and-runtime-crash-cause-2026-05-31-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:0430bdb08e",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-1161-soar-qa-reconcile-public-green-endpoints-with-restart-evidence-2026-05-31-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:e9d28a35b2",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-1162-soar-luc-241-security-validate-workers-ready-principal-permission-path-2026-05-31-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:c4f3320f75",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-1163-workers-ready-smoke-recheck-with-decision-matrix-2026-05-31-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:c1f1f1fc29",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-1164-soar-luc-241-backend-trace-workers-ready-auth-chain-and-fix-ready-map-2026-05-31-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-1165-gate-io-position-ingestion-and-exchange-sync-fix:dabee5ce03",
+          "type": "task",
+          "name": "LUC-1165 - Gate.io position ingestion and exchange sync fix",
+          "path": "history/tasks/luc-1165-soar-gateio-fix-production-position-ingestion-and-exchange-sync-2026-05-31-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task-contract-luc-1166:57642cdf7c",
+          "type": "task",
+          "name": "Task Contract - LUC-1166",
+          "path": "history/tasks/luc-1166-soar-gateio-qa-verify-position-ingestion-readiness-after-adapter-fix-2026-05-31-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task-contract-luc-1167:e3e0bf4e4f",
+          "type": "task",
+          "name": "Task Contract � LUC-1167",
+          "path": "history/tasks/luc-1167-soar-bot-signals-verify-active-bot-signal-dashboard-semantics-2026-05-31-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:e8b013b371",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-117-release-smoke-blocker-evidence-closure-2026-05-26-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task-contract-luc-1174:ffcc0d4836",
+          "type": "task",
+          "name": "Task Contract - LUC-1174",
+          "path": "history/tasks/luc-1174-soar-v1-conformance-backend-verify-exchange-positions-dca-tsl-workers-readiness-contracts-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-1175-soar-v1-conformance-frontend-verification-2026-06-01:2b61a67754",
+          "type": "task",
+          "name": "LUC-1175 - Soar V1 Conformance Frontend Verification (2026-06-01)",
+          "path": "history/tasks/luc-1175-soar-v1-conformance-frontend-verify-dashboard-active-bot-context-signals-and-trading-ux-display-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-1176-soar-v1-conformance-qa-build-v1-acceptance-matrix-and-regression-evidence-map:789f23f45e",
+          "type": "task",
+          "name": "LUC-1176 [Soar][V1 Conformance][QA] Build V1 acceptance matrix and regression evidence map",
+          "path": "history/tasks/luc-1176-soar-v1-conformance-qa-build-v1-acceptance-matrix-and-regression-evidence-map-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-1177-soar-v1-conformance-ops-reconcile-deploy-coolify-restart-evidence-and-release-rea:abd1440228",
+          "type": "task",
+          "name": "LUC-1177 [Soar][V1 Conformance][Ops] Reconcile deploy, Coolify restart evidence, and release readiness gates",
+          "path": "history/tasks/luc-1177-soar-v1-conformance-ops-reconcile-deploy-coolify-restart-evidence-and-release-readiness-gates-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-118-luc-107-coolify-health-evidence-closure-2026-05-26:1106793307",
+          "type": "task",
+          "name": "LUC-118 - LUC-107 Coolify health evidence closure (2026-05-26)",
+          "path": "history/tasks/luc-118-luc-107-coolify-health-evidence-closure-2026-05-26-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-1186-soar-coolify-production-deploy-health-sweep-2026-06-01:ceabf40a9e",
+          "type": "task",
+          "name": "LUC-1186 - [Soar] Coolify production deploy health sweep (2026-06-01)",
+          "path": "history/tasks/luc-1186-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task-contract-luc-1188:c63c13500b",
+          "type": "task",
+          "name": "Task Contract - LUC-1188",
+          "path": "history/tasks/luc-1188-soar-v1-conformance-backend-worker-endpoint-to-contract-drift-matrix-dca-tsl-positions-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-1189-soar-v1-conformance-test-automation-worker-turn-acceptance-matrix-rows-into-execu:3fa6fc3be2",
+          "type": "task",
+          "name": "LUC-1189 [Soar][V1 Conformance][Test Automation Worker] Turn acceptance matrix rows into executable regression checks",
+          "path": "history/tasks/luc-1189-soar-v1-conformance-test-automation-worker-turn-acceptance-matrix-rows-into-executable-regression-checks-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-119-luc-98-release-permit-evidence-closure-2026-05-26:114a7e96b8",
+          "type": "task",
+          "name": "LUC-119 - LUC-98 release permit evidence closure (2026-05-26)",
+          "path": "history/tasks/luc-119-luc-98-release-permit-evidence-closure-2026-05-26-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:c8f83ee72e",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-1190-workers-ready-security-smoke-principal-authorization-gate-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:b0f0e6c311",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-1194-soar-backend-luc-1188-add-endpoint-contract-test-post-dashboard-positions-orphan-repair-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task-contract-luc-1195:2c1f922e9b",
+          "type": "task",
+          "name": "Task Contract - LUC-1195",
+          "path": "history/tasks/luc-1195-soar-backend-luc-1188-consolidate-dca-tsl-route-conformance-pack-runtime-positions-read-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task-contract-luc-1195:f53e5b06c3",
+          "type": "task",
+          "name": "Task Contract - LUC-1195",
+          "path": "history/tasks/luc-1195-soar-backend-luc-1188-consolidate-dca-tsl-route-level-conformance-pack-runtime-positions-read-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task-contract-luc-1196:2a2ba539fa",
+          "type": "task",
+          "name": "Task Contract - LUC-1196",
+          "path": "history/tasks/luc-1196-soar-backend-luc-1188-add-dca-first-close-authority-route-level-pack-for-runtime-position-close-endpoint-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task-contract-luc-1196:a257c1e35a",
+          "type": "task",
+          "name": "Task Contract - LUC-1196",
+          "path": "history/tasks/luc-1196-soar-backend-luc-1188-add-dca-first-close-authority-route-level-pack-runtime-position-close-endpoint-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-1197-soar-backend-ops-luc-1188-unblock-workers-ready-contract-suite-and-close-readines:3d496682a8",
+          "type": "task",
+          "name": "LUC-1197 [Soar][Backend+Ops][LUC-1188] Unblock workers/ready contract suite and close readiness proof gap",
+          "path": "history/tasks/luc-1197-soar-backend-ops-luc-1188-unblock-workers-ready-contract-suite-and-close-readiness-proof-gap-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task-contract-luc-1197-continuation-source-scoped-recovery-action:6b7e412486",
+          "type": "task",
+          "name": "Task Contract - LUC-1197 continuation (source_scoped_recovery_action)",
+          "path": "history/tasks/luc-1197-source-scoped-recovery-workers-ready-suite-reblock-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:f3d3cefc79",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-121-frontend-map-inventory-evidence-closure-2026-05-26-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:0f962bdf9e",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-122-no-stall-queue-expeditor-2026-05-26-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:2cc0940ce1",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-1223-soar-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-luc-1160-luc-1161-luc-1162-plus-17-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-1237-soar-coolify-production-deploy-health-sweep-2026-06-01:72ff555902",
+          "type": "task",
+          "name": "LUC-1237 - [Soar] Coolify production deploy health sweep (2026-06-01)",
+          "path": "history/tasks/luc-1237-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:1006502740",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-1247-architecture-docs-executable-repair-backlog-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:c0843e4c26",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-125-luc-49-ui-state-browser-proof-matrix-closure-2026-05-26-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-1256-known-state-evidence-architecture-baseline-2026-06-01-task:d69613fb31",
+          "type": "task",
+          "name": "luc-1256-known-state-evidence-architecture-baseline-2026-06-01-task",
+          "path": "history/tasks/luc-1256-known-state-evidence-architecture-baseline-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:350c8fcb6e",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-126-v1-audit-to-completion-controller-2026-05-26-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:ddc542514e",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-127-luc-64-backend-runtime-signal-docs-closure-2026-05-26-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-1277-soar-coolify-production-deploy-health-sweep-2026-06-01:9f05e8ba4b",
+          "type": "task",
+          "name": "LUC-1277 - [Soar] Coolify production deploy health sweep (2026-06-01)",
+          "path": "history/tasks/luc-1277-soar-coolify-production-deploy-health-sweep-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:9595e7bb22",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-128-luc-45-v1-controller-docs-closure-2026-05-26-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "implementation_without_task": {
-      "count": 983,
+      "count": 979,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -8860,14 +8827,6 @@
           "type": "component",
           "name": "runtimeUiHelpers.tsx",
           "path": "apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeUiHelpers.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:homelivewidgets-tsx:e522983c63",
-          "type": "component",
-          "name": "HomeLiveWidgets.tsx",
-          "path": "apps/web/src/features/dashboard-home/components/HomeLiveWidgets.tsx",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -9908,6 +9867,14 @@
           "type": "feature",
           "name": "actions.ts",
           "path": "apps/web/src/features/wallets/components/wallet-create-edit-form/actions.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "feature:state-ts:25257ae959",
+          "type": "feature",
+          "name": "state.ts",
+          "path": "apps/web/src/features/wallets/components/wallet-create-edit-form/state.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         }

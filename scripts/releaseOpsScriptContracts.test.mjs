@@ -46,6 +46,8 @@ test('release and Ops wrappers preserve safe command contracts without executing
     await Promise.all(
       [
         'scripts/runProdUxA11yMobileProof.mjs',
+        'scripts/runPublicReadOnlyBrowserProof.mjs',
+        'scripts/runWebNextProductionCommand.mjs',
         'scripts/runQaRepeatableSmokeE2e.mjs',
         'scripts/runRcRefreshSummaryStrict.mjs',
         'scripts/runRestoreDrillEvidence.mjs',
@@ -70,6 +72,30 @@ test('release and Ops wrappers preserve safe command contracts without executing
       'Network.setCookie',
       'Auth tokens, passwords, cookies, private headers, and raw protected payloads',
       'await rm(browser.userDataDir',
+    ]),
+    true,
+  );
+
+  assert.equal(
+    includesAll(files['scripts/runPublicReadOnlyBrowserProof.mjs'], [
+      'PUBLIC_BROWSER_PROOF_WEB_BASE_URL',
+      '--headless=new',
+      'remote-debugging-address=127.0.0.1',
+      'overflowX',
+      'public-read-only-browser-proof',
+      'await rm(browser.userDataDir',
+    ]),
+    true,
+  );
+
+  assert.equal(
+    includesAll(files['scripts/runWebNextProductionCommand.mjs'], [
+      "['build', 'start'].includes(command)",
+      "NODE_ENV: 'production'",
+      'writeWebBuildMetadata.mjs',
+      "node_modules', 'next', 'dist', 'bin', 'next'",
+      "process.env.PORT || '3002'",
+      "'-H', '0.0.0.0'",
     ]),
     true,
   );
@@ -201,7 +227,7 @@ test('release and Ops wrappers preserve safe command contracts without executing
       'SOURCE_COMMIT',
       'COOLIFY_GIT_COMMIT_SHA',
       'readGitShaFromRef',
-      'readGitShaFromGithubBranch',
+      "metadataSource: 'unknown'",
       'metadataSource',
     ]),
     true,

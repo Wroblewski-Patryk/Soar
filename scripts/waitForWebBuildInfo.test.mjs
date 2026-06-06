@@ -48,18 +48,32 @@ const runWaitScript = (url, extraArgs = []) =>
     { cwd: process.cwd() }
   );
 
-test('passes when the expected SHA has build-time deploy metadata', async () => {
+test('passes when the expected SHA has authoritative build-time deploy metadata', async () => {
   await withBuildInfoServer(
     {
       buildId: 'build-001',
       gitSha: 'abc123456789',
       gitRef: 'main',
-      metadataSource: 'github-branch',
+      metadataSource: 'env',
     },
     async (url) => {
       const { stdout } = await runWaitScript(url);
-      assert.match(stdout, /metadataSource=github-branch/);
+      assert.match(stdout, /metadataSource=env/);
       assert.match(stdout, /\[wait:web-build-info\] PASS/);
+    }
+  );
+});
+
+test('fails when a matching SHA comes only from build-time GitHub branch fallback', async () => {
+  await withBuildInfoServer(
+    {
+      buildId: 'build-002',
+      gitSha: 'abc123456789',
+      gitRef: 'main',
+      metadataSource: 'github-branch',
+    },
+    async (url) => {
+      await assert.rejects(runWaitScript(url), /unaccepted metadataSource=github-branch/);
     }
   );
 });
@@ -67,7 +81,7 @@ test('passes when the expected SHA has build-time deploy metadata', async () => 
 test('fails when a matching SHA comes only from runtime GitHub fallback', async () => {
   await withBuildInfoServer(
     {
-      buildId: 'build-002',
+      buildId: 'build-003',
       gitSha: 'abc123456789',
       gitRef: 'main',
       metadataSource: 'github-branch-runtime',
