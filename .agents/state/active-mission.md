@@ -9,6 +9,18 @@ repository history.
 
 ## Current Mission
 
+- `LUC-2395-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-06` is verified as the
+  TSA coordination refresh after [LUC-2394](/LUC/issues/LUC-2394) closed the
+  PM coordination dirty state. Current register truth: no duplicate Backend or
+  source-control repair lane is needed; [LUC-2378](/LUC/issues/LUC-2378) owns
+  the next CTO/Ops push and production-promotion path recheck for candidate
+  `4787ee9859c02fc950f781eb5803d97a930aa977`; protected release confidence
+  remains fail-closed through [LUC-2365](/LUC/issues/LUC-2365),
+  [LUC-2372](/LUC/issues/LUC-2372), and [LUC-2366](/LUC/issues/LUC-2366). No
+  code/runtime/deploy/push/restart/rollback/env/account/secret/exchange/
+  protected-smoke/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2395-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
+
 - `LUC-2394-PM-COORDINATION-SOURCE-CLOSURE-2026-06-06` is verified locally as
   the CTO source-control closure for PM coordination dirty state left by
   [LUC-2390](/LUC/issues/LUC-2390). Dirty state was classified as

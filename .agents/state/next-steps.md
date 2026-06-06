@@ -2,6 +2,23 @@
 
 Last updated: 2026-05-28
 
+## 2026-06-06 LUC-2395 Gap Register And Repair Lane Refresh Next Action
+
+1. Treat [LUC-2395](/LUC/issues/LUC-2395) as a completed TSA register refresh,
+   not a Backend/runtime repair lane.
+2. Do not open duplicate Backend or source-control repair work after
+   [LUC-2394](/LUC/issues/LUC-2394) closed the PM coordination dirty state and
+   [LUC-2380](/LUC/issues/LUC-2380), [LUC-2381](/LUC/issues/LUC-2381), and
+   [LUC-2393](/LUC/issues/LUC-2393) read back as `done`.
+3. Route the next executable release-path action to
+   [LUC-2378](/LUC/issues/LUC-2378): CTO/Ops recheck of the push and
+   production-promotion path for candidate
+   `4787ee9859c02fc950f781eb5803d97a930aa977`.
+4. Keep protected release confidence fail-closed until
+   [LUC-2365](/LUC/issues/LUC-2365), [LUC-2372](/LUC/issues/LUC-2372), and
+   [LUC-2366](/LUC/issues/LUC-2366) provide legal promotion disposition,
+   approved protected inputs, and protected runtime/worker/SLO proof.
+
 ## 2026-06-06 LUC-2390 PM No-Stall Queue Expeditor Next Action
 
 1. Treat [LUC-2390](/LUC/issues/LUC-2390) as a completed coordination

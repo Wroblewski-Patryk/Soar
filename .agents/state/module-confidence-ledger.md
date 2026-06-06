@@ -2,6 +2,18 @@
 
 Last updated: 2026-06-06
 
+- 2026-06-06 `LUC-2395-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-06`
+  applies to V1 audit-to-completion coordination, Bot Runtime release
+  confidence, source-control discipline, and protected release-gate routing.
+  TSA refreshed the current gap register after [LUC-2394](/LUC/issues/LUC-2394)
+  closed the PM coordination dirty state. Status: coordination register
+  `verified`; local Backend/source-control repair lanes are not reopened.
+  Production release confidence remains gated by [LUC-2378](/LUC/issues/LUC-2378)
+  push/promotion recheck and protected proof gates
+  [LUC-2365](/LUC/issues/LUC-2365), [LUC-2372](/LUC/issues/LUC-2372), and
+  [LUC-2366](/LUC/issues/LUC-2366). Evidence:
+  `history/tasks/luc-2395-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
+
 - 2026-06-06 `LUC-2380-POST-2374-DIRTY-API-RUNTIME-DIFF-CLOSURE-2026-06-06`
   applies to Bot Runtime aggregate and release guardrail confidence. CTO
   classified the post-[LUC-2374](/LUC/issues/LUC-2374) dirty API runtime diff

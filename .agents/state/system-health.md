@@ -1,5 +1,17 @@
 # System Health
 
+- `LUC-2395-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-06` is VERIFIED as a TSA
+  coordination/release-routing refresh. Current health routing after
+  [LUC-2394](/LUC/issues/LUC-2394): no duplicate Backend or source-control
+  repair lane is needed; [LUC-2378](/LUC/issues/LUC-2378) owns the next
+  CTO/Ops push and production-promotion path recheck for candidate
+  `4787ee9859c02fc950f781eb5803d97a930aa977`; protected release confidence
+  remains fail-closed through [LUC-2365](/LUC/issues/LUC-2365),
+  [LUC-2372](/LUC/issues/LUC-2372), and [LUC-2366](/LUC/issues/LUC-2366). No
+  code/runtime/deploy/push/restart/rollback/env/account/secret/exchange/
+  protected-smoke/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2395-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
+
 - `LUC-2380-POST-2374-DIRTY-API-RUNTIME-DIFF-CLOSURE-2026-06-06` is VERIFIED
   locally as the CTO source-control closure wrapper for the
   post-[LUC-2374](/LUC/issues/LUC-2374) dirty API runtime diff. PASS: API

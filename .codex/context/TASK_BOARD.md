@@ -1,3 +1,20 @@
+- 2026-06-06 `LUC-2395 [Soar] Gap register and repair lane refresh`
+  - Status: done / coordination register refresh.
+  - Scope: TSA gap-register and repair-lane refresh after
+    [LUC-2394](/LUC/issues/LUC-2394) closed the PM coordination dirty state.
+  - Routing result:
+    - no duplicate Backend or source-control repair lane is needed;
+    - [LUC-2378](/LUC/issues/LUC-2378) owns the next CTO/Ops push and
+      production-promotion path recheck for candidate
+      `4787ee9859c02fc950f781eb5803d97a930aa977`;
+    - protected release confidence remains fail-closed through
+      [LUC-2365](/LUC/issues/LUC-2365), [LUC-2372](/LUC/issues/LUC-2372), and
+      [LUC-2366](/LUC/issues/LUC-2366).
+  - No mutation: no code/runtime/deploy/push/restart/rollback/env/account,
+    secret, exchange, protected-smoke, or live-trading action.
+  - Artifact:
+    - `history/tasks/luc-2395-gap-register-and-repair-lane-refresh-2026-06-06-task.md`
+
 - 2026-06-06 `LUC-2394 [Soar][CTO/Source] Close LUC-2390 PM coordination dirty state before push permit`
   - Status: done / local source-control closure.
   - Scope: source-control closure for the PM coordination dirty state left by
