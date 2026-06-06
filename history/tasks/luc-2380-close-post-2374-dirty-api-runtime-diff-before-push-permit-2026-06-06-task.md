@@ -1,0 +1,98 @@
+# LUC-2380 Close Post-2374 Dirty API Runtime Diff Before Push Permit
+
+## Header
+- ID: LUC-2380
+- Title: Close post-2374 dirty API runtime diff before push permit
+- Task Type: release
+- Current Stage: verification
+- Status: DONE
+- Owner: 09 CTO
+- Priority: P0
+- Module Confidence Rows: Bot Runtime aggregate, Release guardrails
+- Requirement Rows: Release source-control hygiene, Bot Runtime maintainability proof
+- Quality Scenario Rows: Maintainability, regression resistance, release traceability
+- Risk Rows: Dirty source-state risk, runtime aggregate regression risk
+- Operation Mode: BUILDER
+- Mission ID: LUC-2380-POST-2374-DIRTY-API-RUNTIME-DIFF-CLOSURE-2026-06-06
+- Mission Status: VERIFIED
+
+## Context
+
+[LUC-2374](/LUC/issues/LUC-2374) closed the prior dirty source state before a
+renewed push decision for candidate `de3db789177cd497447343395d335fca6a84444c`.
+The post-[LUC-2374](/LUC/issues/LUC-2374) worktree again contained a small
+dirty API runtime set from Bot Runtime read-model decomposition follow-up work,
+with related [LUC-2367](/LUC/issues/LUC-2367), [LUC-2368](/LUC/issues/LUC-2368),
+and [LUC-2381](/LUC/issues/LUC-2381) source-of-truth/task evidence.
+
+## Goal
+
+Verify that the current dirty API runtime diff is coherent, locally proven, and
+safe to close as a local source-control checkpoint before any push permit is
+reconsidered.
+
+## Scope
+
+- Bot Runtime aggregate helper source diff.
+- Bot Runtime read-model task artifacts and source-of-truth state.
+- No production, deployment, account, secret, exchange, protected-smoke, or
+  live-trading action.
+
+## Implementation Plan
+
+1. Inspect the dirty tree and classify runtime/source-of-truth/task evidence.
+2. Run the smallest proof set that matches the dirty diff.
+3. Record CTO closure and residual release-proof blocker.
+4. Commit the coherent local closure set after validation.
+
+## Acceptance Criteria
+
+- API runtime diff is classified and validated.
+- API typecheck passes.
+- Repository guardrails pass.
+- Focused Bot Runtime helper/unit tests pass.
+- Whitespace check reports no errors beyond known LF/CRLF warnings.
+- Residual clean DB-backed full aggregate e2e blocker remains explicit.
+- No push or production mutation occurs.
+
+## Definition of Done
+
+- [x] Current dirty source state is documented.
+- [x] Relevant local checks pass.
+- [x] Source-of-truth state is updated.
+- [x] Work is eligible only for local commit closure; push remains outside this
+      issue.
+
+## Forbidden
+
+- No push.
+- No deploy, restart, rollback, env/database/account, secret, exchange,
+  protected-smoke, or live-trading mutation.
+- No new guardrail allowlist or temporary bypass.
+
+## Validation Evidence
+
+- PASS: `pnpm --filter api exec tsc --noEmit --pretty false`.
+- PASS: `pnpm run quality:guardrails`.
+- PASS: `git diff --check` with LF/CRLF warnings only.
+- PASS: `pnpm --filter api exec vitest run src/modules/bots/runtimeMonitoringAggregateConcurrency.test.ts src/modules/bots/runtimeSessionPositionsRead.service.test.ts --run --sequence.concurrent=false --pool forks --poolOptions.forks.singleFork=true` (`23/23`).
+
+## Result Report
+
+- Runtime diff classification:
+  - extracted aggregate fallback and open-order helper modules now use
+    type-only imports for read-model function shapes.
+  - aggregate subquery default timeout is `25000ms` with the existing
+    environment override preserved.
+- Source-of-truth classification:
+  - [LUC-2367](/LUC/issues/LUC-2367), [LUC-2368](/LUC/issues/LUC-2368), and
+    [LUC-2381](/LUC/issues/LUC-2381) task/state evidence records the Backend
+    decomposition and source-state closure details.
+  - this [LUC-2380](/LUC/issues/LUC-2380) artifact records the CTO push-permit
+    source-control closure wrapper.
+- Reality status: `verified` for local source-control closure.
+- Residual risk: full aggregate e2e release-behavior proof still needs a clean
+  local test DB rerun before candidate promotion decisions claim that proof.
+- Deployment impact: none.
+- Push impact: no push performed; push permit remains gated by protected
+  runtime/worker/SLO proof and explicit Ops mutation approval.
