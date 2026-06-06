@@ -12,11 +12,8 @@ Last updated: 2026-05-28
    [LUC-2378](/LUC/issues/LUC-2378): CTO/Ops recheck of push and
    production-promotion path for candidate
    `4787ee9859c02fc950f781eb5803d97a930aa977`.
-4. First reconcile [LUC-2393](/LUC/issues/LUC-2393), created for CTO after
-   Paperclip readback showed [LUC-2380](/LUC/issues/LUC-2380) still `blocked`
-   despite local verified evidence. [LUC-2393](/LUC/issues/LUC-2393) must mark
-   [LUC-2380](/LUC/issues/LUC-2380) `done` or replace passive `blocked` with
-   a named first-class blocker/owner/action.
+4. [LUC-2393](/LUC/issues/LUC-2393) and [LUC-2380](/LUC/issues/LUC-2380) now
+   read back as `done`; do not reopen that stale blocked-state reconciliation.
 5. Keep protected release confidence fail-closed until
    [LUC-2365](/LUC/issues/LUC-2365), [LUC-2372](/LUC/issues/LUC-2372), and
    [LUC-2366](/LUC/issues/LUC-2366) provide legal promotion disposition,
