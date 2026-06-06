@@ -37,8 +37,8 @@ Remove the Backend Bot Runtime monolith exception by decomposing the aggregate/p
 
 ## Result Report
 
-- Aggregate read service is `664` lines.
-- Runtime session positions read service is `965` lines.
+- Aggregate read service is `635` lines.
+- Runtime session positions read service is `932` lines.
 - Backend staged-decomposition allowlist no longer includes either target file.
 - Fixed helper extraction runtime dependency risk:
   - `runtimeMonitoringAggregateFallbacks.service.ts` now imports runtime read functions as `import type`.

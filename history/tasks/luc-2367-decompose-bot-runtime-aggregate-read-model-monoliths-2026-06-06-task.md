@@ -5,7 +5,7 @@
 - Title: Decompose Bot Runtime aggregate read-model monoliths after release guardrail allowlist
 - Task Type: refactor
 - Current Stage: verification
-- Status: PARTIALLY_VERIFIED
+- Status: VERIFIED
 - Owner: 09 CBE
 - Priority: P1
 - Module Confidence Rows: Bot Runtime aggregate, Release guardrails
@@ -14,7 +14,7 @@
 - Risk Rows: Runtime aggregate regression risk, release gate drift
 - Operation Mode: BUILDER
 - Mission ID: LUC-2367-BOT-RUNTIME-READ-MODEL-DECOMPOSITION-2026-06-06
-- Mission Status: PARTIALLY_VERIFIED
+- Mission Status: VERIFIED
 
 ## Context
 [LUC-2364](/LUC/issues/LUC-2364) restored release guardrails for candidate
@@ -56,7 +56,7 @@ fallback, ownership, and aggregate projection behavior.
 - Repository guardrails pass without Backend read-model monolith exceptions.
 - API typecheck passes.
 - Focused helper/unit tests pass.
-- Any unverified e2e proof gap is recorded honestly.
+- Full aggregate e2e proof passes from the restored local test state.
 
 ## Forbidden
 - No runtime behavior rewrite beyond mechanical extraction.
@@ -68,18 +68,13 @@ fallback, ownership, and aggregate projection behavior.
 - PASS: `pnpm --filter api exec tsc --noEmit --pretty false`.
 - PASS: `pnpm run quality:guardrails`.
 - PASS: `pnpm --filter api exec vitest run src/modules/bots/runtimeMonitoringAggregateConcurrency.test.ts src/modules/bots/runtimeSessionPositionsRead.service.test.ts --run --sequence.concurrent=false` (`23/23`).
-- BLOCKED/PARTIAL: full `bots.monitoring-aggregate.e2e.test.ts` did not
-  produce a clean behavioral proof in the current local DB state. Runs failed
-  before or during setup with `401`/`400` create responses and Prisma FK
-  cleanup errors such as `Order_userId_fkey`, `Strategy_userId_fkey`,
-  `BotRuntimeSession_botId_fkey`, and `BotRuntimeSymbolStat_sessionId_fkey`.
-  The failure is recorded as local test-state contamination, not production
-  evidence.
+- PASS: `pnpm --filter api exec vitest run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts --run --sequence.concurrent=false --testTimeout=30000` (`19/19`).
+- PASS: `git diff --check` with LF/CRLF warnings only.
 
 ## Result Report
-- Status: `partially verified`.
+- Status: `verified local`.
 - Deployment impact: none.
-- Residual risk: the full aggregate e2e should be rerun from a clean local
-  test database before using this extraction as release behavior proof.
-- Next owner/action: QA/Test or Backend should refresh the aggregate e2e test
-  database state and rerun the exact full aggregate e2e proof.
+- Residual risk: production release confidence remains owned by separate
+  protected Ops/QA gates; no production mutation occurred in this task.
+- Next owner/action: release gate owners can consume the local Backend proof
+  when evaluating push/promotion readiness.

@@ -9,10 +9,10 @@ Last updated: 2026-06-06
   [LUC-2367](/LUC/issues/LUC-2367), [LUC-2368](/LUC/issues/LUC-2368), and
   [LUC-2381](/LUC/issues/LUC-2381) evidence. Status: `verified` for local
   source-control closure. Evidence: API typecheck, `quality:guardrails`,
-  `git diff --check` with LF/CRLF warnings only, and focused aggregate
-  concurrency + positions read-model tests (`23/23`). Residual release proof
-  remains blocked on clean DB-backed full aggregate e2e and protected
-  runtime/worker/SLO evidence. Evidence:
+  focused aggregate concurrency + positions read-model tests (`23/23`), and
+  full aggregate e2e (`19/19`) after a local API test DB reset.
+  Residual release proof remains blocked on protected runtime/worker/SLO
+  evidence and explicit Ops mutation permit. Evidence:
   `history/tasks/luc-2380-close-post-2374-dirty-api-runtime-diff-before-push-permit-2026-06-06-task.md`.
 
 - 2026-06-06 `LUC-2381-RUNTIME-MONITORING-SOURCE-CLOSURE-2026-06-06`
@@ -42,10 +42,10 @@ Last updated: 2026-06-06
   positions open-order/takeover helpers out of the two read-model service files.
   `runtimeMonitoringAggregateRead.service.ts` is now `635` lines and
   `runtimeSessionPositionsRead.service.ts` is now `932` lines, below the
-  production monolith threshold. Status: `partially verified`; typecheck,
-  guardrails, and focused helper/unit tests pass, but full aggregate e2e proof
-  needs a clean local test DB rerun because current runs fail during setup/FK
-  cleanup. Evidence:
+  production monolith threshold. Status: `verified local`; typecheck,
+  guardrails, focused helper/unit tests (`23/23`), and full DB-backed
+  aggregate e2e proof (`19/19`) pass. Production release confidence remains
+  owned by separate protected Ops/QA gates. Evidence:
   `history/tasks/luc-2367-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md`.
 
 - 2026-06-06 `LUC-2373-RESIDUAL-GUARDRAIL-DRIFT-2026-06-06` applies to Bot

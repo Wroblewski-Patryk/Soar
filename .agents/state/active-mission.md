@@ -17,14 +17,14 @@ repository history.
   dirty state is coherent with the Bot Runtime read-model decomposition and
   related [LUC-2367](/LUC/issues/LUC-2367), [LUC-2368](/LUC/issues/LUC-2368),
   and [LUC-2381](/LUC/issues/LUC-2381) source-state evidence. Validation
-  passed: API typecheck, `quality:guardrails`, `git diff --check` with LF/CRLF
-  warnings only, and focused aggregate concurrency + positions read-model tests
-  (`23/23`). No push, deploy, restart, rollback, env/database/account, secret,
+  passed: API typecheck, `quality:guardrails`, focused aggregate concurrency +
+  positions read-model tests (`23/23`), and full aggregate e2e (`19/19`) after
+  a local API test DB reset. No push, deploy, restart, rollback,
+  env/account, secret,
   exchange, protected smoke, or live-trading action occurred. Evidence:
   `history/tasks/luc-2380-close-post-2374-dirty-api-runtime-diff-before-push-permit-2026-06-06-task.md`.
-  Next proof: clean DB-backed full aggregate e2e plus protected
-  runtime/worker/SLO evidence remain required before push/promotion can be
-  treated as release-ready.
+  Next proof: protected runtime/worker/SLO evidence remains required before
+  push/promotion can be treated as release-ready.
 
 - `LUC-2381-RUNTIME-MONITORING-SOURCE-CLOSURE-2026-06-06` is verified locally
   as the Backend closure for dirty runtime-monitoring source state blocking
@@ -50,7 +50,7 @@ repository history.
   Wake `issue_assigned` was consumed from inline payload
   (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already claimed
   by the harness and was not repeated. Current code state keeps aggregate read
-  at `663` lines and session positions read at `976` lines, with the target
+  at `635` lines and session positions read at `932` lines, with the target
   Backend files removed from staged-decomposition allowlists. This heartbeat
   fixed runtime import cycles in extracted helpers by converting type-only
   dependencies to `import type`. Validation passed: API typecheck,

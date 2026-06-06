@@ -52,7 +52,7 @@ reconsidered.
 - Repository guardrails pass.
 - Focused Bot Runtime helper/unit tests pass.
 - Whitespace check reports no errors beyond known LF/CRLF warnings.
-- Residual clean DB-backed full aggregate e2e blocker remains explicit.
+- Full aggregate e2e proof is verified or explicitly blocked.
 - No push or production mutation occurs.
 
 ## Definition of Done
@@ -76,6 +76,7 @@ reconsidered.
 - PASS: `pnpm run quality:guardrails`.
 - PASS: `git diff --check` with LF/CRLF warnings only.
 - PASS: `pnpm --filter api exec vitest run src/modules/bots/runtimeMonitoringAggregateConcurrency.test.ts src/modules/bots/runtimeSessionPositionsRead.service.test.ts --run --sequence.concurrent=false --pool forks --poolOptions.forks.singleFork=true` (`23/23`).
+- PASS: `pnpm --filter api exec vitest run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts --run --sequence.concurrent=false --pool forks --poolOptions.forks.singleFork=true --testTimeout=30000 --reporter=dot` (`19/19`).
 
 ## Result Report
 
@@ -91,8 +92,9 @@ reconsidered.
   - this [LUC-2380](/LUC/issues/LUC-2380) artifact records the CTO push-permit
     source-control closure wrapper.
 - Reality status: `verified` for local source-control closure.
-- Residual risk: full aggregate e2e release-behavior proof still needs a clean
-  local test DB rerun before candidate promotion decisions claim that proof.
+- Residual risk: protected runtime/worker/SLO proof and explicit Ops mutation
+  permit remain required before candidate promotion decisions claim release
+  readiness.
 - Deployment impact: none.
 - Push impact: no push performed; push permit remains gated by protected
   runtime/worker/SLO proof and explicit Ops mutation approval.

@@ -4,11 +4,11 @@
   locally as the CTO source-control closure wrapper for the
   post-[LUC-2374](/LUC/issues/LUC-2374) dirty API runtime diff. PASS: API
   typecheck, `quality:guardrails`, `git diff --check` with LF/CRLF warnings
-  only, and focused aggregate concurrency + positions read-model tests
-  (`23/23`). No push, deploy, restart, rollback, protected smoke, account,
-  secret, exchange, database, or live-trading mutation occurred. Residual
-  release proof remains blocked on clean DB-backed full aggregate e2e plus
-  protected runtime/worker/SLO evidence. Evidence:
+  only, focused aggregate concurrency + positions read-model tests (`23/23`),
+  and full aggregate e2e (`19/19`) after a local API test DB reset. No push,
+  deploy, restart, rollback, protected smoke, account, secret, exchange, or
+  live-trading mutation occurred. Residual release proof remains blocked on protected
+  runtime/worker/SLO evidence and explicit Ops mutation permit. Evidence:
   `history/tasks/luc-2380-close-post-2374-dirty-api-runtime-diff-before-push-permit-2026-06-06-task.md`.
 
 - `LUC-2381-RUNTIME-MONITORING-SOURCE-CLOSURE-2026-06-06` is VERIFIED locally
@@ -35,15 +35,14 @@
   `history/tasks/luc-2368-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md`.
 
 - `LUC-2367-BOT-RUNTIME-READ-MODEL-DECOMPOSITION-2026-06-06` is
-  PARTIALLY_VERIFIED locally. Backend decomposed the two Bot Runtime read-model
+  VERIFIED locally. Backend decomposed the two Bot Runtime read-model
   monoliths that were temporarily allowlisted by [LUC-2364](/LUC/issues/LUC-2364):
-  aggregate read is now `635` lines and session positions read is now `932`
+  aggregate read is now `635` lines and session positions read is now `965`
   lines. PASS: API typecheck, `pnpm run quality:guardrails`, and focused
-  aggregate concurrency + positions read-model tests (`23/23`). BLOCKED/PARTIAL:
-  full aggregate e2e proof failed in the current local DB state before clean
-  behavioral proof due setup/auth and Prisma FK cleanup errors. No push,
-  deploy, restart, rollback, protected smoke, account, secret, exchange, or
-  live-trading mutation occurred. Evidence:
+  aggregate concurrency + positions read-model tests (`23/23`). PASS: full
+  DB-backed aggregate e2e proof (`19/19`) after the blocker was resolved. No
+  push, deploy, restart, rollback, protected smoke, account, secret, exchange,
+  or live-trading mutation occurred. Evidence:
   `history/tasks/luc-2367-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md`.
 
 - `LUC-2373-RESIDUAL-GUARDRAIL-DRIFT-2026-06-06` is VERIFIED locally for
