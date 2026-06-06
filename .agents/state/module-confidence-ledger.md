@@ -29,7 +29,7 @@ Last updated: 2026-06-06
 - 2026-06-06 `LUC-2368-BOT-RUNTIME-READ-MODEL-DECOMPOSITION-2026-06-06`
   applies to Bot Runtime aggregate maintainability and release guardrail
   confidence. The target Backend services are below the production monolith
-  threshold (`664` and `965` lines), no longer require staged-decomposition
+  threshold (`635` and `932` lines), no longer require staged-decomposition
   allowlist entries, and pass API typecheck, guardrails, focused helper/unit
   proof (`23/23`), and full DB-backed aggregate e2e proof (`19/19`) after a
   local API test DB reset. Status: `verified local`; production release proof

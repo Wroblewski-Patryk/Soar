@@ -14,7 +14,7 @@ repository history.
   consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`);
   checkout was already claimed by the harness and was not repeated. The Bot
   Runtime aggregate read-model files remain below the production monolith
-  threshold (`664` and `965` lines), the staged-decomposition allowlist entries
+  threshold (`635` and `932` lines), the staged-decomposition allowlist entries
   are gone, and validation passed: API typecheck, `quality:guardrails`, focused
   aggregate concurrency + positions read-model tests (`23/23`), and full
   DB-backed aggregate e2e proof (`19/19`) after a local API test DB reset. No

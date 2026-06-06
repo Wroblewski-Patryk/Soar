@@ -44,8 +44,8 @@ fallback, ownership, and aggregate projection behavior.
   `runtimeMonitoringAggregateFallbacks.service.ts`.
 - Extracted positions open-order de-dupe and runtime takeover helper logic to
   `runtimeSessionOpenOrdersReadModel.service.ts`.
-- Reduced `runtimeMonitoringAggregateRead.service.ts` to `664` lines and
-  `runtimeSessionPositionsRead.service.ts` to `965` lines.
+- Reduced `runtimeMonitoringAggregateRead.service.ts` to `635` lines and
+  `runtimeSessionPositionsRead.service.ts` to `932` lines.
 - Updated `docs/governance/code-quality-guardrails.md` and
   `history/audits/code-quality-maintainability-inventory-2026-04-21.md` to
   remove the Backend temporary monolith exception narrative.
