@@ -44,8 +44,8 @@ fallback, ownership, and aggregate projection behavior.
   `runtimeMonitoringAggregateFallbacks.service.ts`.
 - Extracted positions open-order de-dupe and runtime takeover helper logic to
   `runtimeSessionOpenOrdersReadModel.service.ts`.
-- Reduced `runtimeMonitoringAggregateRead.service.ts` to `635` lines and
-  `runtimeSessionPositionsRead.service.ts` to `932` lines.
+- Reduced `runtimeMonitoringAggregateRead.service.ts` to `664` lines and
+  `runtimeSessionPositionsRead.service.ts` to `965` lines.
 - Updated `docs/governance/code-quality-guardrails.md` and
   `history/audits/code-quality-maintainability-inventory-2026-04-21.md` to
   remove the Backend temporary monolith exception narrative.
@@ -60,8 +60,8 @@ fallback, ownership, and aggregate projection behavior.
 
 ## Forbidden
 - No runtime behavior rewrite beyond mechanical extraction.
-- No push, deploy, restart, rollback, protected smoke, account, secret,
-  exchange, database, or live-trading mutation.
+- No push, deploy, restart, rollback, production database, protected smoke,
+  account, secret, exchange, or live-trading mutation.
 - No new wildcard guardrail exception.
 
 ## Validation Evidence
