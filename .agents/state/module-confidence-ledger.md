@@ -2,6 +2,52 @@
 
 Last updated: 2026-06-06
 
+- 2026-06-06 `LUC-2351-RUNTIME-AGGREGATE-SOURCE-CLOSURE-RERUN-2026-06-06`
+  applies to Bot Runtime aggregate and source-control closure confidence.
+  Backend re-repaired the exact aggregate e2e after [LUC-2341](/LUC/issues/LUC-2341)
+  source closure reran the [LUC-2342](/LUC/issues/LUC-2342) proof and still
+  saw two near-`30000ms` aggregate request timeouts plus one empty
+  `positions.historyItems` result for overlapping running closed positions.
+  Repair: aggregate `withTimeout` now clears its timer after race resolution,
+  aggregate position subquery timeout/error now uses the existing bounded
+  position fallback projection before empty fallback, and temporary e2e debug
+  logging was removed. Status: `verified local`. Evidence: PASS exact full
+  aggregate e2e command with `19/19` tests under `--testTimeout=30000`; PASS
+  API typecheck. Production release confidence remains gated by protected
+  runtime smoke and SLO proof. Evidence:
+  `history/tasks/luc-2351-re-repair-aggregate-e2e-after-source-closure-rerun-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2354-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-06-06`
+  applies to V1 audit-to-completion coordination, Bot Runtime aggregate
+  confidence, source-control discipline, and release-gate routing. The prior
+  [LUC-2329](/LUC/issues/LUC-2329) register state is superseded for the
+  Backend aggregate blocker: [LUC-2328](/LUC/issues/LUC-2328),
+  [LUC-2333](/LUC/issues/LUC-2333), and [LUC-2342](/LUC/issues/LUC-2342)
+  have verified the local aggregate repair sequence with the exact full
+  aggregate e2e passing `19/19` under `--testTimeout=30000` and API typecheck
+  passing. Remaining lanes are not duplicate Backend repair: source-control
+  closure must package or explicitly decline the coherent dirty set, and
+  QA/Ops/Security must still run protected runtime/worker/SLO proof under
+  approved release gates before production readiness can be claimed. Status:
+  coordination register verified; Bot Runtime aggregate is `verified local`,
+  production release confidence remains gated. Evidence:
+  `history/tasks/luc-2354-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2342-RUNTIME-AGGREGATE-POST-PROOF-REGRESSION-2026-06-06`
+  applies to Bot Runtime aggregate and source-control closure confidence.
+  Backend repaired the post-aggregate-proof full-file regression blocking
+  [LUC-2341](/LUC/issues/LUC-2341). Root cause: the aggregate hidden-trade e2e
+  restored a Prisma `trade.findMany` spy while timed-out aggregate subqueries
+  could still be running, so later aggregate reads saw
+  `prisma.trade.findMany is not a function` and fell back to empty payloads;
+  several valid aggregate subqueries also exceeded the old `15000ms` default
+  under the full DB-backed file. The bounded proof now keeps the forwarding spy
+  active after assertion, and the aggregate subquery default timeout is
+  `25000ms` with `RUNTIME_MONITORING_AGGREGATE_SUBQUERY_TIMEOUT_MS` override
+  preserved. Status: `verified local`. Evidence: PASS exact full aggregate
+  e2e command with `19/19` tests and PASS API typecheck. Evidence:
+  `history/tasks/luc-2342-repair-post-aggregate-proof-runtime-aggregate-regression-before-source-closure-2026-06-06-task.md`.
+
 - 2026-06-06 `LUC-2333-RUNTIME-AGGREGATE-TRADE-ROW-REPAIR-2026-06-06`
   applies to Bot Runtime aggregate and production API reliability confidence.
   Backend repaired the post-QA rerun failure where the aggregate endpoint

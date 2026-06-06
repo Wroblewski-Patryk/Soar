@@ -551,7 +551,7 @@ describe('Bots runtime monitoring aggregate endpoint', () => {
     expect(tradeFindManyArgs.some((args) => args.take === 5)).toBe(true);
     expect(tradeFindManyArgs.every((args) => (args.take ?? 0) < 260)).toBe(true);
 
-    tradeFindManySpy.mockRestore();
+    tradeFindManySpy.mockClear();
   });
 
   it('keeps aggregate symbol-stats summaries truthful when visible symbols are limited', async () => {

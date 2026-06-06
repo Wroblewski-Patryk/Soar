@@ -20,6 +20,41 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-06-06 - Prisma spies can race timed-out aggregate readers
+- Context: LUC-2342 repaired the full Bot Runtime monitoring aggregate e2e
+  regression after focused aggregate proofs passed; LUC-2351 re-repaired the
+  same source-closure lane after the exact aggregate e2e still showed unstable
+  timeout/history behavior.
+- Symptom: later aggregate tests returned HTTP `200` with empty symbol stats,
+  positions, trades, or paper capital summaries. Diagnostic fallback logging
+  showed `prisma.trade.findMany is not a function` after the bounded hidden
+  trade proof restored its spy; source-closure rerun also saw empty
+  `positions.historyItems` when the position subquery fell through to empty
+  fallback.
+- Root cause: aggregate subquery timeout uses `Promise.race`, so timed-out
+  reader promises can keep running after the HTTP aggregate response returns.
+  Restoring a Prisma delegate spy immediately after the assertion left late
+  readers calling a restored/invalid mock delegate. Position timeout/error
+  fallback also returned an empty row even though a bounded position projection
+  fallback already existed.
+- Guardrail: in DB-backed e2e tests for aggregate readers, avoid restoring
+  Prisma delegate spies while late aggregate promises can still be active.
+  Keep a forwarding spy installed for the process or isolate the proof in a
+  separate test file/process. Aggregate timeout helpers should clear timers
+  after race resolution, and per-subquery fallbacks should use bounded
+  truth-preserving projections before empty fallback when one exists.
+- Preferred pattern: spy with a bound original delegate, assert bounded calls,
+  then clear call history instead of restoring inside the same long-running
+  aggregate suite. For aggregate positions, fall back to the bounded DB
+  projection on timeout/error before returning empty positions.
+- Avoid: combining `Promise.race` timeout fallback, mutable Prisma delegates,
+  immediate `mockRestore()` in the same DB-backed e2e file, and empty fallback
+  for data that can still be recovered cheaply through an existing bounded
+  projection.
+- Evidence:
+  `history/tasks/luc-2342-repair-post-aggregate-proof-runtime-aggregate-regression-before-source-closure-2026-06-06-task.md`,
+  `history/tasks/luc-2351-re-repair-aggregate-e2e-after-source-closure-rerun-2026-06-06-task.md`.
+
 ### 2026-06-05 - CDP proof Edge process can outlive cleaned ports
 - Context: LUC-2255 reran `scripts/runPublicReadOnlyBrowserProof.mjs` against
   local production Web on `127.0.0.1:3101` with CDP port `9365`.

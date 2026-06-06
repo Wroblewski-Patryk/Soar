@@ -1,3 +1,78 @@
+- 2026-06-06 `LUC-2356 [Soar][PM] No-stall queue expeditor`
+  - Status: done.
+  - Scope: coordination-only PM queue checkpoint for the current post-aggregate
+    repair critical path.
+  - Wake handling:
+    - consumed inline wake payload first;
+    - `fallbackFetchNeeded=false`;
+    - pending comments `0/0`;
+    - checkout was already claimed by the harness and was not repeated.
+  - Routing result:
+    - no duplicate Backend repair lane opened after [LUC-2351](/LUC/issues/LUC-2351)
+      local proof;
+    - next owner/action remains [LUC-2341](/LUC/issues/LUC-2341) source-control
+      closure to rerun dirty-set validation and decide commit/closure;
+    - protected runtime aggregate, worker readiness, and SLO/RC proof remain
+      QA/Ops/Security release-gated follow-up.
+  - No mutation: no code/runtime/deploy/push/restart/rollback/migration,
+    account, secret, exchange, protected-smoke, or live-trading action.
+  - Artifact:
+    - `history/tasks/luc-2356-no-stall-queue-expeditor-2026-06-06-task.md`
+
+- 2026-06-06 `LUC-2351 [Soar][Backend API] Re-repair aggregate e2e after source-closure rerun still fails`
+  - Status: done.
+  - Scope: Backend API runtime aggregate source-closure blocker after the
+    [LUC-2341](/LUC/issues/LUC-2341) rerun still failed the exact aggregate
+    proof.
+  - Evidence:
+    - `withTimeout` now clears timers after race resolution;
+    - aggregate position subquery timeout/error uses the existing bounded
+      position fallback projection before empty fallback;
+    - temporary `LUC-2353` aggregate debug logging was removed;
+    - exact full aggregate e2e passed `19/19`;
+    - API typecheck passed.
+  - No mutation: no push, deploy, restart, rollback, migration, account,
+    secret, exchange, protected smoke, or live-trading action.
+  - Next owner/action: [LUC-2341](/LUC/issues/LUC-2341) source-control closure
+    should rerun dirty-set validation and decide commit/closure.
+  - Artifact:
+    - `history/tasks/luc-2351-re-repair-aggregate-e2e-after-source-closure-rerun-2026-06-06-task.md`
+
+- 2026-06-06 `LUC-2354 [Soar] Gap register and repair lane refresh`
+  - Status: done.
+  - Scope: coordination/source-of-truth refresh after Backend aggregate repair
+    lanes [LUC-2328](/LUC/issues/LUC-2328), [LUC-2333](/LUC/issues/LUC-2333),
+    and [LUC-2342](/LUC/issues/LUC-2342).
+  - Evidence:
+    - previous [LUC-2329](/LUC/issues/LUC-2329) `trades.total=0` blocker is
+      superseded by local aggregate proof;
+    - exact full aggregate e2e passed `19/19`;
+    - API typecheck passed in the Backend repair lane;
+    - refreshed register rows route remaining work to source-control closure
+      and release-gated protected runtime/worker/SLO proof, not duplicate
+      Backend repair.
+  - No mutation: no push, deploy, restart, rollback, account, secret,
+    exchange, protected smoke, or live-trading action.
+  - Artifact:
+    - `history/tasks/luc-2354-gap-register-and-repair-lane-refresh-2026-06-06-task.md`
+
+- 2026-06-06 `LUC-2342 [Soar][Backend API] Repair post-aggregate-proof runtime aggregate regression before source closure`
+  - Status: done.
+  - Scope: backend aggregate source-closure blocker after focused aggregate
+    proofs left the full aggregate e2e file failing.
+  - Evidence:
+    - raised aggregate subquery default timeout to `25000ms` while preserving
+      `RUNTIME_MONITORING_AGGREGATE_SUBQUERY_TIMEOUT_MS`;
+    - changed bounded hidden-trade e2e spy lifecycle so the forwarding
+      `prisma.trade.findMany` spy is not restored while late aggregate
+      promises may still be active;
+    - exact full aggregate e2e passed with `19/19` tests;
+    - API typecheck passed.
+  - No mutation: no push, deploy, restart, rollback, migration, account,
+    secret, exchange, protected smoke, or live-trading action.
+  - Artifact:
+    - `history/tasks/luc-2342-repair-post-aggregate-proof-runtime-aggregate-regression-before-source-closure-2026-06-06-task.md`
+
 - 2026-06-06 `LUC-2340 [Soar][Source Control Closure] Close post-LUC-2312 V1 controller dirty state`
   - Status: done.
   - Scope: classify and close the post-[LUC-2312](/LUC/issues/LUC-2312)

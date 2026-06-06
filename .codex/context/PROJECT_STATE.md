@@ -1,3 +1,50 @@
+- 2026-06-06 `LUC-2356` completed a PM no-stall queue checkpoint for the
+  current post-aggregate repair path. Inline wake payload had
+  `fallbackFetchNeeded=false`, pending comments `0/0`, and no unresolved
+  blocker list on the issue itself. PM routing remains narrow: do not open
+  duplicate Backend repair after [LUC-2351](/LUC/issues/LUC-2351) local proof;
+  [LUC-2341](/LUC/issues/LUC-2341) owns source-control closure rerun/decision,
+  and QA/Ops/Security own protected runtime aggregate, worker readiness, and
+  SLO/RC proof under release gates. No code/runtime/deploy/protected-smoke
+  mutation occurred. Evidence:
+  `history/tasks/luc-2356-no-stall-queue-expeditor-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2351` re-repaired the Bot Runtime aggregate e2e after
+  [LUC-2341](/LUC/issues/LUC-2341) source closure reran the [LUC-2342](/LUC/issues/LUC-2342)
+  proof and still saw two near-`30000ms` aggregate request timeouts plus one
+  empty closed-position history result. Backend wired the existing bounded
+  position fallback into aggregate position timeout/error handling, cleared
+  aggregate timeout timers after race resolution, and removed temporary e2e
+  debug logging. Exact aggregate e2e passed (`19/19`) and API typecheck
+  passed. No push, deploy, restart, rollback, account, secret, exchange,
+  protected-smoke, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2351-re-repair-aggregate-e2e-after-source-closure-rerun-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2354` refreshed the current gap register and repair lane
+  routing after the runtime aggregate repair sequence. The stale
+  [LUC-2329](/LUC/issues/LUC-2329) Backend blocker is superseded:
+  [LUC-2328](/LUC/issues/LUC-2328), [LUC-2333](/LUC/issues/LUC-2333), and
+  [LUC-2342](/LUC/issues/LUC-2342) now verify local aggregate behavior with
+  exact full aggregate e2e `19/19` and API typecheck passing. Remaining
+  actionable lanes are source-control closure for the coherent dirty set and
+  release-gated QA/Ops/Security protected runtime, worker readiness, and
+  SLO/RC proof. No push, deploy, restart, rollback, account, secret, exchange,
+  protected-smoke, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2354-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2342` repaired the post-aggregate-proof runtime aggregate
+  regression blocking [LUC-2341](/LUC/issues/LUC-2341) source closure. Root
+  cause was the full aggregate e2e combining slow aggregate subquery fallback
+  with early restoration of a Prisma `trade.findMany` spy while timed-out
+  aggregate promises could still be running. Backend raised the aggregate
+  subquery default timeout to `25000ms` with
+  `RUNTIME_MONITORING_AGGREGATE_SUBQUERY_TIMEOUT_MS` override preserved, and
+  kept the bounded hidden-trade proof spy forwarding after assertion. Exact
+  aggregate e2e passed (`19/19`) and API typecheck passed. No push, deploy,
+  restart, rollback, account, secret, exchange, protected-smoke, or
+  live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2342-repair-post-aggregate-proof-runtime-aggregate-regression-before-source-closure-2026-06-06-task.md`.
+
 - 2026-06-06 `LUC-2340` closed the post-[LUC-2312](/LUC/issues/LUC-2312) V1
   controller dirty state as a source-control hygiene lane. Baseline before the
   closure artifact/state update was `HEAD`

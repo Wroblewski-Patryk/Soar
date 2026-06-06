@@ -1,5 +1,6 @@
 import { getOwnedBot } from './botOwnership.service';
 import { GetBotRuntimeMonitoringAggregateQueryDto } from './bots.types';
+import { prisma } from '../../prisma/client';
 import { listRuntimeSessionsWithSummary } from './runtimeSessionsRead.service';
 import { listBotRuntimeSessionPositions } from './runtimeSessionPositionsRead.service';
 import { listBotRuntimeSessionSymbolStats } from './runtimeSessionSymbolStatsRead.service';
@@ -60,15 +61,19 @@ const buildRuntimeAggregateCacheKey = (
 
 const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number) => {
   if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) return promise;
-  return Promise.race<T>([
-    promise,
-    new Promise<T>((_, reject) => {
-      const timer = setTimeout(() => {
-        clearTimeout(timer);
-        reject(new Error('runtime_aggregate_subquery_timeout'));
-      }, timeoutMs);
-    }),
-  ]);
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race<T>([
+      promise,
+      new Promise<T>((_, reject) => {
+        timer = setTimeout(() => {
+          reject(new Error('runtime_aggregate_subquery_timeout'));
+        }, timeoutMs);
+      }),
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
 };
 
 export const mapWithLimitedConcurrency = async <T, R>(
@@ -521,6 +526,150 @@ const buildEmptyAggregatePositionsPayload = (params: {
   };
 };
 
+const buildFallbackAggregatePositionsPayload = async (params: {
+  botId: string;
+  userId: string;
+  session: RuntimeSessionListItem;
+  symbol: string | undefined;
+  limit: number;
+}): Promise<RuntimePositionsResponse> => {
+  const finishedAt = resolveAggregateSessionWindowEnd(params.session);
+  const symbol = params.symbol?.trim().toUpperCase();
+  const symbolWhere = symbol ? { symbol } : {};
+  const baseWhere = {
+    userId: params.userId,
+    botId: params.botId,
+    managementMode: 'BOT_MANAGED' as const,
+    ...symbolWhere,
+  };
+  const openWhere = {
+    ...baseWhere,
+    status: 'OPEN' as const,
+    closedAt: null,
+    openedAt: { lte: finishedAt },
+  };
+  const closedWhere = {
+    ...baseWhere,
+    status: 'CLOSED' as const,
+    closedAt: {
+      gte: params.session.startedAt,
+      lte: finishedAt,
+    },
+  };
+
+  const [openPositions, closedPositions, openCount, closedCount, openOrders, openQty, unrealizedPnl, realizedPnl] =
+    await Promise.all([
+      prisma.position.findMany({
+        where: openWhere,
+        orderBy: [{ openedAt: 'desc' }, { createdAt: 'desc' }, { id: 'asc' }],
+        take: params.limit,
+        select: {
+          id: true,
+          openedAt: true,
+          entryPrice: true,
+          quantity: true,
+          leverage: true,
+          unrealizedPnl: true,
+        },
+      }),
+      prisma.position.findMany({
+        where: closedWhere,
+        orderBy: [{ closedAt: 'desc' }, { id: 'asc' }],
+        take: params.limit,
+        select: {
+          id: true,
+          closedAt: true,
+          realizedPnl: true,
+        },
+      }),
+      prisma.position.count({ where: openWhere }),
+      prisma.position.count({ where: closedWhere }),
+      prisma.order.findMany({
+        where: {
+          userId: params.userId,
+          botId: params.botId,
+          managementMode: 'BOT_MANAGED',
+          status: { in: ['PENDING', 'OPEN', 'PARTIALLY_FILLED'] },
+          ...(symbol ? { symbol } : {}),
+        },
+        orderBy: [{ createdAt: 'desc' }, { updatedAt: 'desc' }, { id: 'asc' }],
+        take: params.limit,
+        select: {
+          id: true,
+          origin: true,
+          submittedAt: true,
+          createdAt: true,
+        },
+      }),
+      prisma.position.aggregate({
+        where: openWhere,
+        _sum: { quantity: true },
+      }),
+      prisma.position.aggregate({
+        where: openWhere,
+        _sum: { unrealizedPnl: true },
+      }),
+      prisma.position.aggregate({
+        where: closedWhere,
+        _sum: { realizedPnl: true },
+      }),
+    ]);
+
+  const positionIds = [...openPositions.map((position) => position.id), ...closedPositions.map((position) => position.id)];
+  const feesPaid =
+    positionIds.length > 0
+      ? (
+          await prisma.trade.aggregate({
+            where: {
+              userId: params.userId,
+              botId: params.botId,
+              positionId: { in: positionIds },
+            },
+            _sum: { fee: true },
+          })
+        )._sum.fee ?? 0
+      : 0;
+
+  return {
+    sessionId: params.session.id,
+    total: openCount + closedCount,
+    openCount,
+    closedCount,
+    openOrdersCount: openOrders.length,
+    showDynamicStopColumns: false,
+    window: {
+      startedAt: params.session.startedAt,
+      finishedAt,
+    },
+    summary: {
+      realizedPnl: realizedPnl._sum.realizedPnl ?? 0,
+      unrealizedPnl: unrealizedPnl._sum.unrealizedPnl ?? 0,
+      feesPaid,
+      openPositionQty: openQty._sum.quantity ?? 0,
+      referenceBalance: null,
+      freeCash: null,
+      accountBalance: null,
+      baseCurrency: null,
+      capitalSource: null,
+      allocationMode: null,
+      allocationValue: null,
+      paperResetAt: null,
+    },
+    openOrders: openOrders.map((order) => ({
+      ...order,
+      origin: order.origin === 'EXCHANGE_SYNC' ? 'EXCHANGE' : 'BOT',
+    })) as RuntimePositionsResponse['openOrders'],
+    openItems: openPositions.map((position) => ({
+      id: position.id,
+      openedAt: position.openedAt,
+      entryNotional: position.entryPrice * position.quantity,
+      leverage: position.leverage,
+      unrealizedPnl: position.unrealizedPnl,
+    })) as RuntimePositionsResponse['openItems'],
+    historyItems: closedPositions as RuntimePositionsResponse['historyItems'],
+  };
+};
+
 const buildEmptyAggregateTradesPayload = (params: {
   session: RuntimeSessionListItem;
   perSessionLimit: number;
@@ -590,21 +739,35 @@ const getBotRuntimeMonitoringAggregateUncached = async (
             preferConfiguredStrategyContext: true,
           }),
           runtimeAggregateSubqueryTimeoutMs
-        ).catch(() => buildEmptyAggregateSymbolStatsPayload({ session })),
+        )
+          .then((value) => value ?? buildEmptyAggregateSymbolStatsPayload({ session }))
+          .catch(() => buildEmptyAggregateSymbolStatsPayload({ session })),
         withTimeout(
           listBotRuntimeSessionPositions(userId, botId, session.id, {
             symbol: query.symbol,
             limit: perSessionLimit,
           }),
           runtimeAggregateSubqueryTimeoutMs
-        ).catch(() => buildEmptyAggregatePositionsPayload({ session })),
+        )
+          .then((value) => value ?? buildEmptyAggregatePositionsPayload({ session }))
+          .catch(() =>
+            buildFallbackAggregatePositionsPayload({
+              botId,
+              userId,
+              session,
+              symbol: query.symbol,
+              limit: perSessionLimit,
+            }).catch(() => buildEmptyAggregatePositionsPayload({ session }))
+          ),
         withTimeout(
           listBotRuntimeSessionTrades(userId, botId, session.id, {
             symbol: query.symbol,
             limit: perSessionLimit,
           }),
           runtimeAggregateSubqueryTimeoutMs
-        ).catch(() => buildEmptyAggregateTradesPayload({ session, perSessionLimit })),
+        )
+          .then((value) => value ?? buildEmptyAggregateTradesPayload({ session, perSessionLimit }))
+          .catch(() => buildEmptyAggregateTradesPayload({ session, perSessionLimit })),
       ]);
 
       return {

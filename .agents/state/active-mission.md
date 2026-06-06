@@ -9,6 +9,66 @@ repository history.
 
 ## Current Mission
 
+- `LUC-2356-NO-STALL-QUEUE-EXPEDITOR-2026-06-06` completed as a PM
+  coordination checkpoint for the current post-aggregate repair critical path.
+  Wake `issue_assigned` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already claimed
+  by the harness and was not repeated. No new unblock/comment delta arrived.
+  Routing remains narrow: no duplicate Backend repair after
+  [LUC-2351](/LUC/issues/LUC-2351) local proof; [LUC-2341](/LUC/issues/LUC-2341)
+  owns source-control closure rerun/decision; QA/Ops/Security own protected
+  runtime aggregate, worker readiness, and SLO/RC proof under approved release
+  gates. No code/runtime/deploy/push/restart/rollback/migration, account,
+  secret, exchange, protected-smoke, or live-trading action occurred. Evidence:
+  `history/tasks/luc-2356-no-stall-queue-expeditor-2026-06-06-task.md`.
+
+- `LUC-2351-RUNTIME-AGGREGATE-SOURCE-CLOSURE-RERUN-2026-06-06` is verified
+  locally as the Backend API re-repair after [LUC-2341](/LUC/issues/LUC-2341)
+  source closure reran the aggregate proof and still failed. Wake
+  `process_lost_retry` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already claimed
+  by the harness and was not repeated. Repair: aggregate `withTimeout` clears
+  timers after race resolution, aggregate position timeout/error fallback now
+  uses the existing bounded position fallback projection before empty fallback,
+  and temporary e2e debug logging was removed. Validation passed: exact full
+  aggregate e2e command under `--testTimeout=30000` (`19/19`) and API
+  typecheck. No production deploy, restart, rollback, migration, account,
+  secret, exchange, protected smoke, or live-trading action occurred.
+  Evidence:
+  `history/tasks/luc-2351-re-repair-aggregate-e2e-after-source-closure-rerun-2026-06-06-task.md`.
+  Next proof: [LUC-2341](/LUC/issues/LUC-2341) source-control closure should
+  rerun its dirty-set validation and commit/close if still coherent.
+
+- `LUC-2354-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-06-06` completed as a
+  coordination/source-of-truth refresh for the current Soar repair register.
+  Wake `issue_assigned` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already claimed
+  by the harness and was not repeated. The stale [LUC-2329](/LUC/issues/LUC-2329)
+  Backend aggregate blocker is superseded: [LUC-2328](/LUC/issues/LUC-2328),
+  [LUC-2333](/LUC/issues/LUC-2333), and [LUC-2342](/LUC/issues/LUC-2342) now
+  verify local aggregate behavior with exact full aggregate e2e `19/19` and
+  API typecheck passing. Current repair lanes are source-control closure for
+  the coherent dirty set, then QA/Ops/Security protected runtime/worker/SLO
+  release proof under approved gates. No production mutation, deploy, restart,
+  rollback, account, secret, exchange, protected smoke, or live-trading action
+  occurred. Evidence:
+  `history/tasks/luc-2354-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
+
+- `LUC-2342-RUNTIME-AGGREGATE-POST-PROOF-REGRESSION-2026-06-06` is verified
+  locally as the Backend API repair for the post-aggregate-proof runtime
+  aggregate regression blocking [LUC-2341](/LUC/issues/LUC-2341) source
+  closure. Wake `issue_assigned` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already claimed
+  by the harness and was not repeated. Repair: default aggregate subquery
+  timeout is now `25000ms` with the environment override preserved, and the
+  bounded hidden-trade e2e keeps the forwarding Prisma `trade.findMany` spy
+  active after assertion so late timed-out aggregate promises cannot hit a
+  restored delegate. Validation passed: exact full aggregate e2e command under
+  `--testTimeout=30000` (`19/19`) and API typecheck. No production deploy,
+  restart, rollback, migration, account, secret, exchange, protected smoke, or
+  live-trading action occurred. Evidence:
+  `history/tasks/luc-2342-repair-post-aggregate-proof-runtime-aggregate-regression-before-source-closure-2026-06-06-task.md`.
+
 - `LUC-2340-SOURCE-CONTROL-CLOSURE-POST-LUC-2312-2026-06-06` closed the
   post-[LUC-2312](/LUC/issues/LUC-2312) V1 controller dirty state as a bounded
   source-control hygiene lane. Wake `issue_continuation_needed` was consumed

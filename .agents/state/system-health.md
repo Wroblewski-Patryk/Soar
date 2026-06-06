@@ -1,5 +1,55 @@
 # System Health
 
+- `LUC-2356-NO-STALL-QUEUE-EXPEDITOR-2026-06-06` VERIFIED as a coordination
+  queue-health checkpoint. PM consumed the issue-scoped wake payload first
+  (`fallbackFetchNeeded=false`, comments `0/0`) and found no new unblock delta
+  or first-class blocker list on the issue itself. Current health routing
+  remains unchanged: [LUC-2351](/LUC/issues/LUC-2351) proves the local
+  aggregate e2e again, [LUC-2341](/LUC/issues/LUC-2341) owns source-control
+  closure rerun/decision, and protected runtime aggregate/worker/SLO proof
+  remains release-gated to QA/Ops/Security. No production or runtime mutation
+  occurred. Evidence:
+  `history/tasks/luc-2356-no-stall-queue-expeditor-2026-06-06-task.md`.
+
+- `LUC-2351-RUNTIME-AGGREGATE-SOURCE-CLOSURE-RERUN-2026-06-06`
+  VERIFIED locally for the aggregate e2e source-closure rerun blocker.
+  Backend confirmed the exact aggregate e2e can pass but was still unstable
+  around position timeout fallback and temporary diagnostics after
+  [LUC-2342](/LUC/issues/LUC-2342). The aggregate timeout helper now clears
+  timers after successful race resolution, position subquery timeout/error
+  falls back to the existing bounded position projection before empty fallback,
+  and the temporary `LUC-2353` debug log was removed. PASS exact command:
+  `pnpm --filter api exec vitest run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts --testTimeout=30000`
+  (`19/19` tests). PASS `pnpm --filter api run typecheck`. No production
+  mutation occurred. Evidence:
+  `history/tasks/luc-2351-re-repair-aggregate-e2e-after-source-closure-rerun-2026-06-06-task.md`.
+
+- `LUC-2354-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-06-06` VERIFIED as a
+  coordination and release-routing refresh. The current Bot Runtime aggregate
+  local proof is no longer blocked by the stale [LUC-2329](/LUC/issues/LUC-2329)
+  `trades.total=0` gap: follow-up Backend repairs [LUC-2328](/LUC/issues/LUC-2328),
+  [LUC-2333](/LUC/issues/LUC-2333), and [LUC-2342](/LUC/issues/LUC-2342)
+  have passing local evidence, including exact full aggregate e2e `19/19` and
+  API typecheck. Remaining health gates are release/process gates:
+  source-control closure before push/deploy, then protected runtime aggregate
+  smoke, worker readiness, and SLO/RC proof under Ops/QA/Security approval.
+  No production mutation occurred. Evidence:
+  `history/tasks/luc-2354-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
+
+- `LUC-2342-RUNTIME-AGGREGATE-POST-PROOF-REGRESSION-2026-06-06`
+  VERIFIED locally for the post-proof aggregate source-closure blocker.
+  Backend confirmed the full aggregate e2e regression came from aggregate
+  subquery timeout fallback plus early restoration of a Prisma
+  `trade.findMany` spy while late aggregate promises could still be running.
+  The aggregate subquery default timeout is now `25000ms` with the environment
+  override preserved, and the bounded hidden-trade proof keeps its forwarding
+  spy active after assertion instead of restoring it mid-suite. PASS exact
+  command:
+  `pnpm --filter api exec vitest run src/modules/bots/bots.monitoring-aggregate.e2e.test.ts --testTimeout=30000`
+  (`19/19` tests). PASS `pnpm --filter api run typecheck`. No production
+  mutation occurred. Evidence:
+  `history/tasks/luc-2342-repair-post-aggregate-proof-runtime-aggregate-regression-before-source-closure-2026-06-06-task.md`.
+
 - `LUC-2333-RUNTIME-AGGREGATE-TRADE-ROW-REPAIR-2026-06-06`
   VERIFIED locally after the failed [LUC-2317](/LUC/issues/LUC-2317) QA rerun.
   Aggregate fanout now isolates nested-reader timeout/error fallback per
