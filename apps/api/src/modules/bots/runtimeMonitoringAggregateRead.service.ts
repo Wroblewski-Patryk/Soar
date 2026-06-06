@@ -76,7 +76,7 @@ const runtimeAggregateMaxPerSession = Number.parseInt(
   10,
 );
 const runtimeAggregateSubqueryTimeoutMs = Number.parseInt(
-  process.env.RUNTIME_MONITORING_AGGREGATE_SUBQUERY_TIMEOUT_MS ?? '15000',
+  process.env.RUNTIME_MONITORING_AGGREGATE_SUBQUERY_TIMEOUT_MS ?? '25000',
   10,
 );
 const runtimeAggregateStaleTtlMs = Number.parseInt(process.env.RUNTIME_MONITORING_AGGREGATE_STALE_TTL_MS ?? '45000', 10);

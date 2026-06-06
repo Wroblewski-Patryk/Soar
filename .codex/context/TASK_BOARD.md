@@ -1,3 +1,51 @@
+- 2026-06-06 `LUC-2381 [Soar][Backend] Resolve dirty runtime-monitoring source state blocking 4787ee98 promotion`
+  - Status: verified local / source closure ready for Ops recheck.
+  - Scope: Backend source-state closure for the dirty runtime-monitoring files
+    blocking [LUC-2378](/LUC/issues/LUC-2378).
+  - Result:
+    - preserved intended [LUC-2367](/LUC/issues/LUC-2367) /
+      [LUC-2368](/LUC/issues/LUC-2368) decomposition deltas;
+    - removed stray diagnostic aggregate fallback logging before closure;
+    - prepared a coherent local commit for the runtime-monitoring source/state
+      set.
+  - Evidence:
+    - API typecheck passed.
+    - `quality:guardrails` passed.
+    - focused aggregate concurrency + positions read-model tests passed
+      (`23/23`).
+  - No mutation: no push, deploy, restart, rollback, env/database/account,
+    secret, exchange, protected-smoke, or live-trading action.
+  - Artifact:
+    - `history/tasks/luc-2381-resolve-dirty-runtime-monitoring-source-state-blocking-4787ee98-promotion-2026-06-06-task.md`
+
+- 2026-06-06 `LUC-2368 [Soar][Backend] Decompose Bot Runtime aggregate read-model monoliths after LUC-2364 allowlist`
+  - Status: partially verified / blocked on clean DB-backed aggregate e2e rerun.
+  - Scope: Backend follow-up to remove the temporary [LUC-2364](/LUC/issues/LUC-2364)
+    monolith allowlist for Bot Runtime aggregate and session positions reads.
+  - Code result:
+    - `runtimeMonitoringAggregateRead.service.ts` is `635` lines.
+    - `runtimeSessionPositionsRead.service.ts` is `932` lines.
+    - target Backend files are no longer in `STAGED_DECOMPOSITION_ALLOWLIST`.
+    - type-only imports removed runtime cycles in aggregate fallback and
+      session open-order helper modules.
+  - Evidence:
+    - API typecheck passed.
+    - `quality:guardrails` passed.
+    - `git diff --check` passed with LF/CRLF warnings only.
+    - focused aggregate concurrency + positions read-model helper tests passed
+      (`23/23`).
+    - isolated aggregate route proof passed for status/symbol filter and
+      ownership isolation.
+  - Residual blocker:
+    - full `bots.monitoring-aggregate.e2e.test.ts` needs a clean local test DB
+      rerun before release-behavior proof is claimed; current long run improved
+      to `11/19` passing but later cases still show setup/create mismatches,
+      Prisma FK cleanup errors, and empty aggregate rows.
+  - No mutation: no push, deploy, restart, rollback, env/database/account,
+    secret, exchange, protected-smoke, or live-trading action.
+  - Artifact:
+    - `history/tasks/luc-2368-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md`
+
 - 2026-06-06 `LUC-2374 [Soar][CTO/Source] Close dirty source state before de3db789 push decision`
   - Status: done / verified local.
   - Scope: source-control closure of the dirty tree left before any renewed
@@ -85,6 +133,32 @@
     secret, exchange, protected-smoke, or live-trading action.
   - Artifact:
     - `history/tasks/luc-2364-repair-release-guardrails-blocking-de3db789-2026-06-06-task.md`
+
+- 2026-06-06 `LUC-2367 [Soar][Backend] Decompose Bot Runtime aggregate read-model monoliths after release guardrail allowlist`
+  - Status: partially verified.
+  - Scope: Backend Bot Runtime maintainability follow-up after [LUC-2364](/LUC/issues/LUC-2364)
+    temporarily allowed two read-model monoliths.
+  - Code result:
+    - `runtimeMonitoringAggregateRead.service.ts` reduced to `635` lines by
+      extracting aggregate projectors, runtime/cache/concurrency helpers, and
+      fallback payload builders.
+    - `runtimeSessionPositionsRead.service.ts` reduced to `932` lines by
+      extracting open-order/takeover read-model helpers.
+    - code-quality guardrail docs and maintainability inventory now record the
+      Backend monolith exception as closed by [LUC-2367](/LUC/issues/LUC-2367).
+  - Evidence:
+    - API typecheck passed.
+    - `quality:guardrails` passed.
+    - focused aggregate concurrency + positions read-model helper tests passed
+      (`23/23`).
+  - Residual risk:
+    - full aggregate e2e proof is blocked by current local test DB cleanup/auth
+      contamination (`401`/`400` setup responses and Prisma FK cleanup errors);
+      rerun from a clean test DB before claiming release behavior proof.
+  - No mutation: no push, deploy, restart, rollback, env/database/account,
+    secret, exchange, protected-smoke, or live-trading action.
+  - Artifact:
+    - `history/tasks/luc-2367-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md`
 
 - 2026-06-06 `LUC-2365 [Soar][CTO/Ops] Decide push and production promotion path for de3db789`
   - Status: blocked / no-go.

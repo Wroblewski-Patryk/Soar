@@ -1,4 +1,4 @@
-import { listRuntimeOpenOrders } from './runtimeSessionPositionsRead.repository';
+import type { listRuntimeOpenOrders } from './runtimeSessionPositionsRead.repository';
 
 type RuntimeOpenOrderRow = Awaited<ReturnType<typeof listRuntimeOpenOrders>>[number];
 

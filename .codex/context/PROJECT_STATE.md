@@ -1,3 +1,40 @@
+- 2026-06-06 `LUC-2381` resolved the dirty Backend runtime-monitoring source
+  state that blocked [LUC-2378](/LUC/issues/LUC-2378) promotion recheck for
+  candidate `4787ee9859c02fc950f781eb5803d97a930aa977`. The closure kept the
+  intended [LUC-2367](/LUC/issues/LUC-2367) / [LUC-2368](/LUC/issues/LUC-2368)
+  decomposition deltas, removed stray diagnostic aggregate fallback logging,
+  and refreshed local validation. PASS: API typecheck, `quality:guardrails`,
+  and focused aggregate concurrency + positions read-model tests (`23/23`).
+  No push, deploy, restart, rollback, env/database/account, secret, exchange,
+  protected-smoke, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2381-resolve-dirty-runtime-monitoring-source-state-blocking-4787ee98-promotion-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2368` partially verified the Backend Bot Runtime read-model
+  decomposition after the [LUC-2364](/LUC/issues/LUC-2364) temporary allowlist.
+  The aggregate read service is `635` lines, the session positions read service
+  is `932` lines, the target files are no longer in the staged-decomposition
+  allowlist, API typecheck passes, `quality:guardrails` passes, focused
+  aggregate concurrency + positions read-model tests pass (`23/23`), and an
+  isolated aggregate route proof passes for status/symbol filter and ownership
+  isolation. Full aggregate e2e proof remains blocked on a clean local test DB
+  rerun; the current long DB-backed run improved to `11/19` passing but still
+  shows setup/create mismatches, Prisma FK cleanup errors, and empty aggregate
+  rows in later cases. No production mutation occurred. Evidence:
+  `history/tasks/luc-2368-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2367` partially verified the Backend Bot Runtime
+  read-model decomposition after the [LUC-2364](/LUC/issues/LUC-2364)
+  temporary monolith allowlist. Aggregate read orchestration is split into
+  projector, runtime/cache/concurrency, and fallback payload helpers; positions
+  read open-order/takeover helpers are split out. The two target files are now
+  below the `1000`-line production threshold (`635` and `932` lines), API
+  typecheck passes, `quality:guardrails` passes, and focused aggregate
+  concurrency + positions read-model tests pass (`23/23`). Full aggregate e2e
+  proof remains blocked by current local test DB cleanup/auth contamination,
+  so release behavior proof must be rerun from a clean test DB. No production
+  mutation occurred. Evidence:
+  `history/tasks/luc-2367-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md`.
+
 - 2026-06-06 `LUC-2374` closed the dirty local source state before any renewed
   push decision for candidate `de3db789`. Dirty state was classified as a
   coherent release/source closure set spanning Backend runtime aggregate

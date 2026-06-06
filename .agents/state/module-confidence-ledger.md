@@ -2,6 +2,41 @@
 
 Last updated: 2026-06-06
 
+- 2026-06-06 `LUC-2381-RUNTIME-MONITORING-SOURCE-CLOSURE-2026-06-06`
+  applies to Bot Runtime aggregate maintainability and release source hygiene.
+  Backend resolved the dirty runtime-monitoring source state blocking
+  [LUC-2378](/LUC/issues/LUC-2378) by preserving the intended decomposition
+  deltas, removing stray diagnostic fallback logging, and rerunning focused
+  validation. Status: `verified local`; API typecheck, guardrails, and focused
+  aggregate concurrency + positions read-model tests pass (`23/23`). Full
+  DB-backed aggregate e2e release-behavior proof remains dependent on a clean
+  local test DB rerun. Evidence:
+  `history/tasks/luc-2381-resolve-dirty-runtime-monitoring-source-state-blocking-4787ee98-promotion-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2368-BOT-RUNTIME-READ-MODEL-DECOMPOSITION-2026-06-06`
+  applies to Bot Runtime aggregate maintainability and release guardrail
+  confidence. The target Backend services are below the production monolith
+  threshold (`635` and `932` lines), no longer require staged-decomposition
+  allowlist entries, and pass API typecheck, guardrails, focused helper/unit
+  proof (`23/23`), and one isolated aggregate route ownership/filter proof.
+  Status: `partially verified`; full aggregate e2e release-behavior proof is
+  still blocked on a clean local test DB rerun because the current long run has
+  setup/create mismatches, Prisma FK cleanup errors, and later empty aggregate
+  rows. Evidence:
+  `history/tasks/luc-2368-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2367-BOT-RUNTIME-READ-MODEL-DECOMPOSITION-2026-06-06`
+  applies to Bot Runtime aggregate maintainability and release guardrail
+  confidence. Backend split aggregate projection/runtime/fallback helpers and
+  positions open-order/takeover helpers out of the two read-model service files.
+  `runtimeMonitoringAggregateRead.service.ts` is now `635` lines and
+  `runtimeSessionPositionsRead.service.ts` is now `932` lines, below the
+  production monolith threshold. Status: `partially verified`; typecheck,
+  guardrails, and focused helper/unit tests pass, but full aggregate e2e proof
+  needs a clean local test DB rerun because current runs fail during setup/FK
+  cleanup. Evidence:
+  `history/tasks/luc-2367-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md`.
+
 - 2026-06-06 `LUC-2373-RESIDUAL-GUARDRAIL-DRIFT-2026-06-06` applies to Bot
   Runtime aggregate, architecture evidence graph, and release guardrail
   confidence. Residual drift after the [LUC-2365](/LUC/issues/LUC-2365) recheck

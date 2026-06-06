@@ -1,5 +1,41 @@
 # System Health
 
+- `LUC-2381-RUNTIME-MONITORING-SOURCE-CLOSURE-2026-06-06` is VERIFIED locally
+  as the Backend source-state closure for [LUC-2378](/LUC/issues/LUC-2378)
+  candidate `4787ee9859c02fc950f781eb5803d97a930aa977`. The dirty set is
+  classified as coherent Bot Runtime read-model decomposition/source-of-truth
+  work, with stray diagnostic aggregate fallback logging removed before
+  closure. PASS: API typecheck, `pnpm run quality:guardrails`, and focused
+  aggregate concurrency + positions read-model tests (`23/23`). No push,
+  deploy, restart, rollback, protected smoke, account, secret, exchange, or
+  live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2381-resolve-dirty-runtime-monitoring-source-state-blocking-4787ee98-promotion-2026-06-06-task.md`.
+
+- `LUC-2368-BOT-RUNTIME-READ-MODEL-DECOMPOSITION-2026-06-06` is
+  PARTIALLY_VERIFIED locally. Backend closed the [LUC-2364](/LUC/issues/LUC-2364)
+  monolith allowlist target for Bot Runtime aggregate and positions reads:
+  aggregate read is `635` lines, session positions read is `932` lines, and
+  guardrails pass without those Backend allowlist entries. PASS: API typecheck,
+  `pnpm run quality:guardrails`, `git diff --check`, focused aggregate
+  concurrency + positions read-model tests (`23/23`), and one isolated
+  aggregate route ownership/filter proof. BLOCKED/PARTIAL: full aggregate e2e
+  needs a clean local test DB rerun before release-behavior proof is claimed.
+  No push, deploy, restart, rollback, protected smoke, account, secret,
+  exchange, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2368-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md`.
+
+- `LUC-2367-BOT-RUNTIME-READ-MODEL-DECOMPOSITION-2026-06-06` is
+  PARTIALLY_VERIFIED locally. Backend decomposed the two Bot Runtime read-model
+  monoliths that were temporarily allowlisted by [LUC-2364](/LUC/issues/LUC-2364):
+  aggregate read is now `635` lines and session positions read is now `932`
+  lines. PASS: API typecheck, `pnpm run quality:guardrails`, and focused
+  aggregate concurrency + positions read-model tests (`23/23`). BLOCKED/PARTIAL:
+  full aggregate e2e proof failed in the current local DB state before clean
+  behavioral proof due setup/auth and Prisma FK cleanup errors. No push,
+  deploy, restart, rollback, protected smoke, account, secret, exchange, or
+  live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2367-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md`.
+
 - `LUC-2373-RESIDUAL-GUARDRAIL-DRIFT-2026-06-06` is VERIFIED locally for
   candidate `de3db789`. The residual graph drift from the [LUC-2365](/LUC/issues/LUC-2365)
   guardrail recheck is repaired by mapping the real extracted Bot Runtime
