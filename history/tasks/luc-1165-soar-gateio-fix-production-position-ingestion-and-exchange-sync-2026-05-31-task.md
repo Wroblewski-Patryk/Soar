@@ -18,9 +18,10 @@ Restore exchange-correct post-sync automation so Gate.io reconciled positions pr
 
 ## Verification
 - `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts -t "uses api-key exchange when hydrating owned LIVE automation"` PASS (2 passed, 32 skipped).
-- Full-file run `pnpm --filter api run test -- src/modules/positions/livePositionReconciliation.service.test.ts --run` timed out in this environment (no failing assertion captured before timeout).
-- `pnpm --filter api run typecheck` timed out in this runner during this heartbeat (no type error output captured before timeout).
+- `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts --reporter=verbose` PASS (34 passed).
+- `pnpm --filter api run typecheck` PASS.
+- Consumed blocker-resolved evidence from `history/evidence/luc-1166-gateio-position-ingestion-readiness-after-adapter-fix-2026-05-31.md`: DB-backed QA verification and scoped source-control closure completed; fix SHA `44a9ceba612e8d49eb86a9001e63b1f0be6243ea` is reachable from `origin/main`.
 
 ## Risk
-- Residual risk: full reconciliation suite not completed in this heartbeat due timeout; broader regressions outside targeted case are not fully re-proven here.
+- Residual risk: browser-rendered UI was not separately smoked in this issue; API display/read path is locally verified by blocker-resolved evidence.
 - No LIVE exchange mutation was performed.
