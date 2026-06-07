@@ -4,6 +4,7 @@ import { existsSync } from 'node:fs';
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 import process from 'node:process';
+import { pathToFileURL } from 'node:url';
 import { resolveOpsAuthToken } from './resolveOpsAuthToken.mjs';
 
 const rawArgs = process.argv.slice(2);
@@ -229,6 +230,15 @@ const captureScreenshot = async (client, filePath) => {
   });
   await writeFile(filePath, Buffer.from(result.data, 'base64'));
 };
+
+const controlName = (el) =>
+  (
+    el.getAttribute('aria-label') ||
+    el.getAttribute('title') ||
+    el.innerText ||
+    el.textContent ||
+    ''
+  ).trim();
 
 const collectPageCheck = async (client) =>
   evaluate(
@@ -494,7 +504,33 @@ const main = async () => {
   if (status !== 'PASS') process.exit(1);
 };
 
-main().catch((error) => {
-  console.error('[prod-ux-proof] failed:', error instanceof Error ? error.message : String(error));
-  process.exit(1);
-});
+export {
+  CdpClient,
+  captureScreenshot,
+  clickMobileMenu,
+  collectPageCheck,
+  controlName,
+  createPage,
+  evaluate,
+  findBrowserPath,
+  hasBadEvents,
+  launchBrowser,
+  main,
+  navigate,
+  normalizeBaseUrl,
+  readArgValue,
+  readJson,
+  renderMarkdown,
+  resolveOptions,
+  setAuthCookie,
+  setViewport,
+  summarizeBadEvents,
+  wait,
+};
+
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+  main().catch((error) => {
+    console.error('[prod-ux-proof] failed:', error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  });
+}

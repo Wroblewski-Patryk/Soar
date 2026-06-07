@@ -2,6 +2,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import { pathToFileURL } from 'node:url';
 import { resolveOpsAuthToken } from './resolveOpsAuthToken.mjs';
 
 const operationsDir = path.resolve(process.cwd(), 'history', 'operations');
@@ -502,10 +503,34 @@ const main = async () => {
   if (status !== 'PASS') process.exit(1);
 };
 
-main().catch((error) => {
-  console.error(
-    '[ops:ui:prod-clickthrough] failed:',
-    error instanceof Error ? error.message : String(error)
-  );
-  process.exit(1);
-});
+export {
+  auditRoute,
+  buildModuleRows,
+  classifyRoute,
+  fetchJson,
+  fetchText,
+  main,
+  makeCookieHeaders,
+  normalizeBaseUrl,
+  normalizePath,
+  printUsage,
+  readArgValue,
+  renderMarkdown,
+  resolveOptions,
+  routeDefinitions,
+  routeToUrl,
+  samePathOrRedirect,
+  splitCsv,
+  statusFromFetchError,
+  summarizeArea,
+};
+
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+  main().catch((error) => {
+    console.error(
+      '[ops:ui:prod-clickthrough] failed:',
+      error instanceof Error ? error.message : String(error)
+    );
+    process.exit(1);
+  });
+}
