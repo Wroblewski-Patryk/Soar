@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-06-07T10:12:49.766Z
+Generated: 2026-06-07T14:27:25.348Z
 
 ## Canonical Exports
 

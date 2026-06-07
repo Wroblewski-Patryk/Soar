@@ -1,6 +1,6 @@
 # Task Synchronization Report
 
-Generated: 2026-06-07T10:12:49.766Z
+Generated: 2026-06-07T14:27:25.348Z
 
 ## Contract
 
@@ -8,15 +8,12 @@ Every task should identify the feature/module it changes, dependency expectation
 
 ## Signals
 
-- Tasks without architecture links: 1157
-- Implementation entities without task links: 979
+- Tasks without architecture links: 1185
+- Implementation entities without task links: 978
 - Verified entities without proof evidence: 0
 
 ## Tasks Without Architecture Links
 
-- Agent Operating System Task - 2026-05-07 (history/tasks/agent-operating-system-task-2026-05-07.md)
-- AI Assistant Foundation Protocol Harness Task (history/tasks/ai-assistant-foundation-protocol-harness-2026-05-23-task.md)
-- Task (history/tasks/api-endpoint-docs-gap-closure-2026-05-19-task.md)
 - Task (history/tasks/api-local-regression-sweep-2026-05-24-task.md)
 - Task (history/tasks/app-function-check-main-sweep-task-2026-05-06.md)
 - Task (history/tasks/arch-runtime-p1-010-011-workers-queue-heartbeat-2026-05-22-task.md)
@@ -94,6 +91,9 @@ Every task should identify the feature/module it changes, dependency expectation
 - Task (history/tasks/exchange2-16-gateio-positions-snapshot-fail-closed-task-2026-05-08.md)
 - Task (history/tasks/exchange2-17-gateio-reconciliation-snapshots-fail-closed-task-2026-05-08.md)
 - Task (history/tasks/exchange2-18-gateio-live-submit-boundary-task-2026-05-08.md)
+- Task (history/tasks/exchange2-19-exchange-backed-cancel-route-fail-closed-task-2026-05-08.md)
+- Task (history/tasks/exchange2-20-plan-reconciliation-task-2026-05-09.md)
+- Task (history/tasks/exchange2-22-gateio-public-symbol-rules-task-2026-05-09.md)
 
 ## Implementation Without Task Links
 

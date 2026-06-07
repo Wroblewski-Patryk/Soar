@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-06-07T10:12:49.766Z
+Generated: 2026-06-07T14:27:25.348Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,16 +11,16 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 37 |
 | component | 97 |
-| document | 3813 |
+| document | 3844 |
 | feature | 225 |
-| function | 8352 |
+| function | 8366 |
 | migration | 56 |
 | model | 277 |
 | module | 15 |
 | project | 1 |
 | route | 352 |
-| task | 1197 |
-| test | 414 |
+| task | 1228 |
+| test | 423 |
 
 ## Counts By Status
 
@@ -28,63 +28,63 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | --- | ---: |
 | blocked | 26 |
 | deprecated | 7 |
-| implemented | 12924 |
+| implemented | 12954 |
 | in_progress | 10 |
-| tested | 741 |
-| verified | 1180 |
+| tested | 765 |
+| verified | 1211 |
 
 ## Health Signals
 
-- Raw implementation entities without inferred tests: 7236
-- Actionable implementation entities without inferred tests: 377
+- Raw implementation entities without inferred tests: 7168
+- Actionable implementation entities without inferred tests: 296
 - Raw implementation entities without inferred docs: 737
 - Actionable implementation entities without inferred docs: 0
-- Classified inferred-link noise: 7441
+- Classified inferred-link noise: 7454
 - Entities without owner attribution: 0
 - Disconnected entities: 0
 
 ## Top Actionable Missing Test Links
 
-- function: assertOptions (scripts/collectNonGateioRuntimeReadback.mjs#assertOptions)
-- function: fetchJson (scripts/collectNonGateioRuntimeReadback.mjs#fetchJson)
-- function: hash (scripts/collectNonGateioRuntimeReadback.mjs#hash)
-- function: main (scripts/collectNonGateioRuntimeReadback.mjs#main)
-- function: normalizeBaseUrl (scripts/collectNonGateioRuntimeReadback.mjs#normalizeBaseUrl)
-- function: readArgValue (scripts/collectNonGateioRuntimeReadback.mjs#readArgValue)
-- function: safeNumber (scripts/collectNonGateioRuntimeReadback.mjs#safeNumber)
-- function: summarizeAggregate (scripts/collectNonGateioRuntimeReadback.mjs#summarizeAggregate)
-- function: summarizeBot (scripts/collectNonGateioRuntimeReadback.mjs#summarizeBot)
-- function: summarizeSession (scripts/collectNonGateioRuntimeReadback.mjs#summarizeSession)
-- function: computeSummary (scripts/collectSloEvidence.mjs#computeSummary)
-- function: endpointSamples (scripts/collectSloEvidence.mjs#endpointSamples)
-- function: evaluateObjective (scripts/collectSloEvidence.mjs#evaluateObjective)
-- function: isLocalOrPrivateHost (scripts/collectSloEvidence.mjs#isLocalOrPrivateHost)
-- function: isPrivateIpv4 (scripts/collectSloEvidence.mjs#isPrivateIpv4)
-- function: main (scripts/collectSloEvidence.mjs#main)
-- function: normalizeEnvironment (scripts/collectSloEvidence.mjs#normalizeEnvironment)
-- function: normalizeTargetProfile (scripts/collectSloEvidence.mjs#normalizeTargetProfile)
-- function: parseArgs (scripts/collectSloEvidence.mjs#parseArgs)
-- function: parseBaseUrl (scripts/collectSloEvidence.mjs#parseBaseUrl)
-- function: parseBoolean (scripts/collectSloEvidence.mjs#parseBoolean)
-- function: parseOptionalNumber (scripts/collectSloEvidence.mjs#parseOptionalNumber)
-- function: percentile (scripts/collectSloEvidence.mjs#percentile)
-- function: readCounter (scripts/collectSloEvidence.mjs#readCounter)
-- function: renderMarkdown (scripts/collectSloEvidence.mjs#renderMarkdown)
-- function: requestJson (scripts/collectSloEvidence.mjs#requestJson)
-- function: safeDelta (scripts/collectSloEvidence.mjs#safeDelta)
-- function: successRatio (scripts/collectSloEvidence.mjs#successRatio)
-- function: toIsoStamp (scripts/collectSloEvidence.mjs#toIsoStamp)
-- function: wait (scripts/collectSloEvidence.mjs#wait)
-- function: compareAudits (scripts/compareReusableAuditManifests.mjs#compareAudits)
-- function: compareDecisions (scripts/compareReusableAuditManifests.mjs#compareDecisions)
-- function: compareReusableAuditManifests (scripts/compareReusableAuditManifests.mjs#compareReusableAuditManifests)
-- function: compareSafetyBoundaries (scripts/compareReusableAuditManifests.mjs#compareSafetyBoundaries)
-- function: compareSummary (scripts/compareReusableAuditManifests.mjs#compareSummary)
-- function: getDecisionIds (scripts/compareReusableAuditManifests.mjs#getDecisionIds)
-- function: indexAudits (scripts/compareReusableAuditManifests.mjs#indexAudits)
-- function: main (scripts/compareReusableAuditManifests.mjs#main)
-- function: writeJsonOutput (scripts/compareReusableAuditManifests.mjs#writeJsonOutput)
-- function: runCheck (scripts/deploySmokeCheck.mjs#runCheck)
+- function: chains (scripts/generateFunctionJourneyIndexes.mjs#chains)
+- function: csvEscape (scripts/generateFunctionJourneyIndexes.mjs#csvEscape)
+- function: gapSeverity (scripts/generateFunctionJourneyIndexes.mjs#gapSeverity)
+- function: isApiDataSourceRelation (scripts/generateFunctionJourneyIndexes.mjs#isApiDataSourceRelation)
+- function: isUserFacingChain (scripts/generateFunctionJourneyIndexes.mjs#isUserFacingChain)
+- function: list (scripts/generateFunctionJourneyIndexes.mjs#list)
+- function: main (scripts/generateFunctionJourneyIndexes.mjs#main)
+- function: normalizeStatus (scripts/generateFunctionJourneyIndexes.mjs#normalizeStatus)
+- function: parseCsv (scripts/generateFunctionJourneyIndexes.mjs#parseCsv)
+- function: readCsv (scripts/generateFunctionJourneyIndexes.mjs#readCsv)
+- function: splitRefs (scripts/generateFunctionJourneyIndexes.mjs#splitRefs)
+- function: statusRank (scripts/generateFunctionJourneyIndexes.mjs#statusRank)
+- function: weakestStatus (scripts/generateFunctionJourneyIndexes.mjs#weakestStatus)
+- function: writeCsv (scripts/generateFunctionJourneyIndexes.mjs#writeCsv)
+- function: actionIdFor (scripts/generateUserActionIndex.mjs#actionIdFor)
+- function: chains (scripts/generateUserActionIndex.mjs#chains)
+- function: csvEscape (scripts/generateUserActionIndex.mjs#csvEscape)
+- function: gapSeverity (scripts/generateUserActionIndex.mjs#gapSeverity)
+- function: includesAny (scripts/generateUserActionIndex.mjs#includesAny)
+- function: inferActionKind (scripts/generateUserActionIndex.mjs#inferActionKind)
+- function: inferSafetyBoundary (scripts/generateUserActionIndex.mjs#inferSafetyBoundary)
+- function: list (scripts/generateUserActionIndex.mjs#list)
+- function: main (scripts/generateUserActionIndex.mjs#main)
+- function: parseCsv (scripts/generateUserActionIndex.mjs#parseCsv)
+- function: proofStatus (scripts/generateUserActionIndex.mjs#proofStatus)
+- function: readCsv (scripts/generateUserActionIndex.mjs#readCsv)
+- function: routeHint (scripts/generateUserActionIndex.mjs#routeHint)
+- function: rowForAction (scripts/generateUserActionIndex.mjs#rowForAction)
+- function: splitRefs (scripts/generateUserActionIndex.mjs#splitRefs)
+- function: statusRank (scripts/generateUserActionIndex.mjs#statusRank)
+- function: unique (scripts/generateUserActionIndex.mjs#unique)
+- function: weakestStatus (scripts/generateUserActionIndex.mjs#weakestStatus)
+- function: writeCsv (scripts/generateUserActionIndex.mjs#writeCsv)
+- function: canConnect (scripts/goLiveSmoke.mjs#canConnect)
+- function: extractFailedMigrationName (scripts/goLiveSmoke.mjs#extractFailedMigrationName)
+- function: finish (scripts/goLiveSmoke.mjs#finish)
+- function: localInfraIsReachable (scripts/goLiveSmoke.mjs#localInfraIsReachable)
+- function: printLocalMigrationGuidance (scripts/goLiveSmoke.mjs#printLocalMigrationGuidance)
+- function: run (scripts/goLiveSmoke.mjs#run)
+- function: fetchJson (scripts/runControlledLiveSessionProof.mjs#fetchJson)
 
 ## Top Actionable Missing Doc Links
 
@@ -94,7 +94,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - config_only_file: 65
 - curated_graph_covered: 1515
 - generated_vendor_docs_vault_plugin: 5775
-- test_fixture_function: 85
+- test_fixture_function: 98
 - top_level_app_mount: 1
 
 ## Top Classified Noise Samples

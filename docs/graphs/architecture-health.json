@@ -1,39 +1,39 @@
 {
-  "generated_at": "2026-06-07T10:12:49.766Z",
+  "generated_at": "2026-06-07T14:27:25.348Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 14888,
-    "relations": 24008,
+    "entities": 14973,
+    "relations": 24249,
     "by_type": {
       "agent": 52,
       "api_endpoint": 37,
       "component": 97,
-      "document": 3813,
+      "document": 3844,
       "feature": 225,
-      "function": 8352,
+      "function": 8366,
       "migration": 56,
       "model": 277,
       "module": 15,
       "project": 1,
       "route": 352,
-      "task": 1197,
-      "test": 414
+      "task": 1228,
+      "test": 423
     },
     "by_status": {
       "blocked": 26,
       "deprecated": 7,
-      "implemented": 12924,
+      "implemented": 12954,
       "in_progress": 10,
-      "tested": 741,
-      "verified": 1180
+      "tested": 765,
+      "verified": 1211
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 7236,
+      "count": 7168,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -3243,472 +3243,8 @@
       ]
     },
     "actionable_implementation_without_tests": {
-      "count": 377,
+      "count": 296,
       "items": [
-        {
-          "id": "function:assertoptions:2c708154d2",
-          "type": "function",
-          "name": "assertOptions",
-          "path": "scripts/collectNonGateioRuntimeReadback.mjs#assertOptions",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:fetchjson:251b6f1737",
-          "type": "function",
-          "name": "fetchJson",
-          "path": "scripts/collectNonGateioRuntimeReadback.mjs#fetchJson",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:hash:d90d9cdf26",
-          "type": "function",
-          "name": "hash",
-          "path": "scripts/collectNonGateioRuntimeReadback.mjs#hash",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:main:1453909365",
-          "type": "function",
-          "name": "main",
-          "path": "scripts/collectNonGateioRuntimeReadback.mjs#main",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:normalizebaseurl:84b8597206",
-          "type": "function",
-          "name": "normalizeBaseUrl",
-          "path": "scripts/collectNonGateioRuntimeReadback.mjs#normalizeBaseUrl",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:readargvalue:d08ffe2c85",
-          "type": "function",
-          "name": "readArgValue",
-          "path": "scripts/collectNonGateioRuntimeReadback.mjs#readArgValue",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:safenumber:36805b1381",
-          "type": "function",
-          "name": "safeNumber",
-          "path": "scripts/collectNonGateioRuntimeReadback.mjs#safeNumber",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:summarizeaggregate:376b28720c",
-          "type": "function",
-          "name": "summarizeAggregate",
-          "path": "scripts/collectNonGateioRuntimeReadback.mjs#summarizeAggregate",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:summarizebot:d15223c010",
-          "type": "function",
-          "name": "summarizeBot",
-          "path": "scripts/collectNonGateioRuntimeReadback.mjs#summarizeBot",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:summarizesession:29f2402b62",
-          "type": "function",
-          "name": "summarizeSession",
-          "path": "scripts/collectNonGateioRuntimeReadback.mjs#summarizeSession",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:computesummary:f0fdf34533",
-          "type": "function",
-          "name": "computeSummary",
-          "path": "scripts/collectSloEvidence.mjs#computeSummary",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:endpointsamples:7dfe6dc502",
-          "type": "function",
-          "name": "endpointSamples",
-          "path": "scripts/collectSloEvidence.mjs#endpointSamples",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:evaluateobjective:58237a7b2f",
-          "type": "function",
-          "name": "evaluateObjective",
-          "path": "scripts/collectSloEvidence.mjs#evaluateObjective",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:islocalorprivatehost:ce84382078",
-          "type": "function",
-          "name": "isLocalOrPrivateHost",
-          "path": "scripts/collectSloEvidence.mjs#isLocalOrPrivateHost",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:isprivateipv4:237260ac3b",
-          "type": "function",
-          "name": "isPrivateIpv4",
-          "path": "scripts/collectSloEvidence.mjs#isPrivateIpv4",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:main:967bc77c72",
-          "type": "function",
-          "name": "main",
-          "path": "scripts/collectSloEvidence.mjs#main",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:normalizeenvironment:380877d1cb",
-          "type": "function",
-          "name": "normalizeEnvironment",
-          "path": "scripts/collectSloEvidence.mjs#normalizeEnvironment",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:normalizetargetprofile:147c42fa1a",
-          "type": "function",
-          "name": "normalizeTargetProfile",
-          "path": "scripts/collectSloEvidence.mjs#normalizeTargetProfile",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:parseargs:4330a03809",
-          "type": "function",
-          "name": "parseArgs",
-          "path": "scripts/collectSloEvidence.mjs#parseArgs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:parsebaseurl:2bbe40f81c",
-          "type": "function",
-          "name": "parseBaseUrl",
-          "path": "scripts/collectSloEvidence.mjs#parseBaseUrl",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:parseboolean:ede601c2ac",
-          "type": "function",
-          "name": "parseBoolean",
-          "path": "scripts/collectSloEvidence.mjs#parseBoolean",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:parseoptionalnumber:47b5476183",
-          "type": "function",
-          "name": "parseOptionalNumber",
-          "path": "scripts/collectSloEvidence.mjs#parseOptionalNumber",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:percentile:818b2630a3",
-          "type": "function",
-          "name": "percentile",
-          "path": "scripts/collectSloEvidence.mjs#percentile",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:readcounter:49044d40d4",
-          "type": "function",
-          "name": "readCounter",
-          "path": "scripts/collectSloEvidence.mjs#readCounter",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:rendermarkdown:475b67bb4e",
-          "type": "function",
-          "name": "renderMarkdown",
-          "path": "scripts/collectSloEvidence.mjs#renderMarkdown",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:requestjson:1350b4c40a",
-          "type": "function",
-          "name": "requestJson",
-          "path": "scripts/collectSloEvidence.mjs#requestJson",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:safedelta:738fcfce10",
-          "type": "function",
-          "name": "safeDelta",
-          "path": "scripts/collectSloEvidence.mjs#safeDelta",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:successratio:0b7395c0a7",
-          "type": "function",
-          "name": "successRatio",
-          "path": "scripts/collectSloEvidence.mjs#successRatio",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:toisostamp:5bb6b8ca06",
-          "type": "function",
-          "name": "toIsoStamp",
-          "path": "scripts/collectSloEvidence.mjs#toIsoStamp",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:wait:eb0e6cc90f",
-          "type": "function",
-          "name": "wait",
-          "path": "scripts/collectSloEvidence.mjs#wait",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:compareaudits:8455a2f5a3",
-          "type": "function",
-          "name": "compareAudits",
-          "path": "scripts/compareReusableAuditManifests.mjs#compareAudits",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:comparedecisions:98a20b40a3",
-          "type": "function",
-          "name": "compareDecisions",
-          "path": "scripts/compareReusableAuditManifests.mjs#compareDecisions",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:comparereusableauditmanifests:097c208b61",
-          "type": "function",
-          "name": "compareReusableAuditManifests",
-          "path": "scripts/compareReusableAuditManifests.mjs#compareReusableAuditManifests",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:comparesafetyboundaries:b60dda8119",
-          "type": "function",
-          "name": "compareSafetyBoundaries",
-          "path": "scripts/compareReusableAuditManifests.mjs#compareSafetyBoundaries",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:comparesummary:0096a615d5",
-          "type": "function",
-          "name": "compareSummary",
-          "path": "scripts/compareReusableAuditManifests.mjs#compareSummary",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:getdecisionids:3385edc63a",
-          "type": "function",
-          "name": "getDecisionIds",
-          "path": "scripts/compareReusableAuditManifests.mjs#getDecisionIds",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:indexaudits:f295b43024",
-          "type": "function",
-          "name": "indexAudits",
-          "path": "scripts/compareReusableAuditManifests.mjs#indexAudits",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:main:633bf11a74",
-          "type": "function",
-          "name": "main",
-          "path": "scripts/compareReusableAuditManifests.mjs#main",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:writejsonoutput:981de84f5a",
-          "type": "function",
-          "name": "writeJsonOutput",
-          "path": "scripts/compareReusableAuditManifests.mjs#writeJsonOutput",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:runcheck:5a8d55fb28",
-          "type": "function",
-          "name": "runCheck",
-          "path": "scripts/deploySmokeCheck.mjs#runCheck",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:checktcpport:f9c960ccff",
-          "type": "function",
-          "name": "checkTcpPort",
-          "path": "scripts/dev-backend.mjs#checkTcpPort",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:dockeravailable:7957c02317",
-          "type": "function",
-          "name": "dockerAvailable",
-          "path": "scripts/dev-backend.mjs#dockerAvailable",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:finalize:03cabae464",
-          "type": "function",
-          "name": "finalize",
-          "path": "scripts/dev-backend.mjs#finalize",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:handleexit:d79a534926",
-          "type": "function",
-          "name": "handleExit",
-          "path": "scripts/dev-backend.mjs#handleExit",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:main:6f1f13e862",
-          "type": "function",
-          "name": "main",
-          "path": "scripts/dev-backend.mjs#main",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:parsedatabaseurl:b731f28035",
-          "type": "function",
-          "name": "parseDatabaseUrl",
-          "path": "scripts/dev-backend.mjs#parseDatabaseUrl",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:readenvvalue:90ac2728ec",
-          "type": "function",
-          "name": "readEnvValue",
-          "path": "scripts/dev-backend.mjs#readEnvValue",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:redis:adf8cdaa61",
-          "type": "function",
-          "name": "redis",
-          "path": "scripts/dev-backend.mjs#redis",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:run:f8b2eae5c0",
-          "type": "function",
-          "name": "run",
-          "path": "scripts/dev-backend.mjs#run",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:runprisma:c98723bb95",
-          "type": "function",
-          "name": "runPrisma",
-          "path": "scripts/dev-backend.mjs#runPrisma",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:shutdown:0a01742f95",
-          "type": "function",
-          "name": "shutdown",
-          "path": "scripts/dev-backend.mjs#shutdown",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:prefixlog:08a030d7ed",
-          "type": "function",
-          "name": "prefixLog",
-          "path": "scripts/dev-workers.mjs#prefixLog",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:shutdown:09665bb1a2",
-          "type": "function",
-          "name": "shutdown",
-          "path": "scripts/dev-workers.mjs#shutdown",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:fetchwithtimeout:a12a220c43",
-          "type": "function",
-          "name": "fetchWithTimeout",
-          "path": "scripts/evaluateRollbackGuard.mjs#fetchWithTimeout",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:isrollbackcriticalalert:8232e207dc",
-          "type": "function",
-          "name": "isRollbackCriticalAlert",
-          "path": "scripts/evaluateRollbackGuard.mjs#isRollbackCriticalAlert",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:main:b1be627590",
-          "type": "function",
-          "name": "main",
-          "path": "scripts/evaluateRollbackGuard.mjs#main",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:parseargs:4a6ae10f91",
-          "type": "function",
-          "name": "parseArgs",
-          "path": "scripts/evaluateRollbackGuard.mjs#parseArgs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:printusage:f7e2205489",
-          "type": "function",
-          "name": "printUsage",
-          "path": "scripts/evaluateRollbackGuard.mjs#printUsage",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
         {
           "id": "function:chains:3708993492",
           "type": "function",
@@ -4022,158 +3558,6 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "function:extracttokenfromsetcookie:503ea6b00f",
-          "type": "function",
-          "name": "extractTokenFromSetCookie",
-          "path": "scripts/resolveOpsAuthToken.mjs#extractTokenFromSetCookie",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:normalizebaseurl:f666bad4b7",
-          "type": "function",
-          "name": "normalizeBaseUrl",
-          "path": "scripts/resolveOpsAuthToken.mjs#normalizeBaseUrl",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:readerrormessage:2b31e17871",
-          "type": "function",
-          "name": "readErrorMessage",
-          "path": "scripts/resolveOpsAuthToken.mjs#readErrorMessage",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:readsetcookieheaders:b7744d292a",
-          "type": "function",
-          "name": "readSetCookieHeaders",
-          "path": "scripts/resolveOpsAuthToken.mjs#readSetCookieHeaders",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:resolveopsauthtoken:b0cb13e44a",
-          "type": "function",
-          "name": "resolveOpsAuthToken",
-          "path": "scripts/resolveOpsAuthToken.mjs#resolveOpsAuthToken",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:main:0730f40b8f",
-          "type": "function",
-          "name": "main",
-          "path": "scripts/runAud07IsolatedDbPacks.mjs#main",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:pnpmargs:292eaf096f",
-          "type": "function",
-          "name": "pnpmArgs",
-          "path": "scripts/runAud07IsolatedDbPacks.mjs#pnpmArgs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:run:104b2ca649",
-          "type": "function",
-          "name": "run",
-          "path": "scripts/runAud07IsolatedDbPacks.mjs#run",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:firstnonemptyenv:3ebde184f6",
-          "type": "function",
-          "name": "firstNonEmptyEnv",
-          "path": "scripts/runBackupVerificationProfile.mjs#firstNonEmptyEnv",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:main:0e565d73b8",
-          "type": "function",
-          "name": "main",
-          "path": "scripts/runBackupVerificationProfile.mjs#main",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:parseargs:ecf4ba5894",
-          "type": "function",
-          "name": "parseArgs",
-          "path": "scripts/runBackupVerificationProfile.mjs#parseArgs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:printusage:d054b1b1cd",
-          "type": "function",
-          "name": "printUsage",
-          "path": "scripts/runBackupVerificationProfile.mjs#printUsage",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:resolveoptions:af13b16c17",
-          "type": "function",
-          "name": "resolveOptions",
-          "path": "scripts/runBackupVerificationProfile.mjs#resolveOptions",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:run:44525b0562",
-          "type": "function",
-          "name": "run",
-          "path": "scripts/runBackupVerificationProfile.mjs#run",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:assertnoorderguardactive:fb66e81e87",
-          "type": "function",
-          "name": "assertNoOrderGuardActive",
-          "path": "scripts/runControlledLiveSessionProof.mjs#assertNoOrderGuardActive",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:assertoptions:7acc33cf91",
-          "type": "function",
-          "name": "assertOptions",
-          "path": "scripts/runControlledLiveSessionProof.mjs#assertOptions",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:asserttargetbotsafe:5a3beb5a51",
-          "type": "function",
-          "name": "assertTargetBotSafe",
-          "path": "scripts/runControlledLiveSessionProof.mjs#assertTargetBotSafe",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:buildbotactivestatepayload:747e0196f0",
-          "type": "function",
-          "name": "buildBotActiveStatePayload",
-          "path": "scripts/runControlledLiveSessionProof.mjs#buildBotActiveStatePayload",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:discovertargetbot:6d0710ed00",
-          "type": "function",
-          "name": "discoverTargetBot",
-          "path": "scripts/runControlledLiveSessionProof.mjs#discoverTargetBot",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "function:fetchjson:b918c41ef1",
           "type": "function",
           "name": "fetchJson",
@@ -4206,34 +3590,10 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "function:normalizebaseurl:ed306da7eb",
-          "type": "function",
-          "name": "normalizeBaseUrl",
-          "path": "scripts/runControlledLiveSessionProof.mjs#normalizeBaseUrl",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:normalizesymbol:fb21e883e0",
-          "type": "function",
-          "name": "normalizeSymbol",
-          "path": "scripts/runControlledLiveSessionProof.mjs#normalizeSymbol",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "function:printusage:bc93b5ad23",
           "type": "function",
           "name": "printUsage",
           "path": "scripts/runControlledLiveSessionProof.mjs#printUsage",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:readargvalue:2d3beabb3e",
-          "type": "function",
-          "name": "readArgValue",
-          "path": "scripts/runControlledLiveSessionProof.mjs#readArgValue",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -4282,14 +3642,6 @@
           "type": "function",
           "name": "sleep",
           "path": "scripts/runControlledLiveSessionProof.mjs#sleep",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:splitcsv:0bf214d6af",
-          "type": "function",
-          "name": "splitCsv",
-          "path": "scripts/runControlledLiveSessionProof.mjs#splitCsv",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -4844,6 +4196,654 @@
           "path": "scripts/runProdPositionsProof.mjs#extractItems",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:findcandidate:8fad6af35c",
+          "type": "function",
+          "name": "findCandidate",
+          "path": "scripts/runProdPositionsProof.mjs#findCandidate",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:main:8d02c3427d",
+          "type": "function",
+          "name": "main",
+          "path": "scripts/runProdPositionsProof.mjs#main",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizebaseurl:3328621a2b",
+          "type": "function",
+          "name": "normalizeBaseUrl",
+          "path": "scripts/runProdPositionsProof.mjs#normalizeBaseUrl",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:printusage:6faa71ee29",
+          "type": "function",
+          "name": "printUsage",
+          "path": "scripts/runProdPositionsProof.mjs#printUsage",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:readargvalue:dd0b350946",
+          "type": "function",
+          "name": "readArgValue",
+          "path": "scripts/runProdPositionsProof.mjs#readArgValue",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:readjson:1ff96d04de",
+          "type": "function",
+          "name": "readJson",
+          "path": "scripts/runProdPositionsProof.mjs#readJson",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:rendermarkdown:72d36f3087",
+          "type": "function",
+          "name": "renderMarkdown",
+          "path": "scripts/runProdPositionsProof.mjs#renderMarkdown",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:requestjson:489d415f41",
+          "type": "function",
+          "name": "requestJson",
+          "path": "scripts/runProdPositionsProof.mjs#requestJson",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolveoptions:d9b34c08ea",
+          "type": "function",
+          "name": "resolveOptions",
+          "path": "scripts/runProdPositionsProof.mjs#resolveOptions",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:tostep:ad0a59ecaa",
+          "type": "function",
+          "name": "toStep",
+          "path": "scripts/runProdPositionsProof.mjs#toStep",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:assertstatus:3a4f217334",
+          "type": "function",
+          "name": "assertStatus",
+          "path": "scripts/runProdSecurityExchangeProof.mjs#assertStatus",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:hasnostoreheaders:6f75ced72b",
+          "type": "function",
+          "name": "hasNoStoreHeaders",
+          "path": "scripts/runProdSecurityExchangeProof.mjs#hasNoStoreHeaders",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:hassecurityheaders:5fbf8be5fb",
+          "type": "function",
+          "name": "hasSecurityHeaders",
+          "path": "scripts/runProdSecurityExchangeProof.mjs#hasSecurityHeaders",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:main:969b61021c",
+          "type": "function",
+          "name": "main",
+          "path": "scripts/runProdSecurityExchangeProof.mjs#main",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizebaseurl:7512e9443e",
+          "type": "function",
+          "name": "normalizeBaseUrl",
+          "path": "scripts/runProdSecurityExchangeProof.mjs#normalizeBaseUrl",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:payloadcontainskeymaterial:c163ba8ac5",
+          "type": "function",
+          "name": "payloadContainsKeyMaterial",
+          "path": "scripts/runProdSecurityExchangeProof.mjs#payloadContainsKeyMaterial",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:printusage:401b313ca1",
+          "type": "function",
+          "name": "printUsage",
+          "path": "scripts/runProdSecurityExchangeProof.mjs#printUsage",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:readargvalue:43d5ec9287",
+          "type": "function",
+          "name": "readArgValue",
+          "path": "scripts/runProdSecurityExchangeProof.mjs#readArgValue",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:readcatalogmarkets:053880d641",
+          "type": "function",
+          "name": "readCatalogMarkets",
+          "path": "scripts/runProdSecurityExchangeProof.mjs#readCatalogMarkets",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:readjson:842d90dfc0",
+          "type": "function",
+          "name": "readJson",
+          "path": "scripts/runProdSecurityExchangeProof.mjs#readJson",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:rendermarkdown:d3e42a34b9",
+          "type": "function",
+          "name": "renderMarkdown",
+          "path": "scripts/runProdSecurityExchangeProof.mjs#renderMarkdown",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:requestjson:166281b2ff",
+          "type": "function",
+          "name": "requestJson",
+          "path": "scripts/runProdSecurityExchangeProof.mjs#requestJson",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolveoptions:70ca8d129e",
+          "type": "function",
+          "name": "resolveOptions",
+          "path": "scripts/runProdSecurityExchangeProof.mjs#resolveOptions",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:tostep:fbd5a50948",
+          "type": "function",
+          "name": "toStep",
+          "path": "scripts/runProdSecurityExchangeProof.mjs#toStep",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:auditroute:53da01d326",
+          "type": "function",
+          "name": "auditRoute",
+          "path": "scripts/runProdUiModuleClickthroughAudit.mjs#auditRoute",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:buildmodulerows:fa3492a143",
+          "type": "function",
+          "name": "buildModuleRows",
+          "path": "scripts/runProdUiModuleClickthroughAudit.mjs#buildModuleRows",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:classifyroute:91a025e9f1",
+          "type": "function",
+          "name": "classifyRoute",
+          "path": "scripts/runProdUiModuleClickthroughAudit.mjs#classifyRoute",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:fetchjson:474ceb5df4",
+          "type": "function",
+          "name": "fetchJson",
+          "path": "scripts/runProdUiModuleClickthroughAudit.mjs#fetchJson",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:fetchtext:e276a8d600",
+          "type": "function",
+          "name": "fetchText",
+          "path": "scripts/runProdUiModuleClickthroughAudit.mjs#fetchText",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:main:d47486e314",
+          "type": "function",
+          "name": "main",
+          "path": "scripts/runProdUiModuleClickthroughAudit.mjs#main",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:makecookieheaders:d70ec51326",
+          "type": "function",
+          "name": "makeCookieHeaders",
+          "path": "scripts/runProdUiModuleClickthroughAudit.mjs#makeCookieHeaders",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizebaseurl:7e3593dc47",
+          "type": "function",
+          "name": "normalizeBaseUrl",
+          "path": "scripts/runProdUiModuleClickthroughAudit.mjs#normalizeBaseUrl",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizepath:6fe7260381",
+          "type": "function",
+          "name": "normalizePath",
+          "path": "scripts/runProdUiModuleClickthroughAudit.mjs#normalizePath",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:printusage:6cd0b6238c",
+          "type": "function",
+          "name": "printUsage",
+          "path": "scripts/runProdUiModuleClickthroughAudit.mjs#printUsage",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:readargvalue:4a5188be93",
+          "type": "function",
+          "name": "readArgValue",
+          "path": "scripts/runProdUiModuleClickthroughAudit.mjs#readArgValue",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:rendermarkdown:50aef388f9",
+          "type": "function",
+          "name": "renderMarkdown",
+          "path": "scripts/runProdUiModuleClickthroughAudit.mjs#renderMarkdown",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolveoptions:6cb3abab04",
+          "type": "function",
+          "name": "resolveOptions",
+          "path": "scripts/runProdUiModuleClickthroughAudit.mjs#resolveOptions",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:routetourl:c39aec7022",
+          "type": "function",
+          "name": "routeToUrl",
+          "path": "scripts/runProdUiModuleClickthroughAudit.mjs#routeToUrl",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:samepathorredirect:09d815a731",
+          "type": "function",
+          "name": "samePathOrRedirect",
+          "path": "scripts/runProdUiModuleClickthroughAudit.mjs#samePathOrRedirect",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:splitcsv:83fad6416e",
+          "type": "function",
+          "name": "splitCsv",
+          "path": "scripts/runProdUiModuleClickthroughAudit.mjs#splitCsv",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:statusfromfetcherror:4052499335",
+          "type": "function",
+          "name": "statusFromFetchError",
+          "path": "scripts/runProdUiModuleClickthroughAudit.mjs#statusFromFetchError",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:summarizearea:8b367300da",
+          "type": "function",
+          "name": "summarizeArea",
+          "path": "scripts/runProdUiModuleClickthroughAudit.mjs#summarizeArea",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:capturescreenshot:b9fd242a19",
+          "type": "function",
+          "name": "captureScreenshot",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#captureScreenshot",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:clickmobilemenu:b6404b6fbd",
+          "type": "function",
+          "name": "clickMobileMenu",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#clickMobileMenu",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:collectpagecheck:6fbeb068e4",
+          "type": "function",
+          "name": "collectPageCheck",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#collectPageCheck",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:controlname:9f514de2d3",
+          "type": "function",
+          "name": "controlName",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#controlName",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:createpage:a652bf9891",
+          "type": "function",
+          "name": "createPage",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#createPage",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:evaluate:633d917daf",
+          "type": "function",
+          "name": "evaluate",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#evaluate",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:findbrowserpath:1a532630f2",
+          "type": "function",
+          "name": "findBrowserPath",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#findBrowserPath",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:hasbadevents:aaee8f8cba",
+          "type": "function",
+          "name": "hasBadEvents",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#hasBadEvents",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:isvisible:2d2bda6eb6",
+          "type": "function",
+          "name": "isVisible",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#isVisible",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:launchbrowser:8b3fd696d3",
+          "type": "function",
+          "name": "launchBrowser",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#launchBrowser",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:main:654f08f228",
+          "type": "function",
+          "name": "main",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#main",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:navigate:7419f78e57",
+          "type": "function",
+          "name": "navigate",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#navigate",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizebaseurl:4a86ef1e3d",
+          "type": "function",
+          "name": "normalizeBaseUrl",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#normalizeBaseUrl",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:readargvalue:32e2d4f794",
+          "type": "function",
+          "name": "readArgValue",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#readArgValue",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:readjson:f6e896a0ca",
+          "type": "function",
+          "name": "readJson",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#readJson",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:rendermarkdown:898355f84a",
+          "type": "function",
+          "name": "renderMarkdown",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#renderMarkdown",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolveoptions:fb27068be3",
+          "type": "function",
+          "name": "resolveOptions",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#resolveOptions",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:setauthcookie:605c218854",
+          "type": "function",
+          "name": "setAuthCookie",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#setAuthCookie",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:setviewport:f4f43e6e81",
+          "type": "function",
+          "name": "setViewport",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#setViewport",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:summarizebadevents:8247868e3d",
+          "type": "function",
+          "name": "summarizeBadEvents",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#summarizeBadEvents",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:wait:a301c7c9f2",
+          "type": "function",
+          "name": "wait",
+          "path": "scripts/runProdUxA11yMobileProof.mjs#wait",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:collectissues:d432378bd8",
+          "type": "function",
+          "name": "collectIssues",
+          "path": "scripts/runPublicReadOnlyBrowserProof.mjs#collectIssues",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:collectpagestate:52a415ee51",
+          "type": "function",
+          "name": "collectPageState",
+          "path": "scripts/runPublicReadOnlyBrowserProof.mjs#collectPageState",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:collectrouteissues:132bbae438",
+          "type": "function",
+          "name": "collectRouteIssues",
+          "path": "scripts/runPublicReadOnlyBrowserProof.mjs#collectRouteIssues",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:createpage:7e109b3cfa",
+          "type": "function",
+          "name": "createPage",
+          "path": "scripts/runPublicReadOnlyBrowserProof.mjs#createPage",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:evaluate:d70e54f52f",
+          "type": "function",
+          "name": "evaluate",
+          "path": "scripts/runPublicReadOnlyBrowserProof.mjs#evaluate",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:findbrowserpath:308f035eb6",
+          "type": "function",
+          "name": "findBrowserPath",
+          "path": "scripts/runPublicReadOnlyBrowserProof.mjs#findBrowserPath",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:islocalwebbaseurl:8ad7f3ea35",
+          "type": "function",
+          "name": "isLocalWebBaseUrl",
+          "path": "scripts/runPublicReadOnlyBrowserProof.mjs#isLocalWebBaseUrl",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:killprocesstree:f7797e412f",
+          "type": "function",
+          "name": "killProcessTree",
+          "path": "scripts/runPublicReadOnlyBrowserProof.mjs#killProcessTree",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:launchbrowser:e964f70b48",
+          "type": "function",
+          "name": "launchBrowser",
+          "path": "scripts/runPublicReadOnlyBrowserProof.mjs#launchBrowser",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:main:3e653d39c8",
+          "type": "function",
+          "name": "main",
+          "path": "scripts/runPublicReadOnlyBrowserProof.mjs#main",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:navigate:5c34081298",
+          "type": "function",
+          "name": "navigate",
+          "path": "scripts/runPublicReadOnlyBrowserProof.mjs#navigate",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizebaseurl:91c518a670",
+          "type": "function",
+          "name": "normalizeBaseUrl",
+          "path": "scripts/runPublicReadOnlyBrowserProof.mjs#normalizeBaseUrl",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:provepasswordtoggle:e33cb13d12",
+          "type": "function",
+          "name": "provePasswordToggle",
+          "path": "scripts/runPublicReadOnlyBrowserProof.mjs#provePasswordToggle",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:readargvalue:27813d9a13",
+          "type": "function",
+          "name": "readArgValue",
+          "path": "scripts/runPublicReadOnlyBrowserProof.mjs#readArgValue",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:rendermarkdown:2d3c5da9c2",
+          "type": "function",
+          "name": "renderMarkdown",
+          "path": "scripts/runPublicReadOnlyBrowserProof.mjs#renderMarkdown",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolveoptions:b721a08053",
+          "type": "function",
+          "name": "resolveOptions",
+          "path": "scripts/runPublicReadOnlyBrowserProof.mjs#resolveOptions",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:setviewport:de48347b89",
+          "type": "function",
+          "name": "setViewport",
+          "path": "scripts/runPublicReadOnlyBrowserProof.mjs#setViewport",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:visitroute:2f428bb714",
+          "type": "function",
+          "name": "visitRoute",
+          "path": "scripts/runPublicReadOnlyBrowserProof.mjs#visitRoute",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
@@ -4852,12 +4852,12 @@
       "items": []
     },
     "classified_inferred_link_noise": {
-      "count": 7441,
+      "count": 7454,
       "by_reason": {
         "config_only_file": 65,
         "curated_graph_covered": 1515,
         "generated_vendor_docs_vault_plugin": 5775,
-        "test_fixture_function": 85,
+        "test_fixture_function": 98,
         "top_level_app_mount": 1
       },
       "items": [
@@ -6672,32 +6672,8 @@
       "items": []
     },
     "tasks_without_architecture": {
-      "count": 1157,
+      "count": 1185,
       "items": [
-        {
-          "id": "task:agent-operating-system-task-2026-05-07:04d1de2b03",
-          "type": "task",
-          "name": "Agent Operating System Task - 2026-05-07",
-          "path": "history/tasks/agent-operating-system-task-2026-05-07.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:ai-assistant-foundation-protocol-harness-task:0adbd87e92",
-          "type": "task",
-          "name": "AI Assistant Foundation Protocol Harness Task",
-          "path": "history/tasks/ai-assistant-foundation-protocol-harness-2026-05-23-task.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "task:task:16ccebb9bd",
-          "type": "task",
-          "name": "Task",
-          "path": "history/tasks/api-endpoint-docs-gap-closure-2026-05-19-task.md",
-          "status": "verified",
-          "owner": "Engineering Delivery Lead"
-        },
         {
           "id": "task:task:161af66a30",
           "type": "task",
@@ -8273,11 +8249,35 @@
           "path": "history/tasks/luc-128-luc-45-v1-controller-docs-closure-2026-05-26-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:c5ee399a01",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-129-no-stall-queue-expeditor-2026-05-26-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-130-luc-88-productivity-review-evidence-closure-2026-05-26:4c8237b1c5",
+          "type": "task",
+          "name": "LUC-130 - LUC-88 productivity review evidence closure (2026-05-26)",
+          "path": "history/tasks/luc-130-luc-88-productivity-review-evidence-closure-2026-05-26-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:30c5a48360",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-1306-soar-operator-resume-dca-tsl-repair-2026-06-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "implementation_without_task": {
-      "count": 979,
+      "count": 978,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
