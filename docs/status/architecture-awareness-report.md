@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-06-07T09:34:54.277Z
+Generated: 2026-06-07T10:12:49.766Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,16 +11,16 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 37 |
 | component | 97 |
-| document | 3811 |
+| document | 3813 |
 | feature | 225 |
-| function | 8349 |
+| function | 8352 |
 | migration | 56 |
 | model | 277 |
 | module | 15 |
 | project | 1 |
 | route | 352 |
-| task | 1195 |
-| test | 413 |
+| task | 1197 |
+| test | 414 |
 
 ## Counts By Status
 
@@ -28,42 +28,23 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | --- | ---: |
 | blocked | 26 |
 | deprecated | 7 |
-| implemented | 12925 |
+| implemented | 12924 |
 | in_progress | 10 |
-| tested | 734 |
-| verified | 1178 |
+| tested | 741 |
+| verified | 1180 |
 
 ## Health Signals
 
-- Raw implementation entities without inferred tests: 7249
-- Actionable implementation entities without inferred tests: 396
+- Raw implementation entities without inferred tests: 7236
+- Actionable implementation entities without inferred tests: 377
 - Raw implementation entities without inferred docs: 737
 - Actionable implementation entities without inferred docs: 0
-- Classified inferred-link noise: 7435
+- Classified inferred-link noise: 7441
 - Entities without owner attribution: 0
 - Disconnected entities: 0
 
 ## Top Actionable Missing Test Links
 
-- function: assertOptions (scripts/collectLiveImportReadbackEvidence.mjs#assertOptions)
-- function: collectAllPositions (scripts/collectLiveImportReadbackEvidence.mjs#collectAllPositions)
-- function: collectSymbolPositions (scripts/collectLiveImportReadbackEvidence.mjs#collectSymbolPositions)
-- function: discoverBots (scripts/collectLiveImportReadbackEvidence.mjs#discoverBots)
-- function: discoverSymbolsFromRuntimeReadback (scripts/collectLiveImportReadbackEvidence.mjs#discoverSymbolsFromRuntimeReadback)
-- function: fetchJson (scripts/collectLiveImportReadbackEvidence.mjs#fetchJson)
-- function: hashId (scripts/collectLiveImportReadbackEvidence.mjs#hashId)
-- function: main (scripts/collectLiveImportReadbackEvidence.mjs#main)
-- function: normalizeBaseUrl (scripts/collectLiveImportReadbackEvidence.mjs#normalizeBaseUrl)
-- function: normalizeSymbol (scripts/collectLiveImportReadbackEvidence.mjs#normalizeSymbol)
-- function: printUsage (scripts/collectLiveImportReadbackEvidence.mjs#printUsage)
-- function: readArgValue (scripts/collectLiveImportReadbackEvidence.mjs#readArgValue)
-- function: redactBot (scripts/collectLiveImportReadbackEvidence.mjs#redactBot)
-- function: redactPosition (scripts/collectLiveImportReadbackEvidence.mjs#redactPosition)
-- function: redactSession (scripts/collectLiveImportReadbackEvidence.mjs#redactSession)
-- function: resolveBuildInfo (scripts/collectLiveImportReadbackEvidence.mjs#resolveBuildInfo)
-- function: resolveOptions (scripts/collectLiveImportReadbackEvidence.mjs#resolveOptions)
-- function: resolveSession (scripts/collectLiveImportReadbackEvidence.mjs#resolveSession)
-- function: splitCsv (scripts/collectLiveImportReadbackEvidence.mjs#splitCsv)
 - function: assertOptions (scripts/collectNonGateioRuntimeReadback.mjs#assertOptions)
 - function: fetchJson (scripts/collectNonGateioRuntimeReadback.mjs#fetchJson)
 - function: hash (scripts/collectNonGateioRuntimeReadback.mjs#hash)
@@ -85,6 +66,25 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - function: parseArgs (scripts/collectSloEvidence.mjs#parseArgs)
 - function: parseBaseUrl (scripts/collectSloEvidence.mjs#parseBaseUrl)
 - function: parseBoolean (scripts/collectSloEvidence.mjs#parseBoolean)
+- function: parseOptionalNumber (scripts/collectSloEvidence.mjs#parseOptionalNumber)
+- function: percentile (scripts/collectSloEvidence.mjs#percentile)
+- function: readCounter (scripts/collectSloEvidence.mjs#readCounter)
+- function: renderMarkdown (scripts/collectSloEvidence.mjs#renderMarkdown)
+- function: requestJson (scripts/collectSloEvidence.mjs#requestJson)
+- function: safeDelta (scripts/collectSloEvidence.mjs#safeDelta)
+- function: successRatio (scripts/collectSloEvidence.mjs#successRatio)
+- function: toIsoStamp (scripts/collectSloEvidence.mjs#toIsoStamp)
+- function: wait (scripts/collectSloEvidence.mjs#wait)
+- function: compareAudits (scripts/compareReusableAuditManifests.mjs#compareAudits)
+- function: compareDecisions (scripts/compareReusableAuditManifests.mjs#compareDecisions)
+- function: compareReusableAuditManifests (scripts/compareReusableAuditManifests.mjs#compareReusableAuditManifests)
+- function: compareSafetyBoundaries (scripts/compareReusableAuditManifests.mjs#compareSafetyBoundaries)
+- function: compareSummary (scripts/compareReusableAuditManifests.mjs#compareSummary)
+- function: getDecisionIds (scripts/compareReusableAuditManifests.mjs#getDecisionIds)
+- function: indexAudits (scripts/compareReusableAuditManifests.mjs#indexAudits)
+- function: main (scripts/compareReusableAuditManifests.mjs#main)
+- function: writeJsonOutput (scripts/compareReusableAuditManifests.mjs#writeJsonOutput)
+- function: runCheck (scripts/deploySmokeCheck.mjs#runCheck)
 
 ## Top Actionable Missing Doc Links
 
@@ -94,7 +94,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - config_only_file: 65
 - curated_graph_covered: 1515
 - generated_vendor_docs_vault_plugin: 5775
-- test_fixture_function: 79
+- test_fixture_function: 85
 - top_level_app_mount: 1
 
 ## Top Classified Noise Samples
