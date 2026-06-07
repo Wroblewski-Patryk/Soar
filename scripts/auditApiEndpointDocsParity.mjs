@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
+import { existsSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const repoRoot = process.cwd();
 const apiRoot = path.join(repoRoot, 'apps', 'api', 'src');
@@ -13,8 +15,7 @@ const routeEntry = path.join(apiRouterRoot, 'index.ts');
 
 const httpMethods = ['get', 'post', 'put', 'patch', 'delete'];
 
-const parseArgs = () => {
-  const args = process.argv.slice(2);
+export const parseArgs = (args = process.argv.slice(2)) => {
   const options = {
     date: new Date().toISOString().slice(0, 10),
     outDir: '',
@@ -52,25 +53,25 @@ const parseArgs = () => {
   return options;
 };
 
-const toPosix = (value) => value.split(path.sep).join('/');
+export const toPosix = (value) => value.split(path.sep).join('/');
 
-const normalizeRoutePart = (value) => {
+export const normalizeRoutePart = (value) => {
   if (!value || value === '/') return '';
   return value.startsWith('/') ? value : `/${value}`;
 };
 
-const joinRoute = (basePath, routePath) => {
+export const joinRoute = (basePath, routePath) => {
   const joined = `${normalizeRoutePart(basePath)}${normalizeRoutePart(routePath)}`;
   return joined || '/';
 };
 
-const moduleNameForRouteFile = (filePath) => {
+export const moduleNameForRouteFile = (filePath) => {
   const relative = path.relative(apiModulesRoot, filePath);
   const [topLevel] = relative.split(path.sep);
   return topLevel || 'root';
 };
 
-const docPathForModule = (moduleName) => {
+export const docPathForModule = (moduleName) => {
   if (moduleName === 'root') return path.join(docsModulesRoot, 'api-root.md');
   if (moduleName === 'admin') return path.join(docsModulesRoot, 'api-admin.md');
   if (moduleName === 'profile') return path.join(docsModulesRoot, 'api-profile.md');
@@ -78,7 +79,7 @@ const docPathForModule = (moduleName) => {
   return path.join(docsModulesRoot, `api-${moduleName}.md`);
 };
 
-const resolveImportPath = (fromFile, importPath) => {
+export const resolveImportPath = (fromFile, importPath) => {
   if (!importPath.startsWith('.')) return null;
   const base = path.resolve(path.dirname(fromFile), importPath);
   const candidates = [
@@ -87,10 +88,10 @@ const resolveImportPath = (fromFile, importPath) => {
     path.join(base, 'index.ts'),
     path.join(base, 'index.tsx'),
   ];
-  return candidates[0];
+  return candidates.find((candidatePath) => existsSync(candidatePath)) ?? null;
 };
 
-const parseImports = (raw, filePath) => {
+export const parseImports = (raw, filePath) => {
   const imports = new Map();
   const defaultImportRegex = /import\s+([A-Za-z_$][\w$]*)\s+from\s+['"]([^'"]+)['"]/g;
   let match;
@@ -102,7 +103,7 @@ const parseImports = (raw, filePath) => {
   return imports;
 };
 
-const collectRoutes = async (filePath, basePath = '', visited = new Set()) => {
+export const collectRoutes = async (filePath, basePath = '', visited = new Set()) => {
   const cacheKey = `${filePath}|${basePath}`;
   if (visited.has(cacheKey)) return [];
   visited.add(cacheKey);
@@ -140,14 +141,14 @@ const collectRoutes = async (filePath, basePath = '', visited = new Set()) => {
   return routes;
 };
 
-const routeMentionVariants = (route) => {
+export const routeMentionVariants = (route) => {
   const withoutRoot = route.path === '/' ? '/' : route.path.replace(/\/$/, '');
   const starVariant = withoutRoot.replace(/\/:[^/]+/g, '*');
   const paramlessVariant = withoutRoot.replace(/:[A-Za-z0-9_]+/g, ':id');
   return [...new Set([withoutRoot, paramlessVariant, starVariant])];
 };
 
-const readDocText = async (moduleName) => {
+export const readDocText = async (moduleName) => {
   const docPath = docPathForModule(moduleName);
   if (!docPath) return { docPath: null, exists: false, text: '' };
   try {
@@ -165,7 +166,7 @@ const readDocText = async (moduleName) => {
   }
 };
 
-const main = async () => {
+export const main = async () => {
   const options = parseArgs();
   if (options.help) {
     console.log('Usage: node scripts/auditApiEndpointDocsParity.mjs [--date yyyy-mm-dd] [--out-dir path] [--json]');
@@ -283,7 +284,12 @@ const main = async () => {
   }
 };
 
-main().catch((error) => {
-  console.error(`api endpoint docs parity audit failed: ${error instanceof Error ? error.message : String(error)}`);
-  process.exit(1);
-});
+const isDirectRun =
+  process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+
+if (isDirectRun) {
+  main().catch((error) => {
+    console.error(`api endpoint docs parity audit failed: ${error instanceof Error ? error.message : String(error)}`);
+    process.exit(1);
+  });
+}

@@ -31,7 +31,7 @@ type RuntimeFreshnessSnapshot = {
   };
 };
 
-const parseEnvDate = (raw: string | undefined) => {
+export const parseEnvDate = (raw: string | undefined) => {
   const normalized = raw?.trim();
   if (!normalized) return null;
   const parsed = Date.parse(normalized);

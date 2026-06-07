@@ -20,6 +20,27 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Evidence:
 ```
 
+### 2026-06-06 - Architecture Backlog Must Beat Historical Checkboxes
+- Context: [LUC-2557](/LUC/issues/LUC-2557) converted current architecture
+  journey/action gaps into Paperclip owner lanes, and [LUC-2568](/LUC/issues/LUC-2568)
+  synchronized that backlog into Soar ledgers.
+- Symptom: older docs still contain unchecked checklist rows that can look
+  executable even when the active architecture-backed backlog already has
+  owner/status/protected-gate routing.
+- Root cause: historical checklist syntax is easier to scan than current
+  architecture evidence registers unless the accepted backlog is copied into
+  durable ledgers.
+- Guardrail: record architecture-backed backlog rows in
+  `.agents/state/requirements-verification-matrix.md` and
+  `.agents/state/module-confidence-ledger.md` with owner, status,
+  protected-gate flag, and proof requirement.
+- Preferred pattern: treat current architecture graph/journey rows plus live
+  Paperclip owner lanes as the active backlog source.
+- Avoid: promoting historical unchecked plan boxes as active V1 work without a
+  current architecture row and owner lane.
+- Evidence: `REQ-DOC-031`;
+  `history/tasks/luc-2568-sync-architecture-gap-backlog-ledgers-2026-06-06-task.md`.
+
 ### 2026-06-06 - Prisma spies can race timed-out aggregate readers
 - Context: LUC-2342 repaired the full Bot Runtime monitoring aggregate e2e
   regression after focused aggregate proofs passed; LUC-2351 re-repaired the

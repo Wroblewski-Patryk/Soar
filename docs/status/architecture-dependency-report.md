@@ -1,11 +1,11 @@
 # Dependency Report
 
-Generated: 2026-06-06T16:24:34.647Z
+Generated: 2026-06-07T06:46:35.755Z
 
 ## Summary
 
-- Dependency relations: 2925
-- Entities with dependencies: 782
+- Dependency relations: 2975
+- Entities with dependencies: 801
 
 ## Dependency Edges
 
@@ -242,6 +242,7 @@ Generated: 2026-06-06T16:24:34.647Z
 | HomeLiveWidgets.tsx | uses | I18nProvider.tsx | apps/web/src/i18n/I18nProvider |
 | HomeLiveWidgets.tsx | uses | useLocaleFormatting.test.tsx | apps/web/src/i18n/useLocaleFormatting |
 | HomeLiveWidgets.tsx | uses | useLocaleFormatting.ts | apps/web/src/i18n/useLocaleFormatting |
+| HomeLiveWidgets.tsx | uses | marketStream.test.ts | apps/web/src/lib/marketStream |
 | HomeLiveWidgets.tsx | uses | marketStream.ts | apps/web/src/lib/marketStream |
 | HomeLiveWidgets.tsx | uses | bots.service.ts | apps/web/src/features/bots/services/bots.service |
 | HomeLiveWidgets.tsx | uses | exchangeCapabilities.test.ts | apps/web/src/features/exchanges/exchangeCapabilities |
@@ -298,6 +299,7 @@ Generated: 2026-06-06T16:24:34.647Z
 | LiveMarketBar.tsx | uses | I18nProvider.tsx | apps/web/src/i18n/I18nProvider |
 | LiveMarketBar.tsx | uses | useLocaleFormatting.test.tsx | apps/web/src/i18n/useLocaleFormatting |
 | LiveMarketBar.tsx | uses | useLocaleFormatting.ts | apps/web/src/i18n/useLocaleFormatting |
+| LiveMarketBar.tsx | uses | marketStream.test.ts | apps/web/src/lib/marketStream |
 | LiveMarketBar.tsx | uses | marketStream.ts | apps/web/src/lib/marketStream |
 | LoginForm.tsx | uses | useHydrationReady.ts | apps/web/src/features/auth/hooks/useHydrationReady |
 | LoginForm.tsx | uses | useLoginForm.test.tsx | apps/web/src/features/auth/hooks/useLoginForm |
@@ -632,6 +634,7 @@ Generated: 2026-06-06T16:24:34.647Z
 | useBotsListController.ts | uses | runtimeSurfaceTruth.ts | apps/web/src/features/bots/utils/runtimeSurfaceTruth |
 | useBotsMonitoringController.ts | uses | translations.test.ts | apps/web/src/i18n/translations |
 | useBotsMonitoringController.ts | uses | translations.ts | apps/web/src/i18n/translations |
+| useBotsMonitoringController.ts | uses | marketStream.test.ts | apps/web/src/lib/marketStream |
 | useBotsMonitoringController.ts | uses | marketStream.ts | apps/web/src/lib/marketStream |
 | useBotsMonitoringController.ts | uses | bots.service.ts | apps/web/src/features/bots/services/bots.service |
 | useBotsMonitoringController.ts | uses | botsMonitoringAggregate.service.test.ts | apps/web/src/features/bots/services/botsMonitoringAggregate.service |
@@ -775,6 +778,7 @@ Generated: 2026-06-06T16:24:34.647Z
 | auth.service.ts | uses | publicUser.ts | apps/api/src/modules/users/publicUser |
 | auth.service.ts | uses | subscriptions.service.ts | apps/api/src/modules/subscriptions/subscriptions.service |
 | backfillBacktestVenueContext.ts | uses | client.ts | apps/api/src/prisma/client |
+| backtest.worker.ts | uses | workerBootstrap.test.ts | apps/api/src/workers/workerBootstrap |
 | backtest.worker.ts | uses | workerBootstrap.ts | apps/api/src/workers/workerBootstrap |
 | backtest.worker.ts | uses | queueTuning.test.ts | apps/api/src/queue/queueTuning |
 | backtest.worker.ts | uses | queueTuning.ts | apps/api/src/queue/queueTuning |
@@ -807,7 +811,3 @@ Generated: 2026-06-06T16:24:34.647Z
 | backtestPortfolioSimulation.service.ts | uses | backtestDataGateway.test.ts | apps/api/src/modules/backtests/backtestDataGateway |
 | backtestPortfolioSimulation.service.ts | uses | backtestDataGateway.ts | apps/api/src/modules/backtests/backtestDataGateway |
 | backtestPortfolioSimulation.service.ts | uses | sharedDerivativesSeries.ts | apps/api/src/modules/engine/sharedDerivativesSeries |
-| backtestRange.service.ts | uses | symbols.test.ts | apps/api/src/lib/symbols |
-| backtestRange.service.ts | uses | symbols.ts | apps/api/src/lib/symbols |
-| backtestRange.service.ts | uses | backtests.repository.ts | apps/api/src/modules/backtests/backtests.repository |
-| backtestRange.service.ts | uses | backtestTimeframe.ts | apps/api/src/modules/backtests/backtestTimeframe |

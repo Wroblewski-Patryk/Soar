@@ -295,6 +295,9 @@ const routeCoveredByPatterns = (routePath, patterns) =>
 const firstCoveringRow = (routePath, rows, key) =>
   rows.find((row) => routeCoveredByPatterns(routePath, row[key]));
 
+const uniquePatternsFromRows = (rows, key) =>
+  [...new Set(rows.flatMap((row) => row[key]))].sort((left, right) => left.localeCompare(right));
+
 export const buildRouteApiMatrixParity = async ({
   traceabilityRaw,
   routeMapRaw,
@@ -313,6 +316,7 @@ export const buildRouteApiMatrixParity = async ({
   const matrixFrontendRows = matrixRows.filter((row) => row.frontendPatterns.length > 0);
   const matrixApiRows = matrixRows.filter((row) => row.apiPatterns.length > 0);
   const routeMapApiRows = routeMap.mappingRows.filter((row) => row.apiPatterns.length > 0);
+  const routeMapApiPatterns = uniquePatternsFromRows(routeMapApiRows, 'apiPatterns');
 
   const routeMapInventorySet = new Set(routeMap.inventoryRoutes);
   const rootOpsEndpointSet = new Set(rootOpsEndpointPatterns);
@@ -355,11 +359,29 @@ export const buildRouteApiMatrixParity = async ({
       missingIn: 'docs/architecture/reference/dashboard-route-map.md Primary API Contract',
     }));
 
+  const routeMapTraceabilityGaps = routeMap.inventoryRoutes
+    .filter((route) => !firstCoveringRow(route, matrixFrontendRows, 'frontendPatterns'))
+    .map((route) => ({
+      route,
+      sourceFile: 'docs/architecture/reference/dashboard-route-map.md',
+      missingIn: 'docs/architecture/traceability-matrix.md Frontend Entry',
+    }));
+
+  const routeMapApiTraceabilityGaps = routeMapApiPatterns
+    .filter((pattern) => !routeCoveredByPatterns(pattern, uniquePatternsFromRows(matrixApiRows, 'apiPatterns')))
+    .map((pattern) => ({
+      route: pattern,
+      sourceFile: 'docs/architecture/reference/dashboard-route-map.md',
+      missingIn: 'docs/architecture/traceability-matrix.md Backend Route/API',
+    }));
+
   const gaps = {
     webRoutesMissingInTraceabilityMatrix: webRouteGaps,
     webRoutesMissingInDashboardRouteMap: routeMapInventoryGaps,
     apiEndpointsMissingInTraceabilityMatrix: apiEndpointGaps,
     dashboardApiEndpointsMissingInRouteMap: routeMapApiGaps,
+    routeMapRoutesMissingInTraceabilityMatrix: routeMapTraceabilityGaps,
+    routeMapApiContractsMissingInTraceabilityMatrix: routeMapApiTraceabilityGaps,
   };
   const hasFailures = Object.values(gaps).some((bucket) => bucket.length > 0);
 
@@ -367,7 +389,7 @@ export const buildRouteApiMatrixParity = async ({
     generatedAt: new Date().toISOString(),
     status: hasFailures ? 'FAIL' : 'PASS',
     scope:
-      'Generated guardrail comparing Next page routes and Express API endpoints with traceability-matrix.md and dashboard-route-map.md coverage patterns.',
+      'Generated guardrail comparing Next page routes, Express API endpoints, and architecture route docs with traceability-matrix.md and dashboard-route-map.md coverage patterns.',
     counts: {
       webRoutes: actualWebRoutes.length,
       apiEndpoints: actualApiRoutes.length,

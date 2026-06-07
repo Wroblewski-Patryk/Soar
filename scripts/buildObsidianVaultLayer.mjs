@@ -2,6 +2,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 
 const repoRoot = process.cwd();
 const docsRoot = path.join(repoRoot, "docs");
@@ -9,7 +10,7 @@ const outputRoot = path.join(docsRoot, "obsidian");
 const mapsRoot = path.join(docsRoot, "maps");
 const today = "2026-05-31";
 
-function parseCsv(text) {
+export function parseCsv(text) {
   const rows = [];
   let row = [];
   let cell = "";
@@ -51,7 +52,7 @@ function parseCsv(text) {
   return rows;
 }
 
-function readCsv(relativePath) {
+export function readCsv(relativePath) {
   const filePath = path.join(repoRoot, relativePath);
   const rows = parseCsv(fs.readFileSync(filePath, "utf8"));
   const headers = rows[0] ?? [];
@@ -64,26 +65,26 @@ function readCsv(relativePath) {
   });
 }
 
-function posix(value) {
+export function posix(value) {
   return value.split(path.sep).join("/");
 }
 
-function rel(filePath) {
+export function rel(filePath) {
   return posix(path.relative(repoRoot, filePath));
 }
 
-function docsRel(filePath) {
+export function docsRel(filePath) {
   return posix(path.relative(docsRoot, filePath));
 }
 
-function splitRefs(value) {
+export function splitRefs(value) {
   return String(value || "")
     .split(/[;|]/)
     .map((item) => item.trim())
     .filter(Boolean);
 }
 
-function walkFiles(root) {
+export function walkFiles(root) {
   if (!fs.existsSync(root)) return [];
   const files = [];
   const stack = [root];
@@ -102,7 +103,7 @@ function walkFiles(root) {
   return files.sort((left, right) => rel(left).localeCompare(rel(right)));
 }
 
-function countBy(records, key) {
+export function countBy(records, key) {
   const counts = new Map();
   for (const record of records) {
     const value = record[key] || "unknown";
@@ -111,7 +112,7 @@ function countBy(records, key) {
   return [...counts.entries()].sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]));
 }
 
-function table(rows) {
+export function table(rows) {
   if (rows.length === 0) return "";
   const headers = Object.keys(rows[0]);
   const lines = [
@@ -122,19 +123,19 @@ function table(rows) {
   return lines.join("\n");
 }
 
-function link(file, label = file) {
+export function link(file, label = file) {
   return `[${label}](../${file})`;
 }
 
-function wiki(file, label = file.replace(/\.md$/, "")) {
+export function wiki(file, label = file.replace(/\.md$/, "")) {
   return `[[${file}|${label}]]`;
 }
 
-function firstNonEmpty(...values) {
+export function firstNonEmpty(...values) {
   return values.find((value) => String(value ?? "").trim()) ?? "";
 }
 
-function statusOrder(value) {
+export function statusOrder(value) {
   return {
     critical: 0,
     high: 1,
@@ -144,32 +145,33 @@ function statusOrder(value) {
   }[value] ?? 9;
 }
 
-function canvasSafeId(value) {
+export function canvasSafeId(value) {
   return String(value).replace(/[^a-zA-Z0-9_-]/g, "-").slice(0, 80);
 }
 
-function write(relativeOutputPath, content) {
+export function write(relativeOutputPath, content) {
   const filePath = path.join(docsRoot, relativeOutputPath);
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, `${content.trimEnd()}\n`, "utf8");
   return filePath;
 }
 
-function canvasNode(id, x, y, width, height, textOrFile, type = "text", color = undefined) {
+export function canvasNode(id, x, y, width, height, textOrFile, type = "text", color = undefined) {
   const base = { id, type, x, y, width, height };
   if (color) base.color = color;
   if (type === "file") return { ...base, file: textOrFile };
   return { ...base, text: textOrFile };
 }
 
-function canvasEdge(id, fromNode, toNode, label) {
+export function canvasEdge(id, fromNode, toNode, label) {
   return { id, fromNode, fromSide: "right", toNode, toSide: "left", label };
 }
 
-function writeCanvas(relativeOutputPath, nodes, edges) {
+export function writeCanvas(relativeOutputPath, nodes, edges) {
   write(relativeOutputPath, JSON.stringify({ nodes, edges }, null, 2));
 }
 
+export function buildObsidianVaultLayer() {
 const docsFiles = walkFiles(docsRoot).filter((file) => !file.includes(`${path.sep}.obsidian${path.sep}`));
 const markdownFiles = docsFiles.filter((file) => file.endsWith(".md"));
 const csvFiles = docsFiles.filter((file) => file.endsWith(".csv"));
@@ -937,3 +939,11 @@ writeCanvas("maps/soar-docs-folder-map.canvas", folderMapNodes, folderMapEdges);
 
 console.log(`Obsidian vault layer written to ${rel(outputRoot)}`);
 console.log(`Canvas maps written under ${rel(mapsRoot)}`);
+}
+
+const isDirectRun =
+  process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+
+if (isDirectRun) {
+  buildObsidianVaultLayer();
+}

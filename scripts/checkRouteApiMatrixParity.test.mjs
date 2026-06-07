@@ -138,3 +138,35 @@ test('buildRouteApiMatrixParity fails with actionable gaps when matrix or route 
   assert.equal(result.gaps.dashboardApiEndpointsMissingInRouteMap.length, 1);
   assert.match(result.gaps.apiEndpointsMissingInTraceabilityMatrix[0].sourceFile, /alerts\.routes\.ts/);
 });
+
+test('buildRouteApiMatrixParity fails when route-map architecture docs drift from traceability matrix', async () => {
+  const routeMapWithUntracedDocs = routeMapRaw
+    .replace('- `/admin/users`', '- `/admin/users`\n- `/dashboard/reports`')
+    .replace(
+      '| `/admin/users` | features/admin/users | `/admin/users*` | api/admin/users | Admin |',
+      '| `/admin/users` | features/admin/users | `/admin/users*` | api/admin/users | Admin |\n| `/dashboard/reports` | features/reports | `/dashboard/reports/cross-mode-performance` | api/reports | Auth |'
+    );
+
+  const result = await buildRouteApiMatrixParity({
+    traceabilityRaw,
+    routeMapRaw: routeMapWithUntracedDocs,
+    webRoutes: [],
+    apiRoutes: [],
+  });
+
+  assert.equal(result.status, 'FAIL');
+  assert.deepEqual(result.gaps.routeMapRoutesMissingInTraceabilityMatrix, [
+    {
+      route: '/dashboard/reports',
+      sourceFile: 'docs/architecture/reference/dashboard-route-map.md',
+      missingIn: 'docs/architecture/traceability-matrix.md Frontend Entry',
+    },
+  ]);
+  assert.deepEqual(result.gaps.routeMapApiContractsMissingInTraceabilityMatrix, [
+    {
+      route: '/dashboard/reports/cross-mode-performance',
+      sourceFile: 'docs/architecture/reference/dashboard-route-map.md',
+      missingIn: 'docs/architecture/traceability-matrix.md Backend Route/API',
+    },
+  ]);
+});

@@ -1,30 +1,42 @@
 # Known-State Readiness
 
-Last updated: 2026-05-26
+Last updated: 2026-06-07
 
-Status: **LOCAL KNOWN-STATE PASS / PRODUCTION GATED**
+Status: **ACTIVE REPAIR/VERIFICATION / PROTECTED GATE HOLD**
 
-Soar has the project-knowledge backbone needed for autonomous agent work. The
-current local known-state refresh is green, with remaining work represented as
-owned Paperclip/operator gates rather than unclassified repo uncertainty. This
-does not bypass the live production worker gate tracked in Paperclip.
+Soar has the project-knowledge backbone needed for autonomous agent work, but it
+is not in monitoring-only mode. Current generated architecture evidence is
+fresh, while the remaining work is represented as owned Paperclip repair,
+verification, and protected/operator gate lanes. Local evidence does not bypass
+protected browser, worker readiness, SLO/release, Coolify access, owner-login,
+exchange, account, or live-trading gates.
 
 ## Current Evidence
 
-- Backbone/template scan: PASS, required docs/status/automation/operations
-  files exist.
-- Architecture graph: PASS, `645` nodes, `804` relations, `27` chains.
-- Graph drift: PASS, `809/809` covered, `0` missing.
-- Journey indexes: PASS with no critical gaps; `28` function-journey high gaps
-  and `37` user-action high gaps remain.
-- Docs parity: PASS, API `22/22`, Web `16/16`, Routes `37/37`.
-- Repository guardrails: PASS.
-- V1 static issue scan: PASS, `0` findings.
-- V1 master ledger: `GO`, `21` module rows in `done`.
-- V1 completion scorecard: `GO`, implementation `100%`, evidence `100%`,
-  release readiness `100%` for the repository V1 evidence snapshot.
-- Production autonomy gate: blocked on Paperclip `LUC-181`
-  (`workers-market-stream` operator recovery/confirmation).
+- Architecture awareness generated at `2026-06-07T06:46:35.755Z` with
+  `14832` entities, `23869` relations, `0` ownerless entities, and
+  `0` disconnected entities.
+- Actionable inferred-link state: `433` actionable implementation entities
+  without inferred tests and `0` actionable implementation entities without
+  inferred docs.
+- Recent local relation repairs verified release/RC/SLO evidence helpers, V1
+  scorecard and master ledger helpers, route/docs/graph helper scripts, Web
+  shared UI/PWA helpers, and Coolify stack environment checker traceability.
+- Paperclip queue readback for Soar on 2026-06-07 under
+  [LUC-2665](/LUC/issues/LUC-2665) returned `95` non-terminal issues:
+  `92` blocked, `1` in_progress, `2` in_review, and `0` todo.
+- Main live/in-review owner paths are
+  [LUC-2665](/LUC/issues/LUC-2665) this docs/memory sweep,
+  [LUC-2558](/LUC/issues/LUC-2558) Coolify read-only production status access
+  binding, and [LUC-1397](/LUC/issues/LUC-1397) owner-login verification path.
+- Protected gate families remain fail-closed through
+  [LUC-2505](/LUC/issues/LUC-2505),
+  [LUC-241](/LUC/issues/LUC-241),
+  [LUC-2372](/LUC/issues/LUC-2372), and related downstream QA/Ops/Integration
+  proof lanes.
+- Tooling drift remains: `pnpm softwarehouse:control-tick` is named by
+  Paperclip issue contracts but is not exposed in this checkout, and
+  `scripts/run-live-run-janitor.mjs` is absent.
 
 ## Canonical Refresh Command
 
@@ -41,10 +53,11 @@ are dependent steps.
 
 | ID | Status | Owner lane | Evidence | Next action |
 | --- | --- | --- | --- | --- |
-| KS-QUEUE-001 | closed | Project Manager / Docs Memory | `history/audits/v1-static-issue-scan-2026-05-26.md` | Queue markers are classified; static scan now reports `0` findings. |
-| KS-PROOF-001 | needs-evidence | QA / Frontend / Backend / Security / Ops | `docs/status/function-journey-index.md`, `docs/status/user-action-index.md` | Convert high gaps into owner-lane proof tasks. |
-| KS-RELEASE-001 | blocked | Ops / Security / Paperclip | Paperclip `LUC-181` | Resolve the production operator gate for `workers-market-stream`; do not bypass from repo-local work. |
-| KS-SCORECARD-001 | closed | Docs Memory / Delivery | `history/releases/v1-completion-scorecard-2026-05-26.md` | Project index now reads the historical V1 action matrix source and scorecard is meaningful. |
+| KS-QUEUE-001 | active-gate-held | Project Manager / TSA / Docs Memory | [LUC-2714](/LUC/issues/LUC-2714); Paperclip issue readback for this refresh showed `96` non-terminal Soar issues | Do not create duplicate children while owner lanes exist; route next motion through existing blocked or in-review owner paths. |
+| KS-PROOF-001 | blocked | QA / Frontend / Backend / Security / Ops | `docs/status/function-journey-index.md`, `docs/status/user-action-index.md`; [LUC-2581](/LUC/issues/LUC-2581); [LUC-2582](/LUC/issues/LUC-2582) | Execute protected proof only after [LUC-2505](/LUC/issues/LUC-2505) and [LUC-241](/LUC/issues/LUC-241) unblock. |
+| KS-RELEASE-001 | blocked | Ops / Security / Paperclip | [LUC-2372](/LUC/issues/LUC-2372); [LUC-2366](/LUC/issues/LUC-2366); [LUC-2361](/LUC/issues/LUC-2361); [LUC-2378](/LUC/issues/LUC-2378) | Keep release/protected runtime proof fail-closed until required protected inputs and approval facts exist. |
+| KS-ACCESS-001 | in_review | Local board / Ops | [LUC-2558](/LUC/issues/LUC-2558); [LUC-1397](/LUC/issues/LUC-1397) | Resolve Coolify read-only status access and owner-login verification paths without exposing secrets. |
+| KS-TOOLING-001 | missing | Softwarehouse control loop owner | [LUC-2665](/LUC/issues/LUC-2665) | Either expose `softwarehouse:control-tick`/janitor in this checkout or update issue contracts to the available project-native equivalents. |
 
 ## Definition Of Known Enough
 

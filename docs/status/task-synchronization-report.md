@@ -1,6 +1,6 @@
 # Task Synchronization Report
 
-Generated: 2026-06-06T16:24:34.647Z
+Generated: 2026-06-07T06:46:35.755Z
 
 ## Contract
 
@@ -8,7 +8,7 @@ Every task should identify the feature/module it changes, dependency expectation
 
 ## Signals
 
-- Tasks without architecture links: 1061
+- Tasks without architecture links: 1137
 - Implementation entities without task links: 979
 - Verified entities without proof evidence: 0
 

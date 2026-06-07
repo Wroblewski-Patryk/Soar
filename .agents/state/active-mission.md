@@ -1,6 +1,1246 @@
 # Active Mission Packet
 
-Last updated: 2026-06-06
+Last updated: 2026-06-07
+
+## 2026-06-07 LUC-2698 Architecture-Awareness Post-Child Closure
+
+- `LUC-2698-ARCHITECTURE-AWARENESS-POST-CHILD-CLOSURE-2026-06-07`
+  completed as a Technical Solution Architect disposition checkpoint. Wake
+  `issue_children_completed` was scoped to [LUC-2698](/LUC/issues/LUC-2698);
+  checkout was already claimed by the harness and was not repeated. Paperclip
+  heartbeat-context showed [LUC-2698](/LUC/issues/LUC-2698) `in_progress`,
+  `blockedBy: []`, and attached to the current run. Direct child
+  [LUC-2706](/LUC/issues/LUC-2706) was `done`. Superseding issue
+  [LUC-2701](/LUC/issues/LUC-2701) had already completed the required
+  architecture-awareness refresh/delegation, and
+  [LUC-2702](/LUC/issues/LUC-2702) completed the resulting
+  `scripts/checkCoolifyStackEnv.mjs` relation/test proof. No new duplicate
+  child lane, product-code, runtime, deploy, push, restart, rollback, env,
+  account, secret, protected-smoke, exchange, database, or live-trading
+  mutation occurred. Evidence:
+  `history/tasks/luc-2698-architecture-awareness-post-child-closure-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2702 Coolify Stack Env Checker Missing-Test Links
+
+- `LUC-2702-COOLIFY-STACK-ENV-CHECKER-MISSING-TEST-LINKS-2026-06-07`
+  completed as a Test Automation local proof/relation repair child for
+  [LUC-2701](/LUC/issues/LUC-2701). Wake `issue_assigned` had no pending
+  comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
+  harness and was not repeated. Expanded
+  `scripts/checkCoolifyStackEnv.test.mjs` with focused coverage for
+  deploy-safety issue classification, redacted reporting, CLI help, and stack
+  env file JSON success. Added `17` scanner-readable `LUC-2702` rows to
+  `docs/architecture/relations/priority-test-links.csv` for the current
+  Coolify stack env checker anchors. Syntax checks passed, focused Node proof
+  passed (`11/11`), project-native Coolify env-check test passed (`11/11`),
+  architecture graph generation passed (`653` nodes / `842` relations / `27`
+  chains), and repository guardrails passed. No product runtime behavior,
+  deploy, push, restart, rollback, production smoke, account, secret,
+  exchange, database, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2702-coolify-stack-env-checker-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2701 Gap Register And Repair Lane Refresh
+
+- `LUC-2701-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-07`
+  completed as a Technical Solution Architect coordination/delegation
+  checkpoint. Wake `issue_assigned` had no pending comments
+  (`fallbackFetchNeeded=false`); checkout was already claimed by the harness
+  and was not repeated. Paperclip heartbeat-context succeeded for
+  [LUC-2701](/LUC/issues/LUC-2701). `pnpm softwarehouse:control-tick` failed
+  because `softwarehouse:control-tick` is not exposed in this checkout.
+  External architecture-awareness refresh passed from
+  `C:\Personal\Projekty\Aplikacje\Paperclip_Softwarehouse` with `14832`
+  entities, `23869` relations, and `9632` files. Refreshed report generated
+  `2026-06-07T06:46:35.755Z` now reports `433` actionable missing-test links,
+  `0` actionable missing-doc links, `0` ownerless entities, `0` disconnected
+  entities, and `7426` classified inferred-link noise rows. Completed
+  [LUC-2693](/LUC/issues/LUC-2693) removed
+  `scripts/buildV1MasterStateLedger.mjs` from the top actionable family. The
+  new non-duplicate top family is `scripts/checkCoolifyStackEnv.mjs`; focused
+  readback passed (`node --test scripts/checkCoolifyStackEnv.test.mjs`,
+  `8/8`) but direct scanner-readable relation rows are absent. Active
+  duplicate searches returned `0` for `checkCoolifyStackEnv`,
+  `Coolify stack env`, and `checkDocsParity`. Created
+  [LUC-2702](/LUC/issues/LUC-2702) for Test Automation Engineer to cover or
+  classify the Coolify stack env checker missing-test anchors. No product-code,
+  runtime, deploy, push, restart, rollback, env, account, secret,
+  protected-smoke, exchange, database, or live-trading mutation occurred.
+  Evidence:
+  `history/tasks/luc-2701-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2695 No-Stall Queue Expeditor
+
+- `LUC-2695-NO-STALL-QUEUE-EXPEDITOR-2026-06-07` completed as a PM
+  no-stall/delegation checkpoint. Wake `issue_assigned` had no pending
+  comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
+  harness and was not repeated. Paperclip heartbeat-context succeeded for
+  [LUC-2695](/LUC/issues/LUC-2695). `pnpm softwarehouse:control-tick` failed
+  because `softwarehouse:control-tick` is not exposed in this checkout. The
+  current local architecture-awareness report generated
+  `2026-06-07T06:16:35.207Z` still lists
+  `scripts/buildV1MasterStateLedger.mjs` as top actionable, which is stale
+  after completed [LUC-2693](/LUC/issues/LUC-2693). Duplicate searches for
+  active `buildV1MasterStateLedger`, `checkCoolifyStackEnv`, and
+  `architecture-awareness` lanes returned `0`. Created
+  [LUC-2698](/LUC/issues/LUC-2698) for `09 TSA (Technical Solution Architect)`
+  to refresh or reconcile architecture-awareness known-state and pick at most
+  one current non-duplicate worker-ready family. No product-code, runtime,
+  deploy, push, restart, rollback, env, account, secret, protected-smoke,
+  exchange, database, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2695-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2693 V1 Master State Ledger Missing-Test Links
+
+- `LUC-2693-V1-MASTER-STATE-LEDGER-MISSING-TEST-LINKS-2026-06-07`
+  completed as a Test Automation local proof/relation repair child for
+  [LUC-2692](/LUC/issues/LUC-2692). Wake `issue_assigned` had no pending
+  comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
+  harness and was not repeated. Made `scripts/buildV1MasterStateLedger.mjs`
+  import-safe, exported existing helper functions for direct local proof, added
+  `scripts/buildV1MasterStateLedger.test.mjs`, and added `15`
+  scanner-readable `LUC-2693` rows to
+  `docs/architecture/relations/priority-test-links.csv` for the current V1
+  master state ledger anchors. Syntax checks passed, focused Node proof passed
+  (`8/8`), architecture graph generation passed (`653` nodes / `842`
+  relations / `27` chains), and repository guardrails passed. No product
+  runtime behavior, deploy, push, restart, rollback, production smoke, account,
+  secret, exchange, database, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2693-v1-master-state-ledger-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2692 V1 Audit-To-Completion Controller
+
+- `LUC-2692-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-06-07`
+  completed as a Technical Solution Architect architecture-awareness refresh
+  and delegation checkpoint. Wake `issue_assigned` had no pending comments
+  (`fallbackFetchNeeded=false`); checkout was already claimed by the harness
+  and was not repeated. Paperclip heartbeat-context succeeded for
+  [LUC-2692](/LUC/issues/LUC-2692). External architecture-awareness refresh
+  passed from `C:\Personal\Projekty\Aplikacje\Paperclip_Softwarehouse` with
+  `14824` entities, `23843` relations, and `9628` files. Refreshed report
+  generated `2026-06-07T06:16:35.207Z` now reports `448` actionable
+  missing-test links, `0` actionable missing-doc links, `0` ownerless
+  entities, `0` disconnected entities, and `7423` classified inferred-link
+  noise rows. Completed [LUC-2685](/LUC/issues/LUC-2685) removed
+  `scripts/buildV1CompletionScorecard.mjs` from the top actionable family.
+  Duplicate searches for active `buildV1MasterStateLedger` and
+  `V1 master state ledger` lanes returned `0`. Created
+  [LUC-2693](/LUC/issues/LUC-2693) for Test Automation Engineer to cover or
+  classify `scripts/buildV1MasterStateLedger.mjs` missing-test anchors. No
+  product-code runtime behavior, deploy, push, restart, rollback, env,
+  account, secret, protected-smoke, exchange, database, or live-trading
+  mutation occurred. Evidence:
+  `history/tasks/luc-2692-v1-audit-to-completion-controller-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2685 V1 Completion Scorecard Missing-Test Links
+
+- `LUC-2685-V1-COMPLETION-SCORECARD-MISSING-TEST-LINKS-2026-06-07`
+  completed as a Test Automation local proof/relation repair child for
+  [LUC-2684](/LUC/issues/LUC-2684). Wake `issue_assigned` had no pending
+  comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
+  harness and was not repeated. Made `scripts/buildV1CompletionScorecard.mjs`
+  import-safe, exported existing helper functions for direct local proof, added
+  `scripts/buildV1CompletionScorecard.test.mjs`, and added `14`
+  scanner-readable `LUC-2685` rows to
+  `docs/architecture/relations/priority-test-links.csv` for the current V1
+  completion scorecard anchors. Syntax checks passed, focused Node proof passed
+  (`7/7`), architecture graph generation passed (`653` nodes / `842` relations
+  / `27` chains), and repository guardrails passed. No product runtime
+  behavior, deploy, push, restart, rollback, production smoke, account, secret,
+  exchange, database, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2685-v1-completion-scorecard-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2684 Architecture-Awareness Refresh After RC/SLO Proof Closure
+
+- `LUC-2684-ARCHITECTURE-AWARENESS-REFRESH-AFTER-RC-SLO-PROOF-CLOSURE-2026-06-07`
+  completed as a Technical Solution Architect architecture-awareness refresh
+  and delegation checkpoint. Wake `issue_assigned` had no pending comments
+  (`fallbackFetchNeeded=false`); checkout was already claimed by the harness
+  and was not repeated. Paperclip heartbeat-context succeeded for
+  [LUC-2684](/LUC/issues/LUC-2684). External architecture-awareness refresh
+  passed from `C:\Personal\Projekty\Aplikacje\Paperclip_Softwarehouse` with
+  `14819` entities, `23822` relations, and `9625` files. Refreshed report
+  generated `2026-06-07T05:34:19.835Z` now reports `462` actionable
+  missing-test links, `0` actionable missing-doc links, `0` ownerless
+  entities, `0` disconnected entities, and `7421` classified inferred-link
+  noise rows. Completed [LUC-2674](/LUC/issues/LUC-2674) and
+  [LUC-2678](/LUC/issues/LUC-2678) RC/SLO helper families are no longer the
+  top actionable family. Duplicate searches for active
+  `buildV1CompletionScorecard`, `V1 completion scorecard`, and
+  `buildV1MasterStateLedger` lanes returned `0`. Created
+  [LUC-2685](/LUC/issues/LUC-2685) for Test Automation Engineer to cover or
+  classify `scripts/buildV1CompletionScorecard.mjs` missing-test anchors. No
+  product-code runtime behavior, deploy, push, restart, rollback, env, account,
+  secret, protected-smoke, exchange, database, or live-trading mutation
+  occurred. Evidence:
+  `history/tasks/luc-2684-architecture-awareness-refresh-after-rc-slo-proof-closure-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2681 No-Stall Queue Expeditor
+
+- `LUC-2681-NO-STALL-QUEUE-EXPEDITOR-2026-06-07` completed as a PM
+  no-stall/delegation checkpoint. Wake `issue_assigned` had no pending
+  comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
+  harness and was not repeated. Paperclip heartbeat-context succeeded for
+  [LUC-2681](/LUC/issues/LUC-2681). `pnpm softwarehouse:control-tick` failed
+  because `softwarehouse:control-tick` is not exposed in this checkout.
+  Current architecture-awareness report generated `2026-06-07T04:42:13.421Z`
+  still lists RC/SLO helper families already covered by completed
+  [LUC-2674](/LUC/issues/LUC-2674) and [LUC-2678](/LUC/issues/LUC-2678), so no
+  duplicate Test Automation lane was opened. Created
+  [LUC-2684](/LUC/issues/LUC-2684) for `09 TSA (Technical Solution Architect)`
+  to refresh or reconcile the architecture-awareness known-state and pick the
+  next non-duplicate actionable missing-test family. No product-code, runtime,
+  deploy, push, restart, rollback, env, account, secret, protected-smoke,
+  exchange, database, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2681-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2675 No-Stall Queue Expeditor
+
+- `LUC-2675-NO-STALL-QUEUE-EXPEDITOR-2026-06-07` completed as a PM
+  no-stall/delegation checkpoint. Wake `issue_assigned` had no pending
+  comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
+  harness and was not repeated. Paperclip heartbeat-context succeeded for
+  [LUC-2675](/LUC/issues/LUC-2675). `pnpm softwarehouse:control-tick` failed
+  because `softwarehouse:control-tick` is not exposed in this checkout.
+  Duplicate searches found no open `todo`/`in_progress`/`in_review` lane for
+  `scripts/buildRcSignoffRecord.mjs` or
+  `scripts/buildSloWindowReport.mjs`. Created [LUC-2678](/LUC/issues/LUC-2678)
+  for Test Automation Engineer to cover or classify the remaining RC signoff
+  and SLO window report helper missing-test links after completed
+  [LUC-2674](/LUC/issues/LUC-2674). No product-code, runtime, deploy, push,
+  restart, rollback, env, account, secret, protected-smoke, exchange,
+  database, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2675-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2674 Release RC/SLO Script Missing-Test Links
+
+- `LUC-2678-RC-SIGNOFF-SLO-WINDOW-MISSING-TEST-LINKS-2026-06-07`
+  completed as a Test Automation local proof/relation repair child for
+  [LUC-2675](/LUC/issues/LUC-2675). Wake `issue_assigned` had no pending
+  comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
+  harness and was not repeated. Made `scripts/buildRcSignoffRecord.mjs` and
+  `scripts/buildSloWindowReport.mjs` import-safe, exported their existing
+  helper functions for direct local proof, added
+  `scripts/buildRcSignoffRecord.test.mjs` and
+  `scripts/buildSloWindowReport.test.mjs`, and added direct `LUC-2678`
+  scanner-readable rows to
+  `docs/architecture/relations/priority-test-links.csv` for the current RC
+  signoff and SLO window report anchors. Syntax checks passed, focused Node
+  proof passed (`12/12` including `scripts/releaseOpsScriptContracts.test.mjs`),
+  architecture graph generation passed (`653` nodes / `842` relations / `27`
+  chains), and repository guardrails passed. No product runtime behavior,
+  deploy, push, restart, rollback, production smoke, account, secret,
+  exchange, database, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2678-rc-signoff-slo-window-missing-test-links-2026-06-07-task.md`.
+
+- `LUC-2674-RELEASE-RC-SLO-SCRIPT-MISSING-TEST-LINKS-2026-06-07`
+  completed as a Test Automation local proof/relation repair child for
+  [LUC-2673](/LUC/issues/LUC-2673). Wake `issue_assigned` had no pending
+  comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
+  harness and was not repeated. Made `scripts/buildRcExternalGateStatus.mjs`
+  import-safe, exported its existing RC/SLO helper functions for direct local
+  proof, added `scripts/buildRcExternalGateStatus.test.mjs`, and added direct
+  `LUC-2674` scanner-readable rows to
+  `docs/architecture/relations/priority-test-links.csv` for the current RC
+  external gate status top anchors. Focused Node proof passed (`9/9` including
+  `scripts/releaseOpsScriptContracts.test.mjs`), architecture graph generation
+  passed (`653` nodes / `842` relations / `27` chains), and repository
+  guardrails passed. No product runtime behavior, deploy, push, restart,
+  rollback, production smoke, account, secret, exchange, database, or
+  live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2674-release-rc-slo-script-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2673 Gap Register And Repair Lane Refresh
+
+- `LUC-2673-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-07`
+  completed as a Technical Solution Architect coordination/delegation
+  checkpoint. Wake `issue_assigned` had no pending comments
+  (`fallbackFetchNeeded=false`); checkout was already claimed by the harness
+  and was not repeated. Paperclip heartbeat-context succeeded for
+  [LUC-2673](/LUC/issues/LUC-2673). Current architecture-awareness report
+  generated `2026-06-07T04:42:13.421Z` reports `14807` entities, `23756`
+  relations, `510` actionable missing-test links, `0` actionable missing-doc
+  links, `0` ownerless entities, `0` disconnected entities, and `7418`
+  classified inferred-link noise rows. The next non-duplicate top family is
+  release/operations evidence tooling:
+  `scripts/buildRcExternalGateStatus.mjs`, `scripts/buildRcSignoffRecord.mjs`,
+  and `scripts/buildSloWindowReport.mjs`. Duplicate search found only older
+  done aggregate lane [LUC-2198](/LUC/issues/LUC-2198), not a current focused
+  function-level repair lane. Created [LUC-2674](/LUC/issues/LUC-2674) for
+  Test Automation Engineer to cover or classify the release RC/SLO script
+  missing-test links. No product-code/runtime/deploy/push/restart/rollback/
+  env/account/secret/protected-smoke/exchange/database/live-trading mutation
+  occurred. Evidence:
+  `history/tasks/luc-2673-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2672 Exclude Test Fixture Functions From Actionable Missing-Test Samples
+
+- `LUC-2672-EXCLUDE-TEST-FIXTURE-FUNCTIONS-FROM-ACTIONABLE-MISSING-TEST-SAMPLES-2026-06-07`
+  completed as a Technical Solution Architect scanner-hygiene checkpoint for
+  [LUC-2671](/LUC/issues/LUC-2671). Wake `issue_assigned` had no pending
+  comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
+  harness and was not repeated. Updated the external Softwarehouse
+  architecture-awareness scanner to classify functions from `.test.*`,
+  fixture, mock, stub, test-support, and e2e/integration fixture paths as
+  `test_fixture_function` inferred-link noise rather than actionable
+  implementation missing-test gaps. Refreshed Soar architecture-awareness
+  exports successfully (`14807` entities / `23756` relations / `9616` files).
+  The refreshed report generated `2026-06-07T04:42:13.421Z` reports
+  actionable missing-test links `510`, classified inferred-link noise `7418`,
+  and `test_fixture_function: 62`; targeted readback confirmed the seven
+  [LUC-2671](/LUC/issues/LUC-2671) fixture samples are no longer actionable.
+  `node --check scripts/build-architecture-awareness-index.mjs` passed from
+  `Paperclip_Softwarehouse`, and Soar `pnpm run quality:guardrails` passed.
+  No product-code runtime behavior, deploy, push, restart, rollback, env,
+  account, secret, protected-smoke, exchange, database, or live-trading
+  mutation occurred. Evidence:
+  `history/tasks/luc-2672-exclude-test-fixture-functions-from-actionable-missing-test-samples-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2671 Residual Architecture-Awareness Top Samples
+
+- `LUC-2671-RECONCILE-RESIDUAL-ARCHITECTURE-AWARENESS-TOP-SAMPLES-2026-06-07`
+  completed as a Test Automation / Architecture QA relation-only
+  reconciliation lane for [LUC-2668](/LUC/issues/LUC-2668). Wake
+  `issue_assigned` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already claimed
+  by the harness and was not repeated. Classified the current
+  `2026-06-07T04:12:30.440Z` top samples against completed
+  [LUC-2650](/LUC/issues/LUC-2650), [LUC-2656](/LUC/issues/LUC-2656), and
+  [LUC-2664](/LUC/issues/LUC-2664). Added `15` scanner-readable `LUC-2671`
+  rows to `docs/architecture/relations/priority-test-links.csv` for covered
+  anchors; `.test.mjs` fixture functions were classified as scanner inference
+  noise and delegated to [LUC-2672](/LUC/issues/LUC-2672) for Technical
+  Solution Architect refinement. Focused tests passed (`18/18`), architecture
+  graph generation passed (`653` nodes / `842` relations / `27` chains), and
+  repository guardrails passed. No deploy, push, restart, rollback, production
+  smoke, account, secret, exchange, database, or live-trading mutation
+  occurred. Evidence:
+  `history/tasks/luc-2671-reconcile-residual-architecture-awareness-top-samples-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2668 No-Stall Queue Expeditor
+
+- `LUC-2668-NO-STALL-QUEUE-EXPEDITOR-2026-06-07` completed as a PM
+  no-stall/delegation checkpoint. Wake `issue_assigned` had no pending
+  comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
+  harness and was not repeated. Paperclip heartbeat-context succeeded for
+  [LUC-2668](/LUC/issues/LUC-2668). `pnpm softwarehouse:control-tick` failed
+  because `softwarehouse:control-tick` is not exposed in this checkout.
+  Read-only Soar queue count returned `0` todo, `2` in_progress, `2`
+  in_review, and `92` blocked issues. Canonical PM lane
+  [LUC-244](/LUC/issues/LUC-244) remains fail-closed `blocked` by
+  [LUC-47](/LUC/issues/LUC-47) and [LUC-241](/LUC/issues/LUC-241), whose
+  terminal blocker is [LUC-2619](/LUC/issues/LUC-2619). Current
+  architecture-awareness report generated `2026-06-07T04:12:30.440Z` still
+  lists residual top samples, including families already covered by completed
+  [LUC-2650](/LUC/issues/LUC-2650), [LUC-2656](/LUC/issues/LUC-2656), and
+  [LUC-2664](/LUC/issues/LUC-2664). Created
+  [LUC-2671](/LUC/issues/LUC-2671) for Test Automation / Architecture QA to
+  reconcile residual top samples without duplicate proof lanes. No product-code,
+  runtime, deploy, push, restart, rollback, env, account, secret,
+  protected-smoke, exchange, database, or live-trading mutation occurred.
+  Evidence:
+  `history/tasks/luc-2668-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2664 buildProjectIndex Architecture Proof Gaps
+
+- `LUC-2664-BUILDPROJECTINDEX-ARCHITECTURE-PROOF-GAPS-2026-06-07`
+  completed as a Test Automation local proof/relation repair lane. Wake
+  `issue_assigned` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already claimed
+  by the harness and was not repeated. Made `scripts/buildProjectIndex.mjs`
+  import-safe, exported current helper functions, added
+  `scripts/buildProjectIndex.test.mjs`, and added scanner-readable `LUC-2664`
+  rows to `docs/architecture/relations/priority-test-links.csv` for current
+  buildProjectIndex helper/CLI anchors. Focused Node proof passed (`8/8`),
+  syntax check passed, architecture graph generation passed (`653` nodes /
+  `842` relations / `27` chains), and repository guardrails passed. No deploy,
+  push, restart, rollback, production smoke, account, secret, exchange,
+  database, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2664-buildprojectindex-architecture-proof-gaps-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2661 Ops Request Header Helper Missing-Test Links
+
+- `LUC-2661-OPS-REQUEST-HEADER-HELPER-MISSING-TEST-LINKS-2026-06-07`
+  completed as a Test Automation local proof/relation repair child for
+  [LUC-2658](/LUC/issues/LUC-2658). Wake `issue_assigned` was consumed from
+  inline payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was
+  already claimed by the harness and was not repeated. Exported the existing
+  `normalize` helper for direct proof, added
+  `scripts/buildOpsRequestHeaders.test.mjs`, and added scanner-readable
+  `LUC-2661` rows to `docs/architecture/relations/priority-test-links.csv`
+  for `buildOpsRequestHeaders`, `normalize`, and
+  `resolveOpsAuthLayerOptions`. Focused Node proof passed (`6/6`),
+  architecture graph generation passed (`653` nodes / `842` relations /
+  `27` chains), and repository guardrails passed. No deploy, push, restart,
+  rollback, production smoke, account, secret, exchange, database, or
+  live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2661-ops-request-header-helper-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2656 Obsidian Vault Layer Script Missing-Test Links
+
+- `LUC-2656-OBSIDIAN-VAULT-LAYER-SCRIPT-MISSING-TEST-LINKS-2026-06-07`
+  completed as a Test Automation local proof/relation repair child for
+  [LUC-2653](/LUC/issues/LUC-2653). Wake `issue_assigned` was consumed from
+  inline payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was
+  already claimed by the harness and was not repeated. Made
+  `scripts/buildObsidianVaultLayer.mjs` import-safe, exported focused helper
+  functions, added `scripts/buildObsidianVaultLayer.test.mjs`, and added
+  scanner-readable `LUC-2656` rows to
+  `docs/architecture/relations/priority-test-links.csv` for current Obsidian
+  vault layer helper anchors. Focused Node proof passed (`5/5`), architecture
+  graph generation passed (`653` nodes / `842` relations / `27` chains),
+  repository guardrails passed, and direct generator execution passed. The
+  generated Obsidian/map churn from that direct proof run was restored because
+  it was outside this repair scope. No deploy, push, restart, rollback,
+  production smoke, account, secret, exchange, database, or live-trading
+  mutation occurred. Evidence:
+  `history/tasks/luc-2656-obsidian-vault-layer-script-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2650 Route-Reachable i18n Audit Script Missing-Test Links
+
+- `LUC-2650-ROUTE-REACHABLE-I18N-AUDIT-SCRIPT-MISSING-TEST-LINKS-2026-06-07`
+  completed as a Test Automation local proof/relation repair child for
+  [LUC-2647](/LUC/issues/LUC-2647). Wake `issue_assigned` was consumed from
+  inline payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was
+  already claimed by the harness and was not repeated. Made
+  `scripts/auditRouteReachableI18n.mjs` import-safe, exported focused helper
+  functions, added `scripts/auditRouteReachableI18n.test.mjs`, and added
+  scanner-readable `LUC-2650` rows to
+  `docs/architecture/relations/priority-test-links.csv` for current
+  route-reachable i18n audit helper anchors. Focused Node proof passed
+  (`5/5`), route-reachable i18n audit passed (`findings=0`, `localCopy=0`,
+  `fallbackPl=0`, `hardcoded=0`), architecture graph generation passed
+  (`653` nodes / `842` relations / `27` chains), and repository guardrails
+  passed. No deploy, push, restart, rollback, production smoke, account,
+  secret, exchange, database, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2650-route-reachable-i18n-audit-script-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2647 No-Stall Queue Expeditor
+
+- `LUC-2647-NO-STALL-QUEUE-EXPEDITOR-2026-06-07` completed as a PM
+  no-stall/delegation checkpoint. Wake `issue_assigned` had no pending
+  comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
+  harness and was not repeated. Paperclip heartbeat-context succeeded for
+  [LUC-2647](/LUC/issues/LUC-2647). `corepack pnpm softwarehouse:control-tick`
+  failed because `softwarehouse:control-tick` is not exposed in this checkout.
+  Open Soar queue readback returned `97` active/open items. Canonical PM lane
+  [LUC-244](/LUC/issues/LUC-244) remains fail-closed `blocked` by
+  [LUC-47](/LUC/issues/LUC-47) and [LUC-241](/LUC/issues/LUC-241), whose
+  terminal blocker is [LUC-2619](/LUC/issues/LUC-2619). Current
+  architecture-awareness report generated `2026-06-07T02:47:58.055Z` with
+  `612` actionable missing-test links; after completed [LUC-2645](/LUC/issues/LUC-2645)
+  and [LUC-2646](/LUC/issues/LUC-2646), the next safe uncovered top family is
+  `scripts/auditRouteReachableI18n.mjs`. Created [LUC-2650](/LUC/issues/LUC-2650)
+  for Test Automation Engineer. No product-code/runtime/deploy/push/restart/
+  rollback/env/account/secret/protected-smoke/exchange/database/live-trading
+  mutation occurred. Evidence:
+  `history/tasks/luc-2647-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2646 Architecture Graph Drift Script Missing-Test Links
+
+- `LUC-2646-ARCHITECTURE-GRAPH-DRIFT-SCRIPT-MISSING-TEST-LINKS-2026-06-07`
+  completed as a Test Automation local proof/relation repair child for
+  [LUC-2644](/LUC/issues/LUC-2644). Wake `issue_assigned` was consumed from
+  inline payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was
+  already claimed by the harness and was not repeated. Made
+  `scripts/auditArchitectureGraphDrift.mjs` import-safe, exported focused
+  helper functions, added `scripts/auditArchitectureGraphDrift.test.mjs`, and
+  added scanner-readable `LUC-2646` rows to
+  `docs/architecture/relations/priority-test-links.csv` for current drift
+  audit helper anchors. Focused Node proof passed (`5/5`), strict architecture
+  drift passed (`846/846` covered, `0` missing), architecture graph generation
+  passed (`653` nodes / `842` relations / `27` chains), and repository
+  guardrails passed. No deploy, push, restart, rollback, production smoke,
+  account, secret, exchange, database, or live-trading mutation occurred.
+  Evidence:
+  `history/tasks/luc-2646-architecture-graph-drift-script-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2645 Dashboard Language Switcher Missing-Test Link
+
+- `LUC-2645-DASHBOARD-LANGUAGE-SWITCHER-MISSING-TEST-LINK-2026-06-07`
+  completed as a Frontend Web local proof/relation repair child for
+  [LUC-2644](/LUC/issues/LUC-2644). Wake `issue_assigned` was consumed from
+  inline payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was
+  already claimed by the harness and was not repeated. Added focused
+  `LanguageSwitcher` coverage proving language selection closes the dropdown
+  through `handleSelect`, and added a scanner-readable `LUC-2645` row to
+  `docs/architecture/relations/priority-test-links.csv` for
+  `apps/web/src/ui/layout/dashboard/LanguageSwitcher.tsx#handleSelect`.
+  Focused Web Vitest proof passed (`1` file / `1` test), architecture graph
+  generation passed (`653` nodes / `842` relations / `27` chains), and
+  repository guardrails passed. Architecture-awareness refresh was not run
+  locally because the known builder scripts are absent in this checkout; exact
+  top-sample removal is not claimed. No deploy, push, restart, rollback,
+  production smoke, account, secret, exchange, database, or live-trading
+  mutation occurred. Evidence:
+  `history/tasks/luc-2645-dashboard-language-switcher-missing-test-link-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2644 Gap Register And Repair Lane Refresh
+
+- `LUC-2644-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-07`
+  completed as a TSA coordination and delegation checkpoint. Wake
+  `issue_assigned` had no pending comments (`fallbackFetchNeeded=false`);
+  checkout was already claimed by the harness and was not repeated. Paperclip
+  heartbeat-context succeeded for [LUC-2644](/LUC/issues/LUC-2644). External
+  architecture-awareness refresh passed with generated timestamp
+  `2026-06-07T02:47:58.055Z`, `14768` entities, `23614` relations, `612`
+  actionable missing-test links, `0` actionable missing-doc links, `0`
+  ownerless entities, and `0` disconnected entities. The stale top families
+  from the previous report were already covered by [LUC-2624](/LUC/issues/LUC-2624),
+  [LUC-2631](/LUC/issues/LUC-2631), and [LUC-2639](/LUC/issues/LUC-2639),
+  so no duplicate repair lane was opened. Created [LUC-2645](/LUC/issues/LUC-2645)
+  for Frontend Web to cover `LanguageSwitcher.tsx#handleSelect` and
+  [LUC-2646](/LUC/issues/LUC-2646) for Test Automation to cover
+  `scripts/auditArchitectureGraphDrift.mjs` helper missing-test links. No
+  product-code/runtime/deploy/push/restart/rollback/env/account/secret/
+  protected-smoke/exchange/database/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2644-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2639 API Endpoint Docs Parity Script Missing-Test Links
+
+- `LUC-2639-API-ENDPOINT-DOCS-PARITY-SCRIPT-MISSING-TEST-LINKS-2026-06-07`
+  completed as a Test Automation local proof/relation repair child for
+  [LUC-2638](/LUC/issues/LUC-2638). Wake `issue_assigned` was consumed from
+  inline payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was
+  already claimed by the harness and was not repeated. Made
+  `scripts/auditApiEndpointDocsParity.mjs` import-safe, exported focused
+  helper functions, fixed mounted-router import resolution to select existing
+  candidate files, added `scripts/auditApiEndpointDocsParity.test.mjs`, and
+  added scanner-readable `LUC-2639` rows to
+  `docs/architecture/relations/priority-test-links.csv` for the current API
+  endpoint docs parity helper anchors. Focused Node proof passed (`5/5`), API
+  endpoint docs parity passed (`109` endpoints / `109` documented / `0`
+  gaps), architecture graph generation passed (`653` nodes / `842` relations /
+  `27` chains), and repository guardrails passed. Architecture-awareness
+  refresh was not run because the known builder scripts are absent in this
+  checkout. No deploy, push, restart, rollback, production smoke, account,
+  secret, exchange, database, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2639-api-endpoint-docs-parity-script-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2638 V1 Audit-To-Completion Controller
+
+- `LUC-2638-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-06-07`
+  completed as a TSA controller/delegation checkpoint. Wake `issue_assigned`
+  had no pending comments (`fallbackFetchNeeded=false`); checkout was already
+  claimed by the harness and was not repeated. Paperclip heartbeat-context
+  succeeded for [LUC-2638](/LUC/issues/LUC-2638). Current
+  architecture-awareness report generated `2026-06-07T01:03:05.613Z`; recent
+  Web UI/form/layout and PWA/service-worker local repair lanes
+  [LUC-2624](/LUC/issues/LUC-2624) and [LUC-2631](/LUC/issues/LUC-2631) are
+  complete. Duplicate search for `auditApiEndpointDocsParity` found prior done
+  classification/aggregate script-tooling lanes [LUC-2156](/LUC/issues/LUC-2156)
+  and [LUC-2198](/LUC/issues/LUC-2198), but no open function-level worker lane
+  for the current top samples. Created [LUC-2639](/LUC/issues/LUC-2639) for
+  Test Automation Engineer to repair or justify focused proof/relations for
+  `scripts/auditApiEndpointDocsParity.mjs` helper missing-test links.
+  `corepack pnpm softwarehouse:control-tick` still fails because the command
+  is not exposed in this checkout. No product-code/runtime/deploy/push/
+  restart/rollback/env/account/secret/protected-smoke/exchange/database/
+  live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2638-v1-audit-to-completion-controller-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2628 No-Stall Queue Expeditor
+
+- `LUC-2628-NO-STALL-QUEUE-EXPEDITOR-2026-06-07` completed as a PM
+  no-stall/delegation checkpoint. Wake `issue_assigned` had no pending
+  comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
+  harness and was not repeated. Paperclip heartbeat-context succeeded for
+  [LUC-2628](/LUC/issues/LUC-2628). `pnpm softwarehouse:control-tick` failed
+  because the command is not exposed in this checkout. Canonical PM lane
+  [LUC-244](/LUC/issues/LUC-244) remains fail-closed `blocked` by
+  [LUC-47](/LUC/issues/LUC-47) and [LUC-241](/LUC/issues/LUC-241), with
+  terminal blocker [LUC-2619](/LUC/issues/LUC-2619). Current
+  architecture-awareness report generated `2026-06-07T01:03:05.613Z`; after
+  completed [LUC-2624](/LUC/issues/LUC-2624), the next safe uncovered local
+  family is Web PWA/service-worker missing-test proof. Created
+  [LUC-2631](/LUC/issues/LUC-2631) for `09 FEW (Frontend Web Engineer)`.
+  No product-code/runtime/deploy/push/restart/rollback/env/account/secret/
+  protected-smoke/exchange/database/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2628-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2631 Web PWA/Service-Worker Missing-Test Links
+
+- `LUC-2631-WEB-PWA-SERVICE-WORKER-MISSING-TEST-LINKS-2026-06-07`
+  completed as a Frontend Web Engineer local proof/relation repair child for
+  [LUC-2628](/LUC/issues/LUC-2628). Wake `issue_assigned` was consumed from
+  inline payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was
+  already claimed by the harness and was not repeated. Added focused
+  `ServiceWorkerRegistration` coverage for install/updatefound activation
+  handoff and added scanner-readable `LUC-2631` rows to
+  `docs/architecture/relations/priority-test-links.csv` for Web
+  PWA/service-worker registration anchors: `checkBuildVersion`,
+  `handleControllerChange`, `handleVisibilityChange`, `handleWindowFocus`,
+  `purgePwaCaches`, and `requestUpdateCheck`. Focused Web PWA Vitest proof
+  passed (`2` files / `8` tests), architecture graph generation passed
+  (`653` nodes / `842` relations / `27` chains), and repository guardrails
+  passed. Architecture-awareness refresh was not run because
+  `scripts/build-architecture-awareness-index.mjs` and
+  `scripts/generateArchitectureAwarenessIndex.mjs` are absent in this checkout.
+  No deploy, push, restart, rollback, production smoke, account, secret,
+  exchange, database, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2631-web-pwa-service-worker-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2624 Web UI/Form/Layout Missing-Test Links
+
+- `LUC-2624-WEB-UI-FORM-LAYOUT-MISSING-TEST-LINKS-2026-06-07`
+  completed as a Frontend Web Engineer local proof/relation repair child for
+  [LUC-2621](/LUC/issues/LUC-2621). Wake `issue_assigned` was consumed from
+  inline payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was
+  already claimed by the harness and was not repeated. Added focused
+  `DataTable` coverage for page-size changes resetting pagination and added
+  scanner-readable `LUC-2624` rows to
+  `docs/architecture/relations/priority-test-links.csv` for refreshed Web
+  UI/form/layout anchors: `handlePageSizeChange`, `TextareaField`,
+  `ToggleField`, form shell/layout primitives, `useDetailsDropdown`, dashboard
+  header/footer/title helpers, and public header/footer helpers. Focused Web
+  Vitest proof passed (`9` files / `49` tests), architecture graph generation
+  passed (`653` nodes / `842` relations / `27` chains), and repository
+  guardrails passed. Architecture-awareness refresh was not run because
+  `scripts/build-architecture-awareness-index.mjs` and
+  `scripts/generateArchitectureAwarenessIndex.mjs` are absent in this checkout.
+  No deploy, push, restart, rollback, production smoke, account, secret,
+  exchange, database, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2624-web-ui-form-layout-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2621 No-Stall Queue Expeditor
+
+- `LUC-2621-NO-STALL-QUEUE-EXPEDITOR-2026-06-07` completed as a PM
+  no-stall/delegation checkpoint. Wake `issue_assigned` had no pending
+  comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
+  harness and was not repeated. Paperclip heartbeat-context succeeded for
+  [LUC-2621](/LUC/issues/LUC-2621). Direct queue readback showed `0` todo,
+  `1` in_progress ([LUC-2621](/LUC/issues/LUC-2621)), `2` in_review
+  ([LUC-2558](/LUC/issues/LUC-2558) and [LUC-1397](/LUC/issues/LUC-1397)),
+  and `93` blocked issues. `corepack pnpm softwarehouse:control-tick` failed
+  because the command is not exposed in this checkout, and
+  `scripts/run-live-run-janitor.mjs` is absent. Ran the external
+  Softwarehouse architecture-awareness scanner successfully; refreshed report
+  generated `2026-06-07T01:03:05.613Z` with `14755` entities, `23553`
+  relations, `652` actionable missing-test links, `0` actionable missing-doc
+  links, `0` disconnected entities, and `0` ownerless entities. Created
+  [LUC-2624](/LUC/issues/LUC-2624) for Frontend Web to cover the refreshed Web
+  UI/form/layout missing-test family with local-only proof and scanner-readable
+  relation rows. No product-code/runtime/deploy/push/restart/rollback/env/
+  account/secret/protected-smoke/exchange/database/live-trading mutation
+  occurred. Evidence:
+  `history/tasks/luc-2621-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2620 Gap Register And Repair Lane Refresh
+
+- `LUC-2620-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-07`
+  completed as a TSA coordination/readback checkpoint. Wake `issue_assigned`
+  was consumed from inline payload (`fallbackFetchNeeded=false`, comments
+  `0/0`); checkout was already claimed by the harness and was not repeated.
+  Paperclip heartbeat-context succeeded for [LUC-2620](/LUC/issues/LUC-2620).
+  Direct queue readback showed `0` todo, `1` in_progress
+  ([LUC-2620](/LUC/issues/LUC-2620)), `2` in_review
+  ([LUC-2558](/LUC/issues/LUC-2558) and [LUC-1397](/LUC/issues/LUC-1397)),
+  and `93` blocked issues. Protected workers-ready/smoke-auth routing remains
+  fail-closed through [LUC-2619](/LUC/issues/LUC-2619), which blocks
+  [LUC-2618](/LUC/issues/LUC-2618), [LUC-2505](/LUC/issues/LUC-2505), and
+  [LUC-1438](/LUC/issues/LUC-1438). Protected release routing remains
+  fail-closed through [LUC-2372](/LUC/issues/LUC-2372) blocking
+  [LUC-2366](/LUC/issues/LUC-2366), [LUC-2361](/LUC/issues/LUC-2361), and
+  [LUC-2378](/LUC/issues/LUC-2378). Current
+  `docs/status/architecture-awareness-report.md` is generated
+  `2026-06-06T23:01:39.171Z` and still lists stale top actionable
+  missing-test samples that have since been locally repaired by
+  [LUC-2601](/LUC/issues/LUC-2601), [LUC-2607](/LUC/issues/LUC-2607), and
+  [LUC-2611](/LUC/issues/LUC-2611); no duplicate repair child was created.
+  `scripts/build-architecture-awareness-index.mjs` and
+  `scripts/run-live-run-janitor.mjs` are absent, and
+  `corepack pnpm softwarehouse:control-tick` is unavailable in this checkout.
+  No product-code/runtime/deploy/push/restart/rollback/env/account/secret/
+  protected-smoke/exchange/database/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2620-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2619 Provision Smoke Auth Binding For Workers Ready
+
+- `LUC-2619-PROVISION-SMOKE-AUTH-BINDING-WORKERS-READY-2026-06-07`
+  is blocked as the Security follow-up for [LUC-2618](/LUC/issues/LUC-2618).
+  Wake `issue_assigned` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already claimed
+  by the harness and was not repeated. Paperclip heartbeat-context succeeded
+  for [LUC-2619](/LUC/issues/LUC-2619). Current binding shape remains
+  invalid/unsafe for acceptance: `SMOKE_AUTH_TOKEN` is present but not
+  JWT-shaped, `SMOKE_AUTH_EMAIL` is present but not email-shaped, and
+  `SMOKE_AUTH_PASSWORD` is present. Extra supported ops auth layer names are
+  absent. Production deploy smoke with workers included passed public
+  API/Web checks and failed protected `API /workers/ready` with `401`.
+  Route/source inspection confirms `/workers/ready` remains guarded by
+  `requireAuth`, `requireRole('ADMIN')`, and `requireOpsNetwork`; `401`
+  means this binding fails before role/network authorization can be proven.
+  No deploy, restart, rollback, env edit, account mutation, database
+  mutation, secret disclosure, exchange mutation, or live-trading mutation
+  occurred. Unblock owner/action: credential/account owner or board-approved
+  secret-store operator must provision one production-smoke appropriate
+  `ADMIN` principal/session accepted by Soar API auth and bind it to exactly
+  one supported `SMOKE_*` path, then wake [LUC-2618](/LUC/issues/LUC-2618).
+  Evidence:
+  `history/tasks/luc-2619-provision-smoke-auth-binding-workers-ready-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2611 Shared UI/Form Primitive Missing-Test Links
+
+- `LUC-2611-SHARED-UI-FORM-PRIMITIVE-MISSING-TEST-LINKS-2026-06-07`
+  completed as a Frontend Web Engineer local proof/relation repair child for
+  [LUC-2608](/LUC/issues/LUC-2608). Wake `issue_assigned` was consumed from
+  inline payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was
+  already claimed by the harness and was not repeated. Added focused
+  `TableToneBadge` coverage and added scanner-readable `LUC-2611` rows to
+  `docs/architecture/relations/priority-test-links.csv` for the remaining
+  shared UI/form primitive anchors: `FooterPreferencesSwitchers`,
+  `ProfileButton`, `StatusBadge`, `TableToneBadge`, `Tabs#syncFromHash`,
+  `SuccessState`, `FormAlert`, `FormField`, `CompoundField`,
+  `RadioGroupField`, and `RangeField`. Focused Web Vitest proof passed (`7`
+  files / `34` tests), architecture graph generation passed (`653` nodes /
+  `842` relations / `27` chains), and repository guardrails passed.
+  Architecture-awareness refresh was not run because
+  `scripts/build-architecture-awareness-index.mjs` is absent in this checkout.
+  No deploy, push, restart, rollback, production smoke, account, secret,
+  exchange, database, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2611-shared-ui-form-primitive-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2608 No-Stall Queue Expeditor
+
+- `LUC-2608-NO-STALL-QUEUE-EXPEDITOR-2026-06-07` completed as a PM
+  no-stall/delegation checkpoint. Wake `issue_assigned` was consumed from
+  inline payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was
+  already claimed by the harness and was not repeated. Paperclip
+  heartbeat-context succeeded for [LUC-2608](/LUC/issues/LUC-2608).
+  `corepack pnpm softwarehouse:control-tick` still fails because the command
+  is not exposed in this checkout, and `scripts/run-live-run-janitor.mjs` is
+  absent. Fresh live queue readback returned `0` todo, `1` in_progress
+  ([LUC-2608](/LUC/issues/LUC-2608)), `2` in_review
+  ([LUC-1397](/LUC/issues/LUC-1397) and
+  [LUC-2558](/LUC/issues/LUC-2558)), and `91` blocked issues. The current
+  architecture-awareness report is stale for already completed
+  [LUC-2601](/LUC/issues/LUC-2601) and [LUC-2607](/LUC/issues/LUC-2607)
+  anchors, so those families were skipped. Created
+  [LUC-2611](/LUC/issues/LUC-2611) for `09 FEW (Frontend Web Engineer)` to
+  reconcile shared UI/form primitive missing-test links with local-only proof
+  and scanner-readable relation rows. Readback showed [LUC-2611](/LUC/issues/LUC-2611)
+  already `in_progress`. No product-code/runtime/deploy/push/restart/rollback/
+  env/account/secret/protected-smoke/exchange/database/live-trading mutation
+  occurred. Evidence:
+  `history/tasks/luc-2608-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2607 Web Theme And DataTable Missing-Test Links
+
+- `LUC-2607-WEB-THEME-DATATABLE-MISSING-TEST-LINKS-2026-06-07`
+  completed as a Frontend Web Engineer local proof/relation repair child for
+  [LUC-2604](/LUC/issues/LUC-2604). Wake `issue_assigned` was consumed from
+  inline payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was
+  already claimed by the harness and was not repeated. Added focused coverage
+  for ThemeSwitcher option visibility, persisted theme selection, system theme
+  media changes, theme bootstrap normalization/locale behavior, DataTable
+  sortable comparison, local filtering, trimmed search submit, and page input
+  clamping. Added scanner-readable `LUC-2607` rows to
+  `docs/architecture/relations/priority-test-links.csv`. Focused Web Vitest
+  proof passed (`2` files / `17` tests), architecture graph generation passed
+  (`653` nodes / `842` relations / `27` chains), and repository guardrails
+  passed. Architecture-awareness refresh was not run because
+  `scripts/build-architecture-awareness-index.mjs` is absent in this checkout.
+  No deploy, push, restart, rollback, production smoke, account, secret,
+  exchange, database, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2607-web-theme-datatable-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2604 No-Stall Queue Expeditor
+
+- `LUC-2604-NO-STALL-QUEUE-EXPEDITOR-2026-06-07` completed as a PM
+  project no-stall checkpoint. Wake `issue_assigned` was consumed from inline
+  payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already
+  claimed by the harness and was not repeated. Paperclip heartbeat-context
+  succeeded for [LUC-2604](/LUC/issues/LUC-2604). `corepack pnpm
+  softwarehouse:control-tick` still fails because the command is not exposed in
+  this checkout, and `scripts/run-live-run-janitor.mjs` is absent. Live Soar
+  queue readback returned `0` todo, `0` in_progress, `2` in_review, and `91`
+  blocked issues. [LUC-2601](/LUC/issues/LUC-2601) readback confirmed `done`,
+  so stale architecture-awareness rows for its Web API/form utility family were
+  skipped. Duplicate search found no issue for `themeBootstrap`, `DataTable
+  applySearch compareValues`, or `FooterPreferencesSwitchers ProfileButton
+  StatusBadge`. Created [LUC-2607](/LUC/issues/LUC-2607) for
+  `09 FEW (Frontend Web Engineer)` to cover Web theme bootstrap and DataTable
+  missing-test links with local-only proof and scanner-readable relation rows.
+  No product-code/runtime/deploy/push/restart/rollback/env/account/secret/
+  protected-smoke/exchange/database/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2604-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2601 Web API And Form Utility Missing-Test Links
+
+- `LUC-2601-WEB-API-FORM-UTILITY-MISSING-TEST-LINKS-2026-06-07`
+  completed as a Frontend Web Engineer local proof/relation repair child for
+  [LUC-2598](/LUC/issues/LUC-2598). Wake `issue_assigned` was consumed from
+  inline payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was
+  already claimed by the harness and was not repeated. Added focused coverage
+  for Web API protected-route classification/hard redirect idempotence, form
+  text/symbol/base-currency/error fallback helpers, market-stream event URL and
+  credentialed EventSource behavior, and numeric input sanitization/step
+  derivation. Added scanner-readable `LUC-2601` rows to
+  `docs/architecture/relations/priority-test-links.csv`. Web Vitest proof
+  passed (`157` files / `575` tests; this checkout's wrapper collected the
+  full Web suite despite file arguments), architecture graph generation passed
+  (`653` nodes / `842` relations / `27` chains), and repository guardrails
+  passed. Architecture-awareness refresh was blocked locally because
+  `scripts/build-architecture-awareness-index.mjs` is absent in this checkout.
+  No deploy, push, restart, rollback, production smoke, account, secret,
+  exchange, database, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2601-web-api-form-utility-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2598 No-Stall Queue Expeditor
+
+- `LUC-2598-NO-STALL-QUEUE-EXPEDITOR-2026-06-07` completed as a PM
+  project no-stall checkpoint. Wake `issue_continuation_needed` was consumed
+  from inline payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout
+  was already claimed by the harness and was not repeated. Paperclip heartbeat-context
+  succeeded for [LUC-2598](/LUC/issues/LUC-2598). `corepack pnpm
+  softwarehouse:control-tick` still fails because the command is not exposed in
+  this checkout, and `scripts/run-live-run-janitor.mjs` is absent. Fresh
+  Current architecture-awareness report generated `2026-06-06T23:01:39.171Z`
+  exposes the next safe local Web missing-test family under
+  `apps/web/src/lib/api.ts` and `apps/web/src/lib/forms.ts`; no duplicate
+  Paperclip issue existed for `hardRedirect` or `normalizeFormBaseCurrency`.
+  Created [LUC-2601](/LUC/issues/LUC-2601) and assigned it to
+  `09 FEW (Frontend Web Engineer)` for focused Web API/form utility proof and
+  scanner-readable architecture relation repair. [LUC-2601](/LUC/issues/LUC-2601)
+  readback showed `in_progress`, so this PM issue has a real live continuation
+  path and can close as delegated. No product-code/runtime/deploy/push/restart/
+  rollback/env/account/secret/protected-smoke/exchange/database/live-trading
+  mutation occurred. Evidence:
+  `history/tasks/luc-2598-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2597 Web Architecture Missing-Test Link Families
+
+- `LUC-2597-WEB-ARCHITECTURE-MISSING-TEST-LINK-FAMILIES-2026-06-07`
+  completed as a Frontend Web Engineer local proof/relation repair. Wake
+  `issue_assigned` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already claimed
+  by the harness and was not repeated. Paperclip heartbeat-context succeeded
+  for [LUC-2597](/LUC/issues/LUC-2597). Added focused tests for Web
+  build-info route behavior, app/public/dashboard shell layouts, PWA manifest,
+  and login authenticated redirect; extended existing runtime formatter and
+  strategy threshold utility tests; added scanner-readable
+  `priority-test-links.csv` rows for the assigned Web/i18n/runtime utility
+  families. Focused Web tests passed (`11` files / `52` tests),
+  architecture-awareness refresh passed (`14731` entities / `23469`
+  relations), assigned Web families no longer appear in top actionable
+  missing-test samples, and repository guardrails passed. No deploy, push,
+  restart, rollback, production smoke, account, secret, exchange, database, or
+  live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2597-web-architecture-missing-test-link-families-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2596 API-Side Architecture Missing-Test Links
+
+- `LUC-2596-API-SIDE-ARCHITECTURE-MISSING-TEST-LINKS-2026-06-07`
+  completed as a Core Backend Engineer local proof/relation repair child for
+  [LUC-2595](/LUC/issues/LUC-2595). Wake `issue_assigned` was consumed from
+  inline payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was
+  already claimed by the harness and was not repeated. Paperclip
+  heartbeat-context succeeded for [LUC-2596](/LUC/issues/LUC-2596). Added an
+  import-safe exported seed `main()` and mocked local proof, added direct
+  runtime freshness parser proof, mapped the existing runtime position
+  non-negative integer normalization proof, and added scanner-readable
+  `priority-test-links.csv` rows for all three assigned anchors. Focused API
+  tests passed (`3` files / `7` tests), API typecheck passed,
+  architecture-awareness refresh passed (`14731` entities / `23431`
+  relations), architecture graph generation passed (`653` nodes / `842`
+  relations / `27` chains), strict graph drift passed (`845/845`, `0`
+  missing), and repository guardrails passed. Refreshed report generated
+  `2026-06-06T22:54:09.465Z` no longer lists the assigned API anchors in top
+  actionable missing-test links; total actionable missing-test links dropped
+  from `733` to `729`. No production/runtime/deploy/push/restart/rollback/
+  env/account/secret/protected-smoke/exchange/database/live-trading mutation
+  occurred. Evidence:
+  `history/tasks/luc-2596-api-side-architecture-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2595 Gap Register And Repair Lane Refresh
+
+- `LUC-2595-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-07` completed as a TSA
+  planning/coordination checkpoint. Wake `issue_assigned` was consumed from
+  inline payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was
+  already claimed by the harness and was not repeated. Paperclip
+  heartbeat-context succeeded for [LUC-2595](/LUC/issues/LUC-2595). Live issue
+  readback confirmed existing first-class owner paths still cover protected
+  release gates, protected workers-ready/smoke-auth gates, architecture
+  backlog lanes, and recent local missing-test repairs. No duplicate protected
+  gate or completed repair lane was opened. The current architecture-awareness
+  report generated `2026-06-06T22:16:06.802Z` still has `733` actionable
+  missing-test links and `0` actionable missing-doc links. Two uncovered
+  current local proof families were delegated: [LUC-2596](/LUC/issues/LUC-2596)
+  for API-side seed/runtime helper/freshness missing-test anchors and
+  [LUC-2597](/LUC/issues/LUC-2597) for Web build-info/layout/auth/runtime
+  utility/i18n missing-test families. No code/runtime/deploy/push/restart/
+  rollback/env/account/secret/protected-smoke/exchange/database/live-trading
+  mutation occurred. Evidence:
+  `history/tasks/luc-2595-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2594 Workers Execution Coolify Crash Metadata Diagnosis
+
+- `LUC-2594-WORKERS-EXECUTION-COOLIFY-CRASH-METADATA-DIAGNOSIS-2026-06-07`
+  completed as a DRE read-only diagnosis child for
+  [LUC-2590](/LUC/issues/LUC-2590). Wake `issue_assigned` was consumed from
+  inline payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was
+  already claimed by the harness and was not repeated. Paperclip
+  heartbeat-context succeeded for [LUC-2594](/LUC/issues/LUC-2594). Coolify
+  read-only metadata still reports `workers-execution` as `running:unknown`
+  with `last_restart_type=crash`,
+  `last_restart_at=2026-06-06T04:12:15.000000Z`, and `restart_count=2`.
+  The app logs endpoint was reachable and returned a retained current tail of
+  `100` non-empty lines; redacted pattern summary found heartbeat/current
+  processing and runtime position automation skip messages, but no fatal, OOM,
+  process-exit, database/Redis dependency, exchange credential, deploy, or
+  startup/module failure signature. App-scoped deployments returned `404`;
+  global deployments returned `0` visible rows. Local source inspection maps
+  the visible skip messages to non-fatal branches. Classification:
+  `unknown_from_retained_coolify_evidence`. `corepack pnpm run
+  ops:coolify-stack:env-check:test` passed (`8/8`). No deploy, restart,
+  rollback, env edit, DB action, protected smoke, account, secret, exchange,
+  host-level, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2594-workers-execution-coolify-crash-metadata-diagnosis-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2590 Coolify Production Deploy Health Sweep
+
+- `LUC-2590-COOLIFY-PRODUCTION-DEPLOY-HEALTH-SWEEP-2026-06-07` completed the
+  DRE read-only sweep portion and then closed after child diagnosis
+  [LUC-2594](/LUC/issues/LUC-2594) completed.
+  Wake `issue_assigned` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already claimed
+  by the harness and was not repeated. Paperclip heartbeat-context succeeded
+  for [LUC-2590](/LUC/issues/LUC-2590). Coolify project/environment readback
+  resolved the canonical eight production resources: six applications,
+  PostgreSQL, and Redis. Public smoke passed for API `/health`, API `/ready`,
+  Web `/`, and Web `/api/build-info`. Production Web build-info reports
+  `56d8d440bfe0fd9ee692e9f669e35414d85d2493`, matching local
+  `origin/main`; local dirty `HEAD` is
+  `9e0e4e09dd993eee65b505f97007831958618609`. Coolify deployment list
+  returned `0` visible rows in this token context; app log endpoint was
+  reachable. Fresh unresolved signal: `workers-execution` reports
+  `last_restart_type=crash`, `last_restart_at=2026-06-06T04:12:15.000000Z`,
+  `restart_count=2`; child [LUC-2594](/LUC/issues/LUC-2594) classified this as
+  `unknown_from_retained_coolify_evidence`. Protected runtime freshness and
+  rollback guard remain fail-closed without approved auth (`401` on workers
+  readiness/freshness/alerts), as a separate release proof boundary. No deploy,
+  restart, rollback, env edit, DB action, protected smoke, account, exchange,
+  secret, or live-trading mutation occurred.
+  Evidence:
+  `history/tasks/luc-2590-coolify-production-deploy-health-sweep-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2591 PM No-Stall Queue Expeditor
+
+- `LUC-2591-NO-STALL-QUEUE-EXPEDITOR-2026-06-07` completed as a PM
+  coordination checkpoint. Wake `issue_assigned` was consumed from inline
+  payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already
+  claimed by the harness and was not repeated. Paperclip heartbeat-context
+  succeeded for [LUC-2591](/LUC/issues/LUC-2591). `corepack pnpm
+  softwarehouse:control-tick` still fails because the command is not exposed in
+  this checkout, and `scripts/run-live-run-janitor.mjs` is absent. Fresh
+  read-only Paperclip queue readback returned `95` non-terminal Soar issues:
+  `91` blocked, `2` in_progress, `2` in_review, and `0` todo. The only active
+  execution besides this PM checkpoint is [LUC-2590](/LUC/issues/LUC-2590),
+  the DRE Coolify production deploy health sweep. Review paths remain
+  [LUC-2558](/LUC/issues/LUC-2558) and [LUC-1397](/LUC/issues/LUC-1397) with
+  local-board. Blocked lanes remain covered by existing protected gate families
+  including [LUC-2505](/LUC/issues/LUC-2505),
+  [LUC-2372](/LUC/issues/LUC-2372), [LUC-241](/LUC/issues/LUC-241),
+  [LUC-2366](/LUC/issues/LUC-2366), [LUC-2361](/LUC/issues/LUC-2361), and
+  [LUC-2378](/LUC/issues/LUC-2378). No duplicate child issue was opened. No
+  product-code/runtime/deploy/push/restart/rollback/env/account/secret/
+  protected-smoke/exchange/database/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2591-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2587 Autonomous Idle And Map Drift Sweep
+
+- `LUC-2587-AUTONOMOUS-IDLE-MAP-DRIFT-SWEEP-2026-06-07` completed as a
+  Documentation Steward docs/memory and no-stall checkpoint. Wake
+  `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`,
+  comments `0/0`); checkout was already claimed by the harness and was not
+  repeated. Paperclip heartbeat-context succeeded for
+  [LUC-2587](/LUC/issues/LUC-2587). Read-only Paperclip queue readback showed
+  Soar is not idle: `96` non-terminal issues, `91` blocked, `3` in_progress,
+  `2` in_review, and `0` todo. Current architecture-awareness report is fresh
+  at `2026-06-06T22:16:06.802Z` with `14712` entities, `23382` relations,
+  `0` ownerless entities, `0` disconnected entities, `733` actionable
+  missing-test links, and `0` actionable missing-doc links. The stale
+  `docs/status/known-state-readiness.md` 2026-05-26 snapshot was updated to
+  active repair/verification and protected gate hold. `pnpm
+  softwarehouse:control-tick` remains unavailable in this checkout, and
+  `scripts/run-live-run-janitor.mjs` is absent. No product-code/runtime/
+  deploy/push/restart/rollback/env/account/secret/protected-smoke/exchange/
+  database/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2587-autonomous-idle-and-map-drift-sweep-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2588 V1 Audit-To-Completion Controller
+
+- `LUC-2588-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-06-07` completed as a
+  TSA controller checkpoint. Wake `issue_assigned` was consumed from inline
+  payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already
+  claimed by the harness and was not repeated. Paperclip heartbeat-context
+  succeeded for [LUC-2588](/LUC/issues/LUC-2588). Fresh live readback confirms
+  the protected release chain remains fail-closed:
+  [LUC-2372](/LUC/issues/LUC-2372) `blocked` ->
+  [LUC-2366](/LUC/issues/LUC-2366) `blocked` ->
+  [LUC-2361](/LUC/issues/LUC-2361) `blocked` ->
+  [LUC-2378](/LUC/issues/LUC-2378) `blocked`. The workers-ready/smoke-auth
+  chain remains fail-closed:
+  [LUC-2505](/LUC/issues/LUC-2505) `blocked` ->
+  [LUC-1438](/LUC/issues/LUC-1438) `blocked` ->
+  [LUC-241](/LUC/issues/LUC-241) `blocked` ->
+  [LUC-47](/LUC/issues/LUC-47) `blocked` ->
+  [LUC-244](/LUC/issues/LUC-244) `blocked`. Architecture backlog readback:
+  [LUC-2564](/LUC/issues/LUC-2564) and [LUC-2567](/LUC/issues/LUC-2567)
+  remain blocked by [LUC-241](/LUC/issues/LUC-241);
+  [LUC-2565](/LUC/issues/LUC-2565), [LUC-2566](/LUC/issues/LUC-2566), and
+  [LUC-2568](/LUC/issues/LUC-2568) are done. [LUC-2578](/LUC/issues/LUC-2578),
+  [LUC-2579](/LUC/issues/LUC-2579), and [LUC-2580](/LUC/issues/LUC-2580)
+  are done on final readback; [LUC-2580](/LUC/issues/LUC-2580) completed at
+  `2026-06-06T22:17:46.959Z`. No duplicate specialist issue was opened.
+  `corepack pnpm softwarehouse:control-tick`
+  still fails because the command is not exposed in this checkout, and
+  `scripts/run-live-run-janitor.mjs` is absent. No code/runtime/deploy/push/
+  restart/rollback/env/account/secret/protected-smoke/exchange/database/
+  live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2588-v1-audit-to-completion-controller-2026-06-07-task.md`.
+
+## 2026-06-06 LUC-2580 Worker Bootstrap And Market-Stream Missing-Test Links
+
+- `LUC-2580-WORKER-BOOTSTRAP-MARKET-STREAM-MISSING-TEST-LINKS-2026-06-06`
+  completed as a Runtime and Adapter Engineer local proof/relation repair.
+  Wake `issue_assigned` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already claimed
+  by the harness and was not repeated. Paperclip heartbeat-context succeeded
+  for [LUC-2580](/LUC/issues/LUC-2580). Added import-safe Vitest lifecycle
+  seams and focused tests for `ensureRuntimeSignalLoopStarted`,
+  market-stream subscription fingerprint/reload/shutdown/failure logging, and
+  worker bootstrap heartbeat/event logging. Added scanner-readable
+  `priority-test-links.csv` rows and refreshed architecture-awareness outputs.
+  Focused worker tests passed (`6` files / `19` tests), API typecheck passed,
+  architecture graph generation passed (`653` nodes / `842` relations /
+  `27` chains), strict graph drift passed (`842/842`, `0` missing),
+  architecture-awareness refresh passed (`14714` entities / `23385`
+  relations; actionable missing-test rows `733`), repository guardrails
+  passed, and no leftover Soar worker/vitest/dev-server process was found.
+  This also resolves the unrelated worker-test graph drift noted by the
+  preceding [LUC-2578](/LUC/issues/LUC-2578) entry. No production worker
+  start, deploy, restart, rollback, env/account, secret, protected-smoke,
+  exchange, database, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2580-worker-bootstrap-market-stream-missing-test-links-2026-06-06-task.md`.
+
+## 2026-06-06 LUC-2578 Position Reconciliation Helper Missing-Test Links
+
+- `LUC-2578-POSITION-RECONCILIATION-HELPER-TEST-LINKS-2026-06-06`
+  completed as a Core Backend Engineer backend traceability repair. Wake
+  `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`,
+  comments `0/0`); checkout was already claimed by the harness and was not
+  repeated. Paperclip heartbeat-context confirmed scope from
+  [LUC-2578](/LUC/issues/LUC-2578): cover top actionable missing-test links for
+  `livePositionReconciliation.helpers.ts`,
+  `livePositionReconciliation.history.ts`, and `positionCloseAttribution.ts`.
+  Added focused non-DB Vitest coverage and twelve scanner-readable
+  `priority-test-links.csv` rows. Focused helper tests passed (`9/9`), API
+  typecheck passed, architecture awareness refresh passed (`14710` entities,
+  `23376` relations, actionable missing-test rows `736`), and architecture
+  graph generation passed (`653` nodes, `842` relations, `27` chains). Strict
+  architecture graph drift remains blocked by unrelated pre-existing worker
+  test graph drift (`execution.worker.test.ts`, `workerBootstrap.test.ts`).
+  No runtime behavior, deploy, push, restart, rollback, env/account, secret,
+  protected-smoke, exchange, database, or live-trading mutation occurred.
+  Evidence:
+  `history/tasks/luc-2578-position-reconciliation-helper-missing-test-links-2026-06-06-task.md`.
+
+
+## 2026-06-06 LUC-2579 Security Utility Missing-Test Link Repair
+
+- `LUC-2579-SECURITY-UTILITY-MISSING-TEST-LINKS-2026-06-06` completed as a
+  Security and Privacy Auditor local proof/relation repair checkpoint. Wake
+  `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`,
+  comments `0/0`); checkout was already claimed by the harness and was not
+  repeated. Paperclip heartbeat-context succeeded for [LUC-2579](/LUC/issues/LUC-2579).
+  Added focused local tests for production error exposure redaction,
+  validation formatting/no raw payload leakage, and bcrypt hash/compare
+  behavior. Added scanner-readable priority test links for the requested
+  crypto/hash/error exposure functions. Focused API tests passed (`2` files /
+  `11` tests), architecture-awareness refresh passed (`14700` entities /
+  `23312` relations), strict graph drift passed (`838/838`, `0` missing), and
+  repository guardrails passed. The targeted utility rows no longer appear in
+  `docs/status/architecture-awareness-report.md` top actionable missing-test
+  links. No code path used production credentials or mutated production,
+  deploy, exchange, protected smoke, accounts, database, or live-trading state.
+  Evidence:
+  `history/tasks/luc-2579-security-utility-missing-test-links-2026-06-06-task.md`.
+
+## 2026-06-06 LUC-2568 Architecture Gap Backlog Ledger Sync
+
+- `LUC-2568-SYNC-ARCHITECTURE-GAP-BACKLOG-LEDGERS-2026-06-06` completed as a
+  Documentation Steward source-of-truth checkpoint. Wake `issue_assigned` was
+  consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`);
+  checkout was already claimed by the harness and was not repeated. Paperclip
+  heartbeat-context succeeded for [LUC-2568](/LUC/issues/LUC-2568). Parent
+  [LUC-2557](/LUC/issues/LUC-2557) readback/comment supplied the accepted
+  architecture-backed backlog. `REQ-DOC-031` now records the requirement, and
+  `.agents/state/module-confidence-ledger.md` contains the owner/status/
+  protected-gate/proof register for [LUC-2564](/LUC/issues/LUC-2564),
+  [LUC-2565](/LUC/issues/LUC-2565), [LUC-2566](/LUC/issues/LUC-2566),
+  [LUC-2567](/LUC/issues/LUC-2567), and [LUC-2568](/LUC/issues/LUC-2568).
+  Historical unchecked planning boxes remain non-active unless backed by
+  current architecture graph/journey rows and live owner lanes. No code/
+  runtime/deploy/push/restart/rollback/env/account/secret/exchange/protected-
+  smoke/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2568-sync-architecture-gap-backlog-ledgers-2026-06-06-task.md`.
+
+## 2026-06-06 LUC-2565 Architecture High-Risk Security Proof Gap Review
+
+- `LUC-2565-ARCHITECTURE-HIGH-RISK-SECURITY-PROOF-GAP-REVIEW-2026-06-06`
+  completed as a Security and Privacy Auditor review checkpoint. Wake
+  `issue_assigned` was consumed from inline payload (`fallbackFetchNeeded=false`,
+  comments `0/0`); checkout was already claimed by the harness and was not
+  repeated. Reviewed the requested high-risk architecture chains:
+  `CHAIN-API-PLATFORM-SAFETY`, `CHAIN-PROFILE-API-KEYS`,
+  `CHAIN-SUBSCRIPTIONS-ADMIN`, `CHAIN-AI-ASSISTANT-FOUNDATION`,
+  `CHAIN-MANUAL-ORDER-DEEP`, and `CHAIN-EXCHANGE-ADAPTER-DEEP`. Strict
+  architecture graph drift passed (`837/837`, `0` missing). Current
+  architecture awareness remained generated `2026-06-06T19:47:09.571Z` with
+  `14683` entities, `23274` relations, `0` disconnected entities, `0`
+  ownerless entities, `763` actionable missing-test links, and `0` actionable
+  missing-doc links. Security disposition: no new concrete exploitable defect
+  or duplicate implementation child issue was found; residual V1 risk remains
+  protected-gate-bound through [LUC-2372](/LUC/issues/LUC-2372),
+  [LUC-2505](/LUC/issues/LUC-2505), [LUC-2366](/LUC/issues/LUC-2366), and
+  [LUC-241](/LUC/issues/LUC-241). No code/runtime/deploy/push/restart/
+  rollback/env/account/secret/exchange/protected-smoke/live-trading mutation
+  occurred. Evidence:
+  `history/tasks/luc-2565-architecture-high-risk-security-proof-gap-review-2026-06-06-task.md`.
+
+## 2026-06-06 LUC-2566 Runtime And Exchange Local-Only Chain Audit
+
+- `LUC-2566-RUNTIME-EXCHANGE-LOCAL-ONLY-CHAIN-AUDIT-2026-06-06` completed as
+  an Integration Domain audit/decomposition checkpoint. Wake `issue_assigned`
+  was consumed from inline payload (`fallbackFetchNeeded=false`, comments
+  `0/0`); checkout was already claimed by the harness and was not repeated.
+  Paperclip heartbeat-context succeeded for [LUC-2566](/LUC/issues/LUC-2566).
+  Targeted chain registry rows were inspected for `CHAIN-ENGINE-RUNTIME-CORE`,
+  `CHAIN-RUNTIME-SUPPORT-SERVICES`, `CHAIN-RUNTIME-DCA-PNL`,
+  `CHAIN-MARKET-DATA-STREAM-ADAPTERS`, `CHAIN-EXCHANGE-ADAPTER-DEEP`,
+  `CHAIN-MANUAL-ORDER-DEEP`, and `CHAIN-POSITIONS-CORE`. No backend
+  implementation gap was found: all targeted chains have mapped code/test/doc
+  surfaces, while remaining gaps are protected readback/browser proof or
+  approval-gated LIVE mutation proof. No child implementation issue was opened.
+  No code/runtime/deploy/push/restart/rollback/env/account/secret/protected-
+  smoke/exchange/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2566-runtime-exchange-local-only-chain-audit-2026-06-06-task.md`.
+
+
+## 2026-06-06 LUC-2560 PM No-Stall Queue Expeditor
+
+- `LUC-2560-NO-STALL-QUEUE-EXPEDITOR-2026-06-06` completed as a PM
+  coordination checkpoint. Wake `issue_assigned` was consumed from inline
+  payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already
+  claimed by the harness and was not repeated. Paperclip heartbeat-context
+  succeeded for [LUC-2560](/LUC/issues/LUC-2560), showing no comments,
+  children, or first-class blockers. Fresh open Soar queue readback initially
+  returned 92 non-terminal issues: 87 `blocked`, 1 `in_progress`, 1
+  `in_review`, and 3 `todo`. PM routing forced all three `todo` lanes to a
+  durable path: [LUC-2557](/LUC/issues/LUC-2557) was assigned to TSA and read
+  back `in_progress` with execution run `32ba3a9e-bba5-49dd-917d-dda6d49404b4`;
+  [LUC-2558](/LUC/issues/LUC-2558) was assigned to `local-board` and read back
+  `in_review`; [LUC-2559](/LUC/issues/LUC-2559) was assigned to DRE, set
+  `blocked`, and direct readback confirmed first-class blocker
+  [LUC-2558](/LUC/issues/LUC-2558). Follow-up queue readback returned 92
+  non-terminal issues: 88 `blocked`, 2 `in_progress`, 2 `in_review`, and 0
+  `todo`. Final pre-close readback returned 97 non-terminal issues with 0
+  `todo` after TSA fan-out started [LUC-2565](/LUC/issues/LUC-2565),
+  [LUC-2566](/LUC/issues/LUC-2566), and
+  [LUC-2568](/LUC/issues/LUC-2568). `corepack pnpm softwarehouse:control-tick`
+  still fails because the
+  command is not exposed in this checkout. No code/runtime/deploy/push/restart/
+  rollback/env/account/secret/protected-smoke/exchange/live-trading mutation
+  occurred. Evidence:
+  `history/tasks/luc-2560-no-stall-queue-expeditor-2026-06-06-task.md`.
+
+## 2026-06-06 LUC-2556 Gap Register And Repair Lane Refresh
+
+- `LUC-2556-GAP-REGISTER-REPAIR-LANE-REFRESH-2026-06-06` completed as a TSA
+  register/routing checkpoint. Wake `issue_assigned` was consumed from inline
+  payload (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already
+  claimed by the harness and was not repeated. Paperclip heartbeat-context
+  succeeded for [LUC-2556](/LUC/issues/LUC-2556). Live readback confirmed the
+  protected release chain remains fail-closed:
+  [LUC-2372](/LUC/issues/LUC-2372) `blocked` ->
+  [LUC-2366](/LUC/issues/LUC-2366) `blocked` ->
+  [LUC-2361](/LUC/issues/LUC-2361) `blocked` ->
+  [LUC-2378](/LUC/issues/LUC-2378) `blocked`. The workers-ready/smoke-auth
+  chain remains fail-closed:
+  [LUC-2505](/LUC/issues/LUC-2505) `blocked` ->
+  [LUC-1438](/LUC/issues/LUC-1438) `blocked` ->
+  [LUC-241](/LUC/issues/LUC-241) `blocked` ->
+  [LUC-47](/LUC/issues/LUC-47) `blocked` ->
+  [LUC-244](/LUC/issues/LUC-244) `blocked`. [LUC-2553](/LUC/issues/LUC-2553),
+  [LUC-2543](/LUC/issues/LUC-2543), [LUC-2542](/LUC/issues/LUC-2542),
+  [LUC-2541](/LUC/issues/LUC-2541), and [LUC-2540](/LUC/issues/LUC-2540)
+  read back as `done`; no duplicate specialist repair issue was opened.
+  Active Soar queue readback returned 89 open non-terminal issues; assigned
+  TSA readback returned 8. No code/runtime/deploy/push/restart/rollback/env/
+  account/secret/exchange/protected-smoke/live-trading mutation occurred.
+  Evidence:
+  `history/tasks/luc-2556-gap-register-and-repair-lane-refresh-2026-06-06-task.md`.
+
+## 2026-06-06 LUC-2541 Bot Runtime Repository Missing-Test Links
+
+- `LUC-2541-BOT-RUNTIME-REPOSITORY-TEST-LINKS-2026-06-06` completed as a Core
+  Backend Engineer relation-repair checkpoint. Wake `issue_assigned` was
+  consumed from inline payload (`fallbackFetchNeeded=false`, comments `0/0`);
+  checkout was already claimed by the harness and was not repeated. Added four
+  scanner-readable priority test links for
+  `runtimeSessionPositionsRead.repository.ts` and
+  `runtimeSessionTradesRead.repository.ts` to existing Bot Runtime API
+  service/e2e proof. CSV readback verified `4/4` [LUC-2541](/LUC/issues/LUC-2541)
+  rows and linked paths. `pnpm run architecture:graph:drift:strict` passed
+  (`837/837`, `0` missing). Focused non-DB API tests passed
+  (`botsRuntimeRead.repository.test.ts` `1/1`,
+  `runtimeSessionPositionsRead.service.test.ts` `22/22`). DB-backed e2e tests
+  were attempted but blocked before assertions because Prisma could not reach
+  local Postgres at `localhost:5432`. No product code, runtime behavior, deploy,
+  push, restart, rollback, env/account, secret, exchange, protected-smoke, or
+  live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2541-cover-bot-runtime-repository-missing-test-links-2026-06-06-task.md`.
+
+## 2026-06-06 LUC-2543 Architecture Graph Missing-Test-Link Backlog Promotion
+
+- `LUC-2543-ARCHITECTURE-GRAPH-MISSING-TEST-LINK-BACKLOG-2026-06-06`
+  completed as a Documentation Steward architecture-awareness relation
+  promotion checkpoint. Wake `issue_assigned` was consumed from inline payload
+  (`fallbackFetchNeeded=false`, comments `0/0`); checkout was already claimed
+  by the harness and was not repeated. Added scanner-readable
+  `docs/architecture/relations/priority-test-links.csv` rows for selected top
+  missing-test samples with existing proof across bots e2e helpers, bot
+  projection reads, runtime symbol-stats repository helpers, engine indicator
+  period handling, and imported position-id helpers.
+  Architecture-awareness refresh passed (`14683` entities / `23274` relations,
+  generated `2026-06-06T19:47:09.571Z`), actionable missing-test rows moved
+  from `804` to `763`, actionable missing-doc rows remained `0`, and
+  disconnected entities remained `0`. Validation passed: focused API relation
+  proof (`7` files, `39` tests passed, `33` skipped by filter), architecture
+  graph generation (`653` nodes / `842` relations / `27` chains), strict graph
+  drift (`837/837`, `0` missing), and `git diff --check` with line-ending
+  warnings only. No runtime/deploy/push/restart/rollback/env/account/secret/
+  exchange/protected-smoke/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2543-promote-architecture-graph-missing-test-link-backlog-2026-06-06-task.md`.
+
+## 2026-06-06 LUC-2542 Engine Strategy Signal Helper Missing-Test Links
+
+- `LUC-2542-COVER-ENGINE-STRATEGY-SIGNAL-HELPER-MISSING-TEST-LINKS-2026-06-06`
+  completed as an RTE architecture evidence-link repair. Wake `issue_assigned`
+  was consumed from inline payload (`fallbackFetchNeeded=false`, comments
+  `0/0`); checkout was already claimed by the harness and was not repeated.
+  The generated architecture awareness report previously listed the
+  `strategySignalAnalysis.ts` private helper family under top actionable
+  missing-test links. Direct scanner-readable relations were added in
+  `docs/architecture/relations/priority-test-links.csv` to existing focused
+  tests: `strategySignalAnalysis.test.ts` and
+  `strategyIndicatorRegistryParity.test.ts`. Validation passed: focused engine
+  tests (`2/2`), architecture graph generation (`653` nodes, `842` relations,
+  `27` chains), strict graph drift (`837/837`, `0` missing), repository
+  guardrails, and target-row readback absent from top actionable missing-test
+  links. No runtime/deploy/push/restart/rollback/env/account/secret/exchange/
+  protected-smoke/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2542-cover-engine-strategy-signal-helper-missing-test-links-2026-06-06-task.md`.
 
 ## 2026-06-06 LUC-2406 Source Control Closure For LUC-2403
 

@@ -2,11 +2,11 @@
 
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const operationsDir = path.resolve(process.cwd(), 'history', 'operations');
 
-const parseArgs = () => {
-  const args = process.argv.slice(2);
+export const parseArgs = (args = process.argv.slice(2)) => {
   const options = {
     inputDir: operationsDir,
     windowDays: Number.parseInt(process.env.SLO_WINDOW_DAYS ?? '7', 10),
@@ -35,23 +35,23 @@ const parseArgs = () => {
   return options;
 };
 
-const asNumber = (value) => (typeof value === 'number' && Number.isFinite(value) ? value : null);
+export const asNumber = (value) => (typeof value === 'number' && Number.isFinite(value) ? value : null);
 
-const toStamp = () => new Date().toISOString().replace(/[:.]/g, '-');
+export const toStamp = () => new Date().toISOString().replace(/[:.]/g, '-');
 
-const pct = (value, digits = 2) => (value == null ? 'n/a' : `${value.toFixed(digits)}%`);
+export const pct = (value, digits = 2) => (value == null ? 'n/a' : `${value.toFixed(digits)}%`);
 
-const avg = (values) => {
+export const avg = (values) => {
   if (values.length === 0) return null;
   return values.reduce((sum, item) => sum + item, 0) / values.length;
 };
 
-const parseIso = (value) => {
+export const parseIso = (value) => {
   const ts = Date.parse(value ?? '');
   return Number.isFinite(ts) ? ts : null;
 };
 
-const loadArtifacts = async (inputDir) => {
+export const loadArtifacts = async (inputDir) => {
   const entries = await readdir(inputDir);
   const names = entries
     .filter((name) => name.startsWith('_artifacts-slo-window-') && name.endsWith('.json'))
@@ -75,7 +75,7 @@ const loadArtifacts = async (inputDir) => {
   return artifacts;
 };
 
-const summarize = (artifacts, options) => {
+export const summarize = (artifacts, options) => {
   const nowMs = Date.now();
   const windowStartMs = nowMs - options.windowDays * 24 * 60 * 60 * 1000;
   const inWindow = artifacts.filter((artifact) => {
@@ -216,7 +216,7 @@ const summarize = (artifacts, options) => {
   };
 };
 
-const renderMarkdown = (report, jsonRelativePath) => {
+export const renderMarkdown = (report, jsonRelativePath) => {
   const rows = report.artifactRefs
     .map(
       (item) =>
@@ -276,8 +276,8 @@ ${rows || '| n/a | n/a | n/a | n/a | n/a | n/a |'}
 `;
 };
 
-const main = async () => {
-  const options = parseArgs();
+export const main = async (args = process.argv.slice(2)) => {
+  const options = parseArgs(args);
   if (options.help) {
     console.log(
       'Usage: node scripts/buildSloWindowReport.mjs [--input-dir <path>] [--window-days <n>] [--output-prefix <name>] [--queue-lag-p95-threshold <n>] [--queue-lag-max-threshold <n>]'
@@ -312,7 +312,12 @@ const main = async () => {
   console.log(`SLO window report: ${path.relative(process.cwd(), mdPath)}`);
 };
 
-main().catch((error) => {
-  console.error('[ops:slo:window-report] failed:', error instanceof Error ? error.message : String(error));
-  process.exit(1);
-});
+const isDirectRun =
+  process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+
+if (isDirectRun) {
+  main().catch((error) => {
+    console.error('[ops:slo:window-report] failed:', error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  });
+}

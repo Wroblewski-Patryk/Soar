@@ -1,5 +1,439 @@
 # System Health
 
+- 2026-06-07 `LUC-2685` completed a Test Automation local proof and
+  architecture relation repair for V1 completion scorecard missing-test links.
+  Status: `verified_local / no production claim`.
+  `scripts/buildV1CompletionScorecard.mjs` is now import-safe for focused
+  helper tests, helper exports are covered by
+  `scripts/buildV1CompletionScorecard.test.mjs`, and direct
+  `priority-test-links.csv` rows map the current scorecard anchors to focused
+  proof. Syntax checks passed, focused Node proof passed (`7/7`), architecture
+  graph generation passed (`653` nodes / `842` relations / `27` chains), and
+  repository guardrails passed. No deploy/push/restart/rollback/protected-
+  smoke/account/secret/exchange/database/live-trading mutation occurred.
+  Evidence:
+  `history/tasks/luc-2685-v1-completion-scorecard-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2678` completed a Test Automation local proof and
+  architecture relation repair for remaining RC signoff and SLO window report
+  missing-test links. Status: `verified_local / no production claim`.
+  `scripts/buildRcSignoffRecord.mjs` and
+  `scripts/buildSloWindowReport.mjs` are now import-safe for focused helper
+  tests, helper exports are covered by
+  `scripts/buildRcSignoffRecord.test.mjs` and
+  `scripts/buildSloWindowReport.test.mjs`, and direct `priority-test-links.csv`
+  rows map the current helper anchors to focused proof. Syntax checks passed,
+  focused Node proof passed (`12/12`), architecture graph generation passed
+  (`653` nodes / `842` relations / `27` chains), and repository guardrails
+  passed. No deploy/push/restart/rollback/protected-smoke/account/secret/
+  exchange/database/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2678-rc-signoff-slo-window-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2675` completed a PM no-stall/delegation checkpoint. Status:
+  `verified_coordination / delegated / no production claim`. Paperclip
+  heartbeat-context succeeded, `softwarehouse:control-tick` remains unavailable
+  in this checkout, and open-lane duplicate searches returned `0` for the
+  remaining `buildRcSignoffRecord` and `buildSloWindowReport` helper families.
+  The next actionable local repair lane is [LUC-2678](/LUC/issues/LUC-2678),
+  assigned to Test Automation Engineer for RC signoff and SLO window
+  missing-test links. No deploy/push/restart/rollback/protected-smoke/account/
+  secret/exchange/database/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2675-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2673` completed a Technical Solution Architect gap-register
+  refresh. Status: `verified_coordination / no production claim`. Current
+  architecture-awareness report remains fresh at
+  `2026-06-07T04:42:13.421Z` with `510` actionable missing-test links, `0`
+  actionable missing-doc links, `0` ownerless entities, `0` disconnected
+  entities, and `7418` classified inferred-link noise rows. The next actionable
+  local repair lane is [LUC-2674](/LUC/issues/LUC-2674), assigned to Test
+  Automation Engineer for release RC/SLO script missing-test links in
+  `scripts/buildRcExternalGateStatus.mjs`,
+  `scripts/buildRcSignoffRecord.mjs`, and
+  `scripts/buildSloWindowReport.mjs`. No deploy/push/restart/rollback/
+  protected-smoke/account/secret/exchange/database/live-trading mutation
+  occurred. Evidence:
+  `history/tasks/luc-2673-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2672` completed a Technical Solution Architect scanner
+  hygiene checkpoint. Status: `verified_local / no production claim`. The
+  external Softwarehouse architecture-awareness scanner now classifies
+  functions from `.test.*`, fixture, mock, stub, test-support, and
+  e2e/integration fixture paths as `test_fixture_function` inferred-link
+  noise rather than actionable missing-test samples. Soar architecture-
+  awareness refresh passed (`14807` entities / `23756` relations / `9616`
+  files). The refreshed report generated `2026-06-07T04:42:13.421Z` reports
+  actionable missing-test links `510`, classified inferred-link noise `7418`,
+  and `test_fixture_function: 62`; targeted readback confirmed the seven
+  [LUC-2671](/LUC/issues/LUC-2671) fixture samples are no longer actionable.
+  `node --check scripts/build-architecture-awareness-index.mjs` passed from
+  `Paperclip_Softwarehouse`, and `pnpm run quality:guardrails` passed. No
+  deploy/push/restart/rollback/protected-smoke/account/secret/exchange/
+  database/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2672-exclude-test-fixture-functions-from-actionable-missing-test-samples-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2667` completed a DRE read-only Coolify production deploy
+  health sweep. Status: `verified_public / protected_runtime_auth_gated`.
+  Current public production health is green: API `/health` `200`, API
+  `/ready` `200`, Web `/` `200`, Web `/api/build-info` `200`, and
+  `node scripts/deploySmokeCheck.mjs --api-base-url
+  https://api.soar.luckysparrow.ch --web-base-url
+  https://soar.luckysparrow.ch --skip-workers` passed all public checks.
+  Production Web build-info reports
+  `56d8d440bfe0fd9ee692e9f669e35414d85d2493`, matching local
+  `origin/main`; local dirty `HEAD` remains
+  `9e0e4e09dd993eee65b505f97007831958618609`. Coolify read-only projection
+  found the Soar project, eight canonical production resources, PostgreSQL and
+  Redis `running:healthy`, and application resources `running:unknown`.
+  Protected runtime freshness and rollback guard remain fail-closed with
+  `401` on workers/runtime/alerts endpoints without an approved read-only
+  production principal. No deploy/push/restart/rollback/env/database/account/
+  secret/protected-smoke/exchange/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2667-coolify-production-deploy-health-sweep-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2650` completed a Test Automation local proof and
+  architecture relation repair for `scripts/auditRouteReachableI18n.mjs`.
+  Status: `verified_local / no production claim`. The script is now
+  import-safe for focused tests, helper exports are covered by
+  `scripts/auditRouteReachableI18n.test.mjs`, and direct
+  `priority-test-links.csv` rows map the current route-reachable i18n audit
+  helper anchors to focused proof. Focused Node proof passed (`5/5`), the live
+  route-reachable i18n audit passed (`findings=0`, `localCopy=0`,
+  `fallbackPl=0`, `hardcoded=0`), architecture graph generation passed
+  (`653` nodes / `842` relations / `27` chains), and repository guardrails
+  passed. No deploy/push/restart/rollback/protected-smoke/account/secret/
+  exchange/database/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2650-route-reachable-i18n-audit-script-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2646` completed a Test Automation local proof and
+  architecture relation repair for `scripts/auditArchitectureGraphDrift.mjs`.
+  Status: `verified_local / no production claim`. The script is now
+  import-safe for focused tests, helper exports are covered by
+  `scripts/auditArchitectureGraphDrift.test.mjs`, and direct
+  `priority-test-links.csv` rows map the current architecture drift helper
+  anchors to focused proof. Focused Node proof passed (`5/5`), strict
+  architecture drift passed (`846/846` covered, `0` missing), architecture
+  graph generation passed (`653` nodes / `842` relations / `27` chains), and
+  repository guardrails passed. No deploy/push/restart/rollback/
+  protected-smoke/account/secret/exchange/database/live-trading mutation
+  occurred. Evidence:
+  `history/tasks/luc-2646-architecture-graph-drift-script-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2639` completed a Test Automation local proof and
+  architecture relation repair for `scripts/auditApiEndpointDocsParity.mjs`.
+  Status: `verified_local / no production claim`. The script is now
+  import-safe for focused tests, relative route imports resolve only to
+  existing files, and direct `priority-test-links.csv` rows map the current
+  API endpoint docs parity helper anchors to
+  `scripts/auditApiEndpointDocsParity.test.mjs`. Focused Node proof passed
+  (`5/5`), endpoint docs parity passed (`109` endpoints / `109` documented /
+  `0` gaps), architecture graph generation passed (`653` nodes / `842`
+  relations / `27` chains), and repository guardrails passed. Architecture-
+  awareness top-sample removal is not claimed because the known builder
+  scripts are absent in this checkout. No deploy/push/restart/rollback/
+  protected-smoke/account/secret/exchange/database/live-trading mutation
+  occurred. Evidence:
+  `history/tasks/luc-2639-api-endpoint-docs-parity-script-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2638` completed a TSA controller/delegation checkpoint.
+  Status: `delegated / no production claim`. Paperclip heartbeat-context
+  succeeded, duplicate search avoided reopening old aggregate script/tooling
+  lanes, and [LUC-2639](/LUC/issues/LUC-2639) was created for Test Automation
+  to repair or justify focused local proof/relations for
+  `scripts/auditApiEndpointDocsParity.mjs` current missing-test samples.
+  Protected workers-ready/smoke-auth and release gates remain blocked on their
+  existing owner chains. `softwarehouse:control-tick` is still unavailable in
+  this checkout. No deploy/push/restart/rollback/protected-smoke/account/
+  secret/exchange/database/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2638-v1-audit-to-completion-controller-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2631` completed a Frontend Web local PWA proof and
+  architecture relation repair. Status: `verified_local / no production
+  claim`. Focused Web PWA Vitest proof passed (`2` files / `8` tests),
+  architecture graph generation passed (`653` nodes / `842` relations /
+  `27` chains), and repository guardrails passed. Added direct
+  `priority-test-links.csv` rows for service-worker registration anchors:
+  `checkBuildVersion`, `handleControllerChange`, `handleVisibilityChange`,
+  `handleWindowFocus`, `purgePwaCaches`, and `requestUpdateCheck`.
+  Architecture-awareness refresh was not claimed because
+  `scripts/build-architecture-awareness-index.mjs` and
+  `scripts/generateArchitectureAwarenessIndex.mjs` are absent in this checkout.
+  No deploy/push/restart/rollback/protected-smoke/account/secret/exchange/
+  database/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2631-web-pwa-service-worker-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2620` completed a TSA gap-register/repair-lane refresh.
+  Paperclip heartbeat-context succeeded. Queue readback showed `0` todo,
+  `1` in_progress ([LUC-2620](/LUC/issues/LUC-2620)), `2` in_review
+  ([LUC-2558](/LUC/issues/LUC-2558), [LUC-1397](/LUC/issues/LUC-1397)), and
+  `93` blocked. Protected workers-ready/smoke-auth remains fail-closed through
+  [LUC-2619](/LUC/issues/LUC-2619); protected release remains fail-closed
+  through [LUC-2372](/LUC/issues/LUC-2372) and dependent QA/Ops/release lanes.
+  Current architecture-awareness top samples are stale after completed local
+  repair lanes [LUC-2601](/LUC/issues/LUC-2601), [LUC-2607](/LUC/issues/LUC-2607),
+  and [LUC-2611](/LUC/issues/LUC-2611), so no duplicate repair lane was opened.
+  Local tooling drift persists: `softwarehouse:control-tick`, the live-run
+  janitor script, and the architecture-awareness builder script are unavailable
+  in this checkout. No deploy, push, restart, rollback, protected smoke,
+  account, secret, exchange, database, or live-trading mutation occurred.
+
+- 2026-06-07 `LUC-2619` blocked the accepted smoke-auth binding lane for
+  protected `GET /workers/ready`. Status: `blocked_auth / fail_closed`.
+  Current `SMOKE_AUTH_TOKEN` is present but not JWT-shaped, `SMOKE_AUTH_EMAIL`
+  is present but not email-shaped, and `SMOKE_AUTH_PASSWORD` is present; values
+  were not printed or stored. Production deploy smoke with workers included
+  passed public API/Web checks and failed `API /workers/ready` with `401`.
+  Route/source inspection confirms `/workers/ready` is protected by
+  `requireAuth`, `requireRole('ADMIN')`, and `requireOpsNetwork`; the current
+  binding fails before role/network authorization. No deploy, restart,
+  rollback, env edit, account mutation, database mutation, secret disclosure,
+  exchange mutation, or live-trading mutation occurred. Unblock owner/action:
+  credential/account owner or board-approved secret-store operator must
+  provision one accepted production-smoke `ADMIN` principal/session through
+  exactly one supported `SMOKE_*` path. Evidence:
+  `history/tasks/luc-2619-provision-smoke-auth-binding-workers-ready-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2611` completed a Frontend Web local proof and architecture
+  relation repair. Status: `verified_local / no production claim`. Focused Web
+  Vitest proof passed (`7` files / `34` tests), architecture graph generation
+  passed (`653` nodes / `842` relations / `27` chains), and repository
+  guardrails passed. Added direct `priority-test-links.csv` rows for shared
+  UI/form primitive anchors covering `StatusBadge`, `TableToneBadge`,
+  `Tabs#syncFromHash`, `SuccessState`, `FormAlert`, `FormField`,
+  `CompoundField`, `RadioGroupField`, and `RangeField`.
+  Architecture-awareness refresh was not claimed because
+  `scripts/build-architecture-awareness-index.mjs` is absent in this checkout.
+  No deploy/push/restart/rollback/protected-smoke/account/secret/exchange/
+  database/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2611-shared-ui-form-primitive-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2601` completed a Frontend Web local proof and architecture
+  relation repair. Status: `verified_local / no production claim`. Web Vitest
+  proof passed (`157` files / `575` tests; wrapper collected the full Web
+  suite despite file arguments), architecture graph generation passed (`653`
+  nodes / `842` relations / `27` chains), and repository guardrails passed.
+  Added direct `priority-test-links.csv` rows for Web API/form/shared-lib
+  anchors covering `api.ts`, `forms.ts`, `getAxiosMessage.ts`,
+  `marketStream.ts`, and `numericInput.ts`. Architecture-awareness refresh was
+  not claimed because `scripts/build-architecture-awareness-index.mjs` is
+  absent in this checkout. No deploy/push/restart/rollback/protected-smoke/
+  account/secret/exchange/database/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2601-web-api-form-utility-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2597` completed a Frontend Web local proof and
+  architecture relation repair. Status: `verified` for local Web proof and
+  scanner traceability; V1 release readiness remains `NO-GO` for protected/live
+  proof. Focused Web tests passed (`11` files / `52` tests), architecture-
+  awareness refresh passed (`14731` entities / `23469` relations), and
+  actionable missing-test links dropped from `733` to `691`; the assigned Web
+  build-info/layout/auth/runtime utility/i18n families no longer appear in top
+  actionable missing-test samples. Guardrails passed. No deploy/push/restart/
+  rollback/protected-smoke/account/secret/exchange/database/live-trading
+  mutation occurred. Evidence:
+  `history/tasks/luc-2597-web-architecture-missing-test-link-families-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2596` completed the CBE API-side architecture
+  missing-test-link repair. Status: `verified_local / no production claim`.
+  Focused API tests passed (`3` files / `7` tests), API typecheck passed,
+  architecture-awareness refresh passed (`14731` entities / `23431`
+  relations), graph generation passed (`653` nodes / `842` relations /
+  `27` chains), strict graph drift passed (`845/845`, `0` missing), and
+  repository guardrails passed. Refreshed
+  `docs/status/architecture-awareness-report.md` generated
+  `2026-06-06T22:54:09.465Z` no longer lists
+  `apps/api/prisma/seed.ts#main`,
+  `runtimePositionState.store.ts#toFiniteNonNegativeInt`, or
+  `runtimeFreshness.ts#parseEnvDate` in top actionable missing-test links.
+  Total actionable missing-test links dropped from `733` to `729`. No
+  production/runtime/deploy/protected-smoke/secret/exchange/database mutation
+  occurred. Evidence:
+  `history/tasks/luc-2596-api-side-architecture-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2595` completed a TSA gap-register and repair-lane refresh.
+  Status: coordination `verified`, V1 release readiness still `NO-GO` for
+  protected/live proof. Live Paperclip readback confirmed protected release
+  and workers-ready blockers remain correctly owned and blocked; recent local
+  missing-test repair issues [LUC-2578](/LUC/issues/LUC-2578),
+  [LUC-2579](/LUC/issues/LUC-2579), and
+  [LUC-2580](/LUC/issues/LUC-2580) are done. Current architecture-awareness
+  report remains fresh at `2026-06-06T22:16:06.802Z` with `733` actionable
+  missing-test links and `0` actionable missing-doc links. New local proof
+  child lanes were opened: [LUC-2596](/LUC/issues/LUC-2596) for API-side
+  seed/runtime helper/freshness anchors and
+  [LUC-2597](/LUC/issues/LUC-2597) for Web build-info/layout/auth/runtime
+  utility/i18n families. No production/runtime mutation occurred. Evidence:
+  `history/tasks/luc-2595-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2594` completed the DRE read-only diagnosis of
+  `workers-execution` crash metadata. Status: `partially verified` for
+  operations evidence, with crash cause still unknown from retained Coolify
+  evidence. Verified: Coolify still reports `last_restart_type=crash`,
+  `last_restart_at=2026-06-06T04:12:15.000000Z`, and `restart_count=2`; app
+  logs endpoint returns a retained current tail; local source maps visible
+  execution-context/BOT-origin skip messages to non-fatal runtime branches.
+  Not found in the retained tail: fatal, OOM, process-exit, DB/Redis,
+  exchange credential, deploy, or startup/module failure signatures.
+  Deployment history remained insufficient in this token context
+  (`applications/{uuid}/deployments` `404`, global deployments `0` rows).
+  Protected worker readiness/freshness/alerts remain auth-gated. Evidence:
+  `history/tasks/luc-2594-workers-execution-coolify-crash-metadata-diagnosis-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2590` completed a DRE read-only Coolify production deploy
+  health sweep and child [LUC-2594](/LUC/issues/LUC-2594) completed the
+  `workers-execution` crash metadata diagnosis. Verified: Coolify
+  project/environment read succeeds, canonical production inventory remains
+  eight resources, PostgreSQL/Redis report `running:healthy`, public API/Web
+  smoke passes, and production Web build-info matches local `origin/main`
+  (`56d8d440bfe0fd9ee692e9f669e35414d85d2493`). Not verified: protected
+  workers readiness/runtime freshness/alerts remain `401` in the no-secret
+  lane, and `workers-execution` crash cause at
+  `2026-06-06T04:12:15.000000Z` is
+  `unknown_from_retained_coolify_evidence`.
+  No deploy/restart/rollback/env/DB/protected-smoke/account/secret/exchange/
+  live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2590-coolify-production-deploy-health-sweep-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2591` completed a PM no-stall queue expeditor checkpoint.
+  Paperclip heartbeat-context readback succeeded, and fresh read-only queue
+  readback returned `95` non-terminal Soar issues: `91` blocked,
+  `2` in_progress, `2` in_review, and `0` todo. The active execution lane
+  besides this PM checkpoint is [LUC-2590](/LUC/issues/LUC-2590), owned by DRE
+  for Coolify production deploy health sweep. Review lanes remain
+  [LUC-2558](/LUC/issues/LUC-2558) and [LUC-1397](/LUC/issues/LUC-1397) with
+  local-board. Blocked lanes remain protected-gate-bound through existing
+  owner paths including [LUC-2505](/LUC/issues/LUC-2505),
+  [LUC-2372](/LUC/issues/LUC-2372), [LUC-241](/LUC/issues/LUC-241),
+  [LUC-2366](/LUC/issues/LUC-2366), [LUC-2361](/LUC/issues/LUC-2361), and
+  [LUC-2378](/LUC/issues/LUC-2378). `corepack pnpm
+  softwarehouse:control-tick` remains unavailable, and
+  `scripts/run-live-run-janitor.mjs` is absent. No duplicate child issue or
+  production/runtime mutation occurred. Evidence:
+  `history/tasks/luc-2591-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2587` verified the current idle/readiness posture as
+  `ACTIVE_REPAIR_VERIFICATION / PROTECTED_GATE_HOLD`, not monitoring-only.
+  Read-only Paperclip queue readback returned `96` non-terminal Soar issues:
+  `91` blocked, `3` in_progress, `2` in_review, and `0` todo. Current
+  architecture-awareness report is fresh at `2026-06-06T22:16:06.802Z` with
+  `14712` entities, `23382` relations, `0` ownerless entities,
+  `0` disconnected entities, `733` actionable missing-test links, and
+  `0` actionable missing-doc links. Protected gate families remain fail-closed
+  through [LUC-2505](/LUC/issues/LUC-2505),
+  [LUC-241](/LUC/issues/LUC-241), [LUC-2372](/LUC/issues/LUC-2372), and
+  [LUC-2558](/LUC/issues/LUC-2558). `pnpm softwarehouse:control-tick` remains
+  unavailable in this checkout, and `scripts/run-live-run-janitor.mjs` is
+  absent. No production or runtime mutation occurred. Evidence:
+  `history/tasks/luc-2587-autonomous-idle-and-map-drift-sweep-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2588` is VERIFIED for TSA controller classification only.
+  Fresh Paperclip readback confirms V1 remains `NO-GO`: the protected release
+  chain is blocked through [LUC-2372](/LUC/issues/LUC-2372),
+  [LUC-2366](/LUC/issues/LUC-2366), [LUC-2361](/LUC/issues/LUC-2361), and
+  [LUC-2378](/LUC/issues/LUC-2378); the workers-ready/smoke-auth chain is
+  blocked through [LUC-2505](/LUC/issues/LUC-2505),
+  [LUC-1438](/LUC/issues/LUC-1438), [LUC-241](/LUC/issues/LUC-241),
+  [LUC-47](/LUC/issues/LUC-47), and [LUC-244](/LUC/issues/LUC-244).
+  Architecture backlog lanes remain covered by existing owner issues.
+  [LUC-2578](/LUC/issues/LUC-2578), [LUC-2579](/LUC/issues/LUC-2579), and
+  [LUC-2580](/LUC/issues/LUC-2580) read back `done` by final controller
+  verification. `corepack pnpm softwarehouse:control-tick` is unavailable in this
+  checkout, and `scripts/run-live-run-janitor.mjs` is absent. No product,
+  runtime, deployment, account, secret, exchange, database, or live-trading
+  mutation occurred. Evidence:
+  `history/tasks/luc-2588-v1-audit-to-completion-controller-2026-06-07-task.md`.
+
+- 2026-06-06 `LUC-2580` is VERIFIED for local Runtime worker lifecycle
+  missing-test-link repair. Added focused tests and direct architecture
+  relation rows for execution runtime signal bootstrap, market-stream
+  fingerprint/reload/shutdown/failure logging, and worker bootstrap heartbeat/
+  event logging. PASS: focused worker tests (`6` files / `19` tests), API
+  typecheck, architecture graph generation (`653` nodes / `842` relations /
+  `27` chains), strict graph drift (`842/842`, `0` missing),
+  architecture-awareness refresh (`14714` entities / `23385` relations,
+  actionable missing-test rows `733`), repository guardrails, and narrow
+  process cleanup check with no leftover Soar worker/vitest/dev-server
+  processes. No production/runtime worker start, deploy, restart,
+  env/account, secret, protected-smoke, exchange, database, or live-trading
+  mutation occurred. Evidence:
+  `history/tasks/luc-2580-worker-bootstrap-market-stream-missing-test-links-2026-06-06-task.md`.
+
+- 2026-06-06 `LUC-2565` completed Security architecture proof-gap review for
+  the V1 high-risk chains. Result: security review `DONE`, release readiness
+  still `NO-GO` for protected/live flows. Strict graph drift passed (`837/837`,
+  `0` missing), current architecture awareness had `0` disconnected entities
+  and `0` ownerless entities, and no new concrete exploitable defect was found.
+  Residual protected proof remains under existing first-class owner lanes:
+  [LUC-2372](/LUC/issues/LUC-2372), [LUC-2505](/LUC/issues/LUC-2505),
+  [LUC-2366](/LUC/issues/LUC-2366), and [LUC-241](/LUC/issues/LUC-241). No
+  production/runtime/account/secret/exchange/deploy mutation occurred.
+  Evidence:
+  `history/tasks/luc-2565-architecture-high-risk-security-proof-gap-review-2026-06-06-task.md`.
+
+- `LUC-2541-BOT-RUNTIME-REPOSITORY-TEST-LINKS-2026-06-06` is VERIFIED for
+  Bot Runtime repository test-link traceability. Four direct
+  `docs/architecture/relations/priority-test-links.csv` rows now connect the
+  split runtime positions/trades repository files to existing Bot Runtime API
+  service/e2e proof. CSV path readback passed `4/4`; strict architecture graph
+  drift passed (`837/837`, `0` missing); focused non-DB API tests passed
+  (`botsRuntimeRead.repository.test.ts` `1/1`,
+  `runtimeSessionPositionsRead.service.test.ts` `22/22`). DB-backed e2e suites
+  were attempted but blocked before assertions because Prisma could not reach
+  local Postgres at `localhost:5432`. No code/runtime/deploy/push/restart/
+  rollback/env/account/secret/exchange/protected-smoke/live-trading mutation
+  occurred. Evidence:
+  `history/tasks/luc-2541-cover-bot-runtime-repository-missing-test-links-2026-06-06-task.md`.
+
+- `LUC-2543-ARCHITECTURE-GRAPH-MISSING-TEST-LINK-BACKLOG-2026-06-06` is
+  VERIFIED as a Documentation Steward architecture-awareness relation
+  promotion checkpoint. Added direct `priority-test-links.csv` rows for
+  selected high-signal missing-test samples with existing proof across bots e2e
+  helpers, bot projection reads, runtime symbol-stats repository helpers,
+  engine indicator period handling, and imported position-id helpers.
+  Architecture-awareness refresh passed (`14683` entities / `23274` relations,
+  generated `2026-06-06T19:47:09.571Z`); actionable missing-test rows moved
+  from `804` to `763`, actionable missing-doc rows stayed `0`, and
+  disconnected entities stayed `0`. Focused API proof passed (`7` files, `39`
+  tests passed, `33` skipped by filter), architecture graph generation passed
+  (`653` nodes / `842` relations / `27` chains), strict drift passed
+  (`837/837`, `0` missing), and `git diff --check` passed with line-ending
+  warnings only. No runtime behavior, deploy, push, restart, rollback,
+  env/account, secret, protected-smoke, exchange, or live-trading mutation
+  occurred. Evidence:
+  `history/tasks/luc-2543-promote-architecture-graph-missing-test-link-backlog-2026-06-06-task.md`.
+
+- `LUC-2542-COVER-ENGINE-STRATEGY-SIGNAL-HELPER-MISSING-TEST-LINKS-2026-06-06`
+  is VERIFIED as an architecture evidence-link repair for engine runtime core.
+  The scoped wake had no pending comments (`fallbackFetchNeeded=false`, `0/0`)
+  and checkout was already claimed by the harness. Existing focused tests
+  already covered `strategySignalAnalysis.ts`; the missing piece was direct
+  scanner-readable helper-to-test relations for the private strategy signal
+  helper family. Added direct `priority-test-links.csv` rows for `ensureAdx`,
+  `ensureAtr`, `ensureBollinger`, `ensureCci`, `ensureDonchian`, `ensureEma`,
+  funding/open-interest/order-book helpers, oscillator helpers, `pushRule`,
+  `pushIndicatorSummary`, `pushConditionLine`, and `withFallback`. PASS:
+  focused engine tests (`2/2`), architecture graph generation (`653` nodes,
+  `842` relations, `27` chains), strict graph drift (`837/837`, `0` missing),
+  repository guardrails, and explicit report readback confirming the target
+  helper rows are absent from top actionable missing-test links. No runtime,
+  deploy, push, restart, rollback, env/account, secret, protected-smoke,
+  exchange, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2542-cover-engine-strategy-signal-helper-missing-test-links-2026-06-06-task.md`.
+
+- `LUC-2540-ROUTE-TRACEABILITY-PARITY-AUDIT-2026-06-06` is VERIFIED as a QA
+  architecture-doc route traceability guardrail. The existing
+  `docs:parity:route-api-matrix` checker now fails when
+  `docs/architecture/reference/dashboard-route-map.md` inventory routes or
+  primary API contracts are not covered by
+  `docs/architecture/traceability-matrix.md`. The stronger audit exposed and
+  closed matrix drift for `/privacy`, `/terms`, and
+  `/dashboard/profile/apiKeys*`. PASS: checker syntax, focused checker tests
+  (`6/6`), live route/API matrix parity (`39` Web routes, `109` API endpoints,
+  `0` gaps), docs parity (`22/22` API, `16/16` Web, `39/39` routes), and
+  `git diff --check` with line-ending warnings only. No runtime route
+  behavior, deploy, push, restart, rollback, env/account, secret,
+  protected-smoke, exchange, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2540-route-traceability-parity-audit-2026-06-06-task.md`.
+
 - `LUC-2522-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-06-06` is VERIFIED as a
   TSA controller checkpoint. Paperclip heartbeat-context and live issue
   readback succeeded. Current V1 release confidence remains fail-closed through
@@ -1346,6 +1780,18 @@
 - `LUC-2054-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05` VERIFIED as a bounded Ops read-only access binding checkpoint. Wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`), and the harness had already claimed checkout, so checkout was not repeated. Runtime binding check verified `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`, `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID` are present without printing values; `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` are absent but not required because authenticated read-only Coolify API readback at `2026-06-04T23:40:30Z` resolved project `Soar`, production environment `production`, and eight production resources: six applications plus PostgreSQL and Redis. Application inventory status remains `running:unknown`; PostgreSQL and Redis report `running:healthy`. `GET /api/v1/resources` returned `17` visible rows and was not used as release authority. `pnpm run ops:coolify-stack:env-check:test` passed (`8/8`). Scope stayed read-only docs/evidence/state only; no deploy/restart/rollback/env/database/team/account/secret/live-trading mutation was performed. Evidence: `history/evidence/luc-2054-coolify-read-only-production-status-access-2026-06-05.md`, `history/tasks/luc-2054-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`.
 
 - `LUC-2045-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-05` VERIFIED as a bounded Ops read-only access binding checkpoint. Wake payload was consumed first (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`), and the harness had already claimed checkout, so checkout was not repeated. Runtime binding check verified `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_SOAR_PROJECT_ID`, `COOLIFY_TOKEN`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`, `COOLIFY_SOAR_WEB_APP_ID`, and `COOLIFY_SOAR_API_APP_ID` are present without printing values; `COOLIFY_SOAR_TEAM_ID` / `COOLIFY_TEAM_ID` are absent but not required because authenticated read-only Coolify API readback at `2026-06-04T22:40:46Z` resolved project `Soar`, production environment `production`, and eight production resources: six applications plus PostgreSQL and Redis. Application inventory status remains `running:unknown`; PostgreSQL and Redis report `running:healthy`. `GET /api/v1/resources` returned `17` visible rows and was not used as release authority. `pnpm run ops:coolify-stack:env-check:test` passed (`8/8`). Scope stayed read-only docs/evidence/state only; no deploy/restart/rollback/env/database/team/account/secret/live-trading mutation was performed. Evidence: `history/evidence/luc-2045-coolify-read-only-production-status-access-2026-06-05.md`, `history/tasks/luc-2045-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md`.
+
+- `LUC-2624-WEB-UI-FORM-LAYOUT-MISSING-TEST-LINKS-2026-06-07`
+  VERIFIED_LOCAL as a bounded Frontend Web proof/relation repair. Added
+  focused `DataTable` page-size reset coverage and direct
+  `priority-test-links.csv` rows for refreshed Web UI/form/layout anchors.
+  Validation passed: focused Web Vitest (`9` files / `49` tests),
+  `architecture:graph:generate` (`653` nodes / `842` relations / `27`
+  chains), and `quality:guardrails`. Architecture-awareness top-sample removal
+  is not claimed because the local builder scripts are absent. No deploy,
+  push, restart, rollback, production smoke, account, secret, exchange,
+  database, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2624-web-ui-form-layout-missing-test-links-2026-06-07-task.md`.
 
 - `LUC-2044-SOURCE-CONTROL-CLOSURE-2026-06-05` VERIFIED as a bounded source-control closure checkpoint. Dirty state was classified as docs/state/evidence only across referenced issue groups: Coolify read-only evidence, Security proof map, architecture inferred-link report normalization, shared UI inferred-link triage, and Web component doc relation normalization. Validation passed: `git diff --check` and added-line redaction scan after reviewing generated route/document id `patch-dashboard-profile-security-password` as a false positive, not a stored value. Local closure commit created for the scoped set; two out-of-scope [LUC-2045](/LUC/issues/LUC-2045) artifacts remain dirty and are delegated to [LUC-2046](/LUC/issues/LUC-2046). Push status not pushed; deploy impact none. No production mutation, secret disclosure, account action, protected smoke, screenshot, or live-trading action occurred. Evidence: `history/tasks/luc-2044-source-control-close-local-dirty-state-for-luc-2014-luc-2018-luc-2020-luc-2021-plus-4-2026-06-05-task.md`.
 
@@ -4936,3 +5382,20 @@ shell still lacks those credentials and approvals.
   protected-smoke, or live-trading mutation occurred.
 - Evidence:
   `history/evidence/luc-2456-regression-evidence-sweep-2026-06-06.md`.
+
+## 2026-06-07 LUC-2665 Autonomous Idle And Map Drift Sweep
+
+- Status: `ACTIVE REPAIR/VERIFICATION / PROTECTED GATE HOLD`.
+- Soar is not monitoring-only. Paperclip queue readback returned `95`
+  non-terminal issues: `92` blocked, `1` in_progress for
+  [LUC-2665](/LUC/issues/LUC-2665), `2` in_review, and `0` todo.
+- Architecture-awareness is fresh at `2026-06-07T04:12:30.440Z`:
+  `14796` entities, `23696` relations, `0` ownerless entities,
+  `0` disconnected entities, `583` actionable missing-test links, and
+  `0` actionable missing-doc links.
+- Tooling drift remains: `corepack pnpm softwarehouse:control-tick` is not
+  exposed in this checkout, and `scripts/run-live-run-janitor.mjs` is absent.
+- No product code, runtime, deploy, push, restart, rollback, env/account,
+  secret, protected-smoke, exchange, database, or live-trading mutation
+  occurred. Evidence:
+  `history/tasks/luc-2665-autonomous-idle-and-map-drift-sweep-2026-06-07-task.md`.

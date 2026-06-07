@@ -17,6 +17,13 @@ import { getLocalStorageJsonItem, getLocalStorageItem, removeLocalStorageItem, s
 import { normalizeBaseCurrency, normalizeSymbol, normalizeSymbolsUnique, normalizeSymbolsUniqueSorted } from './symbols';
 import { normalizeUppercaseToken } from './text';
 import { toTimestamp } from './time';
+import {
+  hasFormText,
+  normalizeFormBaseCurrency,
+  normalizeFormSymbol,
+  normalizeFormText,
+  resolveFormErrorMessage,
+} from './forms';
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -57,6 +64,29 @@ describe('shared Web utilities', () => {
     expect(normalizeSymbolsUniqueSorted(['xrpusdt', 'adausdt'])).toEqual(['ADAUSDT', 'XRPUSDT']);
   });
 
+  it('normalizes form text, symbols, and base currency fail-closed', () => {
+    expect(normalizeFormText('  bot name  ')).toBe('bot name');
+    expect(normalizeFormText(null)).toBe('');
+    expect(hasFormText('  BTCUSDT  ')).toBe(true);
+    expect(hasFormText('   ')).toBe(false);
+    expect(normalizeFormSymbol(' btcusdt ')).toBe('BTCUSDT');
+    expect(normalizeFormBaseCurrency(' usdc ')).toBe('USDC');
+    expect(normalizeFormBaseCurrency('', 'EUR')).toBe('EUR');
+  });
+
+  it('resolves form error messages through the shared UI resolver fallback', () => {
+    expect(
+      resolveFormErrorMessage(
+        {
+          isAxiosError: true,
+          response: { data: { error: { message: 'wallet name already exists' } } },
+        },
+        'Save failed'
+      )
+    ).toBe('wallet name already exists');
+    expect(resolveFormErrorMessage({}, 'Save failed')).toBe('Save failed');
+  });
+
   it('parses valid timestamps and fails invalid dates to zero', () => {
     expect(toTimestamp('2026-06-05T00:00:00.000Z')).toBe(Date.UTC(2026, 5, 5));
     expect(toTimestamp('not-a-date')).toBe(0);
@@ -66,9 +96,13 @@ describe('shared Web utilities', () => {
   it('creates and strips strategy threshold client ids without leaking them to payloads', () => {
     const threshold = createThreshold({ percent: 1, arm: 2, clientId: 'threshold-fixed' });
     const dcaLevel = createDcaLevel({ percent: -3, multiplier: 4, clientId: 'dca-fixed' });
+    const generatedThreshold = createThreshold();
+    const generatedDcaLevel = createDcaLevel();
 
     expect(threshold).toEqual({ percent: 1, arm: 2, clientId: 'threshold-fixed' });
     expect(dcaLevel).toEqual({ percent: -3, multiplier: 4, clientId: 'dca-fixed' });
+    expect(generatedThreshold.clientId).toMatch(/^threshold-/);
+    expect(generatedDcaLevel.clientId).toMatch(/^dca-/);
     expect(stripThresholdClientIds([threshold])).toEqual([{ percent: 1, arm: 2 }]);
     expect(stripDcaLevelClientIds([dcaLevel])).toEqual([{ percent: -3, multiplier: 4 }]);
   });

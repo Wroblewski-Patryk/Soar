@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-06-06T16:24:34.647Z
+Generated: 2026-06-07T06:46:35.755Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,80 +11,80 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 37 |
 | component | 97 |
-| document | 3706 |
+| document | 3790 |
 | feature | 225 |
-| function | 8324 |
+| function | 8343 |
 | migration | 56 |
 | model | 277 |
 | module | 15 |
 | project | 1 |
 | route | 352 |
-| task | 1101 |
-| test | 388 |
+| task | 1177 |
+| test | 410 |
 
 ## Counts By Status
 
 | Status | Count |
 | --- | ---: |
-| blocked | 24 |
+| blocked | 25 |
 | deprecated | 7 |
-| implemented | 12830 |
-| in_progress | 9 |
-| tested | 674 |
-| verified | 1087 |
+| implemented | 12909 |
+| in_progress | 10 |
+| tested | 720 |
+| verified | 1161 |
 
 ## Health Signals
 
-- Raw implementation entities without inferred tests: 7608
-- Actionable implementation entities without inferred tests: 804
+- Raw implementation entities without inferred tests: 7277
+- Actionable implementation entities without inferred tests: 433
 - Raw implementation entities without inferred docs: 737
 - Actionable implementation entities without inferred docs: 0
-- Classified inferred-link noise: 7386
+- Classified inferred-link noise: 7426
 - Entities without owner attribution: 0
 - Disconnected entities: 0
 
 ## Top Actionable Missing Test Links
 
-- function: main (apps/api/prisma/seed.ts#main)
-- function: resetBotsE2eState (apps/api/src/modules/bots/bots.e2e.shared.ts#resetBotsE2eState)
-- function: seedRuntimeTicker (apps/api/src/modules/bots/bots.e2e.shared.ts#seedRuntimeTicker)
-- function: getBotWithStrategyProjectionById (apps/api/src/modules/bots/bots.repository.ts#getBotWithStrategyProjectionById)
-- function: getOwnedBotWithStrategyProjection (apps/api/src/modules/bots/bots.repository.ts#getOwnedBotWithStrategyProjection)
-- function: listOwnedBotsWithStrategyProjection (apps/api/src/modules/bots/bots.repository.ts#listOwnedBotsWithStrategyProjection)
-- function: listMarketCandles (apps/api/src/modules/bots/botsRuntimeRead.repository.ts#listMarketCandles)
-- function: listStrategiesByIds (apps/api/src/modules/bots/botsRuntimeRead.repository.ts#listStrategiesByIds)
-- function: toFiniteNonNegativeInt (apps/api/src/modules/engine/runtimePositionState.store.ts#toFiniteNonNegativeInt)
-- function: clampPeriod (apps/api/src/modules/engine/sharedIndicatorSeries.ts#clampPeriod)
-- function: ensureAdx (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureAdx)
-- function: ensureAtr (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureAtr)
-- function: ensureBollinger (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureBollinger)
-- function: ensureCci (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureCci)
-- function: ensureDonchian (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureDonchian)
-- function: ensureEma (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureEma)
-- function: ensureFundingRate (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureFundingRate)
-- function: ensureFundingRateZScore (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureFundingRateZScore)
-- function: ensureMacd (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureMacd)
-- function: ensureMomentum (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureMomentum)
-- function: ensureOpenInterest (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOpenInterest)
-- function: ensureOpenInterestDelta (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOpenInterestDelta)
-- function: ensureOpenInterestMa (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOpenInterestMa)
-- function: ensureOpenInterestZScore (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOpenInterestZScore)
-- function: ensureOrderBookDepthRatio (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOrderBookDepthRatio)
-- function: ensureOrderBookImbalance (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOrderBookImbalance)
-- function: ensureOrderBookSpreadBps (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOrderBookSpreadBps)
-- function: ensureRoc (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureRoc)
-- function: ensureSma (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureSma)
-- function: ensureStochastic (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureStochastic)
-- function: ensureStochRsi (apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureStochRsi)
-- function: pushConditionLine (apps/api/src/modules/engine/strategySignalAnalysis.ts#pushConditionLine)
-- function: pushIndicatorSummary (apps/api/src/modules/engine/strategySignalAnalysis.ts#pushIndicatorSummary)
-- function: pushRule (apps/api/src/modules/engine/strategySignalAnalysis.ts#pushRule)
-- function: withFallback (apps/api/src/modules/engine/strategySignalAnalysis.ts#withFallback)
-- function: buildImportedExternalPositionId (apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#buildImportedExternalPositionId)
-- function: buildImportedExternalPositionIds (apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#buildImportedExternalPositionIds)
-- function: buildImportedExternalPositionMarketPrefix (apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#buildImportedExternalPositionMarketPrefix)
-- function: buildLegacyImportedExternalPositionId (apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#buildLegacyImportedExternalPositionId)
-- function: buildLegacyImportedExternalPositionSymbolPrefix (apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#buildLegacyImportedExternalPositionSymbolPrefix)
+- function: add (scripts/checkCoolifyStackEnv.mjs#add)
+- function: buildValueIssues (scripts/checkCoolifyStackEnv.mjs#buildValueIssues)
+- function: evaluateCoolifyStackEnv (scripts/checkCoolifyStackEnv.mjs#evaluateCoolifyStackEnv)
+- function: formatCoolifyStackEnvReport (scripts/checkCoolifyStackEnv.mjs#formatCoolifyStackEnvReport)
+- function: get (scripts/checkCoolifyStackEnv.mjs#get)
+- function: isPlaceholderValue (scripts/checkCoolifyStackEnv.mjs#isPlaceholderValue)
+- function: isValidUrl (scripts/checkCoolifyStackEnv.mjs#isValidUrl)
+- function: looksWeakSecret (scripts/checkCoolifyStackEnv.mjs#looksWeakSecret)
+- function: main (scripts/checkCoolifyStackEnv.mjs#main)
+- function: normalizeValue (scripts/checkCoolifyStackEnv.mjs#normalizeValue)
+- function: parseKeyringVersions (scripts/checkCoolifyStackEnv.mjs#parseKeyringVersions)
+- function: printUsage (scripts/checkCoolifyStackEnv.mjs#printUsage)
+- function: shouldSkipPlaceholder (scripts/checkCoolifyStackEnv.mjs#shouldSkipPlaceholder)
+- function: collectMissing (scripts/checkDocsParity.mjs#collectMissing)
+- function: collectPageFiles (scripts/checkDocsParity.mjs#collectPageFiles)
+- function: directoryExists (scripts/checkDocsParity.mjs#directoryExists)
+- function: fileExists (scripts/checkDocsParity.mjs#fileExists)
+- function: listDirectoryNames (scripts/checkDocsParity.mjs#listDirectoryNames)
+- function: main (scripts/checkDocsParity.mjs#main)
+- function: normalizeRouteFromPage (scripts/checkDocsParity.mjs#normalizeRouteFromPage)
+- function: parseArgs (scripts/checkDocsParity.mjs#parseArgs)
+- function: parseCanonicalRoutes (scripts/checkDocsParity.mjs#parseCanonicalRoutes)
+- function: parseModuleRows (scripts/checkDocsParity.mjs#parseModuleRows)
+- function: resolveRepoPath (scripts/checkDocsParity.mjs#resolveRepoPath)
+- function: toPosixPath (scripts/checkDocsParity.mjs#toPosixPath)
+- function: fetchWithTimeout (scripts/checkPostDeployRuntimeFreshness.mjs#fetchWithTimeout)
+- function: main (scripts/checkPostDeployRuntimeFreshness.mjs#main)
+- function: main (scripts/checkProtectedInputReadiness.mjs#main)
+- function: printUsage (scripts/checkProtectedInputReadiness.mjs#printUsage)
+- function: writeOutput (scripts/checkProtectedInputReadiness.mjs#writeOutput)
+- function: capture (scripts/checkRcExternalGateEvidence.mjs#capture)
+- function: extractEvidenceValues (scripts/checkRcExternalGateEvidence.mjs#extractEvidenceValues)
+- function: main (scripts/checkRcExternalGateEvidence.mjs#main)
+- function: parseArgs (scripts/checkRcExternalGateEvidence.mjs#parseArgs)
+- function: parseGateLabel (scripts/checkRcExternalGateEvidence.mjs#parseGateLabel)
+- function: parseSignoffFields (scripts/checkRcExternalGateEvidence.mjs#parseSignoffFields)
+- function: resolveDocsRoot (scripts/checkRcExternalGateEvidence.mjs#resolveDocsRoot)
+- function: assertOptions (scripts/collectLiveImportReadbackEvidence.mjs#assertOptions)
+- function: collectAllPositions (scripts/collectLiveImportReadbackEvidence.mjs#collectAllPositions)
+- function: collectSymbolPositions (scripts/collectLiveImportReadbackEvidence.mjs#collectSymbolPositions)
 
 ## Top Actionable Missing Doc Links
 
@@ -92,8 +92,9 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 ## Classified Inferred-Link Noise
 
 - config_only_file: 65
-- curated_graph_covered: 1545
+- curated_graph_covered: 1515
 - generated_vendor_docs_vault_plugin: 5775
+- test_fixture_function: 70
 - top_level_app_mount: 1
 
 ## Top Classified Noise Samples

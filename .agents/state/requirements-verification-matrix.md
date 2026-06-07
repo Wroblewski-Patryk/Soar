@@ -4,6 +4,132 @@ Last updated: 2026-05-25
 
 ## Current Release Override
 
+- 2026-06-07 `LUC-2701` verifies the TSA repair-lane refresh for
+  `REQ-DOC-031`: current architecture-awareness report freshness was restored
+  after completed [LUC-2693](/LUC/issues/LUC-2693), reducing actionable
+  missing-test links to `433` and moving the top non-duplicate family to
+  `scripts/checkCoolifyStackEnv.mjs`. Existing focused
+  `checkCoolifyStackEnv` proof passes locally (`8/8`), but direct
+  scanner-readable relation rows are absent, so [LUC-2702](/LUC/issues/LUC-2702)
+  was created for Test Automation repair/classification. This is local
+  traceability coordination only and does not change protected production,
+  worker-readiness, exchange, or live-trading gates. Evidence:
+  `history/tasks/luc-2701-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2693` verifies the local V1 master state ledger tooling
+  repair slice under `REQ-DOC-031`: current
+  `scripts/buildV1MasterStateLedger.mjs` helper anchors now have focused local
+  `node:test` proof plus direct scanner-readable relation rows. This is local
+  traceability proof only and does not change protected production,
+  worker-readiness, exchange, or live-trading gates. Evidence:
+  `history/tasks/luc-2693-v1-master-state-ledger-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2650` verifies the local route-reachable i18n audit tooling
+  repair slice under `REQ-I18N-022` and `REQ-DOC-031`: current
+  `scripts/auditRouteReachableI18n.mjs` helper anchors now have focused local
+  `node:test` proof plus direct scanner-readable relation rows. The live
+  route-reachable i18n audit remains green with `0` findings. This is local
+  traceability proof only and does not change protected production,
+  worker-readiness, exchange, or live-trading gates. Evidence:
+  `history/tasks/luc-2650-route-reachable-i18n-audit-script-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2646` verifies the local architecture graph drift audit
+  tooling repair slice under `REQ-DOC-031`: current
+  `scripts/auditArchitectureGraphDrift.mjs` helper anchors now have focused
+  local `node:test` proof plus direct scanner-readable relation rows. This is
+  local traceability proof only and does not change protected production,
+  worker-readiness, exchange, or live-trading gates. Evidence:
+  `history/tasks/luc-2646-architecture-graph-drift-script-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2620` verifies the TSA repair-lane refresh for
+  `REQ-DOC-031` and protected-boundary classification for `REQ-FUNC-021`.
+  Existing protected workers-ready/smoke-auth and release blockers remain
+  authoritative and were not duplicated. The current architecture-awareness
+  report's top actionable samples are stale relative to completed local repair
+  lanes [LUC-2601](/LUC/issues/LUC-2601), [LUC-2607](/LUC/issues/LUC-2607),
+  and [LUC-2611](/LUC/issues/LUC-2611), so this checkpoint does not create a
+  new implementation child from those samples. This adds no product/runtime,
+  protected production, browser, exchange, or live-trading proof. Evidence:
+  `history/tasks/luc-2620-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2619` keeps `REQ-FUNC-021` blocked for current protected
+  worker-readiness proof. Public production checks pass, but the current
+  supported `SMOKE_*` auth material is not accepted by Soar API auth for
+  protected `GET /workers/ready`: the worker-included deploy smoke returned
+  `401`. This verifies fail-closed auth rejection only; it does not verify
+  worker readiness. Unblock owner/action: credential/account owner or
+  board-approved secret-store operator must provision one production-smoke
+  appropriate `ADMIN` principal/session accepted by Soar API auth and bind it
+  through exactly one supported `SMOKE_*` path, then wake
+  [LUC-2618](/LUC/issues/LUC-2618). Evidence:
+  `history/tasks/luc-2619-provision-smoke-auth-binding-workers-ready-2026-06-07-task.md`.
+- 2026-06-07 `LUC-2601` verifies the local Web shared-lib repair slice under
+  `REQ-DOC-031`: Web API protected-route/hard redirect helpers, form
+  normalization/error fallback helpers, axios compatibility message mapping,
+  market-stream URL/EventSource helpers, and numeric input sanitization/step
+  helpers now have focused local tests or existing focused-test mappings plus
+  direct scanner-readable relations. Proof is local traceability only.
+  Architecture-awareness refresh could not run from this checkout because the
+  named builder script is absent; protected production/browser/release proof
+  gates are unchanged. Evidence:
+  `history/tasks/luc-2601-web-api-form-utility-missing-test-links-2026-06-07-task.md`.
+- 2026-06-07 `LUC-2597` verifies the local Web repair slice under
+  `REQ-DOC-031`: build-info route helpers, app/public/dashboard layouts,
+  `manifest`, `LoginPage`, runtime display utilities, DCA/runtime monitoring
+  formatters, strategy threshold generated IDs, `I18nProvider`, and locale
+  formatting missing-test rows from the architecture-awareness report now have
+  focused local tests or existing focused-test mappings plus direct
+  scanner-readable relations. Proof is local only and does not change
+  protected production/browser/release proof gates. Evidence:
+  `history/tasks/luc-2597-web-architecture-missing-test-link-families-2026-06-07-task.md`.
+- 2026-06-07 `LUC-2596` verifies the local CBE repair slice under
+  `REQ-DOC-031`: the assigned API-side architecture-awareness missing-test
+  anchors now have focused local proof or direct existing-proof mapping plus
+  scanner-readable relation rows. `seed.ts#main`,
+  `runtimePositionState.store.ts#toFiniteNonNegativeInt`, and
+  `runtimeFreshness.ts#parseEnvDate` are no longer listed in the refreshed
+  architecture-awareness report's top actionable missing-test links. This is
+  local traceability proof only and does not change protected production,
+  worker-readiness, exchange, or live-trading gates. Evidence:
+  `history/tasks/luc-2596-api-side-architecture-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2595` verifies the TSA repair-lane refresh for
+  `REQ-DOC-031` and protected-boundary classification for `REQ-FUNC-021`.
+  Existing protected release and workers-ready blockers remain authoritative
+  and were not duplicated. Current uncovered architecture-awareness local proof
+  families were delegated to [LUC-2596](/LUC/issues/LUC-2596) and
+  [LUC-2597](/LUC/issues/LUC-2597). This does not add product/runtime or
+  protected production proof. Evidence:
+  `history/tasks/luc-2595-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+- 2026-06-07 `LUC-2588` verifies the controller classification for
+  `REQ-DOC-031` and `REQ-FUNC-021` only. Current Paperclip readback keeps V1
+  protected release and workers-ready proof fail-closed under existing owner
+  chains; it does not add product/runtime proof. Architecture backlog lanes
+  are covered by [LUC-2564](/LUC/issues/LUC-2564) through
+  [LUC-2568](/LUC/issues/LUC-2568), with protected proof still blocked by
+  [LUC-241](/LUC/issues/LUC-241). No duplicate requirement or repair lane was
+  created. Evidence:
+  `history/tasks/luc-2588-v1-audit-to-completion-controller-2026-06-07-task.md`.
+- 2026-06-06 `LUC-2580` verifies the local Runtime/Adapter worker lifecycle
+  repair slice under `REQ-DOC-031`: execution worker runtime signal bootstrap,
+  market-stream lifecycle, and worker bootstrap missing-test rows from the
+  architecture-awareness report now have focused local tests and direct
+  scanner-readable relations. Proof is local only and does not change protected
+  production worker-readiness gates.
+- 2026-06-06 `LUC-2579` verifies the local security utility repair slice under
+  `REQ-DOC-031`: crypto/hash/error exposure missing-test rows from the
+  architecture-awareness report were either already covered by focused crypto
+  tests or closed with new focused tests plus direct scanner-readable relations.
+  Proof is local only and does not change protected production proof gates.
+- 2026-06-06 `LUC-2568` syncs the architecture-backed backlog created by
+  [LUC-2557](/LUC/issues/LUC-2557) into durable evidence ledgers. The active
+  backlog rows are [LUC-2564](/LUC/issues/LUC-2564) QA protected browser proof,
+  [LUC-2565](/LUC/issues/LUC-2565) Security high-risk proof review,
+  [LUC-2566](/LUC/issues/LUC-2566) Backend/Runtime local-only chain audit,
+  [LUC-2567](/LUC/issues/LUC-2567) Ops protected production/runtime evidence
+  map, and [LUC-2568](/LUC/issues/LUC-2568) Docs ledger sync. Historical
+  unchecked plan boxes remain non-active unless backed by current architecture
+  rows and Paperclip owner lanes.
 - 2026-06-04 `LUC-2021` updates `REQ-DOC-029` and `REQ-DOC-030`: shared UI
   inferred test/doc link gaps were triaged against current architecture
   artifacts and focused Web tests. `docs/modules/web-shared.md` now names the
@@ -84,6 +210,7 @@ Last updated: 2026-05-25
 
 | ID | Source | Requirement | Type | Journey/Module | Verification Method | Evidence | Status | Next Proof Or Fix | Last Updated |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| REQ-DOC-031 | [LUC-2557](/LUC/issues/LUC-2557) architecture backlog; [LUC-2568](/LUC/issues/LUC-2568); [LUC-2579](/LUC/issues/LUC-2579); `docs/status/function-journey-index.md`; `docs/status/user-action-index.md`; `docs/architecture/traceability-matrix.md`; `docs/architecture/chains/chains.csv` | Architecture-derived proof gaps must be carried as owned evidence-ledger rows with owner, status, protected-gate flag, and proof requirement before they are treated as active V1 repair work. | documentation/process/architecture/QA | Architecture gap backlog / V1 audit-to-completion | Paperclip child issue readback + source-of-truth ledger sync + focused local proof | `history/tasks/luc-2568-sync-architecture-gap-backlog-ledgers-2026-06-06-task.md`; `history/tasks/luc-2579-security-utility-missing-test-links-2026-06-06-task.md`; [LUC-2557](/LUC/issues/LUC-2557) comment `2564a6b3-13e2-465d-9557-a03c76ef4f00`; [LUC-2564](/LUC/issues/LUC-2564) blocked by [LUC-241](/LUC/issues/LUC-241); [LUC-2565](/LUC/issues/LUC-2565) done; [LUC-2566](/LUC/issues/LUC-2566) done; [LUC-2567](/LUC/issues/LUC-2567) blocked by [LUC-241](/LUC/issues/LUC-241); [LUC-2568](/LUC/issues/LUC-2568) done; [LUC-2579](/LUC/issues/LUC-2579) local security utility proof done. | verified | Keep this backlog as the active architecture-backed gap set. Do not promote historical unchecked plan items unless they map to current architecture rows and an owned Paperclip lane. Reopen crypto/hash/error utility relation work only on a future concrete missing-test row or focused regression. | 2026-06-06 |
 | REQ-DATA-040 | LUC-40 issue scope 2026-05-25; `apps/api/prisma/schema.prisma`; `apps/api/prisma/migrations/*` | Persistence layer must maintain an evidence-backed known-state for schema validity, migration-chain health, and ownership-critical trading/auth/subscription/audit entities before deeper data fixes are queued. | data/integrity/process | Data persistence foundation | Prisma schema validation + migration status + known-state artifact | `history/tasks/luc-40-data-persistence-known-state-2026-05-25-task.md`; `corepack pnpm --filter api exec prisma validate` PASS; `corepack pnpm --filter api exec prisma migrate status --schema prisma/schema.prisma` PASS (`55` migrations, schema up to date); `corepack pnpm run ops:db:backup-restore:check-local` PASS (`history/operations/v1-db-restore-check-2026-05-25T18-02-43-687Z.md`); narrowed persistence suite PASS via `corepack pnpm --filter api exec vitest run src/modules/auth/auth.e2e.test.ts src/modules/orders/orders.liveCancelBoundary.service.test.ts src/modules/positions/positions.list.e2e.test.ts --pool=forks --maxWorkers=1 --minWorkers=1 --test-timeout 60000` (`3` files, `15` tests) and `corepack pnpm --filter api exec vitest run src/modules/subscriptions/subscriptionEntitlements.service.test.ts --pool=forks --maxWorkers=1 --minWorkers=1 --test-timeout 30000` (`2` tests). Initial broad pack timeout (`124054ms`) is now mitigated by narrowed file-level proof. | verified | Keep future changes on auth/orders/positions/subscriptions tied to the same narrowed DB-backed proof pattern and rerun backup/restore proof after migration changes. | 2026-05-26 |
 | REQ-DOC-005 | User request 2026-05-24; `docs/architecture/architecture-evidence-graph-system.md`; `docs/architecture/registry/nodes.csv`; `docs/architecture/relations/dependencies.csv`; `docs/architecture/chains/chains.csv` | Soar must maintain an Obsidian-first living architecture evidence graph where project elements are CSV records linked by relations and function chains, with generated Markdown nodes and JSON export for systemic feature analysis. | documentation/process/architecture | Architecture evidence graph | generator validation + docs/source-of-truth review | Foundation seed added CSV registries, relation rows, chain rows, generated node notes, generated graph exports, and status output. `pnpm run architecture:graph:generate` passed with `45` nodes, `24` relations, and `4` chains. | implemented_not_verified | Run guardrails/docs parity and then backfill all P0 modules from codebase map, route inventory, module docs, tests, and existing evidence. | 2026-05-24 |
 | REQ-DOC-029 | User request 2026-05-25; `docs/architecture/architecture-evidence-graph-system.md`; `scripts/generateFunctionJourneyIndexes.mjs` | Soar must expose generated indexes that connect web journeys, function chains, API routes, tests, docs, evidence artifacts, and explicit gaps so agents can determine what works and what lacks proof before fixing user-reported failures. | documentation/process/architecture | Function Journey Evidence Index | generator validation + strict structural gap check | `FUNCTION-JOURNEY-EVIDENCE-INDEX-2026-05-25`: `pnpm run architecture:journey:index` and `pnpm run architecture:journey:index:strict` generated `27` function-chain rows, `36` web journey rows, `96` API surface rows, `0` critical structural gaps, and `28` high proof gaps. JSON readback passed for graph and artifact outputs. | verified | Use the generated indexes before repair work; close high proof gaps with browser/protected production proof or explicit accepted boundaries. | 2026-05-25 |
@@ -279,6 +406,30 @@ Last updated: 2026-05-25
   updates `REQ-FUNC-021` and `REQ-AUDIT-031`: `audit:rerun-playbook:check`
   now fails when required baseline values are empty or are not repository
   paths.
+- 2026-06-07 `LUC-2607-WEB-THEME-DATATABLE-MISSING-TEST-LINKS-2026-06-07`
+  updates `REQ-DOC-028` / architecture evidence graph traceability: Web
+  ThemeSwitcher/theme bootstrap and DataTable missing-test anchors now have
+  focused local Web proof and direct scanner-readable rows in
+  `docs/architecture/relations/priority-test-links.csv`. Proof:
+  `corepack pnpm --filter web exec vitest run src/ui/components/ThemeSwitch.test.tsx src/ui/components/DataTable.test.tsx --run`
+  passed (`2` files / `17` tests), `pnpm run architecture:graph:generate`
+  passed (`653` nodes / `842` relations / `27` chains), and
+  `pnpm run quality:guardrails` passed. Boundary: local Web proof only; no
+  production, deploy, protected-smoke, account, secret, exchange, database, or
+  live-trading behavior was verified or mutated.
+- 2026-06-07 `LUC-2624-WEB-UI-FORM-LAYOUT-MISSING-TEST-LINKS-2026-06-07`
+  updates `REQ-DOC-028` / architecture evidence graph traceability: refreshed
+  Web UI/form/layout anchors now have focused local Web proof and direct
+  scanner-readable rows in
+  `docs/architecture/relations/priority-test-links.csv`. Proof:
+  `corepack pnpm --filter web exec vitest run src/ui/components/DataTable.test.tsx src/ui/forms/FormFields.test.tsx src/ui/forms/FormPrimitives.test.tsx src/ui/components/SharedUiPrimitives.test.tsx src/ui/layout/dashboard/Header.responsive.test.tsx src/ui/layout/dashboard/Footer.layout.test.tsx src/ui/layout/dashboard/PageTitle.a11y.test.tsx src/ui/layout/public/Header.test.tsx src/ui/layout/public/Footer.layout.test.tsx`
+  passed (`9` files / `49` tests), `pnpm run architecture:graph:generate`
+  passed (`653` nodes / `842` relations / `27` chains), and
+  `pnpm run quality:guardrails` passed. Boundary: local Web proof only; no
+  production, deploy, protected-smoke, account, secret, exchange, database, or
+  live-trading behavior was verified or mutated. Exact architecture-awareness
+  top-sample removal is not claimed because the local builder scripts are
+  absent.
 
 Allowed statuses: `proposed`, `accepted`, `in_progress`,
 `implemented_not_verified`, `partially_verified`, `verified`, `failed`,

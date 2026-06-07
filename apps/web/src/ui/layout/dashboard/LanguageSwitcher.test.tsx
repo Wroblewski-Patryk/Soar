@@ -17,14 +17,17 @@ describe("LanguageSwitcher visual contract", () => {
     expect(screen.getAllByTestId("flag-en").length).toBeGreaterThan(0);
     const toggle = screen.getByLabelText("Language");
     expect(toggle).toHaveTextContent("English");
+    const dropdown = toggle.closest("details");
 
     fireEvent.click(toggle);
+    expect(dropdown).toHaveAttribute("open");
     fireEvent.click(screen.getByRole("button", { name: /polski|polish/i }));
 
     await waitFor(() => {
       expect(screen.getAllByTestId("flag-pl").length).toBeGreaterThan(0);
       expect(screen.getAllByText("Polski").length).toBeGreaterThan(0);
     });
+    expect(dropdown).not.toHaveAttribute("open");
 
     fireEvent.click(screen.getByLabelText(/language|jezyk/i));
     fireEvent.click(screen.getByRole("button", { name: /portugalski|portuguese|portugues/i }));

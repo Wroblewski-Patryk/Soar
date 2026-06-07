@@ -9,6 +9,10 @@ import {
   runtimeOpenOrderStatusLabelSuffix,
   runtimeOrderSourceLabelSuffix,
   runtimePositionProvenanceLabelSuffix,
+  toRuntimeCloseInitiatorPillClass,
+  toRuntimeCloseReasonPillClass,
+  toRuntimeTradeLifecycleBadgeClass,
+  toRuntimeTradeLifecyclePillClass,
 } from "./runtimeMonitoringFormatters";
 
 describe("resolveRuntimePositionProvenanceKind", () => {
@@ -121,5 +125,18 @@ describe("resolveRuntimePositionProvenanceKind", () => {
         feeCurrency: "USDT",
       })
     ).toBe("PENDING USDT");
+  });
+
+  it("maps runtime lifecycle and close metadata to stable pill classes", () => {
+    expect(toRuntimeTradeLifecycleBadgeClass("OPEN")).toBe("badge-success");
+    expect(toRuntimeTradeLifecycleBadgeClass("DCA")).toBe("badge-warning");
+    expect(toRuntimeTradeLifecycleBadgeClass("CLOSE")).toBe("badge-primary");
+    expect(toRuntimeTradeLifecyclePillClass("UNKNOWN")).toContain("text-base-content/70");
+    expect(toRuntimeCloseReasonPillClass("TTP")).toContain("text-success");
+    expect(toRuntimeCloseReasonPillClass("ACCOUNT_FLOOR")).toContain("text-error");
+    expect(toRuntimeCloseReasonPillClass("EXTERNAL_SYNC_MISSING")).toContain("text-info");
+    expect(toRuntimeCloseInitiatorPillClass("USER_APP")).toContain("text-secondary");
+    expect(toRuntimeCloseInitiatorPillClass("BOT_APP")).toContain("text-primary");
+    expect(toRuntimeCloseInitiatorPillClass("SYSTEM_REPAIR")).toContain("text-warning");
   });
 });

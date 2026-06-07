@@ -2,6 +2,7 @@
 
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const repoRoot = process.cwd();
 const auditsDir = path.join(repoRoot, 'history', 'audits');
@@ -10,7 +11,7 @@ const toPosixPath = (value) => value.split(path.sep).join('/');
 const relativePath = (targetPath) => toPosixPath(path.relative(repoRoot, targetPath));
 const readJson = async (filePath) => JSON.parse(await readFile(filePath, 'utf8'));
 
-const parseArgs = () => {
+const parseArgs = (args = process.argv.slice(2)) => {
   const options = {
     today: new Date().toISOString().slice(0, 10),
     ledger: '',
@@ -19,7 +20,6 @@ const parseArgs = () => {
     help: false,
   };
 
-  const args = process.argv.slice(2);
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
     if (arg === '--help' || arg === '-h') {
@@ -315,8 +315,8 @@ ${nextRows}
 `;
 };
 
-const main = async () => {
-  const options = parseArgs();
+const main = async (args = process.argv.slice(2)) => {
+  const options = parseArgs(args);
   if (options.help) {
     printHelp();
     return;
@@ -337,7 +337,30 @@ const main = async () => {
   console.log(`Release readiness: ${scorecard.summary.releaseReadinessPercent}%`);
 };
 
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+export {
+  buildScorecard,
+  latestLedgerPath,
+  main,
+  parseArgs,
+  percent,
+  printHelp,
+  readJson,
+  relativePath,
+  renderMarkdown,
+  renderTable,
+  riskWeight,
+  summarizeRows,
+  toPosixPath,
+  weightedAverage,
+};
+
+const isDirectRun = process.argv[1]
+  ? path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+  : false;
+
+if (isDirectRun) {
+  main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+}

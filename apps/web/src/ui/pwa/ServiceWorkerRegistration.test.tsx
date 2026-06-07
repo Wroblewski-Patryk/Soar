@@ -194,4 +194,74 @@ describe("ServiceWorkerRegistration", () => {
     });
     expect(update).toHaveBeenCalled();
   });
+
+  it("activates an installing worker after updatefound when the page is controller-owned", async () => {
+    env.NEXT_PUBLIC_SW_TEST_MODE = "1";
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ buildId: "build-a" }),
+      })
+    );
+
+    const postMessage = vi.fn();
+    const update = vi.fn().mockResolvedValue(undefined);
+    const register = vi.fn();
+    let installingStateChange: (() => void) | null = null;
+    let updateFound: (() => void) | null = null;
+
+    const installingWorker = {
+      state: "installing",
+      addEventListener: vi.fn((eventName: string, listener: () => void) => {
+        if (eventName === "statechange") {
+          installingStateChange = listener;
+        }
+      }),
+    } as unknown as ServiceWorker;
+
+    const registration = {
+      waiting: { postMessage } as unknown as ServiceWorker,
+      installing: installingWorker,
+      update,
+      addEventListener: vi.fn((eventName: string, listener: () => void) => {
+        if (eventName === "updatefound") {
+          updateFound = listener;
+        }
+      }),
+    } as unknown as ServiceWorkerRegistration;
+    register.mockResolvedValue(registration);
+
+    Object.defineProperty(navigator, "serviceWorker", {
+      configurable: true,
+      value: {
+        register,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        controller: {} as ServiceWorker,
+      } as unknown as ServiceWorkerContainer,
+    });
+
+    render(<ServiceWorkerRegistration />);
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(registration.addEventListener).toHaveBeenCalledWith("updatefound", expect.any(Function));
+    expect(installingWorker.addEventListener).toHaveBeenCalledWith("statechange", expect.any(Function));
+
+    await act(async () => {
+      updateFound?.();
+      Object.defineProperty(installingWorker, "state", {
+        configurable: true,
+        value: "installed",
+      });
+      installingStateChange?.();
+      await Promise.resolve();
+    });
+
+    expect(postMessage).toHaveBeenCalledWith({ type: "SKIP_WAITING" });
+  });
 });

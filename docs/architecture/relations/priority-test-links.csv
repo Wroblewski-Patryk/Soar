@@ -1,14 +1,43 @@
 entity_path,test_path,reason
 apps/web/src/ui/components/DataTable.tsx,apps/web/src/ui/components/DataTable.test.tsx,LUC-2164 direct shared table relation
+apps/web/src/ui/components/DataTable.tsx#applySearch,apps/web/src/ui/components/DataTable.test.tsx,LUC-2607 direct search submit relation
+apps/web/src/ui/components/DataTable.tsx#commitPageInput,apps/web/src/ui/components/DataTable.test.tsx,LUC-2607 direct page input relation
+apps/web/src/ui/components/DataTable.tsx#compareValues,apps/web/src/ui/components/DataTable.test.tsx,LUC-2607 direct sortable comparison relation
+apps/web/src/ui/components/DataTable.tsx#DataTable,apps/web/src/ui/components/DataTable.test.tsx,LUC-2607 direct shared table behavior relation
+apps/web/src/ui/components/DataTable.tsx#goToPage,apps/web/src/ui/components/DataTable.test.tsx,LUC-2607 direct pagination navigation relation
+apps/web/src/ui/components/DataTable.tsx#handleEscape,apps/web/src/ui/components/DataTable.test.tsx,LUC-2607 direct columns dropdown escape relation
+apps/web/src/ui/components/DataTable.tsx#handlePageInputChange,apps/web/src/ui/components/DataTable.test.tsx,LUC-2607 direct page input change relation
+apps/web/src/ui/components/DataTable.tsx#handlePointerDown,apps/web/src/ui/components/DataTable.test.tsx,LUC-2607 direct columns dropdown outside-click relation
+apps/web/src/ui/components/DataTable.tsx#handlePageSizeChange,apps/web/src/ui/components/DataTable.test.tsx,LUC-2624 direct page-size reset relation
+apps/web/src/ui/components/DataTable.tsx#handleSort,apps/web/src/ui/components/DataTable.test.tsx,LUC-2607 direct sort toggle relation
+apps/web/src/ui/components/DataTable.tsx#setQueryValue,apps/web/src/ui/components/DataTable.test.tsx,LUC-2607 direct local filter query relation
 apps/web/src/ui/components/FooterPreferencesSwitchers.tsx,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2164 shared primitive relation
 apps/web/src/ui/components/ProfileButton.tsx,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2164 shared primitive relation
+apps/web/src/ui/components/FooterPreferencesSwitchers.tsx#FooterPreferencesSwitchers,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2611 direct footer preferences primitive relation
+apps/web/src/ui/components/ProfileButton.tsx#ProfileButton,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2611 direct profile navigation primitive relation
+apps/web/src/ui/components/StatusBadge.tsx#StatusBadge,apps/web/src/ui/components/StatusBadge.test.tsx,LUC-2611 direct status badge semantic class relation
+apps/web/src/ui/components/TableUi.tsx#TableToneBadge,apps/web/src/ui/components/TableUi.test.tsx,LUC-2611 direct table tone badge relation
+apps/web/src/ui/components/Tabs.tsx#syncFromHash,apps/web/src/ui/components/Tabs.test.tsx,LUC-2611 direct hash-synchronized tabs relation
+apps/web/src/ui/components/ViewState.tsx#SuccessState,apps/web/src/ui/components/ViewState.test.tsx,LUC-2611 direct success state relation
 apps/web/src/ui/forms/FormAlert.tsx,apps/web/src/ui/forms/FormFields.test.tsx,LUC-2164 shared form field relation
 apps/web/src/ui/forms/FormField.tsx,apps/web/src/ui/forms/FormFields.test.tsx,LUC-2164 shared form field relation
+apps/web/src/ui/forms/FormAlert.tsx#FormAlert,apps/web/src/ui/forms/FormPrimitives.test.tsx,LUC-2611 direct form alert variant relation
+apps/web/src/ui/forms/FormField.tsx#FormField,apps/web/src/ui/forms/FormPrimitives.test.tsx,LUC-2611 direct form field metadata relation
+apps/web/src/ui/forms/FormFields.tsx#CompoundField,apps/web/src/ui/forms/FormFields.test.tsx,LUC-2611 direct compound field relation
+apps/web/src/ui/forms/FormFields.tsx#RadioGroupField,apps/web/src/ui/forms/FormFields.test.tsx,LUC-2611 direct radio group selection relation
+apps/web/src/ui/forms/FormFields.tsx#RangeField,apps/web/src/ui/forms/FormFields.test.tsx,LUC-2611 direct range value relation
+apps/web/src/ui/forms/FormFields.tsx#TextareaField,apps/web/src/ui/forms/FormFields.test.tsx,LUC-2624 direct textarea metadata and change relation
+apps/web/src/ui/forms/FormFields.tsx#ToggleField,apps/web/src/ui/forms/FormFields.test.tsx,LUC-2624 direct toggle metadata and boolean change relation
 apps/web/src/ui/forms/FormGrid.tsx,apps/web/src/ui/forms/FormPrimitives.test.tsx,LUC-2164 shared form primitive relation
 apps/web/src/ui/forms/FormMobileActionBar.tsx,apps/web/src/ui/forms/FormPrimitives.test.tsx,LUC-2164 shared form primitive relation
 apps/web/src/ui/forms/FormPageShell.tsx,apps/web/src/ui/forms/FormPrimitives.test.tsx,LUC-2164 shared form primitive relation
 apps/web/src/ui/forms/FormSectionCard.tsx,apps/web/src/ui/forms/FormPrimitives.test.tsx,LUC-2164 shared form primitive relation
 apps/web/src/ui/forms/FormValidationSummary.tsx,apps/web/src/ui/forms/validationFeedback.test.ts,LUC-2164 shared validation relation
+apps/web/src/ui/forms/FormGrid.tsx#FormGrid,apps/web/src/ui/forms/FormPrimitives.test.tsx,LUC-2624 direct form grid layout relation
+apps/web/src/ui/forms/FormMobileActionBar.tsx#FormMobileActionBar,apps/web/src/ui/forms/FormPrimitives.test.tsx,LUC-2624 direct mobile action bar relation
+apps/web/src/ui/forms/FormPageShell.tsx#FormPageShell,apps/web/src/ui/forms/FormPrimitives.test.tsx,LUC-2624 direct form page shell relation
+apps/web/src/ui/forms/FormSectionCard.tsx#FormSectionCard,apps/web/src/ui/forms/FormPrimitives.test.tsx,LUC-2624 direct form section card relation
+apps/web/src/ui/forms/FormValidationSummary.tsx#FormValidationSummary,apps/web/src/ui/forms/FormPrimitives.test.tsx,LUC-2624 direct validation summary relation
 apps/web/src/ui/layout/dashboard/Footer.tsx,apps/web/src/ui/layout/dashboard/Footer.layout.test.tsx,LUC-2164 dashboard footer layout relation
 apps/web/src/ui/layout/dashboard/Header.tsx,apps/web/src/ui/layout/dashboard/Header.responsive.test.tsx,LUC-2164 dashboard header layout relation
 apps/web/src/ui/layout/dashboard/PageTitle.tsx,apps/web/src/ui/layout/dashboard/PageTitle.a11y.test.tsx,LUC-2164 dashboard title accessibility relation
@@ -21,21 +50,126 @@ apps/web/src/lib/getAxiosMessage.ts,apps/web/src/lib/errorResolver.test.ts,LUC-2
 apps/web/src/lib/handleError.ts,apps/web/src/lib/errorResolver.test.ts,LUC-2164 error handling relation
 apps/web/src/lib/marketStream.ts,apps/web/src/lib/sharedWebUtilities.test.ts,LUC-2164 shared lib aggregate relation
 apps/web/src/security/themeBootstrap.ts,apps/web/src/lib/sharedWebUtilities.test.ts,LUC-2164 theme bootstrap utility relation
+apps/web/src/security/themeBootstrap.ts#getStorageItem,apps/web/src/ui/components/ThemeSwitch.test.tsx,LUC-2607 direct theme bootstrap storage relation
+apps/web/src/security/themeBootstrap.ts#normalizeThemePreference,apps/web/src/ui/components/ThemeSwitch.test.tsx,LUC-2607 direct theme bootstrap normalization relation
+apps/web/src/security/themeBootstrap.ts#resolveSystemTheme,apps/web/src/ui/components/ThemeSwitch.test.tsx,LUC-2607 direct theme bootstrap system relation
+apps/web/src/ui/components/ThemeSwitch.tsx#handleChange,apps/web/src/ui/components/ThemeSwitch.test.tsx,LUC-2607 direct system theme change relation
 apps/web/src/ui/hooks/useDetailsDropdown.ts,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2164 details dropdown primitive relation
+apps/web/src/ui/hooks/useDetailsDropdown.ts#handleKeyDown,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2624 direct details escape-close relation
+apps/web/src/ui/hooks/useDetailsDropdown.ts#handlePointerDown,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2624 direct details outside-pointer relation
+apps/web/src/ui/hooks/useDetailsDropdown.ts#useDetailsDropdown,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2624 direct details dropdown hook relation
 apps/web/src/ui/layout/dashboard/headerControlStyles.ts,apps/web/src/lib/sharedWebUtilities.test.ts,LUC-2164 dashboard header style utility relation
+apps/web/src/ui/layout/dashboard/Footer.tsx#Footer,apps/web/src/ui/layout/dashboard/Footer.layout.test.tsx,LUC-2624 direct dashboard footer layout relation
+apps/web/src/ui/layout/dashboard/Header.tsx#Header,apps/web/src/ui/layout/dashboard/Header.responsive.test.tsx,LUC-2624 direct dashboard header responsive relation
+apps/web/src/ui/layout/dashboard/Header.tsx#isActive,apps/web/src/ui/layout/dashboard/Header.responsive.test.tsx,LUC-2624 direct active route styling relation
+apps/web/src/ui/layout/dashboard/Header.tsx#isGroupActive,apps/web/src/ui/layout/dashboard/Header.responsive.test.tsx,LUC-2624 direct grouped route styling relation
+apps/web/src/ui/layout/dashboard/Header.tsx#NavGroup,apps/web/src/ui/layout/dashboard/Header.responsive.test.tsx,LUC-2624 direct dashboard nav group relation
+apps/web/src/ui/layout/dashboard/Header.tsx#updateOverlayTop,apps/web/src/ui/layout/dashboard/Header.responsive.test.tsx,LUC-2624 direct mobile overlay offset relation
+apps/web/src/ui/layout/dashboard/headerControlStyles.ts#getHeaderDropdownLinkClass,apps/web/src/ui/layout/dashboard/Header.responsive.test.tsx,LUC-2624 direct dropdown link active class relation
+apps/web/src/ui/layout/dashboard/headerControlStyles.ts#getHeaderDropdownMenuClass,apps/web/src/ui/layout/dashboard/Header.responsive.test.tsx,LUC-2624 direct dropdown menu placement relation
+apps/web/src/ui/layout/dashboard/headerControlStyles.ts#getHeaderMenuItemClass,apps/web/src/ui/layout/dashboard/Header.responsive.test.tsx,LUC-2624 direct menu item active class relation
+apps/web/src/ui/layout/dashboard/LanguageSwitcher.tsx#handleSelect,apps/web/src/ui/layout/dashboard/LanguageSwitcher.test.tsx,LUC-2645 direct language selection and dropdown close relation
+apps/web/src/ui/layout/dashboard/PageTitle.tsx#PageTitle,apps/web/src/ui/layout/dashboard/PageTitle.a11y.test.tsx,LUC-2624 direct page title accessibility relation
+apps/web/src/ui/layout/public/Footer.tsx#Footer,apps/web/src/ui/layout/public/Footer.layout.test.tsx,LUC-2624 direct public footer layout relation
+apps/web/src/ui/layout/public/Header.tsx#Header,apps/web/src/ui/layout/public/Header.test.tsx,LUC-2624 direct public header auth route relation
 apps/web/vitest.setup.ts,apps/web/src/vitestSetupSupport.test.tsx,LUC-2199 Web test-harness setup support relation
 libs/shared/index.d.ts,apps/web/src/features/exchanges/exchangeCapabilities.test.ts,LUC-2199 shared declaration consumer type relation
 apps/api/src/modules/positions/livePositionReconciliation.helpers.ts,apps/api/src/modules/positions/livePositionReconciliation.service.test.ts,LUC-2187 positions reconciliation helper relation
 apps/api/src/utils/crypto.ts,apps/api/src/utils/crypto.test.ts,LUC-2187 API-key crypto helper relation
+apps/api/src/utils/crypto.ts#decrypt,apps/api/src/utils/crypto.test.ts,LUC-2579 versioned decrypt and legacy CBC relation
+apps/api/src/utils/crypto.ts#decryptLegacyCbc,apps/api/src/utils/crypto.test.ts,LUC-2579 legacy CBC decrypt relation
+apps/api/src/utils/crypto.ts#encrypt,apps/api/src/utils/crypto.test.ts,LUC-2579 versioned AES-GCM encrypt relation
+apps/api/src/utils/crypto.ts#getActiveKey,apps/api/src/utils/crypto.test.ts,LUC-2579 active key version fail-closed relation
+apps/api/src/utils/crypto.ts#getKeyForVersion,apps/api/src/utils/crypto.test.ts,LUC-2579 key version lookup relation
+apps/api/src/utils/errorExposure.ts#isProduction,apps/api/src/utils/securityUtilities.test.ts,LUC-2579 production error exposure gate relation
+apps/api/src/utils/formatZodError.ts#formatZodError,apps/api/src/utils/securityUtilities.test.ts,LUC-2579 validation formatting leak-prevention relation
+apps/api/src/utils/formatZodError.ts#sendValidationError,apps/api/src/utils/securityUtilities.test.ts,LUC-2579 validation error response relation
+apps/api/src/utils/hash.ts#comparePassword,apps/api/src/utils/securityUtilities.test.ts,LUC-2579 bcrypt password compare relation
+apps/api/src/utils/hash.ts#hashPassword,apps/api/src/utils/securityUtilities.test.ts,LUC-2579 bcrypt password hash relation
 apps/api/src/modules/orders/positionFillMath.ts,apps/api/src/modules/orders/positionFillMath.test.ts,LUC-2187 order fill math helper relation
 apps/web/vitest.setup.ts,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2198 Web test setup aggregate relation
 libs/shared/index.d.ts,apps/web/src/lib/sharedWebUtilities.test.ts,LUC-2198 shared type surface aggregate relation
 scripts/auditApiEndpointDocsParity.mjs,scripts/checkReusableAuditToolingIndex.test.mjs,LUC-2198 docs parity tooling aggregate relation
+scripts/auditApiEndpointDocsParity.mjs#collectRoutes,scripts/auditApiEndpointDocsParity.test.mjs,LUC-2639 direct mounted API route collection relation
+scripts/auditApiEndpointDocsParity.mjs#docPathForModule,scripts/auditApiEndpointDocsParity.test.mjs,LUC-2639 direct module docs path mapping relation
+scripts/auditApiEndpointDocsParity.mjs#joinRoute,scripts/auditApiEndpointDocsParity.test.mjs,LUC-2639 direct mounted route join relation
+scripts/auditApiEndpointDocsParity.mjs#main,scripts/auditApiEndpointDocsParity.test.mjs,LUC-2639 import-safe CLI entrypoint relation
+scripts/auditApiEndpointDocsParity.mjs#moduleNameForRouteFile,scripts/auditApiEndpointDocsParity.test.mjs,LUC-2639 direct route-file module mapping relation
+scripts/auditApiEndpointDocsParity.mjs#normalizeRoutePart,scripts/auditApiEndpointDocsParity.test.mjs,LUC-2639 direct route segment normalization relation
+scripts/auditApiEndpointDocsParity.mjs#parseArgs,scripts/auditApiEndpointDocsParity.test.mjs,LUC-2639 direct CLI argument parsing relation
+scripts/auditApiEndpointDocsParity.mjs#parseImports,scripts/auditApiEndpointDocsParity.test.mjs,LUC-2639 direct route import parsing relation
+scripts/auditApiEndpointDocsParity.mjs#readDocText,scripts/auditApiEndpointDocsParity.test.mjs,LUC-2639 module docs read path covered through docs mapping relation
+scripts/auditApiEndpointDocsParity.mjs#resolveImportPath,scripts/auditApiEndpointDocsParity.test.mjs,LUC-2639 direct existing relative import resolution relation
+scripts/auditApiEndpointDocsParity.mjs#routeMentionVariants,scripts/auditApiEndpointDocsParity.test.mjs,LUC-2639 direct dynamic route mention variant relation
+scripts/auditApiEndpointDocsParity.mjs#toPosix,scripts/auditApiEndpointDocsParity.test.mjs,LUC-2639 direct output path normalization relation
 scripts/auditArchitectureGraphDrift.mjs,scripts/repoGuardrails.test.mjs,LUC-2198 graph drift guardrail relation
+scripts/auditArchitectureGraphDrift.mjs#buildDriftAudit,scripts/auditArchitectureGraphDrift.test.mjs,LUC-2646 direct architecture drift audit rollup relation
+scripts/auditArchitectureGraphDrift.mjs#collectCoveredPaths,scripts/auditArchitectureGraphDrift.test.mjs,LUC-2646 direct architecture CSV covered-path collection relation
+scripts/auditArchitectureGraphDrift.mjs#formatDriftMarkdown,scripts/auditArchitectureGraphDrift.test.mjs,LUC-2646 direct architecture drift markdown formatting relation
+scripts/auditArchitectureGraphDrift.mjs#inventory,scripts/auditArchitectureGraphDrift.test.mjs,LUC-2646 direct representative file inventory relation
+scripts/auditArchitectureGraphDrift.mjs#main,scripts/auditArchitectureGraphDrift.test.mjs,LUC-2646 import-safe CLI and strict-mode relation
+scripts/auditArchitectureGraphDrift.mjs#parseCsv,scripts/auditArchitectureGraphDrift.test.mjs,LUC-2646 direct CSV parser relation
+scripts/auditArchitectureGraphDrift.mjs#summarizeDrift,scripts/auditArchitectureGraphDrift.test.mjs,LUC-2646 direct missing-path summary relation
+scripts/auditArchitectureGraphDrift.mjs#toRepoPath,scripts/auditArchitectureGraphDrift.test.mjs,LUC-2646 direct repository path normalization relation
+scripts/auditArchitectureGraphDrift.mjs#walk,scripts/auditArchitectureGraphDrift.test.mjs,LUC-2646 direct filtered repository walk relation
+scripts/auditArchitectureGraphDrift.mjs#writeDriftAudit,scripts/auditArchitectureGraphDrift.test.mjs,LUC-2646 direct architecture drift artifact writer relation
 scripts/auditRouteReachableI18n.mjs,scripts/checkReusableAuditToolingIndex.test.mjs,LUC-2198 i18n audit tooling aggregate relation
 scripts/buildObsidianVaultLayer.mjs,scripts/checkReusableAuditToolingIndex.test.mjs,LUC-2198 docs tooling aggregate relation
+scripts/buildObsidianVaultLayer.mjs#and,scripts/buildObsidianVaultLayer.test.mjs,LUC-2656 scanner-inferred conjunction token covered by import-safe helper proof relation
+scripts/buildObsidianVaultLayer.mjs#canvasEdge,scripts/buildObsidianVaultLayer.test.mjs,LUC-2656 direct Obsidian canvas edge relation
+scripts/buildObsidianVaultLayer.mjs#canvasNode,scripts/buildObsidianVaultLayer.test.mjs,LUC-2656 direct Obsidian canvas node relation
+scripts/buildObsidianVaultLayer.mjs#canvasSafeId,scripts/buildObsidianVaultLayer.test.mjs,LUC-2656 direct canvas id sanitization relation
+scripts/buildObsidianVaultLayer.mjs#chains,scripts/buildObsidianVaultLayer.test.mjs,LUC-2656 graph chain data import-safety relation
+scripts/buildObsidianVaultLayer.mjs#countBy,scripts/buildObsidianVaultLayer.test.mjs,LUC-2656 direct deterministic count aggregation relation
+scripts/buildObsidianVaultLayer.mjs#docsRel,scripts/buildObsidianVaultLayer.test.mjs,LUC-2656 direct docs-relative path normalization relation
+scripts/buildObsidianVaultLayer.mjs#firstNonEmpty,scripts/buildObsidianVaultLayer.test.mjs,LUC-2656 direct fallback selection relation
+scripts/buildObsidianVaultLayer.mjs#journeys,scripts/buildObsidianVaultLayer.test.mjs,LUC-2656 graph journey data import-safety relation
+scripts/buildObsidianVaultLayer.mjs#link,scripts/buildObsidianVaultLayer.test.mjs,LUC-2656 direct markdown link formatting relation
+scripts/buildObsidianVaultLayer.mjs#parseCsv,scripts/buildObsidianVaultLayer.test.mjs,LUC-2656 direct CSV parser relation
+scripts/buildObsidianVaultLayer.mjs#path,scripts/buildObsidianVaultLayer.test.mjs,LUC-2656 Node path normalization usage relation
+scripts/buildObsidianVaultLayer.mjs#posix,scripts/buildObsidianVaultLayer.test.mjs,LUC-2656 direct POSIX path conversion relation
+scripts/buildObsidianVaultLayer.mjs#readCsv,scripts/buildObsidianVaultLayer.test.mjs,LUC-2656 direct architecture CSV reader relation
+scripts/buildObsidianVaultLayer.mjs#rel,scripts/buildObsidianVaultLayer.test.mjs,LUC-2656 direct repository-relative path normalization relation
+scripts/buildObsidianVaultLayer.mjs#buildObsidianVaultLayer,scripts/buildObsidianVaultLayer.test.mjs,LUC-2671 already covered by LUC-2656 import-safe generator relation
+scripts/buildObsidianVaultLayer.mjs#splitRefs,scripts/buildObsidianVaultLayer.test.mjs,LUC-2671 already covered by LUC-2656 markdown formatting helper relation
+scripts/buildObsidianVaultLayer.mjs#statusOrder,scripts/buildObsidianVaultLayer.test.mjs,LUC-2671 already covered by LUC-2656 deterministic status ordering relation
+scripts/buildObsidianVaultLayer.mjs#table,scripts/buildObsidianVaultLayer.test.mjs,LUC-2671 already covered by LUC-2656 markdown table escaping relation
+scripts/buildObsidianVaultLayer.mjs#walkFiles,scripts/buildObsidianVaultLayer.test.mjs,LUC-2671 already covered by LUC-2656 generated-folder file walk relation
+scripts/buildObsidianVaultLayer.mjs#wiki,scripts/buildObsidianVaultLayer.test.mjs,LUC-2671 already covered by LUC-2656 Obsidian wiki-link formatting relation
+scripts/buildObsidianVaultLayer.mjs#write,scripts/buildObsidianVaultLayer.test.mjs,LUC-2671 already covered by LUC-2656 generator write path relation
+scripts/buildObsidianVaultLayer.mjs#writeCanvas,scripts/buildObsidianVaultLayer.test.mjs,LUC-2671 already covered by LUC-2656 canvas write path relation
 scripts/buildOpsRequestHeaders.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 ops request header release-gate relation
+scripts/buildOpsRequestHeaders.mjs#buildOpsRequestHeaders,scripts/buildOpsRequestHeaders.test.mjs,LUC-2661 ops request header bearer basic cookie and custom-header relation
+scripts/buildOpsRequestHeaders.mjs#normalize,scripts/buildOpsRequestHeaders.test.mjs,LUC-2661 ops request auth input normalization relation
+scripts/buildOpsRequestHeaders.mjs#resolveOpsAuthLayerOptions,scripts/buildOpsRequestHeaders.test.mjs,LUC-2661 ops request auth layer validation fail-closed relation
 scripts/buildProjectIndex.mjs,scripts/checkReusableAuditToolingIndex.test.mjs,LUC-2198 known-state tooling aggregate relation
+scripts/buildProjectIndex.mjs#buildIndex,scripts/buildProjectIndex.test.mjs,LUC-2664 direct project index CLI write and JSON relation
+scripts/buildProjectIndex.mjs#buildV1WorkMap,scripts/buildProjectIndex.test.mjs,LUC-2664 direct V1 work map surface-link relation
+scripts/buildProjectIndex.mjs#collectApiModuleSummaries,scripts/buildProjectIndex.test.mjs,LUC-2664 project index CLI collection relation
+scripts/buildProjectIndex.mjs#collectArchitectureSources,scripts/buildProjectIndex.test.mjs,LUC-2664 project index CLI architecture-source collection relation
+scripts/buildProjectIndex.mjs#collectNextRoutes,scripts/buildProjectIndex.test.mjs,LUC-2664 project index CLI route collection relation
+scripts/buildProjectIndex.mjs#collectPackageScripts,scripts/buildProjectIndex.test.mjs,LUC-2664 project index CLI package-script collection relation
+scripts/buildProjectIndex.mjs#collectTests,scripts/buildProjectIndex.test.mjs,LUC-2664 project index CLI test inventory relation
+scripts/buildProjectIndex.mjs#collectUncheckedTasks,scripts/buildProjectIndex.test.mjs,LUC-2664 project index CLI queue-marker collection relation
+scripts/buildProjectIndex.mjs#collectV1Matrix,scripts/buildProjectIndex.test.mjs,LUC-2664 project index CLI V1 matrix collection relation
+scripts/buildProjectIndex.mjs#collectWebFeatureSummaries,scripts/buildProjectIndex.test.mjs,LUC-2664 project index CLI Web feature collection relation
+scripts/buildProjectIndex.mjs#collectWorkerFiles,scripts/buildProjectIndex.test.mjs,LUC-2664 project index CLI worker inventory relation
+scripts/buildProjectIndex.mjs#containsAnyToken,scripts/buildProjectIndex.test.mjs,LUC-2664 direct token matching relation
+scripts/buildProjectIndex.mjs#directoryExists,scripts/buildProjectIndex.test.mjs,LUC-2664 direct directory existence relation
+scripts/buildProjectIndex.mjs#fileExists,scripts/buildProjectIndex.test.mjs,LUC-2664 direct file existence relation
+scripts/buildProjectIndex.mjs#listDirectories,scripts/buildProjectIndex.test.mjs,LUC-2664 direct directory listing relation
+scripts/buildProjectIndex.mjs#main,scripts/buildProjectIndex.test.mjs,LUC-2664 import-safe CLI entrypoint relation
+scripts/buildProjectIndex.mjs#matrixPath,scripts/buildProjectIndex.test.mjs,LUC-2671 already covered by LUC-2664 V1 matrix path collection relation
+scripts/buildProjectIndex.mjs#nextRouteFromPage,scripts/buildProjectIndex.test.mjs,LUC-2664 direct Next app route mapping relation
+scripts/buildProjectIndex.mjs#parseArgs,scripts/buildProjectIndex.test.mjs,LUC-2664 direct CLI argument parsing relation
+scripts/buildProjectIndex.mjs#printHelp,scripts/buildProjectIndex.test.mjs,LUC-2664 import-safe CLI helper export relation
+scripts/buildProjectIndex.mjs#readTextIfExists,scripts/buildProjectIndex.test.mjs,LUC-2664 direct optional text read relation
+scripts/buildProjectIndex.mjs#relativePath,scripts/buildProjectIndex.test.mjs,LUC-2664 direct repository-relative path relation
+scripts/buildProjectIndex.mjs#renderList,scripts/buildProjectIndex.test.mjs,LUC-2664 direct list rendering fallback relation
+scripts/buildProjectIndex.mjs#renderMarkdown,scripts/buildProjectIndex.test.mjs,LUC-2664 direct project index markdown rendering relation
+scripts/buildProjectIndex.mjs#toPosixPath,scripts/buildProjectIndex.test.mjs,LUC-2664 direct POSIX path conversion relation
+scripts/buildProjectIndex.mjs#uniqueSorted,scripts/buildProjectIndex.test.mjs,LUC-2664 direct deterministic unique sorting relation
+scripts/buildProjectIndex.mjs#walkFiles,scripts/buildProjectIndex.test.mjs,LUC-2664 direct ignored-directory file walk relation
 scripts/buildRcExternalGateStatus.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 RC gate status release-gate relation
 scripts/buildRcSignoffRecord.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 RC signoff release-gate relation
 scripts/buildSloWindowReport.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 SLO report release-gate relation
@@ -92,8 +226,33 @@ apps/api/src/modules/engine/sharedCandlePatternSeries.ts#isBullish,apps/api/src/
 apps/api/src/modules/engine/sharedCandlePatternSeries.ts#lowerShadow,apps/api/src/modules/engine/sharedCandlePatternSeries.test.ts,LUC-2230 shared candle shadow helper relation
 apps/api/src/modules/engine/strategyIndicatorRegistry.ts#getStrategyIndicatorRegistry,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2230 strategy indicator registry parity relation
 apps/api/src/modules/engine/strategyIndicatorRegistry.ts#getStrategyIndicatorRegistryEntry,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2230 strategy indicator registry parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureAdx,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis ADX helper parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureAtr,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis ATR helper parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureBollinger,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis Bollinger helper parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureCci,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis CCI helper parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureDonchian,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis Donchian helper parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureEma,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis EMA helper parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureFundingRate,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis funding-rate helper parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureFundingRateZScore,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis funding-rate z-score helper parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureMacd,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis MACD helper parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureMomentum,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis momentum helper parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOpenInterest,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis open-interest helper parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOpenInterestDelta,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis open-interest delta helper parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOpenInterestMa,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis open-interest MA helper parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOpenInterestZScore,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis open-interest z-score helper parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOrderBookDepthRatio,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis order-book depth-ratio helper parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOrderBookImbalance,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis order-book imbalance helper parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureOrderBookSpreadBps,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis order-book spread helper parity relation
 apps/api/src/modules/engine/strategySignalAnalysis.ts#ensurePattern,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2230 strategy analysis pattern indicator parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureRoc,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis ROC helper parity relation
 apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureRsi,apps/api/src/modules/engine/strategySignalAnalysis.test.ts,LUC-2230 strategy analysis RSI fallback relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureSma,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis SMA helper parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureStochastic,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis stochastic helper parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#ensureStochRsi,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis StochRSI helper parity relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#pushConditionLine,apps/api/src/modules/engine/strategySignalAnalysis.test.ts,LUC-2542 strategy signal analysis condition-line helper relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#pushIndicatorSummary,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis indicator-summary helper relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#pushRule,apps/api/src/modules/engine/strategyIndicatorRegistryParity.test.ts,LUC-2542 strategy signal analysis rule dispatch helper relation
+apps/api/src/modules/engine/strategySignalAnalysis.ts#withFallback,apps/api/src/modules/engine/strategySignalAnalysis.test.ts,LUC-2542 strategy signal analysis unavailable-series fallback relation
 apps/api/scripts/assistant-load-benchmark.ts#buildRunInputs,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 assistant load benchmark input builder relation
 apps/api/scripts/assistant-load-benchmark.ts#percentile,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 assistant load benchmark percentile relation
 apps/api/scripts/assistant-load-benchmark.ts#run,apps/api/scripts/apiScriptTooling.test.ts,LUC-2253 assistant load benchmark import-safe wrapper relation
@@ -136,10 +295,221 @@ scripts/writeWebBuildMetadata.mjs,scripts/releaseOpsScriptContracts.test.mjs,LUC
 apps/api/src/modules/auth/auth.session.ts#getSessionJwtExpiresIn,apps/api/src/modules/auth/auth.session.test.ts,LUC-2254 auth session JWT expiry helper relation
 apps/api/src/modules/auth/auth.session.ts#getSessionTtlMs,apps/api/src/modules/auth/auth.session.test.ts,LUC-2254 auth session TTL helper relation
 apps/api/src/modules/bots/bots.e2e.shared.ts#createPayload,apps/api/src/modules/bots/bots.e2e.shared.test.ts,LUC-2254 bots shared create payload helper relation
+apps/api/src/modules/bots/bots.e2e.shared.ts#resetBotsE2eState,apps/api/src/modules/bots/bots.e2e.test.ts,LUC-2543 bots e2e reset helper exercised by main bots e2e pack
+apps/api/src/modules/bots/bots.e2e.shared.ts#seedRuntimeTicker,apps/api/src/modules/bots/bots.runtime-close-authority.route-pack.e2e.test.ts,LUC-2543 runtime ticker helper exercised by close-authority route pack
+apps/api/src/modules/bots/bots.repository.ts#getBotWithStrategyProjectionById,apps/api/src/modules/bots/bots.e2e.test.ts,LUC-2543 bot strategy projection read exercised by bot command e2e pack
+apps/api/src/modules/bots/bots.repository.ts#getOwnedBotWithStrategyProjection,apps/api/src/modules/bots/bots.portfolio-history.e2e.test.ts,LUC-2543 owned bot strategy projection exercised by portfolio-history read pack
+apps/api/src/modules/bots/bots.repository.ts#listOwnedBotsWithStrategyProjection,apps/api/src/modules/bots/bots.e2e.test.ts,LUC-2543 owned bot strategy projection list exercised by bot command e2e pack
 apps/api/src/modules/bots/botsRuntimeRead.repository.ts,apps/api/src/modules/bots/botsRuntimeRead.repository.test.ts,LUC-2475 drift closure existing bot runtime read repository test relation
+apps/api/src/modules/bots/botsRuntimeRead.repository.ts#listMarketCandles,apps/api/src/modules/bots/runtimeSessionSymbolStatsRead.service.test.ts,LUC-2543 runtime symbol stats market-candle fallback proof relation
+apps/api/src/modules/bots/botsRuntimeRead.repository.ts#listStrategiesByIds,apps/api/src/modules/bots/runtimeSessionSymbolStatsRead.service.test.ts,LUC-2543 runtime symbol stats strategy-link proof relation
+apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts,apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts,LUC-2541 bot runtime positions repository service proof relation
+apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts,apps/api/src/modules/bots/bots.runtime-scope.e2e.test.ts,LUC-2541 bot runtime positions repository route-scope proof relation
+apps/api/src/modules/bots/runtimeSessionTradesRead.repository.ts,apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts,LUC-2541 bot runtime trades repository helper proof relation
+apps/api/src/modules/bots/runtimeSessionTradesRead.repository.ts,apps/api/src/modules/bots/bots.runtime-history-parity.e2e.test.ts,LUC-2541 bot runtime trades repository route-history proof relation
 apps/api/src/modules/engine/positionPnlSemantics.ts,apps/api/src/modules/engine/positionPnlSemantics.test.ts,LUC-2475 drift closure existing position PnL semantics test relation
 apps/api/src/modules/engine/positionSizing.ts,apps/api/src/modules/engine/positionSizing.test.ts,LUC-2475 drift closure existing position sizing test relation
 apps/api/src/modules/engine/runtimePositionAutomationSkipTelemetry.ts,apps/api/src/modules/engine/runtimePositionAutomationSkipTelemetry.test.ts,LUC-2475 drift closure existing runtime automation skip telemetry test relation
 apps/api/src/modules/engine/runtimePositionAutomationStateRebase.ts,apps/api/src/modules/engine/runtimePositionAutomationStateRebase.test.ts,LUC-2475 drift closure existing runtime automation state rebase test relation
 apps/api/src/modules/engine/runtimePositionAutomationTelemetry.ts,apps/api/src/modules/engine/runtimePositionAutomationTelemetry.test.ts,LUC-2475 drift closure existing runtime automation telemetry test relation
+apps/api/src/modules/engine/sharedIndicatorSeries.ts#clampPeriod,apps/api/src/modules/engine/strategySignalEvaluator.test.ts,LUC-2543 indicator period clamp exercised by strategy signal evaluator pack
+apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#buildImportedExternalPositionId,apps/api/src/modules/positions/livePositionReconciliation.service.test.ts,LUC-2543 imported external position id helper direct relation
+apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#buildImportedExternalPositionIds,apps/api/src/modules/positions/livePositionReconciliation.service.test.ts,LUC-2543 imported external position id bundle relation
+apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#buildImportedExternalPositionMarketPrefix,apps/api/src/modules/positions/livePositionReconciliation.service.test.ts,LUC-2543 imported external position market-prefix relation
+apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#buildLegacyImportedExternalPositionId,apps/api/src/modules/positions/livePositionReconciliation.service.test.ts,LUC-2543 imported external position legacy-id relation
+apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#buildLegacyImportedExternalPositionSymbolPrefix,apps/api/src/modules/positions/livePositionReconciliation.service.test.ts,LUC-2543 imported external position legacy-prefix relation
+apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#buildPositionIdentity,apps/api/src/modules/positions/livePositionReconciliation.helpers.test.ts,LUC-2578 position reconciliation identity helper relation
+apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#extractSymbolFromExternalId,apps/api/src/modules/positions/livePositionReconciliation.helpers.test.ts,LUC-2578 position reconciliation external-id symbol extraction relation
+apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#isImportedExternalPositionKeyInMarketScope,apps/api/src/modules/positions/livePositionReconciliation.helpers.test.ts,LUC-2578 position reconciliation market-scope key relation
+apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#normalizeImportedLeverage,apps/api/src/modules/positions/livePositionReconciliation.helpers.test.ts,LUC-2578 position reconciliation leverage normalization relation
+apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#normalizeSymbol,apps/api/src/modules/positions/livePositionReconciliation.helpers.test.ts,LUC-2578 position reconciliation symbol normalization relation
+apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#resolveCanonicalEntryPrice,apps/api/src/modules/positions/livePositionReconciliation.helpers.test.ts,LUC-2578 position reconciliation canonical entry price relation
+apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#resolveRecoveredContinuityState,apps/api/src/modules/positions/livePositionReconciliation.helpers.test.ts,LUC-2578 position reconciliation recovered continuity relation
+apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#resolveRecoveredManagementMode,apps/api/src/modules/positions/livePositionReconciliation.helpers.test.ts,LUC-2578 position reconciliation recovered management relation
+apps/api/src/modules/positions/livePositionReconciliation.helpers.ts#shouldTreatAsLifecycleReplacement,apps/api/src/modules/positions/livePositionReconciliation.helpers.test.ts,LUC-2578 position reconciliation lifecycle replacement relation
+apps/api/src/modules/positions/livePositionReconciliation.history.ts#hydrateReconciledImportedPositionHistory,apps/api/src/modules/positions/livePositionReconciliation.helpers.test.ts,LUC-2578 position reconciliation history hydration relation
+apps/api/src/modules/positions/livePositionReconciliation.history.ts#resolveImportedClosedHistoryClosedAt,apps/api/src/modules/positions/livePositionReconciliation.helpers.test.ts,LUC-2578 position reconciliation closed history relation
+apps/api/src/modules/positions/positionCloseAttribution.ts#normalizeReason,apps/api/src/modules/positions/livePositionReconciliation.helpers.test.ts,LUC-2578 position close attribution reason normalization relation
 scripts/deploySmokeCheck.mjs,scripts/deploySmokeCheck.test.mjs,LUC-2475 deploy smoke transient abort retry and fail-closed status regression relation
+apps/api/src/workers/execution.worker.ts#ensureRuntimeSignalLoopStarted,apps/api/src/workers/execution.worker.test.ts,LUC-2580 execution worker runtime signal bootstrap failure telemetry relation
+apps/api/src/workers/execution.worker.ts#resolveRuntimeSignalLoopBootstrapIntervalMs,apps/api/src/workers/execution.worker.test.ts,LUC-2580 execution worker runtime signal bootstrap retry interval relation
+apps/api/src/workers/marketStream.worker.ts#buildSubscriptionFingerprint,apps/api/src/workers/marketStream.worker.test.ts,LUC-2580 market-stream subscription fingerprint relation
+apps/api/src/workers/marketStream.worker.ts#logSubscriptionsRefreshFailure,apps/api/src/workers/marketStream.worker.test.ts,LUC-2580 market-stream subscription refresh failure logging relation
+apps/api/src/workers/marketStream.worker.ts#shutdown,apps/api/src/workers/marketStream.worker.test.ts,LUC-2580 market-stream lifecycle shutdown cleanup relation
+apps/api/src/workers/marketStream.worker.ts#start,apps/api/src/workers/marketStream.worker.test.ts,LUC-2580 market-stream lifecycle start relation
+apps/api/src/workers/marketStream.worker.ts#startOrReloadWorker,apps/api/src/workers/marketStream.worker.test.ts,LUC-2580 market-stream lifecycle reload relation
+apps/api/src/workers/marketStream.worker.ts#createMarketStreamWorkerLifecycle,apps/api/src/workers/marketStream.worker.test.ts,LUC-2580 market-stream lifecycle dependency-injected worker relation
+apps/api/src/workers/workerBootstrap.ts#bootstrapWorker,apps/api/src/workers/workerBootstrap.test.ts,LUC-2580 worker bootstrap start metadata and heartbeat relation
+apps/api/src/workers/workerBootstrap.ts#createWorkerBootstrap,apps/api/src/workers/workerBootstrap.test.ts,LUC-2580 worker bootstrap dependency-injected heartbeat relation
+apps/api/src/workers/workerBootstrap.ts#logWorkerEvent,apps/api/src/workers/workerBootstrap.test.ts,LUC-2580 worker bootstrap logger routing relation
+apps/api/src/workers/workerBootstrap.ts#recordHeartbeat,apps/api/src/workers/workerBootstrap.test.ts,LUC-2580 worker bootstrap heartbeat recording relation
+apps/web/src/app/(public)/layout.tsx#RootLayout,apps/web/src/app/appShellRoutes.test.tsx,LUC-2597 public segment root layout shell relation
+apps/web/src/app/api/build-info/route.test.ts#withEnv,apps/web/src/app/api/build-info/route.test.ts,LUC-2597 build-info route test env helper relation
+apps/web/src/app/api/build-info/route.ts#GET,apps/web/src/app/api/build-info/route.test.ts,LUC-2597 build-info route response and cache relation
+apps/web/src/app/api/build-info/route.ts#readTrimmedEnv,apps/web/src/app/api/build-info/route.test.ts,LUC-2597 build-info env trimming relation
+apps/web/src/app/api/build-info/route.ts#resolveBuildId,apps/web/src/app/api/build-info/route.test.ts,LUC-2597 build-info build id fallback relation
+apps/web/src/app/api/build-info/route.ts#resolveGitRefFromEnv,apps/web/src/app/api/build-info/route.test.ts,LUC-2597 build-info git ref env relation
+apps/web/src/app/api/build-info/route.ts#resolveGitShaFromEnv,apps/web/src/app/api/build-info/route.test.ts,LUC-2597 build-info git sha env relation
+apps/web/src/app/dashboard/layout.tsx#RootLayout,apps/web/src/app/appShellRoutes.test.tsx,LUC-2597 dashboard segment root layout shell relation
+apps/web/src/app/layout.tsx#RootLayout,apps/web/src/app/appShellRoutes.test.tsx,LUC-2597 app root auth chrome and PWA shell relation
+apps/web/src/app/manifest.ts#manifest,apps/web/src/app/appShellRoutes.test.tsx,LUC-2597 PWA manifest metadata relation
+apps/web/src/ui/pwa/ServiceWorkerRegistration.tsx#checkBuildVersion,apps/web/src/ui/pwa/ServiceWorkerRegistration.test.tsx,LUC-2631 direct build-version cache purge and update relation
+apps/web/src/ui/pwa/ServiceWorkerRegistration.tsx#handleControllerChange,apps/web/src/ui/pwa/ServiceWorkerRegistration.test.tsx,LUC-2631 direct controller-change reload guard relation
+apps/web/src/ui/pwa/ServiceWorkerRegistration.tsx#handleVisibilityChange,apps/web/src/ui/pwa/ServiceWorkerRegistration.test.tsx,LUC-2631 direct visible-tab update check relation
+apps/web/src/ui/pwa/ServiceWorkerRegistration.tsx#handleWindowFocus,apps/web/src/ui/pwa/ServiceWorkerRegistration.test.tsx,LUC-2631 direct focus update check relation
+apps/web/src/ui/pwa/ServiceWorkerRegistration.tsx#purgePwaCaches,apps/web/src/ui/pwa/ServiceWorkerRegistration.test.tsx,LUC-2631 direct PWA cache purge relation
+apps/web/src/ui/pwa/ServiceWorkerRegistration.tsx#requestUpdateCheck,apps/web/src/ui/pwa/ServiceWorkerRegistration.test.tsx,LUC-2631 direct service-worker update check relation
+apps/web/src/features/auth/pages/LoginPage.tsx#LoginPage,apps/web/src/app/appShellRoutes.test.tsx,LUC-2597 login page localized copy and authenticated redirect relation
+apps/web/src/features/bots/utils/runtimeOpenPositionDerivations.ts#resolveRuntimeOpenPositionMargin,apps/web/src/features/bots/utils/runtimeOpenPositionDerivations.test.ts,LUC-2597 runtime open-position margin derivation relation
+apps/web/src/features/bots/utils/runtimeOpenPositionDerivations.ts#sumRuntimeOpenPositionMargin,apps/web/src/features/bots/utils/runtimeOpenPositionDerivations.test.ts,LUC-2597 runtime open-position margin summary relation
+apps/web/src/features/bots/utils/runtimeOpenPositionDerivations.ts#sumRuntimeOpenPositionUnrealized,apps/web/src/features/bots/utils/runtimeOpenPositionDerivations.test.ts,LUC-2597 runtime open-position unrealized summary relation
+apps/web/src/features/bots/utils/runtimeSurfaceTruth.ts#hasRuntimeDynamicStopRowTruth,apps/web/src/features/bots/utils/runtimeSurfaceTruth.test.ts,LUC-2597 runtime dynamic-stop row truth relation
+apps/web/src/features/bots/utils/trailingStopDisplay.ts#pruneStickyFavorableMoveMap,apps/web/src/features/bots/utils/trailingStopDisplay.test.ts,LUC-2597 trailing-stop sticky map pruning relation
+apps/web/src/features/bots/utils/trailingStopDisplay.ts#resolveFallbackTtpProtectedPercent,apps/web/src/features/bots/utils/trailingStopDisplay.test.ts,LUC-2597 fallback TTP protection display relation
+apps/web/src/features/shared/dcaLadderCell.tsx#formatDefaultDcaLevel,apps/web/src/features/shared/dcaLadderCell.test.tsx,LUC-2597 DCA ladder default level format relation
+apps/web/src/features/shared/dcaLadderCell.tsx#renderDcaLadderCell,apps/web/src/features/shared/dcaLadderCell.test.tsx,LUC-2597 DCA ladder renderer relation
+apps/web/src/features/shared/runtimeMonitoringFormatters.ts#formatRuntimeTradeFeeMeta,apps/web/src/features/shared/runtimeMonitoringFormatters.test.ts,LUC-2597 runtime trade fee metadata formatter relation
+apps/web/src/features/shared/runtimeMonitoringFormatters.ts#toRuntimeCloseInitiatorPillClass,apps/web/src/features/shared/runtimeMonitoringFormatters.test.ts,LUC-2597 runtime close initiator pill class relation
+apps/web/src/features/shared/runtimeMonitoringFormatters.ts#toRuntimeCloseReasonPillClass,apps/web/src/features/shared/runtimeMonitoringFormatters.test.ts,LUC-2597 runtime close reason pill class relation
+apps/web/src/features/shared/runtimeMonitoringFormatters.ts#toRuntimeTradeLifecycleBadgeClass,apps/web/src/features/shared/runtimeMonitoringFormatters.test.ts,LUC-2597 runtime trade lifecycle badge class relation
+apps/web/src/features/shared/runtimeMonitoringFormatters.ts#toRuntimeTradeLifecyclePillClass,apps/web/src/features/shared/runtimeMonitoringFormatters.test.ts,LUC-2597 runtime trade lifecycle pill class relation
+apps/web/src/features/strategies/utils/strategyThresholdItems.ts#createClientId,apps/web/src/lib/sharedWebUtilities.test.ts,LUC-2597 strategy threshold generated client id relation
+apps/web/src/i18n/I18nProvider.tsx#detectRoutePath,apps/web/src/i18n/I18nProvider.route-loading.test.tsx,LUC-2597 i18n route detection relation
+apps/web/src/i18n/I18nProvider.tsx#I18nProvider,apps/web/src/i18n/I18nProvider.test.tsx,LUC-2597 i18n provider rendering and locale relation
+apps/web/src/i18n/I18nProvider.tsx#normalizeTimeZonePreference,apps/web/src/i18n/I18nProvider.test.tsx,LUC-2597 i18n time-zone preference normalization relation
+apps/web/src/i18n/I18nProvider.tsx#reportMissingTranslation,apps/web/src/i18n/I18nProvider.test.tsx,LUC-2597 i18n missing translation reporting relation
+apps/web/src/i18n/I18nProvider.tsx#syncRoutePath,apps/web/src/i18n/I18nProvider.route-loading.test.tsx,LUC-2597 i18n route path synchronization relation
+apps/web/src/i18n/I18nProvider.tsx#useI18n,apps/web/src/i18n/I18nProvider.test.tsx,LUC-2597 i18n hook provider boundary relation
+apps/web/src/i18n/useLocaleFormatting.ts#formatCurrency,apps/web/src/i18n/useLocaleFormatting.test.tsx,LUC-2597 locale currency formatter relation
+apps/web/src/i18n/useLocaleFormatting.ts#formatDate,apps/web/src/i18n/useLocaleFormatting.test.tsx,LUC-2597 locale date formatter relation
+apps/web/src/i18n/useLocaleFormatting.ts#formatDateTime,apps/web/src/i18n/useLocaleFormatting.test.tsx,LUC-2597 locale date-time formatter relation
+apps/web/src/i18n/useLocaleFormatting.ts#formatDateTimeWithSeconds,apps/web/src/i18n/useLocaleFormatting.test.tsx,LUC-2597 locale date-time seconds formatter relation
+apps/web/src/i18n/useLocaleFormatting.ts#formatNumber,apps/web/src/i18n/useLocaleFormatting.test.tsx,LUC-2597 locale number formatter relation
+apps/web/src/i18n/useLocaleFormatting.ts#formatPercent,apps/web/src/i18n/useLocaleFormatting.test.tsx,LUC-2597 locale percent formatter relation
+apps/web/src/i18n/useLocaleFormatting.ts#formatTime,apps/web/src/i18n/useLocaleFormatting.test.tsx,LUC-2597 locale time formatter relation
+apps/web/src/lib/api.ts#hardRedirect,apps/web/src/lib/api.test.ts,LUC-2601 API protected-route hard redirect idempotence relation
+apps/web/src/lib/api.ts#isProtectedRoute,apps/web/src/lib/api.test.ts,LUC-2601 API protected-route classifier relation
+apps/web/src/lib/forms.ts#hasFormText,apps/web/src/lib/sharedWebUtilities.test.ts,LUC-2601 form text presence relation
+apps/web/src/lib/forms.ts#normalizeFormBaseCurrency,apps/web/src/lib/sharedWebUtilities.test.ts,LUC-2601 form base currency fallback relation
+apps/web/src/lib/forms.ts#normalizeFormSymbol,apps/web/src/lib/sharedWebUtilities.test.ts,LUC-2601 form symbol normalization relation
+apps/web/src/lib/forms.ts#normalizeFormText,apps/web/src/lib/sharedWebUtilities.test.ts,LUC-2601 form text normalization relation
+apps/web/src/lib/forms.ts#resolveFormErrorMessage,apps/web/src/lib/sharedWebUtilities.test.ts,LUC-2601 form error resolver fallback relation
+apps/web/src/lib/getAxiosMessage.ts#getAxiosMessage,apps/web/src/lib/errorResolver.test.ts,LUC-2601 axios compatibility message resolver relation
+apps/web/src/lib/marketStream.ts#buildMarketStreamEventsUrl,apps/web/src/lib/marketStream.test.ts,LUC-2601 market-stream event URL builder relation
+apps/web/src/lib/marketStream.ts#createMarketStreamEventSource,apps/web/src/lib/marketStream.test.ts,LUC-2601 market-stream EventSource credential relation
+apps/web/src/lib/numericInput.ts#normalizeNumericInput,apps/web/src/lib/numericInput.test.ts,LUC-2601 numeric input normalization relation
+apps/web/src/lib/numericInput.ts#resolveMaxDecimals,apps/web/src/lib/numericInput.test.ts,LUC-2601 numeric max-decimals attribute relation
+apps/web/src/lib/numericInput.ts#sanitize,apps/web/src/lib/numericInput.test.ts,LUC-2601 numeric whitespace sanitization relation
+apps/web/src/lib/numericInput.ts#stepFromDecimals,apps/web/src/lib/numericInput.test.ts,LUC-2601 numeric decimal step relation
+apps/api/prisma/seed.ts#main,apps/api/prisma/seed.test.ts,LUC-2596 owner/catalog/runtime bootstrap seed relation
+apps/api/src/modules/engine/runtimePositionState.store.ts#toFiniteNonNegativeInt,apps/api/src/modules/engine/runtimePositionAutomationTelemetry.test.ts,LUC-2596 runtime position persisted current-add normalization relation
+apps/api/src/observability/runtimeFreshness.ts#parseEnvDate,apps/api/src/observability/runtimeFreshness.test.ts,LUC-2596 runtime freshness env timestamp parsing relation
+scripts/auditRouteReachableI18n.mjs#analyzeFileSource,scripts/auditRouteReachableI18n.test.mjs,LUC-2650 route-reachable i18n finding scoring relation
+scripts/auditRouteReachableI18n.mjs#buildRouteReachability,scripts/auditRouteReachableI18n.test.mjs,LUC-2650 route-reachable i18n dependency graph relation
+scripts/auditRouteReachableI18n.mjs#collectAncestorLayouts,scripts/auditRouteReachableI18n.test.mjs,LUC-2650 route-reachable i18n layout ancestry relation
+scripts/auditRouteReachableI18n.mjs#listSourceFiles,scripts/auditRouteReachableI18n.test.mjs,LUC-2650 route-reachable i18n source discovery relation
+scripts/auditRouteReachableI18n.mjs#parseArgs,scripts/auditRouteReachableI18n.test.mjs,LUC-2650 route-reachable i18n CLI option relation
+scripts/auditRouteReachableI18n.mjs#readImports,scripts/auditRouteReachableI18n.test.mjs,LUC-2650 route-reachable i18n TypeScript import reader relation
+scripts/auditRouteReachableI18n.mjs#resolveCandidateFile,scripts/auditRouteReachableI18n.test.mjs,LUC-2650 route-reachable i18n candidate file resolution relation
+scripts/auditRouteReachableI18n.mjs#resolveImport,scripts/auditRouteReachableI18n.test.mjs,LUC-2650 route-reachable i18n import resolution relation
+scripts/auditRouteReachableI18n.mjs#run,scripts/auditRouteReachableI18n.test.mjs,LUC-2650 route-reachable i18n artifact output relation
+scripts/auditRouteReachableI18n.mjs#collectPatternMatches,scripts/auditRouteReachableI18n.test.mjs,LUC-2671 already covered by LUC-2650 literal pattern line-scoring relation
+scripts/auditRouteReachableI18n.mjs#isAuditExcludedFile,scripts/auditRouteReachableI18n.test.mjs,LUC-2671 already covered by LUC-2650 audit exclusion relation
+scripts/auditRouteReachableI18n.mjs#isSharedFoundationFile,scripts/auditRouteReachableI18n.test.mjs,LUC-2671 already covered by LUC-2650 shared foundation exclusion relation
+scripts/auditRouteReachableI18n.mjs#resolveAliasImport,scripts/auditRouteReachableI18n.test.mjs,LUC-2671 already covered by LUC-2650 alias import resolution relation
+scripts/auditRouteReachableI18n.mjs#safeRelativeLine,scripts/auditRouteReachableI18n.test.mjs,LUC-2671 already covered by LUC-2650 source line scoring relation
+scripts/auditRouteReachableI18n.mjs#visit,scripts/auditRouteReachableI18n.test.mjs,LUC-2671 scanner-inferred nested import visitor covered through readImports relation
+scripts/buildRcExternalGateStatus.mjs#asNumber,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct RC gate numeric normalization relation
+scripts/buildRcExternalGateStatus.mjs#buildGateRowsFromObservation,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct SLO observation gate derivation relation
+scripts/buildRcExternalGateStatus.mjs#buildGateRowsFromWindowReport,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct SLO window report gate derivation relation
+scripts/buildRcExternalGateStatus.mjs#buildManualFollowUps,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct RC manual follow-up generation relation
+scripts/buildRcExternalGateStatus.mjs#evaluateBackupRestoreGate,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct backup restore gate artifact relation
+scripts/buildRcExternalGateStatus.mjs#evaluateGate1FromRunbook,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct Gate 1 runbook evidence relation
+scripts/buildRcExternalGateStatus.mjs#evaluateGate3FromRunbook,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct Gate 3 runbook evidence relation
+scripts/buildRcExternalGateStatus.mjs#evaluateGate4FromSignoffRecord,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct Gate 4 signoff evidence relation
+scripts/buildRcExternalGateStatus.mjs#extractEvidenceValues,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct runbook evidence extraction relation
+scripts/buildRcExternalGateStatus.mjs#findLatestDbRestoreArtifact,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct latest DB restore artifact relation
+scripts/buildRcExternalGateStatus.mjs#findLatestSloArtifact,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct latest SLO observation artifact relation
+scripts/buildRcExternalGateStatus.mjs#findLatestSloWindowReportArtifact,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct latest SLO window artifact relation
+scripts/buildRcExternalGateStatus.mjs#gate2StatusLabel,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct Gate 2 status label relation
+scripts/buildRcExternalGateStatus.mjs#loadGate2Evaluation,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct Gate 2 artifact loader relation
+scripts/buildRcExternalGateStatus.mjs#main,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 import-safe RC gate status entrypoint relation
+scripts/buildRcExternalGateStatus.mjs#normalizeEnvironment,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct evidence environment normalization relation
+scripts/buildRcExternalGateStatus.mjs#objectivePass,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct SLO objective status relation
+scripts/buildRcExternalGateStatus.mjs#parseArgs,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct CLI argument parsing relation
+scripts/buildRcExternalGateStatus.mjs#pct,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct percentage formatting relation
+scripts/buildRcExternalGateStatus.mjs#readRunbookRaw,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct runbook read fallback relation
+scripts/buildRcExternalGateStatus.mjs#renderManualFollowUps,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct manual follow-up rendering relation
+scripts/buildRcExternalGateStatus.mjs#renderReport,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct RC status report rendering relation
+scripts/buildRcExternalGateStatus.mjs#renderTemplateOnly,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct RC status template rendering relation
+scripts/buildRcExternalGateStatus.mjs#resolveDocsRoot,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 import-safe docs root coverage through output defaults relation
+scripts/buildRcExternalGateStatus.mjs#resolveGeneratedAt,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct generated timestamp override relation
+scripts/buildRcExternalGateStatus.mjs#statusLabel,scripts/buildRcExternalGateStatus.test.mjs,LUC-2674 direct generic status label relation
+scripts/buildRcSignoffRecord.mjs#approvalLine,scripts/buildRcSignoffRecord.test.mjs,LUC-2678 direct RC approver line rendering relation
+scripts/buildRcSignoffRecord.mjs#evaluateSignoff,scripts/buildRcSignoffRecord.test.mjs,LUC-2678 direct RC signoff fail-closed evaluation relation
+scripts/buildRcSignoffRecord.mjs#listMissingApproverFields,scripts/buildRcSignoffRecord.test.mjs,LUC-2678 direct required approver field classification relation
+scripts/buildRcSignoffRecord.mjs#listRecommendedSignoffFields,scripts/buildRcSignoffRecord.test.mjs,LUC-2678 direct recommended approver field classification relation
+scripts/buildRcSignoffRecord.mjs#loadGateStatuses,scripts/buildRcSignoffRecord.test.mjs,LUC-2678 direct RC gate status loading relation
+scripts/buildRcSignoffRecord.mjs#main,scripts/buildRcSignoffRecord.test.mjs,LUC-2678 import-safe RC signoff writer entrypoint relation
+scripts/buildRcSignoffRecord.mjs#ownerBlock,scripts/buildRcSignoffRecord.test.mjs,LUC-2678 direct RC owner block rendering relation
+scripts/buildRcSignoffRecord.mjs#parseArgs,scripts/buildRcSignoffRecord.test.mjs,LUC-2678 direct RC signoff CLI argument parsing relation
+scripts/buildRcSignoffRecord.mjs#parseGateLine,scripts/buildRcSignoffRecord.test.mjs,LUC-2678 direct external gate line parsing relation
+scripts/buildRcSignoffRecord.mjs#render,scripts/buildRcSignoffRecord.test.mjs,LUC-2678 direct RC signoff record rendering relation
+scripts/buildRcSignoffRecord.mjs#resolveDocsRoot,scripts/buildRcSignoffRecord.test.mjs,LUC-2678 import-safe docs root coverage through output defaults relation
+scripts/buildRcSignoffRecord.mjs#resolveTimestamp,scripts/buildRcSignoffRecord.test.mjs,LUC-2678 direct RC signoff timestamp override relation
+scripts/buildSloWindowReport.mjs#asNumber,scripts/buildSloWindowReport.test.mjs,LUC-2678 direct SLO numeric normalization relation
+scripts/buildSloWindowReport.mjs#avg,scripts/buildSloWindowReport.test.mjs,LUC-2678 direct SLO aggregate average relation
+scripts/buildSloWindowReport.mjs#loadArtifacts,scripts/buildSloWindowReport.test.mjs,LUC-2678 direct SLO artifact loader relation
+scripts/buildSloWindowReport.mjs#main,scripts/buildSloWindowReport.test.mjs,LUC-2678 import-safe SLO window writer entrypoint relation
+scripts/buildSloWindowReport.mjs#parseArgs,scripts/buildSloWindowReport.test.mjs,LUC-2678 direct SLO window CLI argument parsing relation
+scripts/buildSloWindowReport.mjs#parseIso,scripts/buildSloWindowReport.test.mjs,LUC-2678 direct SLO artifact timestamp parsing relation
+scripts/buildSloWindowReport.mjs#pct,scripts/buildSloWindowReport.test.mjs,LUC-2678 direct SLO percentage formatting relation
+scripts/buildSloWindowReport.mjs#renderMarkdown,scripts/buildSloWindowReport.test.mjs,LUC-2678 direct SLO markdown report rendering relation
+scripts/buildSloWindowReport.mjs#summarize,scripts/buildSloWindowReport.test.mjs,LUC-2678 direct SLO window summary and breach relation
+scripts/buildSloWindowReport.mjs#toStamp,scripts/buildSloWindowReport.test.mjs,LUC-2678 direct SLO output stamp relation
+scripts/buildV1CompletionScorecard.mjs#buildScorecard,scripts/buildV1CompletionScorecard.test.mjs,LUC-2685 direct V1 scorecard status summary and blocker relation
+scripts/buildV1CompletionScorecard.mjs#latestLedgerPath,scripts/buildV1CompletionScorecard.test.mjs,LUC-2685 direct latest master ledger discovery relation
+scripts/buildV1CompletionScorecard.mjs#main,scripts/buildV1CompletionScorecard.test.mjs,LUC-2685 import-safe V1 scorecard writer entrypoint relation
+scripts/buildV1CompletionScorecard.mjs#parseArgs,scripts/buildV1CompletionScorecard.test.mjs,LUC-2685 direct V1 scorecard CLI argument parsing relation
+scripts/buildV1CompletionScorecard.mjs#percent,scripts/buildV1CompletionScorecard.test.mjs,LUC-2685 direct score percentage formatting relation
+scripts/buildV1CompletionScorecard.mjs#printHelp,scripts/buildV1CompletionScorecard.test.mjs,LUC-2685 import-safe help branch relation through CLI parse/export
+scripts/buildV1CompletionScorecard.mjs#readJson,scripts/buildV1CompletionScorecard.test.mjs,LUC-2685 direct ledger JSON read relation through scorecard build
+scripts/buildV1CompletionScorecard.mjs#relativePath,scripts/buildV1CompletionScorecard.test.mjs,LUC-2685 direct repository-relative path rendering relation
+scripts/buildV1CompletionScorecard.mjs#renderMarkdown,scripts/buildV1CompletionScorecard.test.mjs,LUC-2685 direct V1 scorecard markdown rendering and escaping relation
+scripts/buildV1CompletionScorecard.mjs#renderTable,scripts/buildV1CompletionScorecard.test.mjs,LUC-2685 direct markdown table row rendering relation
+scripts/buildV1CompletionScorecard.mjs#riskWeight,scripts/buildV1CompletionScorecard.test.mjs,LUC-2685 direct P0/P1/P2 risk weighting relation
+scripts/buildV1CompletionScorecard.mjs#summarizeRows,scripts/buildV1CompletionScorecard.test.mjs,LUC-2685 direct module status summary relation
+scripts/buildV1CompletionScorecard.mjs#toPosixPath,scripts/buildV1CompletionScorecard.test.mjs,LUC-2685 direct POSIX path normalization relation
+scripts/buildV1CompletionScorecard.mjs#weightedAverage,scripts/buildV1CompletionScorecard.test.mjs,LUC-2685 direct weighted score aggregation relation
+scripts/buildV1MasterStateLedger.mjs#buildLedger,scripts/buildV1MasterStateLedger.test.mjs,LUC-2693 direct V1 master ledger build and fail-closed status relation
+scripts/buildV1MasterStateLedger.mjs#buildModuleLedger,scripts/buildV1MasterStateLedger.test.mjs,LUC-2693 direct module traceability ledger relation
+scripts/buildV1MasterStateLedger.mjs#categoryToBucket,scripts/buildV1MasterStateLedger.test.mjs,LUC-2693 direct static finding bucket mapping relation
+scripts/buildV1MasterStateLedger.mjs#main,scripts/buildV1MasterStateLedger.test.mjs,LUC-2693 import-safe V1 master ledger writer entrypoint relation
+scripts/buildV1MasterStateLedger.mjs#parseArgs,scripts/buildV1MasterStateLedger.test.mjs,LUC-2693 direct V1 master ledger CLI argument parsing relation
+scripts/buildV1MasterStateLedger.mjs#printHelp,scripts/buildV1MasterStateLedger.test.mjs,LUC-2693 import-safe help branch relation through direct print coverage
+scripts/buildV1MasterStateLedger.mjs#readJson,scripts/buildV1MasterStateLedger.test.mjs,LUC-2693 direct project index and static scan JSON read relation
+scripts/buildV1MasterStateLedger.mjs#relativePath,scripts/buildV1MasterStateLedger.test.mjs,LUC-2693 direct repository-relative path rendering relation
+scripts/buildV1MasterStateLedger.mjs#renderFindings,scripts/buildV1MasterStateLedger.test.mjs,LUC-2693 direct findings markdown escaping and truncation relation
+scripts/buildV1MasterStateLedger.mjs#renderMarkdown,scripts/buildV1MasterStateLedger.test.mjs,LUC-2693 direct V1 master ledger markdown rendering relation
+scripts/buildV1MasterStateLedger.mjs#sortFindings,scripts/buildV1MasterStateLedger.test.mjs,LUC-2693 direct severity/category/title deterministic sorting relation
+scripts/buildV1MasterStateLedger.mjs#statusToBucket,scripts/buildV1MasterStateLedger.test.mjs,LUC-2693 direct module status bucket mapping relation
+scripts/buildV1MasterStateLedger.mjs#summarizeBy,scripts/buildV1MasterStateLedger.test.mjs,LUC-2693 direct ledger summary aggregation relation
+scripts/buildV1MasterStateLedger.mjs#tableRows,scripts/buildV1MasterStateLedger.test.mjs,LUC-2693 direct markdown table row join relation
+scripts/buildV1MasterStateLedger.mjs#toPosixPath,scripts/buildV1MasterStateLedger.test.mjs,LUC-2693 direct POSIX path normalization relation
+scripts/checkCoolifyStackEnv.mjs#add,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 direct deploy-safety issue append relation
+scripts/checkCoolifyStackEnv.mjs#buildValueIssues,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 direct deploy-safety value issue classification relation
+scripts/checkCoolifyStackEnv.mjs#evaluateCoolifyStackEnv,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 direct Coolify stack env evaluation relation
+scripts/checkCoolifyStackEnv.mjs#formatCoolifyStackEnvReport,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 direct redacted report rendering relation
+scripts/checkCoolifyStackEnv.mjs#get,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 direct normalized env lookup relation
+scripts/checkCoolifyStackEnv.mjs#hasFlag,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 direct CLI flag handling relation
+scripts/checkCoolifyStackEnv.mjs#isPlaceholderValue,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 direct placeholder detection relation
+scripts/checkCoolifyStackEnv.mjs#isValidUrl,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 direct URL shape validation relation
+scripts/checkCoolifyStackEnv.mjs#loadEnv,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 direct stack env file loading relation
+scripts/checkCoolifyStackEnv.mjs#looksWeakSecret,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 direct weak secret detection relation
+scripts/checkCoolifyStackEnv.mjs#main,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 import-safe CLI entrypoint relation
+scripts/checkCoolifyStackEnv.mjs#normalizeValue,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 direct env value normalization relation
+scripts/checkCoolifyStackEnv.mjs#parseDotEnv,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 direct dotenv parsing relation
+scripts/checkCoolifyStackEnv.mjs#parseKeyringVersions,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 direct API keyring version validation relation
+scripts/checkCoolifyStackEnv.mjs#printUsage,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 direct CLI usage rendering relation
+scripts/checkCoolifyStackEnv.mjs#readArgValue,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 direct CLI value argument validation relation
+scripts/checkCoolifyStackEnv.mjs#shouldSkipPlaceholder,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 direct placeholder allowance relation

@@ -12,6 +12,10 @@ describe("numericInput", () => {
     expect(normalizeNumericInput("1 234,56")).toBe("1234.56");
   });
 
+  it("sanitizes interior whitespace before decimal normalization", () => {
+    expect(normalizeNumericInput("\t- 1 234,50\n")).toBe("-1234.50");
+  });
+
   it("parses decimal value for comma and dot separators", () => {
     const contract = { ...numericContracts.decimal2, min: -100, max: 100 };
     const fromComma = parseNumericInput("12,5", contract);
@@ -95,6 +99,12 @@ describe("numericInput", () => {
       step: "1",
       min: 1,
       max: 10,
+    });
+    expect(getNumericInputAttributes({ kind: "decimal", required: true, maxDecimals: 4 })).toEqual({
+      inputMode: "decimal",
+      step: "0.0001",
+      min: undefined,
+      max: undefined,
     });
   });
 });

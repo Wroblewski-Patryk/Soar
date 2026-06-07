@@ -2,6 +2,7 @@
 
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const repoRoot = process.cwd();
 
@@ -881,7 +882,42 @@ const main = async () => {
   console.log(`Tests indexed: ${index.tests.total}`);
 };
 
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+export {
+  buildIndex,
+  buildV1WorkMap,
+  collectApiModuleSummaries,
+  collectArchitectureSources,
+  collectNextRoutes,
+  collectPackageScripts,
+  collectTests,
+  collectUncheckedTasks,
+  collectV1Matrix,
+  collectWebFeatureSummaries,
+  collectWorkerFiles,
+  containsAnyToken,
+  directoryExists,
+  fileExists,
+  listDirectories,
+  main,
+  nextRouteFromPage,
+  parseArgs,
+  printHelp,
+  readTextIfExists,
+  relativePath,
+  renderList,
+  renderMarkdown,
+  toPosixPath,
+  uniqueSorted,
+  walkFiles,
+};
+
+const isDirectRun = process.argv[1]
+  ? path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+  : false;
+
+if (isDirectRun) {
+  main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+}

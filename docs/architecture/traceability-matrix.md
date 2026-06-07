@@ -1,6 +1,6 @@
 # Traceability Matrix
 
-Updated: 2026-05-03
+Updated: 2026-06-06
 
 Purpose: map core Soar features across frontend entry, backend route/API,
 services/modules, database models, pipelines, tests, and related docs. `GAP`
@@ -9,9 +9,9 @@ means the trace is incomplete or needs a stronger future evidence pass.
 ## Core Feature Matrix
 | Feature | Frontend Entry | Backend Route/API | Service / Module | Database Models | Pipeline | Tests | Related Docs |
 |---|---|---|---|---|---|---|---|
-| Public entry and offline shell | `/`, `/offline` | none | `app/(public)`, offline page | n/a | Access/session | route-reachable i18n audit, web route shell tests where present | `docs/architecture/reference/dashboard-route-map.md`, `docs/modules/web-auth.md` |
+| Public entry and offline shell | `/`, `/offline`, `/privacy`, `/terms` | none | `app/(public)`, offline/legal pages | n/a | Access/session | route-reachable i18n audit, web route shell tests where present | `docs/architecture/reference/dashboard-route-map.md`, `docs/modules/web-auth.md` |
 | Auth session | `/auth/login`, `/auth/register`, `features/auth` | `/auth/register`, `/auth/login`, `/auth/me`, `/auth/logout` | `api/auth`, auth middleware | `User` | Access/session | `auth.*.test.ts`, `requireAuth.test.ts`, cache header tests | `docs/modules/api-auth.md`, `docs/modules/web-auth.md`, `docs/security/security-and-risk.md` |
-| Profile and API keys | `/dashboard/profile`, `features/profile` | `/dashboard/profile/basic`, `/dashboard/profile/security`, `/dashboard/profile/apiKeys`, `/dashboard/profile/subscription*`, `/upload/avatar` | `api/profile`, `api/upload`, `api/exchange` API-key probe | `User`, `ApiKey` | Account/API-key setup | `profile/*/*.e2e.test.ts`, `exchangeApiKeyProbe.service.test.ts`, `upload.e2e.test.ts` | `docs/modules/api-profile.md`, `docs/security/api-key-lifecycle-policy.md` |
+| Profile and API keys | `/dashboard/profile`, `features/profile` | `/dashboard/profile/basic`, `/dashboard/profile/security`, `/dashboard/profile/apiKeys*`, `/dashboard/profile/subscription*`, `/upload/avatar` | `api/profile`, `api/upload`, `api/exchange` API-key probe | `User`, `ApiKey` | Account/API-key setup | `profile/*/*.e2e.test.ts`, `exchangeApiKeyProbe.service.test.ts`, `upload.e2e.test.ts` | `docs/modules/api-profile.md`, `docs/security/api-key-lifecycle-policy.md` |
 | Wallet setup and ledger | `/dashboard/wallets*`, `features/wallets` | `/dashboard/wallets*`, preview balance, performance summary, equity timeline, cashflow events | `api/wallets`, `api/exchange`, wallet ledger/classifier | `Wallet`, `WalletBalanceSnapshot`, `WalletCashflowEvent`, `ApiKey` | Wallet and bot configuration | `wallets*.e2e.test.ts`, `walletCashflowClassifier.service.test.ts` | `docs/modules/api-wallets.md`, `docs/architecture/reference/wallet-source-of-truth-contract.md` |
 | Market universe | `/dashboard/markets*`, `features/markets` | `/dashboard/markets/universes*`, `/dashboard/markets/catalog` | `api/markets`, catalog resolver | `MarketUniverse`, `SymbolGroup`, `BotMarketGroup` | Wallet and bot configuration | `markets.e2e.test.ts`, market universe bot tests | `docs/modules/api-markets.md`, `docs/modules/web-markets.md` |
 | Strategy builder | `/dashboard/strategies*`, `features/strategies` | `/dashboard/strategies*`, `/dashboard/strategies/indicators` | `api/strategies`, `api/engine` indicator registry | `Strategy`, `BotStrategy`, `MarketGroupStrategyLink` | Runtime signal execution, backtest run | `strategies.e2e.test.ts`, `strategyIndicatorRegistryParity.test.ts`, indicator tests | `docs/modules/api-strategies.md`, `docs/architecture/reference/indicator-registry-parity-contract.md` |
@@ -29,9 +29,8 @@ means the trace is incomplete or needs a stronger future evidence pass.
 ## Current Gaps
 | Gap | Impact | Next Repair Slice |
 |---|---|---|
-| Endpoint-level generated API matrix is not yet machine-generated from route files. | Manual traceability can drift when routes change. | Add a docs parity check that compares route files with this matrix and `dashboard-route-map.md`. |
-| Full architecture evidence graph backfill is not complete. | The graph system exists, but only seed P0/P1 chains are mapped; unmapped code must not be treated as officially proven by the graph. | Backfill `docs/architecture/registry/nodes.csv`, relation rows, and chain rows module by module, starting with active P0 money/runtime flows. |
 | Mobile app traceability is not covered beyond acknowledging `apps/mobile`. | Future mobile work could drift from V1 web/API contracts. | Create mobile module docs when mobile becomes active. |
+| Full architecture evidence graph backfill is not complete. | The graph system exists, but only seed P0/P1 chains are mapped; unmapped code must not be treated as officially proven by the graph. | Backfill `docs/architecture/registry/nodes.csv`, relation rows, and chain rows module by module, starting with active P0 money/runtime flows. |
 | Web feature test mappings can drift if module deep dives are not updated when tests move/rename. | Traceability can become stale after refactors even when tests still exist. | Keep module deep-dive `Tests` tables synchronized with exact file paths during feature/test edits. |
 | Historical planning files contain unchecked boxes that are not active work. | New agents can misread old plans as current tasks. | Continue active queue sync tasks and keep historical files out of the canonical reading path. |
 

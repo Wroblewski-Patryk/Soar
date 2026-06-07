@@ -1,6 +1,959 @@
 # Next Steps
 
-Last updated: 2026-06-06
+Last updated: 2026-06-07
+
+## 2026-06-07 LUC-2698 Post-Child Closure Next Action
+
+1. Treat [LUC-2698](/LUC/issues/LUC-2698) as complete for the original TSA
+   architecture-awareness refresh/reconciliation request.
+2. Do not create another worker child from [LUC-2698](/LUC/issues/LUC-2698);
+   [LUC-2701](/LUC/issues/LUC-2701) completed the refresh/delegation and
+   [LUC-2702](/LUC/issues/LUC-2702) completed the selected
+   `scripts/checkCoolifyStackEnv.mjs` relation/test proof.
+3. Future no-stall work should continue from the current Paperclip board state
+   or the latest architecture-awareness report, not from the stale
+   [LUC-2698](/LUC/issues/LUC-2698) instruction.
+4. Preserve the boundary: architecture-awareness coordination/readback only.
+   No deploy, push, restart, protected smoke, production browser, account,
+   secret, exchange, database, or live-trading mutation is implied.
+5. Evidence:
+   `history/tasks/luc-2698-architecture-awareness-post-child-closure-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2701 Gap Register Refresh Next Action
+
+1. Treat [LUC-2701](/LUC/issues/LUC-2701) as complete for this TSA
+   gap-register refresh and repair-lane delegation checkpoint.
+2. Execute [LUC-2702](/LUC/issues/LUC-2702) as the next Test Automation local
+   proof/relation lane for `scripts/checkCoolifyStackEnv.mjs`.
+3. [LUC-2702](/LUC/issues/LUC-2702) should prefer direct scanner-readable
+   relation rows to the already-passing `scripts/checkCoolifyStackEnv.test.mjs`
+   and add minimal focused tests only for anchors that are genuinely unproved.
+4. Do not reopen duplicate master-ledger work for
+   [LUC-2693](/LUC/issues/LUC-2693); the refreshed
+   `2026-06-07T06:46:35.755Z` report no longer lists
+   `scripts/buildV1MasterStateLedger.mjs` as the top actionable family.
+5. Preserve the boundary: local proof and architecture traceability only. No
+   deploy, push, restart, protected smoke, production browser, account,
+   secret, exchange, database, or live-trading mutation is implied.
+6. Evidence:
+   `history/tasks/luc-2701-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2695 No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2695](/LUC/issues/LUC-2695) as complete for this PM
+   no-stall/delegation checkpoint.
+2. [LUC-2698](/LUC/issues/LUC-2698) has since been closed as satisfied by
+   completed successor lanes [LUC-2701](/LUC/issues/LUC-2701) and
+   [LUC-2702](/LUC/issues/LUC-2702).
+3. Do not reopen duplicate master-ledger or `checkCoolifyStackEnv` proof work
+   unless a later architecture-awareness refresh identifies new, exact
+   uncovered anchors.
+4. Continue the Soar no-stall/audit-to-completion loop from the current board
+   state.
+5. Preserve the boundary: architecture-awareness coordination/readback only.
+   No deploy, push, restart, protected smoke, production browser, account,
+   secret, exchange, database, or live-trading mutation is implied.
+6. Evidence:
+   `history/tasks/luc-2695-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2693 V1 Master State Ledger Next Action
+
+1. Treat [LUC-2693](/LUC/issues/LUC-2693) as complete for this Test
+   Automation local proof and architecture relation repair checkpoint.
+2. Do not reopen duplicate master-ledger proof work unless a later
+   architecture-awareness refresh identifies new, exact uncovered anchors.
+3. The next TSA/PM refresh may consider `scripts/checkCoolifyStackEnv.mjs`
+   only if a fresh report still shows it as a non-duplicate actionable family.
+4. Preserve the boundary: local proof and architecture traceability only. No
+   deploy, push, restart, protected smoke, production browser, account, secret,
+   exchange, database, or live-trading mutation is implied.
+5. Evidence:
+   `history/tasks/luc-2693-v1-master-state-ledger-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2692 V1 Audit-To-Completion Controller Next Action
+
+1. Treat [LUC-2692](/LUC/issues/LUC-2692) as complete for this TSA controller
+   checkpoint.
+2. Execute [LUC-2693](/LUC/issues/LUC-2693) as the next Test Automation local
+   proof lane for the refreshed top family
+   `scripts/buildV1MasterStateLedger.mjs`.
+3. Do not reopen duplicate scorecard proof work for
+   [LUC-2685](/LUC/issues/LUC-2685); the refreshed
+   `2026-06-07T06:16:35.207Z` report no longer lists
+   `scripts/buildV1CompletionScorecard.mjs` as a top actionable family.
+4. After [LUC-2693](/LUC/issues/LUC-2693) closes, the next TSA/PM refresh
+   should consider `scripts/checkCoolifyStackEnv.mjs` only if a fresh report
+   still shows it as a non-duplicate actionable family.
+5. Preserve the boundary: local proof and architecture traceability only. No
+   deploy, push, restart, protected smoke, production browser, account, secret,
+   exchange, database, or live-trading mutation is implied.
+6. Evidence:
+   `history/tasks/luc-2692-v1-audit-to-completion-controller-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2685 V1 Completion Scorecard Next Action
+
+1. Treat [LUC-2685](/LUC/issues/LUC-2685) as complete for this Test
+   Automation local proof and architecture relation repair checkpoint.
+2. Do not reopen duplicate scorecard proof work unless a later
+   architecture-awareness refresh identifies new, exact uncovered anchors.
+3. The next TSA/PM refresh may consider `scripts/buildV1MasterStateLedger.mjs`
+   only if a fresh report still shows it as a non-duplicate actionable family.
+4. Preserve the boundary: local proof and architecture traceability only. No
+   deploy, push, restart, protected smoke, production browser, account, secret,
+   exchange, database, or live-trading mutation is implied.
+5. Evidence:
+   `history/tasks/luc-2685-v1-completion-scorecard-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2684 Architecture-Awareness Refresh Next Action
+
+1. Treat [LUC-2684](/LUC/issues/LUC-2684) as complete for this Technical
+   Solution Architect architecture-awareness refresh/delegation checkpoint.
+2. Execute [LUC-2685](/LUC/issues/LUC-2685) as the next Test Automation local
+   proof lane for the refreshed top family
+   `scripts/buildV1CompletionScorecard.mjs`.
+3. Do not reopen duplicate RC/SLO helper proof work for
+   [LUC-2674](/LUC/issues/LUC-2674) or
+   [LUC-2678](/LUC/issues/LUC-2678); the refreshed
+   `2026-06-07T05:34:19.835Z` report no longer lists those families as the top
+   actionable samples.
+4. After [LUC-2685](/LUC/issues/LUC-2685) closes, the next TSA/PM refresh
+   should consider `scripts/buildV1MasterStateLedger.mjs` only if a fresh
+   report still shows it as a non-duplicate actionable family.
+5. Preserve the boundary: local proof and architecture traceability only. No
+   deploy, push, restart, protected smoke, production browser, account, secret,
+   exchange, database, or live-trading mutation is implied.
+6. Evidence:
+   `history/tasks/luc-2684-architecture-awareness-refresh-after-rc-slo-proof-closure-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2681 No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2681](/LUC/issues/LUC-2681) as complete for this PM
+   no-stall/delegation checkpoint.
+2. Execute [LUC-2684](/LUC/issues/LUC-2684) as the next Technical Solution
+   Architect refresh/reconciliation lane for the stale architecture-awareness
+   report generated `2026-06-07T04:42:13.421Z`.
+3. [LUC-2684](/LUC/issues/LUC-2684) must not duplicate completed RC/SLO helper
+   proof lanes [LUC-2674](/LUC/issues/LUC-2674) or
+   [LUC-2678](/LUC/issues/LUC-2678); it should refresh or reconcile the report
+   and create at most one next worker-ready lane for a truly current
+   non-duplicate actionable family.
+4. Preserve the boundary: architecture-awareness coordination/readback only.
+   No deploy, push, restart, protected smoke, production browser, account,
+   secret, exchange, database, or live-trading mutation is implied.
+5. Evidence:
+   `history/tasks/luc-2681-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2678 RC Signoff And SLO Window Repair Next Action
+
+1. Treat [LUC-2678](/LUC/issues/LUC-2678) as complete for this Test
+   Automation / Architecture QA local proof lane.
+2. Do not reopen duplicate proof work for
+   `scripts/buildRcSignoffRecord.mjs` or
+   `scripts/buildSloWindowReport.mjs` unless a fresh architecture-awareness
+   refresh proves concrete remaining unlinked anchors after the `LUC-2678`
+   relation rows.
+3. If the parent no-stall chain continues, the next PM/TSA checkpoint should
+   refresh or read back the architecture-awareness report and pick the next
+   non-duplicate actionable missing-test family, not the RC external gate,
+   RC signoff, or SLO window report helpers already covered by
+   [LUC-2674](/LUC/issues/LUC-2674) and
+   [LUC-2678](/LUC/issues/LUC-2678).
+4. Preserve the boundary: local release tooling proof and architecture
+   traceability only. No deploy, push, restart, protected smoke, production
+   browser, account, secret, exchange, database, or live-trading mutation is
+   implied.
+5. Evidence:
+   `history/tasks/luc-2678-rc-signoff-slo-window-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2675 No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2675](/LUC/issues/LUC-2675) as complete for this PM
+   no-stall/delegation checkpoint.
+2. Execute [LUC-2678](/LUC/issues/LUC-2678) as the next Test Automation /
+   Architecture QA local proof lane for remaining release/ops script
+   missing-test links after [LUC-2674](/LUC/issues/LUC-2674):
+   `scripts/buildRcSignoffRecord.mjs` and
+   `scripts/buildSloWindowReport.mjs`.
+3. [LUC-2678](/LUC/issues/LUC-2678) must either add focused local proof plus
+   scanner-readable relation rows for exact current anchors, or classify exact
+   anchors with evidence as already covered/non-actionable.
+4. Do not reopen broad duplicate [LUC-2198](/LUC/issues/LUC-2198), and do not
+   duplicate completed [LUC-2674](/LUC/issues/LUC-2674) coverage for
+   `scripts/buildRcExternalGateStatus.mjs`.
+5. Preserve the boundary: local release tooling proof and architecture
+   traceability only. No deploy, push, restart, protected smoke, production
+   browser, account, secret, exchange, database, or live-trading mutation is
+   implied.
+6. Evidence:
+   `history/tasks/luc-2675-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2673 Gap Register Refresh Next Action
+
+1. Treat [LUC-2673](/LUC/issues/LUC-2673) as complete for this TSA
+   gap-register refresh and repair-lane delegation checkpoint.
+2. Execute [LUC-2674](/LUC/issues/LUC-2674) as the next Test Automation local
+   proof/relation lane for release RC/SLO script missing-test links:
+   `scripts/buildRcExternalGateStatus.mjs`,
+   `scripts/buildRcSignoffRecord.mjs`, and
+   `scripts/buildSloWindowReport.mjs`.
+3. [LUC-2674](/LUC/issues/LUC-2674) must either add focused local proof plus
+   scanner-readable relation rows for exact current top anchors, or classify
+   exact anchors with evidence as already covered/non-actionable.
+4. Do not reopen broad duplicate [LUC-2198](/LUC/issues/LUC-2198); it is done
+   and only provided aggregate file-level release-gate relation rows.
+5. Preserve the boundary: local release tooling proof and architecture
+   traceability only. No deploy, push, restart, protected smoke, production
+   browser, account, secret, exchange, database, or live-trading mutation is
+   implied.
+6. Evidence:
+   `history/tasks/luc-2673-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2671 Residual Architecture-Awareness Reconciliation Next Action
+
+1. Treat [LUC-2671](/LUC/issues/LUC-2671) as complete for local Test
+   Automation relation reconciliation.
+2. Do not reopen duplicate proof work for [LUC-2650](/LUC/issues/LUC-2650),
+   [LUC-2656](/LUC/issues/LUC-2656), or [LUC-2664](/LUC/issues/LUC-2664)
+   from the `2026-06-07T04:12:30.440Z` report; missing relation rows for those
+   covered anchors are repaired.
+3. Follow [LUC-2672](/LUC/issues/LUC-2672) for the remaining `.test.mjs`
+   fixture-function scanner refinement so test fixture functions are not
+   treated as actionable implementation gaps.
+4. Preserve the boundary: local relation/proof confidence only. No deploy,
+   push, restart, protected smoke, production browser, account, secret,
+   exchange, database, or live-trading mutation is implied.
+5. Evidence:
+   `history/tasks/luc-2671-reconcile-residual-architecture-awareness-top-samples-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2668 No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2668](/LUC/issues/LUC-2668) as complete for this PM
+   no-stall/delegation checkpoint.
+2. Execute [LUC-2671](/LUC/issues/LUC-2671) as the next Test Automation /
+   Architecture QA lane to reconcile residual architecture-awareness top
+   samples from the `2026-06-07T04:12:30.440Z` report.
+3. [LUC-2671](/LUC/issues/LUC-2671) must classify top samples as already
+   covered by completed proof lane, stale scanner inference, missing relation
+   row, or true remaining proof gap before adding new tests.
+4. Do not reopen duplicate proof work for [LUC-2650](/LUC/issues/LUC-2650),
+   [LUC-2656](/LUC/issues/LUC-2656), or [LUC-2664](/LUC/issues/LUC-2664)
+   unless focused proof fails or refreshed relation readback proves concrete
+   anchors remain unlinked.
+5. Preserve [LUC-244](/LUC/issues/LUC-244) as the canonical PM no-stall lane;
+   it remains fail-closed on [LUC-47](/LUC/issues/LUC-47) and
+   [LUC-241](/LUC/issues/LUC-241), whose terminal blocker is
+   [LUC-2619](/LUC/issues/LUC-2619).
+
+## 2026-06-07 LUC-2656 Obsidian Vault Layer Script Next Action
+
+1. Treat [LUC-2656](/LUC/issues/LUC-2656) as complete for local Test
+   Automation proof and scanner-readable relation repair of
+   `scripts/buildObsidianVaultLayer.mjs`.
+2. Do not reopen a duplicate Test Automation child for the same Obsidian vault
+   layer helper family unless a future refreshed architecture-awareness report
+   reintroduces concrete missing-test rows or
+   `scripts/buildObsidianVaultLayer.test.mjs` fails.
+3. [LUC-2653](/LUC/issues/LUC-2653) child [LUC-2656](/LUC/issues/LUC-2656)
+   is now locally verified; the next no-stall/repair-lane decision belongs to
+   the coordinator/architecture awareness refresh lane, not this closed Test
+   Automation child.
+4. Preserve the boundary: local tooling proof and architecture traceability
+   only. No deploy, push, restart, protected smoke, production browser,
+   account, secret, exchange, database, or live-trading mutation is implied.
+5. Evidence:
+   `history/tasks/luc-2656-obsidian-vault-layer-script-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2650 Route-Reachable i18n Audit Script Next Action
+
+1. Treat [LUC-2650](/LUC/issues/LUC-2650) as complete for local Test
+   Automation proof and scanner-readable relation repair of
+   `scripts/auditRouteReachableI18n.mjs`.
+2. Do not reopen a duplicate Test Automation child for the same route-reachable
+   i18n audit helper family unless a future refreshed architecture-awareness
+   report reintroduces concrete missing-test rows or
+   `scripts/auditRouteReachableI18n.test.mjs` fails.
+3. [LUC-2647](/LUC/issues/LUC-2647) child [LUC-2650](/LUC/issues/LUC-2650)
+   is now locally verified; the next no-stall/repair-lane decision belongs to
+   the coordinator/architecture awareness refresh lane, not this closed Test
+   Automation child.
+4. Preserve the boundary: local tooling proof and architecture traceability
+   only. No deploy, push, restart, protected smoke, production browser,
+   account, secret, exchange, database, or live-trading mutation is implied.
+5. Evidence:
+   `history/tasks/luc-2650-route-reachable-i18n-audit-script-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2647 No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2647](/LUC/issues/LUC-2647) as complete for this PM
+   no-stall/delegation checkpoint.
+2. Treat [LUC-2650](/LUC/issues/LUC-2650) as the completed Test Automation
+   child proof lane for `scripts/auditRouteReachableI18n.mjs` function-level
+   missing-test links from the `2026-06-07T02:47:58.055Z`
+   architecture-awareness report.
+3. Keep [LUC-2650](/LUC/issues/LUC-2650) strictly local proof and
+   scanner-readable architecture traceability. It must not touch deploy, push,
+   restart, rollback, production smoke, production browser, credentials,
+   accounts, exchange state, database state, or live-trading behavior.
+4. Preserve [LUC-244](/LUC/issues/LUC-244) as the canonical PM no-stall lane;
+   it remains fail-closed on [LUC-47](/LUC/issues/LUC-47) and
+   [LUC-241](/LUC/issues/LUC-241), whose terminal blocker is
+   [LUC-2619](/LUC/issues/LUC-2619).
+5. Tooling drift remains: `corepack pnpm softwarehouse:control-tick` is named
+   by issue contracts but is not exposed in this checkout.
+
+## 2026-06-07 LUC-2646 Architecture Graph Drift Script Next Action
+
+1. Treat [LUC-2646](/LUC/issues/LUC-2646) as complete for local Test
+   Automation proof and scanner-readable relation repair of
+   `scripts/auditArchitectureGraphDrift.mjs`.
+2. Do not reopen a duplicate Test Automation child for the same drift-script
+   helper family unless a future refreshed architecture-awareness report
+   reintroduces concrete missing-test rows or
+   `scripts/auditArchitectureGraphDrift.test.mjs` fails.
+3. [LUC-2644](/LUC/issues/LUC-2644) children [LUC-2645](/LUC/issues/LUC-2645)
+   and [LUC-2646](/LUC/issues/LUC-2646) are now locally verified; the next
+   no-stall/repair-lane decision belongs to the coordinator/architecture
+   awareness refresh lane, not this closed Test Automation child.
+4. Preserve the boundary: local tooling proof and architecture traceability
+   only. No deploy, push, restart, protected smoke, production browser,
+   account, secret, exchange, database, or live-trading mutation is implied.
+5. Evidence:
+   `history/tasks/luc-2646-architecture-graph-drift-script-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2645 Dashboard Language Switcher Missing-Test Link Next Action
+
+1. Treat [LUC-2645](/LUC/issues/LUC-2645) as complete for local Frontend Web
+   proof and scanner-readable relation repair of
+   `apps/web/src/ui/layout/dashboard/LanguageSwitcher.tsx#handleSelect`.
+2. Do not reopen another Frontend child for the same language switcher handler
+   unless a future refreshed architecture-awareness report reintroduces a
+   concrete missing-test row or
+   `apps/web/src/ui/layout/dashboard/LanguageSwitcher.test.tsx` fails.
+3. Remaining sibling work from [LUC-2644](/LUC/issues/LUC-2644) is
+   [LUC-2646](/LUC/issues/LUC-2646), owned by Test Automation for
+   `scripts/auditArchitectureGraphDrift.mjs` helper missing-test links.
+4. Preserve the boundary: local Web proof and architecture traceability only.
+   No deploy, push, restart, protected smoke, production browser, account,
+   secret, exchange, database, or live-trading mutation is implied.
+5. Evidence:
+   `history/tasks/luc-2645-dashboard-language-switcher-missing-test-link-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2644 Gap Register Refresh Next Action
+
+1. Treat [LUC-2644](/LUC/issues/LUC-2644) as complete for this TSA
+   gap-register refresh and repair-lane delegation checkpoint.
+2. Treat [LUC-2645](/LUC/issues/LUC-2645) as the completed Frontend Web local
+   proof lane for
+   `apps/web/src/ui/layout/dashboard/LanguageSwitcher.tsx#handleSelect`.
+3. Execute [LUC-2646](/LUC/issues/LUC-2646) as the Test Automation local proof
+   lane for `scripts/auditArchitectureGraphDrift.mjs` helper missing-test
+   links: `collectCoveredPaths`, `inventory`, `parseCsv`, `summarizeDrift`,
+   `toRepoPath`, and `walk`.
+4. Keep both children strictly local proof and scanner-readable traceability
+   work. They must not touch deploy, push, restart, rollback, production
+   browser/protected smoke, credentials, accounts, exchange state, database
+   state, or live-trading behavior.
+5. Current architecture-awareness report generated
+   `2026-06-07T02:47:58.055Z` with `612` actionable missing-test links, `0`
+   actionable missing-doc links, `0` ownerless entities, and `0`
+   disconnected entities.
+
+## 2026-06-07 LUC-2639 API Endpoint Docs Parity Script Next Action
+
+1. Treat [LUC-2639](/LUC/issues/LUC-2639) as complete for local Test
+   Automation proof and scanner-readable relation repair of
+   `scripts/auditApiEndpointDocsParity.mjs`.
+2. Do not reopen duplicate script/tooling aggregate issues for the same API
+   endpoint docs parity helper family unless a future refreshed
+   architecture-awareness report reintroduces a concrete missing-test row or
+   `scripts/auditApiEndpointDocsParity.test.mjs` fails.
+3. If exact top-sample removal evidence is required, route that to the
+   coordinator/architecture tooling owner with access to the external
+   architecture-awareness builder; this checkout proved focused tests, endpoint
+   parity, graph generation, and guardrails only.
+4. Preserve the boundary: local tooling proof and architecture traceability
+   only. No deploy, push, restart, protected smoke, production browser,
+   account, secret, exchange, database, or live-trading mutation is implied.
+5. Evidence:
+   `history/tasks/luc-2639-api-endpoint-docs-parity-script-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2638 V1 Audit-To-Completion Controller Next Action
+
+1. Treat [LUC-2638](/LUC/issues/LUC-2638) as complete for this TSA controller
+   checkpoint.
+2. Treat [LUC-2639](/LUC/issues/LUC-2639) as the completed child lane for the
+   current API endpoint docs parity script missing-test links.
+3. Protected workers-ready/smoke-auth and release gates remain fail-closed on
+   their existing owner chains; this controller checkpoint and child proof do
+   not unblock them.
+
+## 2026-06-07 LUC-2631 Web PWA/Service-Worker Missing-Test Links Next Action
+
+1. Treat [LUC-2631](/LUC/issues/LUC-2631) as complete for local Web
+   PWA/service-worker missing-test link repair.
+2. Do not open another Frontend child for the same
+   `ServiceWorkerRegistration.tsx#checkBuildVersion`,
+   `handleControllerChange`, `handleVisibilityChange`, `handleWindowFocus`,
+   `purgePwaCaches`, or `requestUpdateCheck` anchors unless a future
+   architecture-awareness refresh reintroduces a concrete missing-test row or
+   one of the focused PWA tests fails.
+3. If exact architecture-awareness row removal evidence is required, hand off
+   to the coordinator/architecture tooling owner with access to the external
+   architecture-awareness builder; this checkout only has graph generation and
+   guardrail tooling.
+4. Preserve the boundary: local Web proof and scanner traceability only. No
+   deploy, push, restart, protected smoke, production browser, account,
+   secret, exchange, database, or live-trading mutation is implied.
+5. Evidence:
+   `history/tasks/luc-2631-web-pwa-service-worker-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2628 No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2628](/LUC/issues/LUC-2628) as complete for this PM
+   no-stall/delegation checkpoint.
+2. Execute [LUC-2631](/LUC/issues/LUC-2631) as the next Frontend Web local
+   proof lane for Web PWA/service-worker missing-test links:
+   `checkBuildVersion`, `handleControllerChange`, `handleVisibilityChange`,
+   `handleWindowFocus`, `purgePwaCaches`, and `requestUpdateCheck`.
+3. Keep [LUC-2631](/LUC/issues/LUC-2631) strictly local Web proof and
+   scanner-readable architecture traceability. It must not touch deploy, push,
+   restart, rollback, production smoke, production browser, credentials,
+   accounts, exchange state, database state, or live-trading behavior.
+4. Preserve [LUC-244](/LUC/issues/LUC-244) as the canonical PM no-stall lane;
+   it remains fail-closed on [LUC-47](/LUC/issues/LUC-47) and
+   [LUC-241](/LUC/issues/LUC-241), whose terminal blocker is
+   [LUC-2619](/LUC/issues/LUC-2619).
+5. Tooling drift remains: `pnpm softwarehouse:control-tick` is named by issue
+   contracts but is not exposed in this checkout.
+
+## 2026-06-07 LUC-2624 Web UI/Form/Layout Missing-Test Links Next Action
+
+1. Treat [LUC-2624](/LUC/issues/LUC-2624) as complete for local refreshed Web
+   UI/form/layout missing-test link repair.
+2. Do not open another Frontend child for the same `handlePageSizeChange`,
+   `TextareaField`, `ToggleField`, form shell/layout primitive,
+   `useDetailsDropdown`, dashboard layout, or public layout anchors unless a
+   future architecture-awareness refresh reintroduces a concrete missing-test
+   row or one of the focused Web tests fails.
+3. If exact architecture-awareness row removal evidence is required, hand off
+   to the coordinator/architecture tooling owner with access to the external
+   architecture-awareness builder; this checkout only has graph generation and
+   guardrail tooling.
+4. Preserve the boundary: local Web proof and scanner traceability only. No
+   deploy, push, restart, protected smoke, production browser, account,
+   secret, exchange, database, or live-trading mutation is implied.
+5. Evidence:
+   `history/tasks/luc-2624-web-ui-form-layout-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2621 No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2621](/LUC/issues/LUC-2621) as complete for this PM no-stall
+   checkpoint.
+2. Execute [LUC-2624](/LUC/issues/LUC-2624) as the next Frontend Web local
+   proof lane for the refreshed architecture-awareness top Web UI/form/layout
+   missing-test family.
+3. Keep [LUC-2624](/LUC/issues/LUC-2624) strictly local Web proof and
+   scanner-readable architecture traceability. It must not touch deploy, push,
+   restart, rollback, production smoke, production browser, credentials,
+   accounts, exchange state, database state, or live-trading behavior.
+4. Do not reopen duplicate work for [LUC-2601](/LUC/issues/LUC-2601),
+   [LUC-2607](/LUC/issues/LUC-2607), or [LUC-2611](/LUC/issues/LUC-2611)
+   anchors unless a future refreshed report reintroduces a concrete row or a
+   focused proof fails.
+5. Tooling drift remains: `corepack pnpm softwarehouse:control-tick` is not
+   exposed and `scripts/run-live-run-janitor.mjs` is absent in this checkout.
+
+## 2026-06-07 LUC-2620 Gap Register Refresh Next Action
+
+1. Treat [LUC-2620](/LUC/issues/LUC-2620) as complete for this TSA
+   coordination/readback checkpoint.
+2. Do not create duplicate local proof children for the current top
+   architecture-awareness samples under Web API/forms, DataTable/theme, or
+   shared UI/form primitives unless a future architecture-awareness refresh
+   reintroduces a concrete missing-test row after completed local repairs
+   [LUC-2601](/LUC/issues/LUC-2601), [LUC-2607](/LUC/issues/LUC-2607), and
+   [LUC-2611](/LUC/issues/LUC-2611).
+3. Preserve protected workers-ready/smoke-auth ownership through
+   [LUC-2619](/LUC/issues/LUC-2619). It must provide one production-smoke
+   appropriate `ADMIN` principal/session accepted by Soar API auth through
+   exactly one supported `SMOKE_*` path before [LUC-2618](/LUC/issues/LUC-2618),
+   [LUC-2505](/LUC/issues/LUC-2505), or [LUC-1438](/LUC/issues/LUC-1438) can
+   rerun protected workers-ready smoke.
+4. Preserve protected release ownership through
+   [LUC-2372](/LUC/issues/LUC-2372), [LUC-2366](/LUC/issues/LUC-2366),
+   [LUC-2361](/LUC/issues/LUC-2361), and [LUC-2378](/LUC/issues/LUC-2378).
+5. Tooling drift remains: `corepack pnpm softwarehouse:control-tick` is not
+   exposed, `scripts/run-live-run-janitor.mjs` is absent, and
+   `scripts/build-architecture-awareness-index.mjs` is absent in this checkout.
+
+## 2026-06-07 LUC-2619 Smoke Auth Binding Next Action
+
+1. Treat [LUC-2619](/LUC/issues/LUC-2619) as blocked, not done: the current
+   supported `SMOKE_*` binding still returns `401` on production
+   `GET /workers/ready`.
+2. Credential/account owner or board-approved secret-store operator must
+   provision one production-smoke appropriate `ADMIN` principal/session
+   accepted by Soar API auth and bind it through exactly one supported path:
+   `SMOKE_AUTH_TOKEN` or valid `SMOKE_AUTH_EMAIL` + `SMOKE_AUTH_PASSWORD`.
+3. Do not retry public-only smoke as proof for this blocker. Public
+   `/health`, `/ready`, Web `/`, and Web `/api/build-info` already pass; the
+   missing proof is protected worker readiness auth acceptance.
+4. After the binding is corrected, wake [LUC-2618](/LUC/issues/LUC-2618) for
+   the worker-included smoke rerun and then continue the [LUC-1438](/LUC/issues/LUC-1438)
+   chain.
+5. Preserve no-secret handling: record names, presence, shape, status codes,
+   and command shape only. Do not print or store token/password/cookie/header
+   values.
+6. Evidence:
+   `history/tasks/luc-2619-provision-smoke-auth-binding-workers-ready-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2611 Shared UI/Form Primitive Missing-Test Links Next Action
+
+1. Treat [LUC-2611](/LUC/issues/LUC-2611) as complete for local shared
+   UI/form primitive missing-test link repair.
+2. Do not open another Frontend child for the same `StatusBadge`,
+   `TableToneBadge`, `Tabs#syncFromHash`, `SuccessState`, `FormAlert`,
+   `FormField`, `CompoundField`, `RadioGroupField`, or `RangeField` anchors
+   unless a future architecture-awareness refresh reintroduces a concrete
+   missing-test row or one of the focused Web tests fails.
+3. If exact architecture-awareness row removal evidence is required, hand off
+   to the coordinator/architecture tooling owner with access to the external
+   `build-architecture-awareness-index.mjs` builder; this checkout only has
+   graph generation/drift tooling.
+4. Preserve the boundary: local Web proof and scanner traceability only. No
+   deploy, push, restart, protected smoke, production browser, account,
+   secret, exchange, database, or live-trading mutation is implied.
+5. Evidence:
+   `history/tasks/luc-2611-shared-ui-form-primitive-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2608 No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2608](/LUC/issues/LUC-2608) as complete for this PM
+   no-stall/delegation checkpoint.
+2. Execute [LUC-2611](/LUC/issues/LUC-2611) as the next Frontend Web local
+   proof lane for shared UI/form primitive missing-test relation repair:
+   `StatusBadge`, `TableToneBadge`, `Tabs#syncFromHash`,
+   `ViewState#SuccessState`, `FormAlert`, `FormField`, `CompoundField`,
+   `RadioGroupField`, and `RangeField`.
+3. Keep [LUC-2611](/LUC/issues/LUC-2611) strictly local Web proof and
+   scanner-readable architecture traceability. It must not touch deploy, push,
+   restart, rollback, production smoke, credentials, accounts, exchange state,
+   database state, or live-trading behavior.
+4. Do not reopen duplicate work for [LUC-2601](/LUC/issues/LUC-2601) or
+   [LUC-2607](/LUC/issues/LUC-2607) anchors unless a future refreshed
+   architecture-awareness report reintroduces a concrete missing-test row or a
+   focused Web proof fails.
+5. Tooling drift remains: `corepack pnpm softwarehouse:control-tick` is named
+   by issue contracts but is not exposed in this checkout, and
+   `scripts/run-live-run-janitor.mjs` is absent.
+
+## 2026-06-07 LUC-2607 Web Theme And DataTable Missing-Test Links Next Action
+
+1. Treat [LUC-2607](/LUC/issues/LUC-2607) as complete for local Web theme
+   bootstrap and DataTable missing-test link repair.
+2. Do not open another Frontend child for the same
+   `apps/web/src/security/themeBootstrap.ts`,
+   `apps/web/src/ui/components/ThemeSwitch.tsx`, or
+   `apps/web/src/ui/components/DataTable.tsx` anchors unless a future
+   architecture-awareness refresh reintroduces a concrete missing-test row or
+   one of the focused Web tests fails.
+3. If exact architecture-awareness row removal evidence is required, hand off
+   to the coordinator/architecture tooling owner with access to the external
+   `build-architecture-awareness-index.mjs` builder; this checkout only has
+   graph generation/drift tooling.
+4. Preserve the boundary: local Web proof and scanner traceability only. No
+   deploy, push, restart, protected smoke, production browser, account,
+   secret, exchange, database, or live-trading mutation is implied.
+5. Evidence:
+   `history/tasks/luc-2607-web-theme-datatable-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2604 No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2604](/LUC/issues/LUC-2604) as complete for this PM
+   no-stall/delegation checkpoint.
+2. Execute [LUC-2607](/LUC/issues/LUC-2607) as the next Frontend Web local
+   proof lane for Web theme bootstrap and DataTable missing-test links.
+3. Keep [LUC-2607](/LUC/issues/LUC-2607) strictly local Web proof and
+   architecture traceability. It must not touch deploy, push, restart,
+   rollback, production smoke, credentials, accounts, exchange state, database
+   state, or live-trading behavior.
+4. Do not open duplicate PM or Frontend children for the same
+   `themeBootstrap.ts` / `DataTable.tsx` anchors unless a future
+   architecture-awareness refresh reintroduces a concrete missing-test row or
+   the focused Web proof fails.
+5. Tooling drift remains: `corepack pnpm softwarehouse:control-tick` is named
+   by issue contracts but is not exposed in this checkout, and
+   `scripts/run-live-run-janitor.mjs` is absent.
+
+## 2026-06-07 LUC-2601 Web API And Form Utility Missing-Test Links Next Action
+
+1. Treat [LUC-2601](/LUC/issues/LUC-2601) as complete for local Web API/form
+   utility missing-test link repair.
+2. Do not open another Frontend child for the same
+   `apps/web/src/lib/api.ts`, `forms.ts`, `getAxiosMessage.ts`,
+   `marketStream.ts`, or `numericInput.ts` anchors unless a future refreshed
+   architecture-awareness report reintroduces a concrete missing-test row or
+   one of the focused Web tests fails.
+3. If exact architecture-awareness row removal evidence is required, hand off
+   to the coordinator/architecture tooling owner with access to the external
+   `build-architecture-awareness-index.mjs` builder; this checkout only has
+   graph generation/drift tooling.
+4. Preserve the boundary: local Web proof and scanner traceability only. No
+   deploy, push, restart, protected smoke, production browser, account,
+   secret, exchange, database, or live-trading mutation is implied.
+5. Evidence:
+   `history/tasks/luc-2601-web-api-form-utility-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2598 No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2598](/LUC/issues/LUC-2598) as complete for this PM
+   no-stall/delegation checkpoint.
+2. [LUC-2601](/LUC/issues/LUC-2601) is now complete for the Web API/form
+   utility missing-test family:
+   `hardRedirect`, `isProtectedRoute`, `hasFormText`,
+   `normalizeFormBaseCurrency`, `normalizeFormSymbol`, and
+   `normalizeFormText`.
+3. Keep [LUC-2601](/LUC/issues/LUC-2601) strictly local Web proof and
+   architecture traceability. It must not touch deploy, push, restart,
+   rollback, production smoke, credentials, accounts, exchange state,
+   database state, or live-trading behavior.
+4. Do not open duplicate PM or Frontend children for the same
+   `apps/web/src/lib/api.ts` / `apps/web/src/lib/forms.ts` anchors unless a
+   future architecture-awareness refresh reintroduces a concrete missing-test
+   row or the focused Web proof fails.
+5. Tooling drift remains: `corepack pnpm softwarehouse:control-tick` is named
+   by issue contracts but is not exposed in this checkout, and
+   `scripts/run-live-run-janitor.mjs` is absent.
+
+## 2026-06-07 LUC-2597 Web Architecture Missing-Test Link Families Next Action
+
+1. Treat [LUC-2597](/LUC/issues/LUC-2597) as complete for local Web
+   build-info/layout/auth/runtime utility/i18n missing-test link repair.
+2. Do not open another repair lane for the same assigned Web families unless a
+   future architecture-awareness refresh reintroduces a concrete row or a
+   focused Web regression fails.
+3. Remaining top actionable missing-test samples after the refresh are separate
+   Web shared/lib/UI helper families, now beginning with
+   `apps/web/src/lib/api.ts#hardRedirect`; route those through a new scoped
+   child if the parent gap loop selects them.
+4. Preserve the boundary: this is local Web proof and scanner traceability
+   only. Protected browser, production release, account, exchange, and
+   live-trading proof remain separate protected gates.
+
+## 2026-06-07 LUC-2596 API-Side Architecture Missing-Test Links Next Action
+
+1. Treat [LUC-2596](/LUC/issues/LUC-2596) as complete for the assigned
+   API-side local proof/traceability anchors:
+   `apps/api/prisma/seed.ts#main`,
+   `runtimePositionState.store.ts#toFiniteNonNegativeInt`, and
+   `runtimeFreshness.ts#parseEnvDate`.
+2. Do not open another backend repair lane for these three anchors unless a
+   future architecture-awareness refresh reintroduces a concrete missing-test
+   row or one of the focused tests fails.
+3. Preserve the boundary: this proves local import-safe seed behavior, runtime
+   state normalization mapping, and runtime freshness parser behavior only.
+   Production worker readiness, protected runtime freshness, deploy, restart,
+   exchange, and live-trading proof remain separate protected/Ops gates.
+4. Continue Web-side missing-test-link repair through
+   [LUC-2597](/LUC/issues/LUC-2597), not through this backend lane.
+5. Evidence:
+   `history/tasks/luc-2596-api-side-architecture-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2595 Gap Register And Repair Lane Refresh Next Action
+
+1. Treat [LUC-2595](/LUC/issues/LUC-2595) as complete for TSA repair-lane
+   refresh and delegation.
+2. Treat [LUC-2596](/LUC/issues/LUC-2596) as completed by the Backend/Runtime
+   local proof lane for the assigned API-side architecture missing-test
+   anchors.
+3. Execute [LUC-2597](/LUC/issues/LUC-2597) as the Frontend local proof lane
+   for current Web build-info/layout/auth/runtime utility/i18n missing-test
+   families.
+4. Do not open duplicate protected release or workers-ready lanes from this
+   checkpoint. Existing blocked owner paths remain authoritative:
+   [LUC-2372](/LUC/issues/LUC-2372),
+   [LUC-2366](/LUC/issues/LUC-2366),
+   [LUC-2361](/LUC/issues/LUC-2361),
+   [LUC-2378](/LUC/issues/LUC-2378),
+   [LUC-2505](/LUC/issues/LUC-2505),
+   [LUC-1438](/LUC/issues/LUC-1438),
+   [LUC-241](/LUC/issues/LUC-241),
+   [LUC-47](/LUC/issues/LUC-47), and
+   [LUC-244](/LUC/issues/LUC-244).
+5. Keep completed [LUC-2596](/LUC/issues/LUC-2596) and active
+   [LUC-2597](/LUC/issues/LUC-2597) strictly local proof/traceability lanes:
+   no deploy, push, protected smoke, production browser, account, secret,
+   exchange, database, or live-trading mutation unless separately approved.
+
+## 2026-06-07 LUC-2594 Workers Execution Crash Metadata Diagnosis Next Action
+
+1. Treat [LUC-2594](/LUC/issues/LUC-2594) as complete for read-only Coolify
+   crash metadata diagnosis.
+2. Do not open another DRE child for the same `workers-execution` crash signal
+   unless new retained logs, Coolify deployment history, or protected worker
+   readiness evidence becomes available.
+3. Preserve the evidence boundary: retained Coolify evidence classifies the
+   cause as `unknown_from_retained_coolify_evidence`, not OOM/resource,
+   process-exit, dependency, exchange credential, deploy, or startup failure.
+4. If the board requires root cause beyond this, the next owner/action is an
+   explicit Ops/Security-approved host-level retained container/journal log or
+   Coolify UI deployment-history export for `workers-execution`, with
+   no-secret redaction rules and no mutation.
+5. Protected `/workers/ready`, runtime freshness, and alerts remain gated by
+   the existing protected-auth owner chain and are not unblocked by this
+   diagnosis.
+
+## 2026-06-07 LUC-2590 Coolify Production Deploy Health Sweep Next Action
+
+1. Treat [LUC-2590](/LUC/issues/LUC-2590) as read-only sweep complete and
+   done after child diagnosis [LUC-2594](/LUC/issues/LUC-2594) completed.
+2. Do not redeploy, restart, roll back, edit env, run protected smoke, or use
+   host-level/terminal access from [LUC-2590](/LUC/issues/LUC-2590) without a
+   fresh explicit approval naming resource, evidence path, and rollback/no-
+   secret plan.
+3. Public API/Web currently passes and Web build-info matches `origin/main`
+   (`56d8d440bfe0fd9ee692e9f669e35414d85d2493`); do not confuse this with
+   protected worker readiness, which remains unverified because freshness/
+   readiness/alerts return `401` in this no-secret lane.
+4. [LUC-2594](/LUC/issues/LUC-2594) classified the `workers-execution`
+   `2026-06-06T04:12:15Z` crash metadata as
+   `unknown_from_retained_coolify_evidence`. Do not reopen the same DRE
+   diagnosis unless new retained log/deployment evidence appears or an
+   explicit host-level/Coolify UI export approval is granted.
+
+## 2026-06-07 LUC-2591 PM No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2591](/LUC/issues/LUC-2591) as complete for this PM queue
+   disposition checkpoint. It is not a product-code, runtime, deploy,
+   protected-smoke, source-control, credential, or release-mutation lane.
+2. Do not open duplicate PM/Ops/QA/Security/release/controller issues from this
+   checkpoint: fresh readback found `0` `todo` issues.
+3. Let [LUC-2590](/LUC/issues/LUC-2590) continue as the active DRE Coolify
+   production deploy health sweep. PM should wait for its real closure,
+   blocker, or review disposition instead of polling or duplicating the lane.
+4. Keep [LUC-2558](/LUC/issues/LUC-2558) and
+   [LUC-1397](/LUC/issues/LUC-1397) in local-board review for operator access
+   and owner-login verification.
+5. Preserve protected gate chains through
+   [LUC-2505](/LUC/issues/LUC-2505),
+   [LUC-241](/LUC/issues/LUC-241),
+   [LUC-2372](/LUC/issues/LUC-2372),
+   [LUC-2366](/LUC/issues/LUC-2366),
+   [LUC-2361](/LUC/issues/LUC-2361), and
+   [LUC-2378](/LUC/issues/LUC-2378). They remain fail-closed until an accepted
+   gate fact or owner evidence changes the queue.
+6. Tooling drift remains: `corepack pnpm softwarehouse:control-tick` is named
+   by issue contracts but is not exposed in this checkout, and
+   `scripts/run-live-run-janitor.mjs` is absent.
+
+## 2026-06-07 LUC-2587 Autonomous Idle And Map Drift Sweep Next Action
+
+1. Treat [LUC-2587](/LUC/issues/LUC-2587) as complete for the docs/memory
+   idle-state and map-drift sweep. Soar is not monitoring-only.
+2. Keep [LUC-2588](/LUC/issues/LUC-2588) as the active V1
+   audit-to-completion controller and do not create duplicate child lanes while
+   its owner path remains live.
+3. Preserve the protected gate chains through
+   [LUC-2505](/LUC/issues/LUC-2505),
+   [LUC-241](/LUC/issues/LUC-241),
+   [LUC-2372](/LUC/issues/LUC-2372), and
+   [LUC-2558](/LUC/issues/LUC-2558). Protected browser, worker readiness,
+   Coolify access, SLO/release, exchange, account, and live-trading proof must
+   remain fail-closed until their owner gates resolve.
+4. [LUC-2580](/LUC/issues/LUC-2580) now reads `done` on final controller
+   readback, so no status-sync/disposition update is needed for that runtime
+   lane.
+5. Tooling drift remains: `pnpm softwarehouse:control-tick` and
+   `scripts/run-live-run-janitor.mjs` are named in issue contracts but are not
+   available in this checkout.
+
+## 2026-06-07 LUC-2588 V1 Audit-To-Completion Controller Next Action
+
+1. Treat [LUC-2588](/LUC/issues/LUC-2588) as a completed TSA controller
+   checkpoint, not a product-code, runtime, deploy, protected-smoke,
+   source-control, or credential lane.
+2. Do not open duplicate Backend, Runtime, source-control, PM, Ops,
+   Security/Ops, QA, TSA, Docs, or release-path issues from this checkpoint.
+   Fresh live readback confirmed existing first-class owner lanes cover the
+   active blockers.
+3. Preserve the protected release chain:
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+4. Preserve the protected workers-ready/smoke-auth chain:
+   [LUC-2505](/LUC/issues/LUC-2505) ->
+   [LUC-1438](/LUC/issues/LUC-1438) ->
+   [LUC-241](/LUC/issues/LUC-241) ->
+   [LUC-47](/LUC/issues/LUC-47) ->
+   [LUC-244](/LUC/issues/LUC-244).
+5. Architecture backlog lanes remain correctly owned:
+   [LUC-2564](/LUC/issues/LUC-2564) and [LUC-2567](/LUC/issues/LUC-2567)
+   are blocked by [LUC-241](/LUC/issues/LUC-241), while
+   [LUC-2565](/LUC/issues/LUC-2565), [LUC-2566](/LUC/issues/LUC-2566), and
+   [LUC-2568](/LUC/issues/LUC-2568) are done.
+6. Treat [LUC-2578](/LUC/issues/LUC-2578), [LUC-2579](/LUC/issues/LUC-2579),
+   and [LUC-2580](/LUC/issues/LUC-2580) as done on final readback; no duplicate
+   missing-test-link repair lane is needed for those completed slices.
+7. Tooling drift remains: `corepack pnpm softwarehouse:control-tick` is named
+   by issue contracts but is not exposed in this checkout, and
+   `scripts/run-live-run-janitor.mjs` is absent.
+
+## 2026-06-06 LUC-2580 Worker Lifecycle Missing-Test Links Next Action
+
+1. Treat [LUC-2580](/LUC/issues/LUC-2580) as complete for local worker
+   bootstrap, execution runtime signal bootstrap, and market-stream lifecycle
+   missing-test-link repair.
+2. Do not open another repair lane for the same worker lifecycle rows unless a
+   future architecture-awareness refresh reintroduces a concrete missing-test
+   row or a focused worker regression fails.
+3. Preserve the boundary: this proves local worker lifecycle behavior and
+   architecture evidence links only. Production `/workers/ready`, protected
+   runtime readiness, deploy, restart, and live worker process proof remain
+   separate protected/Ops gates.
+4. Evidence:
+   `history/tasks/luc-2580-worker-bootstrap-market-stream-missing-test-links-2026-06-06-task.md`.
+
+## 2026-06-06 LUC-2579 Security Utility Missing-Test Links Next Action
+
+1. Treat [LUC-2579](/LUC/issues/LUC-2579) as complete for local security
+   utility proof and scanner-readable relation repair.
+2. Do not open another repair lane for the same crypto/hash/error exposure
+   utility rows unless a future architecture-awareness refresh reintroduces a
+   concrete missing-test row or a focused security regression fails.
+3. Preserve the boundary: this proves local utility behavior and architecture
+   evidence links only. It does not replace protected production credential,
+   authenticated browser, exchange, or live-trading proof.
+4. Evidence:
+   `history/tasks/luc-2579-security-utility-missing-test-links-2026-06-06-task.md`.
+
+## 2026-06-06 LUC-2568 Architecture Gap Backlog Ledger Sync Next Action
+
+1. Treat [LUC-2568](/LUC/issues/LUC-2568) as complete for docs/source-of-truth
+   ledger sync. It did not change product code, runtime behavior, deploy,
+   protected-smoke, credentials, exchange state, or live-trading behavior.
+2. Use `REQ-DOC-031` and the top entry in
+   `.agents/state/module-confidence-ledger.md` as the active architecture gap
+   backlog register.
+3. Active backlog lanes:
+   [LUC-2564](/LUC/issues/LUC-2564) QA protected browser proof remains blocked
+   by [LUC-241](/LUC/issues/LUC-241);
+   [LUC-2565](/LUC/issues/LUC-2565) Security review is done;
+   [LUC-2566](/LUC/issues/LUC-2566) Backend/Runtime audit is done;
+   [LUC-2567](/LUC/issues/LUC-2567) Ops evidence map remains blocked by
+   [LUC-241](/LUC/issues/LUC-241).
+4. Do not promote historical unchecked plan boxes as active work unless they
+   map to current architecture graph/journey rows and a live Paperclip owner
+   lane.
+
+## 2026-06-06 LUC-2566 Runtime And Exchange Local-Only Chain Audit Next Action
+
+1. Treat [LUC-2566](/LUC/issues/LUC-2566) as complete for audit/decomposition.
+   Do not open backend repair children from this audit unless a future focused
+   local rerun fails or a concrete implementation defect is reported.
+2. Preserve the closure distinction: the targeted runtime/exchange chains are
+   `verified_local` for local code/test evidence, but protected production/LIVE
+   behavior is `present in code, behavior unknown` until separately proven.
+3. Route protected readback and authenticated runtime proof through
+   [LUC-241](/LUC/issues/LUC-241) and its current blocker chain. Do not treat
+   local proof commands as production readiness.
+4. Route any LIVE order/DCA/close/mutation proof through a fresh explicit
+   approval lane naming exchange, market type, symbol, size/risk, cleanup, and
+   readback plan. No such mutation is authorized by [LUC-2566](/LUC/issues/LUC-2566).
+5. Evidence:
+   `history/tasks/luc-2566-runtime-exchange-local-only-chain-audit-2026-06-06-task.md`.
+
+## 2026-06-06 LUC-2560 PM No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2560](/LUC/issues/LUC-2560) as a completed PM coordination
+   checkpoint, not a product-code, runtime, deploy, protected-smoke, source-
+   control, or credential lane.
+2. [LUC-2557](/LUC/issues/LUC-2557) is now the active safe architecture-
+   planning lane owned by TSA. It must remain Paperclip backlog planning only:
+   no Soar repo edits, push, deploy, restart, protected smoke, or secret access.
+3. [LUC-2558](/LUC/issues/LUC-2558) is the local-board/operator gate for
+   Coolify read-only status access and is `in_review`; the unblock action is
+   binding the required Coolify refs through Paperclip secrets or an approved
+   encrypted local store without exposing secret values.
+4. [LUC-2559](/LUC/issues/LUC-2559) is DRE-owned and first-class `blocked` by
+   [LUC-2558](/LUC/issues/LUC-2558). DRE should reconcile redacted Coolify
+   resource inventory only after the credential gate resolves.
+5. The follow-up queue had 0 `todo` issues. Do not open duplicate PM, Ops,
+   architecture-planning, release, or credential issues while these owner paths
+   remain live.
+6. Final pre-close readback showed TSA fan-out already started
+   [LUC-2565](/LUC/issues/LUC-2565), [LUC-2566](/LUC/issues/LUC-2566), and
+   [LUC-2568](/LUC/issues/LUC-2568). Treat those as active specialist lanes,
+   not as signals to open duplicate PM children.
+7. Tooling drift remains: `corepack pnpm softwarehouse:control-tick` is named
+   by issue contracts but is not exposed in this checkout.
+
+## 2026-06-06 LUC-2556 Gap Register And Repair Lane Refresh Next Action
+
+1. Treat [LUC-2556](/LUC/issues/LUC-2556) as a completed TSA coordination
+   checkpoint, not a product-code, runtime, deploy, protected-smoke, or
+   source-control implementation lane.
+2. Do not open duplicate Backend, source-control, PM, Ops, Security/Ops, QA,
+   TSA, Docs, or release-path issues from this checkpoint. Live readback
+   confirmed the existing owner lanes cover the active blockers.
+3. Preserve the protected release chain:
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+4. Preserve the protected smoke-auth chain:
+   [LUC-2505](/LUC/issues/LUC-2505) ->
+   [LUC-1438](/LUC/issues/LUC-1438) ->
+   [LUC-241](/LUC/issues/LUC-241) ->
+   [LUC-47](/LUC/issues/LUC-47) ->
+   [LUC-244](/LUC/issues/LUC-244).
+5. Next executable owner/action remains Security/Ops on
+   [LUC-2372](/LUC/issues/LUC-2372) and [LUC-2505](/LUC/issues/LUC-2505);
+   QA/Ops proceed only after those prerequisites close.
+
+## 2026-06-06 LUC-2542 Engine Strategy Signal Helper Links Next Action
+
+1. Treat [LUC-2542](/LUC/issues/LUC-2542) as complete for the assigned
+   `strategySignalAnalysis.ts` helper missing-test-link family.
+2. Do not add duplicate tests for this issue: focused engine proof already
+   passed through `strategySignalAnalysis.test.ts` and
+   `strategyIndicatorRegistryParity.test.ts`.
+3. Remaining architecture-awareness missing-test rows are separate follow-up
+   families, now led by `apps/api/prisma/seed.ts#main`,
+   `runtimePositionState.store.ts#toFiniteNonNegativeInt`, positions
+   reconciliation helpers, utility helpers, and worker bootstrap/market-stream
+   helpers.
+4. No runtime, deploy, protected-smoke, exchange, or live-trading action is
+   implied by this evidence-link repair.
+
+## 2026-06-06 LUC-2553 PM No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2553](/LUC/issues/LUC-2553) as a completed PM coordination
+   checkpoint, not a product-code, runtime, deploy, protected-smoke, or
+   source-control implementation lane.
+2. Do not reopen duplicate source-control or architecture-planning lanes from
+   this checkpoint: [LUC-2406](/LUC/issues/LUC-2406),
+   [LUC-2407](/LUC/issues/LUC-2407),
+   [LUC-2528](/LUC/issues/LUC-2528), and
+   [LUC-2531](/LUC/issues/LUC-2531) read back as `done`.
+3. Current Soar open queue readback had `0` `todo` issues. The only live
+   `in_progress` issue was [LUC-2553](/LUC/issues/LUC-2553) itself, and the
+   only `in_review` issue was [LUC-1397](/LUC/issues/LUC-1397) waiting on
+   local-board owner-login verification path.
+4. Preserve the protected smoke-auth chain:
+   [LUC-2505](/LUC/issues/LUC-2505) ->
+   [LUC-1438](/LUC/issues/LUC-1438) ->
+   [LUC-241](/LUC/issues/LUC-241) ->
+   [LUC-47](/LUC/issues/LUC-47) ->
+   [LUC-244](/LUC/issues/LUC-244).
+5. Preserve the protected release chain:
+   [LUC-2372](/LUC/issues/LUC-2372) ->
+   [LUC-2366](/LUC/issues/LUC-2366) ->
+   [LUC-2361](/LUC/issues/LUC-2361) ->
+   [LUC-2378](/LUC/issues/LUC-2378).
+6. Next executable owner/action remains Security/Ops on
+   [LUC-2505](/LUC/issues/LUC-2505) and [LUC-2372](/LUC/issues/LUC-2372);
+   create no duplicate PM child while those owner lanes remain open.
 
 ## 2026-06-06 LUC-2537 PM No-Stall Queue Expeditor Next Action
 

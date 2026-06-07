@@ -1,6 +1,6 @@
 const HEADER_NAME_PATTERN = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
 
-const normalize = (value) => String(value ?? '').trim();
+export const normalize = (value) => String(value ?? '').trim();
 
 export const resolveOpsAuthLayerOptions = ({
   opsAuthHeaderName = '',
