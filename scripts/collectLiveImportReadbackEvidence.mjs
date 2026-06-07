@@ -2,14 +2,13 @@
 import { createHash } from 'node:crypto';
 import { writeFile } from 'node:fs/promises';
 import process from 'node:process';
+import { fileURLToPath } from 'node:url';
 import {
   buildOpsRequestHeaders,
   resolveOpsAuthLayerOptions,
 } from './buildOpsRequestHeaders.mjs';
 import { resolveOpsAuthToken } from './resolveOpsAuthToken.mjs';
 
-const rawArgs = process.argv.slice(2);
-const args = new Set(rawArgs);
 const MISSING_AUTH_MESSAGE = [
   'Missing read-only production auth token or login credentials.',
   'Provide either LIVEIMPORT_READBACK_AUTH_TOKEN, or LIVEIMPORT_READBACK_AUTH_EMAIL plus LIVEIMPORT_READBACK_AUTH_PASSWORD.',
@@ -17,22 +16,22 @@ const MISSING_AUTH_MESSAGE = [
   'Run with --help for the complete option and environment-variable list.',
 ].join(' ');
 
-const readArgValue = (flag) => {
+export const readArgValue = (flag, rawArgs = process.argv.slice(2)) => {
   const index = rawArgs.indexOf(flag);
   if (index === -1) return '';
   return rawArgs[index + 1] ?? '';
 };
 
-const normalizeBaseUrl = (value) => String(value ?? '').trim().replace(/\/+$/, '');
-const normalizeSymbol = (value) => String(value ?? '').trim().toUpperCase();
-const splitCsv = (value) =>
+export const normalizeBaseUrl = (value) => String(value ?? '').trim().replace(/\/+$/, '');
+export const normalizeSymbol = (value) => String(value ?? '').trim().toUpperCase();
+export const splitCsv = (value) =>
   String(value ?? '')
     .split(',')
     .map((item) => item.trim())
     .filter(Boolean);
 
-const printUsage = () => {
-  process.stdout.write(
+export const printUsage = (stdout = process.stdout) => {
+  stdout.write(
     [
       'Usage: node scripts/collectLiveImportReadbackEvidence.mjs [options]',
       '',
@@ -66,70 +65,73 @@ const printUsage = () => {
   );
 };
 
-const resolveOptions = () => {
+export const resolveOptions = ({ rawArgs = process.argv.slice(2), env = process.env } = {}) => {
   const rawSymbols =
-    readArgValue('--symbols') || process.env.LIVEIMPORT_READBACK_SYMBOLS || 'ETHUSDT,DOGEUSDT';
+    readArgValue('--symbols', rawArgs) || env.LIVEIMPORT_READBACK_SYMBOLS || 'ETHUSDT,DOGEUSDT';
   const autoDiscoverSymbols = rawSymbols.trim().toLowerCase() === 'auto';
   return {
     baseUrl: normalizeBaseUrl(
-      readArgValue('--base-url') ||
-        process.env.LIVEIMPORT_READBACK_API_BASE_URL ||
+      readArgValue('--base-url', rawArgs) ||
+        env.LIVEIMPORT_READBACK_API_BASE_URL ||
         'https://api.soar.luckysparrow.ch'
     ),
     webBaseUrl: normalizeBaseUrl(
-      readArgValue('--web-base-url') ||
-        process.env.LIVEIMPORT_READBACK_WEB_BASE_URL ||
+      readArgValue('--web-base-url', rawArgs) ||
+        env.LIVEIMPORT_READBACK_WEB_BASE_URL ||
         'https://soar.luckysparrow.ch'
     ),
-    authToken: readArgValue('--auth-token') || process.env.LIVEIMPORT_READBACK_AUTH_TOKEN || '',
-    authEmail: readArgValue('--auth-email') || process.env.LIVEIMPORT_READBACK_AUTH_EMAIL || '',
+    authToken: readArgValue('--auth-token', rawArgs) || env.LIVEIMPORT_READBACK_AUTH_TOKEN || '',
+    authEmail: readArgValue('--auth-email', rawArgs) || env.LIVEIMPORT_READBACK_AUTH_EMAIL || '',
     authPassword:
-      readArgValue('--auth-password') || process.env.LIVEIMPORT_READBACK_AUTH_PASSWORD || '',
+      readArgValue('--auth-password', rawArgs) || env.LIVEIMPORT_READBACK_AUTH_PASSWORD || '',
     opsBasicUser:
-      readArgValue('--ops-basic-user') || process.env.LIVEIMPORT_READBACK_OPS_BASIC_USER || '',
+      readArgValue('--ops-basic-user', rawArgs) || env.LIVEIMPORT_READBACK_OPS_BASIC_USER || '',
     opsBasicPassword:
-      readArgValue('--ops-basic-password') ||
-      process.env.LIVEIMPORT_READBACK_OPS_BASIC_PASSWORD ||
+      readArgValue('--ops-basic-password', rawArgs) ||
+      env.LIVEIMPORT_READBACK_OPS_BASIC_PASSWORD ||
       '',
     opsAuthHeaderName:
-      readArgValue('--ops-auth-header-name') ||
-      process.env.LIVEIMPORT_READBACK_OPS_AUTH_HEADER_NAME ||
+      readArgValue('--ops-auth-header-name', rawArgs) ||
+      env.LIVEIMPORT_READBACK_OPS_AUTH_HEADER_NAME ||
       '',
     opsAuthHeaderValue:
-      readArgValue('--ops-auth-header-value') ||
-      process.env.LIVEIMPORT_READBACK_OPS_AUTH_HEADER_VALUE ||
+      readArgValue('--ops-auth-header-value', rawArgs) ||
+      env.LIVEIMPORT_READBACK_OPS_AUTH_HEADER_VALUE ||
       '',
-    botId: readArgValue('--bot-id') || process.env.LIVEIMPORT_READBACK_BOT_ID || '',
-    sessionId: readArgValue('--session-id') || process.env.LIVEIMPORT_READBACK_SESSION_ID || '',
+    botId: readArgValue('--bot-id', rawArgs) || env.LIVEIMPORT_READBACK_BOT_ID || '',
+    sessionId: readArgValue('--session-id', rawArgs) || env.LIVEIMPORT_READBACK_SESSION_ID || '',
     rawSymbols,
     autoDiscoverSymbols,
     symbols: autoDiscoverSymbols ? [] : splitCsv(rawSymbols).map(normalizeSymbol),
     expectedSha:
-      readArgValue('--expected-sha') || process.env.LIVEIMPORT_READBACK_EXPECTED_SHA || '',
-    output: readArgValue('--output') || process.env.LIVEIMPORT_READBACK_OUTPUT || '',
-    timeoutMs: Number.parseInt(process.env.LIVEIMPORT_READBACK_TIMEOUT_MS || '10000', 10),
-    dryRun: args.has('--dry-run'),
+      readArgValue('--expected-sha', rawArgs) || env.LIVEIMPORT_READBACK_EXPECTED_SHA || '',
+    output: readArgValue('--output', rawArgs) || env.LIVEIMPORT_READBACK_OUTPUT || '',
+    timeoutMs: Number.parseInt(env.LIVEIMPORT_READBACK_TIMEOUT_MS || '10000', 10),
+    dryRun: new Set(rawArgs).has('--dry-run'),
   };
 };
 
-const assertOptions = (options) => {
+export const assertOptions = (options) => {
   if (!options.baseUrl) throw new Error('Missing --base-url.');
   if (!options.autoDiscoverSymbols && !options.symbols.length) {
     throw new Error('At least one --symbols value is required, or use --symbols auto.');
   }
 };
 
-const hashId = (value) => {
+export const hashId = (value) => {
   const normalized = String(value ?? '').trim();
   if (!normalized) return null;
   return createHash('sha256').update(normalized).digest('hex').slice(0, 12);
 };
 
-const fetchJson = async (url, { headers = {}, timeoutMs = 10000 } = {}) => {
+export const fetchJson = async (
+  url,
+  { headers = {}, timeoutMs = 10000, fetchImpl = globalThis.fetch } = {}
+) => {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const response = await fetch(url, {
+    const response = await fetchImpl(url, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -155,7 +157,7 @@ const fetchJson = async (url, { headers = {}, timeoutMs = 10000 } = {}) => {
   }
 };
 
-const redactBot = (bot) => ({
+export const redactBot = (bot) => ({
   idHash: hashId(bot?.id),
   nameHash: hashId(bot?.name),
   mode: bot?.mode ?? null,
@@ -172,7 +174,7 @@ const redactBot = (bot) => ({
       : null,
 });
 
-const redactSession = (session) => ({
+export const redactSession = (session) => ({
   idHash: hashId(session?.id),
   status: session?.status ?? null,
   startedAt: session?.startedAt ?? null,
@@ -180,7 +182,7 @@ const redactSession = (session) => ({
   eventsCount: session?.eventsCount ?? null,
 });
 
-const redactPosition = (position) => ({
+export const redactPosition = (position) => ({
   idHash: hashId(position?.id),
   symbol: position?.symbol ?? null,
   status: position?.status ?? null,
@@ -205,10 +207,11 @@ const redactPosition = (position) => ({
   openedAt: position?.openedAt ?? null,
 });
 
-const resolveBuildInfo = async (options) => {
+export const resolveBuildInfo = async (options, { fetchImpl = globalThis.fetch } = {}) => {
   if (!options.expectedSha.trim()) return null;
   const payload = await fetchJson(`${options.webBaseUrl}/api/build-info`, {
     timeoutMs: options.timeoutMs,
+    fetchImpl,
   });
   const gitSha = String(payload?.gitSha ?? '').trim();
   return {
@@ -218,47 +221,60 @@ const resolveBuildInfo = async (options) => {
   };
 };
 
-const discoverBots = async (options, headers) => {
+export const discoverBots = async (options, headers, { fetchImpl = globalThis.fetch } = {}) => {
   if (options.botId.trim()) {
     const bot = await fetchJson(`${options.baseUrl}/dashboard/bots/${encodeURIComponent(options.botId.trim())}`, {
       headers,
       timeoutMs: options.timeoutMs,
+      fetchImpl,
     });
     return [bot];
   }
   const bots = await fetchJson(`${options.baseUrl}/dashboard/bots?marketType=FUTURES`, {
     headers,
     timeoutMs: options.timeoutMs,
+    fetchImpl,
   });
   if (!Array.isArray(bots)) throw new Error('Expected /dashboard/bots to return an array.');
   return bots.filter((bot) => bot?.mode === 'LIVE');
 };
 
-const resolveSession = async (options, headers, botId) => {
+export const resolveSession = async (
+  options,
+  headers,
+  botId,
+  { fetchImpl = globalThis.fetch } = {}
+) => {
   if (options.sessionId.trim()) {
     return fetchJson(
       `${options.baseUrl}/dashboard/bots/${encodeURIComponent(botId)}/runtime-sessions/${encodeURIComponent(
         options.sessionId.trim()
       )}`,
-      { headers, timeoutMs: options.timeoutMs }
+      { headers, timeoutMs: options.timeoutMs, fetchImpl }
     );
   }
   const sessions = await fetchJson(
     `${options.baseUrl}/dashboard/bots/${encodeURIComponent(botId)}/runtime-sessions?status=RUNNING&limit=1`,
-    { headers, timeoutMs: options.timeoutMs }
+    { headers, timeoutMs: options.timeoutMs, fetchImpl }
   );
   if (!Array.isArray(sessions) || sessions.length === 0) return null;
   return sessions[0];
 };
 
-const collectAllPositions = async (options, headers, botId, sessionId) => {
+export const collectAllPositions = async (
+  options,
+  headers,
+  botId,
+  sessionId,
+  { fetchImpl = globalThis.fetch } = {}
+) => {
   const url = `${options.baseUrl}/dashboard/bots/${encodeURIComponent(
     botId
   )}/runtime-sessions/${encodeURIComponent(sessionId)}/positions?limit=50`;
-  return fetchJson(url, { headers, timeoutMs: options.timeoutMs });
+  return fetchJson(url, { headers, timeoutMs: options.timeoutMs, fetchImpl });
 };
 
-const discoverSymbolsFromRuntimeReadback = (payload) =>
+export const discoverSymbolsFromRuntimeReadback = (payload) =>
   Array.from(
     new Set(
       (Array.isArray(payload?.openItems) ? payload.openItems : [])
@@ -267,12 +283,13 @@ const discoverSymbolsFromRuntimeReadback = (payload) =>
     )
   );
 
-const collectSymbolPositions = async (
+export const collectSymbolPositions = async (
   options,
   headers,
   botId,
   sessionId,
-  symbols = options.symbols
+  symbols = options.symbols,
+  { fetchImpl = globalThis.fetch } = {}
 ) => {
   const bySymbol = [];
   for (const symbol of symbols) {
@@ -280,7 +297,7 @@ const collectSymbolPositions = async (
       botId
     )}/runtime-sessions/${encodeURIComponent(sessionId)}/positions?symbol=${encodeURIComponent(symbol)}&limit=50`;
     // eslint-disable-next-line no-await-in-loop
-    const payload = await fetchJson(url, { headers, timeoutMs: options.timeoutMs });
+    const payload = await fetchJson(url, { headers, timeoutMs: options.timeoutMs, fetchImpl });
     const openItems = Array.isArray(payload?.openItems) ? payload.openItems : [];
     bySymbol.push({
       symbol,
@@ -296,17 +313,28 @@ const collectSymbolPositions = async (
   return bySymbol;
 };
 
-const main = async () => {
+export const main = async ({
+  rawArgs = process.argv.slice(2),
+  env = process.env,
+  stdout = process.stdout,
+  fetchImpl = globalThis.fetch,
+  resolveAuthToken = resolveOpsAuthToken,
+  writeFileImpl = writeFile,
+  now = () => new Date(),
+  exitOnHelp = false,
+} = {}) => {
+  const args = new Set(rawArgs);
   if (args.has('--help') || args.has('-h')) {
-    printUsage();
+    printUsage(stdout);
+    if (exitOnHelp) process.exit(0);
     return;
   }
 
-  const options = resolveOptions();
+  const options = resolveOptions({ rawArgs, env });
   assertOptions(options);
 
   if (options.dryRun) {
-    process.stdout.write(
+    stdout.write(
       JSON.stringify(
         {
           baseUrl: options.baseUrl,
@@ -330,7 +358,7 @@ const main = async () => {
     opsBasicUser: options.opsBasicUser,
     opsBasicPassword: options.opsBasicPassword,
   });
-  const resolvedAuth = await resolveOpsAuthToken({
+  const resolvedAuth = await resolveAuthToken({
     baseUrl: options.baseUrl,
     authToken: options.authToken,
     authEmail: options.authEmail,
@@ -346,17 +374,17 @@ const main = async () => {
     token: resolvedAuth.token,
     ...authLayer,
   });
-  const buildInfo = await resolveBuildInfo(options);
+  const buildInfo = await resolveBuildInfo(options, { fetchImpl });
   if (buildInfo && !buildInfo.matchesExpected) {
     throw new Error(`Production build-info SHA mismatch: saw ${buildInfo.gitSha || 'n/a'}`);
   }
 
-  const bots = await discoverBots(options, headers);
+  const bots = await discoverBots(options, headers, { fetchImpl });
   const entries = [];
   for (const bot of bots) {
     if (!bot?.id) continue;
     // eslint-disable-next-line no-await-in-loop
-    const session = await resolveSession(options, headers, bot.id);
+    const session = await resolveSession(options, headers, bot.id, { fetchImpl });
     if (!session?.id) {
       entries.push({
         bot: redactBot(bot),
@@ -370,7 +398,9 @@ const main = async () => {
     let symbolsToVerify = options.symbols;
     if (options.autoDiscoverSymbols) {
       // eslint-disable-next-line no-await-in-loop
-      const payload = await collectAllPositions(options, headers, bot.id, session.id);
+      const payload = await collectAllPositions(options, headers, bot.id, session.id, {
+        fetchImpl,
+      });
       symbolsToVerify = discoverSymbolsFromRuntimeReadback(payload);
       discovery = {
         mode: 'OPEN_RUNTIME_SYMBOLS',
@@ -387,7 +417,14 @@ const main = async () => {
     let symbols = [];
     if (symbolsToVerify.length > 0) {
       // eslint-disable-next-line no-await-in-loop
-      symbols = await collectSymbolPositions(options, headers, bot.id, session.id, symbolsToVerify);
+      symbols = await collectSymbolPositions(
+        options,
+        headers,
+        bot.id,
+        session.id,
+        symbolsToVerify,
+        { fetchImpl }
+      );
     }
     entries.push({
       bot: redactBot(bot),
@@ -404,7 +441,7 @@ const main = async () => {
   }
 
   const evidence = {
-    generatedAt: new Date().toISOString(),
+    generatedAt: now().toISOString(),
     target: {
       baseUrl: options.baseUrl,
       webBaseUrl: options.webBaseUrl,
@@ -446,10 +483,10 @@ const main = async () => {
   };
 
   const output = JSON.stringify(evidence, null, 2);
-  process.stdout.write(output + '\n');
+  stdout.write(output + '\n');
   if (options.output.trim()) {
-    await writeFile(options.output.trim(), output + '\n', 'utf8');
-    process.stdout.write(`[ops:liveimport:readback] wrote ${options.output.trim()}\n`);
+    await writeFileImpl(options.output.trim(), output + '\n', 'utf8');
+    stdout.write(`[ops:liveimport:readback] wrote ${options.output.trim()}\n`);
   }
 
   if (evidence.entries.length === 0) {
@@ -476,10 +513,12 @@ const main = async () => {
   }
 };
 
-main().catch((error) => {
-  console.error(
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  main({ exitOnHelp: true }).catch((error) => {
+    console.error(
     '[ops:liveimport:readback] failed:',
     error instanceof Error ? error.message : String(error)
-  );
-  process.exit(1);
-});
+    );
+    process.exit(1);
+  });
+}

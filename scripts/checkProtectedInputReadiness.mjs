@@ -177,7 +177,7 @@ const parseOptions = () => {
   };
 };
 
-const printUsage = () => {
+export const printUsage = () => {
   console.log(`Usage: node scripts/checkProtectedInputReadiness.mjs [options]
 
 Options:
@@ -195,13 +195,13 @@ environment variable values.
 `);
 };
 
-const writeOutput = async (filePath, content) => {
+export const writeOutput = async (filePath, content) => {
   if (!filePath) return;
   await mkdir(path.dirname(path.resolve(process.cwd(), filePath)), { recursive: true });
   await writeFile(path.resolve(process.cwd(), filePath), content);
 };
 
-const main = async () => {
+export const main = async () => {
   const options = parseOptions();
   if (options.help) {
     printUsage();

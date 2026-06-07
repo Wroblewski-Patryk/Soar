@@ -513,3 +513,48 @@ scripts/checkCoolifyStackEnv.mjs#parseKeyringVersions,scripts/checkCoolifyStackE
 scripts/checkCoolifyStackEnv.mjs#printUsage,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 direct CLI usage rendering relation
 scripts/checkCoolifyStackEnv.mjs#readArgValue,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 direct CLI value argument validation relation
 scripts/checkCoolifyStackEnv.mjs#shouldSkipPlaceholder,scripts/checkCoolifyStackEnv.test.mjs,LUC-2702 direct placeholder allowance relation
+scripts/checkDocsParity.mjs#collectMissing,scripts/checkDocsParity.test.mjs,LUC-2725 direct docs parity missing-item collection relation
+scripts/checkDocsParity.mjs#collectPageFiles,scripts/checkDocsParity.test.mjs,LUC-2725 direct Web app page inventory relation
+scripts/checkDocsParity.mjs#directoryExists,scripts/checkDocsParity.test.mjs,LUC-2725 direct output directory existence relation
+scripts/checkDocsParity.mjs#fileExists,scripts/checkDocsParity.test.mjs,LUC-2725 direct published deep-dive doc existence relation
+scripts/checkDocsParity.mjs#listDirectoryNames,scripts/checkDocsParity.test.mjs,LUC-2725 direct API/Web module directory inventory relation
+scripts/checkDocsParity.mjs#main,scripts/checkDocsParity.test.mjs,LUC-2725 import-safe docs parity CLI entrypoint relation
+scripts/checkDocsParity.mjs#normalizeRouteFromPage,scripts/checkDocsParity.test.mjs,LUC-2725 direct Next.js page route normalization relation
+scripts/checkDocsParity.mjs#parseArgs,scripts/checkDocsParity.test.mjs,LUC-2725 direct docs parity CLI argument parsing relation
+scripts/checkDocsParity.mjs#parseCanonicalRoutes,scripts/checkDocsParity.test.mjs,LUC-2725 direct canonical route inventory parsing relation
+scripts/checkDocsParity.mjs#parseModuleRows,scripts/checkDocsParity.test.mjs,LUC-2725 direct module status table parsing relation
+scripts/checkDocsParity.mjs#printHelp,scripts/checkDocsParity.test.mjs,LUC-2725 direct docs parity help rendering relation
+scripts/checkDocsParity.mjs#resolveRepoPath,scripts/checkDocsParity.test.mjs,LUC-2725 direct repository documentation path resolution relation
+scripts/checkDocsParity.mjs#toPosixPath,scripts/checkDocsParity.test.mjs,LUC-2725 direct POSIX path normalization relation
+scripts/checkPostDeployRuntimeFreshness.mjs#fetchWithTimeout,scripts/checkPostDeployRuntimeFreshness.test.mjs,LUC-2731 direct timeout-abort fetch relation
+scripts/checkPostDeployRuntimeFreshness.mjs#main,scripts/checkPostDeployRuntimeFreshness.test.mjs,LUC-2731 import-safe runtime freshness CLI entrypoint relation
+scripts/checkPostDeployRuntimeFreshness.mjs#parseArgs,scripts/checkPostDeployRuntimeFreshness.test.mjs,LUC-2731 direct secret-bearing CLI argument rejection relation
+scripts/checkProtectedInputReadiness.mjs#main,scripts/checkProtectedInputReadiness.test.mjs,LUC-2733 direct protected input readiness CLI report writer relation
+scripts/checkProtectedInputReadiness.mjs#printUsage,scripts/checkProtectedInputReadiness.test.mjs,LUC-2733 direct no-secret CLI usage rendering relation
+scripts/checkProtectedInputReadiness.mjs#writeOutput,scripts/checkProtectedInputReadiness.test.mjs,LUC-2733 direct protected input readiness artifact writer relation
+scripts/checkRcExternalGateEvidence.mjs#capture,scripts/checkRcExternalGateEvidence.test.mjs,LUC-2740 direct signoff field capture relation
+scripts/checkRcExternalGateEvidence.mjs#extractEvidenceValues,scripts/checkRcExternalGateEvidence.test.mjs,LUC-2740 direct gate evidence extraction relation
+scripts/checkRcExternalGateEvidence.mjs#main,scripts/checkRcExternalGateEvidence.test.mjs,LUC-2740 import-safe RC evidence checker entrypoint relation
+scripts/checkRcExternalGateEvidence.mjs#parseArgs,scripts/checkRcExternalGateEvidence.test.mjs,LUC-2740 direct RC evidence checker CLI argument relation
+scripts/checkRcExternalGateEvidence.mjs#parseGateLabel,scripts/checkRcExternalGateEvidence.test.mjs,LUC-2740 direct external gate status label parsing relation
+scripts/checkRcExternalGateEvidence.mjs#parseSignoffFields,scripts/checkRcExternalGateEvidence.test.mjs,LUC-2740 direct RC signoff field parsing relation
+scripts/checkRcExternalGateEvidence.mjs#resolveDocsRoot,scripts/checkRcExternalGateEvidence.test.mjs,LUC-2740 direct operations docs root resolution relation
+scripts/collectLiveImportReadbackEvidence.mjs#assertOptions,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct live import readback option validation relation
+scripts/collectLiveImportReadbackEvidence.mjs#collectAllPositions,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct all-position readback helper relation
+scripts/collectLiveImportReadbackEvidence.mjs#collectSymbolPositions,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct symbol-position readback helper relation
+scripts/collectLiveImportReadbackEvidence.mjs#discoverBots,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct LIVE bot discovery helper relation
+scripts/collectLiveImportReadbackEvidence.mjs#discoverSymbolsFromRuntimeReadback,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct runtime symbol discovery relation
+scripts/collectLiveImportReadbackEvidence.mjs#fetchJson,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct readback JSON fetch fail-closed relation
+scripts/collectLiveImportReadbackEvidence.mjs#hashId,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct redaction hash helper relation
+scripts/collectLiveImportReadbackEvidence.mjs#main,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 import-safe live import readback collector entrypoint relation
+scripts/collectLiveImportReadbackEvidence.mjs#normalizeBaseUrl,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct base URL normalization relation
+scripts/collectLiveImportReadbackEvidence.mjs#normalizeSymbol,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct symbol normalization relation
+scripts/collectLiveImportReadbackEvidence.mjs#printUsage,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct collector usage rendering relation
+scripts/collectLiveImportReadbackEvidence.mjs#readArgValue,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct collector CLI argument lookup relation
+scripts/collectLiveImportReadbackEvidence.mjs#redactBot,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct bot redaction relation
+scripts/collectLiveImportReadbackEvidence.mjs#redactPosition,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct position redaction relation
+scripts/collectLiveImportReadbackEvidence.mjs#redactSession,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct session redaction relation
+scripts/collectLiveImportReadbackEvidence.mjs#resolveBuildInfo,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct build-info expected SHA relation
+scripts/collectLiveImportReadbackEvidence.mjs#resolveOptions,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct collector option resolution relation
+scripts/collectLiveImportReadbackEvidence.mjs#resolveSession,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct runtime session discovery relation
+scripts/collectLiveImportReadbackEvidence.mjs#splitCsv,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct symbol CSV parsing relation

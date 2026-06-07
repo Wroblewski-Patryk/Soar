@@ -1,3 +1,346 @@
+- 2026-06-07 `LUC-2750 [Soar][Test Automation][LUC-2749] Live import readback collector missing-test links`
+  - Status: `DONE`
+  - Scope: local Test Automation proof and scanner-readable architecture
+    relation repair for `scripts/collectLiveImportReadbackEvidence.mjs`; no
+    product runtime behavior, deploy, push, restart, rollback, production
+    readback, account, secret, exchange, database, or live-trading mutation.
+  - Implementation:
+    - made `scripts/collectLiveImportReadbackEvidence.mjs` import-safe while
+      preserving direct CLI execution;
+    - exported current helper functions and added injectable test seams for
+      args, env, stdout, fetch, auth resolution, file writing, deterministic
+      time, and help behavior;
+    - added `scripts/collectLiveImportReadbackEvidence.test.mjs` covering
+      option helpers, redaction, JSON fetch failure, runtime bot/session/symbol
+      readback helpers, build-info matching, help, dry-run, missing auth,
+      successful local evidence collection, and missing-symbol fail-closed
+      behavior;
+    - added `19` direct `LUC-2750` rows to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/collectLiveImportReadbackEvidence.mjs` PASS.
+    - `node --check scripts/collectLiveImportReadbackEvidence.test.mjs` PASS.
+    - `node --test scripts/collectLiveImportReadbackEvidence.test.mjs` PASS
+      (`7/7`).
+    - `node scripts/collectLiveImportReadbackEvidence.mjs --help` PASS.
+    - `rg -n "LUC-2750" docs/architecture/relations/priority-test-links.csv`
+      PASS (`19` rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - `pnpm run quality:guardrails` PASS.
+  - Residual risk:
+    - `docs/status/architecture-awareness-report.md` is still the parent
+      pre-fix `2026-06-07T09:34:54.277Z` snapshot and needs a TSA refresh
+      before selecting the next non-duplicate missing-test family.
+  - Evidence:
+    - `history/tasks/luc-2750-live-import-readback-collector-missing-test-links-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2749 [Soar][TSA][LUC-2746] Refresh architecture-awareness after RC external gate evidence proof closure`
+  - Status: `DONE / DELEGATED`
+  - Scope: TSA architecture-awareness refresh, duplicate filtering, and
+    child-lane creation only; no product-code, runtime, deploy, push, restart,
+    rollback, env, account, secret, protected-smoke, exchange, database, or
+    live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2749](/LUC/issues/LUC-2749).
+    - External architecture-awareness refresh passed:
+      `node scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`
+      from `C:\Personal\Projekty\Aplikacje\Paperclip_Softwarehouse`.
+    - Refreshed report generated `2026-06-07T09:34:54.277Z` with `14880`
+      entities, `23980` relations, `396` actionable missing-test links, `0`
+      actionable missing-doc links, `0` ownerless entities, `0` disconnected
+      entities, and `7435` classified inferred-link noise rows.
+    - Completed [LUC-2740](/LUC/issues/LUC-2740) removed
+      `scripts/checkRcExternalGateEvidence.mjs` from the top actionable
+      family.
+    - `node --check scripts/collectLiveImportReadbackEvidence.mjs` PASS.
+    - `node --check scripts/collectNonGateioRuntimeReadback.mjs` PASS.
+    - `node --check scripts/collectSloEvidence.mjs` PASS.
+    - Active duplicate search found no exact open local relation/test lane for
+      `collectLiveImportReadbackEvidence`; blocked
+      [LUC-1768](/LUC/issues/LUC-1768) and
+      [LUC-2372](/LUC/issues/LUC-2372) are protected input/runtime lanes, not
+      local proof duplicates.
+  - Disposition:
+    - created [LUC-2750](/LUC/issues/LUC-2750) for Test Automation Engineer to
+      cover or classify `scripts/collectLiveImportReadbackEvidence.mjs`
+      function-level missing-test links without protected production readback
+      or secret handling.
+  - Evidence:
+    - `history/tasks/luc-2749-architecture-awareness-after-rc-external-gate-evidence-proof-closure-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2738 [Soar][TSA][LUC-2735] Refresh architecture-awareness after protected input readiness proof closure`
+  - Status: `DONE / DELEGATED`
+  - Scope: TSA architecture-awareness refresh, duplicate filtering, and
+    child-lane creation only; no product-code, runtime, deploy, push, restart,
+    rollback, env, account, secret, protected-smoke, exchange, database, or
+    live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2738](/LUC/issues/LUC-2738).
+    - External architecture-awareness refresh passed:
+      `node scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`
+      from `C:\Personal\Projekty\Aplikacje\Paperclip_Softwarehouse`.
+    - Refreshed report generated `2026-06-07T09:05:01.622Z` with `14870`
+      entities, `23959` relations, `403` actionable missing-test links, `0`
+      actionable missing-doc links, `0` ownerless entities, `0` disconnected
+      entities, and `7432` classified inferred-link noise rows.
+    - Completed [LUC-2733](/LUC/issues/LUC-2733) removed
+      `scripts/checkProtectedInputReadiness.mjs` from the top actionable
+      family.
+    - `node --check scripts/checkRcExternalGateEvidence.mjs` PASS.
+    - `node --check scripts/collectLiveImportReadbackEvidence.mjs` PASS.
+    - Active duplicate search found no exact open local relation/test lane for
+      `checkRcExternalGateEvidence`; blocked [LUC-1768](/LUC/issues/LUC-1768)
+      is a protected secret-binding lane, not a duplicate.
+  - Disposition:
+    - created [LUC-2740](/LUC/issues/LUC-2740) for Test Automation Engineer to
+      cover or classify `scripts/checkRcExternalGateEvidence.mjs`
+      function-level missing-test links.
+  - Evidence:
+    - `history/tasks/luc-2738-architecture-awareness-after-protected-input-readiness-proof-closure-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2740 [Soar][Test Automation][LUC-2738] RC external gate evidence checker missing-test links`
+  - Status: `DONE`
+  - Scope: local Test Automation proof and scanner-readable architecture
+    relation repair for `scripts/checkRcExternalGateEvidence.mjs`; no product
+    runtime behavior, deploy, push, restart, rollback, production smoke,
+    account, secret, exchange, database, or live-trading mutation.
+  - Implementation:
+    - made `scripts/checkRcExternalGateEvidence.mjs` import-safe while
+      preserving direct CLI execution;
+    - exported current helper functions and added injectable test seams for
+      args, cwd, console, help-exit behavior, and strict-failure behavior;
+    - added `scripts/checkRcExternalGateEvidence.test.mjs` covering docs-root
+      resolution, CLI argument parsing, evidence extraction, gate label
+      parsing, sign-off capture/parsing, successful local policy output, and
+      strict fail-closed missing-evidence behavior;
+    - added `7` direct `LUC-2740` rows to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/checkRcExternalGateEvidence.mjs` PASS.
+    - `node --check scripts/checkRcExternalGateEvidence.test.mjs` PASS.
+    - `node --test scripts/checkRcExternalGateEvidence.test.mjs` PASS
+      (`6/6`).
+    - `node scripts/checkRcExternalGateEvidence.mjs --help` PASS.
+    - `rg -n "LUC-2740" docs/architecture/relations/priority-test-links.csv`
+      PASS (`7` rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - `pnpm run quality:guardrails` PASS.
+  - Evidence:
+    - `history/tasks/luc-2740-rc-external-gate-evidence-checker-missing-test-links-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2735 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED`
+  - Scope: PM queue readback, stale-report detection, duplicate filtering, and
+    child-lane creation only; no product-code, runtime, deploy, push, restart,
+    rollback, env, account, secret, protected-smoke, exchange, database, or
+    live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2735](/LUC/issues/LUC-2735).
+    - `pnpm softwarehouse:control-tick` failed because
+      `softwarehouse:control-tick` is not exposed in this checkout.
+    - Current architecture-awareness report generated
+      `2026-06-07T08:46:05.612Z` still lists
+      `scripts/checkProtectedInputReadiness.mjs` as top actionable after
+      completed [LUC-2733](/LUC/issues/LUC-2733), so the report needs refresh
+      or reconciliation before opening another proof lane from its samples.
+    - Active duplicate searches returned no open matching lane for
+      `Refresh architecture-awareness after protected input readiness proof
+      closure`, `architecture-awareness protected input readiness`, or
+      `checkRcExternalGateEvidence`.
+    - `collectLiveImportReadbackEvidence` returned blocked protected-secret
+      gate work, not a local relation/test duplicate.
+  - Disposition:
+    - created [LUC-2738](/LUC/issues/LUC-2738) for
+      `09 TSA (Technical Solution Architect)` to refresh or reconcile
+      architecture-awareness known-state and create at most one next
+      non-duplicate worker-ready family.
+  - Evidence:
+    - `history/tasks/luc-2735-no-stall-queue-expeditor-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2732 [Soar] Gap register and repair lane refresh`
+  - Status: `DONE / DELEGATED`
+  - Scope: TSA architecture-awareness refresh, duplicate filtering, and
+    child-lane creation only; no product-code, runtime, deploy, push, restart,
+    rollback, env, account, secret, protected-smoke, exchange, database, or
+    live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2732](/LUC/issues/LUC-2732).
+    - External architecture-awareness refresh passed:
+      `node scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`
+      from `C:\Personal\Projekty\Aplikacje\Paperclip_Softwarehouse`.
+    - Refreshed report generated `2026-06-07T08:46:05.612Z` with `14862`
+      entities, `23944` relations, `406` actionable missing-test links, `0`
+      actionable missing-doc links, `0` ownerless entities, `0` disconnected
+      entities, and `7431` classified inferred-link noise rows.
+    - Completed [LUC-2731](/LUC/issues/LUC-2731) removed
+      `scripts/checkPostDeployRuntimeFreshness.mjs` from the top actionable
+      family.
+    - `node --check scripts/checkProtectedInputReadiness.mjs` PASS.
+    - `node --check scripts/checkRcExternalGateEvidence.mjs` PASS.
+    - `node --check scripts/collectLiveImportReadbackEvidence.mjs` PASS.
+    - Active duplicate searches for `checkProtectedInputReadiness`,
+      `Protected input readiness`, `checkRcExternalGateEvidence`, and
+      `RC external gate evidence` found no exact open local relation/test
+      lane. Broader protected-input results were blocked production/input
+      lanes, not duplicates.
+  - Disposition:
+    - created [LUC-2733](/LUC/issues/LUC-2733) for Test Automation Engineer to
+      cover or classify `scripts/checkProtectedInputReadiness.mjs`
+      missing-test links.
+  - Evidence:
+    - `history/tasks/luc-2732-gap-register-and-repair-lane-refresh-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2730 [Soar][TSA][LUC-2727] Refresh architecture-awareness after docs parity proof closure`
+  - Status: `DONE / DELEGATED`
+  - Scope: TSA architecture-awareness refresh, duplicate filtering, and
+    child-lane creation only; no product-code, runtime, deploy, push, restart,
+    rollback, env, account, secret, protected-smoke, exchange, database, or
+    live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2730](/LUC/issues/LUC-2730).
+    - External architecture-awareness refresh passed:
+      `node scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`
+      from `C:\Personal\Projekty\Aplikacje\Paperclip_Softwarehouse`.
+    - Refreshed report generated `2026-06-07T08:34:09.933Z` with `14854`
+      entities, `23928` relations, `408` actionable missing-test links, `0`
+      actionable missing-doc links, `0` ownerless entities, `0` disconnected
+      entities, and `7428` classified inferred-link noise rows.
+    - Completed [LUC-2725](/LUC/issues/LUC-2725) removed
+      `scripts/checkDocsParity.mjs` from the top actionable family.
+    - `node --check scripts/checkPostDeployRuntimeFreshness.mjs` PASS.
+    - `node --check scripts/checkProtectedInputReadiness.mjs` PASS.
+    - `node --check scripts/checkRcExternalGateEvidence.mjs` PASS.
+    - Active duplicate searches for `checkPostDeployRuntimeFreshness`,
+      `Post deploy runtime freshness`, `checkProtectedInputReadiness`, and
+      `Protected input readiness` returned no open matching lanes.
+  - Disposition:
+    - created [LUC-2731](/LUC/issues/LUC-2731) for Test Automation Engineer to
+      cover or classify `scripts/checkPostDeployRuntimeFreshness.mjs`
+      missing-test links.
+  - Evidence:
+    - `history/tasks/luc-2730-architecture-awareness-after-docs-parity-proof-closure-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2731 [Soar][Architecture QA][LUC-2730] Cover post-deploy runtime freshness missing-test links`
+  - Status: `DONE`
+  - Scope: local Test Automation proof and scanner-readable architecture
+    relation repair for `scripts/checkPostDeployRuntimeFreshness.mjs`; no
+    product runtime behavior, deploy, push, restart, rollback, production
+    smoke, account, secret, exchange, database, or live-trading mutation.
+  - Implementation:
+    - made `scripts/checkPostDeployRuntimeFreshness.mjs` import-safe while
+      preserving direct CLI execution;
+    - exported current helper functions and added injectable test seams for
+      args, env, console, help-exit behavior, and fetch;
+    - added `scripts/checkPostDeployRuntimeFreshness.test.mjs` covering
+      secret-bearing CLI rejection, timeout abort, local PASS request/output
+      without secret leakage, and fail-closed HTTP behavior;
+    - added `3` direct `LUC-2731` rows to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/checkPostDeployRuntimeFreshness.mjs` PASS.
+    - `node --check scripts/checkPostDeployRuntimeFreshness.test.mjs` PASS.
+    - `node --test scripts/checkPostDeployRuntimeFreshness.test.mjs` PASS
+      (`4/4`).
+    - `rg -n "LUC-2731" docs/architecture/relations/priority-test-links.csv`
+      PASS (`3` rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - `pnpm run quality:guardrails` PASS.
+  - Evidence:
+    - `history/tasks/luc-2731-post-deploy-runtime-freshness-missing-test-links-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2725 [Soar][Architecture QA][LUC-2723] Cover docs parity checker missing-test links`
+  - Status: `DONE`
+  - Scope: local Test Automation proof and scanner-readable architecture
+    relation repair for `scripts/checkDocsParity.mjs`; no product runtime
+    behavior, deploy, push, restart, rollback, production smoke, account,
+    secret, exchange, database, or live-trading mutation.
+  - Implementation:
+    - made `scripts/checkDocsParity.mjs` import-safe while preserving direct
+      CLI execution;
+    - exported current docs parity helper functions for focused proof;
+    - added `scripts/checkDocsParity.test.mjs` covering CLI parsing, direct
+      CLI invocation, repository/path helpers, filesystem inventory helpers,
+      Next.js route normalization, module and route markdown parsing,
+      missing-item collection, help rendering, and temporary-output `main`
+      execution;
+    - added `13` direct `LUC-2725` rows to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/checkDocsParity.mjs` PASS.
+    - `node --check scripts/checkDocsParity.test.mjs` PASS.
+    - `node --test scripts/checkDocsParity.test.mjs` PASS (`8/8`).
+    - `rg -n "LUC-2725" docs/architecture/relations/priority-test-links.csv`
+      PASS (`13` rows).
+    - `pnpm run docs:parity:check` PASS.
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - `pnpm run quality:guardrails` PASS.
+  - Evidence:
+    - `history/tasks/luc-2725-docs-parity-checker-missing-test-links-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2719 [Soar] Regression evidence sweep`
+  - Status: `DONE / PARTIALLY_VERIFIED`
+  - Scope: safe local QA evidence refresh only; no production, protected,
+    secret, account, exchange, database, deploy, restart, rollback, or
+    live-trading mutation.
+  - Verification:
+    - `node scripts/runQaRepeatableSmokeE2e.mjs --checks 'web' --artifact-prefix luc-2719-qa-repeatable-smoke-e2e`
+      PASS; Web smoke pack duration `8255ms`.
+    - `node scripts/runQaRepeatableSmokeE2e.mjs --checks 'api' --artifact-prefix luc-2719-qa-repeatable-api-smoke-e2e`
+      FAIL after `202152ms`; all `45` API smoke tests failed on
+      `Can't reach database server at localhost:5432`.
+    - `docker compose ps --format json` failed because Docker Desktop Linux
+      engine pipe was unavailable.
+    - `Get-NetTCPConnection -LocalPort 5432,6379` returned no local listeners.
+    - Narrow process readback found no remaining `runQaRepeatableSmokeE2e`,
+      `test:go-live:api`, or `test:go-live:web` validation processes after
+      cleanup.
+  - Residual risk:
+    - API/backtests are not verified until local Postgres/Redis or Docker
+      Desktop is restored.
+  - Evidence:
+    - `history/evidence/luc-2719-qa-repeatable-smoke-e2e-2026-06-07.md`
+    - `history/evidence/luc-2719-qa-repeatable-api-smoke-e2e-2026-06-07.md`
+    - `history/tasks/luc-2719-regression-evidence-sweep-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2723 [Soar][TSA][LUC-2720] Refresh architecture-awareness after Coolify stack env proof closure`
+  - Status: `DONE / DELEGATED`
+  - Scope: TSA architecture-awareness refresh, duplicate filtering, and
+    child-lane creation only; no product-code, runtime, deploy, push, restart,
+    rollback, env, account, secret, protected-smoke, exchange, database, or
+    live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2723](/LUC/issues/LUC-2723).
+    - External architecture-awareness refresh passed:
+      `node scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`
+      from `C:\Personal\Projekty\Aplikacje\Paperclip_Softwarehouse`.
+    - Refreshed report generated `2026-06-07T08:04:36.573Z` with `14844`
+      entities, `23900` relations, `420` actionable missing-test links, `0`
+      actionable missing-doc links, `0` ownerless entities, `0` disconnected
+      entities, and `7426` classified inferred-link noise rows.
+    - Completed [LUC-2702](/LUC/issues/LUC-2702) removed
+      `scripts/checkCoolifyStackEnv.mjs` from the top actionable family.
+    - `node --check scripts/checkDocsParity.mjs` PASS.
+    - `pnpm run docs:parity:check` PASS (`22/22` API modules, `16/16` Web
+      features, `39/39` routes).
+    - Active duplicate search for `checkDocsParity` returned only current
+      [LUC-2723](/LUC/issues/LUC-2723); `Docs parity` and
+      `checkPostDeployRuntimeFreshness` returned no active lane.
+  - Disposition:
+    - created [LUC-2725](/LUC/issues/LUC-2725) for Test Automation Engineer to
+      cover or classify `scripts/checkDocsParity.mjs` missing-test links.
+  - Evidence:
+    - `history/tasks/luc-2723-architecture-awareness-after-coolify-env-proof-closure-2026-06-07-task.md`
+
 - 2026-06-07 `LUC-2720 [Soar][PM] No-stall queue expeditor`
   - Status: `DONE / DELEGATED`
   - Scope: PM queue readback, stale-report detection, duplicate filtering, and
@@ -28090,3 +28433,43 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
   missing-test links, and `0` actionable missing-doc links. No duplicate child
   issue was opened because owner lanes already exist. Evidence:
   `history/tasks/luc-2665-autonomous-idle-and-map-drift-sweep-2026-06-07-task.md`.
+- 2026-06-07 `LUC-2733` completed as a bounded Test Automation local
+  proof/relation repair for protected input readiness checker anchors. Added
+  focused coverage for `main`, `printUsage`, and `writeOutput`, plus three
+  scanner-readable `priority-test-links.csv` rows. Verification passed:
+  `node --check scripts/checkProtectedInputReadiness.mjs`,
+  `node --test scripts/checkProtectedInputReadiness.test.mjs` (`6/6`),
+  LUC-2733 relation readback, `pnpm run architecture:graph:generate`
+  (`653` nodes / `842` relations / `27` chains), and
+  `pnpm run quality:guardrails`. No deploy, push, restart, rollback,
+  production smoke, account, real secret, exchange, database, or live-trading
+  mutation occurred. Evidence:
+  `history/tasks/luc-2733-protected-input-readiness-checker-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2734 [Soar] Security and account-access gate sweep`
+  - Status: `BLOCKED / PARTIALLY_VERIFIED`
+  - Scope: Security & Privacy Auditor gate refresh for production accounts,
+    test-account classes, API keys, cookies, subscription/payment tests,
+    exchange/live-risk boundaries, and redaction rules.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2734](/LUC/issues/LUC-2734).
+    - Public build-info readback returned
+      `56d8d440bfe0fd9ee692e9f669e35414d85d2493` on `main`, checked at
+      `2026-06-07T09:02:00.961Z`.
+    - `pnpm run -s ops:protected-inputs:check ...` returned `PARTIAL/NO-GO`
+      with `6` matching protected input names, limited to
+      `PROD_UI_AUDIT_*` / `PROD_UI_*`.
+    - API redaction/crypto/critical-secret tests passed (`18/18`).
+    - Subscription/exchange-boundary tests passed (`17/17`).
+  - Blocker:
+    - missing `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `SOAR_PROD_*`,
+      `PROD_DB_CHECK_*` or `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE*`
+      input families.
+  - Disposition:
+    - keep protected release proof fail-closed until the board-capable
+      Security/Ops secret owner binds the missing families through approved
+      encrypted runtime injection.
+  - Evidence:
+    - `history/tasks/luc-2734-security-account-access-gate-sweep-2026-06-07-task.md`
+    - `history/evidence/luc-2734-security-account-access-gate-readiness-56d8d440-2026-06-07.md`

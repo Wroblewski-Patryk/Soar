@@ -1,39 +1,39 @@
 {
-  "generated_at": "2026-06-07T06:46:35.755Z",
+  "generated_at": "2026-06-07T09:34:54.277Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 14832,
-    "relations": 23869,
+    "entities": 14880,
+    "relations": 23980,
     "by_type": {
       "agent": 52,
       "api_endpoint": 37,
       "component": 97,
-      "document": 3790,
+      "document": 3811,
       "feature": 225,
-      "function": 8343,
+      "function": 8349,
       "migration": 56,
       "model": 277,
       "module": 15,
       "project": 1,
       "route": 352,
-      "task": 1177,
-      "test": 410
+      "task": 1195,
+      "test": 413
     },
     "by_status": {
-      "blocked": 25,
+      "blocked": 26,
       "deprecated": 7,
-      "implemented": 12909,
+      "implemented": 12925,
       "in_progress": 10,
-      "tested": 720,
-      "verified": 1161
+      "tested": 734,
+      "verified": 1178
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 7277,
+      "count": 7249,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -3243,304 +3243,8 @@
       ]
     },
     "actionable_implementation_without_tests": {
-      "count": 433,
+      "count": 396,
       "items": [
-        {
-          "id": "function:add:96076cae13",
-          "type": "function",
-          "name": "add",
-          "path": "scripts/checkCoolifyStackEnv.mjs#add",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:buildvalueissues:0f0aef10c0",
-          "type": "function",
-          "name": "buildValueIssues",
-          "path": "scripts/checkCoolifyStackEnv.mjs#buildValueIssues",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:evaluatecoolifystackenv:3001259534",
-          "type": "function",
-          "name": "evaluateCoolifyStackEnv",
-          "path": "scripts/checkCoolifyStackEnv.mjs#evaluateCoolifyStackEnv",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:formatcoolifystackenvreport:854f4983d2",
-          "type": "function",
-          "name": "formatCoolifyStackEnvReport",
-          "path": "scripts/checkCoolifyStackEnv.mjs#formatCoolifyStackEnvReport",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:get:a807605fc6",
-          "type": "function",
-          "name": "get",
-          "path": "scripts/checkCoolifyStackEnv.mjs#get",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:isplaceholdervalue:00606b41c2",
-          "type": "function",
-          "name": "isPlaceholderValue",
-          "path": "scripts/checkCoolifyStackEnv.mjs#isPlaceholderValue",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:isvalidurl:abbf126290",
-          "type": "function",
-          "name": "isValidUrl",
-          "path": "scripts/checkCoolifyStackEnv.mjs#isValidUrl",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:looksweaksecret:4d34c7cb54",
-          "type": "function",
-          "name": "looksWeakSecret",
-          "path": "scripts/checkCoolifyStackEnv.mjs#looksWeakSecret",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:main:331597c2ad",
-          "type": "function",
-          "name": "main",
-          "path": "scripts/checkCoolifyStackEnv.mjs#main",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:normalizevalue:d6dbdef5bc",
-          "type": "function",
-          "name": "normalizeValue",
-          "path": "scripts/checkCoolifyStackEnv.mjs#normalizeValue",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:parsekeyringversions:5d829d13e0",
-          "type": "function",
-          "name": "parseKeyringVersions",
-          "path": "scripts/checkCoolifyStackEnv.mjs#parseKeyringVersions",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:printusage:a94f82e81e",
-          "type": "function",
-          "name": "printUsage",
-          "path": "scripts/checkCoolifyStackEnv.mjs#printUsage",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:shouldskipplaceholder:b00fef9e5e",
-          "type": "function",
-          "name": "shouldSkipPlaceholder",
-          "path": "scripts/checkCoolifyStackEnv.mjs#shouldSkipPlaceholder",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:collectmissing:ae352b4e84",
-          "type": "function",
-          "name": "collectMissing",
-          "path": "scripts/checkDocsParity.mjs#collectMissing",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:collectpagefiles:ecebefa1df",
-          "type": "function",
-          "name": "collectPageFiles",
-          "path": "scripts/checkDocsParity.mjs#collectPageFiles",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:directoryexists:2736c538fc",
-          "type": "function",
-          "name": "directoryExists",
-          "path": "scripts/checkDocsParity.mjs#directoryExists",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:fileexists:ac9f19af69",
-          "type": "function",
-          "name": "fileExists",
-          "path": "scripts/checkDocsParity.mjs#fileExists",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:listdirectorynames:c89afb6326",
-          "type": "function",
-          "name": "listDirectoryNames",
-          "path": "scripts/checkDocsParity.mjs#listDirectoryNames",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:main:ab9e35095b",
-          "type": "function",
-          "name": "main",
-          "path": "scripts/checkDocsParity.mjs#main",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:normalizeroutefrompage:9703fcca9a",
-          "type": "function",
-          "name": "normalizeRouteFromPage",
-          "path": "scripts/checkDocsParity.mjs#normalizeRouteFromPage",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:parseargs:ad029d989e",
-          "type": "function",
-          "name": "parseArgs",
-          "path": "scripts/checkDocsParity.mjs#parseArgs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:parsecanonicalroutes:8b14d2ccf6",
-          "type": "function",
-          "name": "parseCanonicalRoutes",
-          "path": "scripts/checkDocsParity.mjs#parseCanonicalRoutes",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:parsemodulerows:6c53c6a531",
-          "type": "function",
-          "name": "parseModuleRows",
-          "path": "scripts/checkDocsParity.mjs#parseModuleRows",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:resolverepopath:3c91aeaa84",
-          "type": "function",
-          "name": "resolveRepoPath",
-          "path": "scripts/checkDocsParity.mjs#resolveRepoPath",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:toposixpath:8c44cf3882",
-          "type": "function",
-          "name": "toPosixPath",
-          "path": "scripts/checkDocsParity.mjs#toPosixPath",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:fetchwithtimeout:94b059a071",
-          "type": "function",
-          "name": "fetchWithTimeout",
-          "path": "scripts/checkPostDeployRuntimeFreshness.mjs#fetchWithTimeout",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:main:8d9b4003ea",
-          "type": "function",
-          "name": "main",
-          "path": "scripts/checkPostDeployRuntimeFreshness.mjs#main",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:main:f69f839773",
-          "type": "function",
-          "name": "main",
-          "path": "scripts/checkProtectedInputReadiness.mjs#main",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:printusage:8304a13e22",
-          "type": "function",
-          "name": "printUsage",
-          "path": "scripts/checkProtectedInputReadiness.mjs#printUsage",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:writeoutput:e9b76e92f1",
-          "type": "function",
-          "name": "writeOutput",
-          "path": "scripts/checkProtectedInputReadiness.mjs#writeOutput",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:capture:5fa5db1d2b",
-          "type": "function",
-          "name": "capture",
-          "path": "scripts/checkRcExternalGateEvidence.mjs#capture",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:extractevidencevalues:8373ecf497",
-          "type": "function",
-          "name": "extractEvidenceValues",
-          "path": "scripts/checkRcExternalGateEvidence.mjs#extractEvidenceValues",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:main:94a2bb336e",
-          "type": "function",
-          "name": "main",
-          "path": "scripts/checkRcExternalGateEvidence.mjs#main",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:parseargs:64931d9652",
-          "type": "function",
-          "name": "parseArgs",
-          "path": "scripts/checkRcExternalGateEvidence.mjs#parseArgs",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:parsegatelabel:b68f8d801f",
-          "type": "function",
-          "name": "parseGateLabel",
-          "path": "scripts/checkRcExternalGateEvidence.mjs#parseGateLabel",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:parsesignofffields:91566d2254",
-          "type": "function",
-          "name": "parseSignoffFields",
-          "path": "scripts/checkRcExternalGateEvidence.mjs#parseSignoffFields",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:resolvedocsroot:9aeee24a19",
-          "type": "function",
-          "name": "resolveDocsRoot",
-          "path": "scripts/checkRcExternalGateEvidence.mjs#resolveDocsRoot",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
         {
           "id": "function:assertoptions:c36109dd5a",
           "type": "function",
@@ -4844,6 +4548,302 @@
           "path": "scripts/runLocalExternalGatesPipeline.mjs#findLatestSloObservationArtifact",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:hassloinputs:38523fc344",
+          "type": "function",
+          "name": "hasSloInputs",
+          "path": "scripts/runLocalExternalGatesPipeline.mjs#hasSloInputs",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:main:03385038c7",
+          "type": "function",
+          "name": "main",
+          "path": "scripts/runLocalExternalGatesPipeline.mjs#main",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizedbprofile:dc2964e6a8",
+          "type": "function",
+          "name": "normalizeDbProfile",
+          "path": "scripts/runLocalExternalGatesPipeline.mjs#normalizeDbProfile",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizeenvironment:f0ddbf88af",
+          "type": "function",
+          "name": "normalizeEnvironment",
+          "path": "scripts/runLocalExternalGatesPipeline.mjs#normalizeEnvironment",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:parseargs:d1eb6b0312",
+          "type": "function",
+          "name": "parseArgs",
+          "path": "scripts/runLocalExternalGatesPipeline.mjs#parseArgs",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:run:7bedb888ad",
+          "type": "function",
+          "name": "run",
+          "path": "scripts/runLocalExternalGatesPipeline.mjs#run",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:collectlocation:ec0f10bf59",
+          "type": "function",
+          "name": "collectLocation",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#collectLocation",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:createpage:dc5d04867a",
+          "type": "function",
+          "name": "createPage",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#createPage",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:evaluate:9a7467eeaa",
+          "type": "function",
+          "name": "evaluate",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#evaluate",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:findbrowserpath:9eeb538a72",
+          "type": "function",
+          "name": "findBrowserPath",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#findBrowserPath",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:httprouteproof:c2af2769f8",
+          "type": "function",
+          "name": "httpRouteProof",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#httpRouteProof",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:installdynamicfixtureapi:6ac0745043",
+          "type": "function",
+          "name": "installDynamicFixtureApi",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#installDynamicFixtureApi",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:jsonfixtureresponse:73acdf3e7d",
+          "type": "function",
+          "name": "jsonFixtureResponse",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#jsonFixtureResponse",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:launchbrowser:a85171f85f",
+          "type": "function",
+          "name": "launchBrowser",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#launchBrowser",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:main:98fc26fb96",
+          "type": "function",
+          "name": "main",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#main",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:navigate:b232ea9230",
+          "type": "function",
+          "name": "navigate",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#navigate",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizebaseurl:60881ab0f8",
+          "type": "function",
+          "name": "normalizeBaseUrl",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#normalizeBaseUrl",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:readargvalue:aff24a3253",
+          "type": "function",
+          "name": "readArgValue",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#readArgValue",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:rendermarkdown:488e38d35c",
+          "type": "function",
+          "name": "renderMarkdown",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#renderMarkdown",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolvedynamicfixtureapi:67ab9a8fd7",
+          "type": "function",
+          "name": "resolveDynamicFixtureApi",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#resolveDynamicFixtureApi",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:resolveoptions:39e2c50d3e",
+          "type": "function",
+          "name": "resolveOptions",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#resolveOptions",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:startwebserver:3e7ff8f47f",
+          "type": "function",
+          "name": "startWebServer",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#startWebServer",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:stopchild:d11c9f9157",
+          "type": "function",
+          "name": "stopChild",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#stopChild",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:verifystaticmapping:4c417eeba7",
+          "type": "function",
+          "name": "verifyStaticMapping",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#verifyStaticMapping",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:wait:f3fd58c8ab",
+          "type": "function",
+          "name": "wait",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#wait",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:waitforpath:d344d27810",
+          "type": "function",
+          "name": "waitForPath",
+          "path": "scripts/runLocalProtectedRouteActionProof.mjs#waitForPath",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:clearauth:4bf1e29b97",
+          "type": "function",
+          "name": "clearAuth",
+          "path": "scripts/runProdAuthSessionBrowserProof.mjs#clearAuth",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:collectlocation:5f6f98a53e",
+          "type": "function",
+          "name": "collectLocation",
+          "path": "scripts/runProdAuthSessionBrowserProof.mjs#collectLocation",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:createpage:5ad8777b4d",
+          "type": "function",
+          "name": "createPage",
+          "path": "scripts/runProdAuthSessionBrowserProof.mjs#createPage",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:evaluate:cffb497c92",
+          "type": "function",
+          "name": "evaluate",
+          "path": "scripts/runProdAuthSessionBrowserProof.mjs#evaluate",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:findbrowserpath:8c7f77ab9b",
+          "type": "function",
+          "name": "findBrowserPath",
+          "path": "scripts/runProdAuthSessionBrowserProof.mjs#findBrowserPath",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:launchbrowser:ea8390eb36",
+          "type": "function",
+          "name": "launchBrowser",
+          "path": "scripts/runProdAuthSessionBrowserProof.mjs#launchBrowser",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:main:74b7601b9b",
+          "type": "function",
+          "name": "main",
+          "path": "scripts/runProdAuthSessionBrowserProof.mjs#main",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:navigate:06d3ef70a4",
+          "type": "function",
+          "name": "navigate",
+          "path": "scripts/runProdAuthSessionBrowserProof.mjs#navigate",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:normalizebaseurl:d5332f3949",
+          "type": "function",
+          "name": "normalizeBaseUrl",
+          "path": "scripts/runProdAuthSessionBrowserProof.mjs#normalizeBaseUrl",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:readargvalue:1414138d7c",
+          "type": "function",
+          "name": "readArgValue",
+          "path": "scripts/runProdAuthSessionBrowserProof.mjs#readArgValue",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:readjson:4cb15444df",
+          "type": "function",
+          "name": "readJson",
+          "path": "scripts/runProdAuthSessionBrowserProof.mjs#readJson",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
@@ -4852,12 +4852,12 @@
       "items": []
     },
     "classified_inferred_link_noise": {
-      "count": 7426,
+      "count": 7435,
       "by_reason": {
         "config_only_file": 65,
         "curated_graph_covered": 1515,
         "generated_vendor_docs_vault_plugin": 5775,
-        "test_fixture_function": 70,
+        "test_fixture_function": 79,
         "top_level_app_mount": 1
       },
       "items": [
@@ -6672,7 +6672,7 @@
       "items": []
     },
     "tasks_without_architecture": {
-      "count": 1137,
+      "count": 1155,
       "items": [
         {
           "id": "task:agent-operating-system-task-2026-05-07:04d1de2b03",

@@ -1,5 +1,159 @@
 # Module Confidence Ledger
 
+- 2026-06-07 `LUC-2750-LIVE-IMPORT-READBACK-COLLECTOR-MISSING-TEST-LINKS-2026-06-07`
+  applies to live import readback collector tooling and Architecture Evidence
+  Graph relation confidence. Status: `verified_local / traceability only`.
+  `scripts/collectLiveImportReadbackEvidence.mjs` is import-safe for focused
+  helper tests, direct helper exports are covered by
+  `scripts/collectLiveImportReadbackEvidence.test.mjs`, and direct `LUC-2750`
+  rows map the current live import readback helper anchors in
+  `docs/architecture/relations/priority-test-links.csv`. Syntax checks passed,
+  focused Node proof passed (`7/7`), CLI help passed, architecture graph
+  generation passed (`653` nodes / `842` relations / `27` chains), and
+  repository guardrails passed. No product runtime behavior, deploy, push,
+  restart, rollback, production readback, account, secret, exchange, database,
+  or live-trading mutation occurred. Follow-up TSA refresh is needed because
+  `docs/status/architecture-awareness-report.md` remains the pre-fix snapshot.
+  Evidence:
+  `history/tasks/luc-2750-live-import-readback-collector-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2749-ARCHITECTURE-AWARENESS-AFTER-RC-EXTERNAL-GATE-EVIDENCE-PROOF-CLOSURE-2026-06-07`
+  applies to V1 audit-to-completion coordination, Architecture Evidence Graph
+  report freshness, repair-lane hygiene, and duplicate-lane prevention.
+  Status: coordination `verified`; no product/runtime module confidence was
+  upgraded. Paperclip heartbeat-context succeeded for
+  [LUC-2749](/LUC/issues/LUC-2749). External architecture-awareness refresh
+  passed with `14880` entities, `23980` relations, and `9659` files.
+  Refreshed report generated `2026-06-07T09:34:54.277Z` has `396`
+  actionable missing-test links, `0` actionable missing-doc links, `0`
+  ownerless entities, `0` disconnected entities, and `7435` classified
+  inferred-link noise rows. Completed [LUC-2740](/LUC/issues/LUC-2740) removed
+  `scripts/checkRcExternalGateEvidence.mjs` from the top actionable family.
+  Created [LUC-2750](/LUC/issues/LUC-2750) for Test Automation Engineer after
+  active duplicate searches found no exact open local
+  `collectLiveImportReadbackEvidence` relation/test lane. No code/runtime/
+  deploy/push/restart/rollback/env/account/secret/protected-smoke/exchange/
+  database/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2749-architecture-awareness-after-rc-external-gate-evidence-proof-closure-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2740-RC-EXTERNAL-GATE-EVIDENCE-CHECKER-MISSING-TEST-LINKS-2026-06-07`
+  applies to RC external gate evidence tooling and Architecture Evidence Graph
+  relation confidence. Status: `verified_local / traceability only`.
+  `scripts/checkRcExternalGateEvidence.mjs` is import-safe for focused helper
+  tests, direct helper exports are covered by
+  `scripts/checkRcExternalGateEvidence.test.mjs`, and direct `LUC-2740` rows
+  map the current RC evidence checker helper anchors in
+  `docs/architecture/relations/priority-test-links.csv`. Syntax checks passed,
+  focused Node proof passed (`6/6`), CLI help passed, architecture graph
+  generation passed (`653` nodes / `842` relations / `27` chains), and
+  repository guardrails passed. No product runtime behavior, deploy, push,
+  restart, rollback, production smoke, account, secret, exchange, database, or
+  live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2740-rc-external-gate-evidence-checker-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2738-ARCHITECTURE-AWARENESS-AFTER-PROTECTED-INPUT-READINESS-PROOF-CLOSURE-2026-06-07`
+  applies to V1 audit-to-completion coordination, Architecture Evidence Graph
+  report freshness, repair-lane hygiene, and duplicate-lane prevention.
+  Status: coordination `verified`; no product/runtime module confidence was
+  upgraded. Paperclip heartbeat-context succeeded for
+  [LUC-2738](/LUC/issues/LUC-2738). External architecture-awareness refresh
+  passed with `14870` entities, `23959` relations, and `9654` files.
+  Refreshed report generated `2026-06-07T09:05:01.622Z` has `403`
+  actionable missing-test links, `0` actionable missing-doc links, `0`
+  ownerless entities, `0` disconnected entities, and `7432` classified
+  inferred-link noise rows. Completed [LUC-2733](/LUC/issues/LUC-2733)
+  removed `scripts/checkProtectedInputReadiness.mjs` from the top actionable
+  family. Created [LUC-2740](/LUC/issues/LUC-2740) for Test Automation
+  Engineer after active duplicate searches found no exact open local
+  `checkRcExternalGateEvidence` relation/test lane. No code/runtime/deploy/
+  push/restart/rollback/env/account/secret/protected-smoke/exchange/database/
+  live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2738-architecture-awareness-after-protected-input-readiness-proof-closure-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2735-NO-STALL-QUEUE-EXPEDITOR-2026-06-07`
+  applies to V1 audit-to-completion coordination, Architecture Evidence Graph
+  report freshness, repair-lane hygiene, and duplicate-lane prevention.
+  Status: coordination `verified`; no product/runtime module confidence was
+  upgraded. Paperclip heartbeat-context succeeded for
+  [LUC-2735](/LUC/issues/LUC-2735). `pnpm softwarehouse:control-tick` failed
+  because the command is not exposed in this checkout. Current local
+  architecture-awareness report generated `2026-06-07T08:46:05.612Z` is stale
+  after completed [LUC-2733](/LUC/issues/LUC-2733), because it still lists
+  `scripts/checkProtectedInputReadiness.mjs` as top actionable. Created
+  [LUC-2738](/LUC/issues/LUC-2738) for `09 TSA (Technical Solution Architect)`
+  after active duplicate searches found no open protected-input readiness
+  architecture refresh lane. No code/runtime/deploy/push/restart/rollback/env/
+  account/secret/protected-smoke/exchange/database/live-trading mutation
+  occurred. Evidence:
+  `history/tasks/luc-2735-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2732-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-06-07`
+  applies to V1 audit-to-completion coordination, Architecture Evidence Graph
+  report freshness, repair-lane hygiene, and duplicate-lane prevention.
+  Status: coordination `verified`; no product/runtime module confidence was
+  upgraded. Paperclip heartbeat-context succeeded for
+  [LUC-2732](/LUC/issues/LUC-2732). External architecture-awareness refresh
+  passed with `14862` entities, `23944` relations, and `9649` files.
+  Refreshed report generated `2026-06-07T08:46:05.612Z` has `406` actionable
+  missing-test links, `0` actionable missing-doc links, `0` ownerless
+  entities, `0` disconnected entities, and `7431` classified inferred-link
+  noise rows. Completed [LUC-2731](/LUC/issues/LUC-2731) removed
+  `scripts/checkPostDeployRuntimeFreshness.mjs` from the top actionable
+  family. Created [LUC-2733](/LUC/issues/LUC-2733) for Test Automation
+  Engineer after active duplicate searches found no exact open local
+  protected-input readiness checker relation/test lane. No code/runtime/deploy/
+  push/restart/rollback/env/account/secret/protected-smoke/exchange/database/
+  live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2732-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2731-POST-DEPLOY-RUNTIME-FRESHNESS-MISSING-TEST-LINKS-2026-06-07`
+  applies to post-deploy runtime freshness tooling and Architecture Evidence
+  Graph relation confidence. Status: `verified_local / traceability only`.
+  `scripts/checkPostDeployRuntimeFreshness.mjs` is import-safe for focused
+  helper tests, direct helper exports are covered by
+  `scripts/checkPostDeployRuntimeFreshness.test.mjs`, and direct `LUC-2731`
+  rows map the current runtime freshness helper anchors in
+  `docs/architecture/relations/priority-test-links.csv`. Syntax checks passed,
+  focused Node proof passed (`4/4`), architecture graph generation passed
+  (`653` nodes / `842` relations / `27` chains), and repository guardrails
+  passed. No product runtime behavior, deploy, push, restart, rollback,
+  production smoke, account, secret, exchange, database, or live-trading
+  mutation occurred. Evidence:
+  `history/tasks/luc-2731-post-deploy-runtime-freshness-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2725-DOCS-PARITY-CHECKER-MISSING-TEST-LINKS-2026-06-07`
+  applies to docs parity tooling and Architecture Evidence Graph relation
+  confidence. Status: `verified_local / traceability only`.
+  `scripts/checkDocsParity.mjs` is import-safe for focused helper tests,
+  direct helper exports are covered by `scripts/checkDocsParity.test.mjs`,
+  and direct `LUC-2725` rows map the current docs parity checker helper
+  anchors in `docs/architecture/relations/priority-test-links.csv`. Syntax
+  checks passed, focused Node proof passed (`8/8`), docs parity passed,
+  architecture graph generation passed (`653` nodes / `842` relations / `27`
+  chains), and repository guardrails passed. No product runtime behavior,
+  deploy, push, restart, rollback, production smoke, account, secret,
+  exchange, database, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2725-docs-parity-checker-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2723-ARCHITECTURE-AWARENESS-AFTER-COOLIFY-ENV-PROOF-CLOSURE-2026-06-07`
+  applies to V1 audit-to-completion coordination, Architecture Evidence Graph
+  report freshness, repair-lane hygiene, and duplicate-lane prevention.
+  Status: coordination `verified`; no product/runtime module confidence was
+  upgraded. Paperclip heartbeat-context succeeded for
+  [LUC-2723](/LUC/issues/LUC-2723). External architecture-awareness refresh
+  passed with `14844` entities, `23900` relations, and `9638` files.
+  Refreshed report generated `2026-06-07T08:04:36.573Z` has `420` actionable
+  missing-test links, `0` actionable missing-doc links, `0` ownerless
+  entities, `0` disconnected entities, and `7426` classified inferred-link
+  noise rows. Completed [LUC-2702](/LUC/issues/LUC-2702) removed
+  `scripts/checkCoolifyStackEnv.mjs` from the top actionable family. Created
+  [LUC-2725](/LUC/issues/LUC-2725) for Test Automation Engineer after active
+  duplicate searches found no open docs parity proof lane beyond current
+  [LUC-2723](/LUC/issues/LUC-2723). No code/runtime/deploy/push/restart/
+  rollback/env/account/secret/protected-smoke/exchange/database/live-trading
+  mutation occurred. Evidence:
+  `history/tasks/luc-2723-architecture-awareness-after-coolify-env-proof-closure-2026-06-07-task.md`.
+
 - 2026-06-07 `LUC-2702-COOLIFY-STACK-ENV-CHECKER-MISSING-TEST-LINKS-2026-06-07`
   applies to Coolify deployment readiness tooling and Architecture Evidence
   Graph relation confidence. Status: `verified_local / traceability only`.
@@ -4755,3 +4909,47 @@ Do not turn uncertainty into optimism.
   `scripts/generateArchitectureAwarenessIndex.mjs` are absent in this checkout;
   production/browser/deploy proof remains outside this local traceability
   repair.
+## 2026-06-07 LUC-2733 Protected Input Readiness Checker Test Links
+
+- Module row: release audit tooling / protected input readiness local proof and
+  architecture traceability confidence.
+- Status delta: `VERIFIED_LOCAL` for the assigned checker-link repair. Existing
+  checker helpers are exportable for focused proof, local tests cover
+  `main`, `printUsage`, and `writeOutput`, and
+  `docs/architecture/relations/priority-test-links.csv` has direct LUC-2733
+  rows for the targeted anchors.
+- Evidence:
+  `history/tasks/luc-2733-protected-input-readiness-checker-missing-test-links-2026-06-07-task.md`.
+- Validation:
+  `node --check scripts/checkProtectedInputReadiness.mjs` PASS;
+  `node --test scripts/checkProtectedInputReadiness.test.mjs` PASS (`6/6`);
+  LUC-2733 relation readback PASS; `pnpm run architecture:graph:generate`
+  PASS (`653` nodes / `842` relations / `27` chains);
+  `pnpm run quality:guardrails` PASS.
+- Residual risk:
+  production protected input readiness and release-gate proof remain outside
+  this local relation/test repair.
+
+## 2026-06-07 LUC-2734 Security And Account-Access Gate Sweep
+
+- Module row: release security/account-access gate, protected input readiness,
+  API-key secrecy, entitlements, and exchange/live boundary confidence.
+- Status delta: `BLOCKED / PARTIALLY_VERIFIED`. Public build-info readback
+  still targets deployed `56d8d440bfe0fd9ee692e9f669e35414d85d2493` on
+  `main`; no-secret protected input readiness remains `PARTIAL/NO-GO` with
+  only UI audit input families present by name. Focused local security tests
+  for redaction, encryption readiness, entitlement live-trading fail-closed
+  behavior, and exchange capability boundaries passed.
+- Evidence:
+  `history/tasks/luc-2734-security-account-access-gate-sweep-2026-06-07-task.md`;
+  `history/evidence/luc-2734-security-account-access-gate-readiness-56d8d440-2026-06-07.md`.
+- Validation:
+  protected input readiness PASS with status `PARTIAL/NO-GO`;
+  API security/crypto/critical-secret tests PASS (`18/18`);
+  subscription/exchange-boundary tests PASS (`17/17`).
+- Residual risk:
+  protected release proof remains blocked until `LIVEIMPORT_READBACK_*`,
+  `ROLLBACK_GUARD_*`, `SOAR_PROD_*`, DB-check, `RC_*`, and `GATE*` families
+  are bound by an approved Security/Ops secret owner. No production account,
+  API-key, subscription/payment, exchange, DB, rollback, deploy, or
+  live-trading mutation occurred.

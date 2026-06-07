@@ -4,6 +4,8 @@ import {
   resolveOpsAuthLayerOptions,
 } from './buildOpsRequestHeaders.mjs';
 import { resolveOpsAuthToken } from './resolveOpsAuthToken.mjs';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 
 const SECRET_CLI_FLAGS = new Set([
   '--auth-token',
@@ -12,18 +14,17 @@ const SECRET_CLI_FLAGS = new Set([
   '--ops-auth-header-value',
 ]);
 
-const parseArgs = () => {
-  const args = process.argv.slice(2);
+const parseArgs = (args = process.argv.slice(2), env = process.env) => {
   const options = {
-    baseUrl: process.env.DEPLOY_FRESHNESS_API_BASE_URL ?? 'http://localhost:3001',
-    authToken: process.env.DEPLOY_FRESHNESS_AUTH_TOKEN ?? '',
-    authEmail: process.env.DEPLOY_FRESHNESS_AUTH_EMAIL ?? '',
-    authPassword: process.env.DEPLOY_FRESHNESS_AUTH_PASSWORD ?? '',
-    opsAuthHeaderName: process.env.DEPLOY_FRESHNESS_OPS_AUTH_HEADER_NAME ?? '',
-    opsAuthHeaderValue: process.env.DEPLOY_FRESHNESS_OPS_AUTH_HEADER_VALUE ?? '',
-    opsBasicUser: process.env.DEPLOY_FRESHNESS_OPS_BASIC_USER ?? '',
-    opsBasicPassword: process.env.DEPLOY_FRESHNESS_OPS_BASIC_PASSWORD ?? '',
-    timeoutMs: Number.parseInt(process.env.DEPLOY_FRESHNESS_TIMEOUT_MS ?? '10000', 10),
+    baseUrl: env.DEPLOY_FRESHNESS_API_BASE_URL ?? 'http://localhost:3001',
+    authToken: env.DEPLOY_FRESHNESS_AUTH_TOKEN ?? '',
+    authEmail: env.DEPLOY_FRESHNESS_AUTH_EMAIL ?? '',
+    authPassword: env.DEPLOY_FRESHNESS_AUTH_PASSWORD ?? '',
+    opsAuthHeaderName: env.DEPLOY_FRESHNESS_OPS_AUTH_HEADER_NAME ?? '',
+    opsAuthHeaderValue: env.DEPLOY_FRESHNESS_OPS_AUTH_HEADER_VALUE ?? '',
+    opsBasicUser: env.DEPLOY_FRESHNESS_OPS_BASIC_USER ?? '',
+    opsBasicPassword: env.DEPLOY_FRESHNESS_OPS_BASIC_PASSWORD ?? '',
+    timeoutMs: Number.parseInt(env.DEPLOY_FRESHNESS_TIMEOUT_MS ?? '10000', 10),
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -49,27 +50,36 @@ const parseArgs = () => {
   return options;
 };
 
-const printUsage = () => {
-  console.log(
+const printUsage = (consoleImpl = console) => {
+  consoleImpl.log(
     'Usage: node scripts/checkPostDeployRuntimeFreshness.mjs [--base-url <url>] [--auth-email <email>] [--ops-basic-user <user>] [--ops-auth-header-name <name>] [--timeout-ms <ms>]\n\nSecret-bearing values must be provided through DEPLOY_FRESHNESS_AUTH_TOKEN, DEPLOY_FRESHNESS_AUTH_PASSWORD, DEPLOY_FRESHNESS_OPS_BASIC_PASSWORD, and DEPLOY_FRESHNESS_OPS_AUTH_HEADER_VALUE.'
   );
 };
 
-const fetchWithTimeout = async (url, options, timeoutMs) => {
+const fetchWithTimeout = async (url, options, timeoutMs, fetchImpl = fetch) => {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    return await fetch(url, { ...options, signal: controller.signal });
+    return await fetchImpl(url, { ...options, signal: controller.signal });
   } finally {
     clearTimeout(timer);
   }
 };
 
-const main = async () => {
-  const options = parseArgs();
+const main = async ({
+  args = process.argv.slice(2),
+  env = process.env,
+  consoleImpl = console,
+  exitOnHelp = true,
+  fetchImpl = fetch,
+} = {}) => {
+  const options = parseArgs(args, env);
   if (options.help) {
-    printUsage();
-    process.exit(0);
+    printUsage(consoleImpl);
+    if (exitOnHelp) {
+      process.exit(0);
+    }
+    return { status: 'HELP' };
   }
 
   const baseUrl = options.baseUrl.replace(/\/+$/, '');
@@ -99,7 +109,8 @@ const main = async () => {
       method: 'GET',
       headers,
     },
-    Number.isFinite(options.timeoutMs) && options.timeoutMs > 0 ? options.timeoutMs : 10000
+    Number.isFinite(options.timeoutMs) && options.timeoutMs > 0 ? options.timeoutMs : 10000,
+    fetchImpl
   );
 
   if (!response.ok) {
@@ -109,25 +120,36 @@ const main = async () => {
   const payload = await response.json();
   const status = String(payload?.status ?? 'UNKNOWN').toUpperCase();
   if (status !== 'PASS') {
-    console.log('[ops:deploy:runtime-freshness] status:', status);
-    console.log(
+    consoleImpl.log('[ops:deploy:runtime-freshness] status:', status);
+    consoleImpl.log(
       '[ops:deploy:runtime-freshness] checks:',
       JSON.stringify(payload?.checks ?? {}, null, 2)
     );
     throw new Error('runtime freshness gate failed');
   }
 
-  console.log('[ops:deploy:runtime-freshness] PASS');
-  console.log(
+  consoleImpl.log('[ops:deploy:runtime-freshness] PASS');
+  consoleImpl.log(
     '[ops:deploy:runtime-freshness] checks:',
     JSON.stringify(payload?.checks ?? {}, null, 2)
   );
+
+  return { status, payload };
 };
 
-main().catch((error) => {
-  console.error(
-    '[ops:deploy:runtime-freshness] failed:',
-    error instanceof Error ? error.message : String(error)
-  );
-  process.exit(1);
-});
+if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
+  main().catch((error) => {
+    console.error(
+      '[ops:deploy:runtime-freshness] failed:',
+      error instanceof Error ? error.message : String(error)
+    );
+    process.exit(1);
+  });
+}
+
+export {
+  fetchWithTimeout,
+  main,
+  parseArgs,
+  printUsage,
+};

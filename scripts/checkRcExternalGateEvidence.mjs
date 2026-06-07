@@ -3,11 +3,12 @@
 import { existsSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const repoRoot = process.cwd();
-const resolveDocsRoot = () => {
-  const docsRoot = path.resolve(repoRoot, 'docs');
-  const migratedDocsRoot = path.resolve(repoRoot, 'docs');
+const resolveDocsRoot = (baseDir = repoRoot) => {
+  const docsRoot = path.resolve(baseDir, 'docs');
+  const migratedDocsRoot = path.resolve(baseDir, 'docs');
   if (existsSync(path.join(docsRoot, 'operations')) || !existsSync(migratedDocsRoot)) {
     return docsRoot;
   }
@@ -16,12 +17,11 @@ const resolveDocsRoot = () => {
 
 const operationsDir = path.join(resolveDocsRoot(), 'operations');
 
-const parseArgs = () => {
-  const args = process.argv.slice(2);
+const parseArgs = (args = process.argv.slice(2), cwd = process.cwd(), defaultOperationsDir = operationsDir) => {
   const options = {
-    statusPath: path.join(operationsDir, 'v1-rc-external-gates-status.md'),
-    runbookPath: path.join(operationsDir, 'v1-rc-external-gates-runbook.md'),
-    signoffPath: path.join(operationsDir, 'v1-rc-signoff-record.md'),
+    statusPath: path.join(defaultOperationsDir, 'v1-rc-external-gates-status.md'),
+    runbookPath: path.join(defaultOperationsDir, 'v1-rc-external-gates-runbook.md'),
+    signoffPath: path.join(defaultOperationsDir, 'v1-rc-signoff-record.md'),
     strict: false,
     requireProductionGate2: false,
     json: false,
@@ -43,11 +43,11 @@ const parseArgs = () => {
     if (arg === '--output') options.output = args[index + 1] ?? options.output;
   }
 
-  options.statusPath = path.resolve(process.cwd(), options.statusPath);
-  options.runbookPath = path.resolve(process.cwd(), options.runbookPath);
-  options.signoffPath = path.resolve(process.cwd(), options.signoffPath);
+  options.statusPath = path.resolve(cwd, options.statusPath);
+  options.runbookPath = path.resolve(cwd, options.runbookPath);
+  options.signoffPath = path.resolve(cwd, options.signoffPath);
   if (options.output) {
-    options.output = path.resolve(process.cwd(), options.output);
+    options.output = path.resolve(cwd, options.output);
   }
   return options;
 };
@@ -78,24 +78,32 @@ const parseGateLabel = (rawStatus, gateNumber) => {
   return rawStatus.match(regex)?.[1]?.trim() ?? 'OPEN';
 };
 
+const capture = (raw, regex) => raw.match(regex)?.[1]?.trim() ?? '';
+
 const parseSignoffFields = (rawSignoff) => {
-  const capture = (regex) => rawSignoff.match(regex)?.[1]?.trim() ?? '';
   return {
-    engineering: capture(/- Engineering sign-off:[\s\S]*?^\s*- Name:[ \t]*(.*)$/im),
-    product: capture(/- Product sign-off:[\s\S]*?^\s*- Name:[ \t]*(.*)$/im),
-    operations: capture(/- Operations sign-off:[\s\S]*?^\s*- Name:[ \t]*(.*)$/im),
-    owner: capture(/- RC owner with rollback authority:[\s\S]*?^\s*- Name:[ \t]*(.*)$/im),
-    rcStatus: capture(/- RC status:\s*`([^`]+)`/i),
+    engineering: capture(rawSignoff, /- Engineering sign-off:[\s\S]*?^\s*- Name:[ \t]*(.*)$/im),
+    product: capture(rawSignoff, /- Product sign-off:[\s\S]*?^\s*- Name:[ \t]*(.*)$/im),
+    operations: capture(rawSignoff, /- Operations sign-off:[\s\S]*?^\s*- Name:[ \t]*(.*)$/im),
+    owner: capture(rawSignoff, /- RC owner with rollback authority:[\s\S]*?^\s*- Name:[ \t]*(.*)$/im),
+    rcStatus: capture(rawSignoff, /- RC status:\s*`([^`]+)`/i),
   };
 };
 
-const main = async () => {
-  const options = parseArgs();
+const main = async ({
+  args = process.argv.slice(2),
+  cwd = process.cwd(),
+  consoleImpl = console,
+  exitOnHelp = true,
+  exitOnStrictFailure = true,
+} = {}) => {
+  const options = parseArgs(args, cwd);
   if (options.help) {
-    console.log(
+    consoleImpl.log(
       'Usage: node scripts/checkRcExternalGateEvidence.mjs [--status-path <file>] [--runbook-path <file>] [--signoff-path <file>] [--json] [--output <file>] [--strict] [--require-production-gate2]'
     );
-    process.exit(0);
+    if (exitOnHelp) process.exit(0);
+    return { help: true };
   }
 
   const [rawStatus, rawRunbook, rawSignoff] = await Promise.all([
@@ -154,29 +162,46 @@ const main = async () => {
   }
 
   if (options.json) {
-    console.log(JSON.stringify(result, null, 2));
+    consoleImpl.log(JSON.stringify(result, null, 2));
   } else {
-    console.log('# RC External Gates Evidence Check');
-    console.log(`- Gate labels: G1=${gateLabels.gate1} | G2=${gateLabels.gate2} | G3=${gateLabels.gate3} | G4=${gateLabels.gate4}`);
-    console.log(`- Gate1 evidence fields: ${gate1Evidence.length}`);
-    console.log(`- Gate3 evidence fields: ${gate3Evidence.length}`);
+    consoleImpl.log('# RC External Gates Evidence Check');
+    consoleImpl.log(`- Gate labels: G1=${gateLabels.gate1} | G2=${gateLabels.gate2} | G3=${gateLabels.gate3} | G4=${gateLabels.gate4}`);
+    consoleImpl.log(`- Gate1 evidence fields: ${gate1Evidence.length}`);
+    consoleImpl.log(`- Gate3 evidence fields: ${gate3Evidence.length}`);
     if (missing.length === 0) {
-      console.log('- Missing evidence: none');
+      consoleImpl.log('- Missing evidence: none');
     } else {
-      console.log(`- Missing evidence count: ${missing.length}`);
-      for (const item of missing) console.log(`  - ${item}`);
+      consoleImpl.log(`- Missing evidence count: ${missing.length}`);
+      for (const item of missing) consoleImpl.log(`  - ${item}`);
     }
     if (options.output) {
-      console.log(`- JSON output: ${path.relative(process.cwd(), options.output)}`);
+      consoleImpl.log(`- JSON output: ${path.relative(cwd, options.output)}`);
     }
   }
 
   if (options.strict && missing.length > 0) {
-    process.exit(1);
+    if (exitOnStrictFailure) process.exit(1);
+    const error = new Error(`RC external gate evidence is incomplete (${missing.length} missing)`);
+    error.result = result;
+    throw error;
   }
+
+  return result;
 };
 
-main().catch((error) => {
-  console.error('[ops:rc:gates:evidence:check] failed:', error instanceof Error ? error.message : String(error));
-  process.exit(1);
-});
+if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
+  main().catch((error) => {
+    console.error('[ops:rc:gates:evidence:check] failed:', error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  });
+}
+
+export {
+  capture,
+  extractEvidenceValues,
+  main,
+  parseArgs,
+  parseGateLabel,
+  parseSignoffFields,
+  resolveDocsRoot,
+};

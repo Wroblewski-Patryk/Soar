@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-06-07T06:46:35.755Z
+Generated: 2026-06-07T09:34:54.277Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,80 +11,80 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 37 |
 | component | 97 |
-| document | 3790 |
+| document | 3811 |
 | feature | 225 |
-| function | 8343 |
+| function | 8349 |
 | migration | 56 |
 | model | 277 |
 | module | 15 |
 | project | 1 |
 | route | 352 |
-| task | 1177 |
-| test | 410 |
+| task | 1195 |
+| test | 413 |
 
 ## Counts By Status
 
 | Status | Count |
 | --- | ---: |
-| blocked | 25 |
+| blocked | 26 |
 | deprecated | 7 |
-| implemented | 12909 |
+| implemented | 12925 |
 | in_progress | 10 |
-| tested | 720 |
-| verified | 1161 |
+| tested | 734 |
+| verified | 1178 |
 
 ## Health Signals
 
-- Raw implementation entities without inferred tests: 7277
-- Actionable implementation entities without inferred tests: 433
+- Raw implementation entities without inferred tests: 7249
+- Actionable implementation entities without inferred tests: 396
 - Raw implementation entities without inferred docs: 737
 - Actionable implementation entities without inferred docs: 0
-- Classified inferred-link noise: 7426
+- Classified inferred-link noise: 7435
 - Entities without owner attribution: 0
 - Disconnected entities: 0
 
 ## Top Actionable Missing Test Links
 
-- function: add (scripts/checkCoolifyStackEnv.mjs#add)
-- function: buildValueIssues (scripts/checkCoolifyStackEnv.mjs#buildValueIssues)
-- function: evaluateCoolifyStackEnv (scripts/checkCoolifyStackEnv.mjs#evaluateCoolifyStackEnv)
-- function: formatCoolifyStackEnvReport (scripts/checkCoolifyStackEnv.mjs#formatCoolifyStackEnvReport)
-- function: get (scripts/checkCoolifyStackEnv.mjs#get)
-- function: isPlaceholderValue (scripts/checkCoolifyStackEnv.mjs#isPlaceholderValue)
-- function: isValidUrl (scripts/checkCoolifyStackEnv.mjs#isValidUrl)
-- function: looksWeakSecret (scripts/checkCoolifyStackEnv.mjs#looksWeakSecret)
-- function: main (scripts/checkCoolifyStackEnv.mjs#main)
-- function: normalizeValue (scripts/checkCoolifyStackEnv.mjs#normalizeValue)
-- function: parseKeyringVersions (scripts/checkCoolifyStackEnv.mjs#parseKeyringVersions)
-- function: printUsage (scripts/checkCoolifyStackEnv.mjs#printUsage)
-- function: shouldSkipPlaceholder (scripts/checkCoolifyStackEnv.mjs#shouldSkipPlaceholder)
-- function: collectMissing (scripts/checkDocsParity.mjs#collectMissing)
-- function: collectPageFiles (scripts/checkDocsParity.mjs#collectPageFiles)
-- function: directoryExists (scripts/checkDocsParity.mjs#directoryExists)
-- function: fileExists (scripts/checkDocsParity.mjs#fileExists)
-- function: listDirectoryNames (scripts/checkDocsParity.mjs#listDirectoryNames)
-- function: main (scripts/checkDocsParity.mjs#main)
-- function: normalizeRouteFromPage (scripts/checkDocsParity.mjs#normalizeRouteFromPage)
-- function: parseArgs (scripts/checkDocsParity.mjs#parseArgs)
-- function: parseCanonicalRoutes (scripts/checkDocsParity.mjs#parseCanonicalRoutes)
-- function: parseModuleRows (scripts/checkDocsParity.mjs#parseModuleRows)
-- function: resolveRepoPath (scripts/checkDocsParity.mjs#resolveRepoPath)
-- function: toPosixPath (scripts/checkDocsParity.mjs#toPosixPath)
-- function: fetchWithTimeout (scripts/checkPostDeployRuntimeFreshness.mjs#fetchWithTimeout)
-- function: main (scripts/checkPostDeployRuntimeFreshness.mjs#main)
-- function: main (scripts/checkProtectedInputReadiness.mjs#main)
-- function: printUsage (scripts/checkProtectedInputReadiness.mjs#printUsage)
-- function: writeOutput (scripts/checkProtectedInputReadiness.mjs#writeOutput)
-- function: capture (scripts/checkRcExternalGateEvidence.mjs#capture)
-- function: extractEvidenceValues (scripts/checkRcExternalGateEvidence.mjs#extractEvidenceValues)
-- function: main (scripts/checkRcExternalGateEvidence.mjs#main)
-- function: parseArgs (scripts/checkRcExternalGateEvidence.mjs#parseArgs)
-- function: parseGateLabel (scripts/checkRcExternalGateEvidence.mjs#parseGateLabel)
-- function: parseSignoffFields (scripts/checkRcExternalGateEvidence.mjs#parseSignoffFields)
-- function: resolveDocsRoot (scripts/checkRcExternalGateEvidence.mjs#resolveDocsRoot)
 - function: assertOptions (scripts/collectLiveImportReadbackEvidence.mjs#assertOptions)
 - function: collectAllPositions (scripts/collectLiveImportReadbackEvidence.mjs#collectAllPositions)
 - function: collectSymbolPositions (scripts/collectLiveImportReadbackEvidence.mjs#collectSymbolPositions)
+- function: discoverBots (scripts/collectLiveImportReadbackEvidence.mjs#discoverBots)
+- function: discoverSymbolsFromRuntimeReadback (scripts/collectLiveImportReadbackEvidence.mjs#discoverSymbolsFromRuntimeReadback)
+- function: fetchJson (scripts/collectLiveImportReadbackEvidence.mjs#fetchJson)
+- function: hashId (scripts/collectLiveImportReadbackEvidence.mjs#hashId)
+- function: main (scripts/collectLiveImportReadbackEvidence.mjs#main)
+- function: normalizeBaseUrl (scripts/collectLiveImportReadbackEvidence.mjs#normalizeBaseUrl)
+- function: normalizeSymbol (scripts/collectLiveImportReadbackEvidence.mjs#normalizeSymbol)
+- function: printUsage (scripts/collectLiveImportReadbackEvidence.mjs#printUsage)
+- function: readArgValue (scripts/collectLiveImportReadbackEvidence.mjs#readArgValue)
+- function: redactBot (scripts/collectLiveImportReadbackEvidence.mjs#redactBot)
+- function: redactPosition (scripts/collectLiveImportReadbackEvidence.mjs#redactPosition)
+- function: redactSession (scripts/collectLiveImportReadbackEvidence.mjs#redactSession)
+- function: resolveBuildInfo (scripts/collectLiveImportReadbackEvidence.mjs#resolveBuildInfo)
+- function: resolveOptions (scripts/collectLiveImportReadbackEvidence.mjs#resolveOptions)
+- function: resolveSession (scripts/collectLiveImportReadbackEvidence.mjs#resolveSession)
+- function: splitCsv (scripts/collectLiveImportReadbackEvidence.mjs#splitCsv)
+- function: assertOptions (scripts/collectNonGateioRuntimeReadback.mjs#assertOptions)
+- function: fetchJson (scripts/collectNonGateioRuntimeReadback.mjs#fetchJson)
+- function: hash (scripts/collectNonGateioRuntimeReadback.mjs#hash)
+- function: main (scripts/collectNonGateioRuntimeReadback.mjs#main)
+- function: normalizeBaseUrl (scripts/collectNonGateioRuntimeReadback.mjs#normalizeBaseUrl)
+- function: readArgValue (scripts/collectNonGateioRuntimeReadback.mjs#readArgValue)
+- function: safeNumber (scripts/collectNonGateioRuntimeReadback.mjs#safeNumber)
+- function: summarizeAggregate (scripts/collectNonGateioRuntimeReadback.mjs#summarizeAggregate)
+- function: summarizeBot (scripts/collectNonGateioRuntimeReadback.mjs#summarizeBot)
+- function: summarizeSession (scripts/collectNonGateioRuntimeReadback.mjs#summarizeSession)
+- function: computeSummary (scripts/collectSloEvidence.mjs#computeSummary)
+- function: endpointSamples (scripts/collectSloEvidence.mjs#endpointSamples)
+- function: evaluateObjective (scripts/collectSloEvidence.mjs#evaluateObjective)
+- function: isLocalOrPrivateHost (scripts/collectSloEvidence.mjs#isLocalOrPrivateHost)
+- function: isPrivateIpv4 (scripts/collectSloEvidence.mjs#isPrivateIpv4)
+- function: main (scripts/collectSloEvidence.mjs#main)
+- function: normalizeEnvironment (scripts/collectSloEvidence.mjs#normalizeEnvironment)
+- function: normalizeTargetProfile (scripts/collectSloEvidence.mjs#normalizeTargetProfile)
+- function: parseArgs (scripts/collectSloEvidence.mjs#parseArgs)
+- function: parseBaseUrl (scripts/collectSloEvidence.mjs#parseBaseUrl)
+- function: parseBoolean (scripts/collectSloEvidence.mjs#parseBoolean)
 
 ## Top Actionable Missing Doc Links
 
@@ -94,7 +94,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - config_only_file: 65
 - curated_graph_covered: 1515
 - generated_vendor_docs_vault_plugin: 5775
-- test_fixture_function: 70
+- test_fixture_function: 79
 - top_level_app_mount: 1
 
 ## Top Classified Noise Samples

@@ -1,3 +1,196 @@
+- 2026-06-07 `LUC-2750` completed Test Automation repair for live import
+  readback collector missing-test links from [LUC-2749](/LUC/issues/LUC-2749).
+  `scripts/collectLiveImportReadbackEvidence.mjs` is now import-safe, exports
+  current helper functions for focused local proof, and has focused Node
+  coverage in `scripts/collectLiveImportReadbackEvidence.test.mjs`. Added `19`
+  scanner-readable `LUC-2750` relation rows to
+  `docs/architecture/relations/priority-test-links.csv`. Validation passed:
+  script/test syntax checks, focused Node proof (`7/7`), CLI help, relation
+  readback, architecture graph generation (`653` nodes / `842` relations /
+  `27` chains), and repository guardrails. No production/runtime/deploy/
+  protected/account/secret/database/exchange/live-trading mutation occurred.
+  Follow-up TSA refresh is needed because `docs/status/architecture-awareness-report.md`
+  remains the pre-fix `2026-06-07T09:34:54.277Z` snapshot until regenerated.
+  Evidence:
+  `history/tasks/luc-2750-live-import-readback-collector-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2749` completed a TSA architecture-awareness refresh after
+  completed [LUC-2740](/LUC/issues/LUC-2740). External
+  architecture-awareness refresh passed from
+  `C:\Personal\Projekty\Aplikacje\Paperclip_Softwarehouse` with `14880`
+  entities, `23980` relations, and `9659` files. Current report:
+  `docs/status/architecture-awareness-report.md`, generated
+  `2026-06-07T09:34:54.277Z`, with `396` actionable missing-test links, `0`
+  actionable missing-doc links, `0` ownerless entities, `0` disconnected
+  entities, and `7435` classified inferred-link noise. Completed
+  [LUC-2740](/LUC/issues/LUC-2740) removed
+  `scripts/checkRcExternalGateEvidence.mjs` from the top actionable family.
+  Current top family is `scripts/collectLiveImportReadbackEvidence.mjs`;
+  syntax checks passed for that helper plus
+  `scripts/collectNonGateioRuntimeReadback.mjs` and
+  `scripts/collectSloEvidence.mjs`. Duplicate searches found no active exact
+  local relation/test lane, so [LUC-2750](/LUC/issues/LUC-2750) was created
+  for Test Automation coverage/classification of function-level
+  `scripts/collectLiveImportReadbackEvidence.mjs` anchors without protected
+  production readback or secret handling. No production/runtime/deploy/
+  protected/account/secret/database/exchange/live-trading mutation occurred.
+  Evidence:
+  `history/tasks/luc-2749-architecture-awareness-after-rc-external-gate-evidence-proof-closure-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2740` completed Test Automation repair for RC external gate
+  evidence checker missing-test links from [LUC-2738](/LUC/issues/LUC-2738).
+  `scripts/checkRcExternalGateEvidence.mjs` is now import-safe, exports
+  current helper functions for focused local proof, and has focused Node
+  coverage in `scripts/checkRcExternalGateEvidence.test.mjs`. Added `7`
+  scanner-readable `LUC-2740` relation rows to
+  `docs/architecture/relations/priority-test-links.csv`. Validation passed:
+  script/test syntax checks, focused Node proof (`6/6`), CLI help, relation
+  readback, architecture graph generation (`653` nodes / `842` relations /
+  `27` chains), and repository guardrails. No production/runtime/deploy/
+  protected/account/secret/database/exchange/live-trading mutation occurred.
+  Evidence:
+  `history/tasks/luc-2740-rc-external-gate-evidence-checker-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2738` completed a TSA architecture-awareness refresh after
+  completed [LUC-2733](/LUC/issues/LUC-2733). External
+  architecture-awareness refresh passed from
+  `C:\Personal\Projekty\Aplikacje\Paperclip_Softwarehouse` with `14870`
+  entities, `23959` relations, and `9654` files. Current report:
+  `docs/status/architecture-awareness-report.md`, generated
+  `2026-06-07T09:05:01.622Z`, with `403` actionable missing-test links, `0`
+  actionable missing-doc links, `0` ownerless entities, `0` disconnected
+  entities, and `7432` classified inferred-link noise. Completed
+  [LUC-2733](/LUC/issues/LUC-2733) removed
+  `scripts/checkProtectedInputReadiness.mjs` from the top actionable family.
+  Current top family is `scripts/checkRcExternalGateEvidence.mjs`; syntax
+  checks passed for that helper and `scripts/collectLiveImportReadbackEvidence.mjs`.
+  Duplicate searches found no active exact local relation/test lane, so
+  [LUC-2740](/LUC/issues/LUC-2740) was created for Test Automation
+  coverage/classification of function-level
+  `scripts/checkRcExternalGateEvidence.mjs` anchors. No production/runtime/
+  deploy/protected/account/secret/database/exchange/live-trading mutation
+  occurred. Evidence:
+  `history/tasks/luc-2738-architecture-awareness-after-protected-input-readiness-proof-closure-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2735` completed a PM no-stall/delegation checkpoint after
+  completed [LUC-2733](/LUC/issues/LUC-2733). Paperclip heartbeat-context
+  readback succeeded for [LUC-2735](/LUC/issues/LUC-2735). `pnpm
+  softwarehouse:control-tick` remains unavailable in this checkout. Current
+  architecture-awareness report generated `2026-06-07T08:46:05.612Z` still
+  lists `scripts/checkProtectedInputReadiness.mjs` as top actionable after its
+  completed proof lane, so the report needs refresh/reconciliation before
+  another worker proof lane is selected. Active duplicate searches found no
+  open matching refresh lane. Created [LUC-2738](/LUC/issues/LUC-2738) for
+  `09 TSA (Technical Solution Architect)` to refresh or reconcile
+  architecture-awareness and create at most one current non-duplicate
+  worker-ready lane if gaps remain. No production/runtime/deploy/protected/
+  account/secret/database/exchange/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2735-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2732` completed a TSA architecture-awareness refresh after
+  completed [LUC-2731](/LUC/issues/LUC-2731). External
+  architecture-awareness refresh passed from
+  `C:\Personal\Projekty\Aplikacje\Paperclip_Softwarehouse` with `14862`
+  entities, `23944` relations, and `9649` files. Current report:
+  `docs/status/architecture-awareness-report.md`, generated
+  `2026-06-07T08:46:05.612Z`, with `406` actionable missing-test links, `0`
+  actionable missing-doc links, `0` ownerless entities, `0` disconnected
+  entities, and `7431` classified inferred-link noise. Completed
+  [LUC-2731](/LUC/issues/LUC-2731) removed
+  `scripts/checkPostDeployRuntimeFreshness.mjs` from the top actionable
+  family. Current top family is `scripts/checkProtectedInputReadiness.mjs`;
+  syntax checks passed for that helper plus
+  `scripts/checkRcExternalGateEvidence.mjs` and
+  `scripts/collectLiveImportReadbackEvidence.mjs`. Exact duplicate searches
+  found no active local relation/test lane, so [LUC-2733](/LUC/issues/LUC-2733)
+  was created for Test Automation coverage/classification of
+  `scripts/checkProtectedInputReadiness.mjs`. No production/runtime/deploy/
+  protected/account/secret/database/exchange/live-trading mutation occurred.
+  Evidence:
+  `history/tasks/luc-2732-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2731` completed Test Automation repair for post-deploy
+  runtime freshness missing-test links from [LUC-2730](/LUC/issues/LUC-2730).
+  `scripts/checkPostDeployRuntimeFreshness.mjs` is now import-safe, exports
+  current helper functions for focused local proof, and has focused Node
+  coverage in `scripts/checkPostDeployRuntimeFreshness.test.mjs`. Added `3`
+  scanner-readable `LUC-2731` relation rows to
+  `docs/architecture/relations/priority-test-links.csv`. Validation passed:
+  script/test syntax checks, focused Node proof (`4/4`), relation readback,
+  architecture graph generation (`653` nodes / `842` relations / `27` chains),
+  and repository guardrails. No production/runtime/deploy/protected/account/
+  secret/database/exchange/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2731-post-deploy-runtime-freshness-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2730` completed a TSA architecture-awareness refresh after
+  completed [LUC-2725](/LUC/issues/LUC-2725). External
+  architecture-awareness refresh passed from
+  `C:\Personal\Projekty\Aplikacje\Paperclip_Softwarehouse` with `14854`
+  entities, `23928` relations, and `9646` files. Current report:
+  `docs/status/architecture-awareness-report.md`, generated
+  `2026-06-07T08:34:09.933Z`, with `408` actionable missing-test links, `0`
+  actionable missing-doc links, `0` ownerless entities, `0` disconnected
+  entities, and `7428` classified inferred-link noise. Completed
+  [LUC-2725](/LUC/issues/LUC-2725) removed
+  `scripts/checkDocsParity.mjs` from the top actionable family. Current top
+  family is `scripts/checkPostDeployRuntimeFreshness.mjs`; syntax checks
+  passed for that helper plus `scripts/checkProtectedInputReadiness.mjs` and
+  `scripts/checkRcExternalGateEvidence.mjs`. Duplicate searches found no
+  active matching child lane, so [LUC-2731](/LUC/issues/LUC-2731) was created
+  for Test Automation coverage/classification of
+  `scripts/checkPostDeployRuntimeFreshness.mjs`. No production/runtime/deploy/
+  protected/account/secret/database/exchange/live-trading mutation occurred.
+  Evidence:
+  `history/tasks/luc-2730-architecture-awareness-after-docs-parity-proof-closure-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2725` completed Test Automation repair for docs parity
+  checker missing-test links from [LUC-2723](/LUC/issues/LUC-2723).
+  `scripts/checkDocsParity.mjs` is now import-safe, exports current helper
+  functions for focused local proof, and has focused Node coverage in
+  `scripts/checkDocsParity.test.mjs`. Added `13` scanner-readable
+  `LUC-2725` relation rows to
+  `docs/architecture/relations/priority-test-links.csv`. Validation passed:
+  script/test syntax checks, focused Node proof (`8/8`), relation readback,
+  docs parity, architecture graph generation (`653` nodes / `842` relations /
+  `27` chains), and repository guardrails. No production/runtime/deploy/
+  protected/account/secret/database/exchange/live-trading mutation occurred.
+  Evidence:
+  `history/tasks/luc-2725-docs-parity-checker-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2719` completed a QA regression evidence sweep as
+  `PARTIALLY_VERIFIED`. Repeatable Web smoke passed with artifact
+  `history/artifacts/luc-2719-qa-repeatable-smoke-e2e-2026-06-07.json` and
+  evidence
+  `history/evidence/luc-2719-qa-repeatable-smoke-e2e-2026-06-07.md`. API
+  smoke was attempted separately and failed on local environment precondition,
+  not confirmed product regression: all `45` tests failed because Prisma could
+  not reach `localhost:5432`; `docker compose ps --format json` also failed
+  because the Docker Desktop Linux engine pipe was unavailable and no local
+  `5432/6379` listeners were present. No production, protected, secret,
+  account, exchange, database, deploy, restart, rollback, or live-trading
+  mutation occurred. Evidence:
+  `history/tasks/luc-2719-regression-evidence-sweep-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2723` completed a TSA architecture-awareness refresh after
+  completed [LUC-2702](/LUC/issues/LUC-2702). External
+  architecture-awareness refresh passed from
+  `C:\Personal\Projekty\Aplikacje\Paperclip_Softwarehouse` with `14844`
+  entities, `23900` relations, and `9638` files. Current report:
+  `docs/status/architecture-awareness-report.md`, generated
+  `2026-06-07T08:04:36.573Z`, with `420` actionable missing-test links, `0`
+  actionable missing-doc links, `0` ownerless entities, `0` disconnected
+  entities, and `7426` classified inferred-link noise. Completed
+  [LUC-2702](/LUC/issues/LUC-2702) removed
+  `scripts/checkCoolifyStackEnv.mjs` from the top actionable family. Current
+  top family is `scripts/checkDocsParity.mjs`; `node --check
+  scripts/checkDocsParity.mjs` and `pnpm run docs:parity:check` passed.
+  Duplicate search found no active docs parity child lane beyond current
+  [LUC-2723](/LUC/issues/LUC-2723), so [LUC-2725](/LUC/issues/LUC-2725) was
+  created for Test Automation coverage/classification of
+  `scripts/checkDocsParity.mjs`. No production/runtime/deploy/protected/
+  account/secret/database/exchange/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2723-architecture-awareness-after-coolify-env-proof-closure-2026-06-07-task.md`.
+
 - 2026-06-07 `LUC-2698` closed after post-child disposition readback. The
   issue was active in the current run with no `blockedBy` blockers, and its
   direct disposition child [LUC-2706](/LUC/issues/LUC-2706) was `done`.
@@ -19348,3 +19541,26 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   protected-smoke, exchange, database, or live-trading mutation occurred.
   Evidence:
   `history/tasks/luc-2665-autonomous-idle-and-map-drift-sweep-2026-06-07-task.md`.
+- 2026-06-07 `LUC-2733` verified protected input readiness checker local
+  proof and architecture traceability. `scripts/checkProtectedInputReadiness.mjs`
+  now exports existing `main`, `printUsage`, and `writeOutput` paths for
+  focused proof; `scripts/checkProtectedInputReadiness.test.mjs` covers the
+  CLI no-secret report path, usage rendering, and artifact writer; and
+  `docs/architecture/relations/priority-test-links.csv` includes three direct
+  LUC-2733 rows. Proof passed: syntax check, focused Node test (`6/6`),
+  relation readback, architecture graph generation (`653` nodes / `842`
+  relations / `27` chains), and repository guardrails. Deployment impact:
+  none; no real protected input values were printed or persisted.
+
+- 2026-06-07 `LUC-2734` refreshed the Security & Privacy account-access gate
+  for deployed `56d8d440bfe0fd9ee692e9f669e35414d85d2493` on `main`.
+  Public build-info readback succeeded and the no-secret protected-input
+  checker wrote current evidence with status `PARTIAL/NO-GO`: only
+  `PROD_UI_AUDIT_*` / `PROD_UI_*` names are present; `LIVEIMPORT_READBACK_*`,
+  `ROLLBACK_GUARD_*`, `SOAR_PROD_*`, production DB-check, `RC_*`, and
+  `GATE*` families remain missing. Focused local security tests passed for
+  redaction/crypto/critical secrets (`18/18`) and
+  subscription/exchange boundaries (`17/17`). No production, protected,
+  secret, account, API-key, subscription/payment, exchange, database, deploy,
+  restart, rollback, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2734-security-account-access-gate-sweep-2026-06-07-task.md`.

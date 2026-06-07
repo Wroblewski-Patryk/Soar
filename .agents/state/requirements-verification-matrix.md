@@ -4,6 +4,100 @@ Last updated: 2026-05-25
 
 ## Current Release Override
 
+- 2026-06-07 `LUC-2750` verifies the local live import readback collector
+  tooling repair slice under `REQ-DOC-031`: current
+  `scripts/collectLiveImportReadbackEvidence.mjs` helper anchors now have
+  focused local `node:test` proof plus direct scanner-readable relation rows.
+  `scripts/collectLiveImportReadbackEvidence.mjs` remains CLI-compatible, and
+  local proof verifies option parsing, redaction, local HTTP readback,
+  build-info matching, no-secret/missing-auth fail-closed behavior, dry-run,
+  help, and missing-symbol failure without protected production readback or
+  secret exposure. This is local traceability proof only and does not change
+  protected production, worker-readiness, exchange, or live-trading gates.
+  Evidence:
+  `history/tasks/luc-2750-live-import-readback-collector-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2749` verifies the TSA repair-lane refresh for
+  `REQ-DOC-031`: current architecture-awareness report freshness was restored
+  after completed [LUC-2740](/LUC/issues/LUC-2740), reducing actionable
+  missing-test links to `396` and moving the top non-duplicate family to
+  `scripts/collectLiveImportReadbackEvidence.mjs`. Existing script syntax
+  checks pass locally, but direct scanner-readable function-level relation rows
+  are absent beyond older aggregate [LUC-2198](/LUC/issues/LUC-2198) coverage,
+  so [LUC-2750](/LUC/issues/LUC-2750) was created for Test Automation
+  repair/classification. This is local traceability coordination only and does
+  not change protected production, worker-readiness, exchange, or live-trading
+  gates. Evidence:
+  `history/tasks/luc-2749-architecture-awareness-after-rc-external-gate-evidence-proof-closure-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2740` verifies the local RC external gate evidence checker
+  tooling repair slice under `REQ-DOC-031`: current
+  `scripts/checkRcExternalGateEvidence.mjs` helper anchors now have focused
+  local `node:test` proof plus direct scanner-readable relation rows.
+  `scripts/checkRcExternalGateEvidence.mjs` remains CLI-compatible, local
+  proof verifies local `LOCAL_PASS` policy handling, and strict mode fails
+  closed for missing evidence or required production Gate 2 mismatch. This is
+  local traceability proof only and does not change protected production,
+  worker-readiness, exchange, or live-trading gates. Evidence:
+  `history/tasks/luc-2740-rc-external-gate-evidence-checker-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2735` preserves the `REQ-DOC-031` no-stall coordination
+  loop after completed [LUC-2733](/LUC/issues/LUC-2733): current local
+  architecture-awareness report still shows the protected input readiness
+  checker as top actionable, so the PM checkpoint classified the report as
+  stale, avoided a duplicate Test Automation lane, and created
+  [LUC-2738](/LUC/issues/LUC-2738) for TSA refresh/reconciliation. This is
+  coordination and traceability hygiene only and does not change protected
+  production, worker-readiness, exchange, or live-trading gates. Evidence:
+  `history/tasks/luc-2735-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2732` verifies the TSA repair-lane refresh for
+  `REQ-DOC-031`: current architecture-awareness report freshness was restored
+  after completed [LUC-2731](/LUC/issues/LUC-2731), reducing actionable
+  missing-test links to `406` and moving the top non-duplicate family to
+  `scripts/checkProtectedInputReadiness.mjs`. Existing helper syntax checks
+  pass locally, but direct scanner-readable function-level relation rows are
+  absent for `main`, `printUsage`, and `writeOutput`, so
+  [LUC-2733](/LUC/issues/LUC-2733) was created for Test Automation
+  repair/classification. This is local traceability coordination only and does
+  not change protected production, worker-readiness, exchange, or live-trading
+  gates. Evidence:
+  `history/tasks/luc-2732-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2731` verifies the local post-deploy runtime freshness
+  tooling repair slice under `REQ-DOC-031`: current
+  `scripts/checkPostDeployRuntimeFreshness.mjs` helper anchors now have
+  focused local `node:test` proof plus direct scanner-readable relation rows.
+  `scripts/checkPostDeployRuntimeFreshness.mjs` remains CLI-compatible, rejects
+  secret-bearing argv values, and local proof verifies PASS, fail-closed HTTP,
+  and timeout behavior without production smoke or secret exposure. This is
+  local traceability proof only and does not change protected production,
+  worker-readiness, exchange, or live-trading gates. Evidence:
+  `history/tasks/luc-2731-post-deploy-runtime-freshness-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2725` verifies the local docs parity checker tooling repair
+  slice under `REQ-DOC-031`: current `scripts/checkDocsParity.mjs` helper
+  anchors now have focused local `node:test` proof plus direct
+  scanner-readable relation rows. `scripts/checkDocsParity.mjs` remains
+  CLI-compatible and `pnpm run docs:parity:check` remains green. This is local
+  traceability proof only and does not change protected production,
+  worker-readiness, exchange, or live-trading gates. Evidence:
+  `history/tasks/luc-2725-docs-parity-checker-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2723` verifies the TSA repair-lane refresh for
+  `REQ-DOC-031`: current architecture-awareness report freshness was restored
+  after completed [LUC-2702](/LUC/issues/LUC-2702), reducing actionable
+  missing-test links to `420` and moving the top non-duplicate family to
+  `scripts/checkDocsParity.mjs`. Existing docs parity behavior passes locally
+  (`node --check scripts/checkDocsParity.mjs`; `pnpm run docs:parity:check`),
+  but direct scanner-readable function-level relation rows are absent beyond
+  older aggregate [LUC-2198](/LUC/issues/LUC-2198) coverage, so
+  [LUC-2725](/LUC/issues/LUC-2725) was created for Test Automation
+  repair/classification. This is local traceability coordination only and does
+  not change protected production, worker-readiness, exchange, or live-trading
+  gates. Evidence:
+  `history/tasks/luc-2723-architecture-awareness-after-coolify-env-proof-closure-2026-06-07-task.md`.
+
 - 2026-06-07 `LUC-2701` verifies the TSA repair-lane refresh for
   `REQ-DOC-031`: current architecture-awareness report freshness was restored
   after completed [LUC-2693](/LUC/issues/LUC-2693), reducing actionable
@@ -430,6 +524,18 @@ Last updated: 2026-05-25
   live-trading behavior was verified or mutated. Exact architecture-awareness
   top-sample removal is not claimed because the local builder scripts are
   absent.
+- 2026-06-07 `LUC-2733-PROTECTED-INPUT-READINESS-CHECKER-MISSING-TEST-LINKS-2026-06-07`
+  updates `REQ-DOC-028` / architecture evidence graph traceability: protected
+  input readiness checker anchors `main`, `printUsage`, and `writeOutput` now
+  have focused local Node proof and direct scanner-readable rows in
+  `docs/architecture/relations/priority-test-links.csv`. Proof:
+  `node --check scripts/checkProtectedInputReadiness.mjs` passed,
+  `node --test scripts/checkProtectedInputReadiness.test.mjs` passed (`6/6`),
+  LUC-2733 relation readback passed, `pnpm run architecture:graph:generate`
+  passed (`653` nodes / `842` relations / `27` chains), and
+  `pnpm run quality:guardrails` passed. Boundary: local no-secret helper proof
+  only; no production, deploy, protected-smoke, account, real secret, exchange,
+  database, or live-trading behavior was verified or mutated.
 
 Allowed statuses: `proposed`, `accepted`, `in_progress`,
 `implemented_not_verified`, `partially_verified`, `verified`, `failed`,
