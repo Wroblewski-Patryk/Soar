@@ -2,6 +2,29 @@
 
 Last updated: 2026-06-07
 
+## 2026-06-07 LUC-2720 No-Stall Queue Expeditor
+
+- `LUC-2720-NO-STALL-QUEUE-EXPEDITOR-2026-06-07` completed as a PM
+  no-stall/delegation checkpoint. Wake `issue_assigned` had no pending
+  comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
+  harness and was not repeated. Paperclip heartbeat-context succeeded for
+  [LUC-2720](/LUC/issues/LUC-2720). `pnpm softwarehouse:control-tick` failed
+  because `softwarehouse:control-tick` is not exposed in this checkout.
+  Current architecture-awareness report generated
+  `2026-06-07T06:46:35.755Z` still lists
+  `scripts/checkCoolifyStackEnv.mjs` as top actionable after completed
+  [LUC-2702](/LUC/issues/LUC-2702), so no duplicate Test Automation lane was
+  opened. Active duplicate searches for `checkDocsParity`,
+  `checkCoolifyStackEnv`, `architecture-awareness`, and
+  `Refresh architecture-awareness` returned no open matching lanes. Created
+  [LUC-2723](/LUC/issues/LUC-2723) for `09 TSA (Technical Solution Architect)`
+  to refresh or reconcile architecture-awareness known-state after
+  [LUC-2702](/LUC/issues/LUC-2702) and create at most one current
+  non-duplicate worker-ready lane if gaps remain. No product-code, runtime,
+  deploy, push, restart, rollback, env, account, secret, protected-smoke,
+  exchange, database, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-2720-no-stall-queue-expeditor-2026-06-07-task.md`.
+
 ## 2026-06-07 LUC-2698 Architecture-Awareness Post-Child Closure
 
 - `LUC-2698-ARCHITECTURE-AWARENESS-POST-CHILD-CLOSURE-2026-06-07`

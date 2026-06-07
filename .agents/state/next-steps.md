@@ -2,6 +2,23 @@
 
 Last updated: 2026-06-07
 
+## 2026-06-07 LUC-2720 No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2720](/LUC/issues/LUC-2720) as complete for this PM
+   no-stall/delegation checkpoint.
+2. Execute [LUC-2723](/LUC/issues/LUC-2723) as the next Technical Solution
+   Architect refresh/reconciliation lane after completed
+   [LUC-2702](/LUC/issues/LUC-2702).
+3. [LUC-2723](/LUC/issues/LUC-2723) must not duplicate the completed
+   `scripts/checkCoolifyStackEnv.mjs` proof lane. It should refresh or
+   reconcile the architecture-awareness report and create at most one next
+   worker-ready lane for a truly current non-duplicate actionable family.
+4. Preserve the boundary: architecture-awareness coordination/readback only.
+   No deploy, push, restart, protected smoke, production browser, account,
+   secret, exchange, database, or live-trading mutation is implied.
+5. Evidence:
+   `history/tasks/luc-2720-no-stall-queue-expeditor-2026-06-07-task.md`.
+
 ## 2026-06-07 LUC-2698 Post-Child Closure Next Action
 
 1. Treat [LUC-2698](/LUC/issues/LUC-2698) as complete for the original TSA

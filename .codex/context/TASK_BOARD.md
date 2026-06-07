@@ -1,3 +1,30 @@
+- 2026-06-07 `LUC-2720 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED`
+  - Scope: PM queue readback, stale-report detection, duplicate filtering, and
+    child-lane creation only; no product-code, runtime, deploy, push, restart,
+    rollback, env, account, secret, protected-smoke, exchange, database, or
+    live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2720](/LUC/issues/LUC-2720).
+    - `pnpm softwarehouse:control-tick` failed because
+      `softwarehouse:control-tick` is not exposed in this checkout.
+    - Current architecture-awareness report generated
+      `2026-06-07T06:46:35.755Z` still lists
+      `scripts/checkCoolifyStackEnv.mjs` as top actionable after completed
+      [LUC-2702](/LUC/issues/LUC-2702), so the report needs refresh or
+      reconciliation before opening another proof lane from its samples.
+    - Active duplicate searches returned no open matching lanes for
+      `checkDocsParity`, `checkCoolifyStackEnv`, `architecture-awareness`, or
+      `Refresh architecture-awareness`.
+  - Disposition:
+    - created [LUC-2723](/LUC/issues/LUC-2723) for
+      `09 TSA (Technical Solution Architect)` to refresh or reconcile
+      architecture-awareness known-state and create at most one next
+      non-duplicate worker-ready family.
+  - Evidence:
+    - `history/tasks/luc-2720-no-stall-queue-expeditor-2026-06-07-task.md`
+
 - 2026-06-07 `LUC-2698 [Soar][TSA][LUC-2695] Refresh architecture-awareness after V1 master ledger proof closure`
   - Status: `DONE / SUPERSEDED-BY-COMPLETED-LANES`
   - Scope: TSA post-child disposition readback and source-of-truth closure
