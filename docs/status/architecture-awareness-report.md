@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-06-07T14:27:25.348Z
+Generated: 2026-06-11T19:33:48.788Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,90 +11,89 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 37 |
 | component | 97 |
-| document | 3844 |
-| feature | 225 |
-| function | 8366 |
+| document | 3984 |
+| feature | 217 |
+| function | 2801 |
 | migration | 56 |
-| model | 277 |
-| module | 15 |
+| model | 108 |
+| module | 16 |
 | project | 1 |
 | route | 352 |
-| task | 1228 |
-| test | 423 |
+| task | 1354 |
+| test | 446 |
 
 ## Counts By Status
 
 | Status | Count |
 | --- | ---: |
 | blocked | 26 |
-| deprecated | 7 |
-| implemented | 12954 |
-| in_progress | 10 |
-| tested | 765 |
-| verified | 1211 |
+| deprecated | 9 |
+| implemented | 7326 |
+| in_progress | 12 |
+| tested | 813 |
+| verified | 1335 |
 
 ## Health Signals
 
-- Raw implementation entities without inferred tests: 7168
-- Actionable implementation entities without inferred tests: 296
-- Raw implementation entities without inferred docs: 737
+- Raw implementation entities without inferred tests: 1331
+- Actionable implementation entities without inferred tests: 46
+- Raw implementation entities without inferred docs: 312
 - Actionable implementation entities without inferred docs: 0
-- Classified inferred-link noise: 7454
+- Classified inferred-link noise: 1513
 - Entities without owner attribution: 0
 - Disconnected entities: 0
 
 ## Top Actionable Missing Test Links
 
-- function: chains (scripts/generateFunctionJourneyIndexes.mjs#chains)
-- function: csvEscape (scripts/generateFunctionJourneyIndexes.mjs#csvEscape)
-- function: gapSeverity (scripts/generateFunctionJourneyIndexes.mjs#gapSeverity)
-- function: isApiDataSourceRelation (scripts/generateFunctionJourneyIndexes.mjs#isApiDataSourceRelation)
-- function: isUserFacingChain (scripts/generateFunctionJourneyIndexes.mjs#isUserFacingChain)
-- function: list (scripts/generateFunctionJourneyIndexes.mjs#list)
-- function: main (scripts/generateFunctionJourneyIndexes.mjs#main)
-- function: normalizeStatus (scripts/generateFunctionJourneyIndexes.mjs#normalizeStatus)
-- function: parseCsv (scripts/generateFunctionJourneyIndexes.mjs#parseCsv)
-- function: readCsv (scripts/generateFunctionJourneyIndexes.mjs#readCsv)
-- function: splitRefs (scripts/generateFunctionJourneyIndexes.mjs#splitRefs)
-- function: statusRank (scripts/generateFunctionJourneyIndexes.mjs#statusRank)
-- function: weakestStatus (scripts/generateFunctionJourneyIndexes.mjs#weakestStatus)
-- function: writeCsv (scripts/generateFunctionJourneyIndexes.mjs#writeCsv)
-- function: actionIdFor (scripts/generateUserActionIndex.mjs#actionIdFor)
-- function: chains (scripts/generateUserActionIndex.mjs#chains)
-- function: csvEscape (scripts/generateUserActionIndex.mjs#csvEscape)
-- function: gapSeverity (scripts/generateUserActionIndex.mjs#gapSeverity)
-- function: includesAny (scripts/generateUserActionIndex.mjs#includesAny)
-- function: inferActionKind (scripts/generateUserActionIndex.mjs#inferActionKind)
-- function: inferSafetyBoundary (scripts/generateUserActionIndex.mjs#inferSafetyBoundary)
-- function: list (scripts/generateUserActionIndex.mjs#list)
-- function: main (scripts/generateUserActionIndex.mjs#main)
-- function: parseCsv (scripts/generateUserActionIndex.mjs#parseCsv)
-- function: proofStatus (scripts/generateUserActionIndex.mjs#proofStatus)
-- function: readCsv (scripts/generateUserActionIndex.mjs#readCsv)
-- function: routeHint (scripts/generateUserActionIndex.mjs#routeHint)
-- function: rowForAction (scripts/generateUserActionIndex.mjs#rowForAction)
-- function: splitRefs (scripts/generateUserActionIndex.mjs#splitRefs)
-- function: statusRank (scripts/generateUserActionIndex.mjs#statusRank)
-- function: unique (scripts/generateUserActionIndex.mjs#unique)
-- function: weakestStatus (scripts/generateUserActionIndex.mjs#weakestStatus)
-- function: writeCsv (scripts/generateUserActionIndex.mjs#writeCsv)
-- function: canConnect (scripts/goLiveSmoke.mjs#canConnect)
-- function: extractFailedMigrationName (scripts/goLiveSmoke.mjs#extractFailedMigrationName)
-- function: finish (scripts/goLiveSmoke.mjs#finish)
-- function: localInfraIsReachable (scripts/goLiveSmoke.mjs#localInfraIsReachable)
-- function: printLocalMigrationGuidance (scripts/goLiveSmoke.mjs#printLocalMigrationGuidance)
-- function: run (scripts/goLiveSmoke.mjs#run)
-- function: fetchJson (scripts/runControlledLiveSessionProof.mjs#fetchJson)
+- function: createPage (scripts/runLocalProtectedRouteActionProof.mjs#createPage)
+- function: launchBrowser (scripts/runLocalProtectedRouteActionProof.mjs#launchBrowser)
+- function: main (scripts/runLocalProtectedRouteActionProof.mjs#main)
+- function: startWebServer (scripts/runLocalProtectedRouteActionProof.mjs#startWebServer)
+- function: createPage (scripts/runProdAuthSessionBrowserProof.mjs#createPage)
+- function: launchBrowser (scripts/runProdAuthSessionBrowserProof.mjs#launchBrowser)
+- function: main (scripts/runProdAuthSessionBrowserProof.mjs#main)
+- function: captureScreenshot (scripts/runProdUxA11yMobileProof.mjs#captureScreenshot)
+- function: clickMobileMenu (scripts/runProdUxA11yMobileProof.mjs#clickMobileMenu)
+- function: collectPageCheck (scripts/runProdUxA11yMobileProof.mjs#collectPageCheck)
+- function: createPage (scripts/runProdUxA11yMobileProof.mjs#createPage)
+- function: evaluate (scripts/runProdUxA11yMobileProof.mjs#evaluate)
+- function: isVisible (scripts/runProdUxA11yMobileProof.mjs#isVisible)
+- function: launchBrowser (scripts/runProdUxA11yMobileProof.mjs#launchBrowser)
+- function: navigate (scripts/runProdUxA11yMobileProof.mjs#navigate)
+- function: renderMarkdown (scripts/runProdUxA11yMobileProof.mjs#renderMarkdown)
+- function: setAuthCookie (scripts/runProdUxA11yMobileProof.mjs#setAuthCookie)
+- function: setViewport (scripts/runProdUxA11yMobileProof.mjs#setViewport)
+- function: summarizeBadEvents (scripts/runProdUxA11yMobileProof.mjs#summarizeBadEvents)
+- function: wait (scripts/runProdUxA11yMobileProof.mjs#wait)
+- function: createPage (scripts/runPublicReadOnlyBrowserProof.mjs#createPage)
+- function: killProcessTree (scripts/runPublicReadOnlyBrowserProof.mjs#killProcessTree)
+- function: launchBrowser (scripts/runPublicReadOnlyBrowserProof.mjs#launchBrowser)
+- function: argValue (scripts/triageJourneyEvidence.mjs#argValue)
+- function: main (scripts/triageJourneyEvidence.mjs#main)
+- function: matches (scripts/triageJourneyEvidence.mjs#matches)
+- function: normalize (scripts/triageJourneyEvidence.mjs#normalize)
+- function: parseCsv (scripts/triageJourneyEvidence.mjs#parseCsv)
+- function: printList (scripts/triageJourneyEvidence.mjs#printList)
+- function: readCsv (scripts/triageJourneyEvidence.mjs#readCsv)
+- function: splitRefs (scripts/triageJourneyEvidence.mjs#splitRefs)
+- function: detectPostgresContainer (scripts/verifyLocalBackupRestore.mjs#detectPostgresContainer)
+- function: dockerExecSh (scripts/verifyLocalBackupRestore.mjs#dockerExecSh)
+- function: main (scripts/verifyLocalBackupRestore.mjs#main)
+- function: normalizeIdSuffix (scripts/verifyLocalBackupRestore.mjs#normalizeIdSuffix)
+- function: nowStamp (scripts/verifyLocalBackupRestore.mjs#nowStamp)
+- function: parseArgs (scripts/verifyLocalBackupRestore.mjs#parseArgs)
+- function: push (scripts/verifyLocalBackupRestore.mjs#push)
+- function: run (scripts/verifyLocalBackupRestore.mjs#run)
+- function: normalizeNonEmptyString (scripts/waitForWebBuildInfo.mjs#normalizeNonEmptyString)
 
 ## Top Actionable Missing Doc Links
 
 
 ## Classified Inferred-Link Noise
 
-- config_only_file: 65
-- curated_graph_covered: 1515
-- generated_vendor_docs_vault_plugin: 5775
-- test_fixture_function: 98
+- config_only_file: 63
+- curated_graph_covered: 1332
+- test_fixture_function: 117
 - top_level_app_mount: 1
 
 ## Top Classified Noise Samples

@@ -1,5 +1,14 @@
 # Task: Architecture Graph API Platform Safety Backfill
 
+## Architecture Links
+
+- Primary feature/module: API platform safety and infrastructure graph coverage.
+- Architecture nodes: SOAR-FEATURE-API-PLATFORM-SAFETY; SOAR-ROUTER-API-ROOT; SOAR-TEST-API-INFRASTRUCTURE-RESIDUAL; SOAR-DOC-ARCHITECTURE-GRAPH-SYSTEM.
+- Function chains: docs/architecture/chains/CHAIN-API-PLATFORM-SAFETY.md.
+- Affected files: docs/architecture/registry/nodes.csv; docs/architecture/relations/dependencies.csv; docs/architecture/chains/chains.csv; generated graph/status exports.
+- Tests/proof: `pnpm run architecture:graph:generate`; `pnpm run architecture:graph:drift` recorded in this task's Result Report.
+- Docs updated: architecture graph registries, generated graph exports, and source-of-truth state files.
+
 ## Context
 
 Stage: verification
@@ -57,4 +66,3 @@ Residual risk:
 - Remaining drift is still substantial, especially Web components/tests,
   API tests, architecture docs, module docs, and remaining API services.
 - This slice did not perform a fresh adversarial security review.
-

@@ -1,5 +1,14 @@
 # LUC-2381 Resolve Dirty Runtime-Monitoring Source State Blocking 4787ee98 Promotion
 
+## Architecture Links
+
+- Primary feature/module: Bot Runtime monitoring source-state closure.
+- Architecture nodes: `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-POSITIONS-READ.md`, `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-POSITION-COMMAND.md`, `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-MARKET-DATA-FALLBACK.md`.
+- Function chains: `docs/pipelines/live-imported-position-reconciliation.md`, `docs/architecture/reference/position-close-attribution-contract.md`.
+- Affected files: `apps/api/src/modules/bots/runtimeMonitoringAggregateRead.service.ts`, `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts`, `apps/api/src/modules/bots/runtimeMonitoringAggregateConcurrency.test.ts`.
+- Tests/proof: API typecheck, repository guardrails, focused runtime aggregate/session position tests, and source-state closure readback.
+- Docs updated: `history/tasks/luc-2381-resolve-dirty-runtime-monitoring-source-state-blocking-4787ee98-promotion-2026-06-06-task.md`.
+
 ## Context
 [LUC-2378](/LUC/issues/LUC-2378) is the Ops push and production-promotion permit
 for candidate `4787ee9859c02fc950f781eb5803d97a930aa977`. The permit failed

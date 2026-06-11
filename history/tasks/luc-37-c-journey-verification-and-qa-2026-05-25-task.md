@@ -33,6 +33,33 @@ Generate a concrete proof packet for highest user-impact journeys and link each 
   - auth login/session flow
   - bot runtime positions/aggregate
 
+## Architecture Links
+
+- Primary feature/module: cross-journey QA proof packet for high-gap user paths.
+- Architecture nodes:
+  - `docs/architecture/nodes/SOAR-PAGE-DASHBOARD.md`
+  - `docs/architecture/nodes/SOAR-FEATURE-MANUAL-ORDER.md`
+  - `docs/architecture/nodes/SOAR-FEATURE-AUTH-SESSION.md`
+  - `docs/architecture/nodes/SOAR-FEATURE-BOT-RUNTIME.md`
+  - `docs/architecture/nodes/SOAR-TEST-DASHBOARD-RUNTIME.md`
+  - `docs/architecture/nodes/SOAR-TEST-MANUAL-ORDER.md`
+  - `docs/architecture/nodes/SOAR-TEST-AUTH-SESSION.md`
+- Function chains:
+  - `docs/architecture/chains/CHAIN-DASHBOARD-RUNTIME.md`
+  - `docs/architecture/chains/CHAIN-MANUAL-ORDER.md`
+  - `docs/architecture/chains/CHAIN-AUTH-SESSION-DEEP.md`
+  - `docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md`
+- Affected files:
+  - `docs/architecture/indices/web-journey-index.csv`
+  - `docs/architecture/indices/user-action-index.csv`
+  - `docs/architecture/indices/function-chain-evidence-index.csv`
+  - `scripts/triageJourneyEvidence.mjs`
+- Tests/proof:
+  - `docs/status/user-action-index.md`
+  - `docs/status/function-journey-index.md`
+- Docs updated:
+  - `docs/status/task-entity-link-backfill-classification-2026-06-08.md`
+
 ## Success Signal
 - For each priority route/action there is a pass/fail matrix with evidence status and next step.
 - Protected evidence is marked blocked or passed explicitly with dependency list.
@@ -63,4 +90,3 @@ Generate a concrete proof packet for highest user-impact journeys and link each 
 - [ ] Top three high-gap routes/actions have evidence status after triage.
 - [ ] No high-gap route is treated as green without browser or production-protected proof.
 - [ ] Lane report includes direct handoff notes for dependent security/ops blockers.
-

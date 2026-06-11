@@ -1,6 +1,6 @@
 # Service Topology
 
-Last updated: 2026-06-06
+Last updated: 2026-06-11
 
 ## Purpose
 
@@ -80,15 +80,18 @@ Application rows still report `running:unknown`; PostgreSQL and Redis report
 `running:healthy`. This remains read-only topology/status evidence only;
 protected smoke and deploy mutation readiness are separate release gates.
 
-`LUC-2223` resource inventory reconciliation: latest project-scoped Coolify
-evidence from `2026-06-06T18:25:12Z` reconfirmed selector `LuckySparrow`,
-project `Soar`, production environment `production`, six applications,
-PostgreSQL, Redis, zero generic services, `17` visible global resource rows,
-and the same eight canonical production-environment resources. Application
-rows still report `running:unknown`; PostgreSQL and Redis report
-`running:healthy`. This closes the stale inventory issue for downstream
-resource-by-resource deploy/status verification, but it is not a deploy,
-restart, rollback, protected-smoke, or release approval.
+`LUC-3578` resource inventory reconciliation: latest project-scoped Coolify
+evidence from `2026-06-11T20:10:21Z` reconfirmed selector `LuckySparrow`,
+project `Soar`, the configured production environment binding, production
+environment id `6`, six
+applications, PostgreSQL, Redis, zero generic services, `17` visible global
+resource rows, `0` active deployment rows, and the same eight canonical
+production-environment resources. Application rows still report
+`running:unknown`; PostgreSQL and Redis report `running:healthy`.
+`workers-execution` retains restart metadata (`restartCount=2`). This closes
+the stale inventory issue for downstream resource-by-resource deploy/status
+verification, but it is not a deploy, restart, rollback, protected-smoke, or
+release approval.
 
 ## Maintenance Rule
 

@@ -1,5 +1,14 @@
 # Task: Architecture Graph Runtime Support Services Backfill
 
+## Architecture Links
+
+- Primary feature/module: Runtime support services graph coverage.
+- Architecture nodes: SOAR-FEATURE-RUNTIME-SUPPORT-SERVICES; SOAR-SERVICE-RUNTIME-AUTOMATION; SOAR-SERVICE-RUNTIME-AGGREGATE; SOAR-DB-RUNTIME-SESSION; SOAR-TEST-RUNTIME-SUPPORT-SERVICES.
+- Function chains: docs/architecture/chains/CHAIN-RUNTIME-SUPPORT-SERVICES.md.
+- Affected files: docs/architecture/registry/nodes.csv; docs/architecture/relations/dependencies.csv; docs/architecture/chains/chains.csv; generated graph/status exports.
+- Tests/proof: `pnpm run architecture:graph:generate`; `pnpm run architecture:graph:drift` recorded in this task's Result Report.
+- Docs updated: architecture graph registries, Runtime Support Services chain output, generated graph exports, and source-of-truth state files.
+
 ## Context
 
 Stage: verification
@@ -58,4 +67,3 @@ Residual risk:
 - Remaining drift is still substantial, especially API tests, Web components,
   Web tests, architecture docs, and remaining API services.
 - This slice did not execute runtime journeys or protected LIVE actions.
-

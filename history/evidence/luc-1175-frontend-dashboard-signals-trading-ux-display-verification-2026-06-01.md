@@ -47,3 +47,18 @@
   - Locale text-integrity conformance remains unresolved; issue cannot be safely closed.
 - Disposition for this checkpoint:
   - `blocked` with unchanged unblock owner/action (Frontend repair -> QA/Frontend closure proof).
+
+## Closure Checkpoint - 2026-06-07 (`issue_blockers_resolved`)
+- Trigger:
+  - `LUC-2786` blocker resolved; `LUC-1175` resumed for final proof.
+- Fresh verification:
+  - `pnpm --filter web exec vitest run src/i18n/translations.test.ts src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts --reporter=verbose`
+    - Result: `PASS` (`3` files, `17` tests).
+  - Locale corruption-marker scan against `apps/web/src/i18n/namespaces/dashboard-home.de-CH.ts` and `apps/web/src/i18n/namespaces/dashboard-home.pt.ts`
+    - Result: no matches (`rg` exit code `1`).
+- Interpretation:
+  - Active-bot signal semantics remain verified by focused component/helper tests and linked `LUC-1167` coverage.
+  - The previously unresolved locale mojibake/BOM mismatch is no longer present in the touched files.
+  - Translation integrity now has direct regression coverage via `src/i18n/translations.test.ts`.
+- Disposition:
+  - `done`.

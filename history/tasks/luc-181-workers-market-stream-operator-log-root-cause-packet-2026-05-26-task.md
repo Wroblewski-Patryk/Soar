@@ -10,6 +10,15 @@
 - Depends on: LUC-99, LUC-47
 - Priority: P0
 
+## Architecture Links
+
+- Primary feature/module: Worker runtime and market-stream production readiness.
+- Architecture nodes: `docs/architecture/nodes/SOAR-WORKER-MARKET-STREAM-SUBSCRIPTIONS.md`, `docs/architecture/nodes/SOAR-SERVICE-MARKET-STREAM.md`, `docs/architecture/nodes/SOAR-API-MARKET-STREAM-EVENTS.md`.
+- Function chains: `docs/architecture/chains/CHAIN-MARKET-DATA-STREAM-ADAPTERS.md`, `docs/pipelines/live-imported-position-reconciliation.md`.
+- Affected files: `apps/api/src/workers`, `apps/api/src/modules/market-stream`, `docs/operations/post-deploy-smoke-checklist.md`.
+- Tests/proof: `corepack pnpm run ops:deploy:smoke -- --skip-workers`, Coolify worker status/log endpoint readback.
+- Docs updated: `history/tasks/luc-181-workers-market-stream-operator-log-root-cause-packet-2026-05-26-task.md`.
+
 ## Context
 Assigned heartbeat requires a concrete operator packet for the unresolved
 `workers-market-stream` production blocker, with log/root-cause evidence and

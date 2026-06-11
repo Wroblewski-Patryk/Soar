@@ -71,3 +71,17 @@
 - Updated blocker truth:
   1. Primary blocker is auth registration bootstrap/runtime path in this local test environment.
   2. Redis availability is no longer the first-failure cause for this suite after the local test guard.
+
+## Closure Delta (2026-06-07, issue_blockers_resolved)
+- Wake reason: `issue_blockers_resolved`; prior child blocker `LUC-2787` reported verified local closure of the workers readiness auth bootstrap path.
+- Re-ran the parent conformance closure checks:
+  - `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts --reporter=verbose`
+  - `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts -t "uses api-key exchange when hydrating owned LIVE automation after exchange-sync create|uses api-key exchange when hydrating owned LIVE automation after exchange-sync update|assigns different exact owners for different symbols|ignores other-market owners when seeding reconciliation cleanup candidates" --reporter=verbose`
+- Result:
+  - workers readiness matrix: `PASS` (`1` file, `8` tests).
+  - exchange/positions/automation contract slice: `PASS` (`1` file, `4` passed, `30` skipped).
+- Final readiness verdict:
+  - Exchange/positions/DCA-TSL local source-level contract: `implemented and verified`.
+  - Workers readiness local contract, including auth/admin/split-mode matrix: `implemented and verified`.
+  - Protected production readiness remains outside this backend source-level issue and belongs to Ops-owned protected proof lanes.
+- Final disposition: `done`.

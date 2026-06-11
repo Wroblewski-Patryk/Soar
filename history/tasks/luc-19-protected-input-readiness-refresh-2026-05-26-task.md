@@ -9,6 +9,15 @@
 - Owner: Ops/Release
 - Priority: P1
 
+## Architecture Links
+
+- Primary feature/module: Protected production proof input gate.
+- Architecture nodes: `docs/architecture/nodes/SOAR-API-POSITION-LIVE-STATUS.md`, `docs/architecture/nodes/SOAR-API-POSITION-EXCHANGE-SNAPSHOT.md`, `docs/architecture/nodes/SOAR-SERVICE-EXCHANGE-AUTH-READ.md`.
+- Function chains: `docs/architecture/reference/exchange-access-ownership-matrix.md`, `docs/operations/post-deploy-smoke-checklist.md`.
+- Affected files: `scripts/checkProtectedInputReadiness.mjs`, `docs/operations/post-deploy-smoke-checklist.md`.
+- Tests/proof: `pnpm run ops:protected-inputs:check -- --expected-sha 4c16305c97566b7680f4feb041601af2af0a0d31 --json`.
+- Docs updated: `history/tasks/luc-19-protected-input-readiness-refresh-2026-05-26-task.md`.
+
 ## Goal
 Verify whether protected input context is now present for authenticated redeploy/proof work.
 
@@ -32,4 +41,3 @@ Interpretation:
 - `pnpm run ops:protected-inputs:check -- --expected-sha 4c16305c97566b7680f4feb041601af2af0a0d31 --json`
 
 Reality status: blocked
-

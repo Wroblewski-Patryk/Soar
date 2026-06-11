@@ -83,3 +83,20 @@
   2. QA/Frontend reruns focused suite and corruption scan to publish closure packet.
 - Source-control closure:
   - `not committed` (verification + evidence sync lane only).
+
+## Closure Checkpoint - 2026-06-07 (`issue_blockers_resolved`)
+- Wake handling:
+  - Resumed after blocker resolution for child issue `LUC-2786`.
+- Concrete action:
+  1. Reran the focused runtime-signal + translation validation suite.
+  2. Reran the explicit locale corruption-marker scan on `dashboard-home.de-CH.ts` and `dashboard-home.pt.ts`.
+  3. Reconfirmed active-bot signal semantics remain covered by `LUC-1167` and this issue does not need a duplicate implementation lane.
+- Verification:
+  - `pnpm --filter web exec vitest run src/i18n/translations.test.ts src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts --reporter=verbose` -> `PASS` (`3` files, `17` tests).
+  - Locale corruption-marker scan against `dashboard-home.de-CH.ts` and `dashboard-home.pt.ts` -> no matches (`rg` exit code `1`).
+- Closure decision:
+  - `done`: the prior unresolved UI/i18n mismatch is now repaired and covered by a translation-integrity regression test.
+- Source-control closure:
+  - `not committed` in this coordinator heartbeat; worktree contains broader existing dirty changes from multiple lanes.
+- Push/deploy impact:
+  - `none`.

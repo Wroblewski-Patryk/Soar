@@ -1,9 +1,104 @@
 # Risk Register
 
-Last updated: 2026-06-06
+Last updated: 2026-06-11
+
+- 2026-06-11 `LUC-3461-COOLIFY-PRODUCTION-DEPLOY-HEALTH-SWEEP-2026-06-11`
+  reduces current unknowns for production public health: API `/health`, API
+  `/ready`, Web `/`, and Web `/api/build-info` all passed, and read-only
+  Coolify projection still shows the canonical eight production resources with
+  PostgreSQL/Redis `running:healthy`. Residual release risk remains open:
+  application rows are still `running:unknown`, Web build-info uses diagnostic
+  `metadataSource=github-branch`, `workers-execution` retains crash restart
+  metadata, and protected `/workers/ready`, worker freshness, rollback,
+  restore, SLO, and release approval are not proven by this sweep. Mitigation:
+  keep release readiness fail-closed until approved protected inputs and owner
+  signoff exist.
+
+- 2026-06-11 `LUC-3457-SECURITY-ACCOUNT-ACCESS-GATE-SWEEP-2026-06-11`
+  confirms protected release/account-access proof remains `PARTIAL/NO-GO`.
+  The current shell has only production UI audit protected input names
+  (`6` matching names); runtime readback, rollback, production app/operator,
+  DB-check, RC, and gate approver families are missing. Mitigation remains
+  fail-closed: do not run protected proof, account/API-key/subscription/payment
+  mutation, exchange/live checks, database proof, rollback, deploy, restart,
+  or live-trading action until a board-capable Security/Ops secret owner binds
+  the missing protected inputs through the approved encrypted runtime path.
+
+- 2026-06-11 `LUC-3394-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-06-11`
+  mitigates duplicate repair-lane churn in the architecture evidence backlog:
+  the visible local-safe `runV1StaticIssueScan` and `runV1StageRehearsal` rows
+  in the current report are stale relative to completed [LUC-3381](/LUC/issues/LUC-3381)
+  and [LUC-3389](/LUC/issues/LUC-3389) direct relation rows. Residual risk
+  remains that the architecture-awareness report cannot be fully refreshed in
+  this checkout because the canonical awareness generator is absent. Mitigation:
+  do not create duplicate children; route the next selection through an
+  Architecture/Docs Memory or PM control lane that can run the canonical
+  awareness refresh first.
+
+- 2026-06-11 `LUC-3381-STATIC-ISSUE-SCAN-HELPER-MISSING-TEST-ROWS-2026-06-11`
+  mitigates architecture evidence-link drift for V1 static issue scan tooling:
+  [LUC-3381](/LUC/issues/LUC-3381) now has focused local proof and `22` direct
+  scanner-readable relation rows for `scripts/runV1StaticIssueScan.mjs`
+  helper anchors. Residual risk remains for graph regeneration in this checkout
+  because Windows returned filesystem `UNKNOWN` while opening
+  `docs/graphs/architecture-graph.json`; guardrails still reported graph drift
+  OK. This lane did not run a real V1 static scan refresh or protected
+  production/release evidence.
+
+- 2026-06-11 `LUC-3375-SECURITY-ACCOUNT-ACCESS-GATE-SWEEP-2026-06-11`
+  confirms protected release/account-access proof remains `PARTIAL/NO-GO`.
+  The current shell has only production UI audit protected input names
+  (`6` matching names); runtime readback, rollback, production app/operator,
+  DB-check, RC, and gate approver families are missing. Mitigation remains
+  fail-closed: do not run protected proof, account/API-key/subscription/payment
+  mutation, exchange/live checks, database proof, rollback, deploy, restart,
+  or live-trading action until a board-capable Security/Ops secret owner binds
+  the missing protected inputs through the approved encrypted runtime path.
+
+- 2026-06-08 `LUC-3001-RESTORE-DRILL-EVIDENCE-HELPER-MISSING-TEST-ROWS-2026-06-08`
+  mitigates release Ops helper traceability drift for restore-drill evidence:
+  [LUC-3001](/LUC/issues/LUC-3001) now has focused local proof and `7` direct
+  scanner-readable relation rows for deterministic helper anchors in
+  `scripts/runRestoreDrillEvidence.mjs`. Residual risk remains unchanged for
+  protected production/stage restore-drill execution itself; this lane did not
+  run a real restore drill, mutate a database, use secrets, deploy, restart,
+  roll back, or validate production readiness.
+
+- 2026-06-08 `LUC-2980-RESTORE-LOCAL-DOCKER-POSTGRESQL-RUNTIME-2026-06-08`
+  mitigates the local DB dependency risk that blocked
+  [LUC-2977](/LUC/issues/LUC-2977). Docker Desktop is running, the stale local
+  Compose network/container state was normalized without deleting volumes, and
+  `pnpm run go-live:infra:up` starts `postgres` plus `redis` on the expected
+  local ports. Proof: TCP checks passed for `localhost:5432` and
+  `localhost:6379`, `pg_isready` accepted connections, and the focused API
+  proof passed (`2` files / `42` tests). Residual risk: the reused
+  `cryptosparrow` volume reports a PostgreSQL collation version mismatch
+  warning; current proof is green, but future local DB maintenance may need to
+  refresh the collation version or rebuild local objects.
+
+- 2026-06-08 `LUC-2975-PUBLIC-READ-ONLY-BROWSER-PROOF-HELPER-TEST-LANE-2026-06-08`
+  mitigates public read-only browser proof helper traceability drift:
+  [LUC-2958](/LUC/issues/LUC-2958) now has focused local proof and `16` direct
+  scanner-readable relation rows for safe deterministic helpers. The refreshed
+  architecture-awareness report generated `2026-06-07T23:10:42.686Z` reports
+  `125` actionable missing-test links. Residual risk remains for real browser
+  and OS process orchestration helpers (`createPage`, `killProcessTree`,
+  `launchBrowser`), which this local-only helper lane intentionally did not
+  unit-claim.
+
+- 2026-06-07 `LUC-2920-KNOWN-STATE-REFRESH-RUN-MISSING-TEST-LINK-2026-06-07`
+  mitigates architecture evidence-link drift for known-state refresh tooling:
+  `scripts/runKnownStateRefresh.mjs#run` has focused local proof and direct
+  scanner-readable relation evidence, and the refreshed architecture-awareness
+  report no longer lists that anchor in Top Actionable Missing Test Links.
+  Residual risk remains for unrelated helper families still reported by the
+  scanner and for protected production/release evidence, which this local
+  proof intentionally did not exercise.
 
 | ID | Area | Risk | Likelihood | Impact | Trigger | Mitigation | Status | Linked Requirement/Decision | Next Action | Last Updated |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| RISK-ARCH-CONTROLLED-LIVE-PROOF-TRACEABILITY-2026-06-07 | Architecture evidence / controlled LIVE proof tooling | Controlled LIVE proof helper anchors can remain under-linked in architecture-awareness, causing repeated audit churn or accidental confusion between local helper proof and protected production readiness. | medium | medium | `docs/status/architecture-awareness-report.md` lists `scripts/runControlledLiveSessionProof.mjs#*` helper anchors as top actionable missing-test links. | [LUC-2827](/LUC/issues/LUC-2827), [LUC-2834](/LUC/issues/LUC-2834), [LUC-2845](/LUC/issues/LUC-2845), [LUC-2847](/LUC/issues/LUC-2847), [LUC-2860](/LUC/issues/LUC-2860), [LUC-2864](/LUC/issues/LUC-2864), [LUC-2878](/LUC/issues/LUC-2878), [LUC-2882](/LUC/issues/LUC-2882), [LUC-2886](/LUC/issues/LUC-2886), [LUC-2892](/LUC/issues/LUC-2892), [LUC-2896](/LUC/issues/LUC-2896), [LUC-2899](/LUC/issues/LUC-2899), [LUC-2904](/LUC/issues/LUC-2904), and [LUC-2906](/LUC/issues/LUC-2906) completed focused local proof/relation rows for current controlled-proof helper anchors. [LUC-2906](/LUC/issues/LUC-2906) refreshed architecture-awareness to `2026-06-07T18:49:12.396Z`, reduced actionable missing-test links to `251`, and removed `waitForRunningSession` from Top Actionable Missing Test Links. | mitigating | REQ-DOC-031 | Continue only with the next non-duplicate architecture-awareness top missing-test family; do not treat local helper traceability as protected production readiness. | 2026-06-07 |
+| RISK-ARCH-DEV-TOOLING-TRACEABILITY-2026-06-07 | Architecture evidence / local developer tooling | Local helper scripts can remain under-proved in the architecture-awareness layer, causing repeated audit churn or accidental overclassification of local tooling gaps as production blockers. | medium | medium | `docs/status/architecture-awareness-report.md` lists local helper script anchors as top actionable missing-test links. | [LUC-2775](/LUC/issues/LUC-2775), [LUC-2781](/LUC/issues/LUC-2781), [LUC-2788](/LUC/issues/LUC-2788), [LUC-2806](/LUC/issues/LUC-2806), and [LUC-2812](/LUC/issues/LUC-2812) completed focused local proof/relation rows for current `dev-backend` and `dev-workers` helper anchors. [LUC-2812](/LUC/issues/LUC-2812) refreshed architecture-awareness to `2026-06-07T13:04:38.451Z`, reduced actionable missing-test links to `314`, and removed `handleWorkerExit` from Top Actionable Missing Test Links. [LUC-2817](/LUC/issues/LUC-2817) deduped generator-index helpers to blocked [LUC-2791](/LUC/issues/LUC-2791), go-live smoke helpers to blocked [LUC-2792](/LUC/issues/LUC-2792), and created [LUC-2820](/LUC/issues/LUC-2820) for the next non-duplicate `scripts/runAud07IsolatedDbPacks.mjs#main` anchor. Keep all lanes local-only and forbid production, secret, account, deploy, DB, exchange, Docker Compose, real Prisma, or live-trading mutation. | mitigating | REQ-DOC-031 / RISK-DOC-005 | Execute [LUC-2820](/LUC/issues/LUC-2820); do not reopen dev-workers anchors unless a future refresh reports a new exact uncovered anchor or `scripts/dev-workers.test.mjs` fails. | 2026-06-07 |
 | RISK-SEC-SMOKE-AUTH-BINDING-2026-06-07 | Security / operations | Protected worker readiness can remain blocked if the production smoke auth binding is populated with non-accepted or malformed material, causing repeated public-smoke passes but protected `/workers/ready` `401` failures. | high | high | `SMOKE_AUTH_TOKEN` is present but not JWT-shaped, `SMOKE_AUTH_EMAIL` is present but not email-shaped, and worker-included deploy smoke returns `401` on `GET /workers/ready`. | Keep fail-closed behavior; do not treat public checks as protected proof. Require credential/account owner or board-approved secret-store operator to provision one production-smoke appropriate `ADMIN` principal/session accepted by Soar API auth through exactly one supported `SMOKE_*` path. | open | REQ-FUNC-021 / LUC-2619 | Correct the secret-store binding, then wake [LUC-2618](/LUC/issues/LUC-2618) for worker-included smoke rerun. | 2026-06-07 |
 | RISK-FE-SHARED-UI-INFERRED-LINKS-2026-06-04 | Frontend / architecture evidence | Shared UI component rows can be misclassified as missing tests/docs when architecture-awareness scanner inference does not directly connect generated `apps/web/src/ui/**` component entities to nearby focused tests or module docs. | medium | medium | A future audit treats inferred missing links as runtime UI defects or, inversely, treats aggregate evidence as fresh browser/production proof. | `LUC-2021` updates `docs/modules/web-shared.md` with exact shared UI test/doc evidence, scanner relation boundary, and real follow-up primitive-test candidates. Focused Web tests passed (`16` files / `87` tests). | mitigating | REQ-DOC-029 / REQ-DOC-030 | Docs Memory can add stable per-component shared UI graph nodes or scanner relation rules; Frontend adds focused primitive tests when modal/brand/navigation/skeleton primitives change. | 2026-06-04 |
 | RISK-SEC-2026-05-25-001 | Auth/session | Registration endpoint returns a user-existence-specific message for existing email, enabling account enumeration and targeted credential attacks. | medium | low | Unauthenticated users repeatedly probe register with candidate emails and infer valid identities from distinct failure responses. | Generic auth error is reused for duplicate-registration service errors, removing identity-specific service leakage; auth registration rate-limits remain active. Focused regression proof now passes for duplicate email rejection. | closed | REQ-SEC-LOGIN-001 | Reopen only if duplicate registration response behavior regresses or new identity-specific register errors are introduced. | 2026-05-26 |
@@ -13,7 +108,7 @@ Last updated: 2026-06-06
 | RISK-DATA-BACKUP-RESTORE-2026-05-25 | Data persistence / backup-restore | Backup/restore evidence can lag behind migration/state changes, so recovery claims may pass for old schema assumptions and fail quietly on newer revisions. | medium | medium | Schema evolves while no post-change restore/replay proof is collected, or restore proof is reused across schema revisions without SHA/date binding. | Keep migration status and validation as baseline only; require restore/replay evidence on the same schema/migration set as this checkpoint before claiming persistence confidence beyond `partially_verified`. | open | REQ-DATA-040 | Backend: run migration replay + DB restore/reload smoke with a current checkpoint artifact before moving `SOAR-DATA` confidence to `verified`. | 2026-05-25 |
 | RISK-PROD-RUNTIME-AGGREGATE-OOM-2026-05-25 | Production reliability / Bot Runtime | Runtime monitoring aggregate fanout and nested support readers can overload the API process, causing heap out-of-memory restarts, 500s, and failed SLO gates even when public health eventually recovers. | high | high | RC/SLO pipeline observes elevated 5xx or availability below target, and API logs show OOM around `/dashboard/bots/:id/runtime-monitoring/aggregate`. | First mitigation limited aggregate session concurrency and skipped failed per-session rows. [LUC-2300](/LUC/issues/LUC-2300) adds bounded trade/position materialization: runtime trade visible rows use DB sorting/paging, trade totals/fees use DB count/aggregate, and carry-over/lifecycle support rows have explicit caps. [LUC-2328](/LUC/issues/LUC-2328) repaired the DB-backed aggregate proof by preserving Prisma delegate binding in the bounded-materialization e2e spy and increasing the aggregate subquery default timeout to `15000ms` with environment override intact. [LUC-2333](/LUC/issues/LUC-2333) repaired the failed QA rerun by isolating aggregate nested-reader timeout/error fallback per subquery, so a slow symbol-stats/positions read no longer drops the session row or erases valid trade totals/items. Original combined DB-backed aggregate proof passes under `--testTimeout=30000`; bounded hidden trade proof returns `trades.total === 260`, `trades.items.length === 5`, and bounded `trade.findMany`; API typecheck passes. | mitigating | REQ-FUNC-003 / REQ-FUNC-021 | QA/release can proceed from local verified aggregate proof to protected runtime smoke, production promotion decision, and post-deploy aggregate/SLO proof under Ops gates. | 2026-06-06 |
 | RISK-VPS-REACHABILITY-2026-05-25 | Operations / VPS | The production VPS can become unreachable on SSH and HTTPS, blocking Coolify, Web, API, and all production validation even when application-level 5xx is zero before the outage. | high | high | `Test-NetConnection` fails for `141.227.149.67` on SSH `22` and HTTPS `443`, and public Web/API/Coolify requests timeout. | Public DNS still resolves to `141.227.149.67`; current evidence points to host/network reachability rather than route-level 404/500. Keep V1 `NO-GO` and avoid further release activation until host access returns. | open | REQ-FUNC-021 | Restore VPS/OVH/network access, check host uptime and Docker/container status, then rerun production smoke and SLO/RC. | 2026-05-25 |
-| RISK-SEC-AI-ASSISTANT-HOTPATH-2026-06-04 | Assistant/AI runtime | Future work could overclaim assistant safety by treating local dry-run/foundation proof as authorization for executable BACKTEST/PAPER/LIVE assistant trading. | medium | high | A product/runtime task wires assistant orchestration into hot-path trading, memory/context enrichment, or tool/model access without a Product/CTO activation decision and Security red-team packet. | `LUC-2018` classifies current assistant foundation as locally verified only for dry-run/foundation and default LIVE fail-closed behavior. Fresh `pnpm run test:adversarial:api-assistant` passed (`8` files / `29` tests). The assistant runtime contract still defers executable hot-path chains until separate approval, persisted traces, and AI red-team evidence exist. | mitigating | REQ-AI-030 | If Product/CTO activates executable assistant trading, create a dedicated AI Runtime + Security red-team issue before enabling hot-path behavior. | 2026-06-04 |
+| RISK-SEC-AI-ASSISTANT-HOTPATH-2026-06-04 | Assistant/AI runtime | Future work could overclaim assistant safety by treating local dry-run/foundation proof as authorization for executable BACKTEST/PAPER/LIVE assistant trading. | medium | high | A product/runtime task wires assistant orchestration into hot-path trading, memory/context enrichment, or tool/model access without a Product/CTO activation decision and Security red-team packet. | `LUC-2018` classifies current assistant foundation as locally verified only for dry-run/foundation and default LIVE fail-closed behavior. Fresh `pnpm run test:adversarial:api-assistant` passed (`8` files / `29` tests). `LUC-2773` confirms `SOAR-ASSISTANT-AI-001` executable hot-path orchestration is accepted deferred V1 scope; the assistant runtime contract still defers executable hot-path chains until separate Product+CTO approval, persisted traces, fail-closed fallback proof, and AI red-team evidence exist. | mitigating | REQ-AI-030 | Keep V1 limited to assistant foundation/dry-run. If Product+CTO activates executable assistant trading after V1, create dedicated AI Runtime, Security red-team, and QA/Test proof issues before enabling hot-path behavior. | 2026-06-07 |
 | RISK-DOC-005 | Architecture evidence graph | Future code, tests, docs, routes, prompts, workers, configs, or migrations could become invisible to impact analysis if graph CSV records are not updated in the same task. | medium | high | A changed source/test/doc/config/pipeline path is not referenced by architecture graph CSV records. | The graph contract records full current representative drift closure: `pnpm run architecture:graph:generate` emits `643` nodes, `798` relations, and `27` chains, and `pnpm run architecture:graph:drift:strict` reports `796/796` representative paths covered with `0` missing. `pnpm run quality:guardrails` now runs strict graph drift and fails if missing graph path references reappear. | mitigating | REQ-DOC-005 / REQ-DOC-006 / REQ-DOC-007 / REQ-DOC-008 / REQ-DOC-009 / REQ-DOC-010 / REQ-DOC-011 / REQ-DOC-012 / REQ-DOC-013 / REQ-DOC-014 / REQ-DOC-015 / REQ-DOC-016 / REQ-DOC-017 / REQ-DOC-018 / REQ-DOC-019 / REQ-DOC-020 / REQ-DOC-021 / REQ-DOC-022 / REQ-DOC-023 / REQ-DOC-024 / REQ-DOC-025 / REQ-DOC-026 / REQ-DOC-027 / REQ-DOC-028 / REQ-DOC-029 | Keep graph CSV updates mandatory for future feature/code/test/docs/config/workflow changes; treat strict drift failure as a source-of-truth blocker, not a warning. | 2026-05-24 |
 | RISK-FULL-READINESS-2026-05-23 | Release/readiness | The project could be overclaimed as "100%" if public smoke, docs polish, or scoped V1 evidence is confused with whole-product current proof across protected production flows, native mobile, deferred AI hot-path trading, and approval-gated LIVE exchange mutation. | high | high | A coordinator reports "Soar is 100%" without current deploy freshness, authenticated journey proof for the reported broken flows, protected production readbacks, and explicit operator approval for live-money paths. | `PROD-FRESH-DEPLOY-380308D1-2026-05-24` resolves the public deploy-freshness part of the risk: Web/API/workers are deployed to `380308d10cf0fabb2ea629eb55e6f0ba7d980ed1`, public build-info returns that SHA, and public no-worker smoke passes. Remaining risk is protected evidence, not public freshness: no authenticated journey proof, protected liveimport/rollback/UI proof, production DB restore proof, or LIVE mutation approval exists in this checkpoint. | mitigating | REQ-FUNC-021 | Run authenticated app-journey triage/proof for reported broken flows with approved app auth; separately run protected liveimport, rollback, UI, and DB restore proof when approved inputs exist; request separate explicit approval before any LIVE mutation proof. | 2026-05-24 |
 | RISK-LOCAL-PROD-DOCKER-DRIFT-2026-05-24 | Operations/deployment | Local validation may miss Coolify-only failures if developers run API/Web/workers through pnpm while production runs split Docker services. | medium | medium | A Dockerfile, env, worker ownership, or compose change passes local watch-mode proof but fails on the VPS. | `LOCAL-DOCKER-COOLIFY-PARITY-2026-05-24` adds a local Docker app-stack workflow that reuses `docker-compose.vps.yml` and verifies API/Web/four worker image build plus short local run with API/Web health checks. | mitigating | REQ-FUNC-021 | Use `pnpm run docker:app:config` and `pnpm run docker:app:build` before Docker/Coolify changes; run protected production proof separately after controlled push/deploy. | 2026-05-24 |
@@ -57,15 +152,43 @@ Last updated: 2026-06-06
 | RISK-027 | Backtest history auditability | Operators may compare or trust historical backtests whose visible strategy or market context changed after the run was created. | medium | high | A strategy is renamed/reconfigured after a run, a market universe is edited/deleted, or historical list/timeline/replay uses mutable records instead of creation-time context. | `POSTV1-STRATEGY-SNAPSHOT-HISTORY-2026-05-14` persists immutable strategy and market-universe snapshots in new backtest seeds, resolves list/timeline/replay from snapshot strategy truth first, and blocks strategy/market-universe deletion while owned backtest history references the mutable source record. Focused API e2e passed (`44/44`). | closed | REQ-FUNC-027 | Extend immutable-history coverage to bot history/versioned bot context and per-symbol best-parameter comparison in separate bounded slices. | 2026-05-14 |
 | RISK-028 | Architecture documentation | Agents may plan exchange work from stale Binance-only or one-exchange-family overview wording even though code and newer reference docs support Binance and Gate.io. | medium | high | Future exchange work starts from `01_overview-and-principles.md` or `03_domain-model.md` without reading newer exchange reference docs. | 2026-05-19 `AUD-01` audit confirmed the exact drift. `DEC-AUD-001` accepted Binance + Gate.io as current implementation scope, not Binance-only, and architecture overview/domain docs now keep production/live readiness evidence-bound by exact exchange, market type, and operation. | closed | REQ-ARCH-028 / DEC-AUD-001 | Reopen only if architecture source-of-truth again contradicts the accepted Binance + Gate.io implementation scope or overclaims production/live readiness. | 2026-05-19 |
 | RISK-029 | Exchange capability contract | Operation support may be overstated when market-type support diverges if future exchange additions bypass the exact exchange-context capability contract. | medium | high | New spot/futures operation support differs by market type or exchange, but consumers infer support from exchange-level truth. | 2026-05-19 `AUD-09` follow-up closed the exact matrix gap: API exchange execution/authenticated-read contracts and consumers now use `(exchange, marketType, operation)`. Focused exchange tests PASS (`21` tests across contract/registry/boundary files) and API typecheck PASS. Follow-up `AUD-EXCH-007` also closed neutral type naming debt for non-exchange orders/wallet consumers. | closed | REQ-EXCH-029 | Reopen only if a future exchange capability path bypasses `(exchange, marketType, operation)` support truth or non-exchange modules start importing connector-specific CCXT-named types again. | 2026-05-19 |
-| RISK-030 | Assistant/AI runtime | Operators or future agents may assume assistant governance is active in trading/runtime decisions when current code only proves config, dry-run, and deterministic orchestrator foundation. | medium | high | Assistant docs are used to reason about BACKTEST/PAPER/LIVE runtime behavior without checking actual hot-path call sites. | 2026-05-19 `AUD-20` evidence records the split truth: orchestrator tests PASS (`2` files, `6` tests), Web route tests PASS (`2` files, `3` tests), bot assistant config/dry-run e2e PASS after local infra (`1` file, `3` tests), but no audited hot-path runtime/backtest/live call site and no full AI red-team protocol proof. `DEC-AUD-002` narrowed current architecture truth to foundation/dry-run and deferred hot-path orchestration to later gated work. 2026-05-23 foundation protocol harness maps all `AI_TESTING_PROTOCOL.md` risk areas, classifies memory/multi-turn model scenarios as foundation-only not applicable, and executes deterministic safety scenarios for forbidden actions, mandates, trace sanitization, and edge confidence handling. 2026-05-28 `LUC-385` security checkpoint confirms `ARB-001` remains blocked on Product/CTO activation scope decision and must not be implemented from a specialist lane without explicit gate acceptance. | mitigating | REQ-AI-030 / DEC-AUD-002 | Product/CTO must issue explicit `ARB-001` activation decision; then AI Runtime + Security execute gated hot-path implementation with persisted traces, fail-closed boundaries, multi-turn protocol, prompt-injection/data-leak tests, and red-team packet before any runtime AI trading claim. | 2026-05-28 |
+| RISK-030 | Assistant/AI runtime | Operators or future agents may assume assistant governance is active in trading/runtime decisions when current code only proves config, dry-run, and deterministic orchestrator foundation. | medium | high | Assistant docs are used to reason about BACKTEST/PAPER/LIVE runtime behavior without checking actual hot-path call sites. | 2026-05-19 `AUD-20` evidence records the split truth: orchestrator tests PASS (`2` files, `6` tests), Web route tests PASS (`2` files, `3` tests), bot assistant config/dry-run e2e PASS after local infra (`1` file, `3` tests), but no audited hot-path runtime/backtest/live call site and no full AI red-team protocol proof. `DEC-AUD-002` narrowed current architecture truth to foundation/dry-run and deferred hot-path orchestration to later gated work. 2026-05-23 foundation protocol harness maps all `AI_TESTING_PROTOCOL.md` risk areas, classifies memory/multi-turn model scenarios as foundation-only not applicable, and executes deterministic safety scenarios for forbidden actions, mandates, trace sanitization, and edge confidence handling. 2026-06-07 `LUC-2773` closes the V1 scope ambiguity: hot-path assistant orchestration is accepted deferred V1 scope, not an active specialist implementation lane. | mitigating | REQ-AI-030 / DEC-AUD-002 / LUC-2773 | Keep V1 to assistant foundation/dry-run. Product+CTO must issue a fresh activation decision before AI Runtime + Security execute any gated hot-path implementation with persisted traces, fail-closed boundaries, multi-turn protocol, prompt-injection/data-leak tests, and red-team packet. | 2026-06-07 |
 | RISK-031 | Engine decision flow | Runtime may open, close, DCA, or skip incorrectly if signal merge, pre-trade, final-candle decisions, execution dedupe, exchange guard, PAPER/LIVE parity, or position automation drift. | low | high | Engine tests fail, merge tie-break becomes nondeterministic, pre-trade admits unsafe side effects, dedupe duplicates side effects, exchange guard bypasses capability truth, or automation acts without canonical context. | 2026-05-19 `AUD-11` evidence: focused engine service/unit pack PASS (`15` files / `173` tests) and DB-backed engine e2e/smoke pack PASS (`4` files / `13` tests). 2026-05-23 `RUNTIME-DCA-EXCHANGE-PNL-THRESHOLD-2026-05-23` fixes an imported LIVE DCA threshold drift by using exchange `unrealizedPnl / marginUsed` as threshold PnL truth for `EXCHANGE_SYNC` positions; focused runtime tests `38/38`, DCA/position parity `27/27`, API typecheck, guardrails, docs parity, and diff check passed. Expected stderr appears in intentional failover/fail-closed tests. | closed | REQ-ENGINE-032 | Reopen only on a new failing engine/runtime signal; production readback and LIVE exchange-side mutation remain separately protected-auth/approval-gated. | 2026-05-23 |
 | RISK-036 | Audit process | Future broad audits may omit layers, mix historical evidence with current proof, or become impossible to compare over time if each run invents a new checklist. | medium | high | User requests a full audit after weeks of work and the agent relies on scattered historical audit files. | `REUSABLE-AUDIT-REGISTRY-2026-05-18` creates stable `AUD-00` through `AUD-23`, a standard run order, required result fields, non-negotiable boundaries, and a dated baseline that separates today-run commands from historical evidence. `FULL-LAYERED-AUDIT-RUN-2026-05-18` extends that baseline with broad local validation, focused API packs, full API/Web tests, i18n audit, go-live smoke, and representative Browser route-state proof while preserving explicit production/LIVE exclusions. `AUTHENTICATED-ROUTE-STATE-AUDIT-2026-05-19` closes the local authenticated Web route-state gap with `53` PASS checks and screenshots. `API-ENDPOINT-DOCS-PARITY-AUDIT-2026-05-19` adds reusable endpoint-level API docs parity; 2026-05-19 gap closure now passes with `109` endpoints, `109` documented, and `0` gaps. 2026-05-19 `AUD-02` follow-up restored risk-ID uniqueness by renumbering this audit-process row from duplicate `RISK-031` to `RISK-036`. `audit:remediation-plan:check` now validates remediation plan structure, source/evidence references, required cleanup checks, and its own self-check closure command for future reruns. `audit:rerun-playbook:check` now validates baseline manifest/rollup path completeness and, with `audit:tooling-index:check`, fails if audit closure omits manifest verification, remediation-plan validation, docs parity, guardrails, or diff check; `audit:handoff:check` now validates the resume packet, tooling-index validation catches missing package scripts, missing self-check closure evidence, and required cleanup-check drift, rerun-playbook validation catches required cleanup-check drift and missing self-check closure evidence, manifest validation catches stale summary/path metadata, rollup validation catches stale rollup summaries, source links, repair queue entries, or safety booleans, and manifest comparison ranks leading status buckets so hybrid current/deferred wording is not misclassified as a regression, writes JSON comparison reports with `--json-output <path>`, and rerun playbook validation rejects stdout-only `compareJson` instructions, and tooling-index validation catches missing Markdown tool entries for JSON tool IDs, and manifest validation catches stale Markdown summary counts, and rollup validation catches missing Markdown audit IDs and stale Markdown summary counts, and handoff validation catches stale rollup summary counts and missing handoff self-check evidence. | mitigating | REQ-AUDIT-031 | Next audit improvement: add deeper keyboard/focus/a11y assertions if needed; keep DB-backed API packs sequential. | 2026-05-19 |
 | RISK-032 | Data model / migrations | DB-backed tests or future migration audits may report false failures or hide real FK lifecycle defects if multiple e2e packs share one mutable local database without reset or isolation. | medium | high | Wallets, backtests, bots, or runtime DB-backed tests run together/parallel and cleanup orders conflict with FK constraints or cross-test data. | 2026-05-19 `AUD-07` proves schema validity and local migration replay (`54` migrations) and confirms wallet/backtest/runtime data-contract tests pass when run with isolated reset-and-run. The shared-DB parallel finding is mitigated by `corepack pnpm run audit:data:db-isolated`, which resets before each representative pack and passed wallets `24/24`, backtests `15/15`, and runtime repository `2/2`. | mitigating | REQ-DATA-007 | Use `audit:data:db-isolated` for representative DB audit packs or provide isolated schemas/databases; refresh production migration/backup/restore evidence under `AUD-19` before future deploys. | 2026-05-19 |
-| RISK-033 | Mobile scope | Future planning may mistake the mobile scaffold or responsive Web mobile screenshots for an active native/mobile product surface. | medium | medium | A task assumes Expo/native screens, mobile CI, native auth/session shell, or independent mobile backend contracts exist because `apps/mobile` exists or Web mobile screenshots passed. | 2026-05-19 `AUD-21` confirms `apps/mobile` is scaffold-only, build/test scripts are intentional echoes, and mobile docs state no production mobile runtime. Responsive Web mobile evidence remains under UX/Web audit scope, not native parity. | mitigating | REQ-MOBILE-021 | Before mobile activation, create module docs, replace scaffold echoes with real Expo/native build/test validation, and explicitly approve mobile product scope. | 2026-05-19 |
-| RISK-034 | I18n / copy | Route or copy changes may introduce missing locale keys, fallback Polish leakage, local copy outside namespaces, or hardcoded UI literals that are missed by normal component tests. | medium | medium | New route, state, or UI copy is added without running route-reachable i18n audit and copy guardrails. | 2026-05-19 `AUD-22` route-reachable i18n audit passed with findings `0`, localCopy `0`, fallbackPl `0`, hardcoded `0`; focused Web i18n pack passed (`8` files / `26` tests); language policy remains explicit. 2026-06-07 `LUC-2650` added focused local helper proof for `scripts/auditRouteReachableI18n.mjs` and reran the live route-reachable audit with `findings=0`, `localCopy=0`, `fallbackPl=0`, `hardcoded=0`. | closed | REQ-I18N-022 | Reopen only on a new i18n/copy finding; rerun route-reachable audit after route/copy changes. | 2026-06-07 |
+| RISK-033 | Mobile scope | Future planning may mistake the mobile scaffold or responsive Web mobile screenshots for an active native/mobile product surface. | medium | medium | A task assumes Expo/native screens, mobile CI, native auth/session shell, or independent mobile backend contracts exist because `apps/mobile` exists or Web mobile screenshots passed. | 2026-05-19 `AUD-21` confirms `apps/mobile` is scaffold-only, build/test scripts are intentional echoes, and mobile docs state no production mobile runtime. 2026-06-07 [LUC-2793](/LUC/issues/LUC-2793) classifies native/mobile traceability as `out_of_scope_for_v1` and keeps only a scaffold documentation seed; responsive Web mobile evidence remains under UX/Web audit scope, not native parity. | mitigating | REQ-MOBILE-021 / REQ-DOC-031 | Reopen only after Product/CTO-approved mobile activation. Then replace scaffold echoes with real Expo/native build/test validation and create feature-level mobile traceability rows. | 2026-06-07 |
+| RISK-034 | I18n / copy | Route or copy changes may introduce missing locale keys, fallback Polish leakage, local copy outside namespaces, hardcoded UI literals, BOM markers, or mojibake encoding drift that is missed by normal component tests. | medium | medium | New route, state, or UI copy is added without running route-reachable i18n audit and copy/encoding guardrails. | 2026-05-19 `AUD-22` route-reachable i18n audit passed with findings `0`, localCopy `0`, fallbackPl `0`, hardcoded `0`; focused Web i18n pack passed (`8` files / `26` tests); language policy remains explicit. 2026-06-07 `LUC-2650` added focused local helper proof for `scripts/auditRouteReachableI18n.mjs` and reran the live route-reachable audit with `findings=0`, `localCopy=0`, `fallbackPl=0`, `hardcoded=0`. 2026-06-07 `LUC-2786` repaired Dashboard Home de-CH/pt BOM/mojibake drift and added loaded-translation encoding marker coverage; focused acceptance pack passed (`3` files / `17` tests) and target integrity search returned no matches. | closed | REQ-I18N-022 | Reopen only on a new i18n/copy/encoding finding; rerun route-reachable i18n audit or focused locale integrity checks after route/copy changes. | 2026-06-07 |
 | RISK-035 | Requirements / delivery map | Future planning may use stale delivery-map rows or non-unique risk IDs after broad audits, causing duplicated work or false confidence in project state. | medium | high | Delivery map remains dated before the latest audit run, a risk ID appears more than once, or continuation state omits the latest rollup/audit artifact. | 2026-05-19 `AUD-02` found the exact source-of-truth drift, then the follow-up refreshed `.agents/state/delivery-map.md` to current audit truth, synchronized continuation state, and restored risk-ID uniqueness by renumbering the audit-process row to `RISK-036`. | closed | REQ-AUDIT-002 | Reopen only if a future broad audit finds stale delivery rows, duplicate IDs, or missing continuation-state sync. | 2026-05-19 |
 
 ## Risk Notes
+
+- 2026-06-08 | DB-backed Gate.io ingestion proof dependency restored and
+  verified | QA / DB-Ops | medium | [LUC-2979](/LUC/issues/LUC-2979) /
+  [LUC-2980](/LUC/issues/LUC-2980) restored local PostgreSQL for
+  [LUC-2977](/LUC/issues/LUC-2977). `127.0.0.1:5432` TCP and `pg_isready`
+  passed, and the focused [LUC-1166](/LUC/issues/LUC-1166) verification command
+  passed (`2` files / `42` tests). | mitigated | Keep the local
+  `cryptosparrow` collation version mismatch warning as a maintenance note;
+  no blocker remains for the DB-backed QA proof. UI display path was not
+  separately browser-proved in this QA slice. |
+
+- 2026-06-07 `LUC-2905` updated
+  `RISK-ARCH-CONTROLLED-LIVE-PROOF-TRACEABILITY-2026-06-07`: the controlled
+  LIVE proof helper family remained a traceability churn risk, but the next
+  non-duplicate current anchor has been routed to [LUC-2906](/LUC/issues/LUC-2906)
+  for local-only QA/Verification coverage or classification. Current report
+  generated `2026-06-07T18:35:45.780Z` shows `252` actionable missing-test
+  links, and `waitForRunningSession` was still open at that checkpoint.
+  [LUC-2906](/LUC/issues/LUC-2906) now supersedes this note with verified
+  local proof.
+
+- 2026-06-07 `LUC-2906` updates
+  `RISK-ARCH-CONTROLLED-LIVE-PROOF-TRACEABILITY-2026-06-07`: the
+  `waitForRunningSession` anchor is now locally verified and scanner-linked.
+  Refreshed architecture-awareness generated `2026-06-07T18:49:12.396Z` shows
+  `251` actionable missing-test links and no controlled live proof helper
+  anchor in Top Actionable Missing Test Links. Remaining risk is generic
+  traceability churn in separate helper families, not this child lane.
 
 - 2026-05-26 `COOLIFY-AUTO-DEPLOY-WORKER-RECOVERY-2026-05-26` updates
   Coolify deployment risk: the six existing Soar Applications had `Auto Deploy`
@@ -249,3 +372,61 @@ Allowed statuses: `open`, `mitigating`, `accepted`, `closed`, `superseded`.
   `/api/build-info`. Residual risk remains until source-control closure/push
   and a separate Ops-controlled production deploy smoke prove `soar-web`
   recovery.
+- 2026-06-07 | Protected production security/exchange proof conflated with
+  local helper tests | Security / Ops / Test Automation | medium | Local
+  helper coverage for `scripts/runProdSecurityExchangeProof.mjs` could be
+  misread as production security/exchange proof. [LUC-2955](/LUC/issues/LUC-2955)
+  created [LUC-2956](/LUC/issues/LUC-2956) with explicit forbidden actions:
+  no production proof, auth/session, real account token/cookie, exchange
+  credential, secret, deploy, restart, rollback, database/account/exchange/
+  order/position/live-trading mutation. | open | Execute only mocked/local
+  helper tests and keep protected proof under approved Security/Ops gates. |
+
+- 2026-06-07 | Protected production security/exchange proof conflated with
+  local helper tests | Security / Ops / Test Automation | medium | [LUC-2956](/LUC/issues/LUC-2956)
+  completed local-only helper proof for `scripts/runProdSecurityExchangeProof.mjs`
+  and refreshed architecture-awareness from `181` to `159` actionable
+  missing-test links, with no protected production proof, auth/session,
+  credential, deploy, database, account, exchange, order, position, or
+  live-trading mutation. | mitigating | Keep release readiness blocked on the
+  approved protected Security/Ops production proof gates; do not treat the
+  local helper test as production security/exchange evidence. |
+
+- 2026-06-08 | Protected production UI/UX proof conflated with local helper
+  traceability | UX / QA / Security / Ops | medium | [LUC-2970](/LUC/issues/LUC-2970)
+  added direct relation rows for [LUC-2957](/LUC/issues/LUC-2957) local
+  production UI/UX helper tests without running production UI clickthrough,
+  production UX/A11y proof, protected auth/session, account, secret, deploy,
+  database, exchange, order, position, or live-trading mutation. | mitigating |
+  Treat this as architecture traceability only. Browser launch/navigation/
+  screenshot helpers and current-target authenticated production proof remain
+  under protected browser/UX/Security/Ops gates. |
+# 2026-06-11 LUC-3405 Public Browser Process Anchor Classification
+
+- Risk: architecture-awareness can keep routing duplicate unit-test repair work
+  for public browser proof anchors that are intentionally OS/CDP process
+  boundaries.
+- Severity: P2.
+- Status: `mitigated_by_classification`.
+- Mitigation: [LUC-3405](/LUC/issues/LUC-3405) classifies `createPage`,
+  `killProcessTree`, and `launchBrowser` as browser/process orchestration
+  boundaries; future work should use public browser proof artifacts or an
+  approved integration harness instead of fake unit-test links.
+- Evidence:
+  `history/tasks/luc-3405-public-read-only-browser-proof-process-anchor-classification-2026-06-11-task.md`.
+
+# 2026-06-11 LUC-3409 Owner Login Proof Session Validity
+
+- Risk: an expired or invalid owner proof session could be mistaken for accepted
+  production owner-login evidence.
+- Severity: P1.
+- Status: `open`.
+- Mitigation: [LUC-3409](/LUC/issues/LUC-3409) approved only a redacted proof
+  path that proceeds after `/auth/me` returns HTTP `200`; the current
+  `PROD_UI_AUDIT_AUTH_TOKEN` reference returned HTTP `401` and is not valid
+  proof.
+- Next action: operator or board-capable credential owner must bind a fresh
+  least-privilege proof session, run supervised proof, or provide an equivalent
+  redacted artifact before [LUC-3375](/LUC/issues/LUC-3375) can unblock.
+- Evidence:
+  `history/tasks/luc-3409-owner-login-verification-path-2026-06-11-task.md`.

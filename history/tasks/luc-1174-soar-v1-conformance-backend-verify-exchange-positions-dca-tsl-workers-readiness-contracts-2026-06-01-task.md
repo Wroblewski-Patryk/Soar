@@ -75,3 +75,17 @@
 - Updated unblock owner/action:
   1. Backend owner: fix auth registration bootstrap/runtime path used by workers-readiness helpers.
   2. Backend/QA lane: rerun full workers readiness matrix and publish closure packet after auth bootstrap fix.
+
+## Closure Delta - 2026-06-07 (`issue_blockers_resolved`)
+- Context:
+  - child blocker `LUC-2787` completed with verified local workers-readiness auth bootstrap repair evidence.
+- Concrete action:
+  - reran full workers readiness suite;
+  - reran the targeted exchange/positions/DCA-TSL contract slice from this parent issue.
+- Verification:
+  - `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts --reporter=verbose` -> PASS (`8` passed).
+  - `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts -t "uses api-key exchange when hydrating owned LIVE automation after exchange-sync create|uses api-key exchange when hydrating owned LIVE automation after exchange-sync update|assigns different exact owners for different symbols|ignores other-market owners when seeding reconciliation cleanup candidates" --reporter=verbose` -> PASS (`4` passed, `30` skipped).
+- Result:
+  - parent backend source-level conformance scope is complete.
+  - protected production readiness remains intentionally excluded and linked to Ops-owned protected proof lanes.
+- Disposition: `done`.

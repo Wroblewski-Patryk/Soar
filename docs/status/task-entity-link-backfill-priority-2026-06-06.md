@@ -171,3 +171,51 @@ Verification:
 - `node scripts/build-architecture-awareness-index.mjs --project Soar --root ../Soar` from `C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse` passed.
 - All selected task files are absent from `docs/status/task-synchronization-report.md` under `## Tasks Without Architecture Links`.
 - `git diff --check` on selected task files and refreshed graph/status exports reported no whitespace errors; Git only emitted line-ending normalization warnings.
+
+## Backfill Slice 3 Result - 2026-06-07
+
+Issue: [LUC-2868](/LUC/issues/LUC-2868)
+
+Selected architecture-graph task files:
+
+- `history/tasks/architecture-evidence-graph-system-2026-05-24-task.md`
+- `history/tasks/architecture-graph-api-platform-safety-backfill-2026-05-24-task.md`
+- `history/tasks/architecture-graph-api-support-routes-backfill-2026-05-24-task.md`
+- `history/tasks/architecture-graph-auth-session-deep-backfill-2026-05-24-task.md`
+- `history/tasks/architecture-graph-backtests-backfill-2026-05-24-task.md`
+- `history/tasks/architecture-graph-bot-setup-backfill-2026-05-24-task.md`
+- `history/tasks/architecture-graph-full-drift-closure-2026-05-24-task.md`
+- `history/tasks/architecture-graph-logs-audit-backfill-2026-05-24-task.md`
+- `history/tasks/architecture-graph-markets-backfill-2026-05-24-task.md`
+- `history/tasks/architecture-graph-ops-config-pipeline-backfill-2026-05-24-task.md`
+- `history/tasks/architecture-graph-profile-api-keys-backfill-2026-05-24-task.md`
+- `history/tasks/architecture-graph-reports-backfill-2026-05-24-task.md`
+- `history/tasks/architecture-graph-runtime-support-services-backfill-2026-05-24-task.md`
+- `history/tasks/architecture-graph-strategies-backfill-2026-05-24-task.md`
+
+Before/after signal:
+
+- Before this slice: `docs/status/task-synchronization-report.md` reported
+  `121` tasks without architecture links at `2026-06-07T16:12:55.932Z`.
+- A partial scanner output during this slice reported `109` tasks without
+  architecture links at `2026-06-07T16:22:29.154Z`.
+- The full scanner command
+  `node scripts/build-architecture-awareness-index.mjs --project Soar --root ../Soar`
+  timed out twice from the Paperclip workspace after 124 seconds and 304
+  seconds, so the exact final generated report should be refreshed in a later
+  scanner-health or longer-running graph sync lane.
+
+Verification:
+
+- Targeted parser check confirmed all 14 selected task files now contain a
+  parseable `## Architecture Links` block with at least one concrete graph node
+  ID and at least one repo path reference.
+- `git diff --check` on the 14 selected task files reported no whitespace
+  errors; Git only emitted line-ending normalization warnings.
+
+Residual risk:
+
+- This was a documentation traceability backfill only. It did not change
+  runtime behavior, run product journeys, or prove production behavior.
+- Remaining task-link drift is still present in older runtime, deployment,
+  Coolify, source-control, and no-stall task records.

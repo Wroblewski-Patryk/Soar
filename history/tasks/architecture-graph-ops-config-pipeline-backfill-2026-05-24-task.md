@@ -1,5 +1,14 @@
 # ARCH-GRAPH-OPS-CONFIG-PIPELINE-BACKFILL-2026-05-24
 
+## Architecture Links
+
+- Primary feature/module: Operations config and pipeline graph coverage.
+- Architecture nodes: SOAR-FEATURE-OPS-CONFIG-PIPELINE; SOAR-CONFIG-ROOT-PACKAGE; SOAR-CONFIG-GITHUB-CI; SOAR-DOC-LOCAL-DEVELOPMENT; SOAR-DOC-TESTING.
+- Function chains: docs/architecture/chains/CHAIN-OPS-CONFIG-PIPELINE.md.
+- Affected files: docs/architecture/registry/nodes.csv; docs/architecture/relations/dependencies.csv; docs/architecture/chains/chains.csv; graph generation and drift scripts; generated graph/status exports.
+- Tests/proof: `pnpm run architecture:graph:generate`; `pnpm run architecture:graph:drift` recorded in this task's Validation section.
+- Docs updated: architecture graph registries, Ops Config Pipeline chain output, generated graph exports, and source-of-truth state files.
+
 ## Context
 
 The architecture evidence graph drift audit showed `configAndPipelines` at

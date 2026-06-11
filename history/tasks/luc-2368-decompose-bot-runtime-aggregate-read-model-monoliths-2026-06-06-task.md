@@ -7,6 +7,15 @@
 - Wake: `issue_assigned`, inline payload consumed first, `fallbackFetchNeeded=false`, comments `0/0`.
 - Scope: Backend Bot Runtime aggregate and positions read-model maintainability after [LUC-2364](/LUC/issues/LUC-2364) temporarily allowlisted two production files above the `1000`-line monolith threshold.
 
+## Architecture Links
+
+- Primary feature/module: Bot Runtime aggregate and session positions read models.
+- Architecture nodes: `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-POSITIONS-READ.md`, `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-POSITION-LIFETIME.md`, `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-ORDER-LIFETIME.md`.
+- Function chains: `docs/pipelines/live-imported-position-reconciliation.md`, `docs/architecture/reference/live-position-restart-continuity-contract.md`.
+- Affected files: `apps/api/src/modules/bots/runtimeMonitoringAggregateRead.service.ts`, `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts`, `apps/api/src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`.
+- Tests/proof: API typecheck, `pnpm run quality:guardrails`, focused runtime aggregate/session positions tests, and `bots.monitoring-aggregate.e2e.test.ts`.
+- Docs updated: `history/tasks/luc-2368-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md`.
+
 ## Goal
 
 Remove the Backend Bot Runtime monolith exception by decomposing the aggregate/positions read-model files while preserving the existing endpoint contract and bounded materialization behavior.

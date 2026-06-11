@@ -1,6 +1,6 @@
 # Codebase Map
 
-Updated: 2026-05-24
+Updated: 2026-06-07
 
 Purpose: provide a repository-grounded map of Soar implementation surfaces.
 This file links code structure to the canonical architecture and module docs.
@@ -23,6 +23,7 @@ registries under `docs/architecture/registry/`,
 | Workers | `apps/api/src/workers` | Backtest, execution, market data, market stream workers. |
 | Queue/config | `apps/api/src/queue`, `apps/api/src/config` | Queue tuning and runtime config parsing. |
 | Ops scripts | `scripts/*` | Local dev, build, deploy, release, smoke, RC evidence, docs parity. |
+| Mobile scaffold | `apps/mobile` | Scaffold-only native/mobile package. Classified `out_of_scope_for_v1`; no production mobile runtime, native screens, mobile CI gate, or independent mobile backend contract is active for V1. |
 
 ## Backend Modules
 | Module | Source Path | Primary Responsibility | Main Docs |
@@ -156,5 +157,8 @@ Core Prisma model groups in `apps/api/prisma/schema.prisma`:
 - This file is a static map and does not replace module deep dives.
 - Endpoint-level method tables live in route files and should be refreshed when
   route definitions change.
-- Mobile app exists as `apps/mobile`, but active V1 traceability for mobile is
-  `UNVERIFIED / NEEDS CONFIRMATION`.
+- Mobile app exists as `apps/mobile`, but native/mobile implementation is
+  `out_of_scope_for_v1`. Current traceability is a scaffold-only seed via
+  `docs/modules/mobile-module-index.md`, `docs/modules/mobile-bootstrap.md`,
+  and `docs/planning/mobile-parity-contract.md`; responsive Web mobile proof
+  remains separate from native/mobile parity.

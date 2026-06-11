@@ -64,10 +64,29 @@ Lane: Soar Project Manager (verification/integration)
 - Result: pass unchanged (`5` position-ingestion checks + `1` readiness auth-gate check, with expected skips).
 - Disposition remains `blocked` for full readiness until DB-backed and UI/API display-path proofs are completed by Backend/QA owner.
 
-## Required Follow-Up Gap
-- Owner: Backend/QA execution lane.
-- Action:
-  - Run full targeted suites with local PostgreSQL test dependency up (`localhost:5432`) to clear DB-backed cases.
-  - Run readiness authenticated/non-admin checks after DB availability.
-  - Run dedicated UI/API display-path verification for position ingestion state.
-  - If green, perform scoped source-control closure for owned implementation files and link commit SHA back to `LUC-1166`.
+## Blocker-Resolved Closure (2026-06-08)
+- Paperclip blockers resolved:
+  - [LUC-2977](/LUC/issues/LUC-2977): DB-backed QA verification completed.
+  - [LUC-2978](/LUC/issues/LUC-2978): scoped source-control closure completed; fix SHA `44a9ceba612e8d49eb86a9001e63b1f0be6243ea` is reachable from `origin/main`.
+- Consumed [LUC-2977](/LUC/issues/LUC-2977) evidence:
+  - `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts src/router/workers-health-readiness.test.ts --reporter=verbose`
+  - Result: PASS (`2` files / `42` tests).
+  - Covers DB-backed Gate.io synced LIVE key scope, persistence lookup/sync behaviors, stale order/position transitions, canonical continuity context, and workers readiness unauthenticated/non-admin/fail-closed paths.
+- Additional parent closure proof for the API display path:
+  - `pnpm --filter api exec vitest run src/modules/bots/bots.runtime-takeover.e2e.test.ts -t "imports six exchange positions through real ownership scope and shows all six for the selected LIVE bot" --reporter=verbose`
+  - Result: FAIL by timeout only at Vitest default `5000ms` while local DB/API setup was still running.
+  - `pnpm --filter api exec vitest run src/modules/bots/bots.runtime-takeover.e2e.test.ts -t "imports six exchange positions through real ownership scope and shows all six for the selected LIVE bot" --reporter=verbose --testTimeout=30000`
+  - Result: PASS (`1` test passed, `4` skipped). The test imports exchange positions through the reconciliation path and verifies the selected LIVE bot runtime positions endpoint returns all imported positions.
+- Final acceptance matrix:
+  - Empty account path: `verified` by reconciliation and runtime position no-position paths.
+  - Open position ingestion path: `verified` by Gate.io create/update hydration regressions and DB-backed ingestion tests.
+  - Auth failure class: `verified` by workers readiness unauthenticated `401` and authenticated non-admin `403`.
+  - Rate-limit / upstream error class: `verified` by healthy-key continuation when another key fetch fails.
+  - Persistence sync class: `verified` by [LUC-2977](/LUC/issues/LUC-2977) DB-backed focused suite.
+  - UI/API display path: `verified locally at API display layer`; no separate browser UI smoke was run for this issue.
+- Safety result: no production smoke, protected proof, secret readback, push, deploy, restart, real exchange account use, order mutation, position mutation, or live-trading mutation occurred.
+
+## Closure Decision
+- Parent issue disposition: `done`.
+- Previously required follow-up gap is closed by [LUC-2977](/LUC/issues/LUC-2977), [LUC-2978](/LUC/issues/LUC-2978), and the 2026-06-08 parent display-path proof above.
+- Residual risk: browser-rendered UI was not separately smoked in this issue; API display/read path is locally verified.

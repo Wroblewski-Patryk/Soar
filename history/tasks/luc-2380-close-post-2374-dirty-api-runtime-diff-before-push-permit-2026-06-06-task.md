@@ -16,6 +16,15 @@
 - Mission ID: LUC-2380-POST-2374-DIRTY-API-RUNTIME-DIFF-CLOSURE-2026-06-06
 - Mission Status: VERIFIED
 
+## Architecture Links
+
+- Primary feature/module: Bot Runtime source-control closure for aggregate read-model decomposition.
+- Architecture nodes: `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-POSITIONS-READ.md`, `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-ORDER-LIFETIME.md`, `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-POSITION-LIFETIME.md`.
+- Function chains: `docs/pipelines/live-imported-position-reconciliation.md`, `docs/architecture/reference/live-position-restart-continuity-contract.md`.
+- Affected files: `apps/api/src/modules/bots/runtimeMonitoringAggregateRead.service.ts`, `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.ts`, `apps/api/src/modules/bots/bots.monitoring-aggregate.e2e.test.ts`.
+- Tests/proof: API typecheck, repository guardrails, focused runtime helper tests, aggregate e2e proof, and `git diff --check`.
+- Docs updated: `history/tasks/luc-2380-close-post-2374-dirty-api-runtime-diff-before-push-permit-2026-06-06-task.md`.
+
 ## Context
 
 [LUC-2374](/LUC/issues/LUC-2374) closed the prior dirty source state before a

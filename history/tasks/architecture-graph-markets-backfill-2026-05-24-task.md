@@ -1,5 +1,14 @@
 # Architecture Graph Markets Backfill - 2026-05-24
 
+## Architecture Links
+
+- Primary feature/module: Market universe authoring and catalog graph coverage.
+- Architecture nodes: SOAR-FEATURE-MARKETS; SOAR-PAGE-MARKETS-LIST; SOAR-API-MARKET-UNIVERSE-LIST; SOAR-DB-MARKET-UNIVERSE; SOAR-TEST-MARKETS-API.
+- Function chains: docs/architecture/chains/CHAIN-MARKETS.md.
+- Affected files: docs/architecture/registry/nodes.csv; docs/architecture/relations/dependencies.csv; docs/architecture/chains/chains.csv; generated graph/status exports.
+- Tests/proof: `pnpm run architecture:graph:generate` recorded in this task's Result Report.
+- Docs updated: architecture graph registries, Markets chain output, generated graph exports, and source-of-truth state files.
+
 ## Context
 
 The architecture evidence graph mission is incrementally backfilling critical
@@ -62,4 +71,3 @@ graph without changing application runtime behavior.
 - Residual risk: this is graph traceability proof only. It is not fresh
   authenticated browser proof, production market mutation proof, or full
   repository graph coverage.
-

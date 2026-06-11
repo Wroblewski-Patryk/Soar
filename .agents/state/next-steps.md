@@ -1,6 +1,1613 @@
 # Next Steps
 
-Last updated: 2026-06-07
+Last updated: 2026-06-11
+
+- 2026-06-11 `LUC-3574` closure update: the exact local-safe residual anchor
+  `scripts/waitForWebBuildInfo.mjs#normalizeNonEmptyString` is closed by a
+  direct scanner-readable relation row to
+  `scripts/waitForWebBuildInfo.test.mjs`. Focused local proof passed
+  (`node --test scripts/waitForWebBuildInfo.test.mjs`, `4/4`) and direct
+  relation readback found the [LUC-3574](/LUC/issues/LUC-3574) row. Do not
+  create another duplicate lane for this exact anchor unless a later full
+  architecture-awareness refresh still reports it after consuming the new
+  relation row. This closure does not authorize production deploy/readback,
+  protected smoke, push, restart, rollback, env edit, secret/account readback,
+  database/Redis mutation, exchange action, order, position,
+  payment/subscription, or live-trading action.
+
+- 2026-06-11 `LUC-3572` closure update: architecture-awareness has been
+  refreshed after [LUC-3567](/LUC/issues/LUC-3567). Fresh generated timestamp:
+  `2026-06-11T19:33:48.788Z`; counts: `9521` entities, `30344` relations,
+  `9837` files, `46` actionable missing-test links, `0` actionable
+  missing-doc links, `0` ownerless entities, and `0` disconnected entities.
+  [LUC-3567](/LUC/issues/LUC-3567)
+  `scripts/waitForWebBuildInfo.mjs#normalizeBaseUrl` no longer appears in Top
+  Actionable Missing Test Links. Execute [LUC-3574](/LUC/issues/LUC-3574) next
+  for the remaining local-safe
+  `scripts/waitForWebBuildInfo.mjs#normalizeNonEmptyString` direct relation or
+  classification. Do not create duplicates for [LUC-3567](/LUC/issues/LUC-3567),
+  [LUC-3561](/LUC/issues/LUC-3561), [LUC-3559](/LUC/issues/LUC-3559),
+  [LUC-3554](/LUC/issues/LUC-3554), [LUC-3551](/LUC/issues/LUC-3551),
+  [LUC-3538](/LUC/issues/LUC-3538), or [LUC-3520](/LUC/issues/LUC-3520). No
+  deploy, restart, rollback, protected smoke, secret/account readback,
+  database/Redis mutation, exchange action, order, position,
+  payment/subscription, or live-trading action is authorized by this refresh.
+
+- 2026-06-11 `LUC-3569` next-step update: execute
+  [LUC-3572](/LUC/issues/LUC-3572), the TSA architecture-awareness refresh
+  created after [LUC-3567](/LUC/issues/LUC-3567) closed
+  `scripts/waitForWebBuildInfo.mjs#normalizeBaseUrl`. Do not create another QA
+  lane for [LUC-3567](/LUC/issues/LUC-3567), [LUC-3561](/LUC/issues/LUC-3561),
+  [LUC-3559](/LUC/issues/LUC-3559), [LUC-3554](/LUC/issues/LUC-3554),
+  [LUC-3551](/LUC/issues/LUC-3551), [LUC-3538](/LUC/issues/LUC-3538), or
+  [LUC-3520](/LUC/issues/LUC-3520). Do not select further repair lanes from
+  the stale `2026-06-11T19:03:14.220Z` report until
+  [LUC-3572](/LUC/issues/LUC-3572) refreshes or explicitly blocks the scanner.
+  No deploy, restart, rollback, protected smoke, secret/account readback,
+  database/Redis mutation, exchange action, order, position,
+  payment/subscription, or live-trading action is authorized by this PM
+  checkpoint.
+
+- 2026-06-11 `LUC-3567` closure update: the exact local-safe residual anchor
+  `scripts/waitForWebBuildInfo.mjs#normalizeBaseUrl` is closed by a direct
+  scanner-readable relation row to `scripts/waitForWebBuildInfo.test.mjs`.
+  Focused local proof passed (`node --test scripts/waitForWebBuildInfo.test.mjs`,
+  `4/4`) and direct relation readback found the [LUC-3567](/LUC/issues/LUC-3567)
+  row at line `866`. Do not create another duplicate lane for this exact anchor
+  unless a later full architecture-awareness refresh still reports it after
+  consuming the new relation row. This closure does not authorize production
+  deploy/readback, protected smoke, push, restart, rollback, env edit,
+  secret/account readback, database/Redis mutation, exchange action, order,
+  position, payment/subscription, or live-trading action.
+
+- 2026-06-11 `LUC-3565` next-step update: execute
+  [LUC-3567](/LUC/issues/LUC-3567), the QVE local traceability
+  repair/classification lane for
+  `scripts/waitForWebBuildInfo.mjs#normalizeBaseUrl`. The refreshed
+  architecture-awareness report generated `2026-06-11T19:03:14.220Z` and
+  [LUC-3561](/LUC/issues/LUC-3561) `scripts/waitForWebBuildInfo.mjs` no longer
+  appears in Top Actionable Missing Test Links. Do not create duplicate lanes
+  for [LUC-3561](/LUC/issues/LUC-3561), [LUC-3559](/LUC/issues/LUC-3559),
+  [LUC-3554](/LUC/issues/LUC-3554), [LUC-3551](/LUC/issues/LUC-3551),
+  [LUC-3538](/LUC/issues/LUC-3538), or [LUC-3520](/LUC/issues/LUC-3520). No
+  deploy, restart, rollback, protected smoke, secret/account readback,
+  database/Redis mutation, exchange action, order, position,
+  payment/subscription, or live-trading action is authorized by this TSA
+  checkpoint.
+
+- 2026-06-11 `LUC-3562` next-step update: execute
+  [LUC-3565](/LUC/issues/LUC-3565), the TSA architecture-awareness refresh
+  created after [LUC-3561](/LUC/issues/LUC-3561) closed the feature-level
+  `scripts/waitForWebBuildInfo.mjs` relation row. Do not create another QA lane
+  for [LUC-3561](/LUC/issues/LUC-3561), [LUC-3559](/LUC/issues/LUC-3559),
+  [LUC-3554](/LUC/issues/LUC-3554), [LUC-3551](/LUC/issues/LUC-3551),
+  [LUC-3538](/LUC/issues/LUC-3538), or [LUC-3520](/LUC/issues/LUC-3520).
+  Do not select further repair lanes from the stale
+  `2026-06-11T18:46:01.427Z` report until [LUC-3565](/LUC/issues/LUC-3565)
+  refreshes or explicitly blocks the scanner. Keep protected/browser/process
+  rows and broad [LUC-3010](/LUC/issues/LUC-3010) helper-family work out of
+  duplicate local repair work. No deploy, restart, rollback, protected smoke,
+  secret/account readback, database/Redis mutation, exchange action, order,
+  position, payment/subscription, or live-trading action is authorized by this
+  PM checkpoint.
+
+- 2026-06-11 `LUC-3561` closure update: the exact local-safe residual
+  feature-level anchor `scripts/waitForWebBuildInfo.mjs` is closed by a direct
+  scanner-readable relation row to `scripts/waitForWebBuildInfo.test.mjs`.
+  Focused local proof passed (`node --test scripts/waitForWebBuildInfo.test.mjs`,
+  `4/4`) and direct relation readback found the LUC-3561 row at line `860`.
+  Do not create another duplicate lane for this exact feature-level anchor
+  unless a later full architecture-awareness refresh still reports it after
+  consuming the new relation row. This closure does not authorize production
+  deploy/readback, protected smoke, push, restart, rollback, env edit,
+  secret/account readback, database/Redis mutation, exchange action, order,
+  position, payment/subscription, or live-trading action.
+
+- 2026-06-11 `LUC-3559` closure update: the exact local-safe residual anchor
+  `scripts/waitForWebBuildInfo.mjs#main` is closed by a direct
+  scanner-readable relation row to `scripts/waitForWebBuildInfo.test.mjs`.
+  Focused local proof passed (`node --test scripts/waitForWebBuildInfo.test.mjs`,
+  `4/4`) and direct relation readback passed for the LUC-3559 row. Do not
+  create another duplicate lane for this exact anchor unless a later full
+  architecture-awareness refresh still reports it after consuming the new
+  relation row. This closure does not authorize production deploy/readback,
+  protected smoke, push, restart, rollback, env edit, secret/account readback,
+  database/Redis mutation, exchange action, order, position,
+  payment/subscription, or live-trading action.
+
+- 2026-06-11 `LUC-3558` closure update: architecture-awareness has been
+  refreshed after [LUC-3554](/LUC/issues/LUC-3554). Fresh generated timestamp:
+  `2026-06-11T18:34:56.688Z`; counts: `9505` entities, `30276` relations,
+  `9829` files, `48` actionable missing-test links, `0` actionable
+  missing-doc links, `0` ownerless entities, and `0` disconnected entities.
+  `scripts/waitForWebBuildInfo.mjs#hasFlag` no longer appears in Top
+  Actionable Missing Test Links. Execute [LUC-3559](/LUC/issues/LUC-3559) next
+  for the remaining local-safe `scripts/waitForWebBuildInfo.mjs#main` direct
+  relation or classification. Do not create duplicates for [LUC-3520](/LUC/issues/LUC-3520),
+  [LUC-3538](/LUC/issues/LUC-3538), [LUC-3551](/LUC/issues/LUC-3551),
+  [LUC-3554](/LUC/issues/LUC-3554), protected/browser/process-boundary rows, or
+  [LUC-3010](/LUC/issues/LUC-3010) helper-family work. No deploy, restart,
+  rollback, protected smoke, secret/account readback, database/Redis mutation,
+  exchange action, order, position, payment/subscription, or live-trading action
+  is authorized by this refresh.
+
+- 2026-06-11 `LUC-3555` next-step update: execute
+  [LUC-3558](/LUC/issues/LUC-3558), the TSA architecture-awareness refresh
+  created after [LUC-3554](/LUC/issues/LUC-3554) closed
+  `scripts/waitForWebBuildInfo.mjs#hasFlag`. Do not create another QA lane for
+  [LUC-3554](/LUC/issues/LUC-3554), [LUC-3551](/LUC/issues/LUC-3551),
+  [LUC-3538](/LUC/issues/LUC-3538), or [LUC-3520](/LUC/issues/LUC-3520). Do not
+  select further repair lanes from the stale `2026-06-11T18:16:37.570Z` report
+  until [LUC-3558](/LUC/issues/LUC-3558) refreshes or explicitly blocks the
+  scanner. Keep protected/browser/process-boundary rows and
+  [LUC-3010](/LUC/issues/LUC-3010) out of duplicate local repair work. No
+  deploy, restart, rollback, protected smoke, secret/account readback,
+  database/Redis mutation, exchange action, order, position,
+  payment/subscription, or live-trading action is authorized by this PM
+  checkpoint.
+
+- 2026-06-11 `LUC-3552` closure update: architecture-awareness has been
+  refreshed after [LUC-3551](/LUC/issues/LUC-3551). Fresh generated timestamp:
+  `2026-06-11T18:16:37.570Z`; counts: `9499` entities, `30246` relations,
+  `9826` files, `48` actionable missing-test links, `0` actionable
+  missing-doc links, `0` ownerless entities, and `0` disconnected entities.
+  `scripts/waitForWebBuildInfo.mjs#isDeployMetadataSourceAccepted` no longer
+  appears in Top Actionable Missing Test Links. Execute
+  [LUC-3554](/LUC/issues/LUC-3554) next for the remaining local-safe
+  `scripts/waitForWebBuildInfo.mjs#hasFlag` direct relation or
+  classification. Do not create duplicates for [LUC-3520](/LUC/issues/LUC-3520),
+  [LUC-3538](/LUC/issues/LUC-3538), [LUC-3551](/LUC/issues/LUC-3551),
+  existing protected/browser/process-boundary rows, or [LUC-3010](/LUC/issues/LUC-3010)
+  helper-family work. No deploy, restart, rollback, protected smoke,
+  secret/account readback, database/Redis mutation, exchange action, order,
+  position, payment/subscription, or live-trading action is authorized by this
+  refresh.
+
+- 2026-06-11 `LUC-3551` closure update: the exact local-safe residual anchor
+  `scripts/waitForWebBuildInfo.mjs#isDeployMetadataSourceAccepted` is closed by
+  a direct scanner-readable relation row to `scripts/waitForWebBuildInfo.test.mjs`.
+  Focused local proof passed (`node --test scripts/waitForWebBuildInfo.test.mjs`,
+  `4/4`) and direct relation readback found the LUC-3551 row at line `862`.
+  Do not create another duplicate lane for this exact anchor unless a later
+  full architecture-awareness refresh still reports it after consuming the new
+  relation row. This closure does not authorize production deploy/readback,
+  protected smoke, push, restart, rollback, env edit, secret/account readback,
+  database/Redis mutation, exchange action, order, position,
+  payment/subscription, or live-trading action.
+
+- 2026-06-11 `LUC-3549` closure update: architecture-awareness has been
+  refreshed after [LUC-3538](/LUC/issues/LUC-3538). Fresh generated timestamp:
+  `2026-06-11T18:04:25.885Z`; counts: `9495` entities, `30230` relations,
+  `9824` files, `48` actionable missing-test links, `0` actionable missing-doc
+  links, `0` ownerless entities, and `0` disconnected entities.
+  `scripts/waitForWebBuildInfo.mjs#isDeployBuildIdAccepted` no longer appears
+  in Top Actionable Missing Test Links. Execute [LUC-3551](/LUC/issues/LUC-3551)
+  next for the remaining local-safe
+  `scripts/waitForWebBuildInfo.mjs#isDeployMetadataSourceAccepted` direct
+  relation or classification. Do not create duplicates for
+  [LUC-3520](/LUC/issues/LUC-3520), [LUC-3538](/LUC/issues/LUC-3538), existing
+  protected/browser/process-boundary rows, or [LUC-3010](/LUC/issues/LUC-3010)
+  helper-family work. No deploy, restart, rollback, protected smoke,
+  secret/account readback, database/Redis mutation, exchange action, order,
+  position, payment/subscription, or live-trading action is authorized by this
+  refresh.
+
+- 2026-06-11 `LUC-3546` next-step update: execute
+  [LUC-3549](/LUC/issues/LUC-3549), the TSA architecture-awareness refresh
+  created after [LUC-3538](/LUC/issues/LUC-3538) closed the remaining
+  `scripts/waitForWebBuildInfo.mjs#isDeployBuildIdAccepted` relation row.
+  Do not create another QA lane for [LUC-3538](/LUC/issues/LUC-3538) or
+  [LUC-3520](/LUC/issues/LUC-3520). Do not select further repair lanes from
+  the stale `2026-06-11T17:34:59.119Z` report until
+  [LUC-3549](/LUC/issues/LUC-3549) refreshes or explicitly blocks the scanner.
+  Keep existing protected/browser/process-boundary rows and
+  [LUC-3010](/LUC/issues/LUC-3010) out of duplicate local repair work. No
+  deploy, restart, rollback, protected smoke, secret/account readback,
+  database/Redis mutation, exchange action, order, position,
+  payment/subscription, or live-trading action is authorized by this PM
+  checkpoint.
+
+- 2026-06-11 `LUC-3536` closure update: architecture-awareness has been
+  refreshed after [LUC-3520](/LUC/issues/LUC-3520). Fresh generated timestamp:
+  `2026-06-11T17:34:59.119Z`; counts: `9489` entities, `30201` relations,
+  `9821` files, `48` actionable missing-test links, `0` actionable missing-doc
+  links, `0` ownerless entities, and `0` disconnected entities.
+  `scripts/waitForWebBuildInfo.mjs#fetchJsonWithTimeout` no longer appears in
+  Top Actionable Missing Test Links. Execute [LUC-3538](/LUC/issues/LUC-3538)
+  next for the remaining local-safe
+  `scripts/waitForWebBuildInfo.mjs#isDeployBuildIdAccepted` direct relation or
+  classification. Do not create duplicates for [LUC-3520](/LUC/issues/LUC-3520),
+  existing protected/browser/process-boundary rows, or [LUC-3010](/LUC/issues/LUC-3010)
+  helper-family work. No deploy, restart, rollback, protected smoke,
+  secret/account readback, database/Redis mutation, exchange action, order,
+  position, payment/subscription, or live-trading action is authorized by this
+  refresh.
+
+- 2026-06-11 `LUC-3530` next-step update: execute
+  [LUC-3536](/LUC/issues/LUC-3536), the TSA architecture-awareness refresh
+  created after [LUC-3520](/LUC/issues/LUC-3520) closed
+  `scripts/waitForWebBuildInfo.mjs#fetchJsonWithTimeout` while the current
+  report still lists that anchor. Do not create another repair child from the
+  stale `2026-06-11T16:13:20.657Z` report before [LUC-3536](/LUC/issues/LUC-3536)
+  refreshes or explicitly blocks the graph/report generation. Keep existing
+  review/operator gates [LUC-3525](/LUC/issues/LUC-3525),
+  [LUC-3409](/LUC/issues/LUC-3409), [LUC-2880](/LUC/issues/LUC-2880), and
+  [LUC-2755](/LUC/issues/LUC-2755) fail-closed; no deploy, restart, rollback,
+  protected smoke, secret/account readback, database/Redis mutation, exchange
+  action, order, position, payment/subscription, or live-trading action is
+  authorized by this PM checkpoint.
+
+- 2026-06-11 `LUC-3520` closure update: the exact local-safe residual anchor
+  `scripts/waitForWebBuildInfo.mjs#fetchJsonWithTimeout` is closed by a direct
+  scanner-readable relation row to `scripts/waitForWebBuildInfo.test.mjs`.
+  Focused local proof passed (`node --test scripts/waitForWebBuildInfo.test.mjs`,
+  `4/4`) and direct relation readback passed (`1/1`). Do not create another
+  duplicate lane for this exact anchor unless a later full architecture-awareness
+  refresh still reports it after consuming the new relation row. This closure
+  does not authorize production deploy/readback, protected smoke, push, restart,
+  rollback, env edit, secret/account readback, database/Redis mutation,
+  exchange action, order, position, payment/subscription, or live-trading action.
+
+- 2026-06-11 `LUC-3519` next-step update: [LUC-3520](/LUC/issues/LUC-3520)
+  has executed the delegated QVE relation-row closure for
+  `scripts/waitForWebBuildInfo.mjs#fetchJsonWithTimeout`. Do not create
+  duplicate lanes for this exact anchor, the current protected/browser/process
+  proof families, [LUC-3010](/LUC/issues/LUC-3010) utility-helper family, or
+  already-closed Web build-info provenance work. Do not run production
+  deploy/readback, protected smoke, push, restart, rollback, env edit,
+  secret/account readback, database/Redis mutation, exchange action, order,
+  position, payment/subscription, or live-trading action from this traceability
+  lane.
+
+- 2026-06-11 `LUC-3515` next-step update: do not rerun another duplicate
+  public Coolify health sweep unless a new operational fact changes. Current
+  public no-worker smoke is green for deployed build-info SHA
+  `56d8d440bfe0fd9ee692e9f669e35414d85d2493`, and Coolify read-only project/
+  environment status resolves the expected production topology: six
+  applications, one PostgreSQL, one Redis, and zero generic services.
+  Continue fail-closed on the unresolved gates: protected `/workers/ready`,
+  worker freshness, release-grade image provenance, rollback, restore, SLO,
+  release approval, and redacted Coolify deploy-log/root-cause export if
+  required. Do not deploy, restart, rollback, edit env, fetch raw private
+  logs, read secret values, mutate DB/Redis, use production accounts, or run
+  live-trading checks from this lane.
+
+- 2026-06-11 `LUC-3516` next-step update: do not create a duplicate
+  source-control closure child for [LUC-3510](/LUC/issues/LUC-3510); it is
+  already `done`. Do not create a duplicate Coolify/deploy-health lane while
+  [LUC-3515](/LUC/issues/LUC-3515) is actively running under DRE/Ops. Continue
+  through the existing review/operator paths [LUC-2755](/LUC/issues/LUC-2755),
+  [LUC-2880](/LUC/issues/LUC-2880), and [LUC-3409](/LUC/issues/LUC-3409).
+  Keep protected gates fail-closed; no deploy, restart, rollback, protected
+  smoke, secret/account readback, database/Redis mutation, exchange action,
+  order, position, payment/subscription, or live-trading action is authorized
+  by this PM checkpoint.
+
+- 2026-06-11 `LUC-3513` next-step update: do not open a duplicate
+  docs/memory or map-drift lane from this sweep. Current local known-state is
+  refreshed and green (`project index PASS:21`, V1 static scan `0` findings,
+  master ledger `GO`, completion scorecard `GO`, docs parity PASS, guardrails
+  PASS, strict graph drift `846/846`). Fresh architecture awareness generated
+  `2026-06-11T16:13:20.657Z` reports `48` actionable missing-test links,
+  `0` actionable missing-doc links, `0` ownerless entities, and `0`
+  disconnected entities. Paperclip queue posture is intentional gate/review
+  hold, not idle: `96` blocked, `3` in_review, `1` in_progress for
+  [LUC-3513](/LUC/issues/LUC-3513), and `0` todo. Continue through real
+  review/operator paths [LUC-2755](/LUC/issues/LUC-2755),
+  [LUC-2880](/LUC/issues/LUC-2880), and [LUC-3409](/LUC/issues/LUC-3409);
+  keep protected gates fail-closed and do not run deploy, restart, rollback,
+  protected smoke, secret/account readback, database/Redis mutation, exchange
+  action, order, position, payment/subscription, or live-trading action from
+  this docs sweep.
+
+- 2026-06-11 `LUC-3507` next-step update: execute
+  [LUC-3510](/LUC/issues/LUC-3510), the DRE/Ops source-control closure batch
+  issue created after [LUC-3503](/LUC/issues/LUC-3503), [LUC-3504](/LUC/issues/LUC-3504),
+  [LUC-3505](/LUC/issues/LUC-3505), and [LUC-3506](/LUC/issues/LUC-3506)
+  all completed validation/classification. [LUC-3510](/LUC/issues/LUC-3510)
+  must inspect current dirty state, stage only evidence-covered files, run
+  redaction/staged-path checks and smallest meaningful validation, then either
+  commit locally with the required Paperclip co-author trailer or record an
+  exact no-commit blocker. Do not push, deploy, restart, rollback, mutate env,
+  read secrets/accounts, run protected proof, touch DB/Redis, exchange, order,
+  position, payment/subscription, or live-trading state. Keep
+  [LUC-3435](/LUC/issues/LUC-3435) with the authorized Ops owner; do not create
+  another Coolify access duplicate.
+
+- 2026-06-11 `LUC-3506` closure update: [LUC-3506](/LUC/issues/LUC-3506)
+  is complete. The root `NUL` artifact was classified as untracked zero-byte
+  Windows reserved-device-name workspace residue and removed with a narrow
+  extended-path delete. `git status --porcelain=v1 -- NUL` is now clean. Do
+  not create another cleanup lane for this artifact unless it reappears; if it
+  does, classify it as environment/tooling residue first and refuse deletion
+  unless it is still untracked and zero-byte.
+
+- 2026-06-11 `LUC-3493` next-step update: [LUC-3493](/LUC/issues/LUC-3493)
+  is blocked on the authorized Ops owner action for [LUC-3435](/LUC/issues/LUC-3435).
+  The PM queue readback found no `todo` issues and only the expected
+  review/operator paths [LUC-2755](/LUC/issues/LUC-2755), [LUC-2880](/LUC/issues/LUC-2880),
+  and [LUC-3409](/LUC/issues/LUC-3409) outside this run. [LUC-3435](/LUC/issues/LUC-3435)
+  remains a stale blocked Coolify read-only access issue after same-day
+  evidence from [LUC-3437](/LUC/issues/LUC-3437) and [LUC-3461](/LUC/issues/LUC-3461);
+  direct PM closure was rejected by Paperclip authorization boundary. Next
+  owner/action: [01 Ops Release Lead](/LUC/agents/01dd0c79-172b-4848-80eb-40692f07ccbb)
+  must close or explicitly supersede [LUC-3435](/LUC/issues/LUC-3435) using
+  the existing read-only evidence. Do not create another Coolify access child
+  for this exact blocker; do not run deploy, restart, rollback, protected
+  proof, secret/account readback, database/Redis mutation, exchange action,
+  order, position, payment/subscription, or live-trading action.
+
+- 2026-06-11 `LUC-3490` next-step update: [LUC-3491](/LUC/issues/LUC-3491)
+  has been executed and closed. It was the QVE child created after the fresh
+  architecture-awareness refresh generated `2026-06-11T14:45:56.361Z`
+  (`9459` entities / `30071` relations / `9807` files). [LUC-3485](/LUC/issues/LUC-3485)
+  `startRuntime` no longer appears in the generated top actionable list; do not
+  create another duplicate lane for that anchor. [LUC-3491](/LUC/issues/LUC-3491)
+  owns only `scripts/summarizeRcGates.mjs#isDirectRun`,
+  `scripts/syncRcChecklistFromGateStatus.mjs#isDirectRun`, and
+  `scripts/syncRcChecklistFromGateStatus.mjs#resolveDocsRoot`; proof passed
+  with focused local Node tests and direct relation readback. Do not run real
+  RC/prod gates, protected proof, secrets/accounts, deploy, restart, rollback,
+  database/Redis mutation, exchange/order/position/payment/subscription, or
+  live-trading action for this closed traceability lane.
+
+- 2026-06-11 `LUC-3491` closure update: [LUC-3491](/LUC/issues/LUC-3491)
+  is complete. Keep the three RC summary/checklist residual anchors closed by
+  the focused local proof and direct relation readback (`3/3`). Do not create
+  another duplicate RC summary/checklist relation lane unless a later full
+  architecture-awareness refresh reports new exact anchors outside
+  `scripts/summarizeRcGates.mjs#isDirectRun`,
+  `scripts/syncRcChecklistFromGateStatus.mjs#isDirectRun`, and
+  `scripts/syncRcChecklistFromGateStatus.mjs#resolveDocsRoot`.
+
+- 2026-06-11 `LUC-3487` next-step update: keep stale duplicate PM daily status
+  refresh [LUC-3372](/LUC/issues/LUC-3372) closed as superseded by fresh
+  completed [LUC-3071](/LUC/issues/LUC-3071) known-state evidence. Current
+  runnable queue posture remains intentional gate/review hold: [LUC-2755](/LUC/issues/LUC-2755)
+  for accepted smoke principal, [LUC-2880](/LUC/issues/LUC-2880) for controlled
+  redeploy provenance, and [LUC-3409](/LUC/issues/LUC-3409) for owner-login
+  verification path. [LUC-3485](/LUC/issues/LUC-3485) is already `done`; do not
+  create another QVE duplicate for `scripts/start-local-prod-like.mjs#startRuntime`
+  unless a later architecture-awareness refresh reports new exact actionable
+  rows. Do not create another no-stall/daily-status sibling unless a new
+  operational fact changes queue posture.
+
+- 2026-06-11 `LUC-3484` next-step update: execute
+  [LUC-3485](/LUC/issues/LUC-3485), the QVE child created after the fresh
+  architecture-awareness refresh generated `2026-06-11T14:16:48.512Z`
+  (`9455` entities / `30056` relations / `9805` files). [LUC-3466](/LUC/issues/LUC-3466)
+  anchors are no longer present in the generated report. [LUC-3485](/LUC/issues/LUC-3485)
+  owns only `scripts/start-local-prod-like.mjs#startRuntime`; expected proof is
+  focused local `node --test scripts/startLocalProdLike.test.mjs` plus direct
+  relation readback or explicit process-boundary classification. Do not start
+  real services, Docker, deploy/restart/rollback, protected proof, secret or
+  account readback, DB mutation, exchange/order/position/payment/subscription,
+  or live-trading action.
+
+- 2026-06-11 `LUC-3480` next-step update: keep duplicate PM daily status
+  refresh [LUC-3454](/LUC/issues/LUC-3454) closed as superseded by fresh
+  completed [LUC-3071](/LUC/issues/LUC-3071) known-state evidence. Current
+  runnable queue posture remains intentional gate/review hold, not idle:
+  [LUC-2755](/LUC/issues/LUC-2755) for accepted smoke principal,
+  [LUC-2880](/LUC/issues/LUC-2880) for controlled redeploy provenance, and
+  [LUC-3409](/LUC/issues/LUC-3409) for owner-login verification path. Do not
+  create another daily-status/no-stall sibling unless a new operational fact
+  changes queue posture.
+
+- 2026-06-11 `LUC-3476` next-step update: do not open another Coolify
+  resource inventory reconciliation lane while [LUC-3471](/LUC/issues/LUC-3471)
+  already closed that scope from fresh read-only evidence. Duplicate
+  [LUC-3479](/LUC/issues/LUC-3479) should remain closed/superseded by that
+  evidence. Continue through the real review/operator paths:
+  [LUC-2755](/LUC/issues/LUC-2755) for accepted smoke principal,
+  [LUC-3409](/LUC/issues/LUC-3409) for owner-login verification path, and
+  [LUC-2880](/LUC/issues/LUC-2880) for controlled web redeploy provenance.
+  Keep protected gates fail-closed; no deploy, restart, rollback, protected
+  smoke, secret/account readback, database/Redis mutation, exchange action,
+  order, position, payment/subscription, or live-trading action is authorized
+  by this PM checkpoint.
+
+- 2026-06-11 `LUC-3465` next-step update: execute
+  [LUC-3466](/LUC/issues/LUC-3466), the DRE child created for the residual
+  exact prod-like/worker wrapper relation rows still visible in the latest
+  architecture-awareness report generated `2026-06-11T04:13:18.595Z`.
+  [LUC-3466](/LUC/issues/LUC-3466) is scoped to
+  `scripts/start-local-prod-like.mjs#validateRequiredEnvFiles`,
+  `#writeMissingEnvGuidance`, `scripts/start-workers-prod.mjs#startWorkers`,
+  and `#writeMissingWorkerGuidance`. Do not open duplicate children for
+  `triageJourneyEvidence` or `verifyLocalBackupRestore`; [LUC-3010](/LUC/issues/LUC-3010)
+  already owns that family and remains blocked by active QVE recovery.
+  Preserve the boundary: no real service start, worker start, Docker mutation,
+  deploy, restart, rollback, protected smoke, secret, production account,
+  database mutation, exchange, order, position, payment/subscription, or
+  live-trading action.
+
+- 2026-06-11 `LUC-3457` next-step update: keep the security/account-access
+  release gate blocked fail-closed. Current no-secret evidence is fresh:
+  public build-info reports deployed `56d8d440bfe0fd9ee692e9f669e35414d85d2493`,
+  protected input readiness is `PARTIAL/NO-GO` with only `PROD_UI_AUDIT_*` /
+  `PROD_UI_*` names present, API redaction/crypto/critical-secret tests passed
+  (`18/18`), and subscription/exchange boundary tests passed (`17/17`). Next
+  owner/action: board-capable Security/Ops secret owner must bind
+  `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `SOAR_PROD_*`, DB-check,
+  `RC_*`, and `GATE*` families through the approved encrypted runtime path.
+  Until then do not run protected proof, account/API-key/subscription/payment
+  mutation, exchange/live checks, database proof, rollback, deploy, restart,
+  or live-trading action. Evidence:
+  `history/tasks/luc-3457-security-account-access-gate-sweep-2026-06-11-task.md`.
+
+- 2026-06-11 `LUC-3071` next-step update: do not keep this daily project
+  status refresh blocked on the stale 2026-06-08 adapter usage-limit failure.
+  Current execution is healthy and `pnpm run ops:project:known-state` passed:
+  project index `PASS:21`, V1 static scan `0` findings, master ledger `GO`,
+  completion scorecard `GO` at `100%`, docs parity PASS, guardrails PASS, and
+  strict graph drift `846/846`. Continue through named protected-gate/review
+  lanes for production-account, deploy/restart/rollback, database, exchange,
+  payment/live-trading, and signoff evidence; do not rerun this issue unless a
+  new status fact changes. Evidence:
+  `history/tasks/luc-3071-daily-project-status-refresh-2026-06-11-task.md`.
+
+- 2026-06-11 `LUC-3455` next-step update: do not rerun this local regression
+  sweep just to recover the earlier adapter-auth failed run. Current QVE
+  execution produced fresh no-secret evidence: known-state PASS, V1 static
+  scan `0`, master ledger `GO`, completion scorecard `GO`, release/smoke
+  helper pack `51/51`, local browser/protected-proof helper pack `14/14`, and
+  no leftover `chrome-headless-shell` process. Continue with named
+  review/operator/protected-gate lanes for production-account, deploy,
+  rollback, database, exchange/payment/live-trading, and signoff evidence.
+  Evidence:
+  `history/tasks/luc-3455-regression-evidence-sweep-2026-06-11-task.md`.
+
+- 2026-06-11 `LUC-3445` next-step update: do not create another duplicate
+  child for the current `triageJourneyEvidence` / `verifyLocalBackupRestore` /
+  build-info utility-helper family. Existing child [LUC-3010](/LUC/issues/LUC-3010)
+  already owns that work and remains blocked by active `stranded_assigned_issue`
+  recovery assigned to [09 QVE](/LUC/agents/10b6e79a-3439-4574-b45c-8e7a4deaa1db).
+  Next owner/action: [09 QVE](/LUC/agents/10b6e79a-3439-4574-b45c-8e7a4deaa1db)
+  must restore the live execution path or manually resolve [LUC-3010](/LUC/issues/LUC-3010),
+  then complete/classify deterministic helper rows with focused local proof and
+  scanner-readable relation evidence. Preserve boundary: no protected proof,
+  production backup restore, deploy, push, restart, rollback, secret, database
+  mutation, exchange, order, position, account/payment, or live-trading action.
+  Evidence:
+  `history/tasks/luc-3445-no-stall-queue-expeditor-2026-06-11-task.md`.
+
+- 2026-06-11 `LUC-3313` next-step update: do not reopen this older
+  autonomous idle/map-drift routine for another known-state refresh. Its
+  previous adapter usage-limit failure is superseded by the fresher completed
+  [LUC-3425](/LUC/issues/LUC-3425) sweep, which already recorded current
+  architecture-awareness, known-state, queue posture, and protected-gate/review
+  hold. Continue through the existing named review/operator and blocked lanes;
+  re-run docs/memory drift only after a new operational fact changes queue
+  posture, architecture-awareness output, or protected-gate evidence. Evidence:
+  `history/tasks/luc-3313-autonomous-idle-and-map-drift-sweep-2026-06-11-task.md`.
+
+- 2026-06-11 `LUC-3434` next-step update: do not reopen
+  [LUC-3007](/LUC/issues/LUC-3007) for stale static-scan adapter recovery.
+  Current QVE execution is working: `node --test scripts/runV1StaticIssueScan.test.mjs`
+  passed (`8/8`), `pnpm run ops:project:index` passed (`PASS:21`, tests
+  indexed `445`), and `pnpm run ops:project:scan` passed with V1 static scan
+  `0` findings. [LUC-3007](/LUC/issues/LUC-3007) should remain `done` because
+  [LUC-3381](/LUC/issues/LUC-3381) completed the helper missing-test objective
+  and [LUC-3434](/LUC/issues/LUC-3434) revalidated the real scan execution
+  path. Continue with non-duplicate architecture-awareness repair lanes only.
+  Preserve the boundary: no protected proof, production proof, deploy, restart,
+  rollback, secret, account, database, exchange, order, position,
+  payment/subscription, or live-trading action. Evidence:
+  `history/tasks/luc-3434-static-scan-qa-execution-path-recovery-2026-06-11-task.md`.
+
+- 2026-06-11 `LUC-3425` next-step update: do not open a duplicate
+  docs/memory, PM, QA, or protected-gate lane from the autonomous idle sweep.
+  The local known-state refresh is green (`project index PASS:21`, V1 static
+  scan `0` findings, master ledger `GO`, completion scorecard `GO`), and the
+  architecture-awareness report generated `2026-06-11T04:13:18.595Z` reports
+  `56` actionable missing-test links, `0` actionable missing-doc links, `0`
+  ownerless entities, and `0` disconnected entities. Paperclip queue posture is
+  not monitoring-idle: `110` non-terminal Soar issues remain (`106` blocked,
+  `3` in_review, `1` in_progress for the sweep itself). Next owner/action:
+  let [LUC-2755](/LUC/issues/LUC-2755), [LUC-2880](/LUC/issues/LUC-2880), and
+  [LUC-3409](/LUC/issues/LUC-3409) resolve through their real review/operator
+  paths, while existing blocker owners continue named blocked lanes such as
+  [LUC-3375](/LUC/issues/LUC-3375) and [LUC-3419](/LUC/issues/LUC-3419).
+  Re-run docs/memory drift only after a new operational fact changes queue
+  posture, architecture-awareness output, or protected-gate evidence. Evidence:
+  `history/tasks/luc-3425-autonomous-idle-and-map-drift-sweep-2026-06-11-task.md`.
+
+- 2026-06-11 `LUC-3419` next-step update: do not create a duplicate child for
+  the current `triageJourneyEvidence` / `verifyLocalBackupRestore` /
+  build-info utility helper family. Fresh architecture-awareness report
+  generated `2026-06-11T04:01:39.651Z` reports `56` actionable missing-test
+  links, `0` actionable missing-doc links, `0` ownerless entities, and `0`
+  disconnected entities. Existing child [LUC-3010](/LUC/issues/LUC-3010)
+  already owns this local-safe family, but is blocked by stranded assigned-issue
+  recovery after a QA adapter usage-limit failure. PM direct unblock was
+  rejected by Paperclip authorization boundary. Next owner/action:
+  [09 QVE](/LUC/agents/10b6e79a-3439-4574-b45c-8e7a4deaa1db) must restore the
+  live execution path or manually resolve [LUC-3010](/LUC/issues/LUC-3010),
+  then complete/classify deterministic helper rows with focused local proof and
+  direct scanner-readable relation rows. Preserve boundary: no protected
+  proof, production backup restore, deploy, push, restart, rollback, secret,
+  database mutation, exchange, order, position, account/payment, or
+  live-trading action. Evidence:
+  `history/tasks/luc-3419-no-stall-queue-expeditor-2026-06-11-task.md`.
+
+- 2026-06-11 `LUC-3009` next-step update: do not reopen the local helper-test
+  lane for `scripts/summarizeRcGates.mjs` or
+  `scripts/syncRcChecklistFromGateStatus.mjs` while
+  [LUC-3009](/LUC/issues/LUC-3009) owns focused local proof and `17` direct
+  scanner-readable relation rows. Validation passed: syntax checks, focused
+  Node proof (`7/7`), release Ops aggregate proof (`9/9`), direct relation
+  readback, architecture graph generation, repository guardrails, and no
+  leftover `chrome-headless-shell` process. Architecture-awareness refresh
+  remains a later generated-report follow-up. Preserve the boundary: no real
+  RC/prod gate, protected smoke, deploy, push, restart, rollback, secret,
+  account, database, exchange, payment/subscription, order, position, or
+  live-trading mutation. Evidence:
+  `history/tasks/luc-3009-rc-gate-summary-checklist-missing-test-rows-2026-06-11-task.md`.
+
+- 2026-06-11 `LUC-3404` next-step update: use the refreshed
+  architecture-awareness report generated `2026-06-11T03:02:36.574Z` as the
+  current generated baseline. Do not reopen [LUC-3381](/LUC/issues/LUC-3381)
+  or [LUC-3389](/LUC/issues/LUC-3389); their rows are gone from the report and
+  direct relation rows remain present in
+  `docs/architecture/relations/priority-test-links.csv`. The next
+  non-duplicate local-safe helper family is [LUC-3410](/LUC/issues/LUC-3410)
+  for `scripts/runWebNextProductionCommand.mjs#run`, owned by `09 QVE`.
+  Expected proof: focused local wrapper test without starting real Next,
+  direct relation row or explicit classification, syntax check, focused
+  `node --test`, relation readback, graph generation or precise blocker, and
+  guardrails as appropriate. Protected-gate status: local-safe only; no
+  protected browser proof, deploy, restart, rollback, secret, env, DB, account,
+  exchange, order, position, payment/subscription, or live-trading mutation.
+  Evidence:
+  `history/tasks/luc-3404-architecture-awareness-refresh-after-closed-relation-lanes-2026-06-11-task.md`.
+
+- 2026-06-11 `LUC-3405` next-step update: do not open duplicate local
+  helper-test lanes for
+  `scripts/runPublicReadOnlyBrowserProof.mjs#createPage`, `#killProcessTree`,
+  or `#launchBrowser`. They are classified as real browser/process
+  orchestration boundaries after [LUC-2958](/LUC/issues/LUC-2958) /
+  [LUC-2975](/LUC/issues/LUC-2975) covered the deterministic helper anchors.
+  Correct future evidence is a public browser proof artifact or an explicitly
+  approved browser/process integration harness, not fake unit-test relation
+  rows. Evidence:
+  `history/tasks/luc-3405-public-read-only-browser-proof-process-anchor-classification-2026-06-11-task.md`.
+
+- 2026-06-11 `LUC-3394` next-step update: do not open duplicate children for
+  the visible stale `runV1StaticIssueScan` or `runV1StageRehearsal` rows.
+  [LUC-3381](/LUC/issues/LUC-3381) and [LUC-3389](/LUC/issues/LUC-3389) are
+  both `done`, and `docs/architecture/relations/priority-test-links.csv`
+  contains direct rows for their target anchors. Local graph generation now
+  passes (`653` nodes / `842` relations / `27` chains), but this checkout does
+  not expose the canonical architecture-awareness refresh script. Next
+  owner/action: Architecture/Docs Memory or the PM control lane should run the
+  Softwarehouse architecture-awareness refresh in an environment with
+  `scripts/build-architecture-awareness-index.mjs`, then route the next
+  non-duplicate top actionable missing-test family. Preserve the boundary: no
+  protected proof, production browser proof, real stage rehearsal, secret,
+  deploy, push, restart, rollback, database, exchange, order, position,
+  account/payment, or live-trading action.
+  Evidence:
+  `history/tasks/luc-3394-gap-register-and-repair-lane-refresh-2026-06-11-task.md`.
+
+- 2026-06-11 `LUC-3366` next-step update: execute
+  [LUC-3389](/LUC/issues/LUC-3389), the QA/Verification child created for the
+  residual `scripts/runV1StageRehearsal.mjs#isEntrypoint` and `#main`
+  traceability rows, after `09 QVE` finishes or hands off the kept active lane
+  that caused the live-run janitor to block [LUC-3389](/LUC/issues/LUC-3389).
+  Do not reopen protected/browser orchestration families or stale static-scan
+  rows while existing lanes cover/classify them, especially [LUC-3381](/LUC/issues/LUC-3381)
+  for `runV1StaticIssueScan`. Preserve the boundary: focused local proof or
+  explicit architecture-awareness classification only; no real stage rehearsal,
+  protected release gate, protected smoke, secret, deploy, push, restart,
+  rollback, database, exchange, order, position, account/payment, or
+  live-trading action.
+  Evidence:
+  `history/tasks/luc-3366-gap-register-and-repair-lane-refresh-2026-06-11-task.md`.
+
+- 2026-06-11 `LUC-3375` next-step update: keep protected release/account-access
+  proof blocked until a board-capable Security/Ops secret owner binds the
+  missing protected input families through the approved encrypted runtime path:
+  `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `SOAR_PROD_*`,
+  `PROD_DB_CHECK_*`, `PRODUCTION_DB_CHECK_*`, `RC_*`, and
+  `GATE* / GATE_*`. Current public build-info is
+  `56d8d440bfe0fd9ee692e9f669e35414d85d2493` on `main`, checked at
+  `2026-06-11T02:20:26.743Z`; no-secret readiness remains `PARTIAL/NO-GO`
+  with only production UI audit name families present. Do not run protected
+  proof, account/API-key/subscription/payment/exchange/live checks, deploy,
+  restart, rollback, database mutation, or live trading action from this
+  shell. Evidence:
+  `history/tasks/luc-3375-security-account-access-gate-sweep-2026-06-11-task.md`.
+
+- 2026-06-08 `LUC-3011` next-step update: execute
+  [LUC-3014](/LUC/issues/LUC-3014), the Test Automation child created for the
+  residual `scripts/runRollbackProofEvidence.mjs#evidenceStamp`, `#main`,
+  `#nowStamp`, `#parseArgs`, `#printUsage`, `#renderMarkdown`, and `#run`
+  missing-test rows. Do not reopen duplicate protected/browser/prod-proof rows
+  while existing local/protected proof and classification lanes cover
+  `runLocalProtectedRouteActionProof`, `runProdAuthSessionBrowserProof`,
+  `runProdUxA11yMobileProof`, and `runPublicReadOnlyBrowserProof`, and do not
+  reopen stale `runRcRefreshSummaryStrict` or `runRestoreDrillEvidence` rows
+  while [LUC-2997](/LUC/issues/LUC-2997) and [LUC-3001](/LUC/issues/LUC-3001)
+  own focused local proof. Preserve the boundary: focused local helper proof or
+  explicit classification only; no real rollback proof, protected proof,
+  secret, deploy, push, restart, rollback execution, database mutation,
+  exchange credential, order, position, account/payment, or live-trading action.
+  Evidence: `history/tasks/luc-3011-no-stall-queue-expeditor-2026-06-08-task.md`.
+
+- 2026-06-08 `LUC-3001` next-step update: do not reopen the local helper-test
+  lane for `scripts/runRestoreDrillEvidence.mjs#evidenceStamp`, `#main`,
+  `#nowStamp`, `#parseArgs`, `#printUsage`, `#readLatestByPrefix`, or `#run`
+  while [LUC-3001](/LUC/issues/LUC-3001) owns focused local proof and `7`
+  direct scanner-readable relation rows. Validation passed: syntax checks,
+  safe `--help`, focused Node proof (`7/7`), direct relation readback, graph
+  generation, and repository guardrails. Architecture-awareness refresh
+  remains an environment follow-up in this checkout because
+  `scripts/build-architecture-awareness-index.mjs` is absent. Preserve the
+  boundary: no real restore drill, protected proof, secret, deploy, push,
+  restart, rollback, database mutation, exchange credential, order, position,
+  account, payment/subscription, or live-trading action. Evidence:
+  `history/tasks/luc-3001-restore-drill-evidence-helper-missing-test-rows-2026-06-08-task.md`.
+
+- 2026-06-08 `LUC-2998` next-step update: execute
+  [LUC-3001](/LUC/issues/LUC-3001), the Test Automation child created for the
+  residual `scripts/runRestoreDrillEvidence.mjs#evidenceStamp`, `#main`,
+  `#nowStamp`, `#parseArgs`, `#printUsage`, `#readLatestByPrefix`, and `#run`
+  missing-test rows. Do not reopen duplicate protected/browser/prod-proof rows
+  while existing local/protected proof and classification lanes cover
+  `runLocalProtectedRouteActionProof`, `runProdAuthSessionBrowserProof`,
+  `runProdUxA11yMobileProof`, and `runPublicReadOnlyBrowserProof`, and do not
+  reopen stale `runRcRefreshSummaryStrict` rows while
+  [LUC-2997](/LUC/issues/LUC-2997) owns focused local proof. Preserve the
+  boundary: focused local helper proof or explicit classification only; no
+  real production/stage restore drill, protected proof, secret, deploy, push,
+  restart, rollback, database mutation, exchange credential, order, position,
+  account, payment/subscription, or live-trading action. Evidence:
+  `history/tasks/luc-2998-no-stall-queue-expeditor-2026-06-08-task.md`.
+
+- 2026-06-08 `LUC-2997` next-step update: do not reopen the local helper-test
+  lane for `scripts/runRcRefreshSummaryStrict.mjs#main`, `#parseArgs`, or
+  `#run` while [LUC-2997](/LUC/issues/LUC-2997) owns focused local proof and
+  `3` direct scanner-readable relation rows. Validation passed: syntax
+  checks, safe `--help`, focused Node proof (`5/5`), direct relation readback,
+  graph generation, and repository guardrails. Architecture-awareness refresh
+  remains an environment follow-up in this checkout because
+  `scripts/build-architecture-awareness-index.mjs` is absent. Preserve the
+  boundary: no real RC/prod gate refresh, protected proof, secret, deploy,
+  push, restart, rollback, database mutation, exchange credential, order,
+  position, account, payment/subscription, or live-trading action. Evidence:
+  `history/tasks/luc-2997-rc-refresh-summary-strict-helper-missing-test-rows-2026-06-08-task.md`.
+
+- 2026-06-08 `LUC-2996` next-step update: execute
+  [LUC-2997](/LUC/issues/LUC-2997), the Test Automation child created for the
+  residual `scripts/runRcRefreshSummaryStrict.mjs#main`, `#parseArgs`, and
+  `#run` missing-test rows. Do not reopen duplicate browser/protected helper
+  lanes while [LUC-2935](/LUC/issues/LUC-2935),
+  [LUC-2939](/LUC/issues/LUC-2939), [LUC-2957](/LUC/issues/LUC-2957),
+  [LUC-2970](/LUC/issues/LUC-2970), and [LUC-2975](/LUC/issues/LUC-2975)
+  cover or classify those families. Preserve the boundary: focused local
+  helper proof or explicit classification only; no real RC/prod gate refresh,
+  protected proof, secret, deploy, push, restart, rollback, database mutation,
+  exchange credential, order, position, account, payment/subscription, or
+  live-trading action. Evidence:
+  `history/tasks/luc-2996-gap-register-and-repair-lane-refresh-2026-06-08-task.md`.
+
+- 2026-06-08 `LUC-2992` next-step update: execute
+  [LUC-2995](/LUC/issues/LUC-2995), the Test Automation child created for the
+  residual `scripts/runQaRepeatableSmokeE2e.mjs#hasFlag`,
+  `#readArgValue`, and `#runCheck` missing-test rows. Do not reopen duplicate
+  protected/browser helper lanes while existing local/protected proof and
+  classification lanes cover `runLocalProtectedRouteActionProof`,
+  `runProdAuthSessionBrowserProof`, `runProdUxA11yMobileProof`, and
+  `runPublicReadOnlyBrowserProof` process/browser anchors. Preserve the
+  boundary: local helper proof or explicit classification only; no production
+  smoke, protected auth/session proof, secret, deploy, push, restart,
+  rollback, database mutation, exchange credential, order, position, account,
+  payment/subscription, or live-trading action. Evidence:
+  `history/tasks/luc-2992-no-stall-queue-expeditor-2026-06-08-task.md`.
+
+- 2026-06-08 `LUC-2989` next-step update: do not reopen the
+  `scripts/goLiveSmoke.mjs` local helper-test lane while
+  [LUC-2989](/LUC/issues/LUC-2989) owns the focused proof and `7` direct
+  scanner-readable relation rows. Refreshed architecture-awareness report
+  generated `2026-06-08T00:08:49.364Z` reports `118` actionable missing-test
+  links and no `scripts/goLiveSmoke.mjs` rows in Top Actionable Missing Test
+  Links. [LUC-2873](/LUC/issues/LUC-2873) should be treated as fulfilled by
+  this recovered lane; [LUC-2792](/LUC/issues/LUC-2792) remains
+  duplicate/superseded for local helper proof. Full go-live smoke remains a
+  separate protected release gate and was not run. Evidence:
+  `history/tasks/luc-2989-go-live-smoke-helper-proof-lane-disposition-2026-06-08-task.md`.
+
+- 2026-06-08 `LUC-2986` next-step update: execute
+  [LUC-2989](/LUC/issues/LUC-2989), the QA recovery child created for the
+  stalled `scripts/goLiveSmoke.mjs` function-anchor missing-test family.
+  [LUC-2985](/LUC/issues/LUC-2985) is done and the current
+  architecture-awareness report generated `2026-06-07T23:39:08.795Z` reports
+  `124` actionable missing-test links. Do not open duplicate release/Ops
+  wrapper lanes while [LUC-2252](/LUC/issues/LUC-2252) exists, or duplicate
+  protected browser/UX proof lanes while [LUC-2935](/LUC/issues/LUC-2935),
+  [LUC-2957](/LUC/issues/LUC-2957), and [LUC-2970](/LUC/issues/LUC-2970) cover
+  those families. Preserve the boundary: local/static helper proof or explicit
+  classification only; no umbrella go-live smoke, protected proof, secret,
+  deploy, push, restart, rollback, database, exchange, order, position,
+  account, or live-trading mutation. Evidence:
+  `history/tasks/luc-2986-no-stall-queue-expeditor-2026-06-08-task.md`.
+
+- 2026-06-08 `LUC-2982` next-step update: execute
+  [LUC-2985](/LUC/issues/LUC-2985), the Test Automation child created for the
+  residual `scripts/generateFunctionJourneyIndexes.mjs#chains` row. Do not
+  reopen duplicate lanes for release/Ops wrappers while [LUC-2252](/LUC/issues/LUC-2252)
+  exists, local protected-route helpers while [LUC-2935](/LUC/issues/LUC-2935)
+  exists, or production UI/UX helper proof while [LUC-2957](/LUC/issues/LUC-2957)
+  plus [LUC-2970](/LUC/issues/LUC-2970) cover safe anchors. Preserve the
+  boundary: local proof/classification and architecture traceability only; no
+  protected proof, secret, deploy, push, restart, database, exchange, order,
+  position, account, or live-trading mutation. Evidence:
+  `history/tasks/luc-2982-no-stall-queue-expeditor-2026-06-08-task.md`.
+
+- 2026-06-08 `LUC-2980` next-step update: local Docker/PostgreSQL runtime is
+  restored for the DB-backed Gate.io ingestion proof. Docker Desktop is
+  running, `pnpm run go-live:infra:up` succeeds after stale local Compose
+  network cleanup, and `soar-postgres-1` / `soar-redis-1` are reachable on
+  `localhost:5432` / `localhost:6379`. The focused proof now passes:
+  `pnpm --filter api exec vitest run
+  src/modules/positions/livePositionReconciliation.service.test.ts
+  src/router/workers-health-readiness.test.ts --reporter=verbose` -> `2`
+  files / `42` tests. Next owner/action: DBE/QA can close or rerun dependent
+  [LUC-2977](/LUC/issues/LUC-2977) with the restored local Compose services.
+  Evidence:
+  `history/tasks/luc-2979-restore-local-postgresql-test-dependency-2026-06-08-task.md`.
+
+- 2026-06-08 `LUC-2975` next-step update: do not reopen the local helper-test
+  lane for `scripts/runPublicReadOnlyBrowserProof.mjs` safe deterministic
+  helpers while [LUC-2958](/LUC/issues/LUC-2958) now owns focused proof and
+  `16` direct scanner-readable relation rows. The refreshed
+  architecture-awareness report generated `2026-06-07T23:10:42.686Z` reports
+  `125` actionable missing-test links. Remaining `runPublicReadOnlyBrowserProof`
+  top-list rows are real browser/process orchestration helpers (`createPage`,
+  `killProcessTree`, `launchBrowser`); keep those out of local helper proof
+  unless a future browser/process proof lane explicitly owns them. Evidence:
+  `history/tasks/luc-2975-public-read-only-browser-proof-helper-test-lane-2026-06-08-task.md`.
+
+- 2026-06-08 `LUC-2977` next-step update: DB-backed Gate.io position
+  ingestion verification is now `DONE / VERIFIED_LOCAL` after
+  [LUC-2979](/LUC/issues/LUC-2979) / [LUC-2980](/LUC/issues/LUC-2980)
+  restored local PostgreSQL. `docker ps` shows `soar-postgres-1` and
+  `soar-redis-1` on loopback ports; `127.0.0.1:5432` TCP passed;
+  `pg_isready` accepted connections with a non-blocking local collation
+  warning; the focused API proof passed (`2` files / `42` tests). Parent
+  [LUC-1166](/LUC/issues/LUC-1166) can consume this DB-backed local proof.
+  Remaining note: no separate browser UI display-path proof was run in this QA
+  slice. Evidence:
+  `history/tasks/luc-2977-gateio-db-backed-position-ingestion-verification-2026-06-08-task.md`.
+
+- 2026-06-08 `LUC-2970` next-step update: do not open a duplicate QA child for
+  `scripts/runProdUiModuleClickthroughAudit.mjs` helper coverage while
+  [LUC-2957](/LUC/issues/LUC-2957) already owns the local tests and
+  [LUC-2970](/LUC/issues/LUC-2970) added direct scanner-readable relation rows
+  for the covered anchors. The next owner should run the available
+  Softwarehouse architecture-awareness refresh outside this checkout, then
+  continue with the next non-duplicate top missing-test family. Remaining
+  `runProdUxA11yMobileProof` browser launch/navigation/screenshot helpers are
+  intentionally not marked as locally unit-proved; keep them under protected
+  browser/UX proof lanes. Evidence:
+  `history/tasks/luc-2970-gap-register-and-repair-lane-refresh-2026-06-08-task.md`.
+
+- 2026-06-07 `LUC-2956` next-step update: prod security/exchange proof helper
+  missing-test links are locally verified and scanner-linked. Do not reopen
+  this family unless a later architecture-awareness refresh reports new exact
+  `scripts/runProdSecurityExchangeProof.mjs` actionable anchors. Next queue
+  owner should continue with the current top actionable missing-test families
+  from `docs/status/architecture-awareness-report.md`: generated-index,
+  `goLiveSmoke`, protected-route/prod-auth side-effect helpers, prod UI module
+  clickthrough helpers, and prod UX proof helpers. Evidence:
+  `history/tasks/luc-2956-prod-security-exchange-proof-helper-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2955` next-step update: execute
+  [LUC-2956](/LUC/issues/LUC-2956), the local Test Automation child created
+  from [LUC-2955](/LUC/issues/LUC-2955) for current
+  `scripts/runProdSecurityExchangeProof.mjs` helper missing-test links. Do not
+  open duplicate generated-index, `goLiveSmoke`, protected-route, prod-auth,
+  prod-fixture, or prod-positions lanes while existing owner issues already
+  cover those families. Preserve the boundary: local helper proof and
+  architecture traceability only. No production security/exchange proof,
+  production auth/session, real account token/cookie, exchange credentials,
+  secrets, database, deploy, push, restart, rollback, order, position, or
+  live-trading mutation is implied. Evidence:
+  `history/tasks/luc-2955-v1-audit-to-completion-controller-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2946` next-step update: execute
+  [LUC-2949](/LUC/issues/LUC-2949), the Test Automation child created from
+  [LUC-2946](/LUC/issues/LUC-2946) for current
+  `scripts/runProdPositionsProof.mjs` helper missing-test links. Do not open
+  duplicate generated-index, `goLiveSmoke`, protected-route, prod-auth, or
+  prod-fixture lanes while [LUC-2791](/LUC/issues/LUC-2791),
+  [LUC-2792](/LUC/issues/LUC-2792), [LUC-2873](/LUC/issues/LUC-2873),
+  [LUC-2935](/LUC/issues/LUC-2935), [LUC-2939](/LUC/issues/LUC-2939), and
+  [LUC-2945](/LUC/issues/LUC-2945) already own those families. Preserve the
+  boundary: local helper proof and architecture traceability only. No
+  production positions proof, production auth/session, real account
+  token/cookie, order, position, exchange, secret, database, deploy, push,
+  restart, rollback, or live-trading mutation is implied. Evidence:
+  `history/tasks/luc-2946-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2945` next-step update: prod fixture action proof helper
+  missing-test links are locally verified and scanner-linked. Do not reopen
+  this family unless a later architecture-awareness refresh reports new exact
+  `scripts/runProdFixtureActionProof.mjs` actionable anchors. Next queue owner
+  should continue with the current top actionable missing-test families from
+  `docs/status/architecture-awareness-report.md`: generated-index,
+  `goLiveSmoke`, protected-route/prod-auth side-effect helpers, and
+  prod-positions helpers.
+
+- 2026-06-07 `LUC-2939` next-step update: completed
+  [LUC-2939](/LUC/issues/LUC-2939) for safe local
+  `scripts/runProdAuthSessionBrowserProof.mjs` helper missing-test links with
+  mocked helper proof and scanner-readable architecture relation evidence. The
+  refreshed report generated `2026-06-07T21:06:25.826Z` reports `205`
+  actionable missing-test links. If parent routing continues, select the next
+  non-duplicate family through a separate scoped issue; do not treat remaining
+  side-effect `runProdAuthSessionBrowserProof` helpers (`createPage`,
+  `launchBrowser`, `main`) as locally unit-coverable without a browser/CDP or
+  protected production proof lane. Evidence:
+  `history/tasks/luc-2939-prod-auth-session-browser-proof-helper-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2934` next-step update: execute
+  [LUC-2935](/LUC/issues/LUC-2935), the Test Automation child created from
+  [LUC-2934](/LUC/issues/LUC-2934) for the current
+  `scripts/runLocalProtectedRouteActionProof.mjs` helper missing-test family.
+  Do not open duplicate generated-index, `goLiveSmoke`, or local external gate
+  lanes while [LUC-2791](/LUC/issues/LUC-2791),
+  [LUC-2792](/LUC/issues/LUC-2792), [LUC-2873](/LUC/issues/LUC-2873), and
+  completed [LUC-2931](/LUC/issues/LUC-2931) already own those families.
+  Preserve the boundary: local browser/protected-route helper proof and
+  architecture traceability only. No production auth, protected production
+  smoke, real account session, exchange credentials, secrets, deploy, push,
+  restart, rollback, database mutation, order, position, or live-trading
+  mutation is implied. Evidence:
+  `history/tasks/luc-2934-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2936` next-step update: execute
+  [LUC-2939](/LUC/issues/LUC-2939), the Test Automation child created from
+  [LUC-2936](/LUC/issues/LUC-2936) for current
+  `scripts/runProdAuthSessionBrowserProof.mjs` helper missing-test links.
+  Do not open duplicate generated-index, `goLiveSmoke`, or local protected
+  route lanes while [LUC-2791](/LUC/issues/LUC-2791),
+  [LUC-2792](/LUC/issues/LUC-2792), [LUC-2873](/LUC/issues/LUC-2873), and
+  completed [LUC-2935](/LUC/issues/LUC-2935) already own those families.
+  Preserve the boundary: local helper proof and architecture traceability only.
+  No production auth/session, real account token/cookie, protected production
+  browser proof, deploy, push, restart, rollback, account, secret, database,
+  exchange, order, position, or live-trading mutation is implied. Evidence:
+  `history/tasks/luc-2936-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2931` next-step update: completed
+  [LUC-2931](/LUC/issues/LUC-2931) for current
+  `scripts/runLocalExternalGatesPipeline.mjs` helper missing-test links with
+  local-only helper proof and scanner-readable architecture relation evidence.
+  The refreshed report generated `2026-06-07T20:42:55.740Z` reports `234`
+  actionable missing-test links and no longer lists any
+  `scripts/runLocalExternalGatesPipeline.mjs#...` anchor. If parent routing
+  continues, select the next non-duplicate family through a separate scoped
+  issue; do not treat remaining generated-index, go-live smoke,
+  protected-route/browser proof, or prod-auth browser proof helpers as part of
+  this completed child lane. Evidence:
+  `history/tasks/luc-2931-local-external-gates-pipeline-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2928` next-step update: execute
+  [LUC-2931](/LUC/issues/LUC-2931), the child QA/Verification issue created
+  from [LUC-2928](/LUC/issues/LUC-2928) for the current
+  `scripts/runLocalExternalGatesPipeline.mjs` helper missing-test links. Do not
+  open duplicate generated-index or go-live smoke helper lanes while
+  [LUC-2791](/LUC/issues/LUC-2791), [LUC-2792](/LUC/issues/LUC-2792), and
+  [LUC-2873](/LUC/issues/LUC-2873) already own those families. Preserve the
+  boundary: local helper proof and architecture traceability only. No protected
+  external gates, production auth, protected smoke, deploy, push, restart,
+  rollback, account, secret, database, exchange, order, position, or
+  live-trading mutation is implied. Evidence:
+  `history/tasks/luc-2928-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2920` next-step update: completed
+  [LUC-2920](/LUC/issues/LUC-2920) for
+  `scripts/runKnownStateRefresh.mjs#run` with local-only child-command proof
+  and scanner-readable architecture relation evidence. The refreshed report
+  generated `2026-06-07T20:07:06.809Z` reports `245` actionable missing-test
+  links and no longer lists that known-state anchor. If parent routing
+  continues, select the next non-duplicate family through a separate scoped
+  issue; do not treat remaining generated-index, go-live smoke, local external
+  gates, protected-route/browser proof, or prod-auth browser proof helpers as
+  part of this completed child lane. Evidence:
+  `history/tasks/luc-2920-known-state-refresh-run-missing-test-link-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2907` next-step update: execute
+  [LUC-2910](/LUC/issues/LUC-2910), the child QA/Verification issue created
+  from [LUC-2907](/LUC/issues/LUC-2907) for
+  `scripts/runCutoverDryRun.mjs#main`. Do not open duplicate generated-index or
+  go-live smoke helper lanes while [LUC-2791](/LUC/issues/LUC-2791),
+  [LUC-2792](/LUC/issues/LUC-2792), and [LUC-2873](/LUC/issues/LUC-2873)
+  already own those families. Preserve the boundary: local cutover dry-run
+  helper proof and architecture traceability only. No real cutover execution,
+  Docker Compose startup, production auth, protected smoke, deploy, push,
+  restart, rollback, account, secret, database, exchange, order, position, or
+  live-trading mutation is implied. Evidence:
+  `history/tasks/luc-2907-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2906` next-step update: completed
+  [LUC-2906](/LUC/issues/LUC-2906) for
+  `scripts/runControlledLiveSessionProof.mjs#waitForRunningSession` with
+  local-only helper proof and scanner-readable architecture relation evidence.
+  The controlled live proof helper family no longer appears in the refreshed
+  Top Actionable Missing Test Links; the next visible families are separate
+  generated-index, go-live smoke, cutover, known-state, and local-gate helper
+  anchors. Preserve the boundary: no controlled LIVE proof,
+  `--i-understand-live-risk`, bot activation/deactivation, production auth,
+  protected smoke, deploy, push, restart, rollback, account, secret, database,
+  exchange, order, position, or live-trading mutation is implied. Evidence:
+  `history/tasks/luc-2906-controlled-live-proof-waitforrunningsession-missing-test-link-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2905` next-step update: child executed
+  [LUC-2906](/LUC/issues/LUC-2906), the QA/Verification child created from
+  [LUC-2905](/LUC/issues/LUC-2905) for
+  `scripts/runControlledLiveSessionProof.mjs#waitForRunningSession`, is now
+  complete with evidence in
+  `history/tasks/luc-2906-controlled-live-proof-waitforrunningsession-missing-test-link-2026-06-07-task.md`.
+  Do not
+  open duplicate generated-index or go-live smoke helper lanes while
+  [LUC-2791](/LUC/issues/LUC-2791), [LUC-2792](/LUC/issues/LUC-2792), and
+  [LUC-2873](/LUC/issues/LUC-2873) already own those families. Preserve the
+  boundary: local helper proof and architecture traceability only. No
+  controlled LIVE proof, `--i-understand-live-risk`, bot
+  activation/deactivation, production auth, protected smoke, deploy, push,
+  restart, rollback, account, secret, database, exchange, order, position, or
+  live-trading mutation is implied. Evidence:
+  `history/tasks/luc-2905-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2904` next-step update: completed
+  [LUC-2904](/LUC/issues/LUC-2904) for
+  `scripts/runControlledLiveSessionProof.mjs#updateBotActiveState` with
+  local-only helper proof and scanner-readable architecture relation evidence.
+  If parent routing continues this family, use a new scoped owner issue for the
+  next remaining non-duplicate anchor, currently
+  `scripts/runControlledLiveSessionProof.mjs#waitForRunningSession`. Preserve
+  the boundary: no controlled LIVE proof, `--i-understand-live-risk`, bot
+  activation/deactivation, production auth, protected smoke, deploy, push,
+  restart, rollback, account, secret, database, exchange, order, position, or
+  live-trading mutation is implied. Evidence:
+  `history/tasks/luc-2904-controlled-live-proof-updatebotactivestate-missing-test-link-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2899` next-step update: completed
+  [LUC-2899](/LUC/issues/LUC-2899) for
+  `scripts/runControlledLiveSessionProof.mjs#sleep` with local-only helper
+  proof and scanner-readable architecture relation evidence. If parent routing
+  continues this family, use a new scoped owner issue for the next remaining
+  non-duplicate anchors, currently
+  `scripts/runControlledLiveSessionProof.mjs#updateBotActiveState` and
+  `scripts/runControlledLiveSessionProof.mjs#waitForRunningSession`. Preserve
+  the boundary: no controlled LIVE proof, `--i-understand-live-risk`, bot
+  activation/deactivation, production auth, protected smoke, deploy, push,
+  restart, rollback, account, secret, database, exchange, order, position, or
+  live-trading mutation is implied. Evidence:
+  `history/tasks/luc-2899-controlled-live-proof-sleep-missing-test-link-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2898` next-step update: execute
+  [LUC-2899](/LUC/issues/LUC-2899), the queued QA/Test child created from
+  [LUC-2898](/LUC/issues/LUC-2898) for
+  `scripts/runControlledLiveSessionProof.mjs#sleep`. Do not open duplicate
+  generated-index or go-live smoke helper lanes while
+  [LUC-2791](/LUC/issues/LUC-2791), [LUC-2792](/LUC/issues/LUC-2792), and
+  [LUC-2873](/LUC/issues/LUC-2873) already own those families. Preserve the
+  boundary: local helper proof and architecture traceability only. No
+  controlled LIVE proof, `--i-understand-live-risk`, bot
+  activation/deactivation, production auth, protected smoke, deploy, push,
+  restart, rollback, account, secret, database, exchange, order, position, or
+  live-trading mutation is implied. Evidence:
+  `history/tasks/luc-2898-v1-audit-to-completion-controller-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2893` next-step update: execute
+  [LUC-2896](/LUC/issues/LUC-2896), the child QA/Verification issue created
+  from [LUC-2893](/LUC/issues/LUC-2893) for
+  `scripts/runControlledLiveSessionProof.mjs#runSimultaneousRuntimeReadback`.
+  Do not open duplicate generated-index or go-live smoke helper lanes while
+  existing blocked [LUC-2791](/LUC/issues/LUC-2791) and
+  [LUC-2792](/LUC/issues/LUC-2792) already own those families. Preserve the
+  boundary: local helper proof and architecture traceability only. No
+  controlled LIVE proof, `--i-understand-live-risk`, bot
+  activation/deactivation, production auth, protected smoke, deploy, push,
+  restart, rollback, account, secret, database, exchange, order, position, or
+  live-trading mutation is implied. Evidence:
+  `history/tasks/luc-2893-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2892` next-step update: completed
+  [LUC-2892](/LUC/issues/LUC-2892) for
+  `scripts/runControlledLiveSessionProof.mjs#runCollector` with local-only
+  helper proof and scanner-readable architecture relation evidence. If parent
+  routing continues this family, use a new scoped owner issue for the next
+  remaining non-duplicate anchor, currently
+  `scripts/runControlledLiveSessionProof.mjs#runSimultaneousRuntimeReadback`.
+  Preserve the boundary: no controlled LIVE proof, `--i-understand-live-risk`,
+  bot activation/deactivation, production auth, protected smoke, deploy, push,
+  restart, rollback, account, secret, database, exchange, order, position, or
+  live-trading mutation is implied. Evidence:
+  `history/tasks/luc-2892-controlled-live-proof-runcollector-missing-test-link-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2889` next-step update: execute
+  [LUC-2892](/LUC/issues/LUC-2892), the child Test Automation issue created
+  from [LUC-2889](/LUC/issues/LUC-2889) for
+  `scripts/runControlledLiveSessionProof.mjs#runCollector`. Do not open
+  duplicate generated-index or go-live smoke helper lanes while existing
+  blocked [LUC-2791](/LUC/issues/LUC-2791) and
+  [LUC-2792](/LUC/issues/LUC-2792) already own those families. Preserve the
+  boundary: local helper proof and architecture traceability only. No
+  controlled LIVE proof, `--i-understand-live-risk`, bot
+  activation/deactivation, production auth, protected smoke, deploy, push,
+  restart, rollback, account, secret, database, exchange, order, position, or
+  live-trading mutation is implied. Evidence:
+  `history/tasks/luc-2889-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2886` next-step update: completed
+  [LUC-2886](/LUC/issues/LUC-2886) for
+  `scripts/runControlledLiveSessionProof.mjs#resolveBuildInfo` with
+  local-only helper proof and scanner-readable architecture relation evidence.
+  If parent routing continues this family, use a new scoped owner issue for
+  the next remaining non-duplicate anchor, currently
+  `scripts/runControlledLiveSessionProof.mjs#runCollector`. Preserve the
+  boundary: no controlled LIVE proof, `--i-understand-live-risk`, bot
+  activation/deactivation, production auth, protected smoke, deploy, push,
+  restart, rollback, account, secret, database, exchange, order, position, or
+  live-trading mutation is implied. Evidence:
+  `history/tasks/luc-2886-controlled-live-proof-resolvebuildinfo-missing-test-link-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2882` next-step update: completed
+  [LUC-2882](/LUC/issues/LUC-2882) for
+  `scripts/runControlledLiveSessionProof.mjs#redactBot` with local-only helper
+  proof and scanner-readable architecture relation evidence. If parent routing
+  continues this family, use a new scoped owner issue for the next remaining
+  non-duplicate anchor, currently
+  `scripts/runControlledLiveSessionProof.mjs#resolveBuildInfo`. Preserve the
+  boundary: no controlled LIVE proof, `--i-understand-live-risk`, bot
+  activation/deactivation, production auth, protected smoke, deploy, push,
+  restart, rollback, account, secret, database, exchange, order, position, or
+  live-trading mutation is implied. Evidence:
+  `history/tasks/luc-2882-controlled-live-proof-redactbot-missing-test-link-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2881` next-step update: execute
+  [LUC-2882](/LUC/issues/LUC-2882), the child Test Automation issue created
+  from [LUC-2881](/LUC/issues/LUC-2881) for
+  `scripts/runControlledLiveSessionProof.mjs#redactBot`. Do not open duplicate
+  generated-index, go-live smoke, or `printUsage` lanes while
+  [LUC-2791](/LUC/issues/LUC-2791), [LUC-2792](/LUC/issues/LUC-2792), and
+  [LUC-2878](/LUC/issues/LUC-2878) already own those families. Preserve the
+  boundary: local helper proof and architecture traceability only. No
+  controlled LIVE proof, `--i-understand-live-risk`, bot activation/deactivation,
+  production auth, protected smoke, deploy, push, restart, rollback, account,
+  secret, database, exchange, order, position, or live-trading mutation is
+  implied. Evidence:
+  `history/tasks/luc-2881-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2879` next-step update: execute
+  [LUC-2880](/LUC/issues/LUC-2880), the DRE/Ops follow-up created to request
+  or obtain explicit approval for a controlled production `soar-web` redeploy
+  from the selected commit, with Web build metadata wired through
+  `SOURCE_COMMIT`/`SOURCE_BRANCH`, then run G3/G4/G5/G7 post-deploy smoke and
+  a redacted Server Action mismatch recurrence scan. Do not mutate production
+  from the Frontend lane. Current read-only evidence shows production Web
+  `/api/build-info` is still on SHA
+  `56d8d440bfe0fd9ee692e9f669e35414d85d2493` with
+  `metadataSource=github-branch`, while local `HEAD` is
+  `ed0f1aeb0e60392fe553f46d4931f9d9742f6aec`; this keeps G4 provenance blocked
+  until an approved redeploy/restart/rollback path is executed and verified.
+  Evidence:
+  `history/tasks/luc-2879-web-server-action-deploy-mismatch-diagnosis-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2875` next-step update: execute
+  [LUC-2878](/LUC/issues/LUC-2878), the child Test Automation issue created
+  from [LUC-2875](/LUC/issues/LUC-2875) for
+  `scripts/runControlledLiveSessionProof.mjs#printUsage`. Do not open
+  duplicate generated-index or go-live smoke helper lanes while existing
+  blocked [LUC-2791](/LUC/issues/LUC-2791) and
+  [LUC-2792](/LUC/issues/LUC-2792) already own those families. Preserve the
+  boundary: local helper proof and architecture traceability only. No
+  controlled LIVE proof, `--i-understand-live-risk`, bot
+  activation/deactivation, production auth, protected smoke, deploy, push,
+  restart, rollback, account, secret, database, exchange, order, position, or
+  live-trading mutation is implied. Evidence:
+  `history/tasks/luc-2875-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2861` next-step update: execute
+  [LUC-2864](/LUC/issues/LUC-2864), the child Test Automation issue created
+  from [LUC-2861](/LUC/issues/LUC-2861) for
+  `scripts/runControlledLiveSessionProof.mjs#main`. Do not open duplicate
+  generated-index or go-live smoke helper lanes while existing blocked
+  [LUC-2791](/LUC/issues/LUC-2791) and [LUC-2792](/LUC/issues/LUC-2792)
+  already own those families. Preserve the boundary: local helper proof and
+  architecture traceability only. No controlled LIVE proof,
+  `--i-understand-live-risk`, bot activation/deactivation, production auth,
+  protected smoke, deploy, push, restart, rollback, account, secret,
+  database, exchange, order, position, or live-trading mutation is implied.
+  Evidence:
+  `history/tasks/luc-2861-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2860` next-step update: treat
+  [LUC-2860](/LUC/issues/LUC-2860) as complete for the
+  `scripts/runControlledLiveSessionProof.mjs#listRunningSessions` local
+  running-session readback proof. Do not rerun the protected controlled LIVE
+  proof, pass `--i-understand-live-risk`, activate/deactivate LIVE bots, use
+  production auth, run protected smoke, deploy, push, restart, rollback, touch
+  secrets, mutate accounts, database, exchange state, orders, positions, or
+  live-trading state for this child lane. The refreshed architecture-awareness
+  report now has `293` actionable missing-test links and its top actionable
+  family is generated function/user-action index helpers, already deduped to
+  existing blocked [LUC-2791](/LUC/issues/LUC-2791) / [LUC-2792](/LUC/issues/LUC-2792)
+  style lanes by prior parent routing. Evidence:
+  `history/tasks/luc-2860-controlled-live-proof-listrunningsessions-missing-test-link-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2846` next-step update: execute
+  [LUC-2847](/LUC/issues/LUC-2847), the child Test Automation issue created
+  from [LUC-2846](/LUC/issues/LUC-2846) for
+  `scripts/runControlledLiveSessionProof.mjs#hashId`. Do not open duplicate
+  generated-index or go-live smoke helper lanes while existing blocked
+  [LUC-2791](/LUC/issues/LUC-2791) and [LUC-2792](/LUC/issues/LUC-2792)
+  already own those families. Preserve the boundary: local helper proof and
+  architecture traceability only. No controlled LIVE proof,
+  `--i-understand-live-risk`, bot activation/deactivation, production auth,
+  protected smoke, deploy, push, restart, rollback, account, secret,
+  database, exchange, order, position, or live-trading mutation is implied.
+  Evidence:
+  `history/tasks/luc-2846-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2834` next-step update: treat
+  [LUC-2834](/LUC/issues/LUC-2834) as complete for the
+  `scripts/runControlledLiveSessionProof.mjs#discoverTargetBot` local target
+  discovery proof. Do not rerun the protected controlled LIVE proof, pass
+  `--i-understand-live-risk`, activate/deactivate LIVE bots, use production
+  auth, run protected smoke, deploy, push, restart, rollback, touch secrets,
+  mutate accounts, database, exchange state, orders, positions, or live-trading
+  state for this child lane. The refreshed report no longer lists
+  `discoverTargetBot`; `scripts/runControlledLiveSessionProof.mjs#fetchJson`
+  is a separate remaining helper anchor for parent queue selection if still
+  non-duplicate. Evidence:
+  `history/tasks/luc-2834-controlled-live-proof-target-discovery-missing-test-link-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2827` next-step update: treat
+  [LUC-2827](/LUC/issues/LUC-2827) as complete for the
+  `scripts/runControlledLiveSessionProof.mjs#assertNoOrderGuardActive` local
+  no-order guard proof. Do not rerun the protected controlled LIVE proof, pass
+  `--i-understand-live-risk`, activate/deactivate LIVE bots, use production
+  auth, run protected smoke, deploy, push, restart, rollback, touch secrets,
+  mutate accounts, database, exchange state, orders, positions, or live-trading
+  state for this child lane. The refreshed report now shows
+  `scripts/runControlledLiveSessionProof.mjs#discoverTargetBot` as the next
+  remaining anchor in that script family; parent queue should select or
+  delegate it separately if it is still the next non-duplicate target.
+  Evidence:
+  `history/tasks/luc-2827-controlled-live-proof-no-order-guard-missing-test-link-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2826` next-step update: execute
+  [LUC-2827](/LUC/issues/LUC-2827), the child Test Automation issue created
+  from [LUC-2826](/LUC/issues/LUC-2826) for
+  `scripts/runControlledLiveSessionProof.mjs#assertNoOrderGuardActive`. Do not
+  open duplicate generator-index or go-live smoke helper lanes while existing
+  blocked [LUC-2791](/LUC/issues/LUC-2791) and
+  [LUC-2792](/LUC/issues/LUC-2792) already own those families. Preserve the
+  boundary: local helper proof and architecture traceability only. Do not run
+  controlled LIVE proof, pass `--i-understand-live-risk`, activate/deactivate
+  LIVE bots, run protected smoke, use production auth, deploy, push, restart,
+  rollback, touch secrets, mutate accounts, database, exchange state, orders,
+  positions, or live-trading state. Evidence:
+  `history/tasks/luc-2826-v1-audit-to-completion-controller-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2821` next-step update: execute
+  [LUC-2824](/LUC/issues/LUC-2824), the child Test Automation issue created
+  from [LUC-2821](/LUC/issues/LUC-2821) for
+  `scripts/runBackupVerificationProfile.mjs#firstNonEmptyEnv`. Do not open
+  duplicate generator-index or go-live smoke helper lanes while existing
+  blocked [LUC-2791](/LUC/issues/LUC-2791) and
+  [LUC-2792](/LUC/issues/LUC-2792) already own those families. Preserve the
+  boundary: local ops/test-tooling proof and architecture traceability only.
+  No real backup/restore execution, Docker Compose startup, DB mutation,
+  protected smoke, production browser, deploy, push, restart, rollback,
+  account, secret, exchange, database, or live-trading mutation is implied.
+  Evidence:
+  `history/tasks/luc-2821-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2820` next-step update: treat
+  [LUC-2820](/LUC/issues/LUC-2820) as complete for this Test Automation local
+  proof and architecture relation repair lane. Do not reopen duplicate
+  `scripts/runAud07IsolatedDbPacks.mjs#main`, `#pnpmArgs`, or `#run` proof
+  work unless a later architecture-awareness refresh identifies a new exact
+  uncovered anchor or `scripts/runAud07IsolatedDbPacks.test.mjs` fails. Parent
+  PM/TSA queue work may continue from the refreshed Top Actionable Missing Test
+  Links list, with generator-index helpers still deduped to
+  [LUC-2791](/LUC/issues/LUC-2791) and go-live smoke helpers still deduped to
+  [LUC-2792](/LUC/issues/LUC-2792). Preserve the boundary: local data-audit
+  tooling proof and architecture traceability only. No Docker Compose startup,
+  real Prisma command, DB mutation, protected smoke, production browser,
+  deploy, push, restart, rollback, account, secret, exchange, database, or
+  live-trading mutation is implied. Evidence:
+  `history/tasks/luc-2820-runaud07-isolated-db-runner-main-missing-test-link-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2817` next-step update: execute
+  [LUC-2820](/LUC/issues/LUC-2820), the child Test Automation issue created
+  from [LUC-2817](/LUC/issues/LUC-2817) for
+  `scripts/runAud07IsolatedDbPacks.mjs#main`. Do not open duplicate
+  generator-index or go-live smoke helper lanes while existing blocked
+  [LUC-2791](/LUC/issues/LUC-2791) and [LUC-2792](/LUC/issues/LUC-2792)
+  already own those families. Preserve the boundary: local test-tooling proof
+  and architecture traceability only. No real Prisma reset/migrate command,
+  Docker Compose startup, DB mutation, protected smoke, production browser,
+  deploy, push, restart, rollback, account, secret, exchange, database, or
+  live-trading mutation is implied. Evidence:
+  `history/tasks/luc-2817-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2812` next-step update: dev-workers
+  `handleWorkerExit` local proof is verified and scanner-linked. Do not reopen
+  duplicate `scripts/dev-workers.mjs#handleWorkerExit`, `#main`, `#prefixLog`,
+  `#shutdown`, or `#shutdownImpl` proof work unless a later
+  architecture-awareness refresh identifies a new exact uncovered anchor or
+  `scripts/dev-workers.test.mjs` fails. Parent PM/TSA work may continue from
+  the generated journey-index helper family already deduped to
+  [LUC-2791](/LUC/issues/LUC-2791). Preserve the boundary: local
+  developer-tooling proof and architecture traceability only. No dev worker
+  process, Docker Compose, DB, Redis, real Prisma, deploy, push, restart,
+  rollback, production browser, protected smoke, account, secret, exchange,
+  database, or live-trading mutation is implied. Evidence:
+  `history/tasks/luc-2812-dev-workers-handle-worker-exit-missing-test-link-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2809 No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2809](/LUC/issues/LUC-2809) as complete for this PM
+   no-stall/delegation checkpoint.
+2. Execute [LUC-2812](/LUC/issues/LUC-2812), the child Test Automation issue
+   created from [LUC-2809](/LUC/issues/LUC-2809) for
+   `scripts/dev-workers.mjs#handleWorkerExit`.
+3. Do not open duplicate generator-index or go-live smoke lanes while
+   [LUC-2791](/LUC/issues/LUC-2791) and [LUC-2792](/LUC/issues/LUC-2792)
+   already exist for those families.
+4. Preserve the boundary: local developer-tooling proof and architecture
+   traceability only. No dev worker process, Docker Compose, DB, Redis, real
+   Prisma, deploy, push, restart, rollback, production browser, protected
+   smoke, account, secret, exchange, database, or live-trading mutation is
+   implied.
+5. Evidence:
+   `history/tasks/luc-2809-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2808 Resolve Ops Auth Token Cookie Parser Proof Next Action
+
+1. Treat [LUC-2808](/LUC/issues/LUC-2808) as complete for this Test
+   Automation local proof and architecture relation repair lane.
+2. Do not reopen duplicate `scripts/resolveOpsAuthToken.mjs#extractTokenFromSetCookie`,
+   `#readSetCookieHeaders`, or `#resolveOpsAuthToken` proof work unless a later
+   architecture-awareness refresh identifies a new exact uncovered anchor or
+   `scripts/resolveOpsAuthToken.test.mjs` fails.
+3. Parent PM/TSA work may continue from the refreshed architecture-awareness
+   Top Actionable Missing Test Links list, now headed by
+   `scripts/dev-workers.mjs#handleWorkerExit` and generated journey-index
+   helpers.
+4. Preserve the boundary: local ops-auth helper proof and architecture
+   traceability only. No production auth, protected smoke, deploy, push,
+   restart, rollback, account, secret, exchange, database, Docker Compose, or
+   live-trading mutation is implied.
+5. Evidence:
+   `history/tasks/luc-2808-resolve-ops-auth-token-cookie-parser-missing-test-link-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2807 Gap Register Refresh Next Action
+
+1. Treat [LUC-2807](/LUC/issues/LUC-2807) as complete for this TSA
+   gap-register refresh and delegation checkpoint.
+2. Execute [LUC-2808](/LUC/issues/LUC-2808) as the next non-duplicate Test
+   Automation local proof/relation lane for
+   `scripts/resolveOpsAuthToken.mjs#extractTokenFromSetCookie`.
+3. Do not open duplicate lanes for `scripts/generateFunctionJourneyIndexes.mjs`,
+   `scripts/generateUserActionIndex.mjs`, or `scripts/goLiveSmoke.mjs` while
+   [LUC-2791](/LUC/issues/LUC-2791) and
+   [LUC-2792](/LUC/issues/LUC-2792) exist for those families.
+4. If [LUC-2791](/LUC/issues/LUC-2791) or
+   [LUC-2792](/LUC/issues/LUC-2792) should resume, the owning Test Automation
+   lane or Paperclip manager must change their status; TSA attempted direct
+   status repair and Paperclip rejected it with `Agent cannot mutate another
+   agent's issue`.
+5. Preserve the boundary: local release/Ops helper proof and architecture
+   traceability only. No protected smoke, production browser, deploy, restart,
+   rollback, real account auth, secret output, exchange, database, or
+   live-trading mutation is implied.
+6. Evidence:
+   `history/tasks/luc-2807-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2806 Dev Workers Main Proof Next Action
+
+1. Treat [LUC-2806](/LUC/issues/LUC-2806) as complete for this Test
+   Automation local relation repair lane.
+2. Do not reopen duplicate `scripts/dev-workers.mjs#main`, `#prefixLog`,
+   `#shutdown`, or `#shutdownImpl` proof work unless a later
+   architecture-awareness refresh identifies a new exact uncovered anchor or
+   `scripts/dev-workers.test.mjs` fails.
+3. Parent PM/TSA work may continue from the refreshed architecture-awareness
+   top actionable list, now headed by generated journey index helper scripts.
+4. Preserve the boundary: local developer-tooling proof and architecture
+   traceability only. No dev worker process, Docker Compose, DB, Redis, real
+   Prisma, deploy, push, restart, rollback, production browser, protected
+   smoke, account, secret, exchange, database, or live-trading mutation is
+   implied.
+5. Evidence:
+   `history/tasks/luc-2806-dev-workers-main-missing-test-link-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2801 Soar Protected Recheck Next Action
+
+1. Treat [LUC-2801](/LUC/issues/LUC-2801) as complete for this authorized
+   one-shot DRE/Ops read-only recheck.
+2. Keep [LUC-241](/LUC/issues/LUC-241) fail-closed: public production
+   API/Web probes are healthy, but protected `GET /workers/ready` still returns
+   `401` with the current smoke auth binding.
+3. Do not rerun protected `/workers/ready` from this same gate fact. A future
+   retry requires a new watcher/board/operator freshness fact after
+   Security/credential owners replace or fix the accepted production smoke
+   principal.
+4. Preserve the boundary: no deploy, restart, rollback, env edit, push,
+   account mutation, secret value output, database mutation, exchange mutation,
+   or live-trading action occurred or is implied.
+5. Evidence:
+   `history/tasks/luc-2801-soar-protected-recheck-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2790 Rollback Guard Helper Proof Next Action
+
+1. Treat [LUC-2790](/LUC/issues/LUC-2790) as complete for this Test
+   Automation local helper proof and architecture relation repair lane.
+2. Do not reopen duplicate `scripts/evaluateRollbackGuard.mjs#fetchWithTimeout`,
+   `#isRollbackCriticalAlert`, `#main`, `#parseArgs`, or `#printUsage` proof
+   work unless a later architecture-awareness refresh identifies a new exact
+   uncovered anchor or `scripts/evaluateRollbackGuard.test.mjs` fails.
+3. Parent PM/TSA work may continue from the refreshed architecture-awareness
+   top actionable list, now headed by unrelated `scripts/dev-workers.mjs#main`
+   and generated journey index helpers.
+4. Preserve the boundary: local rollback-guard helper proof and architecture
+   traceability only. No deploy, restart, rollback, protected smoke,
+   production mutation, account, secret, exchange, database, Docker Compose, or
+   live-trading action is implied.
+5. Evidence:
+   `history/tasks/luc-2790-rollback-guard-helper-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2793 Mobile Traceability Classification Next Action
+
+1. Treat [LUC-2793](/LUC/issues/LUC-2793) as complete for Documentation
+   Steward source-truth classification.
+2. Native/mobile is `out_of_scope_for_v1`; do not create mobile implementation,
+   mobile CI, Expo Router shell, mobile API-contract, or native trading-flow
+   work from V1 traceability gaps alone.
+3. Reopen only if a Product/CTO-approved mobile activation issue enters active
+   scope with non-scaffold runtime behavior in `apps/mobile`.
+4. Evidence:
+   `history/tasks/luc-2793-mobile-traceability-v1-scope-classification-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2794 Architecture Graph Backfill Selection Next Action
+
+1. Treat [LUC-2794](/LUC/issues/LUC-2794) as complete for this TSA
+   architecture-selection checkpoint.
+2. Do not create another `scripts/evaluateRollbackGuard.mjs` proof/relation
+   lane while [LUC-2790](/LUC/issues/LUC-2790) is active under Test
+   Automation for the same current top actionable family.
+3. [LUC-2790](/LUC/issues/LUC-2790) owns focused local proof or classification
+   for `scripts/evaluateRollbackGuard.mjs#fetchWithTimeout`,
+   `#isRollbackCriticalAlert`, `#main`, `#parseArgs`, and `#printUsage`, plus
+   scanner-readable relation rows if proof exists.
+4. Preserve the boundary: local release-tooling helper proof and architecture
+   traceability only. No deploy, restart, rollback, protected smoke,
+   production mutation, account, secret, exchange, database, Docker Compose, or
+   live-trading action is implied.
+5. Evidence:
+   `history/tasks/luc-2794-select-next-p0-architecture-graph-backfill-chain-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2788 Dev Workers Helper Proof Next Action
+
+1. Treat [LUC-2788](/LUC/issues/LUC-2788) as complete for this Test
+   Automation local helper proof and architecture relation repair lane.
+2. Do not reopen duplicate `scripts/dev-workers.mjs#prefixLog`,
+   `scripts/dev-workers.mjs#shutdown`, or
+   `scripts/dev-workers.mjs#shutdownImpl` proof work unless a later
+   architecture-awareness refresh identifies a new exact uncovered anchor or
+   `scripts/dev-workers.test.mjs` fails.
+3. Parent PM/TSA work may continue from the current architecture-awareness top
+   actionable family, now headed by
+   `scripts/evaluateRollbackGuard.mjs#fetchWithTimeout`.
+4. Preserve the boundary: local developer-tooling proof and architecture
+   traceability only. No dev worker process, Docker Compose, DB, Redis, real
+   Prisma, deploy, push, restart, rollback, production browser, protected
+   smoke, account, secret, exchange, database, or live-trading mutation is
+   implied.
+5. Evidence:
+   `history/tasks/luc-2788-dev-workers-helper-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2787 Workers Readiness Auth Bootstrap Next Action
+
+1. Treat [LUC-2787](/LUC/issues/LUC-2787) as complete for the Core Backend
+   local bootstrap stabilization proof.
+2. Parent [LUC-1174](/LUC/issues/LUC-1174) owner should rerun the broader V1
+   conformance closure path now that the local workers readiness suite no
+   longer fails before assertions.
+3. Do not reopen `/auth/register` bootstrap work from the old failure signature
+   unless `apps/api/src/router/workers-health-readiness.test.ts` regresses.
+4. Preserve the boundary: this is local API test proof only. Protected
+   production `/workers/ready` evidence remains auth-gated under the existing
+   Ops/Security path and was not attempted here.
+5. Evidence:
+   `history/tasks/luc-2787-workers-readiness-auth-bootstrap-test-path-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2783 No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2783](/LUC/issues/LUC-2783) as complete for this PM
+   no-stall/delegation checkpoint.
+2. Execute [LUC-2788](/LUC/issues/LUC-2788) as the next Test Automation local
+   proof/relation lane for `scripts/dev-workers.mjs#prefixLog` and
+   `scripts/dev-workers.mjs#shutdown`.
+3. [LUC-2788](/LUC/issues/LUC-2788) should prefer import-safe helper exports,
+   injected seams, focused `node:test` proof, and scanner-readable relation
+   rows. It must not start Docker Compose, DB, Redis, Prisma against a real
+   database, dev worker processes, production browser, protected smoke,
+   deploy, push, restart, rollback, account, secret, exchange, database, or
+   live-trading work.
+4. Defer the next lower families (`scripts/evaluateRollbackGuard.mjs` and
+   generated journey index scripts) until [LUC-2788](/LUC/issues/LUC-2788)
+   closes or is blocked.
+5. Evidence:
+   `history/tasks/luc-2783-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2781 Dev Backend shutdownImpl Proof Next Action
+
+1. Treat [LUC-2781](/LUC/issues/LUC-2781) as complete for this Test
+   Automation local proof and architecture relation repair checkpoint.
+2. Do not reopen duplicate `scripts/dev-backend.mjs#shutdownImpl` proof work
+   unless a later architecture-awareness refresh identifies a new exact
+   uncovered anchor or `scripts/dev-backend.test.mjs` fails.
+3. Parent architecture/no-stall work may continue from the current
+   architecture-awareness top actionable family, now headed by
+   `scripts/dev-workers.mjs#prefixLog` and `scripts/dev-workers.mjs#shutdown`.
+4. Preserve the boundary: local developer-tooling proof and architecture
+   traceability only. No Docker Compose, DB/Redis mutation, real Prisma
+   command, deploy, push, restart, protected smoke, production browser,
+   account, secret, exchange, database, or live-trading mutation is implied.
+5. Evidence:
+   `history/tasks/luc-2781-dev-backend-shutdownimpl-test-link-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2779 Architecture-Awareness Refresh Next Action
+
+1. Treat [LUC-2779](/LUC/issues/LUC-2779) as complete for this TSA
+   architecture-awareness refresh/delegation checkpoint.
+2. Execute [LUC-2781](/LUC/issues/LUC-2781) as the next Test Automation local
+   proof/relation lane for the single residual `scripts/dev-backend.mjs#shutdownImpl`
+   anchor.
+3. [LUC-2781](/LUC/issues/LUC-2781) must not reopen the broad
+   `scripts/dev-backend.mjs` helper proof work already completed by
+   [LUC-2775](/LUC/issues/LUC-2775). It should either add the smallest
+   scanner-readable relation if existing focused proof is sufficient, or add
+   the smallest local injected-seam proof for `shutdownImpl`.
+4. Preserve the boundary: local developer-tooling proof and architecture
+   traceability only. No deploy, push, restart, rollback, env edit, protected
+   smoke, production browser, account, secret, exchange credential, database
+   mutation, Docker Compose startup, real Prisma command, or live-trading action
+   is implied.
+5. Evidence:
+   `history/tasks/luc-2779-architecture-awareness-after-dev-backend-proof-closure-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2776 No-Stall Queue Expeditor Next Action
+
+1. Treat [LUC-2776](/LUC/issues/LUC-2776) as complete for this PM
+   no-stall/delegation checkpoint.
+2. Execute [LUC-2779](/LUC/issues/LUC-2779) as the next Technical Solution
+   Architect refresh/reconciliation lane after completed
+   [LUC-2775](/LUC/issues/LUC-2775).
+3. [LUC-2779](/LUC/issues/LUC-2779) must not duplicate completed
+   `scripts/dev-backend.mjs` proof work. It should refresh or reconcile
+   architecture-awareness and create at most one next worker-ready lane for a
+   truly current non-duplicate actionable family.
+4. Preserve the boundary: architecture-awareness coordination/readback only.
+   No deploy, push, restart, protected smoke, production browser, account,
+   secret, exchange, database, Docker Compose, or live-trading mutation is
+   implied.
+5. Evidence:
+   `history/tasks/luc-2776-no-stall-queue-expeditor-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2775 Dev Backend Helper Proof Next Action
+
+1. Treat [LUC-2775](/LUC/issues/LUC-2775) as complete for this Test
+   Automation local helper proof and relation repair lane.
+2. Do not open another local `scripts/dev-backend.mjs` relation/test child
+   from the pre-fix [LUC-2774](/LUC/issues/LUC-2774) report. The current
+   helper anchors have focused proof and `11` scanner-readable `LUC-2775`
+   relation rows.
+3. The next missing-test family should be selected only after a TSA/PM
+   architecture-awareness refresh or equivalent duplicate-filtered readback.
+4. Preserve the boundary: local developer-tooling proof and architecture
+   traceability only. No deploy, push, restart, rollback, production smoke,
+   protected browser, account, secret, API-key, exchange credential, database
+   mutation, Docker Compose startup, real Prisma command, or live-trading
+   action is implied.
+5. Evidence:
+   `history/tasks/luc-2775-dev-backend-helper-missing-test-links-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2774 Gap Register Refresh Next Action
+
+1. Treat [LUC-2774](/LUC/issues/LUC-2774) as complete for this TSA
+   gap-register refresh and repair-lane delegation checkpoint.
+2. Execute [LUC-2775](/LUC/issues/LUC-2775) as the next Test Automation local
+   proof/relation lane for `scripts/dev-backend.mjs`.
+3. [LUC-2775](/LUC/issues/LUC-2775) should prefer import-safe helper exports,
+   injected seams, focused `node:test` proof, and scanner-readable
+   `LUC-2775` relation rows for `checkTcpPort`, `dockerAvailable`, `finalize`,
+   `handleExit`, `main`, `parseDatabaseUrl`, `readEnvValue`, `redis`, `run`,
+   `runPrisma`, and `shutdown`.
+4. Preserve the boundary: local developer-tooling proof and architecture
+   traceability only. No deploy, push, restart, rollback, production smoke,
+   protected browser, account, secret, API-key, exchange credential, database
+   mutation, or live-trading action is implied.
+5. Evidence:
+   `history/tasks/luc-2774-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2773 Assistant AI V1 Scope Decision Next Action
+
+1. Treat [LUC-2773](/LUC/issues/LUC-2773) as complete for this Soar Product
+   Manager V1 scope decision.
+2. Keep `SOAR-ASSISTANT-AI-001` V1 scope limited to assistant config,
+   deterministic foundation/orchestrator behavior, `BACKTEST|PAPER` dry-run
+   diagnostics, sanitized traces, and fail-closed `LIVE` rejection.
+3. Do not open AI Runtime or Security implementation children for executable
+   assistant hot-path orchestration unless a future Product+CTO activation
+   decision explicitly reopens it.
+4. If reopened after V1, create owner-scoped child issues for AI Runtime
+   implementation, Security red-team packet, and QA/Test protocol proof before
+   any BACKTEST/PAPER runtime claim; require a separate Product+CTO decision
+   before any LIVE-mode discussion.
+5. Evidence:
+   `history/tasks/luc-2773-soar-assistant-ai-v1-scope-decision-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2767 Deploy Health Sweep Next Action
+
+1. Treat [LUC-2767](/LUC/issues/LUC-2767) as complete for this read-only DRE
+   production health sweep.
+2. Do not redeploy, restart, roll back, edit env, or rerun protected smoke from
+   this evidence. Public API/Web health is green and build-info matches
+   `origin/main`; protected workers/readiness/freshness/alerts remain a
+   separate auth-gated proof chain.
+3. Preserve the current protected-smoke/auth owner path for resolving `401`
+   on `/workers/ready`, `/workers/runtime-freshness`, and `/alerts`.
+4. If a future operator provides an approved read-only production principal,
+   rerun protected runtime freshness and rollback guard as a separate gated
+   DRE/QA/Ops proof.
+5. Evidence:
+   `history/tasks/luc-2767-coolify-production-deploy-health-sweep-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2760 Autonomous Idle And Map Drift Sweep Next Action
+
+1. Treat [LUC-2760](/LUC/issues/LUC-2760) as complete for this
+   Documentation Steward docs/memory drift checkpoint.
+2. Do not create another child for `scripts/collectNonGateioRuntimeReadback.mjs`
+   while [LUC-2764](/LUC/issues/LUC-2764) is actively running under Test
+   Automation for the current script cluster.
+3. Treat [LUC-2765](/LUC/issues/LUC-2765) as duplicate/superseded by
+   [LUC-2764](/LUC/issues/LUC-2764). Paperclip rejected direct cancellation
+   from this Documentation Steward run because [LUC-2765](/LUC/issues/LUC-2765)
+   is assigned to Test Automation.
+4. Current known-state remains `ACTIVE REPAIR/VERIFICATION / PROTECTED GATE
+   HOLD`, not monitoring-only: architecture-awareness is fresh and docs parity
+   passes, but protected gate families remain fail-closed and local
+   `softwarehouse:control-tick` is still unavailable.
+5. Evidence:
+   `history/tasks/luc-2760-autonomous-idle-and-map-drift-sweep-2026-06-07-task.md`.
+
+## 2026-06-07 LUC-2761 Controller Next Action
+
+1. Treat [LUC-2761](/LUC/issues/LUC-2761) as complete for this TSA
+   controller/dedup checkpoint.
+2. Do not create a duplicate child for
+   `scripts/collectNonGateioRuntimeReadback.mjs` while
+   [LUC-2764](/LUC/issues/LUC-2764) is actively running under Test Automation
+   for the current script cluster.
+3. After [LUC-2764](/LUC/issues/LUC-2764) closes, refresh
+   architecture-awareness again and choose the next non-duplicate actionable
+   family if gaps remain.
+4. Preserve the boundary: architecture-awareness coordination/readback only.
+   No deploy, push, restart, protected smoke, production browser, account,
+   secret, exchange, database, or live-trading mutation is implied.
+5. Evidence:
+   `history/tasks/luc-2761-v1-audit-to-completion-controller-2026-06-07-task.md`.
 
 ## 2026-06-07 LUC-2750 Live Import Readback Collector Next Action
 
@@ -5923,3 +7530,12 @@ On "rob dalej", "rób dalej", "kontynuuj", "continue", or "next":
   `ROLLBACK_GUARD_*`, `SOAR_PROD_*`, `PROD_DB_CHECK_*` or
   `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE*` families through approved
   encrypted runtime injection, then wake the protected release proof lane.
+
+- 2026-06-11 `LUC-3409` next-step update: owner-login proof path is
+  security-approved but waiting for operator/board choice. Current
+  `PROD_UI_AUDIT_AUTH_TOKEN` returned HTTP `401` on redacted `/auth/me`, so do
+  not run authenticated browser proof yet. Next owner/action: accept the
+  documented path and bind a fresh valid owner proof session through protected
+  runtime inputs, run supervised proof with Patryk present, or provide an
+  equivalent redacted artifact. Keep [LUC-3375](/LUC/issues/LUC-3375)
+  fail-closed until that evidence exists.

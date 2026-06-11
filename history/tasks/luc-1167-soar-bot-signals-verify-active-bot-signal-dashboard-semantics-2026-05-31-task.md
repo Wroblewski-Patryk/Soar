@@ -1,7 +1,14 @@
-# Task Contract ó LUC-1167
+# Task Contract - LUC-1167
 
-## Context
-- Issue: `LUC-1167` ó `[Soar][Bot Signals] Verify active-bot signal dashboard semantics`.
+## Architecture Links
+
+- Primary feature/module: Dashboard active-bot runtime signal semantics.
+- Architecture nodes: `docs/architecture/nodes/SOAR-COMP-LIVE-MARKET-BAR.md`, `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-MARKET-TRUTH-STATE.md`, `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-STRATEGY-DISPLAY-BY-SYMBOL.md`.
+- Function chains: `docs/architecture/reference/runtime-signal-merge-contract.md`, `docs/pipelines/wallet-and-bot-configuration.md`.
+- Affected files: `apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx`, `apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts`.
+- Tests/proof: `pnpm --filter web exec vitest run src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts`.
+- Docs updated: `history/tasks/luc-1167-soar-bot-signals-verify-active-bot-signal-dashboard-semantics-2026-05-31-task.md`.## Context
+- Issue: `LUC-1167` √¢‚Ç¨‚Äù `[Soar][Bot Signals] Verify active-bot signal dashboard semantics`.
 - Wake reason: `source_scoped_recovery_action` with inline payload indicating prior implementation delta already delivered and requiring durable closure disposition.
 - Role lane: Engineering Delivery Lead (coordination/closure evidence, no new feature implementation in this heartbeat).
 

@@ -1,5 +1,14 @@
 # V1 Runtime Non-Binance Derivatives Adapter - 2026-05-13
 
+## Architecture Links
+
+- Primary feature/module: Runtime non-Binance derivatives market-data adapter.
+- Architecture nodes: `docs/architecture/nodes/SOAR-SERVICE-EXCHANGE-PUBLIC-MARKET-DATA.md`, `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-MARKET-DATA-FALLBACK.md`, `docs/architecture/nodes/SOAR-SERVICE-MARKET-DATA.md`.
+- Function chains: `docs/architecture/chains/CHAIN-EXCHANGE-ADAPTER-DEEP.md`, `docs/architecture/chains/CHAIN-MARKET-DATA-STREAM-ADAPTERS.md`.
+- Affected files: `apps/api/src/modules/bots/runtimeMarketDataFallback.service.test.ts`, `apps/api/src/modules/engine/runtimeSignalMarketDataGateway.test.ts`.
+- Tests/proof: focused API runtime fallback and engine signal gateway tests, API typecheck, and repository guardrails.
+- Docs updated: `history/tasks/v1-runtime-non-binance-derivatives-adapter-2026-05-13-task.md`.
+
 ## Task Contract
 
 ### Context

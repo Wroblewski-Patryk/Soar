@@ -21,6 +21,29 @@ Produce deterministic proof that the DCA-before-close behavior fails on the pre-
 - No product/runtime logic edits in main workspace.
 - Historical revision checks in isolated worktrees.
 
+## Architecture Links
+
+- Primary feature/module: DCA-before-close runtime protection regression proof.
+- Architecture nodes:
+  - `docs/architecture/nodes/SOAR-FEATURE-RUNTIME-DCA-PNL.md`
+  - `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-AUTOMATION.md`
+  - `docs/architecture/nodes/SOAR-SERVICE-BOTS-RUNTIME-READ.md`
+  - `docs/architecture/nodes/SOAR-TEST-RUNTIME-DCA-PNL.md`
+  - `docs/architecture/nodes/SOAR-TEST-BOT-RUNTIME-API.md`
+- Function chains:
+  - `docs/architecture/chains/CHAIN-RUNTIME-DCA-PNL.md`
+  - `docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md`
+- Affected files:
+  - `apps/api/src/modules/bots/runtimePositionSerialization.service.test.ts`
+  - `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts`
+  - `apps/api/src/modules/bots/luc963-dca-before-close-regression.test.ts`
+- Tests/proof:
+  - `pnpm --filter api test -- src/modules/bots/luc963-dca-before-close-regression.test.ts`
+  - before `6b1d3e9a^`: FAIL as expected
+  - after `6b1d3e9a`: PASS
+- Docs updated:
+  - `docs/status/task-entity-link-backfill-classification-2026-06-08.md`
+
 ## Verification Design
 1. Identify candidate fix SHA.
 2. Run focused existing regression tests on `before` and `after` revisions.

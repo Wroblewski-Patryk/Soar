@@ -18,6 +18,31 @@ Convert acceptance-matrix rows used in backend conformance verification into one
 - `apps/api/package.json`
 - Existing API unit/middleware regression suites used by the matrix rows
 
+## Architecture Links
+
+- Primary feature/module: V1 conformance acceptance-matrix executable regression pack.
+- Architecture nodes:
+  - `docs/architecture/nodes/SOAR-TEST-POSITIONS-RECONCILIATION.md`
+  - `docs/architecture/nodes/SOAR-TEST-API-MIDDLEWARE-SAFETY.md`
+  - `docs/architecture/nodes/SOAR-TEST-BOT-RUNTIME-API.md`
+  - `docs/architecture/nodes/SOAR-DOC-TESTING.md`
+- Function chains:
+  - `docs/architecture/chains/CHAIN-POSITIONS-CORE.md`
+  - `docs/architecture/chains/CHAIN-API-PLATFORM-SAFETY.md`
+  - `docs/architecture/chains/CHAIN-BOT-RUNTIME-CORE.md`
+- Affected files:
+  - `apps/api/package.json`
+  - `apps/api/src/modules/positions/livePositionReconciliation.service.test.ts`
+  - `apps/api/src/modules/auth/requireRole.test.ts`
+  - `apps/api/src/middleware/requireOpsNetwork.test.ts`
+  - `apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts`
+- Tests/proof:
+  - `history/evidence/luc-1189-acceptance-matrix-executable-regression-pack-2026-06-01.md`
+  - `pnpm --filter api run test:conformance:acceptance-matrix`
+- Docs updated:
+  - `docs/engineering/testing.md`
+  - `docs/status/task-entity-link-backfill-classification-2026-06-08.md`
+
 ## Implementation Plan
 1. Create one API script that executes focused tests mapped to acceptance-matrix classes.
 2. Keep the script DB-independent to avoid `localhost:5432` blocker.

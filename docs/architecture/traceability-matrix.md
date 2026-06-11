@@ -1,6 +1,6 @@
 # Traceability Matrix
 
-Updated: 2026-06-06
+Updated: 2026-06-07
 
 Purpose: map core Soar features across frontend entry, backend route/API,
 services/modules, database models, pipelines, tests, and related docs. `GAP`
@@ -25,11 +25,12 @@ means the trace is incomplete or needs a stronger future evidence pass.
 | Logs/audit trail | `/dashboard/logs`, `features/logs` | `/dashboard/logs` | `api/logs` | `Log` | Audit log read | `logs.e2e.test.ts`, web logs tests | `docs/modules/api-logs.md`, `docs/modules/web-logs.md` |
 | Admin subscriptions/users | `/admin*`, `features/admin` | `/admin*`, `/admin/subscriptions/plans*`, `/admin/users*` | `api/admin`, role middleware | `User`, `SubscriptionPlan`, `UserSubscription` | Admin management | `admin/*/*.e2e.test.ts`, admin web tests if present | `docs/modules/api-admin.md`, `docs/modules/web-admin.md` |
 | Assistant runtime config | `/dashboard/bots/*assistant*`, `features/bots` | `/dashboard/bots/:id/assistant-config*` | `api/bots` assistant services, `api/engine` assistant orchestrator | `BotAssistantConfig`, `BotSubagentConfig`, `Bot` | Assistant dry-run/config | `assistantOrchestrator*.test.ts`, bots assistant e2e coverage | `docs/architecture/reference/assistant-runtime-contract.md`, `docs/modules/api-bots.md` |
+| Native/mobile scaffold | `apps/mobile` scaffold only | none | no runtime module; mobile parity contract only | n/a | inactive V1 scope | file-level docs/readback only; no mobile CI/build proof required for V1 | `docs/modules/mobile-module-index.md`, `docs/modules/mobile-bootstrap.md`, `docs/planning/mobile-parity-contract.md` |
 
 ## Current Gaps
 | Gap | Impact | Next Repair Slice |
 |---|---|---|
-| Mobile app traceability is not covered beyond acknowledging `apps/mobile`. | Future mobile work could drift from V1 web/API contracts. | Create mobile module docs when mobile becomes active. |
+| Native/mobile traceability is classified as `out_of_scope_for_v1` with scaffold-only docs seed. | Future mobile work remains visible without becoming an active V1 implementation gap. | Reopen only after Product/CTO-approved mobile activation; then replace scaffold scripts with real Expo/native build/test contracts and add feature-level mobile traceability rows. |
 | Full architecture evidence graph backfill is not complete. | The graph system exists, but only seed P0/P1 chains are mapped; unmapped code must not be treated as officially proven by the graph. | Backfill `docs/architecture/registry/nodes.csv`, relation rows, and chain rows module by module, starting with active P0 money/runtime flows. |
 | Web feature test mappings can drift if module deep dives are not updated when tests move/rename. | Traceability can become stale after refactors even when tests still exist. | Keep module deep-dive `Tests` tables synchronized with exact file paths during feature/test edits. |
 | Historical planning files contain unchecked boxes that are not active work. | New agents can misread old plans as current tasks. | Continue active queue sync tasks and keep historical files out of the canonical reading path. |

@@ -1,6 +1,6 @@
 # Coolify VPS Deployment Contract
 
-Last updated: 2026-06-06
+Last updated: 2026-06-11
 
 This contract describes the current Soar production deployment target. Coolify
 must be treated as a hierarchy:
@@ -41,9 +41,41 @@ refreshed/reconciled for `LUC-1399`, `LUC-1402`, `LUC-1405`, `LUC-1408`,
 `LUC-2004`
 on 2026-06-04, and `LUC-2069` / `LUC-2072` / `LUC-2094` / `LUC-2136` /
 `LUC-2149` / `LUC-2153` / `LUC-2171` / `LUC-2181` / `LUC-2228` on
-2026-06-05, and `LUC-2316` on 2026-06-06.
+2026-06-05, `LUC-2316` on 2026-06-06, and `LUC-3573` / `LUC-3578` on
+2026-06-11.
 
-Latest resource inventory reconciliation: `LUC-1787` at
+Latest resource inventory reconciliation: `LUC-3578` at
+`2026-06-11T20:10:21Z`. Authenticated read-only Coolify API calls resolved
+selector `LuckySparrow`, project `Soar`, the configured production environment
+binding, production environment id `6`, six applications, PostgreSQL, Redis,
+zero generic services, `17` visible global resource rows, and `0` active
+deployment rows. The canonical
+production-environment inventory remains eight resources: `soar-api`,
+`soar-web`, `workers-backtest`, `workers-execution`, `workers-market-data`,
+`workers-market-stream`, `postgresql`, and `redis`. Application rows report
+`running:unknown`; PostgreSQL and Redis report `running:healthy`.
+`workers-execution` retains restart metadata (`restartCount=2`). This
+heartbeat performed no deploy, restart, rollback, env edit, database action,
+Redis action, team setting change, account action, protected smoke, secret
+readback, raw resource id storage, screenshot, raw log capture, or live-trading
+action. Evidence:
+`history/evidence/luc-3578-coolify-resource-inventory-reconciliation-2026-06-11.md`.
+
+Previous resource inventory reconciliation: `LUC-3573` at
+`2026-06-11T19:36:01Z`. Authenticated read-only Coolify API calls resolved the
+same selector, project, configured production environment binding, eight
+canonical production-environment resources, `17` visible global resource rows,
+and `0` active deployment rows. Evidence:
+`history/evidence/luc-3573-coolify-resource-inventory-reconciliation-2026-06-11.md`.
+
+Previous resource inventory reconciliation: `LUC-3437` at
+`2026-06-11T04:29:51Z`. Authenticated read-only Coolify API calls resolved
+the same selector, project, configured production environment binding, eight
+canonical resources, `17` visible global resource rows, and `0` active
+deployment rows. Evidence:
+`history/evidence/luc-3437-coolify-resource-inventory-reconciliation-2026-06-11.md`.
+
+Previous resource inventory reconciliation: `LUC-1787` at
 `2026-06-05T15:27:09Z`. The board/operator refreshed Coolify access and
 resource refs without exposing secret values, and Ops verified the target
 through authenticated read-only Coolify API calls. Runtime bindings are present

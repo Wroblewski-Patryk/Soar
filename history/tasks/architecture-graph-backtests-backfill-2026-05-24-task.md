@@ -1,5 +1,14 @@
 # Architecture Graph Backtests Backfill - 2026-05-24
 
+## Architecture Links
+
+- Primary feature/module: Backtests run lifecycle and replay graph coverage.
+- Architecture nodes: SOAR-FEATURE-BACKTESTS; SOAR-PAGE-BACKTESTS-LIST; SOAR-API-BACKTEST-RUN-LIST; SOAR-DB-BACKTEST-RUN; SOAR-TEST-BACKTESTS-API.
+- Function chains: docs/architecture/chains/CHAIN-BACKTESTS.md.
+- Affected files: docs/architecture/registry/nodes.csv; docs/architecture/relations/dependencies.csv; docs/architecture/chains/chains.csv; generated graph/status exports.
+- Tests/proof: `pnpm run architecture:graph:generate` recorded in this task's Result Report.
+- Docs updated: architecture graph registries, Backtests chain output, generated graph exports, and source-of-truth state files.
+
 ## Context
 
 The architecture evidence graph mission is incrementally backfilling critical
@@ -65,4 +74,3 @@ evidence graph without changing application runtime behavior.
 - Residual risk: this is graph traceability proof only. It is not fresh
   authenticated browser proof, heavy replay performance proof, or full
   repository graph coverage.
-

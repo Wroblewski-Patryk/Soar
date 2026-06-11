@@ -188,16 +188,84 @@ scripts/dev-workers.mjs,scripts/repoGuardrails.test.mjs,LUC-2198 dev workers gua
 scripts/evaluateRollbackGuard.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 rollback guard release-gate relation
 scripts/generateFunctionJourneyIndexes.mjs,scripts/repoGuardrails.test.mjs,LUC-2198 journey index graph guardrail relation
 scripts/generateUserActionIndex.mjs,scripts/repoGuardrails.test.mjs,LUC-2198 user action index graph guardrail relation
+scripts/generateUserActionIndex.mjs#actionIdFor,scripts/generateUserActionIndex.test.mjs,LUC-2872 direct action id generation relation
+scripts/generateUserActionIndex.mjs#chains,scripts/generateUserActionIndex.test.mjs,LUC-2872 direct chain fixture consumption relation
+scripts/generateUserActionIndex.mjs#csvEscape,scripts/generateUserActionIndex.test.mjs,LUC-2872 direct CSV escaping relation
+scripts/generateUserActionIndex.mjs#gapSeverity,scripts/generateUserActionIndex.test.mjs,LUC-2872 direct action gap severity relation
+scripts/generateUserActionIndex.mjs#includesAny,scripts/generateUserActionIndex.test.mjs,LUC-2872 direct word-boundary helper relation
+scripts/generateUserActionIndex.mjs#inferActionKind,scripts/generateUserActionIndex.test.mjs,LUC-2872 direct action kind inference relation
+scripts/generateUserActionIndex.mjs#inferSafetyBoundary,scripts/generateUserActionIndex.test.mjs,LUC-2872 direct safety boundary inference relation
+scripts/generateUserActionIndex.mjs#list,scripts/generateUserActionIndex.test.mjs,LUC-2872 direct unique list formatting relation
+scripts/generateUserActionIndex.mjs#main,scripts/generateUserActionIndex.test.mjs,LUC-2872 isolated user action index generation relation
+scripts/generateUserActionIndex.mjs#parseCsv,scripts/generateUserActionIndex.test.mjs,LUC-2872 direct CSV parser relation
+scripts/generateUserActionIndex.mjs#proofStatus,scripts/generateUserActionIndex.test.mjs,LUC-2872 direct proof status classification relation
+scripts/generateUserActionIndex.mjs#readCsv,scripts/generateUserActionIndex.test.mjs,LUC-2872 direct CSV reader relation
+scripts/generateUserActionIndex.mjs#rowForAction,scripts/generateUserActionIndex.test.mjs,LUC-2872 direct user action row generation relation
+scripts/generateUserActionIndex.mjs#routeHint,scripts/generateUserActionIndex.test.mjs,LUC-2872 direct route hint relation
+scripts/generateUserActionIndex.mjs#splitRefs,scripts/generateUserActionIndex.test.mjs,LUC-2872 direct reference splitting relation
+scripts/generateUserActionIndex.mjs#statusRank,scripts/generateUserActionIndex.test.mjs,LUC-2872 direct status rank relation
+scripts/generateUserActionIndex.mjs#unique,scripts/generateUserActionIndex.test.mjs,LUC-2872 direct unique value helper relation
+scripts/generateUserActionIndex.mjs#weakestStatus,scripts/generateUserActionIndex.test.mjs,LUC-2872 direct weakest status relation
+scripts/generateUserActionIndex.mjs#writeCsv,scripts/generateUserActionIndex.test.mjs,LUC-2872 direct CSV writer relation
 scripts/goLiveSmoke.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 go-live smoke release-gate relation
+scripts/goLiveSmoke.mjs#canConnect,scripts/goLiveSmoke.test.mjs,LUC-2989 direct go-live smoke local socket reachability relation
+scripts/goLiveSmoke.mjs#extractFailedMigrationName,scripts/goLiveSmoke.test.mjs,LUC-2989 direct go-live smoke Prisma migration name extraction relation
+scripts/goLiveSmoke.mjs#finish,scripts/goLiveSmoke.test.mjs,LUC-2989 direct go-live smoke socket completion relation through canConnect proof
+scripts/goLiveSmoke.mjs#localInfraIsReachable,scripts/goLiveSmoke.test.mjs,LUC-2989 direct go-live smoke local infra reachability aggregation relation
+scripts/goLiveSmoke.mjs#main,scripts/goLiveSmoke.test.mjs,LUC-2989 direct go-live smoke injected CLI orchestration relation
+scripts/goLiveSmoke.mjs#printLocalMigrationGuidance,scripts/goLiveSmoke.test.mjs,LUC-2989 direct go-live smoke local migration guidance relation
+scripts/goLiveSmoke.mjs#run,scripts/goLiveSmoke.test.mjs,LUC-2989 direct go-live smoke injected child command runner relation
 scripts/resolveOpsAuthToken.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 ops auth release-gate relation
+scripts/resolveOpsAuthToken.mjs#extractTokenFromSetCookie,scripts/resolveOpsAuthToken.test.mjs,LUC-2808 direct ops auth cookie token parser relation
+scripts/resolveOpsAuthToken.mjs#readSetCookieHeaders,scripts/resolveOpsAuthToken.test.mjs,LUC-2808 direct ops auth set-cookie header reader relation
+scripts/resolveOpsAuthToken.mjs#resolveOpsAuthToken,scripts/resolveOpsAuthToken.test.mjs,LUC-2808 direct ops auth login token extraction relation
 scripts/runAud07IsolatedDbPacks.mjs,scripts/checkReusableAuditToolingIndex.test.mjs,LUC-2198 isolated DB audit tooling relation
+scripts/runAud07IsolatedDbPacks.mjs#main,scripts/runAud07IsolatedDbPacks.test.mjs,LUC-2820 direct isolated DB runner CLI orchestration relation
+scripts/runAud07IsolatedDbPacks.mjs#pnpmArgs,scripts/runAud07IsolatedDbPacks.test.mjs,LUC-2820 direct corepack pnpm argument relation
+scripts/runAud07IsolatedDbPacks.mjs#run,scripts/runAud07IsolatedDbPacks.test.mjs,LUC-2820 direct child exit fail-closed relation
 scripts/runBackupVerificationProfile.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 backup verification release-gate relation
 scripts/runControlledLiveSessionProof.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 controlled live proof release-gate relation
+scripts/runControlledLiveSessionProof.mjs#assertNoOrderGuardActive,scripts/runControlledLiveSessionProof.test.mjs,LUC-2827 direct controlled live no-order guard readiness relation
+scripts/runControlledLiveSessionProof.mjs#assertOptions,scripts/runControlledLiveSessionProof.test.mjs,LUC-2827 direct controlled live proof fail-closed options relation
+scripts/runControlledLiveSessionProof.mjs#assertTargetBotSafe,scripts/runControlledLiveSessionProof.test.mjs,LUC-2827 direct controlled live target bot safety relation
+scripts/runControlledLiveSessionProof.mjs#buildBotActiveStatePayload,scripts/runControlledLiveSessionProof.test.mjs,LUC-2827 direct controlled live activation payload relation
+scripts/runControlledLiveSessionProof.mjs#updateBotActiveState,scripts/runControlledLiveSessionProof.test.mjs,LUC-2904 direct controlled live activation update relation
+scripts/runControlledLiveSessionProof.mjs#discoverTargetBot,scripts/runControlledLiveSessionProof.test.mjs,LUC-2834 direct controlled live target discovery selection relation
+scripts/runControlledLiveSessionProof.mjs#fetchJson,scripts/runControlledLiveSessionProof.test.mjs,LUC-2845 direct controlled live proof JSON fetch fail-closed relation
 scripts/runCutoverDryRun.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 cutover dry-run release-gate relation
 scripts/runKnownStateRefresh.mjs,scripts/checkReusableAuditToolingIndex.test.mjs,LUC-2198 known-state refresh tooling relation
 scripts/runLocalExternalGatesPipeline.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 local external gates release-gate relation
 scripts/runLocalProtectedRouteActionProof.mjs,scripts/repoGuardrails.test.mjs,LUC-2198 local protected route proof guardrail relation
+scripts/runLocalProtectedRouteActionProof.mjs#collectLocation,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-2935 direct mocked CDP location collection relation
+scripts/runLocalProtectedRouteActionProof.mjs#evaluate,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-2935 direct mocked CDP evaluate relation
+scripts/runLocalProtectedRouteActionProof.mjs#findBrowserPath,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-2935 direct local browser path resolution relation
+scripts/runLocalProtectedRouteActionProof.mjs#httpRouteProof,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-2935 direct local HTTP fixture proof relation
+scripts/runLocalProtectedRouteActionProof.mjs#installDynamicFixtureApi,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-2935 direct dynamic fixture API interception relation
+scripts/runLocalProtectedRouteActionProof.mjs#jsonFixtureResponse,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-2935 direct fixture JSON response relation
+scripts/runLocalProtectedRouteActionProof.mjs#navigate,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-2935 direct mocked CDP navigation relation
+scripts/runLocalProtectedRouteActionProof.mjs#normalizeBaseUrl,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-2935 direct base URL normalization relation
+scripts/runLocalProtectedRouteActionProof.mjs#readArgValue,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-2935 direct CLI argument reader relation
+scripts/runLocalProtectedRouteActionProof.mjs#renderMarkdown,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-2935 direct proof markdown renderer relation
+scripts/runLocalProtectedRouteActionProof.mjs#resolveDynamicFixtureApi,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-2935 direct dynamic fixture resolver relation
+scripts/runLocalProtectedRouteActionProof.mjs#resolveOptions,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-2935 direct local proof option resolver relation
+scripts/runLocalProtectedRouteActionProof.mjs#stopChild,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-2935 direct child cleanup relation
+scripts/runLocalProtectedRouteActionProof.mjs#verifyStaticMapping,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-2935 direct user-action/source static mapping relation
+scripts/runLocalProtectedRouteActionProof.mjs#wait,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-2935 direct async wait helper relation
+scripts/runLocalProtectedRouteActionProof.mjs#waitForPath,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-2935 direct mocked path wait relation
 scripts/runProdAuthSessionBrowserProof.mjs,scripts/runV1FinalPreflight.test.mjs,LUC-2198 prod auth session preflight relation
+scripts/runProdAuthSessionBrowserProof.mjs#clearAuth,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct mocked CDP auth cleanup relation
+scripts/runProdAuthSessionBrowserProof.mjs#collectLocation,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct mocked CDP location collection relation
+scripts/runProdAuthSessionBrowserProof.mjs#evaluate,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct mocked CDP evaluate relation
+scripts/runProdAuthSessionBrowserProof.mjs#findBrowserPath,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct local browser path resolution relation
+scripts/runProdAuthSessionBrowserProof.mjs#navigate,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct mocked CDP navigation relation
+scripts/runProdAuthSessionBrowserProof.mjs#normalizeBaseUrl,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct base URL normalization relation
+scripts/runProdAuthSessionBrowserProof.mjs#readArgValue,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct CLI argument reader relation
+scripts/runProdAuthSessionBrowserProof.mjs#readJson,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct JSON parse fallback relation
+scripts/runProdAuthSessionBrowserProof.mjs#renderMarkdown,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct redacted proof markdown renderer relation
+scripts/runProdAuthSessionBrowserProof.mjs#resolveOptions,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct production auth proof option resolver relation
+scripts/runProdAuthSessionBrowserProof.mjs#setAuthCookie,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct mocked auth cookie relation
+scripts/runProdAuthSessionBrowserProof.mjs#toStep,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct proof step formatter relation
+scripts/runProdAuthSessionBrowserProof.mjs#wait,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct async wait helper relation
 scripts/runProdFixtureActionProof.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 prod fixture action release-gate relation
 scripts/runProdPositionsProof.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 prod positions proof release-gate relation
 scripts/runProdSecurityExchangeProof.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 prod security exchange release-gate relation
@@ -558,3 +626,276 @@ scripts/collectLiveImportReadbackEvidence.mjs#resolveBuildInfo,scripts/collectLi
 scripts/collectLiveImportReadbackEvidence.mjs#resolveOptions,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct collector option resolution relation
 scripts/collectLiveImportReadbackEvidence.mjs#resolveSession,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct runtime session discovery relation
 scripts/collectLiveImportReadbackEvidence.mjs#splitCsv,scripts/collectLiveImportReadbackEvidence.test.mjs,LUC-2750 direct symbol CSV parsing relation
+scripts/collectNonGateioRuntimeReadback.mjs#assertOptions,scripts/collectNonGateioRuntimeReadback.test.mjs,LUC-2764 direct non-Gate.io readback fail-closed option validation relation
+scripts/collectNonGateioRuntimeReadback.mjs#fetchJson,scripts/collectNonGateioRuntimeReadback.test.mjs,LUC-2764 direct non-Gate.io readback JSON fetch failure relation
+scripts/collectNonGateioRuntimeReadback.mjs#hash,scripts/collectNonGateioRuntimeReadback.test.mjs,LUC-2764 direct non-Gate.io readback redaction hash relation
+scripts/collectNonGateioRuntimeReadback.mjs#main,scripts/collectNonGateioRuntimeReadback.test.mjs,LUC-2764 import-safe non-Gate.io readback CLI entrypoint relation
+scripts/collectNonGateioRuntimeReadback.mjs#normalizeBaseUrl,scripts/collectNonGateioRuntimeReadback.test.mjs,LUC-2764 direct non-Gate.io readback base URL normalization relation
+scripts/collectNonGateioRuntimeReadback.mjs#readArgValue,scripts/collectNonGateioRuntimeReadback.test.mjs,LUC-2764 direct non-Gate.io readback CLI argument lookup relation
+scripts/collectNonGateioRuntimeReadback.mjs#safeNumber,scripts/collectNonGateioRuntimeReadback.test.mjs,LUC-2764 direct non-Gate.io readback numeric guard relation
+scripts/collectNonGateioRuntimeReadback.mjs#summarizeAggregate,scripts/collectNonGateioRuntimeReadback.test.mjs,LUC-2764 direct non-Gate.io aggregate summary relation
+scripts/collectNonGateioRuntimeReadback.mjs#summarizeBot,scripts/collectNonGateioRuntimeReadback.test.mjs,LUC-2764 direct non-Gate.io bot summary relation
+scripts/collectNonGateioRuntimeReadback.mjs#summarizeSession,scripts/collectNonGateioRuntimeReadback.test.mjs,LUC-2764 direct non-Gate.io session summary relation
+scripts/collectSloEvidence.mjs#computeSummary,scripts/collectSloEvidence.test.mjs,LUC-2764 direct SLO summary objective evaluation relation
+scripts/collectSloEvidence.mjs#endpointSamples,scripts/collectSloEvidence.test.mjs,LUC-2764 direct SLO endpoint sample extraction relation
+scripts/collectSloEvidence.mjs#evaluateObjective,scripts/collectSloEvidence.test.mjs,LUC-2764 direct SLO objective comparator relation
+scripts/collectSloEvidence.mjs#isLocalOrPrivateHost,scripts/collectSloEvidence.test.mjs,LUC-2764 direct SLO local/private production guard relation
+scripts/collectSloEvidence.mjs#isPrivateIpv4,scripts/collectSloEvidence.test.mjs,LUC-2764 direct SLO private IPv4 guard relation
+scripts/collectSloEvidence.mjs#main,scripts/collectSloEvidence.test.mjs,LUC-2764 import-safe SLO collector CLI entrypoint relation
+scripts/collectSloEvidence.mjs#normalizeEnvironment,scripts/collectSloEvidence.test.mjs,LUC-2764 direct SLO environment normalization relation
+scripts/collectSloEvidence.mjs#normalizeTargetProfile,scripts/collectSloEvidence.test.mjs,LUC-2764 direct SLO target profile normalization relation
+scripts/collectSloEvidence.mjs#parseArgs,scripts/collectSloEvidence.test.mjs,LUC-2764 direct SLO CLI argument and secret flag relation
+scripts/collectSloEvidence.mjs#parseBaseUrl,scripts/collectSloEvidence.test.mjs,LUC-2764 direct SLO base URL validation relation
+scripts/collectSloEvidence.mjs#parseBoolean,scripts/collectSloEvidence.test.mjs,LUC-2764 direct SLO boolean parsing relation
+scripts/collectSloEvidence.mjs#parseOptionalNumber,scripts/collectSloEvidence.test.mjs,LUC-2764 direct SLO numeric parsing relation
+scripts/collectSloEvidence.mjs#percentile,scripts/collectSloEvidence.test.mjs,LUC-2764 direct SLO percentile helper relation
+scripts/collectSloEvidence.mjs#readCounter,scripts/collectSloEvidence.test.mjs,LUC-2764 direct SLO metrics counter reader relation
+scripts/collectSloEvidence.mjs#renderMarkdown,scripts/collectSloEvidence.test.mjs,LUC-2764 direct SLO markdown redaction and objective report relation
+scripts/collectSloEvidence.mjs#requestJson,scripts/collectSloEvidence.test.mjs,LUC-2764 direct SLO JSON request helper relation
+scripts/collectSloEvidence.mjs#safeDelta,scripts/collectSloEvidence.test.mjs,LUC-2764 direct SLO monotonic counter delta relation
+scripts/collectSloEvidence.mjs#successRatio,scripts/collectSloEvidence.test.mjs,LUC-2764 direct SLO success ratio relation
+scripts/collectSloEvidence.mjs#toIsoStamp,scripts/collectSloEvidence.test.mjs,LUC-2764 direct SLO artifact timestamp relation
+scripts/collectSloEvidence.mjs#wait,scripts/collectSloEvidence.test.mjs,LUC-2764 direct SLO wait helper relation
+scripts/compareReusableAuditManifests.mjs#compareAudits,scripts/compareReusableAuditManifests.test.mjs,LUC-2764 direct reusable audit status regression comparison relation
+scripts/compareReusableAuditManifests.mjs#compareDecisions,scripts/compareReusableAuditManifests.test.mjs,LUC-2764 direct reusable audit open decision regression relation
+scripts/compareReusableAuditManifests.mjs#compareReusableAuditManifests,scripts/compareReusableAuditManifests.test.mjs,LUC-2764 direct reusable audit manifest comparison relation
+scripts/compareReusableAuditManifests.mjs#compareSafetyBoundaries,scripts/compareReusableAuditManifests.test.mjs,LUC-2764 direct reusable audit safety boundary regression relation
+scripts/compareReusableAuditManifests.mjs#compareSummary,scripts/compareReusableAuditManifests.test.mjs,LUC-2764 direct reusable audit summary bucket regression relation
+scripts/compareReusableAuditManifests.mjs#getDecisionIds,scripts/compareReusableAuditManifests.test.mjs,LUC-2764 direct reusable audit decision id extraction relation
+scripts/compareReusableAuditManifests.mjs#indexAudits,scripts/compareReusableAuditManifests.test.mjs,LUC-2764 direct reusable audit indexing relation
+scripts/compareReusableAuditManifests.mjs#main,scripts/compareReusableAuditManifests.test.mjs,LUC-2764 direct reusable audit CLI JSON output relation
+scripts/compareReusableAuditManifests.mjs#writeJsonOutput,scripts/compareReusableAuditManifests.test.mjs,LUC-2764 direct reusable audit JSON writer relation
+scripts/deploySmokeCheck.mjs#runCheck,scripts/deploySmokeCheck.test.mjs,LUC-2764 direct deploy smoke endpoint retry/fail-closed runCheck relation
+scripts/dev-backend.mjs#checkTcpPort,scripts/dev-backend.test.mjs,LUC-2775 direct backend TCP readiness helper relation
+scripts/dev-backend.mjs#dockerAvailable,scripts/dev-backend.test.mjs,LUC-2775 direct Docker availability helper relation
+scripts/dev-backend.mjs#finalize,scripts/dev-backend.test.mjs,LUC-2775 direct TCP readiness finalizer relation
+scripts/dev-backend.mjs#handleExit,scripts/dev-backend.test.mjs,LUC-2775 direct child exit fail-closed helper relation
+scripts/dev-backend.mjs#main,scripts/dev-backend.test.mjs,LUC-2775 direct dev backend startup orchestration relation
+scripts/dev-backend.mjs#parseDatabaseUrl,scripts/dev-backend.test.mjs,LUC-2775 direct database URL parser relation
+scripts/dev-backend.mjs#readEnvValue,scripts/dev-backend.test.mjs,LUC-2775 direct API env reader relation
+scripts/dev-backend.mjs#redis,scripts/dev-backend.test.mjs,LUC-2775 direct Redis URL parser relation
+scripts/dev-backend.mjs#run,scripts/dev-backend.test.mjs,LUC-2775 direct command runner exit propagation relation
+scripts/dev-backend.mjs#runPrisma,scripts/dev-backend.test.mjs,LUC-2775 direct Prisma command failure classification relation
+scripts/dev-backend.mjs#shutdown,scripts/dev-backend.test.mjs,LUC-2775 direct child shutdown helper relation
+scripts/dev-backend.mjs#shutdownImpl,scripts/dev-backend.test.mjs,LUC-2781 direct dev backend signal shutdown closure relation
+scripts/dev-workers.mjs#prefixLog,scripts/dev-workers.test.mjs,LUC-2788 direct worker stdout/stderr prefixing helper relation
+scripts/dev-workers.mjs#shutdown,scripts/dev-workers.test.mjs,LUC-2788 direct worker child shutdown signal helper relation
+scripts/dev-workers.mjs#shutdownImpl,scripts/dev-workers.test.mjs,LUC-2788 direct worker signal shutdown closure relation
+scripts/dev-workers.mjs#main,scripts/dev-workers.test.mjs,LUC-2806 direct dev workers startup orchestration relation
+scripts/dev-workers.mjs#handleWorkerExit,scripts/dev-workers.test.mjs,LUC-2812 direct worker exit fail-closed relation
+scripts/evaluateRollbackGuard.mjs#fetchWithTimeout,scripts/evaluateRollbackGuard.test.mjs,LUC-2790 direct rollback guard fetch timeout signal helper relation
+scripts/evaluateRollbackGuard.mjs#isRollbackCriticalAlert,scripts/evaluateRollbackGuard.test.mjs,LUC-2790 direct rollback critical alert classifier relation
+scripts/evaluateRollbackGuard.mjs#main,scripts/evaluateRollbackGuard.test.mjs,LUC-2790 direct rollback guard CLI decision fail-closed relation
+scripts/evaluateRollbackGuard.mjs#parseArgs,scripts/evaluateRollbackGuard.test.mjs,LUC-2790 direct rollback guard CLI parser and secret-flag relation
+scripts/evaluateRollbackGuard.mjs#printUsage,scripts/evaluateRollbackGuard.test.mjs,LUC-2790 direct rollback guard usage output relation
+scripts/runBackupVerificationProfile.mjs#firstNonEmptyEnv,scripts/runBackupVerificationProfile.test.mjs,LUC-2824 direct backup verification profile env helper relation
+scripts/runBackupVerificationProfile.mjs#main,scripts/runBackupVerificationProfile.test.mjs,LUC-2824 import-safe backup verification profile CLI entrypoint relation
+scripts/runBackupVerificationProfile.mjs#parseArgs,scripts/runBackupVerificationProfile.test.mjs,LUC-2824 direct backup verification profile CLI parser relation
+scripts/runBackupVerificationProfile.mjs#printUsage,scripts/runBackupVerificationProfile.test.mjs,LUC-2824 direct backup verification profile usage output relation
+scripts/runBackupVerificationProfile.mjs#resolveOptions,scripts/runBackupVerificationProfile.test.mjs,LUC-2824 direct backup verification profile option resolution relation
+scripts/runBackupVerificationProfile.mjs#run,scripts/runBackupVerificationProfile.test.mjs,LUC-2824 direct backup verification profile injected runner relation
+scripts/runControlledLiveSessionProof.mjs#hashId,scripts/runControlledLiveSessionProof.test.mjs,LUC-2847 direct controlled live proof redacted identifier hash relation
+scripts/runControlledLiveSessionProof.mjs#listRunningSessions,scripts/runControlledLiveSessionProof.test.mjs,LUC-2860 direct controlled live proof running-session readback relation
+scripts/runControlledLiveSessionProof.mjs#main,scripts/runControlledLiveSessionProof.test.mjs,LUC-2864 direct controlled live proof CLI entrypoint dry-run/help relation
+scripts/runControlledLiveSessionProof.mjs#printUsage,scripts/runControlledLiveSessionProof.test.mjs,LUC-2878 direct controlled live proof usage output relation
+scripts/runControlledLiveSessionProof.mjs#redactBot,scripts/runControlledLiveSessionProof.test.mjs,LUC-2882 direct controlled live proof bot redaction relation
+scripts/runControlledLiveSessionProof.mjs#resolveBuildInfo,scripts/runControlledLiveSessionProof.test.mjs,LUC-2886 direct controlled live proof build-info expected SHA relation
+scripts/runControlledLiveSessionProof.mjs#runCollector,scripts/runControlledLiveSessionProof.test.mjs,LUC-2892 direct controlled live proof collector spawn relation
+scripts/runControlledLiveSessionProof.mjs#runSimultaneousRuntimeReadback,scripts/runControlledLiveSessionProof.test.mjs,LUC-2896 direct controlled live proof simultaneous runtime readback spawn relation
+scripts/runCutoverDryRun.mjs#main,scripts/runCutoverDryRun.test.mjs,LUC-2910 direct cutover dry-run injected CLI orchestration relation
+scripts/runCutoverDryRun.mjs#nowStamp,scripts/runCutoverDryRun.test.mjs,LUC-2910 direct cutover dry-run artifact timestamp relation
+scripts/runCutoverDryRun.mjs#parseArgs,scripts/runCutoverDryRun.test.mjs,LUC-2910 direct cutover dry-run CLI argument relation
+scripts/runCutoverDryRun.mjs#renderMarkdown,scripts/runCutoverDryRun.test.mjs,LUC-2910 direct cutover dry-run markdown report relation
+scripts/runCutoverDryRun.mjs#runStep,scripts/runCutoverDryRun.test.mjs,LUC-2910 direct cutover dry-run child command result relation
+scripts/runKnownStateRefresh.mjs#run,scripts/runKnownStateRefresh.test.mjs,LUC-2920 direct known-state refresh child command relation
+scripts/runControlledLiveSessionProof.mjs#sleep,scripts/runControlledLiveSessionProof.test.mjs,LUC-2899 direct controlled live proof bounded sleep relation
+scripts/runControlledLiveSessionProof.mjs#waitForRunningSession,scripts/runControlledLiveSessionProof.test.mjs,LUC-2906 direct controlled live proof bounded running-session polling relation
+scripts/runLocalExternalGatesPipeline.mjs#assertLatestSloObservationPassed,scripts/runLocalExternalGatesPipeline.test.mjs,LUC-2931 direct local external gates SLO observation pass relation
+scripts/runLocalExternalGatesPipeline.mjs#buildStatusWithOfflineFallback,scripts/runLocalExternalGatesPipeline.test.mjs,LUC-2931 direct local external gates offline status fallback relation
+scripts/runLocalExternalGatesPipeline.mjs#canReachApi,scripts/runLocalExternalGatesPipeline.test.mjs,LUC-2931 direct local external gates API reachability relation
+scripts/runLocalExternalGatesPipeline.mjs#expectedShaArgs,scripts/runLocalExternalGatesPipeline.test.mjs,LUC-2931 direct local external gates expected SHA args relation
+scripts/runLocalExternalGatesPipeline.mjs#findLatestSloObservationArtifact,scripts/runLocalExternalGatesPipeline.test.mjs,LUC-2931 direct local external gates latest SLO artifact relation
+scripts/runLocalExternalGatesPipeline.mjs#hasSloInputs,scripts/runLocalExternalGatesPipeline.test.mjs,LUC-2931 direct local external gates SLO inputs relation
+scripts/runLocalExternalGatesPipeline.mjs#main,scripts/runLocalExternalGatesPipeline.test.mjs,LUC-2931 direct local external gates offline orchestration relation
+scripts/runLocalExternalGatesPipeline.mjs#normalizeDbProfile,scripts/runLocalExternalGatesPipeline.test.mjs,LUC-2931 direct local external gates DB profile normalization relation
+scripts/runLocalExternalGatesPipeline.mjs#normalizeEnvironment,scripts/runLocalExternalGatesPipeline.test.mjs,LUC-2931 direct local external gates environment normalization relation
+scripts/runLocalExternalGatesPipeline.mjs#parseArgs,scripts/runLocalExternalGatesPipeline.test.mjs,LUC-2931 direct local external gates CLI parser relation
+scripts/runLocalExternalGatesPipeline.mjs#printUsage,scripts/runLocalExternalGatesPipeline.test.mjs,LUC-2931 direct local external gates usage output relation
+scripts/runLocalExternalGatesPipeline.mjs#run,scripts/runLocalExternalGatesPipeline.test.mjs,LUC-2931 direct local external gates child command runner relation
+scripts/generateFunctionJourneyIndexes.mjs#parseCsv,scripts/generateFunctionJourneyIndexes.test.mjs,LUC-2871 direct function journey CSV parser relation
+scripts/generateFunctionJourneyIndexes.mjs#readCsv,scripts/generateFunctionJourneyIndexes.test.mjs,LUC-2871 direct function journey CSV reader relation
+scripts/generateFunctionJourneyIndexes.mjs#splitRefs,scripts/generateFunctionJourneyIndexes.test.mjs,LUC-2871 direct function journey reference splitting relation
+scripts/generateFunctionJourneyIndexes.mjs#csvEscape,scripts/generateFunctionJourneyIndexes.test.mjs,LUC-2871 direct function journey CSV escaping relation
+scripts/generateFunctionJourneyIndexes.mjs#writeCsv,scripts/generateFunctionJourneyIndexes.test.mjs,LUC-2871 direct function journey CSV writer relation
+scripts/generateFunctionJourneyIndexes.mjs#list,scripts/generateFunctionJourneyIndexes.test.mjs,LUC-2871 direct function journey joined-list relation
+scripts/generateFunctionJourneyIndexes.mjs#statusRank,scripts/generateFunctionJourneyIndexes.test.mjs,LUC-2871 direct function journey status rank relation
+scripts/generateFunctionJourneyIndexes.mjs#normalizeStatus,scripts/generateFunctionJourneyIndexes.test.mjs,LUC-2871 direct function journey status normalization relation
+scripts/generateFunctionJourneyIndexes.mjs#weakestStatus,scripts/generateFunctionJourneyIndexes.test.mjs,LUC-2871 direct function journey weakest status relation
+scripts/generateFunctionJourneyIndexes.mjs#gapSeverity,scripts/generateFunctionJourneyIndexes.test.mjs,LUC-2871 direct function journey gap severity relation
+scripts/generateFunctionJourneyIndexes.mjs#isApiDataSourceRelation,scripts/generateFunctionJourneyIndexes.test.mjs,LUC-2871 direct function journey API data relation classifier
+scripts/generateFunctionJourneyIndexes.mjs#isUserFacingChain,scripts/generateFunctionJourneyIndexes.test.mjs,LUC-2871 direct function journey user-facing chain classifier
+scripts/generateFunctionJourneyIndexes.mjs#main,scripts/generateFunctionJourneyIndexes.test.mjs,LUC-2871 direct function journey isolated main generation relation
+scripts/generateFunctionJourneyIndexes.mjs#chains,scripts/generateFunctionJourneyIndexes.test.mjs,LUC-2985 direct function journey isolated chains ingestion/count relation
+scripts/runProdFixtureActionProof.mjs#assertStatus,scripts/runProdFixtureActionProof.test.mjs,LUC-2945 direct prod fixture action status assertion relation
+scripts/runProdFixtureActionProof.mjs#cleanupDelete,scripts/runProdFixtureActionProof.test.mjs,LUC-2945 direct prod fixture action cleanup delete relation
+scripts/runProdFixtureActionProof.mjs#main,scripts/runProdFixtureActionProof.test.mjs,LUC-2945 direct prod fixture action CLI help entrypoint relation
+scripts/runProdFixtureActionProof.mjs#normalizeBaseUrl,scripts/runProdFixtureActionProof.test.mjs,LUC-2945 direct prod fixture action base URL normalization relation
+scripts/runProdFixtureActionProof.mjs#printUsage,scripts/runProdFixtureActionProof.test.mjs,LUC-2945 direct prod fixture action usage output relation
+scripts/runProdFixtureActionProof.mjs#readArgValue,scripts/runProdFixtureActionProof.test.mjs,LUC-2945 direct prod fixture action CLI argument relation
+scripts/runProdFixtureActionProof.mjs#readJson,scripts/runProdFixtureActionProof.test.mjs,LUC-2945 direct prod fixture action JSON parse fallback relation
+scripts/runProdFixtureActionProof.mjs#renderMarkdown,scripts/runProdFixtureActionProof.test.mjs,LUC-2945 direct prod fixture action redacted markdown relation
+scripts/runProdFixtureActionProof.mjs#requestJson,scripts/runProdFixtureActionProof.test.mjs,LUC-2945 direct prod fixture action HTTP request wrapper relation
+scripts/runProdFixtureActionProof.mjs#resolveOptions,scripts/runProdFixtureActionProof.test.mjs,LUC-2945 direct prod fixture action option resolution relation
+scripts/runProdFixtureActionProof.mjs#sleep,scripts/runProdFixtureActionProof.test.mjs,LUC-2945 direct prod fixture action bounded sleep relation
+scripts/runProdFixtureActionProof.mjs#toStep,scripts/runProdFixtureActionProof.test.mjs,LUC-2945 direct prod fixture action step formatting relation
+scripts/runProdPositionsProof.mjs#assertStatus,scripts/runProdPositionsProof.test.mjs,LUC-2949 direct prod positions status assertion relation
+scripts/runProdPositionsProof.mjs#extractItems,scripts/runProdPositionsProof.test.mjs,LUC-2949 direct prod positions item extraction relation
+scripts/runProdPositionsProof.mjs#findCandidate,scripts/runProdPositionsProof.test.mjs,LUC-2949 direct prod positions candidate discovery relation
+scripts/runProdPositionsProof.mjs#main,scripts/runProdPositionsProof.test.mjs,LUC-2949 direct prod positions CLI help entrypoint relation
+scripts/runProdPositionsProof.mjs#normalizeBaseUrl,scripts/runProdPositionsProof.test.mjs,LUC-2949 direct prod positions base URL normalization relation
+scripts/runProdPositionsProof.mjs#printUsage,scripts/runProdPositionsProof.test.mjs,LUC-2949 direct prod positions usage output relation
+scripts/runProdPositionsProof.mjs#readArgValue,scripts/runProdPositionsProof.test.mjs,LUC-2949 direct prod positions CLI argument relation
+scripts/runProdPositionsProof.mjs#readJson,scripts/runProdPositionsProof.test.mjs,LUC-2949 direct prod positions JSON parse fallback relation
+scripts/runProdPositionsProof.mjs#renderMarkdown,scripts/runProdPositionsProof.test.mjs,LUC-2949 direct prod positions redacted markdown relation
+scripts/runProdPositionsProof.mjs#requestJson,scripts/runProdPositionsProof.test.mjs,LUC-2949 direct prod positions HTTP request wrapper relation
+scripts/runProdPositionsProof.mjs#resolveOptions,scripts/runProdPositionsProof.test.mjs,LUC-2949 direct prod positions option resolution relation
+scripts/runProdPositionsProof.mjs#toStep,scripts/runProdPositionsProof.test.mjs,LUC-2949 direct prod positions step formatting relation
+scripts/runProdSecurityExchangeProof.mjs#assertStatus,scripts/runProdSecurityExchangeProof.test.mjs,LUC-2956 direct prod security exchange status assertion relation
+scripts/runProdSecurityExchangeProof.mjs#hasNoStoreHeaders,scripts/runProdSecurityExchangeProof.test.mjs,LUC-2956 direct prod security exchange no-store header relation
+scripts/runProdSecurityExchangeProof.mjs#hasSecurityHeaders,scripts/runProdSecurityExchangeProof.test.mjs,LUC-2956 direct prod security exchange security header relation
+scripts/runProdSecurityExchangeProof.mjs#main,scripts/runProdSecurityExchangeProof.test.mjs,LUC-2956 direct prod security exchange CLI help entrypoint relation
+scripts/runProdSecurityExchangeProof.mjs#normalizeBaseUrl,scripts/runProdSecurityExchangeProof.test.mjs,LUC-2956 direct prod security exchange base URL normalization relation
+scripts/runProdSecurityExchangeProof.mjs#payloadContainsKeyMaterial,scripts/runProdSecurityExchangeProof.test.mjs,LUC-2956 direct prod security exchange key-material detector relation
+scripts/runProdSecurityExchangeProof.mjs#printUsage,scripts/runProdSecurityExchangeProof.test.mjs,LUC-2956 direct prod security exchange usage output relation
+scripts/runProdSecurityExchangeProof.mjs#readArgValue,scripts/runProdSecurityExchangeProof.test.mjs,LUC-2956 direct prod security exchange CLI argument relation
+scripts/runProdSecurityExchangeProof.mjs#readCatalogMarkets,scripts/runProdSecurityExchangeProof.test.mjs,LUC-2956 direct prod security exchange catalog readback relation
+scripts/runProdSecurityExchangeProof.mjs#readJson,scripts/runProdSecurityExchangeProof.test.mjs,LUC-2956 direct prod security exchange JSON parse fallback relation
+scripts/runProdSecurityExchangeProof.mjs#renderMarkdown,scripts/runProdSecurityExchangeProof.test.mjs,LUC-2956 direct prod security exchange redacted markdown relation
+scripts/runProdSecurityExchangeProof.mjs#requestJson,scripts/runProdSecurityExchangeProof.test.mjs,LUC-2956 direct prod security exchange HTTP request wrapper relation
+scripts/runProdSecurityExchangeProof.mjs#resolveOptions,scripts/runProdSecurityExchangeProof.test.mjs,LUC-2956 direct prod security exchange option resolution relation
+scripts/runProdSecurityExchangeProof.mjs#toStep,scripts/runProdSecurityExchangeProof.test.mjs,LUC-2956 direct prod security exchange step formatting relation
+scripts/runProdUiModuleClickthroughAudit.mjs#auditRoute,scripts/runProdUiModuleClickthroughAudit.test.mjs,LUC-2970 direct prod UI module route audit relation from LUC-2957 proof
+scripts/runProdUiModuleClickthroughAudit.mjs#buildModuleRows,scripts/runProdUiModuleClickthroughAudit.test.mjs,LUC-2970 direct prod UI module row builder relation from LUC-2957 proof
+scripts/runProdUiModuleClickthroughAudit.mjs#classifyRoute,scripts/runProdUiModuleClickthroughAudit.test.mjs,LUC-2970 direct prod UI module route classifier relation from LUC-2957 proof
+scripts/runProdUiModuleClickthroughAudit.mjs#fetchJson,scripts/runProdUiModuleClickthroughAudit.test.mjs,LUC-2970 direct prod UI module JSON fetch relation from LUC-2957 proof
+scripts/runProdUiModuleClickthroughAudit.mjs#fetchText,scripts/runProdUiModuleClickthroughAudit.test.mjs,LUC-2970 direct prod UI module text fetch relation from LUC-2957 proof
+scripts/runProdUiModuleClickthroughAudit.mjs#main,scripts/runProdUiModuleClickthroughAudit.test.mjs,LUC-2970 direct prod UI module CLI help entrypoint relation from LUC-2957 proof
+scripts/runProdUiModuleClickthroughAudit.mjs#makeCookieHeaders,scripts/runProdUiModuleClickthroughAudit.test.mjs,LUC-2970 direct prod UI module cookie header relation from LUC-2957 proof
+scripts/runProdUiModuleClickthroughAudit.mjs#printUsage,scripts/runProdUiModuleClickthroughAudit.test.mjs,LUC-2970 direct prod UI module usage output relation from LUC-2957 proof
+scripts/runProdUiModuleClickthroughAudit.mjs#renderMarkdown,scripts/runProdUiModuleClickthroughAudit.test.mjs,LUC-2970 direct prod UI module markdown report relation from LUC-2957 proof
+scripts/runProdUiModuleClickthroughAudit.mjs#resolveOptions,scripts/runProdUiModuleClickthroughAudit.test.mjs,LUC-2970 direct prod UI module option resolution relation from LUC-2957 proof
+scripts/runProdUiModuleClickthroughAudit.mjs#routeToUrl,scripts/runProdUiModuleClickthroughAudit.test.mjs,LUC-2970 direct prod UI module route URL relation from LUC-2957 proof
+scripts/runProdUiModuleClickthroughAudit.mjs#samePathOrRedirect,scripts/runProdUiModuleClickthroughAudit.test.mjs,LUC-2970 direct prod UI module redirect matcher relation from LUC-2957 proof
+scripts/runProdUiModuleClickthroughAudit.mjs#statusFromFetchError,scripts/runProdUiModuleClickthroughAudit.test.mjs,LUC-2970 direct prod UI module fetch-error status relation from LUC-2957 proof
+scripts/runProdUiModuleClickthroughAudit.mjs#summarizeArea,scripts/runProdUiModuleClickthroughAudit.test.mjs,LUC-2970 direct prod UI module area summary relation from LUC-2957 proof
+scripts/runProdUxA11yMobileProof.mjs#controlName,scripts/runProdUxA11yMobileProof.test.mjs,LUC-2970 direct prod UX control-name relation from LUC-2957 proof
+scripts/runProdUxA11yMobileProof.mjs#hasBadEvents,scripts/runProdUxA11yMobileProof.test.mjs,LUC-2970 direct prod UX browser-event classifier relation from LUC-2957 proof
+scripts/runProdUxA11yMobileProof.mjs#main,scripts/runProdUxA11yMobileProof.test.mjs,LUC-2970 direct prod UX fail-closed CLI entrypoint relation from LUC-2957 proof
+scripts/runProdUxA11yMobileProof.mjs#readJson,scripts/runProdUxA11yMobileProof.test.mjs,LUC-2970 direct prod UX JSON parse fallback relation from LUC-2957 proof
+scripts/runPublicReadOnlyBrowserProof.mjs#collectIssues,scripts/runPublicReadOnlyBrowserProof.test.mjs,LUC-2958 direct public browser proof issue aggregation relation
+scripts/runPublicReadOnlyBrowserProof.mjs#collectPageState,scripts/runPublicReadOnlyBrowserProof.test.mjs,LUC-2958 direct public browser proof page-state relation
+scripts/runPublicReadOnlyBrowserProof.mjs#collectRouteIssues,scripts/runPublicReadOnlyBrowserProof.test.mjs,LUC-2958 direct public browser proof route issue classifier relation
+scripts/runPublicReadOnlyBrowserProof.mjs#evaluate,scripts/runPublicReadOnlyBrowserProof.test.mjs,LUC-2958 direct public browser proof CDP evaluate relation
+scripts/runPublicReadOnlyBrowserProof.mjs#findBrowserPath,scripts/runPublicReadOnlyBrowserProof.test.mjs,LUC-2958 direct public browser proof browser path resolution relation
+scripts/runPublicReadOnlyBrowserProof.mjs#isLocalWebBaseUrl,scripts/runPublicReadOnlyBrowserProof.test.mjs,LUC-2958 direct public browser proof local URL guard relation
+scripts/runPublicReadOnlyBrowserProof.mjs#main,scripts/runPublicReadOnlyBrowserProof.test.mjs,LUC-2958 direct public browser proof CLI help entrypoint relation
+scripts/runPublicReadOnlyBrowserProof.mjs#navigate,scripts/runPublicReadOnlyBrowserProof.test.mjs,LUC-2958 direct public browser proof mocked CDP navigation relation
+scripts/runPublicReadOnlyBrowserProof.mjs#normalizeBaseUrl,scripts/runPublicReadOnlyBrowserProof.test.mjs,LUC-2958 direct public browser proof base URL normalization relation
+scripts/runPublicReadOnlyBrowserProof.mjs#provePasswordToggle,scripts/runPublicReadOnlyBrowserProof.test.mjs,LUC-2958 direct public browser proof password toggle interpretation relation
+scripts/runPublicReadOnlyBrowserProof.mjs#readArgValue,scripts/runPublicReadOnlyBrowserProof.test.mjs,LUC-2958 direct public browser proof CLI argument relation
+scripts/runPublicReadOnlyBrowserProof.mjs#renderMarkdown,scripts/runPublicReadOnlyBrowserProof.test.mjs,LUC-2958 direct public browser proof markdown report relation
+scripts/runPublicReadOnlyBrowserProof.mjs#resolveOptions,scripts/runPublicReadOnlyBrowserProof.test.mjs,LUC-2958 direct public browser proof option resolution relation
+scripts/runPublicReadOnlyBrowserProof.mjs#setViewport,scripts/runPublicReadOnlyBrowserProof.test.mjs,LUC-2958 direct public browser proof viewport helper relation
+scripts/runPublicReadOnlyBrowserProof.mjs#visitRoute,scripts/runPublicReadOnlyBrowserProof.test.mjs,LUC-2958 direct public browser proof route visit aggregation relation
+scripts/runPublicReadOnlyBrowserProof.mjs#wait,scripts/runPublicReadOnlyBrowserProof.test.mjs,LUC-2958 direct public browser proof wait helper relation
+scripts/runQaRepeatableSmokeE2e.mjs#hasFlag,scripts/runQaRepeatableSmokeE2e.test.mjs,LUC-2995 direct repeatable smoke CLI flag relation
+scripts/runQaRepeatableSmokeE2e.mjs#main,scripts/runQaRepeatableSmokeE2e.test.mjs,LUC-2995 direct repeatable smoke injected CLI orchestration relation
+scripts/runQaRepeatableSmokeE2e.mjs#readArgValue,scripts/runQaRepeatableSmokeE2e.test.mjs,LUC-2995 direct repeatable smoke CLI argument value relation
+scripts/runQaRepeatableSmokeE2e.mjs#runCheck,scripts/runQaRepeatableSmokeE2e.test.mjs,LUC-2995 direct repeatable smoke injected command runner relation
+scripts/runRcRefreshSummaryStrict.mjs#main,scripts/runRcRefreshSummaryStrict.test.mjs,LUC-2997 direct RC refresh summary strict injected CLI orchestration relation
+scripts/runRcRefreshSummaryStrict.mjs#parseArgs,scripts/runRcRefreshSummaryStrict.test.mjs,LUC-2997 direct RC refresh summary strict CLI argument relation
+scripts/runRcRefreshSummaryStrict.mjs#run,scripts/runRcRefreshSummaryStrict.test.mjs,LUC-2997 direct RC refresh summary strict injected command runner relation
+scripts/summarizeRcGates.mjs#asIsoTimestamp,scripts/rcGateSummaryChecklist.test.mjs,LUC-3009 direct RC gates summary timestamp freshness relation
+scripts/summarizeRcGates.mjs#isDirectRun,scripts/releaseOpsScriptContracts.test.mjs,LUC-3491 direct RC gates summary import-safe CLI guard relation
+scripts/summarizeRcGates.mjs#main,scripts/rcGateSummaryChecklist.test.mjs,LUC-3009 direct RC gates summary fixture rendering relation
+scripts/summarizeRcGates.mjs#parseArgs,scripts/rcGateSummaryChecklist.test.mjs,LUC-3009 direct RC gates summary CLI argument relation
+scripts/summarizeRcGates.mjs#parseGateLabel,scripts/rcGateSummaryChecklist.test.mjs,LUC-3009 direct RC gates summary gate-label parser relation
+scripts/summarizeRcGates.mjs#parseStatusGeneratedAt,scripts/rcGateSummaryChecklist.test.mjs,LUC-3009 direct RC gates summary generated-at parser relation
+scripts/summarizeRcGates.mjs#resolveDocsRoot,scripts/rcGateSummaryChecklist.test.mjs,LUC-3009 direct RC gates summary docs-root resolver relation
+scripts/syncRcChecklistFromGateStatus.mjs#escapeRegExp,scripts/rcGateSummaryChecklist.test.mjs,LUC-3009 direct RC checklist regex escaping relation
+scripts/syncRcChecklistFromGateStatus.mjs#extractValueAfterLabel,scripts/rcGateSummaryChecklist.test.mjs,LUC-3009 direct RC checklist label-value extraction relation
+scripts/syncRcChecklistFromGateStatus.mjs#getGateLabel,scripts/rcGateSummaryChecklist.test.mjs,LUC-3009 direct RC checklist gate-label parser relation
+scripts/syncRcChecklistFromGateStatus.mjs#isDirectRun,scripts/releaseOpsScriptContracts.test.mjs,LUC-3491 direct RC checklist import-safe CLI guard relation
+scripts/syncRcChecklistFromGateStatus.mjs#main,scripts/rcGateSummaryChecklist.test.mjs,LUC-3009 direct RC checklist fixture sync relation
+scripts/syncRcChecklistFromGateStatus.mjs#parseArgs,scripts/rcGateSummaryChecklist.test.mjs,LUC-3009 direct RC checklist CLI argument relation
+scripts/syncRcChecklistFromGateStatus.mjs#parseSignoff,scripts/rcGateSummaryChecklist.test.mjs,LUC-3009 direct RC checklist signoff parser relation
+scripts/syncRcChecklistFromGateStatus.mjs#refreshExpectedSha,scripts/rcGateSummaryChecklist.test.mjs,LUC-3009 direct RC checklist expected SHA refresh relation
+scripts/syncRcChecklistFromGateStatus.mjs#refreshLatestVerificationDate,scripts/rcGateSummaryChecklist.test.mjs,LUC-3009 direct RC checklist latest verification date relation
+scripts/syncRcChecklistFromGateStatus.mjs#refreshOutstandingExternalGates,scripts/rcGateSummaryChecklist.test.mjs,LUC-3009 direct RC checklist outstanding gate snapshot relation
+scripts/syncRcChecklistFromGateStatus.mjs#resolveDocsRoot,scripts/rcGateSummaryChecklist.test.mjs,LUC-3491 direct RC checklist docs-root resolver relation
+scripts/syncRcChecklistFromGateStatus.mjs#resolveDate,scripts/rcGateSummaryChecklist.test.mjs,LUC-3009 direct RC checklist date resolver relation
+scripts/syncRcChecklistFromGateStatus.mjs#setChecklistCheckbox,scripts/rcGateSummaryChecklist.test.mjs,LUC-3009 direct RC checklist checkbox update relation
+scripts/runRestoreDrillEvidence.mjs#evidenceStamp,scripts/runRestoreDrillEvidence.test.mjs,LUC-3001 direct restore drill evidence stamp relation
+scripts/runRestoreDrillEvidence.mjs#main,scripts/runRestoreDrillEvidence.test.mjs,LUC-3001 direct restore drill injected CLI orchestration relation
+scripts/runRestoreDrillEvidence.mjs#nowStamp,scripts/runRestoreDrillEvidence.test.mjs,LUC-3001 direct restore drill timestamp relation
+scripts/runRestoreDrillEvidence.mjs#parseArgs,scripts/runRestoreDrillEvidence.test.mjs,LUC-3001 direct restore drill CLI argument relation
+scripts/runRestoreDrillEvidence.mjs#printUsage,scripts/runRestoreDrillEvidence.test.mjs,LUC-3001 direct restore drill help output relation
+scripts/runRestoreDrillEvidence.mjs#readLatestByPrefix,scripts/runRestoreDrillEvidence.test.mjs,LUC-3001 direct restore drill latest artifact selection relation
+scripts/runRestoreDrillEvidence.mjs#run,scripts/runRestoreDrillEvidence.test.mjs,LUC-3001 direct restore drill injected command runner relation
+scripts/start-local-prod-like.mjs#gracefulShutdown,scripts/startLocalProdLike.test.mjs,LUC-3008 direct prod-like graceful shutdown relation
+scripts/start-local-prod-like.mjs#main,scripts/startLocalProdLike.test.mjs,LUC-3008 direct prod-like import-safe orchestration relation
+scripts/start-local-prod-like.mjs#prefixLog,scripts/startLocalProdLike.test.mjs,LUC-3008 direct prod-like log prefixing relation
+scripts/start-local-prod-like.mjs#runStep,scripts/startLocalProdLike.test.mjs,LUC-3008 direct prod-like preflight command runner relation
+scripts/start-local-prod-like.mjs#startRuntime,scripts/startLocalProdLike.test.mjs,LUC-3485 direct prod-like injected child process runtime relation
+scripts/start-local-prod-like.mjs#stopAll,scripts/startLocalProdLike.test.mjs,LUC-3008 direct prod-like child process stop-all relation
+scripts/start-local-prod-like.mjs#validateRequiredEnvFiles,scripts/startLocalProdLike.test.mjs,LUC-3466 direct prod-like required env file validation relation
+scripts/start-local-prod-like.mjs#writeMissingEnvGuidance,scripts/startLocalProdLike.test.mjs,LUC-3466 direct prod-like missing env fail-closed guidance relation
+scripts/start-workers-prod.mjs#findMissingWorkerFiles,scripts/startWorkersProd.test.mjs,LUC-3008 direct worker startup built-file validation relation
+scripts/start-workers-prod.mjs#gracefulShutdown,scripts/startWorkersProd.test.mjs,LUC-3008 direct worker startup graceful shutdown relation
+scripts/start-workers-prod.mjs#main,scripts/startWorkersProd.test.mjs,LUC-3008 direct worker startup import-safe orchestration relation
+scripts/start-workers-prod.mjs#prefixLog,scripts/startWorkersProd.test.mjs,LUC-3008 direct worker startup log prefixing relation
+scripts/start-workers-prod.mjs#startWorkers,scripts/startWorkersProd.test.mjs,LUC-3466 direct worker startup spawn and fail-closed child exit relation
+scripts/start-workers-prod.mjs#stopAll,scripts/startWorkersProd.test.mjs,LUC-3008 direct worker startup child process stop-all relation
+scripts/start-workers-prod.mjs#writeMissingWorkerGuidance,scripts/startWorkersProd.test.mjs,LUC-3466 direct worker startup missing build guidance relation
+scripts/waitForWebBuildInfo.mjs,scripts/waitForWebBuildInfo.test.mjs,LUC-3561 direct web build-info feature-level CLI relation
+scripts/waitForWebBuildInfo.mjs#fetchJsonWithTimeout,scripts/waitForWebBuildInfo.test.mjs,LUC-3520 direct web build-info timeout fetch helper relation
+scripts/waitForWebBuildInfo.mjs#isDeployBuildIdAccepted,scripts/waitForWebBuildInfo.test.mjs,LUC-3538 direct web build-info production build id acceptance relation
+scripts/waitForWebBuildInfo.mjs#isDeployMetadataSourceAccepted,scripts/waitForWebBuildInfo.test.mjs,LUC-3551 direct web build-info deploy metadata source acceptance relation
+scripts/waitForWebBuildInfo.mjs#hasFlag,scripts/waitForWebBuildInfo.test.mjs,LUC-3554 direct web build-info CLI flag relation
+scripts/waitForWebBuildInfo.mjs#main,scripts/waitForWebBuildInfo.test.mjs,LUC-3559 direct web build-info CLI entrypoint relation
+scripts/waitForWebBuildInfo.mjs#normalizeBaseUrl,scripts/waitForWebBuildInfo.test.mjs,LUC-3567 direct web build-info base URL normalization relation
+scripts/waitForWebBuildInfo.mjs#normalizeNonEmptyString,scripts/waitForWebBuildInfo.test.mjs,LUC-3574 direct web build-info non-empty metadata normalization relation
+scripts/runRollbackProofEvidence.mjs#evidenceStamp,scripts/runRollbackProofEvidence.test.mjs,LUC-3006 direct rollback proof evidence stamp relation
+scripts/runRollbackProofEvidence.mjs#main,scripts/runRollbackProofEvidence.test.mjs,LUC-3006 direct rollback proof injected CLI orchestration relation
+scripts/runRollbackProofEvidence.mjs#nowStamp,scripts/runRollbackProofEvidence.test.mjs,LUC-3006 direct rollback proof timestamp relation
+scripts/runRollbackProofEvidence.mjs#parseArgs,scripts/runRollbackProofEvidence.test.mjs,LUC-3006 direct rollback proof CLI argument relation
+scripts/runRollbackProofEvidence.mjs#printUsage,scripts/runRollbackProofEvidence.test.mjs,LUC-3006 direct rollback proof help output relation
+scripts/runRollbackProofEvidence.mjs#renderMarkdown,scripts/runRollbackProofEvidence.test.mjs,LUC-3006 direct rollback proof markdown report relation
+scripts/runRollbackProofEvidence.mjs#run,scripts/runRollbackProofEvidence.test.mjs,LUC-3006 direct rollback proof injected command runner relation
+scripts/runV1StaticIssueScan.mjs#buildScan,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan aggregate builder relation
+scripts/runV1StaticIssueScan.mjs#classifySourceMatch,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan source-marker classification relation
+scripts/runV1StaticIssueScan.mjs#collectQueueFindings,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan queue finding relation
+scripts/runV1StaticIssueScan.mjs#collectSurfaceFindings,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan surface finding relation
+scripts/runV1StaticIssueScan.mjs#collectV1Findings,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan V1 finding relation
+scripts/runV1StaticIssueScan.mjs#directoryExists,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan directory helper relation
+scripts/runV1StaticIssueScan.mjs#fileExists,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan file helper relation
+scripts/runV1StaticIssueScan.mjs#isProductionSource,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan production-source predicate relation
+scripts/runV1StaticIssueScan.mjs#listFilesInDirectory,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan directory listing relation
+scripts/runV1StaticIssueScan.mjs#main,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan import-safe CLI orchestration relation
+scripts/runV1StaticIssueScan.mjs#parseArgs,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan CLI argument relation
+scripts/runV1StaticIssueScan.mjs#printHelp,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan help output relation
+scripts/runV1StaticIssueScan.mjs#readJsonWithRetry,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan JSON retry relation
+scripts/runV1StaticIssueScan.mjs#readTextIfExists,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan optional text read relation
+scripts/runV1StaticIssueScan.mjs#relativePath,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan relative path relation
+scripts/runV1StaticIssueScan.mjs#renderFindingsTable,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan findings table relation
+scripts/runV1StaticIssueScan.mjs#renderMarkdown,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan markdown report relation
+scripts/runV1StaticIssueScan.mjs#scanSourceMarkers,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan source marker scan relation
+scripts/runV1StaticIssueScan.mjs#sleep,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan retry sleep relation
+scripts/runV1StaticIssueScan.mjs#summarizeBy,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan summary grouping relation
+scripts/runV1StaticIssueScan.mjs#toPosixPath,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan POSIX path relation
+scripts/runV1StaticIssueScan.mjs#walkFiles,scripts/runV1StaticIssueScan.test.mjs,LUC-3381 direct static issue scan recursive walk relation
+scripts/runV1StageRehearsal.mjs#isEntrypoint,scripts/runV1StageRehearsal.test.mjs,LUC-3389 direct stage rehearsal import-safe entrypoint relation
+scripts/runV1StageRehearsal.mjs#main,scripts/runV1StageRehearsal.test.mjs,LUC-3389 direct stage rehearsal protected CLI orchestration relation
+scripts/runWebNextProductionCommand.mjs#main,scripts/runWebNextProductionCommand.test.mjs,LUC-3410 direct Web Next production command CLI orchestration relation
+scripts/runWebNextProductionCommand.mjs#parseArgs,scripts/runWebNextProductionCommand.test.mjs,LUC-3410 direct Web Next production command argument relation
+scripts/runWebNextProductionCommand.mjs#run,scripts/runWebNextProductionCommand.test.mjs,LUC-3410 direct Web Next production command injected runner relation

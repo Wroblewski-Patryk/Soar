@@ -49,3 +49,12 @@
     - `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts -t "uses api-key exchange when hydrating owned LIVE automation after exchange-sync|continues syncing healthy api keys when one api key fetch fails|ignores other-market owners when seeding reconciliation cleanup candidates|assigns different exact owners for different symbols" --reporter=verbose` -> PASS (`5` passed, `29` skipped).
     - `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts -t "rejects unauthenticated access" --reporter=verbose` -> PASS (`1` passed, `7` skipped).
   - Disposition unchanged: `blocked` pending DB-backed verification and owner-scoped source-control closure.
+- Blocker-resolved closure (2026-06-08):
+  - Consumed child blocker evidence:
+    - [LUC-2977](/LUC/issues/LUC-2977): DB-backed position ingestion verification passed (`2` files / `42` tests).
+    - [LUC-2978](/LUC/issues/LUC-2978): scoped source-control closure passed; fix SHA `44a9ceba612e8d49eb86a9001e63b1f0be6243ea` is on `origin/main`.
+  - Ran parent display-path API proof:
+    - `pnpm --filter api exec vitest run src/modules/bots/bots.runtime-takeover.e2e.test.ts -t "imports six exchange positions through real ownership scope and shows all six for the selected LIVE bot" --reporter=verbose` -> FAIL by default `5000ms` timeout during local DB/API setup.
+    - `pnpm --filter api exec vitest run src/modules/bots/bots.runtime-takeover.e2e.test.ts -t "imports six exchange positions through real ownership scope and shows all six for the selected LIVE bot" --reporter=verbose --testTimeout=30000` -> PASS (`1` passed, `4` skipped).
+  - Final acceptance matrix is covered: empty account, open position ingestion, auth failure/non-admin, upstream error continuity, persistence sync, and local API display path.
+  - Final disposition: `done`; no production smoke, protected proof, secret readback, push, deploy, restart, real exchange account use, order mutation, position mutation, or live-trading mutation occurred.

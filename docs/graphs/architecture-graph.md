@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-06-07T14:27:25.348Z
+Generated: 2026-06-11T19:33:48.788Z
 
 ## Canonical Exports
 
@@ -200,6 +200,11 @@ Generated: 2026-06-07T14:27:25.348Z
 | component | implemented | Header.tsx | apps/web/src/ui/layout/public/Header.tsx | Engineering Delivery Lead |
 | component | implemented | ServiceWorkerRegistration.tsx | apps/web/src/ui/pwa/ServiceWorkerRegistration.tsx | Engineering Delivery Lead |
 | document | implemented | pull_request_template.md | .github/pull_request_template.md | Engineering Delivery Lead |
+| document | implemented | Architecture Graph | .tmp/luc-2957-architecture-output/graphs/architecture-graph.md | Engineering Delivery Lead |
+| document | deprecated | Architecture Awareness Report | .tmp/luc-2957-architecture-output/status/architecture-awareness-report.md | Engineering Delivery Lead |
+| document | implemented | Dependency Report | .tmp/luc-2957-architecture-output/status/architecture-dependency-report.md | Engineering Delivery Lead |
+| document | deprecated | Ownership Report | .tmp/luc-2957-architecture-output/status/architecture-ownership-report.md | Engineering Delivery Lead |
+| document | implemented | Task Synchronization Report | .tmp/luc-2957-architecture-output/status/task-synchronization-report.md | Engineering Delivery Lead |
 | document | implemented | AGENTS.md - CryptoSparrow / Soar | AGENTS.md | Engineering Delivery Lead |
 | document | implemented | AI Testing Protocol | AI_TESTING_PROTOCOL.md | Engineering Delivery Lead |
 | document | implemented | CryptoSparrow Mobile (Bootstrap) | apps/mobile/README.md | Engineering Delivery Lead |
@@ -508,11 +513,6 @@ Generated: 2026-06-07T14:27:25.348Z
 | document | implemented | Dashboard route map | docs/architecture/nodes/SOAR-DOC-DASHBOARD-ROUTE-MAP.md | Docs Memory Lead |
 | document | implemented | Data model source | docs/architecture/nodes/SOAR-DOC-DATA-MODEL.md | Docs Memory Lead |
 | document | implemented | Exchange access ownership matrix | docs/architecture/nodes/SOAR-DOC-EXCHANGE-OWNERSHIP.md | Docs Memory Lead |
-| document | implemented | Execution lifecycle architecture doc | docs/architecture/nodes/SOAR-DOC-EXECUTION-LIFECYCLE.md | Docs Memory Lead |
-| document | implemented | LIVE position restart continuity contract | docs/architecture/nodes/SOAR-DOC-LIVE-POSITION-RESTART.md | Docs Memory Lead |
-| document | implemented | Local development documentation | docs/architecture/nodes/SOAR-DOC-LOCAL-DEVELOPMENT.md | Docs Memory Lead |
-| document | implemented | Mobile bootstrap module documentation | docs/architecture/nodes/SOAR-DOC-MOBILE-BOOTSTRAP.md | Docs Memory Lead |
-| document | implemented | Mobile module documentation index | docs/architecture/nodes/SOAR-DOC-MOBILE-MODULE-INDEX.md | Docs Memory Lead |
 
 ## Relation Index
 
@@ -555,6 +555,9 @@ Generated: 2026-06-07T14:27:25.348Z
 | connected_to | api_endpoint:use-upload:59c4f6ed00 | module:apps-api-src:3261657fad | apps/api/src/router/index.ts |
 | connected_to | api_endpoint:use-users:2f4d7609a6 | module:apps-api-src:3261657fad | apps/api/src/router/admin.routes.ts |
 | connected_to | api_endpoint:use-wallets:b8382408ca | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
+| connected_to | project:soar:7c70e892d7 | task:learning-journal:c5626339c3 | .codex/context/LEARNING_JOURNAL.md |
+| connected_to | project:soar:7c70e892d7 | task:2026-06-11-luc-3569-no-stall-queue-expeditor:03aef97967 | .codex/context/PROJECT_STATE.md |
+| connected_to | project:soar:7c70e892d7 | task:task-board:85d16101f3 | .codex/context/TASK_BOARD.md |
 | connected_to | project:soar:7c70e892d7 | task:agent-operating-system-task-2026-05-07:04d1de2b03 | history/tasks/agent-operating-system-task-2026-05-07.md |
 | connected_to | project:soar:7c70e892d7 | task:ai-assistant-foundation-protocol-harness-task:0adbd87e92 | history/tasks/ai-assistant-foundation-protocol-harness-2026-05-23-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:16ccebb9bd | history/tasks/api-endpoint-docs-gap-closure-2026-05-19-task.md |
@@ -765,7 +768,7 @@ Generated: 2026-06-07T14:27:25.348Z
 | connected_to | project:soar:7c70e892d7 | task:task:c1f1f1fc29 | history/tasks/luc-1164-soar-luc-241-backend-trace-workers-ready-auth-chain-and-fix-ready-map-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1165-gate-io-position-ingestion-and-exchange-sync-fix:dabee5ce03 | history/tasks/luc-1165-soar-gateio-fix-production-position-ingestion-and-exchange-sync-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task-contract-luc-1166:57642cdf7c | history/tasks/luc-1166-soar-gateio-qa-verify-position-ingestion-readiness-after-adapter-fix-2026-05-31-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task-contract-luc-1167:e3e0bf4e4f | history/tasks/luc-1167-soar-bot-signals-verify-active-bot-signal-dashboard-semantics-2026-05-31-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task-contract-luc-1167:58cfdbcac5 | history/tasks/luc-1167-soar-bot-signals-verify-active-bot-signal-dashboard-semantics-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:e8b013b371 | history/tasks/luc-117-release-smoke-blocker-evidence-closure-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task-contract-luc-1174:ffcc0d4836 | history/tasks/luc-1174-soar-v1-conformance-backend-verify-exchange-positions-dca-tsl-workers-readiness-contracts-2026-06-01-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1175-soar-v1-conformance-frontend-verification-2026-06-01:2b61a67754 | history/tasks/luc-1175-soar-v1-conformance-frontend-verify-dashboard-active-bot-context-signals-and-trading-ux-display-2026-06-01-task.md |
@@ -1215,6 +1218,3 @@ Generated: 2026-06-07T14:27:25.348Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2394-close-luc-2390-pm-coordination-dirty-state-before-push-permit:25e5062e06 | history/tasks/luc-2394-close-luc-2390-pm-coordination-dirty-state-before-push-permit-2026-06-06-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2395-gap-register-and-repair-lane-refresh-task:cf15a7a8ac | history/tasks/luc-2395-gap-register-and-repair-lane-refresh-2026-06-06-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:deff1521dc | history/tasks/luc-24-paperclip-agent-execution-smoke-test-2026-05-25-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2403-no-stall-queue-expeditor:ef93e79f77 | history/tasks/luc-2403-no-stall-queue-expeditor-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2406-source-control-closure-for-luc-2403:2edc147d46 | history/tasks/luc-2406-source-control-closure-for-luc-2403-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:cdf3a9deb5 | history/tasks/luc-2408-operator-coolify-bind-read-only-production-status-access-2026-06-06-task.md |

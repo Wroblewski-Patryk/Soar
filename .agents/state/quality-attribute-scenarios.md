@@ -1,6 +1,49 @@
 # Quality Attribute Scenarios
 
-Last updated: 2026-05-25
+Last updated: 2026-06-11
+
+## 2026-06-11 LUC-3405 Public Browser Process Anchor Traceability
+
+- Scenario: architecture-awareness traceability must not imply deterministic
+  unit-test ownership for public browser proof anchors that spawn, connect to,
+  or clean up real browser/OS processes.
+- Update: [LUC-3405](/LUC/issues/LUC-3405) classifies
+  `scripts/runPublicReadOnlyBrowserProof.mjs#createPage`, `#killProcessTree`,
+  and `#launchBrowser` as browser/process orchestration boundaries after
+  [LUC-2958](/LUC/issues/LUC-2958) / [LUC-2975](/LUC/issues/LUC-2975) covered
+  deterministic helpers.
+- Evidence:
+  `history/tasks/luc-3405-public-read-only-browser-proof-process-anchor-classification-2026-06-11-task.md`.
+- Boundary: future evidence should be a public browser proof artifact or an
+  approved browser/process integration harness, not duplicate mocked unit-test
+  relation rows.
+
+## 2026-06-11 LUC-3394 Architecture Awareness Refresh Boundary
+
+- Scenario: traceability gap routing must not create duplicate repair children
+  when the current report is stale relative to completed helper-proof lanes.
+- Update: [LUC-3394](/LUC/issues/LUC-3394) verified that
+  [LUC-3381](/LUC/issues/LUC-3381) and [LUC-3389](/LUC/issues/LUC-3389) already
+  close the visible local-safe helper families through direct
+  `priority-test-links.csv` rows.
+- Evidence: `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+  relations / `27` chains); direct relation readback PASS for both completed
+  families.
+- Boundary: full architecture-awareness refresh remains environment-bound
+  because this checkout lacks the canonical refresh script.
+
+## 2026-06-08 LUC-3001 Restore Drill Evidence Helper Traceability
+
+- Scenario: release-safety traceability must fail closed unless current
+  restore-drill evidence exists for the target environment.
+- Update: [LUC-3001](/LUC/issues/LUC-3001) adds local helper proof and direct
+  scanner-readable relations for `scripts/runRestoreDrillEvidence.mjs`, while
+  preserving the protected boundary for real restore-drill execution.
+- Evidence: `node --test scripts/runRestoreDrillEvidence.test.mjs` PASS
+  (`7/7`), direct relation readback PASS (`7` rows), graph generation PASS,
+  and repository guardrails PASS.
+- Boundary: local helper proof only; no production/stage restore drill or
+  database mutation was run.
 
 | ID | Attribute | Scenario | Measure | Verification | Linked Requirements | Status | Last Updated |
 | --- | --- | --- | --- | --- | --- | --- | --- |

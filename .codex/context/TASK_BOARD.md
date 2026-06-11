@@ -1,3 +1,3986 @@
+- 2026-06-11 `LUC-3578 [Ops][Soar] Reconcile Coolify resource inventory`
+  - Status: `DONE / VERIFIED_READ_ONLY / NO_MUTATION`
+  - Scope: read-only Coolify production inventory reconciliation only; no
+    product code implementation, commit, push, deploy, restart, rollback, env
+    edit, protected smoke, production account use, secret/account readback,
+    raw resource id storage, database/Redis mutation, raw log capture,
+    screenshot, exchange action, order, position, payment/subscription, or
+    live-trading action.
+  - Wake/comment handling:
+    - Latest owner-sync comment assigned the queued Coolify inventory lane to
+      DRE; this changed the next action to direct read-only Coolify proof and
+      issue closure.
+  - Evidence:
+    - Authenticated Coolify `GET` projection at `2026-06-11T20:10:21Z`
+      resolved selector `LuckySparrow`, project `Soar`, production environment
+      id `6`, six applications, one PostgreSQL resource, one Redis resource,
+      zero generic services, `17` visible global resource rows, and `0` active
+      deployment rows.
+    - Canonical resource inventory remains eight rows: `soar-api`, `soar-web`,
+      `workers-backtest`, `workers-execution`, `workers-market-data`,
+      `workers-market-stream`, `postgresql`, and `redis`.
+    - Application rows report `running:unknown`; PostgreSQL/Redis report
+      `running:healthy`; `workers-execution` retains `restartCount=2`.
+  - Residual:
+    - This is inventory/status evidence only. Public/protected smoke, worker
+      freshness, rollback, restore, SLO, and release approval remain separate
+      gates.
+  - Evidence file:
+    - `history/evidence/luc-3578-coolify-resource-inventory-reconciliation-2026-06-11.md`
+
+- 2026-06-11 `LUC-3581 [Soar][SPM] Execute classified source-control closure for docs/evidence packet`
+  - Status: `DONE / VERIFIED_LOCAL / LOCAL_COMMIT_CREATED / NO_RUNTIME_MUTATION`
+  - Scope: local source-control closure for the classified
+    docs/state/evidence/history packet from [LUC-3579](/LUC/issues/LUC-3579);
+    no app code implementation, push, deploy, restart, rollback, env edit,
+    protected smoke, production account use, secret/account readback,
+    database/Redis mutation, raw log capture, screenshot, exchange action,
+    order, position, payment/subscription, or live-trading action.
+  - Evidence:
+    - Dirty scope was `.agents/state`, `.codex/context`, `docs`, and
+      `history`; runtime/product dirty path scan found no app/runtime
+      implementation paths.
+    - Credential-shaped local PostgreSQL placeholder in
+      `history/tasks/luc-2979-restore-local-postgresql-test-dependency-2026-06-08-task.md`
+      was redacted before staging.
+    - `git diff --check` passed with only Windows LF-to-CRLF working-copy
+      warnings.
+    - Local source-control closure commit was created; exact SHA is recorded in
+      the Paperclip closure comment.
+  - Residual:
+    - Push remains held; V1 protected production gates remain separate
+      Ops/Security/QA evidence work.
+  - Evidence file:
+    - `history/tasks/luc-3581-source-control-closure-docs-evidence-packet-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3573 [Ops][Soar] Reconcile Coolify resource inventory`
+  - Status: `DONE / VERIFIED_READ_ONLY / NO_MUTATION`
+  - Scope: read-only Coolify production inventory reconciliation only; no
+    product code implementation, commit, push, deploy, restart, rollback, env
+    edit, protected smoke, production account use, secret/account readback,
+    raw resource id storage, database/Redis mutation, raw log capture,
+    screenshot, exchange action, order, position, payment/subscription, or
+    live-trading action.
+  - Evidence:
+    - Authenticated Coolify `GET` projection at `2026-06-11T19:36:01Z`
+      resolved selector `LuckySparrow`, project `Soar`, production environment
+      id `6`, six applications, one PostgreSQL resource, one Redis resource,
+      zero generic services, `17` visible global resource rows, and `0` active
+      deployment rows.
+    - Canonical resource inventory remains eight rows: `soar-api`, `soar-web`,
+      `workers-backtest`, `workers-execution`, `workers-market-data`,
+      `workers-market-stream`, `postgresql`, and `redis`.
+    - Application rows report `running:unknown`; PostgreSQL/Redis report
+      `running:healthy`; `workers-execution` retains `restartCount=2`.
+  - Residual:
+    - This is inventory/status evidence only. Public/protected smoke, worker
+      freshness, rollback, restore, SLO, and release approval remain separate
+      gates.
+  - Evidence file:
+    - `history/evidence/luc-3573-coolify-resource-inventory-reconciliation-2026-06-11.md`
+
+- 2026-06-11 `LUC-3574 [Soar][QA] waitForWebBuildInfo normalizeNonEmptyString relation row`
+  - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED / NO_MUTATION`
+  - Scope: QVE local scanner-readable traceability repair only; no code
+    implementation, commit, push, deploy, restart, rollback, env edit,
+    protected smoke, production account use, secret/account readback,
+    database/Redis mutation, raw log capture, screenshot, exchange action,
+    order, position, payment/subscription, or live-trading action.
+  - Evidence:
+    - Added direct row in `docs/architecture/relations/priority-test-links.csv`:
+      `scripts/waitForWebBuildInfo.mjs#normalizeNonEmptyString` ->
+      `scripts/waitForWebBuildInfo.test.mjs`.
+    - Existing focused test runs `scripts/waitForWebBuildInfo.mjs` as a
+      subprocess and exercises normalized build-info metadata fields.
+    - `node --test scripts/waitForWebBuildInfo.test.mjs` passed (`4/4`).
+    - Direct relation readback found the [LUC-3574](/LUC/issues/LUC-3574) row.
+  - Residual:
+    - `docs/status/architecture-awareness-report.md` remains the pre-repair
+      generated snapshot until the next full awareness refresh.
+  - Evidence file:
+    - `history/tasks/luc-3574-waitforwebbuildinfo-normalizenonemptystring-relation-row-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3572 [Soar][TSA] Refresh architecture-awareness after LUC-3567 relation row`
+  - Status: `DONE / VERIFIED_LOCAL / DELEGATED / NO_RUNTIME_MUTATION`
+  - Scope: TSA architecture-awareness refresh/routing only; no product code
+    implementation, commit, push, deploy, restart, rollback, env edit,
+    protected smoke, production account use, secret/account readback,
+    database/Redis mutation, raw log capture, screenshot, exchange action,
+    order, position, payment/subscription, or live-trading action.
+  - Evidence:
+    - Canonical Softwarehouse scanner command passed:
+      `node scripts/build-architecture-awareness-index.mjs --project Soar --root ../Soar`.
+    - Refreshed awareness generated `2026-06-11T19:33:48.788Z` with `9521`
+      entities, `30344` relations, and `9837` files.
+    - Report health signals: `46` actionable missing-test links, `0`
+      actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - [LUC-3567](/LUC/issues/LUC-3567)
+      `scripts/waitForWebBuildInfo.mjs#normalizeBaseUrl` no longer appears in
+      Top Actionable Missing Test Links.
+    - Focused local proof passed:
+      `node --test scripts/waitForWebBuildInfo.test.mjs` (`4/4`).
+    - Duplicate search for `waitForWebBuildInfo normalizeNonEmptyString`
+      returned `0` Paperclip issues.
+  - Disposition:
+    - Created [LUC-3574](/LUC/issues/LUC-3574) for
+      [09 QVE](/LUC/agents/09-qve-qa-verification-engineer) to
+      repair/classify the remaining local-safe
+      `scripts/waitForWebBuildInfo.mjs#normalizeNonEmptyString` relation row.
+  - Evidence file:
+    - `history/tasks/luc-3572-architecture-awareness-after-normalizebaseurl-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3569 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED / NO_RUNTIME_MUTATION`
+  - Scope: PM queue disposition only; no product code implementation, commit,
+    push, deploy, restart, rollback, env edit, protected smoke, production
+    account use, secret/account readback, database/Redis mutation, raw log
+    capture, screenshot, exchange action, order, position,
+    payment/subscription, or live-trading action.
+  - Evidence:
+    - [LUC-3567](/LUC/issues/LUC-3567) is `done` and added the direct
+      scanner-readable relation for
+      `scripts/waitForWebBuildInfo.mjs#normalizeBaseUrl` to
+      `scripts/waitForWebBuildInfo.test.mjs`.
+    - Direct relation readback found the [LUC-3567](/LUC/issues/LUC-3567) row
+      at line `866`.
+    - Current architecture-awareness report is still generated at
+      `2026-06-11T19:03:14.220Z` and still lists the closed
+      `normalizeBaseUrl` anchor.
+    - Duplicate search for `architecture-awareness after LUC-3567` returned
+      `0` issues before delegation.
+    - Duplicate search for `waitForWebBuildInfo normalizeBaseUrl` found the
+      closed [LUC-3567](/LUC/issues/LUC-3567) lane and parent
+      [LUC-3565](/LUC/issues/LUC-3565), with no TSA refresh duplicate.
+    - `corepack pnpm softwarehouse:control-tick` remains unavailable in this
+      checkout: `Command "softwarehouse:control-tick" not found`.
+  - Disposition:
+    - Created [LUC-3572](/LUC/issues/LUC-3572) for
+      [09 TSA](/LUC/agents/09-tsa-technical-solution-architect) to refresh
+      architecture-awareness after [LUC-3567](/LUC/issues/LUC-3567) and route
+      at most one next non-duplicate local-safe repair lane.
+  - Evidence file:
+    - `history/tasks/luc-3569-no-stall-queue-expeditor-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3567 [Soar][QA] waitForWebBuildInfo normalizeBaseUrl relation row`
+  - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED / NO_MUTATION`
+  - Scope: QVE local scanner-readable traceability repair only; no code
+    implementation, commit, push, deploy, restart, rollback, env edit,
+    protected smoke, production account use, secret/account readback,
+    database/Redis mutation, raw log capture, screenshot, exchange action,
+    order, position, payment/subscription, or live-trading action.
+  - Evidence:
+    - Added direct row in `docs/architecture/relations/priority-test-links.csv`:
+      `scripts/waitForWebBuildInfo.mjs#normalizeBaseUrl` ->
+      `scripts/waitForWebBuildInfo.test.mjs`.
+    - Existing test coverage uses subprocess CLI execution of
+      `scripts/waitForWebBuildInfo.mjs`.
+    - `node --test scripts/waitForWebBuildInfo.test.mjs` passed (`4/4`).
+    - Direct relation readback found the [LUC-3567](/LUC/issues/LUC-3567) row
+      at line `866`.
+  - Residual:
+    - `docs/status/architecture-awareness-report.md` remains the pre-repair
+      generated snapshot until the next full awareness refresh.
+  - Evidence file:
+    - `history/tasks/luc-3567-waitforwebbuildinfo-normalizebaseurl-relation-row-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3565 [Soar][TSA] Refresh architecture-awareness after LUC-3561 relation row`
+  - Status: `DONE / VERIFIED_LOCAL / DELEGATED / NO_RUNTIME_MUTATION`
+  - Scope: TSA architecture-awareness refresh/routing only; no product code
+    implementation, commit, push, deploy, restart, rollback, env edit,
+    protected smoke, production account use, secret/account readback,
+    database/Redis mutation, raw log capture, screenshot, exchange action,
+    order, position, payment/subscription, or live-trading action.
+  - Evidence:
+    - Canonical Softwarehouse scanner command passed:
+      `node scripts/build-architecture-awareness-index.mjs --project Soar --root ../Soar`.
+    - Refreshed awareness generated `2026-06-11T19:03:14.220Z` with `9513`
+      entities, `30314` relations, and `9833` files.
+    - Report health signals: `47` actionable missing-test links, `0`
+      actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - [LUC-3561](/LUC/issues/LUC-3561)
+      `scripts/waitForWebBuildInfo.mjs` no longer appears in Top Actionable
+      Missing Test Links.
+    - Focused local proof passed:
+      `node --test scripts/waitForWebBuildInfo.test.mjs` (`4/4`).
+    - Duplicate search for `waitForWebBuildInfo normalizeBaseUrl` returned `0`
+      Paperclip issues.
+  - Disposition:
+    - Created [LUC-3567](/LUC/issues/LUC-3567) for
+      [09 QVE](/LUC/agents/09-qve-qa-verification-engineer) to repair/classify
+      the remaining local-safe
+      `scripts/waitForWebBuildInfo.mjs#normalizeBaseUrl` relation row.
+  - Evidence file:
+    - `history/tasks/luc-3565-architecture-awareness-after-feature-level-relation-row-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3562 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED / NO_RUNTIME_MUTATION`
+  - Scope: PM queue disposition only; no product code implementation, commit,
+    push, deploy, restart, rollback, env edit, protected smoke, production
+    account use, secret/account readback, database/Redis mutation, raw log
+    capture, screenshot, exchange action, order, position,
+    payment/subscription, or live-trading action.
+  - Evidence:
+    - [LUC-3561](/LUC/issues/LUC-3561) is `done` and added the direct
+      scanner-readable feature-level relation for
+      `scripts/waitForWebBuildInfo.mjs` to
+      `scripts/waitForWebBuildInfo.test.mjs`.
+    - Direct relation readback found the LUC-3561 row at line `860`.
+    - Current architecture-awareness report is still generated at
+      `2026-06-11T18:46:01.427Z` and still lists the closed feature-level
+      anchor.
+    - Duplicate search for `architecture-awareness after LUC-3561` found `0`
+      existing issues; duplicate search for `waitForWebBuildInfo feature-level`
+      found only closed [LUC-3561](/LUC/issues/LUC-3561).
+    - TSA was already `running`, so the PM lane queued one `todo` child rather
+      than polling a second TSA live lane; Paperclip then accepted the child as
+      `in_progress`.
+  - Disposition:
+    - Created [LUC-3565](/LUC/issues/LUC-3565) for
+      [09 TSA](/LUC/agents/09-tsa-technical-solution-architect) to refresh
+      architecture-awareness after [LUC-3561](/LUC/issues/LUC-3561) and route
+      at most one next non-duplicate local-safe repair lane.
+  - Evidence file:
+    - `history/tasks/luc-3562-no-stall-queue-expeditor-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3561 [Soar][QA] waitForWebBuildInfo feature-level relation row`
+  - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED / NO_MUTATION`
+  - Scope: QVE local scanner-readable traceability repair only; no code
+    implementation, commit, push, deploy, restart, rollback, env edit,
+    protected smoke, production account use, secret/account readback,
+    database/Redis mutation, raw log capture, screenshot, exchange action,
+    order, position, payment/subscription, or live-trading action.
+  - Evidence:
+    - Added direct row in `docs/architecture/relations/priority-test-links.csv`:
+      `scripts/waitForWebBuildInfo.mjs` ->
+      `scripts/waitForWebBuildInfo.test.mjs`.
+    - Existing test coverage is feature-level CLI coverage: the test spawns
+      `scripts/waitForWebBuildInfo.mjs` with `execFile`, exercising success
+      and fail-closed metadata/build-id paths.
+    - `node --test scripts/waitForWebBuildInfo.test.mjs` passed (`4/4`).
+    - Direct relation readback found the LUC-3561 row at line `860`.
+  - Residual:
+    - `docs/status/architecture-awareness-report.md` remains the pre-repair
+      generated snapshot until the next full awareness refresh.
+  - Evidence file:
+    - `history/tasks/luc-3561-waitforwebbuildinfo-feature-level-relation-row-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3560 [Soar] Gap register and repair lane refresh`
+  - Status: `DONE / VERIFIED_LOCAL / DELEGATED / NO_RUNTIME_MUTATION`
+  - Scope: TSA architecture-awareness refresh/routing only; no product code
+    implementation, commit, push, deploy, restart, rollback, env edit,
+    protected smoke, production account use, secret/account readback,
+    database/Redis mutation, raw log capture, screenshot, exchange action,
+    order, position, payment/subscription, or live-trading action.
+  - Evidence:
+    - Project-local scanner attempt failed because
+      `scripts/build-architecture-awareness-index.mjs` is not in the Soar
+      checkout.
+    - Canonical scanner command passed from Softwarehouse:
+      `node scripts/build-architecture-awareness-index.mjs --project Soar --root ../Soar`.
+    - Refreshed awareness generated `2026-06-11T18:46:01.427Z` with `9509`
+      entities, `30300` relations, and `9831` files.
+    - Report health signals: `48` actionable missing-test links, `0`
+      actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - [LUC-3559](/LUC/issues/LUC-3559)
+      `scripts/waitForWebBuildInfo.mjs#main` no longer appears in Top
+      Actionable Missing Test Links.
+    - Next local-safe residual row is feature-level
+      `scripts/waitForWebBuildInfo.mjs`.
+  - Disposition:
+    - Created [LUC-3561](/LUC/issues/LUC-3561) for
+      [09 QVE](/LUC/agents/09-qve-qa-verification-engineer) to repair/classify
+      the feature-level `scripts/waitForWebBuildInfo.mjs` relation row.
+  - Evidence file:
+    - `history/tasks/luc-3560-gap-register-and-repair-lane-refresh-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3559 [Soar][QA] waitForWebBuildInfo main relation row`
+  - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED / NO_MUTATION`
+  - Scope: QVE local scanner-readable traceability repair only; no code
+    implementation, commit, push, deploy, restart, rollback, env edit,
+    protected smoke, production account use, secret/account readback,
+    database/Redis mutation, raw log capture, screenshot, exchange action,
+    order, position, payment/subscription, or live-trading action.
+  - Evidence:
+    - Added direct row in `docs/architecture/relations/priority-test-links.csv`:
+      `scripts/waitForWebBuildInfo.mjs#main` ->
+      `scripts/waitForWebBuildInfo.test.mjs`.
+    - Existing test coverage is entrypoint-level: the test spawns
+      `scripts/waitForWebBuildInfo.mjs` with `execFile`, exercising `main()`
+      through success and fail-closed paths.
+    - `node --test scripts/waitForWebBuildInfo.test.mjs` passed (`4/4`).
+    - Direct relation readback found the LUC-3559 row.
+  - Residual:
+    - `docs/status/architecture-awareness-report.md` remains the pre-repair
+      generated snapshot until the next full awareness refresh.
+  - Evidence file:
+    - `history/tasks/luc-3559-waitforwebbuildinfo-main-relation-row-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3558 [Soar][TSA] Refresh architecture-awareness after LUC-3554 relation row`
+  - Status: `DONE / VERIFIED_LOCAL / DELEGATED / NO_RUNTIME_MUTATION`
+  - Scope: TSA architecture-awareness refresh/routing only; no product code
+    implementation, commit, push, deploy, restart, rollback, env edit,
+    protected smoke, production account use, secret/account readback,
+    database/Redis mutation, raw log capture, screenshot, exchange action,
+    order, position, payment/subscription, or live-trading action.
+  - Evidence:
+    - Canonical scanner command passed:
+      `node scripts/build-architecture-awareness-index.mjs --project Soar --root ../Soar`.
+    - Refreshed awareness generated `2026-06-11T18:34:56.688Z` with `9505`
+      entities, `30276` relations, and `9829` files.
+    - Report health signals: `48` actionable missing-test links, `0`
+      actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - [LUC-3554](/LUC/issues/LUC-3554)
+      `scripts/waitForWebBuildInfo.mjs#hasFlag` no longer appears in Top
+      Actionable Missing Test Links.
+    - Duplicate search for `waitForWebBuildInfo main` returned `0` Paperclip
+      issues.
+  - Disposition:
+    - Created [LUC-3559](/LUC/issues/LUC-3559) for [09 QVE](/LUC/agents/09-qve-qa-verification-engineer)
+      to repair/classify the remaining local-safe
+      `scripts/waitForWebBuildInfo.mjs#main` relation row.
+  - Evidence file:
+    - `history/tasks/luc-3558-architecture-awareness-after-hasflag-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3555 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED / NO_RUNTIME_MUTATION`
+  - Scope: PM queue disposition only; no product code implementation, commit,
+    push, deploy, restart, rollback, env edit, protected smoke, production
+    account use, secret/account readback, database/Redis mutation, raw log
+    capture, screenshot, exchange action, order, position,
+    payment/subscription, or live-trading action.
+  - Evidence:
+    - [LUC-3554](/LUC/issues/LUC-3554) is `done` and added the direct
+      scanner-readable relation for `scripts/waitForWebBuildInfo.mjs#hasFlag`
+      to `scripts/waitForWebBuildInfo.test.mjs`.
+    - [LUC-3554](/LUC/issues/LUC-3554) proof passed:
+      `node --test scripts/waitForWebBuildInfo.test.mjs` (`4/4`) and direct
+      relation readback found the row at line `863`.
+    - Current architecture-awareness report is still generated at
+      `2026-06-11T18:16:37.570Z` and still lists the closed `hasFlag` anchor.
+    - Duplicate search for `waitForWebBuildInfo hasFlag` found only
+      [LUC-3554](/LUC/issues/LUC-3554).
+    - `corepack pnpm softwarehouse:control-tick` remains unavailable in this
+      checkout: `Command "softwarehouse:control-tick" not found`.
+  - Disposition:
+    - Created [LUC-3558](/LUC/issues/LUC-3558) for [09 TSA](/LUC/agents/09-tsa-technical-solution-architect)
+      to refresh architecture-awareness after [LUC-3554](/LUC/issues/LUC-3554)
+      and route at most one next non-duplicate local-safe repair lane.
+  - Evidence file:
+    - `history/tasks/luc-3555-no-stall-queue-expeditor-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3552 [Soar] V1 audit-to-completion controller`
+  - Status: `DONE / VERIFIED_LOCAL / DELEGATED / NO_RUNTIME_MUTATION`
+  - Scope: TSA architecture-awareness refresh/routing only; no product code
+    implementation, commit, push, deploy, restart, rollback, env edit,
+    protected smoke, production account use, secret/account readback,
+    database/Redis mutation, raw log capture, screenshot, exchange action,
+    order, position, payment/subscription, or live-trading action.
+  - Evidence:
+    - Canonical scanner command passed:
+      `node scripts/build-architecture-awareness-index.mjs --project Soar --root ../Soar`.
+    - Refreshed awareness generated `2026-06-11T18:16:37.570Z` with `9499`
+      entities, `30246` relations, and `9826` files.
+    - Report health signals: `48` actionable missing-test links, `0`
+      actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - [LUC-3551](/LUC/issues/LUC-3551)
+      `scripts/waitForWebBuildInfo.mjs#isDeployMetadataSourceAccepted` no
+      longer appears in Top Actionable Missing Test Links.
+    - Duplicate search for `hasFlag` returned only [LUC-2995](/LUC/issues/LUC-2995),
+      which covers `scripts/runQaRepeatableSmokeE2e.mjs#hasFlag`, not
+      `scripts/waitForWebBuildInfo.mjs#hasFlag`.
+  - Disposition:
+    - Created [LUC-3554](/LUC/issues/LUC-3554) for [09 QVE](/LUC/agents/09-qve-qa-verification-engineer)
+      to repair/classify the remaining local-safe
+      `scripts/waitForWebBuildInfo.mjs#hasFlag` relation row.
+  - Evidence file:
+    - `history/tasks/luc-3552-v1-audit-to-completion-controller-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3554 [Soar][QA] waitForWebBuildInfo hasFlag relation row`
+  - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED / NO_MUTATION`
+  - Scope: QVE local scanner-readable traceability repair only; no code
+    implementation, commit, push, deploy, restart, rollback, env edit,
+    protected smoke, production account use, secret/account readback,
+    database/Redis mutation, raw log capture, screenshot, exchange action,
+    order, position, payment/subscription, or live-trading action.
+  - Evidence:
+    - Added direct row in `docs/architecture/relations/priority-test-links.csv`:
+      `scripts/waitForWebBuildInfo.mjs#hasFlag` ->
+      `scripts/waitForWebBuildInfo.test.mjs`.
+    - `node --test scripts/waitForWebBuildInfo.test.mjs` passed (`4/4`).
+    - Direct relation readback found the LUC-3554 row at line `863`.
+  - Residual:
+    - `docs/status/architecture-awareness-report.md` remains the pre-repair
+      generated snapshot until the next full awareness refresh.
+  - Evidence file:
+    - `history/tasks/luc-3554-waitforwebbuildinfo-hasflag-relation-row-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3551 [Soar][QA] waitForWebBuildInfo isDeployMetadataSourceAccepted relation row`
+  - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED / NO_MUTATION`
+  - Scope: QVE local scanner-readable traceability repair only; no code
+    implementation, commit, push, deploy, restart, rollback, env edit,
+    protected smoke, production account use, secret/account readback,
+    database/Redis mutation, raw log capture, screenshot, exchange action,
+    order, position, payment/subscription, or live-trading action.
+  - Evidence:
+    - Added direct row in `docs/architecture/relations/priority-test-links.csv`:
+      `scripts/waitForWebBuildInfo.mjs#isDeployMetadataSourceAccepted` ->
+      `scripts/waitForWebBuildInfo.test.mjs`.
+    - `node --test scripts/waitForWebBuildInfo.test.mjs` passed (`4/4`).
+    - Direct relation readback found the LUC-3551 row at line `862`.
+  - Residual:
+    - `docs/status/architecture-awareness-report.md` remains the pre-repair
+      generated snapshot until the next full awareness refresh.
+  - Evidence file:
+    - `history/tasks/luc-3551-waitforwebbuildinfo-isdeploymetadatasourceaccepted-relation-row-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3549 [Soar][TSA] Refresh architecture-awareness after LUC-3538 relation row`
+  - Status: `DONE / VERIFIED_LOCAL / DELEGATED / NO_RUNTIME_MUTATION`
+  - Scope: TSA architecture-awareness refresh/routing only; no product code
+    implementation, commit, push, deploy, restart, rollback, env edit,
+    protected smoke, production account use, secret/account readback,
+    database/Redis mutation, raw log capture, screenshot, exchange action,
+    order, position, payment/subscription, or live-trading action.
+  - Evidence:
+    - Canonical scanner command passed:
+      `node scripts/build-architecture-awareness-index.mjs --project Soar --root ../Soar`.
+    - Refreshed awareness generated `2026-06-11T18:04:25.885Z` with `9495`
+      entities, `30230` relations, and `9824` files.
+    - Report health signals: `48` actionable missing-test links, `0`
+      actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - [LUC-3538](/LUC/issues/LUC-3538)
+      `scripts/waitForWebBuildInfo.mjs#isDeployBuildIdAccepted` no longer
+      appears in Top Actionable Missing Test Links.
+    - Duplicate search for `isDeployMetadataSourceAccepted` returned `0`
+      Paperclip issues.
+  - Disposition:
+    - Created [LUC-3551](/LUC/issues/LUC-3551) for [09 QVE](/LUC/agents/09-qve-qa-verification-engineer)
+      to repair/classify the remaining local-safe
+      `scripts/waitForWebBuildInfo.mjs#isDeployMetadataSourceAccepted`
+      relation row.
+  - Evidence file:
+    - `history/tasks/luc-3549-architecture-awareness-after-isdeploybuildidaccepted-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3546 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED / NO_RUNTIME_MUTATION`
+  - Scope: PM queue disposition only; no product code, commit, push, deploy,
+    restart, rollback, env edit, protected smoke, production account use,
+    secret/account readback, database/Redis mutation, raw log capture,
+    screenshot, exchange action, order, position, payment/subscription, or
+    live-trading action.
+  - Evidence:
+    - [LUC-3538](/LUC/issues/LUC-3538) is `done` and added the direct
+      scanner-readable relation for
+      `scripts/waitForWebBuildInfo.mjs#isDeployBuildIdAccepted` to
+      `scripts/waitForWebBuildInfo.test.mjs`.
+    - [LUC-3538](/LUC/issues/LUC-3538) proof passed:
+      `node --test scripts/waitForWebBuildInfo.test.mjs` (`4/4`) and direct
+      relation readback found the row at line `861`.
+    - Current architecture-awareness report is still generated at
+      `2026-06-11T17:34:59.119Z` and still lists the closed
+      `isDeployBuildIdAccepted` anchor.
+    - Duplicate search for `isDeployBuildIdAccepted` found only
+      [LUC-3538](/LUC/issues/LUC-3538) and previous parent
+      [LUC-3536](/LUC/issues/LUC-3536).
+    - `corepack pnpm softwarehouse:control-tick` remains unavailable in this
+      checkout: `Command "softwarehouse:control-tick" not found`.
+  - Disposition:
+    - Created [LUC-3549](/LUC/issues/LUC-3549) for [09 TSA](/LUC/agents/09-tsa-technical-solution-architect)
+      to refresh architecture-awareness after [LUC-3538](/LUC/issues/LUC-3538)
+      and route at most one next non-duplicate local-safe repair lane.
+  - Evidence file:
+    - `history/tasks/luc-3546-no-stall-queue-expeditor-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3536 [Soar][TSA] Refresh architecture-awareness after closed relation rows`
+  - Status: `DONE / VERIFIED_LOCAL / DELEGATED / NO_RUNTIME_MUTATION`
+  - Scope: TSA architecture-awareness refresh/routing only; no product code
+    implementation, commit, push, deploy, restart, rollback, env edit,
+    protected smoke, production account use, secret/account readback,
+    database/Redis mutation, raw log capture, screenshot, exchange action,
+    order, position, payment/subscription, or live-trading action.
+  - Evidence:
+    - Canonical scanner command passed from Softwarehouse:
+      `node scripts/build-architecture-awareness-index.mjs --project Soar --root ../Soar`.
+    - Refreshed awareness generated `2026-06-11T17:34:59.119Z` with `9489`
+      entities, `30201` relations, and `9821` files.
+    - Report health signals: `48` actionable missing-test links, `0`
+      actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - [LUC-3520](/LUC/issues/LUC-3520)
+      `scripts/waitForWebBuildInfo.mjs#fetchJsonWithTimeout` no longer appears
+      in Top Actionable Missing Test Links.
+    - `node --test scripts/waitForWebBuildInfo.test.mjs` passed (`4/4`).
+  - Disposition:
+    - Created [LUC-3538](/LUC/issues/LUC-3538) for [09 QVE](/LUC/agents/09-qve-qa-verification-engineer)
+      to repair/classify the remaining local-safe
+      `scripts/waitForWebBuildInfo.mjs#isDeployBuildIdAccepted` relation row.
+  - Evidence file:
+    - `history/tasks/luc-3536-architecture-awareness-after-closed-relation-rows-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3530 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED / NO_RUNTIME_MUTATION`
+  - Scope: PM queue disposition only; no product code, commit, push, deploy,
+    restart, rollback, env edit, protected smoke, production account use,
+    secret/account readback, database/Redis mutation, raw log capture,
+    screenshot, exchange action, order, position, payment/subscription, or
+    live-trading action.
+  - Evidence:
+    - Paperclip heartbeat context for [LUC-3530](/LUC/issues/LUC-3530)
+      confirmed a fresh routine execution under [LUC-12](/LUC/issues/LUC-12),
+      no comments, no first-class blockers, and active local workspace.
+    - `corepack pnpm softwarehouse:control-tick` remains unavailable in this
+      checkout: `Command "softwarehouse:control-tick" not found`.
+    - Live Soar board readback found `97` blocked, `4` in_review, and `1`
+      in_progress issue, with this PM heartbeat as the only active run.
+    - Current review/operator paths are [LUC-3525](/LUC/issues/LUC-3525),
+      [LUC-3409](/LUC/issues/LUC-3409), [LUC-2880](/LUC/issues/LUC-2880), and
+      [LUC-2755](/LUC/issues/LUC-2755).
+    - The latest architecture-awareness report generated
+      `2026-06-11T16:13:20.657Z` still lists the
+      [LUC-3520](/LUC/issues/LUC-3520) closed
+      `scripts/waitForWebBuildInfo.mjs#fetchJsonWithTimeout` anchor.
+  - Disposition:
+    - Created [LUC-3536](/LUC/issues/LUC-3536) for
+      [09 TSA](/LUC/agents/09-tsa-technical-solution-architect) to refresh
+      architecture-awareness after closed relation rows and route at most one
+      next non-duplicate local-safe repair lane from the refreshed report.
+  - Evidence file:
+    - `history/tasks/luc-3530-no-stall-queue-expeditor-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3520 [Soar][QA] waitForWebBuildInfo fetchJsonWithTimeout relation row`
+  - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED / NO_MUTATION`
+  - Scope: QVE local scanner-readable traceability repair only; no code
+    implementation, commit, push, deploy, restart, rollback, env edit,
+    protected smoke, production account use, secret/account readback,
+    database/Redis mutation, raw log capture, screenshot, exchange action,
+    order, position, payment/subscription, or live-trading action.
+  - Evidence:
+    - Added direct row in `docs/architecture/relations/priority-test-links.csv`:
+      `scripts/waitForWebBuildInfo.mjs#fetchJsonWithTimeout` ->
+      `scripts/waitForWebBuildInfo.test.mjs`.
+    - `node --test scripts/waitForWebBuildInfo.test.mjs` passed (`4/4`).
+    - Direct relation readback passed (`1/1`).
+  - Residual:
+    - `docs/status/architecture-awareness-report.md` remains the pre-repair
+      generated snapshot until the next full awareness refresh.
+  - Evidence file:
+    - `history/tasks/luc-3520-waitforwebbuildinfo-fetchjson-relation-row-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3519 [Soar] Gap register and repair lane refresh`
+  - Status: `DONE / DELEGATED / NO_PROTECTED_MUTATION`
+  - Scope: TSA architecture-awareness routing and repair-lane creation only;
+    no code implementation, commit, push, deploy, restart, rollback, env edit,
+    protected smoke, production account use, secret readback, database/Redis
+    mutation, raw log capture, screenshot, exchange action, order, position,
+    payment/subscription, or live-trading action.
+  - Evidence:
+    - Paperclip heartbeat context for [LUC-3519](/LUC/issues/LUC-3519)
+      confirmed a fresh critical issue under [LUC-12](/LUC/issues/LUC-12),
+      no comments, no first-class blockers, and active local workspace.
+    - Current architecture-awareness report generated
+      `2026-06-11T16:13:20.657Z` reports `48` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - `node --test scripts/waitForWebBuildInfo.test.mjs` passed (`4/4`) for
+      the selected local-safe residual candidate.
+  - Disposition:
+    - Created [LUC-3520](/LUC/issues/LUC-3520) for [09 QVE](/LUC/agents/09-qve-qa-verification-engineer)
+      to add or classify the scanner-readable relation for
+      `scripts/waitForWebBuildInfo.mjs#fetchJsonWithTimeout`.
+  - Evidence file:
+    - `history/tasks/luc-3519-gap-register-and-repair-lane-refresh-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3515 [Soar] Coolify production deploy health sweep`
+  - Status: `PARTIALLY_VERIFIED / PUBLIC_SMOKE_PASS / DEEPER_LOGS_BLOCKED /
+    NO_MUTATION`
+  - Scope: DRE read-only production deploy health sweep; no code
+    implementation, commit, push, deploy, restart, rollback, env edit,
+    protected smoke, production account use, secret readback, database/Redis
+    mutation, raw private log capture, screenshot, exchange action, order,
+    position, payment/subscription, or live-trading action.
+  - Evidence:
+    - Paperclip heartbeat context for [LUC-3515](/LUC/issues/LUC-3515)
+      confirmed a critical issue under [LUC-12](/LUC/issues/LUC-12), no
+      comments, no first-class blockers, and active local workspace.
+    - Public smoke command passed:
+      `corepack pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --expected-sha 56d8d440bfe0fd9ee692e9f669e35414d85d2493 --no-workers`.
+    - Direct public probes returned `200` for API `/health`, API `/ready`,
+      Web `/`, Web `/auth/login`, and Web `/api/build-info`; build-info
+      reported `gitSha=56d8d440bfe0fd9ee692e9f669e35414d85d2493`,
+      `gitRef=main`, and `metadataSource=github-branch`.
+    - Coolify read-only projection passed for selector `LuckySparrow`, project
+      `Soar`, production environment, `17` visible global resource rows,
+      `0` active deployment rows, six application resources, one PostgreSQL,
+      one Redis, and zero generic services.
+    - Per-application detail reads returned `200` with `serverStatus=true`;
+      all six app rows remain `running:unknown`. `workers-execution` retains
+      `lastRestartType=crash` and `restartCount=2`.
+    - Candidate per-app deploy-history/log metadata endpoints returned `404`
+      for all six app resources; no raw private logs were fetched or stored.
+  - Residual:
+    - Full release readiness remains blocked on protected `/workers/ready`,
+      worker freshness, release-grade image provenance, rollback, restore,
+      SLO evidence, release approval, and an approved redacted Coolify
+      deploy-log/export path if deeper failed-deploy root cause is required.
+  - Evidence file:
+    - `history/tasks/luc-3515-coolify-production-deploy-health-sweep-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3516 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / QUEUE_SUPERVISED / NO_DUPLICATE_CHILD / NO_RUNTIME_MUTATION`
+  - Scope: PM queue disposition only; no code implementation, commit, push,
+    deploy, restart, rollback, env edit, protected smoke, production account
+    use, secret readback, database/Redis mutation, raw log capture,
+    screenshot, exchange action, order, position, payment/subscription, or
+    live-trading action.
+  - Evidence:
+    - Paperclip heartbeat context for [LUC-3516](/LUC/issues/LUC-3516)
+      confirmed a fresh routine execution under [LUC-12](/LUC/issues/LUC-12),
+      no comments, no first-class blockers, and active local workspace.
+    - `corepack pnpm softwarehouse:control-tick` remains unavailable in this
+      checkout: `Command "softwarehouse:control-tick" not found`.
+    - [LUC-3510](/LUC/issues/LUC-3510) is `done`, so the prior source-control
+      closure delegation is closed.
+    - [LUC-3515](/LUC/issues/LUC-3515) is `in_progress` with an active DRE/Ops
+      run for Coolify deploy-health sweep.
+    - Review/operator gates remain [LUC-2755](/LUC/issues/LUC-2755),
+      [LUC-2880](/LUC/issues/LUC-2880), and [LUC-3409](/LUC/issues/LUC-3409).
+  - Disposition:
+    - No duplicate child was created. Let [LUC-3515](/LUC/issues/LUC-3515)
+      finish through its owner and keep review/operator gates fail-closed.
+  - Evidence file:
+    - `history/tasks/luc-3516-no-stall-queue-expeditor-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3513 [Soar] Autonomous idle and map drift sweep`
+  - Status: `DONE / KNOWN_STATE_REFRESHED / PROTECTED_GATE_HOLD / NO_RUNTIME_MUTATION`
+  - Scope: Documentation Steward docs/memory drift checkpoint only; no code
+    implementation, commit, push, deploy, restart, rollback, env edit,
+    protected smoke, production account use, secret readback, database/Redis
+    mutation, raw log capture, screenshot, exchange action, order, position,
+    payment/subscription, or live-trading action.
+  - Evidence:
+    - Paperclip heartbeat context for [LUC-3513](/LUC/issues/LUC-3513)
+      confirmed a fresh routine execution under [LUC-12](/LUC/issues/LUC-12),
+      no comments, no first-class blockers, and active local workspace.
+    - `corepack pnpm softwarehouse:control-tick` remains unavailable in this
+      checkout: `Command "softwarehouse:control-tick" not found`.
+    - `corepack pnpm run ops:project:known-state` passed with graph `653`
+      nodes / `842` relations / `27` chains, strict graph drift `846/846`,
+      docs parity PASS, guardrails PASS, project index `PASS:21`, V1 static
+      scan findings `0`, master ledger `GO`, and completion scorecard `GO`.
+    - Fresh architecture awareness generated `2026-06-11T16:13:20.657Z` with
+      `48` actionable missing-test links, `0` actionable missing-doc links,
+      `0` ownerless entities, and `0` disconnected entities.
+    - Live Soar queue readback found `96` blocked, `3` in_review,
+      `1` in_progress for [LUC-3513](/LUC/issues/LUC-3513), and `0` todo
+      issues.
+  - Disposition:
+    - Soar remains `ACTIVE REPAIR/VERIFICATION / PROTECTED GATE HOLD`, not
+      monitoring-only idle.
+    - No duplicate child lane was created. Continue through review/operator
+      paths [LUC-2755](/LUC/issues/LUC-2755), [LUC-2880](/LUC/issues/LUC-2880),
+      and [LUC-3409](/LUC/issues/LUC-3409).
+  - Evidence file:
+    - `history/tasks/luc-3513-autonomous-idle-and-map-drift-sweep-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3507 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED_SOURCE_CONTROL_CLOSURE / NO_RUNTIME_MUTATION`
+  - Scope: PM queue disposition only; no code implementation, commit, push,
+    deploy, restart, rollback, env edit, protected smoke, production account
+    use, secret readback, database/Redis mutation, raw log capture,
+    screenshot, exchange action, order, position, payment/subscription, or
+    live-trading action.
+  - Evidence:
+    - Paperclip heartbeat context for [LUC-3507](/LUC/issues/LUC-3507)
+      confirmed a fresh routine execution under [LUC-12](/LUC/issues/LUC-12),
+      no comments, no first-class blockers, and active local workspace.
+    - `pnpm softwarehouse:control-tick` remains unavailable in this checkout:
+      `Command "softwarehouse:control-tick" not found`.
+    - Queue readback found no Soar `todo` issue in this PM scope.
+    - [LUC-3435](/LUC/issues/LUC-3435) remains blocked under the Ops owner
+      despite same-day read-only Coolify evidence from [LUC-3437](/LUC/issues/LUC-3437)
+      and [LUC-3461](/LUC/issues/LUC-3461); PM did not create a duplicate
+      Coolify/protected lane.
+    - [LUC-3503](/LUC/issues/LUC-3503), [LUC-3504](/LUC/issues/LUC-3504),
+      [LUC-3505](/LUC/issues/LUC-3505), and [LUC-3506](/LUC/issues/LUC-3506)
+      were all done, but no open source-control closure follow-up existed.
+  - Disposition:
+    - Created [LUC-3510](/LUC/issues/LUC-3510) for DRE/Ops to execute or
+      explicitly block the source-control closure batch using the completed
+      validation evidence.
+  - Evidence file:
+    - `history/tasks/luc-3507-no-stall-queue-expeditor-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3506 [Soar][DRE] Classify NUL workspace artifact before source-control closure`
+  - Status: `DONE / VERIFIED_LOCAL / ARTIFACT_REMOVED / NO_RUNTIME_MUTATION`
+  - Scope: DRE source-control hygiene for the root `NUL` artifact only; no
+    product code, runtime scripts, deployment, restart, rollback, env edit,
+    protected smoke, production account use, secret readback, database/Redis
+    mutation, raw log capture, screenshot, exchange action, order, position,
+    payment/subscription, or live-trading action.
+  - Evidence:
+    - Initial status reported `?? NUL`.
+    - `git ls-files --others --exclude-standard -- NUL` returned `NUL`; no
+      ignore rule matched.
+    - Exact path bytes were `4E 55 4C 00`.
+    - Normal Win32 path lookup did not resolve `.\NUL`, but extended path
+      `\\?\C:\Personal\Projekty\Aplikacje\Soar\NUL` resolved to a real
+      zero-byte archive file.
+    - `git hash-object --no-filters -- NUL` returned the empty blob hash
+      `e69de29bb2d1d6434b8b29ae775ad8c2e48c5391`.
+    - Narrow cleanup deleted only that zero-byte extended-path artifact.
+    - `git status --porcelain=v1 -- NUL` returned no output after cleanup.
+  - Disposition:
+    - `NUL` is classified as disposable local workspace residue, not product
+      code, evidence, generated architecture output, or a secret-bearing file.
+    - Commit status: not committed; no source file change belongs to this
+      artifact cleanup.
+    - Push/deploy: not needed / none.
+  - Evidence file:
+    - `history/tasks/luc-3506-classify-nul-workspace-artifact-before-source-control-closure-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3503 [Soar][DRE/QVE] Validate scripts source-control closure lane`
+  - Status: `DONE / VERIFIED_LOCAL / COMMIT_READY_RECOMMENDATION / NO_MUTATION`
+  - Scope: DRE/QVE source-control closure validation for the scripts group
+    routed by [LUC-3499](/LUC/issues/LUC-3499); no commit, push, deploy,
+    restart, rollback, env edit, protected smoke, production account use,
+    secret readback, DB/Redis mutation, exchange action, order, position,
+    payment/subscription, or live-trading action.
+  - Evidence:
+    - Heartbeat context confirmed [LUC-3503](/LUC/issues/LUC-3503) is the child
+      scripts closure lane for [LUC-3499](/LUC/issues/LUC-3499), with 32
+      modified script files and 30 untracked focused script test files.
+    - `node --check` passed for all 32 modified script/contract files.
+    - `git diff --check -- scripts` passed with Windows LF/CRLF warnings only.
+    - Focused contract pack passed: `24/24`.
+    - Full corresponding script test pack passed: `207/207`.
+    - No leftover `chrome-headless-shell` process found.
+  - Disposition:
+    - Scripts group is `verified / commit-ready-as-part-of-broader-batch`.
+    - Recommendation: parent closure owner should commit the scripts group with
+      corresponding tests as part of the coherent [LUC-3499](/LUC/issues/LUC-3499)
+      source-control closure batch after sibling lane classifications pass.
+  - Evidence file:
+    - `history/tasks/luc-3503-validate-scripts-source-control-closure-lane-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3504 [Soar][FEW] Validate dashboard i18n source-control closure lane`
+  - Status: `DONE / VERIFIED_LOCAL / COMMIT_READY_SCOPED_GROUP / NO_MUTATION`
+  - Scope: FEW validation of only the three product-code dirty files delegated
+    by [LUC-3499](/LUC/issues/LUC-3499):
+    `apps/web/src/i18n/namespaces/dashboard-home.de-CH.ts`,
+    `apps/web/src/i18n/namespaces/dashboard-home.pt.ts`, and
+    `apps/web/src/i18n/translations.test.ts`; no broader UI, route, runtime,
+    deploy, push, protected smoke, production account, secret, DB/Redis,
+    exchange, order, position, payment, or live-trading mutation.
+  - Evidence:
+    - Diff review confirms de-CH/pt locale changes remove BOM/mojibake drift
+      and preserve existing keys/placeholders.
+    - `apps/web/src/i18n/translations.test.ts` adds loaded-dictionary encoding
+      drift coverage for replacement characters and common mojibake markers.
+    - `corepack pnpm --filter web exec vitest run src/i18n/translations.test.ts --reporter=verbose`
+      PASS (`1` file, `7` tests).
+    - Direct encoding-marker `rg` scan against the two changed locale files
+      returned no matches.
+    - Scoped `git diff --check` found no whitespace errors, only existing
+      Windows LF-to-CRLF working-copy warnings.
+  - Disposition:
+    - Commit recommendation: scoped three-file product-code group is
+      commit-ready.
+    - Current commit status: not committed by FEW because the shared worktree
+      contains a much broader unrelated dirty set; later source-control closure
+      should stage exactly these three files if batching separately.
+    - Evidence file:
+      `history/tasks/luc-3504-dashboard-i18n-source-control-closure-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3493 [Soar][PM] No-stall queue expeditor`
+  - Status: `BLOCKED / AUTHORIZED_OWNER_ACTION_REQUIRED / NO_MUTATION`
+  - Scope: PM queue disposition only; no code implementation, deploy, push,
+    restart, rollback, env edit, protected smoke, production account use,
+    secret readback, database/Redis mutation, raw log capture, screenshot,
+    exchange action, order, position, payment/subscription, or live-trading
+    action.
+  - Evidence:
+    - Paperclip heartbeat context for [LUC-3493](/LUC/issues/LUC-3493)
+      confirmed a fresh routine execution under [LUC-12](/LUC/issues/LUC-12),
+      no comments, no first-class blockers, and active local workspace.
+    - `pnpm softwarehouse:control-tick` remains unavailable in this checkout:
+      `Command "softwarehouse:control-tick" not found`.
+    - Live Soar queue readback found `106` non-terminal issues after
+      [LUC-3435](/LUC/issues/LUC-3435) was identified: `blocked=102`,
+      `in_review=3`, and `in_progress=1` for [LUC-3493](/LUC/issues/LUC-3493).
+    - [LUC-3435](/LUC/issues/LUC-3435) remains blocked for Coolify read-only
+      status access even though same-day [LUC-3437](/LUC/issues/LUC-3437) and
+      [LUC-3461](/LUC/issues/LUC-3461) evidence already proves read-only
+      Coolify resource reconciliation.
+    - Direct PM attempt to close [LUC-3435](/LUC/issues/LUC-3435) was rejected:
+      `Issue is outside this actor's authorization boundary`.
+  - Disposition:
+    - [LUC-3493](/LUC/issues/LUC-3493) is blocked by
+      [LUC-3435](/LUC/issues/LUC-3435).
+    - Next owner/action: [01 Ops Release Lead](/LUC/agents/01dd0c79-172b-4848-80eb-40692f07ccbb)
+      must close or explicitly supersede [LUC-3435](/LUC/issues/LUC-3435)
+      using [LUC-3437](/LUC/issues/LUC-3437) and [LUC-3461](/LUC/issues/LUC-3461)
+      evidence.
+  - Evidence file:
+    - `history/tasks/luc-3493-no-stall-queue-expeditor-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3490 [Soar] Gap register and repair lane refresh`
+  - Status: `DONE / AWARENESS_REFRESHED / DELEGATED / NO_PROTECTED_MUTATION`
+  - Scope: TSA architecture-awareness routing only; no product runtime,
+    deploy, push, restart, rollback, env edit, protected smoke, production
+    account use, secret readback, database/Redis mutation, raw log capture,
+    screenshot, exchange action, order, position, payment/subscription, or
+    live-trading action.
+  - Evidence:
+    - Canonical Softwarehouse architecture-awareness refresh generated
+      `docs/status/architecture-awareness-report.md` at
+      `2026-06-11T14:45:56.361Z` with `9459` entities, `30071` relations,
+      and `9807` files.
+    - Fresh report shows `51` actionable missing-test links, `0` actionable
+      missing-doc links, `0` ownerless entities, and `0` disconnected
+      entities.
+    - [LUC-3485](/LUC/issues/LUC-3485) `startRuntime` is no longer present in
+      the generated top actionable list, so no duplicate lane was created.
+  - Disposition:
+    - Created [LUC-3491](/LUC/issues/LUC-3491) for [09 QVE](/LUC/agents/09-qve-qa-verification-engineer)
+      to repair/classify `scripts/summarizeRcGates.mjs#isDirectRun`,
+      `scripts/syncRcChecklistFromGateStatus.mjs#isDirectRun`, and
+      `scripts/syncRcChecklistFromGateStatus.mjs#resolveDocsRoot`.
+    - Evidence packet:
+      `history/tasks/luc-3490-gap-register-and-repair-lane-refresh-2026-06-11-task.md`.
+
+- 2026-06-11 `LUC-3491 [Soar][QA] RC summary/checklist residual relation rows`
+  - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED / NO_MUTATION`
+  - Scope: QA/Test local traceability closure for the exact residual anchors
+    delegated by [LUC-3490](/LUC/issues/LUC-3490): `scripts/summarizeRcGates.mjs#isDirectRun`,
+    `scripts/syncRcChecklistFromGateStatus.mjs#isDirectRun`, and
+    `scripts/syncRcChecklistFromGateStatus.mjs#resolveDocsRoot`; no real
+    RC/prod gate, protected proof, deploy, push, restart, rollback, env edit,
+    secret/account readback, database/Redis mutation, exchange action, order,
+    position, payment/subscription, or live-trading action.
+  - Evidence:
+    - Added direct scanner-readable [LUC-3491](/LUC/issues/LUC-3491) rows for
+      all three residual anchors in `docs/architecture/relations/priority-test-links.csv`.
+    - Added focused sync checklist `resolveDocsRoot` assertion in
+      `scripts/rcGateSummaryChecklist.test.mjs`.
+    - Extended release Ops contract proof for the private import-safe
+      `isDirectRun` guard shape in both RC helper scripts.
+    - `node --check scripts/rcGateSummaryChecklist.test.mjs` PASS.
+    - `node --test scripts/rcGateSummaryChecklist.test.mjs scripts/releaseOpsScriptContracts.test.mjs`
+      PASS (`9/9`).
+    - Direct relation readback PASS (`3/3`).
+    - No leftover `chrome-headless-shell` process found.
+  - Residual:
+    - `docs/status/architecture-awareness-report.md` remains the pre-repair
+      generated snapshot until the next full awareness refresh.
+  - Evidence file:
+    - `history/tasks/luc-3491-rc-summary-checklist-residual-relation-rows-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3487 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DUPLICATE_BLOCKED_PM_LANE_DISPOSITIONED / NO_MUTATION`
+  - Scope: PM queue disposition only; no code implementation, deploy, push,
+    restart, rollback, env edit, protected smoke, production account use,
+    secret readback, database/Redis mutation, raw log capture, screenshot,
+    exchange action, order, position, payment/subscription, or live-trading
+    action.
+  - Evidence:
+    - Paperclip heartbeat context for [LUC-3487](/LUC/issues/LUC-3487)
+      confirmed a fresh routine execution under [LUC-12](/LUC/issues/LUC-12),
+      no comments, no first-class blockers, and active local workspace.
+    - Live Soar queue readback found `107` non-terminal issues:
+      `blocked=103`, `in_review=3`, and `in_progress=1` for
+      [LUC-3487](/LUC/issues/LUC-3487).
+    - [LUC-3485](/LUC/issues/LUC-3485) was already `done`, so no duplicate
+      QVE child was created.
+    - [LUC-3372](/LUC/issues/LUC-3372) was a blocked duplicate daily status
+      refresh after [LUC-3071](/LUC/issues/LUC-3071) already closed with fresh
+      known-state evidence.
+  - Disposition:
+    - [LUC-3372](/LUC/issues/LUC-3372) was closed as
+      `superseded_by_fresh_completed_daily_status_evidence`.
+    - Existing review/operator paths remain [LUC-2755](/LUC/issues/LUC-2755),
+      [LUC-2880](/LUC/issues/LUC-2880), and [LUC-3409](/LUC/issues/LUC-3409).
+  - Evidence file:
+    - `history/tasks/luc-3487-no-stall-queue-expeditor-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3484 [Soar] V1 audit-to-completion controller`
+  - Status: `DONE / DELEGATED / AWARENESS_REFRESHED / NO_PROTECTED_MUTATION`
+  - Scope: TSA architecture/gap routing only; no real service start, Docker
+    mutation, deploy, restart, rollback, env edit, protected smoke, production
+    account use, secret readback, database mutation, exchange action, order,
+    position, payment/subscription, or live-trading action.
+  - Evidence:
+    - `pnpm softwarehouse:control-tick` remains unavailable in this checkout:
+      `Command "softwarehouse:control-tick" not found`.
+    - Canonical Softwarehouse architecture-awareness refresh passed from
+      `Paperclip_Softwarehouse`: generated `2026-06-11T14:16:48.512Z`,
+      `9455` entities, `30056` relations, `9805` files.
+    - Fresh report no longer lists the four [LUC-3466](/LUC/issues/LUC-3466)
+      anchors: `validateRequiredEnvFiles`, `writeMissingEnvGuidance`,
+      `startWorkers`, and `writeMissingWorkerGuidance`.
+  - Delegation:
+    - Created [LUC-3485](/LUC/issues/LUC-3485) for [09 QVE](/LUC/agents/09-qve-qa-verification-engineer)
+      to classify or repair exactly
+      `scripts/start-local-prod-like.mjs#startRuntime`.
+  - Evidence file:
+    - `history/tasks/luc-3484-v1-audit-to-completion-controller-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3480 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DUPLICATE_BLOCKED_PM_LANE_DISPOSITIONED / NO_MUTATION`
+  - Scope: PM queue disposition only; no code implementation, deploy, push,
+    restart, rollback, env edit, protected smoke, production account use,
+    secret readback, database/Redis mutation, raw log capture, screenshot,
+    exchange action, order, position, payment/subscription, or live-trading
+    action.
+  - Evidence:
+    - Paperclip heartbeat context for [LUC-3480](/LUC/issues/LUC-3480)
+      confirmed a fresh routine execution under [LUC-12](/LUC/issues/LUC-12),
+      no comments, no first-class blockers, and active local workspace.
+    - `pnpm softwarehouse:control-tick` remains unavailable in this checkout:
+      `Command "softwarehouse:control-tick" not found`.
+    - Live Soar queue readback found `108` non-terminal issues:
+      `blocked=104`, `in_review=3`, and `in_progress=1` for
+      [LUC-3480](/LUC/issues/LUC-3480).
+    - [LUC-3454](/LUC/issues/LUC-3454) was a blocked duplicate daily status
+      refresh after [LUC-3071](/LUC/issues/LUC-3071) already closed with fresh
+      known-state evidence.
+  - Disposition:
+    - [LUC-3454](/LUC/issues/LUC-3454) was closed as
+      `superseded_by_fresh_completed_daily_status_evidence`.
+    - Existing review/operator paths remain [LUC-2755](/LUC/issues/LUC-2755),
+      [LUC-2880](/LUC/issues/LUC-2880), and
+      [LUC-3409](/LUC/issues/LUC-3409).
+  - Evidence file:
+    - `history/tasks/luc-3480-no-stall-queue-expeditor-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3476 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DUPLICATE_TODO_DISPOSITIONED / NO_MUTATION`
+  - Scope: PM queue disposition only; no code implementation, deploy, push,
+    restart, rollback, env edit, protected smoke, production account use,
+    secret readback, database/Redis mutation, raw log capture, screenshot,
+    exchange action, order, position, payment/subscription, or live-trading
+    action.
+  - Evidence:
+    - Paperclip heartbeat context for [LUC-3476](/LUC/issues/LUC-3476)
+      confirmed a fresh routine execution under [LUC-12](/LUC/issues/LUC-12),
+      no comments, no first-class blockers, and active local workspace.
+    - `pnpm softwarehouse:control-tick` remains unavailable in this checkout:
+      `Command "softwarehouse:control-tick" not found`.
+    - Live Soar queue readback before duplicate closure found `todo=1`,
+      `in_progress=1` (this [LUC-3476](/LUC/issues/LUC-3476)), `in_review=3`,
+      and `blocked=104`.
+    - The sole `todo` issue was [LUC-3479](/LUC/issues/LUC-3479), another
+      Coolify resource inventory reconciliation duplicate after
+      [LUC-3471](/LUC/issues/LUC-3471) already closed with fresh evidence at
+      `2026-06-11T13:25:29.219Z`.
+  - Disposition:
+    - [LUC-3479](/LUC/issues/LUC-3479) was closed as
+      `superseded_by_verified_existing_evidence`; no duplicate Ops lane was
+      needed.
+    - Existing review/operator paths remain [LUC-2755](/LUC/issues/LUC-2755),
+      [LUC-3409](/LUC/issues/LUC-3409), and [LUC-2880](/LUC/issues/LUC-2880).
+  - Evidence file:
+    - `history/tasks/luc-3476-no-stall-queue-expeditor-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3471 [Ops][Soar] Reconcile Coolify resource inventory`
+  - Status: `DONE / VERIFIED_BY_EXISTING_FRESH_EVIDENCE / NO_MUTATION`
+  - Scope: SPM reconciliation/disposition only; no duplicate Coolify read,
+    deploy, restart, rebuild, rollback, env edit, protected smoke,
+    secret/account readback, database/Redis mutation, raw log capture,
+    screenshot, or live-trading action.
+  - Evidence:
+    - [LUC-3437](/LUC/issues/LUC-3437) already reconciled the Coolify
+      production resource inventory by read-only API at
+      `2026-06-11T04:29:51Z`.
+    - [LUC-3461](/LUC/issues/LUC-3461) reconfirmed the same eight canonical
+      production resources at `2026-06-11T12:52:30Z`.
+    - Canonical inventory remains six applications plus PostgreSQL and Redis:
+      `soar-api`, `soar-web`, `workers-backtest`, `workers-execution`,
+      `workers-market-data`, `workers-market-stream`, `postgresql`, `redis`.
+    - Current source truth already contains the ledger in
+      `docs/operations/coolify-vps-deployment-contract.md`,
+      `docs/operations/service-topology.md`,
+      `docs/operations/runtime-config-ledger.csv`, and
+      `.agents/state/system-health.md`.
+  - Residual:
+    - Full release readiness remains separate: protected `/workers/ready`,
+      worker runtime freshness, release-grade image provenance, rollback,
+      restore, SLO evidence, and release approval.
+  - Evidence file:
+    - `history/tasks/luc-3471-coolify-resource-inventory-reconciliation-disposition-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3466 [Soar][DRE][LUC-3465] Repair residual prod-like worker wrapper relation rows`
+  - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED / NO_MUTATION`
+  - Scope: DRE local traceability closure for four exact prod-like/worker
+    wrapper helper anchors; no real Next production service start, worker
+    start, Docker mutation, deploy, restart, rollback, env edit, protected
+    smoke, production account use, secret readback, database mutation,
+    exchange action, order, position, payment/subscription, or live-trading
+    action.
+  - Evidence:
+    - Paperclip heartbeat context for [LUC-3466](/LUC/issues/LUC-3466)
+      confirmed child of [LUC-3465](/LUC/issues/LUC-3465), no comments, no
+      blockers, and exact anchors:
+      `validateRequiredEnvFiles`, `writeMissingEnvGuidance`, `startWorkers`,
+      and `writeMissingWorkerGuidance`.
+    - Focused syntax checks passed for both wrapper scripts and both focused
+      test files.
+    - `node --test scripts/startLocalProdLike.test.mjs scripts/startWorkersProd.test.mjs`
+      PASS (`15/15`).
+    - Direct [LUC-3466](/LUC/issues/LUC-3466) relation readback PASS (`4/4`).
+    - No leftover `chrome-headless-shell` validation process found.
+  - Residual:
+    - `docs/status/architecture-awareness-report.md` remains a stale generated
+      snapshot from before the direct rows were present; the next full
+      awareness refresh should consume the rows.
+  - Evidence file:
+    - `history/tasks/luc-3466-prod-like-worker-wrapper-relation-rows-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3465 [Soar] Gap register and repair lane refresh`
+  - Status: `DONE / DELEGATED / NO_MUTATION`
+  - Scope: TSA architecture routing only; no code implementation, deploy,
+    push, restart, rollback, env edit, protected smoke, production account use,
+    secret readback, database mutation, exchange action, order, position,
+    payment/subscription, or live-trading action.
+  - Evidence:
+    - Paperclip heartbeat context for [LUC-3465](/LUC/issues/LUC-3465)
+      showed issue `in_progress`, parent [LUC-12](/LUC/issues/LUC-12), no
+      comments, no first-class blockers, and active local workspace.
+    - Current architecture-awareness report generated
+      `2026-06-11T04:13:18.595Z`: `56` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, `0`
+      disconnected entities.
+    - [LUC-3010](/LUC/issues/LUC-3010) readback confirms the existing
+      utility-helper lane remains blocked by active QVE recovery, so no
+      duplicate child was created for `triageJourneyEvidence` or
+      `verifyLocalBackupRestore`.
+  - Delegation:
+    - Created [LUC-3466](/LUC/issues/LUC-3466) for DRE to repair/classify
+      residual prod-like/worker wrapper anchors:
+      `validateRequiredEnvFiles`, `writeMissingEnvGuidance`, `startWorkers`,
+      and `writeMissingWorkerGuidance`.
+  - Evidence file:
+    - `history/tasks/luc-3465-gap-register-and-repair-lane-refresh-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3457 [Soar] Security and account-access gate sweep`
+  - Status: `BLOCKED / PARTIALLY_VERIFIED / NO_MUTATION`
+  - Scope: Security & Privacy Auditor no-secret gate refresh only; no deploy,
+    push, restart, rollback, env edit, protected smoke, production account use,
+    secret readback, database mutation, exchange action, order, position,
+    payment/subscription, API-key mutation, or live-trading action.
+  - Evidence:
+    - Previous run failure classified as adapter authentication failure before
+      product evidence: `401 Unauthorized` from OpenAI Responses API.
+    - Public build-info readback PASS:
+      `gitSha=56d8d440bfe0fd9ee692e9f669e35414d85d2493`, `gitRef=main`,
+      `buildId=Xnn0H5fuVVTeahYMA8tvy`, checked at
+      `2026-06-11T12:50:02.2890814Z`.
+    - `pnpm run -s ops:protected-inputs:check ... --json` PASS as an
+      executed no-secret check, with readiness `PARTIAL` and release
+      `NO-GO`; matching protected input names present: `6`.
+    - API redaction/crypto/critical-secret readiness tests PASS (`18/18`).
+    - Subscription and exchange security boundary tests PASS (`17/17`).
+  - Residual:
+    - Missing protected families remain `LIVEIMPORT_READBACK_*`,
+      `ROLLBACK_GUARD_*`, `SOAR_PROD_*`, `PROD_DB_CHECK_*`,
+      `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE* / GATE_*`.
+    - Next owner/action: board-capable Security/Ops secret owner must bind the
+      missing families through the approved encrypted runtime path before any
+      protected release proof or live-risk check can proceed.
+  - Evidence file:
+    - `history/tasks/luc-3457-security-account-access-gate-sweep-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3461 [Soar] Coolify production deploy health sweep`
+  - Status: `DONE / PARTIALLY_VERIFIED / PUBLIC_SMOKE_PASS / NO_MUTATION`
+  - Scope: DRE read-only production health sweep only; no deploy, restart,
+    rebuild, rollback, env edit, database action, Redis action, team setting
+    change, account action, protected smoke, raw log capture, screenshot, or
+    live-trading mutation.
+  - Evidence:
+    - `pnpm run ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`
+      PASS: API `/health` `200`, API `/ready` `200`, Web `/` `200`, Web
+      `/api/build-info` `200`.
+    - Build-info readback: `56d8d440bfe0fd9ee692e9f669e35414d85d2493` on
+      `main`, `metadataSource=github-branch`, `buildId=Xnn0H5fuVVTeahYMA8tvy`.
+    - Read-only Coolify projection: selector `LuckySparrow`, project `Soar`,
+      one production environment, `17` visible global resources, `0` active
+      deployment rows, and eight canonical production resources.
+  - Residual:
+    - Full release readiness remains unproven: protected `/workers/ready`,
+      worker freshness, release-grade source provenance, rollback proof,
+      restore drill, SLO evidence, and release approval remain separate gates.
+    - Coolify application rows remain `running:unknown`; `workers-execution`
+      retains `restartCount=2` / `lastRestartType=crash`.
+  - Evidence file:
+    - `history/evidence/luc-3461-coolify-production-health-sweep-2026-06-11.md`
+    - `history/tasks/luc-3461-coolify-production-deploy-health-sweep-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3071 [Soar] Daily project status refresh`
+  - Status: `DONE / VERIFIED_LOCAL / NO_MUTATION`
+  - Scope: CINO/PM daily status refresh only; no code implementation, deploy,
+    push, restart, rollback, env edit, protected smoke, production account use,
+    secret readback, database mutation, exchange action, order, position,
+    payment/subscription, or live-trading action.
+  - Evidence:
+    - Previous run failure was adapter usage limit on 2026-06-08 before product
+      evidence.
+    - Current heartbeat ran successfully.
+    - `pnpm run ops:project:known-state` PASS: graph `653` nodes / `842`
+      relations / `27` chains; strict drift `846/846`; docs parity PASS;
+      repository guardrails PASS; project index `PASS:21`; V1 static scan `0`
+      findings; master ledger `GO`; completion scorecard `GO` with
+      implementation/evidence/release readiness `100%`.
+    - Function journey index reports `0` critical and `28` high gaps; user
+      action index reports `0` critical and `39` high gaps.
+  - Residual:
+    - Protected production account checks, deploy/restart/rollback proof,
+      production database proof, exchange/account/payment/live-trading checks,
+      and operator-gated release signoff remain separate protected gates.
+  - Evidence file:
+    - `history/tasks/luc-3071-daily-project-status-refresh-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3445 [Soar][PM] No-stall queue expeditor`
+  - Status: `BLOCKED / FIRST_CLASS_BLOCKER_SET`
+  - Scope: PM no-stall disposition only; no code implementation, deploy,
+    push, restart, rollback, env edit, protected smoke, production account use,
+    secret readback, database mutation, exchange action, order, position, or
+    live-trading action.
+  - Evidence:
+    - Paperclip heartbeat context for [LUC-3445](/LUC/issues/LUC-3445) showed
+      active issue context with no comments and no first-class blockers before
+      disposition.
+    - `pnpm softwarehouse:control-tick` is unavailable in this checkout:
+      `Command "softwarehouse:control-tick" not found`.
+    - Paperclip readback for [LUC-3010](/LUC/issues/LUC-3010) shows the
+      existing utility-helper lane is `blocked` with active
+      `stranded_assigned_issue` recovery owned by [09 QVE](/LUC/agents/10b6e79a-3439-4574-b45c-8e7a4deaa1db).
+  - Disposition:
+    - No duplicate child was created.
+    - [LUC-3445](/LUC/issues/LUC-3445) is blocked by [LUC-3010](/LUC/issues/LUC-3010).
+    - Next owner/action: [09 QVE](/LUC/agents/10b6e79a-3439-4574-b45c-8e7a4deaa1db)
+      must restore the live execution path or manually resolve [LUC-3010](/LUC/issues/LUC-3010).
+  - Evidence file:
+    - `history/tasks/luc-3445-no-stall-queue-expeditor-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3455 [Soar] Regression evidence sweep`
+  - Status: `DONE / VERIFIED_LOCAL / NO_MUTATION`
+  - Scope: QA safe local regression evidence sweep only; no code
+    implementation, deploy, push, restart, rollback, env edit, protected
+    smoke, production account use, secret readback, database mutation,
+    exchange action, order, position, payment/subscription, or live-trading
+    action.
+  - Evidence:
+    - Previous run failure classified as adapter authentication failure before
+      product evidence: `401 Unauthorized` from OpenAI Responses API.
+    - `pnpm run ops:project:known-state` PASS: graph `653` nodes / `842`
+      relations / `27` chains; strict drift `846/846`; docs parity PASS;
+      repository guardrails PASS; project index `PASS:21`; tests indexed
+      `445`; V1 static scan `0` findings; master state ledger `GO`; V1
+      completion scorecard `GO` with implementation/evidence/release
+      readiness `100%`.
+    - Safe local release/smoke helper pack PASS (`51/51`).
+    - Safe local browser/protected-proof helper pack PASS (`14/14`).
+    - No leftover `chrome-headless-shell` process found.
+  - Residual:
+    - Protected production account checks, deploy/restart/rollback proof,
+      production database proof, exchange/account/payment/live-trading checks,
+      and operator-gated release signoff remain separate protected gates.
+  - Evidence file:
+    - `history/tasks/luc-3455-regression-evidence-sweep-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3313 [Soar] Autonomous idle and map drift sweep`
+  - Status: `DONE / SUPERSEDED_BY_FRESHER_SWEEP`
+  - Scope: DPM routine recovery only; no code implementation, deploy, push,
+    restart, rollback, env edit, protected smoke, production account use,
+    secret readback, database mutation, exchange action, order, position, or
+    live-trading action.
+  - Evidence:
+    - Paperclip heartbeat context showed the issue still `in_progress` after
+      the 2026-06-09 adapter usage-limit failure.
+    - Newer equivalent [LUC-3425](/LUC/issues/LUC-3425) sweep already
+      refreshed known-state evidence on 2026-06-11: project index `PASS:21`,
+      V1 static scan `0` findings, architecture-awareness report
+      `2026-06-11T04:13:18.595Z` with `56` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+  - Disposition:
+    - No duplicate map refresh or child issue was created from
+      [LUC-3313](/LUC/issues/LUC-3313).
+    - Soar remains in protected-gate/review hold, not monitoring-only idle.
+  - Evidence file:
+    - `history/tasks/luc-3313-autonomous-idle-and-map-drift-sweep-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3437 [Ops][Soar] Reconcile Coolify resource inventory`
+  - Status: `DONE / VERIFIED_READ_ONLY / NO_MUTATION`
+  - Scope: DRE Coolify production inventory reconciliation only; no code
+    implementation, deploy, restart, rebuild, rollback, env edit, database
+    action, Redis action, secret mutation, protected smoke, screenshot, raw
+    log capture, account/payment action, or live-trading mutation.
+  - Evidence:
+    - Coolify binding names present without values printed:
+      `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`,
+      `COOLIFY_SOAR_PROJECT_ID`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+      `COOLIFY_SOAR_TEAM_ID`, `COOLIFY_TEAM_ID`,
+      `COOLIFY_SOAR_API_APP_ID`, `COOLIFY_SOAR_WEB_APP_ID`,
+      `COOLIFY_SOAR_POSTGRES_RESOURCE_ID`, and
+      `COOLIFY_SOAR_REDIS_RESOURCE_ID`.
+    - Read-only Coolify API checks passed for version, team selector, teams,
+      projects, Soar project, project environments, production environment,
+      global resources, and deployments.
+    - Production inventory resolved 8 canonical resources: `soar-api`,
+      `soar-web`, `workers-backtest`, `workers-execution`,
+      `workers-market-data`, `workers-market-stream`, `postgresql`, and
+      `redis`.
+    - Global active deployment rows: `0`; global resource rows: `17`.
+  - Residual:
+    - API/Web/worker application inventory statuses remain `running:unknown`.
+    - `workers-execution` retains restart metadata (`restartCount=2`).
+    - App readiness, protected smoke, rollback, restore, SLO, and release
+      approval remain separate gates.
+  - Evidence file:
+    - `history/evidence/luc-3437-coolify-resource-inventory-reconciliation-2026-06-11.md`
+
+- 2026-06-11 `LUC-3434 [Soar][QA Recovery][LUC-3007] Restore static scan QA execution path`
+  - Status: `DONE / VERIFIED_RECOVERY`
+  - Scope: QA/Test recovery verification only; no Soar product code,
+    protected proof, production proof, deploy, push, restart, rollback,
+    secret, account, database, exchange, order, position,
+    payment/subscription, or live-trading mutation.
+  - Evidence:
+    - Paperclip heartbeat context for [LUC-3434](/LUC/issues/LUC-3434)
+      showed an active execution workspace and no first-class blockers.
+    - Parent [LUC-3007](/LUC/issues/LUC-3007) readback showed status
+      `blocked`, no active recovery action, and only [LUC-3434](/LUC/issues/LUC-3434)
+      as blocker before closure.
+    - Parent comments confirmed the prior failure was `adapter_failed` due
+      usage limit with no live execution path.
+    - `node --check scripts/runV1StaticIssueScan.mjs` PASS.
+    - `node --check scripts/runV1StaticIssueScan.test.mjs` PASS.
+    - `node --test scripts/runV1StaticIssueScan.test.mjs` PASS (`8/8`).
+    - `pnpm run ops:project:index` PASS: V1 statuses `{"PASS":21}`, tests
+      indexed `445`.
+    - `pnpm run ops:project:scan` PASS: V1 static scan findings `0`, by
+      severity `{}`.
+  - Disposition:
+    - Prior adapter usage-limit blocker is cleared/superseded by current
+      successful execution.
+    - Chosen parent status for [LUC-3007](/LUC/issues/LUC-3007): `done`, since
+      the static-scan helper objective was completed by [LUC-3381](/LUC/issues/LUC-3381)
+      and this heartbeat revalidated the real scan path.
+  - Evidence file:
+    - `history/tasks/luc-3434-static-scan-qa-execution-path-recovery-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3425 [Soar] Autonomous idle and map drift sweep`
+  - Status: `DONE / ACTIVE_PROTECTED_GATE_AND_REVIEW_HOLD`
+  - Scope: Documentation Steward docs/memory sweep only; no code
+    implementation, protected proof, deploy, push, restart, rollback, secret,
+    database mutation, exchange, order, position, account/payment, or
+    live-trading action.
+  - Evidence:
+    - `pnpm softwarehouse:control-tick` unavailable:
+      `Command "softwarehouse:control-tick" not found`.
+    - `pnpm run ops:project:known-state` PASS: graph `653` nodes / `842`
+      relations / `27` chains, strict drift `846/846`, docs parity PASS,
+      guardrails PASS, project index `PASS:21`, V1 static scan `0` findings,
+      master ledger `GO`, completion scorecard `GO`.
+    - Current architecture-awareness report generated
+      `2026-06-11T04:13:18.595Z`: `56` actionable missing-test links, `0`
+      actionable missing-doc links, `0` ownerless entities, `0` disconnected
+      entities.
+    - Paperclip Soar queue readback: `110` non-terminal issues: `106`
+      blocked, `3` in_review, `1` in_progress for this sweep.
+  - Disposition:
+    - Soar is not monitoring-only idle. It remains in protected-gate/review
+      hold with no new runnable worker lane created by this docs sweep.
+    - Preserve review/operator paths:
+      [LUC-2755](/LUC/issues/LUC-2755),
+      [LUC-2880](/LUC/issues/LUC-2880), and
+      [LUC-3409](/LUC/issues/LUC-3409).
+  - Evidence file:
+    - `history/tasks/luc-3425-autonomous-idle-and-map-drift-sweep-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3419 [Soar][PM] No-stall queue expeditor`
+  - Status: `BLOCKED / ROUTED_TO_EXISTING_CHILD`
+  - Scope: PM routing and architecture-awareness refresh only; no code
+    implementation, protected proof, production backup restore, deploy, push,
+    restart, rollback, secret, database mutation, exchange, order, position,
+    account/payment, or live-trading action.
+  - Evidence:
+    - Paperclip heartbeat-context readback for [LUC-3419](/LUC/issues/LUC-3419)
+      PASS: issue `in_progress`, priority `critical`, parent
+      [LUC-12](/LUC/issues/LUC-12), no comments, no first-class blockers.
+    - Canonical Softwarehouse architecture-awareness refresh PASS:
+      `9418` entities / `29871` relations / `9784` files.
+    - Fresh report generated `2026-06-11T04:01:39.651Z` with `56` actionable
+      missing-test links, `0` actionable missing-doc links, `0` ownerless
+      entities, and `0` disconnected entities.
+    - Duplicate/protected review kept protected browser/process families and
+      already completed helper lanes out of duplicate routing.
+  - Disposition:
+    - Existing child [LUC-3010](/LUC/issues/LUC-3010) owns the next local-safe
+      utility-helper family (`triageJourneyEvidence`, `verifyLocalBackupRestore`,
+      build-info metadata utilities), so no duplicate child was created.
+    - [LUC-3010](/LUC/issues/LUC-3010) remains blocked by stranded
+      assigned-issue recovery after the prior QA adapter usage-limit failure;
+      direct PM attempt to move it back to `todo` was rejected by Paperclip
+      authorization boundary.
+    - Next owner/action: [09 QVE](/LUC/agents/10b6e79a-3439-4574-b45c-8e7a4deaa1db)
+      must restore a live execution path or manually resolve
+      [LUC-3010](/LUC/issues/LUC-3010).
+  - Evidence file:
+    - `history/tasks/luc-3419-no-stall-queue-expeditor-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3009 [Soar][Test Automation][LUC-3005] Resolve RC gate summary and checklist sync missing-test rows`
+  - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED`
+  - Scope: QA local helper proof and scanner-readable relation repair for
+    `scripts/summarizeRcGates.mjs` and
+    `scripts/syncRcChecklistFromGateStatus.mjs`; no real RC/prod gate,
+    protected smoke, deploy, push, restart, rollback, secret, account,
+    database, exchange, payment/subscription, order, position, or live-trading
+    mutation.
+  - Implementation:
+    - Both scripts are import-safe behind guarded direct CLI entrypoints while
+      preserving direct CLI behavior.
+    - `scripts/rcGateSummaryChecklist.test.mjs` covers timestamp parsing, gate
+      label parsing, docs-root and CLI arg resolution, stale evidence summary
+      rendering, checkbox updates, signoff parsing, expected SHA/date refresh,
+      and outstanding external gate snapshot rendering with temporary fixture
+      files only.
+    - `docs/architecture/relations/priority-test-links.csv` includes `17`
+      direct [LUC-3009](/LUC/issues/LUC-3009) rows.
+  - Verification:
+    - `node --check scripts/summarizeRcGates.mjs` PASS.
+    - `node --check scripts/syncRcChecklistFromGateStatus.mjs` PASS.
+    - `node --check scripts/rcGateSummaryChecklist.test.mjs` PASS.
+    - `node --test scripts/rcGateSummaryChecklist.test.mjs` PASS (`7/7`).
+    - `node --test scripts/rcGateSummaryChecklist.test.mjs scripts/releaseOpsScriptContracts.test.mjs` PASS (`9/9`).
+    - Direct [LUC-3009](/LUC/issues/LUC-3009) relation readback PASS (`17`
+      rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - `pnpm run quality:guardrails` PASS.
+    - No leftover `chrome-headless-shell` process found.
+  - Residual:
+    - Full architecture-awareness top-list disappearance was not re-generated
+      in this checkout; the canonical Softwarehouse awareness refresh should
+      consume the direct relation rows on the next refresh.
+  - Evidence:
+    `history/tasks/luc-3009-rc-gate-summary-checklist-missing-test-rows-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3410 [Soar][QA] Resolve Web Next production command wrapper function missing-test row`
+  - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED`
+  - Scope: QA local helper proof and scanner-readable relation repair for
+    `scripts/runWebNextProductionCommand.mjs#run`; no real Next production
+    build/start service, deploy, push, restart, protected proof, secret,
+    database, exchange, account/payment, order, position, or live-trading
+    mutation.
+  - Implementation:
+    - `scripts/runWebNextProductionCommand.mjs` is import-safe behind a guarded
+      direct CLI entrypoint while preserving package-script behavior.
+    - `scripts/runWebNextProductionCommand.test.mjs` covers argument parsing,
+      injected spawn behavior, metadata-before-build ordering, production
+      `NODE_ENV`, start host/port defaults, explicit host/port preservation,
+      and fail-closed command errors.
+    - `scripts/releaseOpsScriptContracts.test.mjs` now checks the import-safe
+      `env.PORT || '3002'` source contract.
+    - `docs/architecture/relations/priority-test-links.csv` includes `3`
+      direct [LUC-3410](/LUC/issues/LUC-3410) rows for `main`, `parseArgs`,
+      and `run`.
+  - Verification:
+    - `node --check scripts/runWebNextProductionCommand.mjs` PASS.
+    - `node --check scripts/runWebNextProductionCommand.test.mjs` PASS.
+    - `node --test scripts/runWebNextProductionCommand.test.mjs` PASS (`7/7`).
+    - `node --test scripts/releaseOpsScriptContracts.test.mjs scripts/runWebNextProductionCommand.test.mjs` PASS (`9/9`).
+    - Direct [LUC-3410](/LUC/issues/LUC-3410) relation readback PASS (`3`
+      rows).
+    - No leftover `chrome-headless-shell` process found.
+  - Residual:
+    - Architecture-awareness top-list disappearance was not re-observed in this
+      heartbeat; the current checkout has generated awareness files from
+      [LUC-3404](/LUC/issues/LUC-3404), but this local QA lane only updated
+      direct scanner-readable relation rows.
+  - Evidence:
+    `history/tasks/luc-3410-web-next-production-command-wrapper-missing-test-row-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3405 [Soar][QA] Classify public read-only browser proof process anchors`
+  - Status: `DONE / VERIFIED_CLASSIFICATION / NO_CODE_CHANGE`
+  - Scope: QA classification only for
+    `scripts/runPublicReadOnlyBrowserProof.mjs#createPage`,
+    `#killProcessTree`, and `#launchBrowser`; no browser proof, protected
+    proof, secret, deploy, push, restart, rollback, database, exchange, order,
+    position, account/payment, or live-trading action.
+  - Evidence:
+    - Code inspection classifies `createPage` as CDP target/page creation,
+      `killProcessTree` as Windows process-tree cleanup, and `launchBrowser`
+      as Chrome/Edge headless lifecycle orchestration.
+    - Existing [LUC-2958](/LUC/issues/LUC-2958) relation readback remains
+      present for deterministic helpers (`16` rows).
+    - Focused checks passed: syntax checks and
+      `node --test scripts/runPublicReadOnlyBrowserProof.test.mjs` (`5/5`).
+    - No leftover `chrome-headless-shell` process found.
+  - Residual:
+    - Architecture-awareness may still display these anchors until a future
+      classifier refresh marks browser/process orchestration as non-actionable
+      unit-test noise.
+  - Evidence file:
+    - `history/tasks/luc-3405-public-read-only-browser-proof-process-anchor-classification-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3404 [Soar][Docs Memory] Refresh architecture-awareness after closed relation lanes`
+  - Status: `DONE / VERIFIED_GENERATED / DELEGATED_NEXT_FAMILY`
+  - Scope: Docs Memory architecture-awareness generated exports and routing
+    only; no runtime/product code implementation, protected proof, production
+    browser proof, deploy, push, restart, rollback, secret, env, database,
+    exchange, order, position, account/payment, subscription, or live-trading
+    mutation.
+  - Evidence:
+    - Canonical Softwarehouse refresh command PASS from
+      `C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse`:
+      `node scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`.
+    - Fresh report generated `2026-06-11T03:02:36.574Z`: `9404` entities,
+      `29798` relations, `9777` files, `72` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, `0`
+      disconnected entities.
+    - `docs/status/architecture-awareness-report.md` has no
+      `runV1StaticIssueScan`, `runV1StageRehearsal`, [LUC-3381](/LUC/issues/LUC-3381),
+      or [LUC-3389](/LUC/issues/LUC-3389) matches.
+    - `docs/architecture/relations/priority-test-links.csv` readback found
+      `24` direct relation rows for the closed lanes.
+  - Delegation:
+    - Created [LUC-3410](/LUC/issues/LUC-3410) for `09 QVE` to resolve or
+      classify the next non-duplicate local-safe family:
+      `scripts/runWebNextProductionCommand.mjs#run`.
+  - Evidence file:
+    - `history/tasks/luc-3404-architecture-awareness-refresh-after-closed-relation-lanes-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3396 [Ops][Coolify] Inventory Soar production resources with read-only Coolify access`
+  - Status: `DONE / VERIFIED_READ_ONLY / NO_MUTATION`
+  - Scope: DRE Coolify production inventory only; no code implementation,
+    deploy, restart, rebuild, rollback, env edit, database action, Redis
+    action, secret mutation, protected smoke, screenshot, account/payment
+    action, or live-trading mutation.
+  - Evidence:
+    - Coolify binding names present without values printed:
+      `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`,
+      `COOLIFY_SOAR_PROJECT_ID`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+      `COOLIFY_SOAR_TEAM_ID`, `COOLIFY_TEAM_ID`,
+      `COOLIFY_SOAR_API_APP_ID`, `COOLIFY_SOAR_WEB_APP_ID`,
+      `COOLIFY_SOAR_POSTGRES_RESOURCE_ID`, and
+      `COOLIFY_SOAR_REDIS_RESOURCE_ID`.
+    - Read-only Coolify API checks passed for version, team selector, teams,
+      projects, Soar project, project environments, production environment,
+      global resources, and deployments.
+    - Production inventory resolved 8 canonical resources: `soar-api`,
+      `soar-web`, `workers-backtest`, `workers-execution`,
+      `workers-market-data`, `workers-market-stream`, `postgresql`, and
+      `redis`.
+    - Global active deployment rows: `0`; app log endpoints and
+      deployment-history endpoints reachable for all six applications; log
+      bodies were not stored.
+  - Residual:
+    - API/Web/worker application inventory statuses remain `running:unknown`.
+    - `workers-execution` retains crash restart metadata.
+    - App readiness, protected smoke, rollback, restore, SLO, and release
+      approval remain separate gates.
+  - Evidence file:
+    - `history/evidence/luc-3396-coolify-production-resource-inventory-2026-06-11.md`
+
+- 2026-06-11 `LUC-3394 [Soar] Gap register and repair lane refresh`
+  - Status: `DONE / ROUTED / NO_DUPLICATE_CHILD`
+  - Scope: TSA gap-register routing and local graph validation only; no code
+    implementation, real stage rehearsal, protected release gate, protected
+    smoke, production browser proof, secret, deploy, push, restart, rollback,
+    database, exchange, order, position, account/payment, or live-trading
+    mutation.
+  - Evidence:
+    - Paperclip heartbeat-context readback for [LUC-3394](/LUC/issues/LUC-3394)
+      PASS: issue `in_progress`, priority `critical`, parent
+      [LUC-12](/LUC/issues/LUC-12), no comments, no first-class blockers.
+    - Current architecture-awareness report generated
+      `2026-06-11T02:22:02.917Z` still reports `96` actionable missing-test
+      links, `0` actionable missing-doc links, `0` ownerless entities, and
+      `0` disconnected entities.
+    - Direct relation readback confirms completed [LUC-3381](/LUC/issues/LUC-3381)
+      rows for `scripts/runV1StaticIssueScan.mjs#*` and completed
+      [LUC-3389](/LUC/issues/LUC-3389) rows for
+      `scripts/runV1StageRehearsal.mjs#isEntrypoint` / `#main`.
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - This checkout has no architecture-awareness package script and no
+      `scripts/build-architecture-awareness-index.mjs`.
+  - Delegation:
+    - No duplicate child created. Next owner/action: Architecture/Docs Memory
+      or the PM control lane should run the canonical architecture-awareness
+      refresh in an environment that provides the generator, then route the
+      next non-duplicate top actionable family.
+  - Evidence file:
+    - `history/tasks/luc-3394-gap-register-and-repair-lane-refresh-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3366 [Soar] Gap register and repair lane refresh`
+  - Status: `DONE / DELEGATED`
+  - Scope: TSA gap-register routing only; no code implementation, real stage
+    rehearsal, protected release gate, protected smoke, secret, deploy, push,
+    restart, rollback, database, exchange, order, position, account/payment, or
+    live-trading mutation.
+  - Evidence:
+    - Paperclip heartbeat-context readback for [LUC-3366](/LUC/issues/LUC-3366)
+      PASS: issue `in_progress`, priority `critical`, parent
+      [LUC-12](/LUC/issues/LUC-12), no comments, no first-class blockers.
+    - Current architecture-awareness report generated
+      `2026-06-11T02:22:02.917Z` reports `96` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - Duplicate/protected review kept protected/browser orchestration families
+      and stale `runV1StaticIssueScan` rows out of duplicate routing while
+      [LUC-3381](/LUC/issues/LUC-3381) owns static-scan helper proof.
+    - `scripts/runV1StageRehearsal.mjs` and
+      `scripts/runV1StageRehearsal.test.mjs` exist; `node --check
+      scripts/runV1StageRehearsal.mjs` PASS.
+    - Paperclip duplicate issue search for `runV1StageRehearsal` returned `0`.
+  - Delegation:
+    - Created [LUC-3389](/LUC/issues/LUC-3389) for QA/Verification to resolve
+      or classify `scripts/runV1StageRehearsal.mjs#isEntrypoint` and `#main`.
+      Follow-up readback showed [LUC-3389](/LUC/issues/LUC-3389) blocked by
+      the live-run janitor because `09 QVE` already has a kept active run;
+      unblock owner/action is `09 QVE` finishes or hands off that active lane.
+  - Evidence file:
+    - `history/tasks/luc-3366-gap-register-and-repair-lane-refresh-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3381 [Soar][QA] Resolve V1 static issue scan helper missing-test rows`
+  - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED`
+  - Scope: local helper proof and architecture traceability for
+    `scripts/runV1StaticIssueScan.mjs`; no real V1 static scan evidence
+    refresh, production proof, deploy, push, restart, protected smoke, secret,
+    account, database, exchange, order, position, payment/subscription, or
+    live-trading mutation.
+  - Implementation:
+    - `scripts/runV1StaticIssueScan.mjs` is import-safe behind a guarded direct
+      CLI entrypoint while preserving direct CLI defaults.
+    - `scripts/runV1StaticIssueScan.test.mjs` covers parser defaults, file
+      helpers, source classification, project-index collectors, source marker
+      scanning, aggregate scan building, Markdown/JSON output, JSON retry, and
+      summary grouping using a temporary repository fixture.
+    - `docs/architecture/relations/priority-test-links.csv` includes `22`
+      direct [LUC-3381](/LUC/issues/LUC-3381) rows.
+  - Verification:
+    - `node --check scripts/runV1StaticIssueScan.mjs` PASS.
+    - `node --test scripts/runV1StaticIssueScan.test.mjs` PASS (`8/8`).
+    - Direct relation readback PASS (`22` rows).
+    - `pnpm run quality:guardrails` PASS.
+    - No leftover `chrome-headless-shell` process found.
+  - Residual:
+    - `pnpm run architecture:graph:generate` failed twice with Windows
+      filesystem `UNKNOWN` while opening `docs/graphs/architecture-graph.json`;
+      guardrails still reported architecture graph drift OK.
+  - Evidence:
+    `history/tasks/luc-3381-static-issue-scan-helper-missing-test-rows-2026-06-11-task.md`
+
+- 2026-06-11 `LUC-3375 [Soar] Security and account-access gate sweep`
+  - Status: `BLOCKED / NO-GO`
+  - Scope: Security gate refresh only; no deploy, push, restart, rollback,
+    account, real secret, API-key, subscription/payment, exchange, database, or
+    live-trading mutation.
+  - Evidence:
+    - Public build-info PASS:
+      `gitSha=56d8d440bfe0fd9ee692e9f669e35414d85d2493`, `gitRef=main`,
+      `checkedAt=2026-06-11T02:20:26.743Z`.
+    - Protected input readiness PASS as no-secret checker execution, but gate
+      result remains `PARTIAL/NO-GO`: `6` matching protected input names,
+      limited to `PROD_UI_AUDIT_*` / `PROD_UI_*`.
+    - Missing families: `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`,
+      `SOAR_PROD_*`, `PROD_DB_CHECK_*`, `PRODUCTION_DB_CHECK_*`, `RC_*`,
+      and `GATE* / GATE_*`.
+    - Focused security tests passed: redaction/crypto/critical-secret
+      readiness (`18/18`) and subscription/exchange boundaries (`17/17`).
+  - Unblock owner/action: board-capable Security/Ops secret owner must bind the
+    missing protected input families through approved encrypted runtime inputs,
+    then wake the protected release proof lane.
+  - Evidence:
+    `history/tasks/luc-3375-security-account-access-gate-sweep-2026-06-11-task.md`
+
+- 2026-06-08 `LUC-3011 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED`
+  - Scope: PM queue routing only; no code, real rollback proof, protected
+    proof, secret, deploy, push, restart, rollback execution, database
+    mutation, exchange credential, order, position, account/payment, or
+    live-trading action.
+  - Evidence:
+    - Paperclip heartbeat-context readback for [LUC-3011](/LUC/issues/LUC-3011)
+      PASS: issue `in_progress`, priority `critical`, parent
+      [LUC-12](/LUC/issues/LUC-12), no comments, no first-class blockers.
+    - Current architecture-awareness report generated
+      `2026-06-08T00:37:30.029Z` reports `115` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - Completed [LUC-2997](/LUC/issues/LUC-2997) and
+      [LUC-3001](/LUC/issues/LUC-3001) already own stale visible RC strict and
+      restore-drill helper rows.
+    - `scripts/runRollbackProofEvidence.mjs` still appears for
+      `evidenceStamp`, `main`, `nowStamp`, `parseArgs`, `printUsage`,
+      `renderMarkdown`, and `run`; only wrapper-level [LUC-2252](/LUC/issues/LUC-2252)
+      relation evidence exists, and `scripts/runRollbackProofEvidence.test.mjs`
+      is absent.
+    - `node --check scripts/runRollbackProofEvidence.mjs` PASS.
+    - `pnpm softwarehouse:control-tick` unavailable in this checkout:
+      `Command "softwarehouse:control-tick" not found`.
+  - Delegation:
+    - Created [LUC-3014](/LUC/issues/LUC-3014) for Test Automation Engineer to
+      resolve or classify the rollback proof evidence helper missing-test rows.
+  - Evidence file:
+    - `history/tasks/luc-3011-no-stall-queue-expeditor-2026-06-08-task.md`
+
+- 2026-06-08 `LUC-3006 [Soar][Test Automation][LUC-3005] Resolve rollback proof evidence helper missing-test rows`
+  - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED`
+  - Scope: local helper proof and architecture traceability for
+    `scripts/runRollbackProofEvidence.mjs`; no real rollback, deploy,
+    restart, protected smoke, secret, production account, database mutation,
+    exchange, order, position, payment/subscription, or live-trading mutation.
+  - Implementation:
+    - `scripts/runRollbackProofEvidence.mjs` is import-safe behind a guarded
+      direct CLI entrypoint while preserving direct CLI behavior.
+    - `scripts/runRollbackProofEvidence.test.mjs` covers injected CLI
+      parsing, timestamp stamps, injected command execution, safe help
+      behavior, markdown report rendering, secret-bearing argv rejection, PASS
+      artifact rendering, and fail-closed rollback evidence without running a
+      real rollback guard.
+    - `docs/architecture/relations/priority-test-links.csv` includes `7`
+      direct [LUC-3006](/LUC/issues/LUC-3006) rows.
+  - Verification:
+    - `node --check scripts/runRollbackProofEvidence.mjs` PASS.
+    - `node --check scripts/runRollbackProofEvidence.test.mjs` PASS.
+    - `node scripts/runRollbackProofEvidence.mjs --help` PASS.
+    - `node --test scripts/runRollbackProofEvidence.test.mjs` PASS (`8/8`).
+    - Direct relation readback PASS (`7` rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - `pnpm run quality:guardrails` PASS.
+    - Architecture-awareness refresh BLOCKED in this checkout:
+      `scripts/build-architecture-awareness-index.mjs` is absent.
+  - Evidence:
+    - `history/tasks/luc-3006-rollback-proof-evidence-helper-missing-test-rows-2026-06-08-task.md`
+
+- 2026-06-08 `LUC-2998 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED`
+  - Scope: PM queue routing only; no code, real restore drill, protected
+    proof, secret, deploy, push, restart, rollback, database mutation,
+    exchange credential, order, position, account, payment/subscription, or
+    live-trading action.
+  - Evidence:
+    - Paperclip heartbeat-context readback for [LUC-2998](/LUC/issues/LUC-2998)
+      PASS: issue `in_progress`, priority `critical`, parent
+      [LUC-12](/LUC/issues/LUC-12), no comments, no first-class blockers.
+    - Current architecture-awareness report generated
+      `2026-06-08T00:37:30.029Z` reports `115` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - Duplicate/protected review kept local protected-route, production auth,
+      production UX/mobile, and public browser/process rows under prior
+      proof/classification lanes.
+    - Stale `scripts/runRcRefreshSummaryStrict.mjs` rows were not reopened
+      because [LUC-2997](/LUC/issues/LUC-2997) completed focused local proof
+      and direct relation rows; the local awareness refresh could not run in
+      that checkout because `scripts/build-architecture-awareness-index.mjs`
+      is absent.
+    - `scripts/runRestoreDrillEvidence.mjs` still appears for
+      `evidenceStamp`, `main`, `nowStamp`, `parseArgs`, `printUsage`,
+      `readLatestByPrefix`, and `run`; aggregate wrapper evidence exists from
+      [LUC-2252](/LUC/issues/LUC-2252), but
+      `scripts/runRestoreDrillEvidence.test.mjs` is absent.
+    - `node --check scripts/runRestoreDrillEvidence.mjs` PASS.
+    - `pnpm softwarehouse:control-tick` unavailable in this checkout:
+      `Command "softwarehouse:control-tick" not found`.
+  - Delegation:
+    - Created [LUC-3001](/LUC/issues/LUC-3001) for Test Automation to resolve
+      or classify the restore drill evidence helper missing-test rows.
+  - Evidence file:
+    - `history/tasks/luc-2998-no-stall-queue-expeditor-2026-06-08-task.md`
+
+- 2026-06-08 `LUC-3001 [Soar][Test Automation][LUC-2998] Resolve restore drill evidence helper missing-test rows`
+  - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED`
+  - Scope: local helper proof and architecture traceability for
+    `scripts/runRestoreDrillEvidence.mjs`; no real restore drill, protected
+    proof, secret, deploy, push, restart, rollback, database mutation,
+    exchange credential, order, position, account, payment/subscription, or
+    live-trading action.
+  - Implementation:
+    - `scripts/runRestoreDrillEvidence.mjs` is import-safe behind a guarded
+      direct CLI entrypoint while preserving direct CLI behavior.
+    - `scripts/runRestoreDrillEvidence.test.mjs` covers injected CLI
+      parsing, timestamp stamps, latest artifact selection, injected command
+      execution, safe help behavior, PASS artifact rendering, and fail-closed
+      restore evidence without running a real restore drill.
+    - `docs/architecture/relations/priority-test-links.csv` includes `7`
+      direct [LUC-3001](/LUC/issues/LUC-3001) rows.
+  - Verification:
+    - `node --check scripts/runRestoreDrillEvidence.mjs` PASS.
+    - `node --check scripts/runRestoreDrillEvidence.test.mjs` PASS.
+    - `node scripts/runRestoreDrillEvidence.mjs --help` PASS.
+    - `node --test scripts/runRestoreDrillEvidence.test.mjs` PASS (`7/7`).
+    - Direct relation readback PASS (`7` rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - `pnpm run quality:guardrails` PASS.
+    - Architecture-awareness refresh BLOCKED in this checkout:
+      `scripts/build-architecture-awareness-index.mjs` is absent.
+  - Evidence:
+    - `history/tasks/luc-3001-restore-drill-evidence-helper-missing-test-rows-2026-06-08-task.md`
+
+- 2026-06-08 `LUC-2996 [Soar] Gap register and repair lane refresh`
+  - Status: `DONE / DELEGATED`
+  - Scope: TSA gap-register routing only; no code, protected RC/prod gate
+    command, secret, deploy, push, restart, rollback, database, exchange,
+    order, position, account, payment/subscription, or live-trading mutation.
+  - Evidence:
+    - Paperclip heartbeat-context readback for [LUC-2996](/LUC/issues/LUC-2996)
+      PASS: issue `in_progress`, priority `critical`, parent
+      [LUC-12](/LUC/issues/LUC-12), no comments, no first-class blockers.
+    - Current architecture-awareness report generated
+      `2026-06-08T00:37:30.029Z` reports `115` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - Duplicate/protected review kept local protected-route, production auth,
+      production UX/mobile, and public browser/process orchestration helpers
+      under prior proof/classification lanes.
+    - [LUC-2252](/LUC/issues/LUC-2252) has only script-level wrapper relation
+      evidence for `scripts/runRcRefreshSummaryStrict.mjs`; function-level
+      anchors remain visible, and `scripts/runRcRefreshSummaryStrict.test.mjs`
+      is absent.
+    - `node --check scripts/runRcRefreshSummaryStrict.mjs` PASS.
+  - Delegation:
+    - Created [LUC-2997](/LUC/issues/LUC-2997) for Test Automation to resolve
+      or classify `scripts/runRcRefreshSummaryStrict.mjs#main`, `#parseArgs`,
+      and `#run`.
+  - Evidence file:
+    - `history/tasks/luc-2996-gap-register-and-repair-lane-refresh-2026-06-08-task.md`
+
+- 2026-06-08 `LUC-2997 [Soar][Test Automation][LUC-2996] Resolve RC refresh summary strict helper missing-test rows`
+  - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED`
+  - Scope: local helper proof and architecture traceability for
+    `scripts/runRcRefreshSummaryStrict.mjs`; no real RC/prod gate refresh,
+    protected proof, secret, deploy, push, restart, rollback, database,
+    exchange, order, position, account, payment/subscription, or live-trading
+    mutation.
+  - Implementation:
+    - `scripts/runRcRefreshSummaryStrict.mjs` is import-safe behind a guarded
+      direct CLI entrypoint while preserving direct CLI behavior.
+    - `scripts/runRcRefreshSummaryStrict.test.mjs` covers injected CLI
+      parsing, injected command execution, help behavior, strict/prod command
+      selection, summary execution, and fail-closed exit propagation without
+      running real RC/prod gate commands.
+    - `docs/architecture/relations/priority-test-links.csv` includes `3`
+      direct [LUC-2997](/LUC/issues/LUC-2997) rows for `main`, `parseArgs`,
+      and `run`.
+  - Verification:
+    - `node --check scripts/runRcRefreshSummaryStrict.mjs` PASS.
+    - `node --check scripts/runRcRefreshSummaryStrict.test.mjs` PASS.
+    - `node scripts/runRcRefreshSummaryStrict.mjs --help` PASS.
+    - `node --test scripts/runRcRefreshSummaryStrict.test.mjs` PASS (`5/5`).
+    - Direct relation readback PASS (`3` rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - `pnpm run quality:guardrails` PASS.
+    - Architecture-awareness refresh BLOCKED in this checkout:
+      `scripts/build-architecture-awareness-index.mjs` is absent.
+  - Residual risk:
+    - Refreshed architecture-awareness top-list removal could not be observed
+      locally because the refresh script is absent in this checkout.
+  - Evidence:
+    - `history/tasks/luc-2997-rc-refresh-summary-strict-helper-missing-test-rows-2026-06-08-task.md`
+
+- 2026-06-08 `LUC-2995 [Soar][Test Automation][LUC-2992] Resolve repeatable QA smoke helper missing-test rows`
+  - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED`
+  - Scope: local helper proof and architecture traceability for
+    `scripts/runQaRepeatableSmokeE2e.mjs`; no full repeatable smoke matrix,
+    protected proof, secret, deploy, push, restart, rollback, database,
+    exchange, order, position, account, payment/subscription, or live-trading
+    mutation.
+  - Implementation:
+    - `scripts/runQaRepeatableSmokeE2e.mjs` is import-safe behind a guarded
+      `main()` while preserving direct CLI behavior.
+    - `scripts/runQaRepeatableSmokeE2e.test.mjs` covers injected CLI argument
+      helpers, injected command execution, artifact/evidence writing,
+      default continue-on-fail behavior, `--stop-on-fail`, and unsupported
+      check fail-closed behavior without running real smoke packs.
+    - `docs/architecture/relations/priority-test-links.csv` includes `4`
+      direct [LUC-2995](/LUC/issues/LUC-2995) rows for `hasFlag`, `main`,
+      `readArgValue`, and `runCheck`.
+  - Verification:
+    - `node --check scripts/runQaRepeatableSmokeE2e.mjs` PASS.
+    - `node --check scripts/runQaRepeatableSmokeE2e.test.mjs` PASS.
+    - `node scripts/runQaRepeatableSmokeE2e.mjs --help` PASS.
+    - `node --test scripts/runQaRepeatableSmokeE2e.test.mjs` PASS (`5/5`).
+    - Direct relation readback PASS (`4` rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Architecture-awareness refresh PASS (`9351` entities / `29528`
+      relations / `9742` files); refreshed report generated
+      `2026-06-08T00:37:30.029Z` no longer lists
+      `scripts/runQaRepeatableSmokeE2e.mjs` in Top Actionable Missing Test
+      Links.
+    - `pnpm run quality:guardrails` PASS.
+    - no leftover `chrome-headless-shell` validation process found.
+  - Residual risk:
+    - full `qa:smoke-e2e:repeatable -- --checks web,api,backtests` remains a
+      broader QA smoke evidence gate and was intentionally not run here.
+  - Evidence:
+    - `history/tasks/luc-2995-repeatable-qa-smoke-helper-missing-test-rows-2026-06-08-task.md`
+
+- 2026-06-08 `LUC-2992 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED`
+  - Scope: PM queue routing only; no code, protected proof, secret, deploy,
+    push, restart, rollback, database, exchange, order, position, account,
+    payment/subscription, or live-trading mutation.
+  - Evidence:
+    - Paperclip heartbeat-context readback for [LUC-2992](/LUC/issues/LUC-2992)
+      PASS: issue `in_progress`, priority `critical`, parent
+      [LUC-12](/LUC/issues/LUC-12), no comments, no first-class blockers.
+    - Current architecture-awareness report generated
+      `2026-06-08T00:08:49.364Z` reports `118` actionable missing-test links.
+    - Duplicate/protected review kept local protected-route, production auth,
+      production UX/mobile, and public browser/process helper rows under prior
+      proof/classification lanes.
+    - [LUC-2989](/LUC/issues/LUC-2989) is done and closed the prior
+      `scripts/goLiveSmoke.mjs` helper family.
+    - `scripts/runQaRepeatableSmokeE2e.mjs` still appears for `hasFlag`,
+      `readArgValue`, and `runCheck`; aggregate smoke evidence exists, but
+      `scripts/runQaRepeatableSmokeE2e.test.mjs` is absent.
+    - `node --check scripts/runQaRepeatableSmokeE2e.mjs` PASS.
+    - `corepack pnpm softwarehouse:control-tick` unavailable in this checkout:
+      `Command "softwarehouse:control-tick" not found`.
+  - Delegation:
+    - Created [LUC-2995](/LUC/issues/LUC-2995) for Test Automation to resolve
+      or classify the repeatable QA smoke helper missing-test rows.
+  - Evidence file:
+    - `history/tasks/luc-2992-no-stall-queue-expeditor-2026-06-08-task.md`
+
+- 2026-06-08 `LUC-2986 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED`
+  - Scope: PM queue routing only; no code, protected proof, secret, deploy,
+    push, restart, rollback, database, exchange, order, position, account, or
+    live-trading mutation.
+  - Evidence:
+    - Paperclip heartbeat-context readback for [LUC-2986](/LUC/issues/LUC-2986)
+      PASS: issue `in_progress`, priority `critical`, no comments, no
+      first-class blockers.
+    - Current architecture-awareness report generated
+      `2026-06-07T23:39:08.795Z` reports `124` actionable missing-test links.
+    - [LUC-2985](/LUC/issues/LUC-2985) is `done`; the residual current top
+      actionable local-safe family is `scripts/goLiveSmoke.mjs` function
+      anchors.
+    - [LUC-2792](/LUC/issues/LUC-2792) and [LUC-2873](/LUC/issues/LUC-2873)
+      are blocked without completed function-anchor proof; [LUC-2873](/LUC/issues/LUC-2873)
+      has active recovery action `f93379c8-6867-4726-9276-e2179865195a`.
+  - Delegation:
+    - Created [LUC-2989](/LUC/issues/LUC-2989) for QA to recover or manually
+      resolve the go-live smoke helper proof lane.
+  - Evidence file:
+    - `history/tasks/luc-2986-no-stall-queue-expeditor-2026-06-08-task.md`
+
+- 2026-06-08 `LUC-2989 [Soar][QA][LUC-2986] Recover go-live smoke helper proof lane disposition`
+  - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED`
+  - Scope: local helper proof and architecture traceability for
+    `scripts/goLiveSmoke.mjs`; no umbrella go-live smoke, protected smoke,
+    deploy, push, restart, rollback, secret, production auth/session, account,
+    database mutation, exchange, order, position, or live-trading mutation.
+  - Implementation:
+    - `scripts/goLiveSmoke.mjs` is import-safe behind a guarded `main()` while
+      preserving direct CLI behavior.
+    - `scripts/goLiveSmoke.test.mjs` covers target parsing, injected command
+      execution, socket reachability, local infra aggregation, Prisma
+      migration failure classification/guidance, teardown, infra reuse, and
+      unsupported-target fail-closed behavior.
+    - `docs/architecture/relations/priority-test-links.csv` includes `7`
+      direct [LUC-2989](/LUC/issues/LUC-2989) rows.
+  - Verification:
+    - `node --check scripts/goLiveSmoke.mjs` PASS.
+    - `node --check scripts/goLiveSmoke.test.mjs` PASS.
+    - `node --test scripts/goLiveSmoke.test.mjs` PASS (`11/11`).
+    - Direct relation readback PASS (`7` rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Architecture-awareness refresh PASS (`9344` entities / `29497`
+      relations / `9739` files); report generated
+      `2026-06-08T00:08:49.364Z` reports `118` actionable missing-test links
+      and no `scripts/goLiveSmoke.mjs` rows in Top Actionable Missing Test
+      Links.
+    - `pnpm run quality:guardrails` PASS.
+    - no leftover `chrome-headless-shell` validation process found.
+  - Residual risk:
+    - full `pnpm run test:go-live:smoke` remains a protected release gate and
+      was intentionally not run.
+    - [LUC-2792](/LUC/issues/LUC-2792) remains duplicate/superseded for this
+      local helper-test family.
+  - Evidence:
+    - `history/tasks/luc-2989-go-live-smoke-helper-proof-lane-disposition-2026-06-08-task.md`
+
+- 2026-06-08 `LUC-2985 [Soar][Test Automation][LUC-2982] Resolve function journey chains missing-test row`
+  - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED`
+  - Scope: local architecture evidence traceability only; no browser, deploy,
+    production smoke, protected credential, account, database, exchange, order,
+    position, restart, rollback, push, or live-trading mutation.
+  - Verification:
+    - `node --check scripts/generateFunctionJourneyIndexes.mjs` PASS.
+    - `node --test scripts/generateFunctionJourneyIndexes.test.mjs` PASS
+      (`6/6`).
+    - Direct [LUC-2985](/LUC/issues/LUC-2985) relation readback PASS (`1`
+      row for `scripts/generateFunctionJourneyIndexes.mjs#chains`).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Architecture-awareness refresh PASS (`9336` entities / `29462`
+      relations / `9736` files); refreshed report generated
+      `2026-06-07T23:39:08.795Z` reports `124` actionable missing-test links
+      and no longer lists the `#chains` row.
+    - `pnpm run quality:guardrails` PASS.
+  - Evidence:
+    - `history/tasks/luc-2985-function-journey-chains-missing-test-row-2026-06-08-task.md`
+
+- 2026-06-08 `LUC-2982 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED`
+  - Scope: PM queue routing only; no code, protected proof, secret, deploy,
+    push, restart, database, exchange, order, position, account, or
+    live-trading mutation.
+  - Evidence:
+    - Paperclip heartbeat-context readback for [LUC-2982](/LUC/issues/LUC-2982)
+      PASS: issue `in_progress`, priority `critical`, no comments, no blockers.
+    - Current architecture-awareness report generated
+      `2026-06-07T23:10:42.686Z` reports `125` actionable missing-test links.
+    - Duplicate review found existing owner/evidence lanes:
+      [LUC-2252](/LUC/issues/LUC-2252) for release/Ops wrappers,
+      [LUC-2935](/LUC/issues/LUC-2935) for local protected-route helpers,
+      [LUC-2957](/LUC/issues/LUC-2957) plus [LUC-2970](/LUC/issues/LUC-2970)
+      for production UI/UX helper proof, and [LUC-2871](/LUC/issues/LUC-2871)
+      for prior generator helper proof.
+    - `pnpm softwarehouse:control-tick` failed because the command is not
+      exposed in this checkout.
+  - Delegation:
+    - Created [LUC-2985](/LUC/issues/LUC-2985) for Test Automation to resolve
+      or classify `scripts/generateFunctionJourneyIndexes.mjs#chains`.
+  - Evidence file:
+    - `history/tasks/luc-2982-no-stall-queue-expeditor-2026-06-08-task.md`
+
+- 2026-06-08 `LUC-2979 [Soar][DB][LUC-2977] Restore local PostgreSQL test dependency for Gate.io DB-backed ingestion proof`
+  - Status: `DONE / VERIFIED_LOCAL`
+  - Scope: DBE resume after [LUC-2980](/LUC/issues/LUC-2980) resolved the
+    local runtime blocker. No code, production smoke, protected proof, secret,
+    deploy, push, restart, exchange account use, order, position, production
+    database, or live-trading mutation occurred.
+  - Verification:
+    - [LUC-2980](/LUC/issues/LUC-2980) readback: `done`.
+    - `localhost:5432` TCP check PASS.
+    - Docker Desktop server available.
+    - `docker ps` shows `soar-postgres-1` on `127.0.0.1:5432->5432/tcp` and
+      `soar-redis-1` on `127.0.0.1:6379->6379/tcp`.
+    - Focused API proof PASS: `2` files / `42` tests.
+  - Evidence:
+    - `history/tasks/luc-2979-restore-local-postgresql-test-dependency-2026-06-08-task.md`
+
+- 2026-06-08 `LUC-2980 [Soar][DRE][LUC-2979] Restore local Docker/PostgreSQL runtime for DB-backed ingestion proof`
+  - Status: `DONE / VERIFIED_LOCAL`
+  - Scope: DRE local runtime restoration for [LUC-2979](/LUC/issues/LUC-2979)
+    and downstream [LUC-2977](/LUC/issues/LUC-2977). No code, production
+    smoke, protected proof, secret, deploy, push, exchange account use, order,
+    position, production database, or live-trading mutation occurred.
+  - Verification:
+    - Initial `Test-NetConnection -ComputerName localhost -Port 5432`
+      reproduced the blocker with `TcpTestSucceeded: False`.
+    - Initial `docker version` reproduced the unavailable Desktop engine pipe:
+      `open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified`.
+    - Starting Docker Desktop brought the Docker server up.
+    - First `pnpm run go-live:infra:up` failed on stale unlabeled
+      `soar_default`; DRE removed only local `soar-postgres-1` /
+      `soar-redis-1` containers and that stale network, preserving volumes.
+    - Rerun `pnpm run go-live:infra:up` succeeded.
+    - `docker compose ps` shows `soar-postgres-1` and `soar-redis-1` running
+      on `127.0.0.1:5432` and `127.0.0.1:6379`.
+    - TCP checks for `localhost:5432` and `localhost:6379` passed.
+    - `docker exec soar-postgres-1 pg_isready -U postgres -d cryptosparrow`
+      accepted connections, with a non-blocking collation version mismatch
+      warning on the reused local volume.
+    - Focused API proof passed: `2` files / `42` tests, including Gate.io
+      DB-backed position ingestion and workers readiness `8/8`.
+  - Residual:
+    - Local Docker Desktop/Postgres/Redis remain running intentionally for
+      downstream [LUC-2977](/LUC/issues/LUC-2977) verification.
+    - Future local DB maintenance may need to refresh the reused
+      `cryptosparrow` collation version.
+  - Evidence:
+    - `history/tasks/luc-2979-restore-local-postgresql-test-dependency-2026-06-08-task.md`
+
+- 2026-06-08 `LUC-2975 [Soar][QA][LUC-2972] Resume public read-only browser proof helper-test lane`
+  - Status: `DONE / VERIFIED_LOCAL`
+  - Scope: Resume [LUC-2958](/LUC/issues/LUC-2958), add local-only helper
+    proof and scanner relations for `scripts/runPublicReadOnlyBrowserProof.mjs`.
+    No production browser proof, protected auth/session, account, secret,
+    deploy, push, restart, database, exchange, order, position, or
+    live-trading mutation.
+  - Implementation:
+    - `scripts/runPublicReadOnlyBrowserProof.mjs` now has named exports behind
+      a direct-CLI guard while preserving the existing CLI behavior.
+    - `scripts/runPublicReadOnlyBrowserProof.test.mjs` covers option/URL
+      helpers, browser event issue filtering, route issue classification,
+      mocked CDP evaluate/navigation/page-state helpers, password-toggle
+      interpretation, route aggregation, markdown rendering, and safe `--help`.
+    - `docs/architecture/relations/priority-test-links.csv` includes `16`
+      direct [LUC-2958](/LUC/issues/LUC-2958) rows.
+  - Verification:
+    - `node --check scripts/runPublicReadOnlyBrowserProof.mjs` PASS.
+    - `node --check scripts/runPublicReadOnlyBrowserProof.test.mjs` PASS.
+    - `node scripts/runPublicReadOnlyBrowserProof.mjs --help` PASS.
+    - `node --test scripts/runPublicReadOnlyBrowserProof.test.mjs` PASS (`5/5`).
+    - Direct relation readback PASS (`16` rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`9328` entities /
+      `29432` relations / `9732` files), refreshed actionable missing-test
+      links `125`.
+    - No leftover `chrome-headless-shell` validation process found.
+  - Residual risk:
+    - `createPage`, `killProcessTree`, and `launchBrowser` remain top-list
+      browser/process orchestration helpers and were intentionally not
+      unit-claimed by this local helper-test lane.
+  - Evidence:
+    - `history/tasks/luc-2975-public-read-only-browser-proof-helper-test-lane-2026-06-08-task.md`
+
+- 2026-06-08 `LUC-2977 [Soar][Gate.io][QA] Run DB-backed position ingestion verification for LUC-1166`
+  - Status: `DONE / VERIFIED_LOCAL`
+  - Scope: QA/Test verification for the DB-backed [LUC-1166](/LUC/issues/LUC-1166)
+    follow-up. No code, production smoke, protected proof, secret, deploy,
+    push, restart, exchange account use, order, position, database, or
+    live-trading mutation occurred.
+  - Verification:
+    - Wake `issue_blockers_resolved` followed [LUC-2979](/LUC/issues/LUC-2979)
+      / [LUC-2980](/LUC/issues/LUC-2980) restoring local PostgreSQL.
+    - `docker ps` shows `soar-postgres-1` on
+      `127.0.0.1:5432->5432/tcp` and `soar-redis-1` on
+      `127.0.0.1:6379->6379/tcp`.
+    - `Test-NetConnection -ComputerName 127.0.0.1 -Port 5432` PASS.
+    - `docker exec soar-postgres-1 pg_isready -U postgres -d cryptosparrow`
+      PASS with a non-blocking local collation version mismatch warning.
+    - `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts src/router/workers-health-readiness.test.ts --reporter=verbose`
+      PASS (`2` files / `42` tests).
+    - `livePositionReconciliation.service.test.ts` passed `34/34`, including
+      DB-backed Gate.io synced LIVE key scope, open synced position lookup,
+      stale synced position market scope, exchange-synced open-order collision
+      handling, stale synced order status transition, and canonical bot
+      continuity context.
+    - `workers-health-readiness.test.ts` passed `8/8`, including
+      unauthenticated `401`, authenticated non-admin `403`, inline/split
+      readiness, missing queue fail-closed, and stale heartbeat fail-closed.
+  - Residual risk:
+    - UI display path was not separately browser-proved in this QA slice.
+    - The reused local `cryptosparrow` volume reports a PostgreSQL collation
+      version mismatch warning, but the focused DB-backed proof is green.
+  - Evidence:
+    - `history/tasks/luc-2977-gateio-db-backed-position-ingestion-verification-2026-06-08-task.md`
+
+- 2026-06-08 `LUC-2970 [Soar] Gap register and repair lane refresh`
+  - Status: `DONE / PARTIALLY_VERIFIED / TRACEABILITY_REFRESHED`
+  - Scope: TSA gap-register refresh, duplicate filtering, and
+    scanner-readable relation repair for production UI/UX helper tests already
+    completed by [LUC-2957](/LUC/issues/LUC-2957). No new QA child was opened
+    for the same helper coverage.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2970](/LUC/issues/LUC-2970).
+    - `docs/status/architecture-awareness-report.md` generated
+      `2026-06-07T22:41:40.784Z` reports `159` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - Direct [LUC-2970](/LUC/issues/LUC-2970) relation readback PASS (`18`
+      rows).
+    - `node --test scripts/runProdUiModuleClickthroughAudit.test.mjs scripts/runProdUxA11yMobileProof.test.mjs`
+      PASS (`8/8`).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - `pnpm run quality:guardrails` PASS.
+  - Residual risk:
+    - Full architecture-awareness refresh is unavailable in this checkout
+      because `scripts/build-architecture-awareness-index.mjs` is absent.
+    - Remaining production UX browser launch/navigation/screenshot helpers are
+      protected proof work, not local unit-proof confidence.
+  - Evidence:
+    - `history/tasks/luc-2970-gap-register-and-repair-lane-refresh-2026-06-08-task.md`
+
+- 2026-06-07 `LUC-2961 [Soar] Coolify production deploy health sweep`
+  - Status: `DONE`
+  - Scope: DRE read-only production deploy health sweep; no deploy, push,
+    restart, rollback, env/database/account/secret/protected-smoke/exchange/
+    live-trading mutation.
+  - Verification:
+    - Direct public probes PASS: API `/health` `200`, API `/ready` `200`, Web
+      `/` `200`, Web `/api/build-info` `200`.
+    - `node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --skip-workers`
+      PASS.
+    - Production Web build-info reports
+      `56d8d440bfe0fd9ee692e9f669e35414d85d2493`, matching local
+      `origin/main` and not dirty local `HEAD`
+      `ed0f1aeb0e60392fe553f46d4931f9d9742f6aec`.
+    - Coolify read-only projection PASS: configured production environment
+      read `ok`, applications endpoint `200` with `13` rows, resources
+      endpoint `200` with `17` rows, deployments endpoint `200` with `0`
+      visible rows, and projected Soar production resource count `8`.
+    - PostgreSQL and Redis report `running:healthy`; application resources
+      report `running:unknown`.
+    - Protected runtime freshness fails closed with HTTP `401`; rollback guard
+      reports `shouldRollback: true` only because protected worker readiness,
+      runtime freshness, and alerts are unauthenticated in this no-secret lane.
+    - `pnpm run ops:coolify-stack:env-check:test` PASS (`11/11`).
+  - Residual risk:
+    - Protected workers/runtime/alerts proof still requires an approved
+      read-only production principal.
+    - Retained `workers-execution` crash metadata remains the previously known
+      `unknown_from_retained_coolify_evidence` signal from
+      [LUC-2594](/LUC/issues/LUC-2594).
+  - Evidence:
+    - `history/tasks/luc-2961-coolify-production-deploy-health-sweep-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2956 [Soar][Test Automation][LUC-2955] Prod security exchange proof helper missing-test links`
+  - Status: `DONE`
+  - Scope: local backend/test proof and architecture relation repair for safe
+    `scripts/runProdSecurityExchangeProof.mjs` helper anchors; no production
+    security/exchange proof, no
+    `--i-understand-production-security-exchange-proof`, no production auth/
+    session, real account token/cookie, exchange credential/API key, deploy,
+    push, restart, rollback, database, account, exchange, order, position, or
+    live-trading mutation.
+  - Implementation:
+    - preserved direct CLI behavior behind an import-safe `pathToFileURL`
+      execution guard;
+    - exported helper functions for focused local proof;
+    - added mocked `node:test` coverage for argument/options normalization,
+      JSON parse fallback, HTTP request wrapper behavior, status assertions,
+      no-store/security header assertions, key-material detection, catalog
+      readback, redacted markdown rendering, step formatting, usage output, and
+      `main` help behavior;
+    - added fourteen scanner-readable `LUC-2956` relation rows to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runProdSecurityExchangeProof.mjs` PASS.
+    - `node --check scripts/runProdSecurityExchangeProof.test.mjs` PASS.
+    - `node scripts/runProdSecurityExchangeProof.mjs --help` PASS.
+    - direct [LUC-2956](/LUC/issues/LUC-2956) relation readback PASS (`14`
+      rows).
+    - `node --test scripts/runProdSecurityExchangeProof.test.mjs` PASS
+      (`4/4`).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`15080` entities /
+      `34666` relations / `9757` files); refreshed report generated
+      `2026-06-07T22:19:50.156Z` reports `167` actionable missing-test links
+      and no `runProdSecurityExchangeProof` rows in Top Actionable Missing
+      Test Links.
+    - `pnpm run quality:guardrails` PASS.
+  - Residual risk:
+    - broader missing-test backlog remains outside this focused repair; next
+      visible families include generated-index, go-live, protected-route,
+      prod-auth side-effect, prod-UI, and prod UX/a11y helpers.
+  - Evidence:
+    - `history/tasks/luc-2956-prod-security-exchange-proof-helper-missing-test-links-2026-06-07-task.md`
+
+- 2026-06-11 `LUC-3409 [Operator][Soar] Provide owner-login verification path`
+  - Status: `IN_REVIEW / WAITING_OPERATOR_CHOICE`
+  - Scope: security-defined owner-login verification path for Soar; no secret,
+    cookie, token, payment, exchange credential, account mutation, deploy,
+    restart, rollback, DB mutation, push, or live-trading action.
+  - Verification:
+    - protected input readiness checker -> `PARTIAL / NO-GO`, `6` UI/auth
+      names present;
+    - focused auth proof helper tests -> PASS (`9/9`);
+    - redacted `/auth/me` probe using current `PROD_UI_AUDIT_AUTH_TOKEN` ->
+      HTTP `401`.
+  - Next owner/action: operator or board-capable credential owner must accept
+    the secure path and bind a fresh valid owner proof session, run supervised
+    proof, or provide an equivalent redacted artifact.
+  - Evidence:
+    - `history/tasks/luc-3409-owner-login-verification-path-2026-06-11-task.md`
+
+- 2026-06-08 `LUC-3008 [Soar][DRE][LUC-3005] Classify prod-like and worker startup wrapper missing-test rows`
+  - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED`
+  - Scope: local DRE helper proof and architecture traceability for
+    `scripts/start-local-prod-like.mjs` and `scripts/start-workers-prod.mjs`;
+    no real prod-like startup, worker startup, deploy, restart, protected
+    smoke, Docker destructive cleanup, database, secret, exchange, order,
+    position, account, payment/subscription, or live-trading mutation.
+  - Implementation:
+    - both wrappers are import-safe behind guarded direct CLI entrypoints while
+      preserving existing package-script behavior;
+    - `scripts/startLocalProdLike.test.mjs` covers env validation guidance,
+      preflight `runStep`, log prefixing, child orchestration, unexpected exit
+      fail-closed behavior, `stopAll`, graceful shutdown, and main flow;
+    - `scripts/startWorkersProd.test.mjs` covers built-worker validation,
+      build guidance, log prefixing, worker spawning, unexpected exit
+      fail-closed behavior, `stopAll`, graceful shutdown, and main flow;
+    - `docs/architecture/relations/priority-test-links.csv` includes `10`
+      direct [LUC-3008](/LUC/issues/LUC-3008) relation rows.
+  - Verification:
+    - syntax checks PASS for both scripts and both tests.
+    - `node --test scripts/startLocalProdLike.test.mjs scripts/startWorkersProd.test.mjs scripts/releaseOpsScriptContracts.test.mjs` PASS (`17/17`).
+    - direct [LUC-3008](/LUC/issues/LUC-3008) relation readback PASS (`10` rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842` relations / `27` chains).
+    - `pnpm run quality:guardrails` PASS.
+    - no leftover `chrome-headless-shell` validation process found.
+  - Residual risk:
+    - architecture-awareness refresh could not run because
+      `scripts/build-architecture-awareness-index.mjs` is absent in this checkout.
+    - full prod-like startup and real worker runtime smoke remain separate
+      protected/runtime gates and are not claimed from this local helper proof.
+  - Evidence:
+    - `history/tasks/luc-3008-prod-like-worker-startup-wrapper-missing-test-rows-2026-06-08-task.md`
+
+- 2026-06-07 `LUC-2946 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED`
+  - Scope: PM queue checkpoint for current architecture-awareness missing-test
+    backlog; no code implementation, production proof, deploy, push, restart,
+    rollback, account, secret, database, exchange, order, position, or
+    live-trading mutation.
+  - Evidence:
+    - Paperclip heartbeat-context for [LUC-2946](/LUC/issues/LUC-2946) PASS.
+    - Current architecture-awareness report generated
+      `2026-06-07T21:37:41.107Z` reports `193` actionable missing-test links.
+    - Existing duplicate families remain owned by
+      [LUC-2791](/LUC/issues/LUC-2791), [LUC-2792](/LUC/issues/LUC-2792),
+      [LUC-2873](/LUC/issues/LUC-2873), [LUC-2935](/LUC/issues/LUC-2935),
+      [LUC-2939](/LUC/issues/LUC-2939), and [LUC-2945](/LUC/issues/LUC-2945).
+    - Duplicate search for `runProdPositionsProof` found no existing current
+      child lane.
+    - `Test-Path scripts/runProdPositionsProof.test.mjs` returned `False`.
+    - `node --check scripts/runProdPositionsProof.mjs` PASS.
+    - `corepack pnpm softwarehouse:control-tick` failed because the command is
+      not exposed in this checkout.
+  - Delegation:
+    - Created [LUC-2949](/LUC/issues/LUC-2949) for Test Automation Engineer to
+      add or classify safe local-only helper proof for
+      `scripts/runProdPositionsProof.mjs`.
+  - Residual risk:
+    - Broader missing-test backlog remains outside this PM checkpoint.
+    - The [LUC-2949](/LUC/issues/LUC-2949) description contains one stale
+      template reference to `LUC-2947`; the actual child identifier for any
+      relation rows is [LUC-2949](/LUC/issues/LUC-2949).
+  - Evidence:
+    - `history/tasks/luc-2946-no-stall-queue-expeditor-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2949 [Soar][Test Automation][LUC-2946] Prod positions proof helper missing-test links`
+  - Status: `DONE`
+  - Scope: local QA/Test proof and architecture relation repair for safe
+    `scripts/runProdPositionsProof.mjs` helper anchors; no production positions
+    proof, no `--i-understand-production-positions-proof`, no production
+    auth/session, real account token/cookie, exchange credential, deploy, push,
+    restart, rollback, database, account, order, position, or live-trading
+    mutation.
+  - Implementation:
+    - preserved direct CLI behavior behind an import-safe `pathToFileURL`
+      execution guard;
+    - exported helper functions for focused local proof;
+    - added mocked `node:test` coverage for argument/options normalization,
+      JSON parse fallback, HTTP request wrapper behavior, status assertions,
+      item extraction, candidate discovery, redacted markdown rendering, step
+      formatting, usage output, and `main` help behavior;
+    - added twelve scanner-readable `LUC-2949` relation rows to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runProdPositionsProof.mjs` PASS.
+    - `node --check scripts/runProdPositionsProof.test.mjs` PASS.
+    - `node --test scripts/runProdPositionsProof.test.mjs` PASS (`5/5`).
+    - `node scripts/runProdPositionsProof.mjs --help` PASS.
+    - direct [LUC-2949](/LUC/issues/LUC-2949) relation readback PASS (`12`
+      rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`15072` entities /
+      `34623` relations / `9752` files); refreshed report generated
+      `2026-06-07T22:06:01.945Z` reports `181` actionable missing-test links
+      and no `runProdPositionsProof` rows in Top Actionable Missing Test
+      Links.
+    - `pnpm run quality:guardrails` PASS.
+    - no leftover `chrome-headless-shell` validation process found.
+  - Residual risk:
+    - broader missing-test backlog remains outside this focused repair; next
+      visible families include generated-index, go-live, protected-route,
+      prod-auth side-effect, prod-security-exchange, and prod-UI helpers.
+  - Evidence:
+    - `history/tasks/luc-2949-prod-positions-proof-helper-missing-test-links-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2945 [Soar][Test Automation][LUC-2942] Prod fixture action proof helper missing-test links`
+  - Status: `DONE`
+  - Scope: local QA/Test proof and architecture relation repair for
+    `scripts/runProdFixtureActionProof.mjs` helper anchors; no production
+    fixture action proof, production auth/session, real account token/cookie,
+    protected smoke, deploy, push, restart, rollback, account, secret,
+    database, exchange, order, position, or live-trading mutation.
+  - Implementation:
+    - preserved direct CLI behavior behind an import-safe `pathToFileURL`
+      execution guard;
+    - exported helper functions for focused local proof;
+    - extracted `cleanupDelete` as an injectable helper;
+    - added mocked `node:test` coverage for argument/options normalization,
+      JSON parse fallback, request wrapper behavior, status assertions,
+      cleanup pass/fail/error handling, redacted markdown rendering, bounded
+      sleep, usage output, and `main` help behavior;
+    - added twelve scanner-readable `LUC-2945` relation rows to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runProdFixtureActionProof.mjs` PASS.
+    - `node --check scripts/runProdFixtureActionProof.test.mjs` PASS.
+    - `node --test scripts/runProdFixtureActionProof.test.mjs` PASS (`5/5`).
+    - `node scripts/runProdFixtureActionProof.mjs --help` PASS.
+    - direct [LUC-2945](/LUC/issues/LUC-2945) relation readback PASS (`12`
+      rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`15066` entities /
+      `34587` relations / `9749` files); refreshed report generated
+      `2026-06-07T21:37:41.107Z` reports `193` actionable missing-test links
+      and no `runProdFixtureActionProof` rows in Top Actionable Missing Test
+      Links.
+    - `pnpm run quality:guardrails` PASS.
+    - no leftover `chrome-headless-shell` validation process found.
+  - Residual risk:
+    - broader missing-test backlog remains outside this focused repair; next
+      visible families include generated-index, go-live, protected-route,
+      prod-auth, and prod-positions helpers.
+  - Evidence:
+    - `history/tasks/luc-2945-prod-fixture-action-proof-helper-missing-test-links-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2939 [Soar][Test Automation][LUC-2936] Prod auth session browser proof helper missing-test links`
+  - Status: `DONE`
+  - Scope: local QA/Test proof and architecture relation repair for safe
+    non-mutating `scripts/runProdAuthSessionBrowserProof.mjs` helper anchors;
+    no production auth/session, real account token/cookie, protected production
+    browser proof, deploy, push, restart, rollback, account, secret, database,
+    exchange, order, position, or live-trading mutation.
+  - Implementation:
+    - preserved direct CLI behavior behind an import-safe `pathToFileURL`
+      execution guard;
+    - exported helper functions for focused local proof;
+    - added mocked `node:test` coverage for argument/options normalization,
+      JSON parse fallback, CDP evaluate/navigation/location/auth cleanup/auth
+      cookie helpers, fail-closed cookie setup, markdown redaction, step
+      formatting, and waiting;
+    - added thirteen scanner-readable `LUC-2939` relation rows to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runProdAuthSessionBrowserProof.mjs` PASS.
+    - `node --check scripts/runProdAuthSessionBrowserProof.test.mjs` PASS.
+    - `node --test scripts/runProdAuthSessionBrowserProof.test.mjs` PASS
+      (`5/5`).
+    - `node scripts/runProdAuthSessionBrowserProof.mjs --help` PASS.
+    - direct [LUC-2939](/LUC/issues/LUC-2939) relation readback PASS (`13`
+      rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`15062` entities /
+      `34562` relations / `9747` files); refreshed report generated
+      `2026-06-07T21:06:25.826Z` reports `205` actionable missing-test links.
+    - `pnpm run quality:guardrails` PASS.
+    - no leftover `chrome-headless-shell` validation process found.
+  - Residual risk:
+    - side-effect orchestration helpers (`createPage`, `launchBrowser`, `main`)
+      remain in Top Actionable Missing Test Links and are classified rather than
+      unit-invoked because they create CDP pages, launch browsers, or execute
+      full protected production proof.
+  - Evidence:
+    - `history/tasks/luc-2939-prod-auth-session-browser-proof-helper-missing-test-links-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2936 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED`
+  - Scope: PM queue readback, duplicate filtering, and child-lane creation
+    only; no code, runtime, deploy, push, restart, rollback, env, account,
+    secret, protected-smoke, database, exchange, order, position, or
+    live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2936](/LUC/issues/LUC-2936).
+    - `docs/status/architecture-awareness-report.md` generated
+      `2026-06-07T20:57:53.308Z` reports `218` actionable missing-test links.
+    - Existing generated-index and `goLiveSmoke` families remain owned by
+      [LUC-2791](/LUC/issues/LUC-2791), [LUC-2792](/LUC/issues/LUC-2792), and
+      [LUC-2873](/LUC/issues/LUC-2873).
+    - Completed [LUC-2935](/LUC/issues/LUC-2935) covered non-mutating
+      `scripts/runLocalProtectedRouteActionProof.mjs` helpers and classified
+      remaining side-effect browser/server helpers.
+    - Duplicate search for `runProdAuthSessionBrowserProof` found only older
+      protected production evidence/session blockers, not a current local
+      helper relation/test lane.
+    - `node --check scripts/runProdAuthSessionBrowserProof.mjs` PASS.
+    - `corepack pnpm softwarehouse:control-tick` failed because the command is
+      not exposed in this checkout.
+  - Disposition:
+    - created [LUC-2939](/LUC/issues/LUC-2939) for Test Automation Engineer to
+      cover or classify current `scripts/runProdAuthSessionBrowserProof.mjs`
+      helper missing-test links without production auth/session use.
+  - Evidence:
+    - `history/tasks/luc-2936-no-stall-queue-expeditor-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2935 [Soar][Test Automation][LUC-2934] Local protected route action proof helper missing-test links`
+  - Status: `DONE`
+  - Scope: local QA/Test proof and architecture relation repair for
+    `scripts/runLocalProtectedRouteActionProof.mjs` non-mutating helper anchors;
+    no browser/server launch, protected production smoke, real auth/session,
+    deploy, push, restart, rollback, database, exchange, order, position, or
+    live-trading mutation.
+  - Implementation:
+    - preserved direct CLI behavior behind an import-safe `pathToFileURL`
+      execution guard;
+    - exported helper functions for focused local proof;
+    - added mocked `node:test` coverage for argument/options, CDP evaluate and
+      navigation helpers, dynamic fixture API handling, HTTP fixture route
+      proof, static mapping, markdown rendering, waiting, and child cleanup;
+    - added scanner-readable [LUC-2935](/LUC/issues/LUC-2935) relation rows for
+      directly covered helper anchors.
+  - Verification:
+    - `node --check scripts/runLocalProtectedRouteActionProof.mjs` PASS.
+    - `node --test scripts/runLocalProtectedRouteActionProof.test.mjs` PASS
+      (`4/4`).
+    - direct [LUC-2935](/LUC/issues/LUC-2935) relation readback PASS (`16`
+      rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`15058` entities /
+      `34534` relations / `9745` files); actionable missing-test links now
+      `218`, and only classified side-effect
+      `runLocalProtectedRouteActionProof` helpers remain in the top list.
+    - `pnpm run quality:guardrails` PASS.
+  - Residual risk:
+    - side-effect orchestration helpers (`createPage`, `launchBrowser`,
+      `startWebServer`, `main`) were classified rather than directly
+      unit-invoked; full browser proof remains covered by protected-route matrix
+      lanes such as [LUC-2188](/LUC/issues/LUC-2188).
+  - Evidence:
+    - `history/tasks/luc-2935-local-protected-route-action-proof-helper-missing-test-links-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2934 [Soar] Gap register and repair lane refresh`
+  - Status: `DONE / DELEGATED`
+  - Scope: TSA gap-register refresh, duplicate filtering, and repair-lane
+    routing only; no code, runtime, deploy, push, restart, rollback, env,
+    account, secret, protected-smoke, database, exchange, order, position, or
+    live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2934](/LUC/issues/LUC-2934).
+    - `docs/status/architecture-awareness-report.md` generated
+      `2026-06-07T20:42:55.740Z` reports `234` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - `corepack pnpm softwarehouse:control-tick` failed because
+      `softwarehouse:control-tick` is not exposed in this checkout.
+    - Duplicate search for `runLocalProtectedRouteActionProof collectLocation`
+      returned no exact matching lane.
+  - Disposition:
+    - created [LUC-2935](/LUC/issues/LUC-2935) for Test Automation Engineer to
+      cover or classify current `scripts/runLocalProtectedRouteActionProof.mjs`
+      helper missing-test links.
+  - Evidence:
+    - `history/tasks/luc-2934-gap-register-and-repair-lane-refresh-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2931 [Soar][QA/Test][LUC-2928] Local external gates pipeline missing-test links`
+  - Status: `DONE`
+  - Scope: local QA/Test proof and architecture relation repair for current
+    `scripts/runLocalExternalGatesPipeline.mjs` helper anchors; no protected
+    external gates, real local pipeline execution, production auth, protected
+    smoke, deploy, push, restart, rollback, account, secret, database,
+    exchange, order, position, or live-trading mutation.
+  - Implementation:
+    - exported local external gates helpers behind an import guard while
+      preserving direct CLI behavior;
+    - added deterministic injected tests for CLI parser/secret flag rejection,
+      child command runner options, SLO artifact lookup/pass assertion,
+      offline status fallback, API reachability headers/error handling, usage
+      output, and offline `main` orchestration in
+      `scripts/runLocalExternalGatesPipeline.test.mjs`;
+    - added twelve scanner-readable `LUC-2931` relation rows to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runLocalExternalGatesPipeline.mjs` PASS.
+    - `node --check scripts/runLocalExternalGatesPipeline.test.mjs` PASS.
+    - `node --test scripts/runLocalExternalGatesPipeline.test.mjs` PASS (`7/7`).
+    - `node scripts/runLocalExternalGatesPipeline.mjs --help` PASS.
+    - direct relation readback PASS (`12` rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`15050` entities /
+      `34488` relations / `9741` files); refreshed report generated
+      `2026-06-07T20:42:55.740Z` reports `234` actionable missing-test links
+      and no longer lists `scripts/runLocalExternalGatesPipeline.mjs#...`.
+    - `pnpm run quality:guardrails` PASS.
+  - Residual risk:
+    - remaining top missing-test links are separate generated-index,
+      go-live smoke, protected-route/browser proof, and prod-auth browser proof
+      helper families.
+  - Evidence:
+    - `history/tasks/luc-2931-local-external-gates-pipeline-missing-test-links-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2928 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED`
+  - Scope: PM queue readback, duplicate filtering, and child-lane creation
+    only; no code, runtime, deploy, push, restart, rollback, env, account,
+    secret, protected-smoke, database, exchange, order, position, or
+    live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2928](/LUC/issues/LUC-2928).
+    - `docs/status/architecture-awareness-report.md` generated
+      `2026-06-07T20:07:06.809Z` reports `245` actionable missing-test links.
+    - Existing blocked [LUC-2791](/LUC/issues/LUC-2791) owns generated
+      function/user-action index helpers.
+    - Existing blocked [LUC-2792](/LUC/issues/LUC-2792) and
+      [LUC-2873](/LUC/issues/LUC-2873) own go-live smoke helper lanes.
+    - Duplicate search for `runLocalExternalGatesPipeline` returned no open or
+      done matching issue.
+  - Disposition:
+    - created [LUC-2931](/LUC/issues/LUC-2931) for QA/Verification to cover or
+      classify current `scripts/runLocalExternalGatesPipeline.mjs` helper
+      missing-test links.
+  - Evidence:
+    - `history/tasks/luc-2928-no-stall-queue-expeditor-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2920 [Soar][QA/Test][LUC-2917] Known-state refresh run missing-test link`
+  - Status: `DONE`
+  - Scope: local QA/Test proof and architecture relation repair for
+    `scripts/runKnownStateRefresh.mjs#run`; no full known-state refresh chain,
+    deploy, push, restart, rollback, protected smoke, account, secret,
+    database, exchange, order, position, or live-trading mutation.
+  - Implementation:
+    - exported `commands`, `run`, and `main` behind an import guard while
+      preserving direct CLI behavior;
+    - added deterministic injected tests for command order, child spawn
+      options, non-zero exit rejection, process-error rejection, and `main`
+      orchestration in `scripts/runKnownStateRefresh.test.mjs`;
+    - added one scanner-readable `LUC-2920` relation row to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runKnownStateRefresh.mjs` PASS.
+    - `node --check scripts/runKnownStateRefresh.test.mjs` PASS.
+    - `node --test scripts/runKnownStateRefresh.test.mjs` PASS (`5/5`).
+    - direct relation readback PASS (`1` row).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`15046` entities /
+      `34456` relations / `9738` files); refreshed report generated
+      `2026-06-07T20:07:06.809Z` reports `245` actionable missing-test links
+      and no longer lists `scripts/runKnownStateRefresh.mjs#run`.
+    - `pnpm run quality:guardrails` PASS.
+  - Residual risk:
+    - remaining top missing-test links are separate generated-index,
+      go-live smoke, local external gate, protected-route/browser proof, and
+      prod-auth browser proof helper families.
+  - Evidence:
+    - `history/tasks/luc-2920-known-state-refresh-run-missing-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2907 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED`
+  - Scope: PM queue readback, duplicate filtering, and child-lane creation
+    only; no code, runtime, deploy, push, restart, rollback, env, account,
+    secret, protected-smoke, database, exchange, order, position, or
+    live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2907](/LUC/issues/LUC-2907).
+    - `corepack pnpm softwarehouse:control-tick` failed because
+      `softwarehouse:control-tick` is not exposed in this checkout.
+    - Current architecture-awareness report generated
+      `2026-06-07T18:49:12.396Z` reports `251` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - Duplicate searches for `runCutoverDryRun main` and cutover dry-run helper
+      missing-test work returned no open matching issue.
+  - Disposition:
+    - created [LUC-2910](/LUC/issues/LUC-2910) for QA/Verification to cover or
+      classify `scripts/runCutoverDryRun.mjs#main`.
+  - Evidence:
+    - `history/tasks/luc-2907-no-stall-queue-expeditor-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2905 [Soar] Gap register and repair lane refresh`
+  - Status: `DONE / DELEGATED`
+  - Scope: TSA gap-register refresh, duplicate filtering, and repair-lane
+    routing only; no code, runtime, deploy, push, restart, rollback, env,
+    account, secret, protected-smoke, database, exchange, order, position, or
+    live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2905](/LUC/issues/LUC-2905).
+    - `docs/status/architecture-awareness-report.md` generated
+      `2026-06-07T18:35:45.780Z` reports `252` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - `corepack pnpm softwarehouse:control-tick` failed because
+      `softwarehouse:control-tick` is not exposed in this checkout.
+    - Duplicate search for `runControlledLiveSessionProof waitForRunningSession`
+      returned no open matching issue.
+  - Disposition:
+    - created [LUC-2906](/LUC/issues/LUC-2906) for QA/Verification to cover or
+      classify `scripts/runControlledLiveSessionProof.mjs#waitForRunningSession`.
+  - Evidence:
+    - `history/tasks/luc-2905-gap-register-and-repair-lane-refresh-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2906 [Soar][QA/Test][LUC-2905] Controlled live proof waitForRunningSession missing-test link`
+  - Status: `DONE`
+  - Scope: local QA/Test proof and architecture relation repair for
+    `scripts/runControlledLiveSessionProof.mjs#waitForRunningSession`; no
+    controlled LIVE proof, `--i-understand-live-risk`, production auth,
+    protected smoke, bot activation/deactivation, order, position, exchange,
+    database, deploy, push, restart, rollback, secret, account, or
+    live-trading mutation.
+  - Implementation:
+    - exported `waitForRunningSession` for focused local proof while preserving
+      runtime behavior;
+    - added deterministic local coverage for first RUNNING runtime-session
+      detection through the bounded readback path in
+      `scripts/runControlledLiveSessionProof.test.mjs`;
+    - added one scanner-readable `LUC-2906` relation row to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runControlledLiveSessionProof.mjs` PASS.
+    - `node --check scripts/runControlledLiveSessionProof.test.mjs` PASS.
+    - `node scripts/runControlledLiveSessionProof.mjs --help` PASS.
+    - direct relation readback PASS (`1` row).
+    - `node --test scripts/runControlledLiveSessionProof.test.mjs` PASS
+      (`30/30`).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`15038` entities /
+      `34420` relations / `9733` files); refreshed report generated
+      `2026-06-07T18:49:12.396Z` reports `251` actionable missing-test links
+      and no longer lists `scripts/runControlledLiveSessionProof.mjs#waitForRunningSession`.
+    - `pnpm run quality:guardrails` PASS.
+  - Residual risk:
+    - remaining top missing-test links are separate generated-index, go-live
+      smoke, cutover, known-state, and local-gate helper families.
+  - Evidence:
+    - `history/tasks/luc-2906-controlled-live-proof-waitforrunningsession-missing-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2904 [Soar][QA/Test][LUC-2901] Controlled live proof updateBotActiveState missing-test link`
+  - Status: `DONE`
+  - Scope: local QA/Test proof and architecture relation repair for
+    `scripts/runControlledLiveSessionProof.mjs#updateBotActiveState`; no
+    controlled LIVE proof, `--i-understand-live-risk`, production auth,
+    protected smoke, bot activation/deactivation, order, position, exchange,
+    database, deploy, push, restart, rollback, secret, account, or
+    live-trading mutation.
+  - Implementation:
+    - exported `updateBotActiveState` for focused local proof while preserving
+      runtime behavior;
+    - added deterministic local coverage for encoded bot endpoint `PUT`, auth
+      header propagation, timeout signal, and preserved live-safety payload
+      fields in `scripts/runControlledLiveSessionProof.test.mjs`;
+    - added one scanner-readable `LUC-2904` relation row to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runControlledLiveSessionProof.mjs` PASS.
+    - `node --check scripts/runControlledLiveSessionProof.test.mjs` PASS.
+    - `node scripts/runControlledLiveSessionProof.mjs --help` PASS.
+    - direct relation readback PASS (`1` row).
+    - `node --test scripts/runControlledLiveSessionProof.test.mjs` PASS
+      (`29/29`).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`15036` entities /
+      `34411` relations / `9732` files); refreshed report generated
+      `2026-06-07T18:35:45.780Z` reports `252` actionable missing-test links
+      and no longer lists `scripts/runControlledLiveSessionProof.mjs#updateBotActiveState`.
+    - `pnpm run quality:guardrails` PASS.
+  - Residual risk:
+    - remaining controlled LIVE proof helper missing-test link is a separate
+      anchor: `waitForRunningSession`.
+  - Evidence:
+    - `history/tasks/luc-2904-controlled-live-proof-updatebotactivestate-missing-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2899 [Soar][QA/Test][LUC-2898] Controlled live proof sleep missing-test link`
+  - Status: `DONE`
+  - Scope: local QA/Test proof and architecture relation repair for
+    `scripts/runControlledLiveSessionProof.mjs#sleep`; no controlled LIVE
+    proof, `--i-understand-live-risk`, production auth, protected smoke, bot
+    activation/deactivation, order, position, exchange, database, deploy, push,
+    restart, rollback, secret, account, or live-trading mutation.
+  - Implementation:
+    - exported `sleep` for focused local proof while preserving runtime
+      behavior;
+    - added deterministic fake-timer coverage proving `sleep` resolves only
+      after the requested timeout elapses in
+      `scripts/runControlledLiveSessionProof.test.mjs`;
+    - added one scanner-readable `LUC-2899` relation row to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runControlledLiveSessionProof.mjs` PASS.
+    - `node --check scripts/runControlledLiveSessionProof.test.mjs` PASS.
+    - `node scripts/runControlledLiveSessionProof.mjs --help` PASS.
+    - direct relation readback PASS (`1` row).
+    - `node --test scripts/runControlledLiveSessionProof.test.mjs` PASS
+      (`28/28`).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness final post-state refresh PASS
+      (`15032` entities / `34400` relations / `9730` files); refreshed report
+      generated `2026-06-07T18:22:57.549Z` reports `253` actionable missing-test links
+      and no longer lists `scripts/runControlledLiveSessionProof.mjs#sleep`.
+    - `pnpm run quality:guardrails` PASS.
+  - Residual risk:
+    - remaining controlled LIVE proof helper missing-test links are separate
+      anchors: `updateBotActiveState` and `waitForRunningSession`.
+  - Evidence:
+    - `history/tasks/luc-2899-controlled-live-proof-sleep-missing-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2898 [Soar] V1 audit-to-completion controller`
+  - Status: `DONE / DELEGATED`
+  - Scope: TSA controller checkpoint, architecture-awareness gap readback,
+    duplicate filtering, and child-lane creation only; no code, runtime,
+    deploy, push, restart, rollback, env, account, secret, protected-smoke,
+    database, exchange, order, position, or live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2898](/LUC/issues/LUC-2898).
+    - `corepack pnpm softwarehouse:control-tick` failed because
+      `softwarehouse:control-tick` is not exposed in this checkout.
+    - Current architecture-awareness report generated
+      `2026-06-07T18:13:10.381Z` reports `254` actionable missing-test links.
+    - Duplicate searches found existing blocked [LUC-2791](/LUC/issues/LUC-2791)
+      for generated function/user-action index helpers and existing blocked
+      [LUC-2792](/LUC/issues/LUC-2792) plus [LUC-2873](/LUC/issues/LUC-2873)
+      for `goLiveSmoke` helpers.
+    - Duplicate searches for `runControlledLiveSessionProof sleep`,
+      `updateBotActiveState`, and `waitForRunningSession` returned no open
+      matching lane.
+  - Disposition:
+    - created [LUC-2899](/LUC/issues/LUC-2899) for QA/Test to cover or
+      classify `scripts/runControlledLiveSessionProof.mjs#sleep`.
+  - Evidence:
+    - `history/tasks/luc-2898-v1-audit-to-completion-controller-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2896 [Soar][QA/Test][LUC-2893] Controlled live proof runSimultaneousRuntimeReadback missing-test link`
+  - Status: `DONE`
+  - Scope: local QA/Test proof and architecture relation repair for
+    `scripts/runControlledLiveSessionProof.mjs#runSimultaneousRuntimeReadback`;
+    no controlled LIVE proof, `--i-understand-live-risk`, production auth,
+    protected smoke, bot activation/deactivation, order, position, exchange,
+    database, deploy, push, restart, rollback, secret, account, or
+    live-trading mutation.
+  - Implementation:
+    - added an injectable spawn/env/execPath seam while preserving direct CLI
+      defaults;
+    - added local coverage for skip-without-output, non-Gate.io readback
+      collector env/artifact spawning, and non-zero collector exit rejection in
+      `scripts/runControlledLiveSessionProof.test.mjs`;
+    - added one scanner-readable `LUC-2896` relation row to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runControlledLiveSessionProof.mjs` PASS.
+    - `node --check scripts/runControlledLiveSessionProof.test.mjs` PASS.
+    - `node scripts/runControlledLiveSessionProof.mjs --help` PASS.
+    - direct relation readback PASS (`1` row).
+    - `node --test scripts/runControlledLiveSessionProof.test.mjs` PASS
+      (`27/27`).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh first timed out at `180s`;
+      retry plus final post-state refresh PASS (`15028` entities / `34382`
+      relations / `9728` files); refreshed report generated
+      `2026-06-07T18:13:10.381Z` reports `254`
+      actionable missing-test links and no longer lists
+      `scripts/runControlledLiveSessionProof.mjs#runSimultaneousRuntimeReadback`.
+    - `pnpm run quality:guardrails` PASS.
+  - Residual risk:
+    - remaining controlled LIVE proof helper missing-test links, if any, are
+      separate anchors and require separate scoped issues.
+  - Evidence:
+    - `history/tasks/luc-2896-controlled-live-proof-runsimultaneousruntimereadback-missing-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2893 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED`
+  - Scope: PM queue readback, duplicate filtering, and child-lane creation
+    only; no code, runtime, deploy, push, restart, rollback, env, account,
+    secret, protected-smoke, database, exchange, order, position, or
+    live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2893](/LUC/issues/LUC-2893).
+    - `corepack pnpm softwarehouse:control-tick` failed because
+      `softwarehouse:control-tick` is not exposed in this checkout.
+    - Current architecture-awareness report generated
+      `2026-06-07T17:33:58.207Z` reports `255` actionable missing-test links
+      and still lists
+      `scripts/runControlledLiveSessionProof.mjs#runSimultaneousRuntimeReadback`.
+    - Duplicate search for `runSimultaneousRuntimeReadback` returned `0`
+      matching issues.
+  - Disposition:
+    - created [LUC-2896](/LUC/issues/LUC-2896) for QA/Verification to cover or
+      classify
+      `scripts/runControlledLiveSessionProof.mjs#runSimultaneousRuntimeReadback`.
+  - Evidence:
+    - `history/tasks/luc-2893-no-stall-queue-expeditor-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2892 [Soar][Test Automation][LUC-2889] Controlled live proof runCollector missing-test link`
+  - Status: `DONE`
+  - Scope: local Test Automation proof and architecture relation repair for
+    `scripts/runControlledLiveSessionProof.mjs#runCollector`; no controlled
+    LIVE proof, `--i-understand-live-risk`, production auth, protected smoke,
+    bot activation/deactivation, order, position, exchange, database, deploy,
+    push, restart, rollback, secret, account, or live-trading mutation.
+  - Implementation:
+    - added an injectable spawn/env/execPath seam while preserving direct CLI
+      defaults;
+    - added local coverage for collector child-process arguments, auth/ops env
+      propagation, inherited env preservation, and non-zero collector exit
+      rejection in `scripts/runControlledLiveSessionProof.test.mjs`;
+    - added one scanner-readable `LUC-2892` relation row to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runControlledLiveSessionProof.mjs` PASS.
+    - `node --check scripts/runControlledLiveSessionProof.test.mjs` PASS.
+    - `node scripts/runControlledLiveSessionProof.mjs --help` PASS.
+    - direct relation readback PASS (`1` row).
+    - `node --test scripts/runControlledLiveSessionProof.test.mjs` PASS
+      (`24/24`).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`15022` entities /
+      `34359` relations / `9725` files); refreshed report generated
+      `2026-06-07T17:33:58.207Z` reports `255` actionable missing-test links
+      and no longer lists `scripts/runControlledLiveSessionProof.mjs#runCollector`.
+    - `pnpm run quality:guardrails` PASS.
+  - Residual risk:
+    - remaining controlled LIVE proof helper missing-test links are separate
+      anchors and require separate scoped issues.
+  - Evidence:
+    - `history/tasks/luc-2892-controlled-live-proof-runcollector-missing-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2889 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED`
+  - Scope: PM queue readback, duplicate filtering, and child-lane creation
+    only; no code, runtime, deploy, push, restart, rollback, env, account,
+    secret, protected-smoke, database, exchange, order, position, or
+    live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2889](/LUC/issues/LUC-2889).
+    - `corepack pnpm softwarehouse:control-tick` failed because
+      `softwarehouse:control-tick` is not exposed in this checkout.
+    - Current architecture-awareness report generated
+      `2026-06-07T17:04:43.730Z` reports `256` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - Open non-terminal duplicate search for
+      `runControlledLiveSessionProof.mjs#runCollector` / `runCollector`
+      returned no matching issue.
+  - Disposition:
+    - created [LUC-2892](/LUC/issues/LUC-2892) for Test Automation Engineer to
+      cover or classify
+      `scripts/runControlledLiveSessionProof.mjs#runCollector`.
+  - Evidence:
+    - `history/tasks/luc-2889-no-stall-queue-expeditor-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2886 [Soar][Test Automation][LUC-2883] Controlled live proof resolveBuildInfo missing-test link`
+  - Status: `DONE`
+  - Scope: local Test Automation proof and architecture relation repair for
+    `scripts/runControlledLiveSessionProof.mjs#resolveBuildInfo`; no controlled
+    LIVE proof, `--i-understand-live-risk`, production auth, protected smoke,
+    bot activation/deactivation, order, position, exchange, database, deploy,
+    push, restart, rollback, secret, account, or live-trading mutation.
+  - Implementation:
+    - added direct local coverage for public build-info readback, expected SHA
+      prefix matching, and mismatch reporting in
+      `scripts/runControlledLiveSessionProof.test.mjs`;
+    - added one scanner-readable `LUC-2886` relation row to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runControlledLiveSessionProof.mjs` PASS.
+    - `node --check scripts/runControlledLiveSessionProof.test.mjs` PASS.
+    - `node scripts/runControlledLiveSessionProof.mjs --help` PASS.
+    - direct relation readback PASS (`1` row).
+    - `node --test scripts/runControlledLiveSessionProof.test.mjs` PASS
+      (`22/22`).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`15018` entities /
+      `34345` relations / `9723` files); refreshed report generated
+      `2026-06-07T17:04:43.730Z` reports `256` actionable missing-test links
+      and no longer lists
+      `scripts/runControlledLiveSessionProof.mjs#resolveBuildInfo`.
+    - `pnpm run quality:guardrails` PASS.
+  - Residual risk:
+    - remaining controlled LIVE proof helper missing-test links are separate
+      anchors and require separate scoped issues.
+  - Evidence:
+    - `history/tasks/luc-2886-controlled-live-proof-resolvebuildinfo-missing-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2882 [Soar][Test Automation][LUC-2881] Controlled live proof redactBot missing-test link`
+  - Status: `DONE`
+  - Scope: local Test Automation proof and architecture relation repair for
+    `scripts/runControlledLiveSessionProof.mjs#redactBot`; no controlled LIVE
+    proof, `--i-understand-live-risk`, production auth, protected smoke, bot
+    activation/deactivation, order, position, exchange, database, deploy,
+    push, restart, rollback, secret, account, or live-trading mutation.
+  - Implementation:
+    - added direct local coverage for `redactBot` nullable-safe redaction shape
+      and raw optional identifier/private-note omission in
+      `scripts/runControlledLiveSessionProof.test.mjs`;
+    - added one scanner-readable `LUC-2882` relation row to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runControlledLiveSessionProof.mjs` PASS.
+    - `node --check scripts/runControlledLiveSessionProof.test.mjs` PASS.
+    - `node scripts/runControlledLiveSessionProof.mjs --help` PASS.
+    - direct relation readback PASS (`1` row).
+    - `node --test scripts/runControlledLiveSessionProof.test.mjs` PASS
+      (`20/20`).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`15016` entities /
+      `34337` relations / `9722` files); refreshed report generated
+      `2026-06-07T16:51:54.244Z` reports `257` actionable missing-test links
+      and no longer lists `scripts/runControlledLiveSessionProof.mjs#redactBot`.
+    - `pnpm run quality:guardrails` PASS.
+  - Residual risk:
+    - remaining controlled LIVE proof helper missing-test links are separate
+      anchors and require separate scoped issues.
+  - Evidence:
+    - `history/tasks/luc-2882-controlled-live-proof-redactbot-missing-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2881 [Soar] Gap register and repair lane refresh`
+  - Status: `DONE / DELEGATED`
+  - Scope: TSA gap-register refresh, duplicate filtering, and repair-lane
+    routing only; no code, runtime, deploy, push, restart, rollback, env,
+    account, secret, protected-smoke, database, exchange, order, position, or
+    live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2881](/LUC/issues/LUC-2881).
+    - `docs/status/architecture-awareness-report.md` generated
+      `2026-06-07T16:44:48.491Z` reports `258` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - Duplicate search confirmed [LUC-2878](/LUC/issues/LUC-2878) already
+      owns `scripts/runControlledLiveSessionProof.mjs#printUsage`.
+    - Duplicate search for `runControlledLiveSessionProof redactBot` returned
+      no matching issue.
+  - Disposition:
+    - created [LUC-2882](/LUC/issues/LUC-2882) for Test Automation to cover or
+      classify `scripts/runControlledLiveSessionProof.mjs#redactBot`.
+  - Evidence:
+    - `history/tasks/luc-2881-gap-register-and-repair-lane-refresh-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2878 [Soar][Test Automation][LUC-2875] Controlled live proof printUsage missing-test link`
+  - Status: `DONE`
+  - Scope: local Test Automation proof and architecture relation repair for
+    `scripts/runControlledLiveSessionProof.mjs#printUsage`; no controlled LIVE
+    proof, `--i-understand-live-risk`, production auth, protected smoke, bot
+    activation/deactivation, order, position, exchange, database, deploy,
+    push, restart, rollback, secret, account, or live-trading mutation.
+  - Implementation:
+    - added direct injected-stdout coverage for `printUsage` in
+      `scripts/runControlledLiveSessionProof.test.mjs`;
+    - added one scanner-readable `LUC-2878` relation row to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runControlledLiveSessionProof.mjs` PASS.
+    - `node --check scripts/runControlledLiveSessionProof.test.mjs` PASS.
+    - `node scripts/runControlledLiveSessionProof.mjs --help` PASS.
+    - direct relation readback PASS (`1` row).
+    - `node --test scripts/runControlledLiveSessionProof.test.mjs` PASS
+      (`19/19`).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`15012` entities /
+      `34320` relations / `9720` files); refreshed report generated
+      `2026-06-07T16:44:48.491Z` reports `258` actionable missing-test links
+      and no longer lists `scripts/runControlledLiveSessionProof.mjs#printUsage`.
+    - `pnpm run quality:guardrails` PASS.
+  - Residual risk:
+    - remaining controlled LIVE proof helper missing-test links are separate
+      anchors and require separate scoped issues.
+  - Evidence:
+    - `history/tasks/luc-2878-controlled-live-proof-printusage-missing-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2879 [Soar][Frontend/Ops] Read-only diagnose Web Server Action deploy mismatch`
+  - Status: `DONE / OPS FOLLOW-UP RECOMMENDED`
+  - Scope: FEW read-only diagnosis only; no deploy, restart, rollback, env
+    edit, protected smoke, account mutation, secret readback, raw private log
+    persistence, or live-trading action.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2879](/LUC/issues/LUC-2879).
+    - Public Web `/api/build-info` still reports
+      `gitSha=56d8d440bfe0fd9ee692e9f669e35414d85d2493`,
+      `gitRef=main`, `metadataSource=github-branch`, and
+      `buildId=Xnn0H5fuVVTeahYMA8tvy`.
+    - Local `HEAD` is
+      `ed0f1aeb0e60392fe553f46d4931f9d9742f6aec`, after the
+      LUC-2506 source provenance fix.
+    - `node scripts/waitForWebBuildInfo.mjs --build-info-url
+      https://soar.luckysparrow.ch/api/build-info --expected-sha ed0f1aeb
+      --timeout-seconds 1 --interval-seconds 1` failed closed on the stale
+      SHA and unaccepted `metadataSource=github-branch`.
+    - Source review found current `apps/web/Dockerfile` and
+      `scripts/writeWebBuildMetadata.mjs` are prepared for authoritative
+      build-time provenance, while production still exposes the old
+      branch-head metadata behavior.
+  - Disposition:
+    - leading cause is stale or mixed production `soar-web` deployment/image,
+      not a primary browser-cache-only issue;
+    - created [LUC-2880](/LUC/issues/LUC-2880) for DRE/Ops to request approval
+      for controlled `soar-web` redeploy from the selected commit with
+      `SOURCE_COMMIT`/`SOURCE_BRANCH` build metadata and post-deploy
+      G3/G4/G5/G7 smoke plus redacted Server Action log recurrence scan.
+  - Evidence:
+    - `history/tasks/luc-2879-web-server-action-deploy-mismatch-diagnosis-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2875 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED`
+  - Scope: PM queue readback, duplicate filtering, and child-lane creation
+    only; no code, runtime, deploy, push, restart, rollback, env, account,
+    secret, protected-smoke, database, exchange, order, position, or
+    live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2875](/LUC/issues/LUC-2875).
+    - `corepack pnpm softwarehouse:control-tick` failed because
+      `softwarehouse:control-tick` is not exposed in this checkout.
+    - Current architecture-awareness report generated
+      `2026-06-07T16:22:29.154Z` reports `291` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - Duplicate search for `runControlledLiveSessionProof printUsage` returned
+      no matching issue.
+  - Disposition:
+    - created [LUC-2878](/LUC/issues/LUC-2878) for Test Automation Engineer to
+      cover or classify `scripts/runControlledLiveSessionProof.mjs#printUsage`.
+  - Evidence:
+    - `history/tasks/luc-2875-no-stall-queue-expeditor-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2864 [Soar][Test Automation][LUC-2861] Controlled live proof main missing-test link`
+  - Status: `DONE`
+  - Scope: local Test Automation proof and architecture relation repair for
+    `scripts/runControlledLiveSessionProof.mjs#main`; no controlled LIVE
+    proof, `--i-understand-live-risk`, production auth, protected smoke, bot
+    activation/deactivation, order, position, exchange, database, deploy,
+    push, restart, rollback, secret, account, or live-trading mutation.
+  - Implementation:
+    - made `main` accept injected argv/env/stdout/auth-resolver dependencies
+      for deterministic local proof while preserving direct CLI defaults;
+    - extended `scripts/runControlledLiveSessionProof.test.mjs` with safe
+      `--help` and `--dry-run` proof that avoids auth resolution, fetch/network
+      calls, and LIVE activation;
+    - added one scanner-readable `LUC-2864` relation row to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runControlledLiveSessionProof.mjs` PASS.
+    - `node --check scripts/runControlledLiveSessionProof.test.mjs` PASS.
+    - `node scripts/runControlledLiveSessionProof.mjs --help` PASS.
+    - direct relation readback PASS (`1` row).
+    - `node --test scripts/runControlledLiveSessionProof.test.mjs` PASS
+      (`18/18`).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`14991` entities /
+      `34194` relations / `9710` files); refreshed report generated
+      `2026-06-07T16:04:40.640Z` reports `291` actionable missing-test links
+      and no longer lists `scripts/runControlledLiveSessionProof.mjs#main`.
+    - `pnpm run quality:guardrails` PASS.
+  - Residual risk:
+    - `scripts/runControlledLiveSessionProof.mjs#printUsage` is now the next
+      controlled-proof helper visible in Top Actionable Missing Test Links.
+  - Evidence:
+    - `history/tasks/luc-2864-controlled-live-proof-main-missing-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2861 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED`
+  - Scope: PM queue readback, duplicate filtering, and child-lane creation
+    only; no code, runtime, deploy, push, restart, rollback, env, account,
+    secret, protected-smoke, database, exchange, order, position, or
+    live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2861](/LUC/issues/LUC-2861).
+    - `corepack pnpm softwarehouse:control-tick` failed because
+      `softwarehouse:control-tick` is not exposed in this checkout.
+    - Current architecture-awareness report generated
+      `2026-06-07T15:35:25.877Z` reports `293` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - Duplicate search for `runControlledLiveSessionProof main` returned no
+      open matching lane.
+  - Disposition:
+    - created [LUC-2864](/LUC/issues/LUC-2864) for Test Automation Engineer to
+      cover or classify `scripts/runControlledLiveSessionProof.mjs#main`.
+  - Evidence:
+    - `history/tasks/luc-2861-no-stall-queue-expeditor-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2860 [Soar][Test Automation][LUC-2857] Controlled live proof listRunningSessions missing-test link`
+  - Status: `DONE`
+  - Scope: local Test Automation proof and architecture relation repair for
+    `scripts/runControlledLiveSessionProof.mjs#listRunningSessions`; no
+    controlled LIVE proof, production auth, protected smoke, bot
+    activation/deactivation, order, position, exchange, database, deploy,
+    push, restart, rollback, secret, account, or live-trading mutation.
+  - Implementation:
+    - exported the existing `listRunningSessions` helper for focused local
+      proof;
+    - extended `scripts/runControlledLiveSessionProof.test.mjs` with
+      fake-fetch proof for the bounded target-bot running-session readback and
+      non-array payload fail-closed handling;
+    - added one scanner-readable `LUC-2860` relation row to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runControlledLiveSessionProof.mjs` PASS.
+    - `node --check scripts/runControlledLiveSessionProof.test.mjs` PASS.
+    - `node scripts/runControlledLiveSessionProof.mjs --help` PASS.
+    - `node --test scripts/runControlledLiveSessionProof.test.mjs` PASS
+      (`16/16`).
+    - direct relation readback PASS (`1` row).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`14988` entities /
+      `34178` relations / `9708` files); refreshed report generated
+      `2026-06-07T15:35:25.877Z` reports `293` actionable missing-test links
+      and no longer lists `listRunningSessions` in Top Actionable Missing Test
+      Links.
+    - `pnpm run quality:guardrails` PASS.
+  - Residual risk:
+    - generated function/user-action index helpers remain separate actionable
+      missing-test families and are already deduped by prior parent routing.
+  - Evidence:
+    - `history/tasks/luc-2860-controlled-live-proof-listrunningsessions-missing-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2846 [Soar] Gap register and repair lane refresh`
+  - Status: `DONE / DELEGATED`
+  - Scope: TSA gap-register refresh, duplicate filtering, and repair-lane
+    routing only; no product-code, runtime, deploy, push, restart, rollback,
+    env, account, secret, protected-smoke, database, exchange, order, position,
+    or live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2846](/LUC/issues/LUC-2846).
+    - `docs/status/architecture-awareness-report.md` generated
+      `2026-06-07T14:36:46.412Z` reports `295` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - Duplicate searches confirmed [LUC-2845](/LUC/issues/LUC-2845) is `done`
+      for `fetchJson` and found no open `hashId` lane.
+    - Direct relation readback confirms `fetchJson` has a relation row; `hashId`
+      still needs one.
+  - Disposition:
+    - created [LUC-2847](/LUC/issues/LUC-2847) for Test Automation Engineer to
+      cover or classify `scripts/runControlledLiveSessionProof.mjs#hashId`.
+  - Evidence:
+    - `history/tasks/luc-2846-gap-register-and-repair-lane-refresh-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2847 [Soar][Test Automation][LUC-2846] Controlled live proof hashId missing-test link`
+  - Status: `DONE`
+  - Scope: local Test Automation proof and architecture relation repair for
+    `scripts/runControlledLiveSessionProof.mjs#hashId`; no controlled LIVE
+    proof, production auth, protected smoke, bot activation/deactivation,
+    order, position, exchange, database, deploy, push, restart, rollback,
+    secret, account, or live-trading mutation.
+  - Implementation:
+    - extended `scripts/runControlledLiveSessionProof.test.mjs` with local
+      proof for stable `hashId` behavior and `redactBot` omission of raw
+      identifiers;
+    - added one scanner-readable `LUC-2847` relation row to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runControlledLiveSessionProof.mjs` PASS.
+    - `node --check scripts/runControlledLiveSessionProof.test.mjs` PASS.
+    - `node scripts/runControlledLiveSessionProof.mjs --help` PASS.
+    - `node --test scripts/runControlledLiveSessionProof.test.mjs` PASS
+      (`14/14`).
+    - direct relation readback PASS (`1` row).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`14984` entities /
+      `34166` relations / `9706` files); refreshed report generated
+      `2026-06-07T14:50:02.331Z` reports `294` actionable missing-test links
+      and no longer contains `hashId`.
+    - `pnpm run quality:guardrails` PASS.
+  - Residual risk:
+    - `scripts/runControlledLiveSessionProof.mjs#listRunningSessions` is now
+      the controlled-proof helper visible in Top Actionable Missing Test
+      Links.
+  - Evidence:
+    - `history/tasks/luc-2847-controlled-live-proof-hashid-missing-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2834 [Soar][Test Automation][LUC-2829] Controlled live proof target discovery missing-test link`
+  - Status: `DONE`
+  - Scope: local Test Automation proof and architecture relation repair for
+    `scripts/runControlledLiveSessionProof.mjs#discoverTargetBot`; no
+    controlled LIVE proof, production auth, protected smoke, bot
+    activation/deactivation, order, position, exchange, database, deploy,
+    push, restart, rollback, secret, account, or live-trading mutation.
+  - Implementation:
+    - extended `scripts/runControlledLiveSessionProof.test.mjs` with
+      fake-fetch proof for explicit bot-id lookup, exactly-one LIVE Futures
+      auto-discovery, no eligible LIVE target, ambiguous LIVE target sets, and
+      malformed bot-list payloads;
+    - added one scanner-readable `LUC-2834` relation row to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runControlledLiveSessionProof.mjs` PASS.
+    - `node --check scripts/runControlledLiveSessionProof.test.mjs` PASS.
+    - `node scripts/runControlledLiveSessionProof.mjs --help` PASS.
+    - `node --test scripts/runControlledLiveSessionProof.test.mjs` PASS
+      (`9/9`).
+    - direct relation readback PASS (`1` row).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`14973` entities /
+      `24249` relations / `9702` files); refreshed report generated
+      `2026-06-07T14:27:25.348Z` reports `296` actionable missing-test links
+      and no longer lists `discoverTargetBot` in Top Actionable Missing Test
+      Links.
+    - `pnpm run quality:guardrails` PASS.
+  - Residual risk:
+    - `scripts/runControlledLiveSessionProof.mjs#fetchJson` remains a
+      separate missing-test link in the refreshed report.
+  - Evidence:
+    - `history/tasks/luc-2834-controlled-live-proof-target-discovery-missing-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2827 [Soar][Test Automation][LUC-2826] Controlled live proof no-order guard missing-test link`
+  - Status: `DONE`
+  - Scope: local Test Automation proof and architecture relation repair for
+    `scripts/runControlledLiveSessionProof.mjs#assertNoOrderGuardActive`; no
+    controlled LIVE proof, production auth, protected smoke, bot
+    activation/deactivation, order, position, exchange, database, deploy,
+    push, restart, rollback, secret, account, or live-trading mutation.
+  - Implementation:
+    - made `scripts/runControlledLiveSessionProof.mjs` import-safe while
+      preserving direct CLI behavior;
+    - exported narrow local-test seams for controlled LIVE proof safety
+      helpers;
+    - added `scripts/runControlledLiveSessionProof.test.mjs` for no-order
+      guard readiness, fail-closed readiness gaps, HTTP failure surfacing,
+      unsafe option rejection, target bot safety, and activation payload
+      construction;
+    - added four scanner-readable `LUC-2827` relation rows to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runControlledLiveSessionProof.mjs` PASS.
+    - `node --check scripts/runControlledLiveSessionProof.test.mjs` PASS.
+    - `node scripts/runControlledLiveSessionProof.mjs --help` PASS.
+    - `node --test scripts/runControlledLiveSessionProof.test.mjs` PASS
+      (`6/6`).
+    - direct relation readback PASS (`4` rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`14971` entities /
+      `24245` relations / `9701` files); refreshed report generated
+      `2026-06-07T14:20:01.406Z` reports `297` actionable missing-test links
+      and no longer lists `assertNoOrderGuardActive` in Top Actionable Missing
+      Test Links.
+    - `pnpm run quality:guardrails` PASS.
+  - Residual risk:
+    - `scripts/runControlledLiveSessionProof.mjs#discoverTargetBot` remains a
+      separate missing-test link in the refreshed report.
+  - Evidence:
+    - `history/tasks/luc-2827-controlled-live-proof-no-order-guard-missing-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2826 [Soar] V1 audit-to-completion controller`
+  - Status: `DONE / DELEGATED`
+  - Scope: TSA controller checkpoint, architecture-awareness gap readback,
+    duplicate filtering, and child-lane creation only; no code/runtime/deploy/
+    push/restart/rollback/env/account/secret/protected-smoke/Docker Compose/
+    database/exchange/live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2826](/LUC/issues/LUC-2826).
+    - `corepack pnpm softwarehouse:control-tick` failed because
+      `softwarehouse:control-tick` is not exposed in this checkout.
+    - Current architecture-awareness report generated
+      `2026-06-07T14:06:33.692Z` reports `305` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - Duplicate searches found existing blocked [LUC-2791](/LUC/issues/LUC-2791)
+      for generated function/user-action index helpers and existing blocked
+      [LUC-2792](/LUC/issues/LUC-2792) for go-live smoke helpers.
+    - Duplicate search for `runControlledLiveSessionProof assertNoOrderGuardActive`
+      returned no open matching lane.
+  - Disposition:
+    - created [LUC-2827](/LUC/issues/LUC-2827) for Test Automation Engineer to
+      cover or classify
+      `scripts/runControlledLiveSessionProof.mjs#assertNoOrderGuardActive`
+      with a local-only proof boundary.
+  - Evidence:
+    - `history/tasks/luc-2826-v1-audit-to-completion-controller-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2824 [Soar][Test Automation][LUC-2821] Cover backup verification profile env helper missing-test link`
+  - Status: `DONE`
+  - Scope: local Test Automation proof and architecture relation repair for
+    `scripts/runBackupVerificationProfile.mjs#firstNonEmptyEnv`; no Docker
+    Compose startup, real backup/restore command, real Prisma command, DB
+    mutation, production browser, protected smoke, deploy, push, restart,
+    rollback, account, secret, exchange, database, or live-trading mutation.
+  - Implementation:
+    - made `scripts/runBackupVerificationProfile.mjs` import-safe while
+      preserving direct CLI behavior;
+    - exported injectable seams for `firstNonEmptyEnv`, `parseArgs`,
+      `printUsage`, `resolveOptions`, `run`, and `main`;
+    - added `scripts/runBackupVerificationProfile.test.mjs` for fake-env
+      selection, profile option resolution, non-local missing-container
+      fail-closed behavior, CLI override parsing, injected main execution, and
+      injected spawn behavior;
+    - added six scanner-readable `LUC-2824` relation rows to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runBackupVerificationProfile.mjs` PASS.
+    - `node --check scripts/runBackupVerificationProfile.test.mjs` PASS.
+    - `node scripts/runBackupVerificationProfile.mjs --help` PASS.
+    - `node --test scripts/runBackupVerificationProfile.test.mjs` PASS
+      (`6/6`).
+    - direct relation readback PASS (`6` rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`14965` entities /
+      `24227` relations / `9698` files); refreshed report generated
+      `2026-06-07T14:06:33.692Z` reports `305` actionable missing-test links
+      and no longer lists `runBackupVerificationProfile` or
+      `firstNonEmptyEnv` in Top Actionable Missing Test Links.
+    - `pnpm run quality:guardrails` PASS.
+  - Evidence:
+    - `history/tasks/luc-2824-backup-verification-profile-env-helper-missing-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2821 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED`
+  - Scope: PM queue readback, duplicate filtering, and child-lane creation
+    only; no code, runtime, deploy, push, restart, rollback, env, account,
+    secret, protected-smoke, Docker Compose, backup/restore, database,
+    exchange, or live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2821](/LUC/issues/LUC-2821).
+    - `corepack pnpm softwarehouse:control-tick` failed because the command is
+      not exposed in this checkout.
+    - Current architecture-awareness report generated
+      `2026-06-07T13:36:23.702Z` reports `311` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - Duplicate searches found existing blocked [LUC-2791](/LUC/issues/LUC-2791)
+      for generator-index helpers and blocked [LUC-2792](/LUC/issues/LUC-2792)
+      for go-live smoke helpers.
+    - Duplicate searches for `runBackupVerificationProfile firstNonEmptyEnv`
+      and `runBackupVerificationProfile` returned no open matching lane.
+  - Disposition:
+    - created [LUC-2824](/LUC/issues/LUC-2824) for Test Automation Engineer to
+      cover or classify
+      `scripts/runBackupVerificationProfile.mjs#firstNonEmptyEnv`.
+  - Evidence:
+    - `history/tasks/luc-2821-no-stall-queue-expeditor-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2820 [Soar][Test Automation][LUC-2817] Cover runAud07 isolated DB runner main missing-test link`
+  - Status: `DONE`
+  - Scope: local Test Automation proof and architecture relation repair for
+    `scripts/runAud07IsolatedDbPacks.mjs#main`; no Docker Compose startup,
+    real Prisma command, DB mutation, production browser, protected smoke,
+    deploy, push, restart, rollback, account, secret, exchange, database, or
+    live-trading mutation.
+  - Implementation:
+    - made `scripts/runAud07IsolatedDbPacks.mjs` import-safe while preserving
+      direct CLI behavior;
+    - exported injectable seams for `packs`, `pnpmArgs`, `run`, and `main`;
+    - added `scripts/runAud07IsolatedDbPacks.test.mjs` for safe `--list`,
+      sequential pack orchestration, pnpm argument construction, and non-zero
+      child exit fail-closed behavior;
+    - added three scanner-readable `LUC-2820` relation rows to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runAud07IsolatedDbPacks.mjs` PASS.
+    - `node --check scripts/runAud07IsolatedDbPacks.test.mjs` PASS.
+    - `node scripts/runAud07IsolatedDbPacks.mjs --list` PASS.
+    - `node --test scripts/runAud07IsolatedDbPacks.test.mjs` PASS (`4/4`).
+    - direct relation readback PASS (`3` rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`14960` entities /
+      `24213` relations / `9695` files); refreshed report generated
+      `2026-06-07T13:36:23.702Z` reports `311` actionable missing-test links
+      and no longer lists `runAud07IsolatedDbPacks.mjs#main` in Top Actionable
+      Missing Test Links.
+    - `pnpm run quality:guardrails` PASS.
+  - Evidence:
+    - `history/tasks/luc-2820-runaud07-isolated-db-runner-main-missing-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2817 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED`
+  - Scope: PM queue readback, duplicate filtering, and child-lane creation
+    only; no code, runtime, deploy, push, restart, rollback, env, account,
+    secret, protected-smoke, Docker Compose, database, exchange, or
+    live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2817](/LUC/issues/LUC-2817).
+    - `corepack pnpm softwarehouse:control-tick` failed because the command is
+      not exposed in this checkout.
+    - Current architecture-awareness report generated
+      `2026-06-07T13:04:38.451Z` reports `314` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - Duplicate searches found existing blocked [LUC-2791](/LUC/issues/LUC-2791)
+      for generator-index helpers and blocked [LUC-2792](/LUC/issues/LUC-2792)
+      for go-live smoke helpers.
+    - Duplicate searches for `runAud07IsolatedDbPacks`,
+      `AUD07 isolated db runner`, and `isolated db packs` returned no open
+      matching lane.
+  - Disposition:
+    - created [LUC-2820](/LUC/issues/LUC-2820) for Test Automation Engineer to
+      cover or classify `scripts/runAud07IsolatedDbPacks.mjs#main`.
+  - Evidence:
+    - `history/tasks/luc-2817-no-stall-queue-expeditor-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2812 [Soar][Test Automation][LUC-2809] Cover dev-workers handleWorkerExit missing-test link`
+  - Status: `DONE`
+  - Scope: local Test Automation relation repair for
+    `scripts/dev-workers.mjs#handleWorkerExit`; no dev worker process,
+    Docker Compose, DB/Redis mutation, real Prisma command, product runtime
+    behavior, deploy, push, restart, rollback, production smoke, account,
+    secret, exchange, database, or live-trading mutation.
+  - Implementation:
+    - confirmed existing `scripts/dev-workers.test.mjs` `handleWorkerExit()`
+      proof already covers successful exits and non-zero fail-closed worker
+      exits through injected child/process/stream doubles;
+    - added one scanner-readable `LUC-2812` row to
+      `docs/architecture/relations/priority-test-links.csv` for
+      `scripts/dev-workers.mjs#handleWorkerExit`;
+    - refreshed generated architecture graph and architecture-awareness
+      exports.
+  - Verification:
+    - `node --check scripts/dev-workers.mjs` PASS.
+    - `node --check scripts/dev-workers.test.mjs` PASS.
+    - `node --test scripts/dev-workers.test.mjs` PASS (`4/4`).
+    - direct relation readback PASS (`1` row).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`14954` entities /
+      `24198` relations / `9692` files); refreshed report generated
+      `2026-06-07T13:04:38.451Z` reports `314` actionable missing-test links
+      and no longer lists `handleWorkerExit` in Top Actionable Missing Test
+      Links.
+    - `pnpm run quality:guardrails` PASS.
+  - Evidence:
+    - `history/tasks/luc-2812-dev-workers-handle-worker-exit-missing-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2808 [Soar][Test Automation][LUC-2807] Cover resolveOpsAuthToken cookie parser missing-test link`
+  - Status: `DONE`
+  - Scope: local Test Automation relation repair for
+    `scripts/resolveOpsAuthToken.mjs#extractTokenFromSetCookie`; no production
+    auth, protected smoke, deploy, push, restart, rollback, account, secret,
+    exchange, database, Docker Compose, or live-trading mutation.
+  - Implementation:
+    - exported existing pure helper seams from `scripts/resolveOpsAuthToken.mjs`
+      for direct local test coverage without changing runtime behavior;
+    - added `scripts/resolveOpsAuthToken.test.mjs` for decoded token cookie
+      extraction, malformed/missing cookie handling, `getSetCookie()`
+      precedence, and login token extraction with injected `fetch`;
+    - added three scanner-readable `LUC-2808` relation rows to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/resolveOpsAuthToken.mjs` PASS.
+    - `node --check scripts/resolveOpsAuthToken.test.mjs` PASS.
+    - `node --test scripts/resolveOpsAuthToken.test.mjs` PASS (`4/4`).
+    - direct relation readback PASS (`3` rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`14950` entities /
+      `24191` relations / `9690` files); refreshed report generated
+      `2026-06-07T12:50:57.059Z` reports `315` actionable missing-test links
+      and no longer lists `extractTokenFromSetCookie` in Top Actionable
+      Missing Test Links.
+    - `pnpm run quality:guardrails` PASS.
+  - Evidence:
+    - `history/tasks/luc-2808-resolve-ops-auth-token-cookie-parser-missing-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2807 [Soar] Gap register and repair lane refresh`
+  - Status: `DONE / DELEGATED`
+  - Scope: TSA gap-register refresh, duplicate filtering, and repair-lane
+    routing only; no product-code, runtime, deploy, push, restart, rollback,
+    env, account, secret, protected-smoke, database, exchange, or live-trading
+    mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2807](/LUC/issues/LUC-2807).
+    - `docs/status/architecture-awareness-report.md` generated
+      `2026-06-07T12:34:04.357Z` reports `319` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - `corepack pnpm softwarehouse:control-tick` failed because
+      `softwarehouse:control-tick` is not exposed in this checkout.
+    - Duplicate searches found [LUC-2791](/LUC/issues/LUC-2791) for
+      `generateFunctionJourneyIndexes` / `generateUserActionIndex` and
+      [LUC-2792](/LUC/issues/LUC-2792) for `goLiveSmoke`.
+    - Duplicate searches for `resolveOpsAuthToken` and
+      `extractTokenFromSetCookie` returned no open matching lane.
+    - Attempting to change [LUC-2791](/LUC/issues/LUC-2791) from `blocked` to
+      `todo` failed with `Agent cannot mutate another agent's issue`; no retry
+      was attempted.
+  - Disposition:
+    - created [LUC-2808](/LUC/issues/LUC-2808) for Test Automation Engineer to
+      cover or classify `scripts/resolveOpsAuthToken.mjs#extractTokenFromSetCookie`.
+  - Evidence:
+    - `history/tasks/luc-2807-gap-register-and-repair-lane-refresh-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2806 [Soar][Test Automation][LUC-2803] Cover residual dev-workers main missing-test link`
+  - Status: `DONE`
+  - Scope: local Test Automation relation repair for
+    `scripts/dev-workers.mjs#main`; no dev worker process, Docker Compose,
+    DB/Redis mutation, real Prisma command, product runtime behavior, deploy,
+    push, restart, rollback, production smoke, account, secret, exchange,
+    database, or live-trading mutation.
+  - Implementation:
+    - confirmed existing `scripts/dev-workers.test.mjs` `main()` proof already
+      covers injected worker spawning, stream prefixing, signal registration,
+      and shutdown behavior without starting real workers;
+    - added one scanner-readable `LUC-2806` row to
+      `docs/architecture/relations/priority-test-links.csv` for
+      `scripts/dev-workers.mjs#main`;
+    - refreshed generated architecture graph and architecture-awareness
+      exports.
+  - Verification:
+    - `node --check scripts/dev-workers.mjs` PASS.
+    - `node --check scripts/dev-workers.test.mjs` PASS.
+    - `node --test scripts/dev-workers.test.mjs` PASS (`4/4`).
+    - direct relation readback PASS (`1` row).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`14945` entities /
+      `24177` relations / `9687` files); refreshed report generated
+      `2026-06-07T12:34:04.357Z` reports `319` actionable missing-test links
+      and no longer lists `scripts/dev-workers.mjs` in Top Actionable Missing
+      Test Links.
+    - `pnpm run quality:guardrails` PASS.
+  - Evidence:
+    - `history/tasks/luc-2806-dev-workers-main-missing-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2801 [Gate recheck][LUC-241] Soar protected recheck`
+  - Status: `DONE / FAIL_AUTH`
+  - Scope: DRE/Ops one-shot read-only protected auth/smoke recheck after fresh
+    gate fact from [LUC-2800](/LUC/issues/LUC-2800); no deploy, restart,
+    rollback, env edit, push, account mutation, secret value output, database
+    mutation, exchange mutation, or live-trading mutation.
+  - Verification:
+    - names-only precheck: `SMOKE_AUTH_TOKEN`, `SMOKE_AUTH_EMAIL`, and
+      `SMOKE_AUTH_PASSWORD` present.
+    - `node scripts/deploySmokeCheck.mjs --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch`
+      ran once at `2026-06-07T14:12:44.6307728+02:00` with
+      `SMOKE_TIMEOUT_MS=10000`, `SMOKE_TRANSIENT_RETRIES=0`, and worker check
+      enabled.
+    - PASS: API `/health` `200`, API `/ready` `200`, Web `/` `200`, Web
+      `/api/build-info` `200`.
+    - FAIL: protected API `/workers/ready` `401`.
+  - Disposition:
+    - [LUC-2801](/LUC/issues/LUC-2801) can close as complete for this recheck;
+      [LUC-241](/LUC/issues/LUC-241) remains fail-closed blocked until an
+      accepted production smoke principal is bound by Security/credential
+      owners and a fresh one-shot recheck is authorized.
+  - Evidence:
+    - `history/tasks/luc-2801-soar-protected-recheck-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2790 [Soar][Test Automation][LUC-2789] Rollback guard helper missing-test links`
+  - Status: `DONE`
+  - Scope: local Test Automation proof and scanner-readable architecture
+    relation repair for `scripts/evaluateRollbackGuard.mjs`; no deploy, push,
+    restart, rollback, protected smoke, production mutation, account, secret,
+    exchange, database, Docker Compose, or live-trading mutation.
+  - Implementation:
+    - made `scripts/evaluateRollbackGuard.mjs` import-safe while preserving
+      direct CLI execution;
+    - exported narrow helper seams for `parseArgs`, `printUsage`,
+      `fetchWithTimeout`, `isRollbackCriticalAlert`, and `main`;
+    - added `scripts/evaluateRollbackGuard.test.mjs` with focused `node:test`
+      proof using injected fetch/auth/header/process/console doubles;
+    - added five direct `LUC-2790` rows to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/evaluateRollbackGuard.mjs` PASS.
+    - `node --check scripts/evaluateRollbackGuard.test.mjs` PASS.
+    - `node --test scripts/evaluateRollbackGuard.test.mjs` PASS (`7/7`).
+    - `node scripts/evaluateRollbackGuard.mjs --help` PASS.
+    - direct relation readback PASS (`5` rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`14935` entities /
+      `24161` relations / `9682` files); refreshed report generated
+      `2026-06-07T11:58:47.402Z` no longer lists
+      `scripts/evaluateRollbackGuard.mjs` in Top Actionable Missing Test Links
+      and reports `320` actionable missing-test links.
+    - `pnpm run quality:guardrails` PASS.
+  - Evidence:
+    - `history/tasks/luc-2790-rollback-guard-helper-missing-test-links-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2794 [Soar][TSA][LUC-2789] Select next P0 architecture graph backfill chain after recent test-link repairs`
+  - Status: `DONE / DEDUPED_TO_ACTIVE_CHILD`
+  - Scope: TSA architecture-awareness report readback, duplicate filtering,
+    and next-lane selection only; no code, deploy, push, restart, rollback,
+    protected smoke, account, secret, exchange, database, Docker Compose, or
+    live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2794](/LUC/issues/LUC-2794).
+    - `docs/status/architecture-awareness-report.md` generated
+      `2026-06-07T11:35:58.461Z` reports `324` actionable missing-test links.
+    - Top actionable missing-test links are now
+      `scripts/evaluateRollbackGuard.mjs#fetchWithTimeout`,
+      `#isRollbackCriticalAlert`, `#main`, `#parseArgs`, and `#printUsage`.
+    - Paperclip duplicate searches for `evaluateRollbackGuard` and
+      `fetchWithTimeout` found active [LUC-2790](/LUC/issues/LUC-2790),
+      already assigned to Test Automation for the exact selected slice.
+  - Disposition:
+    - selected [LUC-2790](/LUC/issues/LUC-2790) as the next worker-ready lane;
+      no duplicate child issue was created.
+  - Evidence:
+    - `history/tasks/luc-2794-select-next-p0-architecture-graph-backfill-chain-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-1174 [Soar][V1 Conformance][Backend] Verify exchange, positions, DCA/TSL, and worker readiness contracts`
+  - Status: `DONE / VERIFIED_LOCAL`
+  - Wake: `issue_blockers_resolved`; child blocker
+    [LUC-2787](/LUC/issues/LUC-2787) completed the workers readiness auth
+    bootstrap repair proof.
+  - Scope: backend local/source-level conformance only for exchange,
+    positions, DCA/TSL automation hydration, and workers readiness. No push,
+    deploy, restart, protected smoke, credentials, account, exchange, database,
+    or live-trading mutation.
+  - Verification:
+    - `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts --reporter=verbose`
+      PASS (`1` file / `8` tests).
+    - `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts -t "uses api-key exchange when hydrating owned LIVE automation after exchange-sync create|uses api-key exchange when hydrating owned LIVE automation after exchange-sync update|assigns different exact owners for different symbols|ignores other-market owners when seeding reconciliation cleanup candidates" --reporter=verbose`
+      PASS (`1` file / `4` passed / `30` skipped).
+  - Disposition:
+    - parent backend source-level conformance scope can close as `done`;
+    - protected production readiness remains outside this issue and stays with
+      Ops-owned protected proof lanes.
+  - Evidence:
+    - `history/evidence/luc-1174-backend-contract-verification-2026-06-01.md`
+    - `history/tasks/luc-1174-soar-v1-conformance-backend-verify-exchange-positions-dca-tsl-workers-readiness-contracts-2026-06-01-task.md`
+
+- 2026-06-07 `LUC-2786 [Soar][Frontend][LUC-1175] Repair dashboard locale encoding integrity drift`
+  - Status: `DONE`
+  - Scope: frontend locale integrity repair only for
+    `apps/web/src/i18n/namespaces/dashboard-home.de-CH.ts`,
+    `apps/web/src/i18n/namespaces/dashboard-home.pt.ts`, and
+    `apps/web/src/i18n/translations.test.ts`; no push, deploy, production
+    restart, protected smoke, live account mutation, secret handling, API, DB,
+    worker, exchange, or live-trading mutation.
+  - Implementation:
+    - removed BOM markers from the two target dashboard-home locale files;
+    - recovered CP1250 mojibake sequences in de-CH dashboard-home copy and one
+      Portuguese dashboard-home string;
+    - added loaded-translation regression coverage for replacement characters,
+      CP1250 `Ăx` mojibake, and common UTF-8/CP1252 mojibake markers.
+  - Verification:
+    - `corepack pnpm --filter web exec vitest run src/i18n/translations.test.ts src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts --reporter=verbose`
+      PASS (`3` files / `17` tests).
+    - `rg -n "Ă|â€|﻿export" apps/web/src/i18n/namespaces/dashboard-home.de-CH.ts apps/web/src/i18n/namespaces/dashboard-home.pt.ts -S`
+      PASS by no matches (`rg` exit `1`).
+  - Evidence:
+    - `history/tasks/luc-2786-dashboard-locale-encoding-integrity-drift-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2787 [Soar][Backend][LUC-1174] Stabilize workers readiness auth bootstrap test path`
+  - Status: `DONE / VERIFIED_LOCAL`
+  - Scope: Core Backend local proof for the workers readiness auth bootstrap
+    test path; no production, deploy, push, restart, protected smoke, account,
+    secret, exchange, database, or live-trading mutation.
+  - Findings:
+    - The current checkout already contains the stabilization in
+      `apps/api/src/router/workers-health-readiness.test.ts`: the suite uses
+      signed test JWTs plus a mocked `prisma.user.findUnique` instead of
+      brittle `/auth/register` bootstrap.
+    - `git diff -- apps/api/src/router/workers-health-readiness.test.ts`
+      returned no diff in this heartbeat, so no code edit was needed.
+  - Verification:
+    - `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts --reporter=verbose`
+      PASS (`1` file / `8` tests).
+    - Passing coverage includes unauthenticated `401`, authenticated non-admin
+      `403`, inline ready, split queue missing `not_ready`, split queue ready,
+      and stale heartbeat `not_ready`.
+  - Disposition:
+    - [LUC-2787](/LUC/issues/LUC-2787) can close as verified local backend
+      proof. Parent [LUC-1174](/LUC/issues/LUC-1174) owner should rerun the
+      broader conformance closure path now that the local bootstrap blocker is
+      removed.
+  - Evidence:
+    - `history/tasks/luc-2787-workers-readiness-auth-bootstrap-test-path-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2783 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED`
+  - Scope: PM queue readback, control-signal attempt, duplicate filtering, and
+    child-lane creation only; no product-code, runtime, deploy, push, restart,
+    rollback, env, account, secret, protected-smoke, Docker Compose, database,
+    exchange, or live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2783](/LUC/issues/LUC-2783).
+    - `corepack pnpm softwarehouse:control-tick` failed because
+      `softwarehouse:control-tick` is not exposed in this checkout.
+    - Current architecture-awareness report generated
+      `2026-06-07T11:12:18.981Z` reports `326` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - Top actionable missing-test links are now
+      `scripts/dev-workers.mjs#prefixLog` and
+      `scripts/dev-workers.mjs#shutdown`.
+    - Paperclip duplicate searches for `dev-workers`,
+      `dev-workers prefixLog`, `dev-workers shutdown`, and
+      `architecture-awareness dev-workers` returned no open matching lane.
+  - Disposition:
+    - created [LUC-2788](/LUC/issues/LUC-2788) for Test Automation Engineer to
+      cover or classify the `scripts/dev-workers.mjs` helper anchors.
+  - Evidence:
+    - `history/tasks/luc-2783-no-stall-queue-expeditor-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2788 [Soar][Test Automation][LUC-2783] Cover dev-workers helper missing-test links`
+  - Status: `DONE`
+  - Scope: local Test Automation proof and scanner-readable architecture
+    relation repair for `scripts/dev-workers.mjs`; no dev worker process,
+    Docker Compose, DB/Redis mutation, real Prisma command, product runtime
+    behavior, deploy, push, restart, rollback, production smoke, account,
+    secret, exchange, database, or live-trading mutation.
+  - Implementation:
+    - made `scripts/dev-workers.mjs` import-safe while preserving direct CLI
+      execution;
+    - exported injectable seams for `prefixLog`, `shutdown`, worker exit
+      handling, and `main`;
+    - added `scripts/dev-workers.test.mjs` covering stdout/stderr prefixing,
+      shutdown behavior, non-zero worker exit fail-closed behavior, and signal
+      registration through child/process/stream doubles;
+    - added `3` direct `LUC-2788` rows to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/dev-workers.mjs` PASS.
+    - `node --check scripts/dev-workers.test.mjs` PASS.
+    - `node --test scripts/dev-workers.test.mjs` PASS (`4/4`).
+    - `rg -n "LUC-2788|scripts/dev-workers\\.mjs#(prefixLog|shutdown|shutdownImpl)" docs/architecture/relations/priority-test-links.csv`
+      PASS (`3` rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - `node scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`
+      from `C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse` PASS
+      (`14927` entities / `24144` relations / `9678` files).
+    - `docs/status/architecture-awareness-report.md` generated
+      `2026-06-07T11:35:58.461Z`; actionable missing-test links are now
+      `324`, and the `dev-workers` family no longer appears in Top Actionable
+      Missing Test Links.
+    - `pnpm run quality:guardrails` PASS.
+  - Evidence:
+    - `history/tasks/luc-2788-dev-workers-helper-missing-test-links-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2779 [Soar][TSA][LUC-2776] Refresh architecture-awareness after dev backend proof closure`
+  - Status: `DONE / DELEGATED`
+  - Scope: TSA architecture-awareness refresh, duplicate filtering, and
+    child-lane creation only; no product-code, runtime, deploy, push, restart,
+    rollback, env, account, secret, protected-smoke, Docker Compose, database,
+    exchange, or live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2779](/LUC/issues/LUC-2779).
+    - `node scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`
+      passed from `C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse`
+      with `14913` entities, `24116` relations, and `9673` files.
+    - Fresh report generated `2026-06-07T11:07:42.968Z` reports `327`
+      actionable missing-test links, `0` actionable missing-doc links, `0`
+      ownerless entities, and `0` disconnected entities.
+    - Previous [LUC-2775](/LUC/issues/LUC-2775) dev-backend family is reduced
+      to one residual anchor: `scripts/dev-backend.mjs#shutdownImpl`.
+    - `node --check scripts/dev-backend.mjs; node --test scripts/dev-backend.test.mjs`
+      passed (`9/9`).
+    - Duplicate searches for `shutdownImpl dev-backend` and
+      `dev-workers prefixLog` returned no open lanes.
+  - Disposition:
+    - created [LUC-2781](/LUC/issues/LUC-2781) for Test Automation Engineer to
+      cover or classify the residual `scripts/dev-backend.mjs#shutdownImpl`
+      anchor without reopening broad dev-backend proof work.
+  - Evidence:
+    - `history/tasks/luc-2779-architecture-awareness-after-dev-backend-proof-closure-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2781 [Soar][Test Automation][LUC-2779] Cover residual dev-backend shutdownImpl test link`
+  - Status: `DONE`
+  - Scope: local Test Automation proof and scanner-readable architecture
+    relation repair for `scripts/dev-backend.mjs#shutdownImpl`; no Docker
+    Compose, DB/Redis mutation, real Prisma command, product runtime behavior,
+    deploy, push, restart, rollback, production smoke, account, secret,
+    exchange, database, or live-trading mutation.
+  - Implementation:
+    - added focused `scripts/dev-backend.test.mjs` coverage that captures the
+      `main()`-registered shutdown signal handler and proves injected API and
+      worker child doubles are killed;
+    - added one direct `LUC-2781` row to
+      `docs/architecture/relations/priority-test-links.csv`;
+    - refreshed generated architecture-awareness exports with the
+      Softwarehouse scanner.
+  - Verification:
+    - `node --check scripts/dev-backend.mjs` PASS.
+    - `node --check scripts/dev-backend.test.mjs` PASS.
+    - `node --test scripts/dev-backend.test.mjs` PASS (`10/10`).
+    - `rg -n "LUC-2781|shutdownImpl" ...` relation/readback PASS.
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - `node scripts/build-architecture-awareness-index.mjs --project Soar --root C:/Personal/Projekty/Aplikacje/Soar`
+      from `C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse` PASS
+      (`14915` entities / `24121` relations / `9674` files).
+    - `docs/status/architecture-awareness-report.md` generated
+      `2026-06-07T11:12:18.981Z`; actionable missing-test links decreased
+      from `327` to `326`; `shutdownImpl` no longer appears in Top Actionable
+      Missing Test Links.
+    - `pnpm run quality:guardrails` PASS.
+  - Evidence:
+    - `history/tasks/luc-2781-dev-backend-shutdownimpl-test-link-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2776 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED`
+  - Scope: PM queue readback, stale-report detection, duplicate filtering, and
+    child-lane creation only; no product-code, runtime, deploy, push, restart,
+    rollback, env, account, secret, protected-smoke, Docker Compose, database,
+    exchange, or live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2776](/LUC/issues/LUC-2776).
+    - `corepack pnpm softwarehouse:control-tick` failed because
+      `softwarehouse:control-tick` is not exposed in this checkout.
+    - Current architecture-awareness report generated
+      `2026-06-07T10:30:41.562Z` still lists `scripts/dev-backend.mjs` as top
+      actionable after completed [LUC-2775](/LUC/issues/LUC-2775), so the
+      report needs refresh or reconciliation before opening another proof lane
+      from its samples.
+    - Active duplicate searches returned no open matching lane for
+      `architecture-awareness dev-backend` or `Refresh architecture-awareness
+      after dev backend helper proof closure`.
+  - Disposition:
+    - created [LUC-2779](/LUC/issues/LUC-2779) for
+      `09 TSA (Technical Solution Architect)` to refresh or reconcile
+      architecture-awareness known-state and create at most one next
+      non-duplicate worker-ready family.
+  - Evidence:
+    - `history/tasks/luc-2776-no-stall-queue-expeditor-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2774 [Soar] Gap register and repair lane refresh`
+  - Status: `DONE / DELEGATED`
+  - Scope: TSA gap-register refresh, duplicate filtering, and child-lane
+    creation only; no product-code, runtime, deploy, push, restart, rollback,
+    env, account, secret, protected-smoke, database, exchange, or live-trading
+    mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2774](/LUC/issues/LUC-2774).
+    - Current architecture-awareness report generated
+      `2026-06-07T10:30:41.562Z` reports `337` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - Top current family is `scripts/dev-backend.mjs`, followed by
+      `scripts/dev-workers.mjs`, `scripts/evaluateRollbackGuard.mjs`, and
+      generated journey index scripts.
+    - `corepack pnpm softwarehouse:control-tick` failed because
+      `softwarehouse:control-tick` is not exposed in this checkout.
+    - Paperclip duplicate searches for `dev-backend` and `checkTcpPort`
+      returned no open matching repair lane.
+  - Disposition:
+    - created [LUC-2775](/LUC/issues/LUC-2775) for Test Automation Engineer to
+      cover or classify `scripts/dev-backend.mjs` helper missing-test anchors.
+  - Evidence:
+    - `history/tasks/luc-2774-gap-register-and-repair-lane-refresh-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2775 [Soar][Test Automation][LUC-2774] Dev backend helper missing-test links`
+  - Status: `DONE`
+  - Scope: local Test Automation proof and scanner-readable architecture
+    relation repair for `scripts/dev-backend.mjs`; no Docker Compose,
+    DB/Redis mutation, real Prisma command, product runtime behavior, deploy,
+    push, restart, rollback, production smoke, account, secret, exchange,
+    database, or live-trading mutation.
+  - Implementation:
+    - made `scripts/dev-backend.mjs` import-safe while preserving direct CLI
+      execution;
+    - exported current helper functions and added injectable seams for env
+      reads, TCP checks, Docker/process checks, Prisma runner, child spawning,
+      console, and process exit/signal handling;
+    - added `scripts/dev-backend.test.mjs` covering env parsing, DB/Redis URL
+      parsing, TCP readiness/finalization, Docker/process runner seams,
+      Prisma failure classification, shutdown/exit behavior, ready-service
+      orchestration, and unavailable-service fail-closed behavior;
+    - added `11` direct `LUC-2775` rows to
+      `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/dev-backend.mjs` PASS.
+    - `node --check scripts/dev-backend.test.mjs` PASS.
+    - `node --test scripts/dev-backend.test.mjs` PASS (`9/9`).
+    - `rg -n "LUC-2775" docs/architecture/relations/priority-test-links.csv`
+      PASS (`11` rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - `pnpm run quality:guardrails` PASS.
+  - Evidence:
+    - `history/tasks/luc-2775-dev-backend-helper-missing-test-links-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2773 [Soar][LUC-965 Follow-up] Decide SOAR-ASSISTANT-AI-001 V1 scope and proof path`
+  - Status: `DONE / ACCEPTED_DEFERRED_FOR_V1`
+  - Scope: Soar Product Manager product decision and source-of-truth sync for
+    `SOAR-ASSISTANT-AI-001`; no code, deploy, protected auth, production,
+    account, secret, exchange, database, or live-trading action.
+  - Decision:
+    - V1 includes assistant config, deterministic foundation/orchestrator
+      behavior, owner-scoped `BACKTEST|PAPER` dry-run diagnostics, sanitized
+      traces, and fail-closed `LIVE` rejection.
+    - Executable BACKTEST/PAPER/LIVE assistant hot-path orchestration is
+      accepted deferred scope for V1, not a current implementation gap.
+    - No AI Runtime/Security implementation child was created because Product+CTO
+      activation is not approved for V1.
+  - Future trigger:
+    - Product+CTO must explicitly reopen activation; then create AI Runtime,
+      Security red-team, and QA/Test protocol proof child issues before any
+      runtime trading claim.
+  - Evidence:
+    - `history/tasks/luc-2773-soar-assistant-ai-v1-scope-decision-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2767 [Soar] Coolify production deploy health sweep`
+  - Status: `DONE / READ_ONLY_PUBLIC_VERIFIED_PROTECTED_AUTH_GATED`
+  - Scope: DRE read-only production deploy health sweep; no deploy, restart,
+    rollback, env edit, DB action, protected smoke, account, secret, exchange,
+    push, commit, or live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2767](/LUC/issues/LUC-2767).
+    - Public deploy smoke passed for API `/health`, API `/ready`, Web `/`,
+      and Web `/api/build-info`.
+    - Production build-info reports
+      `56d8d440bfe0fd9ee692e9f669e35414d85d2493`, matching local
+      `origin/main`; local dirty `HEAD` is
+      `0e9f8da8174b2d4053196c436757997efcef5b0b`.
+    - Coolify read-only projection resolved eight Soar production resources:
+      six applications, PostgreSQL, and Redis. PostgreSQL and Redis report
+      `running:healthy`; apps report `running:unknown`.
+    - Redacted retained log pattern summaries showed no new fatal/crash/
+      dependency startup signature. `workers-execution` retained crash
+      metadata remains the known [LUC-2594](/LUC/issues/LUC-2594)
+      `unknown_from_retained_coolify_evidence` signal.
+    - Protected runtime freshness failed with `HTTP 401`; rollback guard
+      returned `shouldRollback: true` only because workers-ready, runtime
+      freshness, and alerts endpoints returned `401`.
+    - `node --test scripts/checkCoolifyStackEnv.test.mjs` PASS (`11/11`).
+    - `node --test scripts/deploySmokeCheck.test.mjs scripts/checkPostDeployRuntimeFreshness.test.mjs`
+      PASS (`6/6`).
+    - `corepack pnpm softwarehouse:control-tick` remains unavailable in this
+      checkout.
+  - Evidence:
+    - `history/tasks/luc-2767-coolify-production-deploy-health-sweep-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2761 [Soar] V1 audit-to-completion controller`
+  - Status: `DONE / DELEGATED`
+  - Scope: Technical Solution Architect controller/dedup checkpoint after
+    [LUC-2750](/LUC/issues/LUC-2750); no product-code, runtime, deploy, push,
+    restart, rollback, env, account, secret, protected-smoke, exchange,
+    database, or live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2761](/LUC/issues/LUC-2761).
+    - Current architecture-awareness report generated
+      `2026-06-07T10:12:49.766Z` reports `377` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - Top current family is `scripts/collectNonGateioRuntimeReadback.mjs`,
+      followed by `scripts/collectSloEvidence.mjs`,
+      `scripts/compareReusableAuditManifests.mjs`, and
+      `scripts/deploySmokeCheck.mjs`.
+    - `node --check scripts/collectNonGateioRuntimeReadback.mjs` PASS.
+    - `node --check scripts/collectSloEvidence.mjs` PASS.
+    - Paperclip duplicate search found active running
+      [LUC-2764](/LUC/issues/LUC-2764) already owns the Test Automation proof
+      lane for the same current script cluster; no duplicate child was opened.
+  - Evidence:
+    - `history/tasks/luc-2761-v1-audit-to-completion-controller-2026-06-07-task.md`
+
 - 2026-06-07 `LUC-2750 [Soar][Test Automation][LUC-2749] Live import readback collector missing-test links`
   - Status: `DONE`
   - Scope: local Test Automation proof and scanner-readable architecture
@@ -9296,6 +13279,15 @@
     - `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts -t "rejects unauthenticated access" --reporter=verbose` -> PASS (`1` passed, `7` skipped).
   - No scope expansion and no source-control/deploy mutation performed in this heartbeat.
   - Final disposition for this wake: `blocked` (unchanged unblock owner/action: Backend/QA DB-backed proof + scoped source-control closure).
+- 2026-06-08 blocker-resolved continuation (`issue_blockers_resolved`):
+  - Consumed resolved child blockers:
+    - `LUC-2977` DB-backed QA proof -> PASS (`livePositionReconciliation.service.test.ts` + `workers-health-readiness.test.ts`, `2` files / `42` tests).
+    - `LUC-2978` source-control closure -> fix SHA `44a9ceba612e8d49eb86a9001e63b1f0be6243ea` reachable from `origin/main`.
+  - Added parent API display-path proof:
+    - `pnpm --filter api exec vitest run src/modules/bots/bots.runtime-takeover.e2e.test.ts -t "imports six exchange positions through real ownership scope and shows all six for the selected LIVE bot" --reporter=verbose` -> FAIL by default `5000ms` timeout during local setup.
+    - Same command with `--testTimeout=30000` -> PASS (`1` passed, `4` skipped).
+  - Final matrix now covered: empty account, open position ingestion, auth failure/non-admin, upstream error continuity, persistence sync, and local API display path.
+  - Final disposition: `done`; no production smoke, protected proof, secret readback, push, deploy, restart, real exchange account use, order mutation, position mutation, or live-trading mutation occurred.
 
 ## 2026-05-31 LUC-1161 continuation [finish_successful_run_handoff]
 - Wake `finish_successful_run_handoff` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
@@ -28473,3 +32465,158 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
   - Evidence:
     - `history/tasks/luc-2734-security-account-access-gate-sweep-2026-06-07-task.md`
     - `history/evidence/luc-2734-security-account-access-gate-readiness-56d8d440-2026-06-07.md`
+
+## 2026-06-07 LUC-1175 closure [issue_blockers_resolved]
+- Wake `issue_blockers_resolved` acknowledged from inline payload (`fallbackFetchNeeded=false`, comments `0/0`, latest comment id `unknown`).
+- Concrete action in this heartbeat:
+  - reran focused runtime-signal + translation validation suite after `LUC-2786` blocker resolution;
+  - reran explicit locale corruption-marker scan on `dashboard-home.de-CH.ts` and `dashboard-home.pt.ts`;
+  - revalidated linkage to `LUC-1167` for active-bot signal semantics without duplicating the implementation lane.
+- Verification:
+  - `pnpm --filter web exec vitest run src/i18n/translations.test.ts src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts --reporter=verbose` -> PASS (`3` files, `17` tests).
+  - locale corruption-marker scan on touched files -> no matches (`rg` exit code `1`).
+- Disposition for this wake: `done`.
+- Source-control closure decision:
+  - `not committed` in this coordinator heartbeat (broader dirty worktree remains active across multiple lanes).
+- Push/deploy impact: `none`.
+- Evidence:
+  - `history/tasks/luc-1175-soar-v1-conformance-frontend-verify-dashboard-active-bot-context-signals-and-trading-ux-display-2026-06-01-task.md`
+  - `history/evidence/luc-1175-frontend-dashboard-signals-trading-ux-display-verification-2026-06-01.md`
+- 2026-06-07 `LUC-2793 [Soar][Docs][LUC-2789] Classify mobile traceability as inactive V1 scope or create mobile map seed`
+  - Status: `DONE / OUT_OF_SCOPE_FOR_V1`
+  - Scope: docs/source-truth classification only; no mobile implementation,
+    runtime, deploy, protected smoke, account, secret, exchange, database, or
+    live-trading mutation.
+  - Decision:
+    - native/mobile is `out_of_scope_for_v1` for Soar V1;
+    - current `apps/mobile` traceability is a scaffold-only documentation seed;
+    - responsive Web mobile evidence remains Web/UX scope and is not native
+      mobile parity.
+  - Evidence:
+    - `history/tasks/luc-2793-mobile-traceability-v1-scope-classification-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2799 [Ops][Soar][LUC-241] Restore blocked disposition for workers/ready smoke principal gate`
+  - Status: `DONE / VERIFIED`
+  - Scope: Paperclip disposition repair only; no `/workers/ready` smoke,
+    protected smoke, deploy, restart, rollback, account, secret, exchange,
+    database, or live-trading mutation.
+  - Verification:
+    - before correction, [LUC-241](/LUC/issues/LUC-241) read back as `todo`
+      while preserving first-class blocker [LUC-1438](/LUC/issues/LUC-1438);
+    - checkout of [LUC-241](/LUC/issues/LUC-241) was rejected because
+      Paperclip detected unresolved blocker [LUC-1438](/LUC/issues/LUC-1438);
+    - after PATCH, [LUC-241](/LUC/issues/LUC-241) read back as `blocked` with
+      [LUC-1438](/LUC/issues/LUC-1438) still blocked and terminal blocker
+      [LUC-2619](/LUC/issues/LUC-2619) still blocked.
+  - Residual blocker:
+    - Security/QA must close [LUC-2619](/LUC/issues/LUC-2619) and
+      [LUC-1438](/LUC/issues/LUC-1438) with accepted read-only production
+      smoke auth binding evidence before Ops resumes the narrow
+      `/workers/ready` proof.
+  - Evidence:
+    - `history/tasks/luc-2799-workers-ready-smoke-principal-gate-blocked-disposition-2026-06-07-task.md`
+- 2026-06-07 `LUC-2867 [Soar] Autonomous idle and map drift sweep`
+  - Status: `DONE`
+  - Scope: Documentation Steward read-only docs/memory and no-stall sweep for
+    [LUC-12](/LUC/issues/LUC-12); no product code, runtime, protected smoke,
+    production auth, deploy, push, restart, rollback, account, secret,
+    database, exchange, order, position, or live-trading mutation.
+  - Verification:
+    - Paperclip heartbeat-context readback succeeded for
+      [LUC-2867](/LUC/issues/LUC-2867).
+    - `docs/status/architecture-awareness-report.md` generated
+      `2026-06-07T16:12:55.932Z` reports `291` actionable missing-test links,
+      `0` actionable missing-doc links, `0` ownerless entities, and `0`
+      disconnected entities.
+    - Paperclip Soar non-terminal queue readback returned `93` blocked, `3`
+      in_review, `1` in_progress, and `0` todo issues.
+    - `corepack pnpm softwarehouse:control-tick` failed because
+      `softwarehouse:control-tick` is not exposed in this checkout.
+  - Disposition:
+    - Soar remains active repair/protected gate hold, not monitoring-only idle.
+    - Existing blocked [LUC-2791](/LUC/issues/LUC-2791) owns generated index
+      helper coverage; existing blocked [LUC-2792](/LUC/issues/LUC-2792) owns
+      go-live smoke helper coverage. No duplicate child lane was created.
+  - Evidence:
+    - `history/tasks/luc-2867-autonomous-idle-and-map-drift-sweep-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2910 [Soar][QA/Test][LUC-2907] Cutover dry-run main missing-test link`
+  - Status: `DONE / VERIFIED_LOCAL`
+  - Scope: local-only QA proof and architecture relation repair for
+    `scripts/runCutoverDryRun.mjs#main` and adjacent helper anchors; no real
+    cutover, Docker, deploy, production auth, protected smoke, secret,
+    database, exchange, order, position, or live-trading mutation.
+  - Verification:
+    - `node --test scripts/runCutoverDryRun.test.mjs` -> PASS (`7/7`).
+    - architecture-awareness report refreshed at
+      `2026-06-07T19:07:10.394Z`; actionable missing-test count is `246` and
+      `scripts/runCutoverDryRun` no longer appears in top actionable rows.
+    - `pnpm run quality:guardrails` -> PASS.
+  - Evidence:
+    - `history/tasks/luc-2910-cutover-dry-run-main-missing-test-link-2026-06-07-task.md`
+- 2026-06-07 `LUC-2955 [Soar] V1 audit-to-completion controller`
+  - Status: `DONE / DELEGATED`
+  - Scope: TSA controller checkpoint for the current architecture-awareness
+    missing-test backlog; no code implementation, production security/exchange
+    proof, production auth/session, deploy, push, restart, rollback, account,
+    secret, database, exchange, order, position, or live-trading mutation.
+  - Evidence:
+    - Paperclip heartbeat-context for [LUC-2955](/LUC/issues/LUC-2955) PASS.
+    - Current architecture-awareness report generated
+      `2026-06-07T22:12:46.871Z` reports `181` actionable missing-test links.
+    - Duplicate/already-owned families were filtered: generated-index,
+      `goLiveSmoke`, protected-route side-effect, prod-auth side-effect,
+      prod-fixture, and prod-positions helpers.
+    - Duplicate search for `runProdSecurityExchangeProof` found older protected
+      production proof/release-gate evidence, but no current local helper test
+      lane.
+    - `Test-Path scripts/runProdSecurityExchangeProof.test.mjs` returned
+      `False`.
+    - `node --check scripts/runProdSecurityExchangeProof.mjs` PASS.
+  - Delegation:
+    - Created [LUC-2956](/LUC/issues/LUC-2956) for local-only helper
+      proof/classification of `scripts/runProdSecurityExchangeProof.mjs`.
+  - Residual risk:
+    - Broader missing-test backlog remains outside this controller checkpoint.
+    - Production security/exchange proof remains protected and must not be
+      inferred from local helper proof.
+  - Evidence:
+    - `history/tasks/luc-2955-v1-audit-to-completion-controller-2026-06-07-task.md`
+
+- 2026-06-07 `LUC-2956 [Soar][Test Automation][LUC-2955] Prod security exchange proof helper missing-test links`
+  - Status: `DONE`
+  - Scope: local Core Backend/Test Automation proof and architecture relation
+    repair for `scripts/runProdSecurityExchangeProof.mjs` helper anchors; no
+    production security/exchange proof, production auth/session, real account
+    token/cookie, exchange credential, protected smoke, deploy, push, restart,
+    rollback, account, secret, database, exchange, order, position, or
+    live-trading mutation.
+  - Implementation:
+    - verified deterministic `node:test` coverage for argument/options
+      normalization, JSON parse fallback, request wrapper metadata, status
+      assertions, security/no-store header checks, key-material detection,
+      catalog extraction, redacted markdown rendering, usage output, and
+      `main` help behavior;
+    - verified fourteen scanner-readable [LUC-2956](/LUC/issues/LUC-2956)
+      relation rows in `docs/architecture/relations/priority-test-links.csv`.
+  - Verification:
+    - `node --check scripts/runProdSecurityExchangeProof.mjs` PASS.
+    - `node --check scripts/runProdSecurityExchangeProof.test.mjs` PASS.
+    - `node --test scripts/runProdSecurityExchangeProof.test.mjs` PASS (`4/4`).
+    - `node scripts/runProdSecurityExchangeProof.mjs --help` PASS.
+    - direct [LUC-2956](/LUC/issues/LUC-2956) relation readback PASS (`14`
+      rows).
+    - `pnpm run architecture:graph:generate` PASS (`653` nodes / `842`
+      relations / `27` chains).
+    - Softwarehouse architecture-awareness refresh PASS (`15087` entities /
+      `34684` relations / `9760` files); refreshed report generated
+      `2026-06-07T22:24:06.213Z` reports `159` actionable missing-test links
+      and no `runProdSecurityExchangeProof` rows in Top Actionable Missing Test
+      Links.
+    - `pnpm run quality:guardrails` PASS.
+    - no leftover `chrome-headless-shell` validation process found.
+  - Residual risk:
+    - broader missing-test backlog remains outside this focused repair;
+      protected production security/exchange proof remains Security/Ops gated.
+  - Evidence:
+    - `history/tasks/luc-2956-prod-security-exchange-proof-helper-missing-test-links-2026-06-07-task.md`

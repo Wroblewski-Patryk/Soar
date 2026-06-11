@@ -1,6 +1,6 @@
 # Function Journey Evidence Index
 
-Last generated: 2026-06-05
+Last generated: 2026-06-11
 
 This index connects user-visible entrypoints, graph function chains, API routes, tests, docs, evidence artifacts, and explicit gaps. It is generated from the architecture graph CSV source of truth and is meant to answer: what works, what is only locally proven, and what still lacks browser or production proof.
 
@@ -10,14 +10,14 @@ This index connects user-visible entrypoints, graph function chains, API routes,
 - `docs/architecture/indices/web-journey-index.csv`
 - `docs/architecture/indices/api-surface-evidence-index.csv`
 - `docs/graphs/function-journey-index.json`
-- `history/artifacts/function-journey-index-2026-06-05.json`
+- `history/artifacts/function-journey-index-2026-06-11.json`
 
 ## Summary
 
 | Index | Rows |
 | --- | ---: |
 | Function chains | 27 |
-| Web journeys / pages | 36 |
+| Web journeys / pages | 38 |
 | API surfaces | 96 |
 | Critical gaps | 0 |
 | High gaps | 28 |
@@ -54,13 +54,15 @@ This index connects user-visible entrypoints, graph function chains, API routes,
 | high | CHAIN-OPS-CONFIG-PIPELINE | ops-config-pipeline | verified_local | missing_proof:Production Coolify stack deployment and protected proof remain separate; production_or_browser_proof_not_implied |
 | high | CHAIN-API-SUPPORT-ROUTES | api-support-routes | verified_local | missing_proof:Fresh authenticated browser proof for profile/upload UI consumers remains separate; production_or_browser_proof_not_implied |
 | high | CHAIN-RUNTIME-SUPPORT-SERVICES | runtime-support-services | verified_local | missing_proof:Fresh end-to-end runtime journey and protected LIVE proof remain separate; production_or_browser_proof_not_implied |
-| high | CHAIN-API-PLATFORM-SAFETY | api-platform-safety | verified_local | missing_proof:Fresh adversarial security review remains separate; production_or_browser_proof_not_implied |
+| high | CHAIN-API-PLATFORM-SAFETY | api-platform-safety | verified_local | missing_proof:production_or_browser_proof_not_implied; production_or_browser_proof_not_implied |
 | high | CHAIN-WEB-RUNTIME-SURFACES | web-runtime-surfaces | verified_local | missing_proof:Fresh authenticated browser runtime journey remains separate; production_or_browser_proof_not_implied |
 | high | CHAIN-AUTH-SESSION-DEEP | auth-session | verified_local | missing_proof:Fresh production auth browser proof remains separate; production_or_browser_proof_not_implied |
 | high | CHAIN-ENGINE-RUNTIME-CORE | engine-runtime-core | verified_local | missing_proof:Fresh end-to-end runtime journey and protected LIVE exchange mutation proof remain separate; production_or_browser_proof_not_implied |
 | high | CHAIN-MARKET-DATA-STREAM-ADAPTERS | market-data-stream-adapters | verified_local | missing_proof:Fresh live exchange stream proof remains separate; production_or_browser_proof_not_implied |
 | high | SOAR-PAGE-DASHBOARD | dashboard-runtime | partially_verified | page_status:partially_verified |
 | high | SOAR-API-BOT-RUNTIME-POSITIONS | dashboard-runtime | partially_verified | api_status:partially_verified |
+| medium | SOAR-PAGE-PRIVACY | public-legal | verified_local | not_in_function_chain |
+| medium | SOAR-PAGE-TERMS | public-legal | verified_local | not_in_function_chain |
 | medium | SOAR-API-ORDER-LIST | manual-order | verified | not_in_function_chain |
 | medium | SOAR-API-ORDER-GET | manual-order | verified | not_in_function_chain |
 | medium | SOAR-API-ORDER-CANCEL | manual-order | verified | not_in_function_chain |

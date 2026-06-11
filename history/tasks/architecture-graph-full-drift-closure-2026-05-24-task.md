@@ -1,5 +1,14 @@
 # Architecture Graph Full Drift Closure - 2026-05-24
 
+## Architecture Links
+
+- Primary feature/module: Architecture evidence graph full drift closure.
+- Architecture nodes: SOAR-FEATURE-ARCHITECTURE-EVIDENCE-GRAPH; SOAR-DOC-ARCHITECTURE-GRAPH-SYSTEM; SOAR-DOC-MODULE-GOVERNANCE-INDEX; SOAR-DOC-ARCHITECTURE-GOVERNANCE-INDEX; SOAR-TEST-ARCHITECTURE-GRAPH.
+- Function chains: docs/architecture/chains/CHAIN-ARCHITECTURE-EVIDENCE-GRAPH.md.
+- Affected files: docs/architecture/registry/nodes.csv; docs/architecture/relations/dependencies.csv; docs/architecture/chains/chains.csv; generated graph/status exports.
+- Tests/proof: `pnpm run architecture:graph:generate`; `pnpm run architecture:graph:drift`; `git diff --check` recorded in this task's Result Report.
+- Docs updated: architecture graph registries, generated graph exports, drift/status reports, and source-of-truth state files.
+
 ## Context
 
 The operator requested an Obsidian-first living architecture evidence graph for Soar: CSV as source of truth, Markdown/CSV/JSON exports, node and relation records for functions, components, tests, documentation, workflows, agents, prompts, configs, and chain execution mapping.

@@ -1,10 +1,10 @@
 # Mobile Module: Bootstrap Scaffold
 
-Updated: 2026-05-28
+Updated: 2026-06-07
 
 ## Scope
 - Source path: `apps/mobile`
-- Status: scaffold-only (implementation deferred)
+- Status: scaffold-only (`out_of_scope_for_v1`)
 
 ## Current Responsibility
 - Keeps the native/mobile lane explicitly non-production until activation.
@@ -39,3 +39,7 @@ Each script currently prints deferred-scaffold messages by design.
 ## Activation Gate
 Before mobile implementation starts, convert scaffold scripts and docs into real
 native build/test contracts in the same lane.
+
+Activation requires a Product/CTO-approved mobile issue whose scope includes
+non-scaffold native runtime behavior in `apps/mobile`. Until that exists, this
+module is not a V1 implementation gap.

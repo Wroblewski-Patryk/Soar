@@ -19,6 +19,27 @@ Issue scope is QA verification that runtime signal cards preserve two facts at o
 ## Goal
 Prove the behavior with repeatable automated checks and record the evidence path.
 
+## Architecture Links
+
+- Primary feature/module: dashboard runtime signal cards preserve matched condition plus blocked execution reason.
+- Architecture nodes:
+  - `docs/architecture/nodes/SOAR-COMP-RUNTIME-SIGNALS-SECTION.md`
+  - `docs/architecture/nodes/SOAR-UTIL-RUNTIME-SIGNAL-CONDITION-STATE.md`
+  - `docs/architecture/nodes/SOAR-TEST-DASHBOARD-RUNTIME-SIGNALS.md`
+  - `docs/architecture/nodes/SOAR-FEATURE-DASHBOARD-RUNTIME.md`
+- Function chains:
+  - `docs/architecture/chains/CHAIN-DASHBOARD-RUNTIME.md`
+  - `docs/architecture/chains/CHAIN-WEB-RUNTIME-SURFACES.md`
+- Affected files:
+  - `apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx`
+  - `apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts`
+  - `apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.tsx`
+- Tests/proof:
+  - `pnpm --filter web exec vitest run src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx`
+  - `pnpm --filter web exec vitest run src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts`
+- Docs updated:
+  - `docs/status/task-entity-link-backfill-classification-2026-06-08.md`
+
 ## Validation Evidence
 - Focused test command:
   - `pnpm --filter web exec vitest run src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx`

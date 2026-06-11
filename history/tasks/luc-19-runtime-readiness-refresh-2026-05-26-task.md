@@ -11,6 +11,15 @@
 - Mission ID: SOAR-FULL-READINESS-COORDINATION-2026-05-23
 - Mission Status: CHECKPOINTED
 
+## Architecture Links
+
+- Primary feature/module: Public runtime readiness and deploy freshness.
+- Architecture nodes: `docs/architecture/nodes/SOAR-API-MARKET-STREAM-EVENTS.md`, `docs/architecture/nodes/SOAR-WORKER-MARKET-STREAM-SUBSCRIPTIONS.md`, `docs/architecture/nodes/SOAR-SERVICE-RUNTIME-MARKET-TRUTH-STATE.md`.
+- Function chains: `docs/operations/post-deploy-smoke-checklist.md`, `docs/operations/deployment-rollback-playbook.md`.
+- Affected files: `scripts/deploySmokeCheck.mjs`, `scripts/checkCoolifyStackEnv.mjs`, `docs/operations/post-deploy-smoke-checklist.md`.
+- Tests/proof: public `/health`, `/ready`, `/api/build-info`, `pnpm run docker:coolify:config`, and `pnpm run ops:coolify-stack:env-check:example`.
+- Docs updated: `history/tasks/luc-19-runtime-readiness-refresh-2026-05-26-task.md`.
+
 ## Context
 Board comment requested continuation in the same narrow ops lane after auth/inbox recovery, with durable evidence and honest status.
 
@@ -74,4 +83,3 @@ Refresh current public runtime/deploy evidence and confirm stack manifest prefli
 - `pnpm run ops:coolify-stack:env-check:example`
 
 Reality status: partially verified
-

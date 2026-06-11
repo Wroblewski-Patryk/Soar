@@ -1,8 +1,282 @@
 # Requirements Verification Matrix
 
-Last updated: 2026-05-25
+Last updated: 2026-06-11
+
+- 2026-06-11 `LUC-3461-COOLIFY-PRODUCTION-DEPLOY-HEALTH-SWEEP-2026-06-11`
+  partially verifies `REQ-FUNC-021` / production operations health: public
+  API/Web no-worker smoke passed and read-only Coolify inventory remains
+  stable. Proof: `pnpm run ops:deploy:smoke -- --base-url
+  https://api.soar.luckysparrow.ch --web-base-url
+  https://soar.luckysparrow.ch --no-workers` passed all four public checks;
+  authenticated Coolify `GET` projection passed for selector, project,
+  production environment, resources, and deployments. Boundary: no protected
+  `/workers/ready`, worker freshness, rollback proof, restore drill, SLO
+  evidence, release approval, deploy, restart, secret/account readback,
+  database/Redis mutation, or live-trading behavior was verified or mutated.
+
+- 2026-06-11 `LUC-3394-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-06-11`
+  updates `REQ-DOC-031` / architecture evidence graph traceability: the current
+  visible local-safe missing-test rows for `runV1StaticIssueScan` and
+  `runV1StageRehearsal` are now classified as stale because direct relation
+  rows exist for completed [LUC-3381](/LUC/issues/LUC-3381) and
+  [LUC-3389](/LUC/issues/LUC-3389). Proof: Paperclip issue searches and direct
+  `priority-test-links.csv` readback passed; `pnpm run architecture:graph:generate`
+  passed (`653` nodes / `842` relations / `27` chains). Boundary: no protected
+  proof, real stage rehearsal, production browser proof, secret, deploy,
+  restart, database, exchange, order, position, account/payment, or
+  live-trading behavior was verified or mutated. Residual: full
+  architecture-awareness refresh is blocked in this checkout by absent
+  `scripts/build-architecture-awareness-index.mjs`.
+
+- 2026-06-11 `LUC-3381-STATIC-ISSUE-SCAN-HELPER-MISSING-TEST-ROWS-2026-06-11`
+  updates `REQ-DOC-031` / architecture evidence graph traceability: V1 static
+  issue scan helper anchors in `scripts/runV1StaticIssueScan.mjs` now have
+  focused local Node proof and direct scanner-readable rows in
+  `docs/architecture/relations/priority-test-links.csv`. Proof: syntax check
+  passed, `node --test scripts/runV1StaticIssueScan.test.mjs` passed (`8/8`),
+  direct relation readback passed (`22` rows), `pnpm run quality:guardrails`
+  passed, and no leftover `chrome-headless-shell` process was found. Boundary:
+  local helper proof only; no real static scan evidence refresh, protected
+  proof, secret, deploy, restart, database mutation, exchange, order, position,
+  account, payment/subscription, or live-trading behavior was verified or
+  mutated. Residual: `pnpm run architecture:graph:generate` failed twice with
+  Windows filesystem `UNKNOWN` while opening
+  `docs/graphs/architecture-graph.json`; guardrails still reported graph drift
+  OK.
+
+- 2026-06-08 `LUC-3001-RESTORE-DRILL-EVIDENCE-HELPER-MISSING-TEST-ROWS-2026-06-08`
+  updates `REQ-DOC-031` / architecture evidence graph traceability: restore
+  drill evidence helper anchors in `scripts/runRestoreDrillEvidence.mjs` now
+  have focused local Node proof and direct scanner-readable rows in
+  `docs/architecture/relations/priority-test-links.csv`. Proof: syntax checks
+  passed, safe `--help` passed, `node --test
+  scripts/runRestoreDrillEvidence.test.mjs` passed (`7/7`), direct relation
+  readback passed (`7` rows), `pnpm run architecture:graph:generate` passed
+  (`653` nodes / `842` relations / `27` chains), and `pnpm run
+  quality:guardrails` passed. Boundary: local helper proof only; no real
+  restore drill, protected proof, secret, deploy, rollback, database mutation,
+  exchange, order, position, account, payment/subscription, or live-trading
+  behavior was verified or mutated.
+
+- 2026-06-08 `LUC-2980-RESTORE-LOCAL-DOCKER-POSTGRESQL-RUNTIME-2026-06-08`
+  verifies `REQ-FUNC-017` / Gate.io position ingestion DB-backed proof can run
+  locally again. Docker Desktop was started, stale local Compose
+  network/container metadata was normalized without deleting volumes, and
+  `pnpm run go-live:infra:up` now starts `postgres` and `redis`. Proof:
+  `docker compose ps` shows `soar-postgres-1` and `soar-redis-1` running,
+  TCP checks for `localhost:5432` and `localhost:6379` passed, `pg_isready`
+  accepted connections, and the focused API proof passed (`2` files / `42`
+  tests). Boundary: no product/runtime code, production smoke, protected proof,
+  secret, deploy, database-production, exchange, order, position, or
+  live-trading behavior was changed or mutated.
+
+- 2026-06-08 `LUC-2975-PUBLIC-READ-ONLY-BROWSER-PROOF-HELPER-TEST-LANE-2026-06-08`
+  updates `REQ-DOC-031` / architecture evidence graph traceability: safe
+  helper anchors in `scripts/runPublicReadOnlyBrowserProof.mjs` now have
+  focused local Node proof and direct scanner-readable rows in
+  `docs/architecture/relations/priority-test-links.csv`. Proof: syntax checks
+  passed, safe `--help` passed, `node --test
+  scripts/runPublicReadOnlyBrowserProof.test.mjs` passed (`5/5`), direct
+  relation readback passed (`16` rows), `pnpm run
+  architecture:graph:generate` passed (`653` nodes / `842` relations / `27`
+  chains), and Softwarehouse architecture-awareness refresh passed (`9328`
+  entities / `29432` relations / `9732` files; `125` actionable missing-test
+  links). Boundary: local helper proof only; no production browser proof,
+  protected auth/session, real account, secret, deploy, database, exchange,
+  order, position, or live-trading behavior was verified or mutated.
+
+- 2026-06-08 `LUC-2970-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-06-08`
+  updates `REQ-DOC-028` / `REQ-DOC-031` architecture evidence graph
+  traceability: production UI module clickthrough helper anchors already
+  locally proved by [LUC-2957](/LUC/issues/LUC-2957) now have direct
+  scanner-readable rows in `docs/architecture/relations/priority-test-links.csv`.
+  Proof: focused helper tests passed (`8/8`), direct relation readback passed
+  (`18` rows), `pnpm run architecture:graph:generate` passed (`653` nodes /
+  `842` relations / `27` chains), and `pnpm run quality:guardrails` passed.
+  Boundary: local traceability repair only; no production UI clickthrough,
+  production UX/A11y proof, protected auth/session, account, secret, deploy,
+  database, exchange, order, position, or live-trading behavior was verified or
+  mutated. Full architecture-awareness refresh is blocked in this checkout by
+  absent `scripts/build-architecture-awareness-index.mjs`.
+
+- 2026-06-07 `LUC-2931-LOCAL-EXTERNAL-GATES-PIPELINE-MISSING-TEST-LINKS-2026-06-07`
+  updates `REQ-DOC-031` / architecture evidence graph traceability: local
+  external gates pipeline helper anchors in
+  `scripts/runLocalExternalGatesPipeline.mjs` now have focused local Node proof
+  and direct scanner-readable rows in
+  `docs/architecture/relations/priority-test-links.csv`. Proof:
+  `node --check scripts/runLocalExternalGatesPipeline.mjs`, `node --check
+  scripts/runLocalExternalGatesPipeline.test.mjs`, `node --test
+  scripts/runLocalExternalGatesPipeline.test.mjs` (`7/7`), safe CLI `--help`,
+  direct relation readback (`12` rows), `pnpm run architecture:graph:generate`,
+  Softwarehouse architecture-awareness refresh (`15050` entities / `34488`
+  relations / `9741` files; `234` actionable missing-test links), and
+  `pnpm run quality:guardrails` passed. Boundary: local helper proof only; no
+  protected external gates, production auth, protected smoke, deploy, account,
+  secret, exchange, database, order, position, or live-trading behavior was
+  verified or mutated.
+
+- 2026-06-07 `LUC-2920-KNOWN-STATE-REFRESH-RUN-MISSING-TEST-LINK-2026-06-07`
+  updates `REQ-DOC-028` / architecture evidence graph traceability: known-state
+  refresh helper anchor `scripts/runKnownStateRefresh.mjs#run` now has focused
+  local Node proof and a direct scanner-readable row in
+  `docs/architecture/relations/priority-test-links.csv`. Proof:
+  `node --check scripts/runKnownStateRefresh.mjs`, `node --check
+  scripts/runKnownStateRefresh.test.mjs`, `node --test
+  scripts/runKnownStateRefresh.test.mjs` (`5/5`), direct relation readback,
+  `pnpm run architecture:graph:generate`, Softwarehouse architecture-awareness
+  refresh (`15046` entities / `34456` relations / `9738` files; `245`
+  actionable missing-test links), and `pnpm run quality:guardrails` passed.
+  Boundary: local helper proof only; no full known-state refresh chain,
+  production, deploy, protected smoke, account, secret, exchange, database, or
+  live-trading behavior was verified or mutated.
 
 ## Current Release Override
+
+- 2026-06-07 `LUC-2906` verifies the local controlled LIVE proof
+  `waitForRunningSession` traceability slice under `REQ-DOC-031`: the bounded
+  running-session wait helper now has focused local `node:test` proof plus a
+  direct scanner-readable relation row. Softwarehouse architecture-awareness
+  refresh generated `2026-06-07T18:49:12.396Z`, reduced actionable
+  missing-test links to `251`, and no longer lists `waitForRunningSession` in
+  Top Actionable Missing Test Links. This is local traceability proof only and
+  does not change protected production, controlled LIVE proof, exchange,
+  account, database, deploy, or live-trading gates. Evidence:
+  `history/tasks/luc-2906-controlled-live-proof-waitforrunningsession-missing-test-link-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2905` updated `REQ-DOC-031` routing but did not itself verify
+  the remaining helper: architecture-awareness report generated
+  `2026-06-07T18:35:45.780Z` reported `252` actionable missing-test links, with
+  `scripts/runControlledLiveSessionProof.mjs#waitForRunningSession` still in
+  Top Actionable Missing Test Links at that checkpoint. Duplicate search found
+  no open matching lane, so [LUC-2906](/LUC/issues/LUC-2906) was created for
+  QA/Verification; [LUC-2906](/LUC/issues/LUC-2906) now supersedes this routing
+  entry with verified local proof. This is a delegated routing checkpoint only
+  and does not change protected production, controlled LIVE proof, exchange,
+  account, database, deploy, or live-trading gates. Evidence:
+  `history/tasks/luc-2905-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2892` verifies the local controlled LIVE proof
+  `runCollector` traceability slice under `REQ-DOC-031`: the collector spawn
+  helper now has focused local `node:test` proof plus a direct
+  scanner-readable relation row. Softwarehouse architecture-awareness refresh
+  generated `2026-06-07T17:33:58.207Z`, reduced actionable missing-test links
+  to `255`, and no longer lists `runCollector` in Top Actionable Missing Test
+  Links. This is local traceability proof only and does not change protected
+  production, controlled LIVE proof, exchange, account, database, deploy, or
+  live-trading gates. Evidence:
+  `history/tasks/luc-2892-controlled-live-proof-runcollector-missing-test-link-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2847` verifies the local controlled LIVE proof
+  `hashId` traceability slice under `REQ-DOC-031`: the redacted identifier
+  helper now has focused local `node:test` proof plus a direct scanner-readable
+  relation row. Softwarehouse architecture-awareness refresh generated
+  `2026-06-07T14:50:02.331Z`, reduced actionable missing-test links to `294`,
+  and no longer lists `hashId` in the report. This is local traceability proof
+  only and does not change protected production, controlled LIVE proof,
+  exchange, account, database, deploy, or live-trading gates. Evidence:
+  `history/tasks/luc-2847-controlled-live-proof-hashid-missing-test-link-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2812` verifies the local dev-workers
+  `handleWorkerExit` traceability slice under `REQ-DOC-031`: the
+  `scripts/dev-workers.mjs#handleWorkerExit` helper now has focused local
+  `node:test` proof plus a direct scanner-readable relation row. Softwarehouse
+  architecture-awareness refresh generated `2026-06-07T13:04:38.451Z`,
+  reduced actionable missing-test links from `315` to `314`, and no longer
+  lists `handleWorkerExit` in Top Actionable Missing Test Links. This is local
+  traceability proof only and does not change protected production,
+  worker-readiness, exchange, database, Docker Compose, or live-trading gates.
+  Evidence:
+  `history/tasks/luc-2812-dev-workers-handle-worker-exit-missing-test-link-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2793` updates `REQ-DOC-031` with verified docs/source-truth
+  classification for mobile traceability: native/mobile is
+  `out_of_scope_for_v1`, while the existing `apps/mobile` map remains a
+  scaffold-only documentation seed. This closes the ambiguity from
+  [LUC-2789](/LUC/issues/LUC-2789) without creating a mobile implementation
+  gap. Future activation requires Product/CTO-approved mobile scope plus real
+  Expo/native build/test contracts before feature-level mobile traceability is
+  required. Evidence:
+  `history/tasks/luc-2793-mobile-traceability-v1-scope-classification-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2788` verifies the local dev-workers helper tooling repair
+  slice under `REQ-DOC-031`: current `scripts/dev-workers.mjs` anchors
+  `prefixLog`, `shutdown`, and the scanner-discovered signal closure
+  `shutdownImpl` now have focused local `node:test` proof plus direct
+  scanner-readable relation rows. `scripts/dev-workers.mjs` remains
+  CLI-compatible and local proof verifies stdout/stderr prefixing, child
+  shutdown, non-zero worker exit fail-closed behavior, and signal registration
+  without starting real worker processes. Softwarehouse architecture-awareness
+  refresh generated `2026-06-07T11:35:58.461Z`, reduced actionable missing-test
+  links to `324`, and no longer lists the `dev-workers` family in Top
+  Actionable Missing Test Links. This is local traceability proof only and does
+  not change protected production, worker-readiness, exchange, database,
+  Docker Compose, or live-trading gates. Evidence:
+  `history/tasks/luc-2788-dev-workers-helper-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2787` updates `REQ-FUNC-021` with verified local backend
+  proof for the workers readiness auth bootstrap test path. The full
+  `apps/api/src/router/workers-health-readiness.test.ts` suite now passes
+  without `/auth/register` bootstrap, using signed test principals and mocked
+  user lookup while still exercising the protected route auth/role contract.
+  Proof:
+  `pnpm --filter api exec vitest run src/router/workers-health-readiness.test.ts --reporter=verbose`
+  passed (`1` file / `8` tests), including unauthenticated `401` and non-admin
+  `403` fail-closed checks. Boundary: this closes the local [LUC-1174](/LUC/issues/LUC-1174)
+  bootstrap blocker only; protected production workers readiness evidence
+  remains separately auth-gated and is not verified by this local proof.
+  Evidence:
+  `history/tasks/luc-2787-workers-readiness-auth-bootstrap-test-path-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2781` verifies the residual local dev backend
+  `shutdownImpl` traceability slice under `REQ-DOC-031`: the nested
+  `scripts/dev-backend.mjs#shutdownImpl` signal-handler closure now has
+  focused local `node:test` proof through the `main()` signal registration seam
+  plus a direct scanner-readable relation row. Softwarehouse
+  architecture-awareness refresh generated `2026-06-07T11:12:18.981Z`, reduced
+  actionable missing-test links from `327` to `326`, and no longer lists
+  `shutdownImpl` in Top Actionable Missing Test Links. This is local
+  traceability proof only and does not change protected production,
+  worker-readiness, exchange, database, Docker Compose, or live-trading gates.
+  Evidence:
+  `history/tasks/luc-2781-dev-backend-shutdownimpl-test-link-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2775` verifies the local dev backend helper tooling repair
+  slice under `REQ-DOC-031`: current `scripts/dev-backend.mjs` helper anchors
+  now have focused local `node:test` proof plus direct scanner-readable
+  relation rows. `scripts/dev-backend.mjs` remains CLI-compatible, and local
+  proof verifies env parsing, DB/Redis URL parsing, TCP readiness finalization,
+  Docker/process runner seams, Prisma failure classification, child shutdown,
+  exit handling, ready-service orchestration, and fail-closed unavailable
+  service behavior without starting Docker, mutating DB/Redis, or running real
+  Prisma commands. This is local traceability proof only and does not change
+  protected production, worker-readiness, exchange, database, or live-trading
+  gates. Evidence:
+  `history/tasks/luc-2775-dev-backend-helper-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2774` verifies the TSA repair-lane refresh for
+  `REQ-DOC-031`: current architecture-awareness report freshness is at
+  `2026-06-07T10:30:41.562Z`, with `337` actionable missing-test links and no
+  actionable missing-doc, ownerless, or disconnected entity findings. The top
+  non-duplicate local helper family is `scripts/dev-backend.mjs`, so
+  [LUC-2775](/LUC/issues/LUC-2775) was created for Test Automation
+  repair/classification. This is local traceability coordination only and does
+  not change protected production, worker-readiness, exchange, database, or
+  live-trading gates. Evidence:
+  `history/tasks/luc-2774-gap-register-and-repair-lane-refresh-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2773` updates `REQ-AI-030`: `SOAR-ASSISTANT-AI-001`
+  remains accepted deferred V1 scope for executable BACKTEST/PAPER/LIVE
+  assistant hot-path orchestration. Current V1 proof is the verified
+  foundation/dry-run boundary: assistant config, deterministic orchestrator,
+  `BACKTEST|PAPER` dry-run diagnostics, sanitized traces, and fail-closed
+  `LIVE` rejection. No implementation, protected auth, deploy, production,
+  account, secret, exchange, database, or live-trading action occurred.
+  Future activation requires Product+CTO approval, AI Runtime ownership,
+  persisted runtime assistant traces, fail-closed fallback proof, Security
+  red-team acceptance, and QA/Test proof under `AI_TESTING_PROTOCOL.md`.
+  Evidence:
+  `history/tasks/luc-2773-soar-assistant-ai-v1-scope-decision-2026-06-07-task.md`.
 
 - 2026-06-07 `LUC-2750` verifies the local live import readback collector
   tooling repair slice under `REQ-DOC-031`: current
@@ -117,6 +391,13 @@ Last updated: 2026-05-25
   traceability proof only and does not change protected production,
   worker-readiness, exchange, or live-trading gates. Evidence:
   `history/tasks/luc-2693-v1-master-state-ledger-missing-test-links-2026-06-07-task.md`.
+
+- 2026-06-07 `LUC-2786` verifies the Dashboard Home locale encoding integrity
+  repair slice under `REQ-I18N-022`: target de-CH/pt locale files no longer
+  match `Ă`, `â€`, or BOM-prefixed `export` markers, and loaded translations now
+  reject common mojibake/replacement-character markers in focused tests.
+  Evidence:
+  `history/tasks/luc-2786-dashboard-locale-encoding-integrity-drift-2026-06-07-task.md`.
 
 - 2026-06-07 `LUC-2650` verifies the local route-reachable i18n audit tooling
   repair slice under `REQ-I18N-022` and `REQ-DOC-031`: current
@@ -362,7 +643,7 @@ Last updated: 2026-05-25
 | REQ-FUNC-027 | `docs/architecture/07_modes-parity-and-data.md`; `history/tasks/post-v1-strategy-snapshot-history-2026-05-14-task.md` | New backtest runs must persist immutable creation-time strategy and market-universe context snapshots, replay/timeline/list projections must prefer snapshot truth over later mutable strategy edits, and strategy/market-universe deletion must fail closed while owned backtest history references the source record. | functional/reliability | Backtests, Strategies, Markets | local API e2e tests + architecture/doc updates | `POSTV1-STRATEGY-SNAPSHOT-HISTORY-2026-05-14`: focused API e2e passed (`backtests.e2e.test.ts`, `strategies.e2e.test.ts`, `markets.e2e.test.ts`; `44/44`). Evidence covers persisted `seedConfig.contextSnapshot`, unchanged historical list `strategyName` after strategy update, strategy delete `409`, and market-universe delete `409` while historical runs reference the records. | verified | Extend the same immutable-history pattern to bot history/versioned bot context and per-symbol best-parameter comparison in later bounded slices. | 2026-05-14 |
 | REQ-ARCH-028 | `history/audits/architecture-code-discrepancy-audit-2026-05-17.md`; `history/audits/architecture-exchange-scope-wording-audit-2026-05-19.md`; `history/audits/audit-decision-packet-2026-05-19.md` | Architecture overview/domain exchange wording must match accepted code-supported exchange scope and explicitly separate implementation support from production proof/resource scope. | architecture/documentation | Exchange Adapter, Architecture | architecture-code audit + doc repair | 2026-05-19 `AUD-01` audit confirmed the drift. `DEC-AUD-001` accepted Binance + Gate.io as current implementation scope, not Binance-only; `01_overview-and-principles.md` and `03_domain-model.md` now keep production/live readiness evidence-bound by exact exchange, market type, and operation. | verified | Keep Gate.io production/live readiness proof separate by exact operation before any production readiness claim. | 2026-05-19 |
 | REQ-EXCH-029 | `docs/architecture/reference/exchange-access-ownership-matrix.md`; `docs/architecture/09_integrations-deployment-and-runtime-services.md`; `history/audits/architecture-code-discrepancy-audit-2026-05-17.md`; `history/audits/exchange-capability-truth-audit-2026-05-19.md` | Exchange operation capability truth must resolve by exact `(exchange, marketType, operation)` or the architecture must explicitly approve the current two-stage exchange-level capability plus registry market-type validation model. | architecture/functional | Exchange Adapter | code audit + focused exchange capability tests after repair | 2026-05-19 `AUD-09` follow-up implemented exact operation support: `supportsExchangeExecutionCapability`, `assertExchangeExecutionCapabilitySupport`, authenticated-read support, exchange boundary calls, wallet balance preview, and positions snapshot calls now pass `(exchange, marketType, operation)`. Focused exchange contract tests PASS (`2` files / `4` tests), exchange boundary/registry tests PASS (`2` files / `17` tests), API typecheck PASS, and follow-up orders/wallet classifier tests PASS (`2` files / `41` tests) after non-exchange consumers moved to neutral exchange-owned type aliases. | verified | Keep future exchange additions on exact capability contracts and neutral exchange-owned type aliases. | 2026-05-19 |
-| REQ-AI-030 | `docs/architecture/11_assistant-runtime.md`; `docs/architecture/reference/assistant-runtime-contract.md`; `history/audits/architecture-code-discrepancy-audit-2026-05-17.md`; `history/audits/ai-assistant-runtime-truth-audit-2026-05-19.md`; `history/audits/audit-decision-packet-2026-05-19.md` | Assistant architecture must truthfully describe whether assistant orchestration is integrated into BACKTEST/PAPER/LIVE runtime decisions, and runtime integration must have fail-closed, audit, and AI red-team evidence before being treated as active behavior. | architecture/AI/safety | Assistant/AI, Runtime, Backtests | code audit + AI protocol proof after repair | 2026-05-19 `AUD-20` audit proves the deterministic foundation locally: orchestrator API tests PASS (`2` files, `6` tests), Web assistant route tests PASS (`2` files, `3` tests), and bot assistant config/dry-run e2e PASS after local Postgres/Redis startup (`1` file, `3` tests). It also confirms no audited hot-path runtime/backtest/live call to `orchestrateAssistantDecision` and no full `AI_TESTING_PROTOCOL.md` multi-turn red-team proof. `DEC-AUD-002` narrowed current architecture truth to assistant foundation/dry-run and deferred hot-path orchestration. 2026-05-25 boundary hardening keeps dry-run non-executable: `AssistantDryRunSchema` now accepts only `BACKTEST|PAPER`; focused orchestration e2e (`pnpm --filter api exec vitest run src/modules/bots/bots.orchestration.e2e.test.ts -t "returns explainable assistant dry-run trace including NO_TRADE output"`) PASS with `mode: LIVE` rejected (`400`). | verified | Before any runtime AI trading claim, implement hot-path assistant orchestration separately with persisted trace, fail-closed integration, and AI red-team evidence. | 2026-05-25 |
+| REQ-AI-030 | `docs/architecture/11_assistant-runtime.md`; `docs/architecture/reference/assistant-runtime-contract.md`; `history/audits/architecture-code-discrepancy-audit-2026-05-17.md`; `history/audits/ai-assistant-runtime-truth-audit-2026-05-19.md`; `history/audits/audit-decision-packet-2026-05-19.md`; `history/tasks/luc-2773-soar-assistant-ai-v1-scope-decision-2026-06-07-task.md` | Assistant architecture must truthfully describe whether assistant orchestration is integrated into BACKTEST/PAPER/LIVE runtime decisions, and runtime integration must have fail-closed, audit, and AI red-team evidence before being treated as active behavior. | architecture/AI/safety | Assistant/AI, Runtime, Backtests | code audit + AI protocol proof after repair + product scope decision | 2026-05-19 `AUD-20` audit proves the deterministic foundation locally: orchestrator API tests PASS (`2` files, `6` tests), Web assistant route tests PASS (`2` files, `3` tests), and bot assistant config/dry-run e2e PASS after local Postgres/Redis startup (`1` file, `3` tests). It also confirms no audited hot-path runtime/backtest/live call to `orchestrateAssistantDecision` and no full `AI_TESTING_PROTOCOL.md` multi-turn red-team proof. `DEC-AUD-002` narrowed current architecture truth to assistant foundation/dry-run and deferred hot-path orchestration. 2026-05-25 boundary hardening keeps dry-run non-executable: `AssistantDryRunSchema` now accepts only `BACKTEST|PAPER`; focused orchestration e2e (`pnpm --filter api exec vitest run src/modules/bots/bots.orchestration.e2e.test.ts -t "returns explainable assistant dry-run trace including NO_TRADE output"`) PASS with `mode: LIVE` rejected (`400`). 2026-06-04 local adversarial proof passed via `pnpm run test:adversarial:api-assistant` (`8` files / `29` tests). 2026-06-07 `LUC-2773` classifies executable assistant hot-path orchestration as accepted deferred V1 scope, not a current implementation gap. | verified_foundation_and_scope_decision | Keep V1 limited to assistant foundation/dry-run. Before any runtime AI trading claim, create a separate Product+CTO-approved hot-path assistant mission with persisted trace, fail-closed integration, model/runtime assumptions, AI red-team evidence, and QA/Test protocol proof. | 2026-06-07 |
 | REQ-AUDIT-031 | User request 2026-05-18; `docs/analysis/reusable-audit-registry.md` | The project must maintain a reusable cross-layer audit registry with stable audit IDs, repeatable evidence expectations, current baseline truth, and trend fields so future reruns can detect improvement or regression without omitting layers. | process/quality | Audit system, all modules | generated project index + static scan + broad local validation + authenticated route-state proof + endpoint docs parity + documentation update | `REUSABLE-AUDIT-REGISTRY-2026-05-18`: created `docs/analysis/reusable-audit-registry.md` with `AUD-00` through `AUD-23`, created `history/audits/audit-baseline-2026-05-18.md`, refreshed project index (`PASS:21`, tests `335`) and static scan (`0` findings) sequentially. `FULL-LAYERED-AUDIT-RUN-2026-05-18`: updated the baseline after guardrails, docs parity, typecheck, lint, build, full Web Vitest (`149` files / `514` tests), focused API layer packs, full API Vitest exit `0`, route-reachable i18n audit (`0` findings), go-live smoke (API `45/45`, Web `18/18`), and representative Browser route-state proof passed locally. `AUTHENTICATED-ROUTE-STATE-AUDIT-2026-05-19`: added authenticated local Browser proof with `53` route checks, `53` PASS, `0` CHECK, `0` console warning/error routes, and `6` screenshots. `API-ENDPOINT-DOCS-PARITY-AUDIT-2026-05-19`: added reusable endpoint-level API docs parity command; gap closure now passes with `109` endpoints, `109` documented, `0` gaps. 2026-05-19 audit tooling now enforces required closure commands in both rerun playbook and tooling-index validators, validates the full reusable audit handoff JSON, checks tooling-index `pnpm run` commands against `package.json`, validates manifest summary/path metadata against actual contents, validates the full reusable audit rollup JSON, compares manifests using leading status buckets so hybrid current/deferred wording does not create false regressions, and persists manifest comparison JSON reports with `--json-output <path>`, and requires the rerun playbook `compareJson` command to use persisted JSON output, and checks tooling-index Markdown/JSON tool ID parity, and checks manifest Markdown/JSON summary count parity, and checks rollup Markdown/JSON audit ID and summary count parity, and requires handoff cleanup validation evidence for headless browser, local DB/Redis listener, and Docker compose cleanup. | verified | Use the registry as the starting point for future broad audits; next extension is deeper keyboard/focus/a11y assertions if needed. | 2026-05-19 |
 | REQ-ENGINE-032 | `docs/architecture/05_strategy-signal-and-decision-flow.md`; `docs/architecture/06_execution-lifecycle.md`; `docs/architecture/reference/runtime-signal-merge-contract.md`; `docs/modules/api-engine.md`; `history/audits/engine-trading-decision-flow-audit-2026-05-19.md` | Engine runtime decisions must use deterministic merge and tie-break behavior, pass lifecycle/pre-trade/exchange guardrails before side effects, keep side effects idempotent, preserve PAPER/LIVE decision parity, and fail closed when canonical runtime context is missing or unsafe. | functional/safety | Engine, Bot Runtime, Orders, Positions | focused engine service/unit tests + DB-backed runtime/pre-trade e2e | 2026-05-19 `AUD-11` audit: engine service/unit pack PASS (`15` files / `173` tests) and DB-backed engine e2e/smoke pack PASS (`4` files / `13` tests). Evidence covers signal merge, decision engine, final-candle flow, signal loop/supervisor, pre-trade/risk, execution orchestration, dedupe, exchange guard, PAPER/LIVE parity, market-data gateway, position automation, PAPER runtime lifecycle, and owned imported-position execution. | verified | Keep LIVE/exchange-side mutation excluded until an explicit safe plan exists; assistant hot-path runtime integration remains tracked by `REQ-AI-030`. | 2026-05-19 |
 | REQ-FUNC-014 | `history/audits/v1-product-action-audit-matrix-2026-05-10.md`; Reports API/Web contracts | Reports must expose authenticated cross-mode performance summaries and dashboard report states that aggregate backtest and runtime outcomes without misleading empty or localized UI behavior. | functional | Reports | local API service/e2e tests + focused web route/component/i18n tests + production disposable fixture proof | `history/evidence/v1-reports-local-proof-task-2026-05-11.md`: API Reports service tests passed (`1` file, `2` tests), covering weighted BACKTEST report aggregation and PAPER trade aggregation. Web Reports tests passed (`3` files, `5` tests), covering route shell, empty state, aggregated cards/tables, and route-reachable locale copy. `history/evidence/prod-fixture-action-proof-457bce05-2026-05-14.md` verifies per-run report readback for a disposable production backtest run on deployed `457bce05`. 2026-05-19 `history/audits/backtests-reports-audit-2026-05-19.md` refreshed local Web backtests/reports evidence (`15` files / `37` tests) and API backtests/reports evidence (`13` files / `114` tests). 2026-05-21 `reports.e2e.test.ts` added DB-backed route proof for unauthenticated rejection and authenticated user-scoped BACKTEST/PAPER/LIVE aggregation; focused Reports API proof passed (`2` files / `4` tests). | verified | Keep proof fresh after future deploys; export/download remains out of the current implemented Reports surface. | 2026-05-21 |
@@ -486,6 +767,19 @@ Last updated: 2026-05-25
   `0` missing; `node --test scripts/repoGuardrails.test.mjs` passed `9/9`;
   `pnpm run quality:guardrails` passed and reported `Architecture graph
   drift: OK`.
+- 2026-06-08 `LUC-2977-GATEIO-DB-BACKED-POSITION-INGESTION-VERIFICATION`
+  updates Gate.io position ingestion readiness for [LUC-1166](/LUC/issues/LUC-1166):
+  DB-backed Gate.io position ingestion and workers readiness auth/non-admin/
+  fail-closed contracts are locally verified after [LUC-2979](/LUC/issues/LUC-2979)
+  / [LUC-2980](/LUC/issues/LUC-2980) restored local PostgreSQL. Proof:
+  `pnpm --filter api exec vitest run src/modules/positions/livePositionReconciliation.service.test.ts src/router/workers-health-readiness.test.ts --reporter=verbose`
+  passed (`2` files / `42` tests), with `127.0.0.1:5432` TCP and
+  `pg_isready` also passing. Boundary: no production proof, secret, deploy,
+  production database mutation, exchange account use, order, position, or
+  live-trading mutation occurred. Residual: UI display path was not separately
+  browser-proved in this QA slice, and the reused local DB volume reports a
+  non-blocking collation warning.
+
 - 2026-06-04 `LUC-1945-ADVERSARIAL-API-ASSISTANT-REGRESSION-PROOF-2026-06-04`
   updates `REQ-DOC-024` / API platform safety and AI assistant foundation
   verification expectations: `pnpm run test:adversarial:api-assistant`
@@ -541,3 +835,40 @@ Allowed statuses: `proposed`, `accepted`, `in_progress`,
 `implemented_not_verified`, `partially_verified`, `verified`, `failed`,
 `blocked`, `superseded`.
 
+- 2026-06-07 | V1 audit-to-completion missing-test backlog routing |
+  partially verified | [LUC-2955](/LUC/issues/LUC-2955) refreshed the current
+  architecture-awareness report (`181` actionable missing-test links), filtered
+  already-owned families, and created [LUC-2956](/LUC/issues/LUC-2956) for
+  `scripts/runProdSecurityExchangeProof.mjs` local helper proof/classification. |
+  `history/tasks/luc-2955-v1-audit-to-completion-controller-2026-06-07-task.md` |
+  [LUC-2956](/LUC/issues/LUC-2956) must provide coverage/classification and
+  architecture relation proof before this family can be marked verified. |
+
+- 2026-06-07 `LUC-2956-PROD-SECURITY-EXCHANGE-PROOF-HELPER-MISSING-TEST-LINKS`
+  updates `REQ-DOC-028` / architecture evidence graph traceability: production
+  security/exchange proof helper anchors now have focused local Node proof and
+  direct scanner-readable rows in
+  `docs/architecture/relations/priority-test-links.csv`. Proof:
+  `node --check scripts/runProdSecurityExchangeProof.mjs` passed,
+  `node --check scripts/runProdSecurityExchangeProof.test.mjs` passed,
+  `node --test scripts/runProdSecurityExchangeProof.test.mjs` passed (`4/4`),
+  direct [LUC-2956](/LUC/issues/LUC-2956) relation readback passed (`14`
+  rows), `pnpm run architecture:graph:generate` passed (`653` nodes / `842`
+  relations / `27` chains), architecture-awareness refresh passed (`15087`
+  entities / `34684` relations / `9760` files), and `pnpm run
+  quality:guardrails` passed. Boundary: local no-secret helper proof only; no
+  production security/exchange proof, auth/session, account, exchange
+  credential, deploy, database, order, position, or live-trading behavior was
+  verified or mutated.
+# 2026-06-11 LUC-3405 Public Browser Proof Process Anchor Classification
+
+- Requirement: public read-only browser proof traceability must distinguish
+  deterministic helpers from OS/browser lifecycle anchors.
+- Status: `verified_classification`.
+- Evidence:
+  `history/tasks/luc-3405-public-read-only-browser-proof-process-anchor-classification-2026-06-11-task.md`.
+- Verification: focused syntax and Node helper tests passed; direct
+  [LUC-2958](/LUC/issues/LUC-2958) relation readback remains present for safe
+  helper anchors.
+- Residual: process/browser lifecycle evidence remains tied to public browser
+  proof artifacts or a future explicit integration harness.
