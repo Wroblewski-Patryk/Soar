@@ -2,6 +2,28 @@
 
 Last updated: 2026-06-11
 
+## 2026-06-11 LUC-3583 No-Stall Queue Expeditor
+
+- `LUC-3583-NO-STALL-QUEUE-EXPEDITOR-2026-06-11` completed as a Soar Product
+  Manager queue-disposition checkpoint with delegated follow-up. Wake
+  `issue_assigned` had no pending comments (`fallbackFetchNeeded=false`);
+  checkout was already claimed by the harness and was not repeated.
+  [LUC-3574](/LUC/issues/LUC-3574) is `done` and added the direct
+  scanner-readable relation for
+  `scripts/waitForWebBuildInfo.mjs#normalizeNonEmptyString` to
+  `scripts/waitForWebBuildInfo.test.mjs` at
+  `docs/architecture/relations/priority-test-links.csv:867`. The current
+  generated architecture-awareness report still predates that closure
+  (`2026-06-11T19:33:48.788Z`) and still lists the closed anchor at
+  `docs/status/architecture-awareness-report.md:87`, so created
+  [LUC-3587](/LUC/issues/LUC-3587) for TSA to refresh architecture-awareness
+  after [LUC-3574](/LUC/issues/LUC-3574) and route at most one next
+  non-duplicate local-safe repair lane. `pnpm softwarehouse:control-tick`
+  remains unavailable in this checkout. No code, runtime, deploy, protected
+  proof, secret/account, database/Redis, exchange, order, position,
+  payment/subscription, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-3583-no-stall-queue-expeditor-2026-06-11-task.md`.
+
 ## 2026-06-11 LUC-3578 Coolify Resource Inventory Reconciliation
 
 - `LUC-3578-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-11`

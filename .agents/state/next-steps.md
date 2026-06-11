@@ -2,6 +2,21 @@
 
 Last updated: 2026-06-11
 
+- 2026-06-11 `LUC-3583` next-step update: execute
+  [LUC-3587](/LUC/issues/LUC-3587), the TSA architecture-awareness refresh
+  created after [LUC-3574](/LUC/issues/LUC-3574) closed
+  `scripts/waitForWebBuildInfo.mjs#normalizeNonEmptyString`. Do not create
+  another QA lane for [LUC-3574](/LUC/issues/LUC-3574), [LUC-3567](/LUC/issues/LUC-3567),
+  [LUC-3561](/LUC/issues/LUC-3561), [LUC-3559](/LUC/issues/LUC-3559),
+  [LUC-3554](/LUC/issues/LUC-3554), [LUC-3551](/LUC/issues/LUC-3551),
+  [LUC-3538](/LUC/issues/LUC-3538), or [LUC-3520](/LUC/issues/LUC-3520).
+  Do not select further repair lanes from the stale
+  `2026-06-11T19:33:48.788Z` report until [LUC-3587](/LUC/issues/LUC-3587)
+  refreshes or explicitly blocks the scanner. No deploy, restart, rollback,
+  protected smoke, secret/account readback, database/Redis mutation, exchange
+  action, order, position, payment/subscription, or live-trading action is
+  authorized by this PM checkpoint.
+
 - 2026-06-11 `LUC-3574` closure update: the exact local-safe residual anchor
   `scripts/waitForWebBuildInfo.mjs#normalizeNonEmptyString` is closed by a
   direct scanner-readable relation row to

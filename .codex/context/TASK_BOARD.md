@@ -1,3 +1,32 @@
+- 2026-06-11 `LUC-3583 [Soar][PM] No-stall queue expeditor`
+  - Status: `DONE / DELEGATED / NO_RUNTIME_MUTATION`
+  - Scope: PM queue disposition only; no product code implementation, commit,
+    push, deploy, restart, rollback, env edit, protected smoke, production
+    account use, secret/account readback, database/Redis mutation, raw log
+    capture, screenshot, exchange action, order, position,
+    payment/subscription, or live-trading action.
+  - Evidence:
+    - [LUC-3574](/LUC/issues/LUC-3574) is `done` and added the direct
+      scanner-readable relation for
+      `scripts/waitForWebBuildInfo.mjs#normalizeNonEmptyString` to
+      `scripts/waitForWebBuildInfo.test.mjs`.
+    - Direct relation readback found the row at
+      `docs/architecture/relations/priority-test-links.csv:867`.
+    - Current architecture-awareness report is still generated at
+      `2026-06-11T19:33:48.788Z` and still lists the closed
+      `normalizeNonEmptyString` anchor at
+      `docs/status/architecture-awareness-report.md:87`.
+    - Duplicate search for `architecture-awareness after LUC-3574` returned
+      `0` issues before delegation.
+    - `pnpm softwarehouse:control-tick` remains unavailable in this checkout:
+      `Command "softwarehouse:control-tick" not found`.
+  - Disposition:
+    - Created [LUC-3587](/LUC/issues/LUC-3587) for TSA to refresh
+      architecture-awareness after [LUC-3574](/LUC/issues/LUC-3574) and route
+      at most one next non-duplicate local-safe repair lane.
+  - Evidence file:
+    - `history/tasks/luc-3583-no-stall-queue-expeditor-2026-06-11-task.md`
+
 - 2026-06-11 `LUC-3578 [Ops][Soar] Reconcile Coolify resource inventory`
   - Status: `DONE / VERIFIED_READ_ONLY / NO_MUTATION`
   - Scope: read-only Coolify production inventory reconciliation only; no

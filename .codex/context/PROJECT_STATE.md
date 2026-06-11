@@ -1,3 +1,20 @@
+# 2026-06-11 LUC-3583 No-Stall Queue Expeditor
+
+- `LUC-3583-NO-STALL-QUEUE-EXPEDITOR-2026-06-11`
+  completed as a Soar Product Manager queue-disposition checkpoint with
+  delegated follow-up. [LUC-3574](/LUC/issues/LUC-3574) is closed with the
+  direct `scripts/waitForWebBuildInfo.mjs#normalizeNonEmptyString` relation row
+  in `docs/architecture/relations/priority-test-links.csv:867`, while the
+  current architecture-awareness report still predates that closure at
+  `2026-06-11T19:33:48.788Z` and still lists the same anchor at
+  `docs/status/architecture-awareness-report.md:87`. Created
+  [LUC-3587](/LUC/issues/LUC-3587) for TSA to refresh architecture-awareness
+  and route at most one next non-duplicate local-safe repair lane. No code,
+  runtime, deploy, protected proof, secret/account, database/Redis, exchange,
+  order, position, payment/subscription, or live-trading mutation occurred.
+  Evidence:
+  `history/tasks/luc-3583-no-stall-queue-expeditor-2026-06-11-task.md`.
+
 # 2026-06-11 LUC-3578 Coolify Resource Inventory Reconciliation
 
 - `LUC-3578-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-11`
