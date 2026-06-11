@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
 
 const rootDir = process.cwd();
 
@@ -9,26 +10,35 @@ const requiredEnvFiles = [
   path.resolve(rootDir, 'apps', 'web', '.env.local'),
 ];
 
-for (const envPath of requiredEnvFiles) {
-  if (!fs.existsSync(envPath)) {
-    process.stderr.write(`[prod-like] missing required env file: ${envPath}\n`);
-    process.stderr.write(
-      '[prod-like] bootstrap with:\n' +
-        '  Copy-Item apps/api/.env.example apps/api/.env -ErrorAction SilentlyContinue\n' +
-        '  Copy-Item apps/web/.env.example apps/web/.env.local -ErrorAction SilentlyContinue\n',
-    );
-    process.exit(1);
-  }
-}
+export const validateRequiredEnvFiles = ({ envFiles = requiredEnvFiles, existsSync = fs.existsSync } = {}) =>
+  envFiles.filter((envPath) => !existsSync(envPath));
 
-const runStep = (label, command, args) =>
+export const writeMissingEnvGuidance = (missing, stderr = process.stderr) => {
+  for (const envPath of missing) {
+    stderr.write(`[prod-like] missing required env file: ${envPath}\n`);
+  }
+  stderr.write(
+    '[prod-like] bootstrap with:\n' +
+      '  Copy-Item apps/api/.env.example apps/api/.env -ErrorAction SilentlyContinue\n' +
+      '  Copy-Item apps/web/.env.example apps/web/.env.local -ErrorAction SilentlyContinue\n',
+  );
+};
+
+export const runStep = (label, command, args, deps = {}) =>
   new Promise((resolve, reject) => {
-    process.stdout.write(`[prod-like] ${label}\n`);
-    const child = spawn(command, args, {
-      cwd: rootDir,
+    const {
+      cwd = rootDir,
+      env = process.env,
+      spawnImpl = spawn,
+      stdout = process.stdout,
+    } = deps;
+
+    stdout.write(`[prod-like] ${label}\n`);
+    const child = spawnImpl(command, args, {
+      cwd,
       shell: true,
       stdio: 'inherit',
-      env: process.env,
+      env,
     });
 
     child.on('exit', (code) => {
@@ -42,73 +52,121 @@ const runStep = (label, command, args) =>
     child.on('error', (error) => reject(error));
   });
 
-try {
-  await runStep('build api', 'pnpm', ['--filter', 'api', 'build']);
-  await runStep('build web', 'pnpm', ['--filter', 'web', 'build']);
-} catch (error) {
-  process.stderr.write(`[prod-like] preflight failed: ${error.message}\n`);
-  process.exit(1);
-}
-
-const runtimeEntries = [
+export const runtimeEntries = [
   { name: 'api', command: 'pnpm', args: ['--filter', 'api', 'run', 'run'] },
   { name: 'web', command: 'pnpm', args: ['--filter', 'web', 'start'] },
   { name: 'workers', command: 'pnpm', args: ['run', 'workers/prod'] },
 ];
 
-const children = [];
-let shuttingDown = false;
-
-const prefixLog = (name, chunk, isError = false) => {
+export const prefixLog = (name, chunk, isError = false, streams = {}) => {
+  const { stdout = process.stdout, stderr = process.stderr } = streams;
   const lines = chunk.toString().split(/\r?\n/);
   for (const line of lines) {
     if (!line.trim()) continue;
     const prefixed = `[prod-like/${name}] ${line}`;
     if (isError) {
-      process.stderr.write(`${prefixed}\n`);
+      stderr.write(`${prefixed}\n`);
     } else {
-      process.stdout.write(`${prefixed}\n`);
+      stdout.write(`${prefixed}\n`);
     }
   }
 };
 
-const stopAll = (signal = 'SIGTERM') => {
+export const stopAll = (children, signal = 'SIGTERM') => {
   for (const child of children) {
     if (!child.killed) child.kill(signal);
   }
 };
 
-for (const entry of runtimeEntries) {
-  const child = spawn(entry.command, entry.args, {
-    cwd: rootDir,
-    shell: true,
-    stdio: ['inherit', 'pipe', 'pipe'],
-    env: process.env,
-  });
+export const startRuntime = (deps = {}) => {
+  const {
+    entries = runtimeEntries,
+    cwd = rootDir,
+    env = process.env,
+    spawnImpl = spawn,
+    stdout = process.stdout,
+    stderr = process.stderr,
+    processImpl = process,
+    prefixLogFn = prefixLog,
+    stopAllFn = stopAll,
+  } = deps;
 
-  child.stdout.on('data', (chunk) => prefixLog(entry.name, chunk));
-  child.stderr.on('data', (chunk) => prefixLog(entry.name, chunk, true));
-  child.on('exit', (code, signal) => {
+  const children = [];
+  let shuttingDown = false;
+
+  for (const entry of entries) {
+    const child = spawnImpl(entry.command, entry.args, {
+      cwd,
+      shell: true,
+      stdio: ['inherit', 'pipe', 'pipe'],
+      env,
+    });
+
+    child.stdout.on('data', (chunk) => prefixLogFn(entry.name, chunk, false, { stdout, stderr }));
+    child.stderr.on('data', (chunk) => prefixLogFn(entry.name, chunk, true, { stdout, stderr }));
+    child.on('exit', (code, signal) => {
+      if (shuttingDown) return;
+      const readable = signal ? `signal ${signal}` : `code ${code ?? 0}`;
+      stderr.write(`[prod-like/${entry.name}] exited with ${readable}\n`);
+      shuttingDown = true;
+      stopAllFn(children);
+      processImpl.exit(code ?? 1);
+    });
+
+    children.push(child);
+  }
+
+  stdout.write('[prod-like] api/web/workers started\n');
+
+  const gracefulShutdown = () => {
     if (shuttingDown) return;
-    const readable = signal ? `signal ${signal}` : `code ${code ?? 0}`;
-    process.stderr.write(`[prod-like/${entry.name}] exited with ${readable}\n`);
     shuttingDown = true;
-    stopAll();
-    process.exit(code ?? 1);
-  });
+    stdout.write('[prod-like] shutdown requested\n');
+    stopAllFn(children);
+    processImpl.exit(0);
+  };
 
-  children.push(child);
-}
+  if (processImpl === process) {
+    process.on('SIGINT', gracefulShutdown);
+    process.on('SIGTERM', gracefulShutdown);
+  } else {
+    processImpl.on('SIGINT', gracefulShutdown);
+    processImpl.on('SIGTERM', gracefulShutdown);
+  }
 
-process.stdout.write('[prod-like] api/web/workers started\n');
-
-const gracefulShutdown = () => {
-  if (shuttingDown) return;
-  shuttingDown = true;
-  process.stdout.write('[prod-like] shutdown requested\n');
-  stopAll();
-  process.exit(0);
+  return { children, gracefulShutdown };
 };
 
-process.on('SIGINT', gracefulShutdown);
-process.on('SIGTERM', gracefulShutdown);
+export const main = async (deps = {}) => {
+  const {
+    stderr = process.stderr,
+    exit = process.exit,
+    validateRequiredEnvFilesFn = validateRequiredEnvFiles,
+    writeMissingEnvGuidanceFn = writeMissingEnvGuidance,
+    runStepFn = runStep,
+    startRuntimeFn = startRuntime,
+  } = deps;
+
+  const missing = validateRequiredEnvFilesFn(deps);
+  if (missing.length > 0) {
+    writeMissingEnvGuidanceFn(missing, stderr);
+    exit(1);
+    return { status: 'FAIL', reason: 'missing-env', missing };
+  }
+
+  try {
+    await runStepFn('build api', 'pnpm', ['--filter', 'api', 'build'], deps);
+    await runStepFn('build web', 'pnpm', ['--filter', 'web', 'build'], deps);
+  } catch (error) {
+    stderr.write(`[prod-like] preflight failed: ${error.message}\n`);
+    exit(1);
+    return { status: 'FAIL', reason: 'preflight', error };
+  }
+
+  const runtime = startRuntimeFn(deps);
+  return { status: 'STARTED', runtime };
+};
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  await main();
+}

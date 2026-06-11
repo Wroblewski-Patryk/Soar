@@ -4,6 +4,8 @@ import {
   resolveOpsAuthLayerOptions,
 } from './buildOpsRequestHeaders.mjs';
 import { resolveOpsAuthToken } from './resolveOpsAuthToken.mjs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const SECRET_CLI_FLAGS = new Set([
   '--auth-token',
@@ -12,18 +14,17 @@ const SECRET_CLI_FLAGS = new Set([
   '--ops-auth-header-value',
 ]);
 
-const parseArgs = () => {
-  const args = process.argv.slice(2);
+const parseArgs = (args = process.argv.slice(2), env = process.env) => {
   const options = {
-    baseUrl: process.env.ROLLBACK_GUARD_API_BASE_URL ?? 'http://localhost:3001',
-    authToken: process.env.ROLLBACK_GUARD_AUTH_TOKEN ?? '',
-    authEmail: process.env.ROLLBACK_GUARD_AUTH_EMAIL ?? '',
-    authPassword: process.env.ROLLBACK_GUARD_AUTH_PASSWORD ?? '',
-    opsAuthHeaderName: process.env.ROLLBACK_GUARD_OPS_AUTH_HEADER_NAME ?? '',
-    opsAuthHeaderValue: process.env.ROLLBACK_GUARD_OPS_AUTH_HEADER_VALUE ?? '',
-    opsBasicUser: process.env.ROLLBACK_GUARD_OPS_BASIC_USER ?? '',
-    opsBasicPassword: process.env.ROLLBACK_GUARD_OPS_BASIC_PASSWORD ?? '',
-    timeoutMs: Number.parseInt(process.env.ROLLBACK_GUARD_TIMEOUT_MS ?? '10000', 10),
+    baseUrl: env.ROLLBACK_GUARD_API_BASE_URL ?? 'http://localhost:3001',
+    authToken: env.ROLLBACK_GUARD_AUTH_TOKEN ?? '',
+    authEmail: env.ROLLBACK_GUARD_AUTH_EMAIL ?? '',
+    authPassword: env.ROLLBACK_GUARD_AUTH_PASSWORD ?? '',
+    opsAuthHeaderName: env.ROLLBACK_GUARD_OPS_AUTH_HEADER_NAME ?? '',
+    opsAuthHeaderValue: env.ROLLBACK_GUARD_OPS_AUTH_HEADER_VALUE ?? '',
+    opsBasicUser: env.ROLLBACK_GUARD_OPS_BASIC_USER ?? '',
+    opsBasicPassword: env.ROLLBACK_GUARD_OPS_BASIC_PASSWORD ?? '',
+    timeoutMs: Number.parseInt(env.ROLLBACK_GUARD_TIMEOUT_MS ?? '10000', 10),
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -49,17 +50,17 @@ const parseArgs = () => {
   return options;
 };
 
-const printUsage = () => {
-  console.log(
+const printUsage = (consoleImpl = console) => {
+  consoleImpl.log(
     'Usage: node scripts/evaluateRollbackGuard.mjs [--base-url <url>] [--auth-email <email>] [--ops-basic-user <user>] [--ops-auth-header-name <name>] [--timeout-ms <ms>]\n\nSecret-bearing values must be provided through ROLLBACK_GUARD_AUTH_TOKEN, ROLLBACK_GUARD_AUTH_PASSWORD, ROLLBACK_GUARD_OPS_BASIC_PASSWORD, and ROLLBACK_GUARD_OPS_AUTH_HEADER_VALUE.'
   );
 };
 
-const fetchWithTimeout = async (url, options, timeoutMs) => {
+const fetchWithTimeout = async (url, options, timeoutMs, fetchImpl = fetch) => {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    return await fetch(url, { ...options, signal: controller.signal });
+    return await fetchImpl(url, { ...options, signal: controller.signal });
   } finally {
     clearTimeout(timer);
   }
@@ -76,11 +77,23 @@ const isRollbackCriticalAlert = (alert) => {
   return false;
 };
 
-const main = async () => {
-  const options = parseArgs();
+const main = async ({
+  args = process.argv.slice(2),
+  env = process.env,
+  fetchImpl = fetch,
+  resolveOpsAuthTokenImpl = resolveOpsAuthToken,
+  buildOpsRequestHeadersImpl = buildOpsRequestHeaders,
+  consoleImpl = console,
+  processImpl = process,
+  exitOnHelp = true,
+  exitOnRollback = true,
+  now = () => new Date(),
+} = {}) => {
+  const options = parseArgs(args, env);
   if (options.help) {
-    printUsage();
-    process.exit(0);
+    printUsage(consoleImpl);
+    if (exitOnHelp) processImpl.exit(0);
+    return { help: true };
   }
 
   const baseUrl = options.baseUrl.replace(/\/+$/, '');
@@ -91,7 +104,7 @@ const main = async () => {
     opsBasicUser: options.opsBasicUser,
     opsBasicPassword: options.opsBasicPassword,
   });
-  const resolvedAuth = await resolveOpsAuthToken({
+  const resolvedAuth = await resolveOpsAuthTokenImpl({
     baseUrl,
     authToken: options.authToken,
     authEmail: options.authEmail,
@@ -99,13 +112,13 @@ const main = async () => {
     ...authLayer,
     contextLabel: 'ops:deploy:rollback-guard',
   });
-  const headers = buildOpsRequestHeaders({
+  const headers = buildOpsRequestHeadersImpl({
     token: resolvedAuth.token,
     ...authLayer,
   });
 
   const decision = {
-    checkedAt: new Date().toISOString(),
+    checkedAt: now().toISOString(),
     shouldRollback: false,
     reasons: [],
     workersReady: null,
@@ -116,7 +129,8 @@ const main = async () => {
   const workersReadyResponse = await fetchWithTimeout(
     `${baseUrl}/workers/ready`,
     { method: 'GET', headers },
-    timeoutMs
+    timeoutMs,
+    fetchImpl
   );
   if (!workersReadyResponse.ok) {
     decision.shouldRollback = true;
@@ -140,7 +154,8 @@ const main = async () => {
   const freshnessResponse = await fetchWithTimeout(
     `${baseUrl}/workers/runtime-freshness`,
     { method: 'GET', headers },
-    timeoutMs
+    timeoutMs,
+    fetchImpl
   );
   if (!freshnessResponse.ok) {
     decision.shouldRollback = true;
@@ -157,7 +172,12 @@ const main = async () => {
     }
   }
 
-  const alertsResponse = await fetchWithTimeout(`${baseUrl}/alerts`, { method: 'GET', headers }, timeoutMs);
+  const alertsResponse = await fetchWithTimeout(
+    `${baseUrl}/alerts`,
+    { method: 'GET', headers },
+    timeoutMs,
+    fetchImpl
+  );
   if (!alertsResponse.ok) {
     decision.shouldRollback = true;
     decision.reasons.push(`alerts_endpoint_http_${alertsResponse.status}`);
@@ -176,16 +196,27 @@ const main = async () => {
     }
   }
 
-  console.log(JSON.stringify(decision, null, 2));
+  consoleImpl.log(JSON.stringify(decision, null, 2));
   if (decision.shouldRollback) {
-    process.exit(1);
+    if (exitOnRollback) processImpl.exit(1);
   }
+  return decision;
 };
 
-main().catch((error) => {
-  console.error(
-    '[ops:deploy:rollback-guard] failed:',
-    error instanceof Error ? error.message : String(error)
-  );
-  process.exit(1);
-});
+if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
+  main().catch((error) => {
+    console.error(
+      '[ops:deploy:rollback-guard] failed:',
+      error instanceof Error ? error.message : String(error)
+    );
+    process.exit(1);
+  });
+}
+
+export {
+  fetchWithTimeout,
+  isRollbackCriticalAlert,
+  main,
+  parseArgs,
+  printUsage,
+};

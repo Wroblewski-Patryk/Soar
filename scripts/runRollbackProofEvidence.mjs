@@ -3,6 +3,7 @@
 import { spawnSync } from 'node:child_process';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const evidenceDir = path.resolve(process.cwd(), 'history', 'evidence');
 const artifactsDir = path.resolve(process.cwd(), 'history', 'artifacts');
@@ -13,18 +14,20 @@ const SECRET_CLI_FLAGS = new Set([
   '--ops-auth-header-value',
 ]);
 
-const parseArgs = () => {
-  const args = process.argv.slice(2);
+const isDirectRun = () => process.argv[1] === fileURLToPath(import.meta.url);
+
+export const parseArgs = (argv = process.argv.slice(2), env = process.env) => {
+  const args = argv;
   const options = {
     profile: 'prod',
-    baseUrl: '',
-    authToken: process.env.ROLLBACK_GUARD_AUTH_TOKEN ?? '',
-    authEmail: process.env.ROLLBACK_GUARD_AUTH_EMAIL ?? '',
-    authPassword: process.env.ROLLBACK_GUARD_AUTH_PASSWORD ?? '',
-    opsBasicUser: process.env.ROLLBACK_GUARD_OPS_BASIC_USER ?? '',
-    opsBasicPassword: process.env.ROLLBACK_GUARD_OPS_BASIC_PASSWORD ?? '',
-    opsAuthHeaderName: process.env.ROLLBACK_GUARD_OPS_AUTH_HEADER_NAME ?? '',
-    opsAuthHeaderValue: process.env.ROLLBACK_GUARD_OPS_AUTH_HEADER_VALUE ?? '',
+    baseUrl: env.ROLLBACK_GUARD_API_BASE_URL ?? '',
+    authToken: env.ROLLBACK_GUARD_AUTH_TOKEN ?? '',
+    authEmail: env.ROLLBACK_GUARD_AUTH_EMAIL ?? '',
+    authPassword: env.ROLLBACK_GUARD_AUTH_PASSWORD ?? '',
+    opsBasicUser: env.ROLLBACK_GUARD_OPS_BASIC_USER ?? '',
+    opsBasicPassword: env.ROLLBACK_GUARD_OPS_BASIC_PASSWORD ?? '',
+    opsAuthHeaderName: env.ROLLBACK_GUARD_OPS_AUTH_HEADER_NAME ?? '',
+    opsAuthHeaderValue: env.ROLLBACK_GUARD_OPS_AUTH_HEADER_VALUE ?? '',
     today: '',
     expectedSha: '',
   };
@@ -50,8 +53,9 @@ const parseArgs = () => {
   return options;
 };
 
-const printUsage = () => {
-  console.log(
+export const printUsage = (deps = {}) => {
+  const { consoleImpl = console } = deps;
+  consoleImpl.log(
     [
       'Usage: node scripts/runRollbackProofEvidence.mjs [--profile <stage|prod>] --base-url <url> [--auth-email <email>] [--ops-basic-user <user>] [--ops-auth-header-name <name>] [--today <yyyy-mm-dd>]',
       '',
@@ -66,25 +70,34 @@ const printUsage = () => {
   );
 };
 
-const nowStamp = () => new Date().toISOString().replace(/[:.]/g, '-');
-const evidenceStamp = (today) => {
+export const nowStamp = (date = new Date()) => date.toISOString().replace(/[:.]/g, '-');
+export const evidenceStamp = (today, deps = {}) => {
+  const { nowStampFn = nowStamp } = deps;
   const normalized = String(today ?? '').trim();
   if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) return `${normalized}T00-00-00-000Z`;
-  return nowStamp();
+  return nowStampFn();
 };
 
-const run = (command, args, envOverrides = {}) =>
-  spawnSync(command, args, {
+export const run = (command, args, deps = {}) => {
+  const {
+    env = process.env,
+    envOverrides = {},
+    platform = process.platform,
+    spawnSyncImpl = spawnSync,
+  } = deps;
+
+  return spawnSyncImpl(command, args, {
     stdio: ['ignore', 'pipe', 'pipe'],
     encoding: 'utf8',
-    shell: process.platform === 'win32',
+    shell: platform === 'win32',
     env: {
-      ...process.env,
+      ...env,
       ...envOverrides,
     },
   });
+};
 
-const renderMarkdown = (payload, jsonPath) => `# V1 Rollback Proof (${payload.profile})
+export const renderMarkdown = (payload, jsonPath) => `# V1 Rollback Proof (${payload.profile})
 
 - Generated at (UTC): ${payload.endedAt}
 - Status: **${payload.status}**
@@ -108,11 +121,29 @@ const renderMarkdown = (payload, jsonPath) => `# V1 Rollback Proof (${payload.pr
 - alerts count: ${Array.isArray(payload.decision?.alerts) ? payload.decision.alerts.length : 0}
 `;
 
-const main = async () => {
-  const options = parseArgs();
+export const main = async (deps = {}) => {
+  const {
+    artifactsDirPath = artifactsDir,
+    argv = process.argv.slice(2),
+    consoleImpl = { ...console, stdout: process.stdout, stderr: process.stderr },
+    cwd = process.cwd(),
+    endedAtIso = () => new Date().toISOString(),
+    env = process.env,
+    evidenceDirPath = evidenceDir,
+    exit = process.exit,
+    mkdirImpl = mkdir,
+    parseArgsFn = parseArgs,
+    renderMarkdownFn = renderMarkdown,
+    runCommand = run,
+    startedAtIso = () => new Date().toISOString(),
+    writeFileImpl = writeFile,
+  } = deps;
+
+  const options = parseArgsFn(argv, env);
   if (options.help) {
-    printUsage();
-    process.exit(0);
+    printUsage({ consoleImpl });
+    exit(0);
+    return { status: 0, help: true };
   }
 
   if (!options.baseUrl.trim()) {
@@ -132,14 +163,14 @@ const main = async () => {
     ROLLBACK_GUARD_OPS_AUTH_HEADER_VALUE: options.opsAuthHeaderValue.trim(),
   };
 
-  const startedAt = new Date().toISOString();
-  const result = run('node', commandArgs, authEnv);
-  const endedAt = new Date().toISOString();
+  const startedAt = startedAtIso();
+  const result = runCommand('node', commandArgs, { env, envOverrides: authEnv });
+  const endedAt = endedAtIso();
 
   const stdout = String(result.stdout ?? '').trim();
   const stderr = String(result.stderr ?? '').trim();
-  if (stdout) process.stdout.write(`${stdout}\n`);
-  if (stderr) process.stderr.write(`${stderr}\n`);
+  if (stdout) consoleImpl.stdout?.write?.(`${stdout}\n`);
+  if (stderr) consoleImpl.stderr?.write?.(`${stderr}\n`);
 
   let decision = null;
   try {
@@ -157,11 +188,11 @@ const main = async () => {
   };
   const status = Object.values(checks).every(Boolean) ? 'PASS' : 'FAIL';
 
-  await mkdir(evidenceDir, { recursive: true });
-  await mkdir(artifactsDir, { recursive: true });
+  await mkdirImpl(evidenceDirPath, { recursive: true });
+  await mkdirImpl(artifactsDirPath, { recursive: true });
   const stamp = evidenceStamp(options.today);
-  const jsonFile = path.join(artifactsDir, `_artifacts-v1-rollback-proof-${options.profile}-${stamp}.json`);
-  const mdFile = path.join(evidenceDir, `v1-rollback-proof-${options.profile}-${stamp}.md`);
+  const jsonFile = path.join(artifactsDirPath, `_artifacts-v1-rollback-proof-${options.profile}-${stamp}.json`);
+  const mdFile = path.join(evidenceDirPath, `v1-rollback-proof-${options.profile}-${stamp}.md`);
 
   const payload = {
     status,
@@ -177,21 +208,24 @@ const main = async () => {
     stderrPreview: stderr.slice(0, 2000),
   };
 
-  await writeFile(jsonFile, `${JSON.stringify(payload, null, 2)}\n`);
-  await writeFile(mdFile, renderMarkdown(payload, path.relative(process.cwd(), jsonFile)));
+  await writeFileImpl(jsonFile, `${JSON.stringify(payload, null, 2)}\n`);
+  await writeFileImpl(mdFile, renderMarkdownFn(payload, path.relative(cwd, jsonFile)));
 
-  console.log(`Rollback proof JSON artifact: ${path.relative(process.cwd(), jsonFile)}`);
-  console.log(`Rollback proof report: ${path.relative(process.cwd(), mdFile)}`);
+  consoleImpl.log(`Rollback proof JSON artifact: ${path.relative(cwd, jsonFile)}`);
+  consoleImpl.log(`Rollback proof report: ${path.relative(cwd, mdFile)}`);
 
   if (status !== 'PASS') {
-    process.exit(1);
+    exit(1);
   }
+  return { status: status === 'PASS' ? 0 : 1, payload, jsonFile, mdFile };
 };
 
-main().catch((error) => {
-  console.error(
-    '[ops:deploy:rollback-proof] failed:',
-    error instanceof Error ? error.message : String(error)
-  );
-  process.exit(1);
-});
+if (isDirectRun()) {
+  main().catch((error) => {
+    console.error(
+      '[ops:deploy:rollback-proof] failed:',
+      error instanceof Error ? error.message : String(error)
+    );
+    process.exit(1);
+  });
+}

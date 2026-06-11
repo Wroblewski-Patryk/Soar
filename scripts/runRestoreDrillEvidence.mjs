@@ -3,13 +3,16 @@
 import { spawnSync } from 'node:child_process';
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const operationsDir = path.resolve(process.cwd(), 'history', 'operations');
 const evidenceDir = path.resolve(process.cwd(), 'history', 'evidence');
 const artifactsDir = path.resolve(process.cwd(), 'history', 'artifacts');
 
-const parseArgs = () => {
-  const args = process.argv.slice(2);
+const isDirectRun = () => process.argv[1] === fileURLToPath(import.meta.url);
+
+export const parseArgs = (argv = process.argv.slice(2)) => {
+  const args = argv;
   const options = {
     profile: 'local',
     passthrough: [],
@@ -44,45 +47,79 @@ const parseArgs = () => {
   return options;
 };
 
-const nowStamp = () => new Date().toISOString().replace(/[:.]/g, '-');
-const evidenceStamp = (today) => {
+export const nowStamp = (date = new Date()) => date.toISOString().replace(/[:.]/g, '-');
+export const evidenceStamp = (today, deps = {}) => {
+  const { nowStampFn = nowStamp } = deps;
   const normalized = String(today ?? '').trim();
   if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) return `${normalized}T00-00-00-000Z`;
-  return nowStamp();
+  return nowStampFn();
 };
 
-const readLatestByPrefix = async (prefix, ext) => {
-  const files = (await readdir(operationsDir))
+export const readLatestByPrefix = async (prefix, ext, deps = {}) => {
+  const {
+    operationsDirPath = operationsDir,
+    readdirImpl = readdir,
+  } = deps;
+
+  const files = (await readdirImpl(operationsDirPath))
     .filter((name) => name.startsWith(prefix) && name.endsWith(ext))
     .sort((a, b) => b.localeCompare(a));
   if (files.length === 0) return null;
-  return path.join(operationsDir, files[0]);
+  return path.join(operationsDirPath, files[0]);
 };
 
-const run = (command, args) =>
-  spawnSync(command, args, {
+export const run = (command, args, deps = {}) => {
+  const {
+    env = process.env,
+    platform = process.platform,
+    spawnSyncImpl = spawnSync,
+  } = deps;
+
+  return spawnSyncImpl(command, args, {
     stdio: ['ignore', 'pipe', 'pipe'],
     encoding: 'utf8',
-    shell: process.platform === 'win32',
-    env: process.env,
+    shell: platform === 'win32',
+    env,
   });
+};
 
-const printUsage = () => {
-  console.log(
+export const printUsage = (deps = {}) => {
+  const { consoleImpl = console } = deps;
+  consoleImpl.log(
     'Usage: node scripts/runRestoreDrillEvidence.mjs [--profile <local|stage|prod>] [--today <yyyy-mm-dd>] [-- <extra backup-verify args>]'
   );
 };
 
-const main = async () => {
-  const options = parseArgs();
+export const main = async (deps = {}) => {
+  const {
+    artifactsDirPath = artifactsDir,
+    argv = process.argv.slice(2),
+    consoleImpl = { ...console, stdout: process.stdout, stderr: process.stderr },
+    cwd = process.cwd(),
+    endedAtIso = () => new Date().toISOString(),
+    env = process.env,
+    evidenceDirPath = evidenceDir,
+    exit = process.exit,
+    mkdirImpl = mkdir,
+    operationsDirPath = operationsDir,
+    parseArgsFn = parseArgs,
+    readFileImpl = readFile,
+    readLatestByPrefixFn = readLatestByPrefix,
+    runCommand = run,
+    startedAtIso = () => new Date().toISOString(),
+    writeFileImpl = writeFile,
+  } = deps;
+
+  const options = parseArgsFn(argv);
   if (options.help) {
-    printUsage();
-    process.exit(0);
+    printUsage({ consoleImpl });
+    exit(0);
+    return { status: 0, help: true };
   }
 
-  await mkdir(operationsDir, { recursive: true });
-  await mkdir(evidenceDir, { recursive: true });
-  await mkdir(artifactsDir, { recursive: true });
+  await mkdirImpl(operationsDirPath, { recursive: true });
+  await mkdirImpl(evidenceDirPath, { recursive: true });
+  await mkdirImpl(artifactsDirPath, { recursive: true });
 
   const commandArgs = [
     'scripts/runBackupVerificationProfile.mjs',
@@ -90,16 +127,20 @@ const main = async () => {
     options.profile,
     ...options.passthrough,
   ];
-  const startedAt = new Date().toISOString();
-  const result = run('node', commandArgs);
-  const endedAt = new Date().toISOString();
+  const startedAt = startedAtIso();
+  const result = runCommand('node', commandArgs, { env });
+  const endedAt = endedAtIso();
 
-  if (result.stdout) process.stdout.write(result.stdout);
-  if (result.stderr) process.stderr.write(result.stderr);
+  if (result.stdout) consoleImpl.stdout?.write?.(result.stdout);
+  if (result.stderr) consoleImpl.stderr?.write?.(result.stderr);
 
-  const latestRawArtifact = await readLatestByPrefix('_artifacts-db-restore-check-', '.txt');
-  const latestReportArtifact = await readLatestByPrefix('v1-db-restore-check-', '.md');
-  const latestRawContent = latestRawArtifact ? await readFile(latestRawArtifact, 'utf8') : '';
+  const latestRawArtifact = await readLatestByPrefixFn('_artifacts-db-restore-check-', '.txt', {
+    operationsDirPath,
+  });
+  const latestReportArtifact = await readLatestByPrefixFn('v1-db-restore-check-', '.md', {
+    operationsDirPath,
+  });
+  const latestRawContent = latestRawArtifact ? await readFileImpl(latestRawArtifact, 'utf8') : '';
   const latestResultMatch = latestRawContent.match(/RESULT:\s*(PASS|FAIL)/i);
   const latestResult = latestResultMatch?.[1]?.toUpperCase() ?? 'UNKNOWN';
 
@@ -113,10 +154,10 @@ const main = async () => {
 
   const stamp = evidenceStamp(options.today);
   const jsonOutput = path.join(
-    artifactsDir,
+    artifactsDirPath,
     `_artifacts-restore-drill-${options.profile}-${stamp}.json`
   );
-  const mdOutput = path.join(evidenceDir, `v1-restore-drill-${options.profile}-${stamp}.md`);
+  const mdOutput = path.join(evidenceDirPath, `v1-restore-drill-${options.profile}-${stamp}.md`);
 
   const payload = {
     status,
@@ -128,14 +169,14 @@ const main = async () => {
     checks,
     backupRestore: {
       result: latestResult,
-      rawArtifact: latestRawArtifact ? path.relative(process.cwd(), latestRawArtifact) : null,
-      reportArtifact: latestReportArtifact ? path.relative(process.cwd(), latestReportArtifact) : null,
+      rawArtifact: latestRawArtifact ? path.relative(cwd, latestRawArtifact) : null,
+      reportArtifact: latestReportArtifact ? path.relative(cwd, latestReportArtifact) : null,
     },
     stdoutPreview: (result.stdout ?? '').trim().slice(0, 4000),
     stderrPreview: (result.stderr ?? '').trim().slice(0, 2000),
   };
 
-  await writeFile(jsonOutput, `${JSON.stringify(payload, null, 2)}\n`);
+  await writeFileImpl(jsonOutput, `${JSON.stringify(payload, null, 2)}\n`);
   const markdown = `# V1 Restore Drill Evidence (${options.profile})
 
 - Generated at (UTC): ${endedAt}
@@ -152,22 +193,25 @@ const main = async () => {
 - backupRestoreResultPass: ${checks.backupRestoreResultPass ? 'PASS' : 'FAIL'}
 
 ## Output Artifacts
-- JSON: \`${path.relative(process.cwd(), jsonOutput)}\`
-- Markdown: \`${path.relative(process.cwd(), mdOutput)}\`
+- JSON: \`${path.relative(cwd, jsonOutput)}\`
+- Markdown: \`${path.relative(cwd, mdOutput)}\`
 `;
-  await writeFile(mdOutput, markdown);
+  await writeFileImpl(mdOutput, markdown);
 
-  console.log(`Restore drill JSON artifact: ${path.relative(process.cwd(), jsonOutput)}`);
-  console.log(`Restore drill report: ${path.relative(process.cwd(), mdOutput)}`);
+  consoleImpl.log(`Restore drill JSON artifact: ${path.relative(cwd, jsonOutput)}`);
+  consoleImpl.log(`Restore drill report: ${path.relative(cwd, mdOutput)}`);
   if (status !== 'PASS') {
-    process.exit(1);
+    exit(1);
   }
+  return { status: status === 'PASS' ? 0 : 1, payload, jsonOutput, mdOutput };
 };
 
-main().catch((error) => {
-  console.error(
-    '[ops:db:restore-drill] failed:',
-    error instanceof Error ? error.message : String(error)
-  );
-  process.exit(1);
-});
+if (isDirectRun()) {
+  main().catch((error) => {
+    console.error(
+      '[ops:db:restore-drill] failed:',
+      error instanceof Error ? error.message : String(error)
+    );
+    process.exit(1);
+  });
+}

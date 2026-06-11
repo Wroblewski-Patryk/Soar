@@ -2,6 +2,7 @@
 
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   buildOpsRequestHeaders,
   resolveOpsAuthLayerOptions,
@@ -37,13 +38,13 @@ const SECRET_CLI_FLAGS = new Set([
   '--ops-auth-header-value',
 ]);
 
-const parseOptionalNumber = (value) => {
+export const parseOptionalNumber = (value) => {
   if (value == null || value === '') return null;
   const parsed = Number.parseFloat(value);
   return Number.isFinite(parsed) ? parsed : null;
 };
 
-const parseBoolean = (value, fallback = false) => {
+export const parseBoolean = (value, fallback = false) => {
   if (value == null || value === '') return fallback;
   const normalized = String(value).trim().toLowerCase();
   if (['1', 'true', 'yes', 'y', 'on'].includes(normalized)) return true;
@@ -51,41 +52,41 @@ const parseBoolean = (value, fallback = false) => {
   return fallback;
 };
 
-const normalizeEnvironment = (value) => {
+export const normalizeEnvironment = (value) => {
   const normalized = String(value ?? '').trim().toLowerCase();
   if (ALLOWED_ENVIRONMENTS.has(normalized)) return normalized;
   return 'local';
 };
 
-const normalizeTargetProfile = (value) => {
+export const normalizeTargetProfile = (value) => {
   const normalized = String(value ?? '').trim().toUpperCase();
   return normalized === 'MVP' || normalized === 'V1' ? normalized : 'V1';
 };
 
-const parseArgs = () => {
-  const args = process.argv.slice(2);
+export const parseArgs = ({ rawArgs = process.argv.slice(2), env = process.env } = {}) => {
+  const args = rawArgs;
   const options = {
-    baseUrl: process.env.SLO_BASE_URL ?? 'http://localhost:4001',
-    durationMinutes: Number.parseInt(process.env.SLO_DURATION_MINUTES ?? '30', 10),
-    intervalSeconds: Number.parseInt(process.env.SLO_INTERVAL_SECONDS ?? '30', 10),
-    authToken: process.env.SLO_AUTH_TOKEN ?? '',
-    authEmail: process.env.SLO_AUTH_EMAIL ?? '',
-    authPassword: process.env.SLO_AUTH_PASSWORD ?? '',
-    opsAuthHeaderName: process.env.SLO_OPS_AUTH_HEADER_NAME ?? '',
-    opsAuthHeaderValue: process.env.SLO_OPS_AUTH_HEADER_VALUE ?? '',
-    opsBasicUser: process.env.SLO_OPS_BASIC_USER ?? '',
-    opsBasicPassword: process.env.SLO_OPS_BASIC_PASSWORD ?? '',
-    environment: normalizeEnvironment(process.env.SLO_ENVIRONMENT ?? 'local'),
-    targetProfile: normalizeTargetProfile(process.env.SLO_TARGET_PROFILE ?? 'V1'),
-    apiAvailabilityPct: parseOptionalNumber(process.env.SLO_API_AVAILABILITY_PCT),
-    workerAvailabilityPct: parseOptionalNumber(process.env.SLO_WORKER_AVAILABILITY_PCT),
-    api5xxRatioPct: parseOptionalNumber(process.env.SLO_API_5XX_RATIO_PCT),
-    apiAvgDurationMs: parseOptionalNumber(process.env.SLO_API_AVG_DURATION_MS),
-    queueLagExecutionThreshold: parseOptionalNumber(process.env.SLO_QUEUE_LAG_EXEC_THRESHOLD),
-    queueLagExecutionCompliancePct: parseOptionalNumber(process.env.SLO_QUEUE_LAG_EXEC_COMPLIANCE_PCT),
-    liveOrderFailureRatioPct: parseOptionalNumber(process.env.SLO_LIVE_ORDER_FAILURE_RATIO_PCT),
+    baseUrl: env.SLO_BASE_URL ?? 'http://localhost:4001',
+    durationMinutes: Number.parseInt(env.SLO_DURATION_MINUTES ?? '30', 10),
+    intervalSeconds: Number.parseInt(env.SLO_INTERVAL_SECONDS ?? '30', 10),
+    authToken: env.SLO_AUTH_TOKEN ?? '',
+    authEmail: env.SLO_AUTH_EMAIL ?? '',
+    authPassword: env.SLO_AUTH_PASSWORD ?? '',
+    opsAuthHeaderName: env.SLO_OPS_AUTH_HEADER_NAME ?? '',
+    opsAuthHeaderValue: env.SLO_OPS_AUTH_HEADER_VALUE ?? '',
+    opsBasicUser: env.SLO_OPS_BASIC_USER ?? '',
+    opsBasicPassword: env.SLO_OPS_BASIC_PASSWORD ?? '',
+    environment: normalizeEnvironment(env.SLO_ENVIRONMENT ?? 'local'),
+    targetProfile: normalizeTargetProfile(env.SLO_TARGET_PROFILE ?? 'V1'),
+    apiAvailabilityPct: parseOptionalNumber(env.SLO_API_AVAILABILITY_PCT),
+    workerAvailabilityPct: parseOptionalNumber(env.SLO_WORKER_AVAILABILITY_PCT),
+    api5xxRatioPct: parseOptionalNumber(env.SLO_API_5XX_RATIO_PCT),
+    apiAvgDurationMs: parseOptionalNumber(env.SLO_API_AVG_DURATION_MS),
+    queueLagExecutionThreshold: parseOptionalNumber(env.SLO_QUEUE_LAG_EXEC_THRESHOLD),
+    queueLagExecutionCompliancePct: parseOptionalNumber(env.SLO_QUEUE_LAG_EXEC_COMPLIANCE_PCT),
+    liveOrderFailureRatioPct: parseOptionalNumber(env.SLO_LIVE_ORDER_FAILURE_RATIO_PCT),
     allowLocalProductionEvidence: parseBoolean(
-      process.env.SLO_ALLOW_LOCAL_PRODUCTION_EVIDENCE,
+      env.SLO_ALLOW_LOCAL_PRODUCTION_EVIDENCE,
       false
     ),
   };
@@ -142,7 +143,7 @@ const parseArgs = () => {
   return options;
 };
 
-const parseBaseUrl = (rawUrl) => {
+export const parseBaseUrl = (rawUrl) => {
   try {
     return new URL(rawUrl);
   } catch {
@@ -150,7 +151,7 @@ const parseBaseUrl = (rawUrl) => {
   }
 };
 
-const isPrivateIpv4 = (hostname) => {
+export const isPrivateIpv4 = (hostname) => {
   const parts = hostname.split('.').map((segment) => Number.parseInt(segment, 10));
   if (parts.length !== 4 || parts.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) {
     return false;
@@ -164,7 +165,7 @@ const isPrivateIpv4 = (hostname) => {
   return false;
 };
 
-const isLocalOrPrivateHost = (hostnameInput) => {
+export const isLocalOrPrivateHost = (hostnameInput) => {
   const hostname = String(hostnameInput ?? '').trim().toLowerCase();
   if (!hostname) return false;
   if (hostname === 'localhost' || hostname.endsWith('.local')) return true;
@@ -174,23 +175,23 @@ const isLocalOrPrivateHost = (hostnameInput) => {
   return false;
 };
 
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+export const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const percentile = (values, pct) => {
+export const percentile = (values, pct) => {
   if (values.length === 0) return null;
   const sorted = [...values].sort((a, b) => a - b);
   const idx = Math.ceil((pct / 100) * sorted.length) - 1;
   return sorted[Math.max(0, Math.min(sorted.length - 1, idx))];
 };
 
-const safeDelta = (start, end) => {
+export const safeDelta = (start, end) => {
   if (typeof start !== 'number' || typeof end !== 'number') return null;
   return Math.max(0, end - start);
 };
 
-const toIsoStamp = () => new Date().toISOString().replace(/[:.]/g, '-');
+export const toIsoStamp = () => new Date().toISOString().replace(/[:.]/g, '-');
 
-const readCounter = (sample, pathParts) => {
+export const readCounter = (sample, pathParts) => {
   let value = sample;
   for (const key of pathParts) {
     if (!value || typeof value !== 'object') return null;
@@ -199,7 +200,7 @@ const readCounter = (sample, pathParts) => {
   return typeof value === 'number' ? value : null;
 };
 
-const evaluateObjective = ({ id, label, comparator, threshold, observed, unit = '' }) => {
+export const evaluateObjective = ({ id, label, comparator, threshold, observed, unit = '' }) => {
   if (observed == null || !Number.isFinite(observed)) {
     return {
       id,
@@ -226,7 +227,7 @@ const evaluateObjective = ({ id, label, comparator, threshold, observed, unit = 
   };
 };
 
-const requestJson = async (baseUrl, endpoint, token, authLayer) => {
+export const requestJson = async (baseUrl, endpoint, token, authLayer) => {
   const startedAt = Date.now();
   try {
     const authHeaders = buildOpsRequestHeaders({
@@ -264,16 +265,19 @@ const requestJson = async (baseUrl, endpoint, token, authLayer) => {
   }
 };
 
-const computeSummary = (samples, thresholds) => {
-  const endpointSamples = (endpoint) => samples.map((sample) => sample[endpoint]).filter(Boolean);
-  const successRatio = (endpoint) => {
-    const points = endpointSamples(endpoint);
-    if (points.length === 0) return null;
-    const success = points.filter((point) => point.status === 200).length;
-    return (success / points.length) * 100;
-  };
+export const endpointSamples = (samples, endpoint) =>
+  samples.map((sample) => sample[endpoint]).filter(Boolean);
 
-  const queueLagPoints = endpointSamples('/metrics')
+export const successRatio = (samples, endpoint) => {
+  const points = endpointSamples(samples, endpoint);
+  if (points.length === 0) return null;
+  const success = points.filter((point) => point.status === 200).length;
+  return (success / points.length) * 100;
+};
+
+export const computeSummary = (samples, thresholds) => {
+
+  const queueLagPoints = endpointSamples(samples, '/metrics')
     .map((point) => readCounter(point.payload, ['worker', 'queueLag', 'execution']))
     .filter((value) => typeof value === 'number');
   const queueWithinThresholdCount = queueLagPoints.filter(
@@ -282,7 +286,7 @@ const computeSummary = (samples, thresholds) => {
   const queueWithinThresholdPct =
     queueLagPoints.length > 0 ? (queueWithinThresholdCount / queueLagPoints.length) * 100 : null;
 
-  const metricsSamples = endpointSamples('/metrics').filter((point) => point.status === 200);
+  const metricsSamples = endpointSamples(samples, '/metrics').filter((point) => point.status === 200);
   const firstMetrics = metricsSamples[0]?.payload ?? null;
   const lastMetrics = metricsSamples[metricsSamples.length - 1]?.payload ?? null;
 
@@ -309,10 +313,10 @@ const computeSummary = (samples, thresholds) => {
 
   const summary = {
     probes: {
-      healthAvailabilityPct: successRatio('/health'),
-      readyAvailabilityPct: successRatio('/ready'),
-      workersHealthAvailabilityPct: successRatio('/workers/health'),
-      workersReadyAvailabilityPct: successRatio('/workers/ready'),
+      healthAvailabilityPct: successRatio(samples, '/health'),
+      readyAvailabilityPct: successRatio(samples, '/ready'),
+      workersHealthAvailabilityPct: successRatio(samples, '/workers/health'),
+      workersReadyAvailabilityPct: successRatio(samples, '/workers/ready'),
     },
     http: {
       requestsDelta,
@@ -429,7 +433,7 @@ const computeSummary = (samples, thresholds) => {
   return summary;
 };
 
-const renderMarkdown = ({ startedAt, endedAt, options, summary, artifacts }) => {
+export const renderMarkdown = ({ startedAt, endedAt, options, summary, artifacts }) => {
   const objectiveRows = summary.evaluation.objectives
     .map((objective) => {
       const observed =
@@ -493,7 +497,7 @@ ${objectiveRows}
 `;
 };
 
-const main = async () => {
+export const main = async () => {
   const options = parseArgs();
   if (options.help) {
     console.log(
@@ -611,7 +615,12 @@ const main = async () => {
   console.log(`SLO evidence report: ${path.relative(process.cwd(), mdPath)}`);
 };
 
-main().catch((error) => {
-  console.error('[ops:slo:collect] failed:', error instanceof Error ? error.message : String(error));
-  process.exit(1);
-});
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  main().catch((error) => {
+    console.error(
+      '[ops:slo:collect] failed:',
+      error instanceof Error ? error.message : String(error)
+    );
+    process.exit(1);
+  });
+}

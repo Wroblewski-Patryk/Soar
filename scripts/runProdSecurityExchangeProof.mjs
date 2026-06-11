@@ -2,6 +2,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import { pathToFileURL } from 'node:url';
 import { resolveOpsAuthToken } from './resolveOpsAuthToken.mjs';
 
 const rawArgs = process.argv.slice(2);
@@ -411,10 +412,29 @@ const main = async () => {
   if (status !== 'PASS') process.exit(1);
 };
 
-main().catch((error) => {
-  console.error(
-    '[prod-security-exchange-proof] failed:',
-    error instanceof Error ? error.message : String(error)
-  );
-  process.exit(1);
-});
+export {
+  assertStatus,
+  hasNoStoreHeaders,
+  hasSecurityHeaders,
+  main,
+  normalizeBaseUrl,
+  payloadContainsKeyMaterial,
+  printUsage,
+  readArgValue,
+  readCatalogMarkets,
+  readJson,
+  renderMarkdown,
+  requestJson,
+  resolveOptions,
+  toStep,
+};
+
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+  main().catch((error) => {
+    console.error(
+      '[prod-security-exchange-proof] failed:',
+      error instanceof Error ? error.message : String(error)
+    );
+    process.exit(1);
+  });
+}

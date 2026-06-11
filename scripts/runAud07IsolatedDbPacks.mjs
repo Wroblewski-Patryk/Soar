@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 import { spawn } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
 
-const packs = [
+export const packs = [
   {
     name: 'wallets',
     files: ['src/modules/wallets/wallets.e2e.test.ts'],
@@ -17,15 +18,17 @@ const packs = [
   },
 ];
 
-const pnpmArgs = (args) => ['pnpm', ...args];
+export const pnpmArgs = (args) => ['pnpm', ...args];
 
-const run = (label, args, options = {}) =>
+export const run = (label, args, options = {}) =>
   new Promise((resolve, reject) => {
-    console.log(`[AUD-07] ${label}`);
-    const child = spawn('corepack', pnpmArgs(args), {
+    const logger = options.console ?? console;
+    const spawnProcess = options.spawn ?? spawn;
+    logger.log(`[AUD-07] ${label}`);
+    const child = spawnProcess('corepack', pnpmArgs(args), {
       cwd: options.cwd ?? process.cwd(),
-      env: process.env,
-      shell: process.platform === 'win32',
+      env: options.env ?? process.env,
+      shell: (options.platform ?? process.platform) === 'win32',
       stdio: 'inherit',
     });
     child.on('error', reject);
@@ -38,19 +41,23 @@ const run = (label, args, options = {}) =>
     });
   });
 
-const main = async () => {
-  if (process.argv.includes('--list')) {
+export const main = async (options = {}) => {
+  const argv = options.argv ?? process.argv;
+  const logger = options.console ?? console;
+  const runCommand = options.run ?? run;
+
+  if (argv.includes('--list')) {
     for (const pack of packs) {
-      console.log(`${pack.name}: ${pack.files.join(' ')}`);
+      logger.log(`${pack.name}: ${pack.files.join(' ')}`);
     }
     return;
   }
 
-  await run('Prisma schema validation', ['--filter', 'api', 'exec', 'prisma', 'validate']);
-  await run('Prisma migration status', ['--filter', 'api', 'exec', 'prisma', 'migrate', 'status']);
+  await runCommand('Prisma schema validation', ['--filter', 'api', 'exec', 'prisma', 'validate']);
+  await runCommand('Prisma migration status', ['--filter', 'api', 'exec', 'prisma', 'migrate', 'status']);
 
   for (const pack of packs) {
-    await run(`Reset database before ${pack.name}`, [
+    await runCommand(`Reset database before ${pack.name}`, [
       '--filter',
       'api',
       'exec',
@@ -60,7 +67,7 @@ const main = async () => {
       '--force',
       '--skip-seed',
     ]);
-    await run(`Run isolated ${pack.name} DB pack`, [
+    await runCommand(`Run isolated ${pack.name} DB pack`, [
       '--filter',
       'api',
       'exec',
@@ -75,10 +82,12 @@ const main = async () => {
     ]);
   }
 
-  console.log('[AUD-07] Isolated DB-backed packs passed sequentially.');
+  logger.log('[AUD-07] Isolated DB-backed packs passed sequentially.');
 };
 
-main().catch((error) => {
-  console.error(`[AUD-07] ${error instanceof Error ? error.message : String(error)}`);
-  process.exit(1);
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error(`[AUD-07] ${error instanceof Error ? error.message : String(error)}`);
+    process.exit(1);
+  });
+}

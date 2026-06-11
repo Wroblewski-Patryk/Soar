@@ -4,20 +4,21 @@ import { spawn } from 'node:child_process';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import { pathToFileURL } from 'node:url';
 
 const rawArgs = process.argv.slice(2);
 const args = new Set(rawArgs);
 
-const readArgValue = (flag) => {
+export const readArgValue = (flag) => {
   const index = rawArgs.indexOf(flag);
   return index === -1 ? '' : rawArgs[index + 1] ?? '';
 };
 
-const normalizeBaseUrl = (value) => String(value ?? '').trim().replace(/\/+$/, '');
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-const isLocalWebBaseUrl = (value) => /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/i.test(value);
+export const normalizeBaseUrl = (value) => String(value ?? '').trim().replace(/\/+$/, '');
+export const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+export const isLocalWebBaseUrl = (value) => /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/i.test(value);
 
-const killProcessTree = async (pid) => {
+export const killProcessTree = async (pid) => {
   if (!pid || process.platform !== 'win32') return;
   await new Promise((resolve) => {
     const child = spawn('taskkill.exe', ['/PID', String(pid), '/T', '/F'], {
@@ -29,7 +30,7 @@ const killProcessTree = async (pid) => {
   });
 };
 
-const findBrowserPath = () => {
+export const findBrowserPath = () => {
   const candidates = [
     process.env.PUBLIC_BROWSER_PROOF_BROWSER_PATH,
     'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
@@ -40,7 +41,7 @@ const findBrowserPath = () => {
   return candidates.find((candidate) => existsSync(candidate)) ?? '';
 };
 
-const resolveOptions = () => {
+export const resolveOptions = () => {
   const today = readArgValue('--today') || new Date().toISOString().slice(0, 10);
   const issue = readArgValue('--issue') || 'LUC-2255';
   const slug = issue.toLowerCase();
@@ -63,7 +64,7 @@ const resolveOptions = () => {
   };
 };
 
-class CdpClient {
+export class CdpClient {
   constructor(url) {
     this.url = url;
     this.id = 0;
@@ -104,7 +105,7 @@ class CdpClient {
   }
 }
 
-const launchBrowser = async (options) => {
+export const launchBrowser = async (options) => {
   if (!options.browserPath) throw new Error('Chrome or Edge executable not found');
   const userDataDir = path.resolve(process.cwd(), '.tmp', `public-browser-proof-${Date.now()}`);
   await rm(userDataDir, { recursive: true, force: true });
@@ -138,7 +139,7 @@ const launchBrowser = async (options) => {
   throw new Error('browser remote debugging endpoint did not become ready');
 };
 
-const createPage = async (port) => {
+export const createPage = async (port) => {
   const response = await fetch(`http://127.0.0.1:${port}/json/new?about:blank`, { method: 'PUT' });
   if (!response.ok) throw new Error(`failed to create CDP page: ${response.status}`);
   const target = await response.json();
@@ -151,7 +152,7 @@ const createPage = async (port) => {
   return client;
 };
 
-const evaluate = async (client, expression) => {
+export const evaluate = async (client, expression) => {
   const result = await client.send('Runtime.evaluate', {
     expression,
     awaitPromise: true,
@@ -163,7 +164,7 @@ const evaluate = async (client, expression) => {
   return result.result?.value;
 };
 
-const setViewport = (client, viewport) =>
+export const setViewport = (client, viewport) =>
   client.send('Emulation.setDeviceMetricsOverride', {
     width: viewport.width,
     height: viewport.height,
@@ -171,7 +172,7 @@ const setViewport = (client, viewport) =>
     mobile: viewport.mobile,
   });
 
-const navigate = async (client, url, settleMs = 1500) => {
+export const navigate = async (client, url, settleMs = 1500) => {
   await client.send('Page.navigate', { url });
   for (let attempt = 0; attempt < 80; attempt += 1) {
     const ready = await evaluate(client, 'document.readyState');
@@ -181,7 +182,7 @@ const navigate = async (client, url, settleMs = 1500) => {
   await wait(settleMs);
 };
 
-const collectPageState = (client) =>
+export const collectPageState = (client) =>
   evaluate(
     client,
     `(() => ({
@@ -202,7 +203,7 @@ const collectPageState = (client) =>
     }))()`
   );
 
-const collectIssues = (client) =>
+export const collectIssues = (client) =>
   client.events
     .filter((event) => {
       if (event.method === 'Runtime.consoleAPICalled') {
@@ -233,7 +234,7 @@ const collectIssues = (client) =>
       return true;
     });
 
-const collectRouteIssues = (client, options) =>
+export const collectRouteIssues = (client, options) =>
   collectIssues(client).filter((issue) => {
     const text = String(issue.text);
     const url = String(issue.url);
@@ -251,7 +252,7 @@ const collectRouteIssues = (client, options) =>
     return true;
   });
 
-const visitRoute = async (client, options, route, viewport) => {
+export const visitRoute = async (client, options, route, viewport) => {
   client.events = [];
   await setViewport(client, viewport);
   await navigate(client, `${options.webBaseUrl}${route.path}`);
@@ -277,7 +278,7 @@ const visitRoute = async (client, options, route, viewport) => {
   };
 };
 
-const provePasswordToggle = async (client, options, routePath) => {
+export const provePasswordToggle = async (client, options, routePath) => {
   client.events = [];
   await setViewport(client, {
     name: 'desktop',
@@ -335,7 +336,7 @@ const provePasswordToggle = async (client, options, routePath) => {
   };
 };
 
-const renderMarkdown = (payload, jsonPath) => {
+export const renderMarkdown = (payload, jsonPath) => {
   const routeRows = payload.routes
     .map(
       (row) =>
@@ -401,7 +402,7 @@ ${blockers}
 `;
 };
 
-const main = async () => {
+export const main = async () => {
   if (args.has('--help') || args.has('-h')) {
     process.stdout.write('Usage: node scripts/runPublicReadOnlyBrowserProof.mjs [--issue LUC-2255] [--web-base-url <url>]\n');
     return;
@@ -480,11 +481,17 @@ const main = async () => {
   }
 };
 
-main()
-  .then(() => {
-    process.exit(process.exitCode ?? 0);
-  })
-  .catch((error) => {
-  process.stderr.write(`[public-read-only-browser-proof] failed: ${error instanceof Error ? error.stack || error.message : String(error)}\n`);
-    process.exit(1);
-  });
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+  main()
+    .then(() => {
+      process.exit(process.exitCode ?? 0);
+    })
+    .catch((error) => {
+      process.stderr.write(
+        `[public-read-only-browser-proof] failed: ${
+          error instanceof Error ? error.stack || error.message : String(error)
+        }\n`,
+      );
+      process.exit(1);
+    });
+}

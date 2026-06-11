@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { createHash } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 
 import {
   buildOpsRequestHeaders,
@@ -8,14 +9,14 @@ import {
 } from './buildOpsRequestHeaders.mjs';
 import { resolveOpsAuthToken } from './resolveOpsAuthToken.mjs';
 
-const readArgValue = (flag) => {
-  const index = process.argv.indexOf(flag);
+export const readArgValue = (flag, rawArgs = process.argv.slice(2)) => {
+  const index = rawArgs.indexOf(flag);
   if (index === -1) return '';
-  return process.argv[index + 1] ?? '';
+  return rawArgs[index + 1] ?? '';
 };
 
-const normalizeBaseUrl = (value) => String(value ?? '').trim().replace(/\/+$/, '');
-const hash = (value) => {
+export const normalizeBaseUrl = (value) => String(value ?? '').trim().replace(/\/+$/, '');
+export const hash = (value) => {
   const normalized = String(value ?? '').trim();
   return normalized ? createHash('sha256').update(normalized).digest('hex').slice(0, 12) : null;
 };
@@ -50,9 +51,9 @@ const options = {
   timeoutMs: Number.parseInt(process.env.NON_GATEIO_READBACK_TIMEOUT_MS || '15000', 10),
 };
 
-const fetchJson = async (url, { headers = {} } = {}) => {
+export const fetchJson = async (url, { headers = {}, timeoutMs = options.timeoutMs } = {}) => {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), options.timeoutMs);
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const response = await fetch(url, {
       method: 'GET',
@@ -80,9 +81,10 @@ const fetchJson = async (url, { headers = {} } = {}) => {
   }
 };
 
-const safeNumber = (value) => (typeof value === 'number' && Number.isFinite(value) ? value : null);
+export const safeNumber = (value) =>
+  typeof value === 'number' && Number.isFinite(value) ? value : null;
 
-const summarizeBot = (bot) => ({
+export const summarizeBot = (bot) => ({
   idHash: hash(bot?.id),
   name: bot?.name,
   mode: bot?.mode,
@@ -92,7 +94,7 @@ const summarizeBot = (bot) => ({
   liveOptIn: Boolean(bot?.liveOptIn),
 });
 
-const summarizeSession = (session) => ({
+export const summarizeSession = (session) => ({
   idHash: hash(session?.id),
   status: session?.status ?? null,
   mode: session?.mode ?? null,
@@ -106,7 +108,7 @@ const summarizeSession = (session) => ({
     : null,
 });
 
-const summarizeAggregate = (aggregate) => ({
+export const summarizeAggregate = (aggregate) => ({
   sessionDetail: summarizeSession(aggregate?.sessionDetail),
   symbolStats: {
     items: Array.isArray(aggregate?.symbolStats?.items) ? aggregate.symbolStats.items.length : null,
@@ -137,15 +139,18 @@ const summarizeAggregate = (aggregate) => ({
   },
 });
 
-const assertOptions = () => {
-  if (!options.baseUrl) throw new Error('Missing API base URL.');
-  if (!options.webBaseUrl) throw new Error('Missing web base URL.');
-  if (!options.authToken && (!options.authEmail || !options.authPassword)) {
+export const assertOptions = (candidateOptions = options) => {
+  if (!candidateOptions.baseUrl) throw new Error('Missing API base URL.');
+  if (!candidateOptions.webBaseUrl) throw new Error('Missing web base URL.');
+  if (
+    !candidateOptions.authToken &&
+    (!candidateOptions.authEmail || !candidateOptions.authPassword)
+  ) {
     throw new Error('Missing auth token or login credentials for read-only production readback.');
   }
 };
 
-const main = async () => {
+export const main = async () => {
   assertOptions();
 
   const authLayer = resolveOpsAuthLayerOptions({});
@@ -345,7 +350,9 @@ const main = async () => {
   process.stdout.write(`[ops:non-gateio-runtime-readback] md=${options.outputMd}\n`);
 };
 
-main().catch((error) => {
-  process.stderr.write(`[ops:non-gateio-runtime-readback] failed: ${error?.message ?? error}\n`);
-  process.exit(1);
-});
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  main().catch((error) => {
+    process.stderr.write(`[ops:non-gateio-runtime-readback] failed: ${error?.message ?? error}\n`);
+    process.exit(1);
+  });
+}

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
+import { pathToFileURL } from 'node:url';
 import process from 'node:process';
 import {
   buildOpsRequestHeaders,
@@ -19,14 +20,14 @@ const splitCsv = (value) =>
     .map((item) => item.trim())
     .filter(Boolean);
 
-const readArgValue = (flag) => {
-  const index = rawArgs.indexOf(flag);
+const readArgValue = (flag, argv = rawArgs) => {
+  const index = argv.indexOf(flag);
   if (index === -1) return '';
-  return rawArgs[index + 1] ?? '';
+  return argv[index + 1] ?? '';
 };
 
-const printUsage = () => {
-  process.stdout.write(
+const printUsage = (stdout = process.stdout) => {
+  stdout.write(
     [
       'Usage: node scripts/runControlledLiveSessionProof.mjs [options]',
       '',
@@ -73,78 +74,78 @@ const printUsage = () => {
   );
 };
 
-const resolveOptions = () => ({
+const resolveOptions = ({ argv = rawArgs, env = process.env, args: argSet = new Set(argv) } = {}) => ({
   baseUrl: normalizeBaseUrl(
-    readArgValue('--base-url') ||
-      process.env.CONTROLLED_LIVE_PROOF_API_BASE_URL ||
+    readArgValue('--base-url', argv) ||
+      env.CONTROLLED_LIVE_PROOF_API_BASE_URL ||
       'https://api.soar.luckysparrow.ch'
   ),
   webBaseUrl: normalizeBaseUrl(
-    readArgValue('--web-base-url') ||
-      process.env.CONTROLLED_LIVE_PROOF_WEB_BASE_URL ||
+    readArgValue('--web-base-url', argv) ||
+      env.CONTROLLED_LIVE_PROOF_WEB_BASE_URL ||
       'https://soar.luckysparrow.ch'
   ),
   authToken:
-    readArgValue('--auth-token') || process.env.CONTROLLED_LIVE_PROOF_AUTH_TOKEN || '',
+    readArgValue('--auth-token', argv) || env.CONTROLLED_LIVE_PROOF_AUTH_TOKEN || '',
   authEmail:
-    readArgValue('--auth-email') || process.env.CONTROLLED_LIVE_PROOF_AUTH_EMAIL || '',
+    readArgValue('--auth-email', argv) || env.CONTROLLED_LIVE_PROOF_AUTH_EMAIL || '',
   authPassword:
-    readArgValue('--auth-password') ||
-    process.env.CONTROLLED_LIVE_PROOF_AUTH_PASSWORD ||
+    readArgValue('--auth-password', argv) ||
+    env.CONTROLLED_LIVE_PROOF_AUTH_PASSWORD ||
     '',
   opsBasicUser:
-    readArgValue('--ops-basic-user') ||
-    process.env.CONTROLLED_LIVE_PROOF_OPS_BASIC_USER ||
+    readArgValue('--ops-basic-user', argv) ||
+    env.CONTROLLED_LIVE_PROOF_OPS_BASIC_USER ||
     '',
   opsBasicPassword:
-    readArgValue('--ops-basic-password') ||
-    process.env.CONTROLLED_LIVE_PROOF_OPS_BASIC_PASSWORD ||
+    readArgValue('--ops-basic-password', argv) ||
+    env.CONTROLLED_LIVE_PROOF_OPS_BASIC_PASSWORD ||
     '',
   opsAuthHeaderName:
-    readArgValue('--ops-auth-header-name') ||
-    process.env.CONTROLLED_LIVE_PROOF_OPS_AUTH_HEADER_NAME ||
+    readArgValue('--ops-auth-header-name', argv) ||
+    env.CONTROLLED_LIVE_PROOF_OPS_AUTH_HEADER_NAME ||
     '',
   opsAuthHeaderValue:
-    readArgValue('--ops-auth-header-value') ||
-    process.env.CONTROLLED_LIVE_PROOF_OPS_AUTH_HEADER_VALUE ||
+    readArgValue('--ops-auth-header-value', argv) ||
+    env.CONTROLLED_LIVE_PROOF_OPS_AUTH_HEADER_VALUE ||
     '',
-  botId: readArgValue('--bot-id') || process.env.CONTROLLED_LIVE_PROOF_BOT_ID || '',
+  botId: readArgValue('--bot-id', argv) || env.CONTROLLED_LIVE_PROOF_BOT_ID || '',
   symbols: splitCsv(
-    readArgValue('--symbols') ||
-      process.env.CONTROLLED_LIVE_PROOF_SYMBOLS ||
+    readArgValue('--symbols', argv) ||
+      env.CONTROLLED_LIVE_PROOF_SYMBOLS ||
       'ETHUSDT,DOGEUSDT'
   ).map(normalizeSymbol),
   expectedSha:
-    readArgValue('--expected-sha') ||
-    process.env.CONTROLLED_LIVE_PROOF_EXPECTED_SHA ||
+    readArgValue('--expected-sha', argv) ||
+    env.CONTROLLED_LIVE_PROOF_EXPECTED_SHA ||
     '',
   output:
-    readArgValue('--output') ||
-    process.env.CONTROLLED_LIVE_PROOF_OUTPUT ||
+    readArgValue('--output', argv) ||
+    env.CONTROLLED_LIVE_PROOF_OUTPUT ||
     '',
   simultaneousReadbackOutputJson:
-    readArgValue('--simultaneous-readback-output-json') ||
-    process.env.CONTROLLED_LIVE_PROOF_SIMULTANEOUS_OUTPUT_JSON ||
+    readArgValue('--simultaneous-readback-output-json', argv) ||
+    env.CONTROLLED_LIVE_PROOF_SIMULTANEOUS_OUTPUT_JSON ||
     '',
   simultaneousReadbackOutputMd:
-    readArgValue('--simultaneous-readback-output-md') ||
-    process.env.CONTROLLED_LIVE_PROOF_SIMULTANEOUS_OUTPUT_MD ||
+    readArgValue('--simultaneous-readback-output-md', argv) ||
+    env.CONTROLLED_LIVE_PROOF_SIMULTANEOUS_OUTPUT_MD ||
     '',
   pollSeconds: Number.parseInt(
-    readArgValue('--poll-seconds') ||
-      process.env.CONTROLLED_LIVE_PROOF_POLL_SECONDS ||
+    readArgValue('--poll-seconds', argv) ||
+      env.CONTROLLED_LIVE_PROOF_POLL_SECONDS ||
       '180',
     10
   ),
   pollIntervalMs: Number.parseInt(
-    readArgValue('--poll-interval-ms') ||
-      process.env.CONTROLLED_LIVE_PROOF_POLL_INTERVAL_MS ||
+    readArgValue('--poll-interval-ms', argv) ||
+      env.CONTROLLED_LIVE_PROOF_POLL_INTERVAL_MS ||
       '5000',
     10
   ),
-  timeoutMs: Number.parseInt(process.env.CONTROLLED_LIVE_PROOF_TIMEOUT_MS || '10000', 10),
-  dryRun: args.has('--dry-run'),
-  understandsLiveRisk: args.has('--i-understand-live-risk'),
+  timeoutMs: Number.parseInt(env.CONTROLLED_LIVE_PROOF_TIMEOUT_MS || '10000', 10),
+  dryRun: argSet.has('--dry-run'),
+  understandsLiveRisk: argSet.has('--i-understand-live-risk'),
 });
 
 const assertOptions = (options) => {
@@ -323,10 +324,16 @@ const waitForRunningSession = async (options, headers, botId) => {
   throw new Error(`No RUNNING runtime session appeared within ${options.pollSeconds} seconds.`);
 };
 
-const runCollector = (options, token, botId, sessionId) =>
+const runCollector = (
+  options,
+  token,
+  botId,
+  sessionId,
+  { spawnImpl = spawn, env = process.env, execPath = process.execPath } = {}
+) =>
   new Promise((resolve, reject) => {
-    const child = spawn(
-      process.execPath,
+    const child = spawnImpl(
+      execPath,
       [
         'scripts/collectLiveImportReadbackEvidence.mjs',
         '--base-url',
@@ -345,7 +352,7 @@ const runCollector = (options, token, botId, sessionId) =>
       {
         stdio: 'inherit',
         env: {
-          ...process.env,
+          ...env,
           LIVEIMPORT_READBACK_AUTH_TOKEN: token,
           LIVEIMPORT_READBACK_OPS_BASIC_USER: options.opsBasicUser,
           LIVEIMPORT_READBACK_OPS_BASIC_PASSWORD: options.opsBasicPassword,
@@ -365,16 +372,20 @@ const runCollector = (options, token, botId, sessionId) =>
     });
   });
 
-const runSimultaneousRuntimeReadback = (options, token) => {
+const runSimultaneousRuntimeReadback = (
+  options,
+  token,
+  { spawnImpl = spawn, env = process.env, execPath = process.execPath } = {}
+) => {
   if (!options.simultaneousReadbackOutputJson.trim() && !options.simultaneousReadbackOutputMd.trim()) {
     return Promise.resolve();
   }
 
   return new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, ['scripts/collectNonGateioRuntimeReadback.mjs'], {
+    const child = spawnImpl(execPath, ['scripts/collectNonGateioRuntimeReadback.mjs'], {
       stdio: 'inherit',
       env: {
-        ...process.env,
+        ...env,
         NON_GATEIO_READBACK_API_BASE_URL: options.baseUrl,
         NON_GATEIO_READBACK_WEB_BASE_URL: options.webBaseUrl,
         NON_GATEIO_READBACK_AUTH_TOKEN: token,
@@ -395,17 +406,23 @@ const runSimultaneousRuntimeReadback = (options, token) => {
   });
 };
 
-const main = async () => {
-  if (args.has('--help') || args.has('-h')) {
-    printUsage();
+const main = async ({
+  argv = rawArgs,
+  env = process.env,
+  stdout = process.stdout,
+  resolveOpsAuthTokenImpl = resolveOpsAuthToken,
+} = {}) => {
+  const argSet = new Set(argv);
+  if (argSet.has('--help') || argSet.has('-h')) {
+    printUsage(stdout);
     return;
   }
 
-  const options = resolveOptions();
+  const options = resolveOptions({ argv, env, args: argSet });
   assertOptions(options);
 
   if (options.dryRun) {
-    process.stdout.write(
+    stdout.write(
       JSON.stringify(
         {
           mode: 'dry-run',
@@ -437,7 +454,7 @@ const main = async () => {
     opsBasicUser: options.opsBasicUser,
     opsBasicPassword: options.opsBasicPassword,
   });
-  const resolvedAuth = await resolveOpsAuthToken({
+  const resolvedAuth = await resolveOpsAuthTokenImpl({
     baseUrl: options.baseUrl,
     authToken: options.authToken,
     authEmail: options.authEmail,
@@ -507,10 +524,36 @@ const main = async () => {
   }
 };
 
-main().catch((error) => {
-  console.error(
-    '[ops:live:controlled-proof] failed:',
-    error instanceof Error ? error.message : String(error)
-  );
-  process.exit(1);
-});
+export {
+  assertNoOrderGuardActive,
+  assertOptions,
+  assertTargetBotSafe,
+  buildBotActiveStatePayload,
+  discoverTargetBot,
+  fetchJson,
+  hashId,
+  listRunningSessions,
+  main,
+  normalizeBaseUrl,
+  normalizeSymbol,
+  printUsage,
+  redactBot,
+  resolveBuildInfo,
+  resolveOptions,
+  runCollector,
+  runSimultaneousRuntimeReadback,
+  sleep,
+  splitCsv,
+  updateBotActiveState,
+  waitForRunningSession,
+};
+
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+  main().catch((error) => {
+    console.error(
+      '[ops:live:controlled-proof] failed:',
+      error instanceof Error ? error.message : String(error)
+    );
+    process.exit(1);
+  });
+}

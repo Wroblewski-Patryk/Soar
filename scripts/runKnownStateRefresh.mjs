@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 import { spawn } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
 
-const commands = [
+export const commands = [
   ['pnpm', ['run', 'architecture:graph:generate']],
   ['pnpm', ['run', 'architecture:graph:drift:strict']],
   ['pnpm', ['run', 'architecture:journey:index:strict']],
@@ -14,11 +15,12 @@ const commands = [
   ['pnpm', ['run', 'ops:project:scorecard']],
 ];
 
-const run = ([command, args]) =>
+export const run = ([command, args], options = {}) =>
   new Promise((resolve, reject) => {
-    console.log(`\n> ${[command, ...args].join(' ')}`);
-    const child = spawn(command, args, {
-      shell: process.platform === 'win32',
+    const logger = options.console ?? console;
+    logger.log(`\n> ${[command, ...args].join(' ')}`);
+    const child = (options.spawn ?? spawn)(command, args, {
+      shell: (options.platform ?? process.platform) === 'win32',
       stdio: 'inherit',
     });
     child.on('exit', (code) => {
@@ -31,8 +33,21 @@ const run = ([command, args]) =>
     child.on('error', reject);
   });
 
-for (const command of commands) {
-  await run(command);
-}
+export const main = async (options = {}) => {
+  const commandList = options.commands ?? commands;
+  const runCommand = options.run ?? run;
+  const logger = options.console ?? console;
 
-console.log('\nKnown-state refresh complete.');
+  for (const command of commandList) {
+    await runCommand(command, options);
+  }
+
+  logger.log('\nKnown-state refresh complete.');
+};
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error('[ops:project:known-state] failed:', error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  });
+}

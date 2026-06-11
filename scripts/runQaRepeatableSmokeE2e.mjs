@@ -4,19 +4,20 @@ import { spawnSync } from 'node:child_process';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import { pathToFileURL } from 'node:url';
 
-const rawArgs = process.argv.slice(2);
+const defaultRawArgs = process.argv.slice(2);
 
-const readArgValue = (flag) => {
-  const index = rawArgs.indexOf(flag);
+export const readArgValue = (flag, args = defaultRawArgs) => {
+  const index = args.indexOf(flag);
   if (index === -1) return '';
-  return rawArgs[index + 1] ?? '';
+  return args[index + 1] ?? '';
 };
 
-const hasFlag = (flag) => rawArgs.includes(flag);
+export const hasFlag = (flag, args = defaultRawArgs) => args.includes(flag);
 
-if (hasFlag('--help') || hasFlag('-h')) {
-  process.stdout.write(
+const printUsage = (stdout = process.stdout) => {
+  stdout.write(
     [
       'Usage: node scripts/runQaRepeatableSmokeE2e.mjs [options]',
       '',
@@ -29,23 +30,9 @@ if (hasFlag('--help') || hasFlag('-h')) {
       '  --help                Show this message',
     ].join('\n') + '\n',
   );
-  process.exit(0);
-}
+};
 
-const today = readArgValue('--today') || new Date().toISOString().slice(0, 10);
-const checksArg = (readArgValue('--checks') || 'web,api,backtests').trim();
-const selectedChecks = checksArg
-  .split(',')
-  .map((value) => value.trim().toLowerCase())
-  .filter(Boolean);
-
-const allowContinueOnFail = hasFlag('--stop-on-fail') ? false : true;
-const artifactPrefix = (readArgValue('--artifact-prefix') || 'qa-repeatable-smoke-e2e').trim();
-const artifactBaseName = `${artifactPrefix}-${today}`;
-const artifactDir = path.resolve(process.cwd(), 'history', 'artifacts');
-const evidenceDir = path.resolve(process.cwd(), 'history', 'evidence');
-
-const supportedChecks = {
+export const supportedChecks = {
   web: {
     label: 'Web smoke pack',
     command: 'pnpm',
@@ -63,22 +50,22 @@ const supportedChecks = {
   },
 };
 
-const unknownChecks = selectedChecks.filter((check) => !supportedChecks[check]);
-if (unknownChecks.length > 0) {
-  process.stderr.write(`[qa-repeatable] Unsupported checks: ${unknownChecks.join(', ')}\n`);
-  process.exit(1);
-}
-
-const runCheck = ({ label, command, args }) => {
-  const startedAt = new Date().toISOString();
-  const startedMs = Date.now();
-  const result = spawnSync(command, args, {
-    shell: process.platform === 'win32',
+export const runCheck = ({ label, command, args }, deps = {}) => {
+  const {
+    now = () => new Date(),
+    nowMs = () => Date.now(),
+    platform = process.platform,
+    spawnSyncImpl = spawnSync,
+  } = deps;
+  const startedAt = now().toISOString();
+  const startedMs = nowMs();
+  const result = spawnSyncImpl(command, args, {
+    shell: platform === 'win32',
     stdio: 'pipe',
     encoding: 'utf8',
   });
-  const finishedAt = new Date().toISOString();
-  const durationMs = Date.now() - startedMs;
+  const finishedAt = now().toISOString();
+  const durationMs = nowMs() - startedMs;
   const exitCode = typeof result.status === 'number' ? result.status : 1;
 
   return {
@@ -94,67 +81,113 @@ const runCheck = ({ label, command, args }) => {
   };
 };
 
-const results = [];
-for (const check of selectedChecks) {
-  const checkConfig = supportedChecks[check];
-  const result = runCheck(checkConfig);
-  results.push(result);
+export const main = async (deps = {}) => {
+  const {
+    argv = defaultRawArgs,
+    cwd = process.cwd(),
+    date = new Date(),
+    stdout = process.stdout,
+    stderr = process.stderr,
+    exit = process.exit,
+    mkdirFn = mkdir,
+    writeFileFn = writeFile,
+    runCheckFn = runCheck,
+  } = deps;
 
-  const badge = result.status === 'PASS' ? 'PASS' : 'FAIL';
-  process.stdout.write(`[qa-repeatable] ${badge} ${result.label} (${result.durationMs}ms)\n`);
-
-  if (result.status === 'FAIL' && !allowContinueOnFail) {
-    break;
+  if (hasFlag('--help', argv) || hasFlag('-h', argv)) {
+    printUsage(stdout);
+    exit(0);
+    return { status: 'HELP' };
   }
-}
 
-const failedCount = results.filter((row) => row.status === 'FAIL').length;
-const summary = {
-  issue: 'LUC-43',
-  date: today,
-  artifactName: artifactBaseName,
-  selectedChecks,
-  continueOnFail: allowContinueOnFail,
-  totals: {
-    checks: results.length,
-    passed: results.filter((row) => row.status === 'PASS').length,
-    failed: failedCount,
-  },
-  results,
+  const today = readArgValue('--today', argv) || date.toISOString().slice(0, 10);
+  const checksArg = (readArgValue('--checks', argv) || 'web,api,backtests').trim();
+  const selectedChecks = checksArg
+    .split(',')
+    .map((value) => value.trim().toLowerCase())
+    .filter(Boolean);
+
+  const allowContinueOnFail = hasFlag('--stop-on-fail', argv) ? false : true;
+  const artifactPrefix = (readArgValue('--artifact-prefix', argv) || 'qa-repeatable-smoke-e2e').trim();
+  const artifactBaseName = `${artifactPrefix}-${today}`;
+  const artifactDir = path.resolve(cwd, 'history', 'artifacts');
+  const evidenceDir = path.resolve(cwd, 'history', 'evidence');
+
+  const unknownChecks = selectedChecks.filter((check) => !supportedChecks[check]);
+  if (unknownChecks.length > 0) {
+    stderr.write(`[qa-repeatable] Unsupported checks: ${unknownChecks.join(', ')}\n`);
+    exit(1);
+    return { status: 'FAIL', reason: 'unsupported-checks', unknownChecks };
+  }
+
+  const results = [];
+  for (const check of selectedChecks) {
+    const checkConfig = supportedChecks[check];
+    const result = runCheckFn(checkConfig);
+    results.push(result);
+
+    const badge = result.status === 'PASS' ? 'PASS' : 'FAIL';
+    stdout.write(`[qa-repeatable] ${badge} ${result.label} (${result.durationMs}ms)\n`);
+
+    if (result.status === 'FAIL' && !allowContinueOnFail) {
+      break;
+    }
+  }
+
+  const failedCount = results.filter((row) => row.status === 'FAIL').length;
+  const summary = {
+    issue: 'LUC-43',
+    date: today,
+    artifactName: artifactBaseName,
+    selectedChecks,
+    continueOnFail: allowContinueOnFail,
+    totals: {
+      checks: results.length,
+      passed: results.filter((row) => row.status === 'PASS').length,
+      failed: failedCount,
+    },
+    results,
+  };
+
+  await mkdirFn(artifactDir, { recursive: true });
+  await mkdirFn(evidenceDir, { recursive: true });
+
+  const jsonPath = path.join(artifactDir, `${artifactBaseName}.json`);
+  await writeFileFn(jsonPath, `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
+
+  const markdownLines = [
+    `# LUC-43 Repeatable Smoke/E2E Evidence (${today})`,
+    '',
+    `- Command: \`pnpm run qa:smoke-e2e:repeatable -- --checks ${selectedChecks.join(',')}\``,
+    `- Result: ${failedCount === 0 ? 'PASS' : 'FAIL'}`,
+    `- JSON artifact: \`history/artifacts/${artifactBaseName}.json\``,
+    '',
+    '## Check Summary',
+    '',
+    '| Check | Status | Duration ms | Command |',
+    '| --- | --- | ---: | --- |',
+    ...results.map((row) => `| ${row.label} | ${row.status} | ${row.durationMs} | \`${row.command}\` |`),
+    '',
+    '## Failure Notes',
+    failedCount === 0 ? '- none' : '- See JSON artifact stderr/stdout fields for exact failure output.',
+  ];
+
+  const evidencePath = path.join(evidenceDir, `${artifactBaseName}.md`);
+  await writeFileFn(evidencePath, `${markdownLines.join('\n')}\n`, 'utf8');
+
+  stdout.write(`[qa-repeatable] Wrote artifact: ${path.relative(cwd, jsonPath)}\n`);
+  stdout.write(`[qa-repeatable] Wrote evidence: ${path.relative(cwd, evidencePath)}\n`);
+
+  if (failedCount > 0) {
+    stderr.write(`[qa-repeatable] Failed checks: ${failedCount}\n`);
+    exit(1);
+    return { status: 'FAIL', summary, jsonPath, evidencePath };
+  }
+
+  stdout.write('[qa-repeatable] All selected checks passed\n');
+  return { status: 'PASS', summary, jsonPath, evidencePath };
 };
 
-await mkdir(artifactDir, { recursive: true });
-await mkdir(evidenceDir, { recursive: true });
-
-const jsonPath = path.join(artifactDir, `${artifactBaseName}.json`);
-await writeFile(jsonPath, `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
-
-const markdownLines = [
-  `# LUC-43 Repeatable Smoke/E2E Evidence (${today})`,
-  '',
-  `- Command: \`pnpm run qa:smoke-e2e:repeatable -- --checks ${selectedChecks.join(',')}\``,
-  `- Result: ${failedCount === 0 ? 'PASS' : 'FAIL'}`,
-  `- JSON artifact: \`history/artifacts/${artifactBaseName}.json\``,
-  '',
-  '## Check Summary',
-  '',
-  '| Check | Status | Duration ms | Command |',
-  '| --- | --- | ---: | --- |',
-  ...results.map((row) => `| ${row.label} | ${row.status} | ${row.durationMs} | \`${row.command}\` |`),
-  '',
-  '## Failure Notes',
-  failedCount === 0 ? '- none' : '- See JSON artifact stderr/stdout fields for exact failure output.',
-];
-
-const evidencePath = path.join(evidenceDir, `${artifactBaseName}.md`);
-await writeFile(evidencePath, `${markdownLines.join('\n')}\n`, 'utf8');
-
-process.stdout.write(`[qa-repeatable] Wrote artifact: ${path.relative(process.cwd(), jsonPath)}\n`);
-process.stdout.write(`[qa-repeatable] Wrote evidence: ${path.relative(process.cwd(), evidencePath)}\n`);
-
-if (failedCount > 0) {
-  process.stderr.write(`[qa-repeatable] Failed checks: ${failedCount}\n`);
-  process.exit(1);
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  await main();
 }
-
-process.stdout.write('[qa-repeatable] All selected checks passed\n');

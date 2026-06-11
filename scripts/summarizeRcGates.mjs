@@ -3,24 +3,28 @@
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const repoRoot = process.cwd();
-const resolveDocsRoot = () => {
+const isDirectRun = () => process.argv[1] === fileURLToPath(import.meta.url);
+
+export const resolveDocsRoot = (deps = {}) => {
+  const { cwd = process.cwd(), existsSyncImpl = existsSync } = deps;
+  const repoRoot = cwd;
   const docsRoot = path.resolve(repoRoot, 'docs');
   const migratedDocsRoot = path.resolve(repoRoot, 'docs');
-  if (existsSync(path.join(docsRoot, 'operations')) || !existsSync(migratedDocsRoot)) {
+  if (existsSyncImpl(path.join(docsRoot, 'operations')) || !existsSyncImpl(migratedDocsRoot)) {
     return docsRoot;
   }
   return migratedDocsRoot;
 };
 
-const operationsDir = path.join(resolveDocsRoot(), 'operations');
-
-const parseArgs = () => {
-  const args = process.argv.slice(2);
+export const parseArgs = (argv = process.argv.slice(2), deps = {}) => {
+  const { cwd = process.cwd(), docsRoot = resolveDocsRoot({ cwd }) } = deps;
+  const operationsDir = path.join(docsRoot, 'operations');
+  const args = argv;
   const options = {
     statusPath: path.join(operationsDir, 'v1-rc-external-gates-status.md'),
-    evidencePath: path.join(process.cwd(), 'history', 'operations', '_artifacts-rc-evidence-check-latest.json'),
+    evidencePath: path.join(cwd, 'history', 'operations', '_artifacts-rc-evidence-check-latest.json'),
     json: false,
   };
 
@@ -35,38 +39,48 @@ const parseArgs = () => {
     if (arg === '--json') options.json = true;
   }
 
-  options.statusPath = path.resolve(process.cwd(), options.statusPath);
-  options.evidencePath = path.resolve(process.cwd(), options.evidencePath);
+  options.statusPath = path.resolve(cwd, options.statusPath);
+  options.evidencePath = path.resolve(cwd, options.evidencePath);
   return options;
 };
 
-const parseGateLabel = (rawStatus, gateNumber) => {
+export const parseGateLabel = (rawStatus, gateNumber) => {
   const regex = new RegExp(`- Gate ${gateNumber} \\(.+?\\):\\s*([^\\r\\n]+)`, 'i');
   return rawStatus.match(regex)?.[1]?.trim() ?? 'UNKNOWN';
 };
 
-const parseStatusGeneratedAt = (rawStatus) =>
+export const parseStatusGeneratedAt = (rawStatus) =>
   rawStatus.match(/Generated at \(UTC\):\s*([^\r\n]+)/i)?.[1]?.trim() ?? null;
 
-const asIsoTimestamp = (value) => {
+export const asIsoTimestamp = (value) => {
   if (typeof value !== 'string' || value.trim().length === 0) return null;
   const parsed = Date.parse(value);
   return Number.isNaN(parsed) ? null : parsed;
 };
 
-const main = async () => {
-  const options = parseArgs();
+export const main = async (deps = {}) => {
+  const {
+    argv = process.argv.slice(2),
+    consoleImpl = console,
+    exit = process.exit,
+    now = () => new Date(),
+    parseArgsFn = parseArgs,
+    readFileImpl = readFile,
+  } = deps;
+
+  const options = parseArgsFn(argv, deps);
   if (options.help) {
-    console.log(
+    consoleImpl.log(
       'Usage: node scripts/summarizeRcGates.mjs [--status-path <file>] [--evidence-path <file>] [--json]'
     );
-    process.exit(0);
+    exit(0);
+    return { status: 0, help: true };
   }
 
-  const rawStatus = await readFile(options.statusPath, 'utf8');
+  const rawStatus = await readFileImpl(options.statusPath, 'utf8');
   let evidence = null;
   try {
-    const rawEvidence = await readFile(options.evidencePath, 'utf8');
+    const rawEvidence = await readFileImpl(options.evidencePath, 'utf8');
     evidence = JSON.parse(rawEvidence);
   } catch {
     evidence = null;
@@ -86,7 +100,7 @@ const main = async () => {
     asIsoTimestamp(evidenceGeneratedAt) < asIsoTimestamp(statusGeneratedAt);
 
   const summary = {
-    generatedAt: new Date().toISOString(),
+    generatedAt: now().toISOString(),
     gates,
     missingEvidenceCount: Number.isFinite(evidence?.counts?.missing) ? evidence.counts.missing : null,
     strictPassed: evidence ? Boolean(evidence.strictPassed) : null,
@@ -101,26 +115,27 @@ const main = async () => {
   };
 
   if (options.json) {
-    console.log(JSON.stringify(summary, null, 2));
-    return;
+    consoleImpl.log(JSON.stringify(summary, null, 2));
+    return { status: 0, summary };
   }
 
-  console.log('# RC Gates Summary');
-  console.log(`- Gate 1: ${summary.gates.gate1}`);
-  console.log(`- Gate 2: ${summary.gates.gate2}`);
-  console.log(`- Gate 3: ${summary.gates.gate3}`);
-  console.log(`- Gate 4: ${summary.gates.gate4}`);
-  console.log(`- Missing evidence: ${summary.missingEvidenceCount ?? 'n/a'}`);
-  console.log(
+  consoleImpl.log('# RC Gates Summary');
+  consoleImpl.log(`- Gate 1: ${summary.gates.gate1}`);
+  consoleImpl.log(`- Gate 2: ${summary.gates.gate2}`);
+  consoleImpl.log(`- Gate 3: ${summary.gates.gate3}`);
+  consoleImpl.log(`- Gate 4: ${summary.gates.gate4}`);
+  consoleImpl.log(`- Missing evidence: ${summary.missingEvidenceCount ?? 'n/a'}`);
+  consoleImpl.log(
     `- Strict passed: ${summary.strictPassed == null ? 'n/a' : summary.strictPassed ? 'yes' : 'no'}`
   );
-  console.log(`- Gate2 policy: ${summary.gate2Policy ?? 'n/a'}`);
-  console.log(`- Status generated at: ${summary.statusGeneratedAt ?? 'n/a'}`);
-  console.log(`- Evidence generated at: ${summary.evidenceGeneratedAt ?? 'n/a'}`);
-  console.log(`- Evidence freshness: ${summary.evidenceFreshness}`);
+  consoleImpl.log(`- Gate2 policy: ${summary.gate2Policy ?? 'n/a'}`);
+  consoleImpl.log(`- Status generated at: ${summary.statusGeneratedAt ?? 'n/a'}`);
+  consoleImpl.log(`- Evidence generated at: ${summary.evidenceGeneratedAt ?? 'n/a'}`);
+  consoleImpl.log(`- Evidence freshness: ${summary.evidenceFreshness}`);
+  return { status: 0, summary };
 };
 
-main().catch((error) => {
+if (isDirectRun()) main().catch((error) => {
   console.error('[ops:rc:gates:summary] failed:', error instanceof Error ? error.message : String(error));
   process.exit(1);
 });

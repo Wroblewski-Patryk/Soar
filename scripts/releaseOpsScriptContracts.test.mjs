@@ -94,7 +94,7 @@ test('release and Ops wrappers preserve safe command contracts without executing
       "NODE_ENV: 'production'",
       'writeWebBuildMetadata.mjs',
       "node_modules', 'next', 'dist', 'bin', 'next'",
-      "process.env.PORT || '3002'",
+      "env.PORT || '3002'",
       "'-H', '0.0.0.0'",
     ]),
     true,
@@ -180,22 +180,26 @@ test('release and Ops wrappers preserve safe command contracts without executing
 
   assert.equal(
     includesAll(files['scripts/summarizeRcGates.mjs'], [
+      'const isDirectRun = () => process.argv[1] === fileURLToPath(import.meta.url)',
       'parseGateLabel',
       'parseStatusGeneratedAt',
       'evidenceIsStaleRelativeToStatus',
       'strictPassed',
       'Evidence freshness',
+      'if (isDirectRun())',
     ]),
     true,
   );
 
   assert.equal(
     includesAll(files['scripts/syncRcChecklistFromGateStatus.mjs'], [
+      'const isDirectRun = () => process.argv[1] === fileURLToPath(import.meta.url)',
       'refreshLatestVerificationDate',
       'refreshExpectedSha',
       'setChecklistCheckbox',
       'Engineering sign-off.',
       'RC owner assigned with rollback authority.',
+      'if (isDirectRun())',
     ]),
     true,
   );

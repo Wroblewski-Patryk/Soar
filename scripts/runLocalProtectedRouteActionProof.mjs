@@ -4,6 +4,7 @@ import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 import process from 'node:process';
+import { pathToFileURL } from 'node:url';
 
 const rawArgs = process.argv.slice(2);
 const args = new Set(rawArgs);
@@ -1309,9 +1310,35 @@ const main = async () => {
   if (status === 'FAIL') process.exit(1);
 };
 
-main().catch((error) => {
-  process.stderr.write(
-    `[local-protected-route-action-proof] failed: ${error instanceof Error ? error.stack || error.message : String(error)}\n`
-  );
-  process.exit(1);
-});
+export {
+  CdpClient,
+  collectLocation,
+  createPage,
+  evaluate,
+  findBrowserPath,
+  httpRouteProof,
+  installDynamicFixtureApi,
+  jsonFixtureResponse,
+  launchBrowser,
+  main,
+  navigate,
+  normalizeBaseUrl,
+  readArgValue,
+  renderMarkdown,
+  resolveDynamicFixtureApi,
+  resolveOptions,
+  startWebServer,
+  stopChild,
+  verifyStaticMapping,
+  wait,
+  waitForPath,
+};
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    process.stderr.write(
+      `[local-protected-route-action-proof] failed: ${error instanceof Error ? error.stack || error.message : String(error)}\n`
+    );
+    process.exit(1);
+  });
+}

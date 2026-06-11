@@ -1,4 +1,4 @@
-﻿export const dashboardHomePt = {
+export const dashboardHomePt = {
   "loadWidgets": "A carregar widgets do snapshot live",
   "loadWidgetsErrorTitle": "Nao foi possivel carregar os widgets do painel",
   "loadWidgetsErrorDescription": "Nao foi possivel obter os widgets do painel.",
@@ -25,7 +25,7 @@
   "strategyLabPrimaryAction": "Estrategias",
   "strategyLabSecondaryAction": "Backtests",
   "executionReviewTitle": "Faixa de revisao de execucao",
-  "executionReviewDescription": "RevĂŞ resultados de execucao, itens pendentes e exposicao atual.",
+  "executionReviewDescription": "Revê resultados de execucao, itens pendentes e exposicao atual.",
   "executionReviewPrimaryAction": "Ordens",
   "executionReviewSecondaryAction": "Posicoes",
   "laneStepOne": "Passo 1",

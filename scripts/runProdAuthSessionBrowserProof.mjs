@@ -4,6 +4,7 @@ import { existsSync } from 'node:fs';
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 import process from 'node:process';
+import { pathToFileURL } from 'node:url';
 import { resolveOpsAuthToken } from './resolveOpsAuthToken.mjs';
 
 const rawArgs = process.argv.slice(2);
@@ -419,7 +420,29 @@ const main = async () => {
   }
 };
 
-main().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.stack || error.message : String(error)}\n`);
-  process.exitCode = 1;
-});
+export {
+  CdpClient,
+  clearAuth,
+  collectLocation,
+  createPage,
+  evaluate,
+  findBrowserPath,
+  launchBrowser,
+  main,
+  navigate,
+  normalizeBaseUrl,
+  readArgValue,
+  readJson,
+  renderMarkdown,
+  resolveOptions,
+  setAuthCookie,
+  toStep,
+  wait,
+};
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    process.stderr.write(`${error instanceof Error ? error.stack || error.message : String(error)}\n`);
+    process.exitCode = 1;
+  });
+}

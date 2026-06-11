@@ -3,6 +3,7 @@
 import { spawnSync } from 'node:child_process';
 import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import {
   buildOpsRequestHeaders,
   resolveOpsAuthLayerOptions,
@@ -30,21 +31,21 @@ const normalizeDbProfile = (value) => {
   return 'local';
 };
 
-const parseArgs = () => {
-  const args = process.argv.slice(2);
+const parseArgs = ({ argv = process.argv.slice(2), env = process.env } = {}) => {
+  const args = argv;
   const options = {
-    baseUrl: process.env.SLO_BASE_URL ?? 'http://localhost:4001',
-    durationMinutes: process.env.SLO_DURATION_MINUTES ?? '5',
-    intervalSeconds: process.env.SLO_INTERVAL_SECONDS ?? '15',
-    authToken: process.env.SLO_AUTH_TOKEN ?? '',
-    authEmail: process.env.SLO_AUTH_EMAIL ?? '',
-    authPassword: process.env.SLO_AUTH_PASSWORD ?? '',
-    opsAuthHeaderName: process.env.SLO_OPS_AUTH_HEADER_NAME ?? '',
-    opsAuthHeaderValue: process.env.SLO_OPS_AUTH_HEADER_VALUE ?? '',
-    opsBasicUser: process.env.SLO_OPS_BASIC_USER ?? '',
-    opsBasicPassword: process.env.SLO_OPS_BASIC_PASSWORD ?? '',
-    environment: normalizeEnvironment(process.env.SLO_ENVIRONMENT ?? 'local'),
-    dbProfile: normalizeDbProfile(process.env.RC_GATES_DB_PROFILE ?? 'local'),
+    baseUrl: env.SLO_BASE_URL ?? 'http://localhost:4001',
+    durationMinutes: env.SLO_DURATION_MINUTES ?? '5',
+    intervalSeconds: env.SLO_INTERVAL_SECONDS ?? '15',
+    authToken: env.SLO_AUTH_TOKEN ?? '',
+    authEmail: env.SLO_AUTH_EMAIL ?? '',
+    authPassword: env.SLO_AUTH_PASSWORD ?? '',
+    opsAuthHeaderName: env.SLO_OPS_AUTH_HEADER_NAME ?? '',
+    opsAuthHeaderValue: env.SLO_OPS_AUTH_HEADER_VALUE ?? '',
+    opsBasicUser: env.SLO_OPS_BASIC_USER ?? '',
+    opsBasicPassword: env.SLO_OPS_BASIC_PASSWORD ?? '',
+    environment: normalizeEnvironment(env.SLO_ENVIRONMENT ?? 'local'),
+    dbProfile: normalizeDbProfile(env.RC_GATES_DB_PROFILE ?? 'local'),
     allowLocalProductionEvidence: false,
     skipDbCheck: false,
     allowOffline: false,
@@ -101,12 +102,18 @@ const parseArgs = () => {
   return options;
 };
 
-const run = (label, command, args, env = {}) => {
-  console.log(`[ops:rc:gates:local] ${label}`);
-  const result = spawnSync(command, args, {
+const run = (
+  label,
+  command,
+  args,
+  env = {},
+  { consoleImpl = console, spawnSyncImpl = spawnSync, platform = process.platform, processEnv = process.env } = {},
+) => {
+  consoleImpl.log(`[ops:rc:gates:local] ${label}`);
+  const result = spawnSyncImpl(command, args, {
     stdio: 'inherit',
-    shell: process.platform === 'win32',
-    env: { ...process.env, ...env },
+    shell: platform === 'win32',
+    env: { ...processEnv, ...env },
   });
   if (result.status !== 0) {
     throw new Error(`${label} failed with exit code ${result.status ?? 1}`);
@@ -164,14 +171,18 @@ const assertLatestSloObservationPassed = async () => {
 const expectedShaArgs = (expectedSha) =>
   expectedSha ? ['--expected-sha', expectedSha] : [];
 
-const buildStatusWithOfflineFallback = async (allowOffline, expectedSha) => {
+const buildStatusWithOfflineFallback = async (
+  allowOffline,
+  expectedSha,
+  { runCommand = run, consoleImpl = console, hasSloInputsFn = hasSloInputs } = {},
+) => {
   if (allowOffline) {
-    const hasInputs = await hasSloInputs();
+    const hasInputs = await hasSloInputsFn();
     if (!hasInputs) {
-      console.log(
+      consoleImpl.log(
         '[ops:rc:gates:local] no SLO artifacts found; using template-only status snapshot (offline mode).'
       );
-      run('build RC external gates status (template-only)', 'pnpm', [
+      runCommand('build RC external gates status (template-only)', 'pnpm', [
         'run',
         'ops:rc:gates:status',
         '--',
@@ -183,7 +194,7 @@ const buildStatusWithOfflineFallback = async (allowOffline, expectedSha) => {
   }
 
   try {
-    run('build RC external gates status', 'pnpm', [
+    runCommand('build RC external gates status', 'pnpm', [
       'run',
       'ops:rc:gates:status',
       '--',
@@ -193,10 +204,10 @@ const buildStatusWithOfflineFallback = async (allowOffline, expectedSha) => {
     if (!allowOffline) {
       throw error;
     }
-    console.log(
+    consoleImpl.log(
       '[ops:rc:gates:local] unable to build status from SLO artifacts; falling back to template-only snapshot.'
     );
-    run('build RC external gates status (template-only)', 'pnpm', [
+    runCommand('build RC external gates status (template-only)', 'pnpm', [
       'run',
       'ops:rc:gates:status',
       '--',
@@ -219,19 +230,35 @@ const canReachApi = async (baseUrl, authToken, authLayer) => {
   }
 };
 
-const main = () => {
+const printUsage = (consoleImpl = console) => {
+  consoleImpl.log(
+    'Usage: node scripts/runLocalExternalGatesPipeline.mjs [--base-url <url>] [--duration-minutes <n>] [--interval-seconds <n>] [--auth-email <email>] [--ops-basic-user <user>] [--ops-auth-header-name <name>] [--environment <local|stage|production>] [--db-profile <local|stage|prod>] [--allow-local-production-evidence] [--skip-db-check] [--skip-slo-collect] [--skip-window-report] [--skip-checklist-sync] [--skip-evidence-check] [--strict-evidence-check] [--require-production-gate2] [--evidence-output <file>] [--window-days <csv>] [--allow-offline]\n\nSecret-bearing values must be provided through SLO_AUTH_TOKEN, SLO_AUTH_PASSWORD, SLO_OPS_BASIC_PASSWORD, and SLO_OPS_AUTH_HEADER_VALUE.'
+  );
+};
+
+const main = async ({
+  argv = process.argv.slice(2),
+  env = process.env,
+  consoleImpl = console,
+  processImpl = process,
+  runCommand = run,
+  resolveOpsAuthTokenFn = resolveOpsAuthToken,
+  canReachApiFn = canReachApi,
+  buildStatusWithOfflineFallbackFn = buildStatusWithOfflineFallback,
+  assertLatestSloObservationPassedFn = assertLatestSloObservationPassed,
+} = {}) => {
   let options;
   try {
-    options = parseArgs();
+    options = parseArgs({ argv, env });
   } catch (error) {
-    console.error('[ops:rc:gates:local] failed:', error instanceof Error ? error.message : String(error));
-    process.exit(1);
+    consoleImpl.error('[ops:rc:gates:local] failed:', error instanceof Error ? error.message : String(error));
+    processImpl.exit(1);
+    return { status: 'FAILED' };
   }
   if (options.help) {
-    console.log(
-      'Usage: node scripts/runLocalExternalGatesPipeline.mjs [--base-url <url>] [--duration-minutes <n>] [--interval-seconds <n>] [--auth-email <email>] [--ops-basic-user <user>] [--ops-auth-header-name <name>] [--environment <local|stage|production>] [--db-profile <local|stage|prod>] [--allow-local-production-evidence] [--skip-db-check] [--skip-slo-collect] [--skip-window-report] [--skip-checklist-sync] [--skip-evidence-check] [--strict-evidence-check] [--require-production-gate2] [--evidence-output <file>] [--window-days <csv>] [--allow-offline]\n\nSecret-bearing values must be provided through SLO_AUTH_TOKEN, SLO_AUTH_PASSWORD, SLO_OPS_BASIC_PASSWORD, and SLO_OPS_AUTH_HEADER_VALUE.'
-    );
-    process.exit(0);
+    printUsage(consoleImpl);
+    processImpl.exit(0);
+    return { help: true };
   }
   const authLayer = resolveOpsAuthLayerOptions({
     opsAuthHeaderName: options.opsAuthHeaderName,
@@ -240,11 +267,10 @@ const main = () => {
     opsBasicPassword: options.opsBasicPassword,
   });
 
-  Promise.resolve()
-    .then(async () => {
+  try {
       let resolvedAuthToken = String(options.authToken ?? '').trim();
       if (!options.skipSloCollect) {
-        const resolvedAuth = await resolveOpsAuthToken({
+        const resolvedAuth = await resolveOpsAuthTokenFn({
           baseUrl: options.baseUrl,
           authToken: resolvedAuthToken,
           authEmail: options.authEmail,
@@ -256,7 +282,7 @@ const main = () => {
       }
 
       if (!options.skipDbCheck) {
-        run(`restore-drill evidence (${options.dbProfile} profile)`, 'pnpm', [
+        runCommand(`restore-drill evidence (${options.dbProfile} profile)`, 'pnpm', [
           'run',
           'ops:db:restore-drill',
           '--',
@@ -267,17 +293,17 @@ const main = () => {
       }
 
       if (!options.skipSloCollect) {
-        const reachable = await canReachApi(options.baseUrl, resolvedAuthToken, authLayer);
+        const reachable = await canReachApiFn(options.baseUrl, resolvedAuthToken, authLayer);
         if (!reachable) {
           if (!options.allowOffline) {
             throw new Error(
               `API health check failed for ${options.baseUrl}. Start API or rerun with --allow-offline to generate template-only status.`
             );
           }
-          console.log(
+          consoleImpl.log(
             `[ops:rc:gates:local] API unavailable at ${options.baseUrl}; using template-only RC status output.`
           );
-          run('build RC external gates status (template-only)', 'pnpm', [
+          runCommand('build RC external gates status (template-only)', 'pnpm', [
             'run',
             'ops:rc:gates:status',
             '--',
@@ -285,7 +311,7 @@ const main = () => {
             ...expectedShaArgs(options.expectedSha),
           ]);
           if (!options.skipChecklistSync) {
-            run('sync RC checklist from gate status', 'pnpm', [
+            runCommand('sync RC checklist from gate status', 'pnpm', [
               'run',
               'ops:rc:checklist:sync',
               '--',
@@ -307,10 +333,10 @@ const main = () => {
             if (options.requireProductionGate2) {
               evidenceArgs.push('--require-production-gate2');
             }
-            run('check missing external evidence', 'pnpm', evidenceArgs);
+            runCommand('check missing external evidence', 'pnpm', evidenceArgs);
           }
-          console.log('[ops:rc:gates:local] done (offline mode)');
-          return;
+          consoleImpl.log('[ops:rc:gates:local] done (offline mode)');
+          return { status: 'PASS', mode: 'offline' };
         }
 
         const sloArgs = [
@@ -329,7 +355,7 @@ const main = () => {
         if (options.allowLocalProductionEvidence) {
           sloArgs.push('--allow-local-production-evidence');
         }
-        run('SLO observation collector', 'pnpm', sloArgs, {
+        runCommand('SLO observation collector', 'pnpm', sloArgs, {
           ...(resolvedAuthToken ? { SLO_AUTH_TOKEN: resolvedAuthToken } : {}),
           ...(authLayer.opsBasicUser ? { SLO_OPS_BASIC_USER: authLayer.opsBasicUser } : {}),
           ...(authLayer.opsBasicPassword
@@ -342,11 +368,11 @@ const main = () => {
             ? { SLO_OPS_AUTH_HEADER_VALUE: authLayer.opsAuthHeaderValue }
             : {}),
         });
-        await assertLatestSloObservationPassed();
+        await assertLatestSloObservationPassedFn();
 
         if (!options.skipWindowReport) {
           for (const days of options.windowDays) {
-            run(`SLO rolling window report (${days}d)`, 'pnpm', [
+            runCommand(`SLO rolling window report (${days}d)`, 'pnpm', [
               'run',
               'ops:slo:window-report',
               '--',
@@ -357,9 +383,12 @@ const main = () => {
         }
       }
 
-      await buildStatusWithOfflineFallback(options.allowOffline, options.expectedSha);
+      await buildStatusWithOfflineFallbackFn(options.allowOffline, options.expectedSha, {
+        runCommand,
+        consoleImpl,
+      });
       if (!options.skipChecklistSync) {
-        run('sync RC checklist from gate status', 'pnpm', [
+        runCommand('sync RC checklist from gate status', 'pnpm', [
           'run',
           'ops:rc:checklist:sync',
           '--',
@@ -381,14 +410,32 @@ const main = () => {
         if (options.requireProductionGate2) {
           evidenceArgs.push('--require-production-gate2');
         }
-        run('check missing external evidence', 'pnpm', evidenceArgs);
+        runCommand('check missing external evidence', 'pnpm', evidenceArgs);
       }
-      console.log('[ops:rc:gates:local] done');
-    })
-    .catch((error) => {
-      console.error('[ops:rc:gates:local] failed:', error instanceof Error ? error.message : String(error));
-      process.exit(1);
-    });
+      consoleImpl.log('[ops:rc:gates:local] done');
+      return { status: 'PASS', mode: 'online' };
+  } catch (error) {
+    consoleImpl.error('[ops:rc:gates:local] failed:', error instanceof Error ? error.message : String(error));
+    processImpl.exit(1);
+    return { status: 'FAILED' };
+  }
 };
 
-main();
+export {
+  assertLatestSloObservationPassed,
+  buildStatusWithOfflineFallback,
+  canReachApi,
+  expectedShaArgs,
+  findLatestSloObservationArtifact,
+  hasSloInputs,
+  main,
+  normalizeDbProfile,
+  normalizeEnvironment,
+  parseArgs,
+  printUsage,
+  run,
+};
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  await main();
+}
