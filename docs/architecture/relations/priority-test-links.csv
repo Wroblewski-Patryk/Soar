@@ -865,6 +865,10 @@ scripts/waitForWebBuildInfo.mjs#hasFlag,scripts/waitForWebBuildInfo.test.mjs,LUC
 scripts/waitForWebBuildInfo.mjs#main,scripts/waitForWebBuildInfo.test.mjs,LUC-3559 direct web build-info CLI entrypoint relation
 scripts/waitForWebBuildInfo.mjs#normalizeBaseUrl,scripts/waitForWebBuildInfo.test.mjs,LUC-3567 direct web build-info base URL normalization relation
 scripts/waitForWebBuildInfo.mjs#normalizeNonEmptyString,scripts/waitForWebBuildInfo.test.mjs,LUC-3574 direct web build-info non-empty metadata normalization relation
+scripts/waitForWebBuildInfo.mjs#printUsage,scripts/waitForWebBuildInfo.test.mjs,LUC-3588 direct web build-info help usage relation
+scripts/waitForWebBuildInfo.mjs#readArgValue,scripts/waitForWebBuildInfo.test.mjs,LUC-3590 direct web build-info CLI argument value relation
+scripts/waitForWebBuildInfo.mjs#resolveOptions,scripts/waitForWebBuildInfo.test.mjs,LUC-3598 direct web build-info option resolution relation
+scripts/waitForWebBuildInfo.mjs#sleep,scripts/waitForWebBuildInfo.test.mjs,LUC-3601 direct web build-info polling sleep relation
 scripts/runRollbackProofEvidence.mjs#evidenceStamp,scripts/runRollbackProofEvidence.test.mjs,LUC-3006 direct rollback proof evidence stamp relation
 scripts/runRollbackProofEvidence.mjs#main,scripts/runRollbackProofEvidence.test.mjs,LUC-3006 direct rollback proof injected CLI orchestration relation
 scripts/runRollbackProofEvidence.mjs#nowStamp,scripts/runRollbackProofEvidence.test.mjs,LUC-3006 direct rollback proof timestamp relation

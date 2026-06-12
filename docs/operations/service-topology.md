@@ -80,8 +80,8 @@ Application rows still report `running:unknown`; PostgreSQL and Redis report
 `running:healthy`. This remains read-only topology/status evidence only;
 protected smoke and deploy mutation readiness are separate release gates.
 
-`LUC-3578` resource inventory reconciliation: latest project-scoped Coolify
-evidence from `2026-06-11T20:10:21Z` reconfirmed selector `LuckySparrow`,
+`LUC-3586` resource inventory reconciliation: latest project-scoped Coolify
+evidence from `2026-06-11T21:00:50Z` reconfirmed selector `LuckySparrow`,
 project `Soar`, the configured production environment binding, production
 environment id `6`, six
 applications, PostgreSQL, Redis, zero generic services, `17` visible global
@@ -92,6 +92,11 @@ production-environment resources. Application rows still report
 the stale inventory issue for downstream resource-by-resource deploy/status
 verification, but it is not a deploy, restart, rollback, protected-smoke, or
 release approval.
+
+Previous same-day reconciliation: `LUC-3578` at `2026-06-11T20:10:21Z`
+reported the same selector, project, production environment id, eight
+canonical resources, application `running:unknown` status, PostgreSQL/Redis
+`running:healthy` status, and `workers-execution` restart metadata.
 
 ## Maintenance Rule
 

@@ -1,4 +1,254 @@
+# 2026-06-12 LUC-3601 waitForWebBuildInfo sleep Relation Row
+
+- [LUC-3601](/LUC/issues/LUC-3601) is `DONE / VERIFIED_LOCAL /
+  TRACEABILITY_REFRESHED / NO_RUNTIME_MUTATION`.
+- Wake was `issue_assigned`; inline payload had no pending comments and
+  `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
+  was not repeated.
+- Added focused subprocess retry-delay coverage in
+  `scripts/waitForWebBuildInfo.test.mjs` proving
+  `scripts/waitForWebBuildInfo.mjs#sleep` is exercised between a first
+  nonmatching build-info response and a later matching deploy response.
+- Added the direct scanner-readable relation row in
+  `docs/architecture/relations/priority-test-links.csv`:
+  `scripts/waitForWebBuildInfo.mjs#sleep` ->
+  `scripts/waitForWebBuildInfo.test.mjs`.
+- Focused local proof passed:
+  `node --test scripts/waitForWebBuildInfo.test.mjs` (`8/8`).
+- Direct relation readback found the row at
+  `docs/architecture/relations/priority-test-links.csv:871`.
+- Evidence:
+  `history/tasks/luc-3601-waitforwebbuildinfo-sleep-relation-row-2026-06-12-task.md`.
+- No deploy, push, restart, rollback, env edit, protected smoke, production
+  account use, secret/account readback, database/Redis mutation, screenshot,
+  browser automation, exchange action, order, position, payment/subscription,
+  or live-trading action occurred.
+
+# 2026-06-12 LUC-3600 V1 Audit-To-Completion Controller Architecture Refresh
+
+- [LUC-3600](/LUC/issues/LUC-3600) is `DONE / VERIFIED_LOCAL / DELEGATED /
+  NO_RUNTIME_MUTATION` for the current TSA heartbeat.
+- Wake was `issue_assigned`; inline payload had no pending comments and
+  `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
+  was not repeated.
+- `pnpm softwarehouse:control-tick` remains unavailable in this checkout:
+  `Command "softwarehouse:control-tick" not found`.
+- Canonical Softwarehouse scanner command passed from
+  `C:\Personal\Projekty\Aplikacje\Paperclip_Softwarehouse`:
+  `node scripts/build-architecture-awareness-index.mjs --project Soar --root ../Soar`.
+- Fresh architecture-awareness report generated `2026-06-11T22:16:05.784Z`
+  with `9552` entities, `30456` relations, `9854` files, `42` actionable
+  missing-test links, `0` actionable missing-doc links, `0` ownerless entities,
+  and `0` disconnected entities.
+- [LUC-3598](/LUC/issues/LUC-3598)
+  `scripts/waitForWebBuildInfo.mjs#resolveOptions` no longer appears in Top
+  Actionable Missing Test Links.
+- Focused local proof passed:
+  `node --test scripts/waitForWebBuildInfo.test.mjs` (`7/7`).
+- Duplicate search for `waitForWebBuildInfo sleep` returned `0` Paperclip
+  issues before delegation.
+- Follow-up: created [LUC-3601](/LUC/issues/LUC-3601) for QVE to repair or
+  classify the next exact local-safe
+  `scripts/waitForWebBuildInfo.mjs#sleep` relation row.
+- Evidence:
+  `history/tasks/luc-3600-v1-audit-to-completion-controller-architecture-refresh-2026-06-12-task.md`.
+- No product implementation, commit, push, deploy, restart, rollback, env edit,
+  protected smoke, production account use, secret/account readback,
+  database/Redis mutation, screenshot, browser automation, exchange action,
+  order, position, payment/subscription, or live-trading action occurred.
+
+# 2026-06-11 LUC-3598 waitForWebBuildInfo resolveOptions Relation Row
+
+- [LUC-3598](/LUC/issues/LUC-3598) is `DONE / VERIFIED_LOCAL /
+  TRACEABILITY_REFRESHED / NO_RUNTIME_MUTATION`.
+- Wake was `issue_assigned`; inline payload had no pending comments and
+  `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
+  was not repeated.
+- Added focused subprocess coverage in `scripts/waitForWebBuildInfo.test.mjs`
+  proving `scripts/waitForWebBuildInfo.mjs#resolveOptions` resolves deploy
+  inputs from environment fallbacks and normalizes `WEB_BUILD_INFO_BASE_URL`
+  when CLI deploy inputs are omitted.
+- Added the direct scanner-readable relation row in
+  `docs/architecture/relations/priority-test-links.csv`:
+  `scripts/waitForWebBuildInfo.mjs#resolveOptions` ->
+  `scripts/waitForWebBuildInfo.test.mjs`.
+- Focused local proof passed:
+  `node --test scripts/waitForWebBuildInfo.test.mjs` (`7/7`).
+- Direct relation readback found the row at
+  `docs/architecture/relations/priority-test-links.csv:870`.
+- Evidence:
+  `history/tasks/luc-3598-waitforwebbuildinfo-resolveoptions-relation-row-2026-06-11-task.md`.
+- No deploy, push, restart, rollback, env edit, protected smoke, production
+  account use, secret/account readback, database/Redis mutation, screenshot,
+  exchange action, order, position, payment/subscription, or live-trading
+  action occurred.
+
+# 2026-06-11 LUC-3597 Architecture-Awareness After LUC-3590 Relation Row
+
+- [LUC-3597](/LUC/issues/LUC-3597) is `DONE / VERIFIED_LOCAL / DELEGATED /
+  NO_RUNTIME_MUTATION`.
+- Wake was `issue_assigned`; inline payload had no pending comments and
+  `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
+  was not repeated.
+- Canonical Softwarehouse scanner command passed from
+  `C:\Personal\Projekty\Aplikacje\Paperclip_Softwarehouse`:
+  `node scripts/build-architecture-awareness-index.mjs --project Soar --root ../Soar`.
+- Fresh architecture-awareness report generated `2026-06-11T22:08:23.147Z`
+  with `9546` entities, `30435` relations, `9851` files, `43` actionable
+  missing-test links, `0` actionable missing-doc links, `0` ownerless entities,
+  and `0` disconnected entities.
+- [LUC-3590](/LUC/issues/LUC-3590)
+  `scripts/waitForWebBuildInfo.mjs#readArgValue` no longer appears in Top
+  Actionable Missing Test Links.
+- Focused local proof passed:
+  `node --test scripts/waitForWebBuildInfo.test.mjs` (`6/6`).
+- Duplicate search for `waitForWebBuildInfo resolveOptions` returned `0`
+  Paperclip issues before delegation.
+- Follow-up: created [LUC-3598](/LUC/issues/LUC-3598) for QVE to repair or
+  classify the next exact local-safe
+  `scripts/waitForWebBuildInfo.mjs#resolveOptions` relation row.
+- Evidence:
+  `history/tasks/luc-3597-architecture-awareness-after-luc-3590-relation-row-2026-06-11-task.md`.
+- No product implementation, commit, push, deploy, restart, rollback, env edit,
+  protected smoke, production account use, secret/account readback,
+  database/Redis mutation, screenshot, exchange action, order, position,
+  payment/subscription, or live-trading action occurred.
+
+# 2026-06-11 LUC-3595 No-Stall Queue Expeditor
+
+- [LUC-3595](/LUC/issues/LUC-3595) is `DONE / DELEGATED /
+  NO_RUNTIME_MUTATION`.
+- Wake was `issue_assigned`; inline payload had no pending comments and
+  `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
+  was not repeated.
+- [LUC-3590](/LUC/issues/LUC-3590) is `done` and added the direct
+  scanner-readable relation for `scripts/waitForWebBuildInfo.mjs#readArgValue`
+  to `scripts/waitForWebBuildInfo.test.mjs`.
+- Direct relation readback found the row at
+  `docs/architecture/relations/priority-test-links.csv:869`.
+- Current architecture-awareness report remains generated at
+  `2026-06-11T20:46:21.821Z` and still lists the closed `readArgValue` anchor
+  at `docs/status/architecture-awareness-report.md:87`.
+- Duplicate searches for `architecture-awareness LUC-3590` and
+  `architecture-awareness after LUC-3590` returned `0` Paperclip issues before
+  delegation.
+- Follow-up: created [LUC-3597](/LUC/issues/LUC-3597) for TSA to refresh
+  architecture-awareness after [LUC-3590](/LUC/issues/LUC-3590) and route at
+  most one next non-duplicate local-safe repair/classification lane.
+- Evidence:
+  `history/tasks/luc-3595-no-stall-queue-expeditor-2026-06-11-task.md`.
+- No product implementation, commit, push, deploy, restart, rollback, env edit,
+  protected smoke, production account use, secret/account readback,
+  database/Redis mutation, screenshot, exchange action, order, position,
+  payment/subscription, or live-trading action occurred.
+
+# 2026-06-11 LUC-3586 Coolify Resource Inventory Reconciliation
+
+- [LUC-3586](/LUC/issues/LUC-3586) `[Ops][Soar] Reconcile Coolify resource
+  inventory` is verified with fresh read-only Coolify API evidence.
+  Authenticated `GET` projection at `2026-06-11T21:00:50Z` confirmed selector
+  `LuckySparrow`, project `Soar`, production environment id `6`, six
+  application resources, one PostgreSQL resource, one Redis resource, zero
+  generic services, `17` visible global resource rows, and `0` active
+  deployment rows.
+- Canonical production resources remain `soar-api`, `soar-web`,
+  `workers-backtest`, `workers-execution`, `workers-market-data`,
+  `workers-market-stream`, `postgresql`, and `redis`.
+- Application rows remain `running:unknown`; PostgreSQL and Redis are
+  `running:healthy`; `workers-execution` retains `restartCount=2`.
+- No deploy, push, restart, rollback, env edit, protected smoke, production
+  account use, secret/account readback, raw resource id storage,
+  database/Redis mutation, screenshot, exchange action, order, position,
+  payment/subscription, or live-trading action occurred.
+- Evidence:
+  `history/evidence/luc-3586-coolify-resource-inventory-reconciliation-2026-06-11.md`;
+  task:
+  `history/tasks/luc-3586-coolify-resource-inventory-reconciliation-2026-06-11-task.md`.
+
+# 2026-06-11 LUC-3589 Gap Register And Repair Lane Refresh
+
+- [LUC-3589](/LUC/issues/LUC-3589) is `DONE / VERIFIED_LOCAL / DELEGATED /
+  NO_RUNTIME_MUTATION`.
+- Canonical scanner command passed from `Paperclip_Softwarehouse`:
+  `node scripts/build-architecture-awareness-index.mjs --project Soar --root ../Soar`.
+- Fresh architecture-awareness report generated `2026-06-11T20:46:21.821Z`
+  with `9539` entities, `30410` relations, `9847` files, `44` actionable
+  missing-test links, `0` actionable missing-doc links, `0` ownerless entities,
+  and `0` disconnected entities.
+- [LUC-3588](/LUC/issues/LUC-3588)
+  `scripts/waitForWebBuildInfo.mjs#printUsage` no longer appears in Top
+  Actionable Missing Test Links.
+- Focused local proof passed:
+  `node --test scripts/waitForWebBuildInfo.test.mjs` (`5/5`).
+- Duplicate routing: `waitForWebBuildInfo readArgValue` returned `0` Paperclip
+  issues before delegation; protected/browser/process rows were left to
+  existing protected proof lanes, and broad [LUC-3010](/LUC/issues/LUC-3010)
+  still covers `triageJourneyEvidence` / `verifyLocalBackupRestore`.
+- Follow-up: created [LUC-3590](/LUC/issues/LUC-3590) for QVE to
+  repair/classify `scripts/waitForWebBuildInfo.mjs#readArgValue`.
+- Evidence:
+  `history/tasks/luc-3589-gap-register-and-repair-lane-refresh-2026-06-11-task.md`.
+
+# 2026-06-11 LUC-3590 waitForWebBuildInfo readArgValue Relation Row
+
+- `LUC-3590-WAITFORWEBBUILDINFO-READARGVALUE-RELATION-ROW-2026-06-11`
+  completed as a QVE local traceability closure. Added direct subprocess
+  coverage in `scripts/waitForWebBuildInfo.test.mjs` proving
+  `scripts/waitForWebBuildInfo.mjs#readArgValue` uses CLI argument values before
+  conflicting environment fallbacks, then added the direct scanner-readable row
+  in `docs/architecture/relations/priority-test-links.csv`. Focused local proof
+  passed: `node --test scripts/waitForWebBuildInfo.test.mjs` (`6/6`), and
+  direct relation readback found the [LUC-3590](/LUC/issues/LUC-3590) row. No
+  deploy, push, restart, rollback, env edit, protected smoke, production
+  account use, secret/account readback, database/Redis mutation, screenshot,
+  exchange action, order, position, payment/subscription, or live-trading action
+  occurred. Evidence:
+  `history/tasks/luc-3590-waitforwebbuildinfo-readargvalue-relation-row-2026-06-11-task.md`.
+
+# 2026-06-11 LUC-3588 waitForWebBuildInfo printUsage Relation Row
+
+- `LUC-3588-WAITFORWEBBUILDINFO-PRINTUSAGE-RELATION-ROW-2026-06-11`
+  completed as a QVE local traceability closure. Added direct `--help`
+  subprocess coverage in `scripts/waitForWebBuildInfo.test.mjs` for
+  `scripts/waitForWebBuildInfo.mjs#printUsage`, then added the direct
+  scanner-readable row in `docs/architecture/relations/priority-test-links.csv`.
+  Focused local proof passed: `node --test scripts/waitForWebBuildInfo.test.mjs`
+  (`5/5`), and direct relation readback found the [LUC-3588](/LUC/issues/LUC-3588)
+  row at line `868`. No deploy, push, restart, rollback, env edit, protected
+  smoke, production account use, secret/account readback, database/Redis
+  mutation, screenshot, exchange action, order, position, payment/subscription,
+  or live-trading action occurred. Evidence:
+  `history/tasks/luc-3588-waitforwebbuildinfo-printusage-relation-row-2026-06-11-task.md`.
+
+# 2026-06-11 LUC-3587 Architecture-Awareness After normalizeNonEmptyString
+
+- [LUC-3587](/LUC/issues/LUC-3587) is `DONE / VERIFIED_LOCAL / DELEGATED /
+  NO_RUNTIME_MUTATION`.
+- Canonical scanner command passed from `Paperclip_Softwarehouse`:
+  `node scripts/build-architecture-awareness-index.mjs --project Soar --root ../Soar`.
+- Fresh architecture-awareness report generated `2026-06-11T20:34:15.942Z`
+  with `9535` entities, `30395` relations, `9845` files, `45` actionable
+  missing-test links, `0` actionable missing-doc links, `0` ownerless entities,
+  and `0` disconnected entities.
+- [LUC-3574](/LUC/issues/LUC-3574)
+  `scripts/waitForWebBuildInfo.mjs#normalizeNonEmptyString` no longer appears
+  in Top Actionable Missing Test Links.
+- Focused local proof passed:
+  `node --test scripts/waitForWebBuildInfo.test.mjs` (`4/4`) before
+  [LUC-3588](/LUC/issues/LUC-3588) expanded the test suite.
+- Duplicate routing: existing broad [LUC-3010](/LUC/issues/LUC-3010) covers
+  the `triageJourneyEvidence` / `verifyLocalBackupRestore` helper-family lane,
+  so no duplicate was created there; duplicate search for
+  `waitForWebBuildInfo printUsage` returned `0` issues.
+- Follow-up: created [LUC-3588](/LUC/issues/LUC-3588) for
+  [09 QVE](/LUC/agents/09-qve-qa-verification-engineer) to repair/classify
+  `scripts/waitForWebBuildInfo.mjs#printUsage`; that child has since completed
+  with focused `5/5` proof and a direct relation row.
+- Evidence:
+  `history/tasks/luc-3587-architecture-awareness-after-normalizenonemptystring-2026-06-11-task.md`.
+
 # 2026-06-11 LUC-3583 No-Stall Queue Expeditor
+
 
 - `LUC-3583-NO-STALL-QUEUE-EXPEDITOR-2026-06-11`
   completed as a Soar Product Manager queue-disposition checkpoint with

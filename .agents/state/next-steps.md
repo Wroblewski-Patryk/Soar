@@ -1,6 +1,157 @@
 # Next Steps
 
+- 2026-06-12 `LUC-3601` closure update: the exact local-safe residual anchor
+  `scripts/waitForWebBuildInfo.mjs#sleep` is closed by direct subprocess
+  retry-delay coverage in `scripts/waitForWebBuildInfo.test.mjs` and a direct
+  scanner-readable relation row in
+  `docs/architecture/relations/priority-test-links.csv`. Focused local proof
+  passed (`node --test scripts/waitForWebBuildInfo.test.mjs`, `8/8`) and direct
+  relation readback found the [LUC-3601](/LUC/issues/LUC-3601) row at
+  `docs/architecture/relations/priority-test-links.csv:871`. Do not create
+  another duplicate lane for this exact anchor unless a later full
+  architecture-awareness refresh still reports it after consuming the new
+  relation row. This closure does not authorize production deploy/readback,
+  protected smoke, push, restart, rollback, env edit, secret/account readback,
+  database/Redis mutation, browser automation, exchange action, order,
+  position, payment/subscription, or live-trading action. Next queue owner
+  should refresh architecture-awareness before selecting another local-safe
+  repair row.
+
+- 2026-06-12 `LUC-3600` closure update: architecture-awareness has been
+  refreshed after [LUC-3598](/LUC/issues/LUC-3598). Fresh generated timestamp:
+  `2026-06-11T22:16:05.784Z`; counts: `9552` entities, `30456` relations,
+  `9854` files, `42` actionable missing-test links, `0` actionable
+  missing-doc links, `0` ownerless entities, and `0` disconnected entities.
+  [LUC-3598](/LUC/issues/LUC-3598)
+  `scripts/waitForWebBuildInfo.mjs#resolveOptions` no longer appears in Top
+  Actionable Missing Test Links. Execute [LUC-3601](/LUC/issues/LUC-3601) next
+  for the remaining local-safe `scripts/waitForWebBuildInfo.mjs#sleep` direct
+  relation or classification. Do not create duplicate lanes for
+  [LUC-3598](/LUC/issues/LUC-3598), existing protected/browser/process-boundary
+  rows, or broad [LUC-3010](/LUC/issues/LUC-3010) helper-family work. No
+  deploy, restart, rollback, protected smoke, secret/account readback,
+  database/Redis mutation, browser automation, exchange action, order,
+  position, payment/subscription, or live-trading action is authorized by this
+  refresh.
+
+- 2026-06-11 `LUC-3598` closure update: the exact local-safe residual anchor
+  `scripts/waitForWebBuildInfo.mjs#resolveOptions` is closed by direct
+  subprocess coverage in `scripts/waitForWebBuildInfo.test.mjs` and a direct
+  scanner-readable relation row in
+  `docs/architecture/relations/priority-test-links.csv`. Focused local proof
+  passed (`node --test scripts/waitForWebBuildInfo.test.mjs`, `7/7`) and direct
+  relation readback found the [LUC-3598](/LUC/issues/LUC-3598) row at
+  `docs/architecture/relations/priority-test-links.csv:870`. Do not create
+  another duplicate lane for this exact anchor unless a later full
+  architecture-awareness refresh still reports it after consuming the new
+  relation row. This closure does not authorize production deploy/readback,
+  protected smoke, push, restart, rollback, env edit, secret/account readback,
+  database/Redis mutation, exchange action, order, position,
+  payment/subscription, or live-trading action. Next queue owner should refresh
+  architecture-awareness before selecting another local-safe repair row.
+
+- 2026-06-11 `LUC-3597` closure update: architecture-awareness has been
+  refreshed after [LUC-3590](/LUC/issues/LUC-3590). Fresh generated timestamp:
+  `2026-06-11T22:08:23.147Z`; counts: `9546` entities, `30435` relations,
+  `9851` files, `43` actionable missing-test links, `0` actionable
+  missing-doc links, `0` ownerless entities, and `0` disconnected entities.
+  [LUC-3590](/LUC/issues/LUC-3590)
+  `scripts/waitForWebBuildInfo.mjs#readArgValue` no longer appears in Top
+  Actionable Missing Test Links. Execute [LUC-3598](/LUC/issues/LUC-3598)
+  next for the remaining local-safe
+  `scripts/waitForWebBuildInfo.mjs#resolveOptions` direct relation or
+  classification. Do not create duplicate lanes for [LUC-3590](/LUC/issues/LUC-3590),
+  [LUC-3588](/LUC/issues/LUC-3588), [LUC-3574](/LUC/issues/LUC-3574), existing
+  protected/browser/process-boundary rows, or broad [LUC-3010](/LUC/issues/LUC-3010)
+  helper-family work. No deploy, restart, rollback, protected smoke,
+  secret/account readback, database/Redis mutation, exchange action, order,
+  position, payment/subscription, or live-trading action is authorized by this
+  refresh.
+
+- 2026-06-11 `LUC-3595` next-step update: execute
+  [LUC-3597](/LUC/issues/LUC-3597), the TSA architecture-awareness refresh
+  created after [LUC-3590](/LUC/issues/LUC-3590) closed
+  `scripts/waitForWebBuildInfo.mjs#readArgValue`. Do not create another QA
+  lane for [LUC-3590](/LUC/issues/LUC-3590), [LUC-3588](/LUC/issues/LUC-3588),
+  [LUC-3574](/LUC/issues/LUC-3574), [LUC-3567](/LUC/issues/LUC-3567),
+  [LUC-3561](/LUC/issues/LUC-3561), [LUC-3559](/LUC/issues/LUC-3559), existing
+  protected/browser/process-boundary rows, or broad [LUC-3010](/LUC/issues/LUC-3010)
+  helper-family work. Do not select further repair lanes from the stale
+  `2026-06-11T20:46:21.821Z` report until [LUC-3597](/LUC/issues/LUC-3597)
+  refreshes or explicitly blocks the scanner. No deploy, restart, rollback,
+  protected smoke, secret/account readback, database/Redis mutation, exchange
+  action, order, position, payment/subscription, or live-trading action is
+  authorized by this PM checkpoint.
+
+- 2026-06-11 `LUC-3589` closure update: architecture-awareness has been
+  refreshed after [LUC-3588](/LUC/issues/LUC-3588). Fresh generated timestamp:
+  `2026-06-11T20:46:21.821Z`; counts: `9539` entities, `30410` relations,
+  `9847` files, `44` actionable missing-test links, `0` actionable
+  missing-doc links, `0` ownerless entities, and `0` disconnected entities.
+  [LUC-3588](/LUC/issues/LUC-3588)
+  `scripts/waitForWebBuildInfo.mjs#printUsage` no longer appears in Top
+  Actionable Missing Test Links. Execute [LUC-3590](/LUC/issues/LUC-3590)
+  next for the remaining local-safe
+  `scripts/waitForWebBuildInfo.mjs#readArgValue` direct relation or
+  classification. Do not create duplicate lanes for [LUC-3588](/LUC/issues/LUC-3588),
+  [LUC-3574](/LUC/issues/LUC-3574), [LUC-3567](/LUC/issues/LUC-3567),
+  [LUC-3561](/LUC/issues/LUC-3561), [LUC-3559](/LUC/issues/LUC-3559), existing
+  protected/browser/process-boundary rows, or broad [LUC-3010](/LUC/issues/LUC-3010)
+  helper-family work. No deploy, restart, rollback, protected smoke,
+  secret/account readback, database/Redis mutation, exchange action, order,
+  position, payment/subscription, or live-trading action is authorized by this
+  refresh.
+
 Last updated: 2026-06-11
+
+- 2026-06-11 `LUC-3590` closure update: the exact local-safe residual anchor
+  `scripts/waitForWebBuildInfo.mjs#readArgValue` is closed by direct subprocess
+  coverage in `scripts/waitForWebBuildInfo.test.mjs` and a direct
+  scanner-readable relation row in
+  `docs/architecture/relations/priority-test-links.csv`. Focused local proof
+  passed (`node --test scripts/waitForWebBuildInfo.test.mjs`, `6/6`) and direct
+  relation readback found the [LUC-3590](/LUC/issues/LUC-3590) row. Do not
+  create another duplicate lane for this exact anchor unless a later full
+  architecture-awareness refresh still reports it after consuming the new
+  relation row. This closure does not authorize production deploy/readback,
+  protected smoke, push, restart, rollback, env edit, secret/account readback,
+  database/Redis mutation, exchange action, order, position,
+  payment/subscription, or live-trading action.
+
+- 2026-06-11 `LUC-3587` closure update: architecture-awareness has been
+  refreshed after [LUC-3574](/LUC/issues/LUC-3574). Fresh generated timestamp:
+  `2026-06-11T20:34:15.942Z`; counts: `9535` entities, `30395` relations,
+  `9845` files, `45` actionable missing-test links, `0` actionable
+  missing-doc links, `0` ownerless entities, and `0` disconnected entities.
+  [LUC-3574](/LUC/issues/LUC-3574)
+  `scripts/waitForWebBuildInfo.mjs#normalizeNonEmptyString` no longer appears
+  in Top Actionable Missing Test Links. [LUC-3588](/LUC/issues/LUC-3588) was
+  created for the remaining local-safe
+  `scripts/waitForWebBuildInfo.mjs#printUsage` direct relation or
+  classification and has since completed. Do not create duplicate lanes for [LUC-3574](/LUC/issues/LUC-3574),
+  [LUC-3572](/LUC/issues/LUC-3572), [LUC-3567](/LUC/issues/LUC-3567),
+  [LUC-3561](/LUC/issues/LUC-3561), [LUC-3559](/LUC/issues/LUC-3559), or the
+  existing broad [LUC-3010](/LUC/issues/LUC-3010)
+  `triageJourneyEvidence` / `verifyLocalBackupRestore` helper-family lane. No
+  deploy, restart, rollback, protected smoke, secret/account readback,
+  database/Redis mutation, exchange action, order, position,
+  payment/subscription, or live-trading action is authorized by this refresh.
+
+Last updated: 2026-06-11
+
+- 2026-06-11 `LUC-3588` closure update: the exact local-safe residual anchor
+  `scripts/waitForWebBuildInfo.mjs#printUsage` is closed by direct help-path
+  test coverage in `scripts/waitForWebBuildInfo.test.mjs` and a direct
+  scanner-readable relation row in
+  `docs/architecture/relations/priority-test-links.csv`. Focused local proof
+  passed (`node --test scripts/waitForWebBuildInfo.test.mjs`, `5/5`) and
+  direct relation readback found the [LUC-3588](/LUC/issues/LUC-3588) row at
+  line `868`. Do not create another duplicate lane for this exact anchor unless
+  a later full architecture-awareness refresh still reports it after consuming
+  the new relation row. This closure does not authorize production
+  deploy/readback, protected smoke, push, restart, rollback, env edit,
+  secret/account readback, database/Redis mutation, exchange action, order,
+  position, payment/subscription, or live-trading action.
 
 - 2026-06-11 `LUC-3583` next-step update: execute
   [LUC-3587](/LUC/issues/LUC-3587), the TSA architecture-awareness refresh

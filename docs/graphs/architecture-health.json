@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-06-11T19:33:48.788Z",
+  "generated_at": "2026-06-11T22:16:05.784Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 9521,
-    "relations": 30344,
+    "entities": 9552,
+    "relations": 30456,
     "by_type": {
       "agent": 52,
       "api_endpoint": 37,
       "component": 97,
-      "document": 3984,
+      "document": 4001,
       "feature": 217,
       "function": 2801,
       "migration": 56,
@@ -19,21 +19,21 @@
       "module": 16,
       "project": 1,
       "route": 352,
-      "task": 1354,
+      "task": 1368,
       "test": 446
     },
     "by_status": {
       "blocked": 26,
       "deprecated": 9,
-      "implemented": 7326,
+      "implemented": 7343,
       "in_progress": 12,
       "tested": 813,
-      "verified": 1335
+      "verified": 1349
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 1331,
+      "count": 1327,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -3243,7 +3243,7 @@
       ]
     },
     "actionable_implementation_without_tests": {
-      "count": 46,
+      "count": 42,
       "items": [
         {
           "id": "function:createpage:dc5d04867a",
@@ -3554,38 +3554,6 @@
           "type": "function",
           "name": "run",
           "path": "scripts/verifyLocalBackupRestore.mjs#run",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:normalizenonemptystring:a4ee868daa",
-          "type": "function",
-          "name": "normalizeNonEmptyString",
-          "path": "scripts/waitForWebBuildInfo.mjs#normalizeNonEmptyString",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:printusage:147896f3e2",
-          "type": "function",
-          "name": "printUsage",
-          "path": "scripts/waitForWebBuildInfo.mjs#printUsage",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:readargvalue:fd6fe4e2ba",
-          "type": "function",
-          "name": "readArgValue",
-          "path": "scripts/waitForWebBuildInfo.mjs#readArgValue",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:resolveoptions:a1421ada18",
-          "type": "function",
-          "name": "resolveOptions",
-          "path": "scripts/waitForWebBuildInfo.mjs#resolveOptions",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },

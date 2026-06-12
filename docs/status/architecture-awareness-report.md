@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-06-11T19:33:48.788Z
+Generated: 2026-06-11T22:16:05.784Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,7 +11,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 37 |
 | component | 97 |
-| document | 3984 |
+| document | 4001 |
 | feature | 217 |
 | function | 2801 |
 | migration | 56 |
@@ -19,7 +19,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | module | 16 |
 | project | 1 |
 | route | 352 |
-| task | 1354 |
+| task | 1368 |
 | test | 446 |
 
 ## Counts By Status
@@ -28,15 +28,15 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | --- | ---: |
 | blocked | 26 |
 | deprecated | 9 |
-| implemented | 7326 |
+| implemented | 7343 |
 | in_progress | 12 |
 | tested | 813 |
-| verified | 1335 |
+| verified | 1349 |
 
 ## Health Signals
 
-- Raw implementation entities without inferred tests: 1331
-- Actionable implementation entities without inferred tests: 46
+- Raw implementation entities without inferred tests: 1327
+- Actionable implementation entities without inferred tests: 42
 - Raw implementation entities without inferred docs: 312
 - Actionable implementation entities without inferred docs: 0
 - Classified inferred-link noise: 1513
@@ -84,7 +84,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - function: parseArgs (scripts/verifyLocalBackupRestore.mjs#parseArgs)
 - function: push (scripts/verifyLocalBackupRestore.mjs#push)
 - function: run (scripts/verifyLocalBackupRestore.mjs#run)
-- function: normalizeNonEmptyString (scripts/waitForWebBuildInfo.mjs#normalizeNonEmptyString)
+- function: sleep (scripts/waitForWebBuildInfo.mjs#sleep)
 
 ## Top Actionable Missing Doc Links
 

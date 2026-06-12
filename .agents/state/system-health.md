@@ -1,5 +1,150 @@
 # System Health
 
+## 2026-06-12 LUC-3601 waitForWebBuildInfo sleep Relation Row
+
+- Status: `VERIFIED_LOCAL / TRACEABILITY_REFRESHED / NO_RUNTIME_MUTATION`.
+- Current health signal: [LUC-3601](/LUC/issues/LUC-3601) closed the
+  `scripts/waitForWebBuildInfo.mjs#sleep` local-safe relation gap with direct
+  subprocess retry-delay coverage and a scanner-readable priority test link row.
+- Verified: `node --test scripts/waitForWebBuildInfo.test.mjs` passed
+  (`8/8`), and direct relation readback found the [LUC-3601](/LUC/issues/LUC-3601)
+  row at `docs/architecture/relations/priority-test-links.csv:871`.
+- Follow-up: generated architecture-awareness outputs remain pre-consumption
+  for this new row until the next TSA refresh.
+- Safety: no deploy, push, restart, rollback, env edit, protected smoke,
+  secret/account readback, database/Redis mutation, screenshot, browser
+  automation, exchange action, order, position, payment/subscription, or
+  live-trading action occurred.
+
+## 2026-06-11 LUC-3598 waitForWebBuildInfo resolveOptions Relation Row
+
+- Status: `VERIFIED_LOCAL / TRACEABILITY_REFRESHED / NO_RUNTIME_MUTATION`.
+- Current health signal: [LUC-3598](/LUC/issues/LUC-3598) closed the
+  `scripts/waitForWebBuildInfo.mjs#resolveOptions` local-safe relation gap with
+  direct subprocess coverage for environment fallback option resolution and a
+  scanner-readable priority test link row.
+- Verified: `node --test scripts/waitForWebBuildInfo.test.mjs` passed
+  (`7/7`), and direct relation readback found the [LUC-3598](/LUC/issues/LUC-3598)
+  row at `docs/architecture/relations/priority-test-links.csv:870`.
+- Follow-up: generated architecture-awareness outputs remain pre-consumption
+  for this new row until the next TSA refresh.
+- Safety: no deploy, push, restart, rollback, env edit, protected smoke,
+  secret/account readback, database/Redis mutation, screenshot, exchange
+  action, order, position, payment/subscription, or live-trading action
+  occurred.
+
+## 2026-06-11 LUC-3597 Architecture-Awareness After LUC-3590 Relation Row
+
+- Status: `VERIFIED_LOCAL / DELEGATED / NO_RUNTIME_MUTATION`.
+- Current health signal: [LUC-3597](/LUC/issues/LUC-3597) refreshed the Soar
+  architecture-awareness exports with the canonical Softwarehouse scanner at
+  `2026-06-11T22:08:23.147Z`.
+- Verified: `9546` entities, `30435` relations, `9851` files, `43`
+  actionable missing-test links, `0` actionable missing-doc links, `0`
+  ownerless entities, and `0` disconnected entities.
+- Closure: [LUC-3590](/LUC/issues/LUC-3590)
+  `scripts/waitForWebBuildInfo.mjs#readArgValue` is no longer in Top
+  Actionable Missing Test Links; focused `node --test scripts/waitForWebBuildInfo.test.mjs`
+  passed (`6/6`).
+- Follow-up: [LUC-3598](/LUC/issues/LUC-3598) was created for QVE to handle
+  `scripts/waitForWebBuildInfo.mjs#resolveOptions`.
+- Safety: no product code, deploy, restart, rollback, env edit, protected
+  smoke, secret/account readback, database/Redis mutation, screenshot, or
+  live-trading action occurred.
+
+## 2026-06-11 LUC-3586 Coolify Resource Inventory Reconciliation
+
+- Status: `VERIFIED_READ_ONLY / NO_MUTATION`.
+- Current health signal: [LUC-3586](/LUC/issues/LUC-3586) reconciled the Soar
+  production Coolify resource ledger through read-only API access at
+  `2026-06-11T21:00:50Z`.
+- Verified: selector `LuckySparrow`, project `Soar`, production environment id
+  `6`, six applications, one PostgreSQL resource, one Redis resource, zero
+  generic services, `17` visible global resource rows, and `0` active
+  deployment rows.
+- Canonical resources: `soar-api`, `soar-web`, `workers-backtest`,
+  `workers-execution`, `workers-market-data`, `workers-market-stream`,
+  `postgresql`, and `redis`.
+- Residual health risk: application rows remain `running:unknown`;
+  `workers-execution` retains `restartCount=2`; protected smoke, worker
+  freshness, rollback, restore, SLO, and release approval remain separate
+  gates.
+- Safety: no deploy, restart, rollback, env edit, secret/account readback,
+  database/Redis mutation, screenshot, or protected smoke occurred.
+
+## 2026-06-11 LUC-3589 Gap Register And Repair Lane Refresh
+
+- Status: `VERIFIED_LOCAL / DELEGATED / NO_RUNTIME_MUTATION`.
+- Current health signal: [LUC-3589](/LUC/issues/LUC-3589) refreshed the Soar
+  architecture-awareness exports with the canonical Softwarehouse scanner at
+  `2026-06-11T20:46:21.821Z`.
+- Verified: `9539` entities, `30410` relations, `9847` files, `44`
+  actionable missing-test links, `0` actionable missing-doc links, `0`
+  ownerless entities, and `0` disconnected entities.
+- Closure: [LUC-3588](/LUC/issues/LUC-3588)
+  `scripts/waitForWebBuildInfo.mjs#printUsage` is no longer in Top Actionable
+  Missing Test Links; focused `node --test scripts/waitForWebBuildInfo.test.mjs`
+  passed (`5/5`).
+- Follow-up: [LUC-3590](/LUC/issues/LUC-3590) was created for QVE to handle
+  `scripts/waitForWebBuildInfo.mjs#readArgValue`.
+- Safety: no product code, deploy, restart, rollback, env edit, protected
+  smoke, secret/account readback, database/Redis mutation, screenshot, or
+  live-trading action occurred.
+
+## 2026-06-11 LUC-3590 waitForWebBuildInfo readArgValue Relation Row
+
+- Status: `VERIFIED_LOCAL / TRACEABILITY_REFRESHED / NO_RUNTIME_MUTATION`.
+- Current health signal: [LUC-3590](/LUC/issues/LUC-3590) closed the
+  `scripts/waitForWebBuildInfo.mjs#readArgValue` local-safe relation gap with
+  direct subprocess coverage for CLI argument value precedence and a
+  scanner-readable priority test link row.
+- Verified: `node --test scripts/waitForWebBuildInfo.test.mjs` passed
+  (`6/6`), and direct relation readback found the [LUC-3590](/LUC/issues/LUC-3590)
+  row in `docs/architecture/relations/priority-test-links.csv`.
+- Follow-up: generated architecture-awareness outputs remain pre-consumption
+  for this new row until the next TSA refresh.
+- Safety: no deploy, push, restart, rollback, env edit, protected smoke,
+  secret/account readback, database/Redis mutation, screenshot, exchange
+  action, order, position, payment/subscription, or live-trading action
+  occurred.
+
+## 2026-06-11 LUC-3588 waitForWebBuildInfo printUsage Relation Row
+
+- Status: `VERIFIED_LOCAL / TRACEABILITY_REFRESHED / NO_RUNTIME_MUTATION`.
+- Current health signal: [LUC-3588](/LUC/issues/LUC-3588) closed the
+  `scripts/waitForWebBuildInfo.mjs#printUsage` local-safe relation gap with
+  direct `--help` subprocess coverage and a scanner-readable priority test
+  link row.
+- Verified: `node --test scripts/waitForWebBuildInfo.test.mjs` passed
+  (`5/5`), and direct relation readback found the [LUC-3588](/LUC/issues/LUC-3588)
+  row at `docs/architecture/relations/priority-test-links.csv:868`.
+- Follow-up: generated architecture-awareness outputs remain pre-consumption
+  for this new row until the next TSA refresh.
+- Safety: no deploy, push, restart, rollback, env edit, protected smoke,
+  secret/account readback, database/Redis mutation, screenshot, exchange
+  action, order, position, payment/subscription, or live-trading action
+  occurred.
+
+## 2026-06-11 LUC-3587 Architecture-Awareness Refresh
+
+- Status: `VERIFIED_LOCAL / DELEGATED / NO_RUNTIME_MUTATION`.
+- Current health signal: [LUC-3587](/LUC/issues/LUC-3587) refreshed the Soar
+  architecture-awareness exports with the canonical Softwarehouse scanner at
+  `2026-06-11T20:34:15.942Z`.
+- Verified: `9535` entities, `30395` relations, `9845` files, `45`
+  actionable missing-test links, `0` actionable missing-doc links, `0`
+  ownerless entities, and `0` disconnected entities.
+- Closure: [LUC-3574](/LUC/issues/LUC-3574)
+  `scripts/waitForWebBuildInfo.mjs#normalizeNonEmptyString` is no longer in
+  Top Actionable Missing Test Links; focused
+  `node --test scripts/waitForWebBuildInfo.test.mjs` passed (`4/4`).
+- Follow-up: [LUC-3588](/LUC/issues/LUC-3588) was created for QVE to handle
+  `scripts/waitForWebBuildInfo.mjs#printUsage` and has since completed with
+  focused `5/5` proof.
+- Safety: no product code, deploy, restart, rollback, env edit, protected
+  smoke, secret/account readback, database/Redis mutation, screenshot, or
+  live-trading action occurred.
+
 ## 2026-06-11 LUC-3578 Coolify Resource Inventory Reconciliation
 
 - Status: `VERIFIED_READ_ONLY / NO_MUTATION`.

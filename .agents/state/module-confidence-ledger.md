@@ -1,5 +1,157 @@
 # Module Confidence Ledger
 
+## 2026-06-12 LUC-3601 waitForWebBuildInfo sleep Relation Row
+
+- Module row: Architecture Evidence Graph / Web build-info deploy wait
+  traceability backlog.
+- Status delta: `VERIFIED_LOCAL / TRACEABILITY_REFRESHED / NO_MUTATION`.
+  [LUC-3601](/LUC/issues/LUC-3601) added focused subprocess coverage for
+  `scripts/waitForWebBuildInfo.mjs#sleep` in
+  `scripts/waitForWebBuildInfo.test.mjs`, proving the polling loop waits
+  between a first nonmatching build-info response and a later matching response,
+  and added the direct scanner-readable relation row to
+  `docs/architecture/relations/priority-test-links.csv`.
+- Evidence:
+  `history/tasks/luc-3601-waitforwebbuildinfo-sleep-relation-row-2026-06-12-task.md`.
+- Validation:
+  `node --test scripts/waitForWebBuildInfo.test.mjs` PASS (`8/8`); direct
+  relation readback PASS for `scripts/waitForWebBuildInfo.mjs#sleep` at
+  `docs/architecture/relations/priority-test-links.csv:871`.
+- Residual risk:
+  generated architecture-awareness snapshot remains pre-refresh until the next
+  full awareness refresh. This local helper traceability proof is not
+  production deploy freshness, protected browser proof, worker readiness,
+  rollback, restore, SLO, or release approval evidence.
+
+## 2026-06-11 LUC-3598 waitForWebBuildInfo resolveOptions Relation Row
+
+- Module row: Architecture Evidence Graph / Web build-info deploy wait
+  traceability backlog.
+- Status delta: `VERIFIED_LOCAL / TRACEABILITY_REFRESHED / NO_MUTATION`.
+  [LUC-3598](/LUC/issues/LUC-3598) added focused subprocess coverage for
+  `scripts/waitForWebBuildInfo.mjs#resolveOptions` in
+  `scripts/waitForWebBuildInfo.test.mjs`, proving environment fallback option
+  resolution and normalized `WEB_BUILD_INFO_BASE_URL` handling when CLI deploy
+  inputs are omitted, and added the direct scanner-readable relation row to
+  `docs/architecture/relations/priority-test-links.csv`.
+- Evidence:
+  `history/tasks/luc-3598-waitforwebbuildinfo-resolveoptions-relation-row-2026-06-11-task.md`.
+- Validation:
+  `node --test scripts/waitForWebBuildInfo.test.mjs` PASS (`7/7`); direct
+  relation readback PASS for `scripts/waitForWebBuildInfo.mjs#resolveOptions`
+  at `docs/architecture/relations/priority-test-links.csv:870`.
+- Residual risk:
+  generated architecture-awareness snapshot remains pre-refresh until the next
+  full awareness refresh. This local helper traceability proof is not
+  production deploy freshness, protected browser proof, worker readiness,
+  rollback, restore, SLO, or release approval evidence.
+
+## 2026-06-11 LUC-3597 Architecture-Awareness After LUC-3590 Relation Row
+
+- Module row: Architecture Evidence Graph / Web build-info deploy wait
+  traceability backlog.
+- Status delta: `VERIFIED_LOCAL / AWARENESS_REFRESHED / DELEGATED /
+  NO_MUTATION`. [LUC-3597](/LUC/issues/LUC-3597) refreshed generated
+  architecture-awareness outputs at `2026-06-11T22:08:23.147Z`.
+- Evidence:
+  `history/tasks/luc-3597-architecture-awareness-after-luc-3590-relation-row-2026-06-11-task.md`.
+- Validation:
+  Softwarehouse scanner refresh PASS (`9546` entities / `30435` relations /
+  `9851` files); report readback confirms [LUC-3590](/LUC/issues/LUC-3590)
+  `readArgValue` disappeared from Top Actionable Missing Test Links;
+  `node --test scripts/waitForWebBuildInfo.test.mjs` PASS (`6/6`); Paperclip
+  duplicate search for `waitForWebBuildInfo resolveOptions` returned `0`
+  issues; [LUC-3598](/LUC/issues/LUC-3598) was created for QVE.
+- Residual risk:
+  `scripts/waitForWebBuildInfo.mjs#resolveOptions` remains a local-safe direct
+  relation/classification candidate and is delegated to [LUC-3598](/LUC/issues/LUC-3598).
+  Protected/browser/prod proof gates remain separate.
+
+## 2026-06-11 LUC-3586 Coolify Resource Inventory Reconciliation
+
+- Module row: SOAR-OPERATIONS-001 / Coolify production resource inventory.
+- Status: `verified_read_only / no_mutation`.
+- Confidence update:
+  [LUC-3586](/LUC/issues/LUC-3586) refreshed the current Coolify production
+  inventory through authenticated read-only `GET` calls at
+  `2026-06-11T21:00:50Z`. The current selector resolved `LuckySparrow`, the
+  configured project resolved `Soar`, production environment id remains `6`,
+  and the canonical production inventory remains six applications plus
+  PostgreSQL and Redis: `soar-api`, `soar-web`, `workers-backtest`,
+  `workers-execution`, `workers-market-data`, `workers-market-stream`,
+  `postgresql`, and `redis`.
+- Evidence:
+  `history/evidence/luc-3586-coolify-resource-inventory-reconciliation-2026-06-11.md`;
+  `history/tasks/luc-3586-coolify-resource-inventory-reconciliation-2026-06-11-task.md`.
+- Residual:
+  application rows still report `running:unknown`; this is topology/status
+  inventory only, not protected worker readiness, release approval, rollback,
+  restore, or SLO proof.
+
+## 2026-06-11 LUC-3589 Gap Register And Repair Lane Refresh
+
+- Module row: Architecture Evidence Graph / Web build-info deploy wait
+  traceability backlog.
+- Status delta: `VERIFIED_LOCAL / AWARENESS_REFRESHED / DELEGATED /
+  NO_MUTATION`. [LUC-3589](/LUC/issues/LUC-3589) refreshed generated
+  architecture-awareness outputs at `2026-06-11T20:46:21.821Z`.
+- Evidence:
+  `history/tasks/luc-3589-gap-register-and-repair-lane-refresh-2026-06-11-task.md`.
+- Validation:
+  Softwarehouse scanner refresh PASS (`9539` entities / `30410` relations /
+  `9847` files); report readback confirms [LUC-3588](/LUC/issues/LUC-3588)
+  `printUsage` disappeared from Top Actionable Missing Test Links;
+  `node --test scripts/waitForWebBuildInfo.test.mjs` PASS (`5/5`); Paperclip
+  duplicate search for `waitForWebBuildInfo readArgValue` returned `0`
+  issues; [LUC-3590](/LUC/issues/LUC-3590) was created for QVE.
+- Residual risk:
+  `scripts/waitForWebBuildInfo.mjs#readArgValue` remains a local-safe direct
+  relation/classification candidate and is delegated to [LUC-3590](/LUC/issues/LUC-3590).
+  Protected/browser/prod proof gates remain separate.
+
+## 2026-06-11 LUC-3590 waitForWebBuildInfo readArgValue Relation Row
+
+- Module row: Architecture Evidence Graph / Web build-info deploy wait
+  traceability backlog.
+- Status delta: `VERIFIED_LOCAL / TRACEABILITY_REFRESHED / NO_MUTATION`.
+  [LUC-3590](/LUC/issues/LUC-3590) added direct subprocess coverage for
+  `scripts/waitForWebBuildInfo.mjs#readArgValue` in
+  `scripts/waitForWebBuildInfo.test.mjs`, proving CLI argument values are used
+  before conflicting environment fallbacks, and added the direct
+  scanner-readable relation row to
+  `docs/architecture/relations/priority-test-links.csv`.
+- Evidence:
+  `history/tasks/luc-3590-waitforwebbuildinfo-readargvalue-relation-row-2026-06-11-task.md`.
+- Validation:
+  `node --test scripts/waitForWebBuildInfo.test.mjs` PASS (`6/6`); direct
+  relation readback PASS for `scripts/waitForWebBuildInfo.mjs#readArgValue`.
+- Residual risk:
+  generated architecture-awareness snapshot remains pre-refresh until the next
+  full awareness refresh. This local helper traceability proof is not
+  production deploy freshness, protected browser proof, worker readiness,
+  rollback, restore, SLO, or release approval evidence.
+
+## 2026-06-11 LUC-3588 waitForWebBuildInfo printUsage Relation Row
+
+- Module row: Architecture Evidence Graph / Web build-info deploy wait
+  traceability backlog.
+- Status delta: `VERIFIED_LOCAL / TRACEABILITY_REFRESHED / NO_MUTATION`.
+  [LUC-3588](/LUC/issues/LUC-3588) added direct `--help` subprocess coverage
+  for `scripts/waitForWebBuildInfo.mjs#printUsage` in
+  `scripts/waitForWebBuildInfo.test.mjs` and added the direct scanner-readable
+  relation row to `docs/architecture/relations/priority-test-links.csv`.
+- Evidence:
+  `history/tasks/luc-3588-waitforwebbuildinfo-printusage-relation-row-2026-06-11-task.md`.
+- Validation:
+  `node --test scripts/waitForWebBuildInfo.test.mjs` PASS (`5/5`); direct
+  relation readback PASS for `scripts/waitForWebBuildInfo.mjs#printUsage` at
+  line `868`.
+- Residual risk:
+  generated architecture-awareness snapshot remains pre-refresh until the next
+  full awareness refresh. This local helper traceability proof is not
+  production deploy freshness, protected browser proof, worker readiness,
+  rollback, restore, SLO, or release approval evidence.
+
 ## 2026-06-11 LUC-3578 Coolify Resource Inventory Reconciliation
 
 - Module row: SOAR-OPERATIONS-001 / Coolify production resource inventory.

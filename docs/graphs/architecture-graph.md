@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-06-11T19:33:48.788Z
+Generated: 2026-06-11T22:16:05.784Z
 
 ## Canonical Exports
 
@@ -556,7 +556,7 @@ Generated: 2026-06-11T19:33:48.788Z
 | connected_to | api_endpoint:use-users:2f4d7609a6 | module:apps-api-src:3261657fad | apps/api/src/router/admin.routes.ts |
 | connected_to | api_endpoint:use-wallets:b8382408ca | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
 | connected_to | project:soar:7c70e892d7 | task:learning-journal:c5626339c3 | .codex/context/LEARNING_JOURNAL.md |
-| connected_to | project:soar:7c70e892d7 | task:2026-06-11-luc-3569-no-stall-queue-expeditor:03aef97967 | .codex/context/PROJECT_STATE.md |
+| connected_to | project:soar:7c70e892d7 | task:2026-06-11-luc-3598-waitforwebbuildinfo-resolveoptions-relation-row:3e812e05c0 | .codex/context/PROJECT_STATE.md |
 | connected_to | project:soar:7c70e892d7 | task:task-board:85d16101f3 | .codex/context/TASK_BOARD.md |
 | connected_to | project:soar:7c70e892d7 | task:agent-operating-system-task-2026-05-07:04d1de2b03 | history/tasks/agent-operating-system-task-2026-05-07.md |
 | connected_to | project:soar:7c70e892d7 | task:ai-assistant-foundation-protocol-harness-task:0adbd87e92 | history/tasks/ai-assistant-foundation-protocol-harness-2026-05-23-task.md |
