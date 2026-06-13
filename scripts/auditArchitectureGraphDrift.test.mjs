@@ -36,8 +36,13 @@ test("walk normalizes repo paths and skips generated dependency directories", as
   try {
     await mkdir(path.join(fixtureRoot, "apps", "api", "src"), { recursive: true });
     await mkdir(path.join(fixtureRoot, "node_modules", "pkg"), { recursive: true });
+    await mkdir(path.join(fixtureRoot, ".paperclip", "worktrees", "copied", "apps", "api", "src"), { recursive: true });
     await writeFile(path.join(fixtureRoot, "apps", "api", "src", "health.routes.ts"), "router.get('/health');\n");
     await writeFile(path.join(fixtureRoot, "node_modules", "pkg", "ignored.routes.ts"), "ignored\n");
+    await writeFile(
+      path.join(fixtureRoot, ".paperclip", "worktrees", "copied", "apps", "api", "src", "copied.routes.ts"),
+      "ignored\n",
+    );
 
     assert.equal(
       toRepoPath(path.join(fixtureRoot, "docs", "modules", "api-root.md"), { rootPath: fixtureRoot }),

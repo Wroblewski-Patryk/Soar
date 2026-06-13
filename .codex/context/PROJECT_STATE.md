@@ -1,3 +1,27 @@
+# 2026-06-13 LUC-3722 Architecture Graph Drift Guardrail
+
+- [LUC-3722](/LUC/issues/LUC-3722) is `DONE / VERIFIED_LOCAL /
+  SOURCE_PROMOTION_GUARDRAIL_CLEARED`.
+- The failing source-promotion guardrail was a false-positive inventory scope
+  issue: `scripts/auditArchitectureGraphDrift.mjs` walked nested
+  `.paperclip/worktrees/` execution workspaces and counted copied config files
+  as current Soar source.
+- Updated the audit walker to skip `.paperclip` directories and added focused
+  regression coverage in `scripts/auditArchitectureGraphDrift.test.mjs`.
+- Evidence:
+  `node --test scripts/auditArchitectureGraphDrift.test.mjs` PASS (`5/5`);
+  `pnpm run architecture:graph:drift:strict` PASS (`846/846`, `0` missing);
+  `pnpm run quality:guardrails` PASS with architecture drift OK.
+- Generated outputs refreshed:
+  `docs/status/architecture-graph-drift.md`;
+  `history/artifacts/architecture-graph-drift-2026-05-24.json`.
+- Task evidence:
+  `history/tasks/luc-3722-clear-architecture-graph-drift-guardrail-2026-06-13-task.md`.
+- No deploy, push, restart, rollback, env edit, protected smoke, production
+  account use, secret/account readback, database/Redis mutation, screenshot,
+  browser automation, exchange action, order, position, payment/subscription,
+  or live-trading action occurred.
+
 # 2026-06-13 LUC-3708 Coolify Production Deploy Status Inventory
 
 - [LUC-3708](/LUC/issues/LUC-3708) is `DONE / VERIFIED_READ_ONLY /

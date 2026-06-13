@@ -1,3 +1,24 @@
+- 2026-06-13 `LUC-3722 [Soar][Docs] Clear architecture graph drift guardrail before source promotion`
+  - Status: `DONE / VERIFIED_LOCAL / SOURCE_PROMOTION_GUARDRAIL_CLEARED`
+  - Scope: local architecture drift audit tooling and generated guardrail
+    outputs only; no deploy, push, restart, rollback, env edit, protected
+    smoke, production account use, secret/account readback, database/Redis
+    mutation, raw log capture, screenshot, browser automation, exchange
+    action, order, position, payment/subscription, or live-trading action.
+  - Fix:
+    - `scripts/auditArchitectureGraphDrift.mjs` now skips `.paperclip`
+      directories during inventory walking so nested Paperclip execution
+      worktrees are not counted as current Soar source/config drift.
+    - `scripts/auditArchitectureGraphDrift.test.mjs` covers the
+      `.paperclip/worktrees/...` false-positive fixture.
+  - Evidence:
+    - `node --test scripts/auditArchitectureGraphDrift.test.mjs` PASS (`5/5`).
+    - `pnpm run architecture:graph:drift:strict` PASS (`846/846`, `0`
+      missing).
+    - `pnpm run quality:guardrails` PASS with architecture drift OK.
+  - Evidence file:
+    - `history/tasks/luc-3722-clear-architecture-graph-drift-guardrail-2026-06-13-task.md`
+
 - 2026-06-13 `LUC-3708 [Ops][Coolify] Inventory Soar production deploy status with read-only access`
   - Status: `DONE / VERIFIED_READ_ONLY / NO_MUTATION`
   - Scope: DRE read-only Coolify production deploy/status inventory only; no

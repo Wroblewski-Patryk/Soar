@@ -22,7 +22,13 @@ export function toRepoPath(filePath, options = {}) {
 export function walk(dir, predicate, results = [], options = {}) {
   if (!fs.existsSync(dir)) return results;
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (entry.name === "node_modules" || entry.name === ".next" || entry.name === "dist" || entry.name === "coverage") {
+    if (
+      entry.name === "node_modules" ||
+      entry.name === ".next" ||
+      entry.name === ".paperclip" ||
+      entry.name === "dist" ||
+      entry.name === "coverage"
+    ) {
       continue;
     }
     const fullPath = path.join(dir, entry.name);

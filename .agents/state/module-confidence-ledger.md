@@ -1,5 +1,23 @@
 # Module Confidence Ledger
 
+## 2026-06-13 LUC-3722 Architecture Graph Drift Guardrail
+
+- Module row: Architecture Evidence Graph / source-promotion guardrails.
+- Status delta: `VERIFIED_LOCAL / SOURCE_PROMOTION_GUARDRAIL_CLEARED`.
+  [LUC-3722](/LUC/issues/LUC-3722) repaired a false-positive drift-audit
+  inventory scope issue by excluding nested `.paperclip` execution workspaces
+  from `scripts/auditArchitectureGraphDrift.mjs`.
+- Evidence:
+  `history/tasks/luc-3722-clear-architecture-graph-drift-guardrail-2026-06-13-task.md`.
+- Validation:
+  `node --test scripts/auditArchitectureGraphDrift.test.mjs` PASS (`5/5`);
+  `pnpm run architecture:graph:drift:strict` PASS (`846/846`, `0` missing);
+  `pnpm run quality:guardrails` PASS with architecture drift OK.
+- Residual risk:
+  this is local guardrail/source-promotion evidence only. It is not production
+  deploy freshness, protected smoke, worker readiness, rollback, restore, SLO,
+  or release approval proof.
+
 ## 2026-06-13 LUC-3707 Coolify Read-Only Secret Binding
 
 - Module row: SOAR-OPERATIONS-001 / Coolify production status access binding.
