@@ -28,6 +28,9 @@ const splitCsv = (value) =>
     .map((item) => item.trim())
     .filter(Boolean);
 
+const resolveCredentialFallback = ({ token, cliValue, envValue }) =>
+  String(token ?? '').trim() ? '' : cliValue || envValue || '';
+
 const routeDefinitions = [
   { path: '/', area: 'public', expected: '200' },
   { path: '/auth/login', area: 'public', expected: '200' },
@@ -109,6 +112,8 @@ const printUsage = () => {
 
 const resolveOptions = () => {
   const today = readArgValue('--today') || new Date().toISOString().slice(0, 10);
+  const authToken = readArgValue('--auth-token') || process.env.PROD_UI_AUDIT_AUTH_TOKEN || '';
+  const adminToken = readArgValue('--admin-token') || process.env.PROD_UI_AUDIT_ADMIN_TOKEN || '';
   return {
     webBaseUrl: normalizeBaseUrl(
       readArgValue('--web-base-url') ||
@@ -121,13 +126,28 @@ const resolveOptions = () => {
         'https://api.soar.luckysparrow.ch'
     ),
     expectedSha: readArgValue('--expected-sha') || process.env.PROD_UI_AUDIT_EXPECTED_SHA || '',
-    authToken: readArgValue('--auth-token') || process.env.PROD_UI_AUDIT_AUTH_TOKEN || '',
-    authEmail: readArgValue('--auth-email') || process.env.PROD_UI_AUDIT_AUTH_EMAIL || '',
-    authPassword: readArgValue('--auth-password') || process.env.PROD_UI_AUDIT_AUTH_PASSWORD || '',
-    adminToken: readArgValue('--admin-token') || process.env.PROD_UI_AUDIT_ADMIN_TOKEN || '',
-    adminEmail: readArgValue('--admin-email') || process.env.PROD_UI_AUDIT_ADMIN_EMAIL || '',
-    adminPassword:
-      readArgValue('--admin-password') || process.env.PROD_UI_AUDIT_ADMIN_PASSWORD || '',
+    authToken,
+    authEmail: resolveCredentialFallback({
+      token: authToken,
+      cliValue: readArgValue('--auth-email'),
+      envValue: process.env.PROD_UI_AUDIT_AUTH_EMAIL,
+    }),
+    authPassword: resolveCredentialFallback({
+      token: authToken,
+      cliValue: readArgValue('--auth-password'),
+      envValue: process.env.PROD_UI_AUDIT_AUTH_PASSWORD,
+    }),
+    adminToken,
+    adminEmail: resolveCredentialFallback({
+      token: adminToken,
+      cliValue: readArgValue('--admin-email'),
+      envValue: process.env.PROD_UI_AUDIT_ADMIN_EMAIL,
+    }),
+    adminPassword: resolveCredentialFallback({
+      token: adminToken,
+      cliValue: readArgValue('--admin-password'),
+      envValue: process.env.PROD_UI_AUDIT_ADMIN_PASSWORD,
+    }),
     outputJson:
       readArgValue('--output-json') ||
       process.env.PROD_UI_AUDIT_OUTPUT_JSON ||
@@ -516,6 +536,7 @@ export {
   printUsage,
   readArgValue,
   renderMarkdown,
+  resolveCredentialFallback,
   resolveOptions,
   routeDefinitions,
   routeToUrl,

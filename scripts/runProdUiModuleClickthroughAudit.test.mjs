@@ -15,6 +15,8 @@ const importHarness = async (argv = [], env = {}) => {
   process.env.PROD_UI_AUDIT_EXPECTED_SHA = 'abcdef1234567890';
   process.env.PROD_UI_AUDIT_AUTH_TOKEN = 'dashboard-token';
   process.env.PROD_UI_AUDIT_ADMIN_TOKEN = 'admin-token';
+  process.env.PROD_UI_AUDIT_ADMIN_EMAIL = 'REPLACE_ME_PROD_UI_AUDIT_ADMIN_EMAIL';
+  process.env.PROD_UI_AUDIT_ADMIN_PASSWORD = 'REPLACE_ME_PROD_UI_AUDIT_ADMIN_PASSWORD';
   process.env.PROD_UI_AUDIT_EXTRA_ROUTES = 'dashboard/custom, /admin/custom';
   process.env.PROD_UI_AUDIT_OUTPUT_JSON = 'history/artifacts/prod-ui-audit.json';
   process.env.PROD_UI_AUDIT_OUTPUT_MD = 'history/evidence/prod-ui-audit.md';
@@ -62,7 +64,14 @@ test('argument and option helpers normalize production UI audit inputs without r
     '--dry-run',
   ]);
   try {
-    const { normalizeBaseUrl, normalizePath, readArgValue, resolveOptions, splitCsv } = harness.module;
+    const {
+      normalizeBaseUrl,
+      normalizePath,
+      readArgValue,
+      resolveCredentialFallback,
+      resolveOptions,
+      splitCsv,
+    } = harness.module;
 
     assert.equal(readArgValue('--expected-sha'), '1234567890');
     assert.equal(readArgValue('--missing'), '');
@@ -71,6 +80,22 @@ test('argument and option helpers normalize production UI audit inputs without r
     assert.equal(normalizePath('/dashboard'), '/dashboard');
     assert.equal(normalizePath('   '), '');
     assert.deepEqual(splitCsv(' /a, b ,, c '), ['/a', 'b', 'c']);
+    assert.equal(
+      resolveCredentialFallback({
+        token: 'cli-token',
+        cliValue: 'ops@example.test',
+        envValue: 'REPLACE_ME_PROD_UI_AUDIT_ADMIN_EMAIL',
+      }),
+      '',
+    );
+    assert.equal(
+      resolveCredentialFallback({
+        token: '',
+        cliValue: '',
+        envValue: 'admin@example.test',
+      }),
+      'admin@example.test',
+    );
 
     assert.deepEqual(resolveOptions(), {
       webBaseUrl: 'https://web.local',
