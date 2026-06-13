@@ -1,6 +1,6 @@
 # Coolify VPS Deployment Contract
 
-Last updated: 2026-06-11
+Last updated: 2026-06-13
 
 This contract describes the current Soar production deployment target. Coolify
 must be treated as a hierarchy:
@@ -42,10 +42,42 @@ refreshed/reconciled for `LUC-1399`, `LUC-1402`, `LUC-1405`, `LUC-1408`,
 on 2026-06-04, and `LUC-2069` / `LUC-2072` / `LUC-2094` / `LUC-2136` /
 `LUC-2149` / `LUC-2153` / `LUC-2171` / `LUC-2181` / `LUC-2228` on
 2026-06-05, `LUC-2316` on 2026-06-06, and `LUC-3573` / `LUC-3578` /
-`LUC-3586` on
-2026-06-11.
+`LUC-3586` on 2026-06-11, read-only secret binding verification for
+`LUC-3707` on 2026-06-13, and deploy/status inventory for `LUC-3708` on
+2026-06-13.
 
-Latest resource inventory reconciliation: `LUC-3586` at
+Latest read-only secret binding verification: `LUC-3707` at
+`2026-06-13T02:20:50Z`. Security verified that the current runner has the
+expected Coolify binding names without value disclosure and that authenticated
+read-only Coolify `GET` calls resolve selector `LuckySparrow`, project `Soar`,
+the configured production environment binding, production environment id `6`,
+six applications, PostgreSQL, Redis, zero generic services, `17` visible global
+resource rows, and `0` active deployment rows. The configured environment
+selector value, token values, raw configured ids, raw resource ids, internal
+URLs, cookies, credentials, database values, and log bodies were not stored.
+This heartbeat performed no deploy, restart, rollback, env edit, database
+action, Redis action, team setting change, account action, protected smoke,
+secret value readback, raw log capture, screenshot, or live-trading action.
+Evidence:
+`history/evidence/luc-3707-coolify-read-only-secret-binding-2026-06-13.md`.
+
+Latest deploy/status inventory: `LUC-3708` at `2026-06-13T02:22:25Z`.
+Authenticated read-only Coolify `GET` calls resolved selector `LuckySparrow`,
+project `Soar`, the configured production environment binding, production
+environment id `6`, six applications, PostgreSQL, Redis, zero generic
+services, `17` visible global resource rows, and `0` active deployment rows.
+The canonical production-environment inventory remains eight resources:
+`soar-api`, `soar-web`, `workers-backtest`, `workers-execution`,
+`workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`.
+Application rows report `running:unknown`; PostgreSQL and Redis report
+`running:healthy`. `workers-execution` retains restart metadata
+(`restartCount=2`). This heartbeat performed no deploy, restart, rollback,
+env edit, database action, Redis action, team setting change, account action,
+protected smoke, secret readback, raw resource id storage, screenshot, raw log
+capture, or live-trading action. Evidence:
+`history/evidence/luc-3708-coolify-production-deploy-status-inventory-2026-06-13.md`.
+
+Previous resource inventory reconciliation: `LUC-3586` at
 `2026-06-11T21:00:50Z`. Authenticated read-only Coolify API calls resolved
 selector `LuckySparrow`, project `Soar`, the configured production environment
 binding, production environment id `6`, six applications, PostgreSQL, Redis,

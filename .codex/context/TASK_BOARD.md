@@ -1,3 +1,57 @@
+- 2026-06-13 `LUC-3708 [Ops][Coolify] Inventory Soar production deploy status with read-only access`
+  - Status: `DONE / VERIFIED_READ_ONLY / NO_MUTATION`
+  - Scope: DRE read-only Coolify production deploy/status inventory only; no
+    product code implementation, commit, push, deploy, restart, rollback, env
+    edit, protected smoke, production account use, secret/account readback,
+    raw resource id storage, database/Redis mutation, raw log capture,
+    screenshot, exchange action, order, position, payment/subscription, or
+    live-trading action.
+  - Wake/comment handling:
+    - Wake was `issue_assigned`; inline payload had no pending comments and
+      `fallbackFetchNeeded=false`. Checkout was already claimed by the harness
+      and was not repeated.
+  - Evidence:
+    - Authenticated Coolify `GET` projection at `2026-06-13T02:22:25Z`
+      resolved selector `LuckySparrow`, project `Soar`, production
+      environment id `6`, six applications, one PostgreSQL resource, one Redis
+      resource, zero generic services, `17` visible global resource rows, and
+      `0` active deployment rows.
+    - Canonical resource inventory remains eight rows: `soar-api`, `soar-web`,
+      `workers-backtest`, `workers-execution`, `workers-market-data`,
+      `workers-market-stream`, `postgresql`, and `redis`.
+    - Application rows report `running:unknown`; PostgreSQL/Redis report
+      `running:healthy`; `workers-execution` retains `restartCount=2`.
+    - Read-only production status access works for this inventory scope.
+  - Residual:
+    - This is deploy/status inventory evidence only. Public/protected smoke,
+      worker freshness, rollback, restore, SLO, auto-redeploy proof beyond
+      empty active deployment rows, and release approval remain separate gates.
+  - Evidence file:
+    - `history/evidence/luc-3708-coolify-production-deploy-status-inventory-2026-06-13.md`
+
+- 2026-06-13 `LUC-3707 [Security][Coolify] Verify Soar Coolify read-only secret binding`
+  - Status: `DONE / VERIFIED_READ_ONLY / NO_SECRET_DISCLOSURE /
+    NO_RUNTIME_MUTATION`
+  - Scope: Security-owned Coolify read-only secret/config binding
+    verification; no deploy, restart, rollback, env edit, protected smoke,
+    raw logs, raw resource ids, secret value readback, database/Redis mutation,
+    screenshot, browser automation, exchange action, order, position,
+    payment/subscription, or live-trading action.
+  - Evidence:
+    - Names-only Coolify binding scan PASS.
+    - Authenticated Coolify `GET` projection PASS at
+      `2026-06-13T02:20:50Z`.
+    - Selector `LuckySparrow`, project `Soar`, production environment id `6`,
+      eight canonical production resources, `17` visible global resource rows,
+      and `0` active deployment rows.
+  - Evidence files:
+    - `history/evidence/luc-3707-coolify-read-only-secret-binding-2026-06-13.md`
+    - `history/tasks/luc-3707-coolify-read-only-secret-binding-2026-06-13-task.md`
+  - Residual:
+    - This closes binding verification only. Protected auth smoke, worker
+      readiness, rollback, restore, SLO, and release approval remain separate
+      gates.
+
 - 2026-06-12 `LUC-3601 [Soar][QA] waitForWebBuildInfo sleep relation row`
   - Status: `DONE / VERIFIED_LOCAL / TRACEABILITY_REFRESHED / NO_MUTATION`
   - Scope: QVE local scanner-readable traceability repair only; no deploy,

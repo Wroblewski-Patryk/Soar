@@ -1,9 +1,9 @@
 {
   "generatedAt": "2026-05-24",
   "total": {
-    "total": 967,
+    "total": 978,
     "covered": 846,
-    "missing": 121
+    "missing": 132
   },
   "categories": {
     "apiRoutes": {
@@ -61,9 +61,9 @@
       "missingSamples": []
     },
     "configAndPipelines": {
-      "total": 132,
+      "total": 143,
       "covered": 11,
-      "missing": 121,
+      "missing": 132,
       "missingSamples": [
         ".paperclip/worktrees/LUC-1763-soar-arb-006-security-bind-rollback_guard-protected-inputs-for-rollback-proof/.github/workflows/ci.yml",
         ".paperclip/worktrees/LUC-1763-soar-arb-006-security-bind-rollback_guard-protected-inputs-for-rollback-proof/apps/api/package.json",

@@ -1,5 +1,28 @@
 # Active Mission Packet
 
+## 2026-06-13 LUC-3708 Coolify Production Deploy Status Inventory
+
+- `LUC-3708-COOLIFY-PRODUCTION-DEPLOY-STATUS-INVENTORY-2026-06-13`
+  completed as a DRE read-only deploy/status inventory checkpoint. Wake
+  `issue_assigned` had no pending comments (`fallbackFetchNeeded=false`);
+  checkout was already claimed by the harness and was not repeated.
+  Authenticated Coolify `GET` projection at `2026-06-13T02:22:25Z` resolved
+  selector `LuckySparrow`, project `Soar`, production environment id `6`, six
+  application resources, one PostgreSQL resource, one Redis resource, zero
+  generic services, `17` visible global resource rows, and `0` active
+  deployment rows. Canonical resources remain `soar-api`, `soar-web`,
+  `workers-backtest`, `workers-execution`, `workers-market-data`,
+  `workers-market-stream`, `postgresql`, and `redis`. Application rows report
+  `running:unknown`; PostgreSQL and Redis report `running:healthy`;
+  `workers-execution` retains `restartCount=2`. No deploy, push, restart,
+  rollback, env edit, protected smoke, production account use,
+  secret/account readback, raw resource id storage, database/Redis mutation,
+  screenshot, raw log capture, exchange action, order, position,
+  payment/subscription, or live-trading action occurred. Evidence:
+  `history/evidence/luc-3708-coolify-production-deploy-status-inventory-2026-06-13.md`;
+  task:
+  `history/tasks/luc-3708-coolify-production-deploy-status-inventory-2026-06-13-task.md`.
+
 ## 2026-06-12 LUC-3601 waitForWebBuildInfo sleep Relation Row
 
 - `LUC-3601-WAITFORWEBBUILDINFO-SLEEP-RELATION-ROW-2026-06-12`

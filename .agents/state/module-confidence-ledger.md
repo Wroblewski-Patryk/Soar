@@ -1,5 +1,23 @@
 # Module Confidence Ledger
 
+## 2026-06-13 LUC-3707 Coolify Read-Only Secret Binding
+
+- Module row: SOAR-OPERATIONS-001 / Coolify production status access binding.
+- Status: `verified_read_only / no_secret_disclosure / no_mutation`.
+- Confidence update:
+  [LUC-3707](/LUC/issues/LUC-3707) verified current runner bindings through a
+  names-only scan and authenticated Coolify `GET` calls at
+  `2026-06-13T02:20:50Z`. Required Coolify binding names are present without
+  value disclosure; read-only calls resolved selector `LuckySparrow`, project
+  `Soar`, production environment id `6`, six applications, PostgreSQL, Redis,
+  `17` visible global resource rows, and `0` active deployment rows.
+- Evidence:
+  `history/evidence/luc-3707-coolify-read-only-secret-binding-2026-06-13.md`;
+  `history/tasks/luc-3707-coolify-read-only-secret-binding-2026-06-13-task.md`.
+- Residual:
+  this is secret-binding/status-access evidence only. It is not protected auth
+  smoke, worker readiness, release approval, rollback, restore, or SLO proof.
+
 ## 2026-06-12 LUC-3601 waitForWebBuildInfo sleep Relation Row
 
 - Module row: Architecture Evidence Graph / Web build-info deploy wait

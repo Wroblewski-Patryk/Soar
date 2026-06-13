@@ -1,3 +1,60 @@
+# 2026-06-13 LUC-3708 Coolify Production Deploy Status Inventory
+
+- [LUC-3708](/LUC/issues/LUC-3708) is `DONE / VERIFIED_READ_ONLY /
+  NO_MUTATION`.
+- Wake was `issue_assigned`; inline payload had no pending comments and
+  `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
+  was not repeated.
+- Authenticated read-only Coolify `GET` projection at
+  `2026-06-13T02:22:25Z` resolved selector `LuckySparrow`, project `Soar`,
+  the configured production environment binding, production environment id
+  `6`, six applications, one PostgreSQL resource, one Redis resource, zero
+  generic services, `17` visible global resource rows, and `0` active
+  deployment rows.
+- Canonical production inventory remains eight resources: `soar-api`,
+  `soar-web`, `workers-backtest`, `workers-execution`,
+  `workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`.
+- Application rows report `running:unknown`; PostgreSQL/Redis report
+  `running:healthy`; `workers-execution` retains `restartCount=2`.
+- Evidence:
+  `history/evidence/luc-3708-coolify-production-deploy-status-inventory-2026-06-13.md`;
+  task:
+  `history/tasks/luc-3708-coolify-production-deploy-status-inventory-2026-06-13-task.md`.
+- No deploy, push, restart, rollback, env edit, protected smoke, production
+  account use, secret/account readback, raw resource id storage,
+  database/Redis mutation, screenshot, raw log capture, browser automation,
+  exchange action, order, position, payment/subscription, or live-trading
+  action occurred.
+
+# 2026-06-13 LUC-3707 Coolify Read-Only Secret Binding
+
+- [LUC-3707](/LUC/issues/LUC-3707) is `DONE / VERIFIED_READ_ONLY /
+  NO_SECRET_DISCLOSURE / NO_RUNTIME_MUTATION`.
+- Wake was `issue_assigned`; inline payload had no pending comments and
+  `fallbackFetchNeeded=false`. Checkout was already claimed by the harness and
+  was not repeated.
+- Security verified current Coolify binding names without value disclosure:
+  `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`,
+  `COOLIFY_SOAR_PROJECT_ID`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+  `COOLIFY_SOAR_TEAM_ID`, `COOLIFY_TEAM_ID`, `COOLIFY_SOAR_API_APP_ID`,
+  `COOLIFY_SOAR_WEB_APP_ID`, `COOLIFY_SOAR_POSTGRES_RESOURCE_ID`, and
+  `COOLIFY_SOAR_REDIS_RESOURCE_ID`.
+- Authenticated read-only Coolify `GET` projection passed at
+  `2026-06-13T02:20:50Z`: selector `LuckySparrow`, project `Soar`,
+  production environment id `6`, six application resources, one PostgreSQL,
+  one Redis, zero generic services, `17` visible global resource rows, and `0`
+  active deployment rows.
+- The configured environment selector value, token values, raw configured ids,
+  raw resource ids, internal URLs, cookies, credentials, database values, and
+  log bodies were not stored.
+- Evidence:
+  `history/evidence/luc-3707-coolify-read-only-secret-binding-2026-06-13.md`;
+  `history/tasks/luc-3707-coolify-read-only-secret-binding-2026-06-13-task.md`.
+- No deploy, push, restart, rollback, env edit, protected smoke, production
+  account use, secret/account value readback, database/Redis mutation,
+  screenshot, browser automation, exchange action, order, position,
+  payment/subscription, or live-trading action occurred.
+
 # 2026-06-12 LUC-3601 waitForWebBuildInfo sleep Relation Row
 
 - [LUC-3601](/LUC/issues/LUC-3601) is `DONE / VERIFIED_LOCAL /

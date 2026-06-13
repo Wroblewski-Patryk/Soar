@@ -1,5 +1,19 @@
 # Next Steps
 
+## 2026-06-13 LUC-3708 Closure Update
+
+- [LUC-3708](/LUC/issues/LUC-3708) is closed as a DRE read-only
+  deploy/status inventory proof. The current Coolify projection resolved
+  selector `LuckySparrow`, project `Soar`, production environment id `6`, six
+  applications, PostgreSQL, Redis, `17` visible global resource rows, and `0`
+  active deployment rows at `2026-06-13T02:22:25Z`.
+- Do not treat this as release approval or app-level readiness proof:
+  application rows still report `running:unknown`; public/protected smoke,
+  worker freshness, rollback/restore proof, SLO evidence, and any
+  redeploy/restart remain separate gates that require their own approved lane.
+- Parent [LUC-3697](/LUC/issues/LUC-3697) can consume this child evidence for
+  the read-only Coolify production status-access claim.
+
 - 2026-06-12 `LUC-3601` closure update: the exact local-safe residual anchor
   `scripts/waitForWebBuildInfo.mjs#sleep` is closed by direct subprocess
   retry-delay coverage in `scripts/waitForWebBuildInfo.test.mjs` and a direct

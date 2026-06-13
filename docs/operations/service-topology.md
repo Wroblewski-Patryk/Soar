@@ -1,6 +1,6 @@
 # Service Topology
 
-Last updated: 2026-06-11
+Last updated: 2026-06-13
 
 ## Purpose
 
@@ -97,6 +97,18 @@ Previous same-day reconciliation: `LUC-3578` at `2026-06-11T20:10:21Z`
 reported the same selector, project, production environment id, eight
 canonical resources, application `running:unknown` status, PostgreSQL/Redis
 `running:healthy` status, and `workers-execution` restart metadata.
+
+`LUC-3708` deploy/status inventory: latest DRE read-only Coolify evidence from
+`2026-06-13T02:22:25Z` reconfirmed selector `LuckySparrow`, project `Soar`,
+configured production environment id `6`, six applications, PostgreSQL, Redis,
+zero generic services, `17` visible global resource rows, and `0` active
+deployment rows. The canonical production-environment inventory is unchanged:
+`soar-web`, `soar-api`, `workers-backtest`, `workers-execution`,
+`workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`.
+Application rows still report `running:unknown`; PostgreSQL and Redis report
+`running:healthy`; `workers-execution` retains `restartCount=2`. This is
+deploy/status inventory evidence only, not public/protected smoke or release
+approval.
 
 ## Maintenance Rule
 
