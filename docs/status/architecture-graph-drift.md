@@ -6,9 +6,9 @@ This audit compares representative source, test, documentation, config, and pipe
 
 ## Summary
 
-| Total inventoried files | 846 |
+| Total inventoried files | 967 |
 | Covered by graph CSV paths | 846 |
-| Missing graph path references | 0 |
+| Missing graph path references | 121 |
 
 ## Categories
 
@@ -23,7 +23,7 @@ This audit compares representative source, test, documentation, config, and pipe
 | webTests | 156 | 156 | 0 |
 | moduleDocs | 47 | 47 | 0 |
 | architectureDocs | 71 | 71 | 0 |
-| configAndPipelines | 11 | 11 | 0 |
+| configAndPipelines | 132 | 11 | 121 |
 
 ## Missing Samples
 
@@ -65,5 +65,34 @@ This audit compares representative source, test, documentation, config, and pipe
 
 ### configAndPipelines
 
-- None.
+- `.paperclip/worktrees/LUC-1763-soar-arb-006-security-bind-rollback_guard-protected-inputs-for-rollback-proof/.github/workflows/ci.yml`
+- `.paperclip/worktrees/LUC-1763-soar-arb-006-security-bind-rollback_guard-protected-inputs-for-rollback-proof/apps/api/package.json`
+- `.paperclip/worktrees/LUC-1763-soar-arb-006-security-bind-rollback_guard-protected-inputs-for-rollback-proof/apps/mobile/package.json`
+- `.paperclip/worktrees/LUC-1763-soar-arb-006-security-bind-rollback_guard-protected-inputs-for-rollback-proof/apps/web/package.json`
+- `.paperclip/worktrees/LUC-1763-soar-arb-006-security-bind-rollback_guard-protected-inputs-for-rollback-proof/docker-compose.coolify.shared-api-image.yml`
+- `.paperclip/worktrees/LUC-1763-soar-arb-006-security-bind-rollback_guard-protected-inputs-for-rollback-proof/docker-compose.coolify.yml`
+- `.paperclip/worktrees/LUC-1763-soar-arb-006-security-bind-rollback_guard-protected-inputs-for-rollback-proof/docker-compose.vps.yml`
+- `.paperclip/worktrees/LUC-1763-soar-arb-006-security-bind-rollback_guard-protected-inputs-for-rollback-proof/docker-compose.yml`
+- `.paperclip/worktrees/LUC-1763-soar-arb-006-security-bind-rollback_guard-protected-inputs-for-rollback-proof/libs/shared/package.json`
+- `.paperclip/worktrees/LUC-1763-soar-arb-006-security-bind-rollback_guard-protected-inputs-for-rollback-proof/package.json`
+- `.paperclip/worktrees/LUC-1763-soar-arb-006-security-bind-rollback_guard-protected-inputs-for-rollback-proof/pnpm-workspace.yaml`
+- `.paperclip/worktrees/LUC-1767-soar-arb-006-board-bind-rollback_guard-protected-runner-inputs/.github/workflows/ci.yml`
+- `.paperclip/worktrees/LUC-1767-soar-arb-006-board-bind-rollback_guard-protected-runner-inputs/apps/api/package.json`
+- `.paperclip/worktrees/LUC-1767-soar-arb-006-board-bind-rollback_guard-protected-runner-inputs/apps/mobile/package.json`
+- `.paperclip/worktrees/LUC-1767-soar-arb-006-board-bind-rollback_guard-protected-runner-inputs/apps/web/package.json`
+- `.paperclip/worktrees/LUC-1767-soar-arb-006-board-bind-rollback_guard-protected-runner-inputs/docker-compose.coolify.shared-api-image.yml`
+- `.paperclip/worktrees/LUC-1767-soar-arb-006-board-bind-rollback_guard-protected-runner-inputs/docker-compose.coolify.yml`
+- `.paperclip/worktrees/LUC-1767-soar-arb-006-board-bind-rollback_guard-protected-runner-inputs/docker-compose.vps.yml`
+- `.paperclip/worktrees/LUC-1767-soar-arb-006-board-bind-rollback_guard-protected-runner-inputs/docker-compose.yml`
+- `.paperclip/worktrees/LUC-1767-soar-arb-006-board-bind-rollback_guard-protected-runner-inputs/libs/shared/package.json`
+- `.paperclip/worktrees/LUC-1767-soar-arb-006-board-bind-rollback_guard-protected-runner-inputs/package.json`
+- `.paperclip/worktrees/LUC-1767-soar-arb-006-board-bind-rollback_guard-protected-runner-inputs/pnpm-workspace.yaml`
+- `.paperclip/worktrees/LUC-3435-operator-coolify-bind-coolify-read-only-production-status-access/.github/workflows/ci.yml`
+- `.paperclip/worktrees/LUC-3435-operator-coolify-bind-coolify-read-only-production-status-access/apps/api/package.json`
+- `.paperclip/worktrees/LUC-3435-operator-coolify-bind-coolify-read-only-production-status-access/apps/mobile/package.json`
+- `.paperclip/worktrees/LUC-3435-operator-coolify-bind-coolify-read-only-production-status-access/apps/web/package.json`
+- `.paperclip/worktrees/LUC-3435-operator-coolify-bind-coolify-read-only-production-status-access/docker-compose.coolify.shared-api-image.yml`
+- `.paperclip/worktrees/LUC-3435-operator-coolify-bind-coolify-read-only-production-status-access/docker-compose.coolify.yml`
+- `.paperclip/worktrees/LUC-3435-operator-coolify-bind-coolify-read-only-production-status-access/docker-compose.vps.yml`
+- `.paperclip/worktrees/LUC-3435-operator-coolify-bind-coolify-read-only-production-status-access/docker-compose.yml`
 
