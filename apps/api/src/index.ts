@@ -12,6 +12,7 @@ import { requireTrustedOrigin } from './middleware/requireTrustedOrigin';
 import { assertCriticalSecretsReadiness } from './config/criticalSecretsReadiness';
 import { createTrustProxyMatcher } from './config/proxyTrust';
 import { createModuleLogger } from './lib/logger';
+import stripeWebhookRouter from './modules/subscriptions/payments/stripeWebhook.routes';
 
 const logger = createModuleLogger('api.server');
 
@@ -21,7 +22,7 @@ const createCorsOriginError = (origin: string) => {
   return error;
 };
 
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'test' && process.env.VITEST !== 'true') {
   assertCriticalSecretsReadiness();
 }
 
@@ -60,13 +61,14 @@ app.use(
     },
   })
 );
+app.use('/webhooks/stripe', express.raw({ type: 'application/json' }), stripeWebhookRouter);
 app.use(express.json());
 app.use(requireTrustedOrigin);
 app.use(requestLogger);
 app.use(router);
 app.use(errorHandler);
 
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'test' && process.env.VITEST !== 'true') {
   app.listen(serverPort, () => {
     logger.info('server_started', {
       serverPort,
