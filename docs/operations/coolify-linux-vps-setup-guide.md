@@ -152,10 +152,12 @@ Deploy-proof note:
   `git`, repository `.git` files, then `unknown`. It must not derive deploy
   provenance from the GitHub `main` branch head, because branch head proves the
   repository state, not the source used by the built Web image.
-- Dockerfile stages that consume Coolify build args must declare the matching
-  `ARG SOURCE_COMMIT`, `ARG SOURCE_BRANCH`, and `ARG COOLIFY_BRANCH` names in
-  that stage before the Web build command; otherwise the deployment can import
-  the right commit while `/api/build-info` still reports `gitSha: null`.
+- Dockerfile stages that consume deploy identity build args must declare and
+  forward the matching `ARG SOURCE_COMMIT`, `ARG SOURCE_BRANCH`,
+  `ARG COOLIFY_BRANCH`, `ARG COOLIFY_GIT_COMMIT_SHA`,
+  `ARG COOLIFY_COMMIT_SHA`, and `ARG GITHUB_SHA` names in that stage before the
+  Web build command; otherwise the deployment can import the right commit while
+  `/api/build-info` falls back to `metadataSource=env-runtime`.
 - Treat `/api/build-info` as authoritative source provenance only when
   `metadataSource` is `env`, `git`, or `git-files`. `unknown`,
   `env-runtime`, and any historical `github-branch*` value are diagnostic

@@ -629,6 +629,64 @@ export const validateWebRuntimeImageIncludesStartWrapper = ({
       ];
 };
 
+export const validateWebDockerfileBuildMetadataArgs = ({
+  rootDir = ROOT_DIR,
+  webDockerfilePath = WEB_DOCKERFILE_PATH,
+} = {}) => {
+  const dockerfileAbsolute = path.join(rootDir, webDockerfilePath);
+
+  if (!fs.existsSync(dockerfileAbsolute)) {
+    return [`Missing Web Dockerfile: ${webDockerfilePath}`];
+  }
+
+  const content = fs.readFileSync(dockerfileAbsolute, "utf8");
+  const buildStage = content.split(/\nFROM\s+\S+\s+AS\s+build\b/i)[1]?.split(/\nFROM\s+/i)[0] ?? "";
+
+  if (!buildStage) {
+    return [`${webDockerfilePath} must define a deps build stage for the Web production image.`];
+  }
+
+  const requiredArgs = [
+    "SOURCE_COMMIT",
+    "SOURCE_BRANCH",
+    "COOLIFY_BRANCH",
+    "COOLIFY_GIT_COMMIT_SHA",
+    "COOLIFY_COMMIT_SHA",
+    "GITHUB_SHA",
+  ];
+  const missingArgs = requiredArgs.filter(
+    (argName) => !new RegExp(String.raw`^\s*ARG\s+${escapeRegex(argName)}(?:\s|$)`, "m").test(buildStage),
+  );
+  const buildRunLine =
+    buildStage
+      .split(/\r?\n/)
+      .find((line) => line.includes("pnpm --filter web build") && line.trimStart().startsWith("RUN")) ?? "";
+  const requiredRunEnv = [
+    "SOURCE_COMMIT",
+    "COOLIFY_GIT_COMMIT_SHA",
+    "COOLIFY_COMMIT_SHA",
+    "GITHUB_SHA",
+  ];
+  const missingRunEnv = requiredRunEnv.filter((argName) => !buildRunLine.includes(`${argName}="$${argName}"`));
+  if (
+    !buildRunLine.includes("SOURCE_BRANCH=") ||
+    (!buildRunLine.includes("$SOURCE_BRANCH") && !buildRunLine.includes("${SOURCE_BRANCH"))
+  ) {
+    missingRunEnv.push("SOURCE_BRANCH");
+  }
+  if (!buildRunLine.includes("$COOLIFY_BRANCH")) {
+    missingRunEnv.push("COOLIFY_BRANCH");
+  }
+
+  return missingArgs.length === 0 && missingRunEnv.length === 0
+    ? []
+    : [
+        `Web Dockerfile must forward deploy metadata build args into the Web build.\n  - Missing ARG declarations: ${
+          missingArgs.length ? missingArgs.join(", ") : "none"
+        }\n  - Missing RUN env forwards: ${missingRunEnv.length ? missingRunEnv.join(", ") : "none"}`,
+      ];
+};
+
 export const validateTrackedEnvFilePolicy = ({ trackedFiles = readTrackedFiles() } = {}) => {
   const offenders = trackedFiles.filter(
     (filePath) => TRACKED_ENV_FILE_RE.test(filePath) && !TRACKED_ENV_FILE_ALLOWLIST_RE.test(filePath)
@@ -711,6 +769,7 @@ const run = () => {
     ...validateApiStartScript(),
     ...validateRuntimeDockerfilesRunAsNonRoot(),
     ...validateWebRuntimeImageIncludesStartWrapper(),
+    ...validateWebDockerfileBuildMetadataArgs(),
     ...validateTrackedEnvFilePolicy({ trackedFiles }),
     ...validateOpsScriptsDoNotAcceptSecretCliArgs({ trackedFiles }),
   ];
@@ -741,6 +800,7 @@ const run = () => {
   console.log(`- API start script: OK (production-safe launcher)`);
   console.log(`- Runtime Dockerfiles: OK (non-root runtime user)`);
   console.log(`- Web runtime image: OK (production start wrapper present)`);
+  console.log(`- Web deploy metadata: OK (build args forwarded)`);
   console.log(`- Env file policy: OK (only redacted .env examples tracked)`);
   console.log(`- Ops script secret argv policy: OK (secret-bearing CLI args rejected)`);
 };
