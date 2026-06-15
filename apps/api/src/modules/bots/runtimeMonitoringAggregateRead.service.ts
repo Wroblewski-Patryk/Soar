@@ -8,6 +8,7 @@ import { resolveRuntimeMarketTruthState } from './runtimeMarketTruthState.servic
 import {
   buildRuntimeAggregateCacheKey,
   mapWithLimitedConcurrency,
+  selectSessionsForRuntimeAggregation,
   withRuntimeAggregateTimeout,
 } from './runtimeMonitoringAggregateRuntime.service';
 import {
@@ -37,6 +38,7 @@ import {
 
 export {
   mapWithLimitedConcurrency,
+  selectSessionsForRuntimeAggregation,
 } from './runtimeMonitoringAggregateRuntime.service';
 
 export {
@@ -76,50 +78,19 @@ const runtimeAggregateMaxPerSession = Number.parseInt(
   10,
 );
 const runtimeAggregateSubqueryTimeoutMs = Number.parseInt(
-  process.env.RUNTIME_MONITORING_AGGREGATE_SUBQUERY_TIMEOUT_MS ?? '25000',
+  process.env.RUNTIME_MONITORING_AGGREGATE_SUBQUERY_TIMEOUT_MS ?? '5000',
   10,
 );
 const runtimeAggregateStaleTtlMs = Number.parseInt(process.env.RUNTIME_MONITORING_AGGREGATE_STALE_TTL_MS ?? '45000', 10);
 const runtimeAggregateRunningSessionsCap = Number.parseInt(
-  process.env.RUNTIME_MONITORING_AGGREGATE_RUNNING_SESSIONS_CAP ?? '0',
+  process.env.RUNTIME_MONITORING_AGGREGATE_RUNNING_SESSIONS_CAP ?? '2',
   10,
 );
 const runtimeAggregateCompletedSessionsCap = Number.parseInt(
-  process.env.RUNTIME_MONITORING_AGGREGATE_COMPLETED_SESSIONS_CAP ?? '0',
+  process.env.RUNTIME_MONITORING_AGGREGATE_COMPLETED_SESSIONS_CAP ?? '2',
   10,
 );
 const runtimeAggregateSessionConcurrency = Number.parseInt(process.env.RUNTIME_MONITORING_AGGREGATE_SESSION_CONCURRENCY ?? '2', 10);
-
-const selectSessionsForAggregation = (sessions: RuntimeSessionListItem[]) => {
-  if (sessions.length <= 1) return sessions;
-
-  const running = sessions
-    .filter((session) => session.status === 'RUNNING')
-    .sort((left, right) => toRuntimeAggregateTimestamp(right.lastHeartbeatAt) - toRuntimeAggregateTimestamp(left.lastHeartbeatAt));
-  const nonRunning = sessions
-    .filter((session) => session.status !== 'RUNNING')
-    .sort((left, right) =>
-      toRuntimeAggregateTimestamp(resolveAggregateSessionWindowEnd(right)) - toRuntimeAggregateTimestamp(resolveAggregateSessionWindowEnd(left))
-    );
-
-  const runningCap = Number.isFinite(runtimeAggregateRunningSessionsCap) && runtimeAggregateRunningSessionsCap > 0
-    ? runtimeAggregateRunningSessionsCap
-    : running.length;
-  const completedCap = Number.isFinite(runtimeAggregateCompletedSessionsCap) && runtimeAggregateCompletedSessionsCap > 0
-    ? runtimeAggregateCompletedSessionsCap
-    : nonRunning.length;
-  const selected = [...running.slice(0, runningCap), ...nonRunning.slice(0, completedCap)];
-  if (selected.length === 0) {
-    return sessions.slice(0, Math.min(sessions.length, 3));
-  }
-
-  const seen = new Set<string>();
-  return selected.filter((session) => {
-    if (seen.has(session.id)) return false;
-    seen.add(session.id);
-    return true;
-  });
-};
 
 const getBotRuntimeMonitoringAggregateUncached = async (
   userId: string,
@@ -154,7 +125,10 @@ const getBotRuntimeMonitoringAggregateUncached = async (
       perSessionLimit,
     });
   }
-  const scopedSessions = selectSessionsForAggregation(sessions);
+  const scopedSessions = selectSessionsForRuntimeAggregation(sessions, {
+    runningCap: runtimeAggregateRunningSessionsCap,
+    completedCap: runtimeAggregateCompletedSessionsCap,
+  });
 
   const payloadRows = await mapWithLimitedConcurrency(
     scopedSessions,

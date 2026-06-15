@@ -1,3 +1,77 @@
+# 2026-06-14 LUC-3832 Production Dashboard Performance Diagnosis
+
+- [LUC-4201](/LUC/issues/LUC-4201) is
+  `LOCAL_VALIDATION_PASSED / LOCAL_COMMIT_READY /
+  PRODUCTION_PROMOTION_GATE_PENDING`. The shared [LUC-3832](/LUC/issues/LUC-3832)
+  workspace repair bundle is coherent: [LUC-3839](/LUC/issues/LUC-3839)
+  backend aggregate bounds, [LUC-3840](/LUC/issues/LUC-3840) frontend
+  selected-bot fan-out reduction, [LUC-4174](/LUC/issues/LUC-4174) local Web
+  Vitest startup repair, runtime config ledger, and evidence/state packets.
+  Focused proof passed: API aggregate regression `2/2`, Web Dashboard hook
+  regression `5/5`, Web typecheck, and focused diff check with CRLF warnings
+  only. Production promotion remains gated by release-path authorization
+  because the current branch is not `main`. Evidence:
+  `history/tasks/luc-4201-promote-dashboard-performance-repair-bundle-2026-06-15-task.md`.
+
+- [LUC-4174](/LUC/issues/LUC-4174) is `DONE / VERIFIED_LOCAL /
+  VITEST_STARTUP_REPAIRED / NO_PRODUCTION_MUTATION`. The local Web regression
+  blocker from [LUC-3840](/LUC/issues/LUC-3840) is closed: Web test tooling now
+  resolves Vitest `3.2.4` and Vite `5.4.21`, and `apps/web/vitest.config.mts`
+  loads the ESM React plugin without requiring `NODE_OPTIONS`.
+- Evidence:
+  `history/tasks/luc-4174-repair-local-vitest-startup-dashboard-fanout-regression-proof-2026-06-15-task.md`.
+- Validation:
+  `pnpm --filter web exec vitest src/features/dashboard-home/hooks/useHomeLiveWidgetsController.test.tsx --run`
+  PASS (`1` file / `5` tests); `pnpm --filter api exec vitest run
+  src/modules/bots/runtimeMonitoringAggregateConcurrency.test.ts --run` PASS
+  (`1` file / `2` tests, Vite CJS Node API deprecation warning only).
+- Remaining:
+  source-control/release closure and protected production dashboard timing
+  recheck through [LUC-3841](/LUC/issues/LUC-3841) after approved promotion.
+
+- [LUC-3840](/LUC/issues/LUC-3840) frontend repair is
+  `VERIFIED_LOCAL / FRONTEND_FANOUT_REDUCED /
+  NO_PRODUCTION_MUTATION`. Dashboard Home now requests the expensive runtime
+  monitoring aggregate only for the selected bot, keeping non-selected active
+  bots as lightweight session/runtime-graph snapshots. Typecheck passed after
+  `pnpm install --frozen-lockfile`; diff whitespace check passed with CRLF
+  warnings only; focused controller Vitest passed after
+  [LUC-4174](/LUC/issues/LUC-4174) repaired local Vitest startup. Evidence:
+  `history/tasks/luc-3840-reduce-dashboard-runtime-fanout-loading-stalls-2026-06-14-task.md`.
+  Protected dashboard timing recheck remains [LUC-3841](/LUC/issues/LUC-3841)
+  after source promotion/deploy gates.
+
+- [LUC-3839](/LUC/issues/LUC-3839) backend repair is
+  `PARTIALLY_VERIFIED_LOCAL / BACKEND_BOUND_APPLIED / NO_PRODUCTION_MUTATION`.
+  The aggregate endpoint now defaults to a `5000 ms` slow-subquery fallback
+  and bounded session fanout of 2 freshest RUNNING plus 2 freshest
+  non-RUNNING sessions, while preserving env overrides. Focused local proof
+  passed: `pnpm --filter api exec vitest run
+  src/modules/bots/runtimeMonitoringAggregateConcurrency.test.ts --run`
+  (`2/2`). `git diff --check` for touched files passed with CRLF warnings
+  only. Full API typecheck is environment-blocked in this worktree by missing
+  dependency resolution (`TS2307` for API packages such as `express`,
+  `@prisma/client`, `vitest`, `zod`, `redis`, and `supertest`). Evidence:
+  `history/tasks/luc-3839-bound-production-runtime-aggregate-dashboard-latency-2026-06-14-task.md`.
+
+- [LUC-3832](/LUC/issues/LUC-3832) reproduced the slow authenticated
+  production dashboard path with redacted browser timing evidence.
+- Public and base session signals were fast: login `326 ms`, `/auth/me`
+  `366 ms`, `/dashboard` DOM content loaded `303 ms`.
+- Browser network did not settle within `70000 ms` because dashboard runtime
+  data requests kept running/repeating. The dominant bottleneck is
+  `GET /dashboard/bots/:id/runtime-monitoring/aggregate`, with observed
+  production tails up to `26312 ms` while still returning `200`.
+- Classification: backend aggregate cost plus frontend dashboard fan-out/retry
+  behavior. Coolify read-only projection showed no active deploy row but did
+  not expose deeper CPU/RAM/raw-log metrics.
+- Repair blockers:
+  [LUC-3839](/LUC/issues/LUC-3839), [LUC-3840](/LUC/issues/LUC-3840), and
+  [LUC-3841](/LUC/issues/LUC-3841).
+- Evidence:
+  `history/tasks/luc-3832-production-dashboard-performance-diagnosis-2026-06-14-task.md`.
+- No production mutation occurred.
+
 # 2026-06-13 LUC-3722 Architecture Graph Drift Guardrail
 
 - [LUC-3722](/LUC/issues/LUC-3722) is `DONE / VERIFIED_LOCAL /

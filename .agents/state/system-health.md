@@ -1,5 +1,89 @@
 # System Health
 
+## 2026-06-15 LUC-4201 Dashboard Performance Repair Promotion
+
+- [LUC-4201](/LUC/issues/LUC-4201) is
+  `LOCAL_VALIDATION_PASSED / LOCAL_COMMIT_READY /
+  PRODUCTION_PROMOTION_GATE_PENDING`.
+- Health impact: the dashboard performance repair bundle is locally proven and
+  ready for source-control closure, but production health remains degraded
+  until the repair SHA is deployed and [LUC-3841](/LUC/issues/LUC-3841) runs
+  protected timing proof.
+- Validation:
+  API aggregate regression PASS (`2/2`), Web Dashboard hook regression PASS
+  (`5/5`), Web typecheck PASS, focused diff check PASS with CRLF warnings only.
+- Gate: this worktree is on
+  `LUC-3832-soar-production-performance-diagnose-slow-authenticated-dashboard-and-server-health`,
+  not `main`; production mutation requires explicit branch/main/Coolify release
+  path authorization.
+- Evidence:
+  `history/tasks/luc-4201-promote-dashboard-performance-repair-bundle-2026-06-15-task.md`.
+
+## 2026-06-15 LUC-4174 Local Vitest Startup Repair
+
+- [LUC-4174](/LUC/issues/LUC-4174) is `VERIFIED_LOCAL / NO_PRODUCTION_MUTATION`.
+  The focused Dashboard Home fan-out regression now starts, collects, and
+  passes locally after normalizing Web Vitest/Vite tooling and making the Web
+  Vitest config explicitly ESM.
+- Evidence:
+  `history/tasks/luc-4174-repair-local-vitest-startup-dashboard-fanout-regression-proof-2026-06-15-task.md`.
+- Validation:
+  `pnpm --filter web exec vitest src/features/dashboard-home/hooks/useHomeLiveWidgetsController.test.tsx --run`
+  PASS (`1` file / `5` tests); `pnpm --filter api exec vitest run
+  src/modules/bots/runtimeMonitoringAggregateConcurrency.test.ts --run` PASS
+  (`1` file / `2` tests, with Vite CJS Node API deprecation warning).
+- Health impact:
+  local regression proof for [LUC-3840](/LUC/issues/LUC-3840) is no longer
+  blocked by test startup. Production dashboard health remains pending
+  [LUC-3841](/LUC/issues/LUC-3841) after approved source promotion/deploy.
+
+## 2026-06-14 LUC-3832 Production Dashboard Performance Incident
+
+- [LUC-3840](/LUC/issues/LUC-3840) frontend mitigation is
+  `VERIFIED_LOCAL / FRONTEND_FANOUT_REDUCED`: Dashboard Home now loads the expensive runtime
+  monitoring aggregate only for the selected bot, or the first active bot when
+  no selection exists. Non-selected active bots remain lightweight
+  session/runtime-graph snapshots instead of blocking refreshes on aggregate
+  tables for every bot. Web typecheck passed; focused diff whitespace check
+  passed with CRLF warnings only; focused controller regression passed after
+  [LUC-4174](/LUC/issues/LUC-4174) repaired local Vitest startup. Evidence:
+  `history/tasks/luc-3840-reduce-dashboard-runtime-fanout-loading-stalls-2026-06-14-task.md`.
+
+- [LUC-3839](/LUC/issues/LUC-3839) backend mitigation is
+  `PARTIALLY_VERIFIED_LOCAL`: runtime aggregate defaults now bound slow
+  subqueries to `5000 ms` and cap default aggregate session fanout to 2
+  freshest RUNNING plus 2 freshest non-RUNNING sessions. This should reduce
+  the prior `~26 s` aggregate tail, but system health remains degraded until a
+  protected production dashboard timing recheck runs after source
+  promotion/deploy. Evidence:
+  `history/tasks/luc-3839-bound-production-runtime-aggregate-dashboard-latency-2026-06-14-task.md`.
+
+- Status: `VERIFIED_PRODUCTION_REPRO / REPAIR_DELEGATED / NO_MUTATION`.
+- Current health signal: authenticated production dashboard load is unhealthy
+  for sellability. Public home/login/API health/ready and login/session
+  readback were fast, but the authenticated dashboard browser session did not
+  reach network idle within `70000 ms`.
+- Measured bottleneck:
+  `GET /dashboard/bots/:id/runtime-monitoring/aggregate` returned `200` with
+  request tails up to `26312 ms` and repeated aggregate calls in the dashboard
+  home sample. This aligns with the API aggregate timeout envelope and points
+  to backend aggregate cost plus frontend fan-out behavior rather than initial
+  HTML/static asset delivery.
+- Ops read-only check:
+  Coolify selector/project readback passed at `2026-06-13T22:24:39Z`; active
+  deployment row count was `0`. The read-only projection did not expose CPU,
+  RAM, DB wait events, or raw logs, so deeper VPS/log proof still needs an
+  approved Ops lane if backend/frontend repairs do not close the timing gap.
+- Evidence:
+  `history/tasks/luc-3832-production-dashboard-performance-diagnosis-2026-06-14-task.md`.
+- Blockers:
+  [LUC-3839](/LUC/issues/LUC-3839) Backend aggregate latency,
+  [LUC-3840](/LUC/issues/LUC-3840) Frontend fan-out/loading, and
+  [LUC-3841](/LUC/issues/LUC-3841) post-fix protected timing recheck.
+- Safety: no deploy, push, restart, rollback, env edit, secret value readback,
+  database/Redis mutation, screenshot, exchange action, order, position,
+  payment/subscription, or live-trading action occurred.
+
 ## 2026-06-12 LUC-3601 waitForWebBuildInfo sleep Relation Row
 
 - Status: `VERIFIED_LOCAL / TRACEABILITY_REFRESHED / NO_RUNTIME_MUTATION`.

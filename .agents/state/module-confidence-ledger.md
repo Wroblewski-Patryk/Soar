@@ -1,5 +1,112 @@
 # Module Confidence Ledger
 
+## 2026-06-15 LUC-4201 Dashboard Performance Repair Promotion
+
+- Module rows: `web-dashboard-home`, `api-bots` runtime aggregate,
+  `SOAR-API-BOT-RUNTIME-AGGREGATE`.
+- Status delta: `LOCAL_VALIDATION_PASSED / LOCAL_COMMIT_READY /
+  PRODUCTION_PROMOTION_GATE_PENDING`.
+- Evidence:
+  `history/tasks/luc-4201-promote-dashboard-performance-repair-bundle-2026-06-15-task.md`.
+- Validation:
+  `pnpm --filter api exec vitest run src/modules/bots/runtimeMonitoringAggregateConcurrency.test.ts --run`
+  PASS (`2/2`); `pnpm --filter web exec vitest src/features/dashboard-home/hooks/useHomeLiveWidgetsController.test.tsx --run`
+  PASS (`5/5`); Web typecheck PASS; focused diff check PASS with CRLF warnings
+  only.
+- Residual risk:
+  Production still needs a deployed repair SHA readback before the protected
+  dashboard timing proof can move the module row from locally verified to
+  production verified.
+
+## 2026-06-15 LUC-3841 Protected Dashboard Performance Recheck
+
+- Module rows: `web-dashboard-home`, `api-bots` runtime aggregate,
+  `SOAR-API-BOT-RUNTIME-AGGREGATE`.
+- Status delta: `BLOCKED_STALE_PRODUCTION_SHA / NO_PROTECTED_PROBE /
+  NO_MUTATION`. [LUC-3841](/LUC/issues/LUC-3841) did not run the protected
+  dashboard timing proof because production `/api/build-info` still reports
+  `9f61eb9781c323f052f95cae7cf0c1c3c71901c7`, matching local committed `HEAD`,
+  while the [LUC-3839](/LUC/issues/LUC-3839) and [LUC-3840](/LUC/issues/LUC-3840)
+  repair files remain uncommitted workspace changes.
+- Evidence:
+  `history/tasks/luc-3841-protected-dashboard-performance-recheck-2026-06-15-task.md`;
+  `history/artifacts/luc-3841-protected-dashboard-performance-recheck-provenance-2026-06-15.json`.
+- Validation:
+  Web `/api/build-info` returned `200` in `173 ms` with
+  `metadataSource=env-runtime`; API `/health` returned `200` in `163 ms`; API
+  `/ready` returned `200` in `93 ms`; no `chrome-headless-shell` validation
+  process was left running.
+- Residual risk:
+  Protected production dashboard performance remains unverified after the fixes.
+  Source-control/release closure must commit, push, and deploy the validated
+  repair bundle before QA can rerun the protected dashboard timing proof.
+
+## 2026-06-15 LUC-4174 Local Vitest Startup Repair
+
+- Module rows: `web-dashboard-home`, Web local test runtime.
+- Status delta: `VERIFIED_LOCAL / DASHBOARD_FANOUT_REGRESSION_PROOF_RUNNING`.
+  [LUC-4174](/LUC/issues/LUC-4174) repaired the local Vitest startup blocker
+  that prevented [LUC-3840](/LUC/issues/LUC-3840) focused regression proof.
+  Web test tooling is normalized to Vitest `3.2.4` with Vite `5.4.21`, and
+  `apps/web/vitest.config.mts` is explicitly ESM for the ESM-only React plugin.
+- Evidence:
+  `history/tasks/luc-4174-repair-local-vitest-startup-dashboard-fanout-regression-proof-2026-06-15-task.md`.
+- Validation:
+  `pnpm --filter web exec vitest src/features/dashboard-home/hooks/useHomeLiveWidgetsController.test.tsx --run`
+  PASS (`1` file / `5` tests); focused API aggregate regression also PASS
+  (`1` file / `2` tests).
+- Residual risk:
+  Vite emits a CJS Node API deprecation warning on the API focused regression
+  path, but tests pass. Production dashboard timing proof remains separate in
+  [LUC-3841](/LUC/issues/LUC-3841) after approved source promotion/deploy.
+
+## 2026-06-14 LUC-3832 Production Dashboard Performance Diagnosis
+
+- [LUC-3839](/LUC/issues/LUC-3839) status delta:
+  `PARTIALLY_VERIFIED_LOCAL / BACKEND_BOUND_APPLIED /
+  PRODUCTION_PROOF_PENDING`. The `api-bots` runtime aggregate now uses a
+  default `5000 ms` slow-subquery fallback and defaults aggregate fanout to the
+  2 freshest RUNNING plus 2 freshest non-RUNNING sessions, with env overrides
+  preserved. Focused proof passed:
+  `pnpm --filter api exec vitest run
+  src/modules/bots/runtimeMonitoringAggregateConcurrency.test.ts --run`
+  (`2/2`). Full API typecheck is environment-blocked by unresolved API
+  dependencies in this worktree. Evidence:
+  `history/tasks/luc-3839-bound-production-runtime-aggregate-dashboard-latency-2026-06-14-task.md`.
+- Residual for the module row: source-control/release closure and protected
+  production dashboard timing proof remain required before the production
+  aggregate row can move back to verified.
+
+- Module rows: `web-dashboard-home`, `api-bots` runtime aggregate,
+  `SOAR-API-BOT-RUNTIME-AGGREGATE`, and Coolify production status access.
+- Status delta: `VERIFIED_PRODUCTION_REPRO / REPAIR_DELEGATED /
+  NO_MUTATION`.
+- Confidence update:
+  [LUC-3832](/LUC/issues/LUC-3832) reproduced the protected production
+  dashboard performance incident with approved audit credentials. Login and
+  session readback were fast (`POST /auth/login` `326 ms`, `GET /auth/me`
+  `366 ms`), and the `/dashboard` document reached DOM content loaded in
+  `303 ms`, but the authenticated browser never reached network idle inside
+  `70000 ms`.
+- Bottleneck:
+  `GET /dashboard/bots/:id/runtime-monitoring/aggregate` returned `200` but
+  tailed at `26312 ms` and `25702 ms` for two production bot aggregates, with
+  repeated aggregate calls visible in the network sample. Other dashboard API
+  surfaces were materially lower (`runtime-sessions` max `1953 ms`,
+  `runtime-graph` max `941 ms`, bot list max `1505 ms`).
+- Evidence:
+  `history/tasks/luc-3832-production-dashboard-performance-diagnosis-2026-06-14-task.md`;
+  `history/artifacts/luc-3832-production-dashboard-performance-auth-login-probe-2026-06-14.json`.
+- Residual risk:
+  Backend aggregate query/fallback cost and Frontend dashboard fan-out/retry
+  behavior remain unresolved. Read-only Coolify projection did not expose
+  CPU/RAM/raw logs, so infra saturation is not fully ruled out, but no active
+  deployment row was visible and public/API health was fast. No deploy, restart,
+  rollback, env edit, database/Redis mutation, raw log capture, screenshot,
+  exchange action, order, position, payment/subscription, or live-trading action
+  occurred. Repair blockers are [LUC-3839](/LUC/issues/LUC-3839),
+  [LUC-3840](/LUC/issues/LUC-3840), and [LUC-3841](/LUC/issues/LUC-3841).
+
 ## 2026-06-13 LUC-3722 Architecture Graph Drift Guardrail
 
 - Module row: Architecture Evidence Graph / source-promotion guardrails.
@@ -6904,3 +7011,22 @@ Do not turn uncertainty into optimism.
 - Residual risk:
   broader architecture-awareness missing-test backlog remains outside this
   focused repair; next full scanner refresh must consume the new relation row.
+
+## 2026-06-14 LUC-3840 Dashboard Home Runtime Fan-Out Mitigation
+
+- Module row: Dashboard Home / Bot Runtime frontend selected-bot monitoring.
+- Status delta: `VERIFIED_LOCAL / FRONTEND_FANOUT_REDUCED`. Dashboard Home now limits
+  `getBotRuntimeMonitoringAggregate` to the selected bot, or first active bot
+  before explicit selection, while keeping non-selected active bots as
+  lightweight session/runtime-graph snapshots.
+- Evidence:
+  `history/tasks/luc-3840-reduce-dashboard-runtime-fanout-loading-stalls-2026-06-14-task.md`.
+- Validation:
+  `pnpm --filter web exec tsc --noEmit --pretty false --project tsconfig.json`
+  PASS; focused `git diff --check` PASS with CRLF warnings only; focused
+  controller regression PASS after [LUC-4174](/LUC/issues/LUC-4174):
+  `pnpm --filter web exec vitest src/features/dashboard-home/hooks/useHomeLiveWidgetsController.test.tsx --run`
+  (`1` file / `5` tests).
+- Next proof:
+  use [LUC-3841](/LUC/issues/LUC-3841) for protected post-fix dashboard timing
+  proof after approved source promotion/deploy.

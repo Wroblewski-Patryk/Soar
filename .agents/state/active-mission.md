@@ -1,5 +1,150 @@
 # Active Mission Packet
 
+## 2026-06-15 LUC-4201 Dashboard Performance Repair Promotion
+
+- `LUC-4201-PROMOTE-DASHBOARD-PERFORMANCE-REPAIR-BUNDLE-2026-06-15` is
+  `LOCAL_VALIDATION_PASSED / LOCAL_COMMIT_READY /
+  PRODUCTION_PROMOTION_GATE_PENDING`. Wake `issue_assigned` had no pending
+  comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
+  harness and was not repeated. The shared [LUC-3832](/LUC/issues/LUC-3832)
+  execution workspace contains one coherent dashboard repair bundle:
+  [LUC-3839](/LUC/issues/LUC-3839) backend aggregate bounds,
+  [LUC-3840](/LUC/issues/LUC-3840) frontend selected-bot aggregate fan-out
+  reduction, [LUC-4174](/LUC/issues/LUC-4174) local Vitest startup repair,
+  runtime config ledger, and redaction-safe evidence/state packets. Focused
+  validation passed: API aggregate regression `2/2`, Web Dashboard hook
+  regression `5/5`, Web typecheck, and focused diff check with CRLF warnings
+  only. Production mutation remains gated because the worktree branch is not
+  `main`; a branch push, main fast-forward/merge, or Coolify deploy trigger
+  needs explicit release-path authorization before [LUC-3841](/LUC/issues/LUC-3841)
+  can run protected timing proof against a deployed repair SHA. Evidence:
+  `history/tasks/luc-4201-promote-dashboard-performance-repair-bundle-2026-06-15-task.md`.
+
+## 2026-06-15 LUC-3841 Protected Dashboard Performance Recheck
+
+- `LUC-3841-PROTECTED-DASHBOARD-PERFORMANCE-RECHECK-2026-06-15` is
+  `BLOCKED_STALE_PRODUCTION_SHA / NO_PROTECTED_PROBE / NO_MUTATION`. Wake
+  `issue_blockers_resolved` had no pending comments (`fallbackFetchNeeded=false`);
+  checkout was already claimed by the harness and was not repeated. The
+  resolved local blockers [LUC-3839](/LUC/issues/LUC-3839) and
+  [LUC-3840](/LUC/issues/LUC-3840) produced local repair evidence, but their
+  repair files remain uncommitted workspace changes. Read-only provenance check
+  found production Web `/api/build-info` returning `200` in `173 ms` with
+  `gitSha=9f61eb9781c323f052f95cae7cf0c1c3c71901c7` and
+  `metadataSource=env-runtime`, matching local committed `HEAD`; API `/health`
+  returned `200` in `163 ms`, and API `/ready` returned `200` in `93 ms`.
+  Because production cannot contain the uncommitted aggregate/fan-out repair
+  diff, the protected dashboard timing probe was not run to avoid misleading
+  post-fix evidence. Unblock owner/action: Ops Release Lead or source-control
+  closure owner must commit, push, and deploy the validated repair bundle, then
+  wake [LUC-3841](/LUC/issues/LUC-3841) for protected timing proof against the
+  deployed repair SHA. No deploy, push, restart, rollback, env edit, protected
+  browser timing probe, production auth, database/Redis mutation, raw log
+  capture, screenshot, exchange action, order, position, payment/subscription,
+  or live-trading action occurred. Evidence:
+  `history/tasks/luc-3841-protected-dashboard-performance-recheck-2026-06-15-task.md`;
+  `history/artifacts/luc-3841-protected-dashboard-performance-recheck-provenance-2026-06-15.json`.
+
+## 2026-06-15 LUC-3840 Dashboard Runtime Fan-Out Verification Closure
+
+- `LUC-3840-DASHBOARD-RUNTIME-FANOUT-2026-06-14` is now
+  `VERIFIED_LOCAL / FRONTEND_FANOUT_REDUCED / NO_PRODUCTION_MUTATION`. Wake
+  `issue_children_completed` had no pending comments (`fallbackFetchNeeded=false`);
+  checkout was already claimed by the harness and was not repeated. The child
+  [LUC-4174](/LUC/issues/LUC-4174) Vitest startup repair unblocked the focused
+  Dashboard Home regression proof. Verification now passes:
+  `pnpm --filter web exec vitest src/features/dashboard-home/hooks/useHomeLiveWidgetsController.test.tsx --run`
+  (`1` file / `5` tests), `pnpm --filter web exec tsc --noEmit --pretty false --project tsconfig.json`,
+  and focused `git diff --check` with CRLF warnings only. No deploy, push,
+  restart, rollback, env edit, production smoke, database/Redis mutation,
+  raw log capture, screenshot, exchange action, order, position,
+  payment/subscription, or live-trading action occurred. Evidence:
+  `history/tasks/luc-3840-reduce-dashboard-runtime-fanout-loading-stalls-2026-06-14-task.md`.
+  Remaining production proof belongs to [LUC-3841](/LUC/issues/LUC-3841) after
+  approved source promotion/deploy.
+
+## 2026-06-15 LUC-4174 Local Vitest Startup Repair
+
+- `LUC-4174-REPAIR-LOCAL-VITEST-STARTUP-DASHBOARD-FANOUT-REGRESSION-PROOF-2026-06-15`
+  is `VERIFIED_LOCAL / NO_PRODUCTION_MUTATION`. Wake `issue_assigned` had no
+  pending comments (`fallbackFetchNeeded=false`); checkout was already claimed
+  by the harness and was not repeated. Repair: Web Vitest normalized from
+  `4.1.5` to `3.2.4`, Vite pinned to `5.4.21` at Web/root override scope, and
+  Web Vitest config renamed to `.mts` so the ESM-only React plugin loads under
+  the local Node `v22.13.0` runner without `NODE_OPTIONS` or a wrapper script.
+  Validation: focused Web dashboard fan-out regression PASS (`1` file / `5`
+  tests); focused API aggregate regression PASS (`1` file / `2` tests, Vite CJS
+  Node API deprecation warning only). No deploy, push, restart, rollback, env
+  edit, production smoke, database/Redis mutation, raw log capture, screenshot,
+  exchange action, order, position, payment/subscription, or live-trading
+  action occurred. Evidence:
+  `history/tasks/luc-4174-repair-local-vitest-startup-dashboard-fanout-regression-proof-2026-06-15-task.md`.
+
+## 2026-06-14 LUC-3832 Production Dashboard Performance Diagnosis
+
+- `LUC-3840-DASHBOARD-RUNTIME-FANOUT-2026-06-14` is
+  `PARTIALLY_VERIFIED_LOCAL / FRONTEND_FANOUT_REDUCED /
+  NO_PRODUCTION_MUTATION`. Wake `issue_assigned` had no pending comments
+  (`fallbackFetchNeeded=false`); checkout was already claimed by the harness
+  and was not repeated. Repair: `useHomeLiveWidgetsController` now avoids
+  per-active-bot aggregate fan-out by calling the runtime monitoring aggregate
+  endpoint only for the selected dashboard bot, or the first active bot before
+  selection is known. Non-selected bots keep session/runtime-graph lightweight
+  snapshots. The exposed selected-bot setter updates the selection ref before
+  triggering a silent reload so the next aggregate read targets the newly
+  selected bot. Validation: `pnpm install --frozen-lockfile` PASS; Web
+  typecheck PASS; focused `git diff --check` PASS with CRLF warnings only.
+  Focused Vitest did not execute because local `vitest@4.1.5` fails before
+  test collection with `ERR_PACKAGE_IMPORT_NOT_DEFINED` for
+  `#module-evaluator`. No deploy, push, restart, rollback, env edit,
+  production smoke, database/Redis mutation, raw log capture, screenshot,
+  exchange action, order, position, payment/subscription, or live-trading
+  action occurred. Evidence:
+  `history/tasks/luc-3840-reduce-dashboard-runtime-fanout-loading-stalls-2026-06-14-task.md`.
+
+- `LUC-3839-BOUND-PRODUCTION-RUNTIME-AGGREGATE-DASHBOARD-LATENCY-2026-06-14`
+  is partially verified locally as the CBE backend repair checkpoint. Wake
+  `issue_assigned` had no pending comments (`fallbackFetchNeeded=false`);
+  checkout was already claimed by the harness and was not repeated. Repair:
+  aggregate slow-subquery default changed from the production-matching `25000
+  ms` tail to `5000 ms`; aggregate fanout now defaults to the 2 freshest
+  RUNNING plus 2 freshest non-RUNNING sessions, with env overrides preserved;
+  session selection moved to a pure runtime helper. Focused proof passed:
+  `pnpm --filter api exec vitest run
+  src/modules/bots/runtimeMonitoringAggregateConcurrency.test.ts --run`
+  (`2/2`). `git diff --check` for touched files passed with CRLF warnings
+  only. Full `pnpm --filter api run typecheck` is environment-blocked by
+  unresolved API dependencies in this worktree (`TS2307` for packages including
+  `express`, `@prisma/client`, `vitest`, `zod`, `redis`, and `supertest`). No
+  deploy, push, restart, rollback, env edit, production smoke, database/Redis
+  mutation, raw log capture, screenshot, exchange action, order, position,
+  payment/subscription, or live-trading action occurred. Evidence:
+  `history/tasks/luc-3839-bound-production-runtime-aggregate-dashboard-latency-2026-06-14-task.md`.
+
+- `LUC-3832-PRODUCTION-DASHBOARD-PERFORMANCE-DIAGNOSIS-2026-06-14`
+  completed the DRE read-only diagnostic pass with protected production browser
+  evidence. Wake `issue_assigned` had no pending comments
+  (`fallbackFetchNeeded=false`); checkout was already claimed by the harness
+  and was not repeated. First token-based probe proved the existing audit token
+  stale for `/auth/me` (`401`), then normal audit email/password login
+  succeeded (`POST /auth/login` `200` in `326 ms`; `GET /auth/me` `200` in
+  `366 ms`). Authenticated `/dashboard` DOM content loaded in `303 ms`, but the
+  browser did not reach network idle within `70000 ms`. Slowest protected API
+  calls were `GET /dashboard/bots/:id/runtime-monitoring/aggregate` returning
+  `200` with tails up to `26312 ms` and repeated aggregate calls; other sampled
+  dashboard API calls were lower (`runtime-sessions` max `1953 ms`,
+  `runtime-graph` max `941 ms`, bot list max `1505 ms`). Fresh read-only
+  Coolify projection resolved selector `LuckySparrow`, project/environment
+  readback, and `0` active deployment rows. No deploy, push, restart, rollback,
+  env edit, database/Redis mutation, raw log capture, screenshot, exchange
+  action, order, position, payment/subscription, or live-trading action
+  occurred. Evidence:
+  `history/tasks/luc-3832-production-dashboard-performance-diagnosis-2026-06-14-task.md`.
+  Created repair blockers [LUC-3839](/LUC/issues/LUC-3839) for Backend
+  aggregate latency, [LUC-3840](/LUC/issues/LUC-3840) for Frontend dashboard
+  fan-out/loading stalls, and [LUC-3841](/LUC/issues/LUC-3841) for QA post-fix
+  protected timing proof.
+
 ## 2026-06-13 LUC-3708 Coolify Production Deploy Status Inventory
 
 - `LUC-3708-COOLIFY-PRODUCTION-DEPLOY-STATUS-INVENTORY-2026-06-13`
