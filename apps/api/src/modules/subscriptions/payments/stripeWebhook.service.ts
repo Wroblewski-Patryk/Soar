@@ -75,8 +75,11 @@ const getUnixDate = (value: number | null | undefined): Date | null => {
 
 const mapSubscriptionStatus = (
   status: string,
+  cancelAtPeriodEnd?: boolean | null,
 ): { status: 'ACTIVE' | 'PAST_DUE' | 'CANCELED' | 'EXPIRED'; autoRenew: boolean } => {
-  if (status === 'active' || status === 'trialing') return { status: 'ACTIVE', autoRenew: true };
+  if (status === 'active' || status === 'trialing') {
+    return { status: 'ACTIVE', autoRenew: !cancelAtPeriodEnd };
+  }
   if (status === 'past_due' || status === 'unpaid') return { status: 'PAST_DUE', autoRenew: true };
   if (status === 'canceled') return { status: 'CANCELED', autoRenew: false };
   return { status: 'EXPIRED', autoRenew: false };
@@ -382,7 +385,7 @@ const handleSubscriptionLifecycle = async (subscription: StripeSubscription) => 
     throw fail('STRIPE_SUBSCRIPTION_METADATA_INCOMPLETE', { subscriptionId: subscription.id });
   }
 
-  const mapped = mapSubscriptionStatus(subscription.status);
+  const mapped = mapSubscriptionStatus(subscription.status, subscription.cancel_at_period_end);
   const endsAt =
     mapped.status === 'ACTIVE'
       ? getUnixDate(subscription.current_period_end)

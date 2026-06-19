@@ -94,6 +94,7 @@ const postStripeWebhook = async (event: Record<string, unknown>, secret = webhoo
     .post('/webhooks/stripe')
     .set('stripe-signature', signature)
     .set('content-type', 'application/json')
+    .set('content-length', String(Buffer.byteLength(payload)))
     .send(payload);
 };
 
@@ -136,6 +137,7 @@ const subscriptionEvent = (input: {
   userId: string;
   planCode: SubscriptionPlanCode;
   status: string;
+  cancelAtPeriodEnd?: boolean;
 }) => ({
   id: input.eventId,
   object: 'event',
@@ -151,7 +153,7 @@ const subscriptionEvent = (input: {
       status: input.status,
       current_period_end: 1_789_948_800,
       canceled_at: input.status === 'canceled' ? 1_789_344_400 : null,
-      cancel_at_period_end: false,
+      cancel_at_period_end: input.cancelAtPeriodEnd ?? false,
       metadata: {
         userId: input.userId,
         planCode: input.planCode,
@@ -414,5 +416,44 @@ describe('Stripe subscription webhook reconciliation', () => {
     expect(storedSubscription.status).toBe('CANCELED');
     expect(storedSubscription.autoRenew).toBe(false);
     expect(storedSubscription.endsAt).toBeInstanceOf(Date);
+  });
+
+  it('keeps period-end canceled subscriptions active while disabling auto-renew', async () => {
+    const user = await createUserWithDefaultSubscription('stripe-subscription-cancel-period-end@example.com');
+    const plan = await prisma.subscriptionPlan.findUniqueOrThrow({ where: { code: 'ADVANCED' } });
+    const checkoutSubscription = await prisma.userSubscription.create({
+      data: {
+        userId: user.id,
+        subscriptionPlanId: plan.id,
+        source: 'CHECKOUT',
+        status: 'ACTIVE',
+        autoRenew: true,
+        metadata: {
+          stripe: {
+            subscriptionId: 'sub_cancel_period_end',
+          },
+        } satisfies Prisma.InputJsonValue,
+      },
+    });
+
+    const response = await postStripeWebhook(
+      subscriptionEvent({
+        eventId: 'evt_subscription_cancel_period_end',
+        eventType: 'customer.subscription.updated',
+        subscriptionId: 'sub_cancel_period_end',
+        userId: user.id,
+        planCode: 'ADVANCED',
+        status: 'active',
+        cancelAtPeriodEnd: true,
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    const storedSubscription = await prisma.userSubscription.findUniqueOrThrow({
+      where: { id: checkoutSubscription.id },
+    });
+    expect(storedSubscription.status).toBe('ACTIVE');
+    expect(storedSubscription.autoRenew).toBe(false);
+    expect(storedSubscription.endsAt).toEqual(new Date(1_789_948_800 * 1000));
   });
 });
