@@ -7739,3 +7739,17 @@ On "rob dalej", "rób dalej", "kontynuuj", "continue", or "next":
   runtime inputs, run supervised proof with Patryk present, or provide an
   equivalent redacted artifact. Keep [LUC-3375](/LUC/issues/LUC-3375)
   fail-closed until that evidence exists.
+
+# 2026-06-20 LUC-5223 Next Step
+
+- `DELEGATED`: known-state architecture baseline is verified for
+  [LUC-5223](/LUC/issues/LUC-5223). Do not create duplicate architecture repair
+  lanes from this checkpoint: current actionable missing-test/doc/task-link,
+  ownerless, and disconnected counts are all `0`, and strict graph drift passed
+  `849/849`.
+- Next owner/action: generated architecture artifact source-control was closed
+  by [LUC-5227](/LUC/issues/LUC-5227) with local commit
+  `39be357e897cca7b1a6a0569f1ed30d64f39b116`. CTO/source-control lane
+  [LUC-5228](/LUC/issues/LUC-5228) must classify and close the SPM
+  evidence/state packet added after that commit before any release operation
+  depends on it.

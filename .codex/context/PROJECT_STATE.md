@@ -22161,3 +22161,22 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   position, or live-trading mutation occurred.
 - Evidence:
   `history/tasks/luc-4103-owner-login-verification-path-2026-06-14-task.md`.
+
+# 2026-06-20 LUC-5223 Known State Evidence Collection And Architecture Baseline
+
+- [LUC-5223](/LUC/issues/LUC-5223) completed as a Soar Product Manager
+  known-state evidence checkpoint. Latest architecture awareness baseline is
+  generated `2026-06-20T17:44:11.363Z` with `9727` entities, `31288`
+  relations, actionable missing-test `0`, actionable missing-doc `0`,
+  actionable task-link `0`, ownerless entities `0`, and disconnected entities
+  `0`.
+- Verification passed: `pnpm run -s architecture:graph:drift:strict`
+  (`849/849` covered, `0` missing).
+- Disposition: no fresh architecture repair lane is needed. CTO source-control
+  closure for generated architecture artifacts was completed by
+  [LUC-5227](/LUC/issues/LUC-5227) with local commit
+  `39be357e897cca7b1a6a0569f1ed30d64f39b116`; the later SPM evidence/state
+  packet is routed through [LUC-5228](/LUC/issues/LUC-5228). Soar remains
+  `ACTIVE REPAIR/VERIFICATION / PROTECTED GATE HOLD`.
+- Evidence:
+  `history/tasks/luc-5223-known-state-evidence-collection-and-architecture-baseline-2026-06-20-task.md`.

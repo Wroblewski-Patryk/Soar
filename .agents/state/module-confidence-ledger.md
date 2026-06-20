@@ -7084,3 +7084,24 @@ Do not turn uncertainty into optimism.
 - Residual risk:
   broader architecture-awareness missing-test backlog remains outside this
   focused repair; next full scanner refresh must consume the new relation row.
+
+## 2026-06-20 LUC-5223 Known-State Architecture Baseline
+
+- Module row: Architecture Evidence Graph / known-state baseline.
+- Status delta: `VERIFIED_BASELINE / SOURCE_CONTROL_FOLLOW_UP_DELEGATED`.
+  Current `docs/graphs/architecture-health.json` is generated
+  `2026-06-20T17:44:11.363Z` with `9727` entities and `31288` relations.
+  Current architecture-awareness report has actionable missing-test `0`,
+  actionable missing-doc `0`, actionable task-link `0`, ownerless entities
+  `0`, and disconnected entities `0`.
+- Evidence:
+  `history/tasks/luc-5223-known-state-evidence-collection-and-architecture-baseline-2026-06-20-task.md`.
+- Validation:
+  `pnpm run -s architecture:graph:drift:strict` PASS (`849/849` covered,
+  `0` missing).
+- Residual risk:
+  generated architecture artifacts were closed by CTO follow-up
+  [LUC-5227](/LUC/issues/LUC-5227) with local commit
+  `39be357e897cca7b1a6a0569f1ed30d64f39b116`. The SPM evidence/state packet
+  remains under CTO source-control follow-up [LUC-5228](/LUC/issues/LUC-5228);
+  production release gates are unchanged.

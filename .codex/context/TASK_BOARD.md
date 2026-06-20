@@ -2738,6 +2738,30 @@
   - Evidence:
     - `history/tasks/luc-2956-prod-security-exchange-proof-helper-missing-test-links-2026-06-07-task.md`
 
+- 2026-06-20 `LUC-5223 [Soar] Known State Evidence Collection And Architecture Baseline`
+  - Status: `DONE / VERIFIED_BASELINE / FOLLOW_UP_DELEGATED`
+  - Scope: SPM known-state evidence collection and architecture baseline
+    verification; no runtime code, protected smoke, push, deploy, restart,
+    rollback, env/secret/account readback, database/Redis mutation,
+    exchange/order/position/payment/subscription mutation, or live-trading
+    action.
+  - Verification:
+    - `docs/graphs/architecture-health.json` generated
+      `2026-06-20T17:44:11.363Z`: `9727` entities, `31288` relations.
+    - `docs/status/architecture-awareness-report.md`: actionable missing-test
+      `0`, actionable missing-doc `0`, actionable task-link `0`, ownerless
+      `0`, disconnected `0`.
+    - `pnpm run -s architecture:graph:drift:strict` -> PASS (`849/849`
+      covered, `0` missing).
+  - Delegation:
+    - [LUC-5227](/LUC/issues/LUC-5227) closed CTO source-control for generated
+      architecture artifacts with local commit
+      `39be357e897cca7b1a6a0569f1ed30d64f39b116`.
+    - [LUC-5228](/LUC/issues/LUC-5228) owns CTO source-control closure for the
+      SPM evidence/state packet added after [LUC-5227](/LUC/issues/LUC-5227).
+  - Evidence:
+    - `history/tasks/luc-5223-known-state-evidence-collection-and-architecture-baseline-2026-06-20-task.md`
+
 # 2026-06-14 LUC-4103 Owner Login Verification Path
 
 - [LUC-4103](/LUC/issues/LUC-4103) is `IN_REVIEW / WAITING_OPERATOR_METHOD`.
