@@ -1,3 +1,38 @@
+# 2026-06-20 LUC-5250 Production Performance Watch
+
+- [LUC-5250](/LUC/issues/LUC-5250) completed as
+  `DELEGATED / PARTIALLY_VERIFIED / API_LOW_SECOND_OUTLIERS /
+  COOLIFY_VPS_BINDINGS_BLOCKED`.
+- Scope: DRE read-only production health checkpoint; no code, deploy, push,
+  restart, rollback, env edit, secret/account readback, database/Redis
+  mutation, raw log capture, screenshot, exchange action, order, position,
+  payment/subscription mutation, or live-trading action.
+- Evidence:
+  - Public production smoke passed for API `/health`, API `/ready`, Web `/`,
+    and Web `/api/build-info`.
+  - Build-info returned SHA `42177530f2a2ddc22832133b545bccab6ab404eb`,
+    ref `main`, build id `Urnq8xtZUh932c0e3vKGl`, and
+    diagnostic-only `metadataSource=env-runtime`.
+  - `curl.exe` timing kept Web healthy: Web `/` max `237 ms`,
+    Web `/auth/login` max `119 ms`, Web `/api/build-info` max `110 ms`.
+  - API timing warning: API `/health` max `1374 ms`, avg `973.4 ms`;
+    API `/ready` max `1314 ms`, avg `566 ms`, with no timeout in this pass.
+  - Protected auth/session proof passed with redacted artifacts.
+  - `pnpm run -s ops:coolify-stack:env-check:test` passed (`11/11`).
+  - `pnpm run -s ops:coolify-stack:env-check` failed closed with required
+    present `0/16`.
+- Residual:
+  full Coolify/VPS/DB/worker server-health readback remains blocked on
+  [LUC-4811](/LUC/issues/LUC-4811); control-plane unblocker
+  [LUC-5075](/LUC/issues/LUC-5075) is the current owner path. New narrow
+  follow-up [LUC-5252](/LUC/issues/LUC-5252) owns API health/ready low-second
+  latency correlation so this watch does not create duplicate broad binding
+  work.
+- Evidence files:
+  `history/evidence/luc-5250-production-performance-health-watch-2026-06-20.md`;
+  `history/evidence/luc-5250-prod-auth-session-browser-proof-2026-06-20.md`;
+  `history/tasks/luc-5250-production-performance-health-watch-2026-06-20-task.md`.
+
 # 2026-06-20 LUC-5237 Source Control Closure
 
 - [LUC-5237](/LUC/issues/LUC-5237) completed as a CTO source-control

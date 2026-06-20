@@ -1,3 +1,30 @@
+# 2026-06-20 LUC-5250 Production Performance Watch
+
+- Current health signal: `DELEGATED / PARTIALLY_VERIFIED /
+  API_LOW_SECOND_OUTLIERS / COOLIFY_VPS_BINDINGS_BLOCKED`.
+- Public production smoke passed for API `/health`, API `/ready`, Web `/`, and
+  Web `/api/build-info` on deployed SHA
+  `42177530f2a2ddc22832133b545bccab6ab404eb`.
+- Production build-info still reports diagnostic-only
+  `metadataSource=env-runtime`; this is not release-grade provenance.
+- `curl.exe` timing shows Web healthy: Web `/` max `237 ms`,
+  `/auth/login` max `119 ms`, and `/api/build-info` max `110 ms`.
+- API timing warning recurred without timeout: `/health` max `1374 ms`,
+  avg `973.4 ms`; `/ready` max `1314 ms`, avg `566 ms`.
+- Protected auth/session browser proof passed with redacted artifacts, including
+  invalid-token redirect to `session=expired` and logout fail-closed checks.
+- Coolify env checker tests passed (`11/11`), while current-runner stack
+  binding preflight failed closed with required present `0/16`. Full
+  Coolify/VPS/DB/worker health readback remains blocked by
+  [LUC-4811](/LUC/issues/LUC-4811); control-plane unblocker
+  [LUC-5075](/LUC/issues/LUC-5075) is the current owner path.
+- Follow-up: [LUC-5252](/LUC/issues/LUC-5252) owns one narrow DRE/Ops
+  correlation pass for recurring API `/health` and `/ready` low-second latency
+  tails. Evidence:
+  `history/evidence/luc-5250-production-performance-health-watch-2026-06-20.md`;
+  `history/evidence/luc-5250-prod-auth-session-browser-proof-2026-06-20.md`;
+  `history/tasks/luc-5250-production-performance-health-watch-2026-06-20-task.md`.
+
 # 2026-06-20 LUC-5213 API Ready Timeout Investigation
 
 - Current health signal: `DONE / PARTIALLY_VERIFIED /

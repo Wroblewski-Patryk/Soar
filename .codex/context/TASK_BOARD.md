@@ -1,3 +1,22 @@
+# 2026-06-20 LUC-5250 Closure Update
+
+- [LUC-5250](/LUC/issues/LUC-5250) is closed as
+  `DELEGATED / PARTIALLY_VERIFIED / API_LOW_SECOND_OUTLIERS /
+  COOLIFY_VPS_BINDINGS_BLOCKED`.
+- Do not create another broad Coolify/VPS binding incident from this watch.
+  Existing protected binding path remains [LUC-4811](/LUC/issues/LUC-4811),
+  with current control-plane unblocker [LUC-5075](/LUC/issues/LUC-5075).
+- Production app reachability is current: public smoke passed; Web curl timing
+  was healthy; protected auth/session proof passed with redacted artifacts on
+  SHA `42177530f2a2ddc22832133b545bccab6ab404eb`.
+- New exact follow-up: [LUC-5252](/LUC/issues/LUC-5252) owns DRE/Ops
+  correlation for API `/health` and `/ready` low-second latency tails
+  (`/health` max `1374 ms`, `/ready` max `1314 ms` in current curl pass).
+- This closure does not authorize deploy, push, restart, rollback, env edit,
+  secret/account readback, database/Redis mutation, production account use,
+  exchange action, order, position, payment/subscription mutation, or
+  live-trading action.
+
 # 2026-06-20 LUC-5237 Source Control Dirty Packet Classification
 
 - [LUC-5237](/LUC/issues/LUC-5237) closed as
