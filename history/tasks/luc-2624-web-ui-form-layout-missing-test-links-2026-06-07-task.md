@@ -57,6 +57,25 @@ Add focused local Web proof and direct scanner-readable test links for the assig
 - Decision required from user: no.
 - Follow-up architecture doc updates: none beyond direct relation rows.
 
+## Architecture Links
+- apps/web/src/ui/components/DataTable.tsx
+- apps/web/src/ui/components/FooterPreferencesSwitchers.tsx
+- apps/web/src/ui/components/data-table/useDataTableColumnVisibilityState.ts
+- apps/web/src/ui/forms/FormGrid.tsx
+- apps/web/src/ui/forms/FormMobileActionBar.tsx
+- apps/web/src/ui/forms/FormPageShell.tsx
+- apps/web/src/ui/forms/FormSectionCard.tsx
+- apps/web/src/ui/forms/FormValidationSummary.tsx
+- apps/web/src/ui/forms/validationFeedback.ts
+- apps/web/src/ui/hooks/useDetailsDropdown.ts
+- apps/web/src/ui/layout/dashboard/DashboardRouteProgress.tsx
+- apps/web/src/ui/layout/dashboard/Footer.tsx
+- apps/web/src/ui/layout/dashboard/Header.tsx
+- apps/web/src/ui/layout/dashboard/IsometricModeToggle.tsx
+- apps/web/src/ui/layout/dashboard/RiskNoticeFooter.tsx
+- apps/web/src/ui/layout/dashboard/SafetyBar.tsx
+- apps/web/src/ui/layout/public/Footer.tsx
+
 ## UX/UI Evidence
 - Design source type: not applicable.
 - Existing shared pattern reused: existing Web test harness and shared UI/form/layout primitives.

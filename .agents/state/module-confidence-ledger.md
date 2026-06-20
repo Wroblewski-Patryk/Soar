@@ -1,5 +1,185 @@
 # Module Confidence Ledger
 
+## 2026-06-15 LUC-4144 Coolify Read-Only Production Status Access
+
+- Module row: SOAR-OPERATIONS-001 / Coolify production status access.
+- Status: `verified_read_only / no_secret_disclosure / no_mutation`.
+- Confidence update:
+  [LUC-4144](/LUC/issues/LUC-4144) verified that the current Paperclip runner
+  has the required Coolify binding names and can perform authenticated
+  read-only `GET` status reads for Soar production. The projection resolved
+  selector `LuckySparrow`, project `Soar`, production environment id `6`, six
+  applications, one PostgreSQL, one Redis, zero generic services, `17` visible
+  global resource rows, and `0` visible deployment rows.
+- Evidence:
+  `history/evidence/luc-4144-coolify-read-only-production-status-access-2026-06-15.md`;
+  `history/tasks/luc-4144-coolify-read-only-production-status-access-2026-06-15-task.md`.
+  Focused contract test passed:
+  `pnpm run -s ops:coolify-stack:env-check:test` (`11/11`).
+- Residual:
+  This closes read-only Coolify status access only. Public/protected smoke,
+  worker freshness, rollback, restore, SLO, and release approval remain
+  separate gates.
+
+## 2026-06-15 LUC-4121 Protected Test-Account Auth Smoke
+
+- Module row: SOAR-AUTH-001 / production protected auth session smoke.
+- Status: `verified_protected_smoke / no_secret_disclosure / no_mutation`.
+- Confidence update:
+  [LUC-4121](/LUC/issues/LUC-4121) verified the protected test-account
+  email/password path against production SHA
+  `9f61eb9781c323f052f95cae7cf0c1c3c71901c7` using the existing
+  `ops:prod-auth:proof` runner. The stale `PROD_UI_AUDIT_AUTH_TOKEN` remains
+  invalid (`/auth/me` HTTP `401`), but `PROD_UI_AUDIT_AUTH_EMAIL/PASSWORD`
+  successfully minted a session and passed redacted browser proof for
+  authenticated `/dashboard`, invalid-token rejection, logout, and post-logout
+  fail-closed behavior.
+- Evidence:
+  `history/evidence/luc-4121-prod-test-account-auth-session-browser-proof-2026-06-15.md`;
+  `history/tasks/luc-4121-protected-test-account-smoke-path-2026-06-15-task.md`.
+  Focused helper tests passed:
+  `pnpm exec node --test scripts/resolveOpsAuthToken.test.mjs scripts/runProdAuthSessionBrowserProof.test.mjs scripts/runProdUiModuleClickthroughAudit.test.mjs`
+  (`13/13`).
+- Residual:
+  This closes protected auth/session smoke only. Full release readiness remains
+  `NO-GO` until runtime readback, rollback, DB/restore, RC, gate approver,
+  worker freshness, SLO, and release approval evidence are complete.
+
+## 2026-06-14 LUC-3885 Stripe Webhook Subscription Lifecycle Reconciliation
+
+- Module row: SOAR-SUBSCRIPTIONS-ADMIN-001 / subscription checkout and billing lifecycle.
+- Status delta: `IMPLEMENTED_LOCAL / TYPECHECK_VERIFIED / DB_E2E_VERIFIED`.
+- Implementation:
+  [LUC-3885](/LUC/issues/LUC-3885) added Stripe webhook subscription lifecycle
+  reconciliation through `POST /webhooks/stripe`, raw-body signature
+  verification, `BillingWebhookEvent` replay/idempotency tracking, checkout
+  activation to exactly one active `CHECKOUT` subscription, checkout expiration
+  handling, subscription update/delete reconciliation for existing
+  Stripe-backed checkout subscriptions, and period-end cancellation handling
+  that disables auto-renew without revoking active access early.
+- Safety:
+  invalid signatures fail before mutation; invalid plan metadata, unknown
+  checkout session, cross-user checkout metadata, and unknown subscription
+  references fail closed. Webhook event metadata is safe operational metadata,
+  not raw Stripe payload or secret material.
+- Evidence:
+  `pnpm --filter api exec vitest run src/modules/subscriptions/payments/stripeWebhook.e2e.test.ts`
+  PASS (`10/10`), covering paid checkout activation, event replay,
+  same-session idempotency, invalid signatures, unknown session, invalid plan
+  metadata, checkout expiration, cross-user mutation prevention, immediate
+  cancellation, and period-end cancellation. `pnpm --filter api run typecheck`
+  PASS.
+- Residual:
+  Protected production Stripe webhook smoke still requires fresh operator
+  approval and configured test credentials.
+
+## 2026-06-13 LUC-3436 Coolify Team Workspace Confirmation
+
+- Module row: SOAR-OPERATIONS-001 / Coolify team-workspace selector truth.
+- Status: verified.
+- Confidence: high for selector binding truth; unchanged for protected release readiness.
+- Current evidence:
+  [LUC-3436](/LUC/issues/LUC-3436) confirmed current Coolify selector via
+  authenticated read-only `GET` calls at `2026-06-13T19:34:58Z`. The selector
+  is team id `0`, name `LuckySparrow`; `COOLIFY_SOAR_TEAM_ID` and
+  `COOLIFY_TEAM_ID` are present by name and match current selector without
+  value disclosure. The selected workspace resolves project `Soar`,
+  environment `production`, six applications, one PostgreSQL, one Redis, and
+  zero generic services.
+- Validation:
+  Paperclip heartbeat context PASS; Coolify `teams/current`, `teams`, project,
+  and project-environment `GET` probes PASS. No deploy, restart, rollback, env
+  edit, database/Redis action, team setting change, account action, protected
+  smoke, secret readback, raw resource id storage, screenshot, raw log capture,
+  raw Coolify object storage, or live-trading action occurred.
+- Evidence:
+  `history/evidence/luc-3436-coolify-team-workspace-confirmation-2026-06-13.md`;
+  `history/tasks/luc-3436-confirm-coolify-team-workspace-2026-06-13-task.md`.
+- Residual risk:
+  Application readiness, protected worker readiness, rollback readiness, and
+  full production release readiness remain separate gates.
+
+## 2026-06-13 LUC-3796 Coolify Resource Inventory Reconciliation
+
+- Module row: SOAR-OPERATIONS-001 / Coolify production resource inventory.
+- Status: `verified_read_only / no_mutation`.
+- Confidence update:
+  [LUC-3796](/LUC/issues/LUC-3796) reconciled current Coolify production
+  inventory through authenticated read-only `GET` calls at
+  `2026-06-13T17:15:08Z`. The project/environment hierarchy resolved selector
+  `LuckySparrow`, project `Soar`, production environment id `6`, six
+  applications, PostgreSQL, Redis, `17` visible global resource rows, and `1`
+  visible deployment row.
+- Deployment-status delta:
+  the visible deployment row was `soar-api` with status `in_progress` and short
+  commit `9f61eb9781c3`.
+- Evidence:
+  `history/evidence/luc-3796-coolify-resource-inventory-reconciliation-2026-06-13.md`;
+  `history/tasks/luc-3796-coolify-resource-inventory-reconciliation-2026-06-13-task.md`.
+- Residual:
+  this is inventory/status evidence only. It is not public/protected smoke,
+  worker freshness, deployment completion, release approval, rollback, restore,
+  or SLO proof.
+
+## 2026-06-13 LUC-3795 Coolify Read-Only Production Status Access
+
+- Module row: SOAR-OPERATIONS-001 / Coolify production status access binding.
+- Status: `verified_read_only / no_secret_disclosure / no_mutation`.
+- Confidence update:
+  [LUC-3795](/LUC/issues/LUC-3795) verified current runner bindings through a
+  names-only scan and authenticated Coolify `GET` calls at
+  `2026-06-13T16:42:52Z`. Required Coolify binding names are present without
+  value disclosure; read-only calls resolved selector `LuckySparrow`, project
+  `Soar`, production environment id `6`, six applications, PostgreSQL, Redis,
+  `17` visible global resource rows, and the deployments endpoint with `1`
+  visible deployment row.
+- Evidence:
+  `history/evidence/luc-3795-coolify-read-only-production-status-access-2026-06-13.md`;
+  `history/tasks/luc-3795-coolify-read-only-production-status-access-2026-06-13-task.md`.
+- Residual:
+  this is secret-binding/status-access evidence only. It is not protected auth
+  smoke, worker readiness, release approval, rollback, restore, or SLO proof.
+
+## 2026-06-13 LUC-3786 Coolify Read-Only Production Status Access
+
+- Module row: SOAR-OPERATIONS-001 / Coolify production status access binding.
+- Status: `verified_read_only / no_secret_disclosure / no_mutation`.
+- Confidence update:
+  [LUC-3786](/LUC/issues/LUC-3786) verified current runner bindings through a
+  names-only scan and authenticated Coolify `GET` calls at
+  `2026-06-13T14:31:33Z`. Required Coolify binding names are present without
+  value disclosure; read-only calls resolved selector `LuckySparrow`, project
+  `Soar`, one production-environment row, six applications, PostgreSQL, Redis,
+  global resources, and the deployments endpoint. The deployments endpoint
+  showed one visible `soar-api` deployment row with status `in_progress` and
+  short commit `9f61eb9781c3`.
+- Evidence:
+  `history/evidence/luc-3786-coolify-read-only-production-status-access-2026-06-13.md`;
+  `history/tasks/luc-3786-coolify-read-only-production-status-access-2026-06-13-task.md`.
+- Residual:
+  this is secret-binding/status-access evidence only. It is not protected auth
+  smoke, worker readiness, release approval, rollback, restore, or SLO proof.
+
+## 2026-06-13 LUC-3773 Coolify Read-Only Production Status Access
+
+- Module row: SOAR-OPERATIONS-001 / Coolify production status access binding.
+- Status: `verified_read_only / no_secret_disclosure / no_mutation`.
+- Confidence update:
+  [LUC-3773](/LUC/issues/LUC-3773) verified current runner bindings through a
+  names-only scan and authenticated Coolify `GET` calls at
+  `2026-06-13T12:56:34Z`. Required Coolify binding names are present without
+  value disclosure; read-only calls resolved project `Soar`, environment
+  `production`, six applications, PostgreSQL, Redis, and the deployments
+  endpoint. The deployment-status readback was usable and showed one active
+  `soar-api` deployment row with status `in_progress` and short commit
+  `9f61eb97`.
+- Evidence:
+  `history/evidence/luc-3773-coolify-read-only-production-status-access-2026-06-13.md`;
+  `history/tasks/luc-3773-coolify-read-only-production-status-access-2026-06-13-task.md`.
+- Residual:
+  this is secret-binding/status-access evidence only. It is not protected auth
+  smoke, worker readiness, release approval, rollback, restore, or SLO proof.
+
 ## 2026-06-13 LUC-3722 Architecture Graph Drift Guardrail
 
 - Module row: Architecture Evidence Graph / source-promotion guardrails.

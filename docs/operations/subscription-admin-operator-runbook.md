@@ -12,6 +12,7 @@ Status: active (`SUBS-12`, 2026-04-07)
 - Canonical plans: `FREE`, `ADVANCED`, `PROFESSIONAL`.
 - Profile read endpoint: `GET /dashboard/profile/subscription`.
 - Checkout-intent endpoint: `POST /dashboard/profile/subscription/checkout-intents`.
+- Stripe webhook endpoint: `POST /webhooks/stripe`.
 - Admin plans API (ADMIN only):
   - `GET /admin/subscriptions/plans`
   - `PUT /admin/subscriptions/plans/:code`
@@ -23,7 +24,7 @@ Status: active (`SUBS-12`, 2026-04-07)
 ## Preconditions
 - API and web are running.
 - Operator account has `ADMIN` role.
-- DB migration/seed state is up to date (`SubscriptionPlan`, `UserSubscription`, `PaymentIntent` tables present).
+- DB migration/seed state is up to date (`SubscriptionPlan`, `UserSubscription`, `PaymentIntent`, `BillingWebhookEvent` tables present).
 
 ## A. Edit Plan Limits and Pricing
 
@@ -111,6 +112,7 @@ pnpm --filter api exec tsx -e "import { prisma } from './src/prisma/client'; imp
 1. Set env values:
    - `SUBSCRIPTION_PAYMENT_PROVIDER=STRIPE`
    - `STRIPE_SECRET_KEY=...`
+   - `STRIPE_WEBHOOK_SECRET=...`
    - `STRIPE_PRICE_ID_ADVANCED_MONTHLY=...`
    - `STRIPE_PRICE_ID_PROFESSIONAL_MONTHLY=...`
 2. Restart API service.
@@ -130,7 +132,44 @@ pnpm --filter api exec tsx -e "import { prisma } from './src/prisma/client'; imp
 - `400`: non-payable plan selected (`FREE`).
 - `404`: subscription plan missing in catalog.
 
-## D. Safety Rules
+## D. Stripe Webhook Lifecycle Reconciliation
+
+### D1. Local verification
+Run the focused webhook suite against a migrated local database:
+
+```bash
+pnpm --filter api exec vitest run src/modules/subscriptions/payments/stripeWebhook.e2e.test.ts
+```
+
+Coverage expected:
+- paid checkout creates one active `CHECKOUT` subscription and links the stored payment intent,
+- duplicate event ids and duplicate checkout-session events are idempotent,
+- invalid signatures fail before billing mutation,
+- unknown session, invalid plan metadata, and cross-user metadata fail closed,
+- checkout expiration marks the stored payment intent `EXPIRED`,
+- subscription delete/update events reconcile only the matching Stripe-backed checkout subscription,
+- `cancel_at_period_end=true` keeps current access active while disabling auto-renew.
+
+### D2. Protected production smoke
+Production Stripe webhook smoke is protected because it touches payment/subscription infrastructure.
+Before running it, obtain fresh operator approval and confirm:
+- test-mode Stripe credentials and price ids are configured in the target environment,
+- `STRIPE_WEBHOOK_SECRET` is present by name only; do not read back or record the value,
+- smoke uses a test account and Stripe test mode only,
+- evidence captures status codes, event ids, and Soar subscription state only; no raw signatures, secret values, cookies, bearer tokens, payment-card data, or full Stripe payloads.
+
+### D3. Failure triage
+- `400 Missing Stripe signature`: sender did not include `stripe-signature`.
+- `400 Invalid Stripe signature`: webhook secret or payload body does not match.
+- `503 stripe webhook is not configured`: missing Stripe secret key or webhook secret.
+- `422 STRIPE_CHECKOUT_SESSION_UNKNOWN`: Stripe event references no stored checkout intent.
+- `422 STRIPE_CHECKOUT_METADATA_INCOMPLETE`: required `userId`, valid `planCode`, or subscription id is missing.
+- `422 STRIPE_CHECKOUT_PAYMENT_USER_MISMATCH` / `STRIPE_CHECKOUT_USER_MISMATCH`: event metadata does not match the stored checkout owner.
+- `422 STRIPE_SUBSCRIPTION_UNKNOWN`: subscription lifecycle event does not match an existing Stripe-backed checkout subscription.
+
+Review `BillingWebhookEvent` rows for event status, safe metadata, and error code. Do not paste raw provider payloads into docs or tickets.
+
+## E. Safety Rules
 - Never edit plan payload directly in DB without preserving schema contract.
 - Keep one active subscription per user invariant.
 - Prefer `ADMIN_OVERRIDE` source for manual operator actions.

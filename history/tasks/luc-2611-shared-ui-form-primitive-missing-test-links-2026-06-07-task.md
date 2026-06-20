@@ -74,6 +74,20 @@ changing runtime behavior.
 - Follow-up architecture doc updates: direct relation rows added to
   `priority-test-links.csv`.
 
+## Architecture Links
+- apps/web/src/ui/components/StatusBadge.tsx
+- apps/web/src/ui/components/TableUi.tsx
+- apps/web/src/ui/components/Tabs.tsx
+- apps/web/src/ui/components/ViewState.tsx
+- apps/web/src/ui/forms/FormAlert.tsx
+- apps/web/src/ui/forms/FormField.tsx
+- apps/web/src/ui/forms/FormFields.tsx
+- apps/web/src/ui/forms/FormGrid.tsx
+- apps/web/src/ui/forms/FormMobileActionBar.tsx
+- apps/web/src/ui/forms/FormPageShell.tsx
+- apps/web/src/ui/forms/FormSectionCard.tsx
+- apps/web/src/ui/forms/FormValidationSummary.tsx
+
 ## UX/UI Evidence
 - Design source type: not applicable; test/traceability-only frontend proof.
 - Existing shared pattern reused: existing shared primitive tests.

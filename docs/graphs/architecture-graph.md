@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-06-11T22:16:05.784Z
+Generated: 2026-06-18T16:43:05.012Z
 
 ## Canonical Exports
 
@@ -42,14 +42,14 @@ Generated: 2026-06-11T22:16:05.784Z
 | agent | implemented | Procedure | .agents/skills/run_release_gate_checks/SKILL.md | Engineering Delivery Lead |
 | agent | implemented | Procedure | .agents/skills/scaffold_api_module/SKILL.md | Engineering Delivery Lead |
 | agent | implemented | Procedure | .agents/skills/ship_dashboard_feature_slice/SKILL.md | Engineering Delivery Lead |
-| agent | implemented | Active Mission Packet | .agents/state/active-mission.md | Engineering Delivery Lead |
+| agent | implemented | 2026-06-15 LUC-4204 V1 Audit-To-Completion Controller | .agents/state/active-mission.md | Engineering Delivery Lead |
 | agent | implemented | Agent Process Evals | .agents/state/agent-evals.md | Engineering Delivery Lead |
 | agent | implemented | Current Focus | .agents/state/current-focus.md | Engineering Delivery Lead |
 | agent | implemented | Decision Register | .agents/state/decision-register.md | Engineering Delivery Lead |
 | agent | implemented | Delivery Map | .agents/state/delivery-map.md | Engineering Delivery Lead |
 | agent | implemented | Known Issues | .agents/state/known-issues.md | Engineering Delivery Lead |
 | agent | implemented | Module Confidence Ledger | .agents/state/module-confidence-ledger.md | Engineering Delivery Lead |
-| agent | implemented | Next Steps | .agents/state/next-steps.md | Engineering Delivery Lead |
+| agent | implemented | 2026-06-15 LUC-4204 Closure Update | .agents/state/next-steps.md | Engineering Delivery Lead |
 | agent | implemented | Quality Attribute Scenarios | .agents/state/quality-attribute-scenarios.md | Engineering Delivery Lead |
 | agent | implemented | Regression Log | .agents/state/regression-log.md | Engineering Delivery Lead |
 | agent | implemented | Requirements Verification Matrix | .agents/state/requirements-verification-matrix.md | Engineering Delivery Lead |
@@ -66,6 +66,7 @@ Generated: 2026-06-11T22:16:05.784Z
 | agent | implemented | User Collaboration Workflow | .agents/workflows/user-collaboration.md | Engineering Delivery Lead |
 | agent | implemented | World-Class Delivery Workflow | .agents/workflows/world-class-delivery.md | Engineering Delivery Lead |
 | api_endpoint | implemented | USE /avatars | apps/api/src/index.ts#/avatars | Engineering Delivery Lead |
+| api_endpoint | implemented | USE /webhooks/stripe | apps/api/src/index.ts#/webhooks/stripe | Engineering Delivery Lead |
 | api_endpoint | implemented | POST /login | apps/api/src/modules/auth/auth.routes.ts#/login | Engineering Delivery Lead |
 | api_endpoint | implemented | POST /logout | apps/api/src/modules/auth/auth.routes.ts#/logout | Engineering Delivery Lead |
 | api_endpoint | implemented | GET /me | apps/api/src/modules/auth/auth.routes.ts#/me | Engineering Delivery Lead |
@@ -512,7 +513,6 @@ Generated: 2026-06-11T22:16:05.784Z
 | document | implemented | Coolify VPS setup guide | docs/architecture/nodes/SOAR-DOC-COOLIFY-VPS.md | Docs Memory Lead |
 | document | implemented | Dashboard route map | docs/architecture/nodes/SOAR-DOC-DASHBOARD-ROUTE-MAP.md | Docs Memory Lead |
 | document | implemented | Data model source | docs/architecture/nodes/SOAR-DOC-DATA-MODEL.md | Docs Memory Lead |
-| document | implemented | Exchange access ownership matrix | docs/architecture/nodes/SOAR-DOC-EXCHANGE-OWNERSHIP.md | Docs Memory Lead |
 
 ## Relation Index
 
@@ -555,9 +555,10 @@ Generated: 2026-06-11T22:16:05.784Z
 | connected_to | api_endpoint:use-upload:59c4f6ed00 | module:apps-api-src:3261657fad | apps/api/src/router/index.ts |
 | connected_to | api_endpoint:use-users:2f4d7609a6 | module:apps-api-src:3261657fad | apps/api/src/router/admin.routes.ts |
 | connected_to | api_endpoint:use-wallets:b8382408ca | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
+| connected_to | api_endpoint:use-webhooks-stripe:b502d56cea | module:apps-api-src:3261657fad | apps/api/src/index.ts |
 | connected_to | project:soar:7c70e892d7 | task:learning-journal:c5626339c3 | .codex/context/LEARNING_JOURNAL.md |
-| connected_to | project:soar:7c70e892d7 | task:2026-06-11-luc-3598-waitforwebbuildinfo-resolveoptions-relation-row:3e812e05c0 | .codex/context/PROJECT_STATE.md |
-| connected_to | project:soar:7c70e892d7 | task:task-board:85d16101f3 | .codex/context/TASK_BOARD.md |
+| connected_to | project:soar:7c70e892d7 | task:2026-06-15-luc-4144-coolify-read-only-production-status-access:633a94e248 | .codex/context/PROJECT_STATE.md |
+| connected_to | project:soar:7c70e892d7 | task:2026-06-14-luc-4103-owner-login-verification-path:36e72b0204 | .codex/context/TASK_BOARD.md |
 | connected_to | project:soar:7c70e892d7 | task:agent-operating-system-task-2026-05-07:04d1de2b03 | history/tasks/agent-operating-system-task-2026-05-07.md |
 | connected_to | project:soar:7c70e892d7 | task:ai-assistant-foundation-protocol-harness-task:0adbd87e92 | history/tasks/ai-assistant-foundation-protocol-harness-2026-05-23-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:16ccebb9bd | history/tasks/api-endpoint-docs-gap-closure-2026-05-19-task.md |
@@ -1217,4 +1218,3 @@ Generated: 2026-06-11T22:16:05.784Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2390-no-stall-queue-expeditor:d65acd41e2 | history/tasks/luc-2390-no-stall-queue-expeditor-2026-06-06-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2394-close-luc-2390-pm-coordination-dirty-state-before-push-permit:25e5062e06 | history/tasks/luc-2394-close-luc-2390-pm-coordination-dirty-state-before-push-permit-2026-06-06-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2395-gap-register-and-repair-lane-refresh-task:cf15a7a8ac | history/tasks/luc-2395-gap-register-and-repair-lane-refresh-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:deff1521dc | history/tasks/luc-24-paperclip-agent-execution-smoke-test-2026-05-25-task.md |

@@ -1,6 +1,18 @@
 # Risk Register
 
-Last updated: 2026-06-11
+Last updated: 2026-06-15
+
+- 2026-06-15 `LUC-4121-PROTECTED-TEST-ACCOUNT-SMOKE-PATH-2026-06-15`
+  reduces the protected auth/session smoke risk for current production SHA
+  `9f61eb9781c323f052f95cae7cf0c1c3c71901c7`: the pre-bound
+  `PROD_UI_AUDIT_AUTH_TOKEN` still fails `/auth/me` with HTTP `401`, but the
+  protected `PROD_UI_AUDIT_AUTH_EMAIL/PASSWORD` path successfully mints a
+  session and passes the redacted production auth browser proof. Residual
+  release risk remains open because protected input readiness is still
+  `PARTIAL/NO-GO` for runtime readback, rollback, production operator, DB,
+  RC, and gate approver families. Mitigation: consume LUC-4121 only as
+  protected test-account auth/session evidence and keep unrelated V1 release
+  gates fail-closed until their owner proofs land.
 
 - 2026-06-11 `LUC-3461-COOLIFY-PRODUCTION-DEPLOY-HEALTH-SWEEP-2026-06-11`
   reduces current unknowns for production public health: API `/health`, API
@@ -430,3 +442,22 @@ Allowed statuses: `open`, `mitigating`, `accepted`, `closed`, `superseded`.
   redacted artifact before [LUC-3375](/LUC/issues/LUC-3375) can unblock.
 - Evidence:
   `history/tasks/luc-3409-owner-login-verification-path-2026-06-11-task.md`.
+
+# 2026-06-14 LUC-4103 Owner Login Proof Session Validity
+
+- Risk: an expired or invalid owner proof session could be reused for the
+  current production build and mistaken for accepted owner-login evidence.
+- Severity: P1.
+- Status: `open`.
+- Mitigation: [LUC-4103](/LUC/issues/LUC-4103) reuses the redacted
+  [LUC-3409](/LUC/issues/LUC-3409) proof path and requires `/auth/me` HTTP
+  `200` before browser proof. Current production build-info is
+  `9f61eb9781c323f052f95cae7cf0c1c3c71901c7` on `main`; the available
+  `PROD_UI_AUDIT_AUTH_TOKEN` reference returned HTTP `401` and is not valid
+  proof.
+- Next action: operator or board-capable credential owner must select one
+  approved method and provide a fresh least-privilege proof session, supervised
+  proof, or equivalent redacted artifact before owner-login acceptance can
+  unblock.
+- Evidence:
+  `history/tasks/luc-4103-owner-login-verification-path-2026-06-14-task.md`.

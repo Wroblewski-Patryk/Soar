@@ -60,6 +60,15 @@ Generated Obsidian and export files:
 - `docs/status/architecture-map-status.md`
 - `docs/status/architecture-graph-drift.md`
 
+The generated task synchronization report separates raw linkage totals from
+actionable gaps. Historical task files under `history/tasks/` remain proof
+lineage and can appear in raw counts, but they are not active owner work unless
+they are promoted by a current issue. Curated graph coverage and aggregate
+route mounts are likewise classified as linkage noise before a child issue is
+created. Use the actionable counts in `docs/status/task-synchronization-report.md`
+for current repair routing, and use raw samples only for bounded historical
+backfill slices.
+
 Regenerate and validate the graph with:
 
 ```powershell

@@ -1,6 +1,6 @@
 # Task Synchronization Report
 
-Generated: 2026-06-11T22:16:05.784Z
+Generated: 2026-06-18T16:43:05.012Z
 
 ## Contract
 
@@ -8,11 +8,29 @@ Every task should identify the feature/module it changes, dependency expectation
 
 ## Signals
 
-- Tasks without architecture links: 96
-- Implementation entities without task links: 422
+- Actionable tasks without architecture links: 0
+- Raw tasks without architecture links: 96
+- Actionable implementation entities without task links: 0
+- Raw implementation entities without task links: 327
+- Classified task-linkage noise: 423
 - Verified entities without proof evidence: 0
 
-## Tasks Without Architecture Links
+## Classified Task-Linkage Noise
+
+- config_only_file: 34
+- curated_graph_covered: 292
+- historical_task_archive: 96
+- top_level_app_mount: 1
+
+## Actionable Tasks Without Architecture Links
+
+
+## Actionable Implementation Without Task Links
+
+
+## Raw Task-Linkage Samples
+
+### Raw Tasks Without Architecture Links
 
 - Task: LOCAL-CERTAINTY-CLOSURE-2026-05-21 (history/tasks/local-certainty-closure-2026-05-21-task.md)
 - Task: Local Integrity Build Sweep (history/tasks/local-integrity-build-sweep-2026-05-24-task.md)
@@ -54,50 +72,11 @@ Every task should identify the feature/module it changes, dependency expectation
 - LUC-1592 Confirm Coolify Team Workspace Task (history/tasks/luc-1592-confirm-coolify-team-workspace-2026-06-02-task.md)
 - LUC-1734 Restore Owner Path For Coolify Inventory Lane (history/tasks/luc-1734-restore-owner-path-for-coolify-inventory-lane-2026-06-03-task.md)
 - Task (history/tasks/luc-1774-provide-valid-prod-ui-audit-session-2026-06-03-task.md)
-- Task (history/tasks/luc-1775-bind-fresh-valid-prod-ui-audit-app-session-2026-06-03-task.md)
-- LUC-1838 Source Control Dirty Worktree Classification And Closure (history/tasks/luc-1838-source-control-classify-and-close-local-dirty-worktree-groups-2026-06-03-task.md)
-- Task (history/tasks/luc-2020-normalize-inferred-link-report-noise-2026-06-04-task.md)
-- LUC-22 First Safe Repair Lane Task (history/tasks/luc-22-first-safe-repair-lane-2026-05-25-task.md)
-- LUC-2282 Prepare Soar Web Rollback Or Redeploy Permit (history/tasks/luc-2282-prepare-soar-web-rollback-or-redeploy-permit-2026-06-05-task.md)
-- LUC-2286 Choose Next Soar Web Recovery Action After Restart 503 (history/tasks/luc-2286-choose-next-soar-web-recovery-action-after-restart-503-2026-06-05-task.md)
-- LUC-2290 Operator Coolify Bind Read-Only Production Status Access (history/tasks/luc-2290-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md)
-- LUC-2312 Source Control Closure (history/tasks/luc-2312-source-control-closure-luc-1160-plus-2026-06-05-task.md)
-- LUC-2313 Operator Coolify Bind Read-Only Production Status Access (history/tasks/luc-2313-operator-coolify-bind-read-only-production-status-access-2026-06-06-task.md)
-- LUC-2316 Operator Coolify Bind Read-Only Production Status Access (history/tasks/luc-2316-operator-coolify-bind-read-only-production-status-access-2026-06-06-task.md)
-- Task (history/tasks/luc-2319-restore-local-db-redis-infra-for-aggregate-e2e-proof-2026-06-06-task.md)
-- LUC-2340 Source Control Closure (history/tasks/luc-2340-source-control-close-post-luc-2312-v1-controller-dirty-state-2026-06-06-task.md)
-- LUC-2365 Decide Push And Production Promotion Path For de3db789 (history/tasks/luc-2365-decide-push-and-production-promotion-path-for-de3db789-2026-06-06-task.md)
-- LUC-2374 Close Dirty Source State Before de3db789 Push Decision (history/tasks/luc-2374-close-dirty-source-state-before-de3db789-push-decision-2026-06-06-task.md)
-- Task (history/tasks/luc-24-paperclip-agent-execution-smoke-test-2026-05-25-task.md)
-- LUC-2406 Source Control Closure For LUC-2403 (history/tasks/luc-2406-source-control-closure-for-luc-2403-2026-06-06-task.md)
-- Task (history/tasks/luc-2418-no-stall-queue-expeditor-2026-06-06-task.md)
-- Task (history/tasks/luc-2460-gap-register-and-repair-lane-refresh-2026-06-06-task.md)
-- Task (history/tasks/luc-2464-v1-audit-to-completion-controller-2026-06-06-task.md)
-- Task (history/tasks/luc-2490-no-stall-queue-expeditor-2026-06-06-task.md)
-- Task (history/tasks/luc-2537-no-stall-queue-expeditor-2026-06-06-task.md)
-- LUC-2553 No-Stall Queue Expeditor (history/tasks/luc-2553-no-stall-queue-expeditor-2026-06-06-task.md)
-- LUC-2595 Gap Register And Repair Lane Refresh (history/tasks/luc-2595-gap-register-and-repair-lane-refresh-2026-06-07-task.md)
-- LUC-2608 No-Stall Queue Expeditor (history/tasks/luc-2608-no-stall-queue-expeditor-2026-06-07-task.md)
-- LUC-2628 No-Stall Queue Expeditor (history/tasks/luc-2628-no-stall-queue-expeditor-2026-06-07-task.md)
-- LUC-2668 No-Stall Queue Expeditor (history/tasks/luc-2668-no-stall-queue-expeditor-2026-06-07-task.md)
-- LUC-2746 No-Stall Queue Expeditor (history/tasks/luc-2746-no-stall-queue-expeditor-2026-06-07-task.md)
-- Task - LUC-2979 Restore Local PostgreSQL Test Dependency (history/tasks/luc-2979-restore-local-postgresql-test-dependency-2026-06-08-task.md)
-- LUC-3468 No-Stall Queue Expeditor (history/tasks/luc-3468-no-stall-queue-expeditor-2026-06-11-task.md)
-- LUC-3506 Classify NUL Workspace Artifact Before Source-Control Closure (history/tasks/luc-3506-classify-nul-workspace-artifact-before-source-control-closure-2026-06-11-task.md)
-- Task (history/tasks/luc-3507-no-stall-queue-expeditor-2026-06-11-task.md)
-- LUC-3513 Autonomous Idle And Map Drift Sweep (history/tasks/luc-3513-autonomous-idle-and-map-drift-sweep-2026-06-11-task.md)
-- Task (history/tasks/luc-37-b-coolify-stack-cutover-and-smoke-2026-05-25-task.md)
-- Task (history/tasks/luc-37-d-security-auth-exchange-boundary-2026-05-25-task.md)
-- Task (history/tasks/luc-390-infra-gate-diagnose-production-dns-network-failure-for-luc-241-2026-05-28-task.md)
-- Task (history/tasks/luc-433-source-control-closure-comment-followup-2026-05-28-task.md)
-- Task (history/tasks/luc-433-source-control-closure-finish-successful-run-handoff-2026-05-28-task.md)
-- Task (history/tasks/luc-88-review-productivity-for-luc-86-2026-05-26-task.md)
-- LUC-965 [Soar][Non-DCA Closure Coordination] Delegation packet for remaining non-DCA gaps - 2026-05-31 (history/tasks/luc-965-non-dca-closure-lane-delegation-2026-05-31-task.md)
-- LUC-973 [Soar][Coolify] Verify last failed deploys and route repair - 2026-05-31 (history/tasks/luc-973-verify-last-failed-deploys-and-route-repair-2026-05-31-task.md)
 
-## Implementation Without Task Links
+### Raw Implementation Without Task Links
 
 - api_endpoint: USE /avatars (apps/api/src/index.ts#/avatars)
+- api_endpoint: USE /webhooks/stripe (apps/api/src/index.ts#/webhooks/stripe)
 - api_endpoint: GET / (apps/api/src/router/dashboard.routes.ts#/)
 - api_endpoint: USE /backtests (apps/api/src/router/dashboard.routes.ts#/backtests)
 - api_endpoint: USE /bots (apps/api/src/router/dashboard.routes.ts#/bots)
@@ -136,44 +115,3 @@ Every task should identify the feature/module it changes, dependency expectation
 - component: runtimeOnboardingConfig.tsx (apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeOnboardingConfig.tsx)
 - component: RuntimeOnboardingSection.tsx (apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeOnboardingSection.tsx)
 - component: ExchangeConnectionsView.tsx (apps/web/src/features/exchanges/components/ExchangeConnectionsView.tsx)
-- component: AuditTrailView.tsx (apps/web/src/features/logs/components/AuditTrailView.tsx)
-- component: MarketUniversesTable.tsx (apps/web/src/features/markets/components/MarketUniversesTable.tsx)
-- component: StrategiesList.tsx (apps/web/src/features/strategies/components/StrategiesList.tsx)
-- component: Basic.tsx (apps/web/src/features/strategies/components/StrategyFormSections/Basic.tsx)
-- component: Indicators.tsx (apps/web/src/features/strategies/components/StrategyFormSections/Indicators.tsx)
-- component: Open.tsx (apps/web/src/features/strategies/components/StrategyFormSections/Open.tsx)
-- component: StrategyPresetPicker.tsx (apps/web/src/features/strategies/components/StrategyPresetPicker.tsx)
-- component: sections.tsx (apps/web/src/features/wallets/components/wallet-create-edit-form/sections.tsx)
-- component: WalletCreateEditForm.tsx (apps/web/src/features/wallets/components/WalletCreateEditForm.tsx)
-- component: WalletsListTable.tsx (apps/web/src/features/wallets/components/WalletsListTable.tsx)
-- component: AppLogoLink.tsx (apps/web/src/ui/components/AppLogoLink.tsx)
-- component: ConfirmModal.tsx (apps/web/src/ui/components/ConfirmModal.tsx)
-- component: DataTable.tsx (apps/web/src/ui/components/DataTable.tsx)
-- component: FooterPreferencesSwitchers.tsx (apps/web/src/ui/components/FooterPreferencesSwitchers.tsx)
-- component: FormModal.tsx (apps/web/src/ui/components/FormModal.tsx)
-- component: InlinePager.tsx (apps/web/src/ui/components/InlinePager.tsx)
-- component: SkeletonCardBlock.tsx (apps/web/src/ui/components/loading/SkeletonCardBlock.tsx)
-- component: SkeletonFormBlock.tsx (apps/web/src/ui/components/loading/SkeletonFormBlock.tsx)
-- component: SkeletonKpiRow.tsx (apps/web/src/ui/components/loading/SkeletonKpiRow.tsx)
-- component: SkeletonTableRows.tsx (apps/web/src/ui/components/loading/SkeletonTableRows.tsx)
-- component: SkipToContentLink.tsx (apps/web/src/ui/components/SkipToContentLink.tsx)
-- component: StatusBadge.tsx (apps/web/src/ui/components/StatusBadge.tsx)
-- component: TableUi.tsx (apps/web/src/ui/components/TableUi.tsx)
-- component: Tabs.tsx (apps/web/src/ui/components/Tabs.tsx)
-- component: ThemeSwitch.tsx (apps/web/src/ui/components/ThemeSwitch.tsx)
-- component: useAsyncConfirm.tsx (apps/web/src/ui/components/useAsyncConfirm.tsx)
-- component: ViewState.tsx (apps/web/src/ui/components/ViewState.tsx)
-- component: FormAlert.tsx (apps/web/src/ui/forms/FormAlert.tsx)
-- component: FormField.tsx (apps/web/src/ui/forms/FormField.tsx)
-- component: FormFields.tsx (apps/web/src/ui/forms/FormFields.tsx)
-- component: FormGrid.tsx (apps/web/src/ui/forms/FormGrid.tsx)
-- component: FormMobileActionBar.tsx (apps/web/src/ui/forms/FormMobileActionBar.tsx)
-- component: FormPageShell.tsx (apps/web/src/ui/forms/FormPageShell.tsx)
-- component: FormSectionCard.tsx (apps/web/src/ui/forms/FormSectionCard.tsx)
-- component: FormValidationSummary.tsx (apps/web/src/ui/forms/FormValidationSummary.tsx)
-- component: DashboardRouteProgress.tsx (apps/web/src/ui/layout/dashboard/DashboardRouteProgress.tsx)
-- component: Footer.tsx (apps/web/src/ui/layout/dashboard/Footer.tsx)
-- component: Header.tsx (apps/web/src/ui/layout/dashboard/Header.tsx)
-- component: IsometricModeToggle.tsx (apps/web/src/ui/layout/dashboard/IsometricModeToggle.tsx)
-- component: RiskNoticeFooter.tsx (apps/web/src/ui/layout/dashboard/RiskNoticeFooter.tsx)
-- component: SafetyBar.tsx (apps/web/src/ui/layout/dashboard/SafetyBar.tsx)

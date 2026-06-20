@@ -1,3 +1,164 @@
+- 2026-06-15 `LUC-4144 [Operator][Coolify] Bind Coolify read-only production status access`
+  - Status: `DONE / VERIFIED_READ_ONLY / NO_MUTATION`
+  - Scope: DRE operator-access binding verification for Soar Coolify
+    production status only; no deploy, push, restart, rollback, env edit,
+    protected smoke, production account use, secret/account readback, raw
+    resource id storage, raw Coolify object storage, database/Redis mutation,
+    raw log capture, screenshot, exchange action, order, position,
+    payment/subscription, or live-trading action.
+  - Wake/comment handling:
+    - Wake was `issue_assigned`; inline payload had no pending comments and
+      `fallbackFetchNeeded=false`. Checkout was already claimed by the harness
+      and was not repeated.
+  - Evidence:
+    - Names-only binding scan at `2026-06-15T00:47:06Z` found all required
+      Coolify binding names present without value disclosure.
+    - Authenticated Coolify `GET` projection resolved selector
+      `LuckySparrow`, project `Soar`, production environment id `6`, six
+      applications, one PostgreSQL resource, one Redis resource, zero generic
+      services, `17` visible global resource rows, and `0` visible deployment
+      rows.
+    - Canonical production-environment inventory remains eight resources:
+      `soar-web`, `workers-backtest`, `workers-market-stream`,
+      `workers-execution`, `soar-api`, `workers-market-data`, `postgresql`,
+      and `redis`.
+    - `pnpm run -s ops:coolify-stack:env-check:test` PASS (`11/11`).
+  - Residual:
+    - This is access-binding and deploy/status readability evidence only.
+      Public/protected smoke, worker freshness, rollback, restore, SLO, and
+      release approval remain separate gates.
+  - Evidence file:
+    - `history/evidence/luc-4144-coolify-read-only-production-status-access-2026-06-15.md`
+
+- 2026-06-15 `LUC-4121 [Operator][Soar] Provide protected test-account smoke path`
+  - Status: `DONE / VERIFIED_PROTECTED_SMOKE / NO_SECRET_DISCLOSURE`
+  - Scope: QVE protected auth/session smoke path only for current production
+    SHA `9f61eb9781c323f052f95cae7cf0c1c3c71901c7`; no deploy, push,
+    restart, rollback, env edit, database mutation, subscription/payment
+    mutation, API-key mutation, exchange mutation, order/position action,
+    screenshots, response-body capture, or secret readback.
+  - Wake/comment handling:
+    - Wake was `issue_assigned`; inline payload had no pending comments and
+      `fallbackFetchNeeded=false`. Checkout was already claimed by the harness
+      and was not repeated.
+  - Evidence:
+    - Focused helper tests passed:
+      `pnpm exec node --test scripts/resolveOpsAuthToken.test.mjs scripts/runProdAuthSessionBrowserProof.test.mjs scripts/runProdUiModuleClickthroughAudit.test.mjs`
+      (`13/13`).
+    - Names-only protected input scan found `5` `PROD_UI_AUDIT_*` names; no
+      explicit `TEST_ACCOUNT`/`PROD_TEST` names were present.
+    - Status-only probe classified `PROD_UI_AUDIT_AUTH_TOKEN` as invalid
+      (`/auth/me` HTTP `401`) and `PROD_UI_AUDIT_AUTH_EMAIL/PASSWORD` as valid
+      for login plus `/auth/me` HTTP `200`.
+    - `pnpm run -s ops:prod-auth:proof` passed with process-local mapping from
+      `PROD_UI_AUDIT_AUTH_EMAIL/PASSWORD` to `PROD_AUTH_EMAIL/PASSWORD` and
+      stale token path cleared.
+  - Evidence file:
+    - `history/evidence/luc-4121-prod-test-account-auth-session-browser-proof-2026-06-15.md`
+    - `history/tasks/luc-4121-protected-test-account-smoke-path-2026-06-15-task.md`
+  - Residual:
+    - This is protected test-account auth/session smoke only. V1 release
+      remains `NO-GO` until runtime readback, rollback, DB/restore, RC,
+      gate approver, worker freshness, SLO, and release approval evidence are
+      complete.
+
+- 2026-06-13 `LUC-3796 [Ops][Soar] Reconcile Coolify resource inventory`
+  - Status: `DONE / VERIFIED_READ_ONLY / NO_MUTATION`
+  - Scope: SPM read-only Coolify production resource inventory reconciliation
+    only; no product code implementation, commit, push, deploy, restart,
+    rollback, env edit, protected smoke, production account use,
+    secret/account readback, raw resource id storage, raw deployment object
+    storage, database/Redis mutation, raw log capture, screenshot, browser
+    automation, exchange action, order, position, payment/subscription, or
+    live-trading action.
+  - Wake/comment handling:
+    - Wake was `issue_assigned`; inline payload had no pending comments and
+      `fallbackFetchNeeded=false`. Checkout was already claimed by the harness
+      and was not repeated.
+  - Evidence:
+    - Names-only Coolify binding scan at `2026-06-13T17:15:08Z` found all
+      required Coolify binding names present without value disclosure.
+    - Authenticated Coolify `GET` projection resolved selector
+      `LuckySparrow`, project `Soar`, production environment id `6`, six
+      applications, one PostgreSQL resource, one Redis resource, zero generic
+      services, `17` visible global resource rows, and `1` visible deployment
+      row.
+    - Canonical production-environment inventory remains eight resources:
+      `soar-web`, `workers-backtest`, `workers-market-stream`,
+      `workers-execution`, `soar-api`, `workers-market-data`, `postgresql`,
+      and `redis`.
+    - Deployment-status delta: visible `soar-api` row status `in_progress`,
+      short commit `9f61eb9781c3`.
+  - Residual:
+    - This is inventory/status evidence only. Public/protected smoke, worker
+      freshness, deployment completion, rollback, restore, SLO, and release
+      approval remain separate gates.
+  - Evidence file:
+    - `history/evidence/luc-3796-coolify-resource-inventory-reconciliation-2026-06-13.md`
+
+- 2026-06-13 `LUC-3795 [Operator][Coolify] Bind Coolify read-only production status access`
+  - Status: `DONE / VERIFIED_READ_ONLY / NO_MUTATION`
+  - Scope: SPM operator-access binding verification for Soar Coolify
+    production status only; no deploy, push, restart, rollback, env edit,
+    protected smoke, production account use, secret/account readback, raw
+    resource id storage, raw deployment object storage, database/Redis
+    mutation, raw log capture, screenshot, exchange action, order, position,
+    payment/subscription, or live-trading action.
+  - Wake/comment handling:
+    - Wake was `issue_assigned`; inline payload had no pending comments and
+      `fallbackFetchNeeded=false`. Latest board assignment comment scoped SPM
+      to known-state/takeover baseline, evidence before coding, and protected
+      production gates intact.
+  - Evidence:
+    - Names-only binding scan at `2026-06-13T16:42:52Z` found all required
+      Coolify binding names present without value disclosure.
+    - Authenticated Coolify `GET` projection resolved selector
+      `LuckySparrow`, project `Soar`, production environment id `6`, six
+      applications, one PostgreSQL resource, one Redis resource, zero generic
+      services, `17` visible global resource rows, and `1` visible deployment
+      row.
+    - Canonical production-environment inventory remains eight resources:
+      `soar-web`, `workers-backtest`, `workers-market-stream`,
+      `workers-execution`, `soar-api`, `workers-market-data`, `postgresql`,
+      and `redis`.
+  - Residual:
+    - This is access-binding and deploy/status readability evidence only.
+      Public/protected smoke, worker freshness, rollback, restore, SLO, and
+      release approval remain separate gates.
+  - Evidence file:
+    - `history/evidence/luc-3795-coolify-read-only-production-status-access-2026-06-13.md`
+
+- 2026-06-15 `LUC-4204 [Soar] V1 audit-to-completion controller`
+  - Status: `DONE / VERIFIED_LOCAL / DELEGATED / NO_RUNTIME_MUTATION`
+  - Scope: TSA architecture-awareness refresh/routing after
+    [LUC-3601](/LUC/issues/LUC-3601); no product implementation, commit, push,
+    deploy, restart, rollback, env edit, protected smoke, production account
+    use, secret/account readback, database/Redis mutation, raw log capture,
+    screenshot, browser automation, exchange action, order, position,
+    payment/subscription, or live-trading action.
+  - Evidence:
+    - Canonical Softwarehouse scanner passed:
+      `node scripts/build-architecture-awareness-index.mjs --project Soar --root ../Soar`.
+    - Fresh report generated `2026-06-15T04:17:10.531Z` with `9624`
+      entities, `30858` relations, and `9892` files.
+    - Health signals: `12` actionable missing-test links, `0` actionable
+      missing-doc links, `0` actionable task-link gaps, `0` ownerless entities,
+      and `0` disconnected entities.
+    - [LUC-3601](/LUC/issues/LUC-3601)
+      `scripts/waitForWebBuildInfo.mjs#sleep` no longer appears in Top
+      Actionable Missing Test Links.
+    - Focused local proof passed:
+      `node --test scripts/waitForWebBuildInfo.test.mjs` (`8/8`).
+  - Disposition:
+    - New top actionable family is Stripe webhook payments traceability.
+      Existing implementation evidence is [LUC-3885](/LUC/issues/LUC-3885), so
+      route only a narrow QA relation-row/classification lane; do not reopen
+      broad payments implementation from this controller heartbeat.
+    - Created [LUC-4212](/LUC/issues/LUC-4212) for QA & Verification to close
+      or classify the Stripe webhook relation-row family.
+  - Evidence file:
+    - `history/tasks/luc-4204-v1-audit-to-completion-controller-architecture-refresh-2026-06-15-task.md`
+
 - 2026-06-13 `LUC-3722 [Soar][Docs] Clear architecture graph drift guardrail before source promotion`
   - Status: `DONE / VERIFIED_LOCAL / SOURCE_PROMOTION_GUARDRAIL_CLEARED`
   - Scope: local architecture drift audit tooling and generated guardrail
@@ -2576,6 +2737,25 @@
       prod-auth side-effect, prod-UI, and prod UX/a11y helpers.
   - Evidence:
     - `history/tasks/luc-2956-prod-security-exchange-proof-helper-missing-test-links-2026-06-07-task.md`
+
+# 2026-06-14 LUC-4103 Owner Login Verification Path
+
+- [LUC-4103](/LUC/issues/LUC-4103) is `IN_REVIEW / WAITING_OPERATOR_METHOD`.
+  Security refreshed the owner-login proof path for the current production
+  build `9f61eb9781c323f052f95cae7cf0c1c3c71901c7` on `main`, reusing the
+  [LUC-3409](/LUC/issues/LUC-3409) redacted proof contract and existing
+  `pnpm run ops:prod-auth:proof` runner.
+- Current blocker: the available `PROD_UI_AUDIT_AUTH_TOKEN` reference failed
+  the redacted `/auth/me` status check with HTTP `401`, so it is not accepted
+  owner-login proof.
+- Verification:
+  - public build-info readback PASS for current production SHA.
+  - focused helper tests PASS (`9/9`).
+  - protected-input readiness is `PARTIAL / NO-GO`; UI audit names are present,
+    but runtime, rollback, DB, RC, gate, and `SOAR_PROD_*` families remain
+    missing.
+- Evidence:
+  `history/tasks/luc-4103-owner-login-verification-path-2026-06-14-task.md`.
 
 - 2026-06-11 `LUC-3409 [Operator][Soar] Provide owner-login verification path`
   - Status: `IN_REVIEW / WAITING_OPERATOR_CHOICE`

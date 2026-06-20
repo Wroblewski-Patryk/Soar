@@ -70,6 +70,11 @@ changing runtime behavior.
 - Follow-up architecture doc updates: direct relation rows added to
   `priority-test-links.csv`.
 
+## Architecture Links
+- apps/web/src/ui/components/ThemeSwitch.tsx
+- apps/web/src/ui/components/DataTable.tsx
+- apps/web/src/security/themeBootstrap.ts
+
 ## UX/UI Evidence
 - Design source type: not applicable; test/traceability-only frontend proof.
 - Existing shared pattern reused: existing ThemeSwitcher and DataTable tests.

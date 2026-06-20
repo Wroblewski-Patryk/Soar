@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-06-11T22:16:05.784Z
+Generated: 2026-06-18T16:43:05.012Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -9,18 +9,18 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | Type | Count |
 | --- | ---: |
 | agent | 52 |
-| api_endpoint | 37 |
+| api_endpoint | 38 |
 | component | 97 |
-| document | 4001 |
+| document | 4030 |
 | feature | 217 |
-| function | 2801 |
-| migration | 56 |
+| function | 2821 |
+| migration | 57 |
 | model | 108 |
 | module | 16 |
 | project | 1 |
-| route | 352 |
-| task | 1368 |
-| test | 446 |
+| route | 355 |
+| task | 1387 |
+| test | 447 |
 
 ## Counts By Status
 
@@ -28,77 +28,55 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | --- | ---: |
 | blocked | 26 |
 | deprecated | 9 |
-| implemented | 7343 |
-| in_progress | 12 |
-| tested | 813 |
-| verified | 1349 |
+| implemented | 7390 |
+| in_progress | 14 |
+| tested | 821 |
+| verified | 1366 |
 
 ## Health Signals
 
-- Raw implementation entities without inferred tests: 1327
-- Actionable implementation entities without inferred tests: 42
-- Raw implementation entities without inferred docs: 312
+- Raw implementation entities without inferred tests: 1300
+- Actionable implementation entities without inferred tests: 12
+- Raw implementation entities without inferred docs: 313
 - Actionable implementation entities without inferred docs: 0
-- Classified inferred-link noise: 1513
+- Classified inferred-link noise: 1516
+- Raw tasks without architecture links: 96
+- Actionable tasks without architecture links: 0
+- Raw implementation entities without task links: 327
+- Actionable implementation entities without task links: 0
+- Classified task-linkage noise: 423
 - Entities without owner attribution: 0
 - Disconnected entities: 0
 
 ## Top Actionable Missing Test Links
 
-- function: createPage (scripts/runLocalProtectedRouteActionProof.mjs#createPage)
-- function: launchBrowser (scripts/runLocalProtectedRouteActionProof.mjs#launchBrowser)
-- function: main (scripts/runLocalProtectedRouteActionProof.mjs#main)
-- function: startWebServer (scripts/runLocalProtectedRouteActionProof.mjs#startWebServer)
-- function: createPage (scripts/runProdAuthSessionBrowserProof.mjs#createPage)
-- function: launchBrowser (scripts/runProdAuthSessionBrowserProof.mjs#launchBrowser)
-- function: main (scripts/runProdAuthSessionBrowserProof.mjs#main)
-- function: captureScreenshot (scripts/runProdUxA11yMobileProof.mjs#captureScreenshot)
-- function: clickMobileMenu (scripts/runProdUxA11yMobileProof.mjs#clickMobileMenu)
-- function: collectPageCheck (scripts/runProdUxA11yMobileProof.mjs#collectPageCheck)
-- function: createPage (scripts/runProdUxA11yMobileProof.mjs#createPage)
-- function: evaluate (scripts/runProdUxA11yMobileProof.mjs#evaluate)
-- function: isVisible (scripts/runProdUxA11yMobileProof.mjs#isVisible)
-- function: launchBrowser (scripts/runProdUxA11yMobileProof.mjs#launchBrowser)
-- function: navigate (scripts/runProdUxA11yMobileProof.mjs#navigate)
-- function: renderMarkdown (scripts/runProdUxA11yMobileProof.mjs#renderMarkdown)
-- function: setAuthCookie (scripts/runProdUxA11yMobileProof.mjs#setAuthCookie)
-- function: setViewport (scripts/runProdUxA11yMobileProof.mjs#setViewport)
-- function: summarizeBadEvents (scripts/runProdUxA11yMobileProof.mjs#summarizeBadEvents)
-- function: wait (scripts/runProdUxA11yMobileProof.mjs#wait)
-- function: createPage (scripts/runPublicReadOnlyBrowserProof.mjs#createPage)
-- function: killProcessTree (scripts/runPublicReadOnlyBrowserProof.mjs#killProcessTree)
-- function: launchBrowser (scripts/runPublicReadOnlyBrowserProof.mjs#launchBrowser)
-- function: argValue (scripts/triageJourneyEvidence.mjs#argValue)
-- function: main (scripts/triageJourneyEvidence.mjs#main)
-- function: matches (scripts/triageJourneyEvidence.mjs#matches)
-- function: normalize (scripts/triageJourneyEvidence.mjs#normalize)
-- function: parseCsv (scripts/triageJourneyEvidence.mjs#parseCsv)
-- function: printList (scripts/triageJourneyEvidence.mjs#printList)
-- function: readCsv (scripts/triageJourneyEvidence.mjs#readCsv)
-- function: splitRefs (scripts/triageJourneyEvidence.mjs#splitRefs)
-- function: detectPostgresContainer (scripts/verifyLocalBackupRestore.mjs#detectPostgresContainer)
-- function: dockerExecSh (scripts/verifyLocalBackupRestore.mjs#dockerExecSh)
-- function: main (scripts/verifyLocalBackupRestore.mjs#main)
-- function: normalizeIdSuffix (scripts/verifyLocalBackupRestore.mjs#normalizeIdSuffix)
-- function: nowStamp (scripts/verifyLocalBackupRestore.mjs#nowStamp)
-- function: parseArgs (scripts/verifyLocalBackupRestore.mjs#parseArgs)
-- function: push (scripts/verifyLocalBackupRestore.mjs#push)
-- function: run (scripts/verifyLocalBackupRestore.mjs#run)
-- function: sleep (scripts/waitForWebBuildInfo.mjs#sleep)
+- function: getStripeWebhookClient (apps/api/src/modules/subscriptions/payments/stripeWebhook.controller.ts#getStripeWebhookClient)
+- function: getStripeWebhookSecret (apps/api/src/modules/subscriptions/payments/stripeWebhook.controller.ts#getStripeWebhookSecret)
+- function: handleStripeWebhook (apps/api/src/modules/subscriptions/payments/stripeWebhook.controller.ts#handleStripeWebhook)
+- function: sendMappedError (apps/api/src/modules/subscriptions/payments/stripeWebhook.controller.ts#sendMappedError)
+- function: fail (apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#fail)
+- function: getStringId (apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#getStringId)
+- function: handleCheckoutCompleted (apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#handleCheckoutCompleted)
+- function: handleCheckoutExpired (apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#handleCheckoutExpired)
+- function: handleSubscriptionLifecycle (apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#handleSubscriptionLifecycle)
+- function: markEvent (apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#markEvent)
+- function: processEvent (apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#processEvent)
+- function: writeAuditLog (apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#writeAuditLog)
 
 ## Top Actionable Missing Doc Links
 
 
 ## Classified Inferred-Link Noise
 
-- config_only_file: 63
+- config_only_file: 64
 - curated_graph_covered: 1332
-- test_fixture_function: 117
+- test_fixture_function: 119
 - top_level_app_mount: 1
 
 ## Top Classified Noise Samples
 
 - top_level_app_mount: api_endpoint: USE /avatars (apps/api/src/index.ts#/avatars)
+- config_only_file: api_endpoint: USE /webhooks/stripe (apps/api/src/index.ts#/webhooks/stripe)
 - curated_graph_covered: api_endpoint: POST /login (apps/api/src/modules/auth/auth.routes.ts#/login)
 - curated_graph_covered: api_endpoint: POST /logout (apps/api/src/modules/auth/auth.routes.ts#/logout)
 - curated_graph_covered: api_endpoint: GET /me (apps/api/src/modules/auth/auth.routes.ts#/me)
@@ -137,7 +115,56 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - curated_graph_covered: component: PasswordVisibilityToggle.tsx (apps/web/src/features/auth/components/PasswordVisibilityToggle.tsx)
 - curated_graph_covered: component: backtestRunDetailsCharts.tsx (apps/web/src/features/backtest/components/backtestRunDetailsCharts.tsx)
 - curated_graph_covered: component: BacktestRunDetailsTabPanels.tsx (apps/web/src/features/backtest/components/BacktestRunDetailsTabPanels.tsx)
-- curated_graph_covered: component: BacktestRunHeaderSection.tsx (apps/web/src/features/backtest/components/BacktestRunHeaderSection.tsx)
+
+## Classified Task-Linkage Noise
+
+- config_only_file: 34
+- curated_graph_covered: 292
+- historical_task_archive: 96
+- top_level_app_mount: 1
+
+## Top Classified Task-Linkage Noise Samples
+
+- historical_task_archive: task: Task: LOCAL-CERTAINTY-CLOSURE-2026-05-21 (history/tasks/local-certainty-closure-2026-05-21-task.md)
+- historical_task_archive: task: Task: Local Integrity Build Sweep (history/tasks/local-integrity-build-sweep-2026-05-24-task.md)
+- historical_task_archive: task: LUC-1027-CHILD - Read-only failed deploy diagnosis (2026-05-31) (history/tasks/luc-1027-child-read-only-failed-deploy-diagnosis-2026-05-31-task.md)
+- historical_task_archive: task: luc-1080-infra-gate-diagnose-production-dns-network-failure-for-luc-241-2026-05-31-task (history/tasks/luc-1080-infra-gate-diagnose-production-dns-network-failure-for-luc-241-2026-05-31-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1148-source-control-closure-comment-followup-2026-05-31-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1148-source-control-closure-finish-successful-run-handoff-2026-05-31-task.md)
+- historical_task_archive: task: Task Contract (history/tasks/luc-1148-source-control-closure-issue-continuation-needed-2026-05-31-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1148-source-control-closure-source-scoped-recovery-action-2-2026-05-31-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1148-source-control-closure-source-scoped-recovery-action-2026-05-31-task.md)
+- historical_task_archive: task: LUC-1371 Reconcile Coolify Resource Inventory (history/tasks/luc-1371-reconcile-coolify-resource-inventory-2026-06-02-task.md)
+- historical_task_archive: task: LUC-15C CTO Lane Child Issue (history/tasks/luc-15-cto-lane-child-2026-05-25-task.md)
+- historical_task_archive: task: LUC-15D Docs Lane Child Issue (history/tasks/luc-15-docs-lane-child-2026-05-25-task.md)
+- historical_task_archive: task: LUC-15I Implementation Lane Child Issue (history/tasks/luc-15-implementation-lane-child-2026-05-25-task.md)
+- historical_task_archive: task: LUC-15O Ops Lane Child Issue (history/tasks/luc-15-ops-lane-child-2026-05-25-task.md)
+- historical_task_archive: task: LUC-15P Product Lane Child Issue (history/tasks/luc-15-product-lane-child-2026-05-25-task.md)
+- historical_task_archive: task: LUC-15Q QA Lane Child Issue (history/tasks/luc-15-qa-lane-child-2026-05-25-task.md)
+- historical_task_archive: task: LUC-15X UX Lane Child Issue (history/tasks/luc-15-ux-lane-child-2026-05-25-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1507-confirm-coolify-team-workspace-2026-06-02-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1518-confirm-coolify-team-workspace-2026-06-02-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1522-confirm-coolify-team-workspace-2026-06-02-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1525-confirm-coolify-team-workspace-2026-06-02-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1529-confirm-coolify-team-workspace-2026-06-02-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1531-confirm-coolify-team-workspace-2026-06-02-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1533-confirm-coolify-team-workspace-2026-06-02-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1537-confirm-coolify-team-workspace-2026-06-02-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1538-confirm-coolify-team-workspace-2026-06-02-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1539-confirm-coolify-team-workspace-2026-06-02-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1543-confirm-coolify-team-workspace-2026-06-02-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1548-confirm-coolify-team-workspace-2026-06-02-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1552-operator-coolify-bind-read-only-production-status-access-2026-06-02-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1553-confirm-coolify-team-workspace-2026-06-02-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1556-confirm-coolify-team-workspace-2026-06-02-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1560-confirm-coolify-team-workspace-binding-2026-06-02-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1564-confirm-coolify-team-workspace-2026-06-02-task.md)
+- historical_task_archive: task: LUC-1574 Confirm Coolify Team Workspace Task (history/tasks/luc-1574-confirm-coolify-team-workspace-2026-06-02-task.md)
+- historical_task_archive: task: LUC-1580 Confirm Coolify Team Workspace Task (history/tasks/luc-1580-confirm-coolify-team-workspace-2026-06-02-task.md)
+- historical_task_archive: task: LUC-1585 Confirm Coolify Team Workspace Task (history/tasks/luc-1585-confirm-coolify-team-workspace-2026-06-02-task.md)
+- historical_task_archive: task: LUC-1592 Confirm Coolify Team Workspace Task (history/tasks/luc-1592-confirm-coolify-team-workspace-2026-06-02-task.md)
+- historical_task_archive: task: LUC-1734 Restore Owner Path For Coolify Inventory Lane (history/tasks/luc-1734-restore-owner-path-for-coolify-inventory-lane-2026-06-03-task.md)
+- historical_task_archive: task: Task (history/tasks/luc-1774-provide-valid-prod-ui-audit-session-2026-06-03-task.md)
 
 ## Notes
 

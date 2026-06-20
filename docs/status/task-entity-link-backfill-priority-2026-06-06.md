@@ -19,6 +19,25 @@ missing proof evidence, but it does make it harder for agents to answer which
 task last changed a feature/module/chain and which task should own follow-up
 maintenance.
 
+## 2026-06-13 Reconciliation Rule
+
+Issue: [LUC-3776](/LUC/issues/LUC-3776)
+
+The task synchronization report now separates raw totals from actionable gaps:
+
+- Historical task records under `history/tasks/` are archival proof lineage.
+  They should stay visible in raw counts, but they are not active implementation
+  mismatches by themselves.
+- Curated graph coverage and aggregate route mounts are classified before
+  implementation-owner child issues are created. A current child issue is only
+  warranted when the actionable section still names a feature, component,
+  route, model, or task after classification.
+- Use `Actionable tasks without architecture links` and `Actionable
+  implementation entities without task links` from
+  `docs/status/task-synchronization-report.md` for live routing.
+- Use raw samples only for bounded historical backfill slices, following the
+  priorities below.
+
 ## Backfill Priority
 
 Backfill task-to-entity links in this order:

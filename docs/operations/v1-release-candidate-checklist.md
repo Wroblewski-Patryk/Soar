@@ -13,8 +13,8 @@
   - bots LIVE confirmations,
   - shell/accessibility smoke.
 
-### Latest Verification (2026-05-25)
-Expected SHA: `287e77a1ef6aa79396cb485dafcf8d17a0fce033`
+### Latest Verification (2026-06-18)
+Expected SHA: `not provided`
 - `pnpm --filter api build` passed.
 - `pnpm --filter web build` passed.
 - `pnpm --filter api test -- src/modules/auth/auth.e2e.test.ts src/modules/exchange/liveOrderAdapter.service.test.ts src/router/health-readiness.test.ts src/router/workers-health-readiness.test.ts src/router/metrics.test.ts src/router/alerts.test.ts` passed (`6` files, `20` tests).
@@ -45,7 +45,7 @@ Expected SHA: `287e77a1ef6aa79396cb485dafcf8d17a0fce033`
   - `/workers/ready`.
 - [x] Runtime freshness gate healthy:
   - `/workers/runtime-freshness`.
-- [x] Queue lag metrics reviewed and within baseline.
+- [ ] Queue lag metrics reviewed and within baseline.
 - [x] Incident contacts and escalation chain confirmed.
 
 ### Current Runtime Gate Override (2026-05-23)
@@ -118,8 +118,8 @@ Expected SHA: `287e77a1ef6aa79396cb485dafcf8d17a0fce033`
 - [x] RC owner assigned with rollback authority.
 - Sign-off record template: `docs/operations/v1-rc-signoff-record.md`.
 
-## Outstanding External Gates (2026-05-25)
-- current snapshot is `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS` (synced 2026-05-25).
+## Outstanding External Gates (2026-06-18)
+- current snapshot is `G1=PASS`, `G2=OPEN`, `G3=PASS`, `G4=PASS` (synced 2026-06-18).
 - Gate 1 is satisfied by
   `history/evidence/v1-restore-drill-prod-2026-05-23T00-00-00-000Z.md`.
 - Gate 2 is satisfied by

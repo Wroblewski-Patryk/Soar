@@ -903,3 +903,45 @@ scripts/runV1StageRehearsal.mjs#main,scripts/runV1StageRehearsal.test.mjs,LUC-33
 scripts/runWebNextProductionCommand.mjs#main,scripts/runWebNextProductionCommand.test.mjs,LUC-3410 direct Web Next production command CLI orchestration relation
 scripts/runWebNextProductionCommand.mjs#parseArgs,scripts/runWebNextProductionCommand.test.mjs,LUC-3410 direct Web Next production command argument relation
 scripts/runWebNextProductionCommand.mjs#run,scripts/runWebNextProductionCommand.test.mjs,LUC-3410 direct Web Next production command injected runner relation
+scripts/runLocalProtectedRouteActionProof.mjs#createPage,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-3775 existing mocked CDP page creation proof relation
+scripts/runLocalProtectedRouteActionProof.mjs#launchBrowser,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-3775 existing browser-path and cleanup proof relation
+scripts/runLocalProtectedRouteActionProof.mjs#main,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-3775 existing help and non-mutating CLI proof relation
+scripts/runLocalProtectedRouteActionProof.mjs#startWebServer,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-3775 existing local protected-route harness option proof relation
+scripts/runProdAuthSessionBrowserProof.mjs#createPage,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-3775 existing mocked CDP page creation proof relation
+scripts/runProdAuthSessionBrowserProof.mjs#launchBrowser,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-3775 existing local browser path resolution proof relation
+scripts/runProdAuthSessionBrowserProof.mjs#main,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-3775 existing approved production auth CLI proof relation
+scripts/runProdUiModuleClickthroughAudit.mjs#resolveCredentialFallback,scripts/runProdUiModuleClickthroughAudit.test.mjs,LUC-3775 existing credential fallback proof relation
+scripts/runProdUxA11yMobileProof.mjs#captureScreenshot,scripts/runProdUxA11yMobileProof.test.mjs,LUC-3775 existing production UX artifact rendering proof relation
+scripts/runProdUxA11yMobileProof.mjs#clickMobileMenu,scripts/runProdUxA11yMobileProof.test.mjs,LUC-3775 existing production UX mobile interaction proof relation
+scripts/runProdUxA11yMobileProof.mjs#collectPageCheck,scripts/runProdUxA11yMobileProof.test.mjs,LUC-3775 existing production UX page heuristic proof relation
+scripts/runProdUxA11yMobileProof.mjs#createPage,scripts/runProdUxA11yMobileProof.test.mjs,LUC-3775 existing production UX CDP setup proof relation
+scripts/runProdUxA11yMobileProof.mjs#evaluate,scripts/runProdUxA11yMobileProof.test.mjs,LUC-3775 existing production UX CDP evaluation proof relation
+scripts/runProdUxA11yMobileProof.mjs#isVisible,scripts/runProdUxA11yMobileProof.test.mjs,LUC-3775 existing page heuristic visibility proof relation
+scripts/runProdUxA11yMobileProof.mjs#launchBrowser,scripts/runProdUxA11yMobileProof.test.mjs,LUC-3775 existing production UX browser launch contract proof relation
+scripts/runProdUxA11yMobileProof.mjs#navigate,scripts/runProdUxA11yMobileProof.test.mjs,LUC-3775 existing production UX navigation proof relation
+scripts/runProdUxA11yMobileProof.mjs#renderMarkdown,scripts/runProdUxA11yMobileProof.test.mjs,LUC-3775 existing redaction-safe markdown proof relation
+scripts/runProdUxA11yMobileProof.mjs#setAuthCookie,scripts/runProdUxA11yMobileProof.test.mjs,LUC-3775 existing production UX auth-cookie proof relation
+scripts/runProdUxA11yMobileProof.mjs#setViewport,scripts/runProdUxA11yMobileProof.test.mjs,LUC-3775 existing production UX viewport proof relation
+scripts/runProdUxA11yMobileProof.mjs#summarizeBadEvents,scripts/runProdUxA11yMobileProof.test.mjs,LUC-3775 existing bad-event summary proof relation
+scripts/runProdUxA11yMobileProof.mjs#wait,scripts/runProdUxA11yMobileProof.test.mjs,LUC-3775 existing async wait proof relation
+scripts/runPublicReadOnlyBrowserProof.mjs#createPage,scripts/runPublicReadOnlyBrowserProof.test.mjs,LUC-3775 existing public browser CDP page proof relation
+scripts/runPublicReadOnlyBrowserProof.mjs#killProcessTree,scripts/runPublicReadOnlyBrowserProof.test.mjs,LUC-3775 existing public browser cleanup contract proof relation
+scripts/runPublicReadOnlyBrowserProof.mjs#launchBrowser,scripts/runPublicReadOnlyBrowserProof.test.mjs,LUC-3775 existing public browser launch contract proof relation
+scripts/triageJourneyEvidence.mjs#argValue,scripts/releaseOpsScriptContracts.test.mjs,LUC-3775 existing journey triage wrapper contract proof relation
+scripts/triageJourneyEvidence.mjs#main,scripts/releaseOpsScriptContracts.test.mjs,LUC-3775 existing journey triage wrapper contract proof relation
+scripts/triageJourneyEvidence.mjs#matches,scripts/releaseOpsScriptContracts.test.mjs,LUC-3775 existing journey triage wrapper contract proof relation
+scripts/triageJourneyEvidence.mjs#normalize,scripts/releaseOpsScriptContracts.test.mjs,LUC-3775 existing journey triage wrapper contract proof relation
+scripts/triageJourneyEvidence.mjs#parseCsv,scripts/releaseOpsScriptContracts.test.mjs,LUC-3775 existing journey triage wrapper contract proof relation
+scripts/triageJourneyEvidence.mjs#printList,scripts/releaseOpsScriptContracts.test.mjs,LUC-3775 existing journey triage wrapper contract proof relation
+scripts/triageJourneyEvidence.mjs#readCsv,scripts/releaseOpsScriptContracts.test.mjs,LUC-3775 existing journey triage wrapper contract proof relation
+scripts/triageJourneyEvidence.mjs#splitRefs,scripts/releaseOpsScriptContracts.test.mjs,LUC-3775 existing journey triage wrapper contract proof relation
+scripts/verifyLocalBackupRestore.mjs#detectPostgresContainer,scripts/releaseOpsScriptContracts.test.mjs,LUC-3775 existing DB backup restore wrapper contract proof relation
+scripts/verifyLocalBackupRestore.mjs#dockerExecSh,scripts/releaseOpsScriptContracts.test.mjs,LUC-3775 existing DB backup restore wrapper contract proof relation
+scripts/verifyLocalBackupRestore.mjs#main,scripts/releaseOpsScriptContracts.test.mjs,LUC-3775 existing DB backup restore wrapper contract proof relation
+scripts/verifyLocalBackupRestore.mjs#normalizeIdSuffix,scripts/releaseOpsScriptContracts.test.mjs,LUC-3775 existing DB backup restore wrapper contract proof relation
+scripts/verifyLocalBackupRestore.mjs#nowStamp,scripts/releaseOpsScriptContracts.test.mjs,LUC-3775 existing DB backup restore wrapper contract proof relation
+scripts/verifyLocalBackupRestore.mjs#parseArgs,scripts/releaseOpsScriptContracts.test.mjs,LUC-3775 existing DB backup restore wrapper contract proof relation
+scripts/verifyLocalBackupRestore.mjs#push,scripts/releaseOpsScriptContracts.test.mjs,LUC-3775 existing DB backup restore wrapper contract proof relation
+scripts/verifyLocalBackupRestore.mjs#run,scripts/releaseOpsScriptContracts.test.mjs,LUC-3775 existing DB backup restore wrapper contract proof relation
+scripts/waitForWebBuildInfo.mjs#toPositiveInteger,scripts/waitForWebBuildInfo.test.mjs,LUC-3775 existing positive integer option parsing proof relation
+scripts/writeWebBuildMetadata.mjs#main,scripts/writeWebBuildMetadata.test.mjs,LUC-3775 existing web build metadata CLI execution proof relation

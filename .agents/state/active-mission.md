@@ -1,4 +1,116 @@
+# 2026-06-15 LUC-4204 V1 Audit-To-Completion Controller
+
+- `LUC-4204-V1-AUDIT-TO-COMPLETION-CONTROLLER-ARCHITECTURE-REFRESH-2026-06-15`
+  completed as a Technical Solution Architect architecture-awareness refresh
+  and routing checkpoint. Wake `issue_assigned` had no pending comments
+  (`fallbackFetchNeeded=false`); checkout was already claimed by the harness
+  and was not repeated. Canonical Softwarehouse scanner command passed:
+  `node scripts/build-architecture-awareness-index.mjs --project Soar --root ../Soar`.
+  Fresh report generated `2026-06-15T04:17:10.531Z` with `9624` entities,
+  `30858` relations, `9892` files, `12` actionable missing-test links, `0`
+  actionable missing-doc links, `0` actionable task-link gaps, `0` ownerless
+  entities, and `0` disconnected entities. [LUC-3601](/LUC/issues/LUC-3601)
+  `scripts/waitForWebBuildInfo.mjs#sleep` no longer appears in Top Actionable
+  Missing Test Links. Focused local proof passed:
+  `node --test scripts/waitForWebBuildInfo.test.mjs` (`8/8`). Existing
+  [LUC-3885](/LUC/issues/LUC-3885) covers Stripe webhook implementation, so
+  created [LUC-4212](/LUC/issues/LUC-4212) as the narrow QA
+  relation-row/classification follow-up for the current Stripe webhook top-gap
+  family. No code implementation, runtime, deploy,
+  protected proof, secret/account, database/Redis, exchange, order, position,
+  payment/subscription, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-4204-v1-audit-to-completion-controller-architecture-refresh-2026-06-15-task.md`.
+
 # Active Mission Packet
+
+## 2026-06-15 LUC-4144 Coolify Read-Only Production Status Access
+
+- `LUC-4144-COOLIFY-READ-ONLY-PRODUCTION-STATUS-ACCESS-2026-06-15`
+  completed as a DRE read-only production status access checkpoint. Wake
+  `issue_assigned` had no pending comments (`fallbackFetchNeeded=false`);
+  checkout was already claimed by the harness and was not repeated. Names-only
+  binding scan found all required Coolify binding names present without value
+  disclosure. Authenticated Coolify `GET` projection at
+  `2026-06-15T00:47:06Z` resolved selector `LuckySparrow`, project `Soar`,
+  production environment id `6`, six applications, one PostgreSQL resource,
+  one Redis resource, zero generic services, `17` visible global resource rows,
+  and `0` visible deployment rows. Focused env-check contract tests passed:
+  `pnpm run -s ops:coolify-stack:env-check:test` (`11/11`). No deploy, push,
+  restart, rollback, env edit, protected smoke, production account use,
+  secret/account readback, raw resource id storage, raw Coolify object storage,
+  database/Redis mutation, screenshot, raw log capture, exchange action, order,
+  position, payment/subscription, or live-trading action occurred. Evidence:
+  `history/evidence/luc-4144-coolify-read-only-production-status-access-2026-06-15.md`;
+  task:
+  `history/tasks/luc-4144-coolify-read-only-production-status-access-2026-06-15-task.md`.
+
+## 2026-06-15 LUC-4121 Protected Test-Account Smoke Path
+
+- `LUC-4121-PROTECTED-TEST-ACCOUNT-SMOKE-PATH-2026-06-15` completed as a QVE
+  protected auth/session smoke verification. Wake `issue_assigned` had no
+  pending comments (`fallbackFetchNeeded=false`); checkout was already claimed
+  by the harness and was not repeated. Current production build-info resolved
+  SHA `9f61eb9781c323f052f95cae7cf0c1c3c71901c7` on `main`. Focused local
+  helper proof passed (`13/13`). Names-only protected input scan found `5`
+  `PROD_UI_AUDIT_*` names and no explicit `TEST_ACCOUNT`/`PROD_TEST` names.
+  The pre-bound `PROD_UI_AUDIT_AUTH_TOKEN` remains invalid (`/auth/me` HTTP
+  `401`), but `PROD_UI_AUDIT_AUTH_EMAIL/PASSWORD` successfully minted a
+  session and `/auth/me` returned HTTP `200`. The existing production auth
+  browser proof runner passed with process-local mapping from those protected
+  refs: unauthenticated dashboard redirect, authenticated `/dashboard`
+  rendering, invalid-token expired-session redirect, logout, post-logout
+  `/auth/me` fail-closed, and post-logout dashboard redirect all passed. No
+  secret values, cookies, tokens, emails, passwords, response bodies,
+  screenshots, deploy, restart, rollback, env edit, database mutation,
+  subscription/payment mutation, API-key mutation, exchange mutation,
+  order/position action, push, or commit occurred. Evidence:
+  `history/evidence/luc-4121-prod-test-account-auth-session-browser-proof-2026-06-15.md`;
+  task:
+  `history/tasks/luc-4121-protected-test-account-smoke-path-2026-06-15-task.md`.
+
+## 2026-06-13 LUC-3436 Coolify Team Workspace Confirmation
+
+- `LUC-3436-COOLIFY-TEAM-WORKSPACE-CONFIRMATION-2026-06-13` completed as a
+  DRE read-only selector confirmation. Wake `issue_assigned` had no pending
+  comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
+  harness and was not repeated. Authenticated Coolify `GET` projection at
+  `2026-06-13T19:34:58Z` resolved current selector team id `0`, name
+  `LuckySparrow`; both `COOLIFY_SOAR_TEAM_ID` and `COOLIFY_TEAM_ID` are
+  present by name and match the current selector without value disclosure.
+  Under that selector, project `Soar` and environment `production` resolve
+  with six applications, one PostgreSQL, one Redis, and zero generic services.
+  No deploy, push, restart, rollback, env edit, protected smoke, production
+  account use, secret/account readback, raw resource id storage, raw Coolify
+  object storage, database/Redis mutation, screenshot, raw log capture,
+  exchange action, order, position, payment/subscription, or live-trading
+  action occurred. Evidence:
+  `history/evidence/luc-3436-coolify-team-workspace-confirmation-2026-06-13.md`;
+  task:
+  `history/tasks/luc-3436-confirm-coolify-team-workspace-2026-06-13-task.md`.
+
+## 2026-06-13 LUC-3796 Coolify Resource Inventory Reconciliation
+
+- `LUC-3796-COOLIFY-RESOURCE-INVENTORY-RECONCILIATION-2026-06-13`
+  completed as a Soar Product Manager read-only inventory reconciliation.
+  Wake `issue_assigned` had no pending comments (`fallbackFetchNeeded=false`);
+  checkout was already claimed by the harness and was not repeated.
+  Authenticated Coolify `GET` projection at `2026-06-13T17:15:08Z` resolved
+  selector `LuckySparrow`, project `Soar`, production environment id `6`, six
+  application resources, one PostgreSQL resource, one Redis resource, zero
+  generic services, `17` visible global resource rows, and `1` visible
+  deployment row. Canonical resources remain `soar-api`, `soar-web`,
+  `workers-backtest`, `workers-execution`, `workers-market-data`,
+  `workers-market-stream`, `postgresql`, and `redis`. Application rows report
+  `running:unknown`; PostgreSQL and Redis report `running:healthy`; the visible
+  deployment row was `soar-api` with status `in_progress` and short commit
+  `9f61eb9781c3`. No deploy, push, restart, rollback, env edit, protected
+  smoke, production account use, secret/account readback, raw resource id
+  storage, database/Redis mutation, screenshot, raw log capture, exchange
+  action, order, position, payment/subscription, or live-trading action
+  occurred. Evidence:
+  `history/evidence/luc-3796-coolify-resource-inventory-reconciliation-2026-06-13.md`;
+  task:
+  `history/tasks/luc-3796-coolify-resource-inventory-reconciliation-2026-06-13-task.md`.
 
 ## 2026-06-13 LUC-3708 Coolify Production Deploy Status Inventory
 
