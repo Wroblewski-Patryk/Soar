@@ -1,4 +1,467 @@
+# 2026-06-20 LUC-5213 API `/ready` Timeout Investigation
+
+- Module row: SOAR-OPERATIONS-001 / production performance and server-health
+  readiness.
+- Confidence: partially verified for current public `/ready` health; unknown
+  for the exact [LUC-5198](/LUC/issues/LUC-5198) timeout window.
+- Evidence: [LUC-5213](/LUC/issues/LUC-5213) did not reproduce the active
+  timeout. Node fetch returned API `/ready` 30/30 `200`, max `145 ms`;
+  `curl.exe` returned API `/ready` 20/20 `200`, max `987 ms`.
+- Backend finding: public `/ready` evaluates critical secrets and then
+  sequential runtime dependencies; Redis readiness creates a fresh Redis client
+  per request. This is a plausible latency amplifier, not a proven root cause
+  for the historical `21048 ms` timeout.
+- Next proof or fix: if `/ready` outliers recur, DRE/Ops should capture
+  host/proxy/container timing and sanitized log-window evidence. If backend
+  hardening is authorized, make Redis/database readiness probes concurrent and
+  add focused slow-path tests before any deployment lane.
+- Evidence files:
+  `history/evidence/luc-5213-api-ready-timeout-investigation-2026-06-20.md`;
+  `history/tasks/luc-5213-api-ready-timeout-investigation-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-5210 Gap Register And Repair Lane Refresh
+
+- Module row: Architecture Evidence Graph / proof-gap register and repair-lane
+  routing.
+- Status delta: `VERIFIED_REFRESH / NO_NEW_ACTIONABLE_ARCHITECTURE_GAP /
+  NO_RUNTIME_MUTATION`.
+- Confidence update:
+  [LUC-5210](/LUC/issues/LUC-5210) refreshed the current TSA gap register after
+  same-day graph, QA, security, PM, and production-health lanes. The current
+  architecture-awareness report still has `0` actionable missing-test links,
+  `0` actionable missing-doc links, `0` actionable task-link gaps, `0`
+  ownerless entities, `0` verified-without-proof rows, and `0` disconnected
+  entities, so no new architecture repair child issue was created.
+- Evidence:
+  `history/tasks/luc-5210-gap-register-and-repair-lane-refresh-2026-06-20-task.md`;
+  `docs/graphs/architecture-health.json`;
+  `docs/status/architecture-awareness-report.md`;
+  `docs/status/architecture-graph-drift.md`.
+- Validation:
+  `pnpm run -s architecture:graph:drift:strict` PASS (`849/849`, `0`
+  missing); `pnpm softwarehouse:control-tick` unavailable (`Command
+  "softwarehouse:control-tick" not found`).
+- Residual:
+  V1 release readiness remains blocked outside this architecture lane by
+  protected input readiness, Coolify/VPS server-health readback through
+  [LUC-4811](/LUC/issues/LUC-4811), Web build-info `env-runtime` provenance,
+  and source-control/redeploy approval sequencing.
+
+# 2026-06-20 LUC-5206 Module Confidence Delta
+
+| Date | Module / Journey | State | Evidence | Next proof / fix |
+| --- | --- | --- | --- | --- |
+| 2026-06-20 | Production public Web/API smoke | partially verified | `ops:deploy:smoke` PASS; build-info SHA `42177530f2a2ddc22832133b545bccab6ab404eb`; timing max Web `/` `281 ms`, Web `/api/build-info` `2220 ms`, API `/health` `2484 ms` | Watch tail latency; do not declare release-grade provenance while `metadataSource=env-runtime`. |
+| 2026-06-20 | Authenticated UI module clickthrough | verified for route reachability | `history/evidence/luc-5206-prod-ui-module-clickthrough-2026-06-20.md` PASS | Rerun after auth redirect fix and any redeploy. |
+| 2026-06-20 | Protected auth/session browser proof | failed | `history/evidence/luc-5206-prod-auth-session-browser-proof-2026-06-20.md` FAIL: invalid token redirects to `/auth/login` without `session=expired` | [LUC-5146](/LUC/issues/LUC-5146) decides/fixes contract, then QVE reruns protected proof. |
+| 2026-06-20 | Coolify/VPS/DB/worker health readback | blocked | `ops:coolify-stack:env-check` failed closed with required present `0/16` | [LUC-4811](/LUC/issues/LUC-4811) injects approved read-only binding families. |
+
+# 2026-06-20 LUC-5088 Web Latency Coolify Runtime Correlation
+
+- Module row: SOAR-OPERATIONS-001 / production performance and server-health
+  readiness.
+- Status delta: `PARTIALLY_VERIFIED / SPIKE_NOT_REPRODUCED /
+  RUNTIME_CLUE_RECORDED`.
+- Confidence update:
+  [LUC-5088](/LUC/issues/LUC-5088) completed the DRE correlation follow-up
+  from [LUC-5087](/LUC/issues/LUC-5087). Current public production timing did
+  not reproduce the [LUC-5085](/LUC/issues/LUC-5085) Web `/` spike; Web `/`
+  stayed `115-136 ms` over five samples and adjacent Web/API routes stayed
+  below `124 ms`. Coolify read-only projection now works in this runner and
+  showed no active deployment rows, six app resources, PostgreSQL, Redis, and
+  healthy PostgreSQL/Redis statuses.
+- Evidence:
+  `history/evidence/luc-5088-web-latency-coolify-runtime-correlation-2026-06-20.md`;
+  `history/tasks/luc-5088-web-latency-coolify-runtime-correlation-2026-06-20-task.md`.
+- Validation:
+  public curl timing/header recheck PASS; Coolify read-only projection PASS;
+  `pnpm run -s ops:coolify-stack:env-check:test` PASS (`11/11`);
+  deploy stack env checker FAIL_CLOSED with required present `0/16`.
+- Residual:
+  Exact root cause for the historical spike is unproven. `soar-web` restart
+  count `1` is a runtime clue; future recurrence requires host/proxy
+  time-series and sanitized log-window evidence.
+
+# 2026-06-20 LUC-5043 Gap Register And Repair Lane Refresh
+
+- Module row: Architecture Evidence Graph / proof-gap register and repair-lane
+  routing.
+- Status delta: `VERIFIED_REFRESH / NO_NEW_ACTIONABLE_ARCHITECTURE_GAP /
+  NO_RUNTIME_MUTATION`.
+- Confidence update:
+  [LUC-5043](/LUC/issues/LUC-5043) refreshed the current TSA gap register after
+  same-day graph, QA, security, PM, and production-health lanes. The current
+  architecture-awareness report has `0` actionable missing-test links, `0`
+  actionable missing-doc links, `0` actionable task-link gaps, `0` ownerless
+  entities, `0` verified-without-proof rows, and `0` disconnected entities, so
+  no new architecture repair child issue was created.
+- Evidence:
+  `history/tasks/luc-5043-gap-register-and-repair-lane-refresh-2026-06-20-task.md`;
+  `docs/graphs/architecture-health.json`;
+  `docs/status/architecture-awareness-report.md`;
+  `docs/status/architecture-graph-drift.md`.
+- Validation:
+  `pnpm run -s architecture:graph:drift:strict` PASS (`849/849`, `0`
+  missing); `pnpm run -s quality:guardrails` PASS.
+- Residual:
+  V1 release readiness remains blocked outside this architecture lane by
+  protected input readiness, Coolify/VPS server-health readback through
+  [LUC-4811](/LUC/issues/LUC-4811), Web build-info `env-runtime` provenance,
+  and source-control/redeploy approval sequencing.
+
+# 2026-06-20 LUC-5032 Production Acceptance Confidence
+
+- Module row: production acceptance / auth-session / dashboard route
+  reachability / operations health.
+- Status delta: `PARTIALLY_VERIFIED / APP_HEALTHY /
+  COOLIFY_VPS_READBACK_BLOCKED`.
+- Evidence: public smoke PASS; authenticated UI clickthrough PASS; auth/session
+  browser proof PASS; timing maxes all below `250 ms`; Coolify env checker
+  contract PASS (`11/11`); current-runner binding preflight FAIL closed with
+  required present `0/16`.
+- Residual risk: release-grade server-health remains unverified until
+  [LUC-4811](/LUC/issues/LUC-4811) supplies approved read-only
+  Coolify/VPS/DB/worker bindings.
+- Evidence file:
+  `history/evidence/luc-5032-authenticated-production-acceptance-performance-sweep-2026-06-20.md`.
+
+# 2026-06-20 LUC-5022 Production Performance And Server Health Watch
+
+- Module row: SOAR-OPERATIONS-001 / production performance, auth/session, and
+  server-health readiness.
+- Status delta: `PARTIALLY_VERIFIED / APP_HEALTHY /
+  COOLIFY_VPS_BINDINGS_BLOCKED`.
+- Confidence update:
+  [LUC-5022](/LUC/issues/LUC-5022) refreshed the DRE production health signal.
+  Public Web/API smoke passed, public response timing remained responsive,
+  current build-info stayed on SHA
+  `42177530f2a2ddc22832133b545bccab6ab404eb`, and protected auth/session
+  browser proof passed with redacted artifacts. Confidence remains incomplete
+  for full server health because approved read-only Coolify/VPS/DB/worker
+  binding families are absent from this runner.
+- Evidence:
+  `history/evidence/luc-5022-production-performance-health-watch-2026-06-20.md`;
+  `history/evidence/luc-5022-prod-auth-session-browser-proof-2026-06-20.md`;
+  `history/tasks/luc-5022-production-performance-health-watch-2026-06-20-task.md`.
+- Validation:
+  public smoke PASS; protected auth proof PASS; public timing maxes stayed at
+  Web `/` `411 ms`, Web `/auth/login` `59 ms`, Web `/api/build-info` `30 ms`,
+  API `/health` `96 ms`, and API `/ready` `46 ms`; `pnpm run -s
+  ops:coolify-stack:env-check:test` PASS (`11/11`); current-runner Coolify env
+  check FAIL_CLOSED with required present `0/16`.
+- Residual:
+  [LUC-4811](/LUC/issues/LUC-4811) must inject approved read-only Coolify/VPS
+  server-health bindings before DRE can complete full server-health readback.
+
 # Module Confidence Ledger
+
+## 2026-06-20 LUC-5011 V1 Audit-To-Completion Controller
+
+- Module rows: Architecture Evidence Graph; SOAR-OPERATIONS-001 / V1 release
+  readiness controller.
+- Status delta: `VERIFIED_REFRESH / NO_NEW_ACTIONABLE_ARCHITECTURE_GAP /
+  RELEASE_GATES_STILL_BLOCKED`.
+- Confidence update:
+  [LUC-5011](/LUC/issues/LUC-5011) refreshed the TSA audit-to-completion
+  controller after same-day security, DRE, QA, PM, and graph-drift closure
+  lanes. Strict graph drift remains clean and current architecture-awareness
+  queues have `0` actionable implementation-without-test,
+  implementation-without-doc, task-link, ownerless, and disconnected gaps. No
+  duplicate architecture repair child issue was created.
+- Evidence:
+  `history/tasks/luc-5011-v1-audit-to-completion-controller-2026-06-20-task.md`;
+  `docs/graphs/architecture-health.json`;
+  `docs/status/architecture-awareness-report.md`;
+  `docs/status/architecture-graph-drift.md`.
+- Validation:
+  `pnpm run -s architecture:graph:drift:strict` PASS (`849/849`, `0`
+  missing); `pnpm run -s quality:guardrails` PASS. `pnpm
+  softwarehouse:control-tick` is unavailable in this checkout and remains a
+  control-loop tooling limitation, not a product/runtime failure.
+- Residual:
+  V1 release readiness remains blocked by existing non-architecture lanes:
+  protected input families are incomplete, Coolify/VPS server-health readback
+  awaits [LUC-4811](/LUC/issues/LUC-4811), Web build-info provenance is still
+  diagnostic-only `env-runtime`, and source-control reconciliation is required
+  before any protected redeploy approval targets a commit.
+
+## 2026-06-20 LUC-4971 Security And Account-Access Gate Sweep
+
+- Module rows: Security/account-access gate; SOAR-OPERATIONS-001 protected
+  release/account-access readiness.
+- Status delta: `BLOCKED / PARTIALLY_VERIFIED / PROTECTED_INPUTS_NO_GO`.
+- Confidence update:
+  [LUC-4971](/LUC/issues/LUC-4971) refreshed the no-secret security gate for
+  deployed SHA `42177530f2a2ddc22832133b545bccab6ab404eb`. Public build-info
+  was reachable but remains diagnostic-only with `metadataSource=env-runtime`.
+  Protected input readiness remains `PARTIAL/NO-GO`: `LIVEIMPORT_READBACK_*`
+  and UI audit/input families are present by count, but rollback, production
+  app/operator, DB-check, RC, and gate approver families remain absent.
+- Evidence:
+  `history/tasks/luc-4971-security-account-access-gate-sweep-2026-06-20-task.md`;
+  `history/evidence/luc-4971-security-account-access-gate-readiness-42177530-2026-06-20.md`;
+  `history/artifacts/luc-4971-security-account-access-gate-readiness-42177530-2026-06-20.json`.
+- Validation:
+  protected-input checker PASS with `PARTIAL/NO-GO`; API redaction/crypto/
+  critical-secret tests PASS (`18/18`); subscription/exchange boundary tests
+  PASS (`17/17`); tracked filename scan found no tracked `.env` file.
+- Residual:
+  Board-capable Security/Ops secret owner must bind missing protected input
+  families before protected account, payment, API-key, exchange, rollback, DB,
+  RC, gate-approval, or live-trading proof can proceed.
+
+## 2026-06-20 LUC-4959 Production Performance And Server Health Watch
+
+- Module row: SOAR-OPERATIONS-001 / production performance, auth/session, and
+  server-health readiness.
+- Status delta: `PARTIALLY_VERIFIED / APP_HEALTHY /
+  COOLIFY_VPS_BINDINGS_BLOCKED`.
+- Confidence update:
+  [LUC-4959](/LUC/issues/LUC-4959) refreshed the DRE production health signal.
+  Public Web/API smoke passed, public response timing remained low, current
+  build-info stayed on SHA `42177530f2a2ddc22832133b545bccab6ab404eb`, and
+  protected auth/session browser proof passed with redacted artifacts.
+  Confidence remains incomplete for full server health because approved
+  read-only Coolify/VPS/DB/worker binding families are absent from this runner.
+- Evidence:
+  `history/evidence/luc-4959-production-performance-health-watch-2026-06-20.md`;
+  `history/evidence/luc-4959-prod-auth-session-browser-proof-2026-06-20.md`;
+  `history/tasks/luc-4959-production-performance-health-watch-2026-06-20-task.md`.
+- Validation:
+  public smoke PASS; protected auth proof PASS; public timing maxes stayed
+  below `150 ms`; `pnpm run -s ops:coolify-stack:env-check:test` PASS
+  (`11/11`); current-runner Coolify env check FAIL_CLOSED with required
+  present `0/16`.
+- Residual:
+  [LUC-4811](/LUC/issues/LUC-4811) must inject approved read-only Coolify/VPS
+  server-health bindings before DRE can complete full server-health readback.
+
+## 2026-06-20 LUC-4945 Stripe Webhook Graph Drift Repair
+
+- Module row: Architecture Evidence Graph / Stripe webhook traceability and
+  guardrail health.
+- Status delta: `VERIFIED_LOCAL / ARCHITECTURE_GRAPH_DRIFT_REPAIRED /
+  NO_RUNTIME_MUTATION`.
+- Confidence update:
+  [LUC-4945](/LUC/issues/LUC-4945) repaired the source registry gap that
+  caused [LUC-4939](/LUC/issues/LUC-4939) to fail guardrails. The Stripe
+  webhook route, service, and existing e2e proof now have canonical source
+  graph registry rows, and strict graph drift reports `0` missing paths.
+- Evidence:
+  `history/tasks/luc-4945-repair-stripewebhook-graph-drift-2026-06-20-task.md`;
+  `docs/architecture/registry/api_routes.csv`;
+  `docs/architecture/registry/functions.csv`;
+  `docs/architecture/registry/tests.csv`;
+  `docs/architecture/registry/nodes.csv`;
+  `docs/status/architecture-graph-drift.md`.
+- Validation:
+  `pnpm run architecture:graph:drift:strict` PASS (`849/849`, `0` missing);
+  `pnpm run architecture:graph:generate` PASS (`656` nodes, `842` relations,
+  `27` chains); final `pnpm run architecture:graph:drift:strict` PASS
+  (`849/849`, `0` missing); `pnpm run quality:guardrails` PASS.
+- Residual:
+  Protected production Stripe webhook smoke remains separate approval-gated
+  Security/Ops/QA work and is not implied by this local architecture repair.
+
+## 2026-06-20 LUC-4939 Regression Evidence Sweep
+
+- Module rows: SOAR-OPERATIONS-001 / regression evidence baseline; Architecture
+  Evidence Graph / graph drift guardrail.
+- Status delta: `PARTIALLY_VERIFIED / SAFE_SMOKE_GREEN /
+  ARCHITECTURE_GRAPH_DRIFT_REPAIRED_BY_LUC_4945`.
+- Confidence update:
+  [LUC-4939](/LUC/issues/LUC-4939) refreshed the safe QA baseline. Repeatable
+  Web/API/backtests smoke passed, docs parity passed, and public production
+  Web/API smoke passed with workers skipped. Its delegated graph drift has
+  since been repaired by [LUC-4945](/LUC/issues/LUC-4945).
+- Evidence:
+  `history/evidence/qa-repeatable-smoke-e2e-2026-06-20.md`;
+  `history/artifacts/qa-repeatable-smoke-e2e-2026-06-20.json`;
+  `docs/status/architecture-graph-drift.md`;
+  `history/tasks/luc-4939-regression-evidence-sweep-2026-06-20-task.md`.
+- Validation:
+  repeatable QA smoke PASS; docs parity PASS; public deploy smoke
+  `--no-workers` PASS; original `architecture:graph:drift:strict` FAIL
+  (`847/849`) and `quality:guardrails` FAIL were superseded by
+  [LUC-4945](/LUC/issues/LUC-4945) PASS evidence.
+- Residual:
+  No remaining graph-drift repair is open for this exact Stripe webhook pair.
+  Protected production Stripe webhook smoke remains separate approval-gated
+  Security/Ops/QA work.
+
+## 2026-06-20 LUC-4929 Coolify Production Deploy Health Sweep
+
+- Module row: SOAR-OPERATIONS-001 / production deploy health and Coolify/VPS
+  diagnosis.
+- Status delta: `PARTIALLY_VERIFIED / APP_HEALTHY /
+  DEPLOY_PROVENANCE_AND_COOLIFY_BINDINGS_BLOCKED`.
+- Confidence update:
+  [LUC-4929](/LUC/issues/LUC-4929) verified public production Web/API health,
+  current Web build-info readback, protected auth/session browser behavior, and
+  public timing. Confidence remains incomplete for release-grade Web source
+  provenance because build-info still reports `metadataSource=env-runtime`, and
+  incomplete for Coolify/VPS deploy diagnosis because approved read-only
+  binding families are absent from the DRE runner.
+- Evidence:
+  `history/evidence/luc-4929-coolify-production-deploy-health-sweep-2026-06-20.md`;
+  `history/evidence/luc-4929-prod-auth-session-browser-proof-2026-06-20.md`;
+  `history/tasks/luc-4929-coolify-production-deploy-health-sweep-2026-06-20-task.md`.
+- Validation:
+  public smoke passed; protected auth proof passed; public timing maxes stayed
+  below `275 ms`; `pnpm run -s ops:coolify-stack:env-check:test` passed
+  (`11/11`); release provenance gate failed closed on
+  `unaccepted metadataSource=env-runtime`; current-runner Coolify env check
+  failed closed with required present `0/16`.
+- Residual:
+  [LUC-4811](/LUC/issues/LUC-4811) must inject approved read-only Coolify/VPS
+  status bindings into the DRE runtime before deploy rows/log/resource/VPS
+  health can be diagnosed. Fresh `soar-web` deploy approval is still required
+  after source-control reconciliation to restore release-grade build metadata.
+
+## 2026-06-20 LUC-4912 Web Build-Info Env-Runtime Provenance Gate Mismatch
+
+- Module row: SOAR-OPERATIONS-001 / Web build-info deploy provenance.
+- Status delta: `VERIFIED_NO_CODE_CHANGE /
+  DEPLOY_APPROVAL_STILL_REQUIRED`.
+- Confidence update:
+  [LUC-4912](/LUC/issues/LUC-4912) verified that current production Web reports
+  the expected `origin/main` SHA `42177530...` but only via
+  `metadataSource=env-runtime`. The deploy gate correctly rejects this as
+  non-release-grade provenance. Public Web/API health evidence remains useful,
+  but Web image/source provenance is not closed until a selected redeploy emits
+  `metadataSource=env`, `git`, or `git-files`.
+- Evidence:
+  `docs/operations/deployment-readiness-gates.md`;
+  `docs/operations/post-deploy-smoke-checklist.md`;
+  `history/tasks/luc-4912-web-build-info-env-runtime-provenance-gate-mismatch-2026-06-20-task.md`.
+- Validation:
+  `node scripts/waitForWebBuildInfo.mjs --build-info-url https://soar.luckysparrow.ch/api/build-info --expected-sha 42177530 --timeout-seconds 1 --interval-seconds 1 --request-timeout-ms 10000`
+  failed closed as expected; `node --test scripts/waitForWebBuildInfo.test.mjs scripts/writeWebBuildMetadata.test.mjs scripts/runWebNextProductionCommand.test.mjs`
+  passed (`17/17`).
+- Residual:
+  Fresh protected redeploy approval is still needed after source-control
+  reconciliation selects the candidate commit. Do not target dirty local
+  `HEAD` `5478f764...`; current production/origin target is `42177530...`
+  unless a later approved main commit supersedes it.
+
+## 2026-06-20 LUC-4854 Implementation-Without-Tests Health Signal Classification
+
+- Module row: Architecture Evidence Graph / implementation-without-tests
+  health signal.
+- Status delta: `VERIFIED_CLASSIFICATION / NO_NEW_ACTIONABLE_GAP /
+  NO_RUNTIME_MUTATION`.
+- Confidence update:
+  [LUC-4854](/LUC/issues/LUC-4854) classified the post-[LUC-4849](/LUC/issues/LUC-4849)
+  `implementation_without_tests=1288` raw signal. The current actionable
+  missing-test queue is `0`; exposed raw samples are covered by curated
+  graph/proof-register evidence or scanner noise categories rather than new
+  exact repair rows.
+- Evidence:
+  `docs/graphs/architecture-health.json`;
+  `docs/status/architecture-awareness-report.md`;
+  `docs/status/task-synchronization-report.md`;
+  `docs/graphs/architecture-proof-register.csv`;
+  `history/tasks/luc-4854-implementation-without-tests-health-signal-classification-2026-06-20-task.md`.
+- Residual:
+  Next scanner/report generation should reconcile the markdown report's
+  aggregate count table with the current JSON health export. No child repair
+  issue was created because no exact actionable missing-test row remains.
+
+## 2026-06-20 LUC-4843 Gap Register And Repair Lane Refresh
+
+- Module row: Architecture Evidence Graph / proof-gap register and repair-lane
+  routing.
+- Status delta: `VERIFIED_REFRESH / NO_RUNTIME_MUTATION`.
+- Confidence update:
+  [LUC-4843](/LUC/issues/LUC-4843) reconciled the current architecture
+  awareness and proof-gap state. The latest architecture-awareness report has
+  `0` actionable missing-test links, `0` actionable missing-doc links, `0`
+  actionable task-link gaps, `0` ownerless entities, and `0` disconnected
+  entities, so no new architecture repair child issue was needed.
+- Evidence:
+  `docs/status/architecture-awareness-report.md`;
+  `docs/obsidian/proof-gap-register.md`;
+  `history/tasks/luc-4843-gap-register-and-repair-lane-refresh-2026-06-20-task.md`.
+- Residual:
+  Production server-health confidence remains incomplete until
+  [LUC-4767](/LUC/issues/LUC-4767) -> [LUC-4806](/LUC/issues/LUC-4806) ->
+  [LUC-4811](/LUC/issues/LUC-4811) supplies approved read-only Coolify/VPS
+  bindings and DRE reruns the readback.
+
+## 2026-06-20 LUC-4833 Authenticated Production Acceptance And Performance Sweep
+
+- Module row: SOAR-OPERATIONS-001 / authenticated production acceptance and
+  performance.
+- Status delta: `PARTIALLY_VERIFIED / APP_HEALTHY /
+  COOLIFY_VPS_BINDINGS_BLOCKED`.
+- Confidence update:
+  [LUC-4833](/LUC/issues/LUC-4833) verified current production app-level
+  acceptance on SHA `42177530f2a2ddc22832133b545bccab6ab404eb`: public Web/API
+  smoke passed, protected auth/session proof passed, and authenticated
+  route/module clickthrough passed across public, dashboard, admin, and legacy
+  redirect surfaces. This does not prove full server health because Coolify/VPS
+  binding names are absent from this QVE runtime.
+- Evidence:
+  `history/evidence/luc-4833-authenticated-production-acceptance-performance-sweep-2026-06-20.md`;
+  `history/tasks/luc-4833-authenticated-production-acceptance-performance-sweep-2026-06-20-task.md`;
+  `history/evidence/luc-4833-prod-auth-session-browser-proof-2026-06-20.md`;
+  `history/evidence/luc-4833-prod-ui-module-clickthrough-2026-06-20.md`.
+- Validation:
+  `pnpm run -s ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`;
+  `pnpm run -s ops:prod-auth:proof -- --i-understand-production-auth-proof --expected-sha 42177530f2a2ddc22832133b545bccab6ab404eb --today 2026-06-20 --output-json history/evidence/_artifacts-luc-4833-prod-auth-session-browser-proof-2026-06-20.json --output-md history/evidence/luc-4833-prod-auth-session-browser-proof-2026-06-20.md`;
+  `pnpm run -s ops:ui:prod-clickthrough -- --expected-sha 42177530f2a2ddc22832133b545bccab6ab404eb --today 2026-06-20 --output-json history/evidence/_artifacts-luc-4833-prod-ui-module-clickthrough-2026-06-20.json --output-md history/evidence/luc-4833-prod-ui-module-clickthrough-2026-06-20.md`;
+  `pnpm run -s ops:coolify-stack:env-check:test` (`11/11`).
+- Residual:
+  Coolify/VPS health evidence remains blocked by missing approved read-only
+  binding families. Existing blocker chain:
+  [LUC-4767](/LUC/issues/LUC-4767) -> [LUC-4806](/LUC/issues/LUC-4806) ->
+  [LUC-4811](/LUC/issues/LUC-4811).
+
+## 2026-06-20 LUC-4819 Production Performance And Server Health Watch
+
+- Module row: SOAR-OPERATIONS-001 / production performance and server health.
+- Status delta: `PARTIALLY_VERIFIED / APP_HEALTHY /
+  COOLIFY_VPS_BINDINGS_BLOCKED`.
+- Confidence update:
+  [LUC-4819](/LUC/issues/LUC-4819) verified that public production web/API
+  surfaces remain responsive and protected auth/session dashboard proof passes
+  on production SHA `42177530f2a2ddc22832133b545bccab6ab404eb`. This does not
+  prove full server health because Coolify/VPS binding names are absent from
+  the DRE runtime.
+- Evidence:
+  `history/evidence/luc-4819-production-performance-health-watch-2026-06-20.md`;
+  `history/tasks/luc-4819-production-performance-health-watch-2026-06-20-task.md`;
+  `docs/operations/prod-auth-session-browser-proof-current-2026-06-20.md`.
+- Validation:
+  `pnpm run -s ops:deploy:smoke -- --base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`;
+  `pnpm run -s ops:prod-auth:proof -- --i-understand-production-auth-proof`;
+  `pnpm run -s ops:coolify-stack:env-check:test` (`11/11`).
+- Residual:
+  Coolify/VPS health evidence remains blocked by missing approved read-only
+  binding families. Existing blocker chain:
+  [LUC-4767](/LUC/issues/LUC-4767) -> [LUC-4806](/LUC/issues/LUC-4806) ->
+  [LUC-4811](/LUC/issues/LUC-4811).
+
+## 2026-06-20 LUC-4815 V1 Audit-To-Completion Controller
+
+- Module row: Architecture Evidence Graph / Stripe webhook traceability and
+  architecture-awareness controller.
+- Status delta: `VERIFIED_LOCAL / NO_RUNTIME_MUTATION`.
+- Confidence update:
+  [LUC-4815](/LUC/issues/LUC-4815) restored the missing
+  [LUC-4212](/LUC/issues/LUC-4212) Stripe webhook priority test-link rows into
+  the current project workspace and refreshed architecture-awareness. The
+  refreshed report generated `2026-06-20T04:23:46.334Z` reports `0`
+  actionable missing-test links, `0` actionable missing-doc links, `0`
+  actionable task-link gaps, `0` ownerless entities, and `0` disconnected
+  entities.
+- Evidence:
+  `history/tasks/luc-4815-v1-audit-to-completion-controller-stripe-relation-sync-2026-06-20-task.md`;
+  `docs/status/architecture-awareness-report.md`;
+  `docs/architecture/relations/priority-test-links.csv`.
+- Residual:
+  Protected production Stripe webhook smoke remains separate Security/Ops/QA
+  work requiring approved credentials and operator approval.
 
 ## 2026-06-15 LUC-4144 Coolify Read-Only Production Status Access
 
@@ -7004,6 +7467,22 @@ Do not turn uncertainty into optimism.
 - 2026-06-07 | Release audit tooling / `runProdSecurityExchangeProof` helper
   traceability | implemented, not verified | [LUC-2955](/LUC/issues/LUC-2955)
   selected `scripts/runProdSecurityExchangeProof.mjs` as the next non-duplicate
+# 2026-06-20 LUC-5085 Production Web Home Latency Signal
+
+- Module row: SOAR-OPERATIONS-001 / production performance and server-health
+  readiness.
+- Status delta: `PARTIALLY_VERIFIED / INCIDENT_DELEGATED`. Public API health,
+  API ready, Web login, Web build-info, and protected auth/session proof passed,
+  but public Web `/` showed repeated user-visible latency spikes up to
+  `21953 ms` on HTTP `200` responses.
+- Evidence:
+  `history/evidence/luc-5085-production-performance-health-watch-2026-06-20.md`;
+  `history/evidence/luc-5085-prod-auth-session-browser-proof-2026-06-20.md`;
+  `history/tasks/luc-5085-production-performance-health-watch-2026-06-20-task.md`.
+- Next proof/fix: [LUC-5087](/LUC/issues/LUC-5087) reproduces and isolates
+  Web `/` latency; [LUC-4811](/LUC/issues/LUC-4811) still owns approved
+  Coolify/VPS/DB/worker read-only binding injection for full server health.
+
   missing-test family and created [LUC-2956](/LUC/issues/LUC-2956) for local
   helper proof/classification. Syntax check passed for the runner; no helper
   test exists yet. | `history/tasks/luc-2955-v1-audit-to-completion-controller-2026-06-07-task.md` |

@@ -2,6 +2,20 @@
 
 Purpose: keep a compact memory of recurring execution pitfalls and verified fixes for this repository.
 
+# 2026-06-20 LUC-5206 Browser Cleanup Anomaly
+
+- During `ops:prod-auth:proof`, the proof wrote a complete failing artifact but
+  the shell command exceeded its timeout and left Edge cleanup in a degraded
+  state.
+- Cleanup removed `.tmp/prod-auth-cdp-1781973624928` and targeted the started
+  Edge process ids with `Stop-Process` and `taskkill`. A later check showed a
+  second Edge/CDP process tree, but its parent was a separate
+  `luc-5198-prod-auth-session-browser-proof` command, so ownership had to be
+  checked before further cleanup.
+- Future browser proof runners should include stronger self-timeout/finally
+  cleanup around child process trees, unique CDP ports per concurrent run, and
+  ownership-aware process cleanup instead of broad port/profile matching.
+
 ## Update Rules
 - Add or update an entry when a failure pattern is reproducible or documented.
 - Prefer updating an existing entry over creating duplicates.
@@ -19,6 +33,26 @@ Purpose: keep a compact memory of recurring execution pitfalls and verified fixe
 - Avoid:
 - Evidence:
 ```
+
+### 2026-06-20 - Timed production browser proof must leave a cleanup trail
+- Context: [LUC-5143](/LUC/issues/LUC-5143) ran the production auth session
+  browser proof with approved audit credentials mapped process-locally to the
+  script's `PROD_AUTH_*` inputs.
+- Symptom: the proof generated a redacted FAIL artifact, then the shell command
+  exceeded the timeout and left an Edge process tree plus a fresh
+  `.tmp/prod-auth-cdp-*` directory.
+- Root cause: the proof script can finish writing failure artifacts before the
+  browser/CDP process fully exits; external command timeout interrupts normal
+  cleanup.
+- Guardrail: after any timed-out browser/CDP proof, inspect the newest
+  `.tmp/prod-auth-cdp-*` path and narrowly check `chrome-headless-shell`,
+  `chrome`, and `msedge` processes by PID/start time before closure.
+- Preferred pattern: clean only the validation-created process ids and temp
+  directory, then record cleanup evidence in the task result.
+- Avoid: broad browser process kills or leaving timeout-created browser
+  children for the next heartbeat.
+- Evidence:
+  `history/evidence/luc-5143-production-performance-health-watch-2026-06-20.md`.
 
 ### 2026-06-06 - Architecture Backlog Must Beat Historical Checkboxes
 - Context: [LUC-2557](/LUC/issues/LUC-2557) converted current architecture
@@ -3492,3 +3526,19 @@ Test-Path $dst
 - Pitfall: `scripts/runProdUiModuleClickthroughAudit.mjs` can pass protected route HTML checks with any non-empty `token` cookie because web middleware only checks cookie presence. This does not prove `/auth/me` session validity or real browser authenticated rendering.
 - Evidence: redacted `/auth/me` returned HTTP `401` and `runProdAuthSessionBrowserProof` kept `/dashboard` on `/auth/login`, while route HTML clickthrough passed.
 - Rule: For protected production app evidence, require `/auth/me` HTTP 200 or real browser authenticated rendering in addition to route HTML reachability before marking proof done.
+
+## 2026-06-20 - Timed-out auth proof can leave a stubborn Edge child process
+
+- Context: [LUC-5198](/LUC/issues/LUC-5198) production auth proof generated a
+  PASS artifact, but the shell command hit the heartbeat timeout before normal
+  cleanup.
+- Symptom: validation-created Edge PID `21300` remained with command line
+  `--remote-debugging-port=9337` and user data dir
+  `.tmp/prod-auth-cdp-1781974249661`. `Stop-Process`, targeted `taskkill`, and
+  WMI terminate did not remove it during the heartbeat.
+- Guardrail: when `runProdAuthSessionBrowserProof` times out after writing an
+  artifact, inspect the parent `node` process and browser command line before
+  cleanup, record the exact temp profile, and treat any unremoved validation
+  process as a P1 environment cleanup regression in the task evidence.
+- Evidence:
+  `history/evidence/luc-5198-production-performance-health-watch-2026-06-20.md`.

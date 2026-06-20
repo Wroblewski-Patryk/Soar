@@ -52,9 +52,10 @@ Quickly confirm that the deployed revision is operational for critical user flow
 - static assets load correctly (no broken chunks).
 - `/api/build-info` exposes the deployed candidate SHA with authoritative
   source provenance: `metadataSource=env`, `metadataSource=git`, or
-  `metadataSource=git-files`. Branch-head fallbacks such as `github-branch`
-  or `github-branch-runtime` are diagnostics only and fail the deploy
-  provenance gate.
+  `metadataSource=git-files`. Runtime-only fallback metadata such as
+  `env-runtime` and branch-head fallbacks such as `github-branch` or
+  `github-branch-runtime` are diagnostics only and fail the deploy provenance
+  gate.
 
 ### 3) Auth baseline
 - valid login works,

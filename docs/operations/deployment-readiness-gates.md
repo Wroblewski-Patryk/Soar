@@ -51,6 +51,11 @@ Required:
   build metadata (`metadataSource=env`, `git`, or `git-files`). Missing SHA,
   `unknown`, runtime-only metadata, or GitHub branch-head fallback metadata
   are inconclusive and fail closed for deploy provenance.
+- If production reports the expected SHA with `metadataSource=env-runtime`,
+  treat the app as public-smoke healthy but not release-provenance verified.
+  The next Web deploy approval must select a reconciled source commit and make
+  the build stage emit `.build-meta/BUILD_META.json` from `SOURCE_COMMIT`,
+  repository `git`, or repository `.git` files.
 
 Failure effect: prod rollback trigger if post-deploy.
 

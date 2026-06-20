@@ -1,3 +1,563 @@
+# 2026-06-20 LUC-5198 Production Performance And Server Health Watch
+
+- `LUC-5198-PRODUCTION-PERFORMANCE-HEALTH-WATCH-2026-06-20` completed as a
+  DRE read-only production health checkpoint with final disposition
+  `INCIDENT_DELEGATED / PARTIALLY_VERIFIED / API_READY_TIMEOUT_SIGNAL`.
+  Wake `issue_assigned` had no pending comments (`fallbackFetchNeeded=false`);
+  checkout was already claimed by the harness and was not repeated. Public
+  production smoke passed for API `/health`, API `/ready`, Web `/`, and Web
+  `/api/build-info`. Production build-info resolved
+  `42177530f2a2ddc22832133b545bccab6ab404eb` on `main`, build id
+  `Urnq8xtZUh932c0e3vKGl`, with diagnostic-only
+  `metadataSource=env-runtime`. Web timing was healthy, and protected
+  auth/session proof passed with redacted artifacts, including invalid-token
+  `session=expired`. Focused API recheck normalized `/health` but exposed an
+  API `/ready` timeout/outlier signal: one `000` at `21048 ms`, plus `884`,
+  `1416`, and `1626 ms` outliers over ten samples. Coolify read-only
+  projection succeeded with `17` visible global resources and `0` visible
+  deployments; application rows remain `running:unknown`, while global
+  PostgreSQL/Redis rows are `running:healthy`. DRE created
+  [LUC-5213](/LUC/issues/LUC-5213) for Core Backend investigation. Cleanup
+  anomaly: validation-created Edge PID `21300` and temp profile
+  `.tmp/prod-auth-cdp-1781974249661` resisted targeted cleanup attempts and
+  were recorded in the learning journal. No deploy, push, restart, rollback,
+  env edit, secret/account readback, database/Redis mutation, raw log capture,
+  exchange action, order, position, payment/subscription mutation, or
+  live-trading action occurred. Evidence:
+  `history/evidence/luc-5198-production-performance-health-watch-2026-06-20.md`;
+  `history/tasks/luc-5198-production-performance-health-watch-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-5213 API Ready Timeout Investigation
+
+- `LUC-5213-API-READY-TIMEOUT-INVESTIGATION-2026-06-20` completed as a Core
+  Backend read-only production timing and source-inspection checkpoint. Wake
+  `issue_assigned` had no pending comments (`fallbackFetchNeeded=false`);
+  checkout was already claimed by the harness and was not repeated. Paperclip
+  heartbeat-context readback succeeded.
+- Parent [LUC-5198](/LUC/issues/LUC-5198) remains valid historical evidence:
+  API `/ready` had one `000` timeout at `21048 ms` plus low-second outliers.
+- Current focused probes did not reproduce active `/ready` timeout: Node fetch
+  returned API `/ready` 30/30 `200`, max `145 ms`; `curl.exe` returned API
+  `/ready` 20/20 `200`, max `987 ms`.
+- Backend source inspection found sequential Redis/database readiness checks
+  and fresh Redis client creation per public `/ready` request as a plausible
+  latency amplifier, but not a proven root cause for the historical timeout.
+- No code, deploy, push, restart, rollback, env edit, protected smoke,
+  secret/account readback, database/Redis mutation, raw log capture, exchange
+  action, order, position, payment/subscription mutation, or live-trading
+  action occurred. Evidence:
+  `history/evidence/luc-5213-api-ready-timeout-investigation-2026-06-20.md`;
+  `history/tasks/luc-5213-api-ready-timeout-investigation-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-5210 Gap Register And Repair Lane Refresh
+
+- `LUC-5210-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-06-20` completed as a
+  Technical Solution Architect architecture gap-register refresh. Wake
+  `issue_assigned` had no pending comments (`fallbackFetchNeeded=false`);
+  checkout was already claimed by the harness and was not repeated. Paperclip
+  heartbeat-context readback succeeded. Current architecture-health snapshot
+  generated `2026-06-20T05:14:22.302Z` reports `9652` entities, `30975`
+  relations, raw `implementation_without_tests=1288`, raw
+  implementation-without-docs `313`, actionable missing-test/doc/task-link
+  counts `0`, verified-without-proof `0`, ownerless entities `0`, and
+  disconnected entities `0`. Strict graph drift passed with `849/849` covered
+  and `0` missing. `pnpm softwarehouse:control-tick` remains unavailable in
+  this checkout (`Command "softwarehouse:control-tick" not found`). No new
+  child repair issue was created because no fresh exact actionable architecture
+  gap exists. No runtime code, deploy, push, restart, rollback, env edit,
+  protected smoke, secret/account readback, database/Redis mutation, exchange
+  action, order, position, payment/subscription mutation, or live-trading
+  action occurred. Evidence:
+  `history/tasks/luc-5210-gap-register-and-repair-lane-refresh-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-5206 Authenticated Production Acceptance And Performance Sweep
+
+- `LUC-5206-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-06-20`
+  completed as a QVE read-only production acceptance checkpoint with final
+  disposition `BLOCKED / PARTIALLY_VERIFIED / AUTH_PROOF_FAILED /
+  COOLIFY_VPS_BINDINGS_BLOCKED`. Public smoke passed for API `/health`, API
+  `/ready`, Web `/`, and Web `/api/build-info`. Production build-info resolved
+  SHA `42177530f2a2ddc22832133b545bccab6ab404eb` on `main`, build id
+  `Urnq8xtZUh932c0e3vKGl`, with diagnostic-only `metadataSource=env-runtime`.
+  Five-sample public timing returned 200 for every sample; maxes were Web `/`
+  `281 ms`, Web `/auth/login` `225 ms`, Web `/api/build-info` `2220 ms`,
+  API `/health` `2484 ms`, and API `/ready` `199 ms`. Authenticated UI module
+  clickthrough passed. Protected auth/session browser proof failed on the
+  invalid-token expired-session redirect contract (`/auth/login` without
+  `session=expired`) while other auth/session steps passed. Existing repair
+  issue [LUC-5146](/LUC/issues/LUC-5146) remains the exact Frontend owner lane.
+  Coolify checker tests passed (`11/11`), while current-runner binding preflight
+  failed closed with required present `0/16`; full server-health readback
+  remains blocked by [LUC-4811](/LUC/issues/LUC-4811). Cleanup removed the
+  validation-created `LUC-5206` profile directory; later Edge rows were traced
+  to a separate `LUC-5198` proof process and left to that owning run. The
+  concurrent browser ownership pitfall is recorded in the learning journal. No
+  deploy, push, restart, rollback, env
+  edit, secret/account readback, database/Redis mutation, raw log capture,
+  screenshot, exchange action, order, position, payment/subscription mutation,
+  or live-trading action occurred. Evidence:
+  `history/evidence/luc-5206-authenticated-production-acceptance-performance-sweep-2026-06-20.md`;
+  `history/tasks/luc-5206-authenticated-production-acceptance-performance-sweep-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-5192 V1 Audit-To-Completion Controller
+
+- `LUC-5192-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-06-20` completed as a
+  Technical Solution Architect controller refresh. Wake `issue_assigned` had no
+  pending comments (`fallbackFetchNeeded=false`); checkout was already claimed
+  by the harness and was not repeated. Paperclip heartbeat-context readback
+  succeeded. Strict architecture graph drift passed with `849/849` covered and
+  `0` missing. Current architecture-health snapshot remains generated at
+  `2026-06-20T05:14:22.302Z` with `9652` entities, `30975` relations, raw
+  `implementation_without_tests=1288`, and `verified_without_proof=0`.
+  `pnpm run -s quality:guardrails` timed out after `184071 ms`, so it is not
+  claimed as passed. `pnpm softwarehouse:control-tick` remains unavailable in
+  this checkout (`Command "softwarehouse:control-tick" not found`). No new
+  child repair issue was created because no fresh exact actionable architecture
+  gap was identified from the clean strict drift result. V1 remains partially
+  verified and release-blocked by existing non-architecture lanes: protected
+  input readiness, Coolify/VPS read-only binding injection through
+  [LUC-4811](/LUC/issues/LUC-4811), Web build-info provenance, and
+  source-control/redeploy approval sequencing. No runtime code, deploy, push,
+  restart, rollback, env edit, protected smoke, secret/account readback,
+  database/Redis mutation, exchange action, order, position,
+  payment/subscription mutation, or live-trading action occurred. Evidence:
+  `history/tasks/luc-5192-v1-audit-to-completion-controller-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-5143 Production Performance And Server Health Watch
+
+- `LUC-5143-PRODUCTION-PERFORMANCE-HEALTH-WATCH-2026-06-20` completed as a
+  DRE read-only production health checkpoint with final disposition
+  `INCIDENT_DELEGATED / PARTIALLY_VERIFIED / PUBLIC_APP_HEALTHY /
+  PROTECTED_AUTH_PROOF_FAILED`. Wake `issue_assigned` had no pending comments
+  (`fallbackFetchNeeded=false`); checkout was already claimed by the harness
+  and was not repeated. Public production smoke passed for API `/health`, API
+  `/ready`, Web `/`, and Web `/api/build-info`; five-sample public timing did
+  not reproduce the earlier Web `/` spike. Production build-info resolved
+  `42177530f2a2ddc22832133b545bccab6ab404eb` on `main` with diagnostic-only
+  `metadataSource=env-runtime`. Coolify read-only projection succeeded for
+  selector `LuckySparrow`, project `Soar`, production environment, `17`
+  visible resources, and `0` visible deployments; PostgreSQL and Redis are
+  `running:healthy`, while app rows remain `running:unknown`. Protected auth
+  proof generated redacted artifacts and confirmed dashboard render/logout
+  checks, but failed the invalid-token expired-session query contract
+  (`/auth/login` without `session=expired`) and then exceeded the shell
+  timeout. DRE created [LUC-5146](/LUC/issues/LUC-5146), assigned to Frontend
+  Web with Security review required if auth/session semantics change. Cleanup
+  removed the validation-created temp directory and Edge process ids. No
+  deploy, push, restart, rollback, env edit, secret/account readback,
+  database/Redis mutation, raw log capture, screenshot, account mutation,
+  exchange action, payment/subscription mutation, or live-trading action
+  occurred. Evidence:
+  `history/evidence/luc-5143-production-performance-health-watch-2026-06-20.md`;
+  `history/tasks/luc-5143-production-performance-health-watch-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-5088 Web Latency Coolify Runtime Correlation
+
+- `LUC-5088-WEB-LATENCY-COOLIFY-RUNTIME-CORRELATION-2026-06-20` completed as
+  a DRE read-only production runtime correlation checkpoint with final
+  disposition `DONE / PARTIALLY_VERIFIED / SPIKE_NOT_REPRODUCED /
+  RUNTIME_CLUE_RECORDED`. Wake `issue_assigned` had no pending comments
+  (`fallbackFetchNeeded=false`); checkout was already claimed by the harness
+  and was not repeated. Public timing did not reproduce the [LUC-5085](/LUC/issues/LUC-5085)
+  Web `/` spike: Web `/` `115-136 ms` over five samples, `/auth/login`
+  `99-119 ms`, `/api/build-info` `93-104 ms`, API `/health` `94-104 ms`, and
+  API `/ready` `91-124 ms`. Header checks confirmed Web `/` remains a static
+  Next.js cache hit. Coolify read-only API correlation succeeded: selector
+  `LuckySparrow`, project `Soar`, production environment id `6`, six
+  applications, PostgreSQL, Redis, `17` global resources, and `0` visible
+  deployment rows. `soar-web` currently reports `running:unknown`, restart
+  count `1`, and no configured CPU/memory limits; PostgreSQL and Redis report
+  `running:healthy`. Exact root cause for the historical spike is not proven
+  without host/proxy time-series or sanitized log-window evidence. No deploy,
+  push, restart, rollback, env edit, secret/account readback, database/Redis
+  mutation, raw log capture, account mutation, exchange action,
+  payment/subscription mutation, or live-trading action occurred. Evidence:
+  `history/evidence/luc-5088-web-latency-coolify-runtime-correlation-2026-06-20.md`;
+  `history/tasks/luc-5088-web-latency-coolify-runtime-correlation-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-5085 Production Performance And Server Health Watch
+
+- `LUC-5085-PRODUCTION-PERFORMANCE-HEALTH-WATCH-2026-06-20` completed as a
+  DRE read-only production health checkpoint with final disposition
+  `INCIDENT_DELEGATED / PARTIALLY_VERIFIED / WEB_HOME_LATENCY_SPIKES /
+  COOLIFY_VPS_BINDINGS_BLOCKED`. Wake `issue_assigned` had no pending comments
+  (`fallbackFetchNeeded=false`); checkout was already claimed by the harness
+  and was not repeated. Public production smoke passed for API `/health`, API
+  `/ready`, Web `/`, and Web `/api/build-info`. Production build-info resolved
+  SHA `42177530f2a2ddc22832133b545bccab6ab404eb` on `main`, build id
+  `Urnq8xtZUh932c0e3vKGl`, with diagnostic-only
+  `metadataSource=env-runtime`, checked at `2026-06-20T12:22:00.029Z`.
+  Public timing exposed a new Web `/` latency regression signal: three-sample
+  max `10512 ms`, then focused five-sample Web `/` recheck max `21953 ms`
+  with average `8769.4 ms`, while Web `/auth/login` maxed `117 ms`, Web
+  `/api/build-info` `65 ms`, API `/health` `136 ms`, and API `/ready` `73 ms`.
+  Protected auth/session browser proof passed after process-local mapping from
+  pre-bound `PROD_UI_AUDIT_AUTH_EMAIL/PASSWORD` to the script's
+  `PROD_AUTH_*` names, without secret/cookie/token/body artifact storage.
+  `pnpm run -s ops:coolify-stack:env-check:test` passed (`11/11`), while
+  current-runner `ops:coolify-stack:env-check` failed closed with required
+  present `0/16`. Full server-health readback remains blocked by
+  [LUC-4811](/LUC/issues/LUC-4811). A narrow follow-up issue was routed for
+  the production Web `/` latency spike. Cleanup removed
+  `.tmp/prod-auth-cdp-1781958233614` and verified no browser process rows
+  remained. No deploy, push, restart, rollback, env edit, secret/account
+  readback, database/Redis mutation, raw log capture, screenshot, exchange
+  action, order, position, payment/subscription mutation, or live-trading
+  action occurred. Delegated follow-up:
+  [LUC-5087](/LUC/issues/LUC-5087) assigned to 09 CTO for Web/runtime owner
+  routing while FE is paused. Evidence:
+  `history/evidence/luc-5085-production-performance-health-watch-2026-06-20.md`;
+  `history/evidence/luc-5085-prod-auth-session-browser-proof-2026-06-20.md`;
+  `history/tasks/luc-5085-production-performance-health-watch-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-5043 Gap Register And Repair Lane Refresh
+
+- `LUC-5043-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-06-20` completed as a
+  Technical Solution Architect architecture gap-register refresh. Wake
+  `issue_assigned` had no pending comments (`fallbackFetchNeeded=false`);
+  checkout was already claimed by the harness and was not repeated.
+  Paperclip heartbeat-context readback succeeded. Current architecture-health
+  snapshot generated `2026-06-20T05:14:22.302Z` reports `9652` entities,
+  `30975` relations, raw `implementation_without_tests=1288`, actionable
+  implementation-without-tests `0`, raw implementation-without-docs `313`,
+  actionable implementation-without-docs `0`, verified-without-proof `0`, and
+  disconnected entities `0`. Strict graph drift passed with `849/849` covered
+  and `0` missing; repository guardrails passed. No new child repair issue was
+  created because no fresh exact actionable architecture gap exists. No
+  runtime code, deploy, push, restart, rollback, env edit, protected smoke,
+  secret/account readback, database/Redis mutation, exchange action, order,
+  position, payment/subscription mutation, or live-trading action occurred.
+  Evidence:
+  `history/tasks/luc-5043-gap-register-and-repair-lane-refresh-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-5032 Authenticated Production Acceptance And Performance Sweep
+
+- `LUC-5032-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-06-20`
+  completed as a QVE read-only production acceptance checkpoint with final
+  disposition `BLOCKED / PARTIALLY_VERIFIED / PRODUCTION_APP_HEALTHY /
+  COOLIFY_VPS_READBACK_BLOCKED`. Public production smoke passed for API
+  `/health`, API `/ready`, Web `/`, and Web `/api/build-info`. Production
+  build-info resolved SHA `42177530f2a2ddc22832133b545bccab6ab404eb` on
+  `main`, build id `Urnq8xtZUh932c0e3vKGl`, with diagnostic-only
+  `metadataSource=env-runtime`, checked at `2026-06-20T10:36:42.871Z`.
+  Timing maxes were Web `/` `248 ms`, Web `/auth/login` `29 ms`, Web
+  `/api/build-info` `28 ms`, API `/health` `79 ms`, and API `/ready` `25 ms`.
+  Authenticated UI module clickthrough and protected auth/session browser proof
+  both passed with redacted artifacts. Coolify checker tests passed (`11/11`),
+  while current-runner binding preflight failed closed with required present
+  `0/16`. Full server-health readback remains blocked by [LUC-4811](/LUC/issues/LUC-4811).
+  Cleanup verified no browser process rows remained and current validation
+  profile `.tmp/prod-auth-cdp-1781951818370` was removed. No deploy, push,
+  restart, rollback, env edit, secret/account readback, database/Redis
+  mutation, raw log capture, screenshot, exchange action, order, position,
+  payment/subscription mutation, or live-trading action occurred. Evidence:
+  `history/evidence/luc-5032-authenticated-production-acceptance-performance-sweep-2026-06-20.md`;
+  `history/tasks/luc-5032-authenticated-production-acceptance-performance-sweep-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-5022 Production Performance And Server Health Watch
+
+- `LUC-5022-PRODUCTION-PERFORMANCE-HEALTH-WATCH-2026-06-20` completed as a
+  DRE read-only production health checkpoint with final disposition
+  `BLOCKED / PARTIALLY_VERIFIED / APP_HEALTHY /
+  COOLIFY_VPS_BINDINGS_BLOCKED`. Wake `issue_assigned` had no pending comments
+  (`fallbackFetchNeeded=false`); checkout was already claimed by the harness
+  and was not repeated. Public production smoke passed for API `/health`, API
+  `/ready`, Web `/`, and Web `/api/build-info`. Production build-info resolved
+  SHA `42177530f2a2ddc22832133b545bccab6ab404eb` on `main`, build id
+  `Urnq8xtZUh932c0e3vKGl`, with diagnostic-only
+  `metadataSource=env-runtime`, checked at `2026-06-20T10:22:28.168Z`.
+  Three-sample public timing maxes were Web `/` `411 ms`,
+  Web `/auth/login` `59 ms`, Web `/api/build-info` `30 ms`,
+  API `/health` `96 ms`, and API `/ready` `46 ms`. Protected auth/session
+  browser proof passed using process-local mapping from pre-bound
+  `PROD_UI_AUDIT_AUTH_EMAIL/PASSWORD` to the script's `PROD_AUTH_*` names,
+  without secret/cookie/token/body artifact storage. `pnpm run -s
+  ops:coolify-stack:env-check:test` passed (`11/11`), while current-runner
+  `ops:coolify-stack:env-check` failed closed with required present `0/16`.
+  Server-health readback remains incomplete because this DRE runner exposes no
+  approved read-only Coolify/VPS/DB/worker binding families; existing unblock
+  path remains [LUC-4767](/LUC/issues/LUC-4767) ->
+  [LUC-4806](/LUC/issues/LUC-4806) -> [LUC-4811](/LUC/issues/LUC-4811).
+  Cleanup verified no browser process rows remained after follow-up recheck and
+  validation-created `.tmp/prod-auth-cdp-1781950962381` was removed. No deploy,
+  push, restart, rollback, env edit, secret/account readback, database/Redis
+  mutation, raw log capture, screenshot, exchange action, order, position,
+  payment/subscription mutation, or live-trading action occurred. Evidence:
+  `history/evidence/luc-5022-production-performance-health-watch-2026-06-20.md`;
+  `history/evidence/luc-5022-prod-auth-session-browser-proof-2026-06-20.md`;
+  `history/tasks/luc-5022-production-performance-health-watch-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-5011 V1 Audit-To-Completion Controller
+
+- `LUC-5011-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-06-20` completed as a
+  Technical Solution Architect controller refresh. Wake `issue_assigned` had no
+  pending comments (`fallbackFetchNeeded=false`); checkout was already claimed
+  by the harness and was not repeated. Paperclip heartbeat-context readback
+  succeeded. Current architecture-health snapshot generated
+  `2026-06-20T05:14:22.302Z` reports `9652` entities, `30975` relations, raw
+  `implementation_without_tests=1288`, actionable implementation-without-tests
+  `0`, raw implementation-without-docs `313`, actionable
+  implementation-without-docs `0`, and disconnected entities `0`. Strict graph
+  drift passed with `849/849` covered and `0` missing; repository guardrails
+  passed. `pnpm softwarehouse:control-tick` remains unavailable in this checkout
+  (`Command "softwarehouse:control-tick" not found`). No new child issue was
+  created because no fresh exact actionable architecture gap exists. V1 remains
+  partially verified and release-blocked by the existing protected input,
+  Coolify/VPS read-only binding, and Web build-info provenance lanes. No
+  runtime code, deploy, push, restart, rollback, env edit, protected smoke,
+  secret/account readback, database/Redis mutation, exchange action, order,
+  position, payment/subscription mutation, or live-trading action occurred.
+  Evidence:
+  `history/tasks/luc-5011-v1-audit-to-completion-controller-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-4971 Security And Account-Access Gate Sweep
+
+- `LUC-4971-SECURITY-ACCOUNT-ACCESS-GATE-SWEEP-2026-06-20` completed as a
+  Security & Privacy Auditor no-secret gate refresh with blocked disposition.
+  Wake `issue_assigned` had no pending comments (`fallbackFetchNeeded=false`);
+  checkout was already claimed by the harness and was not repeated. Public
+  build-info readback returned deployed
+  `42177530f2a2ddc22832133b545bccab6ab404eb` on `main`, build id
+  `Urnq8xtZUh932c0e3vKGl`, metadata source `env-runtime`, checked at
+  `2026-06-20T09:01:13.391Z`. The no-secret protected input readiness checker
+  returned `PARTIAL/NO-GO` with matching protected input names present `6`:
+  `LIVEIMPORT_READBACK_*` and production UI audit/input families are present
+  by count, while `ROLLBACK_GUARD_*`, `SOAR_PROD_*`, `PROD_DB_CHECK_*`,
+  `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE* / GATE_*` remain missing.
+  Focused local tests passed for API redaction/crypto/critical-secret
+  readiness (`18/18`) and subscription/exchange security boundaries (`17/17`).
+  No deploy, push, restart, rollback, account, real secret, API-key,
+  subscription/payment, exchange, database, or live-trading mutation occurred.
+  Evidence:
+  `history/tasks/luc-4971-security-account-access-gate-sweep-2026-06-20-task.md`;
+  `history/evidence/luc-4971-security-account-access-gate-readiness-42177530-2026-06-20.md`;
+  `history/artifacts/luc-4971-security-account-access-gate-readiness-42177530-2026-06-20.json`.
+
+# 2026-06-20 LUC-4959 Production Performance And Server Health Watch
+
+- `LUC-4959-PRODUCTION-PERFORMANCE-HEALTH-WATCH-2026-06-20` completed as a
+  DRE read-only production health checkpoint with final disposition
+  `BLOCKED / PARTIALLY_VERIFIED / APP_HEALTHY /
+  COOLIFY_VPS_BINDINGS_BLOCKED`. Wake `issue_assigned` had no pending comments
+  (`fallbackFetchNeeded=false`); checkout was already claimed by the harness
+  and was not repeated. Public production smoke passed for API `/health`, API
+  `/ready`, Web `/`, and Web `/api/build-info`. Production build-info resolved
+  SHA `42177530f2a2ddc22832133b545bccab6ab404eb` on `main`, build id
+  `Urnq8xtZUh932c0e3vKGl`, with diagnostic-only
+  `metadataSource=env-runtime`, checked at `2026-06-20T08:20:59.148Z`.
+  Three-sample public timing maxes were Web `/` `150 ms`,
+  Web `/auth/login` `39 ms`, Web `/api/build-info` `27 ms`,
+  API `/health` `85 ms`, and API `/ready` `37 ms`. Protected auth/session
+  browser proof passed using process-local mapping from pre-bound
+  `PROD_UI_AUDIT_AUTH_EMAIL/PASSWORD` to the script's `PROD_AUTH_*` names,
+  without secret/cookie/token/body artifact storage. `pnpm run -s
+  ops:coolify-stack:env-check:test` passed (`11/11`), while current-runner
+  `ops:coolify-stack:env-check` failed closed with required present `0/16`.
+  Server-health readback remains incomplete because this DRE runner exposes no
+  approved read-only Coolify/VPS/DB/RC/Gate binding families; existing unblock
+  path remains [LUC-4767](/LUC/issues/LUC-4767) ->
+  [LUC-4806](/LUC/issues/LUC-4806) -> [LUC-4811](/LUC/issues/LUC-4811). Cleanup
+  verified no browser process rows remained and validation-created
+  `.tmp/prod-auth-cdp-1781943684399` was removed. No deploy, push, restart,
+  rollback, env edit, secret/account readback, database/Redis mutation, raw
+  log capture, screenshot, exchange action, order, position,
+  payment/subscription mutation, or live-trading action occurred. Evidence:
+  `history/evidence/luc-4959-production-performance-health-watch-2026-06-20.md`;
+  `history/tasks/luc-4959-production-performance-health-watch-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-4939 Regression Evidence Sweep
+
+- `LUC-4939-REGRESSION-EVIDENCE-SWEEP-2026-06-20` completed as a QVE
+  regression evidence loop checkpoint. Wake `issue_assigned` had no pending
+  comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
+  harness and was not repeated. Safe regression checks are partially verified:
+  repeatable QA smoke passed for Web, API, and focused backtests; docs parity
+  passed; public production Web/API smoke passed with workers skipped.
+  Repository guardrails failed because strict architecture graph drift reports
+  `847/849` covered and `2` missing path references:
+  `apps/api/src/modules/subscriptions/payments/stripeWebhook.routes.ts` and
+  `apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts`.
+  Created [LUC-4945](/LUC/issues/LUC-4945) for 09 TSA to repair/classify the
+  graph drift; that follow-up is now closed by the next entry in this mission
+  file. `pnpm softwarehouse:control-tick` remains unavailable in this checkout
+  (`Command "softwarehouse:control-tick" not found`). No deploy, push,
+  restart, rollback, env edit, secret/account readback, database/Redis
+  mutation, exchange action, order, position, payment/subscription mutation, or
+  live-trading action occurred. Evidence:
+  `history/tasks/luc-4939-regression-evidence-sweep-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-4945 Stripe Webhook Graph Drift Repair
+
+- `LUC-4945-STRIPEWEBHOOK-GRAPH-DRIFT-2026-06-20` completed as a Technical
+  Solution Architect graph-source repair. Wake `issue_assigned` had no pending
+  comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
+  harness and was not repeated. The repair consumed the [LUC-4939](/LUC/issues/LUC-4939)
+  delegated drift signal: `stripeWebhook.routes.ts` and
+  `stripeWebhook.service.ts` were inventoried but missing from source graph CSV
+  path coverage. Added canonical source registry rows for
+  `SOAR-API-STRIPE-WEBHOOK`, `SOAR-SERVICE-STRIPE-WEBHOOK`, and
+  `SOAR-TEST-STRIPE-WEBHOOK`; regenerated architecture graph artifacts.
+  Validation passed: `pnpm run architecture:graph:drift:strict` (`849/849`,
+  `0` missing), `pnpm run architecture:graph:generate` (`656` nodes,
+  `842` relations, `27` chains), and final strict drift (`849/849`,
+  `0` missing). `pnpm run quality:guardrails` also passed. No runtime code,
+  deploy, push, restart, rollback, env edit, secret/account readback,
+  database/Redis mutation, exchange action, order, position,
+  payment/subscription mutation, or live-trading action occurred. Evidence:
+  `history/tasks/luc-4945-repair-stripewebhook-graph-drift-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-4928 Daily Project Status Refresh
+
+- `LUC-4928-DAILY-PROJECT-STATUS-REFRESH-2026-06-20` completed as a Soar
+  Product Manager status integration heartbeat. Wake `issue_assigned` had no
+  pending comments (`fallbackFetchNeeded=false`); checkout was already claimed
+  by the harness and was not repeated. Current Soar status is
+  `PARTIALLY_VERIFIED / APP_HEALTHY / RELEASE_GATES_STILL_BLOCKED`: public and
+  authenticated production app checks from [LUC-4833](/LUC/issues/LUC-4833),
+  [LUC-4819](/LUC/issues/LUC-4819), and [LUC-4893](/LUC/issues/LUC-4893) passed
+  on production SHA `42177530f2a2ddc22832133b545bccab6ab404eb`, while
+  Coolify/VPS server-health readback remains blocked by the existing
+  [LUC-4767](/LUC/issues/LUC-4767) -> [LUC-4806](/LUC/issues/LUC-4806) ->
+  [LUC-4811](/LUC/issues/LUC-4811) binding chain. Architecture-awareness
+  remains at `0` actionable missing-test/doc/task-link/owner/disconnected gaps
+  from [LUC-4843](/LUC/issues/LUC-4843). Web build-info provenance remains
+  diagnostic-only `env-runtime` from [LUC-4912](/LUC/issues/LUC-4912), so a
+  source-control-reconciled protected `soar-web` redeploy approval is still
+  required before claiming release-grade provenance. No code/runtime/deploy/
+  push/restart/rollback/env/secret/account/database/exchange/payment/live-
+  trading mutation occurred. Evidence:
+  `history/tasks/luc-4928-daily-project-status-refresh-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-4929 Coolify Production Deploy Health Sweep
+
+- `LUC-4929-COOLIFY-PRODUCTION-DEPLOY-HEALTH-SWEEP-2026-06-20` completed the
+  actionable DRE read-only sweep and is blocked on first-class binding owner
+  action. Wake `issue_assigned` had no pending comments
+  (`fallbackFetchNeeded=false`); checkout was already claimed by the harness and
+  was not repeated. Public production smoke passed for API `/health`, API
+  `/ready`, Web `/`, and Web `/api/build-info`. Production build-info resolved
+  `42177530f2a2ddc22832133b545bccab6ab404eb` on `main` with
+  `metadataSource=env-runtime`, build id `Urnq8xtZUh932c0e3vKGl`, checked at
+  `2026-06-20T07:31:16.675Z`; release provenance gate failed closed on
+  `unaccepted metadataSource=env-runtime`. Three-sample public timing maxes
+  were Web `/` `275 ms`, Web `/auth/login` `68 ms`, Web `/api/build-info`
+  `41 ms`, API `/health` `98 ms`, and API `/ready` `59 ms`. Protected
+  auth/session dashboard proof passed using pre-bound
+  `PROD_UI_AUDIT_AUTH_EMAIL/PASSWORD` names without secret/cookie/token/body
+  artifact storage. `pnpm run -s ops:coolify-stack:env-check:test` passed
+  (`11/11`), while current-runner `ops:coolify-stack:env-check` failed closed
+  with required present `0/16`. Coolify/VPS deploy rows, logs, resources, VPS
+  pressure, DB/Redis/container health, and worker health remain unverified
+  because this DRE runner still exposes no approved read-only binding names.
+  Blocker path: [LUC-4811](/LUC/issues/LUC-4811). Evidence:
+  `history/evidence/luc-4929-coolify-production-deploy-health-sweep-2026-06-20.md`;
+  `history/tasks/luc-4929-coolify-production-deploy-health-sweep-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-4912 Web Build-Info Env-Runtime Provenance Gate Mismatch
+
+- `LUC-4912-WEB-BUILD-INFO-ENV-RUNTIME-PROVENANCE-2026-06-20` completed as a
+  DRE verification and ops contract clarification. Wake `issue_assigned` had no
+  pending comments (`fallbackFetchNeeded=false`); checkout was already claimed
+  by the harness and was not repeated. Public Web build-info readback returned
+  `42177530f2a2ddc22832133b545bccab6ab404eb` on `main`,
+  `metadataSource=env-runtime`, and build id `Urnq8xtZUh932c0e3vKGl`, checked
+  at `2026-06-20T06:56:21.980Z`. The deploy wait gate failed closed on
+  `unaccepted metadataSource=env-runtime`, as designed. Focused local proof
+  passed: `node --test scripts/waitForWebBuildInfo.test.mjs scripts/writeWebBuildMetadata.test.mjs scripts/runWebNextProductionCommand.test.mjs`
+  (`17/17`). Decision: keep `env-runtime` diagnostic-only; accepted
+  release-grade sources remain `env`, `git`, and `git-files`. Source-control
+  implication: current production matches `origin/main` `42177530...`, not
+  dirty/ahead local `HEAD` `5478f764...`; no fresh `soar-web` deploy approval
+  should target local `HEAD` before reconciliation. Evidence:
+  `history/tasks/luc-4912-web-build-info-env-runtime-provenance-gate-mismatch-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-4854 Implementation-Without-Tests Health Signal Classification
+
+- `LUC-4854-IMPLEMENTATION-WITHOUT-TESTS-HEALTH-SIGNAL-CLASSIFICATION-2026-06-20`
+  completed as a Technical Solution Architect classification checkpoint. Wake
+  `issue_assigned` had no pending comments (`fallbackFetchNeeded=false`);
+  checkout was already claimed by the harness and was not repeated. Paperclip
+  heartbeat-context readback succeeded and confirmed parent
+  [LUC-4849](/LUC/issues/LUC-4849). Current `docs/graphs/architecture-health.json`
+  generated `2026-06-20T05:14:22.302Z` reports `9652` entities, `30975`
+  relations, `10148` scanned files, raw `implementation_without_tests=1288`,
+  and `0` verified-without-proof rows. The current actionable
+  implementation-without-tests queue is `0`; sampled raw rows are API route
+  mounts, Web components, feature files, and functions already represented by
+  curated graph/proof-register coverage or scanner noise categories. No child
+  repair issue was created. No code/runtime/deploy/protected/secret/database/
+  exchange/payment/live-trading mutation occurred. Evidence:
+  `history/tasks/luc-4854-implementation-without-tests-health-signal-classification-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-4843 Gap Register And Repair Lane Refresh
+
+- `LUC-4843-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-06-20` completed as a
+  Technical Solution Architect refresh. Wake `issue_assigned` had no pending
+  comments (`fallbackFetchNeeded=false`); checkout was already claimed by the
+  harness and was not repeated. Paperclip heartbeat-context readback succeeded.
+  Current architecture-awareness report generated `2026-06-20T04:23:46.334Z`
+  with `9641` entities, `30933` relations, `10028` files, `0` actionable
+  missing-test links, `0` actionable missing-doc links, `0` actionable
+  task-link gaps, `0` ownerless entities, and `0` disconnected entities.
+  Current app-level production acceptance remains partially verified by
+  [LUC-4833](/LUC/issues/LUC-4833), while Coolify/VPS server-health readback
+  remains routed through [LUC-4767](/LUC/issues/LUC-4767) ->
+  [LUC-4806](/LUC/issues/LUC-4806) ->
+  [LUC-4811](/LUC/issues/LUC-4811). No new repair child issue was created, and
+  no code/runtime/deploy/protected/secret/database/exchange/payment/live-trading
+  mutation occurred. Evidence:
+  `history/tasks/luc-4843-gap-register-and-repair-lane-refresh-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-4819 Production Performance And Server Health Watch
+
+- `LUC-4819-PRODUCTION-PERFORMANCE-HEALTH-WATCH-2026-06-20` completed as a
+  DRE read-only production health checkpoint. Wake `issue_assigned` had no
+  pending comments (`fallbackFetchNeeded=false`); checkout was already claimed
+  by the harness and was not repeated. Public production smoke passed for API
+  `/health`, API `/ready`, Web `/`, and Web `/api/build-info`. Production
+  build-info resolved SHA `42177530f2a2ddc22832133b545bccab6ab404eb` on
+  `main`. Three-sample public timing maxes were Web `/` `262 ms`,
+  Web `/auth/login` `140 ms`, Web `/api/build-info` `40 ms`,
+  API `/health` `104 ms`, and API `/ready` `36 ms`. Protected auth/session
+  dashboard proof passed using pre-bound `PROD_UI_AUDIT_AUTH_EMAIL/PASSWORD`
+  names without secret/cookie/token/body artifact storage. Server-health
+  readback remains incomplete because this DRE runner still exposes no
+  `COOLIFY*`, `VPS*`, `SSH*`, `SOAR_PROD*`, `PROD_DB_CHECK*`,
+  `PRODUCTION_DB_CHECK*`, `ROLLBACK_GUARD*`, `RC_*`, or `GATE*` binding names;
+  existing blocker chain [LUC-4767](/LUC/issues/LUC-4767) ->
+  [LUC-4806](/LUC/issues/LUC-4806) -> [LUC-4811](/LUC/issues/LUC-4811)
+  remains the correct unblock path. Focused checker test passed:
+  `pnpm run -s ops:coolify-stack:env-check:test` (`11/11`). Cleanup verified:
+  no browser process rows remained and validation-created
+  `.tmp/prod-auth-cdp-1781929804785` was removed. No deploy, push, restart,
+  rollback, env edit, secret/account readback, database/Redis mutation,
+  screenshot, raw log capture, exchange action, order, position,
+  payment/subscription, or live-trading action occurred. Evidence:
+  `history/evidence/luc-4819-production-performance-health-watch-2026-06-20.md`;
+  task:
+  `history/tasks/luc-4819-production-performance-health-watch-2026-06-20-task.md`.
+
+# 2026-06-20 LUC-4815 V1 Audit-To-Completion Controller
+
+- `LUC-4815-V1-AUDIT-TO-COMPLETION-CONTROLLER-STRIPE-RELATION-SYNC-2026-06-20`
+  completed as a Technical Solution Architect architecture-awareness controller
+  sync. Wake `issue_assigned` had no pending comments (`fallbackFetchNeeded=false`);
+  checkout was already claimed by the harness and was not repeated. Current
+  workspace lacked the previously closed [LUC-4212](/LUC/issues/LUC-4212)
+  Stripe webhook relation rows, and the `2026-06-18T16:43:05.012Z` report
+  still showed 12 Stripe webhook actionable missing-test anchors. Restored 12
+  scanner-readable rows to `docs/architecture/relations/priority-test-links.csv`
+  pointing to `apps/api/src/modules/subscriptions/payments/stripeWebhook.e2e.test.ts`.
+  Canonical Softwarehouse scanner passed:
+  `node scripts/build-architecture-awareness-index.mjs --project Soar --root ../Soar`.
+  Fresh report generated `2026-06-20T04:23:46.334Z` with `9641` entities,
+  `30933` relations, `10028` files, `0` actionable missing-test links, `0`
+  actionable missing-doc links, `0` actionable task-link gaps, `0` ownerless
+  entities, and `0` disconnected entities. No code implementation, runtime,
+  deploy, protected proof, secret/account, database/Redis, exchange, order,
+  position, payment/subscription, or live-trading mutation occurred. Evidence:
+  `history/tasks/luc-4815-v1-audit-to-completion-controller-stripe-relation-sync-2026-06-20-task.md`.
+
 # 2026-06-15 LUC-4204 V1 Audit-To-Completion Controller
 
 - `LUC-4204-V1-AUDIT-TO-COMPLETION-CONTROLLER-ARCHITECTURE-REFRESH-2026-06-15`

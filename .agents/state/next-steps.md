@@ -1,3 +1,302 @@
+# 2026-06-20 LUC-5213 Closure Update
+
+- [LUC-5213](/LUC/issues/LUC-5213) is closed as
+  `DONE / PARTIALLY_VERIFIED / ACTIVE_TIMEOUT_NOT_REPRODUCED /
+  BACKEND_RISK_IDENTIFIED`.
+- Do not create a duplicate API `/ready` incident from the
+  [LUC-5198](/LUC/issues/LUC-5198) timeout unless a new reproduction appears.
+- If `/ready` outliers recur, next smallest owner actions are:
+  1. DRE/Ops captures host/proxy/container timing plus sanitized API log-window
+     evidence around the recurrence.
+  2. If backend hardening is warranted, CBE makes Redis/database readiness
+     probes concurrent and adds focused slow-path tests before any deployment
+     lane.
+- This closure does not authorize deploy, push, restart, rollback, env edit,
+  protected smoke, secret/account readback, database/Redis mutation, raw log
+  capture, exchange action, payment/subscription mutation, or live-trading
+  action.
+
+# 2026-06-20 LUC-5210 Closure Update
+
+- [LUC-5210](/LUC/issues/LUC-5210) closed as
+  `DONE / VERIFIED_REFRESH / NO_NEW_ACTIONABLE_ARCHITECTURE_GAP`.
+- Current architecture-awareness has no actionable missing-test, missing-doc,
+  task-link, ownerless, verified-without-proof, or disconnected gaps. Strict
+  graph drift is clean (`849/849`, `0` missing).
+- Do not create a duplicate architecture repair lane from the current
+  `2026-06-20T05:14:22.302Z` report unless a later scanner run introduces a
+  fresh exact actionable row.
+- `pnpm softwarehouse:control-tick` is still unavailable in this checkout; do
+  not treat the control tick as a passed gate.
+- Remaining V1 proof gaps are non-architecture lanes: protected inputs,
+  release-grade Web build-info provenance/source-control redeploy sequencing,
+  and Coolify/VPS server-health readback through
+  [LUC-4811](/LUC/issues/LUC-4811).
+
+# 2026-06-20 LUC-5206 Closure Update
+
+- [LUC-5206](/LUC/issues/LUC-5206) is blocked as
+  `PARTIALLY_VERIFIED / AUTH_PROOF_FAILED / COOLIFY_VPS_BINDINGS_BLOCKED`.
+- Do not create another duplicate broad authenticated acceptance issue for the
+  invalid-token `session=expired` failure. Existing exact repair owner is
+  [LUC-5146](/LUC/issues/LUC-5146), assigned to Frontend.
+- Do not create another duplicate Coolify/VPS binding incident for this sweep.
+  Existing exact unblock owner is [LUC-4811](/LUC/issues/LUC-4811), assigned to
+  the Security/Ops binding lane.
+- After [LUC-5146](/LUC/issues/LUC-5146) and
+  [LUC-4811](/LUC/issues/LUC-4811) resolve, QVE should rerun the same
+  production acceptance sweep. Current app reachability is partially verified on
+  SHA `42177530f2a2ddc22832133b545bccab6ab404eb`; public route timing produced
+  warnings on Web `/api/build-info` max `2220 ms` and API `/health` max
+  `2484 ms`, but no outage.
+
+# 2026-06-20 LUC-5192 Closure Update
+
+- [LUC-5192](/LUC/issues/LUC-5192) closed as
+  `DONE / PARTIALLY_VERIFIED / NO_NEW_ACTIONABLE_ARCHITECTURE_GAP /
+  RELEASE_GATES_STILL_BLOCKED`.
+- Do not create a duplicate TSA architecture repair issue from the current
+  snapshot unless a later scanner or strict drift run introduces a fresh exact
+  actionable row. This heartbeat's strict graph drift passed (`849/849`,
+  `0` missing).
+- Remaining V1 proof gaps stay in existing non-architecture lanes:
+  [LUC-4811](/LUC/issues/LUC-4811) for approved read-only Coolify/VPS/DB/worker
+  binding injection, Security/Ops protected-input ownership for missing gate
+  families, and source-control/release ownership for Web build-info provenance
+  and redeploy sequencing.
+- `pnpm run -s quality:guardrails` timed out during this heartbeat and
+  `pnpm softwarehouse:control-tick` is still unavailable in this checkout; do
+  not treat either as a passed gate.
+
+# 2026-06-20 LUC-5088 Closure Update
+
+- [LUC-5088](/LUC/issues/LUC-5088) is closed as
+  `DONE / PARTIALLY_VERIFIED / SPIKE_NOT_REPRODUCED`.
+- Do not create another broad Web latency issue from the [LUC-5085](/LUC/issues/LUC-5085)
+  spike unless a new reproduction appears. Current DRE public timing and
+  Coolify read-only projection are healthy enough for closure: no active
+  deployment rows, Web `/` static cache hit, Web `/` `115-136 ms`, and
+  PostgreSQL/Redis healthy.
+- If the spike recurs, next smallest owner action is a DRE follow-up for
+  host/proxy time-series and sanitized `soar-web` log-window evidence around
+  the recurrence. The current correlation clue is `soar-web` restart count
+  `1`; it is not a proven root cause.
+- This closure does not authorize deploy, push, restart, rollback, env edit,
+  secret/account readback, database/Redis mutation, raw log capture, account
+  mutation, exchange action, payment/subscription mutation, or live-trading
+  action.
+
+# 2026-06-20 LUC-5085 Next Step
+
+- `INCIDENT_DELEGATED`: [LUC-5085](/LUC/issues/LUC-5085) found a fresh
+  production Web `/` latency regression signal. Public smoke returned `200`,
+  but Web `/` timing spiked to `10512 ms` in the three-target sample and to
+  `21953 ms` in focused recheck, with average `8769.4 ms`; API `/health`,
+  API `/ready`, Web `/auth/login`, Web `/api/build-info`, and protected
+  auth/session proof passed. Next owner is [LUC-5087](/LUC/issues/LUC-5087),
+  assigned to 09 CTO for Web/runtime owner routing while FE is paused:
+  reproduce the public home latency, identify whether the bottleneck is Web
+  rendering/runtime, Coolify/network routing, or upstream data/API fetch, then
+  patch or route with timing proof. Full Coolify/VPS readback remains blocked
+  by [LUC-4811](/LUC/issues/LUC-4811); do not create duplicate broad
+  server-health binding issues.
+
+# 2026-06-20 LUC-5043 Closure Update
+
+- [LUC-5043](/LUC/issues/LUC-5043) closed as
+  `DONE / VERIFIED_REFRESH / NO_NEW_ACTIONABLE_ARCHITECTURE_GAP`.
+- Current architecture-awareness/health has no actionable missing-test,
+  missing-doc, task-link, ownerless, verified-without-proof, or disconnected
+  gaps. Strict graph drift is clean (`849/849`, `0` missing), and repository
+  guardrails passed.
+- Do not create a duplicate architecture repair lane from the current
+  `2026-06-20T05:14:22.302Z` report unless a later scanner run introduces a
+  fresh exact actionable row.
+- Remaining V1 proof gaps are non-architecture lanes: protected inputs,
+  release-grade Web build-info provenance/source-control redeploy sequencing,
+  and Coolify/VPS server-health readback through
+  [LUC-4811](/LUC/issues/LUC-4811).
+
+# 2026-06-20 LUC-5032 Next Step
+
+- `BLOCKED`: application-level production acceptance for
+  [LUC-5032](/LUC/issues/LUC-5032) is current and green on
+  `42177530f2a2ddc22832133b545bccab6ab404eb` for public smoke, authenticated
+  UI route/module clickthrough, auth/session fail-closed behavior, and public
+  timing. Full server-health readback still requires
+  [LUC-4811](/LUC/issues/LUC-4811) to inject approved read-only
+  Coolify/VPS/DB/worker binding families into a qualified Ops/QVE runtime.
+  Do not create duplicate broad acceptance issues unless a new symptom appears
+  or the binding owner provides fresh unblock evidence.
+
+# 2026-06-20 LUC-5022 Closure Update
+
+- [LUC-5022](/LUC/issues/LUC-5022) is blocked as
+  `PARTIALLY_VERIFIED / APP_HEALTHY / COOLIFY_VPS_BINDINGS_BLOCKED`.
+- Do not create another duplicate Coolify/VPS binding incident for the current
+  missing server-health readback path. Public Web/API smoke, public timing, and
+  protected auth/session proof passed on SHA
+  `42177530f2a2ddc22832133b545bccab6ab404eb`.
+- Next legal owner action:
+  [LUC-4811](/LUC/issues/LUC-4811) owner injects approved read-only
+  Coolify/VPS/DB/worker status bindings into the DRE runtime, then wakes DRE to
+  rerun deploy rows, active deploy queue, resource status, redacted logs/VPS
+  pressure, PostgreSQL/Redis/container health, and worker health.
+- This closure does not authorize deploy, push, restart, rollback, env edit,
+  secret/account readback, database/Redis mutation, production account use,
+  exchange action, order, position, payment/subscription mutation, or
+  live-trading action.
+
+# 2026-06-20 LUC-4971 Security Gate Closure Update
+
+- [LUC-4971](/LUC/issues/LUC-4971) is blocked as
+  `PARTIALLY_VERIFIED / PROTECTED_INPUTS_NO_GO`.
+- Do not treat present `LIVEIMPORT_READBACK_*`, `PROD_UI_AUDIT_*`, or
+  `PROD_UI_*` binding names as release/account-access authority. The current
+  no-secret checker still reports `NO-GO`.
+- Missing protected families remain: `ROLLBACK_GUARD_*`, `SOAR_PROD_*`,
+  `PROD_DB_CHECK_*`, `PRODUCTION_DB_CHECK_*`, `RC_*`, and
+  `GATE* / GATE_*`.
+- Next legal owner action:
+  board-capable Security/Ops secret owner binds the missing protected input
+  families through the approved encrypted runtime path, then wakes the protected
+  release/account proof lane.
+- Until then, do not run protected account, payment, API-key, exchange, DB,
+  rollback, RC, gate-approval, or live-trading proof, and do not deploy, push,
+  restart, rollback, mutate env, or read secret values for this gate.
+
+# 2026-06-20 LUC-4939 Closure Update
+
+- [LUC-4939](/LUC/issues/LUC-4939) completed the QVE regression evidence
+  sweep as `PARTIALLY_VERIFIED / SAFE_SMOKE_GREEN /
+  ARCHITECTURE_GRAPH_DRIFT_DELEGATED`.
+- Safe checks passed:
+  - repeatable QA smoke for Web/API/backtests;
+  - docs parity;
+  - public production Web/API smoke with `--no-workers`.
+- Superseding closure:
+  [LUC-4945](/LUC/issues/LUC-4945) repaired the two missing Stripe webhook
+  graph path references and reran `architecture:graph:drift:strict` plus
+  `quality:guardrails` successfully. Do not create duplicate QA smoke or graph
+  repair issues for this exact drift unless a future strict drift audit
+  reports a fresh recurrence.
+
+# 2026-06-20 LUC-4928 Closure Update
+
+- [LUC-4928](/LUC/issues/LUC-4928) closed as the daily Soar PM status refresh.
+- Current Soar PM posture: `PARTIALLY_VERIFIED / APP_HEALTHY /
+  RELEASE_GATES_STILL_BLOCKED`.
+- Do not create duplicate daily blocker lanes for Coolify/VPS health readback;
+  the active unblock path remains [LUC-4767](/LUC/issues/LUC-4767) ->
+  [LUC-4806](/LUC/issues/LUC-4806) -> [LUC-4811](/LUC/issues/LUC-4811).
+- Do not approve or run a protected `soar-web` redeploy from dirty local `HEAD`.
+  First reconcile source control and select a target commit; then request or
+  execute protected redeploy approval and wait for Web build-info to report
+  `metadataSource=env`, `git`, or `git-files`.
+- Next legal owner actions:
+  1. Security/Ops secret-binding owner injects approved read-only Coolify/VPS
+     status binding families into the DRE runtime for [LUC-4811](/LUC/issues/LUC-4811).
+  2. DRE reruns [LUC-4767](/LUC/issues/LUC-4767) read-only server-health
+     projection after bindings exist.
+  3. Source-control/release owner reconciles local `main...origin/main` drift
+     before any deploy approval.
+
+# 2026-06-20 LUC-4929 Closure Update
+
+- [LUC-4929](/LUC/issues/LUC-4929) is blocked as
+  `PARTIALLY_VERIFIED / APP_HEALTHY / DEPLOY_PROVENANCE_AND_COOLIFY_BINDINGS_BLOCKED`.
+- Do not create another duplicate Coolify/VPS binding incident for the current
+  missing read-only deploy diagnosis path. The current unblock owner/action is
+  [LUC-4811](/LUC/issues/LUC-4811): inject approved read-only Coolify/VPS status
+  bindings into the DRE runtime, then wake the DRE lane to rerun read-only
+  deploy rows, active deploy queue, resource status, redacted logs/pressure,
+  PostgreSQL/Redis/container health, VPS pressure, and worker health.
+- Do not treat the passing public/protected app checks as deploy approval:
+  Web build-info still reports `metadataSource=env-runtime`, so release-grade
+  provenance remains blocked until a reconciled approved redeploy emits
+  `metadataSource=env`, `git`, or `git-files`.
+- This closure does not authorize deploy, push, restart, rollback, env edit,
+  secret/account readback, database/Redis mutation, production account use,
+  exchange action, order, position, payment/subscription mutation, or
+  live-trading action.
+
+# 2026-06-20 LUC-4912 Closure Update
+
+- [LUC-4912](/LUC/issues/LUC-4912) closed as
+  `VERIFIED_NO_CODE_CHANGE / DEPLOY_APPROVAL_STILL_REQUIRED`.
+- Do not relax `scripts/waitForWebBuildInfo.mjs` to accept `env-runtime`.
+  `env-runtime` is diagnostic-only and means Web build-info recovered commit
+  metadata from runtime environment fallback rather than release-grade build
+  metadata.
+- Next legal DRE/Ops action: after source-control reconciliation, request or
+  execute a fresh protected `soar-web` redeploy approval for the selected
+  commit, with `SOURCE_COMMIT=<selected full SHA>` and `SOURCE_BRANCH=main` /
+  `COOLIFY_BRANCH=main`, then rerun the Web build-info wait gate until
+  production reports `metadataSource=env`, `git`, or `git-files`.
+- Current production/origin SHA is `42177530...`; dirty local `HEAD`
+  `5478f764...` must not be used as a deploy target without reconciliation and
+  explicit approval.
+
+# 2026-06-20 LUC-4854 Closure Update
+
+- [LUC-4854](/LUC/issues/LUC-4854) classified the broad
+  `implementation_without_tests=1288` signal from [LUC-4849](/LUC/issues/LUC-4849)
+  as `NO_NEW_ACTIONABLE_GAP`.
+- Do not create child test-repair issues from the current raw count alone. A
+  future repair lane needs a fresh scanner report with exact actionable
+  missing-test rows, not only raw implementation-without-tests samples.
+- Minor residual: next architecture report generation should reconcile the
+  markdown aggregate counts with `docs/graphs/architecture-health.json`.
+
+# 2026-06-20 LUC-4843 Closure Update
+
+- [LUC-4843](/LUC/issues/LUC-4843) closed as a TSA gap-register and
+  repair-lane refresh. Architecture-awareness currently has no actionable
+  missing-test, missing-doc, task-link, ownerless, or disconnected gaps, so no
+  new child issue was created.
+- Do not create duplicate architecture repair lanes from the current
+  `2026-06-20T04:23:46.334Z` report unless a later scanner run introduces a
+  fresh exact actionable row.
+- The active remaining proof gap is Coolify/VPS server-health readback, already
+  routed through [LUC-4767](/LUC/issues/LUC-4767) ->
+  [LUC-4806](/LUC/issues/LUC-4806) ->
+  [LUC-4811](/LUC/issues/LUC-4811). Next legal action is Security/Ops
+  secret-binding owner injection of approved read-only binding families, then
+  DRE rerun of the read-only projection.
+
+# 2026-06-20 LUC-4819 Closure Update
+
+- [LUC-4819](/LUC/issues/LUC-4819) closed this heartbeat as
+  `PARTIALLY_VERIFIED / APP_HEALTHY / COOLIFY_VPS_BINDINGS_BLOCKED`.
+- Do not create another duplicate performance-watch incident for the current
+  missing Coolify/VPS readback. The correct unblock path remains:
+  [LUC-4767](/LUC/issues/LUC-4767) -> [LUC-4806](/LUC/issues/LUC-4806) ->
+  [LUC-4811](/LUC/issues/LUC-4811).
+- Next legal DRE action after bindings are injected: rerun read-only
+  Coolify/VPS production status projection for deployment status, active
+  deploy queue, restart/resource pressure, PostgreSQL/Redis/container health,
+  redacted pressure/log signals where approved, and worker backlog/health.
+- This does not authorize deploy, push, restart, rollback, env edit,
+  secret/account readback, database/Redis mutation, production account use,
+  exchange action, order, position, payment/subscription mutation, or
+  live-trading action.
+
+# 2026-06-20 LUC-4815 Closure Update
+
+- [LUC-4815](/LUC/issues/LUC-4815) is closed as a TSA
+  architecture-awareness controller sync. Current report generated
+  `2026-06-20T04:23:46.334Z` has `0` actionable missing-test links, `0`
+  actionable missing-doc links, `0` actionable task-link gaps, `0` ownerless
+  entities, and `0` disconnected entities after restoring the missing
+  [LUC-4212](/LUC/issues/LUC-4212) Stripe webhook relation rows.
+- Do not create another duplicate Stripe webhook relation-row lane unless a
+  later fresh scanner report again shows exact `stripeWebhook.*` actionable
+  anchors after consuming the new rows.
+- This does not authorize deploy, push, restart, rollback, protected smoke,
+  secret/account readback, database/Redis mutation, production account use,
+  exchange action, order, position, payment/subscription mutation, or
+  live-trading action.
+
 # 2026-06-15 LUC-4204 Closure Update
 
 - [LUC-4204](/LUC/issues/LUC-4204) refreshed architecture-awareness after
@@ -7659,6 +7958,13 @@ On "rob dalej", "rób dalej", "kontynuuj", "continue", or "next":
 4. Use `in_progress` only during active reconciliation; keep `LUC-204` as `blocked` when idle.
 
 ## 2026-05-26 LUC-204 Finish-Handoff Next Action
+- 2026-06-20 `LUC-4945` next-step update: Stripe webhook source graph drift
+  from [LUC-4939](/LUC/issues/LUC-4939) is repaired and locally verified.
+  Do not reopen this graph-drift lane unless a future strict drift audit again
+  reports exact `stripeWebhook.routes.ts` or `stripeWebhook.service.ts`
+  missing path references. Protected production Stripe webhook smoke remains a
+  separate Security/Ops/QA approval-gated lane.
+
 1. Keep PM topology unchanged after `finish_successful_run_handoff`: `LUC-45` and `LUC-204` remain `blocked` when idle.
 2. Maintain single active blocker lane in this PM scope:
    - `LUC-47` owner/action stays unchanged (temp-domain expected-SHA smoke/readiness + worker readiness + rollback note).
@@ -7739,6 +8045,15 @@ On "rob dalej", "rób dalej", "kontynuuj", "continue", or "next":
   runtime inputs, run supervised proof with Patryk present, or provide an
   equivalent redacted artifact. Keep [LUC-3375](/LUC/issues/LUC-3375)
   fail-closed until that evidence exists.
+# 2026-06-20 LUC-4959 Next Step
+
+- `BLOCKED`: full DRE server-health readback for [LUC-4959](/LUC/issues/LUC-4959)
+  requires [LUC-4811](/LUC/issues/LUC-4811) to inject approved read-only
+  Coolify/VPS/DB/worker binding families into the DRE runtime. Public Web/API
+  smoke, protected auth/session proof, and timing are current and green on
+  `42177530f2a2ddc22832133b545bccab6ab404eb`; do not create duplicate
+  health-watch issues unless new runtime symptoms appear or the binding owner
+  provides fresh unblock evidence.
 
 # 2026-06-20 LUC-5223 Next Step
 
