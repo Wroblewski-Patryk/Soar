@@ -1,6 +1,6 @@
 # Task Synchronization Report
 
-Generated: 2026-06-18T16:43:05.012Z
+Generated: 2026-06-20T17:44:11.363Z
 
 ## Contract
 
@@ -9,17 +9,17 @@ Every task should identify the feature/module it changes, dependency expectation
 ## Signals
 
 - Actionable tasks without architecture links: 0
-- Raw tasks without architecture links: 96
+- Raw tasks without architecture links: 98
 - Actionable implementation entities without task links: 0
-- Raw implementation entities without task links: 327
+- Raw implementation entities without task links: 325
 - Classified task-linkage noise: 423
 - Verified entities without proof evidence: 0
 
 ## Classified Task-Linkage Noise
 
 - config_only_file: 34
-- curated_graph_covered: 292
-- historical_task_archive: 96
+- curated_graph_covered: 290
+- historical_task_archive: 98
 - top_level_app_mount: 1
 
 ## Actionable Tasks Without Architecture Links
@@ -108,10 +108,10 @@ Every task should identify the feature/module it changes, dependency expectation
 - component: BacktestsRunsTable.tsx (apps/web/src/features/backtest/components/BacktestsRunsTable.tsx)
 - component: BotsManagementTabs.tsx (apps/web/src/features/bots/components/bots-management/BotsManagementTabs.tsx)
 - component: BotsMonitoringProtectionCell.tsx (apps/web/src/features/bots/components/bots-management/BotsMonitoringProtectionCell.tsx)
-- component: BotsMonitoringRuntimeStateCell.tsx (apps/web/src/features/bots/components/bots-management/BotsMonitoringRuntimeStateCell.tsx)
 - component: BotsMonitoringSections.tsx (apps/web/src/features/bots/components/bots-management/BotsMonitoringSections.tsx)
 - component: MonitoringFutureSignalsSection.tsx (apps/web/src/features/bots/components/bots-management/MonitoringFutureSignalsSection.tsx)
 - component: BotsListTable.tsx (apps/web/src/features/bots/components/BotsListTable.tsx)
 - component: runtimeOnboardingConfig.tsx (apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeOnboardingConfig.tsx)
 - component: RuntimeOnboardingSection.tsx (apps/web/src/features/dashboard-home/components/home-live-widgets/RuntimeOnboardingSection.tsx)
 - component: ExchangeConnectionsView.tsx (apps/web/src/features/exchanges/components/ExchangeConnectionsView.tsx)
+- component: AuditTrailView.tsx (apps/web/src/features/logs/components/AuditTrailView.tsx)

@@ -1,8 +1,31 @@
 # Proof Gap Register
 
-Updated: 2026-05-31
+Updated: 2026-06-20
 
 This register lists generated chain and action proof gaps. It is a working queue for making Soar safer to change autonomously.
+
+## Latest Refresh
+
+- 2026-06-20 [LUC-4854](/LUC/issues/LUC-4854): classified the
+  [LUC-4849](/LUC/issues/LUC-4849) raw
+  `implementation_without_tests=1288` signal. Current actionable
+  implementation-without-tests rows are `0`; representative API/Web samples
+  are already covered by curated graph/proof-register evidence or scanner
+  noise categories. No child repair issue was created from this raw count.
+- 2026-06-20 [LUC-4843](/LUC/issues/LUC-4843): architecture-awareness gap
+  register is current after the [LUC-4815](/LUC/issues/LUC-4815) refresh.
+  Report generated `2026-06-20T04:23:46.334Z` shows `0` actionable
+  missing-test links, `0` actionable missing-doc links, `0` actionable
+  task-link gaps, `0` ownerless entities, and `0` disconnected entities.
+- Current app-level production acceptance is partially verified by
+  [LUC-4833](/LUC/issues/LUC-4833) on SHA
+  `42177530f2a2ddc22832133b545bccab6ab404eb`: public smoke, protected
+  auth/session proof, and authenticated UI clickthrough passed.
+- Remaining proof gap is not a new architecture repair lane. Coolify/VPS
+  server-health readback is already owned by the existing blocker chain
+  [LUC-4767](/LUC/issues/LUC-4767) -> [LUC-4806](/LUC/issues/LUC-4806) ->
+  [LUC-4811](/LUC/issues/LUC-4811), which must provide approved read-only
+  binding families before DRE reruns the projection.
 
 ## Gaps
 

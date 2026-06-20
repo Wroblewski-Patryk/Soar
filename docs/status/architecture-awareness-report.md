@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-06-18T16:43:05.012Z
+Generated: 2026-06-20T17:44:11.363Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,7 +11,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 38 |
 | component | 97 |
-| document | 4030 |
+| document | 4098 |
 | feature | 217 |
 | function | 2821 |
 | migration | 57 |
@@ -19,30 +19,30 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | module | 16 |
 | project | 1 |
 | route | 355 |
-| task | 1387 |
+| task | 1420 |
 | test | 447 |
 
 ## Counts By Status
 
 | Status | Count |
 | --- | ---: |
-| blocked | 26 |
+| blocked | 30 |
 | deprecated | 9 |
-| implemented | 7390 |
+| implemented | 7455 |
 | in_progress | 14 |
 | tested | 821 |
-| verified | 1366 |
+| verified | 1398 |
 
 ## Health Signals
 
-- Raw implementation entities without inferred tests: 1300
-- Actionable implementation entities without inferred tests: 12
-- Raw implementation entities without inferred docs: 313
+- Raw implementation entities without inferred tests: 1288
+- Actionable implementation entities without inferred tests: 0
+- Raw implementation entities without inferred docs: 311
 - Actionable implementation entities without inferred docs: 0
-- Classified inferred-link noise: 1516
-- Raw tasks without architecture links: 96
+- Classified inferred-link noise: 1515
+- Raw tasks without architecture links: 98
 - Actionable tasks without architecture links: 0
-- Raw implementation entities without task links: 327
+- Raw implementation entities without task links: 325
 - Actionable implementation entities without task links: 0
 - Classified task-linkage noise: 423
 - Entities without owner attribution: 0
@@ -50,18 +50,6 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 
 ## Top Actionable Missing Test Links
 
-- function: getStripeWebhookClient (apps/api/src/modules/subscriptions/payments/stripeWebhook.controller.ts#getStripeWebhookClient)
-- function: getStripeWebhookSecret (apps/api/src/modules/subscriptions/payments/stripeWebhook.controller.ts#getStripeWebhookSecret)
-- function: handleStripeWebhook (apps/api/src/modules/subscriptions/payments/stripeWebhook.controller.ts#handleStripeWebhook)
-- function: sendMappedError (apps/api/src/modules/subscriptions/payments/stripeWebhook.controller.ts#sendMappedError)
-- function: fail (apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#fail)
-- function: getStringId (apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#getStringId)
-- function: handleCheckoutCompleted (apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#handleCheckoutCompleted)
-- function: handleCheckoutExpired (apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#handleCheckoutExpired)
-- function: handleSubscriptionLifecycle (apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#handleSubscriptionLifecycle)
-- function: markEvent (apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#markEvent)
-- function: processEvent (apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#processEvent)
-- function: writeAuditLog (apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#writeAuditLog)
 
 ## Top Actionable Missing Doc Links
 
@@ -69,7 +57,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 ## Classified Inferred-Link Noise
 
 - config_only_file: 64
-- curated_graph_covered: 1332
+- curated_graph_covered: 1331
 - test_fixture_function: 119
 - top_level_app_mount: 1
 
@@ -119,8 +107,8 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 ## Classified Task-Linkage Noise
 
 - config_only_file: 34
-- curated_graph_covered: 292
-- historical_task_archive: 96
+- curated_graph_covered: 290
+- historical_task_archive: 98
 - top_level_app_mount: 1
 
 ## Top Classified Task-Linkage Noise Samples
@@ -169,7 +157,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 ## Notes
 
 - This is an inferred baseline. CTO/Docs Memory must promote or correct important relations.
-- Curated graph coverage input: `C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.json` (covered paths: 982).
+- Curated graph coverage input: `C:/Personal/Projekty/Aplikacje/Soar/docs/graphs/architecture-graph.json` (covered paths: 986).
 - Override input: `C:/Personal/Projekty/Aplikacje/Soar/docs/architecture/scanner-overrides.json` (entity entries: 0, relation entries: 0).
 - Override summary: excluded files 0, entity overrides 0, relation overrides 0, critical entities tagged 0.
 - `verified` still requires fresh command/browser/deploy evidence, not only file presence.

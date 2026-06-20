@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-06-18T16:43:05.012Z",
+  "generated_at": "2026-06-20T17:44:11.363Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 9626,
-    "relations": 30867,
+    "entities": 9727,
+    "relations": 31288,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 4030,
+      "document": 4098,
       "feature": 217,
       "function": 2821,
       "migration": 57,
@@ -19,21 +19,21 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1387,
+      "task": 1420,
       "test": 447
     },
     "by_status": {
-      "blocked": 26,
+      "blocked": 30,
       "deprecated": 9,
-      "implemented": 7390,
+      "implemented": 7455,
       "in_progress": 14,
       "tested": 821,
-      "verified": 1366
+      "verified": 1398
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 1300,
+      "count": 1288,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -1638,7 +1638,7 @@
       ]
     },
     "implementation_without_docs": {
-      "count": 313,
+      "count": 311,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -1901,14 +1901,6 @@
           "type": "component",
           "name": "BotsMonitoringProtectionCell.tsx",
           "path": "apps/web/src/features/bots/components/bots-management/BotsMonitoringProtectionCell.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:botsmonitoringruntimestatecell-tsx:dbb3b108a8",
-          "type": "component",
-          "name": "BotsMonitoringRuntimeStateCell.tsx",
-          "path": "apps/web/src/features/bots/components/bots-management/BotsMonitoringRuntimeStateCell.tsx",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -3137,14 +3129,6 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "route:runtimedependencyreadiness-ts:9dfc713a82",
-          "type": "route",
-          "name": "runtimeDependencyReadiness.ts",
-          "path": "apps/api/src/config/runtimeDependencyReadiness.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "route:env-ts:748690e093",
           "type": "route",
           "name": "env.ts",
@@ -3239,119 +3223,38 @@
           "path": "apps/api/src/modules/backtests/backtests.controller.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "route:backteststrategylinksnapshots-ts:7542913d82",
+          "type": "route",
+          "name": "backtestStrategyLinkSnapshots.ts",
+          "path": "apps/api/src/modules/backtests/backtestStrategyLinkSnapshots.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "route:backtesttimeframe-ts:da59b1aa0a",
+          "type": "route",
+          "name": "backtestTimeframe.ts",
+          "path": "apps/api/src/modules/backtests/backtestTimeframe.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "actionable_implementation_without_tests": {
-      "count": 12,
-      "items": [
-        {
-          "id": "function:getstripewebhookclient:9c039fe879",
-          "type": "function",
-          "name": "getStripeWebhookClient",
-          "path": "apps/api/src/modules/subscriptions/payments/stripeWebhook.controller.ts#getStripeWebhookClient",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:getstripewebhooksecret:071f4ed28e",
-          "type": "function",
-          "name": "getStripeWebhookSecret",
-          "path": "apps/api/src/modules/subscriptions/payments/stripeWebhook.controller.ts#getStripeWebhookSecret",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:handlestripewebhook:4c03cac9c2",
-          "type": "function",
-          "name": "handleStripeWebhook",
-          "path": "apps/api/src/modules/subscriptions/payments/stripeWebhook.controller.ts#handleStripeWebhook",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:sendmappederror:3147b41d8c",
-          "type": "function",
-          "name": "sendMappedError",
-          "path": "apps/api/src/modules/subscriptions/payments/stripeWebhook.controller.ts#sendMappedError",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:fail:3d5392de5f",
-          "type": "function",
-          "name": "fail",
-          "path": "apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#fail",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:getstringid:e20a1ff021",
-          "type": "function",
-          "name": "getStringId",
-          "path": "apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#getStringId",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:handlecheckoutcompleted:1ee56b083e",
-          "type": "function",
-          "name": "handleCheckoutCompleted",
-          "path": "apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#handleCheckoutCompleted",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:handlecheckoutexpired:629539c35c",
-          "type": "function",
-          "name": "handleCheckoutExpired",
-          "path": "apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#handleCheckoutExpired",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:handlesubscriptionlifecycle:da04f20eb2",
-          "type": "function",
-          "name": "handleSubscriptionLifecycle",
-          "path": "apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#handleSubscriptionLifecycle",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:markevent:2de38947a9",
-          "type": "function",
-          "name": "markEvent",
-          "path": "apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#markEvent",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:processevent:65875a157d",
-          "type": "function",
-          "name": "processEvent",
-          "path": "apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#processEvent",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:writeauditlog:708b6a3e24",
-          "type": "function",
-          "name": "writeAuditLog",
-          "path": "apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#writeAuditLog",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        }
-      ]
+      "count": 0,
+      "items": []
     },
     "actionable_implementation_without_docs": {
       "count": 0,
       "items": []
     },
     "classified_inferred_link_noise": {
-      "count": 1516,
+      "count": 1515,
       "by_reason": {
         "config_only_file": 64,
-        "curated_graph_covered": 1332,
+        "curated_graph_covered": 1331,
         "test_fixture_function": 119,
         "top_level_app_mount": 1
       },
@@ -5171,7 +5074,7 @@
       "items": []
     },
     "raw_tasks_without_architecture": {
-      "count": 96,
+      "count": 98,
       "items": [
         {
           "id": "task:task-local-certainty-closure-2026-05-21:a8d07f98c0",
@@ -5790,6 +5693,22 @@
           "owner": "Engineering Delivery Lead"
         },
         {
+          "id": "task:luc-4843-gap-register-and-repair-lane-refresh:881e6c58a0",
+          "type": "task",
+          "name": "LUC-4843 Gap Register And Repair Lane Refresh",
+          "path": "history/tasks/luc-4843-gap-register-and-repair-lane-refresh-2026-06-20-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-5001-no-stall-queue-expeditor:bf6975d957",
+          "type": "task",
+          "name": "LUC-5001 No-Stall Queue Expeditor",
+          "path": "history/tasks/luc-5001-no-stall-queue-expeditor-2026-06-20-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
           "id": "task:task:421a4fabd8",
           "type": "task",
           "name": "Task",
@@ -5948,7 +5867,7 @@
       "items": []
     },
     "raw_implementation_without_task": {
-      "count": 327,
+      "count": 325,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -6211,14 +6130,6 @@
           "type": "component",
           "name": "BotsMonitoringProtectionCell.tsx",
           "path": "apps/web/src/features/bots/components/bots-management/BotsMonitoringProtectionCell.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "component:botsmonitoringruntimestatecell-tsx:dbb3b108a8",
-          "type": "component",
-          "name": "BotsMonitoringRuntimeStateCell.tsx",
-          "path": "apps/web/src/features/bots/components/bots-management/BotsMonitoringRuntimeStateCell.tsx",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -7549,6 +7460,14 @@
           "path": "apps/api/src/config/loadEnv.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "route:runtime-ts:af01e1714a",
+          "type": "route",
+          "name": "runtime.ts",
+          "path": "apps/api/src/config/runtime.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
@@ -7556,8 +7475,8 @@
       "count": 423,
       "by_reason": {
         "config_only_file": 34,
-        "curated_graph_covered": 292,
-        "historical_task_archive": 96,
+        "curated_graph_covered": 290,
+        "historical_task_archive": 98,
         "top_level_app_mount": 1
       },
       "items": [
@@ -8255,6 +8174,24 @@
           "reason": "historical_task_archive"
         },
         {
+          "id": "task:luc-4843-gap-register-and-repair-lane-refresh:881e6c58a0",
+          "type": "task",
+          "name": "LUC-4843 Gap Register And Repair Lane Refresh",
+          "path": "history/tasks/luc-4843-gap-register-and-repair-lane-refresh-2026-06-20-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:luc-5001-no-stall-queue-expeditor:bf6975d957",
+          "type": "task",
+          "name": "LUC-5001 No-Stall Queue Expeditor",
+          "path": "history/tasks/luc-5001-no-stall-queue-expeditor-2026-06-20-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
           "id": "task:task:421a4fabd8",
           "type": "task",
           "name": "Task",
@@ -8718,15 +8655,6 @@
           "type": "component",
           "name": "BotsMonitoringProtectionCell.tsx",
           "path": "apps/web/src/features/bots/components/bots-management/BotsMonitoringProtectionCell.tsx",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "component:botsmonitoringruntimestatecell-tsx:dbb3b108a8",
-          "type": "component",
-          "name": "BotsMonitoringRuntimeStateCell.tsx",
-          "path": "apps/web/src/features/bots/components/bots-management/BotsMonitoringRuntimeStateCell.tsx",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -9348,15 +9276,6 @@
           "type": "feature",
           "name": "dashboard-reports.pl.ts",
           "path": "apps/web/src/i18n/namespaces/dashboard-reports.pl.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "config_only_file"
-        },
-        {
-          "id": "feature:dashboard-reports-pt-ts:9edc711f85",
-          "type": "feature",
-          "name": "dashboard-reports.pt.ts",
-          "path": "apps/web/src/i18n/namespaces/dashboard-reports.pt.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "config_only_file"
