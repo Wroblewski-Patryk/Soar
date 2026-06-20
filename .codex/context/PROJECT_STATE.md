@@ -1,3 +1,30 @@
+# 2026-06-20 LUC-5252 API Health/Ready Latency Correlation
+
+- [LUC-5252](/LUC/issues/LUC-5252) completed as a DRE read-only production
+  correlation checkpoint with final disposition
+  `DONE / PARTIALLY_VERIFIED / LOW_SECOND_TLS_PROXY_TAILS / APP_REACHABLE`.
+- Scope: public API `/health` and `/ready` timing plus source-path inspection;
+  no code, deploy, push, restart, rollback, env edit, protected smoke,
+  secret/account readback, database/Redis mutation, raw log capture, production
+  account use, exchange/order/position/payment/subscription mutation, or
+  live-trading action.
+- Evidence:
+  - API `/health`: 30/30 `200`, max `2217 ms`, average `390.2 ms`, four
+    samples above one second.
+  - API `/ready`: 30/30 `200`, max `2006 ms`, average `162.7 ms`, one sample
+    above one second.
+  - Source inspection confirms `/health` is a simple status JSON path, while
+    `/ready` checks critical secrets plus Redis/database dependency readiness.
+  - Slow samples concentrated in TLS/appconnect/start-transfer timing, so this
+    checkpoint points more strongly to intermittent edge/proxy/network/TLS
+    variance than to a proven API handler or readiness dependency defect.
+- Residual: root cause is not proven until approved host/proxy/container timing
+  and sanitized log-window evidence are available through
+  [LUC-4811](/LUC/issues/LUC-4811) / [LUC-5075](/LUC/issues/LUC-5075).
+- Evidence:
+  `history/evidence/luc-5252-api-health-ready-latency-correlation-2026-06-20.md`;
+  `history/tasks/luc-5252-api-health-ready-latency-correlation-2026-06-20-task.md`.
+
 # 2026-06-20 LUC-5250 Production Performance Watch
 
 - [LUC-5250](/LUC/issues/LUC-5250) completed as

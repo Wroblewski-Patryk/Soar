@@ -1,3 +1,25 @@
+# 2026-06-20 LUC-5252 API Health/Ready Latency Correlation
+
+- Current health signal: `DONE / PARTIALLY_VERIFIED /
+  LOW_SECOND_TLS_PROXY_TAILS / APP_REACHABLE`.
+- Follow-up from [LUC-5250](/LUC/issues/LUC-5250): public API `/health` and
+  `/ready` low-second tails were rechecked with bounded public `curl.exe`
+  probes.
+- Current result: API `/health` returned 30/30 `200`, max `2217 ms`, average
+  `390.2 ms`, and four samples above one second. API `/ready` returned 30/30
+  `200`, max `2006 ms`, average `162.7 ms`, and one sample above one second.
+- Correlation: slow samples concentrated in TLS/appconnect/start-transfer
+  timing; `/health` has no Redis/database readiness path, so the current
+  recurrence points more strongly to intermittent edge/proxy/network/TLS
+  variance than to API handler logic or `/ready` dependency checks.
+- Residual: full Coolify/VPS/container/proxy correlation remains blocked by
+  [LUC-4811](/LUC/issues/LUC-4811) and current unblocker
+  [LUC-5075](/LUC/issues/LUC-5075). No code, deploy, push, restart, rollback,
+  env edit, secret/account readback, database/Redis mutation, raw log capture,
+  exchange/payment/live-trading action occurred. Evidence:
+  `history/evidence/luc-5252-api-health-ready-latency-correlation-2026-06-20.md`;
+  `history/tasks/luc-5252-api-health-ready-latency-correlation-2026-06-20-task.md`.
+
 # 2026-06-20 LUC-5250 Production Performance Watch
 
 - Current health signal: `DELEGATED / PARTIALLY_VERIFIED /

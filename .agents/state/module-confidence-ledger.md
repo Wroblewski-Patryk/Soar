@@ -1,3 +1,26 @@
+# 2026-06-20 LUC-5252 API Health/Ready Latency Correlation
+
+- Module row: SOAR-OPERATIONS-001 / production performance and server-health
+  readiness.
+- Confidence: partially verified for current public API reachability; root
+  cause remains unproven for intermittent low-second latency tails.
+- Evidence: [LUC-5252](/LUC/issues/LUC-5252) public bounded `curl.exe` probe
+  returned `/health` 30/30 `200` with max `2217 ms`, average `390.2 ms`, four
+  samples above one second; `/ready` 30/30 `200` with max `2006 ms`, average
+  `162.7 ms`, one sample above one second.
+- Correlation: `/health` has no Redis/database readiness path and reproduced
+  stronger tails than `/ready`; slow samples concentrated in TLS/appconnect
+  timing. Current evidence points more strongly to intermittent
+  edge/proxy/network/TLS variance than to a proven API handler or dependency
+  readiness defect.
+- Next proof or fix: do not patch from this evidence alone. If recurrence
+  worsens, DRE/Ops should capture host/proxy/container timing and sanitized
+  log-window evidence after approved read-only bindings unblock through
+  [LUC-4811](/LUC/issues/LUC-4811) / [LUC-5075](/LUC/issues/LUC-5075).
+- Evidence files:
+  `history/evidence/luc-5252-api-health-ready-latency-correlation-2026-06-20.md`;
+  `history/tasks/luc-5252-api-health-ready-latency-correlation-2026-06-20-task.md`.
+
 # 2026-06-20 LUC-5213 API `/ready` Timeout Investigation
 
 - Module row: SOAR-OPERATIONS-001 / production performance and server-health

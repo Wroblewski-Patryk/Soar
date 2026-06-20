@@ -1,3 +1,26 @@
+# 2026-06-20 LUC-5252 Closure Update
+
+- [LUC-5252](/LUC/issues/LUC-5252) is closed as
+  `DONE / PARTIALLY_VERIFIED / LOW_SECOND_TLS_PROXY_TAILS / APP_REACHABLE`.
+- Current public API reachability is up: `/health` and `/ready` returned
+  60/60 successful `200` responses in the bounded DRE probe.
+- Latency posture remains watchful: `/health` max `2217 ms`, average
+  `390.2 ms`, with four samples above one second; `/ready` max `2006 ms`,
+  average `162.7 ms`, with one sample above one second.
+- Correlation: `/health` has no Redis/database readiness path and reproduced
+  stronger tails than `/ready`; slow samples concentrated in
+  TLS/appconnect/start-transfer timing. Treat this as intermittent
+  edge/proxy/network/TLS variance unless later host/proxy/container evidence
+  proves otherwise.
+- Do not create duplicate broad Coolify/VPS binding issues. Existing full
+  server-health readback unblock path remains
+  [LUC-4811](/LUC/issues/LUC-4811) with control-plane unblocker
+  [LUC-5075](/LUC/issues/LUC-5075).
+- This closure does not authorize deploy, push, restart, rollback, env edit,
+  protected smoke, secret/account readback, database/Redis mutation,
+  production account use, exchange action, order, position,
+  payment/subscription mutation, or live-trading action.
+
 # 2026-06-20 LUC-5250 Closure Update
 
 - [LUC-5250](/LUC/issues/LUC-5250) is closed as
