@@ -1,3 +1,28 @@
+# 2026-06-21 LUC-5429 Production Performance And Server Health Watch
+
+- `LUC-5429-PRODUCTION-PERFORMANCE-HEALTH-WATCH-2026-06-21` completed as a
+  DRE read-only production watch checkpoint.
+- Scope:
+  public smoke/timing, protected workers readiness, rollback guard,
+  authenticated dashboard/admin route and API timing, Coolify read-only
+  projection, and evidence/state sync.
+- Result:
+  `DONE / VERIFIED_READ_ONLY / APP_HEALTHY / TOKEN_STALE_RESIDUAL`.
+  Public routes returned `200`; protected `/workers/ready` failed through the
+  pre-bound stale token path with `401` but passed through the fresh login path;
+  rollback guard returned `shouldRollback=false`; authenticated UI clickthrough
+  passed; representative dashboard/admin API timing passed; Coolify projection
+  passed with zero visible deployment rows.
+- Residual:
+  stale `SMOKE_AUTH_TOKEN` binding should be rotated/removed if it recurs.
+  Host-level VPS pressure and sanitized log-window capture still require
+  approved read-only `SSH*` or dedicated `VPS_*` status credentials beyond
+  `VPS_HOST`.
+- Evidence:
+  `history/evidence/luc-5429-production-performance-server-health-watch-2026-06-21.md`;
+  `history/evidence/luc-5429-prod-ui-module-clickthrough-2026-06-21.md`;
+  `history/tasks/luc-5429-production-performance-and-server-health-watch-2026-06-21-task.md`.
+
 # 2026-06-21 LUC-5319 Runtime DCA/PnL Readback Timeout Classification
 
 - `LUC-5319-RUNTIME-DCA-PNL-READBACK-TIMEOUT-CLASSIFICATION-2026-06-21`

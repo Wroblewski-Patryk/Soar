@@ -23492,6 +23492,30 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   `history/evidence/luc-5362-authenticated-production-acceptance-performance-sweep-2026-06-21-auth-session-browser-proof.md`;
   `history/artifacts/luc-5362-authenticated-production-acceptance-performance-sweep-2026-06-21-public-smoke-timing.json`.
 
+# 2026-06-21 LUC-5429 Production Performance And Server Health Watch
+
+- [LUC-5429](/LUC/issues/LUC-5429) completed a DRE read-only production watch
+  as `DONE / VERIFIED_READ_ONLY / APP_HEALTHY / TOKEN_STALE_RESIDUAL`.
+- Current production evidence:
+  public Web/API smoke passed; protected `/workers/ready` passed through fresh
+  login after the pre-bound smoke token failed closed with `401`; rollback
+  guard returned `shouldRollback=false`; authenticated production UI
+  clickthrough passed (`public 4/4`, `dashboard 18/18`, `admin 3/3`, legacy
+  redirects `3/3`); representative dashboard/admin API timing passed with no
+  60-second stall reproduction.
+- Coolify read-only projection passed:
+  six Soar application rows still report `running:unknown`, PostgreSQL and
+  Redis are visible as `running:healthy`, and visible deployment rows are `0`.
+- Residual:
+  stale `SMOKE_AUTH_TOKEN` runner binding should be rotated or removed if it
+  keeps taking precedence over the working fresh login path. Host-level VPS
+  pressure/log-window capture remains unavailable without approved read-only
+  `SSH*` or dedicated `VPS_*` status credentials beyond `VPS_HOST`.
+- Evidence:
+  `history/evidence/luc-5429-production-performance-server-health-watch-2026-06-21.md`;
+  `history/evidence/luc-5429-prod-ui-module-clickthrough-2026-06-21.md`;
+  `history/tasks/luc-5429-production-performance-and-server-health-watch-2026-06-21-task.md`.
+
 # 2026-06-20 LUC-5309 Wallet LIVE/PAPER Dashboard Readback Triage
 
 - [LUC-5309](/LUC/issues/LUC-5309) completed QVE local proof/triage as

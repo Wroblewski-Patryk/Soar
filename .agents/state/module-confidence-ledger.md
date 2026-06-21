@@ -8071,6 +8071,31 @@ Do not turn uncertainty into optimism.
   mutation, payment/subscription mutation, live trading, full Coolify/VPS
   readback, or release-grade build provenance.
 
+## 2026-06-21 LUC-5429 Production Performance And Server Health Watch
+
+- Module row: Production Runtime Health / Dashboard Runtime / Release Ops
+  Evidence.
+- Status delta: `VERIFIED_READ_ONLY / APP_HEALTHY /
+  TOKEN_STALE_RESIDUAL`.
+  Public smoke and timing passed, protected workers readiness passed through
+  fresh login path after the pre-bound token failed closed with `401`,
+  rollback guard returned `shouldRollback=false`, authenticated UI clickthrough
+  passed, representative dashboard/admin API reads passed, and Coolify
+  read-only projection passed with zero visible deployment rows.
+- Evidence:
+  `history/evidence/luc-5429-production-performance-server-health-watch-2026-06-21.md`;
+  `history/evidence/luc-5429-prod-ui-module-clickthrough-2026-06-21.md`;
+  `history/tasks/luc-5429-production-performance-and-server-health-watch-2026-06-21-task.md`.
+- Validation:
+  production smoke PASS after fresh login path; rollback guard PASS
+  (`shouldRollback=false`); production UI clickthrough PASS; authenticated
+  dashboard/admin API timing PASS; Coolify env checker tests PASS (`11/11`);
+  Coolify read-only projection PASS.
+- Residual risk:
+  stale `SMOKE_AUTH_TOKEN` runner binding should be rotated/removed if it
+  recurs; host/proxy/container pressure and sanitized log-window capture still
+  require approved read-only `SSH*` or dedicated `VPS_*` status credentials.
+
   `2026-06-07T22:24:06.213Z` reports `159` actionable missing-test links and
   no `runProdSecurityExchangeProof` top actionable rows; `pnpm run
   quality:guardrails` PASS.

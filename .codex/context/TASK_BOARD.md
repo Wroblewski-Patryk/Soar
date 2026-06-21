@@ -34526,6 +34526,35 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
     - `history/evidence/luc-4413-coolify-read-only-production-status-access-2026-06-20.md`
     - `history/tasks/luc-4413-coolify-read-only-production-status-access-2026-06-20-task.md`
 
+- 2026-06-21 `LUC-5429 [Soar] Production performance and server health watch`
+  - Status: `DONE / VERIFIED_READ_ONLY / APP_HEALTHY / TOKEN_STALE_RESIDUAL`
+  - Scope: read-only DRE production watch; no deploy, push, restart, rollback,
+    env edit, DB/Redis mutation, raw log capture, account mutation, exchange
+    action, payment/subscription mutation, or live-trading action.
+  - Evidence:
+    - public smoke/timing PASS for Web/API routes with low-second Web outliers
+      but no 60-second dashboard stall reproduction.
+    - protected `/workers/ready` first failed with stale pre-bound token `401`,
+      then PASS through fresh login path.
+    - rollback guard PASS with `shouldRollback=false`, runtime freshness PASS,
+      alerts empty, `5` running runtime sessions and no stale session ids.
+    - authenticated UI clickthrough PASS (`public 4/4`, `dashboard 18/18`,
+      `admin 3/3`, legacy redirects `3/3`).
+    - authenticated dashboard/admin API timing PASS for representative
+      read-only endpoints.
+    - Coolify read-only projection PASS: six Soar applications visible,
+      application statuses `running:unknown`, PostgreSQL/Redis
+      `running:healthy`, visible deployments `0`.
+  - Residual risk:
+    - stale `SMOKE_AUTH_TOKEN` should be rotated/removed if it recurs.
+    - host/proxy/container pressure and sanitized log-window evidence require
+      approved read-only `SSH*` or dedicated `VPS_*` status credentials beyond
+      `VPS_HOST`.
+  - Evidence files:
+    - `history/evidence/luc-5429-production-performance-server-health-watch-2026-06-21.md`
+    - `history/evidence/luc-5429-prod-ui-module-clickthrough-2026-06-21.md`
+    - `history/tasks/luc-5429-production-performance-and-server-health-watch-2026-06-21-task.md`
+
 - 2026-06-07 `LUC-2910 [Soar][QA/Test][LUC-2907] Cutover dry-run main missing-test link`
   - Status: `DONE / VERIFIED_LOCAL`
   - Scope: local-only QA proof and architecture relation repair for
