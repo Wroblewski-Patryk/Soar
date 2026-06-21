@@ -1,3 +1,182 @@
+# 2026-06-21 LUC-5146 Protected-Route Invalid-Token Redirect Proof
+
+- Current health signal: `DONE / VERIFIED_LOCAL /
+  NO_ACTIVE_WEB_RUNTIME_DEFECT`.
+- Local auth/session chain proof passed:
+  `pnpm --filter web test -- src/middleware.test.ts src/lib/api.test.ts src/context/AuthContext.test.tsx --run`
+  returned `3` files and `12` tests passed.
+- Current implementation signal:
+  protected-route `401` handling in `apps/web/src/lib/api.ts` redirects to
+  `/auth/login?session=expired`; the latest production auth/session proof from
+  [LUC-5362](/LUC/issues/LUC-5362) also passed invalid-token redirect with
+  `path=/auth/login; search=?session=expired`.
+- Safety:
+  no protected smoke, deploy, push, restart, env edit, secret/account readback,
+  production mutation, exchange action, payment/subscription mutation, or
+  live-trading action occurred.
+- Evidence:
+  `history/tasks/luc-5146-protected-route-invalid-token-redirect-proof-2026-06-21-task.md`.
+
+# 2026-06-21 LUC-5381 Read-Only Server-Health Projection
+
+- Current health signal: `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
+  VPS_PRESSURE_LIMITED`.
+- Binding names now present without value disclosure:
+  `COOLIFY_*`, `VPS_HOST`, and `SMOKE_AUTH_*`.
+- Missing for deeper host-level evidence: `SSH*`, dedicated read-only `VPS_*`
+  status credentials beyond `VPS_HOST`, `ROLLBACK_GUARD_*`, `SOAR_PROD*`,
+  `PROD_DB_CHECK*`, `PRODUCTION_DB_CHECK*`, `RC_*`, and `GATE*`.
+- Coolify projection at `2026-06-21T00:40Z`: configured project/environment
+  readback passed, `17` visible global resources, `0` visible deployment rows,
+  six application rows `running:unknown`, PostgreSQL/Redis `running:healthy`.
+- App/runtime health: public smoke passed; protected `/workers/ready` passed
+  after clearing stale pre-bound token and using the fresh env-bound login path;
+  rollback guard returned `shouldRollback=false`, freshness `PASS`, `5`
+  running sessions, and no alerts.
+- Evidence:
+  `history/evidence/luc-5381-readonly-server-health-projection-2026-06-21.md`;
+  `history/tasks/luc-5381-readonly-server-health-projection-2026-06-21-task.md`.
+
+# 2026-06-21 LUC-4767 Coolify/VPS Health Readback
+
+- Current health signal: `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
+  VPS_PRESSURE_LIMITED`.
+- Binding names now present without value disclosure:
+  `COOLIFY_*`, `VPS_HOST`, and `SMOKE_AUTH_*`.
+- Missing for deeper host-level evidence: `SSH*`, dedicated `VPS_*` status
+  credentials, `ROLLBACK_GUARD_*`, `SOAR_PROD*`, `PROD_DB_CHECK*`,
+  `PRODUCTION_DB_CHECK*`, `RC_*`, and `GATE*`.
+- Coolify projection at `2026-06-21T00:34Z`: configured project/environment
+  readback passed, `17` visible global resources, `0` visible deployment rows,
+  six application rows `running:unknown`, PostgreSQL/Redis
+  `running:healthy`.
+- App/runtime health: public smoke passed; protected `/workers/ready` failed
+  closed with stale pre-bound `SMOKE_AUTH_TOKEN` (`401`) but passed after using
+  the fresh env-bound login path; rollback guard returned
+  `shouldRollback=false`, freshness `PASS`, `5` running sessions, and no
+  alerts.
+- Evidence:
+  `history/evidence/luc-4767-coolify-vps-health-readback-2026-06-21.md`;
+  `history/tasks/luc-4767-coolify-vps-health-readback-2026-06-21-task.md`.
+
+# 2026-06-21 LUC-5387 Production Performance And Server Health Watch
+
+- Current health signal: `DONE / PARTIALLY_VERIFIED / APP_REACHABLE /
+  API_HEALTH_TLS_TAIL_WATCH`.
+- Public and protected smoke: API `/health`, API `/ready`, Web `/`, Web
+  `/api/build-info`, and protected `/workers/ready` passed after suppressing
+  the stale pre-bound `SMOKE_AUTH_TOKEN` path and using env-bound
+  email/password login. The first run failed only protected `/workers/ready`
+  with `401`.
+- Authenticated UI module clickthrough passed on production build-info SHA
+  `42177530f2a2ddc22832133b545bccab6ab404eb`: public `4/4`, dashboard
+  `18/18`, admin `3/3`, legacy redirects `3/3`.
+- Timing window: API `/health` returned 20/20 `200`, max `1515.0 ms`,
+  average `281.1 ms`, with two over-one-second samples dominated by
+  TLS/appconnect/start-transfer; API `/ready` returned 10/10 `200`, max
+  `196.7 ms`; Web `/` returned 10/10 `200`, max `257.7 ms`.
+- Coolify read-only projection passed. Six application rows still report
+  `running:unknown`; PostgreSQL is `running:healthy` with restart count `52`;
+  Redis is `running:healthy` with restart count `682`; visible deployment
+  rows: `0`.
+- Build-info remains diagnostic-only `metadataSource=env-runtime`; release
+  provenance remains routed through [LUC-4912](/LUC/issues/LUC-4912).
+- No new incident child was created. Residual action: if API `/health` tails
+  recur above low-second range or affect `/ready`, dashboard, or workers
+  readiness, DRE/Ops should capture same-window host/proxy/container pressure
+  plus sanitized API/proxy log-window evidence before routing Backend.
+- Evidence:
+  `history/evidence/luc-5387-production-performance-server-health-watch-2026-06-21.md`;
+  `history/evidence/luc-5387-prod-ui-module-clickthrough-2026-06-21.md`;
+  `history/tasks/luc-5387-production-performance-server-health-watch-2026-06-21-task.md`.
+
+# 2026-06-21 LUC-4929 Coolify Production Deploy Health Sweep Continuation
+
+- Status: `DONE / VERIFIED_READ_ONLY / APP_HEALTHY /
+  PROVENANCE_RESIDUAL_ROUTED`.
+- Current health signal: Coolify read-only projection works; public and
+  protected app smoke pass; runtime freshness passes; rollback guard does not
+  indicate rollback.
+- Coolify projection at `2026-06-21T00:05:18Z`: selector `LuckySparrow`,
+  project `Soar`, environment `production`, six applications, one PostgreSQL,
+  one Redis, zero generic services, `17` global resources, and `0` visible
+  deployment rows. PostgreSQL and Redis report `running:healthy`; application
+  rows report `running:unknown`.
+- Build-info: `42177530f2a2ddc22832133b545bccab6ab404eb` on `main`, build id
+  `Urnq8xtZUh932c0e3vKGl`, metadata source `env-runtime`, checked at
+  `2026-06-21T00:05:36.559Z`.
+- Protected runtime: `/workers/ready` passed with fresh login from
+  `PROD_UI_AUDIT_ADMIN_EMAIL/PASSWORD`; pre-bound `PROD_UI_AUDIT_ADMIN_TOKEN`
+  returned `401`.
+- Runtime freshness: PASS for worker heartbeat, market data, runtime signal lag,
+  and runtime sessions (`runningCount=5`, no stale session ids).
+- Rollback guard: `shouldRollback=false`, reasons empty, alerts empty.
+- Public timing residual: Web `/` had outliers (`5528 ms` max in three-sample
+  set, `14634 ms` first repeat) followed by sub-200ms responses.
+- Cleanup: validation-created `.tmp/prod-auth-cdp-1782000362213` was removed;
+  no `chrome-headless-shell`, `chrome`, or `msedge` process rows remained.
+- Safety: no deploy, push, restart, rollback, env edit, secret/account
+  readback, database/Redis mutation, raw log capture, screenshot, exchange
+  action, order, position, payment/subscription, or live-trading action
+  occurred.
+- Evidence:
+  `history/evidence/luc-4929-coolify-production-deploy-health-sweep-2026-06-21.md`.
+
+# 2026-06-21 LUC-5360 API Health Latency Correlation
+
+- Current health signal: `DONE / PARTIALLY_VERIFIED /
+  ACTIVE_API_TAIL_NOT_REPRODUCED / TLS_PROXY_VARIANCE_CLASSIFIED`.
+- Public production smoke passed for API `/health`, API `/ready`, Web `/`,
+  and Web `/api/build-info` on deployed SHA
+  `42177530f2a2ddc22832133b545bccab6ab404eb`.
+- Fresh phase timing did not reproduce active API `/health` tails: API
+  `/health` returned 30/30 `200`, max `585.7 ms`, average `130.9 ms`, with
+  zero samples above one second; API `/ready` returned 20/20 `200`, max
+  `205.9 ms`, average `106.6 ms`.
+- The only current slow sample was Web `/` sample 10 at `1633.5 ms`, with
+  `1573.6 ms` in TLS/appconnect and `1598.8 ms` to start-transfer, which
+  supports the prior TLS/proxy/network variance classification.
+- Coolify read-only projection succeeded with the DRE binding family present by
+  name, six production application rows, one database row, zero visible
+  deployments, and application statuses still `running:unknown`; this proves
+  read-only reachability but not container pressure.
+- No Core Backend child was created from this checkpoint because the API route
+  normalized and current slow evidence is TLS/appconnect-bound. If API
+  `/health` tails recur, the next DRE/Ops action is same-window
+  host/proxy/container-pressure capture plus sanitized API/proxy log-window
+  summary before routing Backend. No deploy, push, restart, rollback, env edit,
+  secret/account readback, database/Redis mutation, raw log capture,
+  exchange/payment/live-trading action occurred. Evidence:
+  `history/evidence/luc-5360-api-health-latency-correlation-2026-06-21.md`;
+  `history/tasks/luc-5360-api-health-latency-correlation-2026-06-21-task.md`.
+
+# 2026-06-21 LUC-5356 Production Performance And Server Health Watch
+
+- Current health signal: `INCIDENT_DELEGATED / PARTIALLY_VERIFIED /
+  API_HEALTH_LATENCY_TAILS`.
+- Public production smoke passed for API `/health`, API `/ready`, Web `/`,
+  and Web `/api/build-info` on deployed SHA
+  `42177530f2a2ddc22832133b545bccab6ab404eb`.
+- Timing warning: first five-sample route timing returned all `200` statuses
+  but showed API `/health` max `7141 ms`, API `/ready` max `1551 ms`, Web `/`
+  max `3045 ms`, Web `/auth/login` max `1137 ms`, and Web
+  `/api/build-info` max `1523 ms`.
+- Focused recheck narrowed the active signal: API `/health` returned 20/20
+  `200`, max `2729 ms`, average `486.4 ms`, with four samples above one
+  second; Web `/` normalized at 10/10 `200`, max `213 ms`.
+- Coolify read-only projection succeeded with selector `LuckySparrow`,
+  project `Soar`, production environment `production`, six application rows,
+  one database row, one visible deployment row, and application statuses still
+  `running:unknown`. Stack env preflight remains expected fail-closed with
+  required present `0/16`; Coolify checker tests passed (`11/11`).
+- Follow-up:
+  [LUC-5360](/LUC/issues/LUC-5360) owns DRE/Ops correlation for recurring API
+  `/health` low-second latency tails. No deploy, push, restart, rollback, env
+  edit, secret/account readback, database/Redis mutation, raw log capture,
+  exchange/payment/live-trading action occurred. Evidence:
+  `history/evidence/luc-5356-production-performance-health-watch-2026-06-21.md`;
+  `history/tasks/luc-5356-production-performance-health-watch-2026-06-21-task.md`.
+
 # 2026-06-20 LUC-5252 API Health/Ready Latency Correlation
 
 - Current health signal: `DONE / PARTIALLY_VERIFIED /
@@ -7208,6 +7387,26 @@ shell still lacks those credentials and approvals.
   `history/evidence/luc-5085-production-performance-health-watch-2026-06-20.md`.
 - Follow-up: [LUC-5087](/LUC/issues/LUC-5087) owns Web `/` latency
   reproduction/root-cause routing.
+
+# 2026-06-21 LUC-5362 Production Acceptance Health
+
+- Current health signal: `AUTHENTICATED_ACCEPTANCE_PASS /
+  PERFORMANCE_PARTIALLY_VERIFIED`.
+- Production build-info SHA: `42177530f2a2ddc22832133b545bccab6ab404eb`.
+- Public smoke: PASS for API `/health`, API `/ready`, Web `/`, and Web
+  `/api/build-info`.
+- Authenticated route health: PASS for production UI module clickthrough
+  public `4/4`, dashboard `18/18`, admin `3/3`, legacy redirects `3/3`.
+- Auth/session health: PASS for unauthenticated redirect, authenticated
+  dashboard render, invalid-token `session=expired`, logout, post-logout
+  fail-closed `401`, and dashboard-after-logout redirect.
+- Performance health: watchful, not outage. Fresh five-sample timing saw Web
+  `/` max `247 ms`, Web `/auth/login` max `2023 ms`, Web `/api/build-info`
+  max `1572 ms`, API `/health` max `2038 ms`, and API `/ready` max `1482 ms`.
+- Active residual owner: [LUC-5360](/LUC/issues/LUC-5360) for recurring API
+  low-second latency-tail correlation.
+- Evidence:
+  `history/tasks/luc-5362-authenticated-production-acceptance-performance-sweep-2026-06-21-task.md`.
 
   `0` disconnected entities, `583` actionable missing-test links, and
   `0` actionable missing-doc links.

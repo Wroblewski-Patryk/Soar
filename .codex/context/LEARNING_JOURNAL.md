@@ -2,6 +2,28 @@
 
 Purpose: keep a compact memory of recurring execution pitfalls and verified fixes for this repository.
 
+### 2026-06-20 - Vitest runtime is not always NODE_ENV test
+- Context: [LUC-5311](/LUC/issues/LUC-5311) and
+  [LUC-5316](/LUC/issues/LUC-5316) both repaired backend e2e failures where
+  default local Vitest commands set `VITEST=true` but did not set
+  `NODE_ENV=test`.
+- Symptom: local e2e paths that should have used deterministic test behavior
+  attempted real exchange-boundary behavior or shared runtime throttling,
+  producing wallet LIVE preview/create `500/502` failures and rate-limit `429`
+  noise.
+- Root cause: production/runtime guards were checking only
+  `process.env.NODE_ENV === 'test'`.
+- Guardrail: when adding or repairing API test-only guards for Vitest-backed
+  e2e, use the repository convention
+  `process.env.NODE_ENV === 'test' || process.env.VITEST === 'true'`.
+- Preferred pattern: keep the guard close to an existing test-only branch and
+  preserve explicit opt-in test modes such as `RATE_LIMIT_ENABLE_TEST_MODE`.
+- Avoid: relying on command authors to remember `NODE_ENV=test` when the
+  project test runner already identifies itself through `VITEST=true`.
+- Evidence:
+  `history/tasks/luc-5311-orders-positions-e2e-gateio-selected-market-repair-2026-06-20-task.md`;
+  `history/tasks/luc-5316-wallet-api-live-paper-readback-e2e-deterministic-2026-06-20-task.md`.
+
 # 2026-06-20 LUC-5206 Browser Cleanup Anomaly
 
 - During `ops:prod-auth:proof`, the proof wrote a complete failing artifact but

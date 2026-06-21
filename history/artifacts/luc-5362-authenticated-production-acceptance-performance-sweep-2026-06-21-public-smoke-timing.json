@@ -1,0 +1,52 @@
+﻿{
+    "generatedAt":  "2026-06-20T22:42:13.9283797Z",
+    "issue":  "LUC-5362",
+    "smokeOutput":  "[deploy-smoke] summary\n- PASS API /health -\u003e 200\n- PASS API /ready -\u003e 200\n- PASS WEB / -\u003e 200\n- PASS WEB /api/build-info -\u003e 200\n[deploy-smoke] all checks passed",
+    "timing":  [
+                   {
+                       "name":  "Web /",
+                       "url":  "https://soar.luckysparrow.ch/",
+                       "statuses":  "200,200,200,200,200",
+                       "samplesMs":  "131,125,125,128,247",
+                       "maxMs":  247,
+                       "avgMs":  151.2,
+                       "over1000":  0
+                   },
+                   {
+                       "name":  "Web /auth/login",
+                       "url":  "https://soar.luckysparrow.ch/auth/login",
+                       "statuses":  "200,200,200,200,200",
+                       "samplesMs":  "139,2023,326,150,139",
+                       "maxMs":  2023,
+                       "avgMs":  555.4,
+                       "over1000":  1
+                   },
+                   {
+                       "name":  "Web /api/build-info",
+                       "url":  "https://soar.luckysparrow.ch/api/build-info",
+                       "statuses":  "200,200,200,200,200",
+                       "samplesMs":  "186,750,1572,306,106",
+                       "maxMs":  1572,
+                       "avgMs":  584,
+                       "over1000":  1
+                   },
+                   {
+                       "name":  "API /health",
+                       "url":  "https://api.soar.luckysparrow.ch/health",
+                       "statuses":  "200,200,200,200,200",
+                       "samplesMs":  "1277,1245,104,2038,857",
+                       "maxMs":  2038,
+                       "avgMs":  1104.2,
+                       "over1000":  3
+                   },
+                   {
+                       "name":  "API /ready",
+                       "url":  "https://api.soar.luckysparrow.ch/ready",
+                       "statuses":  "200,200,200,200,200",
+                       "samplesMs":  "547,1482,870,1432,481",
+                       "maxMs":  1482,
+                       "avgMs":  962.4,
+                       "over1000":  2
+                   }
+               ]
+}

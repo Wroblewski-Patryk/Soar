@@ -145,3 +145,61 @@ who must unblock it.
   add approved read-only `COOLIFY*`/VPS status secret refs to the DRE
   adapter/runtime environment, then wake [LUC-4767](/LUC/issues/LUC-4767) for
   read-only health evidence collection.
+
+## 2026-06-21 Blocker-Resolved Recheck
+
+- Trigger: Paperclip woke [LUC-4811](/LUC/issues/LUC-4811) with
+  `issue_blockers_resolved` after [LUC-4713](/LUC/issues/LUC-4713) reached
+  `done`.
+- Stage: verification.
+- Result:
+  `DONE / DRE_BINDINGS_PRESENT_BY_AGENT_CONFIG_METADATA /
+  NO_SECRET_VALUES_READ`.
+- Names-only evidence:
+  - Current AIA heartbeat env still has no `COOLIFY*`, `VPS*`, `SSH*`,
+    `SOAR_PROD*`, `PROD_DB_CHECK*`, `ROLLBACK_GUARD*`, `RC_*`, or `GATE*`
+    names.
+  - Paperclip heartbeat context shows [LUC-4811](/LUC/issues/LUC-4811) has no
+    unresolved first-class blockers; the previous blocker
+    [LUC-4713](/LUC/issues/LUC-4713) is `done`.
+  - [LUC-4713](/LUC/issues/LUC-4713) final comment records successful
+    authenticated read-only Coolify projection for Soar without mutation.
+  - Metadata-only agent config readback shows the DRE agent has
+    `COOLIFY_BASE_URL`, `COOLIFY_API_TOKEN`, `COOLIFY_TOKEN`,
+    `COOLIFY_SOAR_PROJECT_ID`, `COOLIFY_SOAR_PRODUCTION_ENVIRONMENT`,
+    `COOLIFY_SOAR_API_APP_ID`, `COOLIFY_SOAR_WEB_APP_ID`,
+    `COOLIFY_SOAR_POSTGRES_RESOURCE_ID`, `COOLIFY_SOAR_REDIS_RESOURCE_ID`,
+    team selector names, and `VPS_HOST`.
+  - Security and Soar PM agent configs also expose the Coolify status binding
+    family by names only, giving cross-role continuity for the protected
+    production health readback lane.
+- Interpretation:
+  - The prior blocker is resolved for the DRE runtime owner.
+  - The current AIA heartbeat process not inheriting these env names is a role
+    boundary and does not prove DRE is still unbound.
+  - [LUC-4767](/LUC/issues/LUC-4767) / DRE can resume read-only Coolify/VPS
+    health projection using the DRE-owned runtime.
+- Validation:
+  - `Get-ChildItem Env:` names-only filter completed for this heartbeat.
+  - `GET /api/issues/{issueId}/heartbeat-context` confirmed blocker state.
+  - `GET /api/issues/{LUC-4713}/comments` confirmed done comment evidence.
+  - `GET /api/agents/{DRE}` and selected related agent metadata confirmed
+    binding names without reading values.
+  - `git diff --check -- .codex/context/TASK_BOARD.md
+    .codex/context/PROJECT_STATE.md
+    history/tasks/luc-4811-inject-read-only-coolify-vps-status-bindings-2026-06-20-task.md`
+    passed.
+- Source-control closure:
+  - Files changed by this heartbeat:
+    `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`,
+    `history/tasks/luc-4811-inject-read-only-coolify-vps-status-bindings-2026-06-20-task.md`.
+  - Commit: not created because the shared Soar worktree already contained
+    unrelated dirty product, context, evidence, and generated files before this
+    heartbeat.
+  - Push: not needed and not allowed by this scope.
+  - Deploy impact: none.
+- Safety boundary:
+  no deploy, push, restart, rollback, production env edit, DB/Redis mutation,
+  account mutation, protected smoke, secret value readback, raw log capture,
+  screenshot, exchange action, payment/subscription mutation, or live-trading
+  action occurred.

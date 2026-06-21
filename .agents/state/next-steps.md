@@ -1,3 +1,179 @@
+# 2026-06-21 LUC-5381 Closure Update
+
+- [LUC-5381](/LUC/issues/LUC-5381) can close as
+  `DONE / VERIFIED_READ_ONLY / APP_HEALTHY / VPS_PRESSURE_LIMITED`.
+- Do not create another broad Coolify/VPS binding issue from the stale
+  [LUC-4811](/LUC/issues/LUC-4811) blocker: current DRE runner exposes the
+  approved Coolify binding family by name and read-only
+  project/environment/resource/deployment projection now succeeds.
+- Current residual is narrower: host-level VPS pressure, proxy/container-engine
+  pressure, and sanitized log-window capture require an approved read-only
+  `SSH*` or dedicated `VPS_*` status credential family beyond `VPS_HOST`.
+  Create a separate narrow Security/Ops binding issue only if future DRE work
+  needs that host-level depth.
+- This closure does not authorize deploy, push, restart, rollback, env edit,
+  secret/account readback, raw log capture, DB/Redis mutation, production
+  account mutation, exchange action, payment/subscription mutation, or
+  live-trading action.
+
+# 2026-06-21 LUC-4767 Closure Update
+
+- [LUC-4767](/LUC/issues/LUC-4767) can close as
+  `DONE / VERIFIED_READ_ONLY / APP_HEALTHY / VPS_PRESSURE_LIMITED`.
+- Do not keep [LUC-4767](/LUC/issues/LUC-4767) blocked on the old Coolify
+  binding gap: current DRE runner exposes the approved Coolify binding family
+  by name and read-only project/environment/resource/deployment projection now
+  succeeds.
+- Current residual is narrower: host-level VPS pressure, proxy/container-engine
+  pressure, and sanitized log-window capture require an approved read-only
+  `SSH*` or dedicated `VPS_*` status credential family beyond `VPS_HOST`.
+  Create a separate narrow Security/Ops binding issue only if future DRE work
+  needs that host-level depth.
+- This closure does not authorize deploy, push, restart, rollback, env edit,
+  secret/account readback, raw log capture, DB/Redis mutation, production
+  account mutation, exchange action, payment/subscription mutation, or
+  live-trading action.
+
+# 2026-06-21 LUC-5387 Closure Update
+
+- [LUC-5387](/LUC/issues/LUC-5387) is closed for this heartbeat as
+  `DONE / PARTIALLY_VERIFIED / APP_REACHABLE / API_HEALTH_TLS_TAIL_WATCH`.
+- Do not create a duplicate Backend or DRE incident from this routine watch
+  alone. Public/protected smoke and authenticated route reachability passed,
+  and API `/health` latency tails were low-second TLS/start-transfer samples
+  with all responses `200`.
+- Next legal DRE/Ops action after a fresh recurrence: capture same-window
+  host/proxy/container pressure plus sanitized API/proxy log-window evidence,
+  then route Backend only if application start-transfer delay remains after
+  normal DNS/connect/TLS.
+- Keep build provenance separate: Web build-info still reports
+  `metadataSource=env-runtime`; [LUC-4912](/LUC/issues/LUC-4912) remains the
+  release provenance/redeploy approval lane.
+- This closure does not authorize deploy, push, restart, rollback, env edit,
+  secret/account readback, database/Redis mutation, raw log capture,
+  production account mutation, exchange action, payment/subscription mutation,
+  or live-trading action.
+
+# 2026-06-21 LUC-4929 Closure Update
+
+- [LUC-4929](/LUC/issues/LUC-4929) closed as
+  `VERIFIED_READ_ONLY / APP_HEALTHY / PROVENANCE_RESIDUAL_ROUTED`.
+- Do not reopen this deploy-health sweep for the same Coolify binding blocker:
+  [LUC-4811](/LUC/issues/LUC-4811) is done and the read-only projection now
+  succeeds.
+- Remaining source/provenance work belongs to [LUC-4912](/LUC/issues/LUC-4912):
+  Web build-info still reports `metadataSource=env-runtime`, so any redeploy
+  must use a reconciled approved commit and produce `metadataSource=env`,
+  `git`, or `git-files`.
+- Continue watching Web `/` cold/outlier latency through routine production
+  performance watch; do not treat the isolated outlier as redeploy/restart
+  approval.
+- This closure does not authorize deploy, push, restart, rollback, env edit,
+  secret/account readback, database/Redis mutation, production account use,
+  exchange action, order, position, payment/subscription mutation, or
+  live-trading action.
+
+# 2026-06-21 LUC-5378 Closure Update
+
+- [LUC-5378](/LUC/issues/LUC-5378) closed as
+  `DONE / DELEGATED_DRE_FOLLOW_UP / NO_CODE_CHANGE`.
+- Do not create another broad Coolify/VPS binding issue from stale
+  [LUC-4811](/LUC/issues/LUC-4811) wording. [LUC-4811](/LUC/issues/LUC-4811)
+  is closed with names-only DRE binding metadata.
+- Next legal owner/action:
+  DRE owns [LUC-5381](/LUC/issues/LUC-5381) and should run the read-only
+  Coolify/VPS/DB/worker server-health projection, or block it with the exact
+  missing runtime binding family/owner action.
+- Existing [LUC-4767](/LUC/issues/LUC-4767) remained blocked and could not be
+  directly resumed by SPM due to Paperclip `403` authorization boundary.
+- Separate root/platform stale proxy cleanup around
+  [LUC-5075](/LUC/issues/LUC-5075) / [LUC-5205](/LUC/issues/LUC-5205) remains
+  outside this SPM heartbeat.
+
+# 2026-06-21 LUC-5360 Closure Update
+
+- [LUC-5360](/LUC/issues/LUC-5360) is closed as
+  `DONE / PARTIALLY_VERIFIED / ACTIVE_API_TAIL_NOT_REPRODUCED /
+  TLS_PROXY_VARIANCE_CLASSIFIED`.
+- Do not create a duplicate Backend issue from the historical `/health` tails
+  alone. Current API timing normalized: `/health` 30/30 `200`, max `585.7 ms`,
+  average `130.9 ms`; `/ready` 20/20 `200`, max `205.9 ms`, average
+  `106.6 ms`.
+- Current residual is operational/edge watchfulness: the only slow sample was
+  Web `/` at `1633.5 ms`, concentrated in TLS/appconnect/start-transfer, and
+  Coolify still reports application status as `running:unknown`.
+- Next legal DRE/Ops action after any fresh recurrence: capture same-window
+  host/proxy/container pressure and sanitized API/proxy log-window summary,
+  then route Core Backend only if application start-transfer delay remains
+  after normal DNS/connect/TLS.
+- This closure does not authorize deploy, push, restart, rollback, env edit,
+  protected smoke, secret/account readback, database/Redis mutation, raw log
+  capture, exchange action, payment/subscription mutation, or live-trading
+  action.
+
+# 2026-06-21 LUC-5367 Closure Update
+
+- [LUC-5367](/LUC/issues/LUC-5367) closed as
+  `DONE / VERIFIED_REFRESH / NO_NEW_ACTIONABLE_ARCHITECTURE_GAP`.
+- Do not create duplicate TSA architecture repair lanes from the current
+  generated evidence: actionable architecture-health counts are `0` for
+  missing-test, missing-doc, task-link, ownerless, verified-without-proof, and
+  disconnected rows; strict graph drift passed `849/849`, `0` missing.
+- Use `docs/status/app-completion-index.*` as Product/QA proof-slicing input
+  only. A follow-up proof lane must name one workflow, affected
+  routes/components/APIs, owner, expected browser/API/doc/test proof, and
+  duplicate check.
+- Current non-architecture next owners remain unchanged:
+  1. [LUC-4811](/LUC/issues/LUC-4811) / [LUC-5075](/LUC/issues/LUC-5075) for
+     approved read-only Coolify/VPS/DB/worker binding injection.
+  2. Release/source-control owner for dirty/ahead-behind state and Web
+     build-info provenance before redeploy approval.
+  3. [LUC-5319](/LUC/issues/LUC-5319) for runtime positions/symbol-stats slow
+     readback or test-budget classification.
+  4. QA/Product owners for exact app-completion browser/doc/test proof slices.
+
+# 2026-06-21 LUC-5362 Closure Update
+
+- [LUC-5362](/LUC/issues/LUC-5362) is closed as
+  `DONE / AUTHENTICATED_ACCEPTANCE_PASS / PERFORMANCE_PARTIALLY_VERIFIED`.
+- Do not create another broad authenticated production acceptance issue from
+  this sweep. Current production acceptance is green on build-info SHA
+  `42177530f2a2ddc22832133b545bccab6ab404eb` for public smoke,
+  authenticated UI module clickthrough, and auth/session fail-closed behavior.
+- Keep the performance residual narrow: [LUC-5360](/LUC/issues/LUC-5360) owns
+  DRE/Ops correlation for recurring API `/health` and `/ready` low-second
+  latency tails. This sweep observed API `/health` max `2038 ms` and API
+  `/ready` max `1482 ms` over five samples, with all samples returning `200`.
+- Next legal owner action is [LUC-5360](/LUC/issues/LUC-5360) host/proxy/API
+  correlation. QA should rerun this acceptance sweep only after a new deploy,
+  a new production symptom, or completion evidence from [LUC-5360](/LUC/issues/LUC-5360).
+- This closure does not authorize deploy, push, restart, rollback, env edit,
+  secret/account readback, database/Redis mutation, exchange action, order,
+  position, payment/subscription mutation, or live-trading action.
+
+# 2026-06-21 LUC-5351 Next Step
+
+- [LUC-5351](/LUC/issues/LUC-5351) controller refresh is closed for this
+  heartbeat as `PARTIALLY_VERIFIED / STRICT_ARCHITECTURE_DRIFT_CLEAN /
+  RELEASE_GATES_STILL_BLOCKED`.
+- Do not open duplicate TSA architecture repair lanes from the current strict
+  graph state: `architecture:graph:drift:strict` passed `849/849`, `0`
+  missing.
+- Use `docs/status/app-completion-index.*` as Product/QA proof slicing input,
+  not as a direct architecture repair queue. A follow-up app-completion proof
+  lane must name one workflow, affected routes/components/APIs, owner,
+  expected browser/API/doc/test proof, and duplicate check.
+- Current executable/non-executable boundaries:
+  1. [LUC-4811](/LUC/issues/LUC-4811) / [LUC-5075](/LUC/issues/LUC-5075)
+     remains the protected read-only Coolify/VPS/DB/worker binding unblock
+     path.
+  2. Release/source-control owner must reconcile dirty/ahead-behind state and
+     Web build-info provenance before any redeploy approval.
+  3. [LUC-5319](/LUC/issues/LUC-5319) owns runtime positions/symbol-stats slow
+     readback or test-budget classification.
+  4. QA/Product may slice app-completion browser/doc/test proof rows only as
+     exact one-owner lanes.
+
 # 2026-06-20 LUC-5213 Closure Update
 
 - [LUC-5213](/LUC/issues/LUC-5213) is closed as

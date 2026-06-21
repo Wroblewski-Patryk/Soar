@@ -6,6 +6,8 @@ import { sendError } from '../utils/apiError';
 
 const logger = createModuleLogger('rate-limit');
 
+const isApiTestRuntime = () => process.env.NODE_ENV === 'test' || process.env.VITEST === 'true';
+
 type RateLimitOptions = {
   windowMs: number;
   max: number;
@@ -76,7 +78,7 @@ const redisReconnectCooldownMs = Math.max(
 );
 
 const getRedisClient = async () => {
-  if (process.env.NODE_ENV === 'test') {
+  if (isApiTestRuntime()) {
     return null;
   }
 
@@ -120,7 +122,7 @@ export const createRateLimiter = ({ windowMs, max, keyScope = 'user' }: RateLimi
 
   return async (req: Request, res: Response, next: NextFunction) => {
     if (
-      process.env.NODE_ENV === 'test' &&
+      isApiTestRuntime() &&
       process.env.RATE_LIMIT_ENABLE_TEST_MODE !== 'true'
     ) {
       return next();

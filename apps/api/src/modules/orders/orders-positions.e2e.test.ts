@@ -122,6 +122,7 @@ describe('Orders and positions read contract', () => {
     await prisma.backtestReport.deleteMany();
     await prisma.backtestTrade.deleteMany();
     await prisma.backtestRun.deleteMany();
+    await prisma.walletCashflowEvent.deleteMany();
     await prisma.trade.deleteMany();
     await prisma.order.deleteMany();
     await prisma.position.deleteMany();
@@ -852,9 +853,179 @@ describe('Orders and positions read contract', () => {
     expect(metadata.waitingForFill).toBe(false);
   });
 
+  it('creates and reads back a Gate.io PAPER position from selected-market manual order scope', async () => {
+    const ownerAgent = await registerAndLogin('manual-gateio-paper-position-owner@example.com');
+    const ownerId = await getUserId('manual-gateio-paper-position-owner@example.com');
+
+    const strategy = await prisma.strategy.create({
+      data: {
+        userId: ownerId,
+        name: 'Gate.io paper selected strategy',
+        interval: '5m',
+        leverage: 4,
+        walletRisk: 1,
+        config: {
+          additional: {
+            marginMode: 'ISOLATED',
+            orderType: 'MARKET',
+          },
+        },
+      },
+    });
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: ownerId,
+        name: 'Gate.io paper selected wallet',
+        mode: 'PAPER',
+        exchange: 'GATEIO',
+        marketType: 'FUTURES',
+        baseCurrency: 'USDT',
+        paperInitialBalance: 10000,
+      },
+    });
+    const symbolGroup = await createMarketScope({
+      userId: ownerId,
+      name: 'Gate.io paper selected scope',
+      symbols: ['ADAUSDT'],
+      exchange: 'GATEIO',
+      marketType: 'FUTURES',
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: ownerId,
+        name: 'Gate.io paper selected bot',
+        mode: 'PAPER',
+        exchange: 'GATEIO',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+        walletId: wallet.id,
+        strategyId: strategy.id,
+        symbolGroupId: symbolGroup.id,
+      },
+    });
+    const botGroup = await prisma.botMarketGroup.create({
+      data: {
+        userId: ownerId,
+        botId: bot.id,
+        symbolGroupId: symbolGroup.id,
+        lifecycleStatus: 'ACTIVE',
+        executionOrder: 1,
+        maxOpenPositions: 3,
+        isEnabled: true,
+      },
+    });
+    await prisma.marketGroupStrategyLink.create({
+      data: {
+        userId: ownerId,
+        botId: bot.id,
+        botMarketGroupId: botGroup.id,
+        strategyId: strategy.id,
+        priority: 1,
+        weight: 1,
+        isEnabled: true,
+      },
+    });
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: ownerId,
+        botId: bot.id,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-04-21T12:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-04-21T12:00:10.000Z'),
+      },
+    });
+
+    const contextRes = await ownerAgent.get('/dashboard/orders/manual-context').query({
+      botId: bot.id,
+      symbol: 'adausdt',
+      side: 'BUY',
+    });
+    expect(contextRes.status).toBe(200);
+    expect(contextRes.body.symbol).toBe('ADAUSDT');
+    expect(contextRes.body.botId).toBe(bot.id);
+    expect(contextRes.body.orderType).toBe('MARKET');
+    expect(contextRes.body.marginMode).toBe('ISOLATED');
+    expect(contextRes.body.leverage).toBe(4);
+
+    const openRes = await ownerAgent.post('/dashboard/orders/open').send({
+      botId: bot.id,
+      symbol: 'adausdt',
+      side: 'BUY',
+      type: 'MARKET',
+      quantity: 4,
+      price: 0.25,
+      mode: 'PAPER',
+      riskAck: false,
+    });
+
+    expect(openRes.status).toBe(201);
+    expect(openRes.body.symbol).toBe('ADAUSDT');
+    expect(openRes.body.status).toBe('FILLED');
+    expect(openRes.body.positionId).toBeTruthy();
+
+    const persistedOrder = await prisma.order.findUniqueOrThrow({
+      where: { id: openRes.body.id as string },
+      select: {
+        botId: true,
+        walletId: true,
+        strategyId: true,
+        symbol: true,
+        status: true,
+        origin: true,
+        positionId: true,
+      },
+    });
+    expect(persistedOrder).toEqual(
+      expect.objectContaining({
+        botId: bot.id,
+        walletId: wallet.id,
+        strategyId: strategy.id,
+        symbol: 'ADAUSDT',
+        status: 'FILLED',
+        origin: 'USER',
+        positionId: openRes.body.positionId,
+      })
+    );
+
+    const openedPosition = await prisma.position.findUniqueOrThrow({
+      where: { id: openRes.body.positionId as string },
+      select: {
+        userId: true,
+        botId: true,
+        strategyId: true,
+        symbol: true,
+        side: true,
+        status: true,
+        origin: true,
+      },
+    });
+    expect(openedPosition).toEqual(
+      expect.objectContaining({
+        userId: ownerId,
+        botId: bot.id,
+        strategyId: strategy.id,
+        symbol: 'ADAUSDT',
+        side: 'LONG',
+        status: 'OPEN',
+        origin: 'USER',
+      })
+    );
+
+    const positionsRes = await ownerAgent.get(
+      `/dashboard/bots/${bot.id}/runtime-sessions/${session.id}/positions`
+    );
+    expect(positionsRes.status).toBe(200);
+    expect(
+      positionsRes.body.openItems.some((item: { id: string }) => item.id === openRes.body.positionId)
+    ).toBe(true);
+  });
+
   it('keeps manual-order write/read scope deterministic per selected bot context', async () => {
     const ownerAgent = await registerAndLogin('manual-order-selected-bot-scope@example.com');
     const ownerId = await getUserId('manual-order-selected-bot-scope@example.com');
+    const liveApiKey = await createBinanceApiKey(ownerId, 'manual-order-selected-bot-scope');
 
     const liveStrategy = await prisma.strategy.create({
       data: {
@@ -884,6 +1055,7 @@ describe('Orders and positions read contract', () => {
         exchange: 'BINANCE',
         marketType: 'FUTURES',
         baseCurrency: 'USDT',
+        apiKeyId: liveApiKey.id,
       },
     });
     const paperWallet = await prisma.wallet.create({
@@ -926,6 +1098,7 @@ describe('Orders and positions read contract', () => {
         isActive: true,
         liveOptIn: true,
         consentTextVersion: 'mvp-v1',
+        apiKeyId: liveApiKey.id,
         walletId: liveWallet.id,
         symbolGroupId: scopeSymbolGroup.id,
         strategyId: liveStrategy.id,
@@ -1231,6 +1404,7 @@ describe('Orders and positions read contract', () => {
   it('supports open/cancel/close write endpoints with LIVE risk guards', async () => {
     const ownerAgent = await registerAndLogin('orders-write-owner@example.com');
     const ownerId = await getUserId('orders-write-owner@example.com');
+    const liveApiKey = await createBinanceApiKey(ownerId, 'orders-write-live');
 
     const liveWithoutAckRes = await ownerAgent.post('/dashboard/orders/open').send({
       symbol: 'BTCUSDT',
@@ -1266,6 +1440,7 @@ describe('Orders and positions read contract', () => {
         exchange: 'BINANCE',
         marketType: 'FUTURES',
         baseCurrency: 'USDT',
+        apiKeyId: liveApiKey.id,
       },
     });
     const liveSymbolGroup = await createMarketScope({
@@ -1285,6 +1460,7 @@ describe('Orders and positions read contract', () => {
         liveOptIn: true,
         consentTextVersion: 'mvp-v1',
         maxOpenPositions: 3,
+        apiKeyId: liveApiKey.id,
         walletId: liveWallet.id,
         symbolGroupId: liveSymbolGroup.id,
         strategyId: liveStrategy.id,
@@ -1666,6 +1842,7 @@ describe('Orders and positions read contract', () => {
         origin: 'EXCHANGE_SYNC',
         managementMode: 'BOT_MANAGED',
         syncState: 'IN_SYNC',
+        continuityState: 'CONFIRMED',
         openedAt: new Date('2026-04-12T10:59:00.000Z'),
       },
     });
@@ -1805,7 +1982,6 @@ describe('Orders and positions read contract', () => {
     const closeRes = await ownerAgent
       .post(`/dashboard/bots/${liveBot.id}/runtime-sessions/${session.id}/positions/${exchangePosition.id}/close`)
       .send({ riskAck: true });
-
     expect(closeRes.status).toBe(200);
     expect(closeRes.body.status).toBe('submitted');
     expect(closeRes.body.orderId).toEqual(expect.any(String));

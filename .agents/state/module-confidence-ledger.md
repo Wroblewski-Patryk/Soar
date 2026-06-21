@@ -1,3 +1,456 @@
+## 2026-06-21 LUC-5146 Protected-Route Invalid-Token Redirect Proof
+
+- Module row: Protected auth/session browser proof.
+- Status delta:
+  `DONE / VERIFIED_LOCAL / NO_ACTIVE_WEB_RUNTIME_DEFECT`.
+- Confidence update:
+  [LUC-5146](/LUC/issues/LUC-5146) was rechecked from the local
+  repair/source-control wake. Current `apps/web/src/lib/api.ts` redirects
+  protected-route `401` responses to `/auth/login?session=expired`, and the
+  latest production auth/session evidence from [LUC-5362](/LUC/issues/LUC-5362)
+  passed the same invalid-token redirect contract on production build-info SHA
+  `42177530f2a2ddc22832133b545bccab6ab404eb`.
+- Evidence:
+  `history/tasks/luc-5146-protected-route-invalid-token-redirect-proof-2026-06-21-task.md`;
+  `history/evidence/luc-5362-authenticated-production-acceptance-performance-sweep-2026-06-21-auth-session-browser-proof.md`.
+- Validation:
+  `pnpm --filter web test -- src/middleware.test.ts src/lib/api.test.ts src/context/AuthContext.test.tsx --run`
+  PASS (`3` files, `12` tests).
+- Residual risk:
+  no protected production smoke rerun, push, deploy, restart, env edit, secret
+  readback, account mutation, or live action occurred in this heartbeat.
+  Source-control commit is deferred to the broader release/source-control owner
+  because the repository is pre-existing mixed-dirty and `main` is
+  `ahead 10, behind 1`.
+
+## 2026-06-21 LUC-5381 Read-Only Server-Health Projection
+
+- Module row: SOAR-OPERATIONS-001 / production performance and server-health.
+- Status delta:
+  `DONE / VERIFIED_READ_ONLY / APP_HEALTHY / VPS_PRESSURE_LIMITED`.
+- Confidence update:
+  [LUC-5381](/LUC/issues/LUC-5381) resumed the server-health projection after
+  [LUC-4811](/LUC/issues/LUC-4811) binding closure. Names-only scan found the
+  Coolify status family, `VPS_HOST`, and `SMOKE_AUTH_*`; authenticated Coolify
+  read-only projection passed for project/environment/resources/deployments;
+  public smoke passed; protected workers readiness passed via fresh login;
+  runtime freshness passed; rollback guard returned `shouldRollback=false`;
+  PostgreSQL/Redis report `running:healthy`.
+- Evidence:
+  `history/evidence/luc-5381-readonly-server-health-projection-2026-06-21.md`;
+  `history/tasks/luc-5381-readonly-server-health-projection-2026-06-21-task.md`.
+- Validation:
+  `pnpm run -s ops:coolify-stack:env-check:test` PASS (`11/11`); Coolify
+  read-only `GET` projection PASS; public deploy smoke PASS; protected deploy
+  smoke PASS through fresh login; rollback guard PASS.
+- Residual risk:
+  Coolify application statuses remain `running:unknown`. Host-level VPS
+  CPU/memory/disk/proxy/container-engine pressure and sanitized log-window
+  evidence were not captured because this runner exposes `VPS_HOST` but no
+  `SSH*` or dedicated read-only `VPS_*` status credential family beyond
+  `VPS_HOST`.
+
+## 2026-06-21 LUC-4767 Coolify/VPS Health Readback Closure
+
+- Module row: SOAR-OPERATIONS-001 / production performance and server-health.
+- Status delta:
+  `DONE / VERIFIED_READ_ONLY / APP_HEALTHY / VPS_PRESSURE_LIMITED`.
+- Confidence update:
+  [LUC-4767](/LUC/issues/LUC-4767) is no longer blocked on the old Coolify
+  binding gap. Names-only scan found the Coolify status family, `VPS_HOST`, and
+  `SMOKE_AUTH_*`; authenticated Coolify read-only projection passed for
+  project/environment/resources/deployments; public smoke passed; protected
+  workers readiness passed via fresh login; runtime freshness passed; rollback
+  guard returned `shouldRollback=false`; PostgreSQL/Redis report
+  `running:healthy`.
+- Evidence:
+  `history/evidence/luc-4767-coolify-vps-health-readback-2026-06-21.md`;
+  `history/tasks/luc-4767-coolify-vps-health-readback-2026-06-21-task.md`.
+- Validation:
+  `pnpm run -s ops:coolify-stack:env-check:test` PASS (`11/11`); Coolify
+  read-only `GET` projection PASS; public deploy smoke PASS; protected deploy
+  smoke PASS through fresh login after stale token path failed closed; rollback
+  guard PASS.
+- Residual risk:
+  Coolify application statuses remain `running:unknown`. Host-level VPS
+  CPU/memory/disk/proxy/container-engine pressure and sanitized log-window
+  evidence were not captured because this runner exposes `VPS_HOST` but no
+  `SSH*` or dedicated `VPS_*` read-only status credential family.
+
+## 2026-06-21 LUC-5387 Production Performance And Server Health Watch
+
+- Module row: SOAR-OPERATIONS-001 / production performance and server-health.
+- Status delta:
+  `DONE / PARTIALLY_VERIFIED / APP_REACHABLE / API_HEALTH_TLS_TAIL_WATCH`.
+- Confidence update:
+  [LUC-5387](/LUC/issues/LUC-5387) refreshed current production-health
+  confidence. Public app smoke passed, protected workers readiness passed via
+  fresh login path, and authenticated production UI module clickthrough passed
+  for public `4/4`, dashboard `18/18`, admin `3/3`, and legacy redirects
+  `3/3`. API `/ready` and Web `/` were responsive in the sampled window.
+  API `/health` stayed available but showed two low-second TLS/start-transfer
+  outliers across 20 samples.
+- Evidence:
+  `history/evidence/luc-5387-production-performance-server-health-watch-2026-06-21.md`;
+  `history/evidence/luc-5387-prod-ui-module-clickthrough-2026-06-21.md`;
+  `history/artifacts/luc-5387-prod-ui-module-clickthrough-2026-06-21.json`;
+  `history/tasks/luc-5387-production-performance-server-health-watch-2026-06-21-task.md`.
+- Validation:
+  public/protected deploy smoke PASS after stale-token path was bypassed with
+  fresh login; authenticated UI clickthrough PASS; Coolify read-only projection
+  PASS; `pnpm run -s ops:coolify-stack:env-check:test` PASS (`11/11`);
+  bounded `curl.exe` phase timing PASS with partial API `/health` latency
+  warning.
+- Residual risk:
+  Coolify application statuses remain `running:unknown`, so container pressure
+  is not disproven. Web build-info remains `metadataSource=env-runtime`.
+  Same-window host/proxy/container pressure and sanitized log-window evidence
+  are still required before creating a Backend repair child for API `/health`
+  tails.
+
+## 2026-06-21 LUC-4929 Coolify Production Deploy Health Sweep Continuation
+
+- Module row: SOAR-OPERATIONS-001 / production deploy health and Coolify/VPS
+  diagnosis.
+- Status delta: `VERIFIED_READ_ONLY / APP_HEALTHY /
+  PROVENANCE_RESIDUAL_ROUTED`.
+- Confidence update:
+  [LUC-4929](/LUC/issues/LUC-4929) completed the previously blocked Coolify
+  read-only deployment/resource diagnosis after [LUC-4811](/LUC/issues/LUC-4811)
+  supplied bindings. Coolify project/environment/resource reads work; public
+  and protected smoke pass; worker runtime freshness passes; rollback guard
+  does not indicate rollback. Confidence remains partial only for Web
+  release-grade build provenance (`env-runtime`) and transient Web root latency
+  outliers.
+- Evidence:
+  `history/evidence/luc-4929-coolify-production-deploy-health-sweep-2026-06-21.md`;
+  `history/evidence/luc-4929-prod-auth-session-browser-proof-2026-06-21.md`;
+  `history/tasks/luc-4929-coolify-production-deploy-health-sweep-continuation-2026-06-21-task.md`.
+- Validation:
+  Coolify read-only projection passed; public smoke passed; protected workers
+  smoke passed with email/password login; runtime freshness passed; rollback
+  guard returned `shouldRollback=false`; protected browser auth proof passed;
+  `pnpm run -s ops:coolify-stack:env-check:test` passed (`11/11`).
+- Residual:
+  [LUC-4912](/LUC/issues/LUC-4912) remains the release provenance/redeploy
+  approval lane for `metadataSource=env-runtime`. Routine production
+  performance watch should keep watching Web `/` cold/outlier latency.
+
+## 2026-06-21 LUC-5360 API Health Latency Correlation
+
+- Module row: SOAR-OPERATIONS-001 / production performance and server-health.
+- Status delta:
+  `DONE / PARTIALLY_VERIFIED / ACTIVE_API_TAIL_NOT_REPRODUCED /
+  TLS_PROXY_VARIANCE_CLASSIFIED`.
+- Confidence update:
+  [LUC-5360](/LUC/issues/LUC-5360) consumed the latency-tail signal delegated
+  by [LUC-5356](/LUC/issues/LUC-5356). Fresh public smoke passed and bounded
+  phase timing did not reproduce the active API `/health` tail: API `/health`
+  returned 30/30 `200`, max `585.7 ms`, average `130.9 ms`; API `/ready`
+  returned 20/20 `200`, max `205.9 ms`, average `106.6 ms`. The only
+  over-one-second sample was Web `/` at `1633.5 ms`, with the delay
+  concentrated in TLS/appconnect/start-transfer.
+- Evidence:
+  `history/evidence/luc-5360-api-health-latency-correlation-2026-06-21.md`;
+  `history/tasks/luc-5360-api-health-latency-correlation-2026-06-21-task.md`.
+- Validation:
+  public deploy smoke PASS; `curl.exe` phase timing PASS; Web build-info
+  readback PASS; read-only Coolify GET projection PASS.
+- Residual risk:
+  Coolify application statuses remain `running:unknown`, so container pressure
+  is not disproven. If API `/health` tails recur, DRE/Ops should capture
+  same-window host/proxy/container pressure plus sanitized API/proxy log-window
+  evidence before routing a Core Backend child.
+
+## 2026-06-21 LUC-5367 Gap Register And Repair Lane Refresh
+
+- Module row: Architecture Evidence Graph / App Completion Evidence / V1
+  release gate routing.
+- Status delta:
+  `VERIFIED_REFRESH / NO_NEW_ACTIONABLE_ARCHITECTURE_GAP /
+  APP_COMPLETION_PROOF_BACKLOG_CLASSIFIED`.
+- Confidence update:
+  [LUC-5367](/LUC/issues/LUC-5367) refreshed the TSA repair-lane decision
+  from current generated evidence. `docs/graphs/architecture-health.json`
+  remains generated `2026-06-20T17:44:11.363Z` with `9727` entities,
+  `31288` relations, raw `implementation_without_tests=1288`, and
+  `verified_without_proof=0`. `docs/status/architecture-awareness-report.md`
+  has actionable missing-test `0`, actionable missing-doc `0`, actionable
+  task-link `0`, ownerless entities `0`, and disconnected entities `0`.
+  Strict architecture graph drift passed with `849/849` covered and `0`
+  missing. Current app-completion evidence remains a proof backlog source:
+  `2524` items, `8` flows, `452` needing browser review, `1645`
+  missing-test-link signals, `300` missing-doc-link signals, and `10`
+  blocked; these are not exact TSA architecture repair rows by themselves.
+- Evidence:
+  `history/tasks/luc-5367-gap-register-and-repair-lane-refresh-2026-06-21-task.md`;
+  `docs/graphs/architecture-health.json`;
+  `docs/status/architecture-awareness-report.md`;
+  `docs/status/app-completion-index.md`;
+  `docs/status/app-completion-index.json`.
+- Validation:
+  `pnpm run -s architecture:graph:drift:strict` PASS (`849/849`, `0`
+  missing).
+- Residual risk:
+  V1 release readiness remains blocked outside this TSA architecture lane by
+  approved read-only Coolify/VPS/DB/worker binding injection through
+  [LUC-4811](/LUC/issues/LUC-4811) / [LUC-5075](/LUC/issues/LUC-5075),
+  diagnostic-only Web build-info `env-runtime` provenance, dirty/ahead-behind
+  source-control and redeploy sequencing, protected production/live proof
+  gates, and [LUC-5319](/LUC/issues/LUC-5319) runtime readback/test-budget
+  classification.
+
+## 2026-06-21 LUC-5351 V1 Audit-To-Completion Controller Refresh
+
+- Module row: Architecture Evidence Graph / App Completion Evidence / V1
+  release gate routing.
+- Status delta:
+  `PARTIALLY_VERIFIED / STRICT_ARCHITECTURE_DRIFT_CLEAN /
+  APP_COMPLETION_PROOF_BACKLOG_CLASSIFIED / RELEASE_GATES_STILL_BLOCKED`.
+- Confidence update:
+  [LUC-5351](/LUC/issues/LUC-5351) refreshed the TSA controller state from the
+  current generated indexes. Strict architecture graph drift passed with
+  `849/849` covered and `0` missing. Current
+  `docs/graphs/architecture-health.json` remains generated
+  `2026-06-20T17:44:11.363Z` with `9727` entities, `31288` relations, raw
+  `implementation_without_tests=1288`, and `verified_without_proof=0`.
+  Current app-completion evidence is broader than the strict architecture
+  repair queue: `2524` items, `8` user flows, `452` needing browser review,
+  `1645` missing-test-link signals, `300` missing-doc-link signals, and `10`
+  blocked. These app-completion counts are proof/backlog slicing inputs, not
+  exact TSA architecture repair rows by themselves.
+- Evidence:
+  `history/tasks/luc-5351-v1-audit-to-completion-controller-2026-06-21-task.md`;
+  `docs/status/app-completion-index.md`;
+  `docs/status/app-completion-index.json`;
+  `docs/graphs/architecture-health.json`.
+- Validation:
+  `pnpm run -s architecture:graph:drift:strict` PASS (`849/849`, `0`
+  missing).
+- Residual risk:
+  V1 release readiness remains blocked outside this TSA lane by approved
+  Coolify/VPS/DB/worker read-only binding injection through
+  [LUC-4811](/LUC/issues/LUC-4811) / [LUC-5075](/LUC/issues/LUC-5075),
+  diagnostic-only Web build-info `env-runtime` provenance, dirty/ahead-behind
+  source-control and redeploy sequencing, protected production/live proof
+  gates, and [LUC-5319](/LUC/issues/LUC-5319) runtime readback/test-budget
+  classification.
+
+## 2026-06-20 LUC-5310 Runtime DCA/PnL PAPER-First Proof Triage
+
+- Module rows: runtime DCA/PnL; bot runtime readback; exchange boundary.
+- Status delta: `PARTIALLY_VERIFIED / LOCAL_RUNTIME_CONTRACTS_PASS /
+  PROTECTED_PRODUCTION_PROOF_NOT_RUN / READBACK_PERFORMANCE_FOLLOW_UP_ROUTED`.
+- Confidence update:
+  [LUC-5310](/LUC/issues/LUC-5310) refreshed focused local confidence for
+  runtime DCA/PnL contracts. Engine tests passed for exchange-PnL DCA
+  thresholds, pending-DCA close blocking, TP blocked by pending profit-side
+  DCA, and SL allowed after loss-side DCA. API route tests passed for runtime
+  PnL readback, fallback mark price, imported DCA visibility, duplicate OPEN
+  row fail-closed behavior, replacement-row continuity, legacy wallet-scoped
+  DCA, restarted-session DCA, and stale-DCA reopen protection. Exchange order
+  guard and execution dedupe tests passed.
+- Evidence:
+  `history/evidence/luc-5310-runtime-dca-pnl-paper-first-proof-triage-2026-06-20.md`;
+  `history/tasks/luc-5310-runtime-dca-pnl-paper-first-proof-triage-2026-06-20-task.md`.
+- Validation:
+  exchange-PnL `2/2`; DCA/close parity `2/2`; runtime PnL readback `2/2`
+  with explicit `--testTimeout=15000`; imported DCA visibility `7/7` with
+  explicit `--testTimeout=15000`; exchange guard/dedupe `18/18`.
+- Residual risk:
+  protected production readback remains unexecuted and approval-gated. Default
+  `bots.runtime-pnl-parity.e2e.test.ts` failed under the 5000ms Vitest budget
+  after a `200` positions readback took about `4209 ms`; rerun with 15s
+  timeout passed but recorded slow runtime readback timings.
+  [LUC-5319](/LUC/issues/LUC-5319) owns performance/test-budget
+  classification.
+
+## 2026-06-20 LUC-5316 Wallet API LIVE/PAPER Readback E2E Deterministic
+
+- Module rows: wallet; exchange adapter; API test runtime; rate-limit
+  middleware.
+- Status delta:
+  `VERIFIED_LOCAL / DETERMINISTIC_WALLET_API_E2E / PRODUCTION_LIVE_PROOF_NOT_RUN`.
+- Confidence update:
+  [LUC-5316](/LUC/issues/LUC-5316) repaired the local backend/test-harness
+  blocker delegated by [LUC-5309](/LUC/issues/LUC-5309). Wallet LIVE
+  preview/create e2e now recognizes `VITEST=true` as API test runtime before
+  fetching balances, so local e2e does not reach authenticated exchange I/O
+  with placeholder credentials. Wallet e2e isolation now uses unique test
+  users and avoids broad destructive cleanup of shared DB-backed rows. Shared
+  rate limiting follows the same test-runtime convention while retaining
+  explicit rate-limit test mode.
+- Evidence:
+  `history/evidence/luc-5316-wallet-api-live-paper-readback-e2e-deterministic-2026-06-20.md`;
+  `history/tasks/luc-5316-wallet-api-live-paper-readback-e2e-deterministic-2026-06-20-task.md`.
+- Validation:
+  focused wallet red-case e2e PASS (`1` file / `4` tests, `20` skipped);
+  full wallet API proof PASS (`2` files / `36` tests); rate-limit unit proof
+  PASS (`1` file / `7` tests).
+- Residual risk:
+  production/live wallet exchange proof remains separately protected and was
+  not run. No deploy, push, restart, env edit, secret/account readback, real
+  exchange I/O, exchange mutation, payment/subscription mutation, or
+  live-trading action occurred.
+
+## 2026-06-20 LUC-5311 Orders/Positions E2E Gate.io Selected-Market Repair
+
+- Module rows: orders; positions; bot runtime; exchange adapter; Gate.io
+  selected-market position creation.
+- Status delta: `VERIFIED_LOCAL / FULL_E2E_BLOCKER_REPAIRED /
+  PRODUCTION_LIVE_PROOF_NOT_RUN`.
+- Confidence update:
+  [LUC-5311](/LUC/issues/LUC-5311) repaired the backend/test-runtime blocker
+  found by [LUC-5308](/LUC/issues/LUC-5308). The root cause was mixed: stale
+  LIVE e2e fixtures were missing canonical API-key/continuity facts, and the
+  orders service treated only `NODE_ENV=test` as test runtime while this
+  Vitest run uses `VITEST=true`, causing default-deps HTTP e2e to attempt
+  real LIVE exchange-boundary decryption against placeholder keys. Production
+  and custom injected LIVE execution paths remain unchanged.
+- Evidence:
+  `history/tasks/luc-5311-orders-positions-e2e-gateio-selected-market-repair-2026-06-20-task.md`.
+- Validation:
+  focused red-case e2e PASS (`1` file / `3` tests, `20` skipped); full
+  LUC-5311 command PASS (`4` files passed, `1` skipped; `39` tests passed,
+  `72` skipped).
+- Residual risk:
+  no production Gate.io LIVE order, exchange mutation, protected proof, deploy,
+  push, restart, env edit, secret/account readback, payment/subscription
+  mutation, or live-trading action occurred. Parent proof remains local unless
+  a separate protected production/live proof lane is approved.
+
+## 2026-06-20 LUC-5308 Gate.io Selected-Market Position Creation Triage
+
+- Module rows: exchange adapter; orders; positions; bot runtime; Gate.io
+  selected-market position creation.
+- Status delta: `VERIFIED_LOCAL /
+  GATEIO_PAPER_SELECTED_MARKET_POSITION_PROVEN /
+  PRODUCTION_LIVE_PROOF_NOT_RUN`.
+- Confidence update:
+  [LUC-5308](/LUC/issues/LUC-5308) consumed the completed
+  [LUC-5311](/LUC/issues/LUC-5311) blocker repair and added a dedicated local
+  e2e proof for Gate.io PAPER selected-market position creation. The proof
+  covers selected market/symbol mapping, manual-order context, order
+  persistence, unified fill lifecycle, position creation, runtime position
+  readback, and existing fail-closed behavior in the same parent command.
+- Evidence:
+  `history/evidence/luc-5308-gateio-selected-market-position-proof-triage-2026-06-20.md`;
+  `history/tasks/luc-5308-gateio-selected-market-position-proof-triage-2026-06-20-task.md`.
+- Validation:
+  focused dedicated Gate.io PAPER position proof PASS (`1` file / `1` test,
+  `23` skipped); parent LUC-5308 command PASS (`4` files passed, `1` skipped;
+  `40` tests passed, `72` skipped).
+- Residual risk:
+  no production Gate.io LIVE order, exchange mutation, protected proof, deploy,
+  push, restart, env edit, secret/account readback, payment/subscription
+  mutation, or live-trading action occurred. Production/live proof remains a
+  separate protected approval lane.
+
+## 2026-06-20 LUC-5307 App Function Execution Report
+
+- Module rows: app function inventory; wallet; exchange adapter; positions;
+  runtime DCA/PnL; dashboard runtime; auth/session; production health.
+- Status delta: `REPORT_PUBLISHED / BROAD_LOCAL_IMPLEMENTATION /
+  PRODUCTION_PROOF_GAPS_IDENTIFIED`.
+- Confidence update:
+  [LUC-5307](/LUC/issues/LUC-5307) consolidated current Soar V1/V1.x function
+  truth from generated architecture indexes and same-day production evidence.
+  The function indexes exist and are usable: `27` function chains, `38` Web
+  journeys/pages, `96` API surfaces, and `41` user actions. Current generated
+  critical gaps are `0`, but high proof gaps remain substantial (`28`
+  function-chain gaps and `39` user-action gaps), mostly because protected,
+  money-facing, and runtime flows are locally verified without fresh
+  production/browser proof.
+- Evidence:
+  `history/evidence/luc-5307-app-function-execution-report-2026-06-20.md`;
+  `history/tasks/luc-5307-app-function-execution-report-2026-06-20-task.md`;
+  `docs/status/function-journey-index.md`;
+  `docs/status/user-action-index.md`.
+- Next proof or fix:
+  prioritize focused proof/repair lanes:
+  [LUC-5308](/LUC/issues/LUC-5308) Gate.io selected-market position creation
+  is now locally verified for the PAPER-safe path,
+  [LUC-5309](/LUC/issues/LUC-5309) wallet LIVE/PAPER readback,
+  [LUC-5310](/LUC/issues/LUC-5310) runtime DCA/PnL protected proof, full
+  Coolify/VPS server-health readback after [LUC-4811](/LUC/issues/LUC-4811),
+  and a production-safe proof queue for remaining high-risk protected user
+  actions.
+
+## 2026-06-20 LUC-5304 Production Performance And Server Health Watch
+
+- Module row: Production Health / Auth Session / Operations Runtime.
+- Status delta: `PARTIALLY_VERIFIED / APP_HEALTHY /
+  COOLIFY_VPS_BINDINGS_BLOCKED`.
+  Public production smoke passed for API `/health`, API `/ready`, Web `/`,
+  and Web `/api/build-info` on production SHA
+  `42177530f2a2ddc22832133b545bccab6ab404eb`. Five-sample public timing was
+  healthy for Web `/` max `238 ms`, Web `/api/build-info` max `109 ms`, API
+  `/health` max `107 ms`, and API `/ready` max `110 ms`; Web `/auth/login`
+  had a watch-only WARN max `1169 ms`. Protected auth/session browser proof
+  passed with redacted artifacts. Coolify stack env-check tests passed
+  (`11/11`), but current-runner binding preflight failed closed with required
+  present `0/16`.
+- Evidence:
+  `history/evidence/luc-5304-production-performance-health-watch-2026-06-20.md`;
+  `history/evidence/luc-5304-prod-auth-session-browser-proof-2026-06-20.md`;
+  `history/tasks/luc-5304-production-performance-health-watch-2026-06-20-task.md`.
+- Residual risk:
+  full Coolify/VPS/DB/worker server-health readback remains blocked by
+  [LUC-4811](/LUC/issues/LUC-4811) and current control-plane unblocker
+  [LUC-5075](/LUC/issues/LUC-5075). `env-runtime` build-info provenance remains
+  diagnostic-only and does not authorize release-grade deploy claims.
+
+# 2026-06-20 LUC-5300 Protected Auth/Session Blocker Reconciliation
+
+- Module row: Protected auth/session browser proof.
+- Status delta: `VERIFIED / STALE_FAILURE_SUPERSEDED / ACCEPTANCE_BLOCKER_REMOVED`.
+- Confidence update:
+  [LUC-5300](/LUC/issues/LUC-5300) reconciled
+  [LUC-5146](/LUC/issues/LUC-5146) against the later PASS evidence from
+  [LUC-5198](/LUC/issues/LUC-5198) and [LUC-5250](/LUC/issues/LUC-5250).
+  No fresh contradictory reproduction was found, and the latest production
+  proofs passed invalid-token redirect to
+  `/auth/login?session=expired` on SHA
+  `42177530f2a2ddc22832133b545bccab6ab404eb`.
+- Evidence:
+  `history/tasks/luc-5300-protected-route-redirect-blocker-reconciliation-2026-06-20-task.md`;
+  `history/evidence/luc-5198-prod-auth-session-browser-proof-2026-06-20.md`;
+  `history/evidence/luc-5250-prod-auth-session-browser-proof-2026-06-20.md`.
+- Next proof or fix:
+  Paperclip readback on 2026-06-21 shows
+  [LUC-5146](/LUC/issues/LUC-5146) is `done`,
+  [LUC-5306](/LUC/issues/LUC-5306) is `done`, and
+  [LUC-5206](/LUC/issues/LUC-5206) no longer has
+  [LUC-5146](/LUC/issues/LUC-5146) as a blocker. Any fresh protected
+  production acceptance proof remains a separate gated QA/release lane.
+
+# 2026-06-20 LUC-5298 Protected Auth/Session Redirect Reconciliation
+
+- Module row: Protected auth/session browser proof.
+- Status delta: `VERIFIED_ROUTING / NO_RUNTIME_REPAIR_REQUIRED /
+  STALE_FAILURE_SUPERSEDED`.
+- Confidence update:
+  [LUC-5298](/LUC/issues/LUC-5298) inspected the protected-route redirect
+  surface after [LUC-5206](/LUC/issues/LUC-5206) failed on invalid-token
+  `session=expired`. Current Web architecture still matches the intended
+  split: `apps/web/src/middleware.ts` only gates cookie presence, while
+  `/auth/me` and the Web API interceptor own invalid/expired token semantics.
+  Focused local Web tests passed (`3` files / `12` tests), and later same-day
+  production proofs [LUC-5198](/LUC/issues/LUC-5198) and
+  [LUC-5250](/LUC/issues/LUC-5250) passed the exact invalid-token
+  `session=expired` contract on SHA
+  `42177530f2a2ddc22832133b545bccab6ab404eb`.
+- Evidence:
+  `history/tasks/luc-5298-protected-route-redirect-executable-path-2026-06-20-task.md`;
+  `history/evidence/luc-5198-prod-auth-session-browser-proof-2026-06-20.md`;
+  `history/evidence/luc-5250-prod-auth-session-browser-proof-2026-06-20.md`.
+- Next proof or fix:
+  QVE reconciliation [LUC-5300](/LUC/issues/LUC-5300) under
+  [LUC-5146](/LUC/issues/LUC-5146) should close or supersede the stale blocker
+  and update [LUC-5206](/LUC/issues/LUC-5206).
+  Do not patch Web middleware unless a fresh reproduction appears after the
+  two PASS production proofs.
+
 # 2026-06-20 LUC-5252 API Health/Ready Latency Correlation
 
 - Module row: SOAR-OPERATIONS-001 / production performance and server-health
@@ -175,6 +628,30 @@
 - Residual:
   [LUC-4811](/LUC/issues/LUC-4811) must inject approved read-only Coolify/VPS
   server-health bindings before DRE can complete full server-health readback.
+
+## 2026-06-20 LUC-5309 Wallet LIVE/PAPER Dashboard Readback Triage
+
+- Module rows: Wallets, Dashboard Home, Exchange Adapter, Profile API Keys.
+- Status delta: `PARTIALLY_VERIFIED / PRODUCT_REPAIR_NOT_PROVEN /
+  TEST_HARNESS_REPAIR_DELEGATED`.
+  Web wallet/dashboard rendering is verified locally for the focused selected
+  runtime wallet KPI/list/preview surfaces. Exchange authenticated-read and
+  capability boundaries are verified locally. API wallet product contracts are
+  verified only with explicit `NODE_ENV=test` and isolated DB-backed wallet
+  test runs.
+- Evidence:
+  `history/evidence/luc-5309-wallet-live-paper-dashboard-readback-triage-2026-06-20.md`;
+  `history/tasks/luc-5309-wallet-live-paper-dashboard-readback-triage-2026-06-20-task.md`.
+- Validation:
+  Web focused wallet/dashboard tests PASS (`4` files / `10` tests); API
+  exchange boundary tests PASS (`4` files / `19` tests); `NODE_ENV=test`
+  `wallets.e2e` PASS (`24/24`); isolated `NODE_ENV=test`
+  `wallets.crud.e2e` PASS (`12/12`). Default API wallet command FAILS
+  (`500/502` LIVE preview/create); combined wallet DB-e2e run with
+  `NODE_ENV=test` FAILS one shared-DB interference assertion.
+- Residual risk:
+  fresh protected production wallet/browser readback remains unproven; API
+  wallet test harness determinism is delegated to [LUC-5316](/LUC/issues/LUC-5316).
 
 # Module Confidence Ledger
 
@@ -7527,6 +8004,48 @@ Do not turn uncertainty into optimism.
   `node --test scripts/runProdSecurityExchangeProof.test.mjs` PASS (`4/4`);
   `node scripts/runProdSecurityExchangeProof.mjs --help` PASS; direct relation
   readback PASS (`14` rows); architecture-awareness report generated
+## 2026-06-20 LUC-4413 Coolify Read-Only Production Status Access
+
+- Module row: `SOAR-OPERATIONS-001` / Coolify production status access.
+- Status delta: `VERIFIED_READ_ONLY`. Current SPM runner has the required
+  Coolify API status binding names and can perform authenticated read-only
+  Coolify `GET` reads for selector `LuckySparrow`, project `Soar`, and
+  production environment `production` without value disclosure.
+- Evidence:
+  `history/evidence/luc-4413-coolify-read-only-production-status-access-2026-06-20.md`;
+  `history/tasks/luc-4413-coolify-read-only-production-status-access-2026-06-20-task.md`.
+- Validation:
+  names-only binding scan PASS; authenticated Coolify `GET` projection PASS;
+  `pnpm run -s ops:coolify-stack:env-check:test` PASS (`11/11`).
+- Residual risk:
+  read-only Coolify inventory status is not app readiness, protected auth,
+  worker readiness, rollback, restore, SLO, or release approval. The separate
+  service stack env family remains absent in this runner (`0/16`) and must not
+  be conflated with Coolify API status access.
+
+## 2026-06-21 LUC-5362 Authenticated Production Acceptance
+
+- Module row: production acceptance / auth session / dashboard-admin route
+  reachability / public API-Web smoke.
+- Status delta: `AUTHENTICATED_ACCEPTANCE_PASS /
+  PERFORMANCE_PARTIALLY_VERIFIED`.
+- Evidence:
+  `history/tasks/luc-5362-authenticated-production-acceptance-performance-sweep-2026-06-21-task.md`;
+  `history/evidence/luc-5362-authenticated-production-acceptance-performance-sweep-2026-06-21-ui-clickthrough.md`;
+  `history/evidence/luc-5362-authenticated-production-acceptance-performance-sweep-2026-06-21-auth-session-browser-proof.md`.
+- Validation:
+  production public smoke PASS for API `/health`, API `/ready`, Web `/`, Web
+  `/api/build-info`; authenticated UI module clickthrough PASS public `4/4`,
+  dashboard `18/18`, admin `3/3`, legacy redirects `3/3`; auth/session
+  browser proof PASS for unauthenticated redirect, authenticated dashboard,
+  invalid-token `session=expired`, logout `200`, post-logout `/auth/me` `401`,
+  and dashboard-after-logout redirect.
+- Residual risk:
+  production API `/health` and `/ready` timing remains watchful and is owned by
+  [LUC-5360](/LUC/issues/LUC-5360). This row does not prove exchange
+  mutation, payment/subscription mutation, live trading, full Coolify/VPS
+  readback, or release-grade build provenance.
+
   `2026-06-07T22:24:06.213Z` reports `159` actionable missing-test links and
   no `runProdSecurityExchangeProof` top actionable rows; `pnpm run
   quality:guardrails` PASS.

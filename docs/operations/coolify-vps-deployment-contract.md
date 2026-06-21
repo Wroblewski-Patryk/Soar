@@ -1,6 +1,6 @@
 # Coolify VPS Deployment Contract
 
-Last updated: 2026-06-15
+Last updated: 2026-06-21
 
 This contract describes the current Soar production deployment target. Coolify
 must be treated as a hierarchy:
@@ -63,7 +63,27 @@ screenshot, raw log capture, raw Coolify object storage, or live-trading
 action. Evidence:
 `history/evidence/luc-3436-coolify-team-workspace-confirmation-2026-06-13.md`.
 
-Latest resource inventory reconciliation: `LUC-3796` at
+Latest deploy-health sweep continuation: `LUC-4929` at
+`2026-06-21T00:05:18Z`. After [LUC-4811](/LUC/issues/LUC-4811) resolved the
+read-only binding blocker, authenticated Coolify `GET` calls resolved selector
+`LuckySparrow`, project `Soar`, the configured production environment binding,
+production environment `production`, six applications, PostgreSQL, Redis, zero
+generic services, `17` visible global resource rows, and `0` visible deployment
+rows. The canonical production-environment inventory remains eight resources:
+`soar-api`, `soar-web`, `workers-backtest`, `workers-execution`,
+`workers-market-data`, `workers-market-stream`, `postgresql`, and `redis`.
+Application rows report `running:unknown`; PostgreSQL and Redis report
+`running:healthy`. Public smoke, protected `/workers/ready`, runtime freshness,
+and rollback guard passed; rollback guard returned `shouldRollback=false` with
+no alerts. Web build-info still reports `metadataSource=env-runtime`, so
+release-grade provenance remains routed through [LUC-4912](/LUC/issues/LUC-4912).
+This heartbeat performed no deploy, restart, rollback, env edit, database
+action, Redis action, team setting change, account action, secret readback, raw
+resource id storage, screenshot, raw log capture, raw Coolify object storage, or
+live-trading action. Evidence:
+`history/evidence/luc-4929-coolify-production-deploy-health-sweep-2026-06-21.md`.
+
+Previous resource inventory reconciliation: `LUC-3796` at
 `2026-06-13T17:15:08Z`. Authenticated read-only Coolify `GET` calls resolved
 selector `LuckySparrow`, project `Soar`, the configured production environment
 binding, production environment id `6`, six applications, PostgreSQL, Redis,
