@@ -1,3 +1,24 @@
+# 2026-06-21 LUC-5319 Runtime DCA/PnL Readback Timeout Classification
+
+- [LUC-5319](/LUC/issues/LUC-5319) closed the remaining Backend Runtime
+  classification lane from [LUC-5310](/LUC/issues/LUC-5310). The focused
+  default-timeout failure was reproduced, then classified as local DB-backed
+  e2e harness cost from per-test destructive cleanup rather than a product
+  read-model correctness defect.
+- Repair:
+  the PnL parity and imported-DCA e2e files now use file-level Bot Runtime
+  state reset with unique fixtures, preserving the same route assertions.
+- Validation:
+  default PnL parity PASS (`2/2`), default imported-DCA visibility PASS
+  (`7/7`), and combined focused pack PASS (`2` files / `9` tests).
+- Evidence:
+  `history/tasks/luc-5319-runtime-dca-pnl-readback-timeout-classification-2026-06-21-task.md`.
+- Residual:
+  protected production DCA/PnL runtime readback remains separately approval
+  gated; this did not authorize deploy, push, restart, env edit, secret/account
+  readback, exchange mutation, payment/subscription mutation, or live-trading
+  action.
+
 # 2026-06-21 LUC-5345 Source-Control Closure Runtime/Evidence Dirty Packet
 
 - [LUC-5345](/LUC/issues/LUC-5345) closed the local runtime/evidence dirty
@@ -249,9 +270,9 @@
 - Local runtime proof passed for DCA trigger/close precedence, exchange PnL
   truth, runtime PnL and DCA API readback, stale-DCA fail-closed behavior, and
   exchange-boundary/dedupe checks.
-- Residual risk: protected production readback was not run in this heartbeat,
-  and route-level runtime readback showed slow local timings that require
-  Backend classification or repair in [LUC-5319](/LUC/issues/LUC-5319).
+- Residual risk: protected production readback was not run in this heartbeat.
+  The local runtime readback/test-budget signal was later closed by
+  [LUC-5319](/LUC/issues/LUC-5319) as a DB-backed e2e harness timeout.
 - Evidence:
   `history/evidence/luc-5310-runtime-dca-pnl-paper-first-proof-triage-2026-06-20.md`;
   `history/tasks/luc-5310-runtime-dca-pnl-paper-first-proof-triage-2026-06-20-task.md`.

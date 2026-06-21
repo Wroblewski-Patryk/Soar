@@ -1,3 +1,27 @@
+# 2026-06-21 LUC-5319 Runtime DCA/PnL Readback Timeout Classification
+
+- [LUC-5319](/LUC/issues/LUC-5319) is closed as
+  `DONE / VERIFIED_LOCAL / HARNESS_TIMEOUT_CLASSIFIED`.
+- Classification:
+  the default-timeout failure from [LUC-5310](/LUC/issues/LUC-5310) was
+  reproducible, but expanded-timeout rerun proved the route assertions. The
+  root cause was local DB-backed e2e harness cost from per-test destructive
+  cleanup, not a confirmed product read-model defect.
+- Repair:
+  `bots.runtime-pnl-parity.e2e.test.ts` and
+  `bots.runtime-imported-dca-visibility.e2e.test.ts` now reset shared Bot
+  Runtime e2e state once per file while keeping unique users/bots and existing
+  product assertions.
+- Validation:
+  default PnL parity PASS (`2/2`); default imported-DCA visibility PASS
+  (`7/7`); combined focused pack PASS (`2` files / `9` tests).
+- Evidence:
+  `history/tasks/luc-5319-runtime-dca-pnl-readback-timeout-classification-2026-06-21-task.md`.
+- Boundary:
+  no runtime product code change, deploy, push, restart, rollback, env edit,
+  secret/account readback, production fixture mutation, exchange action, order,
+  position, payment/subscription mutation, or live-trading action occurred.
+
 # 2026-06-21 LUC-5345 Source-Control Closure Runtime/Evidence Dirty Packet
 
 - [LUC-5345](/LUC/issues/LUC-5345) can close as
@@ -285,13 +309,11 @@
   `300` missing-doc-link; `10` blocked), but it is not an exact architecture
   repair queue by itself. Do not create duplicate TSA repair children from raw
   app-completion counts alone.
-- Next owners unchanged:
+- Next owners after [LUC-5319](/LUC/issues/LUC-5319) closure:
   [LUC-4811](/LUC/issues/LUC-4811) / [LUC-5075](/LUC/issues/LUC-5075) for
   read-only Coolify/VPS/DB/worker binding injection; release/source-control
   owner for dirty/ahead-behind and Web build-info provenance before redeploy;
-  [LUC-5319](/LUC/issues/LUC-5319) for runtime readback/test-budget
-  classification; QA/Product proof queue for app-completion browser/doc/test
-  slicing.
+  QA/Product proof queue for app-completion browser/doc/test slicing.
 
 # 2026-06-20 LUC-5310 Runtime DCA/PnL PAPER-First Proof Triage
 
@@ -310,8 +332,9 @@
   in about `4209 ms`; rerun passed with 15s timeout but recorded slow
   positions/symbol-stats timings (`4204 ms`, `3169 ms`) and imported DCA first
   readback `6968 ms`.
-- Follow-up: [LUC-5319](/LUC/issues/LUC-5319) owns runtime
-  positions/symbol-stats slow readback or test-budget classification.
+- Follow-up closed:
+  [LUC-5319](/LUC/issues/LUC-5319) classified and repaired the local
+  test-budget signal on 2026-06-21.
 - Protected production proof was not run because this wake carried no fresh
   approval fact for protected production actions, secrets/accounts, fixtures,
   or LIVE mutation.

@@ -1,3 +1,26 @@
+## 2026-06-21 LUC-5319 Runtime DCA/PnL Readback Timeout Classification
+
+- Module row: SOAR-BOT-RUNTIME-001 / runtime DCA/PnL readback.
+- Status delta:
+  `DONE / VERIFIED_LOCAL / HARNESS_TIMEOUT_CLASSIFIED / DEFAULT_FOCUSED_PROOF_PASSING`.
+- Confidence update:
+  [LUC-5319](/LUC/issues/LUC-5319) classified the slow runtime
+  positions/symbol-stats signal from [LUC-5310](/LUC/issues/LUC-5310) as
+  local DB-backed e2e harness cost, not a product read-model correctness
+  defect. The repair moved destructive shared `resetBotsE2eState()` cleanup
+  out of each individual test in the focused unique-fixture files and into
+  file-level setup, preserving the same product assertions.
+- Evidence:
+  `history/tasks/luc-5319-runtime-dca-pnl-readback-timeout-classification-2026-06-21-task.md`.
+- Validation:
+  default PnL parity proof PASS (`2/2`); default imported-DCA visibility proof
+  PASS (`7/7`); combined default focused pack PASS (`2` files / `9` tests).
+- Residual risk:
+  protected production DCA/PnL runtime readback remains separately gated; no
+  deploy, push, restart, env edit, secret/account readback, exchange action,
+  order, position, payment/subscription mutation, or live-trading action
+  occurred.
+
 ## 2026-06-21 LUC-5146 Protected-Route Invalid-Token Redirect Proof
 
 - Module row: Protected auth/session browser proof.
@@ -197,8 +220,9 @@
   [LUC-4811](/LUC/issues/LUC-4811) / [LUC-5075](/LUC/issues/LUC-5075),
   diagnostic-only Web build-info `env-runtime` provenance, dirty/ahead-behind
   source-control and redeploy sequencing, protected production/live proof
-  gates, and [LUC-5319](/LUC/issues/LUC-5319) runtime readback/test-budget
-  classification.
+  gates, and app-completion proof slicing. The local runtime
+  readback/test-budget classification is closed by
+  [LUC-5319](/LUC/issues/LUC-5319).
 
 ## 2026-06-21 LUC-5351 V1 Audit-To-Completion Controller Refresh
 
@@ -233,8 +257,9 @@
   [LUC-4811](/LUC/issues/LUC-4811) / [LUC-5075](/LUC/issues/LUC-5075),
   diagnostic-only Web build-info `env-runtime` provenance, dirty/ahead-behind
   source-control and redeploy sequencing, protected production/live proof
-  gates, and [LUC-5319](/LUC/issues/LUC-5319) runtime readback/test-budget
-  classification.
+  gates, and app-completion proof slicing. The local runtime
+  readback/test-budget classification is closed by
+  [LUC-5319](/LUC/issues/LUC-5319).
 
 ## 2026-06-20 LUC-5310 Runtime DCA/PnL PAPER-First Proof Triage
 
@@ -262,8 +287,8 @@
   `bots.runtime-pnl-parity.e2e.test.ts` failed under the 5000ms Vitest budget
   after a `200` positions readback took about `4209 ms`; rerun with 15s
   timeout passed but recorded slow runtime readback timings.
-  [LUC-5319](/LUC/issues/LUC-5319) owns performance/test-budget
-  classification.
+  [LUC-5319](/LUC/issues/LUC-5319) later closed this as a local DB-backed e2e
+  harness timeout.
 
 ## 2026-06-20 LUC-5316 Wallet API LIVE/PAPER Readback E2E Deterministic
 

@@ -1,3 +1,15 @@
+# 2026-06-21 LUC-5319 Closure Update
+
+- [LUC-5319](/LUC/issues/LUC-5319) is closed as
+  `DONE / VERIFIED_LOCAL / HARNESS_TIMEOUT_CLASSIFIED`.
+- Do not create another Backend runtime readback issue from the same
+  [LUC-5310](/LUC/issues/LUC-5310) local timeout signal. The focused default
+  proof now passes after test-harness cleanup moved destructive DB reset out of
+  individual test bodies while preserving product assertions.
+- Current next owners remain release/source-control for branch divergence and
+  protected QA/Ops for production DCA/PnL runtime readback; no backend product
+  performance child is required from this evidence.
+
 # 2026-06-21 LUC-5381 Closure Update
 
 - [LUC-5381](/LUC/issues/LUC-5381) can close as
@@ -123,14 +135,13 @@
   only. A follow-up proof lane must name one workflow, affected
   routes/components/APIs, owner, expected browser/API/doc/test proof, and
   duplicate check.
-- Current non-architecture next owners remain unchanged:
+- Current non-architecture next owners after [LUC-5319](/LUC/issues/LUC-5319)
+  closure:
   1. [LUC-4811](/LUC/issues/LUC-4811) / [LUC-5075](/LUC/issues/LUC-5075) for
      approved read-only Coolify/VPS/DB/worker binding injection.
   2. Release/source-control owner for dirty/ahead-behind state and Web
      build-info provenance before redeploy approval.
-  3. [LUC-5319](/LUC/issues/LUC-5319) for runtime positions/symbol-stats slow
-     readback or test-budget classification.
-  4. QA/Product owners for exact app-completion browser/doc/test proof slices.
+  3. QA/Product owners for exact app-completion browser/doc/test proof slices.
 
 # 2026-06-21 LUC-5362 Closure Update
 
@@ -169,8 +180,9 @@
      path.
   2. Release/source-control owner must reconcile dirty/ahead-behind state and
      Web build-info provenance before any redeploy approval.
-  3. [LUC-5319](/LUC/issues/LUC-5319) owns runtime positions/symbol-stats slow
-     readback or test-budget classification.
+  3. Runtime positions/symbol-stats local timeout classification is closed by
+     [LUC-5319](/LUC/issues/LUC-5319); reopen only on a fresh product latency
+     or protected production readback signal.
   4. QA/Product may slice app-completion browser/doc/test proof rows only as
      exact one-owner lanes.
 

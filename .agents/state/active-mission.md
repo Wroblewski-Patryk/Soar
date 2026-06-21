@@ -1,3 +1,27 @@
+# 2026-06-21 LUC-5319 Runtime DCA/PnL Readback Timeout Classification
+
+- `LUC-5319-RUNTIME-DCA-PNL-READBACK-TIMEOUT-CLASSIFICATION-2026-06-21`
+  completed as a Core Backend Engineer local repair/classification checkpoint.
+- Scope:
+  classify the slow runtime positions/symbol-stats readback from
+  [LUC-5310](/LUC/issues/LUC-5310) without production proof, deploy, push,
+  restart, env edit, secret/account readback, exchange mutation, order,
+  position, payment/subscription mutation, broad runtime rewrite, or
+  live-trading action.
+- Result:
+  the default-timeout failure was harness-only. Product assertions passed with
+  expanded timeout before repair, and after moving destructive Bot Runtime e2e
+  cleanup from per-test to file-level setup in the focused unique-fixture
+  files, both focused route packs pass under the default timeout.
+- Validation:
+  default PnL parity PASS (`2/2`), default imported-DCA visibility PASS
+  (`7/7`), combined focused pack PASS (`2` files / `9` tests).
+- Evidence:
+  `history/tasks/luc-5319-runtime-dca-pnl-readback-timeout-classification-2026-06-21-task.md`.
+- Residual:
+  no backend product performance child is required from this local signal.
+  Protected production DCA/PnL runtime readback remains separately gated.
+
 # 2026-06-21 LUC-5345 Source-Control Closure Runtime/Evidence Dirty Packet
 
 - `LUC-5345-SOURCE-CONTROL-CLOSURE-RUNTIME-EVIDENCE-DIRTY-PACKET-2026-06-21`
@@ -105,8 +129,9 @@
   direct architecture repair rows. V1 release readiness remains blocked by
   existing non-architecture lanes: [LUC-4811](/LUC/issues/LUC-4811) /
   [LUC-5075](/LUC/issues/LUC-5075), source-control/redeploy and Web
-  build-info provenance, protected production/live proof gates, and
-  [LUC-5319](/LUC/issues/LUC-5319).
+  build-info provenance, protected production/live proof gates, and exact
+  app-completion proof slicing. The local runtime readback/test-budget
+  classification is closed by [LUC-5319](/LUC/issues/LUC-5319).
 
 # 2026-06-20 LUC-4413 Coolify Read-Only Production Status Access
 
@@ -157,7 +182,9 @@
   V1 remains blocked on existing release/protected gates:
   [LUC-4811](/LUC/issues/LUC-4811) / [LUC-5075](/LUC/issues/LUC-5075),
   release/source-control and build-info provenance, protected production/live
-  proof gates, and [LUC-5319](/LUC/issues/LUC-5319).
+  proof gates, and exact app-completion proof slicing. The local runtime
+  readback/test-budget classification is closed by
+  [LUC-5319](/LUC/issues/LUC-5319).
 
 # 2026-06-20 LUC-5308 Gate.io Selected-Market Position Proof Closure
 
@@ -199,8 +226,8 @@
   after the LIVE-shaped positions readback returned `200` in about `4209 ms`;
   the same assertions passed with `--testTimeout=15000`. Imported DCA
   visibility also exposed one slow first positions readback at `6968 ms`.
-  [LUC-5319](/LUC/issues/LUC-5319) owns slow readback/test-budget
-  classification.
+  [LUC-5319](/LUC/issues/LUC-5319) later closed this as a local DB-backed e2e
+  harness timeout.
 - No runtime code, deploy, push, restart, rollback, env edit, secret/account
   readback, production fixture mutation, exchange mutation, order, position,
   payment/subscription mutation, broad runtime rewrite, or live-trading action
