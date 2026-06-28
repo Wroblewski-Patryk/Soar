@@ -1,10 +1,10 @@
 {
   "summary": {
-    "generatedAt": "2026-06-11",
+    "generatedAt": "2026-06-28",
     "counts": {
       "chains": 27,
       "webJourneys": 38,
-      "apiRoutes": 96,
+      "apiRoutes": 97,
       "criticalGaps": 0,
       "highGaps": 28
     }
@@ -2803,6 +2803,25 @@
       "gap_severity": "none",
       "risk_level": "high",
       "last_verified_at": "2026-05-24"
+    },
+    {
+      "id": "SOAR-API-STRIPE-WEBHOOK",
+      "route": "POST /webhooks/stripe",
+      "feature": "subscriptions-admin",
+      "module": "api-subscriptions",
+      "status": "verified_local",
+      "verification_status": "verified_local",
+      "consumers": "SOAR-ROUTER-API-ROOT",
+      "downstream_relations": "",
+      "data_models": "SOAR-DB-SUBSCRIPTION-PLAN; SOAR-DB-USER-SUBSCRIPTION; SOAR-DB-PAYMENT-INTENT",
+      "tests": "SOAR-TEST-STRIPE-WEBHOOK",
+      "docs": "SOAR-DOC-API-SUBSCRIPTIONS",
+      "chains": "",
+      "evidence": "apps/api/src/modules/subscriptions/payments/stripeWebhook.controller.ts;apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts",
+      "gaps": "not_in_function_chain",
+      "gap_severity": "medium",
+      "risk_level": "critical",
+      "last_verified_at": "2026-06-20"
     },
     {
       "id": "SOAR-API-BOT-ASSISTANT-CONFIG-GET",

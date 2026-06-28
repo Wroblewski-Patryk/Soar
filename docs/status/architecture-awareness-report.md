@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-06-20T17:44:11.363Z
+Generated: 2026-06-28T22:16:50.743Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,40 +11,40 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 38 |
 | component | 97 |
-| document | 4098 |
+| document | 4307 |
 | feature | 217 |
-| function | 2821 |
+| function | 2831 |
 | migration | 57 |
 | model | 108 |
 | module | 16 |
 | project | 1 |
 | route | 355 |
-| task | 1420 |
-| test | 447 |
+| task | 1536 |
+| test | 451 |
 
 ## Counts By Status
 
 | Status | Count |
 | --- | ---: |
-| blocked | 30 |
-| deprecated | 9 |
-| implemented | 7455 |
+| blocked | 32 |
+| deprecated | 10 |
+| implemented | 7666 |
 | in_progress | 14 |
-| tested | 821 |
-| verified | 1398 |
+| tested | 831 |
+| verified | 1513 |
 
 ## Health Signals
 
-- Raw implementation entities without inferred tests: 1288
+- Raw implementation entities without inferred tests: 1290
 - Actionable implementation entities without inferred tests: 0
-- Raw implementation entities without inferred docs: 311
+- Raw implementation entities without inferred docs: 306
 - Actionable implementation entities without inferred docs: 0
-- Classified inferred-link noise: 1515
-- Raw tasks without architecture links: 98
+- Classified inferred-link noise: 1512
+- Raw tasks without architecture links: 105
 - Actionable tasks without architecture links: 0
-- Raw implementation entities without task links: 325
+- Raw implementation entities without task links: 320
 - Actionable implementation entities without task links: 0
-- Classified task-linkage noise: 423
+- Classified task-linkage noise: 425
 - Entities without owner attribution: 0
 - Disconnected entities: 0
 
@@ -57,18 +57,14 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 ## Classified Inferred-Link Noise
 
 - config_only_file: 64
-- curated_graph_covered: 1331
-- test_fixture_function: 119
+- curated_graph_covered: 1325
+- test_fixture_function: 122
 - top_level_app_mount: 1
 
 ## Top Classified Noise Samples
 
 - top_level_app_mount: api_endpoint: USE /avatars (apps/api/src/index.ts#/avatars)
 - config_only_file: api_endpoint: USE /webhooks/stripe (apps/api/src/index.ts#/webhooks/stripe)
-- curated_graph_covered: api_endpoint: POST /login (apps/api/src/modules/auth/auth.routes.ts#/login)
-- curated_graph_covered: api_endpoint: POST /logout (apps/api/src/modules/auth/auth.routes.ts#/logout)
-- curated_graph_covered: api_endpoint: GET /me (apps/api/src/modules/auth/auth.routes.ts#/me)
-- curated_graph_covered: api_endpoint: POST /register (apps/api/src/modules/auth/auth.routes.ts#/register)
 - curated_graph_covered: api_endpoint: GET / (apps/api/src/router/admin.routes.ts#/)
 - curated_graph_covered: api_endpoint: USE /subscriptions/plans (apps/api/src/router/admin.routes.ts#/subscriptions/plans)
 - curated_graph_covered: api_endpoint: USE /users (apps/api/src/router/admin.routes.ts#/users)
@@ -90,7 +86,6 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - curated_graph_covered: api_endpoint: USE /wallets (apps/api/src/router/dashboard.routes.ts#/wallets)
 - curated_graph_covered: api_endpoint: GET / (apps/api/src/router/index.ts#/)
 - curated_graph_covered: api_endpoint: USE /admin (apps/api/src/router/index.ts#/admin)
-- curated_graph_covered: api_endpoint: USE /auth (apps/api/src/router/index.ts#/auth)
 - curated_graph_covered: api_endpoint: USE /dashboard (apps/api/src/router/index.ts#/dashboard)
 - curated_graph_covered: api_endpoint: GET /health (apps/api/src/router/index.ts#/health)
 - curated_graph_covered: api_endpoint: GET /metrics (apps/api/src/router/index.ts#/metrics)
@@ -103,12 +98,17 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 - curated_graph_covered: component: PasswordVisibilityToggle.tsx (apps/web/src/features/auth/components/PasswordVisibilityToggle.tsx)
 - curated_graph_covered: component: backtestRunDetailsCharts.tsx (apps/web/src/features/backtest/components/backtestRunDetailsCharts.tsx)
 - curated_graph_covered: component: BacktestRunDetailsTabPanels.tsx (apps/web/src/features/backtest/components/BacktestRunDetailsTabPanels.tsx)
+- curated_graph_covered: component: BacktestRunHeaderSection.tsx (apps/web/src/features/backtest/components/BacktestRunHeaderSection.tsx)
+- curated_graph_covered: component: BotsMonitoringAttributionPills.tsx (apps/web/src/features/bots/components/bots-management/BotsMonitoringAttributionPills.tsx)
+- curated_graph_covered: component: BotsMonitoringProtectionCell.tsx (apps/web/src/features/bots/components/bots-management/BotsMonitoringProtectionCell.tsx)
+- curated_graph_covered: component: BotsMonitoringRuntimeStateCell.tsx (apps/web/src/features/bots/components/bots-management/BotsMonitoringRuntimeStateCell.tsx)
+- curated_graph_covered: component: BotsMonitoringSections.tsx (apps/web/src/features/bots/components/bots-management/BotsMonitoringSections.tsx)
 
 ## Classified Task-Linkage Noise
 
 - config_only_file: 34
-- curated_graph_covered: 290
-- historical_task_archive: 98
+- curated_graph_covered: 285
+- historical_task_archive: 105
 - top_level_app_mount: 1
 
 ## Top Classified Task-Linkage Noise Samples

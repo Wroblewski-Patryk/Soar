@@ -1,6 +1,6 @@
 # Function Journey Evidence Index
 
-Last generated: 2026-06-11
+Last generated: 2026-06-28
 
 This index connects user-visible entrypoints, graph function chains, API routes, tests, docs, evidence artifacts, and explicit gaps. It is generated from the architecture graph CSV source of truth and is meant to answer: what works, what is only locally proven, and what still lacks browser or production proof.
 
@@ -10,7 +10,7 @@ This index connects user-visible entrypoints, graph function chains, API routes,
 - `docs/architecture/indices/web-journey-index.csv`
 - `docs/architecture/indices/api-surface-evidence-index.csv`
 - `docs/graphs/function-journey-index.json`
-- `history/artifacts/function-journey-index-2026-06-11.json`
+- `history/artifacts/function-journey-index-2026-06-28.json`
 
 ## Summary
 
@@ -18,7 +18,7 @@ This index connects user-visible entrypoints, graph function chains, API routes,
 | --- | ---: |
 | Function chains | 27 |
 | Web journeys / pages | 38 |
-| API surfaces | 96 |
+| API surfaces | 97 |
 | Critical gaps | 0 |
 | High gaps | 28 |
 
@@ -68,6 +68,7 @@ This index connects user-visible entrypoints, graph function chains, API routes,
 | medium | SOAR-API-ORDER-CANCEL | manual-order | verified | not_in_function_chain |
 | medium | SOAR-API-ORDER-CLOSE | manual-order | verified | not_in_function_chain |
 | medium | SOAR-API-POSITION-MANAGEMENT-MODE | positions | verified_local | not_in_function_chain |
+| medium | SOAR-API-STRIPE-WEBHOOK | subscriptions-admin | verified_local | not_in_function_chain |
 
 ## Use
 

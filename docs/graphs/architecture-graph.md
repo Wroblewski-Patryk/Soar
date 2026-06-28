@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-06-20T17:44:11.363Z
+Generated: 2026-06-28T22:16:50.743Z
 
 ## Canonical Exports
 
@@ -42,20 +42,20 @@ Generated: 2026-06-20T17:44:11.363Z
 | agent | implemented | Procedure | .agents/skills/run_release_gate_checks/SKILL.md | Engineering Delivery Lead |
 | agent | implemented | Procedure | .agents/skills/scaffold_api_module/SKILL.md | Engineering Delivery Lead |
 | agent | implemented | Procedure | .agents/skills/ship_dashboard_feature_slice/SKILL.md | Engineering Delivery Lead |
-| agent | implemented | 2026-06-20 LUC-5198 Production Performance And Server Health Watch | .agents/state/active-mission.md | Engineering Delivery Lead |
+| agent | implemented | 2026-06-29 LUC-5636 Exchange Connection Configuration Parent Closure | .agents/state/active-mission.md | Engineering Delivery Lead |
 | agent | implemented | Agent Process Evals | .agents/state/agent-evals.md | Engineering Delivery Lead |
 | agent | implemented | Current Focus | .agents/state/current-focus.md | Engineering Delivery Lead |
 | agent | implemented | Decision Register | .agents/state/decision-register.md | Engineering Delivery Lead |
 | agent | implemented | Delivery Map | .agents/state/delivery-map.md | Engineering Delivery Lead |
 | agent | implemented | Known Issues | .agents/state/known-issues.md | Engineering Delivery Lead |
-| agent | implemented | 2026-06-20 LUC-5213 API `/ready` Timeout Investigation | .agents/state/module-confidence-ledger.md | Engineering Delivery Lead |
-| agent | implemented | 2026-06-20 LUC-5213 Closure Update | .agents/state/next-steps.md | Engineering Delivery Lead |
+| agent | implemented | 2026-06-28 LUC-5862 App-Completion Browser Review Triage | .agents/state/module-confidence-ledger.md | Engineering Delivery Lead |
+| agent | implemented | 2026-06-29 LUC-6086 Trading Operation Proof Next Step | .agents/state/next-steps.md | Engineering Delivery Lead |
 | agent | implemented | Quality Attribute Scenarios | .agents/state/quality-attribute-scenarios.md | Engineering Delivery Lead |
 | agent | implemented | Regression Log | .agents/state/regression-log.md | Engineering Delivery Lead |
 | agent | implemented | Requirements Verification Matrix | .agents/state/requirements-verification-matrix.md | Engineering Delivery Lead |
 | agent | implemented | Responsibility Learning | .agents/state/responsibility-learning.md | Engineering Delivery Lead |
 | agent | implemented | Risk Register | .agents/state/risk-register.md | Engineering Delivery Lead |
-| agent | implemented | 2026-06-20 LUC-5213 API Ready Timeout Investigation | .agents/state/system-health.md | Engineering Delivery Lead |
+| agent | implemented | 2026-06-28 LUC-5809 Protected Worker Readiness | .agents/state/system-health.md | Engineering Delivery Lead |
 | agent | implemented | Agent Tasks | .agents/tasks/README.md | Engineering Delivery Lead |
 | agent | implemented | Agent Hierarchy | .agents/workflows/agent-hierarchy.md | Engineering Delivery Lead |
 | agent | implemented | Codex Power Use Workflow | .agents/workflows/codex-power-use.md | Engineering Delivery Lead |
@@ -557,8 +557,8 @@ Generated: 2026-06-20T17:44:11.363Z
 | connected_to | api_endpoint:use-wallets:b8382408ca | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
 | connected_to | api_endpoint:use-webhooks-stripe:b502d56cea | module:apps-api-src:3261657fad | apps/api/src/index.ts |
 | connected_to | project:soar:7c70e892d7 | task:learning-journal:c5626339c3 | .codex/context/LEARNING_JOURNAL.md |
-| connected_to | project:soar:7c70e892d7 | task:2026-06-20-luc-5213-api-ready-timeout-investigation:3444fc577f | .codex/context/PROJECT_STATE.md |
-| connected_to | project:soar:7c70e892d7 | task:2026-06-20-luc-5213-soar-investigate-intermittent-production-api-ready-timeout-and-latency:d247d9458e | .codex/context/TASK_BOARD.md |
+| connected_to | project:soar:7c70e892d7 | task:2026-06-29-luc-5636-exchange-connection-configuration-parent-closure:359d2d566c | .codex/context/PROJECT_STATE.md |
+| connected_to | project:soar:7c70e892d7 | task:2026-06-29-luc-5636-closure-update:8a9ccbe37e | .codex/context/TASK_BOARD.md |
 | connected_to | project:soar:7c70e892d7 | task:agent-operating-system-task-2026-05-07:04d1de2b03 | history/tasks/agent-operating-system-task-2026-05-07.md |
 | connected_to | project:soar:7c70e892d7 | task:ai-assistant-foundation-protocol-harness-task:0adbd87e92 | history/tasks/ai-assistant-foundation-protocol-harness-2026-05-23-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:16ccebb9bd | history/tasks/api-endpoint-docs-gap-closure-2026-05-19-task.md |

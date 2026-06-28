@@ -86,6 +86,11 @@ apps/api/src/utils/formatZodError.ts#formatZodError,apps/api/src/utils/securityU
 apps/api/src/utils/formatZodError.ts#sendValidationError,apps/api/src/utils/securityUtilities.test.ts,LUC-2579 validation error response relation
 apps/api/src/utils/hash.ts#comparePassword,apps/api/src/utils/securityUtilities.test.ts,LUC-2579 bcrypt password compare relation
 apps/api/src/utils/hash.ts#hashPassword,apps/api/src/utils/securityUtilities.test.ts,LUC-2579 bcrypt password hash relation
+apps/api/src/modules/auth/auth.routes.ts#/login,apps/api/src/modules/auth/auth.e2e.test.ts,LUC-5946 direct login endpoint relation to existing auth session e2e proof
+apps/api/src/modules/auth/auth.routes.ts#/logout,apps/api/src/modules/auth/auth.e2e.test.ts,LUC-5946 direct logout endpoint relation to existing auth session e2e proof
+apps/api/src/modules/auth/auth.routes.ts#/me,apps/api/src/modules/auth/auth.e2e.test.ts,LUC-5946 direct current-user endpoint relation to existing auth session e2e proof
+apps/api/src/modules/auth/auth.routes.ts#/register,apps/api/src/modules/auth/auth.e2e.test.ts,LUC-5946 direct register endpoint relation to existing auth session e2e proof
+apps/api/src/router/index.ts#/auth,apps/api/src/modules/auth/auth.e2e.test.ts,LUC-5946 direct auth router mount relation to existing auth session e2e proof
 apps/api/src/modules/orders/positionFillMath.ts,apps/api/src/modules/orders/positionFillMath.test.ts,LUC-2187 order fill math helper relation
 apps/web/vitest.setup.ts,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2198 Web test setup aggregate relation
 libs/shared/index.d.ts,apps/web/src/lib/sharedWebUtilities.test.ts,LUC-2198 shared type surface aggregate relation
