@@ -957,3 +957,11 @@ apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#handleSubsc
 apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#markEvent,apps/api/src/modules/subscriptions/payments/stripeWebhook.e2e.test.ts,LUC-4815 restored LUC-4212 webhook idempotency mark relation to existing e2e proof
 apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#processEvent,apps/api/src/modules/subscriptions/payments/stripeWebhook.e2e.test.ts,LUC-4815 restored LUC-4212 webhook event processing relation to existing e2e proof
 apps/api/src/modules/subscriptions/payments/stripeWebhook.service.ts#writeAuditLog,apps/api/src/modules/subscriptions/payments/stripeWebhook.e2e.test.ts,LUC-4815 restored LUC-4212 webhook audit log relation to existing e2e proof
+scripts/summarizeRcGates.mjs#parseGateLabel,scripts/summarizeRcGates.test.mjs,LUC-2959 focused RC gate label parser helper proof relation
+scripts/summarizeRcGates.mjs#parseStatusGeneratedAt,scripts/summarizeRcGates.test.mjs,LUC-2959 focused RC generated-at parser helper proof relation
+scripts/syncRcChecklistFromGateStatus.mjs#getGateLabel,scripts/syncRcChecklistFromGateStatus.test.mjs,LUC-2959 focused RC checklist gate-label helper proof relation
+scripts/syncRcChecklistFromGateStatus.mjs#parseSignoff,scripts/syncRcChecklistFromGateStatus.test.mjs,LUC-2959 focused RC checklist signoff helper proof relation
+scripts/syncRcChecklistFromGateStatus.mjs#setChecklistCheckbox,scripts/syncRcChecklistFromGateStatus.test.mjs,LUC-2959 focused RC checklist checkbox mutation proof relation
+scripts/triageJourneyEvidence.mjs#parseCsv,scripts/triageJourneyEvidence.test.mjs,LUC-2959 focused journey evidence CSV parser helper proof relation
+scripts/verifyLocalBackupRestore.mjs#detectPostgresContainer,scripts/verifyLocalBackupRestore.test.mjs,LUC-2959 focused local backup restore container detection proof relation
+scripts/verifyLocalBackupRestore.mjs#dockerExecSh,scripts/verifyLocalBackupRestore.test.mjs,LUC-2959 focused local backup restore docker command construction proof relation
