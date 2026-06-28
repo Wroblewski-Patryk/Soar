@@ -228,6 +228,14 @@ const setAuthCookie = async (client, options, token) => {
   }
 };
 
+const buildAuthApiHeaders = (options, token, extraHeaders = {}) => ({
+  Accept: 'application/json',
+  Origin: options.webBaseUrl,
+  Cookie: `token=${encodeURIComponent(token)}`,
+  Authorization: `Bearer ${token}`,
+  ...extraHeaders,
+});
+
 const toStep = (name, result, extra = {}) => ({ name, result, ...extra });
 
 const renderMarkdown = (payload, jsonPath) => {
@@ -257,7 +265,8 @@ Covered:
 - unauthenticated protected route fail-closed redirect
 - authenticated protected route rendering
 - invalid-token protected route redirect to \`session=expired\`
-- logout API fail-closed readback
+- logout API fail-closed readback with trusted-origin request shape
+- stale cookie and bearer token rejection after logout
 - protected route redirect after logout
 
 ## Steps
@@ -364,7 +373,8 @@ const main = async () => {
 
     const logoutResponse = await fetch(`${options.apiBaseUrl}/auth/logout`, {
       method: 'POST',
-      headers: { Accept: 'application/json', Cookie: `token=${encodeURIComponent(token)}` },
+      headers: buildAuthApiHeaders(options, token, { 'Content-Type': 'application/json' }),
+      body: '{}',
     });
     steps.push(
       toStep('logout API clears session', logoutResponse.status === 200 ? 'PASS' : 'FAIL', {
@@ -372,12 +382,27 @@ const main = async () => {
       })
     );
 
-    const meAfterLogout = await fetch(`${options.apiBaseUrl}/auth/me`, {
-      headers: { Accept: 'application/json', Cookie: `token=${encodeURIComponent(token)}` },
+    const meAfterLogoutCookie = await fetch(`${options.apiBaseUrl}/auth/me`, {
+      headers: {
+        Accept: 'application/json',
+        Cookie: `token=${encodeURIComponent(token)}`,
+      },
     });
     steps.push(
-      toStep('auth me after logout fails closed', meAfterLogout.status === 401 ? 'PASS' : 'FAIL', {
-        httpStatus: meAfterLogout.status,
+      toStep('auth me after logout fails closed for cookie token', meAfterLogoutCookie.status === 401 ? 'PASS' : 'FAIL', {
+        httpStatus: meAfterLogoutCookie.status,
+      })
+    );
+
+    const meAfterLogoutBearer = await fetch(`${options.apiBaseUrl}/auth/me`, {
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    steps.push(
+      toStep('auth me after logout fails closed for bearer token', meAfterLogoutBearer.status === 401 ? 'PASS' : 'FAIL', {
+        httpStatus: meAfterLogoutBearer.status,
       })
     );
 
@@ -422,6 +447,7 @@ const main = async () => {
 
 export {
   CdpClient,
+  buildAuthApiHeaders,
   clearAuth,
   collectLocation,
   createPage,

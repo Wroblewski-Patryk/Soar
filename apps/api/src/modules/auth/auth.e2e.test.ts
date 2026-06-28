@@ -193,6 +193,12 @@ describe('POST /auth/register', () => {
     expect(staleTokenRes.status).toBe(401);
     expect(staleTokenRes.body.error.message).toBe('Session expired. Please sign in again.');
 
+    const staleToken = /token=([^;]+)/.exec(staleSessionCookie)?.[1] ?? '';
+    expect(staleToken).not.toBe('');
+    const staleBearerRes = await request(app).get('/auth/me').set('Authorization', `Bearer ${staleToken}`);
+    expect(staleBearerRes.status).toBe(401);
+    expect(staleBearerRes.body.error.message).toBe('Session expired. Please sign in again.');
+
     const reloginRes = await request(app).post('/auth/login').send({ email, password });
     expect(reloginRes.status).toBe(200);
     const newSessionCookie = reloginRes.headers['set-cookie']?.[0] ?? '';

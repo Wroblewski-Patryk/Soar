@@ -104,7 +104,7 @@ test('readJson redacts parsing failures to short raw previews', async () => {
 test('mocked CDP helpers evaluate, navigate, collect location, clear auth, and set auth cookies', async () => {
   const harness = await importHarness();
   try {
-    const { clearAuth, collectLocation, evaluate, navigate, setAuthCookie } = harness.module;
+    const { buildAuthApiHeaders, clearAuth, collectLocation, evaluate, navigate, setAuthCookie } = harness.module;
     const calls = [];
     const client = {
       send: async (method, params) => {
@@ -150,6 +150,19 @@ test('mocked CDP helpers evaluate, navigate, collect location, clear auth, and s
           call.params.domain === 'example.test' &&
           call.params.sameSite === 'Lax',
       ),
+    );
+
+    assert.deepEqual(
+      buildAuthApiHeaders({ webBaseUrl: 'https://soar.example.test' }, 'token value', {
+        'Content-Type': 'application/json',
+      }),
+      {
+        Accept: 'application/json',
+        Origin: 'https://soar.example.test',
+        Cookie: 'token=token%20value',
+        Authorization: 'Bearer token value',
+        'Content-Type': 'application/json',
+      },
     );
   } finally {
     await harness.cleanup();
