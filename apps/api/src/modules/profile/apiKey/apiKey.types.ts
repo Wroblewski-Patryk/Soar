@@ -1,8 +1,9 @@
 import { z } from "zod";
+import { EXCHANGE_OPTIONS } from "@cryptosparrow/shared";
 
 export const apiKeySchema = z.object({
   label: z.string().min(2).max(100),
-  exchange: z.enum(["BINANCE", "BYBIT", "OKX", "KRAKEN", "COINBASE", "GATEIO"]),
+  exchange: z.enum(EXCHANGE_OPTIONS),
   apiKey: z.string().min(8).max(100),
   apiSecret: z.string().min(8).max(100),
   syncExternalPositions: z.boolean().optional().default(true),
@@ -15,7 +16,7 @@ export const apiKeyRotateSchema = z.object({
 });
 
 export const apiKeyTestSchema = z.object({
-  exchange: z.enum(["BINANCE", "BYBIT", "OKX", "KRAKEN", "COINBASE", "GATEIO"]),
+  exchange: z.enum(EXCHANGE_OPTIONS),
   apiKey: z.string().min(8).max(100),
   apiSecret: z.string().min(8).max(100),
 });

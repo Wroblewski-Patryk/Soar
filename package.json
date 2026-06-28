@@ -65,10 +65,11 @@
     "ops:coolify-stack:env-check": "node scripts/checkCoolifyStackEnv.mjs",
     "ops:coolify-stack:env-check:example": "node scripts/checkCoolifyStackEnv.mjs --stack-env-file .env.coolify.example --allow-placeholders",
     "ops:coolify-stack:env-check:test": "node --test scripts/checkCoolifyStackEnv.test.mjs",
-    "test:go-live:api": "pnpm --filter api exec vitest run src/modules/auth/auth.e2e.test.ts src/modules/strategies/strategies.e2e.test.ts src/modules/backtests/backtests.e2e.test.ts src/modules/engine/preTrade.e2e.test.ts",
+    "test:go-live:api": "pnpm --filter api exec vitest run --no-file-parallelism src/modules/auth/auth.e2e.test.ts src/modules/strategies/strategies.e2e.test.ts src/modules/backtests/backtests.e2e.test.ts src/modules/engine/preTrade.e2e.test.ts",
     "test:go-live:server": "pnpm run test:go-live:api",
     "test:go-live:api:with-infra": "node scripts/goLiveSmoke.mjs --target=api",
     "test:go-live:server:with-infra": "pnpm run test:go-live:api:with-infra",
+    "test:go-live:backtests:with-infra": "node scripts/goLiveSmoke.mjs --target=backtests",
     "test:go-live:web": "pnpm --filter web exec vitest run src/features/bots/components/BotsManagement.test.tsx src/features/logs/components/AuditTrailView.test.tsx src/ui/layout/dashboard/Header.responsive.test.tsx",
     "test:go-live:client": "pnpm run test:go-live:web",
     "test:go-live:smoke": "node scripts/goLiveSmoke.mjs --target=full",
@@ -145,24 +146,6 @@
     "eslint": "^9.31.0",
     "prettier": "^3.6.2",
     "typescript": "^5.8.3"
-  },
-  "pnpm": {
-    "overrides": {
-      "ajv": "6.14.0",
-      "flatted": "3.4.2",
-      "follow-redirects": "1.16.0",
-      "js-yaml": "4.1.1",
-      "lodash": "4.18.1",
-      "minimatch@<3.1.4": "3.1.5",
-      "picomatch@^2.0.0": "2.3.2",
-      "picomatch@^4.0.0": "4.0.4",
-      "postcss": "8.5.13",
-      "rollup": "4.60.2",
-      "tar": "7.5.13",
-      "vite": "7.3.2",
-      "ws": "8.20.1",
-      "yaml": "2.8.3"
-    }
   }
 }
 

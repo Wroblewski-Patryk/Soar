@@ -68,6 +68,9 @@ const originalApiKeyEncryptionKeys = process.env.API_KEY_ENCRYPTION_KEYS;
 const originalApiKeyEncryptionActiveVersion = process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
 const BACKTESTS_E2E_HOOK_TIMEOUT_MS = 30_000;
 const BACKTESTS_E2E_CRITICAL_TIMEOUT_MS = 20_000;
+const BACKTESTS_E2E_RESET_ATTEMPTS = 5;
+
+const sleep = (delayMs: number) => new Promise((resolve) => setTimeout(resolve, delayMs));
 
 const registerAndLogin = async (email: string) => {
   const agent = request.agent(app);
@@ -173,6 +176,47 @@ const waitForBacktestReport = async (
   return agent.get(`/dashboard/backtests/runs/${runId}/report`);
 };
 
+const resetBacktestsE2eDatabase = async () => {
+  for (let attempt = 0; attempt < BACKTESTS_E2E_RESET_ATTEMPTS; attempt += 1) {
+    try {
+      await prisma.log.deleteMany();
+      await prisma.marketCandleCache.deleteMany();
+      await prisma.backtestReport.deleteMany();
+      await prisma.backtestTrade.deleteMany();
+      await prisma.backtestRun.deleteMany();
+      await prisma.orderFill.deleteMany();
+      await prisma.walletCashflowEvent.deleteMany();
+      await prisma.trade.deleteMany();
+      await prisma.order.deleteMany();
+      await prisma.position.deleteMany();
+      await prisma.signal.deleteMany();
+      await prisma.botStrategy.deleteMany();
+      await prisma.botSubagentConfig.deleteMany();
+      await prisma.botAssistantConfig.deleteMany();
+      await prisma.marketGroupStrategyLink.deleteMany();
+      await prisma.botMarketGroup.deleteMany();
+      await prisma.botRuntimeEvent.deleteMany();
+      await prisma.botRuntimeSymbolStat.deleteMany();
+      await prisma.botRuntimeSession.deleteMany();
+      await prisma.bot.deleteMany();
+      await prisma.walletBalanceSnapshot.deleteMany();
+      await prisma.wallet.deleteMany();
+      await prisma.symbolGroup.deleteMany();
+      await prisma.marketUniverse.deleteMany();
+      await prisma.runtimeExecutionDedupe.deleteMany();
+      await prisma.apiKey.deleteMany();
+      await prisma.paymentIntent.deleteMany();
+      await prisma.userSubscription.deleteMany();
+      await prisma.strategy.deleteMany();
+      await prisma.user.deleteMany();
+      return;
+    } catch (error) {
+      if (attempt === BACKTESTS_E2E_RESET_ATTEMPTS - 1) throw error;
+      await sleep(100 * (attempt + 1));
+    }
+  }
+};
+
 describe('Backtests runs contract', () => {
   beforeEach(async () => {
     process.env.API_KEY_ENCRYPTION_KEYS = 'v1:test-keyring-material';
@@ -183,38 +227,7 @@ describe('Backtests runs contract', () => {
       'ALTER TABLE "Bot" ADD COLUMN IF NOT EXISTS "paperStartBalance" DOUBLE PRECISION NOT NULL DEFAULT 10000',
     );
 
-    await prisma.log.deleteMany();
-    await prisma.marketCandleCache.deleteMany();
-    // Backtest worker updates run/report asynchronously, so cleanup is retried to avoid FK races in tests.
-    for (let attempt = 0; attempt < 3; attempt += 1) {
-      await prisma.backtestReport.deleteMany();
-      await prisma.backtestTrade.deleteMany();
-      try {
-        await prisma.backtestRun.deleteMany();
-        break;
-      } catch (error) {
-        if (attempt === 2) throw error;
-      }
-    }
-    await prisma.trade.deleteMany();
-    await prisma.order.deleteMany();
-    await prisma.position.deleteMany();
-    await prisma.signal.deleteMany();
-    await prisma.botStrategy.deleteMany();
-    await prisma.botSubagentConfig.deleteMany();
-    await prisma.botAssistantConfig.deleteMany();
-    await prisma.marketGroupStrategyLink.deleteMany();
-    await prisma.botMarketGroup.deleteMany();
-    await prisma.botRuntimeEvent.deleteMany();
-    await prisma.botRuntimeSymbolStat.deleteMany();
-    await prisma.botRuntimeSession.deleteMany();
-    await prisma.bot.deleteMany();
-    await prisma.symbolGroup.deleteMany();
-    await prisma.marketUniverse.deleteMany();
-    await prisma.strategy.deleteMany();
-    await prisma.runtimeExecutionDedupe.deleteMany();
-    await prisma.apiKey.deleteMany();
-    await prisma.user.deleteMany();
+    await resetBacktestsE2eDatabase();
   }, BACKTESTS_E2E_HOOK_TIMEOUT_MS);
 
   afterEach(() => {

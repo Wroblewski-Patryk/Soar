@@ -41,12 +41,12 @@ export const supportedChecks = {
   api: {
     label: 'API smoke pack',
     command: 'pnpm',
-    args: ['run', 'test:go-live:api'],
+    args: ['run', 'test:go-live:api:with-infra'],
   },
   backtests: {
     label: 'Focused backtests e2e',
     command: 'pnpm',
-    args: ['--filter', 'api', 'exec', 'vitest', 'run', 'src/modules/backtests/backtests.e2e.test.ts', '--run'],
+    args: ['run', 'test:go-live:backtests:with-infra'],
   },
 };
 

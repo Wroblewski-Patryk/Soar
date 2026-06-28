@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 
-import { hasFlag, main, readArgValue, runCheck } from './runQaRepeatableSmokeE2e.mjs';
+import { hasFlag, main, readArgValue, runCheck, supportedChecks } from './runQaRepeatableSmokeE2e.mjs';
 
 test('argument helpers read flag presence and values from an injected argv array', () => {
   const argv = ['--checks', 'web,api', '--today', '2026-06-08', '--stop-on-fail'];
@@ -55,6 +55,22 @@ test('runCheck returns a stable PASS result with injected process execution', ()
   assert.equal(result.durationMs, 125);
   assert.equal(result.command, 'pnpm run test:go-live:web');
   assert.equal(result.stdout, 'ok');
+});
+
+test('API smoke check uses the infra-aware local wrapper', () => {
+  assert.deepEqual(supportedChecks.api, {
+    label: 'API smoke pack',
+    command: 'pnpm',
+    args: ['run', 'test:go-live:api:with-infra'],
+  });
+});
+
+test('backtests smoke check uses the infra-aware local wrapper', () => {
+  assert.deepEqual(supportedChecks.backtests, {
+    label: 'Focused backtests e2e',
+    command: 'pnpm',
+    args: ['run', 'test:go-live:backtests:with-infra'],
+  });
 });
 
 test('main writes repeatable smoke artifacts and continues after failures by default', async () => {

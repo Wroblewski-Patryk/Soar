@@ -10,6 +10,7 @@ import {
   printLocalMigrationGuidance,
   resolveTarget,
   run,
+  targetCommands,
 } from './goLiveSmoke.mjs';
 
 const commandResult = (exitCode = 0, stdout = '', stderr = '') => ({
@@ -32,6 +33,14 @@ test('resolveTarget keeps full as default and maps server alias to api', () => {
   assert.deepEqual(resolveTarget([]), { rawTarget: 'full', target: 'full' });
   assert.deepEqual(resolveTarget(['--target=server']), { rawTarget: 'server', target: 'api' });
   assert.deepEqual(resolveTarget(['--target=api']), { rawTarget: 'api', target: 'api' });
+  assert.deepEqual(resolveTarget(['--target=backtests']), { rawTarget: 'backtests', target: 'backtests' });
+});
+
+test('targetCommands keeps backtests on the focused DB-backed e2e pack', () => {
+  assert.deepEqual(targetCommands.backtests, [
+    'pnpm',
+    ['--filter', 'api', 'exec', 'vitest', 'run', 'src/modules/backtests/backtests.e2e.test.ts', '--run'],
+  ]);
 });
 
 test('run uses injected spawnSync and Windows shell behavior', () => {
@@ -182,6 +191,39 @@ test('main reuses reachable infra when compose startup fails and then runs full 
   assert.match(output.messages.join('\n'), /Reusing already-running local Postgres\/Redis/);
   assert.deepEqual(exits, [0]);
   assert.equal(result.infraReused, true);
+});
+
+test('main runs backtests target through infra setup, migrations, focused pack, and teardown', async () => {
+  const calls = [];
+  const exits = [];
+
+  const result = await main({
+    argv: ['--target=backtests'],
+    localPrismaCommand: 'prisma-test',
+    console: logger(),
+    process: {
+      stdout: { write: () => {} },
+      stderr: { write: () => {} },
+      exit: (code) => exits.push(code),
+    },
+    run: (command, args, options = {}) => {
+      calls.push({ command, args, options });
+      return commandResult(0, '', '');
+    },
+  });
+
+  assert.deepEqual(
+    calls.map((call) => `${call.command} ${call.args.join(' ')}`),
+    [
+      'pnpm run go-live:infra:up',
+      'prisma-test migrate deploy',
+      'pnpm --filter api exec vitest run src/modules/backtests/backtests.e2e.test.ts --run',
+      'pnpm run go-live:infra:down',
+    ],
+  );
+  assert.deepEqual(exits, [0]);
+  assert.equal(result.exitCode, 0);
+  assert.equal(result.infraStarted, true);
 });
 
 test('main stops before migrations when infra startup fails and ports are not reachable', async () => {

@@ -14,6 +14,14 @@ export const resolveTarget = (args = process.argv.slice(2)) => {
   return { rawTarget, target };
 };
 
+export const targetCommands = {
+  api: ['pnpm', ['run', 'test:go-live:api']],
+  backtests: [
+    'pnpm',
+    ['--filter', 'api', 'exec', 'vitest', 'run', 'src/modules/backtests/backtests.e2e.test.ts', '--run'],
+  ],
+};
+
 export const run = (command, commandArgs, options = {}) => {
   const result = (options.spawnSync ?? spawnSync)(command, commandArgs, {
     stdio: options.captureOutput ? 'pipe' : 'inherit',
@@ -89,8 +97,8 @@ export const main = async (options = {}) => {
   const prismaCommand = options.localPrismaCommand ?? localPrismaCommand;
   const { rawTarget, target } = resolveTarget(args);
 
-  if (!['api', 'full'].includes(target)) {
-    logger.error(`Unsupported target "${rawTarget}". Use --target=api or --target=full.`);
+  if (!['api', 'backtests', 'full'].includes(target)) {
+    logger.error(`Unsupported target "${rawTarget}". Use --target=api, --target=backtests, or --target=full.`);
     processImpl.exit?.(1);
     return { exitCode: 1, target, rawTarget, error: 'unsupported-target' };
   }
@@ -136,7 +144,8 @@ export const main = async (options = {}) => {
     }
 
     if (!stop) {
-      exitCode = runCommand('pnpm', ['run', 'test:go-live:api']).exitCode;
+      const [command, commandArgs] = targetCommands[target === 'full' ? 'api' : target];
+      exitCode = runCommand(command, commandArgs).exitCode;
       if (exitCode !== 0) {
         stop = true;
       }

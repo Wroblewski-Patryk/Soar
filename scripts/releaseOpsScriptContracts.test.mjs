@@ -11,6 +11,7 @@ test('top release and Ops package scripts point at the intended local entrypoint
 
   assert.deepEqual(
     {
+      'test:go-live:api': scripts['test:go-live:api'],
       'workers/prod': scripts['workers/prod'],
       'prod-like/start': scripts['prod-like/start'],
       'architecture:journey:triage': scripts['architecture:journey:triage'],
@@ -25,6 +26,8 @@ test('top release and Ops package scripts point at the intended local entrypoint
       'ops:prod-ux:proof': scripts['ops:prod-ux:proof'],
     },
     {
+      'test:go-live:api':
+        'pnpm --filter api exec vitest run --no-file-parallelism src/modules/auth/auth.e2e.test.ts src/modules/strategies/strategies.e2e.test.ts src/modules/backtests/backtests.e2e.test.ts src/modules/engine/preTrade.e2e.test.ts',
       'workers/prod': 'node scripts/start-workers-prod.mjs',
       'prod-like/start': 'node scripts/start-local-prod-like.mjs',
       'architecture:journey:triage': 'node scripts/triageJourneyEvidence.mjs',
@@ -105,7 +108,7 @@ test('release and Ops wrappers preserve safe command contracts without executing
       'web,api,backtests',
       'test:go-live:web',
       'test:go-live:api',
-      'src/modules/backtests/backtests.e2e.test.ts',
+      'test:go-live:backtests:with-infra',
       'continueOnFail',
     ]),
     true,
