@@ -36,7 +36,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 ## Health Signals
 
 - Raw implementation entities without inferred tests: 1291
-- Actionable implementation entities without inferred tests: 1
+- Actionable implementation entities without inferred tests: 0
 - Raw implementation entities without inferred docs: 306
 - Actionable implementation entities without inferred docs: 0
 - Classified inferred-link noise: 1512
@@ -50,7 +50,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 
 ## Top Actionable Missing Test Links
 
-- function: buildAuthApiHeaders (scripts/runProdAuthSessionBrowserProof.mjs#buildAuthApiHeaders)
+- none
 
 ## Top Actionable Missing Doc Links
 

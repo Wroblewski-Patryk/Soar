@@ -3243,17 +3243,8 @@
       ]
     },
     "actionable_implementation_without_tests": {
-      "count": 1,
-      "items": [
-        {
-          "id": "function:buildauthapiheaders:8beb2c5b0a",
-          "type": "function",
-          "name": "buildAuthApiHeaders",
-          "path": "scripts/runProdAuthSessionBrowserProof.mjs#buildAuthApiHeaders",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        }
-      ]
+      "count": 0,
+      "items": []
     },
     "actionable_implementation_without_docs": {
       "count": 0,
