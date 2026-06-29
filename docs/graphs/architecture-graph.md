@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-06-28T22:16:50.743Z
+Generated: 2026-06-29T21:44:38.791Z
 
 ## Canonical Exports
 
@@ -42,14 +42,14 @@ Generated: 2026-06-28T22:16:50.743Z
 | agent | implemented | Procedure | .agents/skills/run_release_gate_checks/SKILL.md | Engineering Delivery Lead |
 | agent | implemented | Procedure | .agents/skills/scaffold_api_module/SKILL.md | Engineering Delivery Lead |
 | agent | implemented | Procedure | .agents/skills/ship_dashboard_feature_slice/SKILL.md | Engineering Delivery Lead |
-| agent | implemented | 2026-06-29 LUC-5636 Exchange Connection Configuration Parent Closure | .agents/state/active-mission.md | Engineering Delivery Lead |
+| agent | implemented | 2026-06-29 LUC-6269 No-Stall Queue Expeditor | .agents/state/active-mission.md | Engineering Delivery Lead |
 | agent | implemented | Agent Process Evals | .agents/state/agent-evals.md | Engineering Delivery Lead |
 | agent | implemented | Current Focus | .agents/state/current-focus.md | Engineering Delivery Lead |
 | agent | implemented | Decision Register | .agents/state/decision-register.md | Engineering Delivery Lead |
 | agent | implemented | Delivery Map | .agents/state/delivery-map.md | Engineering Delivery Lead |
 | agent | implemented | Known Issues | .agents/state/known-issues.md | Engineering Delivery Lead |
 | agent | implemented | 2026-06-28 LUC-5862 App-Completion Browser Review Triage | .agents/state/module-confidence-ledger.md | Engineering Delivery Lead |
-| agent | implemented | 2026-06-29 LUC-6086 Trading Operation Proof Next Step | .agents/state/next-steps.md | Engineering Delivery Lead |
+| agent | implemented | 2026-06-29 LUC-6102 Production Watch Closure | .agents/state/next-steps.md | Engineering Delivery Lead |
 | agent | implemented | Quality Attribute Scenarios | .agents/state/quality-attribute-scenarios.md | Engineering Delivery Lead |
 | agent | implemented | Regression Log | .agents/state/regression-log.md | Engineering Delivery Lead |
 | agent | implemented | Requirements Verification Matrix | .agents/state/requirements-verification-matrix.md | Engineering Delivery Lead |
@@ -557,8 +557,8 @@ Generated: 2026-06-28T22:16:50.743Z
 | connected_to | api_endpoint:use-wallets:b8382408ca | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
 | connected_to | api_endpoint:use-webhooks-stripe:b502d56cea | module:apps-api-src:3261657fad | apps/api/src/index.ts |
 | connected_to | project:soar:7c70e892d7 | task:learning-journal:c5626339c3 | .codex/context/LEARNING_JOURNAL.md |
-| connected_to | project:soar:7c70e892d7 | task:2026-06-29-luc-5636-exchange-connection-configuration-parent-closure:359d2d566c | .codex/context/PROJECT_STATE.md |
-| connected_to | project:soar:7c70e892d7 | task:2026-06-29-luc-5636-closure-update:8a9ccbe37e | .codex/context/TASK_BOARD.md |
+| connected_to | project:soar:7c70e892d7 | task:2026-06-29-luc-6105-local-postgresql-docker-runtime-closure:fea8b914f2 | .codex/context/PROJECT_STATE.md |
+| connected_to | project:soar:7c70e892d7 | task:2026-06-29-luc-6105-user-configuration-db-runtime-closure:b1e5755a31 | .codex/context/TASK_BOARD.md |
 | connected_to | project:soar:7c70e892d7 | task:agent-operating-system-task-2026-05-07:04d1de2b03 | history/tasks/agent-operating-system-task-2026-05-07.md |
 | connected_to | project:soar:7c70e892d7 | task:ai-assistant-foundation-protocol-harness-task:0adbd87e92 | history/tasks/ai-assistant-foundation-protocol-harness-2026-05-23-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:16ccebb9bd | history/tasks/api-endpoint-docs-gap-closure-2026-05-19-task.md |

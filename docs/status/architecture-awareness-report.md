@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-06-28T22:16:50.743Z
+Generated: 2026-06-29T21:44:38.791Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,45 +11,46 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 38 |
 | component | 97 |
-| document | 4307 |
+| document | 4378 |
 | feature | 217 |
-| function | 2831 |
+| function | 2832 |
 | migration | 57 |
 | model | 108 |
 | module | 16 |
 | project | 1 |
 | route | 355 |
-| task | 1536 |
+| task | 1570 |
 | test | 451 |
 
 ## Counts By Status
 
 | Status | Count |
 | --- | ---: |
-| blocked | 32 |
+| blocked | 33 |
 | deprecated | 10 |
-| implemented | 7666 |
+| implemented | 7738 |
 | in_progress | 14 |
 | tested | 831 |
-| verified | 1513 |
+| verified | 1546 |
 
 ## Health Signals
 
-- Raw implementation entities without inferred tests: 1290
-- Actionable implementation entities without inferred tests: 0
+- Raw implementation entities without inferred tests: 1291
+- Actionable implementation entities without inferred tests: 1
 - Raw implementation entities without inferred docs: 306
 - Actionable implementation entities without inferred docs: 0
 - Classified inferred-link noise: 1512
-- Raw tasks without architecture links: 105
+- Raw tasks without architecture links: 109
 - Actionable tasks without architecture links: 0
 - Raw implementation entities without task links: 320
 - Actionable implementation entities without task links: 0
-- Classified task-linkage noise: 425
+- Classified task-linkage noise: 429
 - Entities without owner attribution: 0
 - Disconnected entities: 0
 
 ## Top Actionable Missing Test Links
 
+- function: buildAuthApiHeaders (scripts/runProdAuthSessionBrowserProof.mjs#buildAuthApiHeaders)
 
 ## Top Actionable Missing Doc Links
 
@@ -108,7 +109,7 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 
 - config_only_file: 34
 - curated_graph_covered: 285
-- historical_task_archive: 105
+- historical_task_archive: 109
 - top_level_app_mount: 1
 
 ## Top Classified Task-Linkage Noise Samples

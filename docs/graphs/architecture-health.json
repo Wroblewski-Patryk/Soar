@@ -1,39 +1,39 @@
 {
-  "generated_at": "2026-06-28T22:16:50.743Z",
+  "generated_at": "2026-06-29T21:44:38.791Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 10066,
-    "relations": 32817,
+    "entities": 10172,
+    "relations": 33282,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 4307,
+      "document": 4378,
       "feature": 217,
-      "function": 2831,
+      "function": 2832,
       "migration": 57,
       "model": 108,
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1536,
+      "task": 1570,
       "test": 451
     },
     "by_status": {
-      "blocked": 32,
+      "blocked": 33,
       "deprecated": 10,
-      "implemented": 7666,
+      "implemented": 7738,
       "in_progress": 14,
       "tested": 831,
-      "verified": 1513
+      "verified": 1546
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 1290,
+      "count": 1291,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -3243,8 +3243,17 @@
       ]
     },
     "actionable_implementation_without_tests": {
-      "count": 0,
-      "items": []
+      "count": 1,
+      "items": [
+        {
+          "id": "function:buildauthapiheaders:8beb2c5b0a",
+          "type": "function",
+          "name": "buildAuthApiHeaders",
+          "path": "scripts/runProdAuthSessionBrowserProof.mjs#buildAuthApiHeaders",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        }
+      ]
     },
     "actionable_implementation_without_docs": {
       "count": 0,
@@ -5074,7 +5083,7 @@
       "items": []
     },
     "raw_tasks_without_architecture": {
-      "count": 105,
+      "count": 109,
       "items": [
         {
           "id": "task:task-local-certainty-closure-2026-05-21:a8d07f98c0",
@@ -5761,6 +5770,38 @@
           "type": "task",
           "name": "Task",
           "path": "history/tasks/luc-5997-close-dirty-divergent-source-control-and-build-provenance-2026-06-28-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-6091-v1-audit-to-completion-controller:d1431498b2",
+          "type": "task",
+          "name": "LUC-6091 V1 Audit-To-Completion Controller",
+          "path": "history/tasks/luc-6091-v1-audit-to-completion-controller-2026-06-29-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-6119-gap-register-and-repair-lane-refresh:c9865b01eb",
+          "type": "task",
+          "name": "LUC-6119 Gap Register And Repair Lane Refresh",
+          "path": "history/tasks/luc-6119-gap-register-and-repair-lane-refresh-2026-06-29-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-6197-daily-project-status-refresh-2026-06-29:d37694bbc1",
+          "type": "task",
+          "name": "LUC-6197 Daily Project Status Refresh - 2026-06-29",
+          "path": "history/tasks/luc-6197-daily-project-status-refresh-2026-06-29-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-6241-no-stall-queue-expeditor:0a60aeb0b5",
+          "type": "task",
+          "name": "LUC-6241 No-Stall Queue Expeditor",
+          "path": "history/tasks/luc-6241-no-stall-queue-expeditor-2026-06-29-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead"
         },
@@ -7528,11 +7569,11 @@
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 425,
+      "count": 429,
       "by_reason": {
         "config_only_file": 34,
         "curated_graph_covered": 285,
-        "historical_task_archive": 105,
+        "historical_task_archive": 109,
         "top_level_app_mount": 1
       },
       "items": [
@@ -8306,6 +8347,42 @@
           "type": "task",
           "name": "Task",
           "path": "history/tasks/luc-5997-close-dirty-divergent-source-control-and-build-provenance-2026-06-28-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:luc-6091-v1-audit-to-completion-controller:d1431498b2",
+          "type": "task",
+          "name": "LUC-6091 V1 Audit-To-Completion Controller",
+          "path": "history/tasks/luc-6091-v1-audit-to-completion-controller-2026-06-29-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:luc-6119-gap-register-and-repair-lane-refresh:c9865b01eb",
+          "type": "task",
+          "name": "LUC-6119 Gap Register And Repair Lane Refresh",
+          "path": "history/tasks/luc-6119-gap-register-and-repair-lane-refresh-2026-06-29-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:luc-6197-daily-project-status-refresh-2026-06-29:d37694bbc1",
+          "type": "task",
+          "name": "LUC-6197 Daily Project Status Refresh - 2026-06-29",
+          "path": "history/tasks/luc-6197-daily-project-status-refresh-2026-06-29-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:luc-6241-no-stall-queue-expeditor:0a60aeb0b5",
+          "type": "task",
+          "name": "LUC-6241 No-Stall Queue Expeditor",
+          "path": "history/tasks/luc-6241-no-stall-queue-expeditor-2026-06-29-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead",
           "reason": "historical_task_archive"
@@ -9296,42 +9373,6 @@
           "type": "feature",
           "name": "dashboard-backtests.de-CH.ts",
           "path": "apps/web/src/i18n/namespaces/dashboard-backtests.de-CH.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "config_only_file"
-        },
-        {
-          "id": "feature:dashboard-backtests-en-ts:4fb025a18c",
-          "type": "feature",
-          "name": "dashboard-backtests.en.ts",
-          "path": "apps/web/src/i18n/namespaces/dashboard-backtests.en.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "config_only_file"
-        },
-        {
-          "id": "feature:dashboard-backtests-pl-ts:0e8de2e080",
-          "type": "feature",
-          "name": "dashboard-backtests.pl.ts",
-          "path": "apps/web/src/i18n/namespaces/dashboard-backtests.pl.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "config_only_file"
-        },
-        {
-          "id": "feature:dashboard-backtests-pt-ts:a610259b69",
-          "type": "feature",
-          "name": "dashboard-backtests.pt.ts",
-          "path": "apps/web/src/i18n/namespaces/dashboard-backtests.pt.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "config_only_file"
-        },
-        {
-          "id": "feature:dashboard-bots-de-ch-ts:e513a147fe",
-          "type": "feature",
-          "name": "dashboard-bots.de-CH.ts",
-          "path": "apps/web/src/i18n/namespaces/dashboard-bots.de-CH.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "config_only_file"
