@@ -9,6 +9,7 @@ const authState = vi.hoisted(() => ({
     | { email: string; userId: string; role?: "ADMIN" | "USER" }
     | null,
   loading: false,
+  sessionExpired: false,
 }));
 const routerPushMock = vi.hoisted(() => vi.fn());
 
@@ -38,6 +39,7 @@ describe("AdminLayoutShell", () => {
   beforeEach(() => {
     authState.user = { email: "admin@example.com", userId: "admin-1", role: "ADMIN" };
     authState.loading = false;
+    authState.sessionExpired = false;
     routerPushMock.mockClear();
   });
 
@@ -67,5 +69,15 @@ describe("AdminLayoutShell", () => {
 
     expect(await screen.findByText("Admin access required")).toBeInTheDocument();
     expect(routerPushMock).toHaveBeenCalledWith("/auth/login");
+  });
+
+  it("preserves expired-session query for unauthenticated admin visits after auth failure", async () => {
+    authState.user = null;
+    authState.sessionExpired = true;
+
+    renderShell();
+
+    expect(await screen.findByText("Admin access required")).toBeInTheDocument();
+    expect(routerPushMock).toHaveBeenCalledWith("/auth/login?session=expired");
   });
 });

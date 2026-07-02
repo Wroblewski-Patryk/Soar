@@ -9,15 +9,15 @@ import { useI18n } from '@/i18n/I18nProvider';
 import { LuHouse } from 'react-icons/lu';
 
 export default function DashboardPage() {
-  const { user, loading } = useAuth();
+  const { user, loading, sessionExpired } = useAuth();
   const router = useRouter();
   const { t } = useI18n();
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/auth/login');
+      router.push(sessionExpired ? '/auth/login?session=expired' : '/auth/login');
     }
-  }, [loading, user, router]);
+  }, [loading, user, router, sessionExpired]);
 
   if (!loading && !user) {
     return <LoadingState title={t('dashboard.home.runtime.loadingTitle')} />;

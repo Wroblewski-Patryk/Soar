@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/exchange`
 - Owner: backend/trading-integration
-- Last updated: 2026-05-21
+- Last updated: 2026-06-28
 - Related planning task: `ARCH-AUDIT-01`
 
 ## 1. Purpose and Scope
@@ -65,6 +65,13 @@ Out of scope:
   2. Exchange module creates the CCXT-backed client with exchange-specific
      `defaultType` semantics.
   3. Profile module maps the probe result into user-facing permission status.
+- Names-only profile API-key validation:
+  1. Profile API-key create/test schemas consume `EXCHANGE_OPTIONS` from
+     `@cryptosparrow/shared`.
+  2. `EXCHANGE_CAPABILITY_MATRIX` is the capability source for deciding which
+     exchange names support `API_KEY_PROBE`.
+  3. Placeholder exchanges remain storable configuration names but unsupported
+     probes fail closed with `EXCHANGE_NOT_IMPLEMENTED`.
 
 ## 5. API and UI Integration
 - No direct endpoints.
@@ -91,6 +98,7 @@ Out of scope:
 ## 8. Test Coverage and Evidence
 - Representative tests:
   - `exchangeApiKeyProbe.service.test.ts`
+  - `apiKey.e2e.test.ts`
   - `exchangeAdapterBoundary.service.test.ts`
   - `exchangeAuthenticatedRead.service.test.ts`
   - `ccxtFuturesConnector.service.test.ts`
@@ -100,6 +108,11 @@ Out of scope:
 - Suggested validation command:
 ```powershell
 pnpm --filter api test -- src/modules/profile/apiKey/exchangeApiKeyProbe.service.test.ts src/modules/exchange/exchangeAdapterBoundary.service.test.ts src/modules/exchange/exchangeAuthenticatedRead.service.test.ts src/modules/exchange/ccxtFuturesConnector.service.test.ts src/modules/exchange/liveOrderAdapter.service.test.ts src/modules/exchange/exchangeSymbolRules.service.test.ts src/modules/exchange/liveFeeReconciliation.service.test.ts
+```
+- LUC-5680 focused backend proof:
+```powershell
+pnpm --filter api exec vitest run src/modules/profile/apiKey/apiKey.e2e.test.ts src/modules/profile/apiKey/exchangeApiKeyProbe.service.test.ts src/modules/exchange/exchangeAdapterBoundary.service.test.ts src/modules/exchange/exchangeCapabilityContract.regression.test.ts
+pnpm --filter api run typecheck
 ```
 
 ## 9. Open Issues and Follow-Ups

@@ -15,11 +15,13 @@ const AuthContext = createContext<{
   user: User | null;
   logout: () => void;
   loading: boolean;
+  sessionExpired: boolean;
   refetchUser: () => Promise<boolean>;
 }>({
   user: null,
   logout: () => {},
   loading: true,
+  sessionExpired: false,
   refetchUser: async () => false,
 });
 
@@ -27,6 +29,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { t } = useOptionalI18n();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [sessionExpired, setSessionExpired] = useState(false);
   const hadAuthenticatedSessionRef = useRef(false);
 
   const fetchUser = useCallback(async (options: FetchUserOptions = {}) => {
@@ -38,6 +41,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const role: UserRole | undefined =
         data?.role === 'ADMIN' || data?.role === 'USER' ? data.role : undefined;
       setUser({ email: data.email, userId: data.id, role });
+      setSessionExpired(false);
       hadAuthenticatedSessionRef.current = true;
       return true;
     } catch (error) {
@@ -54,9 +58,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const sessionExpiredHint =
         typeof window !== "undefined" &&
         new URLSearchParams(window.location.search).get("session") === "expired";
+      const isExpiredSession = status === 401 && (onProtectedRoute || sessionExpiredHint);
+      setSessionExpired(isExpiredSession);
       const shouldWarnAboutExpiredSession =
-        status === 401 &&
-        (onProtectedRoute || sessionExpiredHint) &&
+        isExpiredSession &&
         (hadAuthenticatedSessionRef.current || sessionExpiredHint);
 
       if (notifyOnUnauthorized && shouldWarnAboutExpiredSession) {
@@ -83,12 +88,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     await api.post("/auth/logout");
     setUser(null);
+    setSessionExpired(false);
     window.location.href = "/auth/login";
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, logout, loading, refetchUser: () => fetchUser({ notifyOnUnauthorized: true }) }}
+      value={{ user, logout, loading, sessionExpired, refetchUser: () => fetchUser({ notifyOnUnauthorized: true }) }}
     >
       {children}
     </AuthContext.Provider>

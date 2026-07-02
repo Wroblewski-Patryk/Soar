@@ -1,0 +1,214 @@
+{
+  "issue": "LUC-6463",
+  "parent": "LUC-6459",
+  "generatedAt": "2026-06-30T20:20:00.000+02:00",
+  "role": "09 TAE (Test Automation Engineer)",
+  "scope": "Package next app-completion proof burn-down lanes from the current LUC-6459 baseline.",
+  "sourceIndex": {
+    "path": "docs/status/app-completion-index.json",
+    "generatedAt": "2026-06-29T22:45:57.753Z",
+    "counts": {
+      "items": 2292,
+      "flows": 8,
+      "needsBrowserReview": 452,
+      "missingTestLink": 1016,
+      "missingDocLink": 576,
+      "blocked": 5
+    }
+  },
+  "sourceArchitecture": {
+    "architectureAwarenessReport": "docs/status/architecture-awareness-report.md",
+    "generatedAt": "2026-06-29T23:20:58.409Z",
+    "actionableMissingTestLinks": 0,
+    "actionableMissingDocLinks": 0,
+    "ownerGaps": 0,
+    "disconnectedEntities": 0
+  },
+  "flowBaselines": [
+    {
+      "flow": "Account access",
+      "counts": {
+        "implementedNeedsProof": 20,
+        "missingTestLink": 419,
+        "missingDocLink": 198,
+        "blocked": 5,
+        "ok": 22,
+        "needsBrowserReview": 31
+      },
+      "disposition": "Do not split from LUC-6463; auth/protected production gates and Account access proof remain on existing owner paths."
+    },
+    {
+      "flow": "Exchange connection and configuration",
+      "counts": {
+        "missingTestLink": 275,
+        "missingDocLink": 164,
+        "implementedNeedsProof": 15,
+        "ok": 63,
+        "needsBrowserReview": 30
+      },
+      "disposition": "Do not duplicate Exchange proof lanes from this TAE package; exchange credential/live boundaries stay on existing owner paths."
+    },
+    {
+      "flow": "Unclassified user workflow",
+      "counts": {
+        "missingTestLink": 51,
+        "missingDocLink": 56,
+        "implementedNeedsProof": 78,
+        "ok": 2,
+        "needsBrowserReview": 147
+      },
+      "disposition": "Use the exact LUC-6098 classified packets as next executable child lanes."
+    },
+    {
+      "flow": "Trading operation",
+      "counts": {
+        "missingTestLink": 28,
+        "missingDocLink": 44,
+        "implementedNeedsProof": 7,
+        "needsBrowserReview": 140
+      },
+      "disposition": "Do not run another broad Trading browser proof until row-linkage/taxonomy is reconciled; LUC-6089 records the current limitation."
+    },
+    {
+      "flow": "User configuration",
+      "counts": {
+        "ok": 11,
+        "implementedNeedsProof": 13,
+        "missingTestLink": 84,
+        "missingDocLink": 30,
+        "needsBrowserReview": 24
+      },
+      "disposition": "Keep API/profile config contract proof with CBE/DSM owner paths; browser-only closure is not valid for API support rows."
+    },
+    {
+      "flow": "Subscription and entitlement",
+      "counts": {
+        "missingTestLink": 78,
+        "missingDocLink": 53,
+        "implementedNeedsProof": 4,
+        "ok": 5,
+        "needsBrowserReview": 20
+      },
+      "disposition": "Do not duplicate subscription/account gates from LUC-6463."
+    },
+    {
+      "flow": "Dashboard overview",
+      "counts": {
+        "missingTestLink": 56,
+        "missingDocLink": 24,
+        "implementedNeedsProof": 3,
+        "needsBrowserReview": 51
+      },
+      "disposition": "Prior QVE proof passed but exact row closure is limited by index shape; future work needs exact row drill-down before more broad dashboard claims."
+    },
+    {
+      "flow": "Admin operation",
+      "counts": {
+        "missingTestLink": 25,
+        "missingDocLink": 7,
+        "needsBrowserReview": 9
+      },
+      "disposition": "Do not duplicate Admin operation lane from this package unless board asks for admin-specific proof."
+    }
+  ],
+  "selectedLanes": [
+    {
+      "packetId": "LUC-6463-SHARED-UI-01",
+      "sourcePacket": "LUC-6098-SHARED-UI-01",
+      "title": "Shared UI system and form states component-state proof",
+      "ownerRole": "09 TAE (Test Automation Engineer)",
+      "supportRole": "09 FEW only if a UI defect is reproduced",
+      "rowCount": 26,
+      "proofBoundary": "Focused Web component-state tests for loading, empty, error, success, keyboard, and pointer behavior where applicable.",
+      "suggestedCommands": [
+        "pnpm --filter web run test -- --run src/ui/components src/ui/forms",
+        "pnpm i18n:audit:route-reachable:web"
+      ],
+      "forbidden": [
+        "production mutation",
+        "secret/account readback",
+        "exchange/payment/order/position/subscription mutation",
+        "live-trading action"
+      ],
+      "childIssue": null
+    },
+    {
+      "packetId": "LUC-6463-USER-JOURNEY-01",
+      "sourcePacket": "LUC-6098-USER-JOURNEY-01",
+      "title": "Backtest, strategy, reports, logs, and public shell journey proof",
+      "ownerRole": "09 QVE (QA & Verification Engineer)",
+      "supportRole": "09 CBE for API contract gaps; 09 FEW only for reproduced UI defects; 04 DSM for row-link reconciliation",
+      "rowCount": 55,
+      "proofBoundary": "Journey/route proof for actual user-facing screens plus paired backend API proof. Account-access row must be duplicate-guarded.",
+      "suggestedCommands": [
+        "pnpm --filter web run test -- --run src/features/backtest src/features/strategies src/features/reports src/features/logs src/app/(public)",
+        "pnpm i18n:audit:route-reachable:web"
+      ],
+      "forbidden": [
+        "production mutation",
+        "secret/account readback",
+        "exchange/payment/order/position/subscription mutation",
+        "live-trading action"
+      ],
+      "childIssue": null
+    },
+    {
+      "packetId": "LUC-6463-API-SUPPORT-01",
+      "sourcePacket": "LUC-6098-API-SUPPORT-01",
+      "title": "Platform/API operations support taxonomy and API contract proof",
+      "ownerRole": "09 CBE (Core Backend Engineer)",
+      "supportRole": "04 DSM for taxonomy/doc-link reconciliation; TSA only if scanner taxonomy must change",
+      "rowCount": 39,
+      "proofBoundary": "API/support-contract proof, not browser screenshot proof.",
+      "suggestedCommands": [
+        "pnpm --filter api run test -- --run",
+        "pnpm run quality:guardrails"
+      ],
+      "forbidden": [
+        "browser-only closure for API/support rows",
+        "production mutation",
+        "secret/account readback",
+        "deploy/restart"
+      ],
+      "childIssue": null
+    },
+    {
+      "packetId": "LUC-6463-RUNTIME-AI-01",
+      "sourcePacket": "LUC-6098-RUNTIME-AI-01",
+      "title": "Runtime automation and AI execution API/worker contract proof",
+      "ownerRole": "09 CBE (Core Backend Engineer)",
+      "supportRole": "AI Runtime support if assistant behavior is affected; 09 QVE for focused no-live worker proof after contract owner selects tests",
+      "rowCount": 27,
+      "proofBoundary": "API/worker contract proof only; no live-trading, order, position, exchange, or production mutation.",
+      "suggestedCommands": [
+        "pnpm --filter api run test -- --run",
+        "pnpm run quality:guardrails"
+      ],
+      "forbidden": [
+        "live trading",
+        "exchange mutation",
+        "order/position mutation",
+        "secret/account readback",
+        "production mutation"
+      ],
+      "childIssue": null
+    }
+  ],
+  "duplicateGuard": [
+    "Do not create duplicate Account access, Subscription and entitlement, Exchange connection/configuration, Admin operation, production restoration, protected-smoke, protected-input, build-provenance, host-level, or broad Trading proof lanes from this package.",
+    "Trading operation row burn-down needs exact row-linkage/taxonomy repair before further broad browser proof is useful.",
+    "Dashboard overview proof needs a row drill-down artifact before claiming exact row closure beyond prior route/widget behavior proof."
+  ],
+  "verification": {
+    "repoCommands": [
+      "Read docs/status/app-completion-index.json",
+      "Read history/evidence/luc-6459-known-state-evidence-architecture-baseline-2026-06-30.md",
+      "Read history/evidence/luc-6074-app-completion-residual-worker-proof-lanes-2026-06-28.md",
+      "Read history/evidence/luc-6098-unclassified-workflow-proof-packets-2026-06-29.md"
+    ],
+    "runtimeTestsRun": "not run; this heartbeat packages proof lanes without changing runtime code",
+    "paperclipControlPlane": "initial heartbeat-context readback passed; child issue creation and follow-up readback timed out from this runner, so child identifiers are unconfirmed in this local artifact",
+    "sourceControl": "not committed; shared checkout already dirty/divergent with unrelated active-lane changes"
+  },
+  "status": "packaged_locally_child_creation_unconfirmed"
+}

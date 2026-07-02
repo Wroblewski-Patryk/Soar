@@ -1,0 +1,11 @@
+{
+  "generatedAt": "2026-07-02T15:25:32.248Z",
+  "project": "Soar",
+  "root": "C:/Personal/Projekty/Aplikacje/Soar",
+  "counts": {
+    "runtimeFindings": 0,
+    "criticalFindings": 0,
+    "blockedFindings": 0
+  },
+  "findings": []
+}

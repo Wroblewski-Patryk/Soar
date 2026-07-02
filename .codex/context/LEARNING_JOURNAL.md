@@ -2,6 +2,115 @@
 
 Purpose: keep a compact memory of recurring execution pitfalls and verified fixes for this repository.
 
+### 2026-06-28 - apiKey e2e cleanup can mask product behavior
+- Symptom:
+  after a clean local Prisma reset,
+  `apps/api/src/modules/profile/apiKey/apiKey.e2e.test.ts` can run most tests
+  successfully but fail a later `beforeEach` cleanup with
+  `ApiKey_userId_fkey` or `Log_userId_fkey`, causing secondary 401/500 noise.
+- Correct classification:
+  do not immediately classify this as an exchange/API-key product regression.
+  Reset local DB, rerun the affected test in isolation, and run the focused
+  packet that excludes only the cleanup-conflict case.
+- Verified recovery:
+  for [LUC-5681](/LUC/issues/LUC-5681), the affected
+  `forces sync flag on when manage-external is enabled` case passed alone
+  after local DB reset, and the rest of the API proof passed as `26` tests
+  with `1` skipped. Web exchange/profile proof passed `23/23`.
+- Evidence:
+  `history/tasks/luc-5681-exchange-connection-configuration-proof-slice-2026-06-28-task.md`;
+  `history/evidence/luc-5681-exchange-connection-configuration-proof-slice-2026-06-28.md`.
+
+### 2026-07-01 - Split oversized Web Vitest packets before product escalation
+- Context: [LUC-6479](/LUC/issues/LUC-6479) isolated a prior grouped Backtest
+  Web failure from [LUC-6466](/LUC/issues/LUC-6466).
+- Symptom: the bounded Backtest Web group passed, but the larger
+  Backtest/Strategy/Reports/Logs/Public shell command timed out at the command
+  guard without assertion summary.
+- Guardrail: do not escalate FEW/product repair from a broad Vitest timeout
+  alone. First rerun the bounded journey packet and focused failing file, then
+  harden missing cleanup/mock isolation if neighboring tests already use that
+  pattern.
+- Evidence: `history/evidence/luc-6479-backtest-web-grouped-proof-instability-2026-07-01.md`.
+
+### 2026-06-27 - QA runner API check tears down infra before Backtests
+- Symptom:
+  `pnpm run qa:smoke-e2e:repeatable -- --checks api,backtests` can show API
+  smoke passing and Backtests failing with `Can't reach database server at
+  localhost:5432`.
+- Confirmed cause:
+  the `api` check invokes `test:go-live:api:with-infra`, whose wrapper runs
+  `docker compose down` after the API pack. The following `backtests` check is
+  a bare Vitest command and does not start local infra.
+- Correct classification:
+  if `docker info`, `docker compose up -d postgres redis`, and loopback ports
+  `5432`/`6379` pass, this is a QA runner sequencing issue, not a DRE
+  Docker/Postgres/Redis availability blocker.
+- Verified recovery:
+  re-starting local infra and running
+  `pnpm --filter api exec vitest run src/modules/backtests/backtests.e2e.test.ts --run`
+  passed (`1` file / `15` tests).
+- Evidence:
+  `history/tasks/luc-5586-restore-local-docker-postgres-redis-availability-2026-06-27-task.md`;
+  `history/evidence/luc-5586-local-docker-postgres-redis-availability-2026-06-27.md`.
+
+### 2026-06-27 - pnpm 11 workspace policy and DB smoke prerequisites
+- Finding:
+  pnpm `11.7.0` ignores the legacy root `package.json#pnpm` settings and emits
+  a warning; workspace policy such as `overrides`, `onlyBuiltDependencies`, and
+  `ignoredBuiltDependencies` must live in `pnpm-workspace.yaml`.
+- Finding:
+  DB-backed repeatable API smoke should not call raw Vitest packs when local
+  Postgres/Redis might be absent. Use the existing `test:go-live:api:with-infra`
+  wrapper so Docker/local-port availability is classified before product tests.
+- Cleanup note:
+  if a timed-out raw API smoke leaves Node/Vitest/tinypool child processes,
+  identify them by command line and stop only those task-owned PIDs.
+- Evidence:
+  `history/tasks/luc-5577-repair-qa-smoke-runner-pnpm11-db-availability-2026-06-27-task.md`.
+
+### 2026-06-27 - pnpm 11 dependency approval can block smoke before tests
+- Context: [LUC-5542](/LUC/issues/LUC-5542) attempted the established
+  `qa:smoke-e2e:repeatable` route and [LUC-5543](/LUC/issues/LUC-5543)
+  observed the same package-managed Vitest blocker.
+- Symptom: `pnpm` `11.7.0` attempted a dependency/install status check before
+  running scripts and failed with `ERR_PNPM_IGNORED_BUILDS`, so smoke commands
+  did not reach Vitest.
+- Root cause: the local runner has ignored build scripts for Prisma, bcrypt,
+  ccxt, esbuild, sharp, and related packages without a non-interactive approval
+  path compatible with pnpm 11.
+- Guardrail: when a QA heartbeat needs evidence and package-managed pnpm fails
+  before tests execute, classify it as tooling first, then use direct
+  app-local binaries only to recover evidence without mutating repo metadata.
+- Preferred pattern: run direct `node` scripts and app-local
+  `node_modules/.bin/*` commands; generate Prisma Client locally if missing;
+  avoid accepting placeholder `allowBuilds` metadata into source control.
+- Avoid: treating pre-test pnpm dependency approval failures as product
+  regressions or committing pnpm-generated approval placeholders.
+- Evidence:
+  `history/tasks/luc-5542-regression-evidence-sweep-2026-06-27-task.md`;
+  `history/artifacts/luc-5542-qa-repeatable-smoke-e2e-2026-06-27.json`.
+
+### 2026-06-27 - Stale smoke token can mask healthy worker readiness
+- Context: [LUC-5526](/LUC/issues/LUC-5526) and
+  [LUC-5541](/LUC/issues/LUC-5541) both found protected `/workers/ready`
+  failures through the pre-bound `SMOKE_AUTH_TOKEN` while fresh login using
+  the approved smoke credential family passed.
+- Symptom: public smoke is green, but protected workers readiness returns
+  timeout or `401` when the script uses the pre-bound token.
+- Root cause: the token path is stale or insufficient in the runner; fresh
+  login obtains a valid read-only proof token.
+- Guardrail: when `/workers/ready` fails through `SMOKE_AUTH_TOKEN`, rerun once
+  with the token suppressed and `SMOKE_AUTH_EMAIL` / `SMOKE_AUTH_PASSWORD`
+  mapped only in the child process before declaring a worker outage.
+- Preferred pattern: classify stale-token failure separately from worker
+  readiness and keep credential values out of evidence.
+- Avoid: treating a stale pre-bound token failure as production worker
+  non-readiness without fresh-login corroboration.
+- Evidence:
+  `history/evidence/luc-5526-production-performance-server-health-watch-2026-06-27.md`;
+  `history/evidence/luc-5541-coolify-production-deploy-health-sweep-2026-06-27.md`.
+
 ### 2026-06-20 - Vitest runtime is not always NODE_ENV test
 - Context: [LUC-5311](/LUC/issues/LUC-5311) and
   [LUC-5316](/LUC/issues/LUC-5316) both repaired backend e2e failures where
@@ -3503,6 +3612,22 @@ Test-Path $dst
 - Trigger file/evidence: history/evidence/luc-86-janitor-stale-loop-guard-2026-05-26.md.
 
 
+# 2026-06-27 - Focused pnpm/Vitest Timeouts Can Leave Node Process Pressure
+
+- Context: [LUC-5591](/LUC/issues/LUC-5591) attempted the smallest Admin
+  operation proof commands through package-managed Vitest:
+  `pnpm --filter api test -- src/modules/admin/users/users.e2e.test.ts --run`
+  and `pnpm --filter web test -- src/features/admin/users/pages/AdminUsersPage.test.tsx --run`.
+- Symptom: both commands timed out at `120000 ms`; follow-up process
+  inspection showed many recent `node.exe` processes, while command-line WMI
+  narrowing and a start-time-narrowed `Stop-Process` attempt also timed out.
+- Rule: after a package-managed focused test timeout in this workspace, do not
+  start broader validation immediately. First run a dedicated process-health
+  cleanup/checkpoint or use a direct runner with guaranteed teardown and raw
+  output capture.
+- Evidence:
+  `history/tasks/luc-5591-v1-app-completion-admin-operation-proof-lane-2026-06-27-task.md`.
+
 ## 2026-06-02 - Coolify API Inventory Output Must Be Allowlisted
 - Context: LUC-1371 read-only Coolify environment payloads include secret-bearing fields such as database URLs, tokens, labels, and proxy/server internals.
 - Pitfall: printing raw Coolify environment JSON is unsafe even when the request is read-only inventory.
@@ -3564,3 +3689,96 @@ Test-Path $dst
   process as a P1 environment cleanup regression in the task evidence.
 - Evidence:
   `history/evidence/luc-5198-production-performance-health-watch-2026-06-20.md`.
+# 2026-06-27 - Non-Interactive `pnpm` Can Spawn Install Checks
+
+- Context:
+  during [LUC-5543](/LUC/issues/LUC-5543), package-managed validation through
+  `pnpm run` / `pnpm --filter api exec vitest` attempted a dependency
+  status/install path in this workspace.
+- Symptom:
+  the first run failed with `ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY`; a
+  `CI=true` rerun timed out while `pnpm install --reporter=silent` processes
+  remained active.
+- Fix used:
+  use direct `node` commands for no-dependency scripts/tests when sufficient
+  for the lane, and narrowly clean only task-owned leftover `pnpm`/install
+  processes after confirming command lines.
+- Next time:
+  do not treat package-managed Vitest checks as failed product evidence when
+  they are blocked by package-manager install behavior. Record the tooling
+  blocker and use the smallest direct runner available, or route a dependency
+  install/repair lane if those tests are required.
+### 2026-06-29 - PowerShell parallel read can exhaust runner memory
+
+- Context:
+  During [LUC-6139](/LUC/issues/LUC-6139), a broad parallel PowerShell file
+  read/search batch caused PowerShell/.NET initialization failures and
+  `OutOfMemoryException` symptoms in the local runner.
+- Lesson:
+  For DRE heartbeat watches on this Windows runner, avoid heavy parallel
+  PowerShell reads over large state/history files. Prefer narrow sequential
+  `cmd /c` or Node commands for production probes and bounded file inspection.
+- Applied immediately:
+  Recovered the heartbeat by switching to narrow sequential commands, then
+  completed deploy smoke, runtime freshness, rollback guard, timing samples,
+  and Coolify GET projection.
+# 2026-06-29 LUC-6248 Learning
+
+### 2026-06-29 - pnpm run can echo secret-bearing CLI arguments
+- Symptom:
+  `pnpm run <script> -- --auth-email ... --auth-password ...` echoes the
+  expanded script invocation to the terminal, including secret-bearing CLI
+  argument values.
+- Correct classification:
+  treat this as a tooling/command-invocation pitfall, not a product defect.
+  Do not pass secret-bearing values as CLI flags through `pnpm run`, even when
+  the target script redacts its artifacts.
+- Verified recovery:
+  rerun protected production checks by binding secret-bearing values through
+  the script's documented environment variables, then pass only non-secret
+  flags such as `--base-url` and `--expected-sha`.
+- Evidence:
+  `history/tasks/luc-6248-authenticated-production-acceptance-performance-sweep-2026-06-29-task.md`;
+  `history/evidence/luc-6248-authenticated-production-acceptance-performance-sweep-2026-06-29.md`.
+
+### 2026-06-29 - Paperclip API timeout leaves issue disposition unconfirmed
+- Context:
+  during [LUC-6245](/LUC/issues/LUC-6245), repeated Paperclip control-plane
+  health, checkout, readback, and PATCH attempts timed out or aborted after
+  bounded waits, including the injected `http://127.0.0.1:3201` URL.
+- Symptom:
+  local controller evidence could be completed and verified, but issue status
+  mutation to `blocked` could not be confirmed; janitor comments may keep the
+  issue temporarily `in_progress` while a live run exists.
+- Rule:
+  when the control-plane API is unavailable, record the intended disposition in
+  the task/evidence packet and active board context, then retry API status
+  mutation before any new analysis on the next heartbeat. Do not treat
+  `in_progress` as a valid product liveness path after the live retry ends.
+- Evidence:
+  `history/evidence/luc-6245-v1-audit-to-completion-controller-2026-06-29.md`;
+  `history/tasks/luc-6245-v1-audit-to-completion-controller-2026-06-29-task.md`.
+## 2026-07-01 - Paperclip mutation/readback timeout during LUC-6584
+
+- Context:
+  [LUC-6584](/LUC/issues/LUC-6584) needed final issue disposition after a QVE
+  regression evidence sweep.
+- Observation:
+  `PATCH /api/issues/LUC-6584` to `blocked` aborted after `20s`; follow-up
+  `/api/health` and heartbeat-context readbacks aborted after `8s`.
+- Handling:
+  keep the issue disposition, blocker owners, and evidence in repo state files
+  and retry Paperclip mutation/readback on the next control-plane recovery
+  heartbeat instead of duplicating local verification.
+# 2026-07-02 LUC-6711 Coolify Payload Allowlist
+
+- Pattern:
+  Coolify environment payloads can include secret-bearing database fields even
+  on read-only status endpoints.
+- Impact:
+  DRE/Ops evidence must never store raw Coolify environment payloads or broad
+  object samples.
+- Rule:
+  Use strict allowlist extraction for production health evidence: resource
+  `name`, `status`, coarse `health`, row counts, and HTTP status codes only.
+  Do not print, attach, or persist full resource objects.

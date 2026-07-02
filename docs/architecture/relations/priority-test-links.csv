@@ -15,6 +15,7 @@ apps/web/src/ui/components/FooterPreferencesSwitchers.tsx,apps/web/src/ui/compon
 apps/web/src/ui/components/ProfileButton.tsx,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2164 shared primitive relation
 apps/web/src/ui/components/FooterPreferencesSwitchers.tsx#FooterPreferencesSwitchers,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2611 direct footer preferences primitive relation
 apps/web/src/ui/components/ProfileButton.tsx#ProfileButton,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-2611 direct profile navigation primitive relation
+apps/web/src/ui/components/ProfileButton.tsx#handleProfileSectionNavigation,apps/web/src/ui/components/SharedUiPrimitives.test.tsx,LUC-6312 direct profile section hash navigation proof relation
 apps/web/src/ui/components/StatusBadge.tsx#StatusBadge,apps/web/src/ui/components/StatusBadge.test.tsx,LUC-2611 direct status badge semantic class relation
 apps/web/src/ui/components/TableUi.tsx#TableToneBadge,apps/web/src/ui/components/TableUi.test.tsx,LUC-2611 direct table tone badge relation
 apps/web/src/ui/components/Tabs.tsx#syncFromHash,apps/web/src/ui/components/Tabs.test.tsx,LUC-2611 direct hash-synchronized tabs relation
@@ -259,6 +260,7 @@ scripts/runLocalProtectedRouteActionProof.mjs#wait,scripts/runLocalProtectedRout
 scripts/runLocalProtectedRouteActionProof.mjs#waitForPath,scripts/runLocalProtectedRouteActionProof.test.mjs,LUC-2935 direct mocked path wait relation
 scripts/runProdAuthSessionBrowserProof.mjs,scripts/runV1FinalPreflight.test.mjs,LUC-2198 prod auth session preflight relation
 scripts/runProdAuthSessionBrowserProof.mjs#clearAuth,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct mocked CDP auth cleanup relation
+scripts/runProdAuthSessionBrowserProof.mjs#buildAuthApiHeaders,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-6312 direct production auth API header construction proof relation
 scripts/runProdAuthSessionBrowserProof.mjs#collectLocation,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct mocked CDP location collection relation
 scripts/runProdAuthSessionBrowserProof.mjs#evaluate,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct mocked CDP evaluate relation
 scripts/runProdAuthSessionBrowserProof.mjs#findBrowserPath,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct local browser path resolution relation
@@ -271,6 +273,12 @@ scripts/runProdAuthSessionBrowserProof.mjs#resolveOptions,scripts/runProdAuthSes
 scripts/runProdAuthSessionBrowserProof.mjs#setAuthCookie,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct mocked auth cookie relation
 scripts/runProdAuthSessionBrowserProof.mjs#toStep,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct proof step formatter relation
 scripts/runProdAuthSessionBrowserProof.mjs#wait,scripts/runProdAuthSessionBrowserProof.test.mjs,LUC-2939 direct async wait helper relation
+apps/api/src/lib/capitalAllocation.ts#resolveReferenceBalanceFromAllocation,apps/api/src/modules/architectureBaselineProof.test.ts,LUC-6312 direct capital allocation reference balance proof relation
+apps/api/src/middleware/noStoreHeaders.ts#applyNoStoreHeaders,apps/api/src/modules/architectureBaselineProof.test.ts,LUC-6312 direct no-store middleware header proof relation
+apps/api/src/modules/backtests/backtestIndicatorSpecs.ts#asPeriod,apps/api/src/modules/architectureBaselineProof.test.ts,LUC-6312 direct indicator period coercion proof relation
+apps/api/src/modules/backtests/backtestIndicatorSpecs.ts#clamp,apps/api/src/modules/architectureBaselineProof.test.ts,LUC-6312 direct indicator period clamp proof relation
+apps/api/src/modules/backtests/backtestIndicatorSpecs.ts#resolveIndicatorWarmupCandles,apps/api/src/modules/architectureBaselineProof.test.ts,LUC-6312 direct indicator warmup candle proof relation
+apps/api/src/modules/engine/runtimeExecutionClientOrderId.ts#buildRuntimeClientOrderId,apps/api/src/modules/architectureBaselineProof.test.ts,LUC-6312 direct runtime client order id proof relation
 scripts/runProdFixtureActionProof.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 prod fixture action release-gate relation
 scripts/runProdPositionsProof.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 prod positions proof release-gate relation
 scripts/runProdSecurityExchangeProof.mjs,scripts/runV1ReleaseGate.test.mjs,LUC-2198 prod security exchange release-gate relation

@@ -1,0 +1,202 @@
+{
+  "issue": "LUC-6074",
+  "generatedAt": "2026-06-28T22:20:00.000Z",
+  "sourceIndex": {
+    "path": "docs/status/app-completion-index.json",
+    "generatedAt": "2026-06-28T12:20:40.798Z",
+    "items": 2587,
+    "needsBrowserReview": 452,
+    "missingTestLink": 1292,
+    "missingDocLink": 608,
+    "blocked": 11
+  },
+  "priorEvidence": [
+    "history/artifacts/luc-6003-unclassified-browser-review-row-classification-2026-06-28.json",
+    "history/artifacts/luc-6004-trading-operation-app-completion-drilldown-2026-06-28.json",
+    "history/tasks/luc-6010-split-trading-operation-home-live-widgets-heavy-component-proof-packet-2026-06-28-task.md"
+  ],
+  "duplicateGuard": [
+    "Account access",
+    "Subscription and entitlement",
+    "Exchange connection and configuration",
+    "Admin operation",
+    "protected smoke",
+    "stale smoke-token cleanup",
+    "build provenance",
+    "host-level proof"
+  ],
+  "lanes": [
+    {
+      "id": "LUC-6074-TD-BROWSER-01",
+      "title": "Trading operation residual browser and row-linkage proof",
+      "ownerRole": "09 QVE (QA & Verification Engineer)",
+      "supportRole": "09 FEW (Frontend Engineer) only if QA proves a UI defect",
+      "sourceRows": {
+        "flow": "Trading operation",
+        "total": 219,
+        "residual": {
+          "needsBrowserReview": 137,
+          "missingDocLink": 44,
+          "missingTestLink": 28,
+          "implementedNeedsProof": 4
+        }
+      },
+      "knownAffectedPaths": [
+        "apps/web/src/features/dashboard-home/components/HomeLiveWidgets.test.tsx",
+        "apps/web/src/features/dashboard-home/components/HomeLiveWidgets.manual-order.test.tsx",
+        "apps/web/src/features/dashboard-home/components/HomeLiveWidgets.open-orders-actions.test.tsx",
+        "apps/web/src/features/bots/utils/runtimeSignalLabelKeys.ts",
+        "apps/web/src/features/strategies/utils/strategyThresholdItems.ts",
+        "apps/web/src/lib/marketStream.ts",
+        "scripts/runProdPositionsProof.mjs"
+      ],
+      "proofNeeded": [
+        "Reuse the LUC-6010 split HomeLiveWidgets packets with explicit --testTimeout=15000.",
+        "Map each closed proof to exact app-completion row ids from the LUC-6004 drilldown.",
+        "Record remaining doc-link and test-link rows separately instead of claiming broad closure."
+      ],
+      "verificationCommands": [
+        "pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.test.tsx --reporter=verbose --testTimeout=15000",
+        "pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.manual-order.test.tsx --reporter=verbose --testTimeout=15000",
+        "pnpm --filter web exec vitest run src/features/dashboard-home/components/HomeLiveWidgets.open-orders-actions.test.tsx src/features/dashboard-home/components/HomeLiveWidgets.open-orders-source.test.tsx src/features/dashboard-home/components/home-live-widgets/runtimeDataTablePresenters.test.tsx --reporter=verbose --testTimeout=15000"
+      ],
+      "forbidden": [
+        "live exchange action",
+        "order or position mutation",
+        "production mutation",
+        "secret or account readback"
+      ]
+    },
+    {
+      "id": "LUC-6074-DASH-BROWSER-01",
+      "title": "Dashboard overview route and widget proof packet",
+      "ownerRole": "09 QVE (QA & Verification Engineer)",
+      "supportRole": "09 FEW (Frontend Engineer) if route/component defect is found",
+      "sourceRows": {
+        "flow": "Dashboard overview",
+        "total": 134,
+        "risks": {
+          "needsBrowserReview": 51,
+          "missingDocLink": 24,
+          "missingTestLink": 56,
+          "implementedNeedsProof": 3
+        }
+      },
+      "knownAffectedPaths": [
+        "apps/api/src/router/dashboard.routes.ts",
+        "apps/web/src/app/dashboard/page.tsx",
+        "apps/web/src/app/dashboard/backtests/[id]/page.tsx",
+        "apps/web/src/app/dashboard/bots/[id]/runtime/page.tsx",
+        "apps/web/src/app/dashboard/bots/create/page.tsx",
+        "apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeDerivations.ts",
+        "apps/web/src/ui/layout/dashboard/headerControlStyles.ts"
+      ],
+      "proofNeeded": [
+        "Run a safe authenticated dashboard route render/clickthrough packet.",
+        "Link route-level API mounts separately from visible Web screen rows.",
+        "Keep profile API-key routes out of this lane when they duplicate Exchange/User configuration owner paths."
+      ],
+      "verificationCommands": [
+        "pnpm --filter web run test -- --run src/app/dashboard/page.test.tsx src/app/dashboard/bots/runtime/page.test.tsx src/app/dashboard/bots/[id]/runtime/page.test.tsx",
+        "pnpm i18n:audit:route-reachable:web"
+      ],
+      "forbidden": [
+        "production mutation",
+        "secret or account readback",
+        "exchange mutation",
+        "subscription/payment mutation"
+      ]
+    },
+    {
+      "id": "LUC-6074-CONFIG-CONTRACT-01",
+      "title": "User configuration API/support taxonomy and contract proof",
+      "ownerRole": "09 CBE (Core Backend Engineer)",
+      "supportRole": "04 DSM (Documentation Steward) for doc-link reconciliation",
+      "sourceRows": {
+        "flow": "User configuration",
+        "total": 152,
+        "risks": {
+          "needsBrowserReview": 24,
+          "missingDocLink": 49,
+          "missingTestLink": 75,
+          "implementedNeedsProof": 3,
+          "ok": 1
+        }
+      },
+      "knownAffectedPaths": [
+        "apps/api/src/config/criticalSecretsReadiness.ts",
+        "apps/api/src/config/loadEnv.ts",
+        "apps/api/src/config/proxyTrust.ts",
+        "apps/api/src/config/runtime.ts",
+        "apps/api/src/config/runtimeExecution.ts",
+        "apps/api/src/modules/profile/apiKey/apiKey.controller.ts",
+        "apps/api/src/modules/profile/apiKey/apiKey.routes.ts",
+        "apps/api/src/modules/profile/basic/basic.controller.ts",
+        "apps/api/src/modules/profile/security/security.controller.ts"
+      ],
+      "proofNeeded": [
+        "Treat config/API support rows as backend contract proof, not screenshot proof, unless a Web profile screen path is present.",
+        "Add or link focused tests for missing-test rows before claiming row closure.",
+        "Add doc-link evidence for existing tested config helpers."
+      ],
+      "verificationCommands": [
+        "pnpm --filter api exec vitest run src/config/criticalSecretsReadiness.test.ts src/config/proxyTrust.test.ts src/config/runtimeExecution.test.ts --reporter=verbose",
+        "pnpm --filter api run test -- --run"
+      ],
+      "forbidden": [
+        "secret value readback",
+        "production env mutation",
+        "account mutation",
+        "deploy or restart"
+      ]
+    },
+    {
+      "id": "LUC-6074-UNCLASSIFIED-SPLIT-01",
+      "title": "Classified Unclassified workflow split proof packet",
+      "ownerRole": "04 DSM (Documentation Steward)",
+      "supportRole": "QVE/CBE/FEW by sub-lane after classification",
+      "sourceRows": {
+        "flow": "Unclassified user workflow",
+        "browserReviewRows": 147,
+        "classifiedRemainder": 0,
+        "journeyCounts": {
+          "Platform/API operations support": 39,
+          "Runtime automation and AI execution": 27,
+          "Shared UI system and form states": 26,
+          "Backtest run lifecycle": 21,
+          "Support utilities, audit logs, and reports": 12,
+          "Public shell, legal, build-info, and PWA": 12,
+          "Strategy management": 9,
+          "Account access and public user projection": 1
+        }
+      },
+      "knownAffectedPaths": [
+        "apps/api/src/index.ts",
+        "apps/api/src/modules/engine/paperRuntime.service.ts",
+        "apps/api/src/modules/backtests/backtests.routes.ts",
+        "apps/web/src/features/backtest/components/BacktestCreateForm.tsx",
+        "apps/web/src/features/reports/components/PerformanceReportsView.tsx",
+        "apps/web/src/features/strategies/components/StrategiesList.tsx",
+        "apps/web/src/ui/components/DataTable.tsx",
+        "apps/web/src/app/(public)/page.tsx"
+      ],
+      "proofNeeded": [
+        "Create follow-up worker packets by classified journey, not by the old Unclassified bucket.",
+        "Route 39 Platform/API support rows to taxonomy repair or API contract proof.",
+        "Route 27 runtime automation rows to API/worker contract proof.",
+        "Route 26 shared UI rows to component state proof.",
+        "Route public shell and real user journeys to browser/route proof."
+      ],
+      "verificationCommands": [
+        "Use the exact row ids from history/artifacts/luc-6003-unclassified-browser-review-row-classification-2026-06-28.json",
+        "Run the narrow test command named by each follow-up journey owner before row closure"
+      ],
+      "forbidden": [
+        "broad Unclassified closure without row ids",
+        "screenshot proof for API/support taxonomy rows",
+        "duplicate Account/Subscription/Exchange/Admin lanes"
+      ]
+    }
+  ],
+  "status": "worker_ready_packet_prepared"
+}

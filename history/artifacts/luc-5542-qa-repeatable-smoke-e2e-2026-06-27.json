@@ -1,0 +1,51 @@
+{
+  "issue": "LUC-43",
+  "date": "2026-06-27",
+  "artifactName": "luc-5542-qa-repeatable-smoke-e2e-2026-06-27",
+  "selectedChecks": [
+    "web",
+    "api",
+    "backtests"
+  ],
+  "continueOnFail": true,
+  "totals": {
+    "checks": 3,
+    "passed": 0,
+    "failed": 3
+  },
+  "results": [
+    {
+      "label": "Web smoke pack",
+      "command": "pnpm run test:go-live:web",
+      "startedAt": "2026-06-27T15:47:34.331Z",
+      "finishedAt": "2026-06-27T15:47:37.229Z",
+      "durationMs": 2897,
+      "exitCode": 1,
+      "status": "FAIL",
+      "stdout": "Scope: all 5 workspace projects\n✓ Lockfile passes supply-chain policies (verified 33s ago)\nLockfile is up to date, resolution step is skipped\nAlready up to date\n\n[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: @prisma/client@6.19.3, @prisma/engines@6.19.3, bcrypt@6.0.0, ccxt@4.5.43, esbuild@0.25.8, esbuild@0.27.7, prisma@6.19.3, sharp@0.34.3, sharp@0.34.5, unrs-resolver@1.11.1\n\nRun \"pnpm approve-builds\" to pick which dependencies should be allowed to run scripts.\n[ERROR] Command failed with exit code 1: \"C:\\Users\\wrobl\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe\" \"C:\\Users\\wrobl\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\node_modules\\pnpm\\bin\\pnpm.mjs\" install\n\npnpm: Command failed with exit code 1: \"C:\\Users\\wrobl\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe\" \"C:\\Users\\wrobl\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\node_modules\\pnpm\\bin\\pnpm.mjs\" install\n    at getFinalError (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:34109:14)\n    at makeError (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:36416:21)\n    at getSyncResult (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:38260:10)\n    at spawnSubprocessSync (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:38220:14)\n    at execaCoreSync (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:38150:23)\n    at callBoundExeca (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:40678:23)\n    at boundExeca (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:40655:49)\n    at sync (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:40814:10)\n    at runPnpmCli (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:245099:5)\n    at runDepsStatusCheck (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:246833:7)\n",
+      "stderr": "[WARN] The \"pnpm\" field in package.json is no longer read by pnpm. The following keys were ignored: \"pnpm.overrides\". See https://pnpm.io/settings for the new home of each setting.\n[WARN] The \"pnpm\" field in package.json is no longer read by pnpm. The following keys were ignored: \"pnpm.overrides\". See https://pnpm.io/settings for the new home of each setting.\n"
+    },
+    {
+      "label": "API smoke pack",
+      "command": "pnpm run test:go-live:api",
+      "startedAt": "2026-06-27T15:47:37.230Z",
+      "finishedAt": "2026-06-27T15:47:39.636Z",
+      "durationMs": 2406,
+      "exitCode": 1,
+      "status": "FAIL",
+      "stdout": "Scope: all 5 workspace projects\n✓ Lockfile passes supply-chain policies (verified 36s ago)\nLockfile is up to date, resolution step is skipped\nAlready up to date\n\n[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: @prisma/client@6.19.3, @prisma/engines@6.19.3, bcrypt@6.0.0, ccxt@4.5.43, esbuild@0.25.8, esbuild@0.27.7, prisma@6.19.3, sharp@0.34.3, sharp@0.34.5, unrs-resolver@1.11.1\n\nRun \"pnpm approve-builds\" to pick which dependencies should be allowed to run scripts.\n[ERROR] Command failed with exit code 1: \"C:\\Users\\wrobl\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe\" \"C:\\Users\\wrobl\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\node_modules\\pnpm\\bin\\pnpm.mjs\" install\n\npnpm: Command failed with exit code 1: \"C:\\Users\\wrobl\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe\" \"C:\\Users\\wrobl\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\node_modules\\pnpm\\bin\\pnpm.mjs\" install\n    at getFinalError (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:34109:14)\n    at makeError (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:36416:21)\n    at getSyncResult (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:38260:10)\n    at spawnSubprocessSync (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:38220:14)\n    at execaCoreSync (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:38150:23)\n    at callBoundExeca (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:40678:23)\n    at boundExeca (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:40655:49)\n    at sync (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:40814:10)\n    at runPnpmCli (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:245099:5)\n    at runDepsStatusCheck (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:246833:7)\n",
+      "stderr": "[WARN] The \"pnpm\" field in package.json is no longer read by pnpm. The following keys were ignored: \"pnpm.overrides\". See https://pnpm.io/settings for the new home of each setting.\n[WARN] The \"pnpm\" field in package.json is no longer read by pnpm. The following keys were ignored: \"pnpm.overrides\". See https://pnpm.io/settings for the new home of each setting.\n"
+    },
+    {
+      "label": "Focused backtests e2e",
+      "command": "pnpm --filter api exec vitest run src/modules/backtests/backtests.e2e.test.ts --run",
+      "startedAt": "2026-06-27T15:47:39.636Z",
+      "finishedAt": "2026-06-27T15:47:42.322Z",
+      "durationMs": 2686,
+      "exitCode": 1,
+      "status": "FAIL",
+      "stdout": "Scope: all 5 workspace projects\n✓ Lockfile passes supply-chain policies (verified 38s ago)\nLockfile is up to date, resolution step is skipped\nAlready up to date\n\n[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: @prisma/client@6.19.3, @prisma/engines@6.19.3, bcrypt@6.0.0, ccxt@4.5.43, esbuild@0.25.8, esbuild@0.27.7, prisma@6.19.3, sharp@0.34.3, sharp@0.34.5, unrs-resolver@1.11.1\n\nRun \"pnpm approve-builds\" to pick which dependencies should be allowed to run scripts.\n[ERROR] Command failed with exit code 1: \"C:\\Users\\wrobl\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe\" \"C:\\Users\\wrobl\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\node_modules\\pnpm\\bin\\pnpm.mjs\" install\n\npnpm: Command failed with exit code 1: \"C:\\Users\\wrobl\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe\" \"C:\\Users\\wrobl\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\node_modules\\pnpm\\bin\\pnpm.mjs\" install\n    at getFinalError (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:34109:14)\n    at makeError (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:36416:21)\n    at getSyncResult (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:38260:10)\n    at spawnSubprocessSync (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:38220:14)\n    at execaCoreSync (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:38150:23)\n    at callBoundExeca (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:40678:23)\n    at boundExeca (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:40655:49)\n    at sync (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:40814:10)\n    at runPnpmCli (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:245099:5)\n    at runDepsStatusCheck (file:///C:/Users/wrobl/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:246833:7)\n",
+      "stderr": "[WARN] The \"pnpm\" field in package.json is no longer read by pnpm. The following keys were ignored: \"pnpm.overrides\". See https://pnpm.io/settings for the new home of each setting.\n[WARN] The \"pnpm\" field in package.json is no longer read by pnpm. The following keys were ignored: \"pnpm.overrides\". See https://pnpm.io/settings for the new home of each setting.\n"
+    }
+  ]
+}

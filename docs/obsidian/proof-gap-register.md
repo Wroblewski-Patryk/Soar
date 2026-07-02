@@ -1,11 +1,19 @@
 # Proof Gap Register
 
-Updated: 2026-06-20
+Updated: 2026-07-01
 
 This register lists generated chain and action proof gaps. It is a working queue for making Soar safer to change autonomously.
 
 ## Latest Refresh
 
+- 2026-07-01 [LUC-6553](/LUC/issues/LUC-6553): TSA gap-register refresh
+  confirmed strict architecture drift is clean (`850/850`, `0` missing) and no
+  new TSA architecture repair lane is needed. Current release-critical gaps are
+  already routed to [LUC-6331](/LUC/issues/LUC-6331),
+  [LUC-6413](/LUC/issues/LUC-6413), [LUC-6416](/LUC/issues/LUC-6416),
+  [LUC-6463](/LUC/issues/LUC-6463), source/build provenance, and host-proof
+  owner paths. Protected-input readiness remains `PARTIAL / NO-GO` with `6`
+  matching names and missing required account-access families.
 - 2026-06-20 [LUC-4854](/LUC/issues/LUC-4854): classified the
   [LUC-4849](/LUC/issues/LUC-4849) raw
   `implementation_without_tests=1288` signal. Current actionable

@@ -1,6 +1,97 @@
 # Regression Log
 
-Last updated: 2026-05-26
+Last updated: 2026-07-02
+
+### 2026-07-02 - LUC-6870 production Web/worker regression
+
+- Regression:
+  production Web `/`, `/auth/login`, `/api/build-info`, and protected
+  `/workers/ready` return `503`.
+- Status:
+  `active / blocked_by_existing_ops_restoration_path`.
+- Evidence:
+  `history/evidence/luc-6870-production-performance-server-health-watch-2026-07-02.md`.
+- Owner:
+  [LUC-6331](/LUC/issues/LUC-6331) restores production Web and backtest-worker
+  health; DRE/QVE rerun smoke and acceptance after restoration.
+
+### 2026-07-02 - LUC-6784 gap-register verification
+- Status: closed for TSA, release blockers remain open
+- Severity: P0 release-readiness context
+- Surface: architecture graph, protected-input readiness, repair-lane routing
+- Evidence:
+  `history/evidence/luc-6784-gap-register-and-repair-lane-refresh-2026-07-02.md`;
+  `history/artifacts/luc-6784-protected-input-readiness-2026-07-02.json`
+- Result:
+  architecture drift strict passed `850/850`; protected-input checker passed
+  `7/7`; no-secret protected-input readiness remains `PARTIAL / NO-GO`;
+  `pnpm softwarehouse:control-tick` is unavailable in this checkout.
+- Owner/action:
+  no new TSA child. Continue existing Ops/DRE, QA/Test, Security/Ops,
+  source-control, app-completion, and owner-login paths.
+
+### 2026-07-02 - LUC-6750 gap-register verification
+- Status: closed for TSA, release blockers remain open
+- Severity: P0 release-readiness context
+- Surface: architecture graph, protected-input readiness, repair-lane routing
+- Evidence:
+  `history/evidence/luc-6750-gap-register-and-repair-lane-refresh-2026-07-02.md`;
+  `history/artifacts/luc-6750-protected-input-readiness-2026-07-02.json`
+- Result:
+  architecture drift strict passed `850/850`; protected-input checker passed
+  `7/7`; no-secret protected-input readiness remains `PARTIAL / NO-GO`;
+  `pnpm softwarehouse:control-tick` is unavailable in this checkout.
+- Owner/action:
+  no new TSA child. Continue existing Ops/DRE, QA/Test, Security/Ops,
+  source-control, app-completion, and owner-login paths.
+
+### 2026-07-01 - LUC-6660 production acceptance blocked
+- Status: open
+- Severity: P0
+- Surface: production Web, worker readiness, authenticated acceptance
+- Evidence:
+  `history/evidence/luc-6660-authenticated-production-acceptance-performance-sweep-2026-07-01.md`
+- Result:
+  API `/health` and `/ready` pass; runtime freshness passes; Web `/` and
+  `/api/build-info` return `503`; protected `/workers/ready` returns `503`;
+  rollback guard requests action.
+- Owner/action:
+  Ops Release Lead / board-approved Coolify mutation owner continues
+  [LUC-6331](/LUC/issues/LUC-6331); QVE reruns after restoration.
+
+### 2026-07-01 - LUC-6584 regression baseline blocked
+- Status: open
+- Severity: P1
+- Surface: repeatable Web/API/backtests smoke; public production Web smoke
+- Symptom: Web smoke has two Vitest `5000ms` timeouts; API/backtests fail
+  before assertions because Docker Desktop Linux engine pipe is unavailable;
+  public Web `/` and `/api/build-info` return `503`.
+- Root cause: not proven in this QVE heartbeat; Web timeouts require TAE/FEW
+  triage, local DB-backed smoke requires Docker restoration, production Web
+  availability remains routed through [LUC-6331](/LUC/issues/LUC-6331).
+- Fix or mitigation: none applied by QVE; blockers routed to owner lanes.
+- Validation: `history/evidence/luc-6584-regression-evidence-sweep-2026-07-01.md`.
+- Follow-up: rerun repeatable smoke after Web timeout triage and Docker
+  restoration; rerun public/auth production smoke after Web recovery.
+
+### 2026-06-30 - LUC-6413 regression evidence sweep blocked
+- Status: open
+- Severity: P1
+- Surface: repeatable Web/API/backtests smoke; public no-workers production smoke
+- Symptom: `pnpm run qa:smoke-e2e:repeatable -- --checks web,api,backtests`
+  failed all three selected checks.
+- Root cause:
+  API/backtests were blocked before assertions by unavailable Docker Desktop
+  Linux engine; Web smoke had two 5s Vitest timeouts; production Web returned
+  `503` for `/` and `/api/build-info`.
+- Fix or mitigation:
+  Ops/DRE restores local Docker engine; TAE/FEW triages Web timeout failures;
+  DRE/Ops continues production Web restoration through [LUC-6331](/LUC/issues/LUC-6331).
+- Validation:
+  guardrails PASS; strict architecture drift PASS (`850/850`, `0` missing);
+  repeatable-smoke runner tests PASS (`7/7`); public API health/ready PASS.
+- Follow-up:
+  rerun LUC-6413 regression baseline after owner-path blockers are resolved.
 
 ## Open Regressions
 
@@ -329,6 +420,24 @@ regression. See `history/audits/v1-product-action-audit-matrix-2026-05-10.md`.
   unusable for balance preview while `BALANCE_PREVIEW` authenticated reads are
   unsupported, and `lastUsed` is not updated after rejection. Validation:
   focused wallet e2e (`22/22`), API typecheck, repository guardrails, docs
+### 2026-07-01 - Backtest Web grouped proof harness isolation
+- Status: fixed
+- Severity: P1
+- Surface: Web Backtest component tests
+- Symptom: grouped Backtest Web proof previously failed once in
+  `BacktestsList.test.tsx` with missing `Net PnL`, while focused rerun passed.
+- Root cause: product defect not reproduced; `BacktestsList.test.tsx` lacked
+  local cleanup/mock reset used by neighboring Backtest component tests, and
+  oversized combined packets still exceed the local runner command guard.
+- Fix or mitigation: added Testing Library cleanup, `vi.clearAllMocks`,
+  localStorage clear, and history reset after each `BacktestsList` test.
+- Validation: focused BacktestsList PASS (`1` file / `2` tests); grouped
+  Backtest Web PASS (`13` files / `33` tests); three focused pre-edit reruns
+  also passed; combined oversized packet still timed out without assertion
+  summary.
+- Follow-up: no FEW repair from [LUC-6479](/LUC/issues/LUC-6479); split broad
+  Web packets when reliable summaries are required.
+
   parity, and diff check.
 - 2026-05-08: Prevented positions snapshot drift for explicit stored Gate.io
   keys. A positions e2e test now proves `apiKeyId` selection cannot bypass the
@@ -409,3 +518,23 @@ Future agents must append an entry here when:
 - Validation:
 - Follow-up:
 ```
+
+### 2026-07-02 - LUC-6820 regression evidence sweep blockers
+- Status: open
+- Severity: P1
+- Surface: repeatable QA smoke / local DB-backed API and backtests / public Web
+  smoke
+- Symptom: repeatable Web smoke passed, but API smoke and focused backtests e2e
+  failed before assertions; public Web smoke still returned `503`.
+- Root cause: local Docker Desktop Linux engine pipe unavailable for
+  `docker compose up -d postgres redis`; production Web restoration remains
+  blocked on the existing Ops path.
+- Fix or mitigation: restore local Docker Desktop Linux engine availability and
+  complete production Web restoration through [LUC-6331](/LUC/issues/LUC-6331).
+- Validation: `pnpm run qa:smoke-e2e:repeatable -- --checks
+  web,api,backtests --artifact-prefix luc-6820-qa-repeatable-smoke-e2e --today
+  2026-07-02` failed `1/3` pass; runner unit tests passed `7/7`; architecture
+  drift passed `850/850`; public no-workers deploy smoke had API `200` and Web
+  `503`.
+- Follow-up: QVE reruns API/backtests repeatable smoke after Docker availability
+  is restored and reruns public/protected acceptance after [LUC-6331](/LUC/issues/LUC-6331).

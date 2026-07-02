@@ -34,6 +34,14 @@ test('evaluateProtectedInputReadiness reports blocked when no protected names ex
 
   assert.equal(result.status, 'BLOCKED');
   assert.equal(result.matchingProtectedInputNamesPresent, 0);
+  assert.equal(result.accountAccessGate.status, 'FAIL');
+  assert.deepEqual(result.accountAccessGate.missingRequiredFamilies, [
+    'ROLLBACK_GUARD_*',
+    'SOAR_PROD_*',
+    'PROD_DB_CHECK_* or PRODUCTION_DB_CHECK_*',
+    'RC_*',
+    'GATE* / GATE_*',
+  ]);
   assert.equal(result.observedOutput, 'NO_MATCHING_PROTECTED_INPUT_NAMES_PRESENT');
   assert.equal(result.target.gitSha, 'dd1a1faf79f8ac3581ca0a8c983481a3e30327ac');
 });
@@ -51,6 +59,16 @@ test('evaluateProtectedInputReadiness counts matching names without exposing val
 
   assert.equal(result.status, 'PARTIAL');
   assert.equal(result.matchingProtectedInputNamesPresent, 4);
+  assert.equal(result.accountAccessGate.status, 'FAIL');
+  assert.deepEqual(result.accountAccessGate.missingRequiredFamilies, [
+    'SOAR_PROD_*',
+    'RC_*',
+    'GATE* / GATE_*',
+  ]);
+  assert.equal(
+    result.observedOutput,
+    'MATCHING_PROTECTED_INPUT_NAMES_PRESENT_BUT_ACCOUNT_ACCESS_GATE_INCOMPLETE',
+  );
   assert.equal(
     result.families.find((family) => family.family === 'LIVEIMPORT_READBACK_*')?.matchingNamesPresent,
     1,
@@ -72,8 +90,29 @@ test('buildProtectedInputReadinessMarkdown includes counts but not values', () =
   const markdown = buildProtectedInputReadinessMarkdown(result);
 
   assert.match(markdown, /Matching protected input names present: `1`/);
-  assert.match(markdown, /\| `PROD_UI_AUDIT_\*` \| present \| 1 \|/);
+  assert.match(markdown, /Account-access gate: `FAIL`/);
+  assert.match(markdown, /Missing required account-access families: `ROLLBACK_GUARD_\*, SOAR_PROD_\*/);
+  assert.match(markdown, /\| `PROD_UI_AUDIT_\*` \| no \| present \| 1 \|/);
   assert.equal(markdown.includes('secret-token'), false);
+});
+
+test('evaluateProtectedInputReadiness passes account-access gate when required family names are present', () => {
+  const result = evaluateProtectedInputReadiness({
+    env: {
+      ROLLBACK_GUARD_AUTH_EMAIL: 'ops@example.invalid',
+      SOAR_PROD_API_BASE_URL: 'https://api.example.invalid',
+      PROD_DB_CHECK_CONTAINER: 'prod-db',
+      PRODUCTION_DB_CHECK_NAME: 'soar',
+      RC_APPROVER: 'release',
+      GATE_APPROVER: 'security',
+    },
+    date: '2026-06-29',
+  });
+
+  assert.equal(result.accountAccessGate.status, 'PASS');
+  assert.deepEqual(result.accountAccessGate.missingRequiredFamilies, []);
+  assert.equal(result.observedOutput, 'ACCOUNT_ACCESS_GATE_REQUIRED_INPUTS_PRESENT');
+  assert.equal(JSON.stringify(result).includes('ops@example.invalid'), false);
 });
 
 test('printUsage describes the no-secret CLI contract', () => {
@@ -142,8 +181,10 @@ test('CLI main writes no-secret JSON and markdown reports', async () => {
     const markdown = await readFile(markdownOutput, 'utf8');
     assert.equal(json.target.gitSha, 'abcdef1234567890');
     assert.equal(json.matchingProtectedInputNamesPresent, 1);
+    assert.equal(json.accountAccessGate.status, 'FAIL');
     assert.equal(JSON.stringify(json).includes('secret-token'), false);
     assert.match(markdown, /Matching protected input names present: `1`/);
+    assert.match(markdown, /Account-access gate: `FAIL`/);
     assert.equal(markdown.includes('secret-token'), false);
   });
 });

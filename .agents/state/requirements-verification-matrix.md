@@ -1,3 +1,289 @@
+## 2026-07-02 LUC-6888 Capability Traceability
+
+- 2026-07-02 `LUC-6888-CAPABILITY-IMPLEMENTATION-MAP-BACKFILL-2026-07-02`
+  updates `REQ-DOC-028` / `REQ-DOC-031` documentation traceability: the
+  dedicated capability-to-implementation map is no longer placeholder-only and
+  now lists `27` capability rows from active architecture function-chain,
+  web-journey, app-completion, module-confidence, delivery-map, and
+  requirements sources.
+- Requirement status:
+  `verified for documentation map backfill / runtime proof unchanged`.
+- Evidence:
+  `docs/architecture/capability-to-implementation-map.csv`;
+  `history/tasks/luc-6888-capability-to-implementation-map-backfill-2026-07-02-task.md`.
+- Validation:
+  `Import-Csv docs\architecture\capability-to-implementation-map.csv` returned
+  `27` rows, first `CAP-001`, last `CAP-027`, empty capability count `0`.
+- Boundary:
+  no product code, deploy, protected proof, secret/account readback, DB/Redis
+  mutation, exchange/payment mutation, order, position, subscription, or
+  live-trading behavior was changed or verified.
+
+## 2026-07-02 LUC-6870 Production Health Requirement Verification
+
+| Requirement | Status | Evidence | Next action | Last updated |
+| --- | --- | --- | --- | --- |
+| Production API health and readiness must pass. | verified | `history/evidence/luc-6870-production-performance-server-health-watch-2026-07-02.md` | Keep watching during restoration. | 2026-07-02 |
+| Production Web root, login, and build provenance must be reachable before acceptance. | failed | `history/evidence/luc-6870-production-performance-server-health-watch-2026-07-02.md` | [LUC-6331](/LUC/issues/LUC-6331) restores `soar-web`; rerun DRE/QVE smoke. | 2026-07-02 |
+| Protected worker readiness must pass before release acceptance. | failed | `history/evidence/luc-6870-production-performance-server-health-watch-2026-07-02.md` | [LUC-6331](/LUC/issues/LUC-6331) restores `workers-backtest`/worker readiness; rerun rollback guard. | 2026-07-02 |
+
+## 2026-07-02 LUC-6857 Gap Register And Repair Lane Refresh
+
+- 2026-07-02 `LUC-6857-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-07-02`
+  updates V1 audit-to-completion readiness: architecture drift guardrail is
+  verified (`850/850`, `0` missing), protected-input checker regression is
+  verified (`7/7`), and no new TSA architecture repair lane is needed.
+  Release readiness remains blocked by existing owner paths for production
+  Web/backtest-worker restoration, protected release/account input bindings,
+  source/build provenance, owner-login proof, app-completion proof, and
+  regression rerun.
+- Requirement status:
+  `verified for TSA gap refresh / release blocked`.
+- Evidence:
+  `history/evidence/luc-6857-gap-register-and-repair-lane-refresh-2026-07-02.md`;
+  `history/evidence/luc-6857-protected-input-readiness-2026-07-02.md`;
+  `history/artifacts/luc-6857-protected-input-readiness-2026-07-02.json`;
+  `history/tasks/luc-6857-gap-register-and-repair-lane-refresh-2026-07-02-task.md`.
+- Owner/action:
+  continue [LUC-6331](/LUC/issues/LUC-6331), [LUC-6002](/LUC/issues/LUC-6002),
+  [LUC-6461](/LUC/issues/LUC-6461), [LUC-6468](/LUC/issues/LUC-6468),
+  [LUC-4103](/LUC/issues/LUC-4103), and [LUC-6820](/LUC/issues/LUC-6820).
+
+## 2026-07-02 LUC-6846 V1 Audit-To-Completion Controller
+
+- 2026-07-02 `LUC-6846-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-07-02`
+  updates V1 audit-to-completion readiness: architecture drift guardrail is
+  verified (`850/850`, `0` missing), protected-input checker regression is
+  verified (`7/7`), and no new TSA architecture repair lane is needed.
+  Release readiness remains blocked by existing owner paths for production
+  Web/backtest-worker restoration, protected release/account input bindings,
+  source/build provenance, owner-login proof, app-completion proof, and
+  regression rerun.
+- Requirement status:
+  `verified for TSA controller / release blocked`.
+- Evidence:
+  `history/evidence/luc-6846-v1-audit-to-completion-controller-2026-07-02.md`;
+  `history/tasks/luc-6846-v1-audit-to-completion-controller-2026-07-02-task.md`.
+- Owner/action:
+  continue [LUC-6331](/LUC/issues/LUC-6331), [LUC-6002](/LUC/issues/LUC-6002),
+  [LUC-6461](/LUC/issues/LUC-6461), [LUC-6468](/LUC/issues/LUC-6468),
+  [LUC-4103](/LUC/issues/LUC-4103), and [LUC-6820](/LUC/issues/LUC-6820).
+
+## 2026-07-02 LUC-6830 Security Account-Access Gate Sweep
+
+- 2026-07-02 `LUC-6830-SECURITY-ACCOUNT-ACCESS-GATE-SWEEP-2026-07-02`
+  updates the V1 protected release/account-access requirement: focused local
+  server-side security boundaries are verified, but the release/account-access
+  gate is `blocked/failed closed` because required protected input families are
+  missing by name in the current execution shell.
+- Requirement status:
+  `blocked`.
+- Evidence:
+  `history/evidence/luc-6830-security-account-access-gate-sweep-2026-07-02.md`;
+  `history/evidence/luc-6830-security-account-access-gate-readiness-2026-07-02.md`;
+  `history/artifacts/luc-6830-security-account-access-gate-readiness-2026-07-02.json`;
+  `history/tasks/luc-6830-security-and-account-access-gate-sweep-2026-07-02-task.md`.
+- Boundary:
+  no deploy, restart, rollback, env edit, secret/account value readback,
+  DB/Redis mutation, production account mutation, exchange/payment mutation,
+  API-key mutation, order, position, subscription mutation, or live-trading
+  behavior was changed or verified.
+- Owner/action:
+  Security/Ops binds missing protected input families through approved
+  encrypted runtime paths, then QA/Ops reruns protected release/account proof.
+
+## 2026-07-02 LUC-6784 Gap Register And Repair Lane Refresh
+
+- 2026-07-02 `LUC-6784-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-07-02`
+  updates V1 audit-to-completion readiness: architecture drift guardrail is
+  verified (`850/850`, `0` missing), protected-input checker regression is
+  verified (`7/7`), and no new TSA architecture repair lane is needed. Release
+  readiness remains blocked by existing owner paths for production
+  Web/backtest-worker restoration, regression reruns, protected account-access
+  input bindings, source/build provenance, owner-login proof, and
+  app-completion row proof.
+- Requirement status:
+  `verified for TSA gap refresh / release blocked`.
+- Evidence:
+  `history/evidence/luc-6784-gap-register-and-repair-lane-refresh-2026-07-02.md`;
+  `history/tasks/luc-6784-gap-register-and-repair-lane-refresh-2026-07-02-task.md`.
+- Owner/action:
+  Ops/DRE continues [LUC-6331](/LUC/issues/LUC-6331), QA/Test continues
+  [LUC-6584](/LUC/issues/LUC-6584), Security/Ops continues
+  [LUC-6594](/LUC/issues/LUC-6594) and [LUC-6002](/LUC/issues/LUC-6002),
+  source-control continues [LUC-6461](/LUC/issues/LUC-6461), app-completion
+  continues [LUC-6468](/LUC/issues/LUC-6468), and owner-login waits on
+  [LUC-4103](/LUC/issues/LUC-4103).
+
+## 2026-07-02 LUC-6757 Production Performance And Server Health Watch
+
+- 2026-07-02 `LUC-6757-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-02`
+  updates production deploy health, worker readiness, runtime freshness, and
+  rollback-readiness requirements: API `/health` and `/ready` are verified
+  reachable and runtime freshness passes, but production Web `/`,
+  `/auth/login`, and `/api/build-info` return `503`, protected
+  `/workers/ready` returns `503`, and rollback guard returns
+  `shouldRollback=true`.
+- Requirement status:
+  `blocked`.
+- Evidence:
+  `history/evidence/luc-6757-production-performance-server-health-watch-2026-07-02.md`;
+  `history/tasks/luc-6757-production-performance-server-health-watch-2026-07-02-task.md`.
+- Owner/action:
+  Ops Release Lead / board-approved Coolify mutation owner resolves
+  [LUC-6331](/LUC/issues/LUC-6331), then DRE/QVE rerun production health and
+  acceptance.
+
+## 2026-07-02 LUC-6711 Production Performance And Server Health Watch
+
+- 2026-07-02 `LUC-6711-PRODUCTION-PERFORMANCE-SERVER-HEALTH-WATCH-2026-07-02`
+  updates production deploy health, worker readiness, runtime freshness, and
+  rollback-readiness requirements: API `/health` and `/ready` are verified
+  reachable and runtime freshness passes, but production Web `/`,
+  `/auth/login`, and `/api/build-info` return `503`, protected
+  `/workers/ready` returns `503`, and rollback guard returns
+  `shouldRollback=true`.
+- Requirement status:
+  `blocked`.
+- Evidence:
+  `history/evidence/luc-6711-production-performance-server-health-watch-2026-07-02.md`;
+  `history/tasks/luc-6711-production-performance-server-health-watch-2026-07-02-task.md`.
+- Owner/action:
+  Ops Release Lead / board-approved Coolify mutation owner resolves
+  [LUC-6331](/LUC/issues/LUC-6331), then DRE/QVE rerun production health and
+  acceptance.
+
+# 2026-07-01 LUC-6662 Gap Register And Repair Lane Refresh
+
+- 2026-07-01 `LUC-6662-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-07-01`
+  updates V1 audit-to-completion readiness: architecture drift guardrail is
+  verified (`850/850`, `0` missing), protected-input checker regression is
+  verified (`7/7`), and no new TSA architecture repair lane is needed. Release
+  readiness remains blocked by existing owner paths for production
+  Web/backtest-worker restoration, regression reruns, protected account-access
+  input bindings, source/build provenance, host proof, and app-completion row
+  proof.
+- Requirement status:
+  `verified for TSA gap refresh / release blocked`.
+- Evidence:
+  `history/evidence/luc-6662-gap-register-and-repair-lane-refresh-2026-07-01.md`;
+  `history/tasks/luc-6662-gap-register-and-repair-lane-refresh-2026-07-01-task.md`.
+- Owner/action:
+  Ops/DRE continues [LUC-6331](/LUC/issues/LUC-6331), QA/Test continues
+  [LUC-6584](/LUC/issues/LUC-6584), and Security/Ops continues
+  [LUC-6594](/LUC/issues/LUC-6594).
+
+# 2026-07-01 LUC-6660 Authenticated Production Acceptance
+
+- 2026-07-01 `LUC-6660-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-07-01`
+  updates production authenticated acceptance, worker readiness, runtime
+  freshness, and rollback-readiness requirements: API `/health` and `/ready`
+  are verified reachable and runtime freshness passes, but production Web `/`
+  and `/api/build-info` return `503`, protected `/workers/ready` returns
+  `503`, rollback guard returns `shouldRollback=true`, UI clickthrough fails
+  all route groups with `503`, and auth-session proof fails closed before
+  browser evidence.
+- Requirement status:
+  `blocked`.
+- Evidence:
+  `history/evidence/luc-6660-authenticated-production-acceptance-performance-sweep-2026-07-01.md`;
+  `history/evidence/luc-6660-prod-ui-module-clickthrough-2026-07-01.md`;
+  `history/tasks/luc-6660-authenticated-production-acceptance-performance-sweep-2026-07-01-task.md`.
+- Owner/action:
+  Ops Release Lead / board-approved Coolify mutation owner resolves
+  [LUC-6331](/LUC/issues/LUC-6331), then QVE reruns acceptance.
+
+# 2026-07-01 LUC-6608 Authenticated Production Acceptance
+
+- 2026-07-01 `LUC-6608-AUTHENTICATED-PRODUCTION-ACCEPTANCE-PERFORMANCE-SWEEP-2026-07-01`
+  updates the production authenticated acceptance and rollback-readiness
+  requirements: API `/health` and `/ready` are verified reachable, but
+  production Web `/` and `/api/build-info` return `503`; protected runtime
+  checks are not accepted from this runner because required protected auth
+  bindings are absent by name; auth-session proof failed closed before
+  artifact write. Proof:
+  `history/evidence/luc-6608-authenticated-production-acceptance-performance-sweep-2026-07-01.md`.
+  Boundary: no code, deploy, restart, rollback, env edit, secret/account value
+  readback, DB/Redis mutation, production account mutation, exchange/payment
+  mutation, order, position, subscription mutation, or live-trading behavior
+  was changed or verified.
+
+# 2026-07-01 LUC-6594 Security Account-Access Gate Sweep
+
+- 2026-07-01 `LUC-6594-SECURITY-ACCOUNT-ACCESS-GATE-SWEEP-2026-07-01`
+  updates the V1 protected release/account-access requirement: local
+  server-side security boundaries are verified by focused tests, but the
+  account-access release gate is `blocked/failed closed` because required
+  protected input families are missing by name. Proof:
+  `history/evidence/luc-6594-security-account-access-gate-sweep-2026-07-01.md`.
+  Boundary: no deploy, restart, rollback, env edit, secret/account value
+  readback, DB/Redis mutation, production account mutation, exchange/payment
+  mutation, API-key mutation, order, position, subscription mutation, or
+  live-trading behavior was changed or verified.
+
+# 2026-07-01 LUC-6584 Regression Evidence Sweep
+
+- 2026-07-01 `LUC-6584-REGRESSION-EVIDENCE-SWEEP-2026-07-01`
+  updates regression baseline and production public-smoke verification:
+  repeatable Web/API/backtests smoke is `blocked/failed` (`0/3` selected
+  checks), runner unit tests passed (`7/7`), strict architecture drift passed
+  (`850/850`, `0` missing), and public no-workers production smoke failed on
+  Web `/` plus `/api/build-info` `503` while API `/health` and `/ready`
+  returned `200`. Proof:
+  `history/evidence/luc-6584-regression-evidence-sweep-2026-07-01.md`.
+  Boundary: no code, deploy, restart, rollback, env edit, secret/account
+  readback, DB/Redis mutation outside test-runner startup attempts,
+  production account mutation, exchange/payment mutation, order, position,
+  subscription mutation, or live-trading behavior was changed or verified.
+
+# 2026-07-01 LUC-6546 V1 Audit-To-Completion Controller
+
+- 2026-07-01 `LUC-6546-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-07-01`
+  updates `REQ-FUNC-021` / production operations health and `REQ-DOC-028` /
+  architecture graph drift guardrail: strict architecture drift passed
+  (`850/850`, `0` missing), so there is no fresh TSA architecture repair lane.
+  Protected-input checker tests passed (`7/7`), but current no-secret
+  protected-input readiness remains `PARTIAL`, and release readiness remains
+  blocked by existing owner paths for production Web/backtest-worker
+  restoration, protected input bindings, regression reruns, release-grade
+  source/build provenance, host proof, and app-completion row proof. Proof:
+  `history/evidence/luc-6546-v1-audit-to-completion-controller-2026-07-01.md`.
+  Boundary: no code, deploy, restart, rollback, env edit, secret value
+  readback, DB/Redis mutation, production account mutation, exchange/payment
+  mutation, order, position, subscription mutation, or live-trading behavior
+  was changed or verified.
+
+# 2026-07-01 LUC-6387 Gap Register And Repair Lane Refresh
+
+- 2026-07-01 `LUC-6387-GAP-REGISTER-AND-REPAIR-LANE-REFRESH-2026-07-01`
+  updates `REQ-FUNC-021` / production operations health and `REQ-DOC-028` /
+  architecture graph drift guardrail: strict architecture drift passed
+  (`850/850`, `0` missing), and protected-input checker regression passed
+  (`7/7`). No new TSA architecture repair child is required because the
+  current failed checks are already routed to existing owner paths. Proof:
+  `history/evidence/luc-6387-gap-register-and-repair-lane-refresh-2026-07-01.md`.
+  Boundary: no code, deploy, restart, rollback, env edit, secret value
+  readback, DB/Redis mutation, production account mutation, exchange/payment
+  mutation, order, position, subscription mutation, or live-trading behavior
+  was changed or verified.
+
+# 2026-07-01 LUC-6382 V1 Audit-To-Completion Controller
+
+- 2026-07-01 `LUC-6382-V1-AUDIT-TO-COMPLETION-CONTROLLER-2026-07-01`
+  updates `REQ-FUNC-021` / production operations health and `REQ-DOC-028` /
+  architecture graph drift guardrail: strict architecture drift passed
+  (`850/850`, `0` missing), so there is no fresh TSA architecture repair lane.
+  Protected-input checker tests passed (`7/7`), but current no-secret
+  protected-input readiness remains `PARTIAL`, and release readiness remains
+  blocked by existing owner paths for production Web/backtest-worker
+  restoration, regression evidence, protected input bindings, release-grade
+  source/build provenance, host proof, and app-completion row proof. Proof:
+  `history/evidence/luc-6382-v1-audit-to-completion-controller-2026-07-01.md`.
+  Boundary: no code, deploy, restart, rollback, env edit, secret value
+  readback, DB/Redis mutation, production account mutation, exchange/payment
+  mutation, order, position, subscription mutation, or live-trading behavior
+  was changed or verified.
+
 # Requirements Verification Matrix
 
 Last updated: 2026-06-11

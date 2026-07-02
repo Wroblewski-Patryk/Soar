@@ -1,0 +1,44 @@
+{
+  "generatedAt": "2026-07-02T15:25:32.248Z",
+  "project": "Soar",
+  "root": "C:/Personal/Projekty/Aplikacje/Soar",
+  "status": "ready_for_repair_flow",
+  "gates": [
+    {
+      "gate": "architecture_exports",
+      "status": "present",
+      "evidence": "docs/graphs/architecture-awareness.json",
+      "requiredFor": "cross-layer ownership and dependency tracing"
+    },
+    {
+      "gate": "app_completion_index",
+      "status": "present",
+      "evidence": "docs/status/app-completion-index.json",
+      "requiredFor": "user-flow works/fails/unknown classification"
+    },
+    {
+      "gate": "event_chain_index",
+      "status": "covered",
+      "evidence": "docs/status/event-chain-index.json",
+      "requiredFor": "backend/frontend/worker impact analysis"
+    },
+    {
+      "gate": "runtime_error_index",
+      "status": "covered",
+      "evidence": "docs/status/runtime-error-index.json",
+      "requiredFor": "agent-owned bug discovery and repair routing"
+    },
+    {
+      "gate": "public_runtime_probe",
+      "status": "pass",
+      "evidence": [
+        "https://soar.luckysparrow.ch",
+        "https://soar.luckysparrow.ch/api/build-info",
+        "https://api.soar.luckysparrow.ch/health",
+        "https://api.soar.luckysparrow.ch/ready"
+      ],
+      "requiredFor": "production parity with local behavior"
+    }
+  ],
+  "nextAction": "Use the first failing gate to create or wake the smallest owner-scoped repair/proof lane; do not rely on narrative status."
+}

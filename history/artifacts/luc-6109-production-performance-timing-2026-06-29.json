@@ -1,0 +1,111 @@
+{
+  "issue": "LUC-6109",
+  "generatedAt": "2026-06-28T22:38:47.497Z",
+  "environment": "production",
+  "apiBase": "https://api.soar.luckysparrow.ch",
+  "webBase": "https://soar.luckysparrow.ch",
+  "authSource": "login",
+  "secretRedaction": "tokens, cookies, passwords, private headers, and response bodies omitted",
+  "runsPerEndpoint": 5,
+  "rows": [
+    {
+      "name": "API /health",
+      "auth": "public",
+      "expectedStatuses": [
+        200
+      ],
+      "result": "PASS",
+      "statuses": {
+        "200": 5
+      },
+      "minMs": 16.9,
+      "maxMs": 62.5,
+      "avgMs": 26.7
+    },
+    {
+      "name": "API /ready",
+      "auth": "public",
+      "expectedStatuses": [
+        200
+      ],
+      "result": "PASS",
+      "statuses": {
+        "200": 5
+      },
+      "minMs": 18.4,
+      "maxMs": 23.8,
+      "avgMs": 21
+    },
+    {
+      "name": "WEB /",
+      "auth": "public",
+      "expectedStatuses": [
+        200
+      ],
+      "result": "PASS",
+      "statuses": {
+        "200": 5
+      },
+      "minMs": 22.6,
+      "maxMs": 78.9,
+      "avgMs": 35.8
+    },
+    {
+      "name": "WEB /api/build-info",
+      "auth": "public",
+      "expectedStatuses": [
+        200
+      ],
+      "result": "PASS",
+      "statuses": {
+        "200": 5
+      },
+      "minMs": 24,
+      "maxMs": 29.3,
+      "avgMs": 26.3
+    },
+    {
+      "name": "API /dashboard/markets/catalog",
+      "auth": "authenticated",
+      "expectedStatuses": [
+        200
+      ],
+      "result": "PASS",
+      "statuses": {
+        "200": 5
+      },
+      "minMs": 26.7,
+      "maxMs": 1573.5,
+      "avgMs": 337.9
+    },
+    {
+      "name": "API /admin/subscriptions/plans",
+      "auth": "authenticated",
+      "expectedStatuses": [
+        200
+      ],
+      "result": "PASS",
+      "statuses": {
+        "200": 5
+      },
+      "minMs": 28.1,
+      "maxMs": 37.2,
+      "avgMs": 32.1
+    },
+    {
+      "name": "API /workers/ready",
+      "auth": "authenticated",
+      "expectedStatuses": [
+        200
+      ],
+      "result": "PASS",
+      "statuses": {
+        "200": 5
+      },
+      "minMs": 20.7,
+      "maxMs": 31,
+      "avgMs": 25.8
+    }
+  ],
+  "status": "PASS"
+}

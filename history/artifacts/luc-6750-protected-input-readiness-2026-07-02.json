@@ -1,0 +1,34 @@
+{
+  "id": "V1-PROTECTED-INPUT-READINESS-UNKNOWN-2026-07-02",
+  "date": "2026-07-02",
+  "status": "PARTIAL",
+  "releaseStatus": "NO-GO",
+  "scope": "current execution shell only",
+  "secretHandling": "no secret values printed, copied, or stored",
+  "target": {
+    "gitSha": null,
+    "gitRef": null,
+    "buildInfoCheckedAt": null
+  },
+  "matchingProtectedInputNamesPresent": 6,
+  "accountAccessGate": {
+    "status": "FAIL",
+    "requiredFamilies": [
+      "ROLLBACK_GUARD_*",
+      "SOAR_PROD_*",
+      "PROD_DB_CHECK_* or PRODUCTION_DB_CHECK_*",
+      "RC_*",
+      "GATE* / GATE_*"
+    ],
+    "missingRequiredFamilies": [
+      "ROLLBACK_GUARD_*",
+      "SOAR_PROD_*",
+      "PROD_DB_CHECK_* or PRODUCTION_DB_CHECK_*",
+      "RC_*",
+      "GATE* / GATE_*"
+    ],
+    "bindingState": "REQUIRED_PROTECTED_INPUT_FAMILIES_MISSING"
+  },
+  "observedOutput": "MATCHING_PROTECTED_INPUT_NAMES_PRESENT_BUT_ACCOUNT_ACCESS_GATE_INCOMPLETE",
+  "nextAction": "Execute the current operator unblock packet only after approved protected inputs and real approver fields are available."
+}

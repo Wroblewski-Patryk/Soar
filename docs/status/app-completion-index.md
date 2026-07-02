@@ -1,6 +1,6 @@
 # App Completion Index
 
-Generated: 2026-06-28T22:16:50.737Z
+Generated: 2026-07-01T12:13:43.588Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 Source graph: docs/graphs/architecture-awareness.json
@@ -12,23 +12,23 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 
 ## Counts
 
-- Items: 2587
+- Items: 2303
 - User flows: 8
 - Needs browser/screenshot review: 452
-- Missing test link: 1292
-- Missing doc link: 608
-- Blocked: 11
+- Missing test link: 1042
+- Missing doc link: 560
+- Blocked: 5
 
 ## Flow Summary
 
-- Account access: 651 entities; risks {"implemented_needs_proof":20,"missing_test_link":377,"ok":22,"missing_doc_link":197,"blocked":4,"needs_browser_review":31}; gates {"auth":651,"configuration":33,"subscription":14,"gateio":1}
-- Subscription and entitlement: 541 entities; risks {"missing_test_link":435,"missing_doc_link":69,"implemented_needs_proof":4,"blocked":7,"ok":6,"needs_browser_review":20}; gates {"subscription":541,"auth":7,"configuration":25,"binance":6,"gateio":1}
-- Exchange connection and configuration: 518 entities; risks {"missing_test_link":247,"missing_doc_link":163,"implemented_needs_proof":15,"ok":63,"needs_browser_review":30}; gates {"configuration":446,"gateio":94,"binance":49,"auth":10}
-- Unclassified user workflow: 332 entities; risks {"missing_test_link":50,"missing_doc_link":55,"implemented_needs_proof":78,"ok":2,"needs_browser_review":147}; gates {"auth":47,"configuration":15}
-- Trading operation: 219 entities; risks {"missing_test_link":28,"missing_doc_link":44,"implemented_needs_proof":7,"needs_browser_review":140}; gates {"configuration":50,"auth":8}
-- User configuration: 152 entities; risks {"missing_doc_link":49,"missing_test_link":75,"implemented_needs_proof":3,"ok":1,"needs_browser_review":24}; gates {"configuration":128,"auth":9}
-- Dashboard overview: 134 entities; risks {"missing_test_link":56,"missing_doc_link":24,"implemented_needs_proof":3,"needs_browser_review":51}; gates {"configuration":19,"auth":7}
-- Admin operation: 40 entities; risks {"missing_test_link":24,"missing_doc_link":7,"needs_browser_review":9}; gates {"auth":30}
+- Account access: 706 entities; risks {"implemented_needs_proof":20,"missing_test_link":429,"missing_doc_link":198,"blocked":5,"ok":23,"needs_browser_review":31}; gates {"auth":706,"configuration":40,"subscription":2,"gateio":1}
+- Exchange connection and configuration: 547 entities; risks {"missing_test_link":277,"missing_doc_link":162,"implemented_needs_proof":15,"ok":63,"needs_browser_review":30}; gates {"configuration":470,"gateio":95,"binance":55,"auth":10}
+- Unclassified user workflow: 334 entities; risks {"missing_test_link":53,"missing_doc_link":54,"implemented_needs_proof":78,"ok":2,"needs_browser_review":147}; gates {"auth":47,"configuration":16}
+- Trading operation: 219 entities; risks {"missing_test_link":34,"missing_doc_link":38,"implemented_needs_proof":7,"needs_browser_review":140}; gates {"configuration":50,"auth":8}
+- User configuration: 162 entities; risks {"ok":11,"implemented_needs_proof":13,"missing_test_link":85,"missing_doc_link":29,"needs_browser_review":24}; gates {"auth":19,"configuration":138}
+- Subscription and entitlement: 160 entities; risks {"missing_test_link":82,"missing_doc_link":49,"implemented_needs_proof":4,"ok":5,"needs_browser_review":20}; gates {"subscription":160,"auth":6,"configuration":2}
+- Dashboard overview: 134 entities; risks {"missing_test_link":57,"missing_doc_link":23,"implemented_needs_proof":3,"needs_browser_review":51}; gates {"configuration":19,"auth":7}
+- Admin operation: 41 entities; risks {"missing_test_link":25,"missing_doc_link":7,"needs_browser_review":9}; gates {"auth":31}
 
 ## Priority Review Queue
 
@@ -39,6 +39,7 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 | Account access | implemented_needs_proof | api_endpoint | GET /me | Engineering Delivery Lead | apps/api/src/modules/auth/auth.routes.ts#/me | auth |
 | Account access | implemented_needs_proof | api_endpoint | POST /register | Engineering Delivery Lead | apps/api/src/modules/auth/auth.routes.ts#/register | auth |
 | Account access | implemented_needs_proof | api_endpoint | USE /auth | Engineering Delivery Lead | apps/api/src/router/index.ts#/auth | auth |
+| Account access | missing_test_link | feature_or_capability | 2026-06-30 LUC-6303 Gap Register And Repair Lane Refresh | Engineering Delivery Lead | .agents/state/active-mission.md | auth |
 | Account access | missing_test_link | feature_or_capability | Decision Register | Engineering Delivery Lead | .agents/state/decision-register.md | auth |
 | Account access | missing_test_link | feature_or_capability | Risk Register | Engineering Delivery Lead | .agents/state/risk-register.md | auth |
 | Account access | missing_test_link | feature_or_capability | migration.sql | Engineering Delivery Lead | apps/api/prisma/migrations/20260331101500_add_bot_runtime_session_model/migration.sql | auth |
@@ -113,7 +114,6 @@ Agents use it to decide what to plan next: backend/API proof, frontend/browser p
 | Account access | missing_test_link | feature_or_capability | sumRuntimeManagedPositionRealizedPnl | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionRealizedPnl | auth |
 | Account access | missing_test_link | feature_or_capability | sumRuntimeManagedPositionTradeFees | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionTradeFees | auth |
 | Account access | missing_test_link | feature_or_capability | sumRuntimeManagedPositionUnrealizedPnl | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.repository.ts#sumRuntimeManagedPositionUnrealizedPnl | auth |
-| Account access | missing_doc_link | feature_or_capability | runtimeSessionPositionsRead.service.test.ts | Engineering Delivery Lead | apps/api/src/modules/bots/runtimeSessionPositionsRead.service.test.ts | auth |
 
 ## Agent Rule
 

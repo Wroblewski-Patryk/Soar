@@ -1,0 +1,98 @@
+{
+  "generatedAt": "2026-06-28T21:05:04.322Z",
+  "status": "PASS",
+  "results": [
+    {
+      "name": "API /health",
+      "expected": [200],
+      "samples": [
+        { "status": 200, "ok": true, "ms": 227.1 },
+        { "status": 200, "ok": true, "ms": 88.1 },
+        { "status": 200, "ok": true, "ms": 17.2 },
+        { "status": 200, "ok": true, "ms": 27.5 },
+        { "status": 200, "ok": true, "ms": 25.8 },
+        { "status": 200, "ok": true, "ms": 16.9 },
+        { "status": 200, "ok": true, "ms": 18.3 },
+        { "status": 200, "ok": true, "ms": 16.2 }
+      ],
+      "passed": true,
+      "maxMs": 227.1,
+      "statusCounts": { "200": 8 }
+    },
+    {
+      "name": "API /ready",
+      "expected": [200],
+      "samples": [
+        { "status": 200, "ok": true, "ms": 21.4 },
+        { "status": 200, "ok": true, "ms": 21.6 },
+        { "status": 200, "ok": true, "ms": 20.7 },
+        { "status": 200, "ok": true, "ms": 45.4 },
+        { "status": 200, "ok": true, "ms": 18.7 },
+        { "status": 200, "ok": true, "ms": 21.7 },
+        { "status": 200, "ok": true, "ms": 19.4 },
+        { "status": 200, "ok": true, "ms": 20.1 }
+      ],
+      "passed": true,
+      "maxMs": 45.4,
+      "statusCounts": { "200": 8 }
+    },
+    {
+      "name": "WEB /",
+      "expected": [200],
+      "samples": [
+        { "status": 200, "ok": true, "ms": 92.9 },
+        { "status": 200, "ok": true, "ms": 29.0 },
+        { "status": 200, "ok": true, "ms": 30.4 },
+        { "status": 200, "ok": true, "ms": 22.5 },
+        { "status": 200, "ok": true, "ms": 22.4 },
+        { "status": 200, "ok": true, "ms": 28.6 },
+        { "status": 200, "ok": true, "ms": 33.4 },
+        { "status": 200, "ok": true, "ms": 25.3 }
+      ],
+      "passed": true,
+      "maxMs": 92.9,
+      "statusCounts": { "200": 8 }
+    },
+    {
+      "name": "WEB /api/build-info",
+      "expected": [200],
+      "samples": [
+        { "status": 200, "ok": true, "ms": 25.9 },
+        { "status": 200, "ok": true, "ms": 25.9 },
+        { "status": 200, "ok": true, "ms": 27.0 },
+        { "status": 200, "ok": true, "ms": 24.8 },
+        { "status": 200, "ok": true, "ms": 20.7 },
+        { "status": 200, "ok": true, "ms": 23.0 },
+        { "status": 200, "ok": true, "ms": 23.8 },
+        { "status": 200, "ok": true, "ms": 29.1 }
+      ],
+      "passed": true,
+      "maxMs": 29.1,
+      "statusCounts": { "200": 8 }
+    },
+    {
+      "name": "API /dashboard/markets/catalog unauth",
+      "expected": [401],
+      "samples": [
+        { "status": 401, "ok": true, "ms": 20.5 },
+        { "status": 401, "ok": true, "ms": 18.0 },
+        { "status": 401, "ok": true, "ms": 17.6 }
+      ],
+      "passed": true,
+      "maxMs": 20.5,
+      "statusCounts": { "401": 3 }
+    },
+    {
+      "name": "API /admin/subscriptions/plans unauth",
+      "expected": [401],
+      "samples": [
+        { "status": 401, "ok": true, "ms": 17.8 },
+        { "status": 401, "ok": true, "ms": 24.8 },
+        { "status": 401, "ok": true, "ms": 18.0 }
+      ],
+      "passed": true,
+      "maxMs": 24.8,
+      "statusCounts": { "401": 3 }
+    }
+  ]
+}

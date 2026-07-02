@@ -1,0 +1,51 @@
+{
+  "issue": "LUC-6584",
+  "date": "2026-07-01",
+  "artifactName": "luc-6584-qa-repeatable-smoke-e2e-2026-07-01",
+  "selectedChecks": [
+    "web",
+    "api",
+    "backtests"
+  ],
+  "continueOnFail": true,
+  "totals": {
+    "checks": 3,
+    "passed": 0,
+    "failed": 3
+  },
+  "results": [
+    {
+      "label": "Web smoke pack",
+      "command": "pnpm run test:go-live:web",
+      "startedAt": "2026-07-01T08:06:25.657Z",
+      "finishedAt": "2026-07-01T08:09:06.221Z",
+      "durationMs": 160564,
+      "exitCode": 1,
+      "status": "FAIL",
+      "stdout": "\n RUN  v4.1.5 C:/Personal/Projekty/Aplikacje/Soar/apps/web\n\n ❯ src/ui/layout/dashboard/Header.responsive.test.tsx (2 tests | 1 failed) 8878ms\n     × renders navigation landmark with compact menu structure 6218ms\n ❯ src/features/bots/components/BotsManagement.test.tsx (14 tests | 1 failed) 45076ms\n     × renders monitoring tab with runtime session summary, symbol stats and trades 10282ms\n\n Test Files  2 failed | 1 passed (3)\n      Tests  2 failed | 16 passed (18)\n   Start at  10:06:34\n   Duration  145.44s (transform 43.01s, setup 57.63s, import 157.03s, tests 63.08s, environment 5.01s)\n\nundefined\nC:\\Personal\\Projekty\\Aplikacje\\Soar\\apps\\web:\r\n[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/features/bots/components/BotsManagement.test.tsx src/features/logs/components/AuditTrailView.test.tsx src/ui/layout/dashboard/Header.responsive.test.tsx\n[ELIFECYCLE] Command failed with exit code 1.\n",
+      "stderr": "$ pnpm --filter web exec vitest run src/features/bots/components/BotsManagement.test.tsx src/features/logs/components/AuditTrailView.test.tsx src/ui/layout/dashboard/Header.responsive.test.tsx\n\n⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯\n\n FAIL  src/features/bots/components/BotsManagement.test.tsx > BotsManagement > renders monitoring tab with runtime session summary, symbol stats and trades\nError: Test timed out in 5000ms.\nIf this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".\n ❯ src/features/bots/components/BotsManagement.test.tsx:508:3\n    506|   });\n    507|\n    508|   it(\"renders monitoring tab with runtime session summary, symbol stat…\n       |   ^\n    509|     listStrategiesMock.mockResolvedValue([{ id: \"s-monitor\", name: \"Mo…\n    510|     listMarketUniversesMock.mockResolvedValue([\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯\n\n FAIL  src/ui/layout/dashboard/Header.responsive.test.tsx > Header responsive smoke > renders navigation landmark with compact menu structure\nError: Test timed out in 5000ms.\nIf this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".\n ❯ src/ui/layout/dashboard/Header.responsive.test.tsx:15:3\n     13|\n     14| describe(\"Header responsive smoke\", () => {\n     15|   it(\"renders navigation landmark with compact menu structure\", () => {\n       |   ^\n     16|     render(\n     17|       <I18nProvider>\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯\n\n"
+    },
+    {
+      "label": "API smoke pack",
+      "command": "pnpm run test:go-live:api:with-infra",
+      "startedAt": "2026-07-01T08:09:06.221Z",
+      "finishedAt": "2026-07-01T08:09:18.509Z",
+      "durationMs": 12288,
+      "exitCode": 1,
+      "status": "FAIL",
+      "stdout": "[ELIFECYCLE] Command failed with exit code 1.\n[ELIFECYCLE] Command failed with exit code 1.\n",
+      "stderr": "$ node scripts/goLiveSmoke.mjs --target=api\n$ docker compose up -d postgres redis\ntime=\"2026-07-01T10:09:14+02:00\" level=warning msg=\"C:\\\\Personal\\\\Projekty\\\\Aplikacje\\\\Soar\\\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion\"\nunable to get image 'postgres:15': error during connect: Get \"http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.51/images/postgres:15/json\": open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.\n"
+    },
+    {
+      "label": "Focused backtests e2e",
+      "command": "pnpm run test:go-live:backtests:with-infra",
+      "startedAt": "2026-07-01T08:09:18.509Z",
+      "finishedAt": "2026-07-01T08:09:27.706Z",
+      "durationMs": 9197,
+      "exitCode": 1,
+      "status": "FAIL",
+      "stdout": "[ELIFECYCLE] Command failed with exit code 1.\n[ELIFECYCLE] Command failed with exit code 1.\n",
+      "stderr": "$ node scripts/goLiveSmoke.mjs --target=backtests\n$ docker compose up -d postgres redis\ntime=\"2026-07-01T10:09:24+02:00\" level=warning msg=\"C:\\\\Personal\\\\Projekty\\\\Aplikacje\\\\Soar\\\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion\"\nunable to get image 'postgres:15': error during connect: Get \"http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.51/images/postgres:15/json\": open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.\n"
+    }
+  ]
+}

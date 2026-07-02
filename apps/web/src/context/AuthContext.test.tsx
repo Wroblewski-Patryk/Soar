@@ -22,10 +22,11 @@ vi.mock('sonner', () => ({
 }));
 
 function AuthProbe() {
-  const { loading, user } = useAuth();
+  const { loading, sessionExpired, user } = useAuth();
   return (
     <div>
       <span data-testid="loading">{String(loading)}</span>
+      <span data-testid="session-expired">{String(sessionExpired)}</span>
       <span data-testid="email">{user?.email ?? 'none'}</span>
     </div>
   );
@@ -55,6 +56,7 @@ describe('AuthProvider', () => {
       expect(screen.getByTestId('loading')).toHaveTextContent('false');
     });
     expect(screen.getByTestId('email')).toHaveTextContent('john@example.com');
+    expect(screen.getByTestId('session-expired')).toHaveTextContent('false');
     expect(mockApiGet).toHaveBeenCalledTimes(1);
     expect(mockApiGet).toHaveBeenCalledWith('/auth/me');
 
@@ -109,6 +111,27 @@ describe('AuthProvider', () => {
 
     expect(toast.warning).toHaveBeenCalledTimes(1);
     expect(window.location.search).toBe('');
+  });
+
+  it('marks protected-route unauthorized bootstrap as an expired session', async () => {
+    window.history.pushState({}, '', '/dashboard');
+    mockApiGet.mockRejectedValueOnce({
+      response: { status: 401 },
+    });
+
+    render(
+      <AuthProvider>
+        <AuthProbe />
+      </AuthProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('loading')).toHaveTextContent('false');
+    });
+
+    expect(screen.getByTestId('email')).toHaveTextContent('none');
+    expect(screen.getByTestId('session-expired')).toHaveTextContent('true');
+    expect(toast.warning).not.toHaveBeenCalled();
   });
 
   it('posts logout, clears auth state, and redirects to login', async () => {

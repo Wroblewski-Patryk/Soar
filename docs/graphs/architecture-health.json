@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-06-29T21:44:38.791Z",
+  "generated_at": "2026-07-01T12:13:43.504Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 10172,
-    "relations": 33282,
+    "entities": 10342,
+    "relations": 33080,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 4378,
+      "document": 4491,
       "feature": 217,
       "function": 2832,
       "migration": 57,
@@ -19,16 +19,16 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1570,
-      "test": 451
+      "task": 1626,
+      "test": 452
     },
     "by_status": {
-      "blocked": 33,
+      "blocked": 39,
       "deprecated": 10,
-      "implemented": 7738,
+      "implemented": 7851,
       "in_progress": 14,
-      "tested": 831,
-      "verified": 1546
+      "tested": 832,
+      "verified": 1596
     }
   },
   "signals": {
@@ -236,14 +236,6 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "api_endpoint:get-metrics:c8c3bc223e",
-          "type": "api_endpoint",
-          "name": "GET /metrics",
-          "path": "apps/api/src/router/index.ts#/metrics",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "api_endpoint:get-ready:5f58f81b1e",
           "type": "api_endpoint",
           "name": "GET /ready",
@@ -320,6 +312,14 @@
           "type": "component",
           "name": "BacktestRunHeaderSection.tsx",
           "path": "apps/web/src/features/backtest/components/BacktestRunHeaderSection.tsx",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "component:botsmanagementtabs-tsx:6db5979752",
+          "type": "component",
+          "name": "BotsManagementTabs.tsx",
+          "path": "apps/web/src/features/bots/components/bots-management/BotsManagementTabs.tsx",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         },
@@ -1580,6 +1580,22 @@
           "owner": "Engineering Delivery Lead"
         },
         {
+          "id": "function:listsubscriptionplans:b90e9278db",
+          "type": "function",
+          "name": "listSubscriptionPlans",
+          "path": "apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.controller.ts#listSubscriptionPlans",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:updatesubscriptionplan:2f371f088f",
+          "type": "function",
+          "name": "updateSubscriptionPlan",
+          "path": "apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.controller.ts#updateSubscriptionPlan",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
           "id": "function:listusers:8a2608985c",
           "type": "function",
           "name": "listUsers",
@@ -1616,22 +1632,6 @@
           "type": "function",
           "name": "login",
           "path": "apps/api/src/modules/auth/auth.controller.ts#login",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:logout:aba24168f5",
-          "type": "function",
-          "name": "logout",
-          "path": "apps/api/src/modules/auth/auth.controller.ts#logout",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
-          "id": "function:me:4ef644a761",
-          "type": "function",
-          "name": "me",
-          "path": "apps/api/src/modules/auth/auth.controller.ts#me",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
         }
@@ -3251,11 +3251,11 @@
       "items": []
     },
     "classified_inferred_link_noise": {
-      "count": 1512,
+      "count": 1513,
       "by_reason": {
         "config_only_file": 64,
-        "curated_graph_covered": 1325,
-        "test_fixture_function": 122,
+        "curated_graph_covered": 1329,
+        "test_fixture_function": 119,
         "top_level_app_mount": 1
       },
       "items": [
@@ -3485,15 +3485,6 @@
           "reason": "curated_graph_covered"
         },
         {
-          "id": "api_endpoint:get-metrics:c8c3bc223e",
-          "type": "api_endpoint",
-          "name": "GET /metrics",
-          "path": "apps/api/src/router/index.ts#/metrics",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
           "id": "api_endpoint:get-ready:5f58f81b1e",
           "type": "api_endpoint",
           "name": "GET /ready",
@@ -3579,6 +3570,15 @@
           "type": "component",
           "name": "BacktestRunHeaderSection.tsx",
           "path": "apps/web/src/features/backtest/components/BacktestRunHeaderSection.tsx",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "component:botsmanagementtabs-tsx:6db5979752",
+          "type": "component",
+          "name": "BotsManagementTabs.tsx",
+          "path": "apps/web/src/features/bots/components/bots-management/BotsManagementTabs.tsx",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
@@ -4997,6 +4997,24 @@
           "reason": "curated_graph_covered"
         },
         {
+          "id": "function:listsubscriptionplans:b90e9278db",
+          "type": "function",
+          "name": "listSubscriptionPlans",
+          "path": "apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.controller.ts#listSubscriptionPlans",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:updatesubscriptionplan:2f371f088f",
+          "type": "function",
+          "name": "updateSubscriptionPlan",
+          "path": "apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.controller.ts#updateSubscriptionPlan",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
+        },
+        {
           "id": "function:listusers:8a2608985c",
           "type": "function",
           "name": "listUsers",
@@ -5040,24 +5058,6 @@
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
-        },
-        {
-          "id": "function:logout:aba24168f5",
-          "type": "function",
-          "name": "logout",
-          "path": "apps/api/src/modules/auth/auth.controller.ts#logout",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "function:me:4ef644a761",
-          "type": "function",
-          "name": "me",
-          "path": "apps/api/src/modules/auth/auth.controller.ts#me",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
         }
       ]
     },
@@ -5074,7 +5074,7 @@
       "items": []
     },
     "raw_tasks_without_architecture": {
-      "count": 109,
+      "count": 117,
       "items": [
         {
           "id": "task:task-local-certainty-closure-2026-05-21:a8d07f98c0",
@@ -5793,6 +5793,70 @@
           "type": "task",
           "name": "LUC-6241 No-Stall Queue Expeditor",
           "path": "history/tasks/luc-6241-no-stall-queue-expeditor-2026-06-29-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:51219b8f3b",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6387-gap-register-and-repair-lane-refresh-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-6459-known-state-evidence-and-architecture-baseline-task:8eccc644ed",
+          "type": "task",
+          "name": "LUC-6459 Known-State Evidence And Architecture Baseline Task",
+          "path": "history/tasks/luc-6459-known-state-evidence-architecture-baseline-2026-06-30-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-6483-no-stall-queue-expeditor-task:3ee29ad73f",
+          "type": "task",
+          "name": "LUC-6483 No-Stall Queue Expeditor Task",
+          "path": "history/tasks/luc-6483-no-stall-queue-expeditor-2026-06-30-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:20645367e8",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6548-production-performance-server-health-watch-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:db5273d62c",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6553-gap-register-and-repair-lane-refresh-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-6579-daily-project-status-refresh-2026-07-01:3f6f33c89b",
+          "type": "task",
+          "name": "LUC-6579 Daily Project Status Refresh - 2026-07-01",
+          "path": "history/tasks/luc-6579-daily-project-status-refresh-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:acd7950802",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6580-coolify-production-deploy-health-sweep-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:474c386d7f",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6606-production-performance-server-health-watch-2026-07-01-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead"
         },
@@ -7560,11 +7624,11 @@
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 429,
+      "count": 437,
       "by_reason": {
         "config_only_file": 34,
         "curated_graph_covered": 285,
-        "historical_task_archive": 109,
+        "historical_task_archive": 117,
         "top_level_app_mount": 1
       },
       "items": [
@@ -8374,6 +8438,78 @@
           "type": "task",
           "name": "LUC-6241 No-Stall Queue Expeditor",
           "path": "history/tasks/luc-6241-no-stall-queue-expeditor-2026-06-29-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:51219b8f3b",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6387-gap-register-and-repair-lane-refresh-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:luc-6459-known-state-evidence-and-architecture-baseline-task:8eccc644ed",
+          "type": "task",
+          "name": "LUC-6459 Known-State Evidence And Architecture Baseline Task",
+          "path": "history/tasks/luc-6459-known-state-evidence-architecture-baseline-2026-06-30-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:luc-6483-no-stall-queue-expeditor-task:3ee29ad73f",
+          "type": "task",
+          "name": "LUC-6483 No-Stall Queue Expeditor Task",
+          "path": "history/tasks/luc-6483-no-stall-queue-expeditor-2026-06-30-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:20645367e8",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6548-production-performance-server-health-watch-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:db5273d62c",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6553-gap-register-and-repair-lane-refresh-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:luc-6579-daily-project-status-refresh-2026-07-01:3f6f33c89b",
+          "type": "task",
+          "name": "LUC-6579 Daily Project Status Refresh - 2026-07-01",
+          "path": "history/tasks/luc-6579-daily-project-status-refresh-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:acd7950802",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6580-coolify-production-deploy-health-sweep-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:474c386d7f",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6606-production-performance-server-health-watch-2026-07-01-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead",
           "reason": "historical_task_archive"
@@ -9295,78 +9431,6 @@
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:positions-service-ts:7f63220778",
-          "type": "feature",
-          "name": "positions.service.ts",
-          "path": "apps/web/src/features/positions/services/positions.service.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:reports-service-ts:5e2a303fca",
-          "type": "feature",
-          "name": "reports.service.ts",
-          "path": "apps/web/src/features/reports/services/reports.service.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:strategypresets-ts:4ab647dddc",
-          "type": "feature",
-          "name": "strategyPresets.ts",
-          "path": "apps/web/src/features/strategies/presets/strategyPresets.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:strategynumericinput-ts:736114b369",
-          "type": "feature",
-          "name": "strategyNumericInput.ts",
-          "path": "apps/web/src/features/strategies/utils/strategyNumericInput.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:actions-ts:2ab1643a06",
-          "type": "feature",
-          "name": "actions.ts",
-          "path": "apps/web/src/features/wallets/components/wallet-create-edit-form/actions.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:state-ts:25257ae959",
-          "type": "feature",
-          "name": "state.ts",
-          "path": "apps/web/src/features/wallets/components/wallet-create-edit-form/state.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:wallets-service-ts:6a19f5a8d2",
-          "type": "feature",
-          "name": "wallets.service.ts",
-          "path": "apps/web/src/features/wallets/services/wallets.service.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:dashboard-backtests-de-ch-ts:86b3252b7c",
-          "type": "feature",
-          "name": "dashboard-backtests.de-CH.ts",
-          "path": "apps/web/src/i18n/namespaces/dashboard-backtests.de-CH.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "config_only_file"
         }
       ]
     },

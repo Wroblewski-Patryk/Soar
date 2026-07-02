@@ -1,0 +1,138 @@
+{
+  "issue": "LUC-6467",
+  "parent": "LUC-6463",
+  "generatedAt": "2026-06-30T22:16:42.6036644+02:00",
+  "owner": "09 CBE (Core Backend Engineer)",
+  "packetId": "LUC-6098-API-SUPPORT-01",
+  "sourcePacket": "history/artifacts/luc-6098-unclassified-workflow-proof-packets-2026-06-29.json",
+  "rowCount": 39,
+  "journey": "Platform/API operations support",
+  "proofLane": "taxonomy_repair_or_api_contract_proof",
+  "realityStatus": "partially_verified_blocked_by_local_db_runtime",
+  "verified": {
+    "testFiles": 13,
+    "tests": 63,
+    "commands": [
+      {
+        "command": "pnpm --filter api exec vitest run src/lib/logger.test.ts src/lib/errors.test.ts src/lib/httpErrorMapper.test.ts src/utils/crypto.test.ts src/utils/securityUtilities.test.ts --reporter=verbose",
+        "status": "PASS",
+        "files": 5,
+        "tests": 21
+      },
+      {
+        "command": "pnpm --filter api exec vitest run src/middleware/requireTrustedOrigin.unit.test.ts --reporter=verbose",
+        "status": "PASS",
+        "files": 1,
+        "tests": 3
+      },
+      {
+        "command": "pnpm --filter api exec vitest run src/middleware/requireRole.test.ts --reporter=verbose",
+        "status": "PASS",
+        "files": 1,
+        "tests": 3
+      },
+      {
+        "command": "pnpm --filter api exec vitest run src/middleware/requireOpsNetwork.test.ts --reporter=verbose",
+        "status": "PASS",
+        "files": 1,
+        "tests": 5
+      },
+      {
+        "command": "pnpm --filter api exec vitest run src/middleware/rateLimit.test.ts --reporter=verbose",
+        "status": "PASS",
+        "files": 1,
+        "tests": 7
+      },
+      {
+        "command": "pnpm --filter api exec vitest run src/middleware/requestLogger.test.ts --reporter=verbose",
+        "status": "PASS",
+        "files": 1,
+        "tests": 1
+      },
+      {
+        "command": "pnpm --filter api exec vitest run src/observability/runtimeFreshness.test.ts src/queue/queueTuning.test.ts --reporter=verbose",
+        "status": "PASS",
+        "files": 2,
+        "tests": 4
+      },
+      {
+        "command": "pnpm --filter api exec vitest run src/workers/workerBootstrap.test.ts --reporter=verbose",
+        "status": "PASS",
+        "files": 1,
+        "tests": 3
+      },
+      {
+        "command": "pnpm --filter api exec vitest run src/workers/workerHeartbeat.test.ts --reporter=verbose",
+        "status": "PASS",
+        "files": 1,
+        "tests": 2
+      },
+      {
+        "command": "pnpm --filter api exec vitest run src/workers/workerOwnership.test.ts --reporter=verbose",
+        "status": "PASS",
+        "files": 1,
+        "tests": 6
+      },
+      {
+        "command": "pnpm --filter api exec vitest run prisma/seed.test.ts scripts/apiScriptTooling.test.ts --reporter=verbose",
+        "status": "PASS",
+        "files": 2,
+        "tests": 8
+      }
+    ]
+  },
+  "blocked": {
+    "reason": "Local PostgreSQL/Redis unavailable and Docker Desktop Linux engine not reachable from the heartbeat.",
+    "commands": [
+      {
+        "command": "pnpm --filter api exec vitest run src/middleware/requireTrustedOrigin.test.ts --reporter=verbose",
+        "status": "TIMEOUT",
+        "timeoutSeconds": 64
+      },
+      {
+        "command": "pnpm --filter api exec vitest run src/router/metrics.test.ts --reporter=verbose",
+        "status": "TIMEOUT",
+        "timeoutSeconds": 64
+      },
+      {
+        "command": "pnpm run quality:guardrails",
+        "status": "TIMEOUT",
+        "timeoutSeconds": 124
+      },
+      {
+        "command": "pnpm --filter api run typecheck",
+        "status": "TIMEOUT",
+        "timeoutSeconds": 124
+      }
+    ],
+    "runtimeChecks": [
+      {
+        "command": "Test-NetConnection 127.0.0.1 -Port 5432",
+        "status": "TIMEOUT_TCP_CONNECT_FAILED"
+      },
+      {
+        "command": "Test-NetConnection 127.0.0.1 -Port 6379",
+        "status": "TIMEOUT_TCP_CONNECT_FAILED"
+      },
+      {
+        "command": "docker ps",
+        "status": "FAIL_DOCKER_DESKTOP_LINUX_ENGINE_PIPE_NOT_AVAILABLE"
+      }
+    ],
+    "unblockOwner": "Ops/DRE or local runtime owner",
+    "unblockAction": "Restore local Docker Desktop Linux engine plus Soar PostgreSQL and Redis on 127.0.0.1:5432 and 127.0.0.1:6379."
+  },
+  "sourceControl": {
+    "repo": "C:/Personal/Projekty/Aplikacje/Soar",
+    "commit": "not committed",
+    "reason": "Shared checkout already dirty with unrelated active-lane changes; this heartbeat added evidence/task artifacts only.",
+    "pushStatus": "not needed",
+    "deployImpact": "none"
+  },
+  "forbiddenActionsObserved": false,
+  "nextCommandsAfterUnblock": [
+    "pnpm --filter api exec vitest run src/middleware/requireTrustedOrigin.test.ts src/router/metrics.test.ts --reporter=verbose",
+    "pnpm run quality:guardrails",
+    "pnpm --filter api run typecheck"
+  ]
+}

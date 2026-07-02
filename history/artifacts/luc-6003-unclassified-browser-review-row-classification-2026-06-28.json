@@ -1,0 +1,1497 @@
+{
+  "generatedAt": "2026-06-28T15:11:00.331Z",
+  "source": "docs/graphs/architecture-awareness.json",
+  "appCompletionGeneratedAt": "2026-06-28T12:20:40.798Z",
+  "issue": "LUC-6003",
+  "count": 147,
+  "journeyCounts": {
+    "Platform/API operations support": 39,
+    "Runtime automation and AI execution": 27,
+    "Shared UI system and form states": 26,
+    "Backtest run lifecycle": 21,
+    "Support utilities, audit logs, and reports": 12,
+    "Public shell, legal, build-info, and PWA": 12,
+    "Strategy management": 9,
+    "Account access and public user projection": 1
+  },
+  "proofLaneCounts": {
+    "browser_or_api_journey_proof": 42,
+    "taxonomy_repair_or_api_contract_proof": 39,
+    "api_worker_contract_proof": 27,
+    "component_state_proof": 26,
+    "browser_or_route_proof": 12,
+    "api_contract_proof": 1
+  },
+  "rows": [
+    {
+      "id": "route:seed-ts:e1fb6e7e0f",
+      "type": "route",
+      "name": "seed.ts",
+      "path": "apps/api/prisma/seed.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:readme-md:f32791e104",
+      "type": "route",
+      "name": "README.md",
+      "path": "apps/api/prisma/snapshots/README.md",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:assistant-load-benchmark-ts:2de3100811",
+      "type": "route",
+      "name": "assistant-load-benchmark.ts",
+      "path": "apps/api/scripts/assistant-load-benchmark.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:backfillbacktestvenuecontext-ts:99b0bca6a9",
+      "type": "route",
+      "name": "backfillBacktestVenueContext.ts",
+      "path": "apps/api/scripts/backfillBacktestVenueContext.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:exportpaperruntimesnapshot-ts:d0f2679144",
+      "type": "route",
+      "name": "exportPaperRuntimeSnapshot.ts",
+      "path": "apps/api/scripts/exportPaperRuntimeSnapshot.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:importpaperruntimesnapshot-ts:ed103e2195",
+      "type": "route",
+      "name": "importPaperRuntimeSnapshot.ts",
+      "path": "apps/api/scripts/importPaperRuntimeSnapshot.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:load-test-mjs:4eb226d8f2",
+      "type": "route",
+      "name": "load-test.mjs",
+      "path": "apps/api/scripts/load-test.mjs",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:start-with-migrate-mjs:1b273b1ad7",
+      "type": "route",
+      "name": "start-with-migrate.mjs",
+      "path": "apps/api/scripts/start-with-migrate.mjs",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:index-ts:48515efd20",
+      "type": "route",
+      "name": "index.ts",
+      "path": "apps/api/src/index.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:capitalallocation-ts:7772c12bab",
+      "type": "route",
+      "name": "capitalAllocation.ts",
+      "path": "apps/api/src/lib/capitalAllocation.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:env-ts:748690e093",
+      "type": "route",
+      "name": "env.ts",
+      "path": "apps/api/src/lib/env.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:errors-ts:1f5ab98773",
+      "type": "route",
+      "name": "errors.ts",
+      "path": "apps/api/src/lib/errors.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:httperrormapper-ts:268c3d58cc",
+      "type": "route",
+      "name": "httpErrorMapper.ts",
+      "path": "apps/api/src/lib/httpErrorMapper.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:logger-ts:7c65aca22d",
+      "type": "route",
+      "name": "logger.ts",
+      "path": "apps/api/src/lib/logger.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:symbols-ts:c57835b31d",
+      "type": "route",
+      "name": "symbols.ts",
+      "path": "apps/api/src/lib/symbols.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:errorhandler-ts:bdc0b01034",
+      "type": "route",
+      "name": "errorHandler.ts",
+      "path": "apps/api/src/middleware/errorHandler.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:nostoreheaders-ts:05dc208e8b",
+      "type": "route",
+      "name": "noStoreHeaders.ts",
+      "path": "apps/api/src/middleware/noStoreHeaders.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:ratelimit-ts:0131e98639",
+      "type": "route",
+      "name": "rateLimit.ts",
+      "path": "apps/api/src/middleware/rateLimit.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:requestlogger-ts:d71451ce26",
+      "type": "route",
+      "name": "requestLogger.ts",
+      "path": "apps/api/src/middleware/requestLogger.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:requireopsnetwork-ts:369cdb9ad5",
+      "type": "route",
+      "name": "requireOpsNetwork.ts",
+      "path": "apps/api/src/middleware/requireOpsNetwork.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:requirerole-ts:0bbdb8bc40",
+      "type": "route",
+      "name": "requireRole.ts",
+      "path": "apps/api/src/middleware/requireRole.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:requiretrustedorigin-ts:af4fcfe9c5",
+      "type": "route",
+      "name": "requireTrustedOrigin.ts",
+      "path": "apps/api/src/middleware/requireTrustedOrigin.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:backtestdatagateway-ts:b9776fa9f5",
+      "type": "route",
+      "name": "backtestDataGateway.ts",
+      "path": "apps/api/src/modules/backtests/backtestDataGateway.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:backtestindicatorspecs-ts:7936411f71",
+      "type": "route",
+      "name": "backtestIndicatorSpecs.ts",
+      "path": "apps/api/src/modules/backtests/backtestIndicatorSpecs.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:backtestportfoliosimulation-service-ts:3f547ab1b5",
+      "type": "route",
+      "name": "backtestPortfolioSimulation.service.ts",
+      "path": "apps/api/src/modules/backtests/backtestPortfolioSimulation.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:backtestrange-service-ts:03aefdeb43",
+      "type": "route",
+      "name": "backtestRange.service.ts",
+      "path": "apps/api/src/modules/backtests/backtestRange.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:backtestreplaycore-ts:bf47bf669e",
+      "type": "route",
+      "name": "backtestReplayCore.ts",
+      "path": "apps/api/src/modules/backtests/backtestReplayCore.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:backtestreportlifecycle-service-ts:0027b160c6",
+      "type": "route",
+      "name": "backtestReportLifecycle.service.ts",
+      "path": "apps/api/src/modules/backtests/backtestReportLifecycle.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:backtestrunjob-ts:66a955d882",
+      "type": "route",
+      "name": "backtestRunJob.ts",
+      "path": "apps/api/src/modules/backtests/backtestRunJob.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:backtestrunqueue-ts:8170666319",
+      "type": "route",
+      "name": "backtestRunQueue.ts",
+      "path": "apps/api/src/modules/backtests/backtestRunQueue.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:backtests-controller-ts:3ab3ee285a",
+      "type": "route",
+      "name": "backtests.controller.ts",
+      "path": "apps/api/src/modules/backtests/backtests.controller.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:backtests-repository-ts:839228523d",
+      "type": "route",
+      "name": "backtests.repository.ts",
+      "path": "apps/api/src/modules/backtests/backtests.repository.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:backtests-routes-ts:ba44fb9060",
+      "type": "route",
+      "name": "backtests.routes.ts",
+      "path": "apps/api/src/modules/backtests/backtests.routes.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:backtests-service-ts:d03e2ef358",
+      "type": "route",
+      "name": "backtests.service.ts",
+      "path": "apps/api/src/modules/backtests/backtests.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:backtesttimeframe-ts:da59b1aa0a",
+      "type": "route",
+      "name": "backtestTimeframe.ts",
+      "path": "apps/api/src/modules/backtests/backtestTimeframe.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:assistantorchestrator-service-ts:bd96f07463",
+      "type": "route",
+      "name": "assistantOrchestrator.service.ts",
+      "path": "apps/api/src/modules/engine/assistantOrchestrator.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:executionorchestrator-helpers-ts:176f4f71ab",
+      "type": "route",
+      "name": "executionOrchestrator.helpers.ts",
+      "path": "apps/api/src/modules/engine/executionOrchestrator.helpers.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:executionorchestrator-service-ts:217545b80d",
+      "type": "route",
+      "name": "executionOrchestrator.service.ts",
+      "path": "apps/api/src/modules/engine/executionOrchestrator.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:lifecyclecloseparity-golden-ts:934a40bf56",
+      "type": "route",
+      "name": "lifecycleCloseParity.golden.ts",
+      "path": "apps/api/src/modules/engine/fixtures/lifecycleCloseParity.golden.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:paperlifecycle-service-ts:88d197174c",
+      "type": "route",
+      "name": "paperLifecycle.service.ts",
+      "path": "apps/api/src/modules/engine/paperLifecycle.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:paperruntime-service-ts:1a199df32f",
+      "type": "route",
+      "name": "paperRuntime.service.ts",
+      "path": "apps/api/src/modules/engine/paperRuntime.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:ruleevaluator-service-ts:e8695577ae",
+      "type": "route",
+      "name": "ruleEvaluator.service.ts",
+      "path": "apps/api/src/modules/engine/ruleEvaluator.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:runtimecapitalcontext-service-ts:3216b7afe9",
+      "type": "route",
+      "name": "runtimeCapitalContext.service.ts",
+      "path": "apps/api/src/modules/engine/runtimeCapitalContext.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:runtimeexecutiondedupe-service-ts:946933f8fe",
+      "type": "route",
+      "name": "runtimeExecutionDedupe.service.ts",
+      "path": "apps/api/src/modules/engine/runtimeExecutionDedupe.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:runtimefinalcandledecision-service-ts:a5d09e49e1",
+      "type": "route",
+      "name": "runtimeFinalCandleDecision.service.ts",
+      "path": "apps/api/src/modules/engine/runtimeFinalCandleDecision.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:runtimelifecyclemarkprice-service-ts:7bb4f36880",
+      "type": "route",
+      "name": "runtimeLifecycleMarkPrice.service.ts",
+      "path": "apps/api/src/modules/engine/runtimeLifecycleMarkPrice.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:runtimemetrics-service-ts:8c0c42467b",
+      "type": "route",
+      "name": "runtimeMetrics.service.ts",
+      "path": "apps/api/src/modules/engine/runtimeMetrics.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:runtimescanloop-service-ts:4f916a69f4",
+      "type": "route",
+      "name": "runtimeScanLoop.service.ts",
+      "path": "apps/api/src/modules/engine/runtimeScanLoop.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:runtimesignaldecisionengine-ts:73695e28e2",
+      "type": "route",
+      "name": "runtimeSignalDecisionEngine.ts",
+      "path": "apps/api/src/modules/engine/runtimeSignalDecisionEngine.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:runtimesignalloop-repository-ts:472404b498",
+      "type": "route",
+      "name": "runtimeSignalLoop.repository.ts",
+      "path": "apps/api/src/modules/engine/runtimeSignalLoop.repository.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:runtimesignalloop-service-ts:5b909b7889",
+      "type": "route",
+      "name": "runtimeSignalLoop.service.ts",
+      "path": "apps/api/src/modules/engine/runtimeSignalLoop.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:runtimesignalloopdefaults-ts:4ed06327e9",
+      "type": "route",
+      "name": "runtimeSignalLoopDefaults.ts",
+      "path": "apps/api/src/modules/engine/runtimeSignalLoopDefaults.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:runtimesignalloopsupervisor-ts:552d0027b4",
+      "type": "route",
+      "name": "runtimeSignalLoopSupervisor.ts",
+      "path": "apps/api/src/modules/engine/runtimeSignalLoopSupervisor.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:runtimesignalmerge-ts:063e59245d",
+      "type": "route",
+      "name": "runtimeSignalMerge.ts",
+      "path": "apps/api/src/modules/engine/runtimeSignalMerge.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:runtimetelemetry-service-ts:d1a3d064de",
+      "type": "route",
+      "name": "runtimeTelemetry.service.ts",
+      "path": "apps/api/src/modules/engine/runtimeTelemetry.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:runtimetickerstore-ts:b5a749955f",
+      "type": "route",
+      "name": "runtimeTickerStore.ts",
+      "path": "apps/api/src/modules/engine/runtimeTickerStore.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:runtimetopologycache-service-ts:17b19ea141",
+      "type": "route",
+      "name": "runtimeTopologyCache.service.ts",
+      "path": "apps/api/src/modules/engine/runtimeTopologyCache.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:sharedcandlepatternseries-ts:37fcc25c8e",
+      "type": "route",
+      "name": "sharedCandlePatternSeries.ts",
+      "path": "apps/api/src/modules/engine/sharedCandlePatternSeries.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:sharedderivativesseries-ts:49d1c761fd",
+      "type": "route",
+      "name": "sharedDerivativesSeries.ts",
+      "path": "apps/api/src/modules/engine/sharedDerivativesSeries.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:sharedexecutioncore-ts:ebf2945b9b",
+      "type": "route",
+      "name": "sharedExecutionCore.ts",
+      "path": "apps/api/src/modules/engine/sharedExecutionCore.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:sharedindicatorseries-ts:20623f6082",
+      "type": "route",
+      "name": "sharedIndicatorSeries.ts",
+      "path": "apps/api/src/modules/engine/sharedIndicatorSeries.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:simulator-service-ts:574855cf58",
+      "type": "route",
+      "name": "simulator.service.ts",
+      "path": "apps/api/src/modules/engine/simulator.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Runtime automation and AI execution",
+      "proofLane": "api_worker_contract_proof"
+    },
+    {
+      "id": "route:icons-controller-ts:0a44c45d94",
+      "type": "route",
+      "name": "icons.controller.ts",
+      "path": "apps/api/src/modules/icons/icons.controller.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Support utilities, audit logs, and reports",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:icons-routes-ts:7df5df10fb",
+      "type": "route",
+      "name": "icons.routes.ts",
+      "path": "apps/api/src/modules/icons/icons.routes.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Support utilities, audit logs, and reports",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:icons-service-ts:8c977d571d",
+      "type": "route",
+      "name": "icons.service.ts",
+      "path": "apps/api/src/modules/icons/icons.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Support utilities, audit logs, and reports",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:logs-controller-ts:50cef0953c",
+      "type": "route",
+      "name": "logs.controller.ts",
+      "path": "apps/api/src/modules/logs/logs.controller.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Support utilities, audit logs, and reports",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:logs-routes-ts:90835ce071",
+      "type": "route",
+      "name": "logs.routes.ts",
+      "path": "apps/api/src/modules/logs/logs.routes.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Support utilities, audit logs, and reports",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:logs-service-ts:0b2846ba78",
+      "type": "route",
+      "name": "logs.service.ts",
+      "path": "apps/api/src/modules/logs/logs.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Support utilities, audit logs, and reports",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:reports-controller-ts:7761612a28",
+      "type": "route",
+      "name": "reports.controller.ts",
+      "path": "apps/api/src/modules/reports/reports.controller.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Support utilities, audit logs, and reports",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:reports-routes-ts:938bbf5785",
+      "type": "route",
+      "name": "reports.routes.ts",
+      "path": "apps/api/src/modules/reports/reports.routes.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Support utilities, audit logs, and reports",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:reports-service-ts:bcd51259a2",
+      "type": "route",
+      "name": "reports.service.ts",
+      "path": "apps/api/src/modules/reports/reports.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Support utilities, audit logs, and reports",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:indicators-controller-ts:6808674040",
+      "type": "route",
+      "name": "indicators.controller.ts",
+      "path": "apps/api/src/modules/strategies/indicators/indicators.controller.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Strategy management",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:indicators-routes-ts:414a2a5ffd",
+      "type": "route",
+      "name": "indicators.routes.ts",
+      "path": "apps/api/src/modules/strategies/indicators/indicators.routes.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Strategy management",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:indicators-service-ts:58351e827a",
+      "type": "route",
+      "name": "indicators.service.ts",
+      "path": "apps/api/src/modules/strategies/indicators/indicators.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Strategy management",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:strategies-controller-ts:8df0e9cb58",
+      "type": "route",
+      "name": "strategies.controller.ts",
+      "path": "apps/api/src/modules/strategies/strategies.controller.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Strategy management",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:strategies-errors-ts:12df9563b9",
+      "type": "route",
+      "name": "strategies.errors.ts",
+      "path": "apps/api/src/modules/strategies/strategies.errors.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Strategy management",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:strategies-routes-ts:e35500cc40",
+      "type": "route",
+      "name": "strategies.routes.ts",
+      "path": "apps/api/src/modules/strategies/strategies.routes.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Strategy management",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:strategies-service-ts:b41fab1242",
+      "type": "route",
+      "name": "strategies.service.ts",
+      "path": "apps/api/src/modules/strategies/strategies.service.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Strategy management",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:upload-routes-ts:0f213a76f5",
+      "type": "route",
+      "name": "upload.routes.ts",
+      "path": "apps/api/src/modules/upload/upload.routes.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Support utilities, audit logs, and reports",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:publicuser-ts:a393a249c4",
+      "type": "route",
+      "name": "publicUser.ts",
+      "path": "apps/api/src/modules/users/publicUser.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Account access and public user projection",
+      "proofLane": "api_contract_proof"
+    },
+    {
+      "id": "route:alerts-ts:9241084258",
+      "type": "route",
+      "name": "alerts.ts",
+      "path": "apps/api/src/observability/alerts.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:metrics-ts:d69c80cb60",
+      "type": "route",
+      "name": "metrics.ts",
+      "path": "apps/api/src/observability/metrics.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:runtimefreshness-ts:3e373708fe",
+      "type": "route",
+      "name": "runtimeFreshness.ts",
+      "path": "apps/api/src/observability/runtimeFreshness.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:client-ts:c28c565004",
+      "type": "route",
+      "name": "client.ts",
+      "path": "apps/api/src/prisma/client.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:queuetuning-ts:9c7e5ead21",
+      "type": "route",
+      "name": "queueTuning.ts",
+      "path": "apps/api/src/queue/queueTuning.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:index-ts:911e3b7c5e",
+      "type": "route",
+      "name": "index.ts",
+      "path": "apps/api/src/router/index.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:express-d-ts:c893e0c467",
+      "type": "route",
+      "name": "express.d.ts",
+      "path": "apps/api/src/types/express.d.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:apierror-ts:ad6cc7ff1e",
+      "type": "route",
+      "name": "apiError.ts",
+      "path": "apps/api/src/utils/apiError.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:crypto-ts:61642c8d39",
+      "type": "route",
+      "name": "crypto.ts",
+      "path": "apps/api/src/utils/crypto.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:errorexposure-ts:fb671775ce",
+      "type": "route",
+      "name": "errorExposure.ts",
+      "path": "apps/api/src/utils/errorExposure.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:formatzoderror-ts:93f2455180",
+      "type": "route",
+      "name": "formatZodError.ts",
+      "path": "apps/api/src/utils/formatZodError.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:hash-ts:3b1732d0a1",
+      "type": "route",
+      "name": "hash.ts",
+      "path": "apps/api/src/utils/hash.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:backtest-worker-ts:f70f12b273",
+      "type": "route",
+      "name": "backtest.worker.ts",
+      "path": "apps/api/src/workers/backtest.worker.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:execution-worker-ts:ff9b5be0bc",
+      "type": "route",
+      "name": "execution.worker.ts",
+      "path": "apps/api/src/workers/execution.worker.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:workerbootstrap-ts:2d929804b9",
+      "type": "route",
+      "name": "workerBootstrap.ts",
+      "path": "apps/api/src/workers/workerBootstrap.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:workerheartbeat-ts:9db003f14b",
+      "type": "route",
+      "name": "workerHeartbeat.ts",
+      "path": "apps/api/src/workers/workerHeartbeat.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:workerownership-ts:0678459b5b",
+      "type": "route",
+      "name": "workerOwnership.ts",
+      "path": "apps/api/src/workers/workerOwnership.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Platform/API operations support",
+      "proofLane": "taxonomy_repair_or_api_contract_proof"
+    },
+    {
+      "id": "route:layout-tsx:e32386369d",
+      "type": "route",
+      "name": "layout.tsx",
+      "path": "apps/web/src/app/(public)/layout.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Public shell, legal, build-info, and PWA",
+      "proofLane": "browser_or_route_proof"
+    },
+    {
+      "id": "route:page-tsx:f693d6012d",
+      "type": "route",
+      "name": "page.tsx",
+      "path": "apps/web/src/app/(public)/page.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Public shell, legal, build-info, and PWA",
+      "proofLane": "browser_or_route_proof"
+    },
+    {
+      "id": "route:page-tsx:4bc9c15a6c",
+      "type": "route",
+      "name": "page.tsx",
+      "path": "apps/web/src/app/(public)/privacy/page.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Public shell, legal, build-info, and PWA",
+      "proofLane": "browser_or_route_proof"
+    },
+    {
+      "id": "route:page-tsx:f108848252",
+      "type": "route",
+      "name": "page.tsx",
+      "path": "apps/web/src/app/(public)/terms/page.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Public shell, legal, build-info, and PWA",
+      "proofLane": "browser_or_route_proof"
+    },
+    {
+      "id": "route:route-ts:d506a87247",
+      "type": "route",
+      "name": "route.ts",
+      "path": "apps/web/src/app/api/build-info/route.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Public shell, legal, build-info, and PWA",
+      "proofLane": "browser_or_route_proof"
+    },
+    {
+      "id": "route:layout-tsx:8e5e923156",
+      "type": "route",
+      "name": "layout.tsx",
+      "path": "apps/web/src/app/layout.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Public shell, legal, build-info, and PWA",
+      "proofLane": "browser_or_route_proof"
+    },
+    {
+      "id": "route:manifest-ts:37ae05034d",
+      "type": "route",
+      "name": "manifest.ts",
+      "path": "apps/web/src/app/manifest.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Public shell, legal, build-info, and PWA",
+      "proofLane": "browser_or_route_proof"
+    },
+    {
+      "id": "route:page-tsx:6da563ff17",
+      "type": "route",
+      "name": "page.tsx",
+      "path": "apps/web/src/app/offline/page.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Public shell, legal, build-info, and PWA",
+      "proofLane": "browser_or_route_proof"
+    },
+    {
+      "id": "component:backtestcreateform-tsx:b19562d0a5",
+      "type": "component",
+      "name": "BacktestCreateForm.tsx",
+      "path": "apps/web/src/features/backtest/components/BacktestCreateForm.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "component:backtestrundetails-tsx:52aa4329ba",
+      "type": "component",
+      "name": "BacktestRunDetails.tsx",
+      "path": "apps/web/src/features/backtest/components/BacktestRunDetails.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "component:backtestrundetailscharts-tsx:0a7a33bba4",
+      "type": "component",
+      "name": "backtestRunDetailsCharts.tsx",
+      "path": "apps/web/src/features/backtest/components/backtestRunDetailsCharts.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "component:backtestrundetailstabpanels-tsx:8bb67ce3cd",
+      "type": "component",
+      "name": "BacktestRunDetailsTabPanels.tsx",
+      "path": "apps/web/src/features/backtest/components/BacktestRunDetailsTabPanels.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "component:backtestrunheadersection-tsx:d4a0bd9c32",
+      "type": "component",
+      "name": "BacktestRunHeaderSection.tsx",
+      "path": "apps/web/src/features/backtest/components/BacktestRunHeaderSection.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "component:backtestslist-tsx:fe177584f4",
+      "type": "component",
+      "name": "BacktestsList.tsx",
+      "path": "apps/web/src/features/backtest/components/BacktestsList.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "component:backtestslistview-tsx:9b6433612a",
+      "type": "component",
+      "name": "BacktestsListView.tsx",
+      "path": "apps/web/src/features/backtest/components/BacktestsListView.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "component:backtestsrunstable-tsx:88fa31ad19",
+      "type": "component",
+      "name": "BacktestsRunsTable.tsx",
+      "path": "apps/web/src/features/backtest/components/BacktestsRunsTable.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Backtest run lifecycle",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "component:audittrailview-tsx:d8e8d81fa3",
+      "type": "component",
+      "name": "AuditTrailView.tsx",
+      "path": "apps/web/src/features/logs/components/AuditTrailView.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Support utilities, audit logs, and reports",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "component:performancereportsview-tsx:bb1b010dc7",
+      "type": "component",
+      "name": "PerformanceReportsView.tsx",
+      "path": "apps/web/src/features/reports/components/PerformanceReportsView.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Support utilities, audit logs, and reports",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "route:strategies-api-ts:9d2b78b543",
+      "type": "route",
+      "name": "strategies.api.ts",
+      "path": "apps/web/src/features/strategies/api/strategies.api.ts",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Strategy management",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "component:strategieslist-tsx:ae57963a3e",
+      "type": "component",
+      "name": "StrategiesList.tsx",
+      "path": "apps/web/src/features/strategies/components/StrategiesList.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Strategy management",
+      "proofLane": "browser_or_api_journey_proof"
+    },
+    {
+      "id": "component:i18nprovider-tsx:e2b655d80e",
+      "type": "component",
+      "name": "I18nProvider.tsx",
+      "path": "apps/web/src/i18n/I18nProvider.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:applogolink-tsx:764f83c867",
+      "type": "component",
+      "name": "AppLogoLink.tsx",
+      "path": "apps/web/src/ui/components/AppLogoLink.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Public shell, legal, build-info, and PWA",
+      "proofLane": "browser_or_route_proof"
+    },
+    {
+      "id": "component:assetsymbol-tsx:750977b33b",
+      "type": "component",
+      "name": "AssetSymbol.tsx",
+      "path": "apps/web/src/ui/components/AssetSymbol.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:confirmmodal-tsx:6874e70107",
+      "type": "component",
+      "name": "ConfirmModal.tsx",
+      "path": "apps/web/src/ui/components/ConfirmModal.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:datatable-tsx:988feded77",
+      "type": "component",
+      "name": "DataTable.tsx",
+      "path": "apps/web/src/ui/components/DataTable.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:footerpreferencesswitchers-tsx:b81b564e69",
+      "type": "component",
+      "name": "FooterPreferencesSwitchers.tsx",
+      "path": "apps/web/src/ui/components/FooterPreferencesSwitchers.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:formmodal-tsx:f6bc2327e8",
+      "type": "component",
+      "name": "FormModal.tsx",
+      "path": "apps/web/src/ui/components/FormModal.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:inlinepager-tsx:b72028e3b7",
+      "type": "component",
+      "name": "InlinePager.tsx",
+      "path": "apps/web/src/ui/components/InlinePager.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:skeletoncardblock-tsx:9d76607dfc",
+      "type": "component",
+      "name": "SkeletonCardBlock.tsx",
+      "path": "apps/web/src/ui/components/loading/SkeletonCardBlock.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:skeletonformblock-tsx:fd613b8f9f",
+      "type": "component",
+      "name": "SkeletonFormBlock.tsx",
+      "path": "apps/web/src/ui/components/loading/SkeletonFormBlock.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:skeletonkpirow-tsx:8e5b840afe",
+      "type": "component",
+      "name": "SkeletonKpiRow.tsx",
+      "path": "apps/web/src/ui/components/loading/SkeletonKpiRow.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:skeletontablerows-tsx:ca4a753c4f",
+      "type": "component",
+      "name": "SkeletonTableRows.tsx",
+      "path": "apps/web/src/ui/components/loading/SkeletonTableRows.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:skiptocontentlink-tsx:63f32b3624",
+      "type": "component",
+      "name": "SkipToContentLink.tsx",
+      "path": "apps/web/src/ui/components/SkipToContentLink.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:statusbadge-tsx:a15a75bbbc",
+      "type": "component",
+      "name": "StatusBadge.tsx",
+      "path": "apps/web/src/ui/components/StatusBadge.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:tableui-tsx:a00ea28769",
+      "type": "component",
+      "name": "TableUi.tsx",
+      "path": "apps/web/src/ui/components/TableUi.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:tabs-tsx:345227e49e",
+      "type": "component",
+      "name": "Tabs.tsx",
+      "path": "apps/web/src/ui/components/Tabs.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:themeswitch-tsx:b5c6ee46e5",
+      "type": "component",
+      "name": "ThemeSwitch.tsx",
+      "path": "apps/web/src/ui/components/ThemeSwitch.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:useasyncconfirm-tsx:a6bb9334d3",
+      "type": "component",
+      "name": "useAsyncConfirm.tsx",
+      "path": "apps/web/src/ui/components/useAsyncConfirm.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:viewstate-tsx:3ff6a5410f",
+      "type": "component",
+      "name": "ViewState.tsx",
+      "path": "apps/web/src/ui/components/ViewState.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:formalert-tsx:12f553a4d7",
+      "type": "component",
+      "name": "FormAlert.tsx",
+      "path": "apps/web/src/ui/forms/FormAlert.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:formfield-tsx:b4c43624cb",
+      "type": "component",
+      "name": "FormField.tsx",
+      "path": "apps/web/src/ui/forms/FormField.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:formfields-tsx:5fe8161c93",
+      "type": "component",
+      "name": "FormFields.tsx",
+      "path": "apps/web/src/ui/forms/FormFields.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:formgrid-tsx:f8ff41d511",
+      "type": "component",
+      "name": "FormGrid.tsx",
+      "path": "apps/web/src/ui/forms/FormGrid.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:formmobileactionbar-tsx:0436d76cc9",
+      "type": "component",
+      "name": "FormMobileActionBar.tsx",
+      "path": "apps/web/src/ui/forms/FormMobileActionBar.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:formpageshell-tsx:203bfa73e4",
+      "type": "component",
+      "name": "FormPageShell.tsx",
+      "path": "apps/web/src/ui/forms/FormPageShell.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:formsectioncard-tsx:05e99f4ee6",
+      "type": "component",
+      "name": "FormSectionCard.tsx",
+      "path": "apps/web/src/ui/forms/FormSectionCard.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:formvalidationsummary-tsx:db776feef5",
+      "type": "component",
+      "name": "FormValidationSummary.tsx",
+      "path": "apps/web/src/ui/forms/FormValidationSummary.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Shared UI system and form states",
+      "proofLane": "component_state_proof"
+    },
+    {
+      "id": "component:footer-tsx:61f81a59a1",
+      "type": "component",
+      "name": "Footer.tsx",
+      "path": "apps/web/src/ui/layout/public/Footer.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Public shell, legal, build-info, and PWA",
+      "proofLane": "browser_or_route_proof"
+    },
+    {
+      "id": "component:header-tsx:5cf6c6a94f",
+      "type": "component",
+      "name": "Header.tsx",
+      "path": "apps/web/src/ui/layout/public/Header.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Public shell, legal, build-info, and PWA",
+      "proofLane": "browser_or_route_proof"
+    },
+    {
+      "id": "component:serviceworkerregistration-tsx:c6ee427930",
+      "type": "component",
+      "name": "ServiceWorkerRegistration.tsx",
+      "path": "apps/web/src/ui/pwa/ServiceWorkerRegistration.tsx",
+      "currentFlow": "Unclassified user workflow",
+      "risk": "needs_browser_review",
+      "classifiedJourney": "Public shell, legal, build-info, and PWA",
+      "proofLane": "browser_or_route_proof"
+    }
+  ]
+}

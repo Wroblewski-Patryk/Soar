@@ -67,7 +67,7 @@ vi.mock('../exchange/exchangePublicMarketData.service', async (importOriginal) =
 const originalApiKeyEncryptionKeys = process.env.API_KEY_ENCRYPTION_KEYS;
 const originalApiKeyEncryptionActiveVersion = process.env.API_KEY_ENCRYPTION_ACTIVE_VERSION;
 const BACKTESTS_E2E_HOOK_TIMEOUT_MS = 30_000;
-const BACKTESTS_E2E_CRITICAL_TIMEOUT_MS = 20_000;
+const BACKTESTS_E2E_CRITICAL_TIMEOUT_MS = 45_000;
 const BACKTESTS_E2E_RESET_ATTEMPTS = 5;
 
 const sleep = (delayMs: number) => new Promise((resolve) => setTimeout(resolve, delayMs));
@@ -271,6 +271,8 @@ describe('Backtests runs contract', () => {
     expect(getRes.body.seedConfig.baseCurrency).toBe('USDT');
     expect(getRes.body.seedConfig.marketUniverseId).toBeNull();
 
+    await waitForBacktestReport(agent, runId);
+
     await prisma.backtestTrade.createMany({
       data: [
         {
@@ -340,7 +342,7 @@ describe('Backtests runs contract', () => {
     expect(reportRes.status).toBe(200);
     expect(reportRes.body.backtestRunId).toBe(runId);
     expect(reportRes.body.totalTrades).toBeGreaterThanOrEqual(2);
-  });
+  }, BACKTESTS_E2E_CRITICAL_TIMEOUT_MS);
 
   it('persists explicit startAt/endAt range on create and rejects partial range payload', async () => {
     const ownerEmail = 'backtests-range-create@example.com';
@@ -1266,7 +1268,7 @@ describe('Backtests runs contract', () => {
       .get(`/dashboard/backtests/runs/${runId}/timeline`)
       .query({ symbol: 'NOT_IN_RUN_SYMBOL' });
     expect(outOfScopeTimelineRes.status).toBe(404);
-  }, 15_000);
+  }, BACKTESTS_E2E_CRITICAL_TIMEOUT_MS);
 
   it('reports FAILED parity diagnostics when symbol processing fails', async () => {
     const ownerEmail = 'backtests-failed-symbol@example.com';

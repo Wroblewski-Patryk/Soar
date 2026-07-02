@@ -1,0 +1,570 @@
+{
+  "issue": "LUC-5803",
+  "generatedAt": "2026-06-28T04:38:30.414Z",
+  "environment": "production",
+  "auth": "login:present",
+  "rows": [
+    {
+      "name": "API /health",
+      "path": "/health",
+      "auth": "none",
+      "statusCounts": {
+        "200": 8
+      },
+      "minMs": 15.2,
+      "p50Ms": 17.1,
+      "p95Ms": 266.7,
+      "maxMs": 266.7,
+      "samples": [
+        {
+          "index": 1,
+          "status": 200,
+          "ok": true,
+          "durationMs": 266.7,
+          "error": ""
+        },
+        {
+          "index": 2,
+          "status": 200,
+          "ok": true,
+          "durationMs": 16.2,
+          "error": ""
+        },
+        {
+          "index": 3,
+          "status": 200,
+          "ok": true,
+          "durationMs": 15.2,
+          "error": ""
+        },
+        {
+          "index": 4,
+          "status": 200,
+          "ok": true,
+          "durationMs": 17.7,
+          "error": ""
+        },
+        {
+          "index": 5,
+          "status": 200,
+          "ok": true,
+          "durationMs": 17.4,
+          "error": ""
+        },
+        {
+          "index": 6,
+          "status": 200,
+          "ok": true,
+          "durationMs": 17.1,
+          "error": ""
+        },
+        {
+          "index": 7,
+          "status": 200,
+          "ok": true,
+          "durationMs": 16.8,
+          "error": ""
+        },
+        {
+          "index": 8,
+          "status": 200,
+          "ok": true,
+          "durationMs": 17.7,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "name": "API /ready",
+      "path": "/ready",
+      "auth": "none",
+      "statusCounts": {
+        "200": 8
+      },
+      "minMs": 19.4,
+      "p50Ms": 20.8,
+      "p95Ms": 25,
+      "maxMs": 25,
+      "samples": [
+        {
+          "index": 1,
+          "status": 200,
+          "ok": true,
+          "durationMs": 23.6,
+          "error": ""
+        },
+        {
+          "index": 2,
+          "status": 200,
+          "ok": true,
+          "durationMs": 23.9,
+          "error": ""
+        },
+        {
+          "index": 3,
+          "status": 200,
+          "ok": true,
+          "durationMs": 20.8,
+          "error": ""
+        },
+        {
+          "index": 4,
+          "status": 200,
+          "ok": true,
+          "durationMs": 20.3,
+          "error": ""
+        },
+        {
+          "index": 5,
+          "status": 200,
+          "ok": true,
+          "durationMs": 25,
+          "error": ""
+        },
+        {
+          "index": 6,
+          "status": 200,
+          "ok": true,
+          "durationMs": 19.5,
+          "error": ""
+        },
+        {
+          "index": 7,
+          "status": 200,
+          "ok": true,
+          "durationMs": 24.9,
+          "error": ""
+        },
+        {
+          "index": 8,
+          "status": 200,
+          "ok": true,
+          "durationMs": 19.4,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "name": "WEB /",
+      "path": "/",
+      "auth": "none",
+      "statusCounts": {
+        "200": 8
+      },
+      "minMs": 25,
+      "p50Ms": 28.4,
+      "p95Ms": 86.8,
+      "maxMs": 86.8,
+      "samples": [
+        {
+          "index": 1,
+          "status": 200,
+          "ok": true,
+          "durationMs": 86.8,
+          "error": ""
+        },
+        {
+          "index": 2,
+          "status": 200,
+          "ok": true,
+          "durationMs": 30.8,
+          "error": ""
+        },
+        {
+          "index": 3,
+          "status": 200,
+          "ok": true,
+          "durationMs": 28.4,
+          "error": ""
+        },
+        {
+          "index": 4,
+          "status": 200,
+          "ok": true,
+          "durationMs": 33,
+          "error": ""
+        },
+        {
+          "index": 5,
+          "status": 200,
+          "ok": true,
+          "durationMs": 35.3,
+          "error": ""
+        },
+        {
+          "index": 6,
+          "status": 200,
+          "ok": true,
+          "durationMs": 25,
+          "error": ""
+        },
+        {
+          "index": 7,
+          "status": 200,
+          "ok": true,
+          "durationMs": 25.3,
+          "error": ""
+        },
+        {
+          "index": 8,
+          "status": 200,
+          "ok": true,
+          "durationMs": 25.5,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "name": "WEB /api/build-info",
+      "path": "/api/build-info",
+      "auth": "none",
+      "statusCounts": {
+        "200": 8
+      },
+      "minMs": 23.4,
+      "p50Ms": 24.7,
+      "p95Ms": 25.9,
+      "maxMs": 25.9,
+      "samples": [
+        {
+          "index": 1,
+          "status": 200,
+          "ok": true,
+          "durationMs": 23.4,
+          "error": ""
+        },
+        {
+          "index": 2,
+          "status": 200,
+          "ok": true,
+          "durationMs": 23.5,
+          "error": ""
+        },
+        {
+          "index": 3,
+          "status": 200,
+          "ok": true,
+          "durationMs": 23.7,
+          "error": ""
+        },
+        {
+          "index": 4,
+          "status": 200,
+          "ok": true,
+          "durationMs": 25.2,
+          "error": ""
+        },
+        {
+          "index": 5,
+          "status": 200,
+          "ok": true,
+          "durationMs": 24.7,
+          "error": ""
+        },
+        {
+          "index": 6,
+          "status": 200,
+          "ok": true,
+          "durationMs": 25.9,
+          "error": ""
+        },
+        {
+          "index": 7,
+          "status": 200,
+          "ok": true,
+          "durationMs": 25.9,
+          "error": ""
+        },
+        {
+          "index": 8,
+          "status": 200,
+          "ok": true,
+          "durationMs": 25.6,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "name": "API /auth/me",
+      "path": "/auth/me",
+      "auth": "fresh-login-token",
+      "statusCounts": {
+        "200": 3
+      },
+      "minMs": 22.3,
+      "p50Ms": 25.2,
+      "p95Ms": 27,
+      "maxMs": 27,
+      "samples": [
+        {
+          "index": 1,
+          "status": 200,
+          "ok": true,
+          "durationMs": 27,
+          "error": ""
+        },
+        {
+          "index": 2,
+          "status": 200,
+          "ok": true,
+          "durationMs": 25.2,
+          "error": ""
+        },
+        {
+          "index": 3,
+          "status": 200,
+          "ok": true,
+          "durationMs": 22.3,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "name": "API /dashboard/bots",
+      "path": "/dashboard/bots",
+      "auth": "fresh-login-token",
+      "statusCounts": {
+        "200": 3
+      },
+      "minMs": 22.4,
+      "p50Ms": 23,
+      "p95Ms": 45.7,
+      "maxMs": 45.7,
+      "samples": [
+        {
+          "index": 1,
+          "status": 200,
+          "ok": true,
+          "durationMs": 45.7,
+          "error": ""
+        },
+        {
+          "index": 2,
+          "status": 200,
+          "ok": true,
+          "durationMs": 22.4,
+          "error": ""
+        },
+        {
+          "index": 3,
+          "status": 200,
+          "ok": true,
+          "durationMs": 23,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "name": "API /dashboard/markets/catalog",
+      "path": "/dashboard/markets/catalog",
+      "auth": "fresh-login-token",
+      "statusCounts": {
+        "200": 3
+      },
+      "minMs": 30.6,
+      "p50Ms": 224.6,
+      "p95Ms": 1513.6,
+      "maxMs": 1513.6,
+      "samples": [
+        {
+          "index": 1,
+          "status": 200,
+          "ok": true,
+          "durationMs": 1513.6,
+          "error": ""
+        },
+        {
+          "index": 2,
+          "status": 200,
+          "ok": true,
+          "durationMs": 30.6,
+          "error": ""
+        },
+        {
+          "index": 3,
+          "status": 200,
+          "ok": true,
+          "durationMs": 224.6,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "name": "API /dashboard/reports/cross-mode-performance",
+      "path": "/dashboard/reports/cross-mode-performance",
+      "auth": "fresh-login-token",
+      "statusCounts": {
+        "200": 3
+      },
+      "minMs": 43.2,
+      "p50Ms": 47.1,
+      "p95Ms": 56.3,
+      "maxMs": 56.3,
+      "samples": [
+        {
+          "index": 1,
+          "status": 200,
+          "ok": true,
+          "durationMs": 56.3,
+          "error": ""
+        },
+        {
+          "index": 2,
+          "status": 200,
+          "ok": true,
+          "durationMs": 47.1,
+          "error": ""
+        },
+        {
+          "index": 3,
+          "status": 200,
+          "ok": true,
+          "durationMs": 43.2,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "name": "API /admin/users",
+      "path": "/admin/users",
+      "auth": "fresh-login-token",
+      "statusCounts": {
+        "200": 3
+      },
+      "minMs": 23.2,
+      "p50Ms": 24.1,
+      "p95Ms": 35.3,
+      "maxMs": 35.3,
+      "samples": [
+        {
+          "index": 1,
+          "status": 200,
+          "ok": true,
+          "durationMs": 35.3,
+          "error": ""
+        },
+        {
+          "index": 2,
+          "status": 200,
+          "ok": true,
+          "durationMs": 24.1,
+          "error": ""
+        },
+        {
+          "index": 3,
+          "status": 200,
+          "ok": true,
+          "durationMs": 23.2,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "name": "API /admin/subscriptions/plans",
+      "path": "/admin/subscriptions/plans",
+      "auth": "fresh-login-token",
+      "statusCounts": {
+        "200": 3
+      },
+      "minMs": 28.6,
+      "p50Ms": 29.8,
+      "p95Ms": 30.4,
+      "maxMs": 30.4,
+      "samples": [
+        {
+          "index": 1,
+          "status": 200,
+          "ok": true,
+          "durationMs": 30.4,
+          "error": ""
+        },
+        {
+          "index": 2,
+          "status": 200,
+          "ok": true,
+          "durationMs": 28.6,
+          "error": ""
+        },
+        {
+          "index": 3,
+          "status": 200,
+          "ok": true,
+          "durationMs": 29.8,
+          "error": ""
+        }
+      ]
+    }
+  ],
+  "safety": "read-only timing only; no response bodies, secrets, cookies, tokens, or production data stored",
+  "followup": {
+    "name": "API /dashboard/markets/catalog focused follow-up",
+    "path": "/dashboard/markets/catalog",
+    "auth": "fresh-login-token",
+    "statusCounts": {
+      "200": 8
+    },
+    "minMs": 24.8,
+    "p50Ms": 28.6,
+    "p95Ms": 275.9,
+    "maxMs": 275.9,
+    "samples": [
+      {
+        "index": 1,
+        "status": 200,
+        "ok": true,
+        "durationMs": 275.9,
+        "error": ""
+      },
+      {
+        "index": 2,
+        "status": 200,
+        "ok": true,
+        "durationMs": 42,
+        "error": ""
+      },
+      {
+        "index": 3,
+        "status": 200,
+        "ok": true,
+        "durationMs": 28.6,
+        "error": ""
+      },
+      {
+        "index": 4,
+        "status": 200,
+        "ok": true,
+        "durationMs": 26.7,
+        "error": ""
+      },
+      {
+        "index": 5,
+        "status": 200,
+        "ok": true,
+        "durationMs": 30.6,
+        "error": ""
+      },
+      {
+        "index": 6,
+        "status": 200,
+        "ok": true,
+        "durationMs": 28.8,
+        "error": ""
+      },
+      {
+        "index": 7,
+        "status": 200,
+        "ok": true,
+        "durationMs": 27.7,
+        "error": ""
+      },
+      {
+        "index": 8,
+        "status": 200,
+        "ok": true,
+        "durationMs": 24.8,
+        "error": ""
+      }
+    ],
+    "note": "focused follow-up after initial cold sample"
+  }
+}

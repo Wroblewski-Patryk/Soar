@@ -1,0 +1,360 @@
+{
+  "issue": "LUC-5608",
+  "generatedAt": "2026-06-27T18:22:30.641Z",
+  "publicTiming": {
+    "API /health": {
+      "statuses": {
+        "200": 10
+      },
+      "maxMs": 144.9,
+      "avgMs": 38,
+      "samplesMs": [
+        144.9,
+        80.3,
+        15.8,
+        17.7,
+        25,
+        22.6,
+        17.3,
+        18,
+        17.3,
+        20.6
+      ]
+    },
+    "API /ready": {
+      "statuses": {
+        "200": 10
+      },
+      "maxMs": 23.3,
+      "avgMs": 20.3,
+      "samplesMs": [
+        23.3,
+        22.2,
+        20.8,
+        17.9,
+        21.1,
+        19.5,
+        17.5,
+        19.6,
+        21.2,
+        20
+      ]
+    },
+    "Web /": {
+      "statuses": {
+        "200": 10
+      },
+      "maxMs": 85,
+      "avgMs": 32.8,
+      "samplesMs": [
+        85,
+        23.5,
+        25.2,
+        28.6,
+        27,
+        23.9,
+        26.8,
+        25.4,
+        36.9,
+        25.3
+      ]
+    },
+    "Web /api/build-info": {
+      "statuses": {
+        "200": 10
+      },
+      "maxMs": 29.8,
+      "avgMs": 25.5,
+      "samplesMs": [
+        27,
+        25.5,
+        29.8,
+        26,
+        24.5,
+        24.5,
+        23.9,
+        22.5,
+        24.1,
+        27.5
+      ]
+    }
+  },
+  "dashboardApiTiming": {
+    "/auth/me": {
+      "statuses": {
+        "200": 3
+      },
+      "maxMs": 29.4,
+      "avgMs": 28.1,
+      "samplesMs": [
+        25.8,
+        29.4,
+        29
+      ]
+    },
+    "/dashboard/bots": {
+      "statuses": {
+        "200": 3
+      },
+      "maxMs": 46.1,
+      "avgMs": 38.5,
+      "samplesMs": [
+        46.1,
+        35.5,
+        33.8
+      ]
+    },
+    "/dashboard/wallets": {
+      "statuses": {
+        "200": 3
+      },
+      "maxMs": 32.5,
+      "avgMs": 27.2,
+      "samplesMs": [
+        32.5,
+        25.1,
+        24.1
+      ]
+    },
+    "/dashboard/markets/universes": {
+      "statuses": {
+        "200": 3
+      },
+      "maxMs": 26,
+      "avgMs": 23.8,
+      "samplesMs": [
+        24.4,
+        26,
+        21.1
+      ]
+    },
+    "/dashboard/markets/catalog": {
+      "statuses": {
+        "200": 3
+      },
+      "maxMs": 2010.3,
+      "avgMs": 692.7,
+      "samplesMs": [
+        2010.3,
+        36.4,
+        31.5
+      ]
+    },
+    "/dashboard/strategies": {
+      "statuses": {
+        "200": 3
+      },
+      "maxMs": 31.3,
+      "avgMs": 28.7,
+      "samplesMs": [
+        31.3,
+        26.8,
+        28
+      ]
+    },
+    "/dashboard/strategies/indicators": {
+      "statuses": {
+        "200": 3
+      },
+      "maxMs": 26.1,
+      "avgMs": 24.1,
+      "samplesMs": [
+        20.2,
+        26.1,
+        25.9
+      ]
+    },
+    "/dashboard/backtests/runs": {
+      "statuses": {
+        "200": 3
+      },
+      "maxMs": 32.2,
+      "avgMs": 29.4,
+      "samplesMs": [
+        32.2,
+        29.2,
+        26.9
+      ]
+    },
+    "/dashboard/reports/cross-mode-performance": {
+      "statuses": {
+        "200": 3
+      },
+      "maxMs": 55,
+      "avgMs": 52.4,
+      "samplesMs": [
+        51.8,
+        55,
+        50.5
+      ]
+    },
+    "/dashboard/logs": {
+      "statuses": {
+        "200": 3
+      },
+      "maxMs": 32.1,
+      "avgMs": 29.2,
+      "samplesMs": [
+        32.1,
+        24,
+        31.5
+      ]
+    },
+    "/dashboard/profile/subscription": {
+      "statuses": {
+        "200": 3
+      },
+      "maxMs": 45.8,
+      "avgMs": 41.5,
+      "samplesMs": [
+        44.7,
+        45.8,
+        34.1
+      ]
+    },
+    "/admin/users": {
+      "statuses": {
+        "200": 3
+      },
+      "maxMs": 31,
+      "avgMs": 29.8,
+      "samplesMs": [
+        30.3,
+        28,
+        31
+      ]
+    },
+    "/admin/subscriptions/plans": {
+      "statuses": {
+        "200": 3
+      },
+      "maxMs": 34,
+      "avgMs": 30.3,
+      "samplesMs": [
+        29,
+        34,
+        28
+      ]
+    }
+  },
+  "dashboardAuthSource": "login",
+  "coolifySummary": {
+    "bindingNames": [
+      "COOLIFY_API_TOKEN",
+      "COOLIFY_BASE_URL",
+      "COOLIFY_LOGIN_EMAIL",
+      "COOLIFY_LOGIN_PASSWORD",
+      "COOLIFY_SOAR_API_APP_ID",
+      "COOLIFY_SOAR_APP_ID",
+      "COOLIFY_SOAR_POSTGRES_RESOURCE_ID",
+      "COOLIFY_SOAR_PRODUCTION_ENVIRONMENT",
+      "COOLIFY_SOAR_PROJECT_ID",
+      "COOLIFY_SOAR_REDIS_RESOURCE_ID",
+      "COOLIFY_SOAR_TEAM_ID",
+      "COOLIFY_SOAR_WEB_APP_ID",
+      "COOLIFY_TEAM_ID",
+      "COOLIFY_TOKEN",
+      "VPS_HOST"
+    ],
+    "checks": [
+      {
+        "label": "version",
+        "status": 200,
+        "ok": true,
+        "ms": 109.8,
+        "skipped": null
+      },
+      {
+        "label": "team",
+        "status": 200,
+        "ok": true,
+        "ms": 54.1,
+        "skipped": null
+      },
+      {
+        "label": "project",
+        "status": 200,
+        "ok": true,
+        "ms": 57.2,
+        "skipped": null
+      },
+      {
+        "label": "environments",
+        "status": 200,
+        "ok": true,
+        "ms": 49.8,
+        "skipped": null
+      },
+      {
+        "label": "productionEnvironment",
+        "status": 200,
+        "ok": true,
+        "ms": 162.6,
+        "skipped": null
+      },
+      {
+        "label": "resources",
+        "status": 200,
+        "ok": true,
+        "ms": 273,
+        "skipped": null
+      },
+      {
+        "label": "deployments",
+        "status": 200,
+        "ok": true,
+        "ms": 53.8,
+        "skipped": null
+      }
+    ],
+    "production": {
+      "applicationCount": 6,
+      "applications": [
+        {
+          "name": "soar-web",
+          "status": "running:unknown",
+          "restartCount": 1
+        },
+        {
+          "name": "workers-backtest",
+          "status": "running:unknown",
+          "restartCount": 0
+        },
+        {
+          "name": "workers-market-stream",
+          "status": "running:unknown",
+          "restartCount": 0
+        },
+        {
+          "name": "workers-execution",
+          "status": "running:unknown",
+          "restartCount": 2
+        },
+        {
+          "name": "workers-market-data",
+          "status": "running:unknown",
+          "restartCount": 0
+        },
+        {
+          "name": "soar-api",
+          "status": "running:unknown",
+          "restartCount": 2
+        }
+      ],
+      "databaseCount": 2,
+      "databases": [
+        {
+          "name": "postgresql",
+          "status": "running:healthy"
+        },
+        {
+          "name": "redis",
+          "status": "running:healthy"
+        }
+      ]
+    },
+    "globalResourceCount": 17,
+    "visibleDeploymentCount": 0
+  },
+  "safety": "read-only; no secret values, raw ids, payload bodies, logs, deploy/restart/rollback/env/DB/account mutations stored"
+}

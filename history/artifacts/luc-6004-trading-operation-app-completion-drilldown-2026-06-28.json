@@ -1,0 +1,4297 @@
+{
+  "generatedAt": "2026-06-28T15:09:34.333Z",
+  "sourceGraph": "docs/graphs/architecture-awareness.json",
+  "algorithmSource": "C:/Personal/Projekty/Aplikacje/Paperclip_Softwarehouse/scripts/build-app-completion-index.mjs",
+  "flow": "Trading operation",
+  "counts": {
+    "total": 219,
+    "byRisk": {
+      "implemented_needs_proof": 7,
+      "missing_doc_link": 44,
+      "missing_test_link": 28,
+      "needs_browser_review": 140
+    },
+    "byKind": {
+      "feature_or_capability": 79,
+      "screen_or_route": 140
+    }
+  },
+  "rows": [
+    {
+      "id": "feature:runtimeopenpositionderivations-ts:bfd8412792",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "runtimeOpenPositionDerivations.ts",
+      "path": "apps/web/src/features/bots/utils/runtimeOpenPositionDerivations.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 28,
+      "risk": "implemented_needs_proof"
+    },
+    {
+      "id": "feature:runtimesignallabelkeys-ts:a57e60ea78",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "runtimeSignalLabelKeys.ts",
+      "path": "apps/web/src/features/bots/utils/runtimeSignalLabelKeys.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 6,
+      "risk": "implemented_needs_proof"
+    },
+    {
+      "id": "feature:runtimesurfacetruth-ts:5a12344a69",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "runtimeSurfaceTruth.ts",
+      "path": "apps/web/src/features/bots/utils/runtimeSurfaceTruth.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 21,
+      "risk": "implemented_needs_proof"
+    },
+    {
+      "id": "feature:trailingstopdisplay-ts:14d16d2336",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "trailingStopDisplay.ts",
+      "path": "apps/web/src/features/bots/utils/trailingStopDisplay.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 14,
+      "risk": "implemented_needs_proof"
+    },
+    {
+      "id": "feature:strategythresholditems-ts:32d34bd236",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "strategyThresholdItems.ts",
+      "path": "apps/web/src/features/strategies/utils/strategyThresholdItems.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 10,
+      "risk": "implemented_needs_proof"
+    },
+    {
+      "id": "feature:marketstream-ts:34eedab340",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "marketStream.ts",
+      "path": "apps/web/src/lib/marketStream.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 15,
+      "risk": "implemented_needs_proof"
+    },
+    {
+      "id": "feature:runprodpositionsproof-mjs:ea68d553c1",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "runProdPositionsProof.mjs",
+      "path": "scripts/runProdPositionsProof.mjs",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 33,
+      "risk": "implemented_needs_proof"
+    },
+    {
+      "id": "function:resolvestrategyconfigfromsnapshot:299ba7cb60",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "resolveStrategyConfigFromSnapshot",
+      "path": "apps/api/src/modules/backtests/backtestRunJob.ts#resolveStrategyConfigFromSnapshot",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:createmarketscopeforuser:30082c023d",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "createMarketScopeForUser",
+      "path": "apps/api/src/modules/backtests/backtests.e2e.test.ts#createMarketScopeForUser",
+      "owner": "Engineering Delivery Lead",
+      "status": "tested",
+      "userFlow": "Trading operation",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:createwalletforuser:0b0941cf39",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "createWalletForUser",
+      "path": "apps/api/src/modules/backtests/backtests.e2e.test.ts#createWalletForUser",
+      "owner": "Engineering Delivery Lead",
+      "status": "tested",
+      "userFlow": "Trading operation",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:findownedstrategysignalconfig:3692440496",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "findOwnedStrategySignalConfig",
+      "path": "apps/api/src/modules/backtests/backtests.repository.ts#findOwnedStrategySignalConfig",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:resolvestrategyconfigfromsnapshot:9fb2f6c4a0",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "resolveStrategyConfigFromSnapshot",
+      "path": "apps/api/src/modules/backtests/backtests.service.ts#resolveStrategyConfigFromSnapshot",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:deletebotsubagentconfig:44da67e427",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "deleteBotSubagentConfig",
+      "path": "apps/api/src/modules/bots/botAssistant.service.ts#deleteBotSubagentConfig",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:getbotassistantconfig:0d0c27928a",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "getBotAssistantConfig",
+      "path": "apps/api/src/modules/bots/botAssistant.service.ts#getBotAssistantConfig",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:upsertbotassistantconfig:1f469cd66a",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "upsertBotAssistantConfig",
+      "path": "apps/api/src/modules/bots/botAssistant.service.ts#upsertBotAssistantConfig",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:upsertbotsubagentconfig:c639429f7d",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "upsertBotSubagentConfig",
+      "path": "apps/api/src/modules/bots/botAssistant.service.ts#upsertBotSubagentConfig",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:createliveapikeyforuser:e0c618799c",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "createLiveApiKeyForUser",
+      "path": "apps/api/src/modules/bots/bots.portfolio-history.e2e.test.ts#createLiveApiKeyForUser",
+      "owner": "Engineering Delivery Lead",
+      "status": "tested",
+      "userFlow": "Trading operation",
+      "gates": [
+        "auth",
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "test:runtimestrategyconfigparser-service-test-ts:c50f0bd31c",
+      "type": "test",
+      "kind": "feature_or_capability",
+      "name": "runtimeStrategyConfigParser.service.test.ts",
+      "path": "apps/api/src/modules/bots/runtimeStrategyConfigParser.service.test.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "tested",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 10,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:hasadvancedclosemode:668b28a37f",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "hasAdvancedCloseMode",
+      "path": "apps/api/src/modules/bots/runtimeStrategyConfigParser.service.ts#hasAdvancedCloseMode",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:tofiniteinteger:bceef4a609",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "toFiniteInteger",
+      "path": "apps/api/src/modules/bots/runtimeStrategyConfigParser.service.ts#toFiniteInteger",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:buildpretradeusercountkey:0da6de7a43",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "buildPreTradeUserCountKey",
+      "path": "apps/api/src/modules/engine/preTrade.service.ts#buildPreTradeUserCountKey",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:resolvecacheduseropenpositions:8dbd6d8d73",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "resolveCachedUserOpenPositions",
+      "path": "apps/api/src/modules/engine/preTrade.service.ts#resolveCachedUserOpenPositions",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:getuserid:07c33f1e6d",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "getUserId",
+      "path": "apps/api/src/modules/orders/orders-positions.e2e.test.ts#getUserId",
+      "owner": "Engineering Delivery Lead",
+      "status": "tested",
+      "userFlow": "Trading operation",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:resolveuseridbyemail:e4bbd0d568",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "resolveUserIdByEmail",
+      "path": "apps/api/src/modules/positions/positions.list.e2e.test.ts#resolveUserIdByEmail",
+      "owner": "Engineering Delivery Lead",
+      "status": "tested",
+      "userFlow": "Trading operation",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:createapikey:3266a82cae",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "createApiKey",
+      "path": "apps/api/src/modules/positions/positions.takeover-status.e2e.test.ts#createApiKey",
+      "owner": "Engineering Delivery Lead",
+      "status": "tested",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "test:strategyconfigvalidation-test-ts:7c01750a9c",
+      "type": "test",
+      "kind": "feature_or_capability",
+      "name": "strategyConfigValidation.test.ts",
+      "path": "apps/api/src/modules/strategies/strategyConfigValidation.test.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "tested",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 16,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:basicconfig:3e3567eb23",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "basicConfig",
+      "path": "apps/api/src/modules/strategies/strategyConfigValidation.test.ts#basicConfig",
+      "owner": "Engineering Delivery Lead",
+      "status": "tested",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:capturevalidationerror:0143c4b823",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "captureValidationError",
+      "path": "apps/api/src/modules/strategies/strategyConfigValidation.test.ts#captureValidationError",
+      "owner": "Engineering Delivery Lead",
+      "status": "tested",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:resolvedcalevelpercents:3f77cc64ed",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "resolveDcaLevelPercents",
+      "path": "apps/api/src/modules/strategies/strategyConfigValidation.ts#resolveDcaLevelPercents",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:tofinitenumber:d36f00f08a",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "toFiniteNumber",
+      "path": "apps/api/src/modules/strategies/strategyConfigValidation.ts#toFiniteNumber",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:validatestrategyconfig:94b0c3b31a",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "validateStrategyConfig",
+      "path": "apps/api/src/modules/strategies/strategyConfigValidation.ts#validateStrategyConfig",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:createapikey:c01f41cbf6",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "createApiKey",
+      "path": "apps/api/src/modules/wallets/wallets.crud.e2e.test.ts#createApiKey",
+      "owner": "Engineering Delivery Lead",
+      "status": "tested",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:resolveuseridbyemail:899b23dcfd",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "resolveUserIdByEmail",
+      "path": "apps/api/src/modules/wallets/wallets.e2e.test.ts#resolveUserIdByEmail",
+      "owner": "Engineering Delivery Lead",
+      "status": "tested",
+      "userFlow": "Trading operation",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:assertwalletlivemodeconfig:180b9a5130",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "assertWalletLiveModeConfig",
+      "path": "apps/api/src/modules/wallets/wallets.service.ts#assertWalletLiveModeConfig",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "test:marketstreamworkerconfig-test-ts:22e988a542",
+      "type": "test",
+      "kind": "feature_or_capability",
+      "name": "marketStreamWorkerConfig.test.ts",
+      "path": "apps/api/src/workers/marketStreamWorkerConfig.test.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "tested",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 10,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:parsemarketstreamcsv:ef9671dcca",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "parseMarketStreamCsv",
+      "path": "apps/api/src/workers/marketStreamWorkerConfig.ts#parseMarketStreamCsv",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:parsemarketstreamrefreshms:dc95a2e365",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "parseMarketStreamRefreshMs",
+      "path": "apps/api/src/workers/marketStreamWorkerConfig.ts#parseMarketStreamRefreshMs",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "feature:usebacktesttradesanalytics-ts:1a0157325e",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "useBacktestTradesAnalytics.ts",
+      "path": "apps/web/src/features/backtest/hooks/useBacktestTradesAnalytics.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 13,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "feature:nonoverlappingtradesegments-ts:b394271b25",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "nonOverlappingTradeSegments.ts",
+      "path": "apps/web/src/features/backtest/utils/nonOverlappingTradeSegments.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 7,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "feature:formatters-ts:1916bb81e3",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "formatters.ts",
+      "path": "apps/web/src/features/bots/components/bots-management/formatters.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 28,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "feature:monitoringruntimelabels-ts:dc51b608e2",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "monitoringRuntimeLabels.ts",
+      "path": "apps/web/src/features/bots/components/bots-management/monitoringRuntimeLabels.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 17,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "feature:usebotsassistantcontroller-ts:6f3fa4133e",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "useBotsAssistantController.ts",
+      "path": "apps/web/src/features/bots/hooks/useBotsAssistantController.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 23,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "feature:usebotslistcontroller-ts:01c185f979",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "useBotsListController.ts",
+      "path": "apps/web/src/features/bots/hooks/useBotsListController.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 43,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "feature:usebotsmonitoringcontroller-ts:6d85eab92e",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "useBotsMonitoringController.ts",
+      "path": "apps/web/src/features/bots/hooks/useBotsMonitoringController.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 31,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "feature:bots-service-ts:0a5c9f497a",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "bots.service.ts",
+      "path": "apps/web/src/features/bots/services/bots.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 19,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "feature:botsmonitoringaggregate-service-ts:eae6ff09a1",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "botsMonitoringAggregate.service.ts",
+      "path": "apps/web/src/features/bots/services/botsMonitoringAggregate.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 7,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "feature:markets-service-ts:63f13c6489",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "markets.service.ts",
+      "path": "apps/web/src/features/markets/services/markets.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 12,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "feature:strategypresets-ts:4ab647dddc",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "strategyPresets.ts",
+      "path": "apps/web/src/features/strategies/presets/strategyPresets.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 6,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "feature:strategyclosevalidation-ts:b202ef8787",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "strategyCloseValidation.ts",
+      "path": "apps/web/src/features/strategies/utils/strategyCloseValidation.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 16,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "feature:strategyform-map-ts:d98994b20b",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "StrategyForm.map.ts",
+      "path": "apps/web/src/features/strategies/utils/StrategyForm.map.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 17,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "feature:strategynumericinput-ts:736114b369",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "strategyNumericInput.ts",
+      "path": "apps/web/src/features/strategies/utils/strategyNumericInput.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 15,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "migration:migration-sql:39669260ba",
+      "type": "migration",
+      "kind": "feature_or_capability",
+      "name": "migration.sql",
+      "path": "apps/api/prisma/migrations/20260323014500_add_bot_assistant_and_subagent_config/migration.sql",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "function:getownedapikey:fcc8d4aa29",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "getOwnedApiKey",
+      "path": "apps/api/src/modules/bots/botApiKeyResolver.service.ts#getOwnedApiKey",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "function:resolvecompatiblebotapikey:c83c3a9bd4",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "resolveCompatibleBotApiKey",
+      "path": "apps/api/src/modules/bots/botApiKeyResolver.service.ts#resolveCompatibleBotApiKey",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "function:deletebotsubagentconfig:73a8be08d6",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "deleteBotSubagentConfig",
+      "path": "apps/api/src/modules/bots/bots.controller.ts#deleteBotSubagentConfig",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "function:getbotassistantconfig:4f256f8e53",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "getBotAssistantConfig",
+      "path": "apps/api/src/modules/bots/bots.controller.ts#getBotAssistantConfig",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "function:handlesubagentconfigerror:cda61c204d",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "handleSubagentConfigError",
+      "path": "apps/api/src/modules/bots/bots.controller.ts#handleSubagentConfigError",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "function:upsertbotassistantconfig:d43fd2fd5e",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "upsertBotAssistantConfig",
+      "path": "apps/api/src/modules/bots/bots.controller.ts#upsertBotAssistantConfig",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "function:upsertbotsubagentconfig:4aa334de17",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "upsertBotSubagentConfig",
+      "path": "apps/api/src/modules/bots/bots.controller.ts#upsertBotSubagentConfig",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "function:buildconfiguredstrategybysymbol:70db8ad13e",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "buildConfiguredStrategyBySymbol",
+      "path": "apps/api/src/modules/bots/runtimeSymbolStatsEnrichment.service.ts#buildConfiguredStrategyBySymbol",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "function:resolveconfiguredpositionsymbols:24aabdda41",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "resolveConfiguredPositionSymbols",
+      "path": "apps/api/src/modules/engine/runtimePositionAutomation.service.ts#resolveConfiguredPositionSymbols",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "function:resolvemarginmodefromstrategyconfig:aed089e71f",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "resolveMarginModeFromStrategyConfig",
+      "path": "apps/api/src/modules/orders/orders.manualContext.service.ts#resolveMarginModeFromStrategyConfig",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "function:validatebasicclosedcareachability:35c565c34c",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "validateBasicCloseDcaReachability",
+      "path": "apps/api/src/modules/strategies/strategyConfigValidation.ts#validateBasicCloseDcaReachability",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "function:validatetrailingstoplevels:05f55a89af",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "validateTrailingStopLevels",
+      "path": "apps/api/src/modules/strategies/strategyConfigValidation.ts#validateTrailingStopLevels",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "function:validatetrailingtakeprofitlevels:61d34f4d6c",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "validateTrailingTakeProfitLevels",
+      "path": "apps/api/src/modules/strategies/strategyConfigValidation.ts#validateTrailingTakeProfitLevels",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "function:assertwalletliveapikeycompatibility:424238a930",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "assertWalletLiveApiKeyCompatibility",
+      "path": "apps/api/src/modules/wallets/wallets.service.ts#assertWalletLiveApiKeyCompatibility",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "feature:marketuniversehelpers-ts:e019029725",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "marketUniverseHelpers.ts",
+      "path": "apps/web/src/features/markets/utils/marketUniverseHelpers.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 7,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "feature:positions-service-ts:7f63220778",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "positions.service.ts",
+      "path": "apps/web/src/features/positions/services/positions.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "feature:usestrategyform-ts:6f79cc4b60",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "useStrategyForm.ts",
+      "path": "apps/web/src/features/strategies/hooks/useStrategyForm.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 17,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "feature:actions-ts:2ab1643a06",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "actions.ts",
+      "path": "apps/web/src/features/wallets/components/wallet-create-edit-form/actions.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 16,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "feature:state-ts:25257ae959",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "state.ts",
+      "path": "apps/web/src/features/wallets/components/wallet-create-edit-form/state.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 14,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "feature:wallets-service-ts:6a19f5a8d2",
+      "type": "feature",
+      "kind": "feature_or_capability",
+      "name": "wallets.service.ts",
+      "path": "apps/web/src/features/wallets/services/wallets.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 8,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "document:botassistantconfig-model:ed5c03f4d1",
+      "type": "document",
+      "kind": "feature_or_capability",
+      "name": "BotAssistantConfig model",
+      "path": "docs/architecture/nodes/SOAR-DB-BOT-ASSISTANT-CONFIG.md",
+      "owner": "Docs Memory Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": true,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "document:botsubagentconfig-model:9775120481",
+      "type": "document",
+      "kind": "feature_or_capability",
+      "name": "BotSubagentConfig model",
+      "path": "docs/architecture/nodes/SOAR-DB-BOT-SUBAGENT-CONFIG.md",
+      "owner": "Docs Memory Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": true,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "document:runtime-strategy-config-parser-service:69a84846d3",
+      "type": "document",
+      "kind": "feature_or_capability",
+      "name": "Runtime strategy config parser service",
+      "path": "docs/architecture/nodes/SOAR-SERVICE-RUNTIME-STRATEGY-CONFIG-PARSER.md",
+      "owner": "Docs Memory Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": true,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "document:strategy-config-validation-service:f797b07f1d",
+      "type": "document",
+      "kind": "feature_or_capability",
+      "name": "Strategy config validation service",
+      "path": "docs/architecture/nodes/SOAR-SERVICE-STRATEGY-CONFIG-VALIDATION.md",
+      "owner": "Docs Memory Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": true,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 2,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "document:pipeline-wallet-and-bot-configuration:d20c6f7e69",
+      "type": "document",
+      "kind": "feature_or_capability",
+      "name": "Pipeline: Wallet and bot configuration",
+      "path": "docs/pipelines/wallet-and-bot-configuration.md",
+      "owner": "Docs Memory Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": true,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 4,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "document:task-markets-and-strategy-configuration-audit-2026-05-19:08f7e47009",
+      "type": "document",
+      "kind": "feature_or_capability",
+      "name": "Task: Markets And Strategy Configuration Audit - 2026-05-19",
+      "path": "history/audits/markets-strategies-configuration-audit-2026-05-19-task.md",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 4,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "document:markets-and-strategy-configuration-audit-2026-05-19:9a2330cf92",
+      "type": "document",
+      "kind": "feature_or_capability",
+      "name": "Markets And Strategy Configuration Audit - 2026-05-19",
+      "path": "history/audits/markets-strategies-configuration-audit-2026-05-19.md",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 4,
+      "risk": "missing_test_link"
+    },
+    {
+      "id": "route:bot-v2-preflight-report-ts:ed1ac6f7da",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "bot-v2-preflight-report.ts",
+      "path": "apps/api/scripts/bot-v2-preflight-report.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 17,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:verifywalletdbfoundation-ts:6205e9831c",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "verifyWalletDbFoundation.ts",
+      "path": "apps/api/scripts/verifyWalletDbFoundation.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 9,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:backteststrategylinksnapshots-ts:7542913d82",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "backtestStrategyLinkSnapshots.ts",
+      "path": "apps/api/src/modules/backtests/backtestStrategyLinkSnapshots.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 5,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:botactivationpolicy-service-ts:0d40ab9734",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "botActivationPolicy.service.ts",
+      "path": "apps/api/src/modules/bots/botActivationPolicy.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 6,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:botapikeyresolver-service-ts:0efd25d59a",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "botApiKeyResolver.service.ts",
+      "path": "apps/api/src/modules/bots/botApiKeyResolver.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 11,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:botassistant-service-ts:0ed88c26f3",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "botAssistant.service.ts",
+      "path": "apps/api/src/modules/bots/botAssistant.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 30,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:botcanonicalupdatescope-service-ts:fea65b6844",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "botCanonicalUpdateScope.service.ts",
+      "path": "apps/api/src/modules/bots/botCanonicalUpdateScope.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 9,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:botcontextvalidation-service-ts:42870e9683",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "botContextValidation.service.ts",
+      "path": "apps/api/src/modules/bots/botContextValidation.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 14,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:botlegacystrategylink-service-ts:f2d5b061e2",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "botLegacyStrategyLink.service.ts",
+      "path": "apps/api/src/modules/bots/botLegacyStrategyLink.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 10,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:botliveconsent-service-ts:02c9c05c1e",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "botLiveConsent.service.ts",
+      "path": "apps/api/src/modules/bots/botLiveConsent.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 12,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:botmarketgroups-service-ts:54ede3a2ec",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "botMarketGroups.service.ts",
+      "path": "apps/api/src/modules/bots/botMarketGroups.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 38,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:botownership-service-ts:a7504607fc",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "botOwnership.service.ts",
+      "path": "apps/api/src/modules/bots/botOwnership.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 26,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:botportfoliohistoryread-service-ts:ce9156dc15",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "botPortfolioHistoryRead.service.ts",
+      "path": "apps/api/src/modules/bots/botPortfolioHistoryRead.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 20,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:botreadprojection-service-ts:ebe8b54781",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "botReadProjection.service.ts",
+      "path": "apps/api/src/modules/bots/botReadProjection.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 4,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:botresponsemapper-service-ts:5807b283b1",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "botResponseMapper.service.ts",
+      "path": "apps/api/src/modules/bots/botResponseMapper.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 10,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:bots-controller-ts:9aff7b48a9",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "bots.controller.ts",
+      "path": "apps/api/src/modules/bots/bots.controller.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 104,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:bots-e2e-fixtures-ts:6f9a72f85f",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "bots.e2e.fixtures.ts",
+      "path": "apps/api/src/modules/bots/bots.e2e.fixtures.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 7,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:bots-e2e-shared-ts:20647be641",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "bots.e2e.shared.ts",
+      "path": "apps/api/src/modules/bots/bots.e2e.shared.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 44,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:bots-errors-ts:ef1d74b5e9",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "bots.errors.ts",
+      "path": "apps/api/src/modules/bots/bots.errors.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 21,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:bots-repository-ts:ce2ffcb941",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "bots.repository.ts",
+      "path": "apps/api/src/modules/bots/bots.repository.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 13,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:bots-routes-ts:da4fc1e3bf",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "bots.routes.ts",
+      "path": "apps/api/src/modules/bots/bots.routes.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 33,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:bots-service-ts:5afc96dfa7",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "bots.service.ts",
+      "path": "apps/api/src/modules/bots/bots.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 6,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:botscommand-service-ts:26687715b8",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "botsCommand.service.ts",
+      "path": "apps/api/src/modules/bots/botsCommand.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 83,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:botsruntimeread-repository-ts:790cc06984",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "botsRuntimeRead.repository.ts",
+      "path": "apps/api/src/modules/bots/botsRuntimeRead.repository.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 25,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:botsruntimeread-service-ts:81185fcf50",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "botsRuntimeRead.service.ts",
+      "path": "apps/api/src/modules/bots/botsRuntimeRead.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 20,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:botstrategyprojectiondrift-service-ts:77036822c1",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "botStrategyProjectionDrift.service.ts",
+      "path": "apps/api/src/modules/bots/botStrategyProjectionDrift.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 17,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:botwritevalidation-service-ts:91d9332f6c",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "botWriteValidation.service.ts",
+      "path": "apps/api/src/modules/bots/botWriteValidation.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 24,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimedcaprotectiondisplay-service-ts:0a62e0006a",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeDcaProtectionDisplay.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeDcaProtectionDisplay.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 9,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimeexternalpositionowner-service-ts:b37250429f",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeExternalPositionOwner.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeExternalPositionOwner.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 30,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimemarketdatafallback-service-ts:a8f346becf",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeMarketDataFallback.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeMarketDataFallback.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 40,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimemarkettruthstate-service-ts:470b3b1e3d",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeMarketTruthState.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeMarketTruthState.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 9,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimemonitoringaggregatefallbacks-service-ts:7008340740",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeMonitoringAggregateFallbacks.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeMonitoringAggregateFallbacks.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 22,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimemonitoringaggregateprojectors-ts:2275634639",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeMonitoringAggregateProjectors.ts",
+      "path": "apps/api/src/modules/bots/runtimeMonitoringAggregateProjectors.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 7,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimemonitoringaggregateread-service-ts:ff62fb05bb",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeMonitoringAggregateRead.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeMonitoringAggregateRead.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 56,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimemonitoringaggregateruntime-service-ts:f5874cefcd",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeMonitoringAggregateRuntime.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeMonitoringAggregateRuntime.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 4,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimepositionserialization-service-ts:7ad7c262f9",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimePositionSerialization.service.ts",
+      "path": "apps/api/src/modules/bots/runtimePositionSerialization.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 31,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimesignalconditionlines-service-ts:9a895e8478",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeSignalConditionLines.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeSignalConditionLines.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 3,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimesignalconditionsummary-service-ts:0427482b1b",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeSignalConditionSummary.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeSignalConditionSummary.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 10,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimesignalindicators-service-ts:b9b86a2d74",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeSignalIndicators.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeSignalIndicators.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 10,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimesignalstatsformatting-service-ts:3d640f23c9",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeSignalStatsFormatting.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeSignalStatsFormatting.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 7,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimestrategyconfigparser-service-ts:4e7c3205f9",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeStrategyConfigParser.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeStrategyConfigParser.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 12,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimestrategydisplaybysymbol-service-ts:ec003e0d7f",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeStrategyDisplayBySymbol.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeStrategyDisplayBySymbol.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 30,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimestrategyprotectionfallbackdisplay-ts:5082b77398",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeStrategyProtectionFallbackDisplay.ts",
+      "path": "apps/api/src/modules/bots/runtimeStrategyProtectionFallbackDisplay.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 8,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimesymbolcatalogresolver-service-ts:72856ee33b",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeSymbolCatalogResolver.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeSymbolCatalogResolver.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 17,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimesymbolstatsenrichment-service-ts:c984d015b1",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeSymbolStatsEnrichment.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeSymbolStatsEnrichment.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 12,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimesymbolstatsreadmodel-service-ts:4a7db7541b",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeSymbolStatsReadModel.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeSymbolStatsReadModel.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 30,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimesymboluniverse-service-ts:d7b59bf5f9",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeSymbolUniverse.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeSymbolUniverse.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 15,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimetradeactionreason-service-ts:e27ff417de",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeTradeActionReason.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeTradeActionReason.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 8,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimetradelifecycle-service-ts:3c846eeaf8",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeTradeLifecycle.service.ts",
+      "path": "apps/api/src/modules/bots/runtimeTradeLifecycle.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 6,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:ordertypes-service-ts:6a0f47f96e",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "orderTypes.service.ts",
+      "path": "apps/api/src/modules/engine/orderTypes.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 15,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:positionmanagement-service-ts:dd060d89ff",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "positionManagement.service.ts",
+      "path": "apps/api/src/modules/engine/positionManagement.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 41,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:positionpnlsemantics-ts:6c6d5eb3de",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "positionPnlSemantics.ts",
+      "path": "apps/api/src/modules/engine/positionPnlSemantics.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 15,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:positionsizing-ts:9da488a64c",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "positionSizing.ts",
+      "path": "apps/api/src/modules/engine/positionSizing.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 15,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:pretrade-service-ts:255f9d572e",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "preTrade.service.ts",
+      "path": "apps/api/src/modules/engine/preTrade.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 47,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:pretraderisk-service-ts:ee49730801",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "preTradeRisk.service.ts",
+      "path": "apps/api/src/modules/engine/preTradeRisk.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 7,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimebotexecutioncontext-ts:27c350400c",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeBotExecutionContext.ts",
+      "path": "apps/api/src/modules/engine/runtimeBotExecutionContext.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 12,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimeexecutionclientorderid-ts:5d9ba76e13",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeExecutionClientOrderId.ts",
+      "path": "apps/api/src/modules/engine/runtimeExecutionClientOrderId.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 7,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimeimportedpositionownership-ts:e0405d3374",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeImportedPositionOwnership.ts",
+      "path": "apps/api/src/modules/engine/runtimeImportedPositionOwnership.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 13,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimeorderlifetime-service-ts:780a0fc8dd",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeOrderLifetime.service.ts",
+      "path": "apps/api/src/modules/engine/runtimeOrderLifetime.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 35,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimepositionautomation-helpers-ts:c380bb4200",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimePositionAutomation.helpers.ts",
+      "path": "apps/api/src/modules/engine/runtimePositionAutomation.helpers.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 33,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimepositionautomation-service-ts:fdcb41a128",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimePositionAutomation.service.ts",
+      "path": "apps/api/src/modules/engine/runtimePositionAutomation.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 117,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimepositionautomationdefaultpositiondeps-ts:69de9b9d71",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimePositionAutomationDefaultPositionDeps.ts",
+      "path": "apps/api/src/modules/engine/runtimePositionAutomationDefaultPositionDeps.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 9,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimepositionautomationskiptelemetry-ts:8c2377aec1",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimePositionAutomationSkipTelemetry.ts",
+      "path": "apps/api/src/modules/engine/runtimePositionAutomationSkipTelemetry.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 10,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimepositionautomationstaterebase-ts:1e1719d135",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimePositionAutomationStateRebase.ts",
+      "path": "apps/api/src/modules/engine/runtimePositionAutomationStateRebase.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 9,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimepositionautomationtelemetry-ts:65c8c44b35",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimePositionAutomationTelemetry.ts",
+      "path": "apps/api/src/modules/engine/runtimePositionAutomationTelemetry.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 8,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimepositionlifetime-service-ts:52f8a0f44a",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimePositionLifetime.service.ts",
+      "path": "apps/api/src/modules/engine/runtimePositionLifetime.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 21,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimepositionstate-store-ts:22e095b727",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimePositionState.store.ts",
+      "path": "apps/api/src/modules/engine/runtimePositionState.store.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 24,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:runtimesignalmarketdatagateway-ts:de55bc4540",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "runtimeSignalMarketDataGateway.ts",
+      "path": "apps/api/src/modules/engine/runtimeSignalMarketDataGateway.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 50,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:strategyindicatorkernel-ts:ccf856c287",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "strategyIndicatorKernel.ts",
+      "path": "apps/api/src/modules/engine/strategyIndicatorKernel.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 11,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:strategyindicatorregistry-ts:372440ee70",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "strategyIndicatorRegistry.ts",
+      "path": "apps/api/src/modules/engine/strategyIndicatorRegistry.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 8,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:strategylifetimepolicy-ts:83746e3fa7",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "strategyLifetimePolicy.ts",
+      "path": "apps/api/src/modules/engine/strategyLifetimePolicy.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 7,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:strategysignalanalysis-ts:5f6b1a2f83",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "strategySignalAnalysis.ts",
+      "path": "apps/api/src/modules/engine/strategySignalAnalysis.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 87,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:strategysignalevaluator-ts:9d4b4cd03e",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "strategySignalEvaluator.ts",
+      "path": "apps/api/src/modules/engine/strategySignalEvaluator.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 26,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:indicatoradapter-service-ts:a44c3fa475",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "indicatorAdapter.service.ts",
+      "path": "apps/api/src/modules/market-data/indicatorAdapter.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 10,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:marketdata-service-ts:45a4533dc7",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "marketData.service.ts",
+      "path": "apps/api/src/modules/market-data/marketData.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 9,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:marketstream-routes-ts:87cad698cc",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "marketStream.routes.ts",
+      "path": "apps/api/src/modules/market-stream/marketStream.routes.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 37,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:marketstreamfanout-ts:acb7e26195",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "marketStreamFanout.ts",
+      "path": "apps/api/src/modules/market-stream/marketStreamFanout.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 18,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:marketcatalogsymbolresolver-service-ts:ef81afb07b",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "marketCatalogSymbolResolver.service.ts",
+      "path": "apps/api/src/modules/markets/marketCatalogSymbolResolver.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 16,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:markets-controller-ts:8c12729d45",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "markets.controller.ts",
+      "path": "apps/api/src/modules/markets/markets.controller.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 30,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:markets-errors-ts:b9432647bb",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "markets.errors.ts",
+      "path": "apps/api/src/modules/markets/markets.errors.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 10,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:markets-routes-ts:6d2a073f2e",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "markets.routes.ts",
+      "path": "apps/api/src/modules/markets/markets.routes.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 10,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:markets-service-ts:4df74e7570",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "markets.service.ts",
+      "path": "apps/api/src/modules/markets/markets.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 44,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:orders-controller-ts:1bf22ca27d",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "orders.controller.ts",
+      "path": "apps/api/src/modules/orders/orders.controller.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 38,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:orders-errors-ts:8cfc896c41",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "orders.errors.ts",
+      "path": "apps/api/src/modules/orders/orders.errors.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 17,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:orders-lifecycle-service-ts:06cb59bccc",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "orders.lifecycle.service.ts",
+      "path": "apps/api/src/modules/orders/orders.lifecycle.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 35,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:orders-manualcontext-service-ts:57fd512d7c",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "orders.manualContext.service.ts",
+      "path": "apps/api/src/modules/orders/orders.manualContext.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 26,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:orders-positionscope-ts:5f4aa50b35",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "orders.positionScope.ts",
+      "path": "apps/api/src/modules/orders/orders.positionScope.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 5,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:orders-quantityrules-ts:41b2b4d44f",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "orders.quantityRules.ts",
+      "path": "apps/api/src/modules/orders/orders.quantityRules.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 33,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:orders-routes-ts:17a6494dac",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "orders.routes.ts",
+      "path": "apps/api/src/modules/orders/orders.routes.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 9,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:orders-service-ts:6cab9c383d",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "orders.service.ts",
+      "path": "apps/api/src/modules/orders/orders.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 92,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:positionfillmath-ts:6d4f2dbe69",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "positionFillMath.ts",
+      "path": "apps/api/src/modules/orders/positionFillMath.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 8,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:importedpositionhistoryhydrator-service-ts:80425a4980",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "importedPositionHistoryHydrator.service.ts",
+      "path": "apps/api/src/modules/positions/importedPositionHistoryHydrator.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 38,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:livepositionreconciliation-diagnostics-ts:6ed125209f",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "livePositionReconciliation.diagnostics.ts",
+      "path": "apps/api/src/modules/positions/livePositionReconciliation.diagnostics.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 10,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:livepositionreconciliation-helpers-ts:b8bdb0c916",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "livePositionReconciliation.helpers.ts",
+      "path": "apps/api/src/modules/positions/livePositionReconciliation.helpers.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 45,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:livepositionreconciliation-history-ts:0961236ed1",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "livePositionReconciliation.history.ts",
+      "path": "apps/api/src/modules/positions/livePositionReconciliation.history.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 14,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:livepositionreconciliation-service-ts:36e4fe17f6",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "livePositionReconciliation.service.ts",
+      "path": "apps/api/src/modules/positions/livePositionReconciliation.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 69,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:livepositionreconciliationapikeys-ts:f7b2e52adf",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "livePositionReconciliationApiKeys.ts",
+      "path": "apps/api/src/modules/positions/livePositionReconciliationApiKeys.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 5,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:livepositionreconciliationcontext-ts:423dec787b",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "livePositionReconciliationContext.ts",
+      "path": "apps/api/src/modules/positions/livePositionReconciliationContext.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 10,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:livepositionreconciliationloop-ts:9b177fcf44",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "livePositionReconciliationLoop.ts",
+      "path": "apps/api/src/modules/positions/livePositionReconciliationLoop.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 11,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:positioncloseattribution-ts:837a563289",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "positionCloseAttribution.ts",
+      "path": "apps/api/src/modules/positions/positionCloseAttribution.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 13,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:positions-controller-ts:91851f0a18",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "positions.controller.ts",
+      "path": "apps/api/src/modules/positions/positions.controller.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 51,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:positions-routes-ts:84e0358116",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "positions.routes.ts",
+      "path": "apps/api/src/modules/positions/positions.routes.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 12,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:positions-service-ts:0b24c9befb",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "positions.service.ts",
+      "path": "apps/api/src/modules/positions/positions.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 60,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:strategyconfigvalidation-ts:94769f8355",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "strategyConfigValidation.ts",
+      "path": "apps/api/src/modules/strategies/strategyConfigValidation.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 18,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:walletcashflowclassifier-service-ts:af47e4a37f",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "walletCashflowClassifier.service.ts",
+      "path": "apps/api/src/modules/wallets/walletCashflowClassifier.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 16,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:walletledger-service-ts:49c3b86f16",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "walletLedger.service.ts",
+      "path": "apps/api/src/modules/wallets/walletLedger.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 13,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:wallets-controller-ts:98d45dabac",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "wallets.controller.ts",
+      "path": "apps/api/src/modules/wallets/wallets.controller.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 43,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:wallets-errors-ts:e4712eee37",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "wallets.errors.ts",
+      "path": "apps/api/src/modules/wallets/wallets.errors.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 10,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:wallets-routes-ts:8709126893",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "wallets.routes.ts",
+      "path": "apps/api/src/modules/wallets/wallets.routes.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 9,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:wallets-service-ts:34b0385396",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "wallets.service.ts",
+      "path": "apps/api/src/modules/wallets/wallets.service.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 91,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:marketdata-worker-ts:324dcb259a",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "marketData.worker.ts",
+      "path": "apps/api/src/workers/marketData.worker.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 14,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:marketstream-worker-ts:7ac5f98bf7",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "marketStream.worker.ts",
+      "path": "apps/api/src/workers/marketStream.worker.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 47,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "route:marketstreamworkerconfig-ts:e752e1508e",
+      "type": "route",
+      "kind": "screen_or_route",
+      "name": "marketStreamWorkerConfig.ts",
+      "path": "apps/api/src/workers/marketStreamWorkerConfig.ts",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [
+        "configuration"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": true,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 10,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:botcreateeditform-tsx:07797ad8f9",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "BotCreateEditForm.tsx",
+      "path": "apps/web/src/features/bots/components/BotCreateEditForm.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 9,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:botsmanagementtabs-tsx:6db5979752",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "BotsManagementTabs.tsx",
+      "path": "apps/web/src/features/bots/components/bots-management/BotsManagementTabs.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 10,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:botsmonitoringattributionpills-tsx:85cf57b274",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "BotsMonitoringAttributionPills.tsx",
+      "path": "apps/web/src/features/bots/components/bots-management/BotsMonitoringAttributionPills.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 17,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:botsmonitoringprotectioncell-tsx:dbdbe9e14e",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "BotsMonitoringProtectionCell.tsx",
+      "path": "apps/web/src/features/bots/components/bots-management/BotsMonitoringProtectionCell.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 4,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:botsmonitoringruntimestatecell-tsx:dbb3b108a8",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "BotsMonitoringRuntimeStateCell.tsx",
+      "path": "apps/web/src/features/bots/components/bots-management/BotsMonitoringRuntimeStateCell.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 7,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:botsmonitoringsections-tsx:4248f2bf3f",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "BotsMonitoringSections.tsx",
+      "path": "apps/web/src/features/bots/components/bots-management/BotsMonitoringSections.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 30,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:botsmonitoringtab-tsx:2472f6935a",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "BotsMonitoringTab.tsx",
+      "path": "apps/web/src/features/bots/components/bots-management/BotsMonitoringTab.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 47,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:botsportfoliohistorysection-tsx:46a92e1d91",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "BotsPortfolioHistorySection.tsx",
+      "path": "apps/web/src/features/bots/components/bots-management/BotsPortfolioHistorySection.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 17,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:monitoringfuturesignalssection-tsx:661130668d",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "MonitoringFutureSignalsSection.tsx",
+      "path": "apps/web/src/features/bots/components/bots-management/MonitoringFutureSignalsSection.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 13,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:botsassistanttab-tsx:b45389b257",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "BotsAssistantTab.tsx",
+      "path": "apps/web/src/features/bots/components/BotsAssistantTab.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 17,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:botslisttable-tsx:0c310ab5d3",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "BotsListTable.tsx",
+      "path": "apps/web/src/features/bots/components/BotsListTable.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 14,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:botsmanagement-tsx:f0671f3b71",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "BotsManagement.tsx",
+      "path": "apps/web/src/features/bots/components/BotsManagement.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 58,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:marketuniverseform-tsx:5066b2f58c",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "MarketUniverseForm.tsx",
+      "path": "apps/web/src/features/markets/components/MarketUniverseForm.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 33,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:marketuniversestable-tsx:d384e3ade4",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "MarketUniversesTable.tsx",
+      "path": "apps/web/src/features/markets/components/MarketUniversesTable.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 38,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:searchablemultiselect-tsx:c5fcbe7e46",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "SearchableMultiSelect.tsx",
+      "path": "apps/web/src/features/markets/components/SearchableMultiSelect.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 15,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:strategyform-tsx:39423670b6",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "StrategyForm.tsx",
+      "path": "apps/web/src/features/strategies/components/StrategyForm.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 23,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:additional-tsx:237611383b",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "Additional.tsx",
+      "path": "apps/web/src/features/strategies/components/StrategyFormSections/Additional.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 21,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:basic-tsx:86b263a362",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "Basic.tsx",
+      "path": "apps/web/src/features/strategies/components/StrategyFormSections/Basic.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 10,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:close-tsx:2f1ea22018",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "Close.tsx",
+      "path": "apps/web/src/features/strategies/components/StrategyFormSections/Close.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 17,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:indicators-tsx:324fa822f8",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "Indicators.tsx",
+      "path": "apps/web/src/features/strategies/components/StrategyFormSections/Indicators.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 45,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:open-tsx:839cf637d8",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "Open.tsx",
+      "path": "apps/web/src/features/strategies/components/StrategyFormSections/Open.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 18,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:sortablethresholdlisteditor-tsx:bded59a667",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "SortableThresholdListEditor.tsx",
+      "path": "apps/web/src/features/strategies/components/StrategyFormSections/SortableThresholdListEditor.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 16,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:strategypresetpicker-tsx:05de34f083",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "StrategyPresetPicker.tsx",
+      "path": "apps/web/src/features/strategies/components/StrategyPresetPicker.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 8,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:sections-tsx:00d3f05687",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "sections.tsx",
+      "path": "apps/web/src/features/wallets/components/wallet-create-edit-form/sections.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": false,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 18,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:walletcreateeditform-tsx:0a74ee6690",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "WalletCreateEditForm.tsx",
+      "path": "apps/web/src/features/wallets/components/WalletCreateEditForm.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 18,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:walletpreviewpanel-tsx:63c8f51fa5",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "WalletPreviewPanel.tsx",
+      "path": "apps/web/src/features/wallets/components/WalletPreviewPanel.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 19,
+      "risk": "needs_browser_review"
+    },
+    {
+      "id": "component:walletslisttable-tsx:a7356233f4",
+      "type": "component",
+      "kind": "screen_or_route",
+      "name": "WalletsListTable.tsx",
+      "path": "apps/web/src/features/wallets/components/WalletsListTable.tsx",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Trading operation",
+      "gates": [],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": true,
+        "needsScreenshotReview": true
+      },
+      "relatedEntityCount": 10,
+      "risk": "needs_browser_review"
+    }
+  ]
+}
