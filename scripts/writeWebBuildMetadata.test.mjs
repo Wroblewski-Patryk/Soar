@@ -57,6 +57,23 @@ test('writes env metadata as authoritative build metadata', async () => {
   assert.equal(metadata.metadataSource, 'env');
 });
 
+test('writes Coolify commit alias as authoritative build metadata', async () => {
+  const webDir = await makeWebDir();
+  await execFileAsync(process.execPath, [scriptPath], {
+    cwd: webDir,
+    env: {
+      ...clearBuildMetadataEnv(process.env),
+      COOLIFY_GIT_COMMIT_SHA: 'abcdefabcdefabcdefabcdefabcdefabcdefabcd',
+      COOLIFY_BRANCH: 'main',
+    },
+  });
+
+  const metadata = await readGeneratedMetadata(webDir);
+  assert.equal(metadata.gitSha, 'abcdefabcdefabcdefabcdefabcdefabcdefabcd');
+  assert.equal(metadata.gitRef, 'main');
+  assert.equal(metadata.metadataSource, 'env');
+});
+
 test('does not substitute GitHub branch head when build metadata is absent', async () => {
   const webDir = await makeWebDir();
   await execFileAsync(process.execPath, [scriptPath], {

@@ -1,0 +1,564 @@
+{
+  "issue": "LUC-3832",
+  "generatedAt": "2026-06-13T22:20:38.884Z",
+  "webBaseUrl": "https://soar.luckysparrow.ch/",
+  "apiBaseUrl": "https://api.soar.luckysparrow.ch/",
+  "authContext": "present",
+  "browserLaunch": "system_browser",
+  "directChecks": [
+    {
+      "label": "web_home",
+      "url": "https://soar.luckysparrow.ch/",
+      "status": 200,
+      "durationMs": 257,
+      "location": ""
+    },
+    {
+      "label": "web_login",
+      "url": "https://soar.luckysparrow.ch/auth/login",
+      "status": 200,
+      "durationMs": 20,
+      "location": ""
+    },
+    {
+      "label": "api_health",
+      "url": "https://api.soar.luckysparrow.ch/health",
+      "status": 200,
+      "durationMs": 126,
+      "location": ""
+    },
+    {
+      "label": "api_ready",
+      "url": "https://api.soar.luckysparrow.ch/ready",
+      "status": 200,
+      "durationMs": 59,
+      "location": ""
+    },
+    {
+      "label": "api_auth_me_cookie",
+      "url": "https://api.soar.luckysparrow.ch/auth/me",
+      "status": 401,
+      "durationMs": 18,
+      "location": ""
+    },
+    {
+      "label": "web_dashboard_http_cookie",
+      "url": "https://soar.luckysparrow.ch/dashboard",
+      "status": 200,
+      "durationMs": 22,
+      "location": ""
+    }
+  ],
+  "browser": {
+    "navError": null,
+    "pageFacts": {
+      "href": "https://soar.luckysparrow.ch/auth/login?session=%5BREDACTED%5D",
+      "pathname": "/auth/login",
+      "title": "Soar",
+      "bodyTextLength": 331,
+      "readyState": "complete",
+      "domContentLoadedMs": 330,
+      "loadOrNetworkIdleMs": 1800,
+      "settleState": "networkidle",
+      "navTiming": {
+        "type": "navigate",
+        "domContentLoadedEventEnd": 249,
+        "loadEventEnd": 402,
+        "responseStart": 38,
+        "responseEnd": 41,
+        "transferSize": 34561,
+        "encodedBodySize": 34261
+      },
+      "slowResources": [
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/chunks/438-fa276c088b73960d.js",
+          "initiatorType": "script",
+          "duration": 337,
+          "transferSize": 0,
+          "encodedBodySize": 309678
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/chunks/7309-ed53d3cb30e1d4da.js",
+          "initiatorType": "script",
+          "duration": 313,
+          "transferSize": 0,
+          "encodedBodySize": 173360
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/chunks/4329-db21111cbdc580dd.js",
+          "initiatorType": "script",
+          "duration": 303,
+          "transferSize": 0,
+          "encodedBodySize": 63573
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/chunks/9371-ef7a99bc86eff32d.js",
+          "initiatorType": "script",
+          "duration": 281,
+          "transferSize": 0,
+          "encodedBodySize": 41778
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/chunks/775b5873-b5b085f11aaaac65.js",
+          "initiatorType": "script",
+          "duration": 278,
+          "transferSize": 0,
+          "encodedBodySize": 173020
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/chunks/6370-b7188d5bcac4c9d1.js",
+          "initiatorType": "script",
+          "duration": 273,
+          "transferSize": 0,
+          "encodedBodySize": 25171
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/chunks/1544-0cbec528c3e1b6df.js",
+          "initiatorType": "script",
+          "duration": 264,
+          "transferSize": 0,
+          "encodedBodySize": 16598
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/chunks/4611-11588fbcac7971e6.js",
+          "initiatorType": "script",
+          "duration": 260,
+          "transferSize": 0,
+          "encodedBodySize": 33848
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/chunks/app/(public)/auth/login/page-76656c71153891b7.js",
+          "initiatorType": "script",
+          "duration": 256,
+          "transferSize": 0,
+          "encodedBodySize": 11219
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/chunks/9460-e5c58277c68a0b24.js",
+          "initiatorType": "script",
+          "duration": 243,
+          "transferSize": 0,
+          "encodedBodySize": 8537
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/chunks/b9c98e3c-8ad2b6ec854bca9a.js",
+          "initiatorType": "script",
+          "duration": 242,
+          "transferSize": 0,
+          "encodedBodySize": 24212
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/chunks/app/(public)/layout-f8c581632666c012.js",
+          "initiatorType": "script",
+          "duration": 241,
+          "transferSize": 0,
+          "encodedBodySize": 2567
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/chunks/app/layout-50a22dca8b87260b.js",
+          "initiatorType": "script",
+          "duration": 236,
+          "transferSize": 0,
+          "encodedBodySize": 6682
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/chunks/6172f554-a7d9be719467e846.js",
+          "initiatorType": "script",
+          "duration": 226,
+          "transferSize": 0,
+          "encodedBodySize": 976
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/chunks/main-app-ce34a5918113ccf4.js",
+          "initiatorType": "script",
+          "duration": 220,
+          "transferSize": 0,
+          "encodedBodySize": 559
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/chunks/webpack-a4304cfa928db96d.js",
+          "initiatorType": "link",
+          "duration": 198,
+          "transferSize": 0,
+          "encodedBodySize": 3422
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/css/6e0fa0a391d01bb6.css",
+          "initiatorType": "link",
+          "duration": 187,
+          "transferSize": 0,
+          "encodedBodySize": 165387
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/media/f9fa7964f036c69d-s.p.woff2",
+          "initiatorType": "link",
+          "duration": 171,
+          "transferSize": 0,
+          "encodedBodySize": 12448
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/media/6d664cce900333ee-s.p.woff2",
+          "initiatorType": "link",
+          "duration": 169,
+          "transferSize": 0,
+          "encodedBodySize": 14168
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/media/4de1fea1a954a5b6-s.p.woff2",
+          "initiatorType": "link",
+          "duration": 167,
+          "transferSize": 0,
+          "encodedBodySize": 13980
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/media/c95d4fce0b415528-s.p.woff2",
+          "initiatorType": "link",
+          "duration": 165,
+          "transferSize": 0,
+          "encodedBodySize": 12100
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/media/ed9cb87f7cefa820-s.p.woff2",
+          "initiatorType": "link",
+          "duration": 162,
+          "transferSize": 0,
+          "encodedBodySize": 12380
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/media/56b5d6ac638045ae-s.p.woff2",
+          "initiatorType": "link",
+          "duration": 154,
+          "transferSize": 0,
+          "encodedBodySize": 11704
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/css/0d5206fa1a3f9964.css",
+          "initiatorType": "link",
+          "duration": 117,
+          "transferSize": 0,
+          "encodedBodySize": 5259
+        },
+        {
+          "name": "https://soar.luckysparrow.ch/_next/static/media/155cae559bbd1a77-s.p.woff2",
+          "initiatorType": "link",
+          "duration": 99,
+          "transferSize": 0,
+          "encodedBodySize": 13912
+        }
+      ]
+    },
+    "groupedResponses": {
+      "script:200": 42,
+      "document:200": 2,
+      "font:200": 14,
+      "xhr:401": 2,
+      "stylesheet:200": 4,
+      "image:200": 2,
+      "fetch:200": 11,
+      "other:200": 4
+    },
+    "topNetwork": [
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/438-fa276c088b73960d.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 405
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/775b5873-b5b085f11aaaac65.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 372
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/app/dashboard/page-d0b29ebe87212980.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 348
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/7309-ed53d3cb30e1d4da.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 338
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/438-fa276c088b73960d.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 330
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/7309-ed53d3cb30e1d4da.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 306
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/4329-db21111cbdc580dd.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 296
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/4329-db21111cbdc580dd.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 289
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/6369-f19a65946d12eca3.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 274
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/9371-ef7a99bc86eff32d.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 273
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/775b5873-b5b085f11aaaac65.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 270
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/6370-b7188d5bcac4c9d1.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 265
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/1544-0cbec528c3e1b6df.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 256
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/4611-11588fbcac7971e6.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 252
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/9460-e5c58277c68a0b24.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 248
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/3734-135ff7093f316a98.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 248
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/app/(public)/auth/login/page-76656c71153891b7.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 248
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/app/dashboard/layout-aec771d154b2e36e.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 235
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/9460-e5c58277c68a0b24.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 235
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/b9c98e3c-8ad2b6ec854bca9a.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 234
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/1544-0cbec528c3e1b6df.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 233
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/app/(public)/layout-f8c581632666c012.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 233
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/9062-4350ddebe33b5705.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 231
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/app/layout-50a22dca8b87260b.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 228
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/6172f554-a7d9be719467e846.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 218
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/main-app-ce34a5918113ccf4.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 216
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/app/layout-50a22dca8b87260b.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 200
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/webpack-a4304cfa928db96d.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 198
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/4611-11588fbcac7971e6.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 195
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/b9c98e3c-8ad2b6ec854bca9a.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 192
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/6172f554-a7d9be719467e846.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 182
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/dashboard",
+        "method": "GET",
+        "resourceType": "document",
+        "status": 200,
+        "durationMs": 181
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/media/f9fa7964f036c69d-s.p.woff2",
+        "method": "GET",
+        "resourceType": "font",
+        "status": 200,
+        "durationMs": 165
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/media/6d664cce900333ee-s.p.woff2",
+        "method": "GET",
+        "resourceType": "font",
+        "status": 200,
+        "durationMs": 163
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/media/4de1fea1a954a5b6-s.p.woff2",
+        "method": "GET",
+        "resourceType": "font",
+        "status": 200,
+        "durationMs": 160
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/media/c95d4fce0b415528-s.p.woff2",
+        "method": "GET",
+        "resourceType": "font",
+        "status": 200,
+        "durationMs": 159
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/media/ed9cb87f7cefa820-s.p.woff2",
+        "method": "GET",
+        "resourceType": "font",
+        "status": 200,
+        "durationMs": 157
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/media/56b5d6ac638045ae-s.p.woff2",
+        "method": "GET",
+        "resourceType": "font",
+        "status": 200,
+        "durationMs": 147
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/main-app-ce34a5918113ccf4.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 143
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/_next/static/chunks/webpack-a4304cfa928db96d.js",
+        "method": "GET",
+        "resourceType": "script",
+        "status": 200,
+        "durationMs": 132
+      }
+    ],
+    "failures": [
+      {
+        "url": "https://soar.luckysparrow.ch/dashboard",
+        "method": "GET",
+        "resourceType": "document",
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://soar.luckysparrow.ch/auth/login?_rsc=x6WjuzyPEh4Yx-Sz",
+        "method": "GET",
+        "resourceType": "fetch",
+        "failure": "net::ERR_ABORTED"
+      }
+    ]
+  },
+  "safety": {
+    "noSecretsStored": true,
+    "noProductionMutation": true,
+    "noFormsSubmitted": true,
+    "noScreenshots": true,
+    "bundledPlaywrightBrowser": "missing_on_first_attempt"
+  }
+}
