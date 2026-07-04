@@ -1,3 +1,22 @@
+## 2026-07-04 LUC-108 Account Access RequireAuth Doc-Link
+
+- Current health signal:
+  `DONE / MISSING_DOC_LINK_RESOLVED / REQUIREAUTH_HAS_DOC_TRUE /
+  PROJECT_TRUTH_REFRESHED / NO_RUNTIME_MUTATION`.
+- Local docs/index proof:
+  architecture graph generation passed; architecture-awareness exporter passed
+  with `10598` entities / `34052` relations; app-completion targeted readback
+  for `apps/api/src/middleware/requireAuth.ts#requireAuth` reports
+  `hasDoc=true`, `hasTest=true`, and `risk=implemented_needs_proof`; strict
+  graph drift passed `850/850` covered / `0` missing; project-truth apply
+  passed.
+- Evidence:
+  `history/tasks/luc-108-account-access-requireauth-doc-link-2026-07-04-task.md`.
+- Next owner:
+  none for LUC-108. The current project-truth first gap is the separate
+  Account access missing-doc-link row
+  `apps/api/src/middleware/requireAuth.test.ts#expectSessionCookieCleared`.
+
 ## 2026-07-03 LUC-6468 Runtime Worker Contract Proof Slice
 
 - Current health signal:

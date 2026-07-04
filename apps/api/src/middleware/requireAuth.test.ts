@@ -8,6 +8,8 @@ import * as authJwt from '../modules/auth/auth.jwt';
 const originalJwtSecret = process.env.JWT_SECRET;
 const originalJwtSecretPrevious = process.env.JWT_SECRET_PREVIOUS;
 const originalJwtSecretPreviousUntil = process.env.JWT_SECRET_PREVIOUS_UNTIL;
+const originalCookieDomain = process.env.COOKIE_DOMAIN;
+const originalClientUrl = process.env.CLIENT_URL;
 
 afterEach(() => {
   if (originalJwtSecret === undefined) delete process.env.JWT_SECRET;
@@ -16,8 +18,19 @@ afterEach(() => {
   else process.env.JWT_SECRET_PREVIOUS = originalJwtSecretPrevious;
   if (originalJwtSecretPreviousUntil === undefined) delete process.env.JWT_SECRET_PREVIOUS_UNTIL;
   else process.env.JWT_SECRET_PREVIOUS_UNTIL = originalJwtSecretPreviousUntil;
+  if (originalCookieDomain === undefined) delete process.env.COOKIE_DOMAIN;
+  else process.env.COOKIE_DOMAIN = originalCookieDomain;
+  if (originalClientUrl === undefined) delete process.env.CLIENT_URL;
+  else process.env.CLIENT_URL = originalClientUrl;
   vi.restoreAllMocks();
 });
+
+const expectSessionCookieCleared = (setCookieHeader: string[] | undefined) => {
+  expect(setCookieHeader).toBeDefined();
+  expect(setCookieHeader?.some((header) => header.startsWith('token=;') && header.includes('Expires=Thu, 01 Jan 1970'))).toBe(
+    true
+  );
+};
 
 describe('requireAuth middleware', () => {
   it('accepts Authorization Bearer token when cookie is missing', async () => {
@@ -111,6 +124,84 @@ describe('requireAuth middleware', () => {
     const res = await request(app).get('/dashboard').set('Cookie', [`token=${token}`]);
     expect(res.status).toBe(401);
     expect(res.body.error.message).toBe('Invalid token');
+    expectSessionCookieCleared(res.headers['set-cookie']);
+  });
+
+  it('clears session when no auth token is present', async () => {
+    const res = await request(app).get('/dashboard');
+    expect(res.status).toBe(401);
+    expect(res.body.error.message).toBe('Missing token');
+    expectSessionCookieCleared(res.headers['set-cookie']);
+  });
+
+  it('clears session for expired JWT candidates', async () => {
+    process.env.JWT_SECRET = 'expired-secret';
+    process.env.JWT_SECRET_PREVIOUS = '';
+    delete process.env.JWT_SECRET_PREVIOUS_UNTIL;
+
+    const token = jwt.sign(
+      {
+        userId: 'expired-user',
+        email: 'expired@example.com',
+        role: 'USER',
+        sessionVersion: 1,
+      },
+      'expired-secret',
+      {
+        expiresIn: '-1s',
+        algorithm: 'HS256',
+        issuer: 'cryptosparrow',
+        audience: 'cryptosparrow-app',
+      }
+    );
+
+    const res = await request(app).get('/dashboard').set('Cookie', [`token=${token}`]);
+    expect(res.status).toBe(401);
+    expect(res.body.error.message).toBe('Invalid token');
+    expectSessionCookieCleared(res.headers['set-cookie']);
+  });
+
+  it('clears session when the token user no longer exists', async () => {
+    vi.spyOn(authJwt, 'verifyAuthToken').mockReturnValue({
+      userId: 'deleted-user',
+      email: 'deleted@example.com',
+      role: 'USER',
+      sessionVersion: 1,
+      iat: 0,
+      exp: 9999999999,
+      aud: 'cryptosparrow-app',
+      iss: 'cryptosparrow',
+    });
+    vi.spyOn(prisma.user, 'findUnique').mockResolvedValueOnce(null);
+
+    const res = await request(app).get('/dashboard').set('Cookie', ['token=deleted-user-token']);
+    expect(res.status).toBe(401);
+    expect(res.body.error.message).toBe('Invalid token');
+    expectSessionCookieCleared(res.headers['set-cookie']);
+  });
+
+  it('clears stale sessions when token sessionVersion no longer matches the user', async () => {
+    vi.spyOn(authJwt, 'verifyAuthToken').mockReturnValue({
+      userId: 'stale-user',
+      email: 'stale@example.com',
+      role: 'USER',
+      sessionVersion: 1,
+      iat: 0,
+      exp: 9999999999,
+      aud: 'cryptosparrow-app',
+      iss: 'cryptosparrow',
+    });
+    vi.spyOn(prisma.user, 'findUnique').mockResolvedValueOnce({
+      id: 'stale-user',
+      email: 'stale@example.com',
+      role: 'USER',
+      sessionVersion: 2,
+    } as { id: string; email: string; role: 'USER'; sessionVersion: number });
+
+    const res = await request(app).get('/dashboard').set('Cookie', ['token=stale-user-token']);
+    expect(res.status).toBe(401);
+    expect(res.body.error.message).toBe('Invalid token');
+    expectSessionCookieCleared(res.headers['set-cookie']);
   });
 
   it('returns 503 when auth user lookup is temporarily unavailable', async () => {

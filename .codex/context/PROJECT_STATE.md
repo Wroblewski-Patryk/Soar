@@ -1,3 +1,23 @@
+## 2026-07-04 LUC-108 Account Access RequireAuth Doc-Link
+
+- Status:
+  `DONE / MISSING_DOC_LINK_RESOLVED / REQUIREAUTH_HAS_DOC_TRUE /
+  PROJECT_TRUTH_REFRESHED / NO_RUNTIME_MUTATION`.
+- Evidence:
+  `history/tasks/luc-108-account-access-requireauth-doc-link-2026-07-04-task.md`.
+- Current truth:
+  `apps/api/src/middleware/requireAuth.ts#requireAuth` now links directly to
+  `docs/modules/api-auth.md` through `docs/architecture/relations/documentation-links.csv`
+  and the API auth doc-link classification table. App-completion targeted
+  readback reports `hasDoc=true`, `hasTest=true`, and
+  `risk=implemented_needs_proof`.
+- Release impact:
+  no runtime code, production, deploy, restart, rollback, env, secret/account,
+  DB/Redis, exchange, payment, subscription, order, position, or live-trading
+  mutation occurred. Broader Account access app-completion gaps remain; the
+  refreshed first gap is `expectSessionCookieCleared` as a separate
+  `missing_doc_link` row.
+
 ## 2026-07-03 LUC-6468 Runtime Worker Contract Proof Slice
 
 - Status:
@@ -28501,6 +28521,25 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   [LUC-241](/LUC/issues/LUC-241) and protected input/account gates. CBE owns
   repair only if a selector fails; DSM/architecture graph owns optional
   generated-row count reduction.
+
+## 2026-07-04 LUC-93 Account Access ClearSession Proof
+
+- Status:
+  `DONE / VERIFIED_LOCAL / CLEARSESSION_BEHAVIOR_PROOF_ADDED /
+  APP_COMPLETION_ROW_OK / NO_RUNTIME_MUTATION`.
+- Current proof:
+  `apps/api/src/middleware/requireAuth.test.ts` now covers clear-session cookie
+  clearing for missing-token, invalid issuer/audience, expired JWT,
+  deleted-user, and stale `sessionVersion` candidates. Focused API middleware
+  proof passed (`1` file / `9` tests).
+- Evidence:
+  `history/tasks/luc-93-account-access-clear-session-proof-2026-07-04-task.md`.
+- Residual:
+  no remaining action on [LUC-93](/LUC/issues/LUC-93). Continue separate
+  Account access app-completion rows for `requireAuth` docs and auth
+  controller test-link gaps. No production, browser, deploy, secret/account,
+  DB-backed e2e, exchange/payment/subscription/order/position, or live-trading
+  mutation occurred.
 
 ## 2026-07-02 LUC-6904 Production Performance Watch
 

@@ -1,3 +1,54 @@
+## 2026-07-04 LUC-108 Account Access RequireAuth Doc-Link
+
+- [LUC-108](/LUC/issues/LUC-108) can close as
+  `DONE / MISSING_DOC_LINK_RESOLVED / REQUIREAUTH_HAS_DOC_TRUE /
+  PROJECT_TRUTH_REFRESHED / NO_RUNTIME_MUTATION`.
+- Concrete action:
+  DSM added a direct documentation relation for
+  `apps/api/src/middleware/requireAuth.ts#requireAuth` to
+  `docs/modules/api-auth.md`, updated the API auth doc-link classification,
+  and refreshed architecture-awareness, app-completion, and project-truth
+  indexes.
+- Validation:
+  `architecture:graph:generate` passed; architecture-awareness exporter passed
+  with `10598` entities / `34052` relations; app-completion refresh passed and
+  targeted readback for `requireAuth.ts#requireAuth` reports `hasDoc=true`,
+  `hasTest=true`, `risk=implemented_needs_proof`; strict graph drift passed
+  `850/850` covered / `0` missing; project-truth `--apply` passed.
+- Source control:
+  no commit or push; repo was already dirty/divergent and contained unrelated
+  LUC-93 changes before this heartbeat.
+- Next owner/action:
+  no remaining action on [LUC-108](/LUC/issues/LUC-108). The refreshed
+  project-truth first gap is now
+  `apps/api/src/middleware/requireAuth.test.ts#expectSessionCookieCleared`
+  as a separate Account access `missing_doc_link` row for Docs Memory Lead +
+  Project Manager. No runtime, production, account, secret, deploy, exchange,
+  payment, subscription, order, position, or live-trading mutation occurred.
+- Evidence:
+  `history/tasks/luc-108-account-access-requireauth-doc-link-2026-07-04-task.md`.
+
+## 2026-07-04 LUC-93 Account Access ClearSession Proof
+
+- [LUC-93](/LUC/issues/LUC-93) can close as
+  `DONE / VERIFIED_LOCAL / CLEARSESSION_BEHAVIOR_PROOF_ADDED /
+  APP_COMPLETION_ROW_OK / NO_RUNTIME_MUTATION`.
+- Verified:
+  focused API middleware test passed (`1` file / `9` tests) after adding direct
+  assertions that `requireAuth.clearSession` clears the `token` cookie for
+  missing-token, invalid issuer/audience, expired JWT, deleted-user, and stale
+  `sessionVersion` candidates.
+- Project truth:
+  `apps/api/src/middleware/requireAuth.ts#clearSession` now has direct
+  documentation and test proof; app-completion/project-truth snapshots no
+  longer route this row as `implemented_needs_proof`.
+- Evidence:
+  `history/tasks/luc-93-account-access-clear-session-proof-2026-07-04-task.md`.
+- Next owner/action:
+  no remaining action on [LUC-93](/LUC/issues/LUC-93). Continue separate
+  Account access app-completion rows, starting with `requireAuth` missing
+  documentation link if selected by Docs/DSM.
+
 ## 2026-07-04 LUC-21 Soar Local Architecture And Repo Preflight
 
 - [LUC-21](/LUC/issues/LUC-21) can close as

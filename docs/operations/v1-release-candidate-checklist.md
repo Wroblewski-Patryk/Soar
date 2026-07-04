@@ -14,7 +14,7 @@
   - shell/accessibility smoke.
 
 ### Latest Verification (2026-07-04)
-Expected SHA: `not provided`
+Expected SHA: `cf9011b43060c52941dae9232e9a1ca4392ca3f2`
 - `pnpm --filter api build` passed.
 - `pnpm --filter web build` passed.
 - `pnpm --filter api test -- src/modules/auth/auth.e2e.test.ts src/modules/exchange/liveOrderAdapter.service.test.ts src/router/health-readiness.test.ts src/router/workers-health-readiness.test.ts src/router/metrics.test.ts src/router/alerts.test.ts` passed (`6` files, `20` tests).

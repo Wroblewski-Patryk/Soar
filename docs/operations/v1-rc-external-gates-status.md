@@ -1,12 +1,12 @@
 # V1 RC External Gates Status
 
-Generated at (UTC): 2026-07-04T13:10:58.080Z
-Expected SHA: `not provided`
+Generated at (UTC): 2026-07-04T21:15:50.430Z
+Expected SHA: `cf9011b43060c52941dae9232e9a1ca4392ca3f2`
 
-Source artifact: `history\operations\_artifacts-slo-window-2026-05-25T03-47-13-943Z.json`
+Source artifact: `history\operations\_artifacts-slo-window-2026-07-04T21-15-19-087Z.json`
 Observation window:
-- started: 2026-05-25T03:17:12.324Z
-- ended: 2026-05-25T03:47:13.940Z
+- started: 2026-07-04T20:45:21.668Z
+- ended: 2026-07-04T21:15:19.085Z
 
 ## Gate Status Snapshot
 - Gate 1 (Backup snapshot + restore validation): PASS
@@ -33,7 +33,7 @@ Observation window:
 - source type: slo_observation
 - evidence environment: production
 - production evidence present: yes
-- /ready availability: 96.30%
+- /ready availability: 100.00%
 - /workers/ready availability: 100.00%
 - API 5xx ratio: 0.00%
 - execution queue lag p95: 0

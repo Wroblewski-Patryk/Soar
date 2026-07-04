@@ -1,3 +1,49 @@
+## 2026-07-04 LUC-108 Account Access RequireAuth Doc-Link
+
+- Module row:
+  Account access / Auth session / API auth middleware / app-completion truth.
+- Status:
+  `verified locally / requireAuth doc-link added / project truth refreshed`.
+- Evidence:
+  `history/tasks/luc-108-account-access-requireauth-doc-link-2026-07-04-task.md`;
+  targeted app-completion readback reports
+  `apps/api/src/middleware/requireAuth.ts#requireAuth` with `hasDoc=true`,
+  `hasTest=true`, and `risk=implemented_needs_proof`.
+- Current proof:
+  direct documentation relation now links the protected-route auth guard to
+  `docs/modules/api-auth.md`; generated architecture-awareness,
+  app-completion, and project-truth indexes were refreshed.
+- Residual risk:
+  broader Account access app-completion rows remain open. The refreshed
+  project-truth first gap is
+  `apps/api/src/middleware/requireAuth.test.ts#expectSessionCookieCleared`
+  as a separate missing-doc-link row. This task did not run production,
+  browser, DB-backed e2e, deploy, secret, account, exchange, payment,
+  subscription, order, position, or live-trading proof.
+
+## 2026-07-04 LUC-93 Account Access ClearSession Proof
+
+- Module row:
+  Account access / Auth session / API auth middleware / app-completion truth.
+- Status:
+  `verified locally / clearSession behavior proof added / project truth refreshed`.
+- Evidence:
+  `history/tasks/luc-93-account-access-clear-session-proof-2026-07-04-task.md`;
+  focused API middleware test passed (`1` file / `9` tests).
+- Current proof:
+  `apps/api/src/middleware/requireAuth.test.ts` now directly asserts that
+  missing-token, invalid issuer/audience, expired JWT, deleted-user, and stale
+  `sessionVersion` auth candidates clear the `token` cookie and fail closed.
+  The app-completion row for
+  `apps/api/src/middleware/requireAuth.ts#clearSession` now reads as `ok`
+  with `hasTest=true` and `hasDoc=true`.
+- Residual risk:
+  broader Account access app-completion rows remain open, including
+  `requireAuth` missing-doc-link and auth controller missing-test-link rows.
+  This task did not run production, browser, DB-backed e2e, deploy, secret,
+  account, exchange, payment, subscription, order, position, or live-trading
+  proof.
+
 ## 2026-07-03 LUC-6468 Runtime Worker Contract Proof Slice
 
 - Module rows:

@@ -273,6 +273,7 @@ apps/api/src/modules/profile/apiKey/apiKey.service.ts#writeApiKeyTestAudit,docs/
 apps/api/src/modules/profile/apiKey/apiKey.types.ts,docs/modules/api-profile.md
 apps/api/src/modules/profile/security/security.errors.ts,docs/modules/api-profile.md
 apps/api/src/modules/users/publicUser.ts,docs/modules/api-users.md
+apps/api/src/middleware/requireAuth.ts#requireAuth,docs/modules/api-auth.md
 apps/api/src/observability/alerts.ts,docs/operations/service-reliability-and-observability.md
 apps/api/src/observability/metrics.ts,docs/operations/service-reliability-and-observability.md
 apps/api/src/observability/runtimeFreshness.ts,docs/operations/service-reliability-and-observability.md

@@ -1,0 +1,98 @@
+{
+  "id": "V1-PROTECTED-INPUT-READINESS-UNKNOWN-2026-07-04",
+  "date": "2026-07-04",
+  "status": "PARTIAL",
+  "releaseStatus": "NO-GO",
+  "scope": "current execution shell only",
+  "secretHandling": "no secret values printed, copied, or stored",
+  "target": {
+    "gitSha": null,
+    "gitRef": null,
+    "buildInfoCheckedAt": null
+  },
+  "matchingProtectedInputNamesPresent": 2,
+  "accountAccessGate": {
+    "status": "FAIL",
+    "requiredFamilies": [
+      "ROLLBACK_GUARD_*",
+      "SOAR_PROD_*",
+      "PROD_DB_CHECK_* or PRODUCTION_DB_CHECK_*",
+      "RC_*",
+      "GATE* / GATE_*"
+    ],
+    "missingRequiredFamilies": [
+      "ROLLBACK_GUARD_*",
+      "PROD_DB_CHECK_* or PRODUCTION_DB_CHECK_*",
+      "RC_*",
+      "GATE* / GATE_*"
+    ],
+    "bindingState": "REQUIRED_PROTECTED_INPUT_FAMILIES_MISSING"
+  },
+  "families": [
+    {
+      "family": "LIVEIMPORT_READBACK_*",
+      "state": "missing",
+      "purpose": "Protected LIVEIMPORT-03 production runtime readback",
+      "requiredForAccountAccessGate": false,
+      "matchingNamesPresent": 0
+    },
+    {
+      "family": "ROLLBACK_GUARD_*",
+      "state": "missing",
+      "purpose": "Protected production rollback/runtime freshness proof",
+      "requiredForAccountAccessGate": true,
+      "matchingNamesPresent": 0
+    },
+    {
+      "family": "PROD_UI_AUDIT_*",
+      "state": "missing",
+      "purpose": "Authenticated production dashboard/admin UI clickthrough",
+      "requiredForAccountAccessGate": false,
+      "matchingNamesPresent": 0
+    },
+    {
+      "family": "PROD_UI_*",
+      "state": "missing",
+      "purpose": "Legacy production UI audit input family",
+      "requiredForAccountAccessGate": false,
+      "matchingNamesPresent": 0
+    },
+    {
+      "family": "SOAR_PROD_*",
+      "state": "present",
+      "purpose": "Production app/operator context",
+      "requiredForAccountAccessGate": true,
+      "matchingNamesPresent": 2
+    },
+    {
+      "family": "PROD_DB_CHECK_*",
+      "state": "missing",
+      "purpose": "Production DB restore context",
+      "requiredForAccountAccessGate": true,
+      "matchingNamesPresent": 0
+    },
+    {
+      "family": "PRODUCTION_DB_CHECK_*",
+      "state": "missing",
+      "purpose": "Alternate production DB restore context",
+      "requiredForAccountAccessGate": true,
+      "matchingNamesPresent": 0
+    },
+    {
+      "family": "RC_*",
+      "state": "missing",
+      "purpose": "Release-candidate gate context",
+      "requiredForAccountAccessGate": true,
+      "matchingNamesPresent": 0
+    },
+    {
+      "family": "GATE* / GATE_*",
+      "state": "missing",
+      "purpose": "Gate approver context",
+      "requiredForAccountAccessGate": true,
+      "matchingNamesPresent": 0
+    }
+  ],
+  "observedOutput": "MATCHING_PROTECTED_INPUT_NAMES_PRESENT_BUT_ACCOUNT_ACCESS_GATE_INCOMPLETE",
+  "nextAction": "Execute the current operator unblock packet only after approved protected inputs and real approver fields are available."
+}

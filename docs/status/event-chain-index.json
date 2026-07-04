@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-04T17:34:20.901Z",
+  "generatedAt": "2026-07-04T19:04:21.979Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 4566,
-      "linkedRelationCount": 18283,
+      "entityCount": 4572,
+      "linkedRelationCount": 18310,
       "layers": {
         "frontend": {
           "count": 191,
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 693,
+          "count": 694,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1159,6 +1159,14 @@
               "status": "implemented"
             },
             {
+              "id": "function:requireauth:e044c1cd19",
+              "type": "function",
+              "name": "requireAuth",
+              "path": "apps/api/src/middleware/requireAuth.ts#requireAuth",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
               "id": "route:publicuser-ts:a393a249c4",
               "type": "route",
               "name": "publicUser.ts",
@@ -1293,20 +1301,12 @@
               "path": "apps/api/src/modules/auth/auth.service.test.ts",
               "owner": "Engineering Delivery Lead",
               "status": "tested"
-            },
-            {
-              "id": "function:routehint:03b6fc8e1f",
-              "type": "function",
-              "name": "routeHint",
-              "path": "scripts/generateUserActionIndex.mjs#routeHint",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 3509,
+          "count": 3513,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -1962,7 +1962,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 172,
+          "count": 173,
           "sample": [
             {
               "id": "document:api-deep-dive-auth-module:9b6f76d897",
@@ -2616,7 +2616,7 @@
     {
       "userFlow": "Admin operation",
       "entityCount": 66,
-      "linkedRelationCount": 161,
+      "linkedRelationCount": 163,
       "layers": {
         "frontend": {
           "count": 16,
@@ -3181,7 +3181,7 @@
     {
       "userFlow": "Dashboard overview",
       "entityCount": 841,
-      "linkedRelationCount": 2626,
+      "linkedRelationCount": 2628,
       "layers": {
         "frontend": {
           "count": 331,
@@ -10084,7 +10084,7 @@
     {
       "userFlow": "Trading operation",
       "entityCount": 3218,
-      "linkedRelationCount": 11070,
+      "linkedRelationCount": 11074,
       "layers": {
         "frontend": {
           "count": 390,
@@ -12688,8 +12688,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 9006,
-      "linkedRelationCount": 31586,
+      "entityCount": 9010,
+      "linkedRelationCount": 31608,
       "layers": {
         "frontend": {
           "count": 697,
@@ -13984,7 +13984,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 5926,
+          "count": 5930,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",

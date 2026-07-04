@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-07-04T17:33:24.294Z",
+  "generatedAt": "2026-07-04T19:03:56.753Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
   "counts": {
-    "items": 3556,
+    "items": 3557,
     "flows": 8,
     "needsBrowserReview": 452,
     "missingTestLink": 981,
     "missingDocLink": 1996,
-    "implementedNeedsProof": 114,
+    "implementedNeedsProof": 115,
     "blocked": 0,
-    "riskItems": 3543,
-    "appCompletionRiskItems": 3543,
+    "riskItems": 3544,
+    "appCompletionRiskItems": 3544,
     "priorityReviewItems": 200,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": true
@@ -20,16 +20,16 @@
   "flows": [
     {
       "userFlow": "Account access",
-      "total": 264,
+      "total": 265,
       "risks": {
         "ok": 5,
-        "implemented_needs_proof": 4,
         "missing_doc_link": 147,
+        "implemented_needs_proof": 5,
         "missing_test_link": 77,
         "needs_browser_review": 31
       },
       "gates": {
-        "auth": 264,
+        "auth": 265,
         "configuration": 15,
         "subscription": 2,
         "gateio": 1
@@ -138,6 +138,27 @@
   ],
   "priorityReviewItems": [
     {
+      "id": "function:expectsessioncookiecleared:9748483ec1",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "expectSessionCookieCleared",
+      "path": "apps/api/src/middleware/requireAuth.test.ts#expectSessionCookieCleared",
+      "owner": "Engineering Delivery Lead",
+      "status": "tested",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 1,
+      "risk": "missing_doc_link"
+    },
+    {
       "id": "function:clearsession:c472493149",
       "type": "function",
       "kind": "feature_or_capability",
@@ -172,12 +193,12 @@
       ],
       "evidence": {
         "hasTest": true,
-        "hasDoc": false,
+        "hasDoc": true,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
       "relatedEntityCount": 2,
-      "risk": "missing_doc_link"
+      "risk": "implemented_needs_proof"
     },
     {
       "id": "function:createsessioncookie:5075793e8e",
@@ -4317,27 +4338,6 @@
       "kind": "feature_or_capability",
       "name": "redactBot",
       "path": "scripts/runControlledLiveSessionProof.mjs#redactBot",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 1,
-      "risk": "missing_doc_link"
-    },
-    {
-      "id": "function:resolvebuildinfo:04b3efc98b",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "resolveBuildInfo",
-      "path": "scripts/runControlledLiveSessionProof.mjs#resolveBuildInfo",
       "owner": "Engineering Delivery Lead",
       "status": "implemented_needs_proof",
       "userFlow": "Account access",
