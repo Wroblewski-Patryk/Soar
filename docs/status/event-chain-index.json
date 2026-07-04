@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-02T15:25:32.248Z",
+  "generatedAt": "2026-07-02T16:50:18.521Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 4386,
-      "linkedRelationCount": 17522,
+      "entityCount": 4561,
+      "linkedRelationCount": 18254,
       "layers": {
         "frontend": {
           "count": 191,
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 642,
+          "count": 694,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -791,10 +791,34 @@
               "status": "verified"
             },
             {
+              "id": "task:task:2d24c22ccc",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-6889-account-access-auth-route-proof-linkage-audit-2026-07-02-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "task:task:30fae0d53d",
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-5526-production-performance-server-health-watch-2026-06-27-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:3b056a8a0e",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-6824-production-performance-server-health-watch-2026-07-02-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:5030d797d2",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-6654-v1-audit-to-completion-controller-2026-07-01-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -815,10 +839,34 @@
               "status": "verified"
             },
             {
+              "id": "task:task:8927e0e757",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-6707-v1-audit-to-completion-controller-2026-07-02-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:89485b10a0",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-6711-production-performance-server-health-watch-2026-07-02-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "task:task:8a21195e54",
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-2522-v1-audit-to-completion-controller-2026-06-06-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:a3dba3b05b",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-6774-v1-audit-to-completion-controller-2026-07-02-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -839,6 +887,14 @@
               "status": "verified"
             },
             {
+              "id": "task:task:b42ee12c99",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-6799-production-performance-server-health-watch-2026-07-02-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "task:task:bcc5c35fac",
               "type": "task",
               "name": "Task",
@@ -851,6 +907,14 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-45-v1-audit-to-completion-controller-2026-05-25-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:c83a8d66fa",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-6904-production-performance-server-health-watch-2026-07-02-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -1191,6 +1255,14 @@
               "status": "verified"
             },
             {
+              "id": "document:task:f11517cc3c",
+              "type": "document",
+              "name": "Task",
+              "path": "history/tasks/luc-6889-account-access-auth-route-proof-linkage-audit-2026-07-02-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
               "id": "document:v1ui-02-auth-register-error-and-i18n-route-task:879da8b5f3",
               "type": "document",
               "name": "V1UI-02 Auth Register Error And I18n Route Task",
@@ -1229,89 +1301,17 @@
               "path": "apps/api/scripts/importPaperRuntimeSnapshot.ts#ensureUser",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "route:importpaperruntimesnapshot-ts:ed103e2195",
-              "type": "route",
-              "name": "importPaperRuntimeSnapshot.ts",
-              "path": "apps/api/scripts/importPaperRuntimeSnapshot.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "test:apiscripttooling-test-ts:e6189ff78f",
-              "type": "test",
-              "name": "apiScriptTooling.test.ts",
-              "path": "apps/api/scripts/apiScriptTooling.test.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
-            {
-              "id": "function:clearsession:c472493149",
-              "type": "function",
-              "name": "clearSession",
-              "path": "apps/api/src/middleware/requireAuth.ts#clearSession",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "route:requireauth-ts:a35ca0619a",
-              "type": "route",
-              "name": "requireAuth.ts",
-              "path": "apps/api/src/middleware/requireAuth.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "test:requireauth-test-ts:c5b1929e2f",
-              "type": "test",
-              "name": "requireAuth.test.ts",
-              "path": "apps/api/src/middleware/requireAuth.test.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
-            {
-              "id": "function:requireauth:e044c1cd19",
-              "type": "function",
-              "name": "requireAuth",
-              "path": "apps/api/src/middleware/requireAuth.ts#requireAuth",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "function:createsessioncookie:5075793e8e",
-              "type": "function",
-              "name": "createSessionCookie",
-              "path": "apps/api/src/middleware/requireTrustedOrigin.test.ts#createSessionCookie",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
-            {
-              "id": "test:requiretrustedorigin-test-ts:839da939f0",
-              "type": "test",
-              "name": "requireTrustedOrigin.test.ts",
-              "path": "apps/api/src/middleware/requireTrustedOrigin.test.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
-            },
-            {
-              "id": "function:createuseragent:28991163e1",
-              "type": "function",
-              "name": "createUserAgent",
-              "path": "apps/api/src/modules/admin/subscriptionPlans/subscriptionPlans.e2e.test.ts#createUserAgent",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 3381,
+          "count": 3503,
           "sample": [
             {
-              "id": "agent:2026-07-01-luc-6612-gap-register-and-repair-lane-refresh:7d97658aba",
+              "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
               "type": "agent",
-              "name": "2026-07-01 LUC-6612 Gap Register And Repair Lane Refresh",
+              "name": "2026-07-02 LUC-6750 Gap Register And Repair Lane Refresh",
               "path": ".agents/state/active-mission.md",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
@@ -1325,18 +1325,18 @@
               "status": "implemented"
             },
             {
-              "id": "task:2026-07-01-luc-6612-gap-register-and-repair-lane-refresh:452f6104fd",
+              "id": "task:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:006aecaba0",
               "type": "task",
-              "name": "2026-07-01 LUC-6612 Gap Register And Repair Lane Refresh",
-              "path": ".codex/context/PROJECT_STATE.md",
+              "name": "2026-07-02 LUC-6750 Gap Register And Repair Lane Refresh",
+              "path": ".codex/context/TASK_BOARD.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
             {
-              "id": "task:2026-07-01-luc-6612-gap-register-and-repair-lane-refresh:b270405867",
+              "id": "task:2026-07-02-luc-6750-gap-register-refresh:f10f18ac2e",
               "type": "task",
-              "name": "2026-07-01 LUC-6612 Gap Register And Repair Lane Refresh",
-              "path": ".codex/context/TASK_BOARD.md",
+              "name": "2026-07-02 LUC-6750 Gap Register Refresh",
+              "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -1962,7 +1962,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 171,
+          "count": 172,
           "sample": [
             {
               "id": "document:api-deep-dive-auth-module:9b6f76d897",
@@ -2615,8 +2615,8 @@
     },
     {
       "userFlow": "Admin operation",
-      "entityCount": 65,
-      "linkedRelationCount": 159,
+      "entityCount": 66,
+      "linkedRelationCount": 161,
       "layers": {
         "frontend": {
           "count": 16,
@@ -2983,13 +2983,21 @@
           "truncated": false
         },
         "worker": {
-          "count": 14,
+          "count": 15,
           "sample": [
             {
               "id": "task:luc-2966-auth-security-and-qa-proof-task-entity-link-backfill:c59e900c9c",
               "type": "task",
               "name": "LUC-2966 Auth Security And QA Proof Task Entity Link Backfill",
               "path": "history/tasks/luc-2966-auth-security-qa-proof-task-entity-link-backfill-2026-06-08-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-6925-source-control-closure-dirty-state-classification-2026-07-02:bd2ee0af67",
+              "type": "task",
+              "name": "LUC-6925 Source Control Closure Dirty State Classification - 2026-07-02",
+              "path": "history/tasks/luc-6925-source-control-closure-dirty-state-classification-2026-07-02-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -3042,18 +3050,18 @@
               "status": "implemented"
             },
             {
-              "id": "task:2026-07-01-luc-6612-gap-register-and-repair-lane-refresh:452f6104fd",
+              "id": "task:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:006aecaba0",
               "type": "task",
-              "name": "2026-07-01 LUC-6612 Gap Register And Repair Lane Refresh",
-              "path": ".codex/context/PROJECT_STATE.md",
+              "name": "2026-07-02 LUC-6750 Gap Register And Repair Lane Refresh",
+              "path": ".codex/context/TASK_BOARD.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
             {
-              "id": "task:2026-07-01-luc-6612-gap-register-and-repair-lane-refresh:b270405867",
+              "id": "task:2026-07-02-luc-6750-gap-register-refresh:f10f18ac2e",
               "type": "task",
-              "name": "2026-07-01 LUC-6612 Gap Register And Repair Lane Refresh",
-              "path": ".codex/context/TASK_BOARD.md",
+              "name": "2026-07-02 LUC-6750 Gap Register Refresh",
+              "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -3172,8 +3180,8 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 820,
-      "linkedRelationCount": 2567,
+      "entityCount": 821,
+      "linkedRelationCount": 2570,
       "layers": {
         "frontend": {
           "count": 330,
@@ -4468,7 +4476,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 252,
+          "count": 253,
           "sample": [
             {
               "id": "agent:procedure:21bf8ee82e",
@@ -4655,9 +4663,9 @@
               "status": "verified"
             },
             {
-              "id": "task:2026-07-01-luc-6612-gap-register-and-repair-lane-refresh:b270405867",
+              "id": "task:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:006aecaba0",
               "type": "task",
-              "name": "2026-07-01 LUC-6612 Gap Register And Repair Lane Refresh",
+              "name": "2026-07-02 LUC-6750 Gap Register And Repair Lane Refresh",
               "path": ".codex/context/TASK_BOARD.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
@@ -4711,9 +4719,9 @@
               "status": "verified"
             },
             {
-              "id": "task:2026-07-01-luc-6612-gap-register-and-repair-lane-refresh:452f6104fd",
+              "id": "task:2026-07-02-luc-6750-gap-register-refresh:f10f18ac2e",
               "type": "task",
-              "name": "2026-07-01 LUC-6612 Gap Register And Repair Lane Refresh",
+              "name": "2026-07-02 LUC-6750 Gap Register Refresh",
               "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
@@ -6836,18 +6844,18 @@
               "status": "implemented"
             },
             {
-              "id": "task:2026-07-01-luc-6612-gap-register-and-repair-lane-refresh:452f6104fd",
+              "id": "task:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:006aecaba0",
               "type": "task",
-              "name": "2026-07-01 LUC-6612 Gap Register And Repair Lane Refresh",
-              "path": ".codex/context/PROJECT_STATE.md",
+              "name": "2026-07-02 LUC-6750 Gap Register And Repair Lane Refresh",
+              "path": ".codex/context/TASK_BOARD.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
             {
-              "id": "task:2026-07-01-luc-6612-gap-register-and-repair-lane-refresh:b270405867",
+              "id": "task:2026-07-02-luc-6750-gap-register-refresh:f10f18ac2e",
               "type": "task",
-              "name": "2026-07-01 LUC-6612 Gap Register And Repair Lane Refresh",
-              "path": ".codex/context/TASK_BOARD.md",
+              "name": "2026-07-02 LUC-6750 Gap Register Refresh",
+              "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -7966,8 +7974,8 @@
     },
     {
       "userFlow": "Subscription and entitlement",
-      "entityCount": 927,
-      "linkedRelationCount": 3431,
+      "entityCount": 928,
+      "linkedRelationCount": 3435,
       "layers": {
         "frontend": {
           "count": 25,
@@ -8822,7 +8830,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 686,
+          "count": 687,
           "sample": [
             {
               "id": "agent:planner:d382717bd5",
@@ -9009,18 +9017,18 @@
               "status": "verified"
             },
             {
-              "id": "task:2026-07-01-luc-6612-gap-register-and-repair-lane-refresh:452f6104fd",
+              "id": "task:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:006aecaba0",
               "type": "task",
-              "name": "2026-07-01 LUC-6612 Gap Register And Repair Lane Refresh",
-              "path": ".codex/context/PROJECT_STATE.md",
+              "name": "2026-07-02 LUC-6750 Gap Register And Repair Lane Refresh",
+              "path": ".codex/context/TASK_BOARD.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
             {
-              "id": "task:2026-07-01-luc-6612-gap-register-and-repair-lane-refresh:b270405867",
+              "id": "task:2026-07-02-luc-6750-gap-register-refresh:f10f18ac2e",
               "type": "task",
-              "name": "2026-07-01 LUC-6612 Gap Register And Repair Lane Refresh",
-              "path": ".codex/context/TASK_BOARD.md",
+              "name": "2026-07-02 LUC-6750 Gap Register Refresh",
+              "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -10075,8 +10083,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 3185,
-      "linkedRelationCount": 10908,
+      "entityCount": 3210,
+      "linkedRelationCount": 11018,
       "layers": {
         "frontend": {
           "count": 390,
@@ -10725,7 +10733,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1267,
+          "count": 1272,
           "sample": [
             {
               "id": "task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684",
@@ -10760,10 +10768,26 @@
               "status": "verified"
             },
             {
+              "id": "task:task:3b056a8a0e",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-6824-production-performance-server-health-watch-2026-07-02-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "task:task:8a21195e54",
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-2522-v1-audit-to-completion-controller-2026-06-06-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:b42ee12c99",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-6799-production-performance-server-health-watch-2026-07-02-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -11350,28 +11374,12 @@
               "path": "apps/api/src/modules/positions/livePositionReconciliation.history.ts",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "route:livepositionreconciliationapikeys-ts:f7b2e52adf",
-              "type": "route",
-              "name": "livePositionReconciliationApiKeys.ts",
-              "path": "apps/api/src/modules/positions/livePositionReconciliationApiKeys.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "route:positioncloseattribution-ts:837a563289",
-              "type": "route",
-              "name": "positionCloseAttribution.ts",
-              "path": "apps/api/src/modules/positions/positionCloseAttribution.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 1320,
+          "count": 1338,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -11398,18 +11406,18 @@
               "status": "implemented"
             },
             {
-              "id": "task:2026-07-01-luc-6612-gap-register-and-repair-lane-refresh:452f6104fd",
+              "id": "task:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:006aecaba0",
               "type": "task",
-              "name": "2026-07-01 LUC-6612 Gap Register And Repair Lane Refresh",
-              "path": ".codex/context/PROJECT_STATE.md",
+              "name": "2026-07-02 LUC-6750 Gap Register And Repair Lane Refresh",
+              "path": ".codex/context/TASK_BOARD.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
             {
-              "id": "task:2026-07-01-luc-6612-gap-register-and-repair-lane-refresh:b270405867",
+              "id": "task:2026-07-02-luc-6750-gap-register-refresh:f10f18ac2e",
               "type": "task",
-              "name": "2026-07-01 LUC-6612 Gap Register And Repair Lane Refresh",
-              "path": ".codex/context/TASK_BOARD.md",
+              "name": "2026-07-02 LUC-6750 Gap Register Refresh",
+              "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -12027,7 +12035,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 207,
+          "count": 209,
           "sample": [
             {
               "id": "document:web-deep-dive-shared-feature-helpers:2becf45d1e",
@@ -12680,8 +12688,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 8756,
-      "linkedRelationCount": 30641,
+      "entityCount": 8978,
+      "linkedRelationCount": 31495,
       "layers": {
         "frontend": {
           "count": 698,
@@ -13330,7 +13338,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1480,
+          "count": 1546,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -13405,6 +13413,22 @@
               "status": "verified"
             },
             {
+              "id": "task:task:2d24c22ccc",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-6889-account-access-auth-route-proof-linkage-audit-2026-07-02-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:5030d797d2",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-6654-v1-audit-to-completion-controller-2026-07-01-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "task:task:7087a559bf",
               "type": "task",
               "name": "Task",
@@ -13421,10 +13445,34 @@
               "status": "blocked"
             },
             {
+              "id": "task:task:8927e0e757",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-6707-v1-audit-to-completion-controller-2026-07-02-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:89485b10a0",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-6711-production-performance-server-health-watch-2026-07-02-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "task:task:8a21195e54",
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-2522-v1-audit-to-completion-controller-2026-06-06-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:a3dba3b05b",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-6774-v1-audit-to-completion-controller-2026-07-02-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -13445,6 +13493,14 @@
               "status": "verified"
             },
             {
+              "id": "task:task:b42ee12c99",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-6799-production-performance-server-health-watch-2026-07-02-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "task:task:bcc5c35fac",
               "type": "task",
               "name": "Task",
@@ -13457,6 +13513,14 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-5767-production-performance-server-health-watch-2026-06-28-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:c83a8d66fa",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-6904-production-performance-server-health-watch-2026-07-02-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -13915,68 +13979,12 @@
               "path": "apps/api/src/modules/engine/runtimeSignalMarketDataGateway.ts",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "model:runtimesignalseriestypes-ts:a9e593d98d",
-              "type": "model",
-              "name": "runtimeSignalSeriesTypes.ts",
-              "path": "apps/api/src/modules/engine/runtimeSignalSeriesTypes.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "task:task:91ae3ec8ed",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/v1ui-32-dashboard-home-route-owned-copy-closure-task-2026-05-07.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:task:fab6a760ea",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/v1ui-31-dashboard-home-route-owned-runtime-labels-task-2026-05-07.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:task:dbddb52774",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/luc-2540-route-traceability-parity-audit-2026-06-06-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:task-architecture-graph-api-support-routes-backfill:8466799004",
-              "type": "task",
-              "name": "Task: Architecture Graph API Support Routes Backfill",
-              "path": "history/tasks/architecture-graph-api-support-routes-backfill-2026-05-24-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "document:api-support-routes-chain:92cafa25cc",
-              "type": "document",
-              "name": "API support routes chain",
-              "path": "docs/architecture/chains/CHAIN-API-SUPPORT-ROUTES.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "route:prisma-config-ts:8d4969dab6",
-              "type": "route",
-              "name": "prisma.config.ts",
-              "path": "apps/api/prisma.config.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 5746,
+          "count": 5898,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
@@ -14011,9 +14019,9 @@
               "status": "implemented"
             },
             {
-              "id": "task:2026-07-01-luc-6612-gap-register-and-repair-lane-refresh:b270405867",
+              "id": "task:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:006aecaba0",
               "type": "task",
-              "name": "2026-07-01 LUC-6612 Gap Register And Repair Lane Refresh",
+              "name": "2026-07-02 LUC-6750 Gap Register And Repair Lane Refresh",
               "path": ".codex/context/TASK_BOARD.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
@@ -14355,6 +14363,14 @@
               "status": "verified"
             },
             {
+              "id": "task:luc-6930-runtime-ai-worker-contract-proof-slice:3e20dc9683",
+              "type": "task",
+              "name": "LUC-6930 Runtime/AI Worker Contract Proof Slice",
+              "path": "history/tasks/luc-6930-runtime-ai-worker-contract-proof-slice-2026-07-02-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "task:money-flow-security-cancel-entitlement-task:a28dade859",
               "type": "task",
               "name": "Money-Flow Security Cancel Entitlement Task",
@@ -14609,14 +14625,6 @@
               "path": "history/tasks/luc-1764-inject-protected-prod-db-check-runner-inputs-2026-06-03-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
-            },
-            {
-              "id": "task:task:375418c0c6",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/luc-1787-coolify-resource-inventory-reconciliation-2026-06-05-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
             }
           ],
           "truncated": true
@@ -14632,7 +14640,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 831,
+          "count": 835,
           "sample": [
             {
               "id": "document:web-deep-dive-shared-feature-helpers:2becf45d1e",
@@ -16616,18 +16624,18 @@
               "status": "verified"
             },
             {
-              "id": "task:2026-07-01-luc-6612-gap-register-and-repair-lane-refresh:452f6104fd",
+              "id": "task:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:006aecaba0",
               "type": "task",
-              "name": "2026-07-01 LUC-6612 Gap Register And Repair Lane Refresh",
-              "path": ".codex/context/PROJECT_STATE.md",
+              "name": "2026-07-02 LUC-6750 Gap Register And Repair Lane Refresh",
+              "path": ".codex/context/TASK_BOARD.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
             {
-              "id": "task:2026-07-01-luc-6612-gap-register-and-repair-lane-refresh:b270405867",
+              "id": "task:2026-07-02-luc-6750-gap-register-refresh:f10f18ac2e",
               "type": "task",
-              "name": "2026-07-01 LUC-6612 Gap Register And Repair Lane Refresh",
-              "path": ".codex/context/TASK_BOARD.md",
+              "name": "2026-07-02 LUC-6750 Gap Register Refresh",
+              "path": ".codex/context/PROJECT_STATE.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },

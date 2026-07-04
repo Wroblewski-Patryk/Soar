@@ -520,21 +520,24 @@ Future agents must append an entry here when:
 ```
 
 ### 2026-07-02 - LUC-6820 regression evidence sweep blockers
-- Status: open
+- Status: fixed for local repeatable smoke and public no-workers smoke;
+  protected acceptance remains separately gated
 - Severity: P1
 - Surface: repeatable QA smoke / local DB-backed API and backtests / public Web
   smoke
-- Symptom: repeatable Web smoke passed, but API smoke and focused backtests e2e
-  failed before assertions; public Web smoke still returned `503`.
-- Root cause: local Docker Desktop Linux engine pipe unavailable for
-  `docker compose up -d postgres redis`; production Web restoration remains
-  blocked on the existing Ops path.
-- Fix or mitigation: restore local Docker Desktop Linux engine availability and
-  complete production Web restoration through [LUC-6331](/LUC/issues/LUC-6331).
-- Validation: `pnpm run qa:smoke-e2e:repeatable -- --checks
-  web,api,backtests --artifact-prefix luc-6820-qa-repeatable-smoke-e2e --today
-  2026-07-02` failed `1/3` pass; runner unit tests passed `7/7`; architecture
-  drift passed `850/850`; public no-workers deploy smoke had API `200` and Web
+- Symptom: earlier LUC-6820 pass had repeatable Web smoke green, but API smoke
+  and focused backtests e2e failed before assertions; public Web smoke returned
   `503`.
-- Follow-up: QVE reruns API/backtests repeatable smoke after Docker availability
-  is restored and reruns public/protected acceptance after [LUC-6331](/LUC/issues/LUC-6331).
+- Root cause: earlier local failure was Docker Desktop Linux engine unavailable
+  for DB-backed smoke startup; earlier public failure was production Web
+  availability. Both are no longer reproducing in the latest QVE rerun.
+- Fix or mitigation: no code change by QVE. Local repeatable smoke now starts
+  required local infra and passes; public no-workers smoke now returns `200` for
+  API and Web public endpoints.
+- Validation:
+  `pnpm run qa:smoke-e2e:repeatable -- --checks web,api,backtests --artifact-prefix luc-6820-qa-repeatable-smoke-e2e-rerun --today 2026-07-02`
+  passed `3/3`; `pnpm run ops:deploy:smoke -- --api-base-url https://api.soar.luckysparrow.ch --web-base-url https://soar.luckysparrow.ch --no-workers`
+  passed API `/health`, API `/ready`, Web `/`, and Web `/api/build-info`.
+- Follow-up: protected/authenticated acceptance and worker readiness remain
+  separate gated QVE/Ops/Security paths; do not infer those from no-workers
+  public smoke.

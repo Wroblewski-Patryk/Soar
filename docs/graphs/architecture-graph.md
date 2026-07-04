@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-01T12:13:43.504Z
+Generated: 2026-07-02T19:17:03.006Z
 
 ## Canonical Exports
 
@@ -42,7 +42,7 @@ Generated: 2026-07-01T12:13:43.504Z
 | agent | implemented | Procedure | .agents/skills/run_release_gate_checks/SKILL.md | Engineering Delivery Lead |
 | agent | implemented | Procedure | .agents/skills/scaffold_api_module/SKILL.md | Engineering Delivery Lead |
 | agent | implemented | Procedure | .agents/skills/ship_dashboard_feature_slice/SKILL.md | Engineering Delivery Lead |
-| agent | implemented | 2026-07-01 LUC-6612 Gap Register And Repair Lane Refresh | .agents/state/active-mission.md | Engineering Delivery Lead |
+| agent | implemented | 2026-07-02 LUC-6750 Gap Register And Repair Lane Refresh | .agents/state/active-mission.md | Engineering Delivery Lead |
 | agent | implemented | Agent Process Evals | .agents/state/agent-evals.md | Engineering Delivery Lead |
 | agent | implemented | Current Focus | .agents/state/current-focus.md | Engineering Delivery Lead |
 | agent | implemented | Decision Register | .agents/state/decision-register.md | Engineering Delivery Lead |
@@ -52,7 +52,7 @@ Generated: 2026-07-01T12:13:43.504Z
 | agent | implemented | 2026-06-29 LUC-6102 Production Watch Closure | .agents/state/next-steps.md | Engineering Delivery Lead |
 | agent | implemented | Quality Attribute Scenarios | .agents/state/quality-attribute-scenarios.md | Engineering Delivery Lead |
 | agent | implemented | Regression Log | .agents/state/regression-log.md | Engineering Delivery Lead |
-| agent | implemented | 2026-07-01 LUC-6608 Authenticated Production Acceptance | .agents/state/requirements-verification-matrix.md | Engineering Delivery Lead |
+| agent | implemented | 2026-07-01 LUC-6662 Gap Register And Repair Lane Refresh | .agents/state/requirements-verification-matrix.md | Engineering Delivery Lead |
 | agent | implemented | Responsibility Learning | .agents/state/responsibility-learning.md | Engineering Delivery Lead |
 | agent | implemented | Risk Register | .agents/state/risk-register.md | Engineering Delivery Lead |
 | agent | implemented | 2026-06-28 LUC-5809 Protected Worker Readiness | .agents/state/system-health.md | Engineering Delivery Lead |
@@ -557,8 +557,8 @@ Generated: 2026-07-01T12:13:43.504Z
 | connected_to | api_endpoint:use-wallets:b8382408ca | module:apps-api-src:3261657fad | apps/api/src/router/dashboard.routes.ts |
 | connected_to | api_endpoint:use-webhooks-stripe:b502d56cea | module:apps-api-src:3261657fad | apps/api/src/index.ts |
 | connected_to | project:soar:7c70e892d7 | task:learning-journal:c5626339c3 | .codex/context/LEARNING_JOURNAL.md |
-| connected_to | project:soar:7c70e892d7 | task:2026-07-01-luc-6612-gap-register-and-repair-lane-refresh:452f6104fd | .codex/context/PROJECT_STATE.md |
-| connected_to | project:soar:7c70e892d7 | task:2026-07-01-luc-6612-gap-register-and-repair-lane-refresh:b270405867 | .codex/context/TASK_BOARD.md |
+| connected_to | project:soar:7c70e892d7 | task:2026-07-02-luc-6750-gap-register-refresh:f10f18ac2e | .codex/context/PROJECT_STATE.md |
+| connected_to | project:soar:7c70e892d7 | task:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:006aecaba0 | .codex/context/TASK_BOARD.md |
 | connected_to | project:soar:7c70e892d7 | task:agent-operating-system-task-2026-05-07:04d1de2b03 | history/tasks/agent-operating-system-task-2026-05-07.md |
 | connected_to | project:soar:7c70e892d7 | task:ai-assistant-foundation-protocol-harness-task:0adbd87e92 | history/tasks/ai-assistant-foundation-protocol-harness-2026-05-23-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:16ccebb9bd | history/tasks/api-endpoint-docs-gap-closure-2026-05-19-task.md |

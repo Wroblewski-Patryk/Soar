@@ -1,3 +1,71 @@
+## 2026-07-03 LUC-6468 Runtime Worker Contract Proof Slice
+
+- Status:
+  `VERIFIED / DB_FREE_RUNTIME_WORKER_MARKET_STREAM_SIGNAL_PACK_PASS /
+  NO_PRODUCT_CODE_CHANGE / DB_BACKED_AND_PROTECTED_GATES_STILL_SEPARATE`.
+- Evidence:
+  `history/tasks/luc-6468-runtime-worker-contract-proof-slice-2026-07-03-task.md`.
+- Current proof:
+  focused DB-free API pack passed (`12` files / `51` tests), covering
+  execution worker startup/failure metrics, market-stream worker lifecycle and
+  source selection, market-stream subscription scope, runtime signal merge
+  determinism, runtime topology defaults, runtime supervisor restart signals,
+  telemetry, ticker and market-data gateways, and bot assistant dry-run service
+  wiring.
+- Release impact:
+  parent [LUC-6468](/LUC/issues/LUC-6468) is advanced but not fully closed by
+  this slice. DB-backed runtime freshness remains with the prior local
+  Postgres/Docker blocker, and protected production/browser/source-build gates
+  remain separate owner paths. No production mutation, protected smoke,
+  secret/account readback, exchange/payment mutation, order, position,
+  subscription mutation, deploy, restart, rollback, DB/Redis mutation, or
+  live-trading action occurred.
+
+## 2026-07-02 LUC-3515 Coolify Production Deploy Health Sweep
+
+- [LUC-3515](/LUC/issues/LUC-3515) integrated completed child
+  [LUC-3525](/LUC/issues/LUC-3525), moved from missing deploy-log artifact to
+  a concrete Coolify queue approval gate, then consumed the approved follow-up
+  by rechecking before mutation.
+- Status:
+  `DONE / PUBLIC_WEB_API_SMOKE_PASS / DEPLOY_LOG_EXPORT_INTEGRATED /
+  COOLIFY_DEPLOY_QUEUE_CLEARED_ON_READ_ONLY_RECHECK /
+  NO_PRODUCTION_MUTATION`.
+- Current truth:
+  API `/health`, API `/ready`, Web `/`, and Web `/api/build-info` return
+  `200`. Focused no-worker deploy smoke passes for
+  `c357d957741f56835f27a1fc3a948dad43a91036`; build-info reports
+  `gitRef=main` and `metadataSource=env-runtime`.
+- Coolify:
+  read-only version/team/resources/deployments reads pass. Six Soar apps are
+  visible with `server_status=true` and `running:unknown`; PostgreSQL and
+  Redis are `running:healthy`. Approval follow-up at 2026-07-02T18:41Z showed
+  `/api/v1/deployments` at `0` visible rows, so queue remediation was not
+  executed.
+- Release impact:
+  no deploy, restart, rollback, env edit, DB/Redis mutation, secret/account
+  value readback, account/exchange/payment mutation, order, position,
+  subscription mutation, or live-trading action occurred.
+- Evidence:
+  `history/evidence/luc-3515-coolify-production-deploy-health-sweep-2026-07-02.md`;
+  `history/tasks/luc-3515-coolify-production-deploy-health-sweep-2026-07-02-task.md`.
+
+## 2026-07-02 LUC-6930 Runtime/AI Worker Contract Proof
+
+- Status:
+  `partially verified`.
+- Evidence:
+  `history/tasks/luc-6930-runtime-ai-worker-contract-proof-slice-2026-07-02-task.md`.
+- Current reality:
+  DB-free worker/assistant backend contracts pass (`8` files / `31` tests).
+  DB-backed runtime freshness route proof is blocked by local PostgreSQL being
+  unreachable at `localhost:5432` and Docker Desktop Linux engine being
+  unavailable.
+- Release impact:
+  parent [LUC-6468](/LUC/issues/LUC-6468) can continue with additional
+  app-completion child slices; no backend repair child was found from this
+  proof packet.
+
 ## 2026-07-02 LUC-6920 API Ready Runtime Restoration
 
 - [LUC-6920](/LUC/issues/LUC-6920) was created from stale project truth that

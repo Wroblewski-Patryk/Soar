@@ -1,3 +1,74 @@
+## 2026-07-03 LUC-6468 Runtime Worker Contract Proof Slice
+
+- Current health signal:
+  `VERIFIED / DB_FREE_RUNTIME_WORKER_MARKET_STREAM_SIGNAL_PACK_PASS /
+  NO_PRODUCT_CODE_CHANGE`.
+- Local backend proof:
+  focused API pack passed with `12` files / `51` tests. Coverage includes
+  execution worker startup/failure metrics, market-stream worker lifecycle and
+  subscriptions, runtime signal merge, topology defaults, supervisor restart
+  triggers, telemetry, ticker store, market-data gateway, and bot assistant
+  service wiring.
+- Evidence:
+  `history/tasks/luc-6468-runtime-worker-contract-proof-slice-2026-07-03-task.md`.
+- Next owner:
+  parent [LUC-6468](/LUC/issues/LUC-6468) continues until all packet rows are
+  verified, deferred, or blocked. DB-backed runtime freshness remains blocked
+  by local Postgres/Docker from [LUC-6930](/LUC/issues/LUC-6930); production
+  protected proof remains a separate release gate.
+
+## 2026-07-02 LUC-3515 Coolify Production Deploy Health Sweep
+
+- Current health signal:
+  `DONE / PUBLIC_WEB_API_SMOKE_PASS / DEPLOY_LOG_EXPORT_INTEGRATED /
+  COOLIFY_DEPLOY_QUEUE_CLEARED_ON_READ_ONLY_RECHECK /
+  NO_PRODUCTION_MUTATION`.
+- Public production checks:
+  API `/health`, API `/ready`, Web `/`, and Web `/api/build-info` returned
+  `200`; focused no-worker deploy smoke passed for
+  `c357d957741f56835f27a1fc3a948dad43a91036` with
+  `metadataSource=env-runtime`.
+- Coolify read-only projection:
+  selector `LuckySparrow`; global resources visible; six Soar apps report
+  `running:unknown` with `server_status=true`; PostgreSQL and Redis are
+  `running:healthy`. Approval follow-up at 2026-07-02T18:41Z returned
+  `/api/v1/deployments` with `0` visible rows, so the approved queue
+  remediation was not executed.
+- Deploy-log evidence:
+  [LUC-3525](/LUC/issues/LUC-3525) supplied a redacted Coolify deploy-log
+  artifact, so the previous "no export path" blocker is replaced by a concrete
+  deployment-queue mutation approval gate.
+- Evidence:
+  `history/evidence/luc-3515-coolify-production-deploy-health-sweep-2026-07-02.md`;
+  `history/tasks/luc-3515-coolify-production-deploy-health-sweep-2026-07-02-task.md`.
+- Next owner:
+  none for the deploy queue sweep. Protected worker readiness/authenticated
+  acceptance and release-grade build provenance remain separate release gates;
+  no production mutation was performed.
+
+## 2026-07-02 LUC-6930 Runtime/AI Worker Contract Proof
+
+- Current health signal:
+  `PARTIALLY_VERIFIED / DB_FREE_WORKER_ASSISTANT_CONTRACTS_PASS /
+  DB_BACKED_RUNTIME_FRESHNESS_BLOCKED_BY_LOCAL_POSTGRES`.
+- Local backend proof:
+  DB-free focused API pack passed with `8` files / `31` tests. Coverage
+  includes worker topology/ownership, heartbeat, bootstrap logging/heartbeat,
+  protected workers health/readiness authorization and split-mode checks,
+  runtime freshness env parsing, and assistant orchestrator fail-closed,
+  sanitization, circuit-breaker, protocol, and mode-parity behavior.
+- Blocked check:
+  `workers-runtime-freshness.test.ts` failed `7/7` before product assertions
+  because Prisma could not reach PostgreSQL at `localhost:5432`; `docker info`
+  failed on missing `//./pipe/dockerDesktopLinuxEngine`.
+- Evidence:
+  `history/tasks/luc-6930-runtime-ai-worker-contract-proof-slice-2026-07-02-task.md`.
+- Next owner:
+  infra/QA restores local Docker/Postgres and reruns the blocked DB-backed
+  runtime freshness route proof. Parent [LUC-6468](/LUC/issues/LUC-6468) can
+  continue with additional child slices; no backend code repair is indicated
+  by this packet.
+
 ## 2026-07-02 LUC-6898 API Ready Runtime
 
 - Current health signal:

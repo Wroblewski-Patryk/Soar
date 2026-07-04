@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-01T12:13:43.504Z",
+  "generated_at": "2026-07-02T19:17:03.006Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 10342,
-    "relations": 33080,
+    "entities": 10570,
+    "relations": 33956,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 4491,
+      "document": 4637,
       "feature": 217,
       "function": 2832,
       "migration": 57,
@@ -19,16 +19,16 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1626,
+      "task": 1708,
       "test": 452
     },
     "by_status": {
-      "blocked": 39,
+      "blocked": 46,
       "deprecated": 10,
-      "implemented": 7851,
+      "implemented": 7997,
       "in_progress": 14,
       "tested": 832,
-      "verified": 1596
+      "verified": 1671
     }
   },
   "signals": {
@@ -5074,7 +5074,7 @@
       "items": []
     },
     "raw_tasks_without_architecture": {
-      "count": 117,
+      "count": 135,
       "items": [
         {
           "id": "task:task-local-certainty-closure-2026-05-21:a8d07f98c0",
@@ -5677,6 +5677,14 @@
           "owner": "Engineering Delivery Lead"
         },
         {
+          "id": "task:luc-4103-owner-login-waiting-state-security-heartbeat-2026-07-02:cd219523e8",
+          "type": "task",
+          "name": "LUC-4103 Owner-Login Waiting-State Security Heartbeat - 2026-07-02",
+          "path": "history/tasks/luc-4103-owner-login-waiting-state-security-heartbeat-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
           "id": "task:task:e36fd10d31",
           "type": "task",
           "name": "Task",
@@ -5857,6 +5865,142 @@
           "type": "task",
           "name": "Task",
           "path": "history/tasks/luc-6606-production-performance-server-health-watch-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:d0d1589ae2",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6624-production-performance-server-health-watch-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:b63acfeae2",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6643-production-performance-server-health-watch-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:4f53f1ff79",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6668-no-stall-queue-expeditor-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:c6ec6695b9",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6673-production-performance-server-health-watch-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:29424d3673",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6697-no-stall-queue-expeditor-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:c840a586ca",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6701-no-stall-queue-expeditor-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:98f5b1b6ff",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6733-production-performance-server-health-watch-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:019b0e6343",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6757-production-performance-server-health-watch-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-6760-no-stall-queue-expeditor:f811942b01",
+          "type": "task",
+          "name": "LUC-6760 No-Stall Queue Expeditor",
+          "path": "history/tasks/luc-6760-no-stall-queue-expeditor-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:38a031dadd",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6776-production-performance-server-health-watch-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:b605d04b6c",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6809-v1-audit-to-completion-controller-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-6815-daily-project-status-refresh-2026-07-02:57813f114a",
+          "type": "task",
+          "name": "LUC-6815 Daily Project Status Refresh - 2026-07-02",
+          "path": "history/tasks/luc-6815-daily-project-status-refresh-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-6817-no-stall-queue-expeditor-2026-07-02:6d054d1d1c",
+          "type": "task",
+          "name": "LUC-6817 No-Stall Queue Expeditor - 2026-07-02",
+          "path": "history/tasks/luc-6817-no-stall-queue-expeditor-2026-07-02-task.md",
+          "status": "blocked",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-6838-no-stall-queue-expeditor:76fea7c1d3",
+          "type": "task",
+          "name": "LUC-6838 No-Stall Queue Expeditor",
+          "path": "history/tasks/luc-6838-no-stall-queue-expeditor-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:6b23254959",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6870-production-performance-server-health-watch-2026-07-02-task.md",
+          "status": "blocked",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-6873-no-stall-queue-expeditor-2026-07-02:bea2979db9",
+          "type": "task",
+          "name": "LUC-6873 No-Stall Queue Expeditor - 2026-07-02",
+          "path": "history/tasks/luc-6873-no-stall-queue-expeditor-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:task:9b581d0fb6",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6894-public-probe-runtime-restore-execution-2026-07-02-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead"
         },
@@ -7624,11 +7768,11 @@
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 437,
+      "count": 455,
       "by_reason": {
         "config_only_file": 34,
         "curated_graph_covered": 285,
-        "historical_task_archive": 117,
+        "historical_task_archive": 135,
         "top_level_app_mount": 1
       },
       "items": [
@@ -8308,6 +8452,15 @@
           "reason": "historical_task_archive"
         },
         {
+          "id": "task:luc-4103-owner-login-waiting-state-security-heartbeat-2026-07-02:cd219523e8",
+          "type": "task",
+          "name": "LUC-4103 Owner-Login Waiting-State Security Heartbeat - 2026-07-02",
+          "path": "history/tasks/luc-4103-owner-login-waiting-state-security-heartbeat-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
           "id": "task:task:e36fd10d31",
           "type": "task",
           "name": "Task",
@@ -8510,6 +8663,159 @@
           "type": "task",
           "name": "Task",
           "path": "history/tasks/luc-6606-production-performance-server-health-watch-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:d0d1589ae2",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6624-production-performance-server-health-watch-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:b63acfeae2",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6643-production-performance-server-health-watch-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:4f53f1ff79",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6668-no-stall-queue-expeditor-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:c6ec6695b9",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6673-production-performance-server-health-watch-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:29424d3673",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6697-no-stall-queue-expeditor-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:c840a586ca",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6701-no-stall-queue-expeditor-2026-07-01-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:98f5b1b6ff",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6733-production-performance-server-health-watch-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:019b0e6343",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6757-production-performance-server-health-watch-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:luc-6760-no-stall-queue-expeditor:f811942b01",
+          "type": "task",
+          "name": "LUC-6760 No-Stall Queue Expeditor",
+          "path": "history/tasks/luc-6760-no-stall-queue-expeditor-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:38a031dadd",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6776-production-performance-server-health-watch-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:b605d04b6c",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6809-v1-audit-to-completion-controller-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:luc-6815-daily-project-status-refresh-2026-07-02:57813f114a",
+          "type": "task",
+          "name": "LUC-6815 Daily Project Status Refresh - 2026-07-02",
+          "path": "history/tasks/luc-6815-daily-project-status-refresh-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:luc-6817-no-stall-queue-expeditor-2026-07-02:6d054d1d1c",
+          "type": "task",
+          "name": "LUC-6817 No-Stall Queue Expeditor - 2026-07-02",
+          "path": "history/tasks/luc-6817-no-stall-queue-expeditor-2026-07-02-task.md",
+          "status": "blocked",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:luc-6838-no-stall-queue-expeditor:76fea7c1d3",
+          "type": "task",
+          "name": "LUC-6838 No-Stall Queue Expeditor",
+          "path": "history/tasks/luc-6838-no-stall-queue-expeditor-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:6b23254959",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6870-production-performance-server-health-watch-2026-07-02-task.md",
+          "status": "blocked",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:luc-6873-no-stall-queue-expeditor-2026-07-02:bea2979db9",
+          "type": "task",
+          "name": "LUC-6873 No-Stall Queue Expeditor - 2026-07-02",
+          "path": "history/tasks/luc-6873-no-stall-queue-expeditor-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:task:9b581d0fb6",
+          "type": "task",
+          "name": "Task",
+          "path": "history/tasks/luc-6894-public-probe-runtime-restore-execution-2026-07-02-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead",
           "reason": "historical_task_archive"
@@ -9266,168 +9572,6 @@
           "type": "feature",
           "name": "useBacktestTimelineOrchestration.ts",
           "path": "apps/web/src/features/backtest/hooks/useBacktestTimelineOrchestration.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:usebacktesttradesanalytics-ts:1a0157325e",
-          "type": "feature",
-          "name": "useBacktestTradesAnalytics.ts",
-          "path": "apps/web/src/features/backtest/hooks/useBacktestTradesAnalytics.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:backtests-service-ts:97b9d3c31b",
-          "type": "feature",
-          "name": "backtests.service.ts",
-          "path": "apps/web/src/features/backtest/services/backtests.service.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:backtestsymbolstats-ts:5738a3e21c",
-          "type": "feature",
-          "name": "backtestSymbolStats.ts",
-          "path": "apps/web/src/features/backtest/utils/backtestSymbolStats.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:nonoverlappingtradesegments-ts:b394271b25",
-          "type": "feature",
-          "name": "nonOverlappingTradeSegments.ts",
-          "path": "apps/web/src/features/backtest/utils/nonOverlappingTradeSegments.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:pairstatsmetricdisplay-ts:653eb5bfa5",
-          "type": "feature",
-          "name": "pairStatsMetricDisplay.ts",
-          "path": "apps/web/src/features/backtest/utils/pairStatsMetricDisplay.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:timelineindicatoroverlays-ts:a6acc19653",
-          "type": "feature",
-          "name": "timelineIndicatorOverlays.ts",
-          "path": "apps/web/src/features/backtest/utils/timelineIndicatorOverlays.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:formatters-ts:1916bb81e3",
-          "type": "feature",
-          "name": "formatters.ts",
-          "path": "apps/web/src/features/bots/components/bots-management/formatters.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:botsmonitoringaggregate-service-ts:eae6ff09a1",
-          "type": "feature",
-          "name": "botsMonitoringAggregate.service.ts",
-          "path": "apps/web/src/features/bots/services/botsMonitoringAggregate.service.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:formatters-ts:4f80effc6e",
-          "type": "feature",
-          "name": "formatters.ts",
-          "path": "apps/web/src/features/dashboard-home/components/home-live-widgets/formatters.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:runtimetrademeta-ts:53a3af22b4",
-          "type": "feature",
-          "name": "runtimeTradeMeta.ts",
-          "path": "apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeTradeMeta.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:homelivewidgets-test-helpers-ts:f9b7b13ab4",
-          "type": "feature",
-          "name": "HomeLiveWidgets.test-helpers.ts",
-          "path": "apps/web/src/features/dashboard-home/components/HomeLiveWidgets.test-helpers.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:usecloseruntimepositionaction-ts:b99f4d3059",
-          "type": "feature",
-          "name": "useCloseRuntimePositionAction.ts",
-          "path": "apps/web/src/features/dashboard-home/hooks/useCloseRuntimePositionAction.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:exchangecapabilities-ts:cc55e0b30d",
-          "type": "feature",
-          "name": "exchangeCapabilities.ts",
-          "path": "apps/web/src/features/exchanges/exchangeCapabilities.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:usecoiniconlookup-ts:19986d4e7b",
-          "type": "feature",
-          "name": "useCoinIconLookup.ts",
-          "path": "apps/web/src/features/icons/hooks/useCoinIconLookup.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:icons-service-ts:b46a035990",
-          "type": "feature",
-          "name": "icons.service.ts",
-          "path": "apps/web/src/features/icons/services/icons.service.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:logs-service-ts:2dbed3acdd",
-          "type": "feature",
-          "name": "logs.service.ts",
-          "path": "apps/web/src/features/logs/services/logs.service.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:markets-service-ts:63f13c6489",
-          "type": "feature",
-          "name": "markets.service.ts",
-          "path": "apps/web/src/features/markets/services/markets.service.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:marketuniversehelpers-ts:e019029725",
-          "type": "feature",
-          "name": "marketUniverseHelpers.ts",
-          "path": "apps/web/src/features/markets/utils/marketUniverseHelpers.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"

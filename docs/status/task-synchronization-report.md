@@ -1,6 +1,6 @@
 # Task Synchronization Report
 
-Generated: 2026-07-01T12:13:43.504Z
+Generated: 2026-07-02T19:17:03.006Z
 
 ## Contract
 
@@ -9,17 +9,17 @@ Every task should identify the feature/module it changes, dependency expectation
 ## Signals
 
 - Actionable tasks without architecture links: 0
-- Raw tasks without architecture links: 117
+- Raw tasks without architecture links: 135
 - Actionable implementation entities without task links: 0
 - Raw implementation entities without task links: 320
-- Classified task-linkage noise: 437
+- Classified task-linkage noise: 455
 - Verified entities without proof evidence: 0
 
 ## Classified Task-Linkage Noise
 
 - config_only_file: 34
 - curated_graph_covered: 285
-- historical_task_archive: 117
+- historical_task_archive: 135
 - top_level_app_mount: 1
 
 ## Actionable Tasks Without Architecture Links

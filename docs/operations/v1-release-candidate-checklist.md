@@ -13,7 +13,7 @@
   - bots LIVE confirmations,
   - shell/accessibility smoke.
 
-### Latest Verification (2026-06-18)
+### Latest Verification (2026-07-04)
 Expected SHA: `not provided`
 - `pnpm --filter api build` passed.
 - `pnpm --filter web build` passed.
@@ -118,8 +118,8 @@ Expected SHA: `not provided`
 - [x] RC owner assigned with rollback authority.
 - Sign-off record template: `docs/operations/v1-rc-signoff-record.md`.
 
-## Outstanding External Gates (2026-06-18)
-- current snapshot is `G1=PASS`, `G2=OPEN`, `G3=PASS`, `G4=PASS` (synced 2026-06-18).
+## Outstanding External Gates (2026-07-04)
+- current snapshot is `G1=PASS`, `G2=OPEN`, `G3=PASS`, `G4=PASS` (synced 2026-07-04).
 - Gate 1 is satisfied by
   `history/evidence/v1-restore-drill-prod-2026-05-23T00-00-00-000Z.md`.
 - Gate 2 is satisfied by

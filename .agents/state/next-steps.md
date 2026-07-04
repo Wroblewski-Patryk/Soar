@@ -1,3 +1,88 @@
+## 2026-07-04 LUC-21 Local Architecture/Repo Preflight Next Step
+
+- [LUC-21](/LUC/issues/LUC-21) can close as
+  `DONE / ARCHITECTURE_SOURCE_READ / DIRTY_DIVERGED_REPO_CLASSIFIED /
+  LOCAL_PROOF_CAN_CONTINUE_NARROWLY / RELEASE_OPS_GATED`.
+- Verified:
+  architecture source entrypoints fit the read-only preflight; `main` is at
+  `fc0f6d9f`, `HEAD...origin/main` is `23` ahead and `5` behind, and the
+  checkout has a large pre-existing dirty set across state/status/graph and
+  evidence files.
+- Remaining:
+  do not push/deploy/commit/restart/rollback/migrate from this checkout until
+  source-control ownership reconciles the dirty/diverged state or records an
+  explicit exception. Local no-live proof can continue only when the slice is
+  narrow and does not depend on clean source control.
+- Next owner/action:
+  CBE or packet owner continues [LUC-6468](/LUC/issues/LUC-6468) with the next
+  DB-free worker/runtime/API contract proof slice. Infra/QA separately owns
+  Docker/Postgres restoration for DB-backed proof from
+  [LUC-6930](/LUC/issues/LUC-6930).
+- Evidence:
+  `history/tasks/luc-21-soar-local-architecture-repo-preflight-2026-07-04-task.md`.
+
+## 2026-07-03 LUC-6468 Runtime Worker Contract Proof Next Step
+
+- [LUC-6468](/LUC/issues/LUC-6468) has a fresh verified DB-free slice:
+  execution worker, market-stream worker/subscriptions, runtime signal merge,
+  runtime topology defaults, supervisor, telemetry, ticker/market-data gateway,
+  and bot assistant service tests passed (`12` files / `51` tests).
+- Evidence:
+  `history/tasks/luc-6468-runtime-worker-contract-proof-slice-2026-07-03-task.md`.
+- Remaining:
+  continue row-level burn-down for the parent runtime automation/AI packet.
+  Do not wait on the DB-backed `workers-runtime-freshness.test.ts` blocker for
+  all parent progress; that blocker remains an infra/QA local Docker/Postgres
+  restoration path from [LUC-6930](/LUC/issues/LUC-6930).
+- Next owner/action:
+  CBE or packet owner selects the next unproved no-live API/worker contract
+  row, or infra/QA restores local Docker/Postgres and reruns the blocked
+  freshness route proof. Protected production/browser/source-build gates remain
+  separate owner lanes.
+
+## 2026-07-02 LUC-3515 Coolify Deploy Queue Closure
+
+- [LUC-3515](/LUC/issues/LUC-3515) should close `done` as
+  `DONE / PUBLIC_WEB_API_SMOKE_PASS / DEPLOY_LOG_EXPORT_INTEGRATED /
+  COOLIFY_DEPLOY_QUEUE_CLEARED_ON_READ_ONLY_RECHECK /
+  NO_PRODUCTION_MUTATION`.
+- Verified:
+  public no-worker deploy smoke passed for
+  `c357d957741f56835f27a1fc3a948dad43a91036`; Web build-info reports
+  `metadataSource=env-runtime`; Coolify read-only version/team/resources reads
+  pass; [LUC-3525](/LUC/issues/LUC-3525) attached the redacted deploy-log
+  export.
+- Remaining:
+  approval follow-up at 2026-07-02T18:41Z returned Coolify
+  `/api/v1/deployments` with `0` visible rows, so the approved queue-remediation
+  mutation had no remaining target. Protected worker readiness/authenticated
+  acceptance and release-grade build provenance remain separate release gates.
+- Next owner/action:
+  none for the deploy queue sweep. Do not mutate Coolify, production, env,
+  DB/Redis, accounts, exchanges, payments, or live-trading state from this
+  closed lane.
+- Evidence:
+  `history/evidence/luc-3515-coolify-production-deploy-health-sweep-2026-07-02.md`;
+  `history/tasks/luc-3515-coolify-production-deploy-health-sweep-2026-07-02-task.md`.
+
+## 2026-07-02 LUC-6930 Runtime/AI Worker Contract Proof Next Step
+
+- [LUC-6930](/LUC/issues/LUC-6930) can close as
+  `PARTIALLY_VERIFIED / DB_FREE_WORKER_ASSISTANT_CONTRACTS_PASS /
+  DB_BACKED_RUNTIME_FRESHNESS_BLOCKED_BY_LOCAL_POSTGRES /
+  NO_BACKEND_REPAIR_CHILD`.
+- Verified:
+  DB-free focused API proof passed (`8` files / `31` tests): worker
+  ownership/topology, heartbeat, bootstrap, protected workers health/readiness,
+  runtime freshness env parsing, and assistant fail-closed/protocol/parity.
+- Remaining:
+  restore local Docker/Postgres and rerun
+  `src/router/workers-runtime-freshness.test.ts`. Parent
+  [LUC-6468](/LUC/issues/LUC-6468) should continue with additional scoped
+  runtime/AI worker proof slices rather than waiting on this child.
+- Evidence:
+  `history/tasks/luc-6930-runtime-ai-worker-contract-proof-slice-2026-07-02-task.md`.
+
 ## 2026-07-02 LUC-6917 No-Stall Queue Expeditor
 
 - [LUC-6917](/LUC/issues/LUC-6917) should move to `done` as

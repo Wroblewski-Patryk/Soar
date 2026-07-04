@@ -1,3 +1,104 @@
+## 2026-07-04 LUC-21 Soar Local Architecture And Repo Preflight
+
+- [LUC-21](/LUC/issues/LUC-21) can close as
+  `DONE / ARCHITECTURE_SOURCE_READ / DIRTY_DIVERGED_REPO_CLASSIFIED /
+  LOCAL_PROOF_CAN_CONTINUE_NARROWLY / RELEASE_OPS_GATED`.
+- Verified:
+  architecture entrypoints `docs/architecture/README.md` and
+  `docs/architecture/architecture-source-of-truth.md` were read and fit the
+  preflight scope; branch is `main` at `fc0f6d9f`, upstream `origin/main`,
+  divergence is `23` ahead and `5` behind, and the workspace is already dirty
+  with large state/status/graph/evidence changes.
+- Next owner/action:
+  continue no-live, DB-free row-level proof through
+  [LUC-6468](/LUC/issues/LUC-6468) when scoped tests do not require a clean
+  tree. Source-control/release owner must reconcile the dirty/diverged checkout
+  before commit, push, deploy, migration, restart, rollback, or production
+  mutation.
+- Evidence:
+  `history/tasks/luc-21-soar-local-architecture-repo-preflight-2026-07-04-task.md`.
+
+## 2026-07-03 LUC-6468 Runtime Worker Contract Proof Slice
+
+- [LUC-6468](/LUC/issues/LUC-6468) advanced as
+  `VERIFIED / DB_FREE_RUNTIME_WORKER_MARKET_STREAM_SIGNAL_PACK_PASS /
+  NO_PRODUCT_CODE_CHANGE`.
+- Concrete action:
+  CBE resumed the runtime automation/AI packet after the prior usage-limit
+  adapter stop, kept the no-live boundary, selected a second DB-free API
+  contract pack not covered by [LUC-6930](/LUC/issues/LUC-6930), and recorded
+  durable task/state evidence.
+- Validation:
+  `corepack pnpm --filter api exec vitest run src/workers/execution.worker.test.ts src/workers/marketStream.worker.test.ts src/workers/marketStreamWorkerConfig.test.ts src/workers/marketStreamSubscriptions.service.test.ts src/modules/engine/runtimeSignalMerge.test.ts src/modules/engine/runtimeSignalLoopDefaults.test.ts src/modules/engine/runtimeSignalLoopSupervisor.test.ts src/modules/engine/runtimeTelemetry.service.test.ts src/modules/engine/runtimeTickerStore.test.ts src/modules/engine/runtimeSignalMarketDataGateway.test.ts src/modules/bots/botAssistant.service.test.ts src/modules/bots/bots.types.test.ts --pool=forks --maxWorkers=1 --minWorkers=1 --test-timeout 30000`
+  passed (`12` files / `51` tests).
+- Source control:
+  no commit or push; repo was already dirty/divergent and this heartbeat added
+  scoped task/state evidence only.
+- Next owner/action:
+  continue remaining [LUC-6468](/LUC/issues/LUC-6468) row-level proof.
+  DB-backed runtime freshness remains blocked by the local Postgres/Docker
+  condition recorded in [LUC-6930](/LUC/issues/LUC-6930). Protected production,
+  browser, source/build, and deploy gates remain separate owner paths.
+- Evidence:
+  `history/tasks/luc-6468-runtime-worker-contract-proof-slice-2026-07-03-task.md`.
+
+## 2026-07-02 LUC-3515 Coolify Production Deploy Health Sweep
+
+- [LUC-3515](/LUC/issues/LUC-3515) should move to `done` as
+  `DONE / PUBLIC_WEB_API_SMOKE_PASS / DEPLOY_LOG_EXPORT_INTEGRATED /
+  COOLIFY_DEPLOY_QUEUE_CLEARED_ON_READ_ONLY_RECHECK /
+  NO_PRODUCTION_MUTATION`.
+- Concrete action:
+  DRE consumed the `issue_children_completed` wake, integrated completed child
+  [LUC-3525](/LUC/issues/LUC-3525), downloaded/read the redacted Coolify
+  deploy-log export metadata, reran public no-worker production smoke, and
+  reran read-only Coolify version/team/resources/deployments checks.
+- Validation:
+  public smoke passed for API `/health`, API `/ready`, Web `/`, and Web
+  `/api/build-info` at
+  `c357d957741f56835f27a1fc3a948dad43a91036`. Coolify reads pass and show
+  six Soar apps with `server_status=true`; PostgreSQL/Redis are healthy.
+  Approval follow-up rerun at 2026-07-02T18:41Z still passed public no-worker
+  smoke and Coolify `/api/v1/deployments` returned `0` visible rows, so the
+  approved queue-remediation mutation had no remaining target and was not
+  executed.
+- Source control:
+  no commit or push; repo was already dirty/divergent
+  (`main`, local `fc0f6d9f`, ahead `23`, behind `3`). This heartbeat added
+  scoped evidence/task/state records only.
+- Next owner/action:
+  none for the deploy queue sweep. Protected worker readiness/authenticated
+  acceptance and release-grade build provenance remain separate release gates.
+  No Coolify, production, deploy, restart, rollback, env, DB/Redis, account,
+  exchange, payment, subscription, or live-trading mutation occurred.
+- Evidence:
+  `history/evidence/luc-3515-coolify-production-deploy-health-sweep-2026-07-02.md`;
+  `history/tasks/luc-3515-coolify-production-deploy-health-sweep-2026-07-02-task.md`.
+
+## 2026-07-02 LUC-6930 Runtime/AI Worker Contract Proof
+
+- [LUC-6930](/LUC/issues/LUC-6930) should move to `done` as
+  `PARTIALLY_VERIFIED / DB_FREE_WORKER_ASSISTANT_CONTRACTS_PASS /
+  DB_BACKED_RUNTIME_FRESHNESS_BLOCKED_BY_LOCAL_POSTGRES /
+  NO_BACKEND_REPAIR_CHILD`.
+- Verified:
+  DB-free focused API pack passed (`8` files / `31` tests), covering worker
+  ownership/topology, worker heartbeat/bootstrap, protected workers
+  health/readiness route behavior, runtime freshness env parsing, and assistant
+  orchestrator fail-closed/protocol/parity behavior.
+- Blocked:
+  the DB-backed `workers-runtime-freshness.test.ts` proof failed before product
+  assertions because PostgreSQL was unreachable at `localhost:5432`. Docker
+  Desktop Linux engine was unavailable, so local infra could not be restored in
+  this heartbeat.
+- Next owner/action:
+  infra/QA restores local Docker/Postgres and reruns the blocked DB-backed
+  route proof. Parent [LUC-6468](/LUC/issues/LUC-6468) can continue with more
+  child proof slices; no backend code repair child is warranted from
+  [LUC-6930](/LUC/issues/LUC-6930).
+- Evidence:
+  `history/tasks/luc-6930-runtime-ai-worker-contract-proof-slice-2026-07-02-task.md`.
+
 ## 2026-07-02 LUC-6920 API Ready Runtime Restoration
 
 - [LUC-6920](/LUC/issues/LUC-6920) should move to `done` as
