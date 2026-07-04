@@ -134,6 +134,9 @@ describe('Orders and positions read contract', () => {
     await prisma.botMarketGroup.deleteMany();
     await prisma.botRuntimeEvent.deleteMany();
     await prisma.botRuntimeSymbolStat.deleteMany();
+    // Runtime read helpers can finish telemetry writes after a request resolves in e2e setup.
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await prisma.botRuntimeSymbolStat.deleteMany();
     await prisma.botRuntimeSession.deleteMany();
     await prisma.runtimeExecutionDedupe.deleteMany();
     await prisma.bot.deleteMany();
