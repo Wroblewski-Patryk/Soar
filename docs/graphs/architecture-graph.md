@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-02T19:17:03.006Z
+Generated: 2026-07-04T17:32:34.669Z
 
 ## Canonical Exports
 
@@ -1097,6 +1097,7 @@ Generated: 2026-07-02T19:17:03.006Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2094-operator-coolify-bind-read-only-production-status-access:9872f60acd | history/tasks/luc-2094-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2095-source-control-close-local-dirty-state-for-luc-2094:a3090a5866 | history/tasks/luc-2095-source-control-close-local-dirty-state-for-luc-2094-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2099-operator-coolify-bind-read-only-production-status-access:1fee3311a2 | history/tasks/luc-2099-operator-coolify-bind-read-only-production-status-access-2026-06-05-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-21-soar-local-architecture-and-repo-preflight:f20d9ed387 | history/tasks/luc-21-soar-local-architecture-repo-preflight-2026-07-04-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:b297bce3dd | history/tasks/luc-2105-normalize-shared-web-ui-doc-link-gaps-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:d161b63fd6 | history/tasks/luc-2106-classify-shared-web-ui-missing-test-links-2026-06-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:954f69914a | history/tasks/luc-2107-route-api-matrix-parity-guardrail-2026-06-05-task.md |
@@ -1217,4 +1218,3 @@ Generated: 2026-07-02T19:17:03.006Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2381-resolve-dirty-runtime-monitoring-source-state-blocking-4787ee98-promotion:0828b47396 | history/tasks/luc-2381-resolve-dirty-runtime-monitoring-source-state-blocking-4787ee98-promotion-2026-06-06-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2390-no-stall-queue-expeditor:d65acd41e2 | history/tasks/luc-2390-no-stall-queue-expeditor-2026-06-06-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2394-close-luc-2390-pm-coordination-dirty-state-before-push-permit:25e5062e06 | history/tasks/luc-2394-close-luc-2390-pm-coordination-dirty-state-before-push-permit-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2395-gap-register-and-repair-lane-refresh-task:cf15a7a8ac | history/tasks/luc-2395-gap-register-and-repair-lane-refresh-2026-06-06-task.md |

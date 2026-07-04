@@ -14689,3 +14689,27 @@ repository history.
   no duplicate incident or repair child is warranted. Continue existing
   source/build provenance, Coolify queue, host-level VPS proof, and stale
   token binding watch items through their owner paths.
+
+## 2026-07-04 LUC-86 Account Access ClearSession Doc-Link
+
+- Mission:
+  `LUC-86-ACCOUNT-ACCESS-CLEARSESSION-DOC-LINK-2026-07-04`.
+- Status:
+  `DONE / MISSING_DOC_LINK_RESOLVED / APP_COMPLETION_READBACK_HAS_DOC_TRUE /
+  PROJECT_TRUTH_REFRESHED / QA_PROOF_FOLLOWUP_CREATED`.
+- Scope:
+  DSM documentation/source-of-truth linkage only. No runtime code, commit,
+  push, deploy, restart, rollback, env edit, secret/account readback,
+  DB/Redis mutation, production account mutation, exchange/payment mutation,
+  order, position, subscription mutation, or live-trading action.
+- Result:
+  [LUC-86](/LUC/issues/LUC-86) target
+  `apps/api/src/middleware/requireAuth.ts#clearSession` now has a direct
+  documentation relation to `docs/modules/api-auth.md`. App-completion
+  readback confirms `hasDoc=true` for the targeted row; the global
+  `missingDocLink` count moved from `1998` to `1996`.
+- Evidence:
+  `history/tasks/luc-86-account-access-clear-session-doc-link-2026-07-04-task.md`.
+- Residual:
+  the same row now routes as `implemented_needs_proof`; QA/Test Automation owns
+  [LUC-93](/LUC/issues/LUC-93) for fresh behavior proof.

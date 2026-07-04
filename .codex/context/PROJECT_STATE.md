@@ -28528,3 +28528,22 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   no new repair child is warranted. Continue release-grade build provenance,
   Coolify queue/resource-status watch, host-level VPS proof, and stale token
   binding through existing owner paths.
+
+## 2026-07-04 LUC-86 Account Access ClearSession Doc-Link
+
+- Status:
+  `DONE / MISSING_DOC_LINK_RESOLVED / PROJECT_TRUTH_REFRESHED /
+  QA_PROOF_FOLLOWUP_CREATED`.
+- Current proof:
+  `apps/api/src/middleware/requireAuth.ts#clearSession` now documents to
+  `docs/modules/api-auth.md`; app-completion readback reports `hasDoc=true`
+  and `hasTest=true` for the targeted row. `architecture:graph:drift:strict`
+  passed `850/850` covered / `0` missing. Project-truth was refreshed with
+  `--apply`.
+- Evidence:
+  `history/tasks/luc-86-account-access-clear-session-doc-link-2026-07-04-task.md`.
+- Residual:
+  project-truth now routes the same entity as `implemented_needs_proof`; TAE
+  owns [LUC-93](/LUC/issues/LUC-93) for fresh behavior proof. No runtime,
+  production, account, secret, deploy, exchange, payment, subscription, order,
+  position, or live-trading mutation occurred.

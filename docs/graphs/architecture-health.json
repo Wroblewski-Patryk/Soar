@@ -1,39 +1,39 @@
 {
-  "generated_at": "2026-07-02T19:17:03.006Z",
+  "generated_at": "2026-07-04T17:32:34.669Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 10570,
-    "relations": 33956,
+    "entities": 10593,
+    "relations": 34027,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 4637,
-      "feature": 217,
-      "function": 2832,
+      "document": 4649,
+      "feature": 216,
+      "function": 2834,
       "migration": 57,
       "model": 108,
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1708,
+      "task": 1718,
       "test": 452
     },
     "by_status": {
       "blocked": 46,
       "deprecated": 10,
-      "implemented": 7997,
+      "implemented": 8010,
       "in_progress": 14,
       "tested": 832,
-      "verified": 1671
+      "verified": 1681
     }
   },
   "signals": {
     "implementation_without_tests": {
-      "count": 1291,
+      "count": 1292,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -1284,14 +1284,6 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "feature:vitest-config-ts:91de816294",
-          "type": "feature",
-          "name": "vitest.config.ts",
-          "path": "apps/web/vitest.config.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "feature:index-js:f6716b7db6",
           "type": "feature",
           "name": "index.js",
@@ -1634,11 +1626,19 @@
           "path": "apps/api/src/modules/auth/auth.controller.ts#login",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "function:logout:aba24168f5",
+          "type": "function",
+          "name": "logout",
+          "path": "apps/api/src/modules/auth/auth.controller.ts#logout",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "implementation_without_docs": {
-      "count": 306,
+      "count": 304,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -2513,14 +2513,6 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "feature:vitest-config-ts:91de816294",
-          "type": "feature",
-          "name": "vitest.config.ts",
-          "path": "apps/web/vitest.config.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "feature:index-js:f6716b7db6",
           "type": "feature",
           "name": "index.js",
@@ -3239,6 +3231,14 @@
           "path": "apps/api/src/modules/bots/botLegacyStrategyLink.service.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "route:botliveconsent-service-ts:02c9c05c1e",
+          "type": "route",
+          "name": "botLiveConsent.service.ts",
+          "path": "apps/api/src/modules/bots/botLiveConsent.service.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
@@ -3253,8 +3253,8 @@
     "classified_inferred_link_noise": {
       "count": 1513,
       "by_reason": {
-        "config_only_file": 64,
-        "curated_graph_covered": 1329,
+        "config_only_file": 63,
+        "curated_graph_covered": 1330,
         "test_fixture_function": 119,
         "top_level_app_mount": 1
       },
@@ -4664,15 +4664,6 @@
           "reason": "curated_graph_covered"
         },
         {
-          "id": "feature:vitest-config-ts:91de816294",
-          "type": "feature",
-          "name": "vitest.config.ts",
-          "path": "apps/web/vitest.config.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "config_only_file"
-        },
-        {
           "id": "feature:index-js:f6716b7db6",
           "type": "feature",
           "name": "index.js",
@@ -5058,6 +5049,15 @@
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "curated_graph_covered"
+        },
+        {
+          "id": "function:logout:aba24168f5",
+          "type": "function",
+          "name": "logout",
+          "path": "apps/api/src/modules/auth/auth.controller.ts#logout",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead",
+          "reason": "curated_graph_covered"
         }
       ]
     },
@@ -5074,7 +5074,7 @@
       "items": []
     },
     "raw_tasks_without_architecture": {
-      "count": 135,
+      "count": 138,
       "items": [
         {
           "id": "task:task-local-certainty-closure-2026-05-21:a8d07f98c0",
@@ -5669,6 +5669,14 @@
           "owner": "Engineering Delivery Lead"
         },
         {
+          "id": "task:luc-3832-production-dashboard-performance-diagnosis:4d74cfdef3",
+          "type": "task",
+          "name": "LUC-3832 Production Dashboard Performance Diagnosis",
+          "path": "history/tasks/luc-3832-production-dashboard-performance-diagnosis-2026-06-14-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
           "id": "task:task:aa86e21c28",
           "type": "task",
           "name": "Task",
@@ -5681,6 +5689,22 @@
           "type": "task",
           "name": "LUC-4103 Owner-Login Waiting-State Security Heartbeat - 2026-07-02",
           "path": "history/tasks/luc-4103-owner-login-waiting-state-security-heartbeat-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-4174-repair-local-vitest-startup-for-dashboard-fan-out-regression-proof:1eaa2dc1b7",
+          "type": "task",
+          "name": "LUC-4174 Repair Local Vitest Startup For Dashboard Fan-Out Regression Proof",
+          "path": "history/tasks/luc-4174-repair-local-vitest-startup-dashboard-fanout-regression-proof-2026-06-15-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "task:luc-4201-promote-dashboard-performance-repair-bundle:1349917b3e",
+          "type": "task",
+          "name": "LUC-4201 Promote Dashboard Performance Repair Bundle",
+          "path": "history/tasks/luc-4201-promote-dashboard-performance-repair-bundle-2026-06-15-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead"
         },
@@ -6163,7 +6187,7 @@
       "items": []
     },
     "raw_implementation_without_task": {
-      "count": 320,
+      "count": 318,
       "items": [
         {
           "id": "api_endpoint:use-avatars:1e1c441a3a",
@@ -7150,14 +7174,6 @@
           "owner": "Engineering Delivery Lead"
         },
         {
-          "id": "feature:vitest-config-ts:91de816294",
-          "type": "feature",
-          "name": "vitest.config.ts",
-          "path": "apps/web/vitest.config.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
-        },
-        {
           "id": "feature:index-js:f6716b7db6",
           "type": "feature",
           "name": "index.js",
@@ -7764,15 +7780,23 @@
           "path": "apps/api/src/lib/env.ts",
           "status": "implemented",
           "owner": "Engineering Delivery Lead"
+        },
+        {
+          "id": "route:errors-ts:1f5ab98773",
+          "type": "route",
+          "name": "errors.ts",
+          "path": "apps/api/src/lib/errors.ts",
+          "status": "implemented",
+          "owner": "Engineering Delivery Lead"
         }
       ]
     },
     "classified_task_linkage_noise": {
-      "count": 455,
+      "count": 456,
       "by_reason": {
-        "config_only_file": 34,
-        "curated_graph_covered": 285,
-        "historical_task_archive": 135,
+        "config_only_file": 33,
+        "curated_graph_covered": 284,
+        "historical_task_archive": 138,
         "top_level_app_mount": 1
       },
       "items": [
@@ -8443,6 +8467,15 @@
           "reason": "historical_task_archive"
         },
         {
+          "id": "task:luc-3832-production-dashboard-performance-diagnosis:4d74cfdef3",
+          "type": "task",
+          "name": "LUC-3832 Production Dashboard Performance Diagnosis",
+          "path": "history/tasks/luc-3832-production-dashboard-performance-diagnosis-2026-06-14-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
           "id": "task:task:aa86e21c28",
           "type": "task",
           "name": "Task",
@@ -8456,6 +8489,24 @@
           "type": "task",
           "name": "LUC-4103 Owner-Login Waiting-State Security Heartbeat - 2026-07-02",
           "path": "history/tasks/luc-4103-owner-login-waiting-state-security-heartbeat-2026-07-02-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:luc-4174-repair-local-vitest-startup-for-dashboard-fan-out-regression-proof:1eaa2dc1b7",
+          "type": "task",
+          "name": "LUC-4174 Repair Local Vitest Startup For Dashboard Fan-Out Regression Proof",
+          "path": "history/tasks/luc-4174-repair-local-vitest-startup-dashboard-fanout-regression-proof-2026-06-15-task.md",
+          "status": "verified",
+          "owner": "Engineering Delivery Lead",
+          "reason": "historical_task_archive"
+        },
+        {
+          "id": "task:luc-4201-promote-dashboard-performance-repair-bundle:1349917b3e",
+          "type": "task",
+          "name": "LUC-4201 Promote Dashboard Performance Repair Bundle",
+          "path": "history/tasks/luc-4201-promote-dashboard-performance-repair-bundle-2026-06-15-task.md",
           "status": "verified",
           "owner": "Engineering Delivery Lead",
           "reason": "historical_task_archive"
@@ -9548,33 +9599,6 @@
           "status": "implemented",
           "owner": "Engineering Delivery Lead",
           "reason": "config_only_file"
-        },
-        {
-          "id": "feature:backtestrundetails-copy-ts:85d4067ed4",
-          "type": "feature",
-          "name": "backtestRunDetails.copy.ts",
-          "path": "apps/web/src/features/backtest/components/backtestRunDetails.copy.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:usebacktestruncoredata-ts:4d81b12c7f",
-          "type": "feature",
-          "name": "useBacktestRunCoreData.ts",
-          "path": "apps/web/src/features/backtest/hooks/useBacktestRunCoreData.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
-        },
-        {
-          "id": "feature:usebacktesttimelineorchestration-ts:3226161ebd",
-          "type": "feature",
-          "name": "useBacktestTimelineOrchestration.ts",
-          "path": "apps/web/src/features/backtest/hooks/useBacktestTimelineOrchestration.ts",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
-          "reason": "curated_graph_covered"
         }
       ]
     },

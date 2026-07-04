@@ -11571,3 +11571,21 @@ Do not turn uncertainty into optimism.
   no new repair child is warranted. Continue release-grade build provenance,
   Coolify queued deployment/resource-status watch, host-level VPS proof, and
   stale token binding through existing owner paths.
+
+# 2026-07-04 LUC-86 Account Access ClearSession Doc-Link
+
+- Module row:
+  Account access / Auth session / API auth routes / app-completion truth.
+- Reality:
+  `doc-link verified; behavior proof still needed`.
+- Update:
+  [LUC-86](/LUC/issues/LUC-86) added direct documentation evidence for
+  `apps/api/src/middleware/requireAuth.ts#clearSession` through
+  `docs/modules/api-auth.md` and refreshed architecture-awareness,
+  app-completion, and project-truth indexes. Targeted readback confirms
+  `hasDoc=true`, `hasTest=true`, and `risk=implemented_needs_proof`.
+- Evidence:
+  `history/tasks/luc-86-account-access-clear-session-doc-link-2026-07-04-task.md`.
+- Remaining:
+  QA/Test Automation owns [LUC-93](/LUC/issues/LUC-93) to run and record fresh
+  behavior proof for `requireAuth.clearSession`.

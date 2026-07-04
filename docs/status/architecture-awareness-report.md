@@ -1,6 +1,6 @@
 # Architecture Awareness Report
 
-Generated: 2026-07-02T19:17:03.006Z
+Generated: 2026-07-04T17:32:34.669Z
 Project: Soar
 Root: C:/Personal/Projekty/Aplikacje/Soar
 
@@ -11,15 +11,15 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | agent | 52 |
 | api_endpoint | 38 |
 | component | 97 |
-| document | 4637 |
-| feature | 217 |
-| function | 2832 |
+| document | 4649 |
+| feature | 216 |
+| function | 2834 |
 | migration | 57 |
 | model | 108 |
 | module | 16 |
 | project | 1 |
 | route | 355 |
-| task | 1708 |
+| task | 1718 |
 | test | 452 |
 
 ## Counts By Status
@@ -28,23 +28,23 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 | --- | ---: |
 | blocked | 46 |
 | deprecated | 10 |
-| implemented | 7997 |
+| implemented | 8010 |
 | in_progress | 14 |
 | tested | 832 |
-| verified | 1671 |
+| verified | 1681 |
 
 ## Health Signals
 
-- Raw implementation entities without inferred tests: 1291
+- Raw implementation entities without inferred tests: 1292
 - Actionable implementation entities without inferred tests: 0
-- Raw implementation entities without inferred docs: 306
+- Raw implementation entities without inferred docs: 304
 - Actionable implementation entities without inferred docs: 0
 - Classified inferred-link noise: 1513
-- Raw tasks without architecture links: 135
+- Raw tasks without architecture links: 138
 - Actionable tasks without architecture links: 0
-- Raw implementation entities without task links: 320
+- Raw implementation entities without task links: 318
 - Actionable implementation entities without task links: 0
-- Classified task-linkage noise: 455
+- Classified task-linkage noise: 456
 - Entities without owner attribution: 0
 - Disconnected entities: 0
 
@@ -56,8 +56,8 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 
 ## Classified Inferred-Link Noise
 
-- config_only_file: 64
-- curated_graph_covered: 1329
+- config_only_file: 63
+- curated_graph_covered: 1330
 - test_fixture_function: 119
 - top_level_app_mount: 1
 
@@ -106,9 +106,9 @@ Root: C:/Personal/Projekty/Aplikacje/Soar
 
 ## Classified Task-Linkage Noise
 
-- config_only_file: 34
-- curated_graph_covered: 285
-- historical_task_archive: 135
+- config_only_file: 33
+- curated_graph_covered: 284
+- historical_task_archive: 138
 - top_level_app_mount: 1
 
 ## Top Classified Task-Linkage Noise Samples

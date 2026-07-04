@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-02T16:50:18.521Z",
+  "generatedAt": "2026-07-04T17:34:20.901Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 4561,
-      "linkedRelationCount": 18254,
+      "entityCount": 4566,
+      "linkedRelationCount": 18283,
       "layers": {
         "frontend": {
           "count": 191,
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 694,
+          "count": 693,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1151,6 +1151,14 @@
               "status": "implemented"
             },
             {
+              "id": "function:clearsession:c472493149",
+              "type": "function",
+              "name": "clearSession",
+              "path": "apps/api/src/middleware/requireAuth.ts#clearSession",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
               "id": "route:publicuser-ts:a393a249c4",
               "type": "route",
               "name": "publicUser.ts",
@@ -1293,20 +1301,12 @@
               "path": "scripts/generateUserActionIndex.mjs#routeHint",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "function:ensureuser:4d60cdb829",
-              "type": "function",
-              "name": "ensureUser",
-              "path": "apps/api/scripts/importPaperRuntimeSnapshot.ts#ensureUser",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 3503,
+          "count": 3509,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -3180,11 +3180,11 @@
     },
     {
       "userFlow": "Dashboard overview",
-      "entityCount": 821,
-      "linkedRelationCount": 2570,
+      "entityCount": 841,
+      "linkedRelationCount": 2626,
       "layers": {
         "frontend": {
-          "count": 330,
+          "count": 331,
           "sample": [
             {
               "id": "component:runtimedatasection-tsx:b1b85851a6",
@@ -3830,7 +3830,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 133,
+          "count": 136,
           "sample": [
             {
               "id": "api_endpoint:get:1f75b583ca",
@@ -4476,7 +4476,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 253,
+          "count": 269,
           "sample": [
             {
               "id": "agent:procedure:21bf8ee82e",
@@ -5103,18 +5103,18 @@
               "status": "implemented"
             },
             {
+              "id": "task:luc-3840-reduce-dashboard-runtime-fan-out-and-loading-stalls:c1acead2f1",
+              "type": "task",
+              "name": "LUC-3840 Reduce Dashboard Runtime Fan-Out And Loading Stalls",
+              "path": "history/tasks/luc-3840-reduce-dashboard-runtime-fanout-loading-stalls-2026-06-14-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "document:dashboard-runtime-helper-tests:d93a65376c",
               "type": "document",
               "name": "Dashboard runtime helper tests",
               "path": "docs/architecture/nodes/SOAR-TEST-DASHBOARD-RUNTIME-HELPERS.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:dashboard-runtime-residual-web-tests:95ab54e831",
-              "type": "document",
-              "name": "Dashboard runtime residual Web tests",
-              "path": "docs/architecture/nodes/SOAR-TEST-DASHBOARD-RUNTIME-RESIDUAL-WEB.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             }
@@ -5786,7 +5786,7 @@
     {
       "userFlow": "Exchange connection and configuration",
       "entityCount": 798,
-      "linkedRelationCount": 2908,
+      "linkedRelationCount": 2910,
       "layers": {
         "frontend": {
           "count": 28,
@@ -7975,7 +7975,7 @@
     {
       "userFlow": "Subscription and entitlement",
       "entityCount": 928,
-      "linkedRelationCount": 3435,
+      "linkedRelationCount": 3437,
       "layers": {
         "frontend": {
           "count": 25,
@@ -10083,8 +10083,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 3210,
-      "linkedRelationCount": 11018,
+      "entityCount": 3218,
+      "linkedRelationCount": 11070,
       "layers": {
         "frontend": {
           "count": 390,
@@ -11379,7 +11379,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 1338,
+          "count": 1345,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -11790,6 +11790,14 @@
               "status": "verified"
             },
             {
+              "id": "task:luc-3515-coolify-production-deploy-health-sweep:315b92a3f0",
+              "type": "task",
+              "name": "LUC-3515 Coolify Production Deploy Health Sweep",
+              "path": "history/tasks/luc-3515-coolify-production-deploy-health-sweep-2026-07-02-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "task:luc-3515-coolify-production-deploy-health-sweep:6d311c0f0e",
               "type": "task",
               "name": "LUC-3515 Coolify Production Deploy Health Sweep",
@@ -12012,14 +12020,6 @@
               "path": "history/tasks/luc-2321-coolify-production-deploy-health-sweep-2026-06-06-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
-            },
-            {
-              "id": "task:task:0a71c05a0c",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/v1-current-worktree-sanity-2026-05-14-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
             }
           ],
           "truncated": true
@@ -12035,7 +12035,7 @@
           "truncated": false
         },
         "docs": {
-          "count": 209,
+          "count": 210,
           "sample": [
             {
               "id": "document:web-deep-dive-shared-feature-helpers:2becf45d1e",
@@ -12688,11 +12688,11 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 8978,
-      "linkedRelationCount": 31495,
+      "entityCount": 9006,
+      "linkedRelationCount": 31586,
       "layers": {
         "frontend": {
-          "count": 698,
+          "count": 697,
           "sample": [
             {
               "id": "task:task:2026ed0dbb",
@@ -13338,7 +13338,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1546,
+          "count": 1547,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -13984,7 +13984,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 5898,
+          "count": 5926,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
@@ -14363,6 +14363,14 @@
               "status": "verified"
             },
             {
+              "id": "task:luc-6468-runtime-worker-contract-proof-slice:9b5cdd04ad",
+              "type": "task",
+              "name": "LUC-6468 Runtime Worker Contract Proof Slice",
+              "path": "history/tasks/luc-6468-runtime-worker-contract-proof-slice-2026-07-03-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "task:luc-6930-runtime-ai-worker-contract-proof-slice:3e20dc9683",
               "type": "task",
               "name": "LUC-6930 Runtime/AI Worker Contract Proof Slice",
@@ -14615,14 +14623,6 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-2867-autonomous-idle-and-map-drift-sweep-2026-06-07-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:task:35f906426a",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/luc-1764-inject-protected-prod-db-check-runner-inputs-2026-06-03-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             }
@@ -15293,11 +15293,11 @@
     },
     {
       "userFlow": "User configuration",
-      "entityCount": 298,
-      "linkedRelationCount": 723,
+      "entityCount": 297,
+      "linkedRelationCount": 722,
       "layers": {
         "frontend": {
-          "count": 95,
+          "count": 94,
           "sample": [
             {
               "id": "component:apikeyform-tsx:5c8d1d06f0",

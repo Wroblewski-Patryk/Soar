@@ -18,6 +18,34 @@
 - Evidence:
   `history/tasks/luc-21-soar-local-architecture-repo-preflight-2026-07-04-task.md`.
 
+## 2026-07-04 LUC-86 Account Access ClearSession Doc-Link
+
+- [LUC-86](/LUC/issues/LUC-86) should move to `done` as
+  `DONE / MISSING_DOC_LINK_RESOLVED / APP_COMPLETION_READBACK_HAS_DOC_TRUE /
+  PROJECT_TRUTH_REFRESHED / QA_PROOF_FOLLOWUP_CREATED`.
+- Concrete action:
+  DSM added a direct documentation relation for
+  `apps/api/src/middleware/requireAuth.ts#clearSession` to
+  `docs/modules/api-auth.md`, updated the API auth doc-link classification,
+  refreshed architecture-awareness, app-completion, and project-truth indexes,
+  and created QA follow-up [LUC-93](/LUC/issues/LUC-93).
+- Validation:
+  `architecture:graph:generate` passed; architecture-awareness exporter passed
+  with `10593` entities / `34027` relations; app-completion refresh passed and
+  `missingDocLink` moved from `1998` to `1996`; targeted readback for
+  `requireAuth.ts#clearSession` reports `hasDoc=true`; strict graph drift
+  passed `850/850` covered / `0` missing; project-truth `--apply` passed.
+- Source control:
+  no commit or push; repo was already dirty/divergent and this heartbeat added
+  scoped docs/index/state evidence only.
+- Next owner/action:
+  TAE owns [LUC-93](/LUC/issues/LUC-93) for the remaining
+  `implemented_needs_proof` row. No runtime, production, account, secret,
+  deploy, exchange, payment, subscription, order, position, or live-trading
+  mutation occurred.
+- Evidence:
+  `history/tasks/luc-86-account-access-clear-session-doc-link-2026-07-04-task.md`.
+
 ## 2026-07-03 LUC-6468 Runtime Worker Contract Proof Slice
 
 - [LUC-6468](/LUC/issues/LUC-6468) advanced as

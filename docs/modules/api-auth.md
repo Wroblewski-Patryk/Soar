@@ -92,3 +92,4 @@ Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
 | Source entity | Owner doc | Classification | Expected proof |
 | --- | --- | --- | --- |
 | `apps/api/src/modules/auth/auth.session.ts` | `docs/modules/api-auth.md` | Auth session helper boundary for current-user/session bootstrap behavior and fail-closed session response shaping. | Architecture-awareness `documents` relation from this doc plus auth session/cookie/JWT tests when behavior changes. |
+| `apps/api/src/middleware/requireAuth.ts#clearSession` | `docs/modules/api-auth.md` | Protected-route session clearing path for stale, invalid, expired, or deleted-user session candidates in Account access. | Architecture-awareness `documents` relation from this doc plus `requireAuth` middleware tests when behavior changes. |
