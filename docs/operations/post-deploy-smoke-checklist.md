@@ -22,6 +22,9 @@ Quickly confirm that the deployed revision is operational for critical user flow
   release-readiness smoke item. Web/workers may depend only on API
   `service_started`, so this checklist is the acceptance gate for dependency
   readiness.
+- For the Coolify Service Stack topology, API and API-image worker containers
+  keep core dumps disabled (`ulimit -c` returns `0`) so crash artifacts cannot
+  grow the writable layer.
 - For the Coolify Service Stack topology, `ops:coolify-stack:env-check` has
   passed in the deploy environment or an equivalent no-secret variable-name and
   value-shape readiness check has been captured.

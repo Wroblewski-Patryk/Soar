@@ -37,6 +37,9 @@ x-api-env: &api-env
 
 x-api-image: &api-image ${API_STACK_IMAGE:-soar-api-stack:${SOURCE_COMMIT:?SOURCE_COMMIT is required}}
 
+x-api-core-ulimits: &api-core-ulimits
+  core: 0
+
 services:
   api:
     image: *api-image
@@ -44,6 +47,7 @@ services:
       context: .
       dockerfile: apps/api/Dockerfile
     restart: unless-stopped
+    ulimits: *api-core-ulimits
     environment:
       <<: *api-env
       SERVICE_FQDN_API_3001: ${SERVICE_FQDN_API_3001:-https://api.soar.luckysparrow.ch}
@@ -95,6 +99,7 @@ services:
     profiles: ["workers"]
     image: *api-image
     restart: unless-stopped
+    ulimits: *api-core-ulimits
     depends_on:
       api:
         condition: service_started
@@ -107,6 +112,7 @@ services:
     profiles: ["workers"]
     image: *api-image
     restart: unless-stopped
+    ulimits: *api-core-ulimits
     depends_on:
       api:
         condition: service_started
@@ -119,6 +125,7 @@ services:
     profiles: ["workers"]
     image: *api-image
     restart: unless-stopped
+    ulimits: *api-core-ulimits
     depends_on:
       api:
         condition: service_started
@@ -131,6 +138,7 @@ services:
     profiles: ["workers"]
     image: *api-image
     restart: unless-stopped
+    ulimits: *api-core-ulimits
     depends_on:
       api:
         condition: service_started

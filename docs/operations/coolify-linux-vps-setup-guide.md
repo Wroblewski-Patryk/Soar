@@ -331,6 +331,11 @@ pnpm run docker:coolify:shared-api:config
 pnpm run ops:coolify-stack:env-check:example
 ```
 
+The rendered Coolify Compose config must keep Linux core dumps disabled for
+the API image runtime services. Verify `ulimits.core: 0` is present for `api`,
+`workers-market-data`, `workers-market-stream`, `workers-backtest`, and
+`workers-execution` before approving the stack manifest.
+
 For a real copied Coolify environment, run the env check without
 `--allow-placeholders` from the environment that has the stack variables. The
 check validates required variable names, rejects placeholders, checks production
