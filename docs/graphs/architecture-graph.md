@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-04T19:03:29.486Z
+Generated: 2026-07-05T02:24:54.970Z
 
 ## Canonical Exports
 
@@ -729,6 +729,7 @@ Generated: 2026-07-04T19:03:29.486Z
 | connected_to | project:soar:7c70e892d7 | task:task:9c8d819b32 | history/tasks/luc-1068-source-control-closure-classify-and-close-local-dirty-state-for-luc-1065-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-107-coolify-production-deploy-health-sweep-2026-05-26:24df882fdd | history/tasks/luc-107-coolify-production-deploy-health-sweep-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:a4745ddc09 | history/tasks/luc-1075-blocked-triage-classify-luc-1068-and-produce-next-legal-action-2026-05-31-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:7c4d7a4197 | history/tasks/luc-108-account-access-requireauth-doc-link-2026-07-04-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:7e2c20d0f1 | history/tasks/luc-108-no-stall-queue-expeditor-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1080-infra-gate-diagnose-production-dns-network-failure-for-luc-241-2026-05-31-task:7ce4e4941f | history/tasks/luc-1080-infra-gate-diagnose-production-dns-network-failure-for-luc-241-2026-05-31-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:477cfb2ee5 | history/tasks/luc-1083-source-control-closure-classify-and-close-local-dirty-state-for-luc-241-luc-1080-2026-05-31-task.md |
@@ -975,14 +976,17 @@ Generated: 2026-07-04T19:03:29.486Z
 | connected_to | project:soar:7c70e892d7 | task:luc-169-luc-166-provenance-packet-closure-2026-05-26:70d252d3ed | history/tasks/luc-169-luc-166-provenance-packet-closure-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:ac5139a5fd | history/tasks/luc-1696-reconcile-coolify-resource-inventory-2026-06-03-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:6c67a169ca | history/tasks/luc-17-architecture-function-chain-known-state-2026-05-25-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-170-account-access-first-doc-rows:f81caa350f | history/tasks/luc-170-account-access-first-doc-rows-2026-07-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:84ec70ddd2 | history/tasks/luc-170-no-stall-queue-expeditor-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:094ec30f31 | history/tasks/luc-1700-operator-coolify-bind-read-only-production-status-access-2026-06-03-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:13ca9ff661 | history/tasks/luc-1707-operator-coolify-bind-read-only-production-status-access-2026-06-03-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:00e81e72a3 | history/tasks/luc-1709-restore-soar-guardrails-source-control-closure-2026-06-03-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:c8c5813277 | history/tasks/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-171-luc-169-provenance-packet-closure-2026-05-26:93b4d576c3 | history/tasks/luc-171-luc-169-provenance-packet-closure-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1734-restore-owner-path-for-coolify-inventory-lane:effa2c2808 | history/tasks/luc-1734-restore-owner-path-for-coolify-inventory-lane-2026-06-03-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1739-coolify-read-only-access-source-control-closure:00bda71cb9 | history/tasks/luc-1739-coolify-read-only-access-source-control-closure-2026-06-03-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:605229b8f6 | history/tasks/luc-174-no-stall-queue-expeditor-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:task:8f529d5458 | history/tasks/luc-175-requireauth-test-typing-api-build-blocker-2026-07-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:04c35723a3 | history/tasks/luc-175-source-control-queue-executor-gate-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:cc5a9ea204 | history/tasks/luc-1754-liveimport-readback-protected-evidence-2026-06-03-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1755-rollback-guard-protected-evidence:c8c0bba716 | history/tasks/luc-1755-rollback-guard-protected-evidence-2026-06-03-task.md |
@@ -1214,7 +1218,3 @@ Generated: 2026-07-04T19:03:29.486Z
 | connected_to | project:soar:7c70e892d7 | task:task:753adf7759 | history/tasks/luc-2372-bind-protected-runtime-worker-slo-proof-inputs-de3db789-2026-06-06-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:9c72bcfe90 | history/tasks/luc-2373-repair-residual-guardrail-drift-after-luc-2365-recheck-2026-06-06-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2374-close-dirty-source-state-before-de3db789-push-decision:803969de16 | history/tasks/luc-2374-close-dirty-source-state-before-de3db789-push-decision-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2380-close-post-2374-dirty-api-runtime-diff-before-push-permit:1099a2f756 | history/tasks/luc-2380-close-post-2374-dirty-api-runtime-diff-before-push-permit-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2381-resolve-dirty-runtime-monitoring-source-state-blocking-4787ee98-promotion:0828b47396 | history/tasks/luc-2381-resolve-dirty-runtime-monitoring-source-state-blocking-4787ee98-promotion-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2390-no-stall-queue-expeditor:d65acd41e2 | history/tasks/luc-2390-no-stall-queue-expeditor-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2394-close-luc-2390-pm-coordination-dirty-state-before-push-permit:25e5062e06 | history/tasks/luc-2394-close-luc-2390-pm-coordination-dirty-state-before-push-permit-2026-06-06-task.md |

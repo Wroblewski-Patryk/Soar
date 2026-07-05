@@ -5,7 +5,7 @@
 - Layer: `api`
 - Source path: `apps/api/src/modules/auth`
 - Owner: backend/core
-- Last updated: 2026-04-12
+- Last updated: 2026-07-05
 - Related planning task: `DCP-04`
 
 ## 1. Purpose and Scope
@@ -87,10 +87,12 @@ pnpm --filter api test -- src/modules/auth/auth.e2e.test.ts src/modules/auth/aut
 
 ## 10. Architecture-Awareness Doc-Link Classification
 
-Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
+Last classified: 2026-07-05 under [LUC-170](/LUC/issues/LUC-170).
 
 | Source entity | Owner doc | Classification | Expected proof |
 | --- | --- | --- | --- |
 | `apps/api/src/modules/auth/auth.session.ts` | `docs/modules/api-auth.md` | Auth session helper boundary for current-user/session bootstrap behavior and fail-closed session response shaping. | Architecture-awareness `documents` relation from this doc plus auth session/cookie/JWT tests when behavior changes. |
+| `apps/api/src/middleware/requireAuth.test.ts#expectSessionCookieCleared` | `docs/modules/api-auth.md` | Middleware proof helper that asserts stale or invalid Account access session candidates actively clear the `token` cookie instead of leaving dead sessions in place. | Architecture-awareness `documents` relation from this doc plus focused `requireAuth` middleware tests when cookie-clearing semantics change. |
 | `apps/api/src/middleware/requireAuth.ts#requireAuth` | `docs/modules/api-auth.md` | Protected-route authentication guard for Account access and dashboard/admin API route identity boundaries. | Architecture-awareness `documents` relation from this doc plus `requireAuth` middleware tests when behavior changes. |
 | `apps/api/src/middleware/requireAuth.ts#clearSession` | `docs/modules/api-auth.md` | Protected-route session clearing path for stale, invalid, expired, or deleted-user session candidates in Account access. | Architecture-awareness `documents` relation from this doc plus `requireAuth` middleware tests when behavior changes. |
+| `apps/api/src/middleware/requireTrustedOrigin.test.ts#createSessionCookie` | `docs/modules/api-auth.md` | Trusted-origin middleware test helper that creates a real auth session cookie for state-changing Account access guard coverage. | Architecture-awareness `documents` relation from this doc plus `requireTrustedOrigin` middleware tests when cookie bootstrap or origin-gate semantics change. |

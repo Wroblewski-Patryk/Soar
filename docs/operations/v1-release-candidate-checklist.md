@@ -45,7 +45,7 @@ Expected SHA: `cf9011b43060c52941dae9232e9a1ca4392ca3f2`
   - `/workers/ready`.
 - [x] Runtime freshness gate healthy:
   - `/workers/runtime-freshness`.
-- [ ] Queue lag metrics reviewed and within baseline.
+- [x] Queue lag metrics reviewed and within baseline.
 - [x] Incident contacts and escalation chain confirmed.
 
 ### Current Runtime Gate Override (2026-05-23)
@@ -119,13 +119,15 @@ Expected SHA: `cf9011b43060c52941dae9232e9a1ca4392ca3f2`
 - Sign-off record template: `docs/operations/v1-rc-signoff-record.md`.
 
 ## Outstanding External Gates (2026-07-04)
-- current snapshot is `G1=PASS`, `G2=OPEN`, `G3=PASS`, `G4=PASS` (synced 2026-07-04).
+- current snapshot is `G1=PASS`, `G2=PASS`, `G3=PASS`, `G4=PASS` (synced 2026-07-04).
 - Gate 1 is satisfied by
   `history/evidence/v1-restore-drill-prod-2026-05-23T00-00-00-000Z.md`.
 - Gate 2 is satisfied by
-  `history/evidence/v1-slo-observation-2026-05-23T04-38-07-393Z.md`; the only
-  `NO_DATA` objective is live order failure ratio because no live order
-  attempts occurred.
+  `history/operations/v1-slo-observation-2026-07-04T21-45-56-640Z.md`
+  with raw artifact
+  `history/operations/_artifacts-slo-window-2026-07-04T21-45-56-640Z.json`;
+  the only `NO_DATA` objective is live order failure ratio because no live
+  order attempts occurred.
 - `LIVEIMPORT-03` is satisfied by
   `history/artifacts/liveimport-03-prod-readback-2026-05-23.json` after the
   runner used `--symbols auto` and read actual open runtime payloads for

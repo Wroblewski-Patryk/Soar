@@ -1,6 +1,17 @@
 {
   "excludePaths": [],
   "excludePathPrefixes": [],
-  "entityOverrides": [],
+  "entityOverrides": [
+    {
+      "path": "apps/api/src/middleware/requireAuth.ts#clearSession",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified Account access session clearing path for stale, invalid, expired, deleted-user, and missing-token session candidates.",
+      "evidence": [
+        "history/tasks/luc-93-account-access-clear-session-proof-2026-07-04-task.md",
+        "history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md"
+      ]
+    }
+  ],
   "relationOverrides": []
 }

@@ -1,3 +1,68 @@
+## 2026-07-05 LUC-176 Account Access ClearSession Project-Truth Proof
+
+- Status:
+  `DONE / VERIFIED_LOCAL / CLEARSESSION_PROJECT_TRUTH_RESOLVED /
+  APP_COMPLETION_REFRESHED / NO_RUNTIME_MUTATION`.
+- Evidence:
+  `history/evidence/luc-176-account-access-clearsession-project-truth-proof-2026-07-05.md`;
+  `history/tasks/luc-176-account-access-clearsession-project-truth-proof-2026-07-05-task.md`.
+- Current truth:
+  `apps/api/src/middleware/requireAuth.ts#clearSession` now resolves out of the
+  project-truth priority row after scoped scanner metadata promotion and
+  generated index refresh. App-completion `implementedNeedsProof` is now `114`,
+  and the current first Account access gap is
+  `apps/api/src/middleware/requireAuth.ts#requireAuth`.
+- Verification:
+  focused middleware test passed (`1` file / `9` tests); architecture-awareness,
+  app-completion, and project-truth generators passed.
+- Release impact:
+  no runtime code, production protected auth/session proof, deploy, restart,
+  rollback, env edit, migration, secret/account readback, DB/Redis mutation,
+  exchange, payment, subscription, order, position, or live-trading mutation
+  occurred.
+
+## 2026-07-05 LUC-175 RequireAuth Test Typing API Build Blocker
+
+- Status:
+  `DONE / VERIFIED_LOCAL / API_TYPECHECK_PASS / REQUIREAUTH_TEST_PASS /
+  TEST_ONLY_CHANGE / NO_RUNTIME_MUTATION`.
+- Evidence:
+  `history/tasks/luc-175-requireauth-test-typing-api-build-blocker-2026-07-05-task.md`.
+- Current truth:
+  `apps/api/src/middleware/requireAuth.test.ts` no longer blocks API
+  typecheck. The clear-cookie assertion helper now accepts Supertest's typed
+  `string | string[]` header shape, and the stale-session Prisma mock returns a
+  typed user-compatible shape.
+- Verification:
+  focused middleware test passed (`1` file / `9` tests), and
+  `corepack pnpm --filter api run typecheck` passed.
+- Release impact:
+  no runtime code, production, deploy, restart, rollback, env, secret/account,
+  DB/Redis, exchange, payment, subscription, order, position, or live-trading
+  mutation occurred. No commit or push was performed from the dirty/diverged
+  checkout.
+
+## 2026-07-05 LUC-170 Account Access First Doc Rows
+
+- Status:
+  `DONE / TWO_MISSING_DOC_LINK_ROWS_RESOLVED / PROJECT_TRUTH_REFRESHED /
+  NO_RUNTIME_MUTATION`.
+- Evidence:
+  `history/tasks/luc-170-account-access-first-doc-rows-2026-07-05-task.md`.
+- Current truth:
+  `apps/api/src/middleware/requireAuth.test.ts#expectSessionCookieCleared` and
+  `apps/api/src/middleware/requireTrustedOrigin.test.ts#createSessionCookie`
+  now link directly to `docs/modules/api-auth.md` through
+  `docs/architecture/relations/documentation-links.csv` and the API auth
+  doc-link classification table. App-completion targeted readback reports
+  `hasDoc=true`, `hasTest=true`, and `risk=ok` for both rows.
+- Release impact:
+  no runtime code, production, deploy, restart, rollback, env, secret/account,
+  DB/Redis, exchange, payment, subscription, order, position, or live-trading
+  mutation occurred. The refreshed first Account access gap is now
+  `apps/api/src/middleware/requireAuth.ts#clearSession` as
+  `implemented_needs_proof`.
+
 ## 2026-07-04 LUC-108 Account Access RequireAuth Doc-Link
 
 - Status:

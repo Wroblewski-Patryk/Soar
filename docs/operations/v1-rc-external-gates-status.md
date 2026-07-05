@@ -1,16 +1,16 @@
 # V1 RC External Gates Status
 
-Generated at (UTC): 2026-07-04T21:15:50.430Z
+Generated at (UTC): 2026-07-04T21:46:16.925Z
 Expected SHA: `cf9011b43060c52941dae9232e9a1ca4392ca3f2`
 
-Source artifact: `history\operations\_artifacts-slo-window-2026-07-04T21-15-19-087Z.json`
+Source artifact: `history\operations\_artifacts-slo-window-2026-07-04T21-45-56-640Z.json`
 Observation window:
-- started: 2026-07-04T20:45:21.668Z
-- ended: 2026-07-04T21:15:19.085Z
+- started: 2026-07-04T21:16:09.340Z
+- ended: 2026-07-04T21:45:56.638Z
 
 ## Gate Status Snapshot
 - Gate 1 (Backup snapshot + restore validation): PASS
-- Gate 2 (Queue-lag baseline review): OPEN
+- Gate 2 (Queue-lag baseline review): PASS
 - Gate 3 (Incident contacts + escalation confirmation): PASS
 - Gate 4 (Formal RC sign-offs): PASS
 
@@ -45,10 +45,9 @@ Observation window:
 
 ## Suggested Checklist Updates
 - Runtime and Operations Gates:
-  - Production SLO metrics reviewed and within baseline -> OPEN
+  - Production SLO metrics reviewed and within baseline -> PASS
 - Exit Evidence Workpack:
-  - ops(slo): define SLO targets and collect production observation window evidence -> OPEN
+  - ops(slo): define SLO targets and collect production observation window evidence -> PASS
 
 ## Manual Follow-ups (Required)
-1. Complete Gate 2 queue-lag baseline review from fresh SLO artifacts and regenerate `v1-rc-external-gates-status.md`.
-2. Reflect current gate states in `docs/operations/v1-release-candidate-checklist.md` after updating evidence/sign-offs.
+- None. `docs/operations/v1-release-candidate-checklist.md` was synced from this gate status.

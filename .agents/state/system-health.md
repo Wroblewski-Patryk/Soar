@@ -1,3 +1,22 @@
+## 2026-07-05 LUC-170 Account Access First Doc Rows
+
+- Current health signal:
+  `DONE / TWO_MISSING_DOC_LINK_ROWS_RESOLVED / PROJECT_TRUTH_REFRESHED /
+  NO_RUNTIME_MUTATION`.
+- Local docs/index proof:
+  architecture graph generation passed; architecture-awareness exporter passed
+  with `10617` entities / `34442` relations; app-completion targeted readback
+  for both helper rows reports `hasDoc=true`, `hasTest=true`, and `risk=ok`;
+  strict graph drift passed `850/850` covered / `0` missing; project-truth
+  apply passed and moved the first gap to
+  `apps/api/src/middleware/requireAuth.ts#clearSession`.
+- Evidence:
+  `history/tasks/luc-170-account-access-first-doc-rows-2026-07-05-task.md`.
+- Next owner:
+  none for the doc-link slice. The current first Account access gap is the
+  separate proof row `apps/api/src/middleware/requireAuth.ts#clearSession` for
+  QA Regression Lead + Project Manager.
+
 ## 2026-07-04 LUC-108 Account Access RequireAuth Doc-Link
 
 - Current health signal:

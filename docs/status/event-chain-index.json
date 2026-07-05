@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-04T19:04:21.979Z",
+  "generatedAt": "2026-07-05T02:25:15.289Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,11 +10,11 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 4572,
-      "linkedRelationCount": 18310,
+      "entityCount": 4630,
+      "linkedRelationCount": 18675,
       "layers": {
         "frontend": {
-          "count": 191,
+          "count": 193,
           "sample": [
             {
               "id": "component:authcontext-tsx:a378912537",
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 694,
+          "count": 700,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -1151,12 +1151,28 @@
               "status": "implemented"
             },
             {
+              "id": "function:expectsessioncookiecleared:9748483ec1",
+              "type": "function",
+              "name": "expectSessionCookieCleared",
+              "path": "apps/api/src/middleware/requireAuth.test.ts#expectSessionCookieCleared",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
               "id": "function:clearsession:c472493149",
               "type": "function",
               "name": "clearSession",
               "path": "apps/api/src/middleware/requireAuth.ts#clearSession",
+              "owner": "QA Regression Lead",
+              "status": "verified"
+            },
+            {
+              "id": "function:createsessioncookie:5075793e8e",
+              "type": "function",
+              "name": "createSessionCookie",
+              "path": "apps/api/src/middleware/requireTrustedOrigin.test.ts#createSessionCookie",
               "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "status": "tested"
             },
             {
               "id": "function:requireauth:e044c1cd19",
@@ -1231,6 +1247,14 @@
               "status": "implemented"
             },
             {
+              "id": "test:requireauth-test-ts:c5b1929e2f",
+              "type": "test",
+              "name": "requireAuth.test.ts",
+              "path": "apps/api/src/middleware/requireAuth.test.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
               "id": "document:task-contract-luc-1196:a480d0963e",
               "type": "document",
               "name": "Task Contract - LUC-1196",
@@ -1277,36 +1301,12 @@
               "path": "history/tasks/luc-6889-account-access-auth-route-proof-linkage-audit-2026-07-02-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "document:v1ui-02-auth-register-error-and-i18n-route-task:879da8b5f3",
-              "type": "document",
-              "name": "V1UI-02 Auth Register Error And I18n Route Task",
-              "path": "history/tasks/v1ui-02-auth-register-error-i18n-task-2026-05-07.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "route:adminuserspage-tsx:784aa77abb",
-              "type": "route",
-              "name": "AdminUsersPage.tsx",
-              "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "test:auth-service-test-ts:15ebc01810",
-              "type": "test",
-              "name": "auth.service.test.ts",
-              "path": "apps/api/src/modules/auth/auth.service.test.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 3513,
+          "count": 3563,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -2615,11 +2615,11 @@
     },
     {
       "userFlow": "Admin operation",
-      "entityCount": 66,
-      "linkedRelationCount": 163,
+      "entityCount": 69,
+      "linkedRelationCount": 173,
       "layers": {
         "frontend": {
-          "count": 16,
+          "count": 17,
           "sample": [
             {
               "id": "component:adminlayoutshell-tsx:bda7fce396",
@@ -2748,12 +2748,20 @@
               "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.test.tsx",
               "owner": "Engineering Delivery Lead",
               "status": "tested"
+            },
+            {
+              "id": "function:adminuserspage:e494242783",
+              "type": "function",
+              "name": "AdminUsersPage",
+              "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx#AdminUsersPage",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
             }
           ],
           "truncated": false
         },
         "backend": {
-          "count": 28,
+          "count": 30,
           "sample": [
             {
               "id": "api_endpoint:get:6708703663",
@@ -2978,6 +2986,22 @@
               "path": "apps/web/src/features/admin/users/pages/AdminUsersPage.tsx",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
+            },
+            {
+              "id": "function:listusers:8a2608985c",
+              "type": "function",
+              "name": "listUsers",
+              "path": "apps/api/src/modules/admin/users/users.controller.ts#listUsers",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "function:updateuser:ea3eed9a5a",
+              "type": "function",
+              "name": "updateUser",
+              "path": "apps/api/src/modules/admin/users/users.controller.ts#updateUser",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
             }
           ],
           "truncated": false
@@ -2990,6 +3014,14 @@
               "type": "task",
               "name": "LUC-2966 Auth Security And QA Proof Task Entity Link Backfill",
               "path": "history/tasks/luc-2966-auth-security-qa-proof-task-entity-link-backfill-2026-06-08-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-5591-v1-app-completion-admin-operation-proof-lane:6fe83e9fbe",
+              "type": "task",
+              "name": "LUC-5591 V1 App-Completion Admin Operation Proof Lane",
+              "path": "history/tasks/luc-5591-v1-app-completion-admin-operation-proof-lane-2026-06-27-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -3070,14 +3102,6 @@
               "type": "task",
               "name": "LEARNING_JOURNAL",
               "path": ".codex/context/LEARNING_JOURNAL.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-5591-v1-app-completion-admin-operation-proof-lane:6fe83e9fbe",
-              "type": "task",
-              "name": "LUC-5591 V1 App-Completion Admin Operation Proof Lane",
-              "path": "history/tasks/luc-5591-v1-app-completion-admin-operation-proof-lane-2026-06-27-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -3181,7 +3205,7 @@
     {
       "userFlow": "Dashboard overview",
       "entityCount": 841,
-      "linkedRelationCount": 2628,
+      "linkedRelationCount": 2631,
       "layers": {
         "frontend": {
           "count": 331,
@@ -10083,8 +10107,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 3218,
-      "linkedRelationCount": 11074,
+      "entityCount": 3232,
+      "linkedRelationCount": 11187,
       "layers": {
         "frontend": {
           "count": 390,
@@ -10733,7 +10757,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1272,
+          "count": 1273,
           "sample": [
             {
               "id": "task:luc-2057-local-protected-wallet-route-action-proof-task:2bc9484684",
@@ -11379,7 +11403,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 1345,
+          "count": 1358,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -12688,8 +12712,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 9010,
-      "linkedRelationCount": 31608,
+      "entityCount": 9059,
+      "linkedRelationCount": 32055,
       "layers": {
         "frontend": {
           "count": 697,
@@ -13338,7 +13362,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1547,
+          "count": 1552,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -13984,7 +14008,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 5930,
+          "count": 5974,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
@@ -15293,8 +15317,8 @@
     },
     {
       "userFlow": "User configuration",
-      "entityCount": 297,
-      "linkedRelationCount": 722,
+      "entityCount": 298,
+      "linkedRelationCount": 732,
       "layers": {
         "frontend": {
           "count": 94,
@@ -16589,7 +16613,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 62,
+          "count": 63,
           "sample": [
             {
               "id": "task:luc-2966-auth-security-and-qa-proof-task-entity-link-backfill:c59e900c9c",
@@ -16942,6 +16966,14 @@
               "path": "scripts/runLocalExternalGatesPipeline.mjs#normalizeDbProfile",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
+            },
+            {
+              "id": "task:luc-2931-local-external-gates-pipeline-missing-test-links:93431708bd",
+              "type": "task",
+              "name": "LUC-2931 Local External Gates Pipeline Missing-Test Links",
+              "path": "history/tasks/luc-2931-local-external-gates-pipeline-missing-test-links-2026-06-07-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
             },
             {
               "id": "feature:runlocalexternalgatespipeline-mjs:499ae45ce1",

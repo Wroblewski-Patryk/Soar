@@ -1,3 +1,56 @@
+## 2026-07-05 LUC-176 Account Access ClearSession Closure
+
+- [LUC-176](/LUC/issues/LUC-176) can close as
+  `DONE / VERIFIED_LOCAL / CLEARSESSION_PROJECT_TRUTH_RESOLVED /
+  APP_COMPLETION_REFRESHED / NO_RUNTIME_MUTATION`.
+- Verified:
+  `clearSession` is no longer the first project-truth gap after scoped scanner
+  metadata promotion, generator refresh, focused middleware proof (`1` file /
+  `9` tests), strict graph drift pass (`850/850`, `0` missing), and targeted
+  readback.
+- Next owner/action:
+  no remaining action on [LUC-176](/LUC/issues/LUC-176). The next Account
+  access app-completion proof row is
+  `apps/api/src/middleware/requireAuth.ts#requireAuth`; create or select a
+  separate QA/Project Manager proof issue for that row.
+- Evidence:
+  `history/evidence/luc-176-account-access-clearsession-project-truth-proof-2026-07-05.md`;
+  `history/tasks/luc-176-account-access-clearsession-project-truth-proof-2026-07-05-task.md`.
+
+## 2026-07-05 LUC-175 RequireAuth Test Typing Closure
+
+- [LUC-175](/LUC/issues/LUC-175) can close as
+  `DONE / VERIFIED_LOCAL / API_TYPECHECK_PASS / REQUIREAUTH_TEST_PASS /
+  TEST_ONLY_CHANGE / NO_RUNTIME_MUTATION`.
+- Verified:
+  focused `requireAuth` middleware tests passed (`1` file / `9` tests), and
+  `corepack pnpm --filter api run typecheck` passed.
+- Next owner/action:
+  no remaining action on [LUC-175](/LUC/issues/LUC-175). Source-control/release
+  owner may batch this test-only change under the existing dirty/diverged
+  checkout policy. No push/deploy/restart/rollback/protected smoke is
+  authorized by this issue.
+- Evidence:
+  `history/tasks/luc-175-requireauth-test-typing-api-build-blocker-2026-07-05-task.md`.
+
+## 2026-07-05 LUC-171 DB-Backed Auth/Worker Freshness Closure
+
+- [LUC-171](/LUC/issues/LUC-171) can close as
+  `DONE / VERIFIED_LOCAL / DB_BACKED_AUTH_PASS /
+  WORKER_RUNTIME_FRESHNESS_PASS / NO_RUNTIME_MUTATION`.
+- Verified:
+  the previously blocked local DB-backed proof path is now executable because
+  Docker Desktop is available and the existing local Postgres/Redis containers
+  are running. Auth/origin DB-backed tests passed (`2` files / `16` tests);
+  worker runtime freshness tests passed (`1` file / `7` tests).
+- Next owner/action:
+  no remaining action on [LUC-171](/LUC/issues/LUC-171). Production protected
+  acceptance, build provenance, host/log-window proof, and release gates remain
+  on their separate existing issue lanes.
+- Evidence:
+  `history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md`;
+  `history/tasks/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05-task.md`.
+
 ## 2026-07-04 LUC-21 Local Architecture/Repo Preflight Next Step
 
 - [LUC-21](/LUC/issues/LUC-21) can close as

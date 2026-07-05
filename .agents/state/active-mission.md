@@ -1,3 +1,77 @@
+## 2026-07-05 LUC-176 Account Access ClearSession Project-Truth Proof
+
+- Mission:
+  `LUC-176-ACCOUNT-ACCESS-CLEARSESSION-PROJECT-TRUTH-PROOF-2026-07-05`.
+- Status:
+  `DONE / VERIFIED_LOCAL / CLEARSESSION_PROJECT_TRUTH_RESOLVED /
+  APP_COMPLETION_REFRESHED / NO_RUNTIME_MUTATION`.
+- Scope:
+  QVE verification/source-truth closure only. No runtime code change, commit,
+  push, deploy, restart, rollback, env edit, migration, production protected
+  auth/session proof, secret/account readback, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, or live-trading
+  action.
+- Result:
+  `apps/api/src/middleware/requireAuth.ts#clearSession` was promoted through
+  the existing scanner override mechanism using prior LUC-93/LUC-171 evidence
+  and fresh focused middleware proof. Generated app-completion
+  `implementedNeedsProof` dropped from `115` to `114`; project-truth first gap
+  advanced to `apps/api/src/middleware/requireAuth.ts#requireAuth`.
+- Evidence:
+  `history/evidence/luc-176-account-access-clearsession-project-truth-proof-2026-07-05.md`;
+  `history/tasks/luc-176-account-access-clearsession-project-truth-proof-2026-07-05-task.md`.
+- Residual:
+  no remaining action on [LUC-176](/LUC/issues/LUC-176). The next Account
+  access row is `requireAuth` and should be handled separately.
+
+## 2026-07-05 LUC-175 RequireAuth Test Typing API Build Blocker
+
+- Mission:
+  `LUC-175-REQUIREAUTH-TEST-TYPING-API-BUILD-BLOCKER-2026-07-05`.
+- Status:
+  `DONE / VERIFIED_LOCAL / API_TYPECHECK_PASS / REQUIREAUTH_TEST_PASS /
+  TEST_ONLY_CHANGE / NO_RUNTIME_MUTATION`.
+- Scope:
+  CBE backend test typing fix only. No runtime auth behavior change, product
+  code change outside the test, commit, push, deploy, restart, rollback, env
+  edit, migration, production access, secret/account readback, DB/Redis
+  mutation beyond test-created local records, exchange/payment/subscription
+  mutation, order, position, or live-trading action.
+- Result:
+  `apps/api/src/middleware/requireAuth.test.ts` now matches Supertest's
+  `set-cookie` header type and Prisma's typed user mock shape. Focused
+  middleware tests and API typecheck pass.
+- Evidence:
+  `history/tasks/luc-175-requireauth-test-typing-api-build-blocker-2026-07-05-task.md`.
+- Residual:
+  no remaining action on [LUC-175](/LUC/issues/LUC-175). Source-control/release
+  owner may batch the test-only fix from the existing dirty/diverged checkout.
+
+## 2026-07-05 LUC-171 DB-Backed Auth And Worker Runtime Freshness
+
+- Mission:
+  `LUC-171-DB-BACKED-AUTH-WORKER-RUNTIME-FRESHNESS-2026-07-05`.
+- Status:
+  `DONE / VERIFIED_LOCAL / DB_BACKED_AUTH_PASS /
+  WORKER_RUNTIME_FRESHNESS_PASS / NO_RUNTIME_MUTATION`.
+- Scope:
+  QVE local verification only. No product code, commit, push, deploy, restart,
+  rollback, env edit, migration, production access, secret/account readback,
+  DB/Redis mutation beyond test-created local records, exchange/payment/
+  subscription mutation, order, position, or live-trading action.
+- Result:
+  Docker Desktop was available and local `soar-postgres-1`/`soar-redis-1`
+  containers were already running before the heartbeat. The DB-backed auth and
+  trusted-origin pack passed (`2` files / `16` tests). The worker runtime
+  freshness route pack passed (`1` file / `7` tests).
+- Evidence:
+  `history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md`;
+  `history/tasks/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05-task.md`.
+- Residual:
+  no remaining action on [LUC-171](/LUC/issues/LUC-171). Production protected
+  acceptance, build provenance, host/log-window proof, and release gates remain
+  on separate existing owner paths.
+
 ## 2026-07-02 LUC-6917 No-Stall Queue Expeditor
 
 - Mission:

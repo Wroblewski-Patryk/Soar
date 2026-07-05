@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-04T19:03:56.753Z",
+  "generatedAt": "2026-07-05T02:25:10.618Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -8,11 +8,11 @@
     "flows": 8,
     "needsBrowserReview": 452,
     "missingTestLink": 981,
-    "missingDocLink": 1996,
-    "implementedNeedsProof": 115,
+    "missingDocLink": 1994,
+    "implementedNeedsProof": 114,
     "blocked": 0,
-    "riskItems": 3544,
-    "appCompletionRiskItems": 3544,
+    "riskItems": 3541,
+    "appCompletionRiskItems": 3541,
     "priorityReviewItems": 200,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": true
@@ -22,10 +22,10 @@
       "userFlow": "Account access",
       "total": 265,
       "risks": {
-        "ok": 5,
-        "missing_doc_link": 147,
-        "implemented_needs_proof": 5,
+        "ok": 8,
+        "implemented_needs_proof": 4,
         "missing_test_link": 77,
+        "missing_doc_link": 145,
         "needs_browser_review": 31
       },
       "gates": {
@@ -138,48 +138,6 @@
   ],
   "priorityReviewItems": [
     {
-      "id": "function:expectsessioncookiecleared:9748483ec1",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "expectSessionCookieCleared",
-      "path": "apps/api/src/middleware/requireAuth.test.ts#expectSessionCookieCleared",
-      "owner": "Engineering Delivery Lead",
-      "status": "tested",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 1,
-      "risk": "missing_doc_link"
-    },
-    {
-      "id": "function:clearsession:c472493149",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "clearSession",
-      "path": "apps/api/src/middleware/requireAuth.ts#clearSession",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": true,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 2,
-      "risk": "implemented_needs_proof"
-    },
-    {
       "id": "function:requireauth:e044c1cd19",
       "type": "function",
       "kind": "feature_or_capability",
@@ -197,29 +155,8 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 2,
+      "relatedEntityCount": 5,
       "risk": "implemented_needs_proof"
-    },
-    {
-      "id": "function:createsessioncookie:5075793e8e",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "createSessionCookie",
-      "path": "apps/api/src/middleware/requireTrustedOrigin.test.ts#createSessionCookie",
-      "owner": "Engineering Delivery Lead",
-      "status": "tested",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": true,
-        "hasDoc": false,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 1,
-      "risk": "missing_doc_link"
     },
     {
       "id": "function:clearsession:a174a4b7f1",
@@ -535,7 +472,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 2,
+      "relatedEntityCount": 3,
       "risk": "missing_doc_link"
     },
     {
@@ -556,7 +493,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 2,
+      "relatedEntityCount": 3,
       "risk": "missing_doc_link"
     },
     {
@@ -3488,7 +3425,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
+      "relatedEntityCount": 3,
       "risk": "missing_doc_link"
     },
     {
@@ -3845,7 +3782,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 2,
+      "relatedEntityCount": 3,
       "risk": "missing_doc_link"
     },
     {
@@ -3866,7 +3803,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
+      "relatedEntityCount": 2,
       "risk": "missing_doc_link"
     },
     {
@@ -3887,7 +3824,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
+      "relatedEntityCount": 2,
       "risk": "missing_doc_link"
     },
     {
@@ -3951,7 +3888,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 2,
+      "relatedEntityCount": 6,
       "risk": "missing_doc_link"
     },
     {
@@ -4014,7 +3951,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 2,
+      "relatedEntityCount": 3,
       "risk": "missing_doc_link"
     },
     {
@@ -4035,7 +3972,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
+      "relatedEntityCount": 2,
       "risk": "missing_doc_link"
     },
     {
@@ -4077,7 +4014,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
+      "relatedEntityCount": 5,
       "risk": "missing_doc_link"
     },
     {
@@ -4161,7 +4098,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
+      "relatedEntityCount": 5,
       "risk": "missing_doc_link"
     },
     {
@@ -4182,7 +4119,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
+      "relatedEntityCount": 6,
       "risk": "missing_doc_link"
     },
     {
@@ -4203,7 +4140,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
+      "relatedEntityCount": 6,
       "risk": "missing_doc_link"
     },
     {
@@ -4224,7 +4161,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
+      "relatedEntityCount": 6,
       "risk": "missing_doc_link"
     },
     {
@@ -4245,7 +4182,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
+      "relatedEntityCount": 6,
       "risk": "missing_doc_link"
     },
     {
@@ -4308,7 +4245,7 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
+      "relatedEntityCount": 6,
       "risk": "missing_doc_link"
     },
     {
@@ -4350,7 +4287,70 @@
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
+      "relatedEntityCount": 5,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:resolvebuildinfo:04b3efc98b",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "resolveBuildInfo",
+      "path": "scripts/runControlledLiveSessionProof.mjs#resolveBuildInfo",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 5,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:runcollector:34d586962e",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "runCollector",
+      "path": "scripts/runControlledLiveSessionProof.mjs#runCollector",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 7,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:runsimultaneousruntimereadback:3d70c37d22",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "runSimultaneousRuntimeReadback",
+      "path": "scripts/runControlledLiveSessionProof.mjs#runSimultaneousRuntimeReadback",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 6,
       "risk": "missing_doc_link"
     }
   ]

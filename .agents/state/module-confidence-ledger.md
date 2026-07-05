@@ -1,3 +1,92 @@
+## 2026-07-05 LUC-176 Account Access ClearSession Project-Truth Proof
+
+- Module row:
+  Account access / Auth session / API auth middleware / app-completion truth.
+- Status:
+  `verified locally / clearSession project-truth gap resolved /
+  app-completion refreshed / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-176-account-access-clearsession-project-truth-proof-2026-07-05.md`;
+  `history/tasks/luc-176-account-access-clearsession-project-truth-proof-2026-07-05-task.md`.
+- Current proof:
+  `apps/api/src/middleware/requireAuth.ts#clearSession` has direct test and
+  doc relations, prior LUC-93 behavior proof, and fresh focused middleware
+  proof (`1` file / `9` tests). The scanner override applies one verified
+  entity status, app-completion `implementedNeedsProof` dropped from `115` to
+  `114`, and project-truth first gap advanced to
+  `apps/api/src/middleware/requireAuth.ts#requireAuth`.
+- Confidence:
+  high for this local Account access middleware/project-truth row. Broader
+  Account access rows remain open separately; no production protected auth,
+  deploy, secret/account, exchange/payment/subscription, order, position, or
+  live-trading proof was performed.
+
+## 2026-07-05 LUC-175 RequireAuth Test Typing API Build Blocker
+
+- Module row:
+  Account access / API auth middleware / typed backend test suite.
+- Status:
+  `verified locally / requireAuth middleware test pass / API typecheck pass /
+  test-only change`.
+- Evidence:
+  `history/tasks/luc-175-requireauth-test-typing-api-build-blocker-2026-07-05-task.md`.
+- Current proof:
+  focused `requireAuth` middleware test passed (`1` file / `9` tests), and API
+  typecheck passed after normalizing `set-cookie` header typing and returning a
+  Prisma-compatible mock user shape in the stale-session test.
+- Confidence:
+  high for the local Account access middleware test/build contract covered by
+  this slice. Runtime auth behavior, production acceptance, deploy, protected
+  account/session proof, and release gates were not changed or exercised.
+
+## 2026-07-05 LUC-171 DB-Backed Auth And Worker Runtime Freshness
+
+- Module rows:
+  Account access / API auth routes / trusted-origin middleware; Runtime workers /
+  protected runtime freshness route.
+- Status:
+  `verified locally / DB-backed auth-origin route proof pass /
+  DB-backed worker runtime freshness route proof pass / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md`;
+  `history/tasks/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05-task.md`.
+- Current proof:
+  focused DB-backed auth and trusted-origin proof passed (`2` files / `16`
+  tests), covering register/login/session cookie behavior, logout invalidation,
+  stale/deleted/expired session rejection, duplicate token precedence, and
+  trusted-origin fail-closed behavior. Focused worker runtime freshness proof
+  passed (`1` file / `7` tests), covering unauthenticated rejection, healthy
+  PASS, stale market/session/decision FAIL cases, and inline no-demand PASS.
+- Confidence:
+  high for the local DB-backed contracts covered by this slice. Production
+  protected acceptance, release build provenance, host/log-window proof, and
+  deployment gates remain separate owner paths. No backend repair child is
+  indicated by this proof.
+
+## 2026-07-05 LUC-170 Account Access First Doc Rows
+
+- Module row:
+  Account access / Auth session / API auth middleware / app-completion truth.
+- Status:
+  `verified locally / two helper doc-links added / project truth refreshed`.
+- Evidence:
+  `history/tasks/luc-170-account-access-first-doc-rows-2026-07-05-task.md`;
+  targeted app-completion readback reports
+  `apps/api/src/middleware/requireAuth.test.ts#expectSessionCookieCleared` and
+  `apps/api/src/middleware/requireTrustedOrigin.test.ts#createSessionCookie`
+  with `hasDoc=true`, `hasTest=true`, and `risk=ok`.
+- Current proof:
+  direct documentation relations now link the stale-session cookie-clearing
+  assertion helper and the trusted-origin session-cookie bootstrap helper to
+  `docs/modules/api-auth.md`; generated architecture-awareness,
+  app-completion, and project-truth indexes were refreshed.
+- Residual risk:
+  broader Account access app-completion rows remain open. The refreshed first
+  gap is `apps/api/src/middleware/requireAuth.ts#clearSession` as a separate
+  `implemented_needs_proof` row for QA-owned behavior proof. This task did not
+  run production, browser, DB-backed e2e, deploy, secret, account, exchange,
+  payment, subscription, order, position, or live-trading proof.
+
 ## 2026-07-04 LUC-108 Account Access RequireAuth Doc-Link
 
 - Module row:

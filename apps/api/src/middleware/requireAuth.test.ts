@@ -25,9 +25,10 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-const expectSessionCookieCleared = (setCookieHeader: string[] | undefined) => {
-  expect(setCookieHeader).toBeDefined();
-  expect(setCookieHeader?.some((header) => header.startsWith('token=;') && header.includes('Expires=Thu, 01 Jan 1970'))).toBe(
+const expectSessionCookieCleared = (setCookieHeader: string | string[] | undefined) => {
+  const cookieHeaders = Array.isArray(setCookieHeader) ? setCookieHeader : setCookieHeader ? [setCookieHeader] : undefined;
+  expect(cookieHeaders).toBeDefined();
+  expect(cookieHeaders?.some((header) => header.startsWith('token=;') && header.includes('Expires=Thu, 01 Jan 1970'))).toBe(
     true
   );
 };
@@ -194,9 +195,15 @@ describe('requireAuth middleware', () => {
     vi.spyOn(prisma.user, 'findUnique').mockResolvedValueOnce({
       id: 'stale-user',
       email: 'stale@example.com',
+      password: 'hashed-password',
       role: 'USER',
       sessionVersion: 2,
-    } as { id: string; email: string; role: 'USER'; sessionVersion: number });
+      name: null,
+      avatarUrl: null,
+      uiPreferences: {},
+      createdAt: new Date('2026-01-01T00:00:00.000Z'),
+      updatedAt: new Date('2026-01-01T00:00:00.000Z'),
+    });
 
     const res = await request(app).get('/dashboard').set('Cookie', ['token=stale-user-token']);
     expect(res.status).toBe(401);

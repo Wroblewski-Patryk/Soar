@@ -1,3 +1,102 @@
+## 2026-07-05 LUC-176 Account Access ClearSession Project-Truth Proof
+
+- [LUC-176](/LUC/issues/LUC-176) can close as
+  `DONE / VERIFIED_LOCAL / CLEARSESSION_PROJECT_TRUTH_RESOLVED /
+  APP_COMPLETION_REFRESHED / NO_RUNTIME_MUTATION`.
+- Verified:
+  `apps/api/src/middleware/requireAuth.ts#clearSession` had direct test/doc
+  relations and prior LUC-93 behavior proof; this heartbeat added scoped
+  scanner metadata promotion for that one entity, regenerated
+  architecture-awareness, app-completion, and project-truth indexes, and reran
+  focused middleware proof (`1` file / `9` tests).
+- Readback:
+  architecture-awareness exporter passed with `10623` entities / `34477`
+  relations and `entityOverridesApplied=1`; app-completion
+  `implementedNeedsProof` dropped from `115` to `114`; project-truth first gap
+  advanced from `clearSession` to
+  `apps/api/src/middleware/requireAuth.ts#requireAuth`.
+- Next owner/action:
+  no remaining action on [LUC-176](/LUC/issues/LUC-176). The next Account
+  access row, `requireAuth`, should be handled as a separate QA/Project
+  Manager proof slice when selected.
+- Evidence:
+  `history/evidence/luc-176-account-access-clearsession-project-truth-proof-2026-07-05.md`;
+  `history/tasks/luc-176-account-access-clearsession-project-truth-proof-2026-07-05-task.md`.
+
+## 2026-07-05 LUC-175 RequireAuth Test Typing API Build Blocker
+
+- [LUC-175](/LUC/issues/LUC-175) can close as
+  `DONE / VERIFIED_LOCAL / API_TYPECHECK_PASS / REQUIREAUTH_TEST_PASS /
+  TEST_ONLY_CHANGE / NO_RUNTIME_MUTATION`.
+- Verified:
+  API typecheck initially failed on `requireAuth.test.ts` because Supertest's
+  `set-cookie` header can be `string | string[]` and one Prisma user mock was
+  under-shaped. CBE fixed the test-only typing issues and reran focused proof.
+- Commands:
+  `corepack pnpm --filter api exec vitest run src/middleware/requireAuth.test.ts --pool=forks --maxWorkers=1 --minWorkers=1 --test-timeout 30000`;
+  `corepack pnpm --filter api run typecheck`.
+- Next owner/action:
+  no remaining action on [LUC-175](/LUC/issues/LUC-175). Source-control/release
+  owner may batch the test-only fix with the existing dirty/diverged checkout
+  when appropriate; no push/deploy is authorized by this issue.
+- Evidence:
+  `history/tasks/luc-175-requireauth-test-typing-api-build-blocker-2026-07-05-task.md`.
+
+## 2026-07-05 LUC-171 DB-Backed Auth And Worker Runtime Freshness Proof
+
+- [LUC-171](/LUC/issues/LUC-171) can close as
+  `DONE / VERIFIED_LOCAL / DB_BACKED_AUTH_PASS /
+  WORKER_RUNTIME_FRESHNESS_PASS / NO_RUNTIME_MUTATION`.
+- Verified:
+  local Docker Desktop was available and the existing `soar-postgres-1` and
+  `soar-redis-1` containers were already running. Focused DB-backed auth and
+  trusted-origin proof passed (`2` files / `16` tests). Focused worker runtime
+  freshness route proof passed (`1` file / `7` tests).
+- Commands:
+  `corepack pnpm --filter api exec vitest run src/modules/auth/auth.e2e.test.ts src/middleware/requireTrustedOrigin.test.ts --pool=forks --maxWorkers=1 --minWorkers=1 --test-timeout 30000`;
+  `corepack pnpm --filter api exec vitest run src/router/workers-runtime-freshness.test.ts --pool=forks --maxWorkers=1 --minWorkers=1 --test-timeout 30000`.
+- Source control:
+  no commit or push; repo was already dirty/divergent and this heartbeat added
+  scoped QA evidence/task/context records only.
+- Boundary:
+  no product code, deploy, restart, rollback, env edit, migration,
+  production access, secret/account readback, exchange/payment/subscription
+  mutation, order, position, or live-trading action occurred.
+- Evidence:
+  `history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md`;
+  `history/tasks/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05-task.md`.
+
+## 2026-07-05 LUC-170 Account Access First Doc Rows
+
+- [LUC-170](/LUC/issues/LUC-170) can close as
+  `DONE / TWO_MISSING_DOC_LINK_ROWS_RESOLVED / PROJECT_TRUTH_REFRESHED /
+  NO_RUNTIME_MUTATION`.
+- Concrete action:
+  DSM added direct documentation relations for
+  `apps/api/src/middleware/requireAuth.test.ts#expectSessionCookieCleared` and
+  `apps/api/src/middleware/requireTrustedOrigin.test.ts#createSessionCookie`
+  to `docs/modules/api-auth.md`, updated the API auth doc-link
+  classification, and refreshed architecture-awareness, app-completion, and
+  project-truth indexes.
+- Validation:
+  `architecture:graph:generate` passed; architecture-awareness exporter passed
+  with `10617` entities / `34442` relations; app-completion refresh passed and
+  reduced `missingDocLink` from `1996` to `1994`; strict graph drift passed
+  `850/850` covered / `0` missing; project-truth `--apply` passed and moved
+  the first gap to `requireAuth.ts#clearSession` with
+  `risk=implemented_needs_proof`.
+- Source control:
+  no commit or push; repo was already dirty/divergent before this heartbeat.
+- Next owner/action:
+  no remaining doc-link action on [LUC-170](/LUC/issues/LUC-170). The current
+  first Account access gap is
+  `apps/api/src/middleware/requireAuth.ts#clearSession` for QA Regression Lead
+  + Project Manager to record fresh behavior proof. No runtime, production,
+  account, secret, deploy, exchange, payment, subscription, order, position,
+  or live-trading mutation occurred.
+- Evidence:
+  `history/tasks/luc-170-account-access-first-doc-rows-2026-07-05-task.md`.
+
 ## 2026-07-04 LUC-108 Account Access RequireAuth Doc-Link
 
 - [LUC-108](/LUC/issues/LUC-108) can close as
