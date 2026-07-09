@@ -47,8 +47,12 @@ const resolveOptions = () => {
     ),
     expectedSha,
     authToken: readArgValue('--auth-token') || process.env.PROD_AUTH_TOKEN || '',
-    authEmail: readArgValue('--auth-email') || process.env.PROD_AUTH_EMAIL || '',
-    authPassword: readArgValue('--auth-password') || process.env.PROD_AUTH_PASSWORD || '',
+    authEmail: readArgValue('--auth-email') || process.env.PROD_AUTH_EMAIL || process.env.SOAR_PROD_TEST_EMAIL || '',
+    authPassword:
+      readArgValue('--auth-password') ||
+      process.env.PROD_AUTH_PASSWORD ||
+      process.env.SOAR_PROD_TEST_PASSWORD ||
+      '',
     outputJson:
       readArgValue('--output-json') ||
       process.env.PROD_AUTH_OUTPUT_JSON ||

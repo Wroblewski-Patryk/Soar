@@ -37,7 +37,8 @@ const printUsage = () => {
       '  PROD_FIXTURE_WEB_BASE_URL, PROD_FIXTURE_API_BASE_URL,',
       '  PROD_FIXTURE_EXPECTED_SHA, PROD_FIXTURE_AUTH_TOKEN,',
       '  PROD_FIXTURE_AUTH_EMAIL, PROD_FIXTURE_AUTH_PASSWORD,',
-      '  PROD_FIXTURE_OUTPUT_JSON, PROD_FIXTURE_OUTPUT_MD',
+      '  PROD_FIXTURE_OUTPUT_JSON, PROD_FIXTURE_OUTPUT_MD,',
+      '  SOAR_PROD_TEST_EMAIL, SOAR_PROD_TEST_PASSWORD',
     ].join('\n') + '\n'
   );
 };
@@ -59,8 +60,16 @@ const resolveOptions = () => {
     ),
     expectedSha,
     authToken: readArgValue('--auth-token') || process.env.PROD_FIXTURE_AUTH_TOKEN || '',
-    authEmail: readArgValue('--auth-email') || process.env.PROD_FIXTURE_AUTH_EMAIL || '',
-    authPassword: readArgValue('--auth-password') || process.env.PROD_FIXTURE_AUTH_PASSWORD || '',
+    authEmail:
+      readArgValue('--auth-email') ||
+      process.env.PROD_FIXTURE_AUTH_EMAIL ||
+      process.env.SOAR_PROD_TEST_EMAIL ||
+      '',
+    authPassword:
+      readArgValue('--auth-password') ||
+      process.env.PROD_FIXTURE_AUTH_PASSWORD ||
+      process.env.SOAR_PROD_TEST_PASSWORD ||
+      '',
     outputJson:
       readArgValue('--output-json') ||
       process.env.PROD_FIXTURE_OUTPUT_JSON ||

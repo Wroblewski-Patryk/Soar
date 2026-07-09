@@ -74,6 +74,24 @@ test('argument and option helpers normalize production fixture proof inputs with
   }
 });
 
+test('resolveOptions falls back to app-specific Soar production test account refs', async () => {
+  const harness = await importHarness([], {
+    PROD_FIXTURE_AUTH_EMAIL: '',
+    PROD_FIXTURE_AUTH_PASSWORD: '',
+    SOAR_PROD_TEST_EMAIL: 'soar-test@example.test',
+    SOAR_PROD_TEST_PASSWORD: 'soar-test-password',
+  });
+  try {
+    const { resolveOptions } = harness.module;
+
+    const options = resolveOptions();
+    assert.equal(options.authEmail, 'soar-test@example.test');
+    assert.equal(options.authPassword, 'soar-test-password');
+  } finally {
+    await harness.cleanup();
+  }
+});
+
 test('readJson and requestJson parse responses and keep invalid bodies to short previews', async () => {
   const harness = await importHarness();
   const originalFetch = globalThis.fetch;

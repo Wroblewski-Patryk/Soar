@@ -7,7 +7,7 @@ import test from 'node:test';
 
 const scriptUrl = pathToFileURL(path.resolve('scripts/runProdAuthSessionBrowserProof.mjs'));
 
-const importHarness = async (argv = []) => {
+const importHarness = async (argv = [], env = {}) => {
   const originalArgv = process.argv;
   const originalEnv = { ...process.env };
   const dir = await mkdtemp(path.join(os.tmpdir(), 'soar-prod-auth-proof-'));
@@ -23,6 +23,7 @@ const importHarness = async (argv = []) => {
   process.env.PROD_AUTH_EMAIL = 'local@example.test';
   process.env.PROD_AUTH_PASSWORD = 'synthetic-local-password';
   process.env.PROD_AUTH_CDP_PORT = '9444';
+  Object.assign(process.env, env);
 
   try {
     const module = await import(`${scriptUrl.href}?case=${Date.now()}-${Math.random()}`);
@@ -81,6 +82,24 @@ test('argument and option helpers normalize production auth proof inputs without
       today: '2026-06-07',
       approved: true,
     });
+  } finally {
+    await harness.cleanup();
+  }
+});
+
+test('resolveOptions falls back to app-specific Soar production test account refs', async () => {
+  const harness = await importHarness([], {
+    PROD_AUTH_EMAIL: '',
+    PROD_AUTH_PASSWORD: '',
+    SOAR_PROD_TEST_EMAIL: 'soar-test@example.test',
+    SOAR_PROD_TEST_PASSWORD: 'soar-test-password',
+  });
+  try {
+    const { resolveOptions } = harness.module;
+
+    const options = resolveOptions();
+    assert.equal(options.authEmail, 'soar-test@example.test');
+    assert.equal(options.authPassword, 'soar-test-password');
   } finally {
     await harness.cleanup();
   }
