@@ -1,3 +1,30 @@
+## 2026-07-10 LUC-242 Account Access Controller ClearSession Doc-Link
+
+- `LUC-242-ACCOUNT-ACCESS-CONTROLLER-CLEARSESSION-DOC-LINK-2026-07-10` is
+  `DONE / MISSING_DOC_LINK_RESOLVED / PROJECT_TRUTH_REFRESHED /
+  NO_RUNTIME_MUTATION`.
+- DSM closed one Account access architecture-awareness documentation-link row:
+  `apps/api/src/modules/auth/auth.controller.ts#clearSession`.
+  `docs/modules/api-auth.md` now classifies the controller-local session
+  clearing helper, and `docs/architecture/scanner-overrides.json` adds the
+  direct `documents` relation from `docs/modules/api-auth.md`.
+- Validation:
+  architecture-awareness generation passed with `10654` entities, `34642`
+  relations, `entityOverridesApplied=3`, and `relationOverridesApplied=1`;
+  app-completion refresh passed with `3557` items, `missingDocLink=1994`,
+  `missingTestLink=980`, and `implementedNeedsProof=113`; project-truth
+  `--apply` passed and advanced the first Account access gap to
+  `apps/api/src/modules/auth/auth.controller.ts#clearSessionCookie` as
+  `missing_test_link`.
+- Boundary:
+  no product code, runtime behavior, protected production smoke, raw secret,
+  account/cookie/token/API-key readback, push, deploy, restart, rollback,
+  DB/Redis mutation, exchange/payment/subscription mutation, order, position,
+  or live-trading action occurred.
+- Evidence:
+  `history/evidence/luc-242-account-access-controller-clearsession-doc-link-2026-07-10.md`;
+  `history/tasks/luc-242-account-access-controller-clearsession-doc-link-2026-07-10-task.md`.
+
 ## 2026-07-10 LUC-174 Protected Trading Readback Approval Packet
 
 - `LUC-174-PROTECTED-TRADING-READBACK-LIVE-MUTATION-APPROVAL-PACKET-2026-07-10`

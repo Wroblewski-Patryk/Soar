@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-10T12:45:14.135Z
+Generated: 2026-07-10T18:57:42.963Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -13,26 +13,25 @@ This is the routing surface agents should use before guessing whether an app wor
 | incompleteEventChains | 0 |
 | runtimeFindings | 0 |
 | criticalRuntimeFindings | 0 |
-| appCompletionGaps | 3540 |
+| appCompletionGaps | 3539 |
 | indexedAppCompletionGaps | 200 |
-| knownAppCompletionRiskItems | 3540 |
+| knownAppCompletionRiskItems | 3539 |
 | appCompletionPriorityReviewItems | 200 |
 | appCompletionPriorityReviewTruncated | true |
 | operationalGateGaps | 0 |
 | indexedGaps | 200 |
-| totalGaps | 3540 |
+| totalGaps | 3539 |
 
 ## First Gap
 
-- medium: Account access: clearSession has app-completion risk missing_doc_link.
-- Owner: Docs Memory Lead + Project Manager
-- Next action: Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.
+- medium: Account access: clearSessionCookie has app-completion risk missing_test_link.
+- Owner: Test Automation Engineer + QA Regression Lead
+- Next action: Add or link the smallest relevant automated/manual verification for this flow before claiming it works.
 
 ## Gaps
 
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
-| medium | app_completion_gap | Account access | Account access: clearSession has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Account access | Account access: clearSessionCookie has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Account access | Account access: login has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Account access | Account access: logout has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
@@ -112,3 +111,4 @@ This is the routing surface agents should use before guessing whether an app wor
 | medium | app_completion_gap | Account access | Account access: resolveRuntimeSymbolStatsConfiguredContext has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Account access | Account access: countRuntimeTradeRows has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Account access | Account access: getRuntimeTradeBotContext has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
+| medium | app_completion_gap | Account access | Account access: listRuntimeTradeAnchorPositionRows has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |

@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-10T12:44:48.912Z
+Generated: 2026-07-10T18:57:35.903Z
 
 ## Canonical Exports
 
@@ -983,9 +983,11 @@ Generated: 2026-07-10T12:44:48.912Z
 | connected_to | project:soar:7c70e892d7 | task:task:00e81e72a3 | history/tasks/luc-1709-restore-soar-guardrails-source-control-closure-2026-06-03-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:c8c5813277 | history/tasks/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-171-luc-169-provenance-packet-closure-2026-05-26:93b4d576c3 | history/tasks/luc-171-luc-169-provenance-packet-closure-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-172-protected-authenticated-browser-proof-packet:c23c159399 | history/tasks/luc-172-protected-authenticated-browser-proof-packet-2026-07-10-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1734-restore-owner-path-for-coolify-inventory-lane:effa2c2808 | history/tasks/luc-1734-restore-owner-path-for-coolify-inventory-lane-2026-06-03-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1739-coolify-read-only-access-source-control-closure:00bda71cb9 | history/tasks/luc-1739-coolify-read-only-access-source-control-closure-2026-06-03-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:605229b8f6 | history/tasks/luc-174-no-stall-queue-expeditor-2026-05-26-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-174-protected-trading-readback-vs-live-mutation-approval-packet:9ef895074b | history/tasks/luc-174-protected-trading-readback-live-mutation-approval-packet-2026-07-10-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:8f529d5458 | history/tasks/luc-175-requireauth-test-typing-api-build-blocker-2026-07-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:04c35723a3 | history/tasks/luc-175-source-control-queue-executor-gate-2026-05-26-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:cc5a9ea204 | history/tasks/luc-1754-liveimport-readback-protected-evidence-2026-06-03-task.md |
@@ -1216,5 +1218,3 @@ Generated: 2026-07-10T12:44:48.912Z
 | connected_to | project:soar:7c70e892d7 | task:task:4265bf3afb | history/tasks/luc-2366-refresh-protected-runtime-worker-slo-proof-de3db789-2026-06-06-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2367-decompose-bot-runtime-aggregate-read-model-monoliths:d2173e357f | history/tasks/luc-2367-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-2368-decompose-bot-runtime-aggregate-read-model-monoliths:6d7f73ba0f | history/tasks/luc-2368-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:753adf7759 | history/tasks/luc-2372-bind-protected-runtime-worker-slo-proof-inputs-de3db789-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:task:9c72bcfe90 | history/tasks/luc-2373-repair-residual-guardrail-drift-after-luc-2365-recheck-2026-06-06-task.md |

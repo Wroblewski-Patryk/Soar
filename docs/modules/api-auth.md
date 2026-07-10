@@ -87,11 +87,12 @@ pnpm --filter api test -- src/modules/auth/auth.e2e.test.ts src/modules/auth/aut
 
 ## 10. Architecture-Awareness Doc-Link Classification
 
-Last classified: 2026-07-05 under [LUC-170](/LUC/issues/LUC-170).
+Last classified: 2026-07-10 under [LUC-242](/LUC/issues/LUC-242).
 
 | Source entity | Owner doc | Classification | Expected proof |
 | --- | --- | --- | --- |
 | `apps/api/src/modules/auth/auth.session.ts` | `docs/modules/api-auth.md` | Auth session helper boundary for current-user/session bootstrap behavior and fail-closed session response shaping. | Architecture-awareness `documents` relation from this doc plus auth session/cookie/JWT tests when behavior changes. |
+| `apps/api/src/modules/auth/auth.controller.ts#clearSession` | `docs/modules/api-auth.md` | Controller-local session clearing path that clears the `token` cookie before fail-closed current-user responses and logout invalidation. | Architecture-awareness `documents` relation from this doc plus DB-backed `auth.e2e.test.ts` logout and `/auth/me` stale-session proof when controller session clearing changes. |
 | `apps/api/src/middleware/requireAuth.test.ts#expectSessionCookieCleared` | `docs/modules/api-auth.md` | Middleware proof helper that asserts stale or invalid Account access session candidates actively clear the `token` cookie instead of leaving dead sessions in place. | Architecture-awareness `documents` relation from this doc plus focused `requireAuth` middleware tests when cookie-clearing semantics change. |
 | `apps/api/src/middleware/requireAuth.ts#requireAuth` | `docs/modules/api-auth.md` | Protected-route authentication guard for Account access and dashboard/admin API route identity boundaries. | Architecture-awareness `documents` relation from this doc plus `requireAuth` middleware tests when behavior changes. |
 | `apps/api/src/middleware/requireAuth.ts#clearSession` | `docs/modules/api-auth.md` | Protected-route session clearing path for stale, invalid, expired, or deleted-user session candidates in Account access. | Architecture-awareness `documents` relation from this doc plus `requireAuth` middleware tests when behavior changes. |

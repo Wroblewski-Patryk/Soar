@@ -33,5 +33,12 @@
       ]
     }
   ],
-  "relationOverrides": []
+  "relationOverrides": [
+    {
+      "fromPath": "docs/modules/api-auth.md",
+      "toPath": "apps/api/src/modules/auth/auth.controller.ts#clearSession",
+      "type": "documents",
+      "evidence": "docs/modules/api-auth.md"
+    }
+  ]
 }

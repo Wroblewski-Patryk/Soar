@@ -1,3 +1,35 @@
+## 2026-07-10 LUC-242 Account Access Controller ClearSession Doc-Link
+
+- [LUC-242](/LUC/issues/LUC-242) should move to `done` as
+  `DONE / MISSING_DOC_LINK_RESOLVED / PROJECT_TRUTH_REFRESHED /
+  LOCAL_COMMIT_CREATED / NO_RUNTIME_MUTATION`.
+- Concrete action:
+  DSM acknowledged the local repair/source-control lane starter and resolved
+  the next Account access documentation-link row:
+  `apps/api/src/modules/auth/auth.controller.ts#clearSession`.
+  `docs/modules/api-auth.md` now classifies the controller-local session
+  clearing helper, and `docs/architecture/scanner-overrides.json` adds one
+  explicit `documents` relation from the API auth module doc to that entity.
+- Validation:
+  architecture-awareness generation passed with `10654` entities, `34642`
+  relations, `entityOverridesApplied=3`, and `relationOverridesApplied=1`;
+  app-completion refresh passed with `3557` items and `3539` risk items;
+  project-truth `--apply` passed and advanced the first Account access gap to
+  `apps/api/src/modules/auth/auth.controller.ts#clearSessionCookie` as
+  `missing_test_link`.
+- Source-control disposition:
+  local commit is expected if final validation passes and the dirty set remains
+  limited to this docs/generated-index/state/evidence closure. Push/deploy
+  remain explicitly out of scope.
+- Next owner/action:
+  Test Automation Engineer + QA Regression Lead should handle
+  `auth.controller.ts#clearSessionCookie` as the next Account access
+  `missing_test_link` row. No production, protected, secret, deploy, exchange,
+  payment, subscription, order, position, or live-trading action occurred.
+- Evidence:
+  `history/evidence/luc-242-account-access-controller-clearsession-doc-link-2026-07-10.md`;
+  `history/tasks/luc-242-account-access-controller-clearsession-doc-link-2026-07-10-task.md`.
+
 ## 2026-07-10 LUC-174 Protected Trading Readback vs LIVE Mutation Packet
 
 - [LUC-174](/LUC/issues/LUC-174) should move to `done` as

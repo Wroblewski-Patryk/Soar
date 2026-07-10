@@ -1,3 +1,27 @@
+## 2026-07-10 LUC-242 Account Access Controller ClearSession Doc-Link
+
+- Module row:
+  Account access / API auth controller / architecture-awareness documentation
+  link.
+- Status:
+  `verified index link / missing-doc-link resolved / project-truth advanced /
+  no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-242-account-access-controller-clearsession-doc-link-2026-07-10.md`;
+  `history/tasks/luc-242-account-access-controller-clearsession-doc-link-2026-07-10-task.md`.
+- Current proof:
+  `docs/modules/api-auth.md` now classifies
+  `apps/api/src/modules/auth/auth.controller.ts#clearSession`; the scanner
+  override file adds one `documents` relation from that module doc to the
+  controller helper. Architecture-awareness applied `3` entity overrides and
+  `1` relation override. App-completion remains at `3557` items / `3539` risk
+  items, and project-truth first gap advanced to
+  `apps/api/src/modules/auth/auth.controller.ts#clearSessionCookie` as
+  `missing_test_link`.
+- Confidence:
+  high that the DSM-owned documentation-link row is resolved. The next Account
+  access row is test-owned by Test Automation Engineer + QA Regression Lead.
+
 ## 2026-07-10 LUC-172 Protected Authenticated Browser Proof Packet
 
 - Module row:

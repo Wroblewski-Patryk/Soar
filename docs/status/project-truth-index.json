@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-10T12:45:14.135Z",
+  "generatedAt": "2026-07-10T18:57:42.963Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "status": "gaps_require_routing",
@@ -9,42 +9,29 @@
     "incompleteEventChains": 0,
     "runtimeFindings": 0,
     "criticalRuntimeFindings": 0,
-    "appCompletionGaps": 3540,
+    "appCompletionGaps": 3539,
     "indexedAppCompletionGaps": 200,
-    "knownAppCompletionRiskItems": 3540,
+    "knownAppCompletionRiskItems": 3539,
     "appCompletionPriorityReviewItems": 200,
     "appCompletionPriorityReviewTruncated": true,
     "operationalGateGaps": 0,
     "indexedGaps": 200,
-    "totalGaps": 3540
+    "totalGaps": 3539
   },
   "firstGap": {
     "kind": "app_completion_gap",
     "severity": "medium",
     "userFlow": "Account access",
-    "summary": "Account access: clearSession has app-completion risk missing_doc_link.",
-    "nextOwner": "Docs Memory Lead + Project Manager",
-    "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+    "summary": "Account access: clearSessionCookie has app-completion risk missing_test_link.",
+    "nextOwner": "Test Automation Engineer + QA Regression Lead",
+    "nextAction": "Add or link the smallest relevant automated/manual verification for this flow before claiming it works.",
     "evidence": [
-      "apps/api/src/modules/auth/auth.controller.ts#clearSession"
+      "apps/api/src/modules/auth/auth.controller.ts#clearSessionCookie"
     ],
-    "sourceItemId": "function:clearsession:a174a4b7f1",
-    "risk": "missing_doc_link"
+    "sourceItemId": "function:clearsessioncookie:667949011e",
+    "risk": "missing_test_link"
   },
   "gaps": [
-    {
-      "kind": "app_completion_gap",
-      "severity": "medium",
-      "userFlow": "Account access",
-      "summary": "Account access: clearSession has app-completion risk missing_doc_link.",
-      "nextOwner": "Docs Memory Lead + Project Manager",
-      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
-      "evidence": [
-        "apps/api/src/modules/auth/auth.controller.ts#clearSession"
-      ],
-      "sourceItemId": "function:clearsession:a174a4b7f1",
-      "risk": "missing_doc_link"
-    },
     {
       "kind": "app_completion_gap",
       "severity": "medium",
@@ -2630,6 +2617,19 @@
         "scripts/runControlledLiveSessionProof.mjs#sleep"
       ],
       "sourceItemId": "function:sleep:59b6323c20",
+      "risk": "missing_doc_link"
+    },
+    {
+      "kind": "app_completion_gap",
+      "severity": "medium",
+      "userFlow": "Account access",
+      "summary": "Account access: splitCsv has app-completion risk missing_doc_link.",
+      "nextOwner": "Docs Memory Lead + Project Manager",
+      "nextAction": "Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.",
+      "evidence": [
+        "scripts/runControlledLiveSessionProof.mjs#splitCsv"
+      ],
+      "sourceItemId": "function:splitcsv:0bf214d6af",
       "risk": "missing_doc_link"
     }
   ]

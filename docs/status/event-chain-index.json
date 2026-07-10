@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-10T12:45:14.135Z",
+  "generatedAt": "2026-07-10T18:57:42.963Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 4647,
-      "linkedRelationCount": 18768,
+      "entityCount": 4661,
+      "linkedRelationCount": 18836,
       "layers": {
         "frontend": {
           "count": 193,
@@ -660,7 +660,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 700,
+          "count": 706,
           "sample": [
             {
               "id": "task:luc-2588-v1-audit-to-completion-controller:de8c2bb352",
@@ -755,6 +755,14 @@
               "type": "task",
               "name": "LUC-6271 Production Performance And Server Health Watch - Task Contract",
               "path": "history/tasks/luc-6271-production-performance-server-health-watch-2026-06-30-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:0559921402",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-242-account-access-controller-clearsession-doc-link-2026-07-10-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -1143,6 +1151,14 @@
               "status": "verified"
             },
             {
+              "id": "function:clearsession:a174a4b7f1",
+              "type": "function",
+              "name": "clearSession",
+              "path": "apps/api/src/modules/auth/auth.controller.ts#clearSession",
+              "owner": "Test Automation Engineer",
+              "status": "verified"
+            },
+            {
               "id": "route:auth-session-ts:acb7f8af80",
               "type": "route",
               "name": "auth.session.ts",
@@ -1223,12 +1239,28 @@
               "status": "implemented"
             },
             {
+              "id": "document:luc-242-account-access-controller-clearsession-doc-link-evidence:678ad00626",
+              "type": "document",
+              "name": "LUC-242 Account Access Controller ClearSession Doc-Link Evidence",
+              "path": "history/evidence/luc-242-account-access-controller-clearsession-doc-link-2026-07-10.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
+            },
+            {
               "id": "test:requireauth-test-ts:c5b1929e2f",
               "type": "test",
               "name": "requireAuth.test.ts",
               "path": "apps/api/src/middleware/requireAuth.test.ts",
               "owner": "Engineering Delivery Lead",
               "status": "tested"
+            },
+            {
+              "id": "document:luc-306-account-access-controller-clearsession-test-link-evidence:ce2773b050",
+              "type": "document",
+              "name": "LUC-306 Account Access Controller ClearSession Test-Link Evidence",
+              "path": "history/evidence/luc-306-account-access-controller-clearsession-test-link-2026-07-10.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "implemented"
             },
             {
               "id": "task:luc-4766-production-performance-and-server-health-watch-task:d408c69912",
@@ -1269,44 +1301,12 @@
               "path": "history/tasks/luc-1196-soar-backend-luc-1188-add-dca-first-close-authority-route-level-pack-runtime-position-close-endpoint-2026-06-01-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "document:luc-1419-restore-local-db-backed-api-e2e-runtime-for-close-authority-route-proof:59e5507064",
-              "type": "document",
-              "name": "LUC-1419 Restore Local DB-Backed API E2E Runtime For Close-Authority Route Proof",
-              "path": "history/tasks/luc-1419-restore-local-db-backed-api-e2e-runtime-for-close-authority-route-proof-2026-06-02-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:task:1cc9a87ea8",
-              "type": "document",
-              "name": "Task",
-              "path": "history/tasks/luc-6065-route-smoke-auth-token-secret-manager-owner-path-2026-06-28-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "task:task:7c3c5aabe1",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/luc-6065-route-smoke-auth-token-secret-manager-owner-path-2026-06-28-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "document:task:f11517cc3c",
-              "type": "document",
-              "name": "Task",
-              "path": "history/tasks/luc-6889-account-access-auth-route-proof-linkage-audit-2026-07-02-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 3580,
+          "count": 3588,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -5809,8 +5809,8 @@
     },
     {
       "userFlow": "Exchange connection and configuration",
-      "entityCount": 798,
-      "linkedRelationCount": 2910,
+      "entityCount": 799,
+      "linkedRelationCount": 2916,
       "layers": {
         "frontend": {
           "count": 28,
@@ -6689,7 +6689,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 390,
+          "count": 391,
           "sample": [
             {
               "id": "agent:procedure:f48c47c027",
@@ -7076,6 +7076,14 @@
               "status": "verified"
             },
             {
+              "id": "task:luc-174-protected-trading-readback-vs-live-mutation-approval-packet:9ef895074b",
+              "type": "task",
+              "name": "LUC-174 Protected Trading Readback vs LIVE Mutation Approval Packet",
+              "path": "history/tasks/luc-174-protected-trading-readback-live-mutation-approval-packet-2026-07-10-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "in_progress"
+            },
+            {
               "id": "task:luc-2734-security-and-account-access-gate-sweep:fed5e275d5",
               "type": "task",
               "name": "LUC-2734 Security And Account-Access Gate Sweep",
@@ -7320,14 +7328,6 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-5682-exchange-credential-live-trading-boundary-review-2026-06-28-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:task:8aa6f14b7a",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/luc-6594-security-and-account-access-gate-sweep-2026-07-01-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             }
@@ -12712,8 +12712,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 9079,
-      "linkedRelationCount": 32166,
+      "entityCount": 9093,
+      "linkedRelationCount": 32230,
       "layers": {
         "frontend": {
           "count": 697,
@@ -13362,7 +13362,7 @@
           "truncated": true
         },
         "backend": {
-          "count": 1552,
+          "count": 1558,
           "sample": [
             {
               "id": "task:luc-2638-v1-audit-to-completion-controller:dbdf5f9458",
@@ -13409,6 +13409,14 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-5986-production-performance-server-health-watch-2026-06-28-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:0559921402",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-242-account-access-controller-clearsession-doc-link-2026-07-10-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -13995,20 +14003,12 @@
               "path": "apps/api/src/modules/engine/runtimeSignalMarketDataGateway.ts#RuntimeSignalMarketDataGateway",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "route:runtimesignalmarketdatagateway-ts:de55bc4540",
-              "type": "route",
-              "name": "runtimeSignalMarketDataGateway.ts",
-              "path": "apps/api/src/modules/engine/runtimeSignalMarketDataGateway.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
             }
           ],
           "truncated": true
         },
         "worker": {
-          "count": 5994,
+          "count": 6002,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
