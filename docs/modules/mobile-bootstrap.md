@@ -1,6 +1,6 @@
 # Mobile Module: Bootstrap Scaffold
 
-Updated: 2026-06-07
+Updated: 2026-07-10
 
 ## Scope
 - Source path: `apps/mobile`
@@ -29,6 +29,8 @@ Each script currently prints deferred-scaffold messages by design.
   - `apps/mobile/package.json`
   - `apps/mobile/README.md`
   - `apps/mobile/src/.gitkeep`
+- 2026-07-10 `LUC-253` readback reconfirmed this scaffold-only inventory and
+  kept native/mobile runtime claims out of scope.
 
 ## Known Gaps
 - No Expo Router app shell.

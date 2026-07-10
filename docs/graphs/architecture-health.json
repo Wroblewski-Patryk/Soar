@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-05T02:24:54.970Z",
+  "generated_at": "2026-07-10T12:44:48.912Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 10623,
-    "relations": 34477,
+    "entities": 10643,
+    "relations": 34593,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 4670,
+      "document": 4683,
       "feature": 216,
       "function": 2835,
       "migration": 57,
@@ -19,16 +19,16 @@
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1726,
+      "task": 1733,
       "test": 452
     },
     "by_status": {
       "blocked": 46,
       "deprecated": 10,
-      "implemented": 8030,
+      "implemented": 8041,
       "in_progress": 14,
       "tested": 833,
-      "verified": 1690
+      "verified": 1699
     }
   },
   "signals": {
@@ -1608,8 +1608,8 @@
           "type": "function",
           "name": "clearSession",
           "path": "apps/api/src/modules/auth/auth.controller.ts#clearSession",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
+          "status": "verified",
+          "owner": "Test Automation Engineer"
         },
         {
           "id": "function:clearsessioncookie:667949011e",
@@ -5028,8 +5028,8 @@
           "type": "function",
           "name": "clearSession",
           "path": "apps/api/src/modules/auth/auth.controller.ts#clearSession",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
+          "status": "verified",
+          "owner": "Test Automation Engineer",
           "reason": "curated_graph_covered"
         },
         {

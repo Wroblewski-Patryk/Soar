@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-05T02:25:10.618Z",
+  "generatedAt": "2026-07-10T12:45:06.972Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -7,12 +7,12 @@
     "items": 3557,
     "flows": 8,
     "needsBrowserReview": 452,
-    "missingTestLink": 981,
-    "missingDocLink": 1994,
-    "implementedNeedsProof": 114,
+    "missingTestLink": 980,
+    "missingDocLink": 1995,
+    "implementedNeedsProof": 113,
     "blocked": 0,
-    "riskItems": 3541,
-    "appCompletionRiskItems": 3541,
+    "riskItems": 3540,
+    "appCompletionRiskItems": 3540,
     "priorityReviewItems": 200,
     "priorityReviewLimit": 200,
     "priorityReviewTruncated": true
@@ -22,15 +22,15 @@
       "userFlow": "Account access",
       "total": 265,
       "risks": {
-        "ok": 8,
-        "implemented_needs_proof": 4,
-        "missing_test_link": 77,
-        "missing_doc_link": 145,
+        "ok": 9,
+        "missing_doc_link": 146,
+        "missing_test_link": 76,
+        "implemented_needs_proof": 3,
         "needs_browser_review": 31
       },
       "gates": {
         "auth": 265,
-        "configuration": 15,
+        "configuration": 16,
         "subscription": 2,
         "gateio": 1
       }
@@ -138,46 +138,25 @@
   ],
   "priorityReviewItems": [
     {
-      "id": "function:requireauth:e044c1cd19",
+      "id": "function:clearsession:a174a4b7f1",
       "type": "function",
       "kind": "feature_or_capability",
-      "name": "requireAuth",
-      "path": "apps/api/src/middleware/requireAuth.ts#requireAuth",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
+      "name": "clearSession",
+      "path": "apps/api/src/modules/auth/auth.controller.ts#clearSession",
+      "owner": "Test Automation Engineer",
+      "status": "verified",
       "userFlow": "Account access",
       "gates": [
         "auth"
       ],
       "evidence": {
         "hasTest": true,
-        "hasDoc": true,
-        "needsBrowserProof": false,
-        "needsScreenshotReview": false
-      },
-      "relatedEntityCount": 5,
-      "risk": "implemented_needs_proof"
-    },
-    {
-      "id": "function:clearsession:a174a4b7f1",
-      "type": "function",
-      "kind": "feature_or_capability",
-      "name": "clearSession",
-      "path": "apps/api/src/modules/auth/auth.controller.ts#clearSession",
-      "owner": "Engineering Delivery Lead",
-      "status": "implemented_needs_proof",
-      "userFlow": "Account access",
-      "gates": [
-        "auth"
-      ],
-      "evidence": {
-        "hasTest": false,
         "hasDoc": false,
         "needsBrowserProof": false,
         "needsScreenshotReview": false
       },
-      "relatedEntityCount": 1,
-      "risk": "missing_test_link"
+      "relatedEntityCount": 4,
+      "risk": "missing_doc_link"
     },
     {
       "id": "function:clearsessioncookie:667949011e",
@@ -4351,6 +4330,27 @@
         "needsScreenshotReview": false
       },
       "relatedEntityCount": 6,
+      "risk": "missing_doc_link"
+    },
+    {
+      "id": "function:sleep:59b6323c20",
+      "type": "function",
+      "kind": "feature_or_capability",
+      "name": "sleep",
+      "path": "scripts/runControlledLiveSessionProof.mjs#sleep",
+      "owner": "Engineering Delivery Lead",
+      "status": "implemented_needs_proof",
+      "userFlow": "Account access",
+      "gates": [
+        "auth"
+      ],
+      "evidence": {
+        "hasTest": true,
+        "hasDoc": false,
+        "needsBrowserProof": false,
+        "needsScreenshotReview": false
+      },
+      "relatedEntityCount": 5,
       "risk": "missing_doc_link"
     }
   ]

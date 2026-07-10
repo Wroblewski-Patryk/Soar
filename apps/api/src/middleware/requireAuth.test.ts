@@ -39,12 +39,19 @@ describe('requireAuth middleware', () => {
     process.env.JWT_SECRET_PREVIOUS = '';
     delete process.env.JWT_SECRET_PREVIOUS_UNTIL;
     const email = `bearer-${Date.now()}@example.com`;
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password: 'hashed-password',
-      },
-    });
+    const user = {
+      id: 'bearer-user',
+      email,
+      password: 'hashed-password',
+      role: 'USER' as const,
+      sessionVersion: 1,
+      name: null,
+      avatarUrl: null,
+      uiPreferences: {},
+      createdAt: new Date('2026-01-01T00:00:00.000Z'),
+      updatedAt: new Date('2026-01-01T00:00:00.000Z'),
+    };
+    vi.spyOn(prisma.user, 'findUnique').mockResolvedValueOnce(user);
 
     const token = jwt.sign(
       {
@@ -73,12 +80,19 @@ describe('requireAuth middleware', () => {
     process.env.JWT_SECRET_PREVIOUS = 'old-secret';
     process.env.JWT_SECRET_PREVIOUS_UNTIL = '2999-01-01T00:00:00.000Z';
     const email = `rotation-${Date.now()}@example.com`;
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password: 'hashed-password',
-      },
-    });
+    const user = {
+      id: 'rotation-user',
+      email,
+      password: 'hashed-password',
+      role: 'USER' as const,
+      sessionVersion: 1,
+      name: null,
+      avatarUrl: null,
+      uiPreferences: {},
+      createdAt: new Date('2026-01-01T00:00:00.000Z'),
+      updatedAt: new Date('2026-01-01T00:00:00.000Z'),
+    };
+    vi.spyOn(prisma.user, 'findUnique').mockResolvedValueOnce(user);
 
     const token = jwt.sign(
       {

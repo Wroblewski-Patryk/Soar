@@ -1,6 +1,6 @@
 # Architecture Graph
 
-Generated: 2026-07-05T02:24:54.970Z
+Generated: 2026-07-10T12:44:48.912Z
 
 ## Canonical Exports
 
@@ -992,6 +992,7 @@ Generated: 2026-07-05T02:24:54.970Z
 | connected_to | project:soar:7c70e892d7 | task:luc-1755-rollback-guard-protected-evidence:c8c0bba716 | history/tasks/luc-1755-rollback-guard-protected-evidence-2026-06-03-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:8d5093bd8d | history/tasks/luc-1756-soar-prod-protected-app-evidence-2026-06-03-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:c6e13a084a | history/tasks/luc-1757-prod-db-check-protected-evidence-2026-06-03-task.md |
+| connected_to | project:soar:7c70e892d7 | task:luc-176-account-access-clearsession-project-truth-proof:402d42c4ac | history/tasks/luc-176-account-access-clearsession-project-truth-proof-2026-07-05-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:3b13a4ab73 | history/tasks/luc-1761-bind-approved-soar-prod-protected-app-smoke-session-2026-06-03-task.md |
 | connected_to | project:soar:7c70e892d7 | task:luc-1763-bind-rollback-guard-protected-inputs:036d0b8ef4 | history/tasks/luc-1763-bind-rollback-guard-protected-inputs-2026-06-03-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:35f906426a | history/tasks/luc-1764-inject-protected-prod-db-check-runner-inputs-2026-06-03-task.md |
@@ -1217,4 +1218,3 @@ Generated: 2026-07-05T02:24:54.970Z
 | connected_to | project:soar:7c70e892d7 | task:luc-2368-decompose-bot-runtime-aggregate-read-model-monoliths:6d7f73ba0f | history/tasks/luc-2368-decompose-bot-runtime-aggregate-read-model-monoliths-2026-06-06-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:753adf7759 | history/tasks/luc-2372-bind-protected-runtime-worker-slo-proof-inputs-de3db789-2026-06-06-task.md |
 | connected_to | project:soar:7c70e892d7 | task:task:9c72bcfe90 | history/tasks/luc-2373-repair-residual-guardrail-drift-after-luc-2365-recheck-2026-06-06-task.md |
-| connected_to | project:soar:7c70e892d7 | task:luc-2374-close-dirty-source-state-before-de3db789-push-decision:803969de16 | history/tasks/luc-2374-close-dirty-source-state-before-de3db789-push-decision-2026-06-06-task.md |

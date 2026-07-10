@@ -1,3 +1,68 @@
+## 2026-07-10 LUC-306 Account Access Controller ClearSession Test-Link
+
+- Status:
+  `PASS_INDEX / TEST_LINK_RESOLVED / API_TYPECHECK_PASS /
+  ARCHITECTURE_DRIFT_PASS / DB_BACKED_RERUN_BLOCKED_BY_LOCAL_INFRA /
+  NO_RUNTIME_MUTATION`.
+- Validation:
+  architecture-awareness regeneration passed with `10643` entities / `34593`
+  relations and `entityOverridesApplied=3`; app-completion reports
+  `missingTestLink=980`; project-truth first gap is now
+  `apps/api/src/modules/auth/auth.controller.ts#clearSession` as
+  `missing_doc_link`; API typecheck passed; strict graph drift passed
+  (`850/850`, `0` missing); override formatting passed.
+- Blocked local proof:
+  focused DB-backed auth e2e rerun failed before assertions because PostgreSQL
+  was unreachable at `localhost:5432`; Docker Desktop Linux engine pipe was
+  missing, so local infra could not be restored from this heartbeat.
+- Residual:
+  no runtime product defect identified. Docs/PM owns the remaining doc-link
+  project-truth row.
+- Evidence:
+  `history/evidence/luc-306-account-access-controller-clearsession-test-link-2026-07-10.md`;
+  `history/tasks/luc-306-account-access-controller-clearsession-test-link-2026-07-10-task.md`.
+
+## 2026-07-10 LUC-263 Account Access requireAuth Health Signal
+
+- Status:
+  `PASS_LOCAL / REQUIREAUTH_FOCUSED_PROOF_PASS / API_TYPECHECK_PASS /
+  APP_COMPLETION_ROW_RESOLVED / NO_RUNTIME_MUTATION`.
+- Validation:
+  focused `requireAuth` middleware proof passed (`1` file / `9` tests), API
+  typecheck passed, and `git diff --check` passed with line-ending warnings
+  only.
+- Generated truth:
+  architecture-awareness reports `10643` entities / `34593` relations and
+  `entityOverridesApplied=2`; app-completion reports
+  `implementedNeedsProof=113`; project-truth first gap is now
+  `apps/api/src/modules/auth/auth.controller.ts#clearSession`.
+- Residual:
+  broader Account access app-completion rows and protected production/account
+  gates remain separate owner paths.
+
+## 2026-07-10 LUC-264 Protected Input Readiness Binding Follow-Up
+
+- Status:
+  `BLOCKED / NO_SECRET_READINESS_PARTIAL / ACCOUNT_ACCESS_GATE_FAIL /
+  SECRET_BINDING_ACCESS_403 / NO_RUNTIME_MUTATION`.
+- Protected-input readiness:
+  checker regression passed (`7/7`); current shell readiness remains `PARTIAL`
+  with `3` matching protected input names. Only `SOAR_PROD_*` is present.
+  Required account-access families `ROLLBACK_GUARD_*`,
+  `PROD_DB_CHECK_* or PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE* / GATE_*`
+  are missing by name.
+- Access blocker:
+  Paperclip company secret metadata endpoint returned `403 Forbidden`; this
+  runner cannot bind or verify protected company secret refs.
+- Next owner/action:
+  board-capable Paperclip secrets operator or Ops Release Lead binds the
+  missing families through approved encrypted runtime references without value
+  exposure, then Security/Ops or QA/Ops reruns readiness and protected proof.
+- Evidence:
+  `history/evidence/luc-264-protected-input-readiness-binding-follow-up-2026-07-10.md`;
+  `history/artifacts/luc-264-protected-input-readiness-binding-follow-up-2026-07-10.json`;
+  `history/tasks/luc-264-protected-input-readiness-binding-follow-up-2026-07-10-task.md`.
+
 ## 2026-07-05 LUC-170 Account Access First Doc Rows
 
 - Current health signal:

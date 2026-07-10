@@ -1,3 +1,91 @@
+## 2026-07-10 LUC-306 Account Access Controller ClearSession Test-Link
+
+- Module row:
+  Account access / API auth controller / app-completion truth.
+- Status:
+  `verified index link / missing-test-link resolved / DB-backed rerun blocked
+  by local infra / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-306-account-access-controller-clearsession-test-link-2026-07-10.md`;
+  `history/tasks/luc-306-account-access-controller-clearsession-test-link-2026-07-10-task.md`.
+- Current proof:
+  existing DB-backed `auth.e2e.test.ts` coverage verifies logout/session
+  clearing through cleared cookie, stale cookie rejection, stale bearer
+  rejection, and re-login. Architecture-awareness applied three overrides;
+  app-completion `missingTestLink` is now `980`; project-truth now routes
+  `auth.controller.ts#clearSession` as `missing_doc_link`.
+- Confidence:
+  high that the Test Automation missing-test-link row is resolved. Fresh
+  DB-backed rerun remains blocked until local Docker/Postgres is available;
+  remaining source-truth gap is documentation-owned.
+
+## 2026-07-10 LUC-263 Account Access requireAuth App-Completion Proof Row
+
+- Module row:
+  Account access / API auth middleware / app-completion truth.
+- Status:
+  `verified locally / requireAuth project-truth gap resolved /
+  app-completion refreshed / API typecheck pass / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-263-account-access-requireauth-app-completion-proof-row-2026-07-10.md`;
+  `history/tasks/luc-263-account-access-requireauth-app-completion-proof-row-2026-07-10-task.md`.
+- Current proof:
+  focused `requireAuth` middleware proof passed (`1` file / `9` tests) after
+  test setup was narrowed to typed Prisma lookup spies for the two happy-path
+  cases because local PostgreSQL was unavailable. API typecheck passed.
+  Architecture-awareness applied two entity overrides, app-completion
+  `implementedNeedsProof` dropped from `114` to `113`, and project-truth first
+  gap advanced to `apps/api/src/modules/auth/auth.controller.ts#clearSession`.
+- Confidence:
+  high for this local Account access middleware/project-truth row. Broader
+  Account access rows remain open separately; production protected auth,
+  deploy, secret/account, exchange/payment/subscription, order, position, and
+  live-trading proof were not performed.
+
+## 2026-07-10 LUC-264 Protected Input Readiness Binding Follow-Up
+
+- Module row:
+  protected release/account readiness.
+- Status:
+  `blocked / no-secret readiness partial / account-access gate fail /
+  secret-binding access 403 / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-264-protected-input-readiness-binding-follow-up-2026-07-10.md`;
+  `history/artifacts/luc-264-protected-input-readiness-binding-follow-up-2026-07-10.json`;
+  `history/tasks/luc-264-protected-input-readiness-binding-follow-up-2026-07-10-task.md`.
+- Current proof:
+  `corepack pnpm run ops:protected-inputs:check` returned `PARTIAL`; only
+  `SOAR_PROD_*` is present by name count. `corepack pnpm run
+  ops:protected-inputs:check:test` passed (`7/7`). Paperclip secret metadata
+  access returned `403 Forbidden`, so this runner cannot bind/verify protected
+  company refs directly.
+- Confidence:
+  high that the current runner must fail closed for protected release/account
+  proof; low for production protected acceptance until a board-capable secrets
+  operator binds the missing families and the proof is rerun.
+
+## 2026-07-10 LUC-261 Known State Evidence And Architecture Baseline
+
+- Module rows:
+  Architecture evidence graph; Account access app-completion; protected
+  release/account readiness; source-control closure.
+- Status:
+  `partially verified / local architecture drift pass / protected input
+  readiness partial / app-completion gaps require routing / no runtime
+  mutation`.
+- Evidence:
+  `history/evidence/luc-261-known-state-evidence-architecture-baseline-2026-07-10.md`;
+  `history/tasks/luc-261-known-state-evidence-architecture-baseline-2026-07-10-task.md`.
+- Current proof:
+  strict graph drift passed (`850/850`, `0` missing), and protected-input
+  checker regression passed (`7/7`). Current project truth still has `3541`
+  app-completion gaps, with Account access `requireAuth` as the first
+  implemented-needs-proof row.
+- Confidence:
+  high for the local architecture baseline, low for release/protected
+  acceptance from this runner, and partial for app-completion until owner
+  lanes close exact proof rows.
+
 ## 2026-07-05 LUC-176 Account Access ClearSession Project-Truth Proof
 
 - Module row:
@@ -9645,7 +9733,7 @@ Do not turn uncertainty into optimism.
 | ID | Module | Journey / function | Priority | Status | Confidence | Evidence | Missing proof or defect | Next smallest action | Owner | Last verified |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | SOAR-DATA-001 | Data Model / Migrations | Prisma schema, migration chain, indexes, uniqueness, ownership, and DB-backed data contracts | P0 | PARTIALLY VERIFIED | High | 2026-05-19 `history/audits/data-model-migrations-audit-2026-05-19.md`: Prisma schema validation passed; local migration status reported `54` migrations and schema up to date; full local migration replay applied all `54` migrations; schema diff generation passed; isolated wallet data-contract e2e passed (`1` file / `24` tests), isolated backtests data-contract e2e passed (`1` file / `15` tests), and runtime repository contract passed (`1` file / `2` tests). 2026-05-23 `DATA-MODEL-ISOLATED-DB-PROOF-2026-05-23`: Docker Desktop was started after local Postgres/Redis were unavailable, `pnpm run go-live:infra:up` brought up `soar-postgres-1` and `soar-redis-1`, `pnpm run audit:data:db-isolated` passed with Prisma schema validation, migration status, full reset/replay of `55` migrations, wallets `24/24`, backtests `15/15`, and runtime repository `2/2`; `pnpm run ops:db:backup-restore:check-local` passed with `history/evidence/v1-db-restore-check-2026-05-23T13-05-22-623Z.md`. Critical manual partial-index invariants remain identified for open position scoping and one active market group. | Production migration status and production backup/restore freshness were not rerun in this local audit. Shared-DB parallel e2e remains a documented run-policy pitfall; the isolated audit path is current and passing. | Keep DB-backed audit packs sequential or isolated; refresh production migration/backup/restore proof under protected ops context before future production release claims. | DB/Migrations + QA/Test | 2026-05-23 |
-| SOAR-MOBILE-001 | Mobile / Cross-platform | Native/mobile app scope, scaffold status, and future parity gates | P2 | OUT_OF_SCOPE_FOR_V1 | High | 2026-05-19 `history/audits/mobile-cross-platform-scope-audit-2026-05-19.md`: `apps/mobile` contains only `package.json`, `README.md`, and `src/.gitkeep`; mobile build/test scripts print scaffold-only deferred messages; mobile README and `docs/planning/mobile-parity-contract.md` state no production mobile runtime and no independent mobile backend contracts. 2026-05-28 `LUC-386`: mobile docs registry/index baseline is now explicit via `docs/modules/mobile-module-index.md`, `docs/modules/mobile-bootstrap.md`, `docs/modules/module-doc-status-index.md` (Mobile Surface), and `docs/modules/module-registry.md` (Mobile Module Registry). 2026-06-07 [LUC-2793](/LUC/issues/LUC-2793): native/mobile traceability is `out_of_scope_for_v1`; current map is a scaffold-only documentation seed, not an active V1 implementation gap. | No native mobile app, Expo Router, mobile screens, app config, mobile CI gate, independent mobile API contract, or real mobile tests exist by design. Responsive Web mobile evidence is tracked under `SOAR-UX-A11Y-MOBILE-001`, not this native scope row. | Keep mobile module docs/index rows in sync as long as scope stays scaffold-only; when Product/CTO activation is approved, replace scaffold echoes with real Expo/native build/test validation and expand `mobile-*.md` coverage in the same lane. | Product + Frontend/Mobile + Docs Memory | 2026-06-07 |
+| SOAR-MOBILE-001 | Mobile / Cross-platform | Native/mobile app scope, scaffold status, and future parity gates | P2 | OUT_OF_SCOPE_FOR_V1 | High | 2026-05-19 `history/audits/mobile-cross-platform-scope-audit-2026-05-19.md`: `apps/mobile` contains only `package.json`, `README.md`, and `src/.gitkeep`; mobile build/test scripts print scaffold-only deferred messages; mobile README and `docs/planning/mobile-parity-contract.md` state no production mobile runtime and no independent mobile backend contracts. 2026-05-28 `LUC-386`: mobile docs registry/index baseline is now explicit via `docs/modules/mobile-module-index.md`, `docs/modules/mobile-bootstrap.md`, `docs/modules/module-doc-status-index.md` (Mobile Surface), and `docs/modules/module-registry.md` (Mobile Module Registry). 2026-06-07 [LUC-2793](/LUC/issues/LUC-2793): native/mobile traceability is `out_of_scope_for_v1`; current map is a scaffold-only documentation seed, not an active V1 implementation gap. 2026-07-10 [LUC-253](/LUC/issues/LUC-253): TSA readback reconfirmed the same scaffold-only inventory and refreshed mobile module docs/index evidence without runtime mutation. | No native mobile app, Expo Router, mobile screens, app config, mobile CI gate, independent mobile API contract, or real mobile tests exist by design. Responsive Web mobile evidence is tracked under `SOAR-UX-A11Y-MOBILE-001`, not this native scope row. | Keep mobile module docs/index rows in sync as long as scope stays scaffold-only; when Product/CTO activation is approved, replace scaffold echoes with real Expo/native build/test validation and expand `mobile-*.md` coverage in the same lane. | Product + Frontend/Mobile + Docs Memory | 2026-07-10 |
 | SOAR-I18N-001 | Web i18n / Copy | Route-reachable locale copy, namespace registry, hardcoded literal guardrails, and language policy | P1 | VERIFIED | High | 2026-05-19 `history/audits/i18n-copy-reachability-audit-2026-05-19.md`: route-reachable i18n audit passed with findings `0`, localCopy `0`, fallbackPl `0`, and hardcoded `0`; focused Web i18n pack passed (`8` files / `26` tests), covering translations, guardrails, namespace registry, route locale smoke, provider loading, locale formatting, and optional i18n behavior. | None for current route-reachable local scope. Future route/copy changes must rerun the route-reachable i18n audit. | Keep `corepack pnpm i18n:audit:route-reachable:web` in route/copy change gates. | Frontend Builder + QA/Test | 2026-05-19 |
 | SOAR-AUTH-001 | Auth | Login, logout, session validation, expired-session redirect, and protected-route cookie gate | P0 | VERIFIED | High | 2026-05-11 `V1-AUTH-SESSION-LIFECYCLE-PROOF-2026-05-11`: API Auth e2e passed (`11/11`) and proves registration/login cookie TTLs, logout cookie clearing, deleted-user session expiry, expired JWT clearing, and duplicate-token precedence. Focused Web Auth tests passed (`5` files, `17` tests) and cover AuthProvider bootstrap, logout redirect, session-expired warning cleanup, API interceptor redirect to `/auth/login?session=expired`, middleware cookie gate, login form rendering/error alert, and login hook fail-closed missing-session-refresh behavior. 2026-05-14 `history/evidence/prod-auth-session-browser-proof-2fc90a08-2026-05-14.md` found a production replay gap on deployed `2fc90a08`: browser route fail-closed checks passed, but direct reuse of the pre-logout JWT still returned `/auth/me` `200`. `V1-POST-V1-AUTH-LOGOUT-TOKEN-REUSE-HARDENING-2026-05-14` fixed logout by incrementing the matching user's `sessionVersion`; focused Auth/middleware tests passed (`21/21`), root typecheck/lint/build passed, and `history/evidence/prod-auth-session-browser-proof-84711599-2026-05-14.md` passed on deployed `84711599`, including stale-token `/auth/me` `401` after logout. | Current Auth proof is covered for the V1/post-V1 target scope. | Keep auth proof fresh after future deploys; reopen only on a new failing auth/session signal. | Backend Builder + QA/Test | 2026-05-14 |
 | SOAR-PROFILE-001 | Profile | Basic profile update, timezone preference, password change, and account deletion guards | P0 | VERIFIED | High | 2026-05-11 `V1-PROFILE-LOCAL-PROOF-2026-05-11`: API Profile basic/security e2e passed (`2` files, `7` tests), proving self-delete route behavior, legacy delete rejection, valid timezone persistence, invalid timezone rejection, unauthenticated security access rejection, valid-current-password change, weak/invalid password rejection, old-login failure/new-login success, and password-confirmed account deletion. Focused Web Profile tests passed (`2` files, `5` tests), proving basic profile save success/error toasts, timezone preference payload, password mismatch short-circuit without API call, and successful password change payload/feedback. 2026-05-14 `history/evidence/prod-fixture-action-proof-457bce05-2026-05-14.md` verifies production-safe profile read, reversible update, and restore with disposable fixture boundaries and no raw secret artifacts. | Current V1 Profile proof is covered for local security/form behavior plus production-safe reversible update. Avatar upload transport is outside this V1 row. | Keep proof fresh after future deploys; reopen only on a new failing Profile signal or changed profile scope. | QA/Test + Frontend Builder | 2026-05-14 |

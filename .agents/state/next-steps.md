@@ -1,3 +1,89 @@
+## 2026-07-10 LUC-306 Account Access Controller ClearSession Closure
+
+- [LUC-306](/LUC/issues/LUC-306) can close as
+  `DONE / TEST_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+  API_TYPECHECK_PASS / DB_BACKED_RERUN_BLOCKED_BY_LOCAL_INFRA /
+  NO_RUNTIME_MUTATION`.
+- Verified:
+  existing DB-backed `auth.e2e.test.ts` route coverage proves controller
+  session clearing through logout, cleared cookie, stale cookie rejection,
+  stale bearer rejection, and re-login after invalidation. Architecture
+  awareness applied `3` entity overrides; app-completion `missingTestLink`
+  is now `980`; project-truth now routes
+  `apps/api/src/modules/auth/auth.controller.ts#clearSession` as
+  `missing_doc_link` instead of `missing_test_link`.
+- Next owner/action:
+  no remaining Test Automation action on [LUC-306](/LUC/issues/LUC-306). Docs
+  Memory Lead + Project Manager owns the next Account access doc-link row for
+  the same entity. Source Control / Release should batch this metadata/evidence
+  update with the existing dirty generated-index set.
+- Evidence:
+  `history/evidence/luc-306-account-access-controller-clearsession-test-link-2026-07-10.md`;
+  `history/tasks/luc-306-account-access-controller-clearsession-test-link-2026-07-10-task.md`.
+
+## 2026-07-10 LUC-263 Account Access requireAuth Closure
+
+- [LUC-263](/LUC/issues/LUC-263) can close as
+  `DONE / VERIFIED_LOCAL / REQUIREAUTH_PROJECT_TRUTH_RESOLVED /
+  APP_COMPLETION_REFRESHED / API_TYPECHECK_PASS / NO_RUNTIME_MUTATION`.
+- Verified:
+  focused `requireAuth` middleware tests passed (`1` file / `9` tests), API
+  typecheck passed, app-completion `implementedNeedsProof` dropped from `114`
+  to `113`, and project-truth first gap advanced off
+  `apps/api/src/middleware/requireAuth.ts#requireAuth`.
+- Next owner/action:
+  no remaining action on [LUC-263](/LUC/issues/LUC-263). The next Account
+  access project-truth gap is
+  `apps/api/src/modules/auth/auth.controller.ts#clearSession` as
+  `missing_test_link` for Test Automation Engineer + QA Regression Lead.
+- Evidence:
+  `history/evidence/luc-263-account-access-requireauth-app-completion-proof-row-2026-07-10.md`;
+  `history/tasks/luc-263-account-access-requireauth-app-completion-proof-row-2026-07-10-task.md`.
+
+## 2026-07-10 LUC-264 Protected Input Readiness Binding Follow-Up
+
+- [LUC-264](/LUC/issues/LUC-264) is blocked on protected secret binding access,
+  not on code changes.
+- Current no-secret readiness:
+  `PARTIAL`; `SOAR_PROD_*` present by name count only (`3`); required
+  account-access families still missing are `ROLLBACK_GUARD_*`,
+  `PROD_DB_CHECK_* or PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE* / GATE_*`.
+- Access blocker:
+  Paperclip company secret metadata endpoint returned `403 Forbidden`; this
+  Security runner cannot bind or verify company protected secret refs.
+- Next owner/action:
+  board-capable Paperclip secrets operator or Ops Release Lead binds missing
+  families through approved encrypted runtime references without exposing
+  values, then wakes Security/Ops or QA/Ops to rerun
+  `corepack pnpm run ops:protected-inputs:check` and the protected
+  release/account proof.
+- Evidence:
+  `history/evidence/luc-264-protected-input-readiness-binding-follow-up-2026-07-10.md`;
+  `history/artifacts/luc-264-protected-input-readiness-binding-follow-up-2026-07-10.json`;
+  `history/tasks/luc-264-protected-input-readiness-binding-follow-up-2026-07-10-task.md`.
+
+## 2026-07-10 LUC-261 Known State Evidence Next Lanes
+
+- [LUC-261](/LUC/issues/LUC-261) local baseline is partially verified:
+  architecture drift strict passed (`850/850`, `0` missing), protected-input
+  checker tests passed (`7/7`), no-secret protected input readiness remains
+  `PARTIAL`, and project truth still requires app-completion gap routing.
+- Next lane 1:
+  QA Regression Lead + Project Manager should run the focused Account access
+  `apps/api/src/middleware/requireAuth.ts#requireAuth` behavior proof and
+  refresh `docs/status/app-completion-index.*` plus
+  `docs/status/project-truth-index.*`.
+- Next lane 2:
+  Security/Ops protected secret owner should bind the missing protected input
+  families through approved encrypted runtime references; do not disclose
+  values.
+- Next lane 3:
+  Source Control/Release owner must provide LUC-261 source-control closure for
+  the new evidence/task/state files or record a concrete no-commit blocker.
+- Evidence:
+  `history/evidence/luc-261-known-state-evidence-architecture-baseline-2026-07-10.md`;
+  `history/tasks/luc-261-known-state-evidence-architecture-baseline-2026-07-10-task.md`.
+
 ## 2026-07-05 LUC-176 Account Access ClearSession Closure
 
 - [LUC-176](/LUC/issues/LUC-176) can close as

@@ -1,6 +1,6 @@
 # Module Documentation Status Index (Canonical)
 
-Updated: 2026-05-28
+Updated: 2026-07-10
 
 Purpose: map every active module in code inventory to deep-dive documentation status and planned delivery task.
 Latest docs parity artifact: `history/artifacts/_artifacts-docs-parity-2026-04-16T22-37-19-622Z.json` (`PASS`).
@@ -62,7 +62,7 @@ Status legend:
 
 | Layer | Module | Source Path | Target Deep-Dive File | Status | Planned Task |
 |---|---|---|---|---|---|
-| mobile | bootstrap | `apps/mobile` | `docs/modules/mobile-bootstrap.md` | Published | LUC-386 |
+| mobile | bootstrap | `apps/mobile` | `docs/modules/mobile-bootstrap.md` | Published | LUC-386; LUC-253 readback |
 
 ## Governance Notes
 - Use `docs/modules/module-deep-dive-template.md` for every new deep-dive file listed above.

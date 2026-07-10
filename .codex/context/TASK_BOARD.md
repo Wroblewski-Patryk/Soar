@@ -1,3 +1,180 @@
+## 2026-07-10 LUC-310 Source Control Closure
+
+- [LUC-310](/LUC/issues/LUC-310) should move to `done` as
+  `DONE / LOCAL_SOURCE_CONTROL_CLOSURE_COMMITTED /
+  VALIDATED_NO_SECRET_HITS / API_REQUIREAUTH_PROOF_PASS /
+  API_TYPECHECK_PASS / NO_PUSH_NO_DEPLOY`.
+- Concrete action:
+  SPM acknowledged the sidecar-lane starter comment and used this issue only
+  for local source-control closure. The protected target issue remains gated;
+  this heartbeat did not attempt protected delivery, secrets, deploy, paid
+  resource, destructive, legal/customer/finance, or LIVE trading work.
+- Validation:
+  `git diff --check` passed with CRLF normalization warnings only; dirty-file
+  no-secret scan found `0` hits across `46` files; focused
+  `requireAuth.test.ts` proof passed (`1` file / `9` tests); API typecheck
+  passed.
+- Source-control disposition:
+  local commit created for the coherent dirty set spanning LUC-252/LUC-253/
+  LUC-261/LUC-263/LUC-264/LUC-265/LUC-306 source-truth, docs, generated-index,
+  evidence, and test-only changes. Push/deploy remain explicitly out of scope.
+- Evidence:
+  `history/tasks/luc-310-source-control-closure-2026-07-10-task.md`.
+
+## 2026-07-10 LUC-306 Account Access Controller ClearSession Test-Link
+
+- [LUC-306](/LUC/issues/LUC-306) should move to `done` as
+  `DONE / TEST_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+  API_TYPECHECK_PASS / DB_BACKED_RERUN_BLOCKED_BY_LOCAL_INFRA /
+  NO_RUNTIME_MUTATION`.
+- Concrete action:
+  TAE linked the existing DB-backed auth route proof to
+  `apps/api/src/modules/auth/auth.controller.ts#clearSession` through the
+  approved scanner override mechanism, then regenerated architecture-awareness,
+  app-completion, and project-truth indexes.
+- Validation:
+  architecture-awareness applied `3` entity overrides; app-completion reports
+  `missingTestLink=980`; project-truth now routes the same entity as
+  `missing_doc_link` instead of `missing_test_link`; API typecheck passed;
+  strict graph drift passed (`850/850`, `0` missing); override formatting
+  passed.
+- Blocked rerun:
+  focused DB-backed `auth.e2e.test.ts` rerun was attempted but local Postgres
+  at `localhost:5432` was unreachable and Docker Desktop Linux engine pipe was
+  unavailable.
+- Next owner/action:
+  no remaining Test Automation action on [LUC-306](/LUC/issues/LUC-306). Docs
+  Memory Lead + Project Manager should handle the remaining doc-link row if
+  selected by project truth.
+- Evidence:
+  `history/evidence/luc-306-account-access-controller-clearsession-test-link-2026-07-10.md`;
+  `history/tasks/luc-306-account-access-controller-clearsession-test-link-2026-07-10-task.md`.
+
+## 2026-07-10 LUC-263 Account Access requireAuth App-Completion Proof
+
+- [LUC-263](/LUC/issues/LUC-263) should move to `done` as
+  `DONE / VERIFIED_LOCAL / REQUIREAUTH_PROJECT_TRUTH_RESOLVED /
+  APP_COMPLETION_REFRESHED / API_TYPECHECK_PASS / NO_RUNTIME_MUTATION`.
+- Concrete action:
+  QVE converted the two local-infra-dependent middleware happy-path test setup
+  cases to typed Prisma lookup spies, preserving route-level `requireAuth`
+  behavior proof when Docker/Postgres is unavailable. Then QVE promoted only
+  `apps/api/src/middleware/requireAuth.ts#requireAuth` through the existing
+  scanner override mechanism and regenerated app-completion/project-truth
+  indexes.
+- Validation:
+  focused `requireAuth` middleware tests passed (`1` file / `9` tests); API
+  typecheck passed; `git diff --check` passed with line-ending warnings only;
+  architecture-awareness applied `2` entity overrides; app-completion
+  `implementedNeedsProof=113`; project-truth first gap advanced to
+  `apps/api/src/modules/auth/auth.controller.ts#clearSession`.
+- Next owner/action:
+  no remaining action on [LUC-263](/LUC/issues/LUC-263). Test Automation
+  Engineer + QA Regression Lead can handle the next Account access
+  `clearSession` controller missing-test-link row if selected by project truth.
+- Evidence:
+  `history/evidence/luc-263-account-access-requireauth-app-completion-proof-row-2026-07-10.md`;
+  `history/tasks/luc-263-account-access-requireauth-app-completion-proof-row-2026-07-10-task.md`.
+
+## 2026-07-10 LUC-264 Protected Input Readiness Binding Follow-Up
+
+- [LUC-264](/LUC/issues/LUC-264) should move to `blocked` as
+  `BLOCKED / NO_SECRET_READINESS_PARTIAL / ACCOUNT_ACCESS_GATE_FAIL /
+  SECRET_BINDING_ACCESS_403 / NO_RUNTIME_MUTATION`.
+- Verified:
+  no-secret protected-input readiness is still `PARTIAL`; only `SOAR_PROD_*`
+  is present (`3` matching names). Checker regression passed (`7/7`).
+- Missing required account-access families:
+  `ROLLBACK_GUARD_*`, `PROD_DB_CHECK_* or PRODUCTION_DB_CHECK_*`, `RC_*`, and
+  `GATE* / GATE_*`.
+- Additional missing proof families:
+  `LIVEIMPORT_READBACK_*`, `PROD_UI_AUDIT_*`, and `PROD_UI_*`.
+- Blocker:
+  Paperclip company secret metadata endpoint returned `403 Forbidden`; Security
+  runner cannot bind or verify protected company secret refs directly.
+- Next owner/action:
+  board-capable Paperclip secrets operator or Ops Release Lead binds missing
+  families via approved encrypted runtime references without exposing values,
+  then reruns readiness/protected proof.
+- Evidence:
+  `history/evidence/luc-264-protected-input-readiness-binding-follow-up-2026-07-10.md`;
+  `history/artifacts/luc-264-protected-input-readiness-binding-follow-up-2026-07-10.json`;
+  `history/tasks/luc-264-protected-input-readiness-binding-follow-up-2026-07-10-task.md`.
+
+## 2026-07-10 LUC-265 Evidence Source-Control Closure Sidecar
+
+- [LUC-265](/LUC/issues/LUC-265) should close as `DONE /
+  SOURCE_CONTROL_BATCHING_DECISION_RECORDED / NO_COMMIT_NO_PUSH /
+  LUC_261_SIDECAR_LINKED`.
+- Concrete action:
+  EDL read back `git status --short --branch`, `git log --oneline --decorate
+  origin/main..HEAD`, `git diff --name-status`, and untracked files, then
+  recorded the source-control sidecar for [LUC-261](/LUC/issues/LUC-261).
+- Source-control disposition:
+  no commit was made because the checkout is `main...origin/main [ahead 2]`
+  and still contains mixed dirty work from LUC-253, LUC-261, LUC-252,
+  concurrent LUC-263/LUC-264 artifacts, generated architecture/status indexes,
+  and shared state files. The closure is a batching/no-commit decision with
+  exact affected paths in
+  `history/tasks/luc-265-evidence-source-control-closure-sidecar-2026-07-10-task.md`.
+- Next owner/action:
+  Source Control / Release owner batches or deliberately splits the listed
+  LUC-261 paths during the next approved source-control operation. No separate
+  blocker remains on [LUC-265](/LUC/issues/LUC-265).
+- Boundary:
+  no product code, commit, push, deploy, restart, rollback, production access,
+  protected smoke, secret/account readback, DB/Redis mutation, exchange/payment
+  mutation, order, position, subscription, or live-trading action occurred.
+- Evidence:
+  `history/tasks/luc-265-evidence-source-control-closure-sidecar-2026-07-10-task.md`.
+
+## 2026-07-10 LUC-261 Known State Evidence And Architecture Baseline
+
+- [LUC-261](/LUC/issues/LUC-261) source-control closure is now linked through
+  [LUC-265](/LUC/issues/LUC-265); the parent still remains non-final for
+  remaining proof/configuration gates, but this heartbeat completed the local
+  evidence baseline as `PARTIALLY_VERIFIED /
+  LOCAL_ARCHITECTURE_BASELINE_PASS / PROTECTED_INPUTS_PARTIAL /
+  APP_COMPLETION_GAPS_REQUIRE_ROUTING`.
+- Verified:
+  `corepack pnpm run architecture:graph:drift:strict` passed (`850/850`,
+  `0` missing); `corepack pnpm run ops:protected-inputs:check:test` passed
+  (`7/7`); no-secret readiness is `PARTIAL` with only `SOAR_PROD_*` present.
+- Current generated readback:
+  app-completion has `3557` items and `3541` risk items. Project truth is
+  `gaps_require_routing`; first gap is
+  `apps/api/src/middleware/requireAuth.ts#requireAuth` as
+  `implemented_needs_proof`, owner `QA Regression Lead + Project Manager`.
+- Next owner/action:
+  create/continue owner-scoped follow-ups for Account access `requireAuth`
+  proof and protected input binding readiness. Source Control / Release owner
+  should batch or deliberately split the LUC-261 artifact paths listed by
+  [LUC-265](/LUC/issues/LUC-265) during the next approved source-control
+  operation. No duplicate TSA architecture repair child is warranted from this
+  pass.
+- Evidence:
+  `history/evidence/luc-261-known-state-evidence-architecture-baseline-2026-07-10.md`;
+  `history/tasks/luc-261-known-state-evidence-architecture-baseline-2026-07-10-task.md`.
+
+## 2026-07-10 LUC-253 Mobile Module Registry Index Readback
+
+- [LUC-253](/LUC/issues/LUC-253) can close as
+  `DONE / MOBILE_DOCS_INDEX_PRESENT / REGISTRY_ROWS_REFRESHED /
+  SOAR_MOBILE_OUT_OF_SCOPE_FOR_V1_CONFIRMED / NO_RUNTIME_MUTATION`.
+- Verified:
+  the mobile docs/index baseline is present:
+  `docs/modules/mobile-module-index.md`, `docs/modules/mobile-bootstrap.md`,
+  `docs/modules/module-registry.md`, and
+  `docs/modules/module-doc-status-index.md`. Fresh scaffold inventory readback
+  found only `apps/mobile/package.json`, `apps/mobile/README.md`, and
+  `apps/mobile/src/.gitkeep`.
+- Next owner/action:
+  no remaining action on [LUC-253](/LUC/issues/LUC-253). Future mobile docs
+  expansion should be opened only when `DEC-ARB-002` is met: Product/CTO
+  approved non-scaffold runtime work enters `in_progress` in `apps/mobile`.
+- Evidence:
+  `history/tasks/luc-253-mobile-module-registry-index-readback-2026-07-10-task.md`.
+
 ## 2026-07-05 LUC-176 Account Access ClearSession Project-Truth Proof
 
 - [LUC-176](/LUC/issues/LUC-176) can close as
@@ -41240,3 +41417,23 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
   no product code, commit, push, deploy, restart, rollback, env edit,
   secret/account value readback, DB/Redis mutation, exchange/payment mutation,
   order, position, subscription mutation, or live-trading action occurred.
+## 2026-07-10 LUC-252 ARB-001 Security Disposition
+
+- [LUC-252](/LUC/issues/LUC-252) should close as `cancelled` /
+  `SUPERSEDED_BY_DEC_ARB_001_AND_LUC_2773 / V1_HOTPATH_NOT_AUTHORIZED /
+  CURRENT_ASSISTANT_FOUNDATION_FAIL_CLOSED_VERIFIED`.
+- Concrete action:
+  Security rechecked the current assistant runtime source, architecture
+  contract, decision register, and focused tests. Current implementation remains
+  foundation/dry-run only; executable BACKTEST/PAPER/LIVE assistant hot-path
+  orchestration and persisted immutable runtime traces are accepted deferred
+  scope for V1.
+- Validation:
+  focused assistant API pack passed: `5` files / `15` tests.
+- Next owner/action:
+  no AI Runtime/Security implementation child is warranted from this heartbeat.
+  If Product+CTO later reopen `ARB-001` for post-V1 activation, create a fresh
+  implementation parent with AI Runtime, DB/Persistence, QA/Test, and Security
+  red-team lanes.
+- Evidence:
+  `history/tasks/luc-252-arb-001-security-disposition-2026-07-10-task.md`.

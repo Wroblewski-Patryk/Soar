@@ -1,3 +1,24 @@
+## 2026-07-10 LUC-263 Account Access requireAuth Proof Risk
+
+| Risk | Severity | Status | Evidence | Owner / next action | Last updated |
+| --- | --- | --- | --- | --- | --- |
+| Project truth could keep over-routing `requireAuth` as incomplete after local middleware behavior proof exists. | P1 | mitigated | `history/evidence/luc-263-account-access-requireauth-app-completion-proof-row-2026-07-10.md`; app-completion `implementedNeedsProof` dropped from `114` to `113`; first gap advanced to auth controller `clearSession`. | No remaining action on [LUC-263](/LUC/issues/LUC-263); keep production protected proof and remaining Account access rows on separate owner paths. | 2026-07-10 |
+| Local DB-backed middleware proof may fail in QVE runner when Docker/Postgres is unavailable. | P2 | mitigated_for_this_row | Initial focused run failed `2/9` only on PostgreSQL reachability; final focused route-level middleware proof passed with typed Prisma lookup spies; prior [LUC-171](/LUC/issues/LUC-171) remains DB-backed auth proof. | Use local infra when available for DB-backed route proof; for middleware unit proof, keep typed repository spies explicit and record the DB-backed evidence boundary. | 2026-07-10 |
+
+## 2026-07-10 LUC-264 Protected Input Binding Risk
+
+| Risk | Severity | Status | Evidence | Owner / next action | Last updated |
+| --- | --- | --- | --- | --- | --- |
+| Release/account evidence could be overclaimed while required protected input families remain absent and this Security runner lacks company secret binding access. | P0 | blocked | `history/evidence/luc-264-protected-input-readiness-binding-follow-up-2026-07-10.md`; Paperclip secret metadata endpoint returned `403 Forbidden`; no-secret readiness `PARTIAL`. | Board-capable Paperclip secrets operator or Ops Release Lead binds missing families through approved encrypted runtime references without value exposure, then Security/Ops or QA/Ops reruns readiness/protected proof. | 2026-07-10 |
+
+## 2026-07-10 LUC-261 Known State Baseline Risks
+
+| Risk | Severity | Status | Evidence | Owner / next action | Last updated |
+| --- | --- | --- | --- | --- | --- |
+| LUC-261 could overclaim project readiness if architecture pass is conflated with app-completion/protected release evidence. | P1 | mitigating | `history/evidence/luc-261-known-state-evidence-architecture-baseline-2026-07-10.md`; strict drift PASS but project truth still `gaps_require_routing`. | PM keeps architecture, app-completion, protected input, and source-control lanes separate; create children only for fresh scoped work. | 2026-07-10 |
+| Protected release/account checks remain blocked in this runner because required no-secret input families are absent by name. | P0 | blocked | `corepack pnpm run ops:protected-inputs:check` returned `PARTIAL`; only `SOAR_PROD_*` present. | Security/Ops protected secret owner binds missing families through approved encrypted runtime paths without value exposure. | 2026-07-10 |
+| LUC-261 cannot be final-done after creating local evidence/state files unless source-control closure is explicitly linked or blocked. | P1 | needs_owner_sidecar | `git status --short`; LUC-261 issue description source-control closure requirement. | Source Control/Release owner records commit hash, batches the evidence files, or names a no-commit blocker with affected paths. | 2026-07-10 |
+
 ## 2026-07-02 LUC-6870 Production Web And Worker Readiness Risk
 
 | Risk | Severity | Status | Evidence | Owner / next action | Last updated |

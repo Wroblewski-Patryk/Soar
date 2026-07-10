@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-05T02:25:15.289Z",
+  "generatedAt": "2026-07-10T12:45:14.135Z",
   "project": "Soar",
   "root": "C:/Personal/Projekty/Aplikacje/Soar",
   "sourceGraph": "docs/graphs/architecture-awareness.json",
@@ -10,8 +10,8 @@
   "chains": [
     {
       "userFlow": "Account access",
-      "entityCount": 4630,
-      "linkedRelationCount": 18675,
+      "entityCount": 4647,
+      "linkedRelationCount": 18768,
       "layers": {
         "frontend": {
           "count": 193,
@@ -1179,8 +1179,8 @@
               "type": "function",
               "name": "requireAuth",
               "path": "apps/api/src/middleware/requireAuth.ts#requireAuth",
-              "owner": "Engineering Delivery Lead",
-              "status": "implemented"
+              "owner": "QA Regression Lead",
+              "status": "verified"
             },
             {
               "id": "route:publicuser-ts:a393a249c4",
@@ -1223,6 +1223,14 @@
               "status": "implemented"
             },
             {
+              "id": "test:requireauth-test-ts:c5b1929e2f",
+              "type": "test",
+              "name": "requireAuth.test.ts",
+              "path": "apps/api/src/middleware/requireAuth.test.ts",
+              "owner": "Engineering Delivery Lead",
+              "status": "tested"
+            },
+            {
               "id": "task:luc-4766-production-performance-and-server-health-watch-task:d408c69912",
               "type": "task",
               "name": "LUC-4766 Production Performance And Server Health Watch Task",
@@ -1245,14 +1253,6 @@
               "path": "history/evidence/luc-6097-user-configuration-api-support-contract-2026-06-29.md",
               "owner": "Engineering Delivery Lead",
               "status": "implemented"
-            },
-            {
-              "id": "test:requireauth-test-ts:c5b1929e2f",
-              "type": "test",
-              "name": "requireAuth.test.ts",
-              "path": "apps/api/src/middleware/requireAuth.test.ts",
-              "owner": "Engineering Delivery Lead",
-              "status": "tested"
             },
             {
               "id": "document:task-contract-luc-1196:a480d0963e",
@@ -1306,7 +1306,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 3563,
+          "count": 3580,
           "sample": [
             {
               "id": "agent:2026-07-02-luc-6750-gap-register-and-repair-lane-refresh:7bacdcbdbf",
@@ -1401,6 +1401,14 @@
               "type": "task",
               "name": "LUC-1755 ROLLBACK_GUARD Protected Evidence",
               "path": "history/tasks/luc-1755-rollback-guard-protected-evidence-2026-06-03-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-176-account-access-clearsession-project-truth-proof:402d42c4ac",
+              "type": "task",
+              "name": "LUC-176 Account Access ClearSession Project-Truth Proof",
+              "path": "history/tasks/luc-176-account-access-clearsession-project-truth-proof-2026-07-05-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -1741,6 +1749,14 @@
               "status": "verified"
             },
             {
+              "id": "task:luc-263-account-access-requireauth-app-completion-proof-row:c01bd6bca1",
+              "type": "task",
+              "name": "LUC-263 Account Access requireAuth App-Completion Proof Row",
+              "path": "history/tasks/luc-263-account-access-requireauth-app-completion-proof-row-2026-07-10-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "task:luc-2714-daily-project-status-refresh-2026-06-07:0cba1cae71",
               "type": "task",
               "name": "LUC-2714 Daily Project Status Refresh - 2026-06-07",
@@ -1929,22 +1945,6 @@
               "type": "task",
               "name": "LUC-3375 Security And Account-Access Gate Sweep",
               "path": "history/tasks/luc-3375-security-account-access-gate-sweep-2026-06-11-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-3394-gap-register-and-repair-lane-refresh-2026-06-11:48e07ccca9",
-              "type": "task",
-              "name": "LUC-3394 Gap Register And Repair Lane Refresh - 2026-06-11",
-              "path": "history/tasks/luc-3394-gap-register-and-repair-lane-refresh-2026-06-11-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:luc-3425-autonomous-idle-and-map-drift-sweep:b219ba79e8",
-              "type": "task",
-              "name": "LUC-3425 Autonomous Idle And Map Drift Sweep",
-              "path": "history/tasks/luc-3425-autonomous-idle-and-map-drift-sweep-2026-06-11-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             }
@@ -2501,6 +2501,38 @@
               "status": "implemented"
             },
             {
+              "id": "document:mobile-modules-index:3b6ff6ed04",
+              "type": "document",
+              "name": "Mobile Modules Index",
+              "path": "docs/modules/mobile-module-index.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:mobile-module-bootstrap-scaffold:b54ddbe9ed",
+              "type": "document",
+              "name": "Mobile Module: Bootstrap Scaffold",
+              "path": "docs/modules/mobile-bootstrap.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:module-registry:d9e4d436f0",
+              "type": "document",
+              "name": "Module Registry",
+              "path": "docs/modules/module-registry.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
+              "id": "document:module-documentation-status-index-canonical:aef98a486c",
+              "type": "document",
+              "name": "Module Documentation Status Index (Canonical)",
+              "path": "docs/modules/module-doc-status-index.md",
+              "owner": "Docs Memory Lead",
+              "status": "implemented"
+            },
+            {
               "id": "document:app-completion-index:507f64f96f",
               "type": "document",
               "name": "App Completion Index",
@@ -2569,38 +2601,6 @@
               "type": "document",
               "name": "Coolify VPS Deployment Contract",
               "path": "docs/operations/coolify-vps-deployment-contract.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:function-journey-evidence-index:a148b4789b",
-              "type": "document",
-              "name": "Function Journey Evidence Index",
-              "path": "docs/status/function-journey-index.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:soar-obsidian-layer:46e777e225",
-              "type": "document",
-              "name": "Soar Obsidian Layer",
-              "path": "docs/obsidian/README.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:soar-vault-dashboard:34f3b21b21",
-              "type": "document",
-              "name": "Soar Vault Dashboard",
-              "path": "docs/obsidian/soar-vault-dashboard.md",
-              "owner": "Docs Memory Lead",
-              "status": "implemented"
-            },
-            {
-              "id": "document:docs-health-report:0b3be04482",
-              "type": "document",
-              "name": "Docs Health Report",
-              "path": "docs/obsidian/docs-health-report.md",
               "owner": "Docs Memory Lead",
               "status": "implemented"
             }
@@ -7998,8 +7998,8 @@
     },
     {
       "userFlow": "Subscription and entitlement",
-      "entityCount": 928,
-      "linkedRelationCount": 3437,
+      "entityCount": 929,
+      "linkedRelationCount": 3442,
       "layers": {
         "frontend": {
           "count": 25,
@@ -8854,7 +8854,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 687,
+          "count": 688,
           "sample": [
             {
               "id": "agent:planner:d382717bd5",
@@ -9093,6 +9093,14 @@
               "type": "task",
               "name": "LUC-2793 Mobile Traceability V1 Scope Classification",
               "path": "history/tasks/luc-2793-mobile-traceability-v1-scope-classification-2026-06-07-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:task:b5b898250c",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-253-mobile-module-registry-index-readback-2026-07-10-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -9485,14 +9493,6 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/v1dca-02-multi-replacement-dca-count-task-2026-05-01.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:task:c540612a8e",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/docsync-2026-04-28-planning-catalog-refresh-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             }
@@ -10107,8 +10107,8 @@
     },
     {
       "userFlow": "Trading operation",
-      "entityCount": 3232,
-      "linkedRelationCount": 11187,
+      "entityCount": 3236,
+      "linkedRelationCount": 11211,
       "layers": {
         "frontend": {
           "count": 390,
@@ -11403,7 +11403,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 1358,
+          "count": 1362,
           "sample": [
             {
               "id": "agent:procedure:9978f21e86",
@@ -12712,8 +12712,8 @@
     },
     {
       "userFlow": "Unclassified user workflow",
-      "entityCount": 9059,
-      "linkedRelationCount": 32055,
+      "entityCount": 9079,
+      "linkedRelationCount": 32166,
       "layers": {
         "frontend": {
           "count": 697,
@@ -14008,7 +14008,7 @@
           "truncated": true
         },
         "worker": {
-          "count": 5974,
+          "count": 5994,
           "sample": [
             {
               "id": "agent:agent-checklists:db27c98cf6",
@@ -14283,6 +14283,14 @@
               "status": "verified"
             },
             {
+              "id": "task:luc-176-account-access-clearsession-project-truth-proof:402d42c4ac",
+              "type": "task",
+              "name": "LUC-176 Account Access ClearSession Project-Truth Proof",
+              "path": "history/tasks/luc-176-account-access-clearsession-project-truth-proof-2026-07-05-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "task:luc-1925-source-control-closure-task:9373aeee9f",
               "type": "task",
               "name": "LUC-1925 Source Control Closure Task",
@@ -14295,6 +14303,14 @@
               "type": "task",
               "name": "LUC-2463 Autonomous Idle And Map Drift Sweep",
               "path": "history/tasks/luc-2463-autonomous-idle-and-map-drift-sweep-2026-06-06-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
+              "id": "task:luc-263-account-access-requireauth-app-completion-proof-row:c01bd6bca1",
+              "type": "task",
+              "name": "LUC-263 Account Access requireAuth App-Completion Proof Row",
+              "path": "history/tasks/luc-263-account-access-requireauth-app-completion-proof-row-2026-07-10-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             },
@@ -14507,6 +14523,14 @@
               "status": "verified"
             },
             {
+              "id": "task:task:10ab1c8c01",
+              "type": "task",
+              "name": "Task",
+              "path": "history/tasks/luc-261-known-state-evidence-architecture-baseline-2026-07-10-task.md",
+              "owner": "Engineering Delivery Lead",
+              "status": "verified"
+            },
+            {
               "id": "task:task:13ca9ff661",
               "type": "task",
               "name": "Task",
@@ -14623,30 +14647,6 @@
               "type": "task",
               "name": "Task",
               "path": "history/tasks/luc-5541-coolify-production-deploy-health-sweep-2026-06-27-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:task:32ca1a06e5",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/architecture-graph-strict-guardrail-2026-05-24-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:task:3430102462",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/doc-hub-filename-semantics-2026-05-23-task.md",
-              "owner": "Engineering Delivery Lead",
-              "status": "verified"
-            },
-            {
-              "id": "task:task:3582554b53",
-              "type": "task",
-              "name": "Task",
-              "path": "history/tasks/luc-2867-autonomous-idle-and-map-drift-sweep-2026-06-07-task.md",
               "owner": "Engineering Delivery Lead",
               "status": "verified"
             }

@@ -1,3 +1,23 @@
+## 2026-07-10 LUC-263 Account Access requireAuth Requirement
+
+| Requirement | Status | Evidence | Next action | Last updated |
+| --- | --- | --- | --- | --- |
+| Account access `requireAuth` project-truth row must have fresh local behavior proof before it can leave `implemented_needs_proof`. | verified locally | `history/evidence/luc-263-account-access-requireauth-app-completion-proof-row-2026-07-10.md`; focused middleware proof passed (`1` file / `9` tests); API typecheck passed; app-completion `implementedNeedsProof=113`. | No remaining action on [LUC-263](/LUC/issues/LUC-263); route next auth controller `clearSession` missing-test-link row separately if selected. | 2026-07-10 |
+
+## 2026-07-10 LUC-264 Protected Input Binding Requirement
+
+| Requirement | Status | Evidence | Next action | Last updated |
+| --- | --- | --- | --- | --- |
+| Protected release/account proof must have required encrypted runtime input families available by name before evidence can be accepted. | blocked | `history/evidence/luc-264-protected-input-readiness-binding-follow-up-2026-07-10.md`; `corepack pnpm run ops:protected-inputs:check` returned `PARTIAL`; `corepack pnpm run ops:protected-inputs:check:test` passed (`7/7`). | Board-capable Paperclip secrets operator or Ops Release Lead binds `ROLLBACK_GUARD_*`, `PROD_DB_CHECK_* or PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE* / GATE_*`; then rerun no-secret readiness and protected proof. | 2026-07-10 |
+
+## 2026-07-10 LUC-261 Known State Evidence And Architecture Baseline
+
+| Requirement | Status | Evidence | Next action | Last updated |
+| --- | --- | --- | --- | --- |
+| Architecture source-truth baseline must be current before repair lanes are claimed. | verified locally | `corepack pnpm run architecture:graph:drift:strict` PASS (`850/850`, `0` missing); `history/evidence/luc-261-known-state-evidence-architecture-baseline-2026-07-10.md` | Keep strict drift in future gates; no TSA repair child from this pass. | 2026-07-10 |
+| Project known-state gaps must become owner-scoped repair lanes. | partially verified | `docs/status/project-truth-index.json` first gap advanced to `apps/api/src/modules/auth/auth.controller.ts#clearSession`; `3540` app-completion gaps. | Test Automation Engineer + QA Regression Lead handle the next Account access `clearSession` missing-test-link row if selected; protected input and source-control lanes stay separate. | 2026-07-10 |
+| Protected release/account evidence must not be claimed without approved input bindings. | blocked | `corepack pnpm run ops:protected-inputs:check` returned `PARTIAL`; required families missing except `SOAR_PROD_*`. | Security/Ops binds required protected input families via approved encrypted references, then QA/Ops reruns protected proof. | 2026-07-10 |
+
 ## 2026-07-02 LUC-6888 Capability Traceability
 
 - 2026-07-02 `LUC-6888-CAPABILITY-IMPLEMENTATION-MAP-BACKFILL-2026-07-02`

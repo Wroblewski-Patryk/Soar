@@ -11,6 +11,26 @@
         "history/tasks/luc-93-account-access-clear-session-proof-2026-07-04-task.md",
         "history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md"
       ]
+    },
+    {
+      "path": "apps/api/src/middleware/requireAuth.ts#requireAuth",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified Account access protected-route guard for Bearer/cookie session acceptance, secret rotation, duplicate cookie precedence, stale session fail-closed behavior, and auth-service outage handling.",
+      "evidence": [
+        "history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md",
+        "history/tasks/luc-263-account-access-requireauth-app-completion-proof-row-2026-07-10-task.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/auth/auth.controller.ts#clearSession",
+      "status": "verified",
+      "owner": "Test Automation Engineer",
+      "description": "Verified Account access controller session clearing path through DB-backed logout and /auth/me route proof, including cleared cookie, stale cookie rejection, stale bearer rejection, and re-login after invalidation.",
+      "evidence": [
+        "history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md",
+        "history/tasks/luc-306-account-access-controller-clearsession-test-link-2026-07-10-task.md"
+      ]
     }
   ],
   "relationOverrides": []

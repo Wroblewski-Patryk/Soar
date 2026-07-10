@@ -1,6 +1,6 @@
 # Mobile Modules Index
 
-Updated: 2026-06-07
+Updated: 2026-07-10
 
 ## Purpose
 This index tracks `docs/modules/mobile-*.md` files so mobile documentation can
@@ -8,6 +8,13 @@ grow without drifting from registry/state files.
 
 ## Current Mobile Docs
 - `mobile-bootstrap.md` - scaffold-only native/mobile scope and activation gate.
+
+## Latest Readback
+- 2026-07-10 `LUC-253`: confirmed the current mobile docs/index baseline is
+  already present for scaffold-only scope. `apps/mobile` still contains only
+  `package.json`, `README.md`, and `src/.gitkeep`; no additional
+  non-scaffold `mobile-*.md` deep-dive is warranted until the `DEC-ARB-002`
+  activation trigger is met.
 
 ## V1 Traceability Classification
 - V1 status: `out_of_scope_for_v1`.
