@@ -1,3 +1,26 @@
+## 2026-07-10 LUC-256 ARB-005 Docs Parity Pipeline Enforcement
+
+- [LUC-256](/LUC/issues/LUC-256) is `DONE /
+  PIPELINE_PARITY_HOOK_ENFORCED / CHECKLIST_UPDATED /
+  LOCAL_COMMIT_CREATED / NO_RUNTIME_MUTATION`.
+- Verified:
+  `scripts/runLocalExternalGatesPipeline.mjs` now runs
+  `docs:parity:endpoints:api` and `docs:parity:route-api-matrix` before
+  external evidence collection. The V1 RC checklist names both parity gates as
+  mandatory pipeline coverage.
+- Validation:
+  API endpoint docs parity PASS (`109/109`, `0` gaps); route/API matrix parity
+  PASS (`39` Web routes, `109` API endpoints, `0` gaps); focused Node tests
+  PASS (`10/10`); `git diff --check` PASS with CRLF warnings only.
+- Boundary:
+  local pipeline/checklist/docs/evidence only. No runtime behavior change,
+  production smoke, protected input access, secret/account readback, push,
+  deploy, restart, rollback, DB/Redis mutation, exchange/payment/subscription
+  mutation, order, position, or live-trading action.
+- Evidence:
+  `history/tasks/luc-256-arb-005-docs-parity-pipeline-enforcement-2026-07-10-task.md`;
+  `docs/operations/api-endpoint-docs-parity-2026-07-10/api-endpoint-docs-parity-2026-07-10.md`.
+
 ## 2026-07-10 LUC-255 ARB-004 UI Scorecard TBD Metrics Source Truth
 
 - [LUC-255](/LUC/issues/LUC-255) is `DONE /

@@ -1,3 +1,27 @@
+## 2026-07-10 LUC-256 ARB-005 Docs Parity Pipeline Enforcement
+
+- [LUC-256](/LUC/issues/LUC-256) should move to `done` as
+  `DONE / PIPELINE_PARITY_HOOK_ENFORCED / CHECKLIST_UPDATED /
+  LOCAL_COMMIT_CREATED / NO_RUNTIME_MUTATION`.
+- Concrete action:
+  QVE acknowledged the local repair/source-control lane starter and added a
+  mandatory docs parity hook to the existing RC local external gates pipeline.
+  The hook runs `docs:parity:endpoints:api` and
+  `docs:parity:route-api-matrix` before external evidence collection in both
+  online and offline paths.
+- Validation:
+  `corepack pnpm run docs:parity:endpoints:api` passed (`109/109` endpoints,
+  `0` gaps); `corepack pnpm run docs:parity:route-api-matrix` passed (`39`
+  Web routes, `109` API endpoints, `0` gaps); focused Node tests passed
+  (`10/10`); `git diff --check` passed with CRLF normalization warnings only.
+- Boundary:
+  no production, protected smoke, deploy, push, restart, rollback, secret,
+  account, DB/Redis, exchange/payment/subscription, order, position, or
+  live-trading action occurred.
+- Evidence:
+  `history/tasks/luc-256-arb-005-docs-parity-pipeline-enforcement-2026-07-10-task.md`;
+  `docs/operations/api-endpoint-docs-parity-2026-07-10/api-endpoint-docs-parity-2026-07-10.md`.
+
 ## 2026-07-10 LUC-255 ARB-004 UI Scorecard TBD Metrics
 
 - [LUC-255](/LUC/issues/LUC-255) should move to `done` as

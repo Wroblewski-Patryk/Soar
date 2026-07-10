@@ -50,6 +50,7 @@ test('release and Ops wrappers preserve safe command contracts without executing
       [
         'scripts/runProdUxA11yMobileProof.mjs',
         'scripts/runPublicReadOnlyBrowserProof.mjs',
+        'scripts/runLocalExternalGatesPipeline.mjs',
         'scripts/runWebNextProductionCommand.mjs',
         'scripts/runQaRepeatableSmokeE2e.mjs',
         'scripts/runRcRefreshSummaryStrict.mjs',
@@ -87,6 +88,16 @@ test('release and Ops wrappers preserve safe command contracts without executing
       'overflowX',
       'public-read-only-browser-proof',
       'await rm(browser.userDataDir',
+    ]),
+    true,
+  );
+
+  assert.equal(
+    includesAll(files['scripts/runLocalExternalGatesPipeline.mjs'], [
+      'runDocsParityChecks',
+      'docs:parity:endpoints:api',
+      'docs:parity:route-api-matrix',
+      'The pipeline always runs docs parity gates',
     ]),
     true,
   );

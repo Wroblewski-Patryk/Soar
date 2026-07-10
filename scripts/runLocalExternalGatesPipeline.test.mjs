@@ -17,6 +17,7 @@ import {
   parseArgs,
   printUsage,
   run,
+  runDocsParityChecks,
 } from './runLocalExternalGatesPipeline.mjs';
 
 test('parseArgs normalizes environment, db profile, windows, and secret-bearing flags', () => {
@@ -166,12 +167,35 @@ test('buildStatusWithOfflineFallback uses template-only mode when offline inputs
   assert.match(logs.join('\n'), /template-only status snapshot/);
 });
 
+test('docs parity hook runs mandatory API endpoint and Web route matrix checks', () => {
+  const calls = [];
+
+  runDocsParityChecks({
+    runCommand: (label, command, args) => calls.push({ label, command, args }),
+  });
+
+  assert.deepEqual(calls, [
+    {
+      label: 'API endpoint docs parity',
+      command: 'pnpm',
+      args: ['run', 'docs:parity:endpoints:api'],
+    },
+    {
+      label: 'Web route/API matrix parity',
+      command: 'pnpm',
+      args: ['run', 'docs:parity:route-api-matrix'],
+    },
+  ]);
+});
+
 test('printUsage describes secret-bearing environment variable requirements', () => {
   const logs = [];
 
   printUsage({ log: (message) => logs.push(message) });
 
   assert.match(logs.join('\n'), /runLocalExternalGatesPipeline\.mjs/);
+  assert.match(logs.join('\n'), /docs:parity:endpoints:api/);
+  assert.match(logs.join('\n'), /docs:parity:route-api-matrix/);
   assert.match(logs.join('\n'), /SLO_AUTH_TOKEN/);
   assert.match(logs.join('\n'), /SLO_OPS_AUTH_HEADER_VALUE/);
 });
@@ -238,11 +262,13 @@ test('main orchestrates offline local gates without executing protected smoke or
   assert.deepEqual(exits, []);
   assert.deepEqual(result, { status: 'PASS', mode: 'offline' });
   assert.deepEqual(calls.map((call) => call.label), [
+    'API endpoint docs parity',
+    'Web route/API matrix parity',
     'build RC external gates status (template-only)',
     'sync RC checklist from gate status',
     'check missing external evidence',
   ]);
-  assert.deepEqual(calls[2].args, [
+  assert.deepEqual(calls[4].args, [
     'run',
     'ops:rc:gates:evidence:check',
     '--',

@@ -120,6 +120,11 @@ const run = (
   }
 };
 
+const runDocsParityChecks = ({ runCommand = run } = {}) => {
+  runCommand('API endpoint docs parity', 'pnpm', ['run', 'docs:parity:endpoints:api']);
+  runCommand('Web route/API matrix parity', 'pnpm', ['run', 'docs:parity:route-api-matrix']);
+};
+
 const hasSloInputs = async () => {
   const operationsDir = path.resolve(process.cwd(), 'history', 'operations');
   try {
@@ -232,7 +237,7 @@ const canReachApi = async (baseUrl, authToken, authLayer) => {
 
 const printUsage = (consoleImpl = console) => {
   consoleImpl.log(
-    'Usage: node scripts/runLocalExternalGatesPipeline.mjs [--base-url <url>] [--duration-minutes <n>] [--interval-seconds <n>] [--auth-email <email>] [--ops-basic-user <user>] [--ops-auth-header-name <name>] [--environment <local|stage|production>] [--db-profile <local|stage|prod>] [--allow-local-production-evidence] [--skip-db-check] [--skip-slo-collect] [--skip-window-report] [--skip-checklist-sync] [--skip-evidence-check] [--strict-evidence-check] [--require-production-gate2] [--evidence-output <file>] [--window-days <csv>] [--allow-offline]\n\nSecret-bearing values must be provided through SLO_AUTH_TOKEN, SLO_AUTH_PASSWORD, SLO_OPS_BASIC_PASSWORD, and SLO_OPS_AUTH_HEADER_VALUE.'
+    'Usage: node scripts/runLocalExternalGatesPipeline.mjs [--base-url <url>] [--duration-minutes <n>] [--interval-seconds <n>] [--auth-email <email>] [--ops-basic-user <user>] [--ops-auth-header-name <name>] [--environment <local|stage|production>] [--db-profile <local|stage|prod>] [--allow-local-production-evidence] [--skip-db-check] [--skip-slo-collect] [--skip-window-report] [--skip-checklist-sync] [--skip-evidence-check] [--strict-evidence-check] [--require-production-gate2] [--evidence-output <file>] [--window-days <csv>] [--allow-offline]\n\nThe pipeline always runs docs parity gates `docs:parity:endpoints:api` and `docs:parity:route-api-matrix` before external evidence collection. Secret-bearing values must be provided through SLO_AUTH_TOKEN, SLO_AUTH_PASSWORD, SLO_OPS_BASIC_PASSWORD, and SLO_OPS_AUTH_HEADER_VALUE.'
   );
 };
 
@@ -268,6 +273,8 @@ const main = async ({
   });
 
   try {
+      runDocsParityChecks({ runCommand });
+
       let resolvedAuthToken = String(options.authToken ?? '').trim();
       if (!options.skipSloCollect) {
         const resolvedAuth = await resolveOpsAuthTokenFn({
@@ -434,6 +441,7 @@ export {
   parseArgs,
   printUsage,
   run,
+  runDocsParityChecks,
 };
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

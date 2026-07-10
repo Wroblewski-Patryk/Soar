@@ -12,6 +12,10 @@
   - logs decision trace,
   - bots LIVE confirmations,
   - shell/accessibility smoke.
+- [x] API endpoint documentation parity gate is enforced in the RC pipeline:
+  - `pnpm run docs:parity:endpoints:api`.
+- [x] Web route/API matrix parity gate is enforced in the RC pipeline:
+  - `pnpm run docs:parity:route-api-matrix`.
 
 ### Latest Verification (2026-07-04)
 Expected SHA: `cf9011b43060c52941dae9232e9a1ca4392ca3f2`
@@ -171,7 +175,9 @@ Expected SHA: `cf9011b43060c52941dae9232e9a1ca4392ca3f2`
   - `pnpm run ops:rc:gates:summary`
 - Run local end-to-end helper pipeline:
   - `pnpm run ops:rc:gates:local-pipeline -- --base-url http://localhost:4001 --duration-minutes 5 --interval-seconds 15`
-  - Includes status rebuild + checklist sync + evidence diagnostics by default.
+  - Includes mandatory docs parity (`docs:parity:endpoints:api` and
+    `docs:parity:route-api-matrix`), status rebuild, checklist sync, and
+    evidence diagnostics by default.
   - Use `--skip-checklist-sync` / `--skip-evidence-check` to disable selected steps.
   - Use `--strict-evidence-check` to fail pipeline when evidence is incomplete.
   - Use `--require-production-gate2` to require Gate2=`PASS` (no `LOCAL_PASS` accepted).
