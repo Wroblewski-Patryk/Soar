@@ -5,7 +5,7 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/icons`
 - Owner: frontend/shared-ui
-- Last updated: 2026-04-12
+- Last updated: 2026-07-10
 - Related planning task: `DCP-09`
 
 ## 1. Purpose and Scope
@@ -64,7 +64,10 @@ Tests:
 
 Evidence:
 - No dedicated `apps/web/src/features/icons/*.test.*` file exists yet.
-- Current coverage is consumer-driven through dashboard-home/bots/UI component suites.
+- The exact consumer-driven coverage is the `Tests` table above. Treat future
+  icon lookup hook, deduplication, cancellation, or cache behavior changes as
+  requiring a dedicated module-local test instead of relying only on consumer
+  suites.
 
 ## 9. Open Issues and Follow-Ups
 - Add unit tests for hook deduplication and cancellation behavior.

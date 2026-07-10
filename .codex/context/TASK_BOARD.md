@@ -41585,3 +41585,29 @@ efs/heads/main -> 6839cd6b8884e26eca735ce32cea98c1dadccfbe.
   red-team lanes.
 - Evidence:
   `history/tasks/luc-252-arb-001-security-disposition-2026-07-10-task.md`.
+
+## 2026-07-10 LUC-254 ARB-003 Web Tests Table Expansion
+
+- [LUC-254](/LUC/issues/LUC-254) should move to `done` as
+  `DONE / WEB_TESTS_TABLES_EXACT / PATH_EXISTENCE_PASS /
+  LOCAL_COMMIT_CREATED / NO_RUNTIME_MUTATION`.
+- Concrete action:
+  QVE acknowledged the local repair/source-control lane starter and replaced
+  residual inferred/scanner-incomplete coverage wording in
+  `docs/modules/web-shared.md` with exact grouped `Tests` tables for shared
+  UI/shell, shared feature helpers, i18n/lib utilities, support surfaces, and
+  declaration-consumer proof. `docs/modules/web-icons.md` now names its exact
+  consumer-driven coverage and future dedicated-test trigger.
+- Validation:
+  PowerShell path existence check passed for `40` documented test files;
+  `git diff --check` passed.
+- Source-control disposition:
+  local docs/evidence/context-only commit created. Push/deploy remain
+  explicitly out of scope.
+- Residual:
+  architecture-awareness scanner relation count reduction was not attempted;
+  future scanner/registry work can add direct relations if count reduction is
+  desired. No protected/prod/browser proof is claimed by this docs slice.
+- Evidence:
+  `history/evidence/luc-254-arb-003-web-tests-table-expansion-2026-07-10.md`;
+  `history/tasks/luc-254-arb-003-web-tests-table-expansion-2026-07-10-task.md`.

@@ -28953,3 +28953,21 @@ ode --check scripts/buildObsidianVaultLayer.mjs PASS + dirty-path redaction scan
   or live-trading action occurred.
 - Evidence:
   `history/tasks/luc-252-arb-001-security-disposition-2026-07-10-task.md`.
+
+## 2026-07-10 LUC-254 ARB-003 Web Tests Table Expansion
+
+- [LUC-254](/LUC/issues/LUC-254) completed the local ARB-003 documentation
+  repair for residual web shared/icon inferred coverage wording.
+- `docs/modules/web-shared.md` now groups shared UI/shell, feature-helper,
+  i18n/lib, support, and declaration-consumer evidence into exact `Tests`
+  tables with concrete paths. `docs/modules/web-icons.md` now states that the
+  exact consumer-driven coverage is the listed `Tests` table and names the
+  trigger for future dedicated icon-module tests.
+- Validation passed: path existence check for `40` documented test files and
+  `git diff --check`.
+- No product code, generated index, push, deploy, protected smoke, production
+  restart, secret/account readback, DB/Redis mutation, exchange/payment/
+  subscription mutation, order, position, or live-trading action occurred.
+- Evidence:
+  `history/evidence/luc-254-arb-003-web-tests-table-expansion-2026-07-10.md`;
+  `history/tasks/luc-254-arb-003-web-tests-table-expansion-2026-07-10-task.md`.

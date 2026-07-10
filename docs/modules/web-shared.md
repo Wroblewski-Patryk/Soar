@@ -5,7 +5,7 @@
 - Layer: `web`
 - Source path: `apps/web/src/features/shared`
 - Owner: frontend/shared-ui
-- Last updated: 2026-06-05
+- Last updated: 2026-07-10
 - Related planning task: `V1CLOSEOUT-07`
 
 ## 1. Purpose and Scope
@@ -101,28 +101,37 @@ pnpm --filter web test -- src/features/shared/dcaLadderCell.test.tsx src/feature
 
 ## 8A. Architecture-Awareness Gap Triage
 
-`LUC-2021` triaged the 2026-06-03 architecture-awareness inferred
-test/doc-link gaps for shared UI. `LUC-2105` normalized the doc-link side by
-adding curated documentation links in
-`docs/architecture/relations/documentation-links.csv` for top shared UI
-component rows generated from `apps/web/src/ui/**`, the shared i18n provider,
-and the shared PWA/layout primitives. `LUC-2123` added the same doc-link
-mapping for the top shared feature-helper samples
-`apps/web/src/features/shared/dcaLadderCell.tsx` and
-`apps/web/src/features/shared/runtimeMonitoringFormatters.ts`. The scanner
-still does not promote every nearby `*.test.*` file as a direct relation on
-each generated component. Treat the remaining "without inferred tests" signal
-as follows:
+`LUC-2021`, `LUC-2105`, `LUC-2123`, `LUC-2138`, `LUC-2164`, and `LUC-2199`
+triaged architecture-awareness doc/test-link rows for shared Web surfaces.
+This section keeps the module deep dive explicit: the rows below are exact
+test-table mappings for evidence-present shared surfaces, not inferred
+coverage claims. Remaining graph drift should be treated as scanner relation
+maintenance unless a listed test file is removed or a shared behavior changes.
 
-| Shared UI surface | Current evidence | Triage status | Next action |
+Shared UI and shell tests:
+| Shared surface | Tests | Level | Status |
 | --- | --- | --- | --- |
-| `DataTable`, `TableUi`, `ViewState`, `StatusBadge`, `Tabs`, `ThemeSwitch` | Focused component tests exist under `apps/web/src/ui/components` and are also represented by `SOAR-TEST-WEB-RESIDUAL-SURFACES` / `SOAR-TEST-WEB-SHELL-UI`; doc links are curated through `documentation-links.csv`. | Documentation mapped; test relation still scanner-incomplete. | Keep local test coverage; improve test relation generation or registry mapping before treating these as missing tests. |
-| `FormField`, `FormFields`, `FormGrid`, `FormPageShell`, `FormSectionCard`, `FormMobileActionBar`, `FormValidationSummary`, `FormAlert` | Focused form primitive tests exist under `apps/web/src/ui/forms`; doc links are curated through `documentation-links.csv`. | Documentation mapped; test relation still scanner-incomplete. | Keep form primitive tests in the shared UI validation command and map direct test graph relations when the scanner supports stable shared UI component nodes. |
-| Dashboard/public layout and PWA primitives | Focused layout/PWA tests exist under `apps/web/src/ui/layout/**` and `apps/web/src/ui/pwa/**`. | Evidence present, scanner relation incomplete. | Keep route/layout smoke separate from route-level browser proof. |
-| Shared runtime feature helpers | `dcaLadderCell.test.tsx`, `runtimeMonitoringFormatters.test.ts`, and downstream runtime data presenter tests cover shared DCA ladder and runtime monitoring formatting behavior; doc links are curated through `documentation-links.csv`. | Documentation mapped; test evidence present. | Keep helper tests in the shared validation command; do not add new tests unless helper semantics change. |
-| `ConfirmModal`, `FormModal`, `useAsyncConfirm` | Focused primitive coverage exists in `apps/web/src/ui/components/SharedUiPrimitives.test.tsx`; doc links are curated through `documentation-links.csv`. | Evidence present, scanner relation incomplete. | Keep direct primitive coverage in the shared UI validation command and map direct test graph relations when the scanner supports stable shared UI component nodes. |
-| `AppLogoLink`, `FooterPreferencesSwitchers`, `InlinePager`, `ProfileButton`, `SkipToContentLink`, `useDetailsDropdown` | Focused primitive coverage exists in `apps/web/src/ui/components/SharedUiPrimitives.test.tsx`; doc links are curated through `documentation-links.csv`. | Evidence present, scanner relation incomplete. | Keep direct primitive coverage in the shared UI validation command and map direct test graph relations when the scanner supports stable shared UI component nodes. |
-| Skeleton loading primitives | Focused accessibility/count coverage exists in `apps/web/src/ui/components/SharedUiPrimitives.test.tsx`. | Evidence present, scanner relation incomplete. | Add additional focused tests only if loader semantics become user-action-bearing or accessibility-sensitive beyond current skeleton and `ViewState` coverage. |
+| `DataTable`, table state, sorting, paging, search | `apps/web/src/ui/components/DataTable.test.tsx`; `apps/web/src/ui/components/data-table/useDataTableColumnVisibilityState.test.ts` | Component/unit | Exact local tests present |
+| `TableUi`, `ViewState`, `StatusBadge`, `Tabs`, `ThemeSwitch` | `apps/web/src/ui/components/TableUi.test.tsx`; `apps/web/src/ui/components/ViewState.test.tsx`; `apps/web/src/ui/components/StatusBadge.test.tsx`; `apps/web/src/ui/components/Tabs.test.tsx`; `apps/web/src/ui/components/ThemeSwitch.test.tsx` | Component | Exact local tests present |
+| `ConfirmModal`, `FormModal`, `useAsyncConfirm`, `AppLogoLink`, `FooterPreferencesSwitchers`, `InlinePager`, `ProfileButton`, `SkipToContentLink`, `useDetailsDropdown`, skeleton loading primitives | `apps/web/src/ui/components/SharedUiPrimitives.test.tsx` | Component | Exact local tests present |
+| Shared form fields, primitives, validation feedback | `apps/web/src/ui/forms/FormFields.test.tsx`; `apps/web/src/ui/forms/FormPrimitives.test.tsx`; `apps/web/src/ui/forms/validationFeedback.test.ts` | Component/unit | Exact local tests present |
+| Dashboard/public layout and PWA shell primitives | `apps/web/src/ui/layout/dashboard/Footer.layout.test.tsx`; `apps/web/src/ui/layout/dashboard/Header.responsive.test.tsx`; `apps/web/src/ui/layout/dashboard/PageTitle.a11y.test.tsx`; `apps/web/src/ui/layout/public/Footer.layout.test.tsx`; `apps/web/src/ui/layout/public/Header.test.tsx`; `apps/web/src/ui/pwa/ServiceWorkerRegistration.test.tsx` | Component | Exact local tests present |
+
+Shared feature helper tests:
+| Shared surface | Tests | Level | Status |
+| --- | --- | --- | --- |
+| DCA ladder rendering and runtime monitoring formatters | `apps/web/src/features/shared/dcaLadderCell.test.tsx`; `apps/web/src/features/shared/runtimeMonitoringFormatters.test.ts` | Component/unit | Exact local tests present |
+| Dashboard runtime table presenter integration | `apps/web/src/features/dashboard-home/components/home-live-widgets/runtimeDataTablePresenters.test.tsx` | Component | Exact downstream integration test present |
+| Bot/runtime shared display conventions | `apps/web/src/features/bots/utils/trailingStopDisplay.test.ts`; `apps/web/src/features/bots/utils/runtimeSignalLabelKeys.test.ts` | Unit | Exact local tests present |
+
+Shared i18n, utility, and support tests:
+| Shared surface | Tests | Level | Status |
+| --- | --- | --- | --- |
+| i18n guardrails, namespace registry, translations, provider, locale formatting | `apps/web/src/i18n/namespaceRegistry.test.ts`; `apps/web/src/i18n/translations.test.ts`; `apps/web/src/i18n/useLocaleFormatting.test.tsx`; `apps/web/src/i18n/useOptionalI18n.test.tsx`; `apps/web/src/i18n/I18nProvider.test.tsx`; `apps/web/src/i18n/routeLocaleSmoke.test.ts` | Unit/component | Exact local tests present |
+| Shared Web API/error/navigation/numeric/public-base utilities | `apps/web/src/lib/api.test.ts`; `apps/web/src/lib/async.test.ts`; `apps/web/src/lib/errorResolver.test.ts`; `apps/web/src/lib/navigation.test.ts`; `apps/web/src/lib/numericInput.test.ts`; `apps/web/src/lib/publicApiBaseUrl.test.ts` | Unit | Exact local tests present |
+| Aggregate shared Web utilities, theme bootstrap, text/time/forms/storage/symbol helpers | `apps/web/src/lib/sharedWebUtilities.test.ts` | Unit | Exact aggregate test present |
+| Web Vitest setup support | `apps/web/src/vitestSetupSupport.test.tsx` | Unit/support | Exact support test present |
+| Shared declaration consumer proof | `apps/web/src/features/exchanges/exchangeCapabilities.test.ts` | Unit/type-consumer | Exact consumer proof present |
 
 This triage is documentation and evidence classification only. It does not
 claim fresh browser, production, protected, or release readiness proof.

@@ -11855,3 +11855,22 @@ Do not turn uncertainty into optimism.
 - Remaining:
   QA/Test Automation owns [LUC-93](/LUC/issues/LUC-93) to run and record fresh
   behavior proof for `requireAuth.clearSession`.
+
+# 2026-07-10 LUC-254 ARB-003 Web Tests Table Expansion
+
+- Module row:
+  Web shared/module docs and Web icons/module docs.
+- Reality:
+  `verified docs/source-truth; exact test-file tables present; no runtime
+  mutation`.
+- Update:
+  [LUC-254](/LUC/issues/LUC-254) converted residual inferred/shared coverage
+  prose in `docs/modules/web-shared.md` into exact grouped `Tests` tables and
+  clarified `docs/modules/web-icons.md` consumer-driven coverage. Path
+  existence validation passed for `40` documented test files.
+- Evidence:
+  `history/evidence/luc-254-arb-003-web-tests-table-expansion-2026-07-10.md`;
+  `history/tasks/luc-254-arb-003-web-tests-table-expansion-2026-07-10-task.md`.
+- Remaining:
+  scanner relation count reduction remains optional architecture-awareness
+  maintenance; no current module coverage blocker was found in this slice.
