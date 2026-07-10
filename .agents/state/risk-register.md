@@ -1,3 +1,9 @@
+## 2026-07-10 LUC-174 Protected Trading Readback vs LIVE Mutation Risk
+
+| Risk | Severity | Status | Evidence | Owner / next action | Last updated |
+| --- | --- | --- | --- | --- | --- |
+| Protected trading readback could be overclaimed as approval for LIVE exchange-side mutation. | P0 | mitigated_by_packet | `history/evidence/luc-174-protected-trading-readback-live-mutation-approval-packet-2026-07-10.md` separates allowed read-only proof from forbidden submit/cancel/close/account mutations and names the exact approval path. | Approved protected-session Security/QA/Ops runner may execute read-only proof when bindings exist; Integration Trading + Security + QA/Ops must open a separate exact approval packet for any LIVE mutation. | 2026-07-10 |
+
 ## 2026-07-10 LUC-263 Account Access requireAuth Proof Risk
 
 | Risk | Severity | Status | Evidence | Owner / next action | Last updated |

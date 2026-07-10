@@ -1,3 +1,24 @@
+## 2026-07-10 LUC-174 Protected Trading Readback Approval Packet
+
+- [LUC-174](/LUC/issues/LUC-174) can close as
+  `DONE / APPROVAL_PACKET_PREPARED / READ_ONLY_PROOF_ALLOWED_WHEN_BOUND /
+  LIVE_MUTATION_REQUIRES_SEPARATE_APPROVAL / NO_PROTECTED_RUN`.
+- Verified:
+  Security produced the non-secret packet separating protected trading
+  readback from LIVE mutation approval. It covers allowed readback scope,
+  forbidden actions, required principal/session class, protected input
+  families by name only, redaction rules, stop conditions, and the owner path
+  for any future LIVE mutation proposal.
+- Next owner/action:
+  approved protected-session QA/Ops or Security runner may execute read-only
+  proof with `scripts/runProdSecurityExchangeProof.mjs` and redacted artifacts
+  when bindings exist. Integration Trading + Security + QA/Ops must open a
+  separate exact proposal/approval for any LIVE submit/cancel/close or account
+  mutation.
+- Evidence:
+  `history/evidence/luc-174-protected-trading-readback-live-mutation-approval-packet-2026-07-10.md`;
+  `history/tasks/luc-174-protected-trading-readback-live-mutation-approval-packet-2026-07-10-task.md`.
+
 ## 2026-07-10 LUC-172 Protected Browser Proof Next Action
 
 - [LUC-172](/LUC/issues/LUC-172) can close as

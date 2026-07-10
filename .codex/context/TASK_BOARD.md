@@ -1,3 +1,32 @@
+## 2026-07-10 LUC-174 Protected Trading Readback vs LIVE Mutation Packet
+
+- [LUC-174](/LUC/issues/LUC-174) should move to `done` as
+  `DONE / APPROVAL_PACKET_PREPARED / READ_ONLY_PROOF_ALLOWED_WHEN_BOUND /
+  LIVE_MUTATION_REQUIRES_SEPARATE_APPROVAL / NO_PROTECTED_RUN`.
+- Concrete action:
+  SPA acknowledged the local repair/source-control lane starter and converted
+  the issue into a durable Security approval packet. The packet separates
+  read-only protected trading readback from LIVE mutation approval, defines
+  allowed readback, forbidden actions, protected input families by name only,
+  redaction rules, stop conditions, and the owner path for future LIVE mutation
+  proposals.
+- Validation:
+  `git diff --check` passed. `node --test
+  scripts/runProdSecurityExchangeProof.test.mjs` passed (`4/4`).
+- Source-control disposition:
+  local docs/evidence/context-only commit is expected if the dirty set remains
+  limited to this LUC-174 packet and state updates. Push/deploy remain
+  explicitly out of scope.
+- Next owner/action:
+  approved protected-session Security/QA/Ops runner may execute read-only proof
+  with `scripts/runProdSecurityExchangeProof.mjs` and redacted artifacts when
+  bindings exist. Integration Trading + Security + QA/Ops must create a
+  separate exact approval packet for any LIVE submit/cancel/close or production
+  account mutation.
+- Evidence:
+  `history/evidence/luc-174-protected-trading-readback-live-mutation-approval-packet-2026-07-10.md`;
+  `history/tasks/luc-174-protected-trading-readback-live-mutation-approval-packet-2026-07-10-task.md`.
+
 ## 2026-07-10 LUC-172 Protected Authenticated Browser Proof Packet
 
 - [LUC-172](/LUC/issues/LUC-172) should move to `done` as

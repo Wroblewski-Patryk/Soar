@@ -1,3 +1,27 @@
+## 2026-07-10 LUC-174 Protected Trading Readback Approval Packet
+
+- `LUC-174-PROTECTED-TRADING-READBACK-LIVE-MUTATION-APPROVAL-PACKET-2026-07-10`
+  is `DONE / APPROVAL_PACKET_PREPARED /
+  READ_ONLY_PROOF_ALLOWED_WHEN_BOUND /
+  LIVE_MUTATION_REQUIRES_SEPARATE_APPROVAL / NO_PROTECTED_RUN`.
+- Security produced a non-secret packet from [LUC-174](/LUC/issues/LUC-174)
+  and [LUC-169](/LUC/issues/LUC-169) that separates safe protected production
+  trading readback from LIVE exchange-side mutation. The packet defines
+  allowed readback scope, forbidden actions, protected input families by name
+  only, evidence/redaction rules, stop conditions, and the owner path for any
+  future LIVE mutation proposal.
+- Validation:
+  `git diff --check` passed; `node --test
+  scripts/runProdSecurityExchangeProof.test.mjs` passed (`4/4`).
+- Boundary:
+  no protected production run, raw secret/cookie/token/API-key readback, push,
+  deploy, restart, rollback, DB/Redis mutation, API-key mutation,
+  subscription/payment mutation, exchange mutation, order, position, or
+  live-trading action occurred.
+- Evidence:
+  `history/evidence/luc-174-protected-trading-readback-live-mutation-approval-packet-2026-07-10.md`;
+  `history/tasks/luc-174-protected-trading-readback-live-mutation-approval-packet-2026-07-10-task.md`.
+
 ## 2026-07-10 LUC-172 Protected Authenticated Browser Proof Packet
 
 - [LUC-172](/LUC/issues/LUC-172) is `DONE / PROOF_PACKET_PREPARED /
