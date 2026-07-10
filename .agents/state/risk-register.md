@@ -1,3 +1,9 @@
+## 2026-07-10 LUC-342 Protected Input Binding Risk
+
+| Risk | Severity | Status | Evidence | Owner / next action | Last updated |
+| --- | --- | --- | --- | --- | --- |
+| The approved LUC-342 binding lane could be mistaken as complete even though this DRE runner lacks secret-management permission and required protected families remain absent. | P0 | blocked | `history/evidence/luc-342-protected-input-binding-readiness-2026-07-10.md`; names-only readiness `PARTIAL`; Paperclip secret metadata endpoint returned `403 Forbidden`. | Board-capable Paperclip secrets operator or Ops Release Lead binds the missing approved families through encrypted runtime references without value exposure, then DRE/Ops, Security/Ops, or QA/Ops reruns readiness and protected proof. | 2026-07-10 |
+
 ## 2026-07-10 LUC-174 Protected Trading Readback vs LIVE Mutation Risk
 
 | Risk | Severity | Status | Evidence | Owner / next action | Last updated |

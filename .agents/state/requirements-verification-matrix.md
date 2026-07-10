@@ -1,3 +1,9 @@
+## 2026-07-10 LUC-342 Protected Input Binding Requirement
+
+| Requirement | Status | Evidence | Next action | Last updated |
+| --- | --- | --- | --- | --- |
+| DRE/Ops must bind or verify approved protected input families by encrypted runtime reference before protected release/account evidence can proceed. | blocked | `history/evidence/luc-342-protected-input-binding-readiness-2026-07-10.md`; `corepack pnpm run ops:protected-inputs:check` returned `PARTIAL`; secret metadata access returned `403 Forbidden`. | Board-capable Paperclip secrets operator or Ops Release Lead binds `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_UI_AUDIT_*`, `PROD_UI_*`, `PROD_DB_CHECK_* or PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE* / GATE_*` through encrypted refs, then DRE/Ops or QA/Ops reruns readiness/protected proof. | 2026-07-10 |
+
 ## 2026-07-10 LUC-263 Account Access requireAuth Requirement
 
 | Requirement | Status | Evidence | Next action | Last updated |

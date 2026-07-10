@@ -1,3 +1,31 @@
+## 2026-07-10 LUC-342 Protected Input Binding Readiness
+
+- [LUC-342](/LUC/issues/LUC-342) should move to `blocked` as
+  `BLOCKED / DRE_BINDING_ACCESS_FORBIDDEN / READINESS_PARTIAL /
+  NO_RUNTIME_MUTATION`.
+- Concrete action:
+  DRE reran the existing no-secret protected input readiness checker in the
+  approved LUC-342 scope and probed only Paperclip secret metadata/binding
+  availability by endpoint status.
+- Result:
+  `corepack pnpm run ops:protected-inputs:check` returned `PARTIAL` with `3`
+  matching names, all `SOAR_PROD_*`. Missing required account-access families:
+  `ROLLBACK_GUARD_*`, `PROD_DB_CHECK_* or PRODUCTION_DB_CHECK_*`, `RC_*`, and
+  `GATE* / GATE_*`. Missing additional proof families:
+  `LIVEIMPORT_READBACK_*`, `PROD_UI_AUDIT_*`, and `PROD_UI_*`.
+- Blocker:
+  Paperclip company secret metadata endpoint returned `403 Forbidden`; this
+  DRE runner cannot bind or verify company protected secret refs directly.
+- Next owner/action:
+  board-capable Paperclip secrets operator or Ops Release Lead binds the
+  missing approved families through encrypted runtime references without value
+  exposure, then wakes DRE/Ops, Security/Ops, or QA/Ops to rerun readiness and
+  protected proof.
+- Evidence:
+  `history/evidence/luc-342-protected-input-binding-readiness-2026-07-10.md`;
+  `history/artifacts/luc-342-protected-input-binding-readiness-2026-07-10.json`;
+  `history/tasks/luc-342-protected-input-binding-readiness-2026-07-10-task.md`.
+
 ## 2026-07-10 LUC-256 ARB-005 Docs Parity Pipeline Enforcement
 
 - [LUC-256](/LUC/issues/LUC-256) should move to `done` as
