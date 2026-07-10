@@ -1,3 +1,30 @@
+## 2026-07-10 LUC-255 ARB-004 UI Scorecard TBD Metrics
+
+- [LUC-255](/LUC/issues/LUC-255) should move to `done` as
+  `DONE / UI_SCORECARD_TBD_GAP_RECONCILED / DOCUMENTATION_DRIFT_REPAIRED /
+  LOCAL_COMMIT_CREATED / NO_RUNTIME_MUTATION`.
+- Concrete action:
+  UID acknowledged the local repair/source-control lane starter and verified
+  that `docs/ux/ui-scorecard.md` already replaced the three historical `TBD`
+  template rows with explicit defer metadata (`owner/date/reason`). The stale
+  active drift row in `docs/analysis/documentation-drift.md` now records the
+  ARB-004 gap as repaired for [LUC-255](/LUC/issues/LUC-255).
+- Validation:
+  focused scorecard placeholder scan found no `TBD` marker; defer-metadata
+  readback found the three expected `UX Visual Lead` rows; `git diff --check`
+  passed.
+- Source-control disposition:
+  local docs/state/evidence commit is expected if final validation passes and
+  the dirty set remains limited to this closure. Push/deploy remain explicitly
+  out of scope.
+- Evidence:
+  `history/tasks/luc-255-arb-004-ui-scorecard-tbd-metrics-source-truth-2026-07-10-task.md`.
+- Boundary:
+  no UI implementation, protected browser execution, production smoke,
+  protected credential handling, secret/account readback, push, deploy,
+  restart, rollback, DB/Redis mutation, exchange/payment/subscription
+  mutation, order, position, or live-trading action occurred.
+
 ## 2026-07-10 LUC-244 Route Browser-Review Slice Checklist
 
 - [LUC-244](/LUC/issues/LUC-244) should move to `done` as

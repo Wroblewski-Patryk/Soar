@@ -1,6 +1,6 @@
 # Documentation Drift Report
 
-Updated: 2026-05-27
+Updated: 2026-07-10
 
 Purpose: record known gaps between documentation and implementation so future
 agents can repair them deliberately. This is a living report, not a proof that
@@ -21,7 +21,7 @@ all behavior is fully verified.
 | Mobile implementation exists as `apps/mobile`, but V1 traceability was web/API-centric. | `apps/mobile` directory exists as scaffold-only scope. Mobile module docs/index and registry rows are now present: `docs/modules/mobile-module-index.md`, `docs/modules/mobile-bootstrap.md`, `docs/modules/module-registry.md`, and `docs/modules/module-doc-status-index.md`. | Mobile activation can still drift if future native implementation bypasses these docs/registry updates. | Repaired for current scaffold phase; on mobile feature activation, add new `mobile-*.md` docs and registry rows in the same task. |
 | Endpoint-level docs parity was not generated from route files. | Route files are source; `scripts/auditApiEndpointDocsParity.mjs` now generates endpoint parity from Express routes and module docs. 2026-05-19 rerun reports `109` endpoints, `109` documented, `0` gaps. | Route additions can still drift from docs if the parity command is skipped. | Repaired; rerun `pnpm run docs:parity:endpoints:api` whenever API routes or module docs change. |
 | Web feature test mapping drift risk remains if deep-dive `Tests` tables are not maintained after refactors. | ARB-003 expanded exact-file `Tests` tables in `web-orders`, `web-positions`, `web-icons`, and `web-shared`; traceability guidance now expects explicit test-file upkeep. | Future refactors can reintroduce stale file references if docs are not updated in the same change. | Repaired for current modules; keep test-file tables synchronized on each affected web-module edit. |
-| UX scorecard still contains unresolved placeholders (`TBD`). | `docs/ux/ui-scorecard.md` lines 95, 98, 101 show `TBD` values. | UX quality reporting can look complete while key score dimensions remain unspecified. | GAP: UX + Docs Memory to replace with measured values or explicit defer metadata (owner/date/reason). |
+| UX scorecard previously contained unresolved placeholder metrics. | `docs/ux/ui-scorecard.md` lines 95, 98, and 101 now contain explicit defer metadata with owner `UX Visual Lead`, date `2026-05-28`, and a concrete reason for each template row. Focused scan on 2026-07-10 found no `TBD` marker in the scorecard. | Future per-screen reviews still need measured content, but the reusable scorecard template no longer presents unspecified metrics as active truth. | Repaired for ARB-004 / [LUC-255](/LUC/issues/LUC-255); replace deferred template rows with measured review notes during each concrete screen review. |
 
 ## Endpoint Drift Watchlist
 Endpoint docs must be checked whenever these route files change:

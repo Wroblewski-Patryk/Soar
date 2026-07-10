@@ -1,3 +1,25 @@
+## 2026-07-10 LUC-255 ARB-004 UI Scorecard TBD Metrics Source Truth
+
+- [LUC-255](/LUC/issues/LUC-255) is `DONE /
+  UI_SCORECARD_TBD_GAP_RECONCILED / DOCUMENTATION_DRIFT_REPAIRED /
+  NO_RUNTIME_MUTATION`.
+- Verified:
+  `docs/ux/ui-scorecard.md` no longer contains `TBD` in the ARB-004 target
+  rows. The three review-template rows use explicit defer metadata with owner
+  `UX Visual Lead`, date `2026-05-28`, and a concrete reason. The active
+  `docs/analysis/documentation-drift.md` row now records this as repaired
+  instead of an open gap.
+- Validation:
+  focused scorecard placeholder scan, defer-metadata readback, and
+  `git diff --check`.
+- Boundary:
+  docs/state/evidence only. No UI implementation, production smoke, protected
+  input access, secret/account readback, push, deploy, restart, rollback,
+  DB/Redis mutation, exchange/payment/subscription mutation, order, position,
+  or live-trading action.
+- Evidence:
+  `history/tasks/luc-255-arb-004-ui-scorecard-tbd-metrics-source-truth-2026-07-10-task.md`.
+
 ## 2026-07-10 LUC-244 Route Browser-Review Slicing
 
 - `LUC-244-ROUTE-BROWSER-REVIEW-SLICE-CHECKLIST-2026-07-10` is

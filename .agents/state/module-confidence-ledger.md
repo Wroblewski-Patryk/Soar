@@ -1,3 +1,23 @@
+## 2026-07-10 LUC-255 ARB-004 UI Scorecard Source Truth
+
+- Module row:
+  UX documentation / UI scorecard review template / documentation drift
+  register.
+- Status:
+  `verified docs source-truth / historical TBD metric gap reconciled / no
+  runtime mutation`.
+- Evidence:
+  `history/tasks/luc-255-arb-004-ui-scorecard-tbd-metrics-source-truth-2026-07-10-task.md`.
+- Current proof:
+  `docs/ux/ui-scorecard.md` has no `TBD` marker in the ARB-004 target rows and
+  keeps explicit defer metadata with owner `UX Visual Lead`, date
+  `2026-05-28`, and concrete reasons. `docs/analysis/documentation-drift.md`
+  now records the row as repaired for [LUC-255](/LUC/issues/LUC-255).
+- Confidence:
+  high that the reusable scorecard template placeholder gap is closed. Future
+  screen-specific reviews still need measured notes for the actual reviewed
+  flow.
+
 ## 2026-07-10 LUC-242 Account Access Controller ClearSession Doc-Link
 
 - Module row:
