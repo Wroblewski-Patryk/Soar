@@ -1,3 +1,35 @@
+## 2026-07-10 LUC-244 Route Browser-Review Slice Checklist
+
+- [LUC-244](/LUC/issues/LUC-244) should move to `done` as
+  `DONE / ROUTE_BROWSER_REVIEW_SLICED / PROTECTED_RUNTIME_REUSED_LUC-172 /
+  LOCAL_COMMIT_CREATED / NO_PROTECTED_SMOKE`.
+- Concrete action:
+  FEW acknowledged the local repair/source-control lane starter and converted
+  the public/protected route browser-review backlog into owner-usable bundles:
+  public shell/legal, account access, dashboard runtime/trading, setup and
+  configuration, reports/backtests, bots management/assistant,
+  admin/subscription, and logs/observability.
+- Routing:
+  [LUC-172](/LUC/issues/LUC-172) remains the existing protected runtime/trading
+  proof packet for Dashboard runtime, Bots runtime, Manual Orders,
+  Positions/Orders readback, and Backtests/Reports. Separate recommended slices
+  are public/access browser refresh, setup/configuration protected-local proof,
+  and admin/subscription protected-local proof.
+- Validation:
+  source readback of `docs/status/app-completion-index.md`,
+  `docs/status/user-action-index.md`,
+  `docs/architecture/reference/dashboard-route-map.md`, and prior
+  `history/tasks/luc-6890-app-completion-browser-review-packet-2026-07-02-task.md`;
+  `git diff --check` passed.
+- Evidence:
+  `history/evidence/luc-244-route-browser-review-slice-checklist-2026-07-10.md`;
+  `history/tasks/luc-244-route-browser-review-slice-checklist-2026-07-10-task.md`.
+- Boundary:
+  no UI/code change, protected browser execution, production smoke, protected
+  credential handling, secret/account readback, push, deploy, restart,
+  rollback, DB/Redis mutation, exchange/payment/subscription mutation, order,
+  position, or live-trading action occurred.
+
 ## 2026-07-10 LUC-243 Protected Production Input Inventory
 
 - [LUC-243](/LUC/issues/LUC-243) should move to `done` as

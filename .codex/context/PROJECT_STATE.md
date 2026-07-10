@@ -1,3 +1,28 @@
+## 2026-07-10 LUC-244 Route Browser-Review Slicing
+
+- `LUC-244-ROUTE-BROWSER-REVIEW-SLICE-CHECKLIST-2026-07-10` is
+  `DONE / ROUTE_BROWSER_REVIEW_SLICED / PROTECTED_RUNTIME_REUSED_LUC-172 /
+  NO_PROTECTED_SMOKE`.
+- FEW converted the app-completion/user-action route browser-review backlog
+  into owner-usable bundles with owner, gate, proof type, auth requirement, and
+  current routing.
+- Follow-up routing:
+  [LUC-172](/LUC/issues/LUC-172) already owns protected runtime/trading proof;
+  separate recommended slices are public/access browser refresh,
+  setup/configuration protected-local proof, and admin/subscription
+  protected-local proof.
+- Validation:
+  source readback of generated status indexes, route map, and prior
+  [LUC-6890](/LUC/issues/LUC-6890) packet; `git diff --check` passed.
+- Boundary:
+  docs/evidence/context only. No UI/code change, protected browser execution,
+  production smoke, secret/account readback, push, deploy, restart, rollback,
+  DB/Redis mutation, exchange/payment/subscription mutation, order, position,
+  or live-trading action.
+- Evidence:
+  `history/evidence/luc-244-route-browser-review-slice-checklist-2026-07-10.md`;
+  `history/tasks/luc-244-route-browser-review-slice-checklist-2026-07-10-task.md`.
+
 ## 2026-07-10 LUC-242 Account Access Controller ClearSession Doc-Link
 
 - `LUC-242-ACCOUNT-ACCESS-CONTROLLER-CLEARSESSION-DOC-LINK-2026-07-10` is
