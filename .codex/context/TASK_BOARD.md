@@ -1,3 +1,33 @@
+## 2026-07-10 LUC-243 Protected Production Input Inventory
+
+- [LUC-243](/LUC/issues/LUC-243) should move to `done` as
+  `DONE / PROTECTED_INPUT_INVENTORY_PREPARED / CHECKER_PASS_PARTIAL /
+  PROTECTED_EXECUTION_GATED / LOCAL_COMMIT_CREATED / NO_RUNTIME_MUTATION`.
+- Concrete action:
+  DRE acknowledged the local repair/source-control lane starter and prepared a
+  names-only protected production input inventory for release audit tooling.
+  The packet maps binding families to proof commands/endpoints, redaction
+  rules, stop conditions, read-only versus approval-gated execution, and owner
+  actions for missing bindings.
+- Validation:
+  `corepack pnpm run ops:protected-inputs:check` passed with `PARTIAL`
+  readiness: `SOAR_PROD_*` present with `3` names; `LIVEIMPORT_READBACK_*`,
+  `ROLLBACK_GUARD_*`, `PROD_UI_AUDIT_*`, `PROD_UI_*`, `PROD_DB_CHECK_*`,
+  `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE* / GATE_*` missing.
+  `corepack pnpm run ops:protected-inputs:check:test` passed (`7/7`);
+  `git diff --check` passed.
+- Source-control disposition:
+  local docs/evidence/context-only commit created. Push/deploy remain
+  explicitly out of scope.
+- Next owner/action:
+  board-capable Paperclip secrets operator or Ops Release Lead binds the
+  missing protected input families through approved encrypted runtime
+  references without exposing values. DRE/QVE can then rerun protected
+  read-only proof under the [LUC-241](/LUC/issues/LUC-241)-class gate.
+- Evidence:
+  `history/evidence/luc-243-protected-production-input-inventory-2026-07-10.md`;
+  `history/tasks/luc-243-protected-production-input-inventory-2026-07-10-task.md`.
+
 ## 2026-07-10 LUC-242 Account Access Controller ClearSession Doc-Link
 
 - [LUC-242](/LUC/issues/LUC-242) should move to `done` as
