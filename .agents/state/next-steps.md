@@ -1,3 +1,18 @@
+## 2026-07-10 LUC-172 Protected Browser Proof Next Action
+
+- [LUC-172](/LUC/issues/LUC-172) can close as
+  `DONE / PROOF_PACKET_PREPARED / LOCAL_HELPER_PROOF_PASS /
+  PRODUCTION_RUN_GATED / NO_PROTECTED_SMOKE`.
+- Verified:
+  route/action checklist and stop conditions are recorded in
+  `history/evidence/luc-172-protected-authenticated-browser-proof-packet-2026-07-10.md`.
+  Node file-level helper proof passed (`12/12`).
+- Next owner/action:
+  approved protected-session QA/Ops runner executes the prepared non-mutating
+  auth browser proof with protected refs, and only runs disposable PAPER
+  fixture proof if that separate production fixture approval is present. Do
+  not run LIVE order/cancel/close under this issue.
+
 ## 2026-07-10 LUC-306 Account Access Controller ClearSession Closure
 
 - [LUC-306](/LUC/issues/LUC-306) can close as

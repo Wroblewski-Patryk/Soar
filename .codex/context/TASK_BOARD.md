@@ -1,3 +1,28 @@
+## 2026-07-10 LUC-172 Protected Authenticated Browser Proof Packet
+
+- [LUC-172](/LUC/issues/LUC-172) should move to `done` as
+  `DONE / PROOF_PACKET_PREPARED / LOCAL_HELPER_PROOF_PASS /
+  PRODUCTION_RUN_GATED / NO_PROTECTED_SMOKE`.
+- Concrete action:
+  QVE acknowledged the local repair/source-control wake and converted the
+  issue into a durable protected browser proof packet instead of attempting a
+  gated production smoke. The checklist covers Dashboard runtime, Bots runtime
+  monitoring, Manual Orders, Positions/Orders readback, and Backtests/Reports.
+- Validation:
+  `git diff --check` passed; `node --test
+  scripts/runProdAuthSessionBrowserProof.test.mjs
+  scripts/runProdFixtureActionProof.test.mjs` passed (`12/12`). The attempted
+  broader Vitest command failed due to stale `.paperclip/worktrees` test
+  discovery, not because the current checkout helper tests failed.
+- Next owner/action:
+  protected session owner or approved QA/Ops runner can execute the prepared
+  helper scripts with `SOAR_PROD_TEST_EMAIL`/`SOAR_PROD_TEST_PASSWORD` or an
+  approved transient token, then attach redacted artifacts. LIVE trading
+  mutation remains forbidden under [LUC-172](/LUC/issues/LUC-172).
+- Evidence:
+  `history/evidence/luc-172-protected-authenticated-browser-proof-packet-2026-07-10.md`;
+  `history/tasks/luc-172-protected-authenticated-browser-proof-packet-2026-07-10-task.md`.
+
 ## 2026-07-10 LUC-310 Source Control Closure
 
 - [LUC-310](/LUC/issues/LUC-310) should move to `done` as

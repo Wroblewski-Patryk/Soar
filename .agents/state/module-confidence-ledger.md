@@ -1,3 +1,22 @@
+## 2026-07-10 LUC-172 Protected Authenticated Browser Proof Packet
+
+- Module row:
+  authenticated browser proof / runtime and trading top-flow QA packet.
+- Status:
+  `proof packet prepared / local helper proof pass / production run gated / no
+  protected smoke`.
+- Evidence:
+  `history/evidence/luc-172-protected-authenticated-browser-proof-packet-2026-07-10.md`;
+  `history/tasks/luc-172-protected-authenticated-browser-proof-packet-2026-07-10-task.md`.
+- Current proof:
+  Node file-level helper tests passed (`12/12`) for production auth session
+  browser proof and production fixture action proof scripts. The packet defines
+  route/action coverage, desktop/mobile expectations, auth/session
+  preconditions, redaction rules, and stop conditions.
+- Confidence:
+  medium-high that the proof path is executable once protected session refs are
+  available. Production protected acceptance is not newly verified by this row.
+
 ## 2026-07-10 LUC-306 Account Access Controller ClearSession Test-Link
 
 - Module row:

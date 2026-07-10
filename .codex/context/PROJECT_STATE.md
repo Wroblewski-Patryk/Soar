@@ -1,3 +1,27 @@
+## 2026-07-10 LUC-172 Protected Authenticated Browser Proof Packet
+
+- [LUC-172](/LUC/issues/LUC-172) is `DONE / PROOF_PACKET_PREPARED /
+  LOCAL_HELPER_PROOF_PASS / PRODUCTION_RUN_GATED / NO_PROTECTED_SMOKE`.
+- Verified:
+  route/action checklist now covers auth/session boundary, Dashboard runtime,
+  Bots runtime monitoring, Manual Orders, Positions/Orders readback, and
+  Backtests/Reports proof paths with desktop/mobile expectations and explicit
+  stop conditions.
+- Validation:
+  `git diff --check` passed; `node --test
+  scripts/runProdAuthSessionBrowserProof.test.mjs
+  scripts/runProdFixtureActionProof.test.mjs` passed (`12/12`). A broader
+  Vitest command failed because it discovered stale copied tests under
+  `.paperclip/worktrees`, so Node file-level proof is the reliable current
+  checkout validation for these helpers.
+- Boundary:
+  no production protected smoke, push, deploy, restart, rollback, protected
+  account mutation, secret/account readback, exchange/payment/subscription
+  mutation, order, position, or live-trading action occurred.
+- Evidence:
+  `history/evidence/luc-172-protected-authenticated-browser-proof-packet-2026-07-10.md`;
+  `history/tasks/luc-172-protected-authenticated-browser-proof-packet-2026-07-10-task.md`.
+
 ## 2026-07-10 LUC-310 Source Control Closure
 
 - [LUC-310](/LUC/issues/LUC-310) is `DONE /
