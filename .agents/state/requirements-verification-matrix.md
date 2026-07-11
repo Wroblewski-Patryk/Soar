@@ -1,3 +1,9 @@
+## 2026-07-11 LUC-499 Account Access Auth Controller Test-Link Rows
+
+| Requirement | Status | Evidence | Next action | Last updated |
+| --- | --- | --- | --- | --- |
+| Account access auth-controller route/session rows must have linked automated backend proof before leaving `missing_test_link`. | verified locally by existing DB-backed proof link | `history/evidence/luc-499-account-access-auth-controller-test-link-rows-2026-07-11.md`; prior DB-backed auth route proof in `history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md`; app-completion `missingTestLink=974`, down from `980`. | Docs Memory Lead + Project Manager handles the remaining `auth.e2e.test.ts#restoreEnv` doc-link row; DB-backed rerun can be repeated when local Docker/Postgres is available. | 2026-07-11 |
+
 ## 2026-07-11 LUC-264 Protected Input Binding Closure
 
 | Requirement | Status | Evidence | Next action | Last updated |

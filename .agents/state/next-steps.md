@@ -1,3 +1,21 @@
+## 2026-07-11 LUC-498 Account Access Doc-Link Burn-Down Next Step
+
+- [LUC-498](/LUC/issues/LUC-498) can close as
+  `DONE / DOC_LINK_BATCH_RESOLVED / APP_COMPLETION_REFRESHED /
+  FOCUSED_COOKIE_PROOF_PASS / NO_RUNTIME_MUTATION`.
+- Verified:
+  seven Account access rows were removed from the project-truth priority gap
+  queue: `auth.cookie.ts#getSessionCookieBaseOptions`,
+  `auth.controller.ts#clearSessionCookie`, `#login`, `#logout`, `#me`,
+  `#register`, and `#setSessionCookie`.
+- Next owner/action:
+  Docs Memory Lead + Project Manager owns the next Account access
+  `missing_doc_link` row:
+  `apps/api/src/modules/auth/auth.e2e.test.ts#restoreEnv`.
+- Evidence:
+  `history/evidence/luc-498-account-access-doc-link-burn-down-2026-07-11.md`;
+  `history/tasks/luc-498-account-access-doc-link-burn-down-2026-07-11-task.md`.
+
 ## 2026-07-10 LUC-174 Protected Trading Readback Approval Packet
 
 - [LUC-174](/LUC/issues/LUC-174) can close as

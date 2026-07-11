@@ -1,3 +1,87 @@
+## 2026-07-11 LUC-503 Protected Ops Diagnostics Read-Only Proof
+
+- Mission:
+  `LUC-503-PROTECTED-OPS-DIAGNOSTICS-READONLY-PROOF-2026-07-11`.
+- Status:
+  `DONE / PROTECTED_OPS_DIAGNOSTICS_PASS / READY_DETAILS_200 /
+  UNAUTH_FAIL_CLOSED / NO_RUNTIME_MUTATION`.
+- Scope:
+  DRE/Ops protected read-only production diagnostics proof for the LUC-500
+  blocker. No product code, deploy, push, restart, rollback, env edit,
+  migration, secret/account value disclosure, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, bot activation, or
+  live-trading action.
+- Result:
+  existing `ops:prod-security-exchange:proof` was rerun against production
+  build `afb7a974911e1a8376ba27bc3bf90fbdadf3e57d` using the DRE/Ops admin
+  protected binding family. Authenticated `/ready/details` returned `200` and
+  summarized `noOrderGuard=true`; unauthenticated `/ready/details` remained
+  fail-closed at `401`.
+- Evidence:
+  `history/evidence/luc-503-protected-ops-diagnostics-readonly-proof-2026-07-11.md`;
+  `history/artifacts/luc-503-protected-ops-diagnostics-readonly-proof-2026-07-11.json`;
+  `history/tasks/luc-503-protected-ops-diagnostics-readonly-proof-2026-07-11-task.md`.
+- Residual:
+  no remaining action on [LUC-503](/LUC/issues/LUC-503). LUC-500 can consume
+  this DRE/Ops diagnostics proof while preserving the QA principal `403`
+  boundary.
+
+## 2026-07-11 LUC-500 Protected Browser Runtime/Trading Read-Only Proof
+
+- Mission:
+  `LUC-500-PROTECTED-BROWSER-RUNTIME-TRADING-READONLY-PROOF-2026-07-11`.
+- Status:
+  `DONE / AUTH_BROWSER_PASS / TRADING_READONLY_PASS_AFTER_DRE_OPS /
+  OPS_DIAGNOSTICS_PASS / NO_RUNTIME_MUTATION`.
+- Scope:
+  QVE protected read-only verification only. No product code, commit, push,
+  deploy, restart, rollback, env edit, migration, production fixture action,
+  secret/account value disclosure, DB/Redis mutation, exchange/payment/
+  subscription mutation, order, position, bot activation, or live-trading
+  action.
+- Result:
+  production auth/session browser proof passed against build
+  `afb7a974911e1a8376ba27bc3bf90fbdadf3e57d`. Production security/exchange
+  read-only proof passed through catalog and fail-closed checks, first stopped
+  at authenticated `/ready/details -> 403`, then completed after
+  [LUC-503](/LUC/issues/LUC-503) supplied authorized DRE/Ops read-only proof
+  with `/ready/details -> 200` and `noOrderGuard=true`.
+- Evidence:
+  `history/evidence/luc-500-protected-browser-runtime-trading-readonly-proof-2026-07-11.md`;
+  `history/evidence/luc-503-protected-ops-diagnostics-readonly-proof-2026-07-11.md`;
+  `history/tasks/luc-500-protected-browser-runtime-trading-readonly-proof-2026-07-11-task.md`.
+- Residual:
+  no remaining action on [LUC-500](/LUC/issues/LUC-500). Fixture-mutating and
+  LIVE mutation proof remain separate approval lanes.
+
+## 2026-07-11 LUC-499 Account Access Auth Controller Test-Link Rows
+
+- Mission:
+  `LUC-499-ACCOUNT-ACCESS-AUTH-CONTROLLER-TEST-LINK-ROWS-2026-07-11`.
+- Status:
+  `DONE / VERIFIED_LOCAL_INDEX_LINK / SIX_MISSING_TEST_LINK_ROWS_RESOLVED /
+  API_TYPECHECK_PASS_AFTER_PRISMA_GENERATE / DB_RERUN_BLOCKED_BY_LOCAL_INFRA /
+  NO_RUNTIME_MUTATION`.
+- Scope:
+  CBE source-truth/linkage repair only for auth-controller Account access
+  `missing_test_link` rows. No runtime code change, schema/migration,
+  production proof, protected account/session readback, secret readback,
+  deploy, push, restart, rollback, exchange/payment/subscription mutation,
+  order, position, or live-trading action.
+- Result:
+  existing DB-backed `auth.e2e.test.ts` proof was linked through scoped
+  scanner overrides to `clearSessionCookie`, `login`, `logout`, `me`,
+  `register`, and `setSessionCookie`. App-completion `missingTestLink`
+  dropped from `980` to `974`; project truth advanced the first remaining
+  Account access row to `auth.e2e.test.ts#restoreEnv` as `missing_doc_link`.
+- Evidence:
+  `history/evidence/luc-499-account-access-auth-controller-test-link-rows-2026-07-11.md`;
+  `history/tasks/luc-499-account-access-auth-controller-test-link-rows-2026-07-11-task.md`.
+- Residual:
+  fresh DB-backed rerun is blocked by unavailable Docker/Postgres in this
+  runner. Docs Memory Lead + Project Manager owns the remaining
+  `auth.e2e.test.ts#restoreEnv` doc-link row.
+
 ## 2026-07-05 LUC-176 Account Access ClearSession Project-Truth Proof
 
 - Mission:

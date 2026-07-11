@@ -1,5 +1,6 @@
 entity_path,test_path,reason
 apps/api/src/middleware/requireAuth.ts#clearSession,apps/api/src/middleware/requireAuth.test.ts,LUC-93 direct clearSession stale invalid expired deleted-user session clearing proof relation
+apps/api/src/modules/auth/auth.cookie.ts#getSessionCookieBaseOptions,apps/api/src/modules/auth/auth.cookie.test.ts,LUC-498 auth session cookie base options proof relation
 apps/web/src/ui/components/DataTable.tsx,apps/web/src/ui/components/DataTable.test.tsx,LUC-2164 direct shared table relation
 apps/web/src/ui/components/DataTable.tsx#applySearch,apps/web/src/ui/components/DataTable.test.tsx,LUC-2607 direct search submit relation
 apps/web/src/ui/components/DataTable.tsx#commitPageInput,apps/web/src/ui/components/DataTable.test.tsx,LUC-2607 direct page input relation

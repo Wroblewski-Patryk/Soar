@@ -1,6 +1,6 @@
 # Project Truth Index
 
-Generated: 2026-07-10T18:57:42.963Z
+Generated: 2026-07-11T17:29:26.932Z
 Project: Soar
 Status: gaps_require_routing
 
@@ -8,37 +8,30 @@ This is the routing surface agents should use before guessing whether an app wor
 
 | Metric | Count |
 | --- | ---: |
-| appCompletionItems | 3557 |
+| appCompletionItems | 3558 |
 | eventChains | 8 |
 | incompleteEventChains | 0 |
 | runtimeFindings | 0 |
 | criticalRuntimeFindings | 0 |
-| appCompletionGaps | 3539 |
+| appCompletionGaps | 3533 |
 | indexedAppCompletionGaps | 200 |
-| knownAppCompletionRiskItems | 3539 |
+| knownAppCompletionRiskItems | 3533 |
 | appCompletionPriorityReviewItems | 200 |
 | appCompletionPriorityReviewTruncated | true |
 | operationalGateGaps | 0 |
 | indexedGaps | 200 |
-| totalGaps | 3539 |
+| totalGaps | 3533 |
 
 ## First Gap
 
-- medium: Account access: clearSessionCookie has app-completion risk missing_test_link.
-- Owner: Test Automation Engineer + QA Regression Lead
-- Next action: Add or link the smallest relevant automated/manual verification for this flow before claiming it works.
+- medium: Account access: restoreEnv has app-completion risk missing_doc_link.
+- Owner: Docs Memory Lead + Project Manager
+- Next action: Link or update the source-of-truth docs/status entry for this flow so future agents can reason from evidence.
 
 ## Gaps
 
 | Severity | Kind | Flow | Summary | Next owner |
 | --- | --- | --- | --- | --- |
-| medium | app_completion_gap | Account access | Account access: clearSessionCookie has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
-| medium | app_completion_gap | Account access | Account access: login has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
-| medium | app_completion_gap | Account access | Account access: logout has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
-| medium | app_completion_gap | Account access | Account access: me has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
-| medium | app_completion_gap | Account access | Account access: register has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
-| medium | app_completion_gap | Account access | Account access: setSessionCookie has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
-| medium | app_completion_gap | Account access | Account access: getSessionCookieBaseOptions has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Account access | Account access: restoreEnv has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Account access | Account access: getJwtSecrets has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
 | medium | app_completion_gap | Account access | Account access: getPreviousSecretExpiry has app-completion risk missing_doc_link. | Docs Memory Lead + Project Manager |
@@ -112,3 +105,10 @@ This is the routing surface agents should use before guessing whether an app wor
 | medium | app_completion_gap | Account access | Account access: countRuntimeTradeRows has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Account access | Account access: getRuntimeTradeBotContext has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
 | medium | app_completion_gap | Account access | Account access: listRuntimeTradeAnchorPositionRows has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
+| medium | app_completion_gap | Account access | Account access: listRuntimeTradeCarryOverPositionIds has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
+| medium | app_completion_gap | Account access | Account access: listRuntimeTradeCloseEventRows has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
+| medium | app_completion_gap | Account access | Account access: listRuntimeTradePositionMetaRows has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
+| medium | app_completion_gap | Account access | Account access: listRuntimeTradePositionTradeRows has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
+| medium | app_completion_gap | Account access | Account access: listRuntimeTradeRows has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
+| medium | app_completion_gap | Account access | Account access: sumRuntimeTradeFees has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |
+| medium | app_completion_gap | Account access | Account access: compareNumbers has app-completion risk missing_test_link. | Test Automation Engineer + QA Regression Lead |

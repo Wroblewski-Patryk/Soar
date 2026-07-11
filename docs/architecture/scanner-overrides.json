@@ -31,6 +31,76 @@
         "history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md",
         "history/tasks/luc-306-account-access-controller-clearsession-test-link-2026-07-10-task.md"
       ]
+    },
+    {
+      "path": "apps/api/src/modules/auth/auth.cookie.ts#getSessionCookieBaseOptions",
+      "status": "verified",
+      "owner": "Documentation Steward",
+      "description": "Verified Account access shared session cookie base options for httpOnly, root path, environment-driven secure flag, and SameSite policy through focused cookie helper tests.",
+      "evidence": [
+        "apps/api/src/modules/auth/auth.cookie.test.ts",
+        "history/tasks/luc-498-account-access-doc-link-burn-down-2026-07-11-task.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/auth/auth.controller.ts#clearSessionCookie",
+      "status": "verified",
+      "owner": "Core Backend Engineer",
+      "description": "Verified controller cookie clearing through DB-backed logout and /auth/me fail-closed route proof, including cleared token cookie, stale cookie rejection, stale bearer rejection, and deleted or expired session clearing.",
+      "evidence": [
+        "history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md",
+        "history/tasks/luc-499-account-access-auth-controller-test-link-rows-2026-07-11-task.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/auth/auth.controller.ts#login",
+      "status": "verified",
+      "owner": "Core Backend Engineer",
+      "description": "Verified login route behavior through DB-backed auth e2e coverage for successful login, remember and non-remember cookie TTLs, public user payload shape, and invalid login error mapping.",
+      "evidence": [
+        "history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md",
+        "history/tasks/luc-499-account-access-auth-controller-test-link-rows-2026-07-11-task.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/auth/auth.controller.ts#logout",
+      "status": "verified",
+      "owner": "Core Backend Engineer",
+      "description": "Verified logout route behavior through DB-backed auth e2e coverage for sessionVersion invalidation, token cookie clearing, stale cookie rejection, stale bearer rejection, and relogin after invalidation.",
+      "evidence": [
+        "history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md",
+        "history/tasks/luc-499-account-access-auth-controller-test-link-rows-2026-07-11-task.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/auth/auth.controller.ts#me",
+      "status": "verified",
+      "owner": "Core Backend Engineer",
+      "description": "Verified current-user route behavior through DB-backed auth e2e coverage for valid session readback, missing token fail-closed behavior, deleted user clearing, expired JWT clearing, duplicate token precedence, and stale session rejection.",
+      "evidence": [
+        "history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md",
+        "history/tasks/luc-499-account-access-auth-controller-test-link-rows-2026-07-11-task.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/auth/auth.controller.ts#register",
+      "status": "verified",
+      "owner": "Core Backend Engineer",
+      "description": "Verified register route behavior through DB-backed auth e2e coverage for successful registration, public user payload shape, validation failures, duplicate email rejection, and session cookie bootstrap.",
+      "evidence": [
+        "history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md",
+        "history/tasks/luc-499-account-access-auth-controller-test-link-rows-2026-07-11-task.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/auth/auth.controller.ts#setSessionCookie",
+      "status": "verified",
+      "owner": "Core Backend Engineer",
+      "description": "Verified controller session cookie setting through DB-backed register/login/current-user route proof, including remember and short-lived TTLs plus duplicate-cookie healing on /auth/me.",
+      "evidence": [
+        "history/evidence/luc-171-db-backed-auth-worker-runtime-freshness-2026-07-05.md",
+        "history/tasks/luc-499-account-access-auth-controller-test-link-rows-2026-07-11-task.md"
+      ]
     }
   ],
   "relationOverrides": [

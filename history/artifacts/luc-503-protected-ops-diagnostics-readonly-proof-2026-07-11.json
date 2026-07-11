@@ -1,0 +1,93 @@
+{
+  "status": "PASS",
+  "today": "2026-07-11",
+  "generatedAt": "2026-07-11T17:27:11.717Z",
+  "environment": "production",
+  "webBaseUrl": "https://soar.luckysparrow.ch",
+  "apiBaseUrl": "https://api.soar.luckysparrow.ch",
+  "expectedSha": "afb7a974911e1a8376ba27bc3bf90fbdadf3e57d",
+  "buildInfo": {
+    "status": 200,
+    "ok": true,
+    "gitSha": "afb7a974911e1a8376ba27bc3bf90fbdadf3e57d"
+  },
+  "steps": [
+    {
+      "name": "build-info freshness",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "deployed build matches expected SHA"
+    },
+    {
+      "name": "auth token resolved",
+      "status": "PASS",
+      "notes": "login:present"
+    },
+    {
+      "name": "security headers present",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "public readiness minimal response",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "unauthenticated protected route fail-closed",
+      "status": "PASS",
+      "httpStatus": 401
+    },
+    {
+      "name": "unauthenticated ops diagnostics fail-closed",
+      "status": "PASS",
+      "httpStatus": 401
+    },
+    {
+      "name": "unauthenticated metrics fail-closed",
+      "status": "PASS",
+      "httpStatus": 401
+    },
+    {
+      "name": "authenticated no-store profile read",
+      "status": "PASS",
+      "httpStatus": 200
+    },
+    {
+      "name": "profile api key list redaction",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "items=0"
+    },
+    {
+      "name": "untrusted origin state change fail-closed",
+      "status": "PASS",
+      "httpStatus": 403
+    },
+    {
+      "name": "unsupported exchange probe fail-closed",
+      "status": "PASS",
+      "httpStatus": 501,
+      "notes": "COINBASE API_KEY_PROBE unsupported"
+    },
+    {
+      "name": "binance futures catalog read-only",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "items=662"
+    },
+    {
+      "name": "gateio futures catalog canonical read-only",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "items=826"
+    },
+    {
+      "name": "authenticated ops readiness details",
+      "status": "PASS",
+      "httpStatus": 200,
+      "notes": "noOrderGuard=true"
+    }
+  ],
+  "blockers": []
+}

@@ -1,3 +1,144 @@
+## 2026-07-11 LUC-498 Account Access Doc-Link Burn-Down
+
+- [LUC-498](/LUC/issues/LUC-498) can close as
+  `DONE / DOC_LINK_BATCH_RESOLVED / APP_COMPLETION_REFRESHED /
+  FOCUSED_COOKIE_PROOF_PASS / NO_RUNTIME_MUTATION`.
+- DSM resolved a tight Account access source-truth batch:
+  `auth.cookie.ts#getSessionCookieBaseOptions`,
+  `auth.controller.ts#clearSessionCookie`, `#login`, `#logout`, `#me`,
+  `#register`, and `#setSessionCookie`.
+- Source truth:
+  `docs/modules/api-auth.md`,
+  `docs/architecture/relations/documentation-links.csv`,
+  `docs/architecture/relations/priority-test-links.csv`, and
+  `docs/architecture/scanner-overrides.json` now carry the relevant doc/proof
+  links.
+- Validation:
+  architecture-awareness generation passed with `10694` entities, `34822`
+  relations, and `entityOverridesApplied=10`; app-completion refresh passed
+  with `missingDocLink=1994`, `missingTestLink=974`,
+  `implementedNeedsProof=113`, and `riskItems=3533`; project-truth `--apply`
+  passed and advanced the first Account access gap to
+  `apps/api/src/modules/auth/auth.e2e.test.ts#restoreEnv` as
+  `missing_doc_link`; focused `auth.cookie.test.ts` passed (`1` file / `5`
+  tests); target-row readback found no remaining gaps for the seven selected
+  rows.
+- Evidence:
+  `history/evidence/luc-498-account-access-doc-link-burn-down-2026-07-11.md`;
+  `history/tasks/luc-498-account-access-doc-link-burn-down-2026-07-11-task.md`.
+- Boundary:
+  no production smoke, protected credential access, secret readback, deploy,
+  restart, rollback, DB mutation, account mutation, exchange/payment/
+  subscription mutation, order, position, or LIVE trading action occurred.
+
+## 2026-07-11 LUC-499 Account Access Auth Controller Test-Link Rows
+
+- [LUC-499](/LUC/issues/LUC-499) can close as
+  `DONE / VERIFIED_LOCAL_INDEX_LINK / SIX_MISSING_TEST_LINK_ROWS_RESOLVED /
+  API_TYPECHECK_PASS_AFTER_PRISMA_GENERATE / DB_RERUN_BLOCKED_BY_LOCAL_INFRA /
+  NO_RUNTIME_MUTATION`.
+- Verified:
+  scoped scanner overrides linked existing DB-backed `auth.e2e.test.ts`
+  coverage to auth-controller rows `clearSessionCookie`, `login`, `logout`,
+  `me`, `register`, and `setSessionCookie`. Architecture-awareness final
+  rerun applied `10` entity overrides; app-completion `missingTestLink=974`;
+  project truth now routes the first remaining Account access row to
+  `auth.e2e.test.ts#restoreEnv` as `missing_doc_link`.
+- Validation:
+  architecture-awareness/app-completion/project-truth regeneration passed;
+  architecture drift strict passed (`850/850`, `0` missing); scanner override
+  Prettier check passed; API typecheck passed after local Prisma client
+  regeneration; `git diff --check` passed with CRLF warnings only.
+- Boundary:
+  no runtime code, schema/migration, production protected proof, secret/account
+  readback, deploy, push, restart, rollback, exchange/payment/subscription
+  mutation, order, position, or live-trading action occurred.
+- Next owner/action:
+  Docs Memory Lead + Project Manager handles the remaining
+  `auth.e2e.test.ts#restoreEnv` doc-link row. Fresh DB-backed auth e2e rerun
+  remains blocked in this runner until Docker/Postgres is available.
+- Evidence:
+  `history/evidence/luc-499-account-access-auth-controller-test-link-rows-2026-07-11.md`;
+  `history/tasks/luc-499-account-access-auth-controller-test-link-rows-2026-07-11-task.md`.
+
+## 2026-07-11 LUC-503 Protected Ops Diagnostics Read-Only Proof
+
+- [LUC-503](/LUC/issues/LUC-503) is `DONE /
+  PROTECTED_OPS_DIAGNOSTICS_PASS / READY_DETAILS_200 / UNAUTH_FAIL_CLOSED /
+  NO_RUNTIME_MUTATION`.
+- Verified:
+  existing production proof script passed with DRE/Ops admin bindings against
+  build `afb7a974911e1a8376ba27bc3bf90fbdadf3e57d`. Unauthenticated
+  `/ready/details` returned `401`; authenticated DRE/Ops `/ready/details`
+  returned `200`; diagnostic summary reported `noOrderGuard=true`.
+- Boundary:
+  evidence-only protected read-only proof. No code, deployment, restart,
+  rollback, env mutation, secret/account value readback, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, bot activation,
+  fixture action, or live-trading action occurred.
+- Residual:
+  LUC-500 may consume this DRE/Ops proof for the ops diagnostics row while the
+  QA test principal remains correctly forbidden from `/ready/details`.
+- Evidence:
+  `history/evidence/luc-503-protected-ops-diagnostics-readonly-proof-2026-07-11.md`;
+  `history/artifacts/luc-503-protected-ops-diagnostics-readonly-proof-2026-07-11.json`;
+  `history/tasks/luc-503-protected-ops-diagnostics-readonly-proof-2026-07-11-task.md`.
+
+## 2026-07-11 LUC-502 VPS Readiness Smoke Checklist
+
+- [LUC-502](/LUC/issues/LUC-502) is `DONE /
+  CHECKLIST_PREPARED / NO_SECRET_VALUES / NO_RUNTIME_MUTATION`.
+- Verified:
+  DRE converted the remaining production proof gaps into
+  `docs/operations/vps-production-readiness-smoke-checklist.md`, covering
+  source provenance, public API/Web readiness, worker readiness, protected
+  input readiness, auth/session proof, dashboard/runtime proof, read-only
+  trading/runtime readback, backup/restore evidence, rollback guard, RC/gate
+  evidence, and log/secret hygiene.
+- Boundary:
+  the checklist names protected input families only and does not execute
+  protected smoke, deploy, restart, rollback, secret/account value readback,
+  DB/Redis mutation, exchange/payment/subscription mutation, order, position,
+  or live-trading action.
+- Validation:
+  protected-input checker tests passed; new checklist/evidence/task files were
+  read back, scanned for obvious raw secret patterns, and passed
+  `git diff --check`.
+- Residual:
+  actual production acceptance still requires a separately approved protected
+  proof run with bound refs and fresh redacted artifacts.
+- Evidence:
+  `history/evidence/luc-502-vps-readiness-smoke-checklist-2026-07-11.md`;
+  `history/tasks/luc-502-vps-readiness-smoke-checklist-2026-07-11-task.md`.
+
+## 2026-07-11 LUC-501 Browser-Review Owner Route Bundles
+
+- [LUC-501](/LUC/issues/LUC-501) is `DONE /
+  ROUTE_BROWSER_REVIEW_BUNDLES_SPLIT / PUBLIC_ACCESS_SEPARATED /
+  PROTECTED_RUNTIME_REUSED_LUC-172 / NO_RUNTIME_MUTATION`.
+- FEW split the current browser-review backlog into owner-usable bundles:
+  public shell/legal, account access, dashboard runtime/trading,
+  setup/configuration, reports/backtests, bots/assistant, admin/subscription,
+  and logs/observability.
+- Source readback:
+  app-completion index `3557` items / `452` browser-review rows / `0`
+  blocked rows; user-action index `41` actions / `39` high gaps; canonical
+  route map `39` V1 web routes.
+- Routing:
+  protected Dashboard runtime, Manual Orders, Positions/Orders, and protected
+  Backtests/Reports proof remains routed through [LUC-172](/LUC/issues/LUC-172).
+  Separate recommended follow-up slices are public/access browser refresh,
+  setup/configuration protected-local proof, and admin/subscription
+  protected-local proof.
+- Evidence:
+  `history/evidence/luc-501-browser-review-owner-route-bundles-2026-07-11.md`;
+  `history/tasks/luc-501-browser-review-owner-route-bundles-2026-07-11-task.md`.
+- Boundary:
+  no UI/code change, protected browser execution, production smoke, protected
+  credential handling, secret/account readback, deploy, restart, rollback,
+  DB/Redis mutation, exchange/payment/subscription mutation, order, position,
+  or live-trading action occurred.
+
 ## 2026-07-11 LUC-264 Protected Input Readiness Binding Follow-Up Closure
 
 - [LUC-264](/LUC/issues/LUC-264) is `DONE /

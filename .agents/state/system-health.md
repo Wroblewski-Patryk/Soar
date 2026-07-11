@@ -1,3 +1,75 @@
+## 2026-07-11 LUC-498 Account Access Doc-Link Burn-Down
+
+- Status:
+  `DONE / DOC_LINK_BATCH_RESOLVED / APP_COMPLETION_REFRESHED /
+  FOCUSED_COOKIE_PROOF_PASS / NO_RUNTIME_MUTATION`.
+- Health impact:
+  local source-truth/app-completion refresh removed seven Account access
+  rows from the priority gap queue. Project-truth now routes the first Account
+  access gap to `apps/api/src/modules/auth/auth.e2e.test.ts#restoreEnv` as
+  `missing_doc_link`.
+- Environment hygiene:
+  no production smoke, protected credential access, secret readback, browser,
+  server, deploy, restart, rollback, DB/Redis mutation, account mutation,
+  exchange/payment/subscription mutation, order, position, or LIVE trading
+  action occurred.
+
+## 2026-07-11 LUC-499 Account Access Auth Controller Test-Link Rows
+
+- Status:
+  `local source-truth verified; no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-499-account-access-auth-controller-test-link-rows-2026-07-11.md`;
+  `history/tasks/luc-499-account-access-auth-controller-test-link-rows-2026-07-11-task.md`.
+- Health impact:
+  six generated Account access auth-controller missing-test-link rows are now
+  linked to existing DB-backed route proof. Public production probes executed
+  by project-truth refresh passed (`web_home`, `web_build_info`, `api_health`,
+  `api_ready`), but no protected production acceptance was run or claimed.
+- Remaining:
+  local DB-backed rerun remains unavailable until Docker/Postgres is restored;
+  next project-truth ownership is documentation-link repair for
+  `auth.e2e.test.ts#restoreEnv`, not backend code.
+
+## 2026-07-11 LUC-503 Protected Ops Diagnostics Read-Only Proof
+
+- Status:
+  `DONE / PROTECTED_OPS_DIAGNOSTICS_PASS / READY_DETAILS_200 /
+  UNAUTH_FAIL_CLOSED / NO_RUNTIME_MUTATION`.
+- Production signal:
+  build-info returned `200` with SHA
+  `afb7a974911e1a8376ba27bc3bf90fbdadf3e57d`; unauthenticated
+  `/ready/details` returned `401`; authenticated DRE/Ops `/ready/details`
+  returned `200` and summarized `noOrderGuard=true`.
+- Environment hygiene:
+  no browser, server, deploy, restart, rollback, env edit, DB/Redis mutation,
+  exchange mutation, or secret/account value readback occurred.
+- Next owner/action:
+  no remaining LUC-503 action. LUC-500 can consume the DRE/Ops diagnostics
+  evidence while preserving QA-principal fail-closed behavior.
+- Evidence:
+  `history/evidence/luc-503-protected-ops-diagnostics-readonly-proof-2026-07-11.md`;
+  `history/artifacts/luc-503-protected-ops-diagnostics-readonly-proof-2026-07-11.json`;
+  `history/tasks/luc-503-protected-ops-diagnostics-readonly-proof-2026-07-11-task.md`.
+
+## 2026-07-11 LUC-500 Protected Browser Runtime/Trading Read-Only Proof
+
+- Status:
+  `DONE / AUTH_BROWSER_PASS / TRADING_READONLY_PASS_AFTER_DRE_OPS /
+  OPS_DIAGNOSTICS_PASS / NO_RUNTIME_MUTATION`.
+- Production signal:
+  build-info returned `200` with SHA
+  `afb7a974911e1a8376ba27bc3bf90fbdadf3e57d`; auth/session browser proof
+  passed; read-only security/exchange proof passed until authenticated
+  `/ready/details` returned `403`; DRE/Ops child [LUC-503](/LUC/issues/LUC-503)
+  completed the authorized read-only rerun with `/ready/details -> 200` and
+  `noOrderGuard=true`.
+- Environment hygiene:
+  browser cleanup check found no leftover validation browser process.
+- Next owner/action:
+  none for [LUC-500](/LUC/issues/LUC-500). Fixture-mutating and LIVE mutation
+  proof remain separate approval lanes.
+
 ## 2026-07-10 LUC-306 Account Access Controller ClearSession Test-Link
 
 - Status:

@@ -1,34 +1,34 @@
 {
-  "generated_at": "2026-07-10T18:57:35.903Z",
+  "generated_at": "2026-07-11T17:29:15.909Z",
   "project": {
     "name": "Soar",
     "root": "C:/Personal/Projekty/Aplikacje/Soar"
   },
   "counts": {
-    "entities": 10657,
-    "relations": 34662,
+    "entities": 10699,
+    "relations": 34853,
     "by_type": {
       "agent": 52,
       "api_endpoint": 38,
       "component": 97,
-      "document": 4692,
+      "document": 4720,
       "feature": 216,
-      "function": 2835,
+      "function": 2836,
       "migration": 57,
       "model": 108,
       "module": 16,
       "project": 1,
       "route": 355,
-      "task": 1738,
+      "task": 1751,
       "test": 452
     },
     "by_status": {
       "blocked": 46,
       "deprecated": 10,
-      "implemented": 8050,
+      "implemented": 8072,
       "in_progress": 15,
       "tested": 833,
-      "verified": 1703
+      "verified": 1723
     }
   },
   "signals": {
@@ -1616,24 +1616,24 @@
           "type": "function",
           "name": "clearSessionCookie",
           "path": "apps/api/src/modules/auth/auth.controller.ts#clearSessionCookie",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
+          "status": "verified",
+          "owner": "Core Backend Engineer"
         },
         {
           "id": "function:login:33fd3c119c",
           "type": "function",
           "name": "login",
           "path": "apps/api/src/modules/auth/auth.controller.ts#login",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
+          "status": "verified",
+          "owner": "Core Backend Engineer"
         },
         {
           "id": "function:logout:aba24168f5",
           "type": "function",
           "name": "logout",
           "path": "apps/api/src/modules/auth/auth.controller.ts#logout",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead"
+          "status": "verified",
+          "owner": "Core Backend Engineer"
         }
       ]
     },
@@ -5037,8 +5037,8 @@
           "type": "function",
           "name": "clearSessionCookie",
           "path": "apps/api/src/modules/auth/auth.controller.ts#clearSessionCookie",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
+          "status": "verified",
+          "owner": "Core Backend Engineer",
           "reason": "curated_graph_covered"
         },
         {
@@ -5046,8 +5046,8 @@
           "type": "function",
           "name": "login",
           "path": "apps/api/src/modules/auth/auth.controller.ts#login",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
+          "status": "verified",
+          "owner": "Core Backend Engineer",
           "reason": "curated_graph_covered"
         },
         {
@@ -5055,8 +5055,8 @@
           "type": "function",
           "name": "logout",
           "path": "apps/api/src/modules/auth/auth.controller.ts#logout",
-          "status": "implemented",
-          "owner": "Engineering Delivery Lead",
+          "status": "verified",
+          "owner": "Core Backend Engineer",
           "reason": "curated_graph_covered"
         }
       ]

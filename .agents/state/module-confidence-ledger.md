@@ -1,3 +1,94 @@
+## 2026-07-11 LUC-498 Account Access Doc-Link Burn-Down
+
+- Module row:
+  Account access / API auth controller and cookie helpers / app-completion
+  documentation truth.
+- Status:
+  `verified local source-truth links / seven doc-link rows resolved / focused
+  cookie proof pass / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-498-account-access-doc-link-burn-down-2026-07-11.md`;
+  `history/tasks/luc-498-account-access-doc-link-burn-down-2026-07-11-task.md`.
+- Current proof:
+  `docs/modules/api-auth.md` and architecture relation files now document
+  `auth.cookie.ts#getSessionCookieBaseOptions`,
+  `auth.controller.ts#clearSessionCookie`, `#login`, `#logout`, `#me`,
+  `#register`, and `#setSessionCookie`. Architecture-awareness regenerated
+  with `10694` entities and `34822` relations; app-completion reports
+  `missingDocLink=1994`; project-truth first Account access gap advanced to
+  `apps/api/src/modules/auth/auth.e2e.test.ts#restoreEnv`.
+- Confidence:
+  high for the local source-truth/doc-link batch. This does not claim
+  protected production auth acceptance; the next Account access row is a
+  separate docs/source-truth helper row.
+
+## 2026-07-11 LUC-499 Account Access Auth Controller Test-Link Rows
+
+- Module row:
+  Account access / API auth controller / app-completion truth.
+- Status:
+  `verified index links / six missing-test-link rows resolved / DB-backed
+  rerun blocked by local infra / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-499-account-access-auth-controller-test-link-rows-2026-07-11.md`;
+  `history/tasks/luc-499-account-access-auth-controller-test-link-rows-2026-07-11-task.md`.
+- Current proof:
+  scoped scanner overrides now link existing DB-backed `auth.e2e.test.ts`
+  route proof to `clearSessionCookie`, `login`, `logout`, `me`, `register`,
+  and `setSessionCookie`. Architecture-awareness final rerun applied `10`
+  entity overrides; app-completion `missingTestLink` is `974` (down from
+  `980`); project truth now routes the first remaining Account access row to
+  `auth.e2e.test.ts#restoreEnv` as `missing_doc_link`.
+- Confidence:
+  high for the generated Account access missing-test-link closure. Fresh local
+  DB-backed rerun remains blocked because Docker Desktop/Postgres is
+  unavailable in this runner; prior [LUC-171](/LUC/issues/LUC-171) remains the
+  linked DB-backed evidence.
+
+## 2026-07-11 LUC-503 Protected Ops Diagnostics Read-Only Proof
+
+- Module row:
+  protected ops diagnostics / production readiness / runtime safety
+  observability.
+- Status:
+  `verified via DRE/Ops admin protected principal; unauthenticated diagnostics
+  fail closed; no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-503-protected-ops-diagnostics-readonly-proof-2026-07-11.md`;
+  `history/artifacts/luc-503-protected-ops-diagnostics-readonly-proof-2026-07-11.json`;
+  `history/tasks/luc-503-protected-ops-diagnostics-readonly-proof-2026-07-11-task.md`.
+- Current proof:
+  `ops:prod-security-exchange:proof` passed against production build
+  `afb7a974911e1a8376ba27bc3bf90fbdadf3e57d`; unauthenticated
+  `/ready/details` returned `401`; authenticated DRE/Ops `/ready/details`
+  returned `200`; `noOrderGuard=true`.
+- Confidence:
+  high for the LUC-500 protected ops diagnostics row. This does not broaden QA
+  principal permissions and does not replace separate release acceptance rows
+  such as restore, rollback, RC, or full production readiness.
+
+## 2026-07-11 LUC-501 Browser-Review Owner Route Bundles
+
+- Module row:
+  Frontend route browser-review backlog / public-access proof /
+  protected-route proof routing.
+- Status:
+  `verified as owner-usable route-bundle split; no runtime mutation; protected
+  proof still gated`.
+- Evidence:
+  `history/evidence/luc-501-browser-review-owner-route-bundles-2026-07-11.md`;
+  `history/tasks/luc-501-browser-review-owner-route-bundles-2026-07-11-task.md`.
+- Current proof:
+  source readback confirmed the active backlog shape: app-completion `3557`
+  items with `452` browser-review rows, user-action index `41` actions with
+  `39` high gaps, and canonical route map `39` V1 web routes. The owner split
+  separates public/access proof from protected dashboard/admin proof and reuses
+  [LUC-172](/LUC/issues/LUC-172) for protected runtime/trading proof.
+- Confidence:
+  high for planning/routing accuracy against current source files. Runtime
+  confidence is unchanged until selected follow-up proof issues run browser
+  screenshots or protected read-only proof under approved bindings.
+
 ## 2026-07-11 LUC-264 Protected Input Readiness Binding Follow-Up Closure
 
 - Module row:

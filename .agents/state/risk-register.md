@@ -1,3 +1,10 @@
+## 2026-07-11 LUC-499 Account Access Auth Controller Test-Link Risk
+
+| Risk | Severity | Status | Evidence | Owner / next action | Last updated |
+| --- | --- | --- | --- | --- | --- |
+| Project truth could keep routing proven auth-controller behavior as missing test coverage even though DB-backed auth e2e tests already cover the route/session contract. | P1 | mitigated | `history/evidence/luc-499-account-access-auth-controller-test-link-rows-2026-07-11.md`; app-completion `missingTestLink=974`, down from `980`; first gap advanced to `auth.e2e.test.ts#restoreEnv` as `missing_doc_link`. | Docs Memory Lead + Project Manager owns the remaining doc-link row; CBE/QA can rerun DB-backed auth e2e once local Docker/Postgres is available. | 2026-07-11 |
+| Fresh DB-backed auth route proof could be falsely claimed from this runner while Docker/Postgres is unavailable. | P2 | mitigated_by_boundary | Docker probe failed on the Docker Desktop Linux engine pipe; no fresh DB-backed test pass was claimed. | Treat prior [LUC-171](/LUC/issues/LUC-171) DB-backed proof as linked evidence for this metadata row; rerun locally only after infra is available. | 2026-07-11 |
+
 ## 2026-07-11 LUC-264 Protected Input Binding Closure Risk
 
 | Risk | Severity | Status | Evidence | Owner / next action | Last updated |
