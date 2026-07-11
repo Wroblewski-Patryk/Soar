@@ -162,6 +162,8 @@ test("validateWebDockerfileBuildMetadataArgs accepts declared and forwarded depl
       "ARG COOLIFY_GIT_COMMIT_SHA",
       "ARG COOLIFY_COMMIT_SHA",
       "ARG GITHUB_SHA",
+      "COPY .git/HEAD .git/HEAD",
+      "COPY .git/refs .git/refs",
       'RUN SOURCE_COMMIT="$SOURCE_COMMIT" SOURCE_BRANCH="$SOURCE_BRANCH" COOLIFY_BRANCH="$COOLIFY_BRANCH" COOLIFY_GIT_COMMIT_SHA="$COOLIFY_GIT_COMMIT_SHA" COOLIFY_COMMIT_SHA="$COOLIFY_COMMIT_SHA" GITHUB_SHA="$GITHUB_SHA" pnpm --filter web build',
       "FROM node:20-bookworm-slim AS runtime",
       "USER node",
@@ -196,6 +198,35 @@ test("validateWebDockerfileBuildMetadataArgs rejects unforwarded Coolify commit 
   assert.match(errors[0], /COOLIFY_GIT_COMMIT_SHA/);
   assert.match(errors[0], /COOLIFY_COMMIT_SHA/);
   assert.match(errors[0], /GITHUB_SHA/);
+});
+
+test("validateWebDockerfileBuildMetadataArgs rejects missing build-stage git metadata copies", () => {
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), "soar-guardrails-web-build-git-missing-"));
+  const dockerfilePath = path.join(rootDir, "apps/web/Dockerfile");
+  fs.mkdirSync(path.dirname(dockerfilePath), { recursive: true });
+  fs.writeFileSync(
+    dockerfilePath,
+    [
+      "FROM node:20-bookworm-slim AS base",
+      "FROM base AS deps",
+      "FROM deps AS build",
+      "ARG SOURCE_COMMIT",
+      "ARG SOURCE_BRANCH",
+      "ARG COOLIFY_BRANCH",
+      "ARG COOLIFY_GIT_COMMIT_SHA",
+      "ARG COOLIFY_COMMIT_SHA",
+      "ARG GITHUB_SHA",
+      'RUN SOURCE_COMMIT="$SOURCE_COMMIT" SOURCE_BRANCH="$SOURCE_BRANCH" COOLIFY_BRANCH="$COOLIFY_BRANCH" COOLIFY_GIT_COMMIT_SHA="$COOLIFY_GIT_COMMIT_SHA" COOLIFY_COMMIT_SHA="$COOLIFY_COMMIT_SHA" GITHUB_SHA="$GITHUB_SHA" pnpm --filter web build',
+      "FROM node:20-bookworm-slim AS runtime",
+      "USER node",
+    ].join("\n"),
+  );
+
+  const errors = validateWebDockerfileBuildMetadataArgs({ rootDir });
+
+  assert.equal(errors.length, 1);
+  assert.match(errors[0], /\.git\/HEAD/);
+  assert.match(errors[0], /\.git\/refs/);
 });
 
 test("validateTrackedEnvFilePolicy allows templates but rejects tracked runtime env files", () => {

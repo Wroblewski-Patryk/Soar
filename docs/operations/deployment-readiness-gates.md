@@ -56,6 +56,10 @@ Required:
   The next Web deploy approval must select a reconciled source commit and make
   the build stage emit `.build-meta/BUILD_META.json` from `SOURCE_COMMIT`,
   repository `git`, or repository `.git` files.
+- The repository fallback for Dockerfile builds is build-stage only: the build
+  context permits `.git/HEAD` and `.git/refs`, the Web Dockerfile copies those
+  paths before `pnpm --filter web build`, and the runtime image must not include
+  `.git` metadata.
 
 Failure effect: prod rollback trigger if post-deploy.
 

@@ -158,6 +158,11 @@ Deploy-proof note:
   `ARG COOLIFY_COMMIT_SHA`, and `ARG GITHUB_SHA` names in that stage before the
   Web build command; otherwise the deployment can import the right commit while
   `/api/build-info` falls back to `metadataSource=env-runtime`.
+- Because Coolify may not expose `SOURCE_COMMIT` to Docker builds unless the
+  UI-only `Include Source Commit in Build` setting is enabled, the Web
+  Dockerfile also copies only `.git/HEAD` and `.git/refs` into the build stage
+  as a release-provenance fallback. Do not copy the full `.git` directory, and
+  do not copy any `.git` paths into the runtime stage.
 - Treat `/api/build-info` as authoritative source provenance only when
   `metadataSource` is `env`, `git`, or `git-files`. `unknown`,
   `env-runtime`, and any historical `github-branch*` value are diagnostic
