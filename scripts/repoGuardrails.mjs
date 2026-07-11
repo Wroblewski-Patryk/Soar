@@ -661,8 +661,8 @@ export const validateWebDockerfileBuildMetadataArgs = ({
     buildStage
       .split(/\r?\n/)
       .find((line) => line.includes("pnpm --filter web build") && line.trimStart().startsWith("RUN")) ?? "";
-  const hasGitHeadCopy = /^\s*COPY\s+\.git\/HEAD\s+\.git\/HEAD\s*$/m.test(buildStage);
-  const hasGitRefsCopy = /^\s*COPY\s+\.git\/refs\s+\.git\/refs\s*$/m.test(buildStage);
+  const hasForbiddenGitCopy = /^\s*COPY\s+\.git(?:\/(?:HEAD|refs))?\b/m.test(buildStage);
+  const usesWebBuildWrapper = /pnpm\s+--filter\s+web\s+build\b/.test(buildRunLine);
   const requiredRunEnv = [
     "SOURCE_COMMIT",
     "COOLIFY_GIT_COMMIT_SHA",
@@ -680,17 +680,15 @@ export const validateWebDockerfileBuildMetadataArgs = ({
     missingRunEnv.push("COOLIFY_BRANCH");
   }
 
-  return missingArgs.length === 0 && missingRunEnv.length === 0 && hasGitHeadCopy && hasGitRefsCopy
+  return missingArgs.length === 0 && missingRunEnv.length === 0 && usesWebBuildWrapper && !hasForbiddenGitCopy
     ? []
     : [
-        `Web Dockerfile must forward deploy metadata build args and build-stage git metadata into the Web build.\n  - Missing ARG declarations: ${
+        `Web Dockerfile must forward deploy metadata build args into the Web build and must not require .git in the Docker build context.\n  - Missing ARG declarations: ${
           missingArgs.length ? missingArgs.join(", ") : "none"
         }\n  - Missing RUN env forwards: ${
           missingRunEnv.length ? missingRunEnv.join(", ") : "none"
-        }\n  - Missing build-stage git metadata copies: ${
-          [hasGitHeadCopy ? null : ".git/HEAD", hasGitRefsCopy ? null : ".git/refs"]
-            .filter(Boolean)
-            .join(", ") || "none"
+        }\n  - Web build wrapper used: ${usesWebBuildWrapper ? "yes" : "no"}\n  - Forbidden .git COPY present: ${
+          hasForbiddenGitCopy ? "yes" : "no"
         }`,
       ];
 };

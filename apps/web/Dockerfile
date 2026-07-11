@@ -18,8 +18,6 @@ FROM deps AS build
 COPY apps/web apps/web
 COPY libs/shared libs/shared
 COPY scripts scripts
-COPY .git/HEAD .git/HEAD
-COPY .git/refs .git/refs
 ARG SOURCE_COMMIT
 ARG SOURCE_BRANCH
 ARG COOLIFY_BRANCH
