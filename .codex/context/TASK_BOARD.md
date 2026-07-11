@@ -1,3 +1,54 @@
+## 2026-07-11 LUC-264 Protected Input Readiness Binding Follow-Up Closure
+
+- [LUC-264](/LUC/issues/LUC-264) should move to `done` as
+  `DONE / INPUT_BINDING_READINESS_RESOLVED / ACCOUNT_INPUT_GATE_PASS /
+  PROTECTED_PROOF_PENDING / NO_RUNTIME_MUTATION`.
+- Closure basis:
+  child [LUC-342](/LUC/issues/LUC-342) completed the authorized no-secret
+  protected-input readiness rerun. The DRE runtime reported `38` matching
+  protected input names across all requested families and account-access input
+  gate `PASS`.
+- Boundary:
+  input binding readiness is not protected release/account proof. No protected
+  smoke, deploy, restart, rollback, production mutation, account mutation,
+  paid-resource action, or LIVE trading/order action occurred from [LUC-264](/LUC/issues/LUC-264).
+- Next owner/action:
+  route the separate approved protected release/account proof lane through
+  DRE/Ops, Security/Ops, or QA/Ops before accepting release/account evidence.
+- Evidence:
+  `history/evidence/luc-342-protected-input-binding-readiness-2026-07-11.md`;
+  `history/artifacts/luc-342-protected-input-binding-readiness-2026-07-11.json`;
+  [LUC-342](/LUC/issues/LUC-342) completion comments.
+
+## 2026-07-11 LUC-342 Protected Input Binding Readiness Rerun
+
+- [LUC-342](/LUC/issues/LUC-342) should move to `done` as
+  `DONE / INPUT_FAMILIES_PRESENT_BY_NAME / ACCOUNT_INPUT_GATE_PASS /
+  PROTECTED_PROOF_PENDING / NO_RUNTIME_MUTATION`.
+- Concrete action:
+  DRE reran the existing no-secret protected input readiness checker after the
+  blocker was removed and [LUC-342](/LUC/issues/LUC-342) returned to
+  `in_progress`.
+- Result:
+  `corepack pnpm run ops:protected-inputs:check` returned `PARTIAL` overall
+  but account-access input gate `PASS`; `38` matching protected input names are
+  present across all requested families:
+  `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_UI_AUDIT_*`,
+  `PROD_UI_*`, `SOAR_PROD_*`, `PROD_DB_CHECK_*`,
+  `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE* / GATE_*`.
+- Boundary:
+  input-name presence is not protected release/account proof. No protected
+  smoke, deploy, restart, rollback, production mutation, account mutation,
+  paid-resource action, or LIVE trading/order action occurred.
+- Next owner/action:
+  DRE/Ops, Security/Ops, or QA/Ops reruns no-secret readiness and protected
+  release/account proof under the separate approved proof boundary, then
+  reports back to [LUC-264](/LUC/issues/LUC-264) and [LUC-25](/LUC/issues/LUC-25).
+- Evidence:
+  `history/evidence/luc-342-protected-input-binding-readiness-2026-07-11.md`;
+  `history/artifacts/luc-342-protected-input-binding-readiness-2026-07-11.json`;
+  `history/tasks/luc-342-protected-input-binding-readiness-2026-07-11-task.md`.
+
 ## 2026-07-10 LUC-342 Protected Input Binding Readiness
 
 - [LUC-342](/LUC/issues/LUC-342) should move to `blocked` as

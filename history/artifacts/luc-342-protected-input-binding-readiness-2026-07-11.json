@@ -1,0 +1,101 @@
+{
+  "id": "V1-PROTECTED-INPUT-READINESS-UNKNOWN-2026-07-11",
+  "date": "2026-07-11",
+  "status": "PARTIAL",
+  "releaseStatus": "NO-GO",
+  "scope": "current execution shell only",
+  "secretHandling": "no secret values printed, copied, or stored",
+  "target": {
+    "gitSha": null,
+    "gitRef": null,
+    "buildInfoCheckedAt": null
+  },
+  "matchingProtectedInputNamesPresent": 38,
+  "accountAccessGate": {
+    "status": "PASS",
+    "requiredFamilies": [
+      "ROLLBACK_GUARD_*",
+      "SOAR_PROD_*",
+      "PROD_DB_CHECK_* or PRODUCTION_DB_CHECK_*",
+      "RC_*",
+      "GATE* / GATE_*"
+    ],
+    "missingRequiredFamilies": [],
+    "bindingState": "REQUIRED_PROTECTED_INPUT_FAMILIES_BOUND_BY_NAME"
+  },
+  "families": [
+    {
+      "family": "LIVEIMPORT_READBACK_*",
+      "state": "present",
+      "purpose": "Protected LIVEIMPORT-03 production runtime readback",
+      "requiredForAccountAccessGate": false,
+      "matchingNamesPresent": 4
+    },
+    {
+      "family": "ROLLBACK_GUARD_*",
+      "state": "present",
+      "purpose": "Protected production rollback/runtime freshness proof",
+      "requiredForAccountAccessGate": true,
+      "matchingNamesPresent": 4
+    },
+    {
+      "family": "PROD_UI_AUDIT_*",
+      "state": "present",
+      "purpose": "Authenticated production dashboard/admin UI clickthrough",
+      "requiredForAccountAccessGate": false,
+      "matchingNamesPresent": 6
+    },
+    {
+      "family": "PROD_UI_*",
+      "state": "present",
+      "purpose": "Legacy production UI audit input family",
+      "requiredForAccountAccessGate": false,
+      "matchingNamesPresent": 10
+    },
+    {
+      "family": "SOAR_PROD_*",
+      "state": "present",
+      "purpose": "Production app/operator context",
+      "requiredForAccountAccessGate": true,
+      "matchingNamesPresent": 3
+    },
+    {
+      "family": "PROD_DB_CHECK_*",
+      "state": "present",
+      "purpose": "Production DB restore context",
+      "requiredForAccountAccessGate": true,
+      "matchingNamesPresent": 4
+    },
+    {
+      "family": "PRODUCTION_DB_CHECK_*",
+      "state": "present",
+      "purpose": "Alternate production DB restore context",
+      "requiredForAccountAccessGate": true,
+      "matchingNamesPresent": 2
+    },
+    {
+      "family": "RC_*",
+      "state": "present",
+      "purpose": "Release-candidate gate context",
+      "requiredForAccountAccessGate": true,
+      "matchingNamesPresent": 4
+    },
+    {
+      "family": "GATE* / GATE_*",
+      "state": "present",
+      "purpose": "Gate approver context",
+      "requiredForAccountAccessGate": true,
+      "matchingNamesPresent": 7
+    }
+  ],
+  "observedOutput": "ACCOUNT_ACCESS_GATE_REQUIRED_INPUTS_PRESENT",
+  "bindingVerification": {
+    "issue": "LUC-342",
+    "status": "REQUESTED_FAMILIES_PRESENT_BY_NAME",
+    "secretMetadataEndpointStatus": "403 Forbidden",
+    "valueHandling": "values not printed, copied, or stored",
+    "runtimeMutation": "none",
+    "releaseReadinessBoundary": "input presence only; protected runtime, rollback, UI, restore, release-candidate, sign-off, and account proof remain separate"
+  },
+  "nextAction": "Route the next approved DRE/Ops, Security/Ops, or QA/Ops proof lane to rerun no-secret readiness and protected release/account proof."
+}

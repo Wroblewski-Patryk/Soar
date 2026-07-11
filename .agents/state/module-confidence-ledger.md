@@ -1,3 +1,48 @@
+## 2026-07-11 LUC-264 Protected Input Readiness Binding Follow-Up Closure
+
+- Module row:
+  protected release/account readiness / encrypted runtime input binding.
+- Status:
+  `input binding readiness resolved; account-access input gate pass; protected
+  proof still pending`.
+- Evidence:
+  `history/evidence/luc-342-protected-input-binding-readiness-2026-07-11.md`;
+  `history/artifacts/luc-342-protected-input-binding-readiness-2026-07-11.json`;
+  [LUC-342](/LUC/issues/LUC-342) completion comments.
+- Current proof:
+  child [LUC-342](/LUC/issues/LUC-342) completed the authorized no-secret
+  readiness rerun and found `38` protected input names across all requested
+  families. The account-access input gate is `PASS`.
+- Confidence:
+  high that the missing-input blocker for [LUC-264](/LUC/issues/LUC-264) is
+  resolved. Full release/account readiness remains unverified until the
+  approved protected proof lane runs.
+
+## 2026-07-11 LUC-342 Protected Input Binding Readiness Rerun
+
+- Module row:
+  Protected release/account readiness / encrypted runtime input binding /
+  deployment evidence gate.
+- Status:
+  `verified for input-name presence only; all requested families present;
+  protected proof still pending`.
+- Evidence:
+  `history/evidence/luc-342-protected-input-binding-readiness-2026-07-11.md`;
+  `history/artifacts/luc-342-protected-input-binding-readiness-2026-07-11.json`;
+  `history/tasks/luc-342-protected-input-binding-readiness-2026-07-11-task.md`.
+- Current proof:
+  `corepack pnpm run ops:protected-inputs:check` returned `PARTIAL` overall
+  because release evidence is not proven by input presence, but the
+  account-access input gate is `PASS`. The DRE runtime has `38` matching
+  protected input names across all requested families:
+  `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`, `PROD_UI_AUDIT_*`,
+  `PROD_UI_*`, `SOAR_PROD_*`, `PROD_DB_CHECK_*`,
+  `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE* / GATE_*`.
+- Confidence:
+  high that the missing-input blocker for [LUC-342](/LUC/issues/LUC-342) is
+  cleared in this runtime. Full release/account readiness remains unverified
+  until the approved protected proof lane runs.
+
 ## 2026-07-10 LUC-342 Protected Input Binding Readiness
 
 - Module row:

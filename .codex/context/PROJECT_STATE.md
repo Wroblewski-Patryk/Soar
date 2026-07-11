@@ -1,3 +1,48 @@
+## 2026-07-11 LUC-264 Protected Input Readiness Binding Follow-Up Closure
+
+- [LUC-264](/LUC/issues/LUC-264) is `DONE /
+  INPUT_BINDING_READINESS_RESOLVED / ACCOUNT_INPUT_GATE_PASS /
+  PROTECTED_PROOF_PENDING / NO_RUNTIME_MUTATION`.
+- Closure basis:
+  child [LUC-342](/LUC/issues/LUC-342) completed the one authorized Soar gate
+  recheck after board/Codex runtime binding repair. DRE evidence shows `38`
+  matching protected input names across all requested families and
+  account-access input gate `PASS`.
+- Boundary:
+  this closes only the protected-input binding/readiness blocker. It does not
+  execute or accept protected runtime, rollback, UI, restore,
+  release-candidate, sign-off, or account proof.
+- Next owner/action:
+  DRE/Ops, Security/Ops, or QA/Ops must run the separate approved protected
+  release/account proof lane before release/account evidence can be accepted.
+- Evidence:
+  `history/evidence/luc-342-protected-input-binding-readiness-2026-07-11.md`;
+  `history/artifacts/luc-342-protected-input-binding-readiness-2026-07-11.json`;
+  [LUC-342](/LUC/issues/LUC-342) completion comments.
+
+## 2026-07-11 LUC-342 Protected Input Binding Readiness Rerun
+
+- [LUC-342](/LUC/issues/LUC-342) is `DONE /
+  INPUT_FAMILIES_PRESENT_BY_NAME / ACCOUNT_INPUT_GATE_PASS /
+  PROTECTED_PROOF_PENDING / NO_RUNTIME_MUTATION`.
+- Verified:
+  current DRE runtime has `38` matching protected input names across all
+  requested families: `LIVEIMPORT_READBACK_*`, `ROLLBACK_GUARD_*`,
+  `PROD_UI_AUDIT_*`, `PROD_UI_*`, `SOAR_PROD_*`, `PROD_DB_CHECK_*`,
+  `PRODUCTION_DB_CHECK_*`, `RC_*`, and `GATE* / GATE_*`. Account-access input
+  gate is `PASS`.
+- Boundary:
+  this proves input-name presence only. It does not execute protected runtime,
+  rollback, UI, restore, release-candidate, sign-off, or account proof.
+- Next owner/action:
+  DRE/Ops, Security/Ops, or QA/Ops reruns no-secret readiness and protected
+  release/account proof under the separate approved proof boundary, then
+  reports back to [LUC-264](/LUC/issues/LUC-264) and [LUC-25](/LUC/issues/LUC-25).
+- Evidence:
+  `history/evidence/luc-342-protected-input-binding-readiness-2026-07-11.md`;
+  `history/artifacts/luc-342-protected-input-binding-readiness-2026-07-11.json`;
+  `history/tasks/luc-342-protected-input-binding-readiness-2026-07-11-task.md`.
+
 ## 2026-07-10 LUC-342 Protected Input Binding Readiness
 
 - [LUC-342](/LUC/issues/LUC-342) is `BLOCKED /

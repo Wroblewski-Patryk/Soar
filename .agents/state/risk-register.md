@@ -1,3 +1,15 @@
+## 2026-07-11 LUC-264 Protected Input Binding Closure Risk
+
+| Risk | Severity | Status | Evidence | Owner / next action | Last updated |
+| --- | --- | --- | --- | --- | --- |
+| LUC-264 closure could be overclaimed as full protected release/account evidence even though the completed child only proves input families are present by name/count. | P0 | mitigated_by_boundary | `history/evidence/luc-342-protected-input-binding-readiness-2026-07-11.md`; account-access input gate `PASS`; no protected smoke or production mutation executed from [LUC-264](/LUC/issues/LUC-264). | DRE/Ops, Security/Ops, or QA/Ops runs the separate approved protected proof lane before release/account evidence acceptance. | 2026-07-11 |
+
+## 2026-07-11 LUC-342 Protected Input Binding Risk Rerun
+
+| Risk | Severity | Status | Evidence | Owner / next action | Last updated |
+| --- | --- | --- | --- | --- | --- |
+| The LUC-342 binding rerun could be overclaimed as full release/account proof even though it only proves protected input names are present. | P0 | mitigated_by_boundary | `history/evidence/luc-342-protected-input-binding-readiness-2026-07-11.md`; `38` matching protected input names; account-access input gate `PASS`; no protected proof executed. | DRE/Ops, Security/Ops, or QA/Ops runs the separate approved protected proof lane before any release/account evidence acceptance claim. | 2026-07-11 |
+
 ## 2026-07-10 LUC-342 Protected Input Binding Risk
 
 | Risk | Severity | Status | Evidence | Owner / next action | Last updated |

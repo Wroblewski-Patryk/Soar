@@ -1,3 +1,15 @@
+## 2026-07-11 LUC-264 Protected Input Binding Closure
+
+| Requirement | Status | Evidence | Next action | Last updated |
+| --- | --- | --- | --- | --- |
+| Protected release/account proof must have required encrypted runtime input families available by name before evidence can be accepted. | verified for input presence | `history/evidence/luc-342-protected-input-binding-readiness-2026-07-11.md`; child [LUC-342](/LUC/issues/LUC-342) found `38` matching names and account-access input gate `PASS`; no secret values exposed. | Run the separate approved protected release/account proof lane; do not treat input presence as release/account proof. | 2026-07-11 |
+
+## 2026-07-11 LUC-342 Protected Input Binding Requirement Rerun
+
+| Requirement | Status | Evidence | Next action | Last updated |
+| --- | --- | --- | --- | --- |
+| DRE/Ops must verify approved protected input families by encrypted runtime reference before protected release/account evidence can proceed. | verified for input presence | `history/evidence/luc-342-protected-input-binding-readiness-2026-07-11.md`; `corepack pnpm run ops:protected-inputs:check` found `38` matching names and account-access input gate `PASS`; checker regression passed (`7/7`). | DRE/Ops, Security/Ops, or QA/Ops reruns no-secret readiness and protected release/account proof under the separate approved proof boundary; do not treat input presence as release readiness. | 2026-07-11 |
+
 ## 2026-07-10 LUC-342 Protected Input Binding Requirement
 
 | Requirement | Status | Evidence | Next action | Last updated |
