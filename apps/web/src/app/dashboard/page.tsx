@@ -8,11 +8,11 @@ import { LoadingState } from '@/ui/components/ViewState';
 import { useI18n } from '@/i18n/I18nProvider';
 import { LuHouse } from 'react-icons/lu';
 
-const DashboardRuntimeFallback = () => (
-  <section aria-label="Runtime widgets" aria-busy="true">
-    <LoadingState title="Runtime widgets" variant="cards" />
-  </section>
-);
+const DashboardRuntimeFallback = () => {
+  const { t } = useI18n();
+
+  return <LoadingState title={t('dashboard.home.runtime.loadingTitle')} variant="cards" />;
+};
 
 const HomeLiveWidgets = dynamic(
   () => import('@/features/dashboard-home/components/HomeLiveWidgets'),
