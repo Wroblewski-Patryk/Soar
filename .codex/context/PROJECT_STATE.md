@@ -1,3 +1,29 @@
+## 2026-07-13 LUC-826 source-control closure classification for the LUC-722 dirty bundle
+
+- `LUC-826` consumed the board comment sidecar wake and kept `LUC-722` blocked for product delivery while executing only local source-control closure work.
+- Baseline before this artifact mutation: `51` dirty paths.
+- Category split at classification time:
+  - `4` state/control
+  - `20` task/evidence
+  - `27` docs/generated
+  - `0` runtime/product code
+- Explicit linked-issue attribution remains present across the dirty bundle:
+  - `LUC-722` in `9` paths
+  - `LUC-734` in `10` paths
+  - `LUC-743` in `7` paths
+  - `LUC-755` in `11` paths
+  - `LUC-789` in `8` paths
+  - `LUC-790` in `5` paths
+  - `LUC-791` in `10` paths
+  - `LUC-798` in `11` paths
+  - `LUC-799` in `9` paths
+  - `LUC-800` in `5` paths
+- `git diff --check` produced only line-ending normalization warnings and no substantive diff errors.
+- Secret-pattern readback found one prose-only `postgres://` mention in `.codex/context/LEARNING_JOURNAL.md` and no evident raw secret values.
+- Evidence:
+  `history/tasks/luc-826-source-control-closure-classify-and-close-local-dirty-state-for-luc-722-luc-734-luc-743-luc-755-plus-6-2026-07-13-task.md`;
+  `history/evidence/luc-826-source-control-closure-2026-07-13.md`.
+
 ## 2026-07-12 LUC-821 source-control closure classification for LUC-801
 
 - `LUC-821` classified the baseline dirty worktree before a board-side close of `LUC-801`.

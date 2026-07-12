@@ -1,3 +1,19 @@
+## 2026-07-13 LUC-826 [Soar][Source Control Closure] Classify and close local dirty state for LUC-722-LUC-734-LUC-743-LUC-755-plus-6
+
+- Status: `DONE`.
+- Scope: classify the current docs/state/history-only dirty bundle and make the local source-control closure decision for the linked `LUC-722` through `LUC-800` issue set.
+- Result:
+  baseline classification captured `51` dirty paths with explicit linked-issue refs across the bundle and `0` runtime/product code paths.
+- Verification:
+  `git status --porcelain=v1 -uall`, `git diff --check`, per-path linked-issue scans, and a lightweight dirty-path secret-pattern scan.
+- Residual state:
+  [LUC-722](/LUC/issues/LUC-722) remains blocked for protected delivery-gate reasons; this sidecar closes only the local source-control requirement.
+- Closure boundary:
+  no push/deploy/rollback/restart/credential mutation/protected smoke/live trading action in this lane.
+- Evidence:
+  `history/tasks/luc-826-source-control-closure-classify-and-close-local-dirty-state-for-luc-722-luc-734-luc-743-luc-755-plus-6-2026-07-13-task.md`;
+  `history/evidence/luc-826-source-control-closure-2026-07-13.md`.
+
 ## 2026-07-12 LUC-821 [Soar][Source Control Closure] Classify dirty project state before closing LUC-801
 
 - Status: `DONE`.

@@ -1,3 +1,54 @@
+## 2026-07-12 LUC-798 getBotRuntimeSession Test-Link Drift Readback
+
+- Mission:
+  `LUC-798-GETBOTRUNTIMESESSION-TEST-LINK-DRIFT-2026-07-12`.
+- Status:
+  `DONE / STALE_STATUS_READBACK_RESOLVED / NO_RUNTIME_MUTATION`.
+- Scope:
+  verify repo-side generated truth for
+  `apps/api/src/modules/bots/bots.controller.ts#getBotRuntimeSession` only. No
+  runtime code, deploy, push, restart, rollback, env edit, migration,
+  protected smoke, secret/account readback, DB/Redis mutation,
+  exchange/payment/subscription mutation, order, position, bot activation, or
+  LIVE trading action.
+- Result:
+  refreshed `app-completion` and `project-truth` now classify the controller
+  row as `missing_doc_link`, not `missing_test_link`. The separate
+  `runtimeSessionRead.service.ts#getBotRuntimeSession` row remains a real
+  proof gap.
+- Evidence:
+  `history/evidence/luc-798-repair-getbotruntimesession-test-link-classifier-drift-2026-07-12.md`.
+- Residual:
+  Docs Memory Lead + Project Manager owns the controller doc-link follow-up;
+  Test Automation Engineer + QA Regression Lead owns the runtime-read service
+  proof row.
+
+## 2026-07-12 LUC-755 Account Access getOwnedBotRuntimeSession Doc-Link Closure
+
+- Mission:
+  `LUC-755-ACCOUNT-ACCESS-GETOWNEDBOTRUNTIMESESSION-DOC-LINK-2026-07-12`.
+- Status:
+  `DONE / DOC_LINK_RESOLVED / APP_COMPLETION_REFRESHED /
+PROJECT_TRUTH_ADVANCED_TO_QA_PROOF / NO_RUNTIME_MUTATION`.
+- Scope:
+  DSM source-truth repair for
+  `apps/api/src/modules/bots/botOwnership.service.ts#getOwnedBotRuntimeSession`.
+  No runtime code, deploy, push, restart, rollback, env edit, migration,
+  protected account/session smoke, secret/account value readback, DB/Redis
+  mutation, exchange/payment/subscription mutation, order, position, bot
+  activation, or LIVE trading action.
+- Result:
+  `docs/modules/api-bots.md`, `docs/architecture/relations/documentation-links.csv`,
+  `docs/graphs/architecture-awareness.json`,
+  `docs/status/app-completion-index.md`, and
+  `docs/status/project-truth-index.md` now reflect the scoped helper as
+  `implemented_needs_proof`. The next owner/action is QA Regression Lead +
+  Project Manager for the focused proof row.
+- Evidence:
+  `history/evidence/luc-755-account-access-getownedbotruntimesession-doc-link-2026-07-12.md`.
+- Residual:
+  no remaining DSM action on [LUC-755](/LUC/issues/LUC-755).
+
 ## 2026-07-12 LUC-637 Account Access Session-Token Proof
 
 - Mission:
@@ -15,9 +66,9 @@ APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
   focused `sessionToken.test.ts` proof passed (`1` file / `3` tests), the
   `tokenIssuedAt` row is linked through `priority-test-links.csv`, and
   `scanner-overrides.json` marks it verified with evidence. App-completion now
-  reports `implementedNeedsProof=113` and project truth first gap advanced to
-  `apps/api/src/modules/backtests/backtests.e2e.test.ts#registerAndLogin` as
-  `missing_doc_link`.
+  reports `implementedNeedsProof=114` and project truth first gap advanced to
+  `apps/api/src/modules/bots/botOwnership.service.ts#getOwnedBotRuntimeSession`
+  as `implemented_needs_proof`.
 - Evidence:
   `history/evidence/luc-637-account-access-session-token-proof-2026-07-12.md`;
   `history/tasks/luc-637-account-access-session-token-proof-2026-07-12-task.md`.

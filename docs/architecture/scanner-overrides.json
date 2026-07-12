@@ -191,6 +191,26 @@
         "apps/api/src/modules/auth/sessionToken.test.ts",
         "history/evidence/luc-637-account-access-session-token-proof-2026-07-12.md"
       ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/botOwnership.service.ts#getOwnedBotRuntimeSession",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified Account access runtime session ownership gate through focused bot ownership tests covering matching user/bot/session readback and fail-closed rejection for mismatched ownership context.",
+      "evidence": [
+        "apps/api/src/modules/bots/botOwnership.service.test.ts",
+        "history/evidence/luc-755-account-access-getownedbotruntimesession-proof-2026-07-12.md"
+      ]
+    },
+    {
+      "path": "apps/api/src/modules/bots/bots.controller.ts#getBotRuntimeSession",
+      "status": "verified",
+      "owner": "QA Regression Lead",
+      "description": "Verified Account access runtime session detail controller through focused bot runtime e2e coverage proving owner readback and fail-closed 404 isolation for a non-owner against the same session id.",
+      "evidence": [
+        "apps/api/src/modules/bots/bots.e2e.test.ts",
+        "history/evidence/luc-791-account-access-getbotruntimesession-proof-2026-07-12.md"
+      ]
     }
   ],
   "relationOverrides": [
@@ -265,6 +285,24 @@
       "toPath": "apps/api/src/modules/auth/sessionToken.ts#tokenIssuedAt",
       "type": "documents",
       "evidence": "docs/modules/api-auth.md"
+    },
+    {
+      "fromPath": "docs/modules/api-backtests.md",
+      "toPath": "apps/api/src/modules/backtests/backtests.e2e.test.ts#registerAndLogin",
+      "type": "documents",
+      "evidence": "docs/modules/api-backtests.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/bots.controller.ts#closeBotRuntimeSessionPosition",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
+    },
+    {
+      "fromPath": "docs/modules/api-bots.md",
+      "toPath": "apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd",
+      "type": "documents",
+      "evidence": "docs/modules/api-bots.md"
     }
   ]
 }

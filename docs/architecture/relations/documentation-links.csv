@@ -219,6 +219,7 @@ apps/api/src/modules/auth/auth.jwt.ts#getPreviousSecretExpiry,docs/modules/api-a
 apps/api/src/modules/auth/auth.jwt.ts#getJwtSecrets,docs/modules/api-auth.md
 apps/api/src/modules/auth/auth.jwt.ts#signAuthToken,docs/modules/api-auth.md
 apps/api/src/modules/auth/auth.routes.ts#/login,docs/modules/api-auth.md
+apps/api/src/modules/backtests/backtests.e2e.test.ts#registerAndLogin,docs/modules/api-backtests.md
 apps/api/src/modules/auth/auth.routes.ts#/logout,docs/modules/api-auth.md
 apps/api/src/modules/auth/auth.routes.ts#/me,docs/modules/api-auth.md
 apps/api/src/modules/auth/auth.routes.ts#/register,docs/modules/api-auth.md
@@ -233,6 +234,9 @@ apps/api/src/modules/bots/bots.e2e.shared.ts,docs/modules/api-bots.md
 apps/api/src/modules/bots/bots.errors.ts,docs/modules/api-bots.md
 apps/api/src/modules/bots/bots.repository.ts,docs/modules/api-bots.md
 apps/api/src/modules/bots/botsRuntimeRead.repository.ts,docs/modules/api-bots.md
+apps/api/src/modules/bots/bots.controller.ts#closeBotRuntimeSessionPosition,docs/modules/api-bots.md
+apps/api/src/modules/bots/botOwnership.service.ts#getOwnedBotRuntimeSession,docs/modules/api-bots.md
+apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd,docs/modules/api-bots.md
 apps/api/src/modules/bots/runtimeExchangeSyncedPositionPrice.ts,docs/modules/api-bots.md
 apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts,docs/modules/api-bots.md
 apps/api/src/modules/bots/runtimeSessionPositionWindow.ts,docs/modules/api-bots.md

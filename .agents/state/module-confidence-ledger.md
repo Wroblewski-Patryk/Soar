@@ -1,3 +1,46 @@
+## 2026-07-12 LUC-799 Account Access resolveSessionWindowEnd doc-link ingestion repair
+
+- Module row:
+  Account access / API bots runtime session-window helper generated truth.
+- Status:
+  `verified generated-readback refresh / doc-link ingestion repaired / proof follow-up remains / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-799-repair-resolvesessionwindowend-doc-link-ingestion-2026-07-12.md`;
+  `history/tasks/luc-799-repair-resolvesessionwindowend-doc-link-ingestion-2026-07-12-task.md`.
+- Current proof:
+  `docs/graphs/architecture-awareness.json` now contains the direct
+  `documents` relation from `docs/modules/api-bots.md` to
+  `apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd`.
+  `docs/status/app-completion-index.json` now records `hasDoc=true`,
+  `hasTest=true`, and `risk=implemented_needs_proof`. `project-truth` no
+  longer routes the helper as a docs gap; the next docs-owned Account access
+  row is `apps/api/src/modules/bots/bots.controller.ts#getBotRuntimeSession`.
+- Confidence:
+  high for the generated graph/index readback. This does not claim new runtime
+  behavior proof beyond the existing focused test link.
+
+## 2026-07-12 LUC-798 Account Access getBotRuntimeSession Drift Readback
+
+- Module row:
+  Account access / API bots runtime session detail classifier readback.
+- Status:
+  `verified generated-readback refresh / controller row reclassified / no runtime mutation`.
+- Evidence:
+  `history/evidence/luc-798-repair-getbotruntimesession-test-link-classifier-drift-2026-07-12.md`;
+  `history/tasks/luc-798-repair-getbotruntimesession-test-link-classifier-drift-2026-07-12-task.md`.
+- Current proof:
+  `docs/graphs/architecture-awareness.json` already contains the direct
+  `tests` relation from `apps/api/src/modules/bots/bots.e2e.test.ts` to
+  `apps/api/src/modules/bots/bots.controller.ts#getBotRuntimeSession`.
+  Rebuilding `app-completion` now marks that controller row
+  `hasTest=true` / `risk=missing_doc_link`. `project-truth` no longer routes
+  the controller row as `missing_test_link`; the remaining distinct
+  `runtimeSessionRead.service.ts#getBotRuntimeSession` row is still a real
+  `missing_test_link`.
+- Confidence:
+  high for the current generated-readback chain. This does not claim any new
+  runtime behavior change.
+
 ## 2026-07-12 LUC-637 Account Access Session-Token Proof
 
 - Module row:
@@ -14,8 +57,8 @@ mutation`.
   newest `iat` claim. `sessionToken.ts#tokenIssuedAt` is linked through
   `priority-test-links.csv` and marked verified in `scanner-overrides.json`.
   App-completion reports `implementedNeedsProof=113`; project truth first gap
-  advanced to the docs-owned `backtests.e2e.test.ts#registerAndLogin`
-  `missing_doc_link` row.
+  advanced to the docs-owned `botOwnership.service.ts#getOwnedBotRuntimeSession`
+  `implemented_needs_proof` row.
 - Confidence:
   high for the focused no-DB session-token helper proof. This does not claim
   protected production account/session smoke.

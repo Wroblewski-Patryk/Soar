@@ -1,3 +1,34 @@
+## 2026-07-12 LUC-798 getBotRuntimeSession classifier drift closure
+
+- `apps/api/src/modules/bots/bots.controller.ts#getBotRuntimeSession` is no
+  longer a `missing_test_link` row after refreshed generated readback.
+- Next owner/action:
+  Docs Memory Lead + Project Manager should close the remaining controller
+  `missing_doc_link` row, starting from `docs/modules/api-bots.md` and
+  `docs/architecture/relations/documentation-links.csv`.
+- Parallel follow-up:
+  Test Automation Engineer + QA Regression Lead should treat
+  `apps/api/src/modules/bots/runtimeSessionRead.service.ts#getBotRuntimeSession`
+  as the remaining real `missing_test_link` row.
+- Evidence:
+  `history/evidence/luc-798-repair-getbotruntimesession-test-link-classifier-drift-2026-07-12.md`.
+
+## 2026-07-12 LUC-755 Account Access getOwnedBotRuntimeSession Doc-Link Closure
+
+- The scoped Account access doc-link row for
+  `apps/api/src/modules/bots/botOwnership.service.ts#getOwnedBotRuntimeSession`
+  is no longer `missing_doc_link`.
+- Current generated truth routes the row as `implemented_needs_proof`.
+- Next owner/action:
+  QA Regression Lead + Project Manager owns the proof follow-up for the same
+  helper row.
+- Evidence:
+  `history/evidence/luc-755-account-access-getownedbotruntimesession-doc-link-2026-07-12.md`.
+- Tracker note:
+  this session verified the repo-side source-of-truth repair, but no Paperclip
+  control-plane mutation tool was available here to confirm the live issue
+  status flip.
+
 ## 2026-07-12 LUC-637 Account Access Session-Token Proof
 
 - [LUC-637](/LUC/issues/LUC-637) can close as
@@ -8,10 +39,11 @@ APP_COMPLETION_REFRESHED / PROJECT_TRUTH_ADVANCED / NO_RUNTIME_MUTATION`.
   to `apps/api/src/modules/auth/sessionToken.test.ts` and the focused proof
   passed (`1` file / `3` tests).
 - Next owner/action:
-  Docs Memory Lead + Project Manager owns the current project-truth first gap,
-  `apps/api/src/modules/backtests/backtests.e2e.test.ts#registerAndLogin` as
-  `missing_doc_link`.
+  QA Regression Lead + Project Manager owns the current project-truth first
+  gap, `apps/api/src/modules/bots/botOwnership.service.ts#getOwnedBotRuntimeSession`
+  as `implemented_needs_proof`.
 - Evidence:
+  `history/evidence/luc-755-account-access-getownedbotruntimesession-doc-link-2026-07-12.md`;
   `history/evidence/luc-637-account-access-session-token-proof-2026-07-12.md`;
   `history/tasks/luc-637-account-access-session-token-proof-2026-07-12-task.md`.
 

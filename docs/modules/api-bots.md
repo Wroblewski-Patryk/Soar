@@ -1,6 +1,7 @@
 # API Deep-Dive: Bots Module
 
 ## Metadata
+
 - Module name: `bots`
 - Layer: `api`
 - Source path: `apps/api/src/modules/bots`
@@ -9,13 +10,16 @@
 - Related planning task: `REST-IMPLEMENTATION-SWEEP-2026-05-21`
 
 ## Canonical Architecture Linkage
+
 Canonical runtime topology and ownership rules live in:
+
 - `docs/architecture/03_domain-model.md`
 - `docs/architecture/04_runtime-contexts.md`
 - `docs/architecture/06_execution-lifecycle.md`
 - `docs/architecture/08_operator-surfaces-and-routing.md`
 
 ## 1. Purpose and Scope
+
 - Owns bot command + runtime read APIs:
   - bot lifecycle CRUD
   - runtime graph and session observability
@@ -24,10 +28,12 @@ Canonical runtime topology and ownership rules live in:
 - Bridges bot writes to wallet/strategy/market-group constraints and subscription/consent checks.
 
 Out of scope:
+
 - Core signal loop internals (engine module).
 - Raw exchange execution transport (exchange module).
 
 ## 2. Boundaries and Dependencies
+
 - Mounted under `/dashboard/bots`.
 - Depends on:
   - `prisma` bot/runtime persistence.
@@ -36,6 +42,7 @@ Out of scope:
   - symbol/risk/read-model enrichment helpers in module-local services/repositories.
 
 ## 3. Data and Contract Surface
+
 - Command contracts:
   - `CreateBotDto`, `UpdateBotDto`, market-group/strategy link DTOs.
 - Runtime read contracts:
@@ -52,6 +59,7 @@ Out of scope:
   - activation capability checks and duplicate active-bot protections.
 
 ## 4. Runtime Flows
+
 - Create/update bot:
   1. Validate ownership of strategy/market-group/wallet.
   2. Derive mode/exchange/marketType/apiKey from wallet context.
@@ -68,6 +76,7 @@ Out of scope:
   - load bot assistant config/subagents and execute deterministic orchestration trace.
 
 ## 5. API and UI Integration
+
 - Representative routes:
   - `GET/POST/PUT/DELETE /dashboard/bots`
   - `GET /dashboard/bots/:id/runtime-graph`
@@ -91,6 +100,7 @@ Out of scope:
   - `POST /dashboard/bots/:id/assistant-config/dry-run`
 
 ## 6. Security and Risk Guardrails
+
 - Dashboard auth + ownership checks on all bot/runtime/assistant paths.
 - LIVE activation requires explicit consent and capability validation.
 - LIVE capability also requires active-plan `liveTrading` entitlement on bot
@@ -98,6 +108,7 @@ Out of scope:
 - Mode-switch guard prevents unsafe PAPER->LIVE transitions with open managed positions.
 
 ## 7. Observability and Operations
+
 - Runtime session/event/symbol stat telemetry integrated with engine services.
 - Read models include stale/fallback handling for runtime market context.
 - Extensive e2e coverage across create/update/runtime/entitlement scenarios.
@@ -106,6 +117,7 @@ Out of scope:
   - repair: `POST /dashboard/bots/strategy-drift/repair` (idempotent, ownership-scoped)
 
 ## 8. Test Coverage and Evidence
+
 - Primary local audit evidence:
   - `history/audits/bots-runtime-truth-audit-2026-05-19.md`
   - Web bot/runtime pack: `8` files / `61` tests.
@@ -122,11 +134,13 @@ Out of scope:
   - `bots.live-paper-concurrent.e2e.test.ts`
   - `bots.runtime-takeover.e2e.test.ts`
 - Suggested validation command:
+
 ```powershell
 pnpm --filter api exec vitest run src/modules/bots/bots.e2e.test.ts src/modules/bots/bots.duplicate-guard.e2e.test.ts src/modules/bots/bots.subscription-entitlements.e2e.test.ts src/modules/bots/bots.wallet-contract.e2e.test.ts src/modules/bots/bots.runtime-scope.e2e.test.ts src/modules/bots/bots.monitoring-aggregate.e2e.test.ts src/modules/bots/bots.runtime-history-parity.e2e.test.ts src/modules/bots/bots.delete-cleanup.e2e.test.ts src/modules/bots/bots.live-paper-concurrent.e2e.test.ts src/modules/bots/bots.runtime-takeover.e2e.test.ts --pool=forks --maxWorkers=1 --minWorkers=1 --testTimeout=30000
 ```
 
 ## 9. Open Issues and Follow-Ups
+
 - Continue splitting oversized read/command surfaces where maintainability pressure is high.
 - Complete error taxonomy migration for deterministic controller mapping.
 
@@ -134,21 +148,25 @@ pnpm --filter api exec vitest run src/modules/bots/bots.e2e.test.ts src/modules/
 
 Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
 
-| Source entity | Owner doc | Classification | Expected proof |
-| --- | --- | --- | --- |
-| `apps/api/src/modules/bots/bots.errors.ts#BotDomainError` | `docs/modules/api-bots.md` | Bot-domain error taxonomy and controller mapping contract owned by the API bots module. | Architecture-awareness `documents` relation from this doc plus existing bot runtime/API test packs when behavior changes. |
-| `apps/api/src/modules/bots/bots.e2e.fixtures.ts` | `docs/modules/api-bots.md` | Bot API e2e fixture factory surface used by bot lifecycle/runtime proof packs. | Direct doc relation plus focused bot e2e tests when fixture contracts change. |
-| `apps/api/src/modules/bots/bots.e2e.shared.ts` | `docs/modules/api-bots.md` | Shared bot e2e setup/assertion helpers for lifecycle, entitlement, runtime, and topology tests. | Direct doc relation plus focused bot e2e tests when helper semantics change. |
-| `apps/api/src/modules/bots/bots.errors.ts` | `docs/modules/api-bots.md` | File-level bot-domain error taxonomy and fail-closed controller mapping. | Direct doc relation plus bot command/read error tests when errors change. |
-| `apps/api/src/modules/bots/bots.repository.ts` | `docs/modules/api-bots.md` | Bot persistence repository boundary for bot lifecycle and topology reads/writes. | Direct doc relation plus bot lifecycle/repository-facing e2e tests when persistence behavior changes. |
-| `apps/api/src/modules/bots/botsRuntimeRead.repository.ts` | `docs/modules/api-bots.md` | Runtime read repository boundary for bot monitoring/session read models. | Direct doc relation plus bot runtime monitoring tests when read shape changes. |
-| `apps/api/src/modules/bots/runtimeExchangeSyncedPositionPrice.ts` | `docs/modules/api-bots.md` | Bot runtime helper for exchange-synced position price truth in selected-bot monitoring. | Direct doc relation plus runtime monitoring/takeover tests when price-source behavior changes. |
-| `apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts` | `docs/modules/api-bots.md` | Runtime session helper for DCA count display/automation context. | Direct doc relation plus runtime position monitoring tests when DCA count semantics change. |
-| `apps/api/src/modules/bots/runtimeSessionPositionWindow.ts` | `docs/modules/api-bots.md` | Runtime session window helper for selected-bot position/trade read boundaries. | Direct doc relation plus runtime session read tests when window semantics change. |
-| `apps/api/src/modules/bots/runtimeSessionTradeFallbackScope.ts` | `docs/modules/api-bots.md` | Trade fallback scope helper for botless wallet/runtime readback cases. | Direct doc relation plus runtime session positions/read tests when fallback scope changes. |
-| `apps/api/src/modules/bots/runtimeStrategyProtectionFallbackDisplay.ts` | `docs/modules/api-bots.md` | Runtime display helper that labels strategy-derived protection fallback as prospective rather than exchange/runtime-final truth. | Direct doc relation plus runtime monitoring protection-display tests when display semantics change. |
+| Source entity                                                                 | Owner doc                  | Classification                                                                                                                   | Expected proof                                                                                                            |
+| ----------------------------------------------------------------------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `apps/api/src/modules/bots/bots.errors.ts#BotDomainError`                     | `docs/modules/api-bots.md` | Bot-domain error taxonomy and controller mapping contract owned by the API bots module.                                          | Architecture-awareness `documents` relation from this doc plus existing bot runtime/API test packs when behavior changes. |
+| `apps/api/src/modules/bots/bots.e2e.fixtures.ts`                              | `docs/modules/api-bots.md` | Bot API e2e fixture factory surface used by bot lifecycle/runtime proof packs.                                                   | Direct doc relation plus focused bot e2e tests when fixture contracts change.                                             |
+| `apps/api/src/modules/bots/bots.e2e.shared.ts`                                | `docs/modules/api-bots.md` | Shared bot e2e setup/assertion helpers for lifecycle, entitlement, runtime, and topology tests.                                  | Direct doc relation plus focused bot e2e tests when helper semantics change.                                              |
+| `apps/api/src/modules/bots/bots.errors.ts`                                    | `docs/modules/api-bots.md` | File-level bot-domain error taxonomy and fail-closed controller mapping.                                                         | Direct doc relation plus bot command/read error tests when errors change.                                                 |
+| `apps/api/src/modules/bots/bots.repository.ts`                                | `docs/modules/api-bots.md` | Bot persistence repository boundary for bot lifecycle and topology reads/writes.                                                 | Direct doc relation plus bot lifecycle/repository-facing e2e tests when persistence behavior changes.                     |
+| `apps/api/src/modules/bots/botsRuntimeRead.repository.ts`                     | `docs/modules/api-bots.md` | Runtime read repository boundary for bot monitoring/session read models.                                                         | Direct doc relation plus bot runtime monitoring tests when read shape changes.                                            |
+| `apps/api/src/modules/bots/bots.controller.ts#closeBotRuntimeSessionPosition` | `docs/modules/api-bots.md` | Runtime position close controller that enforces authenticated selected-bot ownership, payload normalization, risk acknowledgement, and fail-closed ignored/not-found outcomes for unauthorized or non-actionable close requests. | Direct doc relation plus focused runtime close controller tests when ownership, risk-ack, or fail-closed close semantics change. |
+| `apps/api/src/modules/bots/botOwnership.service.ts#getOwnedBotRuntimeSession` | `docs/modules/api-bots.md` | Runtime ownership helper for resolving the selected bot's session ownership context and fail-closed access gate.                 | Direct doc relation plus focused bot runtime ownership/session read tests when gate behavior changes.                     |
+| `apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd`   | `docs/modules/api-bots.md` | Runtime session-window boundary helper that resolves completed sessions to `finishedAt`, running sessions to the current wall clock, and stale non-running sessions to the last heartbeat or start time. | Direct doc relation plus focused runtime session read/ownership tests when session-window fallback semantics change.      |
+| `apps/api/src/modules/bots/runtimeExchangeSyncedPositionPrice.ts`             | `docs/modules/api-bots.md` | Bot runtime helper for exchange-synced position price truth in selected-bot monitoring.                                          | Direct doc relation plus runtime monitoring/takeover tests when price-source behavior changes.                            |
+| `apps/api/src/modules/bots/runtimeSessionPositionDcaCount.ts`                 | `docs/modules/api-bots.md` | Runtime session helper for DCA count display/automation context.                                                                 | Direct doc relation plus runtime position monitoring tests when DCA count semantics change.                               |
+| `apps/api/src/modules/bots/runtimeSessionPositionWindow.ts`                   | `docs/modules/api-bots.md` | Runtime session window helper for selected-bot position/trade read boundaries.                                                   | Direct doc relation plus runtime session read tests when window semantics change.                                         |
+| `apps/api/src/modules/bots/runtimeSessionTradeFallbackScope.ts`               | `docs/modules/api-bots.md` | Trade fallback scope helper for botless wallet/runtime readback cases.                                                           | Direct doc relation plus runtime session positions/read tests when fallback scope changes.                                |
+| `apps/api/src/modules/bots/runtimeStrategyProtectionFallbackDisplay.ts`       | `docs/modules/api-bots.md` | Runtime display helper that labels strategy-derived protection fallback as prospective rather than exchange/runtime-final truth. | Direct doc relation plus runtime monitoring protection-display tests when display semantics change.                       |
 
 ## 10. Dashboard Ownership and Actionability Contract (`UXR-01`)
+
 - Runtime positions read model (`listBotRuntimeSessionPositions`) is scoped to `managementMode=BOT_MANAGED` only.
 - Dashboard `positions` rows for selected bot are allowed from:
   - direct ownership (`position.botId === selectedBotId`),
@@ -183,6 +201,7 @@ Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
   - empty list is valid runtime state (tab must stay visible).
 
 ## 11. Selected-Bot Runtime Symbol Scope Contract (`BRS-01`)
+
 - Runtime symbol scope for dashboard selected bot is strict and canonical by default:
   - only `ACTIVE + isEnabled` canonical `botMarketGroup + marketGroupStrategyLink` scope contributes symbols and strategy context.
   - `PAUSED` market-groups are excluded from default runtime read symbol scope used by dashboard `signals/markets`.
@@ -214,6 +233,7 @@ Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
   - legacy mapping is compatibility fallback only when canonical mapping is missing for selected bot/symbol, and cannot override canonical mapping.
 
 ## 12. Sidebar Strategy Projection Parity Contract (`SBSC`)
+
 - `listBots` and `getBot` strategy projection (`strategyId`) must stay compatible with runtime graph primary strategy for the same bot.
 - Strategy projection precedence for dashboard-facing read model:
   - canonical active+enabled `marketGroupStrategyLinks` first,
@@ -257,6 +277,7 @@ Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
   - module should expose deterministic diagnostics/repair path for legacy-canonical divergence to support operations closure.
 
 ## 13. Aggregate Wallet Summary and Sidebar Edge Contract (`DAWR`)
+
 - Aggregate read contract (`GET /dashboard/bots/:id/runtime-monitoring/aggregate`) must expose wallet-capital parity fields in `positions.summary`:
   - `referenceBalance`,
   - `freeCash`.
@@ -268,6 +289,7 @@ Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
   - compatibility fallback cannot override canonical runtime topology when canonical mapping exists.
 
 ## 14. Signals + Open Runtime Parity Contract (`SOPR`)
+
 - Consolidated prerequisites:
   - `DAGG` selected-bot aggregate runtime-table contract.
   - `SBSC` selected-bot strategy projection + sidebar parity contract.
@@ -287,6 +309,7 @@ Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
   - no-open blocked/ignored outcomes remain explicit and queryable in operational payload/log flows.
 
 ## 15. Market-Universe Symbol Contract Parity (`MURC`)
+
 - Selected-bot runtime symbol scope that comes from market-universe-backed groups must use one shared formula:
   - `final = unique(filter_result U whitelist) - blacklist`.
 - Edge rules:
@@ -297,6 +320,7 @@ Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
   - runtime symbol scope, bot auto-created symbol-group snapshots, and cross-module consumers must stay parity-compatible for identical universe input.
 
 ## 16. Unified Order Lifecycle Scope and Exchange Takeover Contract (`UOLF-01`)
+
 - Lifecycle scope invariants:
   - manual dashboard opens and runtime signal opens must resolve canonical selected-bot context (`bot`, `wallet`, `mode`, `strategy`) before order lifecycle writes.
   - lifecycle ownership target is one order->fill->position path shared by manual and runtime entries.
@@ -311,6 +335,7 @@ Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
   - this contract keeps `SBSC` and `DAWR` selected-bot context parity requirements unchanged while replacing old `order-only` semantics with unified lifecycle target contract.
 
 ## 17. Canonical Wallet + Market-Universe Ownership Contract (`ARCCON`)
+
 - Canonical context precedence:
   - wallet (`exchange`, `marketType`, `baseCurrency`) and selected
     market-universe context are authoritative for bot symbol-group binding.
@@ -334,6 +359,7 @@ Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
   groups.
 
 ## 18. Runtime Position Execution Venue Contract (`POSDRIFT-05`)
+
 - Runtime signal-loop topology, runtime position reads, and position automation
   resolve inherited execution venue through the shared canonical runtime venue
   resolver:

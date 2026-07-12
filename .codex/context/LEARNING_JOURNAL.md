@@ -2,6 +2,61 @@
 
 Purpose: keep a compact memory of recurring execution pitfalls and verified fixes for this repository.
 
+### 2026-07-12 - Paperclip status close requires the configured API URL and inline completion evidence
+- Symptom:
+  `http://127.0.0.1:3201/api/issues/LUC-733` and
+  `http://127.0.0.1:3201/api/issues/LUC-733/heartbeat-context` returned
+  connection failures because the injected runner was pointed at the wrong
+  local port. The configured Paperclip API lived at
+  `PAPERCLIP_API_URL=http://127.0.0.1:3200`.
+- Correct response:
+  do not assume the issue-tracker mutation path is unavailable just because an
+  initial probe fails. Verify the configured `PAPERCLIP_API_URL`, then close
+  the issue with `status=done` and inline `comment` evidence in the same PATCH
+  request.
+- Verified recovery:
+  [LUC-733](/LUC/issues/LUC-733) closed successfully after sending the
+  comment-evidenced `PATCH /api/issues/LUC-733` request to
+  `http://127.0.0.1:3200`.
+- Evidence:
+  `history/evidence/luc-734-repair-doc-link-ingestion-registerandlogin-awareness-2026-07-12.md`;
+  `history/tasks/luc-734-repair-doc-link-ingestion-for-registerandlogin-awareness-graph-2026-07-12-task.md`.
+
+### 2026-07-12 - Regenerate app-completion only after architecture-awareness finishes
+- Symptom:
+  a scoped doc-link row can remain `missing_doc_link` in
+  `docs/status/app-completion-index.json` even after canonical doc inputs were
+  added, because downstream indexes read a stale
+  `docs/graphs/architecture-awareness.json`.
+- Root cause:
+  dependent Soar generators were run out of order or in parallel, so
+  `build-app-completion-index.mjs` consumed the pre-refresh awareness graph.
+- Correct sequencing:
+  when repairing source-truth linkage, run the generators strictly in this
+  order:
+  `build-architecture-awareness-index.mjs` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply`.
+- Preferred pattern:
+  run the three generators as separate awaited commands and verify the scoped
+  row after each dependent stage.
+- Avoid:
+  parallelizing `architecture-awareness`, `app-completion`, and
+  `project-truth` refreshes in the same heartbeat.
+- Verified recovery:
+  for [LUC-734](/LUC/issues/LUC-734),
+  `apps/api/src/modules/backtests/backtests.e2e.test.ts#registerAndLogin`
+  gained a generated `documents` relation, left `priorityReviewItems`, and
+  project truth advanced to the next Account access gap. The same sequencing
+  repair also closed [LUC-799](/LUC/issues/LUC-799), where
+  `apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd`
+  moved from `missing_doc_link` to `implemented_needs_proof`.
+- Evidence:
+  `history/evidence/luc-799-repair-resolvesessionwindowend-doc-link-ingestion-2026-07-12.md`;
+  `history/tasks/luc-799-repair-resolvesessionwindowend-doc-link-ingestion-2026-07-12-task.md`;
+  `history/evidence/luc-734-repair-doc-link-ingestion-registerandlogin-awareness-2026-07-12.md`;
+  `history/tasks/luc-734-repair-doc-link-ingestion-for-registerandlogin-awareness-graph-2026-07-12-task.md`.
+
 ### 2026-06-28 - apiKey e2e cleanup can mask product behavior
 - Symptom:
   after a clean local Prisma reset,

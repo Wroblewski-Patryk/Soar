@@ -1,6 +1,7 @@
 # API Deep-Dive: Backtests Module
 
 ## Metadata
+
 - Module name: `backtests`
 - Layer: `api`
 - Source path: `apps/api/src/modules/backtests`
@@ -9,12 +10,15 @@
 - Related planning task: `FRONTEND-ENGINE-UX-DCA-SWEEP-2026-05-21`
 
 ## Canonical Architecture Linkage
+
 Canonical replay and parity rules live in:
+
 - `docs/architecture/05_strategy-signal-and-decision-flow.md`
 - `docs/architecture/06_execution-lifecycle.md`
 - `docs/architecture/07_modes-parity-and-data.md`
 
 ## 1. Purpose and Scope
+
 - Owns backtest run lifecycle and read APIs:
   - create/list/get/delete runs
   - trades/report/timeline views
@@ -22,10 +26,12 @@ Canonical replay and parity rules live in:
 - Manages queue/job execution path for run processing.
 
 Out of scope:
+
 - Live runtime signal loop (engine runtime path).
 - Dashboard runtime position/order APIs.
 
 ## 2. Boundaries and Dependencies
+
 - Mounted under `/dashboard/backtests`.
 - Depends on:
   - `prisma` repositories for runs/trades/reports.
@@ -34,6 +40,7 @@ Out of scope:
   - run queue/job processors.
 
 ## 3. Data and Contract Surface
+
 - Core DTO/contracts:
   - `CreateBacktestRunDto`
   - `ListBacktestRunsQuery`, `ListBacktestTradesQuery`, `GetBacktestTimelineQuery`
@@ -54,6 +61,7 @@ Out of scope:
     - legacy runs without explicit range fields remain readable in run list/details/report flows.
 
 ## 4. Runtime Flows
+
 - Run creation:
   1. Validate owned strategy + market universe.
   2. Resolve run symbol seed via shared market-universe contract:
@@ -90,6 +98,7 @@ Out of scope:
     position-management lifecycle policy.
 
 ## 5. API and UI Integration
+
 - Routes:
   - `GET /dashboard/backtests/runs`
   - `GET /dashboard/backtests/runs/:id`
@@ -100,17 +109,20 @@ Out of scope:
   - `DELETE /dashboard/backtests/runs/:id`
 
 ## 6. Security and Risk Guardrails
+
 - Dashboard auth + ownership checks across run/trade/report/timeline surfaces.
 - Timeline/report are run-scoped to user-owned runs only.
 - Safe update wrappers protect against missing-run race conditions.
 
 ## 7. Observability and Operations
+
 - Run queue and job modules provide controlled execution lifecycle.
 - Rich parity and replay tests protect deterministic behavior across strategy modes.
 - New backtest history keeps its creation-time strategy and market-universe
   context stable after later strategy or universe edits.
 
 ## 8. Test Coverage and Evidence
+
 - Primary local audit evidence:
   - `history/audits/backtests-reports-audit-2026-05-19.md`
   - Web backtests/reports pack: `15` files / `37` tests.
@@ -140,16 +152,19 @@ Out of scope:
     interleaved portfolio simulation keep `TTP` blocked while affordable
     profit-side DCA levels remain pending.
 - Suggested validation command:
+
 ```powershell
 pnpm --filter api exec vitest run src/modules/backtests/backtests.e2e.test.ts src/modules/backtests/backtests.contract-remediation.test.ts src/modules/backtests/backtestRuntimeKernelParity.test.ts src/modules/backtests/backtestRunQueue.test.ts src/modules/backtests/backtestRunJob.test.ts src/modules/backtests/backtestReplayCore.test.ts src/modules/backtests/backtestRange.service.test.ts src/modules/backtests/backtestPatternParityFixtures.test.ts src/modules/backtests/backtestParity3Symbols.test.ts src/modules/backtests/backtestIndicatorTimelineSeries.test.ts src/modules/backtests/backtestFillModel.test.ts src/modules/backtests/backtestDataGateway.test.ts src/modules/reports/reports.service.test.ts --pool=forks --maxWorkers=1 --minWorkers=1 --testTimeout=30000
 ```
 
 ## 9. Open Issues and Follow-Ups
+
 - Continue parity hardening between backtest and runtime decision paths.
 - Consider additional queue observability SLIs for heavy multi-symbol workloads.
 - No active BTCF follow-up remains in this module after `BTCF` closure.
 
 ## 10. Market-Universe Symbol Contract Parity (`MURC`)
+
 - `seedConfig.symbols` must always reflect the shared market-universe composition formula.
 - No whitelist override path is allowed; whitelist is unioned with filter output and then blacklist is subtracted.
 - Backtest symbol resolution must stay parity-compatible with:
@@ -157,6 +172,7 @@ pnpm --filter api exec vitest run src/modules/backtests/backtests.e2e.test.ts sr
   - manual-order strategy-context symbol matching.
 
 ## 11. Report Lifecycle Contract (`ARCCON`)
+
 - Owned-run report read (`GET /dashboard/backtests/runs/:id/report`) must not
   use transient `404` for "run exists but report not ready yet".
 - API contract:
@@ -174,6 +190,7 @@ pnpm --filter api exec vitest run src/modules/backtests/backtests.e2e.test.ts sr
 
 Last classified: 2026-06-05 under [LUC-2174](/LUC/issues/LUC-2174).
 
-| Source entity | Owner doc | Classification | Expected proof |
-| --- | --- | --- | --- |
-| `apps/api/src/modules/backtests/backtestIndicatorSpecs.ts` | `docs/modules/api-backtests.md` | Backtest indicator parsing and warmup helper extracted from the replay pipeline while preserving parity with shared series tests. | Architecture-awareness `documents` relation from this doc plus backtest indicator/timeline/replay tests when behavior changes. |
+| Source entity                                                           | Owner doc                       | Classification                                                                                                                                                                                                                                   | Expected proof                                                                                                                                                         |
+| ----------------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/api/src/modules/backtests/backtestIndicatorSpecs.ts`              | `docs/modules/api-backtests.md` | Backtest indicator parsing and warmup helper extracted from the replay pipeline while preserving parity with shared series tests.                                                                                                                | Architecture-awareness `documents` relation from this doc plus backtest indicator/timeline/replay tests when behavior changes.                                         |
+| `apps/api/src/modules/backtests/backtests.e2e.test.ts#registerAndLogin` | `docs/modules/api-backtests.md` | Backtests e2e auth bootstrap helper that registers the owner account through the real `/auth/register` route and reuses the authenticated agent for owned run/trade/report route proof without fabricating session state inside backtests tests. | Architecture-awareness `documents` relation from this doc plus DB-backed `backtests.e2e.test.ts` proof when auth bootstrap or owned backtests route isolation changes. |
