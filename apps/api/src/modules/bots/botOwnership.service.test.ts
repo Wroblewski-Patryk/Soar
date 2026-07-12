@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { prisma } from '../../prisma/client';
-import { validateSymbolGroupForBot } from './botOwnership.service';
+import { getOwnedBotRuntimeSession, validateSymbolGroupForBot } from './botOwnership.service';
 
 const cleanupDb = async () => {
   await prisma.log.deleteMany();
@@ -145,3 +145,85 @@ describe('validateSymbolGroupForBot', () => {
   });
 });
 
+describe('getOwnedBotRuntimeSession', () => {
+  beforeEach(async () => {
+    await cleanupDb();
+  });
+
+  it('returns the owned runtime session when user, bot, and session all match', async () => {
+    const user = await prisma.user.create({
+      data: { email: 'bot-ownership-session-match@example.com', password: 'hashed' },
+    });
+    const bot = await prisma.bot.create({
+      data: {
+        userId: user.id,
+        name: 'Owned bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+      },
+    });
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: user.id,
+        botId: bot.id,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-07-12T10:00:00.000Z'),
+        lastHeartbeatAt: new Date('2026-07-12T10:05:00.000Z'),
+      },
+    });
+
+    await expect(getOwnedBotRuntimeSession(user.id, bot.id, session.id)).resolves.toMatchObject({
+      id: session.id,
+      userId: user.id,
+      botId: bot.id,
+      status: 'RUNNING',
+    });
+  });
+
+  it('fails closed when the session does not belong to the selected bot or user', async () => {
+    const owner = await prisma.user.create({
+      data: { email: 'bot-ownership-session-owner@example.com', password: 'hashed' },
+    });
+    const otherUser = await prisma.user.create({
+      data: { email: 'bot-ownership-session-other@example.com', password: 'hashed' },
+    });
+    const ownerBot = await prisma.bot.create({
+      data: {
+        userId: owner.id,
+        name: 'Owner bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+      },
+    });
+    const otherBot = await prisma.bot.create({
+      data: {
+        userId: otherUser.id,
+        name: 'Other bot',
+        mode: 'PAPER',
+        exchange: 'BINANCE',
+        marketType: 'FUTURES',
+        positionMode: 'ONE_WAY',
+        isActive: true,
+      },
+    });
+    const session = await prisma.botRuntimeSession.create({
+      data: {
+        userId: owner.id,
+        botId: ownerBot.id,
+        mode: 'PAPER',
+        status: 'RUNNING',
+        startedAt: new Date('2026-07-12T10:10:00.000Z'),
+      },
+    });
+
+    await expect(getOwnedBotRuntimeSession(otherUser.id, otherBot.id, session.id)).resolves.toBeNull();
+    await expect(getOwnedBotRuntimeSession(owner.id, otherBot.id, session.id)).resolves.toBeNull();
+  });
+});

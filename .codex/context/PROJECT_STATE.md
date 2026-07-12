@@ -1,3 +1,208 @@
+## 2026-07-12 LUC-821 source-control closure classification for LUC-801
+
+- `LUC-821` classified the baseline dirty worktree before a board-side close of `LUC-801`.
+- Baseline before this artifact mutation: `58` dirty paths.
+- `LUC-801` is explicitly represented in `6` baseline dirty paths:
+  - `.codex/context/PROJECT_STATE.md`
+  - `.codex/context/TASK_BOARD.md`
+  - `history/evidence/luc-801-api-bots-doc-link-ingestion-repair-2026-07-12.md`
+  - `history/evidence/luc-802-source-control-closure-2026-07-12.md`
+  - `history/tasks/luc-801-repair-api-bots-doc-link-ingestion-2026-07-12-task.md`
+  - `history/tasks/luc-802-source-control-closure-classify-dirty-state-for-luc-790-2026-07-12-task.md`
+- Category split at classification time:
+  - `6` state/control
+  - `24` task/evidence
+  - `27` docs/generated
+  - `1` runtime/product code
+- `git diff --check` produced only line-ending normalization warnings and no substantive diff errors.
+- Boundary:
+  no push, deploy, restart, rollback, protected smoke, account action, or secret mutation.
+
+## 2026-07-12 LUC-802 Source-Control closure classification for LUC-790
+
+- `LUC-802` classified the current worktree before LUC-790 close.
+- Result:
+  `LUC-790` is represented locally by:
+  - `history/evidence/luc-790-account-access-closebotruntimesessionposition-doc-link-2026-07-12.md`
+  - `history/tasks/luc-790-account-access-closebotruntimesessionposition-doc-link-2026-07-12-task.md`
+- Evidence bundle contains 56 modified/untracked paths:
+  - 6 state/control files
+  - 22 task/evidence files
+  - 1 runtime/product file
+  - 27 docs/graph/status files
+- `git diff --check` produced no substantive errors.
+- Source-control boundary:
+  no push, deploy, restart, rollback, env mutation, secret-file handling, or protected/live trading action.
+- Current effect:
+  the local state is classified and suitable for board close-readiness handoff with residual lane-mix caveat.
+
+## 2026-07-12 LUC-801 api-bots doc-link ingestion family closure
+
+- Reran the canonical Soar generator chain from the Softwarehouse tooling repo:
+  `build-architecture-awareness-index.mjs` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply`.
+- `closeBotRuntimeSessionPosition` now has the expected generated
+  `documents` relation and no longer appears in app-completion priority review
+  or project-truth gaps.
+- `resolveSessionWindowEnd` also has the expected generated docs linkage; the
+  row now remains only as `implemented_needs_proof` with `hasDoc=true` and
+  `hasTest=true`.
+- Effective disposition:
+  the api-bots doc-link ingestion repair scope is complete; only focused QA
+  proof remains for `resolveSessionWindowEnd`.
+- Evidence:
+  `history/evidence/luc-801-api-bots-doc-link-ingestion-repair-2026-07-12.md`;
+  `history/tasks/luc-801-repair-api-bots-doc-link-ingestion-2026-07-12-task.md`.
+
+## 2026-07-12 LUC-799 resolveSessionWindowEnd doc-link ingestion repair
+
+- RTE reran the canonical Soar generation chain in strict dependency order:
+  `build-architecture-awareness-index.mjs` ->
+  `build-app-completion-index.mjs` ->
+  `build-project-truth-indexes.mjs --apply`.
+- `docs/graphs/architecture-awareness.json` now contains the direct
+  `documents` relation from `docs/modules/api-bots.md` to
+  `apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd`.
+- `docs/status/app-completion-index.json` now classifies the scoped helper as
+  `implemented_needs_proof` with `hasDoc=true` and `hasTest=true`, so the
+  prior `missing_doc_link` state was a stale downstream readback rather than a
+  remaining docs gap.
+- `docs/status/project-truth-index.json` advanced the first docs-owned Account
+  access gap to `apps/api/src/modules/bots/bots.controller.ts#getBotRuntimeSession`
+  while routing `resolveSessionWindowEnd` to QA proof ownership.
+- Evidence:
+  `history/evidence/luc-799-repair-resolvesessionwindowend-doc-link-ingestion-2026-07-12.md`;
+  `history/tasks/luc-799-repair-resolvesessionwindowend-doc-link-ingestion-2026-07-12-task.md`.
+## 2026-07-12 LUC-790 closeBotRuntimeSessionPosition missing-doc-link proof
+
+- DSM proved the current generated-state behavior for
+  `apps/api/src/modules/bots/bots.controller.ts#closeBotRuntimeSessionPosition`.
+- The workspace now contains all expected source-truth inputs:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json`.
+- `pnpm run architecture:graph:generate` refreshed
+  `docs/graphs/architecture-awareness.json`, but the graph still lacks the
+  direct `documents` relation from `docs/modules/api-bots.md` to the scoped
+  controller.
+- Because that relation is still absent, the current
+  `docs/status/app-completion-index.*` and
+  `docs/status/project-truth-index.*` outputs continue to classify the
+  controller as `missing_doc_link`.
+- Current classification:
+  source-truth input is present, generated ingestion remains unresolved. This
+  is a proved stale/generated-state defect, not an unresolved docs-row absence.
+- Evidence:
+  `history/evidence/luc-790-account-access-closebotruntimesessionposition-doc-link-2026-07-12.md`;
+  `history/tasks/luc-790-account-access-closebotruntimesessionposition-doc-link-2026-07-12-task.md`.
+
+## 2026-07-12 LUC-800 Source-Control Closure for Local Dirty-State Readiness
+
+- `LUC-800` closure lane confirms local dirty-work classification before final ticket handoff for [LUC-789](/LUC/issues/LUC-789) and [LUC-799](/LUC/issues/LUC-799).
+- `LUC-789` had explicit local references in `.codex/context/PROJECT_STATE.md`, `.codex/context/TASK_BOARD.md`, and scoped `history/{tasks,evidence}/luc-789-*` files.
+- `LUC-799` had zero explicit local references in this checkpoint.
+- Workspace residue beyond `LUC-789` includes a coherent adjacent Account-access issue bundle (`LUC-722`, `LUC-734`, `LUC-743`, `LUC-755`, `LUC-791`, `LUC-798`).
+- No push, deploy, restart, rollback, credential-sensitive action, or protected run occurred.
+
+## 2026-07-12 LUC-789 resolveSessionWindowEnd missing-doc-link proof
+
+- DSM proved the current generated-state behavior for
+  `apps/api/src/modules/bots/botOwnership.service.ts#resolveSessionWindowEnd`.
+- The workspace now contains all expected source-truth inputs:
+  `docs/modules/api-bots.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json`.
+- `pnpm run architecture:graph:generate` refreshed
+  `docs/graphs/architecture-awareness.json`, but the graph still lacks the
+  direct `documents` relation from `docs/modules/api-bots.md` to the scoped
+  function.
+- Because that relation is still absent, the current
+  `docs/status/app-completion-index.*` and
+  `docs/status/project-truth-index.*` outputs continue to classify the helper
+  as `missing_doc_link`.
+- Current classification:
+  source-truth input is present, generated ingestion remains unresolved. This
+  is a proved stale/generated-state defect, not an unresolved docs-row absence.
+- Evidence:
+  `history/evidence/luc-789-account-access-resolvesessionwindowend-doc-link-2026-07-12.md`;
+  `history/tasks/luc-789-account-access-resolvesessionwindowend-doc-link-2026-07-12-task.md`.
+
+## 2026-07-12 LUC-798 getBotRuntimeSession test-link classifier drift readback
+
+- RTE re-read the current architecture-awareness graph and confirmed that
+  `apps/api/src/modules/bots/bots.controller.ts#getBotRuntimeSession` already
+  had the expected `tests` relation from
+  `apps/api/src/modules/bots/bots.e2e.test.ts`.
+- Regenerating `docs/status/app-completion-index.json` from the current graph
+  now records the controller row with `hasTest=true` and
+  `risk=missing_doc_link`.
+- Regenerating `docs/status/project-truth-index.json` removes the controller
+  row from the `missing_test_link` lane.
+- Residual:
+  the controller still needs doc-link closure, and the distinct
+  `apps/api/src/modules/bots/runtimeSessionRead.service.ts#getBotRuntimeSession`
+  row remains a real `missing_test_link` follow-up.
+- Evidence:
+  `history/evidence/luc-798-repair-getbotruntimesession-test-link-classifier-drift-2026-07-12.md`;
+  `history/tasks/luc-798-repair-getbotruntimesession-test-link-classifier-drift-2026-07-12-task.md`.
+
+## 2026-07-12 LUC-734 registerAndLogin doc-link ingestion repair
+
+- EDL repaired generated source-truth readback for
+  `apps/api/src/modules/backtests/backtests.e2e.test.ts#registerAndLogin`.
+- `docs/graphs/architecture-awareness.json` now contains the effective
+  `documents` relation from `docs/modules/api-backtests.md` to the scoped
+  function entity.
+- `docs/status/app-completion-index.json` no longer includes the scoped path in
+  `priorityReviewItems`, and `docs/status/project-truth-index.md` advanced the
+  first Account access gap to
+  `apps/api/src/modules/bots/botOwnership.service.ts#getOwnedBotRuntimeSession`
+  as `implemented_needs_proof`.
+- Effective fix:
+  refresh generators in dependency order:
+  `architecture-awareness -> app-completion -> project-truth`.
+- Evidence:
+  `history/evidence/luc-755-account-access-getownedbotruntimesession-doc-link-2026-07-12.md`.
+- Evidence:
+  `history/evidence/luc-734-repair-doc-link-ingestion-registerandlogin-awareness-2026-07-12.md`;
+  `history/tasks/luc-734-repair-doc-link-ingestion-for-registerandlogin-awareness-graph-2026-07-12-task.md`.
+
+## 2026-07-12 LUC-722 Account Access Missing-Doc-Link Proof
+
+- DSM proved the current state of
+  `apps/api/src/modules/backtests/backtests.e2e.test.ts#registerAndLogin`.
+- The current workspace already contains the canonical doc-link inputs in
+  `docs/modules/api-backtests.md`,
+  `docs/architecture/relations/documentation-links.csv`, and
+  `docs/architecture/scanner-overrides.json`.
+- The current generated outputs still do not ingest that linkage for the scoped
+  entity:
+  `docs/status/app-completion-index.json` keeps `evidence.hasDoc=false` and
+  `risk=missing_doc_link`, `docs/graphs/architecture-awareness.json` shows only
+  test-file evidence, and `docs/status/project-truth-index.md` still routes the
+  first gap to the same row.
+- Current classification:
+  source-truth input is present, generated behavior is still unresolved. This
+  is a proved awareness/app-completion ingestion mismatch, not a closed
+  missing-doc-link.
+- Evidence:
+  `history/evidence/luc-722-account-access-missing-doc-link-proof-2026-07-12.md`;
+  `history/tasks/luc-722-account-access-missing-doc-link-proof-2026-07-12-task.md`.
+
+## 2026-07-12 LUC-755 Account Access getOwnedBotRuntimeSession Doc-Link Closure
+
+- DSM resolved the scoped Account access source-truth row for
+  `apps/api/src/modules/bots/botOwnership.service.ts#getOwnedBotRuntimeSession`.
+- Linked the helper through `docs/modules/api-bots.md` and
+  `docs/architecture/relations/documentation-links.csv`, then regenerated the
+  architecture-awareness, app-completion, and project-truth outputs.
+- Current generated truth now routes the row as `implemented_needs_proof`.
+- Evidence:
+  `history/evidence/luc-755-account-access-getownedbotruntimesession-doc-link-2026-07-12.md`.
+- Residual:
+  no remaining DSM action on [LUC-755](/LUC/issues/LUC-755).
+
 ## 2026-07-12 LUC-637 Account Access Session-Token Proof
 
 - TAE resolved the Account access session-token proof row for
@@ -7940,7 +8145,7 @@ softwarehouse:control-tick` failed because `softwarehouse:control-tick` is
   dashboard-home CP1250 mojibake sequences, and added a loaded-translation
   regression test for encoding drift markers. Validation passed:
   `corepack pnpm --filter web exec vitest run src/i18n/translations.test.ts src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts --reporter=verbose`
-  (`3` files / `17` tests), and the requested `rg -n "Ä‚|Ă˘â‚¬|ď»żexport" ...`
+  (`3` files / `17` tests), and the requested `rg -n "Ă„â€š|Ä‚ËĂ˘â€šÂ¬|ÄŹÂ»ĹĽexport" ...`
   integrity search returned no matches. No deploy/push/restart/protected
   smoke/account/secret/exchange/database/live-trading mutation occurred.
   Evidence:
@@ -23659,7 +23864,7 @@ available server` for public health/ready/root and web build-info, so
 - 2026-04-30: closed the first implementation slice of `V1ROE-A` after the user approved canonical `LIVE` PnL truth alignment without splitting the lifecycle engine into a separate exchange-only semantics path. The repository now persists `Position.marginUsed` as exchange-synced margin basis, carries that truth through exchange snapshot normalization and reconciliation, and uses one shared `current position pnl fraction` contract for lifecycle decisions: `BACKTEST` and `PAPER` still derive modeled margin from entry/quantity/leverage, while `LIVE` now uses exchange-synced `marginUsed` whenever available and exposes the same basis to operator surfaces through runtime `marginUsed` and `unrealizedPnlPercent`. Fresh local validation is green; remaining closure is protected production/manual evidence on the affected `DOGEUSDT` flow plus the rest of `V1EXCEL-03`.
 - 2026-04-30: a fresh protected production check after the `V1ROE-01` deploy attempt proved one narrower residual gap in the repository closure story. The authenticated `runtime-sessions/:sessionId/positions` response for the active `LIVE DOGEUSDT` session still returned the old payload shape without `marginUsed` or `unrealizedPnlPercent`, even though local code now exposes both fields. This means the fix itself is still locally green, but the repo lacked one explicit end-to-end contract lock at the runtime-positions API seam and production verification must now confirm both deploy freshness and exchange-aligned operator truth.
 - 2026-04-30: closed `V1ROE-02` as the missing runtime-positions contract lock revealed by that protected prod check. The repository now has a focused e2e proof (`bots.runtime-pnl-parity.e2e.test.ts`) that a canonical `LIVE` runtime position with persisted `marginUsed` different from modeled margin still comes back from `runtime-sessions/:sessionId/positions` with the same `marginUsed`, truthful `unrealizedPnl`, and `unrealizedPnlPercent` computed from the persisted margin basis. This narrows the remaining closure risk away from local API regression and back onto deploy freshness plus real protected `DOGEUSDT` operator verification.
-- 2026-04-30: the next protected production pass after `V1ROE-02` confirmed that deploy freshness is no longer the main blocker. The active `LIVE DOGEUSDT` row now exposes `marginUsed` and `unrealizedPnlPercent` on production, but the current basis still appears to follow `initialMargin`-style truth for isolated futures positions (`marginUsedÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬Ă„â€¦Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚ÂĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬Ä…Ä‚â€šĂ‚ÂÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇĂ„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â¬Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â°Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â0.769`, `unrealizedPnlPercentÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬Ă„â€¦Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚ÂĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬Ä…Ä‚â€šĂ‚ÂÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇĂ„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â¬Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â°Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â-27.83%`). That is still too weak to call exchange parity closed if the operator-visible Binance percent is lower because additional isolated margin was added. The next smallest code fix is therefore not another broad PnL rewrite, but a narrower isolated-margin normalization correction: prefer real `isolatedWallet` margin authority for `ISOLATED` `LIVE` positions while preserving the shared lifecycle engine.
+- 2026-04-30: the next protected production pass after `V1ROE-02` confirmed that deploy freshness is no longer the main blocker. The active `LIVE DOGEUSDT` row now exposes `marginUsed` and `unrealizedPnlPercent` on production, but the current basis still appears to follow `initialMargin`-style truth for isolated futures positions (`marginUsedĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă„ÄľÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â€šÂ¬ÄąË‡Ä‚â€šĂ‚Â¬Ä‚â€žĂ„â€¦Ä‚â€ąĂ˘â‚¬Ë‡Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€žĂ˘â‚¬Â¦Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚ÂÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬Ă„â€¦Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚ÂĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬Ä…Ä‚â€šĂ‚ÂÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â€šÂ¬ÄąË‡Ä‚â€šĂ‚Â¬Ä‚â€žĂ„â€¦Ä‚â€ąĂ˘â‚¬Ë‡Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â¬Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â°Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â€šÂ¬ÄąË‡Ä‚â€šĂ‚Â¬Ä‚â€žĂ„â€¦Ä‚â€ąĂ˘â‚¬Ë‡Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â0.769`, `unrealizedPnlPercentĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă„ÄľÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â€šÂ¬ÄąË‡Ä‚â€šĂ‚Â¬Ä‚â€žĂ„â€¦Ä‚â€ąĂ˘â‚¬Ë‡Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€žĂ˘â‚¬Â¦Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚ÂÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬Ă„â€¦Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚ÂĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬Ä…Ä‚â€šĂ‚ÂÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â€šÂ¬ÄąË‡Ä‚â€šĂ‚Â¬Ä‚â€žĂ„â€¦Ä‚â€ąĂ˘â‚¬Ë‡Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â¬Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â°Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â€šÂ¬ÄąË‡Ä‚â€šĂ‚Â¬Ä‚â€žĂ„â€¦Ä‚â€ąĂ˘â‚¬Ë‡Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â-27.83%`). That is still too weak to call exchange parity closed if the operator-visible Binance percent is lower because additional isolated margin was added. The next smallest code fix is therefore not another broad PnL rewrite, but a narrower isolated-margin normalization correction: prefer real `isolatedWallet` margin authority for `ISOLATED` `LIVE` positions while preserving the shared lifecycle engine.
 - 2026-04-30: closed that isolated-margin correction as `V1ROE-03`. Exchange snapshot normalization now prefers `isolatedWallet` for `ISOLATED` futures positions before `isolatedMargin` and initial-margin fields, which should better match the real exchange operator truth when additional margin has been added to an open isolated position. Focused regression coverage now locks both sides of the rule: isolated positions use isolated-wallet truth, while non-isolated positions keep initial-margin precedence. The remaining closure risk is back on protected post-deploy verification of the real `DOGEUSDT` flow.
 - 2026-04-30: another protected production audit narrowed `V1ROE-04` to one read-model freshness seam rather than a new exchange-normalization gap. Direct exchange snapshot and persisted `Position` truth for the active `LIVE DOGEUSDT` row were already fresh (`markPrice`, `unrealizedPnl`, `marginUsed`, `lastExchangeSyncAt`), but runtime session `positions` and `symbol-stats` could still recompute operator truth from an older `botRuntimeSymbolStat` / runtime ticker price. The repository now prefers fresher exchange-synced lifecycle truth for `EXCHANGE_SYNC OPEN` rows whenever runtime cache price is older than `lastExchangeSyncAt`, and focused e2e coverage locks both `runtime-sessions/:sessionId/positions` and `symbol-stats` against silently regressing to stale session price. Remaining closure is protected post-deploy verification on the affected `DOGEUSDT` flow.
 - 2026-04-30: published `V1ROE-A` after a fresh protected production audit of the active `LIVE DOGEUSDT` flow. The repository now has explicit evidence that two different drifts were being conflated: current Soar `PnL %` semantics are still `unrealizedPnl / (entryNotional / leverage)` rather than exchange-style `ROE`, and imported/reopened `LIVE` automation still appears stale enough to miss `DCA/TTP` evaluation after reopen/import even under Soar's own current leveraged-move thresholds. The analysis packet intentionally stops before implementation because one explicit product/architecture decision is required first: keep lifecycle thresholds on leveraged move and align operator UI separately, or migrate lifecycle thresholds to exchange-ROE semantics. Canonical packet: `history/audits/v1roe-live-pnl-roe-and-runtime-automation-parity-plan-2026-04-30.md`.
@@ -23726,7 +23931,7 @@ available server` for public health/ready/root and web build-info, so
 - 2026-04-26: queued and implemented `V1FIX-2026-04-26-C` after post-repair real-account browser verification on prod exposed one more canonical-scope drift: manual open-order conflict detection and fill reuse still searched `OPEN` positions globally by `userId + symbol`, so a `LIVE` DOGE position on one wallet falsely blocked a `PAPER` DOGE manual order on another wallet. The repository now centralizes open-position scope resolution under wallet-first/bot-fallback semantics in `orders.positionScope.ts`, both manual pre-submit conflict checks and fill-lifecycle adoption reuse that same scope, and a new migration replaces the old global partial unique index with wallet-/bot-/unowned-scoped partial unique indexes. Validation PASS: `pnpm --filter api exec vitest run src/modules/orders/orders.service.test.ts src/modules/orders/orders.manual-paper-market.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`. Remaining work is operational: deploy to prod, rerun the dashboard manual-order flow on the affected account, and confirm the new wallet-scoped behavior live.
 - 2026-04-26: the repository is now locally deploy-ready for the remaining `V1FIX-2026-04-26-B` production closure. The final backtests/release-readiness pass aligned wallet-first takeover fixtures with the live ownership contract, hardened slow 3-symbol parity report polling so the canonical diagnostics contract is awaited honestly in the go-live pack, and made backtest delete resilient to async worker/report races. Validation PASS: `pnpm --filter api exec vitest run src/modules/backtests/backtestRunJob.test.ts src/modules/backtests/backtests.e2e.test.ts`, `pnpm run test:go-live:api`, `pnpm run typecheck`, `pnpm run quality:guardrails`, `pnpm run build`. The remaining work is now operational only: deploy the latest repository state plus the open scoped-uniqueness migration to production and rerun the affected real-account dashboard/takeover smoke.
 - 2026-04-26: closed `V1LIVE-PROD-2026-04-26-A` after real-account production browser verification proved the last manual-order blocker on the dashboard was web-only stale symbol-context drift. `useManualOrderController.ts` now accepts manual-order context price only when it matches the current `selected.bot.id + manualOrderSymbol`, so the deployed dashboard no longer submits a current symbol with a previous-symbol price frozen from stale context.
-- 2026-04-26: closed `V1LIVE-PROD-2026-04-26-B` after three real-account production verification loops on the affected live bot. The production API now normalizes/imports Binance Futures leverage truth from nested raw payload fields and derives it from notional-versus-margin when the explicit leverage field is absent, then rounds imported leverage before persistence so floating-point precision cannot degrade `15x` to `14x`. `livePositionReconciliation` also now treats open-orders snapshot failure as fail-soft for stale local managed LIVE cleanup, which allowed the historical phantom `BNBUSDT` row to be closed as `ORPHAN_LOCAL` on the real account while the active imported `DOGEUSDT` position persisted with truthful `leverage=15`. Post-deploy production evidence after authenticated repair: exchange snapshot returns `DOGEUSDT` with `leverageÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬Ă„â€¦Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚ÂĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬Ä…Ä‚â€šĂ‚ÂÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇĂ„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â¬Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â°Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â15`, runtime `openItems` contains only the real `DOGEUSDT` position at `15x`, and stale `BNBUSDT` moved to runtime history instead of remaining actionable.
+- 2026-04-26: closed `V1LIVE-PROD-2026-04-26-B` after three real-account production verification loops on the affected live bot. The production API now normalizes/imports Binance Futures leverage truth from nested raw payload fields and derives it from notional-versus-margin when the explicit leverage field is absent, then rounds imported leverage before persistence so floating-point precision cannot degrade `15x` to `14x`. `livePositionReconciliation` also now treats open-orders snapshot failure as fail-soft for stale local managed LIVE cleanup, which allowed the historical phantom `BNBUSDT` row to be closed as `ORPHAN_LOCAL` on the real account while the active imported `DOGEUSDT` position persisted with truthful `leverage=15`. Post-deploy production evidence after authenticated repair: exchange snapshot returns `DOGEUSDT` with `leverageĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă„ÄľÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â€šÂ¬ÄąË‡Ä‚â€šĂ‚Â¬Ä‚â€žĂ„â€¦Ä‚â€ąĂ˘â‚¬Ë‡Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€žĂ˘â‚¬Â¦Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚ÂÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬Ă„â€¦Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚ÂĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬Ä…Ä‚â€šĂ‚ÂÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â€šÂ¬ÄąË‡Ä‚â€šĂ‚Â¬Ä‚â€žĂ„â€¦Ä‚â€ąĂ˘â‚¬Ë‡Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â¬Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â°Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â€šÂ¬ÄąË‡Ä‚â€šĂ‚Â¬Ä‚â€žĂ„â€¦Ä‚â€ąĂ˘â‚¬Ë‡Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â15`, runtime `openItems` contains only the real `DOGEUSDT` position at `15x`, and stale `BNBUSDT` moved to runtime history instead of remaining actionable.
 - 2026-04-26: published `history/audits/v1live-post-fix-quality-audit-and-plan-2026-04-26.md` as the next post-hotfix audit baseline. The audit confirms the product is materially healthier on the verified production account, but the highest-value remaining quality work is still architectural rather than cosmetic: exact exchange-context truth, fail-closed imported entry truth, one ownership classifier across live-position surfaces, event-driven Binance lifecycle truth, and removal of legacy/fallback operator-surface seams after those contracts are proven.
 - 2026-04-26: closed the first two execution packets inside `V1LIVE-A`. Exact exchange-context truth is now enforced in runtime watchdog and runtime position automation without hidden env-driven `BINANCE/FUTURES` defaults, live-order boundary submit now fails closed if the resolved API-key exchange drifts from the selected bot exchange, and imported LIVE reconciliation no longer falls back from missing `entryPrice` to `markPrice`. Validation PASS: `pnpm --filter api exec vitest run src/modules/engine/runtimeScanLoop.service.test.ts src/modules/engine/runtimePositionAutomation.service.test.ts src/modules/exchange/exchangeAdapterBoundary.service.test.ts src/modules/exchange/exchangeExecutionCapabilityContract.service.test.ts src/modules/positions/livePositionReconciliation.service.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
 - 2026-04-26: closed the imported-ownership/runtime parity packet inside `V1LIVE-A` (`V1LIVE-04/05/08/09`). The repository now has one canonical imported LIVE ownership classifier keyed by exact `apiKeyId + symbol` with explicit `OWNED | AMBIGUOUS | MANUAL_ONLY | UNOWNED` semantics, and that truth is reused by exchange reconciliation, takeover-status/rebind, runtime imported-position visibility, and runtime close authority. Focused regressions now prove shared-API-key symbol isolation, wallet-managed versus manual-only takeover truth, and exact runtime visibility/close claiming for imported `EXCHANGE_SYNC` rows. Validation PASS: `pnpm --filter api exec vitest run src/modules/bots/runtimeExternalPositionOwner.service.test.ts src/modules/positions/livePositionReconciliation.service.test.ts src/modules/bots/runtimeSessionPositionCommand.service.test.ts src/modules/positions/positions.takeover-status.e2e.test.ts src/modules/bots/bots.runtime-takeover.e2e.test.ts`, `pnpm --filter api run typecheck`, `pnpm run quality:guardrails`.
@@ -24267,7 +24472,7 @@ available server` for public health/ready/root and web build-info, so
   container instead of nested framed boxes, dashboard `Historia` keeps only the
   operational trade log, runtime market cards no longer surface the removed
   helper labels/counters (`Status`, `Source`, `Strategy`, `Decision`,
-  `Pozycja otwarta`, `Oceniono/brak wejĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă„ÄľÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€šĂ‚Â¦Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬Ä…Ä‚â€šĂ‚ÂÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇĂ„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â¬Ă„â€šĂ˘â‚¬ĹľÄ‚â€žĂ˘â‚¬Â¦Ä‚â€žĂ„â€¦Ă„Ä…ÄąĹźcia`), dashboard warning text is more
+  `Pozycja otwarta`, `Oceniono/brak wejÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â€šÂ¬ÄąË‡Ä‚â€šĂ‚Â¬Ä‚â€žĂ„â€¦Ä‚â€žĂ„ÄľĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă„ÄľÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â€šÂ¬ÄąË‡Ä‚â€šĂ‚Â¬Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â¦Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬Ă„â€¦Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚ÂĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬Ä…Ä‚â€šĂ‚ÂÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â€šÂ¬ÄąË‡Ä‚â€šĂ‚Â¬Ä‚â€žĂ„â€¦Ä‚â€ąĂ˘â‚¬Ë‡Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ˘â‚¬ĹˇÄ‚â€šĂ‚Â¬Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‚Â¦Ă„â€šĂ˘â‚¬ĹľÄ‚â€žĂ˘â‚¬Â¦Ä‚â€žĂ„â€¦Ă„Ä…ÄąĹşcia`), dashboard warning text is more
   readable, and wallet create/edit form now groups fields into denser rows
   with a button-style mode switcher.
 - 2026-04-24: the next post-`V1IND-A` operator-truth follow-up is now active
@@ -27017,7 +27222,7 @@ bots.runtime-scope.e2e`, `web HomeLiveWidgets`, `api/web typecheck`) with
   - Reran focused suite including runtime-signal semantics and translation checks:
     - `pnpm --filter web exec vitest run src/i18n/translations.test.ts src/features/dashboard-home/components/home-live-widgets/RuntimeSignalsSection.test.tsx src/features/dashboard-home/components/home-live-widgets/runtimeSignalConditionState.test.ts --reporter=verbose` -> PASS (`3` files, `16` tests).
   - Reproduced exact unresolved UI-text mismatch evidence with direct pattern scan:
-    - `rg -n "Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă„ÄľĂ„â€šĂ˘â‚¬ĹľÄ‚â€žĂ˘â‚¬Â¦Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‚Â¦Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‚Â¦Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ˘â‚¬Ä…Ă„Ä…Ă„â€žĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€žĂ˘â‚¬Â¦Ă„â€šĂ˘â‚¬ĹľÄ‚â€žĂ˘â‚¬Â¦Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąÄľ|Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă„ÄľĂ„â€šĂ˘â‚¬ĹľÄ‚â€žĂ˘â‚¬Â¦Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‚Â¦Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‚Â¦Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ˘â‚¬Ä…Ă„Ä…Ă„â€žĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€žĂ˘â‚¬Â¦Ă„â€šĂ˘â‚¬ĹľÄ‚â€žĂ˘â‚¬Â¦Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąÄľ|?export" apps/web/src/i18n/namespaces/dashboard-home.de-CH.ts apps/web/src/i18n/namespaces/dashboard-home.pt.ts -S` -> encoding-corruption indicators present.
+    - `rg -n "Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â€šÂ¬ÄąË‡Ä‚â€šĂ‚Â¬Ä‚â€žĂ„â€¦Ä‚â€žĂ„ÄľÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‚Â¦Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€šĂ‚Â¦Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă„ÄľÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€šĂ‚Â¦Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă„ÄľÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬Ă„â€¦Ä‚â€žĂ„â€¦Ä‚â€žĂ˘â‚¬ĹľÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â€šÂ¬ÄąË‡Ä‚â€šĂ‚Â¬Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‚Â¦Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‚Â¦Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă„Äľ|Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â€šÂ¬ÄąË‡Ä‚â€šĂ‚Â¬Ä‚â€žĂ„â€¦Ä‚â€žĂ„ÄľÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‚Â¦Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€šĂ‚Â¦Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă„ÄľÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ä‚â€šĂ‚Â¦Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬ÄąË‡Ă„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă„ÄľÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬Ă„â€¦Ä‚â€žĂ„â€¦Ä‚â€žĂ˘â‚¬ĹľÄ‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă‹â€ˇÄ‚â€žĂ˘â‚¬ĹˇÄ‚â€ąĂ‚ÂĂ„â€šĂ‹ÂÄ‚ËĂ˘â€šÂ¬ÄąË‡Ä‚â€šĂ‚Â¬Ă„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‚Â¦Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ˘â‚¬ĹľÄ‚ËĂ˘â€šÂ¬Ă‚Â¦Ä‚â€žĂ˘â‚¬ĹˇÄ‚ËĂ˘â€šÂ¬ÄąÄľĂ„â€šĂ‹ÂÄ‚ËĂ˘â‚¬ĹˇĂ‚Â¬Ă„Ä…Ă„Äľ|?export" apps/web/src/i18n/namespaces/dashboard-home.de-CH.ts apps/web/src/i18n/namespaces/dashboard-home.pt.ts -S` -> encoding-corruption indicators present.
   - `LUC-1167` linkage confirmed for signal-semantics fix coverage; no duplicated implementation lane created.
   - Unblock owner/action unchanged: Frontend encoding repair + QA/Frontend closure rerun.
 
